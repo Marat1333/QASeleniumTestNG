@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Authorization Suite">
+
+    <listeners>
+        <listener class-name="com.leroy.core.listeners.Listener"/>
+    </listeners>
+
+    <test name="C3201013 Логин с неверным паролем">
+        <classes>
+            <class name="com.leroy.tests.authorization.AuthorizationTest">
+                <methods>
+                    <include name="testC3201013"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+</suite>

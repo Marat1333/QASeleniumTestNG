@@ -3,11 +3,11 @@ package com.leroy.pages;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.pages.BasePageObject;
+import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
+import com.leroy.core.web_elements.general.Element;
 import com.leroy.models.LoginData;
-import io.appium.java_client.android.AndroidDriver;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 
 public class LoginPage extends BasePageObject {
 
@@ -25,12 +25,24 @@ public class LoginPage extends BasePageObject {
     @WebFindBy(id = "Password")
     public EditBox passwordFld;
 
+    @AppFindBy(accessibilityId = "AuthLoginButton")
+    @WebFindBy(xpath = "//button[@value='login']")
+    public Button loginBtn;
+
+    // Error message
+    @WebFindBy(xpath = "//div[@class='alert alert-danger']/strong")
+    public Element errorTitle;
+
+    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='AuthScreen__error_wrongLoginOrPass']//android.widget.TextView")
+    @WebFindBy(xpath = "//div[@class='danger validation-summary-errors']")
+    public Element errorBody;
 
     public void logIn(LoginData loginData) {
         usernameFld.click();
         usernameFld.clearAndFill(loginData.getUserName());
         passwordFld.click();
         passwordFld.clearAndFill(loginData.getPassword());
+        loginBtn.click();
     }
 
 }
