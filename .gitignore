@@ -1,0 +1,17 @@
+/target/
+/test-output/
+/data-output/
+/.idea/
+/_idea/
+/_idea/workspace.xml
+
+# Generated sources - ignored
+TestXML/Generated
+
+runConfiguration.properties
+*.project
+
+TestXML/.DS_Store
+doc/.DS_Store
+.DS_Store
+auto-tests.iml
