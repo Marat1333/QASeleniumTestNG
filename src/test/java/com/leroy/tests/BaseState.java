@@ -1,8 +1,10 @@
 package com.leroy.tests;
 
-import com.leroy.core.configuration.AssertVerification;
+import com.leroy.core.configuration.CustomSoftAssert;
 import com.leroy.core.configuration.DriverFactory;
+import com.leroy.core.configuration.EnvironmentConfigurator;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -10,8 +12,9 @@ import java.lang.reflect.Method;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BaseState extends AssertVerification {
+public class BaseState extends EnvironmentConfigurator {
 
+    protected CustomSoftAssert softAssert;
     protected String TC_ID;
 
     private String getTestCaseId(String text) {
@@ -24,14 +27,19 @@ public class BaseState extends AssertVerification {
     }
 
     public BaseState() {
-        setEvalAfterMethod(false);
     }
 
     @BeforeMethod
     protected void baseStateBeforeMethod(Method method) throws Exception {
+        softAssert = new CustomSoftAssert();
         TC_ID = getTestCaseId(method.getAnnotation(Test.class).description());
         if (!DriverFactory.isAppProfile())
             driver.get("http://dev.prudevlegowp.hq.ru.corp.leroymerlin.com/all");
+    }
+
+    @AfterMethod
+    public void assertVerificationAfterMethod() {
+        softAssert = null;
     }
 
     @AfterClass

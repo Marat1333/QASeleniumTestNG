@@ -612,7 +612,7 @@ public class Element extends BaseElement {
     }
 
     public void waitForVisibility() {
-        waitForVisibility(timeout);
+        waitForVisibility(short_timeout);
     }
 
     public void waitForVisibility(int timeout) {

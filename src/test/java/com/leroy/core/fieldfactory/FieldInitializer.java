@@ -36,12 +36,15 @@ public class FieldInitializer {
      * The method initializes the field
      */
     public Object initField() {
-        if (field.getAnnotation(WebFindBy.class) != null || field.getAnnotation(AppFindBy.class) != null) {
+        boolean isApp = DriverFactory.isAppProfile();
+        if (field.getAnnotation(WebFindBy.class) != null && !isApp ||
+                field.getAnnotation(AppFindBy.class) != null && isApp) {
             Class<?> decoratableClass = decoratableClass(field);
             if (decoratableClass != null) {
                 CustomFieldElementLocator locator = new CustomFieldElementLocator(field, parentBy);
-                Class<?> useClass = DriverFactory.isAppProfile() ?
-                        field.getAnnotation(WebFindBy.class).clazz() : field.getAnnotation(AppFindBy.class).clazz();
+                Class<?> useClass = isApp ?
+                        field.getAnnotation(AppFindBy.class).clazz() :
+                        field.getAnnotation(WebFindBy.class).clazz();
                 return createInstance(decoratableClass, locator, useClass);
             }
         }
