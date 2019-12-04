@@ -1,0 +1,59 @@
+#---------------------------------
+#       Android app settings
+#---------------------------------
+settings:
+  platform: android_phone
+  browser: android_app
+  host: 0.0.0.0:4723
+  #build: 1.0.0 # Build version for NativeApps or run id for browser tests
+  timeout: 30 # default wait timeout in seconds
+
+  # /Users/xhqautomation/node_modules/appium/node_modules/appium-chromedriver/chromedriver/mac/chromedriver
+
+  #---------------------------------
+  #              mobile
+  #---------------------------------
+
+capabilities:
+  android_phone:
+    android_app:
+      platformName: Android
+      appiumVersion: 1.15.1
+      autoDismissAlerts: true
+      autoGrantPermissions: true
+      deviceOrientation: portrait
+      autoAcceptAlerts: true
+      automationName: uiautomator2
+      newCommandTimeout: 6000
+      platformVersion: '10.0'
+      deviceName: Nexus 5
+      app: C:\apk\LMLF-1.0.6-TEST-b959.apk
+
+    android_browser:
+      browserName: chrome
+      deviceName: Nexus 5
+      platformVersion: '10.0'
+      platformName: Android
+      automationName: uiautomator2
+      newCommandTimeout: 6000
+      deviceOrientation: portrait
+
+  android_tablet:
+    android_app:
+      platformName: Android
+      appiumVersion: 1.6.5
+      autoDismissAlerts: true
+      autoGrantPermissions: true
+      deviceOrientation: portrait
+      autoAcceptAlerts: true
+      automationName: uiautomator2
+      newCommandTimeout: 6000
+      platformVersion: '8.0'
+      deviceName: Nexus_9
+
+    android_browser:
+      browserName: Chrome
+      deviceName: Nexus_9_portrait
+      platformVersion: '9'
+      platformName: Android
+      deviceOrientation: portrait

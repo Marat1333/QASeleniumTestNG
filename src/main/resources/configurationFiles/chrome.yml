@@ -1,0 +1,18 @@
+#---------------------------------
+#       Chrome settings
+#---------------------------------
+settings:
+  platform: windows
+  browser: chrome
+  timeout: 30 # default wait timeout in seconds
+
+#---------------------------------
+#              desktop
+#---------------------------------
+
+capabilities:
+  windows:
+    chrome:
+      platformVersion: Windows 10
+      args:
+        - start-maximized

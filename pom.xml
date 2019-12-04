@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>qa.selenium.testng</groupId>
+    <artifactId>QASeleniumTestNG</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>QA Selenium TestNg</name>
+    <description>QA Selenium and RestAssured with TestNG Framework</description>
+    <properties>
+        <xmlPath>testng.xml</xmlPath>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <build_no/>
+        <mbrowser/>
+        <menv/>
+        <mplatform/>
+        <mgrid/>
+        <mpage/>
+        <mhubipport/>
+    </properties>
+
+    <!--<repositories>-->
+    <!--<repository>-->
+    <!--<id>public</id>-->
+    <!--<url>http://18.217.57.67/nexus/content/groups/public</url>-->
+    <!--</repository>-->
+    <!--</repositories>-->
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.6.1</version>
+                    <configuration>
+                        <encoding>UTF-8</encoding>
+                        <source>1.8</source>
+                        <target>1.8</target>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.19.1</version>
+                    <configuration>
+                        <suiteXmlFiles>
+                            <suiteXmlFile>${xmlPath}</suiteXmlFile>
+                        </suiteXmlFiles>
+                        <useSystemClassLoader>false</useSystemClassLoader>
+                        <properties>
+                            <property>
+                                <name>reporter</name>
+                                <value>
+                                    org.testng.reporters.XMLReporter:generateTestResultAttributes=true,generateGroupsAttribute=true
+                                </value>
+                            </property>
+                        </properties>
+                        <systemProperties>
+                            <property>
+                                <name>TestNGXML</name>
+                                <value>${xmlPath}</value>
+                            </property>
+                            <property>
+                                <name>AUT_Build_Number</name>
+                                <value>${build_no}</value>
+                            </property>
+                            <property>
+                                <name>mbrowser</name>
+                                <value>${mbrowser}</value>
+                            </property>
+                            <property>
+                                <name>mgrid</name>
+                                <value>${mgrid}</value>
+                            </property>
+                            <property>
+                                <name>menv</name>
+                                <value>${menv}</value>
+                            </property>
+                            <property>
+                                <name>mplatform</name>
+                                <value>${mplatform}</value>
+                            </property>
+                            <property>
+                                <name>mhubipport</name>
+                                <value>${mhubipport}</value>
+                            </property>
+
+                        </systemProperties>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>testCompile</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+
+    <dependencies>
+        <!-- For Maven sure-fire report -->
+        <!-- General data-binding functionality for Jackson: works on core streaming API -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.8.8</version>
+        </dependency>
+        <!-- Core Jackson abstractions, basic JSON streaming API implementation -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.8.8</version>
+        </dependency>
+        <!-- Cassandra Connector -->
+        <!-- A driver for Apache Cassandra 1.2+ that works exclusively with the Cassandra Query Language version 3 (CQL3) and Cassandra's binary protocol. -->
+        <!-- Need to Maven surefire report. Otherwise Error: "invalid byte tag in constant pool 19" -->
+        <dependency>
+            <groupId>com.datastax.cassandra</groupId>
+            <artifactId>cassandra-driver-core</artifactId>
+            <version>3.2.0</version>
+        </dependency>
+
+        <!-- END MAVEN SURE-FIRE REPORT DEPENDENCIES -->
+
+
+        <!-- Jakarta ORO ( For TextUtil class) -->
+        <dependency>
+            <groupId>oro</groupId>
+            <artifactId>oro</artifactId>
+            <version>2.0.8</version>
+        </dependency>
+
+        <!-- A testing framework for the JVM -->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.11</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>3.12.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-server</artifactId>
+            <version>3.12.0</version>
+        </dependency>
+
+        <!-- Unitils Core Module (for RandomStringUtils) -->
+        <dependency>
+            <groupId>org.unitils</groupId>
+            <artifactId>unitils-core</artifactId>
+            <version>3.4.6</version>
+        </dependency>
+
+
+        <!-- Need for import org.json.simple as Example -->
+        <dependency>
+            <groupId>com.saucelabs</groupId>
+            <artifactId>saucerest</artifactId>
+            <version>1.0.35</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.appium</groupId>
+            <artifactId>java-client</artifactId>
+            <version>6.0.0</version>
+        </dependency>
+
+        <!-- Web driver manager -->
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>3.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.24</version>
+        </dependency>
+
+        <!-- For ExpectedConditions -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>23.0</version>
+        </dependency>
+
+        <!-- For RaBackListener -->
+        <dependency>
+            <groupId>com.github.kevinsawicki</groupId>
+            <artifactId>http-request</artifactId>
+            <version>6.0</version>
+        </dependency>
+
+    </dependencies>
+</project>
