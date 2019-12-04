@@ -25,6 +25,7 @@ public class LoginPage extends BasePageObject {
     @WebFindBy(id = "Password")
     public EditBox passwordFld;
 
+
     public void logIn(LoginData loginData) {
         usernameFld.click();
         usernameFld.clearAndFill(loginData.getUserName());
