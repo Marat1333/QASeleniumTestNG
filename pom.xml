@@ -20,13 +20,6 @@
         <mhubipport/>
     </properties>
 
-    <!--<repositories>-->
-    <!--<repository>-->
-    <!--<id>public</id>-->
-    <!--<url>http://18.217.57.67/nexus/content/groups/public</url>-->
-    <!--</repository>-->
-    <!--</repositories>-->
-
     <build>
         <pluginManagement>
             <plugins>
