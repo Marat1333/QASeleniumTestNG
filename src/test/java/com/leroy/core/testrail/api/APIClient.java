@@ -70,18 +70,18 @@ public class APIClient {
      * API method). In most cases, this returns a JSONObject instance which
      * is basically the same as java.util.Map.
      */
-    public Object sendGet(String uri) throws IOException, InterruptedException {
+    public Object sendGet(String uri) throws IOException, APIException, InterruptedException {
         return sendGet(uri, 100);
     }
 
     public Object sendGet(String uri, int attemptsNumber)
-            throws IOException, InterruptedException {
+            throws IOException, APIException, InterruptedException {
         try {
             return this.sendRequest("GET", uri, null);
         } catch (APIException err) {
             Log.warn(err.getMessage());
             long timeout = 10000;
-            if (err.getMessage().contains("Retry after"))
+            if (err.getMessage().contains("Retry after")) {
                 try {
                     String timeoutString =
                             getDecimal(StringUtils.substringAfter(err.getMessage(), "Retry after"), 0);
@@ -93,11 +93,11 @@ public class APIClient {
                 } catch (Exception e) {
                     Log.warn("An error occurred while calculating the 'Retry after' timeout: " + err.getMessage());
                 }
-            Thread.sleep(timeout);
-            if ((attemptsNumber - 1) > 0)
-                return sendGet(uri, attemptsNumber - 1);
-            else
-                return null;
+                Thread.sleep(timeout);
+                if ((attemptsNumber - 1) > 0)
+                    return sendGet(uri, attemptsNumber - 1);
+            }
+            throw err;
         }
     }
 
