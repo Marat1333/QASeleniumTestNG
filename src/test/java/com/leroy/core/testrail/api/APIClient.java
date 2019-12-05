@@ -1,22 +1,18 @@
 package com.leroy.core.testrail.api;
 
-import java.net.URL;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.BufferedReader;
-import java.io.UnsupportedEncodingException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.leroy.core.configuration.Log;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.testng.util.Strings;
+
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class APIClient {
     private String m_user;
@@ -24,10 +20,11 @@ public class APIClient {
     private String m_url;
 
     public APIClient(String base_url) {
+        m_user = "ksolkin@luxoft.com";
+        m_password = "";
         if (!base_url.endsWith("/")) {
             base_url += "/";
         }
-
         this.m_url = base_url + "index.php?/api/v2/";
     }
 
@@ -73,12 +70,12 @@ public class APIClient {
      * API method). In most cases, this returns a JSONObject instance which
      * is basically the same as java.util.Map.
      */
-    public Object sendGet(String uri) throws MalformedURLException, IOException, APIException, InterruptedException {
+    public Object sendGet(String uri) throws IOException, InterruptedException {
         return sendGet(uri, 100);
     }
 
     public Object sendGet(String uri, int attemptsNumber)
-            throws MalformedURLException, IOException, APIException, InterruptedException {
+            throws IOException, InterruptedException {
         try {
             return this.sendRequest("GET", uri, null);
         } catch (APIException err) {
@@ -139,13 +136,13 @@ public class APIClient {
         String auth = getAuthorization(this.m_user, this.m_password);
         conn.addRequestProperty("Authorization", "Basic " + auth);
 
-        if (method == "POST") {
+        if (method.equals("POST")) {
             // Add the POST arguments, if any. We just serialize the passed
             // data object (i.e. a dictionary) and then add it to the
             // request body.
             if (data != null) {
                 byte[] block = JSONValue.toJSONString(data).
-                        getBytes("UTF-8");
+                        getBytes(StandardCharsets.UTF_8);
 
                 conn.setDoOutput(true);
                 OutputStream ostream = conn.getOutputStream();
@@ -178,7 +175,7 @@ public class APIClient {
             BufferedReader reader = new BufferedReader(
                     new InputStreamReader(
                             istream,
-                            "UTF-8"
+                            StandardCharsets.UTF_8
                     )
             );
 
@@ -192,7 +189,7 @@ public class APIClient {
         }
 
         Object result;
-        if (text != "") {
+        if (!text.equals("")) {
             result = JSONValue.parse(text);
         } else {
             result = new JSONObject();
@@ -220,13 +217,7 @@ public class APIClient {
     }
 
     private static String getAuthorization(String user, String password) {
-        try {
-            return getBase64((user + ":" + password).getBytes("UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            // Not thrown
-        }
-
-        return "";
+        return getBase64((user + ":" + password).getBytes(StandardCharsets.UTF_8));
     }
 
     private static String getBase64(byte[] buffer) {
@@ -240,7 +231,7 @@ public class APIClient {
                 '8', '9', '+', '/'
         };
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < buffer.length; i++) {
             byte b0 = buffer[i++], b1 = 0, b2 = 0;
 
