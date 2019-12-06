@@ -1,6 +1,7 @@
 package com.leroy.core.testrail.models;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ResultModel extends BaseModel {
@@ -26,6 +27,7 @@ public class ResultModel extends BaseModel {
     private Long case_id;
     private Long run_id;
     private String executionLog;
+    private List<StepResultModel> stepResults;
 
     public ResultModel(Long run_id, Long case_id) {
         this.run_id = run_id;
@@ -80,6 +82,14 @@ public class ResultModel extends BaseModel {
         this.executionLog = executionLog;
     }
 
+    public List<StepResultModel> getStepResults() {
+        return stepResults;
+    }
+
+    public void setStepResults(List<StepResultModel> stepResults) {
+        this.stepResults = stepResults;
+    }
+
     @Override
     public Map<String, Object> getData() {
         Map<String, Object> data = new HashMap<>();
@@ -87,6 +97,7 @@ public class ResultModel extends BaseModel {
         data.put("comment", getComment());
         data.put("elapsed", getElapsed());
         data.put("custom_execlog", getExecutionLog());
+        data.put("custom_step_results", getStepResults());
         return data;
     }
 }

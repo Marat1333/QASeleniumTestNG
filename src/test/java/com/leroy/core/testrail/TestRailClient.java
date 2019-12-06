@@ -2,15 +2,13 @@ package com.leroy.core.testrail;
 
 import com.leroy.core.testrail.api.APIClient;
 import com.leroy.core.testrail.api.APIException;
-import com.leroy.core.testrail.models.PlanEntryModel;
-import com.leroy.core.testrail.models.PlanModel;
-import com.leroy.core.testrail.models.ResultModel;
-import com.leroy.core.testrail.models.RunModel;
+import com.leroy.core.testrail.models.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class TestRailClient {
@@ -25,6 +23,12 @@ public class TestRailClient {
         resultModel.setStatus_id(1);
         resultModel.setElapsed("15s");
         resultModel.setExecutionLog("2222");
+
+        StepResultModel stepResultModel1 = new StepResultModel("content", "expected",
+                "actual", 1);
+        /*StepResultModel stepResultModel2 = new StepResultModel("content", "expected",
+                "actual", 2);*/
+        resultModel.setStepResults(Arrays.asList(stepResultModel1));
         addTestResult(resultModel);
         Long attachmentId = addAttachmentToTestResult(resultModel.getId(), "C:\\JavaProjects\\Untitled.jpg");
         String s = "";

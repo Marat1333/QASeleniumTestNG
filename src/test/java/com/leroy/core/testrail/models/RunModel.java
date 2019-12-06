@@ -57,13 +57,4 @@ public class RunModel extends PlanModel {
         return data;
     }
 
-    @Override
-    public String toString() {
-        try {
-            return toJsonString();
-        }catch (IllegalAccessException err) {
-            Log.error("toString() method. Error: " + err.getMessage());
-            return null;
-        }
-    }
 }

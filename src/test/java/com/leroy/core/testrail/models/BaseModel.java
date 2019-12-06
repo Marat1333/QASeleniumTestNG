@@ -1,5 +1,7 @@
 package com.leroy.core.testrail.models;
 
+import com.leroy.core.configuration.Log;
+
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +21,7 @@ public class BaseModel {
         return new HashMap<>();
     }
 
-    protected String toJsonString() throws IllegalAccessException {
+    private String toJsonString() throws IllegalAccessException {
         StringBuilder result = new StringBuilder("{\n");
         Class<?> current = this.getClass();
         while (current.getSuperclass() != null) {
@@ -44,5 +46,15 @@ public class BaseModel {
         }
         result.append("\n}");
         return result.toString();
+    }
+
+    @Override
+    public String toString() {
+        try {
+            return toJsonString();
+        } catch (IllegalAccessException err) {
+            Log.error("toString() method. Error: " + err.getMessage());
+            return null;
+        }
     }
 }
