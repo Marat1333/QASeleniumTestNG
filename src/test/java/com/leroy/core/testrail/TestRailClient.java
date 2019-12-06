@@ -18,17 +18,19 @@ public class TestRailClient {
     static APIClient apiClient = new APIClient("https://elbrus.testrail.net/"); // TODO
 
     public static void main(String args[]) throws Exception {
-        String PLAN_NAME = "DEBUG_SPECIFIC_PLAN2";
-        String RUN_NAME = "DEBUG_SPECIFIC_RUN2";
+        String PLAN_NAME = "DEBUG_SPECIFIC_PLAN1";
+        String RUN_NAME = "DEBUG_SPECIFIC_RUN1";
         Long runId = findOrCreateNewPlanRun(PLAN_NAME, RUN_NAME);
         ResultModel resultModel = new ResultModel(runId, 22819089L);
         resultModel.setStatus_id(1);
         resultModel.setElapsed("15s");
         resultModel.setExecutionLog("2222");
         addTestResult(resultModel);
+        Long attachmentId = addAttachmentToTestResult(resultModel.getId(), "C:\\JavaProjects\\Untitled.jpg");
+        String s = "";
     }
 
-    private static Long findOrCreateNewPlanRun(String planName, String runName) throws Exception {
+    public static Long findOrCreateNewPlanRun(String planName, String runName) throws Exception {
         long SUITE_ID = 258L;
         long PROJECT_ID = 10L;
         Long planId = findIdFromJSONArrayByName(getPlans(PROJECT_ID), planName);
@@ -86,6 +88,12 @@ public class TestRailClient {
         resultModel.setId(Long.valueOf(((JSONObject) obj).get("id").toString()));
     }
 
+    public static Long addAttachmentToTestResult(Long testResultId, String attachmentFilePath) throws IOException, APIException {
+        JSONObject json = (JSONObject) apiClient.sendPost("add_attachment_to_result/" + testResultId,
+                attachmentFilePath);
+        return Long.valueOf(json.get("attachment_id").toString());
+    }
+
     public static JSONArray getPlans(Long projectId) throws IOException, APIException, InterruptedException {
         Object obj = apiClient.sendGet("get_plans/" + projectId);
         return ((JSONArray) obj);
@@ -98,10 +106,10 @@ public class TestRailClient {
 
     public static JSONArray getRunsFromPlan(Long planId) throws IOException, APIException, InterruptedException {
         Object obj = apiClient.sendGet("get_plan/" + planId);
-        JSONArray planEntries = (JSONArray) ((JSONObject)obj).get("entries");
+        JSONArray planEntries = (JSONArray) ((JSONObject) obj).get("entries");
         JSONArray runsArray = new JSONArray();
         for (Object entry : planEntries) {
-            runsArray.add(((JSONArray)((JSONObject)entry).get("runs")).get(0));
+            runsArray.add(((JSONArray) ((JSONObject) entry).get("runs")).get(0));
         }
         return runsArray;
     }
@@ -113,7 +121,7 @@ public class TestRailClient {
 
     private static Long findIdFromJSONArrayByName(JSONArray jsonArray, String name) {
         for (Object obj : jsonArray) {
-            JSONObject jsonObject = (JSONObject)obj;
+            JSONObject jsonObject = (JSONObject) obj;
             if (jsonObject.get("name").toString().equals(name))
                 return Long.valueOf(jsonObject.get("id").toString());
         }

@@ -5,13 +5,20 @@ import java.util.Map;
 
 public class ResultModel extends BaseModel {
 
-    /** Statuses:
-    1	Passed
-    2	Blocked
-    3	Untested (not allowed when adding a result)
-    4	Retest
-    5	Failed
-     */
+    /**
+     * Statuses:
+     * 1	Passed
+     * 2	Blocked
+     * 3	Untested (not allowed when adding a result)
+     * 4	Retest
+     * 5	Failed
+     **/
+    public static int ST_PASSED = 1;
+    public static int ST_BLOCKED = 2;
+    public static int ST_UNTESTED = 3;
+    public static int ST_RETEST = 4;
+    public static int ST_FAILED = 5;
+    public static int ST_SKIPPED = 4;
 
     private Integer status_id;
     private String comment;
