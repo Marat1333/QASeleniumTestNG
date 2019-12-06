@@ -85,7 +85,7 @@ public class CustomSoftAssert {
         }
     }
 
-    public void verifyAll() {
+    public void verifyStep() {
         softAssert.assertAll();
     }
 
