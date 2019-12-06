@@ -127,11 +127,6 @@ public class Log {
         }
     }
 
-    @Deprecated
-    public static void fatal(String message) {
-        Reporter.log(dateFormat.format(new Date()) + " [fatal]  " + message, true);
-    }
-
     public static void info(String message) {
         if(!hideInfoMessages) {
             Reporter.log(dateFormat.format(new Date()) + " [info]  " + message, true);

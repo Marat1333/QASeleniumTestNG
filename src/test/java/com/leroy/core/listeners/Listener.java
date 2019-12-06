@@ -40,7 +40,6 @@ public class Listener implements ITestListener, ISuiteListener,
     private int testPassed = 0;
     private int testFailed = 0;
     private int testSkipped = 0;
-    private String strTemp = "";
     private static final String TEST_CASE_ID_PATTERN = "C\\d+";
     private static final ThreadLocal<String> context = new ThreadLocal<>();
 
@@ -63,6 +62,7 @@ public class Listener implements ITestListener, ISuiteListener,
     private ArrayList<ISuite> suites = new ArrayList<>();
     private static boolean processFail;
     private static boolean disableScreenshots;
+    protected String currentScreenshotPath;
 
 
     private static ObjectMapper mapper = new ObjectMapper();
@@ -236,6 +236,7 @@ public class Listener implements ITestListener, ISuiteListener,
     // (@Test)
     @Override
     public void onTestStart(ITestResult arg0) {
+        currentScreenshotPath = null;
         Object currentClass = arg0.getInstance();
         try {
             RemoteWebDriver driver = (RemoteWebDriver) ((EnvironmentConfigurator) currentClass).getDriver();
@@ -270,7 +271,7 @@ public class Listener implements ITestListener, ISuiteListener,
     @Override
     public void beforeInvocation(IInvokedMethod arg0, ITestResult arg1) {
         //Log.info("Start on: + " + EnvConstants.URL_SOLUTION_VIEWER_WITHOUT_USER_INFO);
-        Log.info("About to begin executing following method : "
+        Log.info("Started execution of the following method: "
                 + returnMethodName(arg0.getTestMethod()));
     }
 
@@ -285,9 +286,9 @@ public class Listener implements ITestListener, ISuiteListener,
                 teamName = testClass.getAnnotation(Team.class).name();
             }
 
-            Method mthd = arg0.getTestMethod().getConstructorOrMethod().getMethod();
-            Log.info("@@@MetadataBegin");
-            Log.info("@@@Package: " + testClass.getPackage().getName());
+            //Method mthd = arg0.getTestMethod().getConstructorOrMethod().getMethod();
+            //Log.info("@@@MetadataBegin");
+            //Log.info("@@@Package: " + testClass.getPackage().getName());
             /*if (mthd.isAnnotationPresent(API.class)) {
                 Log.info("@@@API-ID: " + mthd.getAnnotation(API.class).id());
                 Log.info("@@@Tester: " + mthd.getAnnotation(API.class).tester());
@@ -295,7 +296,7 @@ public class Listener implements ITestListener, ISuiteListener,
             if (mthd.isAnnotationPresent(UI.class)) {
                 Log.info("@@@UI-Tester: " + mthd.getAnnotation(UI.class).tester());
             }*/
-            if (mthd.isAnnotationPresent(Team.class)) {
+            /*if (mthd.isAnnotationPresent(Team.class)) {
                 // Test-level team name rules!
                 teamName = mthd.getAnnotation(Team.class).name();
             }
@@ -311,7 +312,7 @@ public class Listener implements ITestListener, ISuiteListener,
             String textMsg = "Completed executing following method : "
                     + returnMethodName(arg0.getTestMethod());
 
-            Log.info(textMsg);
+            Log.info(textMsg);*/
 
             ITestNGMethod testMethod = arg0.getTestMethod();
 
@@ -611,6 +612,7 @@ public class Listener implements ITestListener, ISuiteListener,
                 String screenShotName = getTestCaseId(arg0);
                 screenShotName = screenShotName + "_" + RandomStringUtils.randomNumeric(6);
                 String screenShotPath = new AnyPage(driver).takeScreenShot(screenShotName + ".png");
+                currentScreenshotPath = screenShotPath;
                 arg0.setAttribute("screenshot", screenShotPath);
                 setGenerateTestResultAttributes(true);
                 Log.info("Screenshot path: " + screenShotPath);
@@ -622,7 +624,7 @@ public class Listener implements ITestListener, ISuiteListener,
 
     // This will provide the information on the test
     private void printTestResults(ITestResult result) {
-        Log.info("Test Method resides in " + result.getTestClass().getName());
+        //Log.info("Test Method resides in " + result.getTestClass().getName());
         if (result.getParameters().length != 0) {
             StringBuilder params = new StringBuilder();
             for (Object parameter : result.getParameters()) {
