@@ -20,8 +20,6 @@ public class APIClient {
     private String m_url;
 
     public APIClient(String base_url) {
-        m_user = "ksolkin@luxoft.com";
-        m_password = "";
         if (!base_url.endsWith("/")) {
             base_url += "/";
         }

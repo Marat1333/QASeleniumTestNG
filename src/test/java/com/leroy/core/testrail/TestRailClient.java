@@ -1,48 +1,43 @@
 package com.leroy.core.testrail;
 
+import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.testrail.api.APIClient;
 import com.leroy.core.testrail.api.APIException;
-import com.leroy.core.testrail.models.*;
+import com.leroy.core.testrail.models.PlanEntryModel;
+import com.leroy.core.testrail.models.PlanModel;
+import com.leroy.core.testrail.models.ResultModel;
+import com.leroy.core.testrail.models.RunModel;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 
 public class TestRailClient {
 
-    static APIClient apiClient = new APIClient("https://elbrus.testrail.net/"); // TODO
+    static APIClient apiClient;
 
-    public static void main(String args[]) throws Exception {
-        String PLAN_NAME = "DEBUG_SPECIFIC_PLAN1";
-        String RUN_NAME = "DEBUG_SPECIFIC_RUN1";
-        Long runId = findOrCreateNewPlanRun(PLAN_NAME, RUN_NAME);
-        ResultModel resultModel = new ResultModel(runId, 22819089L);
-        resultModel.setStatus_id(1);
-        resultModel.setElapsed("15s");
-        resultModel.setExecutionLog("2222");
-
-        StepResultModel stepResultModel1 = new StepResultModel("content", "expected",
-                "actual", 1);
-        /*StepResultModel stepResultModel2 = new StepResultModel("content", "expected",
-                "actual", 2);*/
-        resultModel.setStepResults(Arrays.asList(stepResultModel1));
-        addTestResult(resultModel);
-        Long attachmentId = addAttachmentToTestResult(resultModel.getId(), "C:\\JavaProjects\\Untitled.jpg");
-        String s = "";
+    static {
+        Map<String, Object> properties = (Map<String, Object>) DriverFactory
+                .loadPropertiesFromFile("src/main/resources/testrail.yml");
+        Map<String, Object> settings = (Map<String, Object>) properties.get("settings");
+        apiClient = new APIClient(settings.get("url").toString());
+        apiClient.setUser(settings.get("user").toString());
+        apiClient.setPassword(new String(
+                Base64.getDecoder().decode(settings.get("password").toString())));
     }
 
-    public static Long findOrCreateNewPlanRun(String planName, String runName) throws Exception {
-        long SUITE_ID = 258L;
-        long PROJECT_ID = 10L;
-        Long planId = findIdFromJSONArrayByName(getPlans(PROJECT_ID), planName);
+    public static Long findOrCreateNewPlanRun(String planName, String runName, long projectId, long suiteId)
+            throws Exception {
+        Long planId = findIdFromJSONArrayByName(getPlans(projectId), planName);
         PlanModel planModel = new PlanModel();
         if (planId != null) {
             planModel.setId(planId);
         } else {
-            planModel.setProject_id(PROJECT_ID);
+            planModel.setProject_id(projectId);
             planModel.setName(planName);
             addPlan(planModel);
         }
@@ -51,7 +46,7 @@ public class TestRailClient {
         Long runId = findIdFromJSONArrayByName(getRunsFromPlan(planModel.getId()), runName);
         if (runId == null) {
             PlanEntryModel planEntryModel = new PlanEntryModel(planModel.getId());
-            planEntryModel.setSuite_id(SUITE_ID);
+            planEntryModel.setSuite_id(suiteId);
             planEntryModel.setName(runName);
 
             List<RunModel> runModels = new ArrayList<>();
@@ -62,6 +57,21 @@ public class TestRailClient {
 
             addPlanEntry(planEntryModel);
             runId = planEntryModel.getRuns().get(0).getId();
+        }
+        return runId;
+    }
+
+    public static Long findOrCreateNewRun(String runName, long projectId, long suiteId)
+            throws Exception {
+
+        Long runId = findIdFromJSONArrayByName(getRuns(projectId), runName);
+        if (runId == null) {
+            RunModel run = new RunModel();
+            run.setSuite_id(suiteId);
+            run.setName(runName);
+            run.setProject_id(projectId);
+            addRun(run);
+            runId = run.getId();
         }
         return runId;
     }

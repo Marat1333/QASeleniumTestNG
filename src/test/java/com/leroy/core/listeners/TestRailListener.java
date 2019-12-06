@@ -7,6 +7,7 @@ import com.leroy.core.testrail.models.StepResultModel;
 import org.testng.ISuite;
 import org.testng.ITestResult;
 import org.testng.Reporter;
+import org.testng.util.Strings;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,15 +23,29 @@ public class TestRailListener extends Listener {
     public void onStart(ISuite arg0) {
         super.onStart(arg0);
         STEPS_INFO = new HashMap<>();
-        String planName = System.getProperty("plan");
-        String runName = System.getProperty("run");
-        if (planName != null && runName != null) {
-            try {
-                runId = TestRailClient.findOrCreateNewPlanRun(planName, runName);
-            } catch (Exception err) {
-                Log.error(err.getMessage());
-            }
-        }
+        String planName = System.getProperty("mPlan");
+        String runName = System.getProperty("mRun");
+        String sSuiteId = System.getProperty("mSuite");
+        String sProjectId = System.getProperty("mProject");
+         if(!Strings.isNullOrEmpty(sSuiteId) && !Strings.isNullOrEmpty(sProjectId)) {
+             try {
+                 long suiteId = Long.parseLong(sSuiteId);
+                 long projectId = Long.parseLong(sProjectId);
+                 //long SUITE_ID = 258L;
+                 //long PROJECT_ID = 10L;
+                 try {
+                     if (planName != null && runName != null) {
+                         runId = TestRailClient.findOrCreateNewPlanRun(planName, runName, projectId, suiteId);
+                     } else if (runName != null) {
+                         runId = TestRailClient.findOrCreateNewRun(runName, projectId, suiteId);
+                     }
+                 } catch (Exception err) {
+                     Log.error(err.getMessage());
+                 }
+             } catch (NumberFormatException e) {
+                 Log.error(e.getMessage());
+             }
+         }
     }
 
     // This belongs to ITestListener and will execute only when the test method is passed
@@ -56,19 +71,22 @@ public class TestRailListener extends Listener {
     }
 
     private void addTestResult(ITestResult testResult) {
-        String sCaseId = getTestCaseId(testResult);
-        ResultModel resultModel = new ResultModel(runId, Long.valueOf(sCaseId.replaceAll("C", "")));
-        resultModel.setStatus_id(convertNgStatusToTestRailStatus(testResult.getStatus()));
-        resultModel.setElapsed(testResult.getEndMillis() - testResult.getStartMillis() + "s");
-        resultModel.setExecutionLog(String.join("\n", Reporter.getOutput(testResult)));
-        resultModel.setStepResults(STEPS_INFO.get(sCaseId));
-        try {
-            TestRailClient.addTestResult(resultModel);
-            if (currentScreenshotPath != null) {
-                TestRailClient.addAttachmentToTestResult(resultModel.getId(), currentScreenshotPath);
+        if (runId != null) {
+            String sCaseId = getTestCaseId(testResult);
+            ResultModel resultModel = new ResultModel(runId, Long.valueOf(sCaseId.replaceAll("C", "")));
+            resultModel.setStatus_id(convertNgStatusToTestRailStatus(testResult.getStatus()));
+            long elapsed = testResult.getEndMillis() - testResult.getStartMillis();
+            resultModel.setElapsed(elapsed + (elapsed > 0 ? "s" : ""));
+            resultModel.setExecutionLog(String.join("\n", Reporter.getOutput(testResult)));
+            resultModel.setStepResults(STEPS_INFO.get(sCaseId));
+            try {
+                TestRailClient.addTestResult(resultModel);
+                if (currentScreenshotPath != null) {
+                    TestRailClient.addAttachmentToTestResult(resultModel.getId(), currentScreenshotPath);
+                }
+            } catch (Exception err) {
+                Log.error("addTestResult() Error: " + err.getMessage());
             }
-        } catch (Exception err) {
-            Log.error(err.getMessage());
         }
     }
 
