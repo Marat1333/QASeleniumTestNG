@@ -3,6 +3,8 @@ package com.leroy.tests;
 import com.leroy.core.configuration.CustomSoftAssert;
 import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.configuration.EnvironmentConfigurator;
+import com.leroy.core.listeners.TestRailListener;
+import com.leroy.core.testrail.helpers.StepLog;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -16,6 +18,7 @@ public class BaseState extends EnvironmentConfigurator {
 
     protected CustomSoftAssert softAssert;
     protected String TC_ID;
+    protected StepLog log;
 
     private String getTestCaseId(String text) {
         String result = "undefined";
@@ -31,8 +34,10 @@ public class BaseState extends EnvironmentConfigurator {
 
     @BeforeMethod
     protected void baseStateBeforeMethod(Method method) throws Exception {
-        softAssert = new CustomSoftAssert();
+        log = new StepLog();
+        softAssert = new CustomSoftAssert(log);
         TC_ID = getTestCaseId(method.getAnnotation(Test.class).description());
+        TestRailListener.STEPS_INFO.put(TC_ID, log.getStepResults());
         if (!DriverFactory.isAppProfile())
             driver.get("http://dev.prudevlegowp.hq.ru.corp.leroymerlin.com/all");
     }

@@ -1,22 +1,18 @@
 package com.leroy.core.testrail.api;
 
-import java.net.URL;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.BufferedReader;
-import java.io.UnsupportedEncodingException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.leroy.core.configuration.Log;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.testng.util.Strings;
+
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Base64;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class APIClient {
     private String m_user;
@@ -27,7 +23,6 @@ public class APIClient {
         if (!base_url.endsWith("/")) {
             base_url += "/";
         }
-
         this.m_url = base_url + "index.php?/api/v2/";
     }
 
@@ -73,18 +68,18 @@ public class APIClient {
      * API method). In most cases, this returns a JSONObject instance which
      * is basically the same as java.util.Map.
      */
-    public Object sendGet(String uri) throws MalformedURLException, IOException, APIException, InterruptedException {
+    public Object sendGet(String uri) throws IOException, APIException, InterruptedException {
         return sendGet(uri, 100);
     }
 
     public Object sendGet(String uri, int attemptsNumber)
-            throws MalformedURLException, IOException, APIException, InterruptedException {
+            throws IOException, APIException, InterruptedException {
         try {
             return this.sendRequest("GET", uri, null);
         } catch (APIException err) {
             Log.warn(err.getMessage());
             long timeout = 10000;
-            if (err.getMessage().contains("Retry after"))
+            if (err.getMessage().contains("Retry after")) {
                 try {
                     String timeoutString =
                             getDecimal(StringUtils.substringAfter(err.getMessage(), "Retry after"), 0);
@@ -96,11 +91,11 @@ public class APIClient {
                 } catch (Exception e) {
                     Log.warn("An error occurred while calculating the 'Retry after' timeout: " + err.getMessage());
                 }
-            Thread.sleep(timeout);
-            if ((attemptsNumber - 1) > 0)
-                return sendGet(uri, attemptsNumber - 1);
-            else
-                return null;
+                Thread.sleep(timeout);
+                if ((attemptsNumber - 1) > 0)
+                    return sendGet(uri, attemptsNumber - 1);
+            }
+            throw err;
         }
     }
 
@@ -130,28 +125,69 @@ public class APIClient {
     private Object sendRequest(String method, String uri, Object data)
             throws MalformedURLException, IOException, APIException {
         URL url = new URL(this.m_url + uri);
-
         // Create the connection object and set the required HTTP method
         // (GET/POST) and headers (content type and basic auth).
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.addRequestProperty("Content-Type", "application/json");
 
         String auth = getAuthorization(this.m_user, this.m_password);
         conn.addRequestProperty("Authorization", "Basic " + auth);
 
-        if (method == "POST") {
+        if (method.equals("POST")) {
+            conn.setRequestMethod("POST");
             // Add the POST arguments, if any. We just serialize the passed
             // data object (i.e. a dictionary) and then add it to the
             // request body.
             if (data != null) {
-                byte[] block = JSONValue.toJSONString(data).
-                        getBytes("UTF-8");
+                if (uri.startsWith("add_attachment"))   // add_attachment API requests
+                {
+                    String boundary = "TestRailAPIAttachmentBoundary"; //Can be any random string
+                    File uploadFile = new File((String) data);
 
-                conn.setDoOutput(true);
-                OutputStream ostream = conn.getOutputStream();
-                ostream.write(block);
-                ostream.flush();
+                    conn.setDoOutput(true);
+                    conn.addRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+
+                    OutputStream ostreamBody = conn.getOutputStream();
+                    BufferedWriter bodyWriter = new BufferedWriter(new OutputStreamWriter(ostreamBody));
+
+                    bodyWriter.write("\n\n--" + boundary + "\r\n");
+                    bodyWriter.write("Content-Disposition: form-data; name=\"attachment\"; filename=\""
+                            + uploadFile.getName() + "\"");
+                    bodyWriter.write("\r\n\r\n");
+                    bodyWriter.flush();
+
+                    //Read file into request
+                    InputStream istreamFile = new FileInputStream(uploadFile);
+                    int bytesRead;
+                    byte[] dataBuffer = new byte[1024];
+                    while ((bytesRead = istreamFile.read(dataBuffer)) != -1) {
+                        ostreamBody.write(dataBuffer, 0, bytesRead);
+                    }
+
+                    ostreamBody.flush();
+
+                    //end of attachment, add boundary
+                    bodyWriter.write("\r\n--" + boundary + "--\r\n");
+                    bodyWriter.flush();
+
+                    //Close streams
+                    istreamFile.close();
+                    ostreamBody.close();
+                    bodyWriter.close();
+                } else    // Not an attachment
+                {
+                    conn.addRequestProperty("Content-Type", "application/json");
+                    byte[] block = JSONValue.toJSONString(data).
+                            getBytes("UTF-8");
+
+                    conn.setDoOutput(true);
+                    OutputStream ostream = conn.getOutputStream();
+                    ostream.write(block);
+                    ostream.close();
+                }
             }
+        } else    // GET request
+        {
+            conn.addRequestProperty("Content-Type", "application/json");
         }
 
         // Execute the actual web request (if it wasn't already initiated
@@ -172,6 +208,23 @@ public class APIClient {
             istream = conn.getInputStream();
         }
 
+        // If 'get_attachment' (not 'get_attachments') returned valid status code, save the file
+        if ((istream != null)
+                && (uri.startsWith("get_attachment/"))) {
+            FileOutputStream outputStream = new FileOutputStream((String) data);
+
+            int bytesRead = 0;
+            byte[] buffer = new byte[1024];
+            while ((bytesRead = istream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+
+            outputStream.close();
+            istream.close();
+            return (String) data;
+        }
+
+        // Not an attachment received
         // Read the response body, if any, and deserialize it from JSON.
         String text = "";
         if (istream != null) {
@@ -192,7 +245,7 @@ public class APIClient {
         }
 
         Object result;
-        if (text != "") {
+        if (!text.equals("")) {
             result = JSONValue.parse(text);
         } else {
             result = new JSONObject();
@@ -221,68 +274,12 @@ public class APIClient {
 
     private static String getAuthorization(String user, String password) {
         try {
-            return getBase64((user + ":" + password).getBytes("UTF-8"));
-        } catch (UnsupportedEncodingException e) {
+            return new String(Base64.getEncoder().encode((user + ":" + password).getBytes()));
+        } catch (IllegalArgumentException e) {
             // Not thrown
         }
 
         return "";
-    }
-
-    private static String getBase64(byte[] buffer) {
-        final char[] map = {
-                'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
-                'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
-                'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd',
-                'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
-                'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x',
-                'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7',
-                '8', '9', '+', '/'
-        };
-
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < buffer.length; i++) {
-            byte b0 = buffer[i++], b1 = 0, b2 = 0;
-
-            int bytes = 3;
-            if (i < buffer.length) {
-                b1 = buffer[i++];
-                if (i < buffer.length) {
-                    b2 = buffer[i];
-                } else {
-                    bytes = 2;
-                }
-            } else {
-                bytes = 1;
-            }
-
-            int total = (b0 << 16) | (b1 << 8) | b2;
-
-            switch (bytes) {
-                case 3:
-                    sb.append(map[(total >> 18) & 0x3f]);
-                    sb.append(map[(total >> 12) & 0x3f]);
-                    sb.append(map[(total >> 6) & 0x3f]);
-                    sb.append(map[total & 0x3f]);
-                    break;
-
-                case 2:
-                    sb.append(map[(total >> 18) & 0x3f]);
-                    sb.append(map[(total >> 12) & 0x3f]);
-                    sb.append(map[(total >> 6) & 0x3f]);
-                    sb.append('=');
-                    break;
-
-                case 1:
-                    sb.append(map[(total >> 18) & 0x3f]);
-                    sb.append(map[(total >> 12) & 0x3f]);
-                    sb.append('=');
-                    sb.append('=');
-                    break;
-            }
-        }
-
-        return sb.toString();
     }
 
     // ----------- Private methods ---------------- //
