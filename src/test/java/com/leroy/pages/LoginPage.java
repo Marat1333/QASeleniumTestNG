@@ -2,14 +2,14 @@ package com.leroy.pages;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.annotations.WebFindBy;
-import com.leroy.core.pages.BasePageObject;
+import com.leroy.core.pages.BaseWebPage;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.models.LoginData;
+import com.leroy.models.UserData;
 import org.openqa.selenium.WebDriver;
 
-public class LoginPage extends BasePageObject {
+public class LoginPage extends BaseWebPage {
 
     public String TITLE = "";
 
@@ -37,7 +37,7 @@ public class LoginPage extends BasePageObject {
     @WebFindBy(xpath = "//div[@class='danger validation-summary-errors']")
     public Element errorBody;
 
-    public void logIn(LoginData loginData) {
+    public void logIn(UserData loginData) {
         usernameFld.click();
         usernameFld.clearAndFill(loginData.getUserName());
         passwordFld.click();
