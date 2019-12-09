@@ -1,11 +1,15 @@
 package com.leroy.models;
 
-public class LoginData {
+public class UserData {
 
     private String userName;
     private String password;
 
-    public LoginData(String username, String password) {
+    // User settings
+    private String shop;
+    private String department;
+
+    public UserData(String username, String password) {
         this.userName = username;
         this.password = password;
     }
@@ -24,5 +28,21 @@ public class LoginData {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getShop() {
+        return shop;
+    }
+
+    public void setShop(String shop) {
+        this.shop = shop;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
     }
 }

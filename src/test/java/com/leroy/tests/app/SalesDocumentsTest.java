@@ -6,7 +6,7 @@ import com.leroy.pages.LoginPage;
 import com.leroy.pages.app.ProductCardPage;
 import com.leroy.pages.app.StockProductsPage;
 import com.leroy.pages.app.WorkPage;
-import com.leroy.pages.app.common.BottomMenu;
+import com.leroy.pages.app.common.BottomMenuPage;
 import com.leroy.tests.BaseState;
 import org.testng.annotations.Test;
 
@@ -18,7 +18,7 @@ public class SalesDocumentsTest extends BaseState  {
         LoginPage loginPage = new LoginPage(driver);
         loginPage.logIn(new UserData(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS));
 
-        BottomMenu bottomMenu = new BottomMenu(driver);
+        BottomMenuPage bottomMenu = new BottomMenuPage(driver);
         bottomMenu.goToMoreSection().goToUserProfile().goToEditShopForm().searchForShopAndSelectById("5")
                 .goToEditDepartmentForm().selectDepartmentById("01");
 

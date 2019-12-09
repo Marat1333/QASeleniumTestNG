@@ -20,6 +20,7 @@ public class Table extends Element {
     private ElementList<Element> resizers;
     protected String XPATH_SPECIFIC_INDEX_TD = "//td[parent::tr][%s]"; // [parent::tr] - workaround for Edge
     private String CSS_TBODY_SPECIFIC_ROW_TD = "tbody>tr:nth-child(%s)>td";
+    private String XPATH_TBODY_SPECIFIC_ROW_TD = ".//tbody/tr/td"; // TODO - need to write correct xpath
 
     public Table(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
@@ -105,7 +106,7 @@ public class Table extends Element {
     public List<String> getAllRowData(int rowIndex) throws Exception {
         initialWebElementIfNeeded();
         ElementList<Element> rowData = new ElementList<>(driver,
-                this.webElement.findElements(By.cssSelector(String.format(this.CSS_TBODY_SPECIFIC_ROW_TD, rowIndex + 1))), Element.class);
+                By.xpath(String.format(XPATH_TBODY_SPECIFIC_ROW_TD, rowIndex + 1)));
         try {
             return rowData.getTextList();
         } catch (StaleElementReferenceException err) {
