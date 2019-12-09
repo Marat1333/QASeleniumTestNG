@@ -36,34 +36,20 @@ public class ElementList<E extends Element> extends BaseElement implements Itera
     }
 
     public ElementList(WebDriver driver, By locator, Class<? extends Element> elementClass) {
-        this.driver = driver;
+        super(driver);
         this.locator = new CustomLocator(locator);
         this.elementClass = elementClass;
         initElements(this.locator);
     }
 
     public ElementList(WebDriver driver, List<By> locators) throws Exception {
-        this.driver = driver;
+        super(driver);
         weList = new ArrayList<>();
         for (By locator : locators) {
             weList.add(findElement(locator));
         }
         this.elementClass = Element.class;
         initElementList(DriverFactory.IMPLICIT_WAIT_TIME_OUT);
-    }
-
-    /**
-     * Deprecated constructor
-     *
-     * @param driver
-     * @param weList
-     * @param elementClass deprecated?? Element list initializing without a locator is inefficient. You should use another constructor
-     */
-    //TODO: we have to remove this constructor. Element list initializing without a locator is inefficient
-    public ElementList(WebDriver driver, List<WebElement> weList, Class<? extends Element> elementClass) {
-        this.driver = driver;
-        this.weList = weList;
-        this.elementClass = elementClass;
     }
 
     @Override
@@ -210,7 +196,7 @@ public class ElementList<E extends Element> extends BaseElement implements Itera
      *
      * @return int
      */
-    public int getCount() throws Exception {
+    public int getCount() {
         if (locator != null) {
             String xpath = getXpath();
             By by;
@@ -370,23 +356,6 @@ public class ElementList<E extends Element> extends BaseElement implements Itera
                 count++;
         }
         return count;
-    }
-
-    /**
-     * Get visible elements
-     *
-     * @return ElementList
-     */
-    public ElementList<E> getVisibleElements() throws Exception {
-        initWebElementListIfNeeded();
-        ElementList<E> newList = new ElementList<>(driver, new ArrayList<>(), getElementClass());
-        for (E element : elementList) {
-            if (element.isVisible())
-                newList.add(element);
-        }
-        //ElementList<E> newList = new ElementList<>(driver, this.weList, this.elementClass);
-        //newList.elementList = this.elementList.stream().filter(c -> c.isVisible()).collect(Collectors.toList());
-        return newList;
     }
 
     /**

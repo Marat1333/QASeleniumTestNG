@@ -37,7 +37,8 @@ public class BaseState extends EnvironmentConfigurator {
         log = new StepLog();
         softAssert = new CustomSoftAssert(log);
         TC_ID = getTestCaseId(method.getAnnotation(Test.class).description());
-        TestRailListener.STEPS_INFO.put(TC_ID, log.getStepResults());
+        if (TestRailListener.STEPS_INFO != null)
+            TestRailListener.STEPS_INFO.put(TC_ID, log.getStepResults());
         if (!DriverFactory.isAppProfile())
             driver.get("http://dev.prudevlegowp.hq.ru.corp.leroymerlin.com/all");
     }

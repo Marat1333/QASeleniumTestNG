@@ -16,15 +16,12 @@ public abstract class BaseElement extends BaseContainer {
 
     protected CustomLocator locator;
 
-    BaseElement() {
-    }
-
     public BaseElement(WebDriver driver) {
-        this.driver = driver;
+        super(driver);
     }
 
     public BaseElement(WebDriver driver, CustomLocator locator) {
-        this.driver = driver;
+        super(driver);
         this.locator = locator;
         initElements(locator);
     }

@@ -3,6 +3,7 @@ package com.leroy.core.configuration;
 import com.leroy.core.testrail.helpers.StepLog;
 import com.leroy.core.testrail.models.StepResultModel;
 import com.leroy.core.web_elements.general.Element;
+import org.testng.Assert;
 import org.testng.asserts.SoftAssert;
 
 public class CustomSoftAssert {
@@ -103,12 +104,7 @@ public class CustomSoftAssert {
     }
 
     public void isElementTextEqual(Element element, String expectedText) {
-        boolean elementVisibility = element.isVisible();
-        String desc = element.getMetaName() + " is not visible";
-        softAssert.assertTrue(elementVisibility, desc);
-        if (!elementVisibility)
-            stepLog.assertFail(desc);
-        else {
+        if (isElementVisible(element)) {
             String actualText = element.getText();
             String desc2 = element.getMetaName() + " has incorrect text";
             softAssert.assertEquals(actualText, expectedText,
@@ -117,6 +113,18 @@ public class CustomSoftAssert {
                 stepLog.assertFail(desc2);
             }
         }
+    }
+
+    public boolean isElementVisible(Element element) {
+        Assert.assertNotNull(element.getMetaName(), "Element meta name is NULL!");
+        boolean elementVisibility = element.isVisible();
+        String desc = element.getMetaName() + " is not visible";
+        softAssert.assertTrue(elementVisibility, desc);
+        if (!elementVisibility) {
+            stepLog.assertFail(desc);
+            return false;
+        } else
+            return true;
     }
 
     public void verifyStep() {

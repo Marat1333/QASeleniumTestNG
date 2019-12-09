@@ -27,20 +27,20 @@ public class Element extends BaseElement {
     }
 
     public Element(WebDriver driver, By by) {
-        this.driver = driver;
+        super(driver);
         this.locator = new CustomLocator(by);
         initElements(this.locator);
     }
 
     public Element(WebDriver driver, CustomLocator locator, String metaName) {
-        this.driver = driver;
+        super(driver);
         this.locator = locator;
         this.metaName = metaName;
         initElements(this.locator);
     }
 
     public Element(WebDriver driver, WebElement we) {
-        this.driver = driver;
+        super(driver);
         this.webElement = we;
         this.locator = new CustomLocator(By.xpath(getAbsoluteXPath()));
         initElements(locator);
@@ -226,7 +226,7 @@ public class Element extends BaseElement {
                 }
             }
         } catch (Exception err) {
-            Log.error("Element not found. " + err.getMessage());
+            Log.error("Element " +(getMetaName() != null? getMetaName() : "")+ " not found. " + err.getMessage());
             throw err;
         }
     }
@@ -297,17 +297,23 @@ public class Element extends BaseElement {
 
     public void click() {
         initialWebElementIfNeeded();
-        simpleClick(1);
+        simpleClick(0);
     }
 
-    private void simpleClick(int attemptNum) {
+    public void doubleClick() {
+        initialWebElementIfNeeded();
+        simpleClick(0);
+        simpleClick(0);
+    }
+
+    private void simpleClick(int additionalAttemptNum) {
         try {
             webElement.click();
         } catch (StaleElementReferenceException err) {
             Log.warn("simpleClick() failed. Err: " + err.getMessage());
-            if (attemptNum > 0) {
+            if (additionalAttemptNum > 0) {
                 initialWebElementIfNeeded();
-                simpleClick(attemptNum - 1);
+                simpleClick(additionalAttemptNum - 1);
             } else
                 throw err;
         }
