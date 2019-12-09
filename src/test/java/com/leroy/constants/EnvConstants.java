@@ -10,51 +10,14 @@ import java.util.Properties;
 
 public class EnvConstants {
 
-    private static final String PRODUCTION_ENV = "prod";
+    private static final String PRODUCTION_ENV = "dev";
     private static final String ENV = getEnvironment();
     private static final Properties properties = getPropertiesForEnv(ENV);
 
-    //URL params
-    public static final String URL_PARAM_HIDE_NAVBAR = "hideNavBar=1";
+    // Credentials
+    public static final String BASIC_USER_NAME = getProperty("basic.user.name");
+    public static final String BASIC_USER_PASS = getProperty("basic.user.password");
 
-    //URLs
-    public static final String URL_SCHEME = "true".equals(System.getProperty("fakeRouter")) ? "http://" : getProperty("url.scheme");
-
-    public static final String USERDOMEN = getProperty("url.userdomen");
-    public static final String USERNAME = getProperty("url.username");
-    public static final String URL_PASSWORD = getProperty("url.password");
-    public static final String URL_USER_INFO = USERNAME.isEmpty() ? "" : USERNAME + ":" + URL_PASSWORD + "@";
-
-    public static final String URL_HOST = Strings.isNotNullAndNotEmpty(System.getProperty("hostRepos"))?
-            System.getProperty("hostRepos") : getProperty("url.host");
-    public static final String URL_PORT = getProperty("url.port");
-
-    public static final String URL_BASE_PART_WITH_USER_INFO = URL_SCHEME + URL_USER_INFO + URL_HOST + URL_PORT;
-    public static final String URL_BASE_PART_WITHOUT_USER_INFO = URL_SCHEME + URL_HOST + URL_PORT;
-    public static final String URL_HOME_PAGE_WITH_XHQ_PREFIX = URL_BASE_PART_WITHOUT_USER_INFO + "/xhq";
-    public static final String URL_SOLUTION_VIEWER =
-            URL_BASE_PART_WITHOUT_USER_INFO + getProperty("url.solution.viewer.path") + "/";
-    public static final String URL_SOLUTION_VIEWER_WITHOUT_USER_INFO =
-            URL_BASE_PART_WITHOUT_USER_INFO + getProperty("url.solution.viewer.path") + "/" +
-                    ("true".equals(System.getProperty("perflog")) ? "?perflog=true" : "") +
-                    ("true".equals(System.getProperty("fakeRouter")) ? "" : "");
-    public static final String URL_SOLUTION_VIEWER_WITHOUT_USER_INFO_HIDE_NAVBAR =
-            URL_SOLUTION_VIEWER_WITHOUT_USER_INFO + "?" + URL_PARAM_HIDE_NAVBAR;
-
-    //Pages URLs
-    public static final String HOME_PAGE_URL = URL_SOLUTION_VIEWER + getProperty("url.home.page.fragment");
-    public static final String HOME_PAGE_URL_WITH_USER_AND_SID = URL_BASE_PART_WITHOUT_USER_INFO +
-            getProperty("url.solution.viewer.path") + "?userName=" + getProperty("url.userdomen") + "%5c" +
-            getProperty("url.username") + "&userSID=" + getProperty("url.usersid");
-    public static final String USER_SETTINGS_PAGE_URL =
-            URL_SOLUTION_VIEWER_WITHOUT_USER_INFO + getProperty("url.users.settings.page.path");
-    public static final String ALERTS_PAGE_URL = URL_BASE_PART_WITHOUT_USER_INFO + getProperty("url.alerts.page.path");
-    public static final String HELP_PAGE_URL = URL_SCHEME + URL_HOST + URL_PORT + getProperty("url.help.page.path");
-
-    @Test(description = "Get constant")
-    public void getConstant() throws Exception {
-        Log.info("Constant = " + URL_SOLUTION_VIEWER_WITHOUT_USER_INFO);
-    }
 
     /**
      * Get the value of a property key
@@ -77,7 +40,7 @@ public class EnvConstants {
         try {
             properties = new Properties();
             FileReader reader = new FileReader(System.getProperty("user.dir")
-                    + String.format("/src/main/resources/PropertyFiles/%s.properties", env));
+                    + String.format("/src/main/resources/propertyFiles/%s.properties", env));
             properties.load(reader);
 
         } catch (IOException e) {
