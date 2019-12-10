@@ -95,7 +95,8 @@ public class Table extends Element {
     }
 
     public List<String> getAllColumnData(int columnIndex) throws Exception {
-        ElementList<Element> columnData = new ElementList<>(driver, By.xpath(getXpath() + String.format(XPATH_SPECIFIC_INDEX_TD, columnIndex + 1)));
+        ElementList<Element> columnData = new ElementList<>(driver,
+                new CustomLocator(By.xpath(getXpath() + String.format(XPATH_SPECIFIC_INDEX_TD, columnIndex + 1))));
         try {
             return columnData.getTextList();
         } catch (StaleElementReferenceException err) {
@@ -106,7 +107,7 @@ public class Table extends Element {
     public List<String> getAllRowData(int rowIndex) throws Exception {
         initialWebElementIfNeeded();
         ElementList<Element> rowData = new ElementList<>(driver,
-                By.xpath(String.format(XPATH_TBODY_SPECIFIC_ROW_TD, rowIndex + 1)));
+                new CustomLocator(By.xpath(String.format(XPATH_TBODY_SPECIFIC_ROW_TD, rowIndex + 1))));
         try {
             return rowData.getTextList();
         } catch (StaleElementReferenceException err) {

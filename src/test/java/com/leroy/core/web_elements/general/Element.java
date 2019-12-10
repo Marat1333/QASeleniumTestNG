@@ -51,14 +51,17 @@ public class Element extends BaseElement {
         this.locator = new CustomLocator(locator);
         this.metaName = metaName;
         initElements(this.locator);
-    }
-
-    public Element(WebDriver driver, WebElement we, By locator) {
-        this.driver = driver;
-        this.webElement = we;
-        this.locator = new CustomLocator(locator);
-        initElements(this.locator);
     }*/
+
+//    public Element(WebDriver driver, WebElement we, By by) {
+//        this(driver, by);
+//        this.webElement = we;
+//    }
+
+    public Element(WebDriver driver, WebElement we, CustomLocator locator) {
+        this(driver, locator);
+        this.webElement = we;
+    }
 
     public WebElement getWebElement() {
         initialWebElementIfNeeded();
@@ -221,12 +224,12 @@ public class Element extends BaseElement {
                 if (webElement == null) {
                     initWebElement(timeout);
                 } else {
-                    if (isStaleReference())
+                    if (!isCacheLookup() && isStaleReference())
                         initWebElement(timeout);
                 }
             }
         } catch (Exception err) {
-            Log.error("Element " +(getMetaName() != null? getMetaName() : "")+ " not found. " + err.getMessage());
+            Log.error("Element " + (getMetaName() != null ? getMetaName() : "") + " not found. " + err.getMessage());
             throw err;
         }
     }
@@ -261,9 +264,9 @@ public class Element extends BaseElement {
     boolean isStaleReference() {
         try {
             // Calling any method forces a staleness check
-            webElement.getTagName();
+            webElement.isEnabled();
             return false;
-        } catch (StaleElementReferenceException expected) {
+        } catch (WebDriverException expected) {
             return true;
         }
     }
@@ -491,7 +494,7 @@ public class Element extends BaseElement {
                                 "return ret;", this.webElement).toString();
             } else {
                 // replaceAll is needed for Edge browser (specific situations)
-                return webElement.getText().replaceAll(" \n", "").trim();
+                return webElement.getText();
             }
         } catch (StaleElementReferenceException err) {
             Log.warn("Method: getText(). StaleElementReferenceException: " + err.getMessage());
@@ -526,20 +529,7 @@ public class Element extends BaseElement {
      * @return String
      */
     public String getText(boolean selfText) {
-        return getText(selfText, 2);
-    }
-
-    /**
-     * Returns the text of all visible child elements of the node
-     * This method was created to solve the problem with Safari
-     */
-    public String getTextWithoutHiddenElements() {
-        String text = getText(true);
-        List<WebElement> childElements = findChildElements(By.xpath("./*"));
-        for (WebElement childElement : childElements)
-            if (childElement.isDisplayed())
-                text += childElement.getText();
-        return text;
+        return getText(selfText, 0);
     }
 
     public String getFontFamily() {

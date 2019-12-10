@@ -30,19 +30,18 @@ public class ElementList<E extends Element> extends BaseElement implements Itera
     }
 
     // Constructors
-    public ElementList(WebDriver driver, By locator) {
-        super(driver, new CustomLocator(locator));
+    public ElementList(WebDriver driver, CustomLocator locator) {
+        super(driver, locator);
         this.elementClass = Element.class;
     }
 
-    public ElementList(WebDriver driver, By locator, Class<? extends Element> elementClass) {
-        super(driver);
-        this.locator = new CustomLocator(locator);
+    public ElementList(WebDriver driver, CustomLocator locator, Class<? extends Element> elementClass) {
+        this(driver, locator);
         this.elementClass = elementClass;
         initElements(this.locator);
     }
 
-    public ElementList(WebDriver driver, List<By> locators) throws Exception {
+    /*public ElementList(WebDriver driver, List<By> locators) throws Exception {
         super(driver);
         weList = new ArrayList<>();
         for (By locator : locators) {
@@ -50,7 +49,7 @@ public class ElementList<E extends Element> extends BaseElement implements Itera
         }
         this.elementClass = Element.class;
         initElementList(DriverFactory.IMPLICIT_WAIT_TIME_OUT);
-    }
+    }*/
 
     @Override
     public Iterator<E> iterator() {
@@ -110,9 +109,12 @@ public class ElementList<E extends Element> extends BaseElement implements Itera
         try {
             if (locator != null) {
                 String stringXPath = getXpath();
-                for (int i = 0; i < weList.size(); i++)
-                    elementList.add((E) getElementClass().getConstructor(WebDriver.class, WebElement.class, By.class).
-                            newInstance(driver, weList.get(i), By.xpath(XpathUtil.getXpathByIndex(stringXPath, i))));
+                for (int i = 0; i < weList.size(); i++) {
+                    CustomLocator elementLocator = new CustomLocator(
+                            By.xpath(XpathUtil.getXpathByIndex(stringXPath, i)));
+                    elementList.add((E) getElementClass().getConstructor(WebDriver.class, WebElement.class, CustomLocator.class).
+                            newInstance(driver, weList.get(i), elementLocator));
+                }
             } else
                 for (WebElement we : weList)
                     elementList.add((E) getElementClass().getConstructor(WebDriver.class, WebElement.class).
@@ -133,9 +135,11 @@ public class ElementList<E extends Element> extends BaseElement implements Itera
         if (elementList == null)
             initElementList(timeout);
         else {
-            if (elementList.size() == 0 || ((Element) elementList.get(0)).isStaleReference()) {
+            //if (!isCacheLookup()) {
+            if (elementList.size() == 0 || elementList.get(0).isStaleReference()) {
                 initElementList(0);
             }
+            //}
         }
     }
 

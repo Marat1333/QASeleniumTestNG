@@ -4,6 +4,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseWebPage;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.pages.app.MorePage;
+import com.leroy.pages.app.WorkPage;
 import org.openqa.selenium.WebDriver;
 
 public class BottomMenuPage extends BaseWebPage {
@@ -28,8 +29,11 @@ public class BottomMenuPage extends BaseWebPage {
         salesBtn.click();
     }
 
-    public void goToWork() {
+    public WorkPage goToWork() {
         workBtn.click();
+        WorkPage workPage = new WorkPage(driver);
+        workPage.titleObj.waitForVisibility();
+        return workPage;
     }
 
     public void goToSupport() {

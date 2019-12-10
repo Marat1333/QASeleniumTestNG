@@ -16,6 +16,8 @@ public @interface AppFindBy {
 
     String xpath() default "";
 
+    String text() default "";
+
     String className() default "";
 
     String cssSelector() default "";
@@ -23,4 +25,6 @@ public @interface AppFindBy {
     Class<? extends Element> clazz() default Element.class;
 
     String metaName() default "";
+
+    boolean cacheLookup() default true;
 }

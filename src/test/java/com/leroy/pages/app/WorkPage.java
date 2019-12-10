@@ -7,7 +7,7 @@ import org.openqa.selenium.WebDriver;
 
 public class WorkPage extends BaseAppPage {
 
-    public static final String TITLE = "Ежедневная работа1";
+    public static final String TITLE = "Ежедневная работа";
 
     public WorkPage(WebDriver driver) {
         super(driver);

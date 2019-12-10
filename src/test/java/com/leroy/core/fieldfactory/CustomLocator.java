@@ -7,19 +7,21 @@ public class CustomLocator {
     private By by;
     private By parentBy;
     private String metaName;
+    private boolean cacheLookup;
+
+    // Specific mobile selector options
+    private String accessibilityId;
 
     public CustomLocator(By by) {
         this.by = by;
     }
 
-    public CustomLocator(By by, By parentBy, String metaName) {
+    public CustomLocator(By by, By parentBy, String metaName, boolean cacheLookup) {
         this(by);
         this.parentBy = parentBy;
         this.metaName = metaName;
+        this.cacheLookup = cacheLookup;
     }
-
-    // Specific mobile selector options
-    private String accessibilityId;
 
     public By getBy() {
         return by;
@@ -39,5 +41,13 @@ public class CustomLocator {
 
     public void setAccessibilityId(String accessibilityId) {
         this.accessibilityId = accessibilityId;
+    }
+
+    public boolean isCacheLookup() {
+        return cacheLookup;
+    }
+
+    public void setCacheLookup(boolean cacheLookup) {
+        this.cacheLookup = cacheLookup;
     }
 }

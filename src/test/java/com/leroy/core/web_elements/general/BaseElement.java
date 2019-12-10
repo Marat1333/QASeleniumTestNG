@@ -26,6 +26,10 @@ public abstract class BaseElement extends BaseContainer {
         initElements(locator);
     }
 
+    public boolean isCacheLookup() {
+        return locator.isCacheLookup();
+    }
+
     /**
      * Get xpath of the element
      *
