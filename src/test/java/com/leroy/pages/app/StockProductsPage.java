@@ -58,6 +58,10 @@ public class StockProductsPage extends BaseAppPage {
 
     public ProductCardData getPieceProductInfoByIndex(int index) throws Exception {
         ProductCardData cardData = new ProductCardData();
+        int count = pieceProductCards.getCount();
+        if (index <= count)
+            throw new IndexOutOfBoundsException("На странице " + count +
+                    " штучных товаров. Тест пытался выбрать " + (index + 1));
         ProductCardWidget cardObj = pieceProductCards.get(index);
         cardData.setNumber(cardObj.getNumber());
         cardData.setName(cardObj.getName());
@@ -77,8 +81,9 @@ public class StockProductsPage extends BaseAppPage {
         return selectedProductCards.getCount();
     }
 
-    public void clickSubmitBtn() {
+    public OrderPage clickSubmitBtn() {
         submitBtnLabel.click();
+        return new OrderPage(driver);
     }
 
     public int getCountOfProductsInBasket() {

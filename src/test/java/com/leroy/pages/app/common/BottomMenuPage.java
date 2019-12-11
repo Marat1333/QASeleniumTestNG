@@ -1,13 +1,13 @@
 package com.leroy.pages.app.common;
 
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.pages.BaseWebPage;
+import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.pages.app.MorePage;
 import com.leroy.pages.app.WorkPage;
 import org.openqa.selenium.WebDriver;
 
-public class BottomMenuPage extends BaseWebPage {
+public class BottomMenuPage extends BaseAppPage {
 
     public BottomMenuPage(WebDriver driver) {
         super(driver);

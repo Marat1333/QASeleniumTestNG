@@ -10,6 +10,11 @@ public class CustomSoftAssert {
 
     private SoftAssert softAssert;
     private StepLog stepLog;
+    private boolean isVerifyAll = false;
+
+    public boolean isVerifyAll() {
+        return isVerifyAll;
+    }
 
     public CustomSoftAssert(StepLog stepLog) {
         softAssert = new SoftAssert();
@@ -20,10 +25,10 @@ public class CustomSoftAssert {
         softAssert.assertTrue(condition, desc);
         StepResultModel curStepRes = stepLog.getCurrentStepResult();
         if (curStepRes != null)
-            curStepRes.setExpected(desc);
+            curStepRes.addExpectedResult(desc);
         if (!condition) {
             if (curStepRes != null)
-                curStepRes.setActual("Opposite to the expected result");
+                curStepRes.addActualResult("Opposite to the expected result");
             stepLog.assertFail(desc);
         }
     }
@@ -32,10 +37,10 @@ public class CustomSoftAssert {
         softAssert.assertFalse(condition, desc);
         StepResultModel curStepRes = stepLog.getCurrentStepResult();
         if (curStepRes != null)
-            curStepRes.setExpected(desc);
+            curStepRes.addExpectedResult(desc);
         if (condition) {
             if (curStepRes != null)
-                curStepRes.setActual("Opposite to the expected result");
+                curStepRes.addActualResult("Opposite to the expected result");
             stepLog.assertFail(desc);
         }
     }
@@ -49,10 +54,10 @@ public class CustomSoftAssert {
             expectedResultText = desc;
         StepResultModel curStepRes = stepLog.getCurrentStepResult();
         if (curStepRes != null)
-            curStepRes.setExpected(expectedResultText);
+            curStepRes.addExpectedResult(expectedResultText);
         if (!actual.equals(expected)) {
             if (curStepRes != null)
-                curStepRes.setActual(actual.toString());
+                curStepRes.addActualResult(actual.toString());
             stepLog.assertFail(desc);
         }
     }
@@ -66,10 +71,10 @@ public class CustomSoftAssert {
             expectedResultText = desc;
         StepResultModel curStepRes = stepLog.getCurrentStepResult();
         if (curStepRes != null)
-            curStepRes.setExpected(expectedResultText);
+            curStepRes.addExpectedResult(expectedResultText);
         if (actual.equals(expected)) {
             if (curStepRes != null)
-                curStepRes.setActual(actual.toString());
+                curStepRes.addActualResult(actual.toString());
             stepLog.assertFail(desc);
         }
     }
@@ -90,17 +95,19 @@ public class CustomSoftAssert {
     }
 
     public void isNull(Object object, String desc) {
-        softAssert.assertNull(object, desc);
         if (object != null) {
             stepLog.assertFail(desc);
         }
+        softAssert.assertNull(object, desc);
     }
 
     public void isNotNull(Object object, String desc) {
-        softAssert.assertNotNull(object, desc);
         if (object == null) {
             stepLog.assertFail(desc);
         }
+        Assert.assertNotNull(object, desc);
+        /*softAssert.assertNotNull(object, desc);
+        verifyStep();*/
     }
 
     public void isElementTextEqual(Element element, String expectedText) {
@@ -127,8 +134,9 @@ public class CustomSoftAssert {
             return true;
     }
 
-    public void verifyStep() {
+    public void verifyAll() {
         softAssert.assertAll();
+        isVerifyAll = true;
     }
 
 }

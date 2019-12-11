@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Support Suite">
+
+    <listeners>
+        <listener class-name="com.leroy.core.listeners.TestRailListener"/>
+    </listeners>
+
+    <test name="C3201017 Создание тикета из приложения (пожаловаться)">
+        <classes>
+            <class name="com.leroy.tests.app.SupportTest">
+                <methods>
+                    <include name="testC3201017"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+</suite>

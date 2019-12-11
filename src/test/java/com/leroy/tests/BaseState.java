@@ -45,6 +45,8 @@ public class BaseState extends EnvironmentConfigurator {
 
     @AfterMethod
     public void assertVerificationAfterMethod() {
+        if (!softAssert.isVerifyAll())
+            throw new AssertionError("You forgot to add verifyAll method in the end of the test case!");
         softAssert = null;
     }
 

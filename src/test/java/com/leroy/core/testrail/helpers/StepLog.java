@@ -14,8 +14,10 @@ public class StepLog {
     public StepResultModel currentStepResult;
 
     public void step(String message) {
+        //if (stepCounter > 0)
+        // TODO need to verify the previous step
         currentStepResult = new StepResultModel();
-        currentStepResult.setStatus_id(ResultModel.ST_PASSED);
+        currentStepResult.setStatus_id(ResultModel.ST_SKIPPED);
         currentStepResult.setContent(message);
         stepResults.add(currentStepResult);
         stepCounter++;

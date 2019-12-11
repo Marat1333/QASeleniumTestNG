@@ -7,6 +7,7 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.models.UserData;
+import com.leroy.pages.app.SalesPage;
 import org.openqa.selenium.WebDriver;
 
 public class LoginPage extends BaseWebPage {
@@ -37,12 +38,13 @@ public class LoginPage extends BaseWebPage {
     @WebFindBy(xpath = "//div[@class='danger validation-summary-errors']")
     public Element errorBody;
 
-    public void logIn(UserData loginData) {
+    public SalesPage logIn(UserData loginData) {
         usernameFld.click();
         usernameFld.clearAndFill(loginData.getUserName());
         passwordFld.click();
         passwordFld.clearAndFill(loginData.getPassword());
         loginBtn.click();
+        return new SalesPage(driver);
     }
 
 }

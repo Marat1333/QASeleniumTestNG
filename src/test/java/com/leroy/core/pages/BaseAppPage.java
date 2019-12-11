@@ -27,6 +27,10 @@ public class BaseAppPage extends BaseContainer {
         }
     }
 
+    public void hideKeyboard() {
+        androidDriver.hideKeyboard();
+    }
+
     public void waitForPageIsLoaded() {}
 
 }
