@@ -123,7 +123,7 @@ public class Listener implements ITestListener, ISuiteListener,
     @Override
     public void onStart(ISuite arg0) {
         //force UTF-8 usage
-        try {
+        /*try {
             System.setProperty("file.encoding", "UTF-8");
             Field charset = Charset.class.getDeclaredField("defaultCharset");
             charset.setAccessible(true);
@@ -131,7 +131,7 @@ public class Listener implements ITestListener, ISuiteListener,
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
-        System.setProperty("current.date", DateUtil.formatCurrectDayYYYYMMDDHHMMSSTimeZone());
+        System.setProperty("current.date", DateUtil.formatCurrectDayYYYYMMDDHHMMSSTimeZone());*/
         arg0.getXmlSuite().setName(arg0.getName());
 
         // Continue with the rest of the initialization of the system properties
@@ -665,8 +665,7 @@ public class Listener implements ITestListener, ISuiteListener,
         }
 
         if (status != null && status.equals("Failed")) {
-            Log.error(DeprecatedCommonUtil.filterInvalidChars(result.getThrowable()
-                    .getMessage()));
+            Log.error(result.getThrowable().getMessage());
         }
     }
 

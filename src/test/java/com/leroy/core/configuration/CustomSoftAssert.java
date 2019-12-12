@@ -89,14 +89,14 @@ public class CustomSoftAssert {
     public void isElementTextEqual(Element element, String expectedText) {
         if (isElementVisible(element)) {
             String actualText = element.getText();
-            String desc2 = element.getMetaName() + String.format(" должно содержать текст '%s'", expectedText);
+            String desc2 = element.getMetaName() + String.format(" должно содержать текст **%s**", expectedText);
             softAssert.assertEquals(actualText, expectedText,
                     desc2);
             if (!actualText.equals(expectedText)) {
                 StepResultModel curStepRes = stepLog.getCurrentStepResult();
                 curStepRes.addExpectedResult(desc2);
                 stepLog.assertFail(desc2);
-                curStepRes.addActualResult(element.getMetaName() + String.format(" содержит текст '%s'", actualText));
+                curStepRes.addActualResult(element.getMetaName() + String.format(" содержит текст **%s**", actualText));
             }
         }
     }
@@ -110,16 +110,18 @@ public class CustomSoftAssert {
             stepLog.assertFail(desc);
             StepResultModel curStepRes = stepLog.getCurrentStepResult();
             curStepRes.addExpectedResult(desc);
-            curStepRes.addActualResult(element.getMetaName() + " не отображается");
+            curStepRes.addActualResult(element.getMetaName() + " **не** отображается");
             return false;
         } else
             return true;
     }
 
     public void verifyAll() {
-        softAssert.assertAll();
-        stepLog.currentStepResult.setStatus_id(ResultModel.ST_PASSED);
+        if (stepLog.currentStepResult != null)
+            if (stepLog.currentStepResult.getStatus_id() == ResultModel.ST_UNTESTED)
+                stepLog.currentStepResult.setStatus_id(ResultModel.ST_PASSED);
         isVerifyAll = true;
+        softAssert.assertAll();
     }
 
 }
