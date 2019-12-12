@@ -69,15 +69,21 @@ public class CustomFieldElementLocator {
     }
 
     private String buildMetaName() {
-        Annotation annotation = DriverFactory.isAppProfile() ?
+        boolean isApp = DriverFactory.isAppProfile();
+        Annotation annotation = isApp ?
                 field.getAnnotation(AppFindBy.class) : field.getAnnotation(WebFindBy.class);
         if (annotation == null)
             return null;
-        String metaName = DriverFactory.isAppProfile() ?
+        String metaName = isApp ?
                 field.getAnnotation(AppFindBy.class).metaName() :
                 field.getAnnotation(WebFindBy.class).metaName();
         if (!metaName.isEmpty())
             return metaName;
+        if (isApp) {
+            String textElem = field.getAnnotation(AppFindBy.class).text();
+            if (!textElem.isEmpty())
+                return "Элемент с текстом '"+textElem+"'";
+        }
         return field.getName();
     }
 

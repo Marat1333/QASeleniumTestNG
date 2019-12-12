@@ -11,13 +11,13 @@ public class SubmittedIncidentPage extends BottomMenuPage {
         super(driver);
     }
 
-    @AppFindBy(xpath = "//android.widget.TextView[1]")
+    @AppFindBy(xpath = "//android.widget.TextView[1]", metaName = "Заголовок 'Письмо отправлено. Спасибо'")
     public Element headerLbl;
 
-    @AppFindBy(xpath = "//android.widget.TextView[2]")
+    @AppFindBy(xpath = "//android.widget.TextView[2]", metaName = "Текст с номером инцидента")
     public Element incidentCreatedWithNumberLbl;
 
-    @AppFindBy(xpath = "//android.widget.TextView[3]")
+    @AppFindBy(xpath = "//android.widget.TextView[3]", metaName = "Текст с почтой, куда будет отправлен email")
     public Element answerWillSendOnMailLbl;
 
     @AppFindBy(text = "ОТПРАВИТЬ ЕЩЕ ОДНО ПИСЬМО")
@@ -29,11 +29,13 @@ public class SubmittedIncidentPage extends BottomMenuPage {
     }
 
     public String getIncidentNumber() {
-        return incidentCreatedWithNumberLbl.getText().replaceAll("Создан инцидент № |\\.", "").trim();
+        return incidentCreatedWithNumberLbl.getText()
+                .replaceAll("Создан инцидент № |\\.", "").trim();
     }
 
     public String getEmail() {
-        return answerWillSendOnMailLbl.getText().replaceAll("Ответ будет выслан на ", "").trim();
+        return answerWillSendOnMailLbl.getText()
+                .replaceAll("Ответ будет выслан на ", "").trim();
     }
 
     public boolean isIncidentNumberVisibleAndValid() {

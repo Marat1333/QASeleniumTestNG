@@ -14,17 +14,17 @@ public class ComplainPage extends BaseAppPage {
 
     @AppFindBy(text = "Что случилось?")
     public Element whatHappenLbl;
-    @AppFindBy(accessibilityId = "title")
+    @AppFindBy(accessibilityId = "title", metaName = "Поле ввода 'Что случилось?'")
     public EditBox whatHappenFld;
 
     @AppFindBy(text = "Чуть больше подробностей")
     public Element moreInfoLbl;
-    @AppFindBy(accessibilityId = "moreInfo")
+    @AppFindBy(accessibilityId = "moreInfo", metaName = "Поле ввода 'Чуть больше подробностей'")
     public EditBox moreInfoFld;
 
     @AppFindBy(text = "Эл. почта для ответа")
     public Element emailLbl;
-    @AppFindBy(accessibilityId = "email")
+    @AppFindBy(accessibilityId = "email", metaName = "Поле ввода 'email'")
     public EditBox emailFld;
     @AppFindBy(xpath = "//android.widget.EditText[@content-desc='email']/following::android.widget.TextView[1]")
     public Element emailDomainLbl;

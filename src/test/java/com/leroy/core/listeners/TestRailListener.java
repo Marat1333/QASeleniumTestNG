@@ -75,7 +75,7 @@ public class TestRailListener extends Listener {
             String sCaseId = getTestCaseId(testResult);
             ResultModel resultModel = new ResultModel(runId, Long.valueOf(sCaseId.replaceAll("C", "")));
             resultModel.setStatus_id(convertNgStatusToTestRailStatus(testResult.getStatus()));
-            long elapsed = testResult.getEndMillis() - testResult.getStartMillis();
+            long elapsed = (testResult.getEndMillis() - testResult.getStartMillis()) / 1000;
             resultModel.setElapsed(elapsed + (elapsed > 0 ? "s" : ""));
             resultModel.setExecutionLog(String.join("\n", Reporter.getOutput(testResult)));
             resultModel.setStepResults(STEPS_INFO.get(sCaseId));
