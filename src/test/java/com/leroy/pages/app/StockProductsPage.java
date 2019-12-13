@@ -59,7 +59,7 @@ public class StockProductsPage extends BaseAppPage {
     public ProductCardData getPieceProductInfoByIndex(int index) throws Exception {
         ProductCardData cardData = new ProductCardData();
         int count = pieceProductCards.getCount();
-        if (index <= count)
+        if (index >= count)
             throw new IndexOutOfBoundsException("На странице " + count +
                     " штучных товаров. Тест пытался выбрать " + (index + 1));
         ProductCardWidget cardObj = pieceProductCards.get(index);
@@ -73,7 +73,7 @@ public class StockProductsPage extends BaseAppPage {
         SelectedCardWidget cardObj = selectedProductCards.get(index);
         cardData.setNumber(cardObj.getNumber());
         cardData.setName(cardObj.getName());
-        cardData.setSelectedQuantity(cardObj.getQuantity());
+        cardData.setSelectedQuantity(cardObj.getSelectedQuantity());
         return cardData;
     }
 

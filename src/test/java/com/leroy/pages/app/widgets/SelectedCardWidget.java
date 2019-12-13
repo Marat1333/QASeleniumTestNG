@@ -25,7 +25,7 @@ public class SelectedCardWidget extends ProductCardWidget {
         return new Element(driver, By.xpath(getXpath() + "/android.widget.TextView[4]")).getText();
     }
 
-    public String getQuantity() {
+    public String getSelectedQuantity() {
         return new Element(driver, By.xpath(getXpath() + "/android.widget.TextView[2]")).getText();
     }
 

@@ -39,9 +39,7 @@ public class LoginPage extends BaseWebPage {
     public Element errorBody;
 
     public SalesPage logIn(UserData loginData) {
-        usernameFld.click();
         usernameFld.clearAndFill(loginData.getUserName());
-        passwordFld.click();
         passwordFld.clearAndFill(loginData.getPassword());
         loginBtn.click();
         return new SalesPage(driver);

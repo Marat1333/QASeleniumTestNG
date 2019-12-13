@@ -26,6 +26,8 @@ public class EditBox extends Element {
 
     public void clear() {
         initialWebElementIfNeeded();
+        if (DriverFactory.isAppProfile() && !isEnabled())
+            click();
         waitForVisibility();
         webElement.clear();
     }

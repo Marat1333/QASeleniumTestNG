@@ -201,6 +201,8 @@ public class Element extends BaseElement {
         } catch (org.openqa.selenium.StaleElementReferenceException e) {
             if (isSearchingAgain) {
                 webElement = null;
+                if (locator != null)
+                    locator.setCacheLookup(false);
                 initialWebElementIfNeeded();
                 waitForVisibilityAndSearchAgain(timeout, false);
             }
@@ -498,8 +500,11 @@ public class Element extends BaseElement {
             }
         } catch (StaleElementReferenceException err) {
             Log.warn("Method: getText(). StaleElementReferenceException: " + err.getMessage());
-            if (attemptsNumber > 0)
+            if (attemptsNumber > 0) {
+                if (locator != null)
+                    locator.setCacheLookup(false);
                 return getText(selfText, attemptsNumber - 1);
+            }
             return null;
         } catch (NoSuchElementException err) {
             Log.warn("Method: getText(). NoSuchElementException: " + err.getMessage());
@@ -529,7 +534,7 @@ public class Element extends BaseElement {
      * @return String
      */
     public String getText(boolean selfText) {
-        return getText(selfText, 0);
+        return getText(selfText, 1);
     }
 
     public String getFontFamily() {
@@ -876,7 +881,7 @@ public class Element extends BaseElement {
     }
 
     public void waitUntilTextIsEqualTo(String referenceText, int timeout) {
-        WebDriverWait wait = new WebDriverWait(this.driver, (long) timeout);
+        WebDriverWait wait = new WebDriverWait(this.driver, timeout);
         try {
             wait.until((ExpectedCondition<Boolean>) driverObject -> this.getText().equals(referenceText));
         } catch (TimeoutException e) {

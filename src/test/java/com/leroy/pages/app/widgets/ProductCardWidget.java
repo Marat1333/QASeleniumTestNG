@@ -28,4 +28,12 @@ public class ProductCardWidget extends Element {
         return new Element(driver, By.xpath(getXpath() + "/android.widget.TextView[2]")).getText();
     }
 
+    public String getQuantity() {
+        return new Element(driver, By.xpath(getXpath() + "/android.widget.TextView[3]")).getText();
+    }
+
+    public String getQuantityType() {
+        return new Element(driver, By.xpath(getXpath() + "/android.widget.TextView[4]")).getText();
+    }
+
 }

@@ -4,6 +4,8 @@ import com.leroy.constants.EnvConstants;
 import com.leroy.models.UserData;
 import com.leroy.pages.LoginPage;
 import com.leroy.pages.app.SalesPage;
+import com.leroy.pages.app.UserProfilePage;
+import com.leroy.pages.app.common.BottomMenuPage;
 import com.leroy.tests.BaseState;
 
 public class BaseAppSteps extends BaseState {
@@ -14,6 +16,8 @@ public class BaseAppSteps extends BaseState {
     protected final String SUPPORT_SECTION = "Поддержка";
     protected final String MORE_SECTION = "еще";
 
+
+    // ------------------- STEPS ---------------------//
     protected void loginInAndGoTo(UserData userData, String section) {
         LoginPage loginPage = new LoginPage(driver);
         SalesPage salesPage = loginPage.logIn(userData);
@@ -35,6 +39,12 @@ public class BaseAppSteps extends BaseState {
 
     protected void loginInAndGoTo(String section) {
         loginInAndGoTo(new UserData(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS), section);
+    }
+
+    protected UserProfilePage setShopAndDepartmentForUser(String shop, String department) {
+        BottomMenuPage bottomMenuPage = new BottomMenuPage(driver);
+        return bottomMenuPage.goToMoreSection().goToUserProfile().goToEditShopForm().searchForShopAndSelectById(shop)
+                .goToEditDepartmentForm().selectDepartmentById(department);
     }
 
 }

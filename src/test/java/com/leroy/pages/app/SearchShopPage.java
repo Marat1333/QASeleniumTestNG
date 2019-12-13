@@ -20,7 +20,7 @@ public class SearchShopPage extends BaseAppPage {
     private EditBox searchFld;
 
     @AppFindBy(xpath = "(//*[@content-desc='Button'])[2]")
-    private EditBox confirmBtn;
+    private Element confirmBtn;
 
     private Element getSpecificShopAreaById(String id) {
         return new Element(driver,

@@ -1,11 +1,11 @@
 package com.leroy.pages.app;
 
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.pages.app.common.BottomMenuPage;
 import org.openqa.selenium.WebDriver;
 
-public class UserProfilePage extends BaseAppPage {
+public class UserProfilePage extends BottomMenuPage {
 
     private static final String TYPICAL_OPTION_XPATH = "//android.view.ViewGroup[@content-desc='ScreenContent']//android.view.ViewGroup";
 
