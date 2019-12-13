@@ -16,6 +16,8 @@ public class BaseAppSteps extends BaseState {
     protected final String SUPPORT_SECTION = "Поддержка";
     protected final String MORE_SECTION = "еще";
 
+    // Sub sections for the SALES_SECTION
+    protected final String DOCUMENTS_SALES_SECTION = "Документы продажи";
 
     // ------------------- STEPS ---------------------//
     protected void loginInAndGoTo(UserData userData, String section) {
@@ -24,6 +26,9 @@ public class BaseAppSteps extends BaseState {
         switch (section) {
             case SALES_SECTION:
                 // Nothing to do because it is default page after login
+                break;
+            case DOCUMENTS_SALES_SECTION:
+
                 break;
             case WORK_SECTION:
                 salesPage.goToWork();

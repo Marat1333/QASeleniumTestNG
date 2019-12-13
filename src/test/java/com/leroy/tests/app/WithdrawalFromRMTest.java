@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Random;
 
-public class SalesDocumentsTest extends BaseAppSteps {
+public class WithdrawalFromRMTest extends BaseAppSteps {
 
     @Test(description = "C3132493 Создание заявки на Отзыв RM из раздела Работа")
     public void testC3201013() throws Exception {
