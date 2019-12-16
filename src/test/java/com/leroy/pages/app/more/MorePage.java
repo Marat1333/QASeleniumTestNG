@@ -1,14 +1,14 @@
-package com.leroy.pages.app;
+package com.leroy.pages.app.more;
 
+import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
-import org.openqa.selenium.WebDriver;
 
 public class MorePage extends BaseAppPage {
 
-    public MorePage(WebDriver driver) {
-        super(driver);
+    public MorePage(TestContext context) {
+        super(context);
     }
 
     @AppFindBy(accessibilityId = "UserProfile")
@@ -16,7 +16,7 @@ public class MorePage extends BaseAppPage {
 
     public UserProfilePage goToUserProfile() {
         userProfileArea.click();
-        return new UserProfilePage(driver);
+        return new UserProfilePage(context);
     }
 
 }

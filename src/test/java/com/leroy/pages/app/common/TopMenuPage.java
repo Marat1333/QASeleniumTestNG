@@ -1,11 +1,11 @@
 package com.leroy.pages.app.common;
 
-import org.openqa.selenium.WebDriver;
+import com.leroy.core.TestContext;
 
 public class TopMenuPage extends BottomMenuPage {
 
-    public TopMenuPage(WebDriver driver) {
-        super(driver);
+    public TopMenuPage(TestContext context) {
+        super(context);
     }
 
 }

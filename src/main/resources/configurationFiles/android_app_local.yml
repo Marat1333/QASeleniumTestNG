@@ -24,10 +24,10 @@ capabilities:
       deviceOrientation: portrait
       autoAcceptAlerts: true
       automationName: uiautomator2
-      newCommandTimeout: 6000
+      newCommandTimeout: 60000
       platformVersion: '10.0'
       deviceName: Nexus 5
-      app: C:\apk\LMLF-1.0.6-TEST-b959.apk
+      app: C:\apk\LMLF-1.1.0-TEST-b966.apk
 
     android_browser:
       browserName: chrome
@@ -35,7 +35,7 @@ capabilities:
       platformVersion: '10.0'
       platformName: Android
       automationName: uiautomator2
-      newCommandTimeout: 6000
+      newCommandTimeout: 60000
       deviceOrientation: portrait
 
   android_tablet:

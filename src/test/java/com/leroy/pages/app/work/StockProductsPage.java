@@ -1,5 +1,6 @@
-package com.leroy.pages.app;
+package com.leroy.pages.app.work;
 
+import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
@@ -7,12 +8,12 @@ import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.models.ProductCardData;
 import com.leroy.pages.app.widgets.ProductCardWidget;
 import com.leroy.pages.app.widgets.SelectedCardWidget;
-import org.openqa.selenium.WebDriver;
+import io.qameta.allure.Step;
 
 public class StockProductsPage extends BaseAppPage {
 
-    public StockProductsPage(WebDriver driver) {
-        super(driver);
+    public StockProductsPage(TestContext context) {
+        super(context);
     }
 
     @AppFindBy(xpath = "//android.widget.ScrollView//android.view.ViewGroup//android.widget.ImageView")
@@ -45,13 +46,17 @@ public class StockProductsPage extends BaseAppPage {
         allProductsOnStockLabel.waitForVisibility(timeout);
     }
 
-    public boolean isAnyProductAvailableOnPage() {
-        return productImages.getCount() > 0;
+    //@Step("Проверьте, что на странице есть хотя бы один товар")
+    public StockProductsPage shouldAnyProductAvailableOnPage() {
+        anAssert.isTrue(productImages.getCount() > 0,
+                "На странице должен быть хотя бы один доступный товар");
+        return this;
     }
 
+    @Step("Выбрать первый товар, который поштучно хранится на складе")
     public ProductCardPage clickFirstPieceProduct() throws Exception {
         pieceProductCards.get(0).click();
-        ProductCardPage productCardPage = new ProductCardPage(driver);
+        ProductCardPage productCardPage = new ProductCardPage(context);
         productCardPage.waitForPageIsLoaded();
         return productCardPage;
     }
@@ -65,6 +70,7 @@ public class StockProductsPage extends BaseAppPage {
         ProductCardWidget cardObj = pieceProductCards.get(index);
         cardData.setNumber(cardObj.getNumber());
         cardData.setName(cardObj.getName());
+        cardData.setQuantityType(cardObj.getQuantityType());
         return cardData;
     }
 
@@ -81,13 +87,46 @@ public class StockProductsPage extends BaseAppPage {
         return selectedProductCards.getCount();
     }
 
+    @Step("Нажать кнопку ДАЛЕЕ К ПАРАМЕТРАМ ЗАЯВКИ")
     public OrderPage clickSubmitBtn() {
         submitBtnLabel.click();
-        return new OrderPage(driver);
+        return new OrderPage(context);
     }
 
     public int getCountOfProductsInBasket() {
         return Integer.parseInt(basketProductCountLabel.getText());
+    }
+
+    public StockProductsPage verifyVisibilityOfAllElements() {
+        softAssert.isElementVisible(selectedProductsLabel);
+        softAssert.isElementTextEqual(submitBtnLabel,
+                "ДАЛЕЕ К ПАРАМЕТРАМ ЗАЯВКИ");
+        // to be continued
+        softAssert.verifyAll();
+        return this;
+    }
+
+    public StockProductsPage shouldCountOfSelectedProductsIs(int num) {
+        softAssert.isEquals(getCountSelectedProducts(), 1,
+                "Должен быть %s товар в секции ВЫБРАННЫЕ ТОВАРЫ");
+        softAssert.isEquals(getCountOfProductsInBasket(), 1,
+                "Внизу экрана есть иконка корзинки с цифрой %s");
+        softAssert.verifyAll();
+        return this;
+    }
+
+    public StockProductsPage shouldSelectedProductIs(
+            int index, ProductCardData productData) throws Exception {
+        ProductCardData selectedProductDataAfter = getSelectedProductInfoByIndex(index);
+        softAssert.isEquals(selectedProductDataAfter.getNumber(), productData.getNumber(),
+                "Выбранный товар должен иметь номер %s");
+        softAssert.isEquals(selectedProductDataAfter.getName(), productData.getName(),
+                "Выбранный товар должен иметь название %s");
+        softAssert.isEquals(selectedProductDataAfter.getSelectedQuantity(),
+                productData.getSelectedQuantity(),
+                "Выбранный товар должен иметь кол-во на отзыв %s");
+        softAssert.verifyAll();
+        return this;
     }
 
 }

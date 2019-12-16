@@ -64,8 +64,6 @@ public class EditBox extends Element {
     public void clearAndFill(String text, boolean imitateTyping) {
         clear();
         fill(text, imitateTyping);
-        if (!DriverFactory.isAppProfile())
-            sendBlurEvent();
     }
 
     public void clearFillAndSubmit(String text) {

@@ -1,16 +1,17 @@
-package com.leroy.pages.app;
+package com.leroy.pages.app.more;
 
+import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 
 public class SearchShopPage extends BaseAppPage {
 
-    public SearchShopPage(WebDriver driver) {
-        super(driver);
+    public SearchShopPage(TestContext context) {
+        super(context);
     }
 
     private static final String TYPICAL_SHOP_AREA_XPATH =
@@ -36,11 +37,12 @@ public class SearchShopPage extends BaseAppPage {
         searchFld.clearAndFill(text);
     }
 
+    @Step("Найдите и выберете магазин с номером {id}")
     public UserProfilePage searchForShopAndSelectById(String id) {
         fillInSearchField(id);
         getSpecificShopAreaById(id).doubleClick();
         confirmBtn.click();
-        return new UserProfilePage(driver);
+        return new UserProfilePage(context);
     }
 
 }

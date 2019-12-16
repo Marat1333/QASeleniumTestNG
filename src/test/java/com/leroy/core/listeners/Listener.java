@@ -1,14 +1,15 @@
 package com.leroy.core.listeners;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.leroy.core.TestContext;
 import com.leroy.core.annotations.DisableTestWhen;
 import com.leroy.core.annotations.Team;
 import com.leroy.core.configuration.*;
 import com.leroy.core.listeners.helpers.RetryAnalyzer;
 import com.leroy.core.listeners.helpers.XMLSuiteResultWriter;
 import com.leroy.core.pages.AnyPage;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -23,9 +24,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -611,7 +610,8 @@ public class Listener implements ITestListener, ISuiteListener,
             try {
                 String screenShotName = getTestCaseId(arg0);
                 screenShotName = screenShotName + "_" + RandomStringUtils.randomNumeric(6);
-                String screenShotPath = new AnyPage(driver).takeScreenShot(screenShotName + ".png");
+                String screenShotPath = new AnyPage(new TestContext(driver, null, null, null, null))
+                        .takeScreenShot(screenShotName + ".png");
                 currentScreenshotPath = screenShotPath;
                 arg0.setAttribute("screenshot", screenShotPath);
                 setGenerateTestResultAttributes(true);

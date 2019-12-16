@@ -1,28 +1,26 @@
 package com.leroy.core.pages;
 
-import com.leroy.core.BaseContainer;
+import com.leroy.core.TestContext;
 import com.leroy.core.configuration.Log;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidDriver;
-import org.openqa.selenium.WebDriver;
+import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriverException;
 
-public class BaseAppPage extends BaseContainer {
+public class BaseAppPage extends BasePage {
 
     AndroidDriver<MobileElement> androidDriver;
 
-    public BaseAppPage(WebDriver driver) {
-        super(driver);
+    public BaseAppPage(TestContext context) {
+        super(context);
         androidDriver = (AndroidDriver) driver;
-        initElements();
-        waitForPageIsLoaded();
     }
 
     public boolean isKeyboardVisible() {
         try {
             return androidDriver.isKeyboardShown();
         } catch (WebDriverException err) {
-            Log.warn("isKeyboardVisible() method: "+ err.getMessage());
+            Log.warn("isKeyboardVisible() method: " + err.getMessage());
             return isKeyboardVisible();
         }
     }
@@ -31,6 +29,13 @@ public class BaseAppPage extends BaseContainer {
         androidDriver.hideKeyboard();
     }
 
-    public void waitForPageIsLoaded() {}
+    // ---------------------- Common Verification Steps ------------------ //
+
+    @Step("Проверить видимость клавиатуры для ввода текста")
+    public BaseAppPage shouldKeyboardVisible() {
+        anAssert.isTrue(isKeyboardVisible(),
+                "Клавиатура для ввода должна быть видна");
+        return this;
+    }
 
 }

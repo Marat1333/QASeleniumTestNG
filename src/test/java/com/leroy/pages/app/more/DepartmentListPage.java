@@ -1,14 +1,14 @@
-package com.leroy.pages.app;
+package com.leroy.pages.app.more;
 
+import com.leroy.core.TestContext;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 
 public class DepartmentListPage extends BaseAppPage {
 
-    public DepartmentListPage(WebDriver driver) {
-        super(driver);
+    public DepartmentListPage(TestContext context) {
+        super(context);
     }
 
     private static final String TYPICAL_DEPARTMENT_AREA_XPATH = "//android.widget.ScrollView//android.view.ViewGroup";
@@ -27,6 +27,6 @@ public class DepartmentListPage extends BaseAppPage {
 
     public UserProfilePage selectDepartmentById(String id) {
         getSpecificShopAreaById(id).click();
-        return new UserProfilePage(driver);
+        return new UserProfilePage(context);
     }
 }

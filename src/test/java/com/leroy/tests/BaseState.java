@@ -1,5 +1,7 @@
 package com.leroy.tests;
 
+import com.leroy.core.TestContext;
+import com.leroy.core.configuration.CustomAssert;
 import com.leroy.core.configuration.CustomSoftAssert;
 import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.configuration.EnvironmentConfigurator;
@@ -16,8 +18,7 @@ import java.util.regex.Pattern;
 
 public class BaseState extends EnvironmentConfigurator {
 
-    protected CustomSoftAssert softAssert;
-    protected String TC_ID;
+    protected TestContext context;
     protected StepLog log;
 
     private String getTestCaseId(String text) {
@@ -35,19 +36,21 @@ public class BaseState extends EnvironmentConfigurator {
     @BeforeMethod
     protected void baseStateBeforeMethod(Method method) throws Exception {
         log = new StepLog();
-        softAssert = new CustomSoftAssert(log);
-        TC_ID = getTestCaseId(method.getAnnotation(Test.class).description());
+        CustomSoftAssert softAssert = new CustomSoftAssert(log);
+        CustomAssert anAssert = new CustomAssert(log);
+        String tcId = getTestCaseId(method.getAnnotation(Test.class).description());
+        context = new TestContext(driver, softAssert, anAssert, log, tcId);
         if (TestRailListener.STEPS_INFO != null)
-            TestRailListener.STEPS_INFO.put(TC_ID, log.getStepResults());
+            TestRailListener.STEPS_INFO.put(tcId, log.getStepResults());
         if (!DriverFactory.isAppProfile())
             driver.get("http://dev.prudevlegowp.hq.ru.corp.leroymerlin.com/all");
     }
 
     @AfterMethod
     public void baseStateAfterMethod() {
-        if (!softAssert.isVerifyAll())
+        if (!context.getSoftAssert().isVerifyAll())
             throw new AssertionError("Did you remember to add verifyAll method in the end of the test case?");
-        softAssert = null;
+        context.setSoftAssert(null);
     }
 
     @AfterClass
@@ -62,7 +65,7 @@ public class BaseState extends EnvironmentConfigurator {
             this.driver.quit();
             this.driver = null;
         }
-        this.softAssert = null;
+        context.setSoftAssert(null);
     }
 
 }

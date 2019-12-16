@@ -35,6 +35,10 @@ public class CustomLocator {
         return metaName;
     }
 
+    public void setMetaName(String metaName) {
+        this.metaName = metaName;
+    }
+
     public String getAccessibilityId() {
         return accessibilityId;
     }

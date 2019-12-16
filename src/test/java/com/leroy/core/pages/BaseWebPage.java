@@ -1,6 +1,7 @@
 package com.leroy.core.pages;
 
 import com.leroy.core.BaseContainer;
+import com.leroy.core.TestContext;
 import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.configuration.Log;
 import io.appium.java_client.ios.IOSDriver;
@@ -21,7 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public abstract class BaseWebPage extends BaseContainer {
+public abstract class BaseWebPage extends BasePage {
 
     private static final ExpectedCondition<Boolean> NON_EMPTY_PAGE_TITLE = new ExpectedCondition<Boolean>() {
         public Boolean apply(WebDriver browser) {
@@ -38,15 +39,13 @@ public abstract class BaseWebPage extends BaseContainer {
     public static final String TRANSITION_URL = "about:blank";
     protected String initialHandle;  //stores the window handle obtained when the object was created
 
-    public BaseWebPage(WebDriver driver) {
-        super(driver);
-        if (isDesktop())
-            initialHandle = this.driver.getWindowHandle();
-        initElements();
+    public BaseWebPage(TestContext context) {
+        super(context);
+        initialHandle = this.driver.getWindowHandle();
     }
 
-    protected BaseWebPage(WebDriver driver, String expectedUrl, Boolean isURL) throws IllegalStateException {
-        this(driver);
+    protected BaseWebPage(TestContext context, String expectedUrl, Boolean isURL) throws IllegalStateException {
+        this(context);
         long startTimer = System.currentTimeMillis();
         String actualUrl = null;
         this.waitFor(NON_EMPTY_PAGE_TITLE, (long) timeout);
@@ -65,8 +64,8 @@ public abstract class BaseWebPage extends BaseContainer {
         }
     }
 
-    protected BaseWebPage(WebDriver driver, String expectedTitle) throws IllegalStateException {
-        this(driver);
+    protected BaseWebPage(TestContext context, String expectedTitle) throws IllegalStateException {
+        this(context);
         long startTimer = System.currentTimeMillis();
         String actualTitle = this.waitForPageTitle(expectedTitle);
         long endTimer = System.currentTimeMillis();

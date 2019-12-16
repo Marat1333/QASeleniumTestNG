@@ -1,10 +1,10 @@
 package com.leroy.core.pages;
 
-import org.openqa.selenium.WebDriver;
+import com.leroy.core.TestContext;
 
 public class AnyPage extends BaseWebPage {
 
-    public AnyPage(WebDriver driver) {
-        super(driver);
+    public AnyPage(TestContext context) {
+        super(context);
     }
 }

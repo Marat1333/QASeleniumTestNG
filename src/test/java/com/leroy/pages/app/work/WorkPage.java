@@ -1,16 +1,15 @@
-package com.leroy.pages.app;
+package com.leroy.pages.app.work;
 
+import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
-import org.openqa.selenium.WebDriver;
+import io.qameta.allure.Step;
 
 public class WorkPage extends BaseAppPage {
 
-    public static final String TITLE = "Ежедневная работа";
-
-    public WorkPage(WebDriver driver) {
-        super(driver);
+    public WorkPage(TestContext context) {
+        super(context);
     }
 
     private static final String XPATH_WITHDRAWAL_FROM_RM_AREA =
@@ -31,9 +30,20 @@ public class WorkPage extends BaseAppPage {
             metaName = "'Отзыв с RM' плюсик")
     public Element withdrawalFromRMPlusIcon;
 
+    @Step("Нажать на иконку + рядом с Отзыв с RM")
     public StockProductsPage clickWithdrawalFromRMPlusIcon() {
         withdrawalFromRMPlusIcon.click();
-        return new StockProductsPage(driver);
+        return new StockProductsPage(context);
+    }
+
+    @Step("Проверьте видимость всех элементов на странице 'Ежедневная работа'")
+    public WorkPage verifyVisibilityOfAllElements() {
+        softAssert.isElementTextEqual(titleObj, "Ежедневная работа");
+        softAssert.isElementTextEqual(withdrawalFromRMLabel, "Отзыв с RM");
+        softAssert.isElementVisible(withdrawalFromRMPlusIcon);
+        // TODO there are more elements
+        softAssert.verifyAll();
+        return this;
     }
 
 }

@@ -1,20 +1,22 @@
 package com.leroy.pages.app.support;
 
+import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
+import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 
 public class ComplainPage extends BaseAppPage {
 
-    public ComplainPage(WebDriver driver) {
-        super(driver);
+    public ComplainPage(TestContext context) {
+        super(context);
     }
 
-    @AppFindBy(text = "Что случилось?")
+    @AppFindBy(text = "В чем проблема?")
     public Element whatHappenLbl;
-    @AppFindBy(accessibilityId = "title", metaName = "Поле ввода 'Что случилось?'")
+    @AppFindBy(accessibilityId = "title", metaName = "Поле ввода 'В чем проблема?'")
     public EditBox whatHappenFld;
 
     @AppFindBy(text = "Чуть больше подробностей")
@@ -38,9 +40,45 @@ public class ComplainPage extends BaseAppPage {
         submitBtn.waitForVisibility();
     }
 
-    public SubmittedIncidentPage clickSubmitBtn() {
+    /* ------------------------- ACTIONS -------------------------- */
+
+    @Step("Нажмите на поле 'Чуть больше подробностей'")
+    public ComplainPage clickMoreInformationField() {
+        moreInfoFld.click();
+        return this;
+    }
+
+    @Step("Введите текст '{text}' в поле 'Чуть больше подробностей'")
+    public ComplainPage enterTextIntoMoreInformationField(String text) {
+        moreInfoFld.clearFillAndSubmit(text);
+        return this;
+    }
+
+    @Step("Нажмите кнопку 'Отправить'")
+    public SubmittedIncidentPage clickSendButton() {
         submitBtn.click();
-        return new SubmittedIncidentPage(driver);
+        return new SubmittedIncidentPage(context);
+    }
+
+    /* ---------------------- Verifications -------------------------- */
+
+    @Step("Проверьте, что все элементы страницы 'Пожаловаться' отображаются корректно")
+    public ComplainPage shouldAllElementsVisibility() {
+        softAssert.isElementVisible(whatHappenLbl);
+        softAssert.isElementTextEqual(whatHappenFld, "Не найден товар");
+        // TODO need to check -> В правой части поля видна иконка ручки (редактирования)
+        softAssert.isElementVisible(moreInfoLbl);
+        softAssert.isElementVisible(emailLbl);
+        softAssert.isElementTextEqual(submitBtn, "ОТПРАВИТЬ");
+        softAssert.verifyAll();
+        return this;
+    }
+
+    @Step("Поле 'Чуть больше подробностей' должно содержать текст {text}")
+    public ComplainPage shouldMoreInformationFieldHasText(String text) {
+        softAssert.isElementTextEqual(moreInfoFld, text);
+        softAssert.verifyAll();
+        return this;
     }
 
 }

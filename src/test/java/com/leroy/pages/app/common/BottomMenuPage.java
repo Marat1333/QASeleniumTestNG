@@ -1,16 +1,18 @@
 package com.leroy.pages.app.common;
 
+import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.pages.app.MorePage;
-import com.leroy.pages.app.WorkPage;
-import org.openqa.selenium.WebDriver;
+import com.leroy.pages.app.more.MorePage;
+import com.leroy.pages.app.more.UserProfilePage;
+import com.leroy.pages.app.work.WorkPage;
+import io.qameta.allure.Step;
 
 public class BottomMenuPage extends BaseAppPage {
 
-    public BottomMenuPage(WebDriver driver) {
-        super(driver);
+    public BottomMenuPage(TestContext context) {
+        super(context);
     }
 
     @AppFindBy(accessibilityId = "Route__btn_cart")
@@ -29,20 +31,29 @@ public class BottomMenuPage extends BaseAppPage {
         salesBtn.click();
     }
 
+    @Step("Перейдите в раздел 'Работа'")
     public WorkPage goToWork() {
         workBtn.click();
-        WorkPage workPage = new WorkPage(driver);
+        WorkPage workPage = new WorkPage(context);
         workPage.titleObj.waitForVisibility();
         return workPage;
     }
 
+    @Step("Перейдите в раздел 'Поддержка'")
     public void goToSupport() {
         supportBtn.click();
     }
 
+    @Step("Перейдите в раздел 'Еще'")
     public MorePage goToMoreSection() {
         moreBtn.click();
-        return new MorePage(driver);
+        return new MorePage(context);
+    }
+
+    @Step("Установить магазин {shop} и отдел {department} для пользователя")
+    public UserProfilePage setShopAndDepartmentForUser(String shop, String department) {
+        return goToMoreSection().goToUserProfile().goToEditShopForm().searchForShopAndSelectById(shop)
+                .goToEditDepartmentForm().selectDepartmentById(department);
     }
 
 }
