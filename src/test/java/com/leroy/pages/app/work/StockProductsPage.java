@@ -8,6 +8,7 @@ import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.models.ProductCardData;
 import com.leroy.pages.app.widgets.ProductCardWidget;
 import com.leroy.pages.app.widgets.SelectedCardWidget;
+import com.leroy.elements.MagMobButton;
 import io.qameta.allure.Step;
 
 public class StockProductsPage extends BaseAppPage {
@@ -38,8 +39,8 @@ public class StockProductsPage extends BaseAppPage {
             metaName = "Метка кол-ва товаров в корзине")
     private Element basketProductCountLabel;
 
-    @AppFindBy(text = "ДАЛЕЕ К ПАРАМЕТРАМ ЗАЯВКИ", metaName = "Текст кнопки 'Далее к параметрам заявки'")
-    public Element submitBtnLabel;
+    @AppFindBy(text = "ДАЛЕЕ К ПАРАМЕТРАМ ЗАЯВКИ", metaName = "Кнопка 'Далее к параметрам заявки'")
+    public MagMobButton submitBtn;
 
     @Override
     public void waitForPageIsLoaded() {
@@ -80,7 +81,7 @@ public class StockProductsPage extends BaseAppPage {
 
     @Step("Нажать кнопку ДАЛЕЕ К ПАРАМЕТРАМ ЗАЯВКИ")
     public OrderPage clickSubmitBtn() {
-        submitBtnLabel.click();
+        submitBtn.click();
         return new OrderPage(context);
     }
 
@@ -94,7 +95,7 @@ public class StockProductsPage extends BaseAppPage {
 
     public StockProductsPage verifyVisibilityOfAllElements() {
         softAssert.isElementVisible(selectedProductsLabel);
-        softAssert.isElementTextEqual(submitBtnLabel,
+        softAssert.isElementTextEqual(submitBtn,
                 "ДАЛЕЕ К ПАРАМЕТРАМ ЗАЯВКИ");
         // to be continued
         softAssert.verifyAll();

@@ -4,6 +4,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.util.XpathUtil;
+import com.leroy.elements.MagMobButton;
 import org.openqa.selenium.By;
 
 import java.lang.annotation.Annotation;
@@ -59,8 +60,11 @@ public class CustomFieldElementLocator {
             }
             return By.xpath(xpath);
         }
-        if (!text.isEmpty())
-            return By.xpath("//*[@text='"+text+"']");
+        if (!text.isEmpty()) {
+            if (field.getType().equals(MagMobButton.class))
+                return By.xpath("//android.view.ViewGroup[android.widget.TextView[@text='" + text + "']]");
+            return By.xpath("//*[@text='" + text + "']");
+        }
         if (isApp)
             return null;
         else

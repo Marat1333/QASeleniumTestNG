@@ -5,6 +5,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.elements.MagMobButton;
 import io.qameta.allure.Step;
 
 public class ProductCardPage extends BaseAppPage {
@@ -17,11 +18,7 @@ public class ProductCardPage extends BaseAppPage {
     private Element productCardHeaderArea;
 
     @AppFindBy(accessibilityId = "Button")
-    private Element withdrawalBtn;
-
-    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='Button']/android.widget.TextView",
-            metaName = "Текст кнопки 'Отозвать'")
-    private Element withdrawalBtnLabel;
+    private MagMobButton withdrawalBtn;
 
     @AppFindBy(xpath = "//android.widget.ScrollView/android.view.ViewGroup")
     private Element mainContentArea;
@@ -65,7 +62,7 @@ public class ProductCardPage extends BaseAppPage {
     }
 
     public ProductCardPage shouldWithdrawalButtonHasQuantity(String count) {
-        anAssert.isElementTextEqual(withdrawalBtnLabel,
+        anAssert.isElementTextEqual(withdrawalBtn,
                 String.format("ОТОЗВАТЬ %s шт.", count));
         return this;
     }

@@ -4,6 +4,7 @@ import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.elements.MagMobButton;
 import io.qameta.allure.Step;
 
 public class SubmittedWithdrawalOrderPage extends BaseAppPage {
@@ -19,9 +20,7 @@ public class SubmittedWithdrawalOrderPage extends BaseAppPage {
     private Element messageLbl;
 
     @AppFindBy(accessibilityId = "Button")
-    private Element submitBtn;
-    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='Button']/android.widget.TextView")
-    private Element submitBtnLbl;
+    private MagMobButton submitBtn;
 
     @Override
     public void waitForPageIsLoaded() {
@@ -43,7 +42,7 @@ public class SubmittedWithdrawalOrderPage extends BaseAppPage {
                 "Заявка на отзыв отправлена");
         softAssert.isElementTextEqual(messageLbl,
                 "Статус заявки можно отслеживать в списке заявок.");
-        softAssert.isElementTextEqual(submitBtnLbl,
+        softAssert.isElementTextEqual(submitBtn,
                 "ПЕРЕЙТИ В СПИСОК ЗАЯВОК");
         softAssert.verifyAll();
         return this;

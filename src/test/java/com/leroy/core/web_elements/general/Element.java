@@ -4,6 +4,7 @@ import com.leroy.constants.Fonts;
 import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
+import com.leroy.core.util.XpathUtil;
 import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
@@ -53,11 +54,6 @@ public class Element extends BaseElement {
         initElements(this.locator);
     }*/
 
-//    public Element(WebDriver driver, WebElement we, By by) {
-//        this(driver, by);
-//        this.webElement = we;
-//    }
-
     public Element(WebDriver driver, WebElement we, CustomLocator locator) {
         this(driver, locator);
         this.webElement = we;
@@ -104,7 +100,9 @@ public class Element extends BaseElement {
     public String getXpath() {
         if (locator == null)
             return getAbsoluteXPath();
-        else {
+        else if (locator.getAccessibilityId() != null && !locator.getAccessibilityId().isEmpty()) {
+            return XpathUtil.getXpathByAccessibilityId(locator.getAccessibilityId());
+        } else {
             return super.getXpath();
         }
     }
