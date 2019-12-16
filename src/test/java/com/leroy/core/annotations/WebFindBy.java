@@ -21,4 +21,6 @@ public @interface WebFindBy {
     Class<? extends Element> clazz() default Element.class;
 
     String metaName() default "";
+
+    boolean cacheLookup() default true;
 }

@@ -1,14 +1,21 @@
 package com.leroy.core.configuration;
 
 import com.leroy.core.testrail.helpers.StepLog;
+import com.leroy.core.testrail.models.ResultModel;
 import com.leroy.core.testrail.models.StepResultModel;
 import com.leroy.core.web_elements.general.Element;
+import org.testng.Assert;
 import org.testng.asserts.SoftAssert;
 
 public class CustomSoftAssert {
 
     private SoftAssert softAssert;
     private StepLog stepLog;
+    private boolean isVerifyAll = false;
+
+    public boolean isVerifyAll() {
+        return isVerifyAll;
+    }
 
     public CustomSoftAssert(StepLog stepLog) {
         softAssert = new SoftAssert();
@@ -17,24 +24,20 @@ public class CustomSoftAssert {
 
     public void isTrue(boolean condition, String desc) {
         softAssert.assertTrue(condition, desc);
-        StepResultModel curStepRes = stepLog.getCurrentStepResult();
-        if (curStepRes != null)
-            curStepRes.setExpected(desc);
         if (!condition) {
-            if (curStepRes != null)
-                curStepRes.setActual("Opposite to the expected result");
+            StepResultModel curStepRes = stepLog.getCurrentStepResult();
+            curStepRes.addExpectedResult(desc);
+            curStepRes.addActualResult("Полностью противоположно ожидаемому");
             stepLog.assertFail(desc);
         }
     }
 
     public void isFalse(boolean condition, String desc) {
         softAssert.assertFalse(condition, desc);
-        StepResultModel curStepRes = stepLog.getCurrentStepResult();
-        if (curStepRes != null)
-            curStepRes.setExpected(desc);
         if (condition) {
-            if (curStepRes != null)
-                curStepRes.setActual("Opposite to the expected result");
+            StepResultModel curStepRes = stepLog.getCurrentStepResult();
+            curStepRes.addExpectedResult(desc);
+            curStepRes.addActualResult("Полностью противоположно ожидаемому");
             stepLog.assertFail(desc);
         }
     }
@@ -46,12 +49,10 @@ public class CustomSoftAssert {
             expectedResultText = String.format(desc, expected.toString());
         else
             expectedResultText = desc;
-        StepResultModel curStepRes = stepLog.getCurrentStepResult();
-        if (curStepRes != null)
-            curStepRes.setExpected(expectedResultText);
         if (!actual.equals(expected)) {
-            if (curStepRes != null)
-                curStepRes.setActual(actual.toString());
+            StepResultModel curStepRes = stepLog.getCurrentStepResult();
+            curStepRes.addExpectedResult(expectedResultText);
+            curStepRes.addActualResult(actual.toString());
             stepLog.assertFail(desc);
         }
     }
@@ -63,63 +64,63 @@ public class CustomSoftAssert {
             expectedResultText = String.format(desc, expected.toString());
         else
             expectedResultText = desc;
-        StepResultModel curStepRes = stepLog.getCurrentStepResult();
-        if (curStepRes != null)
-            curStepRes.setExpected(expectedResultText);
         if (actual.equals(expected)) {
-            if (curStepRes != null)
-                curStepRes.setActual(actual.toString());
-            stepLog.assertFail(desc);
-        }
-    }
-
-    /**
-     * Soft assert if inputString contains searchSubString
-     *
-     * @param inputString
-     * @param searchSubString
-     * @param desc
-     */
-    public void isContains(String inputString, String searchSubString, String desc) {
-        softAssert.assertTrue(inputString.contains(searchSubString),
-                desc + "\nActual string = " + inputString + "\nExpected substring = " + searchSubString + "\n");
-        if (!inputString.contains(searchSubString)) {
+            StepResultModel curStepRes = stepLog.getCurrentStepResult();
+            curStepRes.addExpectedResult(expectedResultText);
+            curStepRes.addActualResult(actual.toString());
             stepLog.assertFail(desc);
         }
     }
 
     public void isNull(Object object, String desc) {
-        softAssert.assertNull(object, desc);
         if (object != null) {
             stepLog.assertFail(desc);
         }
+        softAssert.assertNull(object, desc);
     }
 
     public void isNotNull(Object object, String desc) {
-        softAssert.assertNotNull(object, desc);
         if (object == null) {
             stepLog.assertFail(desc);
         }
+        softAssert.assertNotNull(object, desc);
     }
 
     public void isElementTextEqual(Element element, String expectedText) {
-        boolean elementVisibility = element.isVisible();
-        String desc = element.getMetaName() + " is not visible";
-        softAssert.assertTrue(elementVisibility, desc);
-        if (!elementVisibility)
-            stepLog.assertFail(desc);
-        else {
+        if (isElementVisible(element)) {
             String actualText = element.getText();
-            String desc2 = element.getMetaName() + " has incorrect text";
+            String desc2 = element.getMetaName() + String.format(" должно содержать текст **%s**", expectedText);
             softAssert.assertEquals(actualText, expectedText,
                     desc2);
             if (!actualText.equals(expectedText)) {
+                StepResultModel curStepRes = stepLog.getCurrentStepResult();
+                curStepRes.addExpectedResult(desc2);
                 stepLog.assertFail(desc2);
+                curStepRes.addActualResult(element.getMetaName() + String.format(" содержит текст **%s**", actualText));
             }
         }
     }
 
-    public void verifyStep() {
+    public boolean isElementVisible(Element element) {
+        Assert.assertNotNull(element.getMetaName(), "Element meta name is NULL!");
+        boolean elementVisibility = element.isVisible();
+        String desc = element.getMetaName() + " должен отображаться";
+        softAssert.assertTrue(elementVisibility, desc);
+        if (!elementVisibility) {
+            stepLog.assertFail(desc);
+            StepResultModel curStepRes = stepLog.getCurrentStepResult();
+            curStepRes.addExpectedResult(desc);
+            curStepRes.addActualResult(element.getMetaName() + " **не** отображается");
+            return false;
+        } else
+            return true;
+    }
+
+    public void verifyAll() {
+        if (stepLog.currentStepResult != null)
+            if (stepLog.currentStepResult.getStatus_id() == ResultModel.ST_UNTESTED)
+                stepLog.currentStepResult.setStatus_id(ResultModel.ST_PASSED);
+        isVerifyAll = true;
         softAssert.assertAll();
     }
 

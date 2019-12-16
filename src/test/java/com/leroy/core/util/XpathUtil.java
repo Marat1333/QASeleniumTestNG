@@ -23,6 +23,10 @@ public class XpathUtil {
         return str;
     }
 
+    public static String getXpathByAccessibilityId(String accessibilityId) {
+        return "//*[@content-desc='"+accessibilityId+"']";
+    }
+
     /**
      * Get an xpath by index
      *

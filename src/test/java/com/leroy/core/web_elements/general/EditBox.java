@@ -1,8 +1,12 @@
 package com.leroy.core.web_elements.general;
 
+import com.google.common.collect.ImmutableMap;
 import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.fieldfactory.CustomLocator;
-import org.openqa.selenium.*;
+import io.appium.java_client.android.AndroidDriver;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
 
 public class EditBox extends Element {
 
@@ -22,6 +26,8 @@ public class EditBox extends Element {
 
     public void clear() {
         initialWebElementIfNeeded();
+        if (DriverFactory.isAppProfile() && !isEnabled())
+            click();
         waitForVisibility();
         webElement.clear();
     }
@@ -29,7 +35,10 @@ public class EditBox extends Element {
     @Override
     public String getText() {
         initialWebElementIfNeeded();
-        return webElement.getAttribute("value");
+        if (DriverFactory.isAppProfile())
+            return super.getText();
+        else
+            return webElement.getAttribute("value");
     }
 
     public void fill(String text) {
@@ -55,14 +64,16 @@ public class EditBox extends Element {
     public void clearAndFill(String text, boolean imitateTyping) {
         clear();
         fill(text, imitateTyping);
-        if (!DriverFactory.isAppProfile())
-            sendBlurEvent();
     }
 
-    public void clearAndFillAndPressEnter(String text) {
+    public void clearFillAndSubmit(String text) {
         clear();
         fill(text);
-        webElement.sendKeys(Keys.ENTER);
+        if (DriverFactory.isAppProfile())
+            ((AndroidDriver) driver).executeScript(
+                    "mobile: performEditorAction", ImmutableMap.of("action", "search"));
+        else
+            webElement.sendKeys(Keys.ENTER);
     }
 
     public void sendBlurEvent() {

@@ -41,11 +41,11 @@ public class FieldInitializer {
                 field.getAnnotation(AppFindBy.class) != null && isApp) {
             Class<?> decoratableClass = decoratableClass(field);
             if (decoratableClass != null) {
-                CustomFieldElementLocator locator = new CustomFieldElementLocator(field, parentBy);
+                CustomFieldElementLocator fieldLocator = new CustomFieldElementLocator(field, parentBy);
                 Class<?> useClass = isApp ?
                         field.getAnnotation(AppFindBy.class).clazz() :
                         field.getAnnotation(WebFindBy.class).clazz();
-                return createInstance(decoratableClass, locator, useClass);
+                return createInstance(decoratableClass, fieldLocator, useClass);
             }
         }
         return null;
@@ -92,8 +92,8 @@ public class FieldInitializer {
     private <T> T createInstance(Class<T> clazz, CustomFieldElementLocator fieldLocator, Class<?> listType) {
         try {
             if (ElementList.class.isAssignableFrom(clazz))
-                return clazz.getConstructor(WebDriver.class, By.class, listType.getClass())
-                        .newInstance(driver, fieldLocator.getBy(), listType);
+                return clazz.getConstructor(WebDriver.class, CustomLocator.class, listType.getClass())
+                        .newInstance(driver, fieldLocator.getLocator(), listType);
             else
                 return clazz.getConstructor(WebDriver.class, CustomLocator.class, String.class)
                         .newInstance(driver, fieldLocator.getLocator(), fieldLocator.getMetaName());

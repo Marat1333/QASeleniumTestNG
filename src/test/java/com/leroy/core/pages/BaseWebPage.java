@@ -1,6 +1,7 @@
 package com.leroy.core.pages;
 
 import com.leroy.core.BaseContainer;
+import com.leroy.core.TestContext;
 import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.configuration.Log;
 import io.appium.java_client.ios.IOSDriver;
@@ -21,7 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public abstract class BasePageObject extends BaseContainer {
+public abstract class BaseWebPage extends BasePage {
 
     private static final ExpectedCondition<Boolean> NON_EMPTY_PAGE_TITLE = new ExpectedCondition<Boolean>() {
         public Boolean apply(WebDriver browser) {
@@ -38,15 +39,13 @@ public abstract class BasePageObject extends BaseContainer {
     public static final String TRANSITION_URL = "about:blank";
     protected String initialHandle;  //stores the window handle obtained when the object was created
 
-    public BasePageObject(WebDriver driver) {
-        this.driver = driver;
-        if (isDesktop())
-            initialHandle = this.driver.getWindowHandle();
-        initElements();
+    public BaseWebPage(TestContext context) {
+        super(context);
+        initialHandle = this.driver.getWindowHandle();
     }
 
-    protected BasePageObject(WebDriver driver, String expectedUrl, Boolean isURL) throws IllegalStateException {
-        this(driver);
+    protected BaseWebPage(TestContext context, String expectedUrl, Boolean isURL) throws IllegalStateException {
+        this(context);
         long startTimer = System.currentTimeMillis();
         String actualUrl = null;
         this.waitFor(NON_EMPTY_PAGE_TITLE, (long) timeout);
@@ -65,8 +64,8 @@ public abstract class BasePageObject extends BaseContainer {
         }
     }
 
-    protected BasePageObject(WebDriver driver, String expectedTitle) throws IllegalStateException {
-        this(driver);
+    protected BaseWebPage(TestContext context, String expectedTitle) throws IllegalStateException {
+        this(context);
         long startTimer = System.currentTimeMillis();
         String actualTitle = this.waitForPageTitle(expectedTitle);
         long endTimer = System.currentTimeMillis();
@@ -74,28 +73,6 @@ public abstract class BasePageObject extends BaseContainer {
         if (!actualTitle.contains(expectedTitle)) {
             throw new IllegalStateException("Expected page title: " + expectedTitle + ", actual: " + actualTitle + ", URL: " + driver.getCurrentUrl());
         }
-    }
-
-    protected void waitUntilElementIsVisible(By path, int timeout) {
-        try {
-            this.setImplicitWait(timeout);
-            WebDriverWait wait = new WebDriverWait(this.driver, (long) timeout);
-            wait.until(ExpectedConditions.visibilityOfElementLocated(path));
-        } finally {
-            this.setImplicitWait(DriverFactory.IMPLICIT_WAIT_TIME_OUT);
-        }
-
-    }
-
-    protected void waitUntilElementIsInvisible(By path, int timeout) {
-        try {
-            this.setImplicitWait(0);
-            WebDriverWait wait = new WebDriverWait(this.driver, (long) timeout);
-            wait.until(ExpectedConditions.invisibilityOfElementLocated(path));
-        } finally {
-            this.setImplicitWait(DriverFactory.IMPLICIT_WAIT_TIME_OUT);
-        }
-
     }
 
     public boolean waitUntilTitleContains(String text, int timeout) {
@@ -781,7 +758,7 @@ public abstract class BasePageObject extends BaseContainer {
      * @return
      * @throws Exception
      */
-    public BasePageObject waitUntilUrlIs(String expectedUrl) throws Exception {
+    public BaseWebPage waitUntilUrlIs(String expectedUrl) throws Exception {
         WebDriverWait wait = new WebDriverWait(this.driver, (long) short_timeout);
         try {
             wait.until((ExpectedCondition<Boolean>) driverObject -> {
@@ -804,7 +781,7 @@ public abstract class BasePageObject extends BaseContainer {
      * @return
      * @throws Exception
      */
-    public BasePageObject waitUntilUrlStartsWith(String startsWith) throws Exception {
+    public BaseWebPage waitUntilUrlStartsWith(String startsWith) throws Exception {
         WebDriverWait wait = new WebDriverWait(this.driver, (long) timeout);
         try {
             wait.until((ExpectedCondition<Boolean>) driverObject -> {
@@ -973,11 +950,11 @@ public abstract class BasePageObject extends BaseContainer {
      * @param usingJS - whether the window should be closed using javascript
      * @throws Exception
      */
-    public void closeCurrentWindowAndSwitchToSpecified(BasePageObject window, boolean usingJS) throws Exception {
+    public void closeCurrentWindowAndSwitchToSpecified(BaseWebPage window, boolean usingJS) throws Exception {
         closeCurrentWindowAndSwitchToSpecified(window.initialHandle, usingJS);
     }
 
-    public void closeCurrentWindowAndSwitchToSpecified(BasePageObject window) throws Exception {
+    public void closeCurrentWindowAndSwitchToSpecified(BaseWebPage window) throws Exception {
         if (isEdge())
             if (getCurrentUrl().equals("about:blank"))
                 closeCurrentWindowAndSwitchToSpecified(window.initialHandle, false);
@@ -1015,7 +992,7 @@ public abstract class BasePageObject extends BaseContainer {
      * @throws Exception
      * @deprecated - use closeWindowsExceptSpecified(boolean usingJS, String... handles)
      */
-    public BasePageObject closeWindowsExceptSpecified(int numberToStayOpen, boolean usingJS) throws Exception {
+    public BaseWebPage closeWindowsExceptSpecified(int numberToStayOpen, boolean usingJS) throws Exception {
         if (numberToStayOpen >= 1) {
             int winHandles = getWindowCount();
             for (int i = winHandles - 1; i >= numberToStayOpen; i--) {
@@ -1041,7 +1018,7 @@ public abstract class BasePageObject extends BaseContainer {
      * @throws Exception
      * @deprecated - use closeWindowsExceptSpecified(boolean usingJS, String... handles)
      */
-    public BasePageObject closeWindowsExceptSpecified(int numberToStayOpen) throws Exception {
+    public BaseWebPage closeWindowsExceptSpecified(int numberToStayOpen) throws Exception {
         return closeWindowsExceptSpecified(numberToStayOpen, true);
     }
 
@@ -1052,7 +1029,7 @@ public abstract class BasePageObject extends BaseContainer {
      * @return
      * @throws Exception
      */
-    public BasePageObject closeWindowsExceptSpecified(boolean usingJS, String... handles) throws Exception {
+    public BaseWebPage closeWindowsExceptSpecified(boolean usingJS, String... handles) throws Exception {
         String[] winHandles = driver.getWindowHandles().toArray(new String[0]);
         List<String> handlesList = Arrays.asList(handles);
         for (int i = 0; i < winHandles.length; i++)
@@ -1077,9 +1054,9 @@ public abstract class BasePageObject extends BaseContainer {
      * @return
      * @throws Exception
      */
-    public BasePageObject closeWindowsExceptSpecified(boolean usingJS, BasePageObject... windows) throws Exception {
+    public BaseWebPage closeWindowsExceptSpecified(boolean usingJS, BaseWebPage... windows) throws Exception {
         return closeWindowsExceptSpecified(
-                usingJS, Arrays.stream(windows).map(BasePageObject::getInitialHandle).toArray(String[]::new));
+                usingJS, Arrays.stream(windows).map(BaseWebPage::getInitialHandle).toArray(String[]::new));
     }
 
     /**

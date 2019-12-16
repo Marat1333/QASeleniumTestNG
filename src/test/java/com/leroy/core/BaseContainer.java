@@ -25,6 +25,10 @@ public abstract class BaseContainer {
     protected int timeout = 30;
     protected int long_timeout = 60;
 
+    public BaseContainer(WebDriver driver) {
+        this.driver = driver;
+    }
+
     protected void initElements() {
         initElements(null);
     }

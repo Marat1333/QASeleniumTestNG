@@ -27,16 +27,24 @@ public class StepResultModel extends BaseModel {
         return expected;
     }
 
-    public void setExpected(String expected) {
-        this.expected = expected;
+    public void addExpectedResult(String expected) {
+        expected = expected.replaceAll("\\n", "");
+        if (this.expected == null || expected.isEmpty())
+            this.expected = expected;
+        else
+            this.expected += "\\n" + expected;
     }
 
     public String getActual() {
         return actual;
     }
 
-    public void setActual(String actual) {
-        this.actual = actual;
+    public void addActualResult(String actual) {
+        actual = actual.replaceAll("\\n", "");
+        if (this.actual == null || actual.isEmpty())
+            this.actual = actual;
+        else
+            this.actual += "\\n" + actual;
     }
 
     public int getStatus_id() {

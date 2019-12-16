@@ -4,6 +4,7 @@ import com.leroy.constants.Fonts;
 import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
+import com.leroy.core.util.XpathUtil;
 import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
@@ -27,20 +28,20 @@ public class Element extends BaseElement {
     }
 
     public Element(WebDriver driver, By by) {
-        this.driver = driver;
+        super(driver);
         this.locator = new CustomLocator(by);
         initElements(this.locator);
     }
 
     public Element(WebDriver driver, CustomLocator locator, String metaName) {
-        this.driver = driver;
+        super(driver);
         this.locator = locator;
         this.metaName = metaName;
         initElements(this.locator);
     }
 
     public Element(WebDriver driver, WebElement we) {
-        this.driver = driver;
+        super(driver);
         this.webElement = we;
         this.locator = new CustomLocator(By.xpath(getAbsoluteXPath()));
         initElements(locator);
@@ -51,14 +52,12 @@ public class Element extends BaseElement {
         this.locator = new CustomLocator(locator);
         this.metaName = metaName;
         initElements(this.locator);
-    }
-
-    public Element(WebDriver driver, WebElement we, By locator) {
-        this.driver = driver;
-        this.webElement = we;
-        this.locator = new CustomLocator(locator);
-        initElements(this.locator);
     }*/
+
+    public Element(WebDriver driver, WebElement we, CustomLocator locator) {
+        this(driver, locator);
+        this.webElement = we;
+    }
 
     public WebElement getWebElement() {
         initialWebElementIfNeeded();
@@ -101,7 +100,9 @@ public class Element extends BaseElement {
     public String getXpath() {
         if (locator == null)
             return getAbsoluteXPath();
-        else {
+        else if (locator.getAccessibilityId() != null && !locator.getAccessibilityId().isEmpty()) {
+            return XpathUtil.getXpathByAccessibilityId(locator.getAccessibilityId());
+        } else {
             return super.getXpath();
         }
     }
@@ -198,6 +199,8 @@ public class Element extends BaseElement {
         } catch (org.openqa.selenium.StaleElementReferenceException e) {
             if (isSearchingAgain) {
                 webElement = null;
+                if (locator != null)
+                    locator.setCacheLookup(false);
                 initialWebElementIfNeeded();
                 waitForVisibilityAndSearchAgain(timeout, false);
             }
@@ -221,12 +224,12 @@ public class Element extends BaseElement {
                 if (webElement == null) {
                     initWebElement(timeout);
                 } else {
-                    if (isStaleReference())
+                    if (!isCacheLookup() && isStaleReference())
                         initWebElement(timeout);
                 }
             }
         } catch (Exception err) {
-            Log.error("Element not found. " + err.getMessage());
+            Log.error("Element " + (getMetaName() != null ? getMetaName() : "") + " not found. " + err.getMessage());
             throw err;
         }
     }
@@ -261,9 +264,9 @@ public class Element extends BaseElement {
     boolean isStaleReference() {
         try {
             // Calling any method forces a staleness check
-            webElement.getTagName();
+            webElement.isEnabled();
             return false;
-        } catch (StaleElementReferenceException expected) {
+        } catch (WebDriverException expected) {
             return true;
         }
     }
@@ -297,17 +300,23 @@ public class Element extends BaseElement {
 
     public void click() {
         initialWebElementIfNeeded();
-        simpleClick(1);
+        simpleClick(0);
     }
 
-    private void simpleClick(int attemptNum) {
+    public void doubleClick() {
+        initialWebElementIfNeeded();
+        simpleClick(0);
+        simpleClick(0);
+    }
+
+    private void simpleClick(int additionalAttemptNum) {
         try {
             webElement.click();
         } catch (StaleElementReferenceException err) {
             Log.warn("simpleClick() failed. Err: " + err.getMessage());
-            if (attemptNum > 0) {
+            if (additionalAttemptNum > 0) {
                 initialWebElementIfNeeded();
-                simpleClick(attemptNum - 1);
+                simpleClick(additionalAttemptNum - 1);
             } else
                 throw err;
         }
@@ -485,12 +494,15 @@ public class Element extends BaseElement {
                                 "return ret;", this.webElement).toString();
             } else {
                 // replaceAll is needed for Edge browser (specific situations)
-                return webElement.getText().replaceAll(" \n", "").trim();
+                return webElement.getText();
             }
         } catch (StaleElementReferenceException err) {
-            Log.warn("Method: getText(). StaleElementReferenceException: " + err.getMessage());
-            if (attemptsNumber > 0)
+            Log.debug("Method: getText(). StaleElementReferenceException: " + err.getMessage());
+            if (attemptsNumber > 0) {
+                if (locator != null)
+                    locator.setCacheLookup(false);
                 return getText(selfText, attemptsNumber - 1);
+            }
             return null;
         } catch (NoSuchElementException err) {
             Log.warn("Method: getText(). NoSuchElementException: " + err.getMessage());
@@ -520,20 +532,7 @@ public class Element extends BaseElement {
      * @return String
      */
     public String getText(boolean selfText) {
-        return getText(selfText, 2);
-    }
-
-    /**
-     * Returns the text of all visible child elements of the node
-     * This method was created to solve the problem with Safari
-     */
-    public String getTextWithoutHiddenElements() {
-        String text = getText(true);
-        List<WebElement> childElements = findChildElements(By.xpath("./*"));
-        for (WebElement childElement : childElements)
-            if (childElement.isDisplayed())
-                text += childElement.getText();
-        return text;
+        return getText(selfText, 1);
     }
 
     public String getFontFamily() {
@@ -880,7 +879,7 @@ public class Element extends BaseElement {
     }
 
     public void waitUntilTextIsEqualTo(String referenceText, int timeout) {
-        WebDriverWait wait = new WebDriverWait(this.driver, (long) timeout);
+        WebDriverWait wait = new WebDriverWait(this.driver, timeout);
         try {
             wait.until((ExpectedCondition<Boolean>) driverObject -> this.getText().equals(referenceText));
         } catch (TimeoutException e) {

@@ -1,13 +1,13 @@
 package com.leroy.core.pages;
 
+import com.leroy.core.TestContext;
 import com.leroy.core.web_elements.general.Element;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 
-public class EdgeCertificateErrorPage extends BasePageObject {
+public class EdgeCertificateErrorPage extends BaseWebPage {
 
-    public EdgeCertificateErrorPage(WebDriver driver) {
-        super(driver);
+    public EdgeCertificateErrorPage(TestContext context) {
+        super(context);
     }
 
     private Element detailsLink = new Element(driver, By.xpath("//a[@id='moreInformationDropdownLink']"));

@@ -14,8 +14,11 @@ public class StepLog {
     public StepResultModel currentStepResult;
 
     public void step(String message) {
+        if (currentStepResult != null)
+            if (currentStepResult.getStatus_id() == ResultModel.ST_UNTESTED)
+                currentStepResult.setStatus_id(ResultModel.ST_PASSED);
         currentStepResult = new StepResultModel();
-        currentStepResult.setStatus_id(ResultModel.ST_PASSED);
+        currentStepResult.setStatus_id(ResultModel.ST_UNTESTED);
         currentStepResult.setContent(message);
         stepResults.add(currentStepResult);
         stepCounter++;
