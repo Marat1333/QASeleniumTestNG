@@ -23,7 +23,7 @@ public class OrderWidget extends Element {
     @AppFindBy(xpath = "./android.widget.TextView[1]")
     public Element numberLbl;
 
-    @AppFindBy(xpath = "./android.widget.TextView[2]")
+    @AppFindBy(xpath = "./android.widget.TextView[3]")
     public Element dateLbl;
 
     @AppFindBy(xpath = "./android.view.ViewGroup/android.widget.TextView")

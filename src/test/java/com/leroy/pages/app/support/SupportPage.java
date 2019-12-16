@@ -37,13 +37,16 @@ public class SupportPage extends BaseAppPage {
         titleLbl.waitForVisibility();
     }
 
-    /* ------------------------- ACTIONS -------------------------- */
+    /* ------------------------- ACTION STEPS -------------------------- */
 
-
+    @Step("Нажмите на плашку {button}")
+    public ComplainPage clickButton(String button) {
+        getElementByText(button).click();
+        return new ComplainPage(context);
+    }
 
     /* ---------------------- Verifications -------------------------- */
 
-    @Step("Проверьте, что все элементы страницы 'Поддержка' отображаются корректно")
     public SupportPage verifyAllElementsVisibility() throws Exception {
         softAssert.isElementVisible(titleLbl);
         softAssert.isElementVisible(complainBtnLbl);
@@ -58,11 +61,5 @@ public class SupportPage extends BaseAppPage {
                 "Список категорий проблем должен быть %s");
         softAssert.verifyAll();
         return this;
-    }
-
-    @Step("Нажмите на кнопку {button}")
-    public ComplainPage clickButton(String button) {
-        getElementByText(button).click();
-        return new ComplainPage(context);
     }
 }

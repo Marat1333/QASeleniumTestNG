@@ -22,23 +22,23 @@ public class OrderDetailsPage extends BaseAppPage {
     // Parameters areas
     @AppFindBy(xpath = "//android.widget.TextView[@text='Способ пополнения']/following::android.widget.TextView[1]",
             metaName = "Способ пополнения")
-    public Element replenishmentMethod;
+    private Element replenishmentMethod;
 
     @AppFindBy(xpath = "//android.widget.TextView[@text='Дата доставки товара']/following::android.widget.TextView[1]",
             metaName = "Дата доставки товара")
-    public Element deliveryDate;
+    private Element deliveryDate;
 
     @AppFindBy(xpath = "//android.widget.TextView[@text='Ожидаемое время доставки товара']/following::android.widget.TextView[1]",
             metaName = "Ожидаемое время доставки товара")
-    public Element deliveryTime;
+    private Element deliveryTime;
 
     @AppFindBy(xpath = "//android.widget.TextView[@text='Комментарий']/following::android.widget.TextView[1]",
             metaName = "Комментарий")
-    public Element comment;
+    private Element comment;
 
     @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.TextView[@text='ТОВАРЫ НА ОТЗЫВ']]/following-sibling::android.view.ViewGroup/android.view.ViewGroup",
             clazz = ProductCardWidget.class)
-    public ElementList<ProductCardWidget> productsForWithdrawal;
+    private ElementList<ProductCardWidget> productsForWithdrawal;
 
     @Override
     public void waitForPageIsLoaded() {
@@ -46,6 +46,8 @@ public class OrderDetailsPage extends BaseAppPage {
         deliveryDate.waitForVisibility();
         comment.waitForVisibility();
     }
+
+    /* ---------------------- Verifications -------------------------- */
 
     public OrderDetailsPage shouldFormDataIs(String replenishmentMethod, LocalDate deliveryDate,
                                              LocalTime deliveryTime, String comment) {

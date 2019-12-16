@@ -15,11 +15,11 @@ public class OrdersListPage extends BaseAppPage {
     }
 
     @AppFindBy(accessibilityId = "ScreenTitle")
-    public Element titleLbl;
+    private Element titleLbl;
 
     @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.TextView[contains(@text, 'IP')]]",
             clazz = OrderWidget.class)
-    public ElementList<OrderWidget> orderList;
+    private ElementList<OrderWidget> orderList;
 
     @Override
     public void waitForPageIsLoaded() {
@@ -27,19 +27,25 @@ public class OrdersListPage extends BaseAppPage {
         titleLbl.waitUntilTextIsEqualTo("Отзыв с RM");
     }
 
+    /* ------------------------- ACTION STEPS -------------------------- */
+
     @Step("Открыть {index}-ую заявку")
     public OrderDetailsPage clickOrderByIndex(int index) throws Exception {
         orderList.get(index).click();
         return new OrderDetailsPage(context);
     }
 
+    /* -------------------------  Verifications -------------------------- */
+
     public OrdersListPage shouldOrderByIndexIs(
             int index, String number, String date, String type) throws Exception {
         OrderWidget orderWidget = orderList.get(index);
         softAssert.isEquals(orderWidget.numberLbl.getText(), number,
                 "Номер " + index + "-ой заявки должен быть %s");
-        softAssert.isEquals(orderWidget.dateLbl.getText(), date,
-                "Дата " + index + "-ой заявки должен быть %s");
+        if (date != null) {
+            softAssert.isEquals(orderWidget.dateLbl.getText(), date,
+                    "Дата " + index + "-ой заявки должен быть %s");
+        }
         softAssert.isEquals(orderWidget.typeLbl.getText(), type,
                 "Статус " + index + "-ой завяки должен быть %s");
         softAssert.verifyAll();

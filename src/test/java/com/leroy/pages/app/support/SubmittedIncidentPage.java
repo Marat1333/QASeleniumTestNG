@@ -14,16 +14,16 @@ public class SubmittedIncidentPage extends BottomMenuPage {
     }
 
     @AppFindBy(xpath = "//android.widget.TextView[1]", metaName = "Заголовок 'Письмо отправлено. Спасибо'")
-    public Element headerLbl;
+    private Element headerLbl;
 
     @AppFindBy(xpath = "//android.widget.TextView[2]", metaName = "Текст с номером инцидента")
-    public Element incidentCreatedWithNumberLbl;
+    private Element incidentCreatedWithNumberLbl;
 
     @AppFindBy(xpath = "//android.widget.TextView[3]", metaName = "Текст с почтой, куда будет отправлен email")
-    public Element answerWillSendOnMailLbl;
+    private Element answerWillSendOnMailLbl;
 
     @AppFindBy(text = "ОТПРАВИТЬ ЕЩЕ ОДНО ПИСЬМО")
-    public Element buttonLbl;
+    private Element buttonLbl;
 
     @Override
     public void waitForPageIsLoaded() {
@@ -45,7 +45,11 @@ public class SubmittedIncidentPage extends BottomMenuPage {
         return number.matches("INC\\d{6}_\\d{4}");
     }
 
-    @Step("Проверьте, что все элементы страницы 'Инцидент отправлен' отображаются корректно")
+    /* ------------------------- ACTION STEPS -------------------------- */
+
+
+    /* ---------------------- Verifications -------------------------- */
+
     public SubmittedIncidentPage verifyVisibilityOfAllElements() {
         softAssert.isElementTextEqual(headerLbl, "Письмо отправлено.\nСпасибо!");
         softAssert.isTrue(isIncidentNumberVisibleAndValid(), "Должен быть виден номер инцидента");
@@ -56,7 +60,6 @@ public class SubmittedIncidentPage extends BottomMenuPage {
         return this;
     }
 
-    @Step("Проверьте данные на странице 'Инцидент отправлен'")
     public SubmittedIncidentPage verifyDataOnThePage(String incidentNumber, String email) {
         if (incidentNumber != null)
             softAssert.isEquals(getIncidentNumber(), incidentNumber,

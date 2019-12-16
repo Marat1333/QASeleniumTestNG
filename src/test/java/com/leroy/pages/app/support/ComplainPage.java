@@ -15,24 +15,24 @@ public class ComplainPage extends BaseAppPage {
     }
 
     @AppFindBy(text = "В чем проблема?")
-    public Element whatHappenLbl;
+    private Element whatHappenLbl;
     @AppFindBy(accessibilityId = "title", metaName = "Поле ввода 'В чем проблема?'")
-    public EditBox whatHappenFld;
+    private EditBox whatHappenFld;
 
     @AppFindBy(text = "Чуть больше подробностей")
-    public Element moreInfoLbl;
+    private Element moreInfoLbl;
     @AppFindBy(accessibilityId = "moreInfo", metaName = "Поле ввода 'Чуть больше подробностей'")
-    public EditBox moreInfoFld;
+    private EditBox moreInfoFld;
 
     @AppFindBy(text = "Эл. почта для ответа")
-    public Element emailLbl;
+    private Element emailLbl;
     @AppFindBy(accessibilityId = "email", metaName = "Поле ввода 'email'")
-    public EditBox emailFld;
+    private EditBox emailFld;
     @AppFindBy(xpath = "//android.widget.EditText[@content-desc='email']/following::android.widget.TextView[1]")
-    public Element emailDomainLbl;
+    private Element emailDomainLbl;
 
     @AppFindBy(text = "ОТПРАВИТЬ", cacheLookup = false)
-    public EditBox submitBtn;
+    private EditBox submitBtn;
 
     @Override
     public void waitForPageIsLoaded() {
@@ -40,7 +40,11 @@ public class ComplainPage extends BaseAppPage {
         submitBtn.waitForVisibility();
     }
 
-    /* ------------------------- ACTIONS -------------------------- */
+    public String getEmail() {
+        return emailFld.getText() + emailDomainLbl.getText().trim();
+    }
+
+    /* ------------------------- ACTION STEPS -------------------------- */
 
     @Step("Нажмите на поле 'Чуть больше подробностей'")
     public ComplainPage clickMoreInformationField() {
@@ -62,7 +66,6 @@ public class ComplainPage extends BaseAppPage {
 
     /* ---------------------- Verifications -------------------------- */
 
-    @Step("Проверьте, что все элементы страницы 'Пожаловаться' отображаются корректно")
     public ComplainPage shouldAllElementsVisibility() {
         softAssert.isElementVisible(whatHappenLbl);
         softAssert.isElementTextEqual(whatHappenFld, "Не найден товар");
@@ -74,7 +77,6 @@ public class ComplainPage extends BaseAppPage {
         return this;
     }
 
-    @Step("Поле 'Чуть больше подробностей' должно содержать текст {text}")
     public ComplainPage shouldMoreInformationFieldHasText(String text) {
         softAssert.isElementTextEqual(moreInfoFld, text);
         softAssert.verifyAll();

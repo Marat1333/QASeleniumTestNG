@@ -21,7 +21,7 @@ public class OrderPage extends BaseAppPage {
     }
 
     @AppFindBy(text = "ПАРАМЕТРЫ ЗАЯВКИ", metaName = "Заголовок 'ПАРАМЕТРЫ ЗАЯВКИ'")
-    public Element headerObj;
+    private Element headerObj;
 
     @AppFindBy(xpath = "//android.widget.TextView[starts-with(@text, 'Заявка №')]")
     private Element orderNumberObj;
@@ -38,7 +38,7 @@ public class OrderPage extends BaseAppPage {
 
     @AppFindBy(xpath = "//android.widget.TextView[@text='" + deliveryDateText + "']/following-sibling::android.widget.TextView[1]",
             metaName = deliveryDateText)
-    public Element deliveryDateLbl;
+    private Element deliveryDateLbl;
 
     private static final String deliveryTimeText = "Ожидаемое время доставки товара";
     @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.TextView[@text='" + deliveryTimeText + "']]",
@@ -46,10 +46,10 @@ public class OrderPage extends BaseAppPage {
     private Element deliveryTimeArea;
     @AppFindBy(xpath = "//android.widget.TextView[@text='" + deliveryTimeText + "']/following-sibling::android.widget.TextView[1]",
             metaName = deliveryTimeText)
-    public Element deliveryTimeLbl;
+    private Element deliveryTimeLbl;
 
     @AppFindBy(accessibilityId = "comment", metaName = "Поле комментарий")
-    public EditBox commentFld;
+    private EditBox commentFld;
 
     @AppFindBy(accessibilityId = "Button")
     private Element submitBtn;
@@ -68,6 +68,8 @@ public class OrderPage extends BaseAppPage {
         String number = getOrderNumber();
         return number.matches("IP\\.\\d{7}");
     }
+
+    /* ------------------------- ACTION STEPS -------------------------- */
 
     @Step("Нажать на поле даты поставки и меняем дату на {date} и подтвердить изменение")
     public OrderPage editDeliveryDate(LocalDate date) throws Exception {
@@ -95,6 +97,8 @@ public class OrderPage extends BaseAppPage {
         submitBtn.click();
         return new SubmittedWithdrawalOrderPage(context);
     }
+
+    /* ------------------------- Verifications -------------------------- */
 
     public OrderPage verifyVisibilityOfAllElements() {
         softAssert.isElementVisible(headerObj);

@@ -89,7 +89,7 @@ public class WithdrawalFromRMTest extends BaseState {
         // Step #12
         log.step("Нажать кнопку ПЕРЕЙТИ В СПИСОК ЗАЯВОК");
         OrdersListPage ordersListPage = submittedWithdrawalOrderPage.clickSubmitBtn()
-                .shouldOrderByIndexIs(0, orderNumber, "", "Создана");
+                .shouldOrderByIndexIs(0, orderNumber, null, "Создана");
 
         // Step #13
         log.step("Открыть заявку и проверить заполненные поля и товары");

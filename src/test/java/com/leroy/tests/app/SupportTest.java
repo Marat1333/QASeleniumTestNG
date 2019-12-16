@@ -32,8 +32,7 @@ public class SupportTest extends BaseState {
         complainPage.enterTextIntoMoreInformationField(textToEnter)
                 .shouldMoreInformationFieldHasText(textToEnter);
         // TODO - Вместо иконки + в правой части поля видна иконка ручки (редактирования).
-        String emailFromField = complainPage.emailFld.getText() +
-                complainPage.emailDomainLbl.getText().trim();
+        String emailFromField = complainPage.getEmail();
 
         // Step #5
         log.step("Нажмите на кнопку Отправить внизу экрана");

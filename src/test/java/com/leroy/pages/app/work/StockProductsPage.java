@@ -46,21 +46,6 @@ public class StockProductsPage extends BaseAppPage {
         allProductsOnStockLabel.waitForVisibility(timeout);
     }
 
-    //@Step("Проверьте, что на странице есть хотя бы один товар")
-    public StockProductsPage shouldAnyProductAvailableOnPage() {
-        anAssert.isTrue(productImages.getCount() > 0,
-                "На странице должен быть хотя бы один доступный товар");
-        return this;
-    }
-
-    @Step("Выбрать первый товар, который поштучно хранится на складе")
-    public ProductCardPage clickFirstPieceProduct() throws Exception {
-        pieceProductCards.get(0).click();
-        ProductCardPage productCardPage = new ProductCardPage(context);
-        productCardPage.waitForPageIsLoaded();
-        return productCardPage;
-    }
-
     public ProductCardData getPieceProductInfoByIndex(int index) throws Exception {
         ProductCardData cardData = new ProductCardData();
         int count = pieceProductCards.getCount();
@@ -83,8 +68,14 @@ public class StockProductsPage extends BaseAppPage {
         return cardData;
     }
 
-    public int getCountSelectedProducts() {
-        return selectedProductCards.getCount();
+    /* ------------------------- ACTION STEPS -------------------------- */
+
+    @Step("Выбрать первый товар, который поштучно хранится на складе")
+    public ProductCardPage clickFirstPieceProduct() throws Exception {
+        pieceProductCards.get(0).click();
+        ProductCardPage productCardPage = new ProductCardPage(context);
+        productCardPage.waitForPageIsLoaded();
+        return productCardPage;
     }
 
     @Step("Нажать кнопку ДАЛЕЕ К ПАРАМЕТРАМ ЗАЯВКИ")
@@ -93,8 +84,12 @@ public class StockProductsPage extends BaseAppPage {
         return new OrderPage(context);
     }
 
-    public int getCountOfProductsInBasket() {
-        return Integer.parseInt(basketProductCountLabel.getText());
+    /* ------------------------- Verifications -------------------------- */
+
+    public StockProductsPage shouldAnyProductAvailableOnPage() {
+        anAssert.isTrue(productImages.getCount() > 0,
+                "На странице должен быть хотя бы один доступный товар");
+        return this;
     }
 
     public StockProductsPage verifyVisibilityOfAllElements() {
@@ -107,9 +102,9 @@ public class StockProductsPage extends BaseAppPage {
     }
 
     public StockProductsPage shouldCountOfSelectedProductsIs(int num) {
-        softAssert.isEquals(getCountSelectedProducts(), 1,
+        softAssert.isEquals(selectedProductCards.getCount(), num,
                 "Должен быть %s товар в секции ВЫБРАННЫЕ ТОВАРЫ");
-        softAssert.isEquals(getCountOfProductsInBasket(), 1,
+        softAssert.isEquals(Integer.parseInt(basketProductCountLabel.getText()), num,
                 "Внизу экрана есть иконка корзинки с цифрой %s");
         softAssert.verifyAll();
         return this;

@@ -13,26 +13,30 @@ public class SubmittedWithdrawalOrderPage extends BaseAppPage {
     }
 
     @AppFindBy(xpath = "//android.widget.TextView[1]")
-    public Element headerLbl;
+    private Element headerLbl;
 
     @AppFindBy(xpath = "//android.widget.TextView[2]")
-    public Element messageLbl;
+    private Element messageLbl;
 
     @AppFindBy(accessibilityId = "Button")
-    public Element submitBtn;
+    private Element submitBtn;
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='Button']/android.widget.TextView")
-    public Element submitBtnLbl;
+    private Element submitBtnLbl;
 
     @Override
     public void waitForPageIsLoaded() {
         headerLbl.waitUntilTextIsEqualTo("Заявка на отзыв отправлена");
     }
 
+    /* ------------------------- ACTION STEPS -------------------------- */
+
     @Step("Нажать кнопку ПЕРЕЙТИ В СПИСОК ЗАЯВОК")
     public OrdersListPage clickSubmitBtn() {
         submitBtn.click();
         return new OrdersListPage(context);
     }
+
+    /* ------------------------- Verifications  -------------------------- */
 
     public SubmittedWithdrawalOrderPage verifyVisibilityOfAllElements() {
         softAssert.isElementTextEqual(headerLbl,

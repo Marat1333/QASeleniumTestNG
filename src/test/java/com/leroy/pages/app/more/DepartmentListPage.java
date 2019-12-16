@@ -11,7 +11,8 @@ public class DepartmentListPage extends BaseAppPage {
         super(context);
     }
 
-    private static final String TYPICAL_DEPARTMENT_AREA_XPATH = "//android.widget.ScrollView//android.view.ViewGroup";
+    private static final String TYPICAL_DEPARTMENT_AREA_XPATH =
+            "//android.widget.ScrollView//android.view.ViewGroup";
 
     private Element getSpecificShopAreaById(String id) {
         return new Element(driver,

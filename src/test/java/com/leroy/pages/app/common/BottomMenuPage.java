@@ -6,6 +6,8 @@ import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.pages.app.more.MorePage;
 import com.leroy.pages.app.more.UserProfilePage;
+import com.leroy.pages.app.sales.SalesPage;
+import com.leroy.pages.app.support.SupportPage;
 import com.leroy.pages.app.work.WorkPage;
 import io.qameta.allure.Step;
 
@@ -27,21 +29,24 @@ public class BottomMenuPage extends BaseAppPage {
     @AppFindBy(accessibilityId = "Route__btn_more")
     private Element moreBtn;
 
-    public void goToSales() {
+    /* ------------------------- ACTION STEPS -------------------------- */
+
+    @Step("Перейдите в раздел 'Продажи'")
+    public SalesPage goToSales() {
         salesBtn.click();
+        return new SalesPage(context);
     }
 
     @Step("Перейдите в раздел 'Работа'")
     public WorkPage goToWork() {
         workBtn.click();
-        WorkPage workPage = new WorkPage(context);
-        workPage.titleObj.waitForVisibility();
-        return workPage;
+        return new WorkPage(context);
     }
 
     @Step("Перейдите в раздел 'Поддержка'")
-    public void goToSupport() {
+    public SupportPage goToSupport() {
         supportBtn.click();
+        return new SupportPage(context);
     }
 
     @Step("Перейдите в раздел 'Еще'")

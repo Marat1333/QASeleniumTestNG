@@ -16,19 +16,26 @@ public class WorkPage extends BaseAppPage {
             "//android.widget.ScrollView//android.view.ViewGroup[android.widget.TextView[@text='Отзыв с RM']]";
 
     @AppFindBy(accessibilityId = "ScreenTitle")
-    public Element titleObj;
+    private Element titleObj;
 
     @AppFindBy(xpath = XPATH_WITHDRAWAL_FROM_RM_AREA, metaName = "'Отзыв с RM' область")
     private Element withdrawalFromRMArea;
 
     @AppFindBy(xpath = XPATH_WITHDRAWAL_FROM_RM_AREA + "/android.widget.TextView",
             metaName = "'Отзыв с RM' метка")
-    public Element withdrawalFromRMLabel;
+    private Element withdrawalFromRMLabel;
 
     @AppFindBy(xpath = XPATH_WITHDRAWAL_FROM_RM_AREA +
             "//android.view.ViewGroup[@content-desc='lmui-Icon']/android.view.ViewGroup",
             metaName = "'Отзыв с RM' плюсик")
-    public Element withdrawalFromRMPlusIcon;
+    private Element withdrawalFromRMPlusIcon;
+
+    @Override
+    public void waitForPageIsLoaded() {
+        titleObj.waitForVisibility();
+    }
+
+    /* ------------------------- ACTION STEPS -------------------------- */
 
     @Step("Нажать на иконку + рядом с Отзыв с RM")
     public StockProductsPage clickWithdrawalFromRMPlusIcon() {

@@ -8,4 +8,6 @@ public class TopMenuPage extends BottomMenuPage {
         super(context);
     }
 
+    /* ------------------------- ACTION STEPS -------------------------- */
+
 }

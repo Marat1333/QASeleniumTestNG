@@ -14,14 +14,14 @@ public class ProductCardPage extends BaseAppPage {
     }
 
     @AppFindBy(accessibilityId = "RMProductCard", metaName = "Область с заголовком карточки товара")
-    public Element productCardHeaderArea;
+    private Element productCardHeaderArea;
 
     @AppFindBy(accessibilityId = "Button")
-    public Element withdrawalBtn;
+    private Element withdrawalBtn;
 
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='Button']/android.widget.TextView",
             metaName = "Текст кнопки 'Отозвать'")
-    public Element withdrawalBtnLabel;
+    private Element withdrawalBtnLabel;
 
     @AppFindBy(xpath = "//android.widget.ScrollView/android.view.ViewGroup")
     private Element mainContentArea;
@@ -34,6 +34,8 @@ public class ProductCardPage extends BaseAppPage {
     public void waitForPageIsLoaded() {
         mainContentArea.waitForVisibility();
     }
+
+    /* ------------------------- ACTION STEPS -------------------------- */
 
     @Step("Ввести количество товара для отзыва")
     public ProductCardPage enterCountOfItems(String quantity) {
@@ -53,7 +55,8 @@ public class ProductCardPage extends BaseAppPage {
         return new StockProductsPage(context);
     }
 
-    //@Step("Проверьте, что все элементы страницы '' отображаются корректно")
+    /* ------------------------- Verifications -------------------------- */
+
     public ProductCardPage verifyAllElementsVisibility() {
         softAssert.isElementVisible(productCardHeaderArea);
         // TODO

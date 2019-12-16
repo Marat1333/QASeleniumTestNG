@@ -23,7 +23,7 @@ public class TimePickerWidget extends BaseContainer {
     private Element minutesPicker;
 
     @AppFindBy(accessibilityId = "Button")
-    public Element confirmBtn;
+    private Element confirmBtn;
 
     public void selectTime(LocalTime needToSelectTime, LocalTime currentTime) throws Exception {
         int diffHours = currentTime.getHour() - needToSelectTime.getHour();

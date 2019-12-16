@@ -499,7 +499,7 @@ public class Element extends BaseElement {
                 return webElement.getText();
             }
         } catch (StaleElementReferenceException err) {
-            Log.warn("Method: getText(). StaleElementReferenceException: " + err.getMessage());
+            Log.debug("Method: getText(). StaleElementReferenceException: " + err.getMessage());
             if (attemptsNumber > 0) {
                 if (locator != null)
                     locator.setCacheLookup(false);
