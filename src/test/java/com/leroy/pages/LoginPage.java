@@ -3,13 +3,16 @@ package com.leroy.pages;
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.configuration.Log;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Button;
-import com.leroy.core.web_elements.general.Element;
 import com.leroy.models.UserData;
 import com.leroy.pages.app.sales.SalesPage;
+import io.appium.java_client.android.AndroidDriver;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class LoginPage extends BaseAppPage {
 
@@ -29,34 +32,36 @@ public class LoginPage extends BaseAppPage {
     @AppFindBy(accessibilityId = "Button")
     public Button loginBtn;
 
-    private SalesPage logIn(UserData loginData) {
+    private SalesPage logIn(UserData loginData) throws Exception {
         loginBtn.click();
-        Element termsAcceptBtn = new Element(driver,
+        /*Element termsAcceptBtn = new Element(driver,
                 By.id("com.android.chrome:id/terms_accept"));
-        if (termsAcceptBtn.isVisible()) {
+        if (termsAcceptBtn.isVisible(tiny_timeout)) {
             termsAcceptBtn.click();
             driver.findElement(By.id("com.android.chrome:id/next_button")).click();
             driver.findElement(By.id("com.android.chrome:id/negative_button")).click();
+        }*/
+        AndroidDriver androidDriver = (AndroidDriver) driver;
+        new WebDriverWait(this.driver, timeout).until(
+                a -> androidDriver.getContextHandles().size() > 1);
+        androidDriver.context("WEBVIEW_chrome");
+        //new ChromeCertificateErrorPage(context).skipSiteSecureError();
+        driver.findElement(By.id("Username")).sendKeys(loginData.getUserName());
+        driver.findElement(By.id("Password")).sendKeys(loginData.getPassword());
+        try {
+            driver.findElement(By.xpath("//*[@value='login']")).click();
+        } catch (WebDriverException err) {
+            Log.debug(err.getMessage());
         }
-        /*
-            ((AndroidDriver) driver).context("WEBVIEW_chrome");
-            new ChromeCertificateErrorPage(context).skipSiteSecureError();
-            driver.findElement(By.id("Username")).sendKeys(loginData.getUserName());
-            driver.findElement(By.id("Password")).sendKeys(loginData.getPassword());
-            try {
-                driver.findElement(By.xpath("//*[@value='login']")).click();
-            } catch (WebDriverException err) {
-                Log.debug(err.getMessage());
-            }
-            ((AndroidDriver) driver).context("NATIVE_APP");
-        */
+        androidDriver.context("NATIVE_APP");
+
         return new SalesPage(context);
     }
 
     /* ------------------------- ACTIONS -------------------------- */
 
     @Step("Зайдите в раздел {section}")
-    public void loginInAndGoTo(UserData userData, String section) {
+    public void loginInAndGoTo(UserData userData, String section) throws Exception {
         SalesPage salesPage = logIn(userData);
         switch (section) {
             case SALES_SECTION:
@@ -78,7 +83,7 @@ public class LoginPage extends BaseAppPage {
     }
 
     @Step("Зайдите в раздел {section}")
-    public void loginInAndGoTo(String section) {
+    public void loginInAndGoTo(String section) throws Exception {
         loginInAndGoTo(new UserData(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS), section);
     }
 
