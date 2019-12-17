@@ -1,0 +1,21 @@
+#---------------------------------
+#       Chrome settings
+#---------------------------------
+settings:
+  platform: linux
+  browser: chrome
+  host: moon-e2e-x2.apps.lmru.tech
+  timeout: 30 # default wait timeout in seconds
+
+#---------------------------------
+#              desktop
+#---------------------------------
+
+capabilities:
+  linux:
+    chrome:
+      version: 77.0
+      enableVNC: true
+      enableVideo: false
+      #args:
+      #  - start-maximized
