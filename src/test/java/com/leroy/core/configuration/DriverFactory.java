@@ -4,7 +4,6 @@ import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.MutableCapabilities;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -185,6 +184,18 @@ public class DriverFactory {
                     break;
                 case ANDROID_BROWSER_PROFILE:
                 case ANDROID_APP_PROFILE:
+                    //options.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+                    //options.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
+                    // TODO - KoCTblJlb
+                    if (options.getCapability("browserName") != null &&
+                            options.getCapability("app") != null) {
+                        String app = options.getCapability("app").toString();
+                        options.setCapability("app", "");
+                        driver = new AndroidDriver<>(new URL(REMOTE_ADDRESS), options);
+                        driver.quit();
+                        options.setCapability("app", app);
+                        options.setCapability("browserName", "");
+                    }
                     driver = new AndroidDriver<>(new URL(REMOTE_ADDRESS), options);
                     break;
                 default:

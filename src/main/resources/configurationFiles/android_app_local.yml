@@ -18,6 +18,7 @@ capabilities:
   android_phone:
     android_app:
       platformName: Android
+      browserName: chrome
       appiumVersion: 1.15.1
       autoDismissAlerts: true
       autoGrantPermissions: true
