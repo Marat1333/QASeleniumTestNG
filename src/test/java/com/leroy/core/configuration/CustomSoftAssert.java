@@ -53,7 +53,7 @@ public class CustomSoftAssert {
             StepResultModel curStepRes = stepLog.getCurrentStepResult();
             curStepRes.addExpectedResult(expectedResultText);
             curStepRes.addActualResult(actual.toString());
-            stepLog.assertFail(desc);
+            stepLog.assertFail(expectedResultText);
         }
     }
 
@@ -68,7 +68,7 @@ public class CustomSoftAssert {
             StepResultModel curStepRes = stepLog.getCurrentStepResult();
             curStepRes.addExpectedResult(expectedResultText);
             curStepRes.addActualResult(actual.toString());
-            stepLog.assertFail(desc);
+            stepLog.assertFail(expectedResultText);
         }
     }
 

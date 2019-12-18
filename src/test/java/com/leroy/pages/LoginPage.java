@@ -5,12 +5,15 @@ import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.pages.BaseAppPage;
+import com.leroy.core.pages.ChromeCertificateErrorPage;
 import com.leroy.core.web_elements.general.Button;
+import com.leroy.core.web_elements.general.Element;
 import com.leroy.models.UserData;
 import com.leroy.pages.app.sales.SalesPage;
 import io.appium.java_client.android.AndroidDriver;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -68,7 +71,7 @@ public class LoginPage extends BaseAppPage {
                 // Nothing to do because it is default page after login
                 break;
             case DOCUMENTS_SALES_SECTION:
-
+                salesPage.goToSalesDocumentsSection();
                 break;
             case WORK_SECTION:
                 salesPage.goToWork();

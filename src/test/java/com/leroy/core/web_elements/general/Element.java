@@ -14,6 +14,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.util.Strings;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
@@ -192,8 +193,10 @@ public class Element extends BaseElement {
      * @param timeout
      * @throws Exception
      */
-    private void waitForVisibilityAndSearchAgain(int timeout, boolean isSearchingAgain) {
-        WebDriverWait wait = new WebDriverWait(this.driver, (long) timeout);
+    private void waitForVisibilityAndSearchAgain(int timeout, Duration sleepTimeout, boolean isSearchingAgain) {
+        WebDriverWait wait = new WebDriverWait(this.driver, timeout);
+        if (sleepTimeout != null)
+            wait.pollingEvery(sleepTimeout);
         try {
             wait.until((ExpectedCondition<Boolean>) driverObject -> isVisible());
         } catch (org.openqa.selenium.StaleElementReferenceException e) {
@@ -202,10 +205,10 @@ public class Element extends BaseElement {
                 if (locator != null)
                     locator.setCacheLookup(false);
                 initialWebElementIfNeeded();
-                waitForVisibilityAndSearchAgain(timeout, false);
+                waitForVisibilityAndSearchAgain(timeout, sleepTimeout, false);
             }
         } catch (org.openqa.selenium.TimeoutException e) {
-            Log.warn(String.format("waitForVisibilityAndSearchAgain failed (tried for %d second(s))", timeout));
+            Log.warn(String.format("waitForVisibilityAndSearchAgain for " + getMetaName() + " failed (tried for %d second(s))", timeout));
         }
     }
 
@@ -300,7 +303,7 @@ public class Element extends BaseElement {
 
     public void click() {
         initialWebElementIfNeeded();
-        simpleClick(0);
+        simpleClick(1);
     }
 
     public void doubleClick() {
@@ -313,9 +316,9 @@ public class Element extends BaseElement {
         try {
             webElement.click();
         } catch (StaleElementReferenceException err) {
-            Log.warn("simpleClick() failed. Err: " + err.getMessage());
+            Log.debug("simpleClick() failed. Err: " + err.getMessage());
             if (additionalAttemptNum > 0) {
-                initialWebElementIfNeeded();
+                initWebElement();
                 simpleClick(additionalAttemptNum - 1);
             } else
                 throw err;
@@ -334,7 +337,6 @@ public class Element extends BaseElement {
 
     private void waitForClickability(int timeout, int attempt) {
         initialWebElementIfNeeded();
-        String s = "";
         try {
             new WebDriverWait(this.driver, timeout).until(
                     ExpectedConditions.elementToBeClickable(this.webElement));
@@ -615,7 +617,11 @@ public class Element extends BaseElement {
     }
 
     public void waitForVisibility(int timeout) {
-        waitForVisibilityAndSearchAgain(timeout, true);
+        waitForVisibilityAndSearchAgain(timeout, null, true);
+    }
+
+    public void waitForVisibility(int timeout, Duration sleepTimeout) {
+        waitForVisibilityAndSearchAgain(timeout, sleepTimeout, true);
     }
 
     public void waitForInvisibility() {
@@ -748,7 +754,12 @@ public class Element extends BaseElement {
      */
     public boolean isEnabled() {
         initialWebElementIfNeeded();
-        return webElement.isEnabled();
+        try {
+            return webElement.isEnabled();
+        } catch (WebDriverException err) {
+            Log.warn("isEnabled() - " + err.getMessage());
+            return webElement.isEnabled();
+        }
     }
 
     public Point getLocation() {

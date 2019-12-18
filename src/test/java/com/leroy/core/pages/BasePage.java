@@ -29,6 +29,10 @@ public class BasePage extends BaseContainer {
     public void waitForPageIsLoaded() {
     }
 
+    public BasePage verifyRequiredElements() {
+        return this;
+    }
+
     public Element getElementByText(String text) {
         return new Element(driver, new CustomLocator(By.xpath(String.format("//*[@text='%s']", text)), null,
                 String.format("Элемент с текстом '%s'", text), false));

@@ -43,9 +43,9 @@ public class CustomAssert {
             StepResultModel curStepRes = stepLog.getCurrentStepResult();
             curStepRes.addExpectedResult(expectedResultText);
             curStepRes.addActualResult(actual.toString());
-            stepLog.assertFail(desc);
+            stepLog.assertFail(expectedResultText);
         }
-        Assert.assertEquals(actual, expected, desc);
+        Assert.assertEquals(actual, expected, expectedResultText);
     }
 
     public void isNotEquals(Object actual, Object expected, String desc) {
@@ -58,9 +58,9 @@ public class CustomAssert {
             StepResultModel curStepRes = stepLog.getCurrentStepResult();
             curStepRes.addExpectedResult(expectedResultText);
             curStepRes.addActualResult(actual.toString());
-            stepLog.assertFail(desc);
+            stepLog.assertFail(expectedResultText);
         }
-        Assert.assertNotEquals(actual, expected, desc);
+        Assert.assertNotEquals(actual, expected, expectedResultText);
     }
 
     public void isNull(Object object, String desc) {
