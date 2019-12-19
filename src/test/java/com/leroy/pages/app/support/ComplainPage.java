@@ -1,23 +1,29 @@
 package com.leroy.pages.app.support;
 
+import com.leroy.constants.MagMobElementTypes;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.elements.MagMobButton;
 import io.qameta.allure.Step;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.Color;
 
 public class ComplainPage extends BaseAppPage {
+
+    private static final String WHAT_HAPPEN_TEXT = "В чем проблема?";
 
     public ComplainPage(TestContext context) {
         super(context);
     }
 
-    @AppFindBy(text = "В чем проблема?")
+    @AppFindBy(text = WHAT_HAPPEN_TEXT)
     private Element whatHappenLbl;
-    @AppFindBy(accessibilityId = "title", metaName = "Поле ввода 'В чем проблема?'")
+    @AppFindBy(accessibilityId = "title", metaName = "Поле ввода '" + WHAT_HAPPEN_TEXT + "'")
     private EditBox whatHappenFld;
+    @AppFindBy(xpath = "//android.widget.TextView[@text='" + WHAT_HAPPEN_TEXT + "']/following::android.view.ViewGroup[1]/android.view.ViewGroup")
+    private Element whatHappenEditPen;
 
     @AppFindBy(text = "Чуть больше подробностей")
     private Element moreInfoLbl;
@@ -32,7 +38,7 @@ public class ComplainPage extends BaseAppPage {
     private Element emailDomainLbl;
 
     @AppFindBy(text = "ОТПРАВИТЬ", cacheLookup = false)
-    private EditBox submitBtn;
+    private MagMobButton submitBtn;
 
     @Override
     public void waitForPageIsLoaded() {
@@ -66,10 +72,10 @@ public class ComplainPage extends BaseAppPage {
 
     /* ---------------------- Verifications -------------------------- */
 
-    public ComplainPage shouldAllElementsVisibility() {
+    public ComplainPage shouldAllElementsVisibility() throws Exception {
         softAssert.isElementVisible(whatHappenLbl);
         softAssert.isElementTextEqual(whatHappenFld, "Не найден товар");
-        // TODO need to check -> В правой части поля видна иконка ручки (редактирования)
+        softAssert.isElementImageMatches(whatHappenEditPen, MagMobElementTypes.EditPen.getPictureName());
         softAssert.isElementVisible(moreInfoLbl);
         softAssert.isElementVisible(emailLbl);
         softAssert.isElementTextEqual(submitBtn, "ОТПРАВИТЬ");

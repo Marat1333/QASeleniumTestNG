@@ -704,28 +704,6 @@ public abstract class BaseWebPage extends BasePage {
         }
     }
 
-    // TODO remove
-    protected String waitAndGetWhileCssAttributeValueStabilize(final WebElement webElement, final String cssAttributeName) throws Exception {
-        (new WebDriverWait(this.driver, (long) timeout)).until(new ExpectedCondition<Boolean>() {
-            String oldText = webElement.getCssValue(cssAttributeName);
-
-            public Boolean apply(WebDriver driver) {
-                Boolean var3;
-                try {
-                    Boolean var2 = webElement.getCssValue(cssAttributeName).equals(this.oldText);
-                    return var2;
-                } catch (Exception var7) {
-                    var3 = false;
-                } finally {
-                    this.oldText = webElement.getCssValue(cssAttributeName);
-                }
-
-                return var3;
-            }
-        });
-        return webElement.getCssValue(cssAttributeName);
-    }
-
     public String getCookieValue(String name) throws Exception {
         return URLDecoder.decode(this.driver.manage().getCookieNamed(name).getValue(), "UTF-8");
     }
