@@ -7,6 +7,7 @@ import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.configuration.EnvironmentConfigurator;
 import com.leroy.core.listeners.TestRailListener;
 import com.leroy.core.testrail.helpers.StepLog;
+import org.openqa.selenium.Cookie;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;

@@ -2,12 +2,13 @@ package com.leroy.pages.app.support;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.pages.app.common.BottomMenuPage;
 import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 
-public class SubmittedIncidentPage extends BottomMenuPage {
+public class SubmittedIncidentPage extends BaseAppPage {
 
     public SubmittedIncidentPage(TestContext context) {
         super(context);
