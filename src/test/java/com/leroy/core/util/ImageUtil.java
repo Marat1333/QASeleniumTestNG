@@ -127,7 +127,9 @@ public class ImageUtil {
             WebDriver driver, Rectangle rect,
             String pictureName, Double expectedPercentage) throws Exception {
         String filePath = PATH_SNAPSHOTS + pictureName + ".png";
-        return compareImage(captureElementBitmap(driver, rect).getAbsolutePath(),
+        String screenshotPath = captureElementBitmap(driver, rect).getAbsolutePath();
+        Log.debug("Picture: " + pictureName +" Path: " +screenshotPath);
+        return compareImage(screenshotPath,
                 filePath, expectedPercentage);
     }
 
