@@ -1,5 +1,6 @@
 package com.leroy.tests;
 
+import com.leroy.constants.EnvConstants;
 import com.leroy.core.TestContext;
 import com.leroy.core.configuration.CustomAssert;
 import com.leroy.core.configuration.CustomSoftAssert;
@@ -44,14 +45,12 @@ public class BaseState extends EnvironmentConfigurator {
         if (TestRailListener.STEPS_INFO != null)
             TestRailListener.STEPS_INFO.put(tcId, log.getStepResults());
         if (!DriverFactory.isAppProfile())
-            driver.get("http://dev.prudevlegowp.hq.ru.corp.leroymerlin.com/all");
+            openStartPage();
     }
 
     @AfterMethod
     public void baseStateAfterMethod() {
-        if (!context.getSoftAssert().isVerifyAll())
-            throw new AssertionError("Did you remember to add verifyAll method in the end of the test case?");
-        context.setSoftAssert(null);
+        cleanUp();
     }
 
     @AfterClass
@@ -61,12 +60,17 @@ public class BaseState extends EnvironmentConfigurator {
         }
     }
 
+    private void openStartPage() {
+        driver.get(EnvConstants.URL_MAG_PORTAL);
+    }
+
     private void cleanUp() {
         if (this.driver != null) {
             this.driver.quit();
             this.driver = null;
         }
         context.setSoftAssert(null);
+        context.setAnAssert(null);
     }
 
 }
