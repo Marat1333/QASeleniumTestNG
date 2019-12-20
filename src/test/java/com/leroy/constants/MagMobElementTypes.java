@@ -2,7 +2,7 @@ package com.leroy.constants;
 
 public enum MagMobElementTypes {
 
-    EditPen("pen");
+    EditPen("pen"), Plus("plus");
 
     private String pictureName;
 

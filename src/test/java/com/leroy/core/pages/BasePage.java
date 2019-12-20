@@ -29,7 +29,7 @@ public class BasePage extends BaseContainer {
     public void waitForPageIsLoaded() {
     }
 
-    public BasePage verifyRequiredElements() {
+    public BasePage verifyRequiredElements() throws Exception {
         return this;
     }
 
