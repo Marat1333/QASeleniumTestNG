@@ -708,27 +708,6 @@ public abstract class BaseWebPage extends BasePage {
         return URLDecoder.decode(this.driver.manage().getCookieNamed(name).getValue(), "UTF-8");
     }
 
-    protected WebElement getFirstElementWithText(java.util.List<WebElement> listOfWebElements, String text) {
-        return this.getFirstElementWithText(listOfWebElements, text, false);
-    }
-
-    protected WebElement getFirstElementWithText(List<WebElement> listOfWebElements, String text, boolean caseSensitive) {
-        Iterator var4 = listOfWebElements.iterator();
-
-        while (var4.hasNext()) {
-            WebElement we = (WebElement) var4.next();
-            if (caseSensitive) {
-                if (we.getText().trim().equals(text)) {
-                    return we;
-                }
-            } else if (we.getText().trim().equalsIgnoreCase(text)) {
-                return we;
-            }
-        }
-
-        return null;
-    }
-
     /**
      * Waits until window URL equals to the specified
      *
@@ -890,35 +869,6 @@ public abstract class BaseWebPage extends BasePage {
             return false;
         }
         return true;
-    }
-
-    /**
-     * Close current window and switch cursor to previous
-     *
-     * @return
-     * @throws Exception
-     * @deprecated - you should use closeCurrentWindowAndSwitchToSpecified method for compatibility with Safari
-     */
-    public void closeCurrentWindowAndSwitchToPrevious() throws Exception {
-        closeCurrentWindowAndSwitchToPrevious(isEdge()); //workaround for edge
-    }
-
-    /**
-     * Close current window and switch cursor to previous
-     *
-     * @param usingJS
-     * @throws Exception
-     * @deprecated - you should use closeCurrentWindowAndSwitchToSpecified method for compatibility with Safari
-     */
-    public void closeCurrentWindowAndSwitchToPrevious(boolean usingJS) throws Exception {
-        int winHandles = getWindowCount();
-        if (usingJS)
-            ((JavascriptExecutor) this.driver).executeScript("window.close();");
-        else
-            close();
-        waitUntilWindowHandlesIsChanged(winHandles, short_timeout);
-        switchToWindow(getWindowCount() - 1);
-
     }
 
     /**
