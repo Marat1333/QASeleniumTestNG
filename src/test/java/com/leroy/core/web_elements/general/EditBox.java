@@ -62,18 +62,22 @@ public class EditBox extends Element {
     }
 
     public void clearAndFill(String text, boolean imitateTyping) {
-        clear();
-        fill(text, imitateTyping);
+        if (text != null) {
+            clear();
+            fill(text, imitateTyping);
+        }
     }
 
     public void clearFillAndSubmit(String text) {
-        clear();
-        fill(text);
-        if (DriverFactory.isAppProfile())
-            ((AndroidDriver) driver).executeScript(
-                    "mobile: performEditorAction", ImmutableMap.of("action", "search"));
-        else
-            webElement.sendKeys(Keys.ENTER);
+        if (text != null) {
+            clear();
+            fill(text);
+            if (DriverFactory.isAppProfile())
+                ((AndroidDriver) driver).executeScript(
+                        "mobile: performEditorAction", ImmutableMap.of("action", "search"));
+            else
+                webElement.sendKeys(Keys.ENTER);
+        }
     }
 
     public void sendBlurEvent() {

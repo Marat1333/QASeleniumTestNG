@@ -51,7 +51,7 @@ public class CustomFieldElementLocator {
         String xpath = isApp ?
                 field.getAnnotation(AppFindBy.class).xpath() : field.getAnnotation(WebFindBy.class).xpath();
         String text = isApp ?
-                field.getAnnotation(AppFindBy.class).text() : "";
+                field.getAnnotation(AppFindBy.class).text() : field.getAnnotation(WebFindBy.class).text();
         if (!id.isEmpty())
             return By.id(id);
         if (!xpath.isEmpty()) {

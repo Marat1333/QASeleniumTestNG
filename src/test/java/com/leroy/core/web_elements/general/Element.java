@@ -250,14 +250,27 @@ public class Element extends BaseElement {
     }
 
     /**
-     * Find Child element with default timeout
+     * Find Child web element with default timeout
      *
      * @param by - locator
      * @return WebElement
      */
-    protected WebElement findChildElement(By by) {
+    protected WebElement findChildWebElement(By by) {
         initialWebElementIfNeeded();
         return webElement.findElement(by);
+    }
+
+    /**
+     * Find Child Element with default timeout
+     *
+     * @param xpath - Xpath
+     * @return Element
+     */
+    public Element findChildElement(String xpath) {
+        if (xpath.startsWith("."))
+            xpath = xpath.replaceFirst(".", "");
+        initialWebElementIfNeeded();
+        return new Element(driver, By.xpath(getXpath() + xpath));
     }
 
     /**
@@ -283,7 +296,7 @@ public class Element extends BaseElement {
      * @param by - locator
      * @return WebElement
      */
-    public List<WebElement> findChildElements(By by) {
+    protected List<WebElement> findChildElements(By by) {
         return findChildElements(by, 1);
     }
 
@@ -294,7 +307,7 @@ public class Element extends BaseElement {
      * @param timeout - timeout
      * @return WebElement
      */
-    public List<WebElement> findChildElements(By by, int timeout) {
+    protected List<WebElement> findChildElements(By by, int timeout) {
         initialWebElementIfNeeded();
         this.setImplicitWait(timeout);
         List<WebElement> webElements = webElement.findElements(by);
@@ -998,6 +1011,15 @@ public class Element extends BaseElement {
      */
     public Color getBackgroundColor() {
         return Color.fromString(getCssValue("background-color"));
+    }
+
+    /**
+     * Gets CSS value 'fill' color of the element
+     *
+     * @return Color
+     */
+    public Color getFillColor() {
+        return Color.fromString(getCssValue("fill"));
     }
 
     /**

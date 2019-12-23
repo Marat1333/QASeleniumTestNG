@@ -79,7 +79,7 @@ public class ComplainPage extends BaseAppPage {
         // Видна метка "В чем проблема?"
         softAssert.isElementVisible(whatHappenLbl);
         // В правой части поля видна иконка ручки (редактирования)
-        softAssert.isElementImageMatches(whatHappenEditPen, MagMobElementTypes.EditPen.getPictureName());
+        softAssert.isElementImageMatches(whatHappenEditPen, MagMobElementTypes.EDIT_PEN.getPictureName());
         // Видна метка "Чуть больше подробностей"
         softAssert.isElementVisible(moreInfoLbl);
         // Видна метка "Эл. почта для ответа"
@@ -110,7 +110,7 @@ public class ComplainPage extends BaseAppPage {
         softAssert.isEquals(moreInfoText, text,
                 "Поле 'Чуть больше подробностей' должно иметь текст %s");
         MagMobElementTypes elementType = moreInfoText.isEmpty() ?
-                MagMobElementTypes.Plus : MagMobElementTypes.EditPen;
+                MagMobElementTypes.PLUS : MagMobElementTypes.EDIT_PEN;
         softAssert.isElementImageMatches(moreInfoIcon, elementType.getPictureName());
         softAssert.verifyAll();
         return this;

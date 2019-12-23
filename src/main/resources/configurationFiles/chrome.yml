@@ -14,5 +14,6 @@ capabilities:
   windows:
     chrome:
       platformVersion: Windows 10
+      acceptInsecureCerts: true
       args:
         - start-maximized
