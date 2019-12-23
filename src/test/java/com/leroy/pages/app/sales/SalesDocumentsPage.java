@@ -6,6 +6,8 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.elements.MagMobButton;
 import com.leroy.models.SalesDocumentData;
+import com.leroy.pages.app.common.OldSearchProductPage;
+import com.leroy.pages.app.common.SearchProductPage;
 import com.leroy.pages.app.common.TopMenuPage;
 import com.leroy.pages.app.sales.widget.SalesDocumentWidget;
 import io.qameta.allure.Step;
@@ -39,9 +41,9 @@ public class SalesDocumentsPage extends TopMenuPage {
     /* ------------------------- ACTION STEPS -------------------------- */
 
     @Step("Нажмите 'Создать документ продажи'")
-    public SearchProductPage clickCreateSalesDocumentButton() {
+    public OldSearchProductPage clickCreateSalesDocumentButton() {
         createSalesDocumentBtn.click();
-        return new SearchProductPage(context);
+        return new OldSearchProductPage(context);
     }
 
 

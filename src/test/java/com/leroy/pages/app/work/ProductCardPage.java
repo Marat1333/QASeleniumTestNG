@@ -3,9 +3,11 @@ package com.leroy.pages.app.work;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
+import com.leroy.core.pages.BasePage;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.elements.MagMobButton;
+import com.leroy.pages.app.common.SearchProductPage;
 import io.qameta.allure.Step;
 
 public class ProductCardPage extends BaseAppPage {
@@ -26,6 +28,7 @@ public class ProductCardPage extends BaseAppPage {
     // Modal window elements
     @AppFindBy(accessibilityId = "monoPalletReserved")
     private EditBox quantityItemsFld;
+
 
     @Override
     public void waitForPageIsLoaded() {
@@ -54,7 +57,7 @@ public class ProductCardPage extends BaseAppPage {
 
     /* ------------------------- Verifications -------------------------- */
 
-    public ProductCardPage verifyAllElementsVisibility() {
+    public ProductCardPage verifyRequiredElements() {
         softAssert.isElementVisible(productCardHeaderArea);
         // TODO
         softAssert.verifyAll();
@@ -66,5 +69,4 @@ public class ProductCardPage extends BaseAppPage {
                 String.format("ОТОЗВАТЬ %s шт.", count));
         return this;
     }
-
 }

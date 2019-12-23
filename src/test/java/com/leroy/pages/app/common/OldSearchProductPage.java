@@ -1,18 +1,18 @@
-package com.leroy.pages.app.sales;
+package com.leroy.pages.app.common;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.configuration.Log;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.pages.app.sales.AddProductPage;
 import com.leroy.pages.app.sales.widget.SearchProductCardWidget;
 import io.qameta.allure.Step;
 
-public class SearchProductPage extends BaseAppPage {
+public class OldSearchProductPage extends BaseAppPage {
 
-    public SearchProductPage(TestContext context) {
+    public OldSearchProductPage(TestContext context) {
         super(context);
     }
 
@@ -29,6 +29,7 @@ public class SearchProductPage extends BaseAppPage {
             clazz = SearchProductCardWidget.class)
     private ElementList<SearchProductCardWidget> productCards;
 
+
     @Override
     public void waitForPageIsLoaded() {
         searchField.waitForVisibility();
@@ -37,12 +38,17 @@ public class SearchProductPage extends BaseAppPage {
     // ---------------- Action Steps -------------------------//
 
     @Step("Введите {text} в поле поиска товара")
-    public SearchProductPage enterTextInSearchField(String text, boolean expectProductsBeFound) {
+    public OldSearchProductPage enterTextInSearchField(String text) {
         searchField.clearFillAndSubmit(text);
         waitForProgressBarIsVisible();
         waitForProgressBarIsInvisible();
-        /*if (expectProductsBeFound)
-            productCards.waitForElementCountEqualsOrAbove(1);*/
+        return this;
+    }
+
+    @Step("Искать по {value}")
+    public OldSearchProductPage searchByPhrase(String value){
+        enterTextInSearchField(value);
+
         return this;
     }
 
@@ -62,7 +68,7 @@ public class SearchProductPage extends BaseAppPage {
     // ---------------- Verifications ----------------------- //
 
     @Override
-    public SearchProductPage verifyRequiredElements() {
+    public OldSearchProductPage verifyRequiredElements() {
         softAssert.isElementVisible(backBtn);
         softAssert.isElementVisible(scanBarcodeBtn);
         softAssert.isElementVisible(searchField);
@@ -70,13 +76,13 @@ public class SearchProductPage extends BaseAppPage {
         return this;
     }
 
-    public SearchProductPage shouldCountOfProductsOnPageMoreThan(int count) {
+    public OldSearchProductPage shouldCountOfProductsOnPageMoreThan(int count) {
         anAssert.isTrue(productCards.getCount() > count,
                 "Кол-во товаров на экране должно быть больше " + count);
         return this;
     }
 
-    public SearchProductPage shouldProductCardsContainText(String text) {
+    public OldSearchProductPage shouldProductCardsContainText(String text) {
         for (SearchProductCardWidget card : productCards) {
             anAssert.isTrue(card.getBarCode().contains(text) ||
                             card.getName().contains(text) || card.getNumber().contains(text),
@@ -85,7 +91,7 @@ public class SearchProductPage extends BaseAppPage {
         return this;
     }
 
-    public SearchProductPage shouldProductCardContainAllRequiredElements(int index) throws Exception {
+    public OldSearchProductPage shouldProductCardContainAllRequiredElements(int index) throws Exception {
         anAssert.isFalse(productCards.get(index).getBarCode().isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустой штрихкод", index));
         anAssert.isFalse(productCards.get(index).getNumber().isEmpty(),

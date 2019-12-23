@@ -49,9 +49,7 @@ public class BaseState extends EnvironmentConfigurator {
 
     @AfterMethod
     public void baseStateAfterMethod() {
-        if (!context.getSoftAssert().isVerifyAll())
-            throw new AssertionError("Did you remember to add verifyAll method in the end of the test case?");
-        context.setSoftAssert(null);
+        cleanUp();
     }
 
     @AfterClass

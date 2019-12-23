@@ -67,6 +67,7 @@ public class EditBox extends Element {
     }
 
     public void clearFillAndSubmit(String text) {
+        this.click();
         clear();
         fill(text);
         if (DriverFactory.isAppProfile())

@@ -45,11 +45,11 @@ public class SearchProductCardWidget extends Element {
     private Element quantityLbl;
 
     public String getNumber() {
-        return numberObj.getText();
+        return numberObj.getText().replaceAll("^\\D+","");
     }
 
     public String getBarCode() {
-        return barCodeObj.getText();
+        return barCodeObj.getText().replaceAll(" ","");
     }
 
     public String getName() {
