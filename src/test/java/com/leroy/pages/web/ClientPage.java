@@ -37,6 +37,11 @@ public class ClientPage extends MenuPage {
             metaName = "Кнопка 'Создать клиента'")
     private Element createClientBtn;
 
+    @Override
+    public void waitForPageIsLoaded() {
+        createClientBtn.waitForVisibility();
+    }
+
     // ACTIONS
 
     @Step("Нажмите кнопку 'Создать клиента'")

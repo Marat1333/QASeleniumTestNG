@@ -72,6 +72,7 @@ public class ClientTest extends BaseState {
         // Step #11
         log.step("Click on the button 'Создать'");
         creatingClientPage.clickCreateButtonHappyPath();
+        String s = "";
 
 
     }

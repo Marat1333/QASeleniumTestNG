@@ -10,6 +10,7 @@ import com.leroy.models.CustomerData;
 import com.leroy.pages.web.common.MenuPage;
 import com.leroy.pages.web.modal.CustomersFoundWithThisPhoneModalWindow;
 import io.qameta.allure.Step;
+import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.support.Color;
 import org.testng.util.Strings;
 
@@ -145,8 +146,9 @@ public class CreatingClientPage extends MenuPage {
 
     @Step("Введите {text} в поле 'Телефон'")
     public CreatingClientPage enterTextInPhoneInputField(String text) {
+        phoneFld.clear();
         phoneFld.click();
-        phoneFld.clearAndFill(text);
+        phoneFld.fill(text);
         return this;
     }
 
@@ -351,16 +353,24 @@ public class CreatingClientPage extends MenuPage {
                 softAssert.isTrue(isButtonActive(femaleOptionBtn),
                         "Женский пол должен быть выбран");
         if (customerData.getFirstName() != null)
-            softAssert.isElementTextEqual(firstNameFld, customerData.getFirstName());
+            softAssert.isElementTextEqual(firstNameFld, StringUtils.capitalize(customerData.getFirstName()));
+        String expectedPhoneNumber = customerData.getPersonalPhone() != null ? customerData.getPersonalPhone() :
+                customerData.getWorkPhone();
+        if (expectedPhoneNumber != null) {
+            if (expectedPhoneNumber.length() == 10)
+                expectedPhoneNumber = String.format("+7 (%s) %s-%s-%s",
+                        expectedPhoneNumber.substring(0, 3), expectedPhoneNumber.substring(3, 6),
+                        expectedPhoneNumber.substring(6, 8), expectedPhoneNumber.substring(8, 10));
+        }
         if (customerData.getPersonalPhone() != null) {
             softAssert.isTrue(isButtonActive(phonePersonalOptionBtn),
                     "Должен быть указан Личный телефон");
-            softAssert.isElementTextEqual(phoneFld, customerData.getPersonalPhone());
+            softAssert.isElementTextEqual(phoneFld, expectedPhoneNumber);
         }
         if (customerData.getWorkPhone() != null) {
             softAssert.isTrue(isButtonActive(phoneWorkOptionBtn),
                     "Должен быть указан Рабочий телефон");
-            softAssert.isElementTextEqual(phoneFld, customerData.getWorkPhone());
+            softAssert.isElementTextEqual(phoneFld, expectedPhoneNumber);
         }
         softAssert.verifyAll();
         return this;

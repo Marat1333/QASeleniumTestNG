@@ -47,7 +47,6 @@ public class EditBox extends Element {
     }
 
     public void fill(String text, boolean imitateTyping) {
-        initialWebElementIfNeeded();
         if (!imitateTyping) {
             this.fill(text);
         } else {

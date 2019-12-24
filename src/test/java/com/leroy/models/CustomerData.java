@@ -33,7 +33,7 @@ public class CustomerData {
             setGender(Gender.MALE);
         else
             setGender(Gender.FEMALE);
-        setFirstName(RandomStringUtils.randomAlphabetic(8));
+        setFirstName(getRandomCyrillicCharacters(8));
         int _phone = new Random().nextInt(2);
         if (_phone == 0) {
             setPersonalPhone(RandomStringUtils.randomNumeric(10));
@@ -42,6 +42,7 @@ public class CustomerData {
         }
         return this;
     }
+
     // Default Getter and setters
     public Gender getGender() {
         return gender;
@@ -185,5 +186,17 @@ public class CustomerData {
 
     public void setIntercom(String intercom) {
         this.intercom = intercom;
+    }
+
+    // Private methods
+    public String getRandomCyrillicCharacters(int count) {
+        String cyrillicCharacters = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя";
+        StringBuffer result = new StringBuffer();
+
+        for (int i = 0; i < count; i++) {
+            result.append(cyrillicCharacters.charAt(
+                    new Random().nextInt(cyrillicCharacters.length())));
+        }
+        return result.toString();
     }
 }
