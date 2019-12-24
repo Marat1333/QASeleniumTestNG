@@ -159,9 +159,9 @@ public class CreatingClientPage extends MenuPage {
     }
 
     @Step("Нажмите кнопку 'Создать'")
-    public CustomerPersonalInfoPage clickCreateButtonHappyPath() {
+    public ClientPersonalInfoPage clickCreateButtonHappyPath() {
         createBtn.click();
-        return new CustomerPersonalInfoPage(context);
+        return new ClientPersonalInfoPage(context);
     }
 
     @Step("Нажмите кнопку 'Показать все поля'")

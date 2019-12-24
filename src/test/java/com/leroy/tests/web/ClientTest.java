@@ -2,6 +2,7 @@ package com.leroy.tests.web;
 
 import com.leroy.models.CustomerData;
 import com.leroy.pages.web.ClientPage;
+import com.leroy.pages.web.ClientPersonalInfoPage;
 import com.leroy.pages.web.CreatingClientPage;
 import com.leroy.pages.web.LoginWebPage;
 import com.leroy.tests.BaseState;
@@ -71,7 +72,7 @@ public class ClientTest extends BaseState {
 
         // Step #11
         log.step("Click on the button 'Создать'");
-        creatingClientPage.clickCreateButtonHappyPath();
+        ClientPersonalInfoPage personalInfoPage = creatingClientPage.clickCreateButtonHappyPath();
         String s = "";
 
 
