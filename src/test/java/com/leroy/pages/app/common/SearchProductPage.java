@@ -73,6 +73,12 @@ public class SearchProductPage extends BaseAppPage {
         return new NomenclatureSearch(context);
     }
 
+    @Step("Перейти на страницу выбора фильтров")
+    public FilterPage goToFilterPage(){
+        filter.click();
+        return new FilterPage(context);
+    }
+
     // ---------------- Verifications ----------------------- //
 
     @Override

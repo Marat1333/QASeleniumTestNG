@@ -2,10 +2,10 @@ package com.leroy.tests.app;
 
 import com.leroy.models.UserData;
 import com.leroy.pages.LoginPage;
-import com.leroy.pages.app.common.SearchProductPage;
-import com.leroy.pages.app.sales.SalesPage;
 import com.leroy.pages.app.common.NomenclatureSearch;
+import com.leroy.pages.app.common.SearchProductPage;
 import com.leroy.pages.app.sales.ProductCardPage;
+import com.leroy.pages.app.sales.SalesPage;
 import com.leroy.tests.BaseState;
 import org.testng.annotations.Test;
 
@@ -54,5 +54,20 @@ public class SearchTests extends BaseState {
         log.step("ввести в поисковую строку положительное число длинной >8 символов (4670009014962) и инициировать поиск");
         searchProductPage.enterTextInSearchField(shortBarCode);
         searchProductPage.shouldProductCardsContainText(shortBarCode);
+    }
+    @Test(description = "Сквозной сценарий поиска")
+    public void smokeTest() throws Exception{
+        LoginPage loginPage = new LoginPage(context);
+        SalesPage salesPage = new SalesPage(context);
+        UserData seller = new UserData("60069807","Passwd123");
+        String shortLmCode = "10";
+
+        log.step("Логинимся на главную");
+
+        loginPage.loginInAndGoTo(seller, LoginPage.SALES_SECTION);
+        SearchProductPage searchProductPage = salesPage.selectSearchString();
+        NomenclatureSearch nomenclatureSearch = searchProductPage.goToNomenclatureWindow();
+        nomenclatureSearch.choseDepartmentId(15,105, null, 10);
+        nomenclatureSearch.viewAllProducts();
     }
 }

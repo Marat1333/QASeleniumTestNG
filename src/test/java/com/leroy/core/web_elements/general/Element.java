@@ -260,6 +260,19 @@ public class Element extends BaseElement {
     }
 
     /**
+     * Find Child Element with default timeout
+     *
+     * @param xpath - Xpath
+     * @return Element
+     */
+    public Element findChildElement(String xpath) {
+        if (xpath.startsWith("."))
+            xpath = xpath.replaceFirst(".", "");
+        initialWebElementIfNeeded();
+        return new Element(driver, By.xpath(getXpath() + xpath));
+    }
+
+    /**
      * Is stale element reference?
      *
      * @return true - if an element isn't presented in the DOM. If an element is presented in the DOM returns false
