@@ -32,6 +32,7 @@ public class BaseState extends EnvironmentConfigurator {
     }
 
     public BaseState() {
+        setEvalAfterMethod(false);
     }
 
     @BeforeMethod

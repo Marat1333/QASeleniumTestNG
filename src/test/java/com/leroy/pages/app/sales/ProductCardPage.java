@@ -71,8 +71,7 @@ public class ProductCardPage extends BaseAppPage {
             if (searchContext.length()>8){
                 String barCode = this.barCode.getText().replaceAll(" ","");
                 anAssert.isEquals(barCode, searchContext, searchContext);
-            }
-            if (searchContext.length()<=8){
+            }else {
                 String lmCode=this.lmCode.getText().replaceAll("^\\D+","");
                 anAssert.isEquals(lmCode, searchContext, searchContext);
             }

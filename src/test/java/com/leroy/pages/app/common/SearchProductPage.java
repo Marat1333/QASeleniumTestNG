@@ -68,9 +68,9 @@ public class SearchProductPage extends BaseAppPage {
     }
 
     @Step("Перейти в окно выбора единицы номенклатуры")
-    public NomenclatureSearch goToNomenclatureWindow(){
+    public NomenclatureSearchPage goToNomenclatureWindow(){
         nomenclature.click();
-        return new NomenclatureSearch(context);
+        return new NomenclatureSearchPage(context);
     }
 
     // ---------------- Verifications ----------------------- //
@@ -95,14 +95,14 @@ public class SearchProductPage extends BaseAppPage {
             if (text.contains(" ")){
                 String [] searchWords = text.split(" ");
                 for (String each : searchWords){
-                    anAssert.isTrue(text.contains(each), text);
+                    anAssert.isTrue(card.getName().toLowerCase().contains(each.toLowerCase()), text.toLowerCase());
                 }
                 break;
             }
 
             anAssert.isTrue(card.getBarCode().contains(text) ||
-                            card.getName().contains(text) || card.getNumber().contains(text),
-                    String.format("Товар с кодом %s не содержит текст %s", card.getBarCode(), text));
+                            card.getName().contains(text) || card.getNumber().replaceAll("\\D+","").contains(text),
+                    String.format("Товар с кодом %s не содержит текст %s", card.getNumber(), text));
         }
     }
 

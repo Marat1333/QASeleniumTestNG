@@ -4,11 +4,10 @@ import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BasePage;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.pages.app.common.SearchProductPage;
 import io.qameta.allure.Step;
 
-public class NomenclatureSearch extends BasePage {
-    public NomenclatureSearch(TestContext context){
+public class NomenclatureSearchPage extends BasePage {
+    public NomenclatureSearchPage(TestContext context){
         super(context);
     }
     @AppFindBy(xpath = "//android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[following-sibling::android.widget.TextView]/android.view.ViewGroup")
@@ -19,8 +18,13 @@ public class NomenclatureSearch extends BasePage {
 
     @Step("Перейти на окно выбора отдела")
     public void returnToDepartmentChoseWindow(){
+        int counter=0;
         while (nomenclatureBackBtn.isVisible()){
+            if (counter>3){
+                break;
+            }
             nomenclatureBackBtn.click();
+            counter++;
         }
     }
 
