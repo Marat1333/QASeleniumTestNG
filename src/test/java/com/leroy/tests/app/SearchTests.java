@@ -7,9 +7,11 @@ import com.leroy.pages.app.common.SearchProductPage;
 import com.leroy.pages.app.sales.ProductCardPage;
 import com.leroy.pages.app.sales.SalesPage;
 import com.leroy.tests.BaseState;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 public class SearchTests extends BaseState {
+    @Ignore
     @Test(description = "Поиск товара по критериям")
     public void c3200996() throws Exception{
 

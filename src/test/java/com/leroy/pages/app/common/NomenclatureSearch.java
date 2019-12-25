@@ -69,13 +69,15 @@ public class NomenclatureSearch extends BaseAppPage {
     }
 
     private void selectElementFromArray(Integer value, ElementList<Element> someArray)throws Exception{
+        System.out.println(667);
+        scrollTo();
         for (Element element : someArray){
             String tmp = element.findChildElement(eachElementOfNomenclatureXpath).getText().replaceAll("^0+","");
             tmp = tmp.replaceAll("\\D+", "");
-            if (!(element.findChildElement(eachElementOfNomenclatureXpath)).isVisible()){
+            if (!(element.findChildElement(eachElementOfNomenclatureXpath).isVisible())){
                 for (int q=0;q<2;q++) {
                     System.out.println(2);
-                    scrollTo(element.findChildElement(eachElementOfNomenclatureXpath));
+                    scrollTo();
                     if (element.findChildElement(eachElementOfNomenclatureXpath).isVisible()){
                         System.out.println(3);
                         break;
@@ -83,6 +85,7 @@ public class NomenclatureSearch extends BaseAppPage {
                 }
             }
             if (tmp.equals(String.valueOf(value))){
+                System.out.println(666);
                 element.findChildElement(eachElementOfNomenclatureXpath).click();
                 break;
             }

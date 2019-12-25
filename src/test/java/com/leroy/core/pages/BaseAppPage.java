@@ -21,7 +21,6 @@ import java.util.HashMap;
 public class BaseAppPage extends BasePage {
 
     AndroidDriver<MobileElement> androidDriver;
-    private JavascriptExecutor javascriptExecutor;
 
     @AppFindBy(xpath = "//android.widget.ProgressBar", cacheLookup = false, metaName = "Progress bar")
     private Element progressBar;
@@ -52,13 +51,10 @@ public class BaseAppPage extends BasePage {
         progressBar.waitForInvisibility();
     }
 
-    public void scrollTo(Element element){
+    public void scrollTo(){
         //TouchAction action = new TouchAction((AndroidDriver)driver);
-        androidDriver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains("+element.getText()+").instance(0))");
-        /*javascriptExecutor = (JavascriptExecutor) driver;
-        HashMap<String,String> scrollObject = new HashMap<>();
-        scrollObject.put("direction","down");
-        javascriptExecutor.executeScript("mobile:scroll", scrollObject);*/
+
+        //androidDriver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains("+element.getText()+").instance(0))");
 
         //driver.findElementByAndroidUIAutomator(new UiScrollable(new UiSelector().scrollable(true).instance(0))" + ".scrollIntoView(new UiSelector().resourceId(\" + elemId + \").instance(0))");
         System.out.println(1);
@@ -66,10 +62,15 @@ public class BaseAppPage extends BasePage {
 
 
     public void scrollUp(){
-        javascriptExecutor = (JavascriptExecutor) driver;
-        HashMap<String,String> scrollObject = new HashMap<>();
-        scrollObject.put("direction","up");
-        javascriptExecutor.executeScript("mobile: scroll", scrollObject);
+
+    }
+
+    public void swipeRight(){
+
+    }
+
+    public void swipeLeft(){
+
     }
 
     // ---------------------- Common Verification Steps ------------------ //
