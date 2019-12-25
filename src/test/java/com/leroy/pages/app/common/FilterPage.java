@@ -41,7 +41,7 @@ public class FilterPage extends BaseAppPage {
     @AppFindBy(text = "ПОКАЗАТЬ ТОВАРЫ")
     Element showGoodsBtn;
 
-    public final String TEXT_AND_CHECKBOXES_GROUP_XPATH = "//android.view.ViewGroup[@content-desc=Button]/ancestor::android.view.ViewGroup[2]";
+    public final String TEXT_AND_CHECKBOXES_GROUP_XPATH = "//android.view.ViewGroup[@content-desc='Button']/ancestor::android.view.ViewGroup[2]";
     public final String TOP_EM = "Топ ЕМ";
     public final String TOP_1000 = "Toп 1000";
     public final String CTM = "CTM";
@@ -76,7 +76,7 @@ public class FilterPage extends BaseAppPage {
                 driver.findElement(By.xpath(TEXT_AND_CHECKBOXES_GROUP_XPATH+CHECKBOXES_BY_TEXT_FP_XPATH+HAS_AVAILABLE_STOCK+CHECKBOXES_BY_TEXT_SP_XPATH)).click();
                 break;
             case BEST_PRICE:
-                scrollUp();
+                //scrollUp();
                 driver.findElement(By.xpath(TEXT_AND_CHECKBOXES_GROUP_XPATH+CHECKBOXES_BY_TEXT_FP_XPATH+BEST_PRICE+CHECKBOXES_BY_TEXT_SP_XPATH)).click();
                 break;
             case LIMITED_OFFER:
@@ -85,7 +85,7 @@ public class FilterPage extends BaseAppPage {
                 break;
             case AVS:
                 scrollDown();
-                driver.findElement(By.xpath(TEXT_AND_CHECKBOXES_GROUP_XPATH+CHECKBOXES_BY_TEXT_FP_XPATH+AVS+CHECKBOXES_BY_TEXT_SP_XPATH)).click();
+                new Element(driver, By.xpath(TEXT_AND_CHECKBOXES_GROUP_XPATH+CHECKBOXES_BY_TEXT_FP_XPATH+AVS+CHECKBOXES_BY_TEXT_SP_XPATH)).click();
                 scrollUp();
                 break;
             default:

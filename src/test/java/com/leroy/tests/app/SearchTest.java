@@ -88,7 +88,7 @@ public class SearchTest extends BaseState {
         nomenclatureSearch.choseDepartmentId(15,1595, null, 90);
         nomenclatureSearch.viewAllProducts();
         FilterPage filterPage = searchProductPage.goToFilterPage();
-        filterPage.choseCheckBoxFilter(filterPage.AVS);
+        filterPage.choseCheckBoxFilter(filterPage.BEST_PRICE);
         filterPage.choseCheckBoxFilter(filterPage.LIMITED_OFFER);
         filterPage.choseProductType(filterPage.ORDERED_PRODUCT_TYPE);
         filterPage.choseTopFilter();

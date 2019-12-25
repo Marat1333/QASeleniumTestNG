@@ -2,6 +2,7 @@ package com.leroy.core.configuration;
 
 import com.leroy.core.testrail.helpers.StepLog;
 import com.leroy.core.testrail.models.StepResultModel;
+import com.leroy.core.util.ImageUtil;
 import com.leroy.core.web_elements.general.Element;
 import org.testng.Assert;
 
