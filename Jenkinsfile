@@ -5,8 +5,8 @@ pipeline {
     stages {
         stage('Test') {
             steps {
-                sh 'node --version'
                 sh 'mvn -version'
+                sh 'mvn clean test'
             }
         }
     }
