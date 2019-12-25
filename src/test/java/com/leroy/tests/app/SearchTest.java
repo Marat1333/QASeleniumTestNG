@@ -83,8 +83,8 @@ public class SearchTest extends BaseState {
         log.step("Логинимся на главную");
 
         loginPage.loginInAndGoTo(seller, LoginPage.SALES_SECTION);
-        SearchProductPage searchProductPage = salesPage.selectSearchString();
-        NomenclatureSearch nomenclatureSearch = searchProductPage.goToNomenclatureWindow();
+        SearchProductPage searchProductPage = salesPage.clickSearchBar();
+        NomenclatureSearchPage nomenclatureSearch = searchProductPage.goToNomenclatureWindow();
         nomenclatureSearch.choseDepartmentId(15,1595, null, 90);
         nomenclatureSearch.viewAllProducts();
         FilterPage filterPage = searchProductPage.goToFilterPage();
