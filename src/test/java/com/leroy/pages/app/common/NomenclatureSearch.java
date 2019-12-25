@@ -12,17 +12,20 @@ public class NomenclatureSearch extends BaseAppPage {
     public NomenclatureSearch(TestContext context){
         super(context);
     }
-    @AppFindBy(xpath = "//android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[following-sibling::android.widget.TextView]/android.view.ViewGroup")
+    @AppFindBy(xpath = "//android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[following-sibling::android.widget.TextView]/android.view.ViewGroup", metaName = "Вернуться на элемент назад")
     Element nomenclatureBackBtn;
 
-    @AppFindBy(text = "ПОКАЗАТЬ ВСЕ ТОВАРЫ")
+    @AppFindBy(text = "ПОКАЗАТЬ ВСЕ ТОВАРЫ", metaName = "Кнопка показать товары")
     Element showAllGoods;
 
-    @AppFindBy(xpath = "//android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[preceding-sibling::android.view.ViewGroup[1]]")
+    @AppFindBy(xpath = "//android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[preceding-sibling::android.view.ViewGroup[1]]", metaName = "Окно выбора department")
     ElementList<Element> firstLevelNomenclatureElementsList;
 
-    @AppFindBy(xpath = "//android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[preceding-sibling::android.view.ViewGroup[2]]")
+    @AppFindBy(xpath = "//android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[preceding-sibling::android.view.ViewGroup[2]]", metaName = "Окно выбора последующих элементов")
     ElementList<Element> secondLevelNomenclatureElementsList;
+
+    @AppFindBy(xpath = "//android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[preceding-sibling::android.view.ViewGroup]")
+    ElementList<Element> thirdLevelNomenclatureElementsList;
 
     private final String eachElementOfNomenclatureXpath = "./android.view.ViewGroup/android.widget.TextView";
 
@@ -69,27 +72,24 @@ public class NomenclatureSearch extends BaseAppPage {
     }
 
     private void selectElementFromArray(Integer value, ElementList<Element> someArray)throws Exception{
-        System.out.println(667);
-        scrollTo(someArray.get(7));
+        int counter=0;
         for (Element element : someArray){
             String tmp = element.findChildElement(eachElementOfNomenclatureXpath).getText().replaceAll("^0+","");
             tmp = tmp.replaceAll("\\D+", "");
-            if (!(element.findChildElement(eachElementOfNomenclatureXpath).isVisible())){
-                for (int q=0;q<2;q++) {
-                    System.out.println(2);
-                    scrollTo(someArray.get(8));
-                    if (element.findChildElement(eachElementOfNomenclatureXpath).isVisible()){
-                        System.out.println(3);
-                        break;
-                    }
-                }
+            if (tmp.length()>4){
+                tmp=tmp.substring(0,4);
             }
             if (tmp.equals(String.valueOf(value))){
-                System.out.println(666);
                 element.findChildElement(eachElementOfNomenclatureXpath).click();
+                counter++;
                 break;
             }
         }
+        if (counter<1){
+            scrollDown();
+            selectElementFromArray(value, thirdLevelNomenclatureElementsList);
+        }
+        counter=0;
     }
 
 

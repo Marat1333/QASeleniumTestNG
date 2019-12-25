@@ -2,6 +2,7 @@ package com.leroy.tests.app;
 
 import com.leroy.models.UserData;
 import com.leroy.pages.LoginPage;
+import com.leroy.pages.app.common.FilterPage;
 import com.leroy.pages.app.common.NomenclatureSearch;
 import com.leroy.pages.app.common.SearchProductPage;
 import com.leroy.pages.app.sales.ProductCardPage;
@@ -69,7 +70,9 @@ public class SearchTests extends BaseState {
         loginPage.loginInAndGoTo(seller, LoginPage.SALES_SECTION);
         SearchProductPage searchProductPage = salesPage.selectSearchString();
         NomenclatureSearch nomenclatureSearch = searchProductPage.goToNomenclatureWindow();
-        nomenclatureSearch.choseDepartmentId(15,105, null, 10);
+        nomenclatureSearch.choseDepartmentId(15,1595, null, 90);
         nomenclatureSearch.viewAllProducts();
+        FilterPage filterPage = searchProductPage.goToFilterPage();
+
     }
 }
