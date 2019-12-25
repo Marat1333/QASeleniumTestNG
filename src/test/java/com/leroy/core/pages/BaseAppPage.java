@@ -53,8 +53,8 @@ public class BaseAppPage extends BasePage {
         Dimension size = androidDriver.manage().window().getSize();
         int ground = size.getHeight()-50;
         int ceil = size.getHeight() - ground;
-        int leftBorder=size.getWidth()-10;
-        int rightBorder=size.getWidth()-leftBorder;
+        int rightBorder=size.getWidth()-10;
+        int leftBorder=size.getWidth()-rightBorder;
         while (!element.isVisible()){
             action.press(PointOption.point(leftBorder, ground)).waitAction(WaitOptions.waitOptions(Duration.ofMillis(1000))).moveTo(PointOption.point(leftBorder, ceil)).release().perform();
         }
@@ -65,8 +65,8 @@ public class BaseAppPage extends BasePage {
         Dimension size = androidDriver.manage().window().getSize();
         int ground = size.getHeight()-50;
         int ceil = size.getHeight() - ground;
-        int leftBorder=size.getWidth()-10;
-        int rightBorder=size.getWidth()-leftBorder;
+        int rightBorder=size.getWidth()-10;
+        int leftBorder=size.getWidth()-rightBorder;
         while (!element.isVisible()) {
             action.press(PointOption.point(leftBorder, ceil)).waitAction(WaitOptions.waitOptions(Duration.ofMillis(1000))).moveTo(PointOption.point(leftBorder, ground)).release().perform();
         }
@@ -77,8 +77,8 @@ public class BaseAppPage extends BasePage {
         Dimension size = androidDriver.manage().window().getSize();
         int ground = size.getHeight()-50;
         int ceil = size.getHeight() - ground;
-        int leftBorder=size.getWidth()-10;
-        int rightBorder=size.getWidth()-leftBorder;
+        int rightBorder=size.getWidth()-10;
+        int leftBorder=size.getWidth()-rightBorder;
         action.press(PointOption.point(leftBorder, ground)).waitAction(WaitOptions.waitOptions(Duration.ofMillis(1000))).moveTo(PointOption.point(leftBorder, ceil)).release().perform();
     }
 
@@ -87,17 +87,57 @@ public class BaseAppPage extends BasePage {
         Dimension size = androidDriver.manage().window().getSize();
         int ground = size.getHeight()-50;
         int ceil = size.getHeight() - ground;
-        int leftBorder=size.getWidth()-10;
-        int rightBorder=size.getWidth()-leftBorder;
+        int rightBorder=size.getWidth()-10;
+        int leftBorder=size.getWidth()-rightBorder;
         action.press(PointOption.point(leftBorder, ceil)).waitAction(WaitOptions.waitOptions(Duration.ofMillis(1000))).moveTo(PointOption.point(leftBorder, ground)).release().perform();
     }
 
     public void swipeRightTo(Element anchorElement,Element goalElement){
+        int anchorX = anchorElement.getLocation().getX();
+        int anchorY = anchorElement.getLocation().getY();
+        Dimension size = androidDriver.manage().window().getSize();
+        int rightBorder=size.getWidth()-10;
+        int leftBorder=size.getWidth()-rightBorder;
 
+        TouchAction action = new TouchAction((AndroidDriver)driver);
+        while (!goalElement.isVisible()) {
+            action.press(PointOption.point(anchorX, anchorY)).waitAction(WaitOptions.waitOptions(Duration.ofMillis(1000))).moveTo(PointOption.point(rightBorder, anchorY)).release().perform();
+        }
     }
 
-    public void swipeLeft(){
+    public void swipeLeftTo(Element anchorElement, Element goalElement){
+        int anchorX = anchorElement.getLocation().getX();
+        int anchorY = anchorElement.getLocation().getY();
+        Dimension size = androidDriver.manage().window().getSize();
+        int rightBorder=size.getWidth()-10;
+        int leftBorder=size.getWidth()-rightBorder;
 
+        TouchAction action = new TouchAction((AndroidDriver)driver);
+        while (!goalElement.isVisible()) {
+            action.press(PointOption.point(anchorX, anchorY)).waitAction(WaitOptions.waitOptions(Duration.ofMillis(1000))).moveTo(PointOption.point(leftBorder, anchorY)).release().perform();
+        }
+    }
+
+    public void swipeRight(Element anchorElement){
+        int anchorX = anchorElement.getLocation().getX();
+        int anchorY = anchorElement.getLocation().getY();
+        Dimension size = androidDriver.manage().window().getSize();
+        int rightBorder=size.getWidth()-10;
+        int leftBorder=size.getWidth()-rightBorder;
+
+        TouchAction action = new TouchAction((AndroidDriver)driver);
+        action.press(PointOption.point(anchorX, anchorY)).waitAction(WaitOptions.waitOptions(Duration.ofMillis(1000))).moveTo(PointOption.point(rightBorder, anchorY)).release().perform();
+    }
+
+    public void swipeLeft(Element anchorElement){
+        int anchorX = anchorElement.getLocation().getX();
+        int anchorY = anchorElement.getLocation().getY();
+        Dimension size = androidDriver.manage().window().getSize();
+        int rightBorder=size.getWidth()-10;
+        int leftBorder=size.getWidth()-rightBorder;
+
+        TouchAction action = new TouchAction((AndroidDriver)driver);
+        action.press(PointOption.point(anchorX, anchorY)).waitAction(WaitOptions.waitOptions(Duration.ofMillis(1000))).moveTo(PointOption.point(leftBorder, anchorY)).release().perform();
     }
 
     // ---------------------- Common Verification Steps ------------------ //

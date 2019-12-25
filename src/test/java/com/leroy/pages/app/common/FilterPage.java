@@ -50,7 +50,10 @@ public class FilterPage extends BaseAppPage {
     public final String LIMITED_OFFER = "Предложение ограничено";
     public final String AVS = "AVS";
 
-    private final String CHECKBOXES_BY_TEXT_FP_XPATH = "./android.widget.TextView[@text='";
+    public final String COMMON_PRODUCT_TYPE = "ОБЫЧНЫЙ";
+    public final String ORDERED_PRODUCT_TYPE = "ПОД ЗАКАЗ";
+
+    private final String CHECKBOXES_BY_TEXT_FP_XPATH = "/android.widget.TextView[@text='";
     private final String CHECKBOXES_BY_TEXT_SP_XPATH ="']/following-sibling::android.view.ViewGroup";
 
     @Step("Выбрать checkBox фильтр {value}")
@@ -59,28 +62,70 @@ public class FilterPage extends BaseAppPage {
             case TOP_EM:
                 scrollUp();
                 driver.findElement(By.xpath(TEXT_AND_CHECKBOXES_GROUP_XPATH+CHECKBOXES_BY_TEXT_FP_XPATH+TOP_EM+CHECKBOXES_BY_TEXT_SP_XPATH)).click();
+                break;
             case TOP_1000:
                 scrollUp();
                 driver.findElement(By.xpath(TEXT_AND_CHECKBOXES_GROUP_XPATH+CHECKBOXES_BY_TEXT_FP_XPATH+TOP_1000+CHECKBOXES_BY_TEXT_SP_XPATH)).click();
+                break;
             case CTM:
                 scrollUp();
                 driver.findElement(By.xpath(TEXT_AND_CHECKBOXES_GROUP_XPATH+CHECKBOXES_BY_TEXT_FP_XPATH+CTM+CHECKBOXES_BY_TEXT_SP_XPATH)).click();
+                break;
             case HAS_AVAILABLE_STOCK:
                 scrollUp();
                 driver.findElement(By.xpath(TEXT_AND_CHECKBOXES_GROUP_XPATH+CHECKBOXES_BY_TEXT_FP_XPATH+HAS_AVAILABLE_STOCK+CHECKBOXES_BY_TEXT_SP_XPATH)).click();
+                break;
             case BEST_PRICE:
                 scrollUp();
                 driver.findElement(By.xpath(TEXT_AND_CHECKBOXES_GROUP_XPATH+CHECKBOXES_BY_TEXT_FP_XPATH+BEST_PRICE+CHECKBOXES_BY_TEXT_SP_XPATH)).click();
+                break;
             case LIMITED_OFFER:
                 scrollUp();
                 driver.findElement(By.xpath(TEXT_AND_CHECKBOXES_GROUP_XPATH+CHECKBOXES_BY_TEXT_FP_XPATH+LIMITED_OFFER+CHECKBOXES_BY_TEXT_SP_XPATH)).click();
+                break;
             case AVS:
                 scrollDown();
                 driver.findElement(By.xpath(TEXT_AND_CHECKBOXES_GROUP_XPATH+CHECKBOXES_BY_TEXT_FP_XPATH+AVS+CHECKBOXES_BY_TEXT_SP_XPATH)).click();
+                scrollUp();
+                break;
             default:
                 throw new Exception();
         }
     }
 
+    @Step("Выбрать тип продукта {type}")
+    public void choseProductType(String type){
+        scrollDown();
+        if (type.equals(COMMON_PRODUCT_TYPE)){
+            commonProductBtn.click();
+        }else {
+            orderedProductBtn.click();
+        }
+    }
+
+    @Step("Перейти на страницу выбора поставщиков")
+    public SuppliersSearchPage goToSuppliersSearchPage(){
+        scrollDown();
+        supplierBtn.click();
+        return new SuppliersSearchPage(context);
+    }
+
+    @Step("Выбрать фильтр top")
+    public void choseTopFilter(){
+        scrollUp();
+        top0Btn.click();
+    }
+
+    @Step("Выбрать фильтр гамма")
+    public void choseGammaFilter(){
+        scrollUp();
+        gammaABtn.click();
+    }
+
+    @Step("Показать товары по выбранным фильтрам")
+    public SearchProductPage applyChosenFilters(){
+        showGoodsBtn.click();
+        return new SearchProductPage(context);
+    }
 
 }

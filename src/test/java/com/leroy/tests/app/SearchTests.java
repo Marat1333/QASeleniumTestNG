@@ -5,6 +5,7 @@ import com.leroy.pages.LoginPage;
 import com.leroy.pages.app.common.FilterPage;
 import com.leroy.pages.app.common.NomenclatureSearch;
 import com.leroy.pages.app.common.SearchProductPage;
+import com.leroy.pages.app.common.SuppliersSearchPage;
 import com.leroy.pages.app.sales.ProductCardPage;
 import com.leroy.pages.app.sales.SalesPage;
 import com.leroy.tests.BaseState;
@@ -73,6 +74,14 @@ public class SearchTests extends BaseState {
         nomenclatureSearch.choseDepartmentId(15,1595, null, 90);
         nomenclatureSearch.viewAllProducts();
         FilterPage filterPage = searchProductPage.goToFilterPage();
-
+        filterPage.choseCheckBoxFilter(filterPage.AVS);
+        filterPage.choseCheckBoxFilter(filterPage.LIMITED_OFFER);
+        filterPage.choseProductType(filterPage.ORDERED_PRODUCT_TYPE);
+        filterPage.choseTopFilter();
+        filterPage.choseGammaFilter();
+        SuppliersSearchPage suppliersSearchPage = filterPage.goToSuppliersSearchPage();
+        suppliersSearchPage.searchSupplier("123");
+        suppliersSearchPage.confirmChosenSupplier();
+        filterPage.applyChosenFilters();
     }
 }
