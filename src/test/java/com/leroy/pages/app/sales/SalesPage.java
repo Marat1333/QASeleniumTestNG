@@ -5,6 +5,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.pages.app.common.SearchProductPage;
 import com.leroy.pages.app.common.TopMenuPage;
+import io.qameta.allure.Step;
 
 public class SalesPage extends TopMenuPage {
 
@@ -13,10 +14,11 @@ public class SalesPage extends TopMenuPage {
     }
 
     @AppFindBy(accessibilityId = "MainScreenTitle")
-    EditBox searchString;
+    EditBox searchBar;
 
-    public SearchProductPage selectSearchString(){
-        searchString.click();
+    @Step("Переходим на страницу поиска")
+    public SearchProductPage clickSearchBar() {
+        searchBar.click();
         return new SearchProductPage(context);
     }
 }

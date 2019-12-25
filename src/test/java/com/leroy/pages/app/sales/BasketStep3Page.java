@@ -48,8 +48,8 @@ public class BasketStep3Page extends BasketPage {
         softAssert.isElementVisible(pinCodeHeaderLbl);
         softAssert.isElementVisible(pinCodeFld);
         softAssert.isElementVisible(submitBtn);
-        /*softAssert.isFalse(submitBtn.isEnabled(), // TODO
-                "Кнопка 'Подтвердить должна быть неактивна'");*/
+        softAssert.isFalse(submitBtn.isEnabled(),
+                "Кнопка 'Подтвердить должна быть неактивна'");
         softAssert.verifyAll();
         return this;
     }

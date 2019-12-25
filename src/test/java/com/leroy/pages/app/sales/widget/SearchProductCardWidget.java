@@ -45,7 +45,7 @@ public class SearchProductCardWidget extends Element {
     private Element quantityLbl;
 
     public String getNumber() {
-        return numberObj.getText().replaceAll("^\\D+","");
+        return numberObj.getText();
     }
 
     public String getBarCode() {

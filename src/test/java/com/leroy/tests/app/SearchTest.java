@@ -1,45 +1,59 @@
 package com.leroy.tests.app;
 
+import com.leroy.constants.EnvConstants;
 import com.leroy.models.UserData;
 import com.leroy.pages.LoginPage;
 import com.leroy.pages.app.common.FilterPage;
-import com.leroy.pages.app.common.NomenclatureSearch;
 import com.leroy.pages.app.common.SearchProductPage;
+import com.leroy.pages.app.sales.SalesPage;
+import com.leroy.pages.app.common.NomenclatureSearchPage;
 import com.leroy.pages.app.common.SuppliersSearchPage;
 import com.leroy.pages.app.sales.ProductCardPage;
-import com.leroy.pages.app.sales.SalesPage;
 import com.leroy.tests.BaseState;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
-public class SearchTests extends BaseState {
-    @Ignore
-    @Test(description = "Поиск товара по критериям")
-    public void c3200996() throws Exception{
+public class SearchTest extends BaseState {
+
+    private static final String ALL_DEPARTMENTS_TEXT = "Все отделы";
+
+    @Test(description = "C3200996 Поиск товара по критериям")
+    public void testC3200996() throws Exception {
 
         String lmCode = "10008698";
         String searchContext = "Тепломир радиатор";
         String barCode = "5902120110575";
         String shortLmCode = "100";
         String shortBarCode = "590212011";
+        UserData seller = new UserData(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS);
 
-        log.step("Зайдите в раздел Продажа, Товары и услуги");
+        // Pre-conditions
         LoginPage loginPage = new LoginPage(context);
-        SalesPage salesPage = new SalesPage(context);
-        UserData seller = new UserData("60069807","Passwd123");
         loginPage.loginInAndGoTo(seller, LoginPage.SALES_SECTION);
 
+        // Steps
         log.step("Нажмите на поле Поиск товаров и услуг");
-        SearchProductPage searchProductPage = salesPage.selectSearchString();
-        NomenclatureSearch nomenclatureSearch = searchProductPage.goToNomenclatureWindow();
-        nomenclatureSearch.returnToDepartmentChoseWindow();
-        nomenclatureSearch.viewAllProducts();
+        SalesPage salesPage = new SalesPage(context);
+        SearchProductPage searchProductPage = salesPage.clickSearchBar()
+                .verifyRequiredElements();
+        log.step("Перейдите в окно выбора единицы номенклатуры");
+        NomenclatureSearchPage nomenclatureSearchPage = searchProductPage.goToNomenclatureWindow()
+                .verifyRequiredElements();
+        log.step("Вернитесь на окно выбора отдела");
+        nomenclatureSearchPage.returnToDepartmentChoseWindow()
+                .shouldTitleWithNomenclatureIs("")
+                .verifyNomenclatureBackBtnVisibility(false);
+        log.step("Нажмите 'Показать все товары'");
+        nomenclatureSearchPage.clickShowAllProductsBtn()
+                .verifyRequiredElements()
+                .shouldCountOfProductsOnPageMoreThan(1)
+                .shouldSelectedNomenclatureIs(ALL_DEPARTMENTS_TEXT);
 
-        log.step("Нажмите на поле ввода");
         log.step("Введите полное значение для поиска по ЛМ коду| 10008698");
         searchProductPage.enterTextInSearchField(lmCode);
-        ProductCardPage productCardPage = new ProductCardPage(context);
-        productCardPage.verifyRequiredContext(lmCode);
+        ProductCardPage productCardPage = new ProductCardPage(context)
+                .verifyRequiredElements()
+                .shouldProductLMCodeIs(lmCode);
+        // TODO На карточке товара отображены основные характеристики товара.
         productCardPage.returnBack();
 
         log.step("Введите название товара для поиска");

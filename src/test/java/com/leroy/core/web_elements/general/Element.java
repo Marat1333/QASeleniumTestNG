@@ -4,6 +4,7 @@ import com.leroy.constants.Fonts;
 import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
+import com.leroy.core.util.ImageUtil;
 import com.leroy.core.util.XpathUtil;
 import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.*;
@@ -786,6 +787,11 @@ public class Element extends BaseElement {
         }
     }
 
+    public Dimension getSize() {
+        initialWebElementIfNeeded();
+        return webElement.getSize();
+    }
+
     public int getHeight() {
         initialWebElementIfNeeded();
         try {
@@ -978,8 +984,24 @@ public class Element extends BaseElement {
         return Color.fromString(getCssValue("border-color"));
     }
 
-    public Color getColor() {
+    /**
+     * Gets point color of the Element
+     * @param xOffset - x offset from center
+     * @param yOffset - y offset from center
+     * @return - Color
+     */
+    protected Color getColor(int xOffset, int yOffset) throws Exception {
+        if (DriverFactory.isAppProfile()) {
+            java.awt.Color color = ImageUtil.getColor(this, xOffset, yOffset);
+            if (color == null)
+                throw new IllegalArgumentException("Impossible define color of the " + getMetaName());
+            return new Color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+        }
         return Color.fromString(getCssValue("color"));
+    }
+
+    public Color getColor() throws Exception {
+        return getColor(0,0);
     }
 
     /**
