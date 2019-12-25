@@ -70,14 +70,14 @@ public class NomenclatureSearch extends BaseAppPage {
 
     private void selectElementFromArray(Integer value, ElementList<Element> someArray)throws Exception{
         System.out.println(667);
-        scrollTo();
+        scrollTo(someArray.get(7));
         for (Element element : someArray){
             String tmp = element.findChildElement(eachElementOfNomenclatureXpath).getText().replaceAll("^0+","");
             tmp = tmp.replaceAll("\\D+", "");
             if (!(element.findChildElement(eachElementOfNomenclatureXpath).isVisible())){
                 for (int q=0;q<2;q++) {
                     System.out.println(2);
-                    scrollTo();
+                    scrollTo(someArray.get(8));
                     if (element.findChildElement(eachElementOfNomenclatureXpath).isVisible()){
                         System.out.println(3);
                         break;

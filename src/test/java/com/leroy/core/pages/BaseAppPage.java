@@ -14,6 +14,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.remote.RemoteWebElement;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -51,12 +52,23 @@ public class BaseAppPage extends BasePage {
         progressBar.waitForInvisibility();
     }
 
-    public void scrollTo(){
-        //TouchAction action = new TouchAction((AndroidDriver)driver);
+    public void scrollTo(Element element){
+        /*String listID = (androidDriver.findElementByAndroidUIAutomator("new UiSelector().className(android.widget.ScrollView)")).getId();
+        String direction="down";
+        String elementName = element.getText();
 
-        //androidDriver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains("+element.getText()+").instance(0))");
+        HashMap<String, String> scrollObject = new HashMap<String, String>();
+        scrollObject.put("direction", direction);
+        scrollObject.put("element", listID);
+        scrollObject.put("text", elementName);
+        androidDriver.executeScript("mobile: scrollTo", scrollObject);*/
 
-        //driver.findElementByAndroidUIAutomator(new UiScrollable(new UiSelector().scrollable(true).instance(0))" + ".scrollIntoView(new UiSelector().resourceId(\" + elemId + \").instance(0))");
+        TouchAction action = new TouchAction((AndroidDriver)driver);
+        while (element.isVisible()) {
+            action.press(PointOption.point(10, 1000)).waitAction().moveTo(PointOption.point(10, 100)).release().perform();
+        }
+        //androidDriver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().text("+element.getText()+").instance(0))");
+
         System.out.println(1);
     }
 
