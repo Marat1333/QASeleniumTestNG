@@ -1,4 +1,18 @@
-timestamps {
+pipeline {
+    agent {
+        docker { image 'ksolkin/img-oracle-jdk8-maven-with-sh' }
+    }
+    stages {
+        stage('Test') {
+            steps {
+                sh 'node --version'
+                sh 'mvn -version'
+            }
+        }
+    }
+}
+
+/*timestamps {
     node("dockerhost") {
         stage('Prepare') {
             git (url: 'https://gitlab.lmru.adeo.com/lego-front/auto-tests.git',
@@ -15,4 +29,4 @@ timestamps {
             }
         }
     }
-}
+}*/
