@@ -13,12 +13,15 @@ public class SupportTest extends BaseState {
         // Step #1
         log.step("Зайдите в раздел Поддержка");
         new LoginPage(context).loginInAndGoTo(LoginPage.SUPPORT_SECTION);
-        SupportPage supportPage = new SupportPage(context).verifyAllElementsVisibility();
+        SupportPage supportPage = new SupportPage(context).verifyRequiredElements()
+                .shouldSelectedTypeRequestIs(SupportPage.COMPLAIN_REQUEST);
 
         // Step #2
         log.step("Нажмите на плашку 'Товар не найден'");
-        ComplainPage complainPage = supportPage.clickButton("Не найден товар")
-                .shouldAllElementsVisibility(); // TODO
+        String productNotFoundText = "Не найден товар";
+        ComplainPage complainPage = supportPage.clickButton(productNotFoundText)
+                .verifyRequiredElements()
+                .shouldMainFieldsAre(productNotFoundText, "", null);
 
         // Step #3
         log.step("Нажмите на поле 'Чуть больше подробностей' или на иконку + этого поля");
@@ -31,7 +34,6 @@ public class SupportTest extends BaseState {
         String textToEnter = "проблема с поиском товара C3132493, продавец-консультант 5 магазина";
         complainPage.enterTextIntoMoreInformationField(textToEnter)
                 .shouldMoreInformationFieldHasText(textToEnter);
-        // TODO - Вместо иконки + в правой части поля видна иконка ручки (редактирования).
         String emailFromField = complainPage.getEmail();
 
         // Step #5

@@ -123,4 +123,24 @@ public class CustomAssert {
     }
 
 
+    public void isElementImageMatches(Element elem, String pictureName) {
+        ImageUtil.CompareResult result = null;
+        String desc = "Визуально элемент '"+elem.getMetaName()+"' должен соответствовать эталону";
+        try {
+            result = ImageUtil.takeScreenAndCompareWithBaseImg(elem, pictureName);
+        } catch (Exception err) {
+            Log.error(err.getMessage());
+            Assert.fail("Couldn't take screenshot for " + elem.getMetaName());
+        }
+        if (!ImageUtil.CompareResult.Matched.equals(result)) {
+            StepResultModel curStepRes = stepLog.getCurrentStepResult();
+            curStepRes.addExpectedResult(desc);
+            curStepRes.addActualResult("Визуально элемент '"+elem.getMetaName()+"' не соответствует эталону");
+            stepLog.assertFail(desc);
+        }
+        Assert.assertEquals(result,
+                ImageUtil.CompareResult.Matched,
+                desc);
+    }
+
 }

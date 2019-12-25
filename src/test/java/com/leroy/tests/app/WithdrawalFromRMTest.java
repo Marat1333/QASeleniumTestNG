@@ -25,7 +25,7 @@ public class WithdrawalFromRMTest extends BaseState {
         // Step #1
         log.step("Зайти в раздел Работа");
         WorkPage workPage = userProfilePage.goToWork()
-                .verifyVisibilityOfAllElements();
+                .verifyRequiredElements();
 
         // Step #2
         log.step("Нажать на иконку + рядом с Отзыв с RM");
