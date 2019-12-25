@@ -14,11 +14,11 @@ public class SalesPage extends TopMenuPage {
     }
 
     @AppFindBy(accessibilityId = "MainScreenTitle")
-    EditBox searchString;
+    EditBox searchBar;
 
     @Step("Переходим на страницу поиска")
-    public SearchProductPage selectSearchString(){
-        searchString.click();
+    public SearchProductPage clickSearchBar() {
+        searchBar.click();
         return new SearchProductPage(context);
     }
 }

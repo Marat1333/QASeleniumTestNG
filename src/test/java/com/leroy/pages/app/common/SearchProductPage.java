@@ -32,12 +32,12 @@ public class SearchProductPage extends BaseAppPage {
     @AppFindBy(text = "Фильтр")
     Element filter;
 
-    @AppFindBy(xpath = "//android.view.ViewGroup[following-sibling::android.view.ViewGroup[2][ancestor::android.view.ViewGroup[@content-desc=\"ScreenContent\"]]]")
+    @AppFindBy(xpath = "(//android.view.ViewGroup[descendant::android.widget.TextView[@text='Фильтр']]/preceding-sibling::android.view.ViewGroup[descendant::android.widget.TextView])[2]//android.widget.TextView",
+            metaName = "Выбранная номенклатура")
     Element nomenclature;
 
     @AppFindBy(xpath = "//android.view.ViewGroup[preceding-sibling::android.view.ViewGroup[2][ancestor::android.view.ViewGroup[@content-desc=\"ScreenContent\"]]]")
     Element sort;
-
 
     @Override
     public void waitForPageIsLoaded() {
@@ -68,7 +68,7 @@ public class SearchProductPage extends BaseAppPage {
     }
 
     @Step("Перейти в окно выбора единицы номенклатуры")
-    public NomenclatureSearchPage goToNomenclatureWindow(){
+    public NomenclatureSearchPage goToNomenclatureWindow() {
         nomenclature.click();
         return new NomenclatureSearchPage(context);
     }
@@ -92,18 +92,23 @@ public class SearchProductPage extends BaseAppPage {
 
     public void shouldProductCardsContainText(String text) {
         for (SearchProductCardWidget card : productCards) {
-            if (text.contains(" ")){
-                String [] searchWords = text.split(" ");
-                for (String each : searchWords){
+            if (text.contains(" ")) {
+                String[] searchWords = text.split(" ");
+                for (String each : searchWords) {
                     anAssert.isTrue(card.getName().toLowerCase().contains(each.toLowerCase()), text.toLowerCase());
                 }
                 break;
             }
 
             anAssert.isTrue(card.getBarCode().contains(text) ||
-                            card.getName().contains(text) || card.getNumber().replaceAll("\\D+","").contains(text),
+                            card.getName().contains(text) || card.getNumber().replaceAll("\\D+", "").contains(text),
                     String.format("Товар с кодом %s не содержит текст %s", card.getNumber(), text));
         }
+    }
+
+    public SearchProductPage shouldSelectedNomenclatureIs(String text) {
+        anAssert.isElementTextEqual(nomenclature, text);
+        return this;
     }
 
     public SearchProductPage shouldProductCardContainAllRequiredElements(int index) throws Exception {

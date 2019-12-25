@@ -107,4 +107,20 @@ public class CustomAssert {
             return true;
     }
 
+    public boolean isElementNotVisible(Element element) {
+        Assert.assertNotNull(element.getMetaName(), "Element meta name is NULL!");
+        boolean elementVisibility = element.isVisible();
+        String desc = element.getMetaName() + " не должен отображаться";
+        if (elementVisibility) {
+            stepLog.assertFail(desc);
+            StepResultModel curStepRes = stepLog.getCurrentStepResult();
+            curStepRes.addExpectedResult(desc);
+            curStepRes.addActualResult(element.getMetaName() + " отображается");
+            Assert.fail(desc);
+            return true;
+        } else
+            return false;
+    }
+
+
 }
