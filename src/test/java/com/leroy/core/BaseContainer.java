@@ -29,6 +29,10 @@ public abstract class BaseContainer {
         this.driver = driver;
     }
 
+    public WebDriver getDriver() {
+        return driver;
+    }
+
     protected void initElements() {
         initElements(null);
     }
