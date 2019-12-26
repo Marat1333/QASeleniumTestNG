@@ -1,28 +1,25 @@
 package com.leroy.tests.web;
 
 import com.leroy.models.CustomerData;
-import com.leroy.pages.web.ClientPage;
-import com.leroy.pages.web.ClientPersonalInfoPage;
-import com.leroy.pages.web.CreatingClientPage;
-import com.leroy.pages.web.LoginWebPage;
-import com.leroy.tests.BaseState;
+import com.leroy.pages.web.CreatingCustomerPage;
+import com.leroy.pages.web.CustomerPage;
+import com.leroy.pages.web.CustomerPersonalInfoPage;
+import com.leroy.tests.WebBaseSteps;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
 
-public class ClientTest extends BaseState {
+public class ClientTest extends WebBaseSteps {
 
     @Test(description = "C22783064 Create client via button on client's page")
     public void testC22783064() throws Exception {
         // Step #1
-        new LoginWebPage(context).logIn();
-        driver.get("https://dev.prudevlegowp.hq.ru.corp.leroymerlin.com/customers");
-
         log.step("Open env for testing and add to url 'customers'");
-        ClientPage clientPage = new ClientPage(context).verifyRequiredElements();
+        CustomerPage clientPage = loginAndGoTo(CustomerPage.class);
+        clientPage.verifyRequiredElements();
 
         // Step #2
         log.step("Click on the button 'Создание клиента'");
-        CreatingClientPage creatingClientPage = clientPage.clickCreateClientButton()
+        CreatingCustomerPage creatingClientPage = clientPage.clickCreateClientButton()
                 .verifyRequiredElements();
 
         // Step #3
@@ -55,8 +52,8 @@ public class ClientTest extends BaseState {
         // Step #8
         log.step("Enter to field 'Телефон' number of '1111111111' and remove focus from the field");
         creatingClientPage.enterTextInPhoneInputField("1111111111")
-                .verifyModalWindowRequiredElements();
-        // TODO надо добавить проверку на существующие записи
+                .verifyModalWindowRequiredElements()
+                .shouldCustomerRecordsArePresentInModalWindow();
 
         // Step #9
         log.step("Click on button 'Вернуться'");
@@ -72,9 +69,13 @@ public class ClientTest extends BaseState {
 
         // Step #11
         log.step("Click on the button 'Создать'");
-        ClientPersonalInfoPage personalInfoPage = creatingClientPage.clickCreateButtonHappyPath();
-        String s = "";
+        CustomerPersonalInfoPage personalInfoPage = creatingClientPage.clickCreateButtonHappyPath()
+                .shouldCustomerDataOnPageIs(customerData);
 
-
+        // Step #12
+        log.step("Check to appear new client in the list of favorites client");
+        String phone = customerData.getPersonalPhone() != null ?
+                customerData.getPersonalPhone() : customerData.getWorkPhone();
+        personalInfoPage.shouldMyRecentlyCustomerIs(0, customerData.getFirstName(), phone);
     }
 }

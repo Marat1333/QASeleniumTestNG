@@ -3,6 +3,7 @@ package com.leroy.pages.web.modal;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.core.web_elements.general.ElementList;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -30,5 +31,8 @@ public class CustomersFoundWithThisPhoneModalWindow extends Element { // TODO Wi
 
     @WebFindBy(xpath = "//span[text()='Вернуться']/ancestor::button", metaName = "Кнопка Вернуться")
     public Element returnBtn;
+
+    @WebFindBy(xpath = MAIN_DIV_XPATH + "//div[contains(@class, 'CustomerList__items')]/div")
+    public ElementList<Element> customerRows;
 
 }

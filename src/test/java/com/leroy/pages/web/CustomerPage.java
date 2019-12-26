@@ -8,11 +8,11 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.pages.web.common.MenuPage;
 import io.qameta.allure.Step;
 
-public class ClientPage extends MenuPage {
+public class CustomerPage extends MenuPage {
 
     private static final String HEADER = "Клиенты";
 
-    public ClientPage(TestContext context) {
+    public CustomerPage(TestContext context) {
         super(context);
     }
 
@@ -45,15 +45,15 @@ public class ClientPage extends MenuPage {
     // ACTIONS
 
     @Step("Нажмите кнопку 'Создать клиента'")
-    public CreatingClientPage clickCreateClientButton() {
+    public CreatingCustomerPage clickCreateClientButton() {
         createClientBtn.click();
-        return new CreatingClientPage(context);
+        return new CreatingCustomerPage(context);
     }
 
     // --------------------- Verifications --------------------------//
 
     @Override
-    public ClientPage verifyRequiredElements() {
+    public CustomerPage verifyRequiredElements() {
         softAssert.isElementTextEqual(headerLbl, HEADER);
         softAssert.isElementVisible(phoneLbl);
         softAssert.isElementVisible(searchBtn);

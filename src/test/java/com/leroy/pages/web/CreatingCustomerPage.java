@@ -17,11 +17,11 @@ import org.testng.util.Strings;
 import java.util.Arrays;
 import java.util.List;
 
-public class CreatingClientPage extends MenuPage {
+public class CreatingCustomerPage extends MenuPage {
 
     static final String HEADER = "Создание клиента";
 
-    public CreatingClientPage(TestContext context) {
+    public CreatingCustomerPage(TestContext context) {
         super(context);
     }
 
@@ -139,13 +139,13 @@ public class CreatingClientPage extends MenuPage {
     // ACTIONS
 
     @Step("Введите {text} в поле 'Имя'")
-    public CreatingClientPage enterTextInFirstNameInputField(String text) {
+    public CreatingCustomerPage enterTextInFirstNameInputField(String text) {
         firstNameFld.clearAndFill(text);
         return this;
     }
 
     @Step("Введите {text} в поле 'Телефон'")
-    public CreatingClientPage enterTextInPhoneInputField(String text) {
+    public CreatingCustomerPage enterTextInPhoneInputField(String text) {
         phoneFld.clear();
         phoneFld.click();
         phoneFld.fill(text);
@@ -153,40 +153,40 @@ public class CreatingClientPage extends MenuPage {
     }
 
     @Step("Нажмите кнопку 'Создать'")
-    public CreatingClientPage clickCreateButtonNegativePath() {
+    public CreatingCustomerPage clickCreateButtonNegativePath() {
         createBtn.click();
         return this;
     }
 
     @Step("Нажмите кнопку 'Создать'")
-    public ClientPersonalInfoPage clickCreateButtonHappyPath() {
+    public CustomerPersonalInfoPage clickCreateButtonHappyPath() {
         createBtn.click();
-        return new ClientPersonalInfoPage(context);
+        return new CustomerPersonalInfoPage(context);
     }
 
     @Step("Нажмите кнопку 'Показать все поля'")
-    public CreatingClientPage clickShowAllFieldsButton() {
+    public CreatingCustomerPage clickShowAllFieldsButton() {
         showHideAdditionalFieldsBtn.click();
         lastNameFld.waitForVisibility();
         return this;
     }
 
     @Step("Нажмите кнопку 'Скрыть все поля'")
-    public CreatingClientPage clickHideAllFieldsButton() {
+    public CreatingCustomerPage clickHideAllFieldsButton() {
         showHideAdditionalFieldsBtn.click();
         lastNameFld.waitForInvisibility();
         return this;
     }
 
     @Step("Нажмите кнопку Вернуться для всплывающего окна")
-    public CreatingClientPage clickModalWindowReturnButton() {
+    public CreatingCustomerPage clickModalWindowReturnButton() {
         modalWindow.returnBtn.click();
         modalWindow.returnBtn.waitForInvisibility();
         return this;
     }
 
     @Step("Заполните все обязательные поля для клиента")
-    public CreatingClientPage enterRequiredCustomerData(CustomerData customerData) {
+    public CreatingCustomerPage enterRequiredCustomerData(CustomerData customerData) {
         switch (customerData.getGender()) {
             case MALE:
                 maleOptionBtn.click();
@@ -210,7 +210,7 @@ public class CreatingClientPage extends MenuPage {
     // VERIFICATIONS
 
     @Override
-    public CreatingClientPage verifyRequiredElements() {
+    public CreatingCustomerPage verifyRequiredElements() {
         softAssert.isElementTextEqual(headerLbl, HEADER);
         softAssert.isElementTextEqual(subHeaderLbl, HEADER);
         softAssert.isElementVisible(helpInfoLbl);
@@ -245,7 +245,7 @@ public class CreatingClientPage extends MenuPage {
         return this;
     }
 
-    public CreatingClientPage verifyAllAdditionalFields() {
+    public CreatingCustomerPage verifyAllAdditionalFields() {
         softAssert.isElementVisible(middleNameFld);
         softAssert.isElementVisible(lastNameFld);
         softAssert.isElementVisible(emailFld);
@@ -268,27 +268,27 @@ public class CreatingClientPage extends MenuPage {
         return this;
     }
 
-    public CreatingClientPage shouldErrorTooltipUnderFirstNameFldHasValidText() throws Exception {
+    public CreatingCustomerPage shouldErrorTooltipUnderFirstNameFldHasValidText() throws Exception {
         shouldControlsHighlightedInRed(Arrays.asList(PageControls.NameFld));
         anAssert.isElementTextEqual(firstNameTooltipErrorLbl,
                 "Используй только буквы русского алфавита");
         return this;
     }
 
-    public CreatingClientPage shouldErrorTooltipUnderPhoneFldHasValidText() throws Exception {
+    public CreatingCustomerPage shouldErrorTooltipUnderPhoneFldHasValidText() throws Exception {
         shouldControlsHighlightedInRed(Arrays.asList(PageControls.PhoneFld));
         anAssert.isElementTextEqual(phoneTooltipErrorLbl,
                 "Введи телефон в формате +7 XXX XXX-XX-XX");
         return this;
     }
 
-    public CreatingClientPage shouldAllRequiredFieldsHighlightedInRed() throws Exception {
+    public CreatingCustomerPage shouldAllRequiredFieldsHighlightedInRed() throws Exception {
         return shouldControlsHighlightedInRed(Arrays.asList(PageControls.MaleBtn,
                 PageControls.FemaleBtn, PageControls.NameFld, PageControls.PhoneFld,
                 PageControls.PersonalPhoneBtn, PageControls.WorkPhoneBtn));
     }
 
-    public CreatingClientPage shouldControlsHighlightedInRed(List<PageControls> dangerPageControls)
+    public CreatingCustomerPage shouldControlsHighlightedInRed(List<PageControls> dangerPageControls)
             throws Exception {
         Color dangerColor = Color.fromString("#FF0000");
         for (PageControls control : dangerPageControls) {
@@ -344,7 +344,7 @@ public class CreatingClientPage extends MenuPage {
         return this;
     }
 
-    public CreatingClientPage shouldBeEnteredDataMatchThis(CustomerData customerData) {
+    public CreatingCustomerPage shouldBeEnteredDataMatchThis(CustomerData customerData) {
         if (customerData.getGender() != null)
             if (customerData.getGender().equals(Gender.MALE))
                 softAssert.isTrue(isButtonActive(maleOptionBtn),
@@ -377,7 +377,7 @@ public class CreatingClientPage extends MenuPage {
     }
 
     // Modal window verifications
-    public CreatingClientPage verifyModalWindowRequiredElements() throws Exception {
+    public CreatingCustomerPage verifyModalWindowRequiredElements() throws Exception {
         modalWindow.returnBtn.waitForVisibility();
         softAssert.isElementVisible(modalWindow.customersFoundWithThisPhoneLbl);
         softAssert.isElementVisible(modalWindow.subHeaderMsgLbl);
@@ -386,7 +386,13 @@ public class CreatingClientPage extends MenuPage {
         return this;
     }
 
-    public CreatingClientPage shouldModalWindowInvisible() {
+    public CreatingCustomerPage shouldCustomerRecordsArePresentInModalWindow() {
+        anAssert.isTrue(modalWindow.customerRows.getCount() > 0,
+                "В модальном окне должны быть записи о клиентах с именем и телефоном");
+        return this;
+    }
+
+    public CreatingCustomerPage shouldModalWindowInvisible() {
         anAssert.isElementNotVisible(modalWindow);
         return this;
     }
