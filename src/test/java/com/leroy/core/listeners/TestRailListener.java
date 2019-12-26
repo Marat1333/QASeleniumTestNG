@@ -34,9 +34,9 @@ public class TestRailListener extends Listener {
                  //long SUITE_ID = 258L;
                  //long PROJECT_ID = 10L;
                  try {
-                     if (planName != null && runName != null) {
+                     if (Strings.isNotNullAndNotEmpty(planName) && Strings.isNotNullAndNotEmpty(runName)) {
                          runId = TestRailClient.findOrCreateNewPlanRun(planName, runName, projectId, suiteId);
-                     } else if (runName != null) {
+                     } else if (Strings.isNotNullAndNotEmpty(runName)) {
                          runId = TestRailClient.findOrCreateNewRun(runName, projectId, suiteId);
                      }
                  } catch (Exception err) {
