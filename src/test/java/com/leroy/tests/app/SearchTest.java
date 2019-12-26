@@ -28,46 +28,54 @@ public class SearchTest extends BaseState {
         LoginPage loginPage = new LoginPage(context);
         loginPage.loginInAndGoTo(seller, LoginPage.SALES_SECTION);
 
-        // Steps
+        // Step 1
         log.step("Нажмите на поле Поиск товаров и услуг");
         SalesPage salesPage = new SalesPage(context);
         SearchProductPage searchProductPage = salesPage.clickSearchBar()
                 .verifyRequiredElements();
+        // Step 2
         log.step("Перейдите в окно выбора единицы номенклатуры");
         NomenclatureSearchPage nomenclatureSearchPage = searchProductPage.goToNomenclatureWindow()
                 .verifyRequiredElements();
+        // Step 3
         log.step("Вернитесь на окно выбора отдела");
         nomenclatureSearchPage.returnToDepartmentChoseWindow()
                 .shouldTitleWithNomenclatureIs("")
                 .verifyNomenclatureBackBtnVisibility(false);
+        // Step 4
         log.step("Нажмите 'Показать все товары'");
         nomenclatureSearchPage.clickShowAllProductsBtn()
                 .verifyRequiredElements()
                 .shouldCountOfProductsOnPageMoreThan(1)
                 .shouldSelectedNomenclatureIs(ALL_DEPARTMENTS_TEXT);
 
+        // Step 5
         log.step("Введите полное значение для поиска по ЛМ коду| 10008698");
         searchProductPage.enterTextInSearchField(lmCode);
         ProductCardPage productCardPage = new ProductCardPage(context)
                 .verifyRequiredElements()
                 .shouldProductLMCodeIs(lmCode);
-        // TODO На карточке товара отображены основные характеристики товара.
         productCardPage.returnBack();
 
+        // Step 6
         log.step("Введите название товара для поиска");
         searchProductPage.enterTextInSearchField(searchContext);
         searchProductPage.shouldProductCardsContainText(searchContext);
 
+        // Step 7
         log.step("Ввести штрихкод вручную");
         searchProductPage.enterTextInSearchField(barCode);
-        productCardPage.verifyRequiredContext(barCode);
-        productCardPage.returnBack();
+        productCardPage = new ProductCardPage(context)
+                .shouldProductBarCodeIs(barCode);
+        searchProductPage = productCardPage.returnBack();
 
+        // Step 8
         log.step("Введите часть ЛМ кода для поиска");
         searchProductPage.enterTextInSearchField(shortLmCode);
         searchProductPage.shouldProductCardsContainText(shortLmCode);
 
-        log.step("ввести в поисковую строку положительное число длинной >8 символов (4670009014962) и инициировать поиск");
+        // Step 9
+        log.step("Ввести в поисковую строку положительное число длинной >8 символов ("+shortBarCode+") и инициировать поиск");
         searchProductPage.enterTextInSearchField(shortBarCode);
         searchProductPage.shouldProductCardsContainText(shortBarCode);
     }

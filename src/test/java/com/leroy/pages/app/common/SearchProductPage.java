@@ -16,7 +16,7 @@ public class SearchProductPage extends BaseAppPage {
         super(context);
     }
 
-    @AppFindBy(accessibilityId = "back", metaName = "Кнопка назад")
+    @AppFindBy(accessibilityId = "BackButton", metaName = "Кнопка назад")
     private Element backBtn;
 
     @AppFindBy(accessibilityId = "Button", metaName = "Кнопка для сканирования штрихкода")
@@ -91,18 +91,23 @@ public class SearchProductPage extends BaseAppPage {
     }
 
     public void shouldProductCardsContainText(String text) {
+        String[] searchWords = null;
+        if (text.contains(" "))
+            searchWords = text.split(" ");
+        anAssert.isFalse(E("contains(не найдено)").isVisible(), "Должен быть найден хотя бы один товар");
+        anAssert.isTrue(productCards.getCount() > 1,
+                "Ничего не найдено для " + text);
         for (SearchProductCardWidget card : productCards) {
-            if (text.contains(" ")) {
-                String[] searchWords = text.split(" ");
+            if (searchWords != null) {
                 for (String each : searchWords) {
-                    anAssert.isTrue(card.getName().toLowerCase().contains(each.toLowerCase()), text.toLowerCase());
+                    anAssert.isTrue(card.getName().toLowerCase().contains(each.toLowerCase()),
+                            String.format("Товар с кодом %s не содержит текст %s", card.getNumber(), text));
                 }
-                break;
+            } else {
+                anAssert.isTrue(card.getBarCode().contains(text) ||
+                                card.getName().contains(text) || card.getNumber().contains(text),
+                        String.format("Товар с кодом %s не содержит текст %s", card.getNumber(), text));
             }
-
-            anAssert.isTrue(card.getBarCode().contains(text) ||
-                            card.getName().contains(text) || card.getNumber().replaceAll("\\D+", "").contains(text),
-                    String.format("Товар с кодом %s не содержит текст %s", card.getNumber(), text));
         }
     }
 

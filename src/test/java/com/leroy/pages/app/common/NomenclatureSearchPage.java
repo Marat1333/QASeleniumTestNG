@@ -61,10 +61,24 @@ public class NomenclatureSearchPage extends BaseAppPage {
     }
 
     public NomenclatureSearchPage shouldTitleWithNomenclatureIs(String text) {
-        if (text.isEmpty())
-            anAssert.isElementNotVisible(screenTitle);
+        String format = "%s - %s - %s - %s";
+        String emptyText = "_ _ _";
+        String expectedText;
+        if (text.contains("_"))
+            expectedText = text;
+        else if (text.isEmpty())
+            expectedText = String.format(format, emptyText, emptyText, emptyText, emptyText);
+        else if (text.length() < 4)
+            expectedText = String.format(format, text, emptyText, emptyText, emptyText);
+        else if (text.length() < 7)
+            expectedText = String.format(format, text.substring(0, 3), text.substring(3, 6), emptyText, emptyText);
+        else if (text.length() < 10)
+            expectedText = String.format(
+                    format, text.substring(0, 3), text.substring(3, 6), text.substring(6, 9), emptyText);
         else
-            anAssert.isElementTextEqual(screenTitle, text);
+            expectedText = String.format(
+                    format, text.substring(0, 3), text.substring(3, 6), text.substring(6, 9), text.substring(9));
+        anAssert.isElementTextEqual(screenTitle, expectedText);
         return this;
     }
 
