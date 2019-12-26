@@ -5,6 +5,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
 import io.qameta.allure.Step;
+import org.openqa.selenium.StaleElementReferenceException;
 
 public class NomenclatureSearchPage extends BaseAppPage {
     public NomenclatureSearchPage(TestContext context) {
@@ -30,7 +31,12 @@ public class NomenclatureSearchPage extends BaseAppPage {
             if (counter > 3) {
                 break;
             }
-            nomenclatureBackBtn.click();
+            try {
+                nomenclatureBackBtn.getWebElement().click();
+            } catch (StaleElementReferenceException err) {
+                // Nothing to do. Button disappeared, then break loop
+                break;
+            }
             counter++;
         }
         return this;
