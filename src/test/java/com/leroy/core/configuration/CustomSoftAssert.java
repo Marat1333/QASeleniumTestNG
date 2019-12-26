@@ -117,6 +117,21 @@ public class CustomSoftAssert {
             return true;
     }
 
+    public boolean isElementNotVisible(Element element) {
+        Assert.assertNotNull(element.getMetaName(), "Element meta name is NULL!");
+        boolean elementVisibility = element.isVisible();
+        String desc = element.getMetaName() + " не должен отображаться";
+        softAssert.assertFalse(elementVisibility, desc);
+        if (elementVisibility) {
+            stepLog.assertFail(desc);
+            StepResultModel curStepRes = stepLog.getCurrentStepResult();
+            curStepRes.addExpectedResult(desc);
+            curStepRes.addActualResult(element.getMetaName() + " отображается");
+            return true;
+        } else
+            return false;
+    }
+
     public void isElementImageMatches(Element elem, String pictureName) {
         ImageUtil.CompareResult result = null;
         String desc = "Визуально элемент '"+elem.getMetaName()+"' должен соответствовать эталону";

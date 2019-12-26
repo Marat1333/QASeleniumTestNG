@@ -14,6 +14,8 @@ public @interface WebFindBy {
 
     String xpath() default "";
 
+    String text() default "";
+
     String className() default "";
 
     String cssSelector() default "";

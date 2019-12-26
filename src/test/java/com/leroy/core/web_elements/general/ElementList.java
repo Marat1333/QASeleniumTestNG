@@ -327,7 +327,7 @@ public class ElementList<E extends Element> extends BaseElement implements Itera
         int i = 0;
         for (Element we : elementList) {
             if (we.isVisible()) {
-                if (!checkSvg || we.findChildElement(By.xpath("./ancestor::*[name()='svg']")).isDisplayed()) {
+                if (!checkSvg || we.findChildWebElement(By.xpath("./ancestor::*[name()='svg']")).isDisplayed()) {
                     Log.error("Element#" + i + " is visible");
                     return false;
                 }

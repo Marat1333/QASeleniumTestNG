@@ -59,6 +59,7 @@ public class ProductCardPage extends BaseAppPage {
 
     public ProductCardPage verifyRequiredElements() {
         softAssert.isElementVisible(productCardHeaderArea);
+        softAssert.isElementVisible(withdrawalBtn);
         // TODO
         softAssert.verifyAll();
         return this;

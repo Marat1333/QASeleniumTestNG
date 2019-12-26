@@ -50,8 +50,8 @@ public class CustomFieldElementLocator {
         String id = isApp ? field.getAnnotation(AppFindBy.class).id() : field.getAnnotation(WebFindBy.class).id();
         String xpath = isApp ?
                 field.getAnnotation(AppFindBy.class).xpath() : field.getAnnotation(WebFindBy.class).xpath();
-        String text = isApp?
-                field.getAnnotation(AppFindBy.class).text() : "";
+        String text = isApp ?
+                field.getAnnotation(AppFindBy.class).text() : field.getAnnotation(WebFindBy.class).text();
         if (!id.isEmpty())
             return By.id(id);
         if (!xpath.isEmpty()) {
@@ -63,7 +63,10 @@ public class CustomFieldElementLocator {
         if (!text.isEmpty()) {
             if (field.getType().equals(MagMobButton.class))
                 return By.xpath("//android.view.ViewGroup[android.widget.TextView[@text='" + text + "']]");
-            return By.xpath("//*[@text='" + text + "']");
+            if (isApp)
+                return By.xpath("//*[@text='" + text + "']");
+            else
+                return By.xpath("//*[text()='" + text + "']");
         }
         if (isApp)
             return null;
@@ -86,7 +89,7 @@ public class CustomFieldElementLocator {
         if (isApp) {
             String textElem = field.getAnnotation(AppFindBy.class).text();
             if (!textElem.isEmpty())
-                return "Элемент с текстом '"+textElem+"'";
+                return "Элемент с текстом '" + textElem + "'";
         }
         return field.getName();
     }
