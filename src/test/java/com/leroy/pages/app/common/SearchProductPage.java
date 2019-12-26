@@ -1,12 +1,12 @@
-package com.leroy.pages.app.sales;
+package com.leroy.pages.app.common;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.configuration.Log;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.pages.app.sales.AddProductPage;
 import com.leroy.pages.app.sales.widget.SearchProductCardWidget;
 import io.qameta.allure.Step;
 
@@ -16,18 +16,28 @@ public class SearchProductPage extends BaseAppPage {
         super(context);
     }
 
-    @AppFindBy(accessibilityId = "back", metaName = "Кнопка назад")
+    @AppFindBy(accessibilityId = "BackButton", metaName = "Кнопка назад")
     private Element backBtn;
 
     @AppFindBy(accessibilityId = "Button", metaName = "Кнопка для сканирования штрихкода")
     private Element scanBarcodeBtn;
 
-    @AppFindBy(accessibilityId = "ScreenTitle-CatalogSearch", metaName = "Поле ввода текста для поиска")
+    @AppFindBy(accessibilityId = "ScreenTitle-CatalogComplexSearchStore", metaName = "Поле ввода текста для поиска")
     private EditBox searchField;
 
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ScreenContent']//android.view.ViewGroup[android.widget.ImageView]",
             clazz = SearchProductCardWidget.class)
     private ElementList<SearchProductCardWidget> productCards;
+
+    @AppFindBy(text = "Фильтр")
+    Element filter;
+
+    @AppFindBy(xpath = "(//android.view.ViewGroup[descendant::android.widget.TextView[@text='Фильтр']]/preceding-sibling::android.view.ViewGroup[descendant::android.widget.TextView])[2]//android.widget.TextView",
+            metaName = "Выбранная номенклатура")
+    Element nomenclature;
+
+    @AppFindBy(xpath = "//android.view.ViewGroup[preceding-sibling::android.view.ViewGroup[2][ancestor::android.view.ViewGroup[@content-desc=\"ScreenContent\"]]]")
+    Element sort;
 
     @Override
     public void waitForPageIsLoaded() {
@@ -37,12 +47,10 @@ public class SearchProductPage extends BaseAppPage {
     // ---------------- Action Steps -------------------------//
 
     @Step("Введите {text} в поле поиска товара")
-    public SearchProductPage enterTextInSearchField(String text, boolean expectProductsBeFound) {
+    public SearchProductPage enterTextInSearchField(String text) {
         searchField.clearFillAndSubmit(text);
         waitForProgressBarIsVisible();
         waitForProgressBarIsInvisible();
-        /*if (expectProductsBeFound)
-            productCards.waitForElementCountEqualsOrAbove(1);*/
         return this;
     }
 
@@ -57,6 +65,12 @@ public class SearchProductPage extends BaseAppPage {
             productCards.get(0).click();
         }
         return new AddProductPage(context);
+    }
+
+    @Step("Перейти в окно выбора единицы номенклатуры")
+    public NomenclatureSearchPage goToNomenclatureWindow() {
+        nomenclature.click();
+        return new NomenclatureSearchPage(context);
     }
 
     // ---------------- Verifications ----------------------- //
@@ -76,12 +90,29 @@ public class SearchProductPage extends BaseAppPage {
         return this;
     }
 
-    public SearchProductPage shouldProductCardsContainText(String text) {
+    public void shouldProductCardsContainText(String text) {
+        String[] searchWords = null;
+        if (text.contains(" "))
+            searchWords = text.split(" ");
+        anAssert.isFalse(E("contains(не найдено)").isVisible(), "Должен быть найден хотя бы один товар");
+        anAssert.isTrue(productCards.getCount() > 1,
+                "Ничего не найдено для " + text);
         for (SearchProductCardWidget card : productCards) {
-            anAssert.isTrue(card.getBarCode().contains(text) ||
-                            card.getName().contains(text) || card.getNumber().contains(text),
-                    String.format("Товар с кодом %s не содержит текст %s", card.getNumber(), text));
+            if (searchWords != null) {
+                for (String each : searchWords) {
+                    anAssert.isTrue(card.getName().toLowerCase().contains(each.toLowerCase()),
+                            String.format("Товар с кодом %s не содержит текст %s", card.getNumber(), text));
+                }
+            } else {
+                anAssert.isTrue(card.getBarCode().contains(text) ||
+                                card.getName().contains(text) || card.getNumber().contains(text),
+                        String.format("Товар с кодом %s не содержит текст %s", card.getNumber(), text));
+            }
         }
+    }
+
+    public SearchProductPage shouldSelectedNomenclatureIs(String text) {
+        anAssert.isElementTextEqual(nomenclature, text);
         return this;
     }
 

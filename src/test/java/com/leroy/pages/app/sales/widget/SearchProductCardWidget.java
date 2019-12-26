@@ -49,7 +49,7 @@ public class SearchProductCardWidget extends Element {
     }
 
     public String getBarCode() {
-        return barCodeObj.getText();
+        return barCodeObj.getText().replaceAll(" ","");
     }
 
     public String getName() {

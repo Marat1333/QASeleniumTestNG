@@ -2,6 +2,8 @@ package com.leroy.tests.app;
 
 import com.leroy.models.SalesDocumentData;
 import com.leroy.pages.LoginPage;
+import com.leroy.pages.app.common.OldSearchProductPage;
+import com.leroy.pages.app.common.SearchProductPage;
 import com.leroy.pages.app.sales.*;
 import com.leroy.tests.BaseState;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -20,20 +22,20 @@ public class SalesDocumentsTest extends BaseState {
 
         // Step #2
         log.step("Нажмите 'Создать документ продажи'");
-        SearchProductPage searchProductPage = salesDocumentsPage.clickCreateSalesDocumentButton()
+        OldSearchProductPage oldSearchProductPage = salesDocumentsPage.clickCreateSalesDocumentButton()
                 .verifyRequiredElements();
 
         // Step #3
         String inputDataStep3 = "164";
         log.step("Введите 164 код товара");
-        searchProductPage.enterTextInSearchField(inputDataStep3, true)
+        oldSearchProductPage.enterTextInSearchField(inputDataStep3)
                 .shouldCountOfProductsOnPageMoreThan(1)
                 .shouldProductCardsContainText(inputDataStep3)
                 .shouldProductCardContainAllRequiredElements(0);
 
         // Step #4
         log.step("Нажмите на мини-карточку товара 16410291");
-        AddProductPage addProductPage = searchProductPage.searchProductAndSelect("16410291")
+        AddProductPage addProductPage = oldSearchProductPage.searchProductAndSelect("16410291")
                 .verifyRequiredElements();
 
         // Step #5

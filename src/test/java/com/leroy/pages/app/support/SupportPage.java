@@ -45,7 +45,7 @@ public class SupportPage extends BaseAppPage {
 
     @Step("Нажмите на плашку {button}")
     public ComplainPage clickButton(String button) {
-        getElementByText(button).click();
+        E(button).click();
         return new ComplainPage(context);
     }
 
