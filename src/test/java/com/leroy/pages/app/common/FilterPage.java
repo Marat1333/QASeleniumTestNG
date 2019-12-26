@@ -60,31 +60,24 @@ public class FilterPage extends BaseAppPage {
     public void choseCheckBoxFilter(String value) throws Exception{
         switch (value){
             case TOP_EM:
-                scrollUp();
                 driver.findElement(By.xpath(TEXT_AND_CHECKBOXES_GROUP_XPATH+CHECKBOXES_BY_TEXT_FP_XPATH+TOP_EM+CHECKBOXES_BY_TEXT_SP_XPATH)).click();
                 break;
             case TOP_1000:
-                scrollUp();
                 driver.findElement(By.xpath(TEXT_AND_CHECKBOXES_GROUP_XPATH+CHECKBOXES_BY_TEXT_FP_XPATH+TOP_1000+CHECKBOXES_BY_TEXT_SP_XPATH)).click();
                 break;
             case CTM:
-                scrollUp();
                 driver.findElement(By.xpath(TEXT_AND_CHECKBOXES_GROUP_XPATH+CHECKBOXES_BY_TEXT_FP_XPATH+CTM+CHECKBOXES_BY_TEXT_SP_XPATH)).click();
                 break;
             case HAS_AVAILABLE_STOCK:
-                scrollUp();
                 driver.findElement(By.xpath(TEXT_AND_CHECKBOXES_GROUP_XPATH+CHECKBOXES_BY_TEXT_FP_XPATH+HAS_AVAILABLE_STOCK+CHECKBOXES_BY_TEXT_SP_XPATH)).click();
                 break;
             case BEST_PRICE:
-                //scrollUp();
                 driver.findElement(By.xpath(TEXT_AND_CHECKBOXES_GROUP_XPATH+CHECKBOXES_BY_TEXT_FP_XPATH+BEST_PRICE+CHECKBOXES_BY_TEXT_SP_XPATH)).click();
                 break;
             case LIMITED_OFFER:
-                scrollUp();
                 driver.findElement(By.xpath(TEXT_AND_CHECKBOXES_GROUP_XPATH+CHECKBOXES_BY_TEXT_FP_XPATH+LIMITED_OFFER+CHECKBOXES_BY_TEXT_SP_XPATH)).click();
                 break;
             case AVS:
-                scrollDown();
                 new Element(driver, By.xpath(TEXT_AND_CHECKBOXES_GROUP_XPATH+CHECKBOXES_BY_TEXT_FP_XPATH+AVS+CHECKBOXES_BY_TEXT_SP_XPATH)).click();
                 scrollUp();
                 break;

@@ -9,6 +9,7 @@ import com.leroy.core.util.XpathUtil;
 import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.server.handler.ImplicitlyWait;
 import org.openqa.selenium.support.Color;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -18,6 +19,7 @@ import org.testng.util.Strings;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class Element extends BaseElement {
 
@@ -267,6 +269,7 @@ public class Element extends BaseElement {
      * @return Element
      */
     public Element findChildElement(String xpath) {
+        driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
         if (xpath.startsWith("."))
             xpath = xpath.replaceFirst(".", "");
         initialWebElementIfNeeded();
