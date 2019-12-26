@@ -2,7 +2,10 @@ def mvn_run_str = "mvn clean test -Dmaven.test.failure.ignore=false -DxmlPath=te
 
 pipeline {
     agent {
-        docker { image 'ksolkin/img-oracle-jdk8-maven-with-sh' }
+        docker {
+            image 'ksolkin/img-oracle-jdk8-maven-with-sh'
+            args '-v $HOME/.m2:/root/.m2'
+        }
     }
     stages {
         stage('Test') {
