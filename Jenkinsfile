@@ -5,14 +5,16 @@ pipeline {
     stages {
         stage('Test') {
             steps {
-                sh 'mvn clean test -Dmaven.test.failure.ignore=false
+                sh """
+                mvn clean test -Dmaven.test.failure.ignore=false
                 -DxmlPath=testXML/GlobalWebSuite.xml
                 -DmpropsFile=src/main/resources/configurationFiles/${env.CONFIGURATION}_grid.yml
                 -DthreadCount=${env.THREAD_COUNT}
                 -DmPlan=${env.PLAN}
                 -DmRun=${env.RUN}
                 -DmSuite=258
-                -DmProject=10'
+                -DmProject=10
+                """
             }
         }
     }
