@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 public class ClientTest extends WebBaseSteps {
 
     @Test(description = "C22783064 Create client via button on client's page")
-    public void testC22783064() throws Exception {
+    public void testC22783064() throws Exception { //TODO Обновить кейс в тестрейл
         // Step #1
         log.step("Open env for testing and add to url 'customers'");
         CustomerPage clientPage = loginAndGoTo(CustomerPage.class);
