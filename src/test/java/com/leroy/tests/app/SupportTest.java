@@ -38,7 +38,8 @@ public class SupportTest extends BaseState {
 
         // Step #5
         log.step("Нажмите на кнопку Отправить внизу экрана");
-        complainPage.clickSendButton().verifyVisibilityOfAllElements()
+        complainPage.clickSendButton()
+                .verifyVisibilityOfAllElements()
                 .verifyDataOnThePage(null, emailFromField);
         // TODO - Тикет из приложения создан.
     }

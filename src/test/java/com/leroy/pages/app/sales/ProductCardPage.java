@@ -85,4 +85,10 @@ public class ProductCardPage extends BaseAppPage {
         return this;
     }
 
+    public ProductCardPage shouldProductBarCodeIs(String text) {
+        anAssert.isEquals(barCode.getText().replaceAll("\\D", ""), text,
+                "Бар код должен быть %s");
+        return this;
+    }
+
 }

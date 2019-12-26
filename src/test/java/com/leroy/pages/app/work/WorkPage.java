@@ -66,7 +66,7 @@ public class WorkPage extends BaseAppPage {
         softAssert.isElementTextEqual(titleObj, "Ежедневная работа");
         softAssert.isElementTextEqual(withdrawalFromRMLabel, "Отзыв с RM");
         softAssert.isElementImageMatches(withdrawalFromRMPlusIcon,
-                MagMobElementTypes.CirclePlus.getPictureName());
+                MagMobElementTypes.CIRCLE_PLUS.getPictureName());
         softAssert.isElementVisible(departmentSupplyPlanLbl);
         softAssert.isElementVisible(withdrawalAndDisposalLbl);
         softAssert.isElementVisible(priceTagPrintingLbl);

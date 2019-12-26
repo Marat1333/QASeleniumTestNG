@@ -18,6 +18,9 @@ public class EnvConstants {
     public static final String BASIC_USER_NAME = getProperty("basic.user.name");
     public static final String BASIC_USER_PASS = getProperty("basic.user.password");
 
+    // URLs
+    public static final String URL_MAG_PORTAL = getProperty("url.mag.portal");
+
 
     /**
      * Get the value of a property key

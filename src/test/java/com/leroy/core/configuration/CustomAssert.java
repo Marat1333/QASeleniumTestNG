@@ -123,7 +123,6 @@ public class CustomAssert {
             return false;
     }
 
-
     public void isElementImageMatches(Element elem, String pictureName) {
         ImageUtil.CompareResult result = null;
         String desc = "Визуально элемент '"+elem.getMetaName()+"' должен соответствовать эталону";
