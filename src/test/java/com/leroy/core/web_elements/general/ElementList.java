@@ -327,7 +327,7 @@ public class ElementList<E extends Element> extends BaseElement implements Itera
         int i = 0;
         for (Element we : elementList) {
             if (we.isVisible()) {
-                if (!checkSvg || we.findChildElement(By.xpath("./ancestor::*[name()='svg']")).isDisplayed()) {
+                if (!checkSvg || we.findChildWebElement(By.xpath("./ancestor::*[name()='svg']")).isDisplayed()) {
                     Log.error("Element#" + i + " is visible");
                     return false;
                 }
@@ -423,80 +423,6 @@ public class ElementList<E extends Element> extends BaseElement implements Itera
     }
 
     /**
-     * Get rectangle of element by index
-     *
-     * @param idx
-     * @return Rectangle
-     */
-    public Rectangle getRectangleByIndex(int idx) throws Exception {
-        initWebElementListIfNeeded();
-        return elementList.get(idx).getRectangle();
-    }
-
-    /**
-     * Gets web element attribute by index.
-     *
-     * @param index
-     * @param attribute
-     * @return String
-     * @throws Exception
-     */
-    public String getAttribute(int index, String attribute) throws Exception {
-        initWebElementListIfNeeded();
-        if (index >= elementList.size())
-            return null;
-        return elementList.get(index).getAttribute(attribute);
-    }
-
-    /**
-     * Gets web element CSS value by index.
-     *
-     * @param index
-     * @param cssValue
-     * @return String
-     * @throws Exception
-     */
-    public String getCSSValue(int index, String cssValue) throws Exception {
-        initWebElementListIfNeeded();
-        if (index >= elementList.size())
-            return null;
-        return elementList.get(index).getCssValue(cssValue);
-    }
-
-    /**
-     * Check web element visibility by index
-     *
-     * @param index
-     * @return boolean
-     */
-    public boolean isVisible(int index) throws Exception {
-        initWebElementListIfNeeded();
-        if (index >= elementList.size())
-            return false;
-        return elementList.get(index).isVisible();
-    }
-
-    /**
-     * Check rotate angles of all web elements in the list
-     *
-     * @param angles
-     * @return boolean
-     */
-    public boolean isAllRotateAngles(String angles) throws Exception {
-        initWebElementListIfNeeded();
-        if (elementList.size() < 1) return false;
-        for (Element we : elementList) {
-            String str =
-                    we.getAttribute("transform").substring(we.getAttribute("transform").indexOf("rotate("));
-            str = str.replace("rotate(", "").replace(")", "");
-            String[] rotates = str.split(" ");
-            if (!rotates[0].equals(angles))
-                return false;
-        }
-        return true;
-    }
-
-    /**
      * Gets web element's attributes list. Web elements are defined by the locator.
      *
      * @param attribute
@@ -522,31 +448,6 @@ public class ElementList<E extends Element> extends BaseElement implements Itera
             list.add(el.getLocation());
         }
         return list;
-    }
-
-    /**
-     * Get rectangles of elements list
-     *
-     * @return <Rectangle>
-     */
-    public List<Rectangle> getRectangleList() throws Exception {
-        List<Rectangle> listRect = new ArrayList<>();
-        for (int i = 0; i < getCount(); i++)
-            listRect.add(getRectangleByIndex(i));
-        return listRect;
-    }
-
-    /**
-     * Get rectangles of elements using javascript
-     *
-     * @return List<Rectangle>
-     */
-    public List<Rectangle> getRectangleListJs() throws Exception {
-        initWebElementListIfNeeded();
-        List<Rectangle> listRect = new ArrayList<>();
-        for (int i = 0; i < getCount(); i++)
-            listRect.add(elementList.get(i).getRectangleJs());
-        return listRect;
     }
 
     /**

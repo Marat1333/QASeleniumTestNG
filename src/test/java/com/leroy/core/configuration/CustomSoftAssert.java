@@ -3,6 +3,7 @@ package com.leroy.core.configuration;
 import com.leroy.core.testrail.helpers.StepLog;
 import com.leroy.core.testrail.models.ResultModel;
 import com.leroy.core.testrail.models.StepResultModel;
+import com.leroy.core.util.ImageUtil;
 import com.leroy.core.web_elements.general.Element;
 import org.testng.Assert;
 import org.testng.asserts.SoftAssert;
@@ -114,6 +115,42 @@ public class CustomSoftAssert {
             return false;
         } else
             return true;
+    }
+
+    public boolean isElementNotVisible(Element element) {
+        Assert.assertNotNull(element.getMetaName(), "Element meta name is NULL!");
+        boolean elementVisibility = element.isVisible();
+        String desc = element.getMetaName() + " не должен отображаться";
+        softAssert.assertFalse(elementVisibility, desc);
+        if (elementVisibility) {
+            stepLog.assertFail(desc);
+            StepResultModel curStepRes = stepLog.getCurrentStepResult();
+            curStepRes.addExpectedResult(desc);
+            curStepRes.addActualResult(element.getMetaName() + " отображается");
+            return true;
+        } else
+            return false;
+    }
+
+    public void isElementImageMatches(Element elem, String pictureName) {
+        ImageUtil.CompareResult result = null;
+        String desc = "Визуально элемент '"+elem.getMetaName()+"' должен соответствовать эталону";
+        try {
+            //ImageUtil.takeScreenShot(elem, pictureName); // Only for taking sample snapshots
+            result = ImageUtil.takeScreenAndCompareWithBaseImg(elem, pictureName);
+            softAssert.assertEquals(result,
+                    ImageUtil.CompareResult.Matched,
+                    desc);
+        } catch (Exception err) {
+            Log.error(err.getMessage());
+            Assert.fail("Couldn't take screenshot for " + elem.getMetaName());
+        }
+        if (!ImageUtil.CompareResult.Matched.equals(result)) {
+            StepResultModel curStepRes = stepLog.getCurrentStepResult();
+            curStepRes.addExpectedResult(desc);
+            curStepRes.addActualResult("Визуально элемент '"+elem.getMetaName()+"' не соответствует эталону");
+            stepLog.assertFail(desc);
+        }
     }
 
     public void verifyAll() {

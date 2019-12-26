@@ -1,5 +1,6 @@
 package com.leroy.pages.app.work;
 
+import com.leroy.constants.MagMobElementTypes;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
@@ -30,6 +31,21 @@ public class WorkPage extends BaseAppPage {
             metaName = "'Отзыв с RM' плюсик")
     private Element withdrawalFromRMPlusIcon;
 
+    @AppFindBy(text = "План поставок в отдел")
+    private Element departmentSupplyPlanLbl;
+
+    @AppFindBy(text = "Изъятие и списание")
+    private Element withdrawalAndDisposalLbl;
+
+    @AppFindBy(text = "Печать ценников")
+    private Element priceTagPrintingLbl;
+
+    @AppFindBy(text = "Заказ бализаж")
+    private Element orderBalisageLbl;
+
+    @AppFindBy(text = "Мини-инвентаризация")
+    private Element miniInventoryLbl;
+
     @Override
     public void waitForPageIsLoaded() {
         titleObj.waitForVisibility();
@@ -43,12 +59,19 @@ public class WorkPage extends BaseAppPage {
         return new StockProductsPage(context);
     }
 
-    @Step("Проверьте видимость всех элементов на странице 'Ежедневная работа'")
-    public WorkPage verifyVisibilityOfAllElements() {
+    // ------------------------ Verifications ------------------------//
+
+    @Override
+    public WorkPage verifyRequiredElements() {
         softAssert.isElementTextEqual(titleObj, "Ежедневная работа");
         softAssert.isElementTextEqual(withdrawalFromRMLabel, "Отзыв с RM");
-        softAssert.isElementVisible(withdrawalFromRMPlusIcon);
-        // TODO there are more elements
+        softAssert.isElementImageMatches(withdrawalFromRMPlusIcon,
+                MagMobElementTypes.CIRCLE_PLUS.getPictureName());
+        softAssert.isElementVisible(departmentSupplyPlanLbl);
+        softAssert.isElementVisible(withdrawalAndDisposalLbl);
+        softAssert.isElementVisible(priceTagPrintingLbl);
+        softAssert.isElementVisible(orderBalisageLbl);
+        softAssert.isElementVisible(miniInventoryLbl);
         softAssert.verifyAll();
         return this;
     }

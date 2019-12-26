@@ -27,8 +27,8 @@ capabilities:
       automationName: uiautomator2
       newCommandTimeout: 60000
       platformVersion: '10.0'
-      deviceName: Nexus 5
-      app: C:\apk\LMLF-1.1.0-TEST-b966.apk
+      deviceName: Nexus 5 API 29
+      app: /home/ddimitrash/IdeaProjects/auto-tests/src/LMLF-1.1.2-b3001-BRANCH-story-LFRONT-2692-R3-bugfix.apk
 
     android_browser:
       browserName: chrome

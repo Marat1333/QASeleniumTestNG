@@ -5,13 +5,17 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.elements.MagMobButton;
 import io.qameta.allure.Step;
-import org.openqa.selenium.WebDriver;
+import org.testng.Assert;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class SupportPage extends BaseAppPage {
+
+    public static final String COMPLAIN_REQUEST = "пожаловатсья";
+    public static final String ASK_QUESTION_REQUEST = "задать вопрос";
 
     public SupportPage(TestContext context) {
         super(context);
@@ -22,10 +26,10 @@ public class SupportPage extends BaseAppPage {
     private Element titleLbl;
 
     @AppFindBy(text = "пожаловаться")
-    private Element complainBtnLbl;
+    private MagMobButton complainBtn;
 
     @AppFindBy(text = "задать вопрос")
-    private Element askQuestionBtnLbl;
+    private MagMobButton askQuestionBtn;
 
     // Main area
 
@@ -41,17 +45,17 @@ public class SupportPage extends BaseAppPage {
 
     @Step("Нажмите на плашку {button}")
     public ComplainPage clickButton(String button) {
-        getElementByText(button).click();
+        E(button).click();
         return new ComplainPage(context);
     }
 
     /* ---------------------- Verifications -------------------------- */
 
-    public SupportPage verifyAllElementsVisibility() throws Exception {
+    @Override
+    public SupportPage verifyRequiredElements() throws Exception {
         softAssert.isElementVisible(titleLbl);
-        softAssert.isElementVisible(complainBtnLbl);
-        // TODO need to check - пожаловаться (предвыбрана)
-        softAssert.isElementVisible(askQuestionBtnLbl);
+        softAssert.isElementVisible(complainBtn);
+        softAssert.isElementVisible(askQuestionBtn);
         List<String> expectedIssueCategories = Arrays.asList("В чем проблема?",
                 "Данные о товаре", "Цена товара", "Запас на LS/RM/EM", "Не найден товар",
                 "Отзыв товара со склада", "Данные клиента", "SMS-уведомления клиентам",
@@ -60,6 +64,22 @@ public class SupportPage extends BaseAppPage {
         softAssert.isEquals(mainLabels.getTextList(), expectedIssueCategories,
                 "Список категорий проблем должен быть %s");
         softAssert.verifyAll();
+        return this;
+    }
+
+    public SupportPage shouldSelectedTypeRequestIs(String request) {
+        switch (request) {
+            case COMPLAIN_REQUEST:
+                anAssert.isTrue(complainBtn.isEnabled(),
+                        "Кнопка 'пожаловаться' должна быть активна");
+                break;
+            case ASK_QUESTION_REQUEST:
+                anAssert.isTrue(askQuestionBtn.isEnabled(),
+                        "Кнопка 'задать вопрос' должна быть активна");
+                break;
+            default:
+                Assert.fail("Неизвестный тип запроса");
+        }
         return this;
     }
 }

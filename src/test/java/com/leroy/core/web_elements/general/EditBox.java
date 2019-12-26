@@ -26,7 +26,7 @@ public class EditBox extends Element {
 
     public void clear() {
         initialWebElementIfNeeded();
-        if (DriverFactory.isAppProfile() && !isEnabled())
+        if (DriverFactory.isAppProfile())
             click();
         waitForVisibility();
         webElement.clear();
@@ -47,7 +47,6 @@ public class EditBox extends Element {
     }
 
     public void fill(String text, boolean imitateTyping) {
-        initialWebElementIfNeeded();
         if (!imitateTyping) {
             this.fill(text);
         } else {
@@ -62,18 +61,22 @@ public class EditBox extends Element {
     }
 
     public void clearAndFill(String text, boolean imitateTyping) {
-        clear();
-        fill(text, imitateTyping);
+        if (text != null) {
+            clear();
+            fill(text, imitateTyping);
+        }
     }
 
     public void clearFillAndSubmit(String text) {
-        clear();
-        fill(text);
-        if (DriverFactory.isAppProfile())
-            ((AndroidDriver) driver).executeScript(
-                    "mobile: performEditorAction", ImmutableMap.of("action", "search"));
-        else
-            webElement.sendKeys(Keys.ENTER);
+        if (text != null) {
+            clear();
+            fill(text);
+            if (DriverFactory.isAppProfile())
+                ((AndroidDriver) driver).executeScript(
+                        "mobile: performEditorAction", ImmutableMap.of("action", "search"));
+            else
+                webElement.sendKeys(Keys.ENTER);
+        }
     }
 
     public void sendBlurEvent() {

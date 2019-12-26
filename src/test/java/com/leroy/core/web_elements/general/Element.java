@@ -4,6 +4,7 @@ import com.leroy.constants.Fonts;
 import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
+import com.leroy.core.util.ImageUtil;
 import com.leroy.core.util.XpathUtil;
 import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.*;
@@ -249,14 +250,27 @@ public class Element extends BaseElement {
     }
 
     /**
-     * Find Child element with default timeout
+     * Find Child web element with default timeout
      *
      * @param by - locator
      * @return WebElement
      */
-    protected WebElement findChildElement(By by) {
+    protected WebElement findChildWebElement(By by) {
         initialWebElementIfNeeded();
         return webElement.findElement(by);
+    }
+
+    /**
+     * Find Child Element with default timeout
+     *
+     * @param xpath - Xpath
+     * @return Element
+     */
+    public Element findChildElement(String xpath) {
+        if (xpath.startsWith("."))
+            xpath = xpath.replaceFirst(".", "");
+        initialWebElementIfNeeded();
+        return new Element(driver, By.xpath(getXpath() + xpath));
     }
 
     /**
@@ -282,7 +296,7 @@ public class Element extends BaseElement {
      * @param by - locator
      * @return WebElement
      */
-    public List<WebElement> findChildElements(By by) {
+    protected List<WebElement> findChildElements(By by) {
         return findChildElements(by, 1);
     }
 
@@ -293,7 +307,7 @@ public class Element extends BaseElement {
      * @param timeout - timeout
      * @return WebElement
      */
-    public List<WebElement> findChildElements(By by, int timeout) {
+    protected List<WebElement> findChildElements(By by, int timeout) {
         initialWebElementIfNeeded();
         this.setImplicitWait(timeout);
         List<WebElement> webElements = webElement.findElements(by);
@@ -773,6 +787,11 @@ public class Element extends BaseElement {
         }
     }
 
+    public Dimension getSize() {
+        initialWebElementIfNeeded();
+        return webElement.getSize();
+    }
+
     public int getHeight() {
         initialWebElementIfNeeded();
         try {
@@ -965,8 +984,24 @@ public class Element extends BaseElement {
         return Color.fromString(getCssValue("border-color"));
     }
 
-    public Color getColor() {
+    /**
+     * Gets point color of the Element
+     * @param xOffset - x offset from center
+     * @param yOffset - y offset from center
+     * @return - Color
+     */
+    protected Color getColor(int xOffset, int yOffset) throws Exception {
+        if (DriverFactory.isAppProfile()) {
+            java.awt.Color color = ImageUtil.getColor(this, xOffset, yOffset);
+            if (color == null)
+                throw new IllegalArgumentException("Impossible define color of the " + getMetaName());
+            return new Color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+        }
         return Color.fromString(getCssValue("color"));
+    }
+
+    public Color getColor() throws Exception {
+        return getColor(0,0);
     }
 
     /**
@@ -976,6 +1011,15 @@ public class Element extends BaseElement {
      */
     public Color getBackgroundColor() {
         return Color.fromString(getCssValue("background-color"));
+    }
+
+    /**
+     * Gets CSS value 'fill' color of the element
+     *
+     * @return Color
+     */
+    public Color getFillColor() {
+        return Color.fromString(getCssValue("fill"));
     }
 
     /**

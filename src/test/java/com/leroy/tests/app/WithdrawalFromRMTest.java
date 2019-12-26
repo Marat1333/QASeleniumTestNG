@@ -25,7 +25,7 @@ public class WithdrawalFromRMTest extends BaseState {
         // Step #1
         log.step("Зайти в раздел Работа");
         WorkPage workPage = userProfilePage.goToWork()
-                .verifyVisibilityOfAllElements();
+                .verifyRequiredElements();
 
         // Step #2
         log.step("Нажать на иконку + рядом с Отзыв с RM");
@@ -36,7 +36,7 @@ public class WithdrawalFromRMTest extends BaseState {
         log.step("Выбрать первый товар, который поштучно хранится на складе");
         ProductCardData selectedProductDataBefore = stockProductsPage.getPieceProductInfoByIndex(0);
         ProductCardPage productCardPage = stockProductsPage.clickFirstPieceProduct()
-                .verifyAllElementsVisibility();
+                .verifyRequiredElements();
 
         // Step #4
         log.step("Нажать кнопку ОТОЗВАТЬ");
