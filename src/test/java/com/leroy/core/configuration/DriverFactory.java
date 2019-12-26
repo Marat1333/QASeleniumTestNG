@@ -176,7 +176,7 @@ public class DriverFactory {
                     throw new Exception("Unsupported browser: " + browser);
             }
         } else {
-            String REMOTE_ADDRESS = String.format("http://%s/wd/hub", host);
+            String REMOTE_ADDRESS = String.format("%s/wd/hub", host);
 
             switch (processBrowserName(browser)) {
                 case IOS_PROFILE:
