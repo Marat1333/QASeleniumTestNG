@@ -5,7 +5,7 @@ pipeline {
     stages {
         stage('Test') {
             steps {
-                sh 'mvn clean test -Dmaven.test.failure.ignore=true -DxmlPath=testXML/GlobalSuite.xml -DmpropsFile=src/main/resources/configurationFiles/chrome.yml'
+                sh 'mvn clean test -Dmaven.test.failure.ignore=false -DxmlPath=testXML/GlobalWebSuite.xml -DmpropsFile=src/main/resources/configurationFiles/chrome_grid.yml'
             }
         }
     }
