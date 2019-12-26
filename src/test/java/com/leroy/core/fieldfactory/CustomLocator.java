@@ -16,6 +16,11 @@ public class CustomLocator {
         this.by = by;
     }
 
+    public CustomLocator(By by, String metaName) {
+        this(by);
+        this.metaName = metaName;
+    }
+
     public CustomLocator(By by, By parentBy, String metaName, boolean cacheLookup) {
         this(by);
         this.parentBy = parentBy;
