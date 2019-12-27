@@ -18,16 +18,15 @@ public class FilterPage extends BaseAppPage {
     }
 
     public final String GAMMA = "ГАММА";
-    public final String TOP = "ТОП";
-    public final String TOP_EM = "Топ ЕМ";
     public final String TOP_1000 = "Toп 1000";
     public final String CTM = "CTM";
-    public final String HAS_AVAILABLE_STOCK = "Есть теор. запас";
     public final String BEST_PRICE = "Лучшая цена";
     public final String LIMITED_OFFER = "Предложение ограничено";
     public final String AVS = "AVS";
     public final String COMMON_PRODUCT_TYPE = "ОБЫЧНЫЙ";
     public final String ORDERED_PRODUCT_TYPE = "ПОД ЗАКАЗ";
+    public final String MY_SHOP_FRAME_TYPE = "МОЙ МАГАЗИН";
+    public final String ALL_GAMMA_FRAME_TYPE = "ВСЯ ГАММА ЛМ";
 
     @AppFindBy(text = "МОЙ МАГАЗИН")
     Element myShopBtn;
@@ -38,17 +37,11 @@ public class FilterPage extends BaseAppPage {
     @AppFindBy(text = "ГАММА A")
     Element gammaABtn;
 
-    @AppFindBy(text = "ТОП 0")
-    Element top0Btn;
-
     @AppFindBy(text="ПОД ЗАКАЗ")
     Element orderedProductBtn;
 
     @AppFindBy(text = "ОБЫЧНЫЙ")
     Element commonProductBtn;
-
-    @AppFindBy(text = "Поставщик")
-    Element supplierBtn;
 
     @AppFindBy(text = "Дата AVS")
     Element avsDateBtn;
@@ -56,34 +49,43 @@ public class FilterPage extends BaseAppPage {
     @AppFindBy(text = "ПОКАЗАТЬ ТОВАРЫ")
     Element showGoodsBtn;
 
-    Element bestPrice = E("contains(Лучшая цена)");
+    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"ScreenHeader\"]//android.view.ViewGroup[@content-desc=\"Button\"]")
+    Element clearAllFiltersBtn;
 
-    Element topEm = E("contains(Топ ЕМ)");
+    Element bestPrice = E("contains(Лучшая цена)");
 
     Element top1000 = E("contains(Toп 1000)");
 
     Element ctm = E("contains(CTM)");
 
-    Element hasAvailableStock = E("contains(Есть теор. запас)");
-
     Element limitedOffer = E("contains(Предложение ограничено)");
 
     Element avs = E("contains(AVS)");
 
+    @Step("Выбрать фрейм фильтров {value}")
+    public void switchFiltersFrame(String value){
+        scrollUp();
+        if (value.equals(ALL_GAMMA_FRAME_TYPE)){
+            gammaLmBtn.click();
+        }else{
+            myShopBtn.click();
+        }
+    }
+
+    @Step("Очистить все фильтры")
+    public void clearAllFilters(){
+        scrollUp();
+        clearAllFiltersBtn.click();
+    }
+
     @Step("Выбрать checkBox фильтр {value}")
     public void choseCheckBoxFilter(String value) throws Exception{
         switch (value){
-            case TOP_EM:
-                topEm.click();
-                break;
             case TOP_1000:
                 top1000.click();
                 break;
             case CTM:
                 ctm.click();
-                break;
-            case HAS_AVAILABLE_STOCK:
-                hasAvailableStock.click();
                 break;
             case BEST_PRICE:
                 bestPrice.click();
@@ -101,6 +103,11 @@ public class FilterPage extends BaseAppPage {
         }
     }
 
+    @Step("Выбрать фильтр гамма")
+    public void choseGammaFilter(){
+        gammaABtn.click();
+    }
+
     @Step("Выбрать тип продукта {type}")
     public void choseProductType(String type){
         scrollDown();
@@ -109,23 +116,6 @@ public class FilterPage extends BaseAppPage {
         }else {
             orderedProductBtn.click();
         }
-    }
-
-    @Step("Перейти на страницу выбора поставщиков")
-    public SuppliersSearchPage goToSuppliersSearchPage(){
-        scrollDown();
-        supplierBtn.click();
-        return new SuppliersSearchPage(context);
-    }
-
-    @Step("Выбрать фильтр top")
-    public void choseTopFilter(){
-        top0Btn.click();
-    }
-
-    @Step("Выбрать фильтр гамма")
-    public void choseGammaFilter(){
-        gammaABtn.click();
     }
 
     @Step("Выбрать дату avs")
