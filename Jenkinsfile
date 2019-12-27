@@ -16,6 +16,7 @@ pipeline {
         }
         stage('reports') {
             steps {
+                sh 'allure --version'
                 script {
                     allure([
                             includeProperties: false,
