@@ -1,16 +1,19 @@
 package com.leroy.tests.app;
 
 import com.leroy.constants.EnvConstants;
+import com.leroy.core.configuration.CustomAssert;
 import com.leroy.models.UserData;
 import com.leroy.pages.LoginPage;
 import com.leroy.pages.app.common.FilterPage;
-import com.leroy.pages.app.common.SearchProductPage;
-import com.leroy.pages.app.sales.SalesPage;
 import com.leroy.pages.app.common.NomenclatureSearchPage;
+import com.leroy.pages.app.common.SearchProductPage;
 import com.leroy.pages.app.common.SuppliersSearchPage;
 import com.leroy.pages.app.sales.ProductCardPage;
+import com.leroy.pages.app.sales.SalesPage;
 import com.leroy.tests.BaseState;
 import org.testng.annotations.Test;
+
+import java.time.LocalDate;
 
 public class SearchTest extends BaseState {
 
@@ -81,29 +84,62 @@ public class SearchTest extends BaseState {
         searchProductPage.enterTextInSearchField(shortBarCode);
         searchProductPage.shouldProductCardsContainText(shortBarCode);
     }
-    @Test(description = "Сквозной сценарий поиска")
-    public void smokeTest() throws Exception{
+    @Test(description = "Мой магазин. Выбор фильтров каждого блока фильтров")
+    public void testC22846686() throws Exception{
+
         LoginPage loginPage = new LoginPage(context);
-        SalesPage salesPage = new SalesPage(context);
-        UserData seller = new UserData("60069807","Passwd123");
-        String shortLmCode = "10";
+        UserData seller = new UserData(EnvConstants.BASIC_USER_NAME,EnvConstants.BASIC_USER_PASS);
+        LocalDate avsDate = LocalDate.of(2019, 12,5);
+        String supplierSearchContext = "123";
+        CustomAssert.setExpectedColor(102,192,93);
 
-        log.step("Логинимся на главную");
-
+        // Pre-conditions
         loginPage.loginInAndGoTo(seller, LoginPage.SALES_SECTION);
+        SalesPage salesPage = new SalesPage(context);
         SearchProductPage searchProductPage = salesPage.clickSearchBar();
-        NomenclatureSearchPage nomenclatureSearch = searchProductPage.goToNomenclatureWindow();
-        nomenclatureSearch.choseDepartmentId(15,1595, null, 90);
-        nomenclatureSearch.viewAllProducts();
+        SuppliersSearchPage suppliersSearchPage = new SuppliersSearchPage(context);
         FilterPage filterPage = searchProductPage.goToFilterPage();
-        filterPage.choseCheckBoxFilter(filterPage.BEST_PRICE);
-        filterPage.choseCheckBoxFilter(filterPage.LIMITED_OFFER);
-        filterPage.choseProductType(filterPage.ORDERED_PRODUCT_TYPE);
-        filterPage.choseTopFilter();
+
+        // Step 1
+        log.step("выбрать одну из гамм");
         filterPage.choseGammaFilter();
-        SuppliersSearchPage suppliersSearchPage = filterPage.goToSuppliersSearchPage();
-        suppliersSearchPage.searchSupplier("123");
-        suppliersSearchPage.confirmChosenSupplier();
+        filterPage.verifyFilterHasBeenChosen(filterPage.GAMMA+" A");
+
+        // Step 2
+        log.step("выбрать один из топов");
+        filterPage.choseTopFilter();
+        filterPage.verifyFilterHasBeenChosen(filterPage.TOP);
+
+        // Step 3
+        log.step("выбрать 1 из чек-боксов блока с типами товаров");
+        filterPage.choseCheckBoxFilter(filterPage.BEST_PRICE);
+        filterPage.verifyElementIsSelected(filterPage.BEST_PRICE);
+
+        // Step 4
+        log.step("выбрать тип товара");
+        filterPage.choseProductType(filterPage.ORDERED_PRODUCT_TYPE);
+        filterPage.verifyFilterHasBeenChosen(filterPage.ORDERED_PRODUCT_TYPE);
+
+
+        // Step 5
+        log.step("выбрать 1 поставщика");
+        filterPage.goToSuppliersSearchPage();
+        suppliersSearchPage.verifyRequiredElements();
+
+        suppliersSearchPage.searchSupplier(supplierSearchContext);
+        suppliersSearchPage.shouldCountOfProductsOnPageMoreThan(0);
+        suppliersSearchPage.shouldProductCardsContainText(supplierSearchContext);
+        suppliersSearchPage.verifyElementIsSelected(supplierSearchContext);
+        suppliersSearchPage.applyChosenSupplier();
+
+        // Step 6
+        log.step("выбрать дату авс");
+        filterPage.choseAvsDate(avsDate);
+        filterPage.verifyElementIsSelected(filterPage.AVS);
+
+        // Step 7
+        log.step("подтвердить примененные фильтры");
         filterPage.applyChosenFilters();
+        searchProductPage.verifyRequiredElements();
     }
 }

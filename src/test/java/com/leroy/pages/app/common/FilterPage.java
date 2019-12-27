@@ -1,18 +1,35 @@
 package com.leroy.pages.app.common;
 
+import com.leroy.constants.MagMobElementTypes;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.pages.app.common.widget.SupplierCardWidget;
+import com.leroy.pages.app.widgets.CalendarWidget;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
+
+import java.time.LocalDate;
+import java.util.Date;
 
 public class FilterPage extends BaseAppPage {
 
     public FilterPage(TestContext context){
         super(context);
     }
+
+    public final String GAMMA = "ГАММА";
+    public final String TOP = "ТОП";
+    public final String TOP_EM = "Топ ЕМ";
+    public final String TOP_1000 = "Toп 1000";
+    public final String CTM = "CTM";
+    public final String HAS_AVAILABLE_STOCK = "Есть теор. запас";
+    public final String BEST_PRICE = "Лучшая цена";
+    public final String LIMITED_OFFER = "Предложение ограничено";
+    public final String AVS = "AVS";
+    public final String COMMON_PRODUCT_TYPE = "ОБЫЧНЫЙ";
+    public final String ORDERED_PRODUCT_TYPE = "ПОД ЗАКАЗ";
 
     @AppFindBy(text = "МОЙ МАГАЗИН")
     Element myShopBtn;
@@ -41,44 +58,44 @@ public class FilterPage extends BaseAppPage {
     @AppFindBy(text = "ПОКАЗАТЬ ТОВАРЫ")
     Element showGoodsBtn;
 
-    public final String TEXT_AND_CHECKBOXES_GROUP_XPATH = "//android.view.ViewGroup[@content-desc='Button']/ancestor::android.view.ViewGroup[2]";
-    public final String TOP_EM = "Топ ЕМ";
-    public final String TOP_1000 = "Toп 1000";
-    public final String CTM = "CTM";
-    public final String HAS_AVAILABLE_STOCK = "Есть теор. запас";
-    public final String BEST_PRICE = "Лучшая цена";
-    public final String LIMITED_OFFER = "Предложение ограничено";
-    public final String AVS = "AVS";
+    Element bestPrice = E("contains(Лучшая цена)");
 
-    public final String COMMON_PRODUCT_TYPE = "ОБЫЧНЫЙ";
-    public final String ORDERED_PRODUCT_TYPE = "ПОД ЗАКАЗ";
+    Element topEm = E("contains(Топ ЕМ)");
 
-    private final String CHECKBOXES_BY_TEXT_FP_XPATH = "/android.widget.TextView[@text='";
-    private final String CHECKBOXES_BY_TEXT_SP_XPATH ="']/following-sibling::android.view.ViewGroup";
+    Element top1000 = E("contains(Toп 1000)");
+
+    Element ctm = E("contains(CTM)");
+
+    Element hasAvailableStock = E("contains(Есть теор. запас)");
+
+    Element limitedOffer = E("contains(Предложение ограничено)");
+
+    Element avs = E("contains(AVS)");
 
     @Step("Выбрать checkBox фильтр {value}")
     public void choseCheckBoxFilter(String value) throws Exception{
         switch (value){
             case TOP_EM:
-                driver.findElement(By.xpath(TEXT_AND_CHECKBOXES_GROUP_XPATH+CHECKBOXES_BY_TEXT_FP_XPATH+TOP_EM+CHECKBOXES_BY_TEXT_SP_XPATH)).click();
+                topEm.click();
                 break;
             case TOP_1000:
-                driver.findElement(By.xpath(TEXT_AND_CHECKBOXES_GROUP_XPATH+CHECKBOXES_BY_TEXT_FP_XPATH+TOP_1000+CHECKBOXES_BY_TEXT_SP_XPATH)).click();
+                top1000.click();
                 break;
             case CTM:
-                driver.findElement(By.xpath(TEXT_AND_CHECKBOXES_GROUP_XPATH+CHECKBOXES_BY_TEXT_FP_XPATH+CTM+CHECKBOXES_BY_TEXT_SP_XPATH)).click();
+                ctm.click();
                 break;
             case HAS_AVAILABLE_STOCK:
-                driver.findElement(By.xpath(TEXT_AND_CHECKBOXES_GROUP_XPATH+CHECKBOXES_BY_TEXT_FP_XPATH+HAS_AVAILABLE_STOCK+CHECKBOXES_BY_TEXT_SP_XPATH)).click();
+                hasAvailableStock.click();
                 break;
             case BEST_PRICE:
-                driver.findElement(By.xpath(TEXT_AND_CHECKBOXES_GROUP_XPATH+CHECKBOXES_BY_TEXT_FP_XPATH+BEST_PRICE+CHECKBOXES_BY_TEXT_SP_XPATH)).click();
+                bestPrice.click();
                 break;
             case LIMITED_OFFER:
-                driver.findElement(By.xpath(TEXT_AND_CHECKBOXES_GROUP_XPATH+CHECKBOXES_BY_TEXT_FP_XPATH+LIMITED_OFFER+CHECKBOXES_BY_TEXT_SP_XPATH)).click();
+                limitedOffer.click();
                 break;
             case AVS:
-                new Element(driver, By.xpath(TEXT_AND_CHECKBOXES_GROUP_XPATH+CHECKBOXES_BY_TEXT_FP_XPATH+AVS+CHECKBOXES_BY_TEXT_SP_XPATH)).click();
+                scrollDown();
+                avs.click();
                 scrollUp();
                 break;
             default:
@@ -105,20 +122,41 @@ public class FilterPage extends BaseAppPage {
 
     @Step("Выбрать фильтр top")
     public void choseTopFilter(){
-        scrollUp();
         top0Btn.click();
     }
 
     @Step("Выбрать фильтр гамма")
     public void choseGammaFilter(){
-        scrollUp();
         gammaABtn.click();
+    }
+
+    @Step("Выбрать дату avs")
+    public void choseAvsDate(LocalDate date)throws Exception{
+        avsDateBtn.click();
+        CalendarWidget calendarWidget = new CalendarWidget(context.getDriver());
+        calendarWidget.selectDate(date);
     }
 
     @Step("Показать товары по выбранным фильтрам")
     public SearchProductPage applyChosenFilters(){
+        showGoodsBtn.waitForVisibility();
+        scrollDown();
         showGoodsBtn.click();
         return new SearchProductPage(context);
+    }
+
+    //Verifications
+
+    public FilterPage verifyElementIsSelected(String value){
+        Element anchorElement = E(String.format(SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH,value));
+        anAssert.isElementImageMatches(anchorElement, MagMobElementTypes.CHECK_BOX_FILTER_PAGE.getPictureName());
+        return this;
+    }
+
+    public FilterPage verifyFilterHasBeenChosen(String value)throws Exception{
+        Element element = E("contains("+value+")");
+        anAssert.isElementChosen(element);
+        return this;
     }
 
 }

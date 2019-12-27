@@ -6,9 +6,13 @@ import com.leroy.core.util.ImageUtil;
 import com.leroy.core.web_elements.general.Element;
 import org.testng.Assert;
 
+import java.awt.*;
+
 public class CustomAssert {
 
     private StepLog stepLog;
+
+    private static Color expectedColor;
 
     public CustomAssert(StepLog stepLog) {
         this.stepLog = stepLog;
@@ -127,6 +131,8 @@ public class CustomAssert {
         ImageUtil.CompareResult result = null;
         String desc = "Визуально элемент '"+elem.getMetaName()+"' должен соответствовать эталону";
         try {
+            //comment after first use
+            //ImageUtil.takeScreenShot(elem, pictureName);
             result = ImageUtil.takeScreenAndCompareWithBaseImg(elem, pictureName);
         } catch (Exception err) {
             Log.error(err.getMessage());
@@ -141,6 +147,34 @@ public class CustomAssert {
         Assert.assertEquals(result,
                 ImageUtil.CompareResult.Matched,
                 desc);
+    }
+
+    public void isElementChosen(Element element) throws Exception{
+        Color actualColor = ImageUtil.getPointColor(element);
+        Color expectedColor = getExpectedColor();
+        Assert.assertTrue(similarTo(actualColor,expectedColor));
+    }
+
+
+
+    protected Color getExpectedColor(){
+        return expectedColor;
+    }
+
+    public static void setExpectedColor(int r,int g, int b){
+        expectedColor = new Color(r,g,b);
+    }
+
+    protected boolean similarTo(Color actualColor, Color expectedColor){
+        double limit = 20;
+        double distance = Math.pow(actualColor.getRed() - expectedColor.getRed(),2)
+                + Math.pow(actualColor.getGreen() - expectedColor.getGreen(),2)
+                + Math.pow(actualColor.getBlue() - expectedColor.getBlue(),2);
+        if(distance < limit){
+            return true;
+        }else{
+            return false;
+        }
     }
 
 }

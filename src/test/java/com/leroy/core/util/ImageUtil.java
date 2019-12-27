@@ -1,5 +1,7 @@
 package com.leroy.core.util;
 
+import com.leroy.constants.MagMobElementTypes;
+import com.leroy.core.configuration.CustomAssert;
 import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.web_elements.general.Element;
@@ -160,10 +162,24 @@ public class ImageUtil {
             return new Color(actualImageData[0]);
     }
 
+    public static Color getPointColor(Element element) throws Exception{
+        String pictureName = MagMobElementTypes.OVAL_CHECKBOX.getPictureName();
+        ImageUtil.takeScreenShot(element, pictureName);
+
+        String screenShotPath = PATH_SNAPSHOTS + pictureName + ".png";
+        BufferedImage screenShot = ImageIO.read(new File(screenShotPath));
+
+        int centerX = screenShot.getWidth()/4;
+        int centerY = screenShot.getHeight()/4;
+
+        return new Color(screenShot.getRGB(centerX,centerY));
+    }
+
     public static CompareResult takeScreenAndCompareWithBaseImg(
             Element elem, String pictureName) throws Exception {
         return takeScreenAndCompareWithBaseImg(
                 elem, pictureName, 99.0);
     }
+
 
 }

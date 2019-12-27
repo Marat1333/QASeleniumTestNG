@@ -10,9 +10,9 @@ import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.PointOption;
 import io.qameta.allure.Step;
-import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriverException;
+
 import java.time.Duration;
 
 public class BaseAppPage extends BasePage {
@@ -51,7 +51,7 @@ public class BaseAppPage extends BasePage {
     public void scrollDownTo(Element element){
         TouchAction action = new TouchAction((AndroidDriver)driver);
         Dimension size = androidDriver.manage().window().getSize();
-        int ground = size.getHeight()-50;
+        int ground = size.getHeight()-300;
         int ceil = size.getHeight() - ground;
         int rightBorder=size.getWidth()-10;
         int leftBorder=size.getWidth()-rightBorder;
@@ -63,7 +63,7 @@ public class BaseAppPage extends BasePage {
     public void scrollUpTo(Element element){
         TouchAction action = new TouchAction((AndroidDriver)driver);
         Dimension size = androidDriver.manage().window().getSize();
-        int ground = size.getHeight()-50;
+        int ground = size.getHeight()-300;
         int ceil = size.getHeight() - ground;
         int rightBorder=size.getWidth()-10;
         int leftBorder=size.getWidth()-rightBorder;
@@ -75,20 +75,20 @@ public class BaseAppPage extends BasePage {
     public void scrollDown(){
         TouchAction action = new TouchAction((AndroidDriver)driver);
         Dimension size = androidDriver.manage().window().getSize();
-        int ground = size.getHeight()-50;
+        int ground = size.getHeight()-300;
         int ceil = size.getHeight() - ground;
         int rightBorder=size.getWidth()-10;
         int leftBorder=size.getWidth()-rightBorder;
         action.press(PointOption.point(leftBorder, ground)).waitAction(WaitOptions.waitOptions(Duration.ofMillis(1000))).moveTo(PointOption.point(leftBorder, ceil)).release().perform();
     }
 
-    public void scrollUp(){
-        TouchAction action = new TouchAction((AndroidDriver)driver);
+    public void scrollUp() {
+        TouchAction action = new TouchAction((AndroidDriver) driver);
         Dimension size = androidDriver.manage().window().getSize();
-        int ground = size.getHeight()-50;
+        int ground = size.getHeight() - 300;
         int ceil = size.getHeight() - ground;
-        int rightBorder=size.getWidth()-10;
-        int leftBorder=size.getWidth()-rightBorder;
+        int rightBorder = size.getWidth() - 10;
+        int leftBorder = size.getWidth() - rightBorder;
         action.press(PointOption.point(leftBorder, ceil)).waitAction(WaitOptions.waitOptions(Duration.ofMillis(1000))).moveTo(PointOption.point(leftBorder, ground)).release().perform();
     }
 

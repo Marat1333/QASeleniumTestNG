@@ -6,6 +6,7 @@ import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.pages.app.common.modal.SortModal;
 import com.leroy.pages.app.sales.AddProductPage;
 import com.leroy.pages.app.sales.widget.SearchProductCardWidget;
 import io.qameta.allure.Step;
@@ -77,6 +78,12 @@ public class SearchProductPage extends BaseAppPage {
     public FilterPage goToFilterPage(){
         filter.click();
         return new FilterPage(context);
+    }
+
+    @Step("Открыть окно сортировки")
+    public SortModal openSortPage(){
+        sort.click();
+        return new SortModal(context);
     }
 
     // ---------------- Verifications ----------------------- //
