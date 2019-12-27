@@ -75,9 +75,9 @@ public class SearchProductPage extends BaseAppPage {
     }
 
     @Step("Перейти на страницу выбора фильтров")
-    public FilterPage goToFilterPage(){
+    public MyShopFilterPage goToFilterPage(){
         filter.click();
-        return new FilterPage(context);
+        return new MyShopFilterPage(context);
     }
 
     @Step("Открыть окно сортировки")

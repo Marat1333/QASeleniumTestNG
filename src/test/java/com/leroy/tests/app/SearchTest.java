@@ -4,10 +4,7 @@ import com.leroy.constants.EnvConstants;
 import com.leroy.core.configuration.CustomAssert;
 import com.leroy.models.UserData;
 import com.leroy.pages.LoginPage;
-import com.leroy.pages.app.common.FilterPage;
-import com.leroy.pages.app.common.NomenclatureSearchPage;
-import com.leroy.pages.app.common.SearchProductPage;
-import com.leroy.pages.app.common.SuppliersSearchPage;
+import com.leroy.pages.app.common.*;
 import com.leroy.pages.app.sales.ProductCardPage;
 import com.leroy.pages.app.sales.SalesPage;
 import com.leroy.tests.BaseState;
@@ -98,7 +95,7 @@ public class SearchTest extends BaseState {
         SalesPage salesPage = new SalesPage(context);
         SearchProductPage searchProductPage = salesPage.clickSearchBar();
         SuppliersSearchPage suppliersSearchPage = new SuppliersSearchPage(context);
-        FilterPage filterPage = searchProductPage.goToFilterPage();
+        MyShopFilterPage filterPage = searchProductPage.goToFilterPage();
 
         // Step 1
         log.step("выбрать одну из гамм");
@@ -140,6 +137,51 @@ public class SearchTest extends BaseState {
         // Step 7
         log.step("подтвердить примененные фильтры");
         filterPage.applyChosenFilters();
+        searchProductPage.verifyRequiredElements();
+    }
+
+    @Test(description = "C22789209 Вся гамма ЛМ. Выбор фильтров каждого раздела")
+    public void testC22789209()throws Exception{
+        LoginPage loginPage = new LoginPage(context);
+        UserData seller = new UserData(EnvConstants.BASIC_USER_NAME,EnvConstants.BASIC_USER_PASS);
+        LocalDate avsDate = LocalDate.of(2019, 12,5);
+
+        // Pre-conditions
+        loginPage.loginInAndGoTo(seller, LoginPage.SALES_SECTION);
+        SalesPage salesPage = new SalesPage(context);
+        SearchProductPage searchProductPage = salesPage.clickSearchBar();
+        SuppliersSearchPage suppliersSearchPage = new SuppliersSearchPage(context);
+        FilterPage filterPage = searchProductPage.goToFilterPage();
+
+        // Step 1
+        log.step("выбрать овальный чек-бокс \"Вся гамма ЛМ\"");
+        filterPage.switchFiltersFrame(filterPage.ALL_GAMMA_FRAME_TYPE);
+        filterPage.verifyFilterHasBeenChosen(filterPage.ALL_GAMMA_FRAME_TYPE);
+
+        // Step 2
+        log.step("выбрать одну из гамм");
+        AllGammaFilterPage allGammaFilterPage = new AllGammaFilterPage(context);
+        allGammaFilterPage.choseGammaFilter();
+        allGammaFilterPage.verifyFilterHasBeenChosen(filterPage.GAMMA+" B");
+
+        // Step 3
+        log.step("выбрать 1 из чек-боксов блока с типами товаров");
+        allGammaFilterPage.choseCheckBoxFilter(allGammaFilterPage.CTM);
+        allGammaFilterPage.verifyFilterHasBeenChosen(allGammaFilterPage.CTM);
+
+        // Step 4
+        log.step("выбрать тип товара");
+        allGammaFilterPage.choseProductType(allGammaFilterPage.ORDERED_PRODUCT_TYPE);
+        allGammaFilterPage.verifyFilterHasBeenChosen(allGammaFilterPage.ORDERED_PRODUCT_TYPE);
+
+        // Step 5
+        log.step("выбрать дату авс");
+        allGammaFilterPage.choseAvsDate(avsDate);
+        allGammaFilterPage.verifyElementIsSelected(allGammaFilterPage.AVS);
+
+        // Step 6
+        log.step("подтвердить примененные фильтры");
+        allGammaFilterPage.applyChosenFilters();
         searchProductPage.verifyRequiredElements();
     }
 }
