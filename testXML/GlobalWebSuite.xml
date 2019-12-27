@@ -6,7 +6,7 @@
         <listener class-name="com.leroy.core.listeners.TestRailListener"/>
     </listeners>
 
-    <test name="Test1">
+    <test name="C22783064 Create client via button on client's page">
         <classes>
             <class name="com.leroy.tests.web.ClientTest">
                 <methods>
@@ -16,7 +16,7 @@
         </classes>
     </test>
 
-   <test name="Test2">
+   <test name="C22846687 Create client via button on client's page">
         <classes>
             <class name="com.leroy.tests.web.ClientTest">
                 <methods>
