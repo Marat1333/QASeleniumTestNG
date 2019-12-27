@@ -84,7 +84,7 @@ public class SearchTest extends BaseState {
         searchProductPage.enterTextInSearchField(shortBarCode);
         searchProductPage.shouldProductCardsContainText(shortBarCode);
     }
-    @Test(description = "Мой магазин. Выбор фильтров каждого блока фильтров")
+    @Test(description = "C22846686 Мой магазин. Выбор фильтров каждого блока фильтров")
     public void testC22846686() throws Exception{
 
         LoginPage loginPage = new LoginPage(context);
