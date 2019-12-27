@@ -3,13 +3,13 @@ def mvn_run_str = "mvn clean test -Dmaven.test.failure.ignore=true -DxmlPath=tes
 pipeline {
     agent any
     stages {
-        stage('test') {
-            agent {
-                docker {
-                    image 'docker-local-lego-front.art.lmru.tech/img-jdk8-maven-allure'
-                    args '-v $HOME/.m2:/root/.m2'
-                }
+        agent {
+            docker {
+                image 'docker-local-lego-front.art.lmru.tech/img-jdk8-maven-allure'
+                args '-v $HOME/.m2:/root/.m2'
             }
+        }
+        stage('test') {
             steps {
                 sh(mvn_run_str)
                 stash name: 'allure-results', includes: 'target/allure-results/*'
