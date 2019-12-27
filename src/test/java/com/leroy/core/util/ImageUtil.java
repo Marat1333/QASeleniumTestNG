@@ -19,7 +19,7 @@ import java.io.File;
 
 public class ImageUtil {
 
-    private static String PATH_SNAPSHOTS = "src\\main\\resources\\snapshots\\" + DriverFactory.BROWSER_PROFILE + "\\";
+    private static String PATH_SNAPSHOTS = "src/main/resources/snapshots/" + DriverFactory.BROWSER_PROFILE + "/";
 
     public enum CompareResult {
         Matched, SizeMismatch, PixelMismatch
