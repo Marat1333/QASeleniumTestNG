@@ -9,7 +9,6 @@ import com.leroy.core.util.XpathUtil;
 import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.remote.server.handler.ImplicitlyWait;
 import org.openqa.selenium.support.Color;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -19,7 +18,6 @@ import org.testng.util.Strings;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class Element extends BaseElement {
 
@@ -991,7 +989,7 @@ public class Element extends BaseElement {
      * @param yOffset - y offset from center
      * @return - Color
      */
-    public Color getColor(int xOffset, int yOffset) throws Exception {
+    protected Color getColor(int xOffset, int yOffset) throws Exception {
         if (DriverFactory.isAppProfile()) {
             java.awt.Color color = ImageUtil.getColor(this, xOffset, yOffset);
             if (color == null)

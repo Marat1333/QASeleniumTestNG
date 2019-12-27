@@ -1,7 +1,6 @@
 package com.leroy.core.util;
 
 import com.leroy.constants.MagMobElementTypes;
-import com.leroy.core.configuration.CustomAssert;
 import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.web_elements.general.Element;

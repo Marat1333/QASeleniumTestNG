@@ -8,10 +8,8 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.pages.app.common.widget.SupplierCardWidget;
 import com.leroy.pages.app.widgets.CalendarWidget;
 import io.qameta.allure.Step;
-import org.openqa.selenium.By;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public class FilterPage extends BaseAppPage {
 

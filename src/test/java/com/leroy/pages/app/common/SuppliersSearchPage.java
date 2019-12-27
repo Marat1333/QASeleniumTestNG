@@ -1,6 +1,5 @@
 package com.leroy.pages.app.common;
 
-import com.google.inject.internal.util.$ImmutableList;
 import com.leroy.constants.MagMobElementTypes;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
@@ -10,9 +9,6 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.pages.app.common.widget.SupplierCardWidget;
 import io.qameta.allure.Step;
-import org.openqa.selenium.By;
-
-import java.util.List;
 
 public class SuppliersSearchPage extends BaseAppPage {
 
