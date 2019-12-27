@@ -3,7 +3,7 @@ def mvn_run_str = "mvn clean test -Dmaven.test.failure.ignore=true -DxmlPath=tes
 pipeline {
     agent {
         docker {
-            image 'ksolkin/img-oracle-jdk8-maven-with-sh'
+            image 'docker-local-lego-front.art.lmru.tech/img-jdk8-maven-allure'
             args '-v $HOME/.m2:/root/.m2'
         }
     }
@@ -29,22 +29,3 @@ pipeline {
         }
     }
 }
-
-/*timestamps {
-    node("dockerhost") {
-        stage('Prepare') {
-            git (url: 'https://gitlab.lmru.adeo.com/lego-front/auto-tests.git',
-                credentialsId: 'jenkins-gitlab',
-                branch: "debug"
-            )
-		}
-        stage('Test') {
-			sh("docker pull ksolkin/img-oracle-jdk8-maven-with-sh")
-            docker.image('ksolkin/img-oracle-jdk8-maven-with-sh:latest')//.inside("-v android-gradle-cache:/root/.gradle -v android-maven-cache:/root/.m2")
-			{
-                sh "mvn -version"
-				sh "mvn clean test"
-            }
-        }
-    }
-}*/

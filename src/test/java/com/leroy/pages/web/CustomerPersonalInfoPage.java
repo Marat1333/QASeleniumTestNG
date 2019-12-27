@@ -41,6 +41,7 @@ public class CustomerPersonalInfoPage extends MenuPage {
 
     @Override
     public void waitForPageIsLoaded() {
+        headerClientNameLbl.waitForVisibility();
         headerLbl.waitUntilTextIsEqualTo("Клиенты");
     }
 
