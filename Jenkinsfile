@@ -8,10 +8,23 @@ pipeline {
         }
     }
     stages {
-        stage('Test') {
+        stage('test') {
             steps {
                 sh(mvn_run_str)
                 sh 'echo Finish'
+            }
+        }
+        stage('reports') {
+            steps {
+                script {
+                    allure([
+                            includeProperties: false,
+                            jdk: '',
+                            properties: [],
+                            reportBuildPolicy: 'ALWAYS',
+                            results: [[path: 'target/allure-results']]
+                    ])
+                }
             }
         }
     }
