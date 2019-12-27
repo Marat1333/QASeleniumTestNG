@@ -12,6 +12,11 @@ public class CustomLocator {
     // Specific mobile selector options
     private String accessibilityId;
 
+    public CustomLocator(String accessibilityId, String metaName) {
+        this.accessibilityId = accessibilityId;
+        this.metaName = metaName;
+    }
+
     public CustomLocator(By by) {
         this.by = by;
     }
