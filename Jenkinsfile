@@ -11,21 +11,16 @@ pipeline {
         stage('test') {
             steps {
                 sh(mvn_run_str)
+                stash name: 'allure-results', includes: 'target/allure-results/*'
                 sh 'echo Finish'
             }
         }
-        stage('reports') {
-            steps {
-                sh 'allure --version'
-                script {
-                    allure([
-                            includeProperties: false,
-                            jdk: '',
-                            properties: [],
-                            reportBuildPolicy: 'ALWAYS',
-                            results: [[path: 'target/allure-results']]
-                    ])
-                }
+    }
+    post {
+        always {
+            unstash 'allure-results'
+            script {
+                allure results: [[path: 'target/allure-results']]
             }
         }
     }
