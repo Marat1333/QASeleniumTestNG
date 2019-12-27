@@ -6,7 +6,6 @@ import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import io.qameta.allure.Step;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 
 public class NomenclatureSearchPage extends BaseAppPage {
@@ -64,7 +63,6 @@ public class NomenclatureSearchPage extends BaseAppPage {
     @Step("Выбрать отдел {dept}, подотдел {subDept}, раздел {classId}, подраздел {subClass}")
     public void choseDepartmentId(Integer dept, Integer subDept, Integer classId, Integer subClass) throws Exception{
         returnToDepartmentChoseWindow();
-        try {
             if (dept != null) {
                 selectElementFromArray(dept, firstLevelNomenclatureElementsList);
             }
@@ -77,11 +75,6 @@ public class NomenclatureSearchPage extends BaseAppPage {
             if (dept != null && subDept != null && classId != null && subClass != null) {
                 selectElementFromArray(subClass, secondLevelNomenclatureElementsList);
             }
-        }
-        catch (NoSuchElementException e)
-        {
-            e.printStackTrace();
-        }
     }
 
     private void selectElementFromArray(Integer value, ElementList<Element> someArray)throws Exception{

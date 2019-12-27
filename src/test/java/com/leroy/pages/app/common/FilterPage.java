@@ -5,10 +5,12 @@ import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.elements.MagMobOvalCheckBox;
 import com.leroy.pages.app.common.widget.SupplierCardWidget;
 import com.leroy.pages.app.widgets.CalendarWidget;
 import io.qameta.allure.Step;
 
+import java.awt.*;
 import java.time.LocalDate;
 
 public class FilterPage extends BaseAppPage {
@@ -29,7 +31,7 @@ public class FilterPage extends BaseAppPage {
     public final String ALL_GAMMA_FRAME_TYPE = "ВСЯ ГАММА ЛМ";
 
     @AppFindBy(text = "МОЙ МАГАЗИН")
-    Element myShopBtn;
+    MagMobOvalCheckBox myShopBtn;
 
     @AppFindBy(text = "ВСЯ ГАММА ЛМ")
     Element gammaLmBtn;
@@ -135,15 +137,15 @@ public class FilterPage extends BaseAppPage {
 
     //Verifications
 
-    public FilterPage verifyElementIsSelected(String value){
+    public FilterPage shouldElementHasBeenSelected(String value){
         Element anchorElement = E(String.format(SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH,value));
         anAssert.isElementImageMatches(anchorElement, MagMobElementTypes.CHECK_BOX_FILTER_PAGE.getPictureName());
         return this;
     }
 
-    public FilterPage verifyFilterHasBeenChosen(String value)throws Exception{
+    public FilterPage shouldFilterHasBeenChosen(String value, Color expectedColor)throws Exception{
         Element element = E("contains("+value+")");
-        anAssert.isElementChosen(element);
+        anAssert.isOvalCheckBoxEnabled(element, expectedColor);
         return this;
     }
 

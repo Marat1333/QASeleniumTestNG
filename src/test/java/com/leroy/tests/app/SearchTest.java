@@ -1,7 +1,7 @@
 package com.leroy.tests.app;
 
 import com.leroy.constants.EnvConstants;
-import com.leroy.core.configuration.CustomAssert;
+import com.leroy.elements.MagMobOvalCheckBox;
 import com.leroy.models.UserData;
 import com.leroy.pages.LoginPage;
 import com.leroy.pages.app.common.*;
@@ -10,6 +10,7 @@ import com.leroy.pages.app.sales.SalesPage;
 import com.leroy.tests.BaseState;
 import org.testng.annotations.Test;
 
+import java.awt.*;
 import java.time.LocalDate;
 
 public class SearchTest extends BaseState {
@@ -88,7 +89,7 @@ public class SearchTest extends BaseState {
         UserData seller = new UserData(EnvConstants.BASIC_USER_NAME,EnvConstants.BASIC_USER_PASS);
         LocalDate avsDate = LocalDate.of(2019, 12,5);
         String supplierSearchContext = "123";
-        CustomAssert.setExpectedColor(102,192,93);
+        Color expectedColor = MagMobOvalCheckBox.getActiveGreenColor();
 
         // Pre-conditions
         loginPage.loginInAndGoTo(seller, LoginPage.SALES_SECTION);
@@ -100,22 +101,22 @@ public class SearchTest extends BaseState {
         // Step 1
         log.step("выбрать одну из гамм");
         filterPage.choseGammaFilter();
-        filterPage.verifyFilterHasBeenChosen(filterPage.GAMMA+" A");
+        filterPage.shouldFilterHasBeenChosen(filterPage.GAMMA+" A", expectedColor);
 
         // Step 2
         log.step("выбрать один из топов");
         filterPage.choseTopFilter();
-        filterPage.verifyFilterHasBeenChosen(filterPage.TOP);
+        filterPage.shouldFilterHasBeenChosen(filterPage.TOP,expectedColor);
 
         // Step 3
         log.step("выбрать 1 из чек-боксов блока с типами товаров");
         filterPage.choseCheckBoxFilter(filterPage.BEST_PRICE);
-        filterPage.verifyElementIsSelected(filterPage.BEST_PRICE);
+        filterPage.shouldElementHasBeenSelected(filterPage.BEST_PRICE);
 
         // Step 4
         log.step("выбрать тип товара");
         filterPage.choseProductType(filterPage.ORDERED_PRODUCT_TYPE);
-        filterPage.verifyFilterHasBeenChosen(filterPage.ORDERED_PRODUCT_TYPE);
+        filterPage.shouldFilterHasBeenChosen(filterPage.ORDERED_PRODUCT_TYPE,expectedColor);
 
 
         // Step 5
@@ -132,12 +133,14 @@ public class SearchTest extends BaseState {
         // Step 6
         log.step("выбрать дату авс");
         filterPage.choseAvsDate(avsDate);
-        filterPage.verifyElementIsSelected(filterPage.AVS);
+        filterPage.shouldElementHasBeenSelected(filterPage.AVS);
 
         // Step 7
         log.step("подтвердить примененные фильтры");
         filterPage.applyChosenFilters();
         searchProductPage.verifyRequiredElements();
+
+        // TODO добавить проверку респонса на соответсвие полученных сущностей выбранным фильтрам
     }
 
     @Test(description = "C22789209 Вся гамма ЛМ. Выбор фильтров каждого раздела")
@@ -145,6 +148,7 @@ public class SearchTest extends BaseState {
         LoginPage loginPage = new LoginPage(context);
         UserData seller = new UserData(EnvConstants.BASIC_USER_NAME,EnvConstants.BASIC_USER_PASS);
         LocalDate avsDate = LocalDate.of(2019, 12,5);
+        Color expectedColor = MagMobOvalCheckBox.getActiveGreenColor();
 
         // Pre-conditions
         loginPage.loginInAndGoTo(seller, LoginPage.SALES_SECTION);
@@ -156,32 +160,34 @@ public class SearchTest extends BaseState {
         // Step 1
         log.step("выбрать овальный чек-бокс \"Вся гамма ЛМ\"");
         filterPage.switchFiltersFrame(filterPage.ALL_GAMMA_FRAME_TYPE);
-        filterPage.verifyFilterHasBeenChosen(filterPage.ALL_GAMMA_FRAME_TYPE);
+        filterPage.shouldFilterHasBeenChosen(filterPage.ALL_GAMMA_FRAME_TYPE,expectedColor);
 
         // Step 2
         log.step("выбрать одну из гамм");
         AllGammaFilterPage allGammaFilterPage = new AllGammaFilterPage(context);
         allGammaFilterPage.choseGammaFilter();
-        allGammaFilterPage.verifyFilterHasBeenChosen(filterPage.GAMMA+" B");
+        allGammaFilterPage.shouldFilterHasBeenChosen(filterPage.GAMMA+" B",expectedColor);
 
         // Step 3
         log.step("выбрать 1 из чек-боксов блока с типами товаров");
         allGammaFilterPage.choseCheckBoxFilter(allGammaFilterPage.CTM);
-        allGammaFilterPage.verifyFilterHasBeenChosen(allGammaFilterPage.CTM);
+        allGammaFilterPage.shouldFilterHasBeenChosen(allGammaFilterPage.CTM,expectedColor);
 
         // Step 4
         log.step("выбрать тип товара");
         allGammaFilterPage.choseProductType(allGammaFilterPage.ORDERED_PRODUCT_TYPE);
-        allGammaFilterPage.verifyFilterHasBeenChosen(allGammaFilterPage.ORDERED_PRODUCT_TYPE);
+        allGammaFilterPage.shouldFilterHasBeenChosen(allGammaFilterPage.ORDERED_PRODUCT_TYPE,expectedColor);
 
         // Step 5
         log.step("выбрать дату авс");
         allGammaFilterPage.choseAvsDate(avsDate);
-        allGammaFilterPage.verifyElementIsSelected(allGammaFilterPage.AVS);
+        allGammaFilterPage.shouldElementHasBeenSelected(allGammaFilterPage.AVS);
 
         // Step 6
         log.step("подтвердить примененные фильтры");
         allGammaFilterPage.applyChosenFilters();
         searchProductPage.verifyRequiredElements();
+
+        // TODO добавить проверку респонса на соответсвие полученных сущностей выбранным фильтрам
     }
 }

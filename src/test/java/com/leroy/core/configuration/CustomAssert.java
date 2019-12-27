@@ -5,14 +5,11 @@ import com.leroy.core.testrail.models.StepResultModel;
 import com.leroy.core.util.ImageUtil;
 import com.leroy.core.web_elements.general.Element;
 import org.testng.Assert;
-
 import java.awt.*;
 
 public class CustomAssert {
 
     private StepLog stepLog;
-
-    private static Color expectedColor;
 
     public CustomAssert(StepLog stepLog) {
         this.stepLog = stepLog;
@@ -149,20 +146,9 @@ public class CustomAssert {
                 desc);
     }
 
-    public void isElementChosen(Element element) throws Exception{
+    public void isOvalCheckBoxEnabled(Element element, Color expectedColor) throws Exception{
         Color actualColor = ImageUtil.getPointColor(element);
-        Color expectedColor = getExpectedColor();
         Assert.assertTrue(similarTo(actualColor,expectedColor));
-    }
-
-
-
-    protected Color getExpectedColor(){
-        return expectedColor;
-    }
-
-    public static void setExpectedColor(int r,int g, int b){
-        expectedColor = new Color(r,g,b);
     }
 
     protected boolean similarTo(Color actualColor, Color expectedColor){
