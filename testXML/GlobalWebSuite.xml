@@ -6,10 +6,24 @@
         <listener class-name="com.leroy.core.listeners.TestRailListener"/>
     </listeners>
 
-    <test name="All application tests">
-        <packages>
-            <package name="com.leroy.tests.web.*" />
-        </packages>
+    <test name="Test1">
+        <classes>
+            <class name="com.leroy.tests.web.ClientTest">
+                <methods>
+                    <include name="testC22783064"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+   <test name="Test2">
+        <classes>
+            <class name="com.leroy.tests.web.ClientTest">
+                <methods>
+                    <include name="testC22846687"/>
+                </methods>
+            </class>
+        </classes>
     </test>
 
 </suite>

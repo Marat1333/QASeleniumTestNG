@@ -11,6 +11,7 @@ pipeline {
         stage('Test') {
             steps {
                 sh(mvn_run_str)
+                sh 'echo Finish'
             }
         }
     }
