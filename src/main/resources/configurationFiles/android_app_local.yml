@@ -26,8 +26,8 @@ capabilities:
       autoAcceptAlerts: true
       automationName: uiautomator2
       newCommandTimeout: 60000
-      platformVersion: '10.0'
-      deviceName: Nexus 5 API 29
+      platformVersion: '10.0' #'8.1'
+      deviceName: Nexus 5 API 29 #samsung SM-J530FM
       app: /home/ddimitrash/IdeaProjects/auto-tests/src/LMLF-1.1.2-b3001-BRANCH-story-LFRONT-2692-R3-bugfix.apk
 
     android_browser:

@@ -1,9 +1,9 @@
 package com.leroy.core.util;
 
+import com.leroy.constants.MagMobElementTypes;
 import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.web_elements.general.Element;
-import io.appium.java_client.MobileElement;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
@@ -18,7 +18,7 @@ import java.io.File;
 
 public class ImageUtil {
 
-    private static String PATH_SNAPSHOTS = "src\\main\\resources\\snapshots\\" + DriverFactory.BROWSER_PROFILE + "\\";
+    private static String PATH_SNAPSHOTS = "src/main/resources/snapshots/" + DriverFactory.BROWSER_PROFILE + "/";
 
     public enum CompareResult {
         Matched, SizeMismatch, PixelMismatch
@@ -139,25 +139,17 @@ public class ImageUtil {
                 elem.getDriver(), elem.getRectangle(), pictureName, expectedPercentage);
     }
 
-    public static Color getColor(Element element, int xOffset, int yOffset) throws Exception {
-        // Find center of Element with offset
-        Point centerElemPoint = ((MobileElement)element.getWebElement()).getCenter();
-        centerElemPoint.x += xOffset;
-        centerElemPoint.y += yOffset;
-        Rectangle pointForGettingColor = new Rectangle(centerElemPoint, new Dimension(1,1));
-        // Get Image and define color of the center
-        String currentScreenPath = captureElementBitmap(element.getDriver(), pointForGettingColor)
-                .getAbsolutePath();
-        Image actualImage = Toolkit.getDefaultToolkit().getImage(currentScreenPath);
-        PixelGrabber actualImageGrab = new PixelGrabber(actualImage, 0, 0, -1, -1, false);
-        int[] actualImageData = null;
-        if (actualImageGrab.grabPixels()) {
-            actualImageData = (int[]) actualImageGrab.getPixels();
-        }
-        if (actualImageData == null)
-            return null;
-        else
-            return new Color(actualImageData[0]);
+    public static Color getPointColor(Element element, int x, int y) throws Exception{
+        String pictureName = MagMobElementTypes.OVAL_CHECKBOX.getPictureName();
+        ImageUtil.takeScreenShot(element, pictureName);
+
+        String screenShotPath = PATH_SNAPSHOTS + pictureName + ".png";
+        BufferedImage screenShot = ImageIO.read(new File(screenShotPath));
+
+        x = screenShot.getWidth()/2+x;
+        y = screenShot.getHeight()/2+y;
+
+        return new Color(screenShot.getRGB(x,y));
     }
 
     public static CompareResult takeScreenAndCompareWithBaseImg(
@@ -165,5 +157,6 @@ public class ImageUtil {
         return takeScreenAndCompareWithBaseImg(
                 elem, pictureName, 99.0);
     }
+
 
 }

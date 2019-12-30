@@ -26,14 +26,14 @@ public class MagMobButton extends Element {
     }
 
     @Override
-    public Color getColor() throws Exception {
-        return getColor(0, getHeight() / 4);
+    public Color getPointColor() throws Exception {
+        return getPointColor(0, getHeight() / 4);
     }
 
     @Override
     public boolean isEnabled() {
         try {
-            return getColor().equals(ACTIVE_GREEN_COLOR);
+            return getPointColor().equals(ACTIVE_GREEN_COLOR);
         } catch (Exception err) {
             Log.error("isEnabled() Error: " + err.getMessage());
             return false;

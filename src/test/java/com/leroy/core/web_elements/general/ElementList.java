@@ -413,11 +413,11 @@ public class ElementList<E extends Element> extends BaseElement implements Itera
      *
      * @return HashSet
      */
-    public HashSet<Color> getColorHashSet() throws Exception {
+    public HashSet<Color> getPointColorHashSet() throws Exception {
         initWebElementListIfNeeded();
         HashSet<Color> hS = new HashSet<>();
         for (Element we : elementList) {
-            hS.add(we.getColor());
+            hS.add(we.getPointColor());
         }
         return hS;
     }

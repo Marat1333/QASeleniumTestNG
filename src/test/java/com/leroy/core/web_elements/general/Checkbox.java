@@ -2,9 +2,7 @@ package com.leroy.core.web_elements.general;
 
 import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 
 public class Checkbox extends Element  {
 
@@ -33,5 +31,7 @@ public class Checkbox extends Element  {
             this.click();
         }
     }
+
+
 
 }

@@ -269,7 +269,6 @@ public class Element extends BaseElement {
     public Element findChildElement(String xpath) {
         if (xpath.startsWith("."))
             xpath = xpath.replaceFirst(".", "");
-        initialWebElementIfNeeded();
         return new Element(driver, By.xpath(getXpath() + xpath));
     }
 
@@ -519,16 +518,16 @@ public class Element extends BaseElement {
                     locator.setCacheLookup(false);
                 return getText(selfText, attemptsNumber - 1);
             }
-            return null;
+            throw err;
         } catch (NoSuchElementException err) {
             Log.warn("Method: getText(). NoSuchElementException: " + err.getMessage());
             if (attemptsNumber > 0)
                 return getText(selfText, attemptsNumber - 1);
-            return null;
+            throw err;
         } catch (Exception err) {
             Log.error("Method: getText()");
             Log.error("Exception: " + err.getMessage());
-            return null;
+            throw err;
         }
     }
 
@@ -990,9 +989,9 @@ public class Element extends BaseElement {
      * @param yOffset - y offset from center
      * @return - Color
      */
-    protected Color getColor(int xOffset, int yOffset) throws Exception {
+    protected Color getPointColor(int xOffset, int yOffset) throws Exception {
         if (DriverFactory.isAppProfile()) {
-            java.awt.Color color = ImageUtil.getColor(this, xOffset, yOffset);
+            java.awt.Color color = ImageUtil.getPointColor(this, xOffset, yOffset);
             if (color == null)
                 throw new IllegalArgumentException("Impossible define color of the " + getMetaName());
             return new Color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
@@ -1000,8 +999,8 @@ public class Element extends BaseElement {
         return Color.fromString(getCssValue("color"));
     }
 
-    public Color getColor() throws Exception {
-        return getColor(0,0);
+    public Color getPointColor() throws Exception {
+        return getPointColor(0,0);
     }
 
     /**
