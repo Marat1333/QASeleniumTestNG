@@ -154,7 +154,6 @@ public class SearchTest extends BaseState {
         loginPage.loginInAndGoTo(seller, LoginPage.SALES_SECTION);
         SalesPage salesPage = new SalesPage(context);
         SearchProductPage searchProductPage = salesPage.clickSearchBar();
-        SuppliersSearchPage suppliersSearchPage = new SuppliersSearchPage(context);
         FilterPage filterPage = searchProductPage.goToFilterPage();
 
         // Step 1
@@ -189,5 +188,47 @@ public class SearchTest extends BaseState {
         searchProductPage.verifyRequiredElements();
 
         // TODO добавить проверку респонса на соответсвие полученных сущностей выбранным фильтрам
+    }
+
+    @Test(description = "C22789172 На поисковой запрос не вернулись результаты")
+    public void testC22789172()throws Exception {
+        LoginPage loginPage = new LoginPage(context);
+        UserData seller = new UserData(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS);
+        Color expectedGreenColor = MagMobOvalCheckBox.getActiveGreenColor();
+        Color expectedGreyColor = MagMobOvalCheckBox.getInactiveWhiteColor();
+
+        // Pre-conditions
+        loginPage.loginInAndGoTo(seller, LoginPage.SALES_SECTION);
+        SalesPage salesPage = new SalesPage(context);
+        SearchProductPage searchProductPage = salesPage.clickSearchBar();
+        String byName = "А13";
+
+        // Step 1
+        log.step("Ввести в поле поиска значение, результат поиска по которому не вернется");
+        searchProductPage.enterTextInSearchField(byName);
+        searchProductPage.shouldNotFoundMsgBeDisplayed(byName);
+
+        // Step 2
+        log.step("выбрать более 1 фильтра и нажать \"Показать товары\"");
+        MyShopFilterPage myShopFilterPage = searchProductPage.goToFilterPage();
+        myShopFilterPage.choseTopFilter();
+        myShopFilterPage.shouldFilterHasBeenChosen(myShopFilterPage.TOP,expectedGreenColor);
+        myShopFilterPage.applyChosenFilters();
+
+        searchProductPage.verifyRequiredElements();
+        searchProductPage.shouldNotFoundMsgBeDisplayed(byName);
+        searchProductPage.shouldDiscardAllFiltersBtnBeDisplayed();
+
+        // Step 3
+        log.step("Нажать на кнопку \"Cбросить фильтры\"");
+        searchProductPage.discardFilters();
+        searchProductPage.shouldNotDiscardAllFiltersBtnBeDisplayed();
+        searchProductPage.shouldNotFoundMsgBeDisplayed(byName);
+
+        // Step 4
+        log.step("перейти в фильтры");
+        searchProductPage.goToFilterPage();
+        myShopFilterPage.shouldFilterHasBeenChosen(myShopFilterPage.TOP,expectedGreyColor);
+
     }
 }

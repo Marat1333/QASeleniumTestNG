@@ -10,6 +10,8 @@ import com.leroy.pages.app.common.modal.SortModal;
 import com.leroy.pages.app.sales.AddProductPage;
 import com.leroy.pages.app.sales.widget.SearchProductCardWidget;
 import io.qameta.allure.Step;
+import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.Wait;
 
 public class SearchProductPage extends BaseAppPage {
 
@@ -40,12 +42,21 @@ public class SearchProductPage extends BaseAppPage {
     @AppFindBy(xpath = "//android.view.ViewGroup[preceding-sibling::android.view.ViewGroup[2][ancestor::android.view.ViewGroup[@content-desc=\"ScreenContent\"]]]")
     Element sort;
 
+    Element discardAllFiltersBtn = E("contains(СБРОСИТЬ ФИЛЬТРЫ)");
+
+    private final String notFoundMsg = "//*[contains(@text, 'Поиск «%s» не дал результатов')]";
+
     @Override
     public void waitForPageIsLoaded() {
         searchField.waitForVisibility();
     }
 
     // ---------------- Action Steps -------------------------//
+
+    @Step("Сбросить фильтры, инициировав скрипт со страницы поиска")
+    public void discardFilters(){
+        discardAllFiltersBtn.click();
+    }
 
     @Step("Введите {text} в поле поиска товара")
     public SearchProductPage enterTextInSearchField(String text) {
@@ -95,6 +106,21 @@ public class SearchProductPage extends BaseAppPage {
         softAssert.isElementVisible(searchField);
         softAssert.verifyAll();
         return this;
+    }
+
+    public void shouldNotFoundMsgBeDisplayed(String value){
+        Element element = new Element(driver, By.xpath(String.format(notFoundMsg,value)));
+        anAssert.isTrue(element.isVisible(), "Поиск по запросу "+value+" не вернул результатов");
+    }
+
+    public void shouldDiscardAllFiltersBtnBeDisplayed(){
+        discardAllFiltersBtn.waitForVisibility();
+        anAssert.isTrue(discardAllFiltersBtn.isVisible(),"Кнопка \"Сбросить фильтры\" отображена");
+    }
+
+    public void shouldNotDiscardAllFiltersBtnBeDisplayed(){
+        discardAllFiltersBtn.waitForInvisibility();
+        anAssert.isFalse(discardAllFiltersBtn.isVisible(),"Кнопка \"Сбросить фильтры\" отображена");
     }
 
     public SearchProductPage shouldCountOfProductsOnPageMoreThan(int count) {
