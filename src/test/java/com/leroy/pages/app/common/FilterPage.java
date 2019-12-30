@@ -3,6 +3,7 @@ package com.leroy.pages.app.common;
 import com.leroy.constants.MagMobElementTypes;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.configuration.Log;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.elements.MagMobOvalCheckBox;
@@ -12,6 +13,7 @@ import io.qameta.allure.Step;
 
 import java.awt.*;
 import java.time.LocalDate;
+import java.util.NoSuchElementException;
 
 public class FilterPage extends BaseAppPage {
 
@@ -29,6 +31,8 @@ public class FilterPage extends BaseAppPage {
     public final String ORDERED_PRODUCT_TYPE = "ПОД ЗАКАЗ";
     public final String MY_SHOP_FRAME_TYPE = "МОЙ МАГАЗИН";
     public final String ALL_GAMMA_FRAME_TYPE = "ВСЯ ГАММА ЛМ";
+
+    private final String HORIZONTAL_SCROLL = "//android.widget.TextView[contains(@text,'%s')]/ancestor::android.widget.HorizontalScrollView";
 
     @AppFindBy(text = "МОЙ МАГАЗИН")
     MagMobOvalCheckBox myShopBtn;
@@ -63,6 +67,19 @@ public class FilterPage extends BaseAppPage {
     Element limitedOffer = E("contains(Предложение ограничено)");
 
     Element avs = E("contains(AVS)");
+
+    @Step("Проскроллить фильтры до {neededElement}")
+    public void scrollHorizontalWidget(String neededScroll,String neededElement){
+        Element goalElement = E("contains(" + neededElement + ")");
+        Element anchorElement=null;
+        try {
+            anchorElement = E(String.format(HORIZONTAL_SCROLL,neededScroll));
+        }catch (NoSuchElementException e){
+            Log.error("Выбрана несуществующая горизонтальная область скролла. Необходимо выбрать из: ГАММА, ТОП, ОБЫЧНЫЙ (тип продукта)");
+        }
+        swipeRightTo(anchorElement, goalElement);
+
+    }
 
     @Step("Выбрать фрейм фильтров {value}")
     public void switchFiltersFrame(String value){
@@ -105,9 +122,14 @@ public class FilterPage extends BaseAppPage {
         }
     }
 
-    @Step("Выбрать фильтр гамма")
-    public void choseGammaFilter(){
-        gammaABtn.click();
+    @Step("Выбрать фильтр {gamma}")
+    public void choseGammaFilter(String gamma){
+        gamma = gamma.toUpperCase();
+        try {
+            E("contains(" + gamma + ")").click();
+        }catch (NoSuchElementException e){
+            Log.error("Выбранная Гамма не найдена");
+        }
     }
 
     @Step("Выбрать тип продукта {type}")
