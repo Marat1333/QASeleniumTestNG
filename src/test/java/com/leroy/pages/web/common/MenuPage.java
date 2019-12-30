@@ -8,6 +8,7 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.pages.web.CustomerPage;
 import com.leroy.pages.web.OrdersPage;
+import com.leroy.pages.web.modal.NewFeaturesModalWindow;
 import org.openqa.selenium.By;
 
 public class MenuPage extends BaseWebPage {
@@ -40,6 +41,14 @@ public class MenuPage extends BaseWebPage {
         anAssert.isTrue(menuItem.isVisible(), "Не удалось найти пункт меню " + expectedMenuItem);
         menuItem.click();
         return (T) pageClass.getConstructor(TestContext.class).newInstance(context);
+    }
+
+    public MenuPage closeNewFeaturesModalWindowIfExist() {
+        NewFeaturesModalWindow modalWindow = new NewFeaturesModalWindow(driver, new CustomLocator(By.xpath(NewFeaturesModalWindow.MAIN_DIV_XPATH)));
+        modalWindow.waitForVisibility(1);
+        if (modalWindow.isVisible())
+            modalWindow.clickSubmitButton();
+        return this;
     }
 
 
