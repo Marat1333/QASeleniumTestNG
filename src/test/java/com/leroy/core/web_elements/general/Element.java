@@ -6,6 +6,7 @@ import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.util.ImageUtil;
 import com.leroy.core.util.XpathUtil;
+import io.appium.java_client.MobileElement;
 import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
@@ -15,6 +16,9 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.util.Strings;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -269,7 +273,6 @@ public class Element extends BaseElement {
     public Element findChildElement(String xpath) {
         if (xpath.startsWith("."))
             xpath = xpath.replaceFirst(".", "");
-        initialWebElementIfNeeded();
         return new Element(driver, By.xpath(getXpath() + xpath));
     }
 
@@ -519,16 +522,16 @@ public class Element extends BaseElement {
                     locator.setCacheLookup(false);
                 return getText(selfText, attemptsNumber - 1);
             }
-            return null;
+            throw err;
         } catch (NoSuchElementException err) {
             Log.warn("Method: getText(). NoSuchElementException: " + err.getMessage());
             if (attemptsNumber > 0)
                 return getText(selfText, attemptsNumber - 1);
-            return null;
+            throw err;
         } catch (Exception err) {
             Log.error("Method: getText()");
             Log.error("Exception: " + err.getMessage());
-            return null;
+            throw err;
         }
     }
 
@@ -984,24 +987,33 @@ public class Element extends BaseElement {
         return Color.fromString(getCssValue("border-color"));
     }
 
-    /**
-     * Gets point color of the Element
-     * @param xOffset - x offset from center
-     * @param yOffset - y offset from center
-     * @return - Color
-     */
-    protected Color getColor(int xOffset, int yOffset) throws Exception {
-        if (DriverFactory.isAppProfile()) {
-            java.awt.Color color = ImageUtil.getColor(this, xOffset, yOffset);
-            if (color == null)
-                throw new IllegalArgumentException("Impossible define color of the " + getMetaName());
-            return new Color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-        }
+    public Color getColor() throws Exception {
         return Color.fromString(getCssValue("color"));
     }
 
-    public Color getColor() throws Exception {
-        return getColor(0,0);
+    /**
+     * Get point color of the Element
+     *
+     * @param xOffset - x offset from center
+     * @param yOffset - y offset from center
+     * @return org.openqa.selenium.support.Color
+     */
+    public Color getPointColor(int xOffset, int yOffset) throws Exception {
+        // Find center of web element with offset
+        Point centerElemPoint = ((MobileElement) getWebElement()).getCenter();
+        centerElemPoint.x += xOffset;
+        centerElemPoint.y += yOffset;
+        Rectangle pointForGettingColor = new Rectangle(centerElemPoint, new Dimension(1, 1));
+
+        String screenShotPath = ImageUtil.captureRectangleBitmap(driver, pointForGettingColor)
+                .getAbsolutePath();
+        BufferedImage screenShot = ImageIO.read(new File(screenShotPath));
+        java.awt.Color jwtColor = new java.awt.Color(screenShot.getRGB(0, 0));
+        return new Color(jwtColor.getRed(), jwtColor.getGreen(), jwtColor.getBlue(), jwtColor.getAlpha());
+    }
+
+    public Color getPointColor() throws Exception {
+        return getPointColor(0, 0);
     }
 
     /**

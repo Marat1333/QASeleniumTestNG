@@ -1,12 +1,9 @@
 package com.leroy.core.web_elements.general;
 
-import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 
-public class Checkbox extends Element  {
+public class Checkbox extends Element {
 
     public Checkbox(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
@@ -16,22 +13,18 @@ public class Checkbox extends Element  {
         super(driver, locator, name);
     }
 
-    public boolean isChecked() {
-        try {
-            initialWebElementIfNeeded();
-            waitForVisibility(short_timeout);
-            return webElement.isSelected();
-        } catch (Exception e) {
-            Log.error("Method: isChecked(). There was a problem determining if the CheckBox is checked");
-            throw e;
-        }
+    public boolean isChecked() throws Exception {
+        initialWebElementIfNeeded();
+        waitForVisibility(short_timeout);
+        return webElement.isSelected();
     }
 
-    public void setValue(boolean value) {
+    public void setValue(boolean value) throws Exception {
         this.waitForVisibility(short_timeout);
         if (value ^ this.isChecked()) {
             this.click();
         }
     }
+
 
 }

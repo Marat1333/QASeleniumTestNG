@@ -5,6 +5,7 @@ import com.leroy.core.testrail.models.StepResultModel;
 import com.leroy.core.util.ImageUtil;
 import com.leroy.core.web_elements.general.Element;
 import org.testng.Assert;
+import java.awt.*;
 
 public class CustomAssert {
 
@@ -127,6 +128,8 @@ public class CustomAssert {
         ImageUtil.CompareResult result = null;
         String desc = "Визуально элемент '"+elem.getMetaName()+"' должен соответствовать эталону";
         try {
+            //comment after first use
+            //ImageUtil.takeScreenShot(elem, pictureName);
             result = ImageUtil.takeScreenAndCompareWithBaseImg(elem, pictureName);
         } catch (Exception err) {
             Log.error(err.getMessage());

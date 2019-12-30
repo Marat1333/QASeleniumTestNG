@@ -18,7 +18,7 @@ import java.io.File;
 
 public class ImageUtil {
 
-    private static String PATH_SNAPSHOTS = "src\\main\\resources\\snapshots\\" + DriverFactory.BROWSER_PROFILE + "\\";
+    private static String PATH_SNAPSHOTS = "src/main/resources/snapshots/" + DriverFactory.BROWSER_PROFILE + "/";
 
     public enum CompareResult {
         Matched, SizeMismatch, PixelMismatch
@@ -50,7 +50,7 @@ public class ImageUtil {
      * @return - file with image
      * @throws Exception -
      */
-    private static File captureElementBitmap(WebDriver driver, Rectangle rect) throws Exception {
+    public static File captureRectangleBitmap(WebDriver driver, Rectangle rect) throws Exception {
         File screen = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
         BufferedImage img = ImageIO.read(screen);
         BufferedImage dest = img.getSubimage(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
@@ -114,7 +114,7 @@ public class ImageUtil {
      */
     public static void takeScreenShot(WebDriver driver, Rectangle rect, String pictureName)
             throws Exception {
-        File file = captureElementBitmap(driver, rect);
+        File file = captureRectangleBitmap(driver, rect);
         FileUtils.copyFile(file, new File(PATH_SNAPSHOTS + pictureName + ".png"));
     }
 
@@ -127,8 +127,8 @@ public class ImageUtil {
             WebDriver driver, Rectangle rect,
             String pictureName, Double expectedPercentage) throws Exception {
         String filePath = PATH_SNAPSHOTS + pictureName + ".png";
-        String screenshotPath = captureElementBitmap(driver, rect).getAbsolutePath();
-        Log.debug("Picture: " + pictureName +" Path: " +screenshotPath);
+        String screenshotPath = captureRectangleBitmap(driver, rect).getAbsolutePath();
+        Log.debug("Picture: " + pictureName + " Path: " + screenshotPath);
         return compareImage(screenshotPath,
                 filePath, expectedPercentage);
     }
@@ -141,12 +141,12 @@ public class ImageUtil {
 
     public static Color getColor(Element element, int xOffset, int yOffset) throws Exception {
         // Find center of Element with offset
-        Point centerElemPoint = ((MobileElement)element.getWebElement()).getCenter();
+        Point centerElemPoint = ((MobileElement) element.getWebElement()).getCenter();
         centerElemPoint.x += xOffset;
         centerElemPoint.y += yOffset;
-        Rectangle pointForGettingColor = new Rectangle(centerElemPoint, new Dimension(1,1));
+        Rectangle pointForGettingColor = new Rectangle(centerElemPoint, new Dimension(1, 1));
         // Get Image and define color of the center
-        String currentScreenPath = captureElementBitmap(element.getDriver(), pointForGettingColor)
+        String currentScreenPath = captureRectangleBitmap(element.getDriver(), pointForGettingColor)
                 .getAbsolutePath();
         Image actualImage = Toolkit.getDefaultToolkit().getImage(currentScreenPath);
         PixelGrabber actualImageGrab = new PixelGrabber(actualImage, 0, 0, -1, -1, false);
@@ -160,10 +160,12 @@ public class ImageUtil {
             return new Color(actualImageData[0]);
     }
 
+
     public static CompareResult takeScreenAndCompareWithBaseImg(
             Element elem, String pictureName) throws Exception {
         return takeScreenAndCompareWithBaseImg(
                 elem, pictureName, 99.0);
     }
+
 
 }
