@@ -4,14 +4,15 @@ import com.leroy.constants.MagMobElementTypes;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.configuration.Log;
+import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.elements.MagMobOvalCheckBox;
+import com.leroy.elements.MagMobCheckBox;
 import com.leroy.pages.app.common.widget.SupplierCardWidget;
 import com.leroy.pages.app.widgets.CalendarWidget;
 import io.qameta.allure.Step;
-
-import java.awt.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.support.Color;
 import java.time.LocalDate;
 import java.util.NoSuchElementException;
 
@@ -35,7 +36,7 @@ public class FilterPage extends BaseAppPage {
     private final String HORIZONTAL_SCROLL = "//android.widget.TextView[contains(@text,'%s')]/ancestor::android.widget.HorizontalScrollView";
 
     @AppFindBy(text = "МОЙ МАГАЗИН")
-    MagMobOvalCheckBox myShopBtn;
+    MagMobCheckBox myShopBtn;
 
     @AppFindBy(text = "ВСЯ ГАММА ЛМ")
     Element gammaLmBtn;
@@ -166,8 +167,8 @@ public class FilterPage extends BaseAppPage {
     }
 
     public FilterPage shouldFilterHasBeenChosen(String value, Color expectedColor)throws Exception{
-        Element element = E("contains("+value+")");
-        anAssert.isOvalCheckBoxEnabled(element, expectedColor);
+        MagMobCheckBox element = new MagMobCheckBox(driver, new CustomLocator(By.xpath("//*[contains(@text, '"+value+"')]")));
+        anAssert.isTrue(element.isChecked(expectedColor), "Фильтр выбран");
         return this;
     }
 

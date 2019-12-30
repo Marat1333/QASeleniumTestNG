@@ -300,7 +300,7 @@ public class CreatingCustomerPage extends MenuPage {
                             "Цвет кнопки 'Мужской' должен быть подсвечен красным");
                     softAssert.isEquals(
                             maleOptionBtn.findChildElement("//span[contains(@class, 'Button-Text')]")
-                                    .getColor(), dangerColor,
+                                    .getPointColor(), dangerColor,
                             "Цвет кнопки 'Мужской' должен быть подсвечен красным");
                     break;
                 case FemaleBtn:
@@ -310,7 +310,7 @@ public class CreatingCustomerPage extends MenuPage {
                             "Цвет кнопки 'Женский' должен быть подсвечен красным");
                     softAssert.isEquals(
                             femaleOptionBtn.findChildElement("//span[contains(@class, 'Button-Text')]")
-                                    .getColor(), dangerColor,
+                                    .getPointColor(), dangerColor,
                             "Цвет кнопки 'Женский' должен быть подсвечен красным");
                     break;
                 case NameFld:
@@ -327,13 +327,13 @@ public class CreatingCustomerPage extends MenuPage {
                 case PersonalPhoneBtn:
                     softAssert.isEquals(
                             phonePersonalOptionBtn.findChildElement("//span[contains(@class, 'Button-Text')]")
-                                    .getColor(), dangerColor,
+                                    .getPointColor(), dangerColor,
                             "Цвет кнопки 'Личный' должен быть подсвечен красным");
                     break;
                 case WorkPhoneBtn:
                     softAssert.isEquals(
                             phoneWorkOptionBtn.findChildElement("//span[contains(@class, 'Button-Text')]")
-                                    .getColor(), dangerColor,
+                                    .getPointColor(), dangerColor,
                             "Цвет кнопки 'Рабочий' должен быть подсвечен красным");
                     break;
                 default:

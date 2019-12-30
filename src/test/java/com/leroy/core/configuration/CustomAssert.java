@@ -146,21 +146,4 @@ public class CustomAssert {
                 desc);
     }
 
-    public void isOvalCheckBoxEnabled(Element element, Color expectedColor) throws Exception{
-        Color actualColor = ImageUtil.getPointColor(element);
-        Assert.assertTrue(similarTo(actualColor,expectedColor));
-    }
-
-    protected boolean similarTo(Color actualColor, Color expectedColor){
-        double limit = 20;
-        double distance = Math.pow(actualColor.getRed() - expectedColor.getRed(),2)
-                + Math.pow(actualColor.getGreen() - expectedColor.getGreen(),2)
-                + Math.pow(actualColor.getBlue() - expectedColor.getBlue(),2);
-        if(distance < limit){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
 }

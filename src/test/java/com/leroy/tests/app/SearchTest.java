@@ -1,7 +1,7 @@
 package com.leroy.tests.app;
 
 import com.leroy.constants.EnvConstants;
-import com.leroy.elements.MagMobOvalCheckBox;
+import com.leroy.elements.MagMobCheckBox;
 import com.leroy.models.UserData;
 import com.leroy.pages.LoginPage;
 import com.leroy.pages.app.common.*;
@@ -9,8 +9,7 @@ import com.leroy.pages.app.sales.ProductCardPage;
 import com.leroy.pages.app.sales.SalesPage;
 import com.leroy.tests.BaseState;
 import org.testng.annotations.Test;
-
-import java.awt.*;
+import org.openqa.selenium.support.Color;
 import java.time.LocalDate;
 
 public class SearchTest extends BaseState {
@@ -89,7 +88,7 @@ public class SearchTest extends BaseState {
         UserData seller = new UserData(EnvConstants.BASIC_USER_NAME,EnvConstants.BASIC_USER_PASS);
         LocalDate avsDate = LocalDate.of(2019, 12,5);
         String supplierSearchContext = "123";
-        Color expectedColor = MagMobOvalCheckBox.getActiveGreenColor();
+        Color expectedColor = MagMobCheckBox.getActiveGreenColor();
 
         // Pre-conditions
         loginPage.loginInAndGoTo(seller, LoginPage.SALES_SECTION);
@@ -100,7 +99,7 @@ public class SearchTest extends BaseState {
 
         // Step 1
         log.step("выбрать одну из гамм");
-        filterPage.choseGammaFilter();
+        filterPage.choseGammaFilter(filterPage.GAMMA+" A");
         filterPage.shouldFilterHasBeenChosen(filterPage.GAMMA+" A", expectedColor);
 
         // Step 2
@@ -148,7 +147,7 @@ public class SearchTest extends BaseState {
         LoginPage loginPage = new LoginPage(context);
         UserData seller = new UserData(EnvConstants.BASIC_USER_NAME,EnvConstants.BASIC_USER_PASS);
         LocalDate avsDate = LocalDate.of(2019, 12,5);
-        Color expectedColor = MagMobOvalCheckBox.getActiveGreenColor();
+        Color expectedColor = MagMobCheckBox.getActiveGreenColor();
 
         // Pre-conditions
         loginPage.loginInAndGoTo(seller, LoginPage.SALES_SECTION);
@@ -164,7 +163,7 @@ public class SearchTest extends BaseState {
         // Step 2
         log.step("выбрать одну из гамм");
         AllGammaFilterPage allGammaFilterPage = new AllGammaFilterPage(context);
-        allGammaFilterPage.choseGammaFilter();
+        allGammaFilterPage.choseGammaFilter(filterPage.GAMMA+" B");
         allGammaFilterPage.shouldFilterHasBeenChosen(filterPage.GAMMA+" B",expectedColor);
 
         // Step 3
@@ -194,8 +193,8 @@ public class SearchTest extends BaseState {
     public void testC22789172()throws Exception {
         LoginPage loginPage = new LoginPage(context);
         UserData seller = new UserData(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS);
-        Color expectedGreenColor = MagMobOvalCheckBox.getActiveGreenColor();
-        Color expectedGreyColor = MagMobOvalCheckBox.getInactiveWhiteColor();
+        Color expectedGreenColor = MagMobCheckBox.getActiveGreenColor();
+        Color expectedWhiteColor = MagMobCheckBox.getInactiveWhiteColor();
 
         // Pre-conditions
         loginPage.loginInAndGoTo(seller, LoginPage.SALES_SECTION);
@@ -211,8 +210,9 @@ public class SearchTest extends BaseState {
         // Step 2
         log.step("выбрать более 1 фильтра и нажать \"Показать товары\"");
         MyShopFilterPage myShopFilterPage = searchProductPage.goToFilterPage();
-        myShopFilterPage.choseTopFilter();
-        myShopFilterPage.shouldFilterHasBeenChosen(myShopFilterPage.TOP,expectedGreenColor);
+        myShopFilterPage.scrollHorizontalWidget(myShopFilterPage.GAMMA, myShopFilterPage.GAMMA+" ET");
+        myShopFilterPage.choseGammaFilter(myShopFilterPage.GAMMA+" ET");
+        myShopFilterPage.shouldFilterHasBeenChosen(myShopFilterPage.GAMMA+" ET",expectedGreenColor);
         myShopFilterPage.applyChosenFilters();
 
         searchProductPage.verifyRequiredElements();
@@ -228,7 +228,8 @@ public class SearchTest extends BaseState {
         // Step 4
         log.step("перейти в фильтры");
         searchProductPage.goToFilterPage();
-        myShopFilterPage.shouldFilterHasBeenChosen(myShopFilterPage.TOP,expectedGreyColor);
+        myShopFilterPage.scrollHorizontalWidget(myShopFilterPage.GAMMA, myShopFilterPage.GAMMA+" ET");
+        myShopFilterPage.shouldFilterHasBeenChosen(myShopFilterPage.GAMMA+" ET",expectedWhiteColor);
 
     }
 }
