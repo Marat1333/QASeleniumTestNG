@@ -41,7 +41,7 @@ public class BaseAppPage extends BasePage {
     }
 
     protected void waitForProgressBarIsVisible() {
-        progressBar.waitForVisibility(tiny_timeout, Duration.ofMillis(100));
+        progressBar.waitForVisibility(tiny_timeout, Duration.ofMillis(50));
     }
 
     protected void waitForProgressBarIsInvisible() {

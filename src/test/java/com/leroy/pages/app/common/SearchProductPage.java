@@ -11,7 +11,6 @@ import com.leroy.pages.app.sales.AddProductPage;
 import com.leroy.pages.app.sales.widget.SearchProductCardWidget;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.Wait;
 
 public class SearchProductPage extends BaseAppPage {
 
@@ -54,7 +53,7 @@ public class SearchProductPage extends BaseAppPage {
     // ---------------- Action Steps -------------------------//
 
     @Step("Сбросить фильтры, инициировав скрипт со страницы поиска")
-    public void discardFilters(){
+    public void discardFilters() {
         discardAllFiltersBtn.click();
     }
 
@@ -86,13 +85,13 @@ public class SearchProductPage extends BaseAppPage {
     }
 
     @Step("Перейти на страницу выбора фильтров")
-    public MyShopFilterPage goToFilterPage(){
+    public MyShopFilterPage goToFilterPage() {
         filter.click();
         return new MyShopFilterPage(context);
     }
 
     @Step("Открыть окно сортировки")
-    public SortModal openSortPage(){
+    public SortModal openSortPage() {
         sort.click();
         return new SortModal(context);
     }
@@ -108,19 +107,20 @@ public class SearchProductPage extends BaseAppPage {
         return this;
     }
 
-    public void shouldNotFoundMsgBeDisplayed(String value){
-        Element element = new Element(driver, By.xpath(String.format(notFoundMsg,value)));
-        anAssert.isTrue(element.isVisible(), "Поиск по запросу "+value+" не вернул результатов");
+    public void shouldNotFoundMsgBeDisplayed(String value) {
+        Element element = new Element(driver, By.xpath(String.format(notFoundMsg, value)));
+        anAssert.isTrue(element.isVisible(),
+                "Поиск по запросу " + value + " не должен вернуть результатов. Видно соответствующее сообщение");
     }
 
-    public void shouldDiscardAllFiltersBtnBeDisplayed(){
+    public void shouldDiscardAllFiltersBtnBeDisplayed() {
         discardAllFiltersBtn.waitForVisibility();
-        anAssert.isTrue(discardAllFiltersBtn.isVisible(),"Кнопка \"Сбросить фильтры\" отображена");
+        anAssert.isTrue(discardAllFiltersBtn.isVisible(), "Кнопка \"Сбросить фильтры\" отображена");
     }
 
-    public void shouldNotDiscardAllFiltersBtnBeDisplayed(){
+    public void shouldNotDiscardAllFiltersBtnBeDisplayed() {
         discardAllFiltersBtn.waitForInvisibility();
-        anAssert.isFalse(discardAllFiltersBtn.isVisible(),"Кнопка \"Сбросить фильтры\" не отображена");
+        anAssert.isFalse(discardAllFiltersBtn.isVisible(), "Кнопка \"Сбросить фильтры\" не отображена");
     }
 
     public SearchProductPage shouldCountOfProductsOnPageMoreThan(int count) {
