@@ -120,7 +120,7 @@ public class SearchProductPage extends BaseAppPage {
 
     public void shouldNotDiscardAllFiltersBtnBeDisplayed(){
         discardAllFiltersBtn.waitForInvisibility();
-        anAssert.isFalse(discardAllFiltersBtn.isVisible(),"Кнопка \"Сбросить фильтры\" отображена");
+        anAssert.isFalse(discardAllFiltersBtn.isVisible(),"Кнопка \"Сбросить фильтры\" не отображена");
     }
 
     public SearchProductPage shouldCountOfProductsOnPageMoreThan(int count) {
