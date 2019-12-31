@@ -4,7 +4,7 @@
 settings:
   platform: android_phone
   browser: android_app
-  host: 0.0.0.0:4723
+  host: http://0.0.0.0:4723
   #build: 1.0.0 # Build version for NativeApps or run id for browser tests
   timeout: 30 # default wait timeout in seconds
 
