@@ -12,13 +12,13 @@ import com.leroy.pages.app.common.widget.SupplierCardWidget;
 import com.leroy.pages.app.widgets.CalendarWidget;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.Color;
+
 import java.time.LocalDate;
 import java.util.NoSuchElementException;
 
 public class FilterPage extends BaseAppPage {
 
-    public FilterPage(TestContext context){
+    public FilterPage(TestContext context) {
         super(context);
     }
 
@@ -44,7 +44,7 @@ public class FilterPage extends BaseAppPage {
     @AppFindBy(text = "ГАММА A")
     Element gammaABtn;
 
-    @AppFindBy(text="ПОД ЗАКАЗ")
+    @AppFindBy(text = "ПОД ЗАКАЗ")
     Element orderedProductBtn;
 
     @AppFindBy(text = "ОБЫЧНЫЙ")
@@ -70,12 +70,12 @@ public class FilterPage extends BaseAppPage {
     Element avs = E("contains(AVS)");
 
     @Step("Проскроллить фильтры до {neededElement}")
-    public void scrollHorizontalWidget(String neededScroll,String neededElement){
+    public void scrollHorizontalWidget(String neededScroll, String neededElement) {
         Element goalElement = E("contains(" + neededElement + ")");
-        Element anchorElement=null;
+        Element anchorElement = null;
         try {
-            anchorElement = E(String.format(HORIZONTAL_SCROLL,neededScroll));
-        }catch (NoSuchElementException e){
+            anchorElement = E(String.format(HORIZONTAL_SCROLL, neededScroll));
+        } catch (NoSuchElementException e) {
             Log.error("Выбрана несуществующая горизонтальная область скролла. Необходимо выбрать из: ГАММА, ТОП, ОБЫЧНЫЙ (тип продукта)");
         }
         swipeRightTo(anchorElement, goalElement);
@@ -83,24 +83,24 @@ public class FilterPage extends BaseAppPage {
     }
 
     @Step("Выбрать фрейм фильтров {value}")
-    public void switchFiltersFrame(String value){
+    public void switchFiltersFrame(String value) {
         scrollUp();
-        if (value.equals(ALL_GAMMA_FRAME_TYPE)){
+        if (value.equals(ALL_GAMMA_FRAME_TYPE)) {
             gammaLmBtn.click();
-        }else{
+        } else {
             myShopBtn.click();
         }
     }
 
     @Step("Очистить все фильтры")
-    public void clearAllFilters(){
+    public void clearAllFilters() {
         scrollUp();
         clearAllFiltersBtn.click();
     }
 
     @Step("Выбрать checkBox фильтр {value}")
-    public void choseCheckBoxFilter(String value) throws Exception{
-        switch (value){
+    public void choseCheckBoxFilter(String value) throws Exception {
+        switch (value) {
             case TOP_1000:
                 top1000.click();
                 break;
@@ -124,35 +124,34 @@ public class FilterPage extends BaseAppPage {
     }
 
     @Step("Выбрать фильтр {gamma}")
-    public void choseGammaFilter(String gamma){
+    public void choseGammaFilter(String gamma) {
         gamma = gamma.toUpperCase();
         try {
             E("contains(" + gamma + ")").click();
-        }catch (NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             Log.error("Выбранная Гамма не найдена");
         }
     }
 
     @Step("Выбрать тип продукта {type}")
-    public void choseProductType(String type){
+    public void choseProductType(String type) {
         scrollDown();
-        if (type.equals(COMMON_PRODUCT_TYPE)){
+        if (type.equals(COMMON_PRODUCT_TYPE)) {
             commonProductBtn.click();
-        }else {
+        } else {
             orderedProductBtn.click();
         }
     }
 
     @Step("Выбрать дату avs")
-    public void choseAvsDate(LocalDate date)throws Exception{
+    public void choseAvsDate(LocalDate date) throws Exception {
         avsDateBtn.click();
         CalendarWidget calendarWidget = new CalendarWidget(context.getDriver());
         calendarWidget.selectDate(date);
     }
 
     @Step("Показать товары по выбранным фильтрам")
-    public SearchProductPage applyChosenFilters(){
-        showGoodsBtn.waitForVisibility();
+    public SearchProductPage applyChosenFilters() {
         scrollDown();
         showGoodsBtn.click();
         return new SearchProductPage(context);
@@ -160,15 +159,21 @@ public class FilterPage extends BaseAppPage {
 
     //Verifications
 
-    public FilterPage shouldElementHasBeenSelected(String value){
-        Element anchorElement = E(String.format(SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH,value));
+    public FilterPage shouldElementHasBeenSelected(String value) {
+        Element anchorElement = E(String.format(SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH, value));
         anAssert.isElementImageMatches(anchorElement, MagMobElementTypes.CHECK_BOX_FILTER_PAGE.getPictureName());
         return this;
     }
 
-    public FilterPage shouldFilterHasBeenChosen(String value, Color expectedColor)throws Exception{
-        MagMobCheckBox element = new MagMobCheckBox(driver, new CustomLocator(By.xpath("//*[contains(@text, '"+value+"')]")));
-        anAssert.isTrue(element.isChecked(expectedColor), "Фильтр выбран");
+    public FilterPage shouldFilterHasBeenChosen(String value) throws Exception {
+        MagMobCheckBox element = new MagMobCheckBox(driver, new CustomLocator(By.xpath("//*[contains(@text, '" + value + "')]")));
+        anAssert.isTrue(element.isChecked(), "Фильтр '"+value+"' должен быть +выбран");
+        return this;
+    }
+
+    public FilterPage shouldFilterHasNotBeenChosen(String value) throws Exception {
+        MagMobCheckBox element = new MagMobCheckBox(driver, new CustomLocator(By.xpath("//*[contains(@text, '" + value + "')]")));
+        anAssert.isFalse(element.isChecked(), "Фильтр '"+value+"' не должен быть +выбран");
         return this;
     }
 

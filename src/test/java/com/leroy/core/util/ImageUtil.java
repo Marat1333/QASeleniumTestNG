@@ -1,9 +1,9 @@
 package com.leroy.core.util;
 
-import com.leroy.constants.MagMobElementTypes;
 import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.web_elements.general.Element;
+import io.appium.java_client.MobileElement;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
@@ -50,7 +50,7 @@ public class ImageUtil {
      * @return - file with image
      * @throws Exception -
      */
-    private static File captureElementBitmap(WebDriver driver, Rectangle rect) throws Exception {
+    public static File captureRectangleBitmap(WebDriver driver, Rectangle rect) throws Exception {
         File screen = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
         BufferedImage img = ImageIO.read(screen);
         BufferedImage dest = img.getSubimage(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
@@ -114,7 +114,7 @@ public class ImageUtil {
      */
     public static void takeScreenShot(WebDriver driver, Rectangle rect, String pictureName)
             throws Exception {
-        File file = captureElementBitmap(driver, rect);
+        File file = captureRectangleBitmap(driver, rect);
         FileUtils.copyFile(file, new File(PATH_SNAPSHOTS + pictureName + ".png"));
     }
 
@@ -127,8 +127,8 @@ public class ImageUtil {
             WebDriver driver, Rectangle rect,
             String pictureName, Double expectedPercentage) throws Exception {
         String filePath = PATH_SNAPSHOTS + pictureName + ".png";
-        String screenshotPath = captureElementBitmap(driver, rect).getAbsolutePath();
-        Log.debug("Picture: " + pictureName +" Path: " +screenshotPath);
+        String screenshotPath = captureRectangleBitmap(driver, rect).getAbsolutePath();
+        Log.debug("Picture: " + pictureName + " Path: " + screenshotPath);
         return compareImage(screenshotPath,
                 filePath, expectedPercentage);
     }
@@ -139,18 +139,27 @@ public class ImageUtil {
                 elem.getDriver(), elem.getRectangle(), pictureName, expectedPercentage);
     }
 
-    public static Color getPointColor(Element element, int x, int y) throws Exception{
-        String pictureName = MagMobElementTypes.OVAL_CHECKBOX.getPictureName();
-        ImageUtil.takeScreenShot(element, pictureName);
-
-        String screenShotPath = PATH_SNAPSHOTS + pictureName + ".png";
-        BufferedImage screenShot = ImageIO.read(new File(screenShotPath));
-
-        x = screenShot.getWidth()/2+x;
-        y = screenShot.getHeight()/2+y;
-
-        return new Color(screenShot.getRGB(x,y));
+    public static Color getColor(Element element, int xOffset, int yOffset) throws Exception {
+        // Find center of Element with offset
+        Point centerElemPoint = ((MobileElement) element.getWebElement()).getCenter();
+        centerElemPoint.x += xOffset;
+        centerElemPoint.y += yOffset;
+        Rectangle pointForGettingColor = new Rectangle(centerElemPoint, new Dimension(1, 1));
+        // Get Image and define color of the center
+        String currentScreenPath = captureRectangleBitmap(element.getDriver(), pointForGettingColor)
+                .getAbsolutePath();
+        Image actualImage = Toolkit.getDefaultToolkit().getImage(currentScreenPath);
+        PixelGrabber actualImageGrab = new PixelGrabber(actualImage, 0, 0, -1, -1, false);
+        int[] actualImageData = null;
+        if (actualImageGrab.grabPixels()) {
+            actualImageData = (int[]) actualImageGrab.getPixels();
+        }
+        if (actualImageData == null)
+            return null;
+        else
+            return new Color(actualImageData[0]);
     }
+
 
     public static CompareResult takeScreenAndCompareWithBaseImg(
             Element elem, String pictureName) throws Exception {

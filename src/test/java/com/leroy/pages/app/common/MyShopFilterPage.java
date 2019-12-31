@@ -6,9 +6,11 @@ import com.leroy.core.web_elements.general.Element;
 import io.qameta.allure.Step;
 
 public class MyShopFilterPage extends FilterPage {
+
     public MyShopFilterPage(TestContext context){
         super(context);
     }
+
     public final String TOP = "ТОП";
     public final String TOP_EM = "Топ ЕМ";
     public final String HAS_AVAILABLE_STOCK = "Есть теор. запас";
@@ -22,6 +24,11 @@ public class MyShopFilterPage extends FilterPage {
     Element topEm = E("contains(Топ ЕМ)");
 
     Element hasAvailableStock = E("contains(Есть теор. запас)");
+
+    @Override
+    public void waitForPageIsLoaded() {
+        top0Btn.waitForVisibility();
+    }
 
     @Override
     @Step("Выбрать checkBox фильтр {value}")

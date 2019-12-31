@@ -10,7 +10,8 @@ public class WebBaseSteps extends BaseState {
 
     public <T> T loginAndGoTo(UserData userData, Class<? extends BaseWebPage> pageClass) throws Exception {
         new LoginWebPage(context).logIn(userData);
-        return new OrdersPage(context).goToPage(pageClass);
+        return new OrdersPage(context).closeNewFeaturesModalWindowIfExist()
+                .goToPage(pageClass);
     }
 
     public <T> T loginAndGoTo(Class<? extends BaseWebPage> pageClass) throws Exception {

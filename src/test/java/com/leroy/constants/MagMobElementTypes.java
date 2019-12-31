@@ -6,8 +6,7 @@ public enum MagMobElementTypes {
     PLUS("plus"),
     CIRCLE_PLUS("circle_plus"),
     CHECK_BOX_SELECTED("checkBoxSupplierSearchPage"),
-    CHECK_BOX_FILTER_PAGE("checkBoxFilterPage"),
-    OVAL_CHECKBOX("ovalCheckBoxWithText");
+    CHECK_BOX_FILTER_PAGE("checkBoxFilterPage");
 
     private String pictureName;
 
