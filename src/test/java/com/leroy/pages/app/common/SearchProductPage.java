@@ -2,16 +2,20 @@ package com.leroy.pages.app.common;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.pages.app.common.modal.SortModal;
 import com.leroy.pages.app.sales.AddProductPage;
+import com.leroy.pages.app.sales.SalesPage;
 import com.leroy.pages.app.sales.widget.SearchProductCardWidget;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.Wait;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SearchProductPage extends BaseAppPage {
 
@@ -32,6 +36,9 @@ public class SearchProductPage extends BaseAppPage {
             clazz = SearchProductCardWidget.class)
     private ElementList<SearchProductCardWidget> productCards;
 
+    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"lmui-Icon\"]/ancestor::android.view.ViewGroup[2]")
+    ElementList <Element> historyElementList;
+
     @AppFindBy(text = "Фильтр")
     Element filter;
 
@@ -42,27 +49,72 @@ public class SearchProductPage extends BaseAppPage {
     @AppFindBy(xpath = "//android.view.ViewGroup[preceding-sibling::android.view.ViewGroup[2][ancestor::android.view.ViewGroup[@content-desc=\"ScreenContent\"]]]")
     Element sort;
 
+    @AppFindBy(text = "Ты пока ничего не искал(а)")
+    Element firstSearchMsg;
+
     Element discardAllFiltersBtn = E("contains(СБРОСИТЬ ФИЛЬТРЫ)");
 
-    private final String notFoundMsg = "//*[contains(@text, 'Поиск «%s» не дал результатов')]";
+    private final String SEARCH_HISTORY_ELEMENT = "//android.widget.TextView";
+    private final String NOT_FOUND_MSG = "//*[contains(@text, 'Поиск «%s» не дал результатов')]";
+    private List<String> visibleSearchHistory = new ArrayList<>();
+    private int elementCounter=0;
+    private final int searchHistoryMaxSize=20;
 
     @Override
     public void waitForPageIsLoaded() {
         searchField.waitForVisibility();
     }
 
+    public List<String> getVisibleSearchHistory(){
+        return visibleSearchHistory;
+    }
+
+    private void initializeVisibleSearchHistory()throws Exception{
+        for (int i=0; i<historyElementList.getCount();i++){
+            String tmp = historyElementList.get(i).findChildElement(SEARCH_HISTORY_ELEMENT).getText();
+            if (!visibleSearchHistory.contains(tmp)) {
+                visibleSearchHistory.add(tmp);
+                elementCounter++;
+            }
+        }
+    }
+
     // ---------------- Action Steps -------------------------//
+
+    @Step("Перейти на главную страницу")
+    public SalesPage backToSalesPage(){
+        backBtn.click();
+        return new SalesPage(context);
+    }
+
+    @Step("Ввести поисковой запрос {value} раз и инициировать поиск")
+    public List<String> createSearchHistory(int value){
+        List<String> searchHistory = new ArrayList<>();
+        String tmp = "1";
+        for (int i=0; i<value;i++) {
+            enterTextInSearchFieldAndSubmit(tmp);
+            searchHistory.add(tmp);
+            tmp=tmp+"1";
+        }
+        return searchHistory;
+    }
 
     @Step("Сбросить фильтры, инициировав скрипт со страницы поиска")
     public void discardFilters(){
         discardAllFiltersBtn.click();
     }
 
-    @Step("Введите {text} в поле поиска товара")
-    public SearchProductPage enterTextInSearchField(String text) {
+    @Step("Введите {text} в поле поиска товара и выполните поиск")
+    public SearchProductPage enterTextInSearchFieldAndSubmit(String text) {
         searchField.clearFillAndSubmit(text);
         waitForProgressBarIsVisible();
         waitForProgressBarIsInvisible();
+        return this;
+    }
+
+    @Step("Введите {text} в поле поиска товара")
+    public SearchProductPage enterTextInSearchField(String text){
+        searchField.clearAndFill(text);
         return this;
     }
 
@@ -108,8 +160,43 @@ public class SearchProductPage extends BaseAppPage {
         return this;
     }
 
+    public void verifySearchHistoryMaxSize(List<String> list)throws Exception{
+        hideKeyboard();
+        initializeVisibleSearchHistory();
+        Element element=new Element(driver, new CustomLocator(By.xpath("//android.widget.TextView[@text='"+list.get(list.size()-searchHistoryMaxSize)+"']")));
+        scrollDownTo(element);
+        initializeVisibleSearchHistory();
+
+        softAssert.isTrue(elementCounter==searchHistoryMaxSize,"История поиска состоит из 20 элементов");
+        softAssert.isFalse(visibleSearchHistory.contains(list.get(list.size()-1-searchHistoryMaxSize)),"Не отображаются поисковые запросы, сделанные ранее последних 20 запросов");
+        softAssert.verifyAll();
+    }
+
+    public void verifyElementsOfSearchHistoryContainsSearchPhrase(String searchPhrase)throws Exception{
+        hideKeyboard();
+        List<String> containsVisibleSearchHistory = new ArrayList<>();
+
+        for (int i=0; i<historyElementList.getCount();i++){
+            String tmp = historyElementList.get(i).findChildElement(SEARCH_HISTORY_ELEMENT).getText();
+            if (!containsVisibleSearchHistory.contains(tmp)) {
+                containsVisibleSearchHistory.add(tmp);
+            }
+        }
+
+        for (String tmp : containsVisibleSearchHistory){
+            System.out.println(tmp);
+            anAssert.isTrue(tmp.contains(searchPhrase),"Каждое совпадение содержит поисковую строку");
+        }
+        anAssert.isTrue(containsVisibleSearchHistory.get(containsVisibleSearchHistory.size()-1).equals(searchPhrase),"Последний элемент истории поиска полностью совпадает с поисковой фразой");
+    }
+
+    public void shouldFirstSearchMsgBeDisplayed(){
+        hideKeyboard();
+        anAssert.isTrue(firstSearchMsg.isVisible(),"Отображено сообщение о первом поиске");
+    }
+
     public void shouldNotFoundMsgBeDisplayed(String value){
-        Element element = new Element(driver, By.xpath(String.format(notFoundMsg,value)));
+        Element element = new Element(driver, By.xpath(String.format(NOT_FOUND_MSG,value)));
         anAssert.isTrue(element.isVisible(), "Поиск по запросу "+value+" не вернул результатов");
     }
 

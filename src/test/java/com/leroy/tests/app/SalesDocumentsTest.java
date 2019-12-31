@@ -28,7 +28,7 @@ public class SalesDocumentsTest extends BaseState {
         // Step #3
         String inputDataStep3 = "164";
         log.step("Введите 164 код товара");
-        oldSearchProductPage.enterTextInSearchField(inputDataStep3)
+        oldSearchProductPage.enterTextInSearchFieldAndSubmit(inputDataStep3)
                 .shouldCountOfProductsOnPageMoreThan(1)
                 .shouldProductCardsContainText(inputDataStep3)
                 .shouldProductCardContainAllRequiredElements(0);

@@ -11,6 +11,7 @@ import com.leroy.tests.BaseState;
 import org.testng.annotations.Test;
 import org.openqa.selenium.support.Color;
 import java.time.LocalDate;
+import java.util.List;
 
 public class SearchTest extends BaseState {
 
@@ -53,7 +54,7 @@ public class SearchTest extends BaseState {
 
         // Step 5
         log.step("Введите полное значение для поиска по ЛМ коду| 10008698");
-        searchProductPage.enterTextInSearchField(lmCode);
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
         ProductCardPage productCardPage = new ProductCardPage(context)
                 .verifyRequiredElements()
                 .shouldProductLMCodeIs(lmCode);
@@ -61,32 +62,33 @@ public class SearchTest extends BaseState {
 
         // Step 6
         log.step("Введите название товара для поиска");
-        searchProductPage.enterTextInSearchField(searchContext);
+        searchProductPage.enterTextInSearchFieldAndSubmit(searchContext);
         searchProductPage.shouldProductCardsContainText(searchContext);
 
         // Step 7
         log.step("Ввести штрихкод вручную");
-        searchProductPage.enterTextInSearchField(barCode);
+        searchProductPage.enterTextInSearchFieldAndSubmit(barCode);
         productCardPage = new ProductCardPage(context)
                 .shouldProductBarCodeIs(barCode);
         searchProductPage = productCardPage.returnBack();
 
         // Step 8
         log.step("Введите часть ЛМ кода для поиска");
-        searchProductPage.enterTextInSearchField(shortLmCode);
+        searchProductPage.enterTextInSearchFieldAndSubmit(shortLmCode);
         searchProductPage.shouldProductCardsContainText(shortLmCode);
 
         // Step 9
-        log.step("Ввести в поисковую строку положительное число длинной >8 символов ("+shortBarCode+") и инициировать поиск");
-        searchProductPage.enterTextInSearchField(shortBarCode);
+        log.step("Ввести в поисковую строку положительное число длинной >8 символов (" + shortBarCode + ") и инициировать поиск");
+        searchProductPage.enterTextInSearchFieldAndSubmit(shortBarCode);
         searchProductPage.shouldProductCardsContainText(shortBarCode);
     }
+
     @Test(description = "C22846686 Мой магазин. Выбор фильтров каждого блока фильтров")
-    public void testC22846686() throws Exception{
+    public void testC22846686() throws Exception {
 
         LoginPage loginPage = new LoginPage(context);
-        UserData seller = new UserData(EnvConstants.BASIC_USER_NAME,EnvConstants.BASIC_USER_PASS);
-        LocalDate avsDate = LocalDate.of(2019, 12,5);
+        UserData seller = new UserData(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS);
+        LocalDate avsDate = LocalDate.of(2019, 12, 5);
         String supplierSearchContext = "123";
         Color expectedColor = MagMobCheckBox.getActiveGreenColor();
 
@@ -99,13 +101,13 @@ public class SearchTest extends BaseState {
 
         // Step 1
         log.step("выбрать одну из гамм");
-        filterPage.choseGammaFilter(filterPage.GAMMA+" A");
-        filterPage.shouldFilterHasBeenChosen(filterPage.GAMMA+" A", expectedColor);
+        filterPage.choseGammaFilter(filterPage.GAMMA + " A");
+        filterPage.shouldFilterHasBeenChosen(filterPage.GAMMA + " A", expectedColor);
 
         // Step 2
         log.step("выбрать один из топов");
         filterPage.choseTopFilter();
-        filterPage.shouldFilterHasBeenChosen(filterPage.TOP,expectedColor);
+        filterPage.shouldFilterHasBeenChosen(filterPage.TOP, expectedColor);
 
         // Step 3
         log.step("выбрать 1 из чек-боксов блока с типами товаров");
@@ -115,7 +117,7 @@ public class SearchTest extends BaseState {
         // Step 4
         log.step("выбрать тип товара");
         filterPage.choseProductType(filterPage.ORDERED_PRODUCT_TYPE);
-        filterPage.shouldFilterHasBeenChosen(filterPage.ORDERED_PRODUCT_TYPE,expectedColor);
+        filterPage.shouldFilterHasBeenChosen(filterPage.ORDERED_PRODUCT_TYPE, expectedColor);
 
 
         // Step 5
@@ -143,10 +145,10 @@ public class SearchTest extends BaseState {
     }
 
     @Test(description = "C22789209 Вся гамма ЛМ. Выбор фильтров каждого раздела")
-    public void testC22789209()throws Exception{
+    public void testC22789209() throws Exception {
         LoginPage loginPage = new LoginPage(context);
-        UserData seller = new UserData(EnvConstants.BASIC_USER_NAME,EnvConstants.BASIC_USER_PASS);
-        LocalDate avsDate = LocalDate.of(2019, 12,5);
+        UserData seller = new UserData(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS);
+        LocalDate avsDate = LocalDate.of(2019, 12, 5);
         Color expectedColor = MagMobCheckBox.getActiveGreenColor();
 
         // Pre-conditions
@@ -158,23 +160,23 @@ public class SearchTest extends BaseState {
         // Step 1
         log.step("выбрать овальный чек-бокс \"Вся гамма ЛМ\"");
         filterPage.switchFiltersFrame(filterPage.ALL_GAMMA_FRAME_TYPE);
-        filterPage.shouldFilterHasBeenChosen(filterPage.ALL_GAMMA_FRAME_TYPE,expectedColor);
+        filterPage.shouldFilterHasBeenChosen(filterPage.ALL_GAMMA_FRAME_TYPE, expectedColor);
 
         // Step 2
         log.step("выбрать одну из гамм");
         AllGammaFilterPage allGammaFilterPage = new AllGammaFilterPage(context);
-        allGammaFilterPage.choseGammaFilter(filterPage.GAMMA+" B");
-        allGammaFilterPage.shouldFilterHasBeenChosen(filterPage.GAMMA+" B",expectedColor);
+        allGammaFilterPage.choseGammaFilter(filterPage.GAMMA + " B");
+        allGammaFilterPage.shouldFilterHasBeenChosen(filterPage.GAMMA + " B", expectedColor);
 
         // Step 3
         log.step("выбрать 1 из чек-боксов блока с типами товаров");
         allGammaFilterPage.choseCheckBoxFilter(allGammaFilterPage.CTM);
-        allGammaFilterPage.shouldFilterHasBeenChosen(allGammaFilterPage.CTM,expectedColor);
+        allGammaFilterPage.shouldFilterHasBeenChosen(allGammaFilterPage.CTM, expectedColor);
 
         // Step 4
         log.step("выбрать тип товара");
         allGammaFilterPage.choseProductType(allGammaFilterPage.ORDERED_PRODUCT_TYPE);
-        allGammaFilterPage.shouldFilterHasBeenChosen(allGammaFilterPage.ORDERED_PRODUCT_TYPE,expectedColor);
+        allGammaFilterPage.shouldFilterHasBeenChosen(allGammaFilterPage.ORDERED_PRODUCT_TYPE, expectedColor);
 
         // Step 5
         log.step("выбрать дату авс");
@@ -190,7 +192,7 @@ public class SearchTest extends BaseState {
     }
 
     @Test(description = "C22789172 На поисковой запрос не вернулись результаты")
-    public void testC22789172()throws Exception {
+    public void testC22789172() throws Exception {
         LoginPage loginPage = new LoginPage(context);
         UserData seller = new UserData(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS);
         Color expectedGreenColor = MagMobCheckBox.getActiveGreenColor();
@@ -204,15 +206,15 @@ public class SearchTest extends BaseState {
 
         // Step 1
         log.step("Ввести в поле поиска значение, результат поиска по которому не вернется");
-        searchProductPage.enterTextInSearchField(byName);
+        searchProductPage.enterTextInSearchFieldAndSubmit(byName);
         searchProductPage.shouldNotFoundMsgBeDisplayed(byName);
 
         // Step 2
         log.step("выбрать более 1 фильтра и нажать \"Показать товары\"");
         MyShopFilterPage myShopFilterPage = searchProductPage.goToFilterPage();
-        myShopFilterPage.scrollHorizontalWidget(myShopFilterPage.GAMMA, myShopFilterPage.GAMMA+" ET");
-        myShopFilterPage.choseGammaFilter(myShopFilterPage.GAMMA+" ET");
-        myShopFilterPage.shouldFilterHasBeenChosen(myShopFilterPage.GAMMA+" ET",expectedGreenColor);
+        myShopFilterPage.scrollHorizontalWidget(myShopFilterPage.GAMMA, myShopFilterPage.GAMMA + " ET");
+        myShopFilterPage.choseGammaFilter(myShopFilterPage.GAMMA + " ET");
+        myShopFilterPage.shouldFilterHasBeenChosen(myShopFilterPage.GAMMA + " ET", expectedGreenColor);
         myShopFilterPage.applyChosenFilters();
 
         searchProductPage.verifyRequiredElements();
@@ -228,8 +230,43 @@ public class SearchTest extends BaseState {
         // Step 4
         log.step("перейти в фильтры");
         searchProductPage.goToFilterPage();
-        myShopFilterPage.scrollHorizontalWidget(myShopFilterPage.GAMMA, myShopFilterPage.GAMMA+" ET");
-        myShopFilterPage.shouldFilterHasBeenChosen(myShopFilterPage.GAMMA+" ET",expectedWhiteColor);
+        myShopFilterPage.scrollHorizontalWidget(myShopFilterPage.GAMMA, myShopFilterPage.GAMMA + " ET");
+        myShopFilterPage.shouldFilterHasBeenChosen(myShopFilterPage.GAMMA + " ET", expectedWhiteColor);
 
+    }
+
+
+    @Test(description = "C22789176 Вывод истории поиска")
+    public void testC22789176() throws Exception {
+        LoginPage loginPage = new LoginPage(context);
+        UserData seller = new UserData(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS);
+        List<String> searchPhrases;
+        int searchPhrasesCount=21;
+
+        // Pre-conditions
+        loginPage.loginInAndGoTo(seller, LoginPage.SALES_SECTION);
+        SalesPage salesPage = new SalesPage(context);
+
+        // Step 1
+        log.step("Нажать на поисковую строку");
+        SearchProductPage searchProductPage = salesPage.clickSearchBar();
+        searchProductPage.shouldFirstSearchMsgBeDisplayed();
+
+        // Step 2
+        log.step("ввести любую неповторяющуюся поисковую фразу и выполнить поиск "+searchPhrasesCount+" раз");
+        searchPhrases = searchProductPage.createSearchHistory(searchPhrasesCount);
+
+        // Step 3
+        log.step("Перезайти в поиск");
+        searchProductPage.backToSalesPage();
+        salesPage.clickSearchBar();
+        searchProductPage.verifySearchHistoryMaxSize(searchPhrases);
+
+        // Step 4
+        log.step("Начать вводить значение идентичное одному из ранее введенных");
+        searchProductPage.enterTextInSearchField
+                (searchProductPage.getVisibleSearchHistory().get(searchProductPage.getVisibleSearchHistory().size()/2));
+        searchProductPage.verifyElementsOfSearchHistoryContainsSearchPhrase
+                (searchProductPage.getVisibleSearchHistory().get(searchProductPage.getVisibleSearchHistory().size()/2));
     }
 }
