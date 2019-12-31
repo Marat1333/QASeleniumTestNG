@@ -1,7 +1,6 @@
 package com.leroy.tests.app;
 
 import com.leroy.constants.EnvConstants;
-import com.leroy.elements.MagMobCheckBox;
 import com.leroy.models.UserData;
 import com.leroy.pages.LoginPage;
 import com.leroy.pages.app.common.*;
@@ -9,7 +8,7 @@ import com.leroy.pages.app.sales.ProductCardPage;
 import com.leroy.pages.app.sales.SalesPage;
 import com.leroy.tests.BaseState;
 import org.testng.annotations.Test;
-import org.openqa.selenium.support.Color;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -90,7 +89,6 @@ public class SearchTest extends BaseState {
         UserData seller = new UserData(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS);
         LocalDate avsDate = LocalDate.of(2019, 12, 5);
         String supplierSearchContext = "123";
-        Color expectedColor = MagMobCheckBox.getActiveGreenColor();
 
         // Pre-conditions
         loginPage.loginInAndGoTo(seller, LoginPage.SALES_SECTION);
@@ -102,12 +100,12 @@ public class SearchTest extends BaseState {
         // Step 1
         log.step("выбрать одну из гамм");
         filterPage.choseGammaFilter(filterPage.GAMMA + " A");
-        filterPage.shouldFilterHasBeenChosen(filterPage.GAMMA + " A", expectedColor);
+        filterPage.shouldFilterHasBeenChosen(filterPage.GAMMA + " A");
 
         // Step 2
         log.step("выбрать один из топов");
         filterPage.choseTopFilter();
-        filterPage.shouldFilterHasBeenChosen(filterPage.TOP, expectedColor);
+        filterPage.shouldFilterHasBeenChosen(filterPage.TOP);
 
         // Step 3
         log.step("выбрать 1 из чек-боксов блока с типами товаров");
@@ -117,7 +115,7 @@ public class SearchTest extends BaseState {
         // Step 4
         log.step("выбрать тип товара");
         filterPage.choseProductType(filterPage.ORDERED_PRODUCT_TYPE);
-        filterPage.shouldFilterHasBeenChosen(filterPage.ORDERED_PRODUCT_TYPE, expectedColor);
+        filterPage.shouldFilterHasBeenChosen(filterPage.ORDERED_PRODUCT_TYPE);
 
 
         // Step 5
@@ -149,7 +147,6 @@ public class SearchTest extends BaseState {
         LoginPage loginPage = new LoginPage(context);
         UserData seller = new UserData(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS);
         LocalDate avsDate = LocalDate.of(2019, 12, 5);
-        Color expectedColor = MagMobCheckBox.getActiveGreenColor();
 
         // Pre-conditions
         loginPage.loginInAndGoTo(seller, LoginPage.SALES_SECTION);
@@ -160,23 +157,23 @@ public class SearchTest extends BaseState {
         // Step 1
         log.step("выбрать овальный чек-бокс \"Вся гамма ЛМ\"");
         filterPage.switchFiltersFrame(filterPage.ALL_GAMMA_FRAME_TYPE);
-        filterPage.shouldFilterHasBeenChosen(filterPage.ALL_GAMMA_FRAME_TYPE, expectedColor);
+        filterPage.shouldFilterHasBeenChosen(filterPage.ALL_GAMMA_FRAME_TYPE);
 
         // Step 2
         log.step("выбрать одну из гамм");
         AllGammaFilterPage allGammaFilterPage = new AllGammaFilterPage(context);
         allGammaFilterPage.choseGammaFilter(filterPage.GAMMA + " B");
-        allGammaFilterPage.shouldFilterHasBeenChosen(filterPage.GAMMA + " B", expectedColor);
+        allGammaFilterPage.shouldFilterHasBeenChosen(filterPage.GAMMA + " B");
 
         // Step 3
         log.step("выбрать 1 из чек-боксов блока с типами товаров");
         allGammaFilterPage.choseCheckBoxFilter(allGammaFilterPage.CTM);
-        allGammaFilterPage.shouldFilterHasBeenChosen(allGammaFilterPage.CTM, expectedColor);
+        allGammaFilterPage.shouldElementHasBeenSelected(allGammaFilterPage.CTM);
 
         // Step 4
         log.step("выбрать тип товара");
         allGammaFilterPage.choseProductType(allGammaFilterPage.ORDERED_PRODUCT_TYPE);
-        allGammaFilterPage.shouldFilterHasBeenChosen(allGammaFilterPage.ORDERED_PRODUCT_TYPE, expectedColor);
+        allGammaFilterPage.shouldFilterHasBeenChosen(allGammaFilterPage.ORDERED_PRODUCT_TYPE);
 
         // Step 5
         log.step("выбрать дату авс");
@@ -195,8 +192,6 @@ public class SearchTest extends BaseState {
     public void testC22789172() throws Exception {
         LoginPage loginPage = new LoginPage(context);
         UserData seller = new UserData(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS);
-        Color expectedGreenColor = MagMobCheckBox.getActiveGreenColor();
-        Color expectedWhiteColor = MagMobCheckBox.getInactiveWhiteColor();
 
         // Pre-conditions
         loginPage.loginInAndGoTo(seller, LoginPage.SALES_SECTION);
@@ -214,7 +209,7 @@ public class SearchTest extends BaseState {
         MyShopFilterPage myShopFilterPage = searchProductPage.goToFilterPage();
         myShopFilterPage.scrollHorizontalWidget(myShopFilterPage.GAMMA, myShopFilterPage.GAMMA + " ET");
         myShopFilterPage.choseGammaFilter(myShopFilterPage.GAMMA + " ET");
-        myShopFilterPage.shouldFilterHasBeenChosen(myShopFilterPage.GAMMA + " ET", expectedGreenColor);
+        myShopFilterPage.shouldFilterHasBeenChosen(myShopFilterPage.GAMMA + " ET");
         myShopFilterPage.applyChosenFilters();
 
         searchProductPage.verifyRequiredElements();
@@ -231,7 +226,7 @@ public class SearchTest extends BaseState {
         log.step("перейти в фильтры");
         searchProductPage.goToFilterPage();
         myShopFilterPage.scrollHorizontalWidget(myShopFilterPage.GAMMA, myShopFilterPage.GAMMA + " ET");
-        myShopFilterPage.shouldFilterHasBeenChosen(myShopFilterPage.GAMMA + " ET", expectedWhiteColor);
+        myShopFilterPage.shouldFilterHasNotBeenChosen(myShopFilterPage.GAMMA + " ET");
 
     }
 
