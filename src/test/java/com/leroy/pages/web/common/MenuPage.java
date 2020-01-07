@@ -44,7 +44,7 @@ public class MenuPage extends BaseWebPage {
     }
 
     public MenuPage closeNewFeaturesModalWindowIfExist() {
-        NewFeaturesModalWindow modalWindow = new NewFeaturesModalWindow(driver, new CustomLocator(By.xpath(NewFeaturesModalWindow.MAIN_DIV_XPATH)));
+        NewFeaturesModalWindow modalWindow = new NewFeaturesModalWindow(driver);
         modalWindow.waitForVisibility(1);
         if (modalWindow.isVisible())
             modalWindow.clickSubmitButton();

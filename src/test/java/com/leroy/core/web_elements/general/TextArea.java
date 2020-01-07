@@ -13,10 +13,6 @@ public class TextArea extends Element {
         super(driver, locator);
     }
 
-    public TextArea(WebDriver driver, CustomLocator locator, String name) {
-        super(driver, locator, name);
-    }
-
     // ------ PRIVATE METHODS ------ //
 
 
@@ -24,17 +20,6 @@ public class TextArea extends Element {
 
 
     // ------ PUBLIC METHODS ------ //
-
-    @Override
-    public void click() {
-        try {
-            initialWebElementIfNeeded();
-            webElement.click();
-        } catch (Exception err) {
-            Log.error("click(): " + err.getMessage());
-            throw err;
-        }
-    }
 
     /**
      * Get text from text area

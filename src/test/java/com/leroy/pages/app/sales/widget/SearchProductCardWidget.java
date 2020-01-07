@@ -4,20 +4,11 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 
 public class SearchProductCardWidget extends Element {
 
     public SearchProductCardWidget(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
-    }
-
-    public SearchProductCardWidget(WebDriver driver, CustomLocator locator, String name) {
-        super(driver, locator, name);
-    }
-
-    public SearchProductCardWidget(WebDriver driver, WebElement we, CustomLocator locator) {
-        super(driver, we, locator);
     }
 
     @AppFindBy(xpath = "./android.widget.TextView[1]")
@@ -49,7 +40,7 @@ public class SearchProductCardWidget extends Element {
     }
 
     public String getBarCode() {
-        return barCodeObj.getText().replaceAll(" ","");
+        return barCodeObj.getText().replaceAll(" ", "");
     }
 
     public String getName() {

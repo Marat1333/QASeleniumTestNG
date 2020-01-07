@@ -3,9 +3,9 @@ package com.leroy.core.configuration;
 import com.leroy.core.testrail.helpers.StepLog;
 import com.leroy.core.testrail.models.StepResultModel;
 import com.leroy.core.util.ImageUtil;
+import com.leroy.core.web_elements.general.BaseWidget;
 import com.leroy.core.web_elements.general.Element;
 import org.testng.Assert;
-import java.awt.*;
 
 public class CustomAssert {
 
@@ -109,7 +109,7 @@ public class CustomAssert {
             return true;
     }
 
-    public boolean isElementNotVisible(Element element) {
+    public boolean isElementNotVisible(BaseWidget element) {
         Assert.assertNotNull(element.getMetaName(), "Element meta name is NULL!");
         boolean elementVisibility = element.isVisible();
         String desc = element.getMetaName() + " не должен отображаться";
@@ -126,7 +126,7 @@ public class CustomAssert {
 
     public void isElementImageMatches(Element elem, String pictureName) {
         ImageUtil.CompareResult result = null;
-        String desc = "Визуально элемент '"+elem.getMetaName()+"' должен соответствовать эталону";
+        String desc = "Визуально элемент '" + elem.getMetaName() + "' должен соответствовать эталону";
         try {
             //comment after first use
             //ImageUtil.takeScreenShot(elem, pictureName);
@@ -138,7 +138,7 @@ public class CustomAssert {
         if (!ImageUtil.CompareResult.Matched.equals(result)) {
             StepResultModel curStepRes = stepLog.getCurrentStepResult();
             curStepRes.addExpectedResult(desc);
-            curStepRes.addActualResult("Визуально элемент '"+elem.getMetaName()+"' не соответствует эталону");
+            curStepRes.addActualResult("Визуально элемент '" + elem.getMetaName() + "' не соответствует эталону");
             stepLog.assertFail(desc);
         }
         Assert.assertEquals(result,
