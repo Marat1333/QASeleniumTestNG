@@ -11,7 +11,7 @@ import com.leroy.pages.web.OrdersPage;
 import com.leroy.pages.web.modal.NewFeaturesModalWindow;
 import org.openqa.selenium.By;
 
-public class MenuPage extends BaseWebPage {
+public class MenuPage extends MagPortalBasePage {
 
     public MenuPage(TestContext context) {
         super(context);
@@ -45,7 +45,7 @@ public class MenuPage extends BaseWebPage {
 
     public MenuPage closeNewFeaturesModalWindowIfExist() {
         NewFeaturesModalWindow modalWindow = new NewFeaturesModalWindow(driver);
-        modalWindow.waitForVisibility(1);
+        modalWindow.waitForVisibility(tiny_timeout);
         if (modalWindow.isVisible())
             modalWindow.clickSubmitButton();
         return this;
