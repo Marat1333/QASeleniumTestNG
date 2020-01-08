@@ -17,13 +17,13 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
 
     private List<E> elementList;
     protected List<WebElement> weList;
-    private Class<? extends Element> elementClass;
+    private Class<? extends BaseWidget> elementClass;
 
-    protected Class<? extends Element> getElementClass() {
+    protected Class<? extends BaseWidget> getElementClass() {
         return elementClass;
     }
 
-    protected void setElementClass(Class<? extends Element> elementClass) {
+    protected void setElementClass(Class<? extends BaseWidget> elementClass) {
         this.elementClass = elementClass;
     }
 
@@ -33,7 +33,7 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
         this.elementClass = Element.class;
     }
 
-    public ElementList(WebDriver driver, CustomLocator locator, Class<? extends Element> elementClass) {
+    public ElementList(WebDriver driver, CustomLocator locator, Class<? extends BaseWidget> elementClass) {
         this(driver, locator);
         this.elementClass = elementClass;
         initElements(this.locator);
@@ -100,8 +100,10 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
                 for (int i = 0; i < weList.size(); i++) {
                     CustomLocator elementLocator = new CustomLocator(
                             By.xpath(XpathUtil.getXpathByIndex(stringXPath, i)));
-                    elementList.add((E) getElementClass().getConstructor(WebDriver.class, WebElement.class, CustomLocator.class).
-                            newInstance(driver, weList.get(i), elementLocator));
+                    E oneElem = (E) getElementClass().getConstructor(WebDriver.class, CustomLocator.class).
+                            newInstance(driver,elementLocator);
+                    oneElem.setWebElement(weList.get(i));
+                    elementList.add(oneElem);
                 }
             } else
                 for (WebElement we : weList)

@@ -6,7 +6,9 @@ import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.fieldfactory.FieldInitializer;
+import com.leroy.core.web_elements.general.BaseWidget;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.core.web_elements.general.ElementList;
 import io.appium.java_client.android.AndroidDriver;
 import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.By;
@@ -155,29 +157,62 @@ public abstract class BaseContainer {
         }
     }
 
-    public Element E(String str, String metaName) {
-        if (str.startsWith("/"))
-            return new Element(driver, new CustomLocator(By.xpath(str), metaName));
-        else if (str.startsWith("#"))
-            return new Element(driver, new CustomLocator(
-                    By.id(str.replaceFirst("#", "")), metaName));
-        else if (str.startsWith("$")) {
-            CustomLocator locator = new CustomLocator(str.replaceFirst("\\$", ""), metaName);
-            return new Element(driver, locator);
+    private CustomLocator buildLocator(String str, String metaName) {
+        CustomLocator locator;
+        if (str.startsWith("/")) {
+            locator = new CustomLocator(By.xpath(str), metaName);
+        } else if (str.startsWith("#")) {
+            locator = new CustomLocator(By.id(str.replaceFirst("#", "")), metaName);
+        } else if (str.startsWith("$")) {
+            locator = new CustomLocator(str.replaceFirst("\\$", ""), metaName);
         } else if (str.contains("contains(")) {
             String _xpathTmp = DriverFactory.isAppProfile() ? "//*[contains(@text, '%s')]" : "//*[contains(.,'%s')]";
             String subStr = StringUtils.substringBetween(str, "contains(", ")");
-            return new Element(driver, new CustomLocator(By.xpath(String.format(_xpathTmp, subStr)),
-                    metaName == null ? String.format("Элемент содержащий текст '%s'", subStr) : metaName));
+            locator = new CustomLocator(By.xpath(String.format(_xpathTmp, subStr)),
+                    metaName == null ? String.format("Элемент содержащий текст '%s'", subStr) : metaName);
         } else {
             String _xpathTmp = DriverFactory.isAppProfile() ? "//*[@text='%s']" : "//*[text()='%s']";
-            return new Element(driver, new CustomLocator(By.xpath(String.format(_xpathTmp, str)),
-                    metaName == null ? String.format("Элемент с текстом '%s'", str) : metaName));
+            locator = new CustomLocator(By.xpath(String.format(_xpathTmp, str)),
+                    metaName == null ? String.format("Элемент с текстом '%s'", str) : metaName);
         }
+        return locator;
+    }
+
+    public <T extends Element> T E(String str, String metaName, Class<? extends Element> clazz) {
+        CustomLocator locator = buildLocator(str, metaName);
+        if (locator.getMetaName() == null)
+            throw new IllegalArgumentException("Wrapper with class " + clazz + " should have name");
+        try {
+            return (T) clazz.getConstructor(WebDriver.class, CustomLocator.class)
+                    .newInstance(driver, locator);
+        } catch (Exception err) {
+            Log.error(err.getMessage());
+            return null;
+        }
+    }
+
+    public Element E(String str, String metaName) {
+        return E(str, metaName, Element.class);
     }
 
     public Element E(String str) {
         return E(str, null);
+    }
+
+    public <E extends BaseWidget> ElementList<E> EL(String str, String metaName, Class<? extends BaseWidget> clazz) {
+        CustomLocator locator = buildLocator(str, metaName);
+        if (locator.getMetaName() == null)
+            throw new IllegalArgumentException("ElementList with class " + clazz + " should have name");
+        try {
+            return new ElementList<>(driver, locator, clazz);
+        } catch (Exception err) {
+            Log.error(err.getMessage());
+            return null;
+        }
+    }
+
+    public ElementList<Element> EL(String str, String metaName) {
+        return EL(str, metaName, Element.class);
     }
 
     /**

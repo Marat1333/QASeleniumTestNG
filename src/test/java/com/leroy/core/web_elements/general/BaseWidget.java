@@ -15,6 +15,10 @@ public abstract class BaseWidget extends BaseWrapper {
 
     protected WebElement webElement;
 
+    void setWebElement(WebElement webElement) {
+        this.webElement = webElement;
+    }
+
     // ------ CONSTRUCTORS ------ //
     public BaseWidget(WebDriver driver) {
         super(driver);
