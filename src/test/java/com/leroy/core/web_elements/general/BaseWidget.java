@@ -96,7 +96,7 @@ public abstract class BaseWidget extends BaseWrapper {
      * @param xpath - Xpath
      * @return Element
      */
-    public Element findChildElement(String xpath) { // TODO надо сделать через <T>
+    public Element findChildElement(String xpath) {
         if (xpath.startsWith("."))
             xpath = xpath.replaceFirst(".", "");
         return new Element(driver, By.xpath(getXpath() + xpath));

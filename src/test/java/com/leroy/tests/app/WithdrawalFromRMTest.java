@@ -5,7 +5,7 @@ import com.leroy.pages.LoginPage;
 import com.leroy.pages.app.more.UserProfilePage;
 import com.leroy.pages.app.sales.SalesPage;
 import com.leroy.pages.app.work.*;
-import com.leroy.tests.BaseState;
+import com.leroy.tests.AppBaseSteps;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
 
@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Random;
 
-public class WithdrawalFromRMTest extends BaseState {
+public class WithdrawalFromRMTest extends AppBaseSteps {
 
     @Test(description = "C3132493 Создание заявки на Отзыв RM из раздела Работа")
     public void testC3132493() throws Exception {
