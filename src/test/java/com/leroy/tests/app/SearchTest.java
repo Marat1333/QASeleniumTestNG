@@ -4,8 +4,11 @@ import com.leroy.constants.EnvConstants;
 import com.leroy.models.UserData;
 import com.leroy.pages.LoginPage;
 import com.leroy.pages.app.common.*;
+import com.leroy.pages.app.sales.PricesAndQuantityPage;
 import com.leroy.pages.app.sales.ProductCardPage;
 import com.leroy.pages.app.sales.SalesPage;
+import com.leroy.pages.app.sales.product_card.ProductDescriptionPage;
+import com.leroy.pages.app.sales.product_card.SameProductsPage;
 import com.leroy.tests.AppBaseSteps;
 import org.testng.annotations.Test;
 
@@ -54,9 +57,8 @@ public class SearchTest extends AppBaseSteps {
         // Step 5
         log.step("Введите полное значение для поиска по ЛМ коду| 10008698");
         searchProductPage.enterTextInSearchField(lmCode);
-        ProductCardPage productCardPage = new ProductCardPage(context)
-                .verifyRequiredElements()
-                .shouldProductLMCodeIs(lmCode);
+        ProductDescriptionPage productCardPage = new ProductDescriptionPage(context).verifyRequiredElements();
+        productCardPage.shouldProductLMCodeIs(lmCode);
         productCardPage.returnBack();
 
         // Step 6
@@ -67,8 +69,7 @@ public class SearchTest extends AppBaseSteps {
         // Step 7
         log.step("Ввести штрихкод вручную");
         searchProductPage.enterTextInSearchField(barCode);
-        productCardPage = new ProductCardPage(context)
-                .shouldProductBarCodeIs(barCode);
+        productCardPage.shouldProductBarCodeIs(barCode);
         searchProductPage = productCardPage.returnBack();
 
         // Step 8
@@ -247,10 +248,21 @@ public class SearchTest extends AppBaseSteps {
         allGammaFilterPage.applyChosenFilters();
         searchProductPage.verifyProductCardHasAllGammaView();
 
-        //Step 2
+        // Step 2
         log.step("Перейти в одну из карточек товара");
-        ProductCardPage productCardPage = searchProductPage.goToProductCard(1);
-        //productCardPage.
+        ProductDescriptionPage productCardPage = searchProductPage.goToProductCard(1);
+        productCardPage.shouldGammaCardIsPresented();
+
+        // Step 3
+        log.step("Перейти во вкладку \"Аналогичные товары\"");
+        SameProductsPage sameProductsPage = productCardPage.goToNeededPage(productCardPage.SAME_PRODUCTS);
+        sameProductsPage.verifyProductCardHasAllGammaView();
+        sameProductsPage.goToNeededPage(sameProductsPage.DESCRIPTION);
+
+        // Step 4
+        log.step("Нажать на строку \"Цена\"");
+        PricesAndQuantityPage pricesAndQuantityPage = productCardPage.goToPricesAndQuantityPage();
+        pricesAndQuantityPage.shouldNotSupplyBtnBeDisplayed();
 
 
     }

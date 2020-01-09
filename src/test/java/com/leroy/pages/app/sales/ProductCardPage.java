@@ -7,6 +7,10 @@ import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.elements.MagMobButton;
 import com.leroy.pages.app.common.SearchProductPage;
+import com.leroy.pages.app.sales.product_card.ProductDescriptionPage;
+import com.leroy.pages.app.sales.product_card.ReviewsPage;
+import com.leroy.pages.app.sales.product_card.SameProductsPage;
+import com.leroy.pages.app.sales.product_card.SpecificationsPage;
 import com.leroy.pages.app.work.StockProductsPage;
 import io.qameta.allure.Step;
 
@@ -17,36 +21,23 @@ public class ProductCardPage extends BaseAppPage {
     }
 
     @AppFindBy(accessibilityId = "Tabs")
-    Element productTabs;
+    public Element productTabs;
 
     @AppFindBy(accessibilityId = "BackCloseModal")
-    Element returnBackBtn;
-
-    @AppFindBy(xpath = "//android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[3]/android.widget.TextView[1]",
-            metaName = "ЛМ код товара")
-    Element lmCode;
-
-    @AppFindBy(xpath = "//android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[3]/android.widget.TextView[2]",
-            metaName = "Бар код товара")
-    Element barCode;
-
-    @AppFindBy(xpath = "//android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[4]/android.widget.TextView[1]",
-            metaName = "Название товара")
-    Element productName;
+    public Element returnBackBtn;
 
     @AppFindBy(text = "ДЕЙСТВИЯ С ТОВАРОМ")
-    MagMobButton actionWithProductBtn;
-
-    @AppFindBy(text = "История продаж")
-    MagMobButton salesHistoryBtn;
-
-    @AppFindBy(text = "Цена")
-    MagMobButton productPriceBtn;
+    public MagMobButton actionWithProductBtn;
 
     @Override
     public void waitForPageIsLoaded() {
         productTabs.waitForVisibility();
     }
+
+    public final String DESCRIPTION = "ОПИСАНИЕ ТОВАРА";
+    public final String SPECIFICATION = "ХАРАКТЕРИСТИКИ";
+    public final String REVIEWS = "ОТЗЫВЫ";
+    public final String SAME_PRODUCTS = "АНАЛОГИЧНЫЕ ТОВАРЫ";
 
     /* ------------------------- ACTION STEPS -------------------------- */
 
@@ -57,10 +48,33 @@ public class ProductCardPage extends BaseAppPage {
         return new SearchProductPage(context);
     }
 
-    @Step("Перейти на страницу с детализацией цен и запасов")
-    public PricesAndQuantityPage goToPricesAndQuantityPage(){
-        productPriceBtn.click();
-        return new PricesAndQuantityPage(context);
+    @Step("Перейти во вкладку {value}")
+    public <T>T goToNeededPage(String value){
+        Element element;
+        switch (value){
+            case DESCRIPTION:
+                element = E("contains("+DESCRIPTION+")");
+                element.click();
+                return (T) new ProductDescriptionPage(context);
+            case SPECIFICATION:
+                element = E("contains("+SPECIFICATION+")");
+                element.click();
+                return (T) new SpecificationsPage(context);
+            case REVIEWS:
+                element = E("contains("+REVIEWS+")");
+                swipeRightTo(productTabs,element);
+                element.click();
+                return (T) new ReviewsPage(context);
+            case SAME_PRODUCTS:
+                element = E("contains("+SAME_PRODUCTS+")");
+                swipeRightTo(productTabs,element);
+                element.click();
+                return (T) new SameProductsPage(context);
+            default:
+                element = E("contains("+DESCRIPTION+")");
+                element.click();
+                return (T) new ProductDescriptionPage(context);
+        }
     }
 
     /* ------------------------- Verifications -------------------------- */
@@ -73,40 +87,6 @@ public class ProductCardPage extends BaseAppPage {
         softAssert.verifyAll();
 
         return this;
-    }
-
-    public ProductCardPage verifyRequiredContext(String searchContext) {
-        if (searchContext.matches("^.*?\\D+$")) {
-            anAssert.isEquals(productName.getText(), searchContext, searchContext);
-        }
-        if (searchContext.length() > 8) {
-            String barCode = this.barCode.getText().replaceAll(" ", "");
-            anAssert.isEquals(barCode, searchContext, searchContext);
-        } else {
-            String lmCode = this.lmCode.getText().replaceAll("^\\D+", "");
-            anAssert.isEquals(lmCode, searchContext, searchContext);
-        }
-
-
-        return this;
-    }
-
-    public ProductCardPage shouldProductLMCodeIs(String text) {
-        anAssert.isEquals(lmCode.getText().replaceAll("\\D", ""), text,
-                "ЛМ код должен быть %s");
-        return this;
-    }
-
-    public ProductCardPage shouldProductBarCodeIs(String text) {
-        anAssert.isEquals(barCode.getText().replaceAll("\\D", ""), text,
-                "Бар код должен быть %s");
-        return this;
-    }
-
-    public void shouldGammaCardIsPresented(){
-        softAssert.isFalse(actionWithProductBtn.isVisible(),"Кнопка \"Действия с товаром\" отсутствует в карточке товара ЛМ");
-        softAssert.isFalse(salesHistoryBtn.isVisible(),"Кнопка \"История продаж\" отсутствует в карточке товара ЛМ");
-//        softAssert.isFalse();
     }
 
 }

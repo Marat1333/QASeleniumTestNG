@@ -10,6 +10,7 @@ import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.pages.app.common.modal.SortModal;
 import com.leroy.pages.app.sales.AddProductPage;
 import com.leroy.pages.app.sales.SalesPage;
+import com.leroy.pages.app.sales.product_card.ProductDescriptionPage;
 import com.leroy.pages.app.sales.widget.SearchProductCardWidget;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
@@ -40,10 +41,10 @@ public class SearchProductPage extends BaseAppPage {
     ElementList <Element> historyElementList;
 
     @AppFindBy(text = "за штуку")
-    ElementList<Element> productCardPrice;
+    Element productCardPrice;
 
     @AppFindBy(text = "доступно")
-    ElementList<Element> productCardQuantity;
+    Element productCardQuantity;
 
     @AppFindBy(text = "Фильтр")
     Element filter;
@@ -93,12 +94,12 @@ public class SearchProductPage extends BaseAppPage {
     }
 
     @Step("Перейти в {value} карточку товара")
-    public ProductCardPage goToProductCard(int value) throws Exception {
+    public ProductDescriptionPage goToProductCard(int value) throws Exception {
         value--;
         scrollDownTo(productCards.get(value));
         anAssert.isTrue(productCards.get(value).isVisible(),"Найдена "+value+" по счету карточка товара");
         productCards.get(value).click();
-        return new ProductCardPage(context);
+        return new ProductDescriptionPage(context);
     }
 
     @Step("Перейти в окно выбора единицы номенклатуры")
@@ -137,10 +138,10 @@ public class SearchProductPage extends BaseAppPage {
     }
 
     public void verifyProductCardHasAllGammaView() throws Exception{
+        hideKeyboard();
         scrollDown();
-        softAssert.isElementVisible(productCardPrice.get(productCardPrice.getCount()-1));
-        softAssert.isElementVisible(productCardQuantity.get(productCardQuantity.getCount()-1));
-        softAssert.verifyAll();
+        anAssert.isFalse(productCardPrice.isVisible(),"Не отображается Цена");
+        anAssert.isFalse(productCardQuantity.isVisible(),"Не отображается Кол-во");
     }
 
     public void shouldDiscardAllFiltersBtnBeDisplayed() {
