@@ -127,7 +127,17 @@ public class DriverFactory {
         System.setProperty("mplatformfullname", platformVersion);
         System.setProperty("mbrowserfullname", browser + " " + browserVersion);
 
-        //6. Create Driver
+        //6. Override capabilities by VM options
+        String _app = System.getProperty("mApp");
+        String _platformVersion = System.getProperty("mPlatformVersion");
+        String _deviceName = System.getProperty("mDeviceName");
+        if (Strings.isNotNullAndNotEmpty(_app))
+            capabilities.setCapability("app", _app);
+        if (Strings.isNotNullAndNotEmpty(_platformVersion))
+            capabilities.setCapability("platformVersion", _platformVersion);
+        if (Strings.isNotNullAndNotEmpty(_deviceName))
+            capabilities.setCapability("deviceName", _deviceName);
+        //7. Create Driver
         return createDriver(capabilities, host, browser);
     }
 

@@ -1,13 +1,11 @@
 package com.leroy.core.web_elements.general;
 
 import com.leroy.constants.Fonts;
-import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.util.ImageUtil;
 import com.leroy.core.util.XpathUtil;
 import io.appium.java_client.MobileElement;
-import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.Color;
@@ -19,14 +17,8 @@ import org.testng.util.Strings;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.time.Duration;
-import java.util.List;
-import java.util.Map;
 
-public class Element extends BaseElement {
-
-    protected WebElement webElement;
-    private String metaName;
+public class Element extends BaseWidget {
 
     // ------ CONSTRUCTORS ------ //
     public Element(WebDriver driver, CustomLocator locator) {
@@ -39,12 +31,12 @@ public class Element extends BaseElement {
         initElements(this.locator);
     }
 
-    public Element(WebDriver driver, CustomLocator locator, String metaName) {
-        super(driver);
-        this.locator = locator;
-        this.metaName = metaName;
-        initElements(this.locator);
-    }
+//    public Element(WebDriver driver, CustomLocator locator, String metaName) {
+//        super(driver);
+//        this.locator = locator;
+//        this.metaName = metaName;
+//        initElements(this.locator);
+//    }
 
     public Element(WebDriver driver, WebElement we) {
         super(driver);
@@ -52,13 +44,6 @@ public class Element extends BaseElement {
         this.locator = new CustomLocator(By.xpath(getAbsoluteXPath()));
         initElements(locator);
     }
-
-   /* public Element(WebDriver driver, By locator, String metaName) {
-        this.driver = driver;
-        this.locator = new CustomLocator(locator);
-        this.metaName = metaName;
-        initElements(this.locator);
-    }*/
 
     public Element(WebDriver driver, WebElement we, CustomLocator locator) {
         this(driver, locator);
@@ -78,23 +63,6 @@ public class Element extends BaseElement {
     protected Object executeScript(String jsScript) {
         JavascriptExecutor js = (JavascriptExecutor) driver;
         return js.executeScript(jsScript, webElement);
-    }
-
-    /**
-     * Get name of Element
-     */
-    public String getMetaName() {
-        return metaName;
-    }
-
-    /**
-     * Set the name of the Element
-     *
-     * @param metaName
-     */
-    protected Element setMetaName(String metaName) {
-        this.metaName = metaName;
-        return this;
     }
 
     /**
@@ -192,131 +160,6 @@ public class Element extends BaseElement {
                 .replaceAll("/image\\[", "/*[name() = 'image'][");
     }
 
-    /**
-     * Wait for the web element is visible
-     *
-     * @param timeout
-     * @throws Exception
-     */
-    private void waitForVisibilityAndSearchAgain(int timeout, Duration sleepTimeout, boolean isSearchingAgain) {
-        WebDriverWait wait = new WebDriverWait(this.driver, timeout);
-        if (sleepTimeout != null)
-            wait.pollingEvery(sleepTimeout);
-        try {
-            wait.until((ExpectedCondition<Boolean>) driverObject -> isVisible());
-        } catch (org.openqa.selenium.StaleElementReferenceException e) {
-            if (isSearchingAgain) {
-                webElement = null;
-                if (locator != null)
-                    locator.setCacheLookup(false);
-                initialWebElementIfNeeded();
-                waitForVisibilityAndSearchAgain(timeout, sleepTimeout, false);
-            }
-        } catch (org.openqa.selenium.TimeoutException e) {
-            Log.warn(String.format("waitForVisibilityAndSearchAgain for " + getMetaName() + " failed (tried for %d second(s))", timeout));
-        }
-    }
-
-    // ------ PROTECTED METHODS ------ //
-
-    /**
-     * Finds an element if it has not already been found
-     */
-    protected void initialWebElementIfNeeded() {
-        initialWebElementIfNeeded(timeout);
-    }
-
-    protected void initialWebElementIfNeeded(int timeout) {
-        try {
-            if (locator != null) {
-                if (webElement == null) {
-                    initWebElement(timeout);
-                } else {
-                    if (!isCacheLookup() && isStaleReference())
-                        initWebElement(timeout);
-                }
-            }
-        } catch (Exception err) {
-            Log.error("Element " + (getMetaName() != null ? getMetaName() : "") + " not found. " + err.getMessage());
-            throw err;
-        }
-    }
-
-    /**
-     * Finds an web element
-     */
-    protected void initWebElement(int timeout) {
-        webElement = findElement(locator, timeout);
-    }
-
-    protected void initWebElement() {
-        webElement = findElement(locator);
-    }
-
-    /**
-     * Find Child web element with default timeout
-     *
-     * @param by - locator
-     * @return WebElement
-     */
-    protected WebElement findChildWebElement(By by) {
-        initialWebElementIfNeeded();
-        return webElement.findElement(by);
-    }
-
-    /**
-     * Find Child Element with default timeout
-     *
-     * @param xpath - Xpath
-     * @return Element
-     */
-    public Element findChildElement(String xpath) {
-        if (xpath.startsWith("."))
-            xpath = xpath.replaceFirst(".", "");
-        return new Element(driver, By.xpath(getXpath() + xpath));
-    }
-
-    /**
-     * Is stale element reference?
-     *
-     * @return true - if an element isn't presented in the DOM. If an element is presented in the DOM returns false
-     */
-    boolean isStaleReference() {
-        try {
-            // Calling any method forces a staleness check
-            webElement.isEnabled();
-            return false;
-        } catch (WebDriverException expected) {
-            return true;
-        }
-    }
-
-    // ------ PUBLIC METHODS ------ //
-
-    /**
-     * Find Child elements
-     *
-     * @param by - locator
-     * @return WebElement
-     */
-    protected List<WebElement> findChildElements(By by) {
-        return findChildElements(by, 1);
-    }
-
-    /**
-     * Find Child elements
-     *
-     * @param by      - locator
-     * @param timeout - timeout
-     * @return WebElement
-     */
-    protected List<WebElement> findChildElements(By by, int timeout) {
-        initialWebElementIfNeeded();
-        this.setImplicitWait(timeout);
-        List<WebElement> webElements = webElement.findElements(by);
-        this.setImplicitWait(DriverFactory.IMPLICIT_WAIT_TIME_OUT);
-        return webElements;
-    }
 
     public void click() {
         initialWebElementIfNeeded();
@@ -344,7 +187,7 @@ public class Element extends BaseElement {
 
     public void click(int timeout) {
         try {
-            waitForClickability(timeout, 2);
+            waitForClickability(timeout, 1);
             simpleClick(1);
         } catch (Exception err) {
             Log.error("click(): " + err.getMessage());
@@ -435,11 +278,11 @@ public class Element extends BaseElement {
     public void mouseMoveJS(int xOffset, int yOffset) {
         initialWebElementIfNeeded();
         try {
-            xOffset = xOffset < 0 ? 0 : xOffset;
-            yOffset = yOffset < 0 ? 0 : yOffset;
+            xOffset = Math.max(xOffset, 0);
+            yOffset = Math.max(yOffset, 0);
             Rectangle rect = getRectangleJs();
-            int clientX = rect.x + xOffset <= rect.x + rect.width ? rect.x + xOffset : rect.x + rect.width;
-            int clientY = rect.y + yOffset <= rect.y + rect.height ? rect.y + yOffset : rect.y + rect.height;
+            int clientX = Math.min(rect.x + xOffset, rect.x + rect.width);
+            int clientY = Math.min(rect.y + yOffset, rect.y + rect.height);
             ((JavascriptExecutor) this.driver).executeScript(
                     "var evt = document.createEvent('MouseEvents');" +
                             "evt.initMouseEvent(" +
@@ -476,7 +319,7 @@ public class Element extends BaseElement {
      * return tagname for the element
      */
     public String getTagName() {
-        return getTagName(3);
+        return getTagName(1);
     }
 
     /**
@@ -589,77 +432,6 @@ public class Element extends BaseElement {
         return getCssValue("font-size").replace("px", "");
     }
 
-    public boolean isPresent() {
-        this.setImplicitWait(0);
-        boolean isPresent = findElements(locator).size() > 0;
-        this.setImplicitWait(DriverFactory.IMPLICIT_WAIT_TIME_OUT);
-        return isPresent;
-    }
-
-    public boolean isPresent(int timeout) {
-        this.setImplicitWait(timeout);
-        boolean isPresent = findElements(locator).size() > 0;
-        this.setImplicitWait(DriverFactory.IMPLICIT_WAIT_TIME_OUT);
-        return isPresent;
-    }
-
-    public boolean isVisible() {
-        WebElement we;
-        if (locator != null) {
-            this.setImplicitWait(0);
-            List<WebElement> webElementList = findElements(locator);
-            this.setImplicitWait(DriverFactory.IMPLICIT_WAIT_TIME_OUT);
-            if (webElementList.size() <= 0)
-                return false;
-            we = webElementList.get(0);
-            webElement = we;
-        } else
-            we = webElement;
-        try {
-            return we.isDisplayed();
-        } catch (StaleElementReferenceException err) {
-            return false;
-        }
-    }
-
-    public boolean isVisible(int timeout) {
-        this.setImplicitWait(timeout);
-        List<WebElement> webElementList = findElements(locator);
-        this.setImplicitWait(DriverFactory.IMPLICIT_WAIT_TIME_OUT);
-        return webElementList.size() > 0 && webElementList.get(0).isDisplayed();
-    }
-
-    public void waitForVisibility() {
-        waitForVisibility(timeout);
-    }
-
-    public void waitForVisibility(int timeout) {
-        waitForVisibilityAndSearchAgain(timeout, null, true);
-    }
-
-    public void waitForVisibility(int timeout, Duration sleepTimeout) {
-        waitForVisibilityAndSearchAgain(timeout, sleepTimeout, true);
-    }
-
-    public void waitForInvisibility() {
-        waitForInvisibility(timeout);
-    }
-
-    public void waitForInvisibility(int timeout) {
-        WebDriverWait wait = new WebDriverWait(this.driver, (long) timeout);
-        try {
-            wait.until((ExpectedCondition<Boolean>) driverObject -> {
-                try {
-                    return !isVisible();
-                } catch (StaleElementReferenceException elRefErr) {
-                    return false;
-                }
-            });
-        } catch (org.openqa.selenium.TimeoutException e) {
-            Log.warn(String.format("waitForInvisibility failed (tried for %d second(s))", timeout));
-        }
-    }
-
     public Element hoverOver() {
 
         return hoverOver(false);
@@ -712,18 +484,6 @@ public class Element extends BaseElement {
         return this;
     }
 
-    public Rectangle getRectangle() {
-        initialWebElementIfNeeded();
-        Rectangle rect;
-        try {
-            rect = new Rectangle(webElement.getLocation(), webElement.getSize());
-        } catch (ElementNotInteractableException err) {
-            Log.warn("Element: " + getMetaName() + " Method: getRectangle(). Error: ElementNotInteractableException");
-            rect = getRectangleJs();
-        }
-        return rect;
-    }
-
     public String getCssValue(String cssAttribute) {
         return getCssValue(cssAttribute, 3);
     }
@@ -764,131 +524,12 @@ public class Element extends BaseElement {
         }
     }
 
-    /**
-     * Is enabled?
-     *
-     * @return true/false
-     */
-    public boolean isEnabled() {
-        initialWebElementIfNeeded();
-        try {
-            return webElement.isEnabled();
-        } catch (WebDriverException err) {
-            Log.warn("isEnabled() - " + err.getMessage());
-            return webElement.isEnabled();
-        }
-    }
-
-    public Point getLocation() {
-        initialWebElementIfNeeded();
-        try {
-            return webElement.getLocation();
-        } catch (ElementNotInteractableException err) {
-            Log.warn("Element: " + getMetaName() + " Method: getLocation(). Error: ElementNotInteractableException");
-            Rectangle rect = getRectangleJs();
-            return new Point(rect.x, rect.y);
-        }
-    }
-
-    public Dimension getSize() {
-        initialWebElementIfNeeded();
-        return webElement.getSize();
-    }
-
-    public int getHeight() {
-        initialWebElementIfNeeded();
-        try {
-            return webElement.getSize().getHeight();
-        } catch (ElementNotInteractableException err) {
-            Log.warn("Element: " + getMetaName() + " Method: getHeight(). Error: ElementNotInteractableException");
-            return getRectangleJs().getHeight();
-        }
-    }
-
-    public int getWidth() {
-        initialWebElementIfNeeded();
-        try {
-            return webElement.getSize().getWidth();
-        } catch (ElementNotInteractableException err) {
-            Log.warn("Element: " + getMetaName() + " Method: getWidth(). Error: ElementNotInteractableException");
-            return getRectangleJs().getWidth();
-        }
-    }
-
-    private int getIntFromObject(Object obj) {
-        if (obj instanceof Double)
-            return (int) Math.round((Double) obj);
-        if (obj instanceof Long) {
-            return Math.round((Long) obj);
-        }
-        throw new RuntimeException("Unknown type");
-    }
-
-    public Rectangle getRectangleJs() {
-        return getRectangleJs(3);
-    }
-
-    /**
-     * Gets the rectangle of the web element using javascript
-     *
-     * @param attemptsNumber - defines additional attempts to get the rectangle of the element
-     * @return Rectangle
-     */
-    private Rectangle getRectangleJs(int attemptsNumber) {
-        try {
-            initialWebElementIfNeeded();
-            String js = "return arguments[0].getBoundingClientRect()";
-            Map<String, Object> mapRect = (Map<String, Object>) ((JavascriptExecutor) driver).executeScript(js, webElement);
-            String keyX = /*isEdge()*/false ? "left" : "x";
-            String keyY = /*isEdge()*/false ? "top" : "y";
-            String keyWidth = "width";
-            String keyHeight = "height";
-            int x = getIntFromObject(mapRect.get(keyX));
-            int y = getIntFromObject(mapRect.get(keyY));
-            int width = getIntFromObject(mapRect.get(keyWidth));
-            int height = getIntFromObject(mapRect.get(keyHeight));
-            return new Rectangle(x, y, height, width);
-        } catch (StaleElementReferenceException e) {
-            if (attemptsNumber > 0) {
-                return getRectangleJs(attemptsNumber - 1);
-            } else
-                throw new RuntimeException("Element: " + getMetaName()
-                        + ". Method: getRectangleJs() - " + e.getMessage());
-        }
-    }
-
-    public int getY1Js() {
-        return getRectangleJs().y;
-    }
-
-    public int getY2Js() {
-        Rectangle r = getRectangleJs();
-        return r.y + r.height;
-    }
-
-    public int getX1Js() {
-        return getRectangleJs().x;
-    }
-
-    public int getX2Js() {
-        Rectangle r = getRectangleJs();
-        return r.x + r.width;
-    }
-
     public int getWidthJs() {
         return getRectangleJs().width;
     }
 
     public int getHeightJs() {
         return getRectangleJs().height;
-    }
-
-    public boolean waitUntilTextIsDifferent() {
-        return waitUntilTextIsDifferent(DriverFactory.IMPLICIT_WAIT_TIME_OUT);
-    }
-
-    public boolean waitUntilTextIsDifferent(int timeout) {
-        return waitUntilTextIsDifferent(null, timeout);
     }
 
     public boolean waitUntilTextIsDifferent(String previousText, int timeout) {
@@ -939,19 +580,6 @@ public class Element extends BaseElement {
 
     public void waitUntilTextContains(String referenceText) {
         waitUntilTextContains(referenceText, short_timeout);
-    }
-
-    /**
-     * get Rotate attribute value for the element
-     *
-     * @return String
-     */
-    public String getRotate() {
-        initialWebElementIfNeeded();
-        String rotate = StringUtils.substringBetween(webElement.getAttribute("transform"), "rotate(", ")");
-        if (rotate == null)
-            return "0";
-        return rotate.split(" ")[0].replaceAll("\\+", "");
     }
 
     public void scrollTo(String block, String inline) {
@@ -1145,7 +773,7 @@ public class Element extends BaseElement {
     public void scrollContentToTheRightJs() {
         initialWebElementIfNeeded();
         executeScript("arguments[0].scrollLeft = arguments[0].scrollWidth;");
-        WebDriverWait wait = new WebDriverWait(this.driver, (long) tiny_timeout);
+        WebDriverWait wait = new WebDriverWait(this.driver, tiny_timeout);
         try {  //we need to wait for the element's content to be scrolled to the right, especially for Edge
             wait.until((ExpectedCondition<Boolean>) driverObject -> isElementContentScrolledToRight());
         } catch (TimeoutException e) {

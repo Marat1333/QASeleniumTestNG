@@ -9,14 +9,10 @@ import org.openqa.selenium.support.ui.Select;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Combobox extends Element {
+public class Combobox extends BaseWidget {
 
     public Combobox(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
-    }
-
-    public Combobox(WebDriver driver, CustomLocator locator, String name) {
-        super(driver, locator, name);
     }
 
     public void selectOptionByIndex(int index) {

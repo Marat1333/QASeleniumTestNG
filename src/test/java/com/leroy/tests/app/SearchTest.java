@@ -6,12 +6,12 @@ import com.leroy.pages.LoginPage;
 import com.leroy.pages.app.common.*;
 import com.leroy.pages.app.sales.ProductCardPage;
 import com.leroy.pages.app.sales.SalesPage;
-import com.leroy.tests.BaseState;
+import com.leroy.tests.AppBaseSteps;
 import org.testng.annotations.Test;
 
 import java.time.LocalDate;
 
-public class SearchTest extends BaseState {
+public class SearchTest extends AppBaseSteps {
 
     private static final String ALL_DEPARTMENTS_TEXT = "Все отделы";
 

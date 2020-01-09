@@ -2,23 +2,15 @@ package com.leroy.pages.app.sales.widget;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
+import com.leroy.core.web_elements.general.BaseWidget;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.models.SalesDocumentData;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 
-public class SalesDocumentWidget extends Element {
+public class SalesDocumentWidget extends BaseWidget {
 
     public SalesDocumentWidget(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
-    }
-
-    public SalesDocumentWidget(WebDriver driver, CustomLocator locator, String name) {
-        super(driver, locator, name);
-    }
-
-    public SalesDocumentWidget(WebDriver driver, WebElement we, CustomLocator locator) {
-        super(driver, we, locator);
     }
 
     @AppFindBy(xpath = ".//android.widget.TextView[1]")

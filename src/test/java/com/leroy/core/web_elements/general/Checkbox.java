@@ -9,10 +9,6 @@ public class Checkbox extends Element {
         super(driver, locator);
     }
 
-    public Checkbox(WebDriver driver, CustomLocator locator, String name) {
-        super(driver, locator, name);
-    }
-
     public boolean isChecked() throws Exception {
         initialWebElementIfNeeded();
         waitForVisibility(short_timeout);

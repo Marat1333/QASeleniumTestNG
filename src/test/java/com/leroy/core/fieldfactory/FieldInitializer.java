@@ -95,8 +95,8 @@ public class FieldInitializer {
                 return clazz.getConstructor(WebDriver.class, CustomLocator.class, listType.getClass())
                         .newInstance(driver, fieldLocator.getLocator(), listType);
             else
-                return clazz.getConstructor(WebDriver.class, CustomLocator.class, String.class)
-                        .newInstance(driver, fieldLocator.getLocator(), fieldLocator.getMetaName());
+                return clazz.getConstructor(WebDriver.class, CustomLocator.class)
+                        .newInstance(driver, fieldLocator.getLocator());
         } catch (Exception e) {
             throw new AssertionError(
                     "WebElement can't be represented as " + clazz

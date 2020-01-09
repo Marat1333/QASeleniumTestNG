@@ -3,10 +3,10 @@ package com.leroy.tests.app;
 import com.leroy.pages.LoginPage;
 import com.leroy.pages.app.support.ComplainPage;
 import com.leroy.pages.app.support.SupportPage;
-import com.leroy.tests.BaseState;
+import com.leroy.tests.AppBaseSteps;
 import org.testng.annotations.Test;
 
-public class SupportTest extends BaseState {
+public class SupportTest extends AppBaseSteps {
 
     @Test(description = "C3201017 Создание тикета из приложения (пожаловаться)")
     public void testC3201017() throws Exception {
