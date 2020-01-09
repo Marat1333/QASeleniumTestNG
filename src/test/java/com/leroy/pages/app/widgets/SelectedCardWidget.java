@@ -12,14 +12,6 @@ public class SelectedCardWidget extends ProductCardWidget {
         super(driver, locator);
     }
 
-    public SelectedCardWidget(WebDriver driver, CustomLocator locator, String name) {
-        super(driver, locator, name);
-    }
-
-    public SelectedCardWidget(WebDriver driver, WebElement we, CustomLocator locator) {
-        super(driver, we, locator);
-    }
-
     @Override
     public String getName() {
         return new Element(driver, By.xpath(getXpath() + "/android.widget.TextView[4]")).getText();

@@ -3,13 +3,12 @@ package com.leroy.tests.app;
 import com.leroy.models.SalesDocumentData;
 import com.leroy.pages.LoginPage;
 import com.leroy.pages.app.common.OldSearchProductPage;
-import com.leroy.pages.app.common.SearchProductPage;
 import com.leroy.pages.app.sales.*;
-import com.leroy.tests.BaseState;
+import com.leroy.tests.AppBaseSteps;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
 
-public class SalesDocumentsTest extends BaseState {
+public class SalesDocumentsTest extends AppBaseSteps {
 
     @Test(description = "C3201029 Создание документа продажи")
     public void testC3201029() throws Exception {

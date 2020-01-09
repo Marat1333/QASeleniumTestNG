@@ -2,11 +2,13 @@ package com.leroy.core.web_elements.general;
 
 import com.google.common.collect.ImmutableMap;
 import com.leroy.core.configuration.DriverFactory;
+import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
 import io.appium.java_client.android.AndroidDriver;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 
 public class EditBox extends Element {
 
@@ -16,13 +18,24 @@ public class EditBox extends Element {
         super(driver, locator);
     }
 
-    public EditBox(WebDriver driver, CustomLocator locator, String name) {
-        super(driver, locator, name);
-    }
-
     // ------ PRIVATE METHODS ------ //
 
     // ------ PUBLIC METHODS ------ //
+
+    /**
+     * Is enabled?
+     *
+     * @return true/false
+     */
+    public boolean isEnabled() {
+        initialWebElementIfNeeded();
+        try {
+            return webElement.isEnabled();
+        } catch (WebDriverException err) {
+            Log.warn("isEnabled() - " + err.getMessage());
+            return webElement.isEnabled();
+        }
+    }
 
     public void clear() {
         initialWebElementIfNeeded();

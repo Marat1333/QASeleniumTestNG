@@ -1,5 +1,6 @@
 package com.leroy.core.annotations;
 
+import com.leroy.core.web_elements.general.BaseWidget;
 import com.leroy.core.web_elements.general.Element;
 
 import java.lang.annotation.ElementType;
@@ -22,7 +23,7 @@ public @interface AppFindBy {
 
     String cssSelector() default "";
 
-    Class<? extends Element> clazz() default Element.class;
+    Class<? extends BaseWidget> clazz() default Element.class;
 
     String metaName() default "";
 
