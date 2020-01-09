@@ -10,6 +10,7 @@ import com.leroy.tests.AppBaseSteps;
 import org.testng.annotations.Test;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class SearchTest extends AppBaseSteps {
 
@@ -225,6 +226,32 @@ public class SearchTest extends AppBaseSteps {
         searchProductPage.goToFilterPage();
         myShopFilterPage.scrollHorizontalWidget(myShopFilterPage.GAMMA, myShopFilterPage.GAMMA + " ET");
         myShopFilterPage.shouldFilterHasNotBeenChosen(myShopFilterPage.GAMMA + " ET");
+
+    }
+
+    @Test(description = "C22790468 Гамма ЛМ. Отсутствие: действий с товаром, истории продаж, поставки")
+    public void testC22790468() throws Exception {
+        LoginPage loginPage = new LoginPage(context);
+        UserData seller = new UserData(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS);
+
+        // Pre-conditions
+        loginPage.loginInAndGoTo(seller, LoginPage.SALES_SECTION);
+        SalesPage salesPage = new SalesPage(context);
+        SearchProductPage searchProductPage = salesPage.clickSearchBar();
+        MyShopFilterPage myShopFilterPage = searchProductPage.goToFilterPage();
+
+        // Step 1
+        log.step("Выбрать фильтр \"Вся гамма ЛМ\" и перейти на страницу результатов поиска");
+        myShopFilterPage.switchFiltersFrame(myShopFilterPage.ALL_GAMMA_FRAME_TYPE);
+        AllGammaFilterPage allGammaFilterPage = new AllGammaFilterPage(context);
+        allGammaFilterPage.applyChosenFilters();
+        searchProductPage.verifyProductCardHasAllGammaView();
+
+        //Step 2
+        log.step("Перейти в одну из карточек товара");
+        ProductCardPage productCardPage = searchProductPage.goToProductCard(1);
+        //productCardPage.
+
 
     }
 }

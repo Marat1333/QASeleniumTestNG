@@ -2,15 +2,20 @@ package com.leroy.pages.app.common;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.pages.app.common.modal.SortModal;
 import com.leroy.pages.app.sales.AddProductPage;
+import com.leroy.pages.app.sales.SalesPage;
 import com.leroy.pages.app.sales.widget.SearchProductCardWidget;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
+import java.util.ArrayList;
+import java.util.List;
+import com.leroy.pages.app.sales.ProductCardPage;
 
 public class SearchProductPage extends BaseAppPage {
 
@@ -30,6 +35,15 @@ public class SearchProductPage extends BaseAppPage {
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ScreenContent']//android.view.ViewGroup[android.widget.ImageView]",
             clazz = SearchProductCardWidget.class)
     private ElementList<SearchProductCardWidget> productCards;
+
+    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"lmui-Icon\"]/ancestor::android.view.ViewGroup[2]")
+    ElementList <Element> historyElementList;
+
+    @AppFindBy(text = "за штуку")
+    ElementList<Element> productCardPrice;
+
+    @AppFindBy(text = "доступно")
+    ElementList<Element> productCardQuantity;
 
     @AppFindBy(text = "Фильтр")
     Element filter;
@@ -78,6 +92,15 @@ public class SearchProductPage extends BaseAppPage {
         return new AddProductPage(context);
     }
 
+    @Step("Перейти в {value} карточку товара")
+    public ProductCardPage goToProductCard(int value) throws Exception {
+        value--;
+        scrollDownTo(productCards.get(value));
+        anAssert.isTrue(productCards.get(value).isVisible(),"Найдена "+value+" по счету карточка товара");
+        productCards.get(value).click();
+        return new ProductCardPage(context);
+    }
+
     @Step("Перейти в окно выбора единицы номенклатуры")
     public NomenclatureSearchPage goToNomenclatureWindow() {
         nomenclature.click();
@@ -111,6 +134,13 @@ public class SearchProductPage extends BaseAppPage {
         Element element = new Element(driver, By.xpath(String.format(notFoundMsg, value)));
         anAssert.isTrue(element.isVisible(),
                 "Поиск по запросу " + value + " не должен вернуть результатов. Видно соответствующее сообщение");
+    }
+
+    public void verifyProductCardHasAllGammaView() throws Exception{
+        scrollDown();
+        softAssert.isElementVisible(productCardPrice.get(productCardPrice.getCount()-1));
+        softAssert.isElementVisible(productCardQuantity.get(productCardQuantity.getCount()-1));
+        softAssert.verifyAll();
     }
 
     public void shouldDiscardAllFiltersBtnBeDisplayed() {

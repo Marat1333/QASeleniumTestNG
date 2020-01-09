@@ -37,6 +37,12 @@ public class ProductCardPage extends BaseAppPage {
     @AppFindBy(text = "ДЕЙСТВИЯ С ТОВАРОМ")
     MagMobButton actionWithProductBtn;
 
+    @AppFindBy(text = "История продаж")
+    MagMobButton salesHistoryBtn;
+
+    @AppFindBy(text = "Цена")
+    MagMobButton productPriceBtn;
+
     @Override
     public void waitForPageIsLoaded() {
         productTabs.waitForVisibility();
@@ -49,6 +55,12 @@ public class ProductCardPage extends BaseAppPage {
     public SearchProductPage returnBack() {
         returnBackBtn.click();
         return new SearchProductPage(context);
+    }
+
+    @Step("Перейти на страницу с детализацией цен и запасов")
+    public PricesAndQuantityPage goToPricesAndQuantityPage(){
+        productPriceBtn.click();
+        return new PricesAndQuantityPage(context);
     }
 
     /* ------------------------- Verifications -------------------------- */
@@ -89,6 +101,12 @@ public class ProductCardPage extends BaseAppPage {
         anAssert.isEquals(barCode.getText().replaceAll("\\D", ""), text,
                 "Бар код должен быть %s");
         return this;
+    }
+
+    public void shouldGammaCardIsPresented(){
+        softAssert.isFalse(actionWithProductBtn.isVisible(),"Кнопка \"Действия с товаром\" отсутствует в карточке товара ЛМ");
+        softAssert.isFalse(salesHistoryBtn.isVisible(),"Кнопка \"История продаж\" отсутствует в карточке товара ЛМ");
+//        softAssert.isFalse();
     }
 
 }
