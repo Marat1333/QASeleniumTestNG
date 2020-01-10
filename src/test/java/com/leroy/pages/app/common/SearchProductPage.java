@@ -41,9 +41,6 @@ public class SearchProductPage extends BaseAppPage {
             clazz = SearchProductCardWidget.class)
     private ElementList<SearchProductCardWidget> productCards;
 
-    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"lmui-Icon\"]/ancestor::android.view.ViewGroup[2]")
-    ElementList<Element> historyElementList;
-
     @AppFindBy(text = "Фильтр")
     Element filter;
 
@@ -59,19 +56,11 @@ public class SearchProductPage extends BaseAppPage {
 
     Element discardAllFiltersBtn = E("contains(СБРОСИТЬ ФИЛЬТРЫ)");
 
-    private final String SEARCH_HISTORY_ELEMENT = "//android.widget.TextView";
     private final String NOT_FOUND_MSG = "//*[contains(@text, 'Поиск «%s» не дал результатов')]";
-    private List<String> visibleSearchHistory = new ArrayList<>();
-    private int elementCounter = 0;
-    private final int searchHistoryMaxSize = 20;
 
     @Override
     public void waitForPageIsLoaded() {
         searchField.waitForVisibility();
-    }
-
-    public List<String> getVisibleSearchHistory() {
-        return visibleSearchHistory;
     }
 
     // ---------------- Action Steps -------------------------//
