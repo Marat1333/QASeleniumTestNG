@@ -70,7 +70,7 @@ public class SearchTest extends AppBaseSteps {
         // Step 7
         log.step("Ввести штрихкод вручную");
         searchProductPage.enterTextInSearchFieldAndSubmit(barCode);
-        productCardPage = new ProductCardPage(context)
+        productCardPage = new ProductDescriptionPage(context)
                 .shouldProductBarCodeIs(barCode);
         searchProductPage = productCardPage.returnBack();
 
@@ -275,7 +275,7 @@ public class SearchTest extends AppBaseSteps {
         // Pre-conditions
         loginPage.loginInAndGoTo(seller, LoginPage.SALES_SECTION);
         SalesPage salesPage = new SalesPage(context);
-        SearchProductPage searchProductPage = salesPage.clickSearchBar();
+        SearchProductPage searchProductPage = salesPage.clickSearchBar(false);
         MyShopFilterPage myShopFilterPage = searchProductPage.goToFilterPage();
 
         // Step 1

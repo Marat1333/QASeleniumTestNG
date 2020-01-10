@@ -64,13 +64,13 @@ public class ProductDescriptionPage extends ProductCardPage {
         return this;
     }
 
-    public ProductCardPage shouldProductLMCodeIs(String text) {
+    public ProductDescriptionPage shouldProductLMCodeIs(String text) {
         anAssert.isEquals(lmCode.getText().replaceAll("\\D", ""), text,
                 "ЛМ код должен быть %s");
         return this;
     }
 
-    public ProductCardPage shouldProductBarCodeIs(String text) {
+    public ProductDescriptionPage shouldProductBarCodeIs(String text) {
         anAssert.isEquals(barCode.getText().replaceAll("\\D", ""), text,
                 "Бар код должен быть %s");
         return this;
