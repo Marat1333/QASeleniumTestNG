@@ -211,7 +211,7 @@ public class SearchTest extends AppBaseSteps {
         myShopFilterPage.scrollHorizontalWidget(myShopFilterPage.GAMMA, myShopFilterPage.GAMMA + " ET");
         myShopFilterPage.choseGammaFilter(myShopFilterPage.GAMMA + " ET");
         myShopFilterPage.shouldFilterHasBeenChosen(myShopFilterPage.GAMMA + " ET");
-        myShopFilterPage.applyChosenFilters();
+        searchProductPage  = myShopFilterPage.applyChosenFilters();
 
         searchProductPage.verifyRequiredElements();
         searchProductPage.shouldNotFoundMsgBeDisplayed(byName);

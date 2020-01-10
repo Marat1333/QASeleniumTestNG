@@ -56,7 +56,7 @@ public class SearchProductPage extends BaseAppPage {
 
     Element discardAllFiltersBtn = E("contains(СБРОСИТЬ ФИЛЬТРЫ)");
 
-    private final String NOT_FOUND_MSG = "//*[contains(@text, 'Поиск «%s» не дал результатов')]";
+    private final String NOT_FOUND_MSG_XPATH = "//*[contains(@text, 'Поиск «%s» не дал результатов')]";
 
     @Override
     public void waitForPageIsLoaded() {
@@ -65,13 +65,13 @@ public class SearchProductPage extends BaseAppPage {
 
     // ---------------- Action Steps -------------------------//
 
-    @Step("Перейти на главную страницу")
+    @Step("Перейти на главную страницу 'Документы продажи'")
     public SalesPage backToSalesPage() {
         backBtn.click();
         return new SalesPage(context);
     }
 
-    @Step("Ввести поисковой запрос {value} раз и инициировать поиск")
+    @Step("Ввести поисковой запрос со случайным текстом {value} раз и инициировать поиск")
     public List<String> createSearchHistory(int value) {
         List<String> searchHistory = new ArrayList<>();
         String tmp = RandomStringUtils.randomAlphanumeric(1);
@@ -166,11 +166,11 @@ public class SearchProductPage extends BaseAppPage {
     }
 
     public void shouldFirstSearchMsgBeDisplayed() {
-        anAssert.isTrue(firstSearchMsg.isVisible(), "Отображено сообщение о первом поиске");
+        anAssert.isTrue(firstSearchMsg.isVisible(), "Должно быть отображено сообщение о первом поиске");
     }
 
     public void shouldNotFoundMsgBeDisplayed(String value) {
-        Element element = new Element(driver, By.xpath(String.format(NOT_FOUND_MSG, value)));
+        Element element = new Element(driver, By.xpath(String.format(NOT_FOUND_MSG_XPATH, value)));
         anAssert.isTrue(element.isVisible(), "Поиск по запросу " + value + " не вернул результатов");
     }
 
