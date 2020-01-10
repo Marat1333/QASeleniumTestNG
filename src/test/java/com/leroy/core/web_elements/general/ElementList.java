@@ -1,12 +1,10 @@
 package com.leroy.core.web_elements.general;
 
-import com.leroy.constants.Fonts;
 import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.util.XpathUtil;
 import org.openqa.selenium.*;
-import org.openqa.selenium.support.Color;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.lang.reflect.InvocationTargetException;
@@ -15,17 +13,17 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-public class ElementList<E extends Element> extends BaseElement implements Iterable<E> {
+public class ElementList<E extends BaseWidget> extends BaseWrapper implements Iterable<E> {
 
     private List<E> elementList;
     protected List<WebElement> weList;
-    private Class<? extends Element> elementClass;
+    private Class<? extends BaseWidget> elementClass;
 
-    protected Class<? extends Element> getElementClass() {
+    protected Class<? extends BaseWidget> getElementClass() {
         return elementClass;
     }
 
-    protected void setElementClass(Class<? extends Element> elementClass) {
+    protected void setElementClass(Class<? extends BaseWidget> elementClass) {
         this.elementClass = elementClass;
     }
 
@@ -35,21 +33,11 @@ public class ElementList<E extends Element> extends BaseElement implements Itera
         this.elementClass = Element.class;
     }
 
-    public ElementList(WebDriver driver, CustomLocator locator, Class<? extends Element> elementClass) {
+    public ElementList(WebDriver driver, CustomLocator locator, Class<? extends BaseWidget> elementClass) {
         this(driver, locator);
         this.elementClass = elementClass;
         initElements(this.locator);
     }
-
-    /*public ElementList(WebDriver driver, List<By> locators) throws Exception {
-        super(driver);
-        weList = new ArrayList<>();
-        for (By locator : locators) {
-            weList.add(findElement(locator));
-        }
-        this.elementClass = Element.class;
-        initElementList(DriverFactory.IMPLICIT_WAIT_TIME_OUT);
-    }*/
 
     @Override
     public Iterator<E> iterator() {
@@ -112,8 +100,10 @@ public class ElementList<E extends Element> extends BaseElement implements Itera
                 for (int i = 0; i < weList.size(); i++) {
                     CustomLocator elementLocator = new CustomLocator(
                             By.xpath(XpathUtil.getXpathByIndex(stringXPath, i)));
-                    elementList.add((E) getElementClass().getConstructor(WebDriver.class, WebElement.class, CustomLocator.class).
-                            newInstance(driver, weList.get(i), elementLocator));
+                    E oneElem = (E) getElementClass().getConstructor(WebDriver.class, CustomLocator.class).
+                            newInstance(driver,elementLocator);
+                    oneElem.setWebElement(weList.get(i));
+                    elementList.add(oneElem);
                 }
             } else
                 for (WebElement we : weList)
@@ -283,7 +273,7 @@ public class ElementList<E extends Element> extends BaseElement implements Itera
             return false;
         }
         int i = 0;
-        for (Element we : elementList) {
+        for (E we : elementList) {
             if (!we.isVisible()) {
                 Log.error("Element#" + i + " is not visible");
                 return false;
@@ -302,7 +292,7 @@ public class ElementList<E extends Element> extends BaseElement implements Itera
             Log.error("There are none elements");
             return false;
         }
-        for (Element we : elementList)
+        for (E we : elementList)
             if (we.isVisible())
                 return true;
         return false;
@@ -325,7 +315,7 @@ public class ElementList<E extends Element> extends BaseElement implements Itera
     public boolean confirmInvisibility(boolean checkSvg) throws Exception {
         initWebElementListIfNeeded(0);
         int i = 0;
-        for (Element we : elementList) {
+        for (E we : elementList) {
             if (we.isVisible()) {
                 if (!checkSvg || we.findChildWebElement(By.xpath("./ancestor::*[name()='svg']")).isDisplayed()) {
                     Log.error("Element#" + i + " is visible");
@@ -349,7 +339,7 @@ public class ElementList<E extends Element> extends BaseElement implements Itera
     private int getCountOfVisibleElements(int attemptNumber) throws Exception {
         initElementList(0);
         int count = 0;
-        for (Element we : elementList) {
+        for (E we : elementList) {
             if (!we.isPresent()) {
                 if (attemptNumber > 0)
                     return getCountOfVisibleElements(attemptNumber - 1);
@@ -395,72 +385,16 @@ public class ElementList<E extends Element> extends BaseElement implements Itera
     }
 
     /**
-     * Get Border Color
-     *
-     * @return HashSet
-     */
-    public HashSet<Color> getBorderColorHashSet() throws Exception {
-        initWebElementListIfNeeded();
-        HashSet<Color> hS = new HashSet<>();
-        for (Element we : elementList) {
-            hS.add(we.getBorderColor());
-        }
-        return hS;
-    }
-
-    /**
-     * Get Border Color
-     *
-     * @return HashSet
-     */
-    public HashSet<Color> getColorHashSet() throws Exception {
-        initWebElementListIfNeeded();
-        HashSet<Color> hS = new HashSet<>();
-        for (Element we : elementList) {
-            hS.add(we.getColor());
-        }
-        return hS;
-    }
-
-    /**
-     * Gets web element's attributes list. Web elements are defined by the locator.
-     *
-     * @param attribute
-     * @return List<String>
-     * @throws Exception
-     */
-    public List<String> getAttributeList(String attribute) throws Exception {
-        initWebElementListIfNeeded();
-        List<String> result = new ArrayList<>();
-        for (Element we : elementList) {
-            result.add(we.getAttribute(attribute));
-        }
-        return result;
-    }
-
-    /**
-     * Get list with locations of all grid lines
-     */
-    public List<Point> getLocationList() throws Exception {
-        initWebElementListIfNeeded();
-        List<Point> list = new ArrayList<>();
-        for (Element el : elementList) {
-            list.add(el.getLocation());
-        }
-        return list;
-    }
-
-    /**
      * Get content Text of all web elements in the list
      *
      * @param selfText - Get Text without including text of child elements
      * @return List<String>
      */
-    public ArrayList<String> getTextList(boolean selfText) throws Exception {
+    public List<String> getTextList(boolean selfText) throws Exception {
         initWebElementListIfNeeded();
         ArrayList<String> text = new ArrayList<>();
         for (E we : getElementList()) {
-            text.add(we.getText(selfText));
+            text.add(((Element) we).getText(selfText));
         }
         return text;
     }
@@ -474,83 +408,13 @@ public class ElementList<E extends Element> extends BaseElement implements Itera
     }
 
     /**
-     * Get text content of all visible web elements in the list
-     *
-     * @return List<String>
-     */
-    public List<String> getVisibleTextList() throws Exception {
-        initWebElementListIfNeeded();
-        List<String> text = new ArrayList<>();
-        for (E we : getElementList()) {
-            if (we.isVisible())
-                text.add(we.getText());
-        }
-        return text;
-    }
-
-    public HashSet<String> getFontSizeHashSet() throws Exception {
-        initWebElementListIfNeeded();
-        HashSet<String> hS = new HashSet<>();
-        for (E we : getElementList()) {
-            String size = we.getFontSize();
-            hS.add(size);
-        }
-        return hS;
-    }
-
-    public HashSet<Fonts> getFontWeightHashSet() throws Exception {
-        initWebElementListIfNeeded();
-        HashSet<Fonts> hS = new HashSet<>();
-        for (E we : getElementList()) {
-            Fonts size = we.getFontWeight();
-            hS.add(size);
-        }
-        return hS;
-    }
-
-    public HashSet<String> getFontFamilyHashSet() throws Exception {
-        initWebElementListIfNeeded();
-        HashSet<String> hS = new HashSet<>();
-        for (E we : getElementList()) {
-            String size = we.getFontFamily();
-            hS.add(size);
-        }
-        return hS;
-    }
-
-    public HashSet<String> getFontStyleHashSet() throws Exception {
-        initWebElementListIfNeeded();
-        HashSet<String> hS = new HashSet<>();
-        for (E we : getElementList()) {
-            String size = we.getFontStyle();
-            hS.add(size);
-        }
-        return hS;
-    }
-
-    public HashSet<Integer> getDecimalPlacesHashSet() throws Exception {
-        initWebElementListIfNeeded();
-        HashSet<Integer> hS = new HashSet<>();
-        for (E we : getElementList()) {
-            String text = we.getText();
-            if (text.contains(".")) {
-                int quantityZero = text.split("\\.")[1].length();
-                hS.add(quantityZero);
-                return hS;
-            }
-            hS.add(0);
-        }
-        return hS;
-    }
-
-    /**
      * Get visible elements
      *
      * @return ArrayList<E>
      * @throws Exception
      */
     public ArrayList<E> getVisibleElementsAsList() throws Exception {
-        return getVisibleElementsAsList(3);
+        return getVisibleElementsAsList(1);
     }
 
     /**

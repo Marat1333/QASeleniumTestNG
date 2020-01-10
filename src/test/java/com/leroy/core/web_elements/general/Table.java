@@ -10,7 +10,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Table extends Element {
+public class Table extends BaseWidget {
 
     @WebFindBy(xpath = ".//tr")
     private ElementList<Element> rows;
@@ -26,10 +26,6 @@ public class Table extends Element {
         super(driver, locator);
     }
 
-    public Table(WebDriver driver, CustomLocator locator, String name) {
-        super(driver, locator, name);
-    }
-
     // ------- PROTECTED METHODS ------ //
 
     protected WebElement getCellWebElement(int rowIdx, int colIdx) {
@@ -42,16 +38,6 @@ public class Table extends Element {
 
     public List<String> getHeaderTextList() throws Exception {
         return headers.getTextList();
-    }
-
-    /**
-     * Get a list of the 'innerText' attributes of the header cells
-     *
-     * @return List<String>
-     * @throws Exception
-     */
-    public List<String> getHeaderInnerTextList() throws Exception {
-        return headers.getAttributeList("innerText");
     }
 
     public int getRowCount() {
@@ -215,7 +201,7 @@ public class Table extends Element {
      *
      * @return
      */
-    public List<String> getRowsTextList() throws Exception {
+    private List<String> getRowsTextList() throws Exception {
         rows.refresh();
         return rows.getTextList();
     }
@@ -227,7 +213,7 @@ public class Table extends Element {
         try {
             waitForVisibility(timeout);
             try {
-                WebDriverWait wait = new WebDriverWait(this.driver, (long) timeout);
+                WebDriverWait wait = new WebDriverWait(this.driver, timeout);
                 wait.until(d -> getRowCount() > 0);
             } catch (TimeoutException e) {
                 Log.warn("The table " + getMetaName() + " still doesn't contain data");
@@ -239,46 +225,6 @@ public class Table extends Element {
 
     public void waitForTableIsLoaded() {
         waitForTableIsLoaded(this.timeout);
-    }
-
-    /**
-     * Wait until a table content is changed
-     *
-     * @param timeout - How long will we wait
-     * @deprecated use this method with oldTableContent parameter
-     */
-    public boolean waitUntilTableIsChanged(int timeout) throws Exception {
-        initialWebElementIfNeeded();
-        List<String> oldTableContent = getRowsTextList();
-        return waitUntilTableIsChanged(timeout, oldTableContent);
-    }
-
-    /**
-     * Wait until a table content is changed
-     *
-     * @param timeout - How long will we wait
-     * @return - true, if the content of the table was changed
-     */
-    public boolean waitUntilTableIsChanged(int timeout, List<String> oldTableContent) {
-        initialWebElementIfNeeded();
-        try {
-            (new WebDriverWait(this.driver, (long) timeout)).until((driver) -> {
-                try {
-                    List<String> actualTableContent = getRowsTextList();
-                    return !(actualTableContent.equals(oldTableContent)
-                            || actualTableContent.contains("###"));
-                } catch (Exception e) {
-                    return false;
-                }
-            });
-        } catch (StaleElementReferenceException e) {
-            // nothing to do. The table has been changed
-        } catch (TimeoutException e) {
-            Log.warn(String.format("Expected condition failed: waitUntilTableIsChanged (tried for %d second(s))",
-                    timeout));
-            return false;
-        }
-        return true;
     }
 
     public Element getCellElement(int row, int column) {
@@ -299,52 +245,4 @@ public class Table extends Element {
                 .getCssValue("background-color"));
     }
 
-    /**
-     * Gets the rectangle of the row by row's index
-     *
-     * @param idx - index of the row
-     * @return
-     * @throws Exception
-     */
-    public Rectangle getRowRectangle(int idx) throws Exception {
-        if (getRowCount() > idx)
-            return rows.get(idx).getRectangleJs();
-        else
-            throw new RuntimeException("Method Table.getRowRectangle(" + idx + "). Can't get a rectangle of the row" +
-                    " (row's index should be > than the count of the rows). Actual count of the rows = " +
-                    getRowCount() + ". Table's xpath: " + getXpath());
-    }
-
-    /**
-     * Wait for width of the row equals to the specified value
-     *
-     * @param rowIdx
-     * @param expWidth
-     * @param deviation
-     */
-    public void waitForRowWidthEqualsToTheSpecified(int rowIdx, int expWidth, int deviation) {
-        if (rowIdx >= 0 && rowIdx < getRowCount()) {
-            try {
-                WebDriverWait wait = new WebDriverWait(this.driver, (long) short_timeout);
-                wait.until((driver) -> {
-                    try {
-                        return Math.abs(expWidth - getRowRectangle(rowIdx).width) <= deviation;
-                    } catch (Exception e) {
-                        return false;
-                    }
-                });
-            } catch (TimeoutException e) {
-                String actualWidth = "Undefined";
-                try {
-                    actualWidth = "" + getRowRectangle(rowIdx).width;
-                } catch (Exception e1) {
-                    //nothing to do
-                }
-                Log.warn("Method Table.waitForRowWidthEqualsToTheSpecified() - the row[" + rowIdx + "] in the table " +
-                        getMetaName() + " doesn't have a specified width. Actual width = " +
-                        actualWidth + ". Expected width = " + expWidth + ". Timeout = " + short_timeout + "s");
-            }
-
-        }
-    }
 }

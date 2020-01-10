@@ -620,48 +620,6 @@ public abstract class BaseWebPage extends BasePage {
 
     }
 
-    protected boolean isElementPresent(By by) throws InterruptedException {
-        this.setImplicitWait(0);
-        boolean isPresent = this.driver.findElements(by).size() > 0;
-        this.setImplicitWait(DriverFactory.IMPLICIT_WAIT_TIME_OUT);
-        return isPresent;
-    }
-
-    protected boolean isElementPresent(By by, int timeout) throws InterruptedException {
-        this.setImplicitWait(timeout);
-        boolean isPresent = this.driver.findElements(by).size() > 0;
-        this.setImplicitWait(DriverFactory.IMPLICIT_WAIT_TIME_OUT);
-        return isPresent;
-    }
-
-    protected boolean isElementVisible(By by) throws InterruptedException {
-        this.setImplicitWait(0);
-        java.util.List<WebElement> webElementList = this.driver.findElements(by);
-        this.setImplicitWait(DriverFactory.IMPLICIT_WAIT_TIME_OUT);
-        return webElementList.size() > 0 && ((WebElement) webElementList.get(0)).isDisplayed();
-    }
-
-    protected boolean isElementVisible(By by, int timeout) throws InterruptedException {
-        long timeBeforeWait = System.currentTimeMillis();
-        this.setImplicitWait(timeout);
-        java.util.List<WebElement> webElementList = this.driver.findElements(by);
-        this.setImplicitWait(DriverFactory.IMPLICIT_WAIT_TIME_OUT);
-        long timeSpent = (System.currentTimeMillis() - timeBeforeWait) / 1000L;
-        if (webElementList.size() > 0) {
-            try {
-                if (timeSpent < (long) timeout) {
-                    (new WebDriverWait(this.driver, (long) timeout - timeSpent)).until(ExpectedConditions.visibilityOf((WebElement) webElementList.get(0)));
-                }
-
-                return ((WebElement) webElementList.get(0)).isDisplayed();
-            } catch (Exception var9) {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
-
     public void reloadPage() {
         try {
             this.driver.navigate().refresh();
@@ -910,44 +868,6 @@ public abstract class BaseWebPage extends BasePage {
             close();
         waitUntilWindowHandlesIsChanged(winHandles, short_timeout);
         switchToWindow(handle);
-    }
-
-    /**
-     * Closes some opened windows except the specified number. The method leaves any windows open in Safari
-     *
-     * @param numberToStayOpen - specifies a number of windows, which will remain open
-     * @return
-     * @throws Exception
-     * @deprecated - use closeWindowsExceptSpecified(boolean usingJS, String... handles)
-     */
-    public BaseWebPage closeWindowsExceptSpecified(int numberToStayOpen, boolean usingJS) throws Exception {
-        if (numberToStayOpen >= 1) {
-            int winHandles = getWindowCount();
-            for (int i = winHandles - 1; i >= numberToStayOpen; i--) {
-                switchToWindow(i);
-                if (getCurrentUrl().equals("about:blank"))
-                    close();
-                else if (usingJS)
-                    ((JavascriptExecutor) this.driver).executeScript("window.close();");
-                else
-                    close();
-            }
-            switchToWindow(numberToStayOpen - 1);
-            waitUntilWindowHandlesIs(numberToStayOpen, 2 * short_timeout);
-        }
-        return this;
-    }
-
-    /**
-     * Closes some opened windows except the specified number. The method leaves any windows open in Safari
-     *
-     * @param numberToStayOpen - specifies a number of windows, which will remain open
-     * @return
-     * @throws Exception
-     * @deprecated - use closeWindowsExceptSpecified(boolean usingJS, String... handles)
-     */
-    public BaseWebPage closeWindowsExceptSpecified(int numberToStayOpen) throws Exception {
-        return closeWindowsExceptSpecified(numberToStayOpen, true);
     }
 
     /**

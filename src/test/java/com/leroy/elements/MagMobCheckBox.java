@@ -16,10 +16,6 @@ public class MagMobCheckBox extends Checkbox {
         super(driver, locator);
     }
 
-    public MagMobCheckBox(WebDriver driver, CustomLocator locator, String name) {
-        super(driver, locator, name);
-    }
-
     @Override
     public Color getPointColor() throws Exception {
         return getPointColor(0, getHeight() / 4);
