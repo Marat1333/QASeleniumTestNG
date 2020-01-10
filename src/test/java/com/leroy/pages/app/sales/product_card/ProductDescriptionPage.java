@@ -31,10 +31,12 @@ public class ProductDescriptionPage extends ProductCardPage {
     @AppFindBy(text = "Цена")
     MagMobButton productPriceBtn;
 
+    @AppFindBy(text = "Цены в магазинах")
+    MagMobButton productPriceGammaCardBtn;
 
     @Step("Перейти на страницу с детализацией цен и запасов")
     public PricesAndQuantityPage goToPricesAndQuantityPage(){
-        productPriceBtn.click();
+        productPriceGammaCardBtn.click();
         return new PricesAndQuantityPage(context);
     }
 
@@ -77,6 +79,5 @@ public class ProductDescriptionPage extends ProductCardPage {
     public void shouldGammaCardIsPresented(){
         softAssert.isFalse(actionWithProductBtn.isVisible(),"Кнопка \"Действия с товаром\" отсутствует в карточке товара ЛМ");
         softAssert.isFalse(salesHistoryBtn.isVisible(),"Кнопка \"История продаж\" отсутствует в карточке товара ЛМ");
-//        softAssert.isFalse();
     }
 }

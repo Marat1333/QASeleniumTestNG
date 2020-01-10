@@ -2,21 +2,16 @@ package com.leroy.pages.app.common;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.pages.app.common.modal.SortModal;
 import com.leroy.pages.app.sales.AddProductPage;
-import com.leroy.pages.app.sales.SalesPage;
 import com.leroy.pages.app.sales.product_card.ProductDescriptionPage;
 import com.leroy.pages.app.sales.widget.SearchProductCardWidget;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
-import java.util.ArrayList;
-import java.util.List;
-import com.leroy.pages.app.sales.ProductCardPage;
 
 public class SearchProductPage extends BaseAppPage {
 

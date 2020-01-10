@@ -5,7 +5,6 @@ import com.leroy.models.UserData;
 import com.leroy.pages.LoginPage;
 import com.leroy.pages.app.common.*;
 import com.leroy.pages.app.sales.PricesAndQuantityPage;
-import com.leroy.pages.app.sales.ProductCardPage;
 import com.leroy.pages.app.sales.SalesPage;
 import com.leroy.pages.app.sales.product_card.ProductDescriptionPage;
 import com.leroy.pages.app.sales.product_card.SameProductsPage;
@@ -13,7 +12,6 @@ import com.leroy.tests.AppBaseSteps;
 import org.testng.annotations.Test;
 
 import java.time.LocalDate;
-import java.util.List;
 
 public class SearchTest extends AppBaseSteps {
 

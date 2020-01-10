@@ -3,7 +3,6 @@ package com.leroy.pages.app.sales;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
-import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.elements.MagMobButton;
 import com.leroy.pages.app.common.SearchProductPage;
@@ -11,7 +10,6 @@ import com.leroy.pages.app.sales.product_card.ProductDescriptionPage;
 import com.leroy.pages.app.sales.product_card.ReviewsPage;
 import com.leroy.pages.app.sales.product_card.SameProductsPage;
 import com.leroy.pages.app.sales.product_card.SpecificationsPage;
-import com.leroy.pages.app.work.StockProductsPage;
 import io.qameta.allure.Step;
 
 public class ProductCardPage extends BaseAppPage {
@@ -54,10 +52,12 @@ public class ProductCardPage extends BaseAppPage {
         switch (value){
             case DESCRIPTION:
                 element = E("contains("+DESCRIPTION+")");
+                swipeLeftTo(productTabs, element);
                 element.click();
                 return (T) new ProductDescriptionPage(context);
             case SPECIFICATION:
                 element = E("contains("+SPECIFICATION+")");
+                swipeLeftTo(productTabs, element);
                 element.click();
                 return (T) new SpecificationsPage(context);
             case REVIEWS:
