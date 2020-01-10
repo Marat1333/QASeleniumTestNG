@@ -37,18 +37,11 @@ public class OldSearchProductPage extends BaseAppPage {
 
     // ---------------- Action Steps -------------------------//
 
-    @Step("Введите {text} в поле поиска товара")
-    public OldSearchProductPage enterTextInSearchField(String text) {
+    @Step("Введите {text} в поле поиска товара и подтвердите")
+    public OldSearchProductPage enterTextInSearchFieldAndSubmit(String text) {
         searchField.clearFillAndSubmit(text);
         waitForProgressBarIsVisible();
         waitForProgressBarIsInvisible();
-        return this;
-    }
-
-    @Step("Искать по {value}")
-    public OldSearchProductPage searchByPhrase(String value){
-        enterTextInSearchField(value);
-
         return this;
     }
 

@@ -3,15 +3,21 @@ package com.leroy.pages.app.common;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
+import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.pages.app.common.modal.SortModal;
 import com.leroy.pages.app.sales.AddProductPage;
+import com.leroy.pages.app.sales.SalesPage;
 import com.leroy.pages.app.sales.product_card.ProductDescriptionPage;
 import com.leroy.pages.app.sales.widget.SearchProductCardWidget;
 import io.qameta.allure.Step;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.openqa.selenium.By;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SearchProductPage extends BaseAppPage {
 
@@ -27,6 +33,10 @@ public class SearchProductPage extends BaseAppPage {
 
     @AppFindBy(accessibilityId = "ScreenTitle-CatalogComplexSearchStore", metaName = "Поле ввода текста для поиска")
     private EditBox searchField;
+
+    @AppFindBy(xpath = "//android.widget.ScrollView", metaName = "Виджет прокрутки для карточек товаров",
+            cacheLookup = false)
+    private AndroidScrollView scrollView;
 
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ScreenContent']//android.view.ViewGroup[android.widget.ImageView]",
             clazz = SearchProductCardWidget.class)
@@ -51,9 +61,12 @@ public class SearchProductPage extends BaseAppPage {
     @AppFindBy(xpath = "//android.view.ViewGroup[preceding-sibling::android.view.ViewGroup[2][ancestor::android.view.ViewGroup[@content-desc=\"ScreenContent\"]]]")
     Element sort;
 
+    @AppFindBy(text = "Ты пока ничего не искал(а)")
+    Element firstSearchMsg;
+
     Element discardAllFiltersBtn = E("contains(СБРОСИТЬ ФИЛЬТРЫ)");
 
-    private final String notFoundMsg = "//*[contains(@text, 'Поиск «%s» не дал результатов')]";
+    private final String NOT_FOUND_MSG_XPATH = "//*[contains(@text, 'Поиск «%s» не дал результатов')]";
 
     @Override
     public void waitForPageIsLoaded() {
@@ -62,16 +75,41 @@ public class SearchProductPage extends BaseAppPage {
 
     // ---------------- Action Steps -------------------------//
 
+    @Step("Перейти на главную страницу 'Документы продажи'")
+    public SalesPage backToSalesPage() {
+        backBtn.click();
+        return new SalesPage(context);
+    }
+
+    @Step("Ввести поисковой запрос со случайным текстом {value} раз и инициировать поиск")
+    public List<String> createSearchHistory(int value) {
+        List<String> searchHistory = new ArrayList<>();
+        String tmp = RandomStringUtils.randomAlphanumeric(1);
+        for (int i = 0; i < value; i++) {
+            searchField.fill(tmp)
+                    .submit();
+            searchHistory.add(tmp);
+            tmp = tmp + RandomStringUtils.randomAlphanumeric(1);
+        }
+        return searchHistory;
+    }
+
     @Step("Сбросить фильтры, инициировав скрипт со страницы поиска")
     public void discardFilters() {
         discardAllFiltersBtn.click();
     }
 
-    @Step("Введите {text} в поле поиска товара")
-    public SearchProductPage enterTextInSearchField(String text) {
+    @Step("Введите {text} в поле поиска товара и выполните поиск")
+    public SearchProductPage enterTextInSearchFieldAndSubmit(String text) {
         searchField.clearFillAndSubmit(text);
         waitForProgressBarIsVisible();
         waitForProgressBarIsInvisible();
+        return this;
+    }
+
+    @Step("Введите {text} в поле поиска товара")
+    public SearchProductPage enterTextInSearchField(String text) {
+        searchField.clearAndFill(text);
         return this;
     }
 
@@ -126,10 +164,33 @@ public class SearchProductPage extends BaseAppPage {
         return this;
     }
 
+    @Step("Проверяем, что список последних поисковых запросов такой: {expectedList}")
+    public SearchProductPage shouldSearchHistoryListIs(List<String> expectedList) throws Exception {
+        List<String> actualList = scrollView.getFullTextLabelsList();
+        anAssert.isEquals(actualList, expectedList, "Ожидается следующий список поисковых запросов: %s");
+        return this;
+    }
+
+    @Step("Проверяем, что список последних поисковых запросов содержит {searchPhrase}")
+    public SearchProductPage verifySearchHistoryContainsSearchPhrase(String searchPhrase) throws Exception {
+        List<String> containsVisibleSearchHistory = scrollView.getFullTextLabelsList();
+
+        for (String tmp : containsVisibleSearchHistory) {
+            softAssert.isTrue(tmp.contains(searchPhrase), "Каждое совпадение должно содержать поисковую строку");
+        }
+        softAssert.isEquals(containsVisibleSearchHistory.get(containsVisibleSearchHistory.size() - 1), searchPhrase,
+                "Последний элемент истории поиска должен полностью совпадать с поисковой фразой");
+        softAssert.verifyAll();
+        return this;
+    }
+
+    public void shouldFirstSearchMsgBeDisplayed() {
+        anAssert.isTrue(firstSearchMsg.isVisible(), "Должно быть отображено сообщение о первом поиске");
+    }
+
     public void shouldNotFoundMsgBeDisplayed(String value) {
-        Element element = new Element(driver, By.xpath(String.format(notFoundMsg, value)));
-        anAssert.isTrue(element.isVisible(),
-                "Поиск по запросу " + value + " не должен вернуть результатов. Видно соответствующее сообщение");
+        Element element = new Element(driver, By.xpath(String.format(NOT_FOUND_MSG_XPATH, value)));
+        anAssert.isTrue(element.isVisible(), "Поиск по запросу " + value + " не вернул результатов");
     }
 
     public void verifyProductCardHasAllGammaView() throws Exception{

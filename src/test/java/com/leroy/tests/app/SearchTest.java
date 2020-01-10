@@ -12,6 +12,8 @@ import com.leroy.tests.AppBaseSteps;
 import org.testng.annotations.Test;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 
 public class SearchTest extends AppBaseSteps {
 
@@ -34,7 +36,7 @@ public class SearchTest extends AppBaseSteps {
         // Step 1
         log.step("Нажмите на поле Поиск товаров и услуг");
         SalesPage salesPage = new SalesPage(context);
-        SearchProductPage searchProductPage = salesPage.clickSearchBar()
+        SearchProductPage searchProductPage = salesPage.clickSearchBar(false)
                 .verifyRequiredElements();
         // Step 2
         log.step("Перейдите в окно выбора единицы номенклатуры");
@@ -54,30 +56,32 @@ public class SearchTest extends AppBaseSteps {
 
         // Step 5
         log.step("Введите полное значение для поиска по ЛМ коду| 10008698");
-        searchProductPage.enterTextInSearchField(lmCode);
-        ProductDescriptionPage productCardPage = new ProductDescriptionPage(context).verifyRequiredElements();
-        productCardPage.shouldProductLMCodeIs(lmCode);
-        productCardPage.returnBack();
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
+        ProductDescriptionPage productCardPage = new ProductDescriptionPage(context)
+                .verifyRequiredElements()
+                .shouldProductLMCodeIs(lmCode);
+                productCardPage.returnBack();
 
         // Step 6
         log.step("Введите название товара для поиска");
-        searchProductPage.enterTextInSearchField(searchContext);
+        searchProductPage.enterTextInSearchFieldAndSubmit(searchContext);
         searchProductPage.shouldProductCardsContainText(searchContext);
 
         // Step 7
         log.step("Ввести штрихкод вручную");
-        searchProductPage.enterTextInSearchField(barCode);
-        productCardPage.shouldProductBarCodeIs(barCode);
+        searchProductPage.enterTextInSearchFieldAndSubmit(barCode);
+        productCardPage = new ProductCardPage(context)
+                .shouldProductBarCodeIs(barCode);
         searchProductPage = productCardPage.returnBack();
 
         // Step 8
         log.step("Введите часть ЛМ кода для поиска");
-        searchProductPage.enterTextInSearchField(shortLmCode);
+        searchProductPage.enterTextInSearchFieldAndSubmit(shortLmCode);
         searchProductPage.shouldProductCardsContainText(shortLmCode);
 
         // Step 9
         log.step("Ввести в поисковую строку положительное число длинной >8 символов (" + shortBarCode + ") и инициировать поиск");
-        searchProductPage.enterTextInSearchField(shortBarCode);
+        searchProductPage.enterTextInSearchFieldAndSubmit(shortBarCode);
         searchProductPage.shouldProductCardsContainText(shortBarCode);
     }
 
@@ -92,7 +96,7 @@ public class SearchTest extends AppBaseSteps {
         // Pre-conditions
         loginPage.loginInAndGoTo(seller, LoginPage.SALES_SECTION);
         SalesPage salesPage = new SalesPage(context);
-        SearchProductPage searchProductPage = salesPage.clickSearchBar();
+        SearchProductPage searchProductPage = salesPage.clickSearchBar(false);
         SuppliersSearchPage suppliersSearchPage = new SuppliersSearchPage(context);
         MyShopFilterPage filterPage = searchProductPage.goToFilterPage();
 
@@ -150,7 +154,7 @@ public class SearchTest extends AppBaseSteps {
         // Pre-conditions
         loginPage.loginInAndGoTo(seller, LoginPage.SALES_SECTION);
         SalesPage salesPage = new SalesPage(context);
-        SearchProductPage searchProductPage = salesPage.clickSearchBar();
+        SearchProductPage searchProductPage = salesPage.clickSearchBar(false);
         FilterPage filterPage = searchProductPage.goToFilterPage();
 
         // Step 1
@@ -195,12 +199,12 @@ public class SearchTest extends AppBaseSteps {
         // Pre-conditions
         loginPage.loginInAndGoTo(seller, LoginPage.SALES_SECTION);
         SalesPage salesPage = new SalesPage(context);
-        SearchProductPage searchProductPage = salesPage.clickSearchBar();
+        SearchProductPage searchProductPage = salesPage.clickSearchBar(false);
         String byName = "А13";
 
         // Step 1
         log.step("Ввести в поле поиска значение, результат поиска по которому не вернется");
-        searchProductPage.enterTextInSearchField(byName);
+        searchProductPage.enterTextInSearchFieldAndSubmit(byName);
         searchProductPage.shouldNotFoundMsgBeDisplayed(byName);
 
         // Step 2
@@ -209,7 +213,8 @@ public class SearchTest extends AppBaseSteps {
         myShopFilterPage.scrollHorizontalWidget(myShopFilterPage.GAMMA, myShopFilterPage.GAMMA + " ET");
         myShopFilterPage.choseGammaFilter(myShopFilterPage.GAMMA + " ET");
         myShopFilterPage.shouldFilterHasBeenChosen(myShopFilterPage.GAMMA + " ET");
-        searchProductPage = myShopFilterPage.applyChosenFilters();
+        searchProductPage  = myShopFilterPage.applyChosenFilters();
+
         searchProductPage.verifyRequiredElements();
         searchProductPage.shouldNotFoundMsgBeDisplayed(byName);
         searchProductPage.shouldDiscardAllFiltersBtnBeDisplayed();
@@ -226,6 +231,40 @@ public class SearchTest extends AppBaseSteps {
         myShopFilterPage.scrollHorizontalWidget(myShopFilterPage.GAMMA, myShopFilterPage.GAMMA + " ET");
         myShopFilterPage.shouldFilterHasNotBeenChosen(myShopFilterPage.GAMMA + " ET");
 
+    }
+
+    @Test(description = "C22789176 Вывод истории поиска")
+    public void testC22789176() throws Exception {
+        LoginPage loginPage = new LoginPage(context);
+        int searchPhrasesCount = 21;
+
+        // Pre-conditions
+        loginPage.loginInAndGoTo(LoginPage.SALES_SECTION);
+        SalesPage salesPage = new SalesPage(context);
+
+        // Step 1
+        log.step("Нажать на поисковую строку");
+        SearchProductPage searchProductPage = salesPage.clickSearchBar(true);
+        searchProductPage.shouldFirstSearchMsgBeDisplayed();
+
+        // Step 2
+        log.step("ввести любую неповторяющуюся поисковую фразу и выполнить поиск " + searchPhrasesCount + " раз");
+        List<String> searchPhrases = searchProductPage.createSearchHistory(searchPhrasesCount);
+        // На странице должно отображаться не более 20 записей, значит лишнее убираем
+        searchPhrases.remove(0);
+        Collections.reverse(searchPhrases);
+
+        // Step 3
+        log.step("Перезайти в поиск");
+        searchProductPage.backToSalesPage();
+        searchProductPage = salesPage.clickSearchBar(true);
+        searchProductPage.shouldSearchHistoryListIs(searchPhrases);
+
+        // Step 4
+        log.step("Начать вводить значение идентичное одному из ранее введенных");
+        String exampleText = searchPhrases.get(searchPhrases.size() / 2);
+        searchProductPage.enterTextInSearchField(exampleText)
+                .verifySearchHistoryContainsSearchPhrase(exampleText);
     }
 
     @Test(description = "C22790468 Гамма ЛМ. Отсутствие: действий с товаром, истории продаж, поставки")
@@ -261,7 +300,6 @@ public class SearchTest extends AppBaseSteps {
         log.step("Нажать на строку \"Цена\"");
         PricesAndQuantityPage pricesAndQuantityPage = productCardPage.goToPricesAndQuantityPage();
         pricesAndQuantityPage.shouldNotSupplyBtnBeDisplayed();
-
 
     }
 }
