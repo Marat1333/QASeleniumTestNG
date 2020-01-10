@@ -17,8 +17,12 @@ public class SalesPage extends TopMenuPage {
     EditBox searchBar;
 
     @Step("Переходим на страницу поиска")
-    public SearchProductPage clickSearchBar() {
+    public SearchProductPage clickSearchBar(boolean hideKeyboard) {
+        searchBar.waitForVisibility();
         searchBar.click();
-        return new SearchProductPage(context);
+        SearchProductPage page = new SearchProductPage(context);
+        if (hideKeyboard)
+            hideKeyboard();
+        return page;
     }
 }
