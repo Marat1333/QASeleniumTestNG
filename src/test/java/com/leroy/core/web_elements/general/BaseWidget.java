@@ -102,6 +102,17 @@ public abstract class BaseWidget extends BaseWrapper {
         return new Element(driver, By.xpath(getXpath() + xpath));
     }
 
+    @Override
+    protected CustomLocator buildLocator(String str, String metaName) {
+        CustomLocator locator;
+        if (str.startsWith("."))
+            locator = new CustomLocator(
+                    this.getXpath() + By.xpath(str.replaceFirst("\\.", "")), metaName);
+        else
+            locator = super.buildLocator(str, metaName);
+        return locator;
+    }
+
     public boolean isPresent() {
         this.setImplicitWait(0);
         boolean isPresent = findElements(locator).size() > 0;
