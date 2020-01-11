@@ -3,7 +3,7 @@ package com.leroy.pages.app.sales;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
-import com.leroy.elements.MagMobButton;
+import com.leroy.elements.MagMobSubmitButton;
 
 public class PricesAndQuantityPage extends BaseAppPage {
 
@@ -12,7 +12,7 @@ public class PricesAndQuantityPage extends BaseAppPage {
     }
 
     @AppFindBy(text = "ПОСТАВКИ")
-    MagMobButton supplyBtn;
+    MagMobSubmitButton supplyBtn;
 
     public void shouldNotSupplyBtnBeDisplayed(){
         anAssert.isFalse(supplyBtn.isVisible(),"Раздел \"Поставки\" не отображен");

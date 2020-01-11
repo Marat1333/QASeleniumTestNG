@@ -4,11 +4,11 @@ import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.elements.MagMobButton;
+import com.leroy.elements.MagMobSubmitButton;
 import com.leroy.pages.app.common.SearchProductPage;
 import com.leroy.pages.app.sales.product_card.ProductDescriptionPage;
 import com.leroy.pages.app.sales.product_card.ReviewsPage;
-import com.leroy.pages.app.sales.product_card.SameProductsPage;
+import com.leroy.pages.app.sales.product_card.SimilarProductsPage;
 import com.leroy.pages.app.sales.product_card.SpecificationsPage;
 import io.qameta.allure.Step;
 
@@ -19,23 +19,23 @@ public class ProductCardPage extends BaseAppPage {
     }
 
     @AppFindBy(accessibilityId = "Tabs")
-    public Element productTabs;
+    protected Element mainArea;
 
     @AppFindBy(accessibilityId = "BackCloseModal")
-    public Element returnBackBtn;
+    protected Element returnBackBtn;
 
     @AppFindBy(text = "ДЕЙСТВИЯ С ТОВАРОМ")
-    public MagMobButton actionWithProductBtn;
+    protected MagMobSubmitButton actionWithProductBtn;
 
     @Override
     public void waitForPageIsLoaded() {
-        productTabs.waitForVisibility();
+        mainArea.waitForVisibility();
     }
 
     public final String DESCRIPTION = "ОПИСАНИЕ ТОВАРА";
     public final String SPECIFICATION = "ХАРАКТЕРИСТИКИ";
     public final String REVIEWS = "ОТЗЫВЫ";
-    public final String SAME_PRODUCTS = "АНАЛОГИЧНЫЕ ТОВАРЫ";
+    public final String SIMILAR_PRODUCTS = "АНАЛОГИЧНЫЕ ТОВАРЫ";
 
     /* ------------------------- ACTION STEPS -------------------------- */
 
@@ -47,42 +47,42 @@ public class ProductCardPage extends BaseAppPage {
     }
 
     @Step("Перейти во вкладку {value}")
-    public <T>T goToNeededPage(String value){
+    public <T> T switchTab(String value) {
         Element element;
-        switch (value){
+        switch (value) {
             case DESCRIPTION:
-                element = E("contains("+DESCRIPTION+")");
-                swipeLeftTo(productTabs, element);
+                element = E(DESCRIPTION);
+                swipeLeftTo(mainArea, element);
                 element.click();
                 return (T) new ProductDescriptionPage(context);
             case SPECIFICATION:
-                element = E("contains("+SPECIFICATION+")");
-                swipeLeftTo(productTabs, element);
+                element = E(SPECIFICATION);
+                swipeLeftTo(mainArea, element);
                 element.click();
                 return (T) new SpecificationsPage(context);
             case REVIEWS:
-                element = E("contains("+REVIEWS+")");
-                swipeRightTo(productTabs,element);
+                element = E(REVIEWS);
+                swipeRightTo(mainArea, element);
                 element.click();
                 return (T) new ReviewsPage(context);
-            case SAME_PRODUCTS:
-                element = E("contains("+SAME_PRODUCTS+")");
-                swipeRightTo(productTabs,element);
+            case SIMILAR_PRODUCTS:
+                element = E(SIMILAR_PRODUCTS);
+                swipeRightTo(mainArea, element);
                 element.click();
-                return (T) new SameProductsPage(context);
+                return (T) new SimilarProductsPage(context);
             default:
-                element = E("contains("+DESCRIPTION+")");
-                element.click();
-                return (T) new ProductDescriptionPage(context);
+                throw new IllegalArgumentException("Unknown argument: " + value);
         }
     }
 
     /* ------------------------- Verifications -------------------------- */
 
-    @Override
-    public ProductCardPage verifyRequiredElements() {
-        softAssert.isElementVisible(productTabs);
-        softAssert.isElementVisible(actionWithProductBtn);
+    public ProductCardPage verifyRequiredElements(boolean submitBtnShouldBeVisible) {
+        softAssert.isElementVisible(mainArea);
+        if (submitBtnShouldBeVisible)
+            softAssert.isElementVisible(actionWithProductBtn);
+        else
+            softAssert.isElementNotVisible(actionWithProductBtn);
         // TODO
         softAssert.verifyAll();
 

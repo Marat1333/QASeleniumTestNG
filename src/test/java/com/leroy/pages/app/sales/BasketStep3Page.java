@@ -4,7 +4,7 @@ import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.elements.MagMobButton;
+import com.leroy.elements.MagMobSubmitButton;
 import io.qameta.allure.Step;
 
 public class BasketStep3Page extends BasketPage {
@@ -20,7 +20,7 @@ public class BasketStep3Page extends BasketPage {
     private EditBox pinCodeFld;
 
     @AppFindBy(text = "ПОДТВЕРДИТЬ")
-    private MagMobButton submitBtn;
+    private MagMobSubmitButton submitBtn;
 
     @Override
     public void waitForPageIsLoaded() {

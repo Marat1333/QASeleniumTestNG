@@ -9,7 +9,8 @@ import com.leroy.pages.app.sales.ProductCardPage;
 import io.qameta.allure.Step;
 
 public class ProductDescriptionPage extends ProductCardPage {
-    public ProductDescriptionPage (TestContext context){
+
+    public ProductDescriptionPage(TestContext context) {
         super(context);
     }
 
@@ -35,14 +36,14 @@ public class ProductDescriptionPage extends ProductCardPage {
     MagMobButton productPriceGammaCardBtn;
 
     @Step("Перейти на страницу с детализацией цен и запасов")
-    public PricesAndQuantityPage goToPricesAndQuantityPage(){
+    public PricesAndQuantityPage goToPricesAndQuantityPage() {
         productPriceGammaCardBtn.click();
         return new PricesAndQuantityPage(context);
     }
 
     @Override
     public ProductDescriptionPage verifyRequiredElements() {
-        softAssert.isElementVisible(productTabs);
+        softAssert.isElementVisible(mainArea);
         softAssert.isElementVisible(lmCode);
         softAssert.verifyAll();
         return this;
@@ -76,8 +77,8 @@ public class ProductDescriptionPage extends ProductCardPage {
         return this;
     }
 
-    public void shouldGammaCardIsPresented(){
-        softAssert.isFalse(actionWithProductBtn.isVisible(),"Кнопка \"Действия с товаром\" отсутствует в карточке товара ЛМ");
-        softAssert.isFalse(salesHistoryBtn.isVisible(),"Кнопка \"История продаж\" отсутствует в карточке товара ЛМ");
+    public void verifyCardHasGammaView() {
+        softAssert.isFalse(actionWithProductBtn.isVisible(), "Кнопка \"Действия с товаром\" отсутствует в карточке товара ЛМ");
+        softAssert.isFalse(salesHistoryBtn.isVisible(), "Кнопка \"История продаж\" отсутствует в карточке товара ЛМ");
     }
 }

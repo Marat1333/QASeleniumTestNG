@@ -8,7 +8,7 @@ import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.models.ProductCardData;
 import com.leroy.pages.app.widgets.ProductCardWidget;
 import com.leroy.pages.app.widgets.SelectedCardWidget;
-import com.leroy.elements.MagMobButton;
+import com.leroy.elements.MagMobSubmitButton;
 import io.qameta.allure.Step;
 
 public class StockProductsPage extends BaseAppPage {
@@ -40,7 +40,7 @@ public class StockProductsPage extends BaseAppPage {
     private Element basketProductCountLabel;
 
     @AppFindBy(text = "ДАЛЕЕ К ПАРАМЕТРАМ ЗАЯВКИ", metaName = "Кнопка 'Далее к параметрам заявки'")
-    public MagMobButton submitBtn;
+    public MagMobSubmitButton submitBtn;
 
     @Override
     public void waitForPageIsLoaded() {

@@ -4,7 +4,7 @@ import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.elements.MagMobButton;
+import com.leroy.elements.MagMobSubmitButton;
 import com.leroy.models.SalesDocumentData;
 import com.leroy.pages.app.common.OldSearchProductPage;
 import com.leroy.pages.app.common.TopMenuPage;
@@ -20,10 +20,10 @@ public class SalesDocumentsPage extends TopMenuPage {
     }
 
     @AppFindBy(text = "Фильтр", metaName = "Кнопка 'Фильтр'")
-    private MagMobButton filterBtn;
+    private MagMobSubmitButton filterBtn;
 
     @AppFindBy(text = "СОЗДАТЬ ДОКУМЕНТ ПРОДАЖИ", metaName = "Кнопка 'СОЗДАТЬ ДОКУМЕНТ ПРОДАЖИ'")
-    private MagMobButton createSalesDocumentBtn;
+    private MagMobSubmitButton createSalesDocumentBtn;
 
     @AppFindBy(xpath = "//android.widget.HorizontalScrollView//android.widget.TextView")
     private ElementList<Element> currentFilters;

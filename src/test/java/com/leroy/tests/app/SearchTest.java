@@ -7,7 +7,7 @@ import com.leroy.pages.app.common.*;
 import com.leroy.pages.app.sales.PricesAndQuantityPage;
 import com.leroy.pages.app.sales.SalesPage;
 import com.leroy.pages.app.sales.product_card.ProductDescriptionPage;
-import com.leroy.pages.app.sales.product_card.SameProductsPage;
+import com.leroy.pages.app.sales.product_card.SimilarProductsPage;
 import com.leroy.tests.AppBaseSteps;
 import org.testng.annotations.Test;
 
@@ -60,7 +60,7 @@ public class SearchTest extends AppBaseSteps {
         ProductDescriptionPage productCardPage = new ProductDescriptionPage(context)
                 .verifyRequiredElements()
                 .shouldProductLMCodeIs(lmCode);
-                productCardPage.returnBack();
+        searchProductPage = productCardPage.returnBack();
 
         // Step 6
         log.step("Введите название товара для поиска");
@@ -213,7 +213,7 @@ public class SearchTest extends AppBaseSteps {
         myShopFilterPage.scrollHorizontalWidget(myShopFilterPage.GAMMA, myShopFilterPage.GAMMA + " ET");
         myShopFilterPage.choseGammaFilter(myShopFilterPage.GAMMA + " ET");
         myShopFilterPage.shouldFilterHasBeenChosen(myShopFilterPage.GAMMA + " ET");
-        searchProductPage  = myShopFilterPage.applyChosenFilters();
+        searchProductPage = myShopFilterPage.applyChosenFilters();
 
         searchProductPage.verifyRequiredElements();
         searchProductPage.shouldNotFoundMsgBeDisplayed(byName);
@@ -269,36 +269,35 @@ public class SearchTest extends AppBaseSteps {
 
     @Test(description = "C22790468 Гамма ЛМ. Отсутствие: действий с товаром, истории продаж, поставки")
     public void testC22790468() throws Exception {
-        LoginPage loginPage = new LoginPage(context);
-        UserData seller = new UserData(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS);
-
         // Pre-conditions
-        loginPage.loginInAndGoTo(seller, LoginPage.SALES_SECTION);
-        SalesPage salesPage = new SalesPage(context);
-        SearchProductPage searchProductPage = salesPage.clickSearchBar(false);
-        MyShopFilterPage myShopFilterPage = searchProductPage.goToFilterPage();
+        LoginPage loginPage = new LoginPage(context);
+        loginPage.loginInAndGoTo(LoginPage.SALES_SECTION);
+
+        MyShopFilterPage myShopFilterPage = new SalesPage(context)
+                .clickSearchBar(false)
+                .goToFilterPage();
 
         // Step 1
         log.step("Выбрать фильтр \"Вся гамма ЛМ\" и перейти на страницу результатов поиска");
-        myShopFilterPage.switchFiltersFrame(myShopFilterPage.ALL_GAMMA_FRAME_TYPE);
-        AllGammaFilterPage allGammaFilterPage = new AllGammaFilterPage(context);
-        allGammaFilterPage.applyChosenFilters();
-        searchProductPage.verifyProductCardHasAllGammaView();
+        AllGammaFilterPage allGammaFilterPage = myShopFilterPage
+                .switchFiltersFrame(myShopFilterPage.ALL_GAMMA_FRAME_TYPE);
+        SearchProductPage searchProductPage = allGammaFilterPage.applyChosenFilters();
+        searchProductPage.verifyProductCardsHaveAllGammaView();
 
         // Step 2
         log.step("Перейти в одну из карточек товара");
-        ProductDescriptionPage productCardPage = searchProductPage.goToProductCard(1);
-        productCardPage.shouldGammaCardIsPresented();
+        ProductDescriptionPage productDescriptionCardPage = searchProductPage.selectProductCardByIndex(1);
+        productDescriptionCardPage.verifyCardHasGammaView();
 
         // Step 3
         log.step("Перейти во вкладку \"Аналогичные товары\"");
-        SameProductsPage sameProductsPage = productCardPage.goToNeededPage(productCardPage.SAME_PRODUCTS);
-        sameProductsPage.verifyProductCardHasAllGammaView();
-        sameProductsPage.goToNeededPage(sameProductsPage.DESCRIPTION);
+        SimilarProductsPage similarProductsPage = productDescriptionCardPage.switchTab(productDescriptionCardPage.SIMILAR_PRODUCTS);
+        similarProductsPage.verifyProductCardsHaveAllGammaView();
 
         // Step 4
-        log.step("Нажать на строку \"Цена\"");
-        PricesAndQuantityPage pricesAndQuantityPage = productCardPage.goToPricesAndQuantityPage();
+        log.step("Вернуться на вкладку \"Описание\" и Нажать на строку \"Цены в магазинах\"");
+        productDescriptionCardPage = similarProductsPage.switchTab(similarProductsPage.DESCRIPTION);
+        PricesAndQuantityPage pricesAndQuantityPage = productDescriptionCardPage.goToPricesAndQuantityPage();
         pricesAndQuantityPage.shouldNotSupplyBtnBeDisplayed();
 
     }
