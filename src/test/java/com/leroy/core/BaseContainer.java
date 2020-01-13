@@ -158,7 +158,7 @@ public abstract class BaseContainer {
         }
     }
 
-    private CustomLocator buildLocator(String str, String metaName) {
+    protected CustomLocator buildLocator(String str, String metaName) {
         CustomLocator locator;
         if (str.startsWith("/")) {
             locator = new CustomLocator(By.xpath(str), metaName);
@@ -179,10 +179,10 @@ public abstract class BaseContainer {
         return locator;
     }
 
-    public <T extends Element> T E(String str, String metaName, Class<? extends Element> clazz) {
+    public <T extends BaseWidget> T E(String str, String metaName, Class<? extends BaseWidget> clazz) {
         CustomLocator locator = buildLocator(str, metaName);
-        //if (locator.getMetaName() == null)
-        //    throw new IllegalArgumentException("Wrapper with class " + clazz + " should have name");
+//        if (locator.getMetaName() == null)
+//            throw new IllegalArgumentException("Wrapper with class " + clazz + " should have name");
         try {
             return (T) clazz.getConstructor(WebDriver.class, CustomLocator.class)
                     .newInstance(driver, locator);
@@ -202,8 +202,8 @@ public abstract class BaseContainer {
 
     public <E extends BaseWidget> ElementList<E> EL(String str, String metaName, Class<? extends BaseWidget> clazz) {
         CustomLocator locator = buildLocator(str, metaName);
-        //if (locator.getMetaName() == null)
-        //    throw new IllegalArgumentException("ElementList with class " + clazz + " should have name");
+//        if (locator.getMetaName() == null)
+//            throw new IllegalArgumentException("ElementList with class " + clazz + " should have name");
         try {
             return new ElementList<>(driver, locator, clazz);
         } catch (Exception err) {

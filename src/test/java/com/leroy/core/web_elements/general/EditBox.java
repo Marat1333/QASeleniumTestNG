@@ -54,12 +54,13 @@ public class EditBox extends Element {
             return webElement.getAttribute("value");
     }
 
-    public void fill(String text) {
+    public EditBox fill(String text) {
         initialWebElementIfNeeded();
         webElement.sendKeys(text);
+        return this;
     }
 
-    public void fill(String text, boolean imitateTyping) {
+    public EditBox fill(String text, boolean imitateTyping) {
         if (!imitateTyping) {
             this.fill(text);
         } else {
@@ -67,6 +68,7 @@ public class EditBox extends Element {
                 this.fill(Character.toString(text.charAt(i)));
             }
         }
+        return this;
     }
 
     public void clearAndFill(String text) {
@@ -84,12 +86,17 @@ public class EditBox extends Element {
         if (text != null) {
             clear();
             fill(text);
-            if (DriverFactory.isAppProfile())
-                ((AndroidDriver) driver).executeScript(
-                        "mobile: performEditorAction", ImmutableMap.of("action", "search"));
-            else
-                webElement.sendKeys(Keys.ENTER);
+            submit();
         }
+    }
+
+    public EditBox submit() {
+        if (DriverFactory.isAppProfile())
+            ((AndroidDriver) driver).executeScript(
+                    "mobile: performEditorAction", ImmutableMap.of("action", "search"));
+        else
+            webElement.sendKeys(Keys.ENTER);
+        return this;
     }
 
     public void sendBlurEvent() {

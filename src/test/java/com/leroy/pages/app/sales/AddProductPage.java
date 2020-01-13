@@ -5,7 +5,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.elements.MagMobButton;
+import com.leroy.elements.MagMobSubmitButton;
 import io.qameta.allure.Step;
 
 public class AddProductPage extends BaseAppPage {
@@ -57,7 +57,7 @@ public class AddProductPage extends BaseAppPage {
     private Element totalPrice;
 
     @AppFindBy(text = "ДОБАВИТЬ")
-    private MagMobButton addBtn;
+    private MagMobSubmitButton addBtn;
 
 
     @Override

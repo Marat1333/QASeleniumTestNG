@@ -2,15 +2,27 @@ package com.leroy.pages.app.common;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.pages.BaseAppPage;
+import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.models.ProductCardData;
+import com.leroy.models.TextViewData;
 import com.leroy.pages.app.common.modal.SortModal;
 import com.leroy.pages.app.sales.AddProductPage;
+import com.leroy.pages.app.sales.SalesPage;
+import com.leroy.pages.app.sales.product_card.ProductDescriptionPage;
 import com.leroy.pages.app.sales.widget.SearchProductCardWidget;
+import com.leroy.pages.app.widgets.TextViewWidget;
 import io.qameta.allure.Step;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.openqa.selenium.By;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class SearchProductPage extends BaseAppPage {
 
@@ -27,6 +39,10 @@ public class SearchProductPage extends BaseAppPage {
     @AppFindBy(accessibilityId = "ScreenTitle-CatalogComplexSearchStore", metaName = "Поле ввода текста для поиска")
     private EditBox searchField;
 
+    private AndroidScrollView<TextViewData> searchHistoryScrollView = new AndroidScrollView<>(driver,
+            new CustomLocator(By.xpath("//android.widget.ScrollView"),null,
+                    "Виджет прокрутки для истории последних запросов", false));
+
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ScreenContent']//android.view.ViewGroup[android.widget.ImageView]",
             clazz = SearchProductCardWidget.class)
     private ElementList<SearchProductCardWidget> productCards;
@@ -41,27 +57,56 @@ public class SearchProductPage extends BaseAppPage {
     @AppFindBy(xpath = "//android.view.ViewGroup[preceding-sibling::android.view.ViewGroup[2][ancestor::android.view.ViewGroup[@content-desc=\"ScreenContent\"]]]")
     Element sort;
 
+    @AppFindBy(text = "Ты пока ничего не искал(а)")
+    Element firstSearchMsg;
+
     Element discardAllFiltersBtn = E("contains(СБРОСИТЬ ФИЛЬТРЫ)");
 
-    private final String notFoundMsg = "//*[contains(@text, 'Поиск «%s» не дал результатов')]";
+    private final String NOT_FOUND_MSG_XPATH = "//*[contains(@text, 'Поиск «%s» не дал результатов')]";
 
     @Override
     public void waitForPageIsLoaded() {
         searchField.waitForVisibility();
+        waitForProgressBarIsInvisible();
     }
 
     // ---------------- Action Steps -------------------------//
+
+    @Step("Перейти на главную страницу 'Документы продажи'")
+    public SalesPage backToSalesPage() {
+        backBtn.click();
+        return new SalesPage(context);
+    }
+
+    @Step("Ввести поисковой запрос со случайным текстом {value} раз и инициировать поиск")
+    public List<String> createSearchHistory(int value) {
+        List<String> searchHistory = new ArrayList<>();
+        String tmp = RandomStringUtils.randomAlphanumeric(1);
+        for (int i = 0; i < value; i++) {
+            searchField.fill(tmp)
+                    .submit();
+            searchHistory.add(tmp);
+            tmp = tmp + RandomStringUtils.randomAlphanumeric(1);
+        }
+        return searchHistory;
+    }
 
     @Step("Сбросить фильтры, инициировав скрипт со страницы поиска")
     public void discardFilters() {
         discardAllFiltersBtn.click();
     }
 
-    @Step("Введите {text} в поле поиска товара")
-    public SearchProductPage enterTextInSearchField(String text) {
+    @Step("Введите {text} в поле поиска товара и выполните поиск")
+    public SearchProductPage enterTextInSearchFieldAndSubmit(String text) {
         searchField.clearFillAndSubmit(text);
         waitForProgressBarIsVisible();
         waitForProgressBarIsInvisible();
+        return this;
+    }
+
+    @Step("Введите {text} в поле поиска товара")
+    public SearchProductPage enterTextInSearchField(String text) {
+        searchField.clearAndFill(text);
         return this;
     }
 
@@ -76,6 +121,13 @@ public class SearchProductPage extends BaseAppPage {
             productCards.get(0).click();
         }
         return new AddProductPage(context);
+    }
+
+    @Step("Перейти в {index} карточку товара")
+    public ProductDescriptionPage selectProductCardByIndex(int index) throws Exception {
+        anAssert.isTrue(productCards.getCount() > index, "Не найдена " + index + " по счету карточка товара");
+        productCards.get(index).click();
+        return new ProductDescriptionPage(context);
     }
 
     @Step("Перейти в окно выбора единицы номенклатуры")
@@ -107,10 +159,39 @@ public class SearchProductPage extends BaseAppPage {
         return this;
     }
 
+    @Step("Проверяем, что список последних поисковых запросов такой: {expectedList}")
+    public SearchProductPage shouldSearchHistoryListIs(List<String> expectedList) throws Exception {
+        List<String> actualStringList = searchHistoryScrollView.getFullDataAsStringList();
+        anAssert.isEquals(actualStringList, expectedList, "Ожидается следующий список поисковых запросов: %s");
+        return this;
+    }
+
+    @Step("Проверяем, что список последних поисковых запросов содержит {searchPhrase}")
+    public SearchProductPage verifySearchHistoryContainsSearchPhrase(String searchPhrase) throws Exception {
+        List<String> containsVisibleSearchHistory = searchHistoryScrollView.getFullDataAsStringList();
+        anAssert.isFalse(containsVisibleSearchHistory.size() == 0, "История поиска - пустая");
+        for (String tmp : containsVisibleSearchHistory) {
+            softAssert.isTrue(tmp.contains(searchPhrase), "Каждое совпадение должно содержать поисковую строку");
+        }
+        softAssert.isEquals(containsVisibleSearchHistory.get(containsVisibleSearchHistory.size() - 1), searchPhrase,
+                "Последний элемент истории поиска должен полностью совпадать с поисковой фразой");
+        softAssert.verifyAll();
+        return this;
+    }
+
+    public void shouldFirstSearchMsgBeDisplayed() {
+        anAssert.isTrue(firstSearchMsg.isVisible(), "Должно быть отображено сообщение о первом поиске");
+    }
+
     public void shouldNotFoundMsgBeDisplayed(String value) {
-        Element element = new Element(driver, By.xpath(String.format(notFoundMsg, value)));
-        anAssert.isTrue(element.isVisible(),
-                "Поиск по запросу " + value + " не должен вернуть результатов. Видно соответствующее сообщение");
+        Element element = new Element(driver, By.xpath(String.format(NOT_FOUND_MSG_XPATH, value)));
+        anAssert.isTrue(element.isVisible(), "Поиск по запросу " + value + " не вернул результатов");
+    }
+
+    @Step("Проверить, что карточки товаров имеют соответсвующий вид для фильтра 'Вся гамма ЛМ'")
+    public void verifyProductCardsHaveAllGammaView() throws Exception {
+        anAssert.isFalse(E("за штуку").isVisible(), "Карточки товаров не должны содержать цену");
+        anAssert.isFalse(E("доступно").isVisible(), "Карточки товаров не должны содержать доступное кол-во");
     }
 
     public void shouldDiscardAllFiltersBtnBeDisplayed() {
@@ -140,12 +221,12 @@ public class SearchProductPage extends BaseAppPage {
             if (searchWords != null) {
                 for (String each : searchWords) {
                     anAssert.isTrue(card.getName().toLowerCase().contains(each.toLowerCase()),
-                            String.format("Товар с кодом %s не содержит текст %s", card.getNumber(), text));
+                            String.format("Товар с кодом %s не содержит текст %s", card.getLmCode(), text));
                 }
             } else {
                 anAssert.isTrue(card.getBarCode().contains(text) ||
-                                card.getName().contains(text) || card.getNumber().contains(text),
-                        String.format("Товар с кодом %s не содержит текст %s", card.getNumber(), text));
+                                card.getName().contains(text) || card.getLmCode().contains(text),
+                        String.format("Товар с кодом %s не содержит текст %s", card.getLmCode(), text));
             }
         }
     }
@@ -158,7 +239,7 @@ public class SearchProductPage extends BaseAppPage {
     public SearchProductPage shouldProductCardContainAllRequiredElements(int index) throws Exception {
         anAssert.isFalse(productCards.get(index).getBarCode().isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустой штрихкод", index));
-        anAssert.isFalse(productCards.get(index).getNumber().isEmpty(),
+        anAssert.isFalse(productCards.get(index).getLmCode().isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустой номер", index));
         anAssert.isFalse(productCards.get(index).getName().isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустое название", index));

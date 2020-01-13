@@ -41,14 +41,22 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
 
     @Override
     public Iterator<E> iterator() {
-        Iterator<E> it = new Iterator<E>() {
+        int i = 0;
+        try {
+            initWebElementListIfNeeded();
+            i = elementList.size();
+        } catch (Exception err) {
+            Log.error(err.getMessage());
+        }
+        int elementCount = i;
+        return new Iterator<E>() {
 
             private int currentIndex = 0;
 
             @Override
             public boolean hasNext() {
                 try {
-                    return currentIndex < getCount();
+                    return currentIndex < elementCount;
                 } catch (Exception err) {
                     Log.error(err.getMessage());
                     return false;
@@ -70,7 +78,6 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
                 throw new UnsupportedOperationException();
             }
         };
-        return it;
     }
 
     // Protected and Private methods
@@ -100,8 +107,9 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
                 for (int i = 0; i < weList.size(); i++) {
                     CustomLocator elementLocator = new CustomLocator(
                             By.xpath(XpathUtil.getXpathByIndex(stringXPath, i)));
+                    elementLocator.setCacheLookup(true);
                     E oneElem = (E) getElementClass().getConstructor(WebDriver.class, CustomLocator.class).
-                            newInstance(driver,elementLocator);
+                            newInstance(driver, elementLocator);
                     oneElem.setWebElement(weList.get(i));
                     elementList.add(oneElem);
                 }
@@ -110,6 +118,7 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
                     elementList.add((E) getElementClass().getConstructor(WebDriver.class, WebElement.class).
                             newInstance(driver, we));
         } catch (InvocationTargetException e) {
+            Log.error(e.getMessage());
             if (attemptsNumber > 0) {
                 clearElementList();
                 initElementList(timeout, attemptsNumber - 1);
@@ -125,11 +134,11 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
         if (elementList == null)
             initElementList(timeout);
         else {
-            //if (!isCacheLookup()) {
-            if (elementList.size() == 0 || elementList.get(0).isStaleReference()) {
-                initElementList(0);
+            if (!isCacheLookup()) {
+                if (elementList.size() == 0 || elementList.get(0).isStaleReference()) {
+                    initElementList(0);
+                }
             }
-            //}
         }
     }
 

@@ -4,7 +4,7 @@ import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.elements.MagMobButton;
+import com.leroy.elements.MagMobSubmitButton;
 import io.qameta.allure.Step;
 
 public class SubmittedWithdrawalOrderPage extends BaseAppPage {
@@ -20,7 +20,7 @@ public class SubmittedWithdrawalOrderPage extends BaseAppPage {
     private Element messageLbl;
 
     @AppFindBy(accessibilityId = "Button")
-    private MagMobButton submitBtn;
+    private MagMobSubmitButton submitBtn;
 
     @Override
     public void waitForPageIsLoaded() {

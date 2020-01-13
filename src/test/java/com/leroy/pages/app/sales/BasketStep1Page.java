@@ -2,7 +2,7 @@ package com.leroy.pages.app.sales;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.elements.MagMobButton;
+import com.leroy.elements.MagMobSubmitButton;
 import com.leroy.pages.app.sales.widget.SearchProductCardWidget;
 import io.qameta.allure.Step;
 
@@ -16,13 +16,13 @@ public class BasketStep1Page extends BasketPage {
     private SearchProductCardWidget productCard;
 
     @AppFindBy(text = "Услуги моего отдела")
-    private MagMobButton servicesMyDepartmentArea;
+    private MagMobSubmitButton servicesMyDepartmentArea;
 
     @AppFindBy(text = "ТОВАР")
-    private MagMobButton addProductBtn;
+    private MagMobSubmitButton addProductBtn;
 
     @AppFindBy(text = "ДАЛЕЕ К ПАРАМЕТРАМ")
-    private MagMobButton nextParametersBtn;
+    private MagMobSubmitButton nextParametersBtn;
 
     @Override
     public void waitForPageIsLoaded() {

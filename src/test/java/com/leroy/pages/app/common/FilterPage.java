@@ -6,8 +6,10 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.pages.BaseAppPage;
+import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.elements.MagMobCheckBox;
+import com.leroy.models.TextViewData;
 import com.leroy.pages.app.common.widget.SupplierCardWidget;
 import com.leroy.pages.app.widgets.CalendarWidget;
 import io.qameta.allure.Step;
@@ -34,6 +36,9 @@ public class FilterPage extends BaseAppPage {
     public final String ALL_GAMMA_FRAME_TYPE = "ВСЯ ГАММА ЛМ";
 
     private final String HORIZONTAL_SCROLL = "//android.widget.TextView[contains(@text,'%s')]/ancestor::android.widget.HorizontalScrollView";
+
+    @AppFindBy(xpath = AndroidScrollView.TYPICAL_XPATH, metaName = "Основная прокручиваемая область страницы")
+    AndroidScrollView<TextViewData> mainScrollView;
 
     @AppFindBy(text = "МОЙ МАГАЗИН")
     MagMobCheckBox myShopBtn;
@@ -83,12 +88,15 @@ public class FilterPage extends BaseAppPage {
     }
 
     @Step("Выбрать фрейм фильтров {value}")
-    public void switchFiltersFrame(String value) {
-        scrollUp();
+    public <T> T switchFiltersFrame(String value) throws Exception {
+        if (!gammaLmBtn.isVisible())
+            mainScrollView.scrollUp(1);
         if (value.equals(ALL_GAMMA_FRAME_TYPE)) {
             gammaLmBtn.click();
+            return (T) new AllGammaFilterPage(context);
         } else {
             myShopBtn.click();
+            return (T) new MyShopFilterPage(context);
         }
     }
 
@@ -151,10 +159,14 @@ public class FilterPage extends BaseAppPage {
     }
 
     @Step("Показать товары по выбранным фильтрам")
-    public SearchProductPage applyChosenFilters() {
-        scrollDown();
+    public SearchProductPage applyChosenFilters() throws Exception {
+        if (!showGoodsBtn.isVisible())
+            mainScrollView.scrollDown(1);
         showGoodsBtn.click();
-        return new SearchProductPage(context);
+        waitForProgressBarIsVisible();
+        SearchProductPage page = new SearchProductPage(context);
+        hideKeyboard();
+        return page;
     }
 
     //Verifications
@@ -167,13 +179,13 @@ public class FilterPage extends BaseAppPage {
 
     public FilterPage shouldFilterHasBeenChosen(String value) throws Exception {
         MagMobCheckBox element = new MagMobCheckBox(driver, new CustomLocator(By.xpath("//*[contains(@text, '" + value + "')]")));
-        anAssert.isTrue(element.isChecked(), "Фильтр '"+value+"' должен быть +выбран");
+        anAssert.isTrue(element.isChecked(), "Фильтр '" + value + "' должен быть +выбран");
         return this;
     }
 
     public FilterPage shouldFilterHasNotBeenChosen(String value) throws Exception {
         MagMobCheckBox element = new MagMobCheckBox(driver, new CustomLocator(By.xpath("//*[contains(@text, '" + value + "')]")));
-        anAssert.isFalse(element.isChecked(), "Фильтр '"+value+"' не должен быть +выбран");
+        anAssert.isFalse(element.isChecked(), "Фильтр '" + value + "' не должен быть +выбран");
         return this;
     }
 

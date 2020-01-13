@@ -3,11 +3,9 @@ package com.leroy.pages.app.work;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
-import com.leroy.core.pages.BasePage;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.elements.MagMobButton;
-import com.leroy.pages.app.common.SearchProductPage;
+import com.leroy.elements.MagMobSubmitButton;
 import io.qameta.allure.Step;
 
 public class ProductCardPage extends BaseAppPage {
@@ -20,7 +18,7 @@ public class ProductCardPage extends BaseAppPage {
     private Element productCardHeaderArea;
 
     @AppFindBy(accessibilityId = "Button")
-    private MagMobButton withdrawalBtn;
+    private MagMobSubmitButton withdrawalBtn;
 
     @AppFindBy(xpath = "//android.widget.ScrollView/android.view.ViewGroup")
     private Element mainContentArea;

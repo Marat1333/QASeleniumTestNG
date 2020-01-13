@@ -96,10 +96,34 @@ public abstract class BaseWidget extends BaseWrapper {
      * @param xpath - Xpath
      * @return Element
      */
-    public Element findChildElement(String xpath) {
+    public Element findChildElement(String xpath) throws Exception {
+        return findChildElement(xpath, Element.class);
+    }
+
+    public <T extends BaseWidget> T findChildElement(String xpath, Class<? extends BaseWidget> clazz) throws Exception {
         if (xpath.startsWith("."))
             xpath = xpath.replaceFirst(".", "");
-        return new Element(driver, By.xpath(getXpath() + xpath));
+        return (T) clazz.getConstructor(WebDriver.class, CustomLocator.class)
+                .newInstance(driver, new CustomLocator(By.xpath(getXpath() + xpath)));
+    }
+
+    public <T extends BaseWidget> ElementList<T> findChildElements(String xpath, Class<? extends BaseWidget> clazz) throws Exception {
+        if (xpath.startsWith("."))
+            xpath = xpath.replaceFirst(".", "");
+        CustomLocator locator = new CustomLocator(By.xpath(getXpath() + xpath));
+        locator.setCacheLookup(true);
+        return new ElementList<>(driver, locator, clazz);
+    }
+
+    @Override
+    protected CustomLocator buildLocator(String str, String metaName) {
+        CustomLocator locator;
+        if (str.startsWith("."))
+            locator = new CustomLocator(
+                    this.getXpath() + By.xpath(str.replaceFirst("\\.", "")), metaName);
+        else
+            locator = super.buildLocator(str, metaName);
+        return locator;
     }
 
     public boolean isPresent() {

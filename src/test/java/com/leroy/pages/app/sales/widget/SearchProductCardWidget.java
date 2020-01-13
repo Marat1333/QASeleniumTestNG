@@ -3,16 +3,18 @@ package com.leroy.pages.app.sales.widget;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.models.ProductCardData;
+import com.leroy.pages.app.widgets.CardWidget;
 import org.openqa.selenium.WebDriver;
 
-public class SearchProductCardWidget extends Element {
+public class SearchProductCardWidget extends CardWidget<ProductCardData> {
 
     public SearchProductCardWidget(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
     }
 
     @AppFindBy(xpath = "./android.widget.TextView[1]")
-    private Element numberObj;
+    private Element lmCodeObj;
 
     @AppFindBy(xpath = "./android.widget.TextView[2]")
     private Element barCodeObj;
@@ -35,8 +37,8 @@ public class SearchProductCardWidget extends Element {
     @AppFindBy(xpath = "./android.widget.TextView[8]")
     private Element quantityLbl;
 
-    public String getNumber() {
-        return numberObj.getText();
+    public String getLmCode() {
+        return lmCodeObj.getText();
     }
 
     public String getBarCode() {
@@ -67,4 +69,11 @@ public class SearchProductCardWidget extends Element {
         return quantityLbl.getText();
     }
 
+    @Override
+    public ProductCardData collectDataFromPage() {
+        ProductCardData productCardData = new ProductCardData();
+        productCardData.setNumber(getLmCode());
+        // TODO
+        return productCardData;
+    }
 }
