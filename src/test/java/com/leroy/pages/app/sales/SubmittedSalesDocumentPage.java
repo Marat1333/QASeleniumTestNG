@@ -3,9 +3,8 @@ package com.leroy.pages.app.sales;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
-import com.leroy.core.pages.BasePage;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.elements.MagMobButton;
+import com.leroy.elements.MagMobSubmitButton;
 import io.qameta.allure.Step;
 
 public class SubmittedSalesDocumentPage extends BaseAppPage {
@@ -30,7 +29,7 @@ public class SubmittedSalesDocumentPage extends BaseAppPage {
     private Element bodyMessageLbl;
 
     @AppFindBy(text = "ПЕРЕЙТИ В СПИСОК ДОКУМЕНТОВ")
-    private MagMobButton submitBtn;
+    private MagMobSubmitButton submitBtn;
 
     @Override
     public void waitForPageIsLoaded() {

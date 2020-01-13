@@ -78,8 +78,8 @@ public class OldSearchProductPage extends BaseAppPage {
     public OldSearchProductPage shouldProductCardsContainText(String text) {
         for (SearchProductCardWidget card : productCards) {
             anAssert.isTrue(card.getBarCode().contains(text) ||
-                            card.getName().contains(text) || card.getNumber().contains(text),
-                    String.format("Товар с кодом %s не содержит текст %s", card.getNumber(), text));
+                            card.getName().contains(text) || card.getLmCode().contains(text),
+                    String.format("Товар с кодом %s не содержит текст %s", card.getLmCode(), text));
         }
         return this;
     }
@@ -87,7 +87,7 @@ public class OldSearchProductPage extends BaseAppPage {
     public OldSearchProductPage shouldProductCardContainAllRequiredElements(int index) throws Exception {
         anAssert.isFalse(productCards.get(index).getBarCode().isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустой штрихкод", index));
-        anAssert.isFalse(productCards.get(index).getNumber().isEmpty(),
+        anAssert.isFalse(productCards.get(index).getLmCode().isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустой номер", index));
         anAssert.isFalse(productCards.get(index).getName().isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустое название", index));

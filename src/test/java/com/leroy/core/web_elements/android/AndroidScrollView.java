@@ -3,44 +3,67 @@ package com.leroy.core.web_elements.android;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.BaseWidget;
+import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.models.CardWidgetData;
+import com.leroy.pages.app.widgets.CardWidget;
+import com.leroy.pages.app.widgets.TextViewWidget;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static io.appium.java_client.touch.WaitOptions.waitOptions;
 import static io.appium.java_client.touch.offset.PointOption.point;
 import static java.time.Duration.ofMillis;
 
-public class AndroidScrollView extends BaseWidget {
+public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
+
+    public static final String TYPICAL_XPATH = "//android.widget.ScrollView";
+    private Class<? extends BaseWidget> rowWidgetClass;
+    private String oneRowXpath;
 
     AndroidDriver<MobileElement> androidDriver;
-    private List<String> tmpTextList;
+
+    private List<T> tmpCardDataList;
 
     public AndroidScrollView(WebDriver driver, CustomLocator locator) {
+        this(driver, locator, ".//android.widget.TextView", null);
+    }
+
+    public AndroidScrollView(WebDriver driver, CustomLocator locator, String oneRowXpath,
+                             Class<? extends CardWidget<T>> clazz) {
         super(driver, locator);
+        if (clazz == null)
+            this.rowWidgetClass = TextViewWidget.class;
+        else
+            this.rowWidgetClass = clazz;
+        this.oneRowXpath = oneRowXpath;
         androidDriver = (AndroidDriver) driver;
     }
 
     /**
      * Scroll down to the end and get all text labels as ArrayList
      */
-    public List<String> getFullTextLabelsList() {
-        scrollToEnd();
-        return new ArrayList<>(tmpTextList);
+    public List<T> getFullDataList() throws Exception {
+        scrollDown();
+        return new ArrayList<>(tmpCardDataList);
     }
 
-    private static void addNonRepeatingText(List<String> existedList, List<String> newList) {
+    public List<String> getFullDataAsStringList() throws Exception {
+        return getFullDataList().stream().map(T::toString).collect(Collectors.toList());
+    }
+
+    private void addNonRepeatingText(List<T> existedList, List<T> newList) {
         int iMatchCount = 0;
-        for (String str : existedList) {
+        for (T data : existedList) {
             if (iMatchCount >= newList.size())
                 break;
-            if (str.equals(newList.get(iMatchCount))) {
+            if (data.equals(newList.get(iMatchCount))) {
                 iMatchCount++;
             } else {
                 iMatchCount = 0;
@@ -52,63 +75,107 @@ public class AndroidScrollView extends BaseWidget {
         }
     }
 
+    private void simpleScroll(WebElement startElement, WebElement endElement) {
+        int startX = startElement.getLocation().getX() + (startElement.getSize().getWidth() / 2);
+        int startY = startElement.getLocation().getY() + (startElement.getSize().getHeight() / 2);
+
+        int endX = endElement.getLocation().getX() + (endElement.getSize().getWidth() / 2);
+        int endY = endElement.getLocation().getY() + (endElement.getSize().getHeight() / 2);
+
+        new TouchAction<>(androidDriver)
+                .press(point(startX, startY))
+                .waitAction(waitOptions(ofMillis(500)))
+                .moveTo(point(endX, endY))
+                .release().perform();
+    }
+
     /**
-     * Scroll down to the specific text
-     * @param findText - text which should be found
+     * Scroll to the specific text
+     *
+     * @param findText       - text which should be found
      * @param maxScrollCount - limit of scroll count
+     * @param direction      - up or down
      * @return this
      */
-    public AndroidScrollView scrollDownToText(String findText, int maxScrollCount) {
+    private AndroidScrollView<T> scrollToText(String findText, int maxScrollCount, String direction) throws Exception {
         initialWebElementIfNeeded();
-        tmpTextList = new ArrayList<>();
-        List<String> prefTextList = null;
+        tmpCardDataList = new ArrayList<>();
+        List<T> prevDataList = null;
         int i = 0;
         while (true) {
             if (i >= maxScrollCount)
                 break;
-            List<WebElement> weList = this.webElement.findElements(By.xpath(".//android.widget.TextView"));
-            if (weList.size() < 2)
+            ElementList<CardWidget<T>> cardWidgetList = this.findChildElements(oneRowXpath, rowWidgetClass);
+            int widgetCount = cardWidgetList.getCount();
+            if (widgetCount < 1)
                 break;
-            List<String> currentTextList = new ArrayList<>();
-            for (WebElement we : weList) {
-                String currentText = we.getText();
-                currentTextList.add(currentText);
-                if (findText != null && currentText.contains(findText))
+            List<T> currentVisibleDataList = new ArrayList<>();
+            for (CardWidget<T> we : cardWidgetList) {
+                T data = we.collectDataFromPage();
+                currentVisibleDataList.add(data);
+                if (findText != null && data.toString().contains(findText))
                     break;
             }
-            addNonRepeatingText(tmpTextList, currentTextList);
-            WebElement endElement = weList.get(0);
-            WebElement startElement = weList.get(weList.size() - 1);
-            int startX = startElement.getLocation().getX() + (startElement.getSize().getWidth() / 2);
-            int startY = startElement.getLocation().getY() + (startElement.getSize().getHeight() / 2);
-
-            int endX = endElement.getLocation().getX() + (endElement.getSize().getWidth() / 2);
-            int endY = endElement.getLocation().getY() + (endElement.getSize().getHeight() / 2);
-
-            new TouchAction<>(androidDriver)
-                    .press(point(startX, startY))
-                    .waitAction(waitOptions(ofMillis(500)))
-                    .moveTo(point(endX, endY))
-                    .release().perform();
+            addNonRepeatingText(tmpCardDataList, currentVisibleDataList);
+            WebElement endElement;
+            WebElement startElement;
+            if (direction.equals("down")) {
+                endElement = cardWidgetList.get(0).getWebElement();
+                startElement = cardWidgetList.get(widgetCount - 1).getWebElement();
+            } else {
+                endElement = cardWidgetList.get(widgetCount - 1).getWebElement();
+                startElement = cardWidgetList.get(0).getWebElement();
+            }
+            simpleScroll(startElement, endElement);
             Log.debug("<-- Scroll down #" + (i + 1) + "-->");
-            if (currentTextList.equals(prefTextList))
+            if (currentVisibleDataList.equals(prevDataList))
                 break;
-            prefTextList = new ArrayList<>(currentTextList);
+            prevDataList = new ArrayList<>(currentVisibleDataList);
             i++;
         }
         return this;
     }
 
-    public AndroidScrollView scrollDownToText(String findText) {
+    /**
+     * Scroll down to the specific text
+     *
+     * @param findText       - text which should be found
+     * @param maxScrollCount - limit of scroll count
+     * @return this
+     */
+    public AndroidScrollView<T> scrollDownToText(String findText, int maxScrollCount) throws Exception {
+        return scrollToText(findText, maxScrollCount, "down");
+    }
+
+    /**
+     * Scroll up to the specific text
+     *
+     * @param findText       - text which should be found
+     * @param maxScrollCount - limit of scroll count
+     * @return this
+     */
+    public AndroidScrollView<T> scrollUpToText(String findText, int maxScrollCount) throws Exception {
+        return scrollToText(findText, maxScrollCount, "up");
+    }
+
+    public AndroidScrollView<T> scrollDownToText(String findText) throws Exception {
         return scrollDownToText(findText, 20);
     }
 
-    public AndroidScrollView scrollToEnd() {
-        return scrollDownToText(null, 60);
+    public AndroidScrollView<T> scrollDown() throws Exception {
+        return scrollDown(60);
     }
 
-    public AndroidScrollView scrollDown(int count) {
+    public AndroidScrollView<T> scrollUp() throws Exception {
+        return scrollUp(60);
+    }
+
+    public AndroidScrollView<T> scrollDown(int count) throws Exception {
         return scrollDownToText(null, count);
+    }
+
+    public AndroidScrollView<T> scrollUp(int count) throws Exception {
+        return scrollUpToText(null, count);
     }
 
 }

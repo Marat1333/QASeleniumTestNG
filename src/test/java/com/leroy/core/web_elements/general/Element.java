@@ -388,6 +388,15 @@ public class Element extends BaseWidget {
     }
 
     /**
+     * Get text if the element is present, otherwise return null
+     */
+    public String getTextIfPresent() {
+        if (!isVisible())
+            return null;
+        return getText(false);
+    }
+
+    /**
      * Get text from web element
      *
      * @param selfText - only text of an element without including child elements text

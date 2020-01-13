@@ -10,9 +10,6 @@ import org.openqa.selenium.support.Color;
 
 public class MagMobButton extends Button {
 
-    private static final Color ACTIVE_GREEN_COLOR = new Color(102, 192, 93, 255);
-    private static final Color INACTIVE_GRAY_COLOR = new Color(202, 206, 210, 255);
-
     public MagMobButton(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
     }
@@ -25,15 +22,5 @@ public class MagMobButton extends Button {
     @Override
     public Color getPointColor() throws Exception {
         return getPointColor(0, getHeight() / 4);
-    }
-
-    @Override
-    public boolean isEnabled() {
-        try {
-            return getPointColor().equals(ACTIVE_GREEN_COLOR);
-        } catch (Exception err) {
-            Log.error("isEnabled() Error: " + err.getMessage());
-            return false;
-        }
     }
 }

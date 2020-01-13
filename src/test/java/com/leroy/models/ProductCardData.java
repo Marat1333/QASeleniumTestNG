@@ -1,6 +1,6 @@
 package com.leroy.models;
 
-public class ProductCardData {
+public class ProductCardData extends CardWidgetData {
 
     private String number;
     private String name;
