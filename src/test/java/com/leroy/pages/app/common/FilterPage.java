@@ -9,6 +9,7 @@ import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.elements.MagMobCheckBox;
+import com.leroy.models.TextViewData;
 import com.leroy.pages.app.common.widget.SupplierCardWidget;
 import com.leroy.pages.app.widgets.CalendarWidget;
 import io.qameta.allure.Step;
@@ -36,8 +37,8 @@ public class FilterPage extends BaseAppPage {
 
     private final String HORIZONTAL_SCROLL = "//android.widget.TextView[contains(@text,'%s')]/ancestor::android.widget.HorizontalScrollView";
 
-    @AppFindBy(xpath = AndroidScrollView.TYPICAL_XPATH, metaName = "Основная прокруиваемая область страницы")
-    AndroidScrollView mainScrollView;
+    @AppFindBy(xpath = AndroidScrollView.TYPICAL_XPATH, metaName = "Основная прокручиваемая область страницы")
+    AndroidScrollView<TextViewData> mainScrollView;
 
     @AppFindBy(text = "МОЙ МАГАЗИН")
     MagMobCheckBox myShopBtn;

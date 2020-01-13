@@ -7,14 +7,14 @@ import com.leroy.elements.MagMobSubmitButton;
 
 public class PricesAndQuantityPage extends BaseAppPage {
 
-    public PricesAndQuantityPage (TestContext context){
+    public PricesAndQuantityPage(TestContext context) {
         super(context);
     }
 
     @AppFindBy(text = "ПОСТАВКИ")
     MagMobSubmitButton supplyBtn;
 
-    public void shouldNotSupplyBtnBeDisplayed(){
-        anAssert.isFalse(supplyBtn.isVisible(),"Раздел \"Поставки\" не отображен");
+    public void shouldNotSupplyBtnBeDisplayed() {
+        anAssert.isFalse(supplyBtn.isVisible(), "Раздел \"Поставки\" не отображен");
     }
 }
