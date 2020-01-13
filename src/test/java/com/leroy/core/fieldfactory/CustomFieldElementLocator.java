@@ -4,8 +4,8 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.util.XpathUtil;
-import com.leroy.elements.MagMobButton;
-import com.leroy.elements.MagMobSubmitButton;
+import com.leroy.magmobile.ui.elements.MagMobButton;
+import com.leroy.magmobile.ui.elements.MagMobSubmitButton;
 import org.openqa.selenium.By;
 
 import java.lang.annotation.Annotation;
