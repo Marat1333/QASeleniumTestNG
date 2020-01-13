@@ -11,10 +11,12 @@ public class CustomerData {
     private String firstName;
     private String middleName;
     private String lastName;
-    private String personalPhone;
-    private String workPhone;
-    private String personalEmail;
-    private String workEmail;
+    private String phoneNumber;
+    private boolean isPersonalPhone;
+    private boolean isWorkPhone;
+    private String email;
+    private boolean isPersonalEmail;
+    private boolean isWorkEmail;
 
     private String addressName;
     private String region;
@@ -36,10 +38,11 @@ public class CustomerData {
         setFirstName(getRandomCyrillicCharacters(8));
         int _phone = new Random().nextInt(2);
         if (_phone == 0) {
-            setPersonalPhone(RandomStringUtils.randomNumeric(10));
+            setPersonalPhone(true);
         } else {
-            setWorkPhone(RandomStringUtils.randomNumeric(10));
+            setWorkPhone(true);
         }
+        setPhoneNumber(RandomStringUtils.randomNumeric(10));
         return this;
     }
 
@@ -76,36 +79,52 @@ public class CustomerData {
         this.lastName = lastName;
     }
 
-    public String getPersonalPhone() {
-        return personalPhone;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setPersonalPhone(String personalPhone) {
-        this.personalPhone = personalPhone;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
-    public String getWorkPhone() {
-        return workPhone;
+    public boolean isPersonalPhone() {
+        return isPersonalPhone;
     }
 
-    public void setWorkPhone(String workPhone) {
-        this.workPhone = workPhone;
+    public void setPersonalPhone(boolean personalPhone) {
+        isPersonalPhone = personalPhone;
     }
 
-    public String getPersonalEmail() {
-        return personalEmail;
+    public boolean isWorkPhone() {
+        return isWorkPhone;
     }
 
-    public void setPersonalEmail(String personalEmail) {
-        this.personalEmail = personalEmail;
+    public void setWorkPhone(boolean workPhone) {
+        isWorkPhone = workPhone;
     }
 
-    public String getWorkEmail() {
-        return workEmail;
+    public String getEmail() {
+        return email;
     }
 
-    public void setWorkEmail(String workEmail) {
-        this.workEmail = workEmail;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public boolean isPersonalEmail() {
+        return isPersonalEmail;
+    }
+
+    public void setPersonalEmail(boolean personalEmail) {
+        isPersonalEmail = personalEmail;
+    }
+
+    public boolean isWorkEmail() {
+        return isWorkEmail;
+    }
+
+    public void setWorkEmail(boolean workEmail) {
+        isWorkEmail = workEmail;
     }
 
     public String getAddressName() {

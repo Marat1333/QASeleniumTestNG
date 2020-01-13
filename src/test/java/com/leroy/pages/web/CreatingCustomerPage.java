@@ -36,6 +36,9 @@ public class CreatingCustomerPage extends MenuPage {
     @WebFindBy(xpath = "//h4", metaName = "Основной заголовок страницы")
     Element headerLbl;
 
+    @WebFindBy(xpath = "//button[contains(@class, 'Button-type-empty-main')]", metaName = "Кнопка назад")
+    Button backBtn;
+
     @WebFindBy(xpath = "//h5", metaName = "Подзаголовок страницы")
     Element subHeaderLbl;
 
@@ -138,6 +141,12 @@ public class CreatingCustomerPage extends MenuPage {
 
     // ACTIONS
 
+    @Step("Нажмите кнопку вернуться назад")
+    public CustomerPage clickBackButton() {
+        backBtn.click();
+        return new CustomerPage(context);
+    }
+
     @Step("Введите {text} в поле 'Имя'")
     public CreatingCustomerPage enterTextInFirstNameInputField(String text) {
         firstNameFld.clearAndFill(text);
@@ -196,14 +205,14 @@ public class CreatingCustomerPage extends MenuPage {
                 break;
         }
         enterTextInFirstNameInputField(customerData.getFirstName());
-        if (Strings.isNotNullAndNotEmpty(customerData.getPersonalPhone())) {
+        if (customerData.isPersonalPhone()) {
             phonePersonalOptionBtn.click();
-            enterTextInPhoneInputField(customerData.getPersonalPhone());
         }
-        if (Strings.isNotNullAndNotEmpty(customerData.getWorkPhone())) {
+        if (customerData.isWorkPhone()) {
             phoneWorkOptionBtn.click();
-            enterTextInPhoneInputField(customerData.getWorkPhone());
         }
+        if (Strings.isNotNullAndNotEmpty(customerData.getPhoneNumber()))
+            enterTextInPhoneInputField(customerData.getPhoneNumber());
         return this;
     }
 
@@ -354,23 +363,21 @@ public class CreatingCustomerPage extends MenuPage {
                         "Женский пол должен быть выбран");
         if (customerData.getFirstName() != null)
             softAssert.isElementTextEqual(firstNameFld, StringUtils.capitalize(customerData.getFirstName()));
-        String expectedPhoneNumber = customerData.getPersonalPhone() != null ? customerData.getPersonalPhone() :
-                customerData.getWorkPhone();
+        String expectedPhoneNumber = customerData.getPhoneNumber();
         if (expectedPhoneNumber != null) {
             if (expectedPhoneNumber.length() == 10)
                 expectedPhoneNumber = String.format("+7 (%s) %s-%s-%s",
                         expectedPhoneNumber.substring(0, 3), expectedPhoneNumber.substring(3, 6),
                         expectedPhoneNumber.substring(6, 8), expectedPhoneNumber.substring(8, 10));
+            softAssert.isElementTextEqual(phoneFld, expectedPhoneNumber);
         }
-        if (customerData.getPersonalPhone() != null) {
+        if (customerData.isPersonalPhone()) {
             softAssert.isTrue(isButtonActive(phonePersonalOptionBtn),
                     "Должен быть указан Личный телефон");
-            softAssert.isElementTextEqual(phoneFld, expectedPhoneNumber);
         }
-        if (customerData.getWorkPhone() != null) {
+        if (customerData.isWorkPhone()) {
             softAssert.isTrue(isButtonActive(phoneWorkOptionBtn),
                     "Должен быть указан Рабочий телефон");
-            softAssert.isElementTextEqual(phoneFld, expectedPhoneNumber);
         }
         softAssert.verifyAll();
         return this;

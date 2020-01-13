@@ -53,17 +53,11 @@ public class CustomerPersonalInfoPage extends MenuPage {
         if (data.getGender() != null)
             softAssert.isEquals(genderObj.getText(), (data.getGender().equals(Gender.MALE) ? "Мужской" : "Женский"),
                     "Пол должен быть %s");
-        if (data.getWorkPhone() != null)
-            softAssert.isEquals(phoneObj.getText(), "+7" + data.getWorkPhone(),
+        if (data.getPhoneNumber() != null)
+            softAssert.isEquals(phoneObj.getText(), "+7" + data.getPhoneNumber(),
                     "Основной телефон должен быть %s");
-        if (data.getPersonalPhone() != null)
-            softAssert.isEquals(phoneObj.getText(), "+7" + data.getPersonalPhone(),
-                    "Основной телефон должен быть %s");
-        if (data.getPersonalEmail() != null)
-            softAssert.isEquals(emailObj.getText(), data.getPersonalEmail(),
-                    "Email должен быть %s");
-        else if (data.getWorkEmail() != null)
-            softAssert.isEquals(emailObj.getText(), data.getWorkEmail(),
+        if (data.getEmail() != null)
+            softAssert.isEquals(emailObj.getText(), data.getEmail(),
                     "Email должен быть %s");
         else
             softAssert.isEquals(emailObj.getText(), "Не указано",

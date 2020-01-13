@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Quotes;
 import org.testng.util.Strings;
 
 import java.lang.reflect.Field;
@@ -166,10 +167,10 @@ public abstract class BaseContainer {
         } else if (str.startsWith("$")) {
             locator = new CustomLocator(str.replaceFirst("\\$", ""), metaName);
         } else if (str.contains("contains(")) {
-            String _xpathTmp = DriverFactory.isAppProfile() ? "//*[contains(@text, '%s')]" : "//*[contains(.,'%s')]";
+            String _xpathTmp = DriverFactory.isAppProfile() ? "//*[contains(@text, %s)]" : "//*[contains(text(),%s)]";
             String subStr = StringUtils.substringBetween(str, "contains(", ")");
-            locator = new CustomLocator(By.xpath(String.format(_xpathTmp, subStr)),
-                    metaName == null ? String.format("Элемент содержащий текст '%s'", subStr) : metaName);
+            locator = new CustomLocator(By.xpath(String.format(_xpathTmp, Quotes.escape(subStr))),
+                    metaName == null ? String.format("Элемент содержащий текст %s", Quotes.escape(subStr)) : metaName);
         } else {
             String _xpathTmp = DriverFactory.isAppProfile() ? "//*[@text='%s']" : "//*[text()='%s']";
             locator = new CustomLocator(By.xpath(String.format(_xpathTmp, str)),
