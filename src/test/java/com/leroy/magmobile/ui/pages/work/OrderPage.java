@@ -110,9 +110,10 @@ public class OrderPage extends BaseAppPage {
 
     public OrderPage shouldDateFieldIs(LocalDate date) {
         String dateFormat = "dd-го MMM";
-        LocalDate dateFromPage = DateTimeUtil.strToLocalDate(deliveryDateLbl.getText(),
+        String _deliveryDate = deliveryDateLbl.getText();
+        LocalDate dateFromPage = DateTimeUtil.strToLocalDate(_deliveryDate,
                 dateFormat);
-        softAssert.isNotNull(dateFromPage,
+        softAssert.isNotNull(dateFromPage, _deliveryDate,
                 "Выбранная дата должна иметь формат '" + dateFormat + "'");
         softAssert.isEquals(dateFromPage.getDayOfMonth(), date.getDayOfMonth(),
                 "Выбранный день должен быть равен %s");
