@@ -53,14 +53,14 @@ public class CustomAssert extends BaseCustomAssert {
         }
     }
 
-    public boolean isElementVisible(Element element) {
+    public boolean isElementVisible(BaseWidget element) {
         boolean elementVisibility = logIsElementVisible(element);
         String desc = element.getMetaName() + " должен отображаться";
         Assert.assertTrue(elementVisibility, desc);
         return elementVisibility;
     }
 
-    public boolean isElementNotVisible(Element element) {
+    public boolean isElementNotVisible(BaseWidget element) {
         boolean elementVisibility = !(logIsElementNotVisible(element));
         String desc = element.getMetaName() + " не должен отображаться";
         Assert.assertFalse(elementVisibility, desc);

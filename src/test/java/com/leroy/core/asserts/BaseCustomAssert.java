@@ -4,6 +4,7 @@ import com.leroy.core.configuration.Log;
 import com.leroy.core.testrail.helpers.StepLog;
 import com.leroy.core.testrail.models.StepResultModel;
 import com.leroy.core.util.ImageUtil;
+import com.leroy.core.web_elements.general.BaseWidget;
 import com.leroy.core.web_elements.general.Element;
 import org.testng.Assert;
 
@@ -84,7 +85,7 @@ public abstract class BaseCustomAssert {
 
     // For UI
 
-    protected boolean logIsElementVisible(Element element) {
+    protected boolean logIsElementVisible(BaseWidget element) {
         Assert.assertNotNull(element.getMetaName(), "Element meta name is NULL!");
         boolean elementVisibility = element.isVisible();
         if (!elementVisibility) {
@@ -95,7 +96,7 @@ public abstract class BaseCustomAssert {
         return elementVisibility;
     }
 
-    protected boolean logIsElementNotVisible(Element element) {
+    protected boolean logIsElementNotVisible(BaseWidget element) {
         Assert.assertNotNull(element.getMetaName(), "Element meta name is NULL!");
         boolean elementVisibility = element.isVisible();
         String expectedResult = element.getMetaName() + " не должен отображаться";
