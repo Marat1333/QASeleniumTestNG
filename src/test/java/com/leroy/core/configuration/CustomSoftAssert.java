@@ -52,7 +52,7 @@ public class CustomSoftAssert extends BaseCustomAssert {
         if (isElementVisible(element)) {
             String actualText = element.getText();
             logIsElementTextEqual(element.getMetaName(), actualText, expectedText);
-            softAssert.assertEquals(element.getText(), expectedText,
+            softAssert.assertEquals(actualText, expectedText,
                     String.format("Элемент '%s' содержит текст '%s'", element.getMetaName(), actualText));
         }
     }

@@ -86,7 +86,6 @@ public class CustomerPage extends MenuPage {
 
     // --------------------- Verifications --------------------------//
 
-    @Override
     public CustomerPage verifyRequiredElements() {
         softAssert.isElementTextEqual(headerLbl, HEADER);
         softAssert.isElementVisible(searchTypeLbl);

@@ -58,7 +58,7 @@ public class SearchTest extends AppBaseSteps {
         log.step("Введите полное значение для поиска по ЛМ коду| 10008698");
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
         ProductDescriptionPage productCardPage = new ProductDescriptionPage(context)
-                .verifyRequiredElements()
+                .verifyRequiredElements(true)
                 .shouldProductLMCodeIs(lmCode);
         searchProductPage = productCardPage.returnBack();
 

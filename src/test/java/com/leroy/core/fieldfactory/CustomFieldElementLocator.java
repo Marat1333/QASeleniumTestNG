@@ -40,7 +40,9 @@ public class CustomFieldElementLocator {
     }
 
     public String getAccessibilityId() {
-        return field.getAnnotation(AppFindBy.class).accessibilityId();
+        if (field.getAnnotation(AppFindBy.class) != null)
+            return field.getAnnotation(AppFindBy.class).accessibilityId();
+        else return null;
     }
 
     private By buildBy(By parentBy) {

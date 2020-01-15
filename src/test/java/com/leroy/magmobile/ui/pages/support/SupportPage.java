@@ -51,7 +51,6 @@ public class SupportPage extends BaseAppPage {
 
     /* ---------------------- Verifications -------------------------- */
 
-    @Override
     public SupportPage verifyRequiredElements() throws Exception {
         softAssert.isElementVisible(titleLbl);
         softAssert.isElementVisible(complainBtn);

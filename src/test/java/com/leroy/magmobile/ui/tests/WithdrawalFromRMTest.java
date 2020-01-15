@@ -1,11 +1,11 @@
 package com.leroy.magmobile.ui.tests;
 
-import com.leroy.models.ProductCardData;
+import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.LoginPage;
 import com.leroy.magmobile.ui.pages.more.UserProfilePage;
 import com.leroy.magmobile.ui.pages.sales.SalesPage;
 import com.leroy.magmobile.ui.pages.work.*;
-import com.leroy.magmobile.ui.AppBaseSteps;
+import com.leroy.models.ProductCardData;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
 

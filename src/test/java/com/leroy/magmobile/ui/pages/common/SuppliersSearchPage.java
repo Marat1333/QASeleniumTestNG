@@ -52,7 +52,6 @@ public class SuppliersSearchPage extends BaseAppPage {
         return new FilterPage(context);
     }
 
-    @Override
     public SuppliersSearchPage verifyRequiredElements(){
         softAssert.isElementVisible(searchString);
         softAssert.verifyAll();

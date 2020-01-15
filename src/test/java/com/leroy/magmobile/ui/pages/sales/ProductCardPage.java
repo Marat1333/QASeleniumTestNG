@@ -10,6 +10,7 @@ import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ReviewsPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.SimilarProductsPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.SpecificationsPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.modal.ActionWithProductModalScreen;
 import io.qameta.allure.Step;
 
 public class ProductCardPage extends BaseAppPage {
@@ -38,7 +39,6 @@ public class ProductCardPage extends BaseAppPage {
     public final String SIMILAR_PRODUCTS = "АНАЛОГИЧНЫЕ ТОВАРЫ";
 
     /* ------------------------- ACTION STEPS -------------------------- */
-
 
     @Step("Перейти назад на страницу поиска товара")
     public SearchProductPage returnBack() {
@@ -75,6 +75,12 @@ public class ProductCardPage extends BaseAppPage {
         }
     }
 
+    @Step("Нажмите на кнопку Действия с товаром")
+    public ActionWithProductModalScreen clickActionWithProductButton() {
+        actionWithProductBtn.click();
+        return new ActionWithProductModalScreen(context);
+    }
+
     /* ------------------------- Verifications -------------------------- */
 
     public ProductCardPage verifyRequiredElements(boolean submitBtnShouldBeVisible) {
@@ -83,9 +89,7 @@ public class ProductCardPage extends BaseAppPage {
             softAssert.isElementVisible(actionWithProductBtn);
         else
             softAssert.isElementNotVisible(actionWithProductBtn);
-        // TODO
         softAssert.verifyAll();
-
         return this;
     }
 

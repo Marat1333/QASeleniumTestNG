@@ -1,4 +1,4 @@
-package com.leroy.magmobile.ui.pages.sales;
+package com.leroy.magmobile.ui.pages.sales.basket;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
@@ -53,7 +53,9 @@ public class BasketStep2Page extends BasketPage {
     // ------------ Verifications ------------------//
 
     @Override
+    @Step("Убедиться, что мы находимся на странице Корзина - Шаг 2, и все необходимые элементы отражаются корректно")
     public BasketStep2Page verifyRequiredElements() {
+        super.verifyRequiredElements();
         softAssert.isElementVisible(documentParametersLbl);
         softAssert.isElementVisible(issuePlaceLbl);
         softAssert.isElementVisible(issueDateLbl);
@@ -63,6 +65,7 @@ public class BasketStep2Page extends BasketPage {
         return this;
     }
 
+    @Step("Проверить, что поля 'Место выдачи', 'Дата выдачи' предзаполнены, а поле 'Комментарий' пустое")
     public BasketStep2Page shouldFieldsHaveDefaultValues() {
         softAssert.isElementTextEqual(issuePlaceFld, "Линия касс");
         softAssert.isElementTextEqual(issueDateFld, "Сейчас");

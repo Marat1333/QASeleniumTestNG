@@ -2,8 +2,8 @@ package com.leroy.magportal.ui.pages;
 
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.TestContext;
-import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.pages.BaseWebPage;
+import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.models.UserData;
 
@@ -13,14 +13,11 @@ public class LoginWebPage extends BaseWebPage {
         super(context);
     }
 
-    @WebFindBy(id = "Username")
-    private EditBox usernameFld;
+    private EditBox usernameFld = E("#Username", "Поле для ввода username", EditBox.class);
 
-    @WebFindBy(id = "Password")
-    private EditBox passwordFld;
+    private EditBox passwordFld = E("#Password", "Поле для ввода password", EditBox.class);
 
-    @WebFindBy(xpath = "//*[@value='login']")
-    private EditBox loginBtn;
+    private Button loginBtn = E("//*[@value='login']", "Кнопка 'Войти'", Button.class);
 
     public void logIn(UserData loginData) {
         usernameFld.clearAndFill(loginData.getUserName());

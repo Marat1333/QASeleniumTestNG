@@ -114,7 +114,6 @@ public class NomenclatureSearchPage extends BaseAppPage {
 
     // Verifications
 
-    @Override
     public NomenclatureSearchPage verifyRequiredElements() {
         softAssert.isElementVisible(screenTitle);
         softAssert.isElementVisible(showAllGoods);
