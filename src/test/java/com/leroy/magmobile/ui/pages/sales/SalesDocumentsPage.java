@@ -5,10 +5,10 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.ui.elements.MagMobSubmitButton;
-import com.leroy.models.SalesDocumentData;
 import com.leroy.magmobile.ui.pages.common.OldSearchProductPage;
 import com.leroy.magmobile.ui.pages.common.TopMenuPage;
 import com.leroy.magmobile.ui.pages.sales.widget.SalesDocumentWidget;
+import com.leroy.models.SalesDocumentData;
 import io.qameta.allure.Step;
 
 import java.util.List;
@@ -48,7 +48,6 @@ public class SalesDocumentsPage extends TopMenuPage {
 
     /* ---------------------- Verifications -------------------------- */
 
-    @Override
     public SalesDocumentsPage verifyRequiredElements() {
         softAssert.isElementVisible(filterBtn);
         softAssert.isElementVisible(createSalesDocumentBtn);

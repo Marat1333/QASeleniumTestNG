@@ -42,8 +42,8 @@ public class ProductDescriptionPage extends ProductCardPage {
     }
 
     @Override
-    public ProductDescriptionPage verifyRequiredElements() {
-        softAssert.isElementVisible(mainArea);
+    public ProductDescriptionPage verifyRequiredElements(boolean submitBtnShouldBeVisible) {
+        super.verifyRequiredElements(submitBtnShouldBeVisible);
         softAssert.isElementVisible(lmCode);
         softAssert.verifyAll();
         return this;

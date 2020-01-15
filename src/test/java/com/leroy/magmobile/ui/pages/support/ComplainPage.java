@@ -74,7 +74,6 @@ public class ComplainPage extends BaseAppPage {
 
     /* ---------------------- Verifications -------------------------- */
 
-    @Override
     public ComplainPage verifyRequiredElements() {
         // Видна метка "В чем проблема?"
         softAssert.isElementVisible(whatHappenLbl);

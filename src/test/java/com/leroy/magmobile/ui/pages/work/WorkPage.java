@@ -61,7 +61,6 @@ public class WorkPage extends BaseAppPage {
 
     // ------------------------ Verifications ------------------------//
 
-    @Override
     public WorkPage verifyRequiredElements() {
         softAssert.isElementTextEqual(titleObj, "Ежедневная работа");
         softAssert.isElementTextEqual(withdrawalFromRMLabel, "Отзыв с RM");

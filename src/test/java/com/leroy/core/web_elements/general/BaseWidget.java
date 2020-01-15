@@ -152,7 +152,7 @@ public abstract class BaseWidget extends BaseWrapper {
             wait.pollingEvery(sleepTimeout);
         try {
             wait.until((ExpectedCondition<Boolean>) driverObject -> isVisible());
-        } catch (org.openqa.selenium.StaleElementReferenceException e) {
+        } catch (StaleElementReferenceException e) {
             if (isSearchingAgain) {
                 webElement = null;
                 if (locator != null)

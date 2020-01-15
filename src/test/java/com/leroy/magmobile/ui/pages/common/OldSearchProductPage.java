@@ -60,7 +60,6 @@ public class OldSearchProductPage extends BaseAppPage {
 
     // ---------------- Verifications ----------------------- //
 
-    @Override
     public OldSearchProductPage verifyRequiredElements() {
         softAssert.isElementVisible(backBtn);
         softAssert.isElementVisible(scanBarcodeBtn);

@@ -218,7 +218,6 @@ public class CreatingCustomerPage extends MenuPage {
 
     // VERIFICATIONS
 
-    @Override
     public CreatingCustomerPage verifyRequiredElements() {
         softAssert.isElementTextEqual(headerLbl, HEADER);
         softAssert.isElementTextEqual(subHeaderLbl, HEADER);

@@ -1,5 +1,9 @@
 package com.leroy.magmobile.ui.tests;
 
+import com.leroy.magmobile.ui.pages.sales.basket.BasketPage;
+import com.leroy.magmobile.ui.pages.sales.basket.BasketStep1Page;
+import com.leroy.magmobile.ui.pages.sales.basket.BasketStep2Page;
+import com.leroy.magmobile.ui.pages.sales.basket.BasketStep3Page;
 import com.leroy.models.SalesDocumentData;
 import com.leroy.magmobile.ui.pages.LoginPage;
 import com.leroy.magmobile.ui.pages.common.OldSearchProductPage;
@@ -54,7 +58,7 @@ public class SalesDocumentsTest extends AppBaseSteps {
         log.step("Нажмите кнопку Добавить");
         BasketStep1Page basketStep1Page = addProductPage.clickAddButton()
                 .verifyRequiredElements();
-        basketStep1Page.shouldDocumentTypeIs("Черновик");
+        basketStep1Page.shouldDocumentTypeIs(BasketPage.Constants.DRAFT_DOCUMENT_TYPE);
         String documentNumber = basketStep1Page.getDocumentNumber();
 
         // Step #8

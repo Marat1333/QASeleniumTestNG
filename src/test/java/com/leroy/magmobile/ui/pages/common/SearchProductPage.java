@@ -2,6 +2,7 @@ package com.leroy.magmobile.ui.pages.common;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.android.AndroidScrollView;
@@ -147,7 +148,6 @@ public class SearchProductPage extends BaseAppPage {
 
     // ---------------- Verifications ----------------------- //
 
-    @Override
     public SearchProductPage verifyRequiredElements() {
         softAssert.isElementVisible(backBtn);
         softAssert.isElementVisible(scanBarcodeBtn);
