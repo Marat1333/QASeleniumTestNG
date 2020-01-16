@@ -40,10 +40,11 @@ public class ActionWithProductModalScreen extends CommonMagMobileScreen {
     // ---------- ACTION STEPS --------------------------//
 
     @Step("Нажмите кнопку 'Добавить в документ продажи'")
-    // Если будет необходимость сделать данный метод public'ом, тогда надо учитывать два варианта событий:
+    // Может быть несколько вариантов событий:
     // 1) Когда попадаем на AddIntoSalesDocumentModalScreen
     // 2) Когда попадаем сразу на AddProductPage
-    private void clickAddIntoSalesDocumentButton() {
+    // 3) Видим модальное окно с уведомлением
+    public void clickAddIntoSalesDocumentButton() {
         addIntoSalesDocumentBtn.click();
     }
 
@@ -60,13 +61,16 @@ public class ActionWithProductModalScreen extends CommonMagMobileScreen {
     // Verifications
 
     @Step("Проверить, что модальное окно 'Действия с товаром' отобразилось со всеми необходимыми товарами")
-    public ActionWithProductModalScreen verifyRequiredElements() {
+    public ActionWithProductModalScreen verifyRequiredElements(boolean isAvsProduct) {
         shouldNotAnyErrorVisible();
         softAssert.isElementVisible(closeBtn);
         softAssert.isElementVisible(headerLbl);
         softAssert.isElementVisible(addIntoSalesDocumentBtn);
         softAssert.isElementVisible(addIntoOrderForWithdrawalFromRMBtn);
-        softAssert.isElementVisible(notifyClientBtn);
+        if (isAvsProduct)
+            softAssert.isElementNotVisible(notifyClientBtn);
+        else
+            softAssert.isElementVisible(notifyClientBtn);
         softAssert.verifyAll();
         return this;
     }

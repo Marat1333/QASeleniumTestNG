@@ -14,9 +14,10 @@ public class EnvConstants {
     private static final String ENV = getEnvironment();
     private static final Properties properties = getPropertiesForEnv(ENV);
 
-    // Credentials
+    // User options
     public static final String BASIC_USER_NAME = getProperty("basic.user.name");
     public static final String BASIC_USER_PASS = getProperty("basic.user.password");
+    public static final String BASIC_USER_SHOP_ID = getProperty("basic.user.shopId");
 
     // URLs
     public static final String URL_MAG_PORTAL = getProperty("url.mag.portal");

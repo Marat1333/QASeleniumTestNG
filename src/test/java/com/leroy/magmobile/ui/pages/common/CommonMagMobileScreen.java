@@ -11,7 +11,7 @@ public class CommonMagMobileScreen extends BaseAppPage {
         super(context);
     }
 
-    @AppFindBy(xpath = "//android.widget.TextView[contains(@text, 'Bad Request')]")
+    @AppFindBy(xpath = "//android.widget.TextView[contains(@text, 'Bad Request') or contains(@text, 'rror')]")
     Element errorAlertMessage;
 
     protected void shouldNotAnyErrorVisible() {
