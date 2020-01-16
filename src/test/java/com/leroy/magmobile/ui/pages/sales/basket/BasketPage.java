@@ -2,11 +2,11 @@ package com.leroy.magmobile.ui.pages.sales.basket;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.pages.common.CommonMagMobileScreen;
 import io.qameta.allure.Step;
 
-public abstract class BasketPage extends BaseAppPage {
+public abstract class BasketPage extends CommonMagMobileScreen {
 
     public static class Constants {
         // Типы документа
@@ -38,6 +38,7 @@ public abstract class BasketPage extends BaseAppPage {
     // ------------- Verifications ----------------------//
 
     public BasketPage verifyRequiredElements() {
+        shouldNotAnyErrorVisible();
         String titleText = screenTitle.getText();
         softAssert.isTrue(titleText.matches("Корзина № \\d{8}"),
                 "Номер документа должен состоять из 8 символов");
