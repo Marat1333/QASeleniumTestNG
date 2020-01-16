@@ -17,45 +17,45 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.base.BaseModule;
-import ru.leroymerlin.qa.core.clients.magmobile.MagMobileClient;
-import ru.leroymerlin.qa.core.clients.magmobile.data.ProductItemResponse;
-import ru.leroymerlin.qa.core.clients.magmobile.requests.GetCatalogSearch;
+//import ru.leroymerlin.qa.core.clients.magmobile.MagMobileClient;
+//import ru.leroymerlin.qa.core.clients.magmobile.data.ProductItemResponse;
+//import ru.leroymerlin.qa.core.clients.magmobile.requests.GetCatalogSearch;
 
 import java.util.List;
 
 @Guice(modules = {BaseModule.class})
 public class MultiFunctionalButtonTest extends AppBaseSteps {
 
-    @Inject
-    private MagMobileClient apiClient;
+//    @Inject
+//    private MagMobileClient apiClient;
 
     // Получить ЛМ код для обычного продукта без специфичных опций
     private String getAnyLmCodeProductWithoutSpecificOptions() {
-        GetCatalogSearch params = new GetCatalogSearch()
+        /*GetCatalogSearch params = new GetCatalogSearch()
                 .topEM(false);
         List<ProductItemResponse> items = apiClient.searchProductsBy(params).asJson().getItems();
         for (ProductItemResponse item : items) {
             if (item.getAvsDate() == null)
                 return item.getLmCode();
-        }
+        }*/
         return "13452305";
     }
 
     // Получить ЛМ код для продукта с AVS
     private String getAnyLmCodeProductWithAvs() {
-        GetCatalogSearch params = new GetCatalogSearch()
+        /*GetCatalogSearch params = new GetCatalogSearch()
                 .topEM(false);
         List<ProductItemResponse> items = apiClient.searchProductsBy(params).asJson().getItems();
         for (ProductItemResponse item : items) {
             if (item.getAvsDate() != null)
                 return item.getLmCode();
-        }
+        }*/
         return "82014172";
     }
 
     // Получить ЛМ код для продукта с опцией TopEM
     private String getAnyLmCodeProductWithTopEM() {
-        GetCatalogSearch params = new GetCatalogSearch()
+        /*GetCatalogSearch params = new GetCatalogSearch()
                 .topEM(true)
                 .shopId(EnvConstants.BASIC_USER_SHOP_ID);
         List<ProductItemResponse> items = apiClient.searchProductsBy(params).asJson().getItems();
@@ -64,7 +64,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
                 return item.getLmCode();
         }
         if (items.size() > 0)
-            return items.get(0).getLmCode();
+            return items.get(0).getLmCode();*/
         return "82138074";
     }
 
