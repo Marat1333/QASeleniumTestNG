@@ -5,17 +5,20 @@ import com.leroy.core.TestContext;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.models.CustomerData;
 import com.leroy.magportal.ui.pages.common.MenuPage;
+import com.leroy.models.CustomerData;
+import io.qameta.allure.Step;
 import org.apache.commons.lang3.StringUtils;
 
 public class CustomerPersonalInfoPage extends MenuPage {
+
+    public static final String HEADER = "Клиенты";
 
     public CustomerPersonalInfoPage(TestContext context) {
         super(context);
     }
 
-    @WebFindBy(xpath = "//h4[contains(@class, 'Header')]",
+    @WebFindBy(xpath = "//span[text()='" + HEADER + "']",
             metaName = "Основной заголовок страницы - 'Клиенты'")
     Element headerLbl;
 
@@ -42,10 +45,11 @@ public class CustomerPersonalInfoPage extends MenuPage {
     @Override
     public void waitForPageIsLoaded() {
         headerClientNameLbl.waitForVisibility();
-        headerLbl.waitUntilTextIsEqualTo("Клиенты");
+        headerLbl.waitUntilTextIsEqualTo(HEADER);
     }
 
     // Verifications
+    @Step("Проверить, что на странице отображается следующая информация о клиенте: {data}")
     public CustomerPersonalInfoPage shouldCustomerDataOnPageIs(CustomerData data) {
         if (data.getFirstName() != null)
             softAssert.isEquals(headerClientNameLbl.getText(), StringUtils.capitalize(data.getFirstName()),

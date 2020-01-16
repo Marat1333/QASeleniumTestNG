@@ -1,10 +1,9 @@
 package com.leroy.core.pages;
 
-import com.leroy.core.BaseContainer;
 import com.leroy.core.TestContext;
-import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.configuration.Log;
 import io.appium.java_client.ios.IOSDriver;
+import io.qameta.allure.Attachment;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.Dimension;
@@ -18,7 +17,6 @@ import java.awt.*;
 import java.io.File;
 import java.net.URLDecoder;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -115,12 +113,16 @@ public abstract class BaseWebPage extends BasePage {
         }
     }
 
-    public String takeScreenShot(String FileName) {
+    @Attachment(value = "Page screenshot", type = "image/png")
+    protected byte[] takeScreenShotAsByteArray() {
+        return ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+    }
+
+    public String takeScreenShot(String fileName) {
         try {
-            Log.info("Screen shot FileName: " + FileName);
-            File scrFile = (File) ((TakesScreenshot) this.driver).getScreenshotAs(OutputType.FILE);
-            File destFile = new File(screenshotPath + File.separator + FileName);
-            FileUtils.copyFile(scrFile, destFile);
+            Log.info("Screen shot FileName: " + fileName);
+            File destFile = new File(screenshotPath + File.separator + fileName);
+            FileUtils.writeByteArrayToFile(destFile, takeScreenShotAsByteArray());
             return destFile.getAbsolutePath();
         } catch (Exception var4) {
             var4.printStackTrace();

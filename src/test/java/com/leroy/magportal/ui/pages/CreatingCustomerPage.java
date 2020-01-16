@@ -6,9 +6,9 @@ import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.models.CustomerData;
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.pages.modal.CustomersFoundWithThisPhoneModalWindow;
+import com.leroy.models.CustomerData;
 import io.qameta.allure.Step;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.support.Color;
@@ -33,7 +33,7 @@ public class CreatingCustomerPage extends MenuPage {
             metaName = "Модальное окно о найденных клиентах с этим телефоном")
     CustomersFoundWithThisPhoneModalWindow modalWindow;
 
-    @WebFindBy(xpath = "//h4", metaName = "Основной заголовок страницы")
+    @WebFindBy(xpath = "//span[text()='" + HEADER + "']", metaName = "Основной заголовок страницы")
     Element headerLbl;
 
     @WebFindBy(xpath = "//button[contains(@class, 'Button-type-empty-main')]", metaName = "Кнопка назад")
