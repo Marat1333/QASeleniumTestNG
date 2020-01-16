@@ -1,11 +1,12 @@
 package com.leroy.models;
 
 import com.leroy.constants.Gender;
+import com.leroy.core.BaseModel;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.Random;
 
-public class CustomerData {
+public class CustomerData extends BaseModel {
 
     private Gender gender;
     private String firstName;
