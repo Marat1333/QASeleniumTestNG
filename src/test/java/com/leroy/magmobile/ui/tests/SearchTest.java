@@ -305,40 +305,38 @@ public class SearchTest extends AppBaseSteps {
 
     @Test(description = "C22789191 Сортировка результатов поиска")
     public void testC22789191() throws Exception {
-        LoginPage loginPage = new LoginPage(context);
-
         // Pre-conditions
-        loginPage.loginInAndGoTo(LoginPage.SALES_SECTION);
-        SalesPage salesPage = new SalesPage(context);
+        int countOfCheckedProducts = 10;
+        SalesPage salesPage = loginAndGoTo(SalesPage.class);
         SearchProductPage searchProductPage = salesPage.clickSearchBar(false);
 
         // Step 1
         log.step("Раскрыть модальное окно сортировки");
-        SortPage sortPage = searchProductPage.openSortPage();
-        sortPage.verifyRequiredElements();
+        SortPage sortPage = searchProductPage.openSortPage()
+                .verifyRequiredElements();
 
         // Step 2
         log.step("Выбрать сортировку по ЛМ-коду по возрастающей");
-        sortPage.choseSort(SortPage.SORT_BY_LM_ASC);
-        searchProductPage.shouldProductCardsBeSorted(SortPage.SORT_BY_LM_ASC, 5);
+        searchProductPage = sortPage.selectSort(SortPage.SORT_BY_LM_ASC)
+                .shouldProductCardsBeSorted(SortPage.SORT_BY_LM_ASC, countOfCheckedProducts);
 
         // Step 3
         log.step("повторить шаг 1-2 для сортировки по лм-коду по убывающей");
-        searchProductPage.openSortPage();
-        sortPage.choseSort(SortPage.SORT_BY_LM_DESC);
-        searchProductPage.shouldProductCardsBeSorted(SortPage.SORT_BY_LM_DESC, 5);
+        searchProductPage.openSortPage()
+                .selectSort(SortPage.SORT_BY_LM_DESC)
+                .shouldProductCardsBeSorted(SortPage.SORT_BY_LM_DESC, countOfCheckedProducts);
 
         // Step 4
         log.step("повторить шаг 1-2 для сортировки по запасу по возрастающей");
-        searchProductPage.openSortPage();
-        sortPage.choseSort(SortPage.SORT_BY_AVAILABLE_STOCK_ASC);
-        searchProductPage.shouldProductCardsBeSorted(SortPage.SORT_BY_AVAILABLE_STOCK_ASC, 5);
+        searchProductPage.openSortPage()
+                .selectSort(SortPage.SORT_BY_AVAILABLE_STOCK_ASC)
+                .shouldProductCardsBeSorted(SortPage.SORT_BY_AVAILABLE_STOCK_ASC, countOfCheckedProducts);
 
         // Step 5
         log.step("повторить шаг 1-2 для сортировки по запасу по убывающей");
-        searchProductPage.openSortPage();
-        sortPage.choseSort(SortPage.SORT_BY_AVAILABLE_STOCK_DESC);
-        searchProductPage.shouldProductCardsBeSorted(SortPage.SORT_BY_AVAILABLE_STOCK_DESC, 5);
+        searchProductPage.openSortPage()
+                .selectSort(SortPage.SORT_BY_AVAILABLE_STOCK_DESC)
+                .shouldProductCardsBeSorted(SortPage.SORT_BY_AVAILABLE_STOCK_DESC, countOfCheckedProducts);
     }
 
 }

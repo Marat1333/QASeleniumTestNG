@@ -65,7 +65,7 @@ public class OrderDetailsPage extends BaseAppPage {
     public OrderDetailsPage shouldProductByIndexIs(
             int index, ProductCardData productCardData) throws Exception {
         ProductCardWidget productCardWidget = productsForWithdrawal.get(index);
-        softAssert.isEquals(productCardWidget.getNumber(), productCardData.getNumber(),
+        softAssert.isEquals(productCardWidget.getNumber(), productCardData.getLmCode(),
                 "Номер товара на отзыв должен быть %s");
         softAssert.isEquals(productCardWidget.getName(), productCardData.getName(),
                 "Название товара на отзыв должно быть %s");
