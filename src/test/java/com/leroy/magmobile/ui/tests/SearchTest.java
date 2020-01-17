@@ -1,14 +1,15 @@
 package com.leroy.magmobile.ui.tests;
 
 import com.leroy.constants.EnvConstants;
-import com.leroy.models.UserData;
+import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.LoginPage;
 import com.leroy.magmobile.ui.pages.common.*;
+import com.leroy.magmobile.ui.pages.common.modal.SortPage;
 import com.leroy.magmobile.ui.pages.sales.PricesAndQuantityPage;
 import com.leroy.magmobile.ui.pages.sales.SalesPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.SimilarProductsPage;
-import com.leroy.magmobile.ui.AppBaseSteps;
+import com.leroy.models.UserData;
 import org.testng.annotations.Test;
 
 import java.time.LocalDate;
@@ -301,4 +302,43 @@ public class SearchTest extends AppBaseSteps {
         pricesAndQuantityPage.shouldNotSupplyBtnBeDisplayed();
 
     }
+
+    @Test(description = "C22789191 Сортировка результатов поиска")
+    public void testC22789191() throws Exception {
+        LoginPage loginPage = new LoginPage(context);
+
+        // Pre-conditions
+        loginPage.loginInAndGoTo(LoginPage.SALES_SECTION);
+        SalesPage salesPage = new SalesPage(context);
+        SearchProductPage searchProductPage = salesPage.clickSearchBar(false);
+
+        // Step 1
+        log.step("Раскрыть модальное окно сортировки");
+        SortPage sortPage = searchProductPage.openSortPage();
+        sortPage.verifyRequiredElements();
+
+        // Step 2
+        log.step("Выбрать сортировку по ЛМ-коду по возрастающей");
+        sortPage.choseSort(SortPage.SORT_BY_LM_ASC);
+        searchProductPage.shouldProductCardsBeSorted(SortPage.SORT_BY_LM_ASC, 5);
+
+        // Step 3
+        log.step("повторить шаг 1-2 для сортировки по лм-коду по убывающей");
+        searchProductPage.openSortPage();
+        sortPage.choseSort(SortPage.SORT_BY_LM_DESC);
+        searchProductPage.shouldProductCardsBeSorted(SortPage.SORT_BY_LM_DESC, 5);
+
+        // Step 4
+        log.step("повторить шаг 1-2 для сортировки по запасу по возрастающей");
+        searchProductPage.openSortPage();
+        sortPage.choseSort(SortPage.SORT_BY_AVAILABLE_STOCK_ASC);
+        searchProductPage.shouldProductCardsBeSorted(SortPage.SORT_BY_AVAILABLE_STOCK_ASC, 5);
+
+        // Step 5
+        log.step("повторить шаг 1-2 для сортировки по запасу по убывающей");
+        searchProductPage.openSortPage();
+        sortPage.choseSort(SortPage.SORT_BY_AVAILABLE_STOCK_DESC);
+        searchProductPage.shouldProductCardsBeSorted(SortPage.SORT_BY_AVAILABLE_STOCK_DESC, 5);
+    }
+
 }

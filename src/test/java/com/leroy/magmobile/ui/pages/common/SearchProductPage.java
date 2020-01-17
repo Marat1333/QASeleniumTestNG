@@ -2,25 +2,27 @@ package com.leroy.magmobile.ui.pages.common;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.models.TextViewData;
-import com.leroy.magmobile.ui.pages.common.modal.SortModal;
+import com.leroy.magmobile.ui.pages.common.modal.SortPage;
 import com.leroy.magmobile.ui.pages.sales.AddProductPage;
 import com.leroy.magmobile.ui.pages.sales.SalesPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.widget.SearchProductCardWidget;
+import com.leroy.models.ProductCardData;
+import com.leroy.models.TextViewData;
 import io.qameta.allure.Step;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.openqa.selenium.By;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class SearchProductPage extends BaseAppPage {
 
@@ -28,7 +30,7 @@ public class SearchProductPage extends BaseAppPage {
         super(context);
     }
 
-    @AppFindBy(accessibilityId = "BackButton", metaName = "Кнопка назад")
+    @AppFindBy(accessibilityId = "back", metaName = "Кнопка назад")
     private Element backBtn;
 
     @AppFindBy(accessibilityId = "Button", metaName = "Кнопка для сканирования штрихкода")
@@ -38,8 +40,13 @@ public class SearchProductPage extends BaseAppPage {
     private EditBox searchField;
 
     private AndroidScrollView<TextViewData> searchHistoryScrollView = new AndroidScrollView<>(driver,
-            new CustomLocator(By.xpath("//android.widget.ScrollView"),null,
+            new CustomLocator(By.xpath("//android.widget.ScrollView"), null,
                     "Виджет прокрутки для истории последних запросов", false));
+
+    private AndroidScrollView<ProductCardData> scrollView = new AndroidScrollView<ProductCardData>(driver,
+            new CustomLocator(By.xpath("//android.widget.ScrollView"), null,
+                    "", false), ".//android.view.ViewGroup[android.widget.ImageView]", SearchProductCardWidget.class);
+
 
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ScreenContent']//android.view.ViewGroup[android.widget.ImageView]",
             clazz = SearchProductCardWidget.class)
@@ -52,7 +59,8 @@ public class SearchProductPage extends BaseAppPage {
             metaName = "Выбранная номенклатура")
     Element nomenclature;
 
-    @AppFindBy(xpath = "//android.view.ViewGroup[preceding-sibling::android.view.ViewGroup[2][ancestor::android.view.ViewGroup[@content-desc=\"ScreenContent\"]]]")
+    //@AppFindBy(xpath = "//android.view.ViewGroup[preceding-sibling::android.view.ViewGroup[2][ancestor::android.view.ViewGroup[@content-desc=\"ScreenContent\"]]]")
+    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ScreenContent']/android.view.ViewGroup[2]/android.view.ViewGroup[3]")
     Element sort;
 
     @AppFindBy(text = "Ты пока ничего не искал(а)")
@@ -67,6 +75,61 @@ public class SearchProductPage extends BaseAppPage {
         searchField.waitForVisibility();
         waitForProgressBarIsInvisible();
     }
+
+    private void scrollNTimesAndAddVisibleElementsToArray(int i, ArrayList<Integer> arrayList, String sortType) throws Exception {
+        for (int y = 0; y < i; y++) {
+            addNeededDataToArrayFromProductCard(arrayList, sortType);
+            scrollDown();
+            waitForProgressBarIsInvisible();
+        }
+    }
+
+    private void addNeededDataToArrayFromProductCard(ArrayList<Integer> arrayList, String sortType) throws Exception {
+        String content = "";
+        int contentNumber = 0;
+
+        for (Element tmp : productCards) {
+            if (sortType.equals(SortPage.SORT_BY_LM_ASC) || sortType.equals(SortPage.SORT_BY_LM_DESC)) {
+                content = tmp.findChildElement("//android.widget.TextView[1]").getText();
+                content = content.replaceAll("\\D", "");
+                if (content.length() > 0) {
+                    contentNumber = Integer.valueOf(content);
+                }
+                if (!arrayList.contains(contentNumber) && (content.length() == 8)) {
+                    arrayList.add(contentNumber);
+                }
+            } else if (sortType.equals(SortPage.SORT_BY_AVAILABLE_STOCK_ASC) || sortType.equals(SortPage.SORT_BY_AVAILABLE_STOCK_DESC)) {
+                try {
+                    content = tmp.findChildElement("//android.widget.TextView[6]").getText();
+                    if (!arrayList.contains(tmp) && content.length() > 0) {
+                        content = content.replaceAll(" ", "");
+                        if (content.contains("-") || content.matches("\\d+")) {
+                            contentNumber = Integer.valueOf(content);
+                            arrayList.add(contentNumber);
+                        }
+                    }
+                } catch (NoSuchElementException e) {
+                    log.assertFail("Для карточки товара не найден остаток");
+                }
+            }
+        }
+    }
+
+    private ArrayList<Integer> getSortedElementsFromProductCards(String sortType, int scrollNTimes) throws Exception {
+        ArrayList<Integer> sortedCodes = new ArrayList<>();
+        ArrayList<Integer> sortedStocks = new ArrayList<>();
+
+        if (sortType.equals(SortPage.SORT_BY_AVAILABLE_STOCK_ASC) || sortType.equals(SortPage.SORT_BY_AVAILABLE_STOCK_DESC)) {
+            scrollNTimesAndAddVisibleElementsToArray(scrollNTimes, sortedStocks, sortType);
+            return sortedStocks;
+        } else if (sortType.equals(SortPage.SORT_BY_LM_ASC) || sortType.equals(SortPage.SORT_BY_LM_DESC)) {
+            scrollNTimesAndAddVisibleElementsToArray(scrollNTimes, sortedCodes, sortType);
+            return sortedCodes;
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
 
     // ---------------- Action Steps -------------------------//
 
@@ -124,6 +187,7 @@ public class SearchProductPage extends BaseAppPage {
     @Step("Перейти в {index} карточку товара")
     public ProductDescriptionPage selectProductCardByIndex(int index) throws Exception {
         anAssert.isTrue(productCards.getCount() > index, "Не найдена " + index + " по счету карточка товара");
+        index--;
         productCards.get(index).click();
         return new ProductDescriptionPage(context);
     }
@@ -141,9 +205,9 @@ public class SearchProductPage extends BaseAppPage {
     }
 
     @Step("Открыть окно сортировки")
-    public SortModal openSortPage() {
+    public SortPage openSortPage() {
         sort.click();
-        return new SortModal(context);
+        return new SortPage(context);
     }
 
     // ---------------- Verifications ----------------------- //
@@ -252,5 +316,20 @@ public class SearchProductPage extends BaseAppPage {
                 String.format("Карточка под индексом %s не должна иметь пустой тип кол-ва", index));
         return this;
     }
+
+    public void shouldProductCardsBeSorted(String sortType, int scrollNTimes) throws Exception {
+        ArrayList<Integer> arrayList = getSortedElementsFromProductCards(sortType, scrollNTimes);
+        ArrayList<Integer> sortedList;
+        sortedList = new ArrayList<>(arrayList);
+        Collections.sort(sortedList);
+
+        if (sortType.equals(SortPage.SORT_BY_AVAILABLE_STOCK_DESC) || sortType.equals(SortPage.SORT_BY_LM_DESC)) {
+            Collections.reverse(sortedList);
+            anAssert.isEquals(sortedList, arrayList, "Элементы отсортированы по убыванию некорректно");
+        } else if (sortType.equals(SortPage.SORT_BY_AVAILABLE_STOCK_ASC) || sortType.equals(SortPage.SORT_BY_LM_ASC)) {
+            anAssert.isEquals(sortedList, arrayList, "Элементы отсортированы по возрастанию некорректно");
+        }
+    }
+
 
 }
