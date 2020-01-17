@@ -200,10 +200,14 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
     }
 
     public AndroidScrollView<T> scrollDown(int count) throws Exception {
+        if (count == 1)
+            simpleScroll("down");
         return scrollDownToText(null, count);
     }
 
     public AndroidScrollView<T> scrollUp(int count) throws Exception {
+        if (count == 1)
+            simpleScroll("up");
         return scrollUpToText(null, count);
     }
 
