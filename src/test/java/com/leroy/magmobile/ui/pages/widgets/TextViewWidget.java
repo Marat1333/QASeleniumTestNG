@@ -14,4 +14,9 @@ public class TextViewWidget extends CardWidget<TextViewData> {
     public TextViewData collectDataFromPage() {
         return new TextViewData(getText());
     }
+
+    @Override
+    public boolean isFullyVisible() {
+        return isVisible();
+    }
 }

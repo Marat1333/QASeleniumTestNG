@@ -54,7 +54,7 @@ public class StockProductsPage extends BaseAppPage {
             throw new IndexOutOfBoundsException("На странице " + count +
                     " штучных товаров. Тест пытался выбрать " + (index + 1));
         ProductCardWidget cardObj = pieceProductCards.get(index);
-        cardData.setNumber(cardObj.getNumber());
+        cardData.setLmCode(cardObj.getNumber());
         cardData.setName(cardObj.getName());
         cardData.setQuantityType(cardObj.getQuantityType());
         return cardData;
@@ -63,7 +63,7 @@ public class StockProductsPage extends BaseAppPage {
     public ProductCardData getSelectedProductInfoByIndex(int index) throws Exception {
         ProductCardData cardData = new ProductCardData();
         SelectedCardWidget cardObj = selectedProductCards.get(index);
-        cardData.setNumber(cardObj.getNumber());
+        cardData.setLmCode(cardObj.getNumber());
         cardData.setName(cardObj.getName());
         cardData.setSelectedQuantity(cardObj.getSelectedQuantity());
         return cardData;
@@ -114,7 +114,7 @@ public class StockProductsPage extends BaseAppPage {
     public StockProductsPage shouldSelectedProductIs(
             int index, ProductCardData productData) throws Exception {
         ProductCardData selectedProductDataAfter = getSelectedProductInfoByIndex(index);
-        softAssert.isEquals(selectedProductDataAfter.getNumber(), productData.getNumber(),
+        softAssert.isEquals(selectedProductDataAfter.getLmCode(), productData.getLmCode(),
                 "Выбранный товар должен иметь номер %s");
         softAssert.isEquals(selectedProductDataAfter.getName(), productData.getName(),
                 "Выбранный товар должен иметь название %s");
