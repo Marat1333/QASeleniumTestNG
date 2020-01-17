@@ -5,6 +5,7 @@ public class ProductCardData extends CardWidgetData {
     private String number;
     private String name;
     private String selectedQuantity;
+    private String availableQuantity;
     private String quantityType;
 
     public String getNumber() {
@@ -23,6 +24,14 @@ public class ProductCardData extends CardWidgetData {
         this.name = name;
     }
 
+    public String getAvailableQuantity() {
+        return availableQuantity;
+    }
+
+    public void setAvailableQuantity(String availableQuantity) {
+        this.availableQuantity = availableQuantity;
+    }
+
     public String getQuantityType() {
         return quantityType;
     }
@@ -38,4 +47,5 @@ public class ProductCardData extends CardWidgetData {
     public void setSelectedQuantity(String selectedQuantity) {
         this.selectedQuantity = selectedQuantity;
     }
+
 }
