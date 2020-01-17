@@ -14,13 +14,19 @@ public class EnvConstants {
     private static final String ENV = getEnvironment();
     private static final Properties properties = getPropertiesForEnv(ENV);
 
-    // Credentials
+    // User options
     public static final String BASIC_USER_NAME = getProperty("basic.user.name");
     public static final String BASIC_USER_PASS = getProperty("basic.user.password");
+    public static final String BASIC_USER_SHOP_ID = getProperty("basic.user.shopId");
 
     // URLs
-    public static final String URL_MAG_PORTAL = getProperty("url.mag.portal");
-
+    private static String getUrlMagPortal() {
+        String branchForTesting = System.getProperty("testBranch");
+        if (branchForTesting != null)
+            return String.format("https://%s.prudevlegowp.hq.ru.corp.leroymerlin.com", branchForTesting.toLowerCase().replaceAll("/","-"));
+        return System.getProperty("portalUrl", getProperty("url.mag.portal"));
+    }
+    public static final String URL_MAG_PORTAL = getUrlMagPortal();
 
     /**
      * Get the value of a property key

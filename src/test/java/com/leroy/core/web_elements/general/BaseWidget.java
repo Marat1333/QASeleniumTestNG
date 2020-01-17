@@ -152,7 +152,7 @@ public abstract class BaseWidget extends BaseWrapper {
             wait.pollingEvery(sleepTimeout);
         try {
             wait.until((ExpectedCondition<Boolean>) driverObject -> isVisible());
-        } catch (org.openqa.selenium.StaleElementReferenceException e) {
+        } catch (StaleElementReferenceException e) {
             if (isSearchingAgain) {
                 webElement = null;
                 if (locator != null)
@@ -166,14 +166,17 @@ public abstract class BaseWidget extends BaseWrapper {
     }
 
     public boolean isVisible() {
-        WebElement we;
+        WebElement we = null;
         if (locator != null) {
             this.setImplicitWait(0);
-            List<WebElement> webElementList = findElements(locator);
+            try {
+                we = findElement(locator);
+            } catch (NoSuchElementException err) {
+                // Element is not present
+            }
             this.setImplicitWait(DriverFactory.IMPLICIT_WAIT_TIME_OUT);
-            if (webElementList.size() <= 0)
+            if (we == null)
                 return false;
-            we = webElementList.get(0);
             webElement = we;
         } else
             we = webElement;

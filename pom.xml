@@ -24,6 +24,22 @@
         <htmlelements.version>1.11</htmlelements.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <name>publicGroup</name>
+            <id>art.lmru.tech</id>
+            <url>https://art.lmru.tech/mvn-umbrella</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <build>
         <pluginManagement>
             <plugins>
@@ -124,18 +140,18 @@
         </plugins>
     </build>
 
-<!--    <reporting>-->
-<!--        <plugins>-->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-project-info-reports-plugin</artifactId>-->
-<!--                <version>2.9</version>-->
-<!--                <configuration>-->
-<!--                    <dependencyLocationsEnabled>false</dependencyLocationsEnabled>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
-<!--        </plugins>-->
-<!--    </reporting>-->
+    <!--    <reporting>-->
+    <!--        <plugins>-->
+    <!--            <plugin>-->
+    <!--                <groupId>org.apache.maven.plugins</groupId>-->
+    <!--                <artifactId>maven-project-info-reports-plugin</artifactId>-->
+    <!--                <version>2.9</version>-->
+    <!--                <configuration>-->
+    <!--                    <dependencyLocationsEnabled>false</dependencyLocationsEnabled>-->
+    <!--                </configuration>-->
+    <!--            </plugin>-->
+    <!--        </plugins>-->
+    <!--    </reporting>-->
 
     <reporting>
         <excludeDefaults>true</excludeDefaults>
@@ -150,6 +166,18 @@
             </plugin>
         </plugins>
     </reporting>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>ru.leroymerlin.qa.core</groupId>
+                <artifactId>bom</artifactId>
+                <version>0.5-SNAPSHOT</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <!-- Yandex - htmlelements-thucydidies -->
@@ -269,6 +297,12 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>23.0</version>
+        </dependency>
+
+        <!-- UMBRELLA -->
+        <dependency>
+            <groupId>ru.leroymerlin.qa.core</groupId>
+            <artifactId>base</artifactId>
         </dependency>
 
     </dependencies>
