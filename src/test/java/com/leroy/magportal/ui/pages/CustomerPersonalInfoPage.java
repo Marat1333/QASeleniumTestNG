@@ -26,7 +26,7 @@ public class CustomerPersonalInfoPage extends MenuPage {
             metaName = "Заголовок страницы с именем клиента")
     Element headerClientNameLbl;
 
-    @WebFindBy(xpath = "//div/p[contains(.,'Пол')]/following-sibling::p[1]")
+    @WebFindBy(xpath = "//div/p[contains(.,'Пол')]/following-sibling::p[1]", metaName = "Пол клиента")
     Element genderObj;
 
     @WebFindBy(xpath = "//div/p[contains(.,'Телефон')]/following-sibling::p[1]")
@@ -46,6 +46,14 @@ public class CustomerPersonalInfoPage extends MenuPage {
     public void waitForPageIsLoaded() {
         headerClientNameLbl.waitForVisibility();
         headerLbl.waitUntilTextIsEqualTo(HEADER);
+    }
+
+    @Step("Проверить, что страница с персональными данными клиента отображается корректно")
+    public CustomerPersonalInfoPage verifyRequiredElements() {
+        softAssert.isElementVisible(headerLbl);
+        softAssert.isElementVisible(genderObj);
+        softAssert.verifyAll();
+        return this;
     }
 
     // Verifications
