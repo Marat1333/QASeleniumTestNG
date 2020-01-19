@@ -4,6 +4,7 @@ import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
+import io.qameta.allure.Step;
 
 public class SubmittedIncidentPage extends BaseAppPage {
 
@@ -48,6 +49,7 @@ public class SubmittedIncidentPage extends BaseAppPage {
 
     /* ---------------------- Verifications -------------------------- */
 
+    @Step("Проверить, что страница о созданном инциденте создана отображается успешно")
     public SubmittedIncidentPage verifyVisibilityOfAllElements() {
         softAssert.isElementTextEqual(headerLbl, "Письмо отправлено.\nСпасибо!");
         softAssert.isTrue(isIncidentNumberVisibleAndValid(), "Должен быть виден номер инцидента");
@@ -58,6 +60,7 @@ public class SubmittedIncidentPage extends BaseAppPage {
         return this;
     }
 
+    @Step("Проверить данные на странице. Номер - {incidentNumber}; email - {email}")
     public SubmittedIncidentPage verifyDataOnThePage(String incidentNumber, String email) {
         if (incidentNumber != null)
             softAssert.isEquals(getIncidentNumber(), incidentNumber,

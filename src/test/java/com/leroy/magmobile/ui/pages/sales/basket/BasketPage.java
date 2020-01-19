@@ -3,10 +3,10 @@ package com.leroy.magmobile.ui.pages.sales.basket;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.pages.common.CommonMagMobileScreen;
+import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import io.qameta.allure.Step;
 
-public abstract class BasketPage extends CommonMagMobileScreen {
+public abstract class BasketPage extends CommonMagMobilePage {
 
     public static class Constants {
         // Типы документа

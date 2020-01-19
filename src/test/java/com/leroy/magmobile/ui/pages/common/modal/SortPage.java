@@ -3,13 +3,13 @@ package com.leroy.magmobile.ui.pages.common.modal;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.pages.common.CommonMagMobileScreen;
+import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.common.SearchProductPage;
 import io.qameta.allure.Step;
 
 import java.util.Arrays;
 
-public class SortPage extends CommonMagMobileScreen {
+public class SortPage extends CommonMagMobilePage {
     public SortPage(TestContext context) {
         super(context);
     }

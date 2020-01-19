@@ -37,6 +37,7 @@ public class SubmittedWithdrawalOrderPage extends BaseAppPage {
 
     /* ------------------------- Verifications  -------------------------- */
 
+    @Step("Проверить, что страница с уведомлением успешно созданный заявки отображается корректно")
     public SubmittedWithdrawalOrderPage verifyVisibilityOfAllElements() {
         softAssert.isElementTextEqual(headerLbl,
                 "Заявка на отзыв отправлена");

@@ -1,7 +1,5 @@
 package com.leroy.magmobile.ui.tests;
 
-import com.google.inject.Inject;
-import com.leroy.constants.EnvConstants;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.common.SearchProductPage;
 import com.leroy.magmobile.ui.pages.sales.AddProductPage;
@@ -11,8 +9,8 @@ import com.leroy.magmobile.ui.pages.sales.basket.BasketStep1Page;
 import com.leroy.magmobile.ui.pages.sales.basket.BasketStep2Page;
 import com.leroy.magmobile.ui.pages.sales.basket.BasketStep3Page;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.modal.ActionWithProductModalScreen;
-import com.leroy.magmobile.ui.pages.sales.product_card.modal.ImpossibleCreateDocumentWithTopEmModalScreen;
+import com.leroy.magmobile.ui.pages.sales.product_card.modal.ActionWithProductModalPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.modal.ImpossibleCreateDocumentWithTopEmModalPage;
 import org.apache.commons.lang.RandomStringUtils;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
@@ -21,7 +19,6 @@ import ru.leroymerlin.qa.core.base.BaseModule;
 //import ru.leroymerlin.qa.core.clients.magmobile.data.ProductItemResponse;
 //import ru.leroymerlin.qa.core.clients.magmobile.requests.GetCatalogSearch;
 
-import java.util.List;
 
 @Guice(modules = {BaseModule.class})
 public class MultiFunctionalButtonTest extends AppBaseSteps {
@@ -108,7 +105,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
 
         // Step #3
         log.step("Нажмите на кнопку Действия с товаром");
-        ActionWithProductModalScreen actionWithProductModalPage = productDescriptionPage.clickActionWithProductButton()
+        ActionWithProductModalPage actionWithProductModalPage = productDescriptionPage.clickActionWithProductButton()
                 .verifyRequiredElements(productType.equals(ProductTypes.AVS));
 
         // Step #4
@@ -116,8 +113,8 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         // Если продукт имеет опцию Топ-ЕМ, тогда невозможно оформить документ продажи по нему
         if (productType.equals(ProductTypes.TOP_EM)) {
             actionWithProductModalPage.clickAddIntoSalesDocumentButton();
-            ImpossibleCreateDocumentWithTopEmModalScreen modalScreen =
-                    new ImpossibleCreateDocumentWithTopEmModalScreen(context).verifyRequiredElements();
+            ImpossibleCreateDocumentWithTopEmModalPage modalScreen =
+                    new ImpossibleCreateDocumentWithTopEmModalPage(context).verifyRequiredElements();
 
             // Step #5
             log.step("Нажмите на кнопку Понятно");

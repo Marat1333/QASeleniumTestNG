@@ -2,16 +2,16 @@ package com.leroy.magmobile.ui.pages.work;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.models.ProductCardData;
 import com.leroy.magmobile.ui.pages.widgets.ProductCardWidget;
 import com.leroy.magmobile.ui.pages.widgets.SelectedCardWidget;
 import com.leroy.magmobile.ui.elements.MagMobSubmitButton;
 import io.qameta.allure.Step;
 
-public class StockProductsPage extends BaseAppPage {
+public class StockProductsPage extends CommonMagMobilePage {
 
     public StockProductsPage(TestContext context) {
         super(context);
@@ -87,12 +87,14 @@ public class StockProductsPage extends BaseAppPage {
 
     /* ------------------------- Verifications -------------------------- */
 
+    @Step("Проверить, что на экране отображаются товары")
     public StockProductsPage shouldAnyProductAvailableOnPage() {
         anAssert.isTrue(productImages.getCount() > 0,
                 "На странице должен быть хотя бы один доступный товар");
         return this;
     }
 
+    @Step("Проверить, что страница отображается корректно")
     public StockProductsPage verifyVisibilityOfAllElements() {
         softAssert.isElementVisible(selectedProductsLabel);
         softAssert.isElementTextEqual(submitBtn,
@@ -102,6 +104,7 @@ public class StockProductsPage extends BaseAppPage {
         return this;
     }
 
+    @Step("Проверить, что выбрано {num} товаров")
     public StockProductsPage shouldCountOfSelectedProductsIs(int num) {
         softAssert.isEquals(selectedProductCards.getCount(), num,
                 "Должен быть %s товар в секции ВЫБРАННЫЕ ТОВАРЫ");
@@ -111,6 +114,7 @@ public class StockProductsPage extends BaseAppPage {
         return this;
     }
 
+    @Step("Проверить, что выбранный продукт имеет следующие параметры: {productData}")
     public StockProductsPage shouldSelectedProductIs(
             int index, ProductCardData productData) throws Exception {
         ProductCardData selectedProductDataAfter = getSelectedProductInfoByIndex(index);

@@ -2,9 +2,9 @@ package com.leroy.magmobile.ui.pages.work;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.widgets.CalendarWidget;
 import com.leroy.magmobile.ui.pages.widgets.TimePickerWidget;
 import com.leroy.utils.DateTimeUtil;
@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-public class OrderPage extends BaseAppPage {
+public class OrderPage extends CommonMagMobilePage {
 
     public OrderPage(TestContext context) {
         super(context);
@@ -100,6 +100,7 @@ public class OrderPage extends BaseAppPage {
 
     /* ------------------------- Verifications -------------------------- */
 
+    @Step("Проверить, что экран 'Параметры заявки' отображается корректно")
     public OrderPage verifyVisibilityOfAllElements() {
         softAssert.isElementVisible(headerObj);
         softAssert.isTrue(isOrderNumberVisibleAndValid(),
@@ -108,6 +109,7 @@ public class OrderPage extends BaseAppPage {
         return this;
     }
 
+    @Step("Проверить, что поле дата должно быть {date}")
     public OrderPage shouldDateFieldIs(LocalDate date) {
         String dateFormat = "dd-го MMM";
         String _deliveryDate = deliveryDateLbl.getText();
@@ -123,12 +125,14 @@ public class OrderPage extends BaseAppPage {
         return this;
     }
 
+    @Step("Проверить, что поле время должно быть {time}")
     public OrderPage shouldTimeFieldIs(LocalTime time) {
         anAssert.isElementTextEqual(deliveryTimeLbl,
                 time.format(DateTimeFormatter.ofPattern("HH:mm")));
         return this;
     }
 
+    @Step("Проверить, что поле комментарий должно быть {text}")
     public OrderPage shouldCommentFieldIs(String text) {
         anAssert.isElementTextEqual(commentFld, text);
         return this;

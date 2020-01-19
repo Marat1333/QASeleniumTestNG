@@ -88,14 +88,14 @@ public class WithdrawalFromRMTest extends AppBaseSteps {
         // Step #12
         log.step("Нажать кнопку ПЕРЕЙТИ В СПИСОК ЗАЯВОК");
         OrdersListPage ordersListPage = submittedWithdrawalOrderPage.clickSubmitBtn()
-                .shouldOrderByIndexIs(0, orderNumber, null, "Создана");
+                .shouldOrderByIndexIs(1, orderNumber, null, "Создана");
 
         // Step #13
         log.step("Открыть заявку и проверить заполненные поля и товары");
         OrderDetailsPage orderDetailsPage = ordersListPage.clickOrderByIndex(0)
                 .shouldFormDataIs("Торговый зал", testDate,
                         timeForSelect, testText)
-                .shouldProductByIndexIs(0, selectedProductDataBefore);
+                .shouldProductByIndexIs(1, selectedProductDataBefore);
     }
 
 }
