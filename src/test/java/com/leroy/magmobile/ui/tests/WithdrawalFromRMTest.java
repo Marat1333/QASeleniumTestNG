@@ -1,7 +1,6 @@
 package com.leroy.magmobile.ui.tests;
 
 import com.leroy.magmobile.ui.AppBaseSteps;
-import com.leroy.magmobile.ui.pages.LoginPage;
 import com.leroy.magmobile.ui.pages.more.UserProfilePage;
 import com.leroy.magmobile.ui.pages.sales.SalesPage;
 import com.leroy.magmobile.ui.pages.work.*;
@@ -18,8 +17,8 @@ public class WithdrawalFromRMTest extends AppBaseSteps {
     @Test(description = "C3132493 Создание заявки на Отзыв RM из раздела Работа")
     public void testC3132493() throws Exception {
         // Pre-condition
-        new LoginPage(context).loginInAndGoTo(LoginPage.SALES_SECTION);
-        UserProfilePage userProfilePage = new SalesPage(context)
+        SalesPage salesPage = loginAndGoTo(SalesPage.class);
+        UserProfilePage userProfilePage = salesPage
                 .setShopAndDepartmentForUser("5", "01");
 
         // Step #1

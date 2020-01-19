@@ -2,7 +2,6 @@ package com.leroy.magmobile.ui.tests;
 
 import com.leroy.constants.EnvConstants;
 import com.leroy.magmobile.ui.AppBaseSteps;
-import com.leroy.magmobile.ui.pages.LoginPage;
 import com.leroy.magmobile.ui.pages.common.*;
 import com.leroy.magmobile.ui.pages.common.modal.SortPage;
 import com.leroy.magmobile.ui.pages.sales.PricesAndQuantityPage;
@@ -31,12 +30,10 @@ public class SearchTest extends AppBaseSteps {
         UserData seller = new UserData(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS);
 
         // Pre-conditions
-        LoginPage loginPage = new LoginPage(context);
-        loginPage.loginInAndGoTo(seller, LoginPage.SALES_SECTION);
+        SalesPage salesPage = loginAndGoTo(SalesPage.class);
 
         // Step 1
         log.step("Нажмите на поле Поиск товаров и услуг");
-        SalesPage salesPage = new SalesPage(context);
         SearchProductPage searchProductPage = salesPage.clickSearchBar(false)
                 .verifyRequiredElements();
         // Step 2
@@ -88,15 +85,11 @@ public class SearchTest extends AppBaseSteps {
 
     @Test(description = "C22846686 Мой магазин. Выбор фильтров каждого блока фильтров")
     public void testC22846686() throws Exception {
-
-        LoginPage loginPage = new LoginPage(context);
-        UserData seller = new UserData(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS);
         LocalDate avsDate = LocalDate.of(2019, 12, 5);
         String supplierSearchContext = "123";
 
         // Pre-conditions
-        loginPage.loginInAndGoTo(seller, LoginPage.SALES_SECTION);
-        SalesPage salesPage = new SalesPage(context);
+        SalesPage salesPage = loginAndGoTo(SalesPage.class);
         SearchProductPage searchProductPage = salesPage.clickSearchBar(false);
         SuppliersSearchPage suppliersSearchPage = new SuppliersSearchPage(context);
         MyShopFilterPage filterPage = searchProductPage.goToFilterPage();
@@ -148,13 +141,10 @@ public class SearchTest extends AppBaseSteps {
 
     @Test(description = "C22789209 Вся гамма ЛМ. Выбор фильтров каждого раздела")
     public void testC22789209() throws Exception {
-        LoginPage loginPage = new LoginPage(context);
-        UserData seller = new UserData(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS);
         LocalDate avsDate = LocalDate.of(2019, 12, 5);
 
         // Pre-conditions
-        loginPage.loginInAndGoTo(seller, LoginPage.SALES_SECTION);
-        SalesPage salesPage = new SalesPage(context);
+        SalesPage salesPage = loginAndGoTo(SalesPage.class);
         SearchProductPage searchProductPage = salesPage.clickSearchBar(false);
         FilterPage filterPage = searchProductPage.goToFilterPage();
 
@@ -194,12 +184,8 @@ public class SearchTest extends AppBaseSteps {
 
     @Test(description = "C22789172 На поисковой запрос не вернулись результаты")
     public void testC22789172() throws Exception {
-        LoginPage loginPage = new LoginPage(context);
-        UserData seller = new UserData(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS);
-
         // Pre-conditions
-        loginPage.loginInAndGoTo(seller, LoginPage.SALES_SECTION);
-        SalesPage salesPage = new SalesPage(context);
+        SalesPage salesPage = loginAndGoTo(SalesPage.class);
         SearchProductPage searchProductPage = salesPage.clickSearchBar(false);
         String byName = "А13";
 
@@ -236,12 +222,10 @@ public class SearchTest extends AppBaseSteps {
 
     @Test(description = "C22789176 Вывод истории поиска")
     public void testC22789176() throws Exception {
-        LoginPage loginPage = new LoginPage(context);
         int searchPhrasesCount = 21;
 
         // Pre-conditions
-        loginPage.loginInAndGoTo(LoginPage.SALES_SECTION);
-        SalesPage salesPage = new SalesPage(context);
+        SalesPage salesPage = loginAndGoTo(SalesPage.class);
 
         // Step 1
         log.step("Нажать на поисковую строку");
@@ -271,11 +255,8 @@ public class SearchTest extends AppBaseSteps {
     @Test(description = "C22790468 Гамма ЛМ. Отсутствие: действий с товаром, истории продаж, поставки")
     public void testC22790468() throws Exception {
         // Pre-conditions
-        LoginPage loginPage = new LoginPage(context);
-        loginPage.loginInAndGoTo(LoginPage.SALES_SECTION);
-
-        MyShopFilterPage myShopFilterPage = new SalesPage(context)
-                .clickSearchBar(false)
+        SalesPage salesPage = loginAndGoTo(SalesPage.class);
+        MyShopFilterPage myShopFilterPage = salesPage.clickSearchBar(false)
                 .goToFilterPage();
 
         // Step 1
