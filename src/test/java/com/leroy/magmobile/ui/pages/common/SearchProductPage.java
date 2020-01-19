@@ -28,7 +28,7 @@ public class SearchProductPage extends BaseAppPage {
         super(context);
     }
 
-    @AppFindBy(accessibilityId = "back", metaName = "Кнопка назад")
+    @AppFindBy(accessibilityId = "BackButton", metaName = "Кнопка назад")
     private Element backBtn;
 
     @AppFindBy(accessibilityId = "Button", metaName = "Кнопка для сканирования штрихкода")

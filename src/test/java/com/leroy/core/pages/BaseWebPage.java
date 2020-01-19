@@ -32,7 +32,6 @@ public abstract class BaseWebPage extends BasePage {
         }
     };
 
-    private static String screenshotPath = System.getProperty("output.path");
     public static final String TRANSITION_TITLE = "loading";
     public static final String TRANSITION_URL = "about:blank";
     protected String initialHandle;  //stores the window handle obtained when the object was created
@@ -110,23 +109,6 @@ public abstract class BaseWebPage extends BasePage {
             Log.error("Error: Cannot type the desired text on the alert. It may not be available");
             Log.error("Exception: " + var3.getMessage());
             throw var3;
-        }
-    }
-
-    @Attachment(value = "Page screenshot", type = "image/png")
-    protected byte[] takeScreenShotAsByteArray() {
-        return ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
-    }
-
-    public String takeScreenShot(String fileName) {
-        try {
-            Log.info("Screen shot FileName: " + fileName);
-            File destFile = new File(screenshotPath + File.separator + fileName);
-            FileUtils.writeByteArrayToFile(destFile, takeScreenShotAsByteArray());
-            return destFile.getAbsolutePath();
-        } catch (Exception var4) {
-            var4.printStackTrace();
-            return null;
         }
     }
 

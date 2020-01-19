@@ -18,9 +18,8 @@ public class SalesDocumentsTest extends AppBaseSteps {
     public void testC3201029() throws Exception {
         // Step #1
         log.step("На главном экране выберите раздел Документы продажи");
-        new LoginPage(context).loginInAndGoTo(LoginPage.DOCUMENTS_SALES_SECTION);
-        SalesDocumentsPage salesDocumentsPage = new SalesDocumentsPage(context)
-                .verifyRequiredElements()
+        SalesDocumentsPage salesDocumentsPage = loginAndGoTo(SalesDocumentsPage.class);
+        salesDocumentsPage.verifyRequiredElements()
                 .shouldFilterIs("Мои документы");
 
         // Step #2

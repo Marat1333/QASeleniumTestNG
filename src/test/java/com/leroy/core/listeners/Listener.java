@@ -623,7 +623,7 @@ public class Listener implements ITestListener, ISuiteListener,
                 setGenerateTestResultAttributes(true);
                 Log.info("Screenshot path: " + screenShotPath);
             } catch (Exception e) {
-                Log.error("Results wasn't updated with screenshot.");
+                Log.error("Results wasn't updated with screenshot. Error: " + e.getMessage());
             }
         }
     }

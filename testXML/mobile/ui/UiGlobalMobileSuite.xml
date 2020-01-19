@@ -4,6 +4,10 @@
 
     <suite-files>
         <suite-file path="areas/MultiFunctionalButtonSuite.xml"/>
+        <suite-file path="areas/SalesDocumentsSuite.xml"/>
+        <suite-file path="areas/SearchSuite.xml"/>
+        <suite-file path="areas/SupportSuite.xml"/>
+        <suite-file path="areas/WithdrawalFromRMSuite.xml"/>
     </suite-files>
 
 </suite>

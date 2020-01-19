@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Search Suite">
+
+    <listeners>
+        <listener class-name="com.leroy.core.listeners.TestRailListener"/>
+    </listeners>
+
+    <test name="C3200996 Поиск товара по критериям">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.SearchTest">
+                <methods>
+                    <include name="testC3200996"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22846686 Мой магазин, Выбор фильтров каждого блока фильтров">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.SearchTest">
+                <methods>
+                    <include name="testC22846686"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22789209 Вся гамма ЛМ, Выбор фильтров каждого раздела">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.SearchTest">
+                <methods>
+                    <include name="testC22789209"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22789172 На поисковой запрос не вернулись результаты">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.SearchTest">
+                <methods>
+                    <include name="testC22789172"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22789176 Вывод истории поиска">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.SearchTest">
+                <methods>
+                    <include name="testC22789176"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22790468 Гамма ЛМ; Отсутствие: действий с товаром, истории продаж, поставки">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.SearchTest">
+                <methods>
+                    <include name="testC22790468"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+<!--    <test name="C22789191 Сортировка результатов поиска">-->
+<!--        <classes>-->
+<!--            <class name="com.leroy.magmobile.ui.tests.SearchTest">-->
+<!--                <methods>-->
+<!--                    <include name="testC22789191"/>-->
+<!--                </methods>-->
+<!--            </class>-->
+<!--        </classes>-->
+<!--    </test>-->
+
+</suite>
