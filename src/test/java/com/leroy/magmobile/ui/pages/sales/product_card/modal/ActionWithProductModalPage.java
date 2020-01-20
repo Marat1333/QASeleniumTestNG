@@ -62,7 +62,6 @@ public class ActionWithProductModalPage extends CommonMagMobilePage {
 
     @Step("Проверить, что модальное окно 'Действия с товаром' отобразилось со всеми необходимыми товарами")
     public ActionWithProductModalPage verifyRequiredElements(boolean isAvsProduct) {
-        shouldNotAnyErrorVisible();
         softAssert.isElementVisible(closeBtn);
         softAssert.isElementVisible(headerLbl);
         softAssert.isElementVisible(addIntoSalesDocumentBtn);

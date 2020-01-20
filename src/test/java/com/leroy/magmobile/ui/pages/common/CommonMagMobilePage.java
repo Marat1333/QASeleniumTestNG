@@ -9,6 +9,7 @@ public class CommonMagMobilePage extends BaseAppPage {
 
     public CommonMagMobilePage(TestContext context) {
         super(context);
+        shouldNotAnyErrorVisible();
     }
 
     @AppFindBy(xpath = "//android.widget.TextView[contains(@text, 'Bad Request') or contains(@text, 'rror')]")

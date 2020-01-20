@@ -38,11 +38,11 @@ public abstract class BasketPage extends CommonMagMobilePage {
     // ------------- Verifications ----------------------//
 
     public BasketPage verifyRequiredElements() {
-        shouldNotAnyErrorVisible();
         String titleText = screenTitle.getText();
         softAssert.isTrue(titleText.matches("Корзина № \\d{8}"),
                 "Номер документа должен состоять из 8 символов");
         softAssert.isElementVisible(backBtn);
+        softAssert.isElementVisible(trashBtn);
         softAssert.verifyAll();
         return this;
     }

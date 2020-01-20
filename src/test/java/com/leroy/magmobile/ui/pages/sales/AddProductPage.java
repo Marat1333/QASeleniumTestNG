@@ -99,7 +99,6 @@ public class AddProductPage extends CommonMagMobilePage {
     // ---------------- Verifications ----------------------- //
 
     public AddProductPage verifyRequiredElements() {
-        shouldNotAnyErrorVisible();
         softAssert.isElementTextEqual(screenTitle, SCREEN_TITLE);
         softAssert.isElementVisible(backBtn);
         softAssert.isElementVisible(priceLbl);
