@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="UI Mobile Global Suite">
+
+    <suite-files>
+        <suite-file path="areas/MultiFunctionalButtonSuite.xml"/>
+        <suite-file path="areas/SalesDocumentsSuite.xml"/>
+        <suite-file path="areas/SearchSuite.xml"/>
+        <suite-file path="areas/SupportSuite.xml"/>
+        <suite-file path="areas/WithdrawalFromRMSuite.xml"/>
+    </suite-files>
+
+</suite>

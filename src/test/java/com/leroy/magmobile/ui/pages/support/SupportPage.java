@@ -51,7 +51,7 @@ public class SupportPage extends BaseAppPage {
 
     /* ---------------------- Verifications -------------------------- */
 
-    @Override
+    @Step("Проверить, что страница 'Поддержка' отображается корректно")
     public SupportPage verifyRequiredElements() throws Exception {
         softAssert.isElementVisible(titleLbl);
         softAssert.isElementVisible(complainBtn);
@@ -67,6 +67,7 @@ public class SupportPage extends BaseAppPage {
         return this;
     }
 
+    @Step("Проверить, что выбран тип запроса - {request}")
     public SupportPage shouldSelectedTypeRequestIs(String request) {
         switch (request) {
             case COMPLAIN_REQUEST:

@@ -2,13 +2,14 @@ package com.leroy.magmobile.ui.pages.sales;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobSubmitButton;
+import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import com.leroy.magmobile.ui.pages.sales.basket.BasketStep1Page;
 import io.qameta.allure.Step;
 
-public class AddProductPage extends BaseAppPage {
+public class AddProductPage extends CommonMagMobilePage {
 
     private static final String SCREEN_TITLE = "Добавление товара";
 
@@ -97,8 +98,6 @@ public class AddProductPage extends BaseAppPage {
 
     // ---------------- Verifications ----------------------- //
 
-
-    @Override
     public AddProductPage verifyRequiredElements() {
         softAssert.isElementTextEqual(screenTitle, SCREEN_TITLE);
         softAssert.isElementVisible(backBtn);

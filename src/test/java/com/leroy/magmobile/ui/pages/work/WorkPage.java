@@ -61,7 +61,7 @@ public class WorkPage extends BaseAppPage {
 
     // ------------------------ Verifications ------------------------//
 
-    @Override
+    @Step("Проверить, что страница 'Ежедневная работа' отображается корректно")
     public WorkPage verifyRequiredElements() {
         softAssert.isElementTextEqual(titleObj, "Ежедневная работа");
         softAssert.isElementTextEqual(withdrawalFromRMLabel, "Отзыв с RM");

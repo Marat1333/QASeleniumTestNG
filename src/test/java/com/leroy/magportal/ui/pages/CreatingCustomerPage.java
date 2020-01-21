@@ -6,9 +6,9 @@ import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.models.CustomerData;
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.pages.modal.CustomersFoundWithThisPhoneModalWindow;
+import com.leroy.models.CustomerData;
 import io.qameta.allure.Step;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.support.Color;
@@ -33,7 +33,7 @@ public class CreatingCustomerPage extends MenuPage {
             metaName = "Модальное окно о найденных клиентах с этим телефоном")
     CustomersFoundWithThisPhoneModalWindow modalWindow;
 
-    @WebFindBy(xpath = "//h4", metaName = "Основной заголовок страницы")
+    @WebFindBy(xpath = "//span[text()='" + HEADER + "']", metaName = "Основной заголовок страницы")
     Element headerLbl;
 
     @WebFindBy(xpath = "//button[contains(@class, 'Button-type-empty-main')]", metaName = "Кнопка назад")
@@ -194,8 +194,8 @@ public class CreatingCustomerPage extends MenuPage {
         return this;
     }
 
-    @Step("Заполните все обязательные поля для клиента")
-    public CreatingCustomerPage enterRequiredCustomerData(CustomerData customerData) {
+    @Step("Заполните все необходимые поля для клиента")
+    public CreatingCustomerPage enterCustomerData(CustomerData customerData) {
         switch (customerData.getGender()) {
             case MALE:
                 maleOptionBtn.click();
@@ -205,6 +205,7 @@ public class CreatingCustomerPage extends MenuPage {
                 break;
         }
         enterTextInFirstNameInputField(customerData.getFirstName());
+        // Phone
         if (customerData.isPersonalPhone()) {
             phonePersonalOptionBtn.click();
         }
@@ -213,13 +214,19 @@ public class CreatingCustomerPage extends MenuPage {
         }
         if (Strings.isNotNullAndNotEmpty(customerData.getPhoneNumber()))
             enterTextInPhoneInputField(customerData.getPhoneNumber());
+        // Email
+        if (customerData.isPersonalEmail()) {
+            emailPersonalOptionBtn.click();
+        }
+        if (customerData.isWorkEmail()) {
+            emailWorkOptionBtn.click();
+        }
         return this;
     }
 
     // VERIFICATIONS
 
-    @Override
-    public CreatingCustomerPage verifyRequiredElements() {
+    public CreatingCustomerPage verifyRequiredElements(boolean emailShouldBeVisible) {
         softAssert.isElementTextEqual(headerLbl, HEADER);
         softAssert.isElementTextEqual(subHeaderLbl, HEADER);
         softAssert.isElementVisible(helpInfoLbl);
@@ -233,9 +240,15 @@ public class CreatingCustomerPage extends MenuPage {
         // Дополнительные поля должны быть не видны по-умолчанию
         softAssert.isElementNotVisible(middleNameFld);
         softAssert.isElementNotVisible(lastNameFld);
-        softAssert.isElementNotVisible(emailFld);
-        softAssert.isElementNotVisible(emailPersonalOptionBtn);
-        softAssert.isElementNotVisible(emailWorkOptionBtn);
+        if (emailShouldBeVisible) {
+            softAssert.isElementVisible(emailFld);
+            softAssert.isElementVisible(emailPersonalOptionBtn);
+            softAssert.isElementVisible(emailWorkOptionBtn);
+        } else {
+            softAssert.isElementNotVisible(emailFld);
+            softAssert.isElementNotVisible(emailPersonalOptionBtn);
+            softAssert.isElementNotVisible(emailWorkOptionBtn);
+        }
         softAssert.isElementNotVisible(addressLbl);
         softAssert.isElementNotVisible(addressFld);
         softAssert.isElementNotVisible(regionFld);
@@ -252,6 +265,10 @@ public class CreatingCustomerPage extends MenuPage {
         softAssert.isElementVisible(createBtn);
         softAssert.verifyAll();
         return this;
+    }
+
+    public CreatingCustomerPage verifyRequiredElements() {
+        return verifyRequiredElements(false);
     }
 
     public CreatingCustomerPage verifyAllAdditionalFields() {

@@ -74,7 +74,7 @@ public class ComplainPage extends BaseAppPage {
 
     /* ---------------------- Verifications -------------------------- */
 
-    @Override
+    @Step("Проверить, что страница с жалобами отображается корректно")
     public ComplainPage verifyRequiredElements() {
         // Видна метка "В чем проблема?"
         softAssert.isElementVisible(whatHappenLbl);
@@ -90,6 +90,7 @@ public class ComplainPage extends BaseAppPage {
         return this;
     }
 
+    @Step("Проверить, что поля заполнены корректно. Что случилось - {whatHappen}, Больше подробностей - {moreInfo}, Email - {email}")
     public ComplainPage shouldMainFieldsAre(String whatHappen, String moreInfo, String email) {
         softAssert.isElementTextEqual(whatHappenFld, whatHappen);
         shouldMoreInformationFieldHasText(moreInfo);
@@ -105,6 +106,7 @@ public class ComplainPage extends BaseAppPage {
         return this;
     }
 
+    @Step("Проверить, что поле 'Чуть больше подробностей содержит текст: {text}'")
     public ComplainPage shouldMoreInformationFieldHasText(String text) {
         String moreInfoText = moreInfoFld.getText();
         softAssert.isEquals(moreInfoText, text,

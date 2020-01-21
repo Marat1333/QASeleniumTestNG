@@ -129,8 +129,8 @@ public class Listener implements ITestListener, ISuiteListener,
             charset.set(null, null);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
-        }
-        System.setProperty("current.date", DateUtil.formatCurrectDayYYYYMMDDHHMMSSTimeZone());*/
+        }*/
+        System.setProperty("current.date", DateUtil.formatCurrectDayYYYYMMDDHHMMSSTimeZone());
         arg0.getXmlSuite().setName(arg0.getName());
 
         // Continue with the rest of the initialization of the system properties
@@ -225,7 +225,7 @@ public class Listener implements ITestListener, ISuiteListener,
     public void onTestFailure(ITestResult arg0) {
         if (processFail) {
             updateSauceLabsResult(arg0, "fail");
-            updateResultWithScreenshot(arg0);
+            //updateResultWithScreenshot(arg0);
         }
 
         printTestResults(arg0);
@@ -278,6 +278,10 @@ public class Listener implements ITestListener, ISuiteListener,
     // method including @Before @After @Test
     @Override
     public void afterInvocation(IInvokedMethod arg0, ITestResult arg1) {
+        if (processFail) {
+            if (arg1.getStatus() == ITestResult.FAILURE)
+                updateResultWithScreenshot(arg1);
+        }
         try {
             String teamName = null;
             Class<?> testClass = arg1.getTestClass().getRealClass();
@@ -619,7 +623,7 @@ public class Listener implements ITestListener, ISuiteListener,
                 setGenerateTestResultAttributes(true);
                 Log.info("Screenshot path: " + screenShotPath);
             } catch (Exception e) {
-                Log.error("Results wasn't updated with screenshot.");
+                Log.error("Results wasn't updated with screenshot. Error: " + e.getMessage());
             }
         }
     }

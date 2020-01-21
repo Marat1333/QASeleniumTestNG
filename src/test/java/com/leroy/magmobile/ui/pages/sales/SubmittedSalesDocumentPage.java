@@ -56,7 +56,6 @@ public class SubmittedSalesDocumentPage extends BaseAppPage {
 
     /* ---------------------- Verifications -------------------------- */
 
-    @Override
     public SubmittedSalesDocumentPage verifyRequiredElements() {
         softAssert.isTrue(isDocumentNumberVisibleAndValid(),
                 "Неправильный формат номера документа");

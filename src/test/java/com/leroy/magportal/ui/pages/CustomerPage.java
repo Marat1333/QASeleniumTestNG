@@ -19,7 +19,7 @@ public class CustomerPage extends MenuPage {
         super(context);
     }
 
-    @WebFindBy(xpath = "//h4", metaName = "Заголовок страницы")
+    @WebFindBy(xpath = "//span[text()='"+HEADER+"']", metaName = "Заголовок страницы")
     private Element headerLbl;
 
     @WebFindBy(xpath = "//div[contains(@class, 'lmui-View lm-puz2-Customer-CustomerListSearch__mode-opener')]/span[1]",
@@ -40,7 +40,7 @@ public class CustomerPage extends MenuPage {
     @WebFindBy(id = "inputId", metaName = "Поле для ввода телефона")
     private EditBox searchFld;
 
-    @WebFindBy(xpath = "//button[contains(@class, 'lmui-Button-buttonSize-xl')]",
+    @WebFindBy(xpath = "//button[descendant::span[text()='Создать клиента']]",
             metaName = "Кнопка 'Создать клиента'")
     private Element createClientBtn;
 
@@ -86,7 +86,6 @@ public class CustomerPage extends MenuPage {
 
     // --------------------- Verifications --------------------------//
 
-    @Override
     public CustomerPage verifyRequiredElements() {
         softAssert.isElementTextEqual(headerLbl, HEADER);
         softAssert.isElementVisible(searchTypeLbl);

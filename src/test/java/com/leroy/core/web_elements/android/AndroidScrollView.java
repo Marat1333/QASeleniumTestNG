@@ -1,8 +1,10 @@
 package com.leroy.core.web_elements.android;
 
+import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.BaseWidget;
+import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.ui.pages.widgets.CardWidget;
 import com.leroy.magmobile.ui.pages.widgets.TextViewWidget;
@@ -10,6 +12,8 @@ import com.leroy.models.CardWidgetData;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -22,6 +26,11 @@ import static io.appium.java_client.touch.offset.PointOption.point;
 import static java.time.Duration.ofMillis;
 
 public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
+
+    private final int MAX_SCROLL_COUNT = 10;
+
+    @AppFindBy(xpath = "//android.widget.ProgressBar", cacheLookup = false, metaName = "Progress bar")
+    private Element progressBar;
 
     public static final String TYPICAL_XPATH = "//android.widget.ScrollView";
     private Class<? extends BaseWidget> rowWidgetClass;
@@ -47,11 +56,15 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
     }
 
     /**
-     * Scroll down to the end and get all text labels as ArrayList
+     * Scroll down to the end and get all data as ArrayList
      */
-    public List<T> getFullDataList() throws Exception {
-        scrollDown();
+    public List<T> getFullDataList(int maxEntityCount) throws Exception {
+        scrollToText(null, null, maxEntityCount, "down");
         return new ArrayList<>(tmpCardDataList);
+    }
+
+    public List<T> getFullDataList() throws Exception {
+        return getFullDataList(30);
     }
 
     public List<String> getFullDataAsStringList() throws Exception {
@@ -89,6 +102,21 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
                 .release().perform();
     }
 
+    private void simpleScroll(String direction) {
+        Point _location = getLocation();
+        Dimension _size = getSize();
+        int x = _location.getX() + _size.getWidth() / 2;
+        int bottomY = _location.getY() + _size.getWidth() - (int) Math.round(_size.getWidth() * 0.05);
+        int topY = _location.getY() + (int) Math.round(_size.getWidth() * 0.05);
+
+        boolean isDirectionDown = direction.equals("down");
+        new TouchAction<>(androidDriver)
+                .press(point(x, isDirectionDown ? bottomY : topY))
+                .waitAction(waitOptions(ofMillis(1000)))
+                .moveTo(point(x, isDirectionDown ? topY : bottomY))
+                .release().perform();
+    }
+
     /**
      * Scroll to the specific text
      *
@@ -97,36 +125,37 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
      * @param direction      - up or down
      * @return this
      */
-    private AndroidScrollView<T> scrollToText(String findText, int maxScrollCount, String direction) throws Exception {
+    private AndroidScrollView<T> scrollToText(String findText, Integer maxScrollCount, Integer maxEntityCount, String direction) throws Exception {
         initialWebElementIfNeeded();
         tmpCardDataList = new ArrayList<>();
         List<T> prevDataList = null;
         int i = 0;
         while (true) {
-            if (i >= maxScrollCount)
+            if (maxScrollCount != null && i >= maxScrollCount)
                 break;
+            if (maxEntityCount != null && tmpCardDataList.size() >= maxEntityCount) {
+                while (tmpCardDataList.size() > maxEntityCount) {
+                    tmpCardDataList.remove(tmpCardDataList.size()-1);
+                }
+                break;
+            }
             ElementList<CardWidget<T>> cardWidgetList = this.findChildElements(oneRowXpath, rowWidgetClass);
-            int widgetCount = cardWidgetList.getCount();
-            if (widgetCount < 1)
-                break;
             List<T> currentVisibleDataList = new ArrayList<>();
-            for (CardWidget<T> we : cardWidgetList) {
-                T data = we.collectDataFromPage();
-                currentVisibleDataList.add(data);
-                if (findText != null && data.toString().contains(findText))
-                    break;
+            for (CardWidget<T> widget : cardWidgetList) {
+                if (widget.isFullyVisible()) {
+                    T data = widget.collectDataFromPage();
+                    currentVisibleDataList.add(data);
+                    if (findText != null && data.toString().contains(findText))
+                        break;
+                }
+            }
+            if (currentVisibleDataList.size() == 0) {
+                Log.warn("Couldn't find elements during scroll");
+                break;
             }
             addNonRepeatingText(tmpCardDataList, currentVisibleDataList);
-            WebElement endElement;
-            WebElement startElement;
-            if (direction.equals("down")) {
-                endElement = cardWidgetList.get(0).getWebElement();
-                startElement = cardWidgetList.get(widgetCount - 1).getWebElement();
-            } else {
-                endElement = cardWidgetList.get(widgetCount - 1).getWebElement();
-                startElement = cardWidgetList.get(0).getWebElement();
-            }
-            simpleScroll(startElement, endElement);
+            simpleScroll(direction);
+            progressBar.waitForInvisibility();
             Log.debug("<-- Scroll down #" + (i + 1) + "-->");
             if (currentVisibleDataList.equals(prevDataList))
                 break;
@@ -144,7 +173,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
      * @return this
      */
     public AndroidScrollView<T> scrollDownToText(String findText, int maxScrollCount) throws Exception {
-        return scrollToText(findText, maxScrollCount, "down");
+        return scrollToText(findText, maxScrollCount, null,"down");
     }
 
     /**
@@ -155,26 +184,30 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
      * @return this
      */
     public AndroidScrollView<T> scrollUpToText(String findText, int maxScrollCount) throws Exception {
-        return scrollToText(findText, maxScrollCount, "up");
+        return scrollToText(findText, maxScrollCount, null, "up");
     }
 
     public AndroidScrollView<T> scrollDownToText(String findText) throws Exception {
-        return scrollDownToText(findText, 20);
+        return scrollDownToText(findText, MAX_SCROLL_COUNT);
     }
 
     public AndroidScrollView<T> scrollDown() throws Exception {
-        return scrollDown(60);
+        return scrollDown(MAX_SCROLL_COUNT);
     }
 
     public AndroidScrollView<T> scrollUp() throws Exception {
-        return scrollUp(60);
+        return scrollUp(MAX_SCROLL_COUNT);
     }
 
     public AndroidScrollView<T> scrollDown(int count) throws Exception {
+        if (count == 1)
+            simpleScroll("down");
         return scrollDownToText(null, count);
     }
 
     public AndroidScrollView<T> scrollUp(int count) throws Exception {
+        if (count == 1)
+            simpleScroll("up");
         return scrollUpToText(null, count);
     }
 

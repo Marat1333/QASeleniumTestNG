@@ -3,11 +3,12 @@ package com.leroy.core.configuration;
 import com.leroy.core.asserts.BaseCustomAssert;
 import com.leroy.core.testrail.helpers.StepLog;
 import com.leroy.core.testrail.models.ResultModel;
-import com.leroy.core.testrail.models.StepResultModel;
 import com.leroy.core.util.ImageUtil;
+import com.leroy.core.web_elements.general.BaseWidget;
 import com.leroy.core.web_elements.general.Element;
-import org.testng.Assert;
 import org.testng.asserts.SoftAssert;
+
+import java.util.List;
 
 public class CustomSoftAssert extends BaseCustomAssert {
 
@@ -52,19 +53,25 @@ public class CustomSoftAssert extends BaseCustomAssert {
         if (isElementVisible(element)) {
             String actualText = element.getText();
             logIsElementTextEqual(element.getMetaName(), actualText, expectedText);
-            softAssert.assertEquals(element.getText(), expectedText,
+            softAssert.assertEquals(actualText, expectedText,
                     String.format("Элемент '%s' содержит текст '%s'", element.getMetaName(), actualText));
         }
     }
 
-    public boolean isElementVisible(Element element) {
+    public boolean isElementVisible(BaseWidget element) {
         boolean elementVisibility = logIsElementVisible(element);
         String desc = element.getMetaName() + " должен отображаться";
         softAssert.assertTrue(elementVisibility, desc);
         return elementVisibility;
     }
 
-    public boolean isElementNotVisible(Element element) {
+    public void areElementsVisible(List<BaseWidget> elements) {
+        for (BaseWidget elem : elements) {
+            isElementVisible(elem);
+        }
+    }
+
+    public boolean isElementNotVisible(BaseWidget element) {
         boolean elementVisibility = !(logIsElementNotVisible(element));
         String desc = element.getMetaName() + " не должен отображаться";
         softAssert.assertFalse(elementVisibility, desc);

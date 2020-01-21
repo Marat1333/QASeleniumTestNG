@@ -1,31 +1,22 @@
 package com.leroy.magmobile.ui.pages;
 
-import com.leroy.constants.EnvConstants;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Button;
-import com.leroy.models.UserData;
 import com.leroy.magmobile.ui.pages.sales.SalesPage;
+import com.leroy.models.UserData;
 import io.appium.java_client.android.AndroidDriver;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class LoginPage extends BaseAppPage {
+public class LoginAppPage extends BaseAppPage {
 
-    // Main sections of Mag mobile app
-    public static final String SALES_SECTION = "Продажа";
-    public static final String WORK_SECTION = "Работа";
-    public static final String SUPPORT_SECTION = "Поддержка";
-    public static final String MORE_SECTION = "еще";
-
-    // Sub sections for the SALES_SECTION
-    public static final String DOCUMENTS_SALES_SECTION = "Документы продажи";
-
-    public LoginPage(TestContext context) {
+    public LoginAppPage(TestContext context) {
         super(context);
     }
 
@@ -60,34 +51,14 @@ public class LoginPage extends BaseAppPage {
 
     /* ------------------------- ACTIONS -------------------------- */
 
-    @Step("Зайдите в раздел {section}")
-    public void loginInAndGoTo(UserData userData, String section) throws Exception {
-        SalesPage salesPage = logIn(userData);
-        switch (section) {
-            case SALES_SECTION:
-                // Nothing to do because it is default page after login
-                break;
-            case DOCUMENTS_SALES_SECTION:
-                salesPage.goToSalesDocumentsSection();
-                break;
-            case WORK_SECTION:
-                salesPage.goToWork();
-                break;
-            case SUPPORT_SECTION:
-                salesPage.goToSupport();
-                break;
-            case MORE_SECTION:
-                salesPage.goToMoreSection();
-                break;
+    @Step("Нажмите кнопку 'Войти'")
+    public void clickLoginButton() throws Exception {
+        loginBtn.click();
+        try {
+            new WebDriverWait(this.driver, timeout).until(
+                    a -> ((AndroidDriver) driver).getContextHandles().size() > 1);
+        } catch (TimeoutException err) {
+            Log.error(err.getMessage());
         }
     }
-
-    @Step("Зайдите в раздел {section}")
-    public void loginInAndGoTo(String section) throws Exception {
-        loginInAndGoTo(new UserData(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS), section);
-    }
-
-
-    /* ---------------------- Verifications -------------------------- */
-
 }

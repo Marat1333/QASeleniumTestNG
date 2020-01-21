@@ -35,15 +35,24 @@ public class ProductDescriptionPage extends ProductCardPage {
     @AppFindBy(text = "Цены в магазинах")
     MagMobButton productPriceGammaCardBtn;
 
+    @Override
+    public void waitForPageIsLoaded() {
+        lmCode.waitForVisibility();
+    }
+
+    // Actions
+
     @Step("Перейти на страницу с детализацией цен и запасов")
     public PricesAndQuantityPage goToPricesAndQuantityPage() {
         productPriceGammaCardBtn.click();
         return new PricesAndQuantityPage(context);
     }
 
+    // Verifications
+
     @Override
-    public ProductDescriptionPage verifyRequiredElements() {
-        softAssert.isElementVisible(mainArea);
+    public ProductDescriptionPage verifyRequiredElements(boolean submitBtnShouldBeVisible) {
+        super.verifyRequiredElements(submitBtnShouldBeVisible);
         softAssert.isElementVisible(lmCode);
         softAssert.verifyAll();
         return this;

@@ -6,9 +6,11 @@ import com.leroy.models.UserData;
 import com.leroy.magportal.ui.pages.LoginWebPage;
 import com.leroy.magportal.ui.pages.OrdersPage;
 import com.leroy.temp_ui.BaseState;
+import io.qameta.allure.Step;
 
 public class WebBaseSteps extends BaseState {
 
+    @Step("Авторизоваться на портале и зайти на страницу {pageClass}")
     public <T> T loginAndGoTo(UserData userData, Class<? extends BaseWebPage> pageClass) throws Exception {
         new LoginWebPage(context).logIn(userData);
         return new OrdersPage(context).closeNewFeaturesModalWindowIfExist()

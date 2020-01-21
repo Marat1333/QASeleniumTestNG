@@ -1,10 +1,9 @@
 package com.leroy.core.pages;
 
-import com.leroy.core.BaseContainer;
 import com.leroy.core.TestContext;
-import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.configuration.Log;
 import io.appium.java_client.ios.IOSDriver;
+import io.qameta.allure.Attachment;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.Dimension;
@@ -18,7 +17,6 @@ import java.awt.*;
 import java.io.File;
 import java.net.URLDecoder;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -34,7 +32,6 @@ public abstract class BaseWebPage extends BasePage {
         }
     };
 
-    private static String screenshotPath = System.getProperty("output.path");
     public static final String TRANSITION_TITLE = "loading";
     public static final String TRANSITION_URL = "about:blank";
     protected String initialHandle;  //stores the window handle obtained when the object was created
@@ -112,19 +109,6 @@ public abstract class BaseWebPage extends BasePage {
             Log.error("Error: Cannot type the desired text on the alert. It may not be available");
             Log.error("Exception: " + var3.getMessage());
             throw var3;
-        }
-    }
-
-    public String takeScreenShot(String FileName) {
-        try {
-            Log.info("Screen shot FileName: " + FileName);
-            File scrFile = (File) ((TakesScreenshot) this.driver).getScreenshotAs(OutputType.FILE);
-            File destFile = new File(screenshotPath + File.separator + FileName);
-            FileUtils.copyFile(scrFile, destFile);
-            return destFile.getAbsolutePath();
-        } catch (Exception var4) {
-            var4.printStackTrace();
-            return null;
         }
     }
 

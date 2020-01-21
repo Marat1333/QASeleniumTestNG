@@ -2,16 +2,16 @@ package com.leroy.magmobile.ui.pages.work;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.models.ProductCardData;
 import com.leroy.magmobile.ui.pages.widgets.ProductCardWidget;
 import com.leroy.magmobile.ui.pages.widgets.SelectedCardWidget;
 import com.leroy.magmobile.ui.elements.MagMobSubmitButton;
 import io.qameta.allure.Step;
 
-public class StockProductsPage extends BaseAppPage {
+public class StockProductsPage extends CommonMagMobilePage {
 
     public StockProductsPage(TestContext context) {
         super(context);
@@ -54,7 +54,7 @@ public class StockProductsPage extends BaseAppPage {
             throw new IndexOutOfBoundsException("На странице " + count +
                     " штучных товаров. Тест пытался выбрать " + (index + 1));
         ProductCardWidget cardObj = pieceProductCards.get(index);
-        cardData.setNumber(cardObj.getNumber());
+        cardData.setLmCode(cardObj.getNumber());
         cardData.setName(cardObj.getName());
         cardData.setQuantityType(cardObj.getQuantityType());
         return cardData;
@@ -63,7 +63,7 @@ public class StockProductsPage extends BaseAppPage {
     public ProductCardData getSelectedProductInfoByIndex(int index) throws Exception {
         ProductCardData cardData = new ProductCardData();
         SelectedCardWidget cardObj = selectedProductCards.get(index);
-        cardData.setNumber(cardObj.getNumber());
+        cardData.setLmCode(cardObj.getNumber());
         cardData.setName(cardObj.getName());
         cardData.setSelectedQuantity(cardObj.getSelectedQuantity());
         return cardData;
@@ -87,12 +87,14 @@ public class StockProductsPage extends BaseAppPage {
 
     /* ------------------------- Verifications -------------------------- */
 
+    @Step("Проверить, что на экране отображаются товары")
     public StockProductsPage shouldAnyProductAvailableOnPage() {
         anAssert.isTrue(productImages.getCount() > 0,
                 "На странице должен быть хотя бы один доступный товар");
         return this;
     }
 
+    @Step("Проверить, что страница отображается корректно")
     public StockProductsPage verifyVisibilityOfAllElements() {
         softAssert.isElementVisible(selectedProductsLabel);
         softAssert.isElementTextEqual(submitBtn,
@@ -102,6 +104,7 @@ public class StockProductsPage extends BaseAppPage {
         return this;
     }
 
+    @Step("Проверить, что выбрано {num} товаров")
     public StockProductsPage shouldCountOfSelectedProductsIs(int num) {
         softAssert.isEquals(selectedProductCards.getCount(), num,
                 "Должен быть %s товар в секции ВЫБРАННЫЕ ТОВАРЫ");
@@ -111,10 +114,11 @@ public class StockProductsPage extends BaseAppPage {
         return this;
     }
 
+    @Step("Проверить, что выбранный продукт имеет следующие параметры: {productData}")
     public StockProductsPage shouldSelectedProductIs(
             int index, ProductCardData productData) throws Exception {
         ProductCardData selectedProductDataAfter = getSelectedProductInfoByIndex(index);
-        softAssert.isEquals(selectedProductDataAfter.getNumber(), productData.getNumber(),
+        softAssert.isEquals(selectedProductDataAfter.getLmCode(), productData.getLmCode(),
                 "Выбранный товар должен иметь номер %s");
         softAssert.isEquals(selectedProductDataAfter.getName(), productData.getName(),
                 "Выбранный товар должен иметь название %s");

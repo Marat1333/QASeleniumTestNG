@@ -16,9 +16,15 @@ public class SalesPage extends TopMenuPage {
     @AppFindBy(accessibilityId = "MainScreenTitle")
     EditBox searchBar;
 
+    @Override
+    public void waitForPageIsLoaded() {
+        searchBar.waitForVisibility();
+    }
+
+    // ACTIONS
+
     @Step("Переходим на страницу поиска")
     public SearchProductPage clickSearchBar(boolean hideKeyboard) {
-        searchBar.waitForVisibility();
         searchBar.click();
         SearchProductPage page = new SearchProductPage(context);
         if (hideKeyboard)

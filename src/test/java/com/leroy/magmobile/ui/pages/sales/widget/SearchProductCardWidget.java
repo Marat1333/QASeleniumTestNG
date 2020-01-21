@@ -3,8 +3,8 @@ package com.leroy.magmobile.ui.pages.sales.widget;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.models.ProductCardData;
 import com.leroy.magmobile.ui.pages.widgets.CardWidget;
+import com.leroy.models.ProductCardData;
 import org.openqa.selenium.WebDriver;
 
 public class SearchProductCardWidget extends CardWidget<ProductCardData> {
@@ -37,12 +37,18 @@ public class SearchProductCardWidget extends CardWidget<ProductCardData> {
     @AppFindBy(xpath = "./android.widget.TextView[8]")
     private Element quantityLbl;
 
-    public String getLmCode() {
-        return lmCodeObj.getText();
+    public String getLmCode(boolean onlyDigits) {
+        if (onlyDigits)
+            return lmCodeObj.getText().replaceAll("\\D", "");
+        else
+            return lmCodeObj.getText();
     }
 
-    public String getBarCode() {
-        return barCodeObj.getText().replaceAll(" ", "");
+    public String getBarCode(boolean onlyDigits) {
+        if (onlyDigits)
+            return barCodeObj.getText().replaceAll(" ", "");
+        else
+            return barCodeObj.getText();
     }
 
     public String getName() {
@@ -57,8 +63,11 @@ public class SearchProductCardWidget extends CardWidget<ProductCardData> {
         return priceLbl.getText();
     }
 
-    public String getQuantity() {
-        return quantityObj.getText();
+    public String getQuantity(boolean onlyDigits) {
+        if (onlyDigits)
+            return quantityObj.getText().replaceAll(" ", "");
+        else
+            return quantityObj.getText();
     }
 
     public String getQuantityType() {
@@ -72,8 +81,16 @@ public class SearchProductCardWidget extends CardWidget<ProductCardData> {
     @Override
     public ProductCardData collectDataFromPage() {
         ProductCardData productCardData = new ProductCardData();
-        productCardData.setNumber(getLmCode());
-        // TODO
+        productCardData.setLmCode(getLmCode(true));
+        productCardData.setBarCode(getBarCode(true));
+        productCardData.setName(getName());
+        productCardData.setPrice(getPrice());
+        productCardData.setAvailableQuantity(getQuantity(true));
         return productCardData;
+    }
+
+    @Override
+    public boolean isFullyVisible() {
+        return lmCodeObj.isVisible() && quantityLbl.isVisible();
     }
 }
