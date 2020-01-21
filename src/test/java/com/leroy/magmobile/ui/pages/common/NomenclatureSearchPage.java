@@ -2,10 +2,12 @@ package com.leroy.magmobile.ui.pages.common;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.configuration.Log;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import io.qameta.allure.Step;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 
 public class NomenclatureSearchPage extends BaseAppPage {
@@ -37,65 +39,62 @@ public class NomenclatureSearchPage extends BaseAppPage {
     private final String eachElementOfNomenclatureXpath = "./android.view.ViewGroup/android.widget.TextView";
 
     @Step("Вернитесь на окно выбора отдела")
-    public NomenclatureSearchPage returnToDepartmentChoseWindow() {
-        int counter = 0;
-        while (nomenclatureBackBtn.isVisible()) {
-            if (counter > 3) {
-                break;
+    public NomenclatureSearchPage returnBackNTimes(int counter) throws Exception {
+        for (int y = 0; y < counter; y++) {
+            if (!nomenclatureBackBtn.isVisible()) {
+                Log.error("Осуществлен переход во \"Все отделы\", перейти дальше невозможно");
+                throw new NoSuchElementException("There is no back button");
             }
-            try {
-                nomenclatureBackBtn.getWebElement().click();
-            } catch (StaleElementReferenceException err) {
-                // Nothing to do. Button disappeared, then break loop
-                break;
-            }
-            counter++;
+            nomenclatureBackBtn.click();
         }
-        return this;
+        wait(2);
+        return new NomenclatureSearchPage(context);
     }
 
+
     @Step("Показать товары по выбранной номенклатуре")
-    public SearchProductPage viewAllProducts(){
+    public SearchProductPage viewAllProducts() {
         showAllGoods.click();
         return new SearchProductPage(context);
     }
 
     @Step("Выбрать отдел {dept}, подотдел {subDept}, раздел {classId}, подраздел {subClass}")
-    public void choseDepartmentId(Integer dept, Integer subDept, Integer classId, Integer subClass) throws Exception{
-        returnToDepartmentChoseWindow();
-            if (dept != null) {
-                selectElementFromArray(dept, firstLevelNomenclatureElementsList);
-            }
-            if (dept != null && subDept != null) {
-                selectElementFromArray(subDept, secondLevelNomenclatureElementsList);
-            }
-            if (dept != null && subDept != null && classId != null) {
-                selectElementFromArray(classId, secondLevelNomenclatureElementsList);
-            }
-            if (dept != null && subDept != null && classId != null && subClass != null) {
-                selectElementFromArray(subClass, secondLevelNomenclatureElementsList);
-            }
+    public NomenclatureSearchPage choseDepartmentId(Integer dept, Integer subDept, Integer classId, Integer subClass) throws Exception {
+        if (dept != null) {
+            selectElementFromArray(dept, firstLevelNomenclatureElementsList);
+        }
+        if (dept != null && subDept != null) {
+            selectElementFromArray(subDept, secondLevelNomenclatureElementsList);
+        }
+        if (dept != null && subDept != null && classId != null) {
+            selectElementFromArray(classId, secondLevelNomenclatureElementsList);
+        }
+        if (dept != null && subDept != null && classId != null && subClass != null) {
+            selectElementFromArray(subClass, secondLevelNomenclatureElementsList);
+        }
+        return new NomenclatureSearchPage(context);
     }
 
-    private void selectElementFromArray(Integer value, ElementList<Element> someArray)throws Exception{
-        int counter=0;
-        for (Element element : someArray){
-            String tmp = element.findChildElement(eachElementOfNomenclatureXpath).getText().replaceAll("^0+","");
+    private NomenclatureSearchPage selectElementFromArray(Integer value, ElementList<Element> someArray) throws Exception {
+        int counter = 0;
+        for (Element element : someArray) {
+            String tmp = element.findChildElement(eachElementOfNomenclatureXpath).getText().replaceAll("^0+", "");
             tmp = tmp.replaceAll("\\D+", "");
-            if (tmp.length()>4){
-                tmp=tmp.substring(0,4);
+            if (tmp.length() > 4) {
+                tmp = tmp.substring(0, 4);
             }
-            if (tmp.equals(String.valueOf(value))){
+            if (tmp.equals(String.valueOf(value))) {
                 element.findChildElement(eachElementOfNomenclatureXpath).click();
                 counter++;
                 break;
             }
         }
-        if (counter<1){
+        if (counter < 1) {
             scrollDown();
             selectElementFromArray(value, thirdLevelNomenclatureElementsList);
         }
-        counter=0;
+        counter = 0;
+        return new NomenclatureSearchPage(context);
     }
 
     @Step("Нажмите 'Показать все товары'")
@@ -110,6 +109,7 @@ public class NomenclatureSearchPage extends BaseAppPage {
     @Override
     public void waitForPageIsLoaded() {
         showAllGoods.waitForVisibility();
+        screenTitle.waitForVisibility();
     }
 
     // Verifications
@@ -124,23 +124,43 @@ public class NomenclatureSearchPage extends BaseAppPage {
     public NomenclatureSearchPage shouldTitleWithNomenclatureIs(String text) {
         String format = "%s - %s - %s - %s";
         String emptyText = "_ _ _";
-        String expectedText;
-        if (text.contains("_"))
-            expectedText = text;
-        else if (text.isEmpty())
+        String expectedText="";
+
+        if (text.length() % 3 == 0 && text.length() != 15 && !text.isEmpty()) {
+            if (text.contains("_"))
+                expectedText = text;
+            else if (text.length() == 3)
+                expectedText = String.format(format, text, emptyText, emptyText, emptyText);
+            else if (text.length() == 6)
+                expectedText = String.format(format, text.substring(0, 3), text.substring(3, 6), emptyText, emptyText);
+            else if (text.length() == 9)
+                expectedText = String.format(
+                        format, text.substring(0, 3), text.substring(3, 6), text.substring(6, 9), emptyText);
+            else
+                expectedText = String.format(
+                        format, text.substring(0, 3), text.substring(3, 6), text.substring(6, 9), text.substring(9));
+            anAssert.isElementTextEqual(screenTitle, expectedText);
+            return this;
+        } else if (text.isEmpty()) {
             expectedText = String.format(format, emptyText, emptyText, emptyText, emptyText);
-        else if (text.length() < 4)
-            expectedText = String.format(format, text, emptyText, emptyText, emptyText);
-        else if (text.length() < 7)
-            expectedText = String.format(format, text.substring(0, 3), text.substring(3, 6), emptyText, emptyText);
-        else if (text.length() < 10)
-            expectedText = String.format(
-                    format, text.substring(0, 3), text.substring(3, 6), text.substring(6, 9), emptyText);
-        else
-            expectedText = String.format(
-                    format, text.substring(0, 3), text.substring(3, 6), text.substring(6, 9), text.substring(9));
-        anAssert.isElementTextEqual(screenTitle, expectedText);
-        return this;
+            anAssert.isElementTextEqual(screenTitle, expectedText);
+            return this;
+
+        } else if (text.length() == 15 || text.length() == 11 || text.length() == 7) {
+            if (text.length() == 7) {
+                expectedText = String.format(format, text.substring(0, 3), text.substring(3, 7), emptyText, emptyText);
+            } else if (text.length() == 11) {
+                expectedText = String.format(format, text.substring(0, 3), text.substring(3, 7), text.substring(7, 11), emptyText);
+            } else if (text.length() == 15) {
+                expectedText = String.format(format, text.substring(0, 3), text.substring(3, 7), text.substring(7, 11), text.substring(11, 15));
+            }
+            anAssert.isElementTextEqual(screenTitle, expectedText);
+            return this;
+
+        } else {
+            Log.error("Некорректная длинна номенклатуры");
+            return this;
+        }
     }
 
     public NomenclatureSearchPage shouldSelectedNomenclatureIs(String text) {

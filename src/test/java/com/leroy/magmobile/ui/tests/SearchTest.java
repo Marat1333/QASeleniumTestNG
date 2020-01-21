@@ -1,21 +1,34 @@
 package com.leroy.magmobile.ui.tests;
 
+import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
-import com.leroy.models.UserData;
+import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.LoginPage;
 import com.leroy.magmobile.ui.pages.common.*;
 import com.leroy.magmobile.ui.pages.sales.PricesAndQuantityPage;
 import com.leroy.magmobile.ui.pages.sales.SalesPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.SimilarProductsPage;
-import com.leroy.magmobile.ui.AppBaseSteps;
+import com.leroy.models.UserData;
+import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
+import ru.leroymerlin.qa.core.base.BaseModule;
+import ru.leroymerlin.qa.core.clients.base.Response;
+import ru.leroymerlin.qa.core.clients.magmobile.MagMobileClient;
+import ru.leroymerlin.qa.core.clients.magmobile.data.ProductItemListResponse;
+import ru.leroymerlin.qa.core.clients.magmobile.enums.CatalogSearchFields;
+import ru.leroymerlin.qa.core.clients.magmobile.enums.SortingOrder;
+import ru.leroymerlin.qa.core.clients.magmobile.requests.GetCatalogSearch;
 
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
+@Guice(modules = {BaseModule.class})
 public class SearchTest extends AppBaseSteps {
+
+    @Inject
+    private MagMobileClient apiClient;
 
     private static final String ALL_DEPARTMENTS_TEXT = "Все отделы";
 
@@ -44,7 +57,7 @@ public class SearchTest extends AppBaseSteps {
                 .verifyRequiredElements();
         // Step 3
         log.step("Вернитесь на окно выбора отдела");
-        nomenclatureSearchPage.returnToDepartmentChoseWindow()
+        nomenclatureSearchPage.returnBackNTimes(1)
                 .shouldTitleWithNomenclatureIs("")
                 .verifyNomenclatureBackBtnVisibility(false);
         // Step 4
@@ -52,7 +65,7 @@ public class SearchTest extends AppBaseSteps {
         nomenclatureSearchPage.clickShowAllProductsBtn()
                 .verifyRequiredElements()
                 .shouldCountOfProductsOnPageMoreThan(1)
-                .shouldSelectedNomenclatureIs(ALL_DEPARTMENTS_TEXT);
+                .shouldSelectedNomenclatureIs(ALL_DEPARTMENTS_TEXT, true);
 
         // Step 5
         log.step("Введите полное значение для поиска по ЛМ коду| 10008698");
@@ -299,6 +312,114 @@ public class SearchTest extends AppBaseSteps {
         productDescriptionCardPage = similarProductsPage.switchTab(similarProductsPage.DESCRIPTION);
         PricesAndQuantityPage pricesAndQuantityPage = productDescriptionCardPage.goToPricesAndQuantityPage();
         pricesAndQuantityPage.shouldNotSupplyBtnBeDisplayed();
+
+    }
+
+    @Test(description = "C22789201 Номенклатура, Навигация и Поиск по структурным элементам номенклатуры")
+    public void testC22789201() throws Exception {
+        // Pre-conditions
+        LoginPage loginPage = new LoginPage(context);
+        loginPage.loginInAndGoTo(LoginPage.SALES_SECTION);
+        int dept = 15;
+        int subDept = 1510;
+        int classId = 30;
+        int subClassId = 20;
+
+        GetCatalogSearch subclassParams = new GetCatalogSearch()
+                .departmentId(String.valueOf(dept))
+                .shopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .sortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
+                .startFrom("1")
+                .pageSize("10")
+                .subDepartmentId(String.valueOf(subDept))
+                .classId(String.valueOf(classId))
+                .subclassId(String.valueOf(subClassId));
+
+        GetCatalogSearch classParams = new GetCatalogSearch()
+                .departmentId(String.valueOf(dept))
+                .shopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .sortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
+                .startFrom("1")
+                .pageSize("10")
+                .subDepartmentId(String.valueOf(subDept))
+                .classId(String.valueOf(classId));
+
+        GetCatalogSearch subdepartmentParams = new GetCatalogSearch()
+                .departmentId(String.valueOf(dept))
+                .shopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .sortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
+                .startFrom("1")
+                .pageSize("10")
+                .subDepartmentId(String.valueOf(subDept));
+
+        GetCatalogSearch departmentParams = new GetCatalogSearch()
+                .departmentId(String.valueOf(dept))
+                .shopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .sortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
+                .startFrom("1")
+                .pageSize("10");
+
+        Response <ProductItemListResponse> subclassNomenclatureResponce = apiClient.searchProductsBy(subclassParams);
+        Response <ProductItemListResponse> classNomenclatureResponce = apiClient.searchProductsBy(classParams);
+        Response <ProductItemListResponse> subdepartmentNomenclatureResponce = apiClient.searchProductsBy(subdepartmentParams);
+        Response <ProductItemListResponse> departmentNomenclatureResponce = apiClient.searchProductsBy(departmentParams);
+
+        SalesPage salesPage = new SalesPage(context);
+        SearchProductPage searchProductPage = salesPage.clickSearchBar(true);
+
+        // Step 1
+        log.step("Перейти на страницу выбора номенклатуры");
+        NomenclatureSearchPage nomenclatureSearchPage = searchProductPage.goToNomenclatureWindow();
+        nomenclatureSearchPage.verifyRequiredElements();
+
+        // Step 2
+        log.step("Перейти в список всех отделов");
+        nomenclatureSearchPage.returnBackNTimes(1);
+        nomenclatureSearchPage.shouldTitleWithNomenclatureIs("");
+
+        // Step 3
+        log.step("нажать по кнопке \"показать все товары\"");
+        nomenclatureSearchPage.clickShowAllProductsBtn();
+        searchProductPage.shouldSelectedNomenclatureIs(ALL_DEPARTMENTS_TEXT, true);
+
+        // Step 4
+        log.step("повтороить шаг 2-3 для отделов");
+        searchProductPage.goToNomenclatureWindow();
+        nomenclatureSearchPage.choseDepartmentId(dept, null, null, null);
+
+        nomenclatureSearchPage.shouldTitleWithNomenclatureIs("015");
+        nomenclatureSearchPage.clickShowAllProductsBtn();
+        searchProductPage.shouldSelectedNomenclatureIs(String.valueOf(dept), false);
+
+        // Step 5
+        log.step("повтороить шаг 2-3 для подотделов");
+        searchProductPage.goToNomenclatureWindow();
+        nomenclatureSearchPage.returnBackNTimes(1);
+        nomenclatureSearchPage.choseDepartmentId(dept, subDept, null, null);
+
+        nomenclatureSearchPage.shouldTitleWithNomenclatureIs("0151510");
+        nomenclatureSearchPage.clickShowAllProductsBtn();
+        searchProductPage.shouldSelectedNomenclatureIs(String.valueOf(subDept), false);
+
+        // Step 6
+        log.step("повтороить шаг 2-3 для классов");
+        searchProductPage.goToNomenclatureWindow();
+        nomenclatureSearchPage.returnBackNTimes(2);
+        nomenclatureSearchPage.choseDepartmentId(dept, subDept, classId, null);
+
+        nomenclatureSearchPage.shouldTitleWithNomenclatureIs("01515100030");
+        nomenclatureSearchPage.clickShowAllProductsBtn();
+        searchProductPage.shouldSelectedNomenclatureIs(String.valueOf(classId), false);
+
+        // Step 7
+        log.step("повтороить шаг 2-3 для подклассов");
+        searchProductPage.goToNomenclatureWindow();
+        nomenclatureSearchPage.returnBackNTimes(2);
+        nomenclatureSearchPage.choseDepartmentId(dept, subDept, classId, subClassId);
+
+        nomenclatureSearchPage.shouldTitleWithNomenclatureIs("015151000300020");
+        nomenclatureSearchPage.clickShowAllProductsBtn();
+        searchProductPage.shouldSelectedNomenclatureIs(String.valueOf(subClassId), false);
 
     }
 }

@@ -17,7 +17,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.base.BaseModule;
-//import ru.leroymerlin.qa.core.clients.magmobile.MagMobileClient;
+import ru.leroymerlin.qa.core.clients.magmobile.MagMobileClient;
 //import ru.leroymerlin.qa.core.clients.magmobile.data.ProductItemResponse;
 //import ru.leroymerlin.qa.core.clients.magmobile.requests.GetCatalogSearch;
 

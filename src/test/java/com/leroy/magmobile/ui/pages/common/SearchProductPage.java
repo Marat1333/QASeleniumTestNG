@@ -2,13 +2,13 @@ package com.leroy.magmobile.ui.pages.common;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.models.ProductCardData;
 import com.leroy.models.TextViewData;
 import com.leroy.magmobile.ui.pages.common.modal.SortModal;
 import com.leroy.magmobile.ui.pages.sales.AddProductPage;
@@ -18,6 +18,9 @@ import com.leroy.magmobile.ui.pages.sales.widget.SearchProductCardWidget;
 import io.qameta.allure.Step;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.openqa.selenium.By;
+import ru.leroymerlin.qa.core.clients.base.Response;
+import ru.leroymerlin.qa.core.clients.magmobile.data.ProductItemListResponse;
+import ru.leroymerlin.qa.core.clients.magmobile.data.ProductItemResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,9 +40,11 @@ public class SearchProductPage extends BaseAppPage {
     @AppFindBy(accessibilityId = "ScreenTitle-CatalogComplexSearchStore", metaName = "Поле ввода текста для поиска")
     private EditBox searchField;
 
-    private AndroidScrollView<TextViewData> searchHistoryScrollView = new AndroidScrollView<>(driver,
+    private AndroidScrollView<TextViewData> scrollView = new AndroidScrollView<>(driver,
             new CustomLocator(By.xpath("//android.widget.ScrollView"),null,
                     "Виджет прокрутки для истории последних запросов", false));
+
+    private AndroidScrollView<ProductCardData> productMiniCards = new AndroidScrollView<>(driver, new CustomLocator(By.xpath("//android.widget.ScrollView"), null));
 
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ScreenContent']//android.view.ViewGroup[android.widget.ImageView]",
             clazz = SearchProductCardWidget.class)
@@ -48,7 +53,7 @@ public class SearchProductPage extends BaseAppPage {
     @AppFindBy(text = "Фильтр")
     Element filter;
 
-    @AppFindBy(xpath = "(//android.view.ViewGroup[descendant::android.widget.TextView[@text='Фильтр']]/preceding-sibling::android.view.ViewGroup[descendant::android.widget.TextView])[2]//android.widget.TextView",
+    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ScreenContent']/android.view.ViewGroup[2]/android.view.ViewGroup[1]//android.widget.TextView",
             metaName = "Выбранная номенклатура")
     Element nomenclature;
 
@@ -158,14 +163,14 @@ public class SearchProductPage extends BaseAppPage {
 
     @Step("Проверяем, что список последних поисковых запросов такой: {expectedList}")
     public SearchProductPage shouldSearchHistoryListIs(List<String> expectedList) throws Exception {
-        List<String> actualStringList = searchHistoryScrollView.getFullDataAsStringList();
+        List<String> actualStringList = scrollView.getFullDataAsStringList();
         anAssert.isEquals(actualStringList, expectedList, "Ожидается следующий список поисковых запросов: %s");
         return this;
     }
 
     @Step("Проверяем, что список последних поисковых запросов содержит {searchPhrase}")
     public SearchProductPage verifySearchHistoryContainsSearchPhrase(String searchPhrase) throws Exception {
-        List<String> containsVisibleSearchHistory = searchHistoryScrollView.getFullDataAsStringList();
+        List<String> containsVisibleSearchHistory = scrollView.getFullDataAsStringList();
         anAssert.isFalse(containsVisibleSearchHistory.size() == 0, "История поиска - пустая");
         for (String tmp : containsVisibleSearchHistory) {
             softAssert.isTrue(tmp.contains(searchPhrase), "Каждое совпадение должно содержать поисковую строку");
@@ -228,8 +233,12 @@ public class SearchProductPage extends BaseAppPage {
         }
     }
 
-    public SearchProductPage shouldSelectedNomenclatureIs(String text) {
-        anAssert.isElementTextEqual(nomenclature, text);
+    public SearchProductPage shouldSelectedNomenclatureIs(String text, boolean strictEqual) throws Exception {
+        if (strictEqual) {
+            anAssert.isElementTextEqual(nomenclature, text);
+        }else {
+            anAssert.isElementTextContains(nomenclature, text);
+        }
         return this;
     }
 
@@ -250,6 +259,17 @@ public class SearchProductPage extends BaseAppPage {
                 String.format("Карточка под индексом %s должна иметь примечание 'доступно'", index));
         anAssert.isFalse(productCards.get(index).getQuantityType().isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустой тип кол-ва", index));
+        return this;
+    }
+
+    // API verifications
+    public SearchProductPage shouldResponceEqualsContent(Response<ProductItemListResponse> response) throws Exception{
+        List<ProductItemResponse> productData = response.asJson().getItems();
+        List<ProductCardData> productCardData = productMiniCards.getFullDataList();
+
+        for (ProductItemResponse item: productData){
+
+        }
         return this;
     }
 

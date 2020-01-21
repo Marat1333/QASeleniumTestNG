@@ -53,6 +53,15 @@ public class CustomAssert extends BaseCustomAssert {
         }
     }
 
+    public void isElementTextContains(Element element, String expectedText) {
+        if (isElementVisible(element)) {
+            String actualText = element.getText();
+            logIsElementTextEqual(element.getMetaName(), actualText, expectedText);
+            Assert.assertTrue(actualText.contains(expectedText),
+                    String.format("Элемент '%s' содержит текст '%s'", element.getMetaName(), actualText));
+        }
+    }
+
     public boolean isElementVisible(BaseWidget element) {
         boolean elementVisibility = logIsElementVisible(element);
         String desc = element.getMetaName() + " должен отображаться";
