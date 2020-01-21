@@ -3,13 +3,13 @@ package com.leroy.magmobile.ui.pages.sales.product_card.modal;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.pages.common.CommonMagMobileScreen;
+import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.AddProductPage;
 import io.qameta.allure.Step;
 
-public class ActionWithProductModalScreen extends CommonMagMobileScreen {
+public class ActionWithProductModalPage extends CommonMagMobilePage {
 
-    public ActionWithProductModalScreen(TestContext context) {
+    public ActionWithProductModalPage(TestContext context) {
         super(context);
     }
 
@@ -53,7 +53,7 @@ public class ActionWithProductModalScreen extends CommonMagMobileScreen {
         boolean draftsPresent = addIntoSalesDocumentCountLbl.isVisible();
         clickAddIntoSalesDocumentButton();
         if (draftsPresent)
-            return new AddIntoSalesDocumentModalScreen(context).clickCreateSalesDocumentBtn();
+            return new AddIntoSalesDocumentModalPage(context).clickCreateSalesDocumentBtn();
         else
             return new AddProductPage(context);
     }
@@ -61,8 +61,7 @@ public class ActionWithProductModalScreen extends CommonMagMobileScreen {
     // Verifications
 
     @Step("Проверить, что модальное окно 'Действия с товаром' отобразилось со всеми необходимыми товарами")
-    public ActionWithProductModalScreen verifyRequiredElements(boolean isAvsProduct) {
-        shouldNotAnyErrorVisible();
+    public ActionWithProductModalPage verifyRequiredElements(boolean isAvsProduct) {
         softAssert.isElementVisible(closeBtn);
         softAssert.isElementVisible(headerLbl);
         softAssert.isElementVisible(addIntoSalesDocumentBtn);

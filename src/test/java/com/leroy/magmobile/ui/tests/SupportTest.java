@@ -1,6 +1,6 @@
 package com.leroy.magmobile.ui.tests;
 
-import com.leroy.magmobile.ui.pages.LoginPage;
+import com.leroy.magmobile.ui.pages.sales.SalesPage;
 import com.leroy.magmobile.ui.pages.support.ComplainPage;
 import com.leroy.magmobile.ui.pages.support.SupportPage;
 import com.leroy.magmobile.ui.AppBaseSteps;
@@ -12,8 +12,8 @@ public class SupportTest extends AppBaseSteps {
     public void testC3201017() throws Exception {
         // Step #1
         log.step("Зайдите в раздел Поддержка");
-        new LoginPage(context).loginInAndGoTo(LoginPage.SUPPORT_SECTION);
-        SupportPage supportPage = new SupportPage(context).verifyRequiredElements()
+        SupportPage supportPage = loginAndGoTo(SupportPage.class);
+        supportPage.verifyRequiredElements()
                 .shouldSelectedTypeRequestIs(SupportPage.COMPLAIN_REQUEST);
 
         // Step #2

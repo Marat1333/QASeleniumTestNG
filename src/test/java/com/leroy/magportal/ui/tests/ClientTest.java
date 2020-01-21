@@ -64,7 +64,7 @@ public class ClientTest extends WebBaseSteps {
         // Step #10
         log.step("Entering correct fields for input text and choice gender, type of the phone");
         CustomerData customerData = new CustomerData().setRandomRequiredData();
-        creatingClientPage.enterRequiredCustomerData(customerData)
+        creatingClientPage.enterCustomerData(customerData)
                 .shouldBeEnteredDataMatchThis(customerData);
 
         // Step #11
@@ -133,7 +133,7 @@ public class ClientTest extends WebBaseSteps {
         // Step #10
         log.step("Entering correct fields for input text and choice gender, type of the phone");
         CustomerData customerData = new CustomerData().setRandomRequiredData();
-        creatingClientPage.enterRequiredCustomerData(customerData)
+        creatingClientPage.enterCustomerData(customerData)
                 .shouldBeEnteredDataMatchThis(customerData);
 
         // Step #11
@@ -188,19 +188,21 @@ public class ClientTest extends WebBaseSteps {
         data = new CustomerData();
         data.setEmail(email);
         creatingCustomerPage = customerPage.clickNotFoundCreateClientButton()
-                .verifyRequiredElements()
+                .verifyRequiredElements(true)
                 .shouldBeEnteredDataMatchThis(data);
 
         // Step #7
         log.step("Entering correct fields for input text and choice gender, type of the phone");
         data = new CustomerData().setRandomRequiredData();
         data.setEmail(email);
-        creatingCustomerPage.enterRequiredCustomerData(data)
+        data.setPersonalEmail(true);
+        creatingCustomerPage.enterCustomerData(data)
                 .shouldBeEnteredDataMatchThis(data);
 
         // Step #8
         log.step("Click on the button \"Создать\"");
         CustomerPersonalInfoPage personalInfoPage = creatingCustomerPage.clickCreateButtonHappyPath()
+                .verifyRequiredElements()
                 .shouldCustomerDataOnPageIs(data);
 
         // Step #9

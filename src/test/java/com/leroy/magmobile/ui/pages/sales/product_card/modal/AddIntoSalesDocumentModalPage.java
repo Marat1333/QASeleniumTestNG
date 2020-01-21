@@ -3,13 +3,13 @@ package com.leroy.magmobile.ui.pages.sales.product_card.modal;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.magmobile.ui.elements.MagMobSubmitButton;
-import com.leroy.magmobile.ui.pages.common.CommonMagMobileScreen;
+import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.AddProductPage;
 import io.qameta.allure.Step;
 
-public class AddIntoSalesDocumentModalScreen extends CommonMagMobileScreen {
+public class AddIntoSalesDocumentModalPage extends CommonMagMobilePage {
 
-    public AddIntoSalesDocumentModalScreen(TestContext context) {
+    public AddIntoSalesDocumentModalPage(TestContext context) {
         super(context);
     }
 

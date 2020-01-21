@@ -1,7 +1,6 @@
 package com.leroy.magmobile.ui.tests;
 
 import com.leroy.magmobile.ui.AppBaseSteps;
-import com.leroy.magmobile.ui.pages.LoginPage;
 import com.leroy.magmobile.ui.pages.more.UserProfilePage;
 import com.leroy.magmobile.ui.pages.sales.SalesPage;
 import com.leroy.magmobile.ui.pages.work.*;
@@ -18,8 +17,8 @@ public class WithdrawalFromRMTest extends AppBaseSteps {
     @Test(description = "C3132493 Создание заявки на Отзыв RM из раздела Работа")
     public void testC3132493() throws Exception {
         // Pre-condition
-        new LoginPage(context).loginInAndGoTo(LoginPage.SALES_SECTION);
-        UserProfilePage userProfilePage = new SalesPage(context)
+        SalesPage salesPage = loginAndGoTo(SalesPage.class);
+        UserProfilePage userProfilePage = salesPage
                 .setShopAndDepartmentForUser("5", "01");
 
         // Step #1
@@ -89,14 +88,14 @@ public class WithdrawalFromRMTest extends AppBaseSteps {
         // Step #12
         log.step("Нажать кнопку ПЕРЕЙТИ В СПИСОК ЗАЯВОК");
         OrdersListPage ordersListPage = submittedWithdrawalOrderPage.clickSubmitBtn()
-                .shouldOrderByIndexIs(0, orderNumber, null, "Создана");
+                .shouldOrderByIndexIs(1, orderNumber, null, "Создана");
 
         // Step #13
         log.step("Открыть заявку и проверить заполненные поля и товары");
         OrderDetailsPage orderDetailsPage = ordersListPage.clickOrderByIndex(0)
                 .shouldFormDataIs("Торговый зал", testDate,
                         timeForSelect, testText)
-                .shouldProductByIndexIs(0, selectedProductDataBefore);
+                .shouldProductByIndexIs(1, selectedProductDataBefore);
     }
 
 }

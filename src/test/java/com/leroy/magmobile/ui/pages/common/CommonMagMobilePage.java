@@ -5,10 +5,11 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
 
-public class CommonMagMobileScreen extends BaseAppPage {
+public class CommonMagMobilePage extends BaseAppPage {
 
-    public CommonMagMobileScreen(TestContext context) {
+    public CommonMagMobilePage(TestContext context) {
         super(context);
+        shouldNotAnyErrorVisible();
     }
 
     @AppFindBy(xpath = "//android.widget.TextView[contains(@text, 'Bad Request') or contains(@text, 'rror')]")

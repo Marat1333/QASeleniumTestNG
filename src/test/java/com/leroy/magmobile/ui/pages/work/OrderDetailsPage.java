@@ -2,18 +2,19 @@ package com.leroy.magmobile.ui.pages.work;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.models.ProductCardData;
 import com.leroy.magmobile.ui.pages.widgets.ProductCardWidget;
+import io.qameta.allure.Step;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-public class OrderDetailsPage extends BaseAppPage {
+public class OrderDetailsPage extends CommonMagMobilePage {
 
     public OrderDetailsPage(TestContext context) {
         super(context);
@@ -49,6 +50,7 @@ public class OrderDetailsPage extends BaseAppPage {
 
     /* ---------------------- Verifications -------------------------- */
 
+    @Step("Проверить, что форма заполнена необходимым образом")
     public OrderDetailsPage shouldFormDataIs(String replenishmentMethod, LocalDate deliveryDate,
                                              LocalTime deliveryTime, String comment) {
         softAssert.isElementTextEqual(this.replenishmentMethod, replenishmentMethod);
@@ -62,10 +64,12 @@ public class OrderDetailsPage extends BaseAppPage {
         return this;
     }
 
+    @Step("{index}-ий товар должен соответствовать: {productCardData}")
     public OrderDetailsPage shouldProductByIndexIs(
             int index, ProductCardData productCardData) throws Exception {
+        index--;
         ProductCardWidget productCardWidget = productsForWithdrawal.get(index);
-        softAssert.isEquals(productCardWidget.getNumber(), productCardData.getNumber(),
+        softAssert.isEquals(productCardWidget.getNumber(), productCardData.getLmCode(),
                 "Номер товара на отзыв должен быть %s");
         softAssert.isEquals(productCardWidget.getName(), productCardData.getName(),
                 "Название товара на отзыв должно быть %s");

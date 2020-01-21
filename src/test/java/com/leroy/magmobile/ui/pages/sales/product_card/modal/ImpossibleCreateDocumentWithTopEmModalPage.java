@@ -4,15 +4,15 @@ import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobButton;
-import com.leroy.magmobile.ui.pages.common.CommonMagMobileScreen;
+import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.ProductCardPage;
 import io.qameta.allure.Step;
 
 import java.util.Arrays;
 
-public class ImpossibleCreateDocumentWithTopEmModalScreen extends CommonMagMobileScreen {
+public class ImpossibleCreateDocumentWithTopEmModalPage extends CommonMagMobilePage {
 
-    public ImpossibleCreateDocumentWithTopEmModalScreen(TestContext context) {
+    public ImpossibleCreateDocumentWithTopEmModalPage(TestContext context) {
         super(context);
     }
 
@@ -41,8 +41,7 @@ public class ImpossibleCreateDocumentWithTopEmModalScreen extends CommonMagMobil
     // Verifications
 
     @Step("Проверить, что Модальное окно с сообщением о невозможности оформления документа продажи товара Топ-ЕМ отображается корректно")
-    public ImpossibleCreateDocumentWithTopEmModalScreen verifyRequiredElements() {
-        shouldNotAnyErrorVisible();
+    public ImpossibleCreateDocumentWithTopEmModalPage verifyRequiredElements() {
         softAssert.areElementsVisible(Arrays.asList(headerLbl, bodyMessage, submitBtn));
         softAssert.verifyAll();
         return this;

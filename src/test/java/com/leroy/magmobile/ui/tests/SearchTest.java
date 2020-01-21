@@ -2,19 +2,20 @@ package com.leroy.magmobile.ui.tests;
 
 import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
-import com.leroy.magmobile.ui.AppBaseSteps;
+import com.leroy.models.UserData;
 import com.leroy.magmobile.ui.pages.LoginPage;
 import com.leroy.magmobile.ui.pages.common.*;
+import com.leroy.magmobile.ui.pages.common.modal.SortPage;
 import com.leroy.magmobile.ui.pages.sales.PricesAndQuantityPage;
 import com.leroy.magmobile.ui.pages.sales.SalesPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.SimilarProductsPage;
-import com.leroy.models.UserData;
-import org.testng.annotations.Guice;
+import com.leroy.magmobile.ui.AppBaseSteps;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.base.BaseModule;
 import ru.leroymerlin.qa.core.clients.base.Response;
 import ru.leroymerlin.qa.core.clients.magmobile.MagMobileClient;
+import org.testng.annotations.Guice;
 import ru.leroymerlin.qa.core.clients.magmobile.data.ProductItemListResponse;
 import ru.leroymerlin.qa.core.clients.magmobile.enums.CatalogSearchFields;
 import ru.leroymerlin.qa.core.clients.magmobile.enums.SortingOrder;
@@ -422,4 +423,41 @@ public class SearchTest extends AppBaseSteps {
         searchProductPage.shouldSelectedNomenclatureIs(String.valueOf(subClassId), false);
 
     }
+
+    @Test(description = "C22789191 Сортировка результатов поиска")
+    public void testC22789191() throws Exception {
+        // Pre-conditions
+        int countOfCheckedProducts = 10;
+        SalesPage salesPage = loginAndGoTo(SalesPage.class);
+        SearchProductPage searchProductPage = salesPage.clickSearchBar(false);
+
+        // Step 1
+        log.step("Раскрыть модальное окно сортировки");
+        SortPage sortPage = searchProductPage.openSortPage()
+                .verifyRequiredElements();
+
+        // Step 2
+        log.step("Выбрать сортировку по ЛМ-коду по возрастающей");
+        searchProductPage = sortPage.selectSort(SortPage.SORT_BY_LM_ASC)
+                .shouldProductCardsBeSorted(SortPage.SORT_BY_LM_ASC, countOfCheckedProducts);
+
+        // Step 3
+        log.step("повторить шаг 1-2 для сортировки по лм-коду по убывающей");
+        searchProductPage.openSortPage()
+                .selectSort(SortPage.SORT_BY_LM_DESC)
+                .shouldProductCardsBeSorted(SortPage.SORT_BY_LM_DESC, countOfCheckedProducts);
+
+        // Step 4
+        log.step("повторить шаг 1-2 для сортировки по запасу по возрастающей");
+        searchProductPage.openSortPage()
+                .selectSort(SortPage.SORT_BY_AVAILABLE_STOCK_ASC)
+                .shouldProductCardsBeSorted(SortPage.SORT_BY_AVAILABLE_STOCK_ASC, countOfCheckedProducts);
+
+        // Step 5
+        log.step("повторить шаг 1-2 для сортировки по запасу по убывающей");
+        searchProductPage.openSortPage()
+                .selectSort(SortPage.SORT_BY_AVAILABLE_STOCK_DESC)
+                .shouldProductCardsBeSorted(SortPage.SORT_BY_AVAILABLE_STOCK_DESC, countOfCheckedProducts);
+    }
+
 }

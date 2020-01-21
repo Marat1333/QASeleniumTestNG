@@ -2,19 +2,20 @@ package com.leroy.magmobile.ui.pages.common;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.models.ProductCardData;
-import com.leroy.models.TextViewData;
-import com.leroy.magmobile.ui.pages.common.modal.SortModal;
+import com.leroy.magmobile.ui.pages.common.modal.SortPage;
 import com.leroy.magmobile.ui.pages.sales.AddProductPage;
 import com.leroy.magmobile.ui.pages.sales.SalesPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.widget.SearchProductCardWidget;
+import com.leroy.models.ProductCardData;
+import com.leroy.models.TextViewData;
 import io.qameta.allure.Step;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.openqa.selenium.By;
@@ -40,11 +41,15 @@ public class SearchProductPage extends BaseAppPage {
     @AppFindBy(accessibilityId = "ScreenTitle-CatalogComplexSearchStore", metaName = "Поле ввода текста для поиска")
     private EditBox searchField;
 
-    private AndroidScrollView<TextViewData> scrollView = new AndroidScrollView<>(driver,
-            new CustomLocator(By.xpath("//android.widget.ScrollView"),null,
+    private AndroidScrollView<TextViewData> searchHistoryScrollView = new AndroidScrollView<>(driver,
+            new CustomLocator(By.xpath("//android.widget.ScrollView"), null,
                     "Виджет прокрутки для истории последних запросов", false));
 
-    private AndroidScrollView<ProductCardData> productMiniCards = new AndroidScrollView<>(driver, new CustomLocator(By.xpath("//android.widget.ScrollView"), null));
+    private AndroidScrollView<ProductCardData> productCardsScrollView = new AndroidScrollView<>(driver,
+            new CustomLocator(By.xpath("//android.widget.ScrollView"), null,
+                    "", false),
+            ".//android.view.ViewGroup[android.widget.ImageView]", SearchProductCardWidget.class);
+
 
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ScreenContent']//android.view.ViewGroup[android.widget.ImageView]",
             clazz = SearchProductCardWidget.class)
@@ -72,6 +77,61 @@ public class SearchProductPage extends BaseAppPage {
         searchField.waitForVisibility();
         waitForProgressBarIsInvisible();
     }
+
+    private void scrollNTimesAndAddVisibleElementsToArray(int i, ArrayList<Integer> arrayList, String sortType) throws Exception {
+        for (int y = 0; y < i; y++) {
+            addNeededDataToArrayFromProductCard(arrayList, sortType);
+            scrollDown();
+            waitForProgressBarIsInvisible();
+        }
+    }
+
+    private void addNeededDataToArrayFromProductCard(ArrayList<Integer> arrayList, String sortType) throws Exception {
+        String content = "";
+        int contentNumber = 0;
+
+        for (Element tmp : productCards) {
+            if (sortType.equals(SortPage.SORT_BY_LM_ASC) || sortType.equals(SortPage.SORT_BY_LM_DESC)) {
+                content = tmp.findChildElement("//android.widget.TextView[1]").getText();
+                content = content.replaceAll("\\D", "");
+                if (content.length() > 0) {
+                    contentNumber = Integer.valueOf(content);
+                }
+                if (!arrayList.contains(contentNumber) && (content.length() == 8)) {
+                    arrayList.add(contentNumber);
+                }
+            } else if (sortType.equals(SortPage.SORT_BY_AVAILABLE_STOCK_ASC) || sortType.equals(SortPage.SORT_BY_AVAILABLE_STOCK_DESC)) {
+                try {
+                    content = tmp.findChildElement("//android.widget.TextView[6]").getText();
+                    if (!arrayList.contains(tmp) && content.length() > 0) {
+                        content = content.replaceAll(" ", "");
+                        if (content.contains("-") || content.matches("\\d+")) {
+                            contentNumber = Integer.valueOf(content);
+                            arrayList.add(contentNumber);
+                        }
+                    }
+                } catch (NoSuchElementException e) {
+                    log.assertFail("Для карточки товара не найден остаток");
+                }
+            }
+        }
+    }
+
+    private ArrayList<Integer> getSortedElementsFromProductCards(String sortType, int scrollNTimes) throws Exception {
+        ArrayList<Integer> sortedCodes = new ArrayList<>();
+        ArrayList<Integer> sortedStocks = new ArrayList<>();
+
+        if (sortType.equals(SortPage.SORT_BY_AVAILABLE_STOCK_ASC) || sortType.equals(SortPage.SORT_BY_AVAILABLE_STOCK_DESC)) {
+            scrollNTimesAndAddVisibleElementsToArray(scrollNTimes, sortedStocks, sortType);
+            return sortedStocks;
+        } else if (sortType.equals(SortPage.SORT_BY_LM_ASC) || sortType.equals(SortPage.SORT_BY_LM_DESC)) {
+            scrollNTimesAndAddVisibleElementsToArray(scrollNTimes, sortedCodes, sortType);
+            return sortedCodes;
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
 
     // ---------------- Action Steps -------------------------//
 
@@ -129,6 +189,7 @@ public class SearchProductPage extends BaseAppPage {
     @Step("Перейти в {index} карточку товара")
     public ProductDescriptionPage selectProductCardByIndex(int index) throws Exception {
         anAssert.isTrue(productCards.getCount() > index, "Не найдена " + index + " по счету карточка товара");
+        index--;
         productCards.get(index).click();
         return new ProductDescriptionPage(context);
     }
@@ -146,9 +207,9 @@ public class SearchProductPage extends BaseAppPage {
     }
 
     @Step("Открыть окно сортировки")
-    public SortModal openSortPage() {
+    public SortPage openSortPage() {
         sort.click();
-        return new SortModal(context);
+        return new SortPage(context);
     }
 
     // ---------------- Verifications ----------------------- //
@@ -163,14 +224,14 @@ public class SearchProductPage extends BaseAppPage {
 
     @Step("Проверяем, что список последних поисковых запросов такой: {expectedList}")
     public SearchProductPage shouldSearchHistoryListIs(List<String> expectedList) throws Exception {
-        List<String> actualStringList = scrollView.getFullDataAsStringList();
+        List<String> actualStringList = searchHistoryScrollView.getFullDataAsStringList();
         anAssert.isEquals(actualStringList, expectedList, "Ожидается следующий список поисковых запросов: %s");
         return this;
     }
 
     @Step("Проверяем, что список последних поисковых запросов содержит {searchPhrase}")
     public SearchProductPage verifySearchHistoryContainsSearchPhrase(String searchPhrase) throws Exception {
-        List<String> containsVisibleSearchHistory = scrollView.getFullDataAsStringList();
+        List<String> containsVisibleSearchHistory = searchHistoryScrollView.getFullDataAsStringList();
         anAssert.isFalse(containsVisibleSearchHistory.size() == 0, "История поиска - пустая");
         for (String tmp : containsVisibleSearchHistory) {
             softAssert.isTrue(tmp.contains(searchPhrase), "Каждое совпадение должно содержать поисковую строку");
@@ -223,12 +284,12 @@ public class SearchProductPage extends BaseAppPage {
             if (searchWords != null) {
                 for (String each : searchWords) {
                     anAssert.isTrue(card.getName().toLowerCase().contains(each.toLowerCase()),
-                            String.format("Товар с кодом %s не содержит текст %s", card.getLmCode(), text));
+                            String.format("Товар с кодом %s не содержит текст %s", card.getLmCode(false), text));
                 }
             } else {
-                anAssert.isTrue(card.getBarCode().contains(text) ||
-                                card.getName().contains(text) || card.getLmCode().contains(text),
-                        String.format("Товар с кодом %s не содержит текст %s", card.getLmCode(), text));
+                anAssert.isTrue(card.getBarCode(true).contains(text) ||
+                                card.getName().contains(text) || card.getLmCode(false).contains(text),
+                        String.format("Товар с кодом %s не содержит текст %s", card.getLmCode(false), text));
             }
         }
     }
@@ -243,9 +304,9 @@ public class SearchProductPage extends BaseAppPage {
     }
 
     public SearchProductPage shouldProductCardContainAllRequiredElements(int index) throws Exception {
-        anAssert.isFalse(productCards.get(index).getBarCode().isEmpty(),
+        anAssert.isFalse(productCards.get(index).getBarCode(true).isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустой штрихкод", index));
-        anAssert.isFalse(productCards.get(index).getLmCode().isEmpty(),
+        anAssert.isFalse(productCards.get(index).getLmCode(true).isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустой номер", index));
         anAssert.isFalse(productCards.get(index).getName().isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустое название", index));
@@ -253,7 +314,7 @@ public class SearchProductPage extends BaseAppPage {
                 String.format("Карточка под индексом %s не должна иметь пустую цену", index));
         anAssert.isEquals(productCards.get(index).getPriceLbl(), "за штуку",
                 String.format("Карточка под индексом %s должна иметь примечание 'за штуку'", index));
-        anAssert.isFalse(productCards.get(index).getQuantity().isEmpty(),
+        anAssert.isFalse(productCards.get(index).getQuantity(true).isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустое кол-во", index));
         anAssert.isEquals(productCards.get(index).getQuantityLbl(), "доступно",
                 String.format("Карточка под индексом %s должна иметь примечание 'доступно'", index));
@@ -272,5 +333,35 @@ public class SearchProductPage extends BaseAppPage {
         }
         return this;
     }
+
+    @Step("Проверить, что карточки с товарами отсортированы {sortType}")
+    public SearchProductPage shouldProductCardsBeSorted(String sortType, int howManyProductsNeedToVerify) throws Exception {
+        List<ProductCardData> dataList = scrollView.getFullDataList(howManyProductsNeedToVerify);
+        anAssert.isFalse(dataList.size() == 0, "На странице отсутствуют карточки товаров");
+        List<ProductCardData> expectedSortedList = new ArrayList<>(dataList);
+        switch (sortType) {
+            case SortPage.SORT_BY_AVAILABLE_STOCK_ASC:
+                expectedSortedList.sort(Comparator.comparingInt(d -> Integer.parseInt(d.getAvailableQuantity())));
+                break;
+            case SortPage.SORT_BY_AVAILABLE_STOCK_DESC:
+                expectedSortedList.sort((d1, d2) ->
+                        Integer.parseInt(d2.getAvailableQuantity()) - Integer.parseInt(d1.getAvailableQuantity()));
+                break;
+            case SortPage.SORT_BY_LM_ASC:
+                expectedSortedList.sort(Comparator.comparingInt(d -> Integer.parseInt(d.getLmCode())));
+                break;
+            case SortPage.SORT_BY_LM_DESC:
+                expectedSortedList.sort((d1, d2) ->
+                        Integer.parseInt(d2.getLmCode()) - Integer.parseInt(d1.getLmCode()));
+                break;
+            default:
+                anAssert.isTrue(false,
+                        "Не предусмотрен метод для проверки сортировки с типом: " + sortType);
+                break;
+        }
+        anAssert.isEquals(dataList, expectedSortedList, "Элементы отсортированы некорректно");
+        return this;
+    }
+
 
 }

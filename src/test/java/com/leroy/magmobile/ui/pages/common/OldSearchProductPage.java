@@ -76,17 +76,17 @@ public class OldSearchProductPage extends BaseAppPage {
 
     public OldSearchProductPage shouldProductCardsContainText(String text) {
         for (SearchProductCardWidget card : productCards) {
-            anAssert.isTrue(card.getBarCode().contains(text) ||
-                            card.getName().contains(text) || card.getLmCode().contains(text),
-                    String.format("Товар с кодом %s не содержит текст %s", card.getLmCode(), text));
+            anAssert.isTrue(card.getBarCode(true).contains(text) ||
+                            card.getName().contains(text) || card.getLmCode(false).contains(text),
+                    String.format("Товар с кодом %s не содержит текст %s", card.getLmCode(false), text));
         }
         return this;
     }
 
     public OldSearchProductPage shouldProductCardContainAllRequiredElements(int index) throws Exception {
-        anAssert.isFalse(productCards.get(index).getBarCode().isEmpty(),
+        anAssert.isFalse(productCards.get(index).getBarCode(true).isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустой штрихкод", index));
-        anAssert.isFalse(productCards.get(index).getLmCode().isEmpty(),
+        anAssert.isFalse(productCards.get(index).getLmCode(true).isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустой номер", index));
         anAssert.isFalse(productCards.get(index).getName().isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустое название", index));
@@ -94,7 +94,7 @@ public class OldSearchProductPage extends BaseAppPage {
                 String.format("Карточка под индексом %s не должна иметь пустую цену", index));
         anAssert.isEquals(productCards.get(index).getPriceLbl(), "за штуку",
                 String.format("Карточка под индексом %s должна иметь примечание 'за штуку'", index));
-        anAssert.isFalse(productCards.get(index).getQuantity().isEmpty(),
+        anAssert.isFalse(productCards.get(index).getQuantity(true).isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустое кол-во", index));
         anAssert.isEquals(productCards.get(index).getQuantityLbl(), "доступно",
                 String.format("Карточка под индексом %s должна иметь примечание 'доступно'", index));

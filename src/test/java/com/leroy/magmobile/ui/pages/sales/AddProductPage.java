@@ -5,11 +5,11 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobSubmitButton;
-import com.leroy.magmobile.ui.pages.common.CommonMagMobileScreen;
+import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.basket.BasketStep1Page;
 import io.qameta.allure.Step;
 
-public class AddProductPage extends CommonMagMobileScreen {
+public class AddProductPage extends CommonMagMobilePage {
 
     private static final String SCREEN_TITLE = "Добавление товара";
 
@@ -99,7 +99,6 @@ public class AddProductPage extends CommonMagMobileScreen {
     // ---------------- Verifications ----------------------- //
 
     public AddProductPage verifyRequiredElements() {
-        shouldNotAnyErrorVisible();
         softAssert.isElementTextEqual(screenTitle, SCREEN_TITLE);
         softAssert.isElementVisible(backBtn);
         softAssert.isElementVisible(priceLbl);

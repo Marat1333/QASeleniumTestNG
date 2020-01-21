@@ -1,7 +1,7 @@
 def mvn_run_str = "mvn clean test -Dmaven.test.failure.ignore=true -DxmlPath=testXML/${env.SUITE_XML} -DmpropsFile=src/main/resources/configurationFiles/${env.CONFIGURATION}_grid.yml -DthreadCount=${env.THREAD_COUNT} -DmPlan=${env.PLAN} -DmRun=${env.RUN} -DmSuite=4378 -DmProject=16"
 
 pipeline {
-    agent any
+    agent { label 'dockerhost' }
     stages {
         stage('test') {
             agent {

@@ -2,13 +2,13 @@ package com.leroy.magmobile.ui.pages.work;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobSubmitButton;
+import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import io.qameta.allure.Step;
 
-public class ProductCardPage extends BaseAppPage {
+public class ProductCardPage extends CommonMagMobilePage {
 
     public ProductCardPage(TestContext context) {
         super(context);
@@ -55,6 +55,7 @@ public class ProductCardPage extends BaseAppPage {
 
     /* ------------------------- Verifications -------------------------- */
 
+    @Step("Проверить, что экрана с карточкой товара отображается корректно")
     public ProductCardPage verifyRequiredElements() {
         softAssert.isElementVisible(productCardHeaderArea);
         softAssert.isElementVisible(withdrawalBtn);
@@ -63,6 +64,7 @@ public class ProductCardPage extends BaseAppPage {
         return this;
     }
 
+    @Step("Проверить, что на кнопке 'Отозвать' отображается кол-вл {count}")
     public ProductCardPage shouldWithdrawalButtonHasQuantity(String count) {
         anAssert.isElementTextEqual(withdrawalBtn,
                 String.format("ОТОЗВАТЬ %s шт.", count));
