@@ -31,7 +31,8 @@ capabilities:
       app: /home/ddimitrash/IdeaProjects/auto-tests/src/LMLF-1.1.2-b3001-BRANCH-story-LFRONT-2692-R3-bugfix.apk
 
     android_browser:
-      browserName: "chrome"
-      version: "mobile-75.0"
+      deviceName: "chrome"
+      version: "mobile-75.0-gap"
+      app: https://cloclo4.datacloudmail.ru/weblink/view/3Cho/5MzNyY8PP?etag=376CE7AD45104DEB770BEED90EF1767AC15569FD&key=b5b6fa9217f547e9035b0b1d42eb408d4604a3cb
       enableVNC: true
       enableVideo: false

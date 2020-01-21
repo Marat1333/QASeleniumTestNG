@@ -194,18 +194,7 @@ public class DriverFactory {
                     break;
                 case ANDROID_BROWSER_PROFILE:
                 case ANDROID_APP_PROFILE:
-                    //options.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
-                    //options.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
-                    // TODO - KoCTblJlb
-                    if (options.getCapability("browserName") != null &&
-                            options.getCapability("app") != null) {
-                        String app = options.getCapability("app").toString();
-                        options.setCapability("app", "");
-                        driver = new AndroidDriver<>(new URL(REMOTE_ADDRESS), options);
-                        driver.quit();
-                        options.setCapability("app", app);
-                        options.setCapability("browserName", "");
-                    }
+                    options.setCapability("browserName", "");
                     driver = new AndroidDriver<>(new URL(REMOTE_ADDRESS), options);
                     break;
                 default:
