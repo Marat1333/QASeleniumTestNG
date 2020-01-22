@@ -111,8 +111,8 @@ public class SearchProductCardWidget extends CardWidget<ProductCardData> {
     }
 
     @Override
-    public ProductCardData collectDataFromPage() {
-        String ps = driver.getPageSource();
+    public ProductCardData collectDataFromPage(String pageSource) {
+        String ps = pageSource == null? driver.getPageSource() : pageSource;
         ProductCardData productCardData = new ProductCardData();
         productCardData.setLmCode(getLmCode(true, ps));
         productCardData.setBarCode(getBarCode(true, ps));
@@ -123,7 +123,7 @@ public class SearchProductCardWidget extends CardWidget<ProductCardData> {
     }
 
     @Override
-    public boolean isFullyVisible() {
-        return lmCodeObj.isVisible() && quantityLbl.isVisible();
+    public boolean isFullyVisible(String pageSource) {
+        return lmCodeObj.isVisible(pageSource) && quantityLbl.isVisible(pageSource);
     }
 }
