@@ -22,6 +22,9 @@ capabilities:
       app: https://cloclo4.datacloudmail.ru/weblink/view/3Cho/5MzNyY8PP?etag=376CE7AD45104DEB770BEED90EF1767AC15569FD&key=b5b6fa9217f547e9035b0b1d42eb408d4604a3cb
       enableVNC: true
       enableVideo: false
+      env:
+        #- SKIN=WSVGA
+        - ADB_VENDOR_KEYS=/root/.android/adbkey
 
     android_browser:
       deviceName: "chrome"
