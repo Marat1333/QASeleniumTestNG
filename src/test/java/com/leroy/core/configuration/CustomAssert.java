@@ -41,6 +41,10 @@ public class CustomAssert extends BaseCustomAssert {
         super.logIsElementTextEqual(element, expectedText, pageSource, false);
     }
 
+    public void isElementTextEqual(Element element, String expectedText) {
+        super.logIsElementTextEqual(element, expectedText, null, false);
+    }
+
     public boolean isElementVisible(BaseWidget element, String pageSource) {
         return super.logIsElementVisible(element, pageSource, false);
     }
