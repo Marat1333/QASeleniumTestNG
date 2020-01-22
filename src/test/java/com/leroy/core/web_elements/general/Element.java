@@ -340,6 +340,17 @@ public class Element extends BaseWidget {
         }
     }
 
+    public String getText(String pageSource) {
+        if (pageSource == null)
+            return getText();
+        // Only for Android
+        String result = getAttributeValueFromPageSource(pageSource, "text");
+        if (result == null)
+            throw new NoSuchElementException(String.format(
+                    "Element '%s' with xpath:{%s} wasn't found", getMetaName(), getXpath()));
+        return result;
+    }
+
     private String getText(boolean selfText, int attemptsNumber) {
         try {
             initialWebElementIfNeeded(short_timeout);

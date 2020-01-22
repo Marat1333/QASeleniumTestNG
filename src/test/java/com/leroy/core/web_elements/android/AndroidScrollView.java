@@ -135,7 +135,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
                 break;
             if (maxEntityCount != null && tmpCardDataList.size() >= maxEntityCount) {
                 while (tmpCardDataList.size() > maxEntityCount) {
-                    tmpCardDataList.remove(tmpCardDataList.size()-1);
+                    tmpCardDataList.remove(tmpCardDataList.size() - 1);
                 }
                 break;
             }
@@ -173,7 +173,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
      * @return this
      */
     public AndroidScrollView<T> scrollDownToText(String findText, int maxScrollCount) throws Exception {
-        return scrollToText(findText, maxScrollCount, null,"down");
+        return scrollToText(findText, maxScrollCount, null, "down");
     }
 
     /**

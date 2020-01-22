@@ -3,9 +3,11 @@ package com.leroy.core.web_elements.general;
 import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
+import com.leroy.utils.XmlUtil;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.w3c.dom.NodeList;
 
 import java.time.Duration;
 import java.util.List;
@@ -126,6 +128,24 @@ public abstract class BaseWidget extends BaseWrapper {
         return locator;
     }
 
+    /**
+     * Get value of attribute from Page Source
+     * @param pageSource - xml of the page
+     * @param attribute - name of attribute
+     * @return value of the attribute
+     */
+    protected String getAttributeValueFromPageSource(String pageSource, String attribute) {
+        NodeList nodeList = null;
+        try {
+            nodeList = XmlUtil.getXpathExpressionResultFromXml(pageSource, getXpath());
+        } catch (Exception err) {
+            Log.error(err.getMessage());
+        }
+        if (nodeList == null || nodeList.getLength() == 0)
+            return null;
+        return nodeList.item(0).getAttributes().getNamedItem(attribute).getNodeValue();
+    }
+
     public boolean isPresent() {
         this.setImplicitWait(0);
         boolean isPresent = findElements(locator).size() > 0;
@@ -163,6 +183,12 @@ public abstract class BaseWidget extends BaseWrapper {
         } catch (org.openqa.selenium.TimeoutException e) {
             Log.warn(String.format("waitForVisibilityAndSearchAgain for " + getMetaName() + " failed (tried for %d second(s))", timeout));
         }
+    }
+
+    public boolean isVisible(String pageSource) {
+        // Only for Android
+        return "true".equals(
+                getAttributeValueFromPageSource(pageSource, "displayed"));
     }
 
     public boolean isVisible() {
