@@ -12,6 +12,7 @@ import com.leroy.magmobile.ui.pages.sales.basket.BasketStep3Page;
 import com.leroy.magmobile.ui.pages.sales.product_and_service.AddServicePage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.ActionWithProductModalPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.modal.AddIntoSalesDocumentModalPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.ImpossibleCreateDocumentWithTopEmModalPage;
 import org.apache.commons.lang.RandomStringUtils;
 import org.testng.annotations.Guice;
@@ -158,6 +159,49 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         submittedSalesDocumentPage.verifyRequiredElements()
                 .shouldPinCodeIs(testPinCode)
                 .shouldDocumentNumberIs(documentNumber);
+    }
+
+    @Test(description = "C3201024 Добавление в существующий документ продажи")
+    public void testC3201024() throws Exception {
+        // Pre-condition
+        // - Имеются документы продажи в статусе черновик
+        String lmCode = getAnyLmCodeProductWithoutSpecificOptions();
+        String documentNumber = loginInAndCreateDraftSalesDocument(lmCode);
+
+        // Step #1
+        log.step("Нажмите в поле поиска");
+        SalesPage salesPage = new SalesPage(context);
+        SearchProductPage searchPage = salesPage.clickSearchBar(false)
+                .verifyRequiredElements();
+
+        // Step #2
+        log.step("Введите ЛМ код товара (напр., " + lmCode + ")");
+        searchPage.enterTextInSearchFieldAndSubmit(lmCode);
+        ProductDescriptionPage productDescriptionPage = new ProductDescriptionPage(context)
+                .verifyRequiredElements(true);
+
+        // Step #3
+        log.step("Нажмите на кнопку Действия с товаром");
+        ActionWithProductModalPage actionWithProductModalPage = productDescriptionPage.clickActionWithProductButton()
+                .verifyRequiredElements(false);
+
+        // Step #4
+        log.step("Нажмите Добавить в документ продажи");
+        actionWithProductModalPage.clickAddIntoSalesDocumentButton();
+        AddIntoSalesDocumentModalPage modalPage = new AddIntoSalesDocumentModalPage(context)
+                .verifyRequiredElements();
+
+        // Step #5
+        log.step("Нажмите на любой элемент списка документов продажи");
+        AddProductPage addProductPage = modalPage.selectDraftWithNumber(documentNumber)
+                .verifyRequiredElements();
+
+        // Step #6
+        log.step("Нажмите Добавить");
+        BasketStep1Page basketStep1Page = addProductPage.clickAddButton();
+        basketStep1Page.verifyRequiredElements()
+                .shouldDocumentNumberIs(documentNumber)
+                .shouldLmCodeOfProductIs(lmCode);
     }
 
     // ---------------------- TYPICAL TESTS FOR THIS CLASS -------------------//

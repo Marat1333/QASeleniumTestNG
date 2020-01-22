@@ -141,9 +141,10 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
             }
             ElementList<CardWidget<T>> cardWidgetList = this.findChildElements(oneRowXpath, rowWidgetClass);
             List<T> currentVisibleDataList = new ArrayList<>();
+            String pageSource = driver.getPageSource();
             for (CardWidget<T> widget : cardWidgetList) {
-                if (widget.isFullyVisible()) {
-                    T data = widget.collectDataFromPage();
+                if (widget.isFullyVisible(pageSource)) {
+                    T data = widget.collectDataFromPage(pageSource);
                     currentVisibleDataList.add(data);
                     if (findText != null && data.toString().contains(findText))
                         break;

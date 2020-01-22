@@ -99,16 +99,17 @@ public class AddProductPage extends CommonMagMobilePage {
     // ---------------- Verifications ----------------------- //
 
     public AddProductPage verifyRequiredElements() {
-        softAssert.isElementTextEqual(screenTitle, SCREEN_TITLE);
-        softAssert.isElementVisible(backBtn);
-        softAssert.isElementVisible(priceLbl);
-        softAssert.isElementVisible(availableForSaleLbl);
-        softAssert.isElementVisible(shoppingRoomLbl);
-        softAssert.isElementVisible(stockRMLbl);
-        softAssert.isElementVisible(stockEMLbl);
-        softAssert.isElementVisible(stockOutLbl);
-        softAssert.isElementVisible(editQuantityFld);
-        softAssert.isElementVisible(addBtn);
+        String ps = getPageSource();
+        softAssert.isElementTextEqual(screenTitle, SCREEN_TITLE, ps);
+        softAssert.isElementVisible(backBtn, ps);
+        softAssert.isElementVisible(priceLbl, ps);
+        softAssert.isElementVisible(availableForSaleLbl, ps);
+        softAssert.isElementVisible(shoppingRoomLbl, ps);
+        softAssert.isElementVisible(stockRMLbl, ps);
+        softAssert.isElementVisible(stockEMLbl, ps);
+        softAssert.isElementVisible(stockOutLbl, ps);
+        softAssert.isElementVisible(editQuantityFld, ps);
+        softAssert.isElementVisible(addBtn, ps);
         softAssert.isTrue(addBtn.isEnabled(),
                 "Кнопка 'Добавить' должна быть активна");
         softAssert.verifyAll();

@@ -5,8 +5,11 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.elements.MagMobSubmitButton;
+import com.leroy.magmobile.ui.pages.sales.ProductCardPage;
 import com.leroy.magmobile.ui.pages.sales.widget.SearchProductCardWidget;
 import io.qameta.allure.Step;
+
+import java.util.Arrays;
 
 public class BasketStep1Page extends BasketPage {
 
@@ -45,19 +48,34 @@ public class BasketStep1Page extends BasketPage {
         return new BasketStep2Page(context);
     }
 
+    @Step("Нажмите кнопку назад в верхнем меню")
+    public ProductCardPage clickBackButton() {
+        backBtn.click();
+        return new ProductCardPage(context);
+    }
+
     // --------- Verifications ------------------//
 
     @Override
     @Step("Убедиться, что мы находимся на странице Корзина - Шаг 1, и все необходимые элементы отражаются корректно")
     public BasketStep1Page verifyRequiredElements() {
         super.verifyRequiredElements();
-        softAssert.isElementVisible(productCard);
-        softAssert.isElementVisible(servicesMyDepartmentArea);
-        softAssert.isElementVisible(totalPriceLbl);
-        softAssert.isElementVisible(totalPriceVal);
-        softAssert.isElementVisible(addProductBtn);
-        softAssert.isElementVisible(nextParametersBtn);
+        softAssert.areElementsVisible(Arrays.asList(
+                productCard, servicesMyDepartmentArea, totalPriceLbl,
+                totalPriceVal, addProductBtn, nextParametersBtn));
         softAssert.verifyAll();
+        return this;
+    }
+
+    @Step("Проверить, что номер документа в корзине равен {number}")
+    public BasketStep1Page shouldDocumentNumberIs(String number) {
+        anAssert.isEquals(getDocumentNumber(), number, "Неверный номер документа");
+        return this;
+    }
+
+    @Step("Проверить, что ЛМ код товара в козрине равен {number}")
+    public BasketStep1Page shouldLmCodeOfProductIs(String number) {
+        anAssert.isEquals(productCard.getLmCode(true), number, "Неверный ЛМ код товара в корзине");
         return this;
     }
 
