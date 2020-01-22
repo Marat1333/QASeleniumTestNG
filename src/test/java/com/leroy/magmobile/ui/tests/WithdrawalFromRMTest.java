@@ -34,7 +34,7 @@ public class WithdrawalFromRMTest extends AppBaseSteps {
         // Step #3
         log.step("Выбрать первый товар, который поштучно хранится на складе");
         ProductCardData selectedProductDataBefore = stockProductsPage.getPieceProductInfoByIndex(0);
-        ProductCardPage productCardPage = stockProductsPage.clickFirstPieceProduct()
+        StockProductCardPage productCardPage = stockProductsPage.clickFirstPieceProduct()
                 .verifyRequiredElements();
 
         // Step #4

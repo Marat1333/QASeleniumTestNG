@@ -48,6 +48,14 @@ public class ActionWithProductModalPage extends CommonMagMobilePage {
         addIntoSalesDocumentBtn.click();
     }
 
+    @Step("Нажмите на кнопку 'Добавить в заявку на Отзыв с RM'")
+    // Может быть несколько вариантов событий:
+    // 1)
+    // 2)
+    public void clickAddIntoWithdrawalOrderFromRMButton() {
+        addIntoOrderForWithdrawalFromRMBtn.click();
+    }
+
     @Step("Нажать кнопку 'Добавить в документ продажи' и начать создание нового Документа продажи")
     public AddProductPage startToCreateSalesDocument() {
         boolean draftsPresent = addIntoSalesDocumentCountLbl.isVisible();

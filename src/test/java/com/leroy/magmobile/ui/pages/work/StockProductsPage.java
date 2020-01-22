@@ -72,9 +72,9 @@ public class StockProductsPage extends CommonMagMobilePage {
     /* ------------------------- ACTION STEPS -------------------------- */
 
     @Step("Выбрать первый товар, который поштучно хранится на складе")
-    public ProductCardPage clickFirstPieceProduct() throws Exception {
+    public StockProductCardPage clickFirstPieceProduct() throws Exception {
         pieceProductCards.get(0).click();
-        ProductCardPage productCardPage = new ProductCardPage(context);
+        StockProductCardPage productCardPage = new StockProductCardPage(context);
         productCardPage.waitForPageIsLoaded();
         return productCardPage;
     }
