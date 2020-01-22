@@ -194,6 +194,9 @@ public class DriverFactory {
                     break;
                 case ANDROID_BROWSER_PROFILE:
                 case ANDROID_APP_PROFILE:
+                    String v = System.getProperty("mVersion", null);
+                    if (v != null && !v.isEmpty())
+                        options.setCapability("version", v);
                     driver = new AndroidDriver<>(new URL(REMOTE_ADDRESS), options);
                     break;
                 default:
