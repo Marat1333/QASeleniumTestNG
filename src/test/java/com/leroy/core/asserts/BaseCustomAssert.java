@@ -10,6 +10,8 @@ import com.leroy.core.web_elements.general.Element;
 import org.testng.Assert;
 import org.testng.asserts.SoftAssert;
 
+import java.util.List;
+
 public abstract class BaseCustomAssert {
 
     private StepLog stepLog;
@@ -131,6 +133,17 @@ public abstract class BaseCustomAssert {
 
     protected boolean logIsElementVisible(BaseWidget element, boolean isSoft) {
         return logIsElementVisible(element, null, isSoft);
+    }
+
+    protected void logAreElementsVisible(List<BaseWidget> elements, boolean isSoft) {
+        if (elements.size() == 0)
+            throw new IllegalArgumentException("List should contain at least one element");
+        String pageSource = elements.get(0).getDriver().getPageSource();
+        for (BaseWidget elem : elements) {
+            logIsElementVisible(elem, pageSource, true);
+        }
+        if (!isSoft)
+            verifyAll();
     }
 
     protected boolean logIsElementNotVisible(BaseWidget element, boolean isSoft) {

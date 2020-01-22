@@ -50,12 +50,7 @@ public class CustomSoftAssert extends BaseCustomAssert {
     }
 
     public void areElementsVisible(List<BaseWidget> elements) {
-        if (elements.size() == 0)
-            throw new IllegalArgumentException("List should contain at least one element");
-        String pageSource = elements.get(0).getDriver().getPageSource();
-        for (BaseWidget elem : elements) {
-            isElementVisible(elem, pageSource);
-        }
+        logAreElementsVisible(elements, true);
     }
 
     public boolean isElementNotVisible(BaseWidget element) {
