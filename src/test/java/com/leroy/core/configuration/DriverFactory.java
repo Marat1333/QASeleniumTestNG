@@ -194,7 +194,6 @@ public class DriverFactory {
                     break;
                 case ANDROID_BROWSER_PROFILE:
                 case ANDROID_APP_PROFILE:
-                    options.setCapability("browserName", "");
                     driver = new AndroidDriver<>(new URL(REMOTE_ADDRESS), options);
                     break;
                 default:
@@ -253,7 +252,7 @@ public class DriverFactory {
                 capabilities = new ChromeOptions();
                 break;
             case ANDROID_APP_PROFILE:
-                capabilities = DesiredCapabilities.android();
+                capabilities = new DesiredCapabilities();
                 break;
             case DESKTOP_EDGE_PROFILE:
                 capabilities = new EdgeOptions();
