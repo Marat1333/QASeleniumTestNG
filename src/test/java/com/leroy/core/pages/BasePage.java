@@ -10,6 +10,7 @@ import io.qameta.allure.Attachment;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriverException;
 
 import java.io.File;
 
@@ -30,6 +31,15 @@ public class BasePage extends BaseContainer {
         this.context = context;
         initElements();
         waitForPageIsLoaded();
+    }
+
+    protected String getPageSource() {
+        try {
+            return driver.getPageSource();
+        } catch (WebDriverException err) {
+            Log.warn(err.getMessage());
+            return driver.getPageSource();
+        }
     }
 
     public void waitForPageIsLoaded() {

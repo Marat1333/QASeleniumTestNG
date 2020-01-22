@@ -28,8 +28,10 @@ public abstract class BaseCustomAssert {
 
     private void addResultsToCurrentStepAndThrowAssertException(String actualResult, String expectedResult) {
         StepResultModel curStepRes = stepLog.getCurrentStepResult();
-        curStepRes.addExpectedResult(expectedResult);
-        curStepRes.addActualResult(actualResult);
+        if (curStepRes != null) {
+            curStepRes.addExpectedResult(expectedResult);
+            curStepRes.addActualResult(actualResult);
+        }
         stepLog.assertFail(actualResult);
     }
 

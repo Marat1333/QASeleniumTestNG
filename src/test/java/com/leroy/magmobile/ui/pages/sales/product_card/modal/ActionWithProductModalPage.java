@@ -53,7 +53,8 @@ public class ActionWithProductModalPage extends CommonMagMobilePage {
         boolean draftsPresent = addIntoSalesDocumentCountLbl.isVisible();
         clickAddIntoSalesDocumentButton();
         if (draftsPresent)
-            return new AddIntoSalesDocumentModalPage(context).clickCreateSalesDocumentBtn();
+            return new AddIntoSalesDocumentModalPage(context)
+                    .clickCreateSalesDocumentBtn();
         else
             return new AddProductPage(context);
     }

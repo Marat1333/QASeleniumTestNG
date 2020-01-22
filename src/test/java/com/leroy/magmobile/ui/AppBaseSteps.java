@@ -6,6 +6,8 @@ import com.leroy.magmobile.ui.pages.LoginAppPage;
 import com.leroy.magmobile.ui.pages.more.MorePage;
 import com.leroy.magmobile.ui.pages.sales.SalesDocumentsPage;
 import com.leroy.magmobile.ui.pages.sales.SalesPage;
+import com.leroy.magmobile.ui.pages.sales.basket.BasketStep1Page;
+import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.support.SupportPage;
 import com.leroy.magmobile.ui.pages.work.WorkPage;
 import com.leroy.magportal.ui.pages.LoginWebPage;
@@ -41,6 +43,29 @@ public class AppBaseSteps extends BaseState {
 
     public <T> T loginAndGoTo(Class<? extends BaseAppPage> pageClass) throws Exception {
         return loginAndGoTo(new UserData(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS), pageClass);
+    }
+
+    // Pre-condition steps
+
+    /**
+     * Login in an application, create a draft of a sales document for product
+     * and return to the Sales page
+     * @param lmCode - lmCode of the product
+     * @return - Document number of the draft
+     */
+    protected String loginInAndCreateDraftSalesDocument(String lmCode) throws Exception {
+        SalesPage salesPage = loginAndGoTo(SalesPage.class);
+        salesPage.clickSearchBar(false)
+                .enterTextInSearchFieldAndSubmit(lmCode);
+
+        BasketStep1Page basketStep1Page = new ProductDescriptionPage(context)
+                .clickActionWithProductButton()
+                .startToCreateSalesDocument()
+                .clickAddButton();
+        String documentNumber = basketStep1Page.getDocumentNumber();
+        basketStep1Page.clickBackButton()
+                .returnBack().backToSalesPage();
+        return documentNumber;
     }
 
 }

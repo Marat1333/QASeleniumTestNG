@@ -575,7 +575,8 @@ public class Element extends BaseWidget {
     public void waitUntilTextIsEqualTo(String referenceText, int timeout) {
         WebDriverWait wait = new WebDriverWait(this.driver, timeout);
         try {
-            wait.until((ExpectedCondition<Boolean>) driverObject -> this.getText().equals(referenceText));
+            wait.until((ExpectedCondition<Boolean>) driverObject -> this.isVisible() &&
+                    this.getText().equals(referenceText));
         } catch (TimeoutException e) {
             Log.warn(String.format(
                     "Method: waitUntilTextIsEqualTo() - Text isn't equal to '%s' (tried for %d second(s))",
