@@ -1,8 +1,11 @@
 package com.leroy.core.configuration;
 
+import com.leroy.core.MobileActions;
+import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.By;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -198,6 +201,17 @@ public class DriverFactory {
                     if (v != null && !v.isEmpty())
                         options.setCapability("version", v);
                     driver = new AndroidDriver<>(new URL(REMOTE_ADDRESS), options);
+                    AndroidDriver<MobileElement> androidDriver = (AndroidDriver) driver;
+                    androidDriver.installApp(
+                            "https://cloclo4.datacloudmail.ru/weblink/view/3Cho/5MzNyY8PP?etag=376CE7AD45104DEB770BEED90EF1767AC15569FD&key=b5b6fa9217f547e9035b0b1d42eb408d4604a3cb");
+                    androidDriver.context("NATIVE_APP");
+                    androidDriver.activateApp("ru.leroymerlin.magasin.uat");
+                    Thread.sleep(10000);
+                    //MobileElement el = androidDriver.findElement(By.xpath("//android.widget.LinearLayout[android.widget.TextView]"));
+                    //el.click();
+                    new MobileActions(driver).tapByCoordinates(30, 30);
+                    Thread.sleep(10000);
+                    String ps = androidDriver.getPageSource();
                     break;
                 default:
                     driver = new RemoteWebDriver(new URL(REMOTE_ADDRESS), options);
