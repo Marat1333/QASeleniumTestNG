@@ -17,8 +17,8 @@ public class SortPage extends CommonMagMobilePage {
     private final String CHECK_BOX_XPATH = "//android.widget.TextView[contains(@text,'%s')]/following-sibling::android.view.ViewGroup";
     public final static String SORT_BY_LM_ASC = "По ЛМ-коду: 1→9";
     public final static String SORT_BY_LM_DESC = "По ЛМ-коду: 9→1";
-    public final static String SORT_BY_AVAILABLE_STOCK_ASC = "По возрастанию запаса";
-    public final static String SORT_BY_AVAILABLE_STOCK_DESC = "По убыванию запаса";
+    public final static String SORT_BY_AVAILABLE_STOCK_ASC = "По запасу (меньше→больше)";
+    public final static String SORT_BY_AVAILABLE_STOCK_DESC = "По запасу (больше→меньше)";
 
     @AppFindBy(xpath = "//*[contains(@text,'" + SORT_BY_LM_ASC + "')]")
     Element sortByLmAscLbl;

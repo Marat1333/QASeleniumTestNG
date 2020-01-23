@@ -38,23 +38,3 @@ capabilities:
       automationName: uiautomator2
       newCommandTimeout: 60000
       deviceOrientation: portrait
-
-  android_tablet:
-    android_app:
-      platformName: Android
-      appiumVersion: 1.6.5
-      autoDismissAlerts: true
-      autoGrantPermissions: true
-      deviceOrientation: portrait
-      autoAcceptAlerts: true
-      automationName: uiautomator2
-      newCommandTimeout: 6000
-      platformVersion: '8.0'
-      deviceName: Nexus_9
-
-    android_browser:
-      browserName: Chrome
-      deviceName: Nexus_9_portrait
-      platformVersion: '9'
-      platformName: Android
-      deviceOrientation: portrait

@@ -1,5 +1,7 @@
 package com.leroy.models;
 
+import ru.leroymerlin.qa.core.clients.magmobile.data.ProductItemResponse;
+
 public class ProductCardData extends CardWidgetData {
 
     private String lmCode;
@@ -66,4 +68,20 @@ public class ProductCardData extends CardWidgetData {
         this.selectedQuantity = selectedQuantity;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o==this) {
+            return true;
+        }else {
+            return false;
+        }
+
+
+
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

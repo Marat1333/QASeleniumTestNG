@@ -3,10 +3,16 @@ package com.leroy.magmobile.ui.pages.common;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.configuration.Log;
+import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.pages.BaseAppPage;
+import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.magmobile.ui.pages.sales.widget.SearchProductCardWidget;
+import com.leroy.models.ProductCardData;
+import com.leroy.models.TextViewData;
 import io.qameta.allure.Step;
+import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 
@@ -33,9 +39,6 @@ public class NomenclatureSearchPage extends BaseAppPage {
     @AppFindBy(xpath = "//android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[preceding-sibling::android.view.ViewGroup[1]]", metaName = "Окно выбора последующих элементов")
     ElementList<Element> secondLevelNomenclatureElementsList;
 
-    @AppFindBy(xpath = "//android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[preceding-sibling::android.view.ViewGroup]")
-    ElementList<Element> thirdLevelNomenclatureElementsList;
-
     private final String eachElementOfNomenclatureXpath = "./android.view.ViewGroup/android.widget.TextView";
 
     @Step("Вернитесь на окно выбора отдела")
@@ -59,7 +62,7 @@ public class NomenclatureSearchPage extends BaseAppPage {
     }
 
     @Step("Выбрать отдел {dept}, подотдел {subDept}, раздел {classId}, подраздел {subClass}")
-    public NomenclatureSearchPage choseDepartmentId(Integer dept, Integer subDept, Integer classId, Integer subClass) throws Exception {
+    public NomenclatureSearchPage choseDepartmentId(String dept, String subDept, String classId, String subClass) throws Exception {
         if (dept != null) {
             selectElementFromArray(dept, firstLevelNomenclatureElementsList);
         }
@@ -67,23 +70,37 @@ public class NomenclatureSearchPage extends BaseAppPage {
             selectElementFromArray(subDept, secondLevelNomenclatureElementsList);
         }
         if (dept != null && subDept != null && classId != null) {
-            selectElementFromArray(classId, secondLevelNomenclatureElementsList);
+            String refactoredClassId="";
+            if (classId.length()==4)
+            refactoredClassId=classId.replaceAll("^0","");
+
+            //TODO Заменить wait на изменение массива элементов
+            wait(2);
+
+            selectElementFromArray(refactoredClassId, secondLevelNomenclatureElementsList);
         }
         if (dept != null && subDept != null && classId != null && subClass != null) {
-            selectElementFromArray(subClass, secondLevelNomenclatureElementsList);
+            String refactoredSubClass="";
+            if (subClass.length()==4)
+            refactoredSubClass=subClass.replaceAll("^0","");
+
+            //TODO Заменить wait на изменение массива элементов
+            wait(2);
+
+            selectElementFromArray(refactoredSubClass, secondLevelNomenclatureElementsList);
         }
         return new NomenclatureSearchPage(context);
     }
 
-    private NomenclatureSearchPage selectElementFromArray(Integer value, ElementList<Element> someArray) throws Exception {
+    private NomenclatureSearchPage selectElementFromArray(String value, ElementList<Element> someArray) throws Exception {
         int counter = 0;
         for (Element element : someArray) {
-            String tmp = element.findChildElement(eachElementOfNomenclatureXpath).getText().replaceAll("^0+", "");
+            String tmp = element.findChildElement(eachElementOfNomenclatureXpath).getText();
             tmp = tmp.replaceAll("\\D+", "");
             if (tmp.length() > 4) {
                 tmp = tmp.substring(0, 4);
             }
-            if (tmp.equals(String.valueOf(value))) {
+            if (tmp.equals(value)) {
                 element.findChildElement(eachElementOfNomenclatureXpath).click();
                 counter++;
                 break;
@@ -91,7 +108,7 @@ public class NomenclatureSearchPage extends BaseAppPage {
         }
         if (counter < 1) {
             scrollDown();
-            selectElementFromArray(value, thirdLevelNomenclatureElementsList);
+            selectElementFromArray(value,secondLevelNomenclatureElementsList);
         }
         counter = 0;
         return new NomenclatureSearchPage(context);
@@ -99,6 +116,7 @@ public class NomenclatureSearchPage extends BaseAppPage {
 
     @Step("Нажмите 'Показать все товары'")
     public SearchProductPage clickShowAllProductsBtn() {
+        scrollUpTo(showAllGoods);
         showAllGoods.click();
         SearchProductPage searchPage = new SearchProductPage(context);
         waitForProgressBarIsVisible();
@@ -108,7 +126,7 @@ public class NomenclatureSearchPage extends BaseAppPage {
 
     @Override
     public void waitForPageIsLoaded() {
-        showAllGoods.waitForVisibility();
+        //showAllGoods.waitForVisibility();
         screenTitle.waitForVisibility();
     }
 
@@ -121,7 +139,9 @@ public class NomenclatureSearchPage extends BaseAppPage {
         return this;
     }
 
-    public NomenclatureSearchPage shouldTitleWithNomenclatureIs(String text) {
+    public NomenclatureSearchPage shouldTitleWithNomenclatureIs(String text) throws Exception {
+        //TODO Убрать wait после реализации проверки выше
+        wait(2);
         String format = "%s - %s - %s - %s";
         String emptyText = "_ _ _";
         String expectedText="";

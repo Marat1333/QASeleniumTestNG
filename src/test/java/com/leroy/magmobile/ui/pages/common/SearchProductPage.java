@@ -19,11 +19,13 @@ import com.leroy.models.TextViewData;
 import io.qameta.allure.Step;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import ru.leroymerlin.qa.core.clients.base.Response;
 import ru.leroymerlin.qa.core.clients.magmobile.data.ProductItemListResponse;
 import ru.leroymerlin.qa.core.clients.magmobile.data.ProductItemResponse;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class SearchProductPage extends BaseAppPage {
@@ -32,7 +34,7 @@ public class SearchProductPage extends BaseAppPage {
         super(context);
     }
 
-    @AppFindBy(accessibilityId = "BackButton", metaName = "Кнопка назад")
+    @AppFindBy(accessibilityId = "back", metaName = "Кнопка назад")
     private Element backBtn;
 
     @AppFindBy(accessibilityId = "Button", metaName = "Кнопка для сканирования штрихкода")
@@ -46,7 +48,7 @@ public class SearchProductPage extends BaseAppPage {
                     "Виджет прокрутки для истории последних запросов", false));
 
     private AndroidScrollView<ProductCardData> productCardsScrollView = new AndroidScrollView<>(driver,
-            new CustomLocator(By.xpath("//android.widget.ScrollView"), null,
+            new CustomLocator(By.xpath("//android.view.ViewGroup[@content-desc=\"ScreenContent\"]/android.view.ViewGroup[1]/android.view.ViewGroup/android.widget.ScrollView"), null,
                     "", false),
             ".//android.view.ViewGroup[android.widget.ImageView]", SearchProductCardWidget.class);
 
@@ -62,7 +64,7 @@ public class SearchProductPage extends BaseAppPage {
             metaName = "Выбранная номенклатура")
     Element nomenclature;
 
-    @AppFindBy(xpath = "//android.view.ViewGroup[preceding-sibling::android.view.ViewGroup[2][ancestor::android.view.ViewGroup[@content-desc=\"ScreenContent\"]]]")
+    @AppFindBy(xpath = "\t//android.view.ViewGroup[@content-desc=\"ScreenContent\"]/android.view.ViewGroup[2]/android.view.ViewGroup[3]")
     Element sort;
 
     @AppFindBy(text = "Ты пока ничего не искал(а)")
@@ -164,6 +166,7 @@ public class SearchProductPage extends BaseAppPage {
         searchField.clearFillAndSubmit(text);
         waitForProgressBarIsVisible();
         waitForProgressBarIsInvisible();
+        //TODO Добавить проверку на наличие ошибки ответа сервака
         return this;
     }
 
@@ -324,28 +327,41 @@ public class SearchProductPage extends BaseAppPage {
     }
 
     // API verifications
-    public SearchProductPage shouldResponceEqualsContent(Response<ProductItemListResponse> response) throws Exception{
+
+    //TODO Переопределить equals для ProductCardData
+
+    public SearchProductPage shouldResponceEqualsContent(Response<ProductItemListResponse> response, boolean strictEquality) throws Exception{
         List<ProductItemResponse> productData = response.asJson().getItems();
-        List<ProductCardData> productCardData = productMiniCards.getFullDataList();
-
-        for (ProductItemResponse item: productData){
-
+        List<ProductCardData> productCardData = productCardsScrollView.getFullDataList(10);
+        if (productCardData.size()!=productData.size()){
+            throw new Exception("Page size param should be equals to maxEntityCount");
+        }
+        if (strictEquality) {
+            for (int i = 0; i < productCardData.size(); i++) {
+                anAssert.isEquals(productCardData.get(i).getLmCode(), productData.get(i).getLmCode(), "ЛМ коды не совпадают");
+            }
+        }else {
+            for (int i=0;i<productCardData.size();i++){
+                anAssert.isTrue(productCardData.get(i).getLmCode().contains(productData.get(i).getLmCode()),"Продукты частично не совпадают по LM "+productData.get(i).getLmCode());
+                anAssert.isTrue(productCardData.get(i).getBarCode().contains(productData.get(i).getBarCode()),"Продукты частично совпадают по BAR "+productData.get(i).getBarCode());
+                anAssert.isTrue(productCardData.get(i).getBarCode().contains(productData.get(i).getBarCode()),"Продукты частично совпадают по BAR "+productData.get(i).getBarCode());
+            }
         }
         return this;
     }
 
     @Step("Проверить, что карточки с товарами отсортированы {sortType}")
     public SearchProductPage shouldProductCardsBeSorted(String sortType, int howManyProductsNeedToVerify) throws Exception {
-        List<ProductCardData> dataList = scrollView.getFullDataList(howManyProductsNeedToVerify);
+        List<ProductCardData> dataList = productCardsScrollView.getFullDataList(howManyProductsNeedToVerify);
         anAssert.isFalse(dataList.size() == 0, "На странице отсутствуют карточки товаров");
         List<ProductCardData> expectedSortedList = new ArrayList<>(dataList);
         switch (sortType) {
             case SortPage.SORT_BY_AVAILABLE_STOCK_ASC:
-                expectedSortedList.sort(Comparator.comparingInt(d -> Integer.parseInt(d.getAvailableQuantity())));
-                break;
-            case SortPage.SORT_BY_AVAILABLE_STOCK_DESC:
                 expectedSortedList.sort((d1, d2) ->
                         Integer.parseInt(d2.getAvailableQuantity()) - Integer.parseInt(d1.getAvailableQuantity()));
+                break;
+            case SortPage.SORT_BY_AVAILABLE_STOCK_DESC:
+                expectedSortedList.sort(Comparator.comparingInt(d -> Integer.parseInt(d.getAvailableQuantity())));
                 break;
             case SortPage.SORT_BY_LM_ASC:
                 expectedSortedList.sort(Comparator.comparingInt(d -> Integer.parseInt(d.getLmCode())));
