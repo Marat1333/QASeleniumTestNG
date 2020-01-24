@@ -5,7 +5,7 @@ import com.leroy.core.testrail.helpers.StepLog;
 import com.leroy.core.web_elements.general.BaseWidget;
 import com.leroy.core.web_elements.general.Element;
 
-import java.util.List;
+import java.util.Arrays;
 
 public class CustomSoftAssert extends BaseCustomAssert {
 
@@ -53,8 +53,8 @@ public class CustomSoftAssert extends BaseCustomAssert {
         return isElementVisible(element, null);
     }
 
-    public void areElementsVisible(List<BaseWidget> elements) {
-        logAreElementsVisible(elements, true);
+    public void areElementsVisible(BaseWidget... elements) {
+        logAreElementsVisible(Arrays.asList(elements), true);
     }
 
     public boolean isElementNotVisible(BaseWidget element) {

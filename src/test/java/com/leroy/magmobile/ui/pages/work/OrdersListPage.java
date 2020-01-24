@@ -53,4 +53,18 @@ public class OrdersListPage extends CommonMagMobilePage {
         return this;
     }
 
+    @Step("Проверить, что в списке документов есть документ с номером {number} и статусом {status}")
+    public OrdersListPage shouldListContainsOrderWithNumberAndStatus(String number, String status) {
+        String ps = getPageSource();
+        for (OrderWidget orderWidget : orderList) {
+            if (orderWidget.numberLbl.getText(ps).equals(number)) {
+                anAssert.isEquals(orderWidget.typeLbl.getText(ps), status,
+                        String.format("Документ с номером %s имеет неверный статус", number));
+                return this;
+            }
+        }
+        anAssert.isTrue(false, String.format("Не найден документ с номером %s", number));
+        return this;
+    }
+
 }

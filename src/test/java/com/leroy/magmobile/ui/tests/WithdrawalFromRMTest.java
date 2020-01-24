@@ -4,6 +4,7 @@ import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.more.UserProfilePage;
 import com.leroy.magmobile.ui.pages.sales.SalesPage;
 import com.leroy.magmobile.ui.pages.work.*;
+import com.leroy.magmobile.ui.pages.work.modal.QuantityProductsForWithdrawalModalPage;
 import com.leroy.models.ProductCardData;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
@@ -18,8 +19,8 @@ public class WithdrawalFromRMTest extends AppBaseSteps {
     public void testC3132493() throws Exception {
         // Pre-condition
         SalesPage salesPage = loginAndGoTo(SalesPage.class);
-        UserProfilePage userProfilePage = salesPage
-                .setShopAndDepartmentForUser("5", "01");
+        UserProfilePage userProfilePage = setShopAndDepartmentForUser(
+                salesPage, "5", "01");
 
         // Step #1
         log.step("Зайти в раздел Работа");
@@ -39,27 +40,27 @@ public class WithdrawalFromRMTest extends AppBaseSteps {
 
         // Step #4
         log.step("Нажать кнопку ОТОЗВАТЬ");
-        productCardPage.clickWithdrawalBtnForEnterQuantity()
-                .shouldKeyboardVisible();
+        QuantityProductsForWithdrawalModalPage modalPage = productCardPage.clickWithdrawalBtnForEnterQuantity();
+        modalPage.shouldKeyboardVisible();
 
         // Step #5
         log.step("Ввести количество товара для отзыва");
         String numberForRM = String.valueOf(new Random().nextInt(11) + 1);
         selectedProductDataBefore.setSelectedQuantity(numberForRM);
-        productCardPage.enterCountOfItems(numberForRM)
+        modalPage.enterCountOfItems(numberForRM)
                 .shouldWithdrawalButtonHasQuantity(numberForRM);
 
         // Step #6
         log.step("Нажать кнопку ОТОЗВАТЬ");
-        productCardPage.clickSubmitBtn()
-                .verifyVisibilityOfAllElements()
+        modalPage.clickSubmitBtn()
+                .verifyRequiredElements()
                 .shouldCountOfSelectedProductsIs(1)
                 .shouldSelectedProductIs(0, selectedProductDataBefore);
 
         // Step #7
         log.step("Нажать кнопку ДАЛЕЕ К ПАРАМЕТРАМ ЗАЯВКИ");
         OrderPage orderPage = stockProductsPage.clickSubmitBtn()
-                .verifyVisibilityOfAllElements();
+                .verifyRequiredElements();
         String orderNumber = orderPage.getOrderNumber();
 
         // Step #8
@@ -83,7 +84,7 @@ public class WithdrawalFromRMTest extends AppBaseSteps {
         // Step #11
         log.step("Нажать кнопку ОТПРАВИТЬ ЗАЯВКУ");
         SubmittedWithdrawalOrderPage submittedWithdrawalOrderPage = orderPage.clickSubmitBtn()
-                .verifyVisibilityOfAllElements();
+                .verifyRequiredElements();
 
         // Step #12
         log.step("Нажать кнопку ПЕРЕЙТИ В СПИСОК ЗАЯВОК");

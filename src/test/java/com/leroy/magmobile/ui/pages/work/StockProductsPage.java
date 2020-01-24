@@ -17,6 +17,9 @@ public class StockProductsPage extends CommonMagMobilePage {
         super(context);
     }
 
+    @AppFindBy(accessibilityId = "ScreenTitle")
+    private Element searchArea;
+
     @AppFindBy(xpath = "//android.widget.ScrollView//android.view.ViewGroup//android.widget.ImageView")
     private ElementList<Element> productImages;
 
@@ -95,11 +98,9 @@ public class StockProductsPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что страница отображается корректно")
-    public StockProductsPage verifyVisibilityOfAllElements() {
-        softAssert.isElementVisible(selectedProductsLabel);
-        softAssert.isElementTextEqual(submitBtn,
-                "ДАЛЕЕ К ПАРАМЕТРАМ ЗАЯВКИ");
-        // to be continued
+    public StockProductsPage verifyRequiredElements() {
+        softAssert.areElementsVisible(searchArea,
+                selectedProductsLabel, submitBtn);
         softAssert.verifyAll();
         return this;
     }

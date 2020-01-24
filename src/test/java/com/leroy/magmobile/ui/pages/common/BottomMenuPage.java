@@ -55,10 +55,4 @@ public class BottomMenuPage extends BaseAppPage {
         return new MorePage(context);
     }
 
-    @Step("Установить магазин {shop} и отдел {department} для пользователя")
-    public UserProfilePage setShopAndDepartmentForUser(String shop, String department) {
-        return goToMoreSection().goToUserProfile().goToEditShopForm().searchForShopAndSelectById(shop)
-                .goToEditDepartmentForm().selectDepartmentById(department);
-    }
-
 }

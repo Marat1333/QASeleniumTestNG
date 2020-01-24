@@ -181,8 +181,6 @@ public abstract class BaseContainer {
 
     public <T extends BaseWidget> T E(String str, String metaName, Class<? extends BaseWidget> clazz) {
         CustomLocator locator = buildLocator(str, metaName);
-//        if (locator.getMetaName() == null)
-//            throw new IllegalArgumentException("Wrapper with class " + clazz + " should have name");
         try {
             return (T) clazz.getConstructor(WebDriver.class, CustomLocator.class)
                     .newInstance(driver, locator);
@@ -196,14 +194,16 @@ public abstract class BaseContainer {
         return E(str, metaName, Element.class);
     }
 
+    public <T extends BaseWidget> T E(String str, Class<? extends BaseWidget> clazz) {
+        return E(str, null, clazz);
+    }
+
     public Element E(String str) {
-        return E(str, null);
+        return E(str, null, Element.class);
     }
 
     public <E extends BaseWidget> ElementList<E> EL(String str, String metaName, Class<? extends BaseWidget> clazz) {
         CustomLocator locator = buildLocator(str, metaName);
-//        if (locator.getMetaName() == null)
-//            throw new IllegalArgumentException("ElementList with class " + clazz + " should have name");
         try {
             return new ElementList<>(driver, locator, clazz);
         } catch (Exception err) {

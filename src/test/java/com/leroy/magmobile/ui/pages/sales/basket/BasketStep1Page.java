@@ -60,9 +60,9 @@ public class BasketStep1Page extends BasketPage {
     @Step("Убедиться, что мы находимся на странице Корзина - Шаг 1, и все необходимые элементы отражаются корректно")
     public BasketStep1Page verifyRequiredElements() {
         super.verifyRequiredElements();
-        softAssert.areElementsVisible(Arrays.asList(
+        softAssert.areElementsVisible(
                 productCard, servicesMyDepartmentArea, totalPriceLbl,
-                totalPriceVal, addProductBtn, nextParametersBtn));
+                totalPriceVal, addProductBtn, nextParametersBtn);
         softAssert.verifyAll();
         return this;
     }
