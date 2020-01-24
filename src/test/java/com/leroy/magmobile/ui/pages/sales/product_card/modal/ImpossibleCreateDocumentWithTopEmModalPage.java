@@ -42,7 +42,7 @@ public class ImpossibleCreateDocumentWithTopEmModalPage extends CommonMagMobileP
 
     @Step("Проверить, что Модальное окно с сообщением о невозможности оформления документа продажи товара Топ-ЕМ отображается корректно")
     public ImpossibleCreateDocumentWithTopEmModalPage verifyRequiredElements() {
-        softAssert.areElementsVisible(Arrays.asList(headerLbl, bodyMessage, submitBtn));
+        softAssert.areElementsVisible(headerLbl, bodyMessage, submitBtn);
         softAssert.verifyAll();
         return this;
     }

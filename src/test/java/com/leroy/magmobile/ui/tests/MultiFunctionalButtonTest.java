@@ -14,6 +14,10 @@ import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.ActionWithProductModalPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.AddIntoSalesDocumentModalPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.ImpossibleCreateDocumentWithTopEmModalPage;
+import com.leroy.magmobile.ui.pages.work.OrderPage;
+import com.leroy.magmobile.ui.pages.work.StockProductCardPage;
+import com.leroy.magmobile.ui.pages.work.StockProductsPage;
+import com.leroy.magmobile.ui.pages.work.modal.QuantityProductsForWithdrawalModalPage;
 import org.apache.commons.lang.RandomStringUtils;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
@@ -71,6 +75,11 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         if (items.size() > 0)
             return items.get(0).getLmCode();*/
         return "82138074";
+    }
+
+    // Получить ЛМ код для продукта, доступного для отзыва с RM
+    private String getAnyLmCodeProductIsAvailableForWithdrawalFromRM() {
+        return "82001470";
     }
 
     public String getValidPinCode() {
@@ -168,22 +177,9 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         String lmCode = getAnyLmCodeProductWithoutSpecificOptions();
         String documentNumber = loginInAndCreateDraftSalesDocument(lmCode);
 
-        // Step #1
-        log.step("Нажмите в поле поиска");
-        SalesPage salesPage = new SalesPage(context);
-        SearchProductPage searchPage = salesPage.clickSearchBar(false)
-                .verifyRequiredElements();
-
-        // Step #2
-        log.step("Введите ЛМ код товара (напр., " + lmCode + ")");
-        searchPage.enterTextInSearchFieldAndSubmit(lmCode);
-        ProductDescriptionPage productDescriptionPage = new ProductDescriptionPage(context)
-                .verifyRequiredElements(true);
-
-        // Step #3
-        log.step("Нажмите на кнопку Действия с товаром");
-        ActionWithProductModalPage actionWithProductModalPage = productDescriptionPage.clickActionWithProductButton()
-                .verifyRequiredElements(false);
+        // Steps 1, 2, 3
+        ActionWithProductModalPage actionWithProductModalPage =
+                testSearchForProductAndClickActionsWithProductButton(null, lmCode, ProductTypes.NORMAL);
 
         // Step #4
         log.step("Нажмите Добавить в документ продажи");
@@ -204,11 +200,70 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
                 .shouldLmCodeOfProductIs(lmCode);
     }
 
+    @Test(description = "C22744177 Создание заявки на Отзыв RM")
+    public void testCreateOrderForWithdrawalFromRM() throws Exception {
+        // Pre-condition
+        String lmCode = getAnyLmCodeProductIsAvailableForWithdrawalFromRM();
+        SalesPage salesPage = loginAndGoTo(SalesPage.class);
+        salesPage = setShopAndDepartmentForUser(salesPage, "5", "15")
+                .goToSales();
+
+        // Steps 1, 2, 3
+        ActionWithProductModalPage actionWithProductModalPage =
+                testSearchForProductAndClickActionsWithProductButton(salesPage, lmCode, ProductTypes.NORMAL);
+
+        // Step 4
+        log.step("Нажмите на кнопку Добавить в заявку на Отзыв с RM");
+        actionWithProductModalPage.clickAddIntoWithdrawalOrderFromRMButton();
+        StockProductCardPage stockProductCardPage = new StockProductCardPage(context);
+        stockProductCardPage.verifyRequiredElements();
+
+        // Step 5
+        log.step("Нажмите на нкопку Отозвать");
+        String withdrawalCountItems = RandomStringUtils.randomNumeric(1);
+        QuantityProductsForWithdrawalModalPage modalPage = stockProductCardPage.clickWithdrawalBtnForEnterQuantity()
+                .verifyRequiredElements()
+                .shouldSubmitButtonActivityIs(false);
+
+        // Step 6
+        log.step("Ввести значение количества товара на отзыв");
+        modalPage.enterCountOfItems(withdrawalCountItems)
+                .shouldWithdrawalButtonHasQuantity(withdrawalCountItems)
+                .shouldSubmitButtonActivityIs(true);
+
+        // Step 7
+        log.step("Нажать на кнопку Отозвать");
+        StockProductsPage stockProductsPage = modalPage.clickSubmitBtn()
+                .verifyRequiredElements()
+                .shouldCountOfSelectedProductsIs(1);
+
+        // Step 8
+        log.step("Нажмите Далее к параметрам заявки");
+        OrderPage orderPage = stockProductsPage.clickSubmitBtn()
+                .verifyRequiredElements()
+                .shouldFieldsAreNotEmptyExceptCommentField();
+        String orderNumber = orderPage.getOrderNumber();
+
+        // Step 9
+        log.step("Нажмите кнопку Отправить заявку");
+        orderPage.clickSubmitBtn()
+                .verifyRequiredElements()
+                .clickSubmitBtn()
+                .shouldOrderByIndexIs(1, orderNumber, null, "Создана");
+    }
+
     // ---------------------- TYPICAL TESTS FOR THIS CLASS -------------------//
 
-    private void testCreateSalesDocument(String lmCode, ProductTypes productType) throws Exception {
+    /**
+     * Step 1 - Нажмите в поле поиска
+     * Step 2 - Введите ЛМ код товара (напр., @param lmcode)
+     * Step 3 - Нажмите на кнопку Действия с товаром
+     */
+    private ActionWithProductModalPage testSearchForProductAndClickActionsWithProductButton(
+            SalesPage salesPage, String lmCode, ProductTypes productType) throws Exception {
         // Pre-condition
-        SalesPage salesPage = loginAndGoTo(SalesPage.class);
+        if (salesPage == null)
+            salesPage = loginAndGoTo(SalesPage.class);
 
         // Step #1
         log.step("Нажмите в поле поиска");
@@ -224,8 +279,15 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
 
         // Step #3
         log.step("Нажмите на кнопку Действия с товаром");
-        ActionWithProductModalPage actionWithProductModalPage = productDescriptionPage.clickActionWithProductButton()
+        return productDescriptionPage.clickActionWithProductButton()
                 .verifyRequiredElements(productType.equals(ProductTypes.AVS));
+    }
+
+    private void testCreateSalesDocument(String lmCode, ProductTypes productType) throws Exception {
+
+        // Steps 1, 2, 3
+        ActionWithProductModalPage actionWithProductModalPage =
+                testSearchForProductAndClickActionsWithProductButton(null, lmCode, productType);
 
         // Step #4
         log.step("Нажмите Добавить в документ продажи");

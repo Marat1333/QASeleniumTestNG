@@ -52,7 +52,8 @@ public class AddIntoSalesDocumentModalPage extends CommonMagMobilePage {
 
     @Step("Проверить, что модальное окно отображается корректно")
     public AddIntoSalesDocumentModalPage verifyRequiredElements() {
-        softAssert.areElementsVisible(Arrays.asList(closeBtn, headerLbl, createSalesDocumentBtn));
+        softAssert.areElementsVisible(
+                closeBtn, headerLbl, createSalesDocumentBtn);
         softAssert.verifyAll();
         return this;
     }

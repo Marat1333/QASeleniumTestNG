@@ -142,12 +142,13 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
             ElementList<CardWidget<T>> cardWidgetList = this.findChildElements(oneRowXpath, rowWidgetClass);
             List<T> currentVisibleDataList = new ArrayList<>();
             String pageSource = driver.getPageSource();
+            boolean textFound = false;
             for (CardWidget<T> widget : cardWidgetList) {
                 if (widget.isFullyVisible(pageSource)) {
                     T data = widget.collectDataFromPage(pageSource);
                     currentVisibleDataList.add(data);
                     if (findText != null && data.toString().contains(findText))
-                        break;
+                        textFound = true;
                 }
             }
             if (currentVisibleDataList.size() == 0) {
@@ -155,6 +156,8 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
                 break;
             }
             addNonRepeatingText(tmpCardDataList, currentVisibleDataList);
+            if (textFound)
+                return this;
             simpleScroll(direction);
             progressBar.waitForInvisibility();
             Log.debug("<-- Scroll down #" + (i + 1) + "-->");

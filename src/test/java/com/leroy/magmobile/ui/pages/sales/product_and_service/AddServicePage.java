@@ -74,7 +74,8 @@ public class AddServicePage extends CommonMagMobilePage {
     @Step("Проверить, что страница 'Добавления услуги' отображается корректно")
     public AddServicePage verifyRequiredElements() {
         softAssert.isElementTextEqual(screenTitle, Constants.SCREEN_TITLE);
-        softAssert.areElementsVisible(Arrays.asList(backBtn, editPriceServiceFld, editPriceServiceFld));
+        softAssert.areElementsVisible(
+                backBtn, editPriceServiceFld, editPriceServiceFld);
         softAssert.isFalse(submitBtn.isEnabled(), "Кнопка 'Добавить в документ продажи' активна");
         softAssert.verifyAll();
         return this;

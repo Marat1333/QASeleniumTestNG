@@ -38,13 +38,14 @@ public class SubmittedWithdrawalOrderPage extends BaseAppPage {
     /* ------------------------- Verifications  -------------------------- */
 
     @Step("Проверить, что страница с уведомлением успешно созданный заявки отображается корректно")
-    public SubmittedWithdrawalOrderPage verifyVisibilityOfAllElements() {
+    public SubmittedWithdrawalOrderPage verifyRequiredElements() {
+        String ps = getPageSource();
         softAssert.isElementTextEqual(headerLbl,
-                "Заявка на отзыв отправлена");
+                "Заявка на отзыв отправлена", ps);
         softAssert.isElementTextEqual(messageLbl,
-                "Статус заявки можно отслеживать в списке заявок.");
+                "Статус заявки можно отслеживать в списке заявок.", ps);
         softAssert.isElementTextEqual(submitBtn,
-                "ПЕРЕЙТИ В СПИСОК ЗАЯВОК");
+                "ПЕРЕЙТИ В СПИСОК ЗАЯВОК", ps);
         softAssert.verifyAll();
         return this;
     }

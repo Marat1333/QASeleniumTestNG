@@ -56,4 +56,14 @@
         </classes>
     </test>
 
+    <test name="C22744177 Создание заявки на Отзыв RM">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.MultiFunctionalButtonTest">
+                <methods>
+                    <include name="testCreateOrderForWithdrawalFromRM"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
 </suite>

@@ -7,8 +7,6 @@ import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.common.SearchProductPage;
 import io.qameta.allure.Step;
 
-import java.util.Arrays;
-
 public class SortPage extends CommonMagMobilePage {
     public SortPage(TestContext context) {
         super(context);
@@ -62,8 +60,8 @@ public class SortPage extends CommonMagMobilePage {
     }
 
     public SortPage verifyRequiredElements() {
-        softAssert.areElementsVisible(Arrays.asList(
-                sortByLmAscLbl, sortByLmDescLbl, sortByStockDescLbl, sortByStockAscLbl));
+        softAssert.areElementsVisible(sortByLmAscLbl, sortByLmDescLbl,
+                sortByStockDescLbl, sortByStockAscLbl);
         softAssert.verifyAll();
         return new SortPage(context);
 

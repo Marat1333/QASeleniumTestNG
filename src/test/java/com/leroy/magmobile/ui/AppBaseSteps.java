@@ -3,7 +3,9 @@ package com.leroy.magmobile.ui;
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.magmobile.ui.pages.LoginAppPage;
+import com.leroy.magmobile.ui.pages.common.BottomMenuPage;
 import com.leroy.magmobile.ui.pages.more.MorePage;
+import com.leroy.magmobile.ui.pages.more.UserProfilePage;
 import com.leroy.magmobile.ui.pages.sales.SalesDocumentsPage;
 import com.leroy.magmobile.ui.pages.sales.SalesPage;
 import com.leroy.magmobile.ui.pages.sales.basket.BasketStep1Page;
@@ -15,6 +17,7 @@ import com.leroy.models.UserData;
 import com.leroy.temp_ui.BaseState;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidDriver;
+import io.qameta.allure.Step;
 
 public class AppBaseSteps extends BaseState {
 
@@ -66,6 +69,17 @@ public class AppBaseSteps extends BaseState {
         basketStep1Page.clickBackButton()
                 .returnBack().backToSalesPage();
         return documentNumber;
+    }
+
+    @Step("Установить магазин {shop} и отдел {department} для пользователя")
+    protected UserProfilePage setShopAndDepartmentForUser(BottomMenuPage page, String shop, String department)
+            throws Exception{
+        return page.goToMoreSection()
+                .goToUserProfile()
+                .goToEditShopForm()
+                .searchForShopAndSelectById(shop)
+                .goToEditDepartmentForm()
+                .selectDepartmentById(department);
     }
 
 }
