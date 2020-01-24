@@ -202,11 +202,11 @@ public class DriverFactory {
                         options.setCapability("version", v);
                     driver = new AndroidDriver<>(new URL(REMOTE_ADDRESS), options);
                     AndroidDriver<MobileElement> androidDriver = (AndroidDriver) driver;
-                    androidDriver.installApp(
+                    /*androidDriver.installApp(
                             "https://cloclo4.datacloudmail.ru/weblink/view/3Cho/5MzNyY8PP?etag=376CE7AD45104DEB770BEED90EF1767AC15569FD&key=b5b6fa9217f547e9035b0b1d42eb408d4604a3cb");
                     androidDriver.context("NATIVE_APP");
                     androidDriver.activateApp("ru.leroymerlin.magasin.uat");
-                    Thread.sleep(10000);
+                    Thread.sleep(10000);*/
                     //MobileElement el = androidDriver.findElement(By.xpath("//android.widget.LinearLayout[android.widget.TextView]"));
                     //el.click();
                     new MobileActions(driver).tapByCoordinates(30, 30);
