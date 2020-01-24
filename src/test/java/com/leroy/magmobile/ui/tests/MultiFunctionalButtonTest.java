@@ -11,9 +11,7 @@ import com.leroy.magmobile.ui.pages.sales.basket.BasketStep2Page;
 import com.leroy.magmobile.ui.pages.sales.basket.BasketStep3Page;
 import com.leroy.magmobile.ui.pages.sales.product_and_service.AddServicePage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.modal.ActionWithProductModalPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.modal.AddIntoSalesDocumentModalPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.modal.ImpossibleCreateDocumentWithTopEmModalPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.modal.*;
 import com.leroy.magmobile.ui.pages.work.OrderPage;
 import com.leroy.magmobile.ui.pages.work.StockProductCardPage;
 import com.leroy.magmobile.ui.pages.work.StockProductsPage;
@@ -252,6 +250,19 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
                 .shouldOrderByIndexIs(1, orderNumber, null, "Создана");
     }
 
+    @Test(description = "C22847027 35 магазин - создание заказа")
+    public void ttt() throws Exception {
+        // Pre-condition
+        String lmCode = getAnyLmCodeProductWithoutSpecificOptions();
+        SalesPage salesPage = loginAndGoTo(SalesPage.class);
+        salesPage = setShopAndDepartmentForUser(salesPage, "35", "01")
+                .goToSales();
+
+        // Steps 1, 2, 3
+        ActionWithProduct35ModalPage actionWithProductModalPage =
+                testSearchForProductAndClickActionsWithProductButton(salesPage, lmCode, ProductTypes.NORMAL, true);
+    }
+
     // ---------------------- TYPICAL TESTS FOR THIS CLASS -------------------//
 
     /**
@@ -259,8 +270,8 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
      * Step 2 - Введите ЛМ код товара (напр., @param lmcode)
      * Step 3 - Нажмите на кнопку Действия с товаром
      */
-    private ActionWithProductModalPage testSearchForProductAndClickActionsWithProductButton(
-            SalesPage salesPage, String lmCode, ProductTypes productType) throws Exception {
+    private <T extends CommonActionWithProductModalPage> T testSearchForProductAndClickActionsWithProductButton(
+            SalesPage salesPage, String lmCode, ProductTypes productType, boolean is35Shop) throws Exception {
         // Pre-condition
         if (salesPage == null)
             salesPage = loginAndGoTo(SalesPage.class);
@@ -279,8 +290,19 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
 
         // Step #3
         log.step("Нажмите на кнопку Действия с товаром");
-        return productDescriptionPage.clickActionWithProductButton()
-                .verifyRequiredElements(productType.equals(ProductTypes.AVS));
+        productDescriptionPage.clickActionWithProductButton();
+        if (is35Shop) {
+            ActionWithProduct35ModalPage modalPage = new ActionWithProduct35ModalPage(context);
+            return (T) modalPage.verifyRequiredElements(productType.equals(ProductTypes.AVS));
+        } else {
+            ActionWithProductModalPage modalPage = new ActionWithProductModalPage(context);
+            return (T) modalPage.verifyRequiredElements(productType.equals(ProductTypes.AVS));
+        }
+    }
+
+    private <T extends CommonActionWithProductModalPage> T testSearchForProductAndClickActionsWithProductButton(
+            SalesPage salesPage, String lmCode, ProductTypes productType) throws Exception {
+        return testSearchForProductAndClickActionsWithProductButton(salesPage, lmCode, productType, false);
     }
 
     private void testCreateSalesDocument(String lmCode, ProductTypes productType) throws Exception {

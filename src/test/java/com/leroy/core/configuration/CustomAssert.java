@@ -58,7 +58,7 @@ public class CustomAssert extends BaseCustomAssert {
     }
 
     public boolean isElementNotVisible(BaseWidget element) {
-        return super.logIsElementNotVisible(element, false);
+        return super.logIsElementNotVisible(element, null, false);
     }
 
     public void isElementImageMatches(Element elem, String pictureName) {

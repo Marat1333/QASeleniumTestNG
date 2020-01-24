@@ -10,6 +10,7 @@ import com.leroy.magmobile.ui.pages.sales.SalesDocumentsPage;
 import com.leroy.magmobile.ui.pages.sales.SalesPage;
 import com.leroy.magmobile.ui.pages.sales.basket.BasketStep1Page;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.modal.ActionWithProductModalPage;
 import com.leroy.magmobile.ui.pages.support.SupportPage;
 import com.leroy.magmobile.ui.pages.work.WorkPage;
 import com.leroy.magportal.ui.pages.LoginWebPage;
@@ -61,9 +62,9 @@ public class AppBaseSteps extends BaseState {
         salesPage.clickSearchBar(false)
                 .enterTextInSearchFieldAndSubmit(lmCode);
 
-        BasketStep1Page basketStep1Page = new ProductDescriptionPage(context)
-                .clickActionWithProductButton()
-                .startToCreateSalesDocument()
+        new ProductDescriptionPage(context).clickActionWithProductButton();
+        ActionWithProductModalPage modalPage = new ActionWithProductModalPage(context);
+        BasketStep1Page basketStep1Page = modalPage.startToCreateSalesDocument()
                 .clickAddButton();
         String documentNumber = basketStep1Page.getDocumentNumber();
         basketStep1Page.clickBackButton()

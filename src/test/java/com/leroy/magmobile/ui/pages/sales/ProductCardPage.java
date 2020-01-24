@@ -10,7 +10,7 @@ import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ReviewsPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.SimilarProductsPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.SpecificationsPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.modal.ActionWithProductModalPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.modal.CommonActionWithProductModalPage;
 import io.qameta.allure.Step;
 
 public class ProductCardPage extends BaseAppPage {
@@ -76,9 +76,8 @@ public class ProductCardPage extends BaseAppPage {
     }
 
     @Step("Нажмите на кнопку Действия с товаром")
-    public ActionWithProductModalPage clickActionWithProductButton() {
+    public void clickActionWithProductButton() {
         actionWithProductBtn.click();
-        return new ActionWithProductModalPage(context);
     }
 
     /* ------------------------- Verifications -------------------------- */
