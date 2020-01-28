@@ -22,7 +22,7 @@ public class CustomerPage extends MenuPage {
     @WebFindBy(xpath = "//span[text()='"+HEADER+"']", metaName = "Заголовок страницы")
     private Element headerLbl;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'lmui-View lm-puz2-Customer-CustomerListSearch__mode-opener')]/span[1]",
+    @WebFindBy(xpath = "//div[contains(@class, 'lmui-View lmui-Select')]/span",
             metaName = "Текст обозначающий выбранный тип поиска")
     private Element searchTypeLbl;
 

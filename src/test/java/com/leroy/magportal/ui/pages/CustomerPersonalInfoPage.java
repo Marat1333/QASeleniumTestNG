@@ -85,12 +85,9 @@ public class CustomerPersonalInfoPage extends MenuPage {
         Element customerElem = myRecentlyCustomers.get(index);
         softAssert.isEquals(customerElem.findChildElement("./div/span").getText(), StringUtils.capitalize(name),
                 "Имя " + index + "-ого клиента должно быть %s из списка 'Мои недавние клиенты'");
-        softAssert.isEquals(customerElem.findChildElement("./div/div/span").getText(), StringUtils.capitalize(
-                name.substring(0, 1)),
-                "Первая буква имени " + index + "-ого клиента должна быть %s из списка 'Мои недавние клиенты'");
         String expectedPhone = phone.length() != 10 ? phone : String.format("+7 %s %s-%s-%s",
                 phone.substring(0, 3), phone.substring(3, 6), phone.substring(6, 8), phone.substring(8, 10));
-        softAssert.isEquals(customerElem.findChildElement("./div[2]/span").getText(), expectedPhone,
+        softAssert.isEquals(customerElem.findChildElement("./div[3]/span").getText(), expectedPhone,
                 "Телефон " + index + "-ого клиента должно быть %s из списка 'Мои недавние клиенты'");
         softAssert.verifyAll();
         return this;
