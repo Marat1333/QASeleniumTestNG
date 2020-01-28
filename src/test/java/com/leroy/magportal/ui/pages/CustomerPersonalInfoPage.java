@@ -45,7 +45,7 @@ public class CustomerPersonalInfoPage extends MenuPage {
     @Override
     public void waitForPageIsLoaded() {
         headerClientNameLbl.waitForVisibility();
-        headerLbl.waitUntilTextIsEqualTo(HEADER);
+        headerLbl.waitUntilTextIsEqualTo(HEADER, timeout);
     }
 
     @Step("Проверить, что страница с персональными данными клиента отображается корректно")
@@ -61,21 +61,21 @@ public class CustomerPersonalInfoPage extends MenuPage {
     public CustomerPersonalInfoPage shouldCustomerDataOnPageIs(CustomerData data) {
         if (data.getFirstName() != null)
             softAssert.isEquals(headerClientNameLbl.getText(), StringUtils.capitalize(data.getFirstName()),
-                    "Имя клиента должно быть %s");
+                    "Неверное Имя клиента");
         if (data.getGender() != null)
             softAssert.isEquals(genderObj.getText(), (data.getGender().equals(Gender.MALE) ? "Мужской" : "Женский"),
-                    "Пол должен быть %s");
+                    "Неверный Пол");
         if (data.getPhoneNumber() != null)
             softAssert.isEquals(phoneObj.getText(), "+7" + data.getPhoneNumber(),
-                    "Основной телефон должен быть %s");
+                    "Неверный Основной телефон");
         if (data.getEmail() != null)
             softAssert.isEquals(emailObj.getText(), data.getEmail(),
-                    "Email должен быть %s");
+                    "Неверный Email");
         else
             softAssert.isEquals(emailObj.getText(), "Не указано",
-                    "Email должен быть '%s'");
+                    "Неверный Email");
         softAssert.isEquals(officeObj.getText(), "Не указано",
-                "Офис должен быть '%s'");
+                "Неверный Офис");
         softAssert.verifyAll();
         return this;
     }
@@ -84,7 +84,7 @@ public class CustomerPersonalInfoPage extends MenuPage {
             throws Exception {
         Element customerElem = myRecentlyCustomers.get(index);
         softAssert.isEquals(customerElem.findChildElement("./div/span").getText(), StringUtils.capitalize(name),
-                "Имя " + index + "-ого клиента должно быть %s из списка 'Мои недавние клиенты'");
+                "Имя " + index + "-ого клиента неверно из списка 'Мои недавние клиенты'");
         String expectedPhone = phone.length() != 10 ? phone : String.format("+7 %s %s-%s-%s",
                 phone.substring(0, 3), phone.substring(3, 6), phone.substring(6, 8), phone.substring(8, 10));
         softAssert.isEquals(customerElem.findChildElement("./div[3]/span").getText(), expectedPhone,

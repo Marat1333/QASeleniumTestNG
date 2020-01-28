@@ -66,7 +66,7 @@ public abstract class BaseCustomAssert {
     protected void logIsEquals(Object actual, Object expected, String desc, boolean isSoft) {
         String actualResultText;
         if (desc.contains("%s"))
-            actualResultText = String.format(desc, expected.toString());
+            actualResultText = String.format(desc, actual.toString());
         else
             actualResultText = desc + " Актуальное значение: " + actual.toString();
         if (!actual.equals(expected)) {
