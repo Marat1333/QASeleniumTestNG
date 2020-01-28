@@ -1,14 +1,11 @@
 package com.leroy.magmobile.ui.tests;
 
+import com.google.inject.Inject;
+import com.leroy.constants.EnvConstants;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.common.SearchProductPage;
-import com.leroy.magmobile.ui.pages.sales.AddProductPage;
-import com.leroy.magmobile.ui.pages.sales.SalesPage;
-import com.leroy.magmobile.ui.pages.sales.SubmittedSalesDocumentPage;
-import com.leroy.magmobile.ui.pages.sales.basket.BasketPage;
-import com.leroy.magmobile.ui.pages.sales.basket.BasketStep1Page;
-import com.leroy.magmobile.ui.pages.sales.basket.BasketStep2Page;
-import com.leroy.magmobile.ui.pages.sales.basket.BasketStep3Page;
+import com.leroy.magmobile.ui.pages.sales.*;
+import com.leroy.magmobile.ui.pages.sales.basket.*;
 import com.leroy.magmobile.ui.pages.sales.product_and_service.AddServicePage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.*;
@@ -16,20 +13,24 @@ import com.leroy.magmobile.ui.pages.work.OrderPage;
 import com.leroy.magmobile.ui.pages.work.StockProductCardPage;
 import com.leroy.magmobile.ui.pages.work.StockProductsPage;
 import com.leroy.magmobile.ui.pages.work.modal.QuantityProductsForWithdrawalModalPage;
+import com.leroy.models.OrderDetailsData;
+import com.leroy.models.ProductCardData;
 import org.apache.commons.lang.RandomStringUtils;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.base.BaseModule;
-//import ru.leroymerlin.qa.core.clients.magmobile.MagMobileClient;
-//import ru.leroymerlin.qa.core.clients.magmobile.data.ProductItemResponse;
-//import ru.leroymerlin.qa.core.clients.magmobile.requests.GetCatalogSearch;
+import ru.leroymerlin.qa.core.clients.magmobile.MagMobileClient;
+import ru.leroymerlin.qa.core.clients.magmobile.data.ProductItemResponse;
+import ru.leroymerlin.qa.core.clients.magmobile.requests.GetCatalogSearch;
+
+import java.util.List;
 
 
 @Guice(modules = {BaseModule.class})
 public class MultiFunctionalButtonTest extends AppBaseSteps {
 
-//    @Inject
-//    private MagMobileClient apiClient;
+    @Inject
+    private MagMobileClient apiClient;
 
     // Получить ЛМ код для услуги
     private String getAnyLmCodeOfService() {
@@ -37,41 +38,46 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
     }
 
     // Получить ЛМ код для обычного продукта без специфичных опций
-    private String getAnyLmCodeProductWithoutSpecificOptions() {
-        /*GetCatalogSearch params = new GetCatalogSearch()
-                .topEM(false);
+    private String getAnyLmCodeProductWithoutSpecificOptions(String shopId, Boolean hasAvailableStock) {
+        GetCatalogSearch params = new GetCatalogSearch()
+                .setShopId(shopId)
+                .setTopEM(false)
+                .setHasAvailableStock(hasAvailableStock);
         List<ProductItemResponse> items = apiClient.searchProductsBy(params).asJson().getItems();
         for (ProductItemResponse item : items) {
             if (item.getAvsDate() == null)
                 return item.getLmCode();
-        }*/
-        return "13452305";
+        }
+        if (!hasAvailableStock)
+            return "13452305";
+        else
+            return "";
     }
 
     // Получить ЛМ код для продукта с AVS
     private String getAnyLmCodeProductWithAvs() {
-        /*GetCatalogSearch params = new GetCatalogSearch()
-                .topEM(false);
+        GetCatalogSearch params = new GetCatalogSearch()
+                .setTopEM(false);
         List<ProductItemResponse> items = apiClient.searchProductsBy(params).asJson().getItems();
         for (ProductItemResponse item : items) {
             if (item.getAvsDate() != null)
                 return item.getLmCode();
-        }*/
+        }
         return "82014172";
     }
 
     // Получить ЛМ код для продукта с опцией TopEM
     private String getAnyLmCodeProductWithTopEM() {
-        /*GetCatalogSearch params = new GetCatalogSearch()
-                .topEM(true)
-                .shopId(EnvConstants.BASIC_USER_SHOP_ID);
+        GetCatalogSearch params = new GetCatalogSearch()
+                .setTopEM(true)
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID);
         List<ProductItemResponse> items = apiClient.searchProductsBy(params).asJson().getItems();
         for (ProductItemResponse item : items) {
             if (item.getAvsDate() == null)
                 return item.getLmCode();
         }
         if (items.size() > 0)
-            return items.get(0).getLmCode();*/
+            return items.get(0).getLmCode();
         return "82138074";
     }
 
@@ -91,7 +97,8 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
 
     @Test(description = "C3201023 Создание документа продажи")
     public void testC3201023() throws Exception {
-        testCreateSalesDocument(getAnyLmCodeProductWithoutSpecificOptions(), ProductTypes.NORMAL);
+        testCreateSalesDocument(getAnyLmCodeProductWithoutSpecificOptions(
+                null, null), ProductTypes.NORMAL);
     }
 
     @Test(description = "C22846947 Создание документа продажи с товаром AVS")
@@ -172,12 +179,13 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
     public void testC3201024() throws Exception {
         // Pre-condition
         // - Имеются документы продажи в статусе черновик
-        String lmCode = getAnyLmCodeProductWithoutSpecificOptions();
+        String lmCode = getAnyLmCodeProductWithoutSpecificOptions(null, null);
         String documentNumber = loginInAndCreateDraftSalesDocument(lmCode);
 
         // Steps 1, 2, 3
         ActionWithProductModalPage actionWithProductModalPage =
-                testSearchForProductAndClickActionsWithProductButton(null, lmCode, ProductTypes.NORMAL);
+                testSearchForProductAndClickActionsWithProductButton(null, new ProductCardData(lmCode),
+                        ProductTypes.NORMAL);
 
         // Step #4
         log.step("Нажмите Добавить в документ продажи");
@@ -208,7 +216,8 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
 
         // Steps 1, 2, 3
         ActionWithProductModalPage actionWithProductModalPage =
-                testSearchForProductAndClickActionsWithProductButton(salesPage, lmCode, ProductTypes.NORMAL);
+                testSearchForProductAndClickActionsWithProductButton(salesPage, new ProductCardData(lmCode),
+                        ProductTypes.NORMAL);
 
         // Step 4
         log.step("Нажмите на кнопку Добавить в заявку на Отзыв с RM");
@@ -253,14 +262,59 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
     @Test(description = "C22847027 35 магазин - создание заказа")
     public void ttt() throws Exception {
         // Pre-condition
-        String lmCode = getAnyLmCodeProductWithoutSpecificOptions();
+        String shopId = "35";
+        boolean hasAvailableStock = false; //new Random().nextInt(2) == 1; // No one product with "hasAvailableStock" on dev environment
+        String lmCode = getAnyLmCodeProductWithoutSpecificOptions(shopId, hasAvailableStock);
         SalesPage salesPage = loginAndGoTo(SalesPage.class);
-        salesPage = setShopAndDepartmentForUser(salesPage, "35", "01")
+        salesPage = setShopAndDepartmentForUser(salesPage, shopId, "01")
                 .goToSales();
 
         // Steps 1, 2, 3
+        ProductCardData productData = new ProductCardData(lmCode);
+        productData.setHasAvailableStock(hasAvailableStock);
         ActionWithProduct35ModalPage actionWithProductModalPage =
-                testSearchForProductAndClickActionsWithProductButton(salesPage, lmCode, ProductTypes.NORMAL, true);
+                testSearchForProductAndClickActionsWithProductButton(
+                        salesPage, productData, ProductTypes.NORMAL, true);
+
+        // Step #4
+        log.step("Нажмите Оформить продажу");
+        SaleTypeModalPage modalPage = actionWithProductModalPage.clickMakeSaleButton()
+                .verifyRequiredElements(false);
+
+        // Step #5
+        log.step("Нажмите Корзина");
+        AddProduct35Page addProduct35Page = modalPage.clickBasketMenuItem()
+                .verifyRequiredElements();
+
+        // Step #6
+        log.step("Нажмите Добавить в корзину");
+        Basket35Page basket35Page = addProduct35Page.clickAddButton()
+                .verifyRequiredElements();
+
+        // Step #7
+        log.step("Нажмите Оформить");
+        ProcessOrder35Page processOrder35Page = basket35Page.clickSubmitButton()
+                .verifyRequiredElements();
+
+        // Step #8
+        log.step("Заполните поля Имя и Фамилия, Телефон, PIN-код для оплаты");
+        OrderDetailsData data = new OrderDetailsData().setRequiredRandomData();
+        processOrder35Page.fillInFormFields(data)
+                .shouldFormFieldsAre(data);
+
+        // Step #9
+        log.step("Нажмите на кнопку Подтвердить заказ");
+        SubmittedSalesDocument35Page document35Page = processOrder35Page.clickSubmitButton()
+                .verifyRequiredElements()
+                .shouldPinCodeIs(data.getPinCode());
+        String documentNumber = document35Page.getDocumentNumber(true);
+
+        // Step #10
+        log.step("Нажмите на кнопку Перейти в список документов");
+        document35Page.clickSubmitButton();
+                //.shouldSalesDocumentByIndexIs();
+
+        String s = "";
     }
 
     // ---------------------- TYPICAL TESTS FOR THIS CLASS -------------------//
@@ -271,7 +325,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
      * Step 3 - Нажмите на кнопку Действия с товаром
      */
     private <T extends CommonActionWithProductModalPage> T testSearchForProductAndClickActionsWithProductButton(
-            SalesPage salesPage, String lmCode, ProductTypes productType, boolean is35Shop) throws Exception {
+            SalesPage salesPage, ProductCardData productData, ProductTypes productType, boolean is35Shop) throws Exception {
         // Pre-condition
         if (salesPage == null)
             salesPage = loginAndGoTo(SalesPage.class);
@@ -283,8 +337,8 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         searchPage.verifyRequiredElements();
 
         // Step #2
-        log.step("Введите ЛМ код товара (напр., " + lmCode + ")");
-        searchPage.enterTextInSearchFieldAndSubmit(lmCode);
+        log.step("Введите ЛМ код товара (напр., " + productData.getLmCode() + ")");
+        searchPage.enterTextInSearchFieldAndSubmit(productData.getLmCode());
         ProductDescriptionPage productDescriptionPage = new ProductDescriptionPage(context)
                 .verifyRequiredElements(true);
 
@@ -293,7 +347,8 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         productDescriptionPage.clickActionWithProductButton();
         if (is35Shop) {
             ActionWithProduct35ModalPage modalPage = new ActionWithProduct35ModalPage(context);
-            return (T) modalPage.verifyRequiredElements(productType.equals(ProductTypes.AVS));
+            return (T) modalPage.verifyRequiredElements(productData.isHasAvailableStock(),
+                    productType.equals(ProductTypes.AVS));
         } else {
             ActionWithProductModalPage modalPage = new ActionWithProductModalPage(context);
             return (T) modalPage.verifyRequiredElements(productType.equals(ProductTypes.AVS));
@@ -301,15 +356,16 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
     }
 
     private <T extends CommonActionWithProductModalPage> T testSearchForProductAndClickActionsWithProductButton(
-            SalesPage salesPage, String lmCode, ProductTypes productType) throws Exception {
-        return testSearchForProductAndClickActionsWithProductButton(salesPage, lmCode, productType, false);
+            SalesPage salesPage, ProductCardData productData, ProductTypes productType) throws Exception {
+        return testSearchForProductAndClickActionsWithProductButton(salesPage, productData, productType, false);
     }
 
     private void testCreateSalesDocument(String lmCode, ProductTypes productType) throws Exception {
 
         // Steps 1, 2, 3
         ActionWithProductModalPage actionWithProductModalPage =
-                testSearchForProductAndClickActionsWithProductButton(null, lmCode, productType);
+                testSearchForProductAndClickActionsWithProductButton(null, new ProductCardData(lmCode),
+                        productType);
 
         // Step #4
         log.step("Нажмите Добавить в документ продажи");

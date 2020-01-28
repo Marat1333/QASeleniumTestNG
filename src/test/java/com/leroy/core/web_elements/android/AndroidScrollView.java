@@ -59,7 +59,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
      * Scroll down to the end and get all data as ArrayList
      */
     public List<T> getFullDataList(int maxEntityCount) throws Exception {
-        scrollToText(null, null, maxEntityCount, "down");
+        scrollTo(null, null, null, maxEntityCount, "down");
         return new ArrayList<>(tmpCardDataList);
     }
 
@@ -106,8 +106,8 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
         Point _location = getLocation();
         Dimension _size = getSize();
         int x = _location.getX() + _size.getWidth() / 2;
-        int bottomY = _location.getY() + _size.getWidth() - (int) Math.round(_size.getWidth() * 0.05);
-        int topY = _location.getY() + (int) Math.round(_size.getWidth() * 0.05);
+        int bottomY = _location.getY() + _size.getHeight() - (int) Math.round(_size.getHeight() * 0.2);
+        int topY = _location.getY() + (int) Math.round(_size.getHeight() * 0.2);
 
         boolean isDirectionDown = direction.equals("down");
         new TouchAction<>(androidDriver)
@@ -125,7 +125,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
      * @param direction      - up or down
      * @return this
      */
-    private AndroidScrollView<T> scrollToText(String findText, Integer maxScrollCount, Integer maxEntityCount, String direction) throws Exception {
+    private AndroidScrollView<T> scrollTo(Element findElement, String findText, Integer maxScrollCount, Integer maxEntityCount, String direction) throws Exception {
         initialWebElementIfNeeded();
         tmpCardDataList = new ArrayList<>();
         List<T> prevDataList = null;
@@ -142,6 +142,10 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
             ElementList<CardWidget<T>> cardWidgetList = this.findChildElements(oneRowXpath, rowWidgetClass);
             List<T> currentVisibleDataList = new ArrayList<>();
             String pageSource = driver.getPageSource();
+            if (findElement != null) {
+                if (findElement.isVisible(pageSource))
+                    break;
+            }
             boolean textFound = false;
             for (CardWidget<T> widget : cardWidgetList) {
                 if (widget.isFullyVisible(pageSource)) {
@@ -177,7 +181,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
      * @return this
      */
     public AndroidScrollView<T> scrollDownToText(String findText, int maxScrollCount) throws Exception {
-        return scrollToText(findText, maxScrollCount, null, "down");
+        return scrollTo(null, findText, maxScrollCount, null, "down");
     }
 
     /**
@@ -188,11 +192,19 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
      * @return this
      */
     public AndroidScrollView<T> scrollUpToText(String findText, int maxScrollCount) throws Exception {
-        return scrollToText(findText, maxScrollCount, null, "up");
+        return scrollTo(null, findText, maxScrollCount, null, "up");
     }
 
     public AndroidScrollView<T> scrollDownToText(String findText) throws Exception {
         return scrollDownToText(findText, MAX_SCROLL_COUNT);
+    }
+
+    public AndroidScrollView<T> scrollDownToElement(Element element) throws Exception {
+        return scrollTo(element, null, MAX_SCROLL_COUNT, null, "down");
+    }
+
+    public AndroidScrollView<T> scrollUpToElement(Element element) throws Exception {
+        return scrollTo(element, null, MAX_SCROLL_COUNT, null, "up");
     }
 
     public AndroidScrollView<T> scrollDown() throws Exception {

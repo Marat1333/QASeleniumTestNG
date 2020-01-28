@@ -275,6 +275,9 @@ public abstract class BaseWidget extends BaseWrapper {
             Log.warn("Element: " + getMetaName() + " Method: getLocation(). Error: ElementNotInteractableException");
             Rectangle rect = getRectangleJs();
             return new Point(rect.x, rect.y);
+        } catch (WebDriverException err) {
+            Log.warn("Element: " + getMetaName() + " Method: getLocation() Error: " + err.getMessage());
+            return webElement.getLocation();
         }
     }
 

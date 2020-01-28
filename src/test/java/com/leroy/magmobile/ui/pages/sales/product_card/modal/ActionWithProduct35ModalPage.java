@@ -24,7 +24,11 @@ public class ActionWithProduct35ModalPage extends CommonActionWithProductModalPa
     Element replenishTradingRoomBtn;
 
     // ---------- ACTION STEPS --------------------------//
-
+    @Step("Нажмите кнопку 'Оформить продажу'")
+    public SaleTypeModalPage clickMakeSaleButton() {
+        makeSaleBtn.click();
+        return new SaleTypeModalPage(context);
+    }
 
     // Verifications
 
