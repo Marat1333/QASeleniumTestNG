@@ -22,7 +22,7 @@ public class OldSearchProductPage extends BaseAppPage {
     @AppFindBy(accessibilityId = "Button", metaName = "Кнопка для сканирования штрихкода")
     private Element scanBarcodeBtn;
 
-    @AppFindBy(accessibilityId = "ScreenTitle-CatalogSearch", metaName = "Поле ввода текста для поиска")
+    @AppFindBy(accessibilityId = "ScreenTitle-CatalogComplexSearchStore", metaName = "Поле ввода текста для поиска")
     private EditBox searchField;
 
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ScreenContent']//android.view.ViewGroup[android.widget.ImageView]",
@@ -60,6 +60,7 @@ public class OldSearchProductPage extends BaseAppPage {
 
     // ---------------- Verifications ----------------------- //
 
+    @Step("Проверить, что страница поиска товаров и услуг отображается корректно")
     public OldSearchProductPage verifyRequiredElements() {
         softAssert.isElementVisible(backBtn);
         softAssert.isElementVisible(scanBarcodeBtn);

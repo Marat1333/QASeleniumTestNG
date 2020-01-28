@@ -13,7 +13,7 @@ public class SubmittedSalesDocument35Page extends CommonMagMobilePage {
         super(context);
     }
 
-    @AppFindBy(text = "Заказ на самовывоз оформлен,&#10;товары зарезервированы")
+    @AppFindBy(text = "Заказ на самовывоз оформлен,\nтовары зарезервированы")
     Element titleMsgLbl;
 
     private static final String orderNumberText = "Номер заказа";
@@ -31,7 +31,7 @@ public class SubmittedSalesDocument35Page extends CommonMagMobilePage {
     @AppFindBy(text = "предложи клиенту сделать фото экрана")
     Element offerCustomerToTakeScreenshotLbl;
 
-    @AppFindBy(text = "Статус заказа можно отслеживать&#10;в списке документов.")
+    @AppFindBy(text = "Статус заказа можно отслеживать\nв списке документов.")
     Element statusCanBeMonitoringInDocumentListLbl;
 
     @AppFindBy(text = "ПЕРЕЙТИ В СПИСОК ДОКУМЕНТОВ")
@@ -52,9 +52,9 @@ public class SubmittedSalesDocument35Page extends CommonMagMobilePage {
     /* ------------------------- ACTION STEPS -------------------------- */
 
     @Step("Нажмите кнопку Перейти в список документов")
-    public SalesDocumentsPage clickSubmitButton() {
+    public SalesDocuments35Page clickSubmitButton() {
         submitBtn.click();
-        return new SalesDocumentsPage(context);
+        return new SalesDocuments35Page(context);
     }
 
     /* ---------------------- Verifications -------------------------- */

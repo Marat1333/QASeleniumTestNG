@@ -1,6 +1,8 @@
 package com.leroy.models;
 
-public class SalesDocumentData {
+import com.leroy.core.BaseModel;
+
+public class SalesDocumentData extends BaseModel {
 
     private String whereFrom;
     private Double price;

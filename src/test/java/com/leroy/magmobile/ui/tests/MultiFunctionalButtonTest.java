@@ -15,6 +15,7 @@ import com.leroy.magmobile.ui.pages.work.StockProductsPage;
 import com.leroy.magmobile.ui.pages.work.modal.QuantityProductsForWithdrawalModalPage;
 import com.leroy.models.OrderDetailsData;
 import com.leroy.models.ProductCardData;
+import com.leroy.models.SalesDocumentData;
 import org.apache.commons.lang.RandomStringUtils;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
@@ -304,15 +305,23 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
 
         // Step #9
         log.step("Нажмите на кнопку Подтвердить заказ");
-        SubmittedSalesDocument35Page document35Page = processOrder35Page.clickSubmitButton()
+        SubmittedSalesDocument35Page submittedDocument35Page = processOrder35Page.clickSubmitButton()
                 .verifyRequiredElements()
                 .shouldPinCodeIs(data.getPinCode());
-        String documentNumber = document35Page.getDocumentNumber(true);
+        String documentNumber = submittedDocument35Page.getDocumentNumber(true);
 
         // Step #10
         log.step("Нажмите на кнопку Перейти в список документов");
-        document35Page.clickSubmitButton();
-                //.shouldSalesDocumentByIndexIs();
+        SalesDocumentData expectedSalesDocument = new SalesDocumentData();
+        //expectedSalesDocument.setPrice(expectedTotalPrice);
+        //expectedSalesDocument.setPin(Integer.valueOf(testPinCode));
+        expectedSalesDocument.setDocumentType("Автообработка");
+        expectedSalesDocument.setWhereFrom("Самовывоз"); // TODO
+        expectedSalesDocument.setNumber(Long.valueOf(documentNumber));
+        submittedDocument35Page
+                .clickSubmitButton()
+                .shouldSalesDocumentByIndexIs(0, expectedSalesDocument);
+
 
         String s = "";
     }

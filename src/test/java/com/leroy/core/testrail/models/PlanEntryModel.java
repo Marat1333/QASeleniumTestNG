@@ -2,7 +2,7 @@ package com.leroy.core.testrail.models;
 
 import java.util.*;
 
-public class PlanEntryModel extends BaseModel {
+public class PlanEntryModel extends BaseTestRailModel {
     private Long suite_id;
     private String name;
     private List<Long> case_ids;

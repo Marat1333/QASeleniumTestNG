@@ -3,7 +3,7 @@ package com.leroy.core.testrail.models;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PlanModel extends BaseModel {
+public class PlanModel extends BaseTestRailModel {
     private String name;
     private Long milestone_id;
     private Long project_id;

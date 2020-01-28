@@ -17,9 +17,8 @@ public class SalesDocumentsTest extends AppBaseSteps {
     public void testC3201029() throws Exception {
         // Step #1
         log.step("На главном экране выберите раздел Документы продажи");
-        SalesDocumentsPage salesDocumentsPage = loginAndGoTo(SalesDocumentsPage.class);
-        salesDocumentsPage.verifyRequiredElements()
-                .shouldFilterIs("Мои документы");
+        MainSalesDocumentsPage salesDocumentsPage = loginAndGoTo(MainSalesDocumentsPage.class);
+        salesDocumentsPage.verifyRequiredElements();
 
         // Step #2
         log.step("Нажмите 'Создать документ продажи'");
@@ -92,7 +91,7 @@ public class SalesDocumentsTest extends AppBaseSteps {
         expectedSalesDocument.setPin(Integer.valueOf(testPinCode));
         expectedSalesDocument.setDocumentType("Создан");
         expectedSalesDocument.setWhereFrom("Из торгового зала");
-        expectedSalesDocument.setNumber(Long.valueOf("1912" + documentNumber));
+        expectedSalesDocument.setNumber(Long.valueOf("2001" + documentNumber));
         submittedSalesDocumentPage.clickSubmitButton()
                 .shouldSalesDocumentByIndexIs(0, expectedSalesDocument);
     }

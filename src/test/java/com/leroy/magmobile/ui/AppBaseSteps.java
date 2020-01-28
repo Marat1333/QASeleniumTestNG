@@ -6,7 +6,7 @@ import com.leroy.magmobile.ui.pages.LoginAppPage;
 import com.leroy.magmobile.ui.pages.common.BottomMenuPage;
 import com.leroy.magmobile.ui.pages.more.MorePage;
 import com.leroy.magmobile.ui.pages.more.UserProfilePage;
-import com.leroy.magmobile.ui.pages.sales.SalesDocumentsPage;
+import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
 import com.leroy.magmobile.ui.pages.sales.SalesPage;
 import com.leroy.magmobile.ui.pages.sales.basket.BasketStep1Page;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
@@ -31,7 +31,7 @@ public class AppBaseSteps extends BaseState {
         SalesPage salesPage = new SalesPage(context);
         if (pageClass.equals(SalesPage.class)) {
             return (T) salesPage;
-        } else if (pageClass.equals(SalesDocumentsPage.class)) {
+        } else if (pageClass.equals(MainSalesDocumentsPage.class)) {
             return (T) salesPage.goToSalesDocumentsSection();
         } else if (pageClass.equals(WorkPage.class)) {
             return (T) salesPage.goToWork();
