@@ -10,6 +10,8 @@ settings:
 
   # /Users/xhqautomation/node_modules/appium/node_modules/appium-chromedriver/chromedriver/mac/chromedriver
 
+  # Application Activate: ru.leroymerlin.magasin.uat
+
   #---------------------------------
   #              mobile
   #---------------------------------
@@ -19,14 +21,19 @@ capabilities:
     android_app:
       deviceName: "chrome"
       #browserName: "chrome"
-      version: "mobile-75.0-gap"
+      version: "mobile-75.0"
       acceptInsecureCerts: true
       autoDismissAlerts: true
       autoGrantPermissions: true
+      newCommandTimeout: 60000
+      androidInstallTimeout: 60000
+      uiautomator2ServerInstallTimeout: 60000
+      adbExecTimeout: 60000
       #deviceOrientation: portrait
       autoAcceptAlerts: true
-      #automationName: uiautomator2
-      app: https://cloclo4.datacloudmail.ru/weblink/view/3Cho/5MzNyY8PP?etag=376CE7AD45104DEB770BEED90EF1767AC15569FD&key=b5b6fa9217f547e9035b0b1d42eb408d4604a3cb
+      automationName: uiautomator2
+      #app: https://cloclo4.datacloudmail.ru/weblink/view/3Cho/5MzNyY8PP?etag=376CE7AD45104DEB770BEED90EF1767AC15569FD&key=b5b6fa9217f547e9035b0b1d42eb408d4604a3cb
+      app: https://doc-00-a8-docs.googleusercontent.com/docs/securesc/ha0ro937gcuc7l7deffksulhg5h7mbp1/8vp8h4u682ikegri7df5parid7q3pcs7/1580220000000/09662814724293400398/*/1W2cgPGen6y6XAoF5-g78euZilrfCXWq2?e=download
       enableVNC: true
       enableVideo: false
       env:
@@ -36,7 +43,6 @@ capabilities:
 
     android_browser:
       deviceName: "chrome"
-      version: "mobile-75.0-gap"
-      app: https://cloclo4.datacloudmail.ru/weblink/view/3Cho/5MzNyY8PP?etag=376CE7AD45104DEB770BEED90EF1767AC15569FD&key=b5b6fa9217f547e9035b0b1d42eb408d4604a3cb
+      version: "mobile-75.0"
       enableVNC: true
       enableVideo: false
