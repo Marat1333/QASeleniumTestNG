@@ -2,26 +2,24 @@ package com.leroy.magmobile.ui.tests;
 
 import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
-import com.leroy.models.UserData;
+import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.common.*;
 import com.leroy.magmobile.ui.pages.common.modal.SortPage;
 import com.leroy.magmobile.ui.pages.sales.PricesAndQuantityPage;
 import com.leroy.magmobile.ui.pages.sales.SalesPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.SimilarProductsPage;
-import com.leroy.magmobile.ui.AppBaseSteps;
-import org.testng.annotations.Ignore;
+import com.leroy.models.UserData;
+import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.base.BaseModule;
 import ru.leroymerlin.qa.core.clients.base.Response;
 import ru.leroymerlin.qa.core.clients.magmobile.MagMobileClient;
-import org.testng.annotations.Guice;
 import ru.leroymerlin.qa.core.clients.magmobile.data.ProductItemListResponse;
 import ru.leroymerlin.qa.core.clients.magmobile.enums.CatalogSearchFields;
 import ru.leroymerlin.qa.core.clients.magmobile.enums.SortingOrder;
 import ru.leroymerlin.qa.core.clients.magmobile.requests.GetCatalogSearch;
 
-import javax.annotation.Priority;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -40,43 +38,43 @@ public class SearchTest extends AppBaseSteps {
         String lmCode = "10008698";
         String searchContext = "Тепломир радиатор";
         String barCode = "5902120110575";
-        String shortLmCode = "100";
+        String shortLmCode = "1234";
         String shortBarCode = "590212011";
 
         GetCatalogSearch byLmParams = new GetCatalogSearch()
-                .pageSize("10")
-                .shopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .sortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
-                .startFrom("1")
-                .byLmCode(lmCode);
+                .setPageSize(10)
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
+                .setStartFrom(1)
+                .setByLmCode(lmCode);
 
         GetCatalogSearch byNameParams = new GetCatalogSearch()
-                .pageSize("10")
-                .shopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .sortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
-                .startFrom("1")
-                .byNameLike(searchContext);
+                .setPageSize(10)
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
+                .setStartFrom(1)
+                .setByNameLike(searchContext);
 
         GetCatalogSearch byBarCodeParams = new GetCatalogSearch()
-                .pageSize("10")
-                .shopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .sortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
-                .startFrom("1")
-                .byBarCode(barCode);
+                .setPageSize(10)
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
+                .setStartFrom(1)
+                .setByBarCode(barCode);
 
         GetCatalogSearch byShortLmCodeParams = new GetCatalogSearch()
-                .pageSize("10")
-                .shopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .sortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
-                .startFrom("1")
-                .byLmCode(shortLmCode);
+                .setPageSize(10)
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
+                .setStartFrom(1)
+                .setByLmCode(shortLmCode);
 
         GetCatalogSearch byShortBarCodeParams = new GetCatalogSearch()
-                .pageSize("10")
-                .shopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .sortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
-                .startFrom("1")
-                .byBarCode(shortBarCode);
+                .setPageSize(10)
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
+                .setStartFrom(1)
+                .setByBarCode(shortBarCode);
 
         Response<ProductItemListResponse> lmResponce = apiClient.searchProductsBy(byLmParams);
         Response<ProductItemListResponse> nameLikeResponce = apiClient.searchProductsBy(byNameParams);
@@ -114,7 +112,6 @@ public class SearchTest extends AppBaseSteps {
                 .verifyRequiredElements(true)
                 .shouldProductLMCodeIs(lmCode);
         searchProductPage = productCardPage.returnBack();
-
         // Step 6
         log.step("Введите название товара для поиска");
         searchProductPage.enterTextInSearchFieldAndSubmit(searchContext);
@@ -124,9 +121,8 @@ public class SearchTest extends AppBaseSteps {
         log.step("Ввести штрихкод вручную");
         searchProductPage.enterTextInSearchFieldAndSubmit(barCode);
 
-        //TODO Добавить проверку что мы оказались на странице с карточкой товара
-
         productCardPage = new ProductDescriptionPage(context)
+                .verifyRequiredElements(true)
                 .shouldProductBarCodeIs(barCode);
         searchProductPage = productCardPage.returnBack();
 
@@ -151,7 +147,6 @@ public class SearchTest extends AppBaseSteps {
         // Pre-conditions
         SalesPage salesPage = loginAndGoTo(SalesPage.class);
         SearchProductPage searchProductPage = salesPage.clickSearchBar(false);
-        SuppliersSearchPage suppliersSearchPage = new SuppliersSearchPage(context);
         MyShopFilterPage filterPage = searchProductPage.goToFilterPage();
 
         // Step 1
@@ -178,6 +173,7 @@ public class SearchTest extends AppBaseSteps {
         // Step 5
         log.step("выбрать 1 поставщика");
         filterPage.goToSuppliersSearchPage();
+        SuppliersSearchPage suppliersSearchPage = new SuppliersSearchPage(context);
         suppliersSearchPage.verifyRequiredElements();
 
         suppliersSearchPage.searchSupplier(supplierSearchContext);
@@ -244,12 +240,14 @@ public class SearchTest extends AppBaseSteps {
 
     @Test(description = "C22789172 На поисковой запрос не вернулись результаты", priority = 2)
     public void testC22789172() throws Exception {
+
+        //TODO добавить проверку на отклонение по координатам
         UserData seller = new UserData(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS);
 
         // Pre-conditions
         SalesPage salesPage = loginAndGoTo(SalesPage.class);
         SearchProductPage searchProductPage = salesPage.clickSearchBar(false);
-        String byName = "А13";
+        String byName = "АFHF13dasf";
 
         // Step 1
         log.step("Ввести в поле поиска значение, результат поиска по которому не вернется");
@@ -385,58 +383,56 @@ public class SearchTest extends AppBaseSteps {
         searchProductPage.openSortPage()
                 .selectSort(SortPage.SORT_BY_AVAILABLE_STOCK_DESC)
                 .shouldProductCardsBeSorted(SortPage.SORT_BY_AVAILABLE_STOCK_DESC, countOfCheckedProducts);
-
-        //TODO Проверить сортировку ответа сервиса
     }
 
     @Test(description = "C22789201 Номенклатура, Навигация и Поиск по структурным элементам номенклатуры", priority = 2)
     public void testC22789201() throws Exception {
-        // Pre-conditions
-        SalesPage salesPage = loginAndGoTo(SalesPage.class);
         String dept = "015";
         String subDept = "1510";
         String classId = "0030";
         String subClassId = "0020";
 
         GetCatalogSearch subclassParams = new GetCatalogSearch()
-                .departmentId(dept.replaceAll("^0+",""))
-                .shopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .sortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
-                .startFrom("1")
-                .pageSize("10")
-                .subDepartmentId(subDept.replaceAll("^0+",""))
-                .classId(classId.replaceAll("^0+",""))
-                .subclassId(subClassId.replaceAll("^0+",""));
+                .setDepartmentId(dept.replaceAll("^0+", ""))
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
+                .setStartFrom(1)
+                .setPageSize(10)
+                .setSubDepartmentId(subDept.replaceAll("^0+", ""))
+                .setClassId(classId.replaceAll("^0+", ""))
+                .setSubclassId(subClassId.replaceAll("^0+", ""));
 
         GetCatalogSearch classParams = new GetCatalogSearch()
-                .departmentId(dept.replaceAll("^0+",""))
-                .shopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .sortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
-                .startFrom("1")
-                .pageSize("10")
-                .subDepartmentId(subDept.replaceAll("^0+",""))
-                .classId(classId.replaceAll("^0+",""));
+                .setDepartmentId(dept.replaceAll("^0+", ""))
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
+                .setStartFrom(1)
+                .setPageSize(10)
+                .setSubDepartmentId(subDept.replaceAll("^0+", ""))
+                .setClassId(classId.replaceAll("^0+", ""));
 
         GetCatalogSearch subdepartmentParams = new GetCatalogSearch()
-                .departmentId(dept.replaceAll("^0+",""))
-                .shopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .sortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
-                .startFrom("1")
-                .pageSize("10")
-                .subDepartmentId(subDept.replaceAll("^0+",""));
+                .setDepartmentId(dept.replaceAll("^0+", ""))
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
+                .setStartFrom(1)
+                .setPageSize(10)
+                .setSubDepartmentId(subDept.replaceAll("^0+", ""));
 
         GetCatalogSearch departmentParams = new GetCatalogSearch()
-                .departmentId(dept.replaceAll("^0+",""))
-                .shopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .sortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
-                .startFrom("1")
-                .pageSize("10");
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
+                .setStartFrom(1)
+                .setPageSize(10)
+                .setDepartmentId(dept.replaceAll("^0+", ""));
 
-        Response <ProductItemListResponse> subclassNomenclatureResponce = apiClient.searchProductsBy(subclassParams);
-        Response <ProductItemListResponse> classNomenclatureResponce = apiClient.searchProductsBy(classParams);
-        Response <ProductItemListResponse> subdepartmentNomenclatureResponce = apiClient.searchProductsBy(subdepartmentParams);
-        Response <ProductItemListResponse> departmentNomenclatureResponce = apiClient.searchProductsBy(departmentParams);
+        Response<ProductItemListResponse> subclassNomenclatureResponce = apiClient.searchProductsBy(subclassParams);
+        Response<ProductItemListResponse> classNomenclatureResponce = apiClient.searchProductsBy(classParams);
+        Response<ProductItemListResponse> subdepartmentNomenclatureResponce = apiClient.searchProductsBy(subdepartmentParams);
+        Response<ProductItemListResponse> departmentNomenclatureResponce = apiClient.searchProductsBy(departmentParams);
 
+        // Pre-conditions
+        SalesPage salesPage = loginAndGoTo(SalesPage.class);
         SearchProductPage searchProductPage = salesPage.clickSearchBar(true);
 
         // Step 1
@@ -470,7 +466,7 @@ public class SearchTest extends AppBaseSteps {
         nomenclatureSearchPage.returnBackNTimes(1);
         nomenclatureSearchPage.choseDepartmentId(dept, subDept, null, null);
 
-        nomenclatureSearchPage.shouldTitleWithNomenclatureIs(dept+subDept);
+        nomenclatureSearchPage.shouldTitleWithNomenclatureIs(dept + subDept);
         nomenclatureSearchPage.clickShowAllProductsBtn();
         searchProductPage.shouldSelectedNomenclatureIs(subDept, false);
         searchProductPage.shouldResponceEqualsContent(subdepartmentNomenclatureResponce, true);
@@ -481,7 +477,7 @@ public class SearchTest extends AppBaseSteps {
         nomenclatureSearchPage.returnBackNTimes(2);
         nomenclatureSearchPage.choseDepartmentId(dept, subDept, classId, null);
 
-        nomenclatureSearchPage.shouldTitleWithNomenclatureIs(dept+subDept+classId);
+        nomenclatureSearchPage.shouldTitleWithNomenclatureIs(dept + subDept + classId);
         nomenclatureSearchPage.clickShowAllProductsBtn();
         searchProductPage.shouldSelectedNomenclatureIs(classId, false);
         searchProductPage.shouldResponceEqualsContent(classNomenclatureResponce, true);
@@ -492,7 +488,7 @@ public class SearchTest extends AppBaseSteps {
         nomenclatureSearchPage.returnBackNTimes(3);
         nomenclatureSearchPage.choseDepartmentId(dept, subDept, classId, subClassId);
 
-        nomenclatureSearchPage.shouldTitleWithNomenclatureIs(dept+subDept+classId+subClassId);
+        nomenclatureSearchPage.shouldTitleWithNomenclatureIs(dept + subDept + classId + subClassId);
         nomenclatureSearchPage.clickShowAllProductsBtn();
         searchProductPage.shouldSelectedNomenclatureIs(subClassId, false);
         searchProductPage.shouldResponceEqualsContent(subclassNomenclatureResponce, true);

@@ -20,6 +20,8 @@ import io.qameta.allure.Step;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import ru.leroymerlin.qa.core.clients.base.Response;
 import ru.leroymerlin.qa.core.clients.magmobile.data.ProductItemListResponse;
 import ru.leroymerlin.qa.core.clients.magmobile.data.ProductItemResponse;
@@ -50,7 +52,7 @@ public class SearchProductPage extends BaseAppPage {
     private AndroidScrollView<ProductCardData> productCardsScrollView = new AndroidScrollView<>(driver,
             new CustomLocator(By.xpath("//android.view.ViewGroup[@content-desc=\"ScreenContent\"]/android.view.ViewGroup[1]/android.view.ViewGroup/android.widget.ScrollView"), null,
                     "", false),
-            ".//android.view.ViewGroup[android.widget.ImageView]", SearchProductCardWidget.class);
+            ".//android.view.ViewGroup[android.view.ViewGroup[android.widget.ImageView]]", SearchProductCardWidget.class);
 
 
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ScreenContent']//android.view.ViewGroup[android.widget.ImageView]",
@@ -145,13 +147,15 @@ public class SearchProductPage extends BaseAppPage {
 
     @Step("Ввести поисковой запрос со случайным текстом {value} раз и инициировать поиск")
     public List<String> createSearchHistory(int value) {
+        pageSource=driver.getPageSource();
         List<String> searchHistory = new ArrayList<>();
-        String tmp = RandomStringUtils.randomAlphanumeric(1);
+        String tmp = "1";
         for (int i = 0; i < value; i++) {
-            searchField.fill(tmp)
-                    .submit();
+            searchField.fill(tmp);
+            waitForContentHasChanged(pageSource,2);
+            searchField.submit();
             searchHistory.add(tmp);
-            tmp = tmp + RandomStringUtils.randomAlphanumeric(1);
+            tmp = tmp + "1";
         }
         return searchHistory;
     }
@@ -173,6 +177,7 @@ public class SearchProductPage extends BaseAppPage {
     @Step("Введите {text} в поле поиска товара")
     public SearchProductPage enterTextInSearchField(String text) {
         searchField.clearAndFill(text);
+        hideKeyboard();
         return this;
     }
 
@@ -276,23 +281,28 @@ public class SearchProductPage extends BaseAppPage {
         return this;
     }
 
-    public void shouldProductCardsContainText(String text) {
+    public void shouldProductCardsContainText(String text) throws Exception {
         String[] searchWords = null;
         if (text.contains(" "))
             searchWords = text.split(" ");
         anAssert.isFalse(E("contains(не найдено)").isVisible(), "Должен быть найден хотя бы один товар");
         anAssert.isTrue(productCards.getCount() > 1,
                 "Ничего не найдено для " + text);
-        for (SearchProductCardWidget card : productCards) {
-            if (searchWords != null) {
+        List<ProductCardData> productCardData = productCardsScrollView.getFullDataList(3);
+        for (ProductCardData cardData: productCardData){
+            if (text.matches("^\\d+")&&text.length()<=8){
+                anAssert.isTrue(cardData.getLmCode().contains(text),"ЛМ код товара "+cardData.getLmCode()+" не содрежит критерий поиска "+text);
+            }
+            if (text.matches("^\\d+")&&text.length()>8){
+                anAssert.isTrue(cardData.getBarCode().contains(text),"Штрих код товара "+cardData.getBarCode()+" не содрежит критерий поиска "+text);
+            }
+            if (searchWords!=null&&text.matches("\\D+")) {
                 for (String each : searchWords) {
-                    anAssert.isTrue(card.getName().toLowerCase().contains(each.toLowerCase()),
-                            String.format("Товар с кодом %s не содержит текст %s", card.getLmCode(false), text));
+                    each = each.toLowerCase();
+                    anAssert.isTrue(cardData.getName().toLowerCase().contains(each), "Название товара " + cardData.getName() + " не содержит критерий поиска " + text);
                 }
-            } else {
-                anAssert.isTrue(card.getBarCode(true).contains(text) ||
-                                card.getName().contains(text) || card.getLmCode(false).contains(text),
-                        String.format("Товар с кодом %s не содержит текст %s", card.getLmCode(false), text));
+            }else if (searchWords==null&&text.matches("\\D+")){
+                anAssert.isTrue(cardData.getName().toLowerCase().contains(text), "Название товара " + cardData.getName() + " не содержит критерий поиска " + text);
             }
         }
     }
@@ -337,13 +347,10 @@ public class SearchProductPage extends BaseAppPage {
             throw new Exception("Page size param should be equals to maxEntityCount");
         }
         if (strictEquality) {
-            for (int i = 0; i < productCardData.size(); i++) {
-                anAssert.isEquals(productCardData.get(i).getLmCode(), productData.get(i).getLmCode(), "ЛМ коды не совпадают");
-            }
+            anAssert.isTrue(productCardData.equals(productData), "Товары не совпадают");
         }else {
             for (int i=0;i<productCardData.size();i++){
                 anAssert.isTrue(productCardData.get(i).getLmCode().contains(productData.get(i).getLmCode()),"Продукты частично не совпадают по LM "+productData.get(i).getLmCode());
-                anAssert.isTrue(productCardData.get(i).getBarCode().contains(productData.get(i).getBarCode()),"Продукты частично совпадают по BAR "+productData.get(i).getBarCode());
                 anAssert.isTrue(productCardData.get(i).getBarCode().contains(productData.get(i).getBarCode()),"Продукты частично совпадают по BAR "+productData.get(i).getBarCode());
             }
         }
@@ -357,18 +364,17 @@ public class SearchProductPage extends BaseAppPage {
         List<ProductCardData> expectedSortedList = new ArrayList<>(dataList);
         switch (sortType) {
             case SortPage.SORT_BY_AVAILABLE_STOCK_ASC:
-                expectedSortedList.sort((d1, d2) ->
-                        Integer.parseInt(d2.getAvailableQuantity()) - Integer.parseInt(d1.getAvailableQuantity()));
+                expectedSortedList.sort(Comparator.comparingInt(d -> Integer.parseInt(d.getAvailableQuantity())));
                 break;
             case SortPage.SORT_BY_AVAILABLE_STOCK_DESC:
-                expectedSortedList.sort(Comparator.comparingInt(d -> Integer.parseInt(d.getAvailableQuantity())));
+                expectedSortedList.sort((d1, d2) ->
+                        Integer.parseInt(d2.getAvailableQuantity()) - Integer.parseInt(d1.getAvailableQuantity()));
                 break;
             case SortPage.SORT_BY_LM_ASC:
                 expectedSortedList.sort(Comparator.comparingInt(d -> Integer.parseInt(d.getLmCode())));
                 break;
             case SortPage.SORT_BY_LM_DESC:
-                expectedSortedList.sort((d1, d2) ->
-                        Integer.parseInt(d2.getLmCode()) - Integer.parseInt(d1.getLmCode()));
+                expectedSortedList.sort((d1, d2) -> Integer.parseInt(d2.getLmCode()) - Integer.parseInt(d1.getLmCode()));
                 break;
             default:
                 anAssert.isTrue(false,

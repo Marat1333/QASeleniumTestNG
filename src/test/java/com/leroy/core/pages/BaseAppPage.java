@@ -10,14 +10,21 @@ import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.PointOption;
 import io.qameta.allure.Step;
+import org.junit.rules.ExpectedException;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
 public class BaseAppPage extends BasePage {
 
     AndroidDriver<MobileElement> androidDriver;
+    protected String pageSource;
 
     @AppFindBy(xpath = "//android.widget.ProgressBar", cacheLookup = false, metaName = "Progress bar")
     private Element progressBar;
@@ -36,8 +43,26 @@ public class BaseAppPage extends BasePage {
         }
     }
 
+    protected boolean isContentChanged(String pageSource){
+        String tmpPageSource=androidDriver.getPageSource();
+        if (!tmpPageSource.equals(pageSource)){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
     protected void hideKeyboard() {
         androidDriver.hideKeyboard();
+    }
+
+    protected void waitForContentHasChanged(String pageSource, int timeout){
+        try {
+            new WebDriverWait(androidDriver, timeout)
+                    .until((ExpectedCondition<Boolean>) driverObject -> !(androidDriver.getPageSource().equals(pageSource)));
+        }catch (TimeoutException e){
+            Log.warn(String.format("waitForContentHasChanged failed (tried for %d second(s))", timeout));
+        }
     }
 
     protected void waitForProgressBarIsVisible() {

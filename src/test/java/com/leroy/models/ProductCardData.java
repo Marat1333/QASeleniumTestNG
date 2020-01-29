@@ -70,18 +70,32 @@ public class ProductCardData extends CardWidgetData {
 
     @Override
     public boolean equals(Object o) {
-        if (o==this) {
+        if (o == this) {
             return true;
-        }else {
+        }
+        if (o instanceof ProductItemResponse) {
+
+            ProductItemResponse productItemResponse = (ProductItemResponse) o;
+
+            return (lmCode.equals(productItemResponse.getLmCode())) &&
+                    (barCode.equals(productItemResponse.getBarCode())) &&
+                    (name.equals(productItemResponse.getTitle()));
+        }
+        if (o == null || o.getClass() != this.getClass()) {
             return false;
         }
-
-
-
+        else
+            return super.equals(o);
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        int prime=31;
+        int result=1;
+        result=prime*result + lmCode.hashCode();
+        result=prime*result + barCode.hashCode();
+        result=prime*result + name.hashCode();
+        return result;
     }
 }
+

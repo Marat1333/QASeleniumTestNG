@@ -43,22 +43,20 @@ public class NomenclatureSearchPage extends BaseAppPage {
 
     @Step("Вернитесь на окно выбора отдела")
     public NomenclatureSearchPage returnBackNTimes(int counter) throws Exception {
+        pageSource=getDriver().getPageSource();
         for (int y = 0; y < counter; y++) {
             if (!nomenclatureBackBtn.isVisible()) {
                 Log.error("Осуществлен переход во \"Все отделы\", перейти дальше невозможно");
                 throw new NoSuchElementException("There is no back button");
             }
             nomenclatureBackBtn.click();
+            waitForContentHasChanged(pageSource,5);
+            if (!isContentChanged(pageSource)){
+                nomenclatureBackBtn.click();
+                waitForContentHasChanged(pageSource,5);
+            }
         }
-        wait(2);
         return new NomenclatureSearchPage(context);
-    }
-
-
-    @Step("Показать товары по выбранной номенклатуре")
-    public SearchProductPage viewAllProducts() {
-        showAllGoods.click();
-        return new SearchProductPage(context);
     }
 
     @Step("Выбрать отдел {dept}, подотдел {subDept}, раздел {classId}, подраздел {subClass}")
@@ -73,26 +71,19 @@ public class NomenclatureSearchPage extends BaseAppPage {
             String refactoredClassId="";
             if (classId.length()==4)
             refactoredClassId=classId.replaceAll("^0","");
-
-            //TODO Заменить wait на изменение массива элементов
-            wait(2);
-
             selectElementFromArray(refactoredClassId, secondLevelNomenclatureElementsList);
         }
         if (dept != null && subDept != null && classId != null && subClass != null) {
             String refactoredSubClass="";
             if (subClass.length()==4)
             refactoredSubClass=subClass.replaceAll("^0","");
-
-            //TODO Заменить wait на изменение массива элементов
-            wait(2);
-
             selectElementFromArray(refactoredSubClass, secondLevelNomenclatureElementsList);
         }
         return new NomenclatureSearchPage(context);
     }
 
     private NomenclatureSearchPage selectElementFromArray(String value, ElementList<Element> someArray) throws Exception {
+        pageSource=getDriver().getPageSource();
         int counter = 0;
         for (Element element : someArray) {
             String tmp = element.findChildElement(eachElementOfNomenclatureXpath).getText();
@@ -102,6 +93,7 @@ public class NomenclatureSearchPage extends BaseAppPage {
             }
             if (tmp.equals(value)) {
                 element.findChildElement(eachElementOfNomenclatureXpath).click();
+                waitForContentHasChanged(pageSource,5);
                 counter++;
                 break;
             }
@@ -140,11 +132,9 @@ public class NomenclatureSearchPage extends BaseAppPage {
     }
 
     public NomenclatureSearchPage shouldTitleWithNomenclatureIs(String text) throws Exception {
-        //TODO Убрать wait после реализации проверки выше
-        wait(2);
         String format = "%s - %s - %s - %s";
         String emptyText = "_ _ _";
-        String expectedText="";
+        String expectedText = "";
 
         if (text.length() % 3 == 0 && text.length() != 15 && !text.isEmpty()) {
             if (text.contains("_"))
