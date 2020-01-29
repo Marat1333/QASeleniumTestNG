@@ -163,7 +163,7 @@ public abstract class BaseContainer {
         if (str.startsWith("/")) {
             locator = new CustomLocator(By.xpath(str), metaName);
         } else if (str.startsWith("#")) {
-            locator = new CustomLocator(By.id(str.replaceFirst("#", "")), metaName);
+            locator = new CustomLocator(By.cssSelector(str), metaName);
         } else if (str.startsWith("$")) {
             locator = new CustomLocator(str.replaceFirst("\\$", ""), metaName);
         } else if (str.contains("contains(")) {

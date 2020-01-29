@@ -22,12 +22,15 @@ public class AppBaseSteps extends BaseState {
 
     public <T> T loginAndGoTo(UserData userData, Class<? extends BaseAppPage> pageClass) throws Exception {
         AndroidDriver<MobileElement> androidDriver = (AndroidDriver<MobileElement>) driver;
+        Element redirectBtn = new Element(driver, By.xpath("//*[@resource-id='buttonRedirect']"));
         new LoginAppPage(context).clickLoginButton();
         /// If the Chrome starts first time and we can see pop-up windows
+        boolean moon = false;
         Element termsAcceptBtn = new Element(driver,
                 By.id("com.android.chrome:id/terms_accept"));
         if (termsAcceptBtn.isVisible(5)) {
             termsAcceptBtn.click();
+            moon = true;
             driver.findElement(By.id("com.android.chrome:id/next_button")).click();
             //driver.findElement(By.id("com.android.chrome:id/negative_button")).click();
         }
@@ -35,12 +38,18 @@ public class AppBaseSteps extends BaseState {
                 a -> androidDriver.getContextHandles().size() > 1);
         ///
         androidDriver.context("WEBVIEW_chrome");
-        // Skip invalid certificates
-        new ChromeCertificateErrorPage(context).skipSiteSecureError();
-        ///
-        new LoginWebPage(context).logIn(userData);
+        if (moon) {
+            new ChromeCertificateErrorPage(context).skipSiteSecureError();
+            new LoginWebPage(context).logIn(userData);
+            androidDriver.context("NATIVE_APP");
+            //if (redirectBtn.isVisible())
+            redirectBtn.click();
+        } else {
+            LoginWebPage loginWebPage = new LoginWebPage(context);
+            if (loginWebPage.isLoginFormVisible())
+                loginWebPage.logIn(userData);
+        }
         androidDriver.context("NATIVE_APP");
-        androidDriver.findElement(By.xpath("//*[@resource-id='buttonRedirect']")).click();
         SalesPage salesPage = new SalesPage(context);
         if (pageClass.equals(SalesPage.class)) {
             return (T) salesPage;

@@ -25,6 +25,10 @@ public class LoginWebPage extends BaseWebPage {
         loginBtn.click();
     }
 
+    public boolean isLoginFormVisible() {
+        return usernameFld.isVisible();
+    }
+
     public void logIn() {
         logIn(new UserData(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS));
     }
