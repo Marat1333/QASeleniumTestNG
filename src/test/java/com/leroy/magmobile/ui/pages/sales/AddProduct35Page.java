@@ -52,11 +52,16 @@ public class AddProduct35Page extends CommonMagMobilePage {
         waitForProgressBarIsInvisible();
     }
 
-    public Double getPrice() {
+    /**
+     * Получить Цену продукта за единицу товара
+     */
+    public String getPrice() {
+        String _priceValue = price.getText().replaceAll("₽/м²|₽/шт.", "").trim();
         try {
-            return Double.valueOf(price.getText().replaceAll(" ₽/м²| ₽", ""));
+            Double.parseDouble(_priceValue);
+            return _priceValue;
         } catch (NumberFormatException err) {
-            anAssert.isTrue(false, "Цена имеет не правильный формат: " + price.getText());
+            anAssert.isTrue(false, "Цена имеет не правильный формат: " + _priceValue);
             throw err;
         }
     }

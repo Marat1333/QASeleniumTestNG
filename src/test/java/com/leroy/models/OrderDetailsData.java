@@ -5,11 +5,34 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 public class OrderDetailsData extends BaseModel {
 
+    public enum DeliveryType {
+        PICKUP("Самовывоз"), DELIVERY("Доставка");
+
+        String value;
+
+        DeliveryType(String val) {
+            this.value = val;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    private DeliveryType deliveryType;
     private String fullName;
     private String phone;
     private String email;
     private String pinCode;
     private String comment;
+
+    public DeliveryType getDeliveryType() {
+        return deliveryType;
+    }
+
+    public void setDeliveryType(DeliveryType deliveryType) {
+        this.deliveryType = deliveryType;
+    }
 
     public String getFullName() {
         return fullName;

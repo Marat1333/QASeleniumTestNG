@@ -55,6 +55,12 @@ public class ProcessOrder35Page extends CommonMagMobilePage {
 
     // Ваш заказ
 
+    @AppFindBy(text = "Итого: ")
+    Element totalPriceLbl;
+
+    @AppFindBy(followingTextAfter = "Итого: ")
+    Element totalPriceVal;
+
     @AppFindBy(text = "ПОДТВЕРДИТЬ ЗАКАЗ")
     MagMobSubmitButton submitButton;
 

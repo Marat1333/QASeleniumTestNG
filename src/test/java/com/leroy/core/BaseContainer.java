@@ -13,6 +13,7 @@ import io.appium.java_client.android.AndroidDriver;
 import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Quotes;
 import org.testng.util.Strings;
@@ -158,12 +159,25 @@ public abstract class BaseContainer {
         }
     }
 
+    /**
+     * Get Source from Page / Screen
+     * @return page source
+     */
+    protected String getPageSource() {
+        try {
+            return driver.getPageSource();
+        } catch (WebDriverException err) {
+            Log.warn(err.getMessage());
+            return driver.getPageSource();
+        }
+    }
+
     protected CustomLocator buildLocator(String str, String metaName) {
         CustomLocator locator;
         if (str.startsWith("/")) {
             locator = new CustomLocator(By.xpath(str), metaName);
         } else if (str.startsWith("#")) {
-            locator = new CustomLocator(By.id(str.replaceFirst("#", "")), metaName);
+            locator = new CustomLocator(By.cssSelector(str), metaName);
         } else if (str.startsWith("$")) {
             locator = new CustomLocator(str.replaceFirst("\\$", ""), metaName);
         } else if (str.contains("contains(")) {

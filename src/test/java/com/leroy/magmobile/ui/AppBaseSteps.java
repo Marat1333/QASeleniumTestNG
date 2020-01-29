@@ -2,6 +2,8 @@ package com.leroy.magmobile.ui;
 
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.pages.BaseAppPage;
+import com.leroy.core.pages.ChromeCertificateErrorPage;
+import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.LoginAppPage;
 import com.leroy.magmobile.ui.pages.common.BottomMenuPage;
 import com.leroy.magmobile.ui.pages.more.MorePage;
@@ -19,14 +21,40 @@ import com.leroy.temp_ui.BaseState;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidDriver;
 import io.qameta.allure.Step;
+import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class AppBaseSteps extends BaseState {
 
     public <T> T loginAndGoTo(UserData userData, Class<? extends BaseAppPage> pageClass) throws Exception {
         AndroidDriver<MobileElement> androidDriver = (AndroidDriver<MobileElement>) driver;
+        Element redirectBtn = new Element(driver, By.xpath("//*[@resource-id='buttonRedirect']"));
         new LoginAppPage(context).clickLoginButton();
+        /// If the Chrome starts first time and we can see pop-up windows
+        boolean moon = false;
+        Element termsAcceptBtn = new Element(driver,
+                By.id("com.android.chrome:id/terms_accept"));
+        if (termsAcceptBtn.isVisible(5)) {
+            termsAcceptBtn.click();
+            moon = true;
+            driver.findElement(By.id("com.android.chrome:id/next_button")).click();
+            //driver.findElement(By.id("com.android.chrome:id/negative_button")).click();
+        }
+        new WebDriverWait(this.driver, 30).until(
+                a -> androidDriver.getContextHandles().size() > 1);
+        ///
         androidDriver.context("WEBVIEW_chrome");
-        new LoginWebPage(context).logIn(userData);
+        if (moon) {
+            new ChromeCertificateErrorPage(context).skipSiteSecureError();
+            new LoginWebPage(context).logIn(userData);
+            androidDriver.context("NATIVE_APP");
+            //if (redirectBtn.isVisible())
+            redirectBtn.click();
+        } else {
+            LoginWebPage loginWebPage = new LoginWebPage(context);
+            if (loginWebPage.isLoginFormVisible())
+                loginWebPage.logIn(userData);
+        }
         androidDriver.context("NATIVE_APP");
         SalesPage salesPage = new SalesPage(context);
         if (pageClass.equals(SalesPage.class)) {
@@ -54,6 +82,7 @@ public class AppBaseSteps extends BaseState {
     /**
      * Login in an application, create a draft of a sales document for product
      * and return to the Sales page
+     *
      * @param lmCode - lmCode of the product
      * @return - Document number of the draft
      */
@@ -74,7 +103,7 @@ public class AppBaseSteps extends BaseState {
 
     @Step("Установить магазин {shop} и отдел {department} для пользователя")
     protected UserProfilePage setShopAndDepartmentForUser(BottomMenuPage page, String shop, String department)
-            throws Exception{
+            throws Exception {
         return page.goToMoreSection()
                 .goToUserProfile()
                 .goToEditShopForm()

@@ -5,9 +5,9 @@ import com.leroy.core.BaseModel;
 public class SalesDocumentData extends BaseModel {
 
     private String whereFrom;
-    private Double price;
-    private Long number;
-    private Integer pin;
+    private String price;
+    private String number;
+    private String pin;
     private String date;
     private String documentType;
 
@@ -19,27 +19,27 @@ public class SalesDocumentData extends BaseModel {
         this.whereFrom = whereFrom;
     }
 
-    public Double getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 
-    public Long getNumber() {
+    public String getNumber() {
         return number;
     }
 
-    public void setNumber(Long number) {
+    public void setNumber(String number) {
         this.number = number;
     }
 
-    public Integer getPin() {
+    public String getPin() {
         return pin;
     }
 
-    public void setPin(Integer pin) {
+    public void setPin(String pin) {
         this.pin = pin;
     }
 

@@ -141,7 +141,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
             }
             ElementList<CardWidget<T>> cardWidgetList = this.findChildElements(oneRowXpath, rowWidgetClass);
             List<T> currentVisibleDataList = new ArrayList<>();
-            String pageSource = driver.getPageSource();
+            String pageSource = getPageSource();
             if (findElement != null) {
                 if (findElement.isVisible(pageSource))
                     break;

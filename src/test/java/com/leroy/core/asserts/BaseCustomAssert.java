@@ -74,7 +74,7 @@ public abstract class BaseCustomAssert {
                     actualResultText, "Ожидаемое значение: " + expected.toString());
         }
         if (isSoft)
-            softAssert.assertEquals(actual, expected, desc);
+            softAssert.assertEquals(actual, expected, actualResultText);
         else
             Assert.assertEquals(actual, expected, desc);
     }

@@ -67,11 +67,13 @@ public class AddProductPage extends CommonMagMobilePage {
         waitForProgressBarIsInvisible();
     }
 
-    public Double getPrice() {
+    public String getPrice() {
+        String _priceValue = price.getText().replaceAll(" ₽/м²", "");
         try {
-            return Double.valueOf(price.getText().replaceAll(" ₽/м²", ""));
+            Double.parseDouble(_priceValue);
+            return _priceValue;
         } catch (NumberFormatException err) {
-            anAssert.isTrue(false, "Цена имеет не правильный формат: " + price.getText());
+            anAssert.isTrue(false, "Цена имеет не правильный формат: " + _priceValue);
             throw err;
         }
     }
@@ -121,11 +123,10 @@ public class AddProductPage extends CommonMagMobilePage {
         return this;
     }
 
-    public AddProductPage shouldTotalPriceIs(Double number) {
+    public AddProductPage shouldTotalPriceIs(String number) {
         String sTotalPrice = totalPrice.getText().replaceAll(" ₽", "")
                 .replaceAll(",", ".");
-        Double total = Double.valueOf(sTotalPrice);
-        anAssert.isEquals(total, number, "Сумма должна быть равна %s");
+        anAssert.isEquals(sTotalPrice, number, "Сумма должна быть равна %s");
         return this;
     }
 }

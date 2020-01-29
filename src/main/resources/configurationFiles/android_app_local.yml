@@ -18,17 +18,16 @@ capabilities:
   android_phone:
     android_app:
       platformName: Android
-      browserName: chrome
+      #browserName: chrome
       appiumVersion: 1.15.1
       autoDismissAlerts: true
       autoGrantPermissions: true
       deviceOrientation: portrait
       autoAcceptAlerts: true
       automationName: uiautomator2
-      newCommandTimeout: 60000
+      newCommandTimeout: 600
       platformVersion: '10.0' #'8.1'
       deviceName: Nexus 5 API 29 #samsung SM-J530FM
-      app: /home/ddimitrash/IdeaProjects/auto-tests/src/LMLF-1.1.2-b3001-BRANCH-story-LFRONT-2692-R3-bugfix.apk
 
     android_browser:
       browserName: chrome
@@ -37,24 +36,4 @@ capabilities:
       platformName: Android
       automationName: uiautomator2
       newCommandTimeout: 60000
-      deviceOrientation: portrait
-
-  android_tablet:
-    android_app:
-      platformName: Android
-      appiumVersion: 1.6.5
-      autoDismissAlerts: true
-      autoGrantPermissions: true
-      deviceOrientation: portrait
-      autoAcceptAlerts: true
-      automationName: uiautomator2
-      newCommandTimeout: 6000
-      platformVersion: '8.0'
-      deviceName: Nexus_9
-
-    android_browser:
-      browserName: Chrome
-      deviceName: Nexus_9_portrait
-      platformVersion: '9'
-      platformName: Android
       deviceOrientation: portrait

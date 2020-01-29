@@ -47,7 +47,8 @@ public class SalesDocumentsTest extends AppBaseSteps {
 
         // Step #6
         log.step("Введите значение 20,5 количества товара");
-        Double expectedTotalPrice = addProductPage.getPrice() * 20.5;
+        String expectedTotalPrice = String.valueOf(
+                Double.parseDouble(addProductPage.getPrice()) * 20.5);
         addProductPage.enterQuantityOfProduct("20,5")
                 .shouldTotalPriceIs(expectedTotalPrice);
 
@@ -88,10 +89,10 @@ public class SalesDocumentsTest extends AppBaseSteps {
         log.step("Нажмите кнопку Перейти в список документов");
         SalesDocumentData expectedSalesDocument = new SalesDocumentData();
         expectedSalesDocument.setPrice(expectedTotalPrice);
-        expectedSalesDocument.setPin(Integer.valueOf(testPinCode));
+        expectedSalesDocument.setPin(testPinCode);
         expectedSalesDocument.setDocumentType("Создан");
         expectedSalesDocument.setWhereFrom("Из торгового зала");
-        expectedSalesDocument.setNumber(Long.valueOf("2001" + documentNumber));
+        expectedSalesDocument.setNumber("2001" + documentNumber);
         submittedSalesDocumentPage.clickSubmitButton()
                 .shouldSalesDocumentByIndexIs(0, expectedSalesDocument);
     }

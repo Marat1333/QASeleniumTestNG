@@ -33,15 +33,6 @@ public class BasePage extends BaseContainer {
         waitForPageIsLoaded();
     }
 
-    protected String getPageSource() {
-        try {
-            return driver.getPageSource();
-        } catch (WebDriverException err) {
-            Log.warn(err.getMessage());
-            return driver.getPageSource();
-        }
-    }
-
     public void waitForPageIsLoaded() {
     }
 

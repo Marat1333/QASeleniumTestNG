@@ -261,7 +261,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
     }
 
     @Test(description = "C22847027 35 магазин - создание заказа")
-    public void ttt() throws Exception {
+    public void test35ShopCreatingOrder() throws Exception {
         // Pre-condition
         String shopId = "35";
         boolean hasAvailableStock = false; //new Random().nextInt(2) == 1; // No one product with "hasAvailableStock" on dev environment
@@ -286,6 +286,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         log.step("Нажмите Корзина");
         AddProduct35Page addProduct35Page = modalPage.clickBasketMenuItem()
                 .verifyRequiredElements();
+        String expectedTotalPrice = addProduct35Page.getPrice();
 
         // Step #6
         log.step("Нажмите Добавить в корзину");
@@ -299,31 +300,29 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
 
         // Step #8
         log.step("Заполните поля Имя и Фамилия, Телефон, PIN-код для оплаты");
-        OrderDetailsData data = new OrderDetailsData().setRequiredRandomData();
-        processOrder35Page.fillInFormFields(data)
-                .shouldFormFieldsAre(data);
+        OrderDetailsData orderDetailsData = new OrderDetailsData().setRequiredRandomData();
+        orderDetailsData.setDeliveryType(OrderDetailsData.DeliveryType.PICKUP);
+        processOrder35Page.fillInFormFields(orderDetailsData)
+                .shouldFormFieldsAre(orderDetailsData);
 
         // Step #9
         log.step("Нажмите на кнопку Подтвердить заказ");
         SubmittedSalesDocument35Page submittedDocument35Page = processOrder35Page.clickSubmitButton()
                 .verifyRequiredElements()
-                .shouldPinCodeIs(data.getPinCode());
+                .shouldPinCodeIs(orderDetailsData.getPinCode());
         String documentNumber = submittedDocument35Page.getDocumentNumber(true);
 
         // Step #10
         log.step("Нажмите на кнопку Перейти в список документов");
         SalesDocumentData expectedSalesDocument = new SalesDocumentData();
-        //expectedSalesDocument.setPrice(expectedTotalPrice);
-        //expectedSalesDocument.setPin(Integer.valueOf(testPinCode));
+        expectedSalesDocument.setPrice(expectedTotalPrice);
+        expectedSalesDocument.setPin(orderDetailsData.getPinCode());
         expectedSalesDocument.setDocumentType("Автообработка");
-        expectedSalesDocument.setWhereFrom("Самовывоз"); // TODO
-        expectedSalesDocument.setNumber(Long.valueOf(documentNumber));
+        expectedSalesDocument.setWhereFrom(orderDetailsData.getDeliveryType().getValue());
+        expectedSalesDocument.setNumber(documentNumber);
         submittedDocument35Page
                 .clickSubmitButton()
                 .shouldSalesDocumentByIndexIs(0, expectedSalesDocument);
-
-
-        String s = "";
     }
 
     // ---------------------- TYPICAL TESTS FOR THIS CLASS -------------------//
