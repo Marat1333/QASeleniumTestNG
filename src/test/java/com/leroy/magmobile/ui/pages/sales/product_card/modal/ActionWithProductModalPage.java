@@ -3,22 +3,14 @@ package com.leroy.magmobile.ui.pages.sales.product_card.modal;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.AddProductPage;
 import io.qameta.allure.Step;
 
-public class ActionWithProductModalPage extends CommonMagMobilePage {
+public class ActionWithProductModalPage extends CommonActionWithProductModalPage {
 
     public ActionWithProductModalPage(TestContext context) {
         super(context);
     }
-
-    @AppFindBy(xpath = "(//android.view.ViewGroup[@content-desc=\"Button\"])[1]/android.view.ViewGroup",
-            metaName = "Кнопка для закрытия модального окна")
-    Element closeBtn;
-
-    @AppFindBy(text = "Действия с товаром")
-    Element headerLbl;
 
     @AppFindBy(text = "Добавить в документ продажи")
     Element addIntoSalesDocumentBtn;
@@ -28,14 +20,6 @@ public class ActionWithProductModalPage extends CommonMagMobilePage {
 
     @AppFindBy(text = "Добавить в заявку на отзыв с RM")
     Element addIntoOrderForWithdrawalFromRMBtn;
-
-    @AppFindBy(text = "Уведомить клиента о наличии")
-    Element notifyClientBtn;
-
-    @Override
-    public void waitForPageIsLoaded() {
-        headerLbl.waitForVisibility();
-    }
 
     // ---------- ACTION STEPS --------------------------//
 
@@ -67,18 +51,20 @@ public class ActionWithProductModalPage extends CommonMagMobilePage {
             return new AddProductPage(context);
     }
 
-    // Verifications
+    // VERIFICATIONS
 
+    @Override
     @Step("Проверить, что модальное окно 'Действия с товаром' отобразилось со всеми необходимыми товарами")
     public ActionWithProductModalPage verifyRequiredElements(boolean isAvsProduct) {
-        softAssert.isElementVisible(closeBtn);
-        softAssert.isElementVisible(headerLbl);
-        softAssert.isElementVisible(addIntoSalesDocumentBtn);
-        softAssert.isElementVisible(addIntoOrderForWithdrawalFromRMBtn);
+        String ps = getPageSource();
+        softAssert.isElementVisible(closeBtn, ps);
+        softAssert.isElementVisible(headerLbl, ps);
+        softAssert.isElementVisible(addIntoSalesDocumentBtn, ps);
+        softAssert.isElementVisible(addIntoOrderForWithdrawalFromRMBtn, ps);
         if (isAvsProduct)
-            softAssert.isElementNotVisible(notifyClientBtn);
+            softAssert.isElementNotVisible(notifyClientBtn, ps);
         else
-            softAssert.isElementVisible(notifyClientBtn);
+            softAssert.isElementVisible(notifyClientBtn, ps);
         softAssert.verifyAll();
         return this;
     }

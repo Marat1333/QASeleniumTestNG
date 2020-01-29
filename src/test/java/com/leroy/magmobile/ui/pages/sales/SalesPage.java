@@ -7,6 +7,7 @@ import com.leroy.magmobile.ui.pages.common.SearchProductPage;
 import com.leroy.magmobile.ui.pages.common.TopMenuPage;
 import io.qameta.allure.Step;
 
+// Продажа -> Товары и услуги // TODO надо переименовать в MainProductAndServicesPage
 public class SalesPage extends TopMenuPage {
 
     public SalesPage(TestContext context) {

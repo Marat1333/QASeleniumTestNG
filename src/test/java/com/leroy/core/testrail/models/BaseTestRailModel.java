@@ -6,7 +6,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BaseModel {
+public class BaseTestRailModel {
     private Long id;
 
     public Long getId() {

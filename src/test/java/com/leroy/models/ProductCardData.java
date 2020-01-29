@@ -7,8 +7,16 @@ public class ProductCardData extends CardWidgetData {
     private String name;
     private String price;
     private String selectedQuantity;
+    private Boolean hasAvailableStock;
     private String availableQuantity;
     private String quantityType;
+
+    public ProductCardData() {
+    }
+
+    public ProductCardData(String lmCode) {
+        this.lmCode = lmCode;
+    }
 
     public String getLmCode() {
         return lmCode;
@@ -56,6 +64,14 @@ public class ProductCardData extends CardWidgetData {
 
     public void setQuantityType(String quantityType) {
         this.quantityType = quantityType;
+    }
+
+    public Boolean isHasAvailableStock() {
+        return hasAvailableStock;
+    }
+
+    public void setHasAvailableStock(Boolean hasAvailableStock) {
+        this.hasAvailableStock = hasAvailableStock;
     }
 
     public String getSelectedQuantity() {

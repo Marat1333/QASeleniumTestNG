@@ -3,7 +3,7 @@ package com.leroy.magmobile.ui.pages.common;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.pages.sales.SalesDocumentsPage;
+import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
 
 public class TopMenuPage extends BottomMenuPage {
 
@@ -35,9 +35,9 @@ public class TopMenuPage extends BottomMenuPage {
         calculationsBtn.click();
     }
 
-    public SalesDocumentsPage goToSalesDocumentsSection() {
+    public MainSalesDocumentsPage goToSalesDocumentsSection() {
         salesDocumentsBtn.click();
-        return new SalesDocumentsPage(context);
+        return new MainSalesDocumentsPage(context);
     }
 
     public void goToClientsSection() {
