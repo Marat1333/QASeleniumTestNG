@@ -33,7 +33,7 @@ capabilities:
       autoAcceptAlerts: true
       automationName: uiautomator2
       #app: https://cloclo4.datacloudmail.ru/weblink/view/3Cho/5MzNyY8PP?etag=376CE7AD45104DEB770BEED90EF1767AC15569FD&key=b5b6fa9217f547e9035b0b1d42eb408d4604a3cb
-      app: https://doc-00-a8-docs.googleusercontent.com/docs/securesc/ha0ro937gcuc7l7deffksulhg5h7mbp1/q2famq6ee9sju5unj1vmgaclhe8iqdr9/1580277600000/09662814724293400398/*/1W2cgPGen6y6XAoF5-g78euZilrfCXWq2?e=download
+      app: http://wdfiles.ru/6pjp?download_token=bfeadfbd0c39b2aee708a44a53eb90afb28863a5e5232412738e58f0af7dd76b
       enableVNC: true
       enableVideo: false
       env:
