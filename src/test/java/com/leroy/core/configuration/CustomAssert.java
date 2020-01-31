@@ -4,6 +4,7 @@ import com.leroy.core.asserts.BaseCustomAssert;
 import com.leroy.core.testrail.helpers.StepLog;
 import com.leroy.core.web_elements.general.BaseWidget;
 import com.leroy.core.web_elements.general.Element;
+import org.testng.Assert;
 
 import java.util.Arrays;
 
@@ -52,7 +53,7 @@ public class CustomAssert extends BaseCustomAssert {
     public void isElementTextContains(Element element, String expectedText) {
         if (isElementVisible(element)) {
             String actualText = element.getText();
-            logIsElementTextEqual(element.getMetaName(), actualText, expectedText);
+            //logIsElementTextEqual(element.getMetaName(), actualText, expectedText);
             Assert.assertTrue(actualText.contains(expectedText),
                     String.format("Элемент '%s' содержит текст '%s'", element.getMetaName(), actualText));
         }

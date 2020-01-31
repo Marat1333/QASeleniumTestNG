@@ -126,7 +126,7 @@ public class SearchProductCardWidget extends CardWidget<ProductCardData> {
     public boolean isFullyVisible(String pageSource) {
         if (lmCodeObj.isVisible(pageSource)) {
             String check = lmCodeObj.getText(pageSource).substring(3);
-            return check.matches("\\d+") && quantityLbl.isVisible(pageSource));
+            return check.matches("\\d+") && quantityLbl.isVisible(pageSource);
         }else {
             return false;
         }
@@ -136,11 +136,7 @@ public class SearchProductCardWidget extends CardWidget<ProductCardData> {
     public boolean isServiceCard(){
         if (lmCodeObj.isVisible()) {
             String check = lmCodeObj.getText().substring(3);
-            if (check.matches("\\d+") && check.startsWith("49")) {
-                return true;
-            } else {
-                return false;
-            }
+            return check.matches("\\d+") && check.startsWith("49");
         }else {
             return false;
         }

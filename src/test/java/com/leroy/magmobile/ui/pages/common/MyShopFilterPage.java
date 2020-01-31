@@ -75,7 +75,7 @@ public class MyShopFilterPage extends FilterPage {
     public void choseTopFilter(){
         pageSource=driver.getPageSource();
         top0Btn.click();
-        waitForContentHasChanged(pageSource,2);
+        waitForContentHasChanged(pageSource,3);
     }
 
 }

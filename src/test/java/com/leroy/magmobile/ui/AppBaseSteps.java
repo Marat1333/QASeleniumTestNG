@@ -1,6 +1,7 @@
 package com.leroy.magmobile.ui;
 
 import com.leroy.constants.EnvConstants;
+import com.leroy.core.configuration.Log;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.pages.ChromeCertificateErrorPage;
 import com.leroy.core.web_elements.general.Element;
@@ -22,6 +23,7 @@ import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidDriver;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class AppBaseSteps extends BaseState {
@@ -34,7 +36,7 @@ public class AppBaseSteps extends BaseState {
         boolean moon = false;
         Element termsAcceptBtn = new Element(driver,
                 By.id("com.android.chrome:id/terms_accept"));
-        if (termsAcceptBtn.isVisible(5)) {
+        if (termsAcceptBtn.isVisible()) {
             termsAcceptBtn.click();
             moon = true;
             driver.findElement(By.id("com.android.chrome:id/next_button")).click();
@@ -43,19 +45,32 @@ public class AppBaseSteps extends BaseState {
         new WebDriverWait(this.driver, 30).until(
                 a -> androidDriver.getContextHandles().size() > 1);
         ///
-        androidDriver.context("WEBVIEW_chrome");
-        if (moon) {
-            new ChromeCertificateErrorPage(context).skipSiteSecureError();
-            new LoginWebPage(context).logIn(userData);
-            androidDriver.context("NATIVE_APP");
-            //if (redirectBtn.isVisible())
+        boolean needToClickRedirectBtn;
+        try {
+            needToClickRedirectBtn = !moon && redirectBtn.isVisible(2);
+        } catch (WebDriverException err) {
+            needToClickRedirectBtn = false;
+        }
+        if (needToClickRedirectBtn) {
+            Log.debug("Click Redirect Button");
             redirectBtn.click();
         } else {
-            LoginWebPage loginWebPage = new LoginWebPage(context);
-            if (loginWebPage.isLoginFormVisible())
-                loginWebPage.logIn(userData);
+            Log.debug("Redirect Button is not visible");
+            if (moon) {
+                androidDriver.context("WEBVIEW_chrome");
+                new ChromeCertificateErrorPage(context).skipSiteSecureError();
+                new LoginWebPage(context).logIn(userData);
+                androidDriver.context("NATIVE_APP");
+            } else {
+                if (new Element(driver, By.xpath("//*[@resource-id='Username']")).isVisible(1)) {
+                    androidDriver.context("WEBVIEW_chrome");
+                    LoginWebPage loginWebPage = new LoginWebPage(context);
+                    loginWebPage.logIn(userData);
+                    androidDriver.context("NATIVE_APP");
+                }
+            }
         }
-        androidDriver.context("NATIVE_APP");
+
         SalesPage salesPage = new SalesPage(context);
         if (pageClass.equals(SalesPage.class)) {
             return (T) salesPage;

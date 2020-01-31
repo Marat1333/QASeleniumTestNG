@@ -29,6 +29,7 @@ public class SuppliersSearchPage extends BaseAppPage {
     @Override
     public void waitForPageIsLoaded() {
         searchString.waitForVisibility();
+        waitForProgressBarIsInvisible();
     }
 
     @Step("Найти поставщика по {value} и выбрать его")
@@ -36,8 +37,10 @@ public class SuppliersSearchPage extends BaseAppPage {
         pageSource=driver.getPageSource();
         String supplierId="";
         searchString.clearFillAndSubmit(value);
+        waitForContentHasChanged(pageSource,2);
         searchString.clear();
         hideKeyboard();
+        pageSource=driver.getPageSource();
 
         if (value.matches("\\d+")) {
             Element supplierByCode = E("contains("+value+")");

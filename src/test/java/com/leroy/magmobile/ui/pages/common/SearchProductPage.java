@@ -15,12 +15,12 @@ import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.widget.SearchProductCardWidget;
 import com.leroy.models.ProductCardData;
 import com.leroy.models.TextViewData;
+import com.leroy.umbrella_extension.magmobile.data.ProductItemListResponse;
+import com.leroy.umbrella_extension.magmobile.data.ProductItemResponse;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import ru.leroymerlin.qa.core.clients.base.Response;
-import ru.leroymerlin.qa.core.clients.magmobile.data.ProductItemListResponse;
-import ru.leroymerlin.qa.core.clients.magmobile.data.ProductItemResponse;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -48,8 +48,7 @@ public class SearchProductPage extends BaseAppPage {
     private AndroidScrollView<ProductCardData> productCardsScrollView = new AndroidScrollView<>(driver,
             new CustomLocator(By.xpath("//android.view.ViewGroup[@content-desc=\"ScreenContent\"]/android.view.ViewGroup[1]/android.view.ViewGroup/android.widget.ScrollView"), null,
                     "", false),
-            ".//android.view.ViewGroup[android.view.ViewGroup[android.widget.ImageView]]", SearchProductCardWidget.class);
-
+            ".//android.view.ViewGroup[android.widget.TextView[3]]", SearchProductCardWidget.class);
 
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ScreenContent']//android.view.ViewGroup[android.widget.ImageView]",
             clazz = SearchProductCardWidget.class)
@@ -62,7 +61,7 @@ public class SearchProductPage extends BaseAppPage {
             metaName = "Выбранная номенклатура")
     Element nomenclature;
 
-    @AppFindBy(xpath = "\t//android.view.ViewGroup[@content-desc=\"ScreenContent\"]/android.view.ViewGroup[2]/android.view.ViewGroup[3]")
+    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"ScreenContent\"]/android.view.ViewGroup[2]/android.view.ViewGroup[3]")
     Element sort;
 
     @AppFindBy(text = "Ты пока ничего не искал(а)")
@@ -78,13 +77,13 @@ public class SearchProductPage extends BaseAppPage {
         waitForProgressBarIsInvisible();
     }
 
-    private void scrollNTimesAndAddVisibleElementsToArray(int i, ArrayList<Integer> arrayList, String sortType) throws Exception {
+    /*private void scrollNTimesAndAddVisibleElementsToArray(int i, ArrayList<Integer> arrayList, String sortType) throws Exception {
         for (int y = 0; y < i; y++) {
             addNeededDataToArrayFromProductCard(arrayList, sortType);
             scrollDown();
             waitForProgressBarIsInvisible();
         }
-    }
+    }*/
 
     private void addNeededDataToArrayFromProductCard(ArrayList<Integer> arrayList, String sortType) throws Exception {
         String content = "";
@@ -117,7 +116,7 @@ public class SearchProductPage extends BaseAppPage {
         }
     }
 
-    private ArrayList<Integer> getSortedElementsFromProductCards(String sortType, int scrollNTimes) throws Exception {
+    /*private ArrayList<Integer> getSortedElementsFromProductCards(String sortType, int scrollNTimes) throws Exception {
         ArrayList<Integer> sortedCodes = new ArrayList<>();
         ArrayList<Integer> sortedStocks = new ArrayList<>();
 
@@ -130,7 +129,7 @@ public class SearchProductPage extends BaseAppPage {
         } else {
             return new ArrayList<>();
         }
-    }
+    }*/
 
 
     // ---------------- Action Steps -------------------------//
@@ -206,7 +205,9 @@ public class SearchProductPage extends BaseAppPage {
 
     @Step("Перейти на страницу выбора фильтров")
     public MyShopFilterPage goToFilterPage() {
+        pageSource = driver.getPageSource();
         filter.click();
+        waitForContentHasChanged(pageSource, 2);
         return new MyShopFilterPage(context);
     }
 
@@ -369,16 +370,20 @@ public class SearchProductPage extends BaseAppPage {
             throw new AssertionError("Page size param should be equals to maxEntityCount");
         }
         if (strictEquality) {
-            System.out.println(productData);
-            System.out.println("\n");
-            System.out.println(productCardData);
             anAssert.isTrue(productCardData.equals(productData), "Товары не совпадают");
         } else {
+
+            //TODO подумать как лучше
             for (int i = 0; i < productCardData.size(); i++) {
                 anAssert.isTrue(productCardData.get(i).getLmCode().contains(productData.get(i).getLmCode()), "Продукты частично не совпадают по LM " + productData.get(i).getLmCode());
                 anAssert.isTrue(productCardData.get(i).getBarCode().contains(productData.get(i).getBarCode()), "Продукты частично совпадают по BAR " + productData.get(i).getBarCode());
             }
         }
+        return this;
+    }
+
+    public SearchProductPage shouldResponceIsNull(Response<ProductItemListResponse> response) {
+        anAssert.isTrue(response.asJson().getItems().isEmpty(), "Ответ содержит данные");
         return this;
     }
 

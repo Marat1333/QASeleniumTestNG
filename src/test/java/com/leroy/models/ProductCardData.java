@@ -1,6 +1,6 @@
 package com.leroy.models;
 
-import ru.leroymerlin.qa.core.clients.magmobile.data.ProductItemResponse;
+import com.leroy.umbrella_extension.magmobile.data.ProductItemResponse;
 
 public class ProductCardData extends CardWidgetData {
 
@@ -96,18 +96,17 @@ public class ProductCardData extends CardWidgetData {
         }
         if (o == null || o.getClass() != this.getClass()) {
             return false;
-        }
-        else
+        } else
             return super.equals(o);
     }
 
     @Override
     public int hashCode() {
-        int prime=31;
-        int result=1;
-        result=prime*result + lmCode.hashCode();
-        result=prime*result + barCode.hashCode();
-        result=prime*result + name.hashCode();
+        int prime = 31;
+        int result = 1;
+        result = prime * result + lmCode.hashCode();
+        result = prime * result + barCode.hashCode();
+        result = prime * result + name.hashCode();
         return result;
     }
 }

@@ -9,9 +9,9 @@ import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobCheckBox;
-import com.leroy.models.TextViewData;
 import com.leroy.magmobile.ui.pages.common.widget.SupplierCardWidget;
 import com.leroy.magmobile.ui.pages.widgets.CalendarWidget;
+import com.leroy.models.TextViewData;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 
@@ -29,11 +29,11 @@ public class FilterPage extends BaseAppPage {
     public static final String CTM = "CTM";
     public static final String BEST_PRICE = "Лучшая цена";
     public static final String LIMITED_OFFER = "Предложение ограничено";
+    public static final String MY_SHOP_FRAME_TYPE = "МОЙ МАГАЗИН";
+    public static final String ALL_GAMMA_FRAME_TYPE = "ВСЯ ГАММА ЛМ";
     public final String AVS = "AVS";
     public final String COMMON_PRODUCT_TYPE = "ОБЫЧНЫЙ";
     public final String ORDERED_PRODUCT_TYPE = "ПОД ЗАКАЗ";
-    public final String MY_SHOP_FRAME_TYPE = "МОЙ МАГАЗИН";
-    public final String ALL_GAMMA_FRAME_TYPE = "ВСЯ ГАММА ЛМ";
 
     private final String HORIZONTAL_SCROLL = "//android.widget.TextView[contains(@text,'%s')]/ancestor::android.widget.HorizontalScrollView";
 
@@ -105,10 +105,10 @@ public class FilterPage extends BaseAppPage {
 
     @Step("Очистить все фильтры")
     public void clearAllFilters() {
-        pageSource=driver.getPageSource();
+        pageSource = driver.getPageSource();
         scrollUp();
         clearAllFiltersBtn.click();
-        waitForContentHasChanged(pageSource,2);
+        waitForContentHasChanged(pageSource, 4);
     }
 
     @Step("Выбрать checkBox фильтр {value}")
@@ -142,8 +142,10 @@ public class FilterPage extends BaseAppPage {
         try {
             Element element = E("contains(" + gamma + ")");
             //От захардкоженного элемента нужны только координаты, которые будут использоваться вне зависимости от видимости элемента
-            swipeRightTo(E("contains(ГАММА P)"),element);
+            swipeRightTo(E("contains(ГАММА )"), element);
+            pageSource = driver.getPageSource();
             element.click();
+            waitForContentHasChanged(pageSource, 4);
         } catch (NoSuchElementException e) {
             Log.error("Выбранная Гамма не найдена");
         }
@@ -152,23 +154,26 @@ public class FilterPage extends BaseAppPage {
     @Step("Выбрать тип продукта {type}")
     public void choseProductType(String type) {
         scrollDown();
+        pageSource = driver.getPageSource();
         if (type.equals(COMMON_PRODUCT_TYPE)) {
             commonProductBtn.click();
+            ;
         } else {
             orderedProductBtn.click();
         }
+        waitForContentHasChanged(pageSource, 3);
     }
 
     @Step("Выбрать дату avs")
     public void choseAvsDate(LocalDate date) throws Exception {
         scrollDown();
-        pageSource=driver.getPageSource();
+        pageSource = driver.getPageSource();
         avsDateBtn.click();
-        waitForContentHasChanged(pageSource,2);
+        waitForContentHasChanged(pageSource, 2);
         CalendarWidget calendarWidget = new CalendarWidget(context.getDriver());
-        pageSource=driver.getPageSource();
+        pageSource = driver.getPageSource();
         calendarWidget.selectDate(date);
-        waitForContentHasChanged(pageSource,2);
+        waitForContentHasChanged(pageSource, 2);
     }
 
     @Step("Показать товары по выбранным фильтрам")

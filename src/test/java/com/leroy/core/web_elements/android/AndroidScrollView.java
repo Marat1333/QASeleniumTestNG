@@ -149,10 +149,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
             }
             boolean textFound = false;
             for (CardWidget<T> widget : cardWidgetList) {
-                if (widget.isServiceCard()){
-                    simpleScroll(direction);
-                }
-                if (widget.isFullyVisible(pageSource)&&!widget.isServiceCard()) {
+                if (widget instanceof TextViewWidget || (widget.isFullyVisible(pageSource) && !widget.isServiceCard())) {
                     T data = widget.collectDataFromPage(pageSource);
                     currentVisibleDataList.add(data);
                     if (findText != null && data.toString().contains(findText))
@@ -161,7 +158,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
             }
             if (currentVisibleDataList.size() == 0) {
                 Log.warn("Couldn't find elements during scroll");
-                break;
+                //убрал break
             }
             addNonRepeatingText(tmpCardDataList, currentVisibleDataList);
             if (textFound)
