@@ -136,7 +136,7 @@ public class BaseAppPage extends BasePage {
         TouchAction action = new TouchAction((AndroidDriver) driver);
         while (!goalElement.isVisible()) {
             int breakCounter = 0;
-            if (breakCounter > 3) {
+            if (breakCounter > 5) {
                 break;
             }
             action.press(PointOption.point(rightBorder, anchorY)).waitAction(WaitOptions.waitOptions(Duration.ofMillis(1000))).moveTo(PointOption.point(leftBorder, anchorY)).release().perform();

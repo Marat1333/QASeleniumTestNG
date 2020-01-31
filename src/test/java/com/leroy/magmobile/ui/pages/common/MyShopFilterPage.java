@@ -11,9 +11,9 @@ public class MyShopFilterPage extends FilterPage {
         super(context);
     }
 
-    public final String TOP = "ТОП";
-    public final String TOP_EM = "Топ ЕМ";
-    public final String HAS_AVAILABLE_STOCK = "Есть теор. запас";
+    public static final String TOP = "ТОП";
+    public static final String TOP_EM = "Топ ЕМ";
+    public static final String HAS_AVAILABLE_STOCK = "Есть теор. запас";
 
     @AppFindBy(text = "ТОП 0")
     Element top0Btn;
@@ -33,6 +33,7 @@ public class MyShopFilterPage extends FilterPage {
     @Override
     @Step("Выбрать checkBox фильтр {value}")
     public void choseCheckBoxFilter(String value) throws Exception{
+        pageSource=driver.getPageSource();
         switch (value){
             case TOP_EM:
                 topEm.click();
@@ -60,6 +61,7 @@ public class MyShopFilterPage extends FilterPage {
             default:
                 throw new Exception();
         }
+        waitForContentHasChanged(pageSource,2);
     }
 
     @Step("Перейти на страницу выбора поставщиков")
@@ -71,7 +73,9 @@ public class MyShopFilterPage extends FilterPage {
 
     @Step("Выбрать фильтр top")
     public void choseTopFilter(){
+        pageSource=driver.getPageSource();
         top0Btn.click();
+        waitForContentHasChanged(pageSource,2);
     }
 
 }

@@ -24,11 +24,11 @@ public class FilterPage extends BaseAppPage {
         super(context);
     }
 
-    public final String GAMMA = "ГАММА";
-    public final String TOP_1000 = "Toп 1000";
-    public final String CTM = "CTM";
-    public final String BEST_PRICE = "Лучшая цена";
-    public final String LIMITED_OFFER = "Предложение ограничено";
+    public static final String GAMMA = "ГАММА";
+    public static final String TOP_1000 = "Toп 1000";
+    public static final String CTM = "CTM";
+    public static final String BEST_PRICE = "Лучшая цена";
+    public static final String LIMITED_OFFER = "Предложение ограничено";
     public final String AVS = "AVS";
     public final String COMMON_PRODUCT_TYPE = "ОБЫЧНЫЙ";
     public final String ORDERED_PRODUCT_TYPE = "ПОД ЗАКАЗ";
@@ -48,6 +48,9 @@ public class FilterPage extends BaseAppPage {
 
     @AppFindBy(text = "ГАММА A")
     Element gammaABtn;
+
+    @AppFindBy(text = "ГАММА P")
+    Element gammaPBtn;
 
     @AppFindBy(text = "ПОД ЗАКАЗ")
     Element orderedProductBtn;
@@ -102,8 +105,10 @@ public class FilterPage extends BaseAppPage {
 
     @Step("Очистить все фильтры")
     public void clearAllFilters() {
+        pageSource=driver.getPageSource();
         scrollUp();
         clearAllFiltersBtn.click();
+        waitForContentHasChanged(pageSource,2);
     }
 
     @Step("Выбрать checkBox фильтр {value}")
@@ -135,7 +140,10 @@ public class FilterPage extends BaseAppPage {
     public void choseGammaFilter(String gamma) {
         gamma = gamma.toUpperCase();
         try {
-            E("contains(" + gamma + ")").click();
+            Element element = E("contains(" + gamma + ")");
+            //От захардкоженного элемента нужны только координаты, которые будут использоваться вне зависимости от видимости элемента
+            swipeRightTo(E("contains(ГАММА P)"),element);
+            element.click();
         } catch (NoSuchElementException e) {
             Log.error("Выбранная Гамма не найдена");
         }
@@ -153,15 +161,20 @@ public class FilterPage extends BaseAppPage {
 
     @Step("Выбрать дату avs")
     public void choseAvsDate(LocalDate date) throws Exception {
+        scrollDown();
+        pageSource=driver.getPageSource();
         avsDateBtn.click();
+        waitForContentHasChanged(pageSource,2);
         CalendarWidget calendarWidget = new CalendarWidget(context.getDriver());
+        pageSource=driver.getPageSource();
         calendarWidget.selectDate(date);
+        waitForContentHasChanged(pageSource,2);
     }
 
     @Step("Показать товары по выбранным фильтрам")
     public SearchProductPage applyChosenFilters() throws Exception {
         if (!showGoodsBtn.isVisible())
-            mainScrollView.scrollDown(1);
+            scrollDown();
         showGoodsBtn.click();
         waitForProgressBarIsVisible();
         SearchProductPage page = new SearchProductPage(context);
@@ -179,13 +192,13 @@ public class FilterPage extends BaseAppPage {
 
     public FilterPage shouldFilterHasBeenChosen(String value) throws Exception {
         MagMobCheckBox element = new MagMobCheckBox(driver, new CustomLocator(By.xpath("//*[contains(@text, '" + value + "')]")));
-        anAssert.isTrue(element.isChecked(), "Фильтр '" + value + "' должен быть +выбран");
+        anAssert.isTrue(element.isChecked(), "Фильтр '" + value + "' должен быть выбран");
         return this;
     }
 
     public FilterPage shouldFilterHasNotBeenChosen(String value) throws Exception {
         MagMobCheckBox element = new MagMobCheckBox(driver, new CustomLocator(By.xpath("//*[contains(@text, '" + value + "')]")));
-        anAssert.isFalse(element.isChecked(), "Фильтр '" + value + "' не должен быть +выбран");
+        anAssert.isFalse(element.isChecked(), "Фильтр '" + value + "' не должен быть выбран");
         return this;
     }
 

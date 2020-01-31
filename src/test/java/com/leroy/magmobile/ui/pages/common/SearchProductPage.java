@@ -2,7 +2,6 @@ package com.leroy.magmobile.ui.pages.common;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.android.AndroidScrollView;
@@ -17,11 +16,8 @@ import com.leroy.magmobile.ui.pages.sales.widget.SearchProductCardWidget;
 import com.leroy.models.ProductCardData;
 import com.leroy.models.TextViewData;
 import io.qameta.allure.Step;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import ru.leroymerlin.qa.core.clients.base.Response;
 import ru.leroymerlin.qa.core.clients.magmobile.data.ProductItemListResponse;
 import ru.leroymerlin.qa.core.clients.magmobile.data.ProductItemResponse;
@@ -147,12 +143,12 @@ public class SearchProductPage extends BaseAppPage {
 
     @Step("Ввести поисковой запрос со случайным текстом {value} раз и инициировать поиск")
     public List<String> createSearchHistory(int value) {
-        pageSource=driver.getPageSource();
+        pageSource = driver.getPageSource();
         List<String> searchHistory = new ArrayList<>();
         String tmp = "1";
         for (int i = 0; i < value; i++) {
             searchField.fill(tmp);
-            waitForContentHasChanged(pageSource,2);
+            waitForContentHasChanged(pageSource, 2);
             searchField.submit();
             searchHistory.add(tmp);
             tmp = tmp + "1";
@@ -289,19 +285,19 @@ public class SearchProductPage extends BaseAppPage {
         anAssert.isTrue(productCards.getCount() > 1,
                 "Ничего не найдено для " + text);
         List<ProductCardData> productCardData = productCardsScrollView.getFullDataList(3);
-        for (ProductCardData cardData: productCardData){
-            if (text.matches("^\\d+")&&text.length()<=8){
-                anAssert.isTrue(cardData.getLmCode().contains(text),"ЛМ код товара "+cardData.getLmCode()+" не содрежит критерий поиска "+text);
+        for (ProductCardData cardData : productCardData) {
+            if (text.matches("^\\d+") && text.length() <= 8) {
+                anAssert.isTrue(cardData.getLmCode().contains(text), "ЛМ код товара " + cardData.getLmCode() + " не содрежит критерий поиска " + text);
             }
-            if (text.matches("^\\d+")&&text.length()>8){
-                anAssert.isTrue(cardData.getBarCode().contains(text),"Штрих код товара "+cardData.getBarCode()+" не содрежит критерий поиска "+text);
+            if (text.matches("^\\d+") && text.length() > 8) {
+                anAssert.isTrue(cardData.getBarCode().contains(text), "Штрих код товара " + cardData.getBarCode() + " не содрежит критерий поиска " + text);
             }
-            if (searchWords!=null&&text.matches("\\D+")) {
+            if (searchWords != null && text.matches("\\D+")) {
                 for (String each : searchWords) {
                     each = each.toLowerCase();
                     anAssert.isTrue(cardData.getName().toLowerCase().contains(each), "Название товара " + cardData.getName() + " не содержит критерий поиска " + text);
                 }
-            }else if (searchWords==null&&text.matches("\\D+")){
+            } else if (searchWords == null && text.matches("\\D+")) {
                 anAssert.isTrue(cardData.getName().toLowerCase().contains(text), "Название товара " + cardData.getName() + " не содержит критерий поиска " + text);
             }
         }
@@ -310,7 +306,7 @@ public class SearchProductPage extends BaseAppPage {
     public SearchProductPage shouldSelectedNomenclatureIs(String text, boolean strictEqual) throws Exception {
         if (strictEqual) {
             anAssert.isElementTextEqual(nomenclature, text);
-        }else {
+        } else {
             anAssert.isElementTextContains(nomenclature, text);
         }
         return this;
@@ -333,27 +329,6 @@ public class SearchProductPage extends BaseAppPage {
                 String.format("Карточка под индексом %s должна иметь примечание 'доступно'", index));
         anAssert.isFalse(productCards.get(index).getQuantityType().isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустой тип кол-ва", index));
-        return this;
-    }
-
-    // API verifications
-
-    //TODO Переопределить equals для ProductCardData
-
-    public SearchProductPage shouldResponceEqualsContent(Response<ProductItemListResponse> response, boolean strictEquality) throws Exception{
-        List<ProductItemResponse> productData = response.asJson().getItems();
-        List<ProductCardData> productCardData = productCardsScrollView.getFullDataList(10);
-        if (productCardData.size()!=productData.size()){
-            throw new Exception("Page size param should be equals to maxEntityCount");
-        }
-        if (strictEquality) {
-            anAssert.isTrue(productCardData.equals(productData), "Товары не совпадают");
-        }else {
-            for (int i=0;i<productCardData.size();i++){
-                anAssert.isTrue(productCardData.get(i).getLmCode().contains(productData.get(i).getLmCode()),"Продукты частично не совпадают по LM "+productData.get(i).getLmCode());
-                anAssert.isTrue(productCardData.get(i).getBarCode().contains(productData.get(i).getBarCode()),"Продукты частично совпадают по BAR "+productData.get(i).getBarCode());
-            }
-        }
         return this;
     }
 
@@ -385,5 +360,76 @@ public class SearchProductPage extends BaseAppPage {
         return this;
     }
 
+    // API verifications
+
+    public SearchProductPage shouldResponceEqualsContent(Response<ProductItemListResponse> response, boolean strictEquality) throws Exception {
+        List<ProductItemResponse> productData = response.asJson().getItems();
+        List<ProductCardData> productCardData = productCardsScrollView.getFullDataList(10);
+        if (productCardData.size() != productData.size()) {
+            throw new AssertionError("Page size param should be equals to maxEntityCount");
+        }
+        if (strictEquality) {
+            System.out.println(productData);
+            System.out.println("\n");
+            System.out.println(productCardData);
+            anAssert.isTrue(productCardData.equals(productData), "Товары не совпадают");
+        } else {
+            for (int i = 0; i < productCardData.size(); i++) {
+                anAssert.isTrue(productCardData.get(i).getLmCode().contains(productData.get(i).getLmCode()), "Продукты частично не совпадают по LM " + productData.get(i).getLmCode());
+                anAssert.isTrue(productCardData.get(i).getBarCode().contains(productData.get(i).getBarCode()), "Продукты частично совпадают по BAR " + productData.get(i).getBarCode());
+            }
+        }
+        return this;
+    }
+
+    public SearchProductPage shouldResponceContainsCorrectData(Response<ProductItemListResponse> response, String criterion) {
+        List<ProductItemResponse> productData = response.asJson().getItems();
+        if (criterion.startsWith(FilterPage.GAMMA)) {
+            String productGamma;
+            criterion = criterion.substring(7);
+            for (ProductItemResponse eachProduct : productData) {
+                productGamma = eachProduct.getGamma();
+                anAssert.isEquals(criterion, productGamma, "\"v3 catalog search\" return wrong data by gamma criterion");
+            }
+        }
+
+        if (criterion.startsWith(MyShopFilterPage.TOP)) {
+            String productTop;
+            criterion = criterion.substring(5);
+            for (ProductItemResponse eachProduct : productData) {
+                productTop = String.valueOf(eachProduct.getTop());
+                anAssert.isEquals(criterion, productTop, "\"v3 catalog search\" return wrong data by gamma criterion");
+            }
+        }
+
+        switch (criterion) {
+            case MyShopFilterPage.TOP_EM:
+                for (ProductItemResponse eachProduct : productData) {
+                    anAssert.isTrue(eachProduct.getTopEM(), "\"v3 catalog search\" return wrong data by topEm criterion");
+                }
+                break;
+            case MyShopFilterPage.HAS_AVAILABLE_STOCK:
+                for (ProductItemResponse eachProduct : productData) {
+                    anAssert.isTrue(eachProduct.getAvailableStock() > 0, "\"v3 catalog search\" return wrong data by availableStock criterion");
+                }
+                break;
+            case FilterPage.BEST_PRICE:
+                for (ProductItemResponse eachProduct : productData) {
+                    anAssert.isTrue(eachProduct.getPriceCategory().equals("BPR"), "\"v3 catalog search\" return wrong data by bestPrice criterion");
+                }
+                break;
+            case FilterPage.CTM:
+                for (ProductItemResponse eachProduct : productData) {
+                    anAssert.isTrue(eachProduct.getCtm(), "\"v3 catalog search\" return wrong data by ctm criterion");
+                }
+                break;
+            case FilterPage.TOP_1000:
+                for (ProductItemResponse eachProduct : productData) {
+                    anAssert.isTrue(eachProduct.getTop1000(), "\"v3 catalog search\" return wrong data by top1000 criterion");
+                }
+                break;
+        }
+        return this;
+    }
 
 }

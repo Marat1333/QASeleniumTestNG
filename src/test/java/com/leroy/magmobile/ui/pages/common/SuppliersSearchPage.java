@@ -32,23 +32,30 @@ public class SuppliersSearchPage extends BaseAppPage {
     }
 
     @Step("Найти поставщика по {value} и выбрать его")
-    public void searchSupplier(String value){
+    public String searchSupplier(String value){
+        pageSource=driver.getPageSource();
+        String supplierId="";
         searchString.clearFillAndSubmit(value);
         searchString.clear();
         hideKeyboard();
 
         if (value.matches("\\d+")) {
             Element supplierByCode = E("contains("+value+")");
+            supplierId=supplierByCode.getText().replaceAll("\\D+","");
             supplierByCode.click();
         }else {
             Element supplierByName = E("contains("+value+")");
             supplierByName.click();
         }
+        waitForContentHasChanged(pageSource,2);
+        return supplierId;
     }
 
     @Step("Подтвердить выбор")
     public FilterPage applyChosenSupplier(){
+        pageSource=driver.getPageSource();
         confirmBtn.click();
+        waitForContentHasChanged(pageSource,2);
         return new FilterPage(context);
     }
 
@@ -75,7 +82,7 @@ public class SuppliersSearchPage extends BaseAppPage {
         if (text.contains(" "))
             searchWords = text.split(" ");
         anAssert.isFalse(E("contains(не найдено)").isVisible(), "Должен быть найден хотя бы один товар");
-        anAssert.isTrue(supplierCards.getCount() > 1,
+        anAssert.isTrue(supplierCards.getCount() > 0,
                 "Ничего не найдено для " + text);
         for (SupplierCardWidget card : supplierCards) {
             if (searchWords != null) {

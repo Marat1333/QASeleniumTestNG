@@ -5,6 +5,7 @@ import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.widgets.CardWidget;
 import com.leroy.models.ProductCardData;
+import org.apache.kafka.common.protocol.types.Field;
 import org.openqa.selenium.WebDriver;
 
 public class SearchProductCardWidget extends CardWidget<ProductCardData> {
@@ -91,6 +92,29 @@ public class SearchProductCardWidget extends CardWidget<ProductCardData> {
 
     @Override
     public boolean isFullyVisible() {
-        return lmCodeObj.isVisible() && quantityLbl.isVisible();
+        if (lmCodeObj.isVisible()) {
+            String check = lmCodeObj.getText().substring(3);
+            if (check.matches("\\d+") && quantityLbl.isVisible()) {
+                return true;
+            } else {
+                return false;
+            }
+        }else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean isServiceCard(){
+        if (lmCodeObj.isVisible()) {
+            String check = lmCodeObj.getText().substring(3);
+            if (check.matches("\\d+") && check.startsWith("49")) {
+                return true;
+            } else {
+                return false;
+            }
+        }else {
+            return false;
+        }
     }
 }

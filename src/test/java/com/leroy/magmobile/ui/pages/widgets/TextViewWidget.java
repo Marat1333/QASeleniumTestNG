@@ -19,4 +19,9 @@ public class TextViewWidget extends CardWidget<TextViewData> {
     public boolean isFullyVisible() {
         return isVisible();
     }
+
+    @Override
+    public boolean isServiceCard() {
+        return isVisible();
+    }
 }

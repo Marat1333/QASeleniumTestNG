@@ -107,7 +107,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
         Point _location = getLocation();
         Dimension _size = getSize();
         int x = _location.getX();
-        int bottomY = _location.getY() + _size.getHeight() - (int) Math.round(_size.getHeight() * 0.4);
+        int bottomY = _location.getY() + _size.getHeight() - (int) Math.round(_size.getHeight() * 0.5);
         int topY = _location.getY() + (int) Math.round(_size.getHeight() * 0.05);
 
         boolean isDirectionDown = direction.equals("down");
@@ -143,7 +143,10 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
             ElementList<CardWidget<T>> cardWidgetList = this.findChildElements(oneRowXpath, rowWidgetClass);
             List<T> currentVisibleDataList = new ArrayList<>();
             for (CardWidget<T> widget : cardWidgetList) {
-                if (widget.isFullyVisible()) {
+                if (widget.isServiceCard()){
+                    simpleScroll(direction);
+                }
+                if (widget.isFullyVisible()&&!widget.isServiceCard()) {
                     T data = widget.collectDataFromPage();
                     currentVisibleDataList.add(data);
                     if (findText != null && data.toString().contains(findText))

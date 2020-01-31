@@ -74,12 +74,9 @@ public class ProductCardData extends CardWidgetData {
             return true;
         }
         if (o instanceof ProductItemResponse) {
-
             ProductItemResponse productItemResponse = (ProductItemResponse) o;
-
             return (lmCode.equals(productItemResponse.getLmCode())) &&
-                    (barCode.equals(productItemResponse.getBarCode())) &&
-                    (name.equals(productItemResponse.getTitle()));
+                    (barCode.equals(productItemResponse.getBarCode()));
         }
         if (o == null || o.getClass() != this.getClass()) {
             return false;

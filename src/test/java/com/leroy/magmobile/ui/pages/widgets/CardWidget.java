@@ -13,5 +13,6 @@ public abstract class CardWidget<T extends CardWidgetData> extends Element {
 
     public abstract T collectDataFromPage();
     public abstract boolean isFullyVisible();
+    public abstract boolean isServiceCard();
 
 }
