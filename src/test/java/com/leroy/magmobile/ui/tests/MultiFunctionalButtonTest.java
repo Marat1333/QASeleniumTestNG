@@ -363,6 +363,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
                 .getCustomerDataFromSearchListByIndex(1);
         estimatePage = searchCustomerPage.selectCustomerFromSearchList(1);
         estimatePage.verifyRequiredElements(true);
+        estimatePage.shouldSelectedCustomerIs(customerData);
 
         // Step 5
         log.step("Нажмите на кнопку +товары и услуги");

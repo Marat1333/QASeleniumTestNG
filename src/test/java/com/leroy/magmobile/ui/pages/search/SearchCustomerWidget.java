@@ -25,11 +25,13 @@ public class SearchCustomerWidget extends CardWidget<CustomerData> {
 
     @Override
     public CustomerData collectDataFromPage(String ps) {
+        if (ps == null)
+            ps = getPageSource();
         CustomerData customerData = new CustomerData();
-        customerData.setName(nameVal.getText());
-        customerData.setCardNumber(cardNumberVal.getText());
-        customerData.setCardType(cardTypeVal.getText());
-        customerData.setPhone(phoneVal.getText());
+        customerData.setName(nameVal.getText(ps));
+        customerData.setCardNumber(cardNumberVal.getText(ps));
+        customerData.setCardType(cardTypeVal.getText(ps));
+        customerData.setPhone(phoneVal.getText(ps));
         return customerData;
     }
 

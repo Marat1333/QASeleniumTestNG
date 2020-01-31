@@ -72,9 +72,24 @@ public class EstimatePage extends CommonMagMobilePage {
         return this;
     }
 
-    @Step("Проверить, что выбранный клиент содержит следующие данные: {customerData}")
-    public EstimatePage shouldSelectedCustomerIs(CustomerData customerData) {
-        //softAssert.isEquals();
+    @Step("Проверить, что выбранный клиент содержит следующие данные: {expectedCustomerData}")
+    public EstimatePage shouldSelectedCustomerIs(CustomerData expectedCustomerData) {
+        String ps = getPageSource();
+        CustomerData actualCustomerData = customerWidget.collectDataFromPage(ps);
+        softAssert.isEquals(actualCustomerData.getName(), expectedCustomerData.getName(),
+                "Имя выбранного клиента неверно");
+        if (expectedCustomerData.getCardNumber() != null)
+            softAssert.isEquals(actualCustomerData.getCardNumber(), expectedCustomerData.getCardNumber(),
+                    "Номер карты выбранного клиента неверен");
+        if (expectedCustomerData.getCardType() != null)
+            softAssert.isEquals(actualCustomerData.getCardType(), expectedCustomerData.getCardType(),
+                    "Тип карты выбранного клиента неверен");
+        if (expectedCustomerData.getPhone() != null)
+            softAssert.isEquals(actualCustomerData.getPhone(), expectedCustomerData.getPhone(),
+                    "Телефон выбранного клиента неверен");
+        if (expectedCustomerData.getEmail() != null)
+            softAssert.isEquals(actualCustomerData.getEmail(), expectedCustomerData.getEmail(),
+                    "Email выбранного клиента неверен");
         softAssert.verifyAll();
         return this;
     }

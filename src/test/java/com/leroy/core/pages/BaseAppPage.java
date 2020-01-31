@@ -11,7 +11,9 @@ import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.PointOption;
 import io.qameta.allure.Step;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
@@ -162,6 +164,12 @@ public class BaseAppPage extends BasePage {
 
     @Step("Проверить видимость клавиатуры для ввода текста")
     public BaseAppPage shouldKeyboardVisible() {
+        try {
+            new WebDriverWait(this.driver, short_timeout).until(
+                    a -> isKeyboardVisible());
+        } catch (TimeoutException err) {
+            Log.warn("Keyboard is not visible");
+        }
         anAssert.isTrue(isKeyboardVisible(),
                 "Клавиатура для ввода должна быть видна");
         return this;

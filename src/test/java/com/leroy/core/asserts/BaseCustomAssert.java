@@ -141,7 +141,7 @@ public abstract class BaseCustomAssert {
         if (elements.size() == 0)
             throw new IllegalArgumentException("List should contain at least one element");
         if (pageSource == null)
-            pageSource = elements.get(0).getDriver().getPageSource();
+            pageSource = elements.get(0).getPageSource();
         for (BaseWidget elem : elements) {
             logIsElementVisible(elem, pageSource, true);
         }

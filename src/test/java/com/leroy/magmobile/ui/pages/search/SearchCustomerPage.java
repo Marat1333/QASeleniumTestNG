@@ -55,7 +55,9 @@ public class SearchCustomerPage extends CommonMagMobilePage {
     @Step("Получаем данные о {index}-ом клиенте")
     public CustomerData getCustomerDataFromSearchListByIndex(int index) {
         List<CustomerData> customerDataList = mainScrollView.getFullDataList(index);
-        return customerDataList.get(customerDataList.size() - 1);
+        CustomerData customerData = customerDataList.get(customerDataList.size() - 1);
+        anAssert.isFalse(customerData.getName().isEmpty(), "Клиент не содержит имени");
+        return customerData;
     }
 
     @Step("Выберите {index}-ого клиента из списка поиска")

@@ -7,6 +7,7 @@ public class CustomerData extends CardWidgetData {
     private String phone;
     private String cardNumber;
     private String cardType;
+    private String email;
 
     public String getName() {
         return name;
@@ -38,5 +39,13 @@ public class CustomerData extends CardWidgetData {
 
     public void setCardType(String cardType) {
         this.cardType = cardType;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

@@ -134,14 +134,6 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
         List<T> prevDataList = null;
         int i = 0;
         while (true) {
-            if (maxScrollCount != null && i >= maxScrollCount)
-                break;
-            if (maxEntityCount != null && tmpCardDataList.size() >= maxEntityCount) {
-                while (tmpCardDataList.size() > maxEntityCount) {
-                    tmpCardDataList.remove(tmpCardDataList.size() - 1);
-                }
-                break;
-            }
             ElementList<CardWidget<T>> cardWidgetList = this.findChildElements(oneRowXpath, rowWidgetClass);
             List<T> currentVisibleDataList = new ArrayList<>();
             String pageSource = getPageSource();
@@ -165,6 +157,14 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
             addNonRepeatingText(tmpCardDataList, currentVisibleDataList);
             if (textFound)
                 return this;
+            if (maxScrollCount != null && i >= maxScrollCount)
+                break;
+            if (maxEntityCount != null && tmpCardDataList.size() >= maxEntityCount) {
+                while (tmpCardDataList.size() > maxEntityCount) {
+                    tmpCardDataList.remove(tmpCardDataList.size() - 1);
+                }
+                break;
+            }
             simpleScroll(direction);
             progressBar.waitForInvisibility();
             Log.debug("<-- Scroll down #" + (i + 1) + "-->");
