@@ -6,9 +6,12 @@ import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.common.SearchProductPage;
 import com.leroy.magmobile.ui.pages.sales.*;
 import com.leroy.magmobile.ui.pages.sales.basket.*;
+import com.leroy.magmobile.ui.pages.sales.estimate.EstimatePage;
 import com.leroy.magmobile.ui.pages.sales.product_and_service.AddServicePage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.*;
+import com.leroy.magmobile.ui.pages.search.CustomerData;
+import com.leroy.magmobile.ui.pages.search.SearchCustomerPage;
 import com.leroy.magmobile.ui.pages.work.OrderPage;
 import com.leroy.magmobile.ui.pages.work.StockProductCardPage;
 import com.leroy.magmobile.ui.pages.work.StockProductsPage;
@@ -280,7 +283,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         // Step #4
         log.step("Нажмите Оформить продажу");
         SaleTypeModalPage modalPage = actionWithProductModalPage.clickMakeSaleButton()
-                .verifyRequiredElements(false);
+                .verifyRequiredElementsWhenFromProductCard(false);
 
         // Step #5
         log.step("Нажмите Корзина");
@@ -323,6 +326,59 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         submittedDocument35Page
                 .clickSubmitButton()
                 .shouldSalesDocumentByIndexIs(0, expectedSalesDocument);
+    }
+
+    @Test(description = "C22797068 Создать смету с экрана Документы продажи")
+    public void testCreatingEstimateFromSalesDocumentsScreen() throws Exception {
+        // Test data
+        String existedClientPhone = "1111111111";
+        String shopId = "35";
+        // Pre-condition
+        context.setIs35Shop(true);
+        SalesPage salesPage = loginAndGoTo(SalesPage.class);
+        MainSalesDocumentsPage mainSalesDocumentsPage = setShopAndDepartmentForUser(salesPage, shopId, "01")
+                .goToSales()
+                .goToSalesDocumentsSection();
+
+        // Step 1
+        log.step("Нажать кнопку Оформить продажу");
+        SaleTypeModalPage modalPage = mainSalesDocumentsPage.clickCreateSalesDocumentButton();
+        modalPage.verifyRequiredElementsWhenFromSalesDocuments();
+
+        // Step 2
+        log.step("Выбрать параметр Смета");
+        EstimatePage estimatePage = modalPage.clickEstimateMenuItem();
+        estimatePage.verifyRequiredElements(false);
+
+        // Step 3
+        log.step("Нажмите на поле Клиенты");
+        SearchCustomerPage searchCustomerPage = estimatePage.clickCustomerField();
+        searchCustomerPage.verifyRequiredElements();
+        searchCustomerPage.shouldKeyboardVisible();
+
+        // Step 4
+        log.step("Введите номер телефона/ №карты клиента/ эл. почту");
+        CustomerData customerData = searchCustomerPage.selectSearchType(SearchCustomerPage.SearchType.BY_PHONE)
+                .enterTextInSearchField(existedClientPhone)
+                .getCustomerDataFromSearchListByIndex(1);
+        estimatePage = searchCustomerPage.selectCustomerFromSearchList(1);
+        estimatePage.verifyRequiredElements(true);
+
+        // Step 5
+        log.step("Нажмите на кнопку +товары и услуги");
+
+        // Step 6
+        log.step("Введите ЛМ код товара или название товара или отсканируйте товар");
+
+        // Step 7
+        log.step("Нажмите на Добавить в смету");
+
+        // Step 8
+        log.step("Нажмите на Создать");
+
+        // Step 9
+        log.step("Нажать на Перейти в список документов");
+
     }
 
     // ---------------------- TYPICAL TESTS FOR THIS CLASS -------------------//

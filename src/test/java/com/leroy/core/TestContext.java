@@ -9,16 +9,28 @@ public class TestContext {
 
     private CustomSoftAssert softAssert;
     private CustomAssert anAssert;
-    private String TC_ID;
+    private String tcId;
     private StepLog log;
     private WebDriver driver;
+
+    // Specific crutch for MagMobile
+    private boolean is35Shop;
+
+    public boolean isIs35Shop() {
+        return is35Shop;
+    }
+
+    public void setIs35Shop(boolean is35Shop) {
+        this.is35Shop = is35Shop;
+    }
+    ///
 
     public TestContext(WebDriver driver, CustomSoftAssert softAssert, CustomAssert anAssert, StepLog log, String tcId) {
         this.driver = driver;
         this.softAssert = softAssert;
         this.anAssert = anAssert;
         this.log = log;
-        this.TC_ID = tcId;
+        this.tcId = tcId;
     }
 
     public CustomAssert getAnAssert() {
@@ -37,12 +49,12 @@ public class TestContext {
         this.softAssert = softAssert;
     }
 
-    public String getTC_ID() {
-        return TC_ID;
+    public String getTcId() {
+        return tcId;
     }
 
-    public void setTC_ID(String TC_ID) {
-        this.TC_ID = TC_ID;
+    public void setTcId(String tcId) {
+        this.tcId = tcId;
     }
 
     public StepLog getLog() {

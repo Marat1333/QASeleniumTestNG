@@ -109,7 +109,7 @@ public abstract class BaseWidget extends BaseWrapper {
                 .newInstance(driver, new CustomLocator(By.xpath(getXpath() + xpath)));
     }
 
-    public <T extends BaseWidget> ElementList<T> findChildElements(String xpath, Class<? extends BaseWidget> clazz) throws Exception {
+    public <T extends BaseWidget> ElementList<T> findChildElements(String xpath, Class<? extends BaseWidget> clazz) {
         if (xpath.startsWith("."))
             xpath = xpath.replaceFirst(".", "");
         CustomLocator locator = new CustomLocator(By.xpath(getXpath() + xpath));

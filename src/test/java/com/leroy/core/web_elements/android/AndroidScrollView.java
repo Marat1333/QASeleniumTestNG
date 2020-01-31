@@ -12,10 +12,7 @@ import com.leroy.models.CardWidgetData;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +30,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
     private Element progressBar;
 
     public static final String TYPICAL_XPATH = "//android.widget.ScrollView";
+    public static final By TYPICAL_LOCATOR = By.xpath("//android.widget.ScrollView");
     private Class<? extends BaseWidget> rowWidgetClass;
     private String oneRowXpath;
 
@@ -42,6 +40,11 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
 
     public AndroidScrollView(WebDriver driver, CustomLocator locator) {
         this(driver, locator, ".//android.widget.TextView", null);
+    }
+
+    public AndroidScrollView(WebDriver driver, By by, String oneRowXpath,
+                             Class<? extends CardWidget<T>> clazz) {
+        this(driver, new CustomLocator(by), oneRowXpath, clazz);
     }
 
     public AndroidScrollView(WebDriver driver, CustomLocator locator, String oneRowXpath,
@@ -58,16 +61,16 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
     /**
      * Scroll down to the end and get all data as ArrayList
      */
-    public List<T> getFullDataList(int maxEntityCount) throws Exception {
+    public List<T> getFullDataList(int maxEntityCount) {
         scrollTo(null, null, null, maxEntityCount, "down");
         return new ArrayList<>(tmpCardDataList);
     }
 
-    public List<T> getFullDataList() throws Exception {
+    public List<T> getFullDataList() {
         return getFullDataList(30);
     }
 
-    public List<String> getFullDataAsStringList() throws Exception {
+    public List<String> getFullDataAsStringList() {
         return getFullDataList().stream().map(T::toString).collect(Collectors.toList());
     }
 
@@ -125,7 +128,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
      * @param direction      - up or down
      * @return this
      */
-    private AndroidScrollView<T> scrollTo(Element findElement, String findText, Integer maxScrollCount, Integer maxEntityCount, String direction) throws Exception {
+    private AndroidScrollView<T> scrollTo(Element findElement, String findText, Integer maxScrollCount, Integer maxEntityCount, String direction) {
         initialWebElementIfNeeded();
         tmpCardDataList = new ArrayList<>();
         List<T> prevDataList = null;
@@ -225,6 +228,15 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
         if (count == 1)
             simpleScroll("up");
         return scrollUpToText(null, count);
+    }
+
+    /**
+     * Click the element inside the scroll view
+     */
+    public void clickElemByIndex(int index) throws Exception {
+        // Method can be improved with scrolling if it necessary
+        ElementList<CardWidget<T>> cardWidgetList = this.findChildElements(oneRowXpath, rowWidgetClass);
+        cardWidgetList.get(index).click();
     }
 
 }

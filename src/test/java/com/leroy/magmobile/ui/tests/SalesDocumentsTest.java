@@ -22,8 +22,8 @@ public class SalesDocumentsTest extends AppBaseSteps {
 
         // Step #2
         log.step("Нажмите 'Создать документ продажи'");
-        OldSearchProductPage oldSearchProductPage = salesDocumentsPage.clickCreateSalesDocumentButton()
-                .verifyRequiredElements();
+        OldSearchProductPage oldSearchProductPage = salesDocumentsPage.clickCreateSalesDocumentButton();
+        oldSearchProductPage.verifyRequiredElements();
 
         // Step #3
         String inputDataStep3 = "164";
