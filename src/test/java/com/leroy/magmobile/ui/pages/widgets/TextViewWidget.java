@@ -11,13 +11,13 @@ public class TextViewWidget extends CardWidget<TextViewData> {
     }
 
     @Override
-    public TextViewData collectDataFromPage() {
-        return new TextViewData(getText());
+    public TextViewData collectDataFromPage(String pageSource) {
+        return new TextViewData(getText(pageSource));
     }
 
     @Override
-    public boolean isFullyVisible() {
-        return isVisible();
+    public boolean isFullyVisible(String pageSource) {
+        return isVisible(pageSource);
     }
 
     @Override

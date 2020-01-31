@@ -19,6 +19,8 @@ public @interface AppFindBy {
 
     String text() default "";
 
+    String followingTextAfter() default "";
+
     String className() default "";
 
     String cssSelector() default "";

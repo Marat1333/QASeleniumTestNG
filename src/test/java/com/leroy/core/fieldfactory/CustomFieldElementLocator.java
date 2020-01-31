@@ -55,6 +55,7 @@ public class CustomFieldElementLocator {
                 field.getAnnotation(AppFindBy.class).xpath() : field.getAnnotation(WebFindBy.class).xpath();
         String text = isApp ?
                 field.getAnnotation(AppFindBy.class).text() : field.getAnnotation(WebFindBy.class).text();
+        String followingTextAfter = isApp ? field.getAnnotation(AppFindBy.class).followingTextAfter() : "";
         if (!id.isEmpty())
             return By.id(id);
         if (!xpath.isEmpty()) {
@@ -70,6 +71,9 @@ public class CustomFieldElementLocator {
                 return By.xpath("//*[@text='" + text + "']");
             else
                 return By.xpath("//*[text()='" + text + "']");
+        }
+        if (!followingTextAfter.isEmpty()) {
+            return By.xpath("//android.widget.TextView[@text='" + followingTextAfter + "']/following-sibling::android.widget.TextView");
         }
         if (isApp)
             return null;
@@ -93,6 +97,9 @@ public class CustomFieldElementLocator {
             String textElem = field.getAnnotation(AppFindBy.class).text();
             if (!textElem.isEmpty())
                 return "Элемент с текстом '" + textElem + "'";
+            String followingTextElem = field.getAnnotation(AppFindBy.class).followingTextAfter();
+            if (!followingTextElem.isEmpty())
+                return followingTextElem;
         }
         return field.getName();
     }

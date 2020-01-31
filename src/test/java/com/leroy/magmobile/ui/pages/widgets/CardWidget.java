@@ -11,8 +11,17 @@ public abstract class CardWidget<T extends CardWidgetData> extends Element {
         super(driver, locator);
     }
 
-    public abstract T collectDataFromPage();
-    public abstract boolean isFullyVisible();
+    public T collectDataFromPage() {
+        return collectDataFromPage(null);
+    }
+
+    public abstract T collectDataFromPage(String pageSource);
+
+    public boolean isFullyVisible() {
+        return isFullyVisible(null);
+    }
+
+    public abstract boolean isFullyVisible(String pageSource);
     public abstract boolean isServiceCard();
 
 }

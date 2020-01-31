@@ -2,73 +2,59 @@ package com.leroy.magmobile.ui.pages.sales;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.ui.elements.MagMobSubmitButton;
+import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.common.OldSearchProductPage;
-import com.leroy.magmobile.ui.pages.common.TopMenuPage;
 import com.leroy.magmobile.ui.pages.sales.widget.SalesDocumentWidget;
 import com.leroy.models.SalesDocumentData;
 import io.qameta.allure.Step;
 
-import java.util.List;
-
-public class SalesDocumentsPage extends TopMenuPage {
+// Продажа -> Документы продажи -> "Мои продажи" или "Продажи моего магазина" и т.п.
+public class SalesDocumentsPage extends CommonMagMobilePage {
 
     public SalesDocumentsPage(TestContext context) {
         super(context);
     }
 
-    @AppFindBy(text = "Фильтр", metaName = "Кнопка 'Фильтр'")
+    @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.TextView[@text='Мои продажи']]/following-sibling::android.view.ViewGroup",
+            metaName = "Кнопка 'Фильтр'")
     private MagMobSubmitButton filterBtn;
 
-    @AppFindBy(text = "СОЗДАТЬ ДОКУМЕНТ ПРОДАЖИ", metaName = "Кнопка 'СОЗДАТЬ ДОКУМЕНТ ПРОДАЖИ'")
-    private MagMobSubmitButton createSalesDocumentBtn;
-
-    @AppFindBy(xpath = "//android.widget.HorizontalScrollView//android.widget.TextView")
-    private ElementList<Element> currentFilters;
-
-    @AppFindBy(xpath = "//android.view.ViewGroup[not(@index='0') and child::android.view.ViewGroup[@content-desc='lmui-Icon']]/../../android.view.ViewGroup[not(android.widget.TextView[@text='СЕГОДНЯ'])]",
+    @AppFindBy(xpath = "//android.widget.ScrollView//android.view.ViewGroup[android.view.ViewGroup[android.widget.TextView[contains(@text, '№')]]]",
             metaName = "Мини-карточки документов продажи", clazz = SalesDocumentWidget.class)
     private ElementList<SalesDocumentWidget> salesDocumentList;
 
+    @AppFindBy(text = "СОЗДАТЬ ДОКУМЕНТ ПРОДАЖИ", metaName = "Кнопка 'СОЗДАТЬ ДОКУМЕНТ ПРОДАЖИ'")
+    private MagMobSubmitButton submitBtn;
+
+    public MagMobSubmitButton getSubmitBtn() {
+        return submitBtn;
+    }
+
     @Override
     public void waitForPageIsLoaded() {
-        filterBtn.waitForVisibility();
+        getSubmitBtn().waitForVisibility();
     }
 
     /* ------------------------- ACTION STEPS -------------------------- */
 
     @Step("Нажмите 'Создать документ продажи'")
     public OldSearchProductPage clickCreateSalesDocumentButton() {
-        createSalesDocumentBtn.click();
+        getSubmitBtn().click();
         return new OldSearchProductPage(context);
     }
 
-
     /* ---------------------- Verifications -------------------------- */
 
+    @Step("Проверить, что страница Документы продажи отображается корректно")
     public SalesDocumentsPage verifyRequiredElements() {
-        softAssert.isElementVisible(filterBtn);
-        softAssert.isElementVisible(createSalesDocumentBtn);
+        softAssert.areElementsVisible(filterBtn, getSubmitBtn());
         softAssert.verifyAll();
         return this;
     }
 
-    public SalesDocumentsPage shouldFilterIs(String textFilter) throws Exception {
-        anAssert.isTrue(currentFilters.getCount() > 0,
-                "Должен быть виден хотя бы один фильтр");
-        anAssert.isEquals(currentFilters.get(0).getText(), textFilter,
-                "Текущий фильтр должен быть выставлен в %");
-        return this;
-    }
-
-    public SalesDocumentsPage shouldFiltersAre(List<String> textFilters) throws Exception {
-        anAssert.isEquals(currentFilters.getTextList(), textFilters,
-                "Текущие фильтры должны быть такими: %");
-        return this;
-    }
-
+    @Step("Проверить, что документ {index} содержит необходимую информацию: {expectedDocument}")
     public SalesDocumentsPage shouldSalesDocumentByIndexIs(int index, SalesDocumentData expectedDocument)
             throws Exception {
         SalesDocumentData documentFromPage = salesDocumentList.get(index).getSalesDocumentData();

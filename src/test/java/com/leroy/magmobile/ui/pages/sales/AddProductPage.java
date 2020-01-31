@@ -67,11 +67,13 @@ public class AddProductPage extends CommonMagMobilePage {
         waitForProgressBarIsInvisible();
     }
 
-    public Double getPrice() {
+    public String getPrice() {
+        String _priceValue = price.getText().replaceAll(" ₽/м²", "");
         try {
-            return Double.valueOf(price.getText().replaceAll(" ₽/м²", ""));
+            Double.parseDouble(_priceValue);
+            return _priceValue;
         } catch (NumberFormatException err) {
-            anAssert.isTrue(false, "Цена имеет не правильный формат: " + price.getText());
+            anAssert.isTrue(false, "Цена имеет не правильный формат: " + _priceValue);
             throw err;
         }
     }
@@ -99,16 +101,17 @@ public class AddProductPage extends CommonMagMobilePage {
     // ---------------- Verifications ----------------------- //
 
     public AddProductPage verifyRequiredElements() {
-        softAssert.isElementTextEqual(screenTitle, SCREEN_TITLE);
-        softAssert.isElementVisible(backBtn);
-        softAssert.isElementVisible(priceLbl);
-        softAssert.isElementVisible(availableForSaleLbl);
-        softAssert.isElementVisible(shoppingRoomLbl);
-        softAssert.isElementVisible(stockRMLbl);
-        softAssert.isElementVisible(stockEMLbl);
-        softAssert.isElementVisible(stockOutLbl);
-        softAssert.isElementVisible(editQuantityFld);
-        softAssert.isElementVisible(addBtn);
+        String ps = getPageSource();
+        softAssert.isElementTextEqual(screenTitle, SCREEN_TITLE, ps);
+        softAssert.isElementVisible(backBtn, ps);
+        softAssert.isElementVisible(priceLbl, ps);
+        softAssert.isElementVisible(availableForSaleLbl, ps);
+        softAssert.isElementVisible(shoppingRoomLbl, ps);
+        softAssert.isElementVisible(stockRMLbl, ps);
+        softAssert.isElementVisible(stockEMLbl, ps);
+        softAssert.isElementVisible(stockOutLbl, ps);
+        softAssert.isElementVisible(editQuantityFld, ps);
+        softAssert.isElementVisible(addBtn, ps);
         softAssert.isTrue(addBtn.isEnabled(),
                 "Кнопка 'Добавить' должна быть активна");
         softAssert.verifyAll();
@@ -120,11 +123,10 @@ public class AddProductPage extends CommonMagMobilePage {
         return this;
     }
 
-    public AddProductPage shouldTotalPriceIs(Double number) {
+    public AddProductPage shouldTotalPriceIs(String number) {
         String sTotalPrice = totalPrice.getText().replaceAll(" ₽", "")
                 .replaceAll(",", ".");
-        Double total = Double.valueOf(sTotalPrice);
-        anAssert.isEquals(total, number, "Сумма должна быть равна %s");
+        anAssert.isEquals(sTotalPrice, number, "Сумма должна быть равна %s");
         return this;
     }
 }

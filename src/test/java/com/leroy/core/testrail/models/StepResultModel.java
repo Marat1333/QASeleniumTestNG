@@ -1,6 +1,6 @@
 package com.leroy.core.testrail.models;
 
-public class StepResultModel extends BaseModel {
+public class StepResultModel extends BaseTestRailModel {
     private String content;
     private String expected;
     private String actual;

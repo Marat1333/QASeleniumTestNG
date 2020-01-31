@@ -5,7 +5,6 @@ import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.widgets.CardWidget;
 import com.leroy.models.ProductCardData;
-import org.apache.kafka.common.protocol.types.Field;
 import org.openqa.selenium.WebDriver;
 
 public class SearchProductCardWidget extends CardWidget<ProductCardData> {
@@ -38,67 +37,96 @@ public class SearchProductCardWidget extends CardWidget<ProductCardData> {
     @AppFindBy(xpath = "./android.widget.TextView[8]")
     private Element quantityLbl;
 
-    public String getLmCode(boolean onlyDigits) {
+    public String getLmCode(boolean onlyDigits, String pageSource) {
         if (onlyDigits)
-            return lmCodeObj.getText().replaceAll("\\D", "");
+            return lmCodeObj.getText(pageSource).replaceAll("\\D", "");
         else
-            return lmCodeObj.getText();
+            return lmCodeObj.getText(pageSource);
+    }
+
+    public String getLmCode(boolean onlyDigits) {
+        return getLmCode(onlyDigits, null);
+    }
+
+    public String getBarCode(boolean onlyDigits, String pageSource) {
+        if (onlyDigits)
+            return barCodeObj.getText(pageSource).replaceAll(" ", "");
+        else
+            return barCodeObj.getText(pageSource);
     }
 
     public String getBarCode(boolean onlyDigits) {
-        if (onlyDigits)
-            return barCodeObj.getText().replaceAll(" ", "");
-        else
-            return barCodeObj.getText();
+        return getBarCode(onlyDigits, null);
+    }
+
+    public String getName(String pageSource) {
+        return nameObj.getText(pageSource);
     }
 
     public String getName() {
-        return nameObj.getText();
+        return getName(null);
+    }
+
+    public String getPrice(String pageSource) {
+        return priceObj.getText(pageSource);
     }
 
     public String getPrice() {
-        return priceObj.getText();
+        return getPrice(null);
+    }
+
+    public String getPriceLbl(String pageSource) {
+        return priceLbl.getText(pageSource);
     }
 
     public String getPriceLbl() {
-        return priceLbl.getText();
+        return getPriceLbl(null);
+    }
+
+    public String getQuantity(boolean onlyDigits, String pageSource) {
+        if (onlyDigits)
+            return quantityObj.getText(pageSource).replaceAll(" ", "");
+        else
+            return quantityObj.getText(pageSource);
     }
 
     public String getQuantity(boolean onlyDigits) {
-        if (onlyDigits)
-            return quantityObj.getText().replaceAll(" ", "");
-        else
-            return quantityObj.getText();
+        return getQuantity(onlyDigits, null);
+    }
+
+    public String getQuantityType(String pageSource) {
+        return quantityType.getText(pageSource);
     }
 
     public String getQuantityType() {
-        return quantityType.getText();
+        return getQuantityType(null);
+    }
+
+    public String getQuantityLbl(String pageSource) {
+        return quantityLbl.getText(pageSource);
     }
 
     public String getQuantityLbl() {
-        return quantityLbl.getText();
+        return getQuantityLbl(null);
     }
 
     @Override
-    public ProductCardData collectDataFromPage() {
+    public ProductCardData collectDataFromPage(String pageSource) {
+        String ps = pageSource == null? driver.getPageSource() : pageSource;
         ProductCardData productCardData = new ProductCardData();
-        productCardData.setLmCode(getLmCode(true));
-        productCardData.setBarCode(getBarCode(true));
-        productCardData.setName(getName());
-        productCardData.setPrice(getPrice());
-        productCardData.setAvailableQuantity(getQuantity(true));
+        productCardData.setLmCode(getLmCode(true, ps));
+        productCardData.setBarCode(getBarCode(true, ps));
+        productCardData.setName(getName(ps));
+        productCardData.setPrice(getPrice(ps));
+        productCardData.setAvailableQuantity(getQuantity(true, ps));
         return productCardData;
     }
 
     @Override
-    public boolean isFullyVisible() {
-        if (lmCodeObj.isVisible()) {
-            String check = lmCodeObj.getText().substring(3);
-            if (check.matches("\\d+") && quantityLbl.isVisible()) {
-                return true;
-            } else {
-                return false;
-            }
+    public boolean isFullyVisible(String pageSource) {
+        if (lmCodeObj.isVisible(pageSource)) {
+            String check = lmCodeObj.getText(pageSource).substring(3);
+            return check.matches("\\d+") && quantityLbl.isVisible(pageSource));
         }else {
             return false;
         }

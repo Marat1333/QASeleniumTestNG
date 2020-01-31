@@ -372,10 +372,6 @@ public abstract class BaseWebPage extends BasePage {
         switchToWindow(newHandles.toArray()[0].toString());
     }
 
-    public boolean isTextPresentOnSource(String text) {
-        return this.driver.getPageSource().contains(text);
-    }
-
     /**
      * Gets the count of opened windows
      *

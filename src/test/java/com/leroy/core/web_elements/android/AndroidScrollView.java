@@ -59,7 +59,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
      * Scroll down to the end and get all data as ArrayList
      */
     public List<T> getFullDataList(int maxEntityCount) throws Exception {
-        scrollToText(null, null, maxEntityCount, "down");
+        scrollTo(null, null, null, maxEntityCount, "down");
         return new ArrayList<>(tmpCardDataList);
     }
 
@@ -126,7 +126,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
      * @param direction      - up or down
      * @return this
      */
-    private AndroidScrollView<T> scrollToText(String findText, Integer maxScrollCount, Integer maxEntityCount, String direction) throws Exception {
+    private AndroidScrollView<T> scrollTo(Element findElement, String findText, Integer maxScrollCount, Integer maxEntityCount, String direction) throws Exception {
         initialWebElementIfNeeded();
         tmpCardDataList = new ArrayList<>();
         List<T> prevDataList = null;
@@ -136,21 +136,27 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
                 break;
             if (maxEntityCount != null && tmpCardDataList.size() >= maxEntityCount) {
                 while (tmpCardDataList.size() > maxEntityCount) {
-                    tmpCardDataList.remove(tmpCardDataList.size()-1);
+                    tmpCardDataList.remove(tmpCardDataList.size() - 1);
                 }
                 break;
             }
             ElementList<CardWidget<T>> cardWidgetList = this.findChildElements(oneRowXpath, rowWidgetClass);
             List<T> currentVisibleDataList = new ArrayList<>();
+            String pageSource = getPageSource();
+            if (findElement != null) {
+                if (findElement.isVisible(pageSource))
+                    break;
+            }
+            boolean textFound = false;
             for (CardWidget<T> widget : cardWidgetList) {
                 if (widget.isServiceCard()){
                     simpleScroll(direction);
                 }
-                if (widget.isFullyVisible()&&!widget.isServiceCard()) {
-                    T data = widget.collectDataFromPage();
+                if (widget.isFullyVisible(pageSource)&&!widget.isServiceCard()) {
+                    T data = widget.collectDataFromPage(pageSource);
                     currentVisibleDataList.add(data);
                     if (findText != null && data.toString().contains(findText))
-                        break;
+                        textFound = true;
                 }
             }
             if (currentVisibleDataList.size() == 0) {
@@ -158,6 +164,8 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
                 break;
             }
             addNonRepeatingText(tmpCardDataList, currentVisibleDataList);
+            if (textFound)
+                return this;
             simpleScroll(direction);
             progressBar.waitForInvisibility();
             Log.debug("<-- Scroll down #" + (i + 1) + "-->");
@@ -177,7 +185,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
      * @return this
      */
     public AndroidScrollView<T> scrollDownToText(String findText, int maxScrollCount) throws Exception {
-        return scrollToText(findText, maxScrollCount, null,"down");
+        return scrollTo(null, findText, maxScrollCount, null, "down");
     }
 
     /**
@@ -188,11 +196,19 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
      * @return this
      */
     public AndroidScrollView<T> scrollUpToText(String findText, int maxScrollCount) throws Exception {
-        return scrollToText(findText, maxScrollCount, null, "up");
+        return scrollTo(null, findText, maxScrollCount, null, "up");
     }
 
     public AndroidScrollView<T> scrollDownToText(String findText) throws Exception {
         return scrollDownToText(findText, MAX_SCROLL_COUNT);
+    }
+
+    public AndroidScrollView<T> scrollDownToElement(Element element) throws Exception {
+        return scrollTo(element, null, MAX_SCROLL_COUNT, null, "down");
+    }
+
+    public AndroidScrollView<T> scrollUpToElement(Element element) throws Exception {
+        return scrollTo(element, null, MAX_SCROLL_COUNT, null, "up");
     }
 
     public AndroidScrollView<T> scrollDown() throws Exception {

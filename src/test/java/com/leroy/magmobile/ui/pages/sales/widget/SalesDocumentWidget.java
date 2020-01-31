@@ -34,9 +34,9 @@ public class SalesDocumentWidget extends BaseWidget {
     public SalesDocumentData getSalesDocumentData() {
         SalesDocumentData document = new SalesDocumentData();
         document.setWhereFrom(whereFrom.getText());
-        document.setPrice(Double.valueOf(price.getText().replaceAll("₽|\\s", "")));
-        document.setNumber(Long.valueOf(number.getText().replaceAll("№|\\s", "")));
-        document.setPin(Integer.valueOf(pin.getText().replaceAll("PIN ", "")));
+        document.setPrice(price.getText().replaceAll("₽|\\s", ""));
+        document.setNumber(number.getText().replaceAll("№|\\s", ""));
+        document.setPin(pin.getText().replaceAll("PIN ", ""));
         document.setDate(date.getText());
         document.setDocumentType(documentType.getText());
         return document;
