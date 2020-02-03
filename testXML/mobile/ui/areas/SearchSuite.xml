@@ -66,14 +66,24 @@
         </classes>
     </test>
 
-<!--    <test name="C22789191 Сортировка результатов поиска">-->
-<!--        <classes>-->
-<!--            <class name="com.leroy.magmobile.ui.tests.SearchTest">-->
-<!--                <methods>-->
-<!--                    <include name="testC22789191"/>-->
-<!--                </methods>-->
-<!--            </class>-->
-<!--        </classes>-->
-<!--    </test>-->
+    <test name="C22789191 Сортировка результатов поиска">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.SearchTest">
+                <methods>
+                    <include name="testC22789191"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22789201 Номенклатура, Навигация и Поиск по структурным элементам номенклатуры">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.SearchTest">
+                <methods>
+                    <include name="testC22789201"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
 
 </suite>

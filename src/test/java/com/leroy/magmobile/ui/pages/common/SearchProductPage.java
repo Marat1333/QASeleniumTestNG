@@ -77,61 +77,6 @@ public class SearchProductPage extends BaseAppPage {
         waitForProgressBarIsInvisible();
     }
 
-    /*private void scrollNTimesAndAddVisibleElementsToArray(int i, ArrayList<Integer> arrayList, String sortType) throws Exception {
-        for (int y = 0; y < i; y++) {
-            addNeededDataToArrayFromProductCard(arrayList, sortType);
-            scrollDown();
-            waitForProgressBarIsInvisible();
-        }
-    }*/
-
-    private void addNeededDataToArrayFromProductCard(ArrayList<Integer> arrayList, String sortType) throws Exception {
-        String content = "";
-        int contentNumber = 0;
-
-        for (Element tmp : productCards) {
-            if (sortType.equals(SortPage.SORT_BY_LM_ASC) || sortType.equals(SortPage.SORT_BY_LM_DESC)) {
-                content = tmp.findChildElement("//android.widget.TextView[1]").getText();
-                content = content.replaceAll("\\D", "");
-                if (content.length() > 0) {
-                    contentNumber = Integer.valueOf(content);
-                }
-                if (!arrayList.contains(contentNumber) && (content.length() == 8)) {
-                    arrayList.add(contentNumber);
-                }
-            } else if (sortType.equals(SortPage.SORT_BY_AVAILABLE_STOCK_ASC) || sortType.equals(SortPage.SORT_BY_AVAILABLE_STOCK_DESC)) {
-                try {
-                    content = tmp.findChildElement("//android.widget.TextView[6]").getText();
-                    if (!arrayList.contains(tmp) && content.length() > 0) {
-                        content = content.replaceAll(" ", "");
-                        if (content.contains("-") || content.matches("\\d+")) {
-                            contentNumber = Integer.valueOf(content);
-                            arrayList.add(contentNumber);
-                        }
-                    }
-                } catch (NoSuchElementException e) {
-                    log.assertFail("Для карточки товара не найден остаток");
-                }
-            }
-        }
-    }
-
-    /*private ArrayList<Integer> getSortedElementsFromProductCards(String sortType, int scrollNTimes) throws Exception {
-        ArrayList<Integer> sortedCodes = new ArrayList<>();
-        ArrayList<Integer> sortedStocks = new ArrayList<>();
-
-        if (sortType.equals(SortPage.SORT_BY_AVAILABLE_STOCK_ASC) || sortType.equals(SortPage.SORT_BY_AVAILABLE_STOCK_DESC)) {
-            scrollNTimesAndAddVisibleElementsToArray(scrollNTimes, sortedStocks, sortType);
-            return sortedStocks;
-        } else if (sortType.equals(SortPage.SORT_BY_LM_ASC) || sortType.equals(SortPage.SORT_BY_LM_DESC)) {
-            scrollNTimesAndAddVisibleElementsToArray(scrollNTimes, sortedCodes, sortType);
-            return sortedCodes;
-        } else {
-            return new ArrayList<>();
-        }
-    }*/
-
-
     // ---------------- Action Steps -------------------------//
 
     @Step("Перейти на главную страницу 'Документы продажи'")
@@ -142,7 +87,7 @@ public class SearchProductPage extends BaseAppPage {
 
     @Step("Ввести поисковой запрос со случайным текстом {value} раз и инициировать поиск")
     public List<String> createSearchHistory(int value) {
-        pageSource = driver.getPageSource();
+        String pageSource = getPageSource();
         List<String> searchHistory = new ArrayList<>();
         String tmp = "1";
         for (int i = 0; i < value; i++) {
@@ -205,7 +150,7 @@ public class SearchProductPage extends BaseAppPage {
 
     @Step("Перейти на страницу выбора фильтров")
     public MyShopFilterPage goToFilterPage() {
-        pageSource = driver.getPageSource();
+        String pageSource = getPageSource();
         filter.click();
         waitForContentHasChanged(pageSource, 2);
         return new MyShopFilterPage(context);
@@ -247,10 +192,12 @@ public class SearchProductPage extends BaseAppPage {
         return this;
     }
 
+    @Step("сообщение о первом поиске отображено")
     public void shouldFirstSearchMsgBeDisplayed() {
         anAssert.isTrue(firstSearchMsg.isVisible(), "Должно быть отображено сообщение о первом поиске");
     }
 
+    @Step("сообщение о том, что ничего не найдено - отображено")
     public void shouldNotFoundMsgBeDisplayed(String value) {
         Element element = new Element(driver, By.xpath(String.format(NOT_FOUND_MSG_XPATH, value)));
         anAssert.isTrue(element.isVisible(), "Поиск по запросу " + value + " не вернул результатов");
@@ -262,22 +209,26 @@ public class SearchProductPage extends BaseAppPage {
         anAssert.isFalse(E("доступно").isVisible(), "Карточки товаров не должны содержать доступное кол-во");
     }
 
+    @Step("Кнопка сброса фильтров отображена")
     public void shouldDiscardAllFiltersBtnBeDisplayed() {
         discardAllFiltersBtn.waitForVisibility();
         anAssert.isTrue(discardAllFiltersBtn.isVisible(), "Кнопка \"Сбросить фильтры\" отображена");
     }
 
+    @Step("Кнопка сброса фильтров не отображена")
     public void shouldNotDiscardAllFiltersBtnBeDisplayed() {
         discardAllFiltersBtn.waitForInvisibility();
         anAssert.isFalse(discardAllFiltersBtn.isVisible(), "Кнопка \"Сбросить фильтры\" не отображена");
     }
 
+    @Step("картчоек товара больше {count}")
     public SearchProductPage shouldCountOfProductsOnPageMoreThan(int count) {
         anAssert.isTrue(productCards.getCount() > count,
                 "Кол-во товаров на экране должно быть больше " + count);
         return this;
     }
 
+    @Step("Карточка товара содержит текст {text}")
     public void shouldProductCardsContainText(String text) throws Exception {
         String[] searchWords = null;
         if (text.contains(" "))
@@ -304,6 +255,7 @@ public class SearchProductPage extends BaseAppPage {
         }
     }
 
+    @Step("Кнопка номенклатуры содержит текст {text}")
     public SearchProductPage shouldSelectedNomenclatureIs(String text, boolean strictEqual) throws Exception {
         if (strictEqual) {
             anAssert.isElementTextEqual(nomenclature, text);
@@ -313,6 +265,7 @@ public class SearchProductPage extends BaseAppPage {
         return this;
     }
 
+    @Step("Карточка товара содержит все элементы")
     public SearchProductPage shouldProductCardContainAllRequiredElements(int index) throws Exception {
         anAssert.isFalse(productCards.get(index).getBarCode(true).isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустой штрихкод", index));
@@ -363,22 +316,14 @@ public class SearchProductPage extends BaseAppPage {
 
     // API verifications
 
-    public SearchProductPage shouldResponceEqualsContent(Response<ProductItemListResponse> response, boolean strictEquality) throws Exception {
+    @Step("Фронт корректно отобразил ответ от сервера")
+    public SearchProductPage shouldResponceEqualsContent(Response<ProductItemListResponse> response, Integer entityCount) throws Exception {
         List<ProductItemResponse> productData = response.asJson().getItems();
-        List<ProductCardData> productCardData = productCardsScrollView.getFullDataList(10);
-        if (productCardData.size() != productData.size()) {
+        List<ProductCardData> productCardDataList = productCardsScrollView.getFullDataList(entityCount);
+        if (productCardDataList.size() != productData.size()) {
             throw new AssertionError("Page size param should be equals to maxEntityCount");
         }
-        if (strictEquality) {
-            anAssert.isTrue(productCardData.equals(productData), "Товары не совпадают");
-        } else {
-
-            //TODO подумать как лучше
-            for (int i = 0; i < productCardData.size(); i++) {
-                anAssert.isTrue(productCardData.get(i).getLmCode().contains(productData.get(i).getLmCode()), "Продукты частично не совпадают по LM " + productData.get(i).getLmCode());
-                anAssert.isTrue(productCardData.get(i).getBarCode().contains(productData.get(i).getBarCode()), "Продукты частично совпадают по BAR " + productData.get(i).getBarCode());
-            }
-        }
+        anAssert.isTrue(productCardDataList.equals(productData), "Товары не совпадают");
         return this;
     }
 

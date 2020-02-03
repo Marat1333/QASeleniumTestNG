@@ -106,7 +106,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
         //Try to change bottomY k
         Point _location = getLocation();
         Dimension _size = getSize();
-        int x = _location.getX();
+        int x = _location.getX() + _size.getWidth() / 2;
         int bottomY = _location.getY() + _size.getHeight() - (int) Math.round(_size.getHeight() * 0.5);
         int topY = _location.getY() + (int) Math.round(_size.getHeight() * 0.05);
 

@@ -3,18 +3,16 @@ package com.leroy.magmobile.ui.pages.common;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.configuration.Log;
-import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.pages.BaseAppPage;
-import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magmobile.ui.pages.sales.widget.SearchProductCardWidget;
-import com.leroy.models.ProductCardData;
-import com.leroy.models.TextViewData;
 import io.qameta.allure.Step;
-import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public class NomenclatureSearchPage extends BaseAppPage {
     public NomenclatureSearchPage(TestContext context) {
@@ -43,17 +41,16 @@ public class NomenclatureSearchPage extends BaseAppPage {
 
     @Step("Вернитесь на окно выбора отдела")
     public NomenclatureSearchPage returnBackNTimes(int counter) throws Exception {
-        pageSource=getDriver().getPageSource();
+        String pageSource = getPageSource();
         for (int y = 0; y < counter; y++) {
             if (!nomenclatureBackBtn.isVisible()) {
                 Log.error("Осуществлен переход во \"Все отделы\", перейти дальше невозможно");
                 throw new NoSuchElementException("There is no back button");
             }
             nomenclatureBackBtn.click();
-            waitForContentHasChanged(pageSource,5);
-            if (!isContentChanged(pageSource)){
+            if (!waitForContentHasChanged(pageSource, 5)) {
                 nomenclatureBackBtn.click();
-                waitForContentHasChanged(pageSource,5);
+                waitForContentHasChanged(pageSource, 5);
             }
         }
         return new NomenclatureSearchPage(context);
@@ -68,41 +65,47 @@ public class NomenclatureSearchPage extends BaseAppPage {
             selectElementFromArray(subDept, secondLevelNomenclatureElementsList);
         }
         if (dept != null && subDept != null && classId != null) {
-            String refactoredClassId="";
-            if (classId.length()==4)
-            refactoredClassId=classId.replaceAll("^0","");
+            String refactoredClassId = "";
+            if (classId.length() == 4) {
+                refactoredClassId = classId.replaceAll("^0", "");
+            } else {
+                throw new Exception("Wrong classId length");
+            }
             selectElementFromArray(refactoredClassId, secondLevelNomenclatureElementsList);
         }
         if (dept != null && subDept != null && classId != null && subClass != null) {
-            String refactoredSubClass="";
-            if (subClass.length()==4)
-            refactoredSubClass=subClass.replaceAll("^0","");
+            String refactoredSubClass = "";
+            if (subClass.length() == 4) {
+                refactoredSubClass = subClass.replaceAll("^0", "");
+            } else {
+                throw new Exception("Wrong subClassId length");
+            }
             selectElementFromArray(refactoredSubClass, secondLevelNomenclatureElementsList);
         }
         return new NomenclatureSearchPage(context);
     }
 
     private NomenclatureSearchPage selectElementFromArray(String value, ElementList<Element> someArray) throws Exception {
-        pageSource=getDriver().getPageSource();
+        String pageSource = getPageSource();
         int counter = 0;
         for (Element element : someArray) {
-            String tmp = element.findChildElement(eachElementOfNomenclatureXpath).getText();
+            Element tmpEl = element.findChildElement(eachElementOfNomenclatureXpath);
+            String tmp = tmpEl.getText();
             tmp = tmp.replaceAll("\\D+", "");
             if (tmp.length() > 4) {
                 tmp = tmp.substring(0, 4);
             }
             if (tmp.equals(value)) {
-                element.findChildElement(eachElementOfNomenclatureXpath).click();
-                waitForContentHasChanged(pageSource,5);
+                tmpEl.click();
+                waitForContentHasChanged(pageSource, 5);
                 counter++;
                 break;
             }
         }
         if (counter < 1) {
             scrollDown();
-            selectElementFromArray(value,secondLevelNomenclatureElementsList);
+            selectElementFromArray(value, secondLevelNomenclatureElementsList);
         }
-        counter = 0;
         return new NomenclatureSearchPage(context);
     }
 
@@ -131,7 +134,25 @@ public class NomenclatureSearchPage extends BaseAppPage {
         return this;
     }
 
-    public NomenclatureSearchPage shouldTitleWithNomenclatureIs(String text) throws Exception {
+    @Step("отображено 15 отделов")
+    public NomenclatureSearchPage shouldDepartmentsCountIs15() {
+        Set<String> uniqueElementsArray = new HashSet<>();
+        for (Element element : firstLevelNomenclatureElementsList) {
+            uniqueElementsArray.add(element.getText());
+        }
+        scrollDown();
+        for (Element element : secondLevelNomenclatureElementsList) {
+            if (!uniqueElementsArray.contains(element)) {
+                uniqueElementsArray.add(element.getText());
+            }
+        }
+        anAssert.isTrue(uniqueElementsArray.size() == 15, "Найдено некорректное кол-во отделов");
+        return this;
+    }
+
+
+    @Step("Выбранная номенклатура соответствует критерию {text}")
+    public NomenclatureSearchPage shouldTitleWithNomenclatureIs(String text) {
         String format = "%s - %s - %s - %s";
         String emptyText = "_ _ _";
         String expectedText = "";
@@ -168,16 +189,12 @@ public class NomenclatureSearchPage extends BaseAppPage {
             return this;
 
         } else {
-            Log.error("Некорректная длинна номенклатуры");
+            anAssert.isTrue(false,"Некорректная длинна номенклатуры");
             return this;
         }
     }
 
-    public NomenclatureSearchPage shouldSelectedNomenclatureIs(String text) {
-        anAssert.isElementTextEqual(selectedNomenclatureLbl, text);
-        return this;
-    }
-
+    @Step("Кнопка \"назад\" должна быть отображена - {shouldBeVisible}")
     public NomenclatureSearchPage verifyNomenclatureBackBtnVisibility(boolean shouldBeVisible) {
         if (shouldBeVisible)
             anAssert.isElementVisible(nomenclatureBackBtn);

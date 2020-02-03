@@ -133,12 +133,12 @@ public class SearchProductCardWidget extends CardWidget<ProductCardData> {
     }
 
     @Override
-    public boolean isServiceCard(){
-        if (lmCodeObj.isVisible()) {
+    public boolean isServiceCard() {
+        /*if (lmCodeObj.isVisible()) {
             String check = lmCodeObj.getText().substring(3);
             return check.matches("\\d+") && check.startsWith("49");
-        }else {
-            return false;
-        }
+        }else {*/
+        return false;
+    //}
     }
 }

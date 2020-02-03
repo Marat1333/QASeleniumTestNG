@@ -105,7 +105,7 @@ public class FilterPage extends BaseAppPage {
 
     @Step("Очистить все фильтры")
     public void clearAllFilters() {
-        pageSource = driver.getPageSource();
+        String pageSource = getPageSource();
         scrollUp();
         clearAllFiltersBtn.click();
         waitForContentHasChanged(pageSource, 4);
@@ -143,7 +143,7 @@ public class FilterPage extends BaseAppPage {
             Element element = E("contains(" + gamma + ")");
             //От захардкоженного элемента нужны только координаты, которые будут использоваться вне зависимости от видимости элемента
             swipeRightTo(E("contains(ГАММА )"), element);
-            pageSource = driver.getPageSource();
+            String pageSource = getPageSource();
             element.click();
             waitForContentHasChanged(pageSource, 4);
         } catch (NoSuchElementException e) {
@@ -154,7 +154,7 @@ public class FilterPage extends BaseAppPage {
     @Step("Выбрать тип продукта {type}")
     public void choseProductType(String type) {
         scrollDown();
-        pageSource = driver.getPageSource();
+        String pageSource = getPageSource();
         if (type.equals(COMMON_PRODUCT_TYPE)) {
             commonProductBtn.click();
             ;
@@ -167,11 +167,11 @@ public class FilterPage extends BaseAppPage {
     @Step("Выбрать дату avs")
     public void choseAvsDate(LocalDate date) throws Exception {
         scrollDown();
-        pageSource = driver.getPageSource();
+        String pageSource = getPageSource();
         avsDateBtn.click();
         waitForContentHasChanged(pageSource, 2);
         CalendarWidget calendarWidget = new CalendarWidget(context.getDriver());
-        pageSource = driver.getPageSource();
+        pageSource = getPageSource();
         calendarWidget.selectDate(date);
         waitForContentHasChanged(pageSource, 2);
     }
@@ -189,18 +189,21 @@ public class FilterPage extends BaseAppPage {
 
     //Verifications
 
+    @Step("Чек-бокс {value} выбран")
     public FilterPage shouldElementHasBeenSelected(String value) {
         Element anchorElement = E(String.format(SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH, value));
         anAssert.isElementImageMatches(anchorElement, MagMobElementTypes.CHECK_BOX_FILTER_PAGE.getPictureName());
         return this;
     }
 
+    @Step("Радиогруппа {value} выбрана")
     public FilterPage shouldFilterHasBeenChosen(String value) throws Exception {
         MagMobCheckBox element = new MagMobCheckBox(driver, new CustomLocator(By.xpath("//*[contains(@text, '" + value + "')]")));
         anAssert.isTrue(element.isChecked(), "Фильтр '" + value + "' должен быть выбран");
         return this;
     }
 
+    @Step("Радиогруппа {value} НЕ выбрана")
     public FilterPage shouldFilterHasNotBeenChosen(String value) throws Exception {
         MagMobCheckBox element = new MagMobCheckBox(driver, new CustomLocator(By.xpath("//*[contains(@text, '" + value + "')]")));
         anAssert.isFalse(element.isChecked(), "Фильтр '" + value + "' не должен быть выбран");

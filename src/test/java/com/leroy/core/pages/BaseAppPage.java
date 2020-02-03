@@ -24,7 +24,6 @@ import java.time.Duration;
 public class BaseAppPage extends BasePage {
 
     AndroidDriver<MobileElement> androidDriver;
-    protected String pageSource;
 
     @AppFindBy(xpath = "//android.widget.ProgressBar", cacheLookup = false, metaName = "Progress bar")
     private Element progressBar;
@@ -43,25 +42,18 @@ public class BaseAppPage extends BasePage {
         }
     }
 
-    protected boolean isContentChanged(String pageSource){
-        String tmpPageSource=androidDriver.getPageSource();
-        if (!tmpPageSource.equals(pageSource)){
-            return true;
-        }else {
-            return false;
-        }
-    }
-
     protected void hideKeyboard() {
         androidDriver.hideKeyboard();
     }
 
-    protected void waitForContentHasChanged(String pageSource, int timeout){
+    protected Boolean waitForContentHasChanged(String pageSource, int timeout){
         try {
             new WebDriverWait(androidDriver, timeout)
                     .until((ExpectedCondition<Boolean>) driverObject -> !(androidDriver.getPageSource().equals(pageSource)));
+            return true;
         }catch (TimeoutException e){
             Log.warn(String.format("waitForContentHasChanged failed (tried for %d second(s))", timeout));
+            return false;
         }
     }
 

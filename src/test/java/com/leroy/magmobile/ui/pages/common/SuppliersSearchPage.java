@@ -34,13 +34,13 @@ public class SuppliersSearchPage extends BaseAppPage {
 
     @Step("Найти поставщика по {value} и выбрать его")
     public String searchSupplier(String value){
-        pageSource=driver.getPageSource();
+        String pageSource=getPageSource();
         String supplierId="";
         searchString.clearFillAndSubmit(value);
         waitForContentHasChanged(pageSource,2);
         searchString.clear();
         hideKeyboard();
-        pageSource=driver.getPageSource();
+        pageSource=getPageSource();
 
         if (value.matches("\\d+")) {
             Element supplierByCode = E("contains("+value+")");
@@ -56,7 +56,7 @@ public class SuppliersSearchPage extends BaseAppPage {
 
     @Step("Подтвердить выбор")
     public FilterPage applyChosenSupplier(){
-        pageSource=driver.getPageSource();
+        String pageSource=getPageSource();
         confirmBtn.click();
         waitForContentHasChanged(pageSource,2);
         return new FilterPage(context);
@@ -68,18 +68,21 @@ public class SuppliersSearchPage extends BaseAppPage {
         return this;
     }
 
+    @Step("Поставщик с кодом/именем {value} выбран")
     public SuppliersSearchPage verifyElementIsSelected(String value){
         Element anchorElement = E(String.format(SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH,value));
         anAssert.isElementImageMatches(anchorElement, MagMobElementTypes.CHECK_BOX_SELECTED.getPictureName());
         return this;
     }
 
+    @Step("результатов поиска более {count}")
     public SuppliersSearchPage shouldCountOfProductsOnPageMoreThan(int count) {
         anAssert.isTrue(supplierCards.getCount() > count,
                 "Кол-во товаров на экране должно быть больше " + count);
         return this;
     }
 
+    @Step("найденный поставщик содержит критерий поиска {text}")
     public void shouldProductCardsContainText(String text) {
         String[] searchWords = null;
         if (text.contains(" "))

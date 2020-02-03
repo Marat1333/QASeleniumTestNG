@@ -38,6 +38,7 @@ public class SearchTest extends AppBaseSteps {
         String barCode = "5902120110575";
         String shortLmCode = "1234";
         String shortBarCode = "590212011";
+        int entityCount=10;
 
         GetCatalogSearch byLmParams = new GetCatalogSearch()
                 .setPageSize(10)
@@ -110,12 +111,12 @@ public class SearchTest extends AppBaseSteps {
                 .verifyRequiredElements(true)
                 .shouldProductLMCodeIs(lmCode);
         searchProductPage = productCardPage.returnBack();
-        searchProductPage.shouldResponceEqualsContent(lmResponce, true);
+        searchProductPage.shouldResponceEqualsContent(lmResponce, entityCount);
 
         // Step 6
         log.step("Введите название товара для поиска");
         searchProductPage.enterTextInSearchFieldAndSubmit(searchContext);
-        searchProductPage.shouldResponceEqualsContent(nameLikeResponce, true);
+        searchProductPage.shouldResponceEqualsContent(nameLikeResponce, entityCount);
 
         // Step 7
         log.step("Ввести штрихкод вручную");
@@ -124,17 +125,17 @@ public class SearchTest extends AppBaseSteps {
                 .verifyRequiredElements(true)
                 .shouldProductBarCodeIs(barCode);
         searchProductPage = productCardPage.returnBack();
-        searchProductPage.shouldResponceEqualsContent(barcodeResponce, true);
+        searchProductPage.shouldResponceEqualsContent(barcodeResponce, entityCount);
 
         // Step 8
         log.step("Введите часть ЛМ кода для поиска");
         searchProductPage.enterTextInSearchFieldAndSubmit(shortLmCode);
-        searchProductPage.shouldResponceEqualsContent(shortLmResponce, true);
+        searchProductPage.shouldResponceEqualsContent(shortLmResponce, entityCount);
 
         // Step 9
         log.step("Ввести в поисковую строку положительное число длинной >8 символов (" + shortBarCode + ") и инициировать поиск");
         searchProductPage.enterTextInSearchFieldAndSubmit(shortBarCode);
-        searchProductPage.shouldResponceEqualsContent(shortBarcodeResponce, true);
+        searchProductPage.shouldResponceEqualsContent(shortBarcodeResponce, entityCount);
     }
 
     @Test(description = "C22846686 Мой магазин. Выбор фильтров каждого блока фильтров", priority = 1)
@@ -145,6 +146,7 @@ public class SearchTest extends AppBaseSteps {
         final String TOP = "0";
         final String GAMMA = "B";
         final String departmentId = "5";
+        int entityCount=10;
 
 
         GetCatalogSearch gammaParam = new GetCatalogSearch()
@@ -186,39 +188,9 @@ public class SearchTest extends AppBaseSteps {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setStartFrom(1);
 
-        /*GetCatalogSearch hasAvailableStockParam = new GetCatalogSearch()
-                .setHasAvailableStock(true)
-                .setPageSize(10)
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
-                .setStartFrom(1);
-
-        GetCatalogSearch topEmParam = new GetCatalogSearch()
-                .setTopEM(true)
-                .setPageSize(10)
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
-                .setStartFrom(1);
-
-        GetCatalogSearch top1000Param = new GetCatalogSearch()
-                .setTop1000(true)
-                .setPageSize(10)
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
-                .setStartFrom(1);
-
-        GetCatalogSearch limitedOfferParam = new GetCatalogSearch()
-                .setLimitedOffer("true")
-                .setPageSize(10)
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
-                .setStartFrom(1);*/
-
         Response<ProductItemListResponse> avsDateProductResponce = apiClient.searchProductsBy(avsParam);
         Response<ProductItemListResponse> gammaProductResponce = apiClient.searchProductsBy(gammaParam);
         Response<ProductItemListResponse> topProductResponce = apiClient.searchProductsBy(topParam);
-        /*Response<ProductItemListResponse> hasAvailableStockProductResponce = apiClient.searchProductsBy(hasAvailableStockParam);
-        Response<ProductItemListResponse> topEmProductResponce = apiClient.searchProductsBy(topEmParam);*/
         Response<ProductItemListResponse> bestPriceProductResponce = apiClient.searchProductsBy(bestPriceParam);
         Response<ProductItemListResponse> orderedProductTypeProductResponce = apiClient.searchProductsBy(orderedProductTypeParam);
 
@@ -228,7 +200,7 @@ public class SearchTest extends AppBaseSteps {
         SearchProductPage searchProductPage = salesPage.clickSearchBar(false);
         NomenclatureSearchPage nomenclatureSearchPage = searchProductPage.goToNomenclatureWindow();
         nomenclatureSearchPage.returnBackNTimes(1);
-        //nomenclatureSearchPage.choseDepartmentId("00" + departmentId, null, null, null);
+        nomenclatureSearchPage.choseDepartmentId("00" + departmentId, null, null, null);
         nomenclatureSearchPage.clickShowAllProductsBtn();
         MyShopFilterPage filterPage = searchProductPage.goToFilterPage();
 
@@ -237,7 +209,7 @@ public class SearchTest extends AppBaseSteps {
         filterPage.choseGammaFilter(FilterPage.GAMMA + " " + GAMMA);
         filterPage.shouldFilterHasBeenChosen(FilterPage.GAMMA + " " + GAMMA);
         filterPage.applyChosenFilters();
-        searchProductPage.shouldResponceEqualsContent(gammaProductResponce, true);
+        searchProductPage.shouldResponceEqualsContent(gammaProductResponce, entityCount);
 
         // Step 2
         log.step("выбрать один из топов");
@@ -247,7 +219,7 @@ public class SearchTest extends AppBaseSteps {
         filterPage.choseTopFilter();
         filterPage.shouldFilterHasBeenChosen(MyShopFilterPage.TOP + " " + TOP);
         filterPage.applyChosenFilters();
-        searchProductPage.shouldResponceEqualsContent(topProductResponce, true);
+        searchProductPage.shouldResponceEqualsContent(topProductResponce, entityCount);
 
         // Step 3
         log.step("выбрать 1 из чек-боксов блока с типами товаров");
@@ -257,7 +229,7 @@ public class SearchTest extends AppBaseSteps {
         filterPage.choseCheckBoxFilter(FilterPage.BEST_PRICE);
         filterPage.shouldElementHasBeenSelected(FilterPage.BEST_PRICE);
         filterPage.applyChosenFilters();
-        searchProductPage.shouldResponceEqualsContent(bestPriceProductResponce, true);
+        searchProductPage.shouldResponceEqualsContent(bestPriceProductResponce, entityCount);
 
         // Step 4
         log.step("выбрать тип товара");
@@ -269,7 +241,7 @@ public class SearchTest extends AppBaseSteps {
         filterPage.choseProductType(filterPage.ORDERED_PRODUCT_TYPE);
         filterPage.shouldFilterHasBeenChosen(filterPage.ORDERED_PRODUCT_TYPE);
         filterPage.applyChosenFilters();
-        searchProductPage.shouldResponceEqualsContent(orderedProductTypeProductResponce, true);
+        searchProductPage.shouldResponceEqualsContent(orderedProductTypeProductResponce, entityCount);
 
 
         // Step 5
@@ -295,7 +267,7 @@ public class SearchTest extends AppBaseSteps {
         suppliersSearchPage.verifyElementIsSelected(supplierSearchContext);
         suppliersSearchPage.applyChosenSupplier();
         filterPage.applyChosenFilters();
-        searchProductPage.shouldResponceEqualsContent(supplierProductResponce, true);
+        searchProductPage.shouldResponceEqualsContent(supplierProductResponce, entityCount);
 
         // Step 6
         log.step("выбрать дату авс");
@@ -307,7 +279,7 @@ public class SearchTest extends AppBaseSteps {
 
         // Step 7
         searchProductPage.verifyRequiredElements();
-        searchProductPage.shouldResponceEqualsContent(avsDateProductResponce, true);
+        searchProductPage.shouldResponceEqualsContent(avsDateProductResponce, entityCount);
     }
 
     @Test(description = "C22789209 Вся гамма ЛМ. Выбор фильтров каждого раздела", priority = 1)
@@ -315,7 +287,7 @@ public class SearchTest extends AppBaseSteps {
         LocalDate avsDate = LocalDate.of(2019, 12, 5);
         final String GAMMA = "A";
         final String departmentId = "11";
-
+        int entityCount=10;
 
         GetCatalogSearch gammaParam = new GetCatalogSearch()
                 .setGamma(GAMMA)
@@ -370,7 +342,7 @@ public class SearchTest extends AppBaseSteps {
         allGammaFilterPage.applyChosenFilters();
 
         //TODO Описать виджет для и отдельный метод для карточки всей гаммы ЛМ. Сейчас тест будет падать на попытке забрать
-        searchProductPage.shouldResponceEqualsContent(gammaProductResponce, true);
+        searchProductPage.shouldResponceEqualsContent(gammaProductResponce, entityCount);
 
         // Step 3
         log.step("выбрать 1 из чек-боксов блока с типами товаров");
@@ -383,7 +355,7 @@ public class SearchTest extends AppBaseSteps {
         allGammaFilterPage.choseCheckBoxFilter(AllGammaFilterPage.CTM);
         allGammaFilterPage.shouldElementHasBeenSelected(AllGammaFilterPage.CTM);
         allGammaFilterPage.applyChosenFilters();
-        searchProductPage.shouldResponceEqualsContent(ctmProductResponce, true);
+        searchProductPage.shouldResponceEqualsContent(ctmProductResponce, entityCount);
 
         // Step 4
         log.step("выбрать тип товара");
@@ -392,7 +364,7 @@ public class SearchTest extends AppBaseSteps {
         allGammaFilterPage.choseProductType(allGammaFilterPage.COMMON_PRODUCT_TYPE);
         allGammaFilterPage.shouldFilterHasBeenChosen(allGammaFilterPage.COMMON_PRODUCT_TYPE);
         allGammaFilterPage.applyChosenFilters();
-        searchProductPage.shouldResponceEqualsContent(commonProductTypeProductResponce, true);
+        searchProductPage.shouldResponceEqualsContent(commonProductTypeProductResponce, entityCount);
 
         // Step 5
         log.step("выбрать дату авс");
@@ -406,7 +378,7 @@ public class SearchTest extends AppBaseSteps {
         log.step("подтвердить примененные фильтры");
         allGammaFilterPage.applyChosenFilters();
         searchProductPage.verifyRequiredElements();
-        searchProductPage.shouldResponceEqualsContent(avsDateProductResponce, true);
+        searchProductPage.shouldResponceEqualsContent(avsDateProductResponce, entityCount);
     }
 
     @Test(description = "C22789172 На поисковой запрос не вернулись результаты", priority = 2)
@@ -438,9 +410,9 @@ public class SearchTest extends AppBaseSteps {
         // Step 2
         log.step("выбрать более 1 фильтра и нажать \"Показать товары\"");
         MyShopFilterPage myShopFilterPage = searchProductPage.goToFilterPage();
-        myShopFilterPage.scrollHorizontalWidget(myShopFilterPage.GAMMA, myShopFilterPage.GAMMA + " ET");
-        myShopFilterPage.choseGammaFilter(myShopFilterPage.GAMMA + " ET");
-        myShopFilterPage.shouldFilterHasBeenChosen(myShopFilterPage.GAMMA + " ET");
+        myShopFilterPage.scrollHorizontalWidget(MyShopFilterPage.GAMMA, MyShopFilterPage.GAMMA + " ET");
+        myShopFilterPage.choseGammaFilter(MyShopFilterPage.GAMMA + " ET");
+        myShopFilterPage.shouldFilterHasBeenChosen(MyShopFilterPage.GAMMA + " ET");
         searchProductPage = myShopFilterPage.applyChosenFilters();
 
         searchProductPage.verifyRequiredElements();
@@ -456,8 +428,8 @@ public class SearchTest extends AppBaseSteps {
         // Step 4
         log.step("перейти в фильтры");
         searchProductPage.goToFilterPage();
-        myShopFilterPage.scrollHorizontalWidget(myShopFilterPage.GAMMA, myShopFilterPage.GAMMA + " ET");
-        myShopFilterPage.shouldFilterHasNotBeenChosen(myShopFilterPage.GAMMA + " ET");
+        myShopFilterPage.scrollHorizontalWidget(MyShopFilterPage.GAMMA, MyShopFilterPage.GAMMA + " ET");
+        myShopFilterPage.shouldFilterHasNotBeenChosen(MyShopFilterPage.GAMMA + " ET");
         myShopFilterPage.applyChosenFilters();
         searchProductPage.shouldResponceIsNull(nameLikeResponce);
     }
@@ -507,7 +479,7 @@ public class SearchTest extends AppBaseSteps {
         // Step 1
         log.step("Выбрать фильтр \"Вся гамма ЛМ\" и перейти на страницу результатов поиска");
         AllGammaFilterPage allGammaFilterPage = myShopFilterPage
-                .switchFiltersFrame(myShopFilterPage.ALL_GAMMA_FRAME_TYPE);
+                .switchFiltersFrame(MyShopFilterPage.ALL_GAMMA_FRAME_TYPE);
         SearchProductPage searchProductPage = allGammaFilterPage.applyChosenFilters();
         searchProductPage.verifyProductCardsHaveAllGammaView();
 
@@ -571,6 +543,7 @@ public class SearchTest extends AppBaseSteps {
         String subDept = "1510";
         String classId = "0030";
         String subClassId = "0020";
+        int entityCount=10;
 
         GetCatalogSearch subclassParams = new GetCatalogSearch()
                 .setDepartmentId(dept.replaceAll("^0+", ""))
@@ -619,11 +592,13 @@ public class SearchTest extends AppBaseSteps {
         log.step("Перейти на страницу выбора номенклатуры");
         NomenclatureSearchPage nomenclatureSearchPage = searchProductPage.goToNomenclatureWindow();
         nomenclatureSearchPage.verifyRequiredElements();
+        nomenclatureSearchPage.shouldTitleWithNomenclatureIs(EnvConstants.BASIC_USER_DEPARTMENT_ID);
 
         // Step 2
         log.step("Перейти в список всех отделов");
         nomenclatureSearchPage.returnBackNTimes(1);
         nomenclatureSearchPage.shouldTitleWithNomenclatureIs("");
+        nomenclatureSearchPage.shouldDepartmentsCountIs15();
 
         // Step 3
         log.step("нажать по кнопке \"показать все товары\"");
@@ -638,7 +613,7 @@ public class SearchTest extends AppBaseSteps {
         nomenclatureSearchPage.shouldTitleWithNomenclatureIs(dept);
         nomenclatureSearchPage.clickShowAllProductsBtn();
         searchProductPage.shouldSelectedNomenclatureIs(dept, false);
-        searchProductPage.shouldResponceEqualsContent(departmentNomenclatureResponce, true);
+        searchProductPage.shouldResponceEqualsContent(departmentNomenclatureResponce, entityCount);
 
         // Step 5
         log.step("повтороить шаг 2-3 для подотделов");
@@ -649,7 +624,7 @@ public class SearchTest extends AppBaseSteps {
         nomenclatureSearchPage.shouldTitleWithNomenclatureIs(dept + subDept);
         nomenclatureSearchPage.clickShowAllProductsBtn();
         searchProductPage.shouldSelectedNomenclatureIs(subDept, false);
-        searchProductPage.shouldResponceEqualsContent(subdepartmentNomenclatureResponce, true);
+        searchProductPage.shouldResponceEqualsContent(subdepartmentNomenclatureResponce, entityCount);
 
         // Step 6
         log.step("повтороить шаг 2-3 для классов");
@@ -660,7 +635,7 @@ public class SearchTest extends AppBaseSteps {
         nomenclatureSearchPage.shouldTitleWithNomenclatureIs(dept + subDept + classId);
         nomenclatureSearchPage.clickShowAllProductsBtn();
         searchProductPage.shouldSelectedNomenclatureIs(classId, false);
-        searchProductPage.shouldResponceEqualsContent(classNomenclatureResponce, true);
+        searchProductPage.shouldResponceEqualsContent(classNomenclatureResponce, entityCount);
 
         // Step 7
         log.step("повтороить шаг 2-3 для подклассов");
@@ -671,7 +646,7 @@ public class SearchTest extends AppBaseSteps {
         nomenclatureSearchPage.shouldTitleWithNomenclatureIs(dept + subDept + classId + subClassId);
         nomenclatureSearchPage.clickShowAllProductsBtn();
         searchProductPage.shouldSelectedNomenclatureIs(subClassId, false);
-        searchProductPage.shouldResponceEqualsContent(subclassNomenclatureResponce, true);
+        searchProductPage.shouldResponceEqualsContent(subclassNomenclatureResponce, entityCount);
 
     }
 
