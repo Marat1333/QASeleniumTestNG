@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ResultModel extends BaseModel {
+public class ResultModel extends BaseTestRailModel {
 
     /**
      * Statuses:

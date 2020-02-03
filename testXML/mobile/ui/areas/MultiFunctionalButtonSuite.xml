@@ -46,4 +46,34 @@
         </classes>
     </test>
 
+    <test name="C3201024 Добавление в существующий документ продажи">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.MultiFunctionalButtonTest">
+                <methods>
+                    <include name="testC3201024"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22744177 Создание заявки на Отзыв RM">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.MultiFunctionalButtonTest">
+                <methods>
+                    <include name="testCreateOrderForWithdrawalFromRM"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22847027 35 магазин - создание заказа">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.MultiFunctionalButtonTest">
+                <methods>
+                    <include name="test35ShopCreatingOrder"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
 </suite>

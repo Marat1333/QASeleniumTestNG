@@ -27,9 +27,13 @@ public class OrderPage extends CommonMagMobilePage {
     private Element orderNumberObj;
 
     // Parameters areas
-    @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.TextView[@text='Способ пополнения']]",
+    private static final String replenishmentMethodText = "Способ пополнения";
+    @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.TextView[@text='" + replenishmentMethodText + "']]",
             metaName = "Область 'Способ пополнения'")
     private Element replenishmentMethodArea;
+    @AppFindBy(xpath = "//android.widget.TextView[@text='" + replenishmentMethodText + "']/following-sibling::android.widget.TextView[1]",
+            metaName = replenishmentMethodText)
+    private Element replenishmentMethodLbl;
 
     private static final String deliveryDateText = "Дата доставки товара";
     @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.TextView[@text='" + deliveryDateText + "']]",
@@ -101,10 +105,21 @@ public class OrderPage extends CommonMagMobilePage {
     /* ------------------------- Verifications -------------------------- */
 
     @Step("Проверить, что экран 'Параметры заявки' отображается корректно")
-    public OrderPage verifyVisibilityOfAllElements() {
-        softAssert.isElementVisible(headerObj);
+    public OrderPage verifyRequiredElements() {
+        softAssert.areElementsVisible(headerObj, submitBtn);
         softAssert.isTrue(isOrderNumberVisibleAndValid(),
                 "Номер заявки должен быть валиден");
+        softAssert.verifyAll();
+        return this;
+    }
+
+    @Step("Проверить, что основные поля предзаполнены, кроме поля Комментарий")
+    public OrderPage shouldFieldsAreNotEmptyExceptCommentField() {
+        String ps = getPageSource();
+        softAssert.isFalse(replenishmentMethodLbl.getText(ps).isEmpty(), "Способ пополнения не заполнен");
+        softAssert.isFalse(deliveryDateLbl.getText(ps).isEmpty(), "Дата доставки товара не заполнена");
+        softAssert.isFalse(deliveryTimeLbl.getText(ps).isEmpty(), "Время доставки товара не заполнено");
+        softAssert.isEquals(commentFld.getText(ps), "", "Комментарий содержит текст");
         softAssert.verifyAll();
         return this;
     }

@@ -13,6 +13,7 @@ import io.appium.java_client.android.AndroidDriver;
 import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Quotes;
 import org.testng.util.Strings;
@@ -158,6 +159,19 @@ public abstract class BaseContainer {
         }
     }
 
+    /**
+     * Get Source from Page / Screen
+     * @return page source
+     */
+    protected String getPageSource() {
+        try {
+            return driver.getPageSource();
+        } catch (WebDriverException err) {
+            Log.warn(err.getMessage());
+            return driver.getPageSource();
+        }
+    }
+
     protected CustomLocator buildLocator(String str, String metaName) {
         CustomLocator locator;
         if (str.startsWith("/")) {
@@ -181,8 +195,6 @@ public abstract class BaseContainer {
 
     public <T extends BaseWidget> T E(String str, String metaName, Class<? extends BaseWidget> clazz) {
         CustomLocator locator = buildLocator(str, metaName);
-//        if (locator.getMetaName() == null)
-//            throw new IllegalArgumentException("Wrapper with class " + clazz + " should have name");
         try {
             return (T) clazz.getConstructor(WebDriver.class, CustomLocator.class)
                     .newInstance(driver, locator);
@@ -196,14 +208,16 @@ public abstract class BaseContainer {
         return E(str, metaName, Element.class);
     }
 
+    public <T extends BaseWidget> T E(String str, Class<? extends BaseWidget> clazz) {
+        return E(str, null, clazz);
+    }
+
     public Element E(String str) {
-        return E(str, null);
+        return E(str, null, Element.class);
     }
 
     public <E extends BaseWidget> ElementList<E> EL(String str, String metaName, Class<? extends BaseWidget> clazz) {
         CustomLocator locator = buildLocator(str, metaName);
-//        if (locator.getMetaName() == null)
-//            throw new IllegalArgumentException("ElementList with class " + clazz + " should have name");
         try {
             return new ElementList<>(driver, locator, clazz);
         } catch (Exception err) {

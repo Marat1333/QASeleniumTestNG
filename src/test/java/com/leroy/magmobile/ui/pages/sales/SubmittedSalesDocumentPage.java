@@ -56,6 +56,7 @@ public class SubmittedSalesDocumentPage extends BaseAppPage {
 
     /* ---------------------- Verifications -------------------------- */
 
+    @Step("Проверить, что страница подтверждения заказа отображается корректно")
     public SubmittedSalesDocumentPage verifyRequiredElements() {
         softAssert.isTrue(isDocumentNumberVisibleAndValid(),
                 "Неправильный формат номера документа");
@@ -68,11 +69,13 @@ public class SubmittedSalesDocumentPage extends BaseAppPage {
         return this;
     }
 
+    @Step("Проверить, что Пин-код = {text}")
     public SubmittedSalesDocumentPage shouldPinCodeIs(String text) {
         anAssert.isElementTextEqual(pinCode, text);
         return this;
     }
 
+    @Step("Проверить, что номер документа = {text}")
     public SubmittedSalesDocumentPage shouldDocumentNumberIs(String text) {
         anAssert.isEquals(getDocumentNumber(), text, "Номер документа должен быть %s");
         return this;

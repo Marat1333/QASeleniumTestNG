@@ -28,8 +28,10 @@ public abstract class BaseCustomAssert {
 
     private void addResultsToCurrentStepAndThrowAssertException(String actualResult, String expectedResult) {
         StepResultModel curStepRes = stepLog.getCurrentStepResult();
-        curStepRes.addExpectedResult(expectedResult);
-        curStepRes.addActualResult(actualResult);
+        if (curStepRes != null) {
+            curStepRes.addExpectedResult(expectedResult);
+            curStepRes.addActualResult(actualResult);
+        }
         stepLog.assertFail(actualResult);
     }
 
@@ -72,7 +74,7 @@ public abstract class BaseCustomAssert {
                     actualResultText, "Ожидаемое значение: " + expected.toString());
         }
         if (isSoft)
-            softAssert.assertEquals(actual, expected, desc);
+            softAssert.assertEquals(actual, expected, actualResultText);
         else
             Assert.assertEquals(actual, expected, desc);
     }
@@ -146,9 +148,9 @@ public abstract class BaseCustomAssert {
             verifyAll();
     }
 
-    protected boolean logIsElementNotVisible(BaseWidget element, boolean isSoft) {
+    protected boolean logIsElementNotVisible(BaseWidget element, String pageSource, boolean isSoft) {
         Assert.assertNotNull(element.getMetaName(), "Element meta name is NULL!");
-        boolean elementVisibility = element.isVisible();
+        boolean elementVisibility = pageSource == null? element.isVisible() : element.isVisible(pageSource);
         String expectedResult = element.getMetaName() + " не должен отображаться";
         String actualResult = element.getMetaName() + " отображается";
         if (elementVisibility) {

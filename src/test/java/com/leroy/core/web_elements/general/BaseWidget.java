@@ -135,16 +135,20 @@ public abstract class BaseWidget extends BaseWrapper {
      * @param attribute  - name of attribute
      * @return value of the attribute
      */
-    protected String getAttributeValueFromPageSource(String pageSource, String attribute) {
+    protected String getAttributeValueFromPageSource(String pageSource, String attribute, String xpath) {
         NodeList nodeList = null;
         try {
-            nodeList = XmlUtil.getXpathExpressionResultFromXml(pageSource, getXpath());
+            nodeList = XmlUtil.getXpathExpressionResultFromXml(pageSource, xpath);
         } catch (Exception err) {
             Log.error(err.getMessage());
         }
         if (nodeList == null || nodeList.getLength() == 0)
             return null;
         return nodeList.item(0).getAttributes().getNamedItem(attribute).getNodeValue();
+    }
+
+    protected String getAttributeValueFromPageSource(String pageSource, String attribute) {
+        return getAttributeValueFromPageSource(pageSource, attribute, getXpath());
     }
 
     public boolean isPresent() {
@@ -272,6 +276,9 @@ public abstract class BaseWidget extends BaseWrapper {
             Log.warn("Element: " + getMetaName() + " Method: getLocation(). Error: ElementNotInteractableException");
             Rectangle rect = getRectangleJs();
             return new Point(rect.x, rect.y);
+        } catch (WebDriverException err) {
+            Log.warn("Element: " + getMetaName() + " Method: getLocation() Error: " + err.getMessage());
+            return webElement.getLocation();
         }
     }
 

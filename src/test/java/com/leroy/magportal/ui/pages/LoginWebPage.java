@@ -19,6 +19,10 @@ public class LoginWebPage extends BaseWebPage {
 
     private Button loginBtn = E("//*[@value='login']", "Кнопка 'Войти'", Button.class);
 
+    public boolean isLoginFormVisible() {
+        return usernameFld.isVisible();
+    }
+
     public void logIn(UserData loginData) {
         usernameFld.clearAndFill(loginData.getUserName());
         passwordFld.clearAndFill(loginData.getPassword());
