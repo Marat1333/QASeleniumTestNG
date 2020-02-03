@@ -1,0 +1,47 @@
+#---------------------------------
+#       Android app settings (Moon Grid)
+#---------------------------------
+settings:
+  platform: linux
+  browser: android_app
+  host: https://moon-e2e-x2.apps.lmru.tech
+  #build: 1.0.0 # Build version for NativeApps or run id for browser tests
+  timeout: 30 # default wait timeout in seconds
+
+  # /Users/xhqautomation/node_modules/appium/node_modules/appium-chromedriver/chromedriver/mac/chromedriver
+
+  # Application Activate: ru.leroymerlin.magasin.uat
+
+  #---------------------------------
+  #              mobile
+  #---------------------------------
+
+capabilities:
+  linux:
+    android_app:
+      deviceName: "chrome"
+      #browserName: "chrome"
+      version: "mobile-75.0"
+      acceptInsecureCerts: true
+      autoDismissAlerts: true
+      autoGrantPermissions: true
+      newCommandTimeout: 60000
+      androidInstallTimeout: 60000
+      uiautomator2ServerInstallTimeout: 60000
+      adbExecTimeout: 60000
+      #deviceOrientation: portrait
+      autoAcceptAlerts: true
+      automationName: uiautomator2
+      app: https://docker.art.lmru.tech/artifactory/list/generic-local-lego-front/apk/LMLF-1.2.2-TEST-b36.apk
+      enableVNC: true
+      enableVideo: false
+      env:
+        - TZ=Europe/Moscow
+        #- SKIN=WSVGA
+        #- ADB_VENDOR_KEYS=/root/.android/adbkey
+
+    android_browser:
+      deviceName: "chrome"
+      version: "mobile-75.0"
+      enableVNC: true
+      enableVideo: false
