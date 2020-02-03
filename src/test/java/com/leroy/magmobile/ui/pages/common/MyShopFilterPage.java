@@ -33,7 +33,7 @@ public class MyShopFilterPage extends FilterPage {
     @Override
     @Step("Выбрать checkBox фильтр {value}")
     public void choseCheckBoxFilter(String value) throws Exception{
-        String pageSource=driver.getPageSource();
+        String pageSource=getPageSource();
         switch (value){
             case TOP_EM:
                 topEm.click();
@@ -73,7 +73,7 @@ public class MyShopFilterPage extends FilterPage {
 
     @Step("Выбрать фильтр top")
     public void choseTopFilter(){
-        String pageSource=driver.getPageSource();
+        String pageSource=getPageSource();
         top0Btn.click();
         waitForContentHasChanged(pageSource,3);
     }
