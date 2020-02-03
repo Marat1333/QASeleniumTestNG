@@ -15,6 +15,7 @@ public class SalesDocumentsTest extends AppBaseSteps {
 
     @Test(description = "C3201029 Создание документа продажи")
     public void testC3201029() throws Exception {
+        // TODO нужен Юзер не от 32 магазина
         // Step #1
         log.step("На главном экране выберите раздел Документы продажи");
         MainSalesDocumentsPage salesDocumentsPage = loginAndGoTo(MainSalesDocumentsPage.class);

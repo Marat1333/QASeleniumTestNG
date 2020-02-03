@@ -32,8 +32,7 @@ capabilities:
       #deviceOrientation: portrait
       autoAcceptAlerts: true
       automationName: uiautomator2
-      #app: https://cloclo4.datacloudmail.ru/weblink/view/3Cho/5MzNyY8PP?etag=376CE7AD45104DEB770BEED90EF1767AC15569FD&key=b5b6fa9217f547e9035b0b1d42eb408d4604a3cb
-      app: http://wdfiles.ru/6pjp?download_token=bfeadfbd0c39b2aee708a44a53eb90afb28863a5e5232412738e58f0af7dd76b
+      app: https://docker.art.lmru.tech/artifactory/list/generic-local-lego-front/apk/LMLF-1.2.2-TEST-b36.apk
       enableVNC: true
       enableVideo: false
       env:
