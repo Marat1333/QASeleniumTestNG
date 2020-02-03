@@ -3,8 +3,10 @@ package com.leroy.magmobile.ui.pages.sales.estimate;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.elements.MagMobSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import com.leroy.magmobile.ui.pages.common.SearchProductPage;
 import com.leroy.magmobile.ui.pages.search.CustomerData;
 import com.leroy.magmobile.ui.pages.search.SearchCustomerPage;
 import com.leroy.magmobile.ui.pages.search.SearchCustomerWidget;
@@ -38,8 +40,29 @@ public class EstimatePage extends CommonMagMobilePage {
             metaName = "Поле 'Клиент' (клиент выбран)")
     SearchCustomerWidget customerWidget;
 
+    @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.ImageView]",
+            metaName = "Карточка товара")
+    Element productCardWidget;
+
     @AppFindBy(text = "ТОВАРЫ И УСЛУГИ", metaName = "Кнопка 'Товары и Услуги'")
-    MagMobSubmitButton submitBtn;
+    MagMobSubmitButton productAndServiceBtn;
+
+    // Bottom Area (It is visible when document is created)
+    @AppFindBy(xpath = "//android.widget.TextView[contains(@text, 'Итого:')]/preceding-sibling::android.widget.TextView",
+            metaName = "Текст с количеством и весом товара")
+    Element countAndWeightProductLbl;
+
+    @AppFindBy(text = "Итого: ")
+    Element totalPriceLbl;
+
+    @AppFindBy(xpath = "//android.widget.TextView[contains(@text, 'Итого:')]/following-sibling::android.widget.TextView")
+    Element totalPriceVal;
+
+    @AppFindBy(text = "ТОВАР")
+    private MagMobButton addProductBtn;
+
+    @AppFindBy(text = "СОЗДАТЬ")
+    private MagMobSubmitButton createBtn;
 
     // ACTIONS
 
@@ -50,24 +73,28 @@ public class EstimatePage extends CommonMagMobilePage {
     }
 
     @Step("Нажмите кнопку 'Товары и Услуги'")
-    public EstimatePage clickSubmitButton() {
-        submitBtn.click();
-        return this;
+    public SearchProductPage clickProductAndServiceButton() {
+        productAndServiceBtn.click();
+        return new SearchProductPage(context);
     }
 
     // VERIFICATIONS
 
     @Step("Проверить, что страница 'Смета' отображается корректно")
-    public EstimatePage verifyRequiredElements(boolean customerIsSelected) {
+    public EstimatePage verifyRequiredElements(boolean customerIsSelected, boolean productIsAdded) {
         List<Element> expectedElements = new ArrayList<>(Arrays.asList(
-                backBtn, headerLbl, submitBtn));
+                backBtn, headerLbl, productAndServiceBtn));
         if (!customerIsSelected)
             expectedElements.add(selectCustomerBtn);
         softAssert.areElementsVisible(expectedElements.toArray(new Element[0]));
         if (!customerIsSelected)
-            softAssert.isFalse(submitBtn.isEnabled(), "Кнопка '+ Товары и Услуги' активна");
+            softAssert.isFalse(productAndServiceBtn.isEnabled(), "Кнопка '+ Товары и Услуги' активна");
         else
-            softAssert.isTrue(submitBtn.isEnabled(), "Кнопка '+ Товары и Услуги' неактивна");
+            softAssert.isTrue(productAndServiceBtn.isEnabled(), "Кнопка '+ Товары и Услуги' неактивна");
+        if (productIsAdded)
+            softAssert.isElementVisible(productCardWidget);
+        //else
+        //    softAssert.isElementNotVisible(productCardWidget);
         softAssert.verifyAll();
         return this;
     }

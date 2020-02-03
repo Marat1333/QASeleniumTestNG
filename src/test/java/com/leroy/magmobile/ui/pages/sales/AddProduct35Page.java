@@ -42,7 +42,7 @@ public class AddProduct35Page extends CommonMagMobilePage {
             metaName = "Сумма")
     private Element totalPrice;
 
-    @AppFindBy(text = "ДОБАВИТЬ В КОРЗИНУ")
+    @AppFindBy(accessibilityId = "Button-container")
     private MagMobSubmitButton addBtn;
 
 
@@ -100,6 +100,13 @@ public class AddProduct35Page extends CommonMagMobilePage {
         softAssert.isTrue(addBtn.isEnabled(),
                 "Кнопка 'Добавить' должна быть активна");
         softAssert.verifyAll();
+        return this;
+    }
+
+    @Step("Проверить, что кнопка Добавить содержит текст - {text}")
+    public AddProduct35Page shouldSubmitButtonTextIs(String text) {
+        anAssert.isEquals(addBtn.getText(), text,
+                "Кнопка добавить содержит неверный текст");
         return this;
     }
 

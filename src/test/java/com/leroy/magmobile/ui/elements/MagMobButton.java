@@ -14,7 +14,7 @@ public class MagMobButton extends Button {
         super(driver, locator);
     }
 
-    private String TEXT_VIEW_XPATH = "/android.widget.TextView";
+    private String TEXT_VIEW_XPATH = "//android.widget.TextView";
 
     @Override
     public String getText() {

@@ -288,7 +288,8 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         // Step #5
         log.step("Нажмите Корзина");
         AddProduct35Page addProduct35Page = modalPage.clickBasketMenuItem()
-                .verifyRequiredElements();
+                .verifyRequiredElements()
+                .shouldSubmitButtonTextIs("ДОБАВИТЬ В КОРЗИНУ");
         String expectedTotalPrice = addProduct35Page.getPrice();
 
         // Step #6
@@ -333,6 +334,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         // Test data
         String existedClientPhone = "1111111111";
         String shopId = "35";
+        String lmCode = "13452305";//getAnyLmCodeProductWithoutSpecificOptions(shopId, false);
         // Pre-condition
         context.setIs35Shop(true);
         SalesPage salesPage = loginAndGoTo(SalesPage.class);
@@ -348,13 +350,13 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         // Step 2
         log.step("Выбрать параметр Смета");
         EstimatePage estimatePage = modalPage.clickEstimateMenuItem();
-        estimatePage.verifyRequiredElements(false);
+        estimatePage.verifyRequiredElements(false, false);
 
         // Step 3
         log.step("Нажмите на поле Клиенты");
         SearchCustomerPage searchCustomerPage = estimatePage.clickCustomerField();
         searchCustomerPage.verifyRequiredElements();
-        searchCustomerPage.shouldKeyboardVisible();
+        //searchCustomerPage.shouldKeyboardVisible();
 
         // Step 4
         log.step("Введите номер телефона/ №карты клиента/ эл. почту");
@@ -362,17 +364,24 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
                 .enterTextInSearchField(existedClientPhone)
                 .getCustomerDataFromSearchListByIndex(1);
         estimatePage = searchCustomerPage.selectCustomerFromSearchList(1);
-        estimatePage.verifyRequiredElements(true);
+        estimatePage.verifyRequiredElements(true, false);
         estimatePage.shouldSelectedCustomerIs(customerData);
 
         // Step 5
         log.step("Нажмите на кнопку +товары и услуги");
+        SearchProductPage searchProductPage = estimatePage.clickProductAndServiceButton();
+        searchProductPage.verifyRequiredElements();
 
         // Step 6
         log.step("Введите ЛМ код товара или название товара или отсканируйте товар");
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
+        AddProduct35Page addProduct35Page = new AddProduct35Page(context);
+        addProduct35Page.verifyRequiredElements()
+                .shouldSubmitButtonTextIs("ДОБАВИТЬ В СМЕТУ");
 
         // Step 7
         log.step("Нажмите на Добавить в смету");
+        addProduct35Page.clickAddButton();
 
         // Step 8
         log.step("Нажмите на Создать");
