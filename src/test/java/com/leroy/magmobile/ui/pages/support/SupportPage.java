@@ -56,13 +56,12 @@ public class SupportPage extends BaseAppPage {
         softAssert.isElementVisible(titleLbl);
         softAssert.isElementVisible(complainBtn);
         softAssert.isElementVisible(askQuestionBtn);
-        List<String> expectedIssueCategories = Arrays.asList("В чем проблема?",
-                "Данные о товаре", "Цена товара", "Запас на LS/RM/EM", "Не найден товар",
-                "Отзыв товара со склада", "Данные клиента", "SMS-уведомления клиентам",
-                "Оформление продажи", "История продаж", "Адресное хранение",
-                "Управление перебоями", "Работа Wi-fi сети", "Что-то другое");
+        List<String> expectedIssueCategories = Arrays.asList("В чем проблема?", "Данные о товаре",
+                "Цена товара", "Запас на LS/RM/EM", "Не найден товар", "Отзыв товара со склада",
+                "Оформление продажи", "История продаж", "Данные клиента", "Адресное хранение",
+                "SMS-уведомления клиентам", "Управление перебоями", "Работа Wi-fi сети", "Что-то другое");
         softAssert.isEquals(mainLabels.getTextList(), expectedIssueCategories,
-                "Список категорий проблем должен быть %s");
+                "Неправильный список категорий");
         softAssert.verifyAll();
         return this;
     }

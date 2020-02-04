@@ -25,7 +25,7 @@ capabilities:
       deviceOrientation: portrait
       autoAcceptAlerts: true
       automationName: uiautomator2
-      newCommandTimeout: 600
+      newCommandTimeout: 6000
       platformVersion: '10.0' #'8.1'
       deviceName: Nexus 5 API 29 #samsung SM-J530FM
 

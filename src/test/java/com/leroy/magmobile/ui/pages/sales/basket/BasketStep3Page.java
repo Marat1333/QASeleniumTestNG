@@ -60,6 +60,7 @@ public class BasketStep3Page extends BasketPage {
         return this;
     }
 
+    @Step("Проверить, что Кнопка 'Подтвердить' активна")
     public BasketStep3Page shouldSubmitButtonIsActive() {
         anAssert.isTrue(submitBtn.isEnabled(),
                 "Кнопка 'Подтвердить должна быть активна'");
