@@ -28,7 +28,16 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class AppBaseSteps extends BaseState {
 
-    public <T> T loginAndGoTo(UserData userData, Class<? extends BaseAppPage> pageClass) throws Exception {
+    /**
+     * Иногда нам нужен пользователь с выбранным 35 магазиным (новый интерфейс)
+     * Иногда нам нужен пользователь с выбранным магазином, где старый интерфейс
+     */
+    protected enum LoginType {
+        USER_WITH_NEW_INTERFACE_LIKE_35_SHOP,
+        USER_WITH_OLD_INTERFACE
+    }
+
+    public <T> T loginAndGoTo(LoginType loginType, UserData userData, Class<? extends BaseAppPage> pageClass) throws Exception {
         AndroidDriver<MobileElement> androidDriver = (AndroidDriver<MobileElement>) driver;
         Element redirectBtn = new Element(driver, By.xpath("//*[@resource-id='buttonRedirect']"));
         new LoginAppPage(context).clickLoginButton();
@@ -36,7 +45,8 @@ public class AppBaseSteps extends BaseState {
         boolean moon = false;
         Element termsAcceptBtn = new Element(driver,
                 By.id("com.android.chrome:id/terms_accept"));
-        if (termsAcceptBtn.isVisible(3)) {
+        if (termsAcceptBtn.isVisible(4)) {
+            Log.debug("Accept & Continue button is visible");
             termsAcceptBtn.click();
             moon = true;
             driver.findElement(By.id("com.android.chrome:id/next_button")).click();
@@ -57,8 +67,8 @@ public class AppBaseSteps extends BaseState {
         } else {
             Log.debug("Redirect Button is not visible");
             if (moon) {
-                androidDriver.context("WEBVIEW_chrome");
                 new ChromeCertificateErrorPage(context).skipSiteSecureError();
+                androidDriver.context("WEBVIEW_chrome");
                 new LoginWebPage(context).logIn(userData);
                 androidDriver.context("NATIVE_APP");
                 redirectBtn.click();
@@ -73,9 +83,24 @@ public class AppBaseSteps extends BaseState {
         }
 
         SalesPage salesPage = new SalesPage(context);
+        UserProfilePage userProfilePage = null;
+        if (loginType != null) {
+            switch (loginType) {
+                case USER_WITH_OLD_INTERFACE:
+                    userProfilePage = setShopAndDepartmentForUser(salesPage, "2", "01");
+                    break;
+                case USER_WITH_NEW_INTERFACE_LIKE_35_SHOP:
+                    userProfilePage = setShopAndDepartmentForUser(salesPage, "35", "01");
+                    break;
+            }
+        }
         if (pageClass.equals(SalesPage.class)) {
+            if (userProfilePage != null)
+                return (T) userProfilePage.goToSales();
             return (T) salesPage;
         } else if (pageClass.equals(MainSalesDocumentsPage.class)) {
+            if (userProfilePage != null)
+                return (T) userProfilePage.goToSales().goToSalesDocumentsSection();
             return (T) salesPage.goToSalesDocumentsSection();
         } else if (pageClass.equals(WorkPage.class)) {
             return (T) salesPage.goToWork();
@@ -90,7 +115,15 @@ public class AppBaseSteps extends BaseState {
     }
 
     public <T> T loginAndGoTo(Class<? extends BaseAppPage> pageClass) throws Exception {
-        return loginAndGoTo(new UserData(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS), pageClass);
+        return loginAndGoTo(null, new UserData(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS), pageClass);
+    }
+
+    /**
+     * Используй этот метод, когда нам не важен сам пользователь, но важен тип магазина, который будет выбран
+     */
+    public <T> T loginAndGoTo(LoginType loginType, Class<? extends BaseAppPage> pageClass) throws Exception {
+        return loginAndGoTo(loginType,
+                new UserData(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS), pageClass);
     }
 
     // Pre-condition steps
@@ -103,7 +136,7 @@ public class AppBaseSteps extends BaseState {
      * @return - Document number of the draft
      */
     protected String loginInAndCreateDraftSalesDocument(String lmCode) throws Exception {
-        SalesPage salesPage = loginAndGoTo(SalesPage.class);
+        SalesPage salesPage = loginAndGoTo(LoginType.USER_WITH_OLD_INTERFACE, SalesPage.class);
         salesPage.clickSearchBar(false)
                 .enterTextInSearchFieldAndSubmit(lmCode);
 
