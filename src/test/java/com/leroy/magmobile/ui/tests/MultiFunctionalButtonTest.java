@@ -43,6 +43,8 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
 
     // Получить ЛМ код для обычного продукта без специфичных опций
     private String getAnyLmCodeProductWithoutSpecificOptions(String shopId, Boolean hasAvailableStock) {
+        if (shopId == null) // TODO может быть shopId null или нет?
+            shopId = "2";
         GetCatalogSearch params = new GetCatalogSearch()
                 .setShopId(shopId)
                 .setTopEM(false)
@@ -102,7 +104,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
     @Test(description = "C3201023 Создание документа продажи")
     public void testC3201023() throws Exception {
         testCreateSalesDocument(getAnyLmCodeProductWithoutSpecificOptions(
-                null, null), ProductTypes.NORMAL);
+                null, false), ProductTypes.NORMAL);
     }
 
     @Test(description = "C22846947 Создание документа продажи с товаром AVS")
@@ -183,7 +185,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
     public void testC3201024() throws Exception {
         // Pre-condition
         // - Имеются документы продажи в статусе черновик
-        String lmCode = getAnyLmCodeProductWithoutSpecificOptions(null, null);
+        String lmCode = getAnyLmCodeProductWithoutSpecificOptions(null, false);
         String documentNumber = loginInAndCreateDraftSalesDocument(lmCode);
 
         // Steps 1, 2, 3
@@ -402,7 +404,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
             SalesPage salesPage, ProductCardData productData, ProductTypes productType, boolean is35Shop) throws Exception {
         // Pre-condition
         if (salesPage == null)
-            salesPage = loginAndGoTo(SalesPage.class);
+            salesPage = loginAndGoTo(LoginType.USER_WITH_OLD_INTERFACE, SalesPage.class);
 
         // Step #1
         log.step("Нажмите в поле поиска");

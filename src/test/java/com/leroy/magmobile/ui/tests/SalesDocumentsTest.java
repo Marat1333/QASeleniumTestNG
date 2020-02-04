@@ -1,24 +1,29 @@
 package com.leroy.magmobile.ui.tests;
 
+import com.leroy.magmobile.ui.AppBaseSteps;
+import com.leroy.magmobile.ui.pages.common.OldSearchProductPage;
+import com.leroy.magmobile.ui.pages.sales.AddProductPage;
+import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
+import com.leroy.magmobile.ui.pages.sales.SubmittedSalesDocumentPage;
 import com.leroy.magmobile.ui.pages.sales.basket.BasketPage;
 import com.leroy.magmobile.ui.pages.sales.basket.BasketStep1Page;
 import com.leroy.magmobile.ui.pages.sales.basket.BasketStep2Page;
 import com.leroy.magmobile.ui.pages.sales.basket.BasketStep3Page;
 import com.leroy.models.SalesDocumentData;
-import com.leroy.magmobile.ui.pages.common.OldSearchProductPage;
-import com.leroy.magmobile.ui.pages.sales.*;
-import com.leroy.magmobile.ui.AppBaseSteps;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
+
+import java.text.NumberFormat;
+import java.util.Locale;
 
 public class SalesDocumentsTest extends AppBaseSteps {
 
     @Test(description = "C3201029 Создание документа продажи")
     public void testC3201029() throws Exception {
-        // TODO нужен Юзер не от 32 магазина
         // Step #1
         log.step("На главном экране выберите раздел Документы продажи");
-        MainSalesDocumentsPage salesDocumentsPage = loginAndGoTo(MainSalesDocumentsPage.class);
+        MainSalesDocumentsPage salesDocumentsPage = loginAndGoTo(LoginType.USER_WITH_OLD_INTERFACE,
+                MainSalesDocumentsPage.class);
         salesDocumentsPage.verifyRequiredElements();
 
         // Step #2
@@ -44,11 +49,12 @@ public class SalesDocumentsTest extends AppBaseSteps {
         addProductPage.clickEditQuantityField()
                 .shouldKeyboardVisible();
         addProductPage.shouldEditQuantityFieldIs("1,00")
-                .shouldTotalPriceIs(addProductPage.getPrice());
+                .shouldTotalPriceIs(String.format("%.2f", Double.parseDouble(
+                        addProductPage.getPrice())));
 
         // Step #6
         log.step("Введите значение 20,5 количества товара");
-        String expectedTotalPrice = String.valueOf(
+        String expectedTotalPrice = String.format("%.2f",
                 Double.parseDouble(addProductPage.getPrice()) * 20.5);
         addProductPage.enterQuantityOfProduct("20,5")
                 .shouldTotalPriceIs(expectedTotalPrice);
@@ -89,11 +95,12 @@ public class SalesDocumentsTest extends AppBaseSteps {
         // Step #12
         log.step("Нажмите кнопку Перейти в список документов");
         SalesDocumentData expectedSalesDocument = new SalesDocumentData();
-        expectedSalesDocument.setPrice(expectedTotalPrice);
+        expectedSalesDocument.setPrice(NumberFormat.getInstance(Locale.FRANCE)
+                .parse(expectedTotalPrice).toString());
         expectedSalesDocument.setPin(testPinCode);
         expectedSalesDocument.setDocumentType("Создан");
         expectedSalesDocument.setWhereFrom("Из торгового зала");
-        expectedSalesDocument.setNumber("2001" + documentNumber);
+        expectedSalesDocument.setNumber(documentNumber);
         submittedSalesDocumentPage.clickSubmitButton()
                 .shouldSalesDocumentByIndexIs(0, expectedSalesDocument);
     }
