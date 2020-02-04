@@ -22,6 +22,5 @@ public abstract class CardWidget<T extends CardWidgetData> extends Element {
     }
 
     public abstract boolean isFullyVisible(String pageSource);
-    public abstract boolean isServiceCard();
 
 }

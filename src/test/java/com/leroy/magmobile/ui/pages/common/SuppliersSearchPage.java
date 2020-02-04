@@ -33,32 +33,29 @@ public class SuppliersSearchPage extends BaseAppPage {
     }
 
     @Step("Найти поставщика по {value} и выбрать его")
-    public String searchSupplier(String value){
+    public void searchSupplier(String value){
         String pageSource=getPageSource();
-        String supplierId="";
         searchString.clearFillAndSubmit(value);
-        waitForContentHasChanged(pageSource,2);
+        waitForContentHasChanged(pageSource,short_timeout);
         searchString.clear();
         hideKeyboard();
         pageSource=getPageSource();
 
         if (value.matches("\\d+")) {
             Element supplierByCode = E("contains("+value+")");
-            supplierId=supplierByCode.getText().replaceAll("\\D+","");
             supplierByCode.click();
         }else {
             Element supplierByName = E("contains("+value+")");
             supplierByName.click();
         }
-        waitForContentHasChanged(pageSource,2);
-        return supplierId;
+        waitForContentHasChanged(pageSource,short_timeout);
     }
 
     @Step("Подтвердить выбор")
     public FilterPage applyChosenSupplier(){
         String pageSource=getPageSource();
         confirmBtn.click();
-        waitForContentHasChanged(pageSource,2);
+        waitForContentHasChanged(pageSource,short_timeout);
         return new FilterPage(context);
     }
 

@@ -13,13 +13,13 @@ public class SearchProductCardWidget extends CardWidget<ProductCardData> {
         super(driver, locator);
     }
 
-    @AppFindBy(xpath = "./android.widget.TextView[1]")
+    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc=\"lmCode\"]")
     private Element lmCodeObj;
 
-    @AppFindBy(xpath = "./android.widget.TextView[2]")
+    @AppFindBy(xpath = "./android.widget.TextView[1]")
     private Element barCodeObj;
 
-    @AppFindBy(xpath = "./android.widget.TextView[3]")
+    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc=\"name\"]")
     private Element nameObj;
 
     @AppFindBy(xpath = "./android.widget.TextView[4]")
@@ -28,13 +28,13 @@ public class SearchProductCardWidget extends CardWidget<ProductCardData> {
     @AppFindBy(xpath = "./android.widget.TextView[5]")
     private Element priceLbl;
 
-    @AppFindBy(xpath = "./android.widget.TextView[6]")
+    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc=\"presenceValue\"]")
     private Element quantityObj;
 
-    @AppFindBy(xpath = "./android.widget.TextView[7]")
-    private Element quantityType;
+    /*@AppFindBy(xpath = "./android.widget.TextView[7]")
+    private Element quantityType;*/
 
-    @AppFindBy(xpath = "./android.widget.TextView[8]")
+    @AppFindBy(xpath = "./android.widget.TextView[6]")
     private Element quantityLbl;
 
     public String getLmCode(boolean onlyDigits, String pageSource) {
@@ -94,13 +94,13 @@ public class SearchProductCardWidget extends CardWidget<ProductCardData> {
         return getQuantity(onlyDigits, null);
     }
 
-    public String getQuantityType(String pageSource) {
+    /*public String getQuantityType(String pageSource) {
         return quantityType.getText(pageSource);
     }
 
     public String getQuantityType() {
         return getQuantityType(null);
-    }
+    }*/
 
     public String getQuantityLbl(String pageSource) {
         return quantityLbl.getText(pageSource);
@@ -124,21 +124,11 @@ public class SearchProductCardWidget extends CardWidget<ProductCardData> {
 
     @Override
     public boolean isFullyVisible(String pageSource) {
-        if (lmCodeObj.isVisible(pageSource)) {
+        if (lmCodeObj.isVisible(pageSource)&&lmCodeObj.getText().length()>3) {
             String check = lmCodeObj.getText(pageSource).substring(3);
             return check.matches("\\d+") && quantityLbl.isVisible(pageSource);
         }else {
             return false;
         }
-    }
-
-    @Override
-    public boolean isServiceCard() {
-        /*if (lmCodeObj.isVisible()) {
-            String check = lmCodeObj.getText().substring(3);
-            return check.matches("\\d+") && check.startsWith("49");
-        }else {*/
-        return false;
-    //}
     }
 }

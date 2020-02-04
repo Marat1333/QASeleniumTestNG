@@ -48,9 +48,9 @@ public class NomenclatureSearchPage extends BaseAppPage {
                 throw new NoSuchElementException("There is no back button");
             }
             nomenclatureBackBtn.click();
-            if (!waitForContentHasChanged(pageSource, 5)) {
+            if (!waitForContentHasChanged(pageSource, short_timeout)) {
                 nomenclatureBackBtn.click();
-                waitForContentHasChanged(pageSource, 5);
+                waitForContentHasChanged(pageSource, short_timeout);
             }
         }
         return new NomenclatureSearchPage(context);
@@ -97,7 +97,7 @@ public class NomenclatureSearchPage extends BaseAppPage {
             }
             if (tmp.equals(value)) {
                 tmpEl.click();
-                waitForContentHasChanged(pageSource, 5);
+                waitForContentHasChanged(pageSource, short_timeout);
                 counter++;
                 break;
             }
@@ -135,17 +135,18 @@ public class NomenclatureSearchPage extends BaseAppPage {
     }
 
     @Step("отображено 15 отделов")
-    public NomenclatureSearchPage shouldDepartmentsCountIs15() {
+    public NomenclatureSearchPage shouldDepartmentsCountIs15() throws Exception {
         Set<String> uniqueElementsArray = new HashSet<>();
         for (Element element : firstLevelNomenclatureElementsList) {
-            uniqueElementsArray.add(element.getText());
+            uniqueElementsArray.add(element.findChildElement(eachElementOfNomenclatureXpath).getText());
         }
         scrollDown();
         for (Element element : secondLevelNomenclatureElementsList) {
             if (!uniqueElementsArray.contains(element)) {
-                uniqueElementsArray.add(element.getText());
+                uniqueElementsArray.add(element.findChildElement(eachElementOfNomenclatureXpath).getText());
             }
         }
+        System.out.println(uniqueElementsArray.size());
         anAssert.isTrue(uniqueElementsArray.size() == 15, "Найдено некорректное кол-во отделов");
         return this;
     }
