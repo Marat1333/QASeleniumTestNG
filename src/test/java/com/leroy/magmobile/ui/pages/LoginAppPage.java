@@ -10,7 +10,6 @@ import com.leroy.models.UserData;
 import io.appium.java_client.android.AndroidDriver;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -54,12 +53,6 @@ public class LoginAppPage extends BaseAppPage {
     @Step("Нажмите кнопку 'Войти'")
     public void clickLoginButton() throws Exception {
         loginBtn.click();
-        E("$AuthScreen__btn_getVersionNumber").waitForInvisibility();
-        /*try {
-            new WebDriverWait(this.driver, timeout).until(
-                    a -> ((AndroidDriver) driver).getContextHandles().size() > 1);
-        } catch (TimeoutException err) {
-            Log.error(err.getMessage());
-        }*/
+        //E("$AuthScreen__btn_getVersionNumber").waitForInvisibility();
     }
 }

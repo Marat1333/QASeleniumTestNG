@@ -12,11 +12,15 @@ public class ChromeCertificateErrorPage extends BaseWebPage {
 
     private Element advancedBtn = new Element(driver, By.id("details-button"));
     private Element proceedLink = new Element(driver, By.id("proceed-link"));
+    private Element finalParagraph = new Element(driver, By.id("final-paragraph"));
 
     public void skipSiteSecureError() {
         if (advancedBtn.isVisible()) {
             advancedBtn.click();
-            proceedLink.click();
+            finalParagraph.click();
+            reloadPage();
+            advancedBtn.click();
+            finalParagraph.click();
         }
     }
 

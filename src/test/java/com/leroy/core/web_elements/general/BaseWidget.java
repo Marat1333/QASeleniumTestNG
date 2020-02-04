@@ -130,8 +130,9 @@ public abstract class BaseWidget extends BaseWrapper {
 
     /**
      * Get value of attribute from Page Source
+     *
      * @param pageSource - xml of the page
-     * @param attribute - name of attribute
+     * @param attribute  - name of attribute
      * @return value of the attribute
      */
     protected String getAttributeValueFromPageSource(String pageSource, String attribute, String xpath) {

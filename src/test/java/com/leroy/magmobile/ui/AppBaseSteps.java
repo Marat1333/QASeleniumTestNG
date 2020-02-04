@@ -36,7 +36,7 @@ public class AppBaseSteps extends BaseState {
         boolean moon = false;
         Element termsAcceptBtn = new Element(driver,
                 By.id("com.android.chrome:id/terms_accept"));
-        if (termsAcceptBtn.isVisible()) {
+        if (termsAcceptBtn.isVisible(3)) {
             termsAcceptBtn.click();
             moon = true;
             driver.findElement(By.id("com.android.chrome:id/next_button")).click();
@@ -61,6 +61,7 @@ public class AppBaseSteps extends BaseState {
                 new ChromeCertificateErrorPage(context).skipSiteSecureError();
                 new LoginWebPage(context).logIn(userData);
                 androidDriver.context("NATIVE_APP");
+                redirectBtn.click();
             } else {
                 if (new Element(driver, By.xpath("//*[@resource-id='Username']")).isVisible(1)) {
                     androidDriver.context("WEBVIEW_chrome");
