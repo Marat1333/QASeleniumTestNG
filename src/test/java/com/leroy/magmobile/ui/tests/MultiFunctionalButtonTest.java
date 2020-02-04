@@ -2,11 +2,13 @@ package com.leroy.magmobile.ui.tests;
 
 import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
+import com.leroy.constants.SalesDocumentsType;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.common.SearchProductPage;
 import com.leroy.magmobile.ui.pages.sales.*;
 import com.leroy.magmobile.ui.pages.sales.basket.*;
 import com.leroy.magmobile.ui.pages.sales.estimate.EstimatePage;
+import com.leroy.magmobile.ui.pages.sales.estimate.EstimateSubmittedPage;
 import com.leroy.magmobile.ui.pages.sales.product_and_service.AddServicePage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.*;
@@ -296,7 +298,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
 
         // Step #6
         log.step("Нажмите Добавить в корзину");
-        Basket35Page basket35Page = addProduct35Page.clickAddButton()
+        Basket35Page basket35Page = addProduct35Page.clickAddIntoBasketButton()
                 .verifyRequiredElements();
 
         // Step #7
@@ -323,7 +325,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         SalesDocumentData expectedSalesDocument = new SalesDocumentData();
         expectedSalesDocument.setPrice(expectedTotalPrice);
         expectedSalesDocument.setPin(orderDetailsData.getPinCode());
-        expectedSalesDocument.setDocumentType("Автообработка");
+        expectedSalesDocument.setDocumentType(SalesDocumentsType.AUTO_PROCESSING);
         expectedSalesDocument.setWhereFrom(orderDetailsData.getDeliveryType().getValue());
         expectedSalesDocument.setNumber(documentNumber);
         submittedDocument35Page
@@ -336,7 +338,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         // Test data
         String existedClientPhone = "1111111111";
         String shopId = "35";
-        String lmCode = "13452305";//getAnyLmCodeProductWithoutSpecificOptions(shopId, false);
+        String lmCode = getAnyLmCodeProductWithoutSpecificOptions(shopId, false);
         // Pre-condition
         context.setIs35Shop(true);
         SalesPage salesPage = loginAndGoTo(SalesPage.class);
@@ -358,7 +360,6 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         log.step("Нажмите на поле Клиенты");
         SearchCustomerPage searchCustomerPage = estimatePage.clickCustomerField();
         searchCustomerPage.verifyRequiredElements();
-        //searchCustomerPage.shouldKeyboardVisible();
 
         // Step 4
         log.step("Введите номер телефона/ №карты клиента/ эл. почту");
@@ -383,14 +384,27 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
 
         // Step 7
         log.step("Нажмите на Добавить в смету");
-        addProduct35Page.clickAddButton();
+        estimatePage = addProduct35Page.clickAddIntoEstimateButton();
+        estimatePage.verifyRequiredElements(true, true);
+
 
         // Step 8
         log.step("Нажмите на Создать");
+        String expectedTotalPrice = estimatePage.getTotalPrice();
+        String documentNumber = estimatePage.getDocumentNumber(true);
+        EstimateSubmittedPage estimateSubmittedPage = estimatePage.clickCreateButton()
+                .verifyRequiredElements();
 
         // Step 9
         log.step("Нажать на Перейти в список документов");
-
+        SalesDocumentData expectedSalesDocument = new SalesDocumentData();
+        expectedSalesDocument.setPrice(expectedTotalPrice);
+        expectedSalesDocument.setDocumentType(SalesDocumentsType.CREATED);
+        expectedSalesDocument.setWhereFrom("Смета");
+        expectedSalesDocument.setNumber(documentNumber);
+        SalesDocumentsPage salesDocumentsPage = estimateSubmittedPage.clickSubmitButton();
+        salesDocumentsPage.verifyRequiredElements()
+                .shouldSalesDocumentByIndexIs(0, expectedSalesDocument);
     }
 
     // ---------------------- TYPICAL TESTS FOR THIS CLASS -------------------//

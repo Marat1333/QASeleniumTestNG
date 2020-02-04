@@ -1,5 +1,6 @@
 package com.leroy.magmobile.ui.tests;
 
+import com.leroy.constants.SalesDocumentsType;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.common.OldSearchProductPage;
 import com.leroy.magmobile.ui.pages.sales.AddProductPage;
@@ -98,7 +99,7 @@ public class SalesDocumentsTest extends AppBaseSteps {
         expectedSalesDocument.setPrice(NumberFormat.getInstance(Locale.FRANCE)
                 .parse(expectedTotalPrice).toString());
         expectedSalesDocument.setPin(testPinCode);
-        expectedSalesDocument.setDocumentType("Создан");
+        expectedSalesDocument.setDocumentType(SalesDocumentsType.CREATED);
         expectedSalesDocument.setWhereFrom("Из торгового зала");
         expectedSalesDocument.setNumber(documentNumber);
         submittedSalesDocumentPage.clickSubmitButton()

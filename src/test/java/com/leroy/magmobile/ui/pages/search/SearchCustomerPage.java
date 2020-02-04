@@ -50,6 +50,11 @@ public class SearchCustomerPage extends CommonMagMobilePage {
             metaName = "Поле поиска")
     EditBox searchFld;
 
+    @Override
+    public void waitForPageIsLoaded() {
+        searchFld.waitForVisibility();
+    }
+
     // ACTIONS
 
     @Step("Получаем данные о {index}-ом клиенте")

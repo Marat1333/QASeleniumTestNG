@@ -8,6 +8,8 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.Color;
 
+import java.io.IOException;
+
 public class MagMobButton extends Button {
 
     public MagMobButton(WebDriver driver, CustomLocator locator) {
@@ -34,7 +36,7 @@ public class MagMobButton extends Button {
     }
 
     @Override
-    public Color getPointColor() throws Exception {
-        return getPointColor(0, getHeight() / 5);
+    public Color getPointColor() throws IOException {
+        return getPointColor(0, 5 - (getHeight() / 2));
     }
 }

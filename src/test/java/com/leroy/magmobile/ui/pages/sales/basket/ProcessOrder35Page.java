@@ -6,7 +6,7 @@ import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobButton;
-import com.leroy.magmobile.ui.elements.MagMobSubmitButton;
+import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.SubmittedSalesDocument35Page;
 import com.leroy.models.OrderDetailsData;
@@ -62,7 +62,7 @@ public class ProcessOrder35Page extends CommonMagMobilePage {
     Element totalPriceVal;
 
     @AppFindBy(text = "ПОДТВЕРДИТЬ ЗАКАЗ")
-    MagMobSubmitButton submitButton;
+    MagMobGreenSubmitButton submitButton;
 
     @Override
     public void waitForPageIsLoaded() {

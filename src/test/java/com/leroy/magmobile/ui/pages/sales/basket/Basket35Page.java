@@ -4,7 +4,7 @@ import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobButton;
-import com.leroy.magmobile.ui.elements.MagMobSubmitButton;
+import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import io.qameta.allure.Step;
 
@@ -39,7 +39,7 @@ public class Basket35Page extends CommonMagMobilePage {
     private MagMobButton addProductBtn;
 
     @AppFindBy(text = "ОФОРМИТЬ")
-    private MagMobSubmitButton submitBtn;
+    private MagMobGreenSubmitButton submitBtn;
 
     @Override
     public void waitForPageIsLoaded() {

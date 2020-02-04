@@ -3,8 +3,8 @@ package com.leroy.magmobile.ui.pages.sales.estimate;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.elements.MagMobButton;
-import com.leroy.magmobile.ui.elements.MagMobSubmitButton;
+import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
+import com.leroy.magmobile.ui.elements.MagMobWhiteSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.common.SearchProductPage;
 import com.leroy.magmobile.ui.pages.search.CustomerData;
@@ -24,7 +24,7 @@ public class EstimatePage extends CommonMagMobilePage {
 
     @Override
     public void waitForPageIsLoaded() {
-        headerLbl.waitForVisibility();
+        E("$EstimateDocumentScreenId", "EstimateDocumentScreen").waitForVisibility();
     }
 
     @AppFindBy(accessibilityId = "BackCloseMaster", metaName = "Кнопка назад")
@@ -32,6 +32,10 @@ public class EstimatePage extends CommonMagMobilePage {
 
     @AppFindBy(text = "Смета", metaName = "Заголовок экрана")
     Element headerLbl;
+
+    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='EstimateDocumentScreenId']//android.widget.TextView[contains(@text, 'Документ №')]",
+            metaName = "Номер документа")
+    Element documentNumber;
 
     @AppFindBy(text = "Клиент", metaName = "Поле 'Клиент' (добавить)")
     Element selectCustomerBtn;
@@ -45,7 +49,7 @@ public class EstimatePage extends CommonMagMobilePage {
     Element productCardWidget;
 
     @AppFindBy(text = "ТОВАРЫ И УСЛУГИ", metaName = "Кнопка 'Товары и Услуги'")
-    MagMobSubmitButton productAndServiceBtn;
+    MagMobWhiteSubmitButton productAndServiceBtn;
 
     // Bottom Area (It is visible when document is created)
     @AppFindBy(xpath = "//android.widget.TextView[contains(@text, 'Итого:')]/preceding-sibling::android.widget.TextView",
@@ -59,10 +63,36 @@ public class EstimatePage extends CommonMagMobilePage {
     Element totalPriceVal;
 
     @AppFindBy(text = "ТОВАР")
-    private MagMobButton addProductBtn;
+    private MagMobWhiteSubmitButton addProductBtn;
 
     @AppFindBy(text = "СОЗДАТЬ")
-    private MagMobSubmitButton createBtn;
+    private MagMobGreenSubmitButton createBtn;
+
+    /**
+     * Получить Итоговую стоимость
+     */
+    public String getTotalPrice() {
+        String _priceValue = totalPriceVal.getText().replaceAll("₽", "").trim();
+        try {
+            Double.parseDouble(_priceValue);
+            return _priceValue;
+        } catch (NumberFormatException err) {
+            anAssert.isTrue(false, "Итого цена имеет не правильный формат: " + _priceValue);
+            throw err;
+        }
+    }
+
+    /**
+     * Получить номер документа
+     * @param onlyDigits true - получить только номер из цифр. false - получить всю строку как есть
+     * @return document number
+     */
+    public String getDocumentNumber(boolean onlyDigits) {
+        if (onlyDigits)
+            return documentNumber.getText().replaceAll("\\D+", "");
+        else
+            return documentNumber.getText();
+    }
 
     // ACTIONS
 
@@ -78,23 +108,39 @@ public class EstimatePage extends CommonMagMobilePage {
         return new SearchProductPage(context);
     }
 
+    @Step("Нажмите кнопку 'Создать'")
+    public EstimateSubmittedPage clickCreateButton() {
+        createBtn.click();
+        return new EstimateSubmittedPage(context);
+    }
+
     // VERIFICATIONS
 
     @Step("Проверить, что страница 'Смета' отображается корректно")
     public EstimatePage verifyRequiredElements(boolean customerIsSelected, boolean productIsAdded) {
         List<Element> expectedElements = new ArrayList<>(Arrays.asList(
-                backBtn, headerLbl, productAndServiceBtn));
+                backBtn, headerLbl));
         if (!customerIsSelected)
             expectedElements.add(selectCustomerBtn);
+        if (productIsAdded) {
+            expectedElements.add(countAndWeightProductLbl);
+            expectedElements.add(totalPriceLbl);
+            expectedElements.add(totalPriceVal);
+            expectedElements.add(addProductBtn);
+            expectedElements.add(createBtn);
+            expectedElements.add(productCardWidget);
+        } else {
+            expectedElements.add(productAndServiceBtn);
+        }
         softAssert.areElementsVisible(expectedElements.toArray(new Element[0]));
-        if (!customerIsSelected)
-            softAssert.isFalse(productAndServiceBtn.isEnabled(), "Кнопка '+ Товары и Услуги' активна");
-        else
-            softAssert.isTrue(productAndServiceBtn.isEnabled(), "Кнопка '+ Товары и Услуги' неактивна");
-        if (productIsAdded)
-            softAssert.isElementVisible(productCardWidget);
-        //else
-        //    softAssert.isElementNotVisible(productCardWidget);
+        if (!productIsAdded) {
+            if (!customerIsSelected)
+                softAssert.isFalse(productAndServiceBtn.isEnabled(),
+                        "Кнопка '+ Товары и Услуги' активна");
+            else
+                softAssert.isTrue(productAndServiceBtn.isEnabled(),
+                        "Кнопка '+ Товары и Услуги' неактивна");
+        }
         softAssert.verifyAll();
         return this;
     }

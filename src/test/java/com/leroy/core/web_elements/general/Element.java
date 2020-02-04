@@ -17,6 +17,7 @@ import org.testng.util.Strings;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 public class Element extends BaseWidget {
 
@@ -406,6 +407,12 @@ public class Element extends BaseWidget {
         return getText(false);
     }
 
+    public String getTextIfPresent(String pageSource) {
+        if (!isVisible(pageSource))
+            return null;
+        return getText(pageSource);
+    }
+
     /**
      * Get text from web element
      *
@@ -646,7 +653,7 @@ public class Element extends BaseWidget {
      * @param yOffset - y offset from center
      * @return org.openqa.selenium.support.Color
      */
-    public Color getPointColor(int xOffset, int yOffset) throws Exception {
+    public Color getPointColor(int xOffset, int yOffset) throws IOException {
         // Find center of web element with offset
         Point centerElemPoint = ((MobileElement) getWebElement()).getCenter();
         centerElemPoint.x += xOffset;

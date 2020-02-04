@@ -3,7 +3,7 @@ package com.leroy.magmobile.ui.pages.sales;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.elements.MagMobSubmitButton;
+import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.OldSearchProductPage;
 import com.leroy.magmobile.ui.pages.common.TopMenuPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SaleTypeModalPage;
@@ -33,7 +33,7 @@ public class MainSalesDocumentsPage extends TopMenuPage {
 
     @AppFindBy(xpath = "//*[@text='СОЗДАТЬ ДОКУМЕНТ ПРОДАЖИ' or @text='ОФОРМИТЬ ПРОДАЖУ']",
             metaName = "Кнопка 'СОЗДАТЬ ДОКУМЕНТ ПРОДАЖИ' / 'ОФОРМИТЬ ПРОДАЖУ'")
-    MagMobSubmitButton createSalesDocumentBtn;
+    MagMobGreenSubmitButton createSalesDocumentBtn;
 
     @Override
     public void waitForPageIsLoaded() {

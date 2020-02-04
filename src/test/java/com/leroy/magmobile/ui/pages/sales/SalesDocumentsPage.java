@@ -3,14 +3,15 @@ package com.leroy.magmobile.ui.pages.sales;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magmobile.ui.elements.MagMobSubmitButton;
+import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.common.OldSearchProductPage;
+import com.leroy.magmobile.ui.pages.common.SearchProductPage;
 import com.leroy.magmobile.ui.pages.sales.widget.SalesDocumentWidget;
 import com.leroy.models.SalesDocumentData;
 import io.qameta.allure.Step;
 
 // Продажа -> Документы продажи -> "Мои продажи" или "Продажи моего магазина" и т.п.
+// Или после того, как создали смету, то нажимаем "ПЕРЕЙТИ В СПИСОК ДОКУМЕНТОВ"
 public class SalesDocumentsPage extends CommonMagMobilePage {
 
     public SalesDocumentsPage(TestContext context) {
@@ -19,17 +20,23 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
 
     @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.TextView[@text='Мои продажи']]/following-sibling::android.view.ViewGroup",
             metaName = "Кнопка 'Фильтр'")
-    private MagMobSubmitButton filterBtn;
+    private MagMobGreenSubmitButton filterBtn;
 
     @AppFindBy(xpath = "//android.widget.ScrollView//android.view.ViewGroup[android.view.ViewGroup[android.widget.TextView[contains(@text, '№')]]]",
             metaName = "Мини-карточки документов продажи", clazz = SalesDocumentWidget.class)
     private ElementList<SalesDocumentWidget> salesDocumentList;
 
     @AppFindBy(text = "СОЗДАТЬ ДОКУМЕНТ ПРОДАЖИ", metaName = "Кнопка 'СОЗДАТЬ ДОКУМЕНТ ПРОДАЖИ'")
-    private MagMobSubmitButton submitBtn;
+    private MagMobGreenSubmitButton createSalesDocumentBtn;
 
-    public MagMobSubmitButton getSubmitBtn() {
-        return submitBtn;
+    @AppFindBy(text = "ОФОРМИТЬ ПРОДАЖУ", metaName = "Кнопка 'ОФОРМИТЬ ПРОДАЖУ'")
+    private MagMobGreenSubmitButton makeSaleBtn;
+
+    private MagMobGreenSubmitButton getSubmitBtn() {
+        if (context.isIs35Shop())
+            return makeSaleBtn;
+        else
+            return createSalesDocumentBtn;
     }
 
     @Override
@@ -39,10 +46,16 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
 
     /* ------------------------- ACTION STEPS -------------------------- */
 
-    @Step("Нажмите 'Создать документ продажи'")
-    public OldSearchProductPage clickCreateSalesDocumentButton() {
-        getSubmitBtn().click();
-        return new OldSearchProductPage(context);
+    @Step("Нажмите кнопку 'Создать документ продажи'")
+    public SearchProductPage clickCreateSalesDocumentButton() {
+        createSalesDocumentBtn.click();
+        return new SearchProductPage(context);
+    }
+
+    @Step("Нажмите кнопку 'Оформить продажу'")
+    public SearchProductPage clickMakeSaleButton() {
+        makeSaleBtn.click();
+        return new SearchProductPage(context);
     }
 
     /* ---------------------- Verifications -------------------------- */
@@ -67,8 +80,10 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
         // TODO можно будет подумать, чтоб не через contains, но чтоб C3201029 проходил:
         softAssert.isTrue(documentFromPage.getNumber().contains(expectedDocument.getNumber()),
                 "Номер документа должен быть '" + expectedDocument.getNumber() + "'");
-        softAssert.isEquals(documentFromPage.getPin(), expectedDocument.getPin(),
-                "PIN документа должен быть %s");
+        if (expectedDocument.getPin() != null) {
+            softAssert.isEquals(documentFromPage.getPin(), expectedDocument.getPin(),
+                    "PIN документа должен быть %s");
+        }
         softAssert.isEquals(documentFromPage.getPrice(), expectedDocument.getPrice(),
                 "Сумма в документе должна быть %s");
         softAssert.isEquals(documentFromPage.getWhereFrom(), expectedDocument.getWhereFrom(),

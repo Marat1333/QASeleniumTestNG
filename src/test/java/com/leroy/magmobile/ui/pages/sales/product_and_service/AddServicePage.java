@@ -4,14 +4,13 @@ import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.elements.MagMobSubmitButton;
+import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.basket.BasketStep1Page;
 import io.qameta.allure.Step;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.Arrays;
 import java.util.Locale;
 
 public class AddServicePage extends CommonMagMobilePage {
@@ -48,7 +47,7 @@ public class AddServicePage extends CommonMagMobilePage {
     Element totalPriceVal;
 
     @AppFindBy(text = "ДОБАВИТЬ В ДОКУМЕНТ ПРОДАЖИ", metaName = "Кнопка для добавления документа в продажи")
-    MagMobSubmitButton submitBtn;
+    MagMobGreenSubmitButton submitBtn;
 
     // Actions
     @Step("Ввести значение цены {value} в поле 'Цена за единицу услуги'")
