@@ -15,8 +15,10 @@ import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.widget.SearchProductAllGammaCardWidget;
 import com.leroy.magmobile.ui.pages.sales.widget.SearchProductCardWidget;
 import com.leroy.magmobile.ui.pages.sales.widget.SearchServiceCardWidget;
-import com.leroy.magmobile.ui.pages.widgets.CardWidget;
-import com.leroy.models.*;
+import com.leroy.models.CardWidgetData;
+import com.leroy.models.ProductCardData;
+import com.leroy.models.ServiceCardData;
+import com.leroy.models.TextViewData;
 import com.leroy.umbrella_extension.magmobile.data.ProductItemListResponse;
 import com.leroy.umbrella_extension.magmobile.data.ProductItemResponse;
 import com.leroy.umbrella_extension.magmobile.data.ServiceItemListResponse;
@@ -81,6 +83,9 @@ public class SearchProductPage extends BaseAppPage {
     Element firstSearchMsg;
 
     Element discardAllFiltersBtn = E("contains(СБРОСИТЬ ФИЛЬТРЫ)");
+
+    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"Button\"]/android.view.ViewGroup")
+    Element clearTextInput;
 
     private final String NOT_FOUND_MSG_XPATH = "//*[contains(@text, 'Поиск «%s» не дал результатов')]";
 
@@ -202,6 +207,12 @@ public class SearchProductPage extends BaseAppPage {
         return this;
     }
 
+    @Step("Проверяем, что появилась кнопка очистки инпута поисковой строки")
+    public SearchProductPage verifyClearTextInputBtnIsVisible(){
+        anAssert.isElementVisible(clearTextInput);
+        return this;
+    }
+
     @Step("Проверяем, что список последних поисковых запросов такой: {expectedList}")
     public SearchProductPage shouldSearchHistoryListIs(List<String> expectedList) throws Exception {
         List<String> actualStringList = searchHistoryScrollView.getFullDataAsStringList();
@@ -310,8 +321,8 @@ public class SearchProductPage extends BaseAppPage {
                 if (type.equals(CardType.COMMON)) {
                     expectedSortedList.sort(Comparator.comparingInt(d -> Integer.parseInt(d.getAvailableQuantity())));
                     break;
-                }else{
-                    throw new Exception("Incorrect CardType for "+sortType);
+                } else {
+                    throw new Exception("Incorrect CardType for " + sortType);
                 }
 
             case SortPage.SORT_BY_AVAILABLE_STOCK_DESC:
@@ -319,8 +330,8 @@ public class SearchProductPage extends BaseAppPage {
                     expectedSortedList.sort((d1, d2) ->
                             Integer.parseInt(d2.getAvailableQuantity()) - Integer.parseInt(d1.getAvailableQuantity()));
                     break;
-                }else {
-                    throw new Exception("Incorrect CardType for "+sortType);
+                } else {
+                    throw new Exception("Incorrect CardType for " + sortType);
                 }
             case SortPage.SORT_BY_LM_ASC:
                 expectedSortedList.sort(Comparator.comparingInt(d -> Integer.parseInt(d.getLmCode())));
@@ -362,27 +373,27 @@ public class SearchProductPage extends BaseAppPage {
         for (CardWidgetData cardData : productCardData) {
             if (text.matches("^\\d+") && text.length() <= 8) {
                 if (cardData instanceof ProductCardData) {
-                    anAssert.isTrue(((ProductCardData)cardData).getLmCode().contains(text), "ЛМ код товара " + ((ProductCardData)cardData).getLmCode() + " не содрежит критерий поиска " + text);
-                }else if (cardData instanceof ServiceCardData){
-                    anAssert.isTrue(((ServiceCardData)cardData).getLmCode().contains(text), "ЛМ код товара " + ((ServiceCardData)cardData).getLmCode() + " не содрежит критерий поиска " + text);
+                    anAssert.isTrue(((ProductCardData) cardData).getLmCode().contains(text), "ЛМ код товара " + ((ProductCardData) cardData).getLmCode() + " не содрежит критерий поиска " + text);
+                } else if (cardData instanceof ServiceCardData) {
+                    anAssert.isTrue(((ServiceCardData) cardData).getLmCode().contains(text), "ЛМ код товара " + ((ServiceCardData) cardData).getLmCode() + " не содрежит критерий поиска " + text);
                 }
             }
             if (text.matches("^\\d+") && text.length() > 8 && cardData instanceof ProductCardData) {
-                anAssert.isTrue(((ProductCardData)cardData).getBarCode().contains(text), "Штрих код товара " + ((ProductCardData)cardData).getBarCode() + " не содрежит критерий поиска " + text);
+                anAssert.isTrue(((ProductCardData) cardData).getBarCode().contains(text), "Штрих код товара " + ((ProductCardData) cardData).getBarCode() + " не содрежит критерий поиска " + text);
             }
             if (searchWords != null && text.matches("\\D+")) {
                 for (String each : searchWords) {
                     each = each.toLowerCase();
-                    if (cardData instanceof ProductCardData){
+                    if (cardData instanceof ProductCardData) {
                         anAssert.isTrue(((ProductCardData) cardData).getName().toLowerCase().contains(each), "Название товара " + ((ProductCardData) cardData).getName() + " не содержит критерий поиска " + text);
-                    }else if (cardData instanceof ServiceCardData){
+                    } else if (cardData instanceof ServiceCardData) {
                         anAssert.isTrue(((ServiceCardData) cardData).getName().toLowerCase().contains(each), "Название товара " + ((ServiceCardData) cardData).getName() + " не содержит критерий поиска " + text);
                     }
                 }
             } else if (searchWords == null && text.matches("\\D+")) {
                 if (cardData instanceof ProductCardData) {
-                    anAssert.isTrue(((ProductCardData)cardData).getName().toLowerCase().contains(text), "Название товара " + ((ProductCardData)cardData).getName() + " не содержит критерий поиска " + text);
-                }else if (cardData instanceof ServiceCardData){
+                    anAssert.isTrue(((ProductCardData) cardData).getName().toLowerCase().contains(text), "Название товара " + ((ProductCardData) cardData).getName() + " не содержит критерий поиска " + text);
+                } else if (cardData instanceof ServiceCardData) {
                     anAssert.isTrue(((ServiceCardData) cardData).getName().toLowerCase().contains(text), "Название товара " + ((ServiceCardData) cardData).getName() + " не содержит критерий поиска " + text);
                 }
             }
@@ -408,6 +419,9 @@ public class SearchProductPage extends BaseAppPage {
         if (productCardDataList.size() != productData.size()) {
             throw new AssertionError("Page size param should be equals to maxEntityCount");
         }
+        System.out.println(productCardDataList);
+        System.out.println("\n");
+        System.out.println(productData);
         anAssert.isTrue(productCardDataList.equals(productData), "Товары не совпадают");
         return this;
     }
