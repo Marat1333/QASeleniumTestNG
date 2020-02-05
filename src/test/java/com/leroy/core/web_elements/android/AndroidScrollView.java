@@ -37,6 +37,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
     AndroidDriver<MobileElement> androidDriver;
 
     private List<T> tmpCardDataList;
+    private CardWidget<T> tmpWidget;
 
     public AndroidScrollView(WebDriver driver, CustomLocator locator) {
         this(driver, locator, ".//android.widget.TextView", null);
@@ -56,6 +57,22 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
             this.rowWidgetClass = clazz;
         this.oneRowXpath = oneRowXpath;
         androidDriver = (AndroidDriver) driver;
+    }
+
+    /**
+     * Ищет виджет с текстом {value} и возвращает ссылку на сам widget (в общем виде - CardWidget)
+     */
+    public CardWidget<T> searchForWidgetByText(String value) {
+        scrollTo(null, value, MAX_SCROLL_COUNT, null, "down");
+        return tmpWidget;
+    }
+
+    /**
+     * Get data object by index. If necessary, it scroll to this object
+     */
+    public T getDataObj(int index) {
+        scrollTo(null, null, null, index + 1, "down");
+        return tmpCardDataList.get(tmpCardDataList.size() - 1);
     }
 
     /**
@@ -128,7 +145,8 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
      * @param direction      - up or down
      * @return this
      */
-    private AndroidScrollView<T> scrollTo(Element findElement, String findText, Integer maxScrollCount, Integer maxEntityCount, String direction) {
+    private AndroidScrollView<T> scrollTo(Element findElement, String findText,
+                                          Integer maxScrollCount, Integer maxEntityCount, String direction) {
         initialWebElementIfNeeded();
         tmpCardDataList = new ArrayList<>();
         List<T> prevDataList = null;
@@ -146,8 +164,11 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
                 if (widget.isFullyVisible(pageSource)) {
                     T data = widget.collectDataFromPage(pageSource);
                     currentVisibleDataList.add(data);
-                    if (findText != null && data.toString().contains(findText))
+                    if (findText != null && data.toString().contains(findText)) {
+                        tmpWidget = widget;
                         textFound = true;
+                        break;
+                    }
                 }
             }
             if (currentVisibleDataList.size() == 0) {

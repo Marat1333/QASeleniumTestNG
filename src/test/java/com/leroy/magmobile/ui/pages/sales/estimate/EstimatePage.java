@@ -51,6 +51,10 @@ public class EstimatePage extends CommonMagMobilePage {
     @AppFindBy(text = "ТОВАРЫ И УСЛУГИ", metaName = "Кнопка 'Товары и Услуги'")
     MagMobWhiteSubmitButton productAndServiceBtn;
 
+    // Кнопка видна, когда Смета уже создана
+    @AppFindBy(text = "ДЕЙСТВИЯ СО СМЕТОЙ")
+    private MagMobGreenSubmitButton actionsWithEstimateBtn;
+
     // Bottom Area (It is visible when document is created)
     @AppFindBy(xpath = "//android.widget.TextView[contains(@text, 'Итого:')]/preceding-sibling::android.widget.TextView",
             metaName = "Текст с количеством и весом товара")
@@ -111,6 +115,12 @@ public class EstimatePage extends CommonMagMobilePage {
     @Step("Нажмите кнопку 'Создать'")
     public EstimateSubmittedPage clickCreateButton() {
         createBtn.click();
+        return new EstimateSubmittedPage(context);
+    }
+
+    @Step("Нажмите кнопку 'Действия со сметой'")
+    public EstimateSubmittedPage clickActionsWithEstimateButton() {
+        actionsWithEstimateBtn.click();
         return new EstimateSubmittedPage(context);
     }
 

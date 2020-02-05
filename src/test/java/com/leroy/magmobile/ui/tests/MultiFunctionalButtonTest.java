@@ -2,7 +2,7 @@ package com.leroy.magmobile.ui.tests;
 
 import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
-import com.leroy.constants.SalesDocumentsType;
+import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.common.SearchProductPage;
 import com.leroy.magmobile.ui.pages.sales.*;
@@ -325,13 +325,15 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         SalesDocumentData expectedSalesDocument = new SalesDocumentData();
         expectedSalesDocument.setPrice(expectedTotalPrice);
         expectedSalesDocument.setPin(orderDetailsData.getPinCode());
-        expectedSalesDocument.setDocumentType(SalesDocumentsType.AUTO_PROCESSING);
-        expectedSalesDocument.setWhereFrom(orderDetailsData.getDeliveryType().getValue());
+        expectedSalesDocument.setDocumentState(SalesDocumentsConst.AUTO_PROCESSING_STATE);
+        expectedSalesDocument.setTitle(orderDetailsData.getDeliveryType().getValue());
         expectedSalesDocument.setNumber(documentNumber);
         submittedDocument35Page
                 .clickSubmitButton()
                 .shouldSalesDocumentByIndexIs(0, expectedSalesDocument);
     }
+
+    // Смета
 
     @Test(description = "C22797068 Создать смету с экрана Документы продажи")
     public void testCreatingEstimateFromSalesDocumentsScreen() throws Exception {
@@ -399,12 +401,27 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         log.step("Нажать на Перейти в список документов");
         SalesDocumentData expectedSalesDocument = new SalesDocumentData();
         expectedSalesDocument.setPrice(expectedTotalPrice);
-        expectedSalesDocument.setDocumentType(SalesDocumentsType.CREATED);
-        expectedSalesDocument.setWhereFrom("Смета");
+        expectedSalesDocument.setDocumentState(SalesDocumentsConst.CREATED_STATE);
+        expectedSalesDocument.setTitle(SalesDocumentsConst.ESTIMATE_TYPE);
         expectedSalesDocument.setNumber(documentNumber);
         SalesDocumentsPage salesDocumentsPage = estimateSubmittedPage.clickSubmitButton();
         salesDocumentsPage.verifyRequiredElements()
                 .shouldSalesDocumentByIndexIs(0, expectedSalesDocument);
+    }
+
+    @Test(description = "C22797078 Преобразовать смету в корзину")
+    public void testTransformEstimateToBasket() throws Exception {
+        // Pre-condition
+        MainSalesDocumentsPage mainSalesDocumentsPage = loginAndGoTo(
+                LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
+        SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
+        EstimatePage estimatePage = salesDocumentsPage
+                .searchForDocumentByTextAndSelectIt(SalesDocumentsConst.ESTIMATE_TYPE);
+
+        // Step 1
+        log.step("Нажмите на кнопку Действия со сметой");
+        estimatePage.clickActionsWithEstimateButton();
+
     }
 
     // ---------------------- TYPICAL TESTS FOR THIS CLASS -------------------//

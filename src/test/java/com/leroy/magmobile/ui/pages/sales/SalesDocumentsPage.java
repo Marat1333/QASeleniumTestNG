@@ -2,11 +2,13 @@ package com.leroy.magmobile.ui.pages.sales;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.common.SearchProductPage;
+import com.leroy.magmobile.ui.pages.sales.estimate.EstimatePage;
 import com.leroy.magmobile.ui.pages.sales.widget.SalesDocumentWidget;
+import com.leroy.magmobile.ui.pages.widgets.CardWidget;
 import com.leroy.models.SalesDocumentData;
 import io.qameta.allure.Step;
 
@@ -22,9 +24,10 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
             metaName = "Кнопка 'Фильтр'")
     private MagMobGreenSubmitButton filterBtn;
 
-    @AppFindBy(xpath = "//android.widget.ScrollView//android.view.ViewGroup[android.view.ViewGroup[android.widget.TextView[contains(@text, '№')]]]",
-            metaName = "Мини-карточки документов продажи", clazz = SalesDocumentWidget.class)
-    private ElementList<SalesDocumentWidget> salesDocumentList;
+    AndroidScrollView<SalesDocumentData> salesDocumentScrollList = new AndroidScrollView<>(
+            driver, AndroidScrollView.TYPICAL_LOCATOR,
+            "//android.view.ViewGroup[android.view.ViewGroup[android.widget.TextView[contains(@text, '№')]]]",
+            SalesDocumentWidget.class);
 
     @AppFindBy(text = "СОЗДАТЬ ДОКУМЕНТ ПРОДАЖИ", metaName = "Кнопка 'СОЗДАТЬ ДОКУМЕНТ ПРОДАЖИ'")
     private MagMobGreenSubmitButton createSalesDocumentBtn;
@@ -45,6 +48,13 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
     }
 
     /* ------------------------- ACTION STEPS -------------------------- */
+
+    @Step("Найти и выбрать документ, содержащий текст: {text}")
+    public EstimatePage searchForDocumentByTextAndSelectIt(String text) {
+        CardWidget<SalesDocumentData> cardWidget = salesDocumentScrollList.searchForWidgetByText(text);
+        cardWidget.click();
+        return new EstimatePage(context);
+    }
 
     @Step("Нажмите кнопку 'Создать документ продажи'")
     public SearchProductPage clickCreateSalesDocumentButton() {
@@ -68,14 +78,13 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что документ {index} содержит необходимую информацию: {expectedDocument}")
-    public SalesDocumentsPage shouldSalesDocumentByIndexIs(int index, SalesDocumentData expectedDocument)
-            throws Exception {
-        SalesDocumentData documentFromPage = salesDocumentList.get(index).getSalesDocumentData();
+    public SalesDocumentsPage shouldSalesDocumentByIndexIs(int index, SalesDocumentData expectedDocument) {
+        SalesDocumentData documentFromPage = salesDocumentScrollList.getDataObj(index);
         if (expectedDocument.getDate() != null) {
             softAssert.isEquals(documentFromPage.getDate(), expectedDocument.getDate(),
                     "Документ дата должна быть %s");
         }
-        softAssert.isEquals(documentFromPage.getDocumentType(), expectedDocument.getDocumentType(),
+        softAssert.isEquals(documentFromPage.getDocumentState(), expectedDocument.getDocumentState(),
                 "Тип документа должен быть %s");
         // TODO можно будет подумать, чтоб не через contains, но чтоб C3201029 проходил:
         softAssert.isTrue(documentFromPage.getNumber().contains(expectedDocument.getNumber()),
@@ -86,7 +95,7 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
         }
         softAssert.isEquals(documentFromPage.getPrice(), expectedDocument.getPrice(),
                 "Сумма в документе должна быть %s");
-        softAssert.isEquals(documentFromPage.getWhereFrom(), expectedDocument.getWhereFrom(),
+        softAssert.isEquals(documentFromPage.getTitle(), expectedDocument.getTitle(),
                 "Место отзыва документа должно быть %s");
         softAssert.verifyAll();
         return this;

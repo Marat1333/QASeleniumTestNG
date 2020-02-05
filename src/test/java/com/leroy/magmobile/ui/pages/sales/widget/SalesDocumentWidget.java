@@ -2,12 +2,12 @@ package com.leroy.magmobile.ui.pages.sales.widget;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
-import com.leroy.core.web_elements.general.BaseWidget;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.pages.widgets.CardWidget;
 import com.leroy.models.SalesDocumentData;
 import org.openqa.selenium.WebDriver;
 
-public class SalesDocumentWidget extends BaseWidget {
+public class SalesDocumentWidget extends CardWidget<SalesDocumentData> {
 
     public SalesDocumentWidget(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
@@ -44,16 +44,27 @@ public class SalesDocumentWidget extends BaseWidget {
             return sPinCode.replaceAll("PIN ", "");
     }
 
-    public SalesDocumentData getSalesDocumentData() {
-        String pageSource = getPageSource();
+    @Override
+    public SalesDocumentData collectDataFromPage(String pageSource) {
+        if (pageSource == null)
+            pageSource = getPageSource();
         SalesDocumentData document = new SalesDocumentData();
-        document.setWhereFrom(title.getText(pageSource));
+        document.setTitle(title.getText(pageSource));
         document.setPrice(price.getText(pageSource).replaceAll("₽|\\s", ""));
         document.setNumber(number.getText(pageSource).replaceAll("№|\\s", ""));
         document.setPin(getPinCode(true, pageSource));
         document.setDate(date.getText(pageSource));
-        document.setDocumentType(documentType.getText(pageSource));
+        document.setDocumentState(documentType.getText(pageSource));
         return document;
     }
 
+    @Override
+    public boolean isFullyVisible(String pageSource) {
+        return title.isVisible(pageSource) && documentType.isVisible(pageSource);
+    }
+
+    @Override
+    public void click() {
+        name.click();
+    }
 }

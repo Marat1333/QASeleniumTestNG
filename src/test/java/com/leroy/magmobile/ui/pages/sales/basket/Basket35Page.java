@@ -3,8 +3,8 @@ package com.leroy.magmobile.ui.pages.sales.basket;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
+import com.leroy.magmobile.ui.elements.MagMobWhiteSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import io.qameta.allure.Step;
 
@@ -36,7 +36,7 @@ public class Basket35Page extends CommonMagMobilePage {
     Element totalPriceVal;
 
     @AppFindBy(text = "ТОВАР")
-    private MagMobButton addProductBtn;
+    private MagMobWhiteSubmitButton addProductBtn;
 
     @AppFindBy(text = "ОФОРМИТЬ")
     private MagMobGreenSubmitButton submitBtn;

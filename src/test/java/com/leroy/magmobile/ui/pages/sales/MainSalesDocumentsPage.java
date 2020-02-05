@@ -51,6 +51,12 @@ public class MainSalesDocumentsPage extends TopMenuPage {
             return (T) new OldSearchProductPage(context);
     }
 
+    @Step("Перейти в 'Мои продажи'")
+    public SalesDocumentsPage goToMySales() {
+        mySalesLbl.click();
+        return new SalesDocumentsPage(context);
+    }
+
     /* ---------------------- Verifications -------------------------- */
 
     @Step("Проверить, что страница 'Документы продажи' отображается корректно")
