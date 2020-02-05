@@ -106,12 +106,10 @@ public class SearchProductPage extends BaseAppPage {
         List<String> searchHistory = new ArrayList<>();
         String tmp = "1";
         for (int i = 0; i < value; i++) {
-            String pageSource = getPageSource();
             searchField.fill(tmp);
-            waitForContentIsChanged(pageSource);
             searchField.submit();
             searchHistory.add(tmp);
-            tmp = tmp + RandomStringUtils.randomNumeric(1);
+            tmp = tmp + "1";
         }
         return searchHistory;
     }
@@ -130,12 +128,12 @@ public class SearchProductPage extends BaseAppPage {
         return this;
     }
 
-    /*@Step("Введите {text} в поле поиска товара")
+    @Step("Введите {text} в поле поиска товара")
     public SearchProductPage enterTextInSearchField(String text) {
         searchField.clearAndFill(text);
         hideKeyboard();
-        return new SearchProductPage(context);
-    }*/
+        return this;
+    }
 
     @Step("Найдите и перейдите в карточку товара {text}")
     public AddProductPage searchProductAndSelect(String text) throws Exception {
@@ -166,9 +164,7 @@ public class SearchProductPage extends BaseAppPage {
 
     @Step("Перейти на страницу выбора фильтров")
     public MyShopFilterPage goToFilterPage() {
-        String pageSource = getPageSource();
         filter.click();
-        waitForContentIsChanged(pageSource);
         return new MyShopFilterPage(context);
     }
 

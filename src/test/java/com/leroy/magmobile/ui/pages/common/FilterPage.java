@@ -115,10 +115,8 @@ public class FilterPage extends BaseAppPage {
 
     @Step("Очистить все фильтры")
     public void clearAllFilters() {
-        String pageSource = getPageSource();
-        scrollUp();
         clearAllFiltersBtn.click();
-        waitForContentIsChanged(pageSource);
+        clearAllFiltersBtn.waitForInvisibility();;
     }
 
     @Step("Выбрать checkBox фильтр {value}")
@@ -153,9 +151,7 @@ public class FilterPage extends BaseAppPage {
             Element element = E("contains(" + gamma + ")");
             //От захардкоженного элемента нужны только координаты, которые будут использоваться вне зависимости от видимости элемента
             swipeRightTo(E("contains(ГАММА )"), element);
-            String pageSource = getPageSource();
             element.click();
-            waitForContentIsChanged(pageSource);
         } catch (NoSuchElementException e) {
             Log.error("Выбранная Гамма не найдена");
         }
@@ -164,25 +160,19 @@ public class FilterPage extends BaseAppPage {
     @Step("Выбрать тип продукта {type}")
     public void choseProductType(String type) {
         scrollDown();
-        String pageSource = getPageSource();
         if (type.equals(COMMON_PRODUCT_TYPE)) {
             commonProductBtn.click();
         } else {
             orderedProductBtn.click();
         }
-        waitForContentIsChanged(pageSource);
     }
 
     @Step("Выбрать дату avs")
     public void choseAvsDate(LocalDate date) throws Exception {
         scrollDown();
-        String pageSource = getPageSource();
         avsDateBtn.click();
-        waitForContentIsChanged(pageSource);
         CalendarWidget calendarWidget = new CalendarWidget(context.getDriver());
-        pageSource = getPageSource();
         calendarWidget.selectDate(date);
-        waitForContentIsChanged(pageSource);
     }
 
     @Step("Показать товары по выбранным фильтрам")

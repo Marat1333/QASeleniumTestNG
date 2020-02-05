@@ -31,6 +31,14 @@ public class SearchTest extends AppBaseSteps {
 
     private static final String ALL_DEPARTMENTS_TEXT = "Все отделы";
 
+    private GetCatalogSearch buildDefaultCatalogSearchParams() {
+        return new GetCatalogSearch()
+                .setPageSize(10)
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
+                .setStartFrom(1);
+    }
+
     @Test(description = "C3200996 Поиск товара по критериям", priority = 1)
     public void testC3200996() throws Exception {
         String lmCode = "10008698";
@@ -149,52 +157,28 @@ public class SearchTest extends AppBaseSteps {
         final String departmentId = "5";
         int entityCount = 10;
 
-
-        GetCatalogSearch gammaParam = new GetCatalogSearch()
+        GetCatalogSearch gammaParam = buildDefaultCatalogSearchParams()
                 .setGamma(GAMMA)
-                .setPageSize(10)
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
-                .setStartFrom(1)
                 .setDepartmentId(departmentId);
 
-        GetCatalogSearch topParam = new GetCatalogSearch()
+        GetCatalogSearch topParam = buildDefaultCatalogSearchParams()
                 .setTop(TOP)
-                .setPageSize(10)
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
-                .setStartFrom(1)
                 .setDepartmentId(departmentId);
 
-        GetCatalogSearch bestPriceParam = new GetCatalogSearch()
+        GetCatalogSearch bestPriceParam = buildDefaultCatalogSearchParams()
                 .setBestPrice(true)
-                .setPageSize(10)
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
-                .setStartFrom(1)
                 .setDepartmentId(departmentId);
 
-        GetCatalogSearch orderedProductTypeParam = new GetCatalogSearch()
-                .setOrderType("MBO")
-                .setPageSize(10)
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
-                .setStartFrom(1);
+        GetCatalogSearch orderedProductTypeParam = buildDefaultCatalogSearchParams()
+                .setOrderType("MBO");
 
-        GetCatalogSearch avsParam = new GetCatalogSearch()
+        GetCatalogSearch avsParam = buildDefaultCatalogSearchParams()
                 .setAvsDate(String.format("between%%7C%s-0%s-%sT00:00:00.000Z%%7C%s-0%s-%sT00:00:00.000Z",
-                        avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth(), avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth() + 1))
-                .setPageSize(10)
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
-                .setStartFrom(1);
+                        avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth(),
+                        avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth() + 1));
 
-        GetCatalogSearch supplierIdParam = new GetCatalogSearch()
-                .setSupId(supplierSearchContext)
-                .setPageSize(10)
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
-                .setStartFrom(1);
+        GetCatalogSearch supplierIdParam = buildDefaultCatalogSearchParams()
+                .setSupId(supplierSearchContext);
 
         Response<ProductItemListResponse> avsDateProductResponce = apiClient.searchProductsBy(avsParam);
         Response<ProductItemListResponse> gammaProductResponce = apiClient.searchProductsBy(gammaParam);
@@ -255,23 +239,21 @@ public class SearchTest extends AppBaseSteps {
         searchProductPage.shouldCatalogResponseEqualsContent(
                 orderedProductTypeProductResponce, SearchProductPage.CardType.COMMON, entityCount);
 
-
         // Step 5
         log.step("выбрать 1 поставщика");
         searchProductPage.goToFilterPage();
         filterPage.clearAllFilters();
-        filterPage.goToSuppliersSearchPage();
-        SuppliersSearchPage suppliersSearchPage = new SuppliersSearchPage(context);
+        SuppliersSearchPage suppliersSearchPage = filterPage.goToSuppliersSearchPage();
         suppliersSearchPage.verifyRequiredElements();
 
-        suppliersSearchPage.searchSupplier(supplierSearchContext);
-        suppliersSearchPage.shouldCountOfProductsOnPageMoreThan(0);
-
-        Response<ProductItemListResponse> supplierProductResponce = apiClient.searchProductsBy(supplierIdParam);
-        suppliersSearchPage.shouldProductCardsContainText(supplierSearchContext);
-        suppliersSearchPage.verifyElementIsSelected(supplierSearchContext);
+        suppliersSearchPage.searchForSupplier(supplierSearchContext);
+        suppliersSearchPage.shouldCountOfSuppliersIs(1);
+        suppliersSearchPage.shouldSupplierCardsContainText(supplierSearchContext);
+        suppliersSearchPage.shouldSupplierCheckboxIsSelected(supplierSearchContext);
         suppliersSearchPage.applyChosenSupplier();
         filterPage.applyChosenFilters();
+        Response<ProductItemListResponse> supplierProductResponce = apiClient.searchProductsBy(supplierIdParam);
+
         searchProductPage.shouldCatalogResponseEqualsContent(
                 supplierProductResponce, SearchProductPage.CardType.COMMON, entityCount);
 
@@ -315,7 +297,7 @@ public class SearchTest extends AppBaseSteps {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setStartFrom(1);
 
-        GetCatalogSearch avsParam = new GetCatalogSearch()
+        GetCatalogSearch avsParam = new GetCatalogSearch() // Это корректный кейс, если API возвращает пусто?
                 .setAvsDate(String.format("between%%7C%s-%s-0%sT00:00:00.000Z%%7C%s-%s-0%sT00:00:00.000Z",
                         avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth(), avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth() + 1))
                 .setPageSize(10)
@@ -347,7 +329,8 @@ public class SearchTest extends AppBaseSteps {
         allGammaFilterPage.choseGammaFilter(FilterPage.GAMMA + " " + GAMMA);
         allGammaFilterPage.shouldFilterHasBeenChosen(FilterPage.GAMMA + " " + GAMMA);
         allGammaFilterPage.applyChosenFilters();
-        searchProductPage.shouldCatalogResponseEqualsContent(gammaProductResponce, SearchProductPage.CardType.ALL_GAMMA, entityCount);
+        searchProductPage.shouldCatalogResponseEqualsContent(gammaProductResponce,
+                SearchProductPage.CardType.ALL_GAMMA, entityCount);
 
         // Step 3
         log.step("выбрать 1 из чек-боксов блока с типами товаров");
@@ -360,7 +343,8 @@ public class SearchTest extends AppBaseSteps {
         allGammaFilterPage.choseCheckBoxFilter(AllGammaFilterPage.CTM);
         allGammaFilterPage.shouldElementHasBeenSelected(AllGammaFilterPage.CTM);
         allGammaFilterPage.applyChosenFilters();
-        searchProductPage.shouldCatalogResponseEqualsContent(ctmProductResponce, SearchProductPage.CardType.ALL_GAMMA, entityCount);
+        searchProductPage.shouldCatalogResponseEqualsContent(ctmProductResponce,
+                SearchProductPage.CardType.ALL_GAMMA, entityCount);
 
         // Step 4
         log.step("выбрать тип товара");
@@ -369,7 +353,8 @@ public class SearchTest extends AppBaseSteps {
         allGammaFilterPage.choseProductType(allGammaFilterPage.COMMON_PRODUCT_TYPE);
         allGammaFilterPage.shouldFilterHasBeenChosen(allGammaFilterPage.COMMON_PRODUCT_TYPE);
         allGammaFilterPage.applyChosenFilters();
-        searchProductPage.shouldCatalogResponseEqualsContent(commonProductTypeProductResponce, SearchProductPage.CardType.ALL_GAMMA, entityCount);
+        searchProductPage.shouldCatalogResponseEqualsContent(commonProductTypeProductResponce,
+                SearchProductPage.CardType.ALL_GAMMA, entityCount);
 
         // Step 5
         log.step("выбрать дату авс");
@@ -383,7 +368,8 @@ public class SearchTest extends AppBaseSteps {
         log.step("подтвердить примененные фильтры");
         allGammaFilterPage.applyChosenFilters();
         searchProductPage.verifyRequiredElements();
-        searchProductPage.shouldCatalogResponseEqualsContent(avsDateProductResponce, SearchProductPage.CardType.ALL_GAMMA, entityCount);
+        searchProductPage.shouldCatalogResponseEqualsContent(avsDateProductResponce,
+                SearchProductPage.CardType.ALL_GAMMA, entityCount);
     }
 
     @Test(description = "C22789172 На поисковой запрос не вернулись результаты", priority = 2)
@@ -466,7 +452,7 @@ public class SearchTest extends AppBaseSteps {
         // Step 4
         log.step("Начать вводить значение идентичное одному из ранее введенных");
         String exampleText = searchPhrases.get(searchPhrases.size() / 2);
-        searchProductPage.enterTextInSearchFieldAndSubmit(exampleText)
+        searchProductPage.enterTextInSearchField(exampleText)
                 .verifySearchHistoryContainsSearchPhrase(exampleText);
     }
 

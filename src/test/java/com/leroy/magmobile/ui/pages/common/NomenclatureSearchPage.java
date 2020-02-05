@@ -47,6 +47,7 @@ public class NomenclatureSearchPage extends BaseAppPage {
             }
             nomenclatureBackBtn.click();
             if (!waitForContentIsChanged(pageSource, 1)) {
+                Log.warn("The second click when returnBackNTimes()");
                 nomenclatureBackBtn.click();
                 waitForContentIsChanged(pageSource);
             }

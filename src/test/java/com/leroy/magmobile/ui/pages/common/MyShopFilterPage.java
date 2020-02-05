@@ -33,7 +33,6 @@ public class MyShopFilterPage extends FilterPage {
     @Override
     @Step("Выбрать checkBox фильтр {value}")
     public void choseCheckBoxFilter(String value) throws Exception {
-        String pageSource = getPageSource();
         switch (value) {
             case TOP_EM:
                 topEm.click();
@@ -61,7 +60,6 @@ public class MyShopFilterPage extends FilterPage {
             default:
                 throw new Exception();
         }
-        waitForContentIsChanged(pageSource, 2);
     }
 
     @Step("Перейти на страницу выбора поставщиков")
@@ -72,10 +70,8 @@ public class MyShopFilterPage extends FilterPage {
     }
 
     @Step("Выбрать фильтр top")
-    public void choseTopFilter() {
-        String pageSource = getPageSource();
-        top0Btn.click();
-        waitForContentIsChanged(pageSource, 3);
+    public void choseTopFilter() { //TODO Надо сделать данный метод с параметром, чтоб можно было выбирать ТОП 1 и другие
+        clickElementAndWaitForContentIsChanged(top0Btn);
     }
 
 }

@@ -42,6 +42,12 @@ public class BaseAppPage extends BasePage {
         androidDriver.hideKeyboard();
     }
 
+    protected void clickElementAndWaitForContentIsChanged(Element elem) {
+        String ps = getPageSource();
+        elem.click();
+        waitForContentIsChanged(ps, tiny_timeout);
+    }
+
     protected boolean waitForContentIsChanged(String pageSource, int timeout) {
         try {
             new WebDriverWait(androidDriver, timeout)
@@ -58,7 +64,7 @@ public class BaseAppPage extends BasePage {
     }
 
     protected void waitForProgressBarIsVisible() {
-        progressBar.waitForVisibility(tiny_timeout, Duration.ofMillis(200));
+        progressBar.waitForVisibility(tiny_timeout, Duration.ofMillis(300));
     }
 
     protected void waitForProgressBarIsInvisible() {
