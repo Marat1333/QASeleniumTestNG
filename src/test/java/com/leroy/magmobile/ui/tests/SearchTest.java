@@ -647,6 +647,27 @@ public class SearchTest extends AppBaseSteps {
 
     }
 
+    @Test(description = "C22789173 Поиск товара по одному введенному символу", priority = 2)
+    public void testC22789173() throws Exception {
+        final String searchContext = "1";
+
+        // Pre-conditions
+        SalesPage salesPage = loginAndGoTo(SalesPage.class);
+        SearchProductPage searchProductPage = salesPage.clickSearchBar(true);
+
+        // Step 1
+        log.step("ввести в поисковую строку 1 цифру");
+        searchProductPage.enterTextInSearchField(searchContext);
+
+        // Step 2
+        log.step("инициировать поиск");
+        searchProductPage.submitSearch();
+
+        // Step 3
+        log.step("очистить поисковую строку");
+        searchProductPage.
+    }
+
     //TODO Добавить тест на проверку отображения и получения услуг
 
 }

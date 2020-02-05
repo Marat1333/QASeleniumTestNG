@@ -151,6 +151,13 @@ public class SearchProductPage extends BaseAppPage {
         return new SearchProductPage(context);
     }
 
+    @Step("Инициируем поисковой запрос через поисковую строку")
+    public SearchProductPage submitSearch(){
+        searchField.submit();
+        hideKeyboard();
+        return new SearchProductPage(context);
+    }
+
     @Step("Найдите и перейдите в карточку товара {text}")
     public AddProductPage searchProductAndSelect(String text) throws Exception {
         searchField.clearFillAndSubmit(text);
