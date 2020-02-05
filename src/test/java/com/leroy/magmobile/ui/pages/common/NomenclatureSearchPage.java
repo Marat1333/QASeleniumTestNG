@@ -9,8 +9,6 @@ import com.leroy.core.web_elements.general.ElementList;
 import io.qameta.allure.Step;
 import org.openqa.selenium.NoSuchElementException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -48,9 +46,9 @@ public class NomenclatureSearchPage extends BaseAppPage {
                 throw new NoSuchElementException("There is no back button");
             }
             nomenclatureBackBtn.click();
-            if (!waitForContentHasChanged(pageSource, short_timeout)) {
+            if (!waitForContentIsChanged(pageSource, 1)) {
                 nomenclatureBackBtn.click();
-                waitForContentHasChanged(pageSource, short_timeout);
+                waitForContentIsChanged(pageSource);
             }
         }
         return new NomenclatureSearchPage(context);
@@ -97,7 +95,7 @@ public class NomenclatureSearchPage extends BaseAppPage {
             }
             if (tmp.equals(value)) {
                 tmpEl.click();
-                waitForContentHasChanged(pageSource, short_timeout);
+                waitForContentIsChanged(pageSource);
                 counter++;
                 break;
             }
@@ -121,7 +119,6 @@ public class NomenclatureSearchPage extends BaseAppPage {
 
     @Override
     public void waitForPageIsLoaded() {
-        //showAllGoods.waitForVisibility();
         screenTitle.waitForVisibility();
     }
 
@@ -183,14 +180,14 @@ public class NomenclatureSearchPage extends BaseAppPage {
                 expectedText = String.format(format, text.substring(0, 3), text.substring(3, 7), emptyText, emptyText);
             } else if (text.length() == 11) {
                 expectedText = String.format(format, text.substring(0, 3), text.substring(3, 7), text.substring(7, 11), emptyText);
-            } else if (text.length() == 15) {
+            } else {
                 expectedText = String.format(format, text.substring(0, 3), text.substring(3, 7), text.substring(7, 11), text.substring(11, 15));
             }
             anAssert.isElementTextEqual(screenTitle, expectedText);
             return this;
 
         } else {
-            anAssert.isTrue(false,"Некорректная длинна номенклатуры");
+            anAssert.isTrue(false, "Некорректная длинна номенклатуры");
             return this;
         }
     }

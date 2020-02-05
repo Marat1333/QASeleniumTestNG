@@ -36,7 +36,7 @@ public class SuppliersSearchPage extends BaseAppPage {
     public void searchSupplier(String value){
         String pageSource=getPageSource();
         searchString.clearFillAndSubmit(value);
-        waitForContentHasChanged(pageSource,short_timeout);
+        waitForContentIsChanged(pageSource,short_timeout);
         searchString.clear();
         hideKeyboard();
         pageSource=getPageSource();
@@ -48,14 +48,14 @@ public class SuppliersSearchPage extends BaseAppPage {
             Element supplierByName = E("contains("+value+")");
             supplierByName.click();
         }
-        waitForContentHasChanged(pageSource,short_timeout);
+        waitForContentIsChanged(pageSource,short_timeout);
     }
 
     @Step("Подтвердить выбор")
     public FilterPage applyChosenSupplier(){
         String pageSource=getPageSource();
         confirmBtn.click();
-        waitForContentHasChanged(pageSource,short_timeout);
+        waitForContentIsChanged(pageSource,short_timeout);
         return new FilterPage(context);
     }
 

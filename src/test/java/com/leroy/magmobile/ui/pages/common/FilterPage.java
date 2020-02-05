@@ -20,8 +20,15 @@ import java.util.NoSuchElementException;
 
 public class FilterPage extends BaseAppPage {
 
+    private static final String SCREEN_TITLE = "Фильтры по товарам";
+
     public FilterPage(TestContext context) {
         super(context);
+    }
+
+    @Override
+    public void waitForPageIsLoaded() {
+        screenTitleLbl.waitUntilTextIsEqualTo(SCREEN_TITLE);
     }
 
     public static final String GAMMA = "ГАММА";
@@ -36,6 +43,9 @@ public class FilterPage extends BaseAppPage {
     public final String ORDERED_PRODUCT_TYPE = "ПОД ЗАКАЗ";
 
     private final String HORIZONTAL_SCROLL = "//android.widget.TextView[contains(@text,'%s')]/ancestor::android.widget.HorizontalScrollView";
+
+    @AppFindBy(accessibilityId = "ScreenTitle", metaName = "Загаловок экрана 'Фильтры по товарам'")
+    Element screenTitleLbl;
 
     @AppFindBy(xpath = AndroidScrollView.TYPICAL_XPATH, metaName = "Основная прокручиваемая область страницы")
     AndroidScrollView<TextViewData> mainScrollView;
@@ -108,7 +118,7 @@ public class FilterPage extends BaseAppPage {
         String pageSource = getPageSource();
         scrollUp();
         clearAllFiltersBtn.click();
-        waitForContentHasChanged(pageSource, short_timeout);
+        waitForContentIsChanged(pageSource);
     }
 
     @Step("Выбрать checkBox фильтр {value}")
@@ -145,7 +155,7 @@ public class FilterPage extends BaseAppPage {
             swipeRightTo(E("contains(ГАММА )"), element);
             String pageSource = getPageSource();
             element.click();
-            waitForContentHasChanged(pageSource, short_timeout);
+            waitForContentIsChanged(pageSource);
         } catch (NoSuchElementException e) {
             Log.error("Выбранная Гамма не найдена");
         }
@@ -157,11 +167,10 @@ public class FilterPage extends BaseAppPage {
         String pageSource = getPageSource();
         if (type.equals(COMMON_PRODUCT_TYPE)) {
             commonProductBtn.click();
-            ;
         } else {
             orderedProductBtn.click();
         }
-        waitForContentHasChanged(pageSource, short_timeout);
+        waitForContentIsChanged(pageSource);
     }
 
     @Step("Выбрать дату avs")
@@ -169,17 +178,16 @@ public class FilterPage extends BaseAppPage {
         scrollDown();
         String pageSource = getPageSource();
         avsDateBtn.click();
-        waitForContentHasChanged(pageSource, short_timeout);
+        waitForContentIsChanged(pageSource);
         CalendarWidget calendarWidget = new CalendarWidget(context.getDriver());
         pageSource = getPageSource();
         calendarWidget.selectDate(date);
-        waitForContentHasChanged(pageSource, short_timeout);
+        waitForContentIsChanged(pageSource);
     }
 
     @Step("Показать товары по выбранным фильтрам")
-    public SearchProductPage applyChosenFilters() throws Exception {
-        if (!showGoodsBtn.isVisible())
-            scrollDown();
+    public SearchProductPage applyChosenFilters() {
+        mainScrollView.scrollDownToElement(showGoodsBtn);
         showGoodsBtn.click();
         waitForProgressBarIsVisible();
         SearchProductPage page = new SearchProductPage(context);
@@ -189,21 +197,22 @@ public class FilterPage extends BaseAppPage {
 
     //Verifications
 
-    @Step("Чек-бокс {value} выбран")
+    @Step("Проверить, что выбран чек-бокс {value}")
     public FilterPage shouldElementHasBeenSelected(String value) {
-        Element anchorElement = E(String.format(SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH, value));
+        Element anchorElement = E(String.format(SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH, value),
+                String.format("Чек-бокс %s", value));
         anAssert.isElementImageMatches(anchorElement, MagMobElementTypes.CHECK_BOX_FILTER_PAGE.getPictureName());
         return this;
     }
 
-    @Step("Радиогруппа {value} выбрана")
+    @Step("Проверить, что выбрана Радиогруппа {value}")
     public FilterPage shouldFilterHasBeenChosen(String value) throws Exception {
         MagMobCheckBox element = new MagMobCheckBox(driver, new CustomLocator(By.xpath("//*[contains(@text, '" + value + "')]")));
         anAssert.isTrue(element.isChecked(), "Фильтр '" + value + "' должен быть выбран");
         return this;
     }
 
-    @Step("Радиогруппа {value} НЕ выбрана")
+    @Step("Проверить, что Радиогруппа {value} НЕ выбрана")
     public FilterPage shouldFilterHasNotBeenChosen(String value) throws Exception {
         MagMobCheckBox element = new MagMobCheckBox(driver, new CustomLocator(By.xpath("//*[contains(@text, '" + value + "')]")));
         anAssert.isFalse(element.isChecked(), "Фильтр '" + value + "' не должен быть выбран");
