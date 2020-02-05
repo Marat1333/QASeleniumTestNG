@@ -65,9 +65,12 @@ public class MyShopFilterPage extends FilterPage {
     }
 
     @Step("Перейти на страницу выбора поставщиков")
-    public SuppliersSearchPage goToSuppliersSearchPage(){
+    public SuppliersSearchPage goToSuppliersSearchPage(boolean hideKeyboard){
         scrollDown();
         supplierBtn.click();
+        if (hideKeyboard){
+            hideKeyboard();
+        }
         return new SuppliersSearchPage(context);
     }
 
@@ -76,6 +79,22 @@ public class MyShopFilterPage extends FilterPage {
         String pageSource=getPageSource();
         top0Btn.click();
         waitForContentHasChanged(pageSource,3);
+    }
+
+    //VERIFICATIONS
+
+    @Step("Проверяем, что кнопка выбора фильтра по поставщикам содержит текст {supplierName}")
+    public MyShopFilterPage shouldSupplierButtonContainsText(int countOfChosenSuppliers, String supplierName){
+        Element element;
+        if (countOfChosenSuppliers==1){
+            element = E("contains("+supplierName+")");
+        }else if (countOfChosenSuppliers>1){
+            element = E("contains(Выбрано "+countOfChosenSuppliers+")");
+        }else {
+            element = supplierBtn;
+        }
+        anAssert.isElementVisible(element);
+        return this;
     }
 
 }

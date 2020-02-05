@@ -256,7 +256,7 @@ public class SearchTest extends AppBaseSteps {
         log.step("выбрать 1 поставщика");
         searchProductPage.goToFilterPage();
         filterPage.clearAllFilters();
-        filterPage.goToSuppliersSearchPage();
+        filterPage.goToSuppliersSearchPage(false);
         SuppliersSearchPage suppliersSearchPage = new SuppliersSearchPage(context);
         suppliersSearchPage.verifyRequiredElements();
 
@@ -674,6 +674,26 @@ public class SearchTest extends AppBaseSteps {
         log.step("нажать на поисковую строку и инициировать поиск");
         searchProductPage.enterTextInSearchFieldAndSubmit("");
         searchProductPage.shouldProgressBarIsInvisible();
+    }
+
+    @Test(description = "C22789202 Выбор фильтра поставщиков", priority = 2)
+    public void testC22789202() throws Exception {
+        final String SUPPLIERS_SEARCH_CODE = "1001123001";
+        final String SUPPLIERS_SEARCH_NAME = "Сази";
+        final String COUNT_OF_CHOSEN_SUPPLIERS="2";
+
+        // Pre-conditions
+        SalesPage salesPage = loginAndGoTo(SalesPage.class);
+        SearchProductPage searchProductPage = salesPage.clickSearchBar(true);
+        NomenclatureSearchPage nomenclatureSearchPage = searchProductPage.goToNomenclatureWindow();
+        nomenclatureSearchPage.returnBackNTimes(1);
+        nomenclatureSearchPage.clickShowAllProductsBtn();
+        MyShopFilterPage myShopFilterPage = searchProductPage.goToFilterPage();
+
+        // Step 1
+        log.step("Перейти на страницу выбора поставщика");
+        SuppliersSearchPage suppliersSearchPage = myShopFilterPage.goToSuppliersSearchPage(false);
+        suppliersSearchPage.verifyRequiredElements().shouldCountOfProductsOnPageMoreThan(0);
     }
 
     //TODO Добавить тест на проверку отображения и получения услуг
