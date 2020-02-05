@@ -33,6 +33,10 @@ public class BaseAppPage extends BasePage {
         androidDriver = (AndroidDriver) driver;
     }
 
+    public Element getProgressBar() {
+        return progressBar;
+    }
+
     protected boolean isKeyboardVisible() {
         try {
             return androidDriver.isKeyboardShown();

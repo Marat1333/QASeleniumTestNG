@@ -82,7 +82,13 @@ public class SearchProductPage extends BaseAppPage {
 
     Element discardAllFiltersBtn = E("contains(СБРОСИТЬ ФИЛЬТРЫ)");
 
+    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"Button\"]/android.view.ViewGroup")
+    Element clearTextInput;
+
+
     private final String NOT_FOUND_MSG_XPATH = "//*[contains(@text, 'Поиск «%s» не дал результатов')]";
+
+    private final String DEFAULT_SEARCH_UNPUT_TEXT="ЛМ, название или штрихкод";
 
     public enum CardType {
 
@@ -158,6 +164,14 @@ public class SearchProductPage extends BaseAppPage {
         return new SearchProductPage(context);
     }
 
+    @Step("Очистить поисковой инпут")
+    public SearchProductPage clearSearchInput(){
+        String pageSource=getPageSource();
+        clearTextInput.click();
+        waitForContentHasChanged(pageSource, short_timeout);
+        return new SearchProductPage(context);
+    }
+
     @Step("Найдите и перейдите в карточку товара {text}")
     public AddProductPage searchProductAndSelect(String text) throws Exception {
         searchField.clearFillAndSubmit(text);
@@ -209,6 +223,20 @@ public class SearchProductPage extends BaseAppPage {
         return this;
     }
 
+    public SearchProductPage shouldScannerBtnIsVisible() throws Exception{
+        if (searchField.getText().equals(DEFAULT_SEARCH_UNPUT_TEXT)) {
+            anAssert.isElementVisible(scanBarcodeBtn);
+        }else {
+            throw new Exception("scannerBtn should be visible in the case of empty search field");
+        }
+        return this;
+    }
+
+    public SearchProductPage shouldProgressBarIsInvisible(){
+        anAssert.isElementNotVisible(getProgressBar());
+        return this;
+    }
+
     @Step("Проверяем, что список последних поисковых запросов такой: {expectedList}")
     public SearchProductPage shouldSearchHistoryListIs(List<String> expectedList) throws Exception {
         List<String> actualStringList = searchHistoryScrollView.getFullDataAsStringList();
@@ -232,6 +260,11 @@ public class SearchProductPage extends BaseAppPage {
     @Step("сообщение о первом поиске отображено")
     public void shouldFirstSearchMsgBeDisplayed() {
         anAssert.isTrue(firstSearchMsg.isVisible(), "Должно быть отображено сообщение о первом поиске");
+    }
+
+    @Step("сообщение о первом поиске не отображено")
+    public void shouldNotFirstSearchMsgBeDisplayed() {
+        anAssert.isFalse(firstSearchMsg.isVisible(), "Cообщение о первом поиске не должно быть отображено");
     }
 
     @Step("сообщение о том, что ничего не найдено - отображено")

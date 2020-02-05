@@ -658,14 +658,22 @@ public class SearchTest extends AppBaseSteps {
         // Step 1
         log.step("ввести в поисковую строку 1 цифру");
         searchProductPage.enterTextInSearchField(searchContext);
+        searchProductPage.shouldProgressBarIsInvisible();
 
         // Step 2
         log.step("инициировать поиск");
         searchProductPage.submitSearch();
+        searchProductPage.shouldNotFirstSearchMsgBeDisplayed();
 
         // Step 3
         log.step("очистить поисковую строку");
-        searchProductPage.
+        searchProductPage.clearSearchInput();
+        searchProductPage.shouldScannerBtnIsVisible();
+
+        // Step 4
+        log.step("нажать на поисковую строку и инициировать поиск");
+        searchProductPage.enterTextInSearchFieldAndSubmit("");
+        searchProductPage.shouldProgressBarIsInvisible();
     }
 
     //TODO Добавить тест на проверку отображения и получения услуг
