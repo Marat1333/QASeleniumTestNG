@@ -252,7 +252,7 @@ public class DriverFactory {
                 capabilities = new ChromeOptions();
                 break;
             case ANDROID_APP_PROFILE:
-                capabilities = DesiredCapabilities.android();
+                capabilities = new DesiredCapabilities();
                 break;
             case DESKTOP_EDGE_PROFILE:
                 capabilities = new EdgeOptions();

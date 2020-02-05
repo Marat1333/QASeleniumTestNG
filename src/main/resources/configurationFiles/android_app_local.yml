@@ -25,7 +25,7 @@ capabilities:
       deviceOrientation: portrait
       autoAcceptAlerts: true
       automationName: uiautomator2
-      newCommandTimeout: 600
+      newCommandTimeout: 6000
       platformVersion: '10.0' #'8.1'
       deviceName: Nexus 5 API 29 #samsung SM-J530FM
       app: /home/ddimitrash/IdeaProjects/auto-tests/src/LMLF-1.3.1-b3181-BRANCH-feature-LFRONT-3290-complex-search-auto-test-ids.apk #LMLF-1.3.0-TEST-b998.apk

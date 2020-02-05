@@ -54,11 +54,5 @@ public class LoginAppPage extends BaseAppPage {
     @Step("Нажмите кнопку 'Войти'")
     public void clickLoginButton() throws Exception {
         loginBtn.click();
-        try {
-            new WebDriverWait(this.driver, timeout).until(
-                    a -> ((AndroidDriver) driver).getContextHandles().size() > 1);
-        } catch (TimeoutException err) {
-            Log.error(err.getMessage());
-        }
     }
 }

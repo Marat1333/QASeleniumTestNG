@@ -163,7 +163,7 @@ public abstract class BaseContainer {
      * Get Source from Page / Screen
      * @return page source
      */
-    protected String getPageSource() {
+    public String getPageSource() {
         try {
             return driver.getPageSource();
         } catch (WebDriverException err) {
