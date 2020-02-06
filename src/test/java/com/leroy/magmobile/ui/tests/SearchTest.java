@@ -679,7 +679,7 @@ public class SearchTest extends AppBaseSteps {
         String dept = "015";
         String subDept = "1510";
         final String GAMMA = "A";
-        final int ENTITY_COUNT=20;
+        final int ENTITY_COUNT = 20;
 
         GetCatalogSearch paginationParams = new GetCatalogSearch()
                 .setDepartmentId(dept.replaceAll("^0+", ""))
@@ -764,7 +764,7 @@ public class SearchTest extends AppBaseSteps {
         // Step 3
         log.step("выбрать поставщика и подтвердить выбор");
         suppliersSearchPage.applyChosenSupplier();
-        supplierParamValue=suppliersSearchPage.getSupllierCode();
+        supplierParamValue = suppliersSearchPage.getSupllierCode();
         myShopFilterPage.shouldSupplierButtonContainsText(1, suppliersSearchPage.getSupplierName());
 
         // Step 4
@@ -777,11 +777,11 @@ public class SearchTest extends AppBaseSteps {
         log.step("выбрать поставщика и подтвердить выбор");
         suppliersSearchPage.applyChosenSupplier();
 
-        supplierParamValue=supplierParamValue+","+suppliersSearchPage.getSupllierCode();
+        supplierParamValue = supplierParamValue + "," + suppliersSearchPage.getSupllierCode();
         supplierIdParam.setSupId(supplierParamValue);
-        Response<ProductItemListResponse>suppliersResponce=apiClient.searchProductsBy(supplierIdParam);
+        Response<ProductItemListResponse> suppliersResponce = apiClient.searchProductsBy(supplierIdParam);
 
-        myShopFilterPage.shouldSupplierButtonContainsText(2,null);
+        myShopFilterPage.shouldSupplierButtonContainsText(2, null);
 
         // Step 6
         log.step("Применить фильтры выбранные фильтры");
