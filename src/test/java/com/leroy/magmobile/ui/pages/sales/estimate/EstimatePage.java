@@ -22,6 +22,29 @@ public class EstimatePage extends CommonMagMobilePage {
         super(context);
     }
 
+    public static class PageState {
+        boolean customerIsSelected;
+        boolean productIsAdded;
+
+        public boolean isCustomerIsSelected() {
+            return customerIsSelected;
+        }
+
+        public PageState setCustomerIsSelected(boolean customerIsSelected) {
+            this.customerIsSelected = customerIsSelected;
+            return this;
+        }
+
+        public boolean isProductIsAdded() {
+            return productIsAdded;
+        }
+
+        public PageState setProductIsAdded(boolean productIsAdded) {
+            this.productIsAdded = productIsAdded;
+            return this;
+        }
+    }
+
     @Override
     public void waitForPageIsLoaded() {
         E("$EstimateDocumentScreenId", "EstimateDocumentScreen").waitForVisibility();
@@ -119,20 +142,20 @@ public class EstimatePage extends CommonMagMobilePage {
     }
 
     @Step("Нажмите кнопку 'Действия со сметой'")
-    public EstimateSubmittedPage clickActionsWithEstimateButton() {
+    public ActionsWithEstimateModalPage clickActionsWithEstimateButton() {
         actionsWithEstimateBtn.click();
-        return new EstimateSubmittedPage(context);
+        return new ActionsWithEstimateModalPage(context);
     }
 
     // VERIFICATIONS
 
     @Step("Проверить, что страница 'Смета' отображается корректно")
-    public EstimatePage verifyRequiredElements(boolean customerIsSelected, boolean productIsAdded) {
+    public EstimatePage verifyRequiredElements(PageState state) {
         List<Element> expectedElements = new ArrayList<>(Arrays.asList(
                 backBtn, headerLbl));
-        if (!customerIsSelected)
+        if (!state.isCustomerIsSelected())
             expectedElements.add(selectCustomerBtn);
-        if (productIsAdded) {
+        if (state.isProductIsAdded()) {
             expectedElements.add(countAndWeightProductLbl);
             expectedElements.add(totalPriceLbl);
             expectedElements.add(totalPriceVal);
@@ -143,8 +166,8 @@ public class EstimatePage extends CommonMagMobilePage {
             expectedElements.add(productAndServiceBtn);
         }
         softAssert.areElementsVisible(expectedElements.toArray(new Element[0]));
-        if (!productIsAdded) {
-            if (!customerIsSelected)
+        if (!state.isProductIsAdded()) {
+            if (!state.isCustomerIsSelected())
                 softAssert.isFalse(productAndServiceBtn.isEnabled(),
                         "Кнопка '+ Товары и Услуги' активна");
             else

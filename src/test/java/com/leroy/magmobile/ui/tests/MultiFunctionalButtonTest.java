@@ -7,6 +7,7 @@ import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.common.SearchProductPage;
 import com.leroy.magmobile.ui.pages.sales.*;
 import com.leroy.magmobile.ui.pages.sales.basket.*;
+import com.leroy.magmobile.ui.pages.sales.estimate.ActionsWithEstimateModalPage;
 import com.leroy.magmobile.ui.pages.sales.estimate.EstimatePage;
 import com.leroy.magmobile.ui.pages.sales.estimate.EstimateSubmittedPage;
 import com.leroy.magmobile.ui.pages.sales.product_and_service.AddServicePage;
@@ -356,7 +357,9 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         // Step 2
         log.step("Выбрать параметр Смета");
         EstimatePage estimatePage = modalPage.clickEstimateMenuItem();
-        estimatePage.verifyRequiredElements(false, false);
+        EstimatePage.PageState pageState = new EstimatePage.PageState()
+                .setCustomerIsSelected(false).setProductIsAdded(false);
+        estimatePage.verifyRequiredElements(pageState);
 
         // Step 3
         log.step("Нажмите на поле Клиенты");
@@ -369,7 +372,9 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
                 .enterTextInSearchField(existedClientPhone)
                 .getCustomerDataFromSearchListByIndex(1);
         estimatePage = searchCustomerPage.selectCustomerFromSearchList(1);
-        estimatePage.verifyRequiredElements(true, false);
+        pageState = new EstimatePage.PageState()
+                .setCustomerIsSelected(true).setProductIsAdded(false);
+        estimatePage.verifyRequiredElements(pageState);
         estimatePage.shouldSelectedCustomerIs(customerData);
 
         // Step 5
@@ -387,8 +392,9 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         // Step 7
         log.step("Нажмите на Добавить в смету");
         estimatePage = addProduct35Page.clickAddIntoEstimateButton();
-        estimatePage.verifyRequiredElements(true, true);
-
+        pageState = new EstimatePage.PageState()
+                .setCustomerIsSelected(true).setProductIsAdded(true);
+        estimatePage.verifyRequiredElements(pageState);
 
         // Step 8
         log.step("Нажмите на Создать");
@@ -415,12 +421,19 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         MainSalesDocumentsPage mainSalesDocumentsPage = loginAndGoTo(
                 LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
         SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
-        EstimatePage estimatePage = salesDocumentsPage
-                .searchForDocumentByTextAndSelectIt(SalesDocumentsConst.ESTIMATE_TYPE);
+        EstimatePage estimatePage = salesDocumentsPage.searchForDocumentByTextAndSelectIt(
+                SalesDocumentsConst.ESTIMATE_TYPE, SalesDocumentsConst.TRANSFORMED_STATE);
 
         // Step 1
         log.step("Нажмите на кнопку Действия со сметой");
-        estimatePage.clickActionsWithEstimateButton();
+        ActionsWithEstimateModalPage modalPage = estimatePage.clickActionsWithEstimateButton();
+        modalPage.verifyRequiredElements();
+
+        // Step 2
+        log.step("Выберите параметр Преобразовать в корзину");
+        Basket35Page basket35Page = modalPage.clickTransformToBasketMenuItem();
+        basket35Page.verifyRequiredElements();
+        String s = "";
 
     }
 
