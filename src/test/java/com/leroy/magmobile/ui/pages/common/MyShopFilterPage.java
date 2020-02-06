@@ -53,9 +53,9 @@ public class MyShopFilterPage extends FilterPage {
                 limitedOffer.click();
                 break;
             case AVS:
-                scrollDown();
+                mainScrollView.scrollDown();
                 avs.click();
-                scrollUp();
+                mainScrollView.scrollUp();
                 break;
             default:
                 throw new Exception();
@@ -63,8 +63,8 @@ public class MyShopFilterPage extends FilterPage {
     }
 
     @Step("Перейти на страницу выбора поставщиков")
-    public SuppliersSearchPage goToSuppliersSearchPage(boolean hideKeyboard){
-        scrollDown();
+    public SuppliersSearchPage goToSuppliersSearchPage(boolean hideKeyboard) throws Exception {
+        mainScrollView.scrollDown();
         supplierBtn.click();
         if (hideKeyboard){
             hideKeyboard();
