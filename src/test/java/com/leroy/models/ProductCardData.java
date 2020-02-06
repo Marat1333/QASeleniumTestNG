@@ -84,29 +84,27 @@ public class ProductCardData extends CardWidgetData {
         this.selectedQuantity = selectedQuantity;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == this) {
+    private boolean equalsIfLeftNotNull(Object arg1, Object arg2) {
+        if (arg1 != null)
+            return arg1.equals(arg2);
+        else
             return true;
-        }
-        if (o instanceof ProductItemResponse) {
-            ProductItemResponse productItemResponse = (ProductItemResponse) o;
-            return (lmCode.equals(productItemResponse.getLmCode())) &&
-                    (barCode.equals(productItemResponse.getBarCode()));
-        }
-        if (o == null || o.getClass() != this.getClass()) {
-            return false;
-        } else
-            return super.equals(o);
     }
 
-    @Override
-    public int hashCode() {
-        int prime = 31;
-        int result = 1;
-        result = prime * result + lmCode.hashCode();
-        result = prime * result + barCode.hashCode();
-        result = prime * result + name.hashCode();
+    public boolean compareWithResponse(ProductItemResponse response) {
+        if (response == null) {
+            return false;
+        }
+        boolean result = lmCode.equals(response.getLmCode()) &&
+                equalsIfLeftNotNull(barCode, response.getBarCode()) &&
+                equalsIfLeftNotNull(name, response.getTitle());
+        if (price != null) {
+            try {
+                result = result && Double.valueOf(price.replaceAll(",",".")).equals(Double.valueOf(response.getPrice()));
+            } catch (NumberFormatException err) {
+                result = false;
+            }
+        }
         return result;
     }
 }

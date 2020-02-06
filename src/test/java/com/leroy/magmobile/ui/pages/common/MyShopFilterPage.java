@@ -7,7 +7,7 @@ import io.qameta.allure.Step;
 
 public class MyShopFilterPage extends FilterPage {
 
-    public MyShopFilterPage(TestContext context){
+    public MyShopFilterPage(TestContext context) {
         super(context);
     }
 
@@ -27,14 +27,13 @@ public class MyShopFilterPage extends FilterPage {
 
     @Override
     public void waitForPageIsLoaded() {
-        top0Btn.waitForVisibility();
+        top0Btn.waitForVisibility(short_timeout);
     }
 
     @Override
     @Step("Выбрать checkBox фильтр {value}")
-    public void choseCheckBoxFilter(String value) throws Exception{
-        String pageSource=getPageSource();
-        switch (value){
+    public void choseCheckBoxFilter(String value) throws Exception {
+        switch (value) {
             case TOP_EM:
                 topEm.click();
                 break;
@@ -61,7 +60,6 @@ public class MyShopFilterPage extends FilterPage {
             default:
                 throw new Exception();
         }
-        waitForContentHasChanged(pageSource,2);
     }
 
     @Step("Перейти на страницу выбора поставщиков")
@@ -81,10 +79,8 @@ public class MyShopFilterPage extends FilterPage {
     }
 
     @Step("Выбрать фильтр top")
-    public void choseTopFilter(){
-        String pageSource=getPageSource();
-        top0Btn.click();
-        waitForContentHasChanged(pageSource,3);
+    public void choseTopFilter() { //TODO Надо сделать данный метод с параметром, чтоб можно было выбирать ТОП 1 и другие
+        clickElementAndWaitForContentIsChanged(top0Btn);
     }
 
     //VERIFICATIONS

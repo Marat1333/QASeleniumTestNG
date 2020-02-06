@@ -20,9 +20,11 @@ import java.util.List;
 
 public class SuppliersSearchPage extends BaseAppPage {
 
-    public SuppliersSearchPage (TestContext context){
+    public SuppliersSearchPage(TestContext context) {
         super(context);
     }
+
+    private String SCREEN_CONTENT_XPATH = "//android.view.ViewGroup[@content-desc='ScreenContent']";
 
     @AppFindBy(xpath = "//android.widget.TextView[2]/ancestor::android.view.ViewGroup[1]",
             clazz = SupplierCardWidget.class)
@@ -81,30 +83,28 @@ public class SuppliersSearchPage extends BaseAppPage {
     }
 
     @Step("Подтвердить выбор")
-    public FilterPage applyChosenSupplier(){
-        String pageSource=getPageSource();
+    public FilterPage applyChosenSupplier() {
         confirmBtn.click();
-        waitForContentHasChanged(pageSource,short_timeout);
         return new FilterPage(context);
     }
 
-    public SuppliersSearchPage verifyRequiredElements(){
+    public SuppliersSearchPage verifyRequiredElements() {
         softAssert.isElementVisible(searchString);
         softAssert.verifyAll();
         return this;
     }
 
     @Step("Поставщик с кодом/именем {value} выбран")
-    public SuppliersSearchPage verifyElementIsSelected(String value){
-        Element anchorElement = E(String.format(SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH,value));
+    public SuppliersSearchPage shouldSupplierCheckboxIsSelected(String value) {
+        Element anchorElement = E(String.format(SCREEN_CONTENT_XPATH + SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH, value));
         anAssert.isElementImageMatches(anchorElement, MagMobElementTypes.CHECK_BOX_SELECTED.getPictureName());
         return this;
     }
 
-    @Step("результатов поиска более {count}")
-    public SuppliersSearchPage shouldCountOfProductsOnPageMoreThan(int count) {
-        anAssert.isTrue(supplierCards.getCount() > count,
-                "Кол-во товаров на экране должно быть больше " + count);
+    @Step("Проверить кол-во результатов поиска. Должно быть = {count}")
+    public SuppliersSearchPage shouldCountOfSuppliersIs(int count) {
+        anAssert.isEquals(supplierCards.getCount(), count,
+                "Неверное кол-во поставщиков на странице");
         return this;
     }
 
@@ -115,7 +115,7 @@ public class SuppliersSearchPage extends BaseAppPage {
     }
 
     @Step("найденный поставщик содержит критерий поиска {text}")
-    public void shouldProductCardsContainText(String text) {
+    public void shouldSupplierCardsContainText(String text) {
         String[] searchWords = null;
         if (text.contains(" "))
             searchWords = text.split(" ");

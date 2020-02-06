@@ -31,13 +31,6 @@ public class Element extends BaseWidget {
         initElements(this.locator);
     }
 
-    /*public Element(WebDriver driver, CustomLocator locator, String metaName) {
-        super(driver);
-        this.locator = locator;
-        //this.metaName = metaName;
-        initElements(this.locator);
-    }*/
-
     public Element(WebDriver driver, WebElement we) {
         super(driver);
         this.webElement = we;
@@ -366,21 +359,20 @@ public class Element extends BaseWidget {
                                 "}" +
                                 "return ret;", this.webElement).toString();
             } else {
-                // replaceAll is needed for Edge browser (specific situations)
                 return webElement.getText();
             }
-        } catch (StaleElementReferenceException err) {
-            Log.debug("Method: getText(). StaleElementReferenceException: " + err.getMessage());
+        } catch (NoSuchElementException err) {
+            Log.warn("Method: getText(). NoSuchElementException: " + err.getMessage());
+            if (attemptsNumber > 0)
+                return getText(selfText, attemptsNumber - 1);
+            throw err;
+        } catch (WebDriverException err) {
+            Log.debug("Method: getText(). WebDriverException: " + err.getMessage());
             if (attemptsNumber > 0) {
                 if (locator != null)
                     locator.setCacheLookup(false);
                 return getText(selfText, attemptsNumber - 1);
             }
-            throw err;
-        } catch (NoSuchElementException err) {
-            Log.warn("Method: getText(). NoSuchElementException: " + err.getMessage());
-            if (attemptsNumber > 0)
-                return getText(selfText, attemptsNumber - 1);
             throw err;
         } catch (Exception err) {
             Log.error("Method: getText()");

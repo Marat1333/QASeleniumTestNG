@@ -68,7 +68,7 @@ public class AddProductPage extends CommonMagMobilePage {
     }
 
     public String getPrice() {
-        String _priceValue = price.getText().replaceAll(" ₽/м²", "");
+        String _priceValue = price.getText().replaceAll(" ₽/м²", "").trim();
         try {
             Double.parseDouble(_priceValue);
             return _priceValue;
@@ -123,9 +123,10 @@ public class AddProductPage extends CommonMagMobilePage {
         return this;
     }
 
+    @Step("Проверить, что итогова сумма равна {number}")
     public AddProductPage shouldTotalPriceIs(String number) {
         String sTotalPrice = totalPrice.getText().replaceAll(" ₽", "")
-                .replaceAll(",", ".");
+                .trim();
         anAssert.isEquals(sTotalPrice, number, "Сумма должна быть равна %s");
         return this;
     }

@@ -32,13 +32,14 @@ public class SalesDocumentWidget extends BaseWidget {
     private Element documentType;
 
     public SalesDocumentData getSalesDocumentData() {
+        String pageSource = getPageSource();
         SalesDocumentData document = new SalesDocumentData();
-        document.setWhereFrom(whereFrom.getText());
-        document.setPrice(price.getText().replaceAll("₽|\\s", ""));
-        document.setNumber(number.getText().replaceAll("№|\\s", ""));
-        document.setPin(pin.getText().replaceAll("PIN ", ""));
-        document.setDate(date.getText());
-        document.setDocumentType(documentType.getText());
+        document.setWhereFrom(whereFrom.getText(pageSource));
+        document.setPrice(price.getText(pageSource).replaceAll("₽|\\s", ""));
+        document.setNumber(number.getText(pageSource).replaceAll("№|\\s", ""));
+        document.setPin(pin.getText(pageSource).replaceAll("PIN ", ""));
+        document.setDate(date.getText(pageSource));
+        document.setDocumentType(documentType.getText(pageSource));
         return document;
     }
 
