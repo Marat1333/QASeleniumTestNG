@@ -19,6 +19,7 @@ import com.leroy.magmobile.ui.pages.work.OrderPage;
 import com.leroy.magmobile.ui.pages.work.StockProductCardPage;
 import com.leroy.magmobile.ui.pages.work.StockProductsPage;
 import com.leroy.magmobile.ui.pages.work.modal.QuantityProductsForWithdrawalModalPage;
+import com.leroy.models.EstimateData;
 import com.leroy.models.OrderDetailsData;
 import com.leroy.models.ProductCardData;
 import com.leroy.models.SalesDocumentData;
@@ -423,6 +424,8 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
         EstimatePage estimatePage = salesDocumentsPage.searchForDocumentByTextAndSelectIt(
                 SalesDocumentsConst.ESTIMATE_TYPE, SalesDocumentsConst.TRANSFORMED_STATE);
+        // Collect test data from page
+        EstimateData testEstimateData = estimatePage.getEstimateDataFromPage();
 
         // Step 1
         log.step("Нажмите на кнопку Действия со сметой");
@@ -433,8 +436,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         log.step("Выберите параметр Преобразовать в корзину");
         Basket35Page basket35Page = modalPage.clickTransformToBasketMenuItem();
         basket35Page.verifyRequiredElements();
-        String s = "";
-
+        basket35Page.shouldBasketInformationIs(testEstimateData);
     }
 
     // ---------------------- TYPICAL TESTS FOR THIS CLASS -------------------//

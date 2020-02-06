@@ -167,7 +167,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
             ElementList<CardWidget<T>> cardWidgetList = this.findChildElements(oneRowXpath, rowWidgetClass);
             List<T> currentVisibleDataList = new ArrayList<>();
             String pageSource = getPageSource();
-            if (searchContext.findElement != null) {
+            if (searchContext != null && searchContext.findElement != null) {
                 if (searchContext.findElement.isVisible(pageSource))
                     break;
             }
@@ -176,7 +176,8 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
                 if (widget.isFullyVisible(pageSource)) {
                     T data = widget.collectDataFromPage(pageSource);
                     currentVisibleDataList.add(data);
-                    if (searchContext.findText != null && data.toString().contains(searchContext.findText) &&
+                    if (searchContext != null && searchContext.findText != null &&
+                            data.toString().contains(searchContext.findText) &&
                             (searchContext.findTextShouldNotContainsIt == null ||
                             !data.toString().contains(searchContext.findTextShouldNotContainsIt))) {
                         tmpWidget = widget;

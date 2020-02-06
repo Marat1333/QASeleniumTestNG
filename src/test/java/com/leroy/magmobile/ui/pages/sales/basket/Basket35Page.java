@@ -6,8 +6,12 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.elements.MagMobWhiteSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import com.leroy.models.EstimateData;
 import com.leroy.models.ProductCardData;
+import com.leroy.utils.Converter;
 import io.qameta.allure.Step;
+
+import java.util.List;
 
 public class Basket35Page extends CommonMagMobilePage {
 
@@ -59,27 +63,65 @@ public class Basket35Page extends CommonMagMobilePage {
 
     @Step("Проверить, что страница 'Корзина' отображается корректно")
     public Basket35Page verifyRequiredElements() {
-        softAssert.areElementsVisible(backBtn, screenTitle, productCard, totalPriceLbl, totalPriceVal,
+        String ps = getPageSource();
+        softAssert.areElementsVisible(ps, backBtn, screenTitle, productCard, totalPriceLbl, totalPriceVal,
                 countAndWeightProductLbl, addProductBtn, submitBtn);
+        softAssert.isElementTextEqual(screenTitle, "Корзина", ps);
         softAssert.verifyAll();
         return this;
     }
 
-    public Basket35Page shouldProductCardDataIs(ProductCardData expectedProductCardData) {
-        softAssert.isEquals(productCard.getLmCode(true), expectedProductCardData.getLmCode(),
+    @Step("Проверить, что {index}-ый продукт содержит следующие данные: {expectedProductCardData}")
+    public Basket35Page shouldProductCardDataIs(int index, ProductCardData expectedProductCardData) {
+        index--;
+        String ps = getPageSource();
+        softAssert.isEquals(productCard.getLmCode(true, ps), expectedProductCardData.getLmCode(),
                 "Неверный лм код продукта");
-        softAssert.isEquals(productCard.getName(), expectedProductCardData.getName(),
+        softAssert.isEquals(productCard.getName(ps), expectedProductCardData.getName(),
                 "Неверное название продукта");
-        softAssert.isEquals(productCard.getProductCount(true), expectedProductCardData.getSelectedQuantity(),
+        softAssert.isEquals(productCard.getProductCount(true, ps), expectedProductCardData.getSelectedQuantity(),
                 "Неверное кол-во продукта");
-        softAssert.isEquals(productCard.getPrice(true), expectedProductCardData.getPrice(),
+        softAssert.isEquals(productCard.getPrice(true, ps), expectedProductCardData.getPrice(),
                 "Неверная цена товара");
-        softAssert.isEquals(productCard.getTotalPrice(true), String.valueOf(
+        softAssert.isEquals(productCard.getTotalPrice(true, ps), String.valueOf(
                 Math.round(Double.parseDouble(expectedProductCardData.getPrice()) *
                         Double.parseDouble(expectedProductCardData.getSelectedQuantity()))),
                 "Неверная общая стоимость товара");
-
+        softAssert.isEquals(productCard.getAvailableTodayProductCountLbl(true, ps),
+                expectedProductCardData.getAvailableQuantity(),
+                "Неверное доступное кол-во");
         softAssert.verifyAll();
+        return this;
+    }
+
+    @Step("Проверить, что информация по всем товарам в корзине следующая:" +
+            " Кол-во товаров = {productCount}; Вес = {weight}; Итого = {totalPrice}")
+    public Basket35Page shouldTotalBasketInfoIs(int expectedProductCount,
+                                                Double expectedWeight,
+                                                Double expectedTotalPrice) throws Exception {
+        String pageSource = getPageSource();
+        String[] actualCountProductAndWeight = countAndWeightProductLbl.getText(pageSource).split("•");
+        anAssert.isTrue(actualCountProductAndWeight.length == 2,
+                "Что-то не так с меткой содержащей информацию о кол-ве и весе товара");
+        String actualTotalPrice = totalPriceVal.getText(pageSource).replaceAll("\\D+", "");
+        softAssert.isEquals(Converter.strToInt(actualCountProductAndWeight[0]),
+                expectedProductCount, "Неверное кол-во товара");
+        softAssert.isEquals(Converter.strToDouble(actualCountProductAndWeight[1]),
+                expectedWeight, "Неверное кол-во товара");
+        softAssert.isEquals(Converter.strToDouble(actualTotalPrice), expectedTotalPrice,
+                "Неверное сумма итого");
+        softAssert.verifyAll();
+        return this;
+    }
+
+    @Step("Проверить, что информация о товарах в корзине должна быть следующая: {estimateData}")
+    public Basket35Page shouldBasketInformationIs(EstimateData estimateData) throws Exception {
+        List<ProductCardData> productCardDataList = estimateData.getProductCardDataList();
+        for (int i = 0; i < productCardDataList.size(); i++) {
+            shouldProductCardDataIs(i + 1, productCardDataList.get(i));
+        }
+        shouldTotalBasketInfoIs(estimateData.getCountOfProducts(), estimateData.getWeight(),
+                estimateData.getTotalPrice());
         return this;
     }
 

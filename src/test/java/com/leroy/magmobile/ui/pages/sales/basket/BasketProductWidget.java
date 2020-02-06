@@ -26,45 +26,46 @@ public class BasketProductWidget extends Element {
     @AppFindBy(xpath = ".//android.widget.TextView[5]", metaName = "Итого стоимость")
     Element totalPrice;
 
-    @AppFindBy(containsText = "Сегодня доступно")
+    @AppFindBy(containsText = "оступно",
+            metaName = "Элемент с информацией о доступном кол-ве")
     Element availableTodayProductCount;
 
-    public String getLmCode(boolean onlyDigits) {
+    public String getLmCode(boolean onlyDigits, String ps) {
         if (onlyDigits)
-            return lmCode.getText().replaceAll("\\D+", "");
+            return lmCode.getText(ps).replaceAll("\\D+", "");
         else
-            return lmCode.getText();
+            return lmCode.getText(ps);
     }
 
-    public String getName() {
-        return name.getText();
+    public String getName(String ps) {
+        return name.getText(ps);
     }
 
-    public String getProductCount(boolean onlyDigits) {
+    public String getProductCount(boolean onlyDigits, String ps) {
         if (onlyDigits)
-            return productCount.getText().replaceAll("\\D+", "");
+            return productCount.getText(ps).replaceAll("\\D+", "");
         else
-            return productCount.getText();
+            return productCount.getText(ps);
     }
 
-    public String getPrice(boolean onlyDigits) {
+    public String getPrice(boolean onlyDigits, String ps) {
         if (onlyDigits)
-            return price.getText().replaceAll("\\D+", "");
+            return price.getText(ps).replaceAll("\\D+", "");
         else
-            return price.getText();
+            return price.getText(ps);
     }
 
-    public String getTotalPrice(boolean onlyDigits) {
+    public String getTotalPrice(boolean onlyDigits, String ps) {
         if (onlyDigits)
-            return totalPrice.getText().replaceAll("\\D+", "");
+            return totalPrice.getText(ps).replaceAll("\\D+", "");
         else
-            return totalPrice.getText();
+            return totalPrice.getText(ps);
     }
 
-    public String getAvailableTodayProductCountLbl(boolean onlyDigits) {
+    public String getAvailableTodayProductCountLbl(boolean onlyDigits, String ps) {
         if (onlyDigits)
-            return availableTodayProductCount.getText().replaceAll("\\D+", "");
+            return availableTodayProductCount.getText(ps).replaceAll("\\D+", "");
         else
-            return availableTodayProductCount.getText();
+            return availableTodayProductCount.getText(ps);
     }
 }

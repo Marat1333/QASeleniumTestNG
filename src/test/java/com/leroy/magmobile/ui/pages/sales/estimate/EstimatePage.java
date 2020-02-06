@@ -7,9 +7,13 @@ import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.elements.MagMobWhiteSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.common.SearchProductPage;
+import com.leroy.magmobile.ui.pages.sales.basket.BasketProductWidget;
 import com.leroy.magmobile.ui.pages.search.CustomerData;
 import com.leroy.magmobile.ui.pages.search.SearchCustomerPage;
 import com.leroy.magmobile.ui.pages.search.SearchCustomerWidget;
+import com.leroy.models.EstimateData;
+import com.leroy.models.ProductCardData;
+import com.leroy.utils.Converter;
 import io.qameta.allure.Step;
 
 import java.util.ArrayList;
@@ -67,9 +71,9 @@ public class EstimatePage extends CommonMagMobilePage {
             metaName = "Поле 'Клиент' (клиент выбран)")
     SearchCustomerWidget customerWidget;
 
-    @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.ImageView]",
+    @AppFindBy(xpath = "//android.view.ViewGroup[android.view.ViewGroup[android.view.ViewGroup[android.widget.ImageView]]]",
             metaName = "Карточка товара")
-    Element productCardWidget;
+    BasketProductWidget productCardWidget;
 
     @AppFindBy(text = "ТОВАРЫ И УСЛУГИ", metaName = "Кнопка 'Товары и Услуги'")
     MagMobWhiteSubmitButton productAndServiceBtn;
@@ -79,9 +83,13 @@ public class EstimatePage extends CommonMagMobilePage {
     private MagMobGreenSubmitButton actionsWithEstimateBtn;
 
     // Bottom Area (It is visible when document is created)
-    @AppFindBy(xpath = "//android.widget.TextView[contains(@text, 'Итого:')]/preceding-sibling::android.widget.TextView",
-            metaName = "Текст с количеством и весом товара")
-    Element countAndWeightProductLbl;
+    @AppFindBy(xpath = "//android.widget.TextView[contains(@text, 'Итого:')]/preceding-sibling::android.widget.TextView[2]",
+            metaName = "Текст с кол-вом товара")
+    Element countProductLbl;
+
+    @AppFindBy(xpath = "//android.widget.TextView[contains(@text, 'Итого:')]/preceding-sibling::android.widget.TextView[1]",
+            metaName = "Текст с весом товара")
+    Element weightProductLbl;
 
     @AppFindBy(text = "Итого: ")
     Element totalPriceLbl;
@@ -121,6 +129,34 @@ public class EstimatePage extends CommonMagMobilePage {
             return documentNumber.getText();
     }
 
+    // ------ Grab info from Page methods -----------//
+    @Step("Забираем со страницы информацию о смете")
+    public EstimateData getEstimateDataFromPage() throws Exception {
+        EstimateData estimateData = new EstimateData();
+        List<ProductCardData> productCardDataList = new ArrayList<>();
+        productCardDataList.add(getProductCardDataFromPage(1));
+        estimateData.setProductCardDataList(productCardDataList);
+
+        String ps = getPageSource();
+        estimateData.setTotalPrice(Converter.strToDouble(totalPriceVal.getText(ps)));
+        estimateData.setCountOfProducts(Converter.strToInt(countProductLbl.getText(ps)));
+        estimateData.setWeight(Converter.strToDouble(weightProductLbl.getText(ps)));
+        return estimateData;
+    }
+
+    @Step("Забираем со страницу информацию о {index}-ом товаре")
+    public ProductCardData getProductCardDataFromPage(int index) {
+        index--;
+        ProductCardData cardData = new ProductCardData();
+        String ps = getPageSource();
+        cardData.setLmCode(productCardWidget.getLmCode(true, ps));
+        cardData.setName(productCardWidget.getName(ps));
+        cardData.setSelectedQuantity(productCardWidget.getProductCount(true, ps));
+        cardData.setPrice(productCardWidget.getPrice(true, ps));
+        cardData.setAvailableQuantity(productCardWidget.getAvailableTodayProductCountLbl(true, ps));
+        return cardData;
+    }
+
     // ACTIONS
 
     @Step("Нажмите на поле 'Клиенты'")
@@ -156,7 +192,8 @@ public class EstimatePage extends CommonMagMobilePage {
         if (!state.isCustomerIsSelected())
             expectedElements.add(selectCustomerBtn);
         if (state.isProductIsAdded()) {
-            expectedElements.add(countAndWeightProductLbl);
+            expectedElements.add(countProductLbl);
+            expectedElements.add(weightProductLbl);
             expectedElements.add(totalPriceLbl);
             expectedElements.add(totalPriceVal);
             expectedElements.add(addProductBtn);
