@@ -11,7 +11,9 @@ import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.PointOption;
 import io.qameta.allure.Step;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
@@ -40,8 +42,29 @@ public class BaseAppPage extends BasePage {
         androidDriver.hideKeyboard();
     }
 
+    protected void clickElementAndWaitForContentIsChanged(Element elem) {
+        String ps = getPageSource();
+        elem.click();
+        waitForContentIsChanged(ps, tiny_timeout);
+    }
+
+    protected boolean waitForContentIsChanged(String pageSource, int timeout) {
+        try {
+            new WebDriverWait(androidDriver, timeout)
+                    .until(driverObject -> !getPageSource().equals(pageSource));
+            return true;
+        } catch (TimeoutException e) {
+            Log.warn(String.format("waitForContentIsChanged failed (tried for %d second(s))", timeout));
+            return false;
+        }
+    }
+
+    protected boolean waitForContentIsChanged(String pageSource) {
+        return waitForContentIsChanged(pageSource, tiny_timeout);
+    }
+
     protected void waitForProgressBarIsVisible() {
-        progressBar.waitForVisibility(tiny_timeout, Duration.ofMillis(200));
+        progressBar.waitForVisibility(tiny_timeout, Duration.ofMillis(300));
     }
 
     protected void waitForProgressBarIsInvisible() {
@@ -111,7 +134,7 @@ public class BaseAppPage extends BasePage {
         TouchAction action = new TouchAction((AndroidDriver) driver);
         while (!goalElement.isVisible()) {
             int breakCounter = 0;
-            if (breakCounter > 3) {
+            if (breakCounter > 5) {
                 break;
             }
             action.press(PointOption.point(rightBorder, anchorY)).waitAction(WaitOptions.waitOptions(Duration.ofMillis(1000))).moveTo(PointOption.point(leftBorder, anchorY)).release().perform();

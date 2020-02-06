@@ -93,6 +93,10 @@ public class GetCatalogSearch extends RequestBuilder<GetCatalogSearch> {
         return queryParam("supCode", val);
     }
 
+    public GetCatalogSearch setSupId(String val) {
+        return queryParam("supplierId", val);
+    }
+
     public GetCatalogSearch setHasAvailableStock(Boolean val) {
         return queryParam("hasAvailableStock", val);
     }

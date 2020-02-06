@@ -7,13 +7,13 @@ import io.qameta.allure.Step;
 
 public class MyShopFilterPage extends FilterPage {
 
-    public MyShopFilterPage(TestContext context){
+    public MyShopFilterPage(TestContext context) {
         super(context);
     }
 
-    public final String TOP = "ТОП";
-    public final String TOP_EM = "Топ ЕМ";
-    public final String HAS_AVAILABLE_STOCK = "Есть теор. запас";
+    public static final String TOP = "ТОП";
+    public static final String TOP_EM = "Топ ЕМ";
+    public static final String HAS_AVAILABLE_STOCK = "Есть теор. запас";
 
     @AppFindBy(text = "ТОП 0")
     Element top0Btn;
@@ -27,13 +27,13 @@ public class MyShopFilterPage extends FilterPage {
 
     @Override
     public void waitForPageIsLoaded() {
-        top0Btn.waitForVisibility();
+        top0Btn.waitForVisibility(short_timeout);
     }
 
     @Override
     @Step("Выбрать checkBox фильтр {value}")
-    public void choseCheckBoxFilter(String value) throws Exception{
-        switch (value){
+    public void choseCheckBoxFilter(String value) throws Exception {
+        switch (value) {
             case TOP_EM:
                 topEm.click();
                 break;
@@ -63,15 +63,15 @@ public class MyShopFilterPage extends FilterPage {
     }
 
     @Step("Перейти на страницу выбора поставщиков")
-    public SuppliersSearchPage goToSuppliersSearchPage(){
+    public SuppliersSearchPage goToSuppliersSearchPage() {
         scrollDown();
         supplierBtn.click();
         return new SuppliersSearchPage(context);
     }
 
     @Step("Выбрать фильтр top")
-    public void choseTopFilter(){
-        top0Btn.click();
+    public void choseTopFilter() { //TODO Надо сделать данный метод с параметром, чтоб можно было выбирать ТОП 1 и другие
+        clickElementAndWaitForContentIsChanged(top0Btn);
     }
 
 }
