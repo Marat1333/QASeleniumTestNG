@@ -74,6 +74,12 @@ public class MyShopFilterPage extends FilterPage {
         return new SuppliersSearchPage(context);
     }
 
+    @Step("Очистить поле с фильтром по поставщику")
+    public MyShopFilterPage clearSuppliersFilter(){
+
+        return new MyShopFilterPage(context);
+    }
+
     @Step("Выбрать фильтр top")
     public void choseTopFilter(){
         String pageSource=getPageSource();

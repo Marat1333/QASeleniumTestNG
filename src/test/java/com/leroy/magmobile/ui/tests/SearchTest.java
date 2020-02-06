@@ -680,7 +680,14 @@ public class SearchTest extends AppBaseSteps {
     public void testC22789202() throws Exception {
         final String SUPPLIERS_SEARCH_CODE = "1001123001";
         final String SUPPLIERS_SEARCH_NAME = "Сази";
-        final String COUNT_OF_CHOSEN_SUPPLIERS="2";
+        String supplierParamValue;
+
+        GetCatalogSearch supplierIdParam = new GetCatalogSearch()
+                .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
+                .setPageSize(10)
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
+                .setStartFrom(1);
 
         // Pre-conditions
         SalesPage salesPage = loginAndGoTo(SalesPage.class);
@@ -694,6 +701,44 @@ public class SearchTest extends AppBaseSteps {
         log.step("Перейти на страницу выбора поставщика");
         SuppliersSearchPage suppliersSearchPage = myShopFilterPage.goToSuppliersSearchPage(false);
         suppliersSearchPage.verifyRequiredElements().shouldCountOfProductsOnPageMoreThan(0);
+        suppliersSearchPage.shouldSuppliersSortedByDepartmentId();
+
+        // Step 2
+        log.step("ввести в поисковую строку код поставщика");
+        suppliersSearchPage.searchSupplier(SUPPLIERS_SEARCH_CODE);
+        suppliersSearchPage.shouldProductCardsContainText(SUPPLIERS_SEARCH_CODE);
+
+        // Step 3
+        log.step("выбрать поставщика и подтвердить выбор");
+        suppliersSearchPage.applyChosenSupplier();
+        supplierParamValue=suppliersSearchPage.getSupllierCode();
+        myShopFilterPage.shouldSupplierButtonContainsText(1, suppliersSearchPage.getSupplierName());
+
+        // Step 4
+        log.step("повторить шаг 1-2, но искать по наименованию поставщика");
+        myShopFilterPage.goToSuppliersSearchPage(false);
+        suppliersSearchPage.searchSupplier(SUPPLIERS_SEARCH_NAME);
+        suppliersSearchPage.shouldProductCardsContainText(SUPPLIERS_SEARCH_NAME);
+
+        // Step 5
+        log.step("выбрать поставщика и подтвердить выбор");
+        suppliersSearchPage.applyChosenSupplier();
+
+        supplierParamValue=supplierParamValue+","+suppliersSearchPage.getSupllierCode();
+        supplierIdParam.setSupId(supplierParamValue);
+        Response<ProductItemListResponse>suppliersResponce=apiClient.searchProductsBy(supplierIdParam);
+
+        myShopFilterPage.shouldSupplierButtonContainsText(2,null);
+
+        // Step 6
+        log.step("Применить фильтры выбранные фильтры");
+        myShopFilterPage.applyChosenFilters();
+        searchProductPage.shouldCatalogResponceEqualsContent(suppliersResponce, SearchProductPage.CardType.COMMON, 3);
+
+        // Step 7
+        log.step("Вернуться на страницу выбора фильтров и очистить фильтр поставщиков по нажатию на \"крест\"");
+        searchProductPage.goToFilterPage();
+        //myShopFilterPage.
     }
 
     //TODO Добавить тест на проверку отображения и получения услуг

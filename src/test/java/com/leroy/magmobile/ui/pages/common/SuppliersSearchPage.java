@@ -1,14 +1,22 @@
 package com.leroy.magmobile.ui.pages.common;
 
+import com.leroy.constants.EnvConstants;
 import com.leroy.constants.MagMobElementTypes;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.pages.BaseAppPage;
+import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.ui.pages.common.widget.SupplierCardWidget;
+import com.leroy.models.SupplierCardData;
 import io.qameta.allure.Step;
+import org.openqa.selenium.By;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SuppliersSearchPage extends BaseAppPage {
 
@@ -20,11 +28,20 @@ public class SuppliersSearchPage extends BaseAppPage {
             clazz = SupplierCardWidget.class)
     private ElementList<SupplierCardWidget> supplierCards;
 
+    private AndroidScrollView<SupplierCardData> supplierCardScrollView = new AndroidScrollView<>(driver, new CustomLocator(By.xpath(AndroidScrollView.TYPICAL_XPATH)),
+            "./descendant::android.view.ViewGroup[5]/android.view.ViewGroup",SupplierCardWidget.class);
+
     @AppFindBy(accessibilityId = "ScreenTitle-SuppliesSearch")
     EditBox searchString;
 
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"Button-container\"]/android.view.ViewGroup")
     Element confirmBtn;
+
+    @AppFindBy(xpath = "//android.widget.ScrollView/descendant::android.view.ViewGroup[3]/android.widget.TextView")
+    Element departmentLbl;
+
+    private String supplierName;
+    private String supplierCode;
 
     @Override
     public void waitForPageIsLoaded() {
@@ -32,21 +49,33 @@ public class SuppliersSearchPage extends BaseAppPage {
         waitForProgressBarIsInvisible();
     }
 
+    public String getSupplierName() {
+        return supplierName;
+    }
+
+    public String getSupllierCode() {
+        return supplierCode;
+    }
+
     @Step("Найти поставщика по {value} и выбрать его")
-    public void searchSupplier(String value){
+    public void searchSupplier(String value)throws Exception{
         String pageSource=getPageSource();
         searchString.clearFillAndSubmit(value);
         waitForContentHasChanged(pageSource,short_timeout);
         searchString.clear();
         hideKeyboard();
         pageSource=getPageSource();
-
+        List<SupplierCardData> supplierCardData = supplierCardScrollView.getFullDataList();
         if (value.matches("\\d+")) {
             Element supplierByCode = E("contains("+value+")");
             supplierByCode.click();
+            supplierName=supplierCardData.get(supplierCardData.size()-1).getSupplierName();
+            supplierCode=supplierCardData.get(supplierCardData.size()-1).getSupplierCode();
         }else {
             Element supplierByName = E("contains("+value+")");
             supplierByName.click();
+            supplierName=supplierCardData.get(supplierCardData.size()-1).getSupplierName();
+            supplierCode=supplierCardData.get(supplierCardData.size()-1).getSupplierCode();
         }
         waitForContentHasChanged(pageSource,short_timeout);
     }
@@ -76,6 +105,12 @@ public class SuppliersSearchPage extends BaseAppPage {
     public SuppliersSearchPage shouldCountOfProductsOnPageMoreThan(int count) {
         anAssert.isTrue(supplierCards.getCount() > count,
                 "Кол-во товаров на экране должно быть больше " + count);
+        return this;
+    }
+
+    @Step("Проверить, что сортировка по отделам происходит корректно и первый отдел = отделу пользователя")
+    public SuppliersSearchPage shouldSuppliersSortedByDepartmentId(){
+        anAssert.isTrue(departmentLbl.getText().contains(EnvConstants.BASIC_USER_DEPARTMENT_ID), "Первый отображаемый отдел не соответствует отделу пользователя, следовательно поставщики не отсортированы по отделам");
         return this;
     }
 
