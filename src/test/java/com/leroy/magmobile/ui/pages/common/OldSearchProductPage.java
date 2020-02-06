@@ -25,7 +25,7 @@ public class OldSearchProductPage extends BaseAppPage {
     @AppFindBy(accessibilityId = "ScreenTitle-CatalogComplexSearchStore", metaName = "Поле ввода текста для поиска")
     private EditBox searchField;
 
-    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ScreenContent']//android.view.ViewGroup[android.widget.ImageView]",
+    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ScreenContent']//android.view.ViewGroup[android.view.ViewGroup[android.widget.ImageView]]",
             clazz = SearchProductCardWidget.class)
     private ElementList<SearchProductCardWidget> productCards;
 

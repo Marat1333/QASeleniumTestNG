@@ -140,7 +140,7 @@ public abstract class BaseCustomAssert {
     protected void logAreElementsVisible(List<BaseWidget> elements, boolean isSoft) {
         if (elements.size() == 0)
             throw new IllegalArgumentException("List should contain at least one element");
-        String pageSource = elements.get(0).getDriver().getPageSource();
+        String pageSource = elements.get(0).getPageSource();
         for (BaseWidget elem : elements) {
             logIsElementVisible(elem, pageSource, true);
         }
