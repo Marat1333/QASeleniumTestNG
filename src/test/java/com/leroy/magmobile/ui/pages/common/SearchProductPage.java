@@ -389,7 +389,7 @@ public class SearchProductPage extends BaseAppPage {
                 throw new IllegalArgumentException("Incorrect CardType");
         }
         anAssert.isEquals(productCardDataListFromPage.size(), productDataListFromResponse.size(),
-                "Кол-во записей на странице не соот");
+                "Кол-во записей на странице не соответсвует");
         for (int i = 0; i < productCardDataListFromPage.size(); i++) {
             softAssert.isEquals(productCardDataListFromPage.get(i).getLmCode(),
                     productDataListFromResponse.get(i).getLmCode(), "ЛМ код " + i + "-ого товар отличается");

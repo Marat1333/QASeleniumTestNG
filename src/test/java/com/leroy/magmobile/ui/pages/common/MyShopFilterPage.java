@@ -27,7 +27,7 @@ public class MyShopFilterPage extends FilterPage {
 
     @Override
     public void waitForPageIsLoaded() {
-        top0Btn.waitForVisibility();
+        top0Btn.waitForVisibility(short_timeout);
     }
 
     @Override

@@ -18,6 +18,7 @@ import org.openqa.selenium.By;
 import java.time.LocalDate;
 import java.util.NoSuchElementException;
 
+// TODO Надо объединить экраны "Мой магазин" и "Вся гамма ЛМ" в один класс
 public class FilterPage extends BaseAppPage {
 
     private static final String SCREEN_TITLE = "Фильтры по товарам";

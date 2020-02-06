@@ -124,9 +124,11 @@ public class SearchTest extends AppBaseSteps {
         // Step 6
         log.step("Введите название товара для поиска");
         searchProductPage.enterTextInSearchFieldAndSubmit(searchContext);
-        //Иногда работает некорректно, пока непонятно почему
-        //searchProductPage.shouldResponceEqualsContent(nameLikeResponce, entityCount);
-        searchProductPage.shouldProductCardsContainText(searchContext, SearchProductPage.CardType.COMMON, 3);
+        //Иногда работает некорректно, потому что сортировка по ЛМ коду не применяется в мэшапе и порядок всегда разный
+        /*searchProductPage.shouldCatalogResponseEqualsContent(
+                nameLikeResponce, SearchProductPage.CardType.COMMON, entityCount);*/
+        searchProductPage.shouldProductCardsContainText(
+                searchContext, SearchProductPage.CardType.COMMON, 3);
 
         // Step 7
         log.step("Ввести штрихкод вручную");
@@ -135,17 +137,20 @@ public class SearchTest extends AppBaseSteps {
                 .verifyRequiredElements(true)
                 .shouldProductBarCodeIs(barCode);
         searchProductPage = productCardPage.returnBack();
-        searchProductPage.shouldCatalogResponseEqualsContent(barcodeResponce, SearchProductPage.CardType.COMMON, entityCount);
+        searchProductPage.shouldCatalogResponseEqualsContent(
+                barcodeResponce, SearchProductPage.CardType.COMMON, entityCount);
 
         // Step 8
         log.step("Введите часть ЛМ кода для поиска");
         searchProductPage.enterTextInSearchFieldAndSubmit(shortLmCode);
-        searchProductPage.shouldCatalogResponseEqualsContent(shortLmResponce, SearchProductPage.CardType.COMMON, entityCount);
+        searchProductPage.shouldCatalogResponseEqualsContent(
+                shortLmResponce, SearchProductPage.CardType.COMMON, entityCount);
 
         // Step 9
         log.step("Ввести в поисковую строку положительное число длинной >8 символов (" + shortBarCode + ") и инициировать поиск");
         searchProductPage.enterTextInSearchFieldAndSubmit(shortBarCode);
-        searchProductPage.shouldCatalogResponseEqualsContent(shortBarcodeResponce, SearchProductPage.CardType.COMMON, entityCount);
+        searchProductPage.shouldCatalogResponseEqualsContent(
+                shortBarcodeResponce, SearchProductPage.CardType.COMMON, entityCount);
     }
 
     @Test(description = "C22846686 Мой магазин. Выбор фильтров каждого блока фильтров", priority = 1)
