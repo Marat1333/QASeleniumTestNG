@@ -151,7 +151,7 @@ public abstract class BaseCustomAssert {
 
     protected boolean logIsElementNotVisible(BaseWidget element, String pageSource, boolean isSoft) {
         Assert.assertNotNull(element.getMetaName(), "Element meta name is NULL!");
-        boolean elementVisibility = pageSource == null? element.isVisible() : element.isVisible(pageSource);
+        boolean elementVisibility = pageSource == null ? element.isVisible() : element.isVisible(pageSource);
         String expectedResult = element.getMetaName() + " не должен отображаться";
         String actualResult = element.getMetaName() + " отображается";
         if (elementVisibility) {
@@ -167,10 +167,10 @@ public abstract class BaseCustomAssert {
     protected void logIsElementTextEqual(Element elem, String expectedText, String pageSource, boolean isSoft) {
         if (logIsElementVisible(elem, pageSource, isSoft)) {
             String actualText = elem.getText(pageSource);
-            String expectedResult = String.format("Элемент '%s' должен содержать текст '%s'",
+            String expectedResult = String.format("Элемент '%s' должен иметь текст '%s'",
                     elem.getMetaName(), expectedText);
             String actualResult = String.format(
-                    "Элемент '%s' содержит текст '%s'", elem.getMetaName(), actualText);
+                    "Элемент '%s' имеет текст '%s'", elem.getMetaName(), actualText);
             if (!actualText.equals(expectedText)) {
                 addResultsToCurrentStepAndThrowAssertException(actualResult, expectedResult);
             }
@@ -178,6 +178,24 @@ public abstract class BaseCustomAssert {
                 softAssert.assertEquals(actualText, expectedText, actualResult);
             else
                 Assert.assertEquals(actualText, expectedText, actualResult);
+        }
+    }
+
+    protected void logIsElementTextContains(Element element, String expectedText, String pageSource, boolean isSoft) {
+        if (logIsElementVisible(element, pageSource, isSoft)) {
+            String actualText = element.getText(pageSource);
+            String expectedResult = String.format("Элемент '%s' должен содержать часть текста '%s'",
+                    element.getMetaName(), expectedText);
+            String actualResult = String.format(
+                    "Элемент '%s' имеет текст '%s'", element.getMetaName(), actualText);
+            if (!actualText.contains(expectedText)) {
+                addResultsToCurrentStepAndThrowAssertException(actualResult, expectedResult);
+            }
+            if (isSoft) {
+                softAssert.assertTrue(actualText.contains(expectedText), actualResult);
+            } else {
+                Assert.assertTrue(actualText.contains(expectedText), actualResult);
+            }
         }
     }
 

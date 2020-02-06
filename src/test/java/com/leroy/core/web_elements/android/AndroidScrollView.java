@@ -43,6 +43,10 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
         this(driver, locator, ".//android.widget.TextView", null);
     }
 
+    public AndroidScrollView(WebDriver driver, By by) {
+        this(driver, by, ".//android.widget.TextView", null);
+    }
+
     public AndroidScrollView(WebDriver driver, By by, String oneRowXpath,
                              Class<? extends CardWidget<T>> clazz) {
         this(driver, new CustomLocator(by), oneRowXpath, clazz);
@@ -94,7 +98,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
         return getFullDataList(30);
     }
 
-    public List<String> getFullDataAsStringList() {
+    public List<String> getFullDataAsStringList() throws Exception {
         return getFullDataList().stream().map(T::toString).collect(Collectors.toList());
     }
 
@@ -130,11 +134,12 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
     }
 
     private void simpleScroll(String direction) {
+        //Try to change bottomY k
         Point _location = getLocation();
         Dimension _size = getSize();
         int x = _location.getX() + _size.getWidth() / 2;
-        int bottomY = _location.getY() + _size.getHeight() - (int) Math.round(_size.getHeight() * 0.2);
-        int topY = _location.getY() + (int) Math.round(_size.getHeight() * 0.2);
+        int bottomY = _location.getY() + _size.getHeight() - (int) Math.round(_size.getHeight() * 0.5);
+        int topY = _location.getY() + (int) Math.round(_size.getHeight() * 0.05);
 
         boolean isDirectionDown = direction.equals("down");
         new TouchAction<>(androidDriver)
@@ -179,10 +184,6 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
                         break;
                     }
                 }
-            }
-            if (currentVisibleDataList.size() == 0) {
-                Log.warn("Couldn't find elements during scroll");
-                break;
             }
             addNonRepeatingText(tmpCardDataList, currentVisibleDataList);
             if (textFound)

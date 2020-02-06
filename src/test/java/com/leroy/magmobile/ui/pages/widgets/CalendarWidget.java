@@ -49,12 +49,18 @@ public class CalendarWidget extends BaseContainer {
     }
 
     public void selectDate(LocalDate date) throws Exception {
+        int differenceInMonth;
         Locale locale = new Locale("ru", "RU");
-        Date needToSelectDate = new Date(date.getYear()-1900, date.getMonthValue()-1, 1);
+        Date needToSelectDate = new Date(date.getYear() - 1900, date.getMonthValue() - 1, date.getDayOfMonth() + 1);
         Date calendarDate = new SimpleDateFormat("MMMM yyyy", locale).parse(selectedMonthYearLabel.getText());
 
-        // We suggest that The user will select the date closest to the current
-        for (int i = 0; i < 25; i++) {
+        if (needToSelectDate.before(calendarDate)) {
+            differenceInMonth = (calendarDate.getYear() - needToSelectDate.getYear()) * 12 + calendarDate.getMonth() - needToSelectDate.getMonth();
+        } else {
+            differenceInMonth = (needToSelectDate.getYear() - calendarDate.getYear()) * 12 + needToSelectDate.getMonth() - calendarDate.getMonth();
+        }
+
+        for (int i = 0; i < differenceInMonth; i++) {
             if (needToSelectDate.before(calendarDate))
                 previousMonthBtn.click();
             else if (needToSelectDate.after(calendarDate))

@@ -17,6 +17,10 @@ public class CustomSoftAssert extends BaseCustomAssert {
         super.logIsTrue(condition, desc, true);
     }
 
+    public void isTrue(boolean condition, String actualResult, String expectedResult) {
+        super.logIsTrue(condition, actualResult, expectedResult, true);
+    }
+
     public void isFalse(boolean condition, String desc) {
         super.logIsFalse(condition, desc, true);
     }
@@ -45,6 +49,14 @@ public class CustomSoftAssert extends BaseCustomAssert {
         super.logIsElementTextEqual(element, expectedText, null, true);
     }
 
+    public void isElementTextContains(Element element, String expectedText) {
+        super.logIsElementTextContains(element, expectedText, null, true);
+    }
+
+    public void isElementTextContains(Element element, String expectedText, String pageSource) {
+        super.logIsElementTextContains(element, expectedText, pageSource, true);
+    }
+
     public boolean isElementVisible(BaseWidget element, String pageSource) {
         return super.logIsElementVisible(element, pageSource, true);
     }
@@ -62,7 +74,7 @@ public class CustomSoftAssert extends BaseCustomAssert {
     }
 
     public boolean isElementNotVisible(BaseWidget element) {
-        return super.logIsElementNotVisible(element, null,true);
+        return super.logIsElementNotVisible(element, null, true);
     }
 
     public boolean isElementNotVisible(BaseWidget element, String pageSource) {

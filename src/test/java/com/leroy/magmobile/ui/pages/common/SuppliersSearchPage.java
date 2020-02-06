@@ -12,9 +12,11 @@ import io.qameta.allure.Step;
 
 public class SuppliersSearchPage extends BaseAppPage {
 
-    public SuppliersSearchPage (TestContext context){
+    public SuppliersSearchPage(TestContext context) {
         super(context);
     }
+
+    private String SCREEN_CONTENT_XPATH = "//android.view.ViewGroup[@content-desc='ScreenContent']";
 
     @AppFindBy(xpath = "//android.widget.TextView[2]/ancestor::android.view.ViewGroup[1]",
             clazz = SupplierCardWidget.class)
@@ -29,53 +31,51 @@ public class SuppliersSearchPage extends BaseAppPage {
     @Override
     public void waitForPageIsLoaded() {
         searchString.waitForVisibility();
+        waitForProgressBarIsInvisible();
     }
 
     @Step("Найти поставщика по {value} и выбрать его")
-    public void searchSupplier(String value){
+    public void searchForSupplier(String value) {
         searchString.clearFillAndSubmit(value);
-        searchString.clear();
-        hideKeyboard();
-
-        if (value.matches("\\d+")) {
-            Element supplierByCode = E("contains("+value+")");
-            supplierByCode.click();
-        }else {
-            Element supplierByName = E("contains("+value+")");
-            supplierByName.click();
-        }
+        waitForProgressBarIsVisible();
+        waitForProgressBarIsInvisible();
+        E(SCREEN_CONTENT_XPATH + "//android.widget.TextView[contains(@text, '" + value + "')]")
+                .click();
     }
 
     @Step("Подтвердить выбор")
-    public FilterPage applyChosenSupplier(){
+    public FilterPage applyChosenSupplier() {
         confirmBtn.click();
         return new FilterPage(context);
     }
 
-    public SuppliersSearchPage verifyRequiredElements(){
+    public SuppliersSearchPage verifyRequiredElements() {
         softAssert.isElementVisible(searchString);
         softAssert.verifyAll();
         return this;
     }
 
-    public SuppliersSearchPage verifyElementIsSelected(String value){
-        Element anchorElement = E(String.format(SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH,value));
+    @Step("Поставщик с кодом/именем {value} выбран")
+    public SuppliersSearchPage shouldSupplierCheckboxIsSelected(String value) {
+        Element anchorElement = E(String.format(SCREEN_CONTENT_XPATH + SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH, value));
         anAssert.isElementImageMatches(anchorElement, MagMobElementTypes.CHECK_BOX_SELECTED.getPictureName());
         return this;
     }
 
-    public SuppliersSearchPage shouldCountOfProductsOnPageMoreThan(int count) {
-        anAssert.isTrue(supplierCards.getCount() > count,
-                "Кол-во товаров на экране должно быть больше " + count);
+    @Step("Проверить кол-во результатов поиска. Должно быть = {count}")
+    public SuppliersSearchPage shouldCountOfSuppliersIs(int count) {
+        anAssert.isEquals(supplierCards.getCount(), count,
+                "Неверное кол-во поставщиков на странице");
         return this;
     }
 
-    public void shouldProductCardsContainText(String text) {
+    @Step("найденный поставщик содержит критерий поиска {text}")
+    public void shouldSupplierCardsContainText(String text) {
         String[] searchWords = null;
         if (text.contains(" "))
             searchWords = text.split(" ");
         anAssert.isFalse(E("contains(не найдено)").isVisible(), "Должен быть найден хотя бы один товар");
-        anAssert.isTrue(supplierCards.getCount() > 1,
+        anAssert.isTrue(supplierCards.getCount() > 0,
                 "Ничего не найдено для " + text);
         for (SupplierCardWidget card : supplierCards) {
             if (searchWords != null) {

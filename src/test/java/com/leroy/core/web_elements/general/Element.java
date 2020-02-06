@@ -32,13 +32,6 @@ public class Element extends BaseWidget {
         initElements(this.locator);
     }
 
-//    public Element(WebDriver driver, CustomLocator locator, String metaName) {
-//        super(driver);
-//        this.locator = locator;
-//        this.metaName = metaName;
-//        initElements(this.locator);
-//    }
-
     public Element(WebDriver driver, WebElement we) {
         super(driver);
         this.webElement = we;

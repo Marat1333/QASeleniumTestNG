@@ -49,6 +49,14 @@ public class CustomAssert extends BaseCustomAssert {
         return super.logIsElementVisible(element, pageSource, false);
     }
 
+    public void isElementTextContains(Element element, String expectedText) {
+        super.logIsElementTextContains(element, expectedText, null, false);
+    }
+
+    public void isElementTextContains(Element element, String expectedText, String pageSource) {
+        super.logIsElementTextContains(element, expectedText, pageSource, false);
+    }
+
     public boolean isElementVisible(BaseWidget element) {
         return isElementVisible(element, null);
     }

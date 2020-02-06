@@ -14,11 +14,11 @@ public class ProductDescriptionPage extends ProductCardPage {
         super(context);
     }
 
-    @AppFindBy(xpath = "//android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[3]/android.widget.TextView[1]",
+    @AppFindBy(xpath = "//android.widget.TextView[@content-desc='lmCode']",
             metaName = "ЛМ код товара")
     Element lmCode;
 
-    @AppFindBy(xpath = "//android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[3]/android.widget.TextView[2]",
+    @AppFindBy(xpath = "//android.widget.TextView[@content-desc='barCode2']",
             metaName = "Бар код товара")
     Element barCode;
 
