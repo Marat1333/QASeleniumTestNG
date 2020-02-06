@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.DisableTestWhen;
+import com.leroy.core.annotations.Smoke;
 import com.leroy.core.annotations.Team;
 import com.leroy.core.configuration.*;
 import com.leroy.core.listeners.helpers.RetryAnalyzer;
@@ -18,6 +19,7 @@ import org.testng.annotations.ITestAnnotation;
 import org.testng.internal.Utils;
 import org.testng.reporters.XMLReporterConfig;
 import org.testng.reporters.XMLStringBuffer;
+import org.testng.util.Strings;
 import org.testng.xml.XmlSuite;
 
 import java.io.File;
@@ -111,6 +113,10 @@ public class Listener implements ITestListener, ISuiteListener,
     }
 
     private boolean isTestNeedToDisable(Method method) {
+        String smoke = System.getProperty("smoke");
+        if (Strings.isNotNullAndNotEmpty(smoke) && smoke.equals("true")) {
+            return !method.isAnnotationPresent(Smoke.class);
+        }
         if (method.isAnnotationPresent(DisableTestWhen.class)) {
             String[] browsers = method.getAnnotation(DisableTestWhen.class).browsers();
             return Arrays.asList(browsers).contains(BROWSER_PROFILE);
