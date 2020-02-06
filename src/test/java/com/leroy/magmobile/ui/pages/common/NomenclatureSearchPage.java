@@ -142,9 +142,7 @@ public class NomenclatureSearchPage extends BaseAppPage {
         }
         scrollDown();
         for (Element element : secondLevelNomenclatureElementsList) {
-            if (!uniqueElementsArray.contains(element)) {
-                uniqueElementsArray.add(element.findChildElement(eachElementOfNomenclatureXpath).getText());
-            }
+            uniqueElementsArray.add(element.findChildElement(eachElementOfNomenclatureXpath).getText());
         }
         System.out.println(uniqueElementsArray.size());
         anAssert.isTrue(uniqueElementsArray.size() == 15, "Найдено некорректное кол-во отделов");
@@ -183,7 +181,7 @@ public class NomenclatureSearchPage extends BaseAppPage {
                 expectedText = String.format(format, text.substring(0, 3), text.substring(3, 7), emptyText, emptyText);
             } else if (text.length() == 11) {
                 expectedText = String.format(format, text.substring(0, 3), text.substring(3, 7), text.substring(7, 11), emptyText);
-            } else if (text.length() == 15) {
+            } else {
                 expectedText = String.format(format, text.substring(0, 3), text.substring(3, 7), text.substring(7, 11), text.substring(11, 15));
             }
             anAssert.isElementTextEqual(screenTitle, expectedText);
