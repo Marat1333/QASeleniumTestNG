@@ -119,20 +119,6 @@ public class BaseAppPage extends BasePage {
                 .perform();
     }
 
-    public void scrollDown(int dept) {
-        TouchAction action = new TouchAction((AndroidDriver) driver);
-        Dimension size = androidDriver.manage().window().getSize();
-        int ground = size.getHeight() - dept;
-        int ceil = size.getHeight() - ground;
-        int rightBorder = size.getWidth() - 10;
-        int leftBorder = size.getWidth() - rightBorder;
-        action.press(PointOption.point(leftBorder, ground))
-                .waitAction(WaitOptions.waitOptions(Duration.ofMillis(1000)))
-                .moveTo(PointOption.point(leftBorder, ceil))
-                .release()
-                .perform();
-    }
-
     public void scrollUp() {
         TouchAction action = new TouchAction((AndroidDriver) driver);
         Dimension size = androidDriver.manage().window().getSize();

@@ -645,7 +645,7 @@ public class SearchTest extends AppBaseSteps {
     }
 
     @Test(description = "C3200999 Проверка пагинации", priority = 2)
-    public void testC3200999() throws Exception {
+    public void testSearchPagePagination() throws Exception {
         String shortLmCode = "12";
         String dept = "015";
         String subDept = "1510";
@@ -696,7 +696,7 @@ public class SearchTest extends AppBaseSteps {
 
         // Step 5
         log.step("Проскролить вниз до упора");
-        searchProductPage.shouldCatalogResponceEqualsContent(paginationResponce, SearchProductPage.CardType.COMMON, ENTITY_COUNT);
+        searchProductPage.shouldCatalogResponseEqualsContent(paginationResponce, SearchProductPage.CardType.COMMON, ENTITY_COUNT);
 
     }
     //TODO Добавить тест на проверку отображения и получения услуг

@@ -3,10 +3,15 @@ package com.leroy.magmobile.ui.pages.common;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.configuration.Log;
+import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.pages.BaseAppPage;
+import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.models.TextViewData;
 import io.qameta.allure.Step;
+import org.apache.xpath.operations.And;
+import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 
 import java.util.HashSet;
@@ -34,6 +39,8 @@ public class NomenclatureSearchPage extends BaseAppPage {
 
     @AppFindBy(xpath = "//android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[preceding-sibling::android.view.ViewGroup[1]]", metaName = "Окно выбора последующих элементов")
     ElementList<Element> secondLevelNomenclatureElementsList;
+
+    private AndroidScrollView<TextViewData> scrollView = new AndroidScrollView<>(driver, new CustomLocator(By.xpath(AndroidScrollView.TYPICAL_XPATH)));
 
     private final String eachElementOfNomenclatureXpath = "./android.view.ViewGroup/android.widget.TextView";
 
@@ -102,7 +109,7 @@ public class NomenclatureSearchPage extends BaseAppPage {
             }
         }
         if (counter < 1) {
-            scrollDown();
+            scrollView.scrollDown();
             selectElementFromArray(value, secondLevelNomenclatureElementsList);
         }
         return new NomenclatureSearchPage(context);
@@ -110,7 +117,7 @@ public class NomenclatureSearchPage extends BaseAppPage {
 
     @Step("Нажмите 'Показать все товары'")
     public SearchProductPage clickShowAllProductsBtn() {
-        scrollUpTo(showAllGoods);
+        scrollView.scrollUpToElement(showAllGoods);
         showAllGoods.click();
         SearchProductPage searchPage = new SearchProductPage(context);
         waitForProgressBarIsVisible();
@@ -138,11 +145,10 @@ public class NomenclatureSearchPage extends BaseAppPage {
         for (Element element : firstLevelNomenclatureElementsList) {
             uniqueElementsArray.add(element.findChildElement(eachElementOfNomenclatureXpath).getText());
         }
-        scrollDown();
+        scrollView.scrollDown();
         for (Element element : secondLevelNomenclatureElementsList) {
             uniqueElementsArray.add(element.findChildElement(eachElementOfNomenclatureXpath).getText());
         }
-        System.out.println(uniqueElementsArray.size());
         anAssert.isTrue(uniqueElementsArray.size() == 15, "Найдено некорректное кол-во отделов");
         return this;
     }

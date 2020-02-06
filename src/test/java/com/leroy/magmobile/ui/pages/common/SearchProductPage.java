@@ -79,7 +79,7 @@ public class SearchProductPage extends BaseAppPage {
     Element discardAllFiltersBtn = E("contains(СБРОСИТЬ ФИЛЬТРЫ)");
 
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"Button\"]/android.view.ViewGroup")
-    Element clearTextInput;
+    Element clearTextInputBtn;
 
     private final String NOT_FOUND_MSG_XPATH = "//*[contains(@text, 'Поиск «%s» не дал результатов')]";
 
@@ -188,7 +188,7 @@ public class SearchProductPage extends BaseAppPage {
 
     @Step("Проверяем, что появилась кнопка очистки инпута поисковой строки")
     public SearchProductPage verifyClearTextInputBtnIsVisible(){
-        anAssert.isElementVisible(clearTextInput);
+        anAssert.isElementVisible(clearTextInputBtn);
         return this;
     }
 
