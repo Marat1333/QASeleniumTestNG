@@ -136,9 +136,9 @@ public class FilterPage extends BaseAppPage {
                 limitedOffer.click();
                 break;
             case AVS:
-                scrollDown();
+                mainScrollView.scrollDown();
                 avs.click();
-                scrollUp();
+                mainScrollView.scrollUp();
                 break;
             default:
                 throw new Exception();
@@ -159,8 +159,8 @@ public class FilterPage extends BaseAppPage {
     }
 
     @Step("Выбрать тип продукта {type}")
-    public void choseProductType(String type) {
-        scrollDown();
+    public void choseProductType(String type) throws Exception {
+        mainScrollView.scrollDown();
         if (type.equals(COMMON_PRODUCT_TYPE)) {
             commonProductBtn.click();
         } else {
@@ -170,7 +170,7 @@ public class FilterPage extends BaseAppPage {
 
     @Step("Выбрать дату avs")
     public void choseAvsDate(LocalDate date) throws Exception {
-        scrollDown();
+        mainScrollView.scrollDown();
         avsDateBtn.click();
         CalendarWidget calendarWidget = new CalendarWidget(context.getDriver());
         calendarWidget.selectDate(date);

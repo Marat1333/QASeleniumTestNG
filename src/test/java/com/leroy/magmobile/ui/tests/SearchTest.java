@@ -644,6 +644,61 @@ public class SearchTest extends AppBaseSteps {
 
     }
 
+    @Test(description = "C3200999 Проверка пагинации", priority = 2)
+    public void testSearchPagePagination() throws Exception {
+        String shortLmCode = "12";
+        String dept = "015";
+        String subDept = "1510";
+        final String GAMMA = "A";
+        final int ENTITY_COUNT=20;
+
+        GetCatalogSearch paginationParams = new GetCatalogSearch()
+                .setDepartmentId(dept.replaceAll("^0+", ""))
+                .setSubDepartmentId(subDept.replaceAll("^0+", ""))
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setSortBy(CatalogSearchFields.AVAILABLE_STOCK, SortingOrder.ASC)
+                .setByLmCode(shortLmCode)
+                .setGamma(GAMMA)
+                .setStartFrom(1)
+                .setPageSize(ENTITY_COUNT);
+
+        Response<ProductItemListResponse> paginationResponce = apiClient.searchProductsBy(paginationParams);
+
+        // Pre-conditions
+        SalesPage salesPage = loginAndGoTo(SalesPage.class);
+        SearchProductPage searchProductPage = salesPage.clickSearchBar(true);
+
+        // Step 1
+        log.step("Введите неполное название или неполный ЛМ код товара");
+        searchProductPage.enterTextInSearchFieldAndSubmit(shortLmCode);
+        searchProductPage.verifyClearTextInputBtnIsVisible();
+
+        // Step 2
+        log.step("Выбрать подотдел в номенклатуре");
+        NomenclatureSearchPage nomenclatureSearchPage = searchProductPage.goToNomenclatureWindow();
+        nomenclatureSearchPage.returnBackNTimes(1);
+        nomenclatureSearchPage.choseDepartmentId(dept, subDept, null, null);
+        nomenclatureSearchPage.shouldTitleWithNomenclatureIs(dept + subDept);
+        nomenclatureSearchPage.clickShowAllProductsBtn();
+
+        // Step 3
+        log.step("Выбрать отличный от дефолтного способ сортировки");
+        SortPage sortPage = searchProductPage.openSortPage();
+        sortPage.selectSort(SortPage.SORT_BY_AVAILABLE_STOCK_ASC);
+        searchProductPage.shouldProductCardsBeSorted(SortPage.SORT_BY_AVAILABLE_STOCK_ASC, SearchProductPage.CardType.COMMON, 3);
+
+        // Step 4
+        log.step("Выбрать любой фильтр на странице выбора фильтров");
+        MyShopFilterPage myShopFilterPage = searchProductPage.goToFilterPage();
+        myShopFilterPage.choseGammaFilter(MyShopFilterPage.GAMMA + " " + GAMMA);
+        myShopFilterPage.shouldFilterHasBeenChosen(MyShopFilterPage.GAMMA + " " + GAMMA);
+        myShopFilterPage.applyChosenFilters();
+
+        // Step 5
+        log.step("Проскролить вниз до упора");
+        searchProductPage.shouldCatalogResponseEqualsContent(paginationResponce, SearchProductPage.CardType.COMMON, ENTITY_COUNT);
+
+    }
     //TODO Добавить тест на проверку отображения и получения услуг
 
 }

@@ -30,6 +30,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
     private Element progressBar;
 
     public static final String TYPICAL_XPATH = "//android.widget.ScrollView";
+    public static final By TYPICAL_LOCATOR = By.xpath("//android.widget.ScrollView");
     private Class<? extends BaseWidget> rowWidgetClass;
     private String oneRowXpath;
 
@@ -39,6 +40,10 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
 
     public AndroidScrollView(WebDriver driver, CustomLocator locator) {
         this(driver, locator, ".//android.widget.TextView", null);
+    }
+
+    public AndroidScrollView(WebDriver driver, By by) {
+        this(driver, by, ".//android.widget.TextView", null);
     }
 
     public AndroidScrollView(WebDriver driver, By by, String oneRowXpath,

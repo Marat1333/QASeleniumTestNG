@@ -21,7 +21,6 @@ import com.leroy.umbrella_extension.magmobile.data.ProductItemResponse;
 import com.leroy.umbrella_extension.magmobile.data.ServiceItemListResponse;
 import com.leroy.umbrella_extension.magmobile.data.ServiceItemResponse;
 import io.qameta.allure.Step;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.openqa.selenium.By;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -78,6 +77,9 @@ public class SearchProductPage extends BaseAppPage {
     Element firstSearchMsg;
 
     Element discardAllFiltersBtn = E("contains(СБРОСИТЬ ФИЛЬТРЫ)");
+
+    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"Button\"]/android.view.ViewGroup")
+    Element clearTextInputBtn;
 
     private final String NOT_FOUND_MSG_XPATH = "//*[contains(@text, 'Поиск «%s» не дал результатов')]";
 
@@ -181,6 +183,12 @@ public class SearchProductPage extends BaseAppPage {
         softAssert.isElementVisible(scanBarcodeBtn);
         softAssert.isElementVisible(searchField);
         softAssert.verifyAll();
+        return this;
+    }
+
+    @Step("Проверяем, что появилась кнопка очистки инпута поисковой строки")
+    public SearchProductPage verifyClearTextInputBtnIsVisible(){
+        anAssert.isElementVisible(clearTextInputBtn);
         return this;
     }
 
