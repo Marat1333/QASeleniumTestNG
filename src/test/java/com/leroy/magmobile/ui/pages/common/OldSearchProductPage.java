@@ -99,8 +99,8 @@ public class OldSearchProductPage extends BaseAppPage {
                 String.format("Карточка под индексом %s не должна иметь пустое кол-во", index));
         anAssert.isEquals(productCards.get(index).getQuantityLbl(), "доступно",
                 String.format("Карточка под индексом %s должна иметь примечание 'доступно'", index));
-        /*anAssert.isFalse(productCards.get(index).getQuantityType().isEmpty(),
-                String.format("Карточка под индексом %s не должна иметь пустой тип кол-ва", index));*/
+        anAssert.isFalse(productCards.get(index).getQuantityType().isEmpty(),
+                String.format("Карточка под индексом %s не должна иметь пустой тип кол-ва", index));
         return this;
     }
 
