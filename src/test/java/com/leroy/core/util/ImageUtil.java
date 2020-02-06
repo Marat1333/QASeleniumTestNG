@@ -20,6 +20,12 @@ public class ImageUtil {
 
     private static String PATH_SNAPSHOTS = "src/main/resources/snapshots/" + DriverFactory.BROWSER_PROFILE + "/";
 
+    private static String getScreenPath(WebDriver driver, String pictureName) {
+        Dimension dimension = driver.manage().window().getSize();
+        String sDimension = dimension.getHeight() + "x" + dimension.getWidth();
+        return PATH_SNAPSHOTS + sDimension + "/" + pictureName + ".png";
+    }
+
     public enum CompareResult {
         Matched, SizeMismatch, PixelMismatch
     }
@@ -115,7 +121,7 @@ public class ImageUtil {
     public static void takeScreenShot(WebDriver driver, Rectangle rect, String pictureName)
             throws Exception {
         File file = captureRectangleBitmap(driver, rect);
-        FileUtils.copyFile(file, new File(PATH_SNAPSHOTS + pictureName + ".png"));
+        FileUtils.copyFile(file, new File(getScreenPath(driver, pictureName)));
     }
 
     public static void takeScreenShot(Element element, String pictureName)
@@ -126,7 +132,7 @@ public class ImageUtil {
     private static CompareResult takeScreenAndCompareWithBaseImg(
             WebDriver driver, Rectangle rect,
             String pictureName, Double expectedPercentage) throws Exception {
-        String filePath = PATH_SNAPSHOTS + pictureName + ".png";
+        String filePath = getScreenPath(driver, pictureName);
         String screenshotPath = captureRectangleBitmap(driver, rect).getAbsolutePath();
         Log.debug("Picture: " + pictureName + " Path: " + screenshotPath);
         return compareImage(screenshotPath,

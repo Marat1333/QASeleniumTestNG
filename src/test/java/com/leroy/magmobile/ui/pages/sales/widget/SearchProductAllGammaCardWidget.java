@@ -8,6 +8,7 @@ import com.leroy.models.ProductCardData;
 import org.openqa.selenium.WebDriver;
 
 public class SearchProductAllGammaCardWidget extends CardWidget<ProductCardData> {
+
     public SearchProductAllGammaCardWidget(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
     }

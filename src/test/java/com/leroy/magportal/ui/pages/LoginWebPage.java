@@ -2,6 +2,7 @@ package com.leroy.magportal.ui.pages;
 
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.TestContext;
+import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.pages.BaseWebPage;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
@@ -19,14 +20,17 @@ public class LoginWebPage extends BaseWebPage {
 
     private Button loginBtn = E("//*[@value='login']", "Кнопка 'Войти'", Button.class);
 
-    public boolean isLoginFormVisible() {
-        return usernameFld.isVisible();
-    }
-
     public void logIn(UserData loginData) {
         usernameFld.clearAndFill(loginData.getUserName());
         passwordFld.clearAndFill(loginData.getPassword());
-        loginBtn.click();
+        if (DriverFactory.isAppProfile())
+            loginBtn.clickJS();
+        else
+            loginBtn.click();
+    }
+
+    public boolean isLoginFormVisible() {
+        return usernameFld.isVisible();
     }
 
     public void logIn() {

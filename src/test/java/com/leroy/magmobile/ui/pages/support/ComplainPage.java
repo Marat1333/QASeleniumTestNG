@@ -32,7 +32,7 @@ public class ComplainPage extends BaseAppPage {
             metaName = "Иконка поля 'Чуть больше подробностей'")
     private EditBox moreInfoIcon;
 
-    @AppFindBy(text = "Эл. почта для ответа")
+    @AppFindBy(text = "Email для ответа")
     private Element emailLbl;
     @AppFindBy(accessibilityId = "email", metaName = "Поле ввода 'email'")
     private EditBox emailFld;

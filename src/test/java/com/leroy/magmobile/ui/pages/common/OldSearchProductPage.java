@@ -25,7 +25,7 @@ public class OldSearchProductPage extends BaseAppPage {
     @AppFindBy(accessibilityId = "ScreenTitle-CatalogComplexSearchStore", metaName = "Поле ввода текста для поиска")
     private EditBox searchField;
 
-    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ScreenContent']//android.view.ViewGroup[android.widget.ImageView]",
+    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ScreenContent']//android.view.ViewGroup[android.view.ViewGroup[android.widget.ImageView]]",
             clazz = SearchProductCardWidget.class)
     private ElementList<SearchProductCardWidget> productCards;
 
@@ -99,8 +99,8 @@ public class OldSearchProductPage extends BaseAppPage {
                 String.format("Карточка под индексом %s не должна иметь пустое кол-во", index));
         anAssert.isEquals(productCards.get(index).getQuantityLbl(), "доступно",
                 String.format("Карточка под индексом %s должна иметь примечание 'доступно'", index));
-        /*anAssert.isFalse(productCards.get(index).getQuantityType().isEmpty(),
-                String.format("Карточка под индексом %s не должна иметь пустой тип кол-ва", index));*/
+        anAssert.isFalse(productCards.get(index).getQuantityType().isEmpty(),
+                String.format("Карточка под индексом %s не должна иметь пустой тип кол-ва", index));
         return this;
     }
 
