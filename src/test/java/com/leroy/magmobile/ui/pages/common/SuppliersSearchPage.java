@@ -63,7 +63,6 @@ public class SuppliersSearchPage extends BaseAppPage {
     public void searchSupplier(String value)throws Exception{
         String pageSource=getPageSource();
         searchString.clearFillAndSubmit(value);
-        waitForContentHasChanged(pageSource,short_timeout);
         searchString.clear();
         hideKeyboard();
         pageSource=getPageSource();
@@ -79,7 +78,6 @@ public class SuppliersSearchPage extends BaseAppPage {
             supplierName=supplierCardData.get(supplierCardData.size()-1).getSupplierName();
             supplierCode=supplierCardData.get(supplierCardData.size()-1).getSupplierCode();
         }
-        waitForContentHasChanged(pageSource,short_timeout);
     }
 
     @Step("Подтвердить выбор")

@@ -248,10 +248,10 @@ public class SearchTest extends AppBaseSteps {
         log.step("выбрать 1 поставщика");
         searchProductPage.goToFilterPage();
         filterPage.clearAllFilters();
-        SuppliersSearchPage suppliersSearchPage = filterPage.goToSuppliersSearchPage();
+        SuppliersSearchPage suppliersSearchPage = filterPage.goToSuppliersSearchPage(false);
         suppliersSearchPage.verifyRequiredElements();
 
-        suppliersSearchPage.searchForSupplier(supplierSearchContext);
+        suppliersSearchPage.searchSupplier(supplierSearchContext);
         suppliersSearchPage.shouldCountOfSuppliersIs(1);
         suppliersSearchPage.shouldSupplierCardsContainText(supplierSearchContext);
         suppliersSearchPage.shouldSupplierCheckboxIsSelected(supplierSearchContext);
@@ -697,13 +697,13 @@ public class SearchTest extends AppBaseSteps {
         // Step 1
         log.step("Перейти на страницу выбора поставщика");
         SuppliersSearchPage suppliersSearchPage = myShopFilterPage.goToSuppliersSearchPage(false);
-        suppliersSearchPage.verifyRequiredElements().shouldCountOfProductsOnPageMoreThan(0);
+        suppliersSearchPage.verifyRequiredElements().shouldCountOfSuppliersIs(1);
         suppliersSearchPage.shouldSuppliersSortedByDepartmentId();
 
         // Step 2
         log.step("ввести в поисковую строку код поставщика");
         suppliersSearchPage.searchSupplier(SUPPLIERS_SEARCH_CODE);
-        suppliersSearchPage.shouldProductCardsContainText(SUPPLIERS_SEARCH_CODE);
+        suppliersSearchPage.shouldSupplierCardsContainText(SUPPLIERS_SEARCH_CODE);
 
         // Step 3
         log.step("выбрать поставщика и подтвердить выбор");
@@ -715,7 +715,7 @@ public class SearchTest extends AppBaseSteps {
         log.step("повторить шаг 1-2, но искать по наименованию поставщика");
         myShopFilterPage.goToSuppliersSearchPage(false);
         suppliersSearchPage.searchSupplier(SUPPLIERS_SEARCH_NAME);
-        suppliersSearchPage.shouldProductCardsContainText(SUPPLIERS_SEARCH_NAME);
+        suppliersSearchPage.shouldSupplierCardsContainText(SUPPLIERS_SEARCH_NAME);
 
         // Step 5
         log.step("выбрать поставщика и подтвердить выбор");
@@ -730,7 +730,7 @@ public class SearchTest extends AppBaseSteps {
         // Step 6
         log.step("Применить фильтры выбранные фильтры");
         myShopFilterPage.applyChosenFilters();
-        searchProductPage.shouldCatalogResponceEqualsContent(suppliersResponce, SearchProductPage.CardType.COMMON, 3);
+        searchProductPage.shouldCatalogResponseEqualsContent(suppliersResponce, SearchProductPage.CardType.COMMON, 3);
 
         // Step 7
         log.step("Вернуться на страницу выбора фильтров и очистить фильтр поставщиков по нажатию на \"крест\"");

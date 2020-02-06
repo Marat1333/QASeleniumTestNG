@@ -149,9 +149,7 @@ public class SearchProductPage extends BaseAppPage {
 
     @Step("Очистить поисковой инпут")
     public SearchProductPage clearSearchInput(){
-        String pageSource=getPageSource();
         clearTextInput.click();
-        waitForContentHasChanged(pageSource, short_timeout);
         return new SearchProductPage(context);
     }
 
