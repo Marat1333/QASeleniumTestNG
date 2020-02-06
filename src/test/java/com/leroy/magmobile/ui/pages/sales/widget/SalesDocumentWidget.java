@@ -13,6 +13,9 @@ public class SalesDocumentWidget extends CardWidget<SalesDocumentData> {
         super(driver, locator);
     }
 
+    @AppFindBy(xpath = ".//android.view.ViewGroup[@content-desc='lmui-Icon']")
+    private Element image;
+
     @AppFindBy(xpath = ".//android.widget.TextView[1]")
     private Element title;
 
@@ -44,6 +47,16 @@ public class SalesDocumentWidget extends CardWidget<SalesDocumentData> {
             return sPinCode.replaceAll("PIN ", "");
     }
 
+    public String getDocNumber(boolean onlyDigits, String pageSource) {
+        String sDocNumber = number.getTextIfPresent(pageSource);
+        if (!onlyDigits)
+            return sDocNumber;
+        if (sDocNumber == null)
+            return null;
+        else
+            return sDocNumber.replaceAll("₽|\\s", "");
+    }
+
     @Override
     public SalesDocumentData collectDataFromPage(String pageSource) {
         if (pageSource == null)
@@ -51,16 +64,16 @@ public class SalesDocumentWidget extends CardWidget<SalesDocumentData> {
         SalesDocumentData document = new SalesDocumentData();
         document.setTitle(title.getText(pageSource));
         document.setPrice(price.getText(pageSource).replaceAll("₽|\\s", ""));
-        document.setNumber(number.getText(pageSource).replaceAll("№|\\s", ""));
+        document.setNumber(getDocNumber(true, pageSource));
         document.setPin(getPinCode(true, pageSource));
         document.setDate(date.getText(pageSource));
-        document.setDocumentState(documentType.getText(pageSource));
+        document.setDocumentState(documentType.getTextIfPresent(pageSource));
         return document;
     }
 
     @Override
     public boolean isFullyVisible(String pageSource) {
-        return title.isVisible(pageSource) && documentType.isVisible(pageSource);
+        return image.isVisible(pageSource) && date.isVisible(pageSource);
     }
 
     @Override

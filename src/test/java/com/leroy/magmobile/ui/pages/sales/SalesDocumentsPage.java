@@ -53,6 +53,9 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
     public EstimatePage searchForDocumentByTextAndSelectIt(String containsText, String notContainsText) {
         CardWidget<SalesDocumentData> cardWidget =
                 salesDocumentScrollList.searchForWidgetByText(containsText, notContainsText);
+        anAssert.isNotNull(cardWidget, "Не нашли нужный документ",
+                String.format("Документ содержащий текст %s, но который не содержит %s должен быть найден",
+                        containsText, notContainsText));
         cardWidget.click();
         return new EstimatePage(context);
     }

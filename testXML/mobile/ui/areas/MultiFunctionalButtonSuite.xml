@@ -86,4 +86,14 @@
         </classes>
     </test>
 
+    <test name="C22797078 Преобразовать смету в корзину">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.MultiFunctionalButtonTest">
+                <methods>
+                    <include name="testTransformEstimateToBasket"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
 </suite>
