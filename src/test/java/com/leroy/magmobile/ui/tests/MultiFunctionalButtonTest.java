@@ -293,19 +293,18 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
 
         // Step #5
         log.step("Нажмите Корзина");
-        AddProduct35Page addProduct35Page = modalPage.clickBasketMenuItem()
-                .verifyRequiredElements()
-                .shouldSubmitButtonTextIs("ДОБАВИТЬ В КОРЗИНУ");
+        AddProduct35Page addProduct35Page = modalPage.clickBasketMenuItem();
+        addProduct35Page.verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_BASKET);
         String expectedTotalPrice = addProduct35Page.getPrice();
 
         // Step #6
         log.step("Нажмите Добавить в корзину");
         Basket35Page basket35Page = addProduct35Page.clickAddIntoBasketButton()
-                .verifyRequiredElements();
+                .verifyRequiredElements(new Basket35Page.PageState().setProductIsAdded(true));
 
         // Step #7
         log.step("Нажмите Оформить");
-        ProcessOrder35Page processOrder35Page = basket35Page.clickSubmitButton()
+        ProcessOrder35Page processOrder35Page = basket35Page.clickMakeSalesButton()
                 .verifyRequiredElements();
 
         // Step #8
@@ -387,8 +386,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         log.step("Введите ЛМ код товара или название товара или отсканируйте товар");
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
         AddProduct35Page addProduct35Page = new AddProduct35Page(context);
-        addProduct35Page.verifyRequiredElements()
-                .shouldSubmitButtonTextIs("ДОБАВИТЬ В СМЕТУ");
+        addProduct35Page.verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_ESTIMATE);
 
         // Step 7
         log.step("Нажмите на Добавить в смету");
@@ -435,8 +433,47 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         // Step 2
         log.step("Выберите параметр Преобразовать в корзину");
         Basket35Page basket35Page = modalPage.clickTransformToBasketMenuItem();
-        basket35Page.verifyRequiredElements();
+        basket35Page.verifyRequiredElements(new Basket35Page.PageState().setProductIsAdded(true));
         basket35Page.shouldBasketInformationIs(testEstimateData);
+    }
+
+    // Корзина
+
+    @Test(description = "C22797089 Создать корзину с экрана Документы продажи")
+    public void testCreateBasketFromSalesDocumentsScreen() throws Exception {
+        // Test data
+        String shopId = "35";
+        String lmCode = getAnyLmCodeProductWithoutSpecificOptions(shopId, false);
+        // Pre-condition
+        SalesPage salesPage = loginAndGoTo(
+                LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, SalesPage.class);
+        MainSalesDocumentsPage mainSalesDocumentsPage = setShopAndDepartmentForUser(salesPage, shopId, "01")
+                .goToSales()
+                .goToSalesDocumentsSection();
+
+        // Step 1
+        log.step("Нажать кнопку Оформить продажу");
+        SaleTypeModalPage modalPage = mainSalesDocumentsPage.clickCreateSalesDocumentButton();
+        modalPage.verifyRequiredElementsWhenFromSalesDocuments();
+
+        // Step 2
+        log.step("Выбрать параметр Корзина");
+        Basket35Page basket35Page = modalPage.clickBasketMenuItem();
+        basket35Page.verifyRequiredElements(
+                new Basket35Page.PageState().setProductIsAdded(false));
+
+        // Step 3
+        log.step("Нажмите на кнопку +товары и услуги");
+        SearchProductPage searchProductPage = basket35Page.clickProductAndServiceSubmitButton()
+                .verifyRequiredElements();
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
+        AddProduct35Page addProduct35Page = new AddProduct35Page(context);
+        addProduct35Page.verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_BASKET);
+
+        // Step 4
+        log.step("Нажмите на Добавить в корзину");
+        basket35Page = addProduct35Page.clickAddIntoBasketButton();
+        basket35Page.verifyRequiredElements(new Basket35Page.PageState().setProductIsAdded(true));
     }
 
     // ---------------------- TYPICAL TESTS FOR THIS CLASS -------------------//

@@ -43,6 +43,21 @@ public class AddProduct35Page extends CommonMagMobilePage {
             metaName = "Сумма")
     private Element totalPrice;
 
+    public enum SubmitBtnCaptions {
+        ADD_TO_BASKET("ДОБАВИТЬ В КОРЗИНУ"),
+        ADD_TO_ESTIMATE("ДОБАВИТЬ В СМЕТУ");
+
+        String value;
+
+        SubmitBtnCaptions(String val) {
+            this.value = val;
+        }
+
+        public String value() {
+            return value;
+        }
+    }
+
     @AppFindBy(accessibilityId = "Button-container")
     private MagMobGreenSubmitButton addBtn;
 
@@ -96,24 +111,17 @@ public class AddProduct35Page extends CommonMagMobilePage {
     // ---------------- Verifications ----------------------- //
 
     @Step("Проверить, что страница 'Добавление товара' отображается корректно")
-    public AddProduct35Page verifyRequiredElements() {
+    public AddProduct35Page verifyRequiredElements(SubmitBtnCaptions caption) {
         String ps = getPageSource();
         softAssert.isElementTextEqual(screenTitle, SCREEN_TITLE, ps);
         softAssert.isElementVisible(backBtn, ps);
         softAssert.isElementVisible(priceLbl, ps);
         softAssert.isElementVisible(shoppingRoomLbl, ps);
         softAssert.isElementVisible(editQuantityFld, ps);
-        softAssert.isElementVisible(addBtn, ps);
+        anAssert.isElementTextEqual(addBtn, caption.value(), ps);
         softAssert.isTrue(addBtn.isEnabled(),
                 "Кнопка 'Добавить' должна быть активна");
         softAssert.verifyAll();
-        return this;
-    }
-
-    @Step("Проверить, что кнопка Добавить содержит текст - {text}")
-    public AddProduct35Page shouldSubmitButtonTextIs(String text) {
-        anAssert.isEquals(addBtn.getText(), text,
-                "Кнопка добавить содержит неверный текст");
         return this;
     }
 

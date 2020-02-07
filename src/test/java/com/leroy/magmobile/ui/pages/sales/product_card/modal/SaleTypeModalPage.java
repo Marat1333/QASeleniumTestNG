@@ -5,6 +5,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
+import com.leroy.magmobile.ui.pages.sales.basket.Basket35Page;
 import com.leroy.magmobile.ui.pages.sales.estimate.EstimatePage;
 import io.qameta.allure.Step;
 
@@ -53,9 +54,16 @@ public class SaleTypeModalPage extends CommonMagMobilePage {
     // ACTIONS
 
     @Step("Нажмите пункт меню 'Корзина'")
-    public AddProduct35Page clickBasketMenuItem() {
+    public <T> T clickBasketMenuItem() {
         basketBtn.click();
-        return new AddProduct35Page(context);
+        basketBtn.waitForInvisibility();
+        // Плохо так хардкодить. Не повторяйте:
+        if (E("//*[contains(@content-desc, 'Screen')]//android.widget.TextView")
+                .getText().equals(Basket35Page.SCREEN_TITLE))
+            return (T)new Basket35Page(context);
+        else
+            return (T)new AddProduct35Page(context);
+
     }
 
     @Step("Нажмите пункт меню 'Смета'")

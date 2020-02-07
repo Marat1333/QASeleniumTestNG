@@ -6,6 +6,7 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.elements.MagMobWhiteSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import com.leroy.magmobile.ui.pages.common.SearchProductPage;
 import com.leroy.models.EstimateData;
 import com.leroy.models.ProductCardData;
 import com.leroy.utils.Converter;
@@ -15,8 +16,23 @@ import java.util.List;
 
 public class Basket35Page extends CommonMagMobilePage {
 
+    public final static String SCREEN_TITLE = "Корзина";
+
     public Basket35Page(TestContext context) {
         super(context);
+    }
+
+    public static class PageState {
+        boolean productIsAdded;
+
+        public boolean isProductIsAdded() {
+            return productIsAdded;
+        }
+
+        public PageState setProductIsAdded(boolean productIsAdded) {
+            this.productIsAdded = productIsAdded;
+            return this;
+        }
     }
 
     @AppFindBy(accessibilityId = "BackButton",
@@ -25,6 +41,9 @@ public class Basket35Page extends CommonMagMobilePage {
 
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='DefaultScreenHeader']/android.widget.TextView[1]")
     protected Element screenTitle;
+
+    @AppFindBy(text = "Пока пусто")
+    Element emptyInfoMessageLbl;
 
     @AppFindBy(xpath = "//android.view.ViewGroup[android.view.ViewGroup[android.view.ViewGroup[android.widget.ImageView]]]")
     private BasketProductWidget productCard;
@@ -44,29 +63,45 @@ public class Basket35Page extends CommonMagMobilePage {
     private MagMobWhiteSubmitButton addProductBtn;
 
     @AppFindBy(text = "ОФОРМИТЬ")
-    private MagMobGreenSubmitButton submitBtn;
+    private MagMobGreenSubmitButton makeSalesBtn;
+
+    @AppFindBy(text = "ТОВАРЫ И УСЛУГИ", metaName = "Кнопка 'Товары и Услуги'")
+    MagMobWhiteSubmitButton productAndServiceBtn;
 
     @Override
     public void waitForPageIsLoaded() {
-        submitBtn.waitForVisibility();
+        makeSalesBtn.waitForVisibility();
     }
+
 
     // -------------- ACTIONS ---------------------------//
 
     @Step("Нажмите ОФОРМИТЬ")
-    public ProcessOrder35Page clickSubmitButton() {
-        submitBtn.click();
+    public ProcessOrder35Page clickMakeSalesButton() {
+        makeSalesBtn.click();
         return new ProcessOrder35Page(context);
+    }
+
+    @Step("Нажмите ТОВАРЫ И УСЛУГИ")
+    public SearchProductPage clickProductAndServiceSubmitButton() {
+        productAndServiceBtn.click();
+        return new SearchProductPage(context);
     }
 
     // ------------- Verifications ----------------------//
 
     @Step("Проверить, что страница 'Корзина' отображается корректно")
-    public Basket35Page verifyRequiredElements() {
+    public Basket35Page verifyRequiredElements(PageState state) {
         String ps = getPageSource();
-        softAssert.areElementsVisible(ps, backBtn, screenTitle, productCard, totalPriceLbl, totalPriceVal,
-                countAndWeightProductLbl, addProductBtn, submitBtn);
-        softAssert.isElementTextEqual(screenTitle, "Корзина", ps);
+        // Всегда есть эти элементы:
+        softAssert.areElementsVisible(ps, backBtn, screenTitle);
+        // Разные состояния:
+        if (state.isProductIsAdded())
+            softAssert.areElementsVisible(ps, productCard, totalPriceLbl, totalPriceVal,
+                    countAndWeightProductLbl, addProductBtn, makeSalesBtn);
+        else
+            softAssert.areElementsVisible(ps, productAndServiceBtn, emptyInfoMessageLbl);
+        softAssert.isElementTextEqual(screenTitle, SCREEN_TITLE, ps);
         softAssert.verifyAll();
         return this;
     }
