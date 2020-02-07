@@ -70,7 +70,8 @@ public class Basket35Page extends CommonMagMobilePage {
 
     @Override
     public void waitForPageIsLoaded() {
-        makeSalesBtn.waitForVisibility();
+        screenTitle.waitUntilTextIsEqualTo(SCREEN_TITLE);
+        waitForProgressBarIsInvisible();
     }
 
 

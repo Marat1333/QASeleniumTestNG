@@ -56,7 +56,7 @@ public class SaleTypeModalPage extends CommonMagMobilePage {
     @Step("Нажмите пункт меню 'Корзина'")
     public <T> T clickBasketMenuItem() {
         basketBtn.click();
-        basketBtn.waitForInvisibility();
+        headerLbl.waitForInvisibility();
         // Плохо так хардкодить. Не повторяйте:
         if (E("//*[contains(@content-desc, 'Screen')]//android.widget.TextView")
                 .getText().equals(Basket35Page.SCREEN_TITLE))
