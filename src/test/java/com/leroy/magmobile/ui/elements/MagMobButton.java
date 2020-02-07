@@ -35,6 +35,6 @@ public class MagMobButton extends Button {
 
     @Override
     public Color getPointColor() throws Exception {
-        return getPointColor(0, getHeight() / 5);
+        return getPointColor(0, 5 - (getHeight() / 2));
     }
 }
