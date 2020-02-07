@@ -223,6 +223,31 @@ public abstract class BaseCustomAssert {
         return result;
     }
 
+    protected ImageUtil.CompareResult logIsElementImageNotMatches(Element elem, String pictureName, boolean isSoft) {
+        ImageUtil.CompareResult result = null;
+        String actualResult = "Визуально элемент '" + elem.getMetaName() + "' не соответствует эталону";
+        String expectedResult = "Визуально элемент '" + elem.getMetaName() + "' должен соответствовать эталону";
+        try {
+            //ImageUtil.takeScreenShot(elem, pictureName); // Only for taking sample snapshots
+            result = ImageUtil.takeScreenAndCompareWithBaseImg(elem, pictureName);
+        } catch (Exception err) {
+            Log.error(err.getMessage());
+            Assert.fail("Couldn't take screenshot for " + elem.getMetaName());
+        }
+        if (!ImageUtil.CompareResult.Matched.equals(result)) {
+            addResultsToCurrentStepAndThrowAssertException(
+                    actualResult,
+                    expectedResult);
+        }
+        if (isSoft)
+            softAssert.assertNotEquals(result, ImageUtil.CompareResult.Matched,
+                    actualResult);
+        else
+            Assert.assertNotEquals(result, ImageUtil.CompareResult.Matched,
+                    actualResult);
+        return result;
+    }
+
     protected void verifyAll() {
         if (getStepLog().currentStepResult != null)
             if (getStepLog().currentStepResult.getStatus_id() == ResultModel.ST_UNTESTED)

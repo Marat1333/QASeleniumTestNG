@@ -73,4 +73,8 @@ public class CustomAssert extends BaseCustomAssert {
         super.logIsElementImageMatches(elem, pictureName, false);
     }
 
+    public void isElementImageNotMatches(Element elem, String pictureName) {
+        super.logIsElementImageNotMatches(elem, pictureName, false);
+    }
+
 }

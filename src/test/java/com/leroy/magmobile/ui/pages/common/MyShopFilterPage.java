@@ -25,6 +25,8 @@ public class MyShopFilterPage extends FilterPage {
 
     Element hasAvailableStock = E("contains(Есть теор. запас)");
 
+    final String CLEAR_SUPPLIERS_FILTER_BTN_XPATH = "//android.widget.EditText[contains(@text,%s)]/ancestor::android.view.ViewGroup[2]/following-sibling::android.view.ViewGroup";
+
     @Override
     public void waitForPageIsLoaded() {
         top0Btn.waitForVisibility(short_timeout);
@@ -73,8 +75,9 @@ public class MyShopFilterPage extends FilterPage {
     }
 
     @Step("Очистить поле с фильтром по поставщику")
-    public MyShopFilterPage clearSuppliersFilter(){
-
+    public MyShopFilterPage clearSuppliersFilter(String supplierName){
+        Element clearSuppliersFilterBtn=E(String.format(CLEAR_SUPPLIERS_FILTER_BTN_XPATH, supplierName));
+        clearSuppliersFilterBtn.click();
         return new MyShopFilterPage(context);
     }
 

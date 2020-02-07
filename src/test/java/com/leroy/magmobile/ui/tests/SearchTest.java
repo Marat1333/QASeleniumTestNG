@@ -251,7 +251,7 @@ public class SearchTest extends AppBaseSteps {
         SuppliersSearchPage suppliersSearchPage = filterPage.goToSuppliersSearchPage(false);
         suppliersSearchPage.verifyRequiredElements();
 
-        suppliersSearchPage.searchForSupplier(supplierSearchContext);
+        suppliersSearchPage.searchSupplier(supplierSearchContext);
         suppliersSearchPage.shouldCountOfSuppliersIs(1);
         suppliersSearchPage.shouldSupplierCardsContainText(supplierSearchContext);
         suppliersSearchPage.shouldSupplierCheckboxIsSelected(supplierSearchContext);
@@ -645,7 +645,7 @@ public class SearchTest extends AppBaseSteps {
     }
 
     @Test(description = "C22789173 Поиск товара по одному введенному символу", priority = 2)
-    public void testC22789173() throws Exception {
+    public void testSearchByOneSymbol() throws Exception {
         final String searchContext = "1";
 
         // Pre-conditions
@@ -730,12 +730,19 @@ public class SearchTest extends AppBaseSteps {
     }
 
     @Test(description = "C22789202 Выбор фильтра поставщиков", priority = 2)
-    public void testC22789202() throws Exception {
+    public void testSuppliersFilter() throws Exception {
         final String SUPPLIERS_SEARCH_CODE = "1001123001";
-        final String SUPPLIERS_SEARCH_NAME = "Сази";
+        final String SUPPLIERS_SEARCH_NAME = "САЗИ";
         String supplierParamValue;
 
         GetCatalogSearch supplierIdParam = new GetCatalogSearch()
+                .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
+                .setPageSize(10)
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
+                .setStartFrom(1);
+
+        GetCatalogSearch defaultSearchParam = new GetCatalogSearch()
                 .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
                 .setPageSize(10)
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
@@ -753,8 +760,8 @@ public class SearchTest extends AppBaseSteps {
         // Step 1
         log.step("Перейти на страницу выбора поставщика");
         SuppliersSearchPage suppliersSearchPage = myShopFilterPage.goToSuppliersSearchPage(false);
-        suppliersSearchPage.verifyRequiredElements().shouldCountOfSuppliersIs(1);
-        suppliersSearchPage.shouldSuppliersSortedByDepartmentId();
+        suppliersSearchPage.verifyRequiredElements().shouldCountOfSuppliersIs(3);
+        //suppliersSearchPage.shouldSuppliersSortedByDepartmentId();
 
         // Step 2
         log.step("ввести в поисковую строку код поставщика");
@@ -764,7 +771,7 @@ public class SearchTest extends AppBaseSteps {
         // Step 3
         log.step("выбрать поставщика и подтвердить выбор");
         suppliersSearchPage.applyChosenSupplier();
-        supplierParamValue = suppliersSearchPage.getSupllierCode();
+        supplierParamValue = suppliersSearchPage.getSupllierCode().replaceAll("\\D+","");
         myShopFilterPage.shouldSupplierButtonContainsText(1, suppliersSearchPage.getSupplierName());
 
         // Step 4
@@ -776,11 +783,9 @@ public class SearchTest extends AppBaseSteps {
         // Step 5
         log.step("выбрать поставщика и подтвердить выбор");
         suppliersSearchPage.applyChosenSupplier();
-
-        supplierParamValue = supplierParamValue + "," + suppliersSearchPage.getSupllierCode();
+        supplierParamValue = supplierParamValue + "," + suppliersSearchPage.getSupllierCode().replaceAll("\\D+","");
         supplierIdParam.setSupId(supplierParamValue);
         Response<ProductItemListResponse> suppliersResponce = apiClient.searchProductsBy(supplierIdParam);
-
         myShopFilterPage.shouldSupplierButtonContainsText(2, null);
 
         // Step 6
@@ -791,7 +796,31 @@ public class SearchTest extends AppBaseSteps {
         // Step 7
         log.step("Вернуться на страницу выбора фильтров и очистить фильтр поставщиков по нажатию на \"крест\"");
         searchProductPage.goToFilterPage();
-        //myShopFilterPage.
+        myShopFilterPage.clearSuppliersFilter("Выбрано");
+        myShopFilterPage.shouldSupplierButtonContainsText(0,null);
+
+        // Step 8
+        log.step("Нажать \"показать товары\"");
+        myShopFilterPage.applyChosenFilters();
+        Response<ProductItemListResponse>defaultParamsResponce=apiClient.searchProductsBy(defaultSearchParam);
+        searchProductPage.shouldCatalogResponseEqualsContent(defaultParamsResponce, SearchProductPage.CardType.COMMON, 3);
+
+        // Step 9
+        log.step("Повторить шаг 1-2 и выбрать поставщика");
+        searchProductPage.goToFilterPage();
+        myShopFilterPage.goToSuppliersSearchPage(false);
+        suppliersSearchPage.searchSupplier(SUPPLIERS_SEARCH_CODE);
+        suppliersSearchPage.shouldSupplierCheckboxIsSelected(SUPPLIERS_SEARCH_CODE);
+        suppliersSearchPage.shouldNameOfChosenIsDisplayedInOvalElement(suppliersSearchPage.getSupplierName());
+
+        // Step 10
+        log.step("Нажать на крест на овальном элементе с именем поставщика");
+        suppliersSearchPage.cancelChosenSuppler();
+        suppliersSearchPage.shouldSupplierCheckboxIsNotSelected(SUPPLIERS_SEARCH_CODE);
+
+        // Step 11
+        log.step("Перейти на страницу выбора фильтров по нажатию на зеленую кнопку назад");
+        myShopFilterPage.shouldSupplierButtonContainsText(0,null);
     }
 
     //TODO Добавить тест на проверку отображения и получения услуг

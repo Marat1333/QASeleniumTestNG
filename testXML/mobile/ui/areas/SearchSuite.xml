@@ -95,4 +95,24 @@
             </class>
         </classes>
     </test>
+
+    <test name="C22789173 Поиск товара по одному введенному символу">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.SearchTest">
+                <methods>
+                    <include name="testSearchByOneSymbol"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22789202 Выбор фильтра поставщиков">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.SearchTest">
+                <methods>
+                    <include name="testSuppliersFilter"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
 </suite>
