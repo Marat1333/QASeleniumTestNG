@@ -75,8 +75,8 @@ public class SearchCustomerPage extends CommonMagMobilePage {
     @Step("Введите {text} в поле поиска")
     public SearchCustomerPage enterTextInSearchField(String text) {
         searchFld.clearFillAndSubmit(text);
-        waitForProgressBarIsVisible();
-        waitForProgressBarIsInvisible();
+        waitUntilProgressBarIsVisible();
+        waitUntilProgressBarIsInvisible();
         return this;
     }
 
