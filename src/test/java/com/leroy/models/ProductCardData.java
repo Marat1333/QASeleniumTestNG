@@ -1,5 +1,7 @@
 package com.leroy.models;
 
+import com.leroy.umbrella_extension.magmobile.data.ProductItemResponse;
+
 public class ProductCardData extends CardWidgetData {
 
     private String lmCode;
@@ -82,4 +84,28 @@ public class ProductCardData extends CardWidgetData {
         this.selectedQuantity = selectedQuantity;
     }
 
+    private boolean equalsIfLeftNotNull(Object arg1, Object arg2) {
+        if (arg1 != null)
+            return arg1.equals(arg2);
+        else
+            return true;
+    }
+
+    public boolean compareWithResponse(ProductItemResponse response) {
+        if (response == null) {
+            return false;
+        }
+        boolean result = lmCode.equals(response.getLmCode()) &&
+                equalsIfLeftNotNull(barCode, response.getBarCode()) &&
+                equalsIfLeftNotNull(name, response.getTitle());
+        if (price != null) {
+            try {
+                result = result && Double.valueOf(price.replaceAll(",",".")).equals(Double.valueOf(response.getPrice()));
+            } catch (NumberFormatException err) {
+                result = false;
+            }
+        }
+        return result;
+    }
 }
+

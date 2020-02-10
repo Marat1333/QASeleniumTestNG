@@ -4,6 +4,8 @@ import com.leroy.core.BaseModel;
 
 public abstract class CardWidgetData extends BaseModel {
 
+
+
     @Override
     public boolean equals(Object o) {
         // If the object is compared with itself then return true

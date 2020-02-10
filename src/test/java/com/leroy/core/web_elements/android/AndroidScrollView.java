@@ -12,10 +12,7 @@ import com.leroy.models.CardWidgetData;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +30,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
     private Element progressBar;
 
     public static final String TYPICAL_XPATH = "//android.widget.ScrollView";
+    public static final By TYPICAL_LOCATOR = By.xpath("//android.widget.ScrollView");
     private Class<? extends BaseWidget> rowWidgetClass;
     private String oneRowXpath;
 
@@ -42,6 +40,15 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
 
     public AndroidScrollView(WebDriver driver, CustomLocator locator) {
         this(driver, locator, ".//android.widget.TextView", null);
+    }
+
+    public AndroidScrollView(WebDriver driver, By by) {
+        this(driver, by, ".//android.widget.TextView", null);
+    }
+
+    public AndroidScrollView(WebDriver driver, By by, String oneRowXpath,
+                             Class<? extends CardWidget<T>> clazz) {
+        this(driver, new CustomLocator(by), oneRowXpath, clazz);
     }
 
     public AndroidScrollView(WebDriver driver, CustomLocator locator, String oneRowXpath,
@@ -103,11 +110,12 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
     }
 
     private void simpleScroll(String direction) {
+        //Try to change bottomY k
         Point _location = getLocation();
         Dimension _size = getSize();
         int x = _location.getX() + _size.getWidth() / 2;
-        int bottomY = _location.getY() + _size.getHeight() - (int) Math.round(_size.getHeight() * 0.2);
-        int topY = _location.getY() + (int) Math.round(_size.getHeight() * 0.2);
+        int bottomY = _location.getY() + _size.getHeight() - (int) Math.round(_size.getHeight() * 0.5);
+        int topY = _location.getY() + (int) Math.round(_size.getHeight() * 0.05);
 
         boolean isDirectionDown = direction.equals("down");
         new TouchAction<>(androidDriver)
@@ -125,7 +133,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
      * @param direction      - up or down
      * @return this
      */
-    private AndroidScrollView<T> scrollTo(Element findElement, String findText, Integer maxScrollCount, Integer maxEntityCount, String direction) throws Exception {
+    private AndroidScrollView<T> scrollTo(Element findElement, String findText, Integer maxScrollCount, Integer maxEntityCount, String direction) {
         initialWebElementIfNeeded();
         tmpCardDataList = new ArrayList<>();
         List<T> prevDataList = null;
@@ -154,10 +162,6 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
                     if (findText != null && data.toString().contains(findText))
                         textFound = true;
                 }
-            }
-            if (currentVisibleDataList.size() == 0) {
-                Log.warn("Couldn't find elements during scroll");
-                break;
             }
             addNonRepeatingText(tmpCardDataList, currentVisibleDataList);
             if (textFound)
@@ -199,11 +203,11 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
         return scrollDownToText(findText, MAX_SCROLL_COUNT);
     }
 
-    public AndroidScrollView<T> scrollDownToElement(Element element) throws Exception {
+    public AndroidScrollView<T> scrollDownToElement(Element element) {
         return scrollTo(element, null, MAX_SCROLL_COUNT, null, "down");
     }
 
-    public AndroidScrollView<T> scrollUpToElement(Element element) throws Exception {
+    public AndroidScrollView<T> scrollUpToElement(Element element) {
         return scrollTo(element, null, MAX_SCROLL_COUNT, null, "up");
     }
 
