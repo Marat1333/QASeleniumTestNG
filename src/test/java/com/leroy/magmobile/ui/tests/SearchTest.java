@@ -760,7 +760,7 @@ public class SearchTest extends AppBaseSteps {
         log.step("Перейти на страницу выбора поставщика");
         SuppliersSearchPage suppliersSearchPage = myShopFilterPage.goToSuppliersSearchPage(false);
         suppliersSearchPage.verifyRequiredElements().shouldCountOfSuppliersIs(3);
-        //suppliersSearchPage.shouldSuppliersSortedByDepartmentId();   //баг функционала departmentId пользака не подтягивается
+        //suppliersSearchPage.shouldSuppliersSortedByDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);   //баг функционала departmentId пользака не подтягивается
 
         // Step 2
         log.step("ввести в поисковую строку код поставщика");

@@ -32,7 +32,7 @@ public class SuppliersSearchPage extends BaseAppPage {
             clazz = SupplierCardWidget.class)
     private ElementList<SupplierCardWidget> supplierCards;
 
-    private AndroidScrollView<SupplierCardData> supplierCardScrollView = new AndroidScrollView<>(driver, new CustomLocator(By.xpath(AndroidScrollView.TYPICAL_XPATH)),
+    private AndroidScrollView<SupplierCardData> supplierCardScrollView = new AndroidScrollView<>(driver, AndroidScrollView.TYPICAL_LOCATOR,
             "./descendant::android.view.ViewGroup[7]/android.view.ViewGroup", SupplierCardWidget.class);
 
     AndroidHorizontalScrollView<TextViewData> suppliersOvalElements = new AndroidHorizontalScrollView<>(driver,
@@ -78,7 +78,6 @@ public class SuppliersSearchPage extends BaseAppPage {
         searchString.clearFillAndSubmit(value);
         searchString.clear();
         hideKeyboard();
-        List<SupplierCardData> supplierCardData = supplierCardScrollView.getFullDataList();
         Element supplier = E("contains(" + value + ")");
         supplier.click();
         return new SuppliersSearchPage(context);
@@ -129,8 +128,8 @@ public class SuppliersSearchPage extends BaseAppPage {
     }
 
     @Step("Проверить, что сортировка по отделам происходит корректно и первый отдел = отделу пользователя")
-    public SuppliersSearchPage shouldSuppliersSortedByDepartmentId() {
-        anAssert.isTrue(departmentLbl.getText().contains(EnvConstants.BASIC_USER_DEPARTMENT_ID), "Первый отображаемый отдел не соответствует отделу пользователя, следовательно поставщики не отсортированы по отделам");
+    public SuppliersSearchPage shouldSuppliersSortedByDepartmentId(String deptId) {
+        anAssert.isTrue(departmentLbl.getText().contains(deptId), "Первый отображаемый отдел не соответствует отделу пользователя, следовательно поставщики не отсортированы по отделам");
         return this;
     }
 

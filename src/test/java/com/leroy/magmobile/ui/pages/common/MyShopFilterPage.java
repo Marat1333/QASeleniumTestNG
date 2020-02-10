@@ -68,18 +68,18 @@ public class MyShopFilterPage extends FilterPage {
     public SuppliersSearchPage goToSuppliersSearchPage(boolean hideKeyboard) throws Exception {
         mainScrollView.scrollDown();
         supplierBtn.click();
-        String pageSource=getPageSource();
-        if (hideKeyboard){
+        String pageSource = getPageSource();
+        if (hideKeyboard) {
             hideKeyboard();
-            waitForContentIsChanged(pageSource,short_timeout);
+            waitForContentIsChanged(pageSource, short_timeout);
         }
         return new SuppliersSearchPage(context);
     }
 
     @Step("Очистить поле с фильтром по поставщику")
-    public MyShopFilterPage clearSuppliersFilter(String supplierName)throws Exception{
+    public MyShopFilterPage clearSuppliersFilter(String supplierName) throws Exception {
         mainScrollView.scrollDown();
-        Element clearSuppliersFilterBtn=E(String.format(CLEAR_SUPPLIERS_FILTER_BTN_XPATH, supplierName));
+        Element clearSuppliersFilterBtn = E(String.format(CLEAR_SUPPLIERS_FILTER_BTN_XPATH, supplierName));
         clearSuppliersFilterBtn.click();
         return new MyShopFilterPage(context);
     }
@@ -92,13 +92,13 @@ public class MyShopFilterPage extends FilterPage {
     //VERIFICATIONS
 
     @Step("Проверяем, что кнопка выбора фильтра по поставщикам содержит текст {supplierName}")
-    public MyShopFilterPage shouldSupplierButtonContainsText(int countOfChosenSuppliers, String supplierName){
+    public MyShopFilterPage shouldSupplierButtonContainsText(int countOfChosenSuppliers, String supplierName) {
         Element element;
-        if (countOfChosenSuppliers==1){
-            element = E("contains("+supplierName+")");
-        }else if (countOfChosenSuppliers>1){
-            element = E("contains(Выбрано "+countOfChosenSuppliers+")");
-        }else {
+        if (countOfChosenSuppliers == 1) {
+            element = E("contains(" + supplierName + ")");
+        } else if (countOfChosenSuppliers > 1) {
+            element = E("contains(Выбрано " + countOfChosenSuppliers + ")");
+        } else {
             element = supplierBtn;
         }
         anAssert.isElementVisible(element);

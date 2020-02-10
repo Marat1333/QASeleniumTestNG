@@ -15,7 +15,10 @@ import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.widget.SearchProductAllGammaCardWidget;
 import com.leroy.magmobile.ui.pages.sales.widget.SearchProductCardWidget;
 import com.leroy.magmobile.ui.pages.sales.widget.SearchServiceCardWidget;
-import com.leroy.models.*;
+import com.leroy.models.CardWidgetData;
+import com.leroy.models.ProductCardData;
+import com.leroy.models.ServiceCardData;
+import com.leroy.models.TextViewData;
 import com.leroy.umbrella_extension.magmobile.data.ProductItemListResponse;
 import com.leroy.umbrella_extension.magmobile.data.ProductItemResponse;
 import com.leroy.umbrella_extension.magmobile.data.ServiceItemListResponse;
@@ -83,7 +86,7 @@ public class SearchProductPage extends BaseAppPage {
 
     private final String NOT_FOUND_MSG_XPATH = "//*[contains(@text, 'Поиск «%s» не дал результатов')]";
 
-    private final String DEFAULT_SEARCH_UNPUT_TEXT="ЛМ, название или штрихкод";
+    private final String DEFAULT_SEARCH_UNPUT_TEXT = "ЛМ, название или штрихкод";
 
     public enum CardType {
         COMMON, // Обычная
@@ -140,14 +143,14 @@ public class SearchProductPage extends BaseAppPage {
     }
 
     @Step("Инициируем поисковой запрос через поисковую строку")
-    public SearchProductPage submitSearch(){
+    public SearchProductPage submitSearch() {
         searchField.submit();
         hideKeyboard();
         return new SearchProductPage(context);
     }
 
     @Step("Очистить поисковой инпут")
-    public SearchProductPage clearSearchInput(){
+    public SearchProductPage clearSearchInput() {
         clearTextInputBtn.click();
         return new SearchProductPage(context);
     }
@@ -202,22 +205,18 @@ public class SearchProductPage extends BaseAppPage {
     }
 
     @Step("Проверяем, что появилась кнопка очистки инпута поисковой строки")
-    public SearchProductPage verifyClearTextInputBtnIsVisible(){
+    public SearchProductPage verifyClearTextInputBtnIsVisible() {
         anAssert.isElementVisible(clearTextInputBtn);
         return this;
     }
 
-    public SearchProductPage shouldScannerBtnIsVisible() throws Exception{
-        if (searchField.getText().equals(DEFAULT_SEARCH_UNPUT_TEXT)) {
-            anAssert.isElementVisible(scanBarcodeBtn);
-        }else {
-            throw new Exception("scannerBtn should be visible in the case of empty search field");
+    public SearchProductPage shouldScannerBtnIsVisible() {
+        String pageSource=getPageSource();
+        if (searchField.getText(pageSource).equals(DEFAULT_SEARCH_UNPUT_TEXT)) {
+            anAssert.isElementVisible(scanBarcodeBtn, pageSource);
+        } else {
+            anAssert.isElementNotVisible(scanBarcodeBtn, pageSource);
         }
-        return this;
-    }
-
-    public SearchProductPage shouldProgressBarIsInvisible(){
-        anAssert.isElementNotVisible(getProgressBar());
         return this;
     }
 

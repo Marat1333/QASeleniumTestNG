@@ -4,6 +4,7 @@ import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.pages.common.SearchProductPage;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
@@ -27,10 +28,6 @@ public class BaseAppPage extends BasePage {
     public BaseAppPage(TestContext context) {
         super(context);
         androidDriver = (AndroidDriver) driver;
-    }
-
-    public Element getProgressBar() {
-        return progressBar;
     }
 
     protected boolean isKeyboardVisible() {
@@ -195,6 +192,11 @@ public class BaseAppPage extends BasePage {
     public BaseAppPage shouldKeyboardVisible() {
         anAssert.isTrue(isKeyboardVisible(),
                 "Клавиатура для ввода должна быть видна");
+        return this;
+    }
+
+    public BaseAppPage shouldProgressBarIsInvisible(){
+        anAssert.isElementNotVisible(progressBar);
         return this;
     }
 
