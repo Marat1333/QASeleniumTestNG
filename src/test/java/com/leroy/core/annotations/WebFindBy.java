@@ -15,6 +15,8 @@ public @interface WebFindBy {
 
     String xpath() default "";
 
+    String containsText() default "";
+
     String text() default "";
 
     String className() default "";

@@ -4,9 +4,10 @@ import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.elements.MagMobSubmitButton;
+import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.basket.Basket35Page;
+import com.leroy.magmobile.ui.pages.sales.estimate.EstimatePage;
 import io.qameta.allure.Step;
 
 public class AddProduct35Page extends CommonMagMobilePage {
@@ -42,8 +43,23 @@ public class AddProduct35Page extends CommonMagMobilePage {
             metaName = "Сумма")
     private Element totalPrice;
 
-    @AppFindBy(text = "ДОБАВИТЬ В КОРЗИНУ")
-    private MagMobSubmitButton addBtn;
+    public enum SubmitBtnCaptions {
+        ADD_TO_BASKET("ДОБАВИТЬ В КОРЗИНУ"),
+        ADD_TO_ESTIMATE("ДОБАВИТЬ В СМЕТУ");
+
+        String value;
+
+        SubmitBtnCaptions(String val) {
+            this.value = val;
+        }
+
+        public String value() {
+            return value;
+        }
+    }
+
+    @AppFindBy(accessibilityId = "Button-container")
+    private MagMobGreenSubmitButton addBtn;
 
 
     @Override
@@ -80,23 +96,29 @@ public class AddProduct35Page extends CommonMagMobilePage {
         return this;
     }
 
-    @Step("Нажмите кнопку Добавить")
-    public Basket35Page clickAddButton() {
+    @Step("Нажмите кнопку Добавить в корзину")
+    public Basket35Page clickAddIntoBasketButton() {
         addBtn.click();
         return new Basket35Page(context);
+    }
+
+    @Step("Нажмите кнопку Добавить в смету")
+    public EstimatePage clickAddIntoEstimateButton() {
+        addBtn.click();
+        return new EstimatePage(context);
     }
 
     // ---------------- Verifications ----------------------- //
 
     @Step("Проверить, что страница 'Добавление товара' отображается корректно")
-    public AddProduct35Page verifyRequiredElements() {
+    public AddProduct35Page verifyRequiredElements(SubmitBtnCaptions caption) {
         String ps = getPageSource();
         softAssert.isElementTextEqual(screenTitle, SCREEN_TITLE, ps);
         softAssert.isElementVisible(backBtn, ps);
         softAssert.isElementVisible(priceLbl, ps);
         softAssert.isElementVisible(shoppingRoomLbl, ps);
         softAssert.isElementVisible(editQuantityFld, ps);
-        softAssert.isElementVisible(addBtn, ps);
+        anAssert.isElementTextEqual(addBtn, caption.value(), ps);
         softAssert.isTrue(addBtn.isEnabled(),
                 "Кнопка 'Добавить' должна быть активна");
         softAssert.verifyAll();

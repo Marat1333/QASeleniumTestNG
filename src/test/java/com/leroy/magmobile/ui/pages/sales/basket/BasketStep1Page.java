@@ -4,12 +4,10 @@ import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobButton;
-import com.leroy.magmobile.ui.elements.MagMobSubmitButton;
+import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.sales.ProductCardPage;
 import com.leroy.magmobile.ui.pages.sales.widget.SearchProductCardWidget;
 import io.qameta.allure.Step;
-
-import java.util.Arrays;
 
 public class BasketStep1Page extends BasketPage {
 
@@ -33,7 +31,7 @@ public class BasketStep1Page extends BasketPage {
     private MagMobButton addProductBtn;
 
     @AppFindBy(text = "ДАЛЕЕ К ПАРАМЕТРАМ")
-    private MagMobSubmitButton nextParametersBtn;
+    private MagMobGreenSubmitButton nextParametersBtn;
 
     @Override
     public void waitForPageIsLoaded() {

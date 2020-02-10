@@ -131,6 +131,12 @@ public class BaseAppPage extends BasePage {
 
     @Step("Проверить видимость клавиатуры для ввода текста")
     public BaseAppPage shouldKeyboardVisible() {
+        try {
+            new WebDriverWait(this.driver, short_timeout).until(
+                    a -> isKeyboardVisible());
+        } catch (TimeoutException err) {
+            Log.warn("Keyboard is not visible");
+        }
         anAssert.isTrue(isKeyboardVisible(),
                 "Клавиатура для ввода должна быть видна");
         return this;

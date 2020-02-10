@@ -4,7 +4,7 @@ import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.elements.MagMobSubmitButton;
+import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import io.qameta.allure.Step;
 
 public class BasketStep2Page extends BasketPage {
@@ -35,7 +35,7 @@ public class BasketStep2Page extends BasketPage {
     private Element commentFld;
 
     @AppFindBy(text = "СОЗДАТЬ ДОКУМЕНТ ПРОДАЖИ")
-    private MagMobSubmitButton createSalesDocumentBtn;
+    private MagMobGreenSubmitButton createSalesDocumentBtn;
 
     @Override
     public void waitForPageIsLoaded() {

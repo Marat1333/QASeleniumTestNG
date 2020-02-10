@@ -137,10 +137,11 @@ public abstract class BaseCustomAssert {
         return logIsElementVisible(element, null, isSoft);
     }
 
-    protected void logAreElementsVisible(List<BaseWidget> elements, boolean isSoft) {
+    protected void logAreElementsVisible(List<BaseWidget> elements, boolean isSoft, String pageSource) {
         if (elements.size() == 0)
             throw new IllegalArgumentException("List should contain at least one element");
-        String pageSource = elements.get(0).getPageSource();
+        if (pageSource == null)
+            pageSource = elements.get(0).getPageSource();
         for (BaseWidget elem : elements) {
             logIsElementVisible(elem, pageSource, true);
         }

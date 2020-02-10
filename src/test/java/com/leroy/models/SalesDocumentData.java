@@ -1,22 +1,20 @@
 package com.leroy.models;
 
-import com.leroy.core.BaseModel;
+public class SalesDocumentData extends CardWidgetData {
 
-public class SalesDocumentData extends BaseModel {
-
-    private String whereFrom;
+    private String title;
     private String price;
     private String number;
     private String pin;
     private String date;
-    private String documentType;
+    private String documentState;
 
-    public String getWhereFrom() {
-        return whereFrom;
+    public String getTitle() {
+        return title;
     }
 
-    public void setWhereFrom(String whereFrom) {
-        this.whereFrom = whereFrom;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getPrice() {
@@ -51,11 +49,11 @@ public class SalesDocumentData extends BaseModel {
         this.date = date;
     }
 
-    public String getDocumentType() {
-        return documentType;
+    public String getDocumentState() {
+        return documentState;
     }
 
-    public void setDocumentType(String documentType) {
-        this.documentType = documentType;
+    public void setDocumentState(String documentState) {
+        this.documentState = documentState;
     }
 }

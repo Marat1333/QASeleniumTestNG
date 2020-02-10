@@ -3,12 +3,10 @@ package com.leroy.magmobile.ui.pages.sales.product_card.modal;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.elements.MagMobSubmitButton;
+import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.AddProductPage;
 import io.qameta.allure.Step;
-
-import java.util.Arrays;
 
 public class AddIntoSalesDocumentModalPage extends CommonMagMobilePage {
 
@@ -29,7 +27,7 @@ public class AddIntoSalesDocumentModalPage extends CommonMagMobilePage {
     Element headerLbl;
 
     @AppFindBy(text = "СОЗДАТЬ ДОКУМЕНТ ПРОДАЖИ")
-    private MagMobSubmitButton createSalesDocumentBtn;
+    private MagMobGreenSubmitButton createSalesDocumentBtn;
 
     // ---- ACTIONS ---------//
 
