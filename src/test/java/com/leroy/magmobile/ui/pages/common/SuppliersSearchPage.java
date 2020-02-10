@@ -6,16 +6,18 @@ import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.pages.BaseAppPage;
+import com.leroy.core.web_elements.android.AndroidHorizontalScrollView;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.ui.pages.common.widget.SupplierCardWidget;
+import com.leroy.magmobile.ui.pages.widgets.TextViewWidget;
 import com.leroy.models.SupplierCardData;
+import com.leroy.models.TextViewData;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SuppliersSearchPage extends BaseAppPage {
@@ -31,15 +33,12 @@ public class SuppliersSearchPage extends BaseAppPage {
     private ElementList<SupplierCardWidget> supplierCards;
 
     private AndroidScrollView<SupplierCardData> supplierCardScrollView = new AndroidScrollView<>(driver, new CustomLocator(By.xpath(AndroidScrollView.TYPICAL_XPATH)),
-            "./descendant::android.view.ViewGroup[7]/android.view.ViewGroup",SupplierCardWidget.class);
+            "./descendant::android.view.ViewGroup[7]/android.view.ViewGroup", SupplierCardWidget.class);
 
-    //TODO реализовать горизонтальный скролл
-    @AppFindBy(xpath = "//android.widget.HorizontalScrollView")
-    private Element horizontalScrollView;
-    @AppFindBy(xpath = "./descendant::android.view.ViewGroup[3]")
-    private Element ovalBtnDeleteSupplierBtn;
-    @AppFindBy(xpath = "./descendant::android.view.ViewGroup[2]/android.widget.TextView")
-    private Element ovalBtnSupplierNameLbl;
+    AndroidHorizontalScrollView<TextViewData> suppliersOvalElements = new AndroidHorizontalScrollView<>(driver,
+            new CustomLocator(By.xpath("//android.widget.HorizontalScrollView")),
+            "./descendant::android.view.ViewGroup[2]/android.widget.TextView",
+            TextViewWidget.class);
 
     @AppFindBy(accessibilityId = "ScreenTitle-SuppliesSearch")
     EditBox searchString;
@@ -50,11 +49,10 @@ public class SuppliersSearchPage extends BaseAppPage {
     @AppFindBy(xpath = "//android.widget.ScrollView/descendant::android.view.ViewGroup[3]/android.widget.TextView")
     Element departmentLbl;
 
-    @AppFindBy(accessibilityId = "back", metaName = "Кнопка назад")
+    @AppFindBy(accessibilityId = "BackButton", metaName = "Кнопка назад")
     private Element backBtn;
 
-    private String supplierName;
-    private String supplierCode;
+    private final String OVAL_BTN_DELETE_SUPPLIER_BTN_XPATH = "//android.widget.HorizontalScrollView/descendant::android.view.ViewGroup[3]";
 
     @Override
     public void waitForPageIsLoaded() {
@@ -62,44 +60,28 @@ public class SuppliersSearchPage extends BaseAppPage {
         waitForProgressBarIsInvisible();
     }
 
-    public String getSupplierName() {
-        return supplierName;
-    }
-
-    public String getSupllierCode() {
-        return supplierCode;
-    }
-
     @Step("Перейти назад")
-    public MyShopFilterPage clickBackBtn(){
+    public MyShopFilterPage clickBackBtn() {
         backBtn.click();
         return new MyShopFilterPage(context);
     }
 
     @Step("Отменить выбор поставщика нажатием на крест в овальной области с именем поставщика")
     public SuppliersSearchPage cancelChosenSuppler() throws Exception {
-        Element chosenSupplierCancelBtn = horizontalScrollView.findChildElement(ovalBtnDeleteSupplierBtn.getXpath());
+        Element chosenSupplierCancelBtn = E(OVAL_BTN_DELETE_SUPPLIER_BTN_XPATH);
         chosenSupplierCancelBtn.click();
         return new SuppliersSearchPage(context);
     }
 
     @Step("Найти поставщика по {value} и выбрать его")
-    public void searchSupplier(String value)throws Exception{
+    public SuppliersSearchPage searchAndConfirmSupplier(String value) throws Exception {
         searchString.clearFillAndSubmit(value);
         searchString.clear();
         hideKeyboard();
         List<SupplierCardData> supplierCardData = supplierCardScrollView.getFullDataList();
-        if (value.matches("\\d+")) {
-            Element supplierByCode = E("contains("+value+")");
-            supplierByCode.click();
-            supplierName=supplierCardData.get(supplierCardData.size()-1).getSupplierName();
-            supplierCode=supplierCardData.get(supplierCardData.size()-1).getSupplierCode();
-        }else {
-            Element supplierByName = E("contains("+value+")");
-            supplierByName.click();
-            supplierName=supplierCardData.get(supplierCardData.size()-1).getSupplierName();
-            supplierCode=supplierCardData.get(supplierCardData.size()-1).getSupplierCode();
-        }
+        Element supplier = E("contains(" + value + ")");
+        supplier.click();
+        return new SuppliersSearchPage(context);
     }
 
     @Step("Подтвердить выбор")
@@ -118,23 +100,24 @@ public class SuppliersSearchPage extends BaseAppPage {
 
     @Step("Проверить, что в овальной области отображено имя выбранного поставщика")
     public SuppliersSearchPage shouldNameOfChosenIsDisplayedInOvalElement(String supplierName) throws Exception {
-        Element nameOfChosenSupplier = horizontalScrollView.findChildElement(ovalBtnSupplierNameLbl.getXpath());
+        //Element nameOfChosenSupplier = E(HORIZONTAL_SCROLL_VIEW_XPATH+OVAL_BTN_SUPPLIER_NAME_LBL_XPATH);  КОСТЫЛЬ
+        List<TextViewData> namesOfSuppliers = suppliersOvalElements.getFullDataList();
+        for (TextViewData data : namesOfSuppliers) {
+            anAssert.isTrue(supplierName.contains(data.getText()), "");
+        }
         //isElementTextContains не подойдут т.к. мне надо проверять что переданной значение содержит текст элемента
-        anAssert.isTrue(supplierName.contains(nameOfChosenSupplier.getText()),"Критерий проверки не содержит текст из овальной области с именем выбранного поставщика");
+        //anAssert.isTrue(supplierName.contains(nameOfChosenSupplier.getText()), "Критерий проверки не содержит текст из овальной области с именем выбранного поставщика");    КОСТЫЛЬ
         return new SuppliersSearchPage(context);
     }
 
     @Step("Поставщик с кодом/именем {value} выбран")
-    public SuppliersSearchPage shouldSupplierCheckboxIsSelected(String value) {
+    public SuppliersSearchPage shouldSupplierCheckboxIsSelected(String value, boolean isSelected) {
         Element anchorElement = E(String.format(SCREEN_CONTENT_XPATH + SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH, value));
-        anAssert.isElementImageMatches(anchorElement, MagMobElementTypes.CHECK_BOX_SELECTED.getPictureName());
-        return this;
-    }
-
-    @Step("Поставщик с кодом/именем {value} выбран")
-    public SuppliersSearchPage shouldSupplierCheckboxIsNotSelected(String value){
-        Element anchorElement = E(String.format(SCREEN_CONTENT_XPATH + SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH, value));
-        anAssert.isElementImageNotMatches(anchorElement, MagMobElementTypes.CHECK_BOX_SELECTED.getPictureName());
+        if (isSelected) {
+            anAssert.isElementImageMatches(anchorElement, MagMobElementTypes.CHECK_BOX_SELECTED.getPictureName());
+        } else {
+            anAssert.isElementImageMatches(anchorElement, MagMobElementTypes.CHECK_BOX_NOT_SELECTED.getPictureName());
+        }
         return this;
     }
 
@@ -146,7 +129,7 @@ public class SuppliersSearchPage extends BaseAppPage {
     }
 
     @Step("Проверить, что сортировка по отделам происходит корректно и первый отдел = отделу пользователя")
-    public SuppliersSearchPage shouldSuppliersSortedByDepartmentId(){
+    public SuppliersSearchPage shouldSuppliersSortedByDepartmentId() {
         anAssert.isTrue(departmentLbl.getText().contains(EnvConstants.BASIC_USER_DEPARTMENT_ID), "Первый отображаемый отдел не соответствует отделу пользователя, следовательно поставщики не отсортированы по отделам");
         return this;
     }

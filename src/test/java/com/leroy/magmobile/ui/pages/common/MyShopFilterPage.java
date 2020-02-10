@@ -68,14 +68,17 @@ public class MyShopFilterPage extends FilterPage {
     public SuppliersSearchPage goToSuppliersSearchPage(boolean hideKeyboard) throws Exception {
         mainScrollView.scrollDown();
         supplierBtn.click();
+        String pageSource=getPageSource();
         if (hideKeyboard){
             hideKeyboard();
+            waitForContentIsChanged(pageSource,short_timeout);
         }
         return new SuppliersSearchPage(context);
     }
 
     @Step("Очистить поле с фильтром по поставщику")
-    public MyShopFilterPage clearSuppliersFilter(String supplierName){
+    public MyShopFilterPage clearSuppliersFilter(String supplierName)throws Exception{
+        mainScrollView.scrollDown();
         Element clearSuppliersFilterBtn=E(String.format(CLEAR_SUPPLIERS_FILTER_BTN_XPATH, supplierName));
         clearSuppliersFilterBtn.click();
         return new MyShopFilterPage(context);

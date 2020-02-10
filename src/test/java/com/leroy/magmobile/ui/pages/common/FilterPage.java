@@ -6,11 +6,13 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.pages.BaseAppPage;
+import com.leroy.core.web_elements.android.AndroidHorizontalScrollView;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobCheckBox;
 import com.leroy.magmobile.ui.pages.common.widget.SupplierCardWidget;
 import com.leroy.magmobile.ui.pages.widgets.CalendarWidget;
+import com.leroy.magmobile.ui.pages.widgets.TextViewWidget;
 import com.leroy.models.TextViewData;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
@@ -50,6 +52,9 @@ public class FilterPage extends BaseAppPage {
 
     @AppFindBy(xpath = AndroidScrollView.TYPICAL_XPATH, metaName = "Основная прокручиваемая область страницы")
     AndroidScrollView<TextViewData> mainScrollView;
+
+    AndroidHorizontalScrollView<TextViewData> gammaFilterScrollView = new AndroidHorizontalScrollView<>(driver,
+            new CustomLocator(By.xpath("//android.widget.ScrollView//android.view.ViewGroup[3]/android.widget.HorizontalScrollView")), "//android.widget.TextView", TextViewWidget.class);
 
     @AppFindBy(text = "МОЙ МАГАЗИН")
     MagMobCheckBox myShopBtn;
@@ -117,7 +122,8 @@ public class FilterPage extends BaseAppPage {
     @Step("Очистить все фильтры")
     public void clearAllFilters() {
         clearAllFiltersBtn.click();
-        clearAllFiltersBtn.waitForInvisibility();;
+        clearAllFiltersBtn.waitForInvisibility();
+        ;
     }
 
     @Step("Выбрать checkBox фильтр {value}")
@@ -146,12 +152,11 @@ public class FilterPage extends BaseAppPage {
     }
 
     @Step("Выбрать фильтр {gamma}")
-    public void choseGammaFilter(String gamma) {
+    public void choseGammaFilter(String gamma) throws Exception {
         gamma = gamma.toUpperCase();
         try {
             Element element = E("contains(" + gamma + ")");
-            //От захардкоженного элемента нужны только координаты, которые будут использоваться вне зависимости от видимости элемента
-            swipeRightTo(E("contains(ГАММА )"), element);
+            gammaFilterScrollView.simpleHorizontalScrollTo(AndroidHorizontalScrollView.ScrollDirection.RIGHT, element);
             element.click();
         } catch (NoSuchElementException e) {
             Log.error("Выбранная Гамма не найдена");
