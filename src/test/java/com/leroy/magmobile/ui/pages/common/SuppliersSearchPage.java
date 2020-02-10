@@ -1,6 +1,5 @@
 package com.leroy.magmobile.ui.pages.common;
 
-import com.leroy.constants.EnvConstants;
 import com.leroy.constants.MagMobElementTypes;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
@@ -74,7 +73,7 @@ public class SuppliersSearchPage extends BaseAppPage {
     }
 
     @Step("Найти поставщика по {value} и выбрать его")
-    public SuppliersSearchPage searchAndConfirmSupplier(String value) throws Exception {
+    public SuppliersSearchPage searchAndConfirmSupplier(String value) {
         searchString.clearFillAndSubmit(value);
         searchString.clear();
         hideKeyboard();
