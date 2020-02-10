@@ -90,6 +90,7 @@ public class AppBaseSteps extends BaseState {
                     userProfilePage = setShopAndDepartmentForUser(salesPage, "2", "01");
                     break;
                 case USER_WITH_NEW_INTERFACE_LIKE_35_SHOP:
+                    context.setIs35Shop(true);
                     userProfilePage = setShopAndDepartmentForUser(salesPage, "35", "01");
                     break;
             }

@@ -185,7 +185,7 @@ public class FilterPage extends BaseAppPage {
     public SearchProductPage applyChosenFilters() {
         mainScrollView.scrollDownToElement(showGoodsBtn);
         showGoodsBtn.click();
-        waitForProgressBarIsVisible();
+        waitUntilProgressBarIsVisible();
         SearchProductPage page = new SearchProductPage(context);
         hideKeyboard();
         return page;

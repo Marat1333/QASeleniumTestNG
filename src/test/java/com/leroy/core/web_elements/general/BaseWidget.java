@@ -7,6 +7,7 @@ import com.leroy.utils.XmlUtil;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.time.Duration;
@@ -144,7 +145,10 @@ public abstract class BaseWidget extends BaseWrapper {
         }
         if (nodeList == null || nodeList.getLength() == 0)
             return null;
-        return nodeList.item(0).getAttributes().getNamedItem(attribute).getNodeValue();
+        Node attributeNode = nodeList.item(0).getAttributes().getNamedItem(attribute);
+        if (attribute == null)
+            return null;
+        return attributeNode.getNodeValue();
     }
 
     protected String getAttributeValueFromPageSource(String pageSource, String attribute) {

@@ -4,7 +4,7 @@ import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.elements.MagMobSubmitButton;
+import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.work.StockProductsPage;
 import io.qameta.allure.Step;
@@ -27,7 +27,7 @@ public class QuantityProductsForWithdrawalModalPage extends CommonMagMobilePage 
     private EditBox quantityItemsFld;
 
     @AppFindBy(accessibilityId = "Button")
-    private MagMobSubmitButton withdrawalBtn;
+    private MagMobGreenSubmitButton withdrawalBtn;
 
     /* ------------------------- ACTION STEPS -------------------------- */
 

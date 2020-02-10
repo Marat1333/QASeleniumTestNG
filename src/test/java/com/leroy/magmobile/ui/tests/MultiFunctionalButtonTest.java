@@ -2,17 +2,24 @@ package com.leroy.magmobile.ui.tests;
 
 import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
+import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.common.SearchProductPage;
 import com.leroy.magmobile.ui.pages.sales.*;
 import com.leroy.magmobile.ui.pages.sales.basket.*;
+import com.leroy.magmobile.ui.pages.sales.estimate.ActionsWithEstimateModalPage;
+import com.leroy.magmobile.ui.pages.sales.estimate.EstimatePage;
+import com.leroy.magmobile.ui.pages.sales.estimate.EstimateSubmittedPage;
 import com.leroy.magmobile.ui.pages.sales.product_and_service.AddServicePage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.*;
+import com.leroy.magmobile.ui.pages.search.CustomerData;
+import com.leroy.magmobile.ui.pages.search.SearchCustomerPage;
 import com.leroy.magmobile.ui.pages.work.OrderPage;
 import com.leroy.magmobile.ui.pages.work.StockProductCardPage;
 import com.leroy.magmobile.ui.pages.work.StockProductsPage;
 import com.leroy.magmobile.ui.pages.work.modal.QuantityProductsForWithdrawalModalPage;
+import com.leroy.models.EstimateData;
 import com.leroy.models.OrderDetailsData;
 import com.leroy.models.ProductCardData;
 import com.leroy.models.SalesDocumentData;
@@ -282,22 +289,22 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         // Step #4
         log.step("Нажмите Оформить продажу");
         SaleTypeModalPage modalPage = actionWithProductModalPage.clickMakeSaleButton()
-                .verifyRequiredElements(false);
+                .verifyRequiredElementsWhenFromProductCard(false);
 
         // Step #5
         log.step("Нажмите Корзина");
-        AddProduct35Page addProduct35Page = modalPage.clickBasketMenuItem()
-                .verifyRequiredElements();
+        AddProduct35Page addProduct35Page = modalPage.clickBasketMenuItem();
+        addProduct35Page.verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_BASKET);
         String expectedTotalPrice = addProduct35Page.getPrice();
 
         // Step #6
         log.step("Нажмите Добавить в корзину");
-        Basket35Page basket35Page = addProduct35Page.clickAddButton()
-                .verifyRequiredElements();
+        Basket35Page basket35Page = addProduct35Page.clickAddIntoBasketButton()
+                .verifyRequiredElements(new Basket35Page.PageState().setProductIsAdded(true));
 
         // Step #7
         log.step("Нажмите Оформить");
-        ProcessOrder35Page processOrder35Page = basket35Page.clickSubmitButton()
+        ProcessOrder35Page processOrder35Page = basket35Page.clickMakeSalesButton()
                 .verifyRequiredElements();
 
         // Step #8
@@ -319,12 +326,154 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         SalesDocumentData expectedSalesDocument = new SalesDocumentData();
         expectedSalesDocument.setPrice(expectedTotalPrice);
         expectedSalesDocument.setPin(orderDetailsData.getPinCode());
-        expectedSalesDocument.setDocumentType("Автообработка");
-        expectedSalesDocument.setWhereFrom(orderDetailsData.getDeliveryType().getValue());
+        expectedSalesDocument.setDocumentState(SalesDocumentsConst.AUTO_PROCESSING_STATE);
+        expectedSalesDocument.setTitle(orderDetailsData.getDeliveryType().getValue());
         expectedSalesDocument.setNumber(documentNumber);
         submittedDocument35Page
                 .clickSubmitButton()
                 .shouldSalesDocumentByIndexIs(0, expectedSalesDocument);
+    }
+
+    // Смета
+
+    @Test(description = "C22797068 Создать смету с экрана Документы продажи")
+    public void testCreatingEstimateFromSalesDocumentsScreen() throws Exception {
+        // Test data
+        String existedClientPhone = "1111111111";
+        String shopId = "35";
+        String lmCode = getAnyLmCodeProductWithoutSpecificOptions(shopId, false);
+        // Pre-condition
+        context.setIs35Shop(true);
+        SalesPage salesPage = loginAndGoTo(SalesPage.class);
+        MainSalesDocumentsPage mainSalesDocumentsPage = setShopAndDepartmentForUser(salesPage, shopId, "01")
+                .goToSales()
+                .goToSalesDocumentsSection();
+
+        // Step 1
+        log.step("Нажать кнопку Оформить продажу");
+        SaleTypeModalPage modalPage = mainSalesDocumentsPage.clickCreateSalesDocumentButton();
+        modalPage.verifyRequiredElementsWhenFromSalesDocuments();
+
+        // Step 2
+        log.step("Выбрать параметр Смета");
+        EstimatePage estimatePage = modalPage.clickEstimateMenuItem();
+        EstimatePage.PageState pageState = new EstimatePage.PageState()
+                .setCustomerIsSelected(false).setProductIsAdded(false);
+        estimatePage.verifyRequiredElements(pageState);
+
+        // Step 3
+        log.step("Нажмите на поле Клиенты");
+        SearchCustomerPage searchCustomerPage = estimatePage.clickCustomerField();
+        searchCustomerPage.verifyRequiredElements();
+
+        // Step 4
+        log.step("Введите номер телефона/ №карты клиента/ эл. почту");
+        CustomerData customerData = searchCustomerPage.selectSearchType(SearchCustomerPage.SearchType.BY_PHONE)
+                .enterTextInSearchField(existedClientPhone)
+                .getCustomerDataFromSearchListByIndex(1);
+        estimatePage = searchCustomerPage.selectCustomerFromSearchList(1);
+        pageState = new EstimatePage.PageState()
+                .setCustomerIsSelected(true).setProductIsAdded(false);
+        estimatePage.verifyRequiredElements(pageState);
+        estimatePage.shouldSelectedCustomerIs(customerData);
+
+        // Step 5
+        log.step("Нажмите на кнопку +товары и услуги");
+        SearchProductPage searchProductPage = estimatePage.clickProductAndServiceButton();
+        searchProductPage.verifyRequiredElements();
+
+        // Step 6
+        log.step("Введите ЛМ код товара или название товара или отсканируйте товар");
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
+        AddProduct35Page addProduct35Page = new AddProduct35Page(context);
+        addProduct35Page.verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_ESTIMATE);
+
+        // Step 7
+        log.step("Нажмите на Добавить в смету");
+        estimatePage = addProduct35Page.clickAddIntoEstimateButton();
+        pageState = new EstimatePage.PageState()
+                .setCustomerIsSelected(true).setProductIsAdded(true);
+        estimatePage.verifyRequiredElements(pageState);
+
+        // Step 8
+        log.step("Нажмите на Создать");
+        String expectedTotalPrice = estimatePage.getTotalPrice();
+        String documentNumber = estimatePage.getDocumentNumber(true);
+        EstimateSubmittedPage estimateSubmittedPage = estimatePage.clickCreateButton()
+                .verifyRequiredElements();
+
+        // Step 9
+        log.step("Нажать на Перейти в список документов");
+        SalesDocumentData expectedSalesDocument = new SalesDocumentData();
+        expectedSalesDocument.setPrice(expectedTotalPrice);
+        expectedSalesDocument.setDocumentState(SalesDocumentsConst.CREATED_STATE);
+        expectedSalesDocument.setTitle(SalesDocumentsConst.ESTIMATE_TYPE);
+        expectedSalesDocument.setNumber(documentNumber);
+        SalesDocumentsPage salesDocumentsPage = estimateSubmittedPage.clickSubmitButton();
+        salesDocumentsPage.verifyRequiredElements()
+                .shouldSalesDocumentByIndexIs(0, expectedSalesDocument);
+    }
+
+    @Test(description = "C22797078 Преобразовать смету в корзину")
+    public void testTransformEstimateToBasket() throws Exception {
+        // Pre-condition
+        MainSalesDocumentsPage mainSalesDocumentsPage = loginAndGoTo(
+                LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
+        SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
+        EstimatePage estimatePage = salesDocumentsPage.searchForDocumentByTextAndSelectIt(
+                SalesDocumentsConst.ESTIMATE_TYPE, SalesDocumentsConst.TRANSFORMED_STATE);
+        // Collect test data from page
+        EstimateData testEstimateData = estimatePage.getEstimateDataFromPage();
+
+        // Step 1
+        log.step("Нажмите на кнопку Действия со сметой");
+        ActionsWithEstimateModalPage modalPage = estimatePage.clickActionsWithEstimateButton();
+        modalPage.verifyRequiredElements();
+
+        // Step 2
+        log.step("Выберите параметр Преобразовать в корзину");
+        Basket35Page basket35Page = modalPage.clickTransformToBasketMenuItem();
+        basket35Page.verifyRequiredElements(new Basket35Page.PageState().setProductIsAdded(true));
+        basket35Page.shouldBasketInformationIs(testEstimateData);
+    }
+
+    // Корзина
+
+    @Test(description = "C22797089 Создать корзину с экрана Документы продажи")
+    public void testCreateBasketFromSalesDocumentsScreen() throws Exception {
+        // Test data
+        String shopId = "35";
+        String lmCode = getAnyLmCodeProductWithoutSpecificOptions(shopId, false);
+        // Pre-condition
+        SalesPage salesPage = loginAndGoTo(
+                LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, SalesPage.class);
+        MainSalesDocumentsPage mainSalesDocumentsPage = setShopAndDepartmentForUser(salesPage, shopId, "01")
+                .goToSales()
+                .goToSalesDocumentsSection();
+
+        // Step 1
+        log.step("Нажать кнопку Оформить продажу");
+        SaleTypeModalPage modalPage = mainSalesDocumentsPage.clickCreateSalesDocumentButton();
+        modalPage.verifyRequiredElementsWhenFromSalesDocuments();
+
+        // Step 2
+        log.step("Выбрать параметр Корзина");
+        Basket35Page basket35Page = modalPage.clickBasketMenuItem();
+        basket35Page.verifyRequiredElements(
+                new Basket35Page.PageState().setProductIsAdded(false));
+
+        // Step 3
+        log.step("Нажмите на кнопку +товары и услуги");
+        SearchProductPage searchProductPage = basket35Page.clickProductAndServiceSubmitButton()
+                .verifyRequiredElements();
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
+        AddProduct35Page addProduct35Page = new AddProduct35Page(context);
+        addProduct35Page.verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_BASKET);
+
+        // Step 4
+        log.step("Нажмите на Добавить в корзину");
+        basket35Page = addProduct35Page.clickAddIntoBasketButton();
+        basket35Page.verifyRequiredElements(new Basket35Page.PageState().setProductIsAdded(true));
     }
 
     // ---------------------- TYPICAL TESTS FOR THIS CLASS -------------------//

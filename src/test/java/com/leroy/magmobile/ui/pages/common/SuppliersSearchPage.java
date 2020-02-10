@@ -56,7 +56,7 @@ public class SuppliersSearchPage extends BaseAppPage {
     @Override
     public void waitForPageIsLoaded() {
         searchString.waitForVisibility();
-        waitForProgressBarIsInvisible();
+        waitUntilProgressBarIsInvisible();
     }
 
     @Step("Перейти назад")

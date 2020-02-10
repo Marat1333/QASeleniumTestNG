@@ -52,9 +52,9 @@ public class SubmittedSalesDocument35Page extends CommonMagMobilePage {
     /* ------------------------- ACTION STEPS -------------------------- */
 
     @Step("Нажмите кнопку Перейти в список документов")
-    public SalesDocuments35Page clickSubmitButton() {
+    public SalesDocumentsPage clickSubmitButton() {
         submitBtn.click();
-        return new SalesDocuments35Page(context);
+        return new SalesDocumentsPage(context);
     }
 
     /* ---------------------- Verifications -------------------------- */

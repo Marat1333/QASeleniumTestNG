@@ -62,7 +62,11 @@ public class CustomAssert extends BaseCustomAssert {
     }
 
     public void areElementsVisible(BaseWidget... elements) {
-        logAreElementsVisible(Arrays.asList(elements), false);
+        logAreElementsVisible(Arrays.asList(elements), false, null);
+    }
+
+    public void areElementsVisible(String pageSource, BaseWidget... elements) {
+        logAreElementsVisible(Arrays.asList(elements), false, pageSource);
     }
 
     public boolean isElementNotVisible(BaseWidget element) {

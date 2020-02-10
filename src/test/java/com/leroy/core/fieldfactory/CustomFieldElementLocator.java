@@ -5,7 +5,8 @@ import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.util.XpathUtil;
 import com.leroy.magmobile.ui.elements.MagMobButton;
-import com.leroy.magmobile.ui.elements.MagMobSubmitButton;
+import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
+import com.leroy.magmobile.ui.elements.MagMobWhiteSubmitButton;
 import org.openqa.selenium.By;
 
 import java.lang.annotation.Annotation;
@@ -55,6 +56,10 @@ public class CustomFieldElementLocator {
                 field.getAnnotation(AppFindBy.class).xpath() : field.getAnnotation(WebFindBy.class).xpath();
         String text = isApp ?
                 field.getAnnotation(AppFindBy.class).text() : field.getAnnotation(WebFindBy.class).text();
+        String containsText = isApp ?
+                field.getAnnotation(AppFindBy.class).containsText() : field.getAnnotation(WebFindBy.class).containsText();
+
+
         String followingTextAfter = isApp ? field.getAnnotation(AppFindBy.class).followingTextAfter() : "";
         if (!id.isEmpty())
             return By.id(id);
@@ -65,12 +70,24 @@ public class CustomFieldElementLocator {
             return By.xpath(xpath);
         }
         if (!text.isEmpty()) {
-            if (field.getType().equals(MagMobSubmitButton.class) || field.getType().equals(MagMobButton.class))
+            if (field.getType().equals(MagMobGreenSubmitButton.class) ||
+                    field.getType().equals(MagMobWhiteSubmitButton.class) ||
+                    field.getType().equals(MagMobButton.class))
                 return By.xpath("//android.view.ViewGroup[android.widget.TextView[@text='" + text + "']]");
             if (isApp)
                 return By.xpath("//*[@text='" + text + "']");
             else
                 return By.xpath("//*[text()='" + text + "']");
+        }
+        if (!containsText.isEmpty()) {
+            if (field.getType().equals(MagMobGreenSubmitButton.class) ||
+                    field.getType().equals(MagMobWhiteSubmitButton.class) ||
+                    field.getType().equals(MagMobButton.class))
+                return By.xpath("//android.view.ViewGroup[android.widget.TextView[contains(@text, '" + containsText + "')]]");
+            if (isApp)
+                return By.xpath("//*[contains(@text, '" + containsText + "')]");
+            else
+                return By.xpath("//*[contains(text(), '" + containsText + "')]");
         }
         if (!followingTextAfter.isEmpty()) {
             return By.xpath("//android.widget.TextView[@text='" + followingTextAfter + "']/following-sibling::android.widget.TextView");
@@ -97,6 +114,9 @@ public class CustomFieldElementLocator {
             String textElem = field.getAnnotation(AppFindBy.class).text();
             if (!textElem.isEmpty())
                 return "Элемент с текстом '" + textElem + "'";
+            String containsTextElem = field.getAnnotation(AppFindBy.class).containsText();
+            if (!containsTextElem.isEmpty())
+                return "Элемент содержащий текст '" + containsTextElem + "'";
             String followingTextElem = field.getAnnotation(AppFindBy.class).followingTextAfter();
             if (!followingTextElem.isEmpty())
                 return followingTextElem;
