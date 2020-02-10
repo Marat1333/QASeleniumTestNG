@@ -50,10 +50,10 @@ public class NomenclatureSearchPage extends BaseAppPage {
                 throw new NoSuchElementException("There is no back button");
             }
             nomenclatureBackBtn.click();
-            if (!waitForContentIsChanged(pageSource, 1)) {
+            if (!waitUntilContentIsChanged(pageSource, 1)) {
                 Log.warn("The second click when returnBackNTimes()");
                 nomenclatureBackBtn.click();
-                waitForContentIsChanged(pageSource);
+                waitUntilContentIsChanged(pageSource);
             }
         }
         return new NomenclatureSearchPage(context);
@@ -100,7 +100,7 @@ public class NomenclatureSearchPage extends BaseAppPage {
             }
             if (tmp.equals(value)) {
                 tmpEl.click();
-                waitForContentIsChanged(pageSource);
+                waitUntilContentIsChanged(pageSource);
                 counter++;
                 break;
             }
@@ -117,8 +117,8 @@ public class NomenclatureSearchPage extends BaseAppPage {
         scrollView.scrollUpToElement(showAllGoods);
         showAllGoods.click();
         SearchProductPage searchPage = new SearchProductPage(context);
-        waitForProgressBarIsVisible();
-        waitForProgressBarIsInvisible();
+        waitUntilProgressBarIsVisible();
+        waitUntilProgressBarIsInvisible();
         return searchPage;
     }
 
@@ -136,7 +136,7 @@ public class NomenclatureSearchPage extends BaseAppPage {
         return this;
     }
 
-    @Step("отображено 15 отделов")
+    @Step("Проверить, что отображено 15 отделов")
     public NomenclatureSearchPage shouldDepartmentsCountIs15() throws Exception {
         Set<String> uniqueElementsArray = new HashSet<>();
         for (Element element : firstLevelNomenclatureElementsList) {
@@ -194,7 +194,7 @@ public class NomenclatureSearchPage extends BaseAppPage {
         }
     }
 
-    @Step("Кнопка \"назад\" должна быть отображена - {shouldBeVisible}")
+    @Step("Проверить, что Кнопка \"назад\" должна быть отображена - {shouldBeVisible}")
     public NomenclatureSearchPage verifyNomenclatureBackBtnVisibility(boolean shouldBeVisible) {
         if (shouldBeVisible)
             anAssert.isElementVisible(nomenclatureBackBtn);

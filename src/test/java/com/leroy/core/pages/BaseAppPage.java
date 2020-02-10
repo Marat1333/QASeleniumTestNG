@@ -42,13 +42,13 @@ public class BaseAppPage extends BasePage {
         androidDriver.hideKeyboard();
     }
 
-    protected void clickElementAndWaitForContentIsChanged(Element elem) {
+    protected void clickElementAndWaitUntilContentIsChanged(Element elem) {
         String ps = getPageSource();
         elem.click();
-        waitForContentIsChanged(ps, tiny_timeout);
+        waitUntilContentIsChanged(ps, tiny_timeout);
     }
 
-    protected boolean waitForContentIsChanged(String pageSource, int timeout) {
+    protected boolean waitUntilContentIsChanged(String pageSource, int timeout) {
         try {
             new WebDriverWait(androidDriver, timeout)
                     .until(driverObject -> !getPageSource().equals(pageSource));
@@ -59,74 +59,16 @@ public class BaseAppPage extends BasePage {
         }
     }
 
-    protected boolean waitForContentIsChanged(String pageSource) {
-        return waitForContentIsChanged(pageSource, tiny_timeout);
+    protected boolean waitUntilContentIsChanged(String pageSource) {
+        return waitUntilContentIsChanged(pageSource, tiny_timeout);
     }
 
-    protected void waitForProgressBarIsVisible() {
+    protected void waitUntilProgressBarIsVisible() {
         progressBar.waitForVisibility(tiny_timeout, Duration.ofMillis(300));
     }
 
-    protected void waitForProgressBarIsInvisible() {
+    protected void waitUntilProgressBarIsInvisible() {
         progressBar.waitForInvisibility();
-    }
-
-    public void scrollDownTo(Element element) {
-        TouchAction action = new TouchAction((AndroidDriver) driver);
-        Dimension size = androidDriver.manage().window().getSize();
-        int ground = size.getHeight() - 300;
-        int ceil = size.getHeight() - ground;
-        int rightBorder = size.getWidth() - 10;
-        int leftBorder = size.getWidth() - rightBorder;
-        while (!element.isVisible()) {
-            int breakCounter = 0;
-            if (breakCounter > 3) {
-                break;
-            }
-            action.press(PointOption.point(leftBorder, ground)).waitAction(WaitOptions.waitOptions(Duration.ofMillis(1000))).moveTo(PointOption.point(leftBorder, ceil)).release().perform();
-            breakCounter++;
-        }
-    }
-
-    public void scrollUpTo(Element element) {
-        TouchAction action = new TouchAction((AndroidDriver) driver);
-        Dimension size = androidDriver.manage().window().getSize();
-        int ground = size.getHeight() - 300;
-        int ceil = size.getHeight() - ground;
-        int rightBorder = size.getWidth() - 10;
-        int leftBorder = size.getWidth() - rightBorder;
-        while (!element.isVisible()) {
-            int breakCounter = 0;
-            if (breakCounter > 3) {
-                break;
-            }
-            action.press(PointOption.point(leftBorder, ceil)).waitAction(WaitOptions.waitOptions(Duration.ofMillis(1000))).moveTo(PointOption.point(leftBorder, ground)).release().perform();
-            breakCounter++;
-        }
-    }
-
-    public void scrollDown() {
-        TouchAction action = new TouchAction((AndroidDriver) driver);
-        Dimension size = androidDriver.manage().window().getSize();
-        int ground = size.getHeight() - 300;
-        int ceil = size.getHeight() - ground;
-        int rightBorder = size.getWidth() - 10;
-        int leftBorder = size.getWidth() - rightBorder;
-        action.press(PointOption.point(leftBorder, ground))
-                .waitAction(WaitOptions.waitOptions(Duration.ofMillis(1000)))
-                .moveTo(PointOption.point(leftBorder, ceil))
-                .release()
-                .perform();
-    }
-
-    public void scrollUp() {
-        TouchAction action = new TouchAction((AndroidDriver) driver);
-        Dimension size = androidDriver.manage().window().getSize();
-        int ground = size.getHeight() - 300;
-        int ceil = size.getHeight() - ground;
-        int rightBorder = size.getWidth() - 10;
-        int leftBorder = size.getWidth() - rightBorder;
-        action.press(PointOption.point(leftBorder, ceil)).waitAction(WaitOptions.waitOptions(Duration.ofMillis(1000))).moveTo(PointOption.point(leftBorder, ground)).release().perform();
     }
 
     public void swipeRightTo(Element anchorElement, Element goalElement) {

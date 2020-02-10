@@ -49,7 +49,7 @@ public class AddProduct35Page extends CommonMagMobilePage {
     @Override
     public void waitForPageIsLoaded() {
         screenTitle.waitUntilTextIsEqualTo(SCREEN_TITLE);
-        waitForProgressBarIsInvisible();
+        waitUntilProgressBarIsInvisible();
     }
 
     /**

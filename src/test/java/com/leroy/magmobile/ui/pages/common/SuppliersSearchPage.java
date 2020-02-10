@@ -31,14 +31,14 @@ public class SuppliersSearchPage extends BaseAppPage {
     @Override
     public void waitForPageIsLoaded() {
         searchString.waitForVisibility();
-        waitForProgressBarIsInvisible();
+        waitUntilProgressBarIsInvisible();
     }
 
     @Step("Найти поставщика по {value} и выбрать его")
     public void searchForSupplier(String value) {
         searchString.clearFillAndSubmit(value);
-        waitForProgressBarIsVisible();
-        waitForProgressBarIsInvisible();
+        waitUntilProgressBarIsVisible();
+        waitUntilProgressBarIsInvisible();
         E(SCREEN_CONTENT_XPATH + "//android.widget.TextView[contains(@text, '" + value + "')]")
                 .click();
     }

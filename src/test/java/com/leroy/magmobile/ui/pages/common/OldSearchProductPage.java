@@ -40,16 +40,16 @@ public class OldSearchProductPage extends BaseAppPage {
     @Step("Введите {text} в поле поиска товара и подтвердите")
     public OldSearchProductPage enterTextInSearchFieldAndSubmit(String text) {
         searchField.clearFillAndSubmit(text);
-        waitForProgressBarIsVisible();
-        waitForProgressBarIsInvisible();
+        waitUntilProgressBarIsVisible();
+        waitUntilProgressBarIsInvisible();
         return this;
     }
 
     @Step("Найдите и перейдите в карточку товара {text}")
     public AddProductPage searchProductAndSelect(String text) throws Exception {
         searchField.clearFillAndSubmit(text);
-        waitForProgressBarIsVisible();
-        waitForProgressBarIsInvisible();
+        waitUntilProgressBarIsVisible();
+        waitUntilProgressBarIsInvisible();
         if (searchField.isVisible()) {
             anAssert.isTrue(productCards.getCount() > 0,
                     String.format("Не найден ни один товар по ключевому слову '%s'", text));

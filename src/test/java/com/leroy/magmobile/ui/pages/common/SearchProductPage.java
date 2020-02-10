@@ -92,7 +92,7 @@ public class SearchProductPage extends BaseAppPage {
     @Override
     public void waitForPageIsLoaded() {
         searchField.waitForVisibility();
-        waitForProgressBarIsInvisible();
+        waitUntilProgressBarIsInvisible();
     }
 
     // ---------------- Action Steps -------------------------//
@@ -124,8 +124,8 @@ public class SearchProductPage extends BaseAppPage {
     @Step("Введите {text} в поле поиска товара и выполните поиск")
     public SearchProductPage enterTextInSearchFieldAndSubmit(String text) {
         searchField.clearFillAndSubmit(text);
-        waitForProgressBarIsVisible();
-        waitForProgressBarIsInvisible();
+        waitUntilProgressBarIsVisible();
+        waitUntilProgressBarIsInvisible();
         //TODO Добавить проверку на наличие ошибки ответа сервака
         return this;
     }
@@ -140,8 +140,8 @@ public class SearchProductPage extends BaseAppPage {
     @Step("Найдите и перейдите в карточку товара {text}")
     public AddProductPage searchProductAndSelect(String text) throws Exception {
         searchField.clearFillAndSubmit(text);
-        waitForProgressBarIsVisible();
-        waitForProgressBarIsInvisible();
+        waitUntilProgressBarIsVisible();
+        waitUntilProgressBarIsInvisible();
         if (searchField.isVisible()) {
             anAssert.isTrue(productCards.getCount() > 0,
                     String.format("Не найден ни один товар по ключевому слову '%s'", text));
@@ -178,6 +178,7 @@ public class SearchProductPage extends BaseAppPage {
 
     // ---------------- Verifications ----------------------- //
 
+    @Step("Проверить, что страница поиска товаров и услуг отображается корректно")
     public SearchProductPage verifyRequiredElements() {
         softAssert.isElementVisible(backBtn);
         softAssert.isElementVisible(scanBarcodeBtn);
@@ -187,7 +188,7 @@ public class SearchProductPage extends BaseAppPage {
     }
 
     @Step("Проверяем, что появилась кнопка очистки инпута поисковой строки")
-    public SearchProductPage verifyClearTextInputBtnIsVisible(){
+    public SearchProductPage shouldClearTextInputBtnIsVisible(){
         anAssert.isElementVisible(clearTextInputBtn);
         return this;
     }
