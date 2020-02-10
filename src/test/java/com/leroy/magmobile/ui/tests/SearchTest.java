@@ -6,21 +6,25 @@ import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.common.*;
 import com.leroy.magmobile.ui.pages.common.modal.SortPage;
 import com.leroy.magmobile.ui.pages.sales.PricesAndQuantityPage;
+import com.leroy.magmobile.ui.pages.sales.ProductCardPage;
 import com.leroy.magmobile.ui.pages.sales.SalesPage;
+import com.leroy.magmobile.ui.pages.sales.product_and_service.AddServicePage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.SimilarProductsPage;
 import com.leroy.umbrella_extension.magmobile.MagMobileClient;
 import com.leroy.umbrella_extension.magmobile.data.ProductItemListResponse;
+import com.leroy.umbrella_extension.magmobile.data.ServiceItemListResponse;
 import com.leroy.umbrella_extension.magmobile.enums.CatalogSearchFields;
 import com.leroy.umbrella_extension.magmobile.enums.SortingOrder;
 import com.leroy.umbrella_extension.magmobile.requests.GetCatalogSearch;
+import com.leroy.umbrella_extension.magmobile.requests.GetCatalogServicesSearch;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.base.BaseModule;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Collections;
 import java.util.List;
 
 @Guice(modules = {BaseModule.class})
@@ -127,7 +131,7 @@ public class SearchTest extends AppBaseSteps {
         //Иногда работает некорректно, потому что сортировка по ЛМ коду не применяется в мэшапе и порядок всегда разный
         /*searchProductPage.shouldCatalogResponseEqualsContent(
                 nameLikeResponce, SearchProductPage.CardType.COMMON, entityCount);*/
-        searchProductPage.shouldProductCardsContainText(
+        searchProductPage.shouldCardsContainText(
                 searchContext, SearchProductPage.CardType.COMMON, 3);
 
         // Step 7
@@ -699,7 +703,7 @@ public class SearchTest extends AppBaseSteps {
         // Step 1
         log.step("Введите неполное название или неполный ЛМ код товара");
         searchProductPage.enterTextInSearchFieldAndSubmit(shortLmCode);
-        searchProductPage.shouldClearTextInputBtnIsVisible();
+        searchProductPage.verifyClearTextInputBtnIsVisible();
 
         // Step 2
         log.step("Выбрать подотдел в номенклатуре");
@@ -821,6 +825,85 @@ public class SearchTest extends AppBaseSteps {
         myShopFilterPage.shouldSupplierButtonContainsText(0, null);
     }
 
-    //TODO Добавить тест на проверку отображения и получения услуг
+    @Test(description = "C22883205 Поиск услуг", priority = 2)
+    public void testServicesSearch() throws Exception {
+        final String SERVICE_SHORT_LM_CODE = "4905510";
+        final String SERVICE_FULL_LM_CODE = "49055102";
+        final String SERVICE_SHORT_NAME = "Овер";
+        final String SERVICE_FULL_NAME = "Оверлок";
+        final String DEPARTMENT_ID = "5";
+        final String SHORT_BARCODE = "590212011";
+
+        GetCatalogServicesSearch servicesSearchParams = new GetCatalogServicesSearch();
+        GetCatalogServicesSearch servicesSearchDepartmentParams = new GetCatalogServicesSearch().setDepartmentId(DEPARTMENT_ID);
+        GetCatalogServicesSearch servicesSearchShortLmCodeParams = new GetCatalogServicesSearch().setLmCode(SERVICE_SHORT_LM_CODE);
+        GetCatalogServicesSearch servicesSearchFullLmCodeParams = new GetCatalogServicesSearch().setLmCode(SERVICE_FULL_LM_CODE);
+        GetCatalogServicesSearch servicesSearchShortNameParams = new GetCatalogServicesSearch().setName(SERVICE_SHORT_NAME);
+        GetCatalogServicesSearch servicesSearchFullNameParams = new GetCatalogServicesSearch().setName(SERVICE_FULL_NAME);
+
+        Response<ServiceItemListResponse> allServicesResponce = apiClient.searchServicesBy(servicesSearchParams);
+        Response<ServiceItemListResponse> departmentServicesResponce = apiClient.searchServicesBy(servicesSearchDepartmentParams);
+        Response<ServiceItemListResponse> shortLmCodeServicesResponce = apiClient.searchServicesBy(servicesSearchShortLmCodeParams);
+        Response<ServiceItemListResponse> fullLmCodeServicesResponce = apiClient.searchServicesBy(servicesSearchFullLmCodeParams);
+        Response<ServiceItemListResponse> shortNameServicesResponce = apiClient.searchServicesBy(servicesSearchShortNameParams);
+        Response<ServiceItemListResponse> fullNameServicesResponce = apiClient.searchServicesBy(servicesSearchFullNameParams);
+
+        // Pre-conditions
+        SalesPage salesPage = loginAndGoTo(SalesPage.class);
+        SearchProductPage searchProductPage = salesPage.clickSearchBar(true);
+
+        // Step 1
+        log.step("Перейти на страницу выбора номенклатуры и выполнить поиск по всем отделам");
+        NomenclatureSearchPage nomenclatureSearchPage = searchProductPage.goToNomenclatureWindow();
+        nomenclatureSearchPage.returnBackNTimes(1);
+        nomenclatureSearchPage.clickShowAllProductsBtn();
+        searchProductPage.shouldServicesResponceEqualsContent(allServicesResponce, 5);
+
+        // Step 2
+        log.step("Выполнить поиск услуг по неполному лм коду");
+        searchProductPage.enterTextInSearchFieldAndSubmit(SERVICE_SHORT_LM_CODE);
+        searchProductPage.shouldServicesResponceEqualsContent(shortLmCodeServicesResponce, 2);
+        searchProductPage.shouldCardsContainText(SERVICE_SHORT_LM_CODE, SearchProductPage.CardType.SERVICE, 2);
+
+        // Step 3
+        log.step("Выполнить поиск услуг по полному лм коду");
+        searchProductPage.enterTextInSearchFieldAndSubmit(SERVICE_FULL_LM_CODE);
+        AddServicePage addServicePage = new AddServicePage(context);
+        addServicePage.verifyRequiredElements()
+                .shouldServiceNameAndLmCodeBeOnPage(SERVICE_FULL_NAME, SERVICE_FULL_LM_CODE);
+        addServicePage.returnBack();
+        searchProductPage.shouldServicesResponceEqualsContent(fullLmCodeServicesResponce, 1);
+        searchProductPage.shouldCardsContainText(SERVICE_FULL_LM_CODE, SearchProductPage.CardType.SERVICE, 1);
+
+        // Step 4
+        log.step("Выполнить поиск по одному отделу, в котором есть услуги");
+        searchProductPage.clearSearchInput();
+        searchProductPage.goToNomenclatureWindow();
+        nomenclatureSearchPage.choseDepartmentId("00" + DEPARTMENT_ID, null, null, null);
+        nomenclatureSearchPage.clickShowAllProductsBtn();
+        searchProductPage.shouldServicesResponceEqualsContent(departmentServicesResponce, 2);
+
+        // Step 5
+        log.step("Выполнить поиск услуги по неполному наименованию");
+        searchProductPage.enterTextInSearchFieldAndSubmit(SERVICE_SHORT_NAME);
+        searchProductPage.shouldServicesResponceEqualsContent(shortNameServicesResponce, 1);
+        searchProductPage.shouldCardsContainText(SERVICE_SHORT_NAME, SearchProductPage.CardType.SERVICE, 1);
+
+        // Step 6
+        log.step("Выполнить поиск услуги по полному наименованию");
+        searchProductPage.enterTextInSearchFieldAndSubmit(SERVICE_FULL_NAME);
+        addServicePage.verifyRequiredElements()
+                .shouldServiceNameAndLmCodeBeOnPage(SERVICE_FULL_NAME, SERVICE_FULL_LM_CODE);
+        addServicePage.returnBack();
+        searchProductPage.shouldServicesResponceEqualsContent(fullNameServicesResponce, 1);
+        searchProductPage.shouldCardsContainText(SERVICE_FULL_NAME, SearchProductPage.CardType.SERVICE, 1);
+
+        // Step 7
+        log.step("Выполнить поиск по короткому штрихкоду");
+        searchProductPage.enterTextInSearchFieldAndSubmit(SHORT_BARCODE);
+        ProductCardPage productCardPage = new ProductCardPage(context);
+        productCardPage.returnBack();
+        searchProductPage.shouldNotCardsBeOnPage(SearchProductPage.CardType.SERVICE);
+    }
 
 }

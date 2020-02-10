@@ -97,7 +97,7 @@ public class SuppliersSearchPage extends BaseAppPage {
     }
 
     @Step("Проверить, что в овальной области отображено имя выбранного поставщика")
-    public SuppliersSearchPage shouldNameOfChosenIsDisplayedInOvalElement(String supplierName) throws Exception {
+    public SuppliersSearchPage shouldNameOfChosenIsDisplayedInOvalElement(String supplierName) {
         List<TextViewData> namesOfSuppliers = suppliersOvalElements.getFullDataList();
         for (TextViewData data : namesOfSuppliers) {
             anAssert.isTrue(supplierName.contains(data.getText()), "В овальной области не отображено имя выбранного поставщика");

@@ -65,13 +65,11 @@ public class MyShopFilterPage extends FilterPage {
     }
 
     @Step("Перейти на страницу выбора поставщиков")
-    public SuppliersSearchPage goToSuppliersSearchPage(boolean hideKeyboard) throws Exception {
+    public SuppliersSearchPage goToSuppliersSearchPage(boolean hideKeyboard) {
         mainScrollView.scrollDown();
         supplierBtn.click();
-        String pageSource = getPageSource();
         if (hideKeyboard) {
             hideKeyboard();
-            waitForContentIsChanged(pageSource, short_timeout);
         }
         return new SuppliersSearchPage(context);
     }

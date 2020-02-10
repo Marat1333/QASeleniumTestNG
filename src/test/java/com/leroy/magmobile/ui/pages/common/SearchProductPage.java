@@ -212,7 +212,7 @@ public class SearchProductPage extends BaseAppPage {
     }
 
     public SearchProductPage shouldScannerBtnIsVisible() {
-        String pageSource=getPageSource();
+        String pageSource = getPageSource();
         if (searchField.getText(pageSource).equals(DEFAULT_SEARCH_UNPUT_TEXT)) {
             anAssert.isElementVisible(scanBarcodeBtn, pageSource);
         } else {
@@ -258,7 +258,7 @@ public class SearchProductPage extends BaseAppPage {
     }
 
     @Step("Проверить, что карточки товаров имеют соответсвующий вид для фильтра 'Вся гамма ЛМ'")
-    public void verifyProductCardsHaveAllGammaView() throws Exception {
+    public void verifyProductCardsHaveAllGammaView() {
         anAssert.isFalse(E("за штуку").isVisible(), "Карточки товаров не должны содержать цену");
         anAssert.isFalse(E("доступно").isVisible(), "Карточки товаров не должны содержать доступное кол-во");
     }
@@ -362,13 +362,11 @@ public class SearchProductPage extends BaseAppPage {
     }
 
     @Step("Проверить, что карточка товара содержит текст {text}")
-    public void shouldProductCardsContainText(String text, CardType type, int howManyProductsNeedToVerify) throws Exception {
+    public void shouldCardsContainText(String text, CardType type, int howManyProductsNeedToVerify) throws Exception {
         String[] searchWords = null;
         if (text.contains(" "))
             searchWords = text.split(" ");
         anAssert.isFalse(E("contains(не найдено)").isVisible(), "Должен быть найден хотя бы один товар");
-        anAssert.isTrue(productCards.getCount() > 1,
-                "Ничего не найдено для " + text);
         List<? extends CardWidgetData> productCardData;
         switch (type) {
             case COMMON:
@@ -398,26 +396,47 @@ public class SearchProductPage extends BaseAppPage {
                 for (String each : searchWords) {
                     each = each.toLowerCase();
                     if (cardData instanceof ProductCardData) {
-                        anAssert.isTrue(((ProductCardData) cardData).getName().toLowerCase().contains(each), "Название товара " + ((ProductCardData) cardData).getName() + " не содержит критерий поиска " + text);
+                        anAssert.isTrue(((ProductCardData) cardData).getName().toLowerCase().contains(each.toLowerCase()), "Название товара " + ((ProductCardData) cardData).getName() + " не содержит критерий поиска " + text);
                     } else if (cardData instanceof ServiceCardData) {
-                        anAssert.isTrue(((ServiceCardData) cardData).getName().toLowerCase().contains(each), "Название товара " + ((ServiceCardData) cardData).getName() + " не содержит критерий поиска " + text);
+                        anAssert.isTrue(((ServiceCardData) cardData).getName().toLowerCase().contains(each.toLowerCase()), "Название товара " + ((ServiceCardData) cardData).getName() + " не содержит критерий поиска " + text);
                     }
                 }
             } else if (searchWords == null && text.matches("\\D+")) {
                 if (cardData instanceof ProductCardData) {
-                    anAssert.isTrue(((ProductCardData) cardData).getName().toLowerCase().contains(text), "Название товара " + ((ProductCardData) cardData).getName() + " не содержит критерий поиска " + text);
+                    anAssert.isTrue(((ProductCardData) cardData).getName().toLowerCase().contains(text.toLowerCase()), "Название товара " + ((ProductCardData) cardData).getName() + " не содержит критерий поиска " + text);
                 } else if (cardData instanceof ServiceCardData) {
-                    anAssert.isTrue(((ServiceCardData) cardData).getName().toLowerCase().contains(text), "Название товара " + ((ServiceCardData) cardData).getName() + " не содержит критерий поиска " + text);
+                    anAssert.isTrue(((ServiceCardData) cardData).getName().toLowerCase().contains(text.toLowerCase()), "Название товара " + ((ServiceCardData) cardData).getName() + " не содержит критерий поиска " + text);
                 }
             }
         }
+    }
+
+    @Step("Проверить, что на странице отсутсвуют карточки выбранного типа")
+    public SearchProductPage shouldNotCardsBeOnPage(CardType type) throws Exception {
+        List<? extends CardWidgetData> cardData;
+        switch (type) {
+            case COMMON:
+                cardData = productCardsScrollView.getFullDataList();
+                break;
+            case ALL_GAMMA:
+                cardData = allGammaProductCardsScrollView.getFullDataList();
+                break;
+            case SERVICE:
+                cardData = serviceCardsScrollView.getFullDataList();
+                break;
+            default:
+                throw new Exception("Incorrect CardType");
+        }
+        anAssert.isTrue(cardData.isEmpty(), "на странице содержаться карточки указанного типа");
+
+        return this;
     }
 
     // API verifications
 
     @Step("Проверить, что фронт корректно отобразил ответ от сервера по запросу на catalog product")
     public SearchProductPage shouldCatalogResponseEqualsContent(
-            Response<ProductItemListResponse> response, CardType type, Integer entityCount) throws Exception {
+            Response<ProductItemListResponse> response, CardType type, Integer entityCount) {
         List<ProductItemResponse> productDataListFromResponse = response.asJson().getItems();
         List<ProductCardData> productCardDataListFromPage;
         switch (type) {
@@ -443,7 +462,7 @@ public class SearchProductPage extends BaseAppPage {
     }
 
     @Step("Проверить, что фронт корректно отобразил ответ от сервера по запросу на catalog services")
-    public SearchProductPage shouldServicesResponceEqualsContent(Response<ServiceItemListResponse> response, Integer entityCount) throws Exception {
+    public SearchProductPage shouldServicesResponceEqualsContent(Response<ServiceItemListResponse> response, Integer entityCount) {
         List<ServiceItemResponse> serviceData = response.asJson().getItems();
         List<ServiceCardData> serviceCardDataList = serviceCardsScrollView.getFullDataList(entityCount);
         if (serviceCardDataList.size() != serviceData.size()) {

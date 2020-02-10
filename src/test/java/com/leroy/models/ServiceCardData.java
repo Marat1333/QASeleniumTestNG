@@ -1,6 +1,7 @@
 package com.leroy.models;
 
 import com.leroy.umbrella_extension.magmobile.data.ProductItemResponse;
+import com.leroy.umbrella_extension.magmobile.data.ServiceItemResponse;
 
 public class ServiceCardData extends CardWidgetData {
 
@@ -28,9 +29,9 @@ public class ServiceCardData extends CardWidgetData {
         if (o == this) {
             return true;
         }
-        if (o instanceof ProductItemResponse) {
-            ProductItemResponse productItemResponse = (ProductItemResponse) o;
-            return lmCode.equals(productItemResponse.getLmCode());
+        if (o instanceof ServiceItemResponse) {
+            ServiceItemResponse serviceItemResponse = (ServiceItemResponse) o;
+            return lmCode.equals(serviceItemResponse.getLmCode())&&name.equals(serviceItemResponse.getTitle());
         }
         if (o == null || o.getClass() != this.getClass()) {
             return false;

@@ -115,4 +115,14 @@
             </class>
         </classes>
     </test>
+
+    <test name="C22883205 Поиск услуг">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.SearchTest">
+                <methods>
+                    <include name="testServicesSearch"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
 </suite>
