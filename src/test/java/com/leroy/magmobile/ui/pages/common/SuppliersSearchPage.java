@@ -98,13 +98,10 @@ public class SuppliersSearchPage extends BaseAppPage {
 
     @Step("Проверить, что в овальной области отображено имя выбранного поставщика")
     public SuppliersSearchPage shouldNameOfChosenIsDisplayedInOvalElement(String supplierName) throws Exception {
-        //Element nameOfChosenSupplier = E(HORIZONTAL_SCROLL_VIEW_XPATH+OVAL_BTN_SUPPLIER_NAME_LBL_XPATH);  КОСТЫЛЬ
         List<TextViewData> namesOfSuppliers = suppliersOvalElements.getFullDataList();
         for (TextViewData data : namesOfSuppliers) {
-            anAssert.isTrue(supplierName.contains(data.getText()), "");
+            anAssert.isTrue(supplierName.contains(data.getText()), "В овальной области не отображено имя выбранного поставщика");
         }
-        //isElementTextContains не подойдут т.к. мне надо проверять что переданной значение содержит текст элемента
-        //anAssert.isTrue(supplierName.contains(nameOfChosenSupplier.getText()), "Критерий проверки не содержит текст из овальной области с именем выбранного поставщика");    КОСТЫЛЬ
         return new SuppliersSearchPage(context);
     }
 
