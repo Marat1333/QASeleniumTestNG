@@ -3,9 +3,10 @@ package com.leroy.magmobile.ui.pages.sales;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.elements.MagMobSubmitButton;
+import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.OldSearchProductPage;
 import com.leroy.magmobile.ui.pages.common.TopMenuPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.modal.SaleTypeModalPage;
 import io.qameta.allure.Step;
 
 // Раздел "Продажа" -> Страница "Документы продажи"
@@ -30,8 +31,9 @@ public class MainSalesDocumentsPage extends TopMenuPage {
     @AppFindBy(text = "Все продажи")
     Element allSalesLbl;
 
-    @AppFindBy(text = "СОЗДАТЬ ДОКУМЕНТ ПРОДАЖИ", metaName = "Кнопка 'СОЗДАТЬ ДОКУМЕНТ ПРОДАЖИ'")
-    MagMobSubmitButton createSalesDocumentBtn;
+    @AppFindBy(xpath = "//*[@text='СОЗДАТЬ ДОКУМЕНТ ПРОДАЖИ' or @text='ОФОРМИТЬ ПРОДАЖУ']",
+            metaName = "Кнопка 'СОЗДАТЬ ДОКУМЕНТ ПРОДАЖИ' / 'ОФОРМИТЬ ПРОДАЖУ'")
+    MagMobGreenSubmitButton createSalesDocumentBtn;
 
     @Override
     public void waitForPageIsLoaded() {
@@ -40,12 +42,20 @@ public class MainSalesDocumentsPage extends TopMenuPage {
 
     /* ------------------------- ACTION STEPS -------------------------- */
 
-    @Step("Нажмите 'Создать документ продажи'")
-    public OldSearchProductPage clickCreateSalesDocumentButton() {
+    @Step("Нажмите 'Создать документ продажи' (или 'Оформить продажу')")
+    public <T> T clickCreateSalesDocumentButton() {
         createSalesDocumentBtn.click();
-        return new OldSearchProductPage(context);
+        if (context.isIs35Shop())
+            return (T) new SaleTypeModalPage(context);
+        else
+            return (T) new OldSearchProductPage(context);
     }
 
+    @Step("Перейти в 'Мои продажи'")
+    public SalesDocumentsPage goToMySales() {
+        mySalesLbl.click();
+        return new SalesDocumentsPage(context);
+    }
 
     /* ---------------------- Verifications -------------------------- */
 

@@ -5,7 +5,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magmobile.ui.elements.MagMobSubmitButton;
+import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import io.qameta.allure.Step;
 import org.testng.Assert;
 
@@ -26,10 +26,10 @@ public class SupportPage extends BaseAppPage {
     private Element titleLbl;
 
     @AppFindBy(text = "пожаловаться")
-    private MagMobSubmitButton complainBtn;
+    private MagMobGreenSubmitButton complainBtn;
 
     @AppFindBy(text = "задать вопрос")
-    private MagMobSubmitButton askQuestionBtn;
+    private MagMobGreenSubmitButton askQuestionBtn;
 
     // Main area
 

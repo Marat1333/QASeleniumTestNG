@@ -15,6 +15,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.PixelGrabber;
 import java.io.File;
+import java.io.IOException;
 
 public class ImageUtil {
 
@@ -56,7 +57,7 @@ public class ImageUtil {
      * @return - file with image
      * @throws Exception -
      */
-    public static File captureRectangleBitmap(WebDriver driver, Rectangle rect) throws Exception {
+    public static File captureRectangleBitmap(WebDriver driver, Rectangle rect) throws IOException {
         File screen = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
         BufferedImage img = ImageIO.read(screen);
         BufferedImage dest = img.getSubimage(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());

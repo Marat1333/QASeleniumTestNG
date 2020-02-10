@@ -4,13 +4,12 @@ import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.elements.MagMobSubmitButton;
+import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.SearchProductPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ReviewsPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.SimilarProductsPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.SpecificationsPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.modal.CommonActionWithProductModalPage;
 import io.qameta.allure.Step;
 
 public class ProductCardPage extends BaseAppPage {
@@ -26,7 +25,7 @@ public class ProductCardPage extends BaseAppPage {
     protected Element returnBackBtn;
 
     @AppFindBy(text = "ДЕЙСТВИЯ С ТОВАРОМ")
-    protected MagMobSubmitButton actionWithProductBtn;
+    protected MagMobGreenSubmitButton actionWithProductBtn;
 
     @Override
     public void waitForPageIsLoaded() {

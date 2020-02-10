@@ -17,6 +17,8 @@ public @interface AppFindBy {
 
     String xpath() default "";
 
+    String containsText() default "";
+
     String text() default "";
 
     String followingTextAfter() default "";

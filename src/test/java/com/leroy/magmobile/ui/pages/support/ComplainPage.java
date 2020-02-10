@@ -6,7 +6,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.elements.MagMobSubmitButton;
+import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import io.qameta.allure.Step;
 
 public class ComplainPage extends BaseAppPage {
@@ -40,7 +40,7 @@ public class ComplainPage extends BaseAppPage {
     private Element emailDomainLbl;
 
     @AppFindBy(text = "ОТПРАВИТЬ", cacheLookup = false)
-    private MagMobSubmitButton submitBtn;
+    private MagMobGreenSubmitButton submitBtn;
 
     @Override
     public void waitForPageIsLoaded() {

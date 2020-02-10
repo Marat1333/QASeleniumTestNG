@@ -699,7 +699,7 @@ public class SearchTest extends AppBaseSteps {
         // Step 1
         log.step("Введите неполное название или неполный ЛМ код товара");
         searchProductPage.enterTextInSearchFieldAndSubmit(shortLmCode);
-        searchProductPage.verifyClearTextInputBtnIsVisible();
+        searchProductPage.shouldClearTextInputBtnIsVisible();
 
         // Step 2
         log.step("Выбрать подотдел в номенклатуре");

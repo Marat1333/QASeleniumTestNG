@@ -1,5 +1,6 @@
 package com.leroy.magmobile.ui.tests;
 
+import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.common.OldSearchProductPage;
 import com.leroy.magmobile.ui.pages.sales.AddProductPage;
@@ -28,8 +29,8 @@ public class SalesDocumentsTest extends AppBaseSteps {
 
         // Step #2
         log.step("Нажмите 'Создать документ продажи'");
-        OldSearchProductPage oldSearchProductPage = salesDocumentsPage.clickCreateSalesDocumentButton()
-                .verifyRequiredElements();
+        OldSearchProductPage oldSearchProductPage = salesDocumentsPage.clickCreateSalesDocumentButton();
+        oldSearchProductPage.verifyRequiredElements();
 
         // Step #3
         String inputDataStep3 = "164";
@@ -98,8 +99,8 @@ public class SalesDocumentsTest extends AppBaseSteps {
         expectedSalesDocument.setPrice(NumberFormat.getInstance(Locale.FRANCE)
                 .parse(expectedTotalPrice).toString());
         expectedSalesDocument.setPin(testPinCode);
-        expectedSalesDocument.setDocumentType("Создан");
-        expectedSalesDocument.setWhereFrom("Из торгового зала");
+        expectedSalesDocument.setDocumentState(SalesDocumentsConst.CREATED_STATE);
+        expectedSalesDocument.setTitle("Из торгового зала");
         expectedSalesDocument.setNumber(documentNumber);
         submittedSalesDocumentPage.clickSubmitButton()
                 .shouldSalesDocumentByIndexIs(0, expectedSalesDocument);

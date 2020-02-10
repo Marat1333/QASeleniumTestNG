@@ -86,7 +86,7 @@ public class MyShopFilterPage extends FilterPage {
 
     @Step("Выбрать фильтр top")
     public void choseTopFilter() { //TODO Надо сделать данный метод с параметром, чтоб можно было выбирать ТОП 1 и другие
-        clickElementAndWaitForContentIsChanged(top0Btn);
+        clickElementAndWaitUntilContentIsChanged(top0Btn);
     }
 
     //VERIFICATIONS
