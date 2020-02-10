@@ -7,7 +7,8 @@ public enum MagMobElementTypes {
     CIRCLE_PLUS("circle_plus"),
     CHECK_BOX_SELECTED("checkBoxSupplierSearchPage"),
     CHECK_BOX_NOT_SELECTED("checkBoxNotSelectedSupplierSearchPage"),
-    CHECK_BOX_FILTER_PAGE("checkBoxFilterPage");
+    CHECK_BOX_FILTER_PAGE("checkBoxFilterPage"),
+    CHECK_BOX_NOT_SELECTED_FILTER_PAGE("checkBoxNotSelectedFilterPage");
 
     private String pictureName;
 

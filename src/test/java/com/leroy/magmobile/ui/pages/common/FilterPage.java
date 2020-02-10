@@ -35,15 +35,16 @@ public class FilterPage extends BaseAppPage {
     }
 
     public static final String GAMMA = "ГАММА";
+    public static final String TOP = "ТОП";
     public static final String TOP_1000 = "Toп 1000";
     public static final String CTM = "CTM";
     public static final String BEST_PRICE = "Лучшая цена";
     public static final String LIMITED_OFFER = "Предложение ограничено";
     public static final String MY_SHOP_FRAME_TYPE = "МОЙ МАГАЗИН";
     public static final String ALL_GAMMA_FRAME_TYPE = "ВСЯ ГАММА ЛМ";
-    public final String AVS = "AVS";
-    public final String COMMON_PRODUCT_TYPE = "ОБЫЧНЫЙ";
-    public final String ORDERED_PRODUCT_TYPE = "ПОД ЗАКАЗ";
+    public static final String AVS = "AVS";
+    public static final String COMMON_PRODUCT_TYPE = "ОБЫЧНЫЙ";
+    public static final String ORDERED_PRODUCT_TYPE = "ПОД ЗАКАЗ";
 
     private final String HORIZONTAL_SCROLL = "//android.widget.TextView[contains(@text,'%s')]/ancestor::android.widget.HorizontalScrollView";
 
@@ -61,12 +62,6 @@ public class FilterPage extends BaseAppPage {
 
     @AppFindBy(text = "ВСЯ ГАММА ЛМ")
     Element gammaLmBtn;
-
-    @AppFindBy(text = "ГАММА A")
-    Element gammaABtn;
-
-    @AppFindBy(text = "ГАММА P")
-    Element gammaPBtn;
 
     @AppFindBy(text = "ПОД ЗАКАЗ")
     Element orderedProductBtn;
@@ -120,10 +115,10 @@ public class FilterPage extends BaseAppPage {
     }
 
     @Step("Очистить все фильтры")
-    public void clearAllFilters() {
+    public MyShopFilterPage clearAllFilters() {
         clearAllFiltersBtn.click();
         clearAllFiltersBtn.waitForInvisibility();
-        ;
+        return new MyShopFilterPage(context);
     }
 
     @Step("Выбрать checkBox фильтр {value}")
@@ -201,6 +196,14 @@ public class FilterPage extends BaseAppPage {
         return this;
     }
 
+    @Step("Проверить, что чек-бокс {value} не выбран")
+    public FilterPage shouldElementHasNotBeenSelected(String value) {
+        Element anchorElement = E(String.format(SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH, value),
+                String.format("Чек-бокс %s", value));
+        anAssert.isElementImageMatches(anchorElement, MagMobElementTypes.CHECK_BOX_NOT_SELECTED_FILTER_PAGE.getPictureName());
+        return this;
+    }
+
     @Step("Проверить, что выбрана Радиогруппа {value}")
     public FilterPage shouldFilterHasBeenChosen(String value) throws Exception {
         MagMobCheckBox element = new MagMobCheckBox(driver, new CustomLocator(By.xpath("//*[contains(@text, '" + value + "')]")));
@@ -213,6 +216,17 @@ public class FilterPage extends BaseAppPage {
         MagMobCheckBox element = new MagMobCheckBox(driver, new CustomLocator(By.xpath("//*[contains(@text, '" + value + "')]")));
         anAssert.isFalse(element.isChecked(), "Фильтр '" + value + "' не должен быть выбран");
         return this;
+    }
+
+    @Step("Проверить, что кнопка \"Метла\" должна быть видна - {isVisible}")
+    public FilterPage shouldClearAllFiltersBeOnPage(boolean isVisible){
+        String pageSource = getPageSource();
+        if (isVisible) {
+            anAssert.isElementVisible(clearAllFiltersBtn, pageSource);
+        }else {
+            anAssert.isElementNotVisible(clearAllFiltersBtn, pageSource);
+        }
+        return new FilterPage(context);
     }
 
 }

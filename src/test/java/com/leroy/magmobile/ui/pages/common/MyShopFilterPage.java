@@ -32,6 +32,15 @@ public class MyShopFilterPage extends FilterPage {
         top0Btn.waitForVisibility(short_timeout);
     }
 
+    public MyShopFilterPage scroll(String direction){
+        if (direction.equals("down")) {
+            mainScrollView.scrollDown();
+        }else {
+            mainScrollView.scrollUp();
+        }
+        return new MyShopFilterPage(context);
+    }
+
     @Override
     @Step("Выбрать checkBox фильтр {value}")
     public void choseCheckBoxFilter(String value) throws Exception {
@@ -82,9 +91,11 @@ public class MyShopFilterPage extends FilterPage {
         return new MyShopFilterPage(context);
     }
 
-    @Step("Выбрать фильтр top")
-    public void choseTopFilter() { //TODO Надо сделать данный метод с параметром, чтоб можно было выбирать ТОП 1 и другие
-        clickElementAndWaitUntilContentIsChanged(top0Btn);
+    @Step("Выбрать фильтр top {top}")
+    public MyShopFilterPage choseTopFilter(String top) {
+        Element element = E("contains(" + top + ")");
+        clickElementAndWaitUntilContentIsChanged(element);
+        return new MyShopFilterPage(context);
     }
 
     //VERIFICATIONS
