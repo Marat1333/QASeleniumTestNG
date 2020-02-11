@@ -151,7 +151,7 @@ public class FilterPage extends BaseAppPage {
         gamma = gamma.toUpperCase();
         try {
             Element element = E("contains(" + gamma + ")");
-            gammaFilterScrollView.scrollRight(gamma);
+            gammaFilterScrollView.scrollRight(element);
             element.click();
         } catch (NoSuchElementException e) {
             Log.error("Выбранная Гамма не найдена");

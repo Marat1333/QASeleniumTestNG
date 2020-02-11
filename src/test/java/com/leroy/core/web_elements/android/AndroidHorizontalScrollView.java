@@ -120,8 +120,18 @@ public class AndroidHorizontalScrollView<T extends CardWidgetData> extends BaseW
         return scrollTo(ScrollDirection.LEFT, text);
     }
 
+    public AndroidHorizontalScrollView<T> scrollLeft(Element elem) {
+        scrollTo(ScrollDirection.LEFT, elem);
+        return this;
+    }
+
     public AndroidHorizontalScrollView<T> scrollRight(String text) {
         return scrollTo(ScrollDirection.RIGHT, text);
+    }
+
+    public AndroidHorizontalScrollView<T> scrollRight(Element elem) {
+        scrollTo(ScrollDirection.RIGHT, elem);
+        return this;
     }
 
     public List<T> getFullDataList() {
