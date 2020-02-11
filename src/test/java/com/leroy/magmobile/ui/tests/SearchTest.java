@@ -992,4 +992,71 @@ public class SearchTest extends AppBaseSteps {
         searchProductPage.shouldCatalogResponseEqualsContent(defaultParamsResponce, SearchProductPage.CardType.COMMON, 10);
     }
 
+    @Test(description = "C22789208 Поведение чек-бокса AVS", priority = 2)
+    public void testAvsFilterBehaviour() throws Exception {
+        LocalDate avsDate = LocalDate.of(2019, 4, 24);
+
+        GetCatalogSearch avsParam = new GetCatalogSearch()
+                .setPageSize(3)
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
+                .setStartFrom(1)
+                .setAvsDate(String.format("between%%7C%s-0%s-%sT00:00:00.000Z%%7C%s-0%s-%sT00:00:00.000Z",
+                        avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth(),
+                        avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth() + 1))
+                .setDepartmentId("1");
+
+        GetCatalogSearch avsNeqNullParam = new GetCatalogSearch()
+                .setPageSize(3)
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
+                .setStartFrom(1)
+                .setAvsDate("neq|null")
+                .setDepartmentId("1");
+
+        Response<ProductItemListResponse> avsParamsResponce = apiClient.searchProductsBy(avsParam);
+        Response<ProductItemListResponse> avsNeqNullParamsResponce = apiClient.searchProductsBy(avsNeqNullParam);
+
+        // Pre-conditions
+        SalesPage salesPage = loginAndGoTo(SalesPage.class);
+        SearchProductPage searchProductPage = salesPage.clickSearchBar(true);
+        NomenclatureSearchPage nomenclatureSearchPage = searchProductPage.goToNomenclatureWindow();
+        nomenclatureSearchPage.returnBackNTimes(1);
+        nomenclatureSearchPage.choseDepartmentId("001", null, null, null);
+        nomenclatureSearchPage.clickShowAllProductsBtn();
+        MyShopFilterPage myShopFilterPage = searchProductPage.goToFilterPage();
+
+        // Step 1
+        log.step("Выбрать любую дату по нажатию на поле \"Дата AVS\"");
+        myShopFilterPage.choseAvsDate(avsDate);
+        myShopFilterPage.shouldAvsDateIsCorrect(avsDate, false);
+        myShopFilterPage.shouldClearAvsDateBtnIsVisible(true);
+
+        // Step 2
+        log.step("Применить фильтр");
+        myShopFilterPage.applyChosenFilters();
+        searchProductPage.shouldCatalogResponseEqualsContent(avsParamsResponce, SearchProductPage.CardType.COMMON, 3);
+
+        // Step 3
+        log.step("Убрать чек-бокс напротив слова AVS");
+        searchProductPage.goToFilterPage();
+        myShopFilterPage.choseCheckBoxFilter(FilterPage.AVS);
+        myShopFilterPage.shouldAvsDateIsCorrect(null, true);
+        myShopFilterPage.shouldElementHasNotBeenSelected(FilterPage.AVS);
+
+        // Step 4
+        log.step("установить чек-бокс AVS, не выбирая даты, и применить фильтры");
+        myShopFilterPage.choseCheckBoxFilter(FilterPage.AVS);
+        myShopFilterPage.applyChosenFilters();
+        searchProductPage.shouldCatalogResponseEqualsContent(avsNeqNullParamsResponce, SearchProductPage.CardType.COMMON, 3);
+
+        // Step 5
+        log.step("Выбрать дату AVS и очистить поле по нажатию на \"крест\"");
+        searchProductPage.goToFilterPage();
+        myShopFilterPage.choseAvsDate(avsDate);
+        myShopFilterPage.clearAvsDate();
+        myShopFilterPage.shouldAvsDateIsCorrect(null, true);
+        myShopFilterPage.shouldClearAvsDateBtnIsVisible(false);
+    }
+
 }

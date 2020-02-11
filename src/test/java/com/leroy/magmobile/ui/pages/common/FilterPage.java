@@ -122,7 +122,7 @@ public class FilterPage extends BaseAppPage {
     }
 
     @Step("Выбрать checkBox фильтр {value}")
-    public void choseCheckBoxFilter(String value) throws Exception {
+    public FilterPage choseCheckBoxFilter(String value) throws Exception {
         switch (value) {
             case TOP_1000:
                 top1000.click();
@@ -144,6 +144,7 @@ public class FilterPage extends BaseAppPage {
             default:
                 throw new Exception();
         }
+        return new FilterPage(context);
     }
 
     @Step("Выбрать фильтр {gamma}")
@@ -169,11 +170,12 @@ public class FilterPage extends BaseAppPage {
     }
 
     @Step("Выбрать дату avs")
-    public void choseAvsDate(LocalDate date) throws Exception {
+    public FilterPage choseAvsDate(LocalDate date) throws Exception {
         mainScrollView.scrollDown();
         avsDateBtn.click();
         CalendarWidget calendarWidget = new CalendarWidget(context.getDriver());
         calendarWidget.selectDate(date);
+        return new FilterPage(context);
     }
 
     @Step("Показать товары по выбранным фильтрам")

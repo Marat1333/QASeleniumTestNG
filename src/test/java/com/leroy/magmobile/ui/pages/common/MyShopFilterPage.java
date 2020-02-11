@@ -1,9 +1,12 @@
 package com.leroy.magmobile.ui.pages.common;
 
+import com.leroy.constants.MagMobElementTypes;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import io.qameta.allure.Step;
+
+import java.time.LocalDate;
 
 public class MyShopFilterPage extends FilterPage {
 
@@ -20,6 +23,15 @@ public class MyShopFilterPage extends FilterPage {
 
     @AppFindBy(text = "Поставщик")
     Element supplierBtn;
+
+    @AppFindBy(xpath = "//android.widget.TextView[@text='Дата AVS']/following-sibling::android.view.ViewGroup")
+    Element addAvsDateBtn;
+
+    @AppFindBy(xpath = "//android.widget.TextView[@text='Дата AVS']/following-sibling::android.view.ViewGroup/android.view.ViewGroup")
+    Element clearAvsDateBtn;
+
+    @AppFindBy(xpath = "//android.widget.TextView[@text='Дата AVS']/following-sibling::android.widget.TextView")
+    Element chosenAvsDate;
 
     Element topEm = E("contains(Топ ЕМ)");
 
@@ -43,7 +55,7 @@ public class MyShopFilterPage extends FilterPage {
 
     @Override
     @Step("Выбрать checkBox фильтр {value}")
-    public void choseCheckBoxFilter(String value) throws Exception {
+    public MyShopFilterPage choseCheckBoxFilter(String value) throws Exception {
         switch (value) {
             case TOP_EM:
                 topEm.click();
@@ -66,11 +78,11 @@ public class MyShopFilterPage extends FilterPage {
             case AVS:
                 mainScrollView.scrollDown();
                 avs.click();
-                mainScrollView.scrollUp();
                 break;
             default:
                 throw new Exception();
         }
+        return new MyShopFilterPage(context);
     }
 
     @Step("Перейти на страницу выбора поставщиков")
@@ -98,7 +110,41 @@ public class MyShopFilterPage extends FilterPage {
         return new MyShopFilterPage(context);
     }
 
+    @Step("Очистить дату AVS, нажав на крест")
+    public MyShopFilterPage clearAvsDate() {
+        if (!clearAvsDateBtn.isVisible()) {
+            mainScrollView.scrollDown();
+        }
+        clearAvsDateBtn.click();
+        return new MyShopFilterPage(context);
+    }
+
     //VERIFICATIONS
+
+    @Step("Проверить, что отображенная дата соответствует выбранной")
+    public MyShopFilterPage shouldAvsDateIsCorrect(LocalDate date, boolean isNull) {
+        String pageSource = getPageSource();
+        if (isNull) {
+            anAssert.isElementNotVisible(chosenAvsDate, pageSource);
+        } else {
+            String dateAsString = date.getDayOfMonth() + ".";
+            String month = date.getMonthValue() > 9 ? String.valueOf(date.getMonthValue()) : "0" + date.getMonthValue();
+            dateAsString = dateAsString + month + "." + String.valueOf(date.getYear()).substring(2);
+            anAssert.isElementTextEqual(chosenAvsDate, dateAsString, pageSource);
+        }
+        return this;
+    }
+
+    @Step("Проверить, кнопка очистки даты AVS имеет вид креста {isCrossView}")
+    public MyShopFilterPage shouldClearAvsDateBtnIsVisible(boolean isCrossView) {
+        String pageSource = getPageSource();
+        if (isCrossView) {
+            anAssert.isElementVisible(clearAvsDateBtn, pageSource);
+        } else {
+            anAssert.isElementImageMatches(addAvsDateBtn, MagMobElementTypes.EDIT_PEN.getPictureName());
+        }
+        return this;
+    }
 
     @Step("Проверяем, что кнопка выбора фильтра по поставщикам содержит текст {supplierName}")
     public MyShopFilterPage shouldSupplierButtonContainsText(int countOfChosenSuppliers, String supplierName) {
