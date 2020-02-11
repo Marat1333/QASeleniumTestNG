@@ -226,7 +226,7 @@ public class FilterPage extends BaseAppPage {
         } else {
             anAssert.isElementNotVisible(clearAllFiltersBtn, pageSource);
         }
-        return new FilterPage(context);
+        return this;
     }
 
 }
