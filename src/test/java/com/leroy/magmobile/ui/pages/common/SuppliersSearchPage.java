@@ -73,7 +73,7 @@ public class SuppliersSearchPage extends BaseAppPage {
     }
 
     @Step("Найти поставщика по {value} и выбрать его")
-    public SuppliersSearchPage searchAndConfirmSupplier(String value) {
+    public SuppliersSearchPage searchForAndChoseSupplier(String value) {
         searchString.clearFillAndSubmit(value);
         searchString.clear();
         hideKeyboard();
@@ -99,6 +99,7 @@ public class SuppliersSearchPage extends BaseAppPage {
     @Step("Проверить, что в овальной области отображено имя выбранного поставщика")
     public SuppliersSearchPage shouldNameOfChosenIsDisplayedInOvalElement(String supplierName) {
         List<TextViewData> namesOfSuppliers = suppliersOvalElements.getFullDataList();
+        anAssert.isFalse(namesOfSuppliers.isEmpty(), "Не найдено выбранных поставщиков");
         for (TextViewData data : namesOfSuppliers) {
             anAssert.isTrue(supplierName.contains(data.getText()), "В овальной области не отображено имя выбранного поставщика");
         }

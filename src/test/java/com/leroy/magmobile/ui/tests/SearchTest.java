@@ -255,7 +255,7 @@ public class SearchTest extends AppBaseSteps {
         SuppliersSearchPage suppliersSearchPage = filterPage.goToSuppliersSearchPage(false);
         suppliersSearchPage.verifyRequiredElements();
 
-        suppliersSearchPage.searchAndConfirmSupplier(supplierSearchContext);
+        suppliersSearchPage.searchForAndChoseSupplier(supplierSearchContext);
         suppliersSearchPage.shouldCountOfSuppliersIs(1);
         suppliersSearchPage.shouldSupplierCardsContainText(supplierSearchContext);
         suppliersSearchPage.shouldSupplierCheckboxIsSelected(supplierSearchContext, true);
@@ -768,7 +768,7 @@ public class SearchTest extends AppBaseSteps {
 
         // Step 2
         log.step("ввести в поисковую строку код поставщика");
-        suppliersSearchPage.searchAndConfirmSupplier(FIRST_SUPPLIER_CODE);
+        suppliersSearchPage.searchForAndChoseSupplier(FIRST_SUPPLIER_CODE);
         suppliersSearchPage.shouldSupplierCardsContainText(FIRST_SUPPLIER_CODE);
 
         // Step 3
@@ -779,7 +779,7 @@ public class SearchTest extends AppBaseSteps {
         // Step 4
         log.step("повторить шаг 1-2, но искать по наименованию поставщика");
         myShopFilterPage.goToSuppliersSearchPage(false);
-        suppliersSearchPage.searchAndConfirmSupplier(SECOND_SUPPLIER_NAME);
+        suppliersSearchPage.searchForAndChoseSupplier(SECOND_SUPPLIER_NAME);
         suppliersSearchPage.shouldSupplierCardsContainText(SECOND_SUPPLIER_NAME);
 
         // Step 5
@@ -811,7 +811,7 @@ public class SearchTest extends AppBaseSteps {
         log.step("Повторить шаг 1-2 и выбрать поставщика");
         searchProductPage.goToFilterPage();
         myShopFilterPage.goToSuppliersSearchPage(false);
-        suppliersSearchPage.searchAndConfirmSupplier(FIRST_SUPPLIER_CODE);
+        suppliersSearchPage.searchForAndChoseSupplier(FIRST_SUPPLIER_CODE);
         suppliersSearchPage.shouldSupplierCheckboxIsSelected(FIRST_SUPPLIER_CODE, true);
         suppliersSearchPage.shouldNameOfChosenIsDisplayedInOvalElement(FIRST_SUPPLIER_NAME);
         // Step 10
@@ -949,7 +949,7 @@ public class SearchTest extends AppBaseSteps {
         myShopFilterPage.choseProductType(MyShopFilterPage.ORDERED_PRODUCT_TYPE);
         myShopFilterPage.shouldFilterHasBeenChosen(MyShopFilterPage.ORDERED_PRODUCT_TYPE);
         SuppliersSearchPage suppliersSearchPage = myShopFilterPage.goToSuppliersSearchPage(false);
-        suppliersSearchPage.searchAndConfirmSupplier(SUPPLIER_CODE);
+        suppliersSearchPage.searchForAndChoseSupplier(SUPPLIER_CODE);
         suppliersSearchPage.applyChosenSupplier();
         myShopFilterPage.shouldSupplierButtonContainsText(1, SUPPLIER_NAME);
         myShopFilterPage.choseAvsDate(avsDate);
