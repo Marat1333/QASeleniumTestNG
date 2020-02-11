@@ -123,6 +123,13 @@ public class SuppliersSearchPage extends BaseAppPage {
         return this;
     }
 
+    @Step("Проверить кол-во результатов поиска. Должно быть > {count}")
+    public SuppliersSearchPage shouldCountOfSuppliersIsMoreThan(int count) {
+        anAssert.isTrue(supplierCards.getCount()>count,
+                "Кол-во виджетов поставщиков меньше указанного");
+        return this;
+    }
+
     @Step("Проверить, что сортировка по отделам происходит корректно и первый отдел = отделу пользователя")
     public SuppliersSearchPage shouldSuppliersSortedByDepartmentId(String deptId) {
         anAssert.isTrue(departmentLbl.getText().contains(deptId), "Первый отображаемый отдел не соответствует отделу пользователя, следовательно поставщики не отсортированы по отделам");
