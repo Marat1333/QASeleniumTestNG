@@ -35,7 +35,7 @@ public class SuppliersSearchPage extends BaseAppPage {
             "./descendant::android.view.ViewGroup[7]/android.view.ViewGroup", SupplierCardWidget.class);
 
     AndroidHorizontalScrollView<TextViewData> suppliersOvalElements = new AndroidHorizontalScrollView<>(driver,
-            new CustomLocator(By.xpath("//android.widget.HorizontalScrollView")),
+            By.xpath("//android.widget.HorizontalScrollView"),
             "./descendant::android.view.ViewGroup[2]/android.widget.TextView",
             TextViewWidget.class);
 

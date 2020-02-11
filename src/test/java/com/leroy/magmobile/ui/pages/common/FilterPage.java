@@ -55,7 +55,7 @@ public class FilterPage extends BaseAppPage {
     AndroidScrollView<TextViewData> mainScrollView;
 
     AndroidHorizontalScrollView<TextViewData> gammaFilterScrollView = new AndroidHorizontalScrollView<>(driver,
-            new CustomLocator(By.xpath("//android.widget.ScrollView//android.view.ViewGroup[3]/android.widget.HorizontalScrollView")), "//android.widget.TextView", TextViewWidget.class);
+            By.xpath("//android.widget.ScrollView//android.view.ViewGroup[3]/android.widget.HorizontalScrollView"));
 
     @AppFindBy(text = "МОЙ МАГАЗИН")
     MagMobCheckBox myShopBtn;
@@ -151,7 +151,7 @@ public class FilterPage extends BaseAppPage {
         gamma = gamma.toUpperCase();
         try {
             Element element = E("contains(" + gamma + ")");
-            gammaFilterScrollView.simpleHorizontalScrollTo(AndroidHorizontalScrollView.ScrollDirection.RIGHT, element);
+            gammaFilterScrollView.scrollRight(element);
             element.click();
         } catch (NoSuchElementException e) {
             Log.error("Выбранная Гамма не найдена");
