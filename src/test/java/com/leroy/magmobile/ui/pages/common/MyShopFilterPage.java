@@ -25,9 +25,20 @@ public class MyShopFilterPage extends FilterPage {
 
     Element hasAvailableStock = E("contains(Есть теор. запас)");
 
+    final String CLEAR_SUPPLIERS_FILTER_BTN_XPATH = "//android.widget.EditText[contains(@text,%s)]/ancestor::android.view.ViewGroup[2]/following-sibling::android.view.ViewGroup";
+
     @Override
     public void waitForPageIsLoaded() {
         top0Btn.waitForVisibility(short_timeout);
+    }
+
+    public MyShopFilterPage scroll(String direction) {
+        if (direction.equals("down")) {
+            mainScrollView.scrollDown();
+        } else {
+            mainScrollView.scrollUp();
+        }
+        return new MyShopFilterPage(context);
     }
 
     @Override
@@ -63,15 +74,44 @@ public class MyShopFilterPage extends FilterPage {
     }
 
     @Step("Перейти на страницу выбора поставщиков")
-    public SuppliersSearchPage goToSuppliersSearchPage() throws Exception {
+    public SuppliersSearchPage goToSuppliersSearchPage(boolean hideKeyboard) {
         mainScrollView.scrollDown();
         supplierBtn.click();
+        if (hideKeyboard) {
+            hideKeyboard();
+        }
         return new SuppliersSearchPage(context);
     }
 
-    @Step("Выбрать фильтр top")
-    public void choseTopFilter() { //TODO Надо сделать данный метод с параметром, чтоб можно было выбирать ТОП 1 и другие
-        clickElementAndWaitUntilContentIsChanged(top0Btn);
+    @Step("Очистить поле с фильтром по поставщику")
+    public MyShopFilterPage clearSuppliersFilter(String supplierName) throws Exception {
+        mainScrollView.scrollDown();
+        Element clearSuppliersFilterBtn = E(String.format(CLEAR_SUPPLIERS_FILTER_BTN_XPATH, supplierName));
+        clearSuppliersFilterBtn.click();
+        return new MyShopFilterPage(context);
+    }
+
+    @Step("Выбрать фильтр top {top}")
+    public MyShopFilterPage choseTopFilter(String top) {
+        Element element = E("contains(" + top + ")");
+        clickElementAndWaitUntilContentIsChanged(element);
+        return new MyShopFilterPage(context);
+    }
+
+    //VERIFICATIONS
+
+    @Step("Проверяем, что кнопка выбора фильтра по поставщикам содержит текст {supplierName}")
+    public MyShopFilterPage shouldSupplierButtonContainsText(int countOfChosenSuppliers, String supplierName) {
+        Element element;
+        if (countOfChosenSuppliers == 1) {
+            element = E("contains(" + supplierName + ")");
+        } else if (countOfChosenSuppliers > 1) {
+            element = E("contains(Выбрано " + countOfChosenSuppliers + ")");
+        } else {
+            element = supplierBtn;
+        }
+        anAssert.isElementVisible(element);
+        return this;
     }
 
 }
