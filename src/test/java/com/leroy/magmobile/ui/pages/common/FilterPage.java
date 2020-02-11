@@ -192,7 +192,7 @@ public class FilterPage extends BaseAppPage {
     public FilterPage shouldElementHasBeenSelected(String value) {
         Element anchorElement = E(String.format(SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH, value),
                 String.format("Чек-бокс %s", value));
-        anAssert.isElementImageMatches(anchorElement, MagMobElementTypes.CHECK_BOX_FILTER_PAGE.getPictureName());
+        anAssert.isElementImageMatches(anchorElement, MagMobElementTypes.CHECK_BOX_SELECTED_FILTER_PAGE.getPictureName());
         return this;
     }
 
@@ -219,11 +219,11 @@ public class FilterPage extends BaseAppPage {
     }
 
     @Step("Проверить, что кнопка \"Метла\" должна быть видна - {isVisible}")
-    public FilterPage shouldClearAllFiltersBeOnPage(boolean isVisible){
+    public FilterPage shouldClearAllFiltersBeOnPage(boolean isVisible) {
         String pageSource = getPageSource();
         if (isVisible) {
             anAssert.isElementVisible(clearAllFiltersBtn, pageSource);
-        }else {
+        } else {
             anAssert.isElementNotVisible(clearAllFiltersBtn, pageSource);
         }
         return new FilterPage(context);

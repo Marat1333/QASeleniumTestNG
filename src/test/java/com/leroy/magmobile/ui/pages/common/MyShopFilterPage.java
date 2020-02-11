@@ -32,10 +32,10 @@ public class MyShopFilterPage extends FilterPage {
         top0Btn.waitForVisibility(short_timeout);
     }
 
-    public MyShopFilterPage scroll(String direction){
+    public MyShopFilterPage scroll(String direction) {
         if (direction.equals("down")) {
             mainScrollView.scrollDown();
-        }else {
+        } else {
             mainScrollView.scrollUp();
         }
         return new MyShopFilterPage(context);

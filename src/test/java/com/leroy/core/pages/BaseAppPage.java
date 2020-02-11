@@ -4,7 +4,6 @@ import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.pages.common.SearchProductPage;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
@@ -143,7 +142,7 @@ public class BaseAppPage extends BasePage {
         return this;
     }
 
-    public BaseAppPage shouldProgressBarIsInvisible(){
+    public BaseAppPage shouldProgressBarIsInvisible() {
         anAssert.isElementNotVisible(progressBar);
         return this;
     }

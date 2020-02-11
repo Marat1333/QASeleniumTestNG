@@ -109,9 +109,9 @@ public class SuppliersSearchPage extends BaseAppPage {
     public SuppliersSearchPage shouldSupplierCheckboxIsSelected(String value, boolean isSelected) {
         Element anchorElement = E(String.format(SCREEN_CONTENT_XPATH + SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH, value));
         if (isSelected) {
-            anAssert.isElementImageMatches(anchorElement, MagMobElementTypes.CHECK_BOX_SELECTED.getPictureName());
+            anAssert.isElementImageMatches(anchorElement, MagMobElementTypes.CHECK_BOX_SELECTED_SUPPLIER_SEARCH_PAGE.getPictureName());
         } else {
-            anAssert.isElementImageMatches(anchorElement, MagMobElementTypes.CHECK_BOX_NOT_SELECTED.getPictureName());
+            anAssert.isElementImageMatches(anchorElement, MagMobElementTypes.CHECK_BOX_NOT_SELECTED_SUPPLIER_SEARCH_PAGE.getPictureName());
         }
         return this;
     }
