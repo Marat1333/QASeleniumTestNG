@@ -23,7 +23,7 @@ import java.util.List;
 
 public class AndroidHorizontalScrollView<T extends CardWidgetData> extends BaseWidget {
 
-    private boolean experiment = true;
+    private boolean experiment = false;
     private final int MAX_SCROLL_COUNT = 10;
 
     private AndroidDriver<MobileElement> androidDriver;
