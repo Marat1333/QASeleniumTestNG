@@ -75,10 +75,10 @@ public class SuppliersSearchPage extends BaseAppPage {
     @Step("Найти поставщика по {value} и выбрать его")
     public SuppliersSearchPage searchForAndChoseSupplier(String value) {
         searchString.clearFillAndSubmit(value);
-        searchString.clear();
-        hideKeyboard();
-        Element supplier = E("contains(" + value + ")");
-        supplier.click();
+        waitUntilProgressBarIsVisible();
+        waitUntilProgressBarIsInvisible();
+        E(SCREEN_CONTENT_XPATH + "//android.widget.TextView[contains(@text, '" + value + "')]")
+                .click();
         return new SuppliersSearchPage(context);
     }
 

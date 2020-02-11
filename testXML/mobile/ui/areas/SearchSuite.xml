@@ -126,7 +126,7 @@
         </classes>
     </test>
 
-    <test name="C22789203 очистка выбранных фильтров. При выборе хотя бы 1. Активация кнопки Метла">
+    <test name="C22789203 Очистка выбранных фильтров; При выборе хотя бы 1; Активация кнопки Метла">
         <classes>
             <class name="com.leroy.magmobile.ui.tests.SearchTest">
                 <methods>
