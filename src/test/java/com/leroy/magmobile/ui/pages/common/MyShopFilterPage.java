@@ -137,11 +137,10 @@ public class MyShopFilterPage extends FilterPage {
 
     @Step("Проверить, кнопка очистки даты AVS имеет вид креста {isCrossView}")
     public MyShopFilterPage shouldClearAvsDateBtnIsVisible(boolean isCrossView) {
-        String pageSource = getPageSource();
         if (isCrossView) {
-            anAssert.isElementVisible(clearAvsDateBtn, pageSource);
+            anAssert.isElementVisible(clearAvsDateBtn);
         } else {
-            anAssert.isElementImageMatches(addAvsDateBtn, MagMobElementTypes.EDIT_PEN.getPictureName());
+            anAssert.isElementImageMatches(addAvsDateBtn, MagMobElementTypes.PLUS_FILTER_PAGE.getPictureName());
         }
         return this;
     }

@@ -139,7 +139,6 @@ public class FilterPage extends BaseAppPage {
             case AVS:
                 mainScrollView.scrollDown();
                 avs.click();
-                mainScrollView.scrollUp();
                 break;
             default:
                 throw new Exception();

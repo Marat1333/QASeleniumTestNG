@@ -3,8 +3,8 @@ package com.leroy.constants;
 public enum MagMobElementTypes {
 
     EDIT_PEN("pen"),
-    EDIT_PEN_FILTER_PAGE("penFilterPage"),
     PLUS("plus"),
+    PLUS_FILTER_PAGE("plusFilterPage"),
     CIRCLE_PLUS("circle_plus"),
     CHECK_BOX_SELECTED_SUPPLIER_SEARCH_PAGE("checkBoxSupplierSearchPage"),
     CHECK_BOX_NOT_SELECTED_SUPPLIER_SEARCH_PAGE("checkBoxNotSelectedSupplierSearchPage"),
