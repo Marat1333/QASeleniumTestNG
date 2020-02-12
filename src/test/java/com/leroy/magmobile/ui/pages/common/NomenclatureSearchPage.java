@@ -50,7 +50,7 @@ public class NomenclatureSearchPage extends BaseAppPage {
                 throw new NoSuchElementException("There is no back button");
             }
             nomenclatureBackBtn.click();
-            if (!waitUntilContentIsChanged(pageSource, 1)) {
+            if (!waitUntilContentIsChanged(pageSource, tiny_timeout)) {
                 Log.warn("The second click when returnBackNTimes()");
                 nomenclatureBackBtn.click();
                 waitUntilContentIsChanged(pageSource);
