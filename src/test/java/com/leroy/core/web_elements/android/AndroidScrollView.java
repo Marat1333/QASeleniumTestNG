@@ -1,6 +1,7 @@
 package com.leroy.core.web_elements.android;
 
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.BaseWidget;
@@ -23,6 +24,16 @@ import static io.appium.java_client.touch.offset.PointOption.point;
 import static java.time.Duration.ofMillis;
 
 public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
+
+    // Если будет работать лучше, то надо подумать, как передавать Selector для самого скролла внутрь
+    private boolean experiment = false;
+
+    private boolean bottomPartOverlap = false;
+
+    public AndroidScrollView<T> setBottomPartOverlap(boolean bottomPartOverlap) {
+        this.bottomPartOverlap = bottomPartOverlap;
+        return this;
+    }
 
     private final int MAX_SCROLL_COUNT = 10;
 
@@ -63,6 +74,17 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
         androidDriver = (AndroidDriver) driver;
     }
 
+    private void executeUIAutomatorScript(String script) {
+        setImplicitWait(0);
+        try {
+            androidDriver.findElementByAndroidUIAutomator(script);
+        } catch (NoSuchElementException err) {
+            // This error is ok.
+            // if you know how to execute UIAutomator script with different way, so update this code
+        }
+        this.setImplicitWait(DriverFactory.IMPLICIT_WAIT_TIME_OUT);
+    }
+
     /**
      * Ищет виджет с текстом {value} и возвращает ссылку на сам widget (в общем виде - CardWidget)
      */
@@ -70,6 +92,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
         SearchContext searchContext = new SearchContext();
         searchContext.findText = containsText;
         searchContext.findTextShouldNotContainsIt = shouldNotContainsThisText;
+        scrollUp();
         scrollTo(searchContext, MAX_SCROLL_COUNT, null, "down");
         return tmpWidget;
     }
@@ -82,14 +105,20 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
      * Get data object by index. If necessary, it scroll to this object
      */
     public T getDataObj(int index) {
+        scrollUp();
         scrollTo(null, null, index + 1, "down");
-        return tmpCardDataList.get(tmpCardDataList.size() - 1);
+        if (tmpCardDataList.size() <= index) {
+            throw new IndexOutOfBoundsException(
+                    String.format("Data list size is %s. Index is %s", tmpCardDataList.size(), index));
+        }
+        return tmpCardDataList.get(index);
     }
 
     /**
      * Scroll down to the end and get all data as ArrayList
      */
     public List<T> getFullDataList(int maxEntityCount) {
+        scrollUp();
         scrollTo(null, null, maxEntityCount, "down");
         return new ArrayList<>(tmpCardDataList);
     }
@@ -100,6 +129,14 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
 
     public List<String> getFullDataAsStringList() throws Exception {
         return getFullDataList().stream().map(T::toString).collect(Collectors.toList());
+    }
+
+    /**
+     * Return count of the rows inside the ScrollView
+     */
+    public int getRowCount() {
+        scrollUp();
+        return getFullDataList(100).size();
     }
 
     private void addNonRepeatingText(List<T> existedList, List<T> newList) {
@@ -134,19 +171,25 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
     }
 
     private void simpleScroll(String direction) {
-        //Try to change bottomY k
-        Point _location = getLocation();
-        Dimension _size = getSize();
-        int x = _location.getX() + _size.getWidth() / 2;
-        int bottomY = _location.getY() + _size.getHeight() - (int) Math.round(_size.getHeight() * 0.5);
-        int topY = _location.getY() + (int) Math.round(_size.getHeight() * 0.05);
+        if (experiment && (direction.equals("down") && !bottomPartOverlap || direction.equals("up"))) {
+            String _method = direction.equals("down") ? "scrollForward" : "scrollBackward";
+            executeUIAutomatorScript("new UiScrollable(new UiSelector()"
+                    + ".scrollable(true))." + _method + "();");
+        } else {
+            //Try to change bottomY k
+            Point _location = getLocation();
+            Dimension _size = getSize();
+            int x = _location.getX() + _size.getWidth() / 2;
+            int bottomY = _location.getY() + _size.getHeight() - (int) Math.round(_size.getHeight() * 0.5);
+            int topY = _location.getY() + (int) Math.round(_size.getHeight() * 0.05);
 
-        boolean isDirectionDown = direction.equals("down");
-        new TouchAction<>(androidDriver)
-                .press(point(x, isDirectionDown ? bottomY : topY))
-                .waitAction(waitOptions(ofMillis(1000)))
-                .moveTo(point(x, isDirectionDown ? topY : bottomY))
-                .release().perform();
+            boolean isDirectionDown = direction.equals("down");
+            new TouchAction<>(androidDriver)
+                    .press(point(x, isDirectionDown ? bottomY : topY))
+                    .waitAction(waitOptions(ofMillis(1000)))
+                    .moveTo(point(x, isDirectionDown ? topY : bottomY))
+                    .release().perform();
+        }
     }
 
     /**
@@ -179,7 +222,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
                     if (searchContext != null && searchContext.findText != null &&
                             data.toString().contains(searchContext.findText) &&
                             (searchContext.findTextShouldNotContainsIt == null ||
-                            !data.toString().contains(searchContext.findTextShouldNotContainsIt))) {
+                                    !data.toString().contains(searchContext.findTextShouldNotContainsIt))) {
                         tmpWidget = widget;
                         textFound = true;
                         break;
@@ -197,12 +240,12 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
                 }
                 break;
             }
-            simpleScroll(direction);
-            progressBar.waitForInvisibility();
-            Log.debug("<-- Scroll down #" + (i + 1) + "-->");
             if (currentVisibleDataList.equals(prevDataList))
                 break;
             prevDataList = new ArrayList<>(currentVisibleDataList);
+            simpleScroll(direction);
+            progressBar.waitForInvisibility();
+            Log.debug("<-- Scroll down #" + (i + 1) + "-->");
             i++;
         }
         return this;
@@ -251,22 +294,32 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
     }
 
     public AndroidScrollView<T> scrollDown() {
-        return scrollDown(MAX_SCROLL_COUNT);
+        return scrollDown(1);
     }
 
     public AndroidScrollView<T> scrollUp() {
-        return scrollUp(MAX_SCROLL_COUNT);
+        if (experiment) {
+            executeUIAutomatorScript(
+                    "new UiScrollable(new UiSelector().scrollable(true)).flingBackward();");
+            return this;
+        } else {
+            return scrollUp(1);
+        }
     }
 
     public AndroidScrollView<T> scrollDown(int count) {
-        if (count == 1)
+        if (count == 1) {
             simpleScroll("down");
+            return this;
+        }
         return scrollDownToText(null, count);
     }
 
     public AndroidScrollView<T> scrollUp(int count) {
-        if (count == 1)
+        if (count == 1) {
             simpleScroll("up");
+            return this;
+        }
         return scrollUpToText(null, count);
     }
 
