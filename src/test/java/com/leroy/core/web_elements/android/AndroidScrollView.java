@@ -63,6 +63,10 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
         androidDriver = (AndroidDriver) driver;
     }
 
+    private enum Direction {
+        UP, DOWN;
+    }
+
     /**
      * Ищет виджет с текстом {value} и возвращает ссылку на сам widget (в общем виде - CardWidget)
      */
@@ -70,7 +74,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
         SearchContext searchContext = new SearchContext();
         searchContext.findText = containsText;
         searchContext.findTextShouldNotContainsIt = shouldNotContainsThisText;
-        scrollTo(searchContext, MAX_SCROLL_COUNT, null, "down");
+        scrollTo(searchContext, MAX_SCROLL_COUNT, null, Direction.DOWN);
         return tmpWidget;
     }
 
@@ -82,7 +86,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
      * Get data object by index. If necessary, it scroll to this object
      */
     public T getDataObj(int index) {
-        scrollTo(null, null, index + 1, "down");
+        scrollTo(null, null, index + 1, Direction.DOWN);
         return tmpCardDataList.get(tmpCardDataList.size() - 1);
     }
 
@@ -90,7 +94,8 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
      * Scroll down to the end and get all data as ArrayList
      */
     public List<T> getFullDataList(int maxEntityCount) {
-        scrollTo(null, null, maxEntityCount, "down");
+        scrollUp();
+        scrollTo(null, null, maxEntityCount, Direction.DOWN);
         return new ArrayList<>(tmpCardDataList);
     }
 
@@ -133,7 +138,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
                 .release().perform();
     }
 
-    private void simpleScroll(String direction) {
+    private void simpleScroll(Direction direction) {
         //Try to change bottomY k
         Point _location = getLocation();
         Dimension _size = getSize();
@@ -141,7 +146,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
         int bottomY = _location.getY() + _size.getHeight() - (int) Math.round(_size.getHeight() * 0.5);
         int topY = _location.getY() + (int) Math.round(_size.getHeight() * 0.05);
 
-        boolean isDirectionDown = direction.equals("down");
+        boolean isDirectionDown = direction.equals(Direction.DOWN);
         new TouchAction<>(androidDriver)
                 .press(point(x, isDirectionDown ? bottomY : topY))
                 .waitAction(waitOptions(ofMillis(1000)))
@@ -158,7 +163,8 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
      * @return this
      */
     private AndroidScrollView<T> scrollTo(
-            SearchContext searchContext, Integer maxScrollCount, Integer maxEntityCount, String direction) {
+            SearchContext searchContext, Integer maxScrollCount,
+            Integer maxEntityCount, Direction direction) {
         initialWebElementIfNeeded();
         tmpCardDataList = new ArrayList<>();
         List<T> prevDataList = null;
@@ -179,7 +185,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
                     if (searchContext != null && searchContext.findText != null &&
                             data.toString().contains(searchContext.findText) &&
                             (searchContext.findTextShouldNotContainsIt == null ||
-                            !data.toString().contains(searchContext.findTextShouldNotContainsIt))) {
+                                    !data.toString().contains(searchContext.findTextShouldNotContainsIt))) {
                         tmpWidget = widget;
                         textFound = true;
                         break;
@@ -218,7 +224,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
     public AndroidScrollView<T> scrollDownToText(String findText, int maxScrollCount) {
         SearchContext searchContext = new SearchContext();
         searchContext.findText = findText;
-        return scrollTo(searchContext, maxScrollCount, null, "down");
+        return scrollTo(searchContext, maxScrollCount, null, Direction.DOWN);
     }
 
     /**
@@ -231,7 +237,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
     public AndroidScrollView<T> scrollUpToText(String findText, int maxScrollCount) {
         SearchContext searchContext = new SearchContext();
         searchContext.findText = findText;
-        return scrollTo(searchContext, maxScrollCount, null, "up");
+        return scrollTo(searchContext, maxScrollCount, null, Direction.UP);
     }
 
     public AndroidScrollView<T> scrollDownToText(String findText) {
@@ -241,32 +247,36 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
     public AndroidScrollView<T> scrollDownToElement(Element element) {
         SearchContext searchContext = new SearchContext();
         searchContext.findElement = element;
-        return scrollTo(searchContext, MAX_SCROLL_COUNT, null, "down");
+        return scrollTo(searchContext, MAX_SCROLL_COUNT, null, Direction.DOWN);
     }
 
     public AndroidScrollView<T> scrollUpToElement(Element element) {
         SearchContext searchContext = new SearchContext();
         searchContext.findElement = element;
-        return scrollTo(searchContext, MAX_SCROLL_COUNT, null, "up");
+        return scrollTo(searchContext, MAX_SCROLL_COUNT, null, Direction.UP);
     }
 
     public AndroidScrollView<T> scrollDown() {
-        return scrollDown(MAX_SCROLL_COUNT);
+        return scrollDown(1);
     }
 
     public AndroidScrollView<T> scrollUp() {
-        return scrollUp(MAX_SCROLL_COUNT);
+        return scrollUp(1);
     }
 
     public AndroidScrollView<T> scrollDown(int count) {
-        if (count == 1)
-            simpleScroll("down");
+        if (count == 1) {
+            simpleScroll(Direction.DOWN);
+            return this;
+        }
         return scrollDownToText(null, count);
     }
 
     public AndroidScrollView<T> scrollUp(int count) {
-        if (count == 1)
-            simpleScroll("up");
+        if (count == 1) {
+            simpleScroll(Direction.UP);
+            return this;
+        }
         return scrollUpToText(null, count);
     }
 
