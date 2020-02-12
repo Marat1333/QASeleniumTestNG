@@ -8,6 +8,7 @@ import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.models.ProductCardData;
 import com.leroy.magmobile.ui.pages.widgets.ProductCardWidget;
 import com.leroy.models.WithdrawalOrderCardData;
+import com.leroy.utils.Converter;
 import io.qameta.allure.Step;
 
 import java.time.LocalDate;
@@ -65,7 +66,7 @@ public class OrderDetailsPage extends CommonMagMobilePage {
         return this;
     }
 
-    @Step("{index}-ий товар должен соответствовать: {productCardData}")
+    @Step("{index}-ий товар должен соответствовать: {cardData}")
     public OrderDetailsPage shouldProductByIndexIs(
             int index, WithdrawalOrderCardData cardData) throws Exception {
         index--;
@@ -75,7 +76,8 @@ public class OrderDetailsPage extends CommonMagMobilePage {
                 "Номер товара на отзыв должен быть %s");
         softAssert.isEquals(productCardWidget.getName(), productCardData.getName(),
                 "Название товара на отзыв должно быть %s");
-        softAssert.isEquals(productCardWidget.getQuantity(), cardData.getSelectedQuantity(),
+        softAssert.isEquals(Converter.strToDouble(productCardWidget.getQuantity()),
+                cardData.getSelectedQuantity(),
                 "Кол-во товара на отзыв должно быть %s");
         softAssert.isEquals(productCardWidget.getQuantityUnit(), productCardData.getPriceUnit(),
                 "Тип кол-ва должен быть %s");
