@@ -69,6 +69,10 @@ public class SearchProductPage extends BaseAppPage {
     @AppFindBy(text = "Фильтр")
     Element filter;
 
+    @AppFindBy(xpath = "//android.widget.TextView[@content-desc='FilterBtn']/ancestor::android.view.ViewGroup[2]" +
+            "/following-sibling::android.view.ViewGroup//android.widget.TextView")
+    Element filterCounter;
+
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ScreenContent']/android.view.ViewGroup[2]/android.view.ViewGroup[1]//android.widget.TextView",
             metaName = "Выбранная номенклатура")
     Element nomenclature;
@@ -202,6 +206,18 @@ public class SearchProductPage extends BaseAppPage {
         softAssert.isElementVisible(scanBarcodeBtn);
         softAssert.isElementVisible(searchField);
         softAssert.verifyAll();
+        return this;
+    }
+
+    @Step("Проверить, что счетчик фильтров равен значению {value}")
+    public SearchProductPage shouldFilterCounterEquals(int value){
+        if (value==0){
+            anAssert.isElementNotVisible(filterCounter);
+        }else if (value>0){
+            anAssert.isElementTextEqual(filterCounter, String.valueOf(value));
+        }else {
+            throw new IllegalArgumentException("value should be more than -1");
+        }
         return this;
     }
 

@@ -992,4 +992,29 @@ public class SearchTest extends AppBaseSteps {
         searchProductPage.shouldCatalogResponseEqualsContent(defaultParamsResponce, SearchProductPage.CardType.COMMON, 10);
     }
 
+    @Test(description = "C22789213 Сброс фильтров при нажатии кнопки Назад железная и стрелочка", priority = 2)
+    public void testClearAllFiltersIfReturnBack() throws Exception {
+        final String TOP=" 0";
+
+        // Pre-conditions
+        SalesPage salesPage = loginAndGoTo(SalesPage.class);
+        SearchProductPage searchProductPage = salesPage.clickSearchBar(true);
+        MyShopFilterPage myShopFilterPage = searchProductPage.goToFilterPage();
+
+        // Step 1
+        log.step("Выбрать любой фильтр");
+        myShopFilterPage.choseTopFilter(MyShopFilterPage.TOP+TOP);
+        myShopFilterPage.shouldFilterHasBeenChosen(MyShopFilterPage.TOP+TOP);
+
+        // Step 2
+        log.step("перейти назад на страницу поиска товаров и услуг");
+        myShopFilterPage.returnBack();
+        searchProductPage.shouldFilterCounterEquals(0);
+
+        // Step 3
+        log.step("перейти на страницу фильтров");
+        searchProductPage.goToFilterPage();
+        myShopFilterPage.shouldFilterHasNotBeenChosen(MyShopFilterPage.TOP+TOP); //баг функционала
+    }
+
 }

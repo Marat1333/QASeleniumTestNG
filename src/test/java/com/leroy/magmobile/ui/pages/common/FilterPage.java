@@ -51,6 +51,9 @@ public class FilterPage extends BaseAppPage {
     @AppFindBy(accessibilityId = "ScreenTitle", metaName = "Загаловок экрана 'Фильтры по товарам'")
     Element screenTitleLbl;
 
+    @AppFindBy(accessibilityId = "BackButton")
+    Element backBtn;
+
     @AppFindBy(xpath = AndroidScrollView.TYPICAL_XPATH, metaName = "Основная прокручиваемая область страницы")
     AndroidScrollView<TextViewData> mainScrollView;
 
@@ -99,6 +102,12 @@ public class FilterPage extends BaseAppPage {
         }
         swipeRightTo(anchorElement, goalElement);
 
+    }
+
+    @Step("Вернуться на страницу поиска товаров и услуг")
+    public SearchProductPage returnBack(){
+        backBtn.click();
+        return new SearchProductPage(context);
     }
 
     @Step("Выбрать фрейм фильтров {value}")
