@@ -32,12 +32,9 @@ public class MyShopFilterPage extends FilterPage {
         top0Btn.waitForVisibility(short_timeout);
     }
 
-    public MyShopFilterPage scroll(String direction) {
-        if (direction.equals("down")) {
-            mainScrollView.scrollDown();
-        } else {
-            mainScrollView.scrollUp();
-        }
+    @Step("Нажать на \"Показать все фильтры\"")
+    public MyShopFilterPage clickShowAllFiltersBtn(){
+        showAllFiltersBtn.click();
         return new MyShopFilterPage(context);
     }
 

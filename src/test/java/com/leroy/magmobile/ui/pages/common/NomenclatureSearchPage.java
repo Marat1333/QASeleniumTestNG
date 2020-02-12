@@ -50,7 +50,7 @@ public class NomenclatureSearchPage extends BaseAppPage {
                 throw new NoSuchElementException("There is no back button");
             }
             nomenclatureBackBtn.click();
-            if (!waitUntilContentIsChanged(pageSource, 1)) {
+            if (!waitUntilContentIsChanged(pageSource, tiny_timeout)) {
                 Log.warn("The second click when returnBackNTimes()");
                 nomenclatureBackBtn.click();
                 waitUntilContentIsChanged(pageSource);
@@ -116,10 +116,7 @@ public class NomenclatureSearchPage extends BaseAppPage {
     public SearchProductPage clickShowAllProductsBtn() {
         scrollView.scrollUpToElement(showAllGoods);
         showAllGoods.click();
-        SearchProductPage searchPage = new SearchProductPage(context);
-        waitUntilProgressBarIsVisible();
-        waitUntilProgressBarIsInvisible();
-        return searchPage;
+        return new SearchProductPage(context);
     }
 
     @Override

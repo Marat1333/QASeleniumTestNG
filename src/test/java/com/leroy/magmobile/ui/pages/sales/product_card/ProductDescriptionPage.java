@@ -18,7 +18,7 @@ public class ProductDescriptionPage extends ProductCardPage {
             metaName = "ЛМ код товара")
     Element lmCode;
 
-    @AppFindBy(xpath = "//android.widget.TextView[@content-desc='barCode2']",
+    @AppFindBy(xpath = "//android.widget.TextView[@content-desc='barCode']",
             metaName = "Бар код товара")
     Element barCode;
 

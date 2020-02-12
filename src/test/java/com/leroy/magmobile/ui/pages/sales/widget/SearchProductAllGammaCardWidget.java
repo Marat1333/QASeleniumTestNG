@@ -16,7 +16,7 @@ public class SearchProductAllGammaCardWidget extends CardWidget<ProductCardData>
     @AppFindBy(xpath = ".//android.widget.TextView[@content-desc=\"lmCode\"]")
     private Element lmCodeObj;
 
-    @AppFindBy(xpath = "./android.widget.TextView[1]")
+    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc=\"barCode\"]")
     private Element barCodeObj;
 
     @AppFindBy(xpath = ".//android.widget.TextView[@content-desc=\"name\"]")
