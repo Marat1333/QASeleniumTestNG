@@ -96,7 +96,7 @@ public class MyShopFilterPage extends FilterPage {
     }
 
     @Step("Очистить поле с фильтром по поставщику")
-    public MyShopFilterPage clearSuppliersFilter(String supplierName) throws Exception {
+    public MyShopFilterPage clearSuppliersFilter(String supplierName) {
         mainScrollView.scrollDown();
         Element clearSuppliersFilterBtn = E(String.format(CLEAR_SUPPLIERS_FILTER_BTN_XPATH, supplierName));
         clearSuppliersFilterBtn.click();
