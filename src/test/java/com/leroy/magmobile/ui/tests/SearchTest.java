@@ -1001,6 +1001,7 @@ public class SearchTest extends AppBaseSteps {
     @Test(description = "C22789213 Сброс фильтров при нажатии кнопки Назад железная и стрелочка", priority = 2)
     public void testClearAllFiltersIfReturnBack() throws Exception {
         final String TOP = " 0";
+        final String DEPT_ID="3";
 
         // Pre-conditions
         SalesPage salesPage = loginAndGoTo(SalesPage.class);
@@ -1020,9 +1021,50 @@ public class SearchTest extends AppBaseSteps {
         // Step 3
         log.step("перейти на страницу фильтров");
         searchProductPage.goToFilterPage(true);
-        myShopFilterPage.shouldFilterHasNotBeenChosen(MyShopFilterPage.TOP + TOP); //баг функционала
+        myShopFilterPage.shouldFilterHasNotBeenChosen(MyShopFilterPage.TOP + TOP); //баг функционала, тест можно чекнуть закомментив 3-4 шаг
 
+        // Step 4
+        log.step("Выбрать любой фильтр и нажать \"показать товары\"");
+        myShopFilterPage.choseTopFilter(MyShopFilterPage.TOP + TOP);
+        myShopFilterPage.shouldFilterHasBeenChosen(MyShopFilterPage.TOP + TOP);
+        myShopFilterPage.applyChosenFilters();
 
+        // Step 5
+        log.step("выбрать любой элемент номенклатуры, отличающийся от текущего");
+        NomenclatureSearchPage nomenclatureSearchPage = searchProductPage.goToNomenclatureWindow();
+        nomenclatureSearchPage.returnBackNTimes(1);
+        nomenclatureSearchPage.choseDepartmentId("00"+DEPT_ID,null,null,null);
+        nomenclatureSearchPage.shouldTitleWithNomenclatureIs("00"+DEPT_ID);
+        nomenclatureSearchPage.clickShowAllProductsBtn();
+        searchProductPage.shouldSelectedNomenclatureIs("00"+DEPT_ID, false);
+
+        // Step 6
+        log.step("выбрать сортировку, отличающуюся от текущей");
+        SortPage sortPage = searchProductPage.openSortPage();
+        sortPage.selectSort(SortPage.SORT_BY_LM_ASC);
+        searchProductPage.shouldProductCardsBeSorted(SortPage.SORT_BY_AVAILABLE_STOCK_ASC, SearchProductPage.CardType.COMMON, 3);
+
+        // Step 7
+        log.step("Со страницы поиска перейти назад, на страницу продаж");
+        searchProductPage.backToSalesPage();
+
+        // Step 8
+        log.step("Перейти на страницу поиска");
+        salesPage.clickSearchBar(true);
+        searchProductPage.verifyRequiredElements()
+                .shouldFilterCounterEquals(0)
+                .shouldSelectedNomenclatureIs(EnvConstants.BASIC_USER_DEPARTMENT_ID, false);
+
+        // Step 9
+        log.step("перейти в фильтры");
+        searchProductPage.goToFilterPage(true);
+        myShopFilterPage.shouldFilterHasNotBeenChosen(MyShopFilterPage.TOP + TOP);
+
+        // Step 10
+        log.step("перейти на страницу поиска и открыть модальное окно сортировки");
+        myShopFilterPage.returnBack();
+        searchProductPage.openSortPage();
+        sortPage.shouldSortIsChosen(SortPage.SORT_BY_LM_DESC);
     }
 
 }

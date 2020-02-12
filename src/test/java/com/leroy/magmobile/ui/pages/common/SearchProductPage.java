@@ -73,11 +73,11 @@ public class SearchProductPage extends BaseAppPage {
             "/following-sibling::android.view.ViewGroup//android.widget.TextView")
     Element filterCounter;
 
-    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ScreenContent']/android.view.ViewGroup[2]/android.view.ViewGroup[1]//android.widget.TextView",
+    @AppFindBy(xpath = "\t//android.widget.TextView[@content-desc=\"Nomenclature\"]",
             metaName = "Выбранная номенклатура")
     Element nomenclature;
 
-    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"ScreenContent\"]/android.view.ViewGroup[2]/android.view.ViewGroup[3]")
+    @AppFindBy(xpath = "\t//android.view.ViewGroup[@content-desc=\"SortBtn\"]")
     Element sort;
 
     @AppFindBy(text = "Ты пока ничего не искал(а)")
