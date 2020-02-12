@@ -142,4 +142,9 @@ public class BaseAppPage extends BasePage {
         return this;
     }
 
+    public BaseAppPage shouldProgressBarIsInvisible() {
+        anAssert.isElementNotVisible(progressBar);
+        return this;
+    }
+
 }

@@ -6,14 +6,18 @@ import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.common.*;
 import com.leroy.magmobile.ui.pages.common.modal.SortPage;
 import com.leroy.magmobile.ui.pages.sales.PricesAndQuantityPage;
+import com.leroy.magmobile.ui.pages.sales.ProductCardPage;
 import com.leroy.magmobile.ui.pages.sales.SalesPage;
+import com.leroy.magmobile.ui.pages.sales.product_and_service.AddServicePage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.SimilarProductsPage;
 import com.leroy.umbrella_extension.magmobile.MagMobileClient;
 import com.leroy.umbrella_extension.magmobile.data.ProductItemListResponse;
+import com.leroy.umbrella_extension.magmobile.data.ServiceItemListResponse;
 import com.leroy.umbrella_extension.magmobile.enums.CatalogSearchFields;
 import com.leroy.umbrella_extension.magmobile.enums.SortingOrder;
 import com.leroy.umbrella_extension.magmobile.requests.GetCatalogSearch;
+import com.leroy.umbrella_extension.magmobile.requests.GetCatalogServicesSearch;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.base.BaseModule;
@@ -127,7 +131,7 @@ public class SearchTest extends AppBaseSteps {
         //Иногда работает некорректно, потому что сортировка по ЛМ коду не применяется в мэшапе и порядок всегда разный
         /*searchProductPage.shouldCatalogResponseEqualsContent(
                 nameLikeResponce, SearchProductPage.CardType.COMMON, entityCount);*/
-        searchProductPage.shouldProductCardsContainText(
+        searchProductPage.shouldCardsContainText(
                 searchContext, SearchProductPage.CardType.COMMON, 3);
 
         // Step 7
@@ -214,7 +218,7 @@ public class SearchTest extends AppBaseSteps {
         searchProductPage.goToFilterPage();
         filterPage.clearAllFilters();
         filterPage.shouldFilterHasNotBeenChosen(FilterPage.GAMMA + " " + GAMMA);
-        filterPage.choseTopFilter();
+        filterPage.choseTopFilter(FilterPage.TOP + " " + TOP);
         filterPage.shouldFilterHasBeenChosen(MyShopFilterPage.TOP + " " + TOP);
         filterPage.applyChosenFilters();
         searchProductPage.shouldCatalogResponseEqualsContent(
@@ -238,8 +242,8 @@ public class SearchTest extends AppBaseSteps {
         nomenclatureSearchPage.clickShowAllProductsBtn();
         searchProductPage.goToFilterPage();
         filterPage.clearAllFilters();
-        filterPage.choseProductType(filterPage.ORDERED_PRODUCT_TYPE);
-        filterPage.shouldFilterHasBeenChosen(filterPage.ORDERED_PRODUCT_TYPE);
+        filterPage.choseProductType(FilterPage.ORDERED_PRODUCT_TYPE);
+        filterPage.shouldFilterHasBeenChosen(FilterPage.ORDERED_PRODUCT_TYPE);
         filterPage.applyChosenFilters();
         searchProductPage.shouldCatalogResponseEqualsContent(
                 orderedProductTypeProductResponce, SearchProductPage.CardType.COMMON, entityCount);
@@ -248,13 +252,13 @@ public class SearchTest extends AppBaseSteps {
         log.step("выбрать 1 поставщика");
         searchProductPage.goToFilterPage();
         filterPage.clearAllFilters();
-        SuppliersSearchPage suppliersSearchPage = filterPage.goToSuppliersSearchPage();
+        SuppliersSearchPage suppliersSearchPage = filterPage.goToSuppliersSearchPage(false);
         suppliersSearchPage.verifyRequiredElements();
 
-        suppliersSearchPage.searchForSupplier(supplierSearchContext);
+        suppliersSearchPage.searchForAndChoseSupplier(supplierSearchContext);
         suppliersSearchPage.shouldCountOfSuppliersIs(1);
         suppliersSearchPage.shouldSupplierCardsContainText(supplierSearchContext);
-        suppliersSearchPage.shouldSupplierCheckboxIsSelected(supplierSearchContext);
+        suppliersSearchPage.shouldSupplierCheckboxIsSelected(supplierSearchContext, true);
         suppliersSearchPage.applyChosenSupplier();
         filterPage.applyChosenFilters();
         Response<ProductItemListResponse> supplierProductResponce = apiClient.searchProductsBy(supplierIdParam);
@@ -267,7 +271,7 @@ public class SearchTest extends AppBaseSteps {
         searchProductPage.goToFilterPage();
         filterPage.clearAllFilters();
         filterPage.choseAvsDate(avsDate);
-        filterPage.shouldElementHasBeenSelected(filterPage.AVS);
+        filterPage.shouldElementHasBeenSelected(FilterPage.AVS);
         filterPage.applyChosenFilters();
 
         // Step 7
@@ -302,7 +306,7 @@ public class SearchTest extends AppBaseSteps {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setStartFrom(1);
 
-        GetCatalogSearch avsParam = new GetCatalogSearch() // Это корректный кейс, если API возвращает пусто?
+        GetCatalogSearch avsParam = new GetCatalogSearch()
                 .setAvsDate(String.format("between%%7C%s-%s-0%sT00:00:00.000Z%%7C%s-%s-0%sT00:00:00.000Z",
                         avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth(), avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth() + 1))
                 .setPageSize(10)
@@ -355,8 +359,8 @@ public class SearchTest extends AppBaseSteps {
         log.step("выбрать тип товара");
         searchProductPage.goToFilterPage();
         allGammaFilterPage.choseCheckBoxFilter(AllGammaFilterPage.CTM);
-        allGammaFilterPage.choseProductType(allGammaFilterPage.COMMON_PRODUCT_TYPE);
-        allGammaFilterPage.shouldFilterHasBeenChosen(allGammaFilterPage.COMMON_PRODUCT_TYPE);
+        allGammaFilterPage.choseProductType(AllGammaFilterPage.COMMON_PRODUCT_TYPE);
+        allGammaFilterPage.shouldFilterHasBeenChosen(AllGammaFilterPage.COMMON_PRODUCT_TYPE);
         allGammaFilterPage.applyChosenFilters();
         searchProductPage.shouldCatalogResponseEqualsContent(commonProductTypeProductResponce,
                 SearchProductPage.CardType.ALL_GAMMA, entityCount);
@@ -367,7 +371,7 @@ public class SearchTest extends AppBaseSteps {
         allGammaFilterPage.clearAllFilters();
         filterPage.switchFiltersFrame(MyShopFilterPage.ALL_GAMMA_FRAME_TYPE);
         allGammaFilterPage.choseAvsDate(avsDate);
-        allGammaFilterPage.shouldElementHasBeenSelected(allGammaFilterPage.AVS);
+        allGammaFilterPage.shouldElementHasBeenSelected(AllGammaFilterPage.AVS);
 
         // Step 6
         log.step("подтвердить примененные фильтры");
@@ -406,7 +410,6 @@ public class SearchTest extends AppBaseSteps {
         // Step 2
         log.step("выбрать более 1 фильтра и нажать \"Показать товары\"");
         MyShopFilterPage myShopFilterPage = searchProductPage.goToFilterPage();
-        myShopFilterPage.scrollHorizontalWidget(MyShopFilterPage.GAMMA, MyShopFilterPage.GAMMA + " ET");
         myShopFilterPage.choseGammaFilter(MyShopFilterPage.GAMMA + " ET");
         myShopFilterPage.shouldFilterHasBeenChosen(MyShopFilterPage.GAMMA + " ET");
         searchProductPage = myShopFilterPage.applyChosenFilters();
@@ -644,13 +647,42 @@ public class SearchTest extends AppBaseSteps {
 
     }
 
+    @Test(description = "C22789173 Поиск товара по одному введенному символу", priority = 2)
+    public void testSearchByOneSymbol() throws Exception {
+        final String searchContext = "1";
+
+        // Pre-conditions
+        SalesPage salesPage = loginAndGoTo(SalesPage.class);
+        SearchProductPage searchProductPage = salesPage.clickSearchBar(true);
+
+        // Step 1
+        log.step("ввести в поисковую строку 1 цифру");
+        searchProductPage.enterTextInSearchField(searchContext);
+        searchProductPage.shouldProgressBarIsInvisible();
+
+        // Step 2
+        log.step("инициировать поиск");
+        searchProductPage.submitSearch();
+        searchProductPage.shouldNotFirstSearchMsgBeDisplayed();
+
+        // Step 3
+        log.step("очистить поисковую строку");
+        searchProductPage.clearSearchInput();
+        searchProductPage.shouldScannerBtnIsVisible();
+
+        // Step 4
+        log.step("нажать на поисковую строку и инициировать поиск");
+        searchProductPage.enterTextInSearchFieldAndSubmit("");
+        searchProductPage.shouldProgressBarIsInvisible();
+    }
+
     @Test(description = "C3200999 Проверка пагинации", priority = 2)
     public void testSearchPagePagination() throws Exception {
         String shortLmCode = "12";
         String dept = "015";
         String subDept = "1510";
         final String GAMMA = "A";
-        final int ENTITY_COUNT=20;
+        final int ENTITY_COUNT = 20;
 
         GetCatalogSearch paginationParams = new GetCatalogSearch()
                 .setDepartmentId(dept.replaceAll("^0+", ""))
@@ -671,7 +703,7 @@ public class SearchTest extends AppBaseSteps {
         // Step 1
         log.step("Введите неполное название или неполный ЛМ код товара");
         searchProductPage.enterTextInSearchFieldAndSubmit(shortLmCode);
-        searchProductPage.shouldClearTextInputBtnIsVisible();
+        searchProductPage.verifyClearTextInputBtnIsVisible();
 
         // Step 2
         log.step("Выбрать подотдел в номенклатуре");
@@ -699,6 +731,265 @@ public class SearchTest extends AppBaseSteps {
         searchProductPage.shouldCatalogResponseEqualsContent(paginationResponce, SearchProductPage.CardType.COMMON, ENTITY_COUNT);
 
     }
-    //TODO Добавить тест на проверку отображения и получения услуг
+
+    @Test(description = "C22789202 Выбор фильтра поставщиков", priority = 2)
+    public void testSuppliersFilter() throws Exception {
+        final String FIRST_SUPPLIER_CODE = "1001123001";
+        final String FIRST_SUPPLIER_NAME = "ООО Бард-Спб";
+        final String SECOND_SUPPLIER_CODE = "12301";
+        final String SECOND_SUPPLIER_NAME = "САЗИ";
+        String supplierParamValue;
+
+        GetCatalogSearch supplierIdParam = new GetCatalogSearch()
+                .setPageSize(3)
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
+                .setStartFrom(1);
+
+        GetCatalogSearch defaultSearchParam = new GetCatalogSearch()
+                .setPageSize(3)
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
+                .setStartFrom(1);
+
+        // Pre-conditions
+        SalesPage salesPage = loginAndGoTo(SalesPage.class);
+        SearchProductPage searchProductPage = salesPage.clickSearchBar(true);
+        NomenclatureSearchPage nomenclatureSearchPage = searchProductPage.goToNomenclatureWindow();
+        nomenclatureSearchPage.returnBackNTimes(1);
+        nomenclatureSearchPage.clickShowAllProductsBtn();
+        MyShopFilterPage myShopFilterPage = searchProductPage.goToFilterPage();
+
+        // Step 1
+        log.step("Перейти на страницу выбора поставщика");
+        SuppliersSearchPage suppliersSearchPage = myShopFilterPage.goToSuppliersSearchPage(false);
+        suppliersSearchPage.verifyRequiredElements().shouldCountOfSuppliersIsMoreThan(1);
+        //suppliersSearchPage.shouldSuppliersSortedByDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);   //баг функционала departmentId пользака не подтягивается
+
+        // Step 2
+        log.step("ввести в поисковую строку код поставщика");
+        suppliersSearchPage.searchForAndChoseSupplier(FIRST_SUPPLIER_CODE);
+        suppliersSearchPage.shouldSupplierCardsContainText(FIRST_SUPPLIER_CODE);
+
+        // Step 3
+        log.step("выбрать поставщика и подтвердить выбор");
+        suppliersSearchPage.applyChosenSupplier();
+        myShopFilterPage.shouldSupplierButtonContainsText(1, FIRST_SUPPLIER_NAME);
+
+        // Step 4
+        log.step("повторить шаг 1-2, но искать по наименованию поставщика");
+        myShopFilterPage.goToSuppliersSearchPage(false);
+        suppliersSearchPage.searchForAndChoseSupplier(SECOND_SUPPLIER_NAME);
+        suppliersSearchPage.shouldSupplierCardsContainText(SECOND_SUPPLIER_NAME);
+
+        // Step 5
+        log.step("выбрать поставщика и подтвердить выбор");
+        suppliersSearchPage.applyChosenSupplier();
+        supplierParamValue = FIRST_SUPPLIER_CODE + "," + SECOND_SUPPLIER_CODE;
+        supplierIdParam.setSupId(supplierParamValue);
+        Response<ProductItemListResponse> suppliersResponce = apiClient.searchProductsBy(supplierIdParam);
+        myShopFilterPage.shouldSupplierButtonContainsText(2, null);
+
+        // Step 6
+        log.step("Применить фильтры выбранные фильтры");
+        myShopFilterPage.applyChosenFilters();
+        searchProductPage.shouldCatalogResponseEqualsContent(suppliersResponce, SearchProductPage.CardType.COMMON, 3);
+
+        // Step 7
+        log.step("Вернуться на страницу выбора фильтров и очистить фильтр поставщиков по нажатию на \"крест\"");
+        searchProductPage.goToFilterPage();
+        myShopFilterPage.clearSuppliersFilter("Выбрано");
+        myShopFilterPage.shouldSupplierButtonContainsText(0, null);
+
+        // Step 8
+        log.step("Нажать \"показать товары\"");
+        myShopFilterPage.applyChosenFilters();
+        Response<ProductItemListResponse> defaultParamsResponce = apiClient.searchProductsBy(defaultSearchParam);
+        searchProductPage.shouldCatalogResponseEqualsContent(defaultParamsResponce, SearchProductPage.CardType.COMMON, 3);
+
+        // Step 9
+        log.step("Повторить шаг 1-2 и выбрать поставщика");
+        searchProductPage.goToFilterPage();
+        myShopFilterPage.goToSuppliersSearchPage(false);
+        suppliersSearchPage.searchForAndChoseSupplier(FIRST_SUPPLIER_CODE);
+        suppliersSearchPage.shouldSupplierCheckboxIsSelected(FIRST_SUPPLIER_CODE, true);
+        suppliersSearchPage.shouldNameOfChosenIsDisplayedInOvalElement(FIRST_SUPPLIER_NAME);
+        // Step 10
+        log.step("Нажать на крест на овальном элементе с именем поставщика");
+        suppliersSearchPage.cancelChosenSuppler();
+        suppliersSearchPage.shouldSupplierCheckboxIsSelected(FIRST_SUPPLIER_CODE, false);
+
+        // Step 11
+        log.step("Перейти на страницу выбора фильтров по нажатию на зеленую кнопку назад");
+        suppliersSearchPage.clickBackBtn();
+        myShopFilterPage.shouldSupplierButtonContainsText(0, null);
+    }
+
+    @Test(description = "C22883205 Поиск услуг", priority = 2)
+    public void testServicesSearch() throws Exception {
+        final String SERVICE_SHORT_LM_CODE = "4905510";
+        final String SERVICE_FULL_LM_CODE = "49055102";
+        final String SERVICE_SHORT_NAME = "Овер";
+        final String SERVICE_FULL_NAME = "Оверлок";
+        final String DEPARTMENT_ID = "5";
+        final String SHORT_BARCODE = "590212011";
+
+        GetCatalogServicesSearch servicesSearchParams = new GetCatalogServicesSearch();
+        GetCatalogServicesSearch servicesSearchDepartmentParams = new GetCatalogServicesSearch().setDepartmentId(DEPARTMENT_ID);
+        GetCatalogServicesSearch servicesSearchShortLmCodeParams = new GetCatalogServicesSearch().setLmCode(SERVICE_SHORT_LM_CODE);
+        GetCatalogServicesSearch servicesSearchFullLmCodeParams = new GetCatalogServicesSearch().setLmCode(SERVICE_FULL_LM_CODE);
+        GetCatalogServicesSearch servicesSearchShortNameParams = new GetCatalogServicesSearch().setName(SERVICE_SHORT_NAME);
+        GetCatalogServicesSearch servicesSearchFullNameParams = new GetCatalogServicesSearch().setName(SERVICE_FULL_NAME);
+
+        Response<ServiceItemListResponse> allServicesResponce = apiClient.searchServicesBy(servicesSearchParams);
+        Response<ServiceItemListResponse> departmentServicesResponce = apiClient.searchServicesBy(servicesSearchDepartmentParams);
+        Response<ServiceItemListResponse> shortLmCodeServicesResponce = apiClient.searchServicesBy(servicesSearchShortLmCodeParams);
+        Response<ServiceItemListResponse> fullLmCodeServicesResponce = apiClient.searchServicesBy(servicesSearchFullLmCodeParams);
+        Response<ServiceItemListResponse> shortNameServicesResponce = apiClient.searchServicesBy(servicesSearchShortNameParams);
+        Response<ServiceItemListResponse> fullNameServicesResponce = apiClient.searchServicesBy(servicesSearchFullNameParams);
+
+        // Pre-conditions
+        SalesPage salesPage = loginAndGoTo(SalesPage.class);
+        SearchProductPage searchProductPage = salesPage.clickSearchBar(true);
+
+        // Step 1
+        log.step("Перейти на страницу выбора номенклатуры и выполнить поиск по всем отделам");
+        NomenclatureSearchPage nomenclatureSearchPage = searchProductPage.goToNomenclatureWindow();
+        nomenclatureSearchPage.returnBackNTimes(1);
+        nomenclatureSearchPage.clickShowAllProductsBtn();
+        searchProductPage.shouldServicesResponceEqualsContent(allServicesResponce, 5);
+
+        // Step 2
+        log.step("Выполнить поиск услуг по неполному лм коду");
+        searchProductPage.enterTextInSearchFieldAndSubmit(SERVICE_SHORT_LM_CODE);
+        searchProductPage.shouldServicesResponceEqualsContent(shortLmCodeServicesResponce, 2);
+        searchProductPage.shouldCardsContainText(SERVICE_SHORT_LM_CODE, SearchProductPage.CardType.SERVICE, 2);
+
+        // Step 3
+        log.step("Выполнить поиск услуг по полному лм коду");
+        searchProductPage.enterTextInSearchFieldAndSubmit(SERVICE_FULL_LM_CODE);
+        AddServicePage addServicePage = new AddServicePage(context);
+        addServicePage.verifyRequiredElements()
+                .shouldServiceNameAndLmCodeBeOnPage(SERVICE_FULL_NAME, SERVICE_FULL_LM_CODE);
+        addServicePage.returnBack();
+        searchProductPage.shouldServicesResponceEqualsContent(fullLmCodeServicesResponce, 1);
+        searchProductPage.shouldCardsContainText(SERVICE_FULL_LM_CODE, SearchProductPage.CardType.SERVICE, 1);
+
+        // Step 4
+        log.step("Выполнить поиск по одному отделу, в котором есть услуги");
+        searchProductPage.clearSearchInput();
+        searchProductPage.goToNomenclatureWindow();
+        nomenclatureSearchPage.choseDepartmentId("00" + DEPARTMENT_ID, null, null, null);
+        nomenclatureSearchPage.clickShowAllProductsBtn();
+        searchProductPage.shouldServicesResponceEqualsContent(departmentServicesResponce, 2);
+
+        // Step 5
+        log.step("Выполнить поиск услуги по неполному наименованию");
+        searchProductPage.enterTextInSearchFieldAndSubmit(SERVICE_SHORT_NAME);
+        searchProductPage.shouldServicesResponceEqualsContent(shortNameServicesResponce, 1);
+        searchProductPage.shouldCardsContainText(SERVICE_SHORT_NAME, SearchProductPage.CardType.SERVICE, 1);
+
+        // Step 6
+        log.step("Выполнить поиск услуги по полному наименованию");
+        searchProductPage.enterTextInSearchFieldAndSubmit(SERVICE_FULL_NAME);
+        addServicePage.verifyRequiredElements()
+                .shouldServiceNameAndLmCodeBeOnPage(SERVICE_FULL_NAME, SERVICE_FULL_LM_CODE);
+        addServicePage.returnBack();
+        searchProductPage.shouldServicesResponceEqualsContent(fullNameServicesResponce, 1);
+        searchProductPage.shouldCardsContainText(SERVICE_FULL_NAME, SearchProductPage.CardType.SERVICE, 1);
+
+        // Step 7
+        log.step("Выполнить поиск по короткому штрихкоду");
+        searchProductPage.enterTextInSearchFieldAndSubmit(SHORT_BARCODE);
+        ProductCardPage productCardPage = new ProductCardPage(context);
+        productCardPage.returnBack();
+        searchProductPage.shouldNotCardsBeOnPage(SearchProductPage.CardType.SERVICE);
+    }
+
+    @Test(description = "C22789203 очистка выбранных фильтров. При выборе хотя бы 1. Активация кнопки \"Метла\"", priority = 2)
+    public void testClearAllFilters() throws Exception {
+        LocalDate avsDate = LocalDate.of(2019, 8, 19);
+        final String SUPPLIER_CODE = "1001123001";
+        final String SUPPLIER_NAME = "ООО Бард-Спб";
+        final String TOP = "1";
+        final String GAMMA = "B";
+
+        GetCatalogSearch defaultParams = buildDefaultCatalogSearchParams().setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);
+        Response<ProductItemListResponse> defaultParamsResponce = apiClient.searchProductsBy(defaultParams);
+
+        // Pre-conditions
+        SalesPage salesPage = loginAndGoTo(SalesPage.class);
+        SearchProductPage searchProductPage = salesPage.clickSearchBar(true);
+
+        // Step 1
+        log.step("Выбрать фильтр \"Вся гамма ЛМ\"");
+        FilterPage filterPage = searchProductPage.goToFilterPage();
+        AllGammaFilterPage allGammaFilterPage = filterPage.switchFiltersFrame(FilterPage.ALL_GAMMA_FRAME_TYPE);
+        filterPage.shouldClearAllFiltersBeOnPage(true);
+
+        // Step 2
+        log.step("применить выбранные фильтры и перезайти на страницу выбора фильтров");
+        filterPage.applyChosenFilters();
+        searchProductPage.goToFilterPage();
+        filterPage.shouldClearAllFiltersBeOnPage(true);
+
+        // Step 3
+        log.step("Очистить фильтры при помощи кнопки \"Метла\"");
+        MyShopFilterPage myShopFilterPage = filterPage.clearAllFilters();
+        filterPage.shouldFilterHasBeenChosen(FilterPage.MY_SHOP_FRAME_TYPE);
+
+        // Step 4
+        log.step("выбрать фильтры из каждого блока фильтров для общего фильтра \"Мой магазин\"");
+        myShopFilterPage.choseGammaFilter(FilterPage.GAMMA + " " + GAMMA);
+        myShopFilterPage.shouldFilterHasBeenChosen(FilterPage.GAMMA + " " + GAMMA);
+        myShopFilterPage.choseTopFilter(FilterPage.TOP + " " + TOP);
+        myShopFilterPage.shouldFilterHasBeenChosen(FilterPage.TOP + " " + TOP);
+        myShopFilterPage.choseCheckBoxFilter(MyShopFilterPage.TOP_EM);
+        myShopFilterPage.shouldElementHasBeenSelected(MyShopFilterPage.TOP_EM);
+        myShopFilterPage.choseProductType(MyShopFilterPage.ORDERED_PRODUCT_TYPE);
+        myShopFilterPage.shouldFilterHasBeenChosen(MyShopFilterPage.ORDERED_PRODUCT_TYPE);
+        SuppliersSearchPage suppliersSearchPage = myShopFilterPage.goToSuppliersSearchPage(false);
+        suppliersSearchPage.searchForAndChoseSupplier(SUPPLIER_CODE);
+        suppliersSearchPage.applyChosenSupplier();
+        myShopFilterPage.shouldSupplierButtonContainsText(1, SUPPLIER_NAME);
+        myShopFilterPage.choseAvsDate(avsDate);
+        myShopFilterPage.shouldElementHasBeenSelected(MyShopFilterPage.AVS);
+
+        // Step 5
+        log.step("выбрать фильтры из каждого блока фильтров для общего фильтра \"Вся гамма ЛМ\"");
+        myShopFilterPage.switchFiltersFrame(FilterPage.ALL_GAMMA_FRAME_TYPE);
+        allGammaFilterPage.choseGammaFilter(FilterPage.GAMMA + " P");
+        allGammaFilterPage.shouldFilterHasBeenChosen(FilterPage.GAMMA + " P");
+        allGammaFilterPage.shouldFilterHasBeenChosen(FilterPage.GAMMA + " " + GAMMA);
+        allGammaFilterPage.choseCheckBoxFilter(FilterPage.BEST_PRICE);
+        allGammaFilterPage.shouldElementHasBeenSelected(FilterPage.BEST_PRICE);
+        allGammaFilterPage.shouldFilterHasBeenChosen(MyShopFilterPage.ORDERED_PRODUCT_TYPE);
+        allGammaFilterPage.shouldElementHasBeenSelected(AllGammaFilterPage.AVS);
+
+        // Step 6
+        log.step("Нажать на кнопку \"Метла\"");
+        filterPage.clearAllFilters();
+        myShopFilterPage.shouldFilterHasNotBeenChosen(FilterPage.GAMMA + " " + GAMMA);
+        myShopFilterPage.shouldFilterHasNotBeenChosen(FilterPage.GAMMA + " P");
+        myShopFilterPage.shouldFilterHasNotBeenChosen(FilterPage.TOP + " " + TOP);
+        myShopFilterPage.shouldElementHasNotBeenSelected(MyShopFilterPage.TOP_EM);
+        myShopFilterPage.shouldElementHasNotBeenSelected(MyShopFilterPage.BEST_PRICE);
+        myShopFilterPage.scroll("down");
+        myShopFilterPage.shouldFilterHasNotBeenChosen(MyShopFilterPage.ORDERED_PRODUCT_TYPE);
+        myShopFilterPage.shouldSupplierButtonContainsText(0, null);
+        myShopFilterPage.shouldElementHasNotBeenSelected(MyShopFilterPage.AVS);
+        myShopFilterPage.switchFiltersFrame(FilterPage.ALL_GAMMA_FRAME_TYPE);
+        allGammaFilterPage.shouldFilterHasNotBeenChosen(FilterPage.GAMMA + " " + GAMMA);
+        allGammaFilterPage.shouldFilterHasNotBeenChosen(FilterPage.GAMMA + " P");
+        allGammaFilterPage.shouldElementHasNotBeenSelected(MyShopFilterPage.BEST_PRICE);
+        allGammaFilterPage.shouldFilterHasNotBeenChosen(MyShopFilterPage.ORDERED_PRODUCT_TYPE);
+        allGammaFilterPage.shouldElementHasNotBeenSelected(MyShopFilterPage.AVS);
+
+        // Step 7
+        log.step("Нажать \"Показать товары\"");
+        allGammaFilterPage.switchFiltersFrame(FilterPage.MY_SHOP_FRAME_TYPE);
+        myShopFilterPage.applyChosenFilters();
+        searchProductPage.shouldCatalogResponseEqualsContent(defaultParamsResponce, SearchProductPage.CardType.COMMON, 10);
+    }
 
 }

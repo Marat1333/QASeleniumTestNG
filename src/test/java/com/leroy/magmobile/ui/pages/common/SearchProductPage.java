@@ -15,7 +15,10 @@ import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.widget.SearchProductAllGammaCardWidget;
 import com.leroy.magmobile.ui.pages.sales.widget.SearchProductCardWidget;
 import com.leroy.magmobile.ui.pages.sales.widget.SearchServiceCardWidget;
-import com.leroy.models.*;
+import com.leroy.models.CardWidgetData;
+import com.leroy.models.ProductCardData;
+import com.leroy.models.ServiceCardData;
+import com.leroy.models.TextViewData;
 import com.leroy.umbrella_extension.magmobile.data.ProductItemListResponse;
 import com.leroy.umbrella_extension.magmobile.data.ProductItemResponse;
 import com.leroy.umbrella_extension.magmobile.data.ServiceItemListResponse;
@@ -83,6 +86,8 @@ public class SearchProductPage extends BaseAppPage {
 
     private final String NOT_FOUND_MSG_XPATH = "//*[contains(@text, 'Поиск «%s» не дал результатов')]";
 
+    private final String DEFAULT_SEARCH_UNPUT_TEXT = "ЛМ, название или штрихкод";
+
     public enum CardType {
         COMMON, // Обычная
         ALL_GAMMA, // Вся гамма ЛМ
@@ -137,6 +142,19 @@ public class SearchProductPage extends BaseAppPage {
         return this;
     }
 
+    @Step("Инициируем поисковой запрос через поисковую строку")
+    public SearchProductPage submitSearch() {
+        searchField.submit();
+        hideKeyboard();
+        return new SearchProductPage(context);
+    }
+
+    @Step("Очистить поисковой инпут")
+    public SearchProductPage clearSearchInput() {
+        clearTextInputBtn.click();
+        return new SearchProductPage(context);
+    }
+
     @Step("Найдите и перейдите в карточку товара {text}")
     public AddProductPage searchProductAndSelect(String text) throws Exception {
         searchField.clearFillAndSubmit(text);
@@ -188,8 +206,18 @@ public class SearchProductPage extends BaseAppPage {
     }
 
     @Step("Проверяем, что появилась кнопка очистки инпута поисковой строки")
-    public SearchProductPage shouldClearTextInputBtnIsVisible(){
+    public SearchProductPage verifyClearTextInputBtnIsVisible() {
         anAssert.isElementVisible(clearTextInputBtn);
+        return this;
+    }
+
+    public SearchProductPage shouldScannerBtnIsVisible() {
+        String pageSource = getPageSource();
+        if (searchField.getText(pageSource).equals(DEFAULT_SEARCH_UNPUT_TEXT)) {
+            anAssert.isElementVisible(scanBarcodeBtn, pageSource);
+        } else {
+            anAssert.isElementNotVisible(scanBarcodeBtn, pageSource);
+        }
         return this;
     }
 
@@ -218,6 +246,11 @@ public class SearchProductPage extends BaseAppPage {
         anAssert.isTrue(firstSearchMsg.isVisible(), "Должно быть отображено сообщение о первом поиске");
     }
 
+    @Step("сообщение о первом поиске не отображено")
+    public void shouldNotFirstSearchMsgBeDisplayed() {
+        anAssert.isFalse(firstSearchMsg.isVisible(), "Cообщение о первом поиске не должно быть отображено");
+    }
+
     @Step("Проверить, что сообщение о том, что ничего не найдено - отображено")
     public void shouldNotFoundMsgBeDisplayed(String value) {
         Element element = new Element(driver, By.xpath(String.format(NOT_FOUND_MSG_XPATH, value)));
@@ -225,7 +258,7 @@ public class SearchProductPage extends BaseAppPage {
     }
 
     @Step("Проверить, что карточки товаров имеют соответсвующий вид для фильтра 'Вся гамма ЛМ'")
-    public void verifyProductCardsHaveAllGammaView() throws Exception {
+    public void verifyProductCardsHaveAllGammaView() {
         anAssert.isFalse(E("за штуку").isVisible(), "Карточки товаров не должны содержать цену");
         anAssert.isFalse(E("доступно").isVisible(), "Карточки товаров не должны содержать доступное кол-во");
     }
@@ -329,13 +362,11 @@ public class SearchProductPage extends BaseAppPage {
     }
 
     @Step("Проверить, что карточка товара содержит текст {text}")
-    public void shouldProductCardsContainText(String text, CardType type, int howManyProductsNeedToVerify) throws Exception {
+    public void shouldCardsContainText(String text, CardType type, int howManyProductsNeedToVerify) throws Exception {
         String[] searchWords = null;
         if (text.contains(" "))
             searchWords = text.split(" ");
         anAssert.isFalse(E("contains(не найдено)").isVisible(), "Должен быть найден хотя бы один товар");
-        anAssert.isTrue(productCards.getCount() > 1,
-                "Ничего не найдено для " + text);
         List<? extends CardWidgetData> productCardData;
         switch (type) {
             case COMMON:
@@ -365,26 +396,47 @@ public class SearchProductPage extends BaseAppPage {
                 for (String each : searchWords) {
                     each = each.toLowerCase();
                     if (cardData instanceof ProductCardData) {
-                        anAssert.isTrue(((ProductCardData) cardData).getName().toLowerCase().contains(each), "Название товара " + ((ProductCardData) cardData).getName() + " не содержит критерий поиска " + text);
+                        anAssert.isTrue(((ProductCardData) cardData).getName().toLowerCase().contains(each.toLowerCase()), "Название товара " + ((ProductCardData) cardData).getName() + " не содержит критерий поиска " + text);
                     } else if (cardData instanceof ServiceCardData) {
-                        anAssert.isTrue(((ServiceCardData) cardData).getName().toLowerCase().contains(each), "Название товара " + ((ServiceCardData) cardData).getName() + " не содержит критерий поиска " + text);
+                        anAssert.isTrue(((ServiceCardData) cardData).getName().toLowerCase().contains(each.toLowerCase()), "Название товара " + ((ServiceCardData) cardData).getName() + " не содержит критерий поиска " + text);
                     }
                 }
             } else if (searchWords == null && text.matches("\\D+")) {
                 if (cardData instanceof ProductCardData) {
-                    anAssert.isTrue(((ProductCardData) cardData).getName().toLowerCase().contains(text), "Название товара " + ((ProductCardData) cardData).getName() + " не содержит критерий поиска " + text);
+                    anAssert.isTrue(((ProductCardData) cardData).getName().toLowerCase().contains(text.toLowerCase()), "Название товара " + ((ProductCardData) cardData).getName() + " не содержит критерий поиска " + text);
                 } else if (cardData instanceof ServiceCardData) {
-                    anAssert.isTrue(((ServiceCardData) cardData).getName().toLowerCase().contains(text), "Название товара " + ((ServiceCardData) cardData).getName() + " не содержит критерий поиска " + text);
+                    anAssert.isTrue(((ServiceCardData) cardData).getName().toLowerCase().contains(text.toLowerCase()), "Название товара " + ((ServiceCardData) cardData).getName() + " не содержит критерий поиска " + text);
                 }
             }
         }
+    }
+
+    @Step("Проверить, что на странице отсутсвуют карточки выбранного типа")
+    public SearchProductPage shouldNotCardsBeOnPage(CardType type) throws Exception {
+        List<? extends CardWidgetData> cardData;
+        switch (type) {
+            case COMMON:
+                cardData = productCardsScrollView.getFullDataList();
+                break;
+            case ALL_GAMMA:
+                cardData = allGammaProductCardsScrollView.getFullDataList();
+                break;
+            case SERVICE:
+                cardData = serviceCardsScrollView.getFullDataList();
+                break;
+            default:
+                throw new Exception("Incorrect CardType");
+        }
+        anAssert.isTrue(cardData.isEmpty(), "на странице содержаться карточки указанного типа");
+
+        return this;
     }
 
     // API verifications
 
     @Step("Проверить, что фронт корректно отобразил ответ от сервера по запросу на catalog product")
     public SearchProductPage shouldCatalogResponseEqualsContent(
-            Response<ProductItemListResponse> response, CardType type, Integer entityCount) throws Exception {
+            Response<ProductItemListResponse> response, CardType type, Integer entityCount) {
         List<ProductItemResponse> productDataListFromResponse = response.asJson().getItems();
         List<ProductCardData> productCardDataListFromPage;
         switch (type) {
@@ -410,7 +462,7 @@ public class SearchProductPage extends BaseAppPage {
     }
 
     @Step("Проверить, что фронт корректно отобразил ответ от сервера по запросу на catalog services")
-    public SearchProductPage shouldServicesResponceEqualsContent(Response<ServiceItemListResponse> response, Integer entityCount) throws Exception {
+    public SearchProductPage shouldServicesResponceEqualsContent(Response<ServiceItemListResponse> response, Integer entityCount) {
         List<ServiceItemResponse> serviceData = response.asJson().getItems();
         List<ServiceCardData> serviceCardDataList = serviceCardsScrollView.getFullDataList(entityCount);
         if (serviceCardDataList.size() != serviceData.size()) {
