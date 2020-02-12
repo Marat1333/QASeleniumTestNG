@@ -12,7 +12,7 @@ public class CommonMagMobilePage extends BaseAppPage {
         shouldNotAnyErrorVisible();
     }
 
-    @AppFindBy(xpath = "//android.widget.TextView[contains(@text, 'Bad Request') or contains(@text, 'rror')]")
+    @AppFindBy(accessibilityId = "ErrorNotification")
     Element errorAlertMessage;
 
     protected void shouldNotAnyErrorVisible() {

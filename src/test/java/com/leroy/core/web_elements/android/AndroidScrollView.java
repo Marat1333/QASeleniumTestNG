@@ -74,6 +74,10 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
         androidDriver = (AndroidDriver) driver;
     }
 
+    private enum Direction {
+        UP, DOWN;
+    }
+
     private void executeUIAutomatorScript(String script) {
         setImplicitWait(0);
         try {
@@ -93,7 +97,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
         searchContext.findText = containsText;
         searchContext.findTextShouldNotContainsIt = shouldNotContainsThisText;
         scrollUp();
-        scrollTo(searchContext, MAX_SCROLL_COUNT, null, "down");
+        scrollTo(searchContext, MAX_SCROLL_COUNT, null, Direction.DOWN);
         return tmpWidget;
     }
 
@@ -106,7 +110,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
      */
     public T getDataObj(int index) {
         scrollUp();
-        scrollTo(null, null, index + 1, "down");
+        scrollTo(null, null, index + 1, Direction.DOWN);
         if (tmpCardDataList.size() <= index) {
             throw new IndexOutOfBoundsException(
                     String.format("Data list size is %s. Index is %s", tmpCardDataList.size(), index));
@@ -119,7 +123,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
      */
     public List<T> getFullDataList(int maxEntityCount) {
         scrollUp();
-        scrollTo(null, null, maxEntityCount, "down");
+        scrollTo(null, null, maxEntityCount, Direction.DOWN);
         return new ArrayList<>(tmpCardDataList);
     }
 
@@ -170,7 +174,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
                 .release().perform();
     }
 
-    private void simpleScroll(String direction) {
+    private void simpleScroll(Direction direction) {
         if (experiment && (direction.equals("down") && !bottomPartOverlap || direction.equals("up"))) {
             String _method = direction.equals("down") ? "scrollForward" : "scrollBackward";
             executeUIAutomatorScript("new UiScrollable(new UiSelector()"
@@ -183,7 +187,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
             int bottomY = _location.getY() + _size.getHeight() - (int) Math.round(_size.getHeight() * 0.5);
             int topY = _location.getY() + (int) Math.round(_size.getHeight() * 0.05);
 
-            boolean isDirectionDown = direction.equals("down");
+            boolean isDirectionDown = direction.equals(Direction.DOWN);
             new TouchAction<>(androidDriver)
                     .press(point(x, isDirectionDown ? bottomY : topY))
                     .waitAction(waitOptions(ofMillis(1000)))
@@ -201,7 +205,8 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
      * @return this
      */
     private AndroidScrollView<T> scrollTo(
-            SearchContext searchContext, Integer maxScrollCount, Integer maxEntityCount, String direction) {
+            SearchContext searchContext, Integer maxScrollCount,
+            Integer maxEntityCount, Direction direction) {
         initialWebElementIfNeeded();
         tmpCardDataList = new ArrayList<>();
         List<T> prevDataList = null;
@@ -261,7 +266,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
     public AndroidScrollView<T> scrollDownToText(String findText, int maxScrollCount) {
         SearchContext searchContext = new SearchContext();
         searchContext.findText = findText;
-        return scrollTo(searchContext, maxScrollCount, null, "down");
+        return scrollTo(searchContext, maxScrollCount, null, Direction.DOWN);
     }
 
     /**
@@ -274,7 +279,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
     public AndroidScrollView<T> scrollUpToText(String findText, int maxScrollCount) {
         SearchContext searchContext = new SearchContext();
         searchContext.findText = findText;
-        return scrollTo(searchContext, maxScrollCount, null, "up");
+        return scrollTo(searchContext, maxScrollCount, null, Direction.UP);
     }
 
     public AndroidScrollView<T> scrollDownToText(String findText) {
@@ -284,13 +289,13 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
     public AndroidScrollView<T> scrollDownToElement(Element element) {
         SearchContext searchContext = new SearchContext();
         searchContext.findElement = element;
-        return scrollTo(searchContext, MAX_SCROLL_COUNT, null, "down");
+        return scrollTo(searchContext, MAX_SCROLL_COUNT, null, Direction.DOWN);
     }
 
     public AndroidScrollView<T> scrollUpToElement(Element element) {
         SearchContext searchContext = new SearchContext();
         searchContext.findElement = element;
-        return scrollTo(searchContext, MAX_SCROLL_COUNT, null, "up");
+        return scrollTo(searchContext, MAX_SCROLL_COUNT, null, Direction.UP);
     }
 
     public AndroidScrollView<T> scrollDown() {
@@ -309,7 +314,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
 
     public AndroidScrollView<T> scrollDown(int count) {
         if (count == 1) {
-            simpleScroll("down");
+            simpleScroll(Direction.DOWN);
             return this;
         }
         return scrollDownToText(null, count);
@@ -317,7 +322,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
 
     public AndroidScrollView<T> scrollUp(int count) {
         if (count == 1) {
-            simpleScroll("up");
+            simpleScroll(Direction.UP);
             return this;
         }
         return scrollUpToText(null, count);
