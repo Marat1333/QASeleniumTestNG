@@ -9,6 +9,8 @@ import com.leroy.models.ProductCardData;
 import com.leroy.magmobile.ui.pages.widgets.ProductCardWidget;
 import com.leroy.magmobile.ui.pages.widgets.SelectedCardWidget;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
+import com.leroy.models.WithdrawalOrderCardData;
+import com.leroy.utils.Converter;
 import io.qameta.allure.Step;
 
 public class StockProductsPage extends CommonMagMobilePage {
@@ -27,7 +29,7 @@ public class StockProductsPage extends CommonMagMobilePage {
             metaName = "Карточки 'штучных' товаров", clazz = ProductCardWidget.class)
     private ElementList<ProductCardWidget> pieceProductCards;
 
-    @AppFindBy(xpath = "//android.widget.ScrollView//android.view.ViewGroup[android.view.ViewGroup/android.widget.TextView[@text='ВЫБРАННЫЕ ТОВАРЫ']]//android.view.ViewGroup[@index='0' and android.widget.ImageView]",
+    @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.TextView[@text='ВЫБРАННЫЕ ТОВАРЫ']]/following-sibling::android.view.ViewGroup[descendant::android.widget.ImageView]",
             clazz = SelectedCardWidget.class, metaName = "Карточки выбранных товаров")
     private ElementList<SelectedCardWidget> selectedProductCards;
 
@@ -50,6 +52,7 @@ public class StockProductsPage extends CommonMagMobilePage {
         allProductsOnStockLabel.waitForVisibility(timeout);
     }
 
+    // -------------------- GRAB Info from Page ----------------------------//
     public ProductCardData getPieceProductInfoByIndex(int index) throws Exception {
         ProductCardData cardData = new ProductCardData();
         int count = pieceProductCards.getCount();
@@ -59,17 +62,25 @@ public class StockProductsPage extends CommonMagMobilePage {
         ProductCardWidget cardObj = pieceProductCards.get(index);
         cardData.setLmCode(cardObj.getNumber());
         cardData.setName(cardObj.getName());
-        cardData.setQuantityType(cardObj.getQuantityType());
+        cardData.setPriceUnit(cardObj.getQuantityUnit());
+        cardData.setAvailableQuantity(Converter.strToDouble(cardObj.getQuantity()));
         return cardData;
     }
 
-    public ProductCardData getSelectedProductInfoByIndex(int index) throws Exception {
+    @Step("Забрать со страницы информацию о {index} товаре")
+    public WithdrawalOrderCardData getSelectedProductInfoByIndex(int index) throws Exception {
+        index--;
         ProductCardData cardData = new ProductCardData();
         SelectedCardWidget cardObj = selectedProductCards.get(index);
         cardData.setLmCode(cardObj.getNumber());
         cardData.setName(cardObj.getName());
-        cardData.setSelectedQuantity(cardObj.getSelectedQuantity());
-        return cardData;
+        cardData.setPriceUnit(cardObj.getQuantityUnit());
+        cardData.setAvailableQuantity(Converter.strToDouble(cardObj.getQuantity()));
+
+        WithdrawalOrderCardData withdrawalOrderCardData = new WithdrawalOrderCardData();
+        withdrawalOrderCardData.setProductCardData(cardData);
+        withdrawalOrderCardData.setSelectedQuantity(Converter.strToDouble(cardObj.getSelectedQuantity()));
+        return withdrawalOrderCardData;
     }
 
     /* ------------------------- ACTION STEPS -------------------------- */
@@ -115,18 +126,13 @@ public class StockProductsPage extends CommonMagMobilePage {
         return this;
     }
 
-    @Step("Проверить, что выбранный продукт имеет следующие параметры: {productData}")
+    @Step("Проверить, что выбранный продукт имеет следующие параметры: {expectedOrderCardData}")
     public StockProductsPage shouldSelectedProductIs(
-            int index, ProductCardData productData) throws Exception {
-        ProductCardData selectedProductDataAfter = getSelectedProductInfoByIndex(index);
-        softAssert.isEquals(selectedProductDataAfter.getLmCode(), productData.getLmCode(),
-                "Выбранный товар должен иметь номер %s");
-        softAssert.isEquals(selectedProductDataAfter.getName(), productData.getName(),
-                "Выбранный товар должен иметь название %s");
-        softAssert.isEquals(selectedProductDataAfter.getSelectedQuantity(),
-                productData.getSelectedQuantity(),
-                "Выбранный товар должен иметь кол-во на отзыв %s");
-        softAssert.verifyAll();
+            int index, WithdrawalOrderCardData expectedOrderCardData) throws Exception {
+        WithdrawalOrderCardData selectedProductDataAfter = getSelectedProductInfoByIndex(index);
+        anAssert.isTrue(selectedProductDataAfter.compareOnlyNotNullFields(expectedOrderCardData),
+                "Неверная карточка выбранного товара. Актуальное зн.: " + selectedProductDataAfter.toString(),
+                expectedOrderCardData.toString());
         return this;
     }
 

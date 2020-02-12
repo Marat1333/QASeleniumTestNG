@@ -4,6 +4,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.models.ProductCardData;
+import com.leroy.utils.Converter;
 import org.openqa.selenium.WebDriver;
 
 public class SearchProductCardWidget extends SearchProductAllGammaCardWidget {
@@ -22,7 +23,7 @@ public class SearchProductCardWidget extends SearchProductAllGammaCardWidget {
     private Element quantityObj;
 
     @AppFindBy(xpath = "./android.widget.TextView[7]")
-    private Element quantityType;
+    private Element priceUnit;
 
     @AppFindBy(xpath = "./android.widget.TextView[6]")
     private Element quantityLbl;
@@ -43,23 +44,16 @@ public class SearchProductCardWidget extends SearchProductAllGammaCardWidget {
         return getPriceLbl(null);
     }
 
-    public String getQuantity(boolean onlyDigits, String pageSource) {
-        if (onlyDigits)
-            return quantityObj.getText(pageSource).replaceAll(" ", "");
-        else
-            return quantityObj.getText(pageSource);
+    public String getQuantity(String pageSource) {
+        return quantityObj.getText(pageSource);
     }
 
-    public String getQuantity(boolean onlyDigits) {
-        return getQuantity(onlyDigits, null);
+    public String getPriceUnit(String pageSource) {
+        return priceUnit.getText(pageSource);
     }
 
-    public String getQuantityType(String pageSource) {
-        return quantityType.getText(pageSource);
-    }
-
-    public String getQuantityType() {
-        return getQuantityType(null);
+    public String getPriceUnit() {
+        return getPriceUnit(null);
     }
 
     public String getQuantityLbl(String pageSource) {
@@ -77,8 +71,8 @@ public class SearchProductCardWidget extends SearchProductAllGammaCardWidget {
         productCardData.setLmCode(getLmCode(true, ps));
         productCardData.setBarCode(getBarCode(true, ps));
         productCardData.setName(getName(ps));
-        productCardData.setPrice(getPrice(ps));
-        productCardData.setAvailableQuantity(getQuantity(true, ps));
+        productCardData.setPrice(Converter.strToDouble(getPrice(ps)));
+        productCardData.setAvailableQuantity(Converter.strToDouble(getQuantity(ps)));
         return productCardData;
     }
 

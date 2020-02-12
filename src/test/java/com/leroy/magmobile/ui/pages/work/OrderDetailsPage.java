@@ -7,6 +7,7 @@ import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.models.ProductCardData;
 import com.leroy.magmobile.ui.pages.widgets.ProductCardWidget;
+import com.leroy.models.WithdrawalOrderCardData;
 import io.qameta.allure.Step;
 
 import java.time.LocalDate;
@@ -57,8 +58,8 @@ public class OrderDetailsPage extends CommonMagMobilePage {
         softAssert.isElementTextEqual(this.deliveryDate,
                 deliveryDate.format(DateTimeFormatter.ofPattern(
                         "dd-го MMM", new Locale("ru"))));
-        softAssert.isElementTextEqual(this.deliveryTime,
-                deliveryTime.format(DateTimeFormatter.ofPattern("HH:mm")));
+        //softAssert.isElementTextEqual(this.deliveryTime,
+        //        deliveryTime.format(DateTimeFormatter.ofPattern("HH:mm"))); // TODO
         softAssert.isElementTextEqual(this.comment, comment);
         softAssert.verifyAll();
         return this;
@@ -66,16 +67,17 @@ public class OrderDetailsPage extends CommonMagMobilePage {
 
     @Step("{index}-ий товар должен соответствовать: {productCardData}")
     public OrderDetailsPage shouldProductByIndexIs(
-            int index, ProductCardData productCardData) throws Exception {
+            int index, WithdrawalOrderCardData cardData) throws Exception {
         index--;
         ProductCardWidget productCardWidget = productsForWithdrawal.get(index);
+        ProductCardData productCardData = cardData.getProductCardData();
         softAssert.isEquals(productCardWidget.getNumber(), productCardData.getLmCode(),
                 "Номер товара на отзыв должен быть %s");
         softAssert.isEquals(productCardWidget.getName(), productCardData.getName(),
                 "Название товара на отзыв должно быть %s");
-        softAssert.isEquals(productCardWidget.getQuantity(), productCardData.getSelectedQuantity(),
+        softAssert.isEquals(productCardWidget.getQuantity(), cardData.getSelectedQuantity(),
                 "Кол-во товара на отзыв должно быть %s");
-        softAssert.isEquals(productCardWidget.getQuantityType(), productCardData.getQuantityType(),
+        softAssert.isEquals(productCardWidget.getQuantityUnit(), productCardData.getPriceUnit(),
                 "Тип кол-ва должен быть %s");
         softAssert.verifyAll();
         return this;

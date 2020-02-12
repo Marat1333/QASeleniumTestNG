@@ -9,4 +9,5 @@ public class SalesDocumentsConst {
 
     // Типы документов
     public static final String ESTIMATE_TYPE = "Смета";
+    public static final String BASKET_TYPE = "Корзина";
 }

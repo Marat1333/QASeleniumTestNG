@@ -8,6 +8,9 @@ import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.basket.Basket35Page;
 import com.leroy.magmobile.ui.pages.sales.estimate.EstimatePage;
+import com.leroy.models.SalesOrderCardData;
+import com.leroy.models.ProductCardData;
+import com.leroy.utils.Converter;
 import io.qameta.allure.Step;
 
 public class AddProduct35Page extends CommonMagMobilePage {
@@ -24,6 +27,15 @@ public class AddProduct35Page extends CommonMagMobilePage {
     @AppFindBy(xpath = "(//android.view.ViewGroup[@content-desc='Button'])[1]", metaName = "Кнопка назад")
     private Element backBtn;
 
+    @AppFindBy(xpath = "//android.widget.TextView[@content-desc='lmCode']", metaName = "ЛМ код")
+    private Element lmCode;
+
+    @AppFindBy(xpath = "//android.widget.TextView[@content-desc='barCode2']", metaName = "бар код")
+    private Element barCode;
+
+    @AppFindBy(xpath = "//android.widget.TextView[@content-desc='barCode2']/following::android.widget.TextView")
+    private Element name;
+
     @AppFindBy(text = "Цена")
     private Element priceLbl;
 
@@ -32,6 +44,12 @@ public class AddProduct35Page extends CommonMagMobilePage {
 
     @AppFindBy(text = "Торговый зал")
     private Element shoppingRoomLbl;
+
+    @AppFindBy(xpath = "//android.widget.TextView[@text='Торговый зал']/following-sibling::android.widget.TextView[@content-desc='presenceValue']")
+    private Element shoppingRoomAvailableQuantity;
+
+    @AppFindBy(xpath = "//android.widget.TextView[@text='Торговый зал']/following-sibling::android.widget.TextView[@content-desc='priceUnit']")
+    private Element shoppingRoomAvailablePriceUnit;
 
     // White Bottom Area
 
@@ -80,6 +98,29 @@ public class AddProduct35Page extends CommonMagMobilePage {
             anAssert.isTrue(false, "Цена имеет не правильный формат: " + _priceValue);
             throw err;
         }
+    }
+
+    // ----- Grab Data from Page ----------//
+
+    @Step("Получить информацию со страницы о товаре/услуги/выбранном кол-ве и т.п.")
+    public SalesOrderCardData getOrderRowDataFromPage() {
+        String ps = getPageSource();
+
+        // Карточка товара
+        ProductCardData cardData = new ProductCardData();
+        cardData.setAvailableQuantity(Converter.strToDouble(shoppingRoomAvailableQuantity.getText(ps)));
+        cardData.setPrice(Converter.strToDouble(price.getText(ps)));
+        cardData.setName(name.getText(ps));
+        cardData.setLmCode(Converter.strToStrWithoutDigits(lmCode.getText(ps)));
+        cardData.setBarCode(Converter.strToStrWithoutDigits(barCode.getText(ps)));
+        cardData.setPriceUnit(shoppingRoomAvailablePriceUnit.getText(ps));
+
+        // Детали выбора товара (Строка заказа)
+        SalesOrderCardData orderCardData = new SalesOrderCardData();
+        orderCardData.setSelectedQuantity(Converter.strToDouble(editQuantityFld.getText(ps)));
+        orderCardData.setTotalPrice(Converter.strToDouble(totalPrice.getText(ps)));
+        orderCardData.setProductCardData(cardData);
+        return orderCardData;
     }
 
     // ---------------- Action Steps -------------------------//

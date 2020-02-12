@@ -19,10 +19,7 @@ import com.leroy.magmobile.ui.pages.work.OrderPage;
 import com.leroy.magmobile.ui.pages.work.StockProductCardPage;
 import com.leroy.magmobile.ui.pages.work.StockProductsPage;
 import com.leroy.magmobile.ui.pages.work.modal.QuantityProductsForWithdrawalModalPage;
-import com.leroy.models.EstimateData;
-import com.leroy.models.OrderDetailsData;
-import com.leroy.models.ProductCardData;
-import com.leroy.models.SalesDocumentData;
+import com.leroy.models.*;
 import org.apache.commons.lang.RandomStringUtils;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
@@ -420,10 +417,11 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         MainSalesDocumentsPage mainSalesDocumentsPage = loginAndGoTo(
                 LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
         SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
-        EstimatePage estimatePage = salesDocumentsPage.searchForDocumentByTextAndSelectIt(
+        salesDocumentsPage.searchForDocumentByTextAndSelectIt(
                 SalesDocumentsConst.ESTIMATE_TYPE, SalesDocumentsConst.TRANSFORMED_STATE);
+        EstimatePage estimatePage = new EstimatePage(context);
         // Collect test data from page
-        EstimateData testEstimateData = estimatePage.getEstimateDataFromPage();
+        SalesOrderData testEstimateData = estimatePage.getEstimateDataFromPage();
 
         // Step 1
         log.step("Нажмите на кнопку Действия со сметой");
@@ -434,7 +432,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         log.step("Выберите параметр Преобразовать в корзину");
         Basket35Page basket35Page = modalPage.clickTransformToBasketMenuItem();
         basket35Page.verifyRequiredElements(new Basket35Page.PageState().setProductIsAdded(true));
-        basket35Page.shouldBasketInformationIs(testEstimateData);
+        basket35Page.shouldOrderDataIs(testEstimateData);
     }
 
     // Корзина
@@ -464,7 +462,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
 
         // Step 3
         log.step("Нажмите на кнопку +товары и услуги");
-        SearchProductPage searchProductPage = basket35Page.clickProductAndServiceSubmitButton()
+        SearchProductPage searchProductPage = basket35Page.clickAddProductButton()
                 .verifyRequiredElements();
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
         AddProduct35Page addProduct35Page = new AddProduct35Page(context);
@@ -474,6 +472,45 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         log.step("Нажмите на Добавить в корзину");
         basket35Page = addProduct35Page.clickAddIntoBasketButton();
         basket35Page.verifyRequiredElements(new Basket35Page.PageState().setProductIsAdded(true));
+    }
+
+    @Test(description = "C22797090 Добавить новый товар в корзину")
+    public void testAddNewProductIntoBasket() throws Exception {
+        // Test data
+        String lmCode = getAnyLmCodeProductWithTopEM();
+        // Если выполняется после "C22797089 Создать корзину с экрана Документы продажи",
+        // то можно пропустить pre-condition шаги
+        if (!Basket35Page.isThisPage(context)) {
+            MainSalesDocumentsPage mainSalesDocumentsPage = loginAndGoTo(
+                    LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
+            SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
+            salesDocumentsPage.searchForDocumentByTextAndSelectIt(
+                    SalesDocumentsConst.BASKET_TYPE);
+        }
+        Basket35Page basket35Page = new Basket35Page(context);
+        int productCountInBasket = basket35Page.getCountOfOrderCards();
+        // Step 1
+        log.step("Нажмите на кнопку +Товар");
+        SearchProductPage searchProductPage = basket35Page.clickAddProductButton()
+                .verifyRequiredElements();
+
+        // Step 2
+        log.step("Введите ЛМ код товара или название товара или отсканируйте товар");
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
+        AddProduct35Page addProduct35Page = new AddProduct35Page(context)
+                .verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_BASKET);
+        SalesOrderCardData expectedOrderCardData = addProduct35Page.getOrderRowDataFromPage();
+
+        // Step 3
+        log.step("Нажмите на Добавить в корзину");
+        basket35Page = addProduct35Page.clickAddIntoBasketButton();
+        basket35Page.verifyRequiredElements(
+                new Basket35Page.PageState()
+                        .setProductIsAdded(true)
+                        .setManyOrders(null));
+        basket35Page.shouldCountOfCardsIs(productCountInBasket + 1);
+        basket35Page.shouldOrderCardDataWithTextIs(expectedOrderCardData.getProductCardData().getLmCode(),
+                expectedOrderCardData);
     }
 
     // ---------------------- TYPICAL TESTS FOR THIS CLASS -------------------//

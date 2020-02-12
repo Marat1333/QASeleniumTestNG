@@ -23,7 +23,7 @@ public class ProductItemResponse {
     private Integer top;
     private String supCode;
     private List<String> images;
-    private Integer price;
+    private Double price;
     private String altPrice;
     private String priceUnit;
     private String priceCurrency;

@@ -17,6 +17,10 @@ public class CustomAssert extends BaseCustomAssert {
         super.logIsTrue(condition, desc, false);
     }
 
+    public void isTrue(boolean condition, String actualResult, String expectedResult) {
+        super.logIsTrue(condition, actualResult, expectedResult, false);
+    }
+
     public void isFalse(boolean condition, String desc) {
         super.logIsFalse(condition, desc, false);
     }

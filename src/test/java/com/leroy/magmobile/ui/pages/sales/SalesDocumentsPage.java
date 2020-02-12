@@ -50,14 +50,18 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
     /* ------------------------- ACTION STEPS -------------------------- */
 
     @Step("Найти и выбрать документ, содержащий текст: {containsText}, но не содержащий: {notContainsText}")
-    public EstimatePage searchForDocumentByTextAndSelectIt(String containsText, String notContainsText) {
+    public void searchForDocumentByTextAndSelectIt(String containsText, String notContainsText) {
         CardWidget<SalesDocumentData> cardWidget =
                 salesDocumentScrollList.searchForWidgetByText(containsText, notContainsText);
         anAssert.isNotNull(cardWidget, "Не нашли нужный документ",
                 String.format("Документ содержащий текст %s, но который не содержит %s должен быть найден",
                         containsText, notContainsText));
         cardWidget.click();
-        return new EstimatePage(context);
+    }
+
+    @Step("Найти и выбрать документ, содержащий текст: {containsText}")
+    public void searchForDocumentByTextAndSelectIt(String containsText) {
+        searchForDocumentByTextAndSelectIt(containsText, null);
     }
 
     @Step("Нажмите кнопку 'Создать документ продажи'")

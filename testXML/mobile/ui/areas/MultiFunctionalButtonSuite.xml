@@ -106,4 +106,14 @@
         </classes>
     </test>
 
+    <test name="C22797090 Добавить новый товар в корзину">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.MultiFunctionalButtonTest">
+                <methods>
+                    <include name="testAddNewProductIntoBasket"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
 </suite>
