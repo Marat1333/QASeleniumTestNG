@@ -68,6 +68,7 @@ public class SortPage extends CommonMagMobilePage {
 
     }
 
+    @Step("Проверить, что выбран тип сортировки {sortType}")
     public SortPage shouldSortIsChosen(String sortType){
         Element neededElement;
         switch (sortType) {
@@ -84,8 +85,7 @@ public class SortPage extends CommonMagMobilePage {
                 neededElement = E(String.format(CHECK_BOX_XPATH, SORT_BY_AVAILABLE_STOCK_DESC));
                 break;
             default:
-                neededElement = E(String.format(CHECK_BOX_XPATH, SORT_BY_LM_DESC));
-                break;
+                throw new IllegalArgumentException("Not existed sort type");
         }
         anAssert.isElementImageMatches(neededElement, MagMobElementTypes.SORT_RADIOGROUP_SORT_PAGE.getPictureName());
         return this;

@@ -40,7 +40,7 @@ public class SearchProductCardWidget extends SearchProductAllGammaCardWidget {
     }
 
     public String getPriceLbl() {
-        return getPriceLbl();
+        return getPriceLbl(null);
     }
 
     public String getQuantity(boolean onlyDigits, String pageSource) {
@@ -59,7 +59,7 @@ public class SearchProductCardWidget extends SearchProductAllGammaCardWidget {
     }
 
     public String getQuantityType() {
-        return getQuantityType();
+        return getQuantityType(null);
     }
 
     public String getQuantityLbl(String pageSource) {
