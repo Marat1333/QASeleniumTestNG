@@ -124,19 +124,23 @@ public class FilterPage extends BaseAppPage {
     public <T> T switchFiltersFrame(String value) {
         if (!gammaLmBtn.isVisible())
             mainScrollView.scrollUp(1);
+        String pageSource=getPageSource();
         if (value.equals(ALL_GAMMA_FRAME_TYPE)) {
             gammaLmBtn.click();
+            waitUntilContentIsChanged(pageSource,short_timeout);
             return (T) new AllGammaFilterPage(context);
         } else {
             myShopBtn.click();
+            waitUntilContentIsChanged(pageSource,short_timeout);
             return (T) new MyShopFilterPage(context);
         }
     }
 
     @Step("Очистить все фильтры")
     public MyShopFilterPage clearAllFilters() {
+        String pageSource=getPageSource();
         clearAllFiltersBtn.click();
-        clearAllFiltersBtn.waitForInvisibility();
+        waitUntilContentIsChanged(pageSource, tiny_timeout);
         return new MyShopFilterPage(context);
     }
 

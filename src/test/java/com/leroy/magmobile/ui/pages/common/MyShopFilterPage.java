@@ -89,7 +89,7 @@ public class MyShopFilterPage extends FilterPage {
 
     @Step("Перейти на страницу выбора поставщиков")
     public SuppliersSearchPage goToSuppliersSearchPage(boolean hideKeyboard) {
-        mainScrollView.scrollDown();
+        mainScrollView.scrollDownToElement(supplierBtn);
         supplierBtn.click();
         if (hideKeyboard) {
             hideKeyboard();

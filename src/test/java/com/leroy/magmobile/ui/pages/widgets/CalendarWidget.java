@@ -68,7 +68,7 @@ public class CalendarWidget extends BaseContainer {
             else
                 break;
         }
-        wait(tiny_timeout);
+        wait(1);
         findDayLabel(String.valueOf(date.getDayOfMonth())).click();
         okBtn.click();
     }

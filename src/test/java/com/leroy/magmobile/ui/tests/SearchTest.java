@@ -19,6 +19,7 @@ import com.leroy.umbrella_extension.magmobile.enums.SortingOrder;
 import com.leroy.umbrella_extension.magmobile.requests.GetCatalogSearch;
 import com.leroy.umbrella_extension.magmobile.requests.GetCatalogServicesSearch;
 import org.testng.annotations.Guice;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.base.BaseModule;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -371,7 +372,7 @@ public class SearchTest extends AppBaseSteps {
         log.step("выбрать дату авс");
         searchProductPage.goToFilterPage(false);
         allGammaFilterPage.clearAllFilters();
-        filterPage.switchFiltersFrame(MyShopFilterPage.ALL_GAMMA_FRAME_TYPE);
+        filterPage.switchFiltersFrame(AllGammaFilterPage.ALL_GAMMA_FRAME_TYPE);
         allGammaFilterPage.choseAvsDate(avsDate);
         allGammaFilterPage.shouldElementHasBeenSelected(AllGammaFilterPage.AVS);
 
