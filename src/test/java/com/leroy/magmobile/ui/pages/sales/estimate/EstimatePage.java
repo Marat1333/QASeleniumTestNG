@@ -150,7 +150,19 @@ public class EstimatePage extends CommonMagMobilePage {
         return orderData;
     }
 
+    @Step("Получить список добавленных в смету карточек товаров/услуг с информацией о них")
+    public List<SalesOrderCardData> getCardDataListFromPage() {
+        return orderCardDataScrollView.getFullDataList();
+    }
+
     // ACTIONS
+
+    @Step("Нажмите на {index}-ую карточку товара/услуги")
+    public ActionWithProductCardModalPage clickCardByIndex(int index) throws Exception {
+        index--;
+        orderCardDataScrollView.clickElemByIndex(index);
+        return new ActionWithProductCardModalPage(context);
+    }
 
     @Step("Нажмите на поле 'Клиенты'")
     public SearchCustomerPage clickCustomerField() {

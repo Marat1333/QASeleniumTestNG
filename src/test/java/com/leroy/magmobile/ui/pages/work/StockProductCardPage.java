@@ -25,7 +25,7 @@ public class StockProductCardPage extends CommonMagMobilePage {
 
     @Override
     public void waitForPageIsLoaded() {
-        mainContentArea.waitForVisibility();
+        productCardHeaderArea.waitForVisibility();
     }
 
     /* ------------------------- ACTION STEPS -------------------------- */

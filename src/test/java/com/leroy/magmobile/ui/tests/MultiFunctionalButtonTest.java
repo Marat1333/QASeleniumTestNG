@@ -7,6 +7,7 @@ import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.common.SearchProductPage;
 import com.leroy.magmobile.ui.pages.sales.*;
 import com.leroy.magmobile.ui.pages.sales.basket.*;
+import com.leroy.magmobile.ui.pages.sales.estimate.ActionWithProductCardModalPage;
 import com.leroy.magmobile.ui.pages.sales.estimate.ActionsWithEstimateModalPage;
 import com.leroy.magmobile.ui.pages.sales.estimate.EstimatePage;
 import com.leroy.magmobile.ui.pages.sales.estimate.EstimateSubmittedPage;
@@ -29,6 +30,7 @@ import ru.leroymerlin.qa.core.clients.magmobile.data.ProductItemResponse;
 import ru.leroymerlin.qa.core.clients.magmobile.requests.GetCatalogSearch;
 
 import java.util.List;
+import java.util.Random;
 
 
 @Guice(modules = {BaseModule.class})
@@ -234,7 +236,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
 
         // Step 5
         log.step("Нажмите на нкопку Отозвать");
-        String withdrawalCountItems = RandomStringUtils.randomNumeric(1);
+        String withdrawalCountItems = String.valueOf(new Random().nextInt(10) + 1);
         QuantityProductsForWithdrawalModalPage modalPage = stockProductCardPage.clickWithdrawalBtnForEnterQuantity()
                 .verifyRequiredElements()
                 .shouldSubmitButtonActivityIs(false);
@@ -409,6 +411,30 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         SalesDocumentsPage salesDocumentsPage = estimateSubmittedPage.clickSubmitButton();
         salesDocumentsPage.verifyRequiredElements()
                 .shouldSalesDocumentByIndexIs(0, expectedSalesDocument);
+    }
+
+    @Test(description = "C22797074 Посмотреть подробнее о товаре")
+    public void testViewProductDetailsFromEstimateScreen() throws Exception {
+        // Pre-condition
+        MainSalesDocumentsPage mainSalesDocumentsPage = loginAndGoTo(
+                LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
+        SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
+        salesDocumentsPage.searchForDocumentByTextAndSelectIt(
+                SalesDocumentsConst.ESTIMATE_TYPE, SalesDocumentsConst.TRANSFORMED_STATE);
+        EstimatePage estimatePage = new EstimatePage(context);
+        ProductCardData productCardData = estimatePage.getCardDataListFromPage()
+                .get(0).getProductCardData();
+
+        // Step 1
+        log.step("Нажмите на мини-карточку любого товара в списке товаров сметы");
+        ActionWithProductCardModalPage modalPage = estimatePage.clickCardByIndex(1)
+                .verifyRequiredElements();
+
+        // Step 2
+        log.step("Выберите параметр Подробнее о товаре");
+        ProductDescriptionPage productDescriptionPage = modalPage.clickProductDetailsMenuItem();
+        productDescriptionPage.verifyRequiredElements(false)
+                .shouldProductLMCodeIs(productCardData.getLmCode());
     }
 
     @Test(description = "C22797078 Преобразовать смету в корзину")

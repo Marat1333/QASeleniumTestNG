@@ -30,10 +30,10 @@ public class AddProduct35Page extends CommonMagMobilePage {
     @AppFindBy(xpath = "//android.widget.TextView[@content-desc='lmCode']", metaName = "ЛМ код")
     private Element lmCode;
 
-    @AppFindBy(xpath = "//android.widget.TextView[@content-desc='barCode2']", metaName = "бар код")
+    @AppFindBy(xpath = "//android.widget.TextView[@content-desc='barCode']", metaName = "бар код")
     private Element barCode;
 
-    @AppFindBy(xpath = "//android.widget.TextView[@content-desc='barCode2']/following::android.widget.TextView")
+    @AppFindBy(xpath = "//android.widget.TextView[@content-desc='barCode']/following::android.widget.TextView")
     private Element name;
 
     @AppFindBy(text = "Цена")

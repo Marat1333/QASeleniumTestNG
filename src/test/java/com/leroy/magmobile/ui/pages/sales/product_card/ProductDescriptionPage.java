@@ -18,7 +18,7 @@ public class ProductDescriptionPage extends ProductCardPage {
             metaName = "ЛМ код товара")
     Element lmCode;
 
-    @AppFindBy(xpath = "//android.widget.TextView[@content-desc='barCode2']",
+    @AppFindBy(xpath = "//android.widget.TextView[@content-desc='barCode']",
             metaName = "Бар код товара")
     Element barCode;
 
@@ -74,12 +74,14 @@ public class ProductDescriptionPage extends ProductCardPage {
         return this;
     }
 
+    @Step("Проверить, что ЛМ код товара = {text}")
     public ProductDescriptionPage shouldProductLMCodeIs(String text) {
         anAssert.isEquals(lmCode.getText().replaceAll("\\D", ""), text,
                 "ЛМ код должен быть %s");
         return this;
     }
 
+    @Step("Проверить, что бар код товара = {text}")
     public ProductDescriptionPage shouldProductBarCodeIs(String text) {
         anAssert.isEquals(barCode.getText().replaceAll("\\D", ""), text,
                 "Бар код должен быть %s");
