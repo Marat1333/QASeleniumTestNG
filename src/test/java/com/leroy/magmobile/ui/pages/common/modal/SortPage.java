@@ -1,5 +1,6 @@
 package com.leroy.magmobile.ui.pages.common.modal;
 
+import com.leroy.constants.MagMobElementTypes;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
@@ -65,6 +66,29 @@ public class SortPage extends CommonMagMobilePage {
         softAssert.verifyAll();
         return new SortPage(context);
 
+    }
+
+    @Step("Проверить, что выбран тип сортировки {sortType}")
+    public SortPage shouldSortIsChosen(String sortType){
+        Element neededElement;
+        switch (sortType) {
+            case SORT_BY_LM_ASC:
+                neededElement = E(String.format(CHECK_BOX_XPATH, SORT_BY_LM_ASC));
+                break;
+            case SORT_BY_LM_DESC:
+                neededElement = E(String.format(CHECK_BOX_XPATH, SORT_BY_LM_DESC));
+                break;
+            case SORT_BY_AVAILABLE_STOCK_ASC:
+                neededElement = E(String.format(CHECK_BOX_XPATH, SORT_BY_AVAILABLE_STOCK_ASC));
+                break;
+            case SORT_BY_AVAILABLE_STOCK_DESC:
+                neededElement = E(String.format(CHECK_BOX_XPATH, SORT_BY_AVAILABLE_STOCK_DESC));
+                break;
+            default:
+                throw new IllegalArgumentException("Not existed sort type");
+        }
+        anAssert.isElementImageMatches(neededElement, MagMobElementTypes.SORT_RADIOGROUP_SORT_PAGE.getPictureName());
+        return this;
     }
 }
 

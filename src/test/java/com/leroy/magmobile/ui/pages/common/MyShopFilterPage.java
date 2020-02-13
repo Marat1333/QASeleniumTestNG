@@ -18,8 +18,8 @@ public class MyShopFilterPage extends FilterPage {
     public static final String TOP_EM = "Топ ЕМ";
     public static final String HAS_AVAILABLE_STOCK = "Есть теор. запас";
 
-    @AppFindBy(text = "ТОП 0")
-    Element top0Btn;
+    @AppFindBy(text = "Есть теор. запас")
+    Element hasAvailableStockLbl;
 
     @AppFindBy(text = "Поставщик")
     Element supplierBtn;
@@ -41,15 +41,12 @@ public class MyShopFilterPage extends FilterPage {
 
     @Override
     public void waitForPageIsLoaded() {
-        top0Btn.waitForVisibility(short_timeout);
+        hasAvailableStockLbl.waitForVisibility(short_timeout);
     }
 
-    public MyShopFilterPage scroll(String direction) {
-        if (direction.equals("down")) {
-            mainScrollView.scrollDown();
-        } else {
-            mainScrollView.scrollUp();
-        }
+    @Step("Нажать на \"Показать все фильтры\"")
+    public MyShopFilterPage clickShowAllFiltersBtn(){
+        showAllFiltersBtn.click();
         return new MyShopFilterPage(context);
     }
 
@@ -76,8 +73,13 @@ public class MyShopFilterPage extends FilterPage {
                 limitedOffer.click();
                 break;
             case AVS:
-                mainScrollView.scrollDown();
+                mainScrollView.scrollDownToElement(avs);
+                String pageSource = getPageSource();
                 avs.click();
+                if (!waitUntilContentIsChanged(pageSource)){
+                    mainScrollView.scrollDown();
+                    avs.click();
+                }
                 break;
             default:
                 throw new Exception();
@@ -115,16 +117,21 @@ public class MyShopFilterPage extends FilterPage {
         if (!clearAvsDateBtn.isVisible()) {
             mainScrollView.scrollDown();
         }
+        String pageSource=getPageSource();
         clearAvsDateBtn.click();
+        if (!waitUntilContentIsChanged(pageSource)){
+            mainScrollView.scrollDown();
+            clearAvsDateBtn.click();
+        }
         return new MyShopFilterPage(context);
     }
 
     //VERIFICATIONS
 
     @Step("Проверить, что отображенная дата соответствует выбранной")
-    public MyShopFilterPage shouldAvsDateIsCorrect(LocalDate date, boolean isNull) {
+    public MyShopFilterPage shouldAvsDateIsCorrect(LocalDate date) {
         String pageSource = getPageSource();
-        if (isNull) {
+        if (date==null) {
             anAssert.isElementNotVisible(chosenAvsDate, pageSource);
         } else {
             String dateAsString = date.getDayOfMonth() + ".";

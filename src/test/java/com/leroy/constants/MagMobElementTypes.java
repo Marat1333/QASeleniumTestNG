@@ -3,6 +3,7 @@ package com.leroy.constants;
 public enum MagMobElementTypes {
 
     EDIT_PEN("pen"),
+    SORT_RADIOGROUP_SORT_PAGE("sortRadioGroupSortPage"),
     PLUS("plus"),
     PLUS_FILTER_PAGE("plusFilterPage"),
     CIRCLE_PLUS("circle_plus"),
