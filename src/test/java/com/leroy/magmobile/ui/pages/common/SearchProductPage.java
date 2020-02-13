@@ -40,7 +40,7 @@ public class SearchProductPage extends BaseAppPage {
     @AppFindBy(accessibilityId = "back", metaName = "Кнопка назад")
     private Element backBtn;
 
-    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"ScannerBtn\"]", metaName = "Кнопка для сканирования штрихкода")
+    @AppFindBy(accessibilityId = "ScannerBtn", metaName = "Кнопка для сканирования штрихкода")
     private Element scanBarcodeBtn;
 
     @AppFindBy(accessibilityId = "ScreenTitle-CatalogComplexSearchStore", metaName = "Поле ввода текста для поиска")
@@ -73,11 +73,11 @@ public class SearchProductPage extends BaseAppPage {
             "/following-sibling::android.view.ViewGroup//android.widget.TextView")
     Element filterCounter;
 
-    @AppFindBy(xpath = "\t//android.widget.TextView[@content-desc=\"Nomenclature\"]",
+    @AppFindBy(xpath = "//android.widget.TextView[@content-desc=\"Nomenclature\"]",
             metaName = "Выбранная номенклатура")
     Element nomenclature;
 
-    @AppFindBy(xpath = "\t//android.view.ViewGroup[@content-desc=\"SortBtn\"]")
+    @AppFindBy(accessibilityId = "SortBtn")
     Element sort;
 
     @AppFindBy(text = "Ты пока ничего не искал(а)")
