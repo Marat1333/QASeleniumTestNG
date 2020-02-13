@@ -40,7 +40,7 @@ public class SearchProductPage extends BaseAppPage {
     @AppFindBy(accessibilityId = "back", metaName = "Кнопка назад")
     private Element backBtn;
 
-    @AppFindBy(accessibilityId = "Button", metaName = "Кнопка для сканирования штрихкода")
+    @AppFindBy(accessibilityId = "ScannerBtn", metaName = "Кнопка для сканирования штрихкода")
     private Element scanBarcodeBtn;
 
     @AppFindBy(accessibilityId = "ScreenTitle-CatalogComplexSearchStore", metaName = "Поле ввода текста для поиска")
@@ -69,11 +69,15 @@ public class SearchProductPage extends BaseAppPage {
     @AppFindBy(text = "Фильтр")
     Element filter;
 
-    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ScreenContent']/android.view.ViewGroup[2]/android.view.ViewGroup[1]//android.widget.TextView",
+    @AppFindBy(xpath = "//android.widget.TextView[@content-desc='FilterBtn']/ancestor::android.view.ViewGroup[2]" +
+            "/following-sibling::android.view.ViewGroup//android.widget.TextView")
+    Element filterCounter;
+
+    @AppFindBy(xpath = "//android.widget.TextView[@content-desc=\"Nomenclature\"]",
             metaName = "Выбранная номенклатура")
     Element nomenclature;
 
-    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"ScreenContent\"]/android.view.ViewGroup[2]/android.view.ViewGroup[3]")
+    @AppFindBy(accessibilityId = "SortBtn")
     Element sort;
 
     @AppFindBy(text = "Ты пока ничего не искал(а)")
@@ -97,6 +101,7 @@ public class SearchProductPage extends BaseAppPage {
     @Override
     public void waitForPageIsLoaded() {
         searchField.waitForVisibility();
+        backBtn.waitForVisibility();
         waitUntilProgressBarIsInvisible();
     }
 
@@ -183,9 +188,13 @@ public class SearchProductPage extends BaseAppPage {
     }
 
     @Step("Перейти на страницу выбора фильтров")
-    public MyShopFilterPage goToFilterPage() {
+    public <T> T goToFilterPage(boolean isMyShopFrame) {
         filter.click();
-        return new MyShopFilterPage(context);
+        if (isMyShopFrame) {
+            return (T) new MyShopFilterPage(context);
+        } else {
+            return (T) new AllGammaFilterPage(context);
+        }
     }
 
     @Step("Открыть окно сортировки")
@@ -199,9 +208,20 @@ public class SearchProductPage extends BaseAppPage {
     @Step("Проверить, что страница поиска товаров и услуг отображается корректно")
     public SearchProductPage verifyRequiredElements() {
         softAssert.isElementVisible(backBtn);
-        softAssert.isElementVisible(scanBarcodeBtn);
         softAssert.isElementVisible(searchField);
         softAssert.verifyAll();
+        return this;
+    }
+
+    @Step("Проверить, что счетчик фильтров равен значению {value}")
+    public SearchProductPage shouldFilterCounterEquals(int value) {
+        if (value == 0) {
+            anAssert.isElementNotVisible(filterCounter);
+        } else if (value > 0) {
+            anAssert.isElementTextEqual(filterCounter, String.valueOf(value));
+        } else {
+            throw new IllegalArgumentException("value should be more than -1");
+        }
         return this;
     }
 

@@ -203,7 +203,7 @@ public class SearchTest extends AppBaseSteps {
         nomenclatureSearchPage.returnBackNTimes(1);
         nomenclatureSearchPage.choseDepartmentId("00" + departmentId, null, null, null);
         nomenclatureSearchPage.clickShowAllProductsBtn();
-        MyShopFilterPage filterPage = searchProductPage.goToFilterPage();
+        MyShopFilterPage filterPage = searchProductPage.goToFilterPage(true);
 
         // Step 1
         log.step("выбрать одну из гамм");
@@ -215,7 +215,8 @@ public class SearchTest extends AppBaseSteps {
 
         // Step 2
         log.step("выбрать один из топов");
-        searchProductPage.goToFilterPage();
+        searchProductPage.goToFilterPage(true);
+        filterPage.clickShowAllFiltersBtn();
         filterPage.clearAllFilters();
         filterPage.shouldFilterHasNotBeenChosen(FilterPage.GAMMA + " " + GAMMA);
         filterPage.choseTopFilter(FilterPage.TOP + " " + TOP);
@@ -226,7 +227,8 @@ public class SearchTest extends AppBaseSteps {
 
         // Step 3
         log.step("выбрать 1 из чек-боксов блока с типами товаров");
-        searchProductPage.goToFilterPage();
+        searchProductPage.goToFilterPage(true);
+        filterPage.clickShowAllFiltersBtn();
         filterPage.clearAllFilters();
         filterPage.shouldFilterHasNotBeenChosen(MyShopFilterPage.TOP + " " + TOP);
         filterPage.choseCheckBoxFilter(FilterPage.BEST_PRICE);
@@ -240,7 +242,7 @@ public class SearchTest extends AppBaseSteps {
         searchProductPage.goToNomenclatureWindow();
         nomenclatureSearchPage.returnBackNTimes(1);
         nomenclatureSearchPage.clickShowAllProductsBtn();
-        searchProductPage.goToFilterPage();
+        searchProductPage.goToFilterPage(true);
         filterPage.clearAllFilters();
         filterPage.choseProductType(FilterPage.ORDERED_PRODUCT_TYPE);
         filterPage.shouldFilterHasBeenChosen(FilterPage.ORDERED_PRODUCT_TYPE);
@@ -250,7 +252,7 @@ public class SearchTest extends AppBaseSteps {
 
         // Step 5
         log.step("выбрать 1 поставщика");
-        searchProductPage.goToFilterPage();
+        searchProductPage.goToFilterPage(true);
         filterPage.clearAllFilters();
         SuppliersSearchPage suppliersSearchPage = filterPage.goToSuppliersSearchPage(false);
         suppliersSearchPage.verifyRequiredElements();
@@ -268,7 +270,7 @@ public class SearchTest extends AppBaseSteps {
 
         // Step 6
         log.step("выбрать дату авс");
-        searchProductPage.goToFilterPage();
+        searchProductPage.goToFilterPage(true);
         filterPage.clearAllFilters();
         filterPage.choseAvsDate(avsDate);
         filterPage.shouldElementHasBeenSelected(FilterPage.AVS);
@@ -325,7 +327,7 @@ public class SearchTest extends AppBaseSteps {
         nomenclatureSearchPage.returnBackNTimes(1);
         nomenclatureSearchPage.choseDepartmentId("0" + departmentId, null, null, null);
         nomenclatureSearchPage.clickShowAllProductsBtn();
-        FilterPage filterPage = searchProductPage.goToFilterPage();
+        FilterPage filterPage = searchProductPage.goToFilterPage(true);
 
         // Step 1
         log.step("выбрать овальный чек-бокс \"Вся гамма ЛМ\"");
@@ -346,7 +348,7 @@ public class SearchTest extends AppBaseSteps {
         searchProductPage.goToNomenclatureWindow();
         nomenclatureSearchPage.returnBackNTimes(1);
         nomenclatureSearchPage.clickShowAllProductsBtn();
-        searchProductPage.goToFilterPage();
+        searchProductPage.goToFilterPage(false);
         allGammaFilterPage.choseGammaFilter(FilterPage.GAMMA + " " + GAMMA);
         allGammaFilterPage.shouldFilterHasNotBeenChosen(FilterPage.GAMMA + " " + GAMMA);
         allGammaFilterPage.choseCheckBoxFilter(AllGammaFilterPage.CTM);
@@ -357,7 +359,7 @@ public class SearchTest extends AppBaseSteps {
 
         // Step 4
         log.step("выбрать тип товара");
-        searchProductPage.goToFilterPage();
+        searchProductPage.goToFilterPage(false);
         allGammaFilterPage.choseCheckBoxFilter(AllGammaFilterPage.CTM);
         allGammaFilterPage.choseProductType(AllGammaFilterPage.COMMON_PRODUCT_TYPE);
         allGammaFilterPage.shouldFilterHasBeenChosen(AllGammaFilterPage.COMMON_PRODUCT_TYPE);
@@ -367,7 +369,7 @@ public class SearchTest extends AppBaseSteps {
 
         // Step 5
         log.step("выбрать дату авс");
-        searchProductPage.goToFilterPage();
+        searchProductPage.goToFilterPage(false);
         allGammaFilterPage.clearAllFilters();
         filterPage.switchFiltersFrame(MyShopFilterPage.ALL_GAMMA_FRAME_TYPE);
         allGammaFilterPage.choseAvsDate(avsDate);
@@ -409,7 +411,7 @@ public class SearchTest extends AppBaseSteps {
 
         // Step 2
         log.step("выбрать более 1 фильтра и нажать \"Показать товары\"");
-        MyShopFilterPage myShopFilterPage = searchProductPage.goToFilterPage();
+        MyShopFilterPage myShopFilterPage = searchProductPage.goToFilterPage(true);
         myShopFilterPage.choseGammaFilter(MyShopFilterPage.GAMMA + " ET");
         myShopFilterPage.shouldFilterHasBeenChosen(MyShopFilterPage.GAMMA + " ET");
         searchProductPage = myShopFilterPage.applyChosenFilters();
@@ -426,7 +428,7 @@ public class SearchTest extends AppBaseSteps {
 
         // Step 4
         log.step("перейти в фильтры");
-        searchProductPage.goToFilterPage();
+        searchProductPage.goToFilterPage(true);
         myShopFilterPage.scrollHorizontalWidget(MyShopFilterPage.GAMMA, MyShopFilterPage.GAMMA + " ET");
         myShopFilterPage.shouldFilterHasNotBeenChosen(MyShopFilterPage.GAMMA + " ET");
     }
@@ -455,7 +457,7 @@ public class SearchTest extends AppBaseSteps {
         log.step("Перезайти в поиск");
         searchProductPage.backToSalesPage();
         searchProductPage = salesPage.clickSearchBar(true);
-        searchProductPage.shouldSearchHistoryListIs(searchPhrases);
+        searchProductPage.shouldSearchHistoryListIs(searchPhrases);     //bug dev build 1010
 
         // Step 4
         log.step("Начать вводить значение идентичное одному из ранее введенных");
@@ -469,15 +471,14 @@ public class SearchTest extends AppBaseSteps {
         // Pre-conditions
         SalesPage salesPage = loginAndGoTo(SalesPage.class);
 
-        MyShopFilterPage myShopFilterPage = new SalesPage(context)
-                .clickSearchBar(false)
-                .goToFilterPage();
+        SearchProductPage searchProductPage = salesPage.clickSearchBar(false);
+        MyShopFilterPage myShopFilterPage = searchProductPage.goToFilterPage(true);
 
         // Step 1
         log.step("Выбрать фильтр \"Вся гамма ЛМ\" и перейти на страницу результатов поиска");
         AllGammaFilterPage allGammaFilterPage = myShopFilterPage
                 .switchFiltersFrame(MyShopFilterPage.ALL_GAMMA_FRAME_TYPE);
-        SearchProductPage searchProductPage = allGammaFilterPage.applyChosenFilters();
+        allGammaFilterPage.applyChosenFilters();
         searchProductPage.verifyProductCardsHaveAllGammaView();
 
         // Step 2
@@ -721,7 +722,7 @@ public class SearchTest extends AppBaseSteps {
 
         // Step 4
         log.step("Выбрать любой фильтр на странице выбора фильтров");
-        MyShopFilterPage myShopFilterPage = searchProductPage.goToFilterPage();
+        MyShopFilterPage myShopFilterPage = searchProductPage.goToFilterPage(true);
         myShopFilterPage.choseGammaFilter(MyShopFilterPage.GAMMA + " " + GAMMA);
         myShopFilterPage.shouldFilterHasBeenChosen(MyShopFilterPage.GAMMA + " " + GAMMA);
         myShopFilterPage.applyChosenFilters();
@@ -758,10 +759,11 @@ public class SearchTest extends AppBaseSteps {
         NomenclatureSearchPage nomenclatureSearchPage = searchProductPage.goToNomenclatureWindow();
         nomenclatureSearchPage.returnBackNTimes(1);
         nomenclatureSearchPage.clickShowAllProductsBtn();
-        MyShopFilterPage myShopFilterPage = searchProductPage.goToFilterPage();
+        MyShopFilterPage myShopFilterPage = searchProductPage.goToFilterPage(true);
 
         // Step 1
         log.step("Перейти на страницу выбора поставщика");
+        myShopFilterPage.clickShowAllFiltersBtn();
         SuppliersSearchPage suppliersSearchPage = myShopFilterPage.goToSuppliersSearchPage(false);
         suppliersSearchPage.verifyRequiredElements().shouldCountOfSuppliersIsMoreThan(1);
         //suppliersSearchPage.shouldSuppliersSortedByDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);   //баг функционала departmentId пользака не подтягивается
@@ -797,7 +799,7 @@ public class SearchTest extends AppBaseSteps {
 
         // Step 7
         log.step("Вернуться на страницу выбора фильтров и очистить фильтр поставщиков по нажатию на \"крест\"");
-        searchProductPage.goToFilterPage();
+        searchProductPage.goToFilterPage(true);
         myShopFilterPage.clearSuppliersFilter("Выбрано");
         myShopFilterPage.shouldSupplierButtonContainsText(0, null);
 
@@ -809,7 +811,8 @@ public class SearchTest extends AppBaseSteps {
 
         // Step 9
         log.step("Повторить шаг 1-2 и выбрать поставщика");
-        searchProductPage.goToFilterPage();
+        searchProductPage.goToFilterPage(true);
+        myShopFilterPage.clickShowAllFiltersBtn();
         myShopFilterPage.goToSuppliersSearchPage(false);
         suppliersSearchPage.searchForAndChoseSupplier(FIRST_SUPPLIER_CODE);
         suppliersSearchPage.shouldSupplierCheckboxIsSelected(FIRST_SUPPLIER_CODE, true);
@@ -923,73 +926,145 @@ public class SearchTest extends AppBaseSteps {
 
         // Step 1
         log.step("Выбрать фильтр \"Вся гамма ЛМ\"");
-        FilterPage filterPage = searchProductPage.goToFilterPage();
+        MyShopFilterPage filterPage = searchProductPage.goToFilterPage(true);
         AllGammaFilterPage allGammaFilterPage = filterPage.switchFiltersFrame(FilterPage.ALL_GAMMA_FRAME_TYPE);
-        filterPage.shouldClearAllFiltersBeOnPage(true);
+        allGammaFilterPage.shouldClearAllFiltersBeOnPage(true);
 
         // Step 2
         log.step("применить выбранные фильтры и перезайти на страницу выбора фильтров");
-        filterPage.applyChosenFilters();
-        searchProductPage.goToFilterPage();
-        filterPage.shouldClearAllFiltersBeOnPage(true);
+        allGammaFilterPage.applyChosenFilters();
+        searchProductPage.goToFilterPage(false);
+        allGammaFilterPage.shouldClearAllFiltersBeOnPage(true);
 
         // Step 3
         log.step("Очистить фильтры при помощи кнопки \"Метла\"");
-        MyShopFilterPage myShopFilterPage = filterPage.clearAllFilters();
+        allGammaFilterPage.clearAllFilters();
         filterPage.shouldFilterHasBeenChosen(FilterPage.MY_SHOP_FRAME_TYPE);
 
         // Step 4
         log.step("выбрать фильтры из каждого блока фильтров для общего фильтра \"Мой магазин\"");
-        myShopFilterPage.choseGammaFilter(FilterPage.GAMMA + " " + GAMMA);
-        myShopFilterPage.shouldFilterHasBeenChosen(FilterPage.GAMMA + " " + GAMMA);
-        myShopFilterPage.choseTopFilter(FilterPage.TOP + " " + TOP);
-        myShopFilterPage.shouldFilterHasBeenChosen(FilterPage.TOP + " " + TOP);
-        myShopFilterPage.choseCheckBoxFilter(MyShopFilterPage.TOP_EM);
-        myShopFilterPage.shouldElementHasBeenSelected(MyShopFilterPage.TOP_EM);
-        myShopFilterPage.choseProductType(MyShopFilterPage.ORDERED_PRODUCT_TYPE);
-        myShopFilterPage.shouldFilterHasBeenChosen(MyShopFilterPage.ORDERED_PRODUCT_TYPE);
-        SuppliersSearchPage suppliersSearchPage = myShopFilterPage.goToSuppliersSearchPage(false);
+        filterPage.clickShowAllFiltersBtn();
+        filterPage.choseGammaFilter(FilterPage.GAMMA + " " + GAMMA);
+        filterPage.shouldFilterHasBeenChosen(FilterPage.GAMMA + " " + GAMMA);
+        filterPage.choseTopFilter(FilterPage.TOP + " " + TOP);
+        filterPage.shouldFilterHasBeenChosen(FilterPage.TOP + " " + TOP);
+        filterPage.choseCheckBoxFilter(MyShopFilterPage.TOP_EM);
+        filterPage.shouldElementHasBeenSelected(MyShopFilterPage.TOP_EM);
+        filterPage.choseProductType(MyShopFilterPage.ORDERED_PRODUCT_TYPE);
+        filterPage.shouldFilterHasBeenChosen(MyShopFilterPage.ORDERED_PRODUCT_TYPE);
+        SuppliersSearchPage suppliersSearchPage = filterPage.goToSuppliersSearchPage(false);
         suppliersSearchPage.searchForAndChoseSupplier(SUPPLIER_CODE);
         suppliersSearchPage.applyChosenSupplier();
-        myShopFilterPage.shouldSupplierButtonContainsText(1, SUPPLIER_NAME);
-        myShopFilterPage.choseAvsDate(avsDate);
-        myShopFilterPage.shouldElementHasBeenSelected(MyShopFilterPage.AVS);
+        filterPage.shouldSupplierButtonContainsText(1, SUPPLIER_NAME);
+        filterPage.choseAvsDate(avsDate);
+        filterPage.shouldElementHasBeenSelected(MyShopFilterPage.AVS);
 
         // Step 5
         log.step("выбрать фильтры из каждого блока фильтров для общего фильтра \"Вся гамма ЛМ\"");
-        myShopFilterPage.switchFiltersFrame(FilterPage.ALL_GAMMA_FRAME_TYPE);
+        filterPage.switchFiltersFrame(FilterPage.ALL_GAMMA_FRAME_TYPE);
         allGammaFilterPage.choseGammaFilter(FilterPage.GAMMA + " P");
         allGammaFilterPage.shouldFilterHasBeenChosen(FilterPage.GAMMA + " P");
         allGammaFilterPage.shouldFilterHasBeenChosen(FilterPage.GAMMA + " " + GAMMA);
         allGammaFilterPage.choseCheckBoxFilter(FilterPage.BEST_PRICE);
         allGammaFilterPage.shouldElementHasBeenSelected(FilterPage.BEST_PRICE);
         allGammaFilterPage.shouldFilterHasBeenChosen(MyShopFilterPage.ORDERED_PRODUCT_TYPE);
+        allGammaFilterPage.scroll("down");
         allGammaFilterPage.shouldElementHasBeenSelected(AllGammaFilterPage.AVS);
 
         // Step 6
         log.step("Нажать на кнопку \"Метла\"");
         filterPage.clearAllFilters();
-        myShopFilterPage.shouldFilterHasNotBeenChosen(FilterPage.GAMMA + " " + GAMMA);
-        myShopFilterPage.shouldFilterHasNotBeenChosen(FilterPage.GAMMA + " P");
-        myShopFilterPage.shouldFilterHasNotBeenChosen(FilterPage.TOP + " " + TOP);
-        myShopFilterPage.shouldElementHasNotBeenSelected(MyShopFilterPage.TOP_EM);
-        myShopFilterPage.shouldElementHasNotBeenSelected(MyShopFilterPage.BEST_PRICE);
-        myShopFilterPage.scroll("down");
-        myShopFilterPage.shouldFilterHasNotBeenChosen(MyShopFilterPage.ORDERED_PRODUCT_TYPE);
-        myShopFilterPage.shouldSupplierButtonContainsText(0, null);
-        myShopFilterPage.shouldElementHasNotBeenSelected(MyShopFilterPage.AVS);
-        myShopFilterPage.switchFiltersFrame(FilterPage.ALL_GAMMA_FRAME_TYPE);
+        filterPage.shouldFilterHasNotBeenChosen(FilterPage.GAMMA + " " + GAMMA);
+        filterPage.shouldFilterHasNotBeenChosen(FilterPage.GAMMA + " P");
+        filterPage.shouldFilterHasNotBeenChosen(FilterPage.TOP + " " + TOP);
+        filterPage.shouldElementHasNotBeenSelected(MyShopFilterPage.TOP_EM);
+        filterPage.shouldElementHasNotBeenSelected(MyShopFilterPage.BEST_PRICE);
+        filterPage.scroll("down");
+        filterPage.shouldFilterHasNotBeenChosen(MyShopFilterPage.ORDERED_PRODUCT_TYPE);
+        filterPage.shouldSupplierButtonContainsText(0, null);
+        filterPage.shouldElementHasNotBeenSelected(MyShopFilterPage.AVS);
+        filterPage.switchFiltersFrame(FilterPage.ALL_GAMMA_FRAME_TYPE);
         allGammaFilterPage.shouldFilterHasNotBeenChosen(FilterPage.GAMMA + " " + GAMMA);
         allGammaFilterPage.shouldFilterHasNotBeenChosen(FilterPage.GAMMA + " P");
         allGammaFilterPage.shouldElementHasNotBeenSelected(MyShopFilterPage.BEST_PRICE);
         allGammaFilterPage.shouldFilterHasNotBeenChosen(MyShopFilterPage.ORDERED_PRODUCT_TYPE);
+        allGammaFilterPage.scroll("down");
         allGammaFilterPage.shouldElementHasNotBeenSelected(MyShopFilterPage.AVS);
 
         // Step 7
         log.step("Нажать \"Показать товары\"");
         allGammaFilterPage.switchFiltersFrame(FilterPage.MY_SHOP_FRAME_TYPE);
-        myShopFilterPage.applyChosenFilters();
+        filterPage.applyChosenFilters();
         searchProductPage.shouldCatalogResponseEqualsContent(defaultParamsResponce, SearchProductPage.CardType.COMMON, 10);
+    }
+
+    @Test(description = "C22789213 Сброс фильтров при нажатии кнопки Назад железная и стрелочка", priority = 2)
+    public void testClearAllFiltersIfReturnBack() throws Exception {
+        final String TOP = " 0";
+        final String DEPT_ID="3";
+
+        // Pre-conditions
+        SalesPage salesPage = loginAndGoTo(SalesPage.class);
+        SearchProductPage searchProductPage = salesPage.clickSearchBar(true);
+        MyShopFilterPage myShopFilterPage = searchProductPage.goToFilterPage(true);
+
+        // Step 1
+        log.step("Выбрать любой фильтр");
+        myShopFilterPage.choseTopFilter(MyShopFilterPage.TOP + TOP);
+        myShopFilterPage.shouldFilterHasBeenChosen(MyShopFilterPage.TOP + TOP);
+
+        // Step 2
+        log.step("перейти назад на страницу поиска товаров и услуг");
+        myShopFilterPage.returnBack();
+        searchProductPage.shouldFilterCounterEquals(0);
+
+        // Step 3
+        log.step("перейти на страницу фильтров");
+        searchProductPage.goToFilterPage(true);
+        myShopFilterPage.shouldFilterHasNotBeenChosen(MyShopFilterPage.TOP + TOP); //баг функционала, тест можно чекнуть закомментив 3-4 шаг
+
+        // Step 4
+        log.step("Выбрать любой фильтр и нажать \"показать товары\"");
+        myShopFilterPage.choseTopFilter(MyShopFilterPage.TOP + TOP);
+        myShopFilterPage.shouldFilterHasBeenChosen(MyShopFilterPage.TOP + TOP);
+        myShopFilterPage.applyChosenFilters();
+
+        // Step 5
+        log.step("выбрать любой элемент номенклатуры, отличающийся от текущего");
+        NomenclatureSearchPage nomenclatureSearchPage = searchProductPage.goToNomenclatureWindow();
+        nomenclatureSearchPage.returnBackNTimes(1);
+        nomenclatureSearchPage.choseDepartmentId("00"+DEPT_ID,null,null,null);
+        nomenclatureSearchPage.shouldTitleWithNomenclatureIs("00"+DEPT_ID);
+        nomenclatureSearchPage.clickShowAllProductsBtn();
+        searchProductPage.shouldSelectedNomenclatureIs("00"+DEPT_ID, false);
+
+        // Step 6
+        log.step("выбрать сортировку, отличающуюся от текущей");
+        SortPage sortPage = searchProductPage.openSortPage();
+        sortPage.selectSort(SortPage.SORT_BY_LM_ASC);
+        searchProductPage.shouldProductCardsBeSorted(SortPage.SORT_BY_AVAILABLE_STOCK_ASC, SearchProductPage.CardType.COMMON, 3);
+
+        // Step 7
+        log.step("Со страницы поиска перейти назад, на страницу продаж");
+        searchProductPage.backToSalesPage();
+
+        // Step 8
+        log.step("Перейти на страницу поиска");
+        salesPage.clickSearchBar(true);
+        searchProductPage.verifyRequiredElements()
+                .shouldFilterCounterEquals(0)
+                .shouldSelectedNomenclatureIs(EnvConstants.BASIC_USER_DEPARTMENT_ID, false);
+
+        // Step 9
+        log.step("перейти в фильтры");
+        searchProductPage.goToFilterPage(true);
+        myShopFilterPage.shouldFilterHasNotBeenChosen(MyShopFilterPage.TOP + TOP);
+
+        // Step 10
+        log.step("перейти на страницу поиска и открыть модальное окно сортировки");
+        myShopFilterPage.returnBack();
+        searchProductPage.openSortPage();
+        sortPage.shouldSortIsChosen(SortPage.SORT_BY_LM_DESC);
     }
 
 }

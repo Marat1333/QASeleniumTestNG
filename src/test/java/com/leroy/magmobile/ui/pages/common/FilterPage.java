@@ -12,7 +12,6 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobCheckBox;
 import com.leroy.magmobile.ui.pages.common.widget.SupplierCardWidget;
 import com.leroy.magmobile.ui.pages.widgets.CalendarWidget;
-import com.leroy.magmobile.ui.pages.widgets.TextViewWidget;
 import com.leroy.models.TextViewData;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
@@ -51,6 +50,9 @@ public class FilterPage extends BaseAppPage {
     @AppFindBy(accessibilityId = "ScreenTitle", metaName = "Загаловок экрана 'Фильтры по товарам'")
     Element screenTitleLbl;
 
+    @AppFindBy(accessibilityId = "BackButton")
+    Element backBtn;
+
     @AppFindBy(xpath = AndroidScrollView.TYPICAL_XPATH, metaName = "Основная прокручиваемая область страницы")
     AndroidScrollView<TextViewData> mainScrollView;
 
@@ -62,6 +64,9 @@ public class FilterPage extends BaseAppPage {
 
     @AppFindBy(text = "ВСЯ ГАММА ЛМ")
     Element gammaLmBtn;
+
+    @AppFindBy(text = "ПОКАЗАТЬ ВСЕ ФИЛЬТРЫ")
+    Element showAllFiltersBtn;
 
     @AppFindBy(text = "ПОД ЗАКАЗ")
     Element orderedProductBtn;
@@ -88,6 +93,15 @@ public class FilterPage extends BaseAppPage {
 
     Element avs = E("contains(AVS)");
 
+    public FilterPage scroll(String direction) {
+        if (direction.equals("down")) {
+            mainScrollView.scrollDown();
+        } else {
+            mainScrollView.scrollUp();
+        }
+        return new FilterPage(context);
+    }
+
     @Step("Проскроллить фильтры до {neededElement}")
     public void scrollHorizontalWidget(String neededScroll, String neededElement) {
         Element goalElement = E("contains(" + neededElement + ")");
@@ -98,11 +112,16 @@ public class FilterPage extends BaseAppPage {
             Log.error("Выбрана несуществующая горизонтальная область скролла. Необходимо выбрать из: ГАММА, ТОП, ОБЫЧНЫЙ (тип продукта)");
         }
         swipeRightTo(anchorElement, goalElement);
+    }
 
+    @Step("Вернуться на страницу поиска товаров и услуг")
+    public SearchProductPage returnBack() {
+        backBtn.click();
+        return new SearchProductPage(context);
     }
 
     @Step("Выбрать фрейм фильтров {value}")
-    public <T> T switchFiltersFrame(String value) throws Exception {
+    public <T> T switchFiltersFrame(String value) {
         if (!gammaLmBtn.isVisible())
             mainScrollView.scrollUp(1);
         if (value.equals(ALL_GAMMA_FRAME_TYPE)) {

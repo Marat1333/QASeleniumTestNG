@@ -12,19 +12,19 @@ public class SearchProductCardWidget extends SearchProductAllGammaCardWidget {
         super(driver, locator);
     }
 
-    @AppFindBy(xpath = "./android.view.ViewGroup[android.widget.TextView[@content-desc='name']]/following-sibling::android.widget.TextView")
+    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc=\"price\"]")
     private Element priceObj;
 
-    @AppFindBy(xpath = "./android.widget.TextView[5]")
+    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc=\"productPriceUnit\"]")
     private Element priceLbl;
 
     @AppFindBy(xpath = ".//android.widget.TextView[@content-desc=\"presenceValue\"]")
     private Element quantityObj;
 
-    @AppFindBy(xpath = "./android.widget.TextView[7]")
+    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc=\"priceUnit\"]")
     private Element quantityType;
 
-    @AppFindBy(xpath = "./android.widget.TextView[6]")
+    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc=\"priceUnit\"]/following-sibling::android.widget.TextView")
     private Element quantityLbl;
 
     public String getPrice(String pageSource) {
