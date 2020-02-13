@@ -142,16 +142,17 @@ public class MyShopFilterPage extends FilterPage {
         return this;
     }
 
-    @Step("Проверить, кнопка очистки даты AVS имеет вид креста {isCrossView}")
-    public MyShopFilterPage shouldClearAvsDateBtnIsVisible(boolean isCrossView) {
-        if (isCrossView) {
-            anAssert.isElementVisible(clearAvsDateBtn);
-        } else {
-            anAssert.isElementImageMatches(addAvsDateBtn, MagMobElementTypes.PLUS_FILTER_PAGE.getPictureName());
-        }
+    @Step("Проверить, что кнопка очистки даты AVS отображается")
+    public MyShopFilterPage shouldClearAvsDateBtnIsVisible() {
+        anAssert.isElementVisible(clearAvsDateBtn);
         return this;
     }
 
+    @Step("Проверить, что кнопка добавления даты AVS отображается")
+    public MyShopFilterPage shouldAddAvsDateBtnIsVisible() {
+        anAssert.isElementImageMatches(addAvsDateBtn, MagMobElementTypes.PLUS_FILTER_PAGE.getPictureName());
+        return this;
+    }
     @Step("Проверяем, что кнопка выбора фильтра по поставщикам содержит текст {supplierName}")
     public MyShopFilterPage shouldSupplierButtonContainsText(int countOfChosenSuppliers, String supplierName) {
         Element element;

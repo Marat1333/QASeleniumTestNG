@@ -1106,7 +1106,7 @@ public class SearchTest extends AppBaseSteps {
         myShopFilterPage.clickShowAllFiltersBtn();
         myShopFilterPage.choseAvsDate(avsDate);
         myShopFilterPage.shouldAvsDateIsCorrect(avsDate);
-        myShopFilterPage.shouldClearAvsDateBtnIsVisible(true);
+        myShopFilterPage.shouldClearAvsDateBtnIsVisible();
 
         // Step 2
         log.step("Применить фильтр");
@@ -1132,7 +1132,7 @@ public class SearchTest extends AppBaseSteps {
         myShopFilterPage.choseAvsDate(avsDate);
         myShopFilterPage.clearAvsDate();
         myShopFilterPage.shouldAvsDateIsCorrect(null);
-        myShopFilterPage.shouldClearAvsDateBtnIsVisible(false);
+        myShopFilterPage.shouldAddAvsDateBtnIsVisible();
     }
 
 }
