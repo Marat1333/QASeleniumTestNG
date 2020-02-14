@@ -42,19 +42,19 @@ public class SortPage extends CommonMagMobilePage {
         switch (value) {
             case SORT_BY_LM_ASC:
                 neededElement = E(String.format(CHECK_BOX_XPATH, SORT_BY_LM_ASC));
-                neededElement.doubleClick();
+                neededElement.click();
                 break;
             case SORT_BY_LM_DESC:
                 neededElement = E(String.format(CHECK_BOX_XPATH, SORT_BY_LM_DESC));
-                neededElement.doubleClick();
+                neededElement.click();
                 break;
             case SORT_BY_AVAILABLE_STOCK_ASC:
                 neededElement = E(String.format(CHECK_BOX_XPATH, SORT_BY_AVAILABLE_STOCK_ASC));
-                neededElement.doubleClick();
+                neededElement.click();
                 break;
             case SORT_BY_AVAILABLE_STOCK_DESC:
                 neededElement = E(String.format(CHECK_BOX_XPATH, SORT_BY_AVAILABLE_STOCK_DESC));
-                neededElement.doubleClick();
+                neededElement.click();
                 break;
         }
         return new SearchProductPage(context);

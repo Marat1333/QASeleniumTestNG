@@ -7,6 +7,8 @@ import com.leroy.core.web_elements.general.Element;
 import io.qameta.allure.Step;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MyShopFilterPage extends FilterPage {
 
@@ -24,18 +26,11 @@ public class MyShopFilterPage extends FilterPage {
     @AppFindBy(text = "Поставщик")
     Element supplierBtn;
 
-    @AppFindBy(xpath = "//android.widget.TextView[@text='Дата AVS']/following-sibling::android.view.ViewGroup")
-    Element addAvsDateBtn;
-
-    @AppFindBy(xpath = "//android.widget.TextView[@text='Дата AVS']/following-sibling::android.view.ViewGroup/android.view.ViewGroup")
-    Element clearAvsDateBtn;
-
-    @AppFindBy(xpath = "//android.widget.TextView[@text='Дата AVS']/following-sibling::android.widget.TextView")
-    Element chosenAvsDate;
-
     Element topEm = E("contains(Топ ЕМ)");
 
     Element hasAvailableStock = E("contains(Есть теор. запас)");
+
+    Element bestPrice = E("contains(Лучшая цена)");
 
     final String CLEAR_SUPPLIERS_FILTER_BTN_XPATH = "//android.widget.EditText[contains(@text,%s)]/ancestor::android.view.ViewGroup[2]/following-sibling::android.view.ViewGroup";
 
@@ -45,8 +40,27 @@ public class MyShopFilterPage extends FilterPage {
     }
 
     @Step("Нажать на \"Показать все фильтры\"")
-    public MyShopFilterPage clickShowAllFiltersBtn(){
+    public MyShopFilterPage clickShowAllFiltersBtn() {
         showAllFiltersBtn.click();
+        return new MyShopFilterPage(context);
+    }
+
+    @Override
+    public MyShopFilterPage choseFewFilters(Object... filters) throws Exception {
+        clickShowAllFiltersBtn();
+        for (Object filter : filters) {
+            if ((filter.getClass() == String.class && (String.valueOf(filter).contains("ТОП")))) {
+                choseTopFilter(String.valueOf(filter));
+            } else if (filter.getClass() == String.class && (String.valueOf(filter).matches("\\d+"))) {
+                goToSuppliersSearchPage(false);
+                new SuppliersSearchPage(context)
+                        .searchForAndChoseSupplier(String.valueOf(filter))
+                        .applyChosenSupplier();
+                new MyShopFilterPage(context);
+            } else {
+                super.choseFewFilters(filter);
+            }
+        }
         return new MyShopFilterPage(context);
     }
 
@@ -76,7 +90,7 @@ public class MyShopFilterPage extends FilterPage {
                 mainScrollView.scrollDownToElement(avs);
                 String pageSource = getPageSource();
                 avs.click();
-                if (!waitUntilContentIsChanged(pageSource)){
+                if (!waitUntilContentIsChanged(pageSource)) {
                     mainScrollView.scrollDown();
                     avs.click();
                 }
@@ -108,6 +122,9 @@ public class MyShopFilterPage extends FilterPage {
     @Step("Выбрать фильтр top {top}")
     public MyShopFilterPage choseTopFilter(String top) {
         Element element = E("contains(" + top + ")");
+        if (!element.isVisible()){
+            mainScrollView.scrollUpToElement(element);
+        }
         clickElementAndWaitUntilContentIsChanged(element);
         return new MyShopFilterPage(context);
     }
@@ -117,9 +134,9 @@ public class MyShopFilterPage extends FilterPage {
         if (!clearAvsDateBtn.isVisible()) {
             mainScrollView.scrollDown();
         }
-        String pageSource=getPageSource();
+        String pageSource = getPageSource();
         clearAvsDateBtn.click();
-        if (!waitUntilContentIsChanged(pageSource)){
+        if (!waitUntilContentIsChanged(pageSource)) {
             mainScrollView.scrollDown();
             clearAvsDateBtn.click();
         }
@@ -128,33 +145,48 @@ public class MyShopFilterPage extends FilterPage {
 
     //VERIFICATIONS
 
-    @Step("Проверить, что отображенная дата соответствует выбранной")
-    public MyShopFilterPage shouldAvsDateIsCorrect(LocalDate date) {
-        String pageSource = getPageSource();
-        if (date==null) {
-            anAssert.isElementNotVisible(chosenAvsDate, pageSource);
-        } else {
-            String dateAsString = date.getDayOfMonth() + ".";
-            String month = date.getMonthValue() > 9 ? String.valueOf(date.getMonthValue()) : "0" + date.getMonthValue();
-            dateAsString = dateAsString + month + "." + String.valueOf(date.getYear()).substring(2);
-            anAssert.isElementTextEqual(chosenAvsDate, dateAsString, pageSource);
+
+    @Override
+    public MyShopFilterPage verifyFewFiltersAreChosen(Object... filters) throws Exception {
+        if (!bestPrice.isVisible()) {
+            clickShowAllFiltersBtn();
+        }
+        for (Object filter : filters) {
+            if ((filter.getClass() == String.class && (String.valueOf(filter).contains("ТОП")))) {
+                if (!myShopBtn.isVisible()){
+                    mainScrollView.scrollUpToElement(myShopBtn);
+                }
+                shouldFilterHasBeenChosen(String.valueOf(filter));
+            } else {
+                super.verifyFewFiltersAreChosen(filter);
+            }
         }
         return this;
     }
 
-    @Step("Проверить, что кнопка очистки даты AVS отображается")
-    public MyShopFilterPage shouldClearAvsDateBtnIsVisible() {
-        anAssert.isElementVisible(clearAvsDateBtn);
+    @Override
+    public FilterPage verifyFewFiltersAreNotChosen(Object... filters) throws Exception {
+        if (!bestPrice.isVisible()) {
+            clickShowAllFiltersBtn();
+        }
+        for (Object filter : filters) {
+            if ((filter.getClass() == String.class && (String.valueOf(filter).contains("ТОП")))) {
+                if (!myShopBtn.isVisible()){
+                    mainScrollView.scrollUpToElement(myShopBtn);
+                }
+                shouldFilterHasNotBeenChosen(String.valueOf(filter));
+            } else {
+                super.verifyFewFiltersAreNotChosen(filter);
+            }
+        }
         return this;
     }
 
-    @Step("Проверить, что кнопка добавления даты AVS отображается")
-    public MyShopFilterPage shouldAddAvsDateBtnIsVisible() {
-        anAssert.isElementImageMatches(addAvsDateBtn, MagMobElementTypes.PLUS_FILTER_PAGE.getPictureName());
-        return this;
-    }
     @Step("Проверяем, что кнопка выбора фильтра по поставщикам содержит текст {supplierName}")
     public MyShopFilterPage shouldSupplierButtonContainsText(int countOfChosenSuppliers, String supplierName) {
+        if (!supplierBtn.isVisible()){
+            mainScrollView.scrollDownToElement(supplierBtn);
+        }
         Element element;
         if (countOfChosenSuppliers == 1) {
             element = E("contains(" + supplierName + ")");
