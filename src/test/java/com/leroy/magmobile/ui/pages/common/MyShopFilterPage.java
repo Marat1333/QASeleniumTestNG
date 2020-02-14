@@ -47,7 +47,9 @@ public class MyShopFilterPage extends FilterPage {
 
     @Override
     public MyShopFilterPage choseFewFilters(Object... filters) throws Exception {
-        clickShowAllFiltersBtn();
+        if (!bestPrice.isVisible()) {
+            clickShowAllFiltersBtn();
+        }
         for (Object filter : filters) {
             if ((filter.getClass() == String.class && (String.valueOf(filter).contains("ТОП")))) {
                 choseTopFilter(String.valueOf(filter));
