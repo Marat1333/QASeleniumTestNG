@@ -87,7 +87,7 @@ public class MyShopFilterPage extends FilterPage {
                 limitedOffer.click();
                 break;
             case AVS:
-                mainScrollView.scrollDownToElement(avs);
+                mainScrollView.scrollDown(2);
                 String pageSource = getPageSource();
                 avs.click();
                 if (!waitUntilContentIsChanged(pageSource)) {

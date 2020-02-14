@@ -44,6 +44,7 @@ public class SearchTest extends AppBaseSteps {
                 .setStartFrom(1);
     }
 
+    @Ignore
     @Test(description = "C3200996 Поиск товара по критериям", priority = 1)
     public void testC3200996() throws Exception {
         String lmCode = "10008698";
@@ -929,7 +930,7 @@ public class SearchTest extends AppBaseSteps {
         // Step 1
         log.step("Выбрать фильтр \"Вся гамма ЛМ\"");
         MyShopFilterPage filterPage = searchProductPage.goToFilterPage(true);
-        AllGammaFilterPage allGammaFilterPage = filterPage.switchFiltersFrame(FilterPage.ALL_GAMMA_FRAME_TYPE);
+        AllGammaFilterPage allGammaFilterPage = filterPage.switchFiltersFrame(MyShopFilterPage.ALL_GAMMA_FRAME_TYPE);
         allGammaFilterPage.shouldClearAllFiltersBeOnPage(true);
 
         // Step 2

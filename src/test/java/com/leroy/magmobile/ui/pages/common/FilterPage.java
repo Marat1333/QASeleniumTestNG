@@ -130,17 +130,16 @@ public class FilterPage extends BaseAppPage {
     }
 
     @Step("Выбрать фрейм фильтров {value}")
-    public <T> T switchFiltersFrame(String value) {
+    public <T> T switchFiltersFrame(String value) throws Exception {
         if (!gammaLmBtn.isVisible())
             mainScrollView.scrollUp(2);
-        String pageSource = getPageSource();
         if (value.equals(ALL_GAMMA_FRAME_TYPE)) {
             gammaLmBtn.click();
-            waitUntilContentIsChanged(pageSource, short_timeout);
+            wait(2);
             return (T) new AllGammaFilterPage(context);
         } else {
             myShopBtn.click();
-            waitUntilContentIsChanged(pageSource, short_timeout);
+            wait(2);
             return (T) new MyShopFilterPage(context);
         }
     }
@@ -221,7 +220,7 @@ public class FilterPage extends BaseAppPage {
 
     @Step("Выбрать дату avs")
     public FilterPage choseAvsDate(LocalDate date) throws Exception {
-        mainScrollView.scrollDownToElement(avsDateBtn);
+        mainScrollView.scrollDown(2);
         String pageSource = getPageSource();
         avsDateBtn.click();
         if (!waitUntilContentIsChanged(pageSource)) {
