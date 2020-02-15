@@ -13,19 +13,25 @@ public class SearchProductCardWidget extends SearchProductAllGammaCardWidget {
         super(driver, locator);
     }
 
-    @AppFindBy(xpath = "./android.view.ViewGroup[android.widget.TextView[@content-desc='name']]/following-sibling::android.widget.TextView")
+    // Цена
+    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc='price']")
     private Element priceObj;
 
-    @AppFindBy(xpath = "./android.widget.TextView[5]")
+    // Например, "за штуку"
+    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc='productPriceUnit']")
     private Element priceLbl;
 
+    // Количество
     @AppFindBy(xpath = ".//android.widget.TextView[@content-desc=\"presenceValue\"]")
     private Element quantityObj;
 
-    @AppFindBy(xpath = "./android.widget.TextView[7]")
-    private Element priceUnit;
+    // Рядом с количеством величина, например "шт."
+    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc='priceUnit']")
+    private Element quantityType;
 
-    @AppFindBy(xpath = "./android.widget.TextView[6]")
+    // Рядом с кол-вом, например, "доступно"
+    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc='priceUnit']" +
+            "/following-sibling::android.widget.TextView")
     private Element quantityLbl;
 
     public String getPrice(String pageSource) {
@@ -49,10 +55,10 @@ public class SearchProductCardWidget extends SearchProductAllGammaCardWidget {
     }
 
     public String getPriceUnit(String pageSource) {
-        return priceUnit.getText(pageSource);
+        return quantityType.getText(pageSource);
     }
 
-    public String getPriceUnit() {
+    public String getQuantityType() {
         return getPriceUnit(null);
     }
 

@@ -47,16 +47,17 @@ public class SearchProductPage extends BaseAppPage {
             new CustomLocator(By.xpath("//android.widget.ScrollView"), null,
                     "Виджет прокрутки для истории последних запросов", false));
 
+    private static final By CARD_SCROLL_VIEW_XPATH = AndroidScrollView.TYPICAL_LOCATOR;
     private AndroidScrollView<ProductCardData> productCardsScrollView = new AndroidScrollView<>(driver,
-            By.xpath("//android.view.ViewGroup[@content-desc=\"ScreenContent\"]/android.view.ViewGroup[1]/android.view.ViewGroup/android.widget.ScrollView"),
+            CARD_SCROLL_VIEW_XPATH,
             ".//android.view.ViewGroup[contains(@content-desc,'productListCard')]", SearchProductCardWidget.class);
 
     private AndroidScrollView<ServiceCardData> serviceCardsScrollView = new AndroidScrollView<>(driver,
-            By.xpath("//android.view.ViewGroup[@content-desc=\"ScreenContent\"]/android.view.ViewGroup[1]/android.view.ViewGroup/android.widget.ScrollView"),
+            CARD_SCROLL_VIEW_XPATH,
             ".//android.view.ViewGroup[contains(@content-desc,'serviceListCard')]", SearchServiceCardWidget.class);
 
     private AndroidScrollView<ProductCardData> allGammaProductCardsScrollView = new AndroidScrollView<>(driver,
-            By.xpath("//android.view.ViewGroup[@content-desc=\"ScreenContent\"]/android.view.ViewGroup[1]/android.view.ViewGroup/android.widget.ScrollView"),
+            CARD_SCROLL_VIEW_XPATH,
             ".//android.view.ViewGroup[contains(@content-desc,'productListCard')]", SearchProductAllGammaCardWidget.class);
 
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ScreenContent']//android.view.ViewGroup[android.widget.ImageView]",

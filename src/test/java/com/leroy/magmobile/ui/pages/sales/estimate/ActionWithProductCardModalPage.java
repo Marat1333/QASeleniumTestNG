@@ -41,6 +41,12 @@ public class ActionWithProductCardModalPage extends CommonMagMobilePage {
         return new ProductDescriptionPage(context);
     }
 
+    @Step("Выберите пункт меню 'Изменить кол-во'")
+    public void clickChangeQuantityMenuItem() {
+        changeQuantityMenuItem.click();
+        // TODO
+    }
+
     // Verifications
 
     @Step("Проверить, что страница 'Действия с товаром' отображается корректно")

@@ -21,13 +21,18 @@ import com.leroy.magmobile.ui.pages.work.StockProductCardPage;
 import com.leroy.magmobile.ui.pages.work.StockProductsPage;
 import com.leroy.magmobile.ui.pages.work.modal.QuantityProductsForWithdrawalModalPage;
 import com.leroy.models.*;
+import com.leroy.umbrella_extension.authorization.AuthClient;
+import com.leroy.umbrella_extension.magmobile.MagMobileClient;
+import com.leroy.umbrella_extension.magmobile.data.ProductItemResponse;
+import com.leroy.umbrella_extension.magmobile.data.estimate.EstimateData;
+import com.leroy.umbrella_extension.magmobile.data.estimate.ProductOrderData;
+import com.leroy.umbrella_extension.magmobile.requests.GetCatalogSearch;
 import org.apache.commons.lang.RandomStringUtils;
+import org.testng.Assert;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.base.BaseModule;
-import ru.leroymerlin.qa.core.clients.magmobile.MagMobileClient;
-import ru.leroymerlin.qa.core.clients.magmobile.data.ProductItemResponse;
-import ru.leroymerlin.qa.core.clients.magmobile.requests.GetCatalogSearch;
+import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.List;
 import java.util.Random;
@@ -38,6 +43,9 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
 
     @Inject
     private MagMobileClient apiClient;
+
+    @Inject
+    private AuthClient authClient;
 
     // Получить ЛМ код для услуги
     private String getAnyLmCodeOfService() {
@@ -95,8 +103,24 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         return "82001470";
     }
 
-    public String getValidPinCode() {
+    private String getValidPinCode() {
         return RandomStringUtils.randomNumeric(5);
+    }
+
+    // CREATING PRE-CONDITIONS:
+
+    private String createDraftEstimate() {
+        String shopId = "35";
+        String lmCode = getAnyLmCodeProductWithoutSpecificOptions(shopId, false);
+        String token = authClient.getAccessToken(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS);
+        ProductOrderData productOrderData = new ProductOrderData();
+        productOrderData.setLmCode(lmCode);
+        productOrderData.setQuantity(1.0);
+        Response<EstimateData> estimateDataResponse = apiClient
+                .createEstimate(token, "35", productOrderData);
+        Assert.assertTrue(estimateDataResponse.isSuccessful(),
+                "Не смогли создать Смету на этапе создания pre-condition данных");
+        return estimateDataResponse.asJson().getEstimateId();
     }
 
     // Product Types
@@ -411,16 +435,23 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         SalesDocumentsPage salesDocumentsPage = estimateSubmittedPage.clickSubmitButton();
         salesDocumentsPage.verifyRequiredElements()
                 .shouldSalesDocumentByIndexIs(0, expectedSalesDocument);
+        // Post actions
+        log.step("(Доп. шаг) Найти и открыть созданную смету");
+        salesDocumentsPage.searchForDocumentByTextAndSelectIt(
+                expectedSalesDocument.getNumber());
+        new EstimatePage(context);
     }
 
     @Test(description = "C22797074 Посмотреть подробнее о товаре")
     public void testViewProductDetailsFromEstimateScreen() throws Exception {
-        // Pre-condition
-        MainSalesDocumentsPage mainSalesDocumentsPage = loginAndGoTo(
-                LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
-        SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
-        salesDocumentsPage.searchForDocumentByTextAndSelectIt(
-                SalesDocumentsConst.ESTIMATE_TYPE, SalesDocumentsConst.TRANSFORMED_STATE);
+        if (!EstimatePage.isThisPage(context)) {
+            String estimateId = createDraftEstimate();
+            MainSalesDocumentsPage mainSalesDocumentsPage = loginAndGoTo(
+                    LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
+            SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
+            salesDocumentsPage.searchForDocumentByTextAndSelectIt(estimateId);
+        }
+
         EstimatePage estimatePage = new EstimatePage(context);
         ProductCardData productCardData = estimatePage.getCardDataListFromPage()
                 .get(0).getProductCardData();
@@ -435,6 +466,44 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         ProductDescriptionPage productDescriptionPage = modalPage.clickProductDetailsMenuItem();
         productDescriptionPage.verifyRequiredElements(false)
                 .shouldProductLMCodeIs(productCardData.getLmCode());
+    }
+
+    @Test(description = "C22797073 Изменить количество добавленного товара", enabled = false)
+    public void testChangeProductQuantityFromEstimateScreen() throws Exception {
+        if (!EstimatePage.isThisPage(context)) {
+            String estimateId = createDraftEstimate();
+            MainSalesDocumentsPage mainSalesDocumentsPage = loginAndGoTo(
+                    LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
+            SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
+            salesDocumentsPage.searchForDocumentByTextAndSelectIt(estimateId);
+        }
+
+        EstimatePage estimatePage = new EstimatePage(context);
+        ProductCardData productCardData = estimatePage.getCardDataListFromPage()
+                .get(0).getProductCardData();
+
+        // Step 1
+        log.step("Нажмите на мини-карточку любого товара в списке товаров сметы");
+        ActionWithProductCardModalPage modalPage = estimatePage.clickCardByIndex(1)
+                .verifyRequiredElements();
+
+        // Step 2
+        log.step("Выберите параметр Изменить количество");
+        modalPage.clickChangeQuantityMenuItem();
+
+        // Step 3
+        log.step("Нажмите на плашку изменения количества");
+
+        // Step 4
+        log.step("Измените количество товара");
+
+        // Step 5
+        log.step("Нажмите ОК на клавиатуре");
+
+
+        // Step 6
+        log.step("Нажмите на кнопку Сохранить");
+
     }
 
     @Test(description = "C22797078 Преобразовать смету в корзину")

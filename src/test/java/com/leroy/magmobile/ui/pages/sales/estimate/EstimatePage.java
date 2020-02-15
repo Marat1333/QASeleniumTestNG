@@ -16,6 +16,7 @@ import com.leroy.models.SalesOrderCardData;
 import com.leroy.models.SalesOrderData;
 import com.leroy.utils.Converter;
 import io.qameta.allure.Step;
+import org.openqa.selenium.By;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,6 +51,11 @@ public class EstimatePage extends CommonMagMobilePage {
         }
     }
 
+    public static boolean isThisPage(TestContext context) {
+        return new Element(context.getDriver(),
+                By.xpath("//*[@content-desc='EstimateDocumentScreenId']")).isVisible();
+    }
+
     @Override
     public void waitForPageIsLoaded() {
         E("$EstimateDocumentScreenId", "EstimateDocumentScreen").waitForVisibility();
@@ -79,7 +85,7 @@ public class EstimatePage extends CommonMagMobilePage {
     AndroidScrollView<SalesOrderCardData> orderCardDataScrollView = new AndroidScrollView<>(driver,
             AndroidScrollView.TYPICAL_LOCATOR,
             "//android.view.ViewGroup[android.view.ViewGroup[android.view.ViewGroup[android.widget.ImageView]]]",
-            OrderRowProductWidget.class).setBottomPartOverlap(true);
+            OrderRowProductWidget.class);
 
     @AppFindBy(text = "ТОВАРЫ И УСЛУГИ", metaName = "Кнопка 'Товары и Услуги'")
     MagMobWhiteSubmitButton productAndServiceBtn;

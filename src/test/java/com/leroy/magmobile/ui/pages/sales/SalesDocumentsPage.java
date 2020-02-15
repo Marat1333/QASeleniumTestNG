@@ -52,7 +52,7 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
     @Step("Найти и выбрать документ, содержащий текст: {containsText}, но не содержащий: {notContainsText}")
     public void searchForDocumentByTextAndSelectIt(String containsText, String notContainsText) {
         CardWidget<SalesDocumentData> cardWidget =
-                salesDocumentScrollList.searchForWidgetByText(containsText, notContainsText);
+                salesDocumentScrollList.searchForWidgetByText(containsText/*, notContainsText*/);
         anAssert.isNotNull(cardWidget, "Не нашли нужный документ",
                 String.format("Документ содержащий текст %s, но который не содержит %s должен быть найден",
                         containsText, notContainsText));

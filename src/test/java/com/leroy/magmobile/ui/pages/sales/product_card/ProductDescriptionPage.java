@@ -6,7 +6,9 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.pages.sales.PricesAndQuantityPage;
 import com.leroy.magmobile.ui.pages.sales.ProductCardPage;
+import com.leroy.magmobile.ui.pages.sales.basket.Basket35Page;
 import io.qameta.allure.Step;
+import org.openqa.selenium.By;
 
 public class ProductDescriptionPage extends ProductCardPage {
 
@@ -38,6 +40,13 @@ public class ProductDescriptionPage extends ProductCardPage {
     @Override
     public void waitForPageIsLoaded() {
         lmCode.waitForVisibility();
+    }
+
+    public static boolean isThisPage(TestContext context) {
+        String ps = getPageSource(context.getDriver());
+        Element el = new Element(context.getDriver(),
+                By.xpath("//*[contains(@content-desc, 'Screen')]//android.widget.TextView"));
+        return el.isVisible(ps) && el.getText(ps).equals(Basket35Page.SCREEN_TITLE);
     }
 
     // Actions

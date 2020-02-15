@@ -21,6 +21,11 @@ public class ProductCardPage extends BaseAppPage {
     @AppFindBy(accessibilityId = "Tabs")
     protected Element mainArea;
 
+    // Вкладки:
+    @AppFindBy(text = "ОПИСАНИЕ ТОВАРА")
+    Element mmm;
+    //
+
     @AppFindBy(accessibilityId = "BackCloseModal")
     protected Element returnBackBtn;
 
