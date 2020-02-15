@@ -217,7 +217,7 @@ public abstract class BaseWidget extends BaseWrapper {
             we = webElement;
         try {
             return we.isDisplayed();
-        } catch (StaleElementReferenceException err) {
+        } catch (WebDriverException err) {
             return false;
         }
     }

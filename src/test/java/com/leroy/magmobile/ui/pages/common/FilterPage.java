@@ -93,6 +93,15 @@ public class FilterPage extends BaseAppPage {
 
     Element avs = E("contains(AVS)");
 
+    @AppFindBy(xpath = "//android.widget.TextView[@text='Дата AVS']/following-sibling::android.view.ViewGroup")
+    Element addAvsDateBtn;
+
+    @AppFindBy(xpath = "//android.widget.TextView[@text='Дата AVS']/following-sibling::android.view.ViewGroup/android.view.ViewGroup")
+    Element clearAvsDateBtn;
+
+    @AppFindBy(xpath = "//android.widget.TextView[@text='Дата AVS']/following-sibling::android.widget.TextView")
+    Element chosenAvsDate;
+
     public FilterPage scroll(String direction) {
         if (direction.equals("down")) {
             mainScrollView.scrollDown();
@@ -121,27 +130,42 @@ public class FilterPage extends BaseAppPage {
     }
 
     @Step("Выбрать фрейм фильтров {value}")
-    public <T> T switchFiltersFrame(String value) {
+    public <T> T switchFiltersFrame(String value) throws Exception {
         if (!gammaLmBtn.isVisible())
-            mainScrollView.scrollUp(1);
-        String pageSource=getPageSource();
+            mainScrollView.scrollUp(2);
         if (value.equals(ALL_GAMMA_FRAME_TYPE)) {
             gammaLmBtn.click();
-            waitUntilContentIsChanged(pageSource,short_timeout);
+            wait(2);
             return (T) new AllGammaFilterPage(context);
         } else {
             myShopBtn.click();
-            waitUntilContentIsChanged(pageSource,short_timeout);
+            wait(2);
             return (T) new MyShopFilterPage(context);
         }
     }
 
     @Step("Очистить все фильтры")
     public MyShopFilterPage clearAllFilters() {
-        String pageSource=getPageSource();
+        String pageSource = getPageSource();
         clearAllFiltersBtn.click();
         waitUntilContentIsChanged(pageSource, tiny_timeout);
         return new MyShopFilterPage(context);
+    }
+
+    @Step("Выбрать несколько фильтров")
+    public FilterPage choseFewFilters(Object... filters) throws Exception {
+        for (Object filter : filters) {
+            if (filter.getClass() == String.class && (String.valueOf(filter).contains("ГАММА"))) {
+                choseGammaFilter(String.valueOf(filter));
+            } else if (filter.getClass() == String.class && (String.valueOf(filter).contains("ОБЫЧНЫЙ") || (String.valueOf(filter).contains("ПОД ЗАКАЗ")))) {
+                choseProductType(String.valueOf(filter));
+            } else if (filter.getClass() == LocalDate.class) {
+                choseAvsDate((LocalDate) filter);
+            } else {
+                choseCheckBoxFilter(String.valueOf(filter));
+            }
+        }
+        return new FilterPage(context);
     }
 
     @Step("Выбрать checkBox фильтр {value}")
@@ -160,18 +184,21 @@ public class FilterPage extends BaseAppPage {
                 limitedOffer.click();
                 break;
             case AVS:
-                mainScrollView.scrollDown();
+                mainScrollView.scrollDown(2);
                 avs.click();
                 break;
             default:
-                throw new Exception();
+                throw new IllegalArgumentException("Checkbox filter with name "+value+" does`nt exist");
         }
         return new FilterPage(context);
     }
 
     @Step("Выбрать фильтр {gamma}")
-    public void choseGammaFilter(String gamma) throws Exception {
+    public void choseGammaFilter(String gamma) {
         gamma = gamma.toUpperCase();
+        if (!gammaFilterScrollView.isVisible()){
+            mainScrollView.scrollUpToElement(myShopBtn);
+        }
         try {
             Element element = E("contains(" + gamma + ")");
             gammaFilterScrollView.scrollRight(element);
@@ -182,7 +209,7 @@ public class FilterPage extends BaseAppPage {
     }
 
     @Step("Выбрать тип продукта {type}")
-    public void choseProductType(String type) throws Exception {
+    public void choseProductType(String type) {
         mainScrollView.scrollDown();
         if (type.equals(COMMON_PRODUCT_TYPE)) {
             commonProductBtn.click();
@@ -193,13 +220,13 @@ public class FilterPage extends BaseAppPage {
 
     @Step("Выбрать дату avs")
     public FilterPage choseAvsDate(LocalDate date) throws Exception {
-        mainScrollView.scrollDownToElement(avsDateBtn);
-        String pageSource=getPageSource();
+        mainScrollView.scrollDown(2);
+        String pageSource = getPageSource();
         avsDateBtn.click();
-       if (!waitUntilContentIsChanged(pageSource)){
-           mainScrollView.scrollDown();
-           avsDateBtn.click();
-       }
+        if (!waitUntilContentIsChanged(pageSource)) {
+            mainScrollView.scrollDown();
+            avsDateBtn.click();
+        }
         CalendarWidget calendarWidget = new CalendarWidget(context.getDriver());
         calendarWidget.selectDate(date);
         return new FilterPage(context);
@@ -216,6 +243,96 @@ public class FilterPage extends BaseAppPage {
     }
 
     //Verifications
+
+    @Step("Проверить, что несколько фильтров выбраны")
+    public FilterPage verifyFewFiltersAreChosen(Object... filters) throws Exception {
+        for (Object filter : filters) {
+            if (filter.getClass() == String.class && (String.valueOf(filter).contains("ГАММА"))) {
+                Element element = E("contains(" + filter + ")");
+                if (!element.isVisible()){
+                    mainScrollView.scrollUpToElement(myShopBtn);
+                    new FilterPage(context);
+                }
+                gammaFilterScrollView.scrollRight(element);
+                new FilterPage(context);
+                shouldFilterHasBeenChosen(String.valueOf(filter));
+            } else if (filter.getClass() == String.class && (String.valueOf(filter).contains("ОБЫЧНЫЙ") || (String.valueOf(filter).contains("ПОД ЗАКАЗ")))) {
+                mainScrollView.scrollDown(2);
+                new FilterPage(context);
+                shouldFilterHasBeenChosen(String.valueOf(filter));
+            } else if (filter.getClass() == LocalDate.class) {
+                if (!avsDateBtn.isVisible()){
+                    mainScrollView.scrollDownToElement(avsDateBtn);
+                    new FilterPage(context);
+                }
+                shouldAvsDateIsCorrect((LocalDate) filter);
+            } else {
+                if (String.valueOf(filter).equals("AVS")){
+                    mainScrollView.scrollDown(2);
+                }
+                shouldElementHasBeenSelected(String.valueOf(filter));
+            }
+        }
+        return this;
+    }
+
+    @Step("Проверить, что несколько фильтров не выбраны")
+    public FilterPage verifyFewFiltersAreNotChosen(Object... filters) throws Exception {
+        for (Object filter : filters) {
+            if (filter.getClass() == String.class && (String.valueOf(filter).contains("ГАММА"))) {
+                Element element = E("contains(" + filter + ")");
+                if (!element.isVisible()){
+                    mainScrollView.scrollUpToElement(myShopBtn);
+                    new FilterPage(context);
+                }
+                gammaFilterScrollView.scrollRight(element);
+                new FilterPage(context);
+                shouldFilterHasNotBeenChosen(String.valueOf(filter));
+            } else if (filter.getClass() == String.class && (String.valueOf(filter).contains("ОБЫЧНЫЙ") || (String.valueOf(filter).contains("ПОД ЗАКАЗ")))) {
+                mainScrollView.scrollDownToElement(commonProductBtn);
+                new FilterPage(context);
+                shouldFilterHasNotBeenChosen(String.valueOf(filter));
+            } else if (filter.getClass() == LocalDate.class) {
+                if (!avsDateBtn.isVisible()){
+                    mainScrollView.scrollDownToElement(avsDateBtn);
+                    new FilterPage(context);
+                }
+                shouldAvsDateIsCorrect(null);
+            } else {
+                if (String.valueOf(filter).equals("AVS")){
+                    mainScrollView.scrollDown(2);
+                }
+                shouldElementHasNotBeenSelected(String.valueOf(filter));
+            }
+        }
+        return this;
+    }
+
+    @Step("Проверить, что отображенная дата соответствует выбранной")
+    public FilterPage shouldAvsDateIsCorrect(LocalDate date) {
+        String pageSource = getPageSource();
+        if (date == null) {
+            anAssert.isElementNotVisible(chosenAvsDate, pageSource);
+        } else {
+            String dateAsString = date.getDayOfMonth() + ".";
+            String month = date.getMonthValue() > 9 ? String.valueOf(date.getMonthValue()) : "0" + date.getMonthValue();
+            dateAsString = dateAsString + month + "." + String.valueOf(date.getYear()).substring(2);
+            anAssert.isElementTextEqual(chosenAvsDate, dateAsString, pageSource);
+        }
+        return this;
+    }
+
+    @Step("Проверить, что кнопка очистки даты AVS отображается")
+    public FilterPage shouldClearAvsDateBtnIsVisible() {
+        anAssert.isElementVisible(clearAvsDateBtn);
+        return this;
+    }
+
+    @Step("Проверить, что кнопка добавления даты AVS отображается")
+    public FilterPage shouldAddAvsDateBtnIsVisible() {
+        anAssert.isElementImageMatches(addAvsDateBtn, MagMobElementTypes.PLUS_FILTER_PAGE.getPictureName());
+        return this;
+    }
 
     @Step("Проверить, что выбран чек-бокс {value}")
     public FilterPage shouldElementHasBeenSelected(String value) {

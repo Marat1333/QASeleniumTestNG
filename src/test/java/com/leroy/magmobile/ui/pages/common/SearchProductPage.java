@@ -83,6 +83,9 @@ public class SearchProductPage extends BaseAppPage {
     @AppFindBy(text = "Ты пока ничего не искал(а)")
     Element firstSearchMsg;
 
+    @AppFindBy(text = "Ничего не найдено")
+    Element notFoundMsgLbl;
+
     Element discardAllFiltersBtn = E("contains(СБРОСИТЬ ФИЛЬТРЫ)");
 
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"Button\"]/android.view.ViewGroup")
@@ -455,8 +458,7 @@ public class SearchProductPage extends BaseAppPage {
     // API verifications
 
     @Step("Проверить, что фронт корректно отобразил ответ от сервера по запросу на catalog product")
-    public SearchProductPage shouldCatalogResponseEqualsContent(
-            Response<ProductItemListResponse> response, CardType type, Integer entityCount) {
+    public SearchProductPage shouldCatalogResponseEqualsContent(Response<ProductItemListResponse> response, CardType type, Integer entityCount) {
         List<ProductItemResponse> productDataListFromResponse = response.asJson().getItems();
         List<ProductCardData> productCardDataListFromPage;
         switch (type) {
