@@ -4,6 +4,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
+import com.leroy.core.util.XpathUtil;
 import com.leroy.core.web_elements.general.BaseWidget;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
@@ -25,30 +26,9 @@ import static java.time.Duration.ofMillis;
 
 public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
 
-    // Если будет работать лучше, то надо подумать, как передавать Selector для самого скролла внутрь
-    private boolean experiment = false;
-
-    private boolean bottomPartOverlap = false;
-
-    public AndroidScrollView<T> setBottomPartOverlap(boolean bottomPartOverlap) {
-        this.bottomPartOverlap = bottomPartOverlap;
-        return this;
-    }
-
-    private final int MAX_SCROLL_COUNT = 10;
-
-    @AppFindBy(xpath = "//android.widget.ProgressBar", cacheLookup = false, metaName = "Progress bar")
-    private Element progressBar;
-
-    public static final String TYPICAL_XPATH = "//android.widget.ScrollView";
-    public static final By TYPICAL_LOCATOR = By.xpath("//android.widget.ScrollView");
-    private Class<? extends BaseWidget> rowWidgetClass;
-    private String oneRowXpath;
-
     AndroidDriver<MobileElement> androidDriver;
 
-    private List<T> tmpCardDataList;
-    private CardWidget<T> tmpWidget;
+    // -------------------- CONSTRUCTORS ---------------------------------//
 
     public AndroidScrollView(WebDriver driver, CustomLocator locator) {
         this(driver, locator, ".//android.widget.TextView", null);
@@ -58,25 +38,63 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
         this(driver, by, ".//android.widget.TextView", null);
     }
 
-    public AndroidScrollView(WebDriver driver, By by, String oneRowXpath,
+    public AndroidScrollView(WebDriver driver, By by, String eachRowXpath,
                              Class<? extends CardWidget<T>> clazz) {
-        this(driver, new CustomLocator(by), oneRowXpath, clazz);
+        this(driver, new CustomLocator(by), eachRowXpath, clazz);
     }
 
-    public AndroidScrollView(WebDriver driver, CustomLocator locator, String oneRowXpath,
+    public AndroidScrollView(WebDriver driver, CustomLocator locator, String eachRowXpath,
                              Class<? extends CardWidget<T>> clazz) {
         super(driver, locator);
         if (clazz == null)
             this.rowWidgetClass = TextViewWidget.class;
         else
             this.rowWidgetClass = clazz;
-        this.oneRowXpath = oneRowXpath;
+        this.eachRowXpath = eachRowXpath;
         androidDriver = (AndroidDriver) driver;
     }
+
+    // Constants
+
+    private final int MAX_SCROLL_COUNT = 10;
+    public static final String TYPICAL_XPATH = "//android.widget.ScrollView";
+    public static final By TYPICAL_LOCATOR = By.xpath("//android.widget.ScrollView");
+
+    // Properties
+
+    // Если будет работать лучше, то надо подумать, как передавать Selector для самого скролла внутрь
+    private boolean useUiSelectors = true;
+    private Integer swipeDeadZonePercentage = 15;
+
+    public void setUseUiSelectors(boolean useUiSelectors) {
+        this.useUiSelectors = useUiSelectors;
+    }
+
+    public void setSwipeDeadZonePercentage(int swipeDeadZonePercentage) {
+        this.swipeDeadZonePercentage = swipeDeadZonePercentage;
+    }
+
+    private Class<? extends BaseWidget> rowWidgetClass;
+    private String eachRowXpath;
+
+    // ----- Others -------
+    private List<T> tmpCardDataList;
+    private CardWidget<T> tmpWidget;
+
+    @AppFindBy(xpath = "//android.widget.ProgressBar", cacheLookup = false, metaName = "Progress bar")
+    private Element progressBar;
 
     private enum Direction {
         UP, DOWN;
     }
+
+    private static class SearchContext {
+        Element findElement;
+        String findText;
+        String findTextShouldNotContainsIt;
+    }
+
+    // Helper methods
 
     private void executeUIAutomatorScript(String script) {
         setImplicitWait(0);
@@ -89,28 +107,31 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
         this.setImplicitWait(DriverFactory.IMPLICIT_WAIT_TIME_OUT);
     }
 
+    // Public methods
+
     /**
      * Ищет виджет с текстом {value} и возвращает ссылку на сам widget (в общем виде - CardWidget)
      */
-    public CardWidget<T> searchForWidgetByText(String containsText, String shouldNotContainsThisText) {
+    public CardWidget<T> searchForWidgetByText(String containsText, boolean scrollUpBefore) {
         SearchContext searchContext = new SearchContext();
         searchContext.findText = containsText;
-        searchContext.findTextShouldNotContainsIt = shouldNotContainsThisText;
-        scrollUp();
-        scrollTo(searchContext, MAX_SCROLL_COUNT, null, Direction.DOWN);
+        if (scrollUpBefore)
+            scrollUp();
+        scrollAndGrabData(searchContext, MAX_SCROLL_COUNT, null, Direction.DOWN);
         return tmpWidget;
     }
 
     public CardWidget<T> searchForWidgetByText(String containsText) {
-        return searchForWidgetByText(containsText, null);
+        return searchForWidgetByText(containsText, false);
     }
 
     /**
      * Get data object by index. If necessary, it scroll to this object
      */
-    public T getDataObj(int index) {
-        scrollUp();
-        scrollTo(null, null, index + 1, Direction.DOWN);
+    public T getDataObj(int index, boolean scrollUpBefore) {
+        if (scrollUpBefore)
+            scrollUp();
+        scrollAndGrabData(null, null, index + 1, Direction.DOWN);
         if (tmpCardDataList.size() <= index) {
             throw new IndexOutOfBoundsException(
                     String.format("Data list size is %s. Index is %s", tmpCardDataList.size(), index));
@@ -118,29 +139,43 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
         return tmpCardDataList.get(index);
     }
 
+    public T getDataObj(int index) {
+        return getDataObj(index, false);
+    }
+
     /**
      * Scroll down to the end and get all data as ArrayList
      */
-    public List<T> getFullDataList(int maxEntityCount) {
-        scrollUp();
-        scrollTo(null, null, maxEntityCount, Direction.DOWN);
+    public List<T> getFullDataList(int maxEntityCount, boolean scrollUpBefore) {
+        if (scrollUpBefore)
+            scrollUp();
+        scrollAndGrabData(null, null, maxEntityCount, Direction.DOWN);
         return new ArrayList<>(tmpCardDataList);
+    }
+
+    public List<T> getFullDataList(int maxEntityCount) {
+        return getFullDataList(maxEntityCount, false);
     }
 
     public List<T> getFullDataList() {
         return getFullDataList(30);
     }
 
-    public List<String> getFullDataAsStringList() throws Exception {
+    public List<String> getFullDataAsStringList() {
         return getFullDataList().stream().map(T::toString).collect(Collectors.toList());
     }
 
     /**
      * Return count of the rows inside the ScrollView
      */
-    public int getRowCount() {
-        scrollUp();
+    public int getRowCount(boolean scrollUpBefore) {
+        if (scrollUpBefore)
+            scrollUp();
         return getFullDataList(100).size();
+    }
+
+    public int getRowCount() {
+        return getRowCount(false);
     }
 
     private void addNonRepeatingText(List<T> existedList, List<T> newList) {
@@ -160,25 +195,18 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
         }
     }
 
-    private void simpleScroll(WebElement startElement, WebElement endElement) {
-        int startX = startElement.getLocation().getX() + (startElement.getSize().getWidth() / 2);
-        int startY = startElement.getLocation().getY() + (startElement.getSize().getHeight() / 2);
-
-        int endX = endElement.getLocation().getX() + (endElement.getSize().getWidth() / 2);
-        int endY = endElement.getLocation().getY() + (endElement.getSize().getHeight() / 2);
-
-        new TouchAction<>(androidDriver)
-                .press(point(startX, startY))
-                .waitAction(waitOptions(ofMillis(500)))
-                .moveTo(point(endX, endY))
-                .release().perform();
-    }
-
     private void simpleScroll(Direction direction) {
-        if (experiment && (direction.equals("down") && !bottomPartOverlap || direction.equals("up"))) {
-            String _method = direction.equals("down") ? "scrollForward" : "scrollBackward";
-            executeUIAutomatorScript("new UiScrollable(new UiSelector()"
-                    + ".scrollable(true))." + _method + "();");
+        if (useUiSelectors) {
+            String _method = direction.equals(Direction.DOWN) ? "scrollForward" : "scrollBackward";
+            StringBuilder runStr = new StringBuilder();
+            runStr.append(String.format("new UiScrollable(%s)",
+                    XpathUtil.convertXpathToUISelector(getXpath()).toString()));
+            if (swipeDeadZonePercentage != null) {
+                runStr.append(String.format(".setSwipeDeadZonePercentage(%s)",
+                        swipeDeadZonePercentage / 100.0));
+            }
+            runStr.append(".").append(_method).append("();");
+            executeUIAutomatorScript(runStr.toString());
         } else {
             //Try to change bottomY k
             Point _location = getLocation();
@@ -204,15 +232,15 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
      * @param direction      - up or down
      * @return this
      */
-    private AndroidScrollView<T> scrollTo(
+    private AndroidScrollView<T> scrollAndGrabData(
             SearchContext searchContext, Integer maxScrollCount,
             Integer maxEntityCount, Direction direction) {
         initialWebElementIfNeeded();
         tmpCardDataList = new ArrayList<>();
-        List<T> prevDataList = null;
+        String prevPageSource = null;
         int i = 0;
         while (true) {
-            ElementList<CardWidget<T>> cardWidgetList = this.findChildElements(oneRowXpath, rowWidgetClass);
+            ElementList<CardWidget<T>> cardWidgetList = this.findChildElements(eachRowXpath, rowWidgetClass);
             List<T> currentVisibleDataList = new ArrayList<>();
             String pageSource = getPageSource();
             if (searchContext != null && searchContext.findElement != null) {
@@ -245,9 +273,9 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
                 }
                 break;
             }
-            if (currentVisibleDataList.equals(prevDataList))
+            if (pageSource.equals(prevPageSource))
                 break;
-            prevDataList = new ArrayList<>(currentVisibleDataList);
+            prevPageSource = pageSource;
             simpleScroll(direction);
             progressBar.waitForInvisibility();
             Log.debug("<-- Scroll down #" + (i + 1) + "-->");
@@ -266,7 +294,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
     public AndroidScrollView<T> scrollDownToText(String findText, int maxScrollCount) {
         SearchContext searchContext = new SearchContext();
         searchContext.findText = findText;
-        return scrollTo(searchContext, maxScrollCount, null, Direction.DOWN);
+        return scrollAndGrabData(searchContext, maxScrollCount, null, Direction.DOWN);
     }
 
     /**
@@ -279,7 +307,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
     public AndroidScrollView<T> scrollUpToText(String findText, int maxScrollCount) {
         SearchContext searchContext = new SearchContext();
         searchContext.findText = findText;
-        return scrollTo(searchContext, maxScrollCount, null, Direction.UP);
+        return scrollAndGrabData(searchContext, maxScrollCount, null, Direction.UP);
     }
 
     public AndroidScrollView<T> scrollDownToText(String findText) {
@@ -289,43 +317,23 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
     public AndroidScrollView<T> scrollDownToElement(Element element) {
         SearchContext searchContext = new SearchContext();
         searchContext.findElement = element;
-        return scrollTo(searchContext, MAX_SCROLL_COUNT, null, Direction.DOWN);
+        return scrollAndGrabData(searchContext, MAX_SCROLL_COUNT, null, Direction.DOWN);
     }
 
     public AndroidScrollView<T> scrollUpToElement(Element element) {
         SearchContext searchContext = new SearchContext();
         searchContext.findElement = element;
-        return scrollTo(searchContext, MAX_SCROLL_COUNT, null, Direction.UP);
+        return scrollAndGrabData(searchContext, MAX_SCROLL_COUNT, null, Direction.UP);
     }
 
     public AndroidScrollView<T> scrollDown() {
-        return scrollDown(1);
+        simpleScroll(Direction.DOWN);
+        return this;
     }
 
     public AndroidScrollView<T> scrollUp() {
-        if (experiment) {
-            executeUIAutomatorScript(
-                    "new UiScrollable(new UiSelector().scrollable(true)).flingBackward();");
-            return this;
-        } else {
-            return scrollUp(1);
-        }
-    }
-
-    public AndroidScrollView<T> scrollDown(int count) {
-        if (count == 1) {
-            simpleScroll(Direction.DOWN);
-            return this;
-        }
-        return scrollDownToText(null, count);
-    }
-
-    public AndroidScrollView<T> scrollUp(int count) {
-        if (count == 1) {
-            simpleScroll(Direction.UP);
-            return this;
-        }
-        return scrollUpToText(null, count);
+        simpleScroll(Direction.UP);
+        return this;
     }
 
     /**
@@ -333,16 +341,8 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
      */
     public void clickElemByIndex(int index) throws Exception {
         // Method can be improved with scrolling if it necessary
-        ElementList<CardWidget<T>> cardWidgetList = this.findChildElements(oneRowXpath, rowWidgetClass);
+        ElementList<CardWidget<T>> cardWidgetList = this.findChildElements(eachRowXpath, rowWidgetClass);
         cardWidgetList.get(index).click();
-    }
-
-    // ------------ SEARCH CONTEXT ---------------- //
-
-    private static class SearchContext {
-        Element findElement;
-        String findText;
-        String findTextShouldNotContainsIt;
     }
 
 }
