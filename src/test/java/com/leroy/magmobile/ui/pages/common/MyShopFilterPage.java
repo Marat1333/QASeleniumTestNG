@@ -42,7 +42,8 @@ public class MyShopFilterPage extends FilterPage {
     @Step("Нажать на \"Показать все фильтры\"")
     public MyShopFilterPage clickShowAllFiltersBtn() {
         showAllFiltersBtn.click();
-        return new MyShopFilterPage(context);
+        showAllFiltersBtn.waitForInvisibility();
+        return this;
     }
 
     @Override
@@ -89,7 +90,7 @@ public class MyShopFilterPage extends FilterPage {
                 limitedOffer.click();
                 break;
             case AVS:
-                mainScrollView.scrollDown(2);
+                mainScrollView.scrollToEnd();
                 String pageSource = getPageSource();
                 avs.click();
                 if (!waitUntilContentIsChanged(pageSource)) {

@@ -140,7 +140,7 @@ public class NomenclatureSearchPage extends BaseAppPage {
             uniqueElementsArray.add(element.findChildElement(eachElementOfNomenclatureXpath).getText());
         }
         //TODO перейти на AndroidScrollView
-        scrollView.scrollDown(2);
+        scrollView.scrollToEnd();
         for (Element element : secondLevelNomenclatureElementsList) {
             uniqueElementsArray.add(element.findChildElement(eachElementOfNomenclatureXpath).getText());
         }

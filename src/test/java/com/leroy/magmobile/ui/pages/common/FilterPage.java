@@ -132,7 +132,7 @@ public class FilterPage extends BaseAppPage {
     @Step("Выбрать фрейм фильтров {value}")
     public <T> T switchFiltersFrame(String value) throws Exception {
         if (!gammaLmBtn.isVisible())
-            mainScrollView.scrollUp(2);
+            mainScrollView.scrollToBeginning();
         if (value.equals(ALL_GAMMA_FRAME_TYPE)) {
             gammaLmBtn.click();
             wait(2);
@@ -184,11 +184,11 @@ public class FilterPage extends BaseAppPage {
                 limitedOffer.click();
                 break;
             case AVS:
-                mainScrollView.scrollDown(2);
+                mainScrollView.scrollToEnd();
                 avs.click();
                 break;
             default:
-                throw new IllegalArgumentException("Checkbox filter with name "+value+" does`nt exist");
+                throw new IllegalArgumentException("Checkbox filter with name " + value + " does`nt exist");
         }
         return new FilterPage(context);
     }
@@ -196,7 +196,7 @@ public class FilterPage extends BaseAppPage {
     @Step("Выбрать фильтр {gamma}")
     public void choseGammaFilter(String gamma) {
         gamma = gamma.toUpperCase();
-        if (!gammaFilterScrollView.isVisible()){
+        if (!gammaFilterScrollView.isVisible()) {
             mainScrollView.scrollUpToElement(myShopBtn);
         }
         try {
@@ -220,7 +220,7 @@ public class FilterPage extends BaseAppPage {
 
     @Step("Выбрать дату avs")
     public FilterPage choseAvsDate(LocalDate date) throws Exception {
-        mainScrollView.scrollDown(2);
+        mainScrollView.scrollToEnd();
         String pageSource = getPageSource();
         avsDateBtn.click();
         if (!waitUntilContentIsChanged(pageSource)) {
@@ -249,7 +249,7 @@ public class FilterPage extends BaseAppPage {
         for (Object filter : filters) {
             if (filter.getClass() == String.class && (String.valueOf(filter).contains("ГАММА"))) {
                 Element element = E("contains(" + filter + ")");
-                if (!element.isVisible()){
+                if (!element.isVisible()) {
                     mainScrollView.scrollUpToElement(myShopBtn);
                     new FilterPage(context);
                 }
@@ -257,18 +257,18 @@ public class FilterPage extends BaseAppPage {
                 new FilterPage(context);
                 shouldFilterHasBeenChosen(String.valueOf(filter));
             } else if (filter.getClass() == String.class && (String.valueOf(filter).contains("ОБЫЧНЫЙ") || (String.valueOf(filter).contains("ПОД ЗАКАЗ")))) {
-                mainScrollView.scrollDown(2);
+                mainScrollView.scrollToEnd();
                 new FilterPage(context);
                 shouldFilterHasBeenChosen(String.valueOf(filter));
             } else if (filter.getClass() == LocalDate.class) {
-                if (!avsDateBtn.isVisible()){
+                if (!avsDateBtn.isVisible()) {
                     mainScrollView.scrollDownToElement(avsDateBtn);
                     new FilterPage(context);
                 }
                 shouldAvsDateIsCorrect((LocalDate) filter);
             } else {
-                if (String.valueOf(filter).equals("AVS")){
-                    mainScrollView.scrollDown(2);
+                if (String.valueOf(filter).equals("AVS")) {
+                    mainScrollView.scrollToEnd();
                 }
                 shouldElementHasBeenSelected(String.valueOf(filter));
             }
@@ -281,7 +281,7 @@ public class FilterPage extends BaseAppPage {
         for (Object filter : filters) {
             if (filter.getClass() == String.class && (String.valueOf(filter).contains("ГАММА"))) {
                 Element element = E("contains(" + filter + ")");
-                if (!element.isVisible()){
+                if (!element.isVisible()) {
                     mainScrollView.scrollUpToElement(myShopBtn);
                     new FilterPage(context);
                 }
@@ -293,14 +293,14 @@ public class FilterPage extends BaseAppPage {
                 new FilterPage(context);
                 shouldFilterHasNotBeenChosen(String.valueOf(filter));
             } else if (filter.getClass() == LocalDate.class) {
-                if (!avsDateBtn.isVisible()){
+                if (!avsDateBtn.isVisible()) {
                     mainScrollView.scrollDownToElement(avsDateBtn);
                     new FilterPage(context);
                 }
                 shouldAvsDateIsCorrect(null);
             } else {
-                if (String.valueOf(filter).equals("AVS")){
-                    mainScrollView.scrollDown(2);
+                if (String.valueOf(filter).equals("AVS")) {
+                    mainScrollView.scrollToEnd();
                 }
                 shouldElementHasNotBeenSelected(String.valueOf(filter));
             }
