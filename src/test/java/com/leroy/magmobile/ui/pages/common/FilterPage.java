@@ -113,11 +113,9 @@ public class FilterPage extends BaseAppPage {
     @AppFindBy(text = "AVS")
     Element avs;
 
-    @AppFindBy(xpath = "//android.widget.TextView[@text='Дата AVS']/following-sibling::android.view.ViewGroup")
+    @AppFindBy(xpath = "//android.widget.TextView[@text='Дата AVS']/following-sibling::android.view.ViewGroup",
+            metaName = "Иконка добавления или очистки AVS даты")
     Element avsDateIcon;
-
-    //@AppFindBy(xpath = "//android.widget.TextView[@text='Дата AVS']/following-sibling::android.view.ViewGroup/android.view.ViewGroup")
-    //Element clearAvsDateBtn;
 
     @AppFindBy(xpath = "//android.widget.TextView[@text='Дата AVS']/following-sibling::android.widget.TextView")
     Element chosenAvsDate;
@@ -323,6 +321,7 @@ public class FilterPage extends BaseAppPage {
         avsDateBtn.click();
         CalendarWidget calendarWidget = new CalendarWidget(context.getDriver());
         calendarWidget.selectDate(date);
+        chosenAvsDate.waitForVisibility();
         return this;
     }
 

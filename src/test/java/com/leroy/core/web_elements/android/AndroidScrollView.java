@@ -62,7 +62,6 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
 
     // Properties
 
-    // Если будет работать лучше, то надо подумать, как передавать Selector для самого скролла внутрь
     private boolean useUiSelectors = true;
     private Integer swipeDeadZonePercentage = 20;
 

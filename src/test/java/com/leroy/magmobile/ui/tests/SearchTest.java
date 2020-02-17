@@ -22,6 +22,7 @@ import com.leroy.umbrella_extension.magmobile.enums.CatalogSearchFields;
 import com.leroy.umbrella_extension.magmobile.enums.SortingOrder;
 import com.leroy.umbrella_extension.magmobile.requests.GetCatalogSearch;
 import com.leroy.umbrella_extension.magmobile.requests.GetCatalogServicesSearch;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
@@ -801,7 +802,8 @@ public class SearchTest extends AppBaseSteps {
         // Step 6
         log.step("Применить фильтры выбранные фильтры");
         myShopFilterPage.applyChosenFilters();
-        searchProductPage.shouldCatalogResponseEqualsContent(suppliersResponce, SearchProductPage.CardType.COMMON, 3);
+        searchProductPage.shouldCatalogResponseEqualsContent(suppliersResponce,
+                SearchProductPage.CardType.COMMON, 3);
 
         // Step 7
         log.step("Вернуться на страницу выбора фильтров и очистить фильтр поставщиков по нажатию на \"крест\"");
@@ -813,7 +815,8 @@ public class SearchTest extends AppBaseSteps {
         log.step("Нажать \"показать товары\"");
         myShopFilterPage.applyChosenFilters();
         Response<ProductItemListResponse> defaultParamsResponce = apiClient.searchProductsBy(defaultSearchParam);
-        searchProductPage.shouldCatalogResponseEqualsContent(defaultParamsResponce, SearchProductPage.CardType.COMMON, 3);
+        searchProductPage.shouldCatalogResponseEqualsContent(defaultParamsResponce,
+                SearchProductPage.CardType.COMMON, 3);
 
         // Step 9
         log.step("Повторить шаг 1-2 и выбрать поставщика");
@@ -989,6 +992,7 @@ public class SearchTest extends AppBaseSteps {
                 SearchProductPage.CardType.COMMON, 10);
     }
 
+    @Issue("Bug1") // TODO нужно указать номер бага из Джиры
     @Test(description = "C22789213 Сброс фильтров при нажатии кнопки Назад железная и стрелочка", priority = 2)
     public void testClearAllFiltersIfReturnBack() throws Exception {
         final String TOP = " 0";
