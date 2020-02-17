@@ -285,7 +285,10 @@ public class FilterPage extends BaseAppPage {
                 break;
             case AVS:
                 mainScrollView.scrollToEnd();
-                avs.click();
+                if (isWaitAfterClick)
+                    clickElementAndWaitUntilContentIsChanged(avs);
+                else
+                    avs.click();
                 break;
             default:
                 throw new IllegalArgumentException("Checkbox filter with name " + value + " does`nt exist");

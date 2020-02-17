@@ -11,7 +11,7 @@ import io.qameta.allure.Step;
 
 public class ComplainPage extends BaseAppPage {
 
-    private static final String WHAT_HAPPEN_TEXT = "В чем проблема?";
+    private static final String WHAT_HAPPEN_TEXT = "Что у нас в приложении случилось?";
 
     public ComplainPage(TestContext context) {
         super(context);
