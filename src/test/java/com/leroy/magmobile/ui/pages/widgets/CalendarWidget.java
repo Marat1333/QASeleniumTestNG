@@ -61,10 +61,14 @@ public class CalendarWidget extends BaseContainer {
         }
 
         for (int i = 0; i < differenceInMonth; i++) {
-            if (needToSelectDate.before(calendarDate))
+            if (needToSelectDate.before(calendarDate)) {
                 previousMonthBtn.click();
-            else if (needToSelectDate.after(calendarDate))
+                wait(1);
+            }
+            else if (needToSelectDate.after(calendarDate)) {
                 nextMonthBtn.click();
+                wait(1);
+            }
             else
                 break;
         }

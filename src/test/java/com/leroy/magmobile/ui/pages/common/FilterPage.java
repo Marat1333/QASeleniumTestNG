@@ -452,18 +452,16 @@ public class FilterPage extends BaseAppPage {
     }
 
     @Step("Проверить, что выбран чек-бокс {value}")
-    public FilterPage shouldElementHasBeenSelected(String value) {
-        Element anchorElement = E(String.format(SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH, value),
-                String.format("Чек-бокс %s", value));
-        anAssert.isElementImageMatches(anchorElement, MagMobElementTypes.CHECK_BOX_SELECTED_FILTER_PAGE.getPictureName());
+    public FilterPage shouldElementHasBeenSelected(String value) throws Exception {
+        MagMobCheckBox anchorElement = new MagMobCheckBox(driver, new CustomLocator(By.xpath(String.format(SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH, value))));
+        anAssert.isTrue(anchorElement.isChecked(), "Фильтр '" + value + "' должен быть выбран");
         return this;
     }
 
     @Step("Проверить, что чек-бокс {value} не выбран")
-    public FilterPage shouldElementHasNotBeenSelected(String value) {
-        Element anchorElement = E(String.format(SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH, value),
-                String.format("Чек-бокс %s", value));
-        anAssert.isElementImageMatches(anchorElement, MagMobElementTypes.CHECK_BOX_NOT_SELECTED_FILTER_PAGE.getPictureName());
+    public FilterPage shouldElementHasNotBeenSelected(String value) throws Exception {
+        MagMobCheckBox anchorElement = new MagMobCheckBox(driver, new CustomLocator(By.xpath(String.format(SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH, value))));
+        anAssert.isTrue(!anchorElement.isChecked(), "Фильтр '" + value + "' не должен быть выбран");
         return this;
     }
 

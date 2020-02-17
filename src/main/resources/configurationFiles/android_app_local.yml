@@ -28,7 +28,7 @@ capabilities:
       newCommandTimeout: 6000
       platformVersion: '9.0' #'10.0'
       deviceName: samsung SM-A207F #Nexus 5 API 29
-      app: /home/ddimitrash/IdeaProjects/auto-tests1/src/LMLF-1.3.3-TEST-b1016.apk #LMLF-1.3.3-b3271-BRANCH-feature-LFRONT-3290-complex-search-a.apk
+      app: /home/ddimitrash/IdeaProjects/auto-tests1/src/LMLF-1.3.3-TEST-b1017.apk #LMLF-1.3.3-b3271-BRANCH-feature-LFRONT-3290-complex-search-a.apk
 
     android_browser:
       browserName: chrome

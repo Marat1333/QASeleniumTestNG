@@ -191,7 +191,7 @@ public class SearchProductPage extends BaseAppPage {
     }
 
     @Step("Перейти на страницу выбора фильтров")
-    public FilterPage goToFilterPage(boolean isMyShopFrame) {
+    public FilterPage goToFilterPage() {
         filter.click();
         return new FilterPage(context);
     }

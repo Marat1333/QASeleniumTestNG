@@ -90,5 +90,15 @@ public class SortPage extends CommonMagMobilePage {
         anAssert.isElementImageMatches(neededElement, MagMobElementTypes.SORT_RADIOGROUP_SORT_PAGE.getPictureName());
         return this;
     }
+
+    @Step("Проверить, для выбора доступна сортировка только по ЛМ коду (ASC/DESC)")
+    public SortPage shouldSortIsOnlyByLmCode(){
+        String pageSource=getPageSource();
+        softAssert.areElementsVisible(pageSource, sortByLmDescLbl, sortByLmAscLbl);
+        softAssert.isElementNotVisible(sortByStockDescLbl, pageSource);
+        softAssert.isElementNotVisible(sortByStockAscLbl, pageSource);
+        softAssert.verifyAll();
+        return this;
+    }
 }
 
