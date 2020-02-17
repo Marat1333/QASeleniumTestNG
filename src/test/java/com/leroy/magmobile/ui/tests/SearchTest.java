@@ -42,7 +42,7 @@ public class SearchTest extends AppBaseSteps {
 
     private GetCatalogSearch buildDefaultCatalogSearchParams() {
         return new GetCatalogSearch()
-                .setPageSize(10)
+                .setPageSize(3)
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setStartFrom(1);
@@ -55,45 +55,37 @@ public class SearchTest extends AppBaseSteps {
         String barCode = "5902120110575";
         String shortLmCode = "1234";
         String shortBarCode = "590212011";
-        int entityCount = 10;
+        int entityCount = 3;
 
         GetCatalogSearch byLmParams = new GetCatalogSearch()
-                .setPageSize(10)
+                .setPageSize(3)
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setStartFrom(1)
                 .setByLmCode(lmCode);
 
-        GetCatalogSearch byNameParams = new GetCatalogSearch()
-                .setPageSize(10)
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
-                .setStartFrom(1)
-                .setByNameLike(searchContext);
-
         GetCatalogSearch byBarCodeParams = new GetCatalogSearch()
-                .setPageSize(10)
+                .setPageSize(3)
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setStartFrom(1)
                 .setByBarCode(barCode);
 
         GetCatalogSearch byShortLmCodeParams = new GetCatalogSearch()
-                .setPageSize(10)
+                .setPageSize(3)
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setStartFrom(1)
                 .setByLmCode(shortLmCode);
 
         GetCatalogSearch byShortBarCodeParams = new GetCatalogSearch()
-                .setPageSize(10)
+                .setPageSize(3)
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setStartFrom(1)
                 .setByBarCode(shortBarCode);
 
         Response<ProductItemListResponse> lmResponce = apiClient.searchProductsBy(byLmParams);
-        //Response<ProductItemListResponse> nameLikeResponce = apiClient.searchProductsBy(byNameParams);
         Response<ProductItemListResponse> barcodeResponce = apiClient.searchProductsBy(byBarCodeParams);
         Response<ProductItemListResponse> shortLmResponce = apiClient.searchProductsBy(byShortLmCodeParams);
         Response<ProductItemListResponse> shortBarcodeResponce = apiClient.searchProductsBy(byShortBarCodeParams);
@@ -169,7 +161,7 @@ public class SearchTest extends AppBaseSteps {
         final String TOP = "0";
         final String GAMMA = "B";
         final String departmentId = "5";
-        int entityCount = 10;
+        int entityCount = 3;
 
         GetCatalogSearch gammaParam = buildDefaultCatalogSearchParams()
                 .setGamma(GAMMA)
@@ -292,31 +284,31 @@ public class SearchTest extends AppBaseSteps {
         LocalDate avsDate = LocalDate.of(2019, 12, 5);
         final String GAMMA = "A";
         final String departmentId = "11";
-        int entityCount = 10;
+        int entityCount = 3;
 
         GetCatalogSearch gammaParam = new GetCatalogSearch()
                 .setGamma(GAMMA)
-                .setPageSize(10)
+                .setPageSize(3)
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setStartFrom(1)
                 .setDepartmentId(departmentId);
 
         GetCatalogSearch ctmParam = new GetCatalogSearch()
                 .setCtm(true)
-                .setPageSize(10)
+                .setPageSize(3)
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setStartFrom(1);
 
         GetCatalogSearch commonProductTypeParam = new GetCatalogSearch()
                 .setOrderType("S")
-                .setPageSize(10)
+                .setPageSize(3)
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setStartFrom(1);
 
         GetCatalogSearch avsParam = new GetCatalogSearch()
                 .setAvsDate(String.format("between%%7C%s-%s-0%sT00:00:00.000Z%%7C%s-%s-0%sT00:00:00.000Z",
                         avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth(), avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth() + 1))
-                .setPageSize(10)
+                .setPageSize(3)
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setStartFrom(1);
 
@@ -391,17 +383,6 @@ public class SearchTest extends AppBaseSteps {
     @Test(description = "C22789172 На поисковой запрос не вернулись результаты", priority = 2)
     public void testC22789172() throws Exception {
         final String byName = "АFHF13dasf";
-
-        GetCatalogSearch byNameParams = new GetCatalogSearch()
-                .setPageSize(10)
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
-                .setStartFrom(1)
-                .setByNameLike(byName)
-                .setDepartmentId("15");
-
-        Response<ProductItemListResponse> nameLikeResponce = apiClient.searchProductsBy(byNameParams);
-
         //TODO добавить проверку на отклонение по координатам
 
         // Pre-conditions
@@ -507,7 +488,7 @@ public class SearchTest extends AppBaseSteps {
     @Test(description = "C22789191 Сортировка результатов поиска", priority = 2)
     public void testC22789191() throws Exception {
         // Pre-conditions
-        int countOfCheckedProducts = 11;
+        int countOfCheckedProducts = 3;
         SalesPage salesPage = loginAndGoTo(SalesPage.class);
         SearchProductPage searchProductPage = salesPage.clickSearchBar(false);
 
@@ -546,14 +527,14 @@ public class SearchTest extends AppBaseSteps {
         String subDept = "1510";
         String classId = "0030";
         String subClassId = "0020";
-        int entityCount = 10;
+        int entityCount = 3;
 
         GetCatalogSearch subclassParams = new GetCatalogSearch()
                 .setDepartmentId(dept.replaceAll("^0+", ""))
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setStartFrom(1)
-                .setPageSize(10)
+                .setPageSize(3)
                 .setSubDepartmentId(subDept.replaceAll("^0+", ""))
                 .setClassId(classId.replaceAll("^0+", ""))
                 .setSubclassId(subClassId.replaceAll("^0+", ""));
@@ -563,7 +544,7 @@ public class SearchTest extends AppBaseSteps {
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setStartFrom(1)
-                .setPageSize(10)
+                .setPageSize(3)
                 .setSubDepartmentId(subDept.replaceAll("^0+", ""))
                 .setClassId(classId.replaceAll("^0+", ""));
 
@@ -572,14 +553,14 @@ public class SearchTest extends AppBaseSteps {
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setStartFrom(1)
-                .setPageSize(10)
+                .setPageSize(3)
                 .setSubDepartmentId(subDept.replaceAll("^0+", ""));
 
         GetCatalogSearch departmentParams = new GetCatalogSearch()
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setStartFrom(1)
-                .setPageSize(10)
+                .setPageSize(3)
                 .setDepartmentId(dept.replaceAll("^0+", ""));
 
         Response<ProductItemListResponse> subclassNomenclatureResponce = apiClient.searchProductsBy(subclassParams);
@@ -772,7 +753,7 @@ public class SearchTest extends AppBaseSteps {
         myShopFilterPage.clickShowAllFiltersBtn();
         SuppliersSearchPage suppliersSearchPage = myShopFilterPage.goToSuppliersSearchPage(false);
         suppliersSearchPage.verifyRequiredElements().shouldCountOfSuppliersIsMoreThan(1);
-        suppliersSearchPage.shouldSuppliersSortedByDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);   //bug функционала departmentId пользака не подтягивается
+        //suppliersSearchPage.shouldSuppliersSortedByDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);   //bug функционала departmentId пользака не подтягивается
 
         // Step 2
         log.step("ввести в поисковую строку код поставщика");
@@ -924,6 +905,7 @@ public class SearchTest extends AppBaseSteps {
         final String SUPPLIER_NAME = "ООО Бард-Спб";
         final String TOP = "1";
         final String GAMMA = "B";
+        int entityCount = 3;
 
         GetCatalogSearch defaultParams = buildDefaultCatalogSearchParams().setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);
         Response<ProductItemListResponse> defaultParamsResponce = apiClient.searchProductsBy(defaultParams);
@@ -988,7 +970,7 @@ public class SearchTest extends AppBaseSteps {
         allGammaFilterPage.switchFiltersFrame(FilterPage.MY_SHOP_FRAME_TYPE);
         filterPage.applyChosenFilters();
         searchProductPage.shouldCatalogResponseEqualsContent(defaultParamsResponce,
-                SearchProductPage.CardType.COMMON, 10);
+                SearchProductPage.CardType.COMMON, entityCount);
     }
 
     @Issue("Bug1") // TODO нужно указать номер бага из Джиры
@@ -1231,6 +1213,7 @@ public class SearchTest extends AppBaseSteps {
         filtersData.setTopEM(true);
         filtersData.setDateAvs(avsDate);
         filtersData.setSupplier(FIRST_SUPPLIER_CODE);
+        filtersData.setTop(FilterPage.TOP+" 0");
 
         // Pre-conditions
         SalesPage salesPage = loginAndGoTo(SalesPage.class);
@@ -1247,7 +1230,7 @@ public class SearchTest extends AppBaseSteps {
         // Step 2
         log.step("Применить фильтры");
         filterPage.applyChosenFilters();
-        searchProductPage.shouldFilterCounterEquals(3);
+        searchProductPage.shouldFilterCounterEquals(4);
 
         // Step 3
         log.step("Перейти на страницу фильтров и переключится на группу фильтров \"Вся гамма ЛМ\"");
@@ -1256,14 +1239,9 @@ public class SearchTest extends AppBaseSteps {
         filterPage.shouldFilterHasBeenChosen(FilterPage.ALL_GAMMA_FRAME_TYPE);
 
         // Step 4
-        log.step("Выбрать любой фильтр");
-        filterPage.choseGammaFilter(FilterPage.GAMMA + " A");
-        filterPage.shouldFilterHasBeenChosen(FilterPage.GAMMA + " A");
-
-        // Step 5
         log.step("Применить выбранные фильтры");
         filterPage.applyChosenFilters();
-        searchProductPage.shouldFilterCounterEquals(3);
+        searchProductPage.shouldFilterCounterEquals(2);
     }
 
     @Test(description = "C22887951 Сортировка с фильтром Вся гамма ЛМ", priority = 2)

@@ -63,6 +63,6 @@ public class SearchProductAllGammaCardWidget extends CardWidget<ProductCardData>
 
     @Override
     public boolean isFullyVisible(String pageSource) {
-        return lmCodeObj.isVisible() && nameObj.isVisible();
+        return lmCodeObj.isVisible() && barCodeObj.isVisible() && nameObj.isVisible();
     }
 }

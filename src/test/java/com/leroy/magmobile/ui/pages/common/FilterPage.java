@@ -222,7 +222,6 @@ public class FilterPage extends BaseAppPage {
 
     @Step("Выбрать фрейм фильтров {value}")
     public FilterPage switchFiltersFrame(String value) {
-        if (!gammaLmBtn.isVisible())
             mainScrollView.scrollToBeginning();
         if (value.equals(ALL_GAMMA_FRAME_TYPE)) {
             gammaLmBtn.click();
@@ -318,8 +317,7 @@ public class FilterPage extends BaseAppPage {
     @Step("Выбрать тип продукта {type}")
     public void choseProductType(String type) {
         String ps = getPageSource();
-        if (!orderedProductBtn.isVisible(ps))
-            mainScrollView.scrollDown();
+        mainScrollView.scrollToEnd();
         if (type.equals(COMMON_PRODUCT_TYPE)) {
             commonProductBtn.click();
         } else {
@@ -340,7 +338,6 @@ public class FilterPage extends BaseAppPage {
 
     @Step("Показать товары по выбранным фильтрам")
     public SearchProductPage applyChosenFilters() {
-        mainScrollView.scrollDownToElement(showGoodsBtn);
         showGoodsBtn.click();
         waitUntilProgressBarIsVisible();
         SearchProductPage page = new SearchProductPage(context);
