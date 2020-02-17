@@ -198,6 +198,7 @@ public class FilterPage extends BaseAppPage {
             mainScrollView.scrollToEnd();
         }
         avsDateIcon.click();
+        chosenAvsDate.waitForInvisibility();
         return this;
     }
 
@@ -243,24 +244,26 @@ public class FilterPage extends BaseAppPage {
     @Step("Выбрать чек-бокс фильтры")
     public FilterPage choseCheckBoxFilters(FiltersData filtersData) throws Exception {
         if (filtersData.isTopEM())
-            choseCheckBoxFilter(TOP_EM);
+            choseCheckBoxFilter(TOP_EM, false);
         if (filtersData.isHasAvailableStock())
-            choseCheckBoxFilter(HAS_AVAILABLE_STOCK);
+            choseCheckBoxFilter(HAS_AVAILABLE_STOCK, false);
         if (filtersData.isTop1000())
-            choseCheckBoxFilter(TOP_1000);
+            choseCheckBoxFilter(TOP_1000, false);
         if (filtersData.isCtm())
-            choseCheckBoxFilter(CTM);
+            choseCheckBoxFilter(CTM, false);
         if (filtersData.isBestPrice())
-            choseCheckBoxFilter(BEST_PRICE);
+            choseCheckBoxFilter(BEST_PRICE, false);
         if (filtersData.isLimitedOffer())
-            choseCheckBoxFilter(LIMITED_OFFER);
+            choseCheckBoxFilter(LIMITED_OFFER, false);
         if (filtersData.isAvs())
-            choseCheckBoxFilter(AVS);
+            choseCheckBoxFilter(AVS, false);
         return this;
     }
 
-    @Step("Выбрать checkBox фильтр {value}")
-    public FilterPage choseCheckBoxFilter(String value) throws Exception {
+    private FilterPage choseCheckBoxFilter(String value, boolean isWaitAfterClick) throws Exception {
+        String ps = null;
+        if (isWaitAfterClick)
+            ps = getPageSource();
         switch (value) {
             case TOP_EM:
                 topEm.click();
@@ -287,7 +290,14 @@ public class FilterPage extends BaseAppPage {
             default:
                 throw new IllegalArgumentException("Checkbox filter with name " + value + " does`nt exist");
         }
+        if (isWaitAfterClick)
+            waitUntilContentIsChanged(ps);
         return this;
+    }
+
+    @Step("Выбрать checkBox фильтр {value}")
+    public FilterPage choseCheckBoxFilter(String value) throws Exception {
+        return choseCheckBoxFilter(value, true);
     }
 
     @Step("Выбрать фильтр {gamma}")
@@ -307,12 +317,15 @@ public class FilterPage extends BaseAppPage {
 
     @Step("Выбрать тип продукта {type}")
     public void choseProductType(String type) {
-        mainScrollView.scrollDown();
+        String ps = getPageSource();
+        if (!orderedProductBtn.isVisible(ps))
+            mainScrollView.scrollDown();
         if (type.equals(COMMON_PRODUCT_TYPE)) {
             commonProductBtn.click();
         } else {
             orderedProductBtn.click();
         }
+        waitUntilContentIsChanged(ps);
     }
 
     @Step("Выбрать дату avs")

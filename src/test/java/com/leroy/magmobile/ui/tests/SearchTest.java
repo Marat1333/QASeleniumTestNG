@@ -439,7 +439,7 @@ public class SearchTest extends AppBaseSteps {
         myShopFilterPage.shouldFilterHasNotBeenChosen(FilterPage.GAMMA + " ET");
     }
 
-
+    @Issue("Bug2") // TODO номер из Jira
     @Test(description = "C22789176 Вывод истории поиска", priority = 1)
     public void testC22789176() throws Exception {
         int searchPhrasesCount = 21;
@@ -617,7 +617,8 @@ public class SearchTest extends AppBaseSteps {
         nomenclatureSearchPage.shouldTitleWithNomenclatureIs(dept);
         nomenclatureSearchPage.clickShowAllProductsBtn();
         searchProductPage.shouldSelectedNomenclatureIs(dept, false);
-        searchProductPage.shouldCatalogResponseEqualsContent(departmentNomenclatureResponce, SearchProductPage.CardType.COMMON, entityCount);
+        searchProductPage.shouldCatalogResponseEqualsContent(departmentNomenclatureResponce,
+                SearchProductPage.CardType.COMMON, entityCount);
 
         // Step 5
         log.step("повтороить шаг 2-3 для подотделов");
