@@ -186,4 +186,14 @@
             </class>
         </classes>
     </test>
+
+    <test name="C22789207 Сокрытие части фильтров">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.SearchTest">
+                <methods>
+                    <include name="testAllGammaSort"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
 </suite>

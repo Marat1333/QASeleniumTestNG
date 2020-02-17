@@ -10,6 +10,7 @@ import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.magmobile.ui.elements.MagMobCheckBox;
 import com.leroy.magmobile.ui.pages.common.widget.SupplierCardWidget;
 import com.leroy.magmobile.ui.pages.widgets.TextViewWidget;
 import com.leroy.models.SupplierCardData;
@@ -107,12 +108,12 @@ public class SuppliersSearchPage extends BaseAppPage {
     }
 
     @Step("Поставщик с кодом/именем {value} выбран")
-    public SuppliersSearchPage shouldSupplierCheckboxIsSelected(String value, boolean isSelected) {
-        Element anchorElement = E(String.format(SCREEN_CONTENT_XPATH + SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH, value));
+    public SuppliersSearchPage shouldSupplierCheckboxIsSelected(String value, boolean isSelected) throws Exception {
+        MagMobCheckBox anchorElement = new MagMobCheckBox(driver, new CustomLocator(By.xpath(String.format(SCREEN_CONTENT_XPATH + SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH, value))));
         if (isSelected) {
-            anAssert.isElementImageMatches(anchorElement, MagMobElementTypes.CHECK_BOX_SELECTED_SUPPLIER_SEARCH_PAGE.getPictureName());
+            anAssert.isTrue(anchorElement.isChecked(), "Фильтр '" + value + "' должен быть выбран");
         } else {
-            anAssert.isElementImageMatches(anchorElement, MagMobElementTypes.CHECK_BOX_NOT_SELECTED_SUPPLIER_SEARCH_PAGE.getPictureName());
+            anAssert.isTrue(!anchorElement.isChecked(), "Фильтр '" + value + "' не должен быть выбран");
         }
         return this;
     }

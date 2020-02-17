@@ -421,6 +421,12 @@ public class FilterPage extends BaseAppPage {
         return checkFilters(filtersData, false);
     }
 
+    @Step("Проверить, что кнопка \"ПОКАЗАТЬ ВСЕ ТОВАРЫ\" отображена")
+    public FilterPage shouldShowAllFiltersBtnIsVisible(){
+        anAssert.isElementVisible(showAllFiltersBtn);
+        return this;
+    }
+
     @Step("Проверяем, что кнопка выбора фильтра по поставщикам содержит текст {supplierName}")
     public FilterPage shouldSupplierButtonContainsText(int countOfChosenSuppliers, String supplierName) {
         if (!supplierBtn.isVisible()) {
@@ -501,6 +507,17 @@ public class FilterPage extends BaseAppPage {
             anAssert.isElementNotVisible(clearAllFiltersBtn, pageSource);
         }
         return this;
+    }
+
+    @Step("Проверить, что отображен расширенный вид страницы фильтров")
+    public FilterPage shouldFilterPageHasExtendedView(){
+        mainScrollView.scrollToEnd();
+        String pageSource=getPageSource();
+        new FilterPage(context);
+        softAssert.areElementsVisible(pageSource, bestPrice, commonProductBtn, supplierBtn, avsDateBtn);
+        softAssert.isElementNotVisible(showAllFiltersBtn);
+        mainScrollView.scrollToBeginning();
+        return new FilterPage(context);
     }
 
 }
