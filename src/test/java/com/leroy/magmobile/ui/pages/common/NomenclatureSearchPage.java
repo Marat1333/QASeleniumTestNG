@@ -139,11 +139,13 @@ public class NomenclatureSearchPage extends BaseAppPage {
         for (Element element : firstLevelNomenclatureElementsList) {
             uniqueElementsArray.add(element.findChildElement(eachElementOfNomenclatureXpath).getText());
         }
-        scrollView.scrollDown();
+        //TODO перейти на AndroidScrollView
+        scrollView.scrollToEnd();
         for (Element element : secondLevelNomenclatureElementsList) {
             uniqueElementsArray.add(element.findChildElement(eachElementOfNomenclatureXpath).getText());
         }
-        anAssert.isTrue(uniqueElementsArray.size() == 15, "Найдено некорректное кол-во отделов");
+        anAssert.isEquals(uniqueElementsArray.size(), 15,
+                "Найдено некорректное кол-во отделов");
         return this;
     }
 

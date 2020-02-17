@@ -83,6 +83,9 @@ public class SearchProductPage extends BaseAppPage {
     @AppFindBy(text = "Ты пока ничего не искал(а)")
     Element firstSearchMsg;
 
+    @AppFindBy(text = "Ничего не найдено")
+    Element notFoundMsgLbl;
+
     Element discardAllFiltersBtn = E("contains(СБРОСИТЬ ФИЛЬТРЫ)");
 
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"Button\"]/android.view.ViewGroup")
@@ -188,13 +191,9 @@ public class SearchProductPage extends BaseAppPage {
     }
 
     @Step("Перейти на страницу выбора фильтров")
-    public <T> T goToFilterPage(boolean isMyShopFrame) {
+    public FilterPage goToFilterPage(boolean isMyShopFrame) {
         filter.click();
-        if (isMyShopFrame) {
-            return (T) new MyShopFilterPage(context);
-        } else {
-            return (T) new AllGammaFilterPage(context);
-        }
+        return new FilterPage(context);
     }
 
     @Step("Открыть окно сортировки")
@@ -455,8 +454,7 @@ public class SearchProductPage extends BaseAppPage {
     // API verifications
 
     @Step("Проверить, что фронт корректно отобразил ответ от сервера по запросу на catalog product")
-    public SearchProductPage shouldCatalogResponseEqualsContent(
-            Response<ProductItemListResponse> response, CardType type, Integer entityCount) {
+    public SearchProductPage shouldCatalogResponseEqualsContent(Response<ProductItemListResponse> response, CardType type, Integer entityCount) {
         List<ProductItemResponse> productDataListFromResponse = response.asJson().getItems();
         List<ProductCardData> productCardDataListFromPage;
         switch (type) {

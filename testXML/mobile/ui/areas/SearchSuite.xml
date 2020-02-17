@@ -145,4 +145,25 @@
             </class>
         </classes>
     </test>
+
+    <test name="C22789208 Поведение чек-бокса AVS">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.SearchTest">
+                <methods>
+                    <include name="testAvsFilterBehaviour"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22789211 Переключение между фильтрами Мой магазин и Вся гамма ЛМ;
+        Сброс фильтров предыдущего окна и установка тех же фильтров на новое окно">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.SearchTest">
+                <methods>
+                    <include name="testSwitchBetweenMyShopAndAllGammaFilters"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
 </suite>

@@ -60,9 +60,9 @@ public class SuppliersSearchPage extends BaseAppPage {
     }
 
     @Step("Перейти назад")
-    public MyShopFilterPage clickBackBtn() {
+    public FilterPage clickBackBtn() {
         backBtn.click();
-        return new MyShopFilterPage(context);
+        return new FilterPage(context);
     }
 
     @Step("Отменить выбор поставщика нажатием на крест в овальной области с именем поставщика")

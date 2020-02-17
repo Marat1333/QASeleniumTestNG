@@ -26,14 +26,14 @@ capabilities:
       autoAcceptAlerts: true
       automationName: uiautomator2
       newCommandTimeout: 6000
-      platformVersion: '10.0' #'8.1'
-      deviceName: Nexus 5 API 29 #samsung SM-J530FM
-      app: /home/ddimitrash/IdeaProjects/auto-tests1/src/LMLF-1.3.3-TEST-b1010.apk #LMLF-1.3.3-b3271-BRANCH-feature-LFRONT-3290-complex-search-a.apk
+      platformVersion: '9.0' #'10.0'
+      deviceName: samsung SM-A207F #Nexus 5 API 29
+      app: /home/ddimitrash/IdeaProjects/auto-tests1/src/LMLF-1.3.3-TEST-b1016.apk #LMLF-1.3.3-b3271-BRANCH-feature-LFRONT-3290-complex-search-a.apk
 
     android_browser:
       browserName: chrome
-      deviceName: Nexus 5
-      platformVersion: '10.0'
+      deviceName: samsung SM-A207F #Nexus 5
+      platformVersion: '9.0' #'10.0'
       platformName: Android
       automationName: uiautomator2
       newCommandTimeout: 60000

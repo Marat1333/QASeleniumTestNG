@@ -68,7 +68,7 @@ public class CalendarWidget extends BaseContainer {
             else
                 break;
         }
-        //TODO Добавить ожидание. findDay иногда мажет (1к10)
+        wait(1);
         findDayLabel(String.valueOf(date.getDayOfMonth())).click();
         okBtn.click();
     }
