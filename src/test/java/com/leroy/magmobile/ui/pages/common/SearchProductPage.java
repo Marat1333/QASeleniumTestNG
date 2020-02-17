@@ -230,6 +230,7 @@ public class SearchProductPage extends BaseAppPage {
         return this;
     }
 
+    @Step("Проверить, что кнопка 'Сканировать бар код' отображается")
     public SearchProductPage shouldScannerBtnIsVisible() {
         String pageSource = getPageSource();
         if (searchField.getText(pageSource).equals(DEFAULT_SEARCH_UNPUT_TEXT)) {
