@@ -6,6 +6,7 @@ public enum MagMobElementTypes {
     SORT_RADIOGROUP_SORT_PAGE("sortRadioGroupSortPage"),
     PLUS("plus"),
     PLUS_FILTER_PAGE("plusFilterPage"),
+    CROSS_FILTER_PAGE("crossFilterPage"),
     CIRCLE_PLUS("circle_plus"),
     CHECK_BOX_SELECTED_SUPPLIER_SEARCH_PAGE("checkBoxSupplierSearchPage"),
     CHECK_BOX_NOT_SELECTED_SUPPLIER_SEARCH_PAGE("checkBoxNotSelectedSupplierSearchPage"),

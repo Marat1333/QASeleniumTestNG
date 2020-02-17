@@ -191,13 +191,9 @@ public class SearchProductPage extends BaseAppPage {
     }
 
     @Step("Перейти на страницу выбора фильтров")
-    public <T> T goToFilterPage(boolean isMyShopFrame) {
+    public FilterPage goToFilterPage(boolean isMyShopFrame) {
         filter.click();
-        if (isMyShopFrame) {
-            return (T) new MyShopFilterPage(context);
-        } else {
-            return (T) new AllGammaFilterPage(context);
-        }
+        return new FilterPage(context);
     }
 
     @Step("Открыть окно сортировки")

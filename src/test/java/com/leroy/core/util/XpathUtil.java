@@ -53,10 +53,12 @@ public class XpathUtil {
         return value;
     }
 
+    /**
+     * Convert Xpath to UiSelector
+     * @param xpath
+     * @return UiSelector
+     */
     public static UiSelector convertXpathToUISelector(String xpath) {
-        //"//android.view.ViewGroup[@content-desc=\"ScreenHeader\"]//android.view.ViewGroup[@content-desc=\"Button\"]"
-        //"//android.widget.ProgressBar"
-        //"//android.widget.TextView[@text='Все отделы']/following::android.widget.TextView[1]"
         List<String> nodesInXpath = new ArrayList<>();
         StringBuilder oneNodeXpath = new StringBuilder();
         for (int i = 0; i < xpath.length(); i++) {

@@ -204,7 +204,7 @@ public abstract class BaseCustomAssert {
         String actualResult = "Визуально элемент '" + elem.getMetaName() + "' не соответствует эталону";
         String expectedResult = "Визуально элемент '" + elem.getMetaName() + "' должен соответствовать эталону";
         try {
-            ImageUtil.takeScreenShot(elem, pictureName); // Only for taking sample snapshots
+            //ImageUtil.takeScreenShot(elem, pictureName); // Only for taking sample snapshots
             result = ImageUtil.takeScreenAndCompareWithBaseImg(elem, pictureName);
         } catch (Exception err) {
             Log.error(err.getMessage());
