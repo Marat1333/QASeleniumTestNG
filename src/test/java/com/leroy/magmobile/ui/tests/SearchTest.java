@@ -49,7 +49,6 @@ public class SearchTest extends AppBaseSteps {
                 .setStartFrom(1);
     }
 
-    @Ignore
     @Test(description = "C3200996 Поиск товара по критериям", priority = 1)
     public void testC3200996() throws Exception {
         String lmCode = "10008698";

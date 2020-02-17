@@ -144,7 +144,8 @@ public class NomenclatureSearchPage extends BaseAppPage {
         for (Element element : secondLevelNomenclatureElementsList) {
             uniqueElementsArray.add(element.findChildElement(eachElementOfNomenclatureXpath).getText());
         }
-        anAssert.isTrue(uniqueElementsArray.size() == 15, "Найдено некорректное кол-во отделов " + uniqueElementsArray.size());
+        anAssert.isEquals(uniqueElementsArray.size(), 15,
+                "Найдено некорректное кол-во отделов");
         return this;
     }
 
