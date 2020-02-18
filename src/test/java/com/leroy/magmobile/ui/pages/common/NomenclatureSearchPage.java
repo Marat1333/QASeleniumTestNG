@@ -3,15 +3,20 @@ package com.leroy.magmobile.ui.pages.common;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.configuration.Log;
+import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.magmobile.ui.pages.widgets.TextViewWidget;
 import com.leroy.models.TextViewData;
 import io.qameta.allure.Step;
+import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class NomenclatureSearchPage extends BaseAppPage {
@@ -25,36 +30,23 @@ public class NomenclatureSearchPage extends BaseAppPage {
     @AppFindBy(xpath = "//android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[following-sibling::android.widget.TextView]/android.view.ViewGroup")
     Element nomenclatureBackBtn;
 
-    @AppFindBy(xpath = "//android.widget.TextView[@text='Все отделы']/following::android.widget.TextView[1]")
-    Element selectedNomenclatureLbl;
-
     @AppFindBy(text = "ПОКАЗАТЬ ВСЕ ТОВАРЫ")
     Element showAllGoods;
 
-    @AppFindBy(xpath = "//android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[preceding-sibling::android.view.ViewGroup[1]]", metaName = "Окно выбора department")
-    ElementList<Element> firstLevelNomenclatureElementsList;
-
-    @AppFindBy(xpath = "//android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[preceding-sibling::android.view.ViewGroup[1]]", metaName = "Окно выбора последующих элементов")
-    ElementList<Element> secondLevelNomenclatureElementsList;
+    AndroidScrollView<TextViewData> nomenclatureElementsList = new AndroidScrollView<>(driver, new CustomLocator(By.xpath("//android.widget.ScrollView/android.view.ViewGroup")), ".//android.widget.TextView", TextViewWidget.class);
 
     private AndroidScrollView<TextViewData> scrollView = new AndroidScrollView<>(driver, AndroidScrollView.TYPICAL_LOCATOR);
 
-    private final String eachElementOfNomenclatureXpath = "./android.view.ViewGroup/android.widget.TextView";
-
     @Step("Вернитесь на окно выбора отдела")
-    public NomenclatureSearchPage returnBackNTimes(int counter) throws Exception {
-        String pageSource = getPageSource();
+    public NomenclatureSearchPage returnBackNTimes(int counter) {
+        String screenTitleText = screenTitle.getText();
         for (int y = 0; y < counter; y++) {
             if (!nomenclatureBackBtn.isVisible()) {
                 Log.error("Осуществлен переход во \"Все отделы\", перейти дальше невозможно");
                 throw new NoSuchElementException("There is no back button");
             }
             nomenclatureBackBtn.click();
-            if (!waitUntilContentIsChanged(pageSource, 3)) {
-                Log.warn("The second click when returnBackNTimes()");
-                nomenclatureBackBtn.click();
-                waitUntilContentIsChanged(pageSource);
-            }
+            screenTitle.waitForTextIsNotEqual(screenTitleText);
         }
         return new NomenclatureSearchPage(context);
     }
@@ -62,52 +54,57 @@ public class NomenclatureSearchPage extends BaseAppPage {
     @Step("Выбрать отдел {dept}, подотдел {subDept}, раздел {classId}, подраздел {subClass}")
     public NomenclatureSearchPage choseDepartmentId(String dept, String subDept, String classId, String subClass) throws Exception {
         if (dept != null) {
-            selectElementFromArray(dept, firstLevelNomenclatureElementsList);
+            selectElementFromArray(dept);
         }
         if (dept != null && subDept != null) {
-            selectElementFromArray(subDept, secondLevelNomenclatureElementsList);
+            selectElementFromArray(subDept);
         }
         if (dept != null && subDept != null && classId != null) {
-            String refactoredClassId = "";
+            String refactoredClassId;
             if (classId.length() == 4) {
                 refactoredClassId = classId.replaceAll("^0", "");
             } else {
                 throw new Exception("Wrong classId length");
             }
-            selectElementFromArray(refactoredClassId, secondLevelNomenclatureElementsList);
+            selectElementFromArray(refactoredClassId);
         }
         if (dept != null && subDept != null && classId != null && subClass != null) {
-            String refactoredSubClass = "";
+            String refactoredSubClass;
             if (subClass.length() == 4) {
                 refactoredSubClass = subClass.replaceAll("^0", "");
             } else {
                 throw new Exception("Wrong subClassId length");
             }
-            selectElementFromArray(refactoredSubClass, secondLevelNomenclatureElementsList);
+            selectElementFromArray(refactoredSubClass);
         }
-        return new NomenclatureSearchPage(context);
+        return this;
     }
 
-    private NomenclatureSearchPage selectElementFromArray(String value, ElementList<Element> someArray) throws Exception {
-        String pageSource = getPageSource();
-        int counter = 0;
-        for (Element element : someArray) {
-            Element tmpEl = element.findChildElement(eachElementOfNomenclatureXpath);
-            String tmp = tmpEl.getText();
+    private NomenclatureSearchPage selectElementFromArray(String value) {
+        Element element;
+        String tmp;
+        int counter=0;
+        String pageSource;
+        List<TextViewData> elementsAsString = nomenclatureElementsList.getFullDataList();
+        for (TextViewData data : elementsAsString) {
+            tmp = data.toString();
             tmp = tmp.replaceAll("\\D+", "");
             if (tmp.length() > 4) {
                 tmp = tmp.substring(0, 4);
             }
-            if (tmp.equals(value)) {
-                tmpEl.click();
-                waitUntilContentIsChanged(pageSource);
+            if (tmp.equals(value)){
+                element= E("contains("+value+")");
+                pageSource=getPageSource();
+                if (!element.isVisible()){
+                    nomenclatureElementsList.scrollUpToElement(element);
+                }
+                element.click();
+                waitUntilContentIsChanged(pageSource,short_timeout);
                 counter++;
-                break;
             }
         }
-        if (counter < 1) {
-            scrollView.scrollDown();
-            selectElementFromArray(value, secondLevelNomenclatureElementsList);
+        if (counter<1){
+            throw new IllegalArgumentException("There is no "+value+" nomenclature element");
         }
         return new NomenclatureSearchPage(context);
     }
@@ -115,14 +112,16 @@ public class NomenclatureSearchPage extends BaseAppPage {
     @Step("Нажмите 'Показать все товары'")
     public SearchProductPage clickShowAllProductsBtn() {
         scrollView.scrollUpToElement(showAllGoods);
+        String pageSource = getPageSource();
         showAllGoods.click();
+        waitUntilContentIsChanged(pageSource, short_timeout);
         return new SearchProductPage(context);
     }
 
-    @Override
+    /*@Override
     public void waitForPageIsLoaded() {
         screenTitle.waitForVisibility();
-    }
+    }*/
 
     // Verifications
 
@@ -134,17 +133,18 @@ public class NomenclatureSearchPage extends BaseAppPage {
     }
 
     @Step("Проверить, что отображено 15 отделов")
-    public NomenclatureSearchPage shouldDepartmentsCountIs15() throws Exception {
-        Set<String> uniqueElementsArray = new HashSet<>();
-        for (Element element : firstLevelNomenclatureElementsList) {
-            uniqueElementsArray.add(element.findChildElement(eachElementOfNomenclatureXpath).getText());
+    public NomenclatureSearchPage shouldDepartmentsCountIs15() {
+        List<TextViewData> uniqueElementsArray = nomenclatureElementsList.getFullDataList();
+        List<String>result=new ArrayList<>();
+        String tmp;
+        for (TextViewData data: uniqueElementsArray){
+            tmp=data.toString();
+            tmp = tmp.substring(0,2);
+            if (tmp.matches("\\d+")){
+                result.add(data.toString());
+            }
         }
-        //TODO перейти на AndroidScrollView
-        scrollView.scrollToEnd();
-        for (Element element : secondLevelNomenclatureElementsList) {
-            uniqueElementsArray.add(element.findChildElement(eachElementOfNomenclatureXpath).getText());
-        }
-        anAssert.isEquals(uniqueElementsArray.size(), 15,
+        anAssert.isEquals(result.size(), 15,
                 "Найдено некорректное кол-во отделов");
         return this;
     }

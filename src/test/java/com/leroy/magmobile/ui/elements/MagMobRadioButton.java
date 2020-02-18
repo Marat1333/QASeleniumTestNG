@@ -16,9 +16,4 @@ public class MagMobRadioButton extends RadioButton {
     public boolean isChecked() throws Exception {
         return getPointColor().equals(CHECKED_GREEN_COLOR);
     }
-
-    @Override
-    public Color getPointColor() throws Exception{
-        return getPointColor(0,0);
-    }
 }

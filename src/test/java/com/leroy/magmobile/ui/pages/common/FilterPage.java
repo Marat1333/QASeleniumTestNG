@@ -184,10 +184,8 @@ public class FilterPage extends BaseAppPage {
 
     @Step("Выбрать фильтр top {top}")
     public FilterPage choseTopFilter(String top) {
+        mainScrollView.scrollToBeginning();
         Element element = E("contains(" + top + ")");
-        if (!element.isVisible()) {
-            mainScrollView.scrollUpToElement(element);
-        }
         clickElementAndWaitUntilContentIsChanged(element);
         return this;
     }
@@ -222,7 +220,7 @@ public class FilterPage extends BaseAppPage {
 
     @Step("Выбрать фрейм фильтров {value}")
     public FilterPage switchFiltersFrame(String value) {
-            mainScrollView.scrollToBeginning();
+        mainScrollView.scrollToBeginning();
         if (value.equals(ALL_GAMMA_FRAME_TYPE)) {
             gammaLmBtn.click();
             topReplenishmentLabel.waitForInvisibility();
@@ -510,11 +508,9 @@ public class FilterPage extends BaseAppPage {
     public FilterPage shouldFilterPageHasExtendedView(){
         mainScrollView.scrollToEnd();
         String pageSource=getPageSource();
-        new FilterPage(context);
         softAssert.areElementsVisible(pageSource, bestPrice, commonProductBtn, supplierBtn, avsDateBtn);
         softAssert.isElementNotVisible(showAllFiltersBtn);
-        mainScrollView.scrollToBeginning();
-        return new FilterPage(context);
+        return this;
     }
 
 }

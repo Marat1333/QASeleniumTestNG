@@ -593,7 +593,6 @@ public class SearchTest extends AppBaseSteps {
         log.step("повтороить шаг 2-3 для отделов");
         searchProductPage.goToNomenclatureWindow();
         nomenclatureSearchPage.choseDepartmentId(dept, null, null, null);
-
         nomenclatureSearchPage.shouldTitleWithNomenclatureIs(dept);
         nomenclatureSearchPage.clickShowAllProductsBtn();
         searchProductPage.shouldSelectedNomenclatureIs(dept, false);
@@ -997,7 +996,7 @@ public class SearchTest extends AppBaseSteps {
         // Step 3
         log.step("перейти на страницу фильтров");
         searchProductPage.goToFilterPage();
-        myShopFilterPage.shouldFilterHasNotBeenChosen(FilterPage.TOP + TOP); //баг функционала, тест можно чекнуть закомментив 3-4 шаг
+        myShopFilterPage.shouldFilterHasNotBeenChosen(FilterPage.TOP + TOP); //bug функционала, тест можно чекнуть закомментив 3-4 шаг
 
         // Step 4
         log.step("Выбрать любой фильтр и нажать \"показать товары\"");
