@@ -4,6 +4,7 @@ import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import com.leroy.magmobile.ui.pages.sales.EditProduct35Page;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import io.qameta.allure.Step;
 
@@ -42,9 +43,9 @@ public class ActionWithProductCardModalPage extends CommonMagMobilePage {
     }
 
     @Step("Выберите пункт меню 'Изменить кол-во'")
-    public void clickChangeQuantityMenuItem() {
+    public EditProduct35Page clickChangeQuantityMenuItem() {
         changeQuantityMenuItem.click();
-        // TODO
+        return new EditProduct35Page(context);
     }
 
     // Verifications

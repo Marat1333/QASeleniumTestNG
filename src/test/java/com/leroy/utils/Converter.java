@@ -37,4 +37,11 @@ public class Converter {
             return null;
         return str.replaceAll("\\D+", "");
     }
+
+    public static String prettyDoubleFmt(double d) {
+        if (d == (long) d)
+            return String.format("%d", (long) d);
+        else
+            return String.format("%s", d);
+    }
 }

@@ -21,6 +21,8 @@ public class BaseState extends EnvironmentConfigurator {
 
     protected TestContext context;
     protected StepLog log;
+    protected CustomSoftAssert softAssert;
+    protected CustomAssert anAssert;
 
     private String getTestCaseId(String text) {
         String result = "undefined";
@@ -38,8 +40,8 @@ public class BaseState extends EnvironmentConfigurator {
     @BeforeMethod
     protected void baseStateBeforeMethod(Method method) throws Exception {
         log = new StepLog();
-        CustomSoftAssert softAssert = new CustomSoftAssert(log);
-        CustomAssert anAssert = new CustomAssert(log);
+        softAssert = new CustomSoftAssert(log);
+        anAssert = new CustomAssert(log);
         String tcId = getTestCaseId(method.getAnnotation(Test.class).description());
         context = new TestContext(driver, softAssert, anAssert, log, tcId);
         if (TestRailListener.STEPS_INFO != null)

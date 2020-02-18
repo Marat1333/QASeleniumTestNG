@@ -15,7 +15,9 @@ import io.qameta.allure.Step;
 
 public class AddProduct35Page extends CommonMagMobilePage {
 
-    private static final String SCREEN_TITLE = "Добавление товара";
+    protected String SCREEN_TITLE_VALUE() {
+        return "Добавление товара";
+    }
 
     public AddProduct35Page(TestContext context) {
         super(context);
@@ -63,7 +65,8 @@ public class AddProduct35Page extends CommonMagMobilePage {
 
     public enum SubmitBtnCaptions {
         ADD_TO_BASKET("ДОБАВИТЬ В КОРЗИНУ"),
-        ADD_TO_ESTIMATE("ДОБАВИТЬ В СМЕТУ");
+        ADD_TO_ESTIMATE("ДОБАВИТЬ В СМЕТУ"),
+        SAVE("СОХРАНИТЬ");
 
         String value;
 
@@ -77,12 +80,12 @@ public class AddProduct35Page extends CommonMagMobilePage {
     }
 
     @AppFindBy(accessibilityId = "Button-container")
-    private MagMobGreenSubmitButton addBtn;
+    MagMobGreenSubmitButton submitBtn;
 
 
     @Override
     public void waitForPageIsLoaded() {
-        screenTitle.waitUntilTextIsEqualTo(SCREEN_TITLE);
+        screenTitle.waitUntilTextIsEqualTo(SCREEN_TITLE_VALUE());
         waitUntilProgressBarIsInvisible();
     }
 
@@ -139,13 +142,13 @@ public class AddProduct35Page extends CommonMagMobilePage {
 
     @Step("Нажмите кнопку Добавить в корзину")
     public Basket35Page clickAddIntoBasketButton() {
-        addBtn.click();
+        submitBtn.click();
         return new Basket35Page(context);
     }
 
     @Step("Нажмите кнопку Добавить в смету")
     public EstimatePage clickAddIntoEstimateButton() {
-        addBtn.click();
+        submitBtn.click();
         return new EstimatePage(context);
     }
 
@@ -154,15 +157,35 @@ public class AddProduct35Page extends CommonMagMobilePage {
     @Step("Проверить, что страница 'Добавление товара' отображается корректно")
     public AddProduct35Page verifyRequiredElements(SubmitBtnCaptions caption) {
         String ps = getPageSource();
-        softAssert.isElementTextEqual(screenTitle, SCREEN_TITLE, ps);
+        softAssert.isElementTextEqual(screenTitle, SCREEN_TITLE_VALUE(), ps);
         softAssert.isElementVisible(backBtn, ps);
         softAssert.isElementVisible(priceLbl, ps);
         softAssert.isElementVisible(shoppingRoomLbl, ps);
         softAssert.isElementVisible(editQuantityFld, ps);
-        anAssert.isElementTextEqual(addBtn, caption.value(), ps);
-        softAssert.isTrue(addBtn.isEnabled(),
+        anAssert.isElementTextEqual(submitBtn, caption.value(), ps);
+        softAssert.isTrue(submitBtn.isEnabled(),
                 "Кнопка 'Добавить' должна быть активна");
         softAssert.verifyAll();
+        return this;
+    }
+
+    @Step("Убедиться, что поле для редактирования кол-ва = {text}")
+    public AddProduct35Page shouldEditQuantityFieldIs(String text) {
+        if (!text.contains(","))
+            text = text + ",00";
+        else if (text.length() - text.indexOf(",") == 2)
+            text = text + "0";
+        anAssert.isElementTextEqual(editQuantityFld, text);
+        return this;
+    }
+
+    @Step("Убедиться, что итоговая сумма рассчитана корректно на основе цены и введенного кол-ва")
+    public AddProduct35Page shouldTotalPriceCalculateCorrectly() {
+        double _price = Converter.strToDouble(getPrice());
+        double _quantity = Converter.strToDouble(editQuantityFld.getText());
+        String expectedTotalPrice = Converter.prettyDoubleFmt(_price * _quantity);
+        anAssert.isEquals(Converter.strToStrWithoutDigits(totalPrice.getText()), expectedTotalPrice,
+                "Сумма итого (как цена * кол-во) рассчитана не верно");
         return this;
     }
 

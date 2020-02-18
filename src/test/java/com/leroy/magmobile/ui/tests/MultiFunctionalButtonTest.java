@@ -468,7 +468,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
                 .shouldProductLMCodeIs(productCardData.getLmCode());
     }
 
-    @Test(description = "C22797073 Изменить количество добавленного товара", enabled = false)
+    @Test(description = "C22797073 Изменить количество добавленного товара")
     public void testChangeProductQuantityFromEstimateScreen() throws Exception {
         if (!EstimatePage.isThisPage(context)) {
             String estimateId = createDraftEstimate();
@@ -479,8 +479,8 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         }
 
         EstimatePage estimatePage = new EstimatePage(context);
-        ProductCardData productCardData = estimatePage.getCardDataListFromPage()
-                .get(0).getProductCardData();
+        ProductCardData productCardDataBefore = estimatePage.getCardDataListFromPage()
+                .get(0).getProductCardData(); // TODO мы должны из API брать эти данные
 
         // Step 1
         log.step("Нажмите на мини-карточку любого товара в списке товаров сметы");
@@ -489,21 +489,31 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
 
         // Step 2
         log.step("Выберите параметр Изменить количество");
-        modalPage.clickChangeQuantityMenuItem();
+        EditProduct35Page editProduct35Page = modalPage.clickChangeQuantityMenuItem();
+        editProduct35Page.verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.SAVE);
 
         // Step 3
-        log.step("Нажмите на плашку изменения количества");
+        log.step("Измените количество товара");
+        String testEditQuantityValue = String.valueOf(new Random().nextInt(10)+1);
+        Double expectedTotalCost = Double.parseDouble(testEditQuantityValue) * productCardDataBefore.getPrice();
+        editProduct35Page.enterQuantityOfProduct(testEditQuantityValue)
+                .shouldEditQuantityFieldIs(testEditQuantityValue)
+                .shouldTotalPriceCalculateCorrectly();
 
         // Step 4
-        log.step("Измените количество товара");
-
-        // Step 5
-        log.step("Нажмите ОК на клавиатуре");
-
-
-        // Step 6
         log.step("Нажмите на кнопку Сохранить");
+        estimatePage = editProduct35Page.clickSaveButton();
+        SalesOrderCardData productCardDataAfter = estimatePage.getCardDataListFromPage()
+                .get(0); // TODO Заменить на ProductOrderData
 
+        softAssert.isEquals(productCardDataAfter.getProductCardData().getPrice(),
+                productCardDataBefore.getPrice(),
+                "Цена товара изменилась");
+        softAssert.isEquals(productCardDataAfter.getTotalPrice(), expectedTotalCost,
+                "Неверная сумма для выбранного товара");
+        softAssert.isEquals(productCardDataAfter.getSelectedQuantity(), Double.parseDouble(testEditQuantityValue),
+                "Неверное выбранное кол-во товара");
+        softAssert.verifyAll();
     }
 
     @Test(description = "C22797078 Преобразовать смету в корзину")
