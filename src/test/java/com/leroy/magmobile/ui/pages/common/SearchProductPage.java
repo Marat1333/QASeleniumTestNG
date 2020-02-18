@@ -361,7 +361,7 @@ public class SearchProductPage extends BaseAppPage {
             case SortPage.SORT_BY_AVAILABLE_STOCK_DESC:
                 if (type.equals(CardType.COMMON)) {
                     expectedSortedList.sort((d1, d2) ->
-                            (d2.getAvailableQuantity() - d1.getAvailableQuantity());
+                            (int) (d2.getAvailableQuantity() - d1.getAvailableQuantity()));
                     break;
                 } else {
                     throw new Exception("Incorrect CardType for " + sortType);
