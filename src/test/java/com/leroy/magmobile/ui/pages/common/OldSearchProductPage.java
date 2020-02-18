@@ -19,7 +19,7 @@ public class OldSearchProductPage extends BaseAppPage {
     @AppFindBy(accessibilityId = "back", metaName = "Кнопка назад")
     private Element backBtn;
 
-    @AppFindBy(accessibilityId = "Button", metaName = "Кнопка для сканирования штрихкода")
+    @AppFindBy(accessibilityId = "ScannerBtn", metaName = "Кнопка для сканирования штрихкода")
     private Element scanBarcodeBtn;
 
     @AppFindBy(accessibilityId = "ScreenTitle-CatalogComplexSearchStore", metaName = "Поле ввода текста для поиска")

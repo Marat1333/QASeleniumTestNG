@@ -77,6 +77,10 @@ public class CustomAssert extends BaseCustomAssert {
         return super.logIsElementNotVisible(element, null, false);
     }
 
+    public boolean isElementNotVisible(BaseWidget element, String pageSource) {
+        return super.logIsElementNotVisible(element, pageSource, false);
+    }
+
     public void isElementImageMatches(Element elem, String pictureName) {
         super.logIsElementImageMatches(elem, pictureName, false);
     }

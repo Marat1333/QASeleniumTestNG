@@ -2,10 +2,12 @@ package com.leroy.magmobile.ui.pages.sales.product_and_service;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import com.leroy.magmobile.ui.pages.common.SearchProductPage;
 import com.leroy.magmobile.ui.pages.sales.basket.BasketStep1Page;
 import io.qameta.allure.Step;
 
@@ -49,6 +51,12 @@ public class AddServicePage extends CommonMagMobilePage {
     @AppFindBy(text = "ДОБАВИТЬ В ДОКУМЕНТ ПРОДАЖИ", metaName = "Кнопка для добавления документа в продажи")
     MagMobGreenSubmitButton submitBtn;
 
+    @AppFindBy(xpath = "//android.widget.TextView[@content-desc='lmCode']")
+    Element lmCode;
+
+    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='lmCode']/following-sibling::android.widget.TextView")
+    Element serviceName;
+
     // Actions
     @Step("Ввести значение цены {value} в поле 'Цена за единицу услуги'")
     public AddServicePage enterValueInPriceServiceField(String value) {
@@ -68,6 +76,12 @@ public class AddServicePage extends CommonMagMobilePage {
         return new BasketStep1Page(context);
     }
 
+    @Step("Нажать на зеленую кнопку назад")
+    public SearchProductPage returnBack(){
+        backBtn.click();
+        return new SearchProductPage(context);
+    }
+
     // Verifications
 
     @Step("Проверить, что страница 'Добавления услуги' отображается корректно")
@@ -76,6 +90,15 @@ public class AddServicePage extends CommonMagMobilePage {
         softAssert.areElementsVisible(
                 backBtn, editPriceServiceFld, editPriceServiceFld);
         softAssert.isFalse(submitBtn.isEnabled(), "Кнопка 'Добавить в документ продажи' активна");
+        softAssert.verifyAll();
+        return this;
+    }
+
+    @Step("Проверить, что страница содержит имя услуги {serviceName} и ее ЛМ код {lmCode}")
+    public AddServicePage shouldServiceNameAndLmCodeBeOnPage(String serviceName, String lmCode){
+        String pageSource = getPageSource();
+        softAssert.isElementTextContains(this.lmCode, lmCode, pageSource);
+        softAssert.isElementTextEqual(this.serviceName, serviceName, pageSource);
         softAssert.verifyAll();
         return this;
     }

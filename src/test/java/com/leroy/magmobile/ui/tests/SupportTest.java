@@ -1,9 +1,8 @@
 package com.leroy.magmobile.ui.tests;
 
-import com.leroy.magmobile.ui.pages.sales.SalesPage;
+import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.support.ComplainPage;
 import com.leroy.magmobile.ui.pages.support.SupportPage;
-import com.leroy.magmobile.ui.AppBaseSteps;
 import org.testng.annotations.Test;
 
 public class SupportTest extends AppBaseSteps {

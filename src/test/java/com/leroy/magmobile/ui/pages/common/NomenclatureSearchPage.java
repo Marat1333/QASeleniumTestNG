@@ -50,7 +50,7 @@ public class NomenclatureSearchPage extends BaseAppPage {
                 throw new NoSuchElementException("There is no back button");
             }
             nomenclatureBackBtn.click();
-            if (!waitUntilContentIsChanged(pageSource, 1)) {
+            if (!waitUntilContentIsChanged(pageSource, tiny_timeout)) {
                 Log.warn("The second click when returnBackNTimes()");
                 nomenclatureBackBtn.click();
                 waitUntilContentIsChanged(pageSource);
@@ -116,10 +116,7 @@ public class NomenclatureSearchPage extends BaseAppPage {
     public SearchProductPage clickShowAllProductsBtn() {
         scrollView.scrollUpToElement(showAllGoods);
         showAllGoods.click();
-        SearchProductPage searchPage = new SearchProductPage(context);
-        waitUntilProgressBarIsVisible();
-        waitUntilProgressBarIsInvisible();
-        return searchPage;
+        return new SearchProductPage(context);
     }
 
     @Override
@@ -142,11 +139,13 @@ public class NomenclatureSearchPage extends BaseAppPage {
         for (Element element : firstLevelNomenclatureElementsList) {
             uniqueElementsArray.add(element.findChildElement(eachElementOfNomenclatureXpath).getText());
         }
-        scrollView.scrollDown();
+        //TODO перейти на AndroidScrollView
+        scrollView.scrollToEnd();
         for (Element element : secondLevelNomenclatureElementsList) {
             uniqueElementsArray.add(element.findChildElement(eachElementOfNomenclatureXpath).getText());
         }
-        anAssert.isTrue(uniqueElementsArray.size() == 15, "Найдено некорректное кол-во отделов");
+        anAssert.isEquals(uniqueElementsArray.size(), 15,
+                "Найдено некорректное кол-во отделов");
         return this;
     }
 

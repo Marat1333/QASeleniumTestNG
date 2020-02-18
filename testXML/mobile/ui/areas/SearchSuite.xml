@@ -95,4 +95,75 @@
             </class>
         </classes>
     </test>
+
+    <test name="C22789173 Поиск товара по одному введенному символу">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.SearchTest">
+                <methods>
+                    <include name="testSearchByOneSymbol"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22789202 Выбор фильтра поставщиков">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.SearchTest">
+                <methods>
+                    <include name="testSuppliersFilter"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22883205 Поиск услуг">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.SearchTest">
+                <methods>
+                    <include name="testServicesSearch"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22789203 Очистка выбранных фильтров; При выборе хотя бы 1; Активация кнопки Метла">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.SearchTest">
+                <methods>
+                    <include name="testClearAllFilters"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22789213 Сброс фильтров при нажатии кнопки Назад железная и стрелочка">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.SearchTest">
+                <methods>
+                    <include name="testClearAllFiltersIfReturnBack"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22789208 Поведение чек-бокса AVS">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.SearchTest">
+                <methods>
+                    <include name="testAvsFilterBehaviour"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22789211 Переключение между фильтрами Мой магазин и Вся гамма ЛМ;
+        Сброс фильтров предыдущего окна и установка тех же фильтров на новое окно">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.SearchTest">
+                <methods>
+                    <include name="testSwitchBetweenMyShopAndAllGammaFilters"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
 </suite>

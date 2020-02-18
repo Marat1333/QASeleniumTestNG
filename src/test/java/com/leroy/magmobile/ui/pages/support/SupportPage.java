@@ -10,6 +10,7 @@ import io.qameta.allure.Step;
 import org.testng.Assert;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 public class SupportPage extends BaseAppPage {
@@ -22,7 +23,7 @@ public class SupportPage extends BaseAppPage {
     }
 
     // Top Area with title and 2 buttons
-    @AppFindBy(text = "Дорогая служба поддержки, хочу")
+    @AppFindBy(containsText = "Дорогая служба поддержки")
     private Element titleLbl;
 
     @AppFindBy(text = "пожаловаться")
@@ -56,11 +57,11 @@ public class SupportPage extends BaseAppPage {
         softAssert.isElementVisible(titleLbl);
         softAssert.isElementVisible(complainBtn);
         softAssert.isElementVisible(askQuestionBtn);
-        List<String> expectedIssueCategories = Arrays.asList("В чем проблема?", "Данные о товаре",
-                "Цена товара", "Запас на LS/RM/EM", "Не найден товар", "Отзыв товара со склада",
-                "Оформление продажи", "История продаж", "Данные клиента", "Адресное хранение",
-                "SMS-уведомления клиентам", "Управление перебоями", "Работа Wi-fi сети", "Что-то другое");
-        softAssert.isEquals(mainLabels.getTextList(), expectedIssueCategories,
+        List<String> expectedIssueCategories = Arrays.asList("Что у нас в приложении случилось?",
+                "Данные о товаре", "Цена товара", "Запас на LS/RM/EM", "Не найден товар", "Отзыв товара со склада",
+                "Данные клиента", "SMS-уведомления клиентам", "Оформление продажи", "История продаж",
+                "Адресное хранение", "Управление перебоями", "Работа Wi-fi сети", "Что-то другое");
+        softAssert.isEquals(new HashSet<>(mainLabels.getTextList()), new HashSet<>(expectedIssueCategories),
                 "Неправильный список категорий");
         softAssert.verifyAll();
         return this;

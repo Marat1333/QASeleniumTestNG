@@ -87,7 +87,7 @@ public class AppBaseSteps extends BaseState {
         if (loginType != null) {
             switch (loginType) {
                 case USER_WITH_OLD_INTERFACE:
-                    userProfilePage = setShopAndDepartmentForUser(salesPage, "2", "01");
+                    userProfilePage = setShopAndDepartmentForUser(salesPage, "5", "01");
                     break;
                 case USER_WITH_NEW_INTERFACE_LIKE_35_SHOP:
                     context.setIs35Shop(true);

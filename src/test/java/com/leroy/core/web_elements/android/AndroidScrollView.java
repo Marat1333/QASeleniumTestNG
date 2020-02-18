@@ -62,9 +62,8 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
 
     // Properties
 
-    // Если будет работать лучше, то надо подумать, как передавать Selector для самого скролла внутрь
     private boolean useUiSelectors = true;
-    private Integer swipeDeadZonePercentage = 15;
+    private Integer swipeDeadZonePercentage = 20;
 
     public void setUseUiSelectors(boolean useUiSelectors) {
         this.useUiSelectors = useUiSelectors;
@@ -116,7 +115,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
         SearchContext searchContext = new SearchContext();
         searchContext.findText = containsText;
         if (scrollUpBefore)
-            scrollUp();
+            scrollToBeginning();
         scrollAndGrabData(searchContext, MAX_SCROLL_COUNT, null, Direction.DOWN);
         return tmpWidget;
     }
@@ -130,7 +129,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
      */
     public T getDataObj(int index, boolean scrollUpBefore) {
         if (scrollUpBefore)
-            scrollUp();
+            scrollToBeginning();
         scrollAndGrabData(null, null, index + 1, Direction.DOWN);
         if (tmpCardDataList.size() <= index) {
             throw new IndexOutOfBoundsException(
@@ -148,7 +147,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
      */
     public List<T> getFullDataList(int maxEntityCount, boolean scrollUpBefore) {
         if (scrollUpBefore)
-            scrollUp();
+            scrollToBeginning();
         scrollAndGrabData(null, null, maxEntityCount, Direction.DOWN);
         return new ArrayList<>(tmpCardDataList);
     }
@@ -170,7 +169,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
      */
     public int getRowCount(boolean scrollUpBefore) {
         if (scrollUpBefore)
-            scrollUp();
+            scrollToBeginning();
         return getFullDataList(100).size();
     }
 
@@ -195,18 +194,22 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
         }
     }
 
+    private void uiAutomatorScroll(String method) {
+        StringBuilder runStr = new StringBuilder();
+        runStr.append(String.format("new UiScrollable(%s)",
+                XpathUtil.convertXpathToUISelector(getXpath()).toString()));
+        if (swipeDeadZonePercentage != null) {
+            runStr.append(String.format(".setSwipeDeadZonePercentage(%s)",
+                    swipeDeadZonePercentage / 100.0));
+        }
+        runStr.append(".").append(method).append(";");
+        executeUIAutomatorScript(runStr.toString());
+    }
+
     private void simpleScroll(Direction direction) {
         if (useUiSelectors) {
-            String _method = direction.equals(Direction.DOWN) ? "scrollForward" : "scrollBackward";
-            StringBuilder runStr = new StringBuilder();
-            runStr.append(String.format("new UiScrollable(%s)",
-                    XpathUtil.convertXpathToUISelector(getXpath()).toString()));
-            if (swipeDeadZonePercentage != null) {
-                runStr.append(String.format(".setSwipeDeadZonePercentage(%s)",
-                        swipeDeadZonePercentage / 100.0));
-            }
-            runStr.append(".").append(_method).append("();");
-            executeUIAutomatorScript(runStr.toString());
+            String _method = direction.equals(Direction.DOWN) ? "scrollForward()" : "scrollBackward()";
+            uiAutomatorScroll(_method);
         } else {
             //Try to change bottomY k
             Point _location = getLocation();
@@ -333,6 +336,24 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
 
     public AndroidScrollView<T> scrollUp() {
         simpleScroll(Direction.UP);
+        return this;
+    }
+
+    public AndroidScrollView<T> scrollToBeginning() {
+        if (useUiSelectors) {
+            uiAutomatorScroll("flingToBeginning(2)");
+        } else {
+            // todo
+        }
+        return this;
+    }
+
+    public AndroidScrollView<T> scrollToEnd() {
+        if (useUiSelectors) {
+            uiAutomatorScroll("flingToEnd(2)");
+        } else {
+            // todo
+        }
         return this;
     }
 

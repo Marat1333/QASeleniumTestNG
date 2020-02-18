@@ -55,7 +55,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
     // Получить ЛМ код для обычного продукта без специфичных опций
     private String getAnyLmCodeProductWithoutSpecificOptions(String shopId, Boolean hasAvailableStock) {
         if (shopId == null) // TODO может быть shopId null или нет?
-            shopId = "2";
+            shopId = "5";
         GetCatalogSearch params = new GetCatalogSearch()
                 .setShopId(shopId)
                 .setTopEM(false)
