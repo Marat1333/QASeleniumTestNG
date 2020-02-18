@@ -523,7 +523,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
                 LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
         SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
         salesDocumentsPage.searchForDocumentByTextAndSelectIt(
-                SalesDocumentsConst.ESTIMATE_TYPE, SalesDocumentsConst.TRANSFORMED_STATE);
+                SalesDocumentsConst.ESTIMATE_TYPE);
         EstimatePage estimatePage = new EstimatePage(context);
         // Collect test data from page
         SalesOrderData testEstimateData = estimatePage.getEstimateDataFromPage();

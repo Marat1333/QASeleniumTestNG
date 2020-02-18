@@ -6,7 +6,6 @@ import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.common.SearchProductPage;
-import com.leroy.magmobile.ui.pages.sales.estimate.EstimatePage;
 import com.leroy.magmobile.ui.pages.sales.widget.SalesDocumentWidget;
 import com.leroy.magmobile.ui.pages.widgets.CardWidget;
 import com.leroy.models.SalesDocumentData;
@@ -49,19 +48,14 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
 
     /* ------------------------- ACTION STEPS -------------------------- */
 
-    @Step("Найти и выбрать документ, содержащий текст: {containsText}, но не содержащий: {notContainsText}")
-    public void searchForDocumentByTextAndSelectIt(String containsText, String notContainsText) {
-        CardWidget<SalesDocumentData> cardWidget =
-                salesDocumentScrollList.searchForWidgetByText(containsText/*, notContainsText*/);
-        anAssert.isNotNull(cardWidget, "Не нашли нужный документ",
-                String.format("Документ содержащий текст %s, но который не содержит %s должен быть найден",
-                        containsText, notContainsText));
-        cardWidget.click();
-    }
-
     @Step("Найти и выбрать документ, содержащий текст: {containsText}")
     public void searchForDocumentByTextAndSelectIt(String containsText) {
-        searchForDocumentByTextAndSelectIt(containsText, null);
+        CardWidget<SalesDocumentData> cardWidget =
+                salesDocumentScrollList.searchForWidgetByText(containsText);
+        anAssert.isNotNull(cardWidget, "Не нашли нужный документ",
+                String.format("Документ содержащий текст %s должен быть найден",
+                        containsText));
+        cardWidget.click();
     }
 
     @Step("Нажмите кнопку 'Создать документ продажи'")
