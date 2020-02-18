@@ -159,7 +159,8 @@ public class FilterPage extends BaseAppPage {
 
     @Step("Перейти на страницу выбора поставщиков")
     public SuppliersSearchPage goToSuppliersSearchPage(boolean hideKeyboard) {
-        mainScrollView.scrollDownToElement(supplierBtn);
+        //mainScrollView.scrollDownToElement(supplierBtn);
+        mainScrollView.scrollToEnd();
         supplierBtn.click();
         if (hideKeyboard) {
             hideKeyboard();
@@ -176,7 +177,7 @@ public class FilterPage extends BaseAppPage {
 
     @Step("Очистить поле с фильтром по поставщику")
     public FilterPage clearSuppliersFilter(String supplierName) {
-        mainScrollView.scrollDown();
+        mainScrollView.scrollToEnd();
         Element clearSuppliersFilterBtn = E(String.format(CLEAR_SUPPLIERS_FILTER_BTN_XPATH, supplierName));
         clearSuppliersFilterBtn.click();
         return this;
@@ -301,7 +302,8 @@ public class FilterPage extends BaseAppPage {
     public void choseGammaFilter(String gamma) {
         gamma = gamma.toUpperCase();
         if (!gammaFilterScrollView.isVisible()) {
-            mainScrollView.scrollUpToElement(myShopBtn);
+            //mainScrollView.scrollUpToElement(myShopBtn);
+            mainScrollView.scrollToBeginning();
         }
         try {
             Element element = E("contains(" + gamma + ")");
@@ -425,7 +427,8 @@ public class FilterPage extends BaseAppPage {
     @Step("Проверяем, что кнопка выбора фильтра по поставщикам содержит текст {supplierName}")
     public FilterPage shouldSupplierButtonContainsText(int countOfChosenSuppliers, String supplierName) {
         if (!supplierBtn.isVisible()) {
-            mainScrollView.scrollDownToElement(supplierBtn);
+            //mainScrollView.scrollDownToElement(supplierBtn);
+            mainScrollView.scrollToEnd();
         }
         Element element;
         if (countOfChosenSuppliers == 1) {

@@ -43,8 +43,10 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
     public Iterator<E> iterator() {
         int i = 0;
         try {
-            initWebElementListIfNeeded();
-            i = elementList.size();
+            i=getCount();
+            if (i>0){
+                initWebElementListIfNeeded();
+            }
         } catch (Exception err) {
             Log.error(err.getMessage());
         }

@@ -7,7 +7,6 @@ import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.ui.pages.widgets.TextViewWidget;
 import com.leroy.models.TextViewData;
 import io.qameta.allure.Step;
@@ -15,9 +14,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class NomenclatureSearchPage extends BaseAppPage {
     public NomenclatureSearchPage(TestContext context) {
@@ -36,6 +33,11 @@ public class NomenclatureSearchPage extends BaseAppPage {
     AndroidScrollView<TextViewData> nomenclatureElementsList = new AndroidScrollView<>(driver, new CustomLocator(By.xpath("//android.widget.ScrollView/android.view.ViewGroup")), ".//android.widget.TextView", TextViewWidget.class);
 
     private AndroidScrollView<TextViewData> scrollView = new AndroidScrollView<>(driver, AndroidScrollView.TYPICAL_LOCATOR);
+
+    @Override
+    public void waitForPageIsLoaded() {
+        showAllGoods.waitForVisibility();
+    }
 
     @Step("Вернитесь на окно выбора отдела")
     public NomenclatureSearchPage returnBackNTimes(int counter) {
@@ -80,48 +82,45 @@ public class NomenclatureSearchPage extends BaseAppPage {
         return this;
     }
 
+    //TODO не забирать все элементы, а работать только с нужным
     private NomenclatureSearchPage selectElementFromArray(String value) {
-        Element element;
         String tmp;
-        int counter=0;
+        int counter = 0;
         String pageSource;
-        List<TextViewData> elementsAsString = nomenclatureElementsList.getFullDataList();
-        for (TextViewData data : elementsAsString) {
+        Element element;
+        List<TextViewData> dataList = nomenclatureElementsList.getFullDataList();
+
+        for (TextViewData data : dataList) {
             tmp = data.toString();
             tmp = tmp.replaceAll("\\D+", "");
             if (tmp.length() > 4) {
                 tmp = tmp.substring(0, 4);
             }
-            if (tmp.equals(value)){
-                element= E("contains("+value+")");
-                pageSource=getPageSource();
-                if (!element.isVisible()){
+            if (tmp.equals(value)) {
+                element = E("contains(" + value + ")");
+                pageSource = getPageSource();
+                if (!element.isVisible()) {
                     nomenclatureElementsList.scrollUpToElement(element);
                 }
                 element.click();
-                waitUntilContentIsChanged(pageSource,short_timeout);
+                waitUntilContentIsChanged(pageSource, short_timeout);
                 counter++;
             }
         }
-        if (counter<1){
-            throw new IllegalArgumentException("There is no "+value+" nomenclature element");
+        if (counter < 1) {
+            throw new IllegalArgumentException("There is no " + value + " nomenclature element");
         }
         return new NomenclatureSearchPage(context);
     }
 
     @Step("Нажмите 'Показать все товары'")
     public SearchProductPage clickShowAllProductsBtn() {
-        scrollView.scrollUpToElement(showAllGoods);
+        scrollView.scrollToBeginning();
         String pageSource = getPageSource();
         showAllGoods.click();
         waitUntilContentIsChanged(pageSource, short_timeout);
         return new SearchProductPage(context);
     }
-
-    /*@Override
-    public void waitForPageIsLoaded() {
-        screenTitle.waitForVisibility();
-    }*/
 
     // Verifications
 
@@ -135,12 +134,12 @@ public class NomenclatureSearchPage extends BaseAppPage {
     @Step("Проверить, что отображено 15 отделов")
     public NomenclatureSearchPage shouldDepartmentsCountIs15() {
         List<TextViewData> uniqueElementsArray = nomenclatureElementsList.getFullDataList();
-        List<String>result=new ArrayList<>();
+        List<String> result = new ArrayList<>();
         String tmp;
-        for (TextViewData data: uniqueElementsArray){
-            tmp=data.toString();
-            tmp = tmp.substring(0,2);
-            if (tmp.matches("\\d+")){
+        for (TextViewData data : uniqueElementsArray) {
+            tmp = data.toString();
+            tmp = tmp.substring(0, 2);
+            if (tmp.matches("\\d+")) {
                 result.add(data.toString());
             }
         }
@@ -154,7 +153,7 @@ public class NomenclatureSearchPage extends BaseAppPage {
     public NomenclatureSearchPage shouldTitleWithNomenclatureIs(String text) {
         String format = "%s - %s - %s - %s";
         String emptyText = "_ _ _";
-        String expectedText = "";
+        String expectedText;
 
         if (text.length() % 3 == 0 && text.length() != 15 && !text.isEmpty()) {
             if (text.contains("_"))

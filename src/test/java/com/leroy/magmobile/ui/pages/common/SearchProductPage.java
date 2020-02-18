@@ -118,6 +118,7 @@ public class SearchProductPage extends BaseAppPage {
 
     @Step("Ввести поисковой запрос со случайным текстом {value} раз и инициировать поиск")
     public List<String> createSearchHistory(int value) {
+        //TODO сделать без очистки
         List<String> searchHistory = new ArrayList<>();
         String tmp = "1";
         for (int i = 0; i < value; i++) {
