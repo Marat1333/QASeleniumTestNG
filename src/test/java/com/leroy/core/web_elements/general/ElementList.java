@@ -396,23 +396,45 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
     /**
      * Get content Text of all web elements in the list
      *
-     * @param selfText - Get Text without including text of child elements
-     * @return List<String>
      */
-    public List<String> getTextList(boolean selfText) throws Exception {
+    public List<String> getTextList(String pageSource) throws Exception {
         initWebElementListIfNeeded();
+        if (pageSource == null)
+            pageSource = getPageSource();
         ArrayList<String> text = new ArrayList<>();
         for (E we : getElementList()) {
-            text.add(((Element) we).getText(selfText));
+            text.add(((Element) we).getText(pageSource));
         }
         return text;
     }
 
     public List<String> getTextList() throws Exception {
         try {
-            return getTextList(false);
+            return getTextList(null);
         } catch (StaleElementReferenceException e) {
-            return getTextList(false);
+            return getTextList(null);
+        }
+    }
+
+    /**
+     * Wait for text list is changed
+     * @param contentBefore
+     * @return
+     */
+    public boolean waitForTextListIsChanged(List<String> contentBefore) {
+        try {
+            new WebDriverWait(this.driver, timeout).until(driver -> {
+                try {
+                    return !getTextList().equals(contentBefore);
+                } catch (Exception var4) {
+                    return false;
+                }
+            });
+            return true;
+        } catch (TimeoutException err) {
+            Log.warn(String.format("Expected condition failed: waitForTextListIsChanged (tried for %d second(s))",
+                    timeout));
+            return false;
         }
     }
 

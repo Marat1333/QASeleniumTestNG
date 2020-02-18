@@ -47,19 +47,18 @@ public class SearchProductPage extends BaseAppPage {
     private EditBox searchField;
 
     private AndroidScrollView<TextViewData> searchHistoryScrollView = new AndroidScrollView<>(driver,
-            new CustomLocator(By.xpath("//android.widget.ScrollView"), null,
-                    "Виджет прокрутки для истории последних запросов", false));
+            AndroidScrollView.TYPICAL_LOCATOR);
 
     private AndroidScrollView<ProductCardData> productCardsScrollView = new AndroidScrollView<>(driver,
-            By.xpath("//android.view.ViewGroup[@content-desc=\"ScreenContent\"]/android.view.ViewGroup[1]/android.view.ViewGroup/android.widget.ScrollView"),
+            AndroidScrollView.TYPICAL_LOCATOR,
             ".//android.view.ViewGroup[contains(@content-desc,'productListCard')]", SearchProductCardWidget.class);
 
     private AndroidScrollView<ServiceCardData> serviceCardsScrollView = new AndroidScrollView<>(driver,
-            By.xpath("//android.view.ViewGroup[@content-desc=\"ScreenContent\"]/android.view.ViewGroup[1]/android.view.ViewGroup/android.widget.ScrollView"),
+            AndroidScrollView.TYPICAL_LOCATOR,
             ".//android.view.ViewGroup[contains(@content-desc,'serviceListCard')]", SearchServiceCardWidget.class);
 
     private AndroidScrollView<ProductCardData> allGammaProductCardsScrollView = new AndroidScrollView<>(driver,
-            By.xpath("//android.view.ViewGroup[@content-desc=\"ScreenContent\"]/android.view.ViewGroup[1]/android.view.ViewGroup/android.widget.ScrollView"),
+            AndroidScrollView.TYPICAL_LOCATOR,
             ".//android.view.ViewGroup[contains(@content-desc,'productListCard')]", SearchProductAllGammaCardWidget.class);
 
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ScreenContent']//android.view.ViewGroup[android.widget.ImageView]",
