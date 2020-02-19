@@ -22,6 +22,7 @@ import com.leroy.umbrella_extension.magmobile.enums.CatalogSearchFields;
 import com.leroy.umbrella_extension.magmobile.enums.SortingOrder;
 import com.leroy.umbrella_extension.magmobile.requests.GetCatalogSearch;
 import com.leroy.umbrella_extension.magmobile.requests.GetCatalogServicesSearch;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.base.BaseModule;
@@ -1071,6 +1072,7 @@ public class SearchTest extends AppBaseSteps {
         myShopFilterPage.shouldAddAvsDateBtnIsVisible();
     }
 
+    @Issue("LFRONT-3360")
     @Test(description = "C22789211 Переключение между фильтрами Мой магазин и Вся гамма ЛМ. Сброс фильтров предыдущего окна и установка тех же фильтров на новое окно", priority = 2)
     public void testSwitchBetweenMyShopAndAllGammaFilters() throws Exception {
         LocalDate avsDate = LocalDate.of(2020, 2, 19);
@@ -1129,7 +1131,7 @@ public class SearchTest extends AppBaseSteps {
         allGammaFilterPage.switchFiltersFrame(FilterPage.MY_SHOP_FRAME_TYPE);
         filtersData1.setFilterFrame(FilterPage.MY_SHOP_FRAME_TYPE);
         myShopFilterPage.shouldFiltersAreSelected(filtersData1);
-        //myShopFilterPage.shouldSupplierButtonContainsText(1, SUPPLIER_NAME); //#bug
+        myShopFilterPage.shouldSupplierButtonContainsText(1, SUPPLIER_NAME); //#bug
 
         // Step 4
         log.step("очистить выбранные фильтры");
