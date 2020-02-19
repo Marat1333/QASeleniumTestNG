@@ -5,6 +5,7 @@ import io.appium.java_client.ios.IOSDriver;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Proxy;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -194,7 +195,13 @@ public class DriverFactory {
                     break;
                 case ANDROID_BROWSER_PROFILE:
                 case ANDROID_APP_PROFILE:
-                    driver = new AndroidDriver<>(new URL(REMOTE_ADDRESS), options);
+                    try {
+                        driver = new AndroidDriver<>(new URL(REMOTE_ADDRESS), options);
+                    } catch (WebDriverException err) {
+                        Log.warn("Configuration method. Error: " + err.getMessage());
+                        Log.warn("Try create driver again:");
+                        driver = new AndroidDriver<>(new URL(REMOTE_ADDRESS), options);
+                    }
                     break;
                 default:
                     driver = new RemoteWebDriver(new URL(REMOTE_ADDRESS), options);

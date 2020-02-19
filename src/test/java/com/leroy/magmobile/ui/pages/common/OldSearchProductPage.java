@@ -85,21 +85,22 @@ public class OldSearchProductPage extends BaseAppPage {
     }
 
     public OldSearchProductPage shouldProductCardContainAllRequiredElements(int index) throws Exception {
-        anAssert.isFalse(productCards.get(index).getBarCode(true).isEmpty(),
+        String ps = getPageSource();
+        anAssert.isFalse(productCards.get(index).getBarCode(true, ps).isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустой штрихкод", index));
-        anAssert.isFalse(productCards.get(index).getLmCode(true).isEmpty(),
+        anAssert.isFalse(productCards.get(index).getLmCode(true, ps).isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустой номер", index));
-        anAssert.isFalse(productCards.get(index).getName().isEmpty(),
+        anAssert.isFalse(productCards.get(index).getName(ps).isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустое название", index));
-        anAssert.isFalse(productCards.get(index).getPrice().isEmpty(),
+        anAssert.isFalse(productCards.get(index).getPrice(ps).isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустую цену", index));
-        anAssert.isEquals(productCards.get(index).getPriceLbl(), "за штуку",
+        anAssert.isEquals(productCards.get(index).getPriceLbl(ps), "за штуку",
                 String.format("Карточка под индексом %s должна иметь примечание 'за штуку'", index));
-        anAssert.isFalse(productCards.get(index).getQuantity(true).isEmpty(),
+        anAssert.isFalse(productCards.get(index).getQuantity(ps).isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустое кол-во", index));
-        anAssert.isEquals(productCards.get(index).getQuantityLbl(), "доступно",
+        anAssert.isEquals(productCards.get(index).getQuantityLbl(ps), "доступно",
                 String.format("Карточка под индексом %s должна иметь примечание 'доступно'", index));
-        anAssert.isFalse(productCards.get(index).getQuantityType().isEmpty(),
+        anAssert.isFalse(productCards.get(index).getPriceUnit(ps).isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустой тип кол-ва", index));
         return this;
     }

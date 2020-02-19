@@ -13,11 +13,11 @@ public class SelectedCardWidget extends ProductCardWidget {
 
     @Override
     public String getName() {
-        return new Element(driver, By.xpath(getXpath() + "/android.widget.TextView[4]")).getText();
+        return new Element(driver, By.xpath(getXpath() + "//android.widget.TextView[4]")).getText();
     }
 
     public String getSelectedQuantity() {
-        return new Element(driver, By.xpath(getXpath() + "/android.widget.TextView[2]")).getText();
+        return new Element(driver, By.xpath(getXpath() + "//android.widget.TextView[2]")).getText();
     }
 
 }
