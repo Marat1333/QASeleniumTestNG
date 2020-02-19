@@ -19,7 +19,7 @@ public class Converter {
             return null;
         try {
             return NumberFormat.getInstance(Locale.FRANCE)
-                    .parse(str.replaceAll("[^\\d+\\,]", "")).doubleValue();
+                    .parse(str.replaceAll("[^\\d+\\,\\-]", "")).doubleValue();
         } catch (ParseException err) {
             Log.error(err.getMessage());
             return null;
