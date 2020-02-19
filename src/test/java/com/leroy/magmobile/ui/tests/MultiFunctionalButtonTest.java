@@ -4,6 +4,8 @@ import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.magmobile.ui.AppBaseSteps;
+import com.leroy.magmobile.ui.helpers.SalesDocTestData;
+import com.leroy.magmobile.ui.pages.common.OldSearchProductPage;
 import com.leroy.magmobile.ui.pages.common.SearchProductPage;
 import com.leroy.magmobile.ui.pages.sales.*;
 import com.leroy.magmobile.ui.pages.sales.basket.*;
@@ -34,7 +36,9 @@ import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.base.BaseModule;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 
@@ -104,7 +108,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
     }
 
     private String getValidPinCode() {
-        return RandomStringUtils.randomNumeric(5);
+        return SalesDocTestData.getAvailablePinCode(apiClient);
     }
 
     // CREATING PRE-CONDITIONS:
@@ -123,10 +127,107 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         return estimateDataResponse.asJson().getEstimateId();
     }
 
+    private void cancelOrder(String orderId) {
+        Response r = apiClient.cancelOrder(EnvConstants.BASIC_USER_NAME, orderId);
+        anAssert.isTrue(r.isSuccessful(),
+                "Не смогли удалить заказ №" + orderId +". Ошибка: " + r.toString());
+    }
+
     // Product Types
     private enum ProductTypes {
         NORMAL, AVS, TOP_EM;
     }
+
+    // Документы продажи
+
+    @Test(description = "C3201029 Создание документа продажи")
+    public void testC3201029() throws Exception {
+        // Step #1
+        log.step("На главном экране выберите раздел Документы продажи");
+        MainSalesDocumentsPage salesDocumentsPage = loginAndGoTo(LoginType.USER_WITH_OLD_INTERFACE,
+                MainSalesDocumentsPage.class);
+        salesDocumentsPage.verifyRequiredElements();
+
+        // Step #2
+        log.step("Нажмите 'Создать документ продажи'");
+        OldSearchProductPage oldSearchProductPage = salesDocumentsPage.clickCreateSalesDocumentButton();
+        oldSearchProductPage.verifyRequiredElements();
+
+        // Step #3
+        String inputDataStep3 = "164";
+        log.step("Введите 164 код товара");
+        oldSearchProductPage.enterTextInSearchFieldAndSubmit(inputDataStep3)
+                .shouldCountOfProductsOnPageMoreThan(1)
+                .shouldProductCardsContainText(inputDataStep3)
+                .shouldProductCardContainAllRequiredElements(0);
+
+        // Step #4
+        log.step("Нажмите на мини-карточку товара 16410291");
+        AddProductPage addProductPage = oldSearchProductPage.searchProductAndSelect("16410291")
+                .verifyRequiredElements();
+
+        // Step #5
+        log.step("Нажмите на поле количества");
+        addProductPage.clickEditQuantityField()
+                .shouldKeyboardVisible();
+        addProductPage.shouldEditQuantityFieldIs("1,00")
+                .shouldTotalPriceIs(String.format("%.2f", Double.parseDouble(
+                        addProductPage.getPrice())));
+
+        // Step #6
+        log.step("Введите значение 20,5 количества товара");
+        String expectedTotalPrice = String.format("%.2f",
+                Double.parseDouble(addProductPage.getPrice()) * 20.5);
+        addProductPage.enterQuantityOfProduct("20,5")
+                .shouldTotalPriceIs(expectedTotalPrice);
+
+        // Step #7
+        log.step("Нажмите кнопку Добавить");
+        BasketStep1Page basketStep1Page = addProductPage.clickAddButton()
+                .verifyRequiredElements();
+        basketStep1Page.shouldDocumentTypeIs(BasketPage.Constants.DRAFT_DOCUMENT_TYPE);
+        String documentNumber = basketStep1Page.getDocumentNumber();
+
+        // Step #8
+        log.step("Нажмите Далее к параметрам");
+        BasketStep2Page basketStep2Page = basketStep1Page.clickNextParametersButton()
+                .verifyRequiredElements()
+                .shouldFieldsHaveDefaultValues();
+
+        // Step #9
+        log.step("Нажмите кнопку Создать документ продажи");
+        BasketStep3Page basketStep3Page = basketStep2Page.clickCreateSalesDocumentButton()
+                .verifyRequiredElements();
+        basketStep3Page.shouldKeyboardVisible();
+
+        // Step #10
+        log.step("Введите 5 цифр PIN-кода");
+        String testPinCode = SalesDocTestData.getAvailablePinCode(apiClient);
+        basketStep3Page.enterPinCode(testPinCode)
+                .shouldPinCodeFieldIs(testPinCode)
+                .shouldSubmitButtonIsActive();
+
+        // Step #11
+        log.step("Нажмите кнопку Подтвердить");
+        SubmittedSalesDocumentPage submittedSalesDocumentPage = basketStep3Page.clickSubmitButton()
+                .verifyRequiredElements()
+                .shouldPinCodeIs(testPinCode)
+                .shouldDocumentNumberIs(documentNumber);
+
+        // Step #12
+        log.step("Нажмите кнопку Перейти в список документов");
+        SalesDocumentData expectedSalesDocument = new SalesDocumentData();
+        expectedSalesDocument.setPrice(NumberFormat.getInstance(Locale.FRANCE)
+                .parse(expectedTotalPrice).toString());
+        expectedSalesDocument.setPin(testPinCode);
+        expectedSalesDocument.setDocumentState(SalesDocumentsConst.CREATED_STATE);
+        expectedSalesDocument.setTitle("Из торгового зала");
+        expectedSalesDocument.setNumber(documentNumber);
+        submittedSalesDocumentPage.clickSubmitButton()
+                .shouldSalesDocumentIsPresentAndDataMatches(expectedSalesDocument);
+    }
+
+    // Мультифункциональная кнопка
 
     @Test(description = "C3201023 Создание документа продажи")
     public void testC3201023() throws Exception {
@@ -171,7 +272,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
 
         // Step #4
         log.step("Нажмите на поле Количество для продажи и введите новое значение количества");
-        String testQuantity = RandomStringUtils.randomNumeric(1);
+        String testQuantity = String.valueOf(new Random().nextInt(9)+1);
         addServicePage.enterValueInQuantityServiceField(testQuantity)
                 .shouldFieldsAre(testPrice, testQuantity,
                         String.valueOf(Integer.parseInt(testPrice) * Integer.parseInt(testQuantity)));
@@ -296,6 +397,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
     public void test35ShopCreatingOrder() throws Exception {
         // Pre-condition
         String shopId = "35";
+        context.setIs35Shop(true);
         boolean hasAvailableStock = false; //new Random().nextInt(2) == 1; // No one product with "hasAvailableStock" on dev environment
         String lmCode = getAnyLmCodeProductWithoutSpecificOptions(shopId, hasAvailableStock);
         SalesPage salesPage = loginAndGoTo(SalesPage.class);
@@ -333,6 +435,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         // Step #8
         log.step("Заполните поля Имя и Фамилия, Телефон, PIN-код для оплаты");
         OrderDetailsData orderDetailsData = new OrderDetailsData().setRequiredRandomData();
+        orderDetailsData.setPinCode(getValidPinCode());
         orderDetailsData.setDeliveryType(OrderDetailsData.DeliveryType.PICKUP);
         processOrder35Page.fillInFormFields(orderDetailsData)
                 .shouldFormFieldsAre(orderDetailsData);
@@ -354,7 +457,10 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         expectedSalesDocument.setNumber(documentNumber);
         submittedDocument35Page
                 .clickSubmitButton()
-                .shouldSalesDocumentByIndexIs(0, expectedSalesDocument);
+                .shouldSalesDocumentIsPresentAndDataMatches(expectedSalesDocument);
+        // TODO Иногда на этапе Автообработка нет PINa? Баг или ок. И надо удалять документ после
+        // Clean up
+        //cancelOrder(documentNumber);
     }
 
     // Смета
@@ -434,7 +540,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         expectedSalesDocument.setNumber(documentNumber);
         SalesDocumentsPage salesDocumentsPage = estimateSubmittedPage.clickSubmitButton();
         salesDocumentsPage.verifyRequiredElements()
-                .shouldSalesDocumentByIndexIs(0, expectedSalesDocument);
+                .shouldSalesDocumentIsPresentAndDataMatches(expectedSalesDocument);
         // Post actions
         log.step("(Доп. шаг) Найти и открыть созданную смету");
         salesDocumentsPage.searchForDocumentByTextAndSelectIt(
@@ -518,6 +624,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
 
     @Test(description = "C22797078 Преобразовать смету в корзину")
     public void testTransformEstimateToBasket() throws Exception {
+        // TODO Need to API
         // Pre-condition
         MainSalesDocumentsPage mainSalesDocumentsPage = loginAndGoTo(
                 LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
@@ -591,7 +698,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
             SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
             salesDocumentsPage.searchForDocumentByTextAndSelectIt(
                     SalesDocumentsConst.BASKET_TYPE);
-        }
+        } // TODO через API
         Basket35Page basket35Page = new Basket35Page(context);
         int productCountInBasket = basket35Page.getCountOfOrderCards();
         // Step 1
@@ -704,7 +811,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
 
             // Step #8
             log.step("Введите пятизначный PIN-код, не использованный ранее");
-            String testPinCode = RandomStringUtils.randomNumeric(5);
+            String testPinCode = SalesDocTestData.getAvailablePinCode(apiClient);
             basketStep3Page.enterPinCode(testPinCode)
                     .shouldPinCodeFieldIs(testPinCode)
                     .shouldSubmitButtonIsActive();
@@ -715,6 +822,10 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
                     .verifyRequiredElements()
                     .shouldPinCodeIs(testPinCode)
                     .shouldDocumentNumberIs(documentNumber);
+
+            // Clean up
+            // TODO Надо тут? Если надо, то вроде нужен другой API клиент
+            //apiClient.cancelOrder(EnvConstants.BASIC_USER_NAME, documentNumber);
         }
     }
 }

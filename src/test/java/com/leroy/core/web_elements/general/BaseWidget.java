@@ -206,7 +206,7 @@ public abstract class BaseWidget extends BaseWrapper {
             this.setImplicitWait(0);
             try {
                 we = findElement(locator);
-            } catch (NoSuchElementException err) {
+            } catch (WebDriverException err) {
                 // Element is not present
             }
             this.setImplicitWait(DriverFactory.IMPLICIT_WAIT_TIME_OUT);

@@ -4,10 +4,8 @@ import com.leroy.umbrella_extension.magmobile.data.ProductItemListResponse;
 import com.leroy.umbrella_extension.magmobile.data.ServiceItemListResponse;
 import com.leroy.umbrella_extension.magmobile.data.estimate.EstimateData;
 import com.leroy.umbrella_extension.magmobile.data.estimate.ProductOrderData;
-import com.leroy.umbrella_extension.magmobile.requests.EstimatesPost;
-import com.leroy.umbrella_extension.magmobile.requests.GetCatalogSearch;
-import com.leroy.umbrella_extension.magmobile.requests.GetCatalogServicesSearch;
-import com.leroy.umbrella_extension.magmobile.requests.LegoOrderWorkflowPut;
+import com.leroy.umbrella_extension.magmobile.data.sales.SalesDocumentListResponse;
+import com.leroy.umbrella_extension.magmobile.requests.*;
 import org.json.simple.JSONObject;
 import ru.leroymerlin.qa.core.clients.base.BaseClient;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -58,6 +56,12 @@ public class MagMobileClient extends BaseClient {
                 .setUserLdap(userLdap)
                 .jsonBody(jsonObject)
                 .build(gatewayUrl), JSONObject.class);
+    }
+
+    public Response<SalesDocumentListResponse> getSalesDocumentsByPinCodeOrDocId(String pinCodeOrDocId) {
+        return execute(new SalesDocSearchGET()
+                .queryParam("pinCodeOrDocId", pinCodeOrDocId)
+                .build(gatewayUrl), SalesDocumentListResponse.class);
     }
 
     @PostConstruct

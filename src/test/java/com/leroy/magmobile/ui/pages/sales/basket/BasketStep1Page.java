@@ -15,7 +15,7 @@ public class BasketStep1Page extends BasketPage {
         super(context);
     }
 
-    @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.ImageView]")
+    @AppFindBy(xpath = "//android.view.ViewGroup[android.view.ViewGroup[@content-desc='lmCode']]")
     private SearchProductCardWidget productCard;
 
     @AppFindBy(text = "Услуги моего отдела")

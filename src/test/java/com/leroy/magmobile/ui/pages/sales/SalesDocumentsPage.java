@@ -79,9 +79,14 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
         return this;
     }
 
-    @Step("Проверить, что документ {index} содержит необходимую информацию: {expectedDocument}")
-    public SalesDocumentsPage shouldSalesDocumentByIndexIs(int index, SalesDocumentData expectedDocument) {
-        SalesDocumentData documentFromPage = salesDocumentScrollList.getDataObj(index);
+    @Step("Проверить, что документ на странице имеется документ с данными: {expectedDocument}")
+    public SalesDocumentsPage shouldSalesDocumentIsPresentAndDataMatches(SalesDocumentData expectedDocument) {
+        CardWidget<SalesDocumentData> widget = salesDocumentScrollList.searchForWidgetByText(
+                expectedDocument.getNumber());
+        anAssert.isNotNull(widget,
+                "Документ " + expectedDocument.getNumber() + " не найден",
+                "Документ " + expectedDocument.getNumber() + " должен присутствовать на странице");
+        SalesDocumentData documentFromPage = widget.collectDataFromPage();
         if (expectedDocument.getDate() != null) {
             softAssert.isEquals(documentFromPage.getDate(), expectedDocument.getDate(),
                     "Документ дата должна быть %s");
@@ -92,8 +97,11 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
         softAssert.isTrue(documentFromPage.getNumber().contains(expectedDocument.getNumber()),
                 "Номер документа должен быть '" + expectedDocument.getNumber() + "'");
         if (expectedDocument.getPin() != null) {
-            softAssert.isEquals(documentFromPage.getPin(), expectedDocument.getPin(),
-                    "PIN документа должен быть %s");
+            if (documentFromPage.getPin() == null)
+                softAssert.isTrue(false, "PIN код документа отсутствует");
+            else
+                softAssert.isEquals(documentFromPage.getPin(), expectedDocument.getPin(),
+                        "PIN документа должен быть %s");
         }
         softAssert.isEquals(documentFromPage.getPrice(), expectedDocument.getPrice(),
                 "Сумма в документе должна быть %s");

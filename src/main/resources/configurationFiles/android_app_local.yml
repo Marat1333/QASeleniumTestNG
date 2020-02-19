@@ -24,9 +24,9 @@ capabilities:
       autoAcceptAlerts: true
       automationName: uiautomator2
       newCommandTimeout: 60000
-      platformVersion: #'10.0' #'8.1'
-      deviceName: #Nexus 5 API 29 #samsung SM-J530FM
-      app:
+      #deviceName: Use VM option -DmDeviceName
+      #app: Use VM option -DmApp
+      #platformVersion: 10.0 # not required option
 
     android_browser:
       browserName: chrome

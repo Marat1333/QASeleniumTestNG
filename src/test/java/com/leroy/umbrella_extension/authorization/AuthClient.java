@@ -2,6 +2,7 @@ package com.leroy.umbrella_extension.authorization;
 
 import com.leroy.umbrella_extension.authorization.data.TokenData;
 import com.leroy.umbrella_extension.authorization.requests.TokenRequest;
+import org.testng.Assert;
 import ru.leroymerlin.qa.core.clients.base.BaseClient;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -24,7 +25,10 @@ public class AuthClient extends BaseClient {
     }
 
     public String getAccessToken(String username, String password) {
-        return getResponseToken(username, password).asJson().getAccess_token();
+        Response<TokenData> resp = getResponseToken(username, password);
+        Assert.assertTrue(resp.isSuccessful(),
+                "API: Impossible to get Access Token. Response: " + resp.toString());
+        return resp.asJson().getAccess_token();
     }
 
     @PostConstruct
