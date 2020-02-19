@@ -41,12 +41,13 @@ public class NomenclatureSearchPage extends BaseAppPage {
 
     @Step("Вернитесь на окно выбора отдела")
     public NomenclatureSearchPage returnBackNTimes(int counter) {
-        String screenTitleText = screenTitle.getText();
+        String screenTitleText;
         for (int y = 0; y < counter; y++) {
             if (!nomenclatureBackBtn.isVisible()) {
                 Log.error("Осуществлен переход во \"Все отделы\", перейти дальше невозможно");
                 throw new NoSuchElementException("There is no back button");
             }
+            screenTitleText = screenTitle.getText();
             nomenclatureBackBtn.click();
             screenTitle.waitForTextIsNotEqual(screenTitleText);
         }
@@ -82,30 +83,18 @@ public class NomenclatureSearchPage extends BaseAppPage {
         return this;
     }
 
-    //TODO не забирать все элементы, а работать только с нужным
-    private NomenclatureSearchPage selectElementFromArray(String value) {
-        String tmp;
+    private NomenclatureSearchPage selectElementFromArray(String value) throws Exception {
         int counter = 0;
         String pageSource;
         Element element;
-        List<TextViewData> dataList = nomenclatureElementsList.getFullDataList();
-
-        for (TextViewData data : dataList) {
-            tmp = data.toString();
-            tmp = tmp.replaceAll("\\D+", "");
-            if (tmp.length() > 4) {
-                tmp = tmp.substring(0, 4);
-            }
-            if (tmp.equals(value)) {
-                element = E("contains(" + value + ")");
-                pageSource = getPageSource();
-                if (!element.isVisible()) {
-                    nomenclatureElementsList.scrollUpToElement(element);
-                }
-                element.click();
-                waitUntilContentIsChanged(pageSource, short_timeout);
-                counter++;
-            }
+        element = scrollView.findChildElement("//*[contains(@text, '" + value + "')]");
+        if (!element.isVisible()) {
+            scrollView.scrollDownToElement(element);
+        }
+        pageSource = getPageSource();
+        element.click();
+        if (waitUntilContentIsChanged(pageSource, short_timeout)) {
+            counter++;
         }
         if (counter < 1) {
             throw new IllegalArgumentException("There is no " + value + " nomenclature element");
