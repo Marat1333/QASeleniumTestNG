@@ -7,11 +7,10 @@ public class ProductCardData extends CardWidgetData {
     private String lmCode;
     private String barCode;
     private String name;
-    private String price;
-    private String selectedQuantity;
+    private Double price;
     private Boolean hasAvailableStock;
-    private String availableQuantity;
-    private String quantityType;
+    private Double availableQuantity;
+    private String priceUnit;
 
     public ProductCardData() {
     }
@@ -44,28 +43,32 @@ public class ProductCardData extends CardWidgetData {
         this.name = name;
     }
 
-    public String getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
-    public String getAvailableQuantity() {
+    public Double getAvailableQuantity() {
         return availableQuantity;
     }
 
-    public void setAvailableQuantity(String availableQuantity) {
+    public void setAvailableQuantity(Double availableQuantity) {
         this.availableQuantity = availableQuantity;
     }
 
-    public String getQuantityType() {
-        return quantityType;
+    public void addAvailableQuantity(Double availableQuantity) {
+        this.availableQuantity += availableQuantity;
     }
 
-    public void setQuantityType(String quantityType) {
-        this.quantityType = quantityType;
+    public String getPriceUnit() {
+        return priceUnit;
+    }
+
+    public void setPriceUnit(String priceUnit) {
+        this.priceUnit = priceUnit;
     }
 
     public Boolean isHasAvailableStock() {
@@ -76,36 +79,27 @@ public class ProductCardData extends CardWidgetData {
         this.hasAvailableStock = hasAvailableStock;
     }
 
-    public String getSelectedQuantity() {
-        return selectedQuantity;
-    }
-
-    public void setSelectedQuantity(String selectedQuantity) {
-        this.selectedQuantity = selectedQuantity;
-    }
-
-    private boolean equalsIfLeftNotNull(Object arg1, Object arg2) {
-        if (arg1 != null)
-            return arg1.equals(arg2);
-        else
-            return true;
-    }
-
     public boolean compareWithResponse(ProductItemResponse response) {
         if (response == null) {
             return false;
         }
-        boolean result = lmCode.equals(response.getLmCode()) &&
+        return lmCode.equals(response.getLmCode()) &&
                 equalsIfLeftNotNull(barCode, response.getBarCode()) &&
-                equalsIfLeftNotNull(name, response.getTitle());
-        if (price != null) {
-            try {
-                result = result && Double.valueOf(price.replaceAll(",",".")).equals(Double.valueOf(response.getPrice()));
-            } catch (NumberFormatException err) {
-                result = false;
-            }
-        }
-        return result;
+                equalsIfLeftNotNull(name, response.getTitle()) &&
+                equalsIfLeftNotNull(price, response.getPrice());
     }
+
+    public boolean compareOnlyNotNullFields(ProductCardData cardData) {
+        if (cardData == null)
+            return false;
+        return lmCode.equals(cardData.getLmCode()) &&
+                equalsIfRightNotNull(barCode, cardData.getBarCode()) &&
+                equalsIfRightNotNull(name, cardData.getName()) &&
+                equalsIfRightNotNull(price, cardData.getPrice()) &&
+                equalsIfRightNotNull(hasAvailableStock, cardData.isHasAvailableStock()) &&
+                equalsIfRightNotNull(availableQuantity, cardData.getAvailableQuantity()) &&
+                equalsIfRightNotNull(priceUnit, cardData.getPriceUnit());
+    }
+
 }
 

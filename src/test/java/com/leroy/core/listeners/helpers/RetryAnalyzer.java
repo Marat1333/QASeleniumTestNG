@@ -3,7 +3,6 @@ package com.leroy.core.listeners.helpers;
 import org.testng.IRetryAnalyzer;
 import org.testng.ITestResult;
 
-@Deprecated
 public class RetryAnalyzer implements IRetryAnalyzer {
 
     int counter = 0;

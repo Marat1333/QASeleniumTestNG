@@ -19,6 +19,11 @@ public class EstimateSubmittedPage extends CommonMagMobilePage {
     @AppFindBy(text = "ПЕРЕЙТИ В СПИСОК ДОКУМЕНТОВ")
     Element submitBtn;
 
+    @Override
+    public void waitForPageIsLoaded() {
+        headerLbl.waitForVisibility();
+    }
+
     // ACTIONS
 
     @Step("Нажмите кнопку 'Перейти в список документов'")

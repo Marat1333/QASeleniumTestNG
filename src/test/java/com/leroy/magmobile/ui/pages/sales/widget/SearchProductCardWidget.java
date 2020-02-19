@@ -4,6 +4,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.models.ProductCardData;
+import com.leroy.utils.Converter;
 import org.openqa.selenium.WebDriver;
 
 public class SearchProductCardWidget extends SearchProductAllGammaCardWidget {
@@ -12,19 +13,25 @@ public class SearchProductCardWidget extends SearchProductAllGammaCardWidget {
         super(driver, locator);
     }
 
-    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc=\"price\"]")
+    // Цена
+    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc='price']")
     private Element priceObj;
 
-    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc=\"productPriceUnit\"]")
+    // Например, "за штуку"
+    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc='productPriceUnit']")
     private Element priceLbl;
 
+    // Количество
     @AppFindBy(xpath = ".//android.widget.TextView[@content-desc=\"presenceValue\"]")
     private Element quantityObj;
 
-    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc=\"priceUnit\"]")
+    // Рядом с количеством величина, например "шт."
+    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc='priceUnit']")
     private Element quantityType;
 
-    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc=\"priceUnit\"]/following-sibling::android.widget.TextView")
+    // Рядом с кол-вом, например, "доступно"
+    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc='priceUnit']" +
+            "/following-sibling::android.widget.TextView")
     private Element quantityLbl;
 
     public String getPrice(String pageSource) {
@@ -43,23 +50,16 @@ public class SearchProductCardWidget extends SearchProductAllGammaCardWidget {
         return getPriceLbl(null);
     }
 
-    public String getQuantity(boolean onlyDigits, String pageSource) {
-        if (onlyDigits)
-            return quantityObj.getText(pageSource).replaceAll(" ", "");
-        else
-            return quantityObj.getText(pageSource);
+    public String getQuantity(String pageSource) {
+        return quantityObj.getText(pageSource);
     }
 
-    public String getQuantity(boolean onlyDigits) {
-        return getQuantity(onlyDigits, null);
-    }
-
-    public String getQuantityType(String pageSource) {
+    public String getPriceUnit(String pageSource) {
         return quantityType.getText(pageSource);
     }
 
     public String getQuantityType() {
-        return getQuantityType(null);
+        return getPriceUnit(null);
     }
 
     public String getQuantityLbl(String pageSource) {
@@ -77,8 +77,8 @@ public class SearchProductCardWidget extends SearchProductAllGammaCardWidget {
         productCardData.setLmCode(getLmCode(true, ps));
         productCardData.setBarCode(getBarCode(true, ps));
         productCardData.setName(getName(ps));
-        productCardData.setPrice(getPrice(ps));
-        productCardData.setAvailableQuantity(getQuantity(true, ps));
+        productCardData.setPrice(Converter.strToDouble(getPrice(ps)));
+        productCardData.setAvailableQuantity(Converter.strToDouble(getQuantity(ps)));
         return productCardData;
     }
 

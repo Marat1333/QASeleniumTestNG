@@ -28,7 +28,7 @@ public class ComplainPage extends BaseAppPage {
     private Element moreInfoLbl;
     @AppFindBy(accessibilityId = "moreInfo", metaName = "Поле ввода 'Чуть больше подробностей'")
     private EditBox moreInfoFld;
-    @AppFindBy(xpath = "//android.widget.TextView[@text='Чуть больше подробностей']/following::android.view.ViewGroup[1]/android.view.ViewGroup",
+    @AppFindBy(xpath = "//android.widget.TextView[@text='Чуть больше подробностей']/following::android.view.ViewGroup",
             metaName = "Иконка поля 'Чуть больше подробностей'")
     private EditBox moreInfoIcon;
 

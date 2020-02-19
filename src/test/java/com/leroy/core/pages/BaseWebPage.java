@@ -3,22 +3,22 @@ package com.leroy.core.pages;
 import com.leroy.core.TestContext;
 import com.leroy.core.configuration.Log;
 import io.appium.java_client.ios.IOSDriver;
-import io.qameta.allure.Attachment;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.*;
+import org.openqa.selenium.logging.LogEntry;
+import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.awt.*;
-import java.io.File;
 import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 
 public abstract class BaseWebPage extends BasePage {
 
@@ -123,6 +123,19 @@ public abstract class BaseWebPage extends BasePage {
             Log.error("Exception: " + var3.getMessage());
             throw var3;
         }
+    }
+
+    /**
+     * Get errors from JS console
+     *
+     * @return
+     */
+    public String getJSErrorsFromConsole() {
+        List<LogEntry> logs = driver.manage().logs().get(LogType.BROWSER).filter(Level.WARNING);
+        StringBuilder str = new StringBuilder();
+        for (LogEntry log : logs)
+            str.append(log.getMessage()).append("\n");
+        return str.toString();
     }
 
     public boolean maximizeWindow() throws InterruptedException {

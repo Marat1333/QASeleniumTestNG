@@ -2,16 +2,21 @@ package com.leroy.magmobile.ui.pages.sales.basket;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.elements.MagMobWhiteSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.common.SearchProductPage;
-import com.leroy.models.EstimateData;
-import com.leroy.models.ProductCardData;
+import com.leroy.magmobile.ui.pages.widgets.CardWidget;
+import com.leroy.models.SalesOrderCardData;
+import com.leroy.models.SalesOrderData;
 import com.leroy.utils.Converter;
 import io.qameta.allure.Step;
+import org.openqa.selenium.By;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Basket35Page extends CommonMagMobilePage {
@@ -24,6 +29,7 @@ public class Basket35Page extends CommonMagMobilePage {
 
     public static class PageState {
         boolean productIsAdded;
+        Boolean manyOrders = false;
 
         public boolean isProductIsAdded() {
             return productIsAdded;
@@ -31,6 +37,15 @@ public class Basket35Page extends CommonMagMobilePage {
 
         public PageState setProductIsAdded(boolean productIsAdded) {
             this.productIsAdded = productIsAdded;
+            return this;
+        }
+
+        public Boolean isManyOrders() {
+            return manyOrders;
+        }
+
+        public PageState setManyOrders(Boolean manyOrders) {
+            this.manyOrders = manyOrders;
             return this;
         }
     }
@@ -45,8 +60,14 @@ public class Basket35Page extends CommonMagMobilePage {
     @AppFindBy(text = "Пока пусто")
     Element emptyInfoMessageLbl;
 
+    AndroidScrollView<SalesOrderCardData> orderCardsScrollView = new AndroidScrollView<>(
+            driver, AndroidScrollView.TYPICAL_LOCATOR,
+            "//android.view.ViewGroup[android.view.ViewGroup[android.view.ViewGroup[android.widget.ImageView]]]",
+            OrderRowProductWidget.class
+    );
+
     @AppFindBy(xpath = "//android.view.ViewGroup[android.view.ViewGroup[android.view.ViewGroup[android.widget.ImageView]]]")
-    private BasketProductWidget productCard;
+    private OrderRowProductWidget singleProductCard;
 
     // Bottom Area
     @AppFindBy(xpath = "//android.widget.TextView[contains(@text, 'Итого:')]/preceding-sibling::android.widget.TextView",
@@ -74,6 +95,17 @@ public class Basket35Page extends CommonMagMobilePage {
         waitUntilProgressBarIsInvisible();
     }
 
+    public static boolean isThisPage(TestContext context) {
+        String ps = getPageSource(context.getDriver());
+        Element el = new Element(context.getDriver(),
+                By.xpath("//*[contains(@content-desc, 'Screen')]//android.widget.TextView"));
+        return el.isVisible(ps) && el.getText(ps).equals(Basket35Page.SCREEN_TITLE);
+    }
+
+    @Step("Посчитать кол-во товаров/услуг в корзине")
+    public int getCountOfOrderCards() {
+        return orderCardsScrollView.getRowCount();
+    }
 
     // -------------- ACTIONS ---------------------------//
 
@@ -83,9 +115,12 @@ public class Basket35Page extends CommonMagMobilePage {
         return new ProcessOrder35Page(context);
     }
 
-    @Step("Нажмите ТОВАРЫ И УСЛУГИ")
-    public SearchProductPage clickProductAndServiceSubmitButton() {
-        productAndServiceBtn.click();
+    @Step("Нажмите кнопку для добавления товара в корзину")
+    public SearchProductPage clickAddProductButton() {
+        if (addProductBtn.isVisible())
+            addProductBtn.click();
+        else
+            productAndServiceBtn.click();
         return new SearchProductPage(context);
     }
 
@@ -97,67 +132,76 @@ public class Basket35Page extends CommonMagMobilePage {
         // Всегда есть эти элементы:
         softAssert.areElementsVisible(ps, backBtn, screenTitle);
         // Разные состояния:
+        List<Element> expectedElements = new ArrayList<>();
         if (state.isProductIsAdded())
-            softAssert.areElementsVisible(ps, productCard, totalPriceLbl, totalPriceVal,
-                    countAndWeightProductLbl, addProductBtn, makeSalesBtn);
+            expectedElements.addAll(Arrays.asList(singleProductCard, totalPriceVal,
+                    singleProductCard, totalPriceLbl, totalPriceVal, countAndWeightProductLbl));
         else
-            softAssert.areElementsVisible(ps, productAndServiceBtn, emptyInfoMessageLbl);
+            expectedElements.addAll(Arrays.asList(productAndServiceBtn, emptyInfoMessageLbl));
+        if (state.isManyOrders() != null) {
+            if (state.isManyOrders() || !state.isProductIsAdded())
+                expectedElements.add(productAndServiceBtn);
+            else
+                expectedElements.addAll(Arrays.asList(addProductBtn, makeSalesBtn));
+        }
+        softAssert.areElementsVisible(ps, expectedElements.toArray(new Element[0]));
         softAssert.isElementTextEqual(screenTitle, SCREEN_TITLE, ps);
         softAssert.verifyAll();
         return this;
     }
 
-    @Step("Проверить, что {index}-ый продукт содержит следующие данные: {expectedProductCardData}")
-    public Basket35Page shouldProductCardDataIs(int index, ProductCardData expectedProductCardData) {
-        index--;
-        String ps = getPageSource();
-        softAssert.isEquals(productCard.getLmCode(true, ps), expectedProductCardData.getLmCode(),
-                "Неверный лм код продукта");
-        softAssert.isEquals(productCard.getName(ps), expectedProductCardData.getName(),
-                "Неверное название продукта");
-        softAssert.isEquals(productCard.getProductCount(true, ps), expectedProductCardData.getSelectedQuantity(),
-                "Неверное кол-во продукта");
-        softAssert.isEquals(productCard.getPrice(true, ps), expectedProductCardData.getPrice(),
-                "Неверная цена товара");
-        softAssert.isEquals(productCard.getTotalPrice(true, ps), String.valueOf(
-                Math.round(Double.parseDouble(expectedProductCardData.getPrice()) *
-                        Double.parseDouble(expectedProductCardData.getSelectedQuantity()))),
-                "Неверная общая стоимость товара");
-        softAssert.isEquals(productCard.getAvailableTodayProductCountLbl(true, ps),
-                expectedProductCardData.getAvailableQuantity(),
-                "Неверное доступное кол-во");
-        softAssert.verifyAll();
+    @Step("Проверить, что общее кол-во карточек товаров/услуг в корзине = {count}")
+    public Basket35Page shouldCountOfCardsIs(int count) {
+        anAssert.isEquals(getCountOfOrderCards(), count,
+                "Неверное кол-во товаров на странице");
         return this;
     }
 
-    @Step("Проверить, что информация по всем товарам в корзине следующая:" +
-            " Кол-во товаров = {productCount}; Вес = {weight}; Итого = {totalPrice}")
-    public Basket35Page shouldTotalBasketInfoIs(int expectedProductCount,
-                                                Double expectedWeight,
-                                                Double expectedTotalPrice) throws Exception {
+    @Step("Проверить, что карточка продукта/услуги с текстом '{text}' содержит следующие данные: {expectedOrderCardData}")
+    public Basket35Page shouldOrderCardDataWithTextIs(String text, SalesOrderCardData expectedOrderCardData) {
+        // Поля, которые мы не можем проверить, убираем из проверки:
+        expectedOrderCardData.getProductCardData().setBarCode(null);
+        expectedOrderCardData.getProductCardData().setAvailableQuantity(null);
+
+        CardWidget<SalesOrderCardData> widget = orderCardsScrollView.searchForWidgetByText(text);
+        anAssert.isNotNull(widget, String.format("Не найдена карточка содержащая текст %s", text),
+                String.format("Карточка с текстом %s должна быть", text));
+        SalesOrderCardData actualOrderCardData = widget.collectDataFromPage();
+        anAssert.isTrue(actualOrderCardData.compareOnlyNotNullFields(expectedOrderCardData),
+                "Неправильная карточка, содержащая текст '" + text + "'. " +
+                        "Актуальное значение: " + actualOrderCardData.toString(),
+                "Ожидалось: " + expectedOrderCardData.toString());
+        return this;
+    }
+
+    @Step("Проверить, что информация о заказе в корзине должна быть следующая: {expectedOrderData}")
+    public Basket35Page shouldOrderDataIs(SalesOrderData expectedOrderData) {
+        List<SalesOrderCardData> actualOrderCardDataList = orderCardsScrollView.getFullDataList();
+        anAssert.isEquals(actualOrderCardDataList.size(), expectedOrderData.getOrderCardDataList().size(),
+                "Разное кол-во карточек товаров");
+        for (int i = 0; i < actualOrderCardDataList.size(); i++) {
+            SalesOrderCardData expectedOrderCardData = expectedOrderData.getOrderCardDataList().get(i);
+            SalesOrderCardData actualOrderCardData = actualOrderCardDataList.get(i);
+
+            softAssert.isTrue(actualOrderCardData.compareOnlyNotNullFields(expectedOrderCardData),
+                    (i+1) + "-ая карточка, содержит неверные данные. " +
+                            "Актуальное значение: " + actualOrderCardData.toString(),
+                    "Ожидалось: " + expectedOrderCardData.toString());
+        }
+
+        // Проверяем Total информацию
         String pageSource = getPageSource();
         String[] actualCountProductAndWeight = countAndWeightProductLbl.getText(pageSource).split("•");
         anAssert.isTrue(actualCountProductAndWeight.length == 2,
                 "Что-то не так с меткой содержащей информацию о кол-ве и весе товара");
         String actualTotalPrice = totalPriceVal.getText(pageSource).replaceAll("\\D+", "");
-        softAssert.isEquals(Converter.strToInt(actualCountProductAndWeight[0]),
-                expectedProductCount, "Неверное кол-во товара");
+        softAssert.isEquals(Converter.strToDouble(actualCountProductAndWeight[0]),
+                expectedOrderData.getProductCount(), "Неверное кол-во товара");
         softAssert.isEquals(Converter.strToDouble(actualCountProductAndWeight[1]),
-                expectedWeight, "Неверное кол-во товара");
-        softAssert.isEquals(Converter.strToDouble(actualTotalPrice), expectedTotalPrice,
+                expectedOrderData.getTotalWeight(), "Неверный вес товара");
+        softAssert.isEquals(Converter.strToDouble(actualTotalPrice), expectedOrderData.getTotalPrice(),
                 "Неверное сумма итого");
         softAssert.verifyAll();
-        return this;
-    }
-
-    @Step("Проверить, что информация о товарах в корзине должна быть следующая: {estimateData}")
-    public Basket35Page shouldBasketInformationIs(EstimateData estimateData) throws Exception {
-        List<ProductCardData> productCardDataList = estimateData.getProductCardDataList();
-        for (int i = 0; i < productCardDataList.size(); i++) {
-            shouldProductCardDataIs(i + 1, productCardDataList.get(i));
-        }
-        shouldTotalBasketInfoIs(estimateData.getCountOfProducts(), estimateData.getWeight(),
-                estimateData.getTotalPrice());
         return this;
     }
 

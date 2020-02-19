@@ -23,6 +23,7 @@ import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidDriver;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -45,7 +46,7 @@ public class AppBaseSteps extends BaseState {
         boolean moon = false;
         Element termsAcceptBtn = new Element(driver,
                 By.id("com.android.chrome:id/terms_accept"));
-        if (termsAcceptBtn.isVisible(4)) {
+        if (termsAcceptBtn.isVisible(5)) {
             Log.debug("Accept & Continue button is visible");
             termsAcceptBtn.click();
             moon = true;
@@ -71,7 +72,18 @@ public class AppBaseSteps extends BaseState {
                 androidDriver.context("WEBVIEW_chrome");
                 new LoginWebPage(context).logIn(userData);
                 androidDriver.context("NATIVE_APP");
-                redirectBtn.click();
+                try {
+                    redirectBtn.click();
+                } catch (NoSuchElementException err) {
+                    // Если получили ошибку HTTP ERROR 500
+                    androidDriver.context("WEBVIEW_chrome");
+                    LoginWebPage loginWebPage = new LoginWebPage(context);
+                    //String consoleErrors = loginWebPage.getJSErrorsFromConsole();
+                    //Log.error("CONSOLE ERRORS:" + consoleErrors);
+                    loginWebPage.reloadPage();
+                    androidDriver.context("NATIVE_APP");
+                    redirectBtn.click();
+                }
             } else {
                 if (new Element(driver, By.xpath("//*[@resource-id='Username']")).isVisible(1)) {
                     androidDriver.context("WEBVIEW_chrome");
