@@ -16,6 +16,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.PixelGrabber;
 import java.io.File;
 import java.io.IOException;
+import java.util.stream.IntStream;
 
 public class ImageUtil {
 
@@ -73,7 +74,7 @@ public class ImageUtil {
      * @param expectedPercentage - expected pixel match percentage
      * @return - CompareResult
      */
-    private static CompareResult compareImage(String actualFile, String baseFile, Double expectedPercentage) throws Exception {
+    private static CompareResult compareImageOldWay(String actualFile, String baseFile, Double expectedPercentage) {
         CompareResult compareResult = CompareResult.PixelMismatch;
         Image baseImage = Toolkit.getDefaultToolkit().getImage(baseFile);
         Image actualImage = Toolkit.getDefaultToolkit().getImage(actualFile);
@@ -112,6 +113,69 @@ public class ImageUtil {
             e.printStackTrace();
         }
         return compareResult;
+    }
+
+    /**
+     * New Method for comparing Images. It can compare images with different size.
+     *
+     * @param actualFile         - file with actual image
+     * @param baseFile           - file with expected image
+     * @param expectedPercentage - expected pixel match percentage
+     * @return - CompareResult
+     */
+    public static CompareResult compareImage(String actualFile, String baseFile, Double expectedPercentage)
+            throws Exception {
+        BufferedImage actualImage = ImageIO.read(new File(actualFile));
+        BufferedImage baseImage = ImageIO.read(new File(baseFile));
+        PixelGrabber baseImageGrab = new PixelGrabber(baseImage, 0, 0, -1, -1, false);
+        PixelGrabber actualImageGrab = new PixelGrabber(actualImage, 0, 0, -1, -1, false);
+        int[] baseImageData = null;
+        int[] actualImageData = null;
+        if (baseImageGrab.grabPixels()) {
+            baseImageData = (int[]) baseImageGrab.getPixels();
+        }
+        if (actualImageGrab.grabPixels()) {
+            actualImageData = (int[]) actualImageGrab.getPixels();
+        }
+        double avgBaseImg = IntStream.of(baseImageData).filter(i -> Math.abs(i) != 1).average().getAsDouble();
+        double avgActualImg = IntStream.of(actualImageData).filter(i -> Math.abs(i) != 1).average().getAsDouble();
+        long diff = Math.round(Math.abs(avgActualImg - avgBaseImg));
+        double actualPercentage = (1 - diff / 16777215.0) * 100; // 16777215 = #FFFFFF
+        Log.info("Difference color is " + diff + ". Percentage pixel match: " + actualPercentage + "%");
+        if (actualPercentage >= expectedPercentage)
+            return CompareResult.Matched;
+        return CompareResult.PixelMismatch;
+    }
+
+    // Another one method for comparing images (need to check)
+    private static double getDifferencePercentForImagesWithTheSameDimension(BufferedImage img1, BufferedImage img2) {
+        int width = img1.getWidth();
+        int height = img1.getHeight();
+        int width2 = img2.getWidth();
+        int height2 = img2.getHeight();
+        if (width != width2 || height != height2) {
+            throw new IllegalArgumentException(String.format("Images must have the same dimensions: (%d,%d) vs. (%d,%d)", width, height, width2, height2));
+        }
+
+        long diff = 0;
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                diff += pixelDiff(img1.getRGB(x, y), img2.getRGB(x, y));
+            }
+        }
+        long maxDiff = 3L * 255 * width * height;
+
+        return 100.0 * diff / maxDiff;
+    }
+
+    private static int pixelDiff(int rgb1, int rgb2) {
+        int r1 = (rgb1 >> 16) & 0xff;
+        int g1 = (rgb1 >> 8) & 0xff;
+        int b1 = rgb1 & 0xff;
+        int r2 = (rgb2 >> 16) & 0xff;
+        int g2 = (rgb2 >> 8) & 0xff;
+        int b2 = rgb2 & 0xff;
+        return Math.abs(r1 - r2) + Math.abs(g1 - g2) + Math.abs(b1 - b2);
     }
 
     // -------------- Public methods -------------------
@@ -166,7 +230,6 @@ public class ImageUtil {
         else
             return new Color(actualImageData[0]);
     }
-
 
     public static CompareResult takeScreenAndCompareWithBaseImg(
             Element elem, String pictureName) throws Exception {
