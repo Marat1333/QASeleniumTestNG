@@ -77,8 +77,8 @@ public class WithdrawalFromRMTest extends AppBaseSteps {
         // Step #9
         log.step("Изменить ожидаемое время доставки и подтвердить его");
         LocalTime timeForSelect = LocalTime.now().plusHours(1).plusMinutes(5);
-        //orderPage.editDeliveryTime(timeForSelect)
-        //        .shouldTimeFieldIs(timeForSelect); // TODO
+        orderPage.editDeliveryTime(timeForSelect)
+                .shouldTimeFieldIs(timeForSelect);
 
         // Step #10
         log.step("Ввести комментарий и подтвердить его");

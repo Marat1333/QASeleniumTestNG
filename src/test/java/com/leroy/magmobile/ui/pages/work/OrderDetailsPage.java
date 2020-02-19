@@ -59,8 +59,8 @@ public class OrderDetailsPage extends CommonMagMobilePage {
         softAssert.isElementTextEqual(this.deliveryDate,
                 deliveryDate.format(DateTimeFormatter.ofPattern(
                         "dd-го MMM", new Locale("ru"))));
-        //softAssert.isElementTextEqual(this.deliveryTime,
-        //        deliveryTime.format(DateTimeFormatter.ofPattern("HH:mm"))); // TODO
+        softAssert.isElementTextEqual(this.deliveryTime,
+                deliveryTime.format(DateTimeFormatter.ofPattern("HH:mm"))); // TODO
         softAssert.isElementTextEqual(this.comment, comment);
         softAssert.verifyAll();
         return this;
