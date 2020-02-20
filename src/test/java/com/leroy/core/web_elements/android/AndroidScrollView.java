@@ -276,11 +276,11 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
             if (maxEntityCount!=null && tmpCardDataList.size() >= maxEntityCount) {
                 break;
             }
-            simpleScroll(direction);
             if (pageSource.equals(prevPageSource)) {
                 break;
             }
             prevPageSource = pageSource;
+            simpleScroll(direction);
             progressBar.waitForInvisibility();
             Log.debug("<-- Scroll down #" + (i + 1) + "-->");
             i++;
