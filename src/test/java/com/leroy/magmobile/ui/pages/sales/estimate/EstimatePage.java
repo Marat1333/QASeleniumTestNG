@@ -2,19 +2,21 @@ package com.leroy.magmobile.ui.pages.sales.estimate;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.elements.MagMobWhiteSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.common.SearchProductPage;
-import com.leroy.magmobile.ui.pages.sales.basket.BasketProductWidget;
+import com.leroy.magmobile.ui.pages.sales.basket.OrderRowProductWidget;
 import com.leroy.magmobile.ui.pages.search.CustomerData;
 import com.leroy.magmobile.ui.pages.search.SearchCustomerPage;
 import com.leroy.magmobile.ui.pages.search.SearchCustomerWidget;
-import com.leroy.models.EstimateData;
-import com.leroy.models.ProductCardData;
+import com.leroy.models.SalesOrderCardData;
+import com.leroy.models.SalesOrderData;
 import com.leroy.utils.Converter;
 import io.qameta.allure.Step;
+import org.openqa.selenium.By;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,6 +51,11 @@ public class EstimatePage extends CommonMagMobilePage {
         }
     }
 
+    public static boolean isThisPage(TestContext context) {
+        return new Element(context.getDriver(),
+                By.xpath("//*[@content-desc='EstimateDocumentScreenId']")).isVisible();
+    }
+
     @Override
     public void waitForPageIsLoaded() {
         E("$EstimateDocumentScreenId", "EstimateDocumentScreen").waitForVisibility();
@@ -71,9 +78,14 @@ public class EstimatePage extends CommonMagMobilePage {
             metaName = "Поле 'Клиент' (клиент выбран)")
     SearchCustomerWidget customerWidget;
 
-    @AppFindBy(xpath = "//android.view.ViewGroup[android.view.ViewGroup[android.view.ViewGroup[android.widget.ImageView]]]",
+    @AppFindBy(xpath = "(//android.view.ViewGroup[android.view.ViewGroup[android.view.ViewGroup[android.widget.ImageView]]])[1]",
             metaName = "Карточка товара")
-    BasketProductWidget productCardWidget;
+    OrderRowProductWidget productCardWidget;
+
+    AndroidScrollView<SalesOrderCardData> orderCardDataScrollView = new AndroidScrollView<>(driver,
+            AndroidScrollView.TYPICAL_LOCATOR,
+            "//android.view.ViewGroup[android.view.ViewGroup[android.view.ViewGroup[android.widget.ImageView]]]",
+            OrderRowProductWidget.class);
 
     @AppFindBy(text = "ТОВАРЫ И УСЛУГИ", metaName = "Кнопка 'Товары и Услуги'")
     MagMobWhiteSubmitButton productAndServiceBtn;
@@ -119,6 +131,7 @@ public class EstimatePage extends CommonMagMobilePage {
 
     /**
      * Получить номер документа
+     *
      * @param onlyDigits true - получить только номер из цифр. false - получить всю строку как есть
      * @return document number
      */
@@ -130,34 +143,32 @@ public class EstimatePage extends CommonMagMobilePage {
     }
 
     // ------ Grab info from Page methods -----------//
-    @Step("Забираем со страницы информацию о смете")
-    public EstimateData getEstimateDataFromPage() throws Exception {
-        EstimateData estimateData = new EstimateData();
-        List<ProductCardData> productCardDataList = new ArrayList<>();
-        productCardDataList.add(getProductCardDataFromPage(1));
-        estimateData.setProductCardDataList(productCardDataList);
 
+    @Step("Забираем со страницы информацию о смете")
+    public SalesOrderData getEstimateDataFromPage() {
+        List<SalesOrderCardData> cardDataList = orderCardDataScrollView.getFullDataList();
+        SalesOrderData orderData = new SalesOrderData();
+        orderData.setOrderCardDataList(cardDataList);
         String ps = getPageSource();
-        estimateData.setTotalPrice(Converter.strToDouble(totalPriceVal.getText(ps)));
-        estimateData.setCountOfProducts(Converter.strToInt(countProductLbl.getText(ps)));
-        estimateData.setWeight(Converter.strToDouble(weightProductLbl.getText(ps)));
-        return estimateData;
+        orderData.setTotalPrice(Converter.strToDouble(totalPriceVal.getText(ps)));
+        orderData.setProductCount(Converter.strToDouble(countProductLbl.getText(ps)));
+        orderData.setTotalWeight(Converter.strToDouble(weightProductLbl.getText(ps)));
+        return orderData;
     }
 
-    @Step("Забираем со страницу информацию о {index}-ом товаре")
-    public ProductCardData getProductCardDataFromPage(int index) {
-        index--;
-        ProductCardData cardData = new ProductCardData();
-        String ps = getPageSource();
-        cardData.setLmCode(productCardWidget.getLmCode(true, ps));
-        cardData.setName(productCardWidget.getName(ps));
-        cardData.setSelectedQuantity(productCardWidget.getProductCount(true, ps));
-        cardData.setPrice(productCardWidget.getPrice(true, ps));
-        cardData.setAvailableQuantity(productCardWidget.getAvailableTodayProductCountLbl(true, ps));
-        return cardData;
+    @Step("Получить список добавленных в смету карточек товаров/услуг с информацией о них")
+    public List<SalesOrderCardData> getCardDataListFromPage() {
+        return orderCardDataScrollView.getFullDataList();
     }
 
     // ACTIONS
+
+    @Step("Нажмите на {index}-ую карточку товара/услуги")
+    public ActionWithProductCardModalPage clickCardByIndex(int index) throws Exception {
+        index--;
+        orderCardDataScrollView.clickElemByIndex(index);
+        return new ActionWithProductCardModalPage(context);
+    }
 
     @Step("Нажмите на поле 'Клиенты'")
     public SearchCustomerPage clickCustomerField() {

@@ -619,17 +619,19 @@ public class Listener implements ITestListener, ISuiteListener,
     private void updateResultWithScreenshot(ITestResult arg0) {
         if (arg0.getInstance() instanceof EnvironmentConfigurator && !disableScreenshots) {
             RemoteWebDriver driver = (RemoteWebDriver) ((EnvironmentConfigurator) arg0.getInstance()).getDriver();
-            try {
-                String screenShotName = getTestCaseId(arg0);
-                screenShotName = screenShotName + "_" + RandomStringUtils.randomNumeric(6);
-                String screenShotPath = new AnyPage(new TestContext(driver, null, null, null, null))
-                        .takeScreenShot(screenShotName + ".png");
-                currentScreenshotPath = screenShotPath;
-                arg0.setAttribute("screenshot", screenShotPath);
-                setGenerateTestResultAttributes(true);
-                Log.info("Screenshot path: " + screenShotPath);
-            } catch (Exception e) {
-                Log.error("Results wasn't updated with screenshot. Error: " + e.getMessage());
+            if (driver != null) {
+                try {
+                    String screenShotName = getTestCaseId(arg0);
+                    screenShotName = screenShotName + "_" + RandomStringUtils.randomNumeric(6);
+                    String screenShotPath = new AnyPage(new TestContext(driver, null, null, null, null))
+                            .takeScreenShot(screenShotName + ".png");
+                    currentScreenshotPath = screenShotPath;
+                    arg0.setAttribute("screenshot", screenShotPath);
+                    setGenerateTestResultAttributes(true);
+                    Log.info("Screenshot path: " + screenShotPath);
+                } catch (Exception e) {
+                    Log.error("Results wasn't updated with screenshot. Error: " + e.getMessage());
+                }
             }
         }
     }

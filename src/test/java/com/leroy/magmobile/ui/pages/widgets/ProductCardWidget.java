@@ -12,19 +12,19 @@ public class ProductCardWidget extends Element {
     }
 
     public String getNumber() {
-        return new Element(driver, By.xpath(getXpath() + "/android.widget.TextView[1]")).getText();
+        return new Element(driver, By.xpath(getXpath() + "//android.widget.TextView[1]")).getText();
     }
 
     public String getName() {
-        return new Element(driver, By.xpath(getXpath() + "/android.widget.TextView[2]")).getText();
+        return new Element(driver, By.xpath(getXpath() + "//android.widget.TextView[2]")).getText();
     }
 
     public String getQuantity() {
-        return new Element(driver, By.xpath(getXpath() + "/android.widget.TextView[3]")).getText();
+        return new Element(driver, By.xpath(getXpath() + "//android.widget.TextView[@content-desc='presenceValue'][last()]")).getText();
     }
 
-    public String getQuantityType() {
-        return new Element(driver, By.xpath(getXpath() + "/android.widget.TextView[4]")).getText();
+    public String getQuantityUnit() {
+        return new Element(driver, By.xpath(getXpath() + "//android.widget.TextView[@content-desc='priceUnit']")).getText();
     }
 
 }

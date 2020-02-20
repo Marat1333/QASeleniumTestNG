@@ -6,7 +6,6 @@ import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.common.SearchProductPage;
-import com.leroy.magmobile.ui.pages.sales.estimate.EstimatePage;
 import com.leroy.magmobile.ui.pages.sales.widget.SalesDocumentWidget;
 import com.leroy.magmobile.ui.pages.widgets.CardWidget;
 import com.leroy.models.SalesDocumentData;
@@ -49,15 +48,14 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
 
     /* ------------------------- ACTION STEPS -------------------------- */
 
-    @Step("Найти и выбрать документ, содержащий текст: {containsText}, но не содержащий: {notContainsText}")
-    public EstimatePage searchForDocumentByTextAndSelectIt(String containsText, String notContainsText) {
+    @Step("Найти и выбрать документ, содержащий текст: {containsText}")
+    public void searchForDocumentByTextAndSelectIt(String containsText) {
         CardWidget<SalesDocumentData> cardWidget =
-                salesDocumentScrollList.searchForWidgetByText(containsText/*, notContainsText*/); //TODO
+                salesDocumentScrollList.searchForWidgetByText(containsText);
         anAssert.isNotNull(cardWidget, "Не нашли нужный документ",
-                String.format("Документ содержащий текст %s, но который не содержит %s должен быть найден",
-                        containsText, notContainsText));
+                String.format("Документ содержащий текст %s должен быть найден",
+                        containsText));
         cardWidget.click();
-        return new EstimatePage(context);
     }
 
     @Step("Нажмите кнопку 'Создать документ продажи'")
@@ -81,9 +79,14 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
         return this;
     }
 
-    @Step("Проверить, что документ {index} содержит необходимую информацию: {expectedDocument}")
-    public SalesDocumentsPage shouldSalesDocumentByIndexIs(int index, SalesDocumentData expectedDocument) {
-        SalesDocumentData documentFromPage = salesDocumentScrollList.getDataObj(index);
+    @Step("Проверить, что документ на странице имеется документ с данными: {expectedDocument}")
+    public SalesDocumentsPage shouldSalesDocumentIsPresentAndDataMatches(SalesDocumentData expectedDocument) {
+        CardWidget<SalesDocumentData> widget = salesDocumentScrollList.searchForWidgetByText(
+                expectedDocument.getNumber());
+        anAssert.isNotNull(widget,
+                "Документ " + expectedDocument.getNumber() + " не найден",
+                "Документ " + expectedDocument.getNumber() + " должен присутствовать на странице");
+        SalesDocumentData documentFromPage = widget.collectDataFromPage();
         if (expectedDocument.getDate() != null) {
             softAssert.isEquals(documentFromPage.getDate(), expectedDocument.getDate(),
                     "Документ дата должна быть %s");
@@ -94,8 +97,11 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
         softAssert.isTrue(documentFromPage.getNumber().contains(expectedDocument.getNumber()),
                 "Номер документа должен быть '" + expectedDocument.getNumber() + "'");
         if (expectedDocument.getPin() != null) {
-            softAssert.isEquals(documentFromPage.getPin(), expectedDocument.getPin(),
-                    "PIN документа должен быть %s");
+            if (documentFromPage.getPin() == null)
+                softAssert.isTrue(false, "PIN код документа отсутствует");
+            else
+                softAssert.isEquals(documentFromPage.getPin(), expectedDocument.getPin(),
+                        "PIN документа должен быть %s");
         }
         softAssert.isEquals(documentFromPage.getPrice(), expectedDocument.getPrice(),
                 "Сумма в документе должна быть %s");

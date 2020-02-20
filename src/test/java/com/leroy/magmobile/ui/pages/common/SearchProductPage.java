@@ -314,21 +314,22 @@ public class SearchProductPage extends BaseAppPage {
 
     @Step("Проверить, что Карточка товара содержит все элементы")
     public SearchProductPage shouldProductCardContainAllRequiredElements(int index) throws Exception {
-        anAssert.isFalse(productCards.get(index).getBarCode(true).isEmpty(),
+        String ps = getPageSource();
+        anAssert.isFalse(productCards.get(index).getBarCode(true, ps).isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустой штрихкод", index));
-        anAssert.isFalse(productCards.get(index).getLmCode(true).isEmpty(),
+        anAssert.isFalse(productCards.get(index).getLmCode(true, ps).isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустой номер", index));
-        anAssert.isFalse(productCards.get(index).getName().isEmpty(),
+        anAssert.isFalse(productCards.get(index).getName(ps).isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустое название", index));
-        anAssert.isFalse(productCards.get(index).getPrice().isEmpty(),
+        anAssert.isFalse(productCards.get(index).getPrice(ps).isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустую цену", index));
-        anAssert.isEquals(productCards.get(index).getPriceLbl(), "за штуку",
+        anAssert.isEquals(productCards.get(index).getPriceLbl(ps), "за штуку",
                 String.format("Карточка под индексом %s должна иметь примечание 'за штуку'", index));
-        anAssert.isFalse(productCards.get(index).getQuantity(true).isEmpty(),
+        anAssert.isFalse(productCards.get(index).getQuantity(ps).isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустое кол-во", index));
-        anAssert.isEquals(productCards.get(index).getQuantityLbl(), "доступно",
+        anAssert.isEquals(productCards.get(index).getQuantityLbl(ps), "доступно",
                 String.format("Карточка под индексом %s должна иметь примечание 'доступно'", index));
-        anAssert.isFalse(productCards.get(index).getQuantityType().isEmpty(),
+        anAssert.isFalse(productCards.get(index).getPriceUnit(ps).isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустой тип кол-ва", index));
         return this;
     }
@@ -352,7 +353,7 @@ public class SearchProductPage extends BaseAppPage {
         switch (sortType) {
             case SortPage.SORT_BY_AVAILABLE_STOCK_ASC:
                 if (type.equals(CardType.COMMON)) {
-                    expectedSortedList.sort(Comparator.comparingInt(d -> Integer.parseInt(d.getAvailableQuantity())));
+                    expectedSortedList.sort(Comparator.comparingDouble(d -> d.getAvailableQuantity()));
                     break;
                 } else {
                     throw new Exception("Incorrect CardType for " + sortType);
@@ -361,7 +362,7 @@ public class SearchProductPage extends BaseAppPage {
             case SortPage.SORT_BY_AVAILABLE_STOCK_DESC:
                 if (type.equals(CardType.COMMON)) {
                     expectedSortedList.sort((d1, d2) ->
-                            Integer.parseInt(d2.getAvailableQuantity()) - Integer.parseInt(d1.getAvailableQuantity()));
+                            (int) (d2.getAvailableQuantity() - d1.getAvailableQuantity()));
                     break;
                 } else {
                     throw new Exception("Incorrect CardType for " + sortType);

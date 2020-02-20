@@ -13,13 +13,13 @@ public class SearchProductAllGammaCardWidget extends CardWidget<ProductCardData>
         super(driver, locator);
     }
 
-    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc=\"lmCode\"]")
+    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc='lmCode']")
     private Element lmCodeObj;
 
-    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc=\"barCode\"]")
+    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc='barCode']")
     private Element barCodeObj;
 
-    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc=\"name\"]")
+    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc='name']")
     private Element nameObj;
 
     public String getLmCode(boolean onlyDigits, String pageSource) {

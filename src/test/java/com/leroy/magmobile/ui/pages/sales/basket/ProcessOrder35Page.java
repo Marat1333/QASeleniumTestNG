@@ -78,11 +78,17 @@ public class ProcessOrder35Page extends CommonMagMobilePage {
         return new SubmittedSalesDocument35Page(context);
     }
 
+    private void fillInPhoneFld(String value) {
+        if (value.startsWith("7"))
+            value = "7" + value;
+        phoneFld.clearFillAndSubmit(value);
+    }
+
     @Step("Заполнить поля формы 'Оформление заказа'")
     public ProcessOrder35Page fillInFormFields(OrderDetailsData data) throws Exception {
         fullNameFld.clearFillAndSubmit(data.getFullName());
         mainScrollView.scrollDownToElement(phoneFld);
-        phoneFld.clearFillAndSubmit(data.getPhone(false));
+        fillInPhoneFld(data.getPhone(false));
         mainScrollView.scrollDownToElement(emailFld);
         emailFld.clearFillAndSubmit(data.getEmail());
         mainScrollView.scrollDownToElement(pinCodeFld);

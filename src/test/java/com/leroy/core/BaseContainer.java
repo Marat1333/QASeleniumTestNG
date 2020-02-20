@@ -163,13 +163,17 @@ public abstract class BaseContainer {
      * Get Source from Page / Screen
      * @return page source
      */
-    public String getPageSource() {
+     protected static String getPageSource(WebDriver driver) {
         try {
             return driver.getPageSource();
         } catch (WebDriverException err) {
             Log.warn(err.getMessage());
             return driver.getPageSource();
         }
+    }
+
+    public String getPageSource() {
+        return getPageSource(driver);
     }
 
     protected CustomLocator buildLocator(String str, String metaName) {

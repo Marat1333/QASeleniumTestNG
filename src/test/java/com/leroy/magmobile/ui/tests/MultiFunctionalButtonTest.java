@@ -4,9 +4,12 @@ import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.magmobile.ui.AppBaseSteps;
+import com.leroy.magmobile.ui.helpers.SalesDocTestData;
+import com.leroy.magmobile.ui.pages.common.OldSearchProductPage;
 import com.leroy.magmobile.ui.pages.common.SearchProductPage;
 import com.leroy.magmobile.ui.pages.sales.*;
 import com.leroy.magmobile.ui.pages.sales.basket.*;
+import com.leroy.magmobile.ui.pages.sales.estimate.ActionWithProductCardModalPage;
 import com.leroy.magmobile.ui.pages.sales.estimate.ActionsWithEstimateModalPage;
 import com.leroy.magmobile.ui.pages.sales.estimate.EstimatePage;
 import com.leroy.magmobile.ui.pages.sales.estimate.EstimateSubmittedPage;
@@ -19,19 +22,24 @@ import com.leroy.magmobile.ui.pages.work.OrderPage;
 import com.leroy.magmobile.ui.pages.work.StockProductCardPage;
 import com.leroy.magmobile.ui.pages.work.StockProductsPage;
 import com.leroy.magmobile.ui.pages.work.modal.QuantityProductsForWithdrawalModalPage;
-import com.leroy.models.EstimateData;
-import com.leroy.models.OrderDetailsData;
-import com.leroy.models.ProductCardData;
-import com.leroy.models.SalesDocumentData;
+import com.leroy.models.*;
+import com.leroy.umbrella_extension.authorization.AuthClient;
+import com.leroy.umbrella_extension.magmobile.MagMobileClient;
+import com.leroy.umbrella_extension.magmobile.data.ProductItemResponse;
+import com.leroy.umbrella_extension.magmobile.data.estimate.EstimateData;
+import com.leroy.umbrella_extension.magmobile.data.estimate.ProductOrderData;
+import com.leroy.umbrella_extension.magmobile.requests.GetCatalogSearch;
 import org.apache.commons.lang.RandomStringUtils;
+import org.testng.Assert;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.base.BaseModule;
-import ru.leroymerlin.qa.core.clients.magmobile.MagMobileClient;
-import ru.leroymerlin.qa.core.clients.magmobile.data.ProductItemResponse;
-import ru.leroymerlin.qa.core.clients.magmobile.requests.GetCatalogSearch;
+import ru.leroymerlin.qa.core.clients.base.Response;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
+import java.util.Random;
 
 
 @Guice(modules = {BaseModule.class})
@@ -39,6 +47,9 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
 
     @Inject
     private MagMobileClient apiClient;
+
+    @Inject
+    private AuthClient authClient;
 
     // Получить ЛМ код для услуги
     private String getAnyLmCodeOfService() {
@@ -96,14 +107,127 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         return "82001470";
     }
 
-    public String getValidPinCode() {
-        return RandomStringUtils.randomNumeric(5);
+    private String getValidPinCode() {
+        return SalesDocTestData.getAvailablePinCode(apiClient);
+    }
+
+    // CREATING PRE-CONDITIONS:
+
+    private String createDraftEstimate() {
+        String shopId = "35";
+        String lmCode = getAnyLmCodeProductWithoutSpecificOptions(shopId, false);
+        String token = authClient.getAccessToken(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS);
+        ProductOrderData productOrderData = new ProductOrderData();
+        productOrderData.setLmCode(lmCode);
+        productOrderData.setQuantity(1.0);
+        Response<EstimateData> estimateDataResponse = apiClient
+                .createEstimate(token, "35", productOrderData);
+        Assert.assertTrue(estimateDataResponse.isSuccessful(),
+                "Не смогли создать Смету на этапе создания pre-condition данных");
+        return estimateDataResponse.asJson().getEstimateId();
+    }
+
+    private void cancelOrder(String orderId) {
+        Response r = apiClient.cancelOrder(EnvConstants.BASIC_USER_NAME, orderId);
+        anAssert.isTrue(r.isSuccessful(),
+                "Не смогли удалить заказ №" + orderId +". Ошибка: " + r.toString());
     }
 
     // Product Types
     private enum ProductTypes {
         NORMAL, AVS, TOP_EM;
     }
+
+    // Документы продажи
+
+    @Test(description = "C3201029 Создание документа продажи")
+    public void testC3201029() throws Exception {
+        // Step #1
+        log.step("На главном экране выберите раздел Документы продажи");
+        MainSalesDocumentsPage salesDocumentsPage = loginAndGoTo(LoginType.USER_WITH_OLD_INTERFACE,
+                MainSalesDocumentsPage.class);
+        salesDocumentsPage.verifyRequiredElements();
+
+        // Step #2
+        log.step("Нажмите 'Создать документ продажи'");
+        OldSearchProductPage oldSearchProductPage = salesDocumentsPage.clickCreateSalesDocumentButton();
+        oldSearchProductPage.verifyRequiredElements();
+
+        // Step #3
+        String inputDataStep3 = "164";
+        log.step("Введите 164 код товара");
+        oldSearchProductPage.enterTextInSearchFieldAndSubmit(inputDataStep3)
+                .shouldCountOfProductsOnPageMoreThan(1)
+                .shouldProductCardsContainText(inputDataStep3)
+                .shouldProductCardContainAllRequiredElements(0);
+
+        // Step #4
+        log.step("Нажмите на мини-карточку товара 16410291");
+        AddProductPage addProductPage = oldSearchProductPage.searchProductAndSelect("16410291")
+                .verifyRequiredElements();
+
+        // Step #5
+        log.step("Нажмите на поле количества");
+        addProductPage.clickEditQuantityField()
+                .shouldKeyboardVisible();
+        addProductPage.shouldEditQuantityFieldIs("1,00")
+                .shouldTotalPriceIs(String.format("%.2f", Double.parseDouble(
+                        addProductPage.getPrice())));
+
+        // Step #6
+        log.step("Введите значение 20,5 количества товара");
+        String expectedTotalPrice = String.format("%.2f",
+                Double.parseDouble(addProductPage.getPrice()) * 20.5);
+        addProductPage.enterQuantityOfProduct("20,5")
+                .shouldTotalPriceIs(expectedTotalPrice);
+
+        // Step #7
+        log.step("Нажмите кнопку Добавить");
+        BasketStep1Page basketStep1Page = addProductPage.clickAddButton()
+                .verifyRequiredElements();
+        basketStep1Page.shouldDocumentTypeIs(BasketPage.Constants.DRAFT_DOCUMENT_TYPE);
+        String documentNumber = basketStep1Page.getDocumentNumber();
+
+        // Step #8
+        log.step("Нажмите Далее к параметрам");
+        BasketStep2Page basketStep2Page = basketStep1Page.clickNextParametersButton()
+                .verifyRequiredElements()
+                .shouldFieldsHaveDefaultValues();
+
+        // Step #9
+        log.step("Нажмите кнопку Создать документ продажи");
+        BasketStep3Page basketStep3Page = basketStep2Page.clickCreateSalesDocumentButton()
+                .verifyRequiredElements();
+        basketStep3Page.shouldKeyboardVisible();
+
+        // Step #10
+        log.step("Введите 5 цифр PIN-кода");
+        String testPinCode = SalesDocTestData.getAvailablePinCode(apiClient);
+        basketStep3Page.enterPinCode(testPinCode)
+                .shouldPinCodeFieldIs(testPinCode)
+                .shouldSubmitButtonIsActive();
+
+        // Step #11
+        log.step("Нажмите кнопку Подтвердить");
+        SubmittedSalesDocumentPage submittedSalesDocumentPage = basketStep3Page.clickSubmitButton()
+                .verifyRequiredElements()
+                .shouldPinCodeIs(testPinCode)
+                .shouldDocumentNumberIs(documentNumber);
+
+        // Step #12
+        log.step("Нажмите кнопку Перейти в список документов");
+        SalesDocumentData expectedSalesDocument = new SalesDocumentData();
+        expectedSalesDocument.setPrice(NumberFormat.getInstance(Locale.FRANCE)
+                .parse(expectedTotalPrice).toString());
+        expectedSalesDocument.setPin(testPinCode);
+        expectedSalesDocument.setDocumentState(SalesDocumentsConst.CREATED_STATE);
+        expectedSalesDocument.setTitle("Из торгового зала");
+        expectedSalesDocument.setNumber(documentNumber);
+        submittedSalesDocumentPage.clickSubmitButton()
+                .shouldSalesDocumentIsPresentAndDataMatches(expectedSalesDocument);
+    }
+
+    // Мультифункциональная кнопка
 
     @Test(description = "C3201023 Создание документа продажи")
     public void testC3201023() throws Exception {
@@ -148,7 +272,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
 
         // Step #4
         log.step("Нажмите на поле Количество для продажи и введите новое значение количества");
-        String testQuantity = RandomStringUtils.randomNumeric(1);
+        String testQuantity = String.valueOf(new Random().nextInt(9)+1);
         addServicePage.enterValueInQuantityServiceField(testQuantity)
                 .shouldFieldsAre(testPrice, testQuantity,
                         String.valueOf(Integer.parseInt(testPrice) * Integer.parseInt(testQuantity)));
@@ -237,7 +361,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
 
         // Step 5
         log.step("Нажмите на нкопку Отозвать");
-        String withdrawalCountItems = RandomStringUtils.randomNumeric(1);
+        String withdrawalCountItems = String.valueOf(new Random().nextInt(10) + 1);
         QuantityProductsForWithdrawalModalPage modalPage = stockProductCardPage.clickWithdrawalBtnForEnterQuantity()
                 .verifyRequiredElements()
                 .shouldSubmitButtonActivityIs(false);
@@ -273,6 +397,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
     public void test35ShopCreatingOrder() throws Exception {
         // Pre-condition
         String shopId = "35";
+        context.setIs35Shop(true);
         boolean hasAvailableStock = false; //new Random().nextInt(2) == 1; // No one product with "hasAvailableStock" on dev environment
         String lmCode = getAnyLmCodeProductWithoutSpecificOptions(shopId, hasAvailableStock);
         SalesPage salesPage = loginAndGoTo(SalesPage.class);
@@ -310,6 +435,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         // Step #8
         log.step("Заполните поля Имя и Фамилия, Телефон, PIN-код для оплаты");
         OrderDetailsData orderDetailsData = new OrderDetailsData().setRequiredRandomData();
+        orderDetailsData.setPinCode(getValidPinCode());
         orderDetailsData.setDeliveryType(OrderDetailsData.DeliveryType.PICKUP);
         processOrder35Page.fillInFormFields(orderDetailsData)
                 .shouldFormFieldsAre(orderDetailsData);
@@ -331,7 +457,10 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         expectedSalesDocument.setNumber(documentNumber);
         submittedDocument35Page
                 .clickSubmitButton()
-                .shouldSalesDocumentByIndexIs(0, expectedSalesDocument);
+                .shouldSalesDocumentIsPresentAndDataMatches(expectedSalesDocument);
+        // TODO Иногда на этапе Автообработка нет PINa? Баг или ок. И надо удалять документ после
+        // Clean up
+        //cancelOrder(documentNumber);
     }
 
     // Смета
@@ -411,19 +540,100 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         expectedSalesDocument.setNumber(documentNumber);
         SalesDocumentsPage salesDocumentsPage = estimateSubmittedPage.clickSubmitButton();
         salesDocumentsPage.verifyRequiredElements()
-                .shouldSalesDocumentByIndexIs(0, expectedSalesDocument);
+                .shouldSalesDocumentIsPresentAndDataMatches(expectedSalesDocument);
+        // Post actions
+        log.step("(Доп. шаг) Найти и открыть созданную смету");
+        salesDocumentsPage.searchForDocumentByTextAndSelectIt(
+                expectedSalesDocument.getNumber());
+        new EstimatePage(context);
+    }
+
+    @Test(description = "C22797074 Посмотреть подробнее о товаре")
+    public void testViewProductDetailsFromEstimateScreen() throws Exception {
+        if (!EstimatePage.isThisPage(context)) {
+            String estimateId = createDraftEstimate();
+            MainSalesDocumentsPage mainSalesDocumentsPage = loginAndGoTo(
+                    LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
+            SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
+            salesDocumentsPage.searchForDocumentByTextAndSelectIt(estimateId);
+        }
+
+        EstimatePage estimatePage = new EstimatePage(context);
+        ProductCardData productCardData = estimatePage.getCardDataListFromPage()
+                .get(0).getProductCardData();
+
+        // Step 1
+        log.step("Нажмите на мини-карточку любого товара в списке товаров сметы");
+        ActionWithProductCardModalPage modalPage = estimatePage.clickCardByIndex(1)
+                .verifyRequiredElements();
+
+        // Step 2
+        log.step("Выберите параметр Подробнее о товаре");
+        ProductDescriptionPage productDescriptionPage = modalPage.clickProductDetailsMenuItem();
+        productDescriptionPage.verifyRequiredElements(false)
+                .shouldProductLMCodeIs(productCardData.getLmCode());
+    }
+
+    @Test(description = "C22797073 Изменить количество добавленного товара")
+    public void testChangeProductQuantityFromEstimateScreen() throws Exception {
+        if (!EstimatePage.isThisPage(context)) {
+            String estimateId = createDraftEstimate();
+            MainSalesDocumentsPage mainSalesDocumentsPage = loginAndGoTo(
+                    LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
+            SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
+            salesDocumentsPage.searchForDocumentByTextAndSelectIt(estimateId);
+        }
+
+        EstimatePage estimatePage = new EstimatePage(context);
+        ProductCardData productCardDataBefore = estimatePage.getCardDataListFromPage()
+                .get(0).getProductCardData(); // TODO мы должны из API брать эти данные
+
+        // Step 1
+        log.step("Нажмите на мини-карточку любого товара в списке товаров сметы");
+        ActionWithProductCardModalPage modalPage = estimatePage.clickCardByIndex(1)
+                .verifyRequiredElements();
+
+        // Step 2
+        log.step("Выберите параметр Изменить количество");
+        EditProduct35Page editProduct35Page = modalPage.clickChangeQuantityMenuItem();
+        editProduct35Page.verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.SAVE);
+
+        // Step 3
+        log.step("Измените количество товара");
+        String testEditQuantityValue = String.valueOf(new Random().nextInt(10)+1);
+        Double expectedTotalCost = Double.parseDouble(testEditQuantityValue) * productCardDataBefore.getPrice();
+        editProduct35Page.enterQuantityOfProduct(testEditQuantityValue)
+                .shouldEditQuantityFieldIs(testEditQuantityValue)
+                .shouldTotalPriceCalculateCorrectly();
+
+        // Step 4
+        log.step("Нажмите на кнопку Сохранить");
+        estimatePage = editProduct35Page.clickSaveButton();
+        SalesOrderCardData productCardDataAfter = estimatePage.getCardDataListFromPage()
+                .get(0); // TODO Заменить на ProductOrderData
+
+        softAssert.isEquals(productCardDataAfter.getProductCardData().getPrice(),
+                productCardDataBefore.getPrice(),
+                "Цена товара изменилась");
+        softAssert.isEquals(productCardDataAfter.getTotalPrice(), expectedTotalCost,
+                "Неверная сумма для выбранного товара");
+        softAssert.isEquals(productCardDataAfter.getSelectedQuantity(), Double.parseDouble(testEditQuantityValue),
+                "Неверное выбранное кол-во товара");
+        softAssert.verifyAll();
     }
 
     @Test(description = "C22797078 Преобразовать смету в корзину")
     public void testTransformEstimateToBasket() throws Exception {
+        // TODO Need to API
         // Pre-condition
         MainSalesDocumentsPage mainSalesDocumentsPage = loginAndGoTo(
                 LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
         SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
-        EstimatePage estimatePage = salesDocumentsPage.searchForDocumentByTextAndSelectIt(
-                SalesDocumentsConst.ESTIMATE_TYPE, SalesDocumentsConst.TRANSFORMED_STATE);
+        salesDocumentsPage.searchForDocumentByTextAndSelectIt(
+                SalesDocumentsConst.ESTIMATE_TYPE);
+        EstimatePage estimatePage = new EstimatePage(context);
         // Collect test data from page
-        EstimateData testEstimateData = estimatePage.getEstimateDataFromPage();
+        SalesOrderData testEstimateData = estimatePage.getEstimateDataFromPage();
 
         // Step 1
         log.step("Нажмите на кнопку Действия со сметой");
@@ -434,7 +644,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         log.step("Выберите параметр Преобразовать в корзину");
         Basket35Page basket35Page = modalPage.clickTransformToBasketMenuItem();
         basket35Page.verifyRequiredElements(new Basket35Page.PageState().setProductIsAdded(true));
-        basket35Page.shouldBasketInformationIs(testEstimateData);
+        basket35Page.shouldOrderDataIs(testEstimateData);
     }
 
     // Корзина
@@ -464,7 +674,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
 
         // Step 3
         log.step("Нажмите на кнопку +товары и услуги");
-        SearchProductPage searchProductPage = basket35Page.clickProductAndServiceSubmitButton()
+        SearchProductPage searchProductPage = basket35Page.clickAddProductButton()
                 .verifyRequiredElements();
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
         AddProduct35Page addProduct35Page = new AddProduct35Page(context);
@@ -474,6 +684,45 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         log.step("Нажмите на Добавить в корзину");
         basket35Page = addProduct35Page.clickAddIntoBasketButton();
         basket35Page.verifyRequiredElements(new Basket35Page.PageState().setProductIsAdded(true));
+    }
+
+    @Test(description = "C22797090 Добавить новый товар в корзину")
+    public void testAddNewProductIntoBasket() throws Exception {
+        // Test data
+        String lmCode = getAnyLmCodeProductWithTopEM();
+        // Если выполняется после "C22797089 Создать корзину с экрана Документы продажи",
+        // то можно пропустить pre-condition шаги
+        if (!Basket35Page.isThisPage(context)) {
+            MainSalesDocumentsPage mainSalesDocumentsPage = loginAndGoTo(
+                    LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
+            SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
+            salesDocumentsPage.searchForDocumentByTextAndSelectIt(
+                    SalesDocumentsConst.BASKET_TYPE);
+        } // TODO через API
+        Basket35Page basket35Page = new Basket35Page(context);
+        int productCountInBasket = basket35Page.getCountOfOrderCards();
+        // Step 1
+        log.step("Нажмите на кнопку +Товар");
+        SearchProductPage searchProductPage = basket35Page.clickAddProductButton()
+                .verifyRequiredElements();
+
+        // Step 2
+        log.step("Введите ЛМ код товара или название товара или отсканируйте товар");
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
+        AddProduct35Page addProduct35Page = new AddProduct35Page(context)
+                .verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_BASKET);
+        SalesOrderCardData expectedOrderCardData = addProduct35Page.getOrderRowDataFromPage();
+
+        // Step 3
+        log.step("Нажмите на Добавить в корзину");
+        basket35Page = addProduct35Page.clickAddIntoBasketButton();
+        basket35Page.verifyRequiredElements(
+                new Basket35Page.PageState()
+                        .setProductIsAdded(true)
+                        .setManyOrders(null));
+        basket35Page.shouldCountOfCardsIs(productCountInBasket + 1);
+        basket35Page.shouldOrderCardDataWithTextIs(expectedOrderCardData.getProductCardData().getLmCode(),
+                expectedOrderCardData);
     }
 
     // ---------------------- TYPICAL TESTS FOR THIS CLASS -------------------//
@@ -562,7 +811,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
 
             // Step #8
             log.step("Введите пятизначный PIN-код, не использованный ранее");
-            String testPinCode = RandomStringUtils.randomNumeric(5);
+            String testPinCode = SalesDocTestData.getAvailablePinCode(apiClient);
             basketStep3Page.enterPinCode(testPinCode)
                     .shouldPinCodeFieldIs(testPinCode)
                     .shouldSubmitButtonIsActive();
@@ -573,6 +822,10 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
                     .verifyRequiredElements()
                     .shouldPinCodeIs(testPinCode)
                     .shouldDocumentNumberIs(documentNumber);
+
+            // Clean up
+            // TODO Надо тут? Если надо, то вроде нужен другой API клиент
+            //apiClient.cancelOrder(EnvConstants.BASIC_USER_NAME, documentNumber);
         }
     }
 }

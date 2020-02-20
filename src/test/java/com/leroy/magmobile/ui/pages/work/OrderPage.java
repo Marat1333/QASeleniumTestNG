@@ -87,6 +87,7 @@ public class OrderPage extends CommonMagMobilePage {
         LocalTime currentTime = LocalTime.parse(deliveryTimeLbl.getText());
         deliveryTimeArea.click();
         new TimePickerWidget(driver).selectTime(time, currentTime);
+        deliveryTimeLbl.waitForVisibility();
         return this;
     }
 
