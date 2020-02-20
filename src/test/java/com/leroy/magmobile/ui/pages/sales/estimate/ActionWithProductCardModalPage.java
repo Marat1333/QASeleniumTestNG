@@ -50,9 +50,8 @@ public class ActionWithProductCardModalPage extends CommonMagMobilePage {
     }
 
     @Step("Выберите пункт меню 'Удалить товар'")
-    public ConfirmRemovingProductModal clickRemoveProductMenuItem() {
+    public void clickRemoveProductMenuItem() {
         removeProductMenuItem.click();
-        return new ConfirmRemovingProductModal(context);
     }
 
     // Verifications

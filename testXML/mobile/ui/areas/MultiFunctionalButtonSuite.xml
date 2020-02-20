@@ -146,4 +146,14 @@
         </classes>
     </test>
 
+    <test name="C22797099 Удалить последний товар из корзины">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.MultiFunctionalButtonTest">
+                <methods>
+                    <include name="testRemoveTheLastProductFromCart"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
 </suite>
