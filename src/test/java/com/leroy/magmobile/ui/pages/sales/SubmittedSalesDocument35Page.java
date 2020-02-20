@@ -39,7 +39,7 @@ public class SubmittedSalesDocument35Page extends CommonMagMobilePage {
 
     @Override
     public void waitForPageIsLoaded() {
-        submitBtn.waitForVisibility();
+        submitBtn.waitForVisibility(long_timeout);
     }
 
     public String getDocumentNumber(boolean withoutSpaces) {

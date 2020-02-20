@@ -3,6 +3,7 @@ package com.leroy.magmobile.ui.pages.sales;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
+import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.common.SearchProductPage;
@@ -18,6 +19,9 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
     public SalesDocumentsPage(TestContext context) {
         super(context);
     }
+
+    @AppFindBy(accessibilityId = "BackCloseModal", metaName = "Кнопка назад")
+    Element backBtn;
 
     @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.TextView[@text='Мои продажи']]/following-sibling::android.view.ViewGroup",
             metaName = "Кнопка 'Фильтр'")
@@ -47,6 +51,11 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
     }
 
     /* ------------------------- ACTION STEPS -------------------------- */
+
+    @Step("Нажать кнопку для возвращения назад")
+    public void clickBackButton() {
+        backBtn.click();
+    }
 
     @Step("Найти и выбрать документ, содержащий текст: {containsText}")
     public void searchForDocumentByTextAndSelectIt(String containsText) {
@@ -92,7 +101,7 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
                     "Документ дата должна быть %s");
         }
         softAssert.isEquals(documentFromPage.getDocumentState(), expectedDocument.getDocumentState(),
-                "Тип документа должен быть %s");
+                "Неверный Тип документа");
         // TODO можно будет подумать, чтоб не через contains, но чтоб C3201029 проходил:
         softAssert.isTrue(documentFromPage.getNumber().contains(expectedDocument.getNumber()),
                 "Номер документа должен быть '" + expectedDocument.getNumber() + "'");

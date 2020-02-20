@@ -3,6 +3,7 @@ package com.leroy.magmobile.ui.tests;
 import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.SalesDocumentsConst;
+import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.helpers.SalesDocTestData;
 import com.leroy.magmobile.ui.pages.common.OldSearchProductPage;
@@ -32,6 +33,7 @@ import com.leroy.umbrella_extension.magmobile.data.estimate.EstimateData;
 import com.leroy.umbrella_extension.magmobile.data.estimate.ProductOrderData;
 import com.leroy.umbrella_extension.magmobile.requests.GetCatalogSearch;
 import org.apache.commons.lang.RandomStringUtils;
+import org.json.simple.JSONObject;
 import org.testng.Assert;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
@@ -39,10 +41,7 @@ import ru.leroymerlin.qa.core.base.BaseModule;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Random;
+import java.util.*;
 
 
 @Guice(modules = {BaseModule.class})
@@ -62,6 +61,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
     // Получить ЛМ код для обычного продукта без специфичных опций
     private List<String> getAnyLmCodesProductWithoutSpecificOptions(int necessaryCount, String shopId,
                                                                     Boolean hasAvailableStock) {
+        String[] badLmCodes = {"10008698", "10008751"}; // Из-за отсутствия синхронизации бэков на тесте, мы можем получить некорректные данные
         if (shopId == null) // TODO может быть shopId null или нет?
             shopId = "5";
         GetCatalogSearch params = new GetCatalogSearch()
@@ -72,7 +72,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         List<String> resultList = new ArrayList<>();
         int i = 0;
         for (ProductItemResponse item : items) {
-            if (item.getAvsDate() == null) {
+            if (item.getAvsDate() == null && !Arrays.asList(badLmCodes).contains(item.getLmCode())) {
                 if (necessaryCount > i)
                     resultList.add(item.getLmCode());
                 else
@@ -159,7 +159,11 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
     }
 
     private void cancelOrder(String orderId) {
-        Response r = apiClient.cancelOrder(EnvConstants.BASIC_USER_NAME, orderId);
+        Response<JSONObject> r = apiClient.cancelOrder(EnvConstants.BASIC_USER_NAME, orderId);
+        if (!r.isSuccessful()) {
+            Log.warn(r.toString());
+            r = apiClient.cancelOrder(EnvConstants.BASIC_USER_NAME, orderId);
+        }
         anAssert.isTrue(r.isSuccessful(),
                 "Не смогли удалить заказ №" + orderId + ". Ошибка: " + r.toString());
     }
@@ -428,12 +432,9 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
     public void test35ShopCreatingOrder() throws Exception {
         // Pre-condition
         String shopId = "35";
-        context.setIs35Shop(true);
         boolean hasAvailableStock = false; //new Random().nextInt(2) == 1; // No one product with "hasAvailableStock" on dev environment
         String lmCode = getAnyLmCodeProductWithoutSpecificOptions(shopId, hasAvailableStock);
-        SalesPage salesPage = loginAndGoTo(SalesPage.class);
-        salesPage = setShopAndDepartmentForUser(salesPage, shopId, "01")
-                .goToSales();
+        SalesPage salesPage = loginAndGoTo(LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, SalesPage.class);
 
         // Steps 1, 2, 3
         ProductCardData productData = new ProductCardData(lmCode);
@@ -482,16 +483,27 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         log.step("Нажмите на кнопку Перейти в список документов");
         SalesDocumentData expectedSalesDocument = new SalesDocumentData();
         expectedSalesDocument.setPrice(expectedTotalPrice);
-        expectedSalesDocument.setPin(orderDetailsData.getPinCode());
+
         expectedSalesDocument.setDocumentState(SalesDocumentsConst.AUTO_PROCESSING_STATE);
         expectedSalesDocument.setTitle(orderDetailsData.getDeliveryType().getValue());
         expectedSalesDocument.setNumber(documentNumber);
-        submittedDocument35Page
+        SalesDocumentsPage salesDocumentsPage = submittedDocument35Page
                 .clickSubmitButton()
                 .shouldSalesDocumentIsPresentAndDataMatches(expectedSalesDocument);
-        // TODO Иногда на этапе Автообработка нет PINa? Баг или ок. И надо удалять документ после
+
+        // Additional Step
+        log.step("(Доп шаг) Уходим со страницы и возвращаемся обратно");
+        expectedSalesDocument.setPin(orderDetailsData.getPinCode());
+        expectedSalesDocument.setDocumentState(SalesDocumentsConst.CREATED_STATE);
+        salesDocumentsPage.clickBackButton();
+        salesPage = new SalesPage(context); // Workaround for minor #bug
+        salesPage.goToSalesDocumentsSection()
+                .goToMySales();
+        salesDocumentsPage.shouldSalesDocumentIsPresentAndDataMatches(expectedSalesDocument);
+
         // Clean up
-        //cancelOrder(documentNumber);
+        log.step("(Доп шаг) Отменяем заказ через API запрос");
+        cancelOrder(documentNumber);
     }
 
     // Смета
