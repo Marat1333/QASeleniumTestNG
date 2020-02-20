@@ -80,7 +80,8 @@ public class SuppliersSearchPage extends BaseAppPage {
         waitUntilProgressBarIsInvisible();
         E(SCREEN_CONTENT_XPATH + "//android.widget.TextView[contains(@text, '" + value + "')]")
                 .click();
-        return new SuppliersSearchPage(context);
+        confirmBtn.waitForVisibility();
+        return this;
     }
 
     @Step("Подтвердить выбор")
