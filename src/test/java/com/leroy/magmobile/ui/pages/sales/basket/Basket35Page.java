@@ -102,12 +102,32 @@ public class Basket35Page extends CommonMagMobilePage {
         return el.isVisible(ps) && el.getText(ps).equals(Basket35Page.SCREEN_TITLE);
     }
 
+    // --------- GRAB DATA ----------------------- //
+
+    @Step("Получить из корзины информацию о {index} товаре/услуге")
+    public SalesOrderCardData getSalesOrderCardDataByIndex(int index) {
+        index--;
+        return orderCardsScrollView.getDataObj(index);
+    }
+
+    @Step("Получить из корзины информацию о всех добавленных товарах/услугах")
+    public List<SalesOrderCardData> getSalesOrderCardDataList() {
+        return orderCardsScrollView.getFullDataList();
+    }
+
     @Step("Посчитать кол-во товаров/услуг в корзине")
     public int getCountOfOrderCards() {
         return orderCardsScrollView.getRowCount();
     }
 
     // -------------- ACTIONS ---------------------------//
+
+    @Step("Нажмите на {index}-ую карточку товара/услуги")
+    public CartActionWithProductCardModalPage clickCardByIndex(int index) throws Exception {
+        index--;
+        orderCardsScrollView.clickElemByIndex(index);
+        return new CartActionWithProductCardModalPage(context);
+    }
 
     @Step("Нажмите ОФОРМИТЬ")
     public ProcessOrder35Page clickMakeSalesButton() {
@@ -184,7 +204,7 @@ public class Basket35Page extends CommonMagMobilePage {
             SalesOrderCardData actualOrderCardData = actualOrderCardDataList.get(i);
 
             softAssert.isTrue(actualOrderCardData.compareOnlyNotNullFields(expectedOrderCardData),
-                    (i+1) + "-ая карточка, содержит неверные данные. " +
+                    (i + 1) + "-ая карточка, содержит неверные данные. " +
                             "Актуальное значение: " + actualOrderCardData.toString(),
                     "Ожидалось: " + expectedOrderCardData.toString());
         }
@@ -202,6 +222,16 @@ public class Basket35Page extends CommonMagMobilePage {
         softAssert.isEquals(Converter.strToDouble(actualTotalPrice), expectedOrderData.getTotalPrice(),
                 "Неверное сумма итого");
         softAssert.verifyAll();
+        return this;
+    }
+
+    @Step("Проверить, что в корзине нет товара с ЛМ кодом {expLmCode}")
+    public Basket35Page shouldProductBeNotPresentInCart(String expLmCode) {
+        List<SalesOrderCardData> salesOrderCardDataList = orderCardsScrollView.getFullDataList();
+        for (SalesOrderCardData orderCardData : salesOrderCardDataList) {
+            anAssert.isNotEquals(orderCardData.getProductCardData().getLmCode(), expLmCode,
+                    "Продукта с таким ЛМ код быть не должно");
+        }
         return this;
     }
 
