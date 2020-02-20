@@ -120,6 +120,7 @@ public class SearchProductPage extends BaseAppPage {
         List<String> searchHistory = new ArrayList<>();
         String tmp = "1";
         for (int i = 0; i < value; i++) {
+            searchField.click();
             searchField.fill(tmp);
             searchField.submit();
             searchHistory.add(tmp);
@@ -190,7 +191,7 @@ public class SearchProductPage extends BaseAppPage {
     }
 
     @Step("Перейти на страницу выбора фильтров")
-    public FilterPage goToFilterPage(boolean isMyShopFrame) {
+    public FilterPage goToFilterPage() {
         filter.click();
         return new FilterPage(context);
     }

@@ -166,4 +166,34 @@
             </class>
         </classes>
     </test>
+
+    <test name="C22789214 Счетчик фильтров в меню поиска">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.SearchTest">
+                <methods>
+                    <include name="testFilterCounter"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22887951 Сортировка с фильтром Вся гамма ЛМ">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.SearchTest">
+                <methods>
+                    <include name="testAllGammaSort"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22789207 Сокрытие части фильтров">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.SearchTest">
+                <methods>
+                    <include name="testFiltersHide"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
 </suite>

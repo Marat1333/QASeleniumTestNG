@@ -18,7 +18,7 @@ public class MagMobCheckBox extends Checkbox {
 
     @Override
     public Color getPointColor() throws Exception {
-        return getPointColor(0, getHeight()-25);
+        return getPointColor(0, - getHeight()/4);
     }
 
     @Override
