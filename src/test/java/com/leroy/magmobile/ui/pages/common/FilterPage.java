@@ -159,7 +159,7 @@ public class FilterPage extends BaseAppPage {
 
     @Step("Перейти на страницу выбора поставщиков")
     public SuppliersSearchPage goToSuppliersSearchPage(boolean hideKeyboard) {
-        mainScrollView.scrollDownToElement(supplierBtn);
+        mainScrollView.scrollToEnd();
         supplierBtn.click();
         if (hideKeyboard) {
             hideKeyboard();
@@ -176,7 +176,7 @@ public class FilterPage extends BaseAppPage {
 
     @Step("Очистить поле с фильтром по поставщику")
     public FilterPage clearSuppliersFilter(String supplierName) {
-        mainScrollView.scrollDown();
+        mainScrollView.scrollToEnd();
         Element clearSuppliersFilterBtn = E(String.format(CLEAR_SUPPLIERS_FILTER_BTN_XPATH, supplierName));
         clearSuppliersFilterBtn.click();
         return this;
@@ -184,10 +184,8 @@ public class FilterPage extends BaseAppPage {
 
     @Step("Выбрать фильтр top {top}")
     public FilterPage choseTopFilter(String top) {
+        mainScrollView.scrollToBeginning();
         Element element = E("contains(" + top + ")");
-        if (!element.isVisible()) {
-            mainScrollView.scrollUpToElement(element);
-        }
         clickElementAndWaitUntilContentIsChanged(element);
         return this;
     }
@@ -222,8 +220,7 @@ public class FilterPage extends BaseAppPage {
 
     @Step("Выбрать фрейм фильтров {value}")
     public FilterPage switchFiltersFrame(String value) {
-        if (!gammaLmBtn.isVisible())
-            mainScrollView.scrollToBeginning();
+        mainScrollView.scrollToBeginning();
         if (value.equals(ALL_GAMMA_FRAME_TYPE)) {
             gammaLmBtn.click();
             topReplenishmentLabel.waitForInvisibility();
@@ -307,7 +304,7 @@ public class FilterPage extends BaseAppPage {
     public void choseGammaFilter(String gamma) {
         gamma = gamma.toUpperCase();
         if (!gammaFilterScrollView.isVisible()) {
-            mainScrollView.scrollUpToElement(myShopBtn);
+            mainScrollView.scrollToBeginning();
         }
         try {
             Element element = E("contains(" + gamma + ")");
@@ -321,8 +318,7 @@ public class FilterPage extends BaseAppPage {
     @Step("Выбрать тип продукта {type}")
     public void choseProductType(String type) {
         String ps = getPageSource();
-        if (!orderedProductBtn.isVisible(ps))
-            mainScrollView.scrollDown();
+        mainScrollView.scrollToEnd();
         if (type.equals(COMMON_PRODUCT_TYPE)) {
             commonProductBtn.click();
         } else {
@@ -343,7 +339,6 @@ public class FilterPage extends BaseAppPage {
 
     @Step("Показать товары по выбранным фильтрам")
     public SearchProductPage applyChosenFilters() {
-        mainScrollView.scrollDownToElement(showGoodsBtn);
         showGoodsBtn.click();
         waitUntilProgressBarIsVisible();
         SearchProductPage page = new SearchProductPage(context);
@@ -424,10 +419,16 @@ public class FilterPage extends BaseAppPage {
         return checkFilters(filtersData, false);
     }
 
+    @Step("Проверить, что кнопка \"ПОКАЗАТЬ ВСЕ ТОВАРЫ\" отображена")
+    public FilterPage shouldShowAllFiltersBtnIsVisible(){
+        anAssert.isElementVisible(showAllFiltersBtn);
+        return this;
+    }
+
     @Step("Проверяем, что кнопка выбора фильтра по поставщикам содержит текст {supplierName}")
     public FilterPage shouldSupplierButtonContainsText(int countOfChosenSuppliers, String supplierName) {
         if (!supplierBtn.isVisible()) {
-            mainScrollView.scrollDownToElement(supplierBtn);
+            mainScrollView.scrollToEnd();
         }
         Element element;
         if (countOfChosenSuppliers == 1) {
@@ -468,18 +469,16 @@ public class FilterPage extends BaseAppPage {
     }
 
     @Step("Проверить, что выбран чек-бокс {value}")
-    public FilterPage shouldElementHasBeenSelected(String value) {
-        Element anchorElement = E(String.format(SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH, value),
-                String.format("Чек-бокс %s", value));
-        anAssert.isElementImageMatches(anchorElement, MagMobElementTypes.CHECK_BOX_SELECTED_FILTER_PAGE.getPictureName());
+    public FilterPage shouldElementHasBeenSelected(String value) throws Exception {
+        MagMobCheckBox anchorElement = new MagMobCheckBox(driver, new CustomLocator(By.xpath(String.format(SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH, value))));
+        anAssert.isTrue(anchorElement.isChecked(), "Фильтр '" + value + "' должен быть выбран");
         return this;
     }
 
     @Step("Проверить, что чек-бокс {value} не выбран")
-    public FilterPage shouldElementHasNotBeenSelected(String value) {
-        Element anchorElement = E(String.format(SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH, value),
-                String.format("Чек-бокс %s", value));
-        anAssert.isElementImageMatches(anchorElement, MagMobElementTypes.CHECK_BOX_NOT_SELECTED_FILTER_PAGE.getPictureName());
+    public FilterPage shouldElementHasNotBeenSelected(String value) throws Exception {
+        MagMobCheckBox anchorElement = new MagMobCheckBox(driver, new CustomLocator(By.xpath(String.format(SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH, value))));
+        anAssert.isTrue(!anchorElement.isChecked(), "Фильтр '" + value + "' не должен быть выбран");
         return this;
     }
 
@@ -505,6 +504,15 @@ public class FilterPage extends BaseAppPage {
         } else {
             anAssert.isElementNotVisible(clearAllFiltersBtn, pageSource);
         }
+        return this;
+    }
+
+    @Step("Проверить, что отображен расширенный вид страницы фильтров")
+    public FilterPage shouldFilterPageHasExtendedView(){
+        mainScrollView.scrollToEnd();
+        String pageSource=getPageSource();
+        softAssert.areElementsVisible(pageSource, bestPrice, commonProductBtn, supplierBtn, avsDateBtn);
+        softAssert.isElementNotVisible(showAllFiltersBtn);
         return this;
     }
 
