@@ -4,6 +4,7 @@ import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import com.leroy.magmobile.ui.pages.common.modal.ConfirmRemovingProductModal;
 import com.leroy.magmobile.ui.pages.sales.EditProduct35Page;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import io.qameta.allure.Step;
@@ -15,19 +16,19 @@ public class ActionWithProductCardModalPage extends CommonMagMobilePage {
     }
 
     @AppFindBy(xpath = "//android.widget.TextView", metaName = "Загаловок модального окна")
-    Element headerLbl;
+    protected Element headerLbl;
 
     @AppFindBy(text = "Изменить количество")
-    Element changeQuantityMenuItem;
+    protected Element changeQuantityMenuItem;
 
     @AppFindBy(text = "Добавить товар ещё раз")
-    Element addProductAgainMenuItem;
+    protected Element addProductAgainMenuItem;
 
     @AppFindBy(text = "Подробнее о товаре")
-    Element detailsAboutProductMenuItem;
+    protected Element detailsAboutProductMenuItem;
 
     @AppFindBy(text = "Удалить товар")
-    Element removeProductMenuItem;
+    protected Element removeProductMenuItem;
 
     @Override
     public void waitForPageIsLoaded() {
@@ -46,6 +47,11 @@ public class ActionWithProductCardModalPage extends CommonMagMobilePage {
     public EditProduct35Page clickChangeQuantityMenuItem() {
         changeQuantityMenuItem.click();
         return new EditProduct35Page(context);
+    }
+
+    @Step("Выберите пункт меню 'Удалить товар'")
+    public void clickRemoveProductMenuItem() {
+        removeProductMenuItem.click();
     }
 
     // Verifications

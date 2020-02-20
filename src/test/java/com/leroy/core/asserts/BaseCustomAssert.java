@@ -87,7 +87,7 @@ public abstract class BaseCustomAssert {
             actualResultText = desc + " Актуальное значение: " + actual.toString();
         if (actual.equals(expected)) {
             addResultsToCurrentStepAndThrowAssertException(
-                    actualResultText, "Ожидаемое значение: " + expected.toString());
+                    actualResultText, "Значение, которого не ожидалось: " + expected.toString());
         }
         if (isSoft)
             softAssert.assertNotEquals(actual, expected, desc);

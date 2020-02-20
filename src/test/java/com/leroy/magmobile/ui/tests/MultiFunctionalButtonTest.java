@@ -7,6 +7,7 @@ import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.helpers.SalesDocTestData;
 import com.leroy.magmobile.ui.pages.common.OldSearchProductPage;
 import com.leroy.magmobile.ui.pages.common.SearchProductPage;
+import com.leroy.magmobile.ui.pages.common.modal.ConfirmRemovingProductModal;
 import com.leroy.magmobile.ui.pages.sales.*;
 import com.leroy.magmobile.ui.pages.sales.basket.*;
 import com.leroy.magmobile.ui.pages.sales.estimate.ActionWithProductCardModalPage;
@@ -25,6 +26,7 @@ import com.leroy.magmobile.ui.pages.work.modal.QuantityProductsForWithdrawalModa
 import com.leroy.models.*;
 import com.leroy.umbrella_extension.authorization.AuthClient;
 import com.leroy.umbrella_extension.magmobile.MagMobileClient;
+import com.leroy.umbrella_extension.magmobile.data.CartData;
 import com.leroy.umbrella_extension.magmobile.data.ProductItemResponse;
 import com.leroy.umbrella_extension.magmobile.data.estimate.EstimateData;
 import com.leroy.umbrella_extension.magmobile.data.estimate.ProductOrderData;
@@ -37,6 +39,7 @@ import ru.leroymerlin.qa.core.base.BaseModule;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
@@ -57,7 +60,8 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
     }
 
     // Получить ЛМ код для обычного продукта без специфичных опций
-    private String getAnyLmCodeProductWithoutSpecificOptions(String shopId, Boolean hasAvailableStock) {
+    private List<String> getAnyLmCodesProductWithoutSpecificOptions(int necessaryCount, String shopId,
+                                                                    Boolean hasAvailableStock) {
         if (shopId == null) // TODO может быть shopId null или нет?
             shopId = "5";
         GetCatalogSearch params = new GetCatalogSearch()
@@ -65,14 +69,22 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
                 .setTopEM(false)
                 .setHasAvailableStock(hasAvailableStock);
         List<ProductItemResponse> items = apiClient.searchProductsBy(params).asJson().getItems();
+        List<String> resultList = new ArrayList<>();
+        int i = 0;
         for (ProductItemResponse item : items) {
-            if (item.getAvsDate() == null)
-                return item.getLmCode();
+            if (item.getAvsDate() == null) {
+                if (necessaryCount > i)
+                    resultList.add(item.getLmCode());
+                else
+                    break;
+                i++;
+            }
         }
-        if (!hasAvailableStock)
-            return "13452305";
-        else
-            return "";
+        return resultList;
+    }
+
+    private String getAnyLmCodeProductWithoutSpecificOptions(String shopId, Boolean hasAvailableStock) {
+        return getAnyLmCodesProductWithoutSpecificOptions(1, shopId, hasAvailableStock).get(0);
     }
 
     // Получить ЛМ код для продукта с AVS
@@ -127,10 +139,29 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         return estimateDataResponse.asJson().getEstimateId();
     }
 
+    private String createDraftCart(int productCount) {
+        String shopId = "35";
+        List<String> lmCodes = getAnyLmCodesProductWithoutSpecificOptions(productCount, shopId, false);
+        String token = authClient.getAccessToken(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS);
+        List<ProductOrderData> productOrderDataList = new ArrayList<>();
+        Random r = new Random();
+        for (String lmCode : lmCodes) {
+            ProductOrderData productOrderData = new ProductOrderData();
+            productOrderData.setLmCode(lmCode);
+            productOrderData.setQuantity((double) (r.nextInt(9) + 1));
+            productOrderDataList.add(productOrderData);
+        }
+        Response<CartData> cartDataResponse = apiClient
+                .createCart(token, "35", productOrderDataList);
+        Assert.assertTrue(cartDataResponse.isSuccessful(),
+                "Не смогли создать Корзину на этапе создания pre-condition данных");
+        return cartDataResponse.asJson().getFullDocId();
+    }
+
     private void cancelOrder(String orderId) {
         Response r = apiClient.cancelOrder(EnvConstants.BASIC_USER_NAME, orderId);
         anAssert.isTrue(r.isSuccessful(),
-                "Не смогли удалить заказ №" + orderId +". Ошибка: " + r.toString());
+                "Не смогли удалить заказ №" + orderId + ". Ошибка: " + r.toString());
     }
 
     // Product Types
@@ -272,7 +303,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
 
         // Step #4
         log.step("Нажмите на поле Количество для продажи и введите новое значение количества");
-        String testQuantity = String.valueOf(new Random().nextInt(9)+1);
+        String testQuantity = String.valueOf(new Random().nextInt(9) + 1);
         addServicePage.enterValueInQuantityServiceField(testQuantity)
                 .shouldFieldsAre(testPrice, testQuantity,
                         String.valueOf(Integer.parseInt(testPrice) * Integer.parseInt(testQuantity)));
@@ -600,7 +631,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
 
         // Step 3
         log.step("Измените количество товара");
-        String testEditQuantityValue = String.valueOf(new Random().nextInt(10)+1);
+        String testEditQuantityValue = String.valueOf(new Random().nextInt(10) + 1);
         Double expectedTotalCost = Double.parseDouble(testEditQuantityValue) * productCardDataBefore.getPrice();
         editProduct35Page.enterQuantityOfProduct(testEditQuantityValue)
                 .shouldEditQuantityFieldIs(testEditQuantityValue)
@@ -724,6 +755,75 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         basket35Page.shouldOrderCardDataWithTextIs(expectedOrderCardData.getProductCardData().getLmCode(),
                 expectedOrderCardData);
     }
+
+    @Test(description = "C22797098 Удалить товар из корзины")
+    public void testRemoveProductFromCart() throws Exception {
+        if (!Basket35Page.isThisPage(context)) {
+            String cartDocId = createDraftCart(2);
+            MainSalesDocumentsPage mainSalesDocumentsPage = loginAndGoTo(
+                    LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
+            SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
+            salesDocumentsPage.searchForDocumentByTextAndSelectIt(
+                    cartDocId);
+        }
+
+        Basket35Page basket35Page = new Basket35Page(context);
+        SalesOrderCardData salesOrderCardDataBefore = basket35Page.getSalesOrderCardDataByIndex(1);
+
+        // Step 1
+        log.step("Нажмите на мини-карточку любого товара в списке товаров корзины");
+        CartActionWithProductCardModalPage modalPage = basket35Page.clickCardByIndex(1)
+                .verifyRequiredElements();
+
+        // Step 2
+        log.step("Выберите параметр Удалить товар");
+        modalPage.clickRemoveProductMenuItem();
+        ConfirmRemovingProductModal confirmRemovingProductModal = new ConfirmRemovingProductModal(context)
+                .verifyRequiredElements();
+
+        // Step 3
+        log.step("Нажмите на Удалить");
+        confirmRemovingProductModal.clickConfirmButton();
+        basket35Page = new Basket35Page(context);
+        basket35Page.verifyRequiredElements(new Basket35Page.PageState()
+                .setProductIsAdded(true)
+                .setManyOrders(false));
+        basket35Page.shouldProductBeNotPresentInCart(
+                salesOrderCardDataBefore.getProductCardData().getLmCode());
+    }
+
+    @Test(description = "C22797099 Удалить последний товар из корзины")
+    public void testRemoveTheLastProductFromCart() throws Exception {
+        String cartDocNumber = null;
+        if (!Basket35Page.isThisPage(context)) {
+            cartDocNumber = createDraftCart(1);
+            MainSalesDocumentsPage mainSalesDocumentsPage = loginAndGoTo(
+                    LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
+            SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
+            salesDocumentsPage.searchForDocumentByTextAndSelectIt(
+                    cartDocNumber);
+        }
+
+        Basket35Page basket35Page = new Basket35Page(context);
+        // if (cartDocId == null) TODO если будет тест запускаться в цепочке
+
+        // Step 1
+        log.step("Нажмите на мини-карточку любого товара в списке товаров корзины");
+        CartActionWithProductCardModalPage modalPage = basket35Page.clickCardByIndex(1)
+                .verifyRequiredElements();
+
+        // Step 2
+        log.step("Выберите параметр Удалить товар");
+        modalPage.clickRemoveProductMenuItem();
+        ConfirmRemoveCartModal confirmRemovingProductModal = new ConfirmRemoveCartModal(context)
+                .verifyRequiredElements();
+
+        // Step 3
+        log.step("Нажмите на Выйти");
+        SalesDocumentsPage salesDocumentsPage = confirmRemovingProductModal.clickConfirmButton();
+        salesDocumentsPage.shouldSalesDocumentIsNotPresent(cartDocNumber);
+    }
+
 
     // ---------------------- TYPICAL TESTS FOR THIS CLASS -------------------//
 
