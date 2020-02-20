@@ -84,7 +84,6 @@ public class NomenclatureSearchPage extends BaseAppPage {
     }
 
     private NomenclatureSearchPage selectElementFromArray(String value) throws Exception {
-        int counter = 0;
         String pageSource;
         Element element;
         element = scrollView.findChildElement("//*[contains(@text, '" + value + "')]");
@@ -93,10 +92,7 @@ public class NomenclatureSearchPage extends BaseAppPage {
         }
         pageSource = getPageSource();
         element.click();
-        if (waitUntilContentIsChanged(pageSource, short_timeout)) {
-            counter++;
-        }
-        if (counter < 1) {
+        if (!waitUntilContentIsChanged(pageSource, short_timeout)) {
             throw new IllegalArgumentException("There is no " + value + " nomenclature element");
         }
         return new NomenclatureSearchPage(context);
@@ -105,9 +101,7 @@ public class NomenclatureSearchPage extends BaseAppPage {
     @Step("Нажмите 'Показать все товары'")
     public SearchProductPage clickShowAllProductsBtn() {
         scrollView.scrollToBeginning();
-        String pageSource = getPageSource();
         showAllGoods.click();
-        waitUntilContentIsChanged(pageSource, short_timeout);
         return new SearchProductPage(context);
     }
 
