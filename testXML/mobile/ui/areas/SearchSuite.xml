@@ -191,7 +191,7 @@
         <classes>
             <class name="com.leroy.magmobile.ui.tests.SearchTest">
                 <methods>
-                    <include name="testAllGammaSort"/>
+                    <include name="testFiltersHide"/>
                 </methods>
             </class>
         </classes>
