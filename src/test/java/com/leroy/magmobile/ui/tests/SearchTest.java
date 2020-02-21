@@ -32,6 +32,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 @Guice(modules = {BaseModule.class})
@@ -48,6 +49,20 @@ public class SearchTest extends AppBaseSteps {
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setStartFrom(1);
+    }
+
+    private HashMap<Integer, ThreadApiClient<ProductItemListResponse, MagMobileClient>> sendRequestsSearchProductsBy(
+            GetCatalogSearch... paramsArray) {
+        HashMap<Integer, ThreadApiClient<ProductItemListResponse, MagMobileClient>> resultMap = new HashMap<>();
+        int i=0;
+        for (GetCatalogSearch param : paramsArray) {
+            ThreadApiClient<ProductItemListResponse, MagMobileClient> myThread = new ThreadApiClient<>(
+                    apiClient);
+            myThread.sendRequest(client -> client.searchProductsBy(param));
+            resultMap.put(i, myThread);
+            i++;
+        }
+        return resultMap;
     }
 
     @Test(description = "C3200996 Поиск товара по критериям", priority = 1)
@@ -84,37 +99,19 @@ public class SearchTest extends AppBaseSteps {
                 .setStartFrom(1)
                 .setByBarCode(shortBarCode);
 
-        ThreadApiClient<ProductItemListResponse, MagMobileClient> myThread1 = new ThreadApiClient<>(
-                apiClient);
-        ThreadApiClient<ProductItemListResponse, MagMobileClient> myThread2 = new ThreadApiClient<>(
-                apiClient);
-        ThreadApiClient<ProductItemListResponse, MagMobileClient> myThread3 = new ThreadApiClient<>(
-                apiClient);
-        ThreadApiClient<ProductItemListResponse, MagMobileClient> myThread4 = new ThreadApiClient<>(
-                apiClient);
-        myThread1.sendRequest(client -> client.searchProductsBy(byLmParams));
-        myThread2.sendRequest(client -> client.searchProductsBy(byBarCodeParams));
-        myThread3.sendRequest(client -> client.searchProductsBy(byShortLmCodeParams));
-        myThread4.sendRequest(client -> client.searchProductsBy(byShortBarCodeParams));
-
-
-        //myThread.sendRequest(client -> client.searchProductsBy(byBarCodeParams));
-        //myThread.sendRequest(client -> client.searchProductsBy(byShortLmCodeParams));
-        //myThread.sendRequest(client -> client.searchProductsBy(byShortBarCodeParams));
-        //Response<ProductItemListResponse> lmResponce = apiClient.searchProductsBy(byLmParams);
-        //Response<ProductItemListResponse> barcodeResponce = apiClient.searchProductsBy(byBarCodeParams);
-        //Response<ProductItemListResponse> shortLmResponce = apiClient.searchProductsBy(byShortLmCodeParams);
-        //Response<ProductItemListResponse> shortBarcodeResponce = apiClient.searchProductsBy(byShortBarCodeParams);
+        HashMap<Integer, ThreadApiClient<ProductItemListResponse, MagMobileClient>> apiThreads =
+                sendRequestsSearchProductsBy(byLmParams, byBarCodeParams, byShortLmCodeParams, byShortBarCodeParams);
 
         // Pre-conditions
         Log.info("START LOGIN-IN");
         SalesPage salesPage = loginAndGoTo(SalesPage.class);
 
         // Step 1
-        ProductItemListResponse d1 = myThread1.getData();
-        ProductItemListResponse d2 = myThread2.getData();
-        ProductItemListResponse d3 = myThread3.getData();
-        ProductItemListResponse d4 = myThread4.getData();
+        Log.info("GET DATA");
+        ProductItemListResponse d1 = apiThreads.get(0).getData();
+        ProductItemListResponse d2 = apiThreads.get(1).getData();
+        ProductItemListResponse d3 = apiThreads.get(2).getData();
+        ProductItemListResponse d4 = apiThreads.get(3).getData();
         log.step("Нажмите на поле Поиск товаров и услуг");
         SearchProductPage searchProductPage = salesPage.clickSearchBar(false)
                 .verifyRequiredElements();
