@@ -1,17 +1,23 @@
 package com.leroy.umbrella_extension.magmobile.data;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ServiceItemListResponse {
+public class ServiceItemListResponse extends ResponseList{
 
     private List<ServiceItemResponse> items;
     private Integer totalCount;
 
+    @Override
+    public List<ServiceItemResponse> getItems() {
+        return items;
+    }
+
+    public Integer getTotalCount() {
+        return totalCount;
+    }
 }
