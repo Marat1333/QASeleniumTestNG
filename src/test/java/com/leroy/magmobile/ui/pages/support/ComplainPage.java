@@ -113,7 +113,7 @@ public class ComplainPage extends BaseAppPage {
                 "Поле 'Чуть больше подробностей' должно иметь текст %s");
         MagMobElementTypes elementType = moreInfoText.isEmpty() ?
                 MagMobElementTypes.PLUS : MagMobElementTypes.EDIT_PEN;
-        softAssert.isElementImageMatches(moreInfoIcon, elementType.getPictureName());
+        softAssert.isElementImageMatches(moreInfoIcon, elementType.getPictureName(), 94.0);
         softAssert.verifyAll();
         return this;
     }

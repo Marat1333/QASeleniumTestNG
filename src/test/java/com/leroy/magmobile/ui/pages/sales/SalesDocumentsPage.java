@@ -100,8 +100,9 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
             softAssert.isEquals(documentFromPage.getDate(), expectedDocument.getDate(),
                     "Документ дата должна быть %s");
         }
-        softAssert.isEquals(documentFromPage.getDocumentState(), expectedDocument.getDocumentState(),
-                "Неверный Тип документа");
+        if (expectedDocument.getDocumentState() != null)
+            softAssert.isEquals(documentFromPage.getDocumentState(), expectedDocument.getDocumentState(),
+                    "Неверный Тип документа");
         // TODO можно будет подумать, чтоб не через contains, но чтоб C3201029 проходил:
         softAssert.isTrue(documentFromPage.getNumber().contains(expectedDocument.getNumber()),
                 "Номер документа должен быть '" + expectedDocument.getNumber() + "'");

@@ -158,9 +158,10 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         return cartDataResponse.asJson().getFullDocId();
     }
 
-    private void cancelOrder(String orderId) {
+    private void cancelOrder(String orderId) throws Exception {
         Response<JSONObject> r = apiClient.cancelOrder(EnvConstants.BASIC_USER_NAME, orderId);
         if (!r.isSuccessful()) {
+            Thread.sleep(10000); // TODO можно подумать над не implicit wait'ом
             Log.warn(r.toString());
             r = apiClient.cancelOrder(EnvConstants.BASIC_USER_NAME, orderId);
         }
@@ -494,7 +495,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         // Additional Step
         log.step("(Доп шаг) Уходим со страницы и возвращаемся обратно");
         expectedSalesDocument.setPin(orderDetailsData.getPinCode());
-        expectedSalesDocument.setDocumentState(SalesDocumentsConst.CREATED_STATE);
+        expectedSalesDocument.setDocumentState(null);
         salesDocumentsPage.clickBackButton();
         salesPage = new SalesPage(context); // Workaround for minor #bug
         salesPage.goToSalesDocumentsSection()
