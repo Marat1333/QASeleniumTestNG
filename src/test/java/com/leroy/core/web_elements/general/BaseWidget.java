@@ -3,7 +3,7 @@ package com.leroy.core.web_elements.general;
 import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
-import com.leroy.utils.XmlUtil;
+import com.leroy.core.util.XmlUtil;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;

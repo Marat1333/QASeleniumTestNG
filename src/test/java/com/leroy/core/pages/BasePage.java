@@ -19,7 +19,6 @@ public class BasePage extends BaseContainer {
     protected StepLog log;
     protected CustomSoftAssert softAssert;
     protected CustomAssert anAssert;
-    protected TestContext context;
 
     private static String screenshotPath = System.getProperty("output.path");
 
@@ -28,7 +27,6 @@ public class BasePage extends BaseContainer {
         this.log = context.getLog();
         this.softAssert = context.getSoftAssert();
         this.anAssert = context.getAnAssert();
-        this.context = context;
         initElements();
         waitForPageIsLoaded();
     }

@@ -6,7 +6,6 @@ import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.pages.BaseWebPage;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
-import com.leroy.models.UserData;
 
 public class LoginWebPage extends BaseWebPage {
 
@@ -20,9 +19,9 @@ public class LoginWebPage extends BaseWebPage {
 
     private Button loginBtn = E("//*[@value='login']", "Кнопка 'Войти'", Button.class);
 
-    public void logIn(UserData loginData) {
-        usernameFld.clearAndFill(loginData.getUserName());
-        passwordFld.clearAndFill(loginData.getPassword());
+    public void logIn(String ldap, String password) {
+        usernameFld.clearAndFill(ldap);
+        passwordFld.clearAndFill(password);
         if (DriverFactory.isAppProfile())
             loginBtn.clickJS();
         else
@@ -34,7 +33,7 @@ public class LoginWebPage extends BaseWebPage {
     }
 
     public void logIn() {
-        logIn(new UserData(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS));
+        logIn(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS);
     }
 
 }

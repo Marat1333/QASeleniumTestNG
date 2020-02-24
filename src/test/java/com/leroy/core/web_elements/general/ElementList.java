@@ -43,8 +43,8 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
     public Iterator<E> iterator() {
         int i = 0;
         try {
-            i=getCount();
-            if (i>0){
+            i = getCount();
+            if (i > 0) {
                 initWebElementListIfNeeded();
             }
         } catch (Exception err) {
@@ -219,7 +219,7 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
      *
      * @param expectedCount
      */
-    public void waitForElementCountEquals(int expectedCount) {
+    public void waitUntilElementCountEquals(int expectedCount) {
         try {
             new WebDriverWait(this.driver, timeout).until((driver) -> {
                 try {
@@ -238,7 +238,7 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
      *
      * @param expectedCount
      */
-    public boolean waitForElementCountEqualsOrAbove(int expectedCount) {
+    public boolean waitUntilElementCountEqualsOrAbove(int expectedCount) {
         try {
             new WebDriverWait(this.driver, timeout).until((driver) -> {
                 try {
@@ -260,7 +260,7 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
      *
      * @param expectedCount
      */
-    public void waitForVisibleElementCountEquals(int expectedCount) {
+    public void waitUntilVisibleElementCountEquals(int expectedCount) {
         try {
             new WebDriverWait(this.driver, timeout).until((driver) -> {
                 try {
@@ -397,7 +397,6 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
 
     /**
      * Get content Text of all web elements in the list
-     *
      */
     public List<String> getTextList(String pageSource) throws Exception {
         initWebElementListIfNeeded();
@@ -420,10 +419,11 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
 
     /**
      * Wait for text list is changed
+     *
      * @param contentBefore
      * @return
      */
-    public boolean waitForTextListIsChanged(List<String> contentBefore) {
+    public boolean waitUntilTextListIsChanged(List<String> contentBefore) {
         try {
             new WebDriverWait(this.driver, timeout).until(driver -> {
                 try {

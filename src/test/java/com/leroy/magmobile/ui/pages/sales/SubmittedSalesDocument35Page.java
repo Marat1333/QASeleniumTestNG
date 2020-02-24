@@ -1,15 +1,15 @@
 package com.leroy.magmobile.ui.pages.sales;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import io.qameta.allure.Step;
 
 public class SubmittedSalesDocument35Page extends CommonMagMobilePage {
 
-    public SubmittedSalesDocument35Page(TestContext context) {
+    public SubmittedSalesDocument35Page(Context context) {
         super(context);
     }
 
@@ -39,7 +39,7 @@ public class SubmittedSalesDocument35Page extends CommonMagMobilePage {
 
     @Override
     public void waitForPageIsLoaded() {
-        submitBtn.waitForVisibility();
+        submitBtn.waitForVisibility(long_timeout);
     }
 
     public String getDocumentNumber(boolean withoutSpaces) {

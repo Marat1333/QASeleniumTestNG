@@ -1,15 +1,15 @@
 package com.leroy.magmobile.ui.pages.sales;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
+import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import io.qameta.allure.Step;
 
-public class SubmittedSalesDocumentPage extends BaseAppPage {
+public class SubmittedSalesDocumentPage extends CommonMagMobilePage {
 
-    public SubmittedSalesDocumentPage(TestContext context) {
+    public SubmittedSalesDocumentPage(Context context) {
         super(context);
     }
 

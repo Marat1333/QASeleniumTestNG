@@ -1,14 +1,14 @@
 package com.leroy.magmobile.ui.pages.common.modal;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import io.qameta.allure.Step;
 
 public class ConfirmRemovingProductModal extends CommonMagMobilePage {
 
-    public ConfirmRemovingProductModal(TestContext context) {
+    public ConfirmRemovingProductModal(Context context) {
         super(context);
     }
 

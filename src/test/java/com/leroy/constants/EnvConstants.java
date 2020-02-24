@@ -15,7 +15,7 @@ public class EnvConstants {
     private static final Properties properties = getPropertiesForEnv(ENV);
 
     // User options
-    public static final String BASIC_USER_NAME = getProperty("basic.user.name");
+    public static final String BASIC_USER_LDAP = getProperty("basic.user.name");
     public static final String BASIC_USER_PASS = getProperty("basic.user.password");
     public static final String BASIC_USER_SHOP_ID = getProperty("basic.user.shopId");
     public static final String BASIC_USER_DEPARTMENT_ID = getProperty("basic.user.departmentId");

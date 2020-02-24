@@ -1,15 +1,15 @@
 package com.leroy.magmobile.ui.pages.work;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
+import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import io.qameta.allure.Step;
 
-public class SubmittedWithdrawalOrderPage extends BaseAppPage {
+public class SubmittedWithdrawalOrderPage extends CommonMagMobilePage {
 
-    public SubmittedWithdrawalOrderPage(TestContext context) {
+    public SubmittedWithdrawalOrderPage(Context context) {
         super(context);
     }
 
