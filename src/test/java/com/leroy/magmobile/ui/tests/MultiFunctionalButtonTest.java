@@ -4,10 +4,14 @@ import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.core.configuration.Log;
+import com.leroy.magmobile.models.CustomerData;
+import com.leroy.magmobile.models.sales.OrderDetailsData;
+import com.leroy.magmobile.models.sales.SalesDocumentData;
+import com.leroy.magmobile.models.sales.SalesOrderCardData;
+import com.leroy.magmobile.models.sales.SalesOrderData;
+import com.leroy.magmobile.models.search.ProductCardData;
 import com.leroy.magmobile.ui.AppBaseSteps;
-import com.leroy.magmobile.ui.helpers.SalesDocTestData;
-import com.leroy.magmobile.ui.pages.common.OldSearchProductPage;
-import com.leroy.magmobile.ui.pages.common.SearchProductPage;
+import com.leroy.magmobile.ui.helpers.SalesDocDataGenerator;
 import com.leroy.magmobile.ui.pages.common.modal.ConfirmRemovingProductModal;
 import com.leroy.magmobile.ui.pages.sales.*;
 import com.leroy.magmobile.ui.pages.sales.basket.*;
@@ -18,13 +22,12 @@ import com.leroy.magmobile.ui.pages.sales.estimate.EstimateSubmittedPage;
 import com.leroy.magmobile.ui.pages.sales.product_and_service.AddServicePage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.*;
-import com.leroy.magmobile.ui.pages.search.CustomerData;
 import com.leroy.magmobile.ui.pages.search.SearchCustomerPage;
+import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.work.OrderPage;
 import com.leroy.magmobile.ui.pages.work.StockProductCardPage;
 import com.leroy.magmobile.ui.pages.work.StockProductsPage;
 import com.leroy.magmobile.ui.pages.work.modal.QuantityProductsForWithdrawalModalPage;
-import com.leroy.models.*;
 import com.leroy.umbrella_extension.authorization.AuthClient;
 import com.leroy.umbrella_extension.magmobile.MagMobileClient;
 import com.leroy.umbrella_extension.magmobile.data.CartData;
@@ -120,7 +123,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
     }
 
     private String getValidPinCode() {
-        return SalesDocTestData.getAvailablePinCode(apiClient);
+        return SalesDocDataGenerator.getAvailablePinCode(apiClient);
     }
 
     // CREATING PRE-CONDITIONS:
@@ -128,7 +131,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
     private String createDraftEstimate() {
         String shopId = "35";
         String lmCode = getAnyLmCodeProductWithoutSpecificOptions(shopId, false);
-        String token = authClient.getAccessToken(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS);
+        String token = authClient.getAccessToken(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS);
         ProductOrderData productOrderData = new ProductOrderData();
         productOrderData.setLmCode(lmCode);
         productOrderData.setQuantity(1.0);
@@ -142,7 +145,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
     private String createDraftCart(int productCount) {
         String shopId = "35";
         List<String> lmCodes = getAnyLmCodesProductWithoutSpecificOptions(productCount, shopId, false);
-        String token = authClient.getAccessToken(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS);
+        String token = authClient.getAccessToken(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS);
         List<ProductOrderData> productOrderDataList = new ArrayList<>();
         Random r = new Random();
         for (String lmCode : lmCodes) {
@@ -159,11 +162,11 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
     }
 
     private void cancelOrder(String orderId) throws Exception {
-        Response<JSONObject> r = apiClient.cancelOrder(EnvConstants.BASIC_USER_NAME, orderId);
+        Response<JSONObject> r = apiClient.cancelOrder(EnvConstants.BASIC_USER_LDAP, orderId);
         if (!r.isSuccessful()) {
             Thread.sleep(10000); // TODO можно подумать над не implicit wait'ом
             Log.warn(r.toString());
-            r = apiClient.cancelOrder(EnvConstants.BASIC_USER_NAME, orderId);
+            r = apiClient.cancelOrder(EnvConstants.BASIC_USER_LDAP, orderId);
         }
         anAssert.isTrue(r.isSuccessful(),
                 "Не смогли удалить заказ №" + orderId + ". Ошибка: " + r.toString());
@@ -186,20 +189,20 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
 
         // Step #2
         log.step("Нажмите 'Создать документ продажи'");
-        OldSearchProductPage oldSearchProductPage = salesDocumentsPage.clickCreateSalesDocumentButton();
-        oldSearchProductPage.verifyRequiredElements();
+        SearchProductPage searchProductPage = salesDocumentsPage.clickCreateSalesDocumentButton();
+        searchProductPage.verifyRequiredElements();
 
         // Step #3
         String inputDataStep3 = "164";
         log.step("Введите 164 код товара");
-        oldSearchProductPage.enterTextInSearchFieldAndSubmit(inputDataStep3)
+        searchProductPage.enterTextInSearchFieldAndSubmit(inputDataStep3)
                 .shouldCountOfProductsOnPageMoreThan(1)
                 .shouldProductCardsContainText(inputDataStep3)
-                .shouldProductCardContainAllRequiredElements(0);
+                .shouldProductCardContainAllRequiredElements(1);
 
         // Step #4
         log.step("Нажмите на мини-карточку товара 16410291");
-        AddProductPage addProductPage = oldSearchProductPage.searchProductAndSelect("16410291")
+        AddProductPage addProductPage = searchProductPage.searchProductAndSelect("16410291")
                 .verifyRequiredElements();
 
         // Step #5
@@ -238,7 +241,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
 
         // Step #10
         log.step("Введите 5 цифр PIN-кода");
-        String testPinCode = SalesDocTestData.getAvailablePinCode(apiClient);
+        String testPinCode = SalesDocDataGenerator.getAvailablePinCode(apiClient);
         basketStep3Page.enterPinCode(testPinCode)
                 .shouldPinCodeFieldIs(testPinCode)
                 .shouldSubmitButtonIsActive();
@@ -887,7 +890,7 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
 
             // Step #8
             log.step("Введите пятизначный PIN-код, не использованный ранее");
-            String testPinCode = SalesDocTestData.getAvailablePinCode(apiClient);
+            String testPinCode = SalesDocDataGenerator.getAvailablePinCode(apiClient);
             basketStep3Page.enterPinCode(testPinCode)
                     .shouldPinCodeFieldIs(testPinCode)
                     .shouldSubmitButtonIsActive();

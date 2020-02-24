@@ -4,9 +4,9 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
-import com.leroy.magmobile.ui.pages.common.OldSearchProductPage;
 import com.leroy.magmobile.ui.pages.common.TopMenuPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SaleTypeModalPage;
+import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import io.qameta.allure.Step;
 
 // Раздел "Продажа" -> Страница "Документы продажи"
@@ -48,7 +48,7 @@ public class MainSalesDocumentsPage extends TopMenuPage {
         if (context.is35Shop())
             return (T) new SaleTypeModalPage(context);
         else
-            return (T) new OldSearchProductPage(context);
+            return (T) new SearchProductPage(context);
     }
 
     @Step("Перейти в 'Мои продажи'")

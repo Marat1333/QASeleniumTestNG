@@ -5,8 +5,8 @@ import com.leroy.magmobile.ui.pages.more.UserProfilePage;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
 import com.leroy.magmobile.ui.pages.work.*;
 import com.leroy.magmobile.ui.pages.work.modal.QuantityProductsForWithdrawalModalPage;
-import com.leroy.models.ProductCardData;
-import com.leroy.models.WithdrawalOrderCardData;
+import com.leroy.magmobile.models.search.ProductCardData;
+import com.leroy.magmobile.models.work.WithdrawalOrderCardData;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
 

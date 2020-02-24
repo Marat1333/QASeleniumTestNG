@@ -1,6 +1,5 @@
 package com.leroy.magmobile.ui.pages.sales;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
@@ -9,8 +8,8 @@ import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.basket.Basket35Page;
 import com.leroy.magmobile.ui.pages.sales.estimate.EstimatePage;
-import com.leroy.models.SalesOrderCardData;
-import com.leroy.models.ProductCardData;
+import com.leroy.magmobile.models.sales.SalesOrderCardData;
+import com.leroy.magmobile.models.search.ProductCardData;
 import com.leroy.utils.Converter;
 import io.qameta.allure.Step;
 

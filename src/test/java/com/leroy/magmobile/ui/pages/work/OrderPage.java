@@ -5,7 +5,7 @@ import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.widgets.CalendarWidget;
+import com.leroy.magmobile.ui.pages.common.widget.CalendarWidget;
 import com.leroy.magmobile.ui.pages.widgets.TimePickerWidget;
 import com.leroy.utils.DateTimeUtil;
 import io.qameta.allure.Step;

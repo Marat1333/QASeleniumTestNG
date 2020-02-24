@@ -6,10 +6,10 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.common.SearchProductPage;
+import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.sales.widget.SalesDocumentWidget;
-import com.leroy.magmobile.ui.pages.widgets.CardWidget;
-import com.leroy.models.SalesDocumentData;
+import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
+import com.leroy.magmobile.models.sales.SalesDocumentData;
 import io.qameta.allure.Step;
 
 // Продажа -> Документы продажи -> "Мои продажи" или "Продажи моего магазина" и т.п.

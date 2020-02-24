@@ -9,8 +9,8 @@ import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.SubmittedSalesDocument35Page;
-import com.leroy.models.OrderDetailsData;
-import com.leroy.models.TextViewData;
+import com.leroy.magmobile.models.sales.OrderDetailsData;
+import com.leroy.magmobile.models.TextViewData;
 import io.qameta.allure.Step;
 
 public class ProcessOrder35Page extends CommonMagMobilePage {

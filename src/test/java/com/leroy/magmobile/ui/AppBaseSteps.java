@@ -17,8 +17,6 @@ import com.leroy.magmobile.ui.pages.sales.product_card.modal.ActionWithProductMo
 import com.leroy.magmobile.ui.pages.support.SupportPage;
 import com.leroy.magmobile.ui.pages.work.WorkPage;
 import com.leroy.magportal.ui.pages.LoginWebPage;
-import com.leroy.models.UserData;
-import com.leroy.temp_ui.MagMobileBaseState;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidDriver;
 import io.qameta.allure.Step;
@@ -27,7 +25,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class AppBaseSteps extends MagMobileBaseState {
+public class AppBaseSteps extends MagMobileBaseTest {
 
     /**
      * Иногда нам нужен пользователь с выбранным 35 магазиным (новый интерфейс)
@@ -38,7 +36,8 @@ public class AppBaseSteps extends MagMobileBaseState {
         USER_WITH_OLD_INTERFACE
     }
 
-    public <T> T loginAndGoTo(LoginType loginType, UserData userData, Class<? extends BaseAppPage> pageClass) throws Exception {
+    public <T> T loginAndGoTo(LoginType loginType, String userLdap, String password,
+                              Class<? extends BaseAppPage> pageClass) throws Exception {
         AndroidDriver<MobileElement> androidDriver = (AndroidDriver<MobileElement>) driver;
         Element redirectBtn = new Element(driver, By.xpath("//*[@resource-id='buttonRedirect']"));
         new LoginAppPage(context).clickLoginButton();
@@ -70,7 +69,7 @@ public class AppBaseSteps extends MagMobileBaseState {
             if (moon) {
                 new ChromeCertificateErrorPage(context).skipSiteSecureError();
                 androidDriver.context("WEBVIEW_chrome");
-                new LoginWebPage(context).logIn(userData);
+                new LoginWebPage(context).logIn(userLdap, password);
                 androidDriver.context("NATIVE_APP");
                 try {
                     redirectBtn.click();
@@ -88,7 +87,7 @@ public class AppBaseSteps extends MagMobileBaseState {
                 if (new Element(driver, By.xpath("//*[@resource-id='Username']")).isVisible(1)) {
                     androidDriver.context("WEBVIEW_chrome");
                     LoginWebPage loginWebPage = new LoginWebPage(context);
-                    loginWebPage.logIn(userData);
+                    loginWebPage.logIn(userLdap, password);
                     androidDriver.context("NATIVE_APP");
                 }
             }
@@ -129,15 +128,14 @@ public class AppBaseSteps extends MagMobileBaseState {
     }
 
     public <T> T loginAndGoTo(Class<? extends BaseAppPage> pageClass) throws Exception {
-        return loginAndGoTo(null, new UserData(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS), pageClass);
+        return loginAndGoTo(null, EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS, pageClass);
     }
 
     /**
      * Используй этот метод, когда нам не важен сам пользователь, но важен тип магазина, который будет выбран
      */
     public <T> T loginAndGoTo(LoginType loginType, Class<? extends BaseAppPage> pageClass) throws Exception {
-        return loginAndGoTo(loginType,
-                new UserData(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS), pageClass);
+        return loginAndGoTo(loginType, EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS, pageClass);
     }
 
     // Pre-condition steps
