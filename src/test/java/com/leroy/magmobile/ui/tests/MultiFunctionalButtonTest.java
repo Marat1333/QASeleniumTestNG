@@ -790,7 +790,8 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
 
         // Step 2
         log.step("Выберите параметр Удалить товар");
-        ConfirmRemovingProductModal confirmRemovingProductModal = modalPage.clickRemoveProductMenuItem()
+        modalPage.clickRemoveProductMenuItem();
+        ConfirmRemovingProductModal confirmRemovingProductModal = new ConfirmRemovingProductModal(context)
                 .verifyRequiredElements();
 
         // Step 3
@@ -803,6 +804,39 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         basket35Page.shouldProductBeNotPresentInCart(
                 salesOrderCardDataBefore.getProductCardData().getLmCode());
     }
+
+    @Test(description = "C22797099 Удалить последний товар из корзины")
+    public void testRemoveTheLastProductFromCart() throws Exception {
+        String cartDocNumber = null;
+        if (!Basket35Page.isThisPage(context)) {
+            cartDocNumber = createDraftCart(1);
+            MainSalesDocumentsPage mainSalesDocumentsPage = loginAndGoTo(
+                    LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
+            SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
+            salesDocumentsPage.searchForDocumentByTextAndSelectIt(
+                    cartDocNumber);
+        }
+
+        Basket35Page basket35Page = new Basket35Page(context);
+        // if (cartDocId == null) TODO если будет тест запускаться в цепочке
+
+        // Step 1
+        log.step("Нажмите на мини-карточку любого товара в списке товаров корзины");
+        CartActionWithProductCardModalPage modalPage = basket35Page.clickCardByIndex(1)
+                .verifyRequiredElements();
+
+        // Step 2
+        log.step("Выберите параметр Удалить товар");
+        modalPage.clickRemoveProductMenuItem();
+        ConfirmRemoveCartModal confirmRemovingProductModal = new ConfirmRemoveCartModal(context)
+                .verifyRequiredElements();
+
+        // Step 3
+        log.step("Нажмите на Выйти");
+        SalesDocumentsPage salesDocumentsPage = confirmRemovingProductModal.clickConfirmButton();
+        salesDocumentsPage.shouldSalesDocumentIsNotPresent(cartDocNumber);
+    }
+
 
     // ---------------------- TYPICAL TESTS FOR THIS CLASS -------------------//
 

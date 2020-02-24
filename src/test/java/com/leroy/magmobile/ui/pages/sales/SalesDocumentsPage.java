@@ -12,6 +12,8 @@ import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
 import com.leroy.magmobile.models.sales.SalesDocumentData;
 import io.qameta.allure.Step;
 
+import java.util.List;
+
 // Продажа -> Документы продажи -> "Мои продажи" или "Продажи моего магазина" и т.п.
 // Или после того, как создали смету, то нажимаем "ПЕРЕЙТИ В СПИСОК ДОКУМЕНТОВ"
 public class SalesDocumentsPage extends CommonMagMobilePage {
@@ -118,6 +120,19 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
         softAssert.isEquals(documentFromPage.getTitle(), expectedDocument.getTitle(),
                 "Место отзыва документа должно быть %s");
         softAssert.verifyAll();
+        return this;
+    }
+
+    @Step("Проверить, что среди последних 5 документов, документа с номером {expDocNumber} на странице нет")
+    public SalesDocumentsPage shouldSalesDocumentIsNotPresent(String expDocNumber) {
+        List<SalesDocumentData> salesDocumentDataList = salesDocumentScrollList
+                .getFullDataList(5);
+        anAssert.isTrue(salesDocumentDataList.size() > 0,
+                "На странице нет ни одного документа");
+        for (SalesDocumentData data : salesDocumentDataList) {
+            anAssert.isNotEquals(data.getNumber(), expDocNumber,
+                    "Документ с соответсвующим номером найден");
+        }
         return this;
     }
 }
