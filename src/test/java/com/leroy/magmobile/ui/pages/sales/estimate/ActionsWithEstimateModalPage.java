@@ -3,13 +3,14 @@ package com.leroy.magmobile.ui.pages.sales.estimate;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.basket.Basket35Page;
 import io.qameta.allure.Step;
 
 public class ActionsWithEstimateModalPage extends CommonMagMobilePage {
 
-    public ActionsWithEstimateModalPage(TestContext context) {
+    public ActionsWithEstimateModalPage(Context context) {
         super(context);
     }
 

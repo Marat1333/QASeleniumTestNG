@@ -285,11 +285,11 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
     public void testC3201049() throws Exception {
         // Pre-condition
         String lmCode = getAnyLmCodeOfService();
-        SalesPage salesPage = loginAndGoTo(SalesPage.class);
+        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
 
         // Step #1
         log.step("Нажмите в поле поиска");
-        SearchProductPage searchPage = salesPage.clickSearchBar(false)
+        SearchProductPage searchPage = mainProductAndServicesPage.clickSearchBar(false)
                 .verifyRequiredElements();
 
         // Step #2
@@ -380,13 +380,13 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
     public void testCreateOrderForWithdrawalFromRM() throws Exception {
         // Pre-condition
         String lmCode = getAnyLmCodeProductIsAvailableForWithdrawalFromRM();
-        SalesPage salesPage = loginAndGoTo(SalesPage.class);
-        salesPage = setShopAndDepartmentForUser(salesPage, "5", "15")
+        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
+        mainProductAndServicesPage = setShopAndDepartmentForUser(mainProductAndServicesPage, "5", "15")
                 .goToSales();
 
         // Steps 1, 2, 3
         ActionWithProductModalPage actionWithProductModalPage =
-                testSearchForProductAndClickActionsWithProductButton(salesPage, new ProductCardData(lmCode),
+                testSearchForProductAndClickActionsWithProductButton(mainProductAndServicesPage, new ProductCardData(lmCode),
                         ProductTypes.NORMAL);
 
         // Step 4
@@ -435,14 +435,14 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         String shopId = "35";
         boolean hasAvailableStock = false; //new Random().nextInt(2) == 1; // No one product with "hasAvailableStock" on dev environment
         String lmCode = getAnyLmCodeProductWithoutSpecificOptions(shopId, hasAvailableStock);
-        SalesPage salesPage = loginAndGoTo(LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, SalesPage.class);
+        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainProductAndServicesPage.class);
 
         // Steps 1, 2, 3
         ProductCardData productData = new ProductCardData(lmCode);
         productData.setHasAvailableStock(hasAvailableStock);
         ActionWithProduct35ModalPage actionWithProductModalPage =
                 testSearchForProductAndClickActionsWithProductButton(
-                        salesPage, productData, ProductTypes.NORMAL, true);
+                        mainProductAndServicesPage, productData, ProductTypes.NORMAL, true);
 
         // Step #4
         log.step("Нажмите Оформить продажу");
@@ -497,8 +497,8 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         expectedSalesDocument.setPin(orderDetailsData.getPinCode());
         expectedSalesDocument.setDocumentState(null);
         salesDocumentsPage.clickBackButton();
-        salesPage = new SalesPage(context); // Workaround for minor #bug
-        salesPage.goToSalesDocumentsSection()
+        mainProductAndServicesPage = new MainProductAndServicesPage(context); // Workaround for minor #bug
+        mainProductAndServicesPage.goToSalesDocumentsSection()
                 .goToMySales();
         salesDocumentsPage.shouldSalesDocumentIsPresentAndDataMatches(expectedSalesDocument);
 
@@ -516,11 +516,8 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         String shopId = "35";
         String lmCode = getAnyLmCodeProductWithoutSpecificOptions(shopId, false);
         // Pre-condition
-        context.setIs35Shop(true);
-        SalesPage salesPage = loginAndGoTo(SalesPage.class);
-        MainSalesDocumentsPage mainSalesDocumentsPage = setShopAndDepartmentForUser(salesPage, shopId, "01")
-                .goToSales()
-                .goToSalesDocumentsSection();
+        MainSalesDocumentsPage mainSalesDocumentsPage = loginAndGoTo(
+                LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
 
         // Step 1
         log.step("Нажать кнопку Оформить продажу");
@@ -699,9 +696,9 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
         String shopId = "35";
         String lmCode = getAnyLmCodeProductWithoutSpecificOptions(shopId, false);
         // Pre-condition
-        SalesPage salesPage = loginAndGoTo(
-                LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, SalesPage.class);
-        MainSalesDocumentsPage mainSalesDocumentsPage = setShopAndDepartmentForUser(salesPage, shopId, "01")
+        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(
+                LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainProductAndServicesPage.class);
+        MainSalesDocumentsPage mainSalesDocumentsPage = setShopAndDepartmentForUser(mainProductAndServicesPage, shopId, "01")
                 .goToSales()
                 .goToSalesDocumentsSection();
 
@@ -812,14 +809,14 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
      * Step 3 - Нажмите на кнопку Действия с товаром
      */
     private <T extends CommonActionWithProductModalPage> T testSearchForProductAndClickActionsWithProductButton(
-            SalesPage salesPage, ProductCardData productData, ProductTypes productType, boolean is35Shop) throws Exception {
+            MainProductAndServicesPage mainProductAndServicesPage, ProductCardData productData, ProductTypes productType, boolean is35Shop) throws Exception {
         // Pre-condition
-        if (salesPage == null)
-            salesPage = loginAndGoTo(LoginType.USER_WITH_OLD_INTERFACE, SalesPage.class);
+        if (mainProductAndServicesPage == null)
+            mainProductAndServicesPage = loginAndGoTo(LoginType.USER_WITH_OLD_INTERFACE, MainProductAndServicesPage.class);
 
         // Step #1
         log.step("Нажмите в поле поиска");
-        SearchProductPage searchPage = salesPage.clickSearchBar(false);
+        SearchProductPage searchPage = mainProductAndServicesPage.clickSearchBar(false);
         searchPage.shouldKeyboardVisible();
         searchPage.verifyRequiredElements();
 
@@ -843,8 +840,8 @@ public class MultiFunctionalButtonTest extends AppBaseSteps {
     }
 
     private <T extends CommonActionWithProductModalPage> T testSearchForProductAndClickActionsWithProductButton(
-            SalesPage salesPage, ProductCardData productData, ProductTypes productType) throws Exception {
-        return testSearchForProductAndClickActionsWithProductButton(salesPage, productData, productType, false);
+            MainProductAndServicesPage mainProductAndServicesPage, ProductCardData productData, ProductTypes productType) throws Exception {
+        return testSearchForProductAndClickActionsWithProductButton(mainProductAndServicesPage, productData, productType, false);
     }
 
     private void testCreateSalesDocument(String lmCode, ProductTypes productType) throws Exception {

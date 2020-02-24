@@ -1,18 +1,17 @@
 package com.leroy.magmobile.ui.pages.common;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.sales.AddProductPage;
 import com.leroy.magmobile.ui.pages.sales.widget.SearchProductCardWidget;
 import io.qameta.allure.Step;
 
-public class OldSearchProductPage extends BaseAppPage {
+public class OldSearchProductPage extends CommonMagMobilePage {
 
-    public OldSearchProductPage(TestContext context) {
+    public OldSearchProductPage(Context context) {
         super(context);
     }
 

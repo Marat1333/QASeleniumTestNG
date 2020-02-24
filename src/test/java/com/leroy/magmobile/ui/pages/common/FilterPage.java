@@ -9,6 +9,7 @@ import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.android.AndroidHorizontalScrollView;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobCheckBox;
 import com.leroy.magmobile.ui.pages.common.widget.SupplierCardWidget;
 import com.leroy.magmobile.ui.pages.widgets.CalendarWidget;
@@ -20,11 +21,11 @@ import org.openqa.selenium.By;
 import java.time.LocalDate;
 import java.util.NoSuchElementException;
 
-public class FilterPage extends BaseAppPage {
+public class FilterPage extends CommonMagMobilePage {
 
     private static final String SCREEN_TITLE = "Фильтры по товарам";
 
-    public FilterPage(TestContext context) {
+    public FilterPage(Context context) {
         super(context);
     }
 

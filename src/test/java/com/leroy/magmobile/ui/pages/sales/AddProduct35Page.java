@@ -4,6 +4,7 @@ import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.basket.Basket35Page;
@@ -19,7 +20,7 @@ public class AddProduct35Page extends CommonMagMobilePage {
         return "Добавление товара";
     }
 
-    public AddProduct35Page(TestContext context) {
+    public AddProduct35Page(Context context) {
         super(context);
     }
 

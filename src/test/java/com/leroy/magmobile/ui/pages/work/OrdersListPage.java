@@ -1,16 +1,16 @@
 package com.leroy.magmobile.ui.pages.work;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.widgets.OrderWidget;
 import io.qameta.allure.Step;
 
 public class OrdersListPage extends CommonMagMobilePage {
 
-    public OrdersListPage(TestContext context) {
+    public OrdersListPage(Context context) {
         super(context);
     }
 
@@ -40,7 +40,7 @@ public class OrdersListPage extends CommonMagMobilePage {
     @Step("Проверить, что {index}-ая заявка должна иметь номер {number}, Дата - {date}, Статус - {type}")
     public OrdersListPage shouldOrderByIndexIs(
             int index, String number, String date, String type) throws Exception {
-        OrderWidget orderWidget = orderList.get(index-1);
+        OrderWidget orderWidget = orderList.get(index - 1);
         softAssert.isEquals(orderWidget.numberLbl.getText(), number,
                 "Номер " + index + "-ой заявки должен быть %s");
         if (date != null) {

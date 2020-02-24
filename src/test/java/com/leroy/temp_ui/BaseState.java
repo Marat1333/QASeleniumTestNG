@@ -1,13 +1,12 @@
 package com.leroy.temp_ui;
 
-import com.leroy.constants.EnvConstants;
 import com.leroy.core.TestContext;
 import com.leroy.core.configuration.CustomAssert;
 import com.leroy.core.configuration.CustomSoftAssert;
-import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.configuration.EnvironmentConfigurator;
 import com.leroy.core.listeners.TestRailListener;
 import com.leroy.core.testrail.helpers.StepLog;
+import org.openqa.selenium.WebDriver;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -17,12 +16,17 @@ import java.lang.reflect.Method;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BaseState extends EnvironmentConfigurator {
+public abstract class BaseState extends EnvironmentConfigurator {
 
-    protected TestContext context;
     protected StepLog log;
     protected CustomSoftAssert softAssert;
     protected CustomAssert anAssert;
+
+    protected abstract void initContext(
+            WebDriver driver, CustomSoftAssert customSoftAssert, CustomAssert customAssert,
+            StepLog stepLog, String tcId);
+
+    protected abstract void cleanContext();
 
     private String getTestCaseId(String text) {
         String result = "undefined";
@@ -43,16 +47,14 @@ public class BaseState extends EnvironmentConfigurator {
         softAssert = new CustomSoftAssert(log);
         anAssert = new CustomAssert(log);
         String tcId = getTestCaseId(method.getAnnotation(Test.class).description());
-        context = new TestContext(driver, softAssert, anAssert, log, tcId);
+        initContext(driver, softAssert, anAssert, log, tcId);
         if (TestRailListener.STEPS_INFO != null)
             TestRailListener.STEPS_INFO.put(tcId, log.getStepResults());
-        if (!DriverFactory.isAppProfile())
-            openStartPage();
     }
 
     @AfterMethod
     public void baseStateAfterMethod() {
-        cleanUp();
+        cleanContext();
     }
 
     @AfterClass
@@ -62,17 +64,12 @@ public class BaseState extends EnvironmentConfigurator {
         }
     }
 
-    private void openStartPage() {
-        driver.get(EnvConstants.URL_MAG_PORTAL);
-    }
-
     private void cleanUp() {
         if (this.driver != null) {
             this.driver.quit();
             this.driver = null;
         }
-        context.setSoftAssert(null);
-        context.setAnAssert(null);
+        cleanContext();
     }
 
 }

@@ -5,6 +5,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.common.SearchProductPage;
@@ -23,7 +24,7 @@ public class AddServicePage extends CommonMagMobilePage {
         public static final String EMPTY_TOTAL_PRICE_VALUE = "— ₽";
     }
 
-    public AddServicePage(TestContext context) {
+    public AddServicePage(Context context) {
         super(context);
     }
 

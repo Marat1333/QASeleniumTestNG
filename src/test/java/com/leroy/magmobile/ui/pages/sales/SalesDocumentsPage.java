@@ -1,9 +1,9 @@
 package com.leroy.magmobile.ui.pages.sales;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.common.SearchProductPage;
@@ -16,7 +16,7 @@ import io.qameta.allure.Step;
 // Или после того, как создали смету, то нажимаем "ПЕРЕЙТИ В СПИСОК ДОКУМЕНТОВ"
 public class SalesDocumentsPage extends CommonMagMobilePage {
 
-    public SalesDocumentsPage(TestContext context) {
+    public SalesDocumentsPage(Context context) {
         super(context);
     }
 
@@ -39,7 +39,7 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
     private MagMobGreenSubmitButton makeSaleBtn;
 
     private MagMobGreenSubmitButton getSubmitBtn() {
-        if (context.isIs35Shop())
+        if (context.is35Shop())
             return makeSaleBtn;
         else
             return createSalesDocumentBtn;

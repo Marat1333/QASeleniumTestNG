@@ -3,6 +3,7 @@ package com.leroy.magmobile.ui.pages.sales.estimate;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.common.modal.ConfirmRemovingProductModal;
 import com.leroy.magmobile.ui.pages.sales.EditProduct35Page;
@@ -11,7 +12,7 @@ import io.qameta.allure.Step;
 
 public class ActionWithProductCardModalPage extends CommonMagMobilePage {
 
-    public ActionWithProductCardModalPage(TestContext context) {
+    public ActionWithProductCardModalPage(Context context) {
         super(context);
     }
 

@@ -1,15 +1,13 @@
 package com.leroy.magmobile.ui.pages.common;
 
-import com.leroy.constants.MagMobElementTypes;
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
-import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.android.AndroidHorizontalScrollView;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobCheckBox;
 import com.leroy.magmobile.ui.pages.common.widget.SupplierCardWidget;
 import com.leroy.magmobile.ui.pages.widgets.TextViewWidget;
@@ -20,9 +18,9 @@ import org.openqa.selenium.By;
 
 import java.util.List;
 
-public class SuppliersSearchPage extends BaseAppPage {
+public class SuppliersSearchPage extends CommonMagMobilePage {
 
-    public SuppliersSearchPage(TestContext context) {
+    public SuppliersSearchPage(Context context) {
         super(context);
     }
 
@@ -128,7 +126,7 @@ public class SuppliersSearchPage extends BaseAppPage {
 
     @Step("Проверить кол-во результатов поиска. Должно быть > {count}")
     public SuppliersSearchPage shouldCountOfSuppliersIsMoreThan(int count) {
-        anAssert.isTrue(supplierCards.getCount()>count,
+        anAssert.isTrue(supplierCards.getCount() > count,
                 "Кол-во виджетов поставщиков меньше указанного");
         return this;
     }

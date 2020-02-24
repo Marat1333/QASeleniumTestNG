@@ -1,8 +1,8 @@
 package com.leroy.magmobile.ui.pages.sales;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.OldSearchProductPage;
 import com.leroy.magmobile.ui.pages.common.TopMenuPage;
@@ -12,7 +12,7 @@ import io.qameta.allure.Step;
 // Раздел "Продажа" -> Страница "Документы продажи"
 public class MainSalesDocumentsPage extends TopMenuPage {
 
-    public MainSalesDocumentsPage(TestContext context) {
+    public MainSalesDocumentsPage(Context context) {
         super(context);
     }
 
@@ -45,7 +45,7 @@ public class MainSalesDocumentsPage extends TopMenuPage {
     @Step("Нажмите 'Создать документ продажи' (или 'Оформить продажу')")
     public <T> T clickCreateSalesDocumentButton() {
         createSalesDocumentBtn.click();
-        if (context.isIs35Shop())
+        if (context.is35Shop())
             return (T) new SaleTypeModalPage(context);
         else
             return (T) new OldSearchProductPage(context);

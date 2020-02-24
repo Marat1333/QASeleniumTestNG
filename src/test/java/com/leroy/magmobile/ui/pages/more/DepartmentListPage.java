@@ -1,15 +1,15 @@
 package com.leroy.magmobile.ui.pages.more;
 
-import com.leroy.core.TestContext;
-import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
+import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.models.TextViewData;
 import org.openqa.selenium.By;
 
-public class DepartmentListPage extends BaseAppPage {
+public class DepartmentListPage extends CommonMagMobilePage {
 
-    public DepartmentListPage(TestContext context) {
+    public DepartmentListPage(Context context) {
         super(context);
     }
 

@@ -1,10 +1,10 @@
 package com.leroy.magmobile.ui.pages.sales;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
+import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.common.SearchProductPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ReviewsPage;
@@ -12,9 +12,9 @@ import com.leroy.magmobile.ui.pages.sales.product_card.SimilarProductsPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.SpecificationsPage;
 import io.qameta.allure.Step;
 
-public class ProductCardPage extends BaseAppPage {
+public class ProductCardPage extends CommonMagMobilePage {
 
-    public ProductCardPage(TestContext context) {
+    public ProductCardPage(Context context) {
         super(context);
     }
 

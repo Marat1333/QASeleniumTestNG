@@ -4,6 +4,7 @@ import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.elements.MagMobWhiteSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
@@ -24,7 +25,7 @@ import java.util.List;
 
 public class EstimatePage extends CommonMagMobilePage {
 
-    public EstimatePage(TestContext context) {
+    public EstimatePage(Context context) {
         super(context);
     }
 

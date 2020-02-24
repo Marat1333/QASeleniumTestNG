@@ -1,21 +1,21 @@
 package com.leroy.magmobile.ui.pages.work;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.magmobile.ui.Context;
+import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.models.ProductCardData;
 import com.leroy.magmobile.ui.pages.widgets.ProductCardWidget;
 import com.leroy.magmobile.ui.pages.widgets.SelectedCardWidget;
-import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
+import com.leroy.models.ProductCardData;
 import com.leroy.models.WithdrawalOrderCardData;
 import com.leroy.utils.Converter;
 import io.qameta.allure.Step;
 
 public class StockProductsPage extends CommonMagMobilePage {
 
-    public StockProductsPage(TestContext context) {
+    public StockProductsPage(Context context) {
         super(context);
     }
 

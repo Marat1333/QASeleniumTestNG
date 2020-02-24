@@ -1,11 +1,9 @@
 package com.leroy.magmobile.ui.pages.common.modal;
 
-import com.leroy.constants.MagMobElementTypes;
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.elements.MagMobCheckBox;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobRadioButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.common.SearchProductPage;
@@ -13,7 +11,8 @@ import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 
 public class SortPage extends CommonMagMobilePage {
-    public SortPage(TestContext context) {
+
+    public SortPage(Context context) {
         super(context);
     }
 
@@ -73,7 +72,7 @@ public class SortPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что выбран тип сортировки {sortType}")
-    public SortPage shouldSortIsChosen(String sortType) throws Exception{
+    public SortPage shouldSortIsChosen(String sortType) throws Exception {
         MagMobRadioButton neededElement;
         switch (sortType) {
             case SORT_BY_LM_ASC:
@@ -91,13 +90,13 @@ public class SortPage extends CommonMagMobilePage {
             default:
                 throw new IllegalArgumentException("Not existed sort type");
         }
-        anAssert.isTrue(neededElement.isChecked(),"Элемент должен быть выбран");
+        anAssert.isTrue(neededElement.isChecked(), "Элемент должен быть выбран");
         return this;
     }
 
     @Step("Проверить, для выбора доступна сортировка только по ЛМ коду (ASC/DESC)")
-    public SortPage shouldSortIsOnlyByLmCode(){
-        String pageSource=getPageSource();
+    public SortPage shouldSortIsOnlyByLmCode() {
+        String pageSource = getPageSource();
         softAssert.areElementsVisible(pageSource, sortByLmDescLbl, sortByLmAscLbl);
         softAssert.isElementNotVisible(sortByStockDescLbl, pageSource);
         softAssert.isElementNotVisible(sortByStockAscLbl, pageSource);

@@ -1,10 +1,10 @@
 package com.leroy.magmobile.ui.pages.sales.basket;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
@@ -15,7 +15,7 @@ import io.qameta.allure.Step;
 
 public class ProcessOrder35Page extends CommonMagMobilePage {
 
-    public ProcessOrder35Page(TestContext context) {
+    public ProcessOrder35Page(Context context) {
         super(context);
     }
 

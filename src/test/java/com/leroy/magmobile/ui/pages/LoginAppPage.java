@@ -1,11 +1,11 @@
 package com.leroy.magmobile.ui.pages;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.configuration.Log;
-import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Button;
-import com.leroy.magmobile.ui.pages.sales.SalesPage;
+import com.leroy.magmobile.ui.Context;
+import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
 import com.leroy.models.UserData;
 import io.appium.java_client.android.AndroidDriver;
 import io.qameta.allure.Step;
@@ -13,16 +13,16 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class LoginAppPage extends BaseAppPage {
+public class LoginAppPage extends CommonMagMobilePage {
 
-    public LoginAppPage(TestContext context) {
+    public LoginAppPage(Context context) {
         super(context);
     }
 
     @AppFindBy(accessibilityId = "Button")
     public Button loginBtn;
 
-    private SalesPage logIn(UserData loginData) throws Exception {
+    private MainProductAndServicesPage logIn(UserData loginData) throws Exception {
         loginBtn.click();
         /*Element termsAcceptBtn = new Element(driver,
                 By.id("com.android.chrome:id/terms_accept"));
@@ -45,7 +45,7 @@ public class LoginAppPage extends BaseAppPage {
         }
         androidDriver.context("NATIVE_APP");
 
-        return new SalesPage(context);
+        return new MainProductAndServicesPage(context);
     }
 
     /* ------------------------- ACTIONS -------------------------- */

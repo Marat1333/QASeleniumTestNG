@@ -1,15 +1,15 @@
 package com.leroy.magmobile.ui.pages.more;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.common.BottomMenuPage;
 
 public class UserProfilePage extends BottomMenuPage {
 
     private static final String TYPICAL_OPTION_XPATH = "//android.view.ViewGroup[@content-desc='ScreenContent']//android.view.ViewGroup";
 
-    public UserProfilePage(TestContext context) {
+    public UserProfilePage(Context context) {
         super(context);
     }
 

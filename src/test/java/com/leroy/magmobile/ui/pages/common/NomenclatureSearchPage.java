@@ -1,12 +1,11 @@
 package com.leroy.magmobile.ui.pages.common;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
-import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.widgets.TextViewWidget;
 import com.leroy.models.TextViewData;
 import io.qameta.allure.Step;
@@ -16,8 +15,9 @@ import org.openqa.selenium.NoSuchElementException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NomenclatureSearchPage extends BaseAppPage {
-    public NomenclatureSearchPage(TestContext context) {
+public class NomenclatureSearchPage extends CommonMagMobilePage {
+
+    public NomenclatureSearchPage(Context context) {
         super(context);
     }
 

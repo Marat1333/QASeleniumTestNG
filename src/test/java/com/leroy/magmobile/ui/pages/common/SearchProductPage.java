@@ -1,16 +1,14 @@
 package com.leroy.magmobile.ui.pages.common;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.fieldfactory.CustomLocator;
-import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.common.modal.SortPage;
 import com.leroy.magmobile.ui.pages.sales.AddProductPage;
-import com.leroy.magmobile.ui.pages.sales.SalesPage;
+import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.widget.SearchProductAllGammaCardWidget;
 import com.leroy.magmobile.ui.pages.sales.widget.SearchProductCardWidget;
@@ -31,9 +29,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class SearchProductPage extends BaseAppPage {
+public class SearchProductPage extends CommonMagMobilePage {
 
-    public SearchProductPage(TestContext context) {
+    public SearchProductPage(Context context) {
         super(context);
     }
 
@@ -110,9 +108,9 @@ public class SearchProductPage extends BaseAppPage {
     // ---------------- Action Steps -------------------------//
 
     @Step("Перейти на главную страницу 'Документы продажи'")
-    public SalesPage backToSalesPage() {
+    public MainProductAndServicesPage backToSalesPage() {
         backBtn.click();
-        return new SalesPage(context);
+        return new MainProductAndServicesPage(context);
     }
 
     @Step("Ввести поисковой запрос со случайным текстом {value} раз и инициировать поиск")

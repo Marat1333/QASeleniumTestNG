@@ -4,6 +4,7 @@ import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.basket.BasketStep1Page;
@@ -13,7 +14,7 @@ public class AddProductPage extends CommonMagMobilePage {
 
     private static final String SCREEN_TITLE = "Добавление товара";
 
-    public AddProductPage(TestContext context) {
+    public AddProductPage(Context context) {
         super(context);
     }
 

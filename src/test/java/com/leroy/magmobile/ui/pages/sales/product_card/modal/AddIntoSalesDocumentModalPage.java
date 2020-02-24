@@ -3,6 +3,7 @@ package com.leroy.magmobile.ui.pages.sales.product_card.modal;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.AddProductPage;
@@ -10,7 +11,7 @@ import io.qameta.allure.Step;
 
 public class AddIntoSalesDocumentModalPage extends CommonMagMobilePage {
 
-    public AddIntoSalesDocumentModalPage(TestContext context) {
+    public AddIntoSalesDocumentModalPage(Context context) {
         super(context);
     }
 
