@@ -1,4 +1,4 @@
-package com.leroy.magmobile.ui.tests;
+package com.leroy.magmobile.ui.tests.work;
 
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.more.UserProfilePage;

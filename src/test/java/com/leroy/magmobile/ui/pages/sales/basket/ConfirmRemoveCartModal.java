@@ -1,15 +1,15 @@
 package com.leroy.magmobile.ui.pages.sales.basket;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.SalesDocumentsPage;
 import io.qameta.allure.Step;
 
 public class ConfirmRemoveCartModal extends CommonMagMobilePage {
-    
-    public ConfirmRemoveCartModal(TestContext context) {
+
+    public ConfirmRemoveCartModal(Context context) {
         super(context);
     }
 
@@ -37,5 +37,5 @@ public class ConfirmRemoveCartModal extends CommonMagMobilePage {
         softAssert.verifyAll();
         return this;
     }
-    
+
 }
