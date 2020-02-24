@@ -49,7 +49,7 @@ public class NomenclatureSearchPage extends CommonMagMobilePage {
             }
             screenTitleText = screenTitle.getText();
             nomenclatureBackBtn.click();
-            screenTitle.waitForTextIsNotEqual(screenTitleText);
+            screenTitle.waitUntilTextIsChanged(screenTitleText);
         }
         return new NomenclatureSearchPage(context);
     }
