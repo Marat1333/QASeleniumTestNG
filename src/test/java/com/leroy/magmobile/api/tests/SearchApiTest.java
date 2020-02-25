@@ -33,7 +33,7 @@ public class SearchApiTest extends BaseProjectTest {
                 .setStartFrom(1);
     }
 
-    @TestCase(111)
+    @TestCase(3161100)
     @Test(description = "C3161100 search by lmCode")
     public void testSearchByLmCode() {
         final String lmCode = "18546124";
@@ -47,6 +47,7 @@ public class SearchApiTest extends BaseProjectTest {
 
         List<ProductItemResponse> responseData = response.asJson().getItems();
 
+        assertThat(response.isSuccessful(), equalTo(true));
         assertThat(responseData, hasSize(1));
         for (ProductItemResponse data : responseData) {
             assertThat(data.getLmCode(), equalTo(lmCode));
