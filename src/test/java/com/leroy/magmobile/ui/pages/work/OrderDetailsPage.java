@@ -1,13 +1,13 @@
 package com.leroy.magmobile.ui.pages.work;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.models.ProductCardData;
 import com.leroy.magmobile.ui.pages.widgets.ProductCardWidget;
-import com.leroy.models.WithdrawalOrderCardData;
+import com.leroy.magmobile.models.search.ProductCardData;
+import com.leroy.magmobile.models.work.WithdrawalOrderCardData;
 import com.leroy.utils.Converter;
 import io.qameta.allure.Step;
 
@@ -18,7 +18,7 @@ import java.util.Locale;
 
 public class OrderDetailsPage extends CommonMagMobilePage {
 
-    public OrderDetailsPage(TestContext context) {
+    public OrderDetailsPage(Context context) {
         super(context);
     }
 

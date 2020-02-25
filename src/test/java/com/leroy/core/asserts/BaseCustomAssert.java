@@ -199,13 +199,14 @@ public abstract class BaseCustomAssert {
         }
     }
 
-    protected ImageUtil.CompareResult logIsElementImageMatches(Element elem, String pictureName, boolean isSoft) {
+    protected ImageUtil.CompareResult logIsElementImageMatches(Element elem, String pictureName,
+                                                               Double expectedPercentage, boolean isSoft) {
         ImageUtil.CompareResult result = null;
         String actualResult = "Визуально элемент '" + elem.getMetaName() + "' не соответствует эталону";
         String expectedResult = "Визуально элемент '" + elem.getMetaName() + "' должен соответствовать эталону";
         try {
             //ImageUtil.takeScreenShot(elem, pictureName); // Only for taking sample snapshots
-            result = ImageUtil.takeScreenAndCompareWithBaseImg(elem, pictureName);
+            result = ImageUtil.takeScreenAndCompareWithBaseImg(elem, pictureName, expectedPercentage);
         } catch (Exception err) {
             Log.error(err.getMessage());
             Assert.fail("Couldn't take screenshot for " + elem.getMetaName());
@@ -222,6 +223,10 @@ public abstract class BaseCustomAssert {
             Assert.assertEquals(result, ImageUtil.CompareResult.Matched,
                     actualResult);
         return result;
+    }
+
+    protected ImageUtil.CompareResult logIsElementImageMatches(Element elem, String pictureName, boolean isSoft) {
+        return logIsElementImageMatches(elem, pictureName, 99.0, isSoft);
     }
 
     protected void verifyAll() {

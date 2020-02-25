@@ -4,13 +4,14 @@ import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.elements.MagMobWhiteSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.common.SearchProductPage;
-import com.leroy.magmobile.ui.pages.widgets.CardWidget;
-import com.leroy.models.SalesOrderCardData;
-import com.leroy.models.SalesOrderData;
+import com.leroy.magmobile.ui.pages.search.SearchProductPage;
+import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
+import com.leroy.magmobile.models.sales.SalesOrderCardData;
+import com.leroy.magmobile.models.sales.SalesOrderData;
 import com.leroy.utils.Converter;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
@@ -23,7 +24,7 @@ public class Basket35Page extends CommonMagMobilePage {
 
     public final static String SCREEN_TITLE = "Корзина";
 
-    public Basket35Page(TestContext context) {
+    public Basket35Page(Context context) {
         super(context);
     }
 

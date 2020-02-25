@@ -9,16 +9,14 @@ import com.leroy.magmobile.ui.pages.LoginAppPage;
 import com.leroy.magmobile.ui.pages.common.BottomMenuPage;
 import com.leroy.magmobile.ui.pages.more.MorePage;
 import com.leroy.magmobile.ui.pages.more.UserProfilePage;
+import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
-import com.leroy.magmobile.ui.pages.sales.SalesPage;
 import com.leroy.magmobile.ui.pages.sales.basket.BasketStep1Page;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.ActionWithProductModalPage;
 import com.leroy.magmobile.ui.pages.support.SupportPage;
 import com.leroy.magmobile.ui.pages.work.WorkPage;
 import com.leroy.magportal.ui.pages.LoginWebPage;
-import com.leroy.models.UserData;
-import com.leroy.temp_ui.BaseState;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidDriver;
 import io.qameta.allure.Step;
@@ -27,7 +25,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class AppBaseSteps extends BaseState {
+public class AppBaseSteps extends MagMobileBaseTest {
 
     /**
      * Иногда нам нужен пользователь с выбранным 35 магазиным (новый интерфейс)
@@ -38,7 +36,8 @@ public class AppBaseSteps extends BaseState {
         USER_WITH_OLD_INTERFACE
     }
 
-    public <T> T loginAndGoTo(LoginType loginType, UserData userData, Class<? extends BaseAppPage> pageClass) throws Exception {
+    public <T> T loginAndGoTo(LoginType loginType, String userLdap, String password,
+                              Class<? extends BaseAppPage> pageClass) throws Exception {
         AndroidDriver<MobileElement> androidDriver = (AndroidDriver<MobileElement>) driver;
         Element redirectBtn = new Element(driver, By.xpath("//*[@resource-id='buttonRedirect']"));
         new LoginAppPage(context).clickLoginButton();
@@ -70,7 +69,7 @@ public class AppBaseSteps extends BaseState {
             if (moon) {
                 new ChromeCertificateErrorPage(context).skipSiteSecureError();
                 androidDriver.context("WEBVIEW_chrome");
-                new LoginWebPage(context).logIn(userData);
+                new LoginWebPage(context).logIn(userLdap, password);
                 androidDriver.context("NATIVE_APP");
                 try {
                     redirectBtn.click();
@@ -88,39 +87,40 @@ public class AppBaseSteps extends BaseState {
                 if (new Element(driver, By.xpath("//*[@resource-id='Username']")).isVisible(1)) {
                     androidDriver.context("WEBVIEW_chrome");
                     LoginWebPage loginWebPage = new LoginWebPage(context);
-                    loginWebPage.logIn(userData);
+                    loginWebPage.logIn(userLdap, password);
                     androidDriver.context("NATIVE_APP");
                 }
             }
         }
 
-        SalesPage salesPage = new SalesPage(context);
+        MainProductAndServicesPage mainProductAndServicesPage = new MainProductAndServicesPage(context);
         UserProfilePage userProfilePage = null;
         if (loginType != null) {
             switch (loginType) {
                 case USER_WITH_OLD_INTERFACE:
-                    userProfilePage = setShopAndDepartmentForUser(salesPage, "5", "01");
+                    context.setUserShopId("5");
+                    userProfilePage = setShopAndDepartmentForUser(mainProductAndServicesPage, "5", "01");
                     break;
                 case USER_WITH_NEW_INTERFACE_LIKE_35_SHOP:
-                    context.setIs35Shop(true);
-                    userProfilePage = setShopAndDepartmentForUser(salesPage, "35", "01");
+                    context.setUserShopId("35");
+                    userProfilePage = setShopAndDepartmentForUser(mainProductAndServicesPage, "35", "01");
                     break;
             }
         }
-        if (pageClass.equals(SalesPage.class)) {
+        if (pageClass.equals(MainProductAndServicesPage.class)) {
             if (userProfilePage != null)
                 return (T) userProfilePage.goToSales();
-            return (T) salesPage;
+            return (T) mainProductAndServicesPage;
         } else if (pageClass.equals(MainSalesDocumentsPage.class)) {
             if (userProfilePage != null)
                 return (T) userProfilePage.goToSales().goToSalesDocumentsSection();
-            return (T) salesPage.goToSalesDocumentsSection();
+            return (T) mainProductAndServicesPage.goToSalesDocumentsSection();
         } else if (pageClass.equals(WorkPage.class)) {
-            return (T) salesPage.goToWork();
+            return (T) mainProductAndServicesPage.goToWork();
         } else if (pageClass.equals(SupportPage.class)) {
-            return (T) salesPage.goToSupport();
+            return (T) mainProductAndServicesPage.goToSupport();
         } else if (pageClass.equals(MorePage.class)) {
-            return (T) salesPage.goToMoreSection();
+            return (T) mainProductAndServicesPage.goToMoreSection();
         } else {
             throw new IllegalArgumentException("Переход на страницу " + pageClass.getName() +
                     " еще не реализован через класс TopMenuPage");
@@ -128,15 +128,14 @@ public class AppBaseSteps extends BaseState {
     }
 
     public <T> T loginAndGoTo(Class<? extends BaseAppPage> pageClass) throws Exception {
-        return loginAndGoTo(null, new UserData(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS), pageClass);
+        return loginAndGoTo(null, EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS, pageClass);
     }
 
     /**
      * Используй этот метод, когда нам не важен сам пользователь, но важен тип магазина, который будет выбран
      */
     public <T> T loginAndGoTo(LoginType loginType, Class<? extends BaseAppPage> pageClass) throws Exception {
-        return loginAndGoTo(loginType,
-                new UserData(EnvConstants.BASIC_USER_NAME, EnvConstants.BASIC_USER_PASS), pageClass);
+        return loginAndGoTo(loginType, EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS, pageClass);
     }
 
     // Pre-condition steps
@@ -149,8 +148,9 @@ public class AppBaseSteps extends BaseState {
      * @return - Document number of the draft
      */
     protected String loginInAndCreateDraftSalesDocument(String lmCode) throws Exception {
-        SalesPage salesPage = loginAndGoTo(LoginType.USER_WITH_OLD_INTERFACE, SalesPage.class);
-        salesPage.clickSearchBar(false)
+        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(
+                LoginType.USER_WITH_OLD_INTERFACE, MainProductAndServicesPage.class);
+        mainProductAndServicesPage.clickSearchBar(false)
                 .enterTextInSearchFieldAndSubmit(lmCode);
 
         new ProductDescriptionPage(context).clickActionWithProductButton();

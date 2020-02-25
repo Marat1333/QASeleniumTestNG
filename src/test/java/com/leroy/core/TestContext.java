@@ -13,18 +13,6 @@ public class TestContext {
     private StepLog log;
     private WebDriver driver;
 
-    // Specific crutch for MagMobile
-    private boolean is35Shop;
-
-    public boolean isIs35Shop() {
-        return is35Shop;
-    }
-
-    public void setIs35Shop(boolean is35Shop) {
-        this.is35Shop = is35Shop;
-    }
-    ///
-
     public TestContext(WebDriver driver, CustomSoftAssert softAssert, CustomAssert anAssert, StepLog log, String tcId) {
         this.driver = driver;
         this.softAssert = softAssert;

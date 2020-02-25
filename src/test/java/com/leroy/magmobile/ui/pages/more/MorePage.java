@@ -1,13 +1,13 @@
 package com.leroy.magmobile.ui.pages.more;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
+import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 
-public class MorePage extends BaseAppPage {
+public class MorePage extends CommonMagMobilePage {
 
-    public MorePage(TestContext context) {
+    public MorePage(Context context) {
         super(context);
     }
 
