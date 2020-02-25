@@ -1,18 +1,16 @@
 package com.leroy.magmobile.ui.pages.sales.product_card.modal;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.ProductCardPage;
 import io.qameta.allure.Step;
 
-import java.util.Arrays;
-
 public class ImpossibleCreateDocumentWithTopEmModalPage extends CommonMagMobilePage {
 
-    public ImpossibleCreateDocumentWithTopEmModalPage(TestContext context) {
+    public ImpossibleCreateDocumentWithTopEmModalPage(Context context) {
         super(context);
     }
 

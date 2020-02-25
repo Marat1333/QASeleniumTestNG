@@ -85,6 +85,10 @@ public class CustomSoftAssert extends BaseCustomAssert {
         super.logIsElementImageMatches(elem, pictureName, true);
     }
 
+    public void isElementImageMatches(Element elem, String pictureName, Double expectedPercentage) {
+        super.logIsElementImageMatches(elem, pictureName, expectedPercentage, true);
+    }
+
     public void verifyAll() {
         super.verifyAll();
     }

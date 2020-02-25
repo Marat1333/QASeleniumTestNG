@@ -3,6 +3,7 @@ package com.leroy.magmobile.ui.pages.sales.product_card;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.pages.sales.PricesAndQuantityPage;
 import com.leroy.magmobile.ui.pages.sales.ProductCardPage;
@@ -12,7 +13,7 @@ import org.openqa.selenium.By;
 
 public class ProductDescriptionPage extends ProductCardPage {
 
-    public ProductDescriptionPage(TestContext context) {
+    public ProductDescriptionPage(Context context) {
         super(context);
     }
 

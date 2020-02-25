@@ -1,13 +1,13 @@
 package com.leroy.magmobile.ui.pages.common;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
 
 public class TopMenuPage extends BottomMenuPage {
 
-    public TopMenuPage(TestContext context) {
+    public TopMenuPage(Context context) {
         super(context);
     }
 

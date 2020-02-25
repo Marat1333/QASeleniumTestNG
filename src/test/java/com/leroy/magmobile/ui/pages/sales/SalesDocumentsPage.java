@@ -1,22 +1,24 @@
 package com.leroy.magmobile.ui.pages.sales;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.common.SearchProductPage;
+import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.sales.widget.SalesDocumentWidget;
-import com.leroy.magmobile.ui.pages.widgets.CardWidget;
-import com.leroy.models.SalesDocumentData;
+import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
+import com.leroy.magmobile.models.sales.SalesDocumentData;
 import io.qameta.allure.Step;
+
+import java.util.List;
 
 // Продажа -> Документы продажи -> "Мои продажи" или "Продажи моего магазина" и т.п.
 // Или после того, как создали смету, то нажимаем "ПЕРЕЙТИ В СПИСОК ДОКУМЕНТОВ"
 public class SalesDocumentsPage extends CommonMagMobilePage {
 
-    public SalesDocumentsPage(TestContext context) {
+    public SalesDocumentsPage(Context context) {
         super(context);
     }
 
@@ -39,7 +41,7 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
     private MagMobGreenSubmitButton makeSaleBtn;
 
     private MagMobGreenSubmitButton getSubmitBtn() {
-        if (context.isIs35Shop())
+        if (context.is35Shop())
             return makeSaleBtn;
         else
             return createSalesDocumentBtn;
@@ -100,8 +102,9 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
             softAssert.isEquals(documentFromPage.getDate(), expectedDocument.getDate(),
                     "Документ дата должна быть %s");
         }
-        softAssert.isEquals(documentFromPage.getDocumentState(), expectedDocument.getDocumentState(),
-                "Неверный Тип документа");
+        if (expectedDocument.getDocumentState() != null)
+            softAssert.isEquals(documentFromPage.getDocumentState(), expectedDocument.getDocumentState(),
+                    "Неверный Тип документа");
         // TODO можно будет подумать, чтоб не через contains, но чтоб C3201029 проходил:
         softAssert.isTrue(documentFromPage.getNumber().contains(expectedDocument.getNumber()),
                 "Номер документа должен быть '" + expectedDocument.getNumber() + "'");
@@ -117,6 +120,19 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
         softAssert.isEquals(documentFromPage.getTitle(), expectedDocument.getTitle(),
                 "Место отзыва документа должно быть %s");
         softAssert.verifyAll();
+        return this;
+    }
+
+    @Step("Проверить, что среди последних 5 документов, документа с номером {expDocNumber} на странице нет")
+    public SalesDocumentsPage shouldSalesDocumentIsNotPresent(String expDocNumber) {
+        List<SalesDocumentData> salesDocumentDataList = salesDocumentScrollList
+                .getFullDataList(5);
+        anAssert.isTrue(salesDocumentDataList.size() > 0,
+                "На странице нет ни одного документа");
+        for (SalesDocumentData data : salesDocumentDataList) {
+            anAssert.isNotEquals(data.getNumber(), expDocNumber,
+                    "Документ с соответсвующим номером найден");
+        }
         return this;
     }
 }

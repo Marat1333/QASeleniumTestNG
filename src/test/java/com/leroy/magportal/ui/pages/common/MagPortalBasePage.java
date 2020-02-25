@@ -9,6 +9,8 @@ import java.time.Duration;
 
 public class MagPortalBasePage extends BaseWebPage {
 
+    protected TestContext context;
+
     public MagPortalBasePage(TestContext context) {
         super(context);
     }

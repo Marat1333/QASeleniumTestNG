@@ -1,9 +1,9 @@
 package com.leroy.magmobile.ui.pages.work.modal;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.work.StockProductsPage;
@@ -11,7 +11,7 @@ import io.qameta.allure.Step;
 
 public class QuantityProductsForWithdrawalModalPage extends CommonMagMobilePage {
 
-    public QuantityProductsForWithdrawalModalPage(TestContext context) {
+    public QuantityProductsForWithdrawalModalPage(Context context) {
         super(context);
     }
 
