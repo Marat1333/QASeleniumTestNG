@@ -6,7 +6,7 @@ import java.util.List;
 public class ResponseList {
     private List<?> items;
 
-    public List<?> getItems() {
-        return items;
+    public <T>T getItems() {
+        return (T)items;
     }
 }

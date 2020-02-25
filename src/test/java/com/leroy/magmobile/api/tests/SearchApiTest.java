@@ -3,8 +3,11 @@ package com.leroy.magmobile.api.tests;
 import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.magmobile.api.tests.common.BaseProjectTest;
+import com.leroy.magmobile.ui.pages.common.FilterPage;
 import com.leroy.umbrella_extension.magmobile.MagMobileClient;
 import com.leroy.umbrella_extension.magmobile.data.ProductItemListResponse;
+import com.leroy.umbrella_extension.magmobile.data.ProductItemResponse;
+import com.leroy.umbrella_extension.magmobile.data.ResponseItem;
 import com.leroy.umbrella_extension.magmobile.data.ResponseList;
 import com.leroy.umbrella_extension.magmobile.enums.CatalogSearchFields;
 import com.leroy.umbrella_extension.magmobile.enums.SortingOrder;
@@ -17,7 +20,7 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class ApiTest extends BaseProjectTest {
+public class SearchApiTest extends BaseProjectTest {
 
     @Inject
     private MagMobileClient magMobileClient;
@@ -43,23 +46,27 @@ public class ApiTest extends BaseProjectTest {
                 .setByLmCode(lmCode);
         Response<ProductItemListResponse> response = magMobileClient.searchProductsBy(byLmCodeParams);
 
-        assertThat(response, );
+        List<ProductItemResponse> responseData = response.asJson().getItems();
+
+        assertThat(isResponseEmpty(response), );
     }
 
-    /**VERIFICATIONS**/
+    /**
+     * VERIFICATIONS
+     **/
 
-    public boolean isResponseEmpty(Response<? extends ResponseList> response) {
+    public boolean isResponseEmpty( responseData) {
         boolean result;
-        result= response.asJson().getItems().isEmpty();
+        result = ()response.asJson().getItems().isEmpty();
         return result;
     }
 
-    public boolean isResponseContainsCorrectData(Response<? extends ResponseList> response, String criterion) {
-        List<? extends ResponseList> productData = response.asJson().getItems();
+    public boolean isResponseContainsCorrectData(List<? extends ResponseItem> responseItemsList, String criterion) {
+        List<? extends ResponseList> productData = responseItemsList.asJson().getItems();
         if (criterion.startsWith(FilterPage.GAMMA)) {
             String productGamma;
             criterion = criterion.substring(7);
-            for (ProductItemResponse eachProduct : productData) {
+            for ( eachProduct : productData) {
                 productGamma = eachProduct.getGamma();
                 anAssert.isEquals(criterion, productGamma, "\"v3 catalog search\" return wrong data by gamma criterion");
             }

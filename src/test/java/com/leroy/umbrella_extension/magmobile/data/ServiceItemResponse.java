@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ServiceItemResponse {
+public class ServiceItemResponse extends ResponseItem{
 
     private String lmCode;
     private String barCode;
