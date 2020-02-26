@@ -49,15 +49,6 @@ public class EnvironmentConfigurator {
         return driver;
     }
 
-    @AfterMethod
-    protected void environmentConfiguratorAfterMethod() {
-        if (!evalAfterMethod) {
-            return;
-        }
-        driver.quit();
-        driver = null;
-    }
-
     private boolean isConnectionOpen() {
         return driver != null && driver.getSessionId() != null;
     }

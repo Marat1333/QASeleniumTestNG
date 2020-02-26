@@ -3,8 +3,8 @@ package com.leroy.magmobile.ui.pages.sales.widget;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.pages.widgets.CardWidget;
-import com.leroy.models.ProductCardData;
+import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
+import com.leroy.magmobile.models.search.ProductCardData;
 import org.openqa.selenium.WebDriver;
 
 public class SearchProductAllGammaCardWidget extends CardWidget<ProductCardData> {

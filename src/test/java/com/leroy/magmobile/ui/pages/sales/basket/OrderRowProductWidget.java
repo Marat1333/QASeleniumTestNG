@@ -3,9 +3,9 @@ package com.leroy.magmobile.ui.pages.sales.basket;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.pages.widgets.CardWidget;
-import com.leroy.models.SalesOrderCardData;
-import com.leroy.models.ProductCardData;
+import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
+import com.leroy.magmobile.models.sales.SalesOrderCardData;
+import com.leroy.magmobile.models.search.ProductCardData;
 import com.leroy.utils.Converter;
 import org.openqa.selenium.WebDriver;
 

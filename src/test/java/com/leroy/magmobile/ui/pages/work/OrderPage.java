@@ -1,11 +1,11 @@
 package com.leroy.magmobile.ui.pages.work;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.widgets.CalendarWidget;
+import com.leroy.magmobile.ui.pages.common.widget.CalendarWidget;
 import com.leroy.magmobile.ui.pages.widgets.TimePickerWidget;
 import com.leroy.utils.DateTimeUtil;
 import io.qameta.allure.Step;
@@ -16,7 +16,7 @@ import java.time.format.DateTimeFormatter;
 
 public class OrderPage extends CommonMagMobilePage {
 
-    public OrderPage(TestContext context) {
+    public OrderPage(Context context) {
         super(context);
     }
 

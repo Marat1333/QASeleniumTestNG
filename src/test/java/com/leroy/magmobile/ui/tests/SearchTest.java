@@ -3,18 +3,18 @@ package com.leroy.magmobile.ui.tests;
 import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.magmobile.ui.AppBaseSteps;
-import com.leroy.magmobile.ui.pages.common.FilterPage;
-import com.leroy.magmobile.ui.pages.common.NomenclatureSearchPage;
-import com.leroy.magmobile.ui.pages.common.SearchProductPage;
-import com.leroy.magmobile.ui.pages.common.SuppliersSearchPage;
-import com.leroy.magmobile.ui.pages.common.modal.SortPage;
+import com.leroy.magmobile.ui.pages.search.FilterPage;
+import com.leroy.magmobile.ui.pages.search.NomenclatureSearchPage;
+import com.leroy.magmobile.ui.pages.search.SearchProductPage;
+import com.leroy.magmobile.ui.pages.search.SuppliersSearchPage;
+import com.leroy.magmobile.ui.pages.search.modal.SortPage;
+import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
 import com.leroy.magmobile.ui.pages.sales.PricesAndQuantityPage;
 import com.leroy.magmobile.ui.pages.sales.ProductCardPage;
-import com.leroy.magmobile.ui.pages.sales.SalesPage;
 import com.leroy.magmobile.ui.pages.sales.product_and_service.AddServicePage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.SimilarProductsPage;
-import com.leroy.models.FiltersData;
+import com.leroy.magmobile.models.search.FiltersData;
 import com.leroy.umbrella_extension.ThreadApiClient;
 import com.leroy.umbrella_extension.magmobile.MagMobileClient;
 import com.leroy.umbrella_extension.magmobile.data.ProductItemListResponse;
@@ -115,11 +115,11 @@ public class SearchTest extends AppBaseSteps {
                 sendRequestsSearchProductsBy(byLmParams, byBarCodeParams, byShortLmCodeParams, byShortBarCodeParams);
 
         // Pre-conditions
-        SalesPage salesPage = loginAndGoTo(SalesPage.class);
+        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
 
         // Step 1
         log.step("Нажмите на поле Поиск товаров и услуг");
-        SearchProductPage searchProductPage = salesPage.clickSearchBar(false)
+        SearchProductPage searchProductPage = mainProductAndServicesPage.clickSearchBar(false)
                 .verifyRequiredElements();
         // Step 2
         log.step("Перейдите в окно выбора единицы номенклатуры");
@@ -217,8 +217,8 @@ public class SearchTest extends AppBaseSteps {
                 sendRequestsSearchProductsBy(gammaParam, topParam, bestPriceParam, orderedProductTypeParam, avsParam, supplierIdParam);
 
         // Pre-conditions
-        SalesPage salesPage = loginAndGoTo(SalesPage.class);
-        SearchProductPage searchProductPage = salesPage.clickSearchBar(false);
+        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
+        SearchProductPage searchProductPage = mainProductAndServicesPage.clickSearchBar(false);
         NomenclatureSearchPage nomenclatureSearchPage = searchProductPage.goToNomenclatureWindow();
         nomenclatureSearchPage.returnBackNTimes(1);
         nomenclatureSearchPage.choseDepartmentId("00" + departmentId, null, null, null);
@@ -332,8 +332,8 @@ public class SearchTest extends AppBaseSteps {
                 sendRequestsSearchProductsBy(gammaParam, ctmParam, commonProductTypeParam, avsParam);
 
         // Pre-conditions
-        SalesPage salesPage = loginAndGoTo(SalesPage.class);
-        SearchProductPage searchProductPage = salesPage.clickSearchBar(false);
+        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
+        SearchProductPage searchProductPage = mainProductAndServicesPage.clickSearchBar(false);
         NomenclatureSearchPage nomenclatureSearchPage = searchProductPage.goToNomenclatureWindow();
         nomenclatureSearchPage.returnBackNTimes(1);
         nomenclatureSearchPage.choseDepartmentId("0" + departmentId, null, null, null);
@@ -396,8 +396,8 @@ public class SearchTest extends AppBaseSteps {
         //TODO добавить проверку на отклонение по координатам
 
         // Pre-conditions
-        SalesPage salesPage = loginAndGoTo(SalesPage.class);
-        SearchProductPage searchProductPage = salesPage.clickSearchBar(false);
+        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
+        SearchProductPage searchProductPage = mainProductAndServicesPage.clickSearchBar(false);
 
 
         // Step 1
@@ -433,11 +433,11 @@ public class SearchTest extends AppBaseSteps {
         int searchPhrasesCount = 21;
 
         // Pre-conditions
-        SalesPage salesPage = loginAndGoTo(SalesPage.class);
+        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
 
         // Step 1
         log.step("Нажать на поисковую строку");
-        SearchProductPage searchProductPage = salesPage.clickSearchBar(false);
+        SearchProductPage searchProductPage = mainProductAndServicesPage.clickSearchBar(false);
         searchProductPage.shouldFirstSearchMsgBeDisplayed();
 
         // Step 2
@@ -450,7 +450,7 @@ public class SearchTest extends AppBaseSteps {
         // Step 3
         log.step("Перезайти в поиск");
         searchProductPage.backToSalesPage();
-        searchProductPage = salesPage.clickSearchBar(true);
+        searchProductPage = mainProductAndServicesPage.clickSearchBar(true);
         searchProductPage.shouldSearchHistoryListIs(searchPhrases);
 
         // Step 4
@@ -463,9 +463,9 @@ public class SearchTest extends AppBaseSteps {
     @Test(description = "C22790468 Гамма ЛМ. Отсутствие: действий с товаром, истории продаж, поставки", priority = 2)
     public void testC22790468() throws Exception {
         // Pre-conditions
-        SalesPage salesPage = loginAndGoTo(SalesPage.class);
+        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
 
-        SearchProductPage searchProductPage = salesPage.clickSearchBar(false);
+        SearchProductPage searchProductPage = mainProductAndServicesPage.clickSearchBar(false);
         FilterPage myShopFilterPage = searchProductPage.goToFilterPage();
 
         // Step 1
@@ -497,8 +497,8 @@ public class SearchTest extends AppBaseSteps {
     public void testC22789191() throws Exception {
         // Pre-conditions
         int countOfCheckedProducts = 3;
-        SalesPage salesPage = loginAndGoTo(SalesPage.class);
-        SearchProductPage searchProductPage = salesPage.clickSearchBar(false);
+        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
+        SearchProductPage searchProductPage = mainProductAndServicesPage.clickSearchBar(false);
 
         // Step 1
         log.step("Раскрыть модальное окно сортировки");
@@ -575,8 +575,8 @@ public class SearchTest extends AppBaseSteps {
                 sendRequestsSearchProductsBy(subclassParams, classParams, subdepartmentParams, departmentParams);
 
         // Pre-conditions
-        SalesPage salesPage = loginAndGoTo(SalesPage.class);
-        SearchProductPage searchProductPage = salesPage.clickSearchBar(true);
+        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
+        SearchProductPage searchProductPage = mainProductAndServicesPage.clickSearchBar(true);
 
         // Step 1
         log.step("Перейти на страницу выбора номенклатуры");
@@ -646,8 +646,8 @@ public class SearchTest extends AppBaseSteps {
         final String searchContext = "1";
 
         // Pre-conditions
-        SalesPage salesPage = loginAndGoTo(SalesPage.class);
-        SearchProductPage searchProductPage = salesPage.clickSearchBar(true);
+        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
+        SearchProductPage searchProductPage = mainProductAndServicesPage.clickSearchBar(true);
 
         // Step 1
         log.step("ввести в поисковую строку 1 цифру");
@@ -692,8 +692,8 @@ public class SearchTest extends AppBaseSteps {
                 sendRequestsSearchProductsBy(paginationParams);
 
         // Pre-conditions
-        SalesPage salesPage = loginAndGoTo(SalesPage.class);
-        SearchProductPage searchProductPage = salesPage.clickSearchBar(true);
+        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
+        SearchProductPage searchProductPage = mainProductAndServicesPage.clickSearchBar(true);
 
         // Step 1
         log.step("Введите неполное название или неполный ЛМ код товара");
@@ -752,8 +752,8 @@ public class SearchTest extends AppBaseSteps {
                 sendRequestsSearchProductsBy(supplierIdParam, defaultSearchParam);
 
         // Pre-conditions
-        SalesPage salesPage = loginAndGoTo(SalesPage.class);
-        SearchProductPage searchProductPage = salesPage.clickSearchBar(true);
+        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
+        SearchProductPage searchProductPage = mainProductAndServicesPage.clickSearchBar(true);
         NomenclatureSearchPage nomenclatureSearchPage = searchProductPage.goToNomenclatureWindow();
         nomenclatureSearchPage.returnBackNTimes(1);
         nomenclatureSearchPage.choseDepartmentId("00" + DEPT_ID, null, null, null);
@@ -848,8 +848,8 @@ public class SearchTest extends AppBaseSteps {
                 sendRequestsSearchServicesBy(servicesSearchParams, servicesSearchDepartmentParams, servicesSearchShortLmCodeParams, servicesSearchFullLmCodeParams, servicesSearchShortNameParams, servicesSearchFullNameParams);
 
         // Pre-conditions
-        SalesPage salesPage = loginAndGoTo(SalesPage.class);
-        SearchProductPage searchProductPage = salesPage.clickSearchBar(true);
+        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
+        SearchProductPage searchProductPage = mainProductAndServicesPage.clickSearchBar(true);
 
         // Step 1
         log.step("Перейти на страницу выбора номенклатуры и выполнить поиск по всем отделам");
@@ -924,8 +924,8 @@ public class SearchTest extends AppBaseSteps {
                 sendRequestsSearchProductsBy(defaultParams);
 
         // Pre-conditions
-        SalesPage salesPage = loginAndGoTo(SalesPage.class);
-        SearchProductPage searchProductPage = salesPage.clickSearchBar(true);
+        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
+        SearchProductPage searchProductPage = mainProductAndServicesPage.clickSearchBar(true);
 
         // Step 1
         log.step("Выбрать фильтр \"Вся гамма ЛМ\"");
@@ -991,8 +991,8 @@ public class SearchTest extends AppBaseSteps {
         final String DEPT_ID = "3";
 
         // Pre-conditions
-        SalesPage salesPage = loginAndGoTo(SalesPage.class);
-        SearchProductPage searchProductPage = salesPage.clickSearchBar(true);
+        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
+        SearchProductPage searchProductPage = mainProductAndServicesPage.clickSearchBar(true);
         FilterPage myShopFilterPage = searchProductPage.goToFilterPage();
 
         // Step 1
@@ -1030,7 +1030,7 @@ public class SearchTest extends AppBaseSteps {
 
         // Step 8
         log.step("Перейти на страницу поиска");
-        salesPage.clickSearchBar(true);
+        mainProductAndServicesPage.clickSearchBar(true);
         searchProductPage.verifyRequiredElements()
                 .shouldFilterCounterEquals(0)
                 .shouldSelectedNomenclatureIs(EnvConstants.BASIC_USER_DEPARTMENT_ID, false);
@@ -1075,8 +1075,8 @@ public class SearchTest extends AppBaseSteps {
                 sendRequestsSearchProductsBy(avsParam, avsNeqNullParam);
 
         // Pre-conditions
-        SalesPage salesPage = loginAndGoTo(SalesPage.class);
-        SearchProductPage searchProductPage = salesPage.clickSearchBar(true);
+        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
+        SearchProductPage searchProductPage = mainProductAndServicesPage.clickSearchBar(true);
         FilterPage myShopFilterPage = searchProductPage.goToFilterPage();
 
         // Step 1
@@ -1146,8 +1146,8 @@ public class SearchTest extends AppBaseSteps {
                 sendRequestsSearchProductsBy(myShopFilterParam, allGammaFilterParam);
 
         // Pre-conditions
-        SalesPage salesPage = loginAndGoTo(SalesPage.class);
-        SearchProductPage searchProductPage = salesPage.clickSearchBar(true);
+        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
+        SearchProductPage searchProductPage = mainProductAndServicesPage.clickSearchBar(true);
         FilterPage myShopFilterPage = searchProductPage.goToFilterPage();
 
         // Step 1
@@ -1220,8 +1220,8 @@ public class SearchTest extends AppBaseSteps {
         filtersData.setTop(FilterPage.TOP + " 0");
 
         // Pre-conditions
-        SalesPage salesPage = loginAndGoTo(SalesPage.class);
-        SearchProductPage searchProductPage = salesPage.clickSearchBar(true);
+        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
+        SearchProductPage searchProductPage = mainProductAndServicesPage.clickSearchBar(true);
         FilterPage filterPage = searchProductPage.goToFilterPage();
 
         // Step 1
@@ -1286,8 +1286,8 @@ public class SearchTest extends AppBaseSteps {
                 sendRequestsSearchProductsBy(allGammaLmDescParams, allGammaLmAscParams, myShopLmAscParams, myShopStockAscParams);
 
         // Pre-conditions
-        SalesPage salesPage = loginAndGoTo(SalesPage.class);
-        SearchProductPage searchProductPage = salesPage.clickSearchBar(true);
+        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
+        SearchProductPage searchProductPage = mainProductAndServicesPage.clickSearchBar(true);
         FilterPage filterPage = searchProductPage.goToFilterPage();
 
         // Step 1
@@ -1342,8 +1342,8 @@ public class SearchTest extends AppBaseSteps {
         final String TOP = "0";
 
         // Pre-conditions
-        SalesPage salesPage = loginAndGoTo(SalesPage.class);
-        SearchProductPage searchProductPage = salesPage.clickSearchBar(true);
+        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
+        SearchProductPage searchProductPage = mainProductAndServicesPage.clickSearchBar(true);
 
         // Step 1
         log.step("Перейти на страницу выбора фильтров");

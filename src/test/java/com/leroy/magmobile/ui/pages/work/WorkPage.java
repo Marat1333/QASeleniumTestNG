@@ -1,15 +1,15 @@
 package com.leroy.magmobile.ui.pages.work;
 
 import com.leroy.constants.MagMobElementTypes;
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
+import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import io.qameta.allure.Step;
 
-public class WorkPage extends BaseAppPage {
+public class WorkPage extends CommonMagMobilePage {
 
-    public WorkPage(TestContext context) {
+    public WorkPage(Context context) {
         super(context);
     }
 

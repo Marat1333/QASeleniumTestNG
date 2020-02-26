@@ -85,4 +85,8 @@ public class CustomAssert extends BaseCustomAssert {
         super.logIsElementImageMatches(elem, pictureName, false);
     }
 
+    public void isElementImageMatches(Element elem, String pictureName, Double expectedPercentage) {
+        super.logIsElementImageMatches(elem, pictureName, expectedPercentage, false);
+    }
+
 }

@@ -1,13 +1,12 @@
 package com.leroy.magmobile.ui.pages.sales.product_and_service;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.common.SearchProductPage;
+import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.sales.basket.BasketStep1Page;
 import io.qameta.allure.Step;
 
@@ -23,7 +22,7 @@ public class AddServicePage extends CommonMagMobilePage {
         public static final String EMPTY_TOTAL_PRICE_VALUE = "— ₽";
     }
 
-    public AddServicePage(TestContext context) {
+    public AddServicePage(Context context) {
         super(context);
     }
 

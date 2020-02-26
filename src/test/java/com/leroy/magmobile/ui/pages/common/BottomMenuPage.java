@@ -1,19 +1,17 @@
 package com.leroy.magmobile.ui.pages.common;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.more.MorePage;
-import com.leroy.magmobile.ui.pages.more.UserProfilePage;
-import com.leroy.magmobile.ui.pages.sales.SalesPage;
+import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
 import com.leroy.magmobile.ui.pages.support.SupportPage;
 import com.leroy.magmobile.ui.pages.work.WorkPage;
 import io.qameta.allure.Step;
 
-public class BottomMenuPage extends BaseAppPage {
+public class BottomMenuPage extends CommonMagMobilePage {
 
-    public BottomMenuPage(TestContext context) {
+    public BottomMenuPage(Context context) {
         super(context);
     }
 
@@ -32,9 +30,9 @@ public class BottomMenuPage extends BaseAppPage {
     /* ------------------------- ACTION STEPS -------------------------- */
 
     @Step("Перейдите в раздел 'Продажи'")
-    public SalesPage goToSales() {
+    public MainProductAndServicesPage goToSales() {
         salesBtn.click();
-        return new SalesPage(context);
+        return new MainProductAndServicesPage(context);
     }
 
     @Step("Перейдите в раздел 'Работа'")
