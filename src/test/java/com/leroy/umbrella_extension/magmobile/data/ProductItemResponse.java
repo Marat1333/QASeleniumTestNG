@@ -18,7 +18,7 @@ public class ProductItemResponse extends ResponseItem{
     private String priceCategory;
     private Boolean ctm;
     private Boolean top1000;
-    private Integer availableStock;
+    private Float availableStock;
     private Boolean topEM;
     private Integer top;
     private String supCode;
