@@ -96,7 +96,7 @@ public class SalesDocApiTest extends BaseProjectTest {
                 equalTo(SalesDocumentsConst.States.DRAFT.getApiVal()));
     }
 
-    @Test(description = "C3232448 SalesDoc product search")
+    @Test(description = "C3232448 SalesDoc product GET")
     public void testSalesDocProductGET() {
         if (salesDocument == null)
             throw new IllegalArgumentException("No information about fullDocId");
