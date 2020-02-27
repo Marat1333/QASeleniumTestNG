@@ -1,7 +1,9 @@
 package com.leroy.magmobile.api.tests;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.leroy.constants.EnvConstants;
+import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.constants.StatusCodes;
 import com.leroy.magmobile.api.SessionData;
 import com.leroy.magmobile.api.tests.common.BaseProjectTest;
@@ -10,29 +12,38 @@ import com.leroy.umbrella_extension.magmobile.MagMobileClient;
 import com.leroy.umbrella_extension.magmobile.data.ProductItemResponse;
 import com.leroy.umbrella_extension.magmobile.data.estimate.ProductOrderData;
 import com.leroy.umbrella_extension.magmobile.data.estimate.ProductOrderDataList;
-import com.leroy.umbrella_extension.magmobile.data.sales.SalesDocumentResponse;
+import com.leroy.umbrella_extension.magmobile.data.sales.SalesDocumentResponseData;
 import com.leroy.umbrella_extension.magmobile.requests.GetCatalogSearch;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import ru.leroymerlin.qa.core.base.TestCase;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
+import static org.hamcrest.Matchers.*;
 
 public class SalesDocApiTest extends BaseProjectTest {
 
     @Inject
-    private MagMobileClient magMobileClient;
+    private Provider<MagMobileClient> magMobileClient;
 
     @Inject
     private AuthClient authClient;
 
+
     private String productLmCode;
+    private String serviceLmCode;
+    private SalesDocumentResponseData salesDocument;
+
+
+    //TODO Вынести в какой-нибудь helper:
+
+    // Получить ЛМ код для услуги
+    protected String getAnyLmCodeOfService() {
+        return "49055102";
+    }
+
 
     // Получить ЛМ код для обычного продукта без специфичных опций
     protected List<String> getAnyLmCodesProductWithoutSpecificOptions(SessionData sessionData,
@@ -42,7 +53,7 @@ public class SalesDocApiTest extends BaseProjectTest {
                 .setShopId(sessionData.getUserShopId())
                 .setTopEM(false)
                 .setHasAvailableStock(hasAvailableStock);
-        List<ProductItemResponse> items = magMobileClient.searchProductsBy(params).asJson().getItems();
+        List<ProductItemResponse> items = magMobileClient.get().searchProductsBy(params).asJson().getItems();
         List<String> resultList = new ArrayList<>();
         int i = 0;
         for (ProductItemResponse item : items) {
@@ -66,24 +77,38 @@ public class SalesDocApiTest extends BaseProjectTest {
                 EnvConstants.BASIC_USER_PASS));
         productLmCode = getAnyLmCodesProductWithoutSpecificOptions(
                 sessionData, 1, false).get(0);
+        serviceLmCode = getAnyLmCodeOfService();
     }
 
-    @TestCase(111)
-    @Test(description = "")
-    public void test() {
-        log.step("Step 1");
+    @Test(description = "C3232445 SalesDoc add product")
+    public void testSalesDocAddProduct() {
         ProductOrderData productOrderData = new ProductOrderData();
         productOrderData.setLmCode(productLmCode);
         productOrderData.setQuantity((double) new Random().nextInt(6) + 1);
-        Response<SalesDocumentResponse> resp = magMobileClient.createSalesDocProducts(sessionData,
+        Response<SalesDocumentResponseData> resp = magMobileClient.get().createSalesDocProducts(sessionData,
                 new ProductOrderDataList(Collections.singletonList(productOrderData)));
-        assertThat(resp.getStatusCode(), is(StatusCodes.ST_500_ERROR));
-        String s = "";
+        assertThat(resp.asString(), resp.getStatusCode(), equalTo(StatusCodes.ST_200_OK));
+        salesDocument = resp.asJson();
+        assertThat("docId field", salesDocument.getDocId(), not(isEmptyOrNullString()));
+        assertThat("fullDocId field", salesDocument.getFullDocId(),
+                allOf(not(isEmptyOrNullString()), endsWith(salesDocument.getDocId())));
+        assertThat("Document Status", salesDocument.getSalesDocStatus(),
+                equalTo(SalesDocumentsConst.States.DRAFT.getApiVal()));
     }
 
-    @AfterMethod
-    private void af() {
-        String s = "";
+    @Test(description = "C3232448 SalesDoc product search")
+    public void testSalesDocProductGET() {
+        if (salesDocument == null)
+            throw new IllegalArgumentException("No information about fullDocId");
+        Response<SalesDocumentResponseData> resp = magMobileClient.get()
+                .getSalesDocProductsByFullDocId(salesDocument.getFullDocId());
+        SalesDocumentResponseData data = resp.asJson();
+        assertThatResponseIsOK(resp);
+        assertThat("FullDocId", data.getFullDocId(), equalTo(salesDocument.getFullDocId()));
+        assertThat("DocId", data.getDocId(), equalTo(salesDocument.getDocId()));
+        assertThat("Document status", data.getSalesDocStatus(), equalTo(salesDocument.getSalesDocStatus()));
+        assertThat("products", data.getProducts(), hasSize(1));
+        assertThat("Product #1", data.getProducts().get(0).getLmCode(), equalTo(productLmCode));
     }
 
 }
