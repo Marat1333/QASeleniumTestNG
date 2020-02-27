@@ -1,17 +1,15 @@
 package com.leroy.umbrella_extension.magmobile.data.estimate;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.leroy.umbrella_extension.magmobile.data.ProductItemResponse;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class ProductOrderData {
+public class ProductOrderData extends ProductItemResponse {
 
     private String type = "PRODUCT";
     private Double quantity;
-    private Double price;
-    private String lmCode;
     private String lineId;
-    private Double availableStock;
 
 }

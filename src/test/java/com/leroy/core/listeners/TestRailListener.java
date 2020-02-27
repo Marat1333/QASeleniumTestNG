@@ -4,6 +4,8 @@ import com.leroy.core.configuration.Log;
 import com.leroy.core.testrail.TestRailClient;
 import com.leroy.core.testrail.models.ResultModel;
 import com.leroy.core.testrail.models.StepResultModel;
+import org.apache.commons.lang3.StringUtils;
+import org.testng.IInvokedMethod;
 import org.testng.ISuite;
 import org.testng.ITestResult;
 import org.testng.Reporter;
@@ -27,47 +29,62 @@ public class TestRailListener extends Listener {
         String runName = System.getProperty("mRun");
         String sSuiteId = System.getProperty("mSuite");
         String sProjectId = System.getProperty("mProject");
-         if(!Strings.isNullOrEmpty(sSuiteId) && !Strings.isNullOrEmpty(sProjectId)) {
-             try {
-                 long suiteId = Long.parseLong(sSuiteId);
-                 long projectId = Long.parseLong(sProjectId);
-                 //long SUITE_ID = 258L;
-                 //long PROJECT_ID = 10L;
-                 try {
-                     if (Strings.isNotNullAndNotEmpty(planName) && Strings.isNotNullAndNotEmpty(runName)) {
-                         runId = TestRailClient.findOrCreateNewPlanRun(planName, runName, projectId, suiteId);
-                     } else if (Strings.isNotNullAndNotEmpty(runName)) {
-                         runId = TestRailClient.findOrCreateNewRun(runName, projectId, suiteId);
-                     }
-                 } catch (Exception err) {
-                     Log.error(err.getMessage());
-                 }
-             } catch (NumberFormatException e) {
-                 Log.error(e.getMessage());
-             }
-         }
+        if (!Strings.isNullOrEmpty(sSuiteId) && !Strings.isNullOrEmpty(sProjectId)) {
+            try {
+                long suiteId = Long.parseLong(sSuiteId);
+                long projectId = Long.parseLong(sProjectId);
+                //long SUITE_ID = 258L;
+                //long PROJECT_ID = 10L;
+                try {
+                    if (Strings.isNotNullAndNotEmpty(planName) && Strings.isNotNullAndNotEmpty(runName)) {
+                        runId = TestRailClient.findOrCreateNewPlanRun(planName, runName, projectId, suiteId);
+                    } else if (Strings.isNotNullAndNotEmpty(runName)) {
+                        runId = TestRailClient.findOrCreateNewRun(runName, projectId, suiteId);
+                    }
+                } catch (Exception err) {
+                    Log.error(err.getMessage());
+                }
+            } catch (NumberFormatException e) {
+                Log.error(e.getMessage());
+            }
+        }
     }
 
-    // This belongs to ITestListener and will execute only when the test method is passed
     @Override
-    public void onTestSuccess(ITestResult arg0) {
-        super.onTestSuccess(arg0);
-        addTestResult(arg0);
+    public void afterInvocation(IInvokedMethod arg0, ITestResult arg1) {
+        super.afterInvocation(arg0, arg1);
+        if (arg0.isTestMethod()) {
+            updateLastStepResult(arg1);
+            addTestResult(arg1);
+        }
     }
 
-    // This belongs to ITestListener and will execute only when the test method is failed
-    @Override
-    public void onTestFailure(ITestResult arg0) {
-        super.onTestFailure(arg0);
-        addTestResult(arg0);
-    }
-
-    // This belongs to ITestListener and will execute only if any of the main
-    // test(@Test) get skipped
-    @Override
-    public void onTestSkipped(ITestResult arg0) {
-        super.onTestSkipped(arg0);
-        addTestResult(arg0);
+    private void updateLastStepResult(ITestResult testResult) {
+        String sCaseId = getTestCaseId(testResult);
+        List<StepResultModel> stepResultList = STEPS_INFO.get(sCaseId);
+        if (stepResultList != null && stepResultList.size() > 0) {
+            StepResultModel stepResultModel = stepResultList.get(stepResultList.size() - 1);
+            if (testResult.getStatus() == ITestResult.FAILURE && testResult.getThrowable() != null) {
+                stepResultModel.setStatus_id(ResultModel.ST_FAILED);
+                String msg = testResult.getThrowable().getMessage();
+                if (msg.contains("Expected")) {
+                    String reason = StringUtils.substringBefore(msg, "Expected")
+                            .replaceAll("\n", "").trim();
+                    String expectedValue = StringUtils.substringBetween(msg, "Expected:", "but:")
+                            .replaceAll("\n", "").trim();
+                    String actualValue = StringUtils.substringAfter(msg, "but:")
+                            .replaceAll("\n", "").trim();
+                    stepResultModel.addActualResult(reason + " " +
+                            actualValue);
+                    stepResultModel.addExpectedResult(reason + " " + expectedValue);
+                } else {
+                    stepResultModel.addActualResult(msg);
+                }
+            } else {
+                if (stepResultModel != null)
+                    stepResultModel.setStatus_id(ResultModel.ST_PASSED);
+            }
+        }
     }
 
     private void addTestResult(ITestResult testResult) {

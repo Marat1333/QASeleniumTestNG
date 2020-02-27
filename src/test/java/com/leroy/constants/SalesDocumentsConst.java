@@ -3,9 +3,28 @@ package com.leroy.constants;
 public class SalesDocumentsConst {
 
     // Состояния документа
-    public static final String CREATED_STATE = "Создан";
-    public static final String AUTO_PROCESSING_STATE = "Автообработка";
-    public static final String TRANSFORMED_STATE = "Преобразован";
+    public enum States {
+        CREATED("", "Создан"),
+        AUTO_PROCESSING("","Автообработка"),
+        TRANSFORMED("","Преобразован"),
+        DRAFT("DRAFT","Черновик");
+
+        private String uiVal;
+        private String apiVal;
+
+        States(String apiVal, String uiVal) {
+            this.apiVal = apiVal;
+            this.uiVal = uiVal;
+        }
+
+        public String getUiVal() {
+            return uiVal;
+        }
+
+        public String getApiVal() {
+            return apiVal;
+        }
+    }
 
     // Типы документов
     public static final String ESTIMATE_TYPE = "Смета";
