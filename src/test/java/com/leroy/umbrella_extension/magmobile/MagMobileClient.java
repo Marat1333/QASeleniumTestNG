@@ -1,5 +1,6 @@
 package com.leroy.umbrella_extension.magmobile;
 
+import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.magmobile.api.SessionData;
 import com.leroy.umbrella_extension.common.LegoBaseClient;
 import com.leroy.umbrella_extension.magmobile.data.CartData;
@@ -75,7 +76,13 @@ public class MagMobileClient extends LegoBaseClient {
     // ---------  SalesDoc & Orders -------------------- //
 
     // Lego_Salesdoc_Parameters_Update
-    public Response<SalesDocumentResponseData> updateSalesDocParameters(PutSalesDocParametersUpdate params) {
+    public Response<SalesDocumentResponseData> cancelSalesDoc(SessionData sessionData, String fullDocId) {
+        PutSalesDocParametersUpdate params = new PutSalesDocParametersUpdate();
+        params.setAccessToken(sessionData.getAccessToken())
+                .setLdap(sessionData.getUserLdap())
+                .setShopId(sessionData.getUserShopId())
+                .setFullDocId(fullDocId)
+                .setStatus(SalesDocumentsConst.States.CANCELLED.getApiVal());
         return execute(params.build(gatewayUrl), SalesDocumentResponseData.class);
     }
 

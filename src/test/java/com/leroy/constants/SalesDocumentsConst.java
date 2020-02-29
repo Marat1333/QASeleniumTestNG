@@ -7,6 +7,7 @@ public class SalesDocumentsConst {
         CREATED("", "Создан"),
         AUTO_PROCESSING("","Автообработка"),
         TRANSFORMED("","Преобразован"),
+        CANCELLED("CANCELLED", "Отменен"),
         DRAFT("DRAFT","Черновик");
 
         private String uiVal;

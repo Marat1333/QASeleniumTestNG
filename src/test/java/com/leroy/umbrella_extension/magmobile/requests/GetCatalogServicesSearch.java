@@ -5,6 +5,15 @@ import ru.leroymerlin.qa.core.clients.base.RequestBuilder;
 
 @Method(value = "GET", path = "/catalog/services/search")
 public class GetCatalogServicesSearch extends RequestBuilder<GetCatalogServicesSearch> {
+
+    public GetCatalogServicesSearch setPageSize(Integer val) {
+        return queryParam("pageSize", val);
+    }
+
+    public GetCatalogServicesSearch setStartFrom(Integer val) {
+        return queryParam("startFrom", val);
+    }
+
     public GetCatalogServicesSearch setLmCode(String val) {
         return queryParam("lmCode", val);
     }

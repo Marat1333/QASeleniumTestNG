@@ -1,6 +1,7 @@
 package com.leroy.umbrella_extension.magmobile.data.sales;
 
 import com.leroy.umbrella_extension.magmobile.data.estimate.ProductOrderData;
+import com.leroy.umbrella_extension.magmobile.data.estimate.ServiceOrderData;
 import lombok.Data;
 
 import java.util.List;
@@ -13,5 +14,7 @@ public class SalesDocumentResponseData {
     private String pinCode;
     private String comment;
     private List<ProductOrderData> products;
+    private List<ServiceOrderData> services;
     private Double docPriceSum;
+    private String newServiceId;
 }

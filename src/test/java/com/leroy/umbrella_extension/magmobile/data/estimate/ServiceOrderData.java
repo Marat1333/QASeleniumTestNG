@@ -10,6 +10,20 @@ import lombok.EqualsAndHashCode;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ServiceOrderData extends ServiceItemResponse {
 
+    public ServiceOrderData() {
+        this.quantity = 1.0;
+    }
+
+    public ServiceOrderData(ServiceItemResponse serviceItemResponse) {
+        this();
+        setLmCode(serviceItemResponse.getLmCode());
+        setTitle(serviceItemResponse.getTitle());
+        setBarCode(serviceItemResponse.getBarCode());
+        setUoM(serviceItemResponse.getUoM());
+        setGroupId(serviceItemResponse.getGroupId());
+    }
+
+    private String id;
     private Double quantity;
     private Double price;
     private Double priceSum;

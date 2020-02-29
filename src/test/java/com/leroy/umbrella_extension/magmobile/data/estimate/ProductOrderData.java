@@ -8,7 +8,15 @@ import lombok.EqualsAndHashCode;
 @Data
 public class ProductOrderData extends ProductItemResponse {
 
-    private String type = "PRODUCT";
+    public ProductOrderData() {}
+    public ProductOrderData(ProductItemResponse productItemResponse) {
+        this.setLmCode(productItemResponse.getLmCode());
+        this.setBarCode(productItemResponse.getBarCode());
+        this.setTitle(productItemResponse.getTitle());
+        // to be continued if needed
+    }
+
+    private final String type = "PRODUCT";
     private Double quantity;
     private String lineId;
 
