@@ -28,6 +28,26 @@ public class SalesDocumentsConst {
     }
 
     // Типы документов
-    public static final String ESTIMATE_TYPE = "Смета";
-    public static final String BASKET_TYPE = "Корзина";
+    public enum Types {
+        SALE("SALE", ""),
+        CART("CART","Корзина"),
+        QUOTATION("QUOTATION","Смета"),
+        ORDER("ORDER","");
+
+        private String uiVal;
+        private String apiVal;
+
+        Types(String apiVal, String uiVal) {
+            this.apiVal = apiVal;
+            this.uiVal = uiVal;
+        }
+
+        public String getUiVal() {
+            return uiVal;
+        }
+
+        public String getApiVal() {
+            return apiVal;
+        }
+    }
 }

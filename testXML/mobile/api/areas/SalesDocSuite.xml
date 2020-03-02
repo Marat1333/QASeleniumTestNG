@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite name="API Sales Documents Suite">
+<suite name="API Sales Documents Suite" parallel="tests">
 
     <listeners>
         <listener class-name="com.leroy.core.listeners.TestRailListener"/>
@@ -12,6 +12,7 @@
                 <methods>
                     <include name="testSalesDocAddProduct"/>
                     <include name="testSalesDocProductGET"/>
+                    <include name="testSalesDocUpdateQuantityForTheSameProduct"/>
                     <include name="testSalesDocUpdateParameterCancel"/>
 <!--                    <include name="testSalesDocUpdateProduct"/>-->
 <!--                    <include name="testSalesDocDeleteProduct"/>-->

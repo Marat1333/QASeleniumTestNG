@@ -10,6 +10,8 @@ import java.util.List;
 public class SalesDocumentResponseData {
     private String docId;
     private String fullDocId;
+    private String docType;
+    private String shopId;
     private String salesDocStatus;
     private String pinCode;
     private String comment;

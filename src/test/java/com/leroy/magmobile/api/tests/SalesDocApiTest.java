@@ -49,8 +49,8 @@ public class SalesDocApiTest extends BaseProjectTest {
 
     @Test(description = "C3232445 SalesDoc add product")
     public void testSalesDocAddProduct() {
-        productOrder1 = new ProductOrderData(FindTestDataHelper.getProducts(magMobileClient.get(), sessionData,
-                1, new FiltersData(FilterPage.MY_SHOP_FRAME_TYPE)).get(0));
+        productOrder1 = new ProductOrderData(FindTestDataHelper.getProducts(magMobileClient.get(),
+                sessionData.getUserShopId(), 1, new FiltersData(FilterPage.MY_SHOP_FRAME_TYPE)).get(0));
         productOrder1.setQuantity((double) new Random().nextInt(6) + 1);
         Response<SalesDocumentResponseData> resp = magMobileClient.get().createSalesDocProducts(sessionData,
                 new ProductOrderDataList(Collections.singletonList(productOrder1)));
@@ -66,7 +66,7 @@ public class SalesDocApiTest extends BaseProjectTest {
     @Test(description = "C3232446 SalesDoc add services")
     public void testSalesDocAddService() {
         serviceOrder1 = new ServiceOrderData(FindTestDataHelper.getServices(
-                magMobileClient.get(), sessionData, 1).get(0));
+                magMobileClient.get(), sessionData.getUserShopId(), 1).get(0));
         serviceOrder1.setPrice(446.0);
         Response<SalesDocumentResponseData> resp = magMobileClient.get().createSalesDocProducts(sessionData,
                 new ServiceOrderDataList(Collections.singletonList(serviceOrder1)));
@@ -79,10 +79,10 @@ public class SalesDocApiTest extends BaseProjectTest {
                 equalTo(SalesDocumentsConst.States.DRAFT.getApiVal()));
     }
 
-    @Test(description = "C3232448 SalesDoc product GET")
+    @Test(description = "C3232448 SalesDoc product GET", dependsOnMethods = {"testSalesDocAddProduct"})
     public void testSalesDocProductGET() {
         if (salesDocument == null)
-            throw new IllegalArgumentException("No information about fullDocId");
+            throw new IllegalArgumentException("SalesDoc hasn't been created");
         Response<SalesDocumentResponseData> resp = magMobileClient.get()
                 .getSalesDocProductsByFullDocId(salesDocument.getFullDocId());
         SalesDocumentResponseData data = resp.asJson();
@@ -100,7 +100,7 @@ public class SalesDocApiTest extends BaseProjectTest {
     @Test(description = "C22898131 SalesDoc service GET")
     public void testSalesDocServiceGET() {
         if (salesDocument == null)
-            throw new IllegalArgumentException("No information about fullDocId");
+            throw new IllegalArgumentException("SalesDoc hasn't been created");
         Response<SalesDocumentResponseData> resp = magMobileClient.get()
                 .getSalesDocProductsByFullDocId(salesDocument.getFullDocId());
         SalesDocumentResponseData data = resp.asJson();
@@ -129,10 +129,21 @@ public class SalesDocApiTest extends BaseProjectTest {
                 actualServiceOrderData.getGroupId(), is(serviceOrder1.getGroupId()));
     }
 
+    @Test(description = "C22897826 SalesDoc UPDATE quantity for the same product",
+            dependsOnMethods = {"testSalesDocAddProduct"})
+    public void testSalesDocUpdateQuantityForTheSameProduct() {
+        productOrder1.setQuantity(productOrder1.getQuantity() + 1);
+        Response<SalesDocumentResponseData> resp = magMobileClient.get().updateSalesDocProducts(
+                sessionData,  salesDocument.getFullDocId(),
+                new ProductOrderDataList(Collections.singletonList(productOrder1)));
+        assertThatResponseIsOK(resp);
+        // TODO
+    }
+
     @Test(description = "C22898134 SalesDoc UPDATE parameter - Cancel")
     public void testSalesDocUpdateParameterCancel() {
         if (salesDocument == null)
-            throw new IllegalArgumentException("No information about fullDocId");
+            throw new IllegalArgumentException("SalesDoc hasn't been created");
         Response<SalesDocumentResponseData> resp = magMobileClient.get().cancelSalesDoc(
                 sessionData,salesDocument.getFullDocId());
         assertThatResponseIsOK(resp);

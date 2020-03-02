@@ -64,7 +64,7 @@ public class CartTest extends SalesBaseTest {
                     LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
             SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
             salesDocumentsPage.searchForDocumentByTextAndSelectIt(
-                    SalesDocumentsConst.BASKET_TYPE);
+                    SalesDocumentsConst.Types.CART.getUiVal());
         } // TODO через API
         Basket35Page basket35Page = new Basket35Page(context);
         int productCountInBasket = basket35Page.getCountOfOrderCards();

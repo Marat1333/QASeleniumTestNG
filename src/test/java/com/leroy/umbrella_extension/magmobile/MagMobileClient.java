@@ -14,10 +14,12 @@ import com.leroy.umbrella_extension.magmobile.data.sales.DiscountData;
 import com.leroy.umbrella_extension.magmobile.data.sales.SalesDocumentListResponse;
 import com.leroy.umbrella_extension.magmobile.data.sales.SalesDocumentResponseData;
 import com.leroy.umbrella_extension.magmobile.requests.*;
-import com.leroy.umbrella_extension.magmobile.requests.salesdoc.*;
+import com.leroy.umbrella_extension.magmobile.requests.salesdoc.GetSalesDocDiscount;
+import com.leroy.umbrella_extension.magmobile.requests.salesdoc.PutSalesDocParametersUpdate;
 import com.leroy.umbrella_extension.magmobile.requests.salesdoc.products.GetSalesDocProducts;
 import com.leroy.umbrella_extension.magmobile.requests.salesdoc.products.PostSalesDocProducts;
 import com.leroy.umbrella_extension.magmobile.requests.salesdoc.products.PutSalesDocProducts;
+import com.leroy.umbrella_extension.magmobile.requests.salesdoc.search.GetSalesDocSearchV3;
 import org.json.simple.JSONObject;
 import ru.leroymerlin.qa.core.clients.base.Response;
 import ru.leroymerlin.qa.core.commons.annotations.Dependencies;
@@ -144,6 +146,18 @@ public class MagMobileClient extends LegoBaseClient {
                 .build(gatewayUrl), SalesDocumentResponseData.class);
     }
 
+    // Lego_salesdoc_search
+    public Response<SalesDocumentListResponse> searchForSalesDocumentBy(GetSalesDocSearchV3 params) {
+        return execute(params
+                .build(gatewayUrl), SalesDocumentListResponse.class);
+    }
+
+    public Response<SalesDocumentListResponse> getSalesDocumentsByPinCodeOrDocId(String pinCodeOrDocId) {
+        return execute(new GetSalesDocSearchV3()
+                .queryParam("pinCodeOrDocId", pinCodeOrDocId)
+                .build(gatewayUrl), SalesDocumentListResponse.class);
+    }
+
     //
     public Response<JSONObject> cancelOrder(String userLdap, String orderId) {
         JSONObject jsonObject = new JSONObject();
@@ -153,12 +167,6 @@ public class MagMobileClient extends LegoBaseClient {
                 .setUserLdap(userLdap)
                 .jsonBody(jsonObject)
                 .build(gatewayUrl), JSONObject.class);
-    }
-
-    public Response<SalesDocumentListResponse> getSalesDocumentsByPinCodeOrDocId(String pinCodeOrDocId) {
-        return execute(new SalesDocSearchGET()
-                .queryParam("pinCodeOrDocId", pinCodeOrDocId)
-                .build(gatewayUrl), SalesDocumentListResponse.class);
     }
 
     // Discount

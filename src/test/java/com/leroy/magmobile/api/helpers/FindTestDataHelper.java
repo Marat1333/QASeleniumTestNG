@@ -14,20 +14,20 @@ import java.util.List;
 
 public class FindTestDataHelper {
 
-    public static List<ServiceItemResponse> getServices(MagMobileClient client, SessionData sessionData,
+    public static List<ServiceItemResponse> getServices(MagMobileClient client, String shopId,
                                                         int necessaryCount) {
         GetCatalogServicesSearch params = new GetCatalogServicesSearch();
-        params.setShopId(sessionData.getUserShopId())
+        params.setShopId(shopId)
                 .setStartFrom(1)
                 .setPageSize(necessaryCount);
         return client.searchServicesBy(params).asJson().getItems();
     }
 
-    public static List<ProductItemResponse> getProducts(MagMobileClient client, SessionData sessionData,
+    public static List<ProductItemResponse> getProducts(MagMobileClient client, String shopId,
                                                         int necessaryCount, FiltersData filtersData) {
         String[] badLmCodes = {"10008698", "10008751"}; // Из-за отсутствия синхронизации бэков на тесте, мы можем получить некорректные данные
         GetCatalogSearch params = new GetCatalogSearch()
-                .setShopId(sessionData.getUserShopId())
+                .setShopId(shopId)
                 .setTopEM(filtersData.isTopEM())
                 .setHasAvailableStock(filtersData.isHasAvailableStock());
         List<ProductItemResponse> items = client.searchProductsBy(params).asJson().getItems();
