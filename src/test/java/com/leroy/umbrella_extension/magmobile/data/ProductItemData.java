@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ProductItemResponse extends ResponseItem{
+public class ProductItemData {
 
     private String lmCode;
     private String barCode;

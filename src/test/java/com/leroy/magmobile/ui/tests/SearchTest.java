@@ -16,7 +16,7 @@ import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.SimilarProductsPage;
 import com.leroy.magmobile.models.search.FiltersData;
 import com.leroy.umbrella_extension.magmobile.MagMobileClient;
-import com.leroy.umbrella_extension.magmobile.data.ProductItemListResponse;
+import com.leroy.umbrella_extension.magmobile.data.ProductData;
 import com.leroy.umbrella_extension.magmobile.data.ServiceItemListResponse;
 import com.leroy.umbrella_extension.magmobile.enums.CatalogSearchFields;
 import com.leroy.umbrella_extension.magmobile.enums.SortingOrder;
@@ -82,10 +82,10 @@ public class SearchTest extends AppBaseSteps {
                 .setStartFrom(1)
                 .setByBarCode(shortBarCode);
 
-        Response<ProductItemListResponse> lmResponce = apiClient.searchProductsBy(byLmParams);
-        Response<ProductItemListResponse> barcodeResponce = apiClient.searchProductsBy(byBarCodeParams);
-        Response<ProductItemListResponse> shortLmResponce = apiClient.searchProductsBy(byShortLmCodeParams);
-        Response<ProductItemListResponse> shortBarcodeResponce = apiClient.searchProductsBy(byShortBarCodeParams);
+        Response<ProductData> lmResponce = apiClient.searchProductsBy(byLmParams);
+        Response<ProductData> barcodeResponce = apiClient.searchProductsBy(byBarCodeParams);
+        Response<ProductData> shortLmResponce = apiClient.searchProductsBy(byShortLmCodeParams);
+        Response<ProductData> shortBarcodeResponce = apiClient.searchProductsBy(byShortBarCodeParams);
 
         // Pre-conditions
         MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
@@ -185,12 +185,12 @@ public class SearchTest extends AppBaseSteps {
                 .setDepartmentId(departmentId)
                 .setSupId(supplierSearchContext);
 
-        Response<ProductItemListResponse> gammaProductResponce = apiClient.searchProductsBy(gammaParam);
-        Response<ProductItemListResponse> topProductResponce = apiClient.searchProductsBy(topParam);
-        Response<ProductItemListResponse> bestPriceProductResponce = apiClient.searchProductsBy(bestPriceParam);
-        Response<ProductItemListResponse> orderedProductTypeProductResponce = apiClient.searchProductsBy(orderedProductTypeParam);
-        Response<ProductItemListResponse> supplierProductResponce = apiClient.searchProductsBy(supplierIdParam);
-        Response<ProductItemListResponse> avsDateProductResponce = apiClient.searchProductsBy(avsParam);
+        Response<ProductData> gammaProductResponce = apiClient.searchProductsBy(gammaParam);
+        Response<ProductData> topProductResponce = apiClient.searchProductsBy(topParam);
+        Response<ProductData> bestPriceProductResponce = apiClient.searchProductsBy(bestPriceParam);
+        Response<ProductData> orderedProductTypeProductResponce = apiClient.searchProductsBy(orderedProductTypeParam);
+        Response<ProductData> supplierProductResponce = apiClient.searchProductsBy(supplierIdParam);
+        Response<ProductData> avsDateProductResponce = apiClient.searchProductsBy(avsParam);
 
 
         // Pre-conditions
@@ -299,10 +299,10 @@ public class SearchTest extends AppBaseSteps {
                 .setStartFrom(1)
                 .setDepartmentId(departmentId);
 
-        Response<ProductItemListResponse> avsDateProductResponce = apiClient.searchProductsBy(avsParam);
-        Response<ProductItemListResponse> gammaProductResponce = apiClient.searchProductsBy(gammaParam);
-        Response<ProductItemListResponse> ctmProductResponce = apiClient.searchProductsBy(ctmParam);
-        Response<ProductItemListResponse> commonProductTypeProductResponce = apiClient.searchProductsBy(commonProductTypeParam);
+        Response<ProductData> avsDateProductResponce = apiClient.searchProductsBy(avsParam);
+        Response<ProductData> gammaProductResponce = apiClient.searchProductsBy(gammaParam);
+        Response<ProductData> ctmProductResponce = apiClient.searchProductsBy(ctmParam);
+        Response<ProductData> commonProductTypeProductResponce = apiClient.searchProductsBy(commonProductTypeParam);
 
         // Pre-conditions
         MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
@@ -540,10 +540,10 @@ public class SearchTest extends AppBaseSteps {
                 .setPageSize(3)
                 .setDepartmentId(dept.replaceAll("^0+", ""));
 
-        Response<ProductItemListResponse> subclassNomenclatureResponce = apiClient.searchProductsBy(subclassParams);
-        Response<ProductItemListResponse> classNomenclatureResponce = apiClient.searchProductsBy(classParams);
-        Response<ProductItemListResponse> subdepartmentNomenclatureResponce = apiClient.searchProductsBy(subdepartmentParams);
-        Response<ProductItemListResponse> departmentNomenclatureResponce = apiClient.searchProductsBy(departmentParams);
+        Response<ProductData> subclassNomenclatureResponce = apiClient.searchProductsBy(subclassParams);
+        Response<ProductData> classNomenclatureResponce = apiClient.searchProductsBy(classParams);
+        Response<ProductData> subdepartmentNomenclatureResponce = apiClient.searchProductsBy(subdepartmentParams);
+        Response<ProductData> departmentNomenclatureResponce = apiClient.searchProductsBy(departmentParams);
 
         // Pre-conditions
         MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
@@ -655,7 +655,7 @@ public class SearchTest extends AppBaseSteps {
                 .setStartFrom(1)
                 .setPageSize(ENTITY_COUNT);
 
-        Response<ProductItemListResponse> paginationResponce = apiClient.searchProductsBy(paginationParams);
+        Response<ProductData> paginationResponce = apiClient.searchProductsBy(paginationParams);
 
         // Pre-conditions
         MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
@@ -713,8 +713,8 @@ public class SearchTest extends AppBaseSteps {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setStartFrom(1);
 
-        Response<ProductItemListResponse> suppliersResponce = apiClient.searchProductsBy(supplierIdParam);
-        Response<ProductItemListResponse> defaultParamsResponce = apiClient.searchProductsBy(defaultSearchParam);
+        Response<ProductData> suppliersResponce = apiClient.searchProductsBy(supplierIdParam);
+        Response<ProductData> defaultParamsResponce = apiClient.searchProductsBy(defaultSearchParam);
 
         // Pre-conditions
         MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
@@ -881,7 +881,7 @@ public class SearchTest extends AppBaseSteps {
         int entityCount = 3;
 
         GetCatalogSearch defaultParams = buildDefaultCatalogSearchParams().setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);
-        Response<ProductItemListResponse> defaultParamsResponce = apiClient.searchProductsBy(defaultParams);
+        Response<ProductData> defaultParamsResponce = apiClient.searchProductsBy(defaultParams);
 
         // Pre-conditions
         MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
@@ -1030,8 +1030,8 @@ public class SearchTest extends AppBaseSteps {
                 .setAvsDate("neq|null")
                 .setDepartmentId(DEPT_ID);
 
-        Response<ProductItemListResponse> avsParamsResponce = apiClient.searchProductsBy(avsParam);
-        Response<ProductItemListResponse> avsNeqNullParamsResponce = apiClient.searchProductsBy(avsNeqNullParam);
+        Response<ProductData> avsParamsResponce = apiClient.searchProductsBy(avsParam);
+        Response<ProductData> avsNeqNullParamsResponce = apiClient.searchProductsBy(avsNeqNullParam);
 
         // Pre-conditions
         MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
@@ -1099,8 +1099,8 @@ public class SearchTest extends AppBaseSteps {
                 .setGamma(GAMMA)
                 .setDepartmentId(DEPT_ID);
 
-        Response<ProductItemListResponse> myShopFilterResponce = apiClient.searchProductsBy(myShopFilterParam);
-        Response<ProductItemListResponse> allGammaFilterResponce = apiClient.searchProductsBy(allGammaFilterParam);
+        Response<ProductData> myShopFilterResponce = apiClient.searchProductsBy(myShopFilterParam);
+        Response<ProductData> allGammaFilterResponce = apiClient.searchProductsBy(allGammaFilterParam);
 
         // Pre-conditions
         MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
@@ -1237,10 +1237,10 @@ public class SearchTest extends AppBaseSteps {
                 .setStartFrom(1)
                 .setGamma(GAMMA);
 
-        Response<ProductItemListResponse> allGammaLmDescResponce = apiClient.searchProductsBy(allGammaLmDescParams);
-        Response<ProductItemListResponse> allGammaLmAscResponce = apiClient.searchProductsBy(allGammaLmAscParams);
-        Response<ProductItemListResponse> myShopLmAscResponce = apiClient.searchProductsBy(myShopLmAscParams);
-        Response<ProductItemListResponse> myShopStockAscResponce = apiClient.searchProductsBy(myShopStockAscParams);
+        Response<ProductData> allGammaLmDescResponce = apiClient.searchProductsBy(allGammaLmDescParams);
+        Response<ProductData> allGammaLmAscResponce = apiClient.searchProductsBy(allGammaLmAscParams);
+        Response<ProductData> myShopLmAscResponce = apiClient.searchProductsBy(myShopLmAscParams);
+        Response<ProductData> myShopStockAscResponce = apiClient.searchProductsBy(myShopStockAscParams);
 
         // Pre-conditions
         MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);

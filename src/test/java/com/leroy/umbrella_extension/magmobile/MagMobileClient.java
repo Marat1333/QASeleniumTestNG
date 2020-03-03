@@ -1,7 +1,7 @@
 package com.leroy.umbrella_extension.magmobile;
 
 import com.leroy.umbrella_extension.magmobile.data.CartData;
-import com.leroy.umbrella_extension.magmobile.data.ProductItemListResponse;
+import com.leroy.umbrella_extension.magmobile.data.ProductData;
 import com.leroy.umbrella_extension.magmobile.data.ServiceItemListResponse;
 import com.leroy.umbrella_extension.magmobile.data.estimate.EstimateData;
 import com.leroy.umbrella_extension.magmobile.data.estimate.ProductOrderData;
@@ -23,8 +23,8 @@ public class MagMobileClient extends BaseClient {
     private String gatewayUrl;
 
     // Searching
-    public Response<ProductItemListResponse> searchProductsBy(GetCatalogSearch params) {
-        return execute(params.build(gatewayUrl), ProductItemListResponse.class);
+    public Response<ProductData> searchProductsBy(GetCatalogSearch params) {
+        return execute(params.build(gatewayUrl), ProductData.class);
     }
 
     public Response<ServiceItemListResponse> searchServicesBy(GetCatalogServicesSearch params) {

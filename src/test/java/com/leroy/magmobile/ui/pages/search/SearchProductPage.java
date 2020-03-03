@@ -18,8 +18,8 @@ import com.leroy.magmobile.ui.pages.sales.widget.SearchProductAllGammaCardWidget
 import com.leroy.magmobile.ui.pages.sales.widget.SearchProductCardWidget;
 import com.leroy.magmobile.ui.pages.sales.widget.SearchServiceCardWidget;
 import com.leroy.magmobile.ui.pages.search.modal.SortPage;
-import com.leroy.umbrella_extension.magmobile.data.ProductItemListResponse;
-import com.leroy.umbrella_extension.magmobile.data.ProductItemResponse;
+import com.leroy.umbrella_extension.magmobile.data.ProductData;
+import com.leroy.umbrella_extension.magmobile.data.ProductItemData;
 import com.leroy.umbrella_extension.magmobile.data.ServiceItemListResponse;
 import com.leroy.umbrella_extension.magmobile.data.ServiceItemResponse;
 import io.qameta.allure.Step;
@@ -466,8 +466,8 @@ public class SearchProductPage extends CommonMagMobilePage {
     // API verifications
 
     @Step("Проверить, что фронт корректно отобразил ответ от сервера по запросу на catalog product")
-    public SearchProductPage shouldCatalogResponseEqualsContent(Response<ProductItemListResponse> response, CardType type, Integer entityCount) {
-        List<ProductItemResponse> productDataListFromResponse = response.asJson().getItems();
+    public SearchProductPage shouldCatalogResponseEqualsContent(Response<ProductData> response, CardType type, Integer entityCount) {
+        List<ProductItemData> productDataListFromResponse = response.asJson().getItems();
         List<ProductCardData> productCardDataListFromPage;
         switch (type) {
             case COMMON:
