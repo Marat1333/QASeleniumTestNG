@@ -43,8 +43,8 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
     public Iterator<E> iterator() {
         int i = 0;
         try {
-            i=getCount();
-            if (i>0){
+            i = getCount();
+            if (i > 0) {
                 initWebElementListIfNeeded();
             }
         } catch (Exception err) {
@@ -136,10 +136,8 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
         if (elementList == null)
             initElementList(timeout);
         else {
-            if (!isCacheLookup()) {
-                if (elementList.size() == 0 || elementList.get(0).isStaleReference()) {
-                    initElementList(0);
-                }
+            if (elementList.size() == 0 || elementList.get(0).isStaleReference()) {
+                initElementList(0);
             }
         }
     }
@@ -397,7 +395,6 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
 
     /**
      * Get content Text of all web elements in the list
-     *
      */
     public List<String> getTextList(String pageSource) throws Exception {
         initWebElementListIfNeeded();
@@ -420,6 +417,7 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
 
     /**
      * Wait for text list is changed
+     *
      * @param contentBefore
      * @return
      */
