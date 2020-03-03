@@ -21,7 +21,7 @@ import com.leroy.umbrella_extension.magmobile.data.ProductItemData;
 import com.leroy.umbrella_extension.magmobile.data.estimate.EstimateData;
 import com.leroy.umbrella_extension.magmobile.data.estimate.ProductOrderData;
 import com.leroy.umbrella_extension.magmobile.data.sales.SalesDocumentListResponse;
-import com.leroy.umbrella_extension.magmobile.data.sales.SalesDocumentResponse;
+import com.leroy.umbrella_extension.magmobile.data.sales.SalesDocumentResponseData;
 import com.leroy.umbrella_extension.magmobile.requests.GetCatalogSearch;
 import org.apache.commons.lang.RandomStringUtils;
 import org.json.simple.JSONObject;
@@ -122,7 +122,7 @@ public class SalesBaseTest extends AppBaseSteps {
                 Log.info("API: Не найдено ни одного документа с PIN кодом: " + generatedPinCode);
                 return generatedPinCode;
             }
-            List<SalesDocumentResponse> salesDocs = salesDocumentsResponse.getSalesDocuments();
+            List<SalesDocumentResponseData> salesDocs = salesDocumentsResponse.getSalesDocuments();
             if (!generatedPinCode.equals(salesDocs.get(0).getPinCode())) {
                 return generatedPinCode;
             }
@@ -263,7 +263,7 @@ public class SalesBaseTest extends AppBaseSteps {
         expectedSalesDocument.setPrice(NumberFormat.getInstance(Locale.FRANCE)
                 .parse(expectedTotalPrice).toString());
         expectedSalesDocument.setPin(testPinCode);
-        expectedSalesDocument.setDocumentState(SalesDocumentsConst.CREATED_STATE);
+        expectedSalesDocument.setDocumentState(SalesDocumentsConst.States.CREATED.getUiVal());
         expectedSalesDocument.setTitle("Из торгового зала");
         expectedSalesDocument.setNumber(documentNumber);
         submittedSalesDocumentPage.clickSubmitButton()

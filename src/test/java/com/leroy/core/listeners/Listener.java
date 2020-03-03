@@ -607,11 +607,13 @@ public class Listener implements ITestListener, ISuiteListener,
 
     protected String getTestCaseId(ITestResult arg0) {
         String result = "UNDEFINED_TEST_CASE_ID";
-        Matcher matcher = Pattern.compile(TEST_CASE_ID_PATTERN).matcher(arg0.getMethod().getDescription());
-        if (matcher.find()) {
-            result = matcher.group(0);
-        } else {
-            Log.error("Couldn't define CASE ID for '" + arg0.getMethod().getDescription() + "'");
+        if (arg0.getMethod().getDescription() != null) {
+            Matcher matcher = Pattern.compile(TEST_CASE_ID_PATTERN).matcher(arg0.getMethod().getDescription());
+            if (matcher.find()) {
+                result = matcher.group(0);
+            } else {
+                Log.error("Couldn't define CASE ID for '" + arg0.getMethod().getDescription() + "'");
+            }
         }
         return result;
     }

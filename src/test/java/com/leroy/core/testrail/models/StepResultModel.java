@@ -6,7 +6,8 @@ public class StepResultModel extends BaseTestRailModel {
     private String actual;
     private int status_id;
 
-    public StepResultModel() {}
+    public StepResultModel() {
+    }
 
     public StepResultModel(String content, String expected, String actual, int status_id) {
         this.content = content;
@@ -30,9 +31,9 @@ public class StepResultModel extends BaseTestRailModel {
     public void addExpectedResult(String expected) {
         expected = expected.replaceAll("\\n", "");
         if (this.expected == null || expected.isEmpty())
-            this.expected = expected;
+            this.expected = expected.replaceAll("\"", "\\\\\"");
         else
-            this.expected += "\\n" + expected;
+            this.expected += "\\n" + expected.replaceAll("\"", "\\\\\"");
     }
 
     public String getActual() {
@@ -42,9 +43,9 @@ public class StepResultModel extends BaseTestRailModel {
     public void addActualResult(String actual) {
         actual = actual.replaceAll("\\n", "");
         if (this.actual == null || actual.isEmpty())
-            this.actual = actual;
+            this.actual = actual.replaceAll("\"", "\\\\\"");
         else
-            this.actual += "\\n" + actual;
+            this.actual += "\\n" + actual.replaceAll("\"", "\\\\\"");
     }
 
     public int getStatus_id() {

@@ -92,7 +92,7 @@ public class EstimateTest extends SalesBaseTest {
         log.step("Нажать на Перейти в список документов");
         SalesDocumentData expectedSalesDocument = new SalesDocumentData();
         expectedSalesDocument.setPrice(expectedTotalPrice);
-        expectedSalesDocument.setDocumentState(SalesDocumentsConst.CREATED_STATE);
+        expectedSalesDocument.setDocumentState(SalesDocumentsConst.States.CREATED.getUiVal());
         expectedSalesDocument.setTitle(SalesDocumentsConst.ESTIMATE_TYPE);
         expectedSalesDocument.setNumber(documentNumber);
         SalesDocumentsPage salesDocumentsPage = estimateSubmittedPage.clickSubmitButton();

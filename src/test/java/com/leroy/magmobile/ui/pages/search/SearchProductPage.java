@@ -24,7 +24,6 @@ import com.leroy.umbrella_extension.magmobile.data.ServiceItemListResponse;
 import com.leroy.umbrella_extension.magmobile.data.ServiceItemResponse;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
-import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -466,8 +465,8 @@ public class SearchProductPage extends CommonMagMobilePage {
     // API verifications
 
     @Step("Проверить, что фронт корректно отобразил ответ от сервера по запросу на catalog product")
-    public SearchProductPage shouldCatalogResponseEqualsContent(Response<ProductData> response, CardType type, Integer entityCount) {
-        List<ProductItemData> productDataListFromResponse = response.asJson().getItems();
+    public SearchProductPage shouldCatalogResponseEqualsContent(ProductItemListResponse responseData, CardType type, Integer entityCount) {
+        List<ProductItemResponse> productDataListFromResponse = responseData.getItems();
         List<ProductCardData> productCardDataListFromPage;
         switch (type) {
             case COMMON:
@@ -492,8 +491,8 @@ public class SearchProductPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что фронт корректно отобразил ответ от сервера по запросу на catalog services")
-    public SearchProductPage shouldServicesResponceEqualsContent(Response<ServiceItemListResponse> response, Integer entityCount) {
-        List<ServiceItemResponse> serviceData = response.asJson().getItems();
+    public SearchProductPage shouldServicesResponceEqualsContent(ServiceItemListResponse responseData, Integer entityCount) {
+        List<ServiceItemResponse> serviceData = responseData.getItems();
         List<ServiceCardData> serviceCardDataList = serviceCardsScrollView.getFullDataList(entityCount);
         if (serviceCardDataList.size() != serviceData.size()) {
             throw new AssertionError("Page size param should be equals to maxEntityCount");

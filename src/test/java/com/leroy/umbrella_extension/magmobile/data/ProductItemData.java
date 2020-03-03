@@ -13,8 +13,10 @@ public class ProductItemData {
     private String lmCode;
     private String barCode;
     private String title;
+    private String description;
     private String gamma;
     private LocalDateTime avsDate;
+    private String brand;
     private String priceCategory;
     private Boolean ctm;
     private Boolean top1000;

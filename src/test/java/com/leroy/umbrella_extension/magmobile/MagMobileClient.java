@@ -1,14 +1,23 @@
 package com.leroy.umbrella_extension.magmobile;
 
+import com.leroy.magmobile.api.SessionData;
+import com.leroy.umbrella_extension.common.LegoBaseClient;
 import com.leroy.umbrella_extension.magmobile.data.CartData;
 import com.leroy.umbrella_extension.magmobile.data.ProductData;
 import com.leroy.umbrella_extension.magmobile.data.ServiceItemListResponse;
 import com.leroy.umbrella_extension.magmobile.data.estimate.EstimateData;
 import com.leroy.umbrella_extension.magmobile.data.estimate.ProductOrderData;
+import com.leroy.umbrella_extension.magmobile.data.estimate.ProductOrderDataList;
+import com.leroy.umbrella_extension.magmobile.data.estimate.ServiceOrderDataList;
+import com.leroy.umbrella_extension.magmobile.data.sales.DiscountData;
 import com.leroy.umbrella_extension.magmobile.data.sales.SalesDocumentListResponse;
+import com.leroy.umbrella_extension.magmobile.data.sales.SalesDocumentResponseData;
 import com.leroy.umbrella_extension.magmobile.requests.*;
+import com.leroy.umbrella_extension.magmobile.requests.salesdoc.*;
+import com.leroy.umbrella_extension.magmobile.requests.salesdoc.products.GetSalesDocProducts;
+import com.leroy.umbrella_extension.magmobile.requests.salesdoc.products.PostSalesDocProducts;
+import com.leroy.umbrella_extension.magmobile.requests.salesdoc.products.PutSalesDocProducts;
 import org.json.simple.JSONObject;
-import ru.leroymerlin.qa.core.clients.base.BaseClient;
 import ru.leroymerlin.qa.core.clients.base.Response;
 import ru.leroymerlin.qa.core.commons.annotations.Dependencies;
 import ru.leroymerlin.qa.core.commons.enums.Application;
@@ -18,7 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Dependencies(bricks = Application.MAGMOBILE)
-public class MagMobileClient extends BaseClient {
+public class MagMobileClient extends LegoBaseClient {
 
     private String gatewayUrl;
 
@@ -63,9 +72,72 @@ public class MagMobileClient extends BaseClient {
         return createCart(token, shopId, Arrays.asList(productOrderData));
     }
 
+    // ---------  SalesDoc & Orders -------------------- //
 
-    // Orders
+    // Lego_Salesdoc_Parameters_Update
+    public Response<SalesDocumentResponseData> updateSalesDocParameters(PutSalesDocParametersUpdate params) {
+        return execute(params.build(gatewayUrl), SalesDocumentResponseData.class);
+    }
 
+    // Lego_Salesdoc_Products
+    public Response<SalesDocumentResponseData> getSalesDocProductsByFullDocId(String fullDocId) {
+        return execute(new GetSalesDocProducts()
+                .setFullDocId(fullDocId).build(gatewayUrl), SalesDocumentResponseData.class);
+    }
+
+    // Lego_Salesdoc_Products_Create
+    public Response<SalesDocumentResponseData> createSalesDocProducts(
+            SessionData sessionData, ProductOrderDataList products, ServiceOrderDataList services) {
+        PostSalesDocProducts params = new PostSalesDocProducts();
+        params.setShopId(sessionData.getUserShopId())
+                .setAccessToken(sessionData.getAccessToken());
+        if (sessionData.getRegionId() != null)
+            params.setRegionId(sessionData.getRegionId());
+        if (products != null)
+            params.setProducts(products);
+        if (services != null)
+            params.setServices(services);
+        return execute(params
+                .build(gatewayUrl), SalesDocumentResponseData.class);
+    }
+
+    public Response<SalesDocumentResponseData> createSalesDocProducts(
+            SessionData sessionData, ProductOrderDataList products) {
+        return createSalesDocProducts(sessionData, products, null);
+    }
+
+    public Response<SalesDocumentResponseData> createSalesDocProducts(
+            SessionData sessionData, ServiceOrderDataList services) {
+        return createSalesDocProducts(sessionData, null, services);
+    }
+
+    // Lego_Salesdoc_Products_Update
+    public Response<SalesDocumentResponseData> updateSalesDocProducts(SessionData sessionData, String fullDocId, ProductOrderDataList products) {
+        return updateSalesDocProducts(sessionData, fullDocId, products, null);
+    }
+
+    public Response<SalesDocumentResponseData> updateSalesDocProducts(SessionData sessionData, String fullDocId, ServiceOrderDataList services) {
+        return updateSalesDocProducts(sessionData, fullDocId, null, services);
+    }
+
+    public Response<SalesDocumentResponseData> updateSalesDocProducts(SessionData sessionData, String fullDocId,
+                                                                      ProductOrderDataList products,
+                                                                      ServiceOrderDataList services) {
+        PutSalesDocProducts params = new PutSalesDocProducts();
+        params.setFullDocId(fullDocId);
+        if (products != null)
+            params.setProducts(products);
+        if (services != null)
+            params.setServices(services);
+        params.setShopId(sessionData.getUserShopId())
+                .setAccessToken(sessionData.getAccessToken());
+        if (sessionData.getRegionId() != null)
+            params.setRegionId(sessionData.getRegionId());
+        return execute(params
+                .build(gatewayUrl), SalesDocumentResponseData.class);
+    }
+
+    //
     public Response<JSONObject> cancelOrder(String userLdap, String orderId) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("action", "cancel-order");
@@ -80,6 +152,12 @@ public class MagMobileClient extends BaseClient {
         return execute(new SalesDocSearchGET()
                 .queryParam("pinCodeOrDocId", pinCodeOrDocId)
                 .build(gatewayUrl), SalesDocumentListResponse.class);
+    }
+
+    // Discount
+
+    public Response<DiscountData> getSalesDocDiscount(GetSalesDocDiscount params) {
+        return execute(params.build(gatewayUrl), DiscountData.class);
     }
 
     @PostConstruct
