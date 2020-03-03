@@ -6,29 +6,38 @@
         <listener class-name="com.leroy.core.listeners.TestRailListener"/>
     </listeners>
 
-    <test name="SalesDoc Product">
-        <classes>
-            <class name="com.leroy.magmobile.api.tests.SalesDocApiTest">
-                <methods>
-                    <include name="testSalesDocAddProduct"/>
-                    <include name="testSalesDocProductGET"/>
-                    <include name="testSalesDocUpdateQuantityForTheSameProduct"/>
-                    <include name="testSalesDocUpdateParameterCancel"/>
-<!--                    <include name="testSalesDocUpdateProduct"/>-->
-<!--                    <include name="testSalesDocDeleteProduct"/>-->
+<!--    <test name="SalesDoc with Product">-->
+<!--        <classes>-->
+<!--            <class name="com.leroy.magmobile.api.tests.salesdoc.SalesDocApiTest">-->
+<!--                <methods>-->
+<!--                    <include name="testSalesDocAddProduct"/>-->
+<!--                    <include name="testSalesDocUpdateQuantityForTheSameProduct"/>-->
+<!--                    <include name="testSalesDocProductGET"/>-->
+<!--                    <include name="testSalesDocUpdateParameterCancel"/>-->
+<!--                </methods>-->
+<!--            </class>-->
+<!--        </classes>-->
+<!--    </test>-->
 
-                </methods>
-            </class>
-        </classes>
-    </test>
+<!--    <test name="SalesDoc with Service">-->
+<!--        <classes>-->
+<!--            <class name="com.leroy.magmobile.api.tests.salesdoc.SalesDocApiTest">-->
+<!--                <methods>-->
+<!--                    <include name="testSalesDocAddService"/>-->
+<!--                    <include name="testSalesDocUpdatePriceForTheSameService"/>-->
+<!--                    <include name="testSalesDocServiceGET"/>-->
+<!--                    <include name="testSalesDocUpdateParameterCancel"/>-->
+<!--                </methods>-->
+<!--            </class>-->
+<!--        </classes>-->
+<!--    </test>-->
 
-    <test name="SalesDoc Service">
+    <test name="SalesDoc with Product and Service">
         <classes>
-            <class name="com.leroy.magmobile.api.tests.SalesDocApiTest">
+            <class name="com.leroy.magmobile.api.tests.salesdoc.SalesDocApiTest">
                 <methods>
-                    <include name="testSalesDocAddService"/>
-                    <include name="testSalesDocServiceGET"/>
-                    <include name="testSalesDocUpdateParameterCancel"/>
+                    <include name="testSalesDocAddProductAndService"/>
+                    <include name="testSalesDocUpdateProductAndService"/>
                 </methods>
             </class>
         </classes>
