@@ -20,8 +20,8 @@ import com.leroy.magmobile.ui.pages.sales.widget.SearchServiceCardWidget;
 import com.leroy.magmobile.ui.pages.search.modal.SortPage;
 import com.leroy.umbrella_extension.magmobile.data.ProductData;
 import com.leroy.umbrella_extension.magmobile.data.ProductItemData;
-import com.leroy.umbrella_extension.magmobile.data.ServiceItemListResponse;
-import com.leroy.umbrella_extension.magmobile.data.ServiceItemResponse;
+import com.leroy.umbrella_extension.magmobile.data.ServiceData;
+import com.leroy.umbrella_extension.magmobile.data.ServiceItemData;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 
@@ -465,8 +465,8 @@ public class SearchProductPage extends CommonMagMobilePage {
     // API verifications
 
     @Step("Проверить, что фронт корректно отобразил ответ от сервера по запросу на catalog product")
-    public SearchProductPage shouldCatalogResponseEqualsContent(ProductItemListResponse responseData, CardType type, Integer entityCount) {
-        List<ProductItemResponse> productDataListFromResponse = responseData.getItems();
+    public SearchProductPage shouldCatalogResponseEqualsContent(ProductData responseData, CardType type, Integer entityCount) {
+        List<ProductItemData> productDataListFromResponse = responseData.getItems();
         List<ProductCardData> productCardDataListFromPage;
         switch (type) {
             case COMMON:
@@ -491,8 +491,8 @@ public class SearchProductPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что фронт корректно отобразил ответ от сервера по запросу на catalog services")
-    public SearchProductPage shouldServicesResponceEqualsContent(ServiceItemListResponse responseData, Integer entityCount) {
-        List<ServiceItemResponse> serviceData = responseData.getItems();
+    public SearchProductPage shouldServicesResponceEqualsContent(ServiceData responseData, Integer entityCount) {
+        List<ServiceItemData> serviceData = responseData.getItems();
         List<ServiceCardData> serviceCardDataList = serviceCardsScrollView.getFullDataList(entityCount);
         if (serviceCardDataList.size() != serviceData.size()) {
             throw new AssertionError("Page size param should be equals to maxEntityCount");

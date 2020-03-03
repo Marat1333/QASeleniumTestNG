@@ -9,7 +9,7 @@ import com.leroy.magmobile.api.SessionData;
 import com.leroy.magmobile.api.tests.common.BaseProjectTest;
 import com.leroy.umbrella_extension.authorization.AuthClient;
 import com.leroy.umbrella_extension.magmobile.MagMobileClient;
-import com.leroy.umbrella_extension.magmobile.data.ProductItemResponse;
+import com.leroy.umbrella_extension.magmobile.data.ProductItemData;
 import com.leroy.umbrella_extension.magmobile.data.estimate.ProductOrderData;
 import com.leroy.umbrella_extension.magmobile.data.estimate.ProductOrderDataList;
 import com.leroy.umbrella_extension.magmobile.data.sales.SalesDocumentResponseData;
@@ -53,10 +53,10 @@ public class SalesDocApiTest extends BaseProjectTest {
                 .setShopId(sessionData.getUserShopId())
                 .setTopEM(false)
                 .setHasAvailableStock(hasAvailableStock);
-        List<ProductItemResponse> items = magMobileClient.get().searchProductsBy(params).asJson().getItems();
+        List<ProductItemData> items = magMobileClient.get().searchProductsBy(params).asJson().getItems();
         List<String> resultList = new ArrayList<>();
         int i = 0;
-        for (ProductItemResponse item : items) {
+        for (ProductItemData item : items) {
             if (item.getAvsDate() == null && !Arrays.asList(badLmCodes).contains(item.getLmCode())) {
                 if (necessaryCount > i)
                     resultList.add(item.getLmCode());

@@ -6,8 +6,8 @@ import com.leroy.magmobile.api.tests.common.BaseProjectTest;
 import com.leroy.umbrella_extension.magmobile.MagMobileClient;
 import com.leroy.umbrella_extension.magmobile.data.ProductData;
 import com.leroy.umbrella_extension.magmobile.data.ProductItemData;
-import com.leroy.umbrella_extension.magmobile.data.ServiceItemListResponse;
-import com.leroy.umbrella_extension.magmobile.data.ServiceItemResponse;
+import com.leroy.umbrella_extension.magmobile.data.ServiceData;
+import com.leroy.umbrella_extension.magmobile.data.ServiceItemData;
 import com.leroy.umbrella_extension.magmobile.enums.CatalogSearchFields;
 import com.leroy.umbrella_extension.magmobile.enums.SortingOrder;
 import com.leroy.umbrella_extension.magmobile.requests.GetCatalogSearch;
@@ -647,23 +647,6 @@ public class SearchApiTest extends BaseProjectTest {
         }
     }
 
-    @TestCase(22893339)
-    @Test(description = "C22893339 products response structure")
-    public void testProductResponseStructure() {
-
-        GetCatalogSearch byDefaultParams = new GetCatalogSearch()
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
-                .setStartFrom(1)
-                .setSortBy(CatalogSearchFields.AVAILABLE_STOCK, SortingOrder.ASC)
-                .setPageSize(20);
-
-        Response<ProductData> response = magMobileClient.searchProductsBy(byDefaultParams);
-
-        ProductData responseData = response.asJson();
-
-    }
-
     @TestCase(22893405)
     @Test(description = "C22893405 search by short name")
     public void testSearchServicesByShortName() {
@@ -672,11 +655,11 @@ public class SearchApiTest extends BaseProjectTest {
         GetCatalogServicesSearch byNameParams = new GetCatalogServicesSearch()
                 .setName(name);
 
-        Response<ServiceItemListResponse> response = magMobileClient.searchServicesBy(byNameParams);
+        Response<ServiceData> response = magMobileClient.searchServicesBy(byNameParams);
 
-        List<ServiceItemResponse> responseData = response.asJson().getItems();
+        List<ServiceItemData> responseData = response.asJson().getItems();
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
-        for (ServiceItemResponse data : responseData) {
+        for (ServiceItemData data : responseData) {
             assertThat("Service title has not contains " + name, data.getTitle(), containsString(name));
         }
     }
@@ -689,11 +672,11 @@ public class SearchApiTest extends BaseProjectTest {
         GetCatalogServicesSearch byNameParams = new GetCatalogServicesSearch()
                 .setName(name);
 
-        Response<ServiceItemListResponse> response = magMobileClient.searchServicesBy(byNameParams);
+        Response<ServiceData> response = magMobileClient.searchServicesBy(byNameParams);
 
-        List<ServiceItemResponse> responseData = response.asJson().getItems();
+        List<ServiceItemData> responseData = response.asJson().getItems();
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
-        for (ServiceItemResponse data : responseData) {
+        for (ServiceItemData data : responseData) {
             assertThat("Service title has not matches " + name, data.getTitle(), equalTo(name));
         }
     }
@@ -706,11 +689,11 @@ public class SearchApiTest extends BaseProjectTest {
         GetCatalogServicesSearch byLmCodeParams = new GetCatalogServicesSearch()
                 .setLmCode(shortLmCode);
 
-        Response<ServiceItemListResponse> response = magMobileClient.searchServicesBy(byLmCodeParams);
+        Response<ServiceData> response = magMobileClient.searchServicesBy(byLmCodeParams);
 
-        List<ServiceItemResponse> responseData = response.asJson().getItems();
+        List<ServiceItemData> responseData = response.asJson().getItems();
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
-        for (ServiceItemResponse data : responseData) {
+        for (ServiceItemData data : responseData) {
             assertThat("Service lmCode has not contains " + shortLmCode, data.getLmCode(), containsString(shortLmCode));
         }
     }
@@ -723,11 +706,11 @@ public class SearchApiTest extends BaseProjectTest {
         GetCatalogServicesSearch byLmCodeParams = new GetCatalogServicesSearch()
                 .setLmCode(shortLmCode);
 
-        Response<ServiceItemListResponse> response = magMobileClient.searchServicesBy(byLmCodeParams);
+        Response<ServiceData> response = magMobileClient.searchServicesBy(byLmCodeParams);
 
-        List<ServiceItemResponse> responseData = response.asJson().getItems();
+        List<ServiceItemData> responseData = response.asJson().getItems();
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
-        for (ServiceItemResponse data : responseData) {
+        for (ServiceItemData data : responseData) {
             assertThat("Service lmCode has not matches " + shortLmCode, data.getLmCode(), equalTo(shortLmCode));
         }
     }
@@ -740,11 +723,11 @@ public class SearchApiTest extends BaseProjectTest {
         GetCatalogServicesSearch byDepartmentIdParams = new GetCatalogServicesSearch()
                 .setDepartmentId(departmentId);
 
-        Response<ServiceItemListResponse> response = magMobileClient.searchServicesBy(byDepartmentIdParams);
+        Response<ServiceData> response = magMobileClient.searchServicesBy(byDepartmentIdParams);
 
-        List<ServiceItemResponse> responseData = response.asJson().getItems();
+        List<ServiceItemData> responseData = response.asJson().getItems();
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
-        for (ServiceItemResponse data : responseData) {
+        for (ServiceItemData data : responseData) {
             assertThat("Service department has not matches " + departmentId, data.getDepartmentId(), equalTo("0"+departmentId));
         }
     }
@@ -754,9 +737,9 @@ public class SearchApiTest extends BaseProjectTest {
     public void testSearchAllServices() {
         GetCatalogServicesSearch allServicesParams = new GetCatalogServicesSearch();
 
-        Response<ServiceItemListResponse> response = magMobileClient.searchServicesBy(allServicesParams);
+        Response<ServiceData> response = magMobileClient.searchServicesBy(allServicesParams);
 
-        List<ServiceItemResponse> responseData = response.asJson().getItems();
+        List<ServiceItemData> responseData = response.asJson().getItems();
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
         assertThat("Services count is less than expected", responseData.size(), greaterThanOrEqualTo(5));
     }

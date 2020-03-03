@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite name="API Search Suite">
+<suite name="API Search Suite" parallel="methods">
 
     <listeners>
         <listener class-name="com.leroy.core.listeners.TestRailListener"/>
     </listeners>
 
-    <test name="Test1">
+    <test name="API search tests">
         <classes>
-            <class name="com.leroy.magmobile.api.tests.ApiTest">
-                <methods>
-                    <include name="test1"/>
-                </methods>
-            </class>
+            <class name="com.leroy.magmobile.api.tests.SearchApiTest"/>
         </classes>
     </test>
 
