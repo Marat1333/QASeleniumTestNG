@@ -1,21 +1,25 @@
 package com.leroy.umbrella_extension.magmobile.data;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ServiceItemResponse {
 
     private String lmCode;
     private String barCode;
     private String title;
     private String groupId;
-    private String UoM;
-    private Integer LMFacingPriceCoef;
-    private String LMFacingUoM;
-    private String LMItemType;
-    private String departmentId;
-    private String TaxRate;
+    @JsonProperty("UoM")
+    private String uom;
+    @JsonProperty("LMFacingPriceCoef")
+    private Integer lmFacingPriceCoef;
+    @JsonProperty("LMFacingUoM")
+    private String lmFacingUoM;
+    @JsonProperty("LMItemType")
+    private String lmItemType;
+    private Integer departmentId;
+    @JsonProperty("TaxRate")
+    private String taxRate;
 
 }

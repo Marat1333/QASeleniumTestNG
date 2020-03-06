@@ -5,16 +5,19 @@ import com.leroy.magmobile.ui.pages.search.FilterPage;
 import com.leroy.umbrella_extension.magmobile.MagMobileClient;
 import com.leroy.umbrella_extension.magmobile.data.ProductItemListResponse;
 import com.leroy.umbrella_extension.magmobile.data.ProductItemResponse;
+import com.leroy.umbrella_extension.magmobile.data.ServiceItemListResponse;
 import com.leroy.umbrella_extension.magmobile.data.ServiceItemResponse;
 import com.leroy.umbrella_extension.magmobile.requests.GetCatalogSearch;
 import com.leroy.umbrella_extension.magmobile.requests.GetCatalogServicesSearch;
-import org.testng.Assert;
+import org.hamcrest.MatcherAssert;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.leroy.magmobile.api.tests.matchers.IsSuccessful.successful;
 
 public class FindTestDataHelper {
 
@@ -24,7 +27,8 @@ public class FindTestDataHelper {
         params.setShopId(shopId)
                 .setStartFrom(1)
                 .setPageSize(necessaryCount);
-        return client.searchServicesBy(params).asJson().getItems();
+        Response<ServiceItemListResponse> resp = client.searchServicesBy(params);
+        return resp.asJson().getItems();
     }
 
     public static List<ProductItemResponse> getProducts(MagMobileClient client, String shopId,
@@ -37,7 +41,7 @@ public class FindTestDataHelper {
                 .setTopEM(filtersData.isTopEM())
                 .setHasAvailableStock(filtersData.isHasAvailableStock());
         Response<ProductItemListResponse> resp = client.searchProductsBy(params);
-        Assert.assertTrue(resp.isSuccessful(), "Impossible to search for products. Response: " + resp.toString());
+        MatcherAssert.assertThat("Catalog search request:", resp, successful());
         List<ProductItemResponse> items = resp.asJson().getItems();
         List<ProductItemResponse> resultList = new ArrayList<>();
         int i = 0;

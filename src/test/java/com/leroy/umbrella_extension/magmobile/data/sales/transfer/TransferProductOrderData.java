@@ -8,6 +8,7 @@ public class TransferProductOrderData {
     private String lmCode;
     private String status;
     private String price;
-    private String orderedQuantity;
-    private String assignedQuantity;
+    private Integer orderedQuantity;
+    private Integer assignedQuantity;
+    private String chosenDepartmentId;
 }

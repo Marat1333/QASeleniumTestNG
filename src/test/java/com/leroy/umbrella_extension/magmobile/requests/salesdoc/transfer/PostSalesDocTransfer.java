@@ -4,10 +4,5 @@ import ru.leroymerlin.qa.core.clients.base.Method;
 import ru.leroymerlin.qa.core.clients.base.RequestBuilder;
 
 @Method(value = "POST", path = "/salesdoc/transfer")
-public class PostSalesDocTransfer extends RequestBuilder<PostSalesDocTransfer> {
-
-    public PostSalesDocTransfer setLdap(String val) {
-        return header("ldap", val);
-    }
-
+public class PostSalesDocTransfer extends BaseSalesDocTransferRequest<PostSalesDocTransfer> {
 }

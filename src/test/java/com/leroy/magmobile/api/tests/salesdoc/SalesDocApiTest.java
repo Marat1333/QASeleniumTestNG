@@ -73,7 +73,7 @@ public class SalesDocApiTest extends BaseProjectTest {
     }
 
     @Test(description = "C3232446 SalesDoc add services")
-    public void testSalesDocAddService() {
+    public void testSalesDocAddService() throws Exception {
         // Prepare request data
         serviceOrder1 = new ServiceOrderData(FindTestDataHelper.getServices(
                 magMobileClient.get(), sessionData.getUserShopId(), 1).get(0));
@@ -95,7 +95,7 @@ public class SalesDocApiTest extends BaseProjectTest {
     }
 
     @Test(description = "C3232447 SalesDoc add product and services")
-    public void testSalesDocAddProductAndService() {
+    public void testSalesDocAddProductAndService() throws Exception {
         // Prepare request data
         List<ProductItemResponse> productOrderDataList = FindTestDataHelper.getProducts(magMobileClient.get(),
                 sessionData.getUserShopId(), 2, new FiltersData(FilterPage.MY_SHOP_FRAME_TYPE));
@@ -147,7 +147,7 @@ public class SalesDocApiTest extends BaseProjectTest {
     }
 
     @Test(description = "C22898131 SalesDoc service GET")
-    public void testSalesDocServiceGET() {
+    public void testSalesDocServiceGET() throws Exception {
         if (salesDocument == null)
             throw new IllegalArgumentException("SalesDoc hasn't been created");
         Response<SalesDocumentResponseData> resp = magMobileClient.get()
@@ -169,7 +169,7 @@ public class SalesDocApiTest extends BaseProjectTest {
         assertThat("Service order #1 - id",
                 actualServiceOrderData.getId(), is(salesDocument.getNewServiceId()));
         assertThat("Service order #1 - Uom",
-                actualServiceOrderData.getUoM(), is(serviceOrder1.getUoM()));
+                actualServiceOrderData.getUom(), is(serviceOrder1.getUom()));
         assertThat("Service order #1 - Title",
                 actualServiceOrderData.getTitle(), is(serviceOrder1.getTitle()));
         assertThat("Service order #1 - BarCode",

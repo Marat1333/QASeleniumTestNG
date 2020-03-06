@@ -8,7 +8,10 @@ public class SalesDocumentsConst {
         AUTO_PROCESSING("","Автообработка"),
         TRANSFORMED("","Преобразован"),
         CANCELLED("CANCELLED", "Отменен"),
-        DRAFT("DRAFT","Черновик");
+        DRAFT("DRAFT","Черновик"),
+
+        // Transfer
+        NEW("NEW", "");
 
         private String uiVal;
         private String apiVal;
@@ -38,6 +41,27 @@ public class SalesDocumentsConst {
         private String apiVal;
 
         Types(String apiVal, String uiVal) {
+            this.apiVal = apiVal;
+            this.uiVal = uiVal;
+        }
+
+        public String getUiVal() {
+            return uiVal;
+        }
+
+        public String getApiVal() {
+            return apiVal;
+        }
+    }
+
+    // Отзыв
+    public enum GiveAwayPoints {
+        SALES_FLOOR("SALESFLOOR", "Из торгового зала");
+
+        private String uiVal;
+        private String apiVal;
+
+        GiveAwayPoints(String apiVal, String uiVal) {
             this.apiVal = apiVal;
             this.uiVal = uiVal;
         }

@@ -1,5 +1,6 @@
 package com.leroy.umbrella_extension.magmobile;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.magmobile.api.SessionData;
 import com.leroy.umbrella_extension.common.LegoBaseClient;
@@ -12,6 +13,7 @@ import com.leroy.umbrella_extension.magmobile.data.estimate.ServiceOrderData;
 import com.leroy.umbrella_extension.magmobile.data.sales.DiscountData;
 import com.leroy.umbrella_extension.magmobile.data.sales.SalesDocumentListResponse;
 import com.leroy.umbrella_extension.magmobile.data.sales.SalesDocumentResponseData;
+import com.leroy.umbrella_extension.magmobile.data.sales.transfer.TransferProductOrderData;
 import com.leroy.umbrella_extension.magmobile.data.sales.transfer.TransferSalesDocData;
 import com.leroy.umbrella_extension.magmobile.requests.*;
 import com.leroy.umbrella_extension.magmobile.requests.salesdoc.GetSalesDocDiscount;
@@ -20,7 +22,10 @@ import com.leroy.umbrella_extension.magmobile.requests.salesdoc.products.GetSale
 import com.leroy.umbrella_extension.magmobile.requests.salesdoc.products.PostSalesDocProducts;
 import com.leroy.umbrella_extension.magmobile.requests.salesdoc.products.PutSalesDocProducts;
 import com.leroy.umbrella_extension.magmobile.requests.salesdoc.search.GetSalesDocSearchV3;
+import com.leroy.umbrella_extension.magmobile.requests.salesdoc.transfer.DeleteSalesDocTransferRequest;
+import com.leroy.umbrella_extension.magmobile.requests.salesdoc.transfer.GetSalesDocTransfer;
 import com.leroy.umbrella_extension.magmobile.requests.salesdoc.transfer.PostSalesDocTransfer;
+import com.leroy.umbrella_extension.magmobile.requests.salesdoc.transfer.PutSalesDocTransferAdd;
 import org.json.simple.JSONObject;
 import ru.leroymerlin.qa.core.clients.base.Response;
 import ru.leroymerlin.qa.core.commons.annotations.Dependencies;
@@ -28,6 +33,7 @@ import ru.leroymerlin.qa.core.commons.enums.Application;
 
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Dependencies(bricks = Application.MAGMOBILE)
@@ -197,8 +203,43 @@ public class MagMobileClient extends LegoBaseClient {
     }
 
     // Lego SalesDoc Transfer
-    public Response<TransferSalesDocData> createSalesDocTransfer(PostSalesDocTransfer params) {
+    public Response<TransferSalesDocData> createSalesDocTransfer(
+            SessionData sessionData, TransferSalesDocData transferSalesDocData) {
+        PostSalesDocTransfer params = new PostSalesDocTransfer();
+        params.setLdap(sessionData.getUserLdap());
+        params.jsonBody(transferSalesDocData);
         return execute(params.build(gatewayUrl), TransferSalesDocData.class);
+    }
+
+    public Response<TransferSalesDocData> addProductsIntoSalesDocTransfer(
+            SessionData sessionData, String taskId, List<TransferProductOrderData> productDataList) {
+        PutSalesDocTransferAdd params = new PutSalesDocTransferAdd();
+        params.setLdap(sessionData.getUserLdap());
+        params.setTaskId(taskId);
+        params.setShopId(sessionData.getUserShopId());
+
+        TransferSalesDocData transferSalesDocData = new TransferSalesDocData();
+        transferSalesDocData.setProducts(productDataList);
+        params.jsonBody(transferSalesDocData);
+        return execute(params.build(gatewayUrl), TransferSalesDocData.class);
+    }
+
+    public Response<TransferSalesDocData> getTransferSalesDoc(SessionData sessionData, String taskId) {
+        GetSalesDocTransfer request = new GetSalesDocTransfer();
+        request.setTaskId(taskId);
+        request.setLdap(sessionData.getUserLdap());
+        return execute(request.build(gatewayUrl), TransferSalesDocData.class);
+    }
+
+    public Response<JsonNode> deleteTransferSalesDoc(SessionData sessionData, String taskId) {
+        DeleteSalesDocTransferRequest request = new DeleteSalesDocTransferRequest();
+        request.setTaskId(taskId);
+        return execute(request.build(gatewayUrl), JsonNode.class);
+    }
+
+    public Response<TransferSalesDocData> addProductsIntoSalesDocTransfer(SessionData sessionData,
+                                                                          String taskId, TransferProductOrderData productData) {
+        return addProductsIntoSalesDocTransfer(sessionData, taskId, Collections.singletonList(productData));
     }
 
     @PostConstruct

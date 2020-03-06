@@ -4,10 +4,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.leroy.umbrella_extension.magmobile.data.ServiceItemResponse;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ServiceOrderData extends ServiceItemResponse {
 
     public ServiceOrderData() {
@@ -19,7 +20,7 @@ public class ServiceOrderData extends ServiceItemResponse {
         setLmCode(serviceItemResponse.getLmCode());
         setTitle(serviceItemResponse.getTitle());
         setBarCode(serviceItemResponse.getBarCode());
-        setUoM(serviceItemResponse.getUoM());
+        setUom(serviceItemResponse.getUom());
         setGroupId(serviceItemResponse.getGroupId());
     }
 
