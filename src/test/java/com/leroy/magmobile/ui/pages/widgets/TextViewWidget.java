@@ -1,7 +1,8 @@
 package com.leroy.magmobile.ui.pages.widgets;
 
 import com.leroy.core.fieldfactory.CustomLocator;
-import com.leroy.models.TextViewData;
+import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
+import com.leroy.magmobile.models.TextViewData;
 import org.openqa.selenium.WebDriver;
 
 public class TextViewWidget extends CardWidget<TextViewData> {

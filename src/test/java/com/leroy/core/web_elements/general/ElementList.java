@@ -217,7 +217,7 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
      *
      * @param expectedCount
      */
-    public void waitForElementCountEquals(int expectedCount) {
+    public void waitUntilElementCountEquals(int expectedCount) {
         try {
             new WebDriverWait(this.driver, timeout).until((driver) -> {
                 try {
@@ -236,7 +236,7 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
      *
      * @param expectedCount
      */
-    public boolean waitForElementCountEqualsOrAbove(int expectedCount) {
+    public boolean waitUntilElementCountEqualsOrAbove(int expectedCount) {
         try {
             new WebDriverWait(this.driver, timeout).until((driver) -> {
                 try {
@@ -258,7 +258,7 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
      *
      * @param expectedCount
      */
-    public void waitForVisibleElementCountEquals(int expectedCount) {
+    public void waitUntilVisibleElementCountEquals(int expectedCount) {
         try {
             new WebDriverWait(this.driver, timeout).until((driver) -> {
                 try {
@@ -421,7 +421,7 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
      * @param contentBefore
      * @return
      */
-    public boolean waitForTextListIsChanged(List<String> contentBefore) {
+    public boolean waitUntilTextListIsChanged(List<String> contentBefore) {
         try {
             new WebDriverWait(this.driver, timeout).until(driver -> {
                 try {

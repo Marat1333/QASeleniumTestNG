@@ -4,16 +4,17 @@ import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.elements.MagMobWhiteSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.common.SearchProductPage;
+import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.sales.basket.OrderRowProductWidget;
-import com.leroy.magmobile.ui.pages.search.CustomerData;
+import com.leroy.magmobile.models.CustomerData;
 import com.leroy.magmobile.ui.pages.search.SearchCustomerPage;
-import com.leroy.magmobile.ui.pages.search.SearchCustomerWidget;
-import com.leroy.models.SalesOrderCardData;
-import com.leroy.models.SalesOrderData;
+import com.leroy.magmobile.ui.pages.search.widgets.SearchCustomerWidget;
+import com.leroy.magmobile.models.sales.SalesOrderCardData;
+import com.leroy.magmobile.models.sales.SalesOrderData;
 import com.leroy.utils.Converter;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
@@ -24,7 +25,7 @@ import java.util.List;
 
 public class EstimatePage extends CommonMagMobilePage {
 
-    public EstimatePage(TestContext context) {
+    public EstimatePage(Context context) {
         super(context);
     }
 

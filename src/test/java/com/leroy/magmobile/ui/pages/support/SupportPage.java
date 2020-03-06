@@ -1,11 +1,11 @@
 package com.leroy.magmobile.ui.pages.support;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
+import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import io.qameta.allure.Step;
 import org.testng.Assert;
 
@@ -13,12 +13,12 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-public class SupportPage extends BaseAppPage {
+public class SupportPage extends CommonMagMobilePage {
 
     public static final String COMPLAIN_REQUEST = "пожаловатсья";
     public static final String ASK_QUESTION_REQUEST = "задать вопрос";
 
-    public SupportPage(TestContext context) {
+    public SupportPage(Context context) {
         super(context);
     }
 

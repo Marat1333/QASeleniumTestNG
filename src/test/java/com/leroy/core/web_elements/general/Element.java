@@ -249,20 +249,12 @@ public class Element extends BaseWidget {
     public void rightClick() {
         initialWebElementIfNeeded();
         try {
-            //new TouchActions(driver).longPress(this.webElement).perform();
-            //new TouchAction((IOSDriver) driver).longPress(
-            //                        PointOption.point(((MobileElement) webElement).getCenter().x, ((MobileElement) webElement).getCenter().y)
-            //                ).release().perform();
-//            if (isMobile()) {
-//                rightClickJS();
-//            } else {
             try {
                 new Actions(this.driver).contextClick(webElement).perform();
             } catch (ElementNotInteractableException err) {
                 Log.warn("Element: " + getMetaName() + " Method: rightClick(). Error: ElementNotInteractableException");
                 rightClickJS();
             }
-            //}
         } catch (Exception err) {
             Log.error("rightClick(): " + err.getMessage());
             throw err;
@@ -551,7 +543,28 @@ public class Element extends BaseWidget {
         return getRectangleJs().height;
     }
 
-    public boolean waitUntilTextIsDifferent(String previousText, int timeout) {
+    /**
+     * Wait for the text of the element isn't equal to the specified
+     *
+     * @param initialText
+     */
+    public void waitUntilTextIsChanged(String initialText) {
+        WebDriverWait wait = new WebDriverWait(this.driver, short_timeout);
+        try {
+            wait.until((ExpectedCondition<Boolean>) driverObject -> {
+                try {
+                    return !initialText.equals(getText());
+                } catch (Exception e) {
+                    return false;
+                }
+            });
+        } catch (TimeoutException e) {
+            Log.warn(String.format(
+                    "Expected condition failed: waitForTextIsNotEqual (tried for %d second(s))", short_timeout));
+        }
+    }
+
+    public boolean waitUntilTextIsChanged(String previousText, int timeout) {
         initialWebElementIfNeeded();
         String oldText = previousText == null ? getText() : previousText;
         try {
@@ -703,27 +716,6 @@ public class Element extends BaseWidget {
         String overflowY = webElement.getCssValue("overflow-y");
         return overflowY.equals("scroll") || overflowY.equals("auto") ||
                 overflow.equals("scroll") || overflow.equals("auto");
-    }
-
-    /**
-     * Wait for the text of the element isn't equal to the specified
-     *
-     * @param initialText
-     */
-    public void waitForTextIsNotEqual(String initialText) {
-        WebDriverWait wait = new WebDriverWait(this.driver, (long) short_timeout);
-        try {
-            wait.until((ExpectedCondition<Boolean>) driverObject -> {
-                try {
-                    return !initialText.equals(getText());
-                } catch (Exception e) {
-                    return false;
-                }
-            });
-        } catch (org.openqa.selenium.TimeoutException e) {
-            Log.warn(String.format(
-                    "Expected condition failed: waitForTextIsNotEqual (tried for %d second(s))", short_timeout));
-        }
     }
 
     /**

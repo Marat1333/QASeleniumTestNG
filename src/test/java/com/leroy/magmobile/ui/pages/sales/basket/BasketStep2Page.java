@@ -1,15 +1,15 @@
 package com.leroy.magmobile.ui.pages.sales.basket;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import io.qameta.allure.Step;
 
 public class BasketStep2Page extends BasketPage {
 
-    public BasketStep2Page(TestContext context) {
+    public BasketStep2Page(Context context) {
         super(context);
     }
 
