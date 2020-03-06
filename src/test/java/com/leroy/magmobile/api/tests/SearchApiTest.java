@@ -20,7 +20,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static com.leroy.magmobile.api.matchers.ProjectMatchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -29,17 +31,8 @@ public class SearchApiTest extends BaseProjectTest {
     @Inject
     private MagMobileClient magMobileClient;
 
-    private GetCatalogSearch buildDefaultCatalogSearchParams() {
-        return new GetCatalogSearch()
-                .setPageSize(10)
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
-                .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
-                .setStartFrom(1);
-    }
-
-    private void isResponseSuccessfulAndContainsMoreThanOneEntity(Response response, List<?> responseData) {
-        assertThat("response is not successful", response.isSuccessful());
+    private void isResponseSuccessfulAndContainsMoreThanOneEntity(Response<?> response, List<?> responseData) {
+        assertThat(response, successful());
         assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
     }
 
@@ -57,7 +50,7 @@ public class SearchApiTest extends BaseProjectTest {
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
-        assertThat("response is not successful", response.isSuccessful());
+        assertThat(response, successful());
         assertThat("response contains not the only 1 object", responseData, hasSize(1));
         for (ProductItemData data : responseData) {
             assertThat("product lmCode " + data.getLmCode() + " has not matches with " + lmCode, data.getLmCode(), equalTo(lmCode));
@@ -78,7 +71,7 @@ public class SearchApiTest extends BaseProjectTest {
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
-        assertThat("response is not successful", response.isSuccessful());
+        assertThat(response, successful());
         assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
         for (ProductItemData data : responseData) {
             assertThat("product lmCode " + data.getLmCode() + " has not contains " + lmCode, data.getLmCode(), containsString(lmCode));
@@ -99,7 +92,7 @@ public class SearchApiTest extends BaseProjectTest {
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
-        assertThat("response is not successful", response.isSuccessful());
+        assertThat(response, successful());
         assertThat("response contains not the only 1 object", responseData, hasSize(1));
         for (ProductItemData data : responseData) {
             assertThat("product barcode " + data.getBarCode() + " has not matches with " + barCode, data.getBarCode(), equalTo(barCode));
@@ -120,7 +113,7 @@ public class SearchApiTest extends BaseProjectTest {
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
-        assertThat("response is not successful", response.isSuccessful());
+        assertThat(response, successful());
         assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
         for (ProductItemData data : responseData) {
             assertThat("product barcode " + data.getBarCode() + " has not contains " + barCode, data.getBarCode(), containsString(barCode));
@@ -141,7 +134,7 @@ public class SearchApiTest extends BaseProjectTest {
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
-        assertThat("response is not successful", response.isSuccessful());
+        assertThat(response, successful());
         assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
         String[] searchWords = name.split(" ");
         for (ProductItemData data : responseData) {
@@ -166,7 +159,7 @@ public class SearchApiTest extends BaseProjectTest {
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
-        assertThat("response is not successful", response.isSuccessful());
+        assertThat(response, successful());
         assertThat("response.size", responseData, hasSize(0));
     }
 
@@ -184,7 +177,7 @@ public class SearchApiTest extends BaseProjectTest {
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
-        assertThat("response is not successful", response.isSuccessful());
+        assertThat(response, successful());
         assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
 
         for (ProductItemData data : responseData) {
@@ -207,7 +200,7 @@ public class SearchApiTest extends BaseProjectTest {
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
-        assertThat("response is not successful", response.isSuccessful());
+        assertThat(response, successful());
         assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
 
         for (ProductItemData data : responseData) {
@@ -230,7 +223,7 @@ public class SearchApiTest extends BaseProjectTest {
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
-        assertThat("response is not successful", response.isSuccessful());
+        assertThat(response, successful());
         assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
 
         for (ProductItemData data : responseData) {
@@ -254,7 +247,7 @@ public class SearchApiTest extends BaseProjectTest {
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
-        assertThat("response is not successful", response.isSuccessful());
+        assertThat(response, successful());
         assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
 
         for (ProductItemData data : responseData) {
@@ -278,7 +271,7 @@ public class SearchApiTest extends BaseProjectTest {
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
-        assertThat("response is not successful", response.isSuccessful());
+        assertThat(response, successful());
         assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
 
         for (ProductItemData data : responseData) {
@@ -301,7 +294,7 @@ public class SearchApiTest extends BaseProjectTest {
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
-        assertThat("response is not successful", response.isSuccessful());
+        assertThat(response, successful());
         assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
 
         for (ProductItemData data : responseData) {
@@ -324,7 +317,7 @@ public class SearchApiTest extends BaseProjectTest {
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
-        assertThat("response is not successful", response.isSuccessful());
+        assertThat(response, successful());
         assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
 
         for (ProductItemData data : responseData) {
@@ -346,7 +339,7 @@ public class SearchApiTest extends BaseProjectTest {
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
-        assertThat("response is not successful", response.isSuccessful());
+        assertThat(response, successful());
         assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
 
         for (ProductItemData data : responseData) {
@@ -358,18 +351,18 @@ public class SearchApiTest extends BaseProjectTest {
     @TestCase(22893337)
     @Test(description = "C22893337 search by limitedOffer filter")
     public void testSearchByLimitedOfferFilter() {
-        final boolean LimitedOffer = true;
+        final boolean limitedOffer = true;
 
         GetCatalogSearch byLimitedOfferParams = new GetCatalogSearch()
                 .setStartFrom(1)
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(10)
-                .setLimitedOffer(LimitedOffer);
+                .setLimitedOffer(limitedOffer);
         Response<ProductData> response = magMobileClient.searchProductsBy(byLimitedOfferParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
-        assertThat("response is not successful", response.isSuccessful());
+        assertThat(response, successful());
         assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
 
         for (ProductItemData data : responseData) {
@@ -391,7 +384,7 @@ public class SearchApiTest extends BaseProjectTest {
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
-        assertThat("response is not successful", response.isSuccessful());
+        assertThat(response, successful());
         assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
 
         for (ProductItemData data : responseData) {
@@ -414,7 +407,7 @@ public class SearchApiTest extends BaseProjectTest {
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
-        assertThat("response is not successful", response.isSuccessful());
+        assertThat(response, successful());
         assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
 
         for (ProductItemData data : responseData) {
@@ -438,7 +431,7 @@ public class SearchApiTest extends BaseProjectTest {
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
-        assertThat("response is not successful", response.isSuccessful());
+        assertThat(response, successful());
         assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
 
         for (ProductItemData data : responseData) {
@@ -459,7 +452,7 @@ public class SearchApiTest extends BaseProjectTest {
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
-        assertThat("response is not successful", response.isSuccessful());
+        assertThat(response, successful());
         assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
 
         for (ProductItemData data : responseData) {
@@ -484,7 +477,7 @@ public class SearchApiTest extends BaseProjectTest {
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
-        assertThat("response is not successful", response.isSuccessful());
+        assertThat(response, successful());
         assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
 
         for (ProductItemData data : responseData) {
@@ -516,7 +509,7 @@ public class SearchApiTest extends BaseProjectTest {
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
-        assertThat("response is not successful", response.isSuccessful());
+        assertThat(response, successful());
         assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
 
         for (ProductItemData data : responseData) {
@@ -544,13 +537,13 @@ public class SearchApiTest extends BaseProjectTest {
 
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
 
-        List<String> lmCodes = new ArrayList<>();
-        for (ProductItemData data : responseData) {
-            lmCodes.add(data.getLmCode());
-        }
-        lmCodes.sort((x, y) -> Integer.parseInt(y) - Integer.parseInt(x));
+        List<String> lmCodes = responseData.stream()
+                .map(ProductItemData::getLmCode)
+                .sorted((x, y) -> Integer.parseInt(y) - Integer.parseInt(x))
+                .collect(Collectors.toList());
         for (int i = 0; i < responseData.size(); i++) {
-            assertThat("Sorting order is wrong: " + responseData.get(i).getLmCode() + " not matches with " + lmCodes.get(i), lmCodes.get(i), equalTo(responseData.get(i).getLmCode()));
+            assertThat("Sorting order is wrong: " + responseData.get(i).getLmCode() + " not matches with " + lmCodes.get(i),
+                    lmCodes.get(i), equalTo(responseData.get(i).getLmCode()));
         }
     }
 
@@ -569,13 +562,12 @@ public class SearchApiTest extends BaseProjectTest {
 
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
 
-        List<String> lmCodes = new ArrayList<>();
-        for (ProductItemData data : responseData) {
-            lmCodes.add(data.getLmCode());
-        }
-        lmCodes.sort(Comparator.comparingInt((x) -> Integer.parseInt(x)));
+        List<String> lmCodes = responseData.stream().map(ProductItemData::getLmCode)
+                .sorted(Comparator.comparingInt(Integer::parseInt))
+                .collect(Collectors.toList());
         for (int i = 0; i < responseData.size(); i++) {
-            assertThat("Sorting order is wrong: " + responseData.get(i).getLmCode() + " not matches with " + lmCodes.get(i), lmCodes.get(i), equalTo(responseData.get(i).getLmCode()));
+            assertThat("Sorting order is wrong: " + responseData.get(i).getLmCode() + " not matches with " + lmCodes.get(i),
+                    lmCodes.get(i), equalTo(responseData.get(i).getLmCode()));
         }
     }
 
@@ -595,10 +587,8 @@ public class SearchApiTest extends BaseProjectTest {
 
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
 
-        List<Float> availableStocks = new ArrayList<>();
-        for (ProductItemData data : responseData) {
-            availableStocks.add(data.getAvailableStock());
-        }
+        List<Float> availableStocks = responseData.stream().map(ProductItemData::getAvailableStock)
+                .collect(Collectors.toList());
         for (int y = 0; y < availableStocks.size(); y++) {
             for (int i = availableStocks.size() - 1; i > y; i--) {
                 if (availableStocks.get(i) > availableStocks.get(y)) {
@@ -609,7 +599,8 @@ public class SearchApiTest extends BaseProjectTest {
             }
         }
         for (int i = 0; i < responseData.size(); i++) {
-            assertThat("Sorting order is wrong: " + responseData.get(i).getAvailableStock() + " not matches with " + availableStocks.get(i), availableStocks.get(i), equalTo(responseData.get(i).getAvailableStock()));
+            assertThat("Sorting order is wrong: " + responseData.get(i).getAvailableStock() + " not matches with " + availableStocks.get(i),
+                    availableStocks.get(i), equalTo(responseData.get(i).getAvailableStock()));
         }
     }
 
@@ -643,7 +634,8 @@ public class SearchApiTest extends BaseProjectTest {
             }
         }
         for (int i = 0; i < responseData.size(); i++) {
-            assertThat("Sorting order is wrong: " + responseData.get(i).getAvailableStock() + " not matches with " + availableStocks.get(i), availableStocks.get(i), equalTo(responseData.get(i).getAvailableStock()));
+            assertThat("Sorting order is wrong: " + responseData.get(i).getAvailableStock() + " not matches with " + availableStocks.get(i),
+                    availableStocks.get(i), equalTo(responseData.get(i).getAvailableStock()));
         }
     }
 
@@ -728,7 +720,7 @@ public class SearchApiTest extends BaseProjectTest {
         List<ServiceItemData> responseData = response.asJson().getItems();
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
         for (ServiceItemData data : responseData) {
-            assertThat("Service department has not matches " + departmentId, data.getDepartmentId(), equalTo("0"+departmentId));
+            assertThat("Service department has not matches " + departmentId, data.getDepartmentId(), equalTo("0" + departmentId));
         }
     }
 
