@@ -68,7 +68,7 @@ public class GetCatalogSearch extends RequestBuilder<GetCatalogSearch> {
         return queryParam("top1000", val);
     }
 
-    public GetCatalogSearch setLimitedOffer(String val) {
+    public GetCatalogSearch setLimitedOffer(Boolean val) {
         return queryParam("limitedOffer", val);
     }
 

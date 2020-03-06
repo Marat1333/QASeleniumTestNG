@@ -17,7 +17,7 @@ import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.umbrella_extension.authorization.AuthClient;
 import com.leroy.umbrella_extension.magmobile.MagMobileClient;
 import com.leroy.umbrella_extension.magmobile.data.CartData;
-import com.leroy.umbrella_extension.magmobile.data.ProductItemResponse;
+import com.leroy.umbrella_extension.magmobile.data.ProductItemData;
 import com.leroy.umbrella_extension.magmobile.data.estimate.EstimateData;
 import com.leroy.umbrella_extension.magmobile.data.estimate.ProductOrderData;
 import com.leroy.umbrella_extension.magmobile.data.sales.SalesDocumentListResponse;
@@ -58,10 +58,10 @@ public class SalesBaseTest extends AppBaseSteps {
                 .setShopId(shopId)
                 .setTopEM(false)
                 .setHasAvailableStock(hasAvailableStock);
-        List<ProductItemResponse> items = mashupClient.searchProductsBy(params).asJson().getItems();
+        List<ProductItemData> items = mashupClient.searchProductsBy(params).asJson().getItems();
         List<String> resultList = new ArrayList<>();
         int i = 0;
-        for (ProductItemResponse item : items) {
+        for (ProductItemData item : items) {
             if (item.getAvsDate() == null && !Arrays.asList(badLmCodes).contains(item.getLmCode())) {
                 if (necessaryCount > i)
                     resultList.add(item.getLmCode());
@@ -81,8 +81,8 @@ public class SalesBaseTest extends AppBaseSteps {
     protected String getAnyLmCodeProductWithAvs() {
         GetCatalogSearch params = new GetCatalogSearch()
                 .setTopEM(false);
-        List<ProductItemResponse> items = mashupClient.searchProductsBy(params).asJson().getItems();
-        for (ProductItemResponse item : items) {
+        List<ProductItemData> items = mashupClient.searchProductsBy(params).asJson().getItems();
+        for (ProductItemData item : items) {
             if (item.getAvsDate() != null)
                 return item.getLmCode();
         }
@@ -94,8 +94,8 @@ public class SalesBaseTest extends AppBaseSteps {
         GetCatalogSearch params = new GetCatalogSearch()
                 .setTopEM(true)
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID);
-        List<ProductItemResponse> items = mashupClient.searchProductsBy(params).asJson().getItems();
-        for (ProductItemResponse item : items) {
+        List<ProductItemData> items = mashupClient.searchProductsBy(params).asJson().getItems();
+        for (ProductItemData item : items) {
             if (item.getAvsDate() == null)
                 return item.getLmCode();
         }

@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ProductItemResponse {
+public class ProductItemData {
 
     private String lmCode;
     private String barCode;
@@ -20,7 +20,7 @@ public class ProductItemResponse {
     private String priceCategory;
     private Boolean ctm;
     private Boolean top1000;
-    private Integer availableStock;
+    private Float availableStock;
     private Boolean topEM;
     private Integer top;
     private String supCode;
