@@ -167,7 +167,7 @@ public class SearchApiTest extends BaseProjectTest {
         List<ProductItemData> responseData = response.asJson().getItems();
 
         assertThat("response is not successful", response.isSuccessful());
-        assertThat("response contains 0 objects", responseData.size(), equalTo(0));
+        assertThat("response.size", responseData, hasSize(0));
     }
 
     @TestCase(22893329)
