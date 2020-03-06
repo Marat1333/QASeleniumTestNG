@@ -167,7 +167,7 @@ public class SearchApiTest extends BaseProjectTest {
         List<ProductItemData> responseData = response.asJson().getItems();
 
         assertThat("response is not successful", response.isSuccessful());
-        assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
+        assertThat("response contains 0 objects", responseData.size(), equalTo(0));
     }
 
     @TestCase(22893329)
@@ -711,7 +711,7 @@ public class SearchApiTest extends BaseProjectTest {
         List<ServiceItemData> responseData = response.asJson().getItems();
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
         for (ServiceItemData data : responseData) {
-            assertThat("Service lmCode has not matches " + shortLmCode, data.getLmCode(), equalTo(shortLmCode));
+            assertThat("Service lmCode has not matches " + shortLmCode, data.getLmCode(), containsString(shortLmCode));
         }
     }
 
