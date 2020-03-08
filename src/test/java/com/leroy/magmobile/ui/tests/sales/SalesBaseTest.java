@@ -17,6 +17,7 @@ import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.umbrella_extension.authorization.AuthClient;
 import com.leroy.umbrella_extension.magmobile.MagMobileClient;
 import com.leroy.umbrella_extension.magmobile.data.CartData;
+import com.leroy.umbrella_extension.magmobile.data.ProductItemListResponse;
 import com.leroy.umbrella_extension.magmobile.data.ProductItemResponse;
 import com.leroy.umbrella_extension.magmobile.data.estimate.EstimateData;
 import com.leroy.umbrella_extension.magmobile.data.estimate.ProductOrderData;
@@ -34,6 +35,9 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 import java.text.NumberFormat;
 import java.util.*;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+
 @Guice(modules = {BaseModule.class})
 public class SalesBaseTest extends AppBaseSteps {
 
@@ -45,12 +49,20 @@ public class SalesBaseTest extends AppBaseSteps {
 
     // Получить ЛМ код для услуги
     protected String getAnyLmCodeOfService() {
-        return "49055102";
+        return EnvConstants.SERVICE_1_LM_CODE;
     }
 
     // Получить ЛМ код для обычного продукта без специфичных опций
     protected List<String> getAnyLmCodesProductWithoutSpecificOptions(int necessaryCount, String shopId,
                                                                       Boolean hasAvailableStock) {
+        if ("true".equals(System.getProperty("rmsFail"))) {
+            List<String> lmCodes = new ArrayList<>();
+            lmCodes.add(EnvConstants.PRODUCT_1_LM_CODE);
+            if (necessaryCount > 1)
+                lmCodes.add(EnvConstants.PRODUCT_2_LM_CODE);
+            return lmCodes;
+        }
+
         String[] badLmCodes = {"10008698", "10008751"}; // Из-за отсутствия синхронизации бэков на тесте, мы можем получить некорректные данные
         if (shopId == null) // TODO может быть shopId null или нет?
             shopId = "5";
@@ -58,7 +70,9 @@ public class SalesBaseTest extends AppBaseSteps {
                 .setShopId(shopId)
                 .setTopEM(false)
                 .setHasAvailableStock(hasAvailableStock);
-        List<ProductItemResponse> items = mashupClient.searchProductsBy(params).asJson().getItems();
+        Response<ProductItemListResponse> resp = mashupClient.searchProductsBy(params);
+        assertThat(resp.toString(), resp.isSuccessful());
+        List<ProductItemResponse> items = resp.asJson().getItems();
         List<String> resultList = new ArrayList<>();
         int i = 0;
         for (ProductItemResponse item : items) {
@@ -79,29 +93,38 @@ public class SalesBaseTest extends AppBaseSteps {
 
     // Получить ЛМ код для продукта с AVS
     protected String getAnyLmCodeProductWithAvs() {
+        if ("true".equals(System.getProperty("rmsFail"))) {
+            return EnvConstants.WITH_AVS_PRODUCT_1_LM_CODE;
+        }
         GetCatalogSearch params = new GetCatalogSearch()
                 .setTopEM(false);
+        Response<ProductItemListResponse> resp = mashupClient.searchProductsBy(params);
+        assertThat(resp.toString(), resp.isSuccessful());
         List<ProductItemResponse> items = mashupClient.searchProductsBy(params).asJson().getItems();
         for (ProductItemResponse item : items) {
             if (item.getAvsDate() != null)
                 return item.getLmCode();
         }
-        return "82014172";
+        return EnvConstants.WITH_AVS_PRODUCT_1_LM_CODE;
     }
 
     // Получить ЛМ код для продукта с опцией TopEM
     protected String getAnyLmCodeProductWithTopEM() {
+        if ("true".equals(System.getProperty("rmsFail"))) {
+            return EnvConstants.TOP_EM_PRODUCT_1_LM_CODE;
+        }
         GetCatalogSearch params = new GetCatalogSearch()
                 .setTopEM(true)
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID);
+        Response<ProductItemListResponse> resp = mashupClient.searchProductsBy(params);
+        assertThat(resp.toString(), resp.isSuccessful());
         List<ProductItemResponse> items = mashupClient.searchProductsBy(params).asJson().getItems();
         for (ProductItemResponse item : items) {
             if (item.getAvsDate() == null)
                 return item.getLmCode();
         }
-        if (items.size() > 0)
-            return items.get(0).getLmCode();
-        return "82138074";
+        assertThat("Request - Search for product with TopEm", items,hasSize(greaterThan(0)));
+        return items.get(0).getLmCode();
     }
 
     // Получить ЛМ код для продукта, доступного для отзыва с RM
