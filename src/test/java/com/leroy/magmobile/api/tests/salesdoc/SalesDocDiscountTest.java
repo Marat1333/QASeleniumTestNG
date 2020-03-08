@@ -16,6 +16,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.List;
 
+import static com.leroy.magmobile.api.matchers.ProjectMatchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -39,7 +40,7 @@ public class SalesDocDiscountTest extends BaseProjectTest {
         Response<DiscountData> resp = magMobileClient.get().getSalesDocDiscount(new GetSalesDocDiscount()
                 .setLmCode(productLmCode)
                 .setShopId(SHOP_ID));
-        assertThatResponseIsOK(resp);
+        assertThat(resp, successful());
         DiscountData discountData = resp.asJson();
         assertThat("maxDiscount", discountData.getMaxDiscount(), greaterThan(0.0));
         List<DiscountReasonData> discountReasonDataList = discountData.getReasons();

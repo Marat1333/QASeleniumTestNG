@@ -1,4 +1,4 @@
-package com.leroy.magmobile.api.tests.matchers;
+package com.leroy.magmobile.api.matchers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,7 +12,6 @@ import com.github.fge.jsonschema.main.JsonValidator;
 import com.kjetland.jackson.jsonSchema.JsonSchemaConfig;
 import com.kjetland.jackson.jsonSchema.JsonSchemaGenerator;
 import com.leroy.core.configuration.Log;
-import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -65,7 +64,7 @@ public class IsValid extends TypeSafeMatcher<Response<?>> {
         super.describeMismatchSafely(item, mismatchDescription);
     }
 
-    public static BaseMatcher<Response<?>> valid(Class<?> pojoClass) {
+    public static IsValid valid(Class<?> pojoClass) {
         return new IsValid(pojoClass);
     }
 

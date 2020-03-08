@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import static com.leroy.magmobile.api.matchers.ProjectMatchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -63,7 +64,7 @@ public class SalesDocApiTest extends BaseProjectTest {
                 sessionData, productOrder1);
 
         // Verifications
-        assertThatResponseIsOK(resp);
+        assertThat(resp, successful());
         salesDocument = resp.asJson();
         assertThat("docId field", salesDocument.getDocId(), not(isEmptyOrNullString()));
         assertThat("fullDocId field", salesDocument.getFullDocId(),
@@ -84,7 +85,7 @@ public class SalesDocApiTest extends BaseProjectTest {
                 sessionData, serviceOrder1);
 
         // Verifications
-        assertThatResponseIsOK(resp);
+        assertThat(resp, successful());
         salesDocument = resp.asJson();
         assertThat("docId field", salesDocument.getDocId(), not(isEmptyOrNullString()));
         assertThat("fullDocId field", salesDocument.getFullDocId(),
@@ -117,7 +118,7 @@ public class SalesDocApiTest extends BaseProjectTest {
                 Collections.singletonList(serviceOrder1));
 
         // Verifications
-        assertThatResponseIsOK(resp);
+        assertThat(resp, successful());
         salesDocument = resp.asJson();
         serviceOrder1.setId(salesDocument.getNewServiceId());
         assertThat("docId field", salesDocument.getDocId(), not(isEmptyOrNullString()));
@@ -135,7 +136,7 @@ public class SalesDocApiTest extends BaseProjectTest {
         Response<SalesDocumentResponseData> resp = magMobileClient.get()
                 .getSalesDocProductsByFullDocId(salesDocument.getFullDocId());
         SalesDocumentResponseData data = resp.asJson();
-        assertThatResponseIsOK(resp);
+        assertThat(resp, successful());
         assertThatSalesDocMatches(data);
 
         assertThat("products", data.getProducts(), hasSize(1));
@@ -153,7 +154,7 @@ public class SalesDocApiTest extends BaseProjectTest {
         Response<SalesDocumentResponseData> resp = magMobileClient.get()
                 .getSalesDocProductsByFullDocId(salesDocument.getFullDocId());
         SalesDocumentResponseData data = resp.asJson();
-        assertThatResponseIsOK(resp);
+        assertThat(resp, successful());
         assertThatSalesDocMatches(data);
 
         assertThat("services", data.getServices(), hasSize(1));
@@ -185,7 +186,7 @@ public class SalesDocApiTest extends BaseProjectTest {
         productOrder1.setQuantity(productOrder1.getQuantity() + 2);
         Response<SalesDocumentResponseData> resp = magMobileClient.get().updateSalesDocProducts(
                 sessionData, salesDocument.getFullDocId(), productOrder1);
-        assertThatResponseIsOK(resp);
+        assertThat(resp, successful());
         assertThatSalesDocMatches(resp.asJson());
     }
 
@@ -201,7 +202,7 @@ public class SalesDocApiTest extends BaseProjectTest {
                 sessionData, salesDocument.getFullDocId(), serviceOrder1);
 
         // Verifications
-        assertThatResponseIsOK(resp);
+        assertThat(resp, successful());
         SalesDocumentResponseData newSalesDocData = resp.asJson();
         assertThat("SalesDoc newServiceId", newSalesDocData.getNewServiceId(),
                 not(equalTo(salesDocument.getNewServiceId())));
@@ -224,7 +225,7 @@ public class SalesDocApiTest extends BaseProjectTest {
         Response<SalesDocumentResponseData> resp = magMobileClient.get().updateSalesDocProducts(
                 sessionData, salesDocument.getFullDocId(), Arrays.asList(productOrder1, productOrder2),
                 Arrays.asList(serviceOrder1, serviceOrder2));
-        assertThatResponseIsOK(resp);
+        assertThat(resp, successful());
         assertThatSalesDocMatches(resp.asJson());
     }
 
@@ -234,7 +235,7 @@ public class SalesDocApiTest extends BaseProjectTest {
             throw new IllegalArgumentException("SalesDoc hasn't been created");
         Response<SalesDocumentResponseData> resp = magMobileClient.get().cancelSalesDoc(
                 sessionData, salesDocument.getFullDocId());
-        assertThatResponseIsOK(resp);
+        assertThat(resp, successful());
         salesDocument.setSalesDocStatus(SalesDocumentsConst.States.CANCELLED.getApiVal());
         assertThatSalesDocMatches(resp.asJson());
     }

@@ -1,6 +1,5 @@
 package com.leroy.magmobile.api.tests.common;
 
-import com.leroy.constants.StatusCodes;
 import com.leroy.core.listeners.TestRailListener;
 import com.leroy.core.testrail.helpers.StepLog;
 import com.leroy.magmobile.api.SessionData;
@@ -8,14 +7,10 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.base.BaseModule;
-import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.lang.reflect.Method;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 
 @Guice(modules = {BaseModule.class})
 public class BaseProjectTest {
@@ -43,11 +38,5 @@ public class BaseProjectTest {
     protected void step(String step) {
         log.step(step);
     }
-
-    /// Typical Asserts
-    protected void assertThatResponseIsOK(Response<?> response) {
-        assertThat(response.toString(), response.getStatusCode(), equalTo(StatusCodes.ST_200_OK));
-    }
-
 
 }

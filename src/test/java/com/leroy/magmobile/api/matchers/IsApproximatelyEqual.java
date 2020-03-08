@@ -1,6 +1,5 @@
-package com.leroy.magmobile.api.tests.matchers;
+package com.leroy.magmobile.api.matchers;
 
-import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
@@ -33,7 +32,7 @@ public class IsApproximatelyEqual extends TypeSafeMatcher<Temporal> {
         description.appendText(" minutes");
     }
 
-    public static BaseMatcher<Temporal> approximatelyEqual(Temporal equalArg) {
+    public static IsApproximatelyEqual approximatelyEqual(Temporal equalArg) {
         return new IsApproximatelyEqual(equalArg);
     }
 

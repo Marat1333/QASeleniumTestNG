@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.leroy.magmobile.api.tests.matchers.IsSuccessful.successful;
+import static com.leroy.magmobile.api.matchers.ProjectMatchers.successful;
 
 public class FindTestDataHelper {
 
