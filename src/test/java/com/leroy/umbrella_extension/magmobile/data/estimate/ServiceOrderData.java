@@ -15,7 +15,7 @@ public class ServiceOrderData extends ServiceItemData {
         this.quantity = 1.0;
     }
 
-    public ServiceOrderData(ServiceItemResponse serviceItemResponse) {
+    public ServiceOrderData(ServiceItemData serviceItemResponse) {
         this();
         setLmCode(serviceItemResponse.getLmCode());
         setTitle(serviceItemResponse.getTitle());

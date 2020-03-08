@@ -9,8 +9,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductData {
+public class ServiceItemDataList {
 
-    private List<ProductItemData> items;
-
+    private List<ServiceItemData> items;
+    private Integer totalCount;
 }

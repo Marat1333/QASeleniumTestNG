@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 public class ProductOrderData extends ProductItemData {
 
     public ProductOrderData() {}
-    public ProductOrderData(ProductItemResponse productItemResponse) {
+    public ProductOrderData(ProductItemData productItemResponse) {
         this.setLmCode(productItemResponse.getLmCode());
         this.setBarCode(productItemResponse.getBarCode());
         this.setTitle(productItemResponse.getTitle());

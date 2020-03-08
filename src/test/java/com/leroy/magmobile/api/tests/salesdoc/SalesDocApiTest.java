@@ -11,8 +11,8 @@ import com.leroy.magmobile.models.search.FiltersData;
 import com.leroy.magmobile.ui.pages.search.FilterPage;
 import com.leroy.umbrella_extension.authorization.AuthClient;
 import com.leroy.umbrella_extension.magmobile.MagMobileClient;
-import com.leroy.umbrella_extension.magmobile.data.ProductItemResponse;
-import com.leroy.umbrella_extension.magmobile.data.ServiceItemResponse;
+import com.leroy.umbrella_extension.magmobile.data.ProductItemData;
+import com.leroy.umbrella_extension.magmobile.data.ServiceItemData;
 import com.leroy.umbrella_extension.magmobile.data.estimate.ProductOrderData;
 import com.leroy.umbrella_extension.magmobile.data.estimate.ServiceOrderData;
 import com.leroy.umbrella_extension.magmobile.data.sales.SalesDocumentResponseData;
@@ -97,14 +97,14 @@ public class SalesDocApiTest extends BaseProjectTest {
     @Test(description = "C3232447 SalesDoc add product and services")
     public void testSalesDocAddProductAndService() throws Exception {
         // Prepare request data
-        List<ProductItemResponse> productOrderDataList = FindTestDataHelper.getProducts(magMobileClient.get(),
+        List<ProductItemData> productOrderDataList = FindTestDataHelper.getProducts(magMobileClient.get(),
                 sessionData.getUserShopId(), 2, new FiltersData(FilterPage.MY_SHOP_FRAME_TYPE));
         productOrder1 = new ProductOrderData(productOrderDataList.get(0));
         productOrder1.setQuantity((double) new Random().nextInt(6) + 1);
         productOrder2 = new ProductOrderData(productOrderDataList.get(1));
         productOrder2.setQuantity((double) new Random().nextInt(6) + 1);
 
-        List<ServiceItemResponse> serviceOrderDataList = FindTestDataHelper.getServices(
+        List<ServiceItemData> serviceOrderDataList = FindTestDataHelper.getServices(
                 magMobileClient.get(), sessionData.getUserShopId(), 2);
         serviceOrder1 = new ServiceOrderData(serviceOrderDataList.get(0));
         serviceOrder1.setPrice(10.0);

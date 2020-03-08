@@ -5,8 +5,8 @@ import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.magmobile.api.SessionData;
 import com.leroy.umbrella_extension.common.LegoBaseClient;
 import com.leroy.umbrella_extension.magmobile.data.CartData;
-import com.leroy.umbrella_extension.magmobile.data.ProductData;
-import com.leroy.umbrella_extension.magmobile.data.ServiceData;
+import com.leroy.umbrella_extension.magmobile.data.ProductItemDataList;
+import com.leroy.umbrella_extension.magmobile.data.ServiceItemDataList;
 import com.leroy.umbrella_extension.magmobile.data.estimate.EstimateData;
 import com.leroy.umbrella_extension.magmobile.data.estimate.ProductOrderData;
 import com.leroy.umbrella_extension.magmobile.data.estimate.ServiceOrderData;
@@ -42,12 +42,12 @@ public class MagMobileClient extends LegoBaseClient {
     private String gatewayUrl;
 
     // Searching
-    public Response<ProductData> searchProductsBy(GetCatalogSearch params) {
-        return execute(params.build(gatewayUrl), ProductData.class);
+    public Response<ProductItemDataList> searchProductsBy(GetCatalogSearch params) {
+        return execute(params.build(gatewayUrl), ProductItemDataList.class);
     }
 
-    public Response<ServiceData> searchServicesBy(GetCatalogServicesSearch params) {
-        return execute(params.build(gatewayUrl), ServiceData.class);
+    public Response<ServiceItemDataList> searchServicesBy(GetCatalogServicesSearch params) {
+        return execute(params.build(gatewayUrl), ServiceItemDataList.class);
     }
 
     // Estimates

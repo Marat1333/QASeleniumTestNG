@@ -4,9 +4,9 @@ import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.magmobile.api.tests.common.BaseProjectTest;
 import com.leroy.umbrella_extension.magmobile.MagMobileClient;
-import com.leroy.umbrella_extension.magmobile.data.ProductData;
+import com.leroy.umbrella_extension.magmobile.data.ProductItemDataList;
 import com.leroy.umbrella_extension.magmobile.data.ProductItemData;
-import com.leroy.umbrella_extension.magmobile.data.ServiceData;
+import com.leroy.umbrella_extension.magmobile.data.ServiceItemDataList;
 import com.leroy.umbrella_extension.magmobile.data.ServiceItemData;
 import com.leroy.umbrella_extension.magmobile.enums.CatalogSearchFields;
 import com.leroy.umbrella_extension.magmobile.enums.SortingOrder;
@@ -46,7 +46,7 @@ public class SearchApiTest extends BaseProjectTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(10)
                 .setByLmCode(lmCode);
-        Response<ProductData> response = magMobileClient.searchProductsBy(byLmCodeParams);
+        Response<ProductItemDataList> response = magMobileClient.searchProductsBy(byLmCodeParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -67,7 +67,7 @@ public class SearchApiTest extends BaseProjectTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(20)
                 .setByLmCode(lmCode);
-        Response<ProductData> response = magMobileClient.searchProductsBy(byLmCodeParams);
+        Response<ProductItemDataList> response = magMobileClient.searchProductsBy(byLmCodeParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -88,7 +88,7 @@ public class SearchApiTest extends BaseProjectTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(10)
                 .setByBarCode(barCode);
-        Response<ProductData> response = magMobileClient.searchProductsBy(byBarCodeParams);
+        Response<ProductItemDataList> response = magMobileClient.searchProductsBy(byBarCodeParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -109,7 +109,7 @@ public class SearchApiTest extends BaseProjectTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(20)
                 .setByBarCode(barCode);
-        Response<ProductData> response = magMobileClient.searchProductsBy(byBarCodeParams);
+        Response<ProductItemDataList> response = magMobileClient.searchProductsBy(byBarCodeParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -130,7 +130,7 @@ public class SearchApiTest extends BaseProjectTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(20)
                 .setByNameLike(name);
-        Response<ProductData> response = magMobileClient.searchProductsBy(byNameParams);
+        Response<ProductItemDataList> response = magMobileClient.searchProductsBy(byNameParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -155,7 +155,7 @@ public class SearchApiTest extends BaseProjectTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(10)
                 .setByLmCode(longLmCode);
-        Response<ProductData> response = magMobileClient.searchProductsBy(byLmCodeParams);
+        Response<ProductItemDataList> response = magMobileClient.searchProductsBy(byLmCodeParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -173,7 +173,7 @@ public class SearchApiTest extends BaseProjectTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(20)
                 .setGamma(GAMMA);
-        Response<ProductData> response = magMobileClient.searchProductsBy(byGammaParams);
+        Response<ProductItemDataList> response = magMobileClient.searchProductsBy(byGammaParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -196,7 +196,7 @@ public class SearchApiTest extends BaseProjectTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(20)
                 .setGamma(FIRST_GAMMA + "," + SECOND_GAMMA);
-        Response<ProductData> response = magMobileClient.searchProductsBy(byGammaParams);
+        Response<ProductItemDataList> response = magMobileClient.searchProductsBy(byGammaParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -219,7 +219,7 @@ public class SearchApiTest extends BaseProjectTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(20)
                 .setTop(TOP);
-        Response<ProductData> response = magMobileClient.searchProductsBy(byTopParams);
+        Response<ProductItemDataList> response = magMobileClient.searchProductsBy(byTopParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -243,7 +243,7 @@ public class SearchApiTest extends BaseProjectTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(20)
                 .setTop(FIRST_TOP + "," + SECOND_TOP);
-        Response<ProductData> response = magMobileClient.searchProductsBy(byTopParams);
+        Response<ProductItemDataList> response = magMobileClient.searchProductsBy(byTopParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -267,7 +267,7 @@ public class SearchApiTest extends BaseProjectTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(20)
                 .setHasAvailableStock(hasAvailableStock);
-        Response<ProductData> response = magMobileClient.searchProductsBy(byStockParams);
+        Response<ProductItemDataList> response = magMobileClient.searchProductsBy(byStockParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -290,7 +290,7 @@ public class SearchApiTest extends BaseProjectTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(20)
                 .setTopEM(topEm);
-        Response<ProductData> response = magMobileClient.searchProductsBy(byTopEmParams);
+        Response<ProductItemDataList> response = magMobileClient.searchProductsBy(byTopEmParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -313,7 +313,7 @@ public class SearchApiTest extends BaseProjectTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(10)
                 .setBestPrice(bestPrice);
-        Response<ProductData> response = magMobileClient.searchProductsBy(byBestPriceParams);
+        Response<ProductItemDataList> response = magMobileClient.searchProductsBy(byBestPriceParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -335,7 +335,7 @@ public class SearchApiTest extends BaseProjectTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(20)
                 .setTop1000(top1000);
-        Response<ProductData> response = magMobileClient.searchProductsBy(byTop1000Params);
+        Response<ProductItemDataList> response = magMobileClient.searchProductsBy(byTop1000Params);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -358,7 +358,7 @@ public class SearchApiTest extends BaseProjectTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(10)
                 .setLimitedOffer(limitedOffer);
-        Response<ProductData> response = magMobileClient.searchProductsBy(byLimitedOfferParams);
+        Response<ProductItemDataList> response = magMobileClient.searchProductsBy(byLimitedOfferParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -380,7 +380,7 @@ public class SearchApiTest extends BaseProjectTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(20)
                 .setCtm(ctm);
-        Response<ProductData> response = magMobileClient.searchProductsBy(byCtmParams);
+        Response<ProductItemDataList> response = magMobileClient.searchProductsBy(byCtmParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -403,7 +403,7 @@ public class SearchApiTest extends BaseProjectTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(20)
                 .setSupId(SUPPLIER_CODE);
-        Response<ProductData> response = magMobileClient.searchProductsBy(bySupplierParams);
+        Response<ProductItemDataList> response = magMobileClient.searchProductsBy(bySupplierParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -427,7 +427,7 @@ public class SearchApiTest extends BaseProjectTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(30)
                 .setSupId(FIRST_SUPPLIER_CODE + "," + SECOND_SUPPLIER_CODE);
-        Response<ProductData> response = magMobileClient.searchProductsBy(bySupplierParams);
+        Response<ProductItemDataList> response = magMobileClient.searchProductsBy(bySupplierParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -448,7 +448,7 @@ public class SearchApiTest extends BaseProjectTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(20)
                 .setAvsDate("neq|null");
-        Response<ProductData> response = magMobileClient.searchProductsBy(byAvsNeqNullParams);
+        Response<ProductItemDataList> response = magMobileClient.searchProductsBy(byAvsNeqNullParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -473,7 +473,7 @@ public class SearchApiTest extends BaseProjectTest {
                         avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth(),
                         avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth() + 1));
 
-        Response<ProductData> response = magMobileClient.searchProductsBy(byAvsDateParams);
+        Response<ProductItemDataList> response = magMobileClient.searchProductsBy(byAvsDateParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -505,7 +505,7 @@ public class SearchApiTest extends BaseProjectTest {
                 .setAvsDate(avs)
                 .setCtm(ctm)
                 .setTopEM(topEm);
-        Response<ProductData> response = magMobileClient.searchProductsBy(fewCategoriesParams);
+        Response<ProductItemDataList> response = magMobileClient.searchProductsBy(fewCategoriesParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -531,7 +531,7 @@ public class SearchApiTest extends BaseProjectTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(20);
 
-        Response<ProductData> response = magMobileClient.searchProductsBy(byLmDescSortParams);
+        Response<ProductItemDataList> response = magMobileClient.searchProductsBy(byLmDescSortParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -556,7 +556,7 @@ public class SearchApiTest extends BaseProjectTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.ASC)
                 .setPageSize(20);
 
-        Response<ProductData> response = magMobileClient.searchProductsBy(byLmAscSortParams);
+        Response<ProductItemDataList> response = magMobileClient.searchProductsBy(byLmAscSortParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -582,7 +582,7 @@ public class SearchApiTest extends BaseProjectTest {
                 .setSortBy(CatalogSearchFields.AVAILABLE_STOCK, SortingOrder.DESC)
                 .setPageSize(10);
 
-        Response<ProductData> response = magMobileClient.searchProductsBy(byAvailableStockSortParams);
+        Response<ProductItemDataList> response = magMobileClient.searchProductsBy(byAvailableStockSortParams);
         List<ProductItemData> responseData = response.asJson().getItems();
 
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
@@ -615,7 +615,7 @@ public class SearchApiTest extends BaseProjectTest {
                 .setSortBy(CatalogSearchFields.AVAILABLE_STOCK, SortingOrder.ASC)
                 .setPageSize(20);
 
-        Response<ProductData> response = magMobileClient.searchProductsBy(byAvailableStockSortParams);
+        Response<ProductItemDataList> response = magMobileClient.searchProductsBy(byAvailableStockSortParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
@@ -647,7 +647,7 @@ public class SearchApiTest extends BaseProjectTest {
         GetCatalogServicesSearch byNameParams = new GetCatalogServicesSearch()
                 .setName(name);
 
-        Response<ServiceData> response = magMobileClient.searchServicesBy(byNameParams);
+        Response<ServiceItemDataList> response = magMobileClient.searchServicesBy(byNameParams);
 
         List<ServiceItemData> responseData = response.asJson().getItems();
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
@@ -664,7 +664,7 @@ public class SearchApiTest extends BaseProjectTest {
         GetCatalogServicesSearch byNameParams = new GetCatalogServicesSearch()
                 .setName(name);
 
-        Response<ServiceData> response = magMobileClient.searchServicesBy(byNameParams);
+        Response<ServiceItemDataList> response = magMobileClient.searchServicesBy(byNameParams);
 
         List<ServiceItemData> responseData = response.asJson().getItems();
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
@@ -681,7 +681,7 @@ public class SearchApiTest extends BaseProjectTest {
         GetCatalogServicesSearch byLmCodeParams = new GetCatalogServicesSearch()
                 .setLmCode(shortLmCode);
 
-        Response<ServiceData> response = magMobileClient.searchServicesBy(byLmCodeParams);
+        Response<ServiceItemDataList> response = magMobileClient.searchServicesBy(byLmCodeParams);
 
         List<ServiceItemData> responseData = response.asJson().getItems();
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
@@ -698,7 +698,7 @@ public class SearchApiTest extends BaseProjectTest {
         GetCatalogServicesSearch byLmCodeParams = new GetCatalogServicesSearch()
                 .setLmCode(shortLmCode);
 
-        Response<ServiceData> response = magMobileClient.searchServicesBy(byLmCodeParams);
+        Response<ServiceItemDataList> response = magMobileClient.searchServicesBy(byLmCodeParams);
 
         List<ServiceItemData> responseData = response.asJson().getItems();
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
@@ -715,7 +715,7 @@ public class SearchApiTest extends BaseProjectTest {
         GetCatalogServicesSearch byDepartmentIdParams = new GetCatalogServicesSearch()
                 .setDepartmentId(departmentId);
 
-        Response<ServiceData> response = magMobileClient.searchServicesBy(byDepartmentIdParams);
+        Response<ServiceItemDataList> response = magMobileClient.searchServicesBy(byDepartmentIdParams);
 
         List<ServiceItemData> responseData = response.asJson().getItems();
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
@@ -729,7 +729,7 @@ public class SearchApiTest extends BaseProjectTest {
     public void testSearchAllServices() {
         GetCatalogServicesSearch allServicesParams = new GetCatalogServicesSearch();
 
-        Response<ServiceData> response = magMobileClient.searchServicesBy(allServicesParams);
+        Response<ServiceItemDataList> response = magMobileClient.searchServicesBy(allServicesParams);
 
         List<ServiceItemData> responseData = response.asJson().getItems();
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
