@@ -1,12 +1,12 @@
 package com.leroy.umbrella_extension.magmobile.data.estimate;
 
-import com.leroy.umbrella_extension.magmobile.data.ProductItemResponse;
+import com.leroy.umbrella_extension.magmobile.data.ProductItemData;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class ProductOrderData extends ProductItemResponse {
+public class ProductOrderData extends ProductItemData {
 
     public ProductOrderData() {}
     public ProductOrderData(ProductItemResponse productItemResponse) {

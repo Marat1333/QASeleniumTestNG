@@ -1,7 +1,7 @@
 package com.leroy.umbrella_extension.magmobile.data.estimate;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.leroy.umbrella_extension.magmobile.data.ServiceItemResponse;
+import com.leroy.umbrella_extension.magmobile.data.ServiceItemData;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -9,7 +9,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Data
-public class ServiceOrderData extends ServiceItemResponse {
+public class ServiceOrderData extends ServiceItemData {
 
     public ServiceOrderData() {
         this.quantity = 1.0;

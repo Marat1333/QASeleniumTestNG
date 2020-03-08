@@ -9,7 +9,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductItemListResponse {
+public class ProductData {
 
-    private List<ProductItemResponse> items;
+    private List<ProductItemData> items;
+
 }
