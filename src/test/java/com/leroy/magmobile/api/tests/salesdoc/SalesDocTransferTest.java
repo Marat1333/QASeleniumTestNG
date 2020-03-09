@@ -35,31 +35,6 @@ public class SalesDocTransferTest extends BaseProjectTest {
         builder.setSessionData(sessionData);
     }
 
-    @Test
-    public void tt() {
-        step("Step 1");
-        method1();
-        step("Step 2");
-        method2();
-        step("Step 3");
-        method3();
-    }
-
-    @Step("Method1")
-    private void method1() {
-
-    }
-
-    @Step("Method2")
-    private void method2() {
-
-    }
-
-    @Step("Method3")
-    private void method3() {
-
-    }
-
     @Test(description = "C3248457 SalesDoc transfer create POST")
     public void testSalesDocTransferCreatePOST() {
         // Prepare Test Data
