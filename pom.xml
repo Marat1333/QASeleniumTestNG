@@ -180,13 +180,6 @@
     </dependencyManagement>
 
     <dependencies>
-        <!-- Yandex - htmlelements-thucydidies -->
-        <dependency>
-            <groupId>ru.yandex.qatools.htmlelements</groupId>
-            <artifactId>htmlelements-all</artifactId>
-            <version>${htmlelements.version}</version>
-        </dependency>
-
         <!-- Allure -->
         <dependency>
             <groupId>io.qameta.allure</groupId>
@@ -220,11 +213,7 @@
             <artifactId>jackson-core</artifactId>
             <version>2.9.9</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.fasterxml.jackson.module</groupId>-->
-<!--            <artifactId>jackson-module-jsonSchema</artifactId>-->
-<!--            <version>2.9.0</version>-->
-<!--        </dependency>-->
+
         <dependency>
             <groupId>com.github.java-json-tools</groupId>
             <artifactId>json-schema-validator</artifactId>
@@ -242,7 +231,6 @@
             <version>2.0.1.Final</version>
         </dependency>
 
-        <!-- TTTTTTTTTTTTEST -->
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-parameter-names</artifactId>
@@ -255,7 +243,6 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
-        <!-- ================= -->
 
         <!-- Cassandra Connector -->
         <!-- A driver for Apache Cassandra 1.2+ that works exclusively with the Cassandra Query Language version 3 (CQL3) and Cassandra's binary protocol. -->
