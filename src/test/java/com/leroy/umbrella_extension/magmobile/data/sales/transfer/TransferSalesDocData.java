@@ -2,18 +2,16 @@ package com.leroy.umbrella_extension.magmobile.data.sales.transfer;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaFormat;
-import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaInject;
-import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaString;
 import lombok.Data;
 
-import javax.validation.constraints.Future;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
 public class TransferSalesDocData {
 
+    @JsonProperty(required = true)
     private String taskId;
     private String status;
     private Integer shopId;
@@ -28,6 +26,8 @@ public class TransferSalesDocData {
     private List<TransferProductOrderData> products;
 
     public TransferSalesDocData addProduct(TransferProductOrderData product) {
+        if (products == null)
+            products = new ArrayList<>();
         products.add(product);
         return this;
     }

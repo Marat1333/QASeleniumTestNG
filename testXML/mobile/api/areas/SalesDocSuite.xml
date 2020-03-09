@@ -45,18 +45,18 @@
         </classes>
     </test>
 
-<!--    <test name="SalesDoc Transfer">-->
-<!--        <classes>-->
-<!--            <class name="com.leroy.magmobile.api.tests.salesdoc.SalesDocTransferTest">-->
-<!--                <methods>-->
-<!--                    <include name="testSalesDocTransferCreatePOST"/>-->
-<!--                    <include name="testValidateJsonSchema"/>-->
-<!--                    <include name="testSalesDocTransferAddPUT"/>-->
-<!--                    <include name="testGET"/>-->
-<!--                    <include name="testDelete"/>-->
-<!--                </methods>-->
-<!--            </class>-->
-<!--        </classes>-->
-<!--    </test>-->
+    <test name="SalesDoc Transfer">
+        <classes>
+            <class name="com.leroy.magmobile.api.tests.salesdoc.SalesDocTransferTest">
+                <methods>
+                    <include name="testSalesDocTransferCreatePOST"/>
+                    <include name="testValidateJsonSchema"/>
+                    <include name="testSalesDocTransferAddPUT"/>
+                    <include name="testGET"/>
+                    <include name="testDelete"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
 
 </suite>

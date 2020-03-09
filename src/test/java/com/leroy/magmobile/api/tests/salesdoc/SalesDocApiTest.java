@@ -114,6 +114,7 @@ public class SalesDocApiTest extends BaseProjectTest {
         testSalesDocProductGET();
     }
 
+    // TODO Может оставить только этот?
     @Test(description = "C22898132 SalesDoc product and service GET")
     public void testSalesDocProductAndServiceGET() throws Exception {
         testSalesDocProductGET();

@@ -111,46 +111,6 @@ public class MagMobileClient extends LegoBaseClient {
         return execute(params.build(gatewayUrl), DiscountData.class);
     }
 
-    // Lego SalesDoc Transfer
-    public Response<TransferSalesDocData> createSalesDocTransfer(
-            SessionData sessionData, TransferSalesDocData transferSalesDocData) {
-        PostSalesDocTransfer params = new PostSalesDocTransfer();
-        params.setLdap(sessionData.getUserLdap());
-        params.jsonBody(transferSalesDocData);
-        return execute(params.build(gatewayUrl), TransferSalesDocData.class);
-    }
-
-    public Response<TransferSalesDocData> addProductsIntoSalesDocTransfer(
-            SessionData sessionData, String taskId, List<TransferProductOrderData> productDataList) {
-        PutSalesDocTransferAdd params = new PutSalesDocTransferAdd();
-        params.setLdap(sessionData.getUserLdap());
-        params.setTaskId(taskId);
-        params.setShopId(sessionData.getUserShopId());
-
-        TransferSalesDocData transferSalesDocData = new TransferSalesDocData();
-        transferSalesDocData.setProducts(productDataList);
-        params.jsonBody(transferSalesDocData);
-        return execute(params.build(gatewayUrl), TransferSalesDocData.class);
-    }
-
-    public Response<TransferSalesDocData> getTransferSalesDoc(SessionData sessionData, String taskId) {
-        GetSalesDocTransfer request = new GetSalesDocTransfer();
-        request.setTaskId(taskId);
-        request.setLdap(sessionData.getUserLdap());
-        return execute(request.build(gatewayUrl), TransferSalesDocData.class);
-    }
-
-    public Response<JsonNode> deleteTransferSalesDoc(SessionData sessionData, String taskId) {
-        DeleteSalesDocTransferRequest request = new DeleteSalesDocTransferRequest();
-        request.setTaskId(taskId);
-        return execute(request.build(gatewayUrl), JsonNode.class);
-    }
-
-    public Response<TransferSalesDocData> addProductsIntoSalesDocTransfer(SessionData sessionData,
-                                                                          String taskId, TransferProductOrderData productData) {
-        return addProductsIntoSalesDocTransfer(sessionData, taskId, Collections.singletonList(productData));
-    }
-
     @PostConstruct
     private void init() {
         gatewayUrl = params.getProperty("mashuper.magmobile.url");

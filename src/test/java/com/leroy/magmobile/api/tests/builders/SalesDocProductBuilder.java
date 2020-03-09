@@ -1,12 +1,9 @@
 package com.leroy.magmobile.api.tests.builders;
 
-import com.google.inject.Inject;
 import com.leroy.constants.SalesDocumentsConst;
-import com.leroy.magmobile.api.SessionData;
 import com.leroy.magmobile.api.helpers.FindTestDataHelper;
 import com.leroy.magmobile.models.search.FiltersData;
 import com.leroy.magmobile.ui.pages.search.FilterPage;
-import com.leroy.umbrella_extension.magmobile.MagMobileClient;
 import com.leroy.umbrella_extension.magmobile.data.ProductItemData;
 import com.leroy.umbrella_extension.magmobile.data.ServiceItemData;
 import com.leroy.umbrella_extension.magmobile.data.estimate.ProductOrderData;
@@ -16,34 +13,28 @@ import com.leroy.umbrella_extension.magmobile.requests.salesdoc.PutSalesDocParam
 import com.leroy.umbrella_extension.magmobile.requests.salesdoc.products.GetSalesDocProducts;
 import com.leroy.umbrella_extension.magmobile.requests.salesdoc.products.PostSalesDocProducts;
 import com.leroy.umbrella_extension.magmobile.requests.salesdoc.products.PutSalesDocProducts;
-import lombok.Setter;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.leroy.magmobile.api.matchers.ProjectMatchers.successful;
 import static com.leroy.magmobile.api.matchers.ProjectMatchers.valid;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class SalesDocProductBuilder {
-
-    @Inject
-    private MagMobileClient apiClient;
-
-    @Setter
-    private SessionData sessionData;
+public class SalesDocProductBuilder extends BaseApiBuilder {
 
     private Response<SalesDocumentResponseData> response;
 
     public SalesDocumentResponseData getResponseData() {
-        assertThatResponseIsOk();
+        assertThatResponseIsOk(response);
         return response.asJson();
     }
 
-    /** ---------- Executable Requests ------------- **/
+    /**
+     * ---------- Executable Requests -------------
+     **/
 
     // GET
     public SalesDocProductBuilder sendRequestGet(String fullDocId) {
@@ -131,18 +122,16 @@ public class SalesDocProductBuilder {
                 .setShopId(sessionData.getUserShopId())
                 .setFullDocId(fullDocId)
                 .setStatus(SalesDocumentsConst.States.CANCELLED.getApiVal());
-        response = apiClient. execute(params, SalesDocumentResponseData.class);
+        response = apiClient.execute(params, SalesDocumentResponseData.class);
         return this;
     }
 
-    /** ---------- Verifications ------------- **/
-
-    private void assertThatResponseIsOk() {
-        assertThat(response, successful());
-    }
+    /**
+     * ---------- Verifications -------------
+     **/
 
     public SalesDocProductBuilder assertThatIsCreated(boolean isServiceAdded) {
-        assertThatResponseIsOk();
+        assertThatResponseIsOk(response);
         SalesDocumentResponseData data = response.asJson();
         assertThat("docId field", data.getDocId(), not(isEmptyOrNullString()));
         assertThat("fullDocId field", data.getFullDocId(),
@@ -156,7 +145,7 @@ public class SalesDocProductBuilder {
     }
 
     public SalesDocProductBuilder assertThatIsUpdated(SalesDocumentResponseData expectedData, boolean isServiceAdded) {
-        assertThatResponseIsOk();
+        assertThatResponseIsOk(response);
         SalesDocumentResponseData responseData = response.asJson();
         assertThat("docId field", responseData.getDocId(), is(expectedData.getDocId()));
         assertThat("fullDocId field", responseData.getFullDocId(), is(expectedData.getFullDocId()));
@@ -170,7 +159,7 @@ public class SalesDocProductBuilder {
     }
 
     public SalesDocProductBuilder assertThatIsCancelled(SalesDocumentResponseData expectedData) {
-        assertThatResponseIsOk();
+        assertThatResponseIsOk(response);
         SalesDocumentResponseData responseData = response.asJson();
         assertThat("docId field", responseData.getDocId(), is(expectedData.getDocId()));
         assertThat("fullDocId field", responseData.getFullDocId(), is(expectedData.getFullDocId()));
@@ -180,7 +169,7 @@ public class SalesDocProductBuilder {
     }
 
     public SalesDocProductBuilder assertThatGetResponseMatches(SalesDocumentResponseData expectedData) {
-        assertThatResponseIsOk();
+        assertThatResponseIsOk(response);
         SalesDocumentResponseData actualData = response.asJson();
         assertThat("FullDocId", actualData.getFullDocId(), equalTo(expectedData.getFullDocId()));
         assertThat("DocId", actualData.getDocId(), equalTo(expectedData.getDocId()));
@@ -236,12 +225,14 @@ public class SalesDocProductBuilder {
     }
 
     public SalesDocProductBuilder assertThatResponseIsValid() {
-        assertThatResponseIsOk();
+        assertThatResponseIsOk(response);
         assertThat(response, valid(SalesDocumentResponseData.class));
         return this;
     }
 
-    /** ------------  Help Methods ----------------- **/
+    /**
+     * ------------  Help Methods -----------------
+     **/
 
     public List<ProductOrderData> findProducts(int count) {
         List<ProductOrderData> result = new ArrayList<>();
