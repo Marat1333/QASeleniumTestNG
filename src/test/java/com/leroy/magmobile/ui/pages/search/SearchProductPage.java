@@ -18,10 +18,10 @@ import com.leroy.magmobile.ui.pages.sales.widget.SearchProductAllGammaCardWidget
 import com.leroy.magmobile.ui.pages.sales.widget.SearchProductCardWidget;
 import com.leroy.magmobile.ui.pages.sales.widget.SearchServiceCardWidget;
 import com.leroy.magmobile.ui.pages.search.modal.SortPage;
-import com.leroy.umbrella_extension.magmobile.data.ProductItemDataList;
-import com.leroy.umbrella_extension.magmobile.data.ProductItemData;
-import com.leroy.umbrella_extension.magmobile.data.ServiceItemDataList;
-import com.leroy.umbrella_extension.magmobile.data.ServiceItemData;
+import com.leroy.umbrella_extension.magmobile.data.catalog.ProductItemDataList;
+import com.leroy.umbrella_extension.magmobile.data.catalog.ProductItemData;
+import com.leroy.umbrella_extension.magmobile.data.catalog.ServiceItemDataList;
+import com.leroy.umbrella_extension.magmobile.data.catalog.ServiceItemData;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 

@@ -1,8 +1,8 @@
 package com.leroy.umbrella_extension.magmobile.data.sales;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.leroy.umbrella_extension.magmobile.data.estimate.ProductOrderData;
-import com.leroy.umbrella_extension.magmobile.data.estimate.ServiceOrderData;
+import com.leroy.umbrella_extension.magmobile.data.sales.cart_estimate.ProductOrderData;
+import com.leroy.umbrella_extension.magmobile.data.sales.cart_estimate.ServiceOrderData;
 import lombok.Data;
 
 import javax.validation.constraints.Pattern;

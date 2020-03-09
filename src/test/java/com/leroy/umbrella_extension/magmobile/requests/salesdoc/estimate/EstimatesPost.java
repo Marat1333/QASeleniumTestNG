@@ -1,4 +1,4 @@
-package com.leroy.umbrella_extension.magmobile.requests;
+package com.leroy.umbrella_extension.magmobile.requests.salesdoc.estimate;
 
 import ru.leroymerlin.qa.core.clients.base.Method;
 import ru.leroymerlin.qa.core.clients.base.RequestBuilder;

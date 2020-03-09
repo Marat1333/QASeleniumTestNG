@@ -1,7 +1,7 @@
 package com.leroy.magmobile.models.search;
 
 import com.leroy.magmobile.models.CardWidgetData;
-import com.leroy.umbrella_extension.magmobile.data.ServiceItemData;
+import com.leroy.umbrella_extension.magmobile.data.catalog.ServiceItemData;
 
 public class ServiceCardData extends CardWidgetData {
 

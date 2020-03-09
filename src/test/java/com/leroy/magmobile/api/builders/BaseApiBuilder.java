@@ -1,4 +1,4 @@
-package com.leroy.magmobile.api.tests.builders;
+package com.leroy.magmobile.api.builders;
 
 import com.google.inject.Inject;
 import com.leroy.magmobile.api.SessionData;

@@ -1,17 +1,17 @@
-package com.leroy.magmobile.api.tests;
+package com.leroy.magmobile.api.tests.catalog_search;
 
 import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.magmobile.api.tests.common.BaseProjectTest;
 import com.leroy.umbrella_extension.magmobile.MagMobileClient;
-import com.leroy.umbrella_extension.magmobile.data.ProductItemDataList;
-import com.leroy.umbrella_extension.magmobile.data.ProductItemData;
-import com.leroy.umbrella_extension.magmobile.data.ServiceItemDataList;
-import com.leroy.umbrella_extension.magmobile.data.ServiceItemData;
+import com.leroy.umbrella_extension.magmobile.data.catalog.ProductItemDataList;
+import com.leroy.umbrella_extension.magmobile.data.catalog.ProductItemData;
+import com.leroy.umbrella_extension.magmobile.data.catalog.ServiceItemDataList;
+import com.leroy.umbrella_extension.magmobile.data.catalog.ServiceItemData;
 import com.leroy.umbrella_extension.magmobile.enums.CatalogSearchFields;
 import com.leroy.umbrella_extension.magmobile.enums.SortingOrder;
-import com.leroy.umbrella_extension.magmobile.requests.GetCatalogSearch;
-import com.leroy.umbrella_extension.magmobile.requests.GetCatalogServicesSearch;
+import com.leroy.umbrella_extension.magmobile.requests.catalog_search.GetCatalogSearch;
+import com.leroy.umbrella_extension.magmobile.requests.catalog_search.GetCatalogServicesSearch;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.base.TestCase;
 import ru.leroymerlin.qa.core.clients.base.Response;

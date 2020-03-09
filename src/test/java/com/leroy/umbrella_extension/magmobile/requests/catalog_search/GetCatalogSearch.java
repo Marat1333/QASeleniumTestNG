@@ -1,4 +1,4 @@
-package com.leroy.umbrella_extension.magmobile.requests;
+package com.leroy.umbrella_extension.magmobile.requests.catalog_search;
 
 import com.leroy.umbrella_extension.magmobile.enums.CatalogSearchFields;
 import com.leroy.umbrella_extension.magmobile.enums.SortingOrder;

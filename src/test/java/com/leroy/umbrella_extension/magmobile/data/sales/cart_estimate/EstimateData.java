@@ -1,13 +1,11 @@
-package com.leroy.umbrella_extension.magmobile.data.estimate;
+package com.leroy.umbrella_extension.magmobile.data.sales.cart_estimate;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.leroy.umbrella_extension.magmobile.data.customer.CustomerData;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class EstimateData {
 
     private String estimateId;

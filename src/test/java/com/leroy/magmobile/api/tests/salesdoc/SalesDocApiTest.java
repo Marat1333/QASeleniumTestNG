@@ -4,20 +4,18 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.leroy.constants.EnvConstants;
 import com.leroy.magmobile.api.SessionData;
-import com.leroy.magmobile.api.tests.builders.SalesDocProductBuilder;
+import com.leroy.magmobile.api.builders.SalesDocProductBuilder;
 import com.leroy.magmobile.api.tests.common.BaseProjectTest;
 import com.leroy.umbrella_extension.authorization.AuthClient;
-import com.leroy.umbrella_extension.magmobile.data.estimate.ProductOrderData;
-import com.leroy.umbrella_extension.magmobile.data.estimate.ServiceOrderData;
 import com.leroy.umbrella_extension.magmobile.data.sales.SalesDocumentResponseData;
+import com.leroy.umbrella_extension.magmobile.data.sales.cart_estimate.ProductOrderData;
+import com.leroy.umbrella_extension.magmobile.data.sales.cart_estimate.ServiceOrderData;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-
-import static org.hamcrest.MatcherAssert.assertThat;
 
 public class SalesDocApiTest extends BaseProjectTest {
 

@@ -1,24 +1,20 @@
 package com.leroy.umbrella_extension.magmobile;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.leroy.magmobile.api.SessionData;
 import com.leroy.umbrella_extension.common.LegoBaseClient;
-import com.leroy.umbrella_extension.magmobile.data.CartData;
-import com.leroy.umbrella_extension.magmobile.data.ProductItemDataList;
-import com.leroy.umbrella_extension.magmobile.data.ServiceItemDataList;
-import com.leroy.umbrella_extension.magmobile.data.estimate.EstimateData;
-import com.leroy.umbrella_extension.magmobile.data.estimate.ProductOrderData;
+import com.leroy.umbrella_extension.magmobile.data.catalog.ProductItemDataList;
+import com.leroy.umbrella_extension.magmobile.data.catalog.ServiceItemDataList;
 import com.leroy.umbrella_extension.magmobile.data.sales.DiscountData;
 import com.leroy.umbrella_extension.magmobile.data.sales.SalesDocumentListResponse;
-import com.leroy.umbrella_extension.magmobile.data.sales.transfer.TransferProductOrderData;
-import com.leroy.umbrella_extension.magmobile.data.sales.transfer.TransferSalesDocData;
-import com.leroy.umbrella_extension.magmobile.requests.*;
+import com.leroy.umbrella_extension.magmobile.data.sales.cart_estimate.CartData;
+import com.leroy.umbrella_extension.magmobile.data.sales.cart_estimate.EstimateData;
+import com.leroy.umbrella_extension.magmobile.data.sales.cart_estimate.ProductOrderData;
+import com.leroy.umbrella_extension.magmobile.requests.catalog_search.GetCatalogSearch;
+import com.leroy.umbrella_extension.magmobile.requests.catalog_search.GetCatalogServicesSearch;
+import com.leroy.umbrella_extension.magmobile.requests.order.LegoOrderWorkflowPut;
 import com.leroy.umbrella_extension.magmobile.requests.salesdoc.GetSalesDocDiscount;
+import com.leroy.umbrella_extension.magmobile.requests.salesdoc.cart.CartPOST;
+import com.leroy.umbrella_extension.magmobile.requests.salesdoc.estimate.EstimatesPost;
 import com.leroy.umbrella_extension.magmobile.requests.salesdoc.search.GetSalesDocSearchV3;
-import com.leroy.umbrella_extension.magmobile.requests.salesdoc.transfer.DeleteSalesDocTransferRequest;
-import com.leroy.umbrella_extension.magmobile.requests.salesdoc.transfer.GetSalesDocTransfer;
-import com.leroy.umbrella_extension.magmobile.requests.salesdoc.transfer.PostSalesDocTransfer;
-import com.leroy.umbrella_extension.magmobile.requests.salesdoc.transfer.PutSalesDocTransferAdd;
 import org.json.simple.JSONObject;
 import ru.leroymerlin.qa.core.clients.base.RequestBuilder;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -27,7 +23,6 @@ import ru.leroymerlin.qa.core.commons.enums.Application;
 
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @Dependencies(bricks = Application.MAGMOBILE)

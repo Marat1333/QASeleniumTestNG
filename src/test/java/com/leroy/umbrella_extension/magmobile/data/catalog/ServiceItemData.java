@@ -1,4 +1,4 @@
-package com.leroy.umbrella_extension.magmobile.data;
+package com.leroy.umbrella_extension.magmobile.data.catalog;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

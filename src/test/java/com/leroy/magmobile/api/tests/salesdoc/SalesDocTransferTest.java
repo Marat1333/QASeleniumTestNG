@@ -5,7 +5,7 @@ import com.google.inject.Provider;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.magmobile.api.SessionData;
-import com.leroy.magmobile.api.tests.builders.SalesDocTransferBuilder;
+import com.leroy.magmobile.api.builders.SalesDocTransferBuilder;
 import com.leroy.magmobile.api.tests.common.BaseProjectTest;
 import com.leroy.umbrella_extension.magmobile.data.sales.transfer.TransferProductOrderData;
 import com.leroy.umbrella_extension.magmobile.data.sales.transfer.TransferSalesDocData;

@@ -1,7 +1,6 @@
-package com.leroy.umbrella_extension.magmobile.data.estimate;
+package com.leroy.umbrella_extension.magmobile.data.sales.cart_estimate;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.leroy.umbrella_extension.magmobile.data.ServiceItemData;
+import com.leroy.umbrella_extension.magmobile.data.catalog.ServiceItemData;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

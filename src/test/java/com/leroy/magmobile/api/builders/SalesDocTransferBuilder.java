@@ -1,4 +1,4 @@
-package com.leroy.magmobile.api.tests.builders;
+package com.leroy.magmobile.api.builders;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.SalesDocumentsConst;
@@ -164,7 +164,7 @@ public class SalesDocTransferBuilder extends BaseApiBuilder {
                     equalTo(expectedProductOrderDataList.get(i).getLineId()));
             assertThat("lmCode of Product #" + i, actualProductOrderDataList.get(i).getLmCode(),
                     equalTo(expectedProductOrderDataList.get(i).getLmCode()));
-            String expectedProductStatus = expectedProductOrderDataList.get(i).getStatus() == null?
+            String expectedProductStatus = expectedProductOrderDataList.get(i).getStatus() == null ?
                     SalesDocumentsConst.States.NEW.getApiVal() : expectedProductOrderDataList.get(i).getStatus();
             assertThat("status of Product #" + i, actualProductOrderDataList.get(i).getStatus(),
                     equalTo(expectedProductStatus));

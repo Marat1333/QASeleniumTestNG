@@ -1,14 +1,14 @@
-package com.leroy.magmobile.api.tests.builders;
+package com.leroy.magmobile.api.builders;
 
 import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.magmobile.api.helpers.FindTestDataHelper;
 import com.leroy.magmobile.models.search.FiltersData;
 import com.leroy.magmobile.ui.pages.search.FilterPage;
-import com.leroy.umbrella_extension.magmobile.data.ProductItemData;
-import com.leroy.umbrella_extension.magmobile.data.ServiceItemData;
-import com.leroy.umbrella_extension.magmobile.data.estimate.ProductOrderData;
-import com.leroy.umbrella_extension.magmobile.data.estimate.ServiceOrderData;
+import com.leroy.umbrella_extension.magmobile.data.catalog.ProductItemData;
+import com.leroy.umbrella_extension.magmobile.data.catalog.ServiceItemData;
 import com.leroy.umbrella_extension.magmobile.data.sales.SalesDocumentResponseData;
+import com.leroy.umbrella_extension.magmobile.data.sales.cart_estimate.ProductOrderData;
+import com.leroy.umbrella_extension.magmobile.data.sales.cart_estimate.ServiceOrderData;
 import com.leroy.umbrella_extension.magmobile.requests.salesdoc.PutSalesDocParametersUpdate;
 import com.leroy.umbrella_extension.magmobile.requests.salesdoc.products.GetSalesDocProducts;
 import com.leroy.umbrella_extension.magmobile.requests.salesdoc.products.PostSalesDocProducts;

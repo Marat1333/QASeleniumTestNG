@@ -1,6 +1,6 @@
-package com.leroy.umbrella_extension.magmobile.data.estimate;
+package com.leroy.umbrella_extension.magmobile.data.sales.cart_estimate;
 
-import com.leroy.umbrella_extension.magmobile.data.ProductItemData;
+import com.leroy.umbrella_extension.magmobile.data.catalog.ProductItemData;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -10,7 +10,9 @@ import lombok.ToString;
 @Data
 public class ProductOrderData extends ProductItemData {
 
-    public ProductOrderData() {}
+    public ProductOrderData() {
+    }
+
     public ProductOrderData(ProductItemData productItemResponse) {
         this.setLmCode(productItemResponse.getLmCode());
         this.setBarCode(productItemResponse.getBarCode());

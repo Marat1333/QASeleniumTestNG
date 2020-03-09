@@ -1,15 +1,12 @@
-package com.leroy.umbrella_extension.magmobile.data;
+package com.leroy.umbrella_extension.magmobile.data.catalog;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.leroy.umbrella_extension.magmobile.data.catalog.Characteristic;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductItemData {
 
     @JsonProperty(required = true)

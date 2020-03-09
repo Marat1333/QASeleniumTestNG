@@ -8,7 +8,7 @@
 
     <test name="API search tests">
         <classes>
-            <class name="com.leroy.magmobile.api.tests.SearchApiTest"/>
+            <class name="com.leroy.magmobile.api.tests.catalog_search.SearchApiTest"/>
         </classes>
     </test>
 
