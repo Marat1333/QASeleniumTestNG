@@ -1,14 +1,12 @@
 package com.leroy.umbrella_extension.magmobile.data.sales;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaFormat;
-import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaOptions;
-import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaString;
 import com.leroy.umbrella_extension.magmobile.data.estimate.ProductOrderData;
 import com.leroy.umbrella_extension.magmobile.data.estimate.ServiceOrderData;
 import lombok.Data;
 
 import javax.validation.constraints.Pattern;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -29,8 +27,8 @@ public class SalesDocumentResponseData {
     private String salesDocStatus;
     private String pinCode;
     private String comment;
-    private List<ProductOrderData> products;
-    private List<ServiceOrderData> services;
+    private List<ProductOrderData> products = new ArrayList<>();
+    private List<ServiceOrderData> services = new ArrayList<>();
     private Double docPriceSum;
     private String newServiceId;
 }

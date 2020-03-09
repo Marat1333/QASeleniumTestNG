@@ -26,13 +26,26 @@ public class FindTestDataHelper {
         GetCatalogServicesSearch params = new GetCatalogServicesSearch();
         params.setShopId(shopId)
                 .setStartFrom(1)
-                .setPageSize(necessaryCount);
+                .setPageSize(necessaryCount); // TODO не работает. Почему?
         Response<ServiceItemDataList> resp = client.searchServicesBy(params);
-        return resp.asJson().getItems();
+        List<ServiceItemData> services =
+                resp.asJson().getItems().stream().limit(necessaryCount).collect(Collectors.toList());
+        return services;
     }
 
     public static List<ProductItemData> getProducts(MagMobileClient client, String shopId,
                                                     int necessaryCount, FiltersData filtersData) {
+        List<ProductItemData> result = new ArrayList<>();
+        ProductItemData pr = new ProductItemData();
+        pr.setLmCode("10008807");
+        pr.setPrice(190.0);
+        result.add(pr);
+        pr = new ProductItemData();
+        pr.setLmCode("12752955");
+        pr.setPrice(2.0);
+        result.add(pr);
+        if (true)
+            return result;
         if (filtersData == null)
             filtersData = new FiltersData(FilterPage.MY_SHOP_FRAME_TYPE);
         String[] badLmCodes = {"10008698", "10008751"}; // Из-за отсутствия синхронизации бэков на тесте, мы можем получить некорректные данные

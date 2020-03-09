@@ -3,44 +3,32 @@ package com.leroy.magmobile.api.tests.salesdoc;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.leroy.constants.EnvConstants;
-import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.magmobile.api.SessionData;
-import com.leroy.magmobile.api.helpers.FindTestDataHelper;
+import com.leroy.magmobile.api.tests.builders.SalesDocProductBuilder;
 import com.leroy.magmobile.api.tests.common.BaseProjectTest;
-import com.leroy.magmobile.models.search.FiltersData;
-import com.leroy.magmobile.ui.pages.search.FilterPage;
 import com.leroy.umbrella_extension.authorization.AuthClient;
-import com.leroy.umbrella_extension.magmobile.MagMobileClient;
-import com.leroy.umbrella_extension.magmobile.data.ProductItemData;
-import com.leroy.umbrella_extension.magmobile.data.ServiceItemData;
 import com.leroy.umbrella_extension.magmobile.data.estimate.ProductOrderData;
 import com.leroy.umbrella_extension.magmobile.data.estimate.ServiceOrderData;
 import com.leroy.umbrella_extension.magmobile.data.sales.SalesDocumentResponseData;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import ru.leroymerlin.qa.core.clients.base.Response;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import static com.leroy.magmobile.api.matchers.ProjectMatchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 
 public class SalesDocApiTest extends BaseProjectTest {
 
     @Inject
-    private Provider<MagMobileClient> magMobileClient;
+    private Provider<SalesDocProductBuilder> provider;
+
+    private SalesDocProductBuilder salesDocProductBuilder;
 
     @Inject
     private AuthClient authClient;
 
-    private ProductOrderData productOrder1;
-    private ProductOrderData productOrder2;
-    private ServiceOrderData serviceOrder1;
-    private ServiceOrderData serviceOrder2;
     private SalesDocumentResponseData salesDocument;
 
     @BeforeClass
@@ -50,171 +38,140 @@ public class SalesDocApiTest extends BaseProjectTest {
         sessionData.setUserShopId("35");
         sessionData.setAccessToken(authClient.getAccessToken(EnvConstants.BASIC_USER_LDAP,
                 EnvConstants.BASIC_USER_PASS));
+
+        salesDocProductBuilder = provider.get();
+        salesDocProductBuilder.setSessionData(sessionData);
     }
 
     @Test(description = "C3232445 SalesDoc add product")
     public void testSalesDocAddProduct() {
         // Prepare request data
-        productOrder1 = new ProductOrderData(FindTestDataHelper.getProducts(magMobileClient.get(),
-                sessionData.getUserShopId(), 1, new FiltersData(FilterPage.MY_SHOP_FRAME_TYPE)).get(0));
-        productOrder1.setQuantity((double) new Random().nextInt(6) + 1);
+        ProductOrderData productOrderData = salesDocProductBuilder.findProducts(1).get(0);
+        productOrderData.setQuantity((double) new Random().nextInt(6) + 1);
 
-        // Send request
-        Response<SalesDocumentResponseData> resp = magMobileClient.get().createSalesDocProducts(
-                sessionData, productOrder1);
+        // Create and check
+        salesDocProductBuilder.sendRequestCreate(productOrderData)
+                .assertThatIsCreated(false);
 
-        // Verifications
-        assertThat(resp, successful());
-        salesDocument = resp.asJson();
-        assertThat("docId field", salesDocument.getDocId(), not(isEmptyOrNullString()));
-        assertThat("fullDocId field", salesDocument.getFullDocId(),
-                allOf(not(isEmptyOrNullString()), endsWith(salesDocument.getDocId())));
-        assertThat("Document Status", salesDocument.getSalesDocStatus(),
-                equalTo(SalesDocumentsConst.States.DRAFT.getApiVal()));
+        // Get data
+        salesDocument = salesDocProductBuilder.getResponseData();
+        salesDocument.setProducts(Collections.singletonList(productOrderData));
+
+        // Send get
+        salesDocProductBuilder.sendRequestGet(salesDocument.getFullDocId());
+        salesDocProductBuilder.assertThatGetResponseMatches(salesDocument);
     }
 
     @Test(description = "C3232446 SalesDoc add services")
-    public void testSalesDocAddService() throws Exception {
+    public void testSalesDocAddService() {
         // Prepare request data
-        serviceOrder1 = new ServiceOrderData(FindTestDataHelper.getServices(
-                magMobileClient.get(), sessionData.getUserShopId(), 1).get(0));
-        serviceOrder1.setPrice(446.0);
+        ServiceOrderData serviceOrderData = salesDocProductBuilder.findServices(1).get(0);
+        serviceOrderData.setPrice(10.0);
 
-        // Send request
-        Response<SalesDocumentResponseData> resp = magMobileClient.get().createSalesDocProducts(
-                sessionData, serviceOrder1);
+        // Send requests and verification
+        salesDocProductBuilder.sendRequestCreate(serviceOrderData)
+                .assertThatIsCreated(true);
 
-        // Verifications
-        assertThat(resp, successful());
-        salesDocument = resp.asJson();
-        assertThat("docId field", salesDocument.getDocId(), not(isEmptyOrNullString()));
-        assertThat("fullDocId field", salesDocument.getFullDocId(),
-                allOf(not(isEmptyOrNullString()), endsWith(salesDocument.getDocId())));
-        assertThat("newServiceId", salesDocument.getNewServiceId(), not(isEmptyOrNullString()));
-        assertThat("Document Status", salesDocument.getSalesDocStatus(),
-                equalTo(SalesDocumentsConst.States.DRAFT.getApiVal()));
+        // Get data
+        salesDocument = salesDocProductBuilder.getResponseData();
+        salesDocument.setServices(Collections.singletonList(serviceOrderData));
+
+        salesDocProductBuilder.sendRequestGet(salesDocument.getFullDocId())
+                .assertThatGetResponseMatches(salesDocument);
     }
 
     @Test(description = "C3232447 SalesDoc add product and services")
-    public void testSalesDocAddProductAndService() throws Exception {
+    public void testSalesDocAddProductAndService() {
         // Prepare request data
-        List<ProductItemData> productOrderDataList = FindTestDataHelper.getProducts(magMobileClient.get(),
-                sessionData.getUserShopId(), 2, new FiltersData(FilterPage.MY_SHOP_FRAME_TYPE));
-        productOrder1 = new ProductOrderData(productOrderDataList.get(0));
-        productOrder1.setQuantity((double) new Random().nextInt(6) + 1);
-        productOrder2 = new ProductOrderData(productOrderDataList.get(1));
-        productOrder2.setQuantity((double) new Random().nextInt(6) + 1);
+        List<ProductOrderData> productOrderDataList = salesDocProductBuilder.findProducts(2);
+        productOrderDataList.get(0).setQuantity((double) new Random().nextInt(6) + 1);
+        productOrderDataList.get(1).setQuantity((double) new Random().nextInt(6) + 1);
 
-        List<ServiceItemData> serviceOrderDataList = FindTestDataHelper.getServices(
-                magMobileClient.get(), sessionData.getUserShopId(), 2);
-        serviceOrder1 = new ServiceOrderData(serviceOrderDataList.get(0));
-        serviceOrder1.setPrice(10.0);
-        serviceOrder2 = new ServiceOrderData(serviceOrderDataList.get(1));
-        serviceOrder2.setPrice(158.0);
+        List<ServiceOrderData> serviceOrderDataList = salesDocProductBuilder.findServices(1);
+        serviceOrderDataList.get(0).setPrice(10.0);
 
-        // Send request
-        Response<SalesDocumentResponseData> resp = magMobileClient.get().createSalesDocProducts(sessionData,
-                Collections.singletonList(productOrder1),
-                Collections.singletonList(serviceOrder1));
+        // Send requests and verifications
+        salesDocProductBuilder.sendRequestCreate(productOrderDataList, serviceOrderDataList)
+                .assertThatIsCreated(true);
+        salesDocument = salesDocProductBuilder.getResponseData();
+        salesDocument.setProducts(productOrderDataList);
+        salesDocument.setServices(serviceOrderDataList);
 
-        // Verifications
-        assertThat(resp, successful());
-        salesDocument = resp.asJson();
-        serviceOrder1.setId(salesDocument.getNewServiceId());
-        assertThat("docId field", salesDocument.getDocId(), not(isEmptyOrNullString()));
-        assertThat("fullDocId field", salesDocument.getFullDocId(),
-                allOf(not(isEmptyOrNullString()), endsWith(salesDocument.getDocId())));
-        assertThat("newServiceId", salesDocument.getNewServiceId(), not(isEmptyOrNullString()));
-        assertThat("Document Status", salesDocument.getSalesDocStatus(),
-                equalTo(SalesDocumentsConst.States.DRAFT.getApiVal()));
+        salesDocProductBuilder.sendRequestGet(salesDocument.getFullDocId())
+                .assertThatGetResponseMatches(salesDocument);
     }
 
     @Test(description = "C3232448 SalesDoc product GET")
     public void testSalesDocProductGET() {
         if (salesDocument == null)
             throw new IllegalArgumentException("SalesDoc hasn't been created");
-        Response<SalesDocumentResponseData> resp = magMobileClient.get()
-                .getSalesDocProductsByFullDocId(salesDocument.getFullDocId());
-        SalesDocumentResponseData data = resp.asJson();
-        assertThat(resp, successful());
-        assertThatSalesDocMatches(data);
-
-        assertThat("products", data.getProducts(), hasSize(1));
-        ProductOrderData actualProductOrderData = data.getProducts().get(0);
-        assertThat("Product order #1 - lm code",
-                actualProductOrderData.getLmCode(), equalTo(productOrder1.getLmCode()));
-        assertThat("Product order #1 - quantity",
-                actualProductOrderData.getQuantity(), equalTo(productOrder1.getQuantity()));
+        salesDocProductBuilder.sendRequestGet(salesDocument.getFullDocId())
+                .assertThatResponseIsValid();
     }
 
     @Test(description = "C22898131 SalesDoc service GET")
     public void testSalesDocServiceGET() throws Exception {
-        if (salesDocument == null)
-            throw new IllegalArgumentException("SalesDoc hasn't been created");
-        Response<SalesDocumentResponseData> resp = magMobileClient.get()
-                .getSalesDocProductsByFullDocId(salesDocument.getFullDocId());
-        SalesDocumentResponseData data = resp.asJson();
-        assertThat(resp, successful());
-        assertThatSalesDocMatches(data);
+        testSalesDocProductGET();
+    }
 
-        assertThat("services", data.getServices(), hasSize(1));
-        ServiceOrderData actualServiceOrderData = data.getServices().get(0);
-        assertThat("docPriceSum",
-                data.getDocPriceSum(), equalTo(serviceOrder1.getPrice()));
-        assertThat("Service order #1 - lmCode", actualServiceOrderData.getLmCode(),
-                is(serviceOrder1.getLmCode()));
-        assertThat("Service order #1 - price",
-                actualServiceOrderData.getPrice(), is(serviceOrder1.getPrice()));
-        assertThat("Service order #1 - quantity",
-                actualServiceOrderData.getQuantity(), is(serviceOrder1.getQuantity()));
-        assertThat("Service order #1 - id",
-                actualServiceOrderData.getId(), is(salesDocument.getNewServiceId()));
-        assertThat("Service order #1 - Uom",
-                actualServiceOrderData.getUom(), is(serviceOrder1.getUom()));
-        assertThat("Service order #1 - Title",
-                actualServiceOrderData.getTitle(), is(serviceOrder1.getTitle()));
-        assertThat("Service order #1 - BarCode",
-                actualServiceOrderData.getBarCode(), is(serviceOrder1.getBarCode()));
-        assertThat("Service order #1 - Group Id",
-                actualServiceOrderData.getGroupId(), is(serviceOrder1.getGroupId()));
+    @Test(description = "C22898132 SalesDoc product and service GET")
+    public void testSalesDocProductAndServiceGET() throws Exception {
+        testSalesDocProductGET();
     }
 
     @Test(description = "C22897826 SalesDoc UPDATE quantity for the same product")
     public void testSalesDocUpdateQuantityForTheSameProduct() {
         if (salesDocument == null)
             throw new IllegalArgumentException("SalesDoc hasn't been created");
-        productOrder1.setQuantity(productOrder1.getQuantity() + 2);
-        Response<SalesDocumentResponseData> resp = magMobileClient.get().updateSalesDocProducts(
-                sessionData, salesDocument.getFullDocId(), productOrder1);
-        assertThat(resp, successful());
-        assertThatSalesDocMatches(resp.asJson());
+        ProductOrderData productOrderData = salesDocument.getProducts().get(0);
+        productOrderData.setQuantity(productOrderData.getQuantity() + 2);
+
+        salesDocProductBuilder.updateSalesDocProducts(salesDocument.getFullDocId(), productOrderData)
+                .assertThatIsUpdated(salesDocument, false);
+        salesDocProductBuilder.sendRequestGet(salesDocument.getFullDocId());
+        salesDocProductBuilder.assertThatGetResponseMatches(salesDocument);
     }
 
     @Test(description = "C22898166 SalesDoc UPDATE price for the same service")
     public void testSalesDocUpdatePriceForTheSameService() {
         if (salesDocument == null)
             throw new IllegalArgumentException("SalesDoc hasn't been created");
-        // Change Test data
-        serviceOrder1.setPrice(serviceOrder1.getPrice() + 101);
+        ServiceOrderData serviceOrderData = salesDocument.getServices().get(0);
+        serviceOrderData.setPrice(serviceOrderData.getPrice() + 101);
+        salesDocProductBuilder.updateSalesDocProducts(salesDocument.getFullDocId(), serviceOrderData)
+                .assertThatIsUpdated(salesDocument, true);
 
-        // Send request
-        Response<SalesDocumentResponseData> resp = magMobileClient.get().updateSalesDocProducts(
-                sessionData, salesDocument.getFullDocId(), serviceOrder1);
+        salesDocument.setNewServiceId(salesDocProductBuilder.getResponseData().getNewServiceId());
 
-        // Verifications
-        assertThat(resp, successful());
-        SalesDocumentResponseData newSalesDocData = resp.asJson();
-        assertThat("SalesDoc newServiceId", newSalesDocData.getNewServiceId(),
-                not(equalTo(salesDocument.getNewServiceId())));
-        serviceOrder1.setId(newSalesDocData.getNewServiceId());
-        salesDocument.setNewServiceId(newSalesDocData.getNewServiceId());
-        assertThatSalesDocMatches(newSalesDocData);
+        salesDocProductBuilder.sendRequestGet(salesDocument.getFullDocId())
+                .assertThatGetResponseMatches(salesDocument);
     }
 
-    @Test(description = "C22898164 SalesDoc UPDATE product and services")
+    @Test(description = "C22898164 SalesDoc UPDATE product and services", enabled = false)
     public void testSalesDocUpdateProductAndService() {
-        if (salesDocument == null)
+        /*if (salesDocument == null)
             throw new IllegalArgumentException("SalesDoc hasn't been created");
+        salesDocument.getProducts().get(0).setQuantity(
+                salesDocument.getProducts().get(0).getQuantity() + 2);
+        salesDocument.getProducts().get(1).setQuantity(
+                salesDocument.getProducts().get(0).getQuantity() + 3);
+
+        salesDocProductBuilder.updateSalesDocProducts(salesDocument.getFullDocId(), productOrderData)
+                .assertThatIsUpdated(salesDocument, false);
+        salesDocProductBuilder.sendRequestGet(salesDocument.getFullDocId());
+        salesDocProductBuilder.assertThatGetResponseMatches(salesDocument);
+
+        /////////////
+        ServiceOrderData serviceOrderData = salesDocument.getServices().get(0);
+        serviceOrderData.setPrice(serviceOrderData.getPrice() + 101);
+        salesDocProductBuilder.updateSalesDocProducts(salesDocument.getFullDocId(), serviceOrderData)
+                .assertThatIsUpdated(salesDocument, true);
+
+        salesDocument.setNewServiceId(salesDocProductBuilder.getResponseData().getNewServiceId());
+
+        salesDocProductBuilder.sendRequestGet(salesDocument.getFullDocId())
+                .assertThatGetResponseMatches(salesDocument);
+
         // Prepare request data
         productOrder1.setQuantity((double) new Random().nextInt(6) + 1);
         productOrder2.setQuantity((double) new Random().nextInt(6) + 1);
@@ -226,27 +183,25 @@ public class SalesDocApiTest extends BaseProjectTest {
                 sessionData, salesDocument.getFullDocId(), Arrays.asList(productOrder1, productOrder2),
                 Arrays.asList(serviceOrder1, serviceOrder2));
         assertThat(resp, successful());
-        assertThatSalesDocMatches(resp.asJson());
+        assertThatSalesDocMatches(resp.asJson());*/
     }
 
-    @Test(description = "C22898134 SalesDoc UPDATE parameter - Cancel")
-    public void testSalesDocUpdateParameterCancel() {
+    @Test(description = "C22898134 SalesDoc UPDATE parameter - Cancel (For document with Products)")
+    public void testSalesDocUpdateParameterCancelWithProduct() {
         if (salesDocument == null)
             throw new IllegalArgumentException("SalesDoc hasn't been created");
-        Response<SalesDocumentResponseData> resp = magMobileClient.get().cancelSalesDoc(
-                sessionData, salesDocument.getFullDocId());
-        assertThat(resp, successful());
-        salesDocument.setSalesDocStatus(SalesDocumentsConst.States.CANCELLED.getApiVal());
-        assertThatSalesDocMatches(resp.asJson());
+        salesDocProductBuilder.cancelSalesDoc(salesDocument.getFullDocId())
+                .assertThatIsCancelled(salesDocument);
     }
 
-    // Typical asserts
+    @Test(description = "C22898394 SalesDoc UPDATE parameter - Cancel (For document with Services)")
+    public void testSalesDocUpdateParameterCancelWithServices() {
+        testSalesDocUpdateParameterCancelWithProduct();
+    }
 
-    private void assertThatSalesDocMatches(SalesDocumentResponseData data) {
-        assertThat("FullDocId", data.getFullDocId(), equalTo(salesDocument.getFullDocId()));
-        assertThat("DocId", data.getDocId(), equalTo(salesDocument.getDocId()));
-        assertThat("Document status", data.getSalesDocStatus(), equalTo(salesDocument.getSalesDocStatus()));
-        assertThat("pinCode", data.getPinCode(), is(nullValue()));
+    @Test(description = "C22898395 SalesDoc UPDATE parameter - Cancel (For document with Products and Services)")
+    public void testSalesDocUpdateParameterCancelWithProductsAndServices() {
+        testSalesDocUpdateParameterCancelWithProduct();
     }
 
 }

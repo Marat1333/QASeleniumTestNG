@@ -3,8 +3,10 @@ package com.leroy.umbrella_extension.magmobile.data.estimate;
 import com.leroy.umbrella_extension.magmobile.data.ProductItemData;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @Data
 public class ProductOrderData extends ProductItemData {
 
@@ -13,6 +15,7 @@ public class ProductOrderData extends ProductItemData {
         this.setLmCode(productItemResponse.getLmCode());
         this.setBarCode(productItemResponse.getBarCode());
         this.setTitle(productItemResponse.getTitle());
+        this.setPrice(productItemResponse.getPrice());
         // to be continued if needed
     }
 
