@@ -1,7 +1,6 @@
 package com.leroy.umbrella_extension.magmobile.requests.salesdoc.products;
 
-import com.leroy.umbrella_extension.magmobile.data.estimate.ProductOrderDataList;
-import com.leroy.umbrella_extension.magmobile.data.estimate.ServiceOrderDataList;
+import com.leroy.umbrella_extension.magmobile.data.sales.SalesDocumentResponseData;
 import ru.leroymerlin.qa.core.clients.base.RequestBuilder;
 
 public class SalesDocProductsRequest<T extends SalesDocProductsRequest<T>> extends RequestBuilder<T> {
@@ -22,12 +21,8 @@ public class SalesDocProductsRequest<T extends SalesDocProductsRequest<T>> exten
         return queryParam("regionId", val);
     }
 
-    public T setProducts(ProductOrderDataList products) {
-        return jsonBody(products);
-    }
-
-    public T setServices(ServiceOrderDataList services) {
-        return jsonBody(services);
+    public T setSalesDocumentData(SalesDocumentResponseData salesDoc) {
+        return jsonBody(salesDoc);
     }
 
 }

@@ -18,10 +18,10 @@ import com.leroy.magmobile.ui.pages.sales.widget.SearchProductAllGammaCardWidget
 import com.leroy.magmobile.ui.pages.sales.widget.SearchProductCardWidget;
 import com.leroy.magmobile.ui.pages.sales.widget.SearchServiceCardWidget;
 import com.leroy.magmobile.ui.pages.search.modal.SortPage;
-import com.leroy.umbrella_extension.magmobile.data.ProductData;
-import com.leroy.umbrella_extension.magmobile.data.ProductItemData;
-import com.leroy.umbrella_extension.magmobile.data.ServiceData;
-import com.leroy.umbrella_extension.magmobile.data.ServiceItemData;
+import com.leroy.umbrella_extension.magmobile.data.catalog.ProductItemDataList;
+import com.leroy.umbrella_extension.magmobile.data.catalog.ProductItemData;
+import com.leroy.umbrella_extension.magmobile.data.catalog.ServiceItemDataList;
+import com.leroy.umbrella_extension.magmobile.data.catalog.ServiceItemData;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 
@@ -465,7 +465,7 @@ public class SearchProductPage extends CommonMagMobilePage {
     // API verifications
 
     @Step("Проверить, что фронт корректно отобразил ответ от сервера по запросу на catalog product")
-    public SearchProductPage shouldCatalogResponseEqualsContent(ProductData responseData, CardType type, Integer entityCount) {
+    public SearchProductPage shouldCatalogResponseEqualsContent(ProductItemDataList responseData, CardType type, Integer entityCount) {
         List<ProductItemData> productDataListFromResponse = responseData.getItems();
         List<ProductCardData> productCardDataListFromPage;
         switch (type) {
@@ -491,7 +491,7 @@ public class SearchProductPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что фронт корректно отобразил ответ от сервера по запросу на catalog services")
-    public SearchProductPage shouldServicesResponceEqualsContent(ServiceData responseData, Integer entityCount) {
+    public SearchProductPage shouldServicesResponceEqualsContent(ServiceItemDataList responseData, Integer entityCount) {
         List<ServiceItemData> serviceData = responseData.getItems();
         List<ServiceCardData> serviceCardDataList = serviceCardsScrollView.getFullDataList(entityCount);
         if (serviceCardDataList.size() != serviceData.size()) {

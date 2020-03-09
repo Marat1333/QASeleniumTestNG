@@ -7,7 +7,11 @@ public class SalesDocumentsConst {
         CREATED("", "Создан"),
         AUTO_PROCESSING("","Автообработка"),
         TRANSFORMED("","Преобразован"),
-        DRAFT("DRAFT","Черновик");
+        CANCELLED("CANCELLED", "Отменен"),
+        DRAFT("DRAFT","Черновик"),
+
+        // Transfer
+        NEW("NEW", "");
 
         private String uiVal;
         private String apiVal;
@@ -27,6 +31,47 @@ public class SalesDocumentsConst {
     }
 
     // Типы документов
-    public static final String ESTIMATE_TYPE = "Смета";
-    public static final String BASKET_TYPE = "Корзина";
+    public enum Types {
+        SALE("SALE", ""),
+        CART("CART","Корзина"),
+        QUOTATION("QUOTATION","Смета"),
+        ORDER("ORDER","");
+
+        private String uiVal;
+        private String apiVal;
+
+        Types(String apiVal, String uiVal) {
+            this.apiVal = apiVal;
+            this.uiVal = uiVal;
+        }
+
+        public String getUiVal() {
+            return uiVal;
+        }
+
+        public String getApiVal() {
+            return apiVal;
+        }
+    }
+
+    // Отзыв
+    public enum GiveAwayPoints {
+        SALES_FLOOR("SALESFLOOR", "Из торгового зала");
+
+        private String uiVal;
+        private String apiVal;
+
+        GiveAwayPoints(String apiVal, String uiVal) {
+            this.apiVal = apiVal;
+            this.uiVal = uiVal;
+        }
+
+        public String getUiVal() {
+            return uiVal;
+        }
+
+        public String getApiVal() {
+            return apiVal;
+        }
+    }
 }
