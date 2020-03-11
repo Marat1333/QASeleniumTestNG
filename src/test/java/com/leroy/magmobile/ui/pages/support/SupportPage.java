@@ -57,12 +57,7 @@ public class SupportPage extends CommonMagMobilePage {
         softAssert.isElementVisible(titleLbl);
         softAssert.isElementVisible(complainBtn);
         softAssert.isElementVisible(askQuestionBtn);
-        List<String> expectedIssueCategories = Arrays.asList("Что у нас в приложении случилось?",
-                "Данные о товаре", "Цена товара", "Запас на LS/RM/EM", "Не найден товар", "Отзыв товара со склада",
-                "Данные клиента", "SMS-уведомления клиентам", "Оформление продажи", "История продаж",
-                "Адресное хранение", "Управление перебоями", "Работа Wi-fi сети", "Что-то другое");
-        softAssert.isEquals(new HashSet<>(mainLabels.getTextList()), new HashSet<>(expectedIssueCategories),
-                "Неправильный список категорий");
+        softAssert.isTrue(mainLabels.getCount() > 0, "Плашки с видами жалоб не отображаются");
         softAssert.verifyAll();
         return this;
     }

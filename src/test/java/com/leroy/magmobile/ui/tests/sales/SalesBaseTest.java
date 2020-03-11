@@ -17,6 +17,7 @@ import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.umbrella_extension.authorization.AuthClient;
 import com.leroy.umbrella_extension.magmobile.MagMobileClient;
 import com.leroy.umbrella_extension.magmobile.data.CartData;
+import com.leroy.umbrella_extension.magmobile.data.ProductItemListResponse;
 import com.leroy.umbrella_extension.magmobile.data.ProductItemResponse;
 import com.leroy.umbrella_extension.magmobile.data.estimate.EstimateData;
 import com.leroy.umbrella_extension.magmobile.data.estimate.ProductOrderData;
@@ -34,6 +35,9 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 import java.text.NumberFormat;
 import java.util.*;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+
 @Guice(modules = {BaseModule.class})
 public class SalesBaseTest extends AppBaseSteps {
 
@@ -45,7 +49,7 @@ public class SalesBaseTest extends AppBaseSteps {
 
     // Получить ЛМ код для услуги
     protected String getAnyLmCodeOfService() {
-        return "49055102";
+        return EnvConstants.SERVICE_1_LM_CODE;
     }
 
     // Получить ЛМ код для обычного продукта без специфичных опций
@@ -56,9 +60,12 @@ public class SalesBaseTest extends AppBaseSteps {
             shopId = "5";
         GetCatalogSearch params = new GetCatalogSearch()
                 .setShopId(shopId)
+                .setDepartmentId("1")
                 .setTopEM(false)
                 .setHasAvailableStock(hasAvailableStock);
-        List<ProductItemResponse> items = mashupClient.searchProductsBy(params).asJson().getItems();
+        Response<ProductItemListResponse> resp = mashupClient.searchProductsBy(params);
+        assertThat(resp.toString(), resp.isSuccessful());
+        List<ProductItemResponse> items = resp.asJson().getItems();
         List<String> resultList = new ArrayList<>();
         int i = 0;
         for (ProductItemResponse item : items) {
@@ -80,28 +87,35 @@ public class SalesBaseTest extends AppBaseSteps {
     // Получить ЛМ код для продукта с AVS
     protected String getAnyLmCodeProductWithAvs() {
         GetCatalogSearch params = new GetCatalogSearch()
+                .setShopId("5")
+                .setDepartmentId("1")
                 .setTopEM(false);
+        Response<ProductItemListResponse> resp = mashupClient.searchProductsBy(params);
+        assertThat(resp.toString(), resp.isSuccessful());
         List<ProductItemResponse> items = mashupClient.searchProductsBy(params).asJson().getItems();
         for (ProductItemResponse item : items) {
             if (item.getAvsDate() != null)
                 return item.getLmCode();
         }
-        return "82014172";
+        return EnvConstants.WITH_AVS_PRODUCT_1_LM_CODE;
     }
 
     // Получить ЛМ код для продукта с опцией TopEM
     protected String getAnyLmCodeProductWithTopEM() {
         GetCatalogSearch params = new GetCatalogSearch()
+                .setShopId("5")
+                .setDepartmentId("1")
                 .setTopEM(true)
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID);
+        Response<ProductItemListResponse> resp = mashupClient.searchProductsBy(params);
+        assertThat(resp.toString(), resp.isSuccessful());
         List<ProductItemResponse> items = mashupClient.searchProductsBy(params).asJson().getItems();
         for (ProductItemResponse item : items) {
             if (item.getAvsDate() == null)
                 return item.getLmCode();
         }
-        if (items.size() > 0)
-            return items.get(0).getLmCode();
-        return "82138074";
+        assertThat("Request - Search for product with TopEm", items,hasSize(greaterThan(0)));
+        return items.get(0).getLmCode();
     }
 
     // Получить ЛМ код для продукта, доступного для отзыва с RM

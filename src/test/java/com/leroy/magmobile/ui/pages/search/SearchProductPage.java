@@ -90,7 +90,7 @@ public class SearchProductPage extends CommonMagMobilePage {
 
     private final String NOT_FOUND_MSG_XPATH = "//*[contains(@text, 'Поиск «%s» не дал результатов')]";
 
-    private final String DEFAULT_SEARCH_UNPUT_TEXT = "ЛМ, название или штрихкод";
+    private final String DEFAULT_SEARCH_INPUT_TEXT = "ЛМ, ШК или название";
 
     public enum CardType {
         COMMON, // Обычная
@@ -231,11 +231,9 @@ public class SearchProductPage extends CommonMagMobilePage {
     @Step("Проверить, что кнопка 'Сканировать бар код' отображается")
     public SearchProductPage shouldScannerBtnIsVisible() {
         String pageSource = getPageSource();
-        if (searchField.getText(pageSource).equals(DEFAULT_SEARCH_UNPUT_TEXT)) {
-            anAssert.isElementVisible(scanBarcodeBtn, pageSource);
-        } else {
-            anAssert.isElementNotVisible(scanBarcodeBtn, pageSource);
-        }
+        softAssert.isElementTextEqual(searchField, DEFAULT_SEARCH_INPUT_TEXT);
+        softAssert.isElementVisible(scanBarcodeBtn, pageSource);
+        softAssert.verifyAll();
         return this;
     }
 
