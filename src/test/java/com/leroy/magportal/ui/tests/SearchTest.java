@@ -14,8 +14,12 @@ public class SearchTest extends WebBaseSteps {
 
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
         searchProductPage.choseCheckboxFilter(SearchProductPage.Filters.AVS, false);
-        searchProductPage.choseAvsDate(avsDate);
+        searchProductPage.choseAvsDate(false, avsDate);
         searchProductPage.selectGammaFilter("Гамма P", "Гамма А");
         searchProductPage.choseNomenclature("011", "1115", "020", "040");
+        searchProductPage.choseSupplier("1001123001");
+        searchProductPage.choseSupplier("ЗАО САЗИ");
+
+
     }
 }

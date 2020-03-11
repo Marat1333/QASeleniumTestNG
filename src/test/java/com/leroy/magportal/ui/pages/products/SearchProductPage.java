@@ -9,8 +9,10 @@ import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.webelements.MagPortalComboBox;
 import com.leroy.magportal.ui.webelements.searchelements.SupplierComboBox;
+import com.leroy.magportal.ui.webelements.searchelements.SupplierDropDown;
 import com.leroy.magportal.ui.webelements.widgets.CalendarWidget;
 import com.leroy.magportal.ui.webelements.widgets.ProductCardWidget;
+import com.leroy.magportal.ui.webelements.widgets.SupplierCardWidget;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -55,17 +57,17 @@ public class SearchProductPage extends MenuPage {
     Button allGammaFilterBtn;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[text()=\"Каталог товаров\"]/ancestor::div[2]/div/span[1]/span")
-    ElementList<Button> nomenclaturePathButtons;
+    ElementList<Element> nomenclaturePathButtons;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[text()=\"Каталог товаров\"]/ancestor::div[1]")
-    Button allDepartmentsBtn;
+    Element allDepartmentsBtn;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'lmui-View-row lmui-View-middle')]" +
             "//span[contains(@class, 'color-mainText') and not(contains(text(), 'Показаны'))]")
     Element currentNomenclatureLbl;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(text(),'результаты поиска по')]")
-    Button searchByAllDepartmentsFilterBtn;
+    Element searchByAllDepartmentsFilterBtn;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(text(),'результаты поиска по')]/ancestor::span/preceding-sibling::span")
     Element currentSearchByPhraseInNomenclatureLbl;
@@ -89,7 +91,7 @@ public class SearchProductPage extends MenuPage {
     Button clearAllFiltersInFilterFrameBtn;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(text(),'ПОКАЗАТЬ ТОВАРЫ')]")
-    Button applyFiltersBtn;
+    Element applyFiltersBtn;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//label[text()='Поставщик']/ancestor::div[1]")
     SupplierComboBox supplierDropBox;
@@ -110,42 +112,10 @@ public class SearchProductPage extends MenuPage {
     Button listViewBtn;
 
     @WebFindBy(xpath = "//span[contains(text(), 'ПОКАЗАТЬ ЕЩЕ')]")
-    Button showMoreProductsBtn;
+    Element showMoreProductsBtn;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'BarViewProductCard__container')]")
+    @WebFindBy(xpath = "//div[contains(@class, 'BarViewProductCard__container')]", clazz = ProductCardWidget.class)
     ElementList<ProductCardWidget> productCardsList;
-
-
-    private SearchProductPage showAllFilters() {
-        showAllFilters.click();
-        return this;
-    }
-
-    public SearchProductPage choseCheckboxFilter(Filters filter, boolean applyFilters) {
-        Element checkbox = E("contains(" + filter.getName() + ")");
-        if (!(filter.equals(Filters.HAS_AVAILABLE_STOCK) || filter.equals(Filters.TOP_EM))) {
-            showAllFilters();
-        }
-        checkbox.click();
-        if (applyFilters) {
-            applyFiltersBtn.click();
-        }
-        return this;
-    }
-
-    public SearchProductPage choseAvsDate(LocalDate date) throws Exception {
-        avsDropBox.click();
-        avsDropDownCalendar.selectDate(date);
-        return this;
-    }
-
-    public SearchProductPage selectGammaFilter(String... gammaFilters) throws Exception {
-        List<String> tmpFilters = new ArrayList<>();
-        tmpFilters.addAll(java.util.Arrays.asList(gammaFilters));
-        gammaComboBox.click();
-        gammaComboBox.pickElementFromList(tmpFilters);
-        return this;
-    }
 
     public SearchProductPage choseNomenclature(String dept, String subDept, String classId, String subClass) throws Exception {
         allDepartmentsBtn.click();
@@ -185,6 +155,64 @@ public class SearchProductPage extends MenuPage {
                 }
             }
         }
+        return this;
+    }
+
+    private SearchProductPage showAllFilters() {
+        showAllFilters.click();
+        return this;
+    }
+
+    public SearchProductPage choseCheckboxFilter(Filters filter, boolean applyFilters) {
+        Element checkbox = E("contains(" + filter.getName() + ")");
+        if (!(filter.equals(Filters.HAS_AVAILABLE_STOCK) || filter.equals(Filters.TOP_EM))) {
+            showAllFilters();
+        }
+        checkbox.click();
+        if (applyFilters) {
+            applyFiltersBtn.click();
+        }
+        return this;
+    }
+
+    public SearchProductPage selectGammaFilter(String... gammaFilters) throws Exception {
+        List<String> tmpFilters = new ArrayList<>();
+        tmpFilters.addAll(java.util.Arrays.asList(gammaFilters));
+        gammaComboBox.click();
+        gammaComboBox.pickElementFromList(tmpFilters);
+        return this;
+    }
+
+    public SearchProductPage selectTopFilter(String... topFilters) throws Exception {
+        List<String> tmpFilters = new ArrayList<>();
+        tmpFilters.addAll(java.util.Arrays.asList(topFilters));
+        topComboBox.click();
+        topComboBox.pickElementFromList(tmpFilters);
+        return this;
+    }
+
+    public SearchProductPage choseAvsDate(boolean neqNull, LocalDate date) throws Exception {
+        avsDropBox.click();
+        if (!neqNull) {
+            avsDropDownCalendar.selectDate(date);
+        }
+        return this;
+    }
+
+    public SearchProductPage choseSupplier(String value) {
+        supplierDropBox.click();
+        SupplierDropDown supplierDropDown = supplierDropBox.supplierDropDown;
+        supplierDropDown.loadingSpinner.waitForInvisibility();
+        supplierDropDown.searchSupplier(value);
+        supplierDropDown.loadingSpinner.waitForVisibility(short_timeout);
+        supplierDropDown.loadingSpinner.waitForInvisibility();
+
+        for (SupplierCardWidget widget : supplierDropDown.getSupplierCards()) {
+            if (widget.getSupplierCode().equals(value) || widget.getSupplierName().equals(value)) {
+                widget.click();
+            }
+        }
+        supplierDropBox.click();
         return this;
     }
 
