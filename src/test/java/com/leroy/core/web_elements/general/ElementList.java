@@ -45,7 +45,7 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
         try {
             i = getCount();
             if (i > 0) {
-                initWebElementListIfNeeded();
+                initElementList(timeout);
             }
         } catch (Exception err) {
             Log.error(err.getMessage());

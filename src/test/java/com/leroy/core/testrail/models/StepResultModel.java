@@ -6,7 +6,8 @@ public class StepResultModel extends BaseTestRailModel {
     private String actual;
     private int status_id;
 
-    public StepResultModel() {}
+    public StepResultModel() {
+    }
 
     public StepResultModel(String content, String expected, String actual, int status_id) {
         this.content = content;
@@ -20,7 +21,7 @@ public class StepResultModel extends BaseTestRailModel {
     }
 
     public void setContent(String content) {
-        this.content = content;
+        this.content = content.replaceAll("\"", "\\\\\"");
     }
 
     public String getExpected() {
