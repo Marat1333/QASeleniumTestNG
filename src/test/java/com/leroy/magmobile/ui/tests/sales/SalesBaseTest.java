@@ -55,19 +55,12 @@ public class SalesBaseTest extends AppBaseSteps {
     // Получить ЛМ код для обычного продукта без специфичных опций
     protected List<String> getAnyLmCodesProductWithoutSpecificOptions(int necessaryCount, String shopId,
                                                                       Boolean hasAvailableStock) {
-        if ("true".equals(System.getProperty("rmsFail"))) {
-            List<String> lmCodes = new ArrayList<>();
-            lmCodes.add(EnvConstants.PRODUCT_1_LM_CODE);
-            if (necessaryCount > 1)
-                lmCodes.add(EnvConstants.PRODUCT_2_LM_CODE);
-            return lmCodes;
-        }
-
         String[] badLmCodes = {"10008698", "10008751"}; // Из-за отсутствия синхронизации бэков на тесте, мы можем получить некорректные данные
         if (shopId == null) // TODO может быть shopId null или нет?
             shopId = "5";
         GetCatalogSearch params = new GetCatalogSearch()
                 .setShopId(shopId)
+                .setDepartmentId("1")
                 .setTopEM(false)
                 .setHasAvailableStock(hasAvailableStock);
         Response<ProductItemListResponse> resp = mashupClient.searchProductsBy(params);
@@ -93,10 +86,9 @@ public class SalesBaseTest extends AppBaseSteps {
 
     // Получить ЛМ код для продукта с AVS
     protected String getAnyLmCodeProductWithAvs() {
-        if ("true".equals(System.getProperty("rmsFail"))) {
-            return EnvConstants.WITH_AVS_PRODUCT_1_LM_CODE;
-        }
         GetCatalogSearch params = new GetCatalogSearch()
+                .setShopId("5")
+                .setDepartmentId("1")
                 .setTopEM(false);
         Response<ProductItemListResponse> resp = mashupClient.searchProductsBy(params);
         assertThat(resp.toString(), resp.isSuccessful());
@@ -110,10 +102,9 @@ public class SalesBaseTest extends AppBaseSteps {
 
     // Получить ЛМ код для продукта с опцией TopEM
     protected String getAnyLmCodeProductWithTopEM() {
-        if ("true".equals(System.getProperty("rmsFail"))) {
-            return EnvConstants.TOP_EM_PRODUCT_1_LM_CODE;
-        }
         GetCatalogSearch params = new GetCatalogSearch()
+                .setShopId("5")
+                .setDepartmentId("1")
                 .setTopEM(true)
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID);
         Response<ProductItemListResponse> resp = mashupClient.searchProductsBy(params);
