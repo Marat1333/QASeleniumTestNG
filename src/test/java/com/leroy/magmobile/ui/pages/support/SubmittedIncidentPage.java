@@ -1,14 +1,14 @@
 package com.leroy.magmobile.ui.pages.support;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
+import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import io.qameta.allure.Step;
 
-public class SubmittedIncidentPage extends BaseAppPage {
+public class SubmittedIncidentPage extends CommonMagMobilePage {
 
-    public SubmittedIncidentPage(TestContext context) {
+    public SubmittedIncidentPage(Context context) {
         super(context);
     }
 

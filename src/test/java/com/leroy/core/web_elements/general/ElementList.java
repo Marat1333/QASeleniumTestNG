@@ -136,10 +136,8 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
         if (elementList == null)
             initElementList(timeout);
         else {
-            if (!isCacheLookup()) {
-                if (elementList.size() == 0 || elementList.get(0).isStaleReference()) {
-                    initElementList(0);
-                }
+            if (elementList.size() == 0 || elementList.get(0).isStaleReference()) {
+                initElementList(0);
             }
         }
     }
