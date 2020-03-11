@@ -137,9 +137,8 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
     public void testCreateOrderForWithdrawalFromRM() throws Exception {
         // Pre-condition
         String lmCode = getAnyLmCodeProductIsAvailableForWithdrawalFromRM();
-        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
-        mainProductAndServicesPage = setShopAndDepartmentForUser(mainProductAndServicesPage, "5", "15")
-                .goToSales();
+        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(
+                LoginType.USER_WITH_OLD_INTERFACE, MainProductAndServicesPage.class);
 
         // Steps 1, 2, 3
         ActionWithProductModalPage actionWithProductModalPage =

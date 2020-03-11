@@ -206,7 +206,7 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
             if (xpath.contains("%s"))
                 by = By.xpath(xpath.replaceAll("%s", ""));
             else
-                by = locator.getBy();
+                by = By.xpath(xpath);
             weList = findElements(by, 0);
         }
         return weList.size();

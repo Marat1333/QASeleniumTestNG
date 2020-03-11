@@ -23,6 +23,7 @@ import com.leroy.umbrella_extension.magmobile.data.ProductItemResponse;
 import com.leroy.umbrella_extension.magmobile.data.ServiceItemListResponse;
 import com.leroy.umbrella_extension.magmobile.data.ServiceItemResponse;
 import io.qameta.allure.Step;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.openqa.selenium.By;
 
 import java.util.ArrayList;
@@ -59,8 +60,7 @@ public class SearchProductPage extends CommonMagMobilePage {
             AndroidScrollView.TYPICAL_LOCATOR,
             ".//android.view.ViewGroup[contains(@content-desc,'productListCard')]", SearchProductAllGammaCardWidget.class);
 
-    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ScreenContent']//android.view.ViewGroup[android.widget.ImageView]",
-            clazz = SearchProductCardWidget.class)
+    @AppFindBy(accessibilityId = "productListCard", clazz = SearchProductCardWidget.class)
     private ElementList<SearchProductCardWidget> productCards;
 
     @AppFindBy(text = "Фильтр")
@@ -116,13 +116,13 @@ public class SearchProductPage extends CommonMagMobilePage {
     @Step("Ввести поисковой запрос со случайным текстом {value} раз и инициировать поиск")
     public List<String> createSearchHistory(int value) {
         List<String> searchHistory = new ArrayList<>();
-        String tmp = "1";
+        String tmp = RandomStringUtils.randomAlphabetic(1);
         for (int i = 0; i < value; i++) {
             searchField.click();
             searchField.fill(tmp);
             searchField.submit();
             searchHistory.add(tmp);
-            tmp = tmp + "1";
+            tmp = tmp + RandomStringUtils.randomAlphabetic(1);
         }
         return searchHistory;
     }
