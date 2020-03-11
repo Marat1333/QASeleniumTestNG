@@ -1,9 +1,12 @@
 package com.leroy.magmobile.ui.tests.sales;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.core.configuration.Log;
+import com.leroy.magmobile.api.SessionData;
+import com.leroy.magmobile.api.builders.CartBuilder;
 import com.leroy.magmobile.models.sales.SalesDocumentData;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.sales.AddProductPage;
@@ -26,6 +29,7 @@ import com.leroy.umbrella_extension.magmobile.requests.catalog_search.GetCatalog
 import org.apache.commons.lang.RandomStringUtils;
 import org.json.simple.JSONObject;
 import org.testng.Assert;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.base.BaseModule;
@@ -42,6 +46,20 @@ public class SalesBaseTest extends AppBaseSteps {
 
     @Inject
     private MagMobileClient mashupClient;
+
+    @Inject
+    private Provider<CartBuilder> cartBuilderProvider;
+    private CartBuilder cartBuilder;
+
+    @BeforeClass
+    public void beforeClass() {
+        cartBuilder = cartBuilderProvider.get();
+        String token = authClient.getAccessToken(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS);
+        SessionData sessionData = new SessionData();
+        sessionData.setUserShopId("35");
+        sessionData.setAccessToken(token);
+        cartBuilder.setSessionData(sessionData);
+    }
 
     // Получить ЛМ код для услуги
     protected String getAnyLmCodeOfService() {
@@ -149,7 +167,6 @@ public class SalesBaseTest extends AppBaseSteps {
     protected String createDraftCart(int productCount) {
         String shopId = "35";
         List<String> lmCodes = getAnyLmCodesProductWithoutSpecificOptions(productCount, shopId, false);
-        String token = authClient.getAccessToken(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS);
         List<ProductOrderData> productOrderDataList = new ArrayList<>();
         Random r = new Random();
         for (String lmCode : lmCodes) {
@@ -158,8 +175,7 @@ public class SalesBaseTest extends AppBaseSteps {
             productOrderData.setQuantity((double) (r.nextInt(9) + 1));
             productOrderDataList.add(productOrderData);
         }
-        Response<CartData> cartDataResponse = mashupClient
-                .createCart(token, "35", productOrderDataList);
+        Response<CartData> cartDataResponse = cartBuilder.sendRequestCreate(productOrderDataList);
         Assert.assertTrue(cartDataResponse.isSuccessful(),
                 "Не смогли создать Корзину на этапе создания pre-condition данных");
         return cartDataResponse.asJson().getFullDocId();

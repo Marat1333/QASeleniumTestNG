@@ -237,7 +237,7 @@ public class SalesDocProductBuilder extends BaseApiBuilder {
     public List<ProductOrderData> findProducts(int count) {
         List<ProductOrderData> result = new ArrayList<>();
         List<ProductItemData> productItemDataList = FindTestDataHelper.getProducts(apiClient,
-                sessionData.getUserShopId(), count, new FiltersData(FilterPage.MY_SHOP_FRAME_TYPE));
+                sessionData, count, new FiltersData(FilterPage.MY_SHOP_FRAME_TYPE));
         for (ProductItemData productItemData : productItemDataList) {
             result.add(new ProductOrderData(productItemData));
         }

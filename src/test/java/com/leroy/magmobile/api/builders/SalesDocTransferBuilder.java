@@ -200,7 +200,7 @@ public class SalesDocTransferBuilder extends BaseApiBuilder {
      **/
 
     public List<String> findProductLmCodes(int count) {
-        return FindTestDataHelper.getProductLmCodes(apiClient, sessionData.getUserShopId(), count);
+        return FindTestDataHelper.getProductLmCodes(apiClient, sessionData, count);
     }
 
 }

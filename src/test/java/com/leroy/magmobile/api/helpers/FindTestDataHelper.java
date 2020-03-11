@@ -1,5 +1,6 @@
 package com.leroy.magmobile.api.helpers;
 
+import com.leroy.magmobile.api.SessionData;
 import com.leroy.magmobile.models.search.FiltersData;
 import com.leroy.magmobile.ui.pages.search.FilterPage;
 import com.leroy.umbrella_extension.magmobile.MagMobileClient;
@@ -33,9 +34,9 @@ public class FindTestDataHelper {
         return services;
     }
 
-    public static List<ProductItemData> getProducts(MagMobileClient client, String shopId,
+    public static List<ProductItemData> getProducts(MagMobileClient client, SessionData sessionData,
                                                     int necessaryCount, FiltersData filtersData) {
-        List<ProductItemData> result = new ArrayList<>();
+        /*List<ProductItemData> result = new ArrayList<>();
         ProductItemData pr = new ProductItemData();
         pr.setLmCode("10008807");
         pr.setPrice(190.0);
@@ -44,13 +45,14 @@ public class FindTestDataHelper {
         pr.setLmCode("12752955");
         pr.setPrice(2.0);
         result.add(pr);
-        if (true)
-            return result;
+        if (false)
+            return result;*/
         if (filtersData == null)
             filtersData = new FiltersData(FilterPage.MY_SHOP_FRAME_TYPE);
         String[] badLmCodes = {"10008698", "10008751"}; // Из-за отсутствия синхронизации бэков на тесте, мы можем получить некорректные данные
         GetCatalogSearch params = new GetCatalogSearch()
-                .setShopId(shopId)
+                .setShopId(sessionData.getUserShopId())
+                .setDepartmentId(sessionData.getUserDepartmentId())
                 .setTopEM(filtersData.isTopEM())
                 .setHasAvailableStock(filtersData.isHasAvailableStock());
         Response<ProductItemDataList> resp = client.searchProductsBy(params);
@@ -70,15 +72,15 @@ public class FindTestDataHelper {
         return resultList;
     }
 
-    public static List<ProductItemData> getProducts(MagMobileClient client, String shopId,
+    public static List<ProductItemData> getProducts(MagMobileClient client, SessionData sessionData,
                                                     int necessaryCount) {
-        return getProducts(client, shopId, necessaryCount, null);
+        return getProducts(client, sessionData, necessaryCount, null);
     }
 
-    public static List<String> getProductLmCodes(MagMobileClient client, String shopId,
+    public static List<String> getProductLmCodes(MagMobileClient client, SessionData sessionData,
                                                  int necessaryCount) {
         List<ProductItemData> productItemResponseList = getProducts(
-                client, shopId, necessaryCount, null);
+                client, sessionData, necessaryCount, null);
         return productItemResponseList.stream().map(ProductItemData::getLmCode).collect(Collectors.toList());
     }
 

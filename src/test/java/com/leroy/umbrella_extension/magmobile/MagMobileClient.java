@@ -59,22 +59,6 @@ public class MagMobileClient extends LegoBaseClient {
         return createEstimate(token, shopId, Arrays.asList(productOrderData));
     }
 
-    // Carts (Basket)
-    public Response<CartData> createCart(String token, String shopId,
-                                         List<ProductOrderData> productOrderDataList) {
-        CartData cartData = new CartData();
-        cartData.setProducts(productOrderDataList);
-        return execute(new CartPOST()
-                .bearerAuthHeader(token)
-                .setShopId(shopId)
-                .jsonBody(cartData).build(gatewayUrl), CartData.class);
-    }
-
-    public Response<CartData> createCart(String token, String shopId,
-                                         ProductOrderData productOrderData) {
-        return createCart(token, shopId, Arrays.asList(productOrderData));
-    }
-
     // ---------  SalesDoc & Orders -------------------- //
 
     // Lego_salesdoc_search
