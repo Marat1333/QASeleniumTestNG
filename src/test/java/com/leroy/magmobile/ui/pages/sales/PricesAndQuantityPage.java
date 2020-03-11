@@ -1,13 +1,13 @@
 package com.leroy.magmobile.ui.pages.sales;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.pages.BaseAppPage;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
+import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 
-public class PricesAndQuantityPage extends BaseAppPage {
+public class PricesAndQuantityPage extends CommonMagMobilePage {
 
-    public PricesAndQuantityPage(TestContext context) {
+    public PricesAndQuantityPage(Context context) {
         super(context);
     }
 
