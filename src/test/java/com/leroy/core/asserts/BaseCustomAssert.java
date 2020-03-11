@@ -209,7 +209,7 @@ public abstract class BaseCustomAssert {
             result = ImageUtil.takeScreenAndCompareWithBaseImg(elem, pictureName, expectedPercentage);
         } catch (Exception err) {
             Log.error(err.getMessage());
-            Assert.fail("Couldn't take screenshot for " + elem.getMetaName());
+            result = ImageUtil.CompareResult.ElementNotFound;
         }
         if (!ImageUtil.CompareResult.Matched.equals(result)) {
             addResultsToCurrentStepAndThrowAssertException(
