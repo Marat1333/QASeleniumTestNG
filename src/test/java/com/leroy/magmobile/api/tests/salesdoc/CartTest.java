@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.leroy.constants.EnvConstants;
+import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.magmobile.api.SessionData;
 import com.leroy.magmobile.api.builders.CartBuilder;
 import com.leroy.magmobile.api.tests.common.BaseProjectTest;
@@ -14,6 +15,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
+import java.util.Collections;
 import java.util.Random;
 
 public class CartTest extends BaseProjectTest {
@@ -41,36 +43,38 @@ public class CartTest extends BaseProjectTest {
         cartBuilder.setSessionData(sessionData);
     }
 
-    @Test(description = "Create Cart")
+    @Test(description = "C22906656 Create Cart - Lego_Cart_Post")
     public void testCreateCart() {
         // Prepare request data
         ProductOrderData productOrderData = cartBuilder.findProducts(1).get(0);
         productOrderData.setQuantity((double) new Random().nextInt(6) + 1);
 
-        Response<CartData> cartDataResponse = cartBuilder.sendRequestCreate(productOrderData);
-        cartData = cartBuilder.assertThatIsCreated(cartDataResponse);
-
-        cartBuilder.sendRequestGet(cartData.getCartId());
-        //cartBuilder.assertThatIsCreated()
-
-        cartData = cartDataResponse.asJson();
-
+        // Create
+        Response<CartData> response = cartBuilder.sendRequestCreate(productOrderData);
+        // Check Create
+        cartData = cartBuilder.assertThatIsCreatedAndGetData(response);
+        // Check that created data contains added product
+        cartBuilder.assertThatResponseContainsAddedProducts(response,
+                Collections.singletonList(productOrderData));
     }
 
-    @Test(description = "Get Cart")
+    @Test(description = "C22906657 Get Cart info - Lego_Cart_Get")
     public void testGetCart() {
-        // Prepare request data
-        ProductOrderData productOrderData = cartBuilder.findProducts(1).get(0);
-        productOrderData.setQuantity((double) new Random().nextInt(6) + 1);
-
-        Response<CartData> cartDataResponse = cartBuilder.sendRequestCreate(productOrderData);
-        String s= "";
-
+        if (cartData == null)
+            throw new IllegalArgumentException("cart data hasn't been created");
+        Response<CartData> getResp = cartBuilder.sendRequestGet(cartData.getCartId());
+        cartBuilder.assertThatGetResponseMatches(getResp, cartData);
     }
 
-    @Test(description = "Delete status")
+    @Test(description = "C22906658 Delete Cart - Lego_CartChangeStatus")
     public void testDeleteCart() {
-        Response<JsonNode> r = cartBuilder.sendRequestDelete(cartData.getCartId());
-        String s = "";
+        Response<JsonNode> response = cartBuilder.sendRequestDelete(cartData.getCartId(), cartData.getDocumentVersion());
+        cartBuilder.assertThatResponseChangeStatusIsOk(response);
+
+        Response<CartData> getResponse = cartBuilder.sendRequestGet(cartData.getCartId());
+        cartData.setSalesDocStatus(SalesDocumentsConst.States.DELETED.getApiVal());
+        cartData.setStatus(SalesDocumentsConst.States.DELETED.getApiVal());
+        cartData.increaseDocumentVersion();
+        cartBuilder.assertThatGetResponseMatches(getResponse, cartData);
     }
 }

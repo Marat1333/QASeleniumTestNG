@@ -17,4 +17,8 @@ public class CartData {
     private Integer documentVersion;
     private String groupingId;
 
+    public void increaseDocumentVersion() {
+        this.documentVersion++;
+    }
+
 }

@@ -11,7 +11,7 @@ public class IsNumber extends TypeSafeMatcher<String> {
     }
 
     public void describeTo(Description description) {
-        description.appendText("not a number");
+        description.appendText("is a number");
     }
 
     public static IsNumber isNumber() {

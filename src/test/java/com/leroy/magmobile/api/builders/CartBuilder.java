@@ -2,6 +2,7 @@ package com.leroy.magmobile.api.builders;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.SalesDocumentsConst;
+import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.helpers.FindTestDataHelper;
 import com.leroy.magmobile.models.search.FiltersData;
 import com.leroy.magmobile.ui.pages.search.FilterPage;
@@ -27,7 +28,9 @@ public class CartBuilder extends BaseApiBuilder {
      **/
 
     public Response<CartData> sendRequestGet(String cartId) {
-        return apiClient.execute(new CartGet().setCartId(cartId), CartData.class);
+        return apiClient.execute(new CartGet().setCartId(cartId)
+                .bearerAuthHeader(sessionData.getAccessToken())
+                .setShopId(sessionData.getUserShopId()), CartData.class);
     }
 
     public Response<CartData> sendRequestCreate(List<ProductOrderData> productOrderDataList) {
@@ -44,28 +47,29 @@ public class CartBuilder extends BaseApiBuilder {
         return sendRequestCreate(Collections.singletonList(productOrderData));
     }
 
-    public Response<JsonNode> sendRequestDelete(String cartId) {
+    public Response<JsonNode> sendRequestDelete(String cartId, int documentVersion) {
         Map<String, String> body = new HashMap<>();
         body.put("status", SalesDocumentsConst.States.DELETED.getApiVal());
-        return apiClient.execute(new CartChangeStatusPut().setCartId(cartId).formBody(body), JsonNode.class);
+        body.put("documentVersion", String.valueOf(documentVersion));
+        return apiClient.execute(new CartChangeStatusPut()
+                .bearerAuthHeader(sessionData.getAccessToken())
+                .setCartId(cartId)
+                .formBody(body), JsonNode.class);
     }
 
     /**
      * ------------  Verifications -----------------
      **/
-    public CartData assertThatIsCreated(Response<CartData> response) {
+    public CartData assertThatIsCreatedAndGetData(Response<CartData> response) {
         assertThatResponseIsOk(response);
         CartData data = response.asJson();
         assertThat("fullDocId", data.getFullDocId(), isNumber());
-        assertThat("fullDocId", "", isNumber());
-        assertThat("fullDocId", "123a123", isNumber());
-
         assertThat("docType", data.getDocType(), is(SalesDocumentsConst.Types.CART.getApiVal()));
         assertThat("salesDocStatus", data.getSalesDocStatus(), is(SalesDocumentsConst.States.DRAFT.getApiVal()));
         assertThat("documentType", data.getDocumentType(), is(SalesDocumentsConst.Types.CART.getApiVal()));
         assertThat("status", data.getStatus(), is(SalesDocumentsConst.States.DRAFT.getApiVal()));
         assertThat("shopId", data.getShopId(), is(sessionData.getUserShopId()));
-        assertThat("cartId", data.getFullDocId(), is(data.getFullDocId()));
+        assertThat("cartId", data.getCartId(), is(data.getFullDocId()));
         assertThat("documentVersion", data.getDocumentVersion(), is(1));
         assertThat("groupingId", data.getGroupingId(), not(isEmptyOrNullString()));
 
@@ -74,21 +78,66 @@ public class CartBuilder extends BaseApiBuilder {
         return data;
     }
 
+    private void shortVerifyProducts(
+            int i, ProductOrderData actualProduct, ProductOrderData expectedProduct) {
+        assertThat(String.format("Product #%s - lmCode", i + 1),
+                actualProduct.getLmCode(), is(expectedProduct.getLmCode()));
+        assertThat(String.format("Product #%s - title", i + 1),
+                actualProduct.getTitle(), is(expectedProduct.getTitle()));
+        assertThat(String.format("Product #%s - Quantity", i + 1),
+                actualProduct.getQuantity(), is(expectedProduct.getQuantity()));
+        /*assertThat(String.format("Product #%s - Available stock", i + 1),
+                actualProduct.getAvailableStock(), is(expectedProduct.getAvailableStock()));*/
+        assertThat(String.format("Product #%s - Price", i + 1),
+                actualProduct.getPrice(), is(expectedProduct.getPrice()));
+        /*assertThat(String.format("Product #%s - PriceUnit", i + 1),
+                actualProduct.getPriceUnit(), is(expectedProduct.getPriceUnit()));*/
+        assertThat(String.format("Product #%s - BarCode", i + 1),
+                actualProduct.getBarCode(), is(expectedProduct.getBarCode()));
+        assertThat(String.format("Product #%s - Type", i + 1),
+                actualProduct.getType(), is(expectedProduct.getType()));
+        assertThat(String.format("Product #%s - TopEm", i + 1),
+                actualProduct.getTopEM(), is(expectedProduct.getTopEM()));
+    }
+
+    public CartBuilder assertThatResponseContainsAddedProducts(
+            Response<CartData> resp, List<ProductOrderData> expectedProducts) {
+        assertThatResponseIsOk(resp);
+        CartData actualData = resp.asJson();
+        for (int i = 0; i < actualData.getProducts().size(); i++) {
+            ProductOrderData actualProduct = actualData.getProducts().get(i);
+            ProductOrderData expectedProduct = expectedProducts.get(i);
+            shortVerifyProducts(i, actualProduct, expectedProduct);
+        }
+        return this;
+    }
+
     public CartBuilder assertThatGetResponseMatches(Response<CartData> resp, CartData expectedData) {
         assertThatResponseIsOk(resp);
         CartData actualData = resp.asJson();
         assertThat("FullDocId", actualData.getFullDocId(), equalTo(expectedData.getFullDocId()));
-        /*assertThat("docType", actualData.getDocType(), is();
-        assertThat("salesDocStatus", data.getSalesDocStatus(), is(SalesDocumentsConst.States.DRAFT.getApiVal()));
-        assertThat("documentType", data.getDocumentType(), is(SalesDocumentsConst.Types.CART.getApiVal()));
-        assertThat("status", data.getStatus(), is(SalesDocumentsConst.States.DRAFT.getApiVal()));
-        assertThat("shopId", data.getShopId(), is(sessionData.getUserShopId()));
-        assertThat("cartId", data.getFullDocId(), is(data.getFullDocId()));
-        assertThat("documentVersion", data.getDocumentVersion(), is(1));
-        assertThat("groupingId", data.getGroupingId(), not(isEmptyOrNullString()));
+        assertThat("docType", actualData.getDocType(), is(expectedData.getDocType()));
+        assertThat("salesDocStatus", actualData.getSalesDocStatus(), is(expectedData.getSalesDocStatus()));
+        assertThat("documentType", actualData.getDocumentType(), is(expectedData.getDocumentType()));
+        assertThat("status", actualData.getStatus(), is(expectedData.getStatus()));
+        assertThat("shopId", actualData.getShopId(), is(expectedData.getShopId()));
+        assertThat("cartId", actualData.getCartId(), is(expectedData.getCartId()));
+        assertThat("documentVersion", actualData.getDocumentVersion(), is(expectedData.getDocumentVersion()));
+        assertThat("groupingId", actualData.getGroupingId(), is(expectedData.getGroupingId()));
 
-        assertThat("products", data.getProducts(), hasSize(greaterThan(0)));*/
+        assertThat("products", actualData.getProducts(), hasSize(expectedData.getProducts().size()));
+
+        for (int i = 0; i < actualData.getProducts().size(); i++) {
+            ProductOrderData actualProduct = actualData.getProducts().get(i);
+            ProductOrderData expectedProduct = expectedData.getProducts().get(i);
+            assertThat("Product #"+(i+1), actualProduct, equalTo(expectedProduct));
+        }
         return this;
+    }
+
+    public void assertThatResponseChangeStatusIsOk(Response<JsonNode> resp) {
+        assertThatResponseIsOk(resp);
+        assertThat("result", resp.asJson().get("result").asText(), is("OK"));
     }
 
     /**
