@@ -5,9 +5,12 @@ import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.webelements.MagPortalComboBox;
+import com.leroy.magportal.ui.webelements.searchelements.SupplierComboBox;
 import com.leroy.magportal.ui.webelements.widgets.CalendarWidget;
+import com.leroy.magportal.ui.webelements.widgets.ProductCardWidget;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -39,6 +42,9 @@ public class SearchProductPage extends MenuPage {
         }
     }
 
+    @WebFindBy(xpath = "//div[contains(@class, 'Spinner-active')]")
+    Element loadingSpinner;
+
     @WebFindBy(xpath = "//input[@placeholder='ЛМ, название или штрихкод']")
     EditBox searchInput;
 
@@ -48,9 +54,11 @@ public class SearchProductPage extends MenuPage {
     @WebFindBy(xpath = "//button[@id='AllGamma']")
     Button allGammaFilterBtn;
 
-    //TODO create new Element Class хлебные крошки
-    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[text()=\"Каталог товаров\"]/ancestor::div[2]")
-    Button nomenclaturePath;
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[text()=\"Каталог товаров\"]/ancestor::div[2]/div/span[1]/span")
+    ElementList<Button> nomenclaturePathButtons;
+
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[text()=\"Каталог товаров\"]/ancestor::div[1]")
+    Button allDepartmentsBtn;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'lmui-View-row lmui-View-middle')]" +
             "//span[contains(@class, 'color-mainText') and not(contains(text(), 'Показаны'))]")
@@ -62,9 +70,8 @@ public class SearchProductPage extends MenuPage {
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(text(),'результаты поиска по')]/ancestor::span/preceding-sibling::span")
     Element currentSearchByPhraseInNomenclatureLbl;
 
-    //TODO create new Element Class лист элементов номенклатуры
-    @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'Nomenclatures__link')]/ancestor::div[2]")
-    Element nomenclatureList;
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(@class, 'Nomenclatures__link-text')]")
+    ElementList<Element> nomenclatureElementsList;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//input[@placeholder='Гамма']/ancestor::div[1]")
     MagPortalComboBox gammaComboBox;
@@ -81,17 +88,33 @@ public class SearchProductPage extends MenuPage {
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[text()='ПОКАЗАТЬ ТОВАРЫ']/ancestor::button/preceding-sibling::button")
     Button clearAllFiltersInFilterFrameBtn;
 
-    @WebFindBy(xpath = "//div[contains(@class, \"active\")]//span[contains(text(),'ПОКАЗАТЬ ТОВАРЫ')]")
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(text(),'ПОКАЗАТЬ ТОВАРЫ')]")
     Button applyFiltersBtn;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//label[text()='Поставщик']/ancestor::div[1]")
-    MagPortalComboBox supplierDropBox;
+    SupplierComboBox supplierDropBox;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//input[@placeholder='Дата AVS']")
     MagPortalComboBox avsDropBox;
 
     @WebFindBy(xpath = "//div[contains(@class, 'DatePicker__dayPicker')]")
     CalendarWidget avsDropDownCalendar;
+
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(@class,'singleValue')]/ancestor::div[2]")
+    MagPortalComboBox sortComboBox;
+
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(@class,'singleValue')]/ancestor::div[6]/following-sibling::button[1]")
+    Button extendedViewBtn;
+
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(@class,'singleValue')]/ancestor::div[6]/following-sibling::button[2]")
+    Button listViewBtn;
+
+    @WebFindBy(xpath = "//span[contains(text(), 'ПОКАЗАТЬ ЕЩЕ')]")
+    Button showMoreProductsBtn;
+
+    @WebFindBy(xpath = "//div[contains(@class, 'BarViewProductCard__container')]")
+    ElementList<ProductCardWidget> productCardsList;
+
 
     private SearchProductPage showAllFilters() {
         showAllFilters.click();
@@ -100,7 +123,6 @@ public class SearchProductPage extends MenuPage {
 
     public SearchProductPage choseCheckboxFilter(Filters filter, boolean applyFilters) {
         Element checkbox = E("contains(" + filter.getName() + ")");
-        //WebElement checkbox = findElement(By.xpath("//div[contains(@class, 'active')]//span[text()='"+filter.getName()+"']/ancestor::button"));
         if (!(filter.equals(Filters.HAS_AVAILABLE_STOCK) || filter.equals(Filters.TOP_EM))) {
             showAllFilters();
         }
@@ -117,11 +139,52 @@ public class SearchProductPage extends MenuPage {
         return this;
     }
 
-    public SearchProductPage selectGammaFilter(String ... gammaFilters)throws Exception{
+    public SearchProductPage selectGammaFilter(String... gammaFilters) throws Exception {
         List<String> tmpFilters = new ArrayList<>();
         tmpFilters.addAll(java.util.Arrays.asList(gammaFilters));
         gammaComboBox.click();
         gammaComboBox.pickElementFromList(tmpFilters);
+        return this;
+    }
+
+    public SearchProductPage choseNomenclature(String dept, String subDept, String classId, String subClass) throws Exception {
+        allDepartmentsBtn.click();
+        if (dept != null) {
+            for (Element deptEl : nomenclatureElementsList) {
+                if (deptEl.getText().contains(dept)) {
+                    deptEl.click();
+                    break;
+                }
+            }
+        }
+        if (dept != null && subDept != null) {
+            for (Element subDeptEl : nomenclatureElementsList) {
+                if (subDeptEl.getText().contains(subDept)) {
+                    subDeptEl.click();
+                    break;
+                }
+            }
+        }
+        if (dept != null && subDept != null && classId != null) {
+            String refactoredClassId = classId;
+            refactoredClassId = refactoredClassId.replaceAll("^0", "");
+            for (Element classEl : nomenclatureElementsList) {
+                if (classEl.getText().contains(refactoredClassId)) {
+                    classEl.click();
+                    break;
+                }
+            }
+        }
+        if (dept != null && subDept != null && classId != null && subClass != null) {
+            String refactoredSubClass = subClass;
+            refactoredSubClass = refactoredSubClass.replaceAll("^0", "");
+            for (Element subClassEl : nomenclatureElementsList) {
+                if (subClassEl.getText().contains(refactoredSubClass)) {
+                    subClassEl.click();
+                    break;
+                }
+            }
+        }
         return this;
     }
 

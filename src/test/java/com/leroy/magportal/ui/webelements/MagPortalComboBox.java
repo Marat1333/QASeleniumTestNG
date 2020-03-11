@@ -17,7 +17,7 @@ public class MagPortalComboBox extends Element {
     Element chosenStringValue;
 
     @WebFindBy(xpath = "./ancestor::div[3]/div[@class='lmui-View lmui-Select lmui-Select__menu']//div[contains(@class, 'optionsContainer')]/div")
-    ElementList<Element> dropDownElementsList;
+    private ElementList<Element> dropDownElementsList;
 
     public String getChosenValue() {
         return chosenStringValue.getText();
