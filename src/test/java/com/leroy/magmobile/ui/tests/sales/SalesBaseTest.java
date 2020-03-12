@@ -60,6 +60,7 @@ public class SalesBaseTest extends AppBaseSteps {
             shopId = "5";
         GetCatalogSearch params = new GetCatalogSearch()
                 .setShopId(shopId)
+                .setByLmCode("164")
                 .setDepartmentId("1")
                 .setTopEM(false)
                 .setHasAvailableStock(hasAvailableStock);
@@ -88,6 +89,7 @@ public class SalesBaseTest extends AppBaseSteps {
     protected String getAnyLmCodeProductWithAvs() {
         GetCatalogSearch params = new GetCatalogSearch()
                 .setShopId("5")
+                .setByLmCode("16")
                 .setDepartmentId("1")
                 .setTopEM(false);
         Response<ProductItemListResponse> resp = mashupClient.searchProductsBy(params);
@@ -103,10 +105,11 @@ public class SalesBaseTest extends AppBaseSteps {
     // Получить ЛМ код для продукта с опцией TopEM
     protected String getAnyLmCodeProductWithTopEM() {
         GetCatalogSearch params = new GetCatalogSearch()
-                .setShopId("5")
-                .setDepartmentId("1")
-                .setTopEM(true)
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID);
+                //.setShopId("5")
+                //.setByLmCode("1")
+                //.setDepartmentId("1")
+                .setPageSize(5)
+                .setTopEM(true);
         Response<ProductItemListResponse> resp = mashupClient.searchProductsBy(params);
         assertThat(resp.toString(), resp.isSuccessful());
         List<ProductItemResponse> items = mashupClient.searchProductsBy(params).asJson().getItems();
@@ -120,7 +123,7 @@ public class SalesBaseTest extends AppBaseSteps {
 
     // Получить ЛМ код для продукта, доступного для отзыва с RM
     protected String getAnyLmCodeProductIsAvailableForWithdrawalFromRM() {
-        return "82001470";
+        return "18845896";
     }
 
     protected String getValidPinCode() {
@@ -155,8 +158,7 @@ public class SalesBaseTest extends AppBaseSteps {
         productOrderData.setQuantity(1.0);
         Response<EstimateData> estimateDataResponse = mashupClient
                 .createEstimate(token, "35", productOrderData);
-        Assert.assertTrue(estimateDataResponse.isSuccessful(),
-                "Не смогли создать Смету на этапе создания pre-condition данных");
+        assertThat(estimateDataResponse.toString(), estimateDataResponse.isSuccessful());
         return estimateDataResponse.asJson().getEstimateId();
     }
 
