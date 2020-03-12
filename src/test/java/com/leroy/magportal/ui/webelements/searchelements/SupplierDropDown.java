@@ -24,14 +24,14 @@ public class SupplierDropDown extends BaseWidget {
     @WebFindBy(xpath = "./div[contains(@class, 'options')]/div/div[3]/div/div/div", clazz = SupplierCardWidget.class)
     private ElementList<SupplierCardWidget> supplierCards;
 
-    @WebFindBy(xpath = "//div[contains(@class,'SuppliersMenuComponents__chip')]", clazz = ChosenSupplierWidget.class)
+    @WebFindBy(xpath = ".//div[contains(@class,'SuppliersMenuComponents__chip')]", clazz = ChosenSupplierWidget.class)
     private ElementList<ChosenSupplierWidget> chosenSuppliers;
 
     @WebFindBy(xpath = ".//div[contains(@class, 'Spinner-active')]")
     public Element loadingSpinner;
 
     public void searchSupplier(String value) {
-        searchString.clearAndFill(value,true);
+        searchString.clearAndFill(value, true);
         loadingSpinner.waitForInvisibility(short_timeout);
     }
 

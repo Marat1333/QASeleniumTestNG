@@ -23,7 +23,7 @@ public class MagPortalComboBox extends Element {
         return chosenStringValue.getText();
     }
 
-    public void pickElementFromList(List<String> elements) throws Exception {
+    public void selectOptions(List<String> elements) throws Exception {
         for (String element : elements) {
             for (Element tmp : dropDownElementsList) {
                 if (tmp.findChildElement("//span[contains(@class, 'SwitchButton-label')]").getText().equals(element)) {

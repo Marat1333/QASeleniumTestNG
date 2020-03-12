@@ -10,9 +10,9 @@ import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.webelements.MagPortalComboBox;
 import com.leroy.magportal.ui.webelements.searchelements.SupplierComboBox;
 import com.leroy.magportal.ui.webelements.searchelements.SupplierDropDown;
-import com.leroy.magportal.ui.webelements.widgets.CalendarWidget;
-import com.leroy.magportal.ui.webelements.widgets.ProductCardWidget;
-import com.leroy.magportal.ui.webelements.widgets.SupplierCardWidget;
+import com.leroy.magportal.ui.webelements.widgets.*;
+import io.qameta.allure.Step;
+import org.openqa.selenium.By;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -21,6 +21,11 @@ import java.util.List;
 public class SearchProductPage extends MenuPage {
     public SearchProductPage(TestContext context) {
         super(context);
+    }
+
+    public enum FilterFrame {
+        MY_SHOP,
+        ALL_GAMMA_LM;
     }
 
     public enum Filters {
@@ -44,11 +49,39 @@ public class SearchProductPage extends MenuPage {
         }
     }
 
+    public enum SortType {
+        LM_CODE_DESC("По ЛМ-коду: 9 → 1"),
+        LM_CODE_ASC("По ЛМ-коду: 1 → 9"),
+        AVAILABLE_STOCK_DESC("По запасу (больше → меньше)"),
+        AVAILABLE_STOCK_ASC("По запасу (меньше → больше)");
+
+        private String name;
+
+        SortType(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
+
+    public enum ViewMode {
+        EXTENDED,
+        LIST;
+    }
+
     @WebFindBy(xpath = "//div[contains(@class, 'Spinner-active')]")
     Element loadingSpinner;
 
     @WebFindBy(xpath = "//input[@placeholder='ЛМ, название или штрихкод']")
     EditBox searchInput;
+
+    @WebFindBy(xpath = "//input[@placeholder='ЛМ, название или штрихкод']/following-sibling::button")
+    Button clearSearchInput;
+
+    @WebFindBy(xpath = "//div[contains(@class, 'history')]//div[contains(@class, 'optionText')]//span[2]")
+    ElementList<Element> searchHistoryElements;
 
     @WebFindBy(xpath = "//button[@id='MyShop']")
     Button myShopFilterBtn;
@@ -56,7 +89,8 @@ public class SearchProductPage extends MenuPage {
     @WebFindBy(xpath = "//button[@id='AllGamma']")
     Button allGammaFilterBtn;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[text()=\"Каталог товаров\"]/ancestor::div[2]/div/span[1]/span")
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[text()=\"Каталог товаров\"]" +
+            "/ancestor::div[2]/div/span[1]/span")
     ElementList<Element> nomenclaturePathButtons;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[text()=\"Каталог товаров\"]/ancestor::div[1]")
@@ -69,7 +103,8 @@ public class SearchProductPage extends MenuPage {
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(text(),'результаты поиска по')]")
     Element searchByAllDepartmentsFilterBtn;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(text(),'результаты поиска по')]/ancestor::span/preceding-sibling::span")
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(text(),'результаты поиска по')]" +
+            "/ancestor::span/preceding-sibling::span")
     Element currentSearchByPhraseInNomenclatureLbl;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(@class, 'Nomenclatures__link-text')]")
@@ -84,10 +119,12 @@ public class SearchProductPage extends MenuPage {
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[text()='еще']/ancestor::button")
     Button showAllFilters;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[text()='еще']/ancestor::button/following-sibling::div/span")
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[text()='еще']/ancestor::button" +
+            "/following-sibling::div/span")
     Element filtersCounter;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[text()='ПОКАЗАТЬ ТОВАРЫ']/ancestor::button/preceding-sibling::button")
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[text()='ПОКАЗАТЬ ТОВАРЫ']" +
+            "/ancestor::button/preceding-sibling::button")
     Button clearAllFiltersInFilterFrameBtn;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(text(),'ПОКАЗАТЬ ТОВАРЫ')]")
@@ -99,25 +136,67 @@ public class SearchProductPage extends MenuPage {
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//input[@placeholder='Дата AVS']")
     MagPortalComboBox avsDropBox;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'DatePicker__dayPicker')]")
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'DatePicker__dayPicker')]")
     CalendarWidget avsDropDownCalendar;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(@class,'singleValue')]/ancestor::div[2]")
     MagPortalComboBox sortComboBox;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(@class,'singleValue')]/ancestor::div[6]/following-sibling::button[1]")
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(@class,'singleValue')]" +
+            "/ancestor::div[6]/following-sibling::button[1]")
     Button extendedViewBtn;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(@class,'singleValue')]/ancestor::div[6]/following-sibling::button[2]")
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(@class,'singleValue')]" +
+            "/ancestor::div[6]/following-sibling::button[2]")
     Button listViewBtn;
 
-    @WebFindBy(xpath = "//span[contains(text(), 'ПОКАЗАТЬ ЕЩЕ')]")
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(text(), 'ПОКАЗАТЬ ЕЩЕ')]")
     Element showMoreProductsBtn;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'BarViewProductCard__container')]", clazz = ProductCardWidget.class)
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, " +
+            "'BarViewProductCard__container')]", clazz = ProductCardWidget.class)
     ElementList<ProductCardWidget> productCardsList;
 
-    public SearchProductPage choseNomenclature(String dept, String subDept, String classId, String subClass) throws Exception {
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'BarViewProductCard__container')]" +
+            "//p/following-sibling::div/ancestor::div[1]", clazz = ExtendedProductCardWidget.class)
+    ElementList<ExtendedProductCardWidget> extendedProductCardList;
+
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'TableView__row')]", clazz = ProductCardTableViewWidget.class)
+    ElementList<ProductCardTableViewWidget> productCardListTableView;
+
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'TableView__row')]/div[5]/ancestor::div[1]", clazz = ExtendedProductCardTableViewWidget.class)
+    ElementList<ExtendedProductCardTableViewWidget> extendedProductCardListTableView;
+
+    @WebFindBy(text = "Произошла ошибка")
+    Element errorOccurMsg;
+
+    @WebFindBy(xpath = "//span[contains(text(),'СБРОСИТЬ')]/ancestor::button")
+    Button clearAllFiltersInProductFrame;
+
+    @Step("Ввести в поисковую строку {value} и осуществить поиск")
+    public SearchProductPage searchByPhrase(String value) {
+        searchInput.clearFillAndSubmit(value);
+        return this;
+    }
+
+    @Step("Очистить поисковую строку нажатием на крест")
+    public SearchProductPage clearSearchInputByClearBtn() {
+        clearSearchInput.click();
+        return this;
+    }
+
+    @Step("Выбрать группу фильтров {frame}")
+    public SearchProductPage switchFiltersFrame(FilterFrame frame) {
+        if (frame.equals(FilterFrame.MY_SHOP)) {
+            myShopFilterBtn.click();
+        } else {
+            allGammaFilterBtn.click();
+        }
+        return this;
+    }
+
+    @Step("Выбрать номенклатуру {dept} {subDept} {classId} {subClass}")
+    public SearchProductPage choseNomenclature(String dept, String subDept, String classId, String subClass) {
         allDepartmentsBtn.click();
         if (dept != null) {
             for (Element deptEl : nomenclatureElementsList) {
@@ -158,11 +237,13 @@ public class SearchProductPage extends MenuPage {
         return this;
     }
 
+    @Step("Нажать на кнопку \"ЕЩЕ\" для просмотра всех фильтров")
     private SearchProductPage showAllFilters() {
         showAllFilters.click();
         return this;
     }
 
+    @Step("Выбрать чек-бокс {filter.getName()} и применить фильтры - {applyFilters}")
     public SearchProductPage choseCheckboxFilter(Filters filter, boolean applyFilters) {
         Element checkbox = E("contains(" + filter.getName() + ")");
         if (!(filter.equals(Filters.HAS_AVAILABLE_STOCK) || filter.equals(Filters.TOP_EM))) {
@@ -170,27 +251,30 @@ public class SearchProductPage extends MenuPage {
         }
         checkbox.click();
         if (applyFilters) {
-            applyFiltersBtn.click();
+            applyFilters();
         }
         return this;
     }
 
+    @Step("Выбрать фильтры Гамма {gammaFilters.toString}")
     public SearchProductPage selectGammaFilter(String... gammaFilters) throws Exception {
         List<String> tmpFilters = new ArrayList<>();
         tmpFilters.addAll(java.util.Arrays.asList(gammaFilters));
         gammaComboBox.click();
-        gammaComboBox.pickElementFromList(tmpFilters);
+        gammaComboBox.selectOptions(tmpFilters);
         return this;
     }
 
+    @Step("Выбрать фильтры Топ {topFilters.toString}")
     public SearchProductPage selectTopFilter(String... topFilters) throws Exception {
         List<String> tmpFilters = new ArrayList<>();
         tmpFilters.addAll(java.util.Arrays.asList(topFilters));
         topComboBox.click();
-        topComboBox.pickElementFromList(tmpFilters);
+        topComboBox.selectOptions(tmpFilters);
         return this;
     }
 
+    @Step("выбрать дату AVS {date}")
     public SearchProductPage choseAvsDate(boolean neqNull, LocalDate date) throws Exception {
         avsDropBox.click();
         if (!neqNull) {
@@ -199,10 +283,12 @@ public class SearchProductPage extends MenuPage {
         return this;
     }
 
+    @Step("Выбрать фильтр по поставщику {value}")
     public SearchProductPage choseSupplier(String value) {
         supplierDropBox.click();
         SupplierDropDown supplierDropDown = supplierDropBox.supplierDropDown;
         supplierDropDown.loadingSpinner.waitForInvisibility();
+        //TODO слишком быстрый ввод, надо замедлять - поиск не происходит
         supplierDropDown.searchSupplier(value);
         supplierDropDown.loadingSpinner.waitForVisibility(short_timeout);
         supplierDropDown.loadingSpinner.waitForInvisibility();
@@ -213,6 +299,41 @@ public class SearchProductPage extends MenuPage {
             }
         }
         supplierDropBox.click();
+        return this;
+    }
+
+    @Step("Очистить все фильтры")
+    public SearchProductPage clearAllFilters() {
+        clearAllFiltersInFilterFrameBtn.click();
+        return this;
+    }
+
+    @Step("Применить выбранные фильтры")
+    public SearchProductPage applyFilters() {
+        applyFiltersBtn.click();
+        return this;
+    }
+
+    @Step("Выбрать тип сортировки")
+    public SearchProductPage choseSortType(SortType sortType) {
+        Button sortBtn = (Button) findElement(By.xpath("//span[contains(text(),'" + sortType.getName() + "')]/ancestor::button"));
+        sortBtn.click();
+        return this;
+    }
+
+    @Step("Выбрать вариант отображения товаров")
+    public SearchProductPage choseViewMode(ViewMode mode) {
+        if (mode.equals(ViewMode.EXTENDED)) {
+            extendedViewBtn.click();
+        } else {
+            listViewBtn.click();
+        }
+        return this;
+    }
+
+    @Step("Очистить фильтры по нажатию на клавишу \"СБРОСИТЬ ФИЛЬТРЫ\"")
+    public SearchProductPage clearAllFiltersInProductFrame() {
+        clearAllFiltersInProductFrame.click();
         return this;
     }
 
