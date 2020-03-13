@@ -19,13 +19,12 @@ public class WithdrawalFromRMTest extends AppBaseSteps {
     @Test(description = "C3132493 Создание заявки на Отзыв RM из раздела Работа")
     public void testC3132493() throws Exception {
         // Pre-condition
-        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
-        UserProfilePage userProfilePage = setShopAndDepartmentForUser(
-                mainProductAndServicesPage, "5", "01");
+        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(
+                LoginType.USER_WITH_OLD_INTERFACE, MainProductAndServicesPage.class);
 
         // Step #1
         log.step("Зайти в раздел Работа");
-        WorkPage workPage = userProfilePage.goToWork()
+        WorkPage workPage = mainProductAndServicesPage.goToWork()
                 .verifyRequiredElements();
 
         // Step #2

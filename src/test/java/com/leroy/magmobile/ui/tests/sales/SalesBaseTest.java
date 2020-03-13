@@ -60,7 +60,6 @@ public class SalesBaseTest extends AppBaseSteps {
             shopId = "5";
         GetCatalogSearch params = new GetCatalogSearch()
                 .setShopId(shopId)
-                .setByLmCode("164")
                 .setDepartmentId("1")
                 .setTopEM(false)
                 .setHasAvailableStock(hasAvailableStock);
