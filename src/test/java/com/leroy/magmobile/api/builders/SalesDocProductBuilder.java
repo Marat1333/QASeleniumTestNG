@@ -230,29 +230,7 @@ public class SalesDocProductBuilder extends BaseApiBuilder {
         return this;
     }
 
-    /**
-     * ------------  Help Methods -----------------
-     **/
-
-    public List<ProductOrderData> findProducts(int count) {
-        List<ProductOrderData> result = new ArrayList<>();
-        List<ProductItemData> productItemDataList = FindTestDataHelper.getProducts(apiClient,
-                sessionData, count, new FiltersData(FilterPage.MY_SHOP_FRAME_TYPE));
-        for (ProductItemData productItemData : productItemDataList) {
-            result.add(new ProductOrderData(productItemData));
-        }
-        return result;
-    }
-
-    public List<ServiceOrderData> findServices(int count) {
-        List<ServiceOrderData> result = new ArrayList<>();
-        List<ServiceItemData> serviceItemDataList = FindTestDataHelper.getServices(apiClient,
-                sessionData.getUserShopId(), count);
-        for (ServiceItemData serviceItemData : serviceItemDataList) {
-            result.add(new ServiceOrderData(serviceItemData));
-        }
-        return result;
-    }
+    // Help methods
 
     private double calculateDocSum(SalesDocumentResponseData actualData) {
         double docPriceSum = 0;

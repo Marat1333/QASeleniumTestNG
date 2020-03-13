@@ -36,17 +36,6 @@ public class FindTestDataHelper {
 
     public static List<ProductItemData> getProducts(MagMobileClient client, SessionData sessionData,
                                                     int necessaryCount, FiltersData filtersData) {
-        /*List<ProductItemData> result = new ArrayList<>();
-        ProductItemData pr = new ProductItemData();
-        pr.setLmCode("10008807");
-        pr.setPrice(190.0);
-        result.add(pr);
-        pr = new ProductItemData();
-        pr.setLmCode("12752955");
-        pr.setPrice(2.0);
-        result.add(pr);
-        if (false)
-            return result;*/
         if (filtersData == null)
             filtersData = new FiltersData(FilterPage.MY_SHOP_FRAME_TYPE);
         String[] badLmCodes = {"10008698", "10008751"}; // Из-за отсутствия синхронизации бэков на тесте, мы можем получить некорректные данные
