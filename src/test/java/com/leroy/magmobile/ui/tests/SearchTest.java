@@ -615,7 +615,8 @@ public class SearchTest extends AppBaseSteps {
         nomenclatureSearchPage.clickShowAllProductsBtn();
         searchProductPage.shouldSelectedNomenclatureIs(subDept, false);
         ProductItemListResponse subdepartmentNomenclatureResponce = apiThreads.get(2).getData();
-        searchProductPage.shouldCatalogResponseEqualsContent(subdepartmentNomenclatureResponce, SearchProductPage.CardType.COMMON, entityCount);
+        searchProductPage.shouldCatalogResponseEqualsContent(subdepartmentNomenclatureResponce,
+                SearchProductPage.CardType.COMMON, entityCount);
 
         // Step 6
         log.step("повтороить шаг 2-3 для классов");

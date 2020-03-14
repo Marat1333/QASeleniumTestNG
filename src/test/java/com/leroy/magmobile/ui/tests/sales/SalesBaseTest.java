@@ -27,16 +27,20 @@ import com.leroy.umbrella_extension.magmobile.requests.GetCatalogSearch;
 import org.apache.commons.lang.RandomStringUtils;
 import org.json.simple.JSONObject;
 import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.base.BaseModule;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import java.text.NumberFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
 
 @Guice(modules = {BaseModule.class})
 public class SalesBaseTest extends AppBaseSteps {
@@ -104,9 +108,7 @@ public class SalesBaseTest extends AppBaseSteps {
     // Получить ЛМ код для продукта с опцией TopEM
     protected String getAnyLmCodeProductWithTopEM() {
         GetCatalogSearch params = new GetCatalogSearch()
-                //.setShopId("5")
-                //.setByLmCode("1")
-                //.setDepartmentId("1")
+                .setShopId(context.getUserShopId())
                 .setPageSize(5)
                 .setTopEM(true);
         Response<ProductItemListResponse> resp = mashupClient.searchProductsBy(params);
@@ -116,7 +118,7 @@ public class SalesBaseTest extends AppBaseSteps {
             if (item.getAvsDate() == null)
                 return item.getLmCode();
         }
-        assertThat("Request - Search for product with TopEm", items,hasSize(greaterThan(0)));
+        assertThat("Request - Search for product with TopEm", items, hasSize(greaterThan(0)));
         return items.get(0).getLmCode();
     }
 
@@ -194,6 +196,11 @@ public class SalesBaseTest extends AppBaseSteps {
     // Product Types
     protected enum ProductTypes {
         NORMAL, AVS, TOP_EM;
+    }
+
+    @BeforeMethod
+    public void setUp() {
+        context.setUserShopId("78");
     }
 
     // TESTS
@@ -275,8 +282,7 @@ public class SalesBaseTest extends AppBaseSteps {
         // Step #12
         log.step("Нажмите кнопку Перейти в список документов");
         SalesDocumentData expectedSalesDocument = new SalesDocumentData();
-        expectedSalesDocument.setPrice(NumberFormat.getInstance(Locale.FRANCE)
-                .parse(expectedTotalPrice).toString());
+        expectedSalesDocument.setPrice(expectedTotalPrice);
         expectedSalesDocument.setPin(testPinCode);
         expectedSalesDocument.setDocumentState(SalesDocumentsConst.CREATED_STATE);
         expectedSalesDocument.setTitle("Из торгового зала");
