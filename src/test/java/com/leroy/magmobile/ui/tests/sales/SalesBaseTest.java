@@ -19,12 +19,8 @@ import com.leroy.magmobile.ui.pages.sales.basket.BasketStep3Page;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.umbrella_extension.authorization.AuthClient;
 import com.leroy.umbrella_extension.magmobile.MagMobileClient;
-import com.leroy.umbrella_extension.magmobile.data.CartData;
-import com.leroy.umbrella_extension.magmobile.data.ProductItemListResponse;
-import com.leroy.umbrella_extension.magmobile.data.ProductItemResponse;
 import com.leroy.umbrella_extension.magmobile.data.catalog.ProductItemData;
-import com.leroy.umbrella_extension.magmobile.data.estimate.EstimateData;
-import com.leroy.umbrella_extension.magmobile.data.estimate.ProductOrderData;
+import com.leroy.umbrella_extension.magmobile.data.catalog.ProductItemDataList;
 import com.leroy.umbrella_extension.magmobile.data.sales.SalesDocumentListResponse;
 import com.leroy.umbrella_extension.magmobile.data.sales.SalesDocumentResponseData;
 import com.leroy.umbrella_extension.magmobile.data.sales.cart_estimate.CartData;
@@ -34,6 +30,7 @@ import com.leroy.umbrella_extension.magmobile.requests.catalog_search.GetCatalog
 import org.apache.commons.lang.RandomStringUtils;
 import org.json.simple.JSONObject;
 import org.testng.Assert;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
@@ -88,7 +85,7 @@ public class SalesBaseTest extends AppBaseSteps {
                 .setDepartmentId("1")
                 .setTopEM(false)
                 .setHasAvailableStock(hasAvailableStock);
-        Response<ProductItemData> resp = mashupClient.searchProductsBy(params);
+        Response<ProductItemDataList> resp = mashupClient.searchProductsBy(params);
         assertThat(resp.toString(), resp.isSuccessful());
         List<ProductItemData> items = resp.asJson().getItems();
         List<String> resultList = new ArrayList<>();
@@ -116,7 +113,7 @@ public class SalesBaseTest extends AppBaseSteps {
                 .setByLmCode("16")
                 .setDepartmentId("1")
                 .setTopEM(false);
-        Response<ProductItemData> resp = mashupClient.searchProductsBy(params);
+        Response<ProductItemDataList> resp = mashupClient.searchProductsBy(params);
         assertThat(resp.toString(), resp.isSuccessful());
         List<ProductItemData> items = mashupClient.searchProductsBy(params).asJson().getItems();
         for (ProductItemData item : items) {
@@ -132,10 +129,10 @@ public class SalesBaseTest extends AppBaseSteps {
                 .setShopId(context.getUserShopId())
                 .setPageSize(5)
                 .setTopEM(true);
-        Response<ProductItemListResponse> resp = mashupClient.searchProductsBy(params);
+        Response<ProductItemDataList> resp = mashupClient.searchProductsBy(params);
         assertThat(resp.toString(), resp.isSuccessful());
-        List<ProductItemResponse> items = mashupClient.searchProductsBy(params).asJson().getItems();
-        for (ProductItemResponse item : items) {
+        List<ProductItemData> items = mashupClient.searchProductsBy(params).asJson().getItems();
+        for (ProductItemData item : items) {
             if (item.getAvsDate() == null)
                 return item.getLmCode();
         }
