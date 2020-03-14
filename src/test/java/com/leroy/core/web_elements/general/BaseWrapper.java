@@ -29,7 +29,12 @@ public abstract class BaseWrapper extends BaseContainer {
      * @return String
      */
     public String getXpath() {
-        return XpathUtil.getXpath(locator.getBy());
+        if (locator.getBy() != null)
+            return XpathUtil.getXpath(locator.getBy());
+        else if (locator.getAccessibilityId() != null)
+            return XpathUtil.getXpathByAccessibilityId(locator.getAccessibilityId());
+        else
+            return null;
     }
 
     /**

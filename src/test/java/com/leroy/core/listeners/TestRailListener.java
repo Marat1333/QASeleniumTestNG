@@ -4,7 +4,6 @@ import com.leroy.core.configuration.Log;
 import com.leroy.core.testrail.TestRailClient;
 import com.leroy.core.testrail.models.ResultModel;
 import com.leroy.core.testrail.models.StepResultModel;
-import org.apache.commons.lang3.StringUtils;
 import org.testng.IInvokedMethod;
 import org.testng.ISuite;
 import org.testng.ITestResult;
@@ -67,7 +66,7 @@ public class TestRailListener extends Listener {
             if (testResult.getStatus() == ITestResult.FAILURE && testResult.getThrowable() != null) {
                 stepResultModel.setStatus_id(ResultModel.ST_FAILED);
                 String msg = testResult.getThrowable().getMessage();
-                if (msg.contains("Expected")) {
+                /*if (msg.contains("Expected")) {
                     String reason = StringUtils.substringBefore(msg, "Expected")
                             .replaceAll("\n", "").trim();
                     String expectedValue = StringUtils.substringBetween(msg, "Expected:", "but:")
@@ -79,7 +78,7 @@ public class TestRailListener extends Listener {
                     stepResultModel.addExpectedResult(reason + " " + expectedValue);
                 } else {
                     stepResultModel.addActualResult(msg);
-                }
+                }*/
             } else {
                 if (stepResultModel != null)
                     stepResultModel.setStatus_id(ResultModel.ST_PASSED);

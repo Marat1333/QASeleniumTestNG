@@ -14,7 +14,7 @@ public class WorkPage extends CommonMagMobilePage {
     }
 
     private static final String XPATH_WITHDRAWAL_FROM_RM_AREA =
-            "//android.widget.ScrollView//android.view.ViewGroup[android.widget.TextView[@text='Отзыв с RM']]";
+            "//android.widget.ScrollView//android.view.ViewGroup[android.widget.TextView[contains(@text, 'Отзыв')]]";
 
     @AppFindBy(accessibilityId = "ScreenTitle")
     private Element titleObj;

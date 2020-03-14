@@ -19,7 +19,12 @@ import com.leroy.magmobile.ui.pages.sales.basket.BasketStep3Page;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.umbrella_extension.authorization.AuthClient;
 import com.leroy.umbrella_extension.magmobile.MagMobileClient;
+import com.leroy.umbrella_extension.magmobile.data.CartData;
+import com.leroy.umbrella_extension.magmobile.data.ProductItemListResponse;
+import com.leroy.umbrella_extension.magmobile.data.ProductItemResponse;
 import com.leroy.umbrella_extension.magmobile.data.catalog.ProductItemData;
+import com.leroy.umbrella_extension.magmobile.data.estimate.EstimateData;
+import com.leroy.umbrella_extension.magmobile.data.estimate.ProductOrderData;
 import com.leroy.umbrella_extension.magmobile.data.sales.SalesDocumentListResponse;
 import com.leroy.umbrella_extension.magmobile.data.sales.SalesDocumentResponseData;
 import com.leroy.umbrella_extension.magmobile.data.sales.cart_estimate.CartData;
@@ -29,14 +34,20 @@ import com.leroy.umbrella_extension.magmobile.requests.catalog_search.GetCatalog
 import org.apache.commons.lang.RandomStringUtils;
 import org.json.simple.JSONObject;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.base.BaseModule;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import java.text.NumberFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
 
 @Guice(modules = {BaseModule.class})
 public class SalesBaseTest extends AppBaseSteps {
@@ -63,7 +74,7 @@ public class SalesBaseTest extends AppBaseSteps {
 
     // Получить ЛМ код для услуги
     protected String getAnyLmCodeOfService() {
-        return "49055102";
+        return EnvConstants.SERVICE_1_LM_CODE;
     }
 
     // Получить ЛМ код для обычного продукта без специфичных опций
@@ -74,9 +85,12 @@ public class SalesBaseTest extends AppBaseSteps {
             shopId = "5";
         GetCatalogSearch params = new GetCatalogSearch()
                 .setShopId(shopId)
+                .setDepartmentId("1")
                 .setTopEM(false)
                 .setHasAvailableStock(hasAvailableStock);
-        List<ProductItemData> items = mashupClient.searchProductsBy(params).asJson().getItems();
+        Response<ProductItemData> resp = mashupClient.searchProductsBy(params);
+        assertThat(resp.toString(), resp.isSuccessful());
+        List<ProductItemData> items = resp.asJson().getItems();
         List<String> resultList = new ArrayList<>();
         int i = 0;
         for (ProductItemData item : items) {
@@ -98,33 +112,40 @@ public class SalesBaseTest extends AppBaseSteps {
     // Получить ЛМ код для продукта с AVS
     protected String getAnyLmCodeProductWithAvs() {
         GetCatalogSearch params = new GetCatalogSearch()
+                .setShopId("5")
+                .setByLmCode("16")
+                .setDepartmentId("1")
                 .setTopEM(false);
+        Response<ProductItemData> resp = mashupClient.searchProductsBy(params);
+        assertThat(resp.toString(), resp.isSuccessful());
         List<ProductItemData> items = mashupClient.searchProductsBy(params).asJson().getItems();
         for (ProductItemData item : items) {
             if (item.getAvsDate() != null)
                 return item.getLmCode();
         }
-        return "82014172";
+        return EnvConstants.WITH_AVS_PRODUCT_1_LM_CODE;
     }
 
     // Получить ЛМ код для продукта с опцией TopEM
     protected String getAnyLmCodeProductWithTopEM() {
         GetCatalogSearch params = new GetCatalogSearch()
-                .setTopEM(true)
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID);
-        List<ProductItemData> items = mashupClient.searchProductsBy(params).asJson().getItems();
-        for (ProductItemData item : items) {
+                .setShopId(context.getUserShopId())
+                .setPageSize(5)
+                .setTopEM(true);
+        Response<ProductItemListResponse> resp = mashupClient.searchProductsBy(params);
+        assertThat(resp.toString(), resp.isSuccessful());
+        List<ProductItemResponse> items = mashupClient.searchProductsBy(params).asJson().getItems();
+        for (ProductItemResponse item : items) {
             if (item.getAvsDate() == null)
                 return item.getLmCode();
         }
-        if (items.size() > 0)
-            return items.get(0).getLmCode();
-        return "82138074";
+        assertThat("Request - Search for product with TopEm", items, hasSize(greaterThan(0)));
+        return items.get(0).getLmCode();
     }
 
     // Получить ЛМ код для продукта, доступного для отзыва с RM
     protected String getAnyLmCodeProductIsAvailableForWithdrawalFromRM() {
-        return "82001470";
+        return "18845896";
     }
 
     protected String getValidPinCode() {
@@ -159,8 +180,7 @@ public class SalesBaseTest extends AppBaseSteps {
         productOrderData.setQuantity(1.0);
         Response<EstimateData> estimateDataResponse = mashupClient
                 .createEstimate(token, "35", productOrderData);
-        Assert.assertTrue(estimateDataResponse.isSuccessful(),
-                "Не смогли создать Смету на этапе создания pre-condition данных");
+        assertThat(estimateDataResponse.toString(), estimateDataResponse.isSuccessful());
         return estimateDataResponse.asJson().getEstimateId();
     }
 
@@ -195,6 +215,11 @@ public class SalesBaseTest extends AppBaseSteps {
     // Product Types
     protected enum ProductTypes {
         NORMAL, AVS, TOP_EM;
+    }
+
+    @BeforeMethod
+    public void setUp() {
+        context.setUserShopId("78");
     }
 
     // TESTS
@@ -276,8 +301,7 @@ public class SalesBaseTest extends AppBaseSteps {
         // Step #12
         log.step("Нажмите кнопку Перейти в список документов");
         SalesDocumentData expectedSalesDocument = new SalesDocumentData();
-        expectedSalesDocument.setPrice(NumberFormat.getInstance(Locale.FRANCE)
-                .parse(expectedTotalPrice).toString());
+        expectedSalesDocument.setPrice(expectedTotalPrice);
         expectedSalesDocument.setPin(testPinCode);
         expectedSalesDocument.setDocumentState(SalesDocumentsConst.States.CREATED.getUiVal());
         expectedSalesDocument.setTitle("Из торгового зала");

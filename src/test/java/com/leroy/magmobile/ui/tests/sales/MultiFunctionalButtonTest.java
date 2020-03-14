@@ -14,6 +14,7 @@ import com.leroy.magmobile.ui.pages.work.OrderPage;
 import com.leroy.magmobile.ui.pages.work.StockProductCardPage;
 import com.leroy.magmobile.ui.pages.work.StockProductsPage;
 import com.leroy.magmobile.ui.pages.work.modal.QuantityProductsForWithdrawalModalPage;
+import com.leroy.utils.Converter;
 import org.apache.commons.lang.RandomStringUtils;
 import org.testng.annotations.Test;
 
@@ -136,9 +137,8 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
     public void testCreateOrderForWithdrawalFromRM() throws Exception {
         // Pre-condition
         String lmCode = getAnyLmCodeProductIsAvailableForWithdrawalFromRM();
-        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
-        mainProductAndServicesPage = setShopAndDepartmentForUser(mainProductAndServicesPage, "5", "15")
-                .goToSales();
+        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(
+                LoginType.USER_WITH_OLD_INTERFACE, MainProductAndServicesPage.class);
 
         // Steps 1, 2, 3
         ActionWithProductModalPage actionWithProductModalPage =
@@ -209,7 +209,7 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
         log.step("Нажмите Корзина");
         AddProduct35Page addProduct35Page = modalPage.clickBasketMenuItem();
         addProduct35Page.verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_BASKET);
-        String expectedTotalPrice = addProduct35Page.getPrice();
+        String expectedTotalPrice = Converter.strToStrWithoutDigits(addProduct35Page.getPrice());
 
         // Step #6
         log.step("Нажмите Добавить в корзину");

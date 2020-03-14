@@ -10,12 +10,13 @@ import io.qameta.allure.Attachment;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriverException;
 
 import java.io.File;
+import java.io.IOException;
 
-public class BasePage extends BaseContainer {
+public abstract class BasePage extends BaseContainer {
 
+    protected TestContext context;
     protected StepLog log;
     protected CustomSoftAssert softAssert;
     protected CustomAssert anAssert;
@@ -27,8 +28,13 @@ public class BasePage extends BaseContainer {
         this.log = context.getLog();
         this.softAssert = context.getSoftAssert();
         this.anAssert = context.getAnAssert();
+        initContext(context);
         initElements();
         waitForPageIsLoaded();
+    }
+
+    public void initContext(TestContext context) {
+        this.context = context;
     }
 
     public void waitForPageIsLoaded() {
@@ -39,15 +45,15 @@ public class BasePage extends BaseContainer {
         return ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
     }
 
-    public String takeScreenShot(String fileName) {
+    public String takeScreenShot(String fileName) throws IOException {
         try {
             Log.info("Screen shot FileName: " + fileName);
             File destFile = new File(screenshotPath + File.separator + fileName);
             FileUtils.writeByteArrayToFile(destFile, takeScreenShotAsByteArray());
             return destFile.getAbsolutePath();
-        } catch (Exception var4) {
-            var4.printStackTrace();
-            return null;
+        } catch (Exception err) {
+            Log.error(err.getMessage());
+            throw err;
         }
     }
 

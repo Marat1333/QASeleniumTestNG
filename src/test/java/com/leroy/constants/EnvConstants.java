@@ -29,6 +29,16 @@ public class EnvConstants {
     }
     public static final String URL_MAG_PORTAL = getUrlMagPortal();
 
+    // Test data
+    // Products
+    public static final String PRODUCT_1_LM_CODE = getProperty("data.simple_product1.lmCode");
+    public static final String PRODUCT_2_LM_CODE = getProperty("data.simple_product2.lmCode");
+    public static final String TOP_EM_PRODUCT_1_LM_CODE = getProperty("data.topEm_product1.lmCode");
+    public static final String WITH_AVS_PRODUCT_1_LM_CODE = getProperty("data.withAvs_product1.lmCode");
+
+    // Services
+    public static final String SERVICE_1_LM_CODE = getProperty("data.service1.lmCode");
+
     /**
      * Get the value of a property key
      *

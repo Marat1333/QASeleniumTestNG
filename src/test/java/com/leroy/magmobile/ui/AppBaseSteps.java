@@ -98,8 +98,8 @@ public class AppBaseSteps extends MagMobileBaseTest {
         if (loginType != null) {
             switch (loginType) {
                 case USER_WITH_OLD_INTERFACE:
-                    context.setUserShopId("5");
-                    userProfilePage = setShopAndDepartmentForUser(mainProductAndServicesPage, "5", "01");
+                    context.setUserShopId("78");
+                    userProfilePage = setShopAndDepartmentForUser(mainProductAndServicesPage, "78", "01");
                     break;
                 case USER_WITH_NEW_INTERFACE_LIKE_35_SHOP:
                     context.setUserShopId("35");

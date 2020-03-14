@@ -29,7 +29,7 @@ public class ImageUtil {
     }
 
     public enum CompareResult {
-        Matched, SizeMismatch, PixelMismatch
+        Matched, SizeMismatch, PixelMismatch, ElementNotFound;
     }
 
     /**

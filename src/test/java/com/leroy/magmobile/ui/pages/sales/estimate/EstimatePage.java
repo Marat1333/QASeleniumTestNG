@@ -68,7 +68,7 @@ public class EstimatePage extends CommonMagMobilePage {
     @AppFindBy(text = "Смета", metaName = "Заголовок экрана")
     Element headerLbl;
 
-    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='EstimateDocumentScreenId']//android.widget.TextView[contains(@text, 'Документ №')]",
+    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='EstimateDocumentScreenId']//android.widget.TextView[contains(@text, '№')]",
             metaName = "Номер документа")
     Element documentNumber;
 

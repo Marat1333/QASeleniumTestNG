@@ -30,7 +30,7 @@ public class StepResultModel extends BaseTestRailModel {
     }
 
     public void setContent(String content) {
-        this.content = content;
+        this.content = safelyTextForJsonFormat(content);
     }
 
     public String getExpected() {
@@ -40,9 +40,9 @@ public class StepResultModel extends BaseTestRailModel {
     public void addExpectedResult(String expected) {
         expected = expected.replaceAll("\\n", "");
         if (this.expected == null || expected.isEmpty())
-            this.expected = expected.replaceAll("\"", "\\\\\"");
+            this.expected = safelyTextForJsonFormat(expected);
         else
-            this.expected += "\\n" + expected.replaceAll("\"", "\\\\\"");
+            this.expected += "\\n" + safelyTextForJsonFormat(expected);
     }
 
     public String getActual() {
@@ -52,9 +52,9 @@ public class StepResultModel extends BaseTestRailModel {
     public void addActualResult(String actual) {
         actual = actual.replaceAll("\\n", "");
         if (this.actual == null || actual.isEmpty())
-            this.actual = actual.replaceAll("\"", "\\\\\"");
+            this.actual = safelyTextForJsonFormat(actual);
         else
-            this.actual += "\\n" + actual.replaceAll("\"", "\\\\\"");
+            this.actual += "\\n" + safelyTextForJsonFormat(actual);
     }
 
     public int getStatus_id() {
@@ -63,6 +63,10 @@ public class StepResultModel extends BaseTestRailModel {
 
     public void setStatus_id(int status_id) {
         this.status_id = status_id;
+    }
+
+    private String safelyTextForJsonFormat(String text) {
+        return text.replaceAll("\"", "\\\\\"");
     }
 
 }
