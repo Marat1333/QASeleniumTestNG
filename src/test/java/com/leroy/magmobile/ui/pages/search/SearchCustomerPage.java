@@ -79,6 +79,7 @@ public class SearchCustomerPage extends CommonMagMobilePage {
         searchFld.clearFillAndSubmit(text);
         waitUntilProgressBarIsVisible();
         waitUntilProgressBarIsInvisible();
+        shouldNotAnyErrorVisible();
         return this;
     }
 
