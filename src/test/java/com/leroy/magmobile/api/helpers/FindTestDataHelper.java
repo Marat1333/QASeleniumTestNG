@@ -1,15 +1,15 @@
 package com.leroy.magmobile.api.helpers;
 
 import com.leroy.core.SessionData;
-import com.leroy.magmobile.models.search.FiltersData;
+import com.leroy.magmobile.ui.models.search.FiltersData;
 import com.leroy.magmobile.ui.pages.search.FilterPage;
-import com.leroy.umbrella_extension.magmobile.MagMobileClient;
-import com.leroy.umbrella_extension.magmobile.data.catalog.ProductItemData;
-import com.leroy.umbrella_extension.magmobile.data.catalog.ProductItemDataList;
-import com.leroy.umbrella_extension.magmobile.data.catalog.ServiceItemData;
-import com.leroy.umbrella_extension.magmobile.data.catalog.ServiceItemDataList;
-import com.leroy.umbrella_extension.magmobile.requests.catalog_search.GetCatalogSearch;
-import com.leroy.umbrella_extension.magmobile.requests.catalog_search.GetCatalogServicesSearch;
+import com.leroy.magmobile.api.MagMobileClient;
+import com.leroy.magmobile.api.data.catalog.ProductItemData;
+import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
+import com.leroy.magmobile.api.data.catalog.ServiceItemData;
+import com.leroy.magmobile.api.data.catalog.ServiceItemDataList;
+import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
+import com.leroy.magmobile.api.requests.catalog_search.GetCatalogServicesSearch;
 import org.hamcrest.MatcherAssert;
 import ru.leroymerlin.qa.core.clients.base.Response;
 

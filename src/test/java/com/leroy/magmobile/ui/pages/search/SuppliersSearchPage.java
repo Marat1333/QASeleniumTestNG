@@ -12,8 +12,8 @@ import com.leroy.magmobile.ui.elements.MagMobCheckBox;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.search.widgets.SupplierCardWidget;
 import com.leroy.magmobile.ui.pages.widgets.TextViewWidget;
-import com.leroy.magmobile.models.SupplierCardData;
-import com.leroy.magmobile.models.TextViewData;
+import com.leroy.magmobile.ui.models.SupplierCardData;
+import com.leroy.magmobile.ui.models.TextViewData;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 

@@ -4,7 +4,7 @@ import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.models.TextViewData;
+import com.leroy.magmobile.ui.models.TextViewData;
 import org.openqa.selenium.By;
 
 public class DepartmentListPage extends CommonMagMobilePage {

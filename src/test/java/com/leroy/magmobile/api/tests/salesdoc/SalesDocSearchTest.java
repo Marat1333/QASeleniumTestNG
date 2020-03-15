@@ -4,10 +4,10 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.magmobile.api.tests.common.BaseProjectTest;
-import com.leroy.umbrella_extension.magmobile.MagMobileClient;
-import com.leroy.umbrella_extension.magmobile.data.sales.SalesDocumentListResponse;
-import com.leroy.umbrella_extension.magmobile.data.sales.SalesDocumentResponseData;
-import com.leroy.umbrella_extension.magmobile.requests.salesdoc.search.GetSalesDocSearchV3;
+import com.leroy.magmobile.api.MagMobileClient;
+import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
+import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
+import com.leroy.magmobile.api.requests.salesdoc.search.GetSalesDocSearchV3;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 

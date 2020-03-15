@@ -7,8 +7,8 @@ import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.core.SessionData;
 import com.leroy.magmobile.api.builders.SalesDocTransferBuilder;
 import com.leroy.magmobile.api.tests.common.BaseProjectTest;
-import com.leroy.umbrella_extension.magmobile.data.sales.transfer.TransferProductOrderData;
-import com.leroy.umbrella_extension.magmobile.data.sales.transfer.TransferSalesDocData;
+import com.leroy.magmobile.api.data.sales.transfer.TransferProductOrderData;
+import com.leroy.magmobile.api.data.sales.transfer.TransferSalesDocData;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 

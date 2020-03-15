@@ -7,9 +7,9 @@ import com.leroy.core.SessionData;
 import com.leroy.magmobile.api.builders.SalesDocProductBuilder;
 import com.leroy.magmobile.api.tests.common.BaseProjectTest;
 import com.leroy.umbrella_extension.authorization.AuthClient;
-import com.leroy.umbrella_extension.magmobile.data.sales.SalesDocumentResponseData;
-import com.leroy.umbrella_extension.magmobile.data.sales.cart_estimate.ProductOrderData;
-import com.leroy.umbrella_extension.magmobile.data.sales.cart_estimate.ServiceOrderData;
+import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.ProductOrderData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.ServiceOrderData;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 

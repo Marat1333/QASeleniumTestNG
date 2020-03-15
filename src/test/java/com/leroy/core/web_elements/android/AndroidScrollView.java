@@ -10,7 +10,7 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
 import com.leroy.magmobile.ui.pages.widgets.TextViewWidget;
-import com.leroy.magmobile.models.CardWidgetData;
+import com.leroy.magmobile.ui.models.CardWidgetData;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;

@@ -1,11 +1,11 @@
 package com.leroy.magmobile.ui.tests.sales;
 
 import com.leroy.constants.SalesDocumentsConst;
-import com.leroy.magmobile.models.CustomerData;
-import com.leroy.magmobile.models.sales.SalesDocumentData;
-import com.leroy.magmobile.models.sales.SalesOrderCardData;
-import com.leroy.magmobile.models.sales.SalesOrderData;
-import com.leroy.magmobile.models.search.ProductCardData;
+import com.leroy.magmobile.ui.models.CustomerData;
+import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
+import com.leroy.magmobile.ui.models.sales.SalesOrderCardData;
+import com.leroy.magmobile.ui.models.sales.SalesOrderData;
+import com.leroy.magmobile.ui.models.search.ProductCardData;
 import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
 import com.leroy.magmobile.ui.pages.sales.EditProduct35Page;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;

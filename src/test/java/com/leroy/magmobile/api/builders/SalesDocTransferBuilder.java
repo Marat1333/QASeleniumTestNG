@@ -4,12 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.constants.StatusCodes;
 import com.leroy.magmobile.api.helpers.FindTestDataHelper;
-import com.leroy.umbrella_extension.magmobile.data.sales.transfer.TransferProductOrderData;
-import com.leroy.umbrella_extension.magmobile.data.sales.transfer.TransferSalesDocData;
-import com.leroy.umbrella_extension.magmobile.requests.salesdoc.transfer.DeleteSalesDocTransferRequest;
-import com.leroy.umbrella_extension.magmobile.requests.salesdoc.transfer.GetSalesDocTransfer;
-import com.leroy.umbrella_extension.magmobile.requests.salesdoc.transfer.PostSalesDocTransfer;
-import com.leroy.umbrella_extension.magmobile.requests.salesdoc.transfer.PutSalesDocTransferAdd;
+import com.leroy.magmobile.api.data.sales.transfer.TransferProductOrderData;
+import com.leroy.magmobile.api.data.sales.transfer.TransferSalesDocData;
+import com.leroy.magmobile.api.requests.salesdoc.transfer.DeleteSalesDocTransferRequest;
+import com.leroy.magmobile.api.requests.salesdoc.transfer.GetSalesDocTransfer;
+import com.leroy.magmobile.api.requests.salesdoc.transfer.PostSalesDocTransfer;
+import com.leroy.magmobile.api.requests.salesdoc.transfer.PutSalesDocTransferAdd;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.time.ZonedDateTime;

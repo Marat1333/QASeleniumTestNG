@@ -1,13 +1,13 @@
 package com.leroy.magmobile.api.builders;
 
 import com.leroy.constants.SalesDocumentsConst;
-import com.leroy.umbrella_extension.magmobile.data.sales.SalesDocumentResponseData;
-import com.leroy.umbrella_extension.magmobile.data.sales.cart_estimate.ProductOrderData;
-import com.leroy.umbrella_extension.magmobile.data.sales.cart_estimate.ServiceOrderData;
-import com.leroy.umbrella_extension.magmobile.requests.salesdoc.PutSalesDocParametersUpdate;
-import com.leroy.umbrella_extension.magmobile.requests.salesdoc.products.GetSalesDocProducts;
-import com.leroy.umbrella_extension.magmobile.requests.salesdoc.products.PostSalesDocProducts;
-import com.leroy.umbrella_extension.magmobile.requests.salesdoc.products.PutSalesDocProducts;
+import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.ProductOrderData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.ServiceOrderData;
+import com.leroy.magmobile.api.requests.salesdoc.PutSalesDocParametersUpdate;
+import com.leroy.magmobile.api.requests.salesdoc.products.GetSalesDocProducts;
+import com.leroy.magmobile.api.requests.salesdoc.products.PostSalesDocProducts;
+import com.leroy.magmobile.api.requests.salesdoc.products.PutSalesDocProducts;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.Arrays;

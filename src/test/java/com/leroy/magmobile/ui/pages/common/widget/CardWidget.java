@@ -2,7 +2,7 @@ package com.leroy.magmobile.ui.pages.common.widget;
 
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.models.CardWidgetData;
+import com.leroy.magmobile.ui.models.CardWidgetData;
 import org.openqa.selenium.WebDriver;
 
 public abstract class CardWidget<T extends CardWidgetData> extends Element {

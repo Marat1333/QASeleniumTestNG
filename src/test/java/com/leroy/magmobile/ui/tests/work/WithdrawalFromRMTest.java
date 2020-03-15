@@ -1,12 +1,11 @@
 package com.leroy.magmobile.ui.tests.work;
 
 import com.leroy.magmobile.ui.AppBaseSteps;
-import com.leroy.magmobile.ui.pages.more.UserProfilePage;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
 import com.leroy.magmobile.ui.pages.work.*;
 import com.leroy.magmobile.ui.pages.work.modal.QuantityProductsForWithdrawalModalPage;
-import com.leroy.magmobile.models.search.ProductCardData;
-import com.leroy.magmobile.models.work.WithdrawalOrderCardData;
+import com.leroy.magmobile.ui.models.search.ProductCardData;
+import com.leroy.magmobile.ui.models.work.WithdrawalOrderCardData;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
 

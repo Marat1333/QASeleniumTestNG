@@ -4,8 +4,8 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
-import com.leroy.magmobile.models.sales.SalesOrderCardData;
-import com.leroy.magmobile.models.search.ProductCardData;
+import com.leroy.magmobile.ui.models.sales.SalesOrderCardData;
+import com.leroy.magmobile.ui.models.search.ProductCardData;
 import com.leroy.utils.Converter;
 import org.openqa.selenium.WebDriver;
 

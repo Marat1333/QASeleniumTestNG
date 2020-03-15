@@ -1,9 +1,9 @@
 package com.leroy.magmobile.ui.tests.sales;
 
 import com.leroy.constants.SalesDocumentsConst;
-import com.leroy.magmobile.models.sales.OrderDetailsData;
-import com.leroy.magmobile.models.sales.SalesDocumentData;
-import com.leroy.magmobile.models.search.ProductCardData;
+import com.leroy.magmobile.ui.models.sales.OrderDetailsData;
+import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
+import com.leroy.magmobile.ui.models.search.ProductCardData;
 import com.leroy.magmobile.ui.pages.sales.*;
 import com.leroy.magmobile.ui.pages.sales.basket.*;
 import com.leroy.magmobile.ui.pages.sales.product_and_service.AddServicePage;

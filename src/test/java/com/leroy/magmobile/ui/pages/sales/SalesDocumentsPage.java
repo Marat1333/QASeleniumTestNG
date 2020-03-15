@@ -9,7 +9,7 @@ import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.sales.widget.SalesDocumentWidget;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
-import com.leroy.magmobile.models.sales.SalesDocumentData;
+import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
 import io.qameta.allure.Step;
 
 import java.util.List;

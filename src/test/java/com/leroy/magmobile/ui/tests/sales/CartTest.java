@@ -1,7 +1,7 @@
 package com.leroy.magmobile.ui.tests.sales;
 
 import com.leroy.constants.SalesDocumentsConst;
-import com.leroy.magmobile.models.sales.SalesOrderCardData;
+import com.leroy.magmobile.ui.models.sales.SalesOrderCardData;
 import com.leroy.magmobile.ui.pages.common.modal.ConfirmRemovingProductModal;
 import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;

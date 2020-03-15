@@ -2,11 +2,11 @@ package com.leroy.magmobile.api.builders;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.SalesDocumentsConst;
-import com.leroy.umbrella_extension.magmobile.data.sales.cart_estimate.CartData;
-import com.leroy.umbrella_extension.magmobile.data.sales.cart_estimate.ProductOrderData;
-import com.leroy.umbrella_extension.magmobile.requests.salesdoc.cart.CartChangeStatusPut;
-import com.leroy.umbrella_extension.magmobile.requests.salesdoc.cart.CartGet;
-import com.leroy.umbrella_extension.magmobile.requests.salesdoc.cart.CartPOST;
+import com.leroy.magmobile.api.data.sales.cart_estimate.CartData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.ProductOrderData;
+import com.leroy.magmobile.api.requests.salesdoc.cart.CartChangeStatusPut;
+import com.leroy.magmobile.api.requests.salesdoc.cart.CartGet;
+import com.leroy.magmobile.api.requests.salesdoc.cart.CartPOST;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.*;
