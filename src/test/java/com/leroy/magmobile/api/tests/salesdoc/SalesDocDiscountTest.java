@@ -31,7 +31,7 @@ public class SalesDocDiscountTest extends BaseProjectTest {
 
     @BeforeClass
     private void setUpDefaultSessionData() {
-        SessionData sessionData = new SessionData();
+        sessionData = new SessionData();
         sessionData.setUserShopId("35");
         sessionData.setUserDepartmentId("1");
         productLmCode = FindTestDataHelper.getProducts(magMobileClient.get(), sessionData, 1,

@@ -130,7 +130,11 @@ public class CartBuilder extends BaseApiBuilder {
         for (int i = 0; i < actualData.getProducts().size(); i++) {
             ProductOrderData actualProduct = actualData.getProducts().get(i);
             ProductOrderData expectedProduct = expectedData.getProducts().get(i);
-            assertThat("Product #"+(i+1), actualProduct, equalTo(expectedProduct));
+            shortVerifyProducts(i, actualProduct, expectedProduct);
+            assertThat(String.format("Product #%s - priceCategory", i + 1),
+                    actualProduct.getBarCode(), not(nullValue()));
+            assertThat(String.format("Product #%s - lineId", i + 1),
+                    actualProduct.getLineId(), is(expectedProduct.getLineId()));
         }
         return this;
     }

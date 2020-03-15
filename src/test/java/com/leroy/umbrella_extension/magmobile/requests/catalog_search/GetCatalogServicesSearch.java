@@ -22,7 +22,7 @@ public class GetCatalogServicesSearch extends RequestBuilder<GetCatalogServicesS
         return queryParam("shopId", val);
     }
 
-    public GetCatalogServicesSearch setDepartmentId(String val) {
+    public GetCatalogServicesSearch setDepartmentId(Object val) {
         return queryParam("departmentId", val);
     }
 
