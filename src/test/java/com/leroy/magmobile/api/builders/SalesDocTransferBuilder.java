@@ -16,8 +16,8 @@ import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 
-import static com.leroy.magmobile.api.matchers.IsApproximatelyEqual.approximatelyEqual;
-import static com.leroy.magmobile.api.matchers.ProjectMatchers.valid;
+import static com.leroy.core.matchers.IsApproximatelyEqual.approximatelyEqual;
+import static com.leroy.core.matchers.Matchers.valid;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 

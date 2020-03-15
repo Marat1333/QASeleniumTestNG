@@ -1,11 +1,6 @@
 package com.leroy.magmobile.api.builders;
 
 import com.leroy.constants.SalesDocumentsConst;
-import com.leroy.magmobile.api.helpers.FindTestDataHelper;
-import com.leroy.magmobile.models.search.FiltersData;
-import com.leroy.magmobile.ui.pages.search.FilterPage;
-import com.leroy.umbrella_extension.magmobile.data.catalog.ProductItemData;
-import com.leroy.umbrella_extension.magmobile.data.catalog.ServiceItemData;
 import com.leroy.umbrella_extension.magmobile.data.sales.SalesDocumentResponseData;
 import com.leroy.umbrella_extension.magmobile.data.sales.cart_estimate.ProductOrderData;
 import com.leroy.umbrella_extension.magmobile.data.sales.cart_estimate.ServiceOrderData;
@@ -15,11 +10,10 @@ import com.leroy.umbrella_extension.magmobile.requests.salesdoc.products.PostSal
 import com.leroy.umbrella_extension.magmobile.requests.salesdoc.products.PutSalesDocProducts;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.leroy.magmobile.api.matchers.ProjectMatchers.valid;
+import static com.leroy.core.matchers.Matchers.valid;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 

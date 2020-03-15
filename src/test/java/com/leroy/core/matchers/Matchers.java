@@ -1,8 +1,8 @@
-package com.leroy.magmobile.api.matchers;
+package com.leroy.core.matchers;
 
 import java.time.temporal.Temporal;
 
-public class ProjectMatchers {
+public class Matchers {
 
     public static IsSuccessful successful() {
         return IsSuccessful.successful();

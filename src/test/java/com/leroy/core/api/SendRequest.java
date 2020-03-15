@@ -1,4 +1,4 @@
-package com.leroy.umbrella_extension;
+package com.leroy.core.api;
 
 import ru.leroymerlin.qa.core.clients.base.Response;
 

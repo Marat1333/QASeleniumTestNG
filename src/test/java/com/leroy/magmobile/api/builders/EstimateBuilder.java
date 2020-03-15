@@ -12,7 +12,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.*;
 
-import static com.leroy.magmobile.api.matchers.ProjectMatchers.isNumber;
+import static com.leroy.core.matchers.Matchers.isNumber;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 

@@ -1,4 +1,4 @@
-package com.leroy.magmobile.api.matchers;
+package com.leroy.core.matchers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

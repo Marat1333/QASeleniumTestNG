@@ -1,8 +1,8 @@
 package com.leroy.magmobile.ui;
 
 import com.leroy.core.BaseTest;
-import com.leroy.core.configuration.CustomAssert;
-import com.leroy.core.configuration.CustomSoftAssert;
+import com.leroy.core.asserts.CustomAssert;
+import com.leroy.core.asserts.CustomSoftAssert;
 import com.leroy.core.testrail.helpers.StepLog;
 import org.openqa.selenium.WebDriver;
 

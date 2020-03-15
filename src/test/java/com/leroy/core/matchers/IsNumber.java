@@ -1,4 +1,4 @@
-package com.leroy.magmobile.api.matchers;
+package com.leroy.core.matchers;
 
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;

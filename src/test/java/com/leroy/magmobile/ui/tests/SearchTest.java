@@ -15,7 +15,7 @@ import com.leroy.magmobile.ui.pages.search.NomenclatureSearchPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.search.SuppliersSearchPage;
 import com.leroy.magmobile.ui.pages.search.modal.SortPage;
-import com.leroy.umbrella_extension.ThreadApiClient;
+import com.leroy.core.api.ThreadApiClient;
 import com.leroy.umbrella_extension.magmobile.MagMobileClient;
 import com.leroy.umbrella_extension.magmobile.data.catalog.ProductItemDataList;
 import com.leroy.umbrella_extension.magmobile.data.catalog.ServiceItemDataList;

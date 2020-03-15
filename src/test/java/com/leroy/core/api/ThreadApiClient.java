@@ -1,5 +1,6 @@
-package com.leroy.umbrella_extension;
+package com.leroy.core.api;
 
+import com.leroy.core.api.SendRequest;
 import com.leroy.core.configuration.Log;
 import ru.leroymerlin.qa.core.clients.base.Response;
 

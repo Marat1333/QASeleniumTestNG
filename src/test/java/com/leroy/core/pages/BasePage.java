@@ -2,8 +2,8 @@ package com.leroy.core.pages;
 
 import com.leroy.core.BaseContainer;
 import com.leroy.core.TestContext;
-import com.leroy.core.configuration.CustomAssert;
-import com.leroy.core.configuration.CustomSoftAssert;
+import com.leroy.core.asserts.CustomAssert;
+import com.leroy.core.asserts.CustomSoftAssert;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.testrail.helpers.StepLog;
 import io.qameta.allure.Attachment;

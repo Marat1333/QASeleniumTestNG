@@ -1,7 +1,7 @@
 package com.leroy.core;
 
-import com.leroy.core.configuration.CustomAssert;
-import com.leroy.core.configuration.CustomSoftAssert;
+import com.leroy.core.asserts.CustomAssert;
+import com.leroy.core.asserts.CustomSoftAssert;
 import com.leroy.core.configuration.EnvironmentConfigurator;
 import com.leroy.core.listeners.TestRailListener;
 import com.leroy.core.testrail.helpers.StepLog;
