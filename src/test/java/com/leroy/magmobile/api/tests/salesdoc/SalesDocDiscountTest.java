@@ -17,7 +17,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.List;
 
-import static com.leroy.magmobile.api.matchers.ProjectMatchers.successful;
+import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
