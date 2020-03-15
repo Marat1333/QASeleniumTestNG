@@ -1,7 +1,7 @@
 package com.leroy.magportal.ui;
 
 import com.leroy.constants.EnvConstants;
-import com.leroy.core.BaseTest;
+import com.leroy.core.BaseUiTest;
 import com.leroy.core.TestContext;
 import com.leroy.core.asserts.CustomAssert;
 import com.leroy.core.asserts.CustomSoftAssert;
@@ -11,7 +11,7 @@ import org.testng.annotations.BeforeMethod;
 
 import java.lang.reflect.Method;
 
-public class MagPortalBaseTest extends BaseTest {
+public class MagPortalBaseTest extends BaseUiTest {
 
     TestContext context;
 

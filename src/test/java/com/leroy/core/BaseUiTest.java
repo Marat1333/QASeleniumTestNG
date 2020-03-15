@@ -15,7 +15,7 @@ import java.lang.reflect.Method;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public abstract class BaseTest extends EnvironmentConfigurator {
+public abstract class BaseUiTest extends EnvironmentConfigurator {
 
     protected StepLog log;
     protected CustomSoftAssert softAssert;

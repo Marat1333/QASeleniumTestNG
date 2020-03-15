@@ -4,13 +4,13 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.leroy.core.SessionData;
 import com.leroy.magmobile.api.helpers.FindTestDataHelper;
-import com.leroy.magmobile.api.tests.common.BaseProjectTest;
+import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import com.leroy.magmobile.ui.models.search.FiltersData;
 import com.leroy.magmobile.ui.pages.search.FilterPage;
 import com.leroy.magmobile.api.MagMobileClient;
 import com.leroy.magmobile.api.data.sales.DiscountData;
 import com.leroy.magmobile.api.data.sales.DiscountReasonData;
-import com.leroy.magmobile.api.requests.salesdoc.GetSalesDocDiscount;
+import com.leroy.magmobile.api.requests.salesdoc.discount.GetSalesDocDiscount;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -22,7 +22,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 
-public class SalesDocDiscountTest extends BaseProjectTest {
+public class SalesDocDiscountTest extends BaseProjectApiTest {
 
     @Inject
     private Provider<MagMobileClient> magMobileClient;

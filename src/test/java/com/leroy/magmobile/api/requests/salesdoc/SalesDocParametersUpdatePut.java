@@ -6,22 +6,22 @@ import ru.leroymerlin.qa.core.clients.base.Method;
 import java.util.HashMap;
 
 @Method(value = "PUT", path = "/salesdoc/parameters")
-public class PutSalesDocParametersUpdate extends SalesDocProductsRequest<PutSalesDocParametersUpdate> {
+public class SalesDocParametersUpdatePut extends SalesDocProductsRequest<SalesDocParametersUpdatePut> {
 
     // Query params
-    public PutSalesDocParametersUpdate setLdap(String val) {
+    public SalesDocParametersUpdatePut setLdap(String val) {
         return queryParam("ldap", val);
     }
 
     // Body params
 
-    public PutSalesDocParametersUpdate setPinCode(String val) {
+    public SalesDocParametersUpdatePut setPinCode(String val) {
         HashMap<String, String> pinCode = new HashMap<>();
         pinCode.put("pinCode", val);
         return formBody(pinCode);
     }
 
-    public PutSalesDocParametersUpdate setStatus(String val) {
+    public SalesDocParametersUpdatePut setStatus(String val) {
         HashMap<String, String> mapStatus = new HashMap<>();
         mapStatus.put("status", val);
         return formBody(mapStatus);

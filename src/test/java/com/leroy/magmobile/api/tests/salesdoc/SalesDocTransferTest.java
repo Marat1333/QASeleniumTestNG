@@ -6,7 +6,7 @@ import com.leroy.constants.EnvConstants;
 import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.core.SessionData;
 import com.leroy.magmobile.api.builders.SalesDocTransferBuilder;
-import com.leroy.magmobile.api.tests.common.BaseProjectTest;
+import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import com.leroy.magmobile.api.data.sales.transfer.TransferProductOrderData;
 import com.leroy.magmobile.api.data.sales.transfer.TransferSalesDocData;
 import org.testng.annotations.BeforeClass;
@@ -15,7 +15,7 @@ import org.testng.annotations.Test;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 
-public class SalesDocTransferTest extends BaseProjectTest {
+public class SalesDocTransferTest extends BaseProjectApiTest {
 
     @Inject
     private Provider<SalesDocTransferBuilder> builderProvider;

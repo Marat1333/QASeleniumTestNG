@@ -7,7 +7,7 @@ import com.leroy.constants.EnvConstants;
 import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.core.SessionData;
 import com.leroy.magmobile.api.builders.EstimateBuilder;
-import com.leroy.magmobile.api.tests.common.BaseProjectTest;
+import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import com.leroy.umbrella_extension.authorization.AuthClient;
 import com.leroy.magmobile.api.data.sales.cart_estimate.EstimateData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.ProductOrderData;
@@ -18,7 +18,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 import java.util.Collections;
 import java.util.Random;
 
-public class EstimateTest extends BaseProjectTest {
+public class EstimateTest extends BaseProjectApiTest {
 
     @Inject
     private Provider<EstimateBuilder> provider;

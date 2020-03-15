@@ -5,7 +5,7 @@ import com.google.inject.Provider;
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.SessionData;
 import com.leroy.magmobile.api.builders.SalesDocProductBuilder;
-import com.leroy.magmobile.api.tests.common.BaseProjectTest;
+import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import com.leroy.umbrella_extension.authorization.AuthClient;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.ProductOrderData;
@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class SalesDocApiTest extends BaseProjectTest {
+public class SalesDocApiTest extends BaseProjectApiTest {
 
     @Inject
     private Provider<SalesDocProductBuilder> provider;

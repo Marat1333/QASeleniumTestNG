@@ -1,4 +1,4 @@
-package com.leroy.magmobile.api.tests.common;
+package com.leroy.magmobile.api.tests;
 
 import com.leroy.core.listeners.TestRailListener;
 import com.leroy.core.testrail.helpers.StepLog;
@@ -13,7 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Guice(modules = {BaseModule.class})
-public class BaseProjectTest {
+public class BaseProjectApiTest {
 
     protected SessionData sessionData;
     protected StepLog log;

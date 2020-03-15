@@ -15,4 +15,8 @@ public class CommonSearchRequestBuilder<J extends CommonSearchRequestBuilder<J>>
     public J setShopId(String val) {
         return queryParam("shopId", val);
     }
+
+    public J setDepartmentId(Object val) {
+        return queryParam("departmentId", val);
+    }
 }

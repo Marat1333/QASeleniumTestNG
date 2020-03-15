@@ -9,9 +9,9 @@ import com.leroy.magmobile.api.data.sales.cart_estimate.ProductOrderData;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogServicesSearch;
 import com.leroy.magmobile.api.requests.order.OrderWorkflowPut;
-import com.leroy.magmobile.api.requests.salesdoc.GetSalesDocDiscount;
+import com.leroy.magmobile.api.requests.salesdoc.discount.GetSalesDocDiscount;
 import com.leroy.magmobile.api.requests.salesdoc.estimate.EstimatePost;
-import com.leroy.magmobile.api.requests.salesdoc.search.GetSalesDocSearchV3;
+import com.leroy.magmobile.api.requests.salesdoc.search.SalesDocSearchV3Get;
 import io.qameta.allure.Step;
 import org.json.simple.JSONObject;
 import ru.leroymerlin.qa.core.clients.base.BaseClient;
@@ -75,13 +75,13 @@ public class MagMobileClient extends BaseClient {
     // ---------  SalesDoc & Orders -------------------- //
 
     // Lego_salesdoc_search
-    public Response<SalesDocumentListResponse> searchForSalesDocumentBy(GetSalesDocSearchV3 params) {
+    public Response<SalesDocumentListResponse> searchForSalesDocumentBy(SalesDocSearchV3Get params) {
         return execute(params
                 .build(gatewayUrl), SalesDocumentListResponse.class);
     }
 
     public Response<SalesDocumentListResponse> getSalesDocumentsByPinCodeOrDocId(String pinCodeOrDocId) {
-        return execute(new GetSalesDocSearchV3()
+        return execute(new SalesDocSearchV3Get()
                 .queryParam("pinCodeOrDocId", pinCodeOrDocId)
                 .build(gatewayUrl), SalesDocumentListResponse.class);
     }

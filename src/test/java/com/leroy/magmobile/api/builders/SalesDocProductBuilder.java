@@ -4,10 +4,10 @@ import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.ProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.ServiceOrderData;
-import com.leroy.magmobile.api.requests.salesdoc.PutSalesDocParametersUpdate;
-import com.leroy.magmobile.api.requests.salesdoc.products.GetSalesDocProducts;
-import com.leroy.magmobile.api.requests.salesdoc.products.PostSalesDocProducts;
-import com.leroy.magmobile.api.requests.salesdoc.products.PutSalesDocProducts;
+import com.leroy.magmobile.api.requests.salesdoc.SalesDocParametersUpdatePut;
+import com.leroy.magmobile.api.requests.salesdoc.products.SalesDocProductsGet;
+import com.leroy.magmobile.api.requests.salesdoc.products.SalesDocProductsPost;
+import com.leroy.magmobile.api.requests.salesdoc.products.SalesDocProductsPut;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.Arrays;
@@ -32,14 +32,14 @@ public class SalesDocProductBuilder extends BaseApiBuilder {
 
     // GET
     public SalesDocProductBuilder sendRequestGet(String fullDocId) {
-        response = apiClient.execute(new GetSalesDocProducts()
+        response = apiClient.execute(new SalesDocProductsGet()
                 .setFullDocId(fullDocId), SalesDocumentResponseData.class);
         return this;
     }
 
     // Create (POST)
     private SalesDocProductBuilder sendRequestCreate(SalesDocumentResponseData data) {
-        PostSalesDocProducts params = new PostSalesDocProducts();
+        SalesDocProductsPost params = new SalesDocProductsPost();
         params.setShopId(sessionData.getUserShopId())
                 .setAccessToken(sessionData.getAccessToken());
         if (sessionData.getRegionId() != null)
@@ -74,7 +74,7 @@ public class SalesDocProductBuilder extends BaseApiBuilder {
     // Update (PUT)
     private SalesDocProductBuilder updateSalesDocProducts(String fullDocId,
                                                           SalesDocumentResponseData putSalesDocData) {
-        PutSalesDocProducts params = new PutSalesDocProducts();
+        SalesDocProductsPut params = new SalesDocProductsPut();
         params.setFullDocId(fullDocId);
         params.setSalesDocumentData(putSalesDocData);
         params.setShopId(sessionData.getUserShopId())
@@ -110,7 +110,7 @@ public class SalesDocProductBuilder extends BaseApiBuilder {
 
     // Lego_Salesdoc_Parameters_Update
     public SalesDocProductBuilder cancelSalesDoc(String fullDocId) {
-        PutSalesDocParametersUpdate params = new PutSalesDocParametersUpdate();
+        SalesDocParametersUpdatePut params = new SalesDocParametersUpdatePut();
         params.setAccessToken(sessionData.getAccessToken())
                 .setLdap(sessionData.getUserLdap())
                 .setShopId(sessionData.getUserShopId())

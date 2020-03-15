@@ -1,12 +1,12 @@
 package com.leroy.magmobile.ui;
 
-import com.leroy.core.BaseTest;
+import com.leroy.core.BaseUiTest;
 import com.leroy.core.asserts.CustomAssert;
 import com.leroy.core.asserts.CustomSoftAssert;
 import com.leroy.core.testrail.helpers.StepLog;
 import org.openqa.selenium.WebDriver;
 
-public class MagMobileBaseTest extends BaseTest {
+public class MagMobileBaseTest extends BaseUiTest {
 
     protected Context context;
 

@@ -3,11 +3,11 @@ package com.leroy.magmobile.api.tests.salesdoc;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.leroy.constants.SalesDocumentsConst;
-import com.leroy.magmobile.api.tests.common.BaseProjectTest;
+import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import com.leroy.magmobile.api.MagMobileClient;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
-import com.leroy.magmobile.api.requests.salesdoc.search.GetSalesDocSearchV3;
+import com.leroy.magmobile.api.requests.salesdoc.search.SalesDocSearchV3Get;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -17,7 +17,7 @@ import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class SalesDocSearchTest extends BaseProjectTest {
+public class SalesDocSearchTest extends BaseProjectApiTest {
 
     @Inject
     private Provider<MagMobileClient> magMobileClient;
@@ -25,8 +25,8 @@ public class SalesDocSearchTest extends BaseProjectTest {
     private final int PAGE_SIZE = 4;
     private final int MAX_COUNT_BACKEND = 4;
 
-    private GetSalesDocSearchV3 buildDefaultSalesDocSearchV3Params() {
-        return new GetSalesDocSearchV3()
+    private SalesDocSearchV3Get buildDefaultSalesDocSearchV3Params() {
+        return new SalesDocSearchV3Get()
                 .setPageSize(PAGE_SIZE)
                 .setStartFrom(1);
     }
@@ -34,7 +34,7 @@ public class SalesDocSearchTest extends BaseProjectTest {
     @Test(description = "C3164797 Search by shopId")
     public void testSearchByShopId() {
         String testShop = "5";
-        GetSalesDocSearchV3 params = buildDefaultSalesDocSearchV3Params()
+        SalesDocSearchV3Get params = buildDefaultSalesDocSearchV3Params()
                 .setShopId(testShop);
         Response<SalesDocumentListResponse> resp = magMobileClient.get().searchForSalesDocumentBy(params);
         assertThat(resp, successful());
@@ -95,7 +95,7 @@ public class SalesDocSearchTest extends BaseProjectTest {
     @Test(description = "C3164799 Search by docId")
     public void testSearchByDocId() {
         String testDocId = "1524";
-        GetSalesDocSearchV3 params = buildDefaultSalesDocSearchV3Params()
+        SalesDocSearchV3Get params = buildDefaultSalesDocSearchV3Params()
                 .setDocId(testDocId);
         Response<SalesDocumentListResponse> resp = magMobileClient.get().searchForSalesDocumentBy(params);
         assertThat(resp, successful());

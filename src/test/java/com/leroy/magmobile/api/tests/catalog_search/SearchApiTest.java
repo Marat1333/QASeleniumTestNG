@@ -2,7 +2,7 @@ package com.leroy.magmobile.api.tests.catalog_search;
 
 import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
-import com.leroy.magmobile.api.tests.common.BaseProjectTest;
+import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import com.leroy.magmobile.api.MagMobileClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
@@ -26,7 +26,7 @@ import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class SearchApiTest extends BaseProjectTest {
+public class SearchApiTest extends BaseProjectApiTest {
 
     @Inject
     private MagMobileClient magMobileClient;

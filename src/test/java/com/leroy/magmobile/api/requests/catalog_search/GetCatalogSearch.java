@@ -2,15 +2,12 @@ package com.leroy.magmobile.api.requests.catalog_search;
 
 import com.leroy.magmobile.api.enums.CatalogSearchFields;
 import com.leroy.magmobile.api.enums.SortingOrder;
+import com.leroy.magmobile.api.requests.CommonSearchRequestBuilder;
 import ru.leroymerlin.qa.core.clients.base.Method;
 import ru.leroymerlin.qa.core.clients.base.RequestBuilder;
 
 @Method(value = "GET", path = "/v3/catalog/search")
-public class GetCatalogSearch extends RequestBuilder<GetCatalogSearch> {
-
-    public GetCatalogSearch setShopId(String val) {
-        return queryParam("shopId", val);
-    }
+public class GetCatalogSearch extends CommonSearchRequestBuilder<GetCatalogSearch> {
 
     public GetCatalogSearch setByLmCode(String val) {
         return queryParam("byLmCode", val);
@@ -28,20 +25,8 @@ public class GetCatalogSearch extends RequestBuilder<GetCatalogSearch> {
         return queryParam("byNameLike", val);
     }
 
-    public GetCatalogSearch setPageSize(Integer val) {
-        return queryParam("pageSize", val);
-    }
-
-    public GetCatalogSearch setStartFrom(Integer val) {
-        return queryParam("startFrom", val);
-    }
-
     public GetCatalogSearch setAvsDate(String val) {
         return queryParam("avsDate", val);
-    }
-
-    public GetCatalogSearch setDepartmentId(String val) {
-        return queryParam("departmentId", val);
     }
 
     public GetCatalogSearch setSubDepartmentId(String val) {

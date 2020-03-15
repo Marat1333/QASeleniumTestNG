@@ -4,13 +4,13 @@ import com.leroy.magmobile.api.requests.CommonSearchRequestBuilder;
 import ru.leroymerlin.qa.core.clients.base.Method;
 
 @Method(value = "GET", path = "/v3/salesdoc/search")
-public class GetSalesDocSearchV3 extends CommonSearchRequestBuilder<GetSalesDocSearchV3> {
+public class SalesDocSearchV3Get extends CommonSearchRequestBuilder<SalesDocSearchV3Get> {
 
-    public GetSalesDocSearchV3 setDocType(String val) {
+    public SalesDocSearchV3Get setDocType(String val) {
         return queryParam("docType", val);
     }
 
-    public GetSalesDocSearchV3 setDocId(String val) {
+    public SalesDocSearchV3Get setDocId(String val) {
         return queryParam("docId", val);
     }
 

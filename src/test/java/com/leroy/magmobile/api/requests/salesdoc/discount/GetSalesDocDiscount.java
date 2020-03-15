@@ -1,4 +1,4 @@
-package com.leroy.magmobile.api.requests.salesdoc;
+package com.leroy.magmobile.api.requests.salesdoc.discount;
 
 import ru.leroymerlin.qa.core.clients.base.Method;
 import ru.leroymerlin.qa.core.clients.base.RequestBuilder;
