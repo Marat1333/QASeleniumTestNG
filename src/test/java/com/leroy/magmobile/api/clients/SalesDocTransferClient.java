@@ -1,9 +1,8 @@
-package com.leroy.magmobile.api.builders;
+package com.leroy.magmobile.api.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.constants.StatusCodes;
-import com.leroy.magmobile.api.helpers.FindTestDataHelper;
 import com.leroy.magmobile.api.data.sales.transfer.TransferProductOrderData;
 import com.leroy.magmobile.api.data.sales.transfer.TransferSalesDocData;
 import com.leroy.magmobile.api.requests.salesdoc.transfer.DeleteSalesDocTransferRequest;
@@ -21,7 +20,7 @@ import static com.leroy.core.matchers.Matchers.valid;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class SalesDocTransferBuilder extends BaseApiBuilder {
+public class SalesDocTransferClient extends MagMobileClient {
 
     private Response<TransferSalesDocData> response;
     private Response<JsonNode> simpleResponse;
@@ -36,16 +35,16 @@ public class SalesDocTransferBuilder extends BaseApiBuilder {
      **/
 
     // Lego SalesDoc Transfer
-    public SalesDocTransferBuilder sendRequestCreate(
+    public SalesDocTransferClient sendRequestCreate(
             TransferSalesDocData transferSalesDocData) {
         PostSalesDocTransfer params = new PostSalesDocTransfer();
         params.setLdap(sessionData.getUserLdap());
         params.jsonBody(transferSalesDocData);
-        response = apiClient.execute(params, TransferSalesDocData.class);
+        response = execute(params, TransferSalesDocData.class);
         return this;
     }
 
-    public SalesDocTransferBuilder sendRequestAddProducts(
+    public SalesDocTransferClient sendRequestAddProducts(
             String taskId, List<TransferProductOrderData> productDataList) {
         PutSalesDocTransferAdd params = new PutSalesDocTransferAdd();
         params.setLdap(sessionData.getUserLdap());
@@ -55,27 +54,27 @@ public class SalesDocTransferBuilder extends BaseApiBuilder {
         TransferSalesDocData transferSalesDocData = new TransferSalesDocData();
         transferSalesDocData.setProducts(productDataList);
         params.jsonBody(transferSalesDocData);
-        response = apiClient.execute(params, TransferSalesDocData.class);
+        response = execute(params, TransferSalesDocData.class);
         return this;
     }
 
-    public SalesDocTransferBuilder sendRequestAddProducts(
+    public SalesDocTransferClient sendRequestAddProducts(
             String taskId, TransferProductOrderData productData) {
         return sendRequestAddProducts(taskId, Collections.singletonList(productData));
     }
 
-    public SalesDocTransferBuilder sendRequestGet(String taskId) {
+    public SalesDocTransferClient sendRequestGet(String taskId) {
         GetSalesDocTransfer request = new GetSalesDocTransfer();
         request.setTaskId(taskId);
         request.setLdap(sessionData.getUserLdap());
-        response = apiClient.execute(request, TransferSalesDocData.class);
+        response = execute(request, TransferSalesDocData.class);
         return this;
     }
 
-    public SalesDocTransferBuilder sendRequestDelete(String taskId) {
+    public SalesDocTransferClient sendRequestDelete(String taskId) {
         DeleteSalesDocTransferRequest request = new DeleteSalesDocTransferRequest();
         request.setTaskId(taskId);
-        simpleResponse = apiClient.execute(request, JsonNode.class);
+        simpleResponse = execute(request, JsonNode.class);
         return this;
     }
 
@@ -83,7 +82,7 @@ public class SalesDocTransferBuilder extends BaseApiBuilder {
      * ---------- Verifications ------------
      */
 
-    public SalesDocTransferBuilder assertThatIsCreated(TransferSalesDocData postSalesDocData) {
+    public SalesDocTransferClient assertThatIsCreated(TransferSalesDocData postSalesDocData) {
         assertThatResponseIsOk(response);
         TransferSalesDocData data = response.asJson();
         assertThat("taskId", data.getTaskId(), not(isEmptyOrNullString()));
@@ -116,7 +115,7 @@ public class SalesDocTransferBuilder extends BaseApiBuilder {
         return this;
     }
 
-    public SalesDocTransferBuilder assertThatIsProductAdded(
+    public SalesDocTransferClient assertThatIsProductAdded(
             TransferSalesDocData putSalesDocData, int expectedNewLineId) {
         assertThatResponseIsOk(response);
         TransferSalesDocData data = response.asJson();
@@ -143,7 +142,7 @@ public class SalesDocTransferBuilder extends BaseApiBuilder {
         return this;
     }
 
-    public SalesDocTransferBuilder assertThatGetResponseMatches(TransferSalesDocData expectedData) {
+    public SalesDocTransferClient assertThatGetResponseMatches(TransferSalesDocData expectedData) {
         assertThatResponseIsOk(response);
         TransferSalesDocData actualData = response.asJson();
         assertThat("Task Id", actualData.getTaskId(), is(expectedData.getTaskId()));
@@ -176,31 +175,22 @@ public class SalesDocTransferBuilder extends BaseApiBuilder {
         return this;
     }
 
-    public SalesDocTransferBuilder assertThatIsDeleted() {
+    public SalesDocTransferClient assertThatIsDeleted() {
         assertThatResponseIsOk(simpleResponse);
         JsonNode respData = simpleResponse.asJson();
         assertThat("success", respData.get("success").booleanValue());
         return this;
     }
 
-    public SalesDocTransferBuilder assertThatDocumentIsNotExist() {
+    public SalesDocTransferClient assertThatDocumentIsNotExist() {
         assertThat("Status code", response.getStatusCode(), is(StatusCodes.ST_404_NOT_FOUND));
         return this;
     }
 
-    public SalesDocTransferBuilder assertThatResponseIsValid() {
+    public SalesDocTransferClient assertThatResponseIsValid() {
         assertThatResponseIsOk(response);
         assertThat(response, valid(TransferSalesDocData.class));
         return this;
-    }
-
-
-    /**
-     * ------------  Help Methods -----------------
-     **/
-
-    public List<String> findProductLmCodes(int count) {
-        return FindTestDataHelper.getProductLmCodes(apiClient, sessionData, count);
     }
 
 }

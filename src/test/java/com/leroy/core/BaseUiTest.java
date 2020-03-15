@@ -6,10 +6,7 @@ import com.leroy.core.configuration.EnvironmentConfigurator;
 import com.leroy.core.listeners.TestRailListener;
 import com.leroy.core.testrail.helpers.StepLog;
 import org.openqa.selenium.WebDriver;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import java.lang.reflect.Method;
 import java.util.regex.Matcher;
@@ -22,8 +19,17 @@ public abstract class BaseUiTest extends EnvironmentConfigurator {
     protected CustomAssert anAssert;
 
     protected abstract void initContext(
-            WebDriver driver, CustomSoftAssert customSoftAssert, CustomAssert customAssert,
-            StepLog stepLog, String tcId);
+            WebDriver driver);
+
+    protected abstract TestContext getContext();
+
+    protected void updateContext(
+            CustomSoftAssert customSoftAssert, CustomAssert customAssert, StepLog stepLog, String tcId) {
+        getContext().setSoftAssert(customSoftAssert);
+        getContext().setAnAssert(customAssert);
+        getContext().setLog(stepLog);
+        getContext().setTcId(tcId);
+    }
 
     protected abstract void cleanContext();
 
@@ -36,13 +42,18 @@ public abstract class BaseUiTest extends EnvironmentConfigurator {
         return result;
     }
 
+    @BeforeClass
+    protected void baseStateBeforeClass() {
+        initContext(driver);
+    }
+
     @BeforeMethod
     protected void baseStateBeforeMethod(Method method) throws Exception {
         log = new StepLog();
         softAssert = new CustomSoftAssert(log);
         anAssert = new CustomAssert(log);
         String tcId = getTestCaseId(method.getAnnotation(Test.class).description());
-        initContext(driver, softAssert, anAssert, log, tcId);
+        updateContext(softAssert, anAssert, log, tcId);
         if (TestRailListener.STEPS_INFO != null)
             TestRailListener.STEPS_INFO.put(tcId, log.getStepResults());
     }

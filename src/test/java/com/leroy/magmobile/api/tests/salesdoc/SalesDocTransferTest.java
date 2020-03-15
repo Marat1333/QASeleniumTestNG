@@ -1,14 +1,14 @@
 package com.leroy.magmobile.api.tests.salesdoc;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.core.SessionData;
-import com.leroy.magmobile.api.builders.SalesDocTransferBuilder;
-import com.leroy.magmobile.api.tests.BaseProjectApiTest;
+import com.leroy.magmobile.api.clients.CatalogSearchClient;
+import com.leroy.magmobile.api.clients.SalesDocTransferClient;
 import com.leroy.magmobile.api.data.sales.transfer.TransferProductOrderData;
 import com.leroy.magmobile.api.data.sales.transfer.TransferSalesDocData;
+import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -18,9 +18,10 @@ import java.util.Collections;
 public class SalesDocTransferTest extends BaseProjectApiTest {
 
     @Inject
-    private Provider<SalesDocTransferBuilder> builderProvider;
+    private SalesDocTransferClient transferClient;
 
-    private SalesDocTransferBuilder builder;
+    @Inject
+    private CatalogSearchClient searchBuilder;
 
     private TransferSalesDocData transferSalesDocData;
 
@@ -30,15 +31,15 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
         sessionData.setUserLdap(EnvConstants.BASIC_USER_LDAP);
         sessionData.setUserShopId("35");
         sessionData.setUserDepartmentId("1");
-        builder = builderProvider.get();
-        builder.setSessionData(sessionData);
+        transferClient.setSessionData(sessionData);
+        searchBuilder.setSessionData(sessionData);
     }
 
     @Test(description = "C3248457 SalesDoc transfer create POST")
     public void testSalesDocTransferCreatePOST() {
         // Prepare Test Data
-        String productLmCode = /*"11297305";*/
-                builder.findProductLmCodes(1).get(0);
+        String productLmCode =
+                searchBuilder.getProductLmCodes(1).get(0);
 
         TransferProductOrderData productOrderData = new TransferProductOrderData();
         productOrderData.setLmCode(productLmCode);
@@ -52,7 +53,7 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
         postSalesDocData.setPointOfGiveAway(SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR.getApiVal());
 
         // Send request
-        transferSalesDocData = builder.sendRequestCreate(postSalesDocData)
+        transferSalesDocData = transferClient.sendRequestCreate(postSalesDocData)
                 .assertThatIsCreated(postSalesDocData)
                 .getResponseData();
 
@@ -73,7 +74,7 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
         expectedDocument.setStatus(transferSalesDocData.getStatus());
         expectedDocument.addProduct(productOrderData);
 
-        builder.sendRequestAddProducts(transferSalesDocData.getTaskId(), productOrderData)
+        transferClient.sendRequestAddProducts(transferSalesDocData.getTaskId(), productOrderData)
                 .assertThatIsProductAdded(expectedDocument, 2);
 
         productOrderData.setLineId("2");
@@ -85,7 +86,7 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
         if (transferSalesDocData == null) {
             throw new IllegalArgumentException("Transfer SalesDoc hasn't been created");
         }
-        builder.sendRequestGet(transferSalesDocData.getTaskId())
+        transferClient.sendRequestGet(transferSalesDocData.getTaskId())
                 .assertThatResponseIsValid();
     }
 
@@ -94,7 +95,7 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
         if (transferSalesDocData == null) {
             throw new IllegalArgumentException("Transfer SalesDoc hasn't been created");
         }
-        builder.sendRequestGet(transferSalesDocData.getTaskId())
+        transferClient.sendRequestGet(transferSalesDocData.getTaskId())
                 .assertThatGetResponseMatches(transferSalesDocData);
     }
 
@@ -104,10 +105,10 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
             throw new IllegalArgumentException("Transfer SalesDoc hasn't been created");
         }
         step("Delete SalesDocTransfer task");
-        builder.sendRequestDelete(transferSalesDocData.getTaskId())
+        transferClient.sendRequestDelete(transferSalesDocData.getTaskId())
                 .assertThatIsDeleted();
         step("GET SalesDocTransfer for confirming that task is removed");
-        builder.sendRequestGet(transferSalesDocData.getTaskId())
+        transferClient.sendRequestGet(transferSalesDocData.getTaskId())
                 .assertThatDocumentIsNotExist();
     }
 

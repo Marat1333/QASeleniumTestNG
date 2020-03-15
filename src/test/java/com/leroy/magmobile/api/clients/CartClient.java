@@ -1,4 +1,4 @@
-package com.leroy.magmobile.api.builders;
+package com.leroy.magmobile.api.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.SalesDocumentsConst;
@@ -9,21 +9,23 @@ import com.leroy.magmobile.api.requests.salesdoc.cart.CartGet;
 import com.leroy.magmobile.api.requests.salesdoc.cart.CartPOST;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.leroy.core.matchers.Matchers.isNumber;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class CartBuilder extends BaseApiBuilder {
-
+public class CartClient extends MagMobileClient {
 
     /**
      * ---------- Executable Requests -------------
      **/
 
     public Response<CartData> sendRequestGet(String cartId) {
-        return apiClient.execute(new CartGet().setCartId(cartId)
+        return execute(new CartGet().setCartId(cartId)
                 .bearerAuthHeader(sessionData.getAccessToken())
                 .setShopId(sessionData.getUserShopId()), CartData.class);
     }
@@ -31,7 +33,7 @@ public class CartBuilder extends BaseApiBuilder {
     public Response<CartData> sendRequestCreate(List<ProductOrderData> productOrderDataList) {
         CartData cartData = new CartData();
         cartData.setProducts(productOrderDataList);
-        return apiClient.execute(new CartPOST()
+        return execute(new CartPOST()
                 .bearerAuthHeader(sessionData.getAccessToken())
                 .setShopId(sessionData.getUserShopId())
                 .jsonBody(cartData), CartData.class);
@@ -46,7 +48,7 @@ public class CartBuilder extends BaseApiBuilder {
         Map<String, String> body = new HashMap<>();
         body.put("status", SalesDocumentsConst.States.DELETED.getApiVal());
         body.put("documentVersion", String.valueOf(documentVersion));
-        return apiClient.execute(new CartChangeStatusPut()
+        return execute(new CartChangeStatusPut()
                 .bearerAuthHeader(sessionData.getAccessToken())
                 .setCartId(cartId)
                 .formBody(body), JsonNode.class);
@@ -95,7 +97,7 @@ public class CartBuilder extends BaseApiBuilder {
                 actualProduct.getTopEM(), is(expectedProduct.getTopEM()));
     }
 
-    public CartBuilder assertThatResponseContainsAddedProducts(
+    public CartClient assertThatResponseContainsAddedProducts(
             Response<CartData> resp, List<ProductOrderData> expectedProducts) {
         assertThatResponseIsOk(resp);
         CartData actualData = resp.asJson();
@@ -107,7 +109,7 @@ public class CartBuilder extends BaseApiBuilder {
         return this;
     }
 
-    public CartBuilder assertThatGetResponseMatches(Response<CartData> resp, CartData expectedData) {
+    public CartClient assertThatGetResponseMatches(Response<CartData> resp, CartData expectedData) {
         assertThatResponseIsOk(resp);
         CartData actualData = resp.asJson();
         assertThat("FullDocId", actualData.getFullDocId(), equalTo(expectedData.getFullDocId()));

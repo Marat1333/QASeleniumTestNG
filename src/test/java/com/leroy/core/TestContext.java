@@ -13,8 +13,12 @@ public class TestContext {
     private StepLog log;
     private WebDriver driver;
 
-    public TestContext(WebDriver driver, CustomSoftAssert softAssert, CustomAssert anAssert, StepLog log, String tcId) {
+    public TestContext(WebDriver driver) {
         this.driver = driver;
+    }
+
+    public TestContext(WebDriver driver, CustomSoftAssert softAssert, CustomAssert anAssert, StepLog log, String tcId) {
+        this(driver);
         this.softAssert = softAssert;
         this.anAssert = anAssert;
         this.log = log;

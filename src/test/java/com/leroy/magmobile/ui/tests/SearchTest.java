@@ -2,6 +2,7 @@ package com.leroy.magmobile.ui.tests;
 
 import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
+import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.ui.models.search.FiltersData;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
@@ -16,7 +17,6 @@ import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.search.SuppliersSearchPage;
 import com.leroy.magmobile.ui.pages.search.modal.SortPage;
 import com.leroy.core.api.ThreadApiClient;
-import com.leroy.magmobile.api.MagMobileClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.data.catalog.ServiceItemDataList;
 import com.leroy.magmobile.api.enums.CatalogSearchFields;
@@ -37,7 +37,7 @@ import java.util.List;
 public class SearchTest extends AppBaseSteps {
 
     @Inject
-    private MagMobileClient apiClient;
+    private CatalogSearchClient searchClient;
 
     private static final String ALL_DEPARTMENTS_TEXT = "Все отделы";
 
@@ -49,13 +49,13 @@ public class SearchTest extends AppBaseSteps {
                 .setStartFrom(1);
     }
 
-    private HashMap<Integer, ThreadApiClient<ProductItemDataList, MagMobileClient>> sendRequestsSearchProductsBy(
+    private HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> sendRequestsSearchProductsBy(
             GetCatalogSearch... paramsArray) {
-        HashMap<Integer, ThreadApiClient<ProductItemDataList, MagMobileClient>> resultMap = new HashMap<>();
+        HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> resultMap = new HashMap<>();
         int i = 0;
         for (GetCatalogSearch param : paramsArray) {
-            ThreadApiClient<ProductItemDataList, MagMobileClient> myThread = new ThreadApiClient<>(
-                    apiClient);
+            ThreadApiClient<ProductItemDataList, CatalogSearchClient> myThread = new ThreadApiClient<>(
+                    searchClient);
             myThread.sendRequest(client -> client.searchProductsBy(param));
             resultMap.put(i, myThread);
             i++;
@@ -63,13 +63,13 @@ public class SearchTest extends AppBaseSteps {
         return resultMap;
     }
 
-    private HashMap<Integer, ThreadApiClient<ServiceItemDataList, MagMobileClient>> sendRequestsSearchServicesBy(
+    private HashMap<Integer, ThreadApiClient<ServiceItemDataList, CatalogSearchClient>> sendRequestsSearchServicesBy(
             GetCatalogServicesSearch... paramsArray) {
-        HashMap<Integer, ThreadApiClient<ServiceItemDataList, MagMobileClient>> resultMap = new HashMap<>();
+        HashMap<Integer, ThreadApiClient<ServiceItemDataList, CatalogSearchClient>> resultMap = new HashMap<>();
         int i = 0;
         for (GetCatalogServicesSearch param : paramsArray) {
-            ThreadApiClient<ServiceItemDataList, MagMobileClient> myThread = new ThreadApiClient<>(
-                    apiClient);
+            ThreadApiClient<ServiceItemDataList, CatalogSearchClient> myThread = new ThreadApiClient<>(
+                    searchClient);
             myThread.sendRequest(client -> client.searchServicesBy(param));
             resultMap.put(i, myThread);
             i++;
@@ -111,7 +111,7 @@ public class SearchTest extends AppBaseSteps {
                 .setStartFrom(1)
                 .setByBarCode(shortBarCode);
 
-        HashMap<Integer, ThreadApiClient<ProductItemDataList, MagMobileClient>> apiThreads =
+        HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> apiThreads =
                 sendRequestsSearchProductsBy(byLmParams, byBarCodeParams, byShortLmCodeParams, byShortBarCodeParams);
 
         // Pre-conditions
@@ -213,7 +213,7 @@ public class SearchTest extends AppBaseSteps {
                 .setDepartmentId(departmentId)
                 .setSupId(supplierSearchContext);
 
-        HashMap<Integer, ThreadApiClient<ProductItemDataList, MagMobileClient>> apiThreads =
+        HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> apiThreads =
                 sendRequestsSearchProductsBy(gammaParam, topParam, bestPriceParam, orderedProductTypeParam, avsParam, supplierIdParam);
 
         // Pre-conditions
@@ -328,7 +328,7 @@ public class SearchTest extends AppBaseSteps {
                 .setStartFrom(1)
                 .setDepartmentId(departmentId);
 
-        HashMap<Integer, ThreadApiClient<ProductItemDataList, MagMobileClient>> apiThreads =
+        HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> apiThreads =
                 sendRequestsSearchProductsBy(gammaParam, ctmParam, commonProductTypeParam, avsParam);
 
         // Pre-conditions
@@ -571,7 +571,7 @@ public class SearchTest extends AppBaseSteps {
                 .setPageSize(3)
                 .setDepartmentId(dept.replaceAll("^0+", ""));
 
-        HashMap<Integer, ThreadApiClient<ProductItemDataList, MagMobileClient>> apiThreads =
+        HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> apiThreads =
                 sendRequestsSearchProductsBy(subclassParams, classParams, subdepartmentParams, departmentParams);
 
         // Pre-conditions
@@ -689,7 +689,7 @@ public class SearchTest extends AppBaseSteps {
                 .setStartFrom(1)
                 .setPageSize(ENTITY_COUNT);
 
-        HashMap<Integer, ThreadApiClient<ProductItemDataList, MagMobileClient>> apiThreads =
+        HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> apiThreads =
                 sendRequestsSearchProductsBy(paginationParams);
 
         // Pre-conditions
@@ -749,7 +749,7 @@ public class SearchTest extends AppBaseSteps {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setStartFrom(1);
 
-        HashMap<Integer, ThreadApiClient<ProductItemDataList, MagMobileClient>> apiThreads =
+        HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> apiThreads =
                 sendRequestsSearchProductsBy(supplierIdParam, defaultSearchParam);
 
         // Pre-conditions
@@ -845,7 +845,7 @@ public class SearchTest extends AppBaseSteps {
         GetCatalogServicesSearch servicesSearchShortNameParams = new GetCatalogServicesSearch().setName(SERVICE_SHORT_NAME);
         GetCatalogServicesSearch servicesSearchFullNameParams = new GetCatalogServicesSearch().setName(SERVICE_FULL_NAME);
 
-        HashMap<Integer, ThreadApiClient<ServiceItemDataList, MagMobileClient>> apiThreads =
+        HashMap<Integer, ThreadApiClient<ServiceItemDataList, CatalogSearchClient>> apiThreads =
                 sendRequestsSearchServicesBy(servicesSearchParams, servicesSearchDepartmentParams, servicesSearchShortLmCodeParams, servicesSearchFullLmCodeParams, servicesSearchShortNameParams, servicesSearchFullNameParams);
 
         // Pre-conditions
@@ -921,7 +921,7 @@ public class SearchTest extends AppBaseSteps {
         int entityCount = 3;
 
         GetCatalogSearch defaultParams = buildDefaultCatalogSearchParams().setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);
-        HashMap<Integer, ThreadApiClient<ProductItemDataList, MagMobileClient>> apiThreads =
+        HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> apiThreads =
                 sendRequestsSearchProductsBy(defaultParams);
 
         // Pre-conditions
@@ -1072,7 +1072,7 @@ public class SearchTest extends AppBaseSteps {
                 .setAvsDate("neq|null")
                 .setDepartmentId(DEPT_ID);
 
-        HashMap<Integer, ThreadApiClient<ProductItemDataList, MagMobileClient>> apiThreads =
+        HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> apiThreads =
                 sendRequestsSearchProductsBy(avsParam, avsNeqNullParam);
 
         // Pre-conditions
@@ -1143,7 +1143,7 @@ public class SearchTest extends AppBaseSteps {
                 .setGamma(GAMMA)
                 .setDepartmentId(DEPT_ID);
 
-        HashMap<Integer, ThreadApiClient<ProductItemDataList, MagMobileClient>> apiThreads =
+        HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> apiThreads =
                 sendRequestsSearchProductsBy(myShopFilterParam, allGammaFilterParam);
 
         // Pre-conditions
@@ -1283,7 +1283,7 @@ public class SearchTest extends AppBaseSteps {
                 .setStartFrom(1)
                 .setGamma(GAMMA);
 
-        HashMap<Integer, ThreadApiClient<ProductItemDataList, MagMobileClient>> apiThreads =
+        HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> apiThreads =
                 sendRequestsSearchProductsBy(allGammaLmDescParams, allGammaLmAscParams, myShopLmAscParams, myShopStockAscParams);
 
         // Pre-conditions

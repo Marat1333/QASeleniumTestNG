@@ -26,6 +26,9 @@ public class FiltersData /*extends BaseModel*/ {
     private boolean avs;
     private LocalDate dateAvs;
 
+    public FiltersData() {
+    }
+
     public FiltersData(String filterFrame) {
         this.filterFrame = filterFrame;
     }

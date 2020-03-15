@@ -24,8 +24,7 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
 
     @Test(description = "C3201023 Создание документа продажи")
     public void testC3201023() throws Exception {
-        testCreateSalesDocument(getAnyLmCodeProductWithoutSpecificOptions(
-                null, false), ProductTypes.NORMAL);
+        testCreateSalesDocument(getAnyLmCodeProductWithoutSpecificOptions(), ProductTypes.NORMAL);
     }
 
     @Test(description = "C22846947 Создание документа продажи с товаром AVS")
@@ -106,13 +105,13 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
     public void testC3201024() throws Exception {
         // Pre-condition
         // - Имеются документы продажи в статусе черновик
-        String lmCode = getAnyLmCodeProductWithoutSpecificOptions(null, false);
+        String lmCode = getAnyLmCodeProductWithoutSpecificOptions();
         String documentNumber = loginInAndCreateDraftSalesDocument(lmCode);
 
         // Steps 1, 2, 3
         ActionWithProductModalPage actionWithProductModalPage =
-                testSearchForProductAndClickActionsWithProductButton(null, new ProductCardData(lmCode),
-                        ProductTypes.NORMAL);
+                testSearchForProductAndClickActionsWithProductButton(
+                        null, new ProductCardData(lmCode), ProductTypes.NORMAL);
 
         // Step #4
         log.step("Нажмите Добавить в документ продажи");
@@ -188,14 +187,12 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
     @Test(description = "C22847027 35 магазин - создание заказа")
     public void test35ShopCreatingOrder() throws Exception {
         // Pre-condition
-        String shopId = "35";
-        boolean hasAvailableStock = false; //new Random().nextInt(2) == 1; // No one product with "hasAvailableStock" on dev environment
-        String lmCode = getAnyLmCodeProductWithoutSpecificOptions(shopId, hasAvailableStock);
+        String lmCode = getAnyLmCodeProductWithoutSpecificOptions();
         MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainProductAndServicesPage.class);
 
         // Steps 1, 2, 3
         ProductCardData productData = new ProductCardData(lmCode);
-        productData.setHasAvailableStock(hasAvailableStock);
+        productData.setHasAvailableStock(false);
         ActionWithProduct35ModalPage actionWithProductModalPage =
                 testSearchForProductAndClickActionsWithProductButton(
                         mainProductAndServicesPage, productData, ProductTypes.NORMAL, true);

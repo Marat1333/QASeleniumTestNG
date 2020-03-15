@@ -11,9 +11,13 @@ public class Context extends TestContext {
 
     private SessionData sessionData;
 
+    public Context(WebDriver driver) {
+        super(driver);
+        sessionData = new SessionData();
+    }
+
     public Context(WebDriver driver, CustomSoftAssert softAssert, CustomAssert anAssert, StepLog log, String tcId) {
         super(driver, softAssert, anAssert, log, tcId);
-        sessionData = new SessionData();
     }
 
     public boolean isNewShopFunctionality() {

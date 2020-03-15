@@ -21,9 +21,13 @@ public class MagPortalBaseTest extends BaseUiTest {
     }
 
     @Override
-    protected void initContext(WebDriver driver, CustomSoftAssert customSoftAssert,
-                               CustomAssert customAssert, StepLog stepLog, String tcId) {
-        context = new TestContext(driver, customSoftAssert, customAssert, stepLog, tcId);
+    protected void initContext(WebDriver driver) {
+        context = new TestContext(driver);
+    }
+
+    @Override
+    protected TestContext getContext() {
+        return context;
     }
 
     private void openStartPage() {

@@ -3,14 +3,12 @@ package com.leroy.magmobile.api.tests.salesdoc;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.leroy.core.SessionData;
-import com.leroy.magmobile.api.helpers.FindTestDataHelper;
-import com.leroy.magmobile.api.tests.BaseProjectApiTest;
-import com.leroy.magmobile.ui.models.search.FiltersData;
-import com.leroy.magmobile.ui.pages.search.FilterPage;
-import com.leroy.magmobile.api.MagMobileClient;
+import com.leroy.magmobile.api.clients.MagMobileClient;
+import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.data.sales.DiscountData;
 import com.leroy.magmobile.api.data.sales.DiscountReasonData;
 import com.leroy.magmobile.api.requests.salesdoc.discount.GetSalesDocDiscount;
+import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -27,6 +25,9 @@ public class SalesDocDiscountTest extends BaseProjectApiTest {
     @Inject
     private Provider<MagMobileClient> magMobileClient;
 
+    @Inject
+    private Provider<CatalogSearchClient> searchClientProvider;
+
     private String productLmCode;
 
     @BeforeClass
@@ -34,8 +35,9 @@ public class SalesDocDiscountTest extends BaseProjectApiTest {
         sessionData = new SessionData();
         sessionData.setUserShopId("35");
         sessionData.setUserDepartmentId("1");
-        productLmCode = FindTestDataHelper.getProducts(magMobileClient.get(), sessionData, 1,
-                new FiltersData(FilterPage.MY_SHOP_FRAME_TYPE)).get(0).getLmCode();
+        CatalogSearchClient searchClient = searchClientProvider.get();
+        searchClient.setSessionData(sessionData);
+        productLmCode = searchClient.getProductLmCodes(1).get(0);
     }
 
     @Test(description = "C3254680 SalesDoc GET discounts")

@@ -1,14 +1,22 @@
 package com.leroy.magmobile.ui.tests.sales;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.SalesDocumentsConst;
-import com.leroy.core.configuration.Log;
 import com.leroy.core.SessionData;
-import com.leroy.magmobile.api.builders.CartBuilder;
-import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
+import com.leroy.core.configuration.Log;
+import com.leroy.magmobile.api.clients.CartClient;
+import com.leroy.magmobile.api.clients.CatalogSearchClient;
+import com.leroy.magmobile.api.clients.EstimateClient;
+import com.leroy.magmobile.api.clients.MagMobileClient;
+import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
+import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.CartData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.EstimateData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.ProductOrderData;
 import com.leroy.magmobile.ui.AppBaseSteps;
+import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
+import com.leroy.magmobile.ui.models.search.FiltersData;
 import com.leroy.magmobile.ui.pages.sales.AddProductPage;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
 import com.leroy.magmobile.ui.pages.sales.SubmittedSalesDocumentPage;
@@ -18,18 +26,8 @@ import com.leroy.magmobile.ui.pages.sales.basket.BasketStep2Page;
 import com.leroy.magmobile.ui.pages.sales.basket.BasketStep3Page;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.umbrella_extension.authorization.AuthClient;
-import com.leroy.magmobile.api.MagMobileClient;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
-import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
-import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
-import com.leroy.magmobile.api.data.sales.cart_estimate.CartData;
-import com.leroy.magmobile.api.data.sales.cart_estimate.EstimateData;
-import com.leroy.magmobile.api.data.sales.cart_estimate.ProductOrderData;
-import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import org.apache.commons.lang.RandomStringUtils;
 import org.json.simple.JSONObject;
-import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Guice;
@@ -38,13 +36,11 @@ import ru.leroymerlin.qa.core.base.BaseModule;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasSize;
 
 @Guice(modules = {BaseModule.class})
 public class SalesBaseTest extends AppBaseSteps {
@@ -56,17 +52,24 @@ public class SalesBaseTest extends AppBaseSteps {
     private MagMobileClient mashupClient;
 
     @Inject
-    private Provider<CartBuilder> cartBuilderProvider;
-    private CartBuilder cartBuilder;
+    private CatalogSearchClient searchBuilder;
+
+    @Inject
+    private CartClient cartClient;
+
+    @Inject
+    private EstimateClient estimateClient;
 
     @BeforeClass
     public void beforeClass() {
-        cartBuilder = cartBuilderProvider.get();
         String token = authClient.getAccessToken(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS);
-        SessionData sessionData = new SessionData();
+        SessionData sessionData = context.getSessionData();
         sessionData.setUserShopId("35");
+        sessionData.setUserDepartmentId("15");
         sessionData.setAccessToken(token);
-        cartBuilder.setSessionData(sessionData);
+        estimateClient.setSessionData(sessionData);
+        cartClient.setSessionData(sessionData);
+        searchBuilder.setSessionData(sessionData);
     }
 
     // Получить ЛМ код для услуги
@@ -75,69 +78,27 @@ public class SalesBaseTest extends AppBaseSteps {
     }
 
     // Получить ЛМ код для обычного продукта без специфичных опций
-    protected List<String> getAnyLmCodesProductWithoutSpecificOptions(int necessaryCount, String shopId,
-                                                                      Boolean hasAvailableStock) {
-        String[] badLmCodes = {"10008698", "10008751"}; // Из-за отсутствия синхронизации бэков на тесте, мы можем получить некорректные данные
-        if (shopId == null) // TODO может быть shopId null или нет?
-            shopId = "5";
-        GetCatalogSearch params = new GetCatalogSearch()
-                .setShopId(shopId)
-                .setDepartmentId("1")
-                .setTopEM(false)
-                .setHasAvailableStock(hasAvailableStock);
-        Response<ProductItemDataList> resp = mashupClient.searchProductsBy(params);
-        assertThat(resp.toString(), resp.isSuccessful());
-        List<ProductItemData> items = resp.asJson().getItems();
-        List<String> resultList = new ArrayList<>();
-        int i = 0;
-        for (ProductItemData item : items) {
-            if (item.getAvsDate() == null && !Arrays.asList(badLmCodes).contains(item.getLmCode())) {
-                if (necessaryCount > i)
-                    resultList.add(item.getLmCode());
-                else
-                    break;
-                i++;
-            }
-        }
-        return resultList;
+    protected List<String> getAnyLmCodesProductWithoutSpecificOptions(
+            int necessaryCount) {
+        return searchBuilder.getProductLmCodes(necessaryCount);
     }
 
-    protected String getAnyLmCodeProductWithoutSpecificOptions(String shopId, Boolean hasAvailableStock) {
-        return getAnyLmCodesProductWithoutSpecificOptions(1, shopId, hasAvailableStock).get(0);
+    protected String getAnyLmCodeProductWithoutSpecificOptions() {
+        return getAnyLmCodesProductWithoutSpecificOptions(1).get(0);
     }
 
     // Получить ЛМ код для продукта с AVS
     protected String getAnyLmCodeProductWithAvs() {
-        GetCatalogSearch params = new GetCatalogSearch()
-                .setShopId("5")
-                .setByLmCode("16")
-                .setDepartmentId("1")
-                .setTopEM(false);
-        Response<ProductItemDataList> resp = mashupClient.searchProductsBy(params);
-        assertThat(resp.toString(), resp.isSuccessful());
-        List<ProductItemData> items = mashupClient.searchProductsBy(params).asJson().getItems();
-        for (ProductItemData item : items) {
-            if (item.getAvsDate() != null)
-                return item.getLmCode();
-        }
-        return EnvConstants.WITH_AVS_PRODUCT_1_LM_CODE;
+        FiltersData filtersData = new FiltersData();
+        filtersData.setAvs(true);
+        return searchBuilder.getProducts(1, filtersData).get(0).getLmCode();
     }
 
     // Получить ЛМ код для продукта с опцией TopEM
     protected String getAnyLmCodeProductWithTopEM() {
-        GetCatalogSearch params = new GetCatalogSearch()
-                .setShopId(context.getSessionData().getUserShopId())
-                .setPageSize(5)
-                .setTopEM(true);
-        Response<ProductItemDataList> resp = mashupClient.searchProductsBy(params);
-        assertThat(resp.toString(), resp.isSuccessful());
-        List<ProductItemData> items = mashupClient.searchProductsBy(params).asJson().getItems();
-        for (ProductItemData item : items) {
-            if (item.getAvsDate() == null)
-                return item.getLmCode();
-        }
-        assertThat("Request - Search for product with TopEm", items, hasSize(greaterThan(0)));
-        return items.get(0).getLmCode();
+        FiltersData filtersData = new FiltersData();
+        filtersData.setTopEM(true);
+        return searchBuilder.getProducts(1, filtersData).get(0).getLmCode();
     }
 
     // Получить ЛМ код для продукта, доступного для отзыва с RM
@@ -169,21 +130,17 @@ public class SalesBaseTest extends AppBaseSteps {
     // CREATING PRE-CONDITIONS:
 
     protected String createDraftEstimate() {
-        String shopId = "35";
-        String lmCode = getAnyLmCodeProductWithoutSpecificOptions(shopId, false);
-        String token = authClient.getAccessToken(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS);
+        String lmCode = getAnyLmCodeProductWithoutSpecificOptions();
         ProductOrderData productOrderData = new ProductOrderData();
         productOrderData.setLmCode(lmCode);
         productOrderData.setQuantity(1.0);
-        Response<EstimateData> estimateDataResponse = mashupClient
-                .createEstimate(token, "35", productOrderData);
-        assertThat(estimateDataResponse.toString(), estimateDataResponse.isSuccessful());
+        Response<EstimateData> estimateDataResponse = estimateClient.sendRequestCreate(productOrderData);
+        assertThat(estimateDataResponse, successful());
         return estimateDataResponse.asJson().getEstimateId();
     }
 
     protected String createDraftCart(int productCount) {
-        String shopId = "35";
-        List<String> lmCodes = getAnyLmCodesProductWithoutSpecificOptions(productCount, shopId, false);
+        List<String> lmCodes = getAnyLmCodesProductWithoutSpecificOptions(productCount);
         List<ProductOrderData> productOrderDataList = new ArrayList<>();
         Random r = new Random();
         for (String lmCode : lmCodes) {
@@ -192,9 +149,8 @@ public class SalesBaseTest extends AppBaseSteps {
             productOrderData.setQuantity((double) (r.nextInt(9) + 1));
             productOrderDataList.add(productOrderData);
         }
-        Response<CartData> cartDataResponse = cartBuilder.sendRequestCreate(productOrderDataList);
-        Assert.assertTrue(cartDataResponse.isSuccessful(),
-                "Не смогли создать Корзину на этапе создания pre-condition данных");
+        Response<CartData> cartDataResponse = cartClient.sendRequestCreate(productOrderDataList);
+        assertThat(cartDataResponse, successful());
         return cartDataResponse.asJson().getFullDocId();
     }
 

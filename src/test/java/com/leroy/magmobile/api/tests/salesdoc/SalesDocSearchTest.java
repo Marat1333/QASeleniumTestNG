@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
-import com.leroy.magmobile.api.MagMobileClient;
+import com.leroy.magmobile.api.clients.MagMobileClient;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.requests.salesdoc.search.SalesDocSearchV3Get;

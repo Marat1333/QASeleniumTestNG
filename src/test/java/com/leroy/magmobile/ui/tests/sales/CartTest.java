@@ -19,14 +19,10 @@ public class CartTest extends SalesBaseTest {
     @Test(description = "C22797089 Создать корзину с экрана Документы продажи")
     public void testCreateBasketFromSalesDocumentsScreen() throws Exception {
         // Test data
-        String shopId = "35";
-        String lmCode = getAnyLmCodeProductWithoutSpecificOptions(shopId, false);
+        String lmCode = getAnyLmCodeProductWithoutSpecificOptions();
         // Pre-condition
-        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(
-                LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainProductAndServicesPage.class);
-        MainSalesDocumentsPage mainSalesDocumentsPage = setShopAndDepartmentForUser(mainProductAndServicesPage, shopId, "01")
-                .goToSales()
-                .goToSalesDocumentsSection();
+        MainSalesDocumentsPage mainSalesDocumentsPage = loginAndGoTo(
+                LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
 
         // Step 1
         log.step("Нажать кнопку Оформить продажу");

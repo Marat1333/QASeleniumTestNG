@@ -1,4 +1,4 @@
-package com.leroy.magmobile.api.builders;
+package com.leroy.magmobile.api.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.SalesDocumentsConst;
@@ -16,14 +16,14 @@ import static com.leroy.core.matchers.Matchers.isNumber;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class EstimateBuilder extends BaseApiBuilder {
+public class EstimateClient extends MagMobileClient {
 
     /**
      * ---------- Executable Requests -------------
      **/
 
     public Response<EstimateData> sendRequestGet(String estimateId) {
-        return apiClient.execute(new EstimateGet().setEstimateId(estimateId)
+        return execute(new EstimateGet().setEstimateId(estimateId)
                 .bearerAuthHeader(sessionData.getAccessToken())
                 .setShopId(sessionData.getUserShopId()), EstimateData.class);
     }
@@ -38,7 +38,7 @@ public class EstimateBuilder extends BaseApiBuilder {
         }
         EstimateData estimateData = new EstimateData();
         estimateData.setProducts(filteredProducts);
-        return apiClient.execute(new EstimatePost()
+        return execute(new EstimatePost()
                 .bearerAuthHeader(sessionData.getAccessToken())
                 .setShopId(sessionData.getUserShopId())
                 .jsonBody(estimateData), EstimateData.class);
@@ -53,7 +53,7 @@ public class EstimateBuilder extends BaseApiBuilder {
                                                     List<ProductOrderData> productOrderDataList) {
         EstimateData estimateData = new EstimateData();
         estimateData.setProducts(productOrderDataList);
-        return apiClient.execute(new EstimatePut()
+        return execute(new EstimatePut()
                 .setEstimateId(estimateId)
                 .bearerAuthHeader(sessionData.getAccessToken())
                 .setShopId(sessionData.getUserShopId())
@@ -69,7 +69,7 @@ public class EstimateBuilder extends BaseApiBuilder {
         Map<String, String> body = new HashMap<>();
         body.put("status", SalesDocumentsConst.States.DELETED.getApiVal());
         body.put("documentVersion", String.valueOf(documentVersion));
-        return apiClient.execute(new EstimateChangeStatusPut()
+        return execute(new EstimateChangeStatusPut()
                 .bearerAuthHeader(sessionData.getAccessToken())
                 .setEstimateId(estimateId)
                 .formBody(body), JsonNode.class);
@@ -108,7 +108,7 @@ public class EstimateBuilder extends BaseApiBuilder {
                 actualProduct.getType(), is(expectedProduct.getType()));
     }
 
-    public EstimateBuilder assertThatResponseContainsAddedProducts(
+    public EstimateClient assertThatResponseContainsAddedProducts(
             Response<EstimateData> resp, List<ProductOrderData> expectedProducts) {
         assertThatResponseIsOk(resp);
         EstimateData actualData = resp.asJson();
@@ -120,7 +120,7 @@ public class EstimateBuilder extends BaseApiBuilder {
         return this;
     }
 
-    public EstimateBuilder assertThatGetResponseMatches(Response<EstimateData> resp, EstimateData expectedData) {
+    public EstimateClient assertThatGetResponseMatches(Response<EstimateData> resp, EstimateData expectedData) {
         assertThatResponseIsOk(resp);
         EstimateData actualData = resp.asJson();
         assertThat("FullDocId", actualData.getFullDocId(), equalTo(expectedData.getFullDocId()));

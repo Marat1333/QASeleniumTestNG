@@ -29,8 +29,7 @@ public class EstimateTest extends SalesBaseTest {
     public void testCreatingEstimateFromSalesDocumentsScreen() throws Exception {
         // Test data
         String existedClientPhone = "1111111111";
-        String shopId = "35";
-        String lmCode = getAnyLmCodeProductWithoutSpecificOptions(shopId, false);
+        String lmCode = getAnyLmCodeProductWithoutSpecificOptions();
         // Pre-condition
         MainSalesDocumentsPage mainSalesDocumentsPage = loginAndGoTo(
                 LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);

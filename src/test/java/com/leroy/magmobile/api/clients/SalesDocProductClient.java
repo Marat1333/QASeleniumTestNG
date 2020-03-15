@@ -1,4 +1,4 @@
-package com.leroy.magmobile.api.builders;
+package com.leroy.magmobile.api.clients;
 
 import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
@@ -17,7 +17,7 @@ import static com.leroy.core.matchers.Matchers.valid;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class SalesDocProductBuilder extends BaseApiBuilder {
+public class SalesDocProductClient extends MagMobileClient {
 
     private Response<SalesDocumentResponseData> response;
 
@@ -31,25 +31,25 @@ public class SalesDocProductBuilder extends BaseApiBuilder {
      **/
 
     // GET
-    public SalesDocProductBuilder sendRequestGet(String fullDocId) {
-        response = apiClient.execute(new SalesDocProductsGet()
+    public SalesDocProductClient sendRequestGet(String fullDocId) {
+        response = execute(new SalesDocProductsGet()
                 .setFullDocId(fullDocId), SalesDocumentResponseData.class);
         return this;
     }
 
     // Create (POST)
-    private SalesDocProductBuilder sendRequestCreate(SalesDocumentResponseData data) {
+    private SalesDocProductClient sendRequestCreate(SalesDocumentResponseData data) {
         SalesDocProductsPost params = new SalesDocProductsPost();
         params.setShopId(sessionData.getUserShopId())
                 .setAccessToken(sessionData.getAccessToken());
         if (sessionData.getRegionId() != null)
             params.setRegionId(sessionData.getRegionId());
         params.setSalesDocumentData(data);
-        response = apiClient.execute(params, SalesDocumentResponseData.class);
+        response = execute(params, SalesDocumentResponseData.class);
         return this;
     }
 
-    public SalesDocProductBuilder sendRequestCreate(
+    public SalesDocProductClient sendRequestCreate(
             List<ProductOrderData> products, List<ServiceOrderData> services) {
         SalesDocumentResponseData salesDocumentResponseData = new SalesDocumentResponseData();
         salesDocumentResponseData.setProducts(products);
@@ -57,14 +57,14 @@ public class SalesDocProductBuilder extends BaseApiBuilder {
         return sendRequestCreate(salesDocumentResponseData);
     }
 
-    public SalesDocProductBuilder sendRequestCreate(
+    public SalesDocProductClient sendRequestCreate(
             ProductOrderData... productOrderDataArray) {
         SalesDocumentResponseData salesDocumentResponseData = new SalesDocumentResponseData();
         salesDocumentResponseData.setProducts(Arrays.asList(productOrderDataArray));
         return sendRequestCreate(salesDocumentResponseData);
     }
 
-    public SalesDocProductBuilder sendRequestCreate(
+    public SalesDocProductClient sendRequestCreate(
             ServiceOrderData... serviceOrderDataArray) {
         SalesDocumentResponseData salesDocumentResponseData = new SalesDocumentResponseData();
         salesDocumentResponseData.setServices(Arrays.asList(serviceOrderDataArray));
@@ -72,8 +72,8 @@ public class SalesDocProductBuilder extends BaseApiBuilder {
     }
 
     // Update (PUT)
-    private SalesDocProductBuilder updateSalesDocProducts(String fullDocId,
-                                                          SalesDocumentResponseData putSalesDocData) {
+    private SalesDocProductClient updateSalesDocProducts(String fullDocId,
+                                                         SalesDocumentResponseData putSalesDocData) {
         SalesDocProductsPut params = new SalesDocProductsPut();
         params.setFullDocId(fullDocId);
         params.setSalesDocumentData(putSalesDocData);
@@ -81,27 +81,27 @@ public class SalesDocProductBuilder extends BaseApiBuilder {
                 .setAccessToken(sessionData.getAccessToken());
         if (sessionData.getRegionId() != null)
             params.setRegionId(sessionData.getRegionId());
-        response = apiClient.execute(params, SalesDocumentResponseData.class);
+        response = execute(params, SalesDocumentResponseData.class);
 
         return this;
     }
 
-    public SalesDocProductBuilder updateSalesDocProducts(String fullDocId,
-                                                         ProductOrderData... productOrderData) {
+    public SalesDocProductClient updateSalesDocProducts(String fullDocId,
+                                                        ProductOrderData... productOrderData) {
         SalesDocumentResponseData salesDocumentResponseData = new SalesDocumentResponseData();
         salesDocumentResponseData.setProducts(Arrays.asList(productOrderData));
         return updateSalesDocProducts(fullDocId, salesDocumentResponseData);
     }
 
-    public SalesDocProductBuilder updateSalesDocProducts(String fullDocId,
-                                                         ServiceOrderData... serviceOrderData) {
+    public SalesDocProductClient updateSalesDocProducts(String fullDocId,
+                                                        ServiceOrderData... serviceOrderData) {
         SalesDocumentResponseData salesDocumentResponseData = new SalesDocumentResponseData();
         salesDocumentResponseData.setServices(Arrays.asList(serviceOrderData));
         return updateSalesDocProducts(fullDocId, salesDocumentResponseData);
     }
 
-    public SalesDocProductBuilder updateSalesDocProducts(String fullDocId,
-                                                         List<ProductOrderData> products, List<ServiceOrderData> services) {
+    public SalesDocProductClient updateSalesDocProducts(String fullDocId,
+                                                        List<ProductOrderData> products, List<ServiceOrderData> services) {
         SalesDocumentResponseData salesDocumentResponseData = new SalesDocumentResponseData();
         salesDocumentResponseData.setServices(services);
         salesDocumentResponseData.setProducts(products);
@@ -109,14 +109,14 @@ public class SalesDocProductBuilder extends BaseApiBuilder {
     }
 
     // Lego_Salesdoc_Parameters_Update
-    public SalesDocProductBuilder cancelSalesDoc(String fullDocId) {
+    public SalesDocProductClient cancelSalesDoc(String fullDocId) {
         SalesDocParametersUpdatePut params = new SalesDocParametersUpdatePut();
         params.setAccessToken(sessionData.getAccessToken())
                 .setLdap(sessionData.getUserLdap())
                 .setShopId(sessionData.getUserShopId())
                 .setFullDocId(fullDocId)
                 .setStatus(SalesDocumentsConst.States.CANCELLED.getApiVal());
-        response = apiClient.execute(params, SalesDocumentResponseData.class);
+        response = execute(params, SalesDocumentResponseData.class);
         return this;
     }
 
@@ -124,7 +124,7 @@ public class SalesDocProductBuilder extends BaseApiBuilder {
      * ---------- Verifications -------------
      **/
 
-    public SalesDocProductBuilder assertThatIsCreated(boolean isServiceAdded) {
+    public SalesDocProductClient assertThatIsCreated(boolean isServiceAdded) {
         assertThatResponseIsOk(response);
         SalesDocumentResponseData data = response.asJson();
         assertThat("docId field", data.getDocId(), not(isEmptyOrNullString()));
@@ -138,7 +138,7 @@ public class SalesDocProductBuilder extends BaseApiBuilder {
         return this;
     }
 
-    public SalesDocProductBuilder assertThatIsUpdated(SalesDocumentResponseData expectedData, boolean isServiceAdded) {
+    public SalesDocProductClient assertThatIsUpdated(SalesDocumentResponseData expectedData, boolean isServiceAdded) {
         assertThatResponseIsOk(response);
         SalesDocumentResponseData responseData = response.asJson();
         assertThat("docId field", responseData.getDocId(), is(expectedData.getDocId()));
@@ -152,7 +152,7 @@ public class SalesDocProductBuilder extends BaseApiBuilder {
         return this;
     }
 
-    public SalesDocProductBuilder assertThatIsCancelled(SalesDocumentResponseData expectedData) {
+    public SalesDocProductClient assertThatIsCancelled(SalesDocumentResponseData expectedData) {
         assertThatResponseIsOk(response);
         SalesDocumentResponseData responseData = response.asJson();
         assertThat("docId field", responseData.getDocId(), is(expectedData.getDocId()));
@@ -162,7 +162,7 @@ public class SalesDocProductBuilder extends BaseApiBuilder {
         return this;
     }
 
-    public SalesDocProductBuilder assertThatGetResponseMatches(SalesDocumentResponseData expectedData) {
+    public SalesDocProductClient assertThatGetResponseMatches(SalesDocumentResponseData expectedData) {
         assertThatResponseIsOk(response);
         SalesDocumentResponseData actualData = response.asJson();
         assertThat("FullDocId", actualData.getFullDocId(), equalTo(expectedData.getFullDocId()));
@@ -218,7 +218,7 @@ public class SalesDocProductBuilder extends BaseApiBuilder {
         return this;
     }
 
-    public SalesDocProductBuilder assertThatResponseIsValid() {
+    public SalesDocProductClient assertThatResponseIsValid() {
         assertThatResponseIsOk(response);
         assertThat(response, valid(SalesDocumentResponseData.class));
         return this;
