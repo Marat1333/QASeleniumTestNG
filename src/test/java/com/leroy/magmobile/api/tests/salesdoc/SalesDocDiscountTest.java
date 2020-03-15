@@ -2,7 +2,7 @@ package com.leroy.magmobile.api.tests.salesdoc;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.leroy.magmobile.api.SessionData;
+import com.leroy.core.SessionData;
 import com.leroy.magmobile.api.helpers.FindTestDataHelper;
 import com.leroy.magmobile.api.tests.common.BaseProjectTest;
 import com.leroy.magmobile.models.search.FiltersData;

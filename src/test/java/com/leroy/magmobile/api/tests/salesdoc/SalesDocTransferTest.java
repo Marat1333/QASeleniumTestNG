@@ -4,12 +4,11 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.SalesDocumentsConst;
-import com.leroy.magmobile.api.SessionData;
+import com.leroy.core.SessionData;
 import com.leroy.magmobile.api.builders.SalesDocTransferBuilder;
 import com.leroy.magmobile.api.tests.common.BaseProjectTest;
 import com.leroy.umbrella_extension.magmobile.data.sales.transfer.TransferProductOrderData;
 import com.leroy.umbrella_extension.magmobile.data.sales.transfer.TransferSalesDocData;
-import io.qameta.allure.Step;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 

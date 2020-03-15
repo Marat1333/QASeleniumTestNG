@@ -5,7 +5,7 @@ import com.google.inject.Provider;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.core.configuration.Log;
-import com.leroy.magmobile.api.SessionData;
+import com.leroy.core.SessionData;
 import com.leroy.magmobile.api.builders.CartBuilder;
 import com.leroy.magmobile.models.sales.SalesDocumentData;
 import com.leroy.magmobile.ui.AppBaseSteps;
@@ -126,7 +126,7 @@ public class SalesBaseTest extends AppBaseSteps {
     // Получить ЛМ код для продукта с опцией TopEM
     protected String getAnyLmCodeProductWithTopEM() {
         GetCatalogSearch params = new GetCatalogSearch()
-                .setShopId(context.getUserShopId())
+                .setShopId(context.getSessionData().getUserShopId())
                 .setPageSize(5)
                 .setTopEM(true);
         Response<ProductItemDataList> resp = mashupClient.searchProductsBy(params);
@@ -216,7 +216,7 @@ public class SalesBaseTest extends AppBaseSteps {
 
     @BeforeMethod
     public void setUp() {
-        context.setUserShopId("78");
+        context.getSessionData().setUserShopId("78");
     }
 
     // TESTS

@@ -1,7 +1,7 @@
 package com.leroy.magmobile.api.builders;
 
 import com.google.inject.Inject;
-import com.leroy.magmobile.api.SessionData;
+import com.leroy.core.SessionData;
 import com.leroy.magmobile.api.helpers.FindTestDataHelper;
 import com.leroy.magmobile.models.search.FiltersData;
 import com.leroy.magmobile.ui.pages.search.FilterPage;

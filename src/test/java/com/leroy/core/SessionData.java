@@ -1,4 +1,4 @@
-package com.leroy.magmobile.api;
+package com.leroy.core;
 
 import lombok.Data;
 

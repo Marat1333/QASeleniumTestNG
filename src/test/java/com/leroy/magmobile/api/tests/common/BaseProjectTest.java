@@ -2,7 +2,7 @@ package com.leroy.magmobile.api.tests.common;
 
 import com.leroy.core.listeners.TestRailListener;
 import com.leroy.core.testrail.helpers.StepLog;
-import com.leroy.magmobile.api.SessionData;
+import com.leroy.core.SessionData;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;

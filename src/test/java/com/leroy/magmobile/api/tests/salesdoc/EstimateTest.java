@@ -5,7 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.SalesDocumentsConst;
-import com.leroy.magmobile.api.SessionData;
+import com.leroy.core.SessionData;
 import com.leroy.magmobile.api.builders.EstimateBuilder;
 import com.leroy.magmobile.api.tests.common.BaseProjectTest;
 import com.leroy.umbrella_extension.authorization.AuthClient;
