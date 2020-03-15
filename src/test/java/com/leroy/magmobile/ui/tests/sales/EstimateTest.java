@@ -92,8 +92,8 @@ public class EstimateTest extends SalesBaseTest {
         log.step("Нажать на Перейти в список документов");
         SalesDocumentData expectedSalesDocument = new SalesDocumentData();
         expectedSalesDocument.setPrice(expectedTotalPrice);
-        expectedSalesDocument.setDocumentState(SalesDocumentsConst.CREATED_STATE);
-        expectedSalesDocument.setTitle(SalesDocumentsConst.ESTIMATE_TYPE);
+        expectedSalesDocument.setDocumentState(SalesDocumentsConst.States.CREATED.getUiVal());
+        expectedSalesDocument.setTitle(SalesDocumentsConst.Types.QUOTATION.getUiVal());
         expectedSalesDocument.setNumber(documentNumber);
         SalesDocumentsPage salesDocumentsPage = estimateSubmittedPage.clickSubmitButton();
         salesDocumentsPage.verifyRequiredElements()
@@ -187,7 +187,7 @@ public class EstimateTest extends SalesBaseTest {
                 LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
         SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
         salesDocumentsPage.searchForDocumentByTextAndSelectIt(
-                SalesDocumentsConst.ESTIMATE_TYPE);
+                SalesDocumentsConst.Types.QUOTATION.getUiVal());
         EstimatePage estimatePage = new EstimatePage(context);
         // Collect test data from page
         SalesOrderData testEstimateData = estimatePage.getEstimateDataFromPage();

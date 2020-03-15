@@ -1,7 +1,7 @@
 package com.leroy.magmobile.models.search;
 
 import com.leroy.magmobile.models.CardWidgetData;
-import com.leroy.umbrella_extension.magmobile.data.ProductItemResponse;
+import com.leroy.umbrella_extension.magmobile.data.catalog.ProductItemData;
 
 public class ProductCardData extends CardWidgetData {
 
@@ -80,7 +80,7 @@ public class ProductCardData extends CardWidgetData {
         this.hasAvailableStock = hasAvailableStock;
     }
 
-    public boolean compareWithResponse(ProductItemResponse response) {
+    public boolean compareWithResponse(ProductItemData response) {
         if (response == null) {
             return false;
         }

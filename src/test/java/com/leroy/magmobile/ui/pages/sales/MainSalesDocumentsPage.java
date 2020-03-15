@@ -45,7 +45,7 @@ public class MainSalesDocumentsPage extends TopMenuPage {
     @Step("Нажмите 'Создать документ продажи' (или 'Оформить продажу')")
     public <T> T clickCreateSalesDocumentButton() {
         createSalesDocumentBtn.click();
-        if (context.is35Shop())
+        if (context.isNewShopFunctionality())
             return (T) new SaleTypeModalPage(context);
         else
             return (T) new SearchProductPage(context);

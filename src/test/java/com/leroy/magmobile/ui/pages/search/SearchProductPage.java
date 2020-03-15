@@ -18,10 +18,10 @@ import com.leroy.magmobile.ui.pages.sales.widget.SearchProductAllGammaCardWidget
 import com.leroy.magmobile.ui.pages.sales.widget.SearchProductCardWidget;
 import com.leroy.magmobile.ui.pages.sales.widget.SearchServiceCardWidget;
 import com.leroy.magmobile.ui.pages.search.modal.SortPage;
-import com.leroy.umbrella_extension.magmobile.data.ProductItemListResponse;
-import com.leroy.umbrella_extension.magmobile.data.ProductItemResponse;
-import com.leroy.umbrella_extension.magmobile.data.ServiceItemListResponse;
-import com.leroy.umbrella_extension.magmobile.data.ServiceItemResponse;
+import com.leroy.umbrella_extension.magmobile.data.catalog.ProductItemDataList;
+import com.leroy.umbrella_extension.magmobile.data.catalog.ProductItemData;
+import com.leroy.umbrella_extension.magmobile.data.catalog.ServiceItemDataList;
+import com.leroy.umbrella_extension.magmobile.data.catalog.ServiceItemData;
 import io.qameta.allure.Step;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.openqa.selenium.By;
@@ -463,8 +463,8 @@ public class SearchProductPage extends CommonMagMobilePage {
     // API verifications
 
     @Step("Проверить, что фронт корректно отобразил ответ от сервера по запросу на catalog product")
-    public SearchProductPage shouldCatalogResponseEqualsContent(ProductItemListResponse responseData, CardType type, Integer entityCount) {
-        List<ProductItemResponse> productDataListFromResponse = responseData.getItems();
+    public SearchProductPage shouldCatalogResponseEqualsContent(ProductItemDataList responseData, CardType type, Integer entityCount) {
+        List<ProductItemData> productDataListFromResponse = responseData.getItems();
         List<ProductCardData> productCardDataListFromPage;
         switch (type) {
             case COMMON:
@@ -489,8 +489,8 @@ public class SearchProductPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что фронт корректно отобразил ответ от сервера по запросу на catalog services")
-    public SearchProductPage shouldServicesResponceEqualsContent(ServiceItemListResponse responseData, Integer entityCount) {
-        List<ServiceItemResponse> serviceData = responseData.getItems();
+    public SearchProductPage shouldServicesResponceEqualsContent(ServiceItemDataList responseData, Integer entityCount) {
+        List<ServiceItemData> serviceData = responseData.getItems();
         List<ServiceCardData> serviceCardDataList = serviceCardsScrollView.getFullDataList(entityCount);
         if (serviceCardDataList.size() != serviceData.size()) {
             throw new AssertionError("Page size param should be equals to maxEntityCount");
@@ -498,60 +498,5 @@ public class SearchProductPage extends CommonMagMobilePage {
         anAssert.isTrue(serviceCardDataList.equals(serviceData), "Товары не совпадают");
         return this;
     }
-
-    /*public SearchProductPage shouldResponceIsNull(Response<ProductItemListResponse> response) {
-        anAssert.isTrue(response.asJson().getItems().isEmpty(), "Ответ содержит данные");
-        return this;
-    }
-
-    public SearchProductPage shouldResponceContainsCorrectData(Response<ProductItemListResponse> response, String criterion) {
-        List<ProductItemResponse> productData = response.asJson().getItems();
-        if (criterion.startsWith(FilterPage.GAMMA)) {
-            String productGamma;
-            criterion = criterion.substring(7);
-            for (ProductItemResponse eachProduct : productData) {
-                productGamma = eachProduct.getGamma();
-                anAssert.isEquals(criterion, productGamma, "\"v3 catalog search\" return wrong data by gamma criterion");
-            }
-        }
-
-        if (criterion.startsWith(MyShopFilterPage.TOP)) {
-            String productTop;
-            criterion = criterion.substring(5);
-            for (ProductItemResponse eachProduct : productData) {
-                productTop = String.valueOf(eachProduct.getTop());
-                anAssert.isEquals(criterion, productTop, "\"v3 catalog search\" return wrong data by gamma criterion");
-            }
-        }
-
-        switch (criterion) {
-            case MyShopFilterPage.TOP_EM:
-                for (ProductItemResponse eachProduct : productData) {
-                    anAssert.isTrue(eachProduct.getTopEM(), "\"v3 catalog search\" return wrong data by topEm criterion");
-                }
-                break;
-            case MyShopFilterPage.HAS_AVAILABLE_STOCK:
-                for (ProductItemResponse eachProduct : productData) {
-                    anAssert.isTrue(eachProduct.getAvailableStock() > 0, "\"v3 catalog search\" return wrong data by availableStock criterion");
-                }
-                break;
-            case FilterPage.BEST_PRICE:
-                for (ProductItemResponse eachProduct : productData) {
-                    anAssert.isTrue(eachProduct.getPriceCategory().equals("BPR"), "\"v3 catalog search\" return wrong data by bestPrice criterion");
-                }
-                break;
-            case FilterPage.CTM:
-                for (ProductItemResponse eachProduct : productData) {
-                    anAssert.isTrue(eachProduct.getCtm(), "\"v3 catalog search\" return wrong data by ctm criterion");
-                }
-                break;
-            case FilterPage.TOP_1000:
-                for (ProductItemResponse eachProduct : productData) {
-                    anAssert.isTrue(eachProduct.getTop1000(), "\"v3 catalog search\" return wrong data by top1000 criterion");
-                }
-                break;
-        }
-        return this;
-    }*/
 
 }

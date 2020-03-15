@@ -4,10 +4,9 @@ import com.leroy.constants.EnvConstants;
 import com.leroy.core.pages.BaseWebPage;
 import com.leroy.magportal.ui.pages.LoginWebPage;
 import com.leroy.magportal.ui.pages.OrdersPage;
-import com.leroy.magmobile.ui.MagMobileBaseTest;
 import io.qameta.allure.Step;
 
-public class WebBaseSteps extends MagMobileBaseTest {
+public class WebBaseSteps extends MagPortalBaseTest {
 
     @Step("Авторизоваться на портале и зайти на страницу {pageClass}")
     public <T> T loginAndGoTo(String ldap, String password, Class<? extends BaseWebPage> pageClass) throws Exception {

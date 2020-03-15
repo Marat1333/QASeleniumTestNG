@@ -7,5 +7,5 @@ import java.util.List;
 @Data
 public class SalesDocumentListResponse {
     private Integer totalCount;
-    List<SalesDocumentResponse> salesDocuments;
+    List<SalesDocumentResponseData> salesDocuments;
 }

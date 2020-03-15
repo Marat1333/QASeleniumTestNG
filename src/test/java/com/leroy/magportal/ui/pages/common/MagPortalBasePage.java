@@ -11,6 +11,7 @@ public class MagPortalBasePage extends BaseWebPage {
 
     public MagPortalBasePage(TestContext context) {
         super(context);
+        this.context = context;
     }
 
     @WebFindBy(xpath = "//div[contains(@class, 'Spinner')]")

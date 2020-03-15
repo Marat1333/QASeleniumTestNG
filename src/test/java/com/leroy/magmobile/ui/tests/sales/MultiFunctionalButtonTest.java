@@ -241,7 +241,7 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
         SalesDocumentData expectedSalesDocument = new SalesDocumentData();
         expectedSalesDocument.setPrice(expectedTotalPrice);
 
-        expectedSalesDocument.setDocumentState(SalesDocumentsConst.AUTO_PROCESSING_STATE);
+        expectedSalesDocument.setDocumentState(SalesDocumentsConst.States.AUTO_PROCESSING.getUiVal());
         expectedSalesDocument.setTitle(orderDetailsData.getDeliveryType().getValue());
         expectedSalesDocument.setNumber(documentNumber);
         SalesDocumentsPage salesDocumentsPage = submittedDocument35Page

@@ -41,7 +41,7 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
     private MagMobGreenSubmitButton makeSaleBtn;
 
     private MagMobGreenSubmitButton getSubmitBtn() {
-        if (context.is35Shop())
+        if (context.isNewShopFunctionality())
             return makeSaleBtn;
         else
             return createSalesDocumentBtn;
