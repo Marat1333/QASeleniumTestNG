@@ -23,6 +23,7 @@ import com.leroy.umbrella_extension.magmobile.data.catalog.ProductItemData;
 import com.leroy.umbrella_extension.magmobile.data.catalog.ServiceItemDataList;
 import com.leroy.umbrella_extension.magmobile.data.catalog.ServiceItemData;
 import io.qameta.allure.Step;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.openqa.selenium.By;
 
 import java.util.ArrayList;
@@ -59,8 +60,7 @@ public class SearchProductPage extends CommonMagMobilePage {
             AndroidScrollView.TYPICAL_LOCATOR,
             ".//android.view.ViewGroup[contains(@content-desc,'productListCard')]", SearchProductAllGammaCardWidget.class);
 
-    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ScreenContent']//android.view.ViewGroup[android.widget.ImageView]",
-            clazz = SearchProductCardWidget.class)
+    @AppFindBy(accessibilityId = "productListCard", clazz = SearchProductCardWidget.class)
     private ElementList<SearchProductCardWidget> productCards;
 
     @AppFindBy(text = "Фильтр")
@@ -90,7 +90,7 @@ public class SearchProductPage extends CommonMagMobilePage {
 
     private final String NOT_FOUND_MSG_XPATH = "//*[contains(@text, 'Поиск «%s» не дал результатов')]";
 
-    private final String DEFAULT_SEARCH_UNPUT_TEXT = "ЛМ, название или штрихкод";
+    private final String DEFAULT_SEARCH_INPUT_TEXT = "ЛМ, ШК или название";
 
     public enum CardType {
         COMMON, // Обычная
@@ -116,13 +116,13 @@ public class SearchProductPage extends CommonMagMobilePage {
     @Step("Ввести поисковой запрос со случайным текстом {value} раз и инициировать поиск")
     public List<String> createSearchHistory(int value) {
         List<String> searchHistory = new ArrayList<>();
-        String tmp = "1";
+        String tmp = RandomStringUtils.randomAlphabetic(1);
         for (int i = 0; i < value; i++) {
             searchField.click();
             searchField.fill(tmp);
             searchField.submit();
             searchHistory.add(tmp);
-            tmp = tmp + "1";
+            tmp = tmp + RandomStringUtils.randomAlphabetic(1);
         }
         return searchHistory;
     }
@@ -231,11 +231,9 @@ public class SearchProductPage extends CommonMagMobilePage {
     @Step("Проверить, что кнопка 'Сканировать бар код' отображается")
     public SearchProductPage shouldScannerBtnIsVisible() {
         String pageSource = getPageSource();
-        if (searchField.getText(pageSource).equals(DEFAULT_SEARCH_UNPUT_TEXT)) {
-            anAssert.isElementVisible(scanBarcodeBtn, pageSource);
-        } else {
-            anAssert.isElementNotVisible(scanBarcodeBtn, pageSource);
-        }
+        softAssert.isElementTextEqual(searchField, DEFAULT_SEARCH_INPUT_TEXT);
+        softAssert.isElementVisible(scanBarcodeBtn, pageSource);
+        softAssert.verifyAll();
         return this;
     }
 

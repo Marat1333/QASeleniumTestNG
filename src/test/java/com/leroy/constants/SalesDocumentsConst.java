@@ -11,7 +11,10 @@ public class SalesDocumentsConst {
         DRAFT("DRAFT","Черновик"),
 
         // Transfer
-        NEW("NEW", "");
+        NEW("NEW", ""),
+
+        // Cart
+        DELETED("DELETED", "");
 
         private String uiVal;
         private String apiVal;

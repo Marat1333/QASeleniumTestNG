@@ -20,8 +20,8 @@ capabilities:
       platformName: Android
       autoDismissAlerts: true
       autoGrantPermissions: true
-      deviceOrientation: portrait
       autoAcceptAlerts: true
+      deviceOrientation: portrait
       automationName: uiautomator2
       newCommandTimeout: 60000
       #deviceName: Use VM option -DmDeviceName

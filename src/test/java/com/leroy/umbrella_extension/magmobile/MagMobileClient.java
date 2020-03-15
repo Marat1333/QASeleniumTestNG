@@ -5,15 +5,13 @@ import com.leroy.umbrella_extension.magmobile.data.catalog.ProductItemDataList;
 import com.leroy.umbrella_extension.magmobile.data.catalog.ServiceItemDataList;
 import com.leroy.umbrella_extension.magmobile.data.sales.DiscountData;
 import com.leroy.umbrella_extension.magmobile.data.sales.SalesDocumentListResponse;
-import com.leroy.umbrella_extension.magmobile.data.sales.cart_estimate.CartData;
 import com.leroy.umbrella_extension.magmobile.data.sales.cart_estimate.EstimateData;
 import com.leroy.umbrella_extension.magmobile.data.sales.cart_estimate.ProductOrderData;
 import com.leroy.umbrella_extension.magmobile.requests.catalog_search.GetCatalogSearch;
 import com.leroy.umbrella_extension.magmobile.requests.catalog_search.GetCatalogServicesSearch;
-import com.leroy.umbrella_extension.magmobile.requests.order.LegoOrderWorkflowPut;
+import com.leroy.umbrella_extension.magmobile.requests.order.OrderWorkflowPut;
 import com.leroy.umbrella_extension.magmobile.requests.salesdoc.GetSalesDocDiscount;
-import com.leroy.umbrella_extension.magmobile.requests.salesdoc.cart.CartPOST;
-import com.leroy.umbrella_extension.magmobile.requests.salesdoc.estimate.EstimatesPost;
+import com.leroy.umbrella_extension.magmobile.requests.salesdoc.estimate.EstimatePost;
 import com.leroy.umbrella_extension.magmobile.requests.salesdoc.search.GetSalesDocSearchV3;
 import org.json.simple.JSONObject;
 import ru.leroymerlin.qa.core.clients.base.RequestBuilder;
@@ -22,6 +20,7 @@ import ru.leroymerlin.qa.core.commons.annotations.Dependencies;
 import ru.leroymerlin.qa.core.commons.enums.Application;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,9 +45,16 @@ public class MagMobileClient extends LegoBaseClient {
     // Estimates
     public Response<EstimateData> createEstimate(String token, String shopId,
                                                  List<ProductOrderData> productOrderDataList) {
+        List<ProductOrderData> filteredProducts = new ArrayList<>();
+        for (ProductOrderData prData : productOrderDataList) {
+            ProductOrderData filterPrData = new ProductOrderData();
+            filterPrData.setQuantity(prData.getQuantity());
+            filterPrData.setLmCode(prData.getLmCode());
+            filteredProducts.add(filterPrData);
+        }
         EstimateData estimateData = new EstimateData();
-        estimateData.setProducts(productOrderDataList);
-        return execute(new EstimatesPost()
+        estimateData.setProducts(filteredProducts);
+        return execute(new EstimatePost()
                 .bearerAuthHeader(token)
                 .setShopId(shopId)
                 .jsonBody(estimateData).build(gatewayUrl), EstimateData.class);
@@ -57,22 +63,6 @@ public class MagMobileClient extends LegoBaseClient {
     public Response<EstimateData> createEstimate(String token, String shopId,
                                                  ProductOrderData productOrderData) {
         return createEstimate(token, shopId, Arrays.asList(productOrderData));
-    }
-
-    // Carts (Basket)
-    public Response<CartData> createCart(String token, String shopId,
-                                         List<ProductOrderData> productOrderDataList) {
-        CartData cartData = new CartData();
-        cartData.setProducts(productOrderDataList);
-        return execute(new CartPOST()
-                .bearerAuthHeader(token)
-                .setShopId(shopId)
-                .jsonBody(cartData).build(gatewayUrl), CartData.class);
-    }
-
-    public Response<CartData> createCart(String token, String shopId,
-                                         ProductOrderData productOrderData) {
-        return createCart(token, shopId, Arrays.asList(productOrderData));
     }
 
     // ---------  SalesDoc & Orders -------------------- //
@@ -93,7 +83,7 @@ public class MagMobileClient extends LegoBaseClient {
     public Response<JSONObject> cancelOrder(String userLdap, String orderId) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("action", "cancel-order");
-        return execute(new LegoOrderWorkflowPut()
+        return execute(new OrderWorkflowPut()
                 .setOrderId(orderId)
                 .setUserLdap(userLdap)
                 .jsonBody(jsonObject)

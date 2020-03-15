@@ -17,7 +17,11 @@ public class EstimateData {
     private List<CustomerData> customers;
     private List<ProductOrderData> products;
     private String status;
-    private String documentVersion;
+    private Integer documentVersion;
     private Double totalWeight;
+
+    public void increaseDocumentVersion() {
+        this.documentVersion++;
+    }
 
 }

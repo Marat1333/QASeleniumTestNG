@@ -2,6 +2,7 @@ package com.leroy.magmobile.api.tests.salesdoc;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.leroy.magmobile.api.SessionData;
 import com.leroy.magmobile.api.helpers.FindTestDataHelper;
 import com.leroy.magmobile.api.tests.common.BaseProjectTest;
 import com.leroy.magmobile.models.search.FiltersData;
@@ -26,12 +27,14 @@ public class SalesDocDiscountTest extends BaseProjectTest {
     @Inject
     private Provider<MagMobileClient> magMobileClient;
 
-    private final String SHOP_ID = "35";
     private String productLmCode;
 
     @BeforeClass
     private void setUpDefaultSessionData() {
-        productLmCode = FindTestDataHelper.getProducts(magMobileClient.get(), SHOP_ID, 1,
+        sessionData = new SessionData();
+        sessionData.setUserShopId("35");
+        sessionData.setUserDepartmentId("1");
+        productLmCode = FindTestDataHelper.getProducts(magMobileClient.get(), sessionData, 1,
                 new FiltersData(FilterPage.MY_SHOP_FRAME_TYPE)).get(0).getLmCode();
     }
 
@@ -39,7 +42,7 @@ public class SalesDocDiscountTest extends BaseProjectTest {
     public void testSalesDocGetDiscounts() {
         Response<DiscountData> resp = magMobileClient.get().getSalesDocDiscount(new GetSalesDocDiscount()
                 .setLmCode(productLmCode)
-                .setShopId(SHOP_ID));
+                .setShopId(sessionData.getUserShopId()));
         assertThat(resp, successful());
         DiscountData discountData = resp.asJson();
         assertThat("maxDiscount", discountData.getMaxDiscount(), greaterThan(0.0));

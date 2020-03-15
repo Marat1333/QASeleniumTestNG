@@ -18,6 +18,10 @@ public class ProductOrderData extends ProductItemData {
         this.setBarCode(productItemResponse.getBarCode());
         this.setTitle(productItemResponse.getTitle());
         this.setPrice(productItemResponse.getPrice());
+        this.setAvailableStock(productItemResponse.getAvailableStock());
+        this.setPriceUnit(productItemResponse.getPriceUnit());
+        this.setDepartmentId(productItemResponse.getDepartmentId());
+        this.setTopEM(productItemResponse.getTopEM());
         // to be continued if needed
     }
 

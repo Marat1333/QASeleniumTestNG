@@ -16,4 +16,8 @@ public class ProjectMatchers {
         return IsApproximatelyEqual.approximatelyEqual(equalArg);
     }
 
+    public static IsNumber isNumber() {
+        return IsNumber.isNumber();
+    }
+
 }

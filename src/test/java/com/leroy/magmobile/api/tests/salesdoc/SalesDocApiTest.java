@@ -34,6 +34,7 @@ public class SalesDocApiTest extends BaseProjectTest {
         sessionData = new SessionData();
         sessionData.setUserLdap(EnvConstants.BASIC_USER_LDAP);
         sessionData.setUserShopId("35");
+        sessionData.setUserDepartmentId("1");
         sessionData.setAccessToken(authClient.getAccessToken(EnvConstants.BASIC_USER_LDAP,
                 EnvConstants.BASIC_USER_PASS));
 
@@ -78,7 +79,7 @@ public class SalesDocApiTest extends BaseProjectTest {
                 .assertThatGetResponseMatches(salesDocument);
     }
 
-    @Test(description = "C3232447 SalesDoc add product and services")
+    @Test(description = "C3232447 SalesDoc add product and services", enabled = false)
     public void testSalesDocAddProductAndService() {
         // Prepare request data
         List<ProductOrderData> productOrderDataList = salesDocProductBuilder.findProducts(2);
@@ -113,7 +114,7 @@ public class SalesDocApiTest extends BaseProjectTest {
     }
 
     // TODO Может оставить только этот?
-    @Test(description = "C22898132 SalesDoc product and service GET")
+    @Test(description = "C22898132 SalesDoc product and service GET", enabled = false)
     public void testSalesDocProductAndServiceGET() throws Exception {
         testSalesDocProductGET();
     }

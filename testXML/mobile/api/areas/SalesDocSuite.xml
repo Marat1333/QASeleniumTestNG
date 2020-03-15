@@ -32,19 +32,6 @@
         </classes>
     </test>
 
-    <test name="SalesDoc with Product and Service">
-        <classes>
-            <class name="com.leroy.magmobile.api.tests.salesdoc.SalesDocApiTest">
-                <methods>
-                    <include name="testSalesDocAddProductAndService"/>
-                    <include name="testSalesDocProductAndServiceGET"/>
-                    <include name="testSalesDocUpdateProductAndService"/>
-                    <include name="testSalesDocUpdateParameterCancelWithProductsAndServices"/>
-                </methods>
-            </class>
-        </classes>
-    </test>
-
     <test name="SalesDoc Transfer">
         <classes>
             <class name="com.leroy.magmobile.api.tests.salesdoc.SalesDocTransferTest">

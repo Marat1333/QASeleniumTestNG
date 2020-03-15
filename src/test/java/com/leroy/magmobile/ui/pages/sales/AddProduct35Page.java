@@ -93,14 +93,7 @@ public class AddProduct35Page extends CommonMagMobilePage {
      * Получить Цену продукта за единицу товара
      */
     public String getPrice() {
-        String _priceValue = price.getText().replaceAll("₽/м²|₽/шт.", "").trim();
-        try {
-            Double.parseDouble(_priceValue);
-            return _priceValue;
-        } catch (NumberFormatException err) {
-            anAssert.isTrue(false, "Цена имеет не правильный формат: " + _priceValue);
-            throw err;
-        }
+        return price.getText();
     }
 
     // ----- Grab Data from Page ----------//

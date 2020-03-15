@@ -481,7 +481,8 @@ public class SearchApiTest extends BaseProjectTest {
         assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
 
         for (ProductItemData data : responseData) {
-            assertThat("avs in product " + data.getLmCode() + " is " + data.getAvsDate(), data.getAvsDate().toString(), containsString(avsDate.toString()));
+            assertThat("avs in product " + data.getLmCode() + " is " + data.getAvsDate(),
+                    data.getAvsDate().toString(), containsString(avsDate.toString()));
         }
     }
 
@@ -703,14 +704,15 @@ public class SearchApiTest extends BaseProjectTest {
         List<ServiceItemData> responseData = response.asJson().getItems();
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
         for (ServiceItemData data : responseData) {
-            assertThat("Service lmCode has not matches " + shortLmCode, data.getLmCode(), containsString(shortLmCode));
+            assertThat("Service lmCode has not matches " + shortLmCode, data.getLmCode(),
+                    containsString(shortLmCode));
         }
     }
 
     @TestCase(22893410)
     @Test(description = "C22893410 search by department")
     public void testSearchServicesByDepartmentId() {
-        final String departmentId = "2";
+        final int departmentId = 2;
 
         GetCatalogServicesSearch byDepartmentIdParams = new GetCatalogServicesSearch()
                 .setDepartmentId(departmentId);
@@ -720,7 +722,8 @@ public class SearchApiTest extends BaseProjectTest {
         List<ServiceItemData> responseData = response.asJson().getItems();
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
         for (ServiceItemData data : responseData) {
-            assertThat("Service department has not matches " + departmentId, data.getDepartmentId(), equalTo("0" + departmentId));
+            assertThat("Service department has not matches " + departmentId,
+                    data.getDepartmentId(), equalTo(departmentId));
         }
     }
 
