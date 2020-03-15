@@ -91,9 +91,10 @@ public class ResultModel extends BaseTestRailModel {
     }
 
     private String escapingQuotes(String text) {
-        if (text == null)
+        return text;
+        /*if (text == null)
             return null;
-        return text.replaceAll("\"", "\\\\\"");
+        return text.replaceAll("\"", "\\\\\"");*/
     }
 
     @Override
