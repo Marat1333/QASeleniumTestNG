@@ -65,7 +65,7 @@ public class SalesBaseTest extends AppBaseSteps {
         String token = authClient.getAccessToken(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS);
         SessionData sessionData = context.getSessionData();
         sessionData.setUserShopId("35");
-        sessionData.setUserDepartmentId("15");
+        sessionData.setUserDepartmentId("1");
         sessionData.setAccessToken(token);
         estimateClient.setSessionData(sessionData);
         cartClient.setSessionData(sessionData);
@@ -98,6 +98,7 @@ public class SalesBaseTest extends AppBaseSteps {
     protected String getAnyLmCodeProductWithTopEM() {
         FiltersData filtersData = new FiltersData();
         filtersData.setTopEM(true);
+        context.getSessionData().setUserDepartmentId("15");
         return searchBuilder.getProducts(1, filtersData).get(0).getLmCode();
     }
 
