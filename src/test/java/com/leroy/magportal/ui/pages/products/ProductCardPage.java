@@ -54,14 +54,14 @@ public class ProductCardPage extends MenuPage {
 
     @Step("Перейти на страницу с результатами поиска по элементу номенклатуры {nomenclatureElementName}")
     public SearchProductPage backToNomenclatureElement(String nomenclatureElementName) throws Exception {
-        Button targetElement=null;
+        Button targetElement = null;
         for (Button each : nomenclaturePath) {
             try {
                 targetElement = (Button) each.findChildElement("/descendant::span[2][contains(text(),'" + nomenclatureElementName + "')]/ancestor::div[1]");
-                if (targetElement.isPresent()){
+                if (targetElement.isPresent()) {
                     break;
                 }
-            }catch (NoSuchElementException e){
+            } catch (NoSuchElementException e) {
                 Log.warn("Try to find element");
             }
         }
@@ -70,17 +70,16 @@ public class ProductCardPage extends MenuPage {
     }
 
     @Step("Открыть полное описание товара")
-    public ProductCardPage showFullDescription(){
+    public ProductCardPage showFullDescription() {
         showFullDescription.click();
         return this;
     }
 
     @Step("Показать все характеристики товара")
-    public ProductCardPage showAllSpecifications(){
+    public ProductCardPage showAllSpecifications() {
         showAllSpecifications.click();
         return this;
     }
 
-    
 
 }

@@ -8,18 +8,19 @@ import java.time.LocalDate;
 
 public class SearchTest extends WebBaseSteps {
 
-    @Test(description = "C22782949 No results without filters")
+    @Test(description = "C22782949 No results msg")
     public void testNotFoundResults() throws Exception {
-        LocalDate avsDate = LocalDate.of(2019, 5, 23);
+        final String SEARCH_PHRASE= "asdf123";
 
+        //Pre-conditions
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
-        searchProductPage.choseCheckboxFilter(SearchProductPage.Filters.AVS, false);
-        searchProductPage.choseAvsDate(false, avsDate);
-        searchProductPage.selectGammaFilter("Гамма P", "Гамма А");
-        searchProductPage.choseNomenclature("011", "1115", "020", "040");
-        searchProductPage.choseSupplier("1001123001");
-        searchProductPage.choseSupplier("ЗАО САЗИ");
 
+        //Step 1
+        searchProductPage.searchByPhrase(SEARCH_PHRASE);
+        searchProductPage.shouldNotFoundMsgIsDisplayed(false, SEARCH_PHRASE);
 
+        //Step 2
+        searchProductPage.choseCheckboxFilter(SearchProductPage.Filters.HAS_AVAILABLE_STOCK, true);
+        searchProductPage.shouldNotFoundMsgIsDisplayed(true, SEARCH_PHRASE);
     }
 }

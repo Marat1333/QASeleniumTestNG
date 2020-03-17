@@ -26,7 +26,6 @@ public class ExtendedProductCardPage extends ProductCardPage {
         PRICES_AND_STOCKS_IN_OTHER_SHOPS;
     }
 
-
     @WebFindBy(xpath = "//span[contains(@class, 'Badge')][2]")
     Element topBadge;
 
@@ -95,8 +94,6 @@ public class ExtendedProductCardPage extends ProductCardPage {
 
     private PriceContainer getHiddenPurchasePrice() {
         hiddenPurchasingPrice.click();
-        waitUntilContentHasChanged(getPageSource());
-        initElements(new CustomLocator(By.xpath(hiddenPurchasingPrice.getXpath())));
         return hiddenPurchasingPrice;
     }
 
@@ -113,6 +110,12 @@ public class ExtendedProductCardPage extends ProductCardPage {
                 pricesAndStocksInOtherShops.click();
                 break;
         }
+        return this;
+    }
+
+    @Step("искать магазин по {value}")
+    public ExtendedProductCardPage searchShop(String value){
+        searchForShop.clearAndFill(value);
         return this;
     }
 

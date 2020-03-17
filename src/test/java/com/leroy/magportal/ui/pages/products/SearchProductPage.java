@@ -44,6 +44,7 @@ public class SearchProductPage extends MenuPage {
             this.name = name;
         }
 
+        @Step("")
         public String getName() {
             return name;
         }
@@ -127,7 +128,7 @@ public class SearchProductPage extends MenuPage {
             "/ancestor::button/preceding-sibling::button")
     Button clearAllFiltersInFilterFrameBtn;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(text(),'ПОКАЗАТЬ ТОВАРЫ')]")
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(text(),'ПОКАЗАТЬ ТОВАРЫ')]/ancestor::button")
     Element applyFiltersBtn;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//label[text()='Поставщик']/ancestor::div[1]")
@@ -173,9 +174,16 @@ public class SearchProductPage extends MenuPage {
     @WebFindBy(xpath = "//span[contains(text(),'СБРОСИТЬ')]/ancestor::button")
     Button clearAllFiltersInProductFrame;
 
+    @WebFindBy(text = "Ничего не найдено")
+    Element notFoundMsgLbl;
+
+    @WebFindBy(xpath = "//p[contains(text(),'не дал результатов')]")
+    Element notFoundMsgDescriptionLbl;
+
     @Step("Ввести в поисковую строку {value} и осуществить поиск")
     public SearchProductPage searchByPhrase(String value) {
         searchInput.clearFillAndSubmit(value);
+        waitForSpinnerAppearAndDisappear();
         return this;
     }
 
@@ -243,7 +251,7 @@ public class SearchProductPage extends MenuPage {
         return this;
     }
 
-    @Step("Выбрать чек-бокс {filter.getName()} и применить фильтры - {applyFilters}")
+    @Step("Выбрать чек-бокс и применить фильтры - {applyFilters}")
     public SearchProductPage choseCheckboxFilter(Filters filter, boolean applyFilters) {
         Element checkbox = E("contains(" + filter.getName() + ")");
         if (!(filter.equals(Filters.HAS_AVAILABLE_STOCK) || filter.equals(Filters.TOP_EM))) {
@@ -311,6 +319,7 @@ public class SearchProductPage extends MenuPage {
     @Step("Применить выбранные фильтры")
     public SearchProductPage applyFilters() {
         applyFiltersBtn.click();
+        waitForSpinnerAppearAndDisappear();
         return this;
     }
 
@@ -334,6 +343,21 @@ public class SearchProductPage extends MenuPage {
     @Step("Очистить фильтры по нажатию на клавишу \"СБРОСИТЬ ФИЛЬТРЫ\"")
     public SearchProductPage clearAllFiltersInProductFrame() {
         clearAllFiltersInProductFrame.click();
+        return this;
+    }
+
+    //VERIFICATIONS
+
+    @Step("Проверить, что отобразилось сообщение \"Ничего не найдено\" " +
+            "с кнопкой \"Сбросить фильтры\" - {isClearFiltersVisible} и содержит поисковой запрос {value}")
+    public SearchProductPage shouldNotFoundMsgIsDisplayed(boolean isClearFiltersVisible, String value){
+        if (isClearFiltersVisible){
+            softAssert.isElementVisible(clearAllFiltersInProductFrame);
+        }else {
+            softAssert.isElementTextContains(notFoundMsgDescriptionLbl, value);
+        }
+        softAssert.isElementVisible(notFoundMsgLbl);
+        softAssert.verifyAll();
         return this;
     }
 
