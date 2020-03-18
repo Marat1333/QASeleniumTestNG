@@ -43,4 +43,8 @@ public class OrderData {
         paymentVersion++;
     }
 
+    public void increaseFulfillmentVersion() {
+        fulfillmentVersion++;
+    }
+
 }

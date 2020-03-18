@@ -4,8 +4,8 @@ public class SalesDocumentsConst {
 
     // Состояния документа
     public enum States {
-        CREATED("", "Создан"),
-        AUTO_PROCESSING("","Автообработка"),
+        CONFIRMED("CONFIRMED", "Создан"),
+        IN_PROGRESS("CONFIRMATION_IN_PROGRESS","Автообработка"),
         TRANSFORMED("","Преобразован"),
         CANCELLED("CANCELLED", "Отменен"),
         DRAFT("DRAFT","Черновик"),

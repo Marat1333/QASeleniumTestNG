@@ -3,9 +3,12 @@ package com.leroy.magmobile.api.tests.salesdoc;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.constants.SalesDocumentsConst;
+import com.leroy.constants.StatusCodes;
+import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.CartClient;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.OrderClient;
+import com.leroy.magmobile.api.clients.SalesDocSearchClient;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
 import com.leroy.magmobile.api.data.sales.orders.GiveAwayData;
@@ -28,6 +31,9 @@ public class OrderTest extends BaseProjectApiTest {
     @Inject
     private OrderClient orderClient;
 
+    @Inject
+    private SalesDocSearchClient salesDocSearchClient;
+
     private CatalogSearchClient searchClient;
 
     private OrderData orderData;
@@ -42,6 +48,7 @@ public class OrderTest extends BaseProjectApiTest {
         searchClient = getCatalogSearchClient();
         cartClient.setSessionData(sessionData);
         orderClient.setSessionData(sessionData);
+        salesDocSearchClient.setSessionData(sessionData);
     }
 
     @Test(description = "Create Order")
@@ -84,15 +91,31 @@ public class OrderTest extends BaseProjectApiTest {
     @Test(description = "Get Order")
     public void testGetOrder() {
         if (orderData == null)
-            throw new IllegalArgumentException("cart data hasn't been created");
+            throw new IllegalArgumentException("order data hasn't been created");
         Response<OrderData> getResp = orderClient.getOrder(orderData.getOrderId());
+        if (getResp.getStatusCode() == StatusCodes.ST_500_ERROR) {
+            Log.error(getResp.toString());
+            getResp = orderClient.getOrder(orderData.getOrderId());
+        }
         orderClient.assertThatGetResponseMatches(getResp, orderData);
+    }
+
+    @Test(description = "Set PinCode")
+    public void testSetPinCode() {
+        if (orderData == null)
+            throw new IllegalArgumentException("order data hasn't been created");
+        String validPinCode = salesDocSearchClient.getValidPinCode();
+        Response<JsonNode> response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
+        orderClient.assertThatPinCodeIsSet(response);
+        orderData.setPinCode(validPinCode);
+        orderData.increasePaymentVersion();
+        orderData.increaseFulfillmentVersion();
     }
 
     @Test(description = "Confirm Order")
     public void testConfirmOrder() {
         if (orderData == null)
-            throw new IllegalArgumentException("cart data hasn't been created");
+            throw new IllegalArgumentException("order data hasn't been created");
         OrderData confirmOrderData = new OrderData();
         confirmOrderData.setPriority(SalesDocumentsConst.Priorities.HIGH.getApiVal());
         confirmOrderData.setShopId(sessionData.getUserShopId());
@@ -110,18 +133,25 @@ public class OrderTest extends BaseProjectApiTest {
         confirmOrderData.setGiveAway(giveAwayData);
 
         Response<OrderData> getResp = orderClient.confirmOrder(orderData.getOrderId(), confirmOrderData);
-        String s = "";
+        orderClient.assertThatIsConfirmed(getResp, orderData);
+        orderData.increaseFulfillmentVersion();
     }
 
     @Test(description = "Cancel Order")
-    public void testCancelOrder() {
+    public void testCancelOrder() throws Exception {
         if (orderData == null)
-            throw new IllegalArgumentException("cart data hasn't been created");
+            throw new IllegalArgumentException("order data hasn't been created");
+        step("Wait until order is confirmed");
+        orderClient.waitUntilOrderIsConfirmed(orderData.getOrderId());
         step("Cancel Order");
         Response<JsonNode> resp = orderClient.cancelOrder(orderData.getOrderId());
         orderClient.assertThatIsCancelled(resp);
-
-        step("Send Get request and check that order is cancelled");
+        orderData.setStatus(SalesDocumentsConst.States.CANCELLED.getApiVal());
+        orderData.setSalesDocStatus(SalesDocumentsConst.States.CANCELLED.getApiVal());
+        orderData.increaseFulfillmentVersion();
+        step("Check that Order is cancelled after GET request");
+        Response<OrderData> getResp = orderClient.getOrder(orderData.getOrderId());
+        orderClient.assertThatGetResponseMatches(getResp, orderData);
     }
 
 }
