@@ -1,0 +1,102 @@
+package com.leroy.magmobile.api.tests.salesdoc;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.inject.Inject;
+import com.leroy.constants.EnvConstants;
+import com.leroy.constants.SalesDocumentsConst;
+import com.leroy.core.SessionData;
+import com.leroy.magmobile.api.clients.CatalogSearchClient;
+import com.leroy.magmobile.api.clients.EstimateClient;
+import com.leroy.magmobile.api.tests.BaseProjectApiTest;
+import com.leroy.umbrella_extension.authorization.AuthClient;
+import com.leroy.magmobile.api.data.sales.cart_estimate.EstimateData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.ProductOrderData;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+import ru.leroymerlin.qa.core.clients.base.Response;
+
+import java.util.Collections;
+import java.util.Random;
+
+public class EstimateTest extends BaseProjectApiTest {
+
+    @Inject
+    private EstimateClient estimateClient;
+
+    @Inject
+    private CatalogSearchClient searchClient;
+
+    @Inject
+    private AuthClient authClient;
+
+    private EstimateData estimateData;
+
+    @BeforeClass
+    private void setUpDefaultSessionData() {
+        sessionData = new SessionData();
+        sessionData.setUserLdap(EnvConstants.BASIC_USER_LDAP);
+        sessionData.setUserShopId("35");
+        sessionData.setUserDepartmentId("1");
+        sessionData.setAccessToken(authClient.getAccessToken(EnvConstants.BASIC_USER_LDAP,
+                EnvConstants.BASIC_USER_PASS));
+
+        searchClient.setSessionData(sessionData);
+        estimateClient.setSessionData(sessionData);
+    }
+
+    @Test(description = "Create Estimate")
+    public void testCreateEstimate() {
+        // Prepare request data
+        ProductOrderData productOrderData = new ProductOrderData(searchClient.getProducts(1).get(0));
+        productOrderData.setQuantity((double) new Random().nextInt(6) + 1);
+
+        // Create
+        Response<EstimateData> response = estimateClient.sendRequestCreate(productOrderData);
+        // Check Create
+        estimateData = estimateClient.assertThatIsCreatedAndGetData(response);
+        // Check that created data contains added product
+        estimateClient.assertThatResponseContainsAddedProducts(response,
+                Collections.singletonList(productOrderData));
+        productOrderData.setLineId(estimateData.getProducts().get(0).getLineId());
+        estimateData.setProducts(Collections.singletonList(productOrderData));
+    }
+
+    @Test(description = "Get Estimate")
+    public void testGetEstimate() {
+        if (estimateData == null)
+            throw new IllegalArgumentException("cart data hasn't been created");
+        Response<EstimateData> getResp = estimateClient.sendRequestGet(estimateData.getEstimateId());
+        estimateClient.assertThatGetResponseMatches(getResp, estimateData);
+    }
+
+    @Test(description = "Update Estimate - change quantity")
+    public void testUpdateEstimate() {
+        // Prepare request data
+        ProductOrderData productOrderData = estimateData.getProducts().get(0);
+        productOrderData.setQuantity(productOrderData.getQuantity() + 3);
+
+        // Create
+        Response<EstimateData> response = estimateClient.sendRequestUpdate(estimateData.getEstimateId(),
+                productOrderData);
+        // Check update
+        estimateData.increaseDocumentVersion();
+        estimateClient.assertThatGetResponseMatches(response, estimateData);
+
+        // Send get request and check again that the estimate has been updated
+        Response<EstimateData> getResp = estimateClient.sendRequestGet(estimateData.getEstimateId());
+        estimateClient.assertThatGetResponseMatches(getResp, estimateData);
+    }
+
+    @Test(description = "Delete Estimate")
+    public void testDeleteEstimate() {
+        Response<JsonNode> response = estimateClient.sendRequestDelete(estimateData.getEstimateId(),
+                estimateData.getDocumentVersion());
+        estimateClient.assertThatResponseChangeStatusIsOk(response);
+
+        Response<EstimateData> getResponse = estimateClient.sendRequestGet(estimateData.getEstimateId());
+        estimateData.setSalesDocStatus(SalesDocumentsConst.States.DELETED.getApiVal());
+        estimateData.setStatus(SalesDocumentsConst.States.DELETED.getApiVal());
+        estimateData.increaseDocumentVersion();
+        estimateClient.assertThatGetResponseMatches(getResponse, estimateData);
+    }
+}

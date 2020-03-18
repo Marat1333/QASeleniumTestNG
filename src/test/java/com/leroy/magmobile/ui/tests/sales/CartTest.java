@@ -1,7 +1,7 @@
 package com.leroy.magmobile.ui.tests.sales;
 
 import com.leroy.constants.SalesDocumentsConst;
-import com.leroy.magmobile.models.sales.SalesOrderCardData;
+import com.leroy.magmobile.ui.models.sales.SalesOrderCardData;
 import com.leroy.magmobile.ui.pages.common.modal.ConfirmRemovingProductModal;
 import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
@@ -19,14 +19,10 @@ public class CartTest extends SalesBaseTest {
     @Test(description = "C22797089 Создать корзину с экрана Документы продажи")
     public void testCreateBasketFromSalesDocumentsScreen() throws Exception {
         // Test data
-        String shopId = "35";
-        String lmCode = getAnyLmCodeProductWithoutSpecificOptions(shopId, false);
+        String lmCode = getAnyLmCodeProductWithoutSpecificOptions();
         // Pre-condition
-        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(
-                LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainProductAndServicesPage.class);
-        MainSalesDocumentsPage mainSalesDocumentsPage = setShopAndDepartmentForUser(mainProductAndServicesPage, shopId, "01")
-                .goToSales()
-                .goToSalesDocumentsSection();
+        MainSalesDocumentsPage mainSalesDocumentsPage = loginAndGoTo(
+                LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
 
         // Step 1
         log.step("Нажать кнопку Оформить продажу");
@@ -64,7 +60,7 @@ public class CartTest extends SalesBaseTest {
                     LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
             SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
             salesDocumentsPage.searchForDocumentByTextAndSelectIt(
-                    SalesDocumentsConst.BASKET_TYPE);
+                    SalesDocumentsConst.Types.CART.getUiVal());
         } // TODO через API
         Basket35Page basket35Page = new Basket35Page(context);
         int productCountInBasket = basket35Page.getCountOfOrderCards();

@@ -6,8 +6,8 @@ import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.widgets.ProductCardWidget;
-import com.leroy.magmobile.models.search.ProductCardData;
-import com.leroy.magmobile.models.work.WithdrawalOrderCardData;
+import com.leroy.magmobile.ui.models.search.ProductCardData;
+import com.leroy.magmobile.ui.models.work.WithdrawalOrderCardData;
 import com.leroy.utils.Converter;
 import io.qameta.allure.Step;
 

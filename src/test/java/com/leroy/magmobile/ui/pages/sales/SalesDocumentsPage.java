@@ -9,7 +9,7 @@ import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.sales.widget.SalesDocumentWidget;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
-import com.leroy.magmobile.models.sales.SalesDocumentData;
+import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
 import io.qameta.allure.Step;
 
 import java.util.List;
@@ -41,7 +41,7 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
     private MagMobGreenSubmitButton makeSaleBtn;
 
     private MagMobGreenSubmitButton getSubmitBtn() {
-        if (context.is35Shop())
+        if (context.isNewShopFunctionality())
             return makeSaleBtn;
         else
             return createSalesDocumentBtn;
@@ -100,7 +100,7 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
         SalesDocumentData documentFromPage = widget.collectDataFromPage();
         if (expectedDocument.getDate() != null) {
             softAssert.isEquals(documentFromPage.getDate(), expectedDocument.getDate(),
-                    "Документ дата должна быть %s");
+                    "Документ дата - не верна");
         }
         if (expectedDocument.getDocumentState() != null)
             softAssert.isEquals(documentFromPage.getDocumentState(), expectedDocument.getDocumentState(),
@@ -116,9 +116,9 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
                         "PIN документа должен быть %s");
         }
         softAssert.isEquals(documentFromPage.getPrice(), expectedDocument.getPrice(),
-                "Сумма в документе должна быть %s");
+                "Сумма в документе - не верна");
         softAssert.isEquals(documentFromPage.getTitle(), expectedDocument.getTitle(),
-                "Место отзыва документа должно быть %s");
+                "Место отзыва документа - не верно");
         softAssert.verifyAll();
         return this;
     }

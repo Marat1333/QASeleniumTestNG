@@ -3,7 +3,7 @@ package com.leroy.magmobile.ui.pages.sales.widget;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.models.search.ProductCardData;
+import com.leroy.magmobile.ui.models.search.ProductCardData;
 import com.leroy.utils.Converter;
 import org.openqa.selenium.WebDriver;
 
@@ -14,11 +14,11 @@ public class SearchProductCardWidget extends SearchProductAllGammaCardWidget {
     }
 
     // Цена
-    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc='price']")
+    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc='price'][last()]")
     private Element priceObj;
 
     // Например, "за штуку"
-    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc='productPriceUnit']")
+    @AppFindBy(xpath = ".//android.view.ViewGroup[android.widget.TextView[@content-desc='productPriceUnit']][last()]/android.widget.TextView")
     private Element priceLbl;
 
     // Количество
@@ -30,8 +30,7 @@ public class SearchProductCardWidget extends SearchProductAllGammaCardWidget {
     private Element quantityType;
 
     // Рядом с кол-вом, например, "доступно"
-    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc='priceUnit']" +
-            "/following-sibling::android.widget.TextView")
+    @AppFindBy(xpath = ".//android.widget.TextView[contains(@text, 'доступно')]")
     private Element quantityLbl;
 
     public String getPrice(String pageSource) {
@@ -77,7 +76,8 @@ public class SearchProductCardWidget extends SearchProductAllGammaCardWidget {
         productCardData.setLmCode(getLmCode(true, ps));
         productCardData.setBarCode(getBarCode(true, ps));
         productCardData.setName(getName(ps));
-        productCardData.setPrice(Converter.strToDouble(getPrice(ps)));
+        if (priceObj.isVisible(ps))
+            productCardData.setPrice(Converter.strToDouble(getPrice(ps)));
         productCardData.setAvailableQuantity(Converter.strToDouble(getQuantity(ps)));
         return productCardData;
     }

@@ -1,6 +1,6 @@
 package com.leroy.magportal.ui.tests;
 
-import com.leroy.magportal.models.CustomerData;
+import com.leroy.magportal.ui.models.CustomerData;
 import com.leroy.magportal.ui.pages.CreatingCustomerPage;
 import com.leroy.magportal.ui.pages.CustomerPage;
 import com.leroy.magportal.ui.pages.CustomerPersonalInfoPage;

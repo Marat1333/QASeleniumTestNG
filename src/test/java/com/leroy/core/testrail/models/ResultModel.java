@@ -90,13 +90,20 @@ public class ResultModel extends BaseTestRailModel {
         this.stepResults = stepResults;
     }
 
+    private String escapingQuotes(String text) {
+        return text;
+        /*if (text == null)
+            return null;
+        return text.replaceAll("\"", "\\\\\"");*/
+    }
+
     @Override
     public Map<String, Object> getData() {
         Map<String, Object> data = new HashMap<>();
         data.put("status_id", getStatus_id());
-        data.put("comment", getComment());
+        data.put("comment", escapingQuotes(getComment()));
         data.put("elapsed", getElapsed());
-        data.put("custom_execlog", getExecutionLog());
+        data.put("custom_execlog", escapingQuotes(getExecutionLog()));
         data.put("custom_step_results", getStepResults());
         return data;
     }

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="API Sales Documents Suite" parallel="tests">
+
+    <listeners>
+        <listener class-name="com.leroy.core.listeners.TestRailListener"/>
+    </listeners>
+
+    <test name="SalesDoc with Product">
+        <classes>
+            <class name="com.leroy.magmobile.api.tests.salesdoc.SalesDocApiTest">
+                <methods>
+                    <include name="testSalesDocAddProduct"/>
+                    <include name="testSalesDocProductGET"/>
+                    <include name="testSalesDocUpdateQuantityForTheSameProduct"/>
+                    <include name="testSalesDocUpdateParameterCancelWithProduct"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="SalesDoc with Service">
+        <classes>
+            <class name="com.leroy.magmobile.api.tests.salesdoc.SalesDocApiTest">
+                <methods>
+                    <include name="testSalesDocAddService"/>
+                    <include name="testSalesDocServiceGET"/>
+                    <include name="testSalesDocUpdatePriceForTheSameService"/>
+                    <include name="testSalesDocUpdateParameterCancelWithServices"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="SalesDoc Transfer">
+        <classes>
+            <class name="com.leroy.magmobile.api.tests.salesdoc.SalesDocTransferTest">
+                <methods>
+                    <include name="testSalesDocTransferCreatePOST"/>
+                    <include name="testValidateJsonSchema"/>
+                    <include name="testSalesDocTransferAddPUT"/>
+                    <include name="testGET"/>
+                    <include name="testDelete"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+</suite>

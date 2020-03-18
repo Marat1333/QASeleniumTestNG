@@ -1,7 +1,7 @@
 package com.leroy.core;
 
-import com.leroy.core.configuration.CustomAssert;
-import com.leroy.core.configuration.CustomSoftAssert;
+import com.leroy.core.asserts.CustomAssert;
+import com.leroy.core.asserts.CustomSoftAssert;
 import com.leroy.core.testrail.helpers.StepLog;
 import org.openqa.selenium.WebDriver;
 
@@ -13,8 +13,12 @@ public class TestContext {
     private StepLog log;
     private WebDriver driver;
 
-    public TestContext(WebDriver driver, CustomSoftAssert softAssert, CustomAssert anAssert, StepLog log, String tcId) {
+    public TestContext(WebDriver driver) {
         this.driver = driver;
+    }
+
+    public TestContext(WebDriver driver, CustomSoftAssert softAssert, CustomAssert anAssert, StepLog log, String tcId) {
+        this(driver);
         this.softAssert = softAssert;
         this.anAssert = anAssert;
         this.log = log;

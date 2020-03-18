@@ -10,11 +10,11 @@ import com.leroy.magmobile.ui.elements.MagMobWhiteSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.sales.basket.OrderRowProductWidget;
-import com.leroy.magmobile.models.CustomerData;
+import com.leroy.magmobile.ui.models.CustomerData;
 import com.leroy.magmobile.ui.pages.search.SearchCustomerPage;
 import com.leroy.magmobile.ui.pages.search.widgets.SearchCustomerWidget;
-import com.leroy.magmobile.models.sales.SalesOrderCardData;
-import com.leroy.magmobile.models.sales.SalesOrderData;
+import com.leroy.magmobile.ui.models.sales.SalesOrderCardData;
+import com.leroy.magmobile.ui.models.sales.SalesOrderData;
 import com.leroy.utils.Converter;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
@@ -68,7 +68,7 @@ public class EstimatePage extends CommonMagMobilePage {
     @AppFindBy(text = "Смета", metaName = "Заголовок экрана")
     Element headerLbl;
 
-    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='EstimateDocumentScreenId']//android.widget.TextView[contains(@text, 'Документ №')]",
+    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='EstimateDocumentScreenId']//android.widget.TextView[contains(@text, '№')]",
             metaName = "Номер документа")
     Element documentNumber;
 

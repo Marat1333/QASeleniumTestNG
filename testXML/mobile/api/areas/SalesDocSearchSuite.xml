@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="API Sales Documents Search Suite" parallel="methods">
+
+    <listeners>
+        <listener class-name="com.leroy.core.listeners.TestRailListener"/>
+    </listeners>
+
+    <test name="SalesDoc SEARCH">
+        <classes>
+            <class name="com.leroy.magmobile.api.tests.salesdoc.SalesDocSearchTest"/>
+        </classes>
+    </test>
+
+    <test name="SalesDoc Discount">
+        <classes>
+            <class name="com.leroy.magmobile.api.tests.salesdoc.SalesDocDiscountTest"/>
+        </classes>
+    </test>
+
+
+
+</suite>

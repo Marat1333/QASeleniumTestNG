@@ -1,11 +1,11 @@
 package com.leroy.magmobile.ui.tests.sales;
 
 import com.leroy.constants.SalesDocumentsConst;
-import com.leroy.magmobile.models.CustomerData;
-import com.leroy.magmobile.models.sales.SalesDocumentData;
-import com.leroy.magmobile.models.sales.SalesOrderCardData;
-import com.leroy.magmobile.models.sales.SalesOrderData;
-import com.leroy.magmobile.models.search.ProductCardData;
+import com.leroy.magmobile.ui.models.CustomerData;
+import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
+import com.leroy.magmobile.ui.models.sales.SalesOrderCardData;
+import com.leroy.magmobile.ui.models.sales.SalesOrderData;
+import com.leroy.magmobile.ui.models.search.ProductCardData;
 import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
 import com.leroy.magmobile.ui.pages.sales.EditProduct35Page;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
@@ -29,8 +29,7 @@ public class EstimateTest extends SalesBaseTest {
     public void testCreatingEstimateFromSalesDocumentsScreen() throws Exception {
         // Test data
         String existedClientPhone = "1111111111";
-        String shopId = "35";
-        String lmCode = getAnyLmCodeProductWithoutSpecificOptions(shopId, false);
+        String lmCode = getAnyLmCodeProductWithoutSpecificOptions();
         // Pre-condition
         MainSalesDocumentsPage mainSalesDocumentsPage = loginAndGoTo(
                 LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
@@ -92,8 +91,8 @@ public class EstimateTest extends SalesBaseTest {
         log.step("Нажать на Перейти в список документов");
         SalesDocumentData expectedSalesDocument = new SalesDocumentData();
         expectedSalesDocument.setPrice(expectedTotalPrice);
-        expectedSalesDocument.setDocumentState(SalesDocumentsConst.CREATED_STATE);
-        expectedSalesDocument.setTitle(SalesDocumentsConst.ESTIMATE_TYPE);
+        expectedSalesDocument.setDocumentState(SalesDocumentsConst.States.CREATED.getUiVal());
+        expectedSalesDocument.setTitle(SalesDocumentsConst.Types.QUOTATION.getUiVal());
         expectedSalesDocument.setNumber(documentNumber);
         SalesDocumentsPage salesDocumentsPage = estimateSubmittedPage.clickSubmitButton();
         salesDocumentsPage.verifyRequiredElements()
@@ -187,7 +186,7 @@ public class EstimateTest extends SalesBaseTest {
                 LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
         SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
         salesDocumentsPage.searchForDocumentByTextAndSelectIt(
-                SalesDocumentsConst.ESTIMATE_TYPE);
+                SalesDocumentsConst.Types.QUOTATION.getUiVal());
         EstimatePage estimatePage = new EstimatePage(context);
         // Collect test data from page
         SalesOrderData testEstimateData = estimatePage.getEstimateDataFromPage();

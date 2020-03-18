@@ -4,7 +4,6 @@ import com.leroy.constants.EnvConstants;
 import com.leroy.core.pages.BaseWebPage;
 import com.leroy.magportal.ui.pages.LoginWebPage;
 import com.leroy.magportal.ui.pages.OrdersPage;
-import com.leroy.magmobile.ui.MagMobileBaseTest;
 import io.qameta.allure.Step;
 
 public class WebBaseSteps extends MagPortalBaseTest {
