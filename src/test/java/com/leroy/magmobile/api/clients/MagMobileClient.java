@@ -30,6 +30,8 @@ public class MagMobileClient extends BaseClient {
     protected SessionData sessionData;
 
     protected <J> Response<J> execute(RequestBuilder<?> request, final Class<J> type) {
+        if (sessionData.getAccessToken() != null)
+            request.bearerAuthHeader(sessionData.getAccessToken());
         return executeRequest(request.build(gatewayUrl), type);
     }
 
@@ -55,17 +57,6 @@ public class MagMobileClient extends BaseClient {
         return execute(new SalesDocSearchV3Get()
                 .queryParam("pinCodeOrDocId", pinCodeOrDocId)
                 .build(gatewayUrl), SalesDocumentListResponse.class);
-    }
-
-    //
-    public Response<JSONObject> cancelOrder(String userLdap, String orderId) {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("action", "cancel-order");
-        return execute(new OrderWorkflowPut()
-                .setOrderId(orderId)
-                .setUserLdap(userLdap)
-                .jsonBody(jsonObject)
-                .build(gatewayUrl), JSONObject.class);
     }
 
     // Discount

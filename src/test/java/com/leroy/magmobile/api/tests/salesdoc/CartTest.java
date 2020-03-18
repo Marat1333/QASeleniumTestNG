@@ -2,15 +2,12 @@ package com.leroy.magmobile.api.tests.salesdoc;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
-import com.leroy.constants.EnvConstants;
 import com.leroy.constants.SalesDocumentsConst;
-import com.leroy.core.SessionData;
 import com.leroy.magmobile.api.clients.CartClient;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
-import com.leroy.magmobile.api.tests.BaseProjectApiTest;
-import com.leroy.umbrella_extension.authorization.AuthClient;
+import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartData;
-import com.leroy.magmobile.api.data.sales.cart_estimate.ProductOrderData;
+import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -23,31 +20,25 @@ public class CartTest extends BaseProjectApiTest {
     @Inject
     private CartClient cartClient;
 
-    @Inject
     private CatalogSearchClient searchClient;
-
-    @Inject
-    private AuthClient authClient;
 
     private CartData cartData;
 
-    @BeforeClass
-    private void setUpDefaultSessionData() {
-        sessionData = new SessionData();
-        sessionData.setUserLdap(EnvConstants.BASIC_USER_LDAP);
-        sessionData.setUserShopId("35");
-        sessionData.setUserDepartmentId("1");
-        sessionData.setAccessToken(authClient.getAccessToken(EnvConstants.BASIC_USER_LDAP,
-                EnvConstants.BASIC_USER_PASS));
+    @Override
+    protected boolean isNeedAccessToken() {
+        return true;
+    }
 
+    @BeforeClass
+    private void setUp() {
+        searchClient = getCatalogSearchClient();
         cartClient.setSessionData(sessionData);
-        searchClient.setSessionData(sessionData);
     }
 
     @Test(description = "C22906656 Create Cart - Lego_Cart_Post")
     public void testCreateCart() {
         // Prepare request data
-        ProductOrderData productOrderData = new ProductOrderData(searchClient.getProducts(1).get(0));
+        CartEstimateProductOrderData productOrderData = new CartEstimateProductOrderData(searchClient.getProducts(1).get(0));
         productOrderData.setQuantity((double) new Random().nextInt(6) + 1);
 
         // Create

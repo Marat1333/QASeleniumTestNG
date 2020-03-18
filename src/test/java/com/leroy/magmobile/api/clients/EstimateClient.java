@@ -3,7 +3,7 @@ package com.leroy.magmobile.api.clients;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.magmobile.api.data.sales.cart_estimate.EstimateData;
-import com.leroy.magmobile.api.data.sales.cart_estimate.ProductOrderData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
 import com.leroy.magmobile.api.requests.salesdoc.estimate.EstimateChangeStatusPut;
 import com.leroy.magmobile.api.requests.salesdoc.estimate.EstimateGet;
 import com.leroy.magmobile.api.requests.salesdoc.estimate.EstimatePost;
@@ -28,10 +28,10 @@ public class EstimateClient extends MagMobileClient {
                 .setShopId(sessionData.getUserShopId()), EstimateData.class);
     }
 
-    public Response<EstimateData> sendRequestCreate(List<ProductOrderData> productOrderDataList) {
-        List<ProductOrderData> filteredProducts = new ArrayList<>();
-        for (ProductOrderData prData : productOrderDataList) {
-            ProductOrderData filterPrData = new ProductOrderData();
+    public Response<EstimateData> sendRequestCreate(List<CartEstimateProductOrderData> productOrderDataList) {
+        List<CartEstimateProductOrderData> filteredProducts = new ArrayList<>();
+        for (CartEstimateProductOrderData prData : productOrderDataList) {
+            CartEstimateProductOrderData filterPrData = new CartEstimateProductOrderData();
             filterPrData.setQuantity(prData.getQuantity());
             filterPrData.setLmCode(prData.getLmCode());
             filteredProducts.add(filterPrData);
@@ -45,12 +45,12 @@ public class EstimateClient extends MagMobileClient {
     }
 
     public Response<EstimateData> sendRequestCreate(
-            ProductOrderData productOrderData) {
+            CartEstimateProductOrderData productOrderData) {
         return sendRequestCreate(Collections.singletonList(productOrderData));
     }
 
     public Response<EstimateData> sendRequestUpdate(String estimateId,
-                                                    List<ProductOrderData> productOrderDataList) {
+                                                    List<CartEstimateProductOrderData> productOrderDataList) {
         EstimateData estimateData = new EstimateData();
         estimateData.setProducts(productOrderDataList);
         return execute(new EstimatePut()
@@ -61,7 +61,7 @@ public class EstimateClient extends MagMobileClient {
     }
 
     public Response<EstimateData> sendRequestUpdate(String estimateId,
-            ProductOrderData productOrderData) {
+            CartEstimateProductOrderData productOrderData) {
         return sendRequestUpdate(estimateId, Collections.singletonList(productOrderData));
     }
 
@@ -97,7 +97,7 @@ public class EstimateClient extends MagMobileClient {
     }
 
     private void shortVerifyProducts(
-            int i, ProductOrderData actualProduct, ProductOrderData expectedProduct) {
+            int i, CartEstimateProductOrderData actualProduct, CartEstimateProductOrderData expectedProduct) {
         assertThat(String.format("Product #%s - lmCode", i + 1),
                 actualProduct.getLmCode(), is(expectedProduct.getLmCode()));
         assertThat(String.format("Product #%s - Quantity", i + 1),
@@ -109,12 +109,12 @@ public class EstimateClient extends MagMobileClient {
     }
 
     public EstimateClient assertThatResponseContainsAddedProducts(
-            Response<EstimateData> resp, List<ProductOrderData> expectedProducts) {
+            Response<EstimateData> resp, List<CartEstimateProductOrderData> expectedProducts) {
         assertThatResponseIsOk(resp);
         EstimateData actualData = resp.asJson();
         for (int i = 0; i < actualData.getProducts().size(); i++) {
-            ProductOrderData actualProduct = actualData.getProducts().get(i);
-            ProductOrderData expectedProduct = expectedProducts.get(i);
+            CartEstimateProductOrderData actualProduct = actualData.getProducts().get(i);
+            CartEstimateProductOrderData expectedProduct = expectedProducts.get(i);
             shortVerifyProducts(i, actualProduct, expectedProduct);
         }
         return this;
@@ -135,8 +135,8 @@ public class EstimateClient extends MagMobileClient {
         assertThat("products", actualData.getProducts(), hasSize(expectedData.getProducts().size()));
 
         for (int i = 0; i < actualData.getProducts().size(); i++) {
-            ProductOrderData actualProduct = actualData.getProducts().get(i);
-            ProductOrderData expectedProduct = expectedData.getProducts().get(i);
+            CartEstimateProductOrderData actualProduct = actualData.getProducts().get(i);
+            CartEstimateProductOrderData expectedProduct = expectedData.getProducts().get(i);
             shortVerifyProducts(i, actualProduct, expectedProduct);
             assertThat(String.format("Product #%s - barCode", i + 1),
                     actualProduct.getBarCode(), is(expectedProduct.getBarCode()));

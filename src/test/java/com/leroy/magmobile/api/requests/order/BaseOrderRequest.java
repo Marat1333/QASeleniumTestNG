@@ -4,6 +4,10 @@ import ru.leroymerlin.qa.core.clients.base.RequestBuilder;
 
 public class BaseOrderRequest<J extends BaseOrderRequest<J>> extends RequestBuilder<J> {
 
+    public J setOrderId(String val) {
+        return queryParam("orderId", val);
+    }
+
     public J setShopId(String val) {
         return header("shopid", val);
     }

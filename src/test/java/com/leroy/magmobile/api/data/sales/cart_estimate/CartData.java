@@ -9,7 +9,7 @@ public class CartData {
     private String fullDocId;
     private String docType;
     private String salesDocStatus;
-    private List<ProductOrderData> products;
+    private List<CartEstimateProductOrderData> products;
     private String shopId;
     private String cartId;
     private String documentType;

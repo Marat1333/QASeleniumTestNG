@@ -25,19 +25,16 @@ public class SalesDocDiscountTest extends BaseProjectApiTest {
     @Inject
     private Provider<MagMobileClient> magMobileClient;
 
-    @Inject
-    private Provider<CatalogSearchClient> searchClientProvider;
-
     private String productLmCode;
 
+    @Override
+    protected boolean isNeedAccessToken() {
+        return false;
+    }
+
     @BeforeClass
-    private void setUpDefaultSessionData() {
-        sessionData = new SessionData();
-        sessionData.setUserShopId("35");
-        sessionData.setUserDepartmentId("1");
-        CatalogSearchClient searchClient = searchClientProvider.get();
-        searchClient.setSessionData(sessionData);
-        productLmCode = searchClient.getProductLmCodes(1).get(0);
+    private void setUp() {
+        productLmCode = getCatalogSearchClient().getProductLmCodes(1).get(0);
     }
 
     @Test(description = "C3254680 SalesDoc GET discounts")

@@ -3,7 +3,7 @@ package com.leroy.magmobile.api.clients;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartData;
-import com.leroy.magmobile.api.data.sales.cart_estimate.ProductOrderData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
 import com.leroy.magmobile.api.requests.salesdoc.cart.CartChangeStatusPut;
 import com.leroy.magmobile.api.requests.salesdoc.cart.CartGet;
 import com.leroy.magmobile.api.requests.salesdoc.cart.CartPOST;
@@ -30,7 +30,7 @@ public class CartClient extends MagMobileClient {
                 .setShopId(sessionData.getUserShopId()), CartData.class);
     }
 
-    public Response<CartData> sendRequestCreate(List<ProductOrderData> productOrderDataList) {
+    public Response<CartData> sendRequestCreate(List<CartEstimateProductOrderData> productOrderDataList) {
         CartData cartData = new CartData();
         cartData.setProducts(productOrderDataList);
         return execute(new CartPOST()
@@ -40,7 +40,7 @@ public class CartClient extends MagMobileClient {
     }
 
     public Response<CartData> sendRequestCreate(
-            ProductOrderData productOrderData) {
+            CartEstimateProductOrderData productOrderData) {
         return sendRequestCreate(Collections.singletonList(productOrderData));
     }
 
@@ -57,26 +57,32 @@ public class CartClient extends MagMobileClient {
     /**
      * ------------  Verifications -----------------
      **/
-    public CartData assertThatIsCreatedAndGetData(Response<CartData> response) {
+    public CartData assertThatIsCreatedAndGetData(Response<CartData> response, boolean shortCheck) {
         assertThatResponseIsOk(response);
         CartData data = response.asJson();
         assertThat("fullDocId", data.getFullDocId(), isNumber());
-        assertThat("docType", data.getDocType(), is(SalesDocumentsConst.Types.CART.getApiVal()));
-        assertThat("salesDocStatus", data.getSalesDocStatus(), is(SalesDocumentsConst.States.DRAFT.getApiVal()));
-        assertThat("documentType", data.getDocumentType(), is(SalesDocumentsConst.Types.CART.getApiVal()));
-        assertThat("status", data.getStatus(), is(SalesDocumentsConst.States.DRAFT.getApiVal()));
-        assertThat("shopId", data.getShopId(), is(sessionData.getUserShopId()));
-        assertThat("cartId", data.getCartId(), is(data.getFullDocId()));
-        assertThat("documentVersion", data.getDocumentVersion(), is(1));
-        assertThat("groupingId", data.getGroupingId(), not(isEmptyOrNullString()));
+        if (!shortCheck) {
+            assertThat("docType", data.getDocType(), is(SalesDocumentsConst.Types.CART.getApiVal()));
+            assertThat("salesDocStatus", data.getSalesDocStatus(), is(SalesDocumentsConst.States.DRAFT.getApiVal()));
+            assertThat("documentType", data.getDocumentType(), is(SalesDocumentsConst.Types.CART.getApiVal()));
+            assertThat("status", data.getStatus(), is(SalesDocumentsConst.States.DRAFT.getApiVal()));
+            assertThat("shopId", data.getShopId(), is(sessionData.getUserShopId()));
+            assertThat("cartId", data.getCartId(), is(data.getFullDocId()));
+            assertThat("documentVersion", data.getDocumentVersion(), is(1));
+            assertThat("groupingId", data.getGroupingId(), not(emptyOrNullString()));
 
-        assertThat("products", data.getProducts(), hasSize(greaterThan(0)));
+            assertThat("products", data.getProducts(), hasSize(greaterThan(0)));
+        }
 
         return data;
     }
 
+    public CartData assertThatIsCreatedAndGetData(Response<CartData> response) {
+        return assertThatIsCreatedAndGetData(response, false);
+    }
+
     private void shortVerifyProducts(
-            int i, ProductOrderData actualProduct, ProductOrderData expectedProduct) {
+            int i, CartEstimateProductOrderData actualProduct, CartEstimateProductOrderData expectedProduct) {
         assertThat(String.format("Product #%s - lmCode", i + 1),
                 actualProduct.getLmCode(), is(expectedProduct.getLmCode()));
         assertThat(String.format("Product #%s - title", i + 1),
@@ -98,12 +104,12 @@ public class CartClient extends MagMobileClient {
     }
 
     public CartClient assertThatResponseContainsAddedProducts(
-            Response<CartData> resp, List<ProductOrderData> expectedProducts) {
+            Response<CartData> resp, List<CartEstimateProductOrderData> expectedProducts) {
         assertThatResponseIsOk(resp);
         CartData actualData = resp.asJson();
         for (int i = 0; i < actualData.getProducts().size(); i++) {
-            ProductOrderData actualProduct = actualData.getProducts().get(i);
-            ProductOrderData expectedProduct = expectedProducts.get(i);
+            CartEstimateProductOrderData actualProduct = actualData.getProducts().get(i);
+            CartEstimateProductOrderData expectedProduct = expectedProducts.get(i);
             shortVerifyProducts(i, actualProduct, expectedProduct);
         }
         return this;
@@ -125,8 +131,8 @@ public class CartClient extends MagMobileClient {
         assertThat("products", actualData.getProducts(), hasSize(expectedData.getProducts().size()));
 
         for (int i = 0; i < actualData.getProducts().size(); i++) {
-            ProductOrderData actualProduct = actualData.getProducts().get(i);
-            ProductOrderData expectedProduct = expectedData.getProducts().get(i);
+            CartEstimateProductOrderData actualProduct = actualData.getProducts().get(i);
+            CartEstimateProductOrderData expectedProduct = expectedData.getProducts().get(i);
             shortVerifyProducts(i, actualProduct, expectedProduct);
             assertThat(String.format("Product #%s - priceCategory", i + 1),
                     actualProduct.getBarCode(), not(nullValue()));
