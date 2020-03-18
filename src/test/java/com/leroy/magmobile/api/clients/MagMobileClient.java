@@ -1,5 +1,6 @@
 package com.leroy.magmobile.api.clients;
 
+import com.leroy.constants.EnvConstants;
 import com.leroy.core.SessionData;
 import com.leroy.magmobile.api.data.sales.DiscountData;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
@@ -42,7 +43,7 @@ public class MagMobileClient extends BaseClient {
 
     @PostConstruct
     private void init() {
-        gatewayUrl = params.getProperty("mashuper.magmobile.url");
+        gatewayUrl = EnvConstants.MAIN_API_HOST;
     }
 
     // ---------  SalesDoc & Orders -------------------- //

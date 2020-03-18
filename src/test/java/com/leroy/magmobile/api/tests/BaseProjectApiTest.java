@@ -9,10 +9,10 @@ import com.leroy.core.SessionData;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.umbrella_extension.authorization.AuthClient;
 import org.testng.annotations.BeforeClass;
+import com.leroy.core.api.BaseModule;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
-import ru.leroymerlin.qa.core.base.BaseModule;
 
 import java.lang.reflect.Method;
 import java.util.regex.Matcher;
