@@ -20,7 +20,7 @@ public class ExtendedProductCardPage extends ProductCardPage {
         super(context);
     }
 
-    public enum Tabs{
+    public enum Tabs {
         SIMILAR_PRODUCTS,
         COMPLEMENT_PRODUCTS,
         PRICES_AND_STOCKS_IN_OTHER_SHOPS;
@@ -98,8 +98,8 @@ public class ExtendedProductCardPage extends ProductCardPage {
     }
 
     @Step("перейти во вкладку с дополнительной информацией")
-    public ExtendedProductCardPage switchExtraInfoTabs(Tabs tab){
-        switch(tab){
+    public ExtendedProductCardPage switchExtraInfoTabs(Tabs tab) {
+        switch (tab) {
             case SIMILAR_PRODUCTS:
                 similarProducts.click();
                 break;
@@ -114,7 +114,7 @@ public class ExtendedProductCardPage extends ProductCardPage {
     }
 
     @Step("искать магазин по {value}")
-    public ExtendedProductCardPage searchShop(String value){
+    public ExtendedProductCardPage searchShop(String value) {
         searchForShop.clearAndFill(value);
         return this;
     }

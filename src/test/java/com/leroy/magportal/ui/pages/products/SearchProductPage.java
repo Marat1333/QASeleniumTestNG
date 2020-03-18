@@ -11,6 +11,7 @@ import com.leroy.magportal.ui.webelements.MagPortalComboBox;
 import com.leroy.magportal.ui.webelements.searchelements.SupplierComboBox;
 import com.leroy.magportal.ui.webelements.searchelements.SupplierDropDown;
 import com.leroy.magportal.ui.webelements.widgets.*;
+import com.leroy.umbrella_extension.magmobile.data.ProductItemListResponse;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 
@@ -179,6 +180,9 @@ public class SearchProductPage extends MenuPage {
 
     @WebFindBy(xpath = "//p[contains(text(),'не дал результатов')]")
     Element notFoundMsgDescriptionLbl;
+
+    @WebFindBy(text = "Больше ничего не найдено.")
+    Element noMoreResultsLbl;
 
     @Step("Ввести в поисковую строку {value} и осуществить поиск")
     public SearchProductPage searchByPhrase(String value) {
@@ -350,14 +354,21 @@ public class SearchProductPage extends MenuPage {
 
     @Step("Проверить, что отобразилось сообщение \"Ничего не найдено\" " +
             "с кнопкой \"Сбросить фильтры\" - {isClearFiltersVisible} и содержит поисковой запрос {value}")
-    public SearchProductPage shouldNotFoundMsgIsDisplayed(boolean isClearFiltersVisible, String value){
-        if (isClearFiltersVisible){
+    public SearchProductPage shouldNotFoundMsgIsDisplayed(boolean isClearFiltersVisible, String value) {
+        if (isClearFiltersVisible) {
             softAssert.isElementVisible(clearAllFiltersInProductFrame);
-        }else {
+        } else {
             softAssert.isElementTextContains(notFoundMsgDescriptionLbl, value);
         }
         softAssert.isElementVisible(notFoundMsgLbl);
         softAssert.verifyAll();
+        return this;
+    }
+
+    public SearchProductPage shouldResponseEntityCountEqualsToViewEntityCount(ProductItemListResponse responseData){
+        anAssert.isTrue(responseData.getItems().size()==extendedProductCardListTableView.getCount(),
+                "Кол-во артикулов отличается: отображено -"+responseData.getItems().size()+", получено - "
+                        +extendedProductCardListTableView.getCount());
         return this;
     }
 
