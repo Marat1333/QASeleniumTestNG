@@ -80,7 +80,8 @@ public class SalesDocumentsConst {
 
     // Отзыв
     public enum GiveAwayPoints {
-        SALES_FLOOR("SALESFLOOR", "Из торгового зала");
+        SALES_FLOOR("SALESFLOOR", "Из торгового зала"),
+        PICKUP("PICKUP", "Самовывоз");
 
         private String uiVal;
         private String apiVal;

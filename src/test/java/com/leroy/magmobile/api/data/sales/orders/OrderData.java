@@ -31,7 +31,7 @@ public class OrderData {
     private List<Object> refunds;
     private Object registerStatus;
     private String pinCode;
-    private Object giveAway;
+    private GiveAwayData giveAway;
     private String fulfillmentTaskId;
     private Integer fulfillmentVersion;
     private String creatorName;

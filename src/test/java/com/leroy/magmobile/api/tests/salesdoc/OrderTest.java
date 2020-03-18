@@ -8,6 +8,7 @@ import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.OrderClient;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
+import com.leroy.magmobile.api.data.sales.orders.GiveAwayData;
 import com.leroy.magmobile.api.data.sales.orders.OrderData;
 import com.leroy.magmobile.api.data.sales.orders.PostOrderData;
 import com.leroy.magmobile.api.data.sales.orders.PostOrderProductData;
@@ -101,6 +102,12 @@ public class OrderTest extends BaseProjectApiTest {
         confirmOrderData.setFulfillmentTaskId(orderData.getFulfillmentTaskId());
         confirmOrderData.setPaymentTaskId(orderData.getPaymentTaskId());
         confirmOrderData.setProducts(orderData.getProducts());
+
+        GiveAwayData giveAwayData = new GiveAwayData();
+        giveAwayData.setDate(LocalDateTime.now().plusDays(1));
+        giveAwayData.setPoint(SalesDocumentsConst.GiveAwayPoints.PICKUP.getApiVal());
+        giveAwayData.setShopId(Integer.valueOf(sessionData.getUserShopId()));
+        confirmOrderData.setGiveAway(giveAwayData);
 
         Response<OrderData> getResp = orderClient.confirmOrder(orderData.getOrderId(), confirmOrderData);
         String s = "";
