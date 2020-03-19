@@ -119,4 +119,20 @@ public class CustomerClient extends MagMobileClient {
 
         return this;
     }
+
+    // Help Methods
+
+    public CustomerData getAnyCustomer() {
+        CustomerSearchFilters customerSearchFilters = new CustomerSearchFilters();
+        customerSearchFilters.setCustomerType(CustomerSearchFilters.CustomerType.NATURAL);
+        customerSearchFilters.setDiscriminantType(CustomerSearchFilters.DiscriminantType.PHONENUMBER);
+        customerSearchFilters.setCustomerType(CustomerSearchFilters.CustomerType.NATURAL);
+        customerSearchFilters.setDiscriminantValue("+71111111111");
+        Response<CustomerListData> resp = searchForCustomers(customerSearchFilters);
+        assertThatResponseIsOk(resp);
+        List<CustomerData> customers = resp.asJson().getItems();
+        assertThat("GetAnyCustomer Method. Count of customers", customers,
+                hasSize(greaterThan(0)));
+        return customers.get(0);
+    }
 }
