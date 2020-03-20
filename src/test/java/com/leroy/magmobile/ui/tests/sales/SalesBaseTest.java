@@ -9,8 +9,9 @@ import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.*;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
-import com.leroy.magmobile.api.data.sales.cart_estimate.CartData;
-import com.leroy.magmobile.api.data.sales.cart_estimate.EstimateData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
@@ -143,10 +144,10 @@ public class SalesBaseTest extends AppBaseSteps {
 
     protected String createDraftCart(int productCount) {
         List<String> lmCodes = getAnyLmCodesProductWithoutSpecificOptions(productCount);
-        List<CartEstimateProductOrderData> productOrderDataList = new ArrayList<>();
+        List<CartProductOrderData> productOrderDataList = new ArrayList<>();
         Random r = new Random();
         for (String lmCode : lmCodes) {
-            CartEstimateProductOrderData productOrderData = new CartEstimateProductOrderData();
+            CartProductOrderData productOrderData = new CartProductOrderData();
             productOrderData.setLmCode(lmCode);
             productOrderData.setQuantity((double) (r.nextInt(9) + 1));
             productOrderDataList.add(productOrderData);

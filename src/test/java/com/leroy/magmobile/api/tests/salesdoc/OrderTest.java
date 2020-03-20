@@ -9,8 +9,9 @@ import com.leroy.magmobile.api.clients.CartClient;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.OrderClient;
 import com.leroy.magmobile.api.clients.SalesDocSearchClient;
-import com.leroy.magmobile.api.data.sales.cart_estimate.CartData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magmobile.api.data.sales.orders.GiveAwayData;
 import com.leroy.magmobile.api.data.sales.orders.OrderData;
 import com.leroy.magmobile.api.data.sales.orders.PostOrderData;
@@ -54,7 +55,7 @@ public class OrderTest extends BaseProjectApiTest {
     @Test(description = "Create Order")
     public void testCreateOrder() {
         // Prepare request data
-        CartEstimateProductOrderData productOrderData = new CartEstimateProductOrderData(
+        CartProductOrderData productOrderData = new CartProductOrderData(
                 searchClient.getProducts(1).get(0));
         productOrderData.setQuantity(1.0);
 
@@ -135,6 +136,11 @@ public class OrderTest extends BaseProjectApiTest {
         Response<OrderData> getResp = orderClient.confirmOrder(orderData.getOrderId(), confirmOrderData);
         orderClient.assertThatIsConfirmed(getResp, orderData);
         orderData.increaseFulfillmentVersion();
+    }
+
+    @Test(description = "Check Quantity Order")
+    public void testCheckQuantity() {
+        orderClient.addProductAfterConfirmation(); // TODO #unfinished Как узнать, в какой заказ добавлять товары?
     }
 
     @Test(description = "Cancel Order")

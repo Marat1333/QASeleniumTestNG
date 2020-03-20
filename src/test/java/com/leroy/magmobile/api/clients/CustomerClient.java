@@ -3,7 +3,6 @@ package com.leroy.magmobile.api.clients;
 import com.leroy.magmobile.api.data.customer.Communication;
 import com.leroy.magmobile.api.data.customer.CustomerData;
 import com.leroy.magmobile.api.data.customer.CustomerListData;
-import com.leroy.magmobile.api.data.sales.cart_estimate.EstimateData;
 import com.leroy.magmobile.api.requests.customer.CustomerAccountCreateRequest;
 import com.leroy.magmobile.api.requests.customer.CustomerAccountGetRequest;
 import com.leroy.magmobile.api.requests.customer.CustomerAccountsSearchRequest;

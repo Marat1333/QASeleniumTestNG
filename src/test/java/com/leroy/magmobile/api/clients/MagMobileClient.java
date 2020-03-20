@@ -2,14 +2,12 @@ package com.leroy.magmobile.api.clients;
 
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.SessionData;
-import com.leroy.magmobile.api.data.sales.DiscountData;
+import com.leroy.magmobile.api.data.sales.SalesDocDiscountData;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
-import com.leroy.magmobile.api.requests.order.OrderWorkflowPut;
 import com.leroy.magmobile.api.requests.salesdoc.discount.GetSalesDocDiscount;
 import com.leroy.magmobile.api.requests.salesdoc.search.SalesDocSearchV3Get;
 import io.qameta.allure.Step;
 import lombok.Setter;
-import org.json.simple.JSONObject;
 import ru.leroymerlin.qa.core.clients.base.BaseClient;
 import ru.leroymerlin.qa.core.clients.base.Request;
 import ru.leroymerlin.qa.core.clients.base.RequestBuilder;
@@ -62,8 +60,8 @@ public class MagMobileClient extends BaseClient {
 
     // Discount
 
-    public Response<DiscountData> getSalesDocDiscount(GetSalesDocDiscount params) {
-        return execute(params.build(gatewayUrl), DiscountData.class);
+    public Response<SalesDocDiscountData> getSalesDocDiscount(GetSalesDocDiscount params) {
+        return execute(params.build(gatewayUrl), SalesDocDiscountData.class);
     }
 
     // ---------------- VERIFICATIONS --------------- //

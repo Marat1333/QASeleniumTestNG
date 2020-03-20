@@ -2,12 +2,10 @@ package com.leroy.magmobile.api.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.SalesDocumentsConst;
-import com.leroy.magmobile.api.data.sales.cart_estimate.EstimateData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
-import com.leroy.magmobile.api.requests.salesdoc.estimate.EstimateChangeStatusPut;
-import com.leroy.magmobile.api.requests.salesdoc.estimate.EstimateGet;
-import com.leroy.magmobile.api.requests.salesdoc.estimate.EstimatePost;
-import com.leroy.magmobile.api.requests.salesdoc.estimate.EstimatePut;
+import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.SendEmailData;
+import com.leroy.magmobile.api.requests.salesdoc.estimate.*;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.*;
@@ -73,6 +71,13 @@ public class EstimateClient extends MagMobileClient {
                 .bearerAuthHeader(sessionData.getAccessToken())
                 .setEstimateId(estimateId)
                 .formBody(body), JsonNode.class);
+    }
+
+    public Response<JsonNode> sendEmail(String estimateId, SendEmailData emailData) {
+        EstimateSendEmailRequest req = new EstimateSendEmailRequest();
+        req.setEstimateId(estimateId);
+        req.jsonBody(emailData);
+        return execute(req, JsonNode.class);
     }
 
     /**

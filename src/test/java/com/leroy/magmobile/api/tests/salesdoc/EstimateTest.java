@@ -5,15 +5,18 @@ import com.google.inject.Inject;
 import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.EstimateClient;
-import com.leroy.magmobile.api.tests.BaseProjectApiTest;
-import com.leroy.magmobile.api.data.sales.cart_estimate.EstimateData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.SendEmailData;
+import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.Collections;
 import java.util.Random;
+
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class EstimateTest extends BaseProjectApiTest {
 
@@ -52,16 +55,30 @@ public class EstimateTest extends BaseProjectApiTest {
         estimateData.setProducts(Collections.singletonList(productOrderData));
     }
 
+    @Test(description = "Estimate - Send Email")
+    public void testEstimateSendEmail() {
+        if (estimateData == null)
+            throw new IllegalArgumentException("estimate data hasn't been created");
+        SendEmailData emailData = new SendEmailData();
+        emailData.setShopName("TestShopName");
+        emailData.setShopAddress("TestShopAddress");
+        emailData.setEmails(Collections.singletonList("someEmail@mail.com")); // TODO #unfinished
+        Response<JsonNode> resp = estimateClient.sendEmail(estimateData.getEstimateId(), emailData);
+        assertThat(resp.toString(), resp.isSuccessful());
+    }
+
     @Test(description = "Get Estimate")
     public void testGetEstimate() {
         if (estimateData == null)
-            throw new IllegalArgumentException("cart data hasn't been created");
+            throw new IllegalArgumentException("estimate data hasn't been created");
         Response<EstimateData> getResp = estimateClient.sendRequestGet(estimateData.getEstimateId());
         estimateClient.assertThatGetResponseMatches(getResp, estimateData);
     }
 
     @Test(description = "Update Estimate - change quantity")
     public void testUpdateEstimate() {
+        if (estimateData == null)
+            throw new IllegalArgumentException("estimate data hasn't been created");
         // Prepare request data
         CartEstimateProductOrderData productOrderData = estimateData.getProducts().get(0);
         productOrderData.setQuantity(productOrderData.getQuantity() + 3);
@@ -80,6 +97,8 @@ public class EstimateTest extends BaseProjectApiTest {
 
     @Test(description = "Delete Estimate")
     public void testDeleteEstimate() {
+        if (estimateData == null)
+            throw new IllegalArgumentException("estimate data hasn't been created");
         Response<JsonNode> response = estimateClient.sendRequestDelete(estimateData.getEstimateId(),
                 estimateData.getDocumentVersion());
         estimateClient.assertThatResponseChangeStatusIsOk(response);
