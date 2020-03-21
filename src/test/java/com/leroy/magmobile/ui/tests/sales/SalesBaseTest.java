@@ -65,7 +65,7 @@ public class SalesBaseTest extends AppBaseSteps {
         String token = authClient.getAccessToken(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS);
         SessionData sessionData = context.getSessionData();
         sessionData.setUserShopId("35");
-        sessionData.setUserDepartmentId("15");
+        sessionData.setUserDepartmentId("1");
         sessionData.setAccessToken(token);
         estimateClient.setSessionData(sessionData);
         cartClient.setSessionData(sessionData);
@@ -191,19 +191,11 @@ public class SalesBaseTest extends AppBaseSteps {
         searchProductPage.verifyRequiredElements();
 
         // Step #3
-        String inputDataStep3 = "164";
-        log.step("Введите 164 код товара");
-        searchProductPage.enterTextInSearchFieldAndSubmit(inputDataStep3)
-                .shouldCountOfProductsOnPageMoreThan(1)
-                .shouldProductCardsContainText(inputDataStep3)
-                .shouldProductCardContainAllRequiredElements(1);
-
-        // Step #4
         log.step("Нажмите на мини-карточку товара 16410291");
         AddProductPage addProductPage = searchProductPage.searchProductAndSelect("16410291")
                 .verifyRequiredElements();
 
-        // Step #5
+        // Step #4
         log.step("Нажмите на поле количества");
         addProductPage.clickEditQuantityField()
                 .shouldKeyboardVisible();
@@ -211,47 +203,47 @@ public class SalesBaseTest extends AppBaseSteps {
                 .shouldTotalPriceIs(String.format("%.2f", Double.parseDouble(
                         addProductPage.getPrice())));
 
-        // Step #6
+        // Step #5
         log.step("Введите значение 20,5 количества товара");
         String expectedTotalPrice = String.format("%.2f",
                 Double.parseDouble(addProductPage.getPrice()) * 20.5);
         addProductPage.enterQuantityOfProduct("20,5")
                 .shouldTotalPriceIs(expectedTotalPrice);
 
-        // Step #7
+        // Step #6
         log.step("Нажмите кнопку Добавить");
         BasketStep1Page basketStep1Page = addProductPage.clickAddButton()
                 .verifyRequiredElements();
         basketStep1Page.shouldDocumentTypeIs(BasketPage.Constants.DRAFT_DOCUMENT_TYPE);
         String documentNumber = basketStep1Page.getDocumentNumber();
 
-        // Step #8
+        // Step #7
         log.step("Нажмите Далее к параметрам");
         BasketStep2Page basketStep2Page = basketStep1Page.clickNextParametersButton()
                 .verifyRequiredElements()
                 .shouldFieldsHaveDefaultValues();
 
-        // Step #9
+        // Step #8
         log.step("Нажмите кнопку Создать документ продажи");
         BasketStep3Page basketStep3Page = basketStep2Page.clickCreateSalesDocumentButton()
                 .verifyRequiredElements();
         basketStep3Page.shouldKeyboardVisible();
 
-        // Step #10
+        // Step #9
         log.step("Введите 5 цифр PIN-кода");
         String testPinCode = getValidPinCode();
         basketStep3Page.enterPinCode(testPinCode)
                 .shouldPinCodeFieldIs(testPinCode)
                 .shouldSubmitButtonIsActive();
 
-        // Step #11
+        // Step #10
         log.step("Нажмите кнопку Подтвердить");
         SubmittedSalesDocumentPage submittedSalesDocumentPage = basketStep3Page.clickSubmitButton()
                 .verifyRequiredElements()
                 .shouldPinCodeIs(testPinCode)
                 .shouldDocumentNumberIs(documentNumber);
 
-        // Step #12
+        // Step #11
         log.step("Нажмите кнопку Перейти в список документов");
         SalesDocumentData expectedSalesDocument = new SalesDocumentData();
         expectedSalesDocument.setPrice(expectedTotalPrice);

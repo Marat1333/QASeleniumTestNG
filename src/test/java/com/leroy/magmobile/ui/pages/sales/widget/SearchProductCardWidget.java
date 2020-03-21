@@ -75,7 +75,7 @@ public class SearchProductCardWidget extends SearchProductAllGammaCardWidget {
         ProductCardData productCardData = new ProductCardData();
         productCardData.setLmCode(getLmCode(true, ps));
         productCardData.setBarCode(getBarCode(true, ps));
-        productCardData.setName(getName(ps));
+        productCardData.setName(getTitle(ps));
         if (priceObj.isVisible(ps))
             productCardData.setPrice(Converter.strToDouble(getPrice(ps)));
         productCardData.setAvailableQuantity(Converter.strToDouble(getQuantity(ps)));

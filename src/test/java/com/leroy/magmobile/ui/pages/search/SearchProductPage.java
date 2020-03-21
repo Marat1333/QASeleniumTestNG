@@ -302,7 +302,7 @@ public class SearchProductPage extends CommonMagMobilePage {
     public SearchProductPage shouldProductCardsContainText(String text) {
         for (SearchProductCardWidget card : productCards) {
             anAssert.isTrue(card.getBarCode(true).contains(text) ||
-                            card.getName().contains(text) || card.getLmCode(false).contains(text),
+                            card.getTitle().contains(text) || card.getLmCode(false).contains(text),
                     String.format("Товар с кодом %s не содержит текст %s", card.getLmCode(false), text));
         }
         return this;
@@ -326,7 +326,7 @@ public class SearchProductPage extends CommonMagMobilePage {
                 String.format("Карточка под индексом %s не должна иметь пустой штрихкод", index));
         anAssert.isFalse(productCards.get(index).getLmCode(true, ps).isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустой номер", index));
-        anAssert.isFalse(productCards.get(index).getName(ps).isEmpty(),
+        anAssert.isFalse(productCards.get(index).getTitle(ps).isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустое название", index));
         anAssert.isFalse(productCards.get(index).getPrice(ps).isEmpty(),
                 String.format("Карточка под индексом %s не должна иметь пустую цену", index));

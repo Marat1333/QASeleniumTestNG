@@ -20,7 +20,7 @@ public class SearchProductAllGammaCardWidget extends CardWidget<ProductCardData>
     private Element barCodeObj;
 
     @AppFindBy(xpath = ".//android.widget.TextView[@content-desc='name']")
-    private Element nameObj;
+    private Element titleObj;
 
     public String getLmCode(boolean onlyDigits, String pageSource) {
         if (onlyDigits)
@@ -44,12 +44,12 @@ public class SearchProductAllGammaCardWidget extends CardWidget<ProductCardData>
         return getBarCode(onlyDigits, null);
     }
 
-    public String getName(String pageSource) {
-        return nameObj.getText(pageSource);
+    public String getTitle(String pageSource) {
+        return titleObj.getText(pageSource);
     }
 
-    public String getName() {
-        return getName(null);
+    public String getTitle() {
+        return getTitle(null);
     }
 
     @Override
@@ -57,12 +57,12 @@ public class SearchProductAllGammaCardWidget extends CardWidget<ProductCardData>
         ProductCardData productCardData = new ProductCardData();
         productCardData.setLmCode(getLmCode(true));
         productCardData.setBarCode(getBarCode(true));
-        productCardData.setName(getName());
+        productCardData.setName(getTitle());
         return productCardData;
     }
 
     @Override
     public boolean isFullyVisible(String pageSource) {
-        return lmCodeObj.isVisible(pageSource) && barCodeObj.isVisible(pageSource) && nameObj.isVisible(pageSource);
+        return lmCodeObj.isVisible(pageSource) && barCodeObj.isVisible(pageSource) && titleObj.isVisible(pageSource);
     }
 }
