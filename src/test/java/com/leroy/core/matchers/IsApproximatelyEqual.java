@@ -9,6 +9,7 @@ import java.time.temporal.Temporal;
 public class IsApproximatelyEqual extends TypeSafeMatcher<Temporal> {
 
     private final Temporal expectedDate;
+    private int allowableDifferenceInMinutes = 5;
 
     private static boolean datesAreEqual(Temporal date1, Temporal date2, Duration allowableDifference) {
         return Duration.between(date1, date2).getSeconds() < allowableDifference.getSeconds();
@@ -20,7 +21,7 @@ public class IsApproximatelyEqual extends TypeSafeMatcher<Temporal> {
 
     @Override
     public boolean matchesSafely(Temporal actualDate) {
-        return datesAreEqual(actualDate, expectedDate, Duration.ofMinutes(5));
+        return datesAreEqual(actualDate, expectedDate, Duration.ofMinutes(allowableDifferenceInMinutes));
     }
 
     @Override
@@ -28,7 +29,7 @@ public class IsApproximatelyEqual extends TypeSafeMatcher<Temporal> {
         description.appendText("Date should be approximately equal ");
         description.appendValue(expectedDate);
         description.appendText(" with difference of ");
-        description.appendValue(5);
+        description.appendValue(allowableDifferenceInMinutes);
         description.appendText(" minutes");
     }
 

@@ -8,12 +8,12 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Data
-public class ProductOrderData extends ProductItemData {
+public class CartEstimateProductOrderData extends ProductItemData {
 
-    public ProductOrderData() {
+    public CartEstimateProductOrderData() {
     }
 
-    public ProductOrderData(ProductItemData productItemResponse) {
+    public CartEstimateProductOrderData(ProductItemData productItemResponse) {
         this.setLmCode(productItemResponse.getLmCode());
         this.setBarCode(productItemResponse.getBarCode());
         this.setTitle(productItemResponse.getTitle());

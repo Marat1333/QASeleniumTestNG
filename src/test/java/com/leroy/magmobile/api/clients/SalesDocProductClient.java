@@ -2,7 +2,7 @@ package com.leroy.magmobile.api.clients;
 
 import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
-import com.leroy.magmobile.api.data.sales.cart_estimate.ProductOrderData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.ServiceOrderData;
 import com.leroy.magmobile.api.requests.salesdoc.SalesDocParametersUpdatePut;
 import com.leroy.magmobile.api.requests.salesdoc.products.SalesDocProductsGet;
@@ -50,7 +50,7 @@ public class SalesDocProductClient extends MagMobileClient {
     }
 
     public SalesDocProductClient sendRequestCreate(
-            List<ProductOrderData> products, List<ServiceOrderData> services) {
+            List<CartEstimateProductOrderData> products, List<ServiceOrderData> services) {
         SalesDocumentResponseData salesDocumentResponseData = new SalesDocumentResponseData();
         salesDocumentResponseData.setProducts(products);
         salesDocumentResponseData.setServices(services);
@@ -58,7 +58,7 @@ public class SalesDocProductClient extends MagMobileClient {
     }
 
     public SalesDocProductClient sendRequestCreate(
-            ProductOrderData... productOrderDataArray) {
+            CartEstimateProductOrderData... productOrderDataArray) {
         SalesDocumentResponseData salesDocumentResponseData = new SalesDocumentResponseData();
         salesDocumentResponseData.setProducts(Arrays.asList(productOrderDataArray));
         return sendRequestCreate(salesDocumentResponseData);
@@ -87,7 +87,7 @@ public class SalesDocProductClient extends MagMobileClient {
     }
 
     public SalesDocProductClient updateSalesDocProducts(String fullDocId,
-                                                        ProductOrderData... productOrderData) {
+                                                        CartEstimateProductOrderData... productOrderData) {
         SalesDocumentResponseData salesDocumentResponseData = new SalesDocumentResponseData();
         salesDocumentResponseData.setProducts(Arrays.asList(productOrderData));
         return updateSalesDocProducts(fullDocId, salesDocumentResponseData);
@@ -101,7 +101,7 @@ public class SalesDocProductClient extends MagMobileClient {
     }
 
     public SalesDocProductClient updateSalesDocProducts(String fullDocId,
-                                                        List<ProductOrderData> products, List<ServiceOrderData> services) {
+                                                        List<CartEstimateProductOrderData> products, List<ServiceOrderData> services) {
         SalesDocumentResponseData salesDocumentResponseData = new SalesDocumentResponseData();
         salesDocumentResponseData.setServices(services);
         salesDocumentResponseData.setProducts(products);
@@ -127,11 +127,11 @@ public class SalesDocProductClient extends MagMobileClient {
     public SalesDocProductClient assertThatIsCreated(boolean isServiceAdded) {
         assertThatResponseIsOk(response);
         SalesDocumentResponseData data = response.asJson();
-        assertThat("docId field", data.getDocId(), not(isEmptyOrNullString()));
+        assertThat("docId field", data.getDocId(), not(emptyOrNullString()));
         assertThat("fullDocId field", data.getFullDocId(),
-                allOf(not(isEmptyOrNullString()), endsWith(data.getDocId())));
+                allOf(not(emptyOrNullString()), endsWith(data.getDocId())));
         if (isServiceAdded) {
-            assertThat("newServiceId", data.getNewServiceId(), not(isEmptyOrNullString()));
+            assertThat("newServiceId", data.getNewServiceId(), not(emptyOrNullString()));
         }
         assertThat("Document Status", data.getSalesDocStatus(),
                 equalTo(SalesDocumentsConst.States.DRAFT.getApiVal()));
@@ -144,7 +144,7 @@ public class SalesDocProductClient extends MagMobileClient {
         assertThat("docId field", responseData.getDocId(), is(expectedData.getDocId()));
         assertThat("fullDocId field", responseData.getFullDocId(), is(expectedData.getFullDocId()));
         if (isServiceAdded) {
-            assertThat("newServiceId", responseData.getNewServiceId(), not(isEmptyOrNullString()));
+            assertThat("newServiceId", responseData.getNewServiceId(), not(emptyOrNullString()));
             expectedData.getServices().get(0).setId(responseData.getNewServiceId());
         }
         assertThat("Document Status", responseData.getSalesDocStatus(),
@@ -178,7 +178,7 @@ public class SalesDocProductClient extends MagMobileClient {
                 actualData.getDocPriceSum(), equalTo(docPriceSum));
 
         // Products
-        List<ProductOrderData> actualProductOrderDataList = actualData.getProducts();
+        List<CartEstimateProductOrderData> actualProductOrderDataList = actualData.getProducts();
         for (int i = 0; i < actualProductOrderDataList.size(); i++) {
             assertThat("Product order #" + i + " - lm code",
                     actualProductOrderDataList.get(i).getLmCode(),
@@ -228,7 +228,7 @@ public class SalesDocProductClient extends MagMobileClient {
 
     private double calculateDocSum(SalesDocumentResponseData actualData) {
         double docPriceSum = 0;
-        for (ProductOrderData productOrderData : actualData.getProducts()) {
+        for (CartEstimateProductOrderData productOrderData : actualData.getProducts()) {
             docPriceSum += productOrderData.getQuantity() * productOrderData.getPrice();
         }
         for (ServiceOrderData serviceOrderData : actualData.getServices()) {

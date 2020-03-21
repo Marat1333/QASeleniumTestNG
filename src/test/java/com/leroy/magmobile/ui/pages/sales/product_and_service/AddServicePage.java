@@ -65,7 +65,9 @@ public class AddServicePage extends CommonMagMobilePage {
 
     @Step("Ввести значение кол-ва {value} в поле 'Количество для продажи'")
     public AddServicePage enterValueInQuantityServiceField(String value) {
+        String prevTotalPrice = totalPriceVal.getText();
         editQuantityServiceFld.clearFillAndSubmit(value);
+        totalPriceVal.waitUntilTextIsChanged(prevTotalPrice);
         return this;
     }
 

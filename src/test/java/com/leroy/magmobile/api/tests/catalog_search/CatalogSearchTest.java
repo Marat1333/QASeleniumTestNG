@@ -32,6 +32,11 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     @Inject
     private Provider<CatalogSearchClient> searchBuilderProvider;
 
+    @Override
+    protected boolean isNeedAccessToken() {
+        return false;
+    }
+
     private void isResponseSuccessfulAndContainsMoreThanOneEntity(Response<?> response, List<?> responseData) {
         assertThat(response, successful());
         assertThat("response contains 0 objects", responseData.size(), greaterThan(0));

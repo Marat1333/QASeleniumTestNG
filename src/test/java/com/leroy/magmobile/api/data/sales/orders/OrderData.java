@@ -1,7 +1,6 @@
 package com.leroy.magmobile.api.data.sales.orders;
 
 import com.leroy.magmobile.api.data.customer.CustomerData;
-import com.leroy.magmobile.api.data.sales.cart_estimate.ProductOrderData;
 import lombok.Data;
 
 import java.util.List;
@@ -9,15 +8,19 @@ import java.util.List;
 @Data
 public class OrderData {
 
+    private String fullDocId;
     private String orderId;
-    private Integer shopId;
+    private String docType;
+    private String salesDocStatus;
+    private String status;
+    private String shopId;
     private String createdAt;
     private String createdBy;
     private String channel;
     private String paymentStatus;
     private String comment;
     private List<CustomerData> customers;
-    private List<ProductOrderData> products; // TODO нужен другой ProductOrderData точно
+    private List<OrderProductData> products;
     private List<String> userComments;
     private Integer solutionVersion;
     private Boolean delivery;
@@ -28,11 +31,20 @@ public class OrderData {
     private List<Object> refunds;
     private Object registerStatus;
     private String pinCode;
-    private Object giveAway;
+    private GiveAwayData giveAway;
     private String fulfillmentTaskId;
     private Integer fulfillmentVersion;
-    private String status;
     private String creatorName;
     private String creatorSurname;
+
+    private String priority;
+
+    public void increasePaymentVersion() {
+        paymentVersion++;
+    }
+
+    public void increaseFulfillmentVersion() {
+        fulfillmentVersion++;
+    }
 
 }

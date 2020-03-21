@@ -7,10 +7,10 @@ import java.util.List;
 @Data
 public class ProductOrderDataList {
 
-    public ProductOrderDataList(List<ProductOrderData> products) {
+    public ProductOrderDataList(List<CartEstimateProductOrderData> products) {
         this.products = products;
     }
 
-    List<ProductOrderData> products;
+    List<CartEstimateProductOrderData> products;
 
 }
