@@ -3,16 +3,16 @@ package com.leroy.magmobile.api.tests;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.leroy.constants.EnvConstants;
+import com.leroy.core.SessionData;
+import com.leroy.core.api.BaseModule;
 import com.leroy.core.listeners.TestRailListener;
 import com.leroy.core.testrail.helpers.StepLog;
-import com.leroy.core.SessionData;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.umbrella_extension.authorization.AuthClient;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
-import ru.leroymerlin.qa.core.base.BaseModule;
 
 import java.lang.reflect.Method;
 import java.util.regex.Matcher;

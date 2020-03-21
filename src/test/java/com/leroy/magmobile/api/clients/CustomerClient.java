@@ -3,7 +3,6 @@ package com.leroy.magmobile.api.clients;
 import com.leroy.magmobile.api.data.customer.Communication;
 import com.leroy.magmobile.api.data.customer.CustomerData;
 import com.leroy.magmobile.api.data.customer.CustomerListData;
-import com.leroy.magmobile.api.data.sales.cart_estimate.EstimateData;
 import com.leroy.magmobile.api.requests.customer.CustomerAccountCreateRequest;
 import com.leroy.magmobile.api.requests.customer.CustomerAccountGetRequest;
 import com.leroy.magmobile.api.requests.customer.CustomerAccountsSearchRequest;
@@ -118,5 +117,21 @@ public class CustomerClient extends MagMobileClient {
         }
 
         return this;
+    }
+
+    // Help Methods
+
+    public CustomerData getAnyCustomer() {
+        CustomerSearchFilters customerSearchFilters = new CustomerSearchFilters();
+        customerSearchFilters.setCustomerType(CustomerSearchFilters.CustomerType.NATURAL);
+        customerSearchFilters.setDiscriminantType(CustomerSearchFilters.DiscriminantType.PHONENUMBER);
+        customerSearchFilters.setCustomerType(CustomerSearchFilters.CustomerType.NATURAL);
+        customerSearchFilters.setDiscriminantValue("+71111111111");
+        Response<CustomerListData> resp = searchForCustomers(customerSearchFilters);
+        assertThatResponseIsOk(resp);
+        List<CustomerData> customers = resp.asJson().getItems();
+        assertThat("GetAnyCustomer Method. Count of customers", customers,
+                hasSize(greaterThan(0)));
+        return customers.get(0);
     }
 }

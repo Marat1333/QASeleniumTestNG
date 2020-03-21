@@ -49,6 +49,11 @@ public class OrderClient extends MagMobileClient {
         return execute(req, OrderData.class);
     }
 
+    public Response<OrderData> addProductAfterConfirmation() {
+        OrderCheckQuantityRequest req = new OrderCheckQuantityRequest();
+        return execute(req, OrderData.class);
+    }
+
     public Response<JsonNode> setPinCode(String orderId, String pinCode) {
         OrderSetPinCodeRequest req = new OrderSetPinCodeRequest();
         req.setOrderId(orderId);
@@ -82,8 +87,8 @@ public class OrderClient extends MagMobileClient {
         assertThat("fulfillmentTaskId", data.getFulfillmentTaskId(), not(emptyOrNullString()));
         assertThat("paymentTaskId", data.getPaymentTaskId(), not(emptyOrNullString()));
 
-        assertThat("products", data.getProducts(), hasSize(greaterThan(0)));
-        assertThat("customers", data.getCustomers(), not(nullValue()));
+
+        assertThat("customers", data.getCustomers(), not(nullValue()));assertThat("products", data.getProducts(), hasSize(greaterThan(0)));
 
         return data;
     }

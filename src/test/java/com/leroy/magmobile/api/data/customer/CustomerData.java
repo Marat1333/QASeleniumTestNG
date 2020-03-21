@@ -30,4 +30,12 @@ public class CustomerData {
             this.communications = new ArrayList<>(Collections.singletonList(communication));
         }
     }
+
+    public String getMainPhoneFromCommunication() {
+        for (Communication communication : communications) {
+            if (true == communication.getIsMain() && communication.getType().equals( "PHONENUMBER"))
+                return communication.getValue();
+        }
+        return null;
+    }
 }
