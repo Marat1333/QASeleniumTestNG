@@ -22,6 +22,11 @@ public class SalesDocSearchTest extends BaseProjectApiTest {
     @Inject
     private Provider<MagMobileClient> magMobileClient;
 
+    @Override
+    protected boolean isNeedAccessToken() {
+        return false;
+    }
+
     private final int PAGE_SIZE = 4;
     private final int MAX_COUNT_BACKEND = 4;
 

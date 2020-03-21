@@ -4,8 +4,8 @@ public class SalesDocumentsConst {
 
     // Состояния документа
     public enum States {
-        CREATED("", "Создан"),
-        AUTO_PROCESSING("","Автообработка"),
+        CONFIRMED("CONFIRMED", "Создан"),
+        IN_PROGRESS("CONFIRMATION_IN_PROGRESS","Автообработка"),
         TRANSFORMED("","Преобразован"),
         CANCELLED("CANCELLED", "Отменен"),
         DRAFT("DRAFT","Черновик"),
@@ -57,9 +57,31 @@ public class SalesDocumentsConst {
         }
     }
 
+    // Приоритет
+    public enum Priorities {
+        HIGH("HIGH", "");
+
+        private String uiVal;
+        private String apiVal;
+
+        Priorities(String apiVal, String uiVal) {
+            this.apiVal = apiVal;
+            this.uiVal = uiVal;
+        }
+
+        public String getUiVal() {
+            return uiVal;
+        }
+
+        public String getApiVal() {
+            return apiVal;
+        }
+    }
+
     // Отзыв
     public enum GiveAwayPoints {
-        SALES_FLOOR("SALESFLOOR", "Из торгового зала");
+        SALES_FLOOR("SALESFLOOR", "Из торгового зала"),
+        PICKUP("PICKUP", "Самовывоз");
 
         private String uiVal;
         private String apiVal;

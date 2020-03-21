@@ -20,19 +20,19 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
     @Inject
     private SalesDocTransferClient transferClient;
 
-    @Inject
     private CatalogSearchClient searchBuilder;
 
     private TransferSalesDocData transferSalesDocData;
 
+    @Override
+    protected boolean isNeedAccessToken() {
+        return false;
+    }
+
     @BeforeClass
-    private void setUpDefaultSessionData() {
-        sessionData = new SessionData();
-        sessionData.setUserLdap(EnvConstants.BASIC_USER_LDAP);
-        sessionData.setUserShopId("35");
-        sessionData.setUserDepartmentId("1");
+    private void setUp() {
         transferClient.setSessionData(sessionData);
-        searchBuilder.setSessionData(sessionData);
+        searchBuilder = getCatalogSearchClient();
     }
 
     @Test(description = "C3248457 SalesDoc transfer create POST")
