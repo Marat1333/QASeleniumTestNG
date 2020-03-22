@@ -30,6 +30,9 @@ public class EnvConstants {
     public static final String URL_MAG_PORTAL = getUrlMagPortal();
 
     // Test data
+    // Shops
+    public static final String SHOP_WITH_NEW_INTERFACE = getProperty("data.shop.new_interface");
+    public static final String SHOP_WITH_OLD_INTERFACE = getProperty("data.shop.old_interface");
     // Products
     public static final String PRODUCT_1_LM_CODE = getProperty("data.simple_product1.lmCode");
     public static final String PRODUCT_2_LM_CODE = getProperty("data.simple_product2.lmCode");

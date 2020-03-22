@@ -2,8 +2,10 @@ package com.leroy.magmobile.api.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.SalesDocumentsConst;
-import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateCustomerData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.SendEmailData;
 import com.leroy.magmobile.api.requests.salesdoc.estimate.*;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -26,29 +28,37 @@ public class EstimateClient extends MagMobileClient {
                 .setShopId(sessionData.getUserShopId()), EstimateData.class);
     }
 
-    public Response<EstimateData> sendRequestCreate(List<CartEstimateProductOrderData> productOrderDataList) {
-        List<CartEstimateProductOrderData> filteredProducts = new ArrayList<>();
-        for (CartEstimateProductOrderData prData : productOrderDataList) {
-            CartEstimateProductOrderData filterPrData = new CartEstimateProductOrderData();
+    public Response<EstimateData> sendRequestCreate(List<EstimateCustomerData> customerDataList,
+                                                    List<EstimateProductOrderData> productOrderDataList) {
+        List<EstimateProductOrderData> filteredProducts = new ArrayList<>();
+        for (EstimateProductOrderData prData : productOrderDataList) {
+            EstimateProductOrderData filterPrData = new EstimateProductOrderData();
             filterPrData.setQuantity(prData.getQuantity());
             filterPrData.setLmCode(prData.getLmCode());
             filteredProducts.add(filterPrData);
         }
         EstimateData estimateData = new EstimateData();
         estimateData.setProducts(filteredProducts);
+        estimateData.setCustomers(customerDataList);
         return execute(new EstimatePost()
                 .bearerAuthHeader(sessionData.getAccessToken())
                 .setShopId(sessionData.getUserShopId())
                 .jsonBody(estimateData), EstimateData.class);
     }
 
+    public Response<EstimateData> sendRequestCreate(EstimateProductOrderData productOrderData) {
+        return sendRequestCreate(null,
+                Collections.singletonList(productOrderData));
+    }
+
     public Response<EstimateData> sendRequestCreate(
-            CartEstimateProductOrderData productOrderData) {
-        return sendRequestCreate(Collections.singletonList(productOrderData));
+            EstimateCustomerData customerData, EstimateProductOrderData productOrderData) {
+        return sendRequestCreate(Collections.singletonList(customerData),
+                Collections.singletonList(productOrderData));
     }
 
     public Response<EstimateData> sendRequestUpdate(String estimateId,
-                                                    List<CartEstimateProductOrderData> productOrderDataList) {
+                                                    List<EstimateProductOrderData> productOrderDataList) {
         EstimateData estimateData = new EstimateData();
         estimateData.setProducts(productOrderDataList);
         return execute(new EstimatePut()
@@ -59,7 +69,7 @@ public class EstimateClient extends MagMobileClient {
     }
 
     public Response<EstimateData> sendRequestUpdate(String estimateId,
-            CartEstimateProductOrderData productOrderData) {
+                                                    EstimateProductOrderData productOrderData) {
         return sendRequestUpdate(estimateId, Collections.singletonList(productOrderData));
     }
 

@@ -116,13 +116,13 @@ public class SearchProductPage extends CommonMagMobilePage {
     @Step("Ввести поисковой запрос со случайным текстом {value} раз и инициировать поиск")
     public List<String> createSearchHistory(int value) {
         List<String> searchHistory = new ArrayList<>();
-        String tmp = RandomStringUtils.randomAlphabetic(1);
+        String tmp = "q";
         for (int i = 0; i < value; i++) {
             searchField.click();
             searchField.fill(tmp);
             searchField.submit();
             searchHistory.add(tmp);
-            tmp = tmp + RandomStringUtils.randomAlphabetic(1);
+            tmp = tmp + "q";
         }
         return searchHistory;
     }

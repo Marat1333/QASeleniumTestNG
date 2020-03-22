@@ -19,9 +19,9 @@ public class SearchCustomerWidget extends CardWidget<CustomerData> {
     private Element cardNumberVal;
     @AppFindBy(xpath = "./android.widget.TextView[3]")
     private Element cardTypeVal;
-    @AppFindBy(xpath = "./android.widget.TextView[4]")
+    @AppFindBy(xpath = "./android.widget.TextView[contains(@text, '+7')]")
     private Element phoneVal;
-    @AppFindBy(xpath = "./android.widget.TextView[5]")
+    @AppFindBy(xpath = "./android.widget.TextView[contains(@text, '@')]")
     private Element emailVal;
 
     @Override
@@ -30,8 +30,8 @@ public class SearchCustomerWidget extends CardWidget<CustomerData> {
             ps = getPageSource();
         CustomerData customerData = new CustomerData();
         customerData.setName(nameVal.getText(ps));
-        customerData.setCardNumber(cardNumberVal.getText(ps));
-        customerData.setCardType(cardTypeVal.getText(ps));
+        //customerData.setCardNumber(cardNumberVal.getText(ps)); TODO
+        //customerData.setCardType(cardTypeVal.getText(ps));
         customerData.setPhone(phoneVal.getText(ps));
         return customerData;
     }

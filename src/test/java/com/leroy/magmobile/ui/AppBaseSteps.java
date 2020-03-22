@@ -24,19 +24,17 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.annotations.BeforeClass;
 
 public class AppBaseSteps extends MagMobileBaseTest {
 
-    /**
-     * Иногда нам нужен пользователь с выбранным 35 магазиным (новый интерфейс)
-     * Иногда нам нужен пользователь с выбранным магазином, где старый интерфейс
-     */
-    protected enum LoginType {
-        USER_WITH_NEW_INTERFACE_LIKE_35_SHOP,
-        USER_WITH_OLD_INTERFACE
+    @BeforeClass
+    public void appBaseStepsBeforeClass() {
+        sessionData.setUserShopId(EnvConstants.SHOP_WITH_NEW_INTERFACE);
+        sessionData.setUserDepartmentId("1");
     }
 
-    public <T> T loginAndGoTo(LoginType loginType, String userLdap, String password,
+    public <T> T loginAndGoTo(String userLdap, String password, boolean selectShopAndDepartment,
                               Class<? extends BaseAppPage> pageClass) throws Exception {
         AndroidDriver<MobileElement> androidDriver = (AndroidDriver<MobileElement>) driver;
         Element redirectBtn = new Element(driver, By.xpath("//*[@resource-id='buttonRedirect']"));
@@ -95,18 +93,11 @@ public class AppBaseSteps extends MagMobileBaseTest {
 
         MainProductAndServicesPage mainProductAndServicesPage = new MainProductAndServicesPage(context);
         UserProfilePage userProfilePage = null;
-        if (loginType != null) {
-            switch (loginType) {
-                case USER_WITH_OLD_INTERFACE:
-                    context.getSessionData().setUserShopId("78");
-                    userProfilePage = setShopAndDepartmentForUser(mainProductAndServicesPage, "78", "01");
-                    break;
-                case USER_WITH_NEW_INTERFACE_LIKE_35_SHOP:
-                    context.getSessionData().setUserShopId("35");
-                    userProfilePage = setShopAndDepartmentForUser(mainProductAndServicesPage, "35", "01");
-                    break;
-            }
+        if (selectShopAndDepartment) {
+            userProfilePage = setShopAndDepartmentForUser(mainProductAndServicesPage,
+                    context.getSessionData().getUserShopId(), context.getSessionData().getUserDepartmentId());
         }
+
         if (pageClass.equals(MainProductAndServicesPage.class)) {
             if (userProfilePage != null)
                 return (T) userProfilePage.goToSales();
@@ -128,14 +119,13 @@ public class AppBaseSteps extends MagMobileBaseTest {
     }
 
     public <T> T loginAndGoTo(Class<? extends BaseAppPage> pageClass) throws Exception {
-        return loginAndGoTo(null, EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS, pageClass);
+        return loginAndGoTo(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS,
+                false, pageClass);
     }
 
-    /**
-     * Используй этот метод, когда нам не важен сам пользователь, но важен тип магазина, который будет выбран
-     */
-    public <T> T loginAndGoTo(LoginType loginType, Class<? extends BaseAppPage> pageClass) throws Exception {
-        return loginAndGoTo(loginType, EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS, pageClass);
+    public <T> T loginSelectShopAndGoTo(Class<? extends BaseAppPage> pageClass) throws Exception {
+        return loginAndGoTo(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS,
+                true, pageClass);
     }
 
     // Pre-condition steps
@@ -148,8 +138,8 @@ public class AppBaseSteps extends MagMobileBaseTest {
      * @return - Document number of the draft
      */
     protected String loginInAndCreateDraftSalesDocument(String lmCode) throws Exception {
-        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(
-                LoginType.USER_WITH_OLD_INTERFACE, MainProductAndServicesPage.class);
+        MainProductAndServicesPage mainProductAndServicesPage = loginSelectShopAndGoTo(
+                MainProductAndServicesPage.class);
         mainProductAndServicesPage.clickSearchBar(false)
                 .enterTextInSearchFieldAndSubmit(lmCode);
 
@@ -166,6 +156,8 @@ public class AppBaseSteps extends MagMobileBaseTest {
     @Step("Установить магазин {shop} и отдел {department} для пользователя")
     protected UserProfilePage setShopAndDepartmentForUser(BottomMenuPage page, String shop, String department)
             throws Exception {
+        if (department.length() == 1)
+            department = "0" + department;
         return page.goToMoreSection()
                 .goToUserProfile()
                 .goToEditShopForm()

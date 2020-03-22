@@ -5,8 +5,8 @@ import com.google.inject.Inject;
 import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.EstimateClient;
-import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.SendEmailData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import org.testng.annotations.BeforeClass;
@@ -41,7 +41,7 @@ public class EstimateTest extends BaseProjectApiTest {
     @Test(description = "Create Estimate")
     public void testCreateEstimate() {
         // Prepare request data
-        CartEstimateProductOrderData productOrderData = new CartEstimateProductOrderData(searchClient.getProducts(1).get(0));
+        EstimateProductOrderData productOrderData = new EstimateProductOrderData(searchClient.getProducts(1).get(0));
         productOrderData.setQuantity((double) new Random().nextInt(6) + 1);
 
         // Create
@@ -80,7 +80,7 @@ public class EstimateTest extends BaseProjectApiTest {
         if (estimateData == null)
             throw new IllegalArgumentException("estimate data hasn't been created");
         // Prepare request data
-        CartEstimateProductOrderData productOrderData = estimateData.getProducts().get(0);
+        EstimateProductOrderData productOrderData = estimateData.getProducts().get(0);
         productOrderData.setQuantity(productOrderData.getQuantity() + 3);
 
         // Create

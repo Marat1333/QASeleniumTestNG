@@ -4,7 +4,6 @@ import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.magmobile.ui.models.sales.SalesOrderCardData;
 import com.leroy.magmobile.ui.pages.common.modal.ConfirmRemovingProductModal;
 import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
-import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
 import com.leroy.magmobile.ui.pages.sales.SalesDocumentsPage;
 import com.leroy.magmobile.ui.pages.sales.basket.Basket35Page;
@@ -21,8 +20,8 @@ public class CartTest extends SalesBaseTest {
         // Test data
         String lmCode = getAnyLmCodeProductWithoutSpecificOptions();
         // Pre-condition
-        MainSalesDocumentsPage mainSalesDocumentsPage = loginAndGoTo(
-                LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
+        MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
+                MainSalesDocumentsPage.class);
 
         // Step 1
         log.step("Нажать кнопку Оформить продажу");
@@ -56,8 +55,8 @@ public class CartTest extends SalesBaseTest {
         // Если выполняется после "C22797089 Создать корзину с экрана Документы продажи",
         // то можно пропустить pre-condition шаги
         if (!Basket35Page.isThisPage(context)) {
-            MainSalesDocumentsPage mainSalesDocumentsPage = loginAndGoTo(
-                    LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
+            MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
+                    MainSalesDocumentsPage.class);
             SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
             salesDocumentsPage.searchForDocumentByTextAndSelectIt(
                     SalesDocumentsConst.Types.CART.getUiVal());
@@ -92,8 +91,8 @@ public class CartTest extends SalesBaseTest {
     public void testRemoveProductFromCart() throws Exception {
         if (!Basket35Page.isThisPage(context)) {
             String cartDocId = createDraftCart(2);
-            MainSalesDocumentsPage mainSalesDocumentsPage = loginAndGoTo(
-                    LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
+            MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
+                    MainSalesDocumentsPage.class);
             SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
             salesDocumentsPage.searchForDocumentByTextAndSelectIt(
                     cartDocId);
@@ -129,8 +128,8 @@ public class CartTest extends SalesBaseTest {
         String cartDocNumber = null;
         if (!Basket35Page.isThisPage(context)) {
             cartDocNumber = createDraftCart(1);
-            MainSalesDocumentsPage mainSalesDocumentsPage = loginAndGoTo(
-                    LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
+            MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
+                    MainSalesDocumentsPage.class);
             SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
             salesDocumentsPage.searchForDocumentByTextAndSelectIt(
                     cartDocNumber);

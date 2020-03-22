@@ -1,5 +1,6 @@
 package com.leroy.magmobile.api.data.customer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -10,14 +11,8 @@ public class CustomerData {
     private String gender;
     private String firstName;
     private String lastName;
-    private String customerId;
-    private String type;
     private String customerType;
     private String customerNumber;
-    private PhoneData phone;
-    private String email;
-    private String loyaltyCardNumber;
-    private List<String> roles;
     private List<Communication> communications;
 
     public void generateRandomValidRequiredData(boolean hasCommunication) {
@@ -31,6 +26,7 @@ public class CustomerData {
         }
     }
 
+    @JsonIgnore
     public String getMainPhoneFromCommunication() {
         for (Communication communication : communications) {
             if (true == communication.getIsMain() && communication.getType().equals( "PHONENUMBER"))
