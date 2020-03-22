@@ -31,8 +31,8 @@ public class EstimateTest extends SalesBaseTest {
         String existedClientPhone = "1111111111";
         String lmCode = getAnyLmCodeProductWithoutSpecificOptions();
         // Pre-condition
-        MainSalesDocumentsPage mainSalesDocumentsPage = loginAndGoTo(
-                LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
+        MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
+                MainSalesDocumentsPage.class);
 
         // Step 1
         log.step("Нажать кнопку Оформить продажу");
@@ -107,9 +107,9 @@ public class EstimateTest extends SalesBaseTest {
     @Test(description = "C22797074 Посмотреть подробнее о товаре")
     public void testViewProductDetailsFromEstimateScreen() throws Exception {
         if (!EstimatePage.isThisPage(context)) {
-            String estimateId = createDraftEstimate();
-            MainSalesDocumentsPage mainSalesDocumentsPage = loginAndGoTo(
-                    LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
+            String estimateId = clientProvider.createDraftEstimateAndGetCartId();
+            MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
+                    MainSalesDocumentsPage.class);
             SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
             salesDocumentsPage.searchForDocumentByTextAndSelectIt(estimateId);
         }
@@ -133,9 +133,9 @@ public class EstimateTest extends SalesBaseTest {
     @Test(description = "C22797073 Изменить количество добавленного товара")
     public void testChangeProductQuantityFromEstimateScreen() throws Exception {
         if (!EstimatePage.isThisPage(context)) {
-            String estimateId = createDraftEstimate();
-            MainSalesDocumentsPage mainSalesDocumentsPage = loginAndGoTo(
-                    LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
+            String estimateId = clientProvider.createDraftEstimateAndGetCartId();
+            MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
+                    MainSalesDocumentsPage.class);
             SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
             salesDocumentsPage.searchForDocumentByTextAndSelectIt(estimateId);
         }
@@ -182,8 +182,8 @@ public class EstimateTest extends SalesBaseTest {
     public void testTransformEstimateToBasket() throws Exception {
         // TODO Need to API
         // Pre-condition
-        MainSalesDocumentsPage mainSalesDocumentsPage = loginAndGoTo(
-                LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainSalesDocumentsPage.class);
+        MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
+                MainSalesDocumentsPage.class);
         SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
         salesDocumentsPage.searchForDocumentByTextAndSelectIt(
                 SalesDocumentsConst.Types.QUOTATION.getUiVal());

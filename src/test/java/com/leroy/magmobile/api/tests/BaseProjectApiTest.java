@@ -4,9 +4,10 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.SessionData;
-import com.leroy.core.api.BaseModule;
+import com.leroy.core.api.Module;
 import com.leroy.core.listeners.TestRailListener;
 import com.leroy.core.testrail.helpers.StepLog;
+import com.leroy.magmobile.api.ApiClientProvider;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.umbrella_extension.authorization.AuthClient;
 import org.testng.annotations.BeforeClass;
@@ -18,7 +19,7 @@ import java.lang.reflect.Method;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Guice(modules = {BaseModule.class})
+@Guice(modules = {Module.class})
 public abstract class BaseProjectApiTest {
 
     @Inject
@@ -32,6 +33,9 @@ public abstract class BaseProjectApiTest {
 
     @Inject
     private AuthClient authClient;
+
+    @Inject
+    protected ApiClientProvider apiClientProvider;
 
     protected SessionData sessionData;
     protected StepLog log;
@@ -49,12 +53,13 @@ public abstract class BaseProjectApiTest {
     protected void setUpDefaultSessionData() {
         sessionData = new SessionData();
         sessionData.setUserLdap(EnvConstants.BASIC_USER_LDAP);
-        sessionData.setUserShopId("35");
+        sessionData.setUserShopId(EnvConstants.SHOP_WITH_NEW_INTERFACE);
         sessionData.setUserDepartmentId("1");
         if (isNeedAccessToken()) {
             sessionData.setAccessToken(authClient.getAccessToken(EnvConstants.BASIC_USER_LDAP,
                     EnvConstants.BASIC_USER_PASS));
         }
+        apiClientProvider.setSessionData(sessionData);
     }
 
     protected abstract boolean isNeedAccessToken();

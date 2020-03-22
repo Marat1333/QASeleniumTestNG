@@ -15,8 +15,8 @@ public class EstimateData {
     private String documentType;
     private String salesDocStatus;
     private String shopId;
-    private List<CustomerData> customers;
-    private List<CartEstimateProductOrderData> products;
+    private List<EstimateCustomerData> customers;
+    private List<EstimateProductOrderData> products;
     private String status;
     private Integer documentVersion;
     private Double totalWeight;

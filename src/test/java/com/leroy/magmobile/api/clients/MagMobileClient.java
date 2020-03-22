@@ -29,7 +29,7 @@ public class MagMobileClient extends BaseClient {
     protected SessionData sessionData;
 
     protected <J> Response<J> execute(RequestBuilder<?> request, final Class<J> type) {
-        if (sessionData.getAccessToken() != null)
+        if (sessionData != null && sessionData.getAccessToken() != null)
             request.bearerAuthHeader(sessionData.getAccessToken());
         return executeRequest(request.build(gatewayUrl), type);
     }

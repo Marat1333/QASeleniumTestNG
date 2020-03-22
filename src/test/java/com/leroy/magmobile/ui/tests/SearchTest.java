@@ -2,6 +2,8 @@ package com.leroy.magmobile.ui.tests;
 
 import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
+import com.leroy.core.api.Module;
+import com.leroy.magmobile.api.ApiClientProvider;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.ui.models.search.FiltersData;
 import com.leroy.magmobile.ui.AppBaseSteps;
@@ -26,18 +28,20 @@ import com.leroy.magmobile.api.requests.catalog_search.GetCatalogServicesSearch;
 import io.qameta.allure.Issue;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
-import ru.leroymerlin.qa.core.base.BaseModule;
 
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-@Guice(modules = {BaseModule.class})
+@Guice(modules = {Module.class})
 public class SearchTest extends AppBaseSteps {
 
     @Inject
     private CatalogSearchClient searchClient;
+
+    @Inject
+    private ApiClientProvider apiClientProvider;
 
     private static final String ALL_DEPARTMENTS_TEXT = "Все отделы";
 

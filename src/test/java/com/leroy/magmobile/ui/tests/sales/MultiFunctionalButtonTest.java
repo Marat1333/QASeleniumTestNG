@@ -1,5 +1,6 @@
 package com.leroy.magmobile.ui.tests.sales;
 
+import com.leroy.constants.EnvConstants;
 import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.magmobile.ui.models.sales.OrderDetailsData;
 import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
@@ -103,6 +104,7 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
 
     @Test(description = "C3201024 Добавление в существующий документ продажи")
     public void testC3201024() throws Exception {
+        sessionData.setUserShopId(EnvConstants.SHOP_WITH_OLD_INTERFACE);
         // Pre-condition
         // - Имеются документы продажи в статусе черновик
         String lmCode = getAnyLmCodeProductWithoutSpecificOptions();
@@ -134,10 +136,11 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
 
     @Test(description = "C22744177 Создание заявки на Отзыв RM")
     public void testCreateOrderForWithdrawalFromRM() throws Exception {
+        sessionData.setUserShopId(EnvConstants.SHOP_WITH_OLD_INTERFACE);
         // Pre-condition
         String lmCode = getAnyLmCodeProductIsAvailableForWithdrawalFromRM();
-        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(
-                LoginType.USER_WITH_OLD_INTERFACE, MainProductAndServicesPage.class);
+        MainProductAndServicesPage mainProductAndServicesPage = loginSelectShopAndGoTo(
+                MainProductAndServicesPage.class);
 
         // Steps 1, 2, 3
         ActionWithProductModalPage actionWithProductModalPage =
@@ -188,7 +191,8 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
     public void test35ShopCreatingOrder() throws Exception {
         // Pre-condition
         String lmCode = getAnyLmCodeProductWithoutSpecificOptions();
-        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(LoginType.USER_WITH_NEW_INTERFACE_LIKE_35_SHOP, MainProductAndServicesPage.class);
+        MainProductAndServicesPage mainProductAndServicesPage = loginSelectShopAndGoTo(
+                MainProductAndServicesPage.class);
 
         // Steps 1, 2, 3
         ProductCardData productData = new ProductCardData(lmCode);
@@ -271,8 +275,10 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
             MainProductAndServicesPage mainProductAndServicesPage, ProductCardData productData,
             ProductTypes productType, boolean is35Shop) throws Exception {
         // Pre-condition
-        if (mainProductAndServicesPage == null)
-            mainProductAndServicesPage = loginAndGoTo(LoginType.USER_WITH_OLD_INTERFACE, MainProductAndServicesPage.class);
+        if (mainProductAndServicesPage == null) {
+            sessionData.setUserShopId(EnvConstants.SHOP_WITH_OLD_INTERFACE);
+            mainProductAndServicesPage = loginSelectShopAndGoTo(MainProductAndServicesPage.class);
+        }
 
         // Step #1
         log.step("Нажмите в поле поиска");
