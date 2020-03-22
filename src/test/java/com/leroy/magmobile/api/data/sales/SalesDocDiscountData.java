@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class DiscountData {
+public class SalesDocDiscountData {
 
     private Double maxDiscount;
     List<DiscountReasonData> reasons;

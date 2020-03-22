@@ -11,7 +11,11 @@
             <class name="com.leroy.magmobile.api.tests.salesdoc.CartTest">
                 <methods>
                     <include name="testCreateCart"/>
+                    <include name="testCartConfirmQuantity"/>
+                    <include name="testCartItems"/>
+                    <include name="testCartDiscount"/>
                     <include name="testGetCart"/>
+                    <include name="testUpdateCart"/>
                     <include name="testDeleteCart"/>
                 </methods>
             </class>

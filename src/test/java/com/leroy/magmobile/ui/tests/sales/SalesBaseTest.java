@@ -1,19 +1,18 @@
 package com.leroy.magmobile.ui.tests.sales;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.core.SessionData;
 import com.leroy.core.configuration.Log;
-import com.leroy.magmobile.api.clients.CartClient;
-import com.leroy.magmobile.api.clients.CatalogSearchClient;
-import com.leroy.magmobile.api.clients.EstimateClient;
-import com.leroy.magmobile.api.clients.MagMobileClient;
+import com.leroy.magmobile.api.clients.*;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
-import com.leroy.magmobile.api.data.sales.cart_estimate.CartData;
-import com.leroy.magmobile.api.data.sales.cart_estimate.EstimateData;
-import com.leroy.magmobile.api.data.sales.cart_estimate.ProductOrderData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
 import com.leroy.magmobile.ui.models.search.FiltersData;
@@ -27,7 +26,6 @@ import com.leroy.magmobile.ui.pages.sales.basket.BasketStep3Page;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.umbrella_extension.authorization.AuthClient;
 import org.apache.commons.lang.RandomStringUtils;
-import org.json.simple.JSONObject;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Guice;
@@ -52,7 +50,7 @@ public class SalesBaseTest extends AppBaseSteps {
     private MagMobileClient mashupClient;
 
     @Inject
-    private CatalogSearchClient searchBuilder;
+    private CatalogSearchClient searchClient;
 
     @Inject
     private CartClient cartClient;
@@ -60,16 +58,20 @@ public class SalesBaseTest extends AppBaseSteps {
     @Inject
     private EstimateClient estimateClient;
 
+    @Inject
+    private OrderClient orderClient;
+
     @BeforeClass
     public void beforeClass() {
         String token = authClient.getAccessToken(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS);
         SessionData sessionData = context.getSessionData();
         sessionData.setUserShopId("35");
-        sessionData.setUserDepartmentId("15");
+        sessionData.setUserDepartmentId("1");
         sessionData.setAccessToken(token);
         estimateClient.setSessionData(sessionData);
         cartClient.setSessionData(sessionData);
-        searchBuilder.setSessionData(sessionData);
+        searchClient.setSessionData(sessionData);
+        orderClient.setSessionData(sessionData);
     }
 
     // Получить ЛМ код для услуги
@@ -80,7 +82,7 @@ public class SalesBaseTest extends AppBaseSteps {
     // Получить ЛМ код для обычного продукта без специфичных опций
     protected List<String> getAnyLmCodesProductWithoutSpecificOptions(
             int necessaryCount) {
-        return searchBuilder.getProductLmCodes(necessaryCount);
+        return searchClient.getProductLmCodes(necessaryCount);
     }
 
     protected String getAnyLmCodeProductWithoutSpecificOptions() {
@@ -91,14 +93,15 @@ public class SalesBaseTest extends AppBaseSteps {
     protected String getAnyLmCodeProductWithAvs() {
         FiltersData filtersData = new FiltersData();
         filtersData.setAvs(true);
-        return searchBuilder.getProducts(1, filtersData).get(0).getLmCode();
+        return searchClient.getProducts(1, filtersData).get(0).getLmCode();
     }
 
     // Получить ЛМ код для продукта с опцией TopEM
     protected String getAnyLmCodeProductWithTopEM() {
         FiltersData filtersData = new FiltersData();
         filtersData.setTopEM(true);
-        return searchBuilder.getProducts(1, filtersData).get(0).getLmCode();
+        context.getSessionData().setUserDepartmentId("15");
+        return searchClient.getProducts(1, filtersData).get(0).getLmCode();
     }
 
     // Получить ЛМ код для продукта, доступного для отзыва с RM
@@ -131,7 +134,7 @@ public class SalesBaseTest extends AppBaseSteps {
 
     protected String createDraftEstimate() {
         String lmCode = getAnyLmCodeProductWithoutSpecificOptions();
-        ProductOrderData productOrderData = new ProductOrderData();
+        CartEstimateProductOrderData productOrderData = new CartEstimateProductOrderData();
         productOrderData.setLmCode(lmCode);
         productOrderData.setQuantity(1.0);
         Response<EstimateData> estimateDataResponse = estimateClient.sendRequestCreate(productOrderData);
@@ -141,10 +144,10 @@ public class SalesBaseTest extends AppBaseSteps {
 
     protected String createDraftCart(int productCount) {
         List<String> lmCodes = getAnyLmCodesProductWithoutSpecificOptions(productCount);
-        List<ProductOrderData> productOrderDataList = new ArrayList<>();
+        List<CartProductOrderData> productOrderDataList = new ArrayList<>();
         Random r = new Random();
         for (String lmCode : lmCodes) {
-            ProductOrderData productOrderData = new ProductOrderData();
+            CartProductOrderData productOrderData = new CartProductOrderData();
             productOrderData.setLmCode(lmCode);
             productOrderData.setQuantity((double) (r.nextInt(9) + 1));
             productOrderDataList.add(productOrderData);
@@ -155,11 +158,11 @@ public class SalesBaseTest extends AppBaseSteps {
     }
 
     protected void cancelOrder(String orderId) throws Exception {
-        Response<JSONObject> r = mashupClient.cancelOrder(EnvConstants.BASIC_USER_LDAP, orderId);
+        Response<JsonNode> r = orderClient.cancelOrder(orderId);
         if (!r.isSuccessful()) {
             Thread.sleep(10000); // TODO можно подумать над не implicit wait'ом
             Log.warn(r.toString());
-            r = mashupClient.cancelOrder(EnvConstants.BASIC_USER_LDAP, orderId);
+            r = orderClient.cancelOrder(orderId);
         }
         anAssert.isTrue(r.isSuccessful(),
                 "Не смогли удалить заказ №" + orderId + ". Ошибка: " + r.toString());
@@ -256,7 +259,7 @@ public class SalesBaseTest extends AppBaseSteps {
         SalesDocumentData expectedSalesDocument = new SalesDocumentData();
         expectedSalesDocument.setPrice(expectedTotalPrice);
         expectedSalesDocument.setPin(testPinCode);
-        expectedSalesDocument.setDocumentState(SalesDocumentsConst.States.CREATED.getUiVal());
+        expectedSalesDocument.setDocumentState(SalesDocumentsConst.States.CONFIRMED.getUiVal());
         expectedSalesDocument.setTitle("Из торгового зала");
         expectedSalesDocument.setNumber(documentNumber);
         submittedSalesDocumentPage.clickSubmitButton()

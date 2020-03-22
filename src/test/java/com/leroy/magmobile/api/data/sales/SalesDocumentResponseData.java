@@ -1,7 +1,7 @@
 package com.leroy.magmobile.api.data.sales;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.leroy.magmobile.api.data.sales.cart_estimate.ProductOrderData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.ServiceOrderData;
 import lombok.Data;
 
@@ -27,7 +27,7 @@ public class SalesDocumentResponseData {
     private String salesDocStatus;
     private String pinCode;
     private String comment;
-    private List<ProductOrderData> products = new ArrayList<>();
+    private List<CartEstimateProductOrderData> products = new ArrayList<>();
     private List<ServiceOrderData> services = new ArrayList<>();
     private Double docPriceSum;
     private String newServiceId;

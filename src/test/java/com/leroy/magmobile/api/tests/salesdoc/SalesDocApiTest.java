@@ -1,15 +1,12 @@
 package com.leroy.magmobile.api.tests.salesdoc;
 
 import com.google.inject.Inject;
-import com.leroy.constants.EnvConstants;
-import com.leroy.core.SessionData;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.SalesDocProductClient;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
-import com.leroy.magmobile.api.data.sales.cart_estimate.ProductOrderData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.ServiceOrderData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
-import com.leroy.umbrella_extension.authorization.AuthClient;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -21,31 +18,25 @@ public class SalesDocApiTest extends BaseProjectApiTest {
     @Inject
     private SalesDocProductClient salesDocProductClient;
 
-    @Inject
     private CatalogSearchClient searchClient;
-
-    @Inject
-    private AuthClient authClient;
 
     private SalesDocumentResponseData salesDocument;
 
-    @BeforeClass
-    private void setUpDefaultSessionData() {
-        sessionData = new SessionData();
-        sessionData.setUserLdap(EnvConstants.BASIC_USER_LDAP);
-        sessionData.setUserShopId("35");
-        sessionData.setUserDepartmentId("1");
-        sessionData.setAccessToken(authClient.getAccessToken(EnvConstants.BASIC_USER_LDAP,
-                EnvConstants.BASIC_USER_PASS));
+    @Override
+    protected boolean isNeedAccessToken() {
+        return true;
+    }
 
+    @BeforeClass
+    private void setUp() {
         salesDocProductClient.setSessionData(sessionData);
-        searchClient.setSessionData(sessionData);
+        searchClient = getCatalogSearchClient();
     }
 
     @Test(description = "C3232445 SalesDoc add product")
     public void testSalesDocAddProduct() {
         // Prepare request data
-        ProductOrderData productOrderData = new ProductOrderData(searchClient.getProducts(1).get(0));
+        CartEstimateProductOrderData productOrderData = new CartEstimateProductOrderData(searchClient.getProducts(1).get(0));
         productOrderData.setQuantity((double) new Random().nextInt(6) + 1);
 
         // Create and check
@@ -96,7 +87,7 @@ public class SalesDocApiTest extends BaseProjectApiTest {
     public void testSalesDocUpdateQuantityForTheSameProduct() {
         if (salesDocument == null)
             throw new IllegalArgumentException("SalesDoc hasn't been created");
-        ProductOrderData productOrderData = salesDocument.getProducts().get(0);
+        CartEstimateProductOrderData productOrderData = salesDocument.getProducts().get(0);
         productOrderData.setQuantity(productOrderData.getQuantity() + 2);
 
         salesDocProductClient.updateSalesDocProducts(salesDocument.getFullDocId(), productOrderData)

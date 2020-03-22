@@ -1,7 +1,6 @@
 package com.leroy.constants;
 
 import com.leroy.core.configuration.Log;
-import org.testng.annotations.Test;
 import org.testng.util.Strings;
 
 import java.io.FileReader;
@@ -24,9 +23,10 @@ public class EnvConstants {
     private static String getUrlMagPortal() {
         String branchForTesting = System.getProperty("testBranch");
         if (branchForTesting != null)
-            return String.format("https://%s.prudevlegowp.hq.ru.corp.leroymerlin.com", branchForTesting.toLowerCase().replaceAll("/","-"));
-        return System.getProperty("portalUrl", getProperty("url.mag.portal"));
+            return String.format("https://%s.prudevlegowp.hq.ru.corp.leroymerlin.com", branchForTesting.toLowerCase().replaceAll("/", "-"));
+        return System.getProperty("portalUrl", getProperty("url.ui.main"));
     }
+
     public static final String URL_MAG_PORTAL = getUrlMagPortal();
 
     // Test data
@@ -38,6 +38,9 @@ public class EnvConstants {
 
     // Services
     public static final String SERVICE_1_LM_CODE = getProperty("data.service1.lmCode");
+
+    // -------------- API HOSTS --------------- //
+    public static final String MAIN_API_HOST = getProperty("url.api.main_host");
 
     /**
      * Get the value of a property key
@@ -76,7 +79,7 @@ public class EnvConstants {
      */
     private static String getEnvironment() {
         String env = PRODUCTION_ENV;
-        String mavenEnv = System.getProperty("menv");
+        String mavenEnv = System.getProperty("env");
         if (!Strings.isNullOrEmpty(mavenEnv)) {
             env = mavenEnv;
         }
