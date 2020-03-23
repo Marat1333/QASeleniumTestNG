@@ -9,10 +9,10 @@ import ru.leroymerlin.qa.core.config.client.EnvironmentConfig;
 
 import javax.ws.rs.client.Client;
 
-public class BaseModule extends AbstractModule {
+public class Module extends AbstractModule {
     private final Client client = ClientFactory.buildUnsecureWebClient();
 
-    public BaseModule() {
+    public Module() {
     }
 
     protected void configure() {

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="API Order Suite" parallel="tests">
+
+    <listeners>
+        <listener class-name="com.leroy.core.listeners.TestRailListener"/>
+    </listeners>
+
+    <test name="Order">
+        <classes>
+            <class name="com.leroy.magmobile.api.tests.salesdoc.OrderTest">
+                <methods>
+                    <include name="testCreateOrder"/>
+                    <include name="testGetOrder"/>
+                    <include name="testSetPinCode"/>
+                    <include name="testConfirmOrder"/>
+                    <include name="testCancelOrder"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+</suite>

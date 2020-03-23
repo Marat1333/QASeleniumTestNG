@@ -13,7 +13,6 @@ public class Context extends TestContext {
 
     public Context(WebDriver driver) {
         super(driver);
-        sessionData = new SessionData();
     }
 
     public Context(WebDriver driver, CustomSoftAssert softAssert, CustomAssert anAssert, StepLog log, String tcId) {

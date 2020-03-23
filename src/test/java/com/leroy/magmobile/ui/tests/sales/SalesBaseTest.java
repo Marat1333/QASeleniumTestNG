@@ -1,19 +1,16 @@
 package com.leroy.magmobile.ui.tests.sales;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.SalesDocumentsConst;
-import com.leroy.core.SessionData;
+import com.leroy.core.api.Module;
 import com.leroy.core.configuration.Log;
-import com.leroy.magmobile.api.clients.CartClient;
-import com.leroy.magmobile.api.clients.CatalogSearchClient;
-import com.leroy.magmobile.api.clients.EstimateClient;
-import com.leroy.magmobile.api.clients.MagMobileClient;
+import com.leroy.magmobile.api.ApiClientProvider;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
-import com.leroy.magmobile.api.data.sales.cart_estimate.CartData;
-import com.leroy.magmobile.api.data.sales.cart_estimate.EstimateData;
-import com.leroy.magmobile.api.data.sales.cart_estimate.ProductOrderData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
 import com.leroy.magmobile.ui.models.search.FiltersData;
@@ -27,12 +24,9 @@ import com.leroy.magmobile.ui.pages.sales.basket.BasketStep3Page;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.umbrella_extension.authorization.AuthClient;
 import org.apache.commons.lang.RandomStringUtils;
-import org.json.simple.JSONObject;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
-import ru.leroymerlin.qa.core.base.BaseModule;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.ArrayList;
@@ -42,34 +36,20 @@ import java.util.Random;
 import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@Guice(modules = {BaseModule.class})
+@Guice(modules = {Module.class})
 public class SalesBaseTest extends AppBaseSteps {
 
     @Inject
     private AuthClient authClient;
 
     @Inject
-    private MagMobileClient mashupClient;
-
-    @Inject
-    private CatalogSearchClient searchBuilder;
-
-    @Inject
-    private CartClient cartClient;
-
-    @Inject
-    private EstimateClient estimateClient;
+    protected ApiClientProvider clientProvider;
 
     @BeforeClass
-    public void beforeClass() {
+    public void salesBaseTestBeforeClass() {
         String token = authClient.getAccessToken(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS);
-        SessionData sessionData = context.getSessionData();
-        sessionData.setUserShopId("35");
-        sessionData.setUserDepartmentId("15");
         sessionData.setAccessToken(token);
-        estimateClient.setSessionData(sessionData);
-        cartClient.setSessionData(sessionData);
-        searchBuilder.setSessionData(sessionData);
+        clientProvider.setSessionData(sessionData);
     }
 
     // Получить ЛМ код для услуги
@@ -80,7 +60,7 @@ public class SalesBaseTest extends AppBaseSteps {
     // Получить ЛМ код для обычного продукта без специфичных опций
     protected List<String> getAnyLmCodesProductWithoutSpecificOptions(
             int necessaryCount) {
-        return searchBuilder.getProductLmCodes(necessaryCount);
+        return clientProvider.getCatalogSearchClient().getProductLmCodes(necessaryCount);
     }
 
     protected String getAnyLmCodeProductWithoutSpecificOptions() {
@@ -91,14 +71,15 @@ public class SalesBaseTest extends AppBaseSteps {
     protected String getAnyLmCodeProductWithAvs() {
         FiltersData filtersData = new FiltersData();
         filtersData.setAvs(true);
-        return searchBuilder.getProducts(1, filtersData).get(0).getLmCode();
+        return clientProvider.getCatalogSearchClient().getProducts(1, filtersData).get(0).getLmCode();
     }
 
     // Получить ЛМ код для продукта с опцией TopEM
     protected String getAnyLmCodeProductWithTopEM() {
         FiltersData filtersData = new FiltersData();
         filtersData.setTopEM(true);
-        return searchBuilder.getProducts(1, filtersData).get(0).getLmCode();
+        context.getSessionData().setUserDepartmentId("15");
+        return clientProvider.getCatalogSearchClient().getProducts(1, filtersData).get(0).getLmCode();
     }
 
     // Получить ЛМ код для продукта, доступного для отзыва с RM
@@ -113,7 +94,7 @@ public class SalesBaseTest extends AppBaseSteps {
             do {
                 generatedPinCode = RandomStringUtils.randomNumeric(5);
             } while (generatedPinCode.startsWith("9"));
-            SalesDocumentListResponse salesDocumentsResponse = mashupClient.getSalesDocumentsByPinCodeOrDocId(generatedPinCode)
+            SalesDocumentListResponse salesDocumentsResponse = clientProvider.getCatalogSearchClient().getSalesDocumentsByPinCodeOrDocId(generatedPinCode)
                     .asJson();
             if (salesDocumentsResponse.getTotalCount() == 0) {
                 Log.info("API: Не найдено ни одного документа с PIN кодом: " + generatedPinCode);
@@ -129,37 +110,37 @@ public class SalesBaseTest extends AppBaseSteps {
 
     // CREATING PRE-CONDITIONS:
 
-    protected String createDraftEstimate() {
+    /*protected String createDraftEstimate() {
         String lmCode = getAnyLmCodeProductWithoutSpecificOptions();
-        ProductOrderData productOrderData = new ProductOrderData();
+        CartEstimateProductOrderData productOrderData = new CartEstimateProductOrderData();
         productOrderData.setLmCode(lmCode);
         productOrderData.setQuantity(1.0);
         Response<EstimateData> estimateDataResponse = estimateClient.sendRequestCreate(productOrderData);
         assertThat(estimateDataResponse, successful());
         return estimateDataResponse.asJson().getEstimateId();
-    }
+    }*/
 
     protected String createDraftCart(int productCount) {
         List<String> lmCodes = getAnyLmCodesProductWithoutSpecificOptions(productCount);
-        List<ProductOrderData> productOrderDataList = new ArrayList<>();
+        List<CartProductOrderData> productOrderDataList = new ArrayList<>();
         Random r = new Random();
         for (String lmCode : lmCodes) {
-            ProductOrderData productOrderData = new ProductOrderData();
+            CartProductOrderData productOrderData = new CartProductOrderData();
             productOrderData.setLmCode(lmCode);
             productOrderData.setQuantity((double) (r.nextInt(9) + 1));
             productOrderDataList.add(productOrderData);
         }
-        Response<CartData> cartDataResponse = cartClient.sendRequestCreate(productOrderDataList);
+        Response<CartData> cartDataResponse = clientProvider.getCartClient().sendRequestCreate(productOrderDataList);
         assertThat(cartDataResponse, successful());
         return cartDataResponse.asJson().getFullDocId();
     }
 
     protected void cancelOrder(String orderId) throws Exception {
-        Response<JSONObject> r = mashupClient.cancelOrder(EnvConstants.BASIC_USER_LDAP, orderId);
+        Response<JsonNode> r = clientProvider.getOrderClient().cancelOrder(orderId);
         if (!r.isSuccessful()) {
             Thread.sleep(10000); // TODO можно подумать над не implicit wait'ом
             Log.warn(r.toString());
-            r = mashupClient.cancelOrder(EnvConstants.BASIC_USER_LDAP, orderId);
+            r = clientProvider.getOrderClient().cancelOrder(orderId);
         }
         anAssert.isTrue(r.isSuccessful(),
                 "Не смогли удалить заказ №" + orderId + ". Ошибка: " + r.toString());
@@ -170,18 +151,15 @@ public class SalesBaseTest extends AppBaseSteps {
         NORMAL, AVS, TOP_EM;
     }
 
-    @BeforeMethod
-    public void setUp() {
-        context.getSessionData().setUserShopId("78");
-    }
-
     // TESTS
 
     @Test(description = "C3201029 Создание документа продажи")
     public void testCreateDocumentSales() throws Exception {
+        sessionData.setUserShopId(EnvConstants.SHOP_WITH_OLD_INTERFACE);
+        //sessionData.setUserDepartmentId("15");
         // Step #1
         log.step("На главном экране выберите раздел Документы продажи");
-        MainSalesDocumentsPage salesDocumentsPage = loginAndGoTo(LoginType.USER_WITH_OLD_INTERFACE,
+        MainSalesDocumentsPage salesDocumentsPage = loginSelectShopAndGoTo(
                 MainSalesDocumentsPage.class);
         salesDocumentsPage.verifyRequiredElements();
 
@@ -191,19 +169,11 @@ public class SalesBaseTest extends AppBaseSteps {
         searchProductPage.verifyRequiredElements();
 
         // Step #3
-        String inputDataStep3 = "164";
-        log.step("Введите 164 код товара");
-        searchProductPage.enterTextInSearchFieldAndSubmit(inputDataStep3)
-                .shouldCountOfProductsOnPageMoreThan(1)
-                .shouldProductCardsContainText(inputDataStep3)
-                .shouldProductCardContainAllRequiredElements(1);
-
-        // Step #4
         log.step("Нажмите на мини-карточку товара 16410291");
         AddProductPage addProductPage = searchProductPage.searchProductAndSelect("16410291")
                 .verifyRequiredElements();
 
-        // Step #5
+        // Step #4
         log.step("Нажмите на поле количества");
         addProductPage.clickEditQuantityField()
                 .shouldKeyboardVisible();
@@ -211,52 +181,52 @@ public class SalesBaseTest extends AppBaseSteps {
                 .shouldTotalPriceIs(String.format("%.2f", Double.parseDouble(
                         addProductPage.getPrice())));
 
-        // Step #6
+        // Step #5
         log.step("Введите значение 20,5 количества товара");
         String expectedTotalPrice = String.format("%.2f",
                 Double.parseDouble(addProductPage.getPrice()) * 20.5);
         addProductPage.enterQuantityOfProduct("20,5")
                 .shouldTotalPriceIs(expectedTotalPrice);
 
-        // Step #7
+        // Step #6
         log.step("Нажмите кнопку Добавить");
         BasketStep1Page basketStep1Page = addProductPage.clickAddButton()
                 .verifyRequiredElements();
         basketStep1Page.shouldDocumentTypeIs(BasketPage.Constants.DRAFT_DOCUMENT_TYPE);
         String documentNumber = basketStep1Page.getDocumentNumber();
 
-        // Step #8
+        // Step #7
         log.step("Нажмите Далее к параметрам");
         BasketStep2Page basketStep2Page = basketStep1Page.clickNextParametersButton()
                 .verifyRequiredElements()
                 .shouldFieldsHaveDefaultValues();
 
-        // Step #9
+        // Step #8
         log.step("Нажмите кнопку Создать документ продажи");
         BasketStep3Page basketStep3Page = basketStep2Page.clickCreateSalesDocumentButton()
                 .verifyRequiredElements();
         basketStep3Page.shouldKeyboardVisible();
 
-        // Step #10
+        // Step #9
         log.step("Введите 5 цифр PIN-кода");
         String testPinCode = getValidPinCode();
         basketStep3Page.enterPinCode(testPinCode)
                 .shouldPinCodeFieldIs(testPinCode)
                 .shouldSubmitButtonIsActive();
 
-        // Step #11
+        // Step #10
         log.step("Нажмите кнопку Подтвердить");
         SubmittedSalesDocumentPage submittedSalesDocumentPage = basketStep3Page.clickSubmitButton()
                 .verifyRequiredElements()
                 .shouldPinCodeIs(testPinCode)
                 .shouldDocumentNumberIs(documentNumber);
 
-        // Step #12
+        // Step #11
         log.step("Нажмите кнопку Перейти в список документов");
         SalesDocumentData expectedSalesDocument = new SalesDocumentData();
         expectedSalesDocument.setPrice(expectedTotalPrice);
         expectedSalesDocument.setPin(testPinCode);
-        expectedSalesDocument.setDocumentState(SalesDocumentsConst.States.CREATED.getUiVal());
+        expectedSalesDocument.setDocumentState(SalesDocumentsConst.States.CONFIRMED.getUiVal());
         expectedSalesDocument.setTitle("Из торгового зала");
         expectedSalesDocument.setNumber(documentNumber);
         submittedSalesDocumentPage.clickSubmitButton()
