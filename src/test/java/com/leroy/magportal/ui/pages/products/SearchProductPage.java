@@ -6,12 +6,13 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.magmobile.api.data.catalog.ProductItemData;
+import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.webelements.MagPortalComboBox;
 import com.leroy.magportal.ui.webelements.searchelements.SupplierComboBox;
 import com.leroy.magportal.ui.webelements.searchelements.SupplierDropDown;
 import com.leroy.magportal.ui.webelements.widgets.*;
-import com.leroy.umbrella_extension.magmobile.data.ProductItemListResponse;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 
@@ -246,6 +247,19 @@ public class SearchProductPage extends MenuPage {
                 }
             }
         }
+        waitForSpinnerAppearAndDisappear();
+        return this;
+    }
+
+    @Step("Перейти по хлебным крошкам в {value}")
+    public SearchProductPage navigateToPreviousNomenclatureElement(String value) {
+        for (Element element : nomenclaturePathButtons) {
+            if (element.getText().contains(value)) {
+                element.click();
+                break;
+            }
+        }
+        waitForSpinnerAppearAndDisappear();
         return this;
     }
 
@@ -264,6 +278,7 @@ public class SearchProductPage extends MenuPage {
         checkbox.click();
         if (applyFilters) {
             applyFilters();
+            waitForSpinnerAppearAndDisappear();
         }
         return this;
     }
@@ -350,6 +365,13 @@ public class SearchProductPage extends MenuPage {
         return this;
     }
 
+    @Step("Нажать на кнопку \"Показать еще\"")
+    public SearchProductPage showMoreResults() {
+        showMoreProductsBtn.click();
+        waitForSpinnerAppearAndDisappear();
+        return this;
+    }
+
     //VERIFICATIONS
 
     @Step("Проверить, что отобразилось сообщение \"Ничего не найдено\" " +
@@ -365,10 +387,66 @@ public class SearchProductPage extends MenuPage {
         return this;
     }
 
-    public SearchProductPage shouldResponseEntityCountEqualsToViewEntityCount(ProductItemListResponse responseData){
-        anAssert.isTrue(responseData.getItems().size()==extendedProductCardListTableView.getCount(),
-                "Кол-во артикулов отличается: отображено -"+responseData.getItems().size()+", получено - "
-                        +extendedProductCardListTableView.getCount());
+    @Step("Проверить, что кол-во отображенных результатов соответствует кол-ву артикулов из ответа мэшапера")
+    public SearchProductPage shouldResponseEntityEqualsToViewEntity(ProductItemDataList responseData, FilterFrame frame, ViewMode mode) throws Exception {
+        List<ProductItemData> dataList = responseData.getItems();
+        if (frame.equals(FilterFrame.MY_SHOP) && mode.equals(ViewMode.EXTENDED)) {
+            anAssert.isTrue(dataList.size() == extendedProductCardList.getCount(),
+                    "Кол-во артикулов отличается: отображено - " + extendedProductCardList.getCount() + ", получено - "
+                            + dataList.size());
+            for (int i = 0; i < dataList.size(); i++) {
+                anAssert.isTrue(dataList.get(i).getLmCode().equals(extendedProductCardList.get(i).getLmCode()) &&
+                                dataList.get(i).getBarCode().equals(extendedProductCardList.get(i).getBarCode()),
+                        "У артикулов не совпадают лм или баркод: ответ мэшапера - " + dataList.get(i).getLmCode() +
+                                " отображено - " + extendedProductCardList.get(i).getLmCode());
+            }
+        } else if (frame.equals(FilterFrame.MY_SHOP) && mode.equals(ViewMode.LIST)) {
+            anAssert.isTrue(dataList.size() == extendedProductCardListTableView.getCount(),
+                    "Кол-во артикулов отличается: отображено - " + extendedProductCardListTableView.getCount() + ", получено - "
+                            + dataList.size());
+            for (int i = 0; i < dataList.size(); i++) {
+                anAssert.isTrue(dataList.get(i).getLmCode().equals(extendedProductCardListTableView.get(i).getLmCode()) &&
+                        dataList.get(i).getBarCode().equals(extendedProductCardListTableView.get(i).getBarCode()),
+                        "У артикулов не совпадают лм или баркод: ответ мэшапера - " + dataList.get(i).getLmCode() +
+                                " отображено - " + extendedProductCardListTableView.get(i).getLmCode());
+            }
+        } else if (frame.equals(FilterFrame.ALL_GAMMA_LM) && mode.equals(ViewMode.EXTENDED)) {
+            anAssert.isTrue(dataList.size() == productCardsList.getCount(),
+                    "Кол-во артикулов отличается: отображено - " + productCardsList.getCount() + ", получено - "
+                            + dataList.size());
+            for (int i = 0; i < dataList.size(); i++) {
+                anAssert.isTrue(dataList.get(i).getLmCode().equals(productCardsList.get(i).getLmCode()) &&
+                        dataList.get(i).getBarCode().equals(productCardsList.get(i).getBarCode()),
+                        "У артикулов не совпадают лм или баркод: ответ мэшапера - " + dataList.get(i).getLmCode() +
+                                " отображено - " + productCardsList.get(i).getLmCode());
+            }
+        } else {
+            anAssert.isTrue(dataList.size() == productCardListTableView.getCount(),
+                    "Кол-во артикулов отличается: отображено - " + productCardListTableView.getCount() + ", получено - "
+                            + dataList.size());
+            for (int i = 0; i < dataList.size(); i++) {
+                anAssert.isTrue(dataList.get(i).getLmCode().equals(productCardListTableView.get(i).getLmCode()) &&
+                        dataList.get(i).getBarCode().equals(productCardListTableView.get(i).getBarCode()),
+                        "У артикулов не совпадают лм или баркод: ответ мэшапера - " + dataList.get(i).getLmCode() +
+                                " отображено - " + productCardListTableView.get(i).getLmCode());
+            }
+        }
+        return this;
+    }
+
+    @Step("Проверить, что кнопка \"показать еще\" отображается")
+    public SearchProductPage shouldShowMoreBtnBeVisible() {
+        softAssert.isElementVisible(showMoreProductsBtn);
+        softAssert.isElementNotVisible(noMoreResultsLbl);
+        softAssert.verifyAll();
+        return this;
+    }
+
+    @Step("Проверить, что лейбл \"Больше ничего не найдено\" отображается")
+    public SearchProductPage shouldNoMoreResultsBeVisible() {
+        softAssert.isElementVisible(noMoreResultsLbl);
+        softAssert.isElementNotVisible(showMoreProductsBtn);
+        softAssert.verifyAll();
         return this;
     }
 

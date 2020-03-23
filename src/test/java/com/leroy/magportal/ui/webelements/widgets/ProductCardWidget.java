@@ -24,7 +24,7 @@ public class ProductCardWidget extends Element {
     }
 
     public String getBarCode(){
-        return barCodeLbl.getText();
+        return barCodeLbl.getText().replaceAll(" ","");
     }
 
     public String getTitle(){
