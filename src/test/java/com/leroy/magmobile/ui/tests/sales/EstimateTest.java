@@ -180,13 +180,14 @@ public class EstimateTest extends SalesBaseTest {
 
     @Test(description = "C22797078 Преобразовать смету в корзину")
     public void testTransformEstimateToBasket() throws Exception {
-        // TODO Need to API
-        // Pre-condition
-        MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
-                MainSalesDocumentsPage.class);
-        SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
-        salesDocumentsPage.searchForDocumentByTextAndSelectIt(
-                SalesDocumentsConst.Types.QUOTATION.getUiVal());
+        if (!EstimatePage.isThisPage(context)) {
+            String estimateId = clientProvider.createConfirmedEstimateAndGetCartId();
+            MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
+                    MainSalesDocumentsPage.class);
+            SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
+            salesDocumentsPage.searchForDocumentByTextAndSelectIt(estimateId);
+        }
+
         EstimatePage estimatePage = new EstimatePage(context);
         // Collect test data from page
         SalesOrderData testEstimateData = estimatePage.getEstimateDataFromPage();
