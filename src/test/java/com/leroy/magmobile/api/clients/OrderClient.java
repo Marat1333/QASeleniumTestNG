@@ -49,8 +49,10 @@ public class OrderClient extends MagMobileClient {
         return execute(req, OrderData.class);
     }
 
-    public Response<OrderData> addProductAfterConfirmation() {
+    public Response<OrderData> checkQuantity(PostOrderData data) {
         OrderCheckQuantityRequest req = new OrderCheckQuantityRequest();
+        req.setShopId(sessionData.getUserShopId());
+        req.jsonBody(data);
         return execute(req, OrderData.class);
     }
 
@@ -114,7 +116,7 @@ public class OrderClient extends MagMobileClient {
         return this;
     }
 
-    public OrderClient assertThatGetResponseMatches(Response<OrderData> resp, OrderData expectedData) {
+    public void assertThatGetResponseMatches(Response<OrderData> resp, OrderData expectedData) {
         assertThatResponseIsOk(resp);
         OrderData actualData = resp.asJson();
         assertThat("orderId", actualData.getOrderId(), is(expectedData.getOrderId()));
@@ -152,15 +154,13 @@ public class OrderClient extends MagMobileClient {
             assertThat(String.format("Product #%s - Type", i + 1),
                     actualProduct.getType(), is(expectedProduct.getType()));
         }
-        return this;
     }
 
-    public OrderClient assertThatPinCodeIsSet(Response<JsonNode> resp) {
+    public void assertThatPinCodeIsSet(Response<JsonNode> resp) {
         assertThatResponseIsOk(resp);
-        return this;
     }
 
-    public OrderClient assertThatIsConfirmed(Response<OrderData> resp, OrderData expectedData) {
+    public void assertThatIsConfirmed(Response<OrderData> resp, OrderData expectedData) {
         assertThatResponseIsOk(resp);
         OrderData actualData = resp.asJson();
         assertThat("orderId", actualData.getOrderId(), is(expectedData.getOrderId()));
@@ -168,7 +168,12 @@ public class OrderClient extends MagMobileClient {
         assertThat("status", actualData.getStatus(), is(SalesDocumentsConst.States.IN_PROGRESS.getApiVal()));
         assertThat("salesDocStatus", actualData.getSalesDocStatus(),
                 is(SalesDocumentsConst.States.IN_PROGRESS.getApiVal()));
-        return this;
+    }
+
+    public void assertThatCheckQuantityIsOk(Response<OrderData> resp, PostOrderProductData expectedProductData) {
+        assertThatResponseIsOk(resp);
+        OrderData actualData = resp.asJson();
+       // assertThat("orderId", actualData.getOrderId(), is(expectedData.getOrderId()));
     }
 
     public OrderClient assertThatIsCancelled(Response<JsonNode> resp) {

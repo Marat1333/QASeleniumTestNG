@@ -12,10 +12,7 @@ import com.leroy.magmobile.api.clients.SalesDocSearchClient;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
-import com.leroy.magmobile.api.data.sales.orders.GiveAwayData;
-import com.leroy.magmobile.api.data.sales.orders.OrderData;
-import com.leroy.magmobile.api.data.sales.orders.PostOrderData;
-import com.leroy.magmobile.api.data.sales.orders.PostOrderProductData;
+import com.leroy.magmobile.api.data.sales.orders.*;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -138,9 +135,20 @@ public class OrderTest extends BaseProjectApiTest {
         orderData.increaseFulfillmentVersion();
     }
 
-    @Test(description = "Check Quantity Order")
+    @Test(description = "Check Quantity Order - happy path")
     public void testCheckQuantity() {
-        orderClient.addProductAfterConfirmation(); // TODO #unfinished Как узнать, в какой заказ добавлять товары?
+        OrderProductData orderProductData =  orderData.getProducts().get(0);
+
+        PostOrderProductData putProductData = new PostOrderProductData();
+        putProductData.setLmCode(orderProductData.getLmCode());
+        putProductData.setQuantity(orderProductData.getQuantity() + 1);
+
+        PostOrderData postOrderData = new PostOrderData();
+        postOrderData.setDateOfGiveAway(orderData.getGiveAway().getDate());
+        postOrderData.setProducts(Collections.singletonList(putProductData));
+
+        Response<OrderData> resp = orderClient.checkQuantity(postOrderData);
+        String s = "";
     }
 
     @Test(description = "Cancel Order")

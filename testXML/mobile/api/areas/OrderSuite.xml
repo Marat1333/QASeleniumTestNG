@@ -14,6 +14,7 @@
                     <include name="testGetOrder"/>
                     <include name="testSetPinCode"/>
                     <include name="testConfirmOrder"/>
+                    <include name="testCheckQuantity"/>
                     <include name="testCancelOrder"/>
                 </methods>
             </class>
