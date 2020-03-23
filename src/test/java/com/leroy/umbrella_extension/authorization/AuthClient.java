@@ -26,6 +26,8 @@ public class AuthClient extends BaseClient {
 
     public String getAccessToken(String username, String password) {
         Response<TokenData> resp = getResponseToken(username, password);
+        if (!resp.isSuccessful())
+            resp = getResponseToken(username, password);
         Assert.assertTrue(resp.isSuccessful(),
                 "API: Impossible to get Access Token. Response: " + resp.toString());
         return resp.asJson().getAccess_token();

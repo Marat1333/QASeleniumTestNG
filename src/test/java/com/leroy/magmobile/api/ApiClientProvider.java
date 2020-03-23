@@ -1,5 +1,6 @@
 package com.leroy.magmobile.api;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.leroy.core.SessionData;
@@ -184,6 +185,14 @@ public class ApiClientProvider {
                 estimateCustomerData, productOrderData);
         assertThat(estimateDataResponse, successful());
         return estimateDataResponse.asJson().getEstimateId();
+    }
+
+    public String createConfirmedEstimateAndGetCartId() {
+        EstimateClient client = getEstimateClient();
+        String cartId = createDraftEstimateAndGetCartId();
+        Response<JsonNode> resp = client.confirm(cartId);
+        client.assertThatResponseChangeStatusIsOk(resp);
+        return cartId;
     }
 
 }

@@ -83,6 +83,15 @@ public class EstimateClient extends MagMobileClient {
                 .formBody(body), JsonNode.class);
     }
 
+    public Response<JsonNode> confirm(String estimateId) {
+        Map<String, String> body = new HashMap<>();
+        body.put("status", SalesDocumentsConst.States.CONFIRMED.getApiVal());
+        return execute(new EstimateChangeStatusPut()
+                .bearerAuthHeader(sessionData.getAccessToken())
+                .setEstimateId(estimateId)
+                .formBody(body), JsonNode.class);
+    }
+
     public Response<JsonNode> sendEmail(String estimateId, SendEmailData emailData) {
         EstimateSendEmailRequest req = new EstimateSendEmailRequest();
         req.setEstimateId(estimateId);
