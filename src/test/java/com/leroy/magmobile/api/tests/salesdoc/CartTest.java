@@ -2,13 +2,15 @@ package com.leroy.magmobile.api.tests.salesdoc;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
+import com.leroy.constants.sales.DiscountConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.clients.CartClient;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountReasonData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
-import com.leroy.magmobile.api.data.sales.cart_estimate.cart.DiscountData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -72,27 +74,21 @@ public class CartTest extends BaseProjectApiTest {
         cartClient.assertThatQuantityIsConfirmed(confirmQuantityResp, cartData);
     }
 
-    // TODO #unfinished
-    // https://jaeger-query-lego-preprod-apim-stage.apps.lmru.tech/trace/21d4607f004219af
     @Test(description = "Cart - Add Discount")
     public void testCartDiscount() {
         if (cartData == null)
             throw new IllegalArgumentException("cart data hasn't been created");
-        CartProductOrderData cartProductOrderData = cartData.getProducts().get(0);
+        CartProductOrderData putCartProductOrderData = cartData.getProducts().get(0);
 
-        CartProductOrderData putCartProductOrderData = new CartProductOrderData();
-        putCartProductOrderData.setLineId(cartProductOrderData.getLineId());
-        putCartProductOrderData.setLmCode(cartProductOrderData.getLmCode());
-        putCartProductOrderData.setPrice(cartProductOrderData.getPrice());
-        //putCartProductOrderData.setType(null);
-        DiscountData discountData = new DiscountData();
+        CartDiscountData discountData = new CartDiscountData();
         discountData.setType(TYPE_NEW_PRICE);
         discountData.setTypeValue(189);
-        //discountData.setReason(new DiscountReasonData(1));
+        discountData.setReason(new CartDiscountReasonData(DiscountConst.Reasons.PRODUCT_SAMPLE.getId()));
         putCartProductOrderData.setDiscount(discountData);
         Response<CartData> resp = cartClient.addDiscount(cartData.getCartId(), cartData.getDocumentVersion(),
                 putCartProductOrderData);
         cartClient.assertThatDiscountAdded(resp, cartData);
+        cartData.increaseDocumentVersion();
     }
 
     @Test(description = "Lego_Cart_Consolidate_Products")
