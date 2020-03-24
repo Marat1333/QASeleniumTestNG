@@ -46,7 +46,7 @@ public class ProductCardPage extends MenuPage {
     @WebFindBy(xpath = "//span[contains(text(),'ВСЕ ОПИСАНИЕ')]")
     Element showFullDescription;
 
-    @Step("Вернуться к результатам поиска")
+    /*@Step("Вернуться к результатам поиска")
     public SearchProductPage backToSearchResult() {
         backToSearchResults.click();
         return new SearchProductPage(context);
@@ -80,6 +80,6 @@ public class ProductCardPage extends MenuPage {
         showAllSpecifications.click();
         return this;
     }
-
+    */
 
 }

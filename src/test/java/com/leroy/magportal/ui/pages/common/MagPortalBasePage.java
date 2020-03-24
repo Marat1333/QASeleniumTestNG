@@ -33,16 +33,6 @@ public class MagPortalBasePage extends BaseWebPage {
         spinnerIcon.waitForInvisibility();
     }
 
-    protected boolean waitUntilContentHasChanged(String ps) {
-        try {
-            new WebDriverWait(driver, short_timeout).until(driver -> !getPageSource().equals(ps));
-            return true;
-        } catch (TimeoutException e) {
-            Log.warn(String.format("waitForContentIsChanged failed (tried for %d second(s))", timeout));
-            return false;
-        }
-    }
-
     /**
      * Is alert message with something error visible?
      */

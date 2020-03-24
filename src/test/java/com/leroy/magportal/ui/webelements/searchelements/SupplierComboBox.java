@@ -14,7 +14,7 @@ public class SupplierComboBox extends MagPortalComboBox {
     }
 
     @WebFindBy(xpath = "./ancestor::div[1]/following-sibling::div[contains(@class, 'Select__menu lmui')]")
-    public SupplierDropDown supplierDropDown;
+    private SupplierDropDown supplierDropDown;
 
     @Override
     public void selectOptions(List<String> elements) throws Exception {

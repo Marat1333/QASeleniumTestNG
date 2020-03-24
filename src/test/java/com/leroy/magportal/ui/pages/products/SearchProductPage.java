@@ -11,13 +11,12 @@ import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.webelements.MagPortalComboBox;
 import com.leroy.magportal.ui.webelements.searchelements.SupplierComboBox;
-import com.leroy.magportal.ui.webelements.searchelements.SupplierDropDown;
 import com.leroy.magportal.ui.webelements.widgets.*;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SearchProductPage extends MenuPage {
@@ -46,7 +45,6 @@ public class SearchProductPage extends MenuPage {
             this.name = name;
         }
 
-        @Step("")
         public String getName() {
             return name;
         }
@@ -283,12 +281,11 @@ public class SearchProductPage extends MenuPage {
         return this;
     }
 
-    @Step("Выбрать фильтры Гамма {gammaFilters.toString}")
+    // Может не массив String'ов? А один класс FiltersData как в magportal
+    /*@Step("Выбрать фильтры Гамма {gammaFilters.toString}")
     public SearchProductPage selectGammaFilter(String... gammaFilters) throws Exception {
-        List<String> tmpFilters = new ArrayList<>();
-        tmpFilters.addAll(java.util.Arrays.asList(gammaFilters));
         gammaComboBox.click();
-        gammaComboBox.selectOptions(tmpFilters);
+        gammaComboBox.selectOptions(Arrays.asList(gammaFilters));
         return this;
     }
 
@@ -308,9 +305,9 @@ public class SearchProductPage extends MenuPage {
             avsDropDownCalendar.selectDate(date);
         }
         return this;
-    }
+    }*/
 
-    @Step("Выбрать фильтр по поставщику {value}")
+    /*@Step("Выбрать фильтр по поставщику {value}")
     public SearchProductPage choseSupplier(String value) {
         supplierDropBox.click();
         SupplierDropDown supplierDropDown = supplierDropBox.supplierDropDown;
@@ -327,7 +324,7 @@ public class SearchProductPage extends MenuPage {
         }
         supplierDropBox.click();
         return this;
-    }
+    }*/
 
     @Step("Очистить все фильтры")
     public SearchProductPage clearAllFilters() {
@@ -342,12 +339,13 @@ public class SearchProductPage extends MenuPage {
         return this;
     }
 
+    /*
     @Step("Выбрать тип сортировки")
     public SearchProductPage choseSortType(SortType sortType) {
         Button sortBtn = (Button) findElement(By.xpath("//span[contains(text(),'" + sortType.getName() + "')]/ancestor::button"));
         sortBtn.click();
         return this;
-    }
+    }*/
 
     @Step("Выбрать вариант отображения товаров")
     public SearchProductPage choseViewMode(ViewMode mode) {
@@ -388,7 +386,8 @@ public class SearchProductPage extends MenuPage {
     }
 
     @Step("Проверить, что кол-во отображенных результатов соответствует кол-ву артикулов из ответа мэшапера")
-    public SearchProductPage shouldResponseEntityEqualsToViewEntity(ProductItemDataList responseData, FilterFrame frame, ViewMode mode) throws Exception {
+    public SearchProductPage shouldResponseEntityEqualsToViewEntity(
+            ProductItemDataList responseData, FilterFrame frame, ViewMode mode) throws Exception {
         List<ProductItemData> dataList = responseData.getItems();
         if (frame.equals(FilterFrame.MY_SHOP) && mode.equals(ViewMode.EXTENDED)) {
             anAssert.isTrue(dataList.size() == extendedProductCardList.getCount(),
@@ -406,7 +405,7 @@ public class SearchProductPage extends MenuPage {
                             + dataList.size());
             for (int i = 0; i < dataList.size(); i++) {
                 anAssert.isTrue(dataList.get(i).getLmCode().equals(extendedProductCardListTableView.get(i).getLmCode()) &&
-                        dataList.get(i).getBarCode().equals(extendedProductCardListTableView.get(i).getBarCode()),
+                                dataList.get(i).getBarCode().equals(extendedProductCardListTableView.get(i).getBarCode()),
                         "У артикулов не совпадают лм или баркод: ответ мэшапера - " + dataList.get(i).getLmCode() +
                                 " отображено - " + extendedProductCardListTableView.get(i).getLmCode());
             }
@@ -416,7 +415,7 @@ public class SearchProductPage extends MenuPage {
                             + dataList.size());
             for (int i = 0; i < dataList.size(); i++) {
                 anAssert.isTrue(dataList.get(i).getLmCode().equals(productCardsList.get(i).getLmCode()) &&
-                        dataList.get(i).getBarCode().equals(productCardsList.get(i).getBarCode()),
+                                dataList.get(i).getBarCode().equals(productCardsList.get(i).getBarCode()),
                         "У артикулов не совпадают лм или баркод: ответ мэшапера - " + dataList.get(i).getLmCode() +
                                 " отображено - " + productCardsList.get(i).getLmCode());
             }
@@ -426,7 +425,7 @@ public class SearchProductPage extends MenuPage {
                             + dataList.size());
             for (int i = 0; i < dataList.size(); i++) {
                 anAssert.isTrue(dataList.get(i).getLmCode().equals(productCardListTableView.get(i).getLmCode()) &&
-                        dataList.get(i).getBarCode().equals(productCardListTableView.get(i).getBarCode()),
+                                dataList.get(i).getBarCode().equals(productCardListTableView.get(i).getBarCode()),
                         "У артикулов не совпадают лм или баркод: ответ мэшапера - " + dataList.get(i).getLmCode() +
                                 " отображено - " + productCardListTableView.get(i).getLmCode());
             }

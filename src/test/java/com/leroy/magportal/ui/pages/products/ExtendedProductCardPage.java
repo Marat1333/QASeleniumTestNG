@@ -2,7 +2,6 @@ package com.leroy.magportal.ui.pages.products;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.WebFindBy;
-import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
@@ -13,7 +12,6 @@ import com.leroy.magportal.ui.webelements.commonelements.PriceContainer;
 import com.leroy.magportal.ui.webelements.widgets.ExtendedProductCardWidget;
 import com.leroy.magportal.ui.webelements.widgets.ShopCardWidget;
 import io.qameta.allure.Step;
-import org.openqa.selenium.By;
 
 public class ExtendedProductCardPage extends ProductCardPage {
     public ExtendedProductCardPage(TestContext context) {
@@ -85,7 +83,7 @@ public class ExtendedProductCardPage extends ProductCardPage {
     @WebFindBy(xpath = "//span[text()='в смету']")
     Button addProductToEstimate;
 
-    private PriceContainer getHiddenRecommendedPrice() {
+    /*private PriceContainer getHiddenRecommendedPrice() {
         hiddenRecommendedPrice.click();
         waitUntilContentHasChanged(getPageSource());
         initElements(new CustomLocator(By.xpath(hiddenRecommendedPrice.getXpath())));
@@ -143,7 +141,7 @@ public class ExtendedProductCardPage extends ProductCardPage {
     public ExtendedProductCardPage showAllSpecifications() {
         showAllSpecifications.click();
         return this;
-    }
+    }*/
 
 
 }
