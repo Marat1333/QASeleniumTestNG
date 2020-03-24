@@ -62,22 +62,22 @@ public class OrderTest extends BaseProjectApiTest {
         CartData cartData = cartClient.assertThatIsCreatedAndGetData(response, true);
 
         step("Create Order");
-        PostOrderData postOrderData = new PostOrderData();
-        postOrderData.setCartId(cartData.getCartId());
-        postOrderData.setDateOfGiveAway(LocalDateTime.now().plusDays(5));
-        postOrderData.setDocumentVersion(1);
+        ReqOrderData reqOrderData = new ReqOrderData();
+        reqOrderData.setCartId(cartData.getCartId());
+        reqOrderData.setDateOfGiveAway(LocalDateTime.now().plusDays(5));
+        reqOrderData.setDocumentVersion(1);
 
         CartEstimateProductOrderData cardProduct = cartData.getProducts().get(0);
 
-        PostOrderProductData postProductData = new PostOrderProductData();
+        ReqOrderProductData postProductData = new ReqOrderProductData();
         postProductData.setLineId(cardProduct.getLineId());
         postProductData.setLmCode(cardProduct.getLmCode());
         postProductData.setQuantity(cardProduct.getQuantity());
         postProductData.setPrice(cardProduct.getPrice());
 
-        postOrderData.getProducts().add(postProductData);
+        reqOrderData.getProducts().add(postProductData);
 
-        Response<OrderData> orderResp = orderClient.createOrder(postOrderData);
+        Response<OrderData> orderResp = orderClient.createOrder(reqOrderData);
         orderData = orderClient.assertThatIsCreatedAndGetData(orderResp);
 
         orderClient.assertThatResponseContainsAddedProducts(orderResp,
@@ -107,7 +107,6 @@ public class OrderTest extends BaseProjectApiTest {
         orderClient.assertThatPinCodeIsSet(response);
         orderData.setPinCode(validPinCode);
         orderData.increasePaymentVersion();
-        orderData.increaseFulfillmentVersion();
     }
 
     @Test(description = "Confirm Order")
@@ -130,8 +129,8 @@ public class OrderTest extends BaseProjectApiTest {
         giveAwayData.setShopId(Integer.valueOf(sessionData.getUserShopId()));
         confirmOrderData.setGiveAway(giveAwayData);
 
-        Response<OrderData> getResp = orderClient.confirmOrder(orderData.getOrderId(), confirmOrderData);
-        orderClient.assertThatIsConfirmed(getResp, orderData);
+        Response<OrderData> resp = orderClient.confirmOrder(orderData.getOrderId(), confirmOrderData);
+        orderClient.assertThatIsConfirmed(resp, orderData);
         orderData.increaseFulfillmentVersion();
     }
 
@@ -139,16 +138,16 @@ public class OrderTest extends BaseProjectApiTest {
     public void testCheckQuantity() {
         OrderProductData orderProductData =  orderData.getProducts().get(0);
 
-        PostOrderProductData putProductData = new PostOrderProductData();
+        ReqOrderProductData putProductData = new ReqOrderProductData();
         putProductData.setLmCode(orderProductData.getLmCode());
         putProductData.setQuantity(orderProductData.getQuantity() + 1);
 
-        PostOrderData postOrderData = new PostOrderData();
-        postOrderData.setDateOfGiveAway(orderData.getGiveAway().getDate());
-        postOrderData.setProducts(Collections.singletonList(putProductData));
+        ReqOrderData reqOrderData = new ReqOrderData();
+        reqOrderData.setDateOfGiveAway(orderData.getGiveAway().getDate());
+        reqOrderData.setProducts(Collections.singletonList(putProductData));
 
-        Response<OrderData> resp = orderClient.checkQuantity(postOrderData);
-        String s = "";
+        Response<ResOrderCheckQuantityData> resp = orderClient.checkQuantity(reqOrderData);
+        orderClient.assertThatCheckQuantityIsOk(resp, reqOrderData.getProducts());
     }
 
     @Test(description = "Cancel Order")
@@ -157,6 +156,7 @@ public class OrderTest extends BaseProjectApiTest {
             throw new IllegalArgumentException("order data hasn't been created");
         step("Wait until order is confirmed");
         orderClient.waitUntilOrderIsConfirmed(orderData.getOrderId());
+        orderData.increaseFulfillmentVersion();
         step("Cancel Order");
         Response<JsonNode> resp = orderClient.cancelOrder(orderData.getOrderId());
         orderClient.assertThatIsCancelled(resp);
@@ -165,6 +165,7 @@ public class OrderTest extends BaseProjectApiTest {
         orderData.increaseFulfillmentVersion();
         step("Check that Order is cancelled after GET request");
         Response<OrderData> getResp = orderClient.getOrder(orderData.getOrderId());
+        orderData.getProducts().get(0).setQuantity(0.0); // quantity became 0 after order is cancelled
         orderClient.assertThatGetResponseMatches(getResp, orderData);
     }
 

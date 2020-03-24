@@ -9,7 +9,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Data
-public class PostOrderProductData extends BaseProductOrderData {
+public class ReqOrderProductData extends BaseProductOrderData {
 
     private Integer futureStock;
 

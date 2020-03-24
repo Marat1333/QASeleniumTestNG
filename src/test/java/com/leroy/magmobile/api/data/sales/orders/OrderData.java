@@ -47,4 +47,8 @@ public class OrderData {
         fulfillmentVersion++;
     }
 
+    public void increaseFulfillmentVersion(int val) {
+        fulfillmentVersion+=val;
+    }
+
 }
