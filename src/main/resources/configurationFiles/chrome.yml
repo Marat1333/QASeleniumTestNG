@@ -17,3 +17,8 @@ capabilities:
       acceptInsecureCerts: true
       args:
         - start-maximized
+  linux:
+    chrome:
+      acceptInsecureCerts: true
+      args:
+        - start-maximized
