@@ -3,14 +3,13 @@ package com.leroy.magmobile.api.clients;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.configuration.Log;
+import com.leroy.magmobile.api.data.sales.BaseProductOrderData;
 import com.leroy.magmobile.api.data.sales.orders.*;
 import com.leroy.magmobile.api.requests.order.*;
 import org.json.simple.JSONObject;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.leroy.core.matchers.Matchers.isNumber;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -59,6 +58,29 @@ public class OrderClient extends MagMobileClient {
         Map<String, String> body = new HashMap<>();
         body.put("pinCode", pinCode);
         req.jsonBody(body);
+        return execute(req, JsonNode.class);
+    }
+
+    public Response<JsonNode> rearrange(OrderData orderData,
+                                        BaseProductOrderData productData) {
+        OrderRearrangeRequest req = new OrderRearrangeRequest();
+        req.setOrderId(orderData.getOrderId());
+        OrderData putOrderData = new OrderData();
+        putOrderData.setSolutionVersion(orderData.getSolutionVersion());
+        putOrderData.setPaymentVersion(orderData.getPaymentVersion());
+        putOrderData.setSolutionVersion(orderData.getSolutionVersion());
+        putOrderData.setFulfillmentVersion(orderData.getFulfillmentVersion());
+        putOrderData.setFulfillmentTaskId(orderData.getFulfillmentTaskId());
+        putOrderData.setPaymentTaskId(orderData.getPaymentTaskId());
+        putOrderData.setGiveAway(orderData.getGiveAway());
+
+        OrderProductData putProductData = new OrderProductData();
+        putProductData.setLmCode(productData.getLmCode());
+        putProductData.setQuantity(productData.getQuantity());
+        putProductData.setType(productData.getType());
+        putProductData.setPrice(productData.getPrice());
+        putOrderData.setProducts(Collections.singletonList(putProductData));
+        req.jsonBody(putOrderData);
         return execute(req, JsonNode.class);
     }
 
@@ -154,6 +176,10 @@ public class OrderClient extends MagMobileClient {
     }
 
     public void assertThatPinCodeIsSet(Response<JsonNode> resp) {
+        assertThatResponseIsOk(resp);
+    }
+
+    public void assertThatRearranged(Response<JsonNode> resp) {
         assertThatResponseIsOk(resp);
     }
 

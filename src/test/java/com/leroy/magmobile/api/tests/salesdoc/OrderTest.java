@@ -1,16 +1,14 @@
 package com.leroy.magmobile.api.tests.salesdoc;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.inject.Inject;
-import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.constants.StatusCodes;
+import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.CartClient;
-import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.OrderClient;
-import com.leroy.magmobile.api.clients.SalesDocSearchClient;
-import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
+import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magmobile.api.data.sales.orders.*;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
@@ -20,21 +18,16 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 
 public class OrderTest extends BaseProjectApiTest {
 
-    @Inject
     private CartClient cartClient;
-
-    @Inject
     private OrderClient orderClient;
 
-    @Inject
-    private SalesDocSearchClient salesDocSearchClient;
-
-    private CatalogSearchClient searchClient;
-
     private OrderData orderData;
+
+    private List<ProductItemData> productItemDataList;
 
     @Override
     protected boolean isNeedAccessToken() {
@@ -43,17 +36,16 @@ public class OrderTest extends BaseProjectApiTest {
 
     @BeforeClass
     private void setUp() {
-        searchClient = getCatalogSearchClient();
-        cartClient.setSessionData(sessionData);
-        orderClient.setSessionData(sessionData);
-        salesDocSearchClient.setSessionData(sessionData);
+        cartClient = apiClientProvider.getCartClient();
+        orderClient = apiClientProvider.getOrderClient();
+        productItemDataList = apiClientProvider.getProducts(2);
     }
 
     @Test(description = "Create Order")
     public void testCreateOrder() {
         // Prepare request data
         CartProductOrderData productOrderData = new CartProductOrderData(
-                searchClient.getProducts(1).get(0));
+                productItemDataList.get(0));
         productOrderData.setQuantity(1.0);
 
         // Create
@@ -102,7 +94,7 @@ public class OrderTest extends BaseProjectApiTest {
     public void testSetPinCode() {
         if (orderData == null)
             throw new IllegalArgumentException("order data hasn't been created");
-        String validPinCode = salesDocSearchClient.getValidPinCode();
+        String validPinCode = apiClientProvider.getValidPinCode();
         Response<JsonNode> response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
         orderClient.assertThatPinCodeIsSet(response);
         orderData.setPinCode(validPinCode);
@@ -134,9 +126,27 @@ public class OrderTest extends BaseProjectApiTest {
         orderData.increaseFulfillmentVersion();
     }
 
+    @Test(description = "Rearrange Order")
+    public void testRearrangeOrder() {
+        if (orderData == null)
+            throw new IllegalArgumentException("order data hasn't been created");
+        ProductItemData productItemData = productItemDataList.get(1);
+        OrderProductData orderProductData = new OrderProductData(productItemData);
+        orderProductData.setQuantity(1.0);
+
+        step("Rearrange Order");
+        Response<JsonNode> resp = orderClient.rearrange(orderData, orderProductData);
+        orderClient.assertThatRearranged(resp);
+        orderData.getProducts().add(orderProductData);
+
+        step("Check that Order is rearranged after GET request");
+        Response<OrderData> getResp = orderClient.getOrder(orderData.getOrderId());
+        orderClient.assertThatGetResponseMatches(getResp, orderData);
+    }
+
     @Test(description = "Check Quantity Order - happy path")
     public void testCheckQuantity() {
-        OrderProductData orderProductData =  orderData.getProducts().get(0);
+        OrderProductData orderProductData = orderData.getProducts().get(0);
 
         ReqOrderProductData putProductData = new ReqOrderProductData();
         putProductData.setLmCode(orderProductData.getLmCode());

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.leroy.core.SessionData;
+import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.*;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
@@ -12,6 +13,8 @@ import com.leroy.magmobile.api.data.catalog.ServiceItemDataList;
 import com.leroy.magmobile.api.data.customer.CustomerData;
 import com.leroy.magmobile.api.data.customer.CustomerListData;
 import com.leroy.magmobile.api.data.customer.CustomerSearchFilters;
+import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
+import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateCustomerData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateProductOrderData;
@@ -19,6 +22,7 @@ import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogServicesSearch;
 import com.leroy.magmobile.ui.models.search.FiltersData;
 import lombok.Setter;
+import org.apache.commons.lang.RandomStringUtils;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.ArrayList;
@@ -165,6 +169,30 @@ public class ApiClientProvider {
         assertThat("GetAnyCustomer Method. Count of customers", customers,
                 hasSize(greaterThan(0)));
         return customers.get(0);
+    }
+
+    // SalesDoc
+
+    public String getValidPinCode() {
+        int tryCount = 10;
+        for (int i = 0; i < tryCount; i++) {
+            String generatedPinCode;
+            do {
+                generatedPinCode = RandomStringUtils.randomNumeric(5);
+            } while (generatedPinCode.startsWith("9"));
+            SalesDocumentListResponse salesDocumentsResponse = getSalesDocSearchClient()
+                    .getSalesDocumentsByPinCodeOrDocId(generatedPinCode)
+                    .asJson();
+            if (salesDocumentsResponse.getTotalCount() == 0) {
+                Log.info("API: None documents found with PIN: " + generatedPinCode);
+                return generatedPinCode;
+            }
+            List<SalesDocumentResponseData> salesDocs = salesDocumentsResponse.getSalesDocuments();
+            if (!generatedPinCode.equals(salesDocs.get(0).getPinCode())) {
+                return generatedPinCode;
+            }
+        }
+        throw new RuntimeException("Couldn't find valid pin code for " + tryCount + " trying");
     }
 
     // ESTIMATE
