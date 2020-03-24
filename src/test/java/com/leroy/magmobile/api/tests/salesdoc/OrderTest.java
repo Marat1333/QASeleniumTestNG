@@ -2,7 +2,7 @@ package com.leroy.magmobile.api.tests.salesdoc;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
-import com.leroy.constants.SalesDocumentsConst;
+import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.constants.StatusCodes;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.CartClient;

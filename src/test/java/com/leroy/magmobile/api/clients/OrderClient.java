@@ -1,7 +1,7 @@
 package com.leroy.magmobile.api.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.leroy.constants.SalesDocumentsConst;
+import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.data.sales.orders.*;
 import com.leroy.magmobile.api.requests.order.*;

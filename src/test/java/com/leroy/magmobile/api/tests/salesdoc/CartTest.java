@@ -2,11 +2,10 @@ package com.leroy.magmobile.api.tests.salesdoc;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
-import com.leroy.constants.SalesDocumentsConst;
+import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.clients.CartClient;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.api.data.sales.DiscountReasonData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.DiscountData;
@@ -18,6 +17,8 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+
+import static com.leroy.constants.sales.DiscountConst.TYPE_NEW_PRICE;
 
 public class CartTest extends BaseProjectApiTest {
 
@@ -78,17 +79,18 @@ public class CartTest extends BaseProjectApiTest {
         if (cartData == null)
             throw new IllegalArgumentException("cart data hasn't been created");
         CartProductOrderData cartProductOrderData = cartData.getProducts().get(0);
+
         CartProductOrderData putCartProductOrderData = new CartProductOrderData();
         putCartProductOrderData.setLineId(cartProductOrderData.getLineId());
         putCartProductOrderData.setLmCode(cartProductOrderData.getLmCode());
         putCartProductOrderData.setPrice(cartProductOrderData.getPrice());
         //putCartProductOrderData.setType(null);
         DiscountData discountData = new DiscountData();
-        discountData.setType("NEW_PRICE");
+        discountData.setType(TYPE_NEW_PRICE);
         discountData.setTypeValue(189);
         //discountData.setReason(new DiscountReasonData(1));
         putCartProductOrderData.setDiscount(discountData);
-        Response<CartData> resp = cartClient.addDiscount(cartData.getCartId(), 1,
+        Response<CartData> resp = cartClient.addDiscount(cartData.getCartId(), cartData.getDocumentVersion(),
                 putCartProductOrderData);
         cartClient.assertThatDiscountAdded(resp, cartData);
     }

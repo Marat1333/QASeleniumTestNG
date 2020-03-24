@@ -3,7 +3,7 @@ package com.leroy.magmobile.ui.tests.sales;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
-import com.leroy.constants.SalesDocumentsConst;
+import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.api.Module;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.ApiClientProvider;

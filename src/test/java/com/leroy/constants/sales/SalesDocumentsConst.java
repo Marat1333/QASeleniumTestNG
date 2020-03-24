@@ -1,4 +1,4 @@
-package com.leroy.constants;
+package com.leroy.constants.sales;
 
 public class SalesDocumentsConst {
 

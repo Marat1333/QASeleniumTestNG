@@ -1,9 +1,7 @@
 package com.leroy.magmobile.api.tests.salesdoc;
 
 import com.google.inject.Inject;
-import com.leroy.constants.EnvConstants;
-import com.leroy.constants.SalesDocumentsConst;
-import com.leroy.core.SessionData;
+import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.SalesDocTransferClient;
 import com.leroy.magmobile.api.data.sales.transfer.TransferProductOrderData;
