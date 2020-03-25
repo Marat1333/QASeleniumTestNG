@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Search Suite">
+
+    <listeners>
+        <listener class-name="com.leroy.core.listeners.TestRailListener"/>
+    </listeners>
+
+    <test name="C22782949 No results msg">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.SearchTest">
+                <methods>
+                    <include name="testNotFoundResults"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22782951 Pagination">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.SearchTest">
+                <methods>
+                    <include name="testPagination"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+</suite>
