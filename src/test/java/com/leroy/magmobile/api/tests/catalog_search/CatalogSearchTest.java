@@ -66,7 +66,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     @TestCase(22893254)
     @Test(description = "C22893254 search by short lmCode")
     public void testSearchByShortLmCode() {
-        final String lmCode = "123";
+        final String lmCode = "1234";
 
         GetCatalogSearch byLmCodeParams = new GetCatalogSearch()
                 .setStartFrom(1)
@@ -80,7 +80,11 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         assertThat(response, successful());
         assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
         for (ProductItemData data : responseData) {
-            assertThat("product lmCode " + data.getLmCode() + " has not contains " + lmCode, data.getLmCode(), containsString(lmCode));
+            int condition=0;
+            if (data.getLmCode().contains(lmCode)||data.getBarCode().contains(lmCode)){
+                condition++;
+            }
+            assertThat("product lmCode or barcode " + data.getLmCode() + data.getBarCode() +" has not contains " + lmCode, condition, greaterThan(0));
         }
     }
 
@@ -127,13 +131,12 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893248)
-    @Test(description = "C22893248 search by name")
+    @Test(description = "C22893248 search by shortName")
     public void testSearchByName() {
-        final String name = "Тепломир радиатор";
+        final String name = "12";
 
         GetCatalogSearch byNameParams = new GetCatalogSearch()
                 .setStartFrom(1)
-                .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(20)
                 .setByNameLike(name);
         Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(byNameParams);
@@ -166,7 +169,8 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         List<ProductItemData> responseData = response.asJson().getItems();
 
         assertThat(response, successful());
-        assertThat("response.size", responseData, hasSize(0));
+        for (ProductItemData data : responseData)
+        assertThat("barCode has not contains "+ longLmCode, data.getBarCode(), containsString(longLmCode));
     }
 
     @TestCase(22893329)
@@ -270,7 +274,6 @@ public class CatalogSearchTest extends BaseProjectApiTest {
                 .setStartFrom(1)
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
-                .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(20)
                 .setHasAvailableStock(hasAvailableStock);
         Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(byStockParams);
@@ -281,6 +284,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
 
         for (ProductItemData data : responseData) {
+            //стоки на разных бэках отличаются
             assertThat("available stock in product " + data.getLmCode() + " is " + data.getAvailableStock(), data.getAvailableStock(), greaterThan(0f));
         }
     }
@@ -417,6 +421,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
 
         for (ProductItemData data : responseData) {
+            //Данные берутся с разных бэков. В одном поставщик для товара есть, в другом - нет
             assertThat("supplier in product " + data.getLmCode() + " is " + data.getSupCode(), data.getSupCode(), equalTo(SUPPLIER_CODE));
         }
     }
@@ -441,6 +446,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
 
         for (ProductItemData data : responseData) {
+            //Данные берутся с разных бэков. В одном поставщик для товара есть, в другом - нет
             assertThat("supplier in product " + data.getLmCode() + " is " + data.getSupCode(), data.getSupCode(), isOneOf(FIRST_SUPPLIER_CODE, SECOND_SUPPLIER_CODE));
         }
     }
@@ -525,6 +531,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
             assertThat("avs in product " + data.getLmCode() + " is " + data.getAvsDate(), data.getAvsDate(), notNullValue());
             assertThat("gamma in product " + data.getLmCode() + " is " + data.getGamma(), data.getGamma(), equalTo(GAMMA));
             assertThat("top in product " + data.getLmCode() + " is " + data.getTop(), data.getTop(), equalTo(Integer.valueOf(TOP)));
+            //можем найти по одному из поставщиков, а отдаст по главному
             assertThat("supplier in product " + data.getLmCode() + " is " + data.getSupCode(), data.getSupCode(), equalTo(SUPPLIER_CODE));
         }
     }
@@ -536,7 +543,8 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         GetCatalogSearch byLmDescSortParams = new GetCatalogSearch()
                 .setStartFrom(1)
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
-                .setPageSize(20);
+                .setPageSize(20)
+                .setDepartmentId(5);
 
         Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(byLmDescSortParams);
 
@@ -578,7 +586,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         }
     }
 
-    @TestCase(22893350)
+    /*@TestCase(22893350)
     @Test(description = "C22893350 sort by availableStock DESC")
     public void testSortByAvailableStockDesc() {
 
@@ -643,6 +651,62 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         for (int i = 0; i < responseData.size(); i++) {
             assertThat("Sorting order is wrong: " + responseData.get(i).getAvailableStock() + " not matches with " + availableStocks.get(i),
                     availableStocks.get(i), equalTo(responseData.get(i).getAvailableStock()));
+        }
+    }*/
+
+    @TestCase(23183649)
+    @Test(description = "C23183649 sort by name DESC")
+    public void testSortByNameDesc() {
+
+        GetCatalogSearch byAvailableStockSortParams = new GetCatalogSearch()
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
+                .setStartFrom(1)
+                .setSortBy(CatalogSearchFields.NAME, SortingOrder.DESC)
+                .setPageSize(20);
+
+        Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(byAvailableStockSortParams);
+
+        List<ProductItemData> responseData = response.asJson().getItems();
+        isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
+
+        List<String> alphabetOrder = new ArrayList<>();
+        for (ProductItemData data : responseData) {
+            alphabetOrder.add(data.getTitle());
+        }
+        alphabetOrder.sort(Comparator.reverseOrder());
+
+        for (int i = 0; i < responseData.size(); i++) {
+            assertThat("Sorting order is wrong: " + responseData.get(i).getTitle() + " not matches with " + alphabetOrder.get(i),
+                    alphabetOrder.get(i), equalTo(responseData.get(i).getTitle()));
+        }
+    }
+
+    @TestCase(23183650)
+    @Test(description = "C23183650 sort by name ASC")
+    public void testSortByNameAsc() {
+
+        GetCatalogSearch byAvailableStockSortParams = new GetCatalogSearch()
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
+                .setStartFrom(1)
+                .setSortBy(CatalogSearchFields.NAME, SortingOrder.ASC)
+                .setPageSize(20);
+
+        Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(byAvailableStockSortParams);
+
+        List<ProductItemData> responseData = response.asJson().getItems();
+        isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
+
+        List<String> alphabetOrder = new ArrayList<>();
+        for (ProductItemData data : responseData) {
+            alphabetOrder.add(data.getTitle());
+        }
+        alphabetOrder.sort(String::compareTo);
+
+        for (int i = 0; i < responseData.size(); i++) {
+            assertThat("Sorting order is wrong: " + responseData.get(i).getTitle() + " not matches with " + alphabetOrder.get(i),
+                    alphabetOrder.get(i), equalTo(responseData.get(i).getTitle()));
         }
     }
 
