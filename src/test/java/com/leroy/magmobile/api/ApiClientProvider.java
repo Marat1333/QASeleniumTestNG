@@ -56,7 +56,7 @@ public class ApiClientProvider {
     @Inject
     private Provider<SalesDocSearchClient> salesDocSearchClientProvider;
     @Inject
-    private Provider<SalesDocTransferClient> salesDocTransferClientProvider;
+    private Provider<TransferClient> salesDocTransferClientProvider;
     @Inject
     private Provider<SmsNotificationClient> smsNotificationClientProvider;
 
@@ -94,7 +94,7 @@ public class ApiClientProvider {
         return getClient(salesDocSearchClientProvider);
     }
 
-    public SalesDocTransferClient getSalesDocTransferClient() {
+    public TransferClient getTransferClient() {
         return getClient(salesDocTransferClientProvider);
     }
 

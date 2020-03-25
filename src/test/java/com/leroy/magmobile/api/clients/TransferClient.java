@@ -1,14 +1,14 @@
 package com.leroy.magmobile.api.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.constants.StatusCodes;
+import com.leroy.constants.sales.SalesDocumentsConst;
+import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.data.sales.transfer.TransferProductOrderData;
+import com.leroy.magmobile.api.data.sales.transfer.TransferRunRespData;
 import com.leroy.magmobile.api.data.sales.transfer.TransferSalesDocData;
-import com.leroy.magmobile.api.requests.salesdoc.transfer.DeleteSalesDocTransferRequest;
-import com.leroy.magmobile.api.requests.salesdoc.transfer.GetSalesDocTransfer;
-import com.leroy.magmobile.api.requests.salesdoc.transfer.PostSalesDocTransfer;
-import com.leroy.magmobile.api.requests.salesdoc.transfer.PutSalesDocTransferAdd;
+import com.leroy.magmobile.api.data.sales.transfer.TransferStatusRespData;
+import com.leroy.magmobile.api.requests.salesdoc.transfer.*;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.time.ZonedDateTime;
@@ -20,31 +20,22 @@ import static com.leroy.core.matchers.Matchers.valid;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class SalesDocTransferClient extends MagMobileClient {
-
-    private Response<TransferSalesDocData> response;
-    private Response<JsonNode> simpleResponse;
-
-    public TransferSalesDocData getResponseData() {
-        assertThatResponseIsOk(response);
-        return response.asJson();
-    }
+public class TransferClient extends MagMobileClient {
 
     /**
      * ---------- Executable Requests -------------
      **/
 
     // Lego SalesDoc Transfer
-    public SalesDocTransferClient sendRequestCreate(
+    public Response<TransferSalesDocData> sendRequestCreate(
             TransferSalesDocData transferSalesDocData) {
         PostSalesDocTransfer params = new PostSalesDocTransfer();
         params.setLdap(sessionData.getUserLdap());
         params.jsonBody(transferSalesDocData);
-        response = execute(params, TransferSalesDocData.class);
-        return this;
+        return execute(params, TransferSalesDocData.class);
     }
 
-    public SalesDocTransferClient sendRequestAddProducts(
+    public Response<TransferSalesDocData> sendRequestAddProducts(
             String taskId, List<TransferProductOrderData> productDataList) {
         PutSalesDocTransferAdd params = new PutSalesDocTransferAdd();
         params.setLdap(sessionData.getUserLdap());
@@ -54,38 +45,92 @@ public class SalesDocTransferClient extends MagMobileClient {
         TransferSalesDocData transferSalesDocData = new TransferSalesDocData();
         transferSalesDocData.setProducts(productDataList);
         params.jsonBody(transferSalesDocData);
-        response = execute(params, TransferSalesDocData.class);
-        return this;
+        return execute(params, TransferSalesDocData.class);
     }
 
-    public SalesDocTransferClient sendRequestAddProducts(
+    public Response<TransferSalesDocData> sendRequestAddProducts(
             String taskId, TransferProductOrderData productData) {
         return sendRequestAddProducts(taskId, Collections.singletonList(productData));
     }
 
-    public SalesDocTransferClient sendRequestGet(String taskId) {
+    public Response<TransferSalesDocData> sendRequestGet(String taskId) {
         GetSalesDocTransfer request = new GetSalesDocTransfer();
         request.setTaskId(taskId);
         request.setLdap(sessionData.getUserLdap());
-        response = execute(request, TransferSalesDocData.class);
-        return this;
+        return execute(request, TransferSalesDocData.class);
     }
 
-    public SalesDocTransferClient sendRequestDelete(String taskId) {
+    public Response<TransferRunRespData> run(TransferSalesDocData transferSalesDocData) {
+        return run(transferSalesDocData.getTaskId(), transferSalesDocData.getPointOfGiveAway(),
+                transferSalesDocData.getDateOfGiveAway());
+    }
+
+    public Response<TransferRunRespData> run(String taskId, String pointOfGiveAway, ZonedDateTime dateOfGiveAway) {
+        TransferRunRequest req = new TransferRunRequest();
+        req.setTaskId(taskId);
+        TransferSalesDocData putData = new TransferSalesDocData();
+        putData.setPointOfGiveAway(pointOfGiveAway);
+        putData.setDateOfGiveAway(dateOfGiveAway);
+        req.jsonBody(putData);
+        return execute(req, TransferRunRespData.class);
+    }
+
+    public Response<TransferSalesDocData> update(String taskId, TransferProductOrderData productData) {
+        TransferUpdateRequest req = new TransferUpdateRequest();
+        req.setTaskId(taskId);
+        req.setLdap(sessionData.getUserLdap());
+        TransferSalesDocData putData = new TransferSalesDocData();
+        putData.setProducts(Collections.singletonList(productData));
+        req.jsonBody(putData);
+        return execute(req, TransferSalesDocData.class);
+    }
+
+    public Response<TransferStatusRespData> getStatus(String taskId) {
+        TransferStatusRequest req = new TransferStatusRequest();
+        req.setTaskId(taskId);
+        return execute(req, TransferStatusRespData.class);
+    }
+
+    /**
+     * Wait until task status is success
+     *
+     * @param taskId - task Id
+     */
+    public void waitUntilIsSuccess(String taskId) throws Exception {
+        String successStatus = "SUCCESS";
+        int maxTimeoutInSeconds = 60;
+        long currentTimeMillis = System.currentTimeMillis();
+        Response<TransferStatusRespData> r = null;
+        while (System.currentTimeMillis() - currentTimeMillis < maxTimeoutInSeconds * 1000) {
+            r = getStatus(taskId);
+            if (r.isSuccessful() && r.asJson().getStatus().equals(successStatus)) {
+                Log.info("waitUntilIsSuccess() has executed for " +
+                        (System.currentTimeMillis() - currentTimeMillis) / 1000 + " seconds");
+                return;
+            }
+            Thread.sleep(1000);
+        }
+        assertThat("Could not wait for the task to be SUCCESS. Timeout=" + maxTimeoutInSeconds + ". " +
+                        "Response error:" + r.toString(),
+                r.isSuccessful());
+        assertThat("Could not wait for the task to be SUCCESS. Timeout=" + maxTimeoutInSeconds + ". " +
+                "Status:", r.asJson().getStatus(), is(successStatus));
+    }
+
+    public Response<JsonNode> sendRequestDelete(String taskId) {
         DeleteSalesDocTransferRequest request = new DeleteSalesDocTransferRequest();
         request.setTaskId(taskId);
-        simpleResponse = execute(request, JsonNode.class);
-        return this;
+        return execute(request, JsonNode.class);
     }
 
     /**
      * ---------- Verifications ------------
      */
 
-    public SalesDocTransferClient assertThatIsCreated(TransferSalesDocData postSalesDocData) {
+    public TransferSalesDocData assertThatIsCreatedAndGetData(Response<TransferSalesDocData> response, TransferSalesDocData postSalesDocData) {
         assertThatResponseIsOk(response);
         TransferSalesDocData data = response.asJson();
-        assertThat("taskId", data.getTaskId(), not(isEmptyOrNullString()));
+        assertThat("taskId", data.getTaskId(), not(emptyOrNullString()));
         assertThat("status", data.getStatus(), is(SalesDocumentsConst.States.NEW.getApiVal()));
         assertThat("createdBy", data.getCreatedBy(), is(sessionData.getUserLdap()));
         assertThat("createdDate", data.getCreatedDate(),
@@ -112,14 +157,14 @@ public class SalesDocTransferClient extends MagMobileClient {
             //assertThat("Product assignedQuantity", actualProductData.getOrderedQuantity(),
             //        is(postSalesDocData.getProducts().get(i).getOrderedQuantity()));
         }
-        return this;
+        return data;
     }
 
-    public SalesDocTransferClient assertThatIsProductAdded(
-            TransferSalesDocData putSalesDocData, int expectedNewLineId) {
+    public void assertThatIsProductAdded(Response<TransferSalesDocData> response,
+                                         TransferSalesDocData putSalesDocData, int expectedNewLineId) {
         assertThatResponseIsOk(response);
         TransferSalesDocData data = response.asJson();
-        assertThat("taskId", data.getTaskId(), not(isEmptyOrNullString()));
+        assertThat("taskId", data.getTaskId(), not(emptyOrNullString()));
         assertThat("status", data.getStatus(), is(SalesDocumentsConst.States.NEW.getApiVal()));
 
         assertThat("products size", data.getProducts(), hasSize(putSalesDocData.getProducts().size()));
@@ -139,22 +184,36 @@ public class SalesDocTransferClient extends MagMobileClient {
             //assertThat("Product assignedQuantity", actualProductData.getOrderedQuantity(),
             //        is(postSalesDocData.getProducts().get(i).getOrderedQuantity()));
         }
-        return this;
     }
 
-    public SalesDocTransferClient assertThatGetResponseMatches(TransferSalesDocData expectedData) {
-        assertThatResponseIsOk(response);
-        TransferSalesDocData actualData = response.asJson();
+    public void assertThatIsRun(Response<TransferRunRespData> resp, TransferSalesDocData expectedData) {
+        assertThatResponseIsOk(resp);
+        TransferRunRespData actualData = resp.asJson();
+        assertThat("Task Id", actualData.getTaskId(),
+                is(expectedData.getTaskId()));
+        assertThat("Status", actualData.getStatus(), is("IN_PROGRESS"));
+        assertThat("code", actualData.getCode(), is(1));
+    }
+
+    public void assertThatResponseMatches(Response<TransferSalesDocData> resp, TransferSalesDocData expectedData) {
+        assertThatResponseMatches(resp, expectedData, ResponseType.GET);
+    }
+
+    public void assertThatResponseMatches(Response<TransferSalesDocData> resp, TransferSalesDocData expectedData,
+                                          ResponseType responseType) {
+        assertThatResponseIsOk(resp);
+        TransferSalesDocData actualData = resp.asJson();
         assertThat("Task Id", actualData.getTaskId(), is(expectedData.getTaskId()));
         assertThat("status", actualData.getStatus(), is(expectedData.getStatus()));
-        assertThat("shopId", actualData.getShopId(), is(expectedData.getShopId()));
-        assertThat("createdBy", actualData.getCreatedBy(), is(expectedData.getCreatedBy()));
-        assertThat("createdDate", actualData.getCreatedDate(), is(expectedData.getCreatedDate()));
-        assertThat("pointOfGiveAway", actualData.getPointOfGiveAway(),
-                is(expectedData.getPointOfGiveAway()));
-        assertThat("dateOfGiveAway", actualData.getDateOfGiveAway(),
-                is(expectedData.getDateOfGiveAway()));
-
+        if (!responseType.equals(ResponseType.PUT)) {
+            assertThat("shopId", actualData.getShopId(), is(expectedData.getShopId()));
+            assertThat("createdBy", actualData.getCreatedBy(), is(expectedData.getCreatedBy()));
+            assertThat("createdDate", actualData.getCreatedDate(), is(expectedData.getCreatedDate()));
+            assertThat("pointOfGiveAway", actualData.getPointOfGiveAway(),
+                    is(expectedData.getPointOfGiveAway()));
+            assertThat("dateOfGiveAway", actualData.getDateOfGiveAway(),
+                    is(expectedData.getDateOfGiveAway()));
+        }
         List<TransferProductOrderData> actualProductOrderDataList = actualData.getProducts();
         List<TransferProductOrderData> expectedProductOrderDataList = expectedData.getProducts();
         assertThat("Product size", actualProductOrderDataList, hasSize(expectedProductOrderDataList.size()));
@@ -172,25 +231,21 @@ public class SalesDocTransferClient extends MagMobileClient {
             /*assertThat("assignedQuantity of Product #" + i, actualProductOrderDataList.get(i).getAssignedQuantity(),
                     equalTo(expectedProductOrderDataList.get(i).getAssignedQuantity()));*/
         }
-        return this;
     }
 
-    public SalesDocTransferClient assertThatIsDeleted() {
-        assertThatResponseIsOk(simpleResponse);
-        JsonNode respData = simpleResponse.asJson();
+    public void assertThatIsDeleted(Response<JsonNode> resp) {
+        assertThatResponseIsOk(resp);
+        JsonNode respData = resp.asJson();
         assertThat("success", respData.get("success").booleanValue());
-        return this;
     }
 
-    public SalesDocTransferClient assertThatDocumentIsNotExist() {
-        assertThat("Status code", response.getStatusCode(), is(StatusCodes.ST_404_NOT_FOUND));
-        return this;
+    public void assertThatDocumentIsNotExist(Response<TransferSalesDocData> resp) {
+        assertThat("Status code", resp.getStatusCode(), is(StatusCodes.ST_404_NOT_FOUND));
     }
 
-    public SalesDocTransferClient assertThatResponseIsValid() {
-        assertThatResponseIsOk(response);
-        assertThat(response, valid(TransferSalesDocData.class));
-        return this;
+    public void assertThatResponseIsValid(Response<TransferSalesDocData> resp) {
+        assertThatResponseIsOk(resp);
+        assertThat(resp, valid(TransferSalesDocData.class));
     }
 
 }
