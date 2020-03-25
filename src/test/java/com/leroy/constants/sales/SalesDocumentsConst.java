@@ -7,14 +7,12 @@ public class SalesDocumentsConst {
         CONFIRMED("CONFIRMED", "Создан"),
         IN_PROGRESS("CONFIRMATION_IN_PROGRESS","Автообработка"),
         TRANSFORMED("","Преобразован"),
+        DELETED("DELETED", ""),
         CANCELLED("CANCELLED", "Отменен"),
         DRAFT("DRAFT","Черновик"),
 
         // Transfer
-        NEW("NEW", ""),
-
-        // Cart
-        DELETED("DELETED", "");
+        NEW("NEW", "");
 
         private String uiVal;
         private String apiVal;

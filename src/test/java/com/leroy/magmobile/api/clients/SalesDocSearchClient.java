@@ -15,4 +15,9 @@ public class SalesDocSearchClient extends MagMobileClient {
                 .queryParam("pinCodeOrDocId", pinCodeOrDocId), SalesDocumentListResponse.class);
     }
 
+    public Response<SalesDocumentListResponse> searchForDocumentsByDocId(String docId) {
+        return execute(new SalesDocSearchV3Get()
+                .queryParam("docId", docId), SalesDocumentListResponse.class);
+    }
+
 }

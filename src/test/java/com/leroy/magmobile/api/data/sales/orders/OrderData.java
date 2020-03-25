@@ -37,6 +37,7 @@ public class OrderData {
     private String creatorName;
     private String creatorSurname;
 
+    // For Update, Confirm requests
     private String priority;
 
     public void increasePaymentVersion() {

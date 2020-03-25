@@ -61,10 +61,20 @@ public class OrderClient extends MagMobileClient {
         return execute(req, JsonNode.class);
     }
 
+    public Response<OrderData> updateDraftOrder(OrderData orderData) {
+        OrderPutRequest req = new OrderPutRequest();
+        req.setShopId(sessionData.getUserShopId());
+        req.setUserLdap(sessionData.getUserLdap());
+        req.jsonBody(orderData);
+        return execute(req, OrderData.class);
+    }
+
     public Response<JsonNode> rearrange(OrderData orderData,
                                         BaseProductOrderData productData) {
         OrderRearrangeRequest req = new OrderRearrangeRequest();
         req.setOrderId(orderData.getOrderId());
+        req.setShopId(sessionData.getUserShopId());
+        req.setUserLdap(sessionData.getUserLdap());
         OrderData putOrderData = new OrderData();
         putOrderData.setSolutionVersion(orderData.getSolutionVersion());
         putOrderData.setPaymentVersion(orderData.getPaymentVersion());
@@ -81,6 +91,16 @@ public class OrderClient extends MagMobileClient {
         putProductData.setPrice(productData.getPrice());
         putOrderData.setProducts(Collections.singletonList(putProductData));
         req.jsonBody(putOrderData);
+        return execute(req, JsonNode.class);
+    }
+
+    public Response<JsonNode> deleteDraftOrder(String orderId) {
+        OrderChangeStatusRequest req = new OrderChangeStatusRequest();
+        req.setOrderId(orderId);
+        req.setUserLdap(sessionData.getUserLdap());
+        Map<String, String> body = new HashMap<>();
+        body.put("status", SalesDocumentsConst.States.DELETED.getApiVal());
+        req.jsonBody(body);
         return execute(req, JsonNode.class);
     }
 
@@ -135,12 +155,23 @@ public class OrderClient extends MagMobileClient {
         return this;
     }
 
-    public void assertThatGetResponseMatches(Response<OrderData> resp, OrderData expectedData) {
+    public void assertThatResponseMatches(Response<OrderData> resp, OrderData expectedData) {
+        assertThatResponseMatches(resp, expectedData, ResponseType.GET, true);
+    }
+
+    public void assertThatResponseMatches(Response<OrderData> resp, OrderData expectedData, ResponseType responseType) {
+        assertThatResponseMatches(resp, expectedData, responseType, true);
+    }
+
+    public void assertThatResponseMatches(Response<OrderData> resp, OrderData expectedData, ResponseType responseType,
+                                          boolean checkProductLineId) {
         assertThatResponseIsOk(resp);
         OrderData actualData = resp.asJson();
         assertThat("orderId", actualData.getOrderId(), is(expectedData.getOrderId()));
         assertThat("shopId", actualData.getShopId(), is(expectedData.getShopId()));
-        assertThat("createdBy", actualData.getCreatedBy(), is(sessionData.getUserLdap()));
+        if (!ResponseType.PUT.equals(responseType)) {
+            assertThat("createdBy", actualData.getCreatedBy(), is(sessionData.getUserLdap()));
+        }
         assertThat("fulfillmentTaskId", actualData.getFulfillmentTaskId(),
                 is(expectedData.getFulfillmentTaskId()));
         //assertThat("fulfillmentVersion", actualData.getFulfillmentVersion(),
@@ -164,8 +195,13 @@ public class OrderClient extends MagMobileClient {
             OrderProductData expectedProduct = expectedData.getProducts().get(i);
             assertThat(String.format("Product #%s - lmCode", i + 1),
                     actualProduct.getLmCode(), is(expectedProduct.getLmCode()));
-            assertThat(String.format("Product #%s - lineId", i + 1),
-                    actualProduct.getLineId(), is(expectedProduct.getLineId()));
+            if (checkProductLineId) {
+                assertThat(String.format("Product #%s - lineId", i + 1),
+                        actualProduct.getLineId(), is(expectedProduct.getLineId()));
+            } else {
+                assertThat(String.format("Product #%s - lineId", i + 1),
+                        actualProduct.getLineId(), not(emptyOrNullString()));
+            }
             assertThat(String.format("Product #%s - Quantity", i + 1),
                     actualProduct.getQuantity(), is(expectedProduct.getQuantity()));
             assertThat(String.format("Product #%s - Price", i + 1),
@@ -218,6 +254,11 @@ public class OrderClient extends MagMobileClient {
         assertThat("status", respData.get("status").asText(),
                 is("CONFIRMED"));
         return this;
+    }
+
+    public void assertThatResponseChangeStatusIsOk(Response<JsonNode> resp) {
+        assertThatResponseIsOk(resp);
+        assertThat("result", resp.asJson().get("result").asText(), is("OK"));
     }
 
 
