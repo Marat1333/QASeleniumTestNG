@@ -22,7 +22,7 @@ public class SearchProductCardWidget extends SearchProductAllGammaCardWidget {
     private Element priceLbl;
 
     // Количество
-    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc=\"presenceValue\"]")
+    @AppFindBy(xpath = ".//android.widget.TextView[2]"/*".//android.widget.TextView[@content-desc=\"presenceValue\"]"*/)
     private Element quantityObj;
 
     // Рядом с количеством величина, например "шт."

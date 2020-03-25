@@ -9,11 +9,11 @@ import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobCheckBox;
-import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.search.widgets.SupplierCardWidget;
-import com.leroy.magmobile.ui.pages.common.widget.CalendarWidget;
-import com.leroy.magmobile.ui.models.search.FiltersData;
 import com.leroy.magmobile.ui.models.TextViewData;
+import com.leroy.magmobile.ui.models.search.FiltersData;
+import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import com.leroy.magmobile.ui.pages.common.widget.CalendarWidget;
+import com.leroy.magmobile.ui.pages.search.widgets.SupplierCardWidget;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 
@@ -58,7 +58,7 @@ public class FilterPage extends CommonMagMobilePage {
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"ScreenHeader\"]//android.view.ViewGroup[@content-desc=\"Button\"]")
     Element clearAllFiltersBtn;
 
-    @AppFindBy(xpath = AndroidScrollView.TYPICAL_XPATH, metaName = "Основная прокручиваемая область страницы")
+    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ScreenContent']/android.widget.ScrollView[1]", metaName = "Основная прокручиваемая область страницы")
     AndroidScrollView<TextViewData> mainScrollView;
 
     AndroidHorizontalScrollView<TextViewData> gammaFilterScrollView = new AndroidHorizontalScrollView<>(driver,
@@ -83,7 +83,7 @@ public class FilterPage extends CommonMagMobilePage {
     @AppFindBy(text = "Топ ЕМ")
     Element topEm;
 
-    @AppFindBy(text = "Лучшая цена")
+    @AppFindBy(xpath = "//android.widget.TextView[@text='Лучшая цена']")
     Element bestPrice;
 
     @AppFindBy(text = "Toп 1000")
@@ -263,22 +263,28 @@ public class FilterPage extends CommonMagMobilePage {
             ps = getPageSource();
         switch (value) {
             case TOP_EM:
+                mainScrollView.scrollToBeginning();
                 topEm.click();
                 break;
             case HAS_AVAILABLE_STOCK:
+                mainScrollView.scrollToBeginning();
                 hasAvailableStock.click();
                 break;
             case TOP_1000:
+                mainScrollView.scrollToBeginning();
                 top1000.click();
                 break;
             case CTM:
+                mainScrollView.scrollToBeginning();
                 ctm.click();
                 break;
             case BEST_PRICE:
-                bestPrice.click();
+                mainScrollView.scrollToEnd();
+                bestPrice.doubleClick();
                 break;
             case LIMITED_OFFER:
-                limitedOffer.click();
+                mainScrollView.scrollToEnd();
+                limitedOffer.doubleClick();
                 break;
             case AVS:
                 mainScrollView.scrollToEnd();
@@ -316,8 +322,12 @@ public class FilterPage extends CommonMagMobilePage {
     }
 
     @Step("Выбрать тип продукта {type}")
-    public void choseProductType(String type) {
+    public void choseProductType(String type) throws Exception {
         String ps = getPageSource();
+        if (showAllFiltersBtn.isVisible()) {
+            showAllFiltersBtn.click();
+        }
+        waitUntilContentIsChanged(ps);
         mainScrollView.scrollToEnd();
         if (type.equals(COMMON_PRODUCT_TYPE)) {
             commonProductBtn.click();
@@ -420,7 +430,7 @@ public class FilterPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что кнопка \"ПОКАЗАТЬ ВСЕ ТОВАРЫ\" отображена")
-    public FilterPage shouldShowAllFiltersBtnIsVisible(){
+    public FilterPage shouldShowAllFiltersBtnIsVisible() {
         anAssert.isElementVisible(showAllFiltersBtn);
         return this;
     }
@@ -448,7 +458,7 @@ public class FilterPage extends CommonMagMobilePage {
         if (date == null) {
             anAssert.isElementNotVisible(chosenAvsDate, pageSource);
         } else {
-            String dateAsString = date.getDayOfMonth() + ".";
+            String dateAsString = date.getDayOfMonth() > 9 ? date.getDayOfMonth() + "." : "0" + date.getDayOfMonth()+".";
             String month = date.getMonthValue() > 9 ? String.valueOf(date.getMonthValue()) : "0" + date.getMonthValue();
             dateAsString = dateAsString + month + "." + String.valueOf(date.getYear()).substring(2);
             anAssert.isElementTextEqual(chosenAvsDate, dateAsString, pageSource);
@@ -508,11 +518,12 @@ public class FilterPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что отображен расширенный вид страницы фильтров")
-    public FilterPage shouldFilterPageHasExtendedView(){
+    public FilterPage shouldFilterPageHasExtendedView() {
         mainScrollView.scrollToEnd();
-        String pageSource=getPageSource();
+        String pageSource = getPageSource();
         softAssert.areElementsVisible(pageSource, bestPrice, commonProductBtn, supplierBtn, avsDateBtn);
         softAssert.isElementNotVisible(showAllFiltersBtn);
+        softAssert.verifyAll();
         return this;
     }
 

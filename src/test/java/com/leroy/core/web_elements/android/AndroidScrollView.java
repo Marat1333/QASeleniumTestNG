@@ -342,20 +342,20 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
     }
 
     public AndroidScrollView<T> scrollToBeginning() {
-        if (useUiSelectors) {
+        /*if (useUiSelectors) {*/
             uiAutomatorScroll("flingToBeginning(2)");
-        } else {
+        /*} else {
             // todo
-        }
+        }*/
         return this;
     }
 
     public AndroidScrollView<T> scrollToEnd() {
-        if (useUiSelectors) {
+        /*if (useUiSelectors) {*/
             uiAutomatorScroll("flingToEnd(2)");
-        } else {
+        /*} else {
             // todo
-        }
+        }*/
         return this;
     }
 
