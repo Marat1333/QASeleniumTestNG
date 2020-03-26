@@ -19,8 +19,9 @@ public class SortPage extends CommonMagMobilePage {
     private final String CHECK_BOX_XPATH = "//android.widget.TextView[contains(@text,'%s')]/following-sibling::android.view.ViewGroup";
     public final static String SORT_BY_LM_ASC = "По ЛМ-коду: 1→9";
     public final static String SORT_BY_LM_DESC = "По ЛМ-коду: 9→1";
-    public final static String SORT_BY_AVAILABLE_STOCK_ASC = "По запасу (меньше→больше)";
-    public final static String SORT_BY_AVAILABLE_STOCK_DESC = "По запасу (больше→меньше)";
+    public final static String SORT_BY_ALPHABET_ASC = "По названию: А→Я";
+    public final static String SORT_BY_ALPHABET_DESC = "По названию: Я→А";
+    public final static String DEFAULT_SORT = "По умолчанию";
 
     @AppFindBy(xpath = "//*[contains(@text,'" + SORT_BY_LM_ASC + "')]")
     Element sortByLmAscLbl;
@@ -28,11 +29,11 @@ public class SortPage extends CommonMagMobilePage {
     @AppFindBy(xpath = "//*[contains(@text,'" + SORT_BY_LM_DESC + "')]")
     Element sortByLmDescLbl;
 
-    @AppFindBy(text = SORT_BY_AVAILABLE_STOCK_ASC)
-    Element sortByStockAscLbl;
+    @AppFindBy(text = SORT_BY_ALPHABET_ASC)
+    Element sortByAlphabetAscLbl;
 
-    @AppFindBy(text = SORT_BY_AVAILABLE_STOCK_DESC)
-    Element sortByStockDescLbl;
+    @AppFindBy(text = SORT_BY_ALPHABET_DESC)
+    Element sortByAlphabetDescLbl;
 
     @Override
     public void waitForPageIsLoaded() {
@@ -51,12 +52,12 @@ public class SortPage extends CommonMagMobilePage {
                 neededElement = E(String.format(CHECK_BOX_XPATH, SORT_BY_LM_DESC));
                 neededElement.click();
                 break;
-            case SORT_BY_AVAILABLE_STOCK_ASC:
-                neededElement = E(String.format(CHECK_BOX_XPATH, SORT_BY_AVAILABLE_STOCK_ASC));
+            case SORT_BY_ALPHABET_ASC:
+                neededElement = E(String.format(CHECK_BOX_XPATH, SORT_BY_ALPHABET_ASC));
                 neededElement.click();
                 break;
-            case SORT_BY_AVAILABLE_STOCK_DESC:
-                neededElement = E(String.format(CHECK_BOX_XPATH, SORT_BY_AVAILABLE_STOCK_DESC));
+            case SORT_BY_ALPHABET_DESC:
+                neededElement = E(String.format(CHECK_BOX_XPATH, SORT_BY_ALPHABET_DESC));
                 neededElement.click();
                 break;
         }
@@ -65,7 +66,7 @@ public class SortPage extends CommonMagMobilePage {
 
     public SortPage verifyRequiredElements() {
         softAssert.areElementsVisible(sortByLmAscLbl, sortByLmDescLbl,
-                sortByStockDescLbl, sortByStockAscLbl);
+                sortByAlphabetDescLbl, sortByAlphabetAscLbl);
         softAssert.verifyAll();
         return new SortPage(context);
 
@@ -81,26 +82,19 @@ public class SortPage extends CommonMagMobilePage {
             case SORT_BY_LM_DESC:
                 neededElement = new MagMobRadioButton(driver, new CustomLocator(By.xpath(String.format(CHECK_BOX_XPATH, SORT_BY_LM_DESC))));
                 break;
-            case SORT_BY_AVAILABLE_STOCK_ASC:
-                neededElement = new MagMobRadioButton(driver, new CustomLocator(By.xpath(String.format(CHECK_BOX_XPATH, SORT_BY_AVAILABLE_STOCK_ASC))));
+            case SORT_BY_ALPHABET_ASC:
+                neededElement = new MagMobRadioButton(driver, new CustomLocator(By.xpath(String.format(CHECK_BOX_XPATH, SORT_BY_ALPHABET_ASC))));
                 break;
-            case SORT_BY_AVAILABLE_STOCK_DESC:
-                neededElement = new MagMobRadioButton(driver, new CustomLocator(By.xpath(String.format(CHECK_BOX_XPATH, SORT_BY_AVAILABLE_STOCK_DESC))));
+            case SORT_BY_ALPHABET_DESC:
+                neededElement = new MagMobRadioButton(driver, new CustomLocator(By.xpath(String.format(CHECK_BOX_XPATH, SORT_BY_ALPHABET_DESC))));
+                break;
+            case DEFAULT_SORT:
+                neededElement = new MagMobRadioButton(driver, new CustomLocator(By.xpath(String.format(CHECK_BOX_XPATH, DEFAULT_SORT))));
                 break;
             default:
                 throw new IllegalArgumentException("Not existed sort type");
         }
         anAssert.isTrue(neededElement.isChecked(), "Элемент должен быть выбран");
-        return this;
-    }
-
-    @Step("Проверить, для выбора доступна сортировка только по ЛМ коду (ASC/DESC)")
-    public SortPage shouldSortIsOnlyByLmCode() {
-        String pageSource = getPageSource();
-        softAssert.areElementsVisible(pageSource, sortByLmDescLbl, sortByLmAscLbl);
-        softAssert.isElementNotVisible(sortByStockDescLbl, pageSource);
-        softAssert.isElementNotVisible(sortByStockAscLbl, pageSource);
-        softAssert.verifyAll();
         return this;
     }
 }
