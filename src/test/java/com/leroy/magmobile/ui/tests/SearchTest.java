@@ -648,7 +648,6 @@ public class SearchTest extends AppBaseSteps {
 
     }
 
-    @Issue("")
     @Test(description = "C22789173 Поиск товара по одному введенному символу", priority = 2)
     public void testSearchByOneSymbol() throws Exception {
         final String searchContext = "1";

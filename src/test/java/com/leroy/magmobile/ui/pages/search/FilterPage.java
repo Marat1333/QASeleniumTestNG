@@ -83,7 +83,7 @@ public class FilterPage extends CommonMagMobilePage {
     @AppFindBy(text = "Топ ЕМ")
     Element topEm;
 
-    @AppFindBy(xpath = "//android.widget.TextView[@text='Лучшая цена']")
+    @AppFindBy(text = "Лучшая цена")
     Element bestPrice;
 
     @AppFindBy(text = "Toп 1000")
@@ -324,10 +324,9 @@ public class FilterPage extends CommonMagMobilePage {
     @Step("Выбрать тип продукта {type}")
     public void choseProductType(String type) throws Exception {
         String ps = getPageSource();
-        if (showAllFiltersBtn.isVisible()) {
-            showAllFiltersBtn.click();
+        if (showAllFiltersBtn.isVisible(ps)) {
+            clickShowAllFiltersBtn();
         }
-        waitUntilContentIsChanged(ps);
         mainScrollView.scrollToEnd();
         if (type.equals(COMMON_PRODUCT_TYPE)) {
             commonProductBtn.click();
@@ -458,7 +457,7 @@ public class FilterPage extends CommonMagMobilePage {
         if (date == null) {
             anAssert.isElementNotVisible(chosenAvsDate, pageSource);
         } else {
-            String dateAsString = date.getDayOfMonth() > 9 ? date.getDayOfMonth() + "." : "0" + date.getDayOfMonth()+".";
+            String dateAsString = date.getDayOfMonth() > 9 ? date.getDayOfMonth() + "." : "0" + date.getDayOfMonth() + ".";
             String month = date.getMonthValue() > 9 ? String.valueOf(date.getMonthValue()) : "0" + date.getMonthValue();
             dateAsString = dateAsString + month + "." + String.valueOf(date.getYear()).substring(2);
             anAssert.isElementTextEqual(chosenAvsDate, dateAsString, pageSource);
