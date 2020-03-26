@@ -14,6 +14,7 @@ import com.leroy.magmobile.ui.models.sales.SalesOrderCardData;
 import com.leroy.magmobile.ui.models.sales.SalesOrderData;
 import com.leroy.utils.Converter;
 import io.qameta.allure.Step;
+import org.apache.commons.math3.util.Precision;
 import org.openqa.selenium.By;
 
 import java.util.ArrayList;
@@ -219,7 +220,7 @@ public class Basket35Page extends CommonMagMobilePage {
         softAssert.isEquals(Converter.strToDouble(actualCountProductAndWeight[0]),
                 expectedOrderData.getProductCount(), "Неверное кол-во товара");
         softAssert.isEquals(Converter.strToDouble(actualCountProductAndWeight[1]),
-                expectedOrderData.getTotalWeight(), "Неверный вес товара");
+                Precision.round(expectedOrderData.getTotalWeight(), 1), "Неверный вес товара");
         softAssert.isEquals(Converter.strToDouble(actualTotalPrice), expectedOrderData.getTotalPrice(),
                 "Неверное сумма итого");
         softAssert.verifyAll();
