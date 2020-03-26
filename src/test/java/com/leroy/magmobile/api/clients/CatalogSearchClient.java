@@ -26,10 +26,12 @@ public class CatalogSearchClient extends MagMobileClient {
      **/
 
     public Response<ProductItemDataList> searchProductsBy(GetCatalogSearch params) {
+        params.setLdap(sessionData.getUserLdap());
         return execute(params, ProductItemDataList.class);
     }
 
     public Response<ServiceItemDataList> searchServicesBy(GetCatalogServicesSearch params) {
+        params.setLdap(sessionData.getUserLdap());
         return execute(params, ServiceItemDataList.class);
     }
 

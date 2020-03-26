@@ -5,11 +5,15 @@ import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.magmobile.api.data.catalog.ProductItemData;
+import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
+import com.leroy.magmobile.api.data.catalog.ServiceItemData;
+import com.leroy.magmobile.api.data.catalog.ServiceItemDataList;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.models.CardWidgetData;
 import com.leroy.magmobile.ui.models.TextViewData;
 import com.leroy.magmobile.ui.models.search.ProductCardData;
 import com.leroy.magmobile.ui.models.search.ServiceCardData;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.AddProductPage;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
@@ -18,12 +22,7 @@ import com.leroy.magmobile.ui.pages.sales.widget.SearchProductAllGammaCardWidget
 import com.leroy.magmobile.ui.pages.sales.widget.SearchProductCardWidget;
 import com.leroy.magmobile.ui.pages.sales.widget.SearchServiceCardWidget;
 import com.leroy.magmobile.ui.pages.search.modal.SortPage;
-import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.api.data.catalog.ServiceItemDataList;
-import com.leroy.magmobile.api.data.catalog.ServiceItemData;
 import io.qameta.allure.Step;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.openqa.selenium.By;
 
 import java.util.ArrayList;
@@ -60,7 +59,7 @@ public class SearchProductPage extends CommonMagMobilePage {
             AndroidScrollView.TYPICAL_LOCATOR,
             ".//android.view.ViewGroup[contains(@content-desc,'productListCard')]", SearchProductAllGammaCardWidget.class);
 
-    @AppFindBy(accessibilityId = "productListCard", clazz = SearchProductCardWidget.class)
+    @AppFindBy(accessibilityId = "productListCard", clazz = SearchProductCardWidget.class, metaName = "product cards")
     private ElementList<SearchProductCardWidget> productCards;
 
     @AppFindBy(text = "Фильтр")
@@ -149,9 +148,11 @@ public class SearchProductPage extends CommonMagMobilePage {
     }
 
     @Step("Инициируем поисковой запрос через поисковую строку")
-    public SearchProductPage submitSearch() {
+    public SearchProductPage submitSearch(boolean hideKeyboard) {
         searchField.submit();
-        hideKeyboard();
+        if (hideKeyboard) {
+            hideKeyboard();
+        }
         return new SearchProductPage(context);
     }
 
@@ -358,22 +359,12 @@ public class SearchProductPage extends CommonMagMobilePage {
         List<ProductCardData> expectedSortedList = new ArrayList<>(dataList);
 
         switch (sortType) {
-            case SortPage.SORT_BY_AVAILABLE_STOCK_ASC:
-                if (type.equals(CardType.COMMON)) {
-                    expectedSortedList.sort(Comparator.comparingDouble(d -> d.getAvailableQuantity()));
-                    break;
-                } else {
-                    throw new Exception("Incorrect CardType for " + sortType);
-                }
-
-            case SortPage.SORT_BY_AVAILABLE_STOCK_DESC:
-                if (type.equals(CardType.COMMON)) {
-                    expectedSortedList.sort((d1, d2) ->
-                            (int) (d2.getAvailableQuantity() - d1.getAvailableQuantity()));
-                    break;
-                } else {
-                    throw new Exception("Incorrect CardType for " + sortType);
-                }
+            case SortPage.SORT_BY_ALPHABET_ASC:
+                expectedSortedList.sort(Comparator.comparing(ProductCardData::getName));
+                break;
+            case SortPage.SORT_BY_ALPHABET_DESC:
+                expectedSortedList.sort((name1, name2) -> name2.getName().compareTo(name1.getName()));
+                break;
             case SortPage.SORT_BY_LM_ASC:
                 expectedSortedList.sort(Comparator.comparingInt(d -> Integer.parseInt(d.getLmCode())));
                 break;
@@ -410,7 +401,18 @@ public class SearchProductPage extends CommonMagMobilePage {
                 throw new Exception("Incorrect CardType");
         }
         for (CardWidgetData cardData : productCardData) {
-            if (text.matches("^\\d+") && text.length() <= 8) {
+            if (text.matches("^\\d+") && text.length() < 8 && text.length() >= 4) {
+                int condition = 0;
+                if (cardData instanceof ProductCardData && (((ProductCardData) cardData).getLmCode().contains(text)
+                        || ((ProductCardData) cardData).getBarCode().contains(text))) {
+                    condition++;
+                } else if (cardData instanceof ServiceCardData) {
+                    anAssert.isTrue(((ServiceCardData) cardData).getLmCode().contains(text), "ЛМ код товара " + ((ServiceCardData) cardData).getLmCode() + " не содрежит критерий поиска " + text);
+                    condition++;
+                }
+                anAssert.isTrue(condition > 0, "Товар или услуга не содрежит критерий поиска " + text);
+            }
+            if (text.matches("^\\d+") && text.length() == 8) {
                 if (cardData instanceof ProductCardData) {
                     anAssert.isTrue(((ProductCardData) cardData).getLmCode().contains(text), "ЛМ код товара " + ((ProductCardData) cardData).getLmCode() + " не содрежит критерий поиска " + text);
                 } else if (cardData instanceof ServiceCardData) {
@@ -420,20 +422,23 @@ public class SearchProductPage extends CommonMagMobilePage {
             if (text.matches("^\\d+") && text.length() > 8 && cardData instanceof ProductCardData) {
                 anAssert.isTrue(((ProductCardData) cardData).getBarCode().contains(text), "Штрих код товара " + ((ProductCardData) cardData).getBarCode() + " не содрежит критерий поиска " + text);
             }
-            if (searchWords != null && text.matches("\\D+")) {
+            if (searchWords != null && (text.matches("\\D+") || text.length() < 4)) {
+                String name = "";
                 for (String each : searchWords) {
                     each = each.toLowerCase();
-                    if (cardData instanceof ProductCardData) {
-                        anAssert.isTrue(((ProductCardData) cardData).getName().toLowerCase().contains(each.toLowerCase()), "Название товара " + ((ProductCardData) cardData).getName() + " не содержит критерий поиска " + text);
-                    } else if (cardData instanceof ServiceCardData) {
-                        anAssert.isTrue(((ServiceCardData) cardData).getName().toLowerCase().contains(each.toLowerCase()), "Название товара " + ((ServiceCardData) cardData).getName() + " не содержит критерий поиска " + text);
+                    if (cardData instanceof ProductCardData && ((ProductCardData) cardData).getName().toLowerCase().contains(each.toLowerCase())) {
+                        name = ((ProductCardData) cardData).getName();
+                    } else if (cardData instanceof ServiceCardData && ((ServiceCardData) cardData).getName().toLowerCase().contains(each.toLowerCase())) {
+                        name = ((ServiceCardData) cardData).getName();
                     }
                 }
-            } else if (searchWords == null && text.matches("\\D+")) {
+                anAssert.isFalse(name.isEmpty(), "Товар не содержит критерий поиска " + text);
+
+            } else if (searchWords == null && (text.matches("\\D+") || text.length() < 4)) {
                 if (cardData instanceof ProductCardData) {
-                    anAssert.isTrue(((ProductCardData) cardData).getName().toLowerCase().contains(text.toLowerCase()), "Название товара " + ((ProductCardData) cardData).getName() + " не содержит критерий поиска " + text);
+                    anAssert.isTrue(((ProductCardData) cardData).getName().toLowerCase().contains(text.toLowerCase()), "Товар " + ((ProductCardData) cardData).getName() + " не содержит критерий поиска " + text);
                 } else if (cardData instanceof ServiceCardData) {
-                    anAssert.isTrue(((ServiceCardData) cardData).getName().toLowerCase().contains(text.toLowerCase()), "Название товара " + ((ServiceCardData) cardData).getName() + " не содержит критерий поиска " + text);
+                    anAssert.isTrue(((ServiceCardData) cardData).getName().toLowerCase().contains(text.toLowerCase()), "Товар " + ((ServiceCardData) cardData).getName() + " не содержит критерий поиска " + text);
                 }
             }
         }
@@ -496,6 +501,12 @@ public class SearchProductPage extends CommonMagMobilePage {
             throw new AssertionError("Page size param should be equals to maxEntityCount");
         }
         anAssert.isTrue(serviceCardDataList.equals(serviceData), "Товары не совпадают");
+        return this;
+    }
+
+    @Step("Проверить, что история поиска отображается")
+    public SearchProductPage shouldSearchHistoryBeVisible(){
+        anAssert.isElementVisible(searchHistoryScrollView);
         return this;
     }
 
