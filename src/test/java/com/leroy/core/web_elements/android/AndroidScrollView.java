@@ -8,9 +8,9 @@ import com.leroy.core.util.XpathUtil;
 import com.leroy.core.web_elements.general.BaseWidget;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.magmobile.ui.models.CardWidgetData;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
 import com.leroy.magmobile.ui.pages.widgets.TextViewWidget;
-import com.leroy.magmobile.ui.models.CardWidgetData;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
@@ -273,7 +273,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
                 return this;
             if (maxScrollCount != null && i >= maxScrollCount)
                 break;
-            if (maxEntityCount!=null && tmpCardDataList.size() >= maxEntityCount) {
+            if (maxEntityCount != null && tmpCardDataList.size() >= maxEntityCount) {
                 break;
             }
             if (pageSource.equals(prevPageSource)) {
@@ -342,20 +342,20 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
     }
 
     public AndroidScrollView<T> scrollToBeginning() {
-        /*if (useUiSelectors) {*/
+        if (useUiSelectors) {
             uiAutomatorScroll("flingToBeginning(2)");
-        /*} else {
+        } else {
             // todo
-        }*/
+        }
         return this;
     }
 
     public AndroidScrollView<T> scrollToEnd() {
-        /*if (useUiSelectors) {*/
+        if (useUiSelectors) {
             uiAutomatorScroll("flingToEnd(2)");
-        /*} else {
+        } else {
             // todo
-        }*/
+        }
         return this;
     }
 

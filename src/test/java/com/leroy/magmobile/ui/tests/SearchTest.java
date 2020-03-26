@@ -26,6 +26,7 @@ import com.leroy.magmobile.api.enums.SortingOrder;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogServicesSearch;
 import io.qameta.allure.Issue;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 
@@ -37,11 +38,16 @@ import java.util.List;
 @Guice(modules = {Module.class})
 public class SearchTest extends AppBaseSteps {
 
-    @Inject
     private CatalogSearchClient searchClient;
 
     @Inject
     private ApiClientProvider apiClientProvider;
+
+    @BeforeClass
+    public void setUp() {
+        apiClientProvider.setSessionData(sessionData);
+        searchClient = apiClientProvider.getCatalogSearchClient();
+    }
 
     private static final String ALL_DEPARTMENTS_TEXT = "Все отделы";
 

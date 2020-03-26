@@ -1,18 +1,16 @@
 package com.leroy.magmobile.api.tests.catalog_search;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.leroy.constants.EnvConstants;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
-import com.leroy.magmobile.api.tests.BaseProjectApiTest;
-import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.api.data.catalog.ServiceItemDataList;
+import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.data.catalog.ServiceItemData;
+import com.leroy.magmobile.api.data.catalog.ServiceItemDataList;
 import com.leroy.magmobile.api.enums.CatalogSearchFields;
 import com.leroy.magmobile.api.enums.SortingOrder;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogServicesSearch;
+import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.base.TestCase;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -28,9 +26,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class CatalogSearchTest extends BaseProjectApiTest {
-
-    @Inject
-    private Provider<CatalogSearchClient> searchBuilderProvider;
 
     @Override
     protected boolean isNeedAccessToken() {
@@ -52,7 +47,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(10)
                 .setByLmCode(lmCode);
-        Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(byLmCodeParams);
+        Response<ProductItemDataList> response = getCatalogSearchClient().searchProductsBy(byLmCodeParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -73,18 +68,15 @@ public class CatalogSearchTest extends BaseProjectApiTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(20)
                 .setByLmCode(lmCode);
-        Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(byLmCodeParams);
+        Response<ProductItemDataList> response = getCatalogSearchClient().searchProductsBy(byLmCodeParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
         assertThat(response, successful());
         assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
         for (ProductItemData data : responseData) {
-            int condition=0;
-            if (data.getLmCode().contains(lmCode)||data.getBarCode().contains(lmCode)){
-                condition++;
-            }
-            assertThat("product lmCode or barcode " + data.getLmCode() + data.getBarCode() +" has not contains " + lmCode, condition, greaterThan(0));
+            assertThat(String.format("Product with lmCode=%s and barCode=%s", data.getLmCode(), data.getBarCode()),
+                    data.getLmCode().contains(lmCode) || data.getBarCode().contains(lmCode));
         }
     }
 
@@ -98,7 +90,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(10)
                 .setByBarCode(barCode);
-        Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(byBarCodeParams);
+        Response<ProductItemDataList> response = getCatalogSearchClient().searchProductsBy(byBarCodeParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -119,7 +111,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(20)
                 .setByBarCode(barCode);
-        Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(byBarCodeParams);
+        Response<ProductItemDataList> response = getCatalogSearchClient().searchProductsBy(byBarCodeParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -133,13 +125,14 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     @TestCase(22893248)
     @Test(description = "C22893248 search by shortName")
     public void testSearchByName() {
+        //final String name = "Тепломир радиатор"; TODO почему бэки возвращают другие значения?
         final String name = "12";
 
         GetCatalogSearch byNameParams = new GetCatalogSearch()
                 .setStartFrom(1)
                 .setPageSize(20)
                 .setByNameLike(name);
-        Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(byNameParams);
+        Response<ProductItemDataList> response = getCatalogSearchClient().searchProductsBy(byNameParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -148,7 +141,8 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         String[] searchWords = name.split(" ");
         for (ProductItemData data : responseData) {
             for (String eachWord : searchWords) {
-                assertThat("title " + data.getTitle() + " of product " + data.getLmCode() + " has not contains word " + eachWord, data.getTitle().toLowerCase(), containsString(eachWord.toLowerCase()));
+                assertThat("title " + data.getTitle() + " of product " + data.getLmCode() + " has not contains word " + eachWord,
+                        data.getTitle(), containsStringIgnoringCase(eachWord));
             }
         }
     }
@@ -164,13 +158,13 @@ public class CatalogSearchTest extends BaseProjectApiTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(10)
                 .setByLmCode(longLmCode);
-        Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(byLmCodeParams);
+        Response<ProductItemDataList> response = getCatalogSearchClient().searchProductsBy(byLmCodeParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
         assertThat(response, successful());
         for (ProductItemData data : responseData)
-        assertThat("barCode has not contains "+ longLmCode, data.getBarCode(), containsString(longLmCode));
+            assertThat("barCode has not contains " + longLmCode, data.getBarCode(), containsString(longLmCode));
     }
 
     @TestCase(22893329)
@@ -183,7 +177,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(20)
                 .setGamma(GAMMA);
-        Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(byGammaParams);
+        Response<ProductItemDataList> response = getCatalogSearchClient().searchProductsBy(byGammaParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -206,7 +200,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(20)
                 .setGamma(FIRST_GAMMA + "," + SECOND_GAMMA);
-        Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(byGammaParams);
+        Response<ProductItemDataList> response = getCatalogSearchClient().searchProductsBy(byGammaParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -214,7 +208,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
 
         for (ProductItemData data : responseData) {
-            assertThat("gamma in product " + data.getLmCode() + " is " + data.getGamma(), data.getGamma(), isOneOf(FIRST_GAMMA, SECOND_GAMMA));
+            assertThat("gamma in product " + data.getLmCode() + " is " + data.getGamma(), data.getGamma(), oneOf(FIRST_GAMMA, SECOND_GAMMA));
         }
     }
 
@@ -229,7 +223,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(20)
                 .setTop(TOP);
-        Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(byTopParams);
+        Response<ProductItemDataList> response = getCatalogSearchClient().searchProductsBy(byTopParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -253,7 +247,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(20)
                 .setTop(FIRST_TOP + "," + SECOND_TOP);
-        Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(byTopParams);
+        Response<ProductItemDataList> response = getCatalogSearchClient().searchProductsBy(byTopParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -261,7 +255,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
 
         for (ProductItemData data : responseData) {
-            assertThat("top in product " + data.getLmCode() + " is " + data.getTop(), data.getTop(), isOneOf(Integer.valueOf(FIRST_TOP), Integer.valueOf(SECOND_TOP)));
+            assertThat("top in product " + data.getLmCode() + " is " + data.getTop(), data.getTop(), oneOf(Integer.valueOf(FIRST_TOP), Integer.valueOf(SECOND_TOP)));
         }
     }
 
@@ -276,7 +270,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
                 .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
                 .setPageSize(20)
                 .setHasAvailableStock(hasAvailableStock);
-        Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(byStockParams);
+        Response<ProductItemDataList> response = getCatalogSearchClient().searchProductsBy(byStockParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -300,7 +294,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(20)
                 .setTopEM(topEm);
-        Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(byTopEmParams);
+        Response<ProductItemDataList> response = getCatalogSearchClient().searchProductsBy(byTopEmParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -323,7 +317,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(10)
                 .setBestPrice(bestPrice);
-        Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(byBestPriceParams);
+        Response<ProductItemDataList> response = getCatalogSearchClient().searchProductsBy(byBestPriceParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -345,7 +339,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(20)
                 .setTop1000(top1000);
-        Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(byTop1000Params);
+        Response<ProductItemDataList> response = getCatalogSearchClient().searchProductsBy(byTop1000Params);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -368,7 +362,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(10)
                 .setLimitedOffer(limitedOffer);
-        Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(byLimitedOfferParams);
+        Response<ProductItemDataList> response = getCatalogSearchClient().searchProductsBy(byLimitedOfferParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -390,7 +384,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(20)
                 .setCtm(ctm);
-        Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(byCtmParams);
+        Response<ProductItemDataList> response = getCatalogSearchClient().searchProductsBy(byCtmParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -413,7 +407,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(20)
                 .setSupId(SUPPLIER_CODE);
-        Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(bySupplierParams);
+        Response<ProductItemDataList> response = getCatalogSearchClient().searchProductsBy(bySupplierParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -438,7 +432,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(30)
                 .setSupId(FIRST_SUPPLIER_CODE + "," + SECOND_SUPPLIER_CODE);
-        Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(bySupplierParams);
+        Response<ProductItemDataList> response = getCatalogSearchClient().searchProductsBy(bySupplierParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -447,7 +441,8 @@ public class CatalogSearchTest extends BaseProjectApiTest {
 
         for (ProductItemData data : responseData) {
             //Данные берутся с разных бэков. В одном поставщик для товара есть, в другом - нет
-            assertThat("supplier in product " + data.getLmCode() + " is " + data.getSupCode(), data.getSupCode(), isOneOf(FIRST_SUPPLIER_CODE, SECOND_SUPPLIER_CODE));
+            assertThat("supplier in product " + data.getLmCode() + " is " + data.getSupCode(), data.getSupCode(),
+                    oneOf(FIRST_SUPPLIER_CODE, SECOND_SUPPLIER_CODE));
         }
     }
 
@@ -460,7 +455,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.DESC)
                 .setPageSize(20)
                 .setAvsDate("neq|null");
-        Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(byAvsNeqNullParams);
+        Response<ProductItemDataList> response = getCatalogSearchClient().searchProductsBy(byAvsNeqNullParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -485,7 +480,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
                         avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth(),
                         avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth() + 1));
 
-        Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(byAvsDateParams);
+        Response<ProductItemDataList> response = getCatalogSearchClient().searchProductsBy(byAvsDateParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -518,7 +513,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
                 .setAvsDate(avs)
                 .setCtm(ctm)
                 .setTopEM(topEm);
-        Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(fewCategoriesParams);
+        Response<ProductItemDataList> response = getCatalogSearchClient().searchProductsBy(fewCategoriesParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -546,7 +541,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
                 .setPageSize(20)
                 .setDepartmentId(5);
 
-        Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(byLmDescSortParams);
+        Response<ProductItemDataList> response = getCatalogSearchClient().searchProductsBy(byLmDescSortParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -571,7 +566,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.ASC)
                 .setPageSize(20);
 
-        Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(byLmAscSortParams);
+        Response<ProductItemDataList> response = getCatalogSearchClient().searchProductsBy(byLmAscSortParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
 
@@ -586,8 +581,8 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         }
     }
 
-    /*@TestCase(22893350)
-    @Test(description = "C22893350 sort by availableStock DESC")
+    @TestCase(22893350)
+    @Test(description = "C22893350 sort by availableStock DESC", enabled = false)
     public void testSortByAvailableStockDesc() {
 
         GetCatalogSearch byAvailableStockSortParams = new GetCatalogSearch()
@@ -597,7 +592,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
                 .setSortBy(CatalogSearchFields.AVAILABLE_STOCK, SortingOrder.DESC)
                 .setPageSize(10);
 
-        Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(byAvailableStockSortParams);
+        Response<ProductItemDataList> response = getCatalogSearchClient().searchProductsBy(byAvailableStockSortParams);
         List<ProductItemData> responseData = response.asJson().getItems();
 
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
@@ -620,7 +615,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893351)
-    @Test(description = "C22893351 sort by availableStock ASC")
+    @Test(description = "C22893351 sort by availableStock ASC", enabled = false)
     public void testSortByAvailableStockAsc() {
 
         GetCatalogSearch byAvailableStockSortParams = new GetCatalogSearch()
@@ -630,7 +625,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
                 .setSortBy(CatalogSearchFields.AVAILABLE_STOCK, SortingOrder.ASC)
                 .setPageSize(20);
 
-        Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(byAvailableStockSortParams);
+        Response<ProductItemDataList> response = getCatalogSearchClient().searchProductsBy(byAvailableStockSortParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
@@ -652,7 +647,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
             assertThat("Sorting order is wrong: " + responseData.get(i).getAvailableStock() + " not matches with " + availableStocks.get(i),
                     availableStocks.get(i), equalTo(responseData.get(i).getAvailableStock()));
         }
-    }*/
+    }
 
     @TestCase(23183649)
     @Test(description = "C23183649 sort by name DESC")
@@ -665,7 +660,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
                 .setSortBy(CatalogSearchFields.NAME, SortingOrder.DESC)
                 .setPageSize(20);
 
-        Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(byAvailableStockSortParams);
+        Response<ProductItemDataList> response = getCatalogSearchClient().searchProductsBy(byAvailableStockSortParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
@@ -693,7 +688,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
                 .setSortBy(CatalogSearchFields.NAME, SortingOrder.ASC)
                 .setPageSize(20);
 
-        Response<ProductItemDataList> response = searchBuilderProvider.get().searchProductsBy(byAvailableStockSortParams);
+        Response<ProductItemDataList> response = getCatalogSearchClient().searchProductsBy(byAvailableStockSortParams);
 
         List<ProductItemData> responseData = response.asJson().getItems();
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
@@ -718,7 +713,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         GetCatalogServicesSearch byNameParams = new GetCatalogServicesSearch()
                 .setName(name);
 
-        Response<ServiceItemDataList> response = searchBuilderProvider.get().searchServicesBy(byNameParams);
+        Response<ServiceItemDataList> response = getCatalogSearchClient().searchServicesBy(byNameParams);
 
         List<ServiceItemData> responseData = response.asJson().getItems();
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
@@ -735,7 +730,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         GetCatalogServicesSearch byNameParams = new GetCatalogServicesSearch()
                 .setName(name);
 
-        Response<ServiceItemDataList> response = searchBuilderProvider.get().searchServicesBy(byNameParams);
+        Response<ServiceItemDataList> response = getCatalogSearchClient().searchServicesBy(byNameParams);
 
         List<ServiceItemData> responseData = response.asJson().getItems();
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
@@ -752,7 +747,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         GetCatalogServicesSearch byLmCodeParams = new GetCatalogServicesSearch()
                 .setLmCode(shortLmCode);
 
-        Response<ServiceItemDataList> response = searchBuilderProvider.get().searchServicesBy(byLmCodeParams);
+        Response<ServiceItemDataList> response = getCatalogSearchClient().searchServicesBy(byLmCodeParams);
 
         List<ServiceItemData> responseData = response.asJson().getItems();
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
@@ -769,7 +764,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         GetCatalogServicesSearch byLmCodeParams = new GetCatalogServicesSearch()
                 .setLmCode(shortLmCode);
 
-        Response<ServiceItemDataList> response = searchBuilderProvider.get().searchServicesBy(byLmCodeParams);
+        Response<ServiceItemDataList> response = getCatalogSearchClient().searchServicesBy(byLmCodeParams);
 
         List<ServiceItemData> responseData = response.asJson().getItems();
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
@@ -787,7 +782,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         GetCatalogServicesSearch byDepartmentIdParams = new GetCatalogServicesSearch()
                 .setDepartmentId(departmentId);
 
-        Response<ServiceItemDataList> response = searchBuilderProvider.get().searchServicesBy(byDepartmentIdParams);
+        Response<ServiceItemDataList> response = getCatalogSearchClient().searchServicesBy(byDepartmentIdParams);
 
         List<ServiceItemData> responseData = response.asJson().getItems();
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
@@ -802,7 +797,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     public void testSearchAllServices() {
         GetCatalogServicesSearch allServicesParams = new GetCatalogServicesSearch();
 
-        Response<ServiceItemDataList> response = searchBuilderProvider.get().searchServicesBy(allServicesParams);
+        Response<ServiceItemDataList> response = getCatalogSearchClient().searchServicesBy(allServicesParams);
 
         List<ServiceItemData> responseData = response.asJson().getItems();
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);

@@ -9,14 +9,6 @@ import ru.leroymerlin.qa.core.clients.base.RequestBuilder;
 @Method(value = "GET", path = "/v4/catalog/search")
 public class GetCatalogSearch extends CommonSearchRequestBuilder<GetCatalogSearch> {
 
-    public GetCatalogSearch (){
-        setLdap();
-    }
-
-    public void setLdap(){
-        header("ldap","60069803");
-    }
-
     public GetCatalogSearch setByLmCode(String val) {
         return queryParam("byLmCode", val);
     }

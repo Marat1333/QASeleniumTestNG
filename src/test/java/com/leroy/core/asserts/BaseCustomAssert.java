@@ -118,7 +118,7 @@ public abstract class BaseCustomAssert {
     // For UI
 
     protected boolean logIsElementVisible(BaseWidget element, String pageSource, boolean isSoft) {
-        //Assert.assertNotNull(element.getMetaName(), "Element meta name is NULL!");
+        Assert.assertNotNull(element.getMetaName(), "Element meta name is NULL!");
         boolean elementVisibility = pageSource == null ? element.isVisible() : element.isVisible(pageSource);
         String desc = element.getMetaName() + " не отображается";
         if (!elementVisibility) {
