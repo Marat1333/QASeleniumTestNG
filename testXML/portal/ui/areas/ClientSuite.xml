@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Client Mag Portal Suite">
+
+    <listeners>
+        <listener class-name="com.leroy.core.listeners.TestRailListener"/>
+    </listeners>
+
+    <test name="C22783064 Create client via button on client's page">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.ClientTest">
+                <methods>
+                    <include name="testC22783064"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22783068 Create client via modal window after search">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.ClientTest">
+                <methods>
+                    <include name="testC22783068"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+</suite>
