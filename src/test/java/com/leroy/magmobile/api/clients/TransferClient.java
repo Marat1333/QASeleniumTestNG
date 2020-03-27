@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.StatusCodes;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.configuration.Log;
-import com.leroy.magmobile.api.data.sales.transfer.TransferProductOrderData;
-import com.leroy.magmobile.api.data.sales.transfer.TransferRunRespData;
-import com.leroy.magmobile.api.data.sales.transfer.TransferSalesDocData;
-import com.leroy.magmobile.api.data.sales.transfer.TransferStatusRespData;
+import com.leroy.magmobile.api.data.sales.transfer.*;
 import com.leroy.magmobile.api.requests.salesdoc.transfer.*;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -121,6 +118,18 @@ public class TransferClient extends MagMobileClient {
         DeleteSalesDocTransferRequest request = new DeleteSalesDocTransferRequest();
         request.setTaskId(taskId);
         return execute(request, JsonNode.class);
+    }
+
+    // Search
+
+    public Response<TransferDataList> searchForTasks(TransferSearchFilters filters) {
+        TransferSearchRequest req = new TransferSearchRequest();
+        req.setShopId(sessionData.getUserShopId());
+        if (filters.getStatus() != null)
+            req.setStatus(filters.getStatus());
+        if (filters.getCreatedBy() != null)
+            req.setCreatedBy(filters.getCreatedBy());
+        return execute(req, TransferDataList.class);
     }
 
     /**
