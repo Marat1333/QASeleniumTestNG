@@ -30,6 +30,7 @@ public class AppBaseSteps extends MagMobileBaseTest {
 
     @BeforeClass
     public void appBaseStepsBeforeClass() {
+        sessionData.setUserLdap(EnvConstants.BASIC_USER_LDAP);
         sessionData.setUserShopId(EnvConstants.SHOP_WITH_NEW_INTERFACE);
         sessionData.setUserDepartmentId("1");
     }

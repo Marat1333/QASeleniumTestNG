@@ -9,6 +9,7 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magportal.ui.pages.CustomerPage;
 import com.leroy.magportal.ui.pages.OrdersPage;
 import com.leroy.magportal.ui.pages.modal.NewFeaturesModalWindow;
+import com.leroy.magportal.ui.pages.products.SearchProductPage;
 import org.openqa.selenium.By;
 
 public class MenuPage extends MagPortalBasePage {
@@ -32,6 +33,7 @@ public class MenuPage extends MagPortalBasePage {
         String expectedMenuItem;
         if (OrdersPage.class == pageClass) expectedMenuItem = "Заказы";
         else if (CustomerPage.class == pageClass) expectedMenuItem = "Клиенты";
+        else if (SearchProductPage.class == pageClass) expectedMenuItem = "Товары";
         else
             throw new IllegalArgumentException("Переход на страницу " + pageClass.getName() + " еще не реализован через класс MenuPage");
         Element menuItem = new Element(driver, new CustomLocator(
@@ -44,10 +46,12 @@ public class MenuPage extends MagPortalBasePage {
     }
 
     public MenuPage closeNewFeaturesModalWindowIfExist() {
+        //TODO не ждать появления элемента
         NewFeaturesModalWindow modalWindow = new NewFeaturesModalWindow(driver);
-        modalWindow.waitForVisibility(tiny_timeout);
+        modalWindow.waitForVisibility(short_timeout);
         if (modalWindow.isVisible())
             modalWindow.clickSubmitButton();
+        modalWindow.waitForInvisibility();
         return this;
     }
 

@@ -1,10 +1,12 @@
 package com.leroy.magmobile.ui.pages.sales.widget;
 
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.models.search.ProductCardData;
 import com.leroy.utils.Converter;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 
 public class SearchProductCardWidget extends SearchProductAllGammaCardWidget {
@@ -22,7 +24,7 @@ public class SearchProductCardWidget extends SearchProductAllGammaCardWidget {
     private Element priceLbl;
 
     // Количество
-    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc=\"presenceValue\"]")
+    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc=\"presenceValue\"][last()]")
     private Element quantityObj;
 
     // Рядом с количеством величина, например "шт."
@@ -50,7 +52,12 @@ public class SearchProductCardWidget extends SearchProductAllGammaCardWidget {
     }
 
     public String getQuantity(String pageSource) {
-        return quantityObj.getText(pageSource);
+        try {
+            return quantityObj.getText(pageSource);
+        } catch (NoSuchElementException err) {
+            Log.error(err.getMessage());
+            return null;
+        }
     }
 
     public String getPriceUnit(String pageSource) {
