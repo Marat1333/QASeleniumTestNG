@@ -6,10 +6,7 @@ import com.google.inject.Provider;
 import com.leroy.core.SessionData;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.*;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
-import com.leroy.magmobile.api.data.catalog.ServiceItemData;
-import com.leroy.magmobile.api.data.catalog.ServiceItemDataList;
+import com.leroy.magmobile.api.data.catalog.*;
 import com.leroy.magmobile.api.data.customer.CustomerData;
 import com.leroy.magmobile.api.data.customer.CustomerListData;
 import com.leroy.magmobile.api.data.customer.CustomerSearchFilters;
@@ -20,7 +17,6 @@ import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateProductOrderData;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogServicesSearch;
-import com.leroy.magmobile.ui.models.search.FiltersData;
 import lombok.Setter;
 import org.apache.commons.lang.RandomStringUtils;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -130,15 +126,16 @@ public class ApiClientProvider {
         return services;
     }
 
-    public List<ProductItemData> getProducts(int necessaryCount, FiltersData filtersData) {
+    public List<ProductItemData> getProducts(int necessaryCount, CatalogSearchFilter filtersData) {
         if (filtersData == null)
-            filtersData = new FiltersData();
+            filtersData = new CatalogSearchFilter();
         String[] badLmCodes = {"10008698", "10008751"}; // Из-за отсутствия синхронизации бэков на тесте, мы можем получить некорректные данные
         GetCatalogSearch params = new GetCatalogSearch()
                 .setShopId(sessionData.getUserShopId())
                 .setDepartmentId(sessionData.getUserDepartmentId())
-                .setTopEM(filtersData.isTopEM())
-                .setHasAvailableStock(filtersData.isHasAvailableStock());
+                .setTopEM(filtersData.getTopEM())
+                .setPageSize(50)
+                .setHasAvailableStock(filtersData.getHasAvailableStock());
         Response<ProductItemDataList> resp = getCatalogSearchClient().searchProductsBy(params);
         assertThat("Catalog search request:", resp, successful());
         List<ProductItemData> items = resp.asJson().getItems();
@@ -146,8 +143,8 @@ public class ApiClientProvider {
         int i = 0;
         for (ProductItemData item : items) {
             if (!Arrays.asList(badLmCodes).contains(item.getLmCode()))
-                if (!filtersData.isAvs() && item.getAvsDate() == null ||
-                        filtersData.isAvs() && item.getAvsDate() != null) {
+                if (filtersData.getAvs() == null || !filtersData.getAvs() && item.getAvsDate() == null ||
+                        filtersData.getAvs() && item.getAvsDate() != null) {
                     resultList.add(item);
                     i++;
                 }

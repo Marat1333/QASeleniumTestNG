@@ -8,10 +8,7 @@ import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderDat
 import com.leroy.magmobile.api.requests.salesdoc.cart.*;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.leroy.core.matchers.Matchers.isNumber;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -96,6 +93,20 @@ public class CartClient extends MagMobileClient {
         req.setLineId(lineId);
         req.setShopId(sessionData.getUserShopId());
         return execute(req, CartData.class);
+    }
+
+    public Response<JsonNode> consolidateProducts(String cartId, Integer documentVersion, String lineId) {
+        CartConsolidateProductsRequest req = new CartConsolidateProductsRequest();
+        req.setLdap(sessionData.getUserLdap());
+        req.setShopId(sessionData.getUserShopId());
+        req.setCartId(cartId);
+        CartData putData = new CartData();
+        putData.setDocumentVersion(documentVersion);
+        CartProductOrderData productOrderData = new CartProductOrderData();
+        productOrderData.setLineId(lineId);
+        putData.setProducts(Collections.singletonList(productOrderData));
+        req.jsonBody(putData);
+        return execute(req, JsonNode.class);
     }
 
     public Response<JsonNode> sendRequestDelete(String cartId, int documentVersion) {
@@ -262,7 +273,7 @@ public class CartClient extends MagMobileClient {
         }
     }
 
-    public void assertThatResponseChangeStatusIsOk(Response<JsonNode> resp) {
+    public void assertThatResponseResultIsOk(Response<JsonNode> resp) {
         assertThatResponseIsOk(resp);
         assertThat("result", resp.asJson().get("result").asText(), is("OK"));
     }

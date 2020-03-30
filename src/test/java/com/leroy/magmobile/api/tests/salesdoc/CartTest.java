@@ -6,6 +6,7 @@ import com.leroy.constants.sales.DiscountConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.clients.CartClient;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
+import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountData;
@@ -21,6 +22,9 @@ import java.util.List;
 import java.util.Random;
 
 import static com.leroy.constants.sales.DiscountConst.TYPE_NEW_PRICE;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 public class CartTest extends BaseProjectApiTest {
 
@@ -93,8 +97,34 @@ public class CartTest extends BaseProjectApiTest {
 
     @Test(description = "Lego_Cart_Consolidate_Products")
     public void testCartConsolidateProducts() {
-        // TODO #unfinished
-        // Kak???
+        step("Find products");
+        CatalogSearchFilter filtersData = new CatalogSearchFilter();
+        filtersData.setAvs(false);
+        filtersData.setTopEM(false);
+        filtersData.setHasAvailableStock(false);
+        CartProductOrderData productWithNegativeBalance = new CartProductOrderData(
+                apiClientProvider.getProducts(1, filtersData).get(0));
+        productWithNegativeBalance.setQuantity(1.0);
+        filtersData.setHasAvailableStock(true);
+        CartProductOrderData productWithPositiveBalance = new CartProductOrderData(
+                apiClientProvider.getProducts(1, filtersData).get(0));
+        productWithPositiveBalance.setQuantity(1.0);
+
+        step("Create Cart");
+        Response<CartData> response = cartClient.sendRequestCreate(
+                Arrays.asList(productWithNegativeBalance, productWithPositiveBalance));
+        // Check Create
+        cartData = cartClient.assertThatIsCreatedAndGetData(response);
+        assertThat("Group count", cartData.getGroups(), hasSize(2));
+        step("Consolidate Products");
+        Response<JsonNode> consolidateResp = cartClient.consolidateProducts(
+                cartData.getCartId(), cartData.getDocumentVersion(), cartData.getProducts().get(1).getLineId());
+        cartClient.assertThatResponseResultIsOk(consolidateResp);
+
+        step("Send get request and check data");
+        Response<CartData> getResp = cartClient.sendRequestGet(cartData.getCartId());
+        cartClient.assertThatResponseMatches(getResp, cartData);
+        assertThat("Group count", getResp.asJson().getGroups(), hasSize(1));
     }
 
     @Test(description = "Lego_Cart_Items")
@@ -135,7 +165,7 @@ public class CartTest extends BaseProjectApiTest {
     public void testDeleteCart() {
         Response<JsonNode> response = cartClient.sendRequestDelete(cartData.getCartId(),
                 cartData.getDocumentVersion());
-        cartClient.assertThatResponseChangeStatusIsOk(response);
+        cartClient.assertThatResponseResultIsOk(response);
 
         Response<CartData> getResponse = cartClient.sendRequestGet(cartData.getCartId());
         cartData.setSalesDocStatus(SalesDocumentsConst.States.DELETED.getApiVal());
