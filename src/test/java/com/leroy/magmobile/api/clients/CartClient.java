@@ -8,13 +8,11 @@ import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderDat
 import com.leroy.magmobile.api.requests.salesdoc.cart.*;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.leroy.core.matchers.Matchers.approximatelyEqual;
 import static com.leroy.core.matchers.Matchers.isNumber;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;

@@ -61,6 +61,8 @@ public class ApiClientProvider {
     private Provider<SmsNotificationClient> smsNotificationClientProvider;
     @Inject
     private Provider<PickingTaskClient> pickingTaskClientProvider;
+    @Inject
+    private Provider<ShopClient> shopClientProvider;
 
     private <J extends MagMobileClient> J getClient(Provider<J> provider) {
         MagMobileClient cl = provider.get();
@@ -106,6 +108,10 @@ public class ApiClientProvider {
 
     public PickingTaskClient getPickingTaskClient() {
         return getClient(pickingTaskClientProvider);
+    }
+
+    public ShopClient getShopClient() {
+        return getClient(shopClientProvider);
     }
 
 
