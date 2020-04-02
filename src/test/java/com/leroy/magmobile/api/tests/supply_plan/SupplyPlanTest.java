@@ -4,12 +4,17 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.leroy.constants.EnvConstants;
 import com.leroy.magmobile.api.clients.SupplyPlanClient;
+import com.leroy.magmobile.api.data.supply_plan.Card.SupplyCardData;
+import com.leroy.magmobile.api.data.supply_plan.Card.SupplyCardProductsData;
+import com.leroy.magmobile.api.data.supply_plan.Card.SupplyCardSendingLocationData;
+import com.leroy.magmobile.api.data.supply_plan.Card.SupplyCardShipmentsData;
 import com.leroy.magmobile.api.data.supply_plan.Details.ShipmentData;
 import com.leroy.magmobile.api.data.supply_plan.Details.ShipmentDataList;
 import com.leroy.magmobile.api.data.supply_plan.Total.TotalPalletData;
 import com.leroy.magmobile.api.data.supply_plan.Total.TotalPalletDataList;
 import com.leroy.magmobile.api.data.supply_plan.suppliers.SupplierData;
 import com.leroy.magmobile.api.data.supply_plan.suppliers.SupplierDataList;
+import com.leroy.magmobile.api.requests.supply_plan.GetSupplyPlanCard;
 import com.leroy.magmobile.api.requests.supply_plan.GetSupplyPlanDetails;
 import com.leroy.magmobile.api.requests.supply_plan.GetSupplyPlanSuppliers;
 import com.leroy.magmobile.api.requests.supply_plan.GetSupplyPlanTotal;
@@ -17,11 +22,10 @@ import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -36,28 +40,108 @@ public class SupplyPlanTest extends BaseProjectApiTest {
     @Inject
     Provider<SupplyPlanClient> supplyPlanClient;
 
-    private List<LocalDate> getCalendarDates(int daysQuantity, LocalDate beginDate){
+    private enum LocationType {
+        SUPPLIER("SUPP"),
+        WAREHAUSE("WH"),
+        STORE("ST");
+
+        private String typeName;
+
+        LocationType(String name) {
+            typeName = name;
+        }
+
+        public String getTypeName() {
+            return typeName;
+        }
+    }
+
+    private enum DocumentType {
+        PO("PO"),
+        TRANSFER("TSF");
+
+        private String typeName;
+
+        DocumentType(String name) {
+            typeName = name;
+        }
+
+        public String getTypeName() {
+            return typeName;
+        }
+    }
+
+    private List<LocalDate> getCalendarDates(int daysQuantity, LocalDate beginDate) {
         List<LocalDate> dates = new ArrayList<>();
         dates.add(beginDate);
         Calendar calendar = new GregorianCalendar();
         calendar.set(Calendar.YEAR, beginDate.getYear());
         calendar.set(Calendar.MONTH, beginDate.getMonthValue());
-        calendar.set(Calendar.DAY_OF_MONTH, beginDate.getDayOfMonth()-1);
-        if (daysQuantity>0) {
+        calendar.set(Calendar.DAY_OF_MONTH, beginDate.getDayOfMonth() - 1);
+        if (daysQuantity > 0) {
             for (int i = 0; i < daysQuantity; i++) {
                 calendar.add(Calendar.DAY_OF_MONTH, 1);
                 dates.add(LocalDate.of(beginDate.getYear(), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)));
             }
             return dates;
-        }else if (daysQuantity<0){
+        } else if (daysQuantity < 0) {
             for (int i = 0; i > daysQuantity; i--) {
                 calendar.add(Calendar.DAY_OF_MONTH, i);
                 dates.add(LocalDate.of(beginDate.getYear(), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)));
             }
             return dates;
-        }else {
+        } else {
             return dates;
         }
+    }
+
+    private void verifyDataIsSortedByDate(List<ShipmentData> data) {
+        List<Date> dateList = new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        String tmp;
+        Date tmpDate;
+        for (ShipmentData data1 : data) {
+            tmp = data1.getDate().toString() + "T" + data1.getTime() + ".000Z";
+            try {
+                tmpDate = sdf.parse(tmp);
+                dateList.add(tmpDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        Collections.sort(dateList);
+        String formattedString;
+        for (int i = 0; i < dateList.size(); i++) {
+            formattedString = sdf.format(dateList.get(i));
+            assertThat("Shipments sorted incorrect by date", formattedString, containsString(data.get(i).getDate().toString()));
+            assertThat("Shipments sorted incorrect by time", formattedString, containsString(data.get(i).getTime()));
+        }
+    }
+
+    private List<String> sortDates(List<String> datesList, boolean descendingOrder) {
+        List<Date> dateList = new ArrayList<>();
+        List<String> result = new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        Date tmpDate;
+        for (String data1 : datesList) {
+            try {
+                tmpDate = sdf.parse(data1);
+                dateList.add(tmpDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        if (!descendingOrder) {
+            Collections.sort(dateList);
+        } else {
+            dateList.sort(Collections.reverseOrder());
+        }
+        String formattedString;
+        for (int i = 0; i < dateList.size(); i++) {
+            formattedString = sdf.format(dateList.get(i));
+            result.add(formattedString);
+        }
+        return result;
     }
 
     @Test(description = "C23184440 one date")
@@ -80,7 +164,7 @@ public class SupplyPlanTest extends BaseProjectApiTest {
     public void testGetTotalPalletPerFewDays() {
         LocalDate testDate = LocalDate.of(2020, 1, 10);
         LocalDate testDate1 = LocalDate.of(2020, 1, 20);
-        List<LocalDate>dateList = new ArrayList<>();
+        List<LocalDate> dateList = new ArrayList<>();
         dateList.add(testDate);
         dateList.add(testDate1);
 
@@ -91,9 +175,9 @@ public class SupplyPlanTest extends BaseProjectApiTest {
 
         Response<TotalPalletDataList> response = supplyPlanClient.get().getTotalPallet(params);
         List<TotalPalletData> dataList = response.asJson().getItems();
-        int condition=0;
+        int condition = 0;
         for (TotalPalletData data : dataList) {
-            for (LocalDate date: dateList) {
+            for (LocalDate date : dateList) {
                 if (date.equals(data.getDate())) {
                     condition++;
                 }
@@ -104,7 +188,7 @@ public class SupplyPlanTest extends BaseProjectApiTest {
 
     @Test(description = "C23184830 search by name")
     public void testGetSupplierByName() {
-        String supplierName="сен-гобен";
+        String supplierName = "сен-гобен";
 
         GetSupplyPlanSuppliers params = new GetSupplyPlanSuppliers()
                 .setQuery(supplierName)
@@ -119,7 +203,7 @@ public class SupplyPlanTest extends BaseProjectApiTest {
 
     @Test(description = "C23184832 search by code")
     public void testGetSupplierByCode() {
-        String supplierCode="10003";
+        String supplierCode = "10003";
 
         GetSupplyPlanSuppliers params = new GetSupplyPlanSuppliers()
                 .setQuery(supplierCode)
@@ -163,7 +247,7 @@ public class SupplyPlanTest extends BaseProjectApiTest {
         List<ShipmentData> dataList = response.asJson().getItems();
         for (ShipmentData data : dataList) {
             assertThat("shipment date - " + data.getDate() + " does not matches " + testDate.toString(), data.getDate(), equalTo(testDate));
-            assertThat("supplier - "+data.getSendingLocation()+" does not matches "+supplier,data.getSendingLocation(),equalTo(supplier));
+            assertThat("supplier - " + data.getSendingLocation() + " does not matches " + supplier, data.getSendingLocation(), equalTo(supplier));
         }
     }
 
@@ -183,7 +267,141 @@ public class SupplyPlanTest extends BaseProjectApiTest {
         List<ShipmentData> dataList = response.asJson().getItems();
         for (ShipmentData data : dataList) {
             assertThat("shipment date - " + data.getDate() + " not in range of " + daysList.toString(), data.getDate(), in(daysList));
-            assertThat("supplier - "+data.getSendingLocation()+" does not matches "+supplier,data.getSendingLocation(),equalTo(supplier));
+            assertThat("supplier - " + data.getSendingLocation() + " does not matches " + supplier, data.getSendingLocation(), equalTo(supplier));
         }
+    }
+
+    @Test(description = "C23185243 isFullReceived flag correct")
+    public void testVerifyIsFullReceivedFlag() {
+        LocalDate testDate = LocalDate.of(2020, 3, 31);
+        String supplier = "1001802015";
+        List<LocalDate> daysList = getCalendarDates(6, testDate);
+
+        GetSupplyPlanDetails params = new GetSupplyPlanDetails()
+                .setDate(daysList)
+                .setSendingLocations(supplier)
+                .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
+                .setShopId("35");
+
+        Response<ShipmentDataList> response = supplyPlanClient.get().getShipments(params);
+        List<ShipmentData> dataList = response.asJson().getItems();
+        for (ShipmentData data : dataList) {
+            if (data.getRowType().equals("FR_APPOINTMENT")) {
+                assertThat("isFullReceived should be not null", data.getIsFullReceived(), notNullValue());
+                if (data.getPalletPlan() - data.getPalletFact() == 0) {
+                    assertThat("isFullReceived is incorrect in supply " + data.getDocumentNo(), data.getIsFullReceived(), is(true));
+                } else {
+                    assertThat("isFullReceived is incorrect in supply " + data.getDocumentNo(), data.getIsFullReceived(), is(false));
+                }
+            }
+        }
+    }
+
+    @Test(description = "C23185314 shipments sorted by date & time")
+    public void testVerifySortByDateAndTime() {
+        LocalDate testDate = LocalDate.of(2020, 3, 31);
+        String supplier = "1001802015";
+        List<LocalDate> daysList = getCalendarDates(6, testDate);
+
+        GetSupplyPlanDetails params = new GetSupplyPlanDetails()
+                .setDate(daysList)
+                .setSendingLocations(supplier)
+                .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
+                .setShopId("35");
+
+        Response<ShipmentDataList> response = supplyPlanClient.get().getShipments(params);
+        List<ShipmentData> dataList = response.asJson().getItems();
+        verifyDataIsSortedByDate(dataList);
+    }
+
+    @Test(description = "C23185309 warehause/shop card")
+    public void testGetShopCard() {
+        String supplier = "5";
+        String documentNumber = "1114743188";
+        String defaultContactPhone = "8 800 600-82-02";
+        String defaultEmail = "supportlogistic@leroymerlin.ru";
+        String defaultContactName = "Группа SUPPORTLOGISTIC";
+
+
+        GetSupplyPlanCard params = new GetSupplyPlanCard()
+                .setSendingLocation(supplier)
+                .setSendingLocationType(LocationType.STORE.getTypeName())
+                .setDocumentType(DocumentType.TRANSFER.getTypeName())
+                .setDocumentNo(documentNumber);
+
+        Response<SupplyCardData> response = supplyPlanClient.get().getSupplyCard(params);
+        List<SupplyCardSendingLocationData> dataList = response.asJson().getSendingLocation();
+        for (SupplyCardSendingLocationData data : dataList) {
+            assertThat("store/warehause phone is " + data.getContactPhone() + " not mathes " + defaultContactPhone,
+                    data.getContactPhone(), equalTo(defaultContactPhone));
+            assertThat("store/warehause email is " + data.getEmail() + " not matches " + defaultEmail,
+                    data.getEmail(), equalTo(defaultEmail));
+            assertThat("store/warehause contact name is " + data.getContactName() + " not matches " + defaultContactName,
+                    data.getContactName(), equalTo(defaultContactName));
+        }
+    }
+
+    @Test(description = "C23185310 isFullReceived flag correct")
+    public void testVerifyIsFullReceivedFlagInCard() {
+        String supplier = "5";
+        String documentNumber = "1114743188";
+
+        GetSupplyPlanCard params = new GetSupplyPlanCard()
+                .setSendingLocation(supplier)
+                .setSendingLocationType(LocationType.STORE.getTypeName())
+                .setDocumentType(DocumentType.TRANSFER.getTypeName())
+                .setDocumentNo(documentNumber);
+
+        Response<SupplyCardData> response = supplyPlanClient.get().getSupplyCard(params);
+        List<SupplyCardShipmentsData> dataList = response.asJson().getShipments();
+        for (SupplyCardShipmentsData shipments : dataList) {
+            if (shipments.getStatus().equals("R") || shipments.getStatus().equals("C")) {
+                assertThat("isFullReceived should be not null", shipments.getIsFullReceived(), notNullValue());
+                if (shipments.getPalletPlanQuantity() - shipments.getPalletFactQuantity() == 0) {
+                    assertThat("isFullReceived is incorrect in shipment " + shipments.getShipmentId(), shipments.getIsFullReceived(), is(true));
+                } else {
+                    assertThat("isFullReceived is incorrect in shipment " + shipments.getShipmentId(), shipments.getIsFullReceived(), is(false));
+                }
+            } else {
+                assertThat("isFullReceived should be null", shipments.getIsFullReceived(), is(null));
+            }
+        }
+        for (SupplyCardShipmentsData data : dataList) {
+            List<SupplyCardProductsData> productsData = data.getProducts();
+            for (SupplyCardProductsData productData : productsData) {
+                if (productData.getExpectedQuantity() - productData.getReceivedQuantity() == 0) {
+                    assertThat("isFullReceived is incorrect for product " + productData.getLmCode(), productData.getIsFullReceived(), is(true));
+                } else {
+                    assertThat("isFullReceived is incorrect for product " + productData.getLmCode(), productData.getIsFullReceived(), is(false));
+                }
+            }
+        }
+    }
+
+    //bug
+    @Test(description = "C23185311 shipments sort by secRecDate")
+    public void testVerifySortBySecRecDate() {
+        String warehause = "922";
+        String documentNumber = "1101831359";
+
+        GetSupplyPlanCard params = new GetSupplyPlanCard()
+                .setSendingLocation(warehause)
+                .setSendingLocationType(LocationType.STORE.getTypeName())
+                .setDocumentType(DocumentType.TRANSFER.getTypeName())
+                .setDocumentNo(documentNumber);
+
+        Response<SupplyCardData> response = supplyPlanClient.get().getSupplyCard(params);
+        List<SupplyCardShipmentsData> dataList = response.asJson().getShipments();
+        List<String> datesList = new ArrayList<>();
+
+        for (SupplyCardShipmentsData data : dataList) {
+            datesList.add(data.getSecRecDate());
+        }
+        List<String> sorted = sortDates(datesList, false);
+        for (int i=0;i<dataList.size();i++) {
+            assertThat("date sorting is incorrect: date should be "+sorted.get(i)+" but date is "+dataList.get(i).getSecRecDate(),
+                    sorted.get(i),equalTo(dataList.get(i).getSecRecDate()));
+        }
+
     }
 }

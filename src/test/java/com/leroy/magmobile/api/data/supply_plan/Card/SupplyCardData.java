@@ -7,6 +7,6 @@ import java.util.List;
 @Data
 public class SupplyCardData {
     private List<SupplyCardSendingLocationData> sendingLocation;
-    private List<SupplyCardShipments> shipments;
+    private List<SupplyCardShipmentsData> shipments;
     private List<SupplyCardOtherProductsData> otherProducts;
 }
