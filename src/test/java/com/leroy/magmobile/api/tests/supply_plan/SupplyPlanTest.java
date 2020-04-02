@@ -398,9 +398,9 @@ public class SupplyPlanTest extends BaseProjectApiTest {
             datesList.add(data.getSecRecDate());
         }
         List<String> sorted = sortDates(datesList, false);
-        for (int i=0;i<dataList.size();i++) {
-            assertThat("date sorting is incorrect: date should be "+sorted.get(i)+" but date is "+dataList.get(i).getSecRecDate(),
-                    sorted.get(i),equalTo(dataList.get(i).getSecRecDate()));
+        for (int i = 0; i < dataList.size(); i++) {
+            assertThat("date sorting is incorrect: date should be " + sorted.get(i) + " but date is " + dataList.get(i).getSecRecDate(),
+                    sorted.get(i), equalTo(dataList.get(i).getSecRecDate()));
         }
 
     }

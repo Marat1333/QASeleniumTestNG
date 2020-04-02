@@ -6,9 +6,9 @@ import ru.leroymerlin.qa.core.clients.base.Method;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Collections;
 
 @Method(value = "GET", path = "/supplyPlan/supplyDetails")
 public class GetSupplyPlanDetails extends CommonSearchRequestBuilder<GetSupplyPlanDetails> {
