@@ -10,9 +10,9 @@ import java.util.Map;
 @Method(value = "POST", path = "/oauthlmru/refresh")
 public class Is4AuthRefreshResponse extends RequestBuilder<Is4AuthRefreshResponse> {
 
-    public Is4AuthRefreshResponse setRefreshToken(String token) {
+    public Is4AuthRefreshResponse setRefreshToken(String refreshToken) {
         Map<String, String> body = new HashMap<>();
-        body.put("refreshToken", token);
+        body.put("refreshToken", refreshToken);
         return formBody(body);
     }
 

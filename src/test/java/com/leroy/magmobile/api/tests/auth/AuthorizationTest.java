@@ -2,7 +2,6 @@ package com.leroy.magmobile.api.tests.auth;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.StatusCodes;
 import com.leroy.magmobile.api.clients.Is4AuthClient;
@@ -20,17 +19,19 @@ import static org.hamcrest.Matchers.*;
 public class AuthorizationTest extends BaseProjectApiTest {
 
     @Inject
-    private Provider<AuthClient> authClientProvider;
+    private AuthClient authClient;
 
     @Inject
-    private Provider<Is4AuthClient> is4AuthClientProvider;
+    private Is4AuthClient is4AuthClient;
+
+    private Is4TokenData tokenData;
 
     @Test(description = "Authorization with valid credentials")
     public void testAuthorizationWithValidCredentials() {
-        String code = authClientProvider.get().authAndGetCode(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS);
-        Response<Is4TokenData> response = is4AuthClientProvider.get().sendPostCodeRequest(code);
+        String code = authClient.authAndGetCode(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS);
+        Response<Is4TokenData> response = is4AuthClient.sendPostCodeRequest(code);
         assertThat(response, successful());
-        Is4TokenData tokenData = response.asJson();
+        tokenData = response.asJson();
         assertThat("access_token", tokenData.getAccessToken(), not(emptyOrNullString()));
         assertThat("expires_in", tokenData.getExpiresIn(), greaterThan(1));
         assertThat("refresh token", tokenData.getRefreshToken(), not(emptyOrNullString()));
@@ -51,9 +52,30 @@ public class AuthorizationTest extends BaseProjectApiTest {
     }
 
     @Test(description = "Authorization with invalid code")
-    public void testAuthorizationWithInvalidCredentials() {
-        Response<Is4TokenData> response = is4AuthClientProvider.get()
+    public void testAuthorizationWithInvalidCode() {
+        Response<Is4TokenData> response = is4AuthClient
                 .sendPostCodeRequest("a2e508c1-bdbd-4d4d-8a5d-d88155812f64");
+        assertThat("response status", response.getStatusCode(), is(StatusCodes.ST_400_NOT_AUTH));
+        JsonNode jsonNode = response.asJson(JsonNode.class);
+        assertThat("error text", jsonNode.get("error").asText(), is("invalid_grant"));
+    }
+
+    @Test(description = "Refresh token - happy path")
+    public void testRefreshTokenHappyPath() {
+        if (tokenData == null)
+            throw new IllegalArgumentException("Token hasn't been created");
+        Response<Is4TokenData> response = is4AuthClient.sendPostRefreshRequest(tokenData.getRefreshToken());
+        assertThat(response, successful());
+        Is4TokenData tokenData = response.asJson();
+        assertThat("access_token", tokenData.getAccessToken(), not(emptyOrNullString()));
+        assertThat("expires_in", tokenData.getExpiresIn(), greaterThan(1));
+        assertThat("refresh token", tokenData.getRefreshToken(), not(emptyOrNullString()));
+    }
+
+    @Test(description = "Refresh with invalid token")
+    public void testRefreshInvalidToken() {
+        Response<Is4TokenData> response = is4AuthClient
+                .sendPostRefreshRequest("a2e508c1-bdbd-4d4d-8a5d-d88155812f64");
         assertThat("response status", response.getStatusCode(), is(StatusCodes.ST_400_NOT_AUTH));
         JsonNode jsonNode = response.asJson(JsonNode.class);
         assertThat("error text", jsonNode.get("error").asText(), is("invalid_grant"));

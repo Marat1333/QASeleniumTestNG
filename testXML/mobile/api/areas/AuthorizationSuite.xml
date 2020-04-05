@@ -11,6 +11,7 @@
             <class name="com.leroy.magmobile.api.tests.auth.AuthorizationTest">
                 <methods>
                     <include name="testAuthorizationWithValidCredentials"/>
+                    <include name="testRefreshTokenHappyPath"/>
                 </methods>
             </class>
         </classes>
@@ -20,7 +21,8 @@
         <classes>
             <class name="com.leroy.magmobile.api.tests.auth.AuthorizationTest">
                 <methods>
-                    <include name="testAuthorizationWithInvalidCredentials"/>
+                    <include name="testAuthorizationWithInvalidCode"/>
+                    <include name="testRefreshInvalidToken"/>
                 </methods>
             </class>
         </classes>
