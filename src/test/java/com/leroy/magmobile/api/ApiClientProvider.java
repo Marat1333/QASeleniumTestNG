@@ -59,6 +59,8 @@ public class ApiClientProvider {
     private Provider<PickingTaskClient> pickingTaskClientProvider;
     @Inject
     private Provider<ShopClient> shopClientProvider;
+    @Inject
+    private Provider<LsAddressClient> lsAddressClientProvider;
 
     private <J extends MagMobileClient> J getClient(Provider<J> provider) {
         MagMobileClient cl = provider.get();
@@ -108,6 +110,10 @@ public class ApiClientProvider {
 
     public ShopClient getShopClient() {
         return getClient(shopClientProvider);
+    }
+
+    public LsAddressClient getLsAddressClient() {
+        return getClient(lsAddressClientProvider);
     }
 
 

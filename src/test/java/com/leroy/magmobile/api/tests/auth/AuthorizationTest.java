@@ -55,7 +55,8 @@ public class AuthorizationTest extends BaseProjectApiTest {
     public void testAuthorizationWithInvalidCode() {
         Response<Is4TokenData> response = is4AuthClient
                 .sendPostCodeRequest("a2e508c1-bdbd-4d4d-8a5d-d88155812f64");
-        assertThat("response status", response.getStatusCode(), is(StatusCodes.ST_400_NOT_AUTH));
+        assertThat("response status", response.getStatusCode(),
+                is(StatusCodes.ST_400_BAD_REQ));
         JsonNode jsonNode = response.asJson(JsonNode.class);
         assertThat("error text", jsonNode.get("error").asText(), is("invalid_grant"));
     }
@@ -76,7 +77,8 @@ public class AuthorizationTest extends BaseProjectApiTest {
     public void testRefreshInvalidToken() {
         Response<Is4TokenData> response = is4AuthClient
                 .sendPostRefreshRequest("a2e508c1-bdbd-4d4d-8a5d-d88155812f64");
-        assertThat("response status", response.getStatusCode(), is(StatusCodes.ST_400_NOT_AUTH));
+        assertThat("response status", response.getStatusCode(),
+                is(StatusCodes.ST_400_BAD_REQ));
         JsonNode jsonNode = response.asJson(JsonNode.class);
         assertThat("error text", jsonNode.get("error").asText(), is("invalid_grant"));
     }
