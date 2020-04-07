@@ -47,15 +47,52 @@ public class LsAddressClient extends MagMobileClient {
         return execute(req, StandData.class);
     }
 
+    // Scheme
+
+    public Response<SchemeData> getScheme() {
+        LsAddressSchemeRequest req = new LsAddressSchemeRequest();
+        req.setShopId(sessionData.getUserShopId());
+        req.setDepartmentId(sessionData.getUserDepartmentId());
+        return execute(req, SchemeData.class);
+    }
+
+    public Response<JsonNode> putScheme(int schemeType) {
+        LsAddressSchemePutRequest req = new LsAddressSchemePutRequest();
+        req.setShopId(sessionData.getUserShopId());
+        req.setDepartmentId(sessionData.getUserDepartmentId());
+        SchemeData schemeData = new SchemeData();
+        schemeData.setSchemeType(schemeType);
+        req.jsonBody(schemeData);
+        return execute(req, JsonNode.class);
+    }
+
     // Cells
 
-    public Response<CellData> createCell(Integer standId, CellData postData) {
+    public Response<CellData> createCell(int standId, CellData postData) {
         LsAddressCellsPostRequest req = new LsAddressCellsPostRequest();
         req.setStandId(standId);
         req.jsonBody(postData);
         return execute(req, CellData.class);
     }
 
+    public Response<CellData> getCells(int standId) {
+        LsAddressCellsRequest req = new LsAddressCellsRequest();
+        req.setStandId(standId);
+        return execute(req, CellData.class);
+    }
+
+    public Response<CellData> updateCells(int standId, CellData putData) {
+        LsAddressCellsPutRequest req = new LsAddressCellsPutRequest();
+        req.setStandId(standId);
+        req.jsonBody(putData);
+        return execute(req, CellData.class);
+    }
+
+    public Response<JsonNode> deleteCell(String cellId) {
+        LsAddressCellsDeleteRequest req = new LsAddressCellsDeleteRequest();
+        req.setCellId(cellId);
+        return execute(req, JsonNode.class);
+    }
 
     public Response<JsonNode> createCellProducts(String cellId) {
         LsAddressCellProductsPostRequest req = new LsAddressCellProductsPostRequest();
@@ -117,10 +154,16 @@ public class LsAddressClient extends MagMobileClient {
             assertThat("side", actualItem.getSide(), is(expectedItem.getSide()));
             assertThat("size", actualItem.getSize(), is(expectedItem.getSize()));
             assertThat("position", actualItem.getPosition(), is(expectedItem.getPosition()));
-            assertThat("cellsCount", actualItem.getCellsCount(),  is(expectedItem.getCellsCount()));
-            assertThat("productsCount", actualItem.getProductsCount(),  is(expectedItem.getProductsCount()));
-            assertThat("equipmentId", actualItem.getEquipmentId(),  is(expectedItem.getEquipmentId()));
+            assertThat("cellsCount", actualItem.getCellsCount(), is(expectedItem.getCellsCount()));
+            assertThat("productsCount", actualItem.getProductsCount(), is(expectedItem.getProductsCount()));
+            assertThat("equipmentId", actualItem.getEquipmentId(), is(expectedItem.getEquipmentId()));
         }
+    }
+
+    // Scheme
+    public void assertThatSchemeIsUpdated(Response<JsonNode> resp) {
+        assertThatResponseIsOk(resp);
+        assertThat("success", resp.asJson().get("success").asText(), is("true"));
     }
 
     // Cell
@@ -143,5 +186,46 @@ public class LsAddressClient extends MagMobileClient {
         return actualData;
     }
 
+    public void assertThatDataMatches(Response<CellData> resp, CellData expectedData) {
+        assertThatDataMatches(resp, expectedData, ResponseType.GET);
+    }
+
+    public void assertThatDataMatches(Response<CellData> resp, CellData expectedData, ResponseType respType) {
+        assertThatResponseIsOk(resp);
+        CellData actualData = resp.asJson();
+        assertThat("items count", actualData.getItems(), hasSize(expectedData.getItems().size()));
+        // Check main Cell id
+        if (respType.equals(ResponseType.GET)) {
+            for (CellItemData cellItemData : expectedData.getItems()) {
+                assertThat("Cell id", actualData.getStandId(), is(cellItemData.getStandId()));
+            }
+        }
+        // Check items
+        for (int i = 0; i < actualData.getItems().size(); i++) {
+            CellItemData actualItem = actualData.getItems().get(i);
+            CellItemData expectedItem = expectedData.getItems().get(i);
+            if (ResponseType.PUT.equals(respType) && expectedItem.getId() == null) {
+                assertThat("id", actualItem.getId(), not(emptyOrNullString()));
+                assertThat("code", actualItem.getCode(), not(emptyOrNullString()));
+                assertThat("productsCount", actualItem.getProductsCount(), is(0));
+                assertThat("stand id", actualItem.getStandId(), notNullValue());
+            } else {
+                assertThat("id", actualItem.getId(), is(expectedItem.getId()));
+                assertThat("code", actualItem.getCode(), is(expectedItem.getCode()));
+                assertThat("productsCount", actualItem.getProductsCount(), is(expectedItem.getProductsCount()));
+                assertThat("stand id", actualItem.getStandId(), is(expectedItem.getStandId()));
+            }
+            assertThat("shelf", actualItem.getShelf(), is(expectedItem.getShelf()));
+            assertThat("position", actualItem.getPosition(), is(expectedItem.getPosition()));
+            assertThat("type", actualItem.getType(), is(expectedItem.getType()));
+        }
+    }
+
+    public void assertThatCellIsDeleted(Response<JsonNode> resp, String deletedCellId) {
+        assertThatResponseIsOk(resp);
+        JsonNode respData = resp.asJson();
+        assertThat("item id", respData.get("items").get("items").get(0).asText(),
+                is(deletedCellId));
+    }
 
 }

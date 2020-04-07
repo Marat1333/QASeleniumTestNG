@@ -2,6 +2,7 @@ package com.leroy.magmobile.api.tests.address;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.magmobile.api.clients.LsAddressClient;
+import com.leroy.magmobile.api.clients.MagMobileClient;
 import com.leroy.magmobile.api.data.address.*;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -9,12 +10,14 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
+import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static com.leroy.core.matchers.Matchers.*;
 
 
 public class LsAddressTest extends BaseProjectApiTest {
@@ -29,6 +32,10 @@ public class LsAddressTest extends BaseProjectApiTest {
     private AlleyData alleyData;
 
     private StandData standData;
+
+    private CellData cellData;
+
+    private int schemeType;
 
     @BeforeClass
     public void setUp() {
@@ -105,7 +112,73 @@ public class LsAddressTest extends BaseProjectApiTest {
         CellItemData itemData2 = new CellItemData(3, 4, "B");
         cellData.setItems(Arrays.asList(itemData1, itemData2));
         Response<CellData> resp = lsAddressClient.createCell(standId, cellData);
-        lsAddressClient.assertThatCellIsCreatedAndGetData(resp, standId, cellData);
+        this.cellData = lsAddressClient.assertThatCellIsCreatedAndGetData(resp, standId, cellData);
+        lsAddressClient.createCell(standId, cellData);
+    }
+
+    @Test(description = "Get cells")
+    public void testGetCells() {
+        int standId = cellData.getItems().get(0).getStandId();
+        Response<CellData> resp = lsAddressClient.getCells(standId);
+        lsAddressClient.assertThatDataMatches(resp, cellData);
+    }
+
+    @Test(description = "Update cells - Add item")
+    public void testUpdateCells() {
+        int standId = cellData.getItems().get(0).getStandId();
+
+        CellItemData newCellItemData = new CellItemData();
+        newCellItemData.setType(5);
+        newCellItemData.setPosition(11);
+        newCellItemData.setShelf("C");
+        List<CellItemData> putCellItems = new ArrayList<>(cellData.getItems());
+        putCellItems.add(newCellItemData);
+
+        CellData updateCellData = new CellData();
+        updateCellData.setItems(putCellItems);
+        step("Add Item");
+        Response<CellData> resp = lsAddressClient.updateCells(standId, updateCellData);
+        cellData.addItem(newCellItemData);
+        lsAddressClient.assertThatDataMatches(resp, cellData, MagMobileClient.ResponseType.PUT);
+        cellData.updateLastItem(resp.asJson().getItems().get(2));
+        step("Send Get request and check data");
+        Response<CellData> getResp = lsAddressClient.getCells(standId);
+        lsAddressClient.assertThatDataMatches(getResp, cellData);
+    }
+
+    @Test(description = "Delete cell")
+    public void testDeleteCell() {
+        int itemIndexToRemove = 0;
+        int standId = cellData.getItems().get(0).getStandId();
+        String cellIdToRemove = cellData.getItems().get(itemIndexToRemove).getId();
+
+        Response<JsonNode> resp = lsAddressClient.deleteCell(cellIdToRemove);
+        lsAddressClient.assertThatCellIsDeleted(resp, cellIdToRemove);
+        cellData.getItems().remove(itemIndexToRemove);
+
+        step("Send Get request and check data");
+        Response<CellData> getResp = lsAddressClient.getCells(standId);
+        lsAddressClient.assertThatDataMatches(getResp, cellData);
+    }
+
+    @Test(description = "Get Scheme")
+    public void testGetScheme() {
+        Response<SchemeData> resp = lsAddressClient.getScheme();
+        assertThat(resp, successful());
+        SchemeData schemeData = resp.asJson();
+        assertThat("schemeType", schemeData.getSchemeType(), is(schemeType));
+        assertThat("navigationType", schemeData.getNavigationType(), is(greaterThan(0)));
+        assertThat("departmentId", schemeData.getDepartmentId(),
+                is(Integer.parseInt(sessionData.getUserDepartmentId())));
+        assertThat("shopId", schemeData.getShopId(),
+                is(Integer.parseInt(sessionData.getUserShopId())));
+    }
+
+    @Test(description = "Put Scheme")
+    public void testPutScheme() {
+        schemeType = new Random().nextInt(10);
+        Response<JsonNode> resp = lsAddressClient.putScheme(schemeType);
+        lsAddressClient.assertThatSchemeIsUpdated(resp);
     }
 
 }
