@@ -62,7 +62,9 @@ public abstract class BaseProjectApiTest {
         apiClientProvider.setSessionData(sessionData);
     }
 
-    protected abstract boolean isNeedAccessToken();
+    protected boolean isNeedAccessToken() {
+        return false;
+    }
 
     @BeforeMethod
     protected void baseTestBeforeMethod(Method method) throws Exception {
