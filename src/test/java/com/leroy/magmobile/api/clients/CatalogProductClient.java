@@ -38,15 +38,6 @@ public class CatalogProductClient extends MagMobileClient {
     }
 
     public Response<CatalogProductData> searchProduct(
-            String lmCode, Extend extend) {
-        GetCatalogProduct req = new GetCatalogProduct();
-        req.setLmCode(lmCode);
-        req.setShopId(sessionData.getUserShopId());
-        req.setExtend(extend.toString());
-        return execute(req, CatalogProductData.class);
-    }
-
-    public Response<CatalogProductData> searchProduct(
             String lmCode, SalesDocumentsConst.GiveAwayPoints pointOfGiveAway, Extend extend) {
         GetCatalogProduct req = new GetCatalogProduct();
         req.setLmCode(lmCode);

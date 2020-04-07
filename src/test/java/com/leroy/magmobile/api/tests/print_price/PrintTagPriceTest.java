@@ -1,6 +1,7 @@
 package com.leroy.magmobile.api.tests.print_price;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.magmobile.api.clients.CatalogProductClient;
 import com.leroy.magmobile.api.clients.PrintPriceClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
@@ -46,7 +47,10 @@ public class PrintTagPriceTest extends BaseProjectApiTest {
     private void initCatalogProductDataList(String... lmCode) {
         List<CatalogProductData> catalogProductList = new ArrayList<>();
         for (String eachLm : lmCode) {
-            Response<CatalogProductData> resp = catalogProductClient.searchProduct(eachLm);
+            CatalogProductClient.Extend extendOptions = CatalogProductClient.Extend.builder()
+                    .inventory(true).logistic(true).rating(true).build();
+            Response<CatalogProductData> resp = catalogProductClient.searchProduct(
+                    eachLm, SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR, extendOptions);
             assertThat(resp, successful());
             catalogProductList.add(resp.asJson());
         }
