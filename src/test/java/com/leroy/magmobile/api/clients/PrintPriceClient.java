@@ -1,46 +1,50 @@
 package com.leroy.magmobile.api.clients;
 
-import com.leroy.magmobile.api.data.catalog.product.ProductCardData;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.magmobile.api.data.print.*;
-import com.leroy.magmobile.api.requests.print.GetPrintersList;
-import com.leroy.magmobile.api.requests.print.PostPrintTask;
+import com.leroy.magmobile.api.requests.print.PrintDocumentsPrintersRequest;
+import com.leroy.magmobile.api.requests.print.PrintPriceTaskRequest;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+
 public class PrintPriceClient extends MagMobileClient {
-    public Response<PrintDepartmentList> getPrinterList(GetPrintersList params) {
-        return execute(params, PrintDepartmentList.class);
+
+    public Response<PrintDepartmentList> getDepartmentPrinterList() {
+        return getDepartmentPrinterList(sessionData.getUserShopId());
     }
 
-    public Response<EmptyResponse> sendPrintTask(PrintPrinterData printerData, int priceTagQuantity, List<Response<ProductCardData>> productData) {
-        List<PrintTaskProductData> printTaskProductDataList = new ArrayList<>();
-        PrintTaskProductData printTaskProductData = new PrintTaskProductData();
+    public Response<PrintDepartmentList> getDepartmentPrinterList(String shopId) {
+        PrintDocumentsPrintersRequest req = new PrintDocumentsPrintersRequest();
+        req.setShopId(shopId);
+        return execute(req, PrintDepartmentList.class);
+    }
 
-        for (int i = 0; i < productData.size(); i++) {
-            printTaskProductData.setLmCode(productData.get(i).asJson().getLmCode());
-            printTaskProductData.setBarCode(productData.get(i).asJson().getBarCode());
-            printTaskProductData.setTitle(productData.get(i).asJson().getTitle());
-            printTaskProductData.setPrice(productData.get(i).asJson().getPrice());
-            printTaskProductData.setPriceCurrency(productData.get(i).asJson().getPurchasePriceCurrency());
-            printTaskProductData.setRecommendedPrice(productData.get(i).asJson().getSalesPrice().getRecommendedPrice());
-            printTaskProductData.setSalesPrice(productData.get(i).asJson().getSalesPrice().getPrice());
-            printTaskProductData.setPriceReasonOfChange(productData.get(i).asJson().getSalesPrice().getReasonOfChange());
-            printTaskProductData.setFuturePriceFromDate(productData.get(i).asJson().getSalesPrice().getDateOfChange());
-            printTaskProductData.setPriceUnit(productData.get(i).asJson().getPriceUnit());
-            printTaskProductData.setQuantity(priceTagQuantity);
-            printTaskProductData.setSize("pricetag-small-50x40mm");
+    public Response<JsonNode> sendPrintTask(
+            String printerName, PrintTaskProductData printProductData) {
+        return sendPrintTask(printerName, Collections.singletonList(printProductData));
+    }
 
-            printTaskProductDataList.add(new PrintTaskProductData(printTaskProductData));
-        }
+    public Response<JsonNode> sendPrintTask(
+            String printerName, List<PrintTaskProductData> printProductDataList) {
         PrintTaskProductsList printTaskProductsList = new PrintTaskProductsList();
-        printTaskProductsList.setData(printTaskProductDataList);
-        PostPrintTask printTask = new PostPrintTask()
-                .setPrinterName(printerData)
-                .setShopId("20")
+        printTaskProductsList.setData(printProductDataList);
+        PrintPriceTaskRequest printTaskReq = new PrintPriceTaskRequest()
+                .setPrinterName(printerName)
+                .setShopId(sessionData.getUserShopId())
                 .jsonBody(printTaskProductsList);
 
-        return execute(printTask, EmptyResponse.class);
+        return execute(printTaskReq, JsonNode.class);
+    }
+
+    // Verifications
+
+    public void assertThatSendPrintTaskIsSuccessful(Response<JsonNode> response) {
+        assertThatResponseIsOk(response);
+        assertThat("Response body", response.asString(), emptyString());
     }
 }

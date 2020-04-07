@@ -9,7 +9,7 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 
-public class ProductCardData extends ProductItemData {
+public class CatalogProductData extends ProductItemData {
     private Integer topEMQuantity;
     private ExtStocks extStocks;
     private SalesPrice salesPrice;

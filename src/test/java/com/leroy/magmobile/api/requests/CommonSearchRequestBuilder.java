@@ -1,13 +1,8 @@
 package com.leroy.magmobile.api.requests;
 
-import ru.leroymerlin.qa.core.clients.base.RequestBuilder;
-
-public class CommonSearchRequestBuilder<J extends CommonSearchRequestBuilder<J>> extends RequestBuilder<J> {
+public class CommonSearchRequestBuilder<J extends CommonSearchRequestBuilder<J>> extends CommonLegoRequest<J> {
 
     // Header
-    public J setLdap(String val) {
-        return header("ldap", val);
-    }
 
     // Query params
 
@@ -19,11 +14,4 @@ public class CommonSearchRequestBuilder<J extends CommonSearchRequestBuilder<J>>
         return queryParam("startFrom", val);
     }
 
-    public J setShopId(String val) {
-        return queryParam("shopId", val);
-    }
-
-    public J setDepartmentId(Object val) {
-        return queryParam("departmentId", val);
-    }
 }
