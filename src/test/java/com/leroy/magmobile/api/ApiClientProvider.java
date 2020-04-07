@@ -56,6 +56,10 @@ public class ApiClientProvider {
     @Inject
     private Provider<SmsNotificationClient> smsNotificationClientProvider;
     @Inject
+    private Provider<PrintPriceClient> printPriceClientProvider;
+    @Inject
+    private Provider<CatalogProductClient> catalogProductClientProvider;
+    @Inject
     private Provider<PickingTaskClient> pickingTaskClientProvider;
     @Inject
     private Provider<ShopClient> shopClientProvider;
@@ -102,6 +106,14 @@ public class ApiClientProvider {
 
     public SmsNotificationClient getSmsNotificationClient() {
         return getClient(smsNotificationClientProvider);
+    }
+
+    public PrintPriceClient getPrintPriceClient() {
+        return getClient(printPriceClientProvider);
+    }
+
+    public CatalogProductClient getCatalogProductClient() {
+        return getClient(catalogProductClientProvider);
     }
 
     public PickingTaskClient getPickingTaskClient() {

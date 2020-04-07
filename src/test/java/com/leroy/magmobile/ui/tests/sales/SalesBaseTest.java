@@ -179,7 +179,7 @@ public class SalesBaseTest extends AppBaseSteps {
                 .shouldKeyboardVisible();
         addProductPage.shouldEditQuantityFieldIs("1,00")
                 .shouldTotalPriceIs(String.format("%.2f", Double.parseDouble(
-                        addProductPage.getPrice())));
+                        addProductPage.getPrice()))); // TODO Jenkins job failed here
 
         // Step #5
         log.step("Введите значение 20,5 количества товара");
