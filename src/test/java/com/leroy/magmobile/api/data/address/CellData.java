@@ -1,20 +1,22 @@
 package com.leroy.magmobile.api.data.address;
 
 import lombok.Data;
-
-import java.util.List;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class CellData {
+    private String id;
+    private String code;
+    private String shelf;
+    private Integer position;
+    private Integer type;
     private Integer standId;
-    private List<CellItemData> items;
+    private Integer productsCount;
 
-    public void addItem(CellItemData itemData) {
-        items.add(itemData);
-    }
-
-    public void updateLastItem(CellItemData itemData) {
-        items.remove(items.size()-1);
-        items.add(itemData);
+    public CellData(int position, int type, String shelf) {
+        this.position = position;
+        this.type = type;
+        this.shelf = shelf;
     }
 }
