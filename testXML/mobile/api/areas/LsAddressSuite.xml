@@ -32,4 +32,18 @@
         </classes>
     </test>
 
+    <test name="Ls Address - Cell products">
+        <classes>
+            <class name="com.leroy.magmobile.api.tests.address.LsAddressTest">
+                <methods>
+                    <include name="testCreateCellProducts"/>
+                    <include name="testGetCellProducts"/>
+                    <include name="testUpdateCellProducts"/>
+                    <include name="testMoveCellProducts"/>
+                    <include name="testDeleteCellProducts"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
 </suite>
