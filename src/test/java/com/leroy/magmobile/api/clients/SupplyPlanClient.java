@@ -16,7 +16,7 @@ public class SupplyPlanClient extends MagMobileClient {
         return execute(params, ShipmentDataList.class);
     }
 
-    public Response<TotalPalletDataList> getTotalPallet(GetSupplyPlanTotal params) {
+    public Response<TotalPalletDataList> getTotalPallets(GetSupplyPlanTotal params) {
         return execute(params, TotalPalletDataList.class);
     }
 
@@ -24,7 +24,7 @@ public class SupplyPlanClient extends MagMobileClient {
         return execute(params, SupplyCardData.class);
     }
 
-    public Response<SupplierDataList> getSupplier(GetSupplyPlanSuppliers params) {
+    public Response<SupplierDataList> getSuppliers(GetSupplyPlanSuppliers params) {
         return execute(params, SupplierDataList.class);
     }
 }
