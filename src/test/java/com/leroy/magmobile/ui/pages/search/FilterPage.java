@@ -280,11 +280,11 @@ public class FilterPage extends CommonMagMobilePage {
                 break;
             case BEST_PRICE:
                 mainScrollView.scrollToEnd();
-                bestPrice.click();
+                bestPrice.doubleClick();
                 break;
             case LIMITED_OFFER:
                 mainScrollView.scrollToEnd();
-                limitedOffer.click();
+                limitedOffer.doubleClick();
                 break;
             case AVS:
                 mainScrollView.scrollToEnd();
