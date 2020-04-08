@@ -3,10 +3,17 @@ package com.leroy.magmobile.ui.tests;
 import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.api.Module;
+import com.leroy.core.api.ThreadApiClient;
 import com.leroy.magmobile.api.ApiClientProvider;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
-import com.leroy.magmobile.ui.models.search.FiltersData;
+import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
+import com.leroy.magmobile.api.data.catalog.ServiceItemDataList;
+import com.leroy.magmobile.api.enums.CatalogSearchFields;
+import com.leroy.magmobile.api.enums.SortingOrder;
+import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
+import com.leroy.magmobile.api.requests.catalog_search.GetCatalogServicesSearch;
 import com.leroy.magmobile.ui.AppBaseSteps;
+import com.leroy.magmobile.ui.models.search.FiltersData;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
 import com.leroy.magmobile.ui.pages.sales.PricesAndQuantityPage;
 import com.leroy.magmobile.ui.pages.sales.ProductCardPage;
@@ -18,14 +25,8 @@ import com.leroy.magmobile.ui.pages.search.NomenclatureSearchPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.search.SuppliersSearchPage;
 import com.leroy.magmobile.ui.pages.search.modal.SortPage;
-import com.leroy.core.api.ThreadApiClient;
-import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
-import com.leroy.magmobile.api.data.catalog.ServiceItemDataList;
-import com.leroy.magmobile.api.enums.CatalogSearchFields;
-import com.leroy.magmobile.api.enums.SortingOrder;
-import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
-import com.leroy.magmobile.api.requests.catalog_search.GetCatalogServicesSearch;
 import io.qameta.allure.Issue;
+import org.apache.tools.ant.taskdefs.Get;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
@@ -55,7 +56,8 @@ public class SearchTest extends AppBaseSteps {
         return new GetCatalogSearch()
                 .setPageSize(3)
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .setStartFrom(1);
+                .setStartFrom(1)
+                .setHasAvailableStock(true);
     }
 
     private HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> sendRequestsSearchProductsBy(
@@ -90,7 +92,7 @@ public class SearchTest extends AppBaseSteps {
     public void testC3200996() throws Exception {
         String lmCode = "10008698";
         String searchContext = "Тепломир радиатор";
-        String shortSearchPhrase="12";
+        String shortSearchPhrase = "12";
         String barCode = "5902120110575";
         String shortLmCode = "1234";
         String shortBarCode = "590212011";
@@ -101,22 +103,15 @@ public class SearchTest extends AppBaseSteps {
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setByLmCode(lmCode);
 
-        GetCatalogSearch byBarCodeParams = new GetCatalogSearch()
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+        GetCatalogSearch byBarCodeParams = buildDefaultCatalogSearchParams()
                 .setByBarCode(barCode);
 
-        GetCatalogSearch byShortLmCodeParams = new GetCatalogSearch()
-                .setPageSize(3)
+        GetCatalogSearch byShortLmCodeParams = buildDefaultCatalogSearchParams()
                 .setDepartmentId(departmentId)
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .setStartFrom(1)
                 .setByLmCode(shortLmCode);
 
-        GetCatalogSearch byShortBarCodeParams = new GetCatalogSearch()
-                .setPageSize(3)
+        GetCatalogSearch byShortBarCodeParams = buildDefaultCatalogSearchParams()
                 .setDepartmentId(departmentId)
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .setStartFrom(1)
                 .setByBarCode(shortBarCode);
 
         HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> apiThreads =
@@ -187,6 +182,7 @@ public class SearchTest extends AppBaseSteps {
         // Step 10
         log.step("Ввести в поисковую строку положительное число длинной >8 символов (" + shortBarCode + ") и инициировать поиск");
         searchProductPage.enterTextInSearchFieldAndSubmit(shortBarCode);
+        productCardPage.returnBack();
         ProductItemDataList d4 = apiThreads.get(3).getData();
         searchProductPage.shouldCatalogResponseEqualsContent(
                 d4, SearchProductPage.CardType.COMMON, entityCount);
@@ -205,25 +201,36 @@ public class SearchTest extends AppBaseSteps {
                 .setGamma(GAMMA)
                 .setDepartmentId(departmentId);
 
-        GetCatalogSearch topParam = buildDefaultCatalogSearchParams()
+        GetCatalogSearch topParam = new GetCatalogSearch()
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setStartFrom(1)
+                .setPageSize(entityCount)
                 .setTop(TOP)
                 .setDepartmentId(departmentId);
 
         GetCatalogSearch hasAvailableStockParam = buildDefaultCatalogSearchParams()
-                .setHasAvailableStock(true)
                 .setDepartmentId(departmentId);
 
-        GetCatalogSearch orderedProductTypeParam = buildDefaultCatalogSearchParams()
+        GetCatalogSearch orderedProductTypeParam = new GetCatalogSearch()
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setStartFrom(1)
+                .setPageSize(entityCount)
                 .setDepartmentId(departmentId)
                 .setOrderType("MBO");
 
-        GetCatalogSearch avsParam = buildDefaultCatalogSearchParams()
+        GetCatalogSearch avsParam = new GetCatalogSearch()
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setStartFrom(1)
+                .setPageSize(entityCount)
                 .setDepartmentId(departmentId)
                 .setAvsDate(String.format("between%%7C%s-0%s-%sT00:00:00.000Z%%7C%s-0%s-%sT00:00:00.000Z",
                         avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth(),
                         avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth() + 1));
 
-        GetCatalogSearch supplierIdParam = buildDefaultCatalogSearchParams()
+        GetCatalogSearch supplierIdParam = new GetCatalogSearch()
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setStartFrom(1)
+                .setPageSize(entityCount)
                 .setDepartmentId(departmentId)
                 .setSupId(supplierSearchContext);
 
@@ -509,6 +516,10 @@ public class SearchTest extends AppBaseSteps {
         int countOfCheckedProducts = 3;
         MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
         SearchProductPage searchProductPage = mainProductAndServicesPage.clickSearchBar(false);
+        NomenclatureSearchPage nomenclatureSearchPage = searchProductPage.goToNomenclatureWindow();
+        nomenclatureSearchPage.returnBackNTimes(1);
+        nomenclatureSearchPage.choseDepartmentId("0" + EnvConstants.BASIC_USER_DEPARTMENT_ID, "1505", null, null);
+        nomenclatureSearchPage.clickShowAllProductsBtn();
 
         // Step 1
         log.step("Раскрыть модальное окно сортировки");
@@ -547,34 +558,22 @@ public class SearchTest extends AppBaseSteps {
         String subClassId = "0020";
         int entityCount = 3;
 
-        GetCatalogSearch subclassParams = new GetCatalogSearch()
+        GetCatalogSearch subclassParams = buildDefaultCatalogSearchParams()
                 .setDepartmentId(dept.replaceAll("^0+", ""))
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .setStartFrom(1)
-                .setPageSize(3)
                 .setSubDepartmentId(subDept.replaceAll("^0+", ""))
                 .setClassId(classId.replaceAll("^0+", ""))
                 .setSubclassId(subClassId.replaceAll("^0+", ""));
 
-        GetCatalogSearch classParams = new GetCatalogSearch()
+        GetCatalogSearch classParams = buildDefaultCatalogSearchParams()
                 .setDepartmentId(dept.replaceAll("^0+", ""))
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .setStartFrom(1)
-                .setPageSize(3)
                 .setSubDepartmentId(subDept.replaceAll("^0+", ""))
                 .setClassId(classId.replaceAll("^0+", ""));
 
-        GetCatalogSearch subdepartmentParams = new GetCatalogSearch()
+        GetCatalogSearch subdepartmentParams = buildDefaultCatalogSearchParams()
                 .setDepartmentId(dept.replaceAll("^0+", ""))
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .setStartFrom(1)
-                .setPageSize(3)
                 .setSubDepartmentId(subDept.replaceAll("^0+", ""));
 
-        GetCatalogSearch departmentParams = new GetCatalogSearch()
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .setStartFrom(1)
-                .setPageSize(3)
+        GetCatalogSearch departmentParams = buildDefaultCatalogSearchParams()
                 .setDepartmentId(dept.replaceAll("^0+", ""));
 
         HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> apiThreads =
@@ -704,16 +703,16 @@ public class SearchTest extends AppBaseSteps {
         SearchProductPage searchProductPage = mainProductAndServicesPage.clickSearchBar(true);
 
         // Step 1
-        log.step("Введите неполное название или неполный ЛМ код товара");
-        searchProductPage.enterTextInSearchFieldAndSubmit(searchCriterion);
-        searchProductPage.verifyClearTextInputBtnIsVisible();
-
-        // Step 2
         log.step("Выбрать подотдел в номенклатуре");
         NomenclatureSearchPage nomenclatureSearchPage = searchProductPage.goToNomenclatureWindow();
         nomenclatureSearchPage.returnBackNTimes(1);
         nomenclatureSearchPage.choseDepartmentId(dept, subDept, null, null);
         nomenclatureSearchPage.clickShowAllProductsBtn();
+
+        // Step 2
+        log.step("Введите неполное название или неполный ЛМ код товара");
+        searchProductPage.enterTextInSearchFieldAndSubmit(searchCriterion);
+        searchProductPage.verifyClearTextInputBtnIsVisible();
 
         // Step 3
         log.step("Выбрать отличный от дефолтного способ сортировки");
@@ -724,6 +723,7 @@ public class SearchTest extends AppBaseSteps {
         log.step("Выбрать любой фильтр на странице выбора фильтров");
         FilterPage myShopFilterPage = searchProductPage.goToFilterPage();
         myShopFilterPage.choseGammaFilter(FilterPage.GAMMA + " " + GAMMA);
+        myShopFilterPage.choseCheckBoxFilter(FilterPage.HAS_AVAILABLE_STOCK);
         myShopFilterPage.applyChosenFilters();
 
         // Step 5
@@ -741,18 +741,12 @@ public class SearchTest extends AppBaseSteps {
         final String SECOND_SUPPLIER_NAME = "САЗИ";
         final String DEPT_ID = "1";
 
-        GetCatalogSearch supplierIdParam = new GetCatalogSearch()
+        GetCatalogSearch supplierIdParam = buildDefaultCatalogSearchParams()
                 .setDepartmentId(DEPT_ID)
-                .setPageSize(3)
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .setStartFrom(1)
                 .setSupId(FIRST_SUPPLIER_CODE + "," + SECOND_SUPPLIER_CODE);
 
-        GetCatalogSearch defaultSearchParam = new GetCatalogSearch()
-                .setDepartmentId(DEPT_ID)
-                .setPageSize(3)
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .setStartFrom(1);
+        GetCatalogSearch defaultSearchParam = buildDefaultCatalogSearchParams()
+                .setDepartmentId(DEPT_ID);
 
         HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> apiThreads =
                 sendRequestsSearchProductsBy(supplierIdParam, defaultSearchParam);
@@ -895,6 +889,7 @@ public class SearchTest extends AppBaseSteps {
         // Step 5
         log.step("Выполнить поиск услуги по неполному наименованию");
         searchProductPage.enterTextInSearchFieldAndSubmit(SERVICE_SHORT_NAME);
+        addServicePage.returnBack();
         ServiceItemDataList shortNameServicesResponce = apiThreads.get(4).getData();
         searchProductPage.shouldServicesResponceEqualsContent(shortNameServicesResponce, 1);
         searchProductPage.shouldCardsContainText(SERVICE_SHORT_NAME, SearchProductPage.CardType.SERVICE, 1);
@@ -925,7 +920,11 @@ public class SearchTest extends AppBaseSteps {
         final String GAMMA = "B";
         int entityCount = 3;
 
-        GetCatalogSearch defaultParams = buildDefaultCatalogSearchParams().setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);
+        GetCatalogSearch defaultParams = new GetCatalogSearch()
+                .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
+                .setPageSize(entityCount)
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setStartFrom(1);
         HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> apiThreads =
                 sendRequestsSearchProductsBy(defaultParams);
 
@@ -1038,7 +1037,7 @@ public class SearchTest extends AppBaseSteps {
         log.step("Перейти на страницу поиска");
         mainProductAndServicesPage.clickSearchBar(true);
         searchProductPage.verifyRequiredElements()
-                .shouldFilterCounterEquals(0)
+                .shouldFilterCounterEquals(1)
                 .shouldSelectedNomenclatureIs(EnvConstants.BASIC_USER_DEPARTMENT_ID, false);
 
         // Step 9
@@ -1060,8 +1059,8 @@ public class SearchTest extends AppBaseSteps {
         final String DEPT_ID = EnvConstants.BASIC_USER_DEPARTMENT_ID;
 
         GetCatalogSearch avsParam = new GetCatalogSearch()
-                .setPageSize(3)
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setPageSize(3)
                 .setStartFrom(1)
                 .setAvsDate(String.format("between%%7C%s-0%s-0%sT00:00:00.000Z%%7C%s-0%s-0%sT00:00:00.000Z",
                         avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth(),
@@ -1069,8 +1068,8 @@ public class SearchTest extends AppBaseSteps {
                 .setDepartmentId(DEPT_ID);
 
         GetCatalogSearch avsNeqNullParam = new GetCatalogSearch()
-                .setPageSize(3)
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setPageSize(3)
                 .setStartFrom(1)
                 .setAvsDate("neq|null")
                 .setDepartmentId(DEPT_ID);
@@ -1086,6 +1085,7 @@ public class SearchTest extends AppBaseSteps {
         // Step 1
         log.step("Выбрать любую дату по нажатию на поле \"Дата AVS\"");
         myShopFilterPage.clickShowAllFiltersBtn();
+        myShopFilterPage.choseCheckBoxFilter(FilterPage.HAS_AVAILABLE_STOCK);
         myShopFilterPage.choseAvsDate(avsDate);
         myShopFilterPage.shouldAvsDateIsCorrect(avsDate);
         myShopFilterPage.shouldClearAvsDateBtnIsVisible();
@@ -1129,10 +1129,7 @@ public class SearchTest extends AppBaseSteps {
         final String GAMMA = "S";
         final String DEPT_ID = EnvConstants.BASIC_USER_DEPARTMENT_ID;
 
-        GetCatalogSearch myShopFilterParam = new GetCatalogSearch()
-                .setPageSize(3)
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .setStartFrom(1)
+        GetCatalogSearch myShopFilterParam = buildDefaultCatalogSearchParams()
                 .setGamma(GAMMA)
                 .setTop(TOP)
                 .setSupId(SUPPLIER_CODE)
@@ -1236,7 +1233,7 @@ public class SearchTest extends AppBaseSteps {
         // Step 2
         log.step("Применить фильтры");
         filterPage.applyChosenFilters();
-        searchProductPage.shouldFilterCounterEquals(4);
+        searchProductPage.shouldFilterCounterEquals(5);
 
         // Step 3
         log.step("Перейти на страницу фильтров и переключится на группу фильтров \"Вся гамма ЛМ\"");
@@ -1256,32 +1253,26 @@ public class SearchTest extends AppBaseSteps {
 
         GetCatalogSearch allGammaLmDescParams = new GetCatalogSearch()
                 .setPageSize(3)
+                .setStartFrom(1)
                 .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
                 .setSortBy(CatalogSearchFields.NAME, SortingOrder.ASC)
-                .setStartFrom(1)
                 .setGamma(GAMMA);
 
         GetCatalogSearch allGammaLmAscParams = new GetCatalogSearch()
+                .setStartFrom(1)
                 .setPageSize(3)
                 .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.ASC)
-                .setStartFrom(1)
                 .setGamma(GAMMA);
 
-        GetCatalogSearch myShopLmAscParams = new GetCatalogSearch()
-                .setPageSize(3)
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+        GetCatalogSearch myShopLmAscParams = buildDefaultCatalogSearchParams()
                 .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.ASC)
-                .setStartFrom(1)
                 .setGamma(GAMMA);
 
-        GetCatalogSearch myShopStockAscParams = new GetCatalogSearch()
-                .setPageSize(3)
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+        GetCatalogSearch myShopStockAscParams = buildDefaultCatalogSearchParams()
                 .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
                 .setSortBy(CatalogSearchFields.NAME, SortingOrder.ASC)
-                .setStartFrom(1)
                 .setGamma(GAMMA);
 
         HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> apiThreads =
