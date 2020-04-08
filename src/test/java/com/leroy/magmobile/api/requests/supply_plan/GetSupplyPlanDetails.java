@@ -18,7 +18,6 @@ public class GetSupplyPlanDetails extends CommonSearchRequestBuilder<GetSupplyPl
     }
 
     public GetSupplyPlanDetails setDate(LocalDate... dates) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         StringBuilder datesAsString = new StringBuilder();
         List<LocalDate> datesList = new ArrayList<>();
         Collections.addAll(datesList, dates);

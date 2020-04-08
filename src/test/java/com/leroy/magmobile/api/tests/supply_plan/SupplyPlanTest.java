@@ -40,6 +40,8 @@ public class SupplyPlanTest extends BaseProjectApiTest {
     @Inject
     Provider<SupplyPlanClient> supplyPlanClient;
 
+    private final String SUPPLIER = "1001802015";
+
     private enum LocationType {
         SUPPLIER("SUPP"),
         WAREHAUSE("WH"),
@@ -154,7 +156,9 @@ public class SupplyPlanTest extends BaseProjectApiTest {
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID);
 
         Response<TotalPalletDataList> response = supplyPlanClient.get().getTotalPallet(params);
+        isResponseOk(response);
         List<TotalPalletData> dataList = response.asJson().getItems();
+        assertThat(dataList.size(), greaterThan(0));
         for (TotalPalletData data : dataList) {
             assertThat("date - " + date.toString() + " not matches with " + data.getDate(), date, equalTo(data.getDate()));
         }
@@ -174,7 +178,9 @@ public class SupplyPlanTest extends BaseProjectApiTest {
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID);
 
         Response<TotalPalletDataList> response = supplyPlanClient.get().getTotalPallet(params);
+        isResponseOk(response);
         List<TotalPalletData> dataList = response.asJson().getItems();
+        assertThat(dataList.size(), greaterThan(0));
         int condition = 0;
         for (TotalPalletData data : dataList) {
             for (LocalDate date : dateList) {
@@ -195,7 +201,9 @@ public class SupplyPlanTest extends BaseProjectApiTest {
                 .setDepartmentId(1);
 
         Response<SupplierDataList> response = supplyPlanClient.get().getSupplier(params);
+        isResponseOk(response);
         List<SupplierData> dataList = response.asJson().getItems();
+        assertThat(dataList.size(), greaterThan(0));
         for (SupplierData data : dataList) {
             assertThat("supplier name - " + data.getName() + " does not contains " + supplierName, data.getName().toLowerCase(), containsString(supplierName.toLowerCase()));
         }
@@ -210,7 +218,9 @@ public class SupplyPlanTest extends BaseProjectApiTest {
                 .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);
 
         Response<SupplierDataList> response = supplyPlanClient.get().getSupplier(params);
+        isResponseOk(response);
         List<SupplierData> dataList = response.asJson().getItems();
+        assertThat(dataList.size(), greaterThan(0));
         for (SupplierData data : dataList) {
             assertThat("supplier code - " + data.getSupplierId() + " does not contains " + supplierCode, data.getSupplierId().toLowerCase(), containsString(supplierCode.toLowerCase()));
         }
@@ -226,7 +236,9 @@ public class SupplyPlanTest extends BaseProjectApiTest {
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID);
 
         Response<ShipmentDataList> response = supplyPlanClient.get().getShipments(params);
+        isResponseOk(response);
         List<ShipmentData> dataList = response.asJson().getItems();
+        assertThat(dataList.size(), greaterThan(0));
         for (ShipmentData data : dataList) {
             assertThat("shipment date - " + data.getDate() + " does not matches " + testDate.toString(), data.getDate(), equalTo(testDate));
         }
@@ -235,56 +247,59 @@ public class SupplyPlanTest extends BaseProjectApiTest {
     @Test(description = "C23184834 get shipments by supplier (one date)")
     public void testGetShipmentsBySupplier() {
         LocalDate testDate = LocalDate.of(2020, 3, 31);
-        String supplier = "1001802015";
 
         GetSupplyPlanDetails params = new GetSupplyPlanDetails()
                 .setDate(testDate)
-                .setSendingLocations(supplier)
+                .setSendingLocations(SUPPLIER)
                 .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
                 .setShopId("35");
 
         Response<ShipmentDataList> response = supplyPlanClient.get().getShipments(params);
+        isResponseOk(response);
         List<ShipmentData> dataList = response.asJson().getItems();
+        assertThat(dataList.size(), greaterThan(0));
         for (ShipmentData data : dataList) {
             assertThat("shipment date - " + data.getDate() + " does not matches " + testDate.toString(), data.getDate(), equalTo(testDate));
-            assertThat("supplier - " + data.getSendingLocation() + " does not matches " + supplier, data.getSendingLocation(), equalTo(supplier));
+            assertThat("supplier - " + data.getSendingLocation() + " does not matches " + SUPPLIER, data.getSendingLocation(), equalTo(SUPPLIER));
         }
     }
 
     @Test(description = "C23184835 get shipments by supplier (week)")
     public void testGetShipmentsBySupplierFewDays() {
         LocalDate testDate = LocalDate.of(2020, 3, 31);
-        String supplier = "1001802015";
         List<LocalDate> daysList = getCalendarDates(6, testDate);
 
         GetSupplyPlanDetails params = new GetSupplyPlanDetails()
                 .setDate(daysList)
-                .setSendingLocations(supplier)
+                .setSendingLocations(SUPPLIER)
                 .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
                 .setShopId("35");
 
         Response<ShipmentDataList> response = supplyPlanClient.get().getShipments(params);
+        isResponseOk(response);
         List<ShipmentData> dataList = response.asJson().getItems();
+        assertThat(dataList.size(), greaterThan(0));
         for (ShipmentData data : dataList) {
             assertThat("shipment date - " + data.getDate() + " not in range of " + daysList.toString(), data.getDate(), in(daysList));
-            assertThat("supplier - " + data.getSendingLocation() + " does not matches " + supplier, data.getSendingLocation(), equalTo(supplier));
+            assertThat("supplier - " + data.getSendingLocation() + " does not matches " + SUPPLIER, data.getSendingLocation(), equalTo(SUPPLIER));
         }
     }
 
     @Test(description = "C23185243 isFullReceived flag correct")
     public void testVerifyIsFullReceivedFlag() {
         LocalDate testDate = LocalDate.of(2020, 3, 31);
-        String supplier = "1001802015";
         List<LocalDate> daysList = getCalendarDates(6, testDate);
 
         GetSupplyPlanDetails params = new GetSupplyPlanDetails()
                 .setDate(daysList)
-                .setSendingLocations(supplier)
+                .setSendingLocations(SUPPLIER)
                 .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
                 .setShopId("35");
 
         Response<ShipmentDataList> response = supplyPlanClient.get().getShipments(params);
+        isResponseOk(response);
         List<ShipmentData> dataList = response.asJson().getItems();
+        assertThat(dataList.size(), greaterThan(0));
         for (ShipmentData data : dataList) {
             if (data.getRowType().equals("FR_APPOINTMENT")) {
                 assertThat("isFullReceived should be not null", data.getIsFullReceived(), notNullValue());
@@ -300,17 +315,18 @@ public class SupplyPlanTest extends BaseProjectApiTest {
     @Test(description = "C23185314 shipments sorted by date & time")
     public void testVerifySortByDateAndTime() {
         LocalDate testDate = LocalDate.of(2020, 3, 31);
-        String supplier = "1001802015";
         List<LocalDate> daysList = getCalendarDates(6, testDate);
 
         GetSupplyPlanDetails params = new GetSupplyPlanDetails()
                 .setDate(daysList)
-                .setSendingLocations(supplier)
+                .setSendingLocations(SUPPLIER)
                 .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
                 .setShopId("35");
 
         Response<ShipmentDataList> response = supplyPlanClient.get().getShipments(params);
+        isResponseOk(response);
         List<ShipmentData> dataList = response.asJson().getItems();
+        assertThat(dataList.size(), greaterThan(0));
         verifyDataIsSortedByDate(dataList);
     }
 
@@ -330,7 +346,9 @@ public class SupplyPlanTest extends BaseProjectApiTest {
                 .setDocumentNo(documentNumber);
 
         Response<SupplyCardData> response = supplyPlanClient.get().getSupplyCard(params);
+        isResponseOk(response);
         List<SupplyCardSendingLocationData> dataList = response.asJson().getSendingLocation();
+        assertThat(dataList.size(), greaterThan(0));
         for (SupplyCardSendingLocationData data : dataList) {
             assertThat("store/warehause phone is " + data.getContactPhone() + " not mathes " + defaultContactPhone,
                     data.getContactPhone(), equalTo(defaultContactPhone));
@@ -353,7 +371,9 @@ public class SupplyPlanTest extends BaseProjectApiTest {
                 .setDocumentNo(documentNumber);
 
         Response<SupplyCardData> response = supplyPlanClient.get().getSupplyCard(params);
+        isResponseOk(response);
         List<SupplyCardShipmentsData> dataList = response.asJson().getShipments();
+        assertThat(dataList.size(), greaterThan(0));
         for (SupplyCardShipmentsData shipments : dataList) {
             if (shipments.getStatus().equals("R") || shipments.getStatus().equals("C")) {
                 assertThat("isFullReceived should be not null", shipments.getIsFullReceived(), notNullValue());
@@ -391,7 +411,9 @@ public class SupplyPlanTest extends BaseProjectApiTest {
                 .setDocumentNo(documentNumber);
 
         Response<SupplyCardData> response = supplyPlanClient.get().getSupplyCard(params);
+        isResponseOk(response);
         List<SupplyCardShipmentsData> dataList = response.asJson().getShipments();
+        assertThat(dataList.size(), greaterThan(0));
         List<String> datesList = new ArrayList<>();
 
         for (SupplyCardShipmentsData data : dataList) {
