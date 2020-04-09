@@ -6,6 +6,8 @@ import com.leroy.magmobile.api.data.address.cellproducts.*;
 import com.leroy.magmobile.api.requests.address.*;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
+import java.util.List;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -93,6 +95,13 @@ public class LsAddressClient extends MagMobileClient {
         LsAddressCellsDeleteRequest req = new LsAddressCellsDeleteRequest();
         req.setCellId(cellId);
         return execute(req, JsonNode.class);
+    }
+
+    public Response<ProductCellDataList> searchProductCells(String lmCode) {
+        LsAddressCellSearchRequest req = new LsAddressCellSearchRequest();
+        req.setShopId(sessionData.getUserShopId());
+        req.setLmCode(lmCode);
+        return execute(req, ProductCellDataList.class);
     }
 
     // Cell Products
@@ -304,6 +313,12 @@ public class LsAddressClient extends MagMobileClient {
         assertThat("Cell Product - quantity", actualRespData.getQuantity(), equalTo(expectedData.getQuantity()));
         assertThat("Cell Product - lm code", actualRespData.getLmCode(), equalTo(expectedData.getLmCode()));
         // to be continued if necessary
+    }
+
+    public void assertThatDataMatches(Response<ProductCellDataList> resp, List<ProductCellData> expectedData) {
+        assertThatResponseIsOk(resp);
+        ProductCellDataList actualRespData = resp.asJson();
+        assertThat("Ls Address Cells", actualRespData.getItems(), equalTo(expectedData));
     }
 
     public void assertThatCellProductsIsDeleted(Response<JsonNode> resp, String deletedCellId) {

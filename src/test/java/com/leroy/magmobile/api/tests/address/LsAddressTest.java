@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.magmobile.api.clients.LsAddressClient;
 import com.leroy.magmobile.api.clients.MagMobileClient;
 import com.leroy.magmobile.api.data.address.*;
-import com.leroy.magmobile.api.data.address.cellproducts.CellProductData;
-import com.leroy.magmobile.api.data.address.cellproducts.CellProductDataList;
-import com.leroy.magmobile.api.data.address.cellproducts.ReqCellProductData;
-import com.leroy.magmobile.api.data.address.cellproducts.ReqCellProductDataList;
+import com.leroy.magmobile.api.data.address.cellproducts.*;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.BeforeClass;
@@ -261,6 +258,20 @@ public class LsAddressTest extends BaseProjectApiTest {
         step("Send get request and check data");
         Response<CellProductDataList> getResponse = lsAddressClient.getCellProducts(cellId);
         lsAddressClient.assertThatDataMatches(getResponse, cellProductDataList);
+    }
+
+    @Test(description = "Search cells")
+    public void testSearchCells() {
+        CellProductData cellProductData = cellProductDataList.getItems().get(0);
+        String lmCode = cellProductData.getLmCode();
+
+        List<ProductCellData> expectedSearchData = cellProductData.getLsAddressCells();
+        for (ProductCellData productCellData : expectedSearchData) {
+            productCellData.setQuantity(0);
+        }
+
+        Response<ProductCellDataList> resp = lsAddressClient.searchProductCells(lmCode);
+        lsAddressClient.assertThatDataMatches(resp, expectedSearchData);
     }
 
     @Test(description = "Get Scheme")
