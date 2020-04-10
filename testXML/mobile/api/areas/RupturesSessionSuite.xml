@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="API Ruptures Sessions Suite" parallel="tests">
+
+    <listeners>
+        <listener class-name="com.leroy.core.listeners.TestRailListener"/>
+    </listeners>
+
+    <test name="Rupture session">
+        <classes>
+            <class name="com.leroy.magmobile.api.tests.ruptures.RupturesSessionTest">
+                <methods>
+                    <include name="testCreateRuptureSessionProduct"/>
+                    <include name="testUpdateRuptureSessionProduct"/>
+                    <include name="testActionRuptureSessionProduct"/>
+                    <include name="testSearchForRuptureSessionProducts"/>
+                    <include name="testDeleteRuptureSessionProducts"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+
+</suite>

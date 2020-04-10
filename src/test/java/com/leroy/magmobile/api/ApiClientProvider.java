@@ -65,6 +65,8 @@ public class ApiClientProvider {
     private Provider<ShopClient> shopClientProvider;
     @Inject
     private Provider<LsAddressClient> lsAddressClientProvider;
+    @Inject
+    private Provider<RupturesClient> rupturesClientProvider;
 
     private <J extends MagMobileClient> J getClient(Provider<J> provider) {
         MagMobileClient cl = provider.get();
@@ -126,6 +128,10 @@ public class ApiClientProvider {
 
     public LsAddressClient getLsAddressClient() {
         return getClient(lsAddressClientProvider);
+    }
+
+    public RupturesClient getRupturesClient() {
+        return getClient(rupturesClientProvider);
     }
 
 
