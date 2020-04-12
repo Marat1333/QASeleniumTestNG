@@ -2,7 +2,6 @@ package com.leroy.magmobile.api.tests.supply_plan;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.leroy.constants.EnvConstants;
 import com.leroy.magmobile.api.clients.SupplyPlanClient;
 import com.leroy.magmobile.api.data.supply_plan.Card.SupplyCardData;
 import com.leroy.magmobile.api.data.supply_plan.Card.SupplyCardProductsData;
@@ -19,22 +18,27 @@ import com.leroy.magmobile.api.requests.supply_plan.GetSupplyPlanDetails;
 import com.leroy.magmobile.api.requests.supply_plan.GetSupplyPlanSuppliers;
 import com.leroy.magmobile.api.requests.supply_plan.GetSupplyPlanTotal;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class SupplyPlanTest extends BaseProjectApiTest {
 
-    @Override
-    protected boolean isNeedAccessToken() {
-        return false;
+    @BeforeClass
+    public void setUp() {
+        sessionData.setUserShopId("35");
+        sessionData.setUserDepartmentId("15");
     }
 
     @Inject
@@ -44,7 +48,7 @@ public class SupplyPlanTest extends BaseProjectApiTest {
 
     private enum LocationType {
         SUPPLIER("SUPP"),
-        WAREHAUSE("WH"),
+        WAREHOUSE("WH"),
         STORE("ST");
 
         private String typeName;
@@ -146,15 +150,16 @@ public class SupplyPlanTest extends BaseProjectApiTest {
 
         GetSupplyPlanTotal params = new GetSupplyPlanTotal()
                 .setDate(date)
-                .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID);
+                .setDepartmentId(sessionData.getUserDepartmentId())
+                .setShopId(sessionData.getUserShopId());
 
         Response<TotalPalletDataList> response = supplyPlanClient.get().getTotalPallets(params);
         isResponseOk(response);
         List<TotalPalletData> dataList = response.asJson().getItems();
         assertThat(dataList.size(), greaterThan(0));
         for (TotalPalletData data : dataList) {
-            assertThat("date - " + date.toString() + " not matches with " + data.getDate(), date, equalTo(data.getDate()));
+            assertThat("date - " + date.toString() + " not matches with " + data.getDate(), date,
+                    equalTo(data.getDate()));
         }
     }
 
@@ -168,15 +173,16 @@ public class SupplyPlanTest extends BaseProjectApiTest {
 
         GetSupplyPlanTotal params = new GetSupplyPlanTotal()
                 .setDate(testDate, testDate1)
-                .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID);
+                .setDepartmentId(sessionData.getUserDepartmentId())
+                .setShopId(sessionData.getUserShopId());
 
         Response<TotalPalletDataList> response = supplyPlanClient.get().getTotalPallets(params);
         isResponseOk(response);
         List<TotalPalletData> dataList = response.asJson().getItems();
         assertThat(dataList.size(), greaterThan(0));
         for (TotalPalletData data : dataList) {
-            assertThat("test data date - not matches with " + data.getDate(), data.getDate(), oneOf(dateList.toArray()));
+            assertThat("test data date - not matches with " + data.getDate(), data.getDate(),
+                    oneOf(dateList.toArray()));
         }
     }
 
@@ -193,7 +199,8 @@ public class SupplyPlanTest extends BaseProjectApiTest {
         List<SupplierData> dataList = response.asJson().getItems();
         assertThat(dataList.size(), greaterThan(0));
         for (SupplierData data : dataList) {
-            assertThat("supplier name - " + data.getName() + " does not contains " + supplierName, data.getName(), containsStringIgnoringCase(supplierName));
+            assertThat("supplier name - " + data.getName() + " does not contains " + supplierName,
+                    data.getName(), containsStringIgnoringCase(supplierName));
         }
     }
 
@@ -203,14 +210,15 @@ public class SupplyPlanTest extends BaseProjectApiTest {
 
         GetSupplyPlanSuppliers params = new GetSupplyPlanSuppliers()
                 .setQuery(supplierCode)
-                .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);
+                .setDepartmentId(sessionData.getUserDepartmentId());
 
         Response<SupplierDataList> response = supplyPlanClient.get().getSuppliers(params);
         isResponseOk(response);
         List<SupplierData> dataList = response.asJson().getItems();
         assertThat(dataList.size(), greaterThan(0));
         for (SupplierData data : dataList) {
-            assertThat("supplier code - " + data.getSupplierId() + " does not contains " + supplierCode, data.getSupplierId().toLowerCase(), containsString(supplierCode.toLowerCase()));
+            assertThat("supplier code - " + data.getSupplierId() + " does not contains " + supplierCode,
+                    data.getSupplierId().toLowerCase(), containsString(supplierCode.toLowerCase()));
         }
     }
 
@@ -220,15 +228,16 @@ public class SupplyPlanTest extends BaseProjectApiTest {
 
         GetSupplyPlanDetails params = new GetSupplyPlanDetails()
                 .setDate(testDate)
-                .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID);
+                .setDepartmentId(sessionData.getUserDepartmentId())
+                .setShopId(sessionData.getUserShopId());
 
         Response<ShipmentDataList> response = supplyPlanClient.get().getShipments(params);
         isResponseOk(response);
         List<ShipmentData> dataList = response.asJson().getItems();
         assertThat(dataList.size(), greaterThan(0));
         for (ShipmentData data : dataList) {
-            assertThat("shipment date - " + data.getDate() + " does not matches " + testDate.toString(), data.getDate(), equalTo(testDate));
+            assertThat("shipment date - " + data.getDate() + " does not matches " + testDate.toString(),
+                    data.getDate(), equalTo(testDate));
         }
     }
 
@@ -239,16 +248,18 @@ public class SupplyPlanTest extends BaseProjectApiTest {
         GetSupplyPlanDetails params = new GetSupplyPlanDetails()
                 .setDate(testDate)
                 .setSendingLocations(SUPPLIER)
-                .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
-                .setShopId("35");
+                .setDepartmentId(sessionData.getUserDepartmentId())
+                .setShopId(sessionData.getUserShopId());
 
         Response<ShipmentDataList> response = supplyPlanClient.get().getShipments(params);
         isResponseOk(response);
         List<ShipmentData> dataList = response.asJson().getItems();
         assertThat(dataList.size(), greaterThan(0));
         for (ShipmentData data : dataList) {
-            assertThat("shipment date - " + data.getDate() + " does not matches " + testDate.toString(), data.getDate(), equalTo(testDate));
-            assertThat("supplier - " + data.getSendingLocation() + " does not matches " + SUPPLIER, data.getSendingLocation(), equalTo(SUPPLIER));
+            assertThat("shipment date - " + data.getDate() + " does not matches " + testDate.toString(),
+                    data.getDate(), equalTo(testDate));
+            assertThat("supplier - " + data.getSendingLocation() + " does not matches " + SUPPLIER,
+                    data.getSendingLocation(), equalTo(SUPPLIER));
         }
     }
 
@@ -260,16 +271,18 @@ public class SupplyPlanTest extends BaseProjectApiTest {
         GetSupplyPlanDetails params = new GetSupplyPlanDetails()
                 .setDate(daysList)
                 .setSendingLocations(SUPPLIER)
-                .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
-                .setShopId("35");
+                .setDepartmentId(sessionData.getUserDepartmentId())
+                .setShopId(sessionData.getUserShopId());
 
         Response<ShipmentDataList> response = supplyPlanClient.get().getShipments(params);
         isResponseOk(response);
         List<ShipmentData> dataList = response.asJson().getItems();
         assertThat(dataList.size(), greaterThan(0));
         for (ShipmentData data : dataList) {
-            assertThat("shipment date - " + data.getDate() + " not in range of " + daysList.toString(), data.getDate(), in(daysList));
-            assertThat("supplier - " + data.getSendingLocation() + " does not matches " + SUPPLIER, data.getSendingLocation(), equalTo(SUPPLIER));
+            assertThat("shipment date - " + data.getDate() + " not in range of " + daysList.toString(),
+                    data.getDate(), in(daysList));
+            assertThat("supplier - " + data.getSendingLocation() + " does not matches " + SUPPLIER,
+                    data.getSendingLocation(), equalTo(SUPPLIER));
         }
     }
 
@@ -281,8 +294,8 @@ public class SupplyPlanTest extends BaseProjectApiTest {
         GetSupplyPlanDetails params = new GetSupplyPlanDetails()
                 .setDate(daysList)
                 .setSendingLocations(SUPPLIER)
-                .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
-                .setShopId("35");
+                .setDepartmentId(sessionData.getUserDepartmentId())
+                .setShopId(sessionData.getUserShopId());
 
         Response<ShipmentDataList> response = supplyPlanClient.get().getShipments(params);
         isResponseOk(response);
@@ -292,9 +305,11 @@ public class SupplyPlanTest extends BaseProjectApiTest {
             if (data.getRowType().equals("FR_APPOINTMENT")) {
                 assertThat("isFullReceived should be not null", data.getIsFullReceived(), notNullValue());
                 if (data.getPalletPlan() - data.getPalletFact() == 0) {
-                    assertThat("isFullReceived is incorrect in supply " + data.getDocumentNo(), data.getIsFullReceived(), is(true));
+                    assertThat("isFullReceived is incorrect in supply " + data.getDocumentNo(),
+                            data.getIsFullReceived(), is(true));
                 } else {
-                    assertThat("isFullReceived is incorrect in supply " + data.getDocumentNo(), data.getIsFullReceived(), is(false));
+                    assertThat("isFullReceived is incorrect in supply " + data.getDocumentNo(),
+                            data.getIsFullReceived(), is(false));
                 }
             }
         }
@@ -308,8 +323,8 @@ public class SupplyPlanTest extends BaseProjectApiTest {
         GetSupplyPlanDetails params = new GetSupplyPlanDetails()
                 .setDate(daysList)
                 .setSendingLocations(SUPPLIER)
-                .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
-                .setShopId("35");
+                .setDepartmentId(sessionData.getUserDepartmentId())
+                .setShopId(sessionData.getUserShopId());
 
         Response<ShipmentDataList> response = supplyPlanClient.get().getShipments(params);
         isResponseOk(response);
@@ -366,9 +381,11 @@ public class SupplyPlanTest extends BaseProjectApiTest {
             if (shipments.getStatus().equals("R") || shipments.getStatus().equals("C")) {
                 assertThat("isFullReceived should be not null", shipments.getIsFullReceived(), notNullValue());
                 if (shipments.getPalletPlanQuantity() - shipments.getPalletFactQuantity() == 0) {
-                    assertThat("isFullReceived is incorrect in shipment " + shipments.getShipmentId(), shipments.getIsFullReceived(), is(true));
+                    assertThat("isFullReceived is incorrect in shipment " + shipments.getShipmentId(),
+                            shipments.getIsFullReceived(), is(true));
                 } else {
-                    assertThat("isFullReceived is incorrect in shipment " + shipments.getShipmentId(), shipments.getIsFullReceived(), is(false));
+                    assertThat("isFullReceived is incorrect in shipment " + shipments.getShipmentId(),
+                            shipments.getIsFullReceived(), is(false));
                 }
             } else {
                 assertThat("isFullReceived should be null", shipments.getIsFullReceived(), nullValue());
@@ -378,9 +395,11 @@ public class SupplyPlanTest extends BaseProjectApiTest {
             List<SupplyCardProductsData> productsData = data.getProducts();
             for (SupplyCardProductsData productData : productsData) {
                 if (productData.getExpectedQuantity() - productData.getReceivedQuantity() == 0) {
-                    assertThat("isFullReceived is incorrect for product " + productData.getLmCode(), productData.getIsFullReceived(), is(true));
+                    assertThat("isFullReceived is incorrect for product " + productData.getLmCode(),
+                            productData.getIsFullReceived(), is(true));
                 } else {
-                    assertThat("isFullReceived is incorrect for product " + productData.getLmCode(), productData.getIsFullReceived(), is(false));
+                    assertThat("isFullReceived is incorrect for product " + productData.getLmCode(),
+                            productData.getIsFullReceived(), is(false));
                 }
             }
         }
@@ -389,11 +408,11 @@ public class SupplyPlanTest extends BaseProjectApiTest {
     //bug
     @Test(description = "C23185311 shipments sort by secRecDate")
     public void testVerifySortBySecRecDate() {
-        String warehause = "922";
+        String warehouse = "922";
         String documentNumber = "1101831359";
 
         GetSupplyPlanCard params = new GetSupplyPlanCard()
-                .setSendingLocation(warehause)
+                .setSendingLocation(warehouse)
                 .setSendingLocationType(LocationType.STORE.getTypeName())
                 .setDocumentType(DocumentType.TRANSFER.getTypeName())
                 .setDocumentNo(documentNumber);
@@ -409,7 +428,8 @@ public class SupplyPlanTest extends BaseProjectApiTest {
         }
         List<String> sorted = sortDates(datesList, false);
         for (int i = 0; i < dataList.size(); i++) {
-            assertThat("date sorting is incorrect: date should be " + sorted.get(i) + " but date is " + dataList.get(i).getSecRecDate(),
+            assertThat("date sorting is incorrect: date should be " + sorted.get(i) + " but date is " +
+                            dataList.get(i).getSecRecDate(),
                     sorted.get(i), equalTo(dataList.get(i).getSecRecDate()));
         }
 

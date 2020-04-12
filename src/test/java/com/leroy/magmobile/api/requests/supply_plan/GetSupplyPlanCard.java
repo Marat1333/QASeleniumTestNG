@@ -1,10 +1,10 @@
 package com.leroy.magmobile.api.requests.supply_plan;
 
-import com.leroy.magmobile.api.requests.CommonSearchRequestBuilder;
+import com.leroy.magmobile.api.requests.CommonLegoRequest;
 import ru.leroymerlin.qa.core.clients.base.Method;
 
 @Method(value = "GET", path = "/supplyPlan/supplyCard")
-public class GetSupplyPlanCard extends CommonSearchRequestBuilder<GetSupplyPlanCard> {
+public class GetSupplyPlanCard extends CommonLegoRequest<GetSupplyPlanCard> {
 
     public GetSupplyPlanCard setDocumentNo(String value) {
         return queryParam("documentNo", value);
