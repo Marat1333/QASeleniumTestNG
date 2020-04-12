@@ -18,6 +18,7 @@
         <suite-file path="areas/SalesDocSearchSuite.xml"/>
         <suite-file path="areas/SalesDocSuite.xml"/>
         <suite-file path="areas/ShopsSuite.xml"/>
+        <suite-file path="areas/SupplyPlan.xml"/>
     </suite-files>
 
 </suite>
