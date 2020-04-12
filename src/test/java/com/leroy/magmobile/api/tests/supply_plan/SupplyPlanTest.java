@@ -333,7 +333,7 @@ public class SupplyPlanTest extends BaseProjectApiTest {
         verifyDataIsSortedByDate(dataList);
     }
 
-    @Test(description = "C23185309 warehause/shop card")
+    @Test(description = "C23185309 Warehouse - shop card")
     public void testGetShopCard() {
         String supplier = "5";
         String documentNumber = "1114743188";
@@ -353,11 +353,11 @@ public class SupplyPlanTest extends BaseProjectApiTest {
         List<SupplyCardSendingLocationData> dataList = response.asJson().getSendingLocation();
         assertThat(dataList.size(), greaterThan(0));
         for (SupplyCardSendingLocationData data : dataList) {
-            assertThat("store/warehause phone is " + data.getContactPhone() + " not mathes " + defaultContactPhone,
+            assertThat("store/warehouse phone is " + data.getContactPhone() + " not mathes " + defaultContactPhone,
                     data.getContactPhone(), equalTo(defaultContactPhone));
-            assertThat("store/warehause email is " + data.getEmail() + " not matches " + defaultEmail,
+            assertThat("store/warehouse email is " + data.getEmail() + " not matches " + defaultEmail,
                     data.getEmail(), equalTo(defaultEmail));
-            assertThat("store/warehause contact name is " + data.getContactName() + " not matches " + defaultContactName,
+            assertThat("store/warehouse contact name is " + data.getContactName() + " not matches " + defaultContactName,
                     data.getContactName(), equalTo(defaultContactName));
         }
     }
