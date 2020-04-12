@@ -69,7 +69,7 @@ public class WorkPage extends CommonMagMobilePage {
                 MagMobElementTypes.CIRCLE_PLUS.getPictureName());
         softAssert.isElementVisible(departmentSupplyPlanLbl);
         softAssert.isElementVisible(withdrawalAndDisposalLbl);
-        softAssert.isElementVisible(priceTagPrintingLbl);
+        //softAssert.isElementVisible(priceTagPrintingLbl); - Отображается только на определенных магазинах (например, 20)
         softAssert.isElementVisible(orderBalisageLbl);
         softAssert.isElementVisible(miniInventoryLbl);
         softAssert.verifyAll();
