@@ -5,6 +5,7 @@ import com.leroy.magmobile.api.data.ruptures.*;
 import com.leroy.magmobile.api.requests.ruptures.*;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -56,24 +57,33 @@ public class RupturesClient extends MagMobileClient {
         return execute(req, RuptureProductDataList.class);
     }
 
-    public Response<Object> getSessions() {
+    public Response<ResRuptureSessionDataList> getSessions() {
         RupturesSessionsRequest req = new RupturesSessionsRequest();
-        return execute(req, Object.class);
+        req.setAppVersion(appVersion);
+        req.setShopId(sessionData.getUserShopId());
+        req.setDepartmentId(sessionData.getUserDepartmentId());
+        return execute(req, ResRuptureSessionDataList.class);
     }
 
-    public Response<Object> getGroups() {
+    public Response<RuptureSessionGroupData> getGroups(int sessionId) {
         RupturesSessionGroupsRequest req = new RupturesSessionGroupsRequest();
-        return execute(req, Object.class);
+        req.setAppVersion(appVersion);
+        req.setSessionId(sessionId);
+        return execute(req, RuptureSessionGroupData.class);
     }
 
-    public Response<Object> finishSession() {
+    public Response<JsonNode> finishSession(int sessionId) {
         RupturesSessionFinishRequest req = new RupturesSessionFinishRequest();
-        return execute(req, Object.class);
+        req.setAppVersion(appVersion);
+        req.setSessionId(sessionId);
+        return execute(req, JsonNode.class);
     }
 
-    public Response<Object> deleteSession() {
+    public Response<JsonNode> deleteSession(int sessionId) {
         RupturesSessionDeleteRequest req = new RupturesSessionDeleteRequest();
-        return execute(req, Object.class);
+        req.setSessionId(sessionId);
+        req.setAppVersion(appVersion);
+        return execute(req, JsonNode.class);
     }
 
     //Verifications
@@ -85,7 +95,7 @@ public class RupturesClient extends MagMobileClient {
         return sessionId;
     }
 
-    public void assertThatProductIsUpdatedOrDeleted(Response<JsonNode> resp) {
+    public void assertThatIsUpdatedOrDeleted(Response<JsonNode> resp) {
         assertThatResponseIsOk(resp);
         assertThat("success", resp.asJson().get("success").booleanValue());
     }
@@ -98,13 +108,17 @@ public class RupturesClient extends MagMobileClient {
             ResActionData actualActionData = actualData.getActions().get(i);
             ActionData expectedActionData = expectedActions.get(i);
             assertThat("action", actualActionData.getAction(), is(expectedActionData.getAction()));
-            assertThat("result", actualActionData.getResult(), is(false)); // ????
+            assertThat("result", actualActionData.getResult(), is(true));
         }
     }
 
     public void assertThatDataMatches(Response<RuptureProductDataList> resp, RuptureProductDataList expectedData) {
         assertThatResponseIsOk(resp);
-        assertThat("rupture session product items", resp.asJson(), equalTo(expectedData));
+        RuptureProductDataList actualData = resp.asJson();
+        List<RuptureProductData> expectedProductItems = expectedData.getItems();
+        Collections.reverse(expectedProductItems);
+        assertThat("total count", actualData.getTotalCount(), equalTo(expectedData.getTotalCount()));
+        assertThat("rupture session product items", actualData.getItems(), equalTo(expectedData.getItems()));
     }
 
 }

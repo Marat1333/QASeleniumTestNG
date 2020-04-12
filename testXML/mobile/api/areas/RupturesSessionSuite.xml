@@ -14,7 +14,10 @@
                     <include name="testUpdateRuptureSessionProduct"/>
                     <include name="testActionRuptureSessionProduct"/>
                     <include name="testSearchForRuptureSessionProducts"/>
+                    <include name="testFinishRuptureSession"/>
+                    <include name="testRuptureSessionGrouping"/>
                     <include name="testDeleteRuptureSessionProducts"/>
+                    <include name="testDeleteFinishedRuptureSession"/>
                 </methods>
             </class>
         </classes>

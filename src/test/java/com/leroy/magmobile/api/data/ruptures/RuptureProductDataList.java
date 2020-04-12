@@ -20,4 +20,10 @@ public class RuptureProductDataList {
         items.add(productData);
         totalCount++;
     }
+
+    @JsonIgnore
+    public void removeItem(int index) {
+        items.remove(index);
+        totalCount--;
+    }
 }

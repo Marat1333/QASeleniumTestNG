@@ -49,5 +49,7 @@ public class RuptureProductData {
         this.setShelfStock(new Random().nextInt(22)+1);
         this.setTheoreticalStock(new Random().nextInt(22)+1);
         this.setLsStock(new Random().nextInt(22)+1);
+        this.setTwentyEighty(new Random().nextBoolean());
+        this.setRmFeedbackCount(0);
     }
 }
