@@ -180,7 +180,9 @@ public class ApiClientProvider {
     }
 
     public List<ProductItemData> getProducts(int necessaryCount) {
-        return getProducts(necessaryCount, null);
+        CatalogSearchFilter filter = new CatalogSearchFilter();
+        filter.setHasAvailableStock(true);
+        return getProducts(necessaryCount, filter);
     }
 
     public List<String> getProductLmCodes(int necessaryCount) {

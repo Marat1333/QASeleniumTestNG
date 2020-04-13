@@ -26,7 +26,7 @@ public class AuthorizationTest extends BaseProjectApiTest {
 
     private Is4TokenData tokenData;
 
-    @Test(description = "Authorization with valid credentials")
+    @Test(description = "C3137640 Authorization with valid credentials")
     public void testAuthorizationWithValidCredentials() {
         String code = authClient.authAndGetCode(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS);
         Response<Is4TokenData> response = is4AuthClient.sendPostCodeRequest(code);
@@ -51,7 +51,7 @@ public class AuthorizationTest extends BaseProjectApiTest {
         assertThat("shop region", tokenData.getShopRegion(), notNullValue());
     }
 
-    @Test(description = "Authorization with invalid code")
+    @Test(description = "C3159000 Authorization with invalid code")
     public void testAuthorizationWithInvalidCode() {
         Response<Is4TokenData> response = is4AuthClient
                 .sendPostCodeRequest("a2e508c1-bdbd-4d4d-8a5d-d88155812f64");
@@ -61,7 +61,7 @@ public class AuthorizationTest extends BaseProjectApiTest {
         assertThat("error text", jsonNode.get("error").asText(), is("invalid_grant"));
     }
 
-    @Test(description = "Refresh token - happy path")
+    @Test(description = "C3255565 Refresh token - happy path")
     public void testRefreshTokenHappyPath() {
         if (tokenData == null)
             throw new IllegalArgumentException("Token hasn't been created");
@@ -73,7 +73,7 @@ public class AuthorizationTest extends BaseProjectApiTest {
         assertThat("refresh token", tokenData.getRefreshToken(), not(emptyOrNullString()));
     }
 
-    @Test(description = "Refresh with invalid token")
+    @Test(description = "C3255566 Refresh with invalid token")
     public void testRefreshInvalidToken() {
         Response<Is4TokenData> response = is4AuthClient
                 .sendPostRefreshRequest("a2e508c1-bdbd-4d4d-8a5d-d88155812f64");

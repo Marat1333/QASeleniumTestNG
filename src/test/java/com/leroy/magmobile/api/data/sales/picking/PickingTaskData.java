@@ -13,7 +13,7 @@ public class PickingTaskData {
     private Boolean delivery;
     private String taskStatus;
     private String pointOfGiveAway;
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss[.SSS]'Z'")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss[.SSS][.S]'Z'")
     private LocalDateTime dateOfGiveAway;
     private Integer documentVersion;
     private Integer buId;
