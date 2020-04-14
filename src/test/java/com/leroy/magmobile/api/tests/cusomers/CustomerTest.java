@@ -27,7 +27,7 @@ public class CustomerTest extends BaseProjectApiTest {
         customerClient.setSessionData(sessionData);
     }
 
-    @Test(description = "Create Customer")
+    @Test(description = "C3164926 Create Customer - happy path")
     public void testCreateCustomer() {
         CustomerData newCustomerData = new CustomerData();
         newCustomerData.generateRandomValidRequiredData(true);
@@ -35,7 +35,7 @@ public class CustomerTest extends BaseProjectApiTest {
         customerData = customerClient.assertThatIsCreatedAndGetData(resp, newCustomerData);
     }
 
-    @Test(description = "Get Customer")
+    @Test(description = "C23194970 Get Customer")
     public void testGetCustomer() {
         if (customerData == null)
             throw new IllegalArgumentException("customerData hasn't been created");
@@ -43,7 +43,7 @@ public class CustomerTest extends BaseProjectApiTest {
         customerClient.assertThatGetResponseMatches(resp, customerData);
     }
 
-    @Test(description = "Update Customer - change gender")
+    @Test(description = "C23194971 Update Customer - change gender")
     public void testUpdateCustomer() {
         if (customerData == null)
             throw new IllegalArgumentException("customerData hasn't been created");
@@ -54,7 +54,7 @@ public class CustomerTest extends BaseProjectApiTest {
 
     // Negative scenarios
 
-    @Test(description = "Get Customer Balance  for non-existent account")
+    @Test(description = "C23194972 Get Customer Balance  for non-existent account")
     public void testGetCustomerBalanceForNonExistentAccount() {
         String nonExistentAccountNumber = "999999";
         Response<JsonNode> resp = customerClient.getCustomerBalance(nonExistentAccountNumber);

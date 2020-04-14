@@ -11,8 +11,8 @@
             <class name="com.leroy.magmobile.api.tests.salesdoc.OrderTest">
                 <methods>
                     <include name="testCreateOrder"/>
-                    <include name="testGetOrder"/>
                     <include name="testSetPinCode"/>
+                    <include name="testGetOrder"/>
                     <include name="testCheckQuantity"/>
                     <include name="testConfirmOrder"/>
                     <include name="testRearrangeOrder"/>

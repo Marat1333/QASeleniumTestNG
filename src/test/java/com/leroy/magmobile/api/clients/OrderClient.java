@@ -275,7 +275,8 @@ public class OrderClient extends MagMobileClient {
         Response<OrderData> r = null;
         while (System.currentTimeMillis() - currentTimeMillis < maxTimeoutInSeconds * 1000) {
             r = getOrder(orderId);
-            if (r.isSuccessful() && r.asJson().getStatus().equals(SalesDocumentsConst.States.CONFIRMED.getApiVal())) {
+            if (r.isSuccessful() && !r.asJson().getStatus()
+                    .equals(SalesDocumentsConst.States.IN_PROGRESS.getApiVal())) {
                 Log.info("waitUntilOrderIsConfirmed() has executed for " +
                         (System.currentTimeMillis() - currentTimeMillis) / 1000 + " seconds");
                 return;
@@ -286,7 +287,8 @@ public class OrderClient extends MagMobileClient {
                         "Response error:" + r.toString(),
                 r.isSuccessful());
         assertThat("Could not wait for the order to be confirmed. Timeout=" + maxTimeoutInSeconds + ". " +
-                "Status:", r.asJson().getStatus(), is(SalesDocumentsConst.States.CONFIRMED.getApiVal()));
+                "Status:", r.asJson().getStatus(),
+                not(SalesDocumentsConst.States.IN_PROGRESS.getApiVal()));
     }
 
 

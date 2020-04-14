@@ -48,7 +48,7 @@ public class OrderTest extends BaseProjectApiTest {
         productItemDataList = apiClientProvider.getProducts(2);
     }
 
-    @Test(description = "Create Order")
+    @Test(description = "C23195019 POST Order")
     public void testCreateOrder() {
         // Prepare request data
         CartProductOrderData productOrderData = new CartProductOrderData(
@@ -85,7 +85,7 @@ public class OrderTest extends BaseProjectApiTest {
         orderData.increasePaymentVersion(); // TODO это правильно или баг?
     }
 
-    @Test(description = "Get Order")
+    @Test(description = "C23195023 GET Order")
     public void testGetOrder() {
         if (orderData == null)
             throw new IllegalArgumentException("order data hasn't been created");
@@ -97,7 +97,7 @@ public class OrderTest extends BaseProjectApiTest {
         orderClient.assertThatResponseMatches(getResp, orderData);
     }
 
-    @Test(description = "Set PinCode")
+    @Test(description = "C23195024 PUT SetPinCode")
     public void testSetPinCode() {
         if (orderData == null)
             throw new IllegalArgumentException("order data hasn't been created");
@@ -108,7 +108,7 @@ public class OrderTest extends BaseProjectApiTest {
         orderData.increasePaymentVersion();
     }
 
-    @Test(description = "Confirm Order")
+    @Test(description = "C23195027 PUT Confirm Order")
     public void testConfirmOrder() {
         if (orderData == null)
             throw new IllegalArgumentException("order data hasn't been created");
@@ -135,7 +135,7 @@ public class OrderTest extends BaseProjectApiTest {
         orderData.increaseFulfillmentVersion();
     }
 
-    @Test(description = "Rearrange Order")
+    @Test(description = "C23195028 PUT Rearrange Order - Add new product in confirmed order")
     public void testRearrangeOrder() throws Exception {
         if (orderData == null)
             throw new IllegalArgumentException("order data hasn't been created");
@@ -145,6 +145,7 @@ public class OrderTest extends BaseProjectApiTest {
 
         step("Wait until order is confirmed");
         orderClient.waitUntilOrderIsConfirmed(orderData.getOrderId());
+        orderData.setStatus(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal());
         orderData.increaseFulfillmentVersion();
 
         step("Rearrange Order");
@@ -158,7 +159,7 @@ public class OrderTest extends BaseProjectApiTest {
         orderData.setProducts(getResp.asJson().getProducts());
     }
 
-    @Test(description = "Check Quantity Order - happy path")
+    @Test(description = "C23195026 POST Check Quantity Order - happy path")
     public void testCheckQuantity() {
         OrderProductData orderProductData = orderData.getProducts().get(0);
 
@@ -174,7 +175,7 @@ public class OrderTest extends BaseProjectApiTest {
         orderClient.assertThatCheckQuantityIsOk(resp, reqOrderData.getProducts());
     }
 
-    @Test(description = "Cancel Order")
+    @Test(description = "C23195030 PUT OrderWorkflow - cancel confirmed order")
     public void testCancelOrder() {
         if (orderData == null)
             throw new IllegalArgumentException("order data hasn't been created");
@@ -185,15 +186,10 @@ public class OrderTest extends BaseProjectApiTest {
         orderData.setSalesDocStatus(SalesDocumentsConst.States.CANCELLED.getApiVal());
         orderData.increaseFulfillmentVersion();
         step("Check that Order is cancelled after GET request");
-        for (OrderProductData pr : orderData.getProducts()) {
-            pr.setQuantity(0.0); // quantity became 0 after order is cancelled
-        }
         testGetOrder();
     }
 
-    // Test #2
-
-    @Test(description = "Update Draft Order - Remove Product line")
+    @Test(description = "C23195040 PUT Order - Remove Product line from Draft Order")
     public void testUpdateDraftOrderRemoveProductLine() {
         // Prepare request data
         CartProductOrderData productOrderData1 = new CartProductOrderData(
@@ -243,7 +239,7 @@ public class OrderTest extends BaseProjectApiTest {
         testGetOrder();
     }
 
-    @Test(description = "Delete Draft Order")
+    @Test(description = "C23195043 PUT Order - Change status to Deleted from Draft")
     public void testDeleteDraftOrder() {
         if (orderData == null)
             throw new IllegalArgumentException("order data hasn't been created");

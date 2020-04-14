@@ -49,7 +49,7 @@ public class CartTest extends BaseProjectApiTest {
         products = searchClient.getProducts(3);
     }
 
-    @Test(description = "C22906656 Create Cart - Lego_Cart_Post")
+    @Test(description = "C22906656 Creating Cart with 2 products")
     public void testCreateCart() {
         // Prepare request data
         CartProductOrderData productOrderData1 = new CartProductOrderData(products.get(0));
@@ -67,7 +67,7 @@ public class CartTest extends BaseProjectApiTest {
                 Arrays.asList(productOrderData1, productOrderData2));
     }
 
-    @Test(description = "Cart - Confirm Quantity")
+    @Test(description = "C23194964 Cart - Confirm Quantity - happy path (with simple product - no AVS, no TOP EM)")
     public void testCartConfirmQuantity() {
         if (cartData == null)
             throw new IllegalArgumentException("cart data hasn't been created");
@@ -78,7 +78,7 @@ public class CartTest extends BaseProjectApiTest {
         cartClient.assertThatQuantityIsConfirmed(confirmQuantityResp, cartData);
     }
 
-    @Test(description = "Cart - Add Discount")
+    @Test(description = "C23194966 Cart - Add Discount")
     public void testCartDiscount() {
         if (cartData == null)
             throw new IllegalArgumentException("cart data hasn't been created");
@@ -95,7 +95,7 @@ public class CartTest extends BaseProjectApiTest {
         cartData.increaseDocumentVersion();
     }
 
-    @Test(description = "Lego_Cart_Consolidate_Products")
+    @Test(description = "C23194968 Lego_Cart_Consolidate_Products - happy path")
     public void testCartConsolidateProducts() {
         step("Find products");
         CatalogSearchFilter filtersData = new CatalogSearchFilter();
@@ -127,7 +127,7 @@ public class CartTest extends BaseProjectApiTest {
         assertThat("Group count", getResp.asJson().getGroups(), hasSize(1));
     }
 
-    @Test(description = "Lego_Cart_Items")
+    @Test(description = "C23194965 Lego_Cart_Items - Remove 1 product from 2 from the Cart")
     public void testCartItems() {
         if (cartData == null)
             throw new IllegalArgumentException("cart data hasn't been created");
@@ -140,7 +140,7 @@ public class CartTest extends BaseProjectApiTest {
         cartClient.assertThatResponseMatches(resp, cartData);
     }
 
-    @Test(description = "Update Cart - Add product")
+    @Test(description = "C23194967 Update Cart - Add product")
     public void testUpdateCart() {
         if (cartData == null)
             throw new IllegalArgumentException("cart data hasn't been created");
@@ -161,7 +161,7 @@ public class CartTest extends BaseProjectApiTest {
         cartClient.assertThatResponseMatches(getResp, cartData);
     }
 
-    @Test(description = "C22906658 Delete Cart - Lego_CartChangeStatus")
+    @Test(description = "C22906658 Lego_CartChangeStatus - make status is DELETED")
     public void testDeleteCart() {
         Response<JsonNode> response = cartClient.sendRequestDelete(cartData.getCartId(),
                 cartData.getDocumentVersion());

@@ -14,7 +14,7 @@ import static org.hamcrest.Matchers.*;
 
 public class CustomerSearchTest extends BaseProjectApiTest {
 
-    @Test(description = "Simple Search Customers by Phone")
+    @Test(description = "C23194969 Simple Search Customers by Phone")
     public void testSimpleSearchCustomers() {
         CustomerSearchFilters customerSearchFilters = new CustomerSearchFilters();
         customerSearchFilters.setCustomerType(CustomerSearchFilters.CustomerType.NATURAL);
