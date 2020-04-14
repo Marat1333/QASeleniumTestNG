@@ -14,10 +14,15 @@ public class EnvConstants {
     private static final Properties properties = getPropertiesForEnv(ENV);
 
     // User options
-    public static final String BASIC_USER_LDAP = getProperty("basic.user.name");
+    public static final String BASIC_USER_NAME = getProperty("basic.user.name");
+    public static final String BASIC_USER_FULL_NAME = getProperty("basic.user.fullName");
+    public static final String BASIC_USER_LDAP = getProperty("basic.user.ldap");
     public static final String BASIC_USER_PASS = getProperty("basic.user.password");
     public static final String BASIC_USER_SHOP_ID = getProperty("basic.user.shopId");
     public static final String BASIC_USER_DEPARTMENT_ID = getProperty("basic.user.departmentId");
+    public static final String BASIC_USER_SHOP_NAME = getProperty("basic.user.shopName");
+    public static final String BASIC_USER_DEPARTMENT_NAME = getProperty("basic.user.departmentName");
+    public static final String BASIC_USER_CITY_NAME = getProperty("basic.user.cityName");
 
     // URLs
     private static String getUrlMagPortal() {

@@ -8,4 +8,8 @@ public class GetCatalogProductSales extends GetCatalogProduct {
     public GetCatalogProductSales setLmCode(String value) {
         return (GetCatalogProductSales) super.setLmCode(value);
     }
+
+    public GetCatalogProductSales setShopId(String value){
+        return (GetCatalogProductSales) super.setShopId(value);
+    }
 }

@@ -8,6 +8,10 @@ public class GetCatalogShops extends GetCatalogProduct {
         return (GetCatalogShops) queryParam("shopId", String.join(",", shopIdArray));
     }
 
+    public GetCatalogShops setShopId(String val) {
+        return (GetCatalogShops) super.setShopId(val);
+    }
+
     public GetCatalogShops setLmCode(String value) {
         return (GetCatalogShops) super.setLmCode(value);
     }

@@ -8,4 +8,7 @@ public class GetCatalogSupplier extends GetCatalogProduct {
         return (GetCatalogSupplier)super.setLmCode(value);
     }
 
+    public GetCatalogSupplier setShopId(String shopId){
+        return (GetCatalogSupplier) super.setShopId(shopId);
+    }
 }

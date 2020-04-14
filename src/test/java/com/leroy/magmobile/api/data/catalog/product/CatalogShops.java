@@ -1,10 +1,9 @@
 package com.leroy.magmobile.api.data.catalog.product;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import java.util.List;
+import java.util.ArrayList;
 
-@Data
-public class CatalogShops {
-    List<CatalogShopsData>data;
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class CatalogShops extends ArrayList<CatalogShopsData> {
 }

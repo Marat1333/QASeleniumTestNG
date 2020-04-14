@@ -5,6 +5,8 @@ import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.data.catalog.ServiceItemData;
 import com.leroy.magmobile.api.data.catalog.ServiceItemDataList;
+import com.leroy.magmobile.api.data.supply_plan.suppliers.SupplierData;
+import com.leroy.magmobile.api.data.supply_plan.suppliers.SupplierDataList;
 import com.leroy.magmobile.api.enums.CatalogSearchFields;
 import com.leroy.magmobile.api.enums.SortingOrder;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
@@ -801,5 +803,27 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         List<ServiceItemData> responseData = response.asJson().getItems();
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
         assertThat("Services count is less than expected", responseData.size(), greaterThanOrEqualTo(5));
+    }
+
+    @Test(description = "C23195045 search supplier by code")
+    public void testSearchSupplierByCode(){
+        String query = "123";
+        Response<SupplierDataList> response = getCatalogSearchClient().searchSupplierBy(query, 100);
+        isResponseOk(response);
+        List<SupplierData> data = response.asJson().getItems();
+        for (SupplierData supplierData: data){
+            assertThat(supplierData.getSupplierId(), containsString(query));
+        }
+    }
+
+    @Test(description = "C23195044 search supplier by name")
+    public void testSearchSupplierByName(){
+        String query = "сази";
+        Response<SupplierDataList> response = getCatalogSearchClient().searchSupplierBy(query, 100);
+        isResponseOk(response);
+        List<SupplierData> data = response.asJson().getItems();
+        for (SupplierData supplierData: data){
+            assertThat(supplierData.getName(), containsStringIgnoringCase(query));
+        }
     }
 }

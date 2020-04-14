@@ -1,11 +1,9 @@
 package com.leroy.magmobile.api.data.catalog.product;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import java.util.List;
+import java.util.ArrayList;
 
-@Data
-public class Nomenclature {
-    private List<NomenclatureData> items;
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Nomenclature extends ArrayList<NomenclatureData> {
 }

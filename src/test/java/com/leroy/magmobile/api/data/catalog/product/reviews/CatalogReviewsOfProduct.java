@@ -7,4 +7,5 @@ import java.util.List;
 @Data
 public class CatalogReviewsOfProduct {
     private List<CatalogReviewsOfProductsData>items;
+    private Integer totalCount;
 }

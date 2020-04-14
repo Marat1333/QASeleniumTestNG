@@ -4,8 +4,10 @@ import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.data.catalog.ServiceItemData;
 import com.leroy.magmobile.api.data.catalog.ServiceItemDataList;
+import com.leroy.magmobile.api.data.supply_plan.suppliers.SupplierDataList;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogServicesSearch;
+import com.leroy.magmobile.api.requests.catalog_search.GetSupplierSearch;
 import com.leroy.magmobile.ui.models.search.FiltersData;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -33,6 +35,13 @@ public class CatalogSearchClient extends MagMobileClient {
     public Response<ServiceItemDataList> searchServicesBy(GetCatalogServicesSearch params) {
         params.setLdap(sessionData.getUserLdap());
         return execute(params, ServiceItemDataList.class);
+    }
+
+    public Response<SupplierDataList> searchSupplierBy(String query, int pageSize) {
+        GetSupplierSearch params = new GetSupplierSearch()
+                .setQuery(query)
+                .setPageSize(pageSize);
+        return execute(params, SupplierDataList.class);
     }
 
     // Help methods

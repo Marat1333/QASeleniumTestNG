@@ -14,10 +14,6 @@ public class GetCatalogProduct extends CommonLegoRequest<GetCatalogProduct> {
         return queryParam("extend", value);
     }
 
-    public GetCatalogProduct setExtend(String... values) {
-        return queryParam("extend", String.join(",", values));
-    }
-
     public GetCatalogProduct setPointOfGiveAway(String value) {
         return queryParam("pointOfGiveAway", value);
     }

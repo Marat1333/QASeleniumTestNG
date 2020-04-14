@@ -1,6 +1,5 @@
 package com.leroy.magmobile.api.data.catalog.product;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Data;
 
 import java.util.List;

@@ -10,6 +10,8 @@
         <suite-file path="areas/SalesDocSuite.xml"/>
         <suite-file path="areas/SupplyPlan.xml"/>
         <suite-file path="areas/CatalogSearchSuite.xml"/>
+        <suite-file path="areas/CatalogProductTest.xml"/>
+        <suite-file path="areas/PrintTagPriceTest.xml"/>
     </suite-files>
 
 </suite>
