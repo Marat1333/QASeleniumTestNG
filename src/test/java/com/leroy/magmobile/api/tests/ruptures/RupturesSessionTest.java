@@ -33,7 +33,7 @@ public class RupturesSessionTest extends BaseProjectApiTest {
         rupturesClient = apiClientProvider.getRupturesClient();
     }
 
-    @Test(description = "Create Rupture session product")
+    @Test(description = "C3233579 POST rupture session product")
     public void testCreateRuptureSessionProduct() {
         ActionData action1 = new ActionData();
         action1.setAction(0);
@@ -64,7 +64,7 @@ public class RupturesSessionTest extends BaseProjectApiTest {
         ruptureProductDataList.addItem(productData);
     }
 
-    @Test(description = "Update Rupture session product - Add new product")
+    @Test(description = "C3233582 PUT ruptures product - Add new product")
     public void testUpdateRuptureSessionProduct() {
         ActionData action1 = new ActionData();
         action1.setAction(0);
@@ -87,7 +87,7 @@ public class RupturesSessionTest extends BaseProjectApiTest {
         ruptureProductDataList.addItem(productData);
     }
 
-    @Test(description = "Action Rupture session product")
+    @Test(description = "C23195088 PUT rupture actions with different states")
     public void testActionRuptureSessionProduct() {
         RuptureProductData ruptureProductData = ruptureProductDataList.getItems().get(0);
         for (ActionData actionData : ruptureProductData.getActions()) {
@@ -103,13 +103,13 @@ public class RupturesSessionTest extends BaseProjectApiTest {
         rupturesClient.assertThatSessionIsActivated(resp, ruptureData.getActions());
     }
 
-    @Test(description = "Search for Rupture session products")
+    @Test(description = "C3233583 GET ruptures products")
     public void testSearchForRuptureSessionProducts() {
         Response<RuptureProductDataList> resp = rupturesClient.getProducts(sessionId);
         rupturesClient.assertThatDataMatches(resp, ruptureProductDataList);
     }
 
-    @Test(description = "Rupture Session Grouping")
+    @Test(description = "C3285462 GET ruptures groups for new session with groups")
     public void testRuptureSessionGrouping() {
         Response<RuptureSessionGroupData> resp = rupturesClient.getGroups(sessionId);
         isResponseOk(resp);
@@ -131,13 +131,13 @@ public class RupturesSessionTest extends BaseProjectApiTest {
         assertThat("gr3 - ", gr3.getFinishedCount(), is(0));
     }
 
-    @Test(description = "Finish rupture session")
+    @Test(description = "C3233585 PUT ruptures session finish")
     public void testFinishRuptureSession() {
         Response<JsonNode> resp = rupturesClient.finishSession(sessionId);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
     }
 
-    @Test(description = "Delete Rupture session products")
+    @Test(description = "C3298403 DELETE ruptures product from finished session")
     public void testDeleteRuptureSessionProducts() {
         step("Delete product");
         String deleteLmCode = ruptureProductDataList.getItems().get(0).getLmCode();
@@ -150,7 +150,7 @@ public class RupturesSessionTest extends BaseProjectApiTest {
         rupturesClient.assertThatDataMatches(getResp, ruptureProductDataList);
     }
 
-    @Test(description = "Delete Finished Rupture session")
+    @Test(description = "C3233587 DELETE finished ruptures session")
     public void testDeleteFinishedRuptureSession() {
         step("Delete session");
         Response<JsonNode> resp = rupturesClient.deleteSession(sessionId);

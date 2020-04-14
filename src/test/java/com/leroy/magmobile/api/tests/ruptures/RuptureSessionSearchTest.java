@@ -19,7 +19,7 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
         return true;
     }
 
-    @Test(description = "Search for Rupture session without specific filters")
+    @Test(description = "C3233580 GET ruptures sessions without params")
     public void testSearchForRuptureSessionWithoutSpecificFilters() {
         RupturesClient rupturesClient = apiClientProvider.getRupturesClient();
         Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions();

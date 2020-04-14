@@ -14,7 +14,7 @@ import static org.hamcrest.Matchers.*;
 
 public class ShopTest extends BaseProjectApiTest {
 
-    @Test(description = "Get shops")
+    @Test(description = "C23195091 GET shops")
     public void testGetShops() {
         ShopClient shopClient = apiClientProvider.getShopClient();
         Response<ShopData> resp = shopClient.getShops();

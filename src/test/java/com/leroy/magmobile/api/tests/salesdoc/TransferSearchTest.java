@@ -15,7 +15,7 @@ import static org.hamcrest.Matchers.*;
 
 public class TransferSearchTest extends BaseProjectApiTest {
 
-    @Test(description = "Transfer task search by status")
+    @Test(description = "C3272535 SalesDoc transfers GET with status NEW")
     public void testTransferTaskSearchByStatus() {
         TransferClient transferClient = apiClientProvider.getTransferClient();
 

@@ -53,7 +53,7 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
         transferSalesDocData = transferClient.assertThatIsCreatedAndGetData(resp, postSalesDocData);
     }
 
-    @Test(description = "Transfer update")
+    @Test(description = "C3248482 SalesDoc transfer update PUT - change quantity")
     public void testUpdateTransfer() {
         if (transferSalesDocData == null) {
             throw new IllegalArgumentException("Transfer SalesDoc hasn't been created");
@@ -94,7 +94,7 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
         transferClient.assertThatResponseIsValid(resp);
     }
 
-    @Test(description = "GET")
+    @Test(description = "C3248455 SalesDoc transfers GET")
     public void testGET() {
         if (transferSalesDocData == null) {
             throw new IllegalArgumentException("Transfer SalesDoc hasn't been created");
@@ -103,7 +103,7 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
         transferClient.assertThatResponseMatches(resp, transferSalesDocData);
     }
 
-    @Test(description = "DELETE")
+    @Test(description = "C3248469 SalesDoc transfer DELETE")
     public void testDelete() {
         if (transferSalesDocData == null) {
             throw new IllegalArgumentException("Transfer SalesDoc hasn't been created");
@@ -116,14 +116,14 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
         transferClient.assertThatDocumentIsNotExist(getResp);
     }
 
-    @Test(description = "Transfer Run")
+    @Test(description = "C3248459 SalesDoc transfer run PUT")
     public void testTransferRun() {
         testSalesDocTransferCreatePOST();
         Response<TransferRunRespData> resp = transferClient.run(transferSalesDocData);
         transferClient.assertThatIsRun(resp, transferSalesDocData);
     }
 
-    @Test(description = "Transfer status")
+    @Test(description = "C3248460 SalesDoc transfer status GET")
     public void testTransferStatus() throws Exception {
         if (transferSalesDocData == null) {
             throw new IllegalArgumentException("Transfer SalesDoc hasn't been created");

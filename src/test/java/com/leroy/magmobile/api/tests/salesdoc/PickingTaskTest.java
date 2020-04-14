@@ -14,7 +14,7 @@ import static org.hamcrest.Matchers.*;
 
 public class PickingTaskTest extends BaseProjectApiTest {
 
-    @Test(description = "Picking search without filters")
+    @Test(description = "C23195055 Picking search without filters")
     public void testPickingSearchWithoutFilters() {
         int pageSize = 14;
         PickingTaskClient pickingTaskClient = apiClientProvider.getPickingTaskClient();
