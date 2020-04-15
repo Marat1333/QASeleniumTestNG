@@ -1,6 +1,6 @@
 package com.leroy.magmobile.api.clients;
 
-import com.leroy.constants.SalesDocumentsConst;
+import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
 import com.leroy.magmobile.api.requests.catalog_product.GetCatalogProduct;
 import lombok.Builder;

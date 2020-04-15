@@ -66,6 +66,10 @@ public class MagMobileClient extends BaseClient {
 
     // ---------------- VERIFICATIONS --------------- //
 
+    public enum ResponseType {
+        GET, PUT, POST, DELETE;
+    }
+
     protected void assertThatResponseIsOk(Response<?> response) {
         assertThat(response, successful());
     }

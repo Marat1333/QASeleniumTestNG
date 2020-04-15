@@ -1,5 +1,6 @@
 package com.leroy.magmobile.api.data.sales.orders;
 
+import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.sales.BaseProductOrderData;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -19,6 +20,11 @@ public class OrderProductData extends BaseProductOrderData {
     private Integer confirmedQuantity;
     private String pointOfSale;
     private String pointOfOrigin;
+
+    public OrderProductData() {}
+    public OrderProductData(ProductItemData productItemResponse) {
+        super(productItemResponse);
+    }
 
 
 }

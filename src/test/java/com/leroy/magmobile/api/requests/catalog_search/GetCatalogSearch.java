@@ -71,6 +71,8 @@ public class GetCatalogSearch extends CommonSearchRequestBuilder<GetCatalogSearc
     }
 
     public GetCatalogSearch setTopEM(Boolean val) {
+        if (val == null)
+            return this;
         return queryParam("topEM", val);
     }
 
@@ -83,6 +85,8 @@ public class GetCatalogSearch extends CommonSearchRequestBuilder<GetCatalogSearc
     }
 
     public GetCatalogSearch setHasAvailableStock(Boolean val) {
+        if (val == null)
+            return this;
         return queryParam("hasAvailableStock", val);
     }
 

@@ -2,7 +2,7 @@ package com.leroy.magmobile.api.tests.salesdoc;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
-import com.leroy.constants.SalesDocumentsConst;
+import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.EstimateClient;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateData;
@@ -38,7 +38,7 @@ public class EstimateTest extends BaseProjectApiTest {
         estimateClient.setSessionData(sessionData);
     }
 
-    @Test(description = "Create Estimate")
+    @Test(description = "C3311701 POST estimate product - HP")
     public void testCreateEstimate() {
         // Prepare request data
         EstimateProductOrderData productOrderData = new EstimateProductOrderData(searchClient.getProducts(1).get(0));
@@ -55,7 +55,7 @@ public class EstimateTest extends BaseProjectApiTest {
         estimateData.setProducts(Collections.singletonList(productOrderData));
     }
 
-    @Test(description = "Estimate - Send Email")
+    @Test(description = "C23194973 Estimate - Send Email")
     public void testEstimateSendEmail() {
         if (estimateData == null)
             throw new IllegalArgumentException("estimate data hasn't been created");
@@ -67,7 +67,7 @@ public class EstimateTest extends BaseProjectApiTest {
         assertThat(resp.toString(), resp.isSuccessful());
     }
 
-    @Test(description = "Get Estimate")
+    @Test(description = "C3311703 GET estimate product")
     public void testGetEstimate() {
         if (estimateData == null)
             throw new IllegalArgumentException("estimate data hasn't been created");
@@ -75,7 +75,7 @@ public class EstimateTest extends BaseProjectApiTest {
         estimateClient.assertThatGetResponseMatches(getResp, estimateData);
     }
 
-    @Test(description = "Update Estimate - change quantity")
+    @Test(description = "C3311707 Update Estimate - change quantity")
     public void testUpdateEstimate() {
         if (estimateData == null)
             throw new IllegalArgumentException("estimate data hasn't been created");
@@ -95,7 +95,7 @@ public class EstimateTest extends BaseProjectApiTest {
         estimateClient.assertThatGetResponseMatches(getResp, estimateData);
     }
 
-    @Test(description = "Delete Estimate")
+    @Test(description = "C22732369 PUT estimates/changeStatus DRAFT -> DELETED")
     public void testDeleteEstimate() {
         if (estimateData == null)
             throw new IllegalArgumentException("estimate data hasn't been created");
