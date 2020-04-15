@@ -17,19 +17,19 @@ def mvn_run_str = "mvn clean test -Dmaven.test.failure.ignore=true -DrunWithIssu
 pipeline {
     agent { label 'dockerhost' }
     stages {
-        stage('test') {
-            agent {
-                docker {
-                    reuseNode true
-                    image 'maven:3.6.3-jdk-8-openj9'
-                    args '-v $HOME/.m2:/root/.m2'
-                }
-            }
-            steps {
+       // stage('test') {
+       //     agent {
+      //          docker {
+      //              reuseNode true
+      //              image 'maven:3.6.3-jdk-8-openj9'
+      //              args '-v $HOME/.m2:/root/.m2'
+     //           }
+      //      }
+     //       steps {
                 //sh(mvn_run_str)
                 //stash name: 'allure-results', includes: 'target/allure-results/*'
-            }
-        }
+     //       }
+     //   }
         stage("notification") {
 			steps {
                 echo("Test")
