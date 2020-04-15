@@ -14,10 +14,14 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
+import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.lang.reflect.Method;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.leroy.core.matchers.Matchers.successful;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 @Guice(modules = {Module.class})
 public abstract class BaseProjectApiTest {
@@ -62,7 +66,9 @@ public abstract class BaseProjectApiTest {
         apiClientProvider.setSessionData(sessionData);
     }
 
-    protected abstract boolean isNeedAccessToken();
+    protected boolean isNeedAccessToken() {
+        return false;
+    }
 
     @BeforeMethod
     protected void baseTestBeforeMethod(Method method) throws Exception {
@@ -74,6 +80,10 @@ public abstract class BaseProjectApiTest {
 
     protected void step(String step) {
         log.step(step);
+    }
+
+    protected void isResponseOk(Response<?> response) {
+        assertThat(response, successful());
     }
 
 }

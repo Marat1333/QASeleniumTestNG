@@ -18,6 +18,12 @@
         </classes>
     </test>
 
+    <test name="Transfer search">
+        <classes>
+            <class name="com.leroy.magmobile.api.tests.salesdoc.TransferSearchTest"/>
+        </classes>
+    </test>
+
 
 
 </suite>

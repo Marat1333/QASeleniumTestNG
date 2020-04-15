@@ -11,6 +11,7 @@ public class CartData {
     private String docType;
     private String salesDocStatus;
     private List<CartProductOrderData> products;
+    private List<Object> groups;
     private String shopId;
     private String cartId;
     private String documentType;

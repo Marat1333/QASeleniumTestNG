@@ -1,7 +1,6 @@
 package com.leroy.magmobile.api.tests.catalog_search;
 
 import com.leroy.constants.EnvConstants;
-import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.data.catalog.ServiceItemData;
@@ -26,11 +25,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class CatalogSearchTest extends BaseProjectApiTest {
-
-    @Override
-    protected boolean isNeedAccessToken() {
-        return false;
-    }
 
     private void isResponseSuccessfulAndContainsMoreThanOneEntity(Response<?> response, List<?> responseData) {
         assertThat(response, successful());

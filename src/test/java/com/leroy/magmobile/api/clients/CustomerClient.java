@@ -1,11 +1,11 @@
 package com.leroy.magmobile.api.clients;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.leroy.constants.StatusCodes;
 import com.leroy.magmobile.api.data.customer.Communication;
 import com.leroy.magmobile.api.data.customer.CustomerData;
 import com.leroy.magmobile.api.data.customer.CustomerListData;
-import com.leroy.magmobile.api.requests.customer.CustomerAccountCreateRequest;
-import com.leroy.magmobile.api.requests.customer.CustomerAccountGetRequest;
-import com.leroy.magmobile.api.requests.customer.CustomerAccountsSearchRequest;
+import com.leroy.magmobile.api.requests.customer.*;
 import com.leroy.magmobile.api.data.customer.CustomerResponseBodyData;
 import com.leroy.magmobile.api.data.customer.CustomerSearchFilters;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -38,10 +38,24 @@ public class CustomerClient extends MagMobileClient {
         return execute(req, CustomerResponseBodyData.class);
     }
 
+    public Response<CustomerResponseBodyData> updateCustomer(CustomerData customerData) {
+        CustomerAccountUpdateRequest req = new CustomerAccountUpdateRequest();
+        req.setShopId(sessionData.getUserShopId());
+        req.setLdap(sessionData.getUserLdap());
+        req.jsonBody(customerData);
+        return execute(req, CustomerResponseBodyData.class);
+    }
+
     public Response<CustomerResponseBodyData> getCustomer(String customerNumber) {
         CustomerAccountGetRequest req = new CustomerAccountGetRequest();
         req.setCustomerNumber(customerNumber);
         return execute(req, CustomerResponseBodyData.class);
+    }
+
+    public Response<JsonNode> getCustomerBalance(String customerNumber) {
+        CustomerAccountBalanceRequest req = new CustomerAccountBalanceRequest();
+        req.setCustomerNumber(customerNumber);
+        return execute(req, JsonNode.class);
     }
 
     // ----------------- VERIFICATIONS --------------- //
@@ -117,6 +131,15 @@ public class CustomerClient extends MagMobileClient {
         }
 
         return this;
+    }
+
+    // Negative verifications
+
+    public void assertThatBalanceNotFound(Response<JsonNode> resp) {
+        assertThat(resp.toString(), resp.getStatusCode(), is(StatusCodes.ST_404_NOT_FOUND));
+        assertThat("Error text is wrong", resp.asJson().get("error").asText(),
+                is("Customer balance not found!"));
+
     }
 
     // Help Methods
