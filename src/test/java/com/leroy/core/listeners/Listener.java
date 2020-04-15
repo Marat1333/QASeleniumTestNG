@@ -119,7 +119,7 @@ public class Listener implements ITestListener, ISuiteListener,
     private boolean isTestNeedToDisable(Method method) {
         String smoke = System.getProperty("smoke");
         String withIssues = System.getProperty("runWithIssues");
-        if (Strings.isNotNullAndNotEmpty(withIssues) && withIssues.equals("false")) {
+        if (Strings.isNotNullAndNotEmpty(withIssues) && withIssues.equalsIgnoreCase("false")) {
             return method.isAnnotationPresent(Issue.class);
         }
         if (Strings.isNotNullAndNotEmpty(smoke) && smoke.equals("true")) {
