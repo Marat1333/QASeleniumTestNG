@@ -10,6 +10,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -177,16 +178,17 @@ public class APIClient {
                 {
                     conn.addRequestProperty("Content-Type", "application/json");
                     byte[] block = JSONValue.toJSONString(data).
-                            getBytes("UTF-8");
+                            getBytes(StandardCharsets.UTF_8);
 
                     conn.setDoOutput(true);
                     OutputStream ostream = conn.getOutputStream();
                     ostream.write(block);
                     ostream.close();
                 }
+            } else {
+                conn.addRequestProperty("Content-Type", "application/json");
             }
-        } else    // GET request
-        {
+        } else {   // GET request
             conn.addRequestProperty("Content-Type", "application/json");
         }
 

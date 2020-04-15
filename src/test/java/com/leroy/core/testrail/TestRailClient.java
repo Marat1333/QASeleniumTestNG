@@ -113,6 +113,11 @@ public class TestRailClient {
         return ((JSONArray) obj);
     }
 
+    public static JSONArray getRuns(Long projectId, boolean isCompleted) throws IOException, APIException, InterruptedException {
+        Object obj = apiClient.sendGet("get_runs/" + projectId + "&is_completed=" + (isCompleted? "1" : "0"));
+        return ((JSONArray) obj);
+    }
+
     public static JSONArray getRuns(Long projectId) throws IOException, APIException, InterruptedException {
         Object obj = apiClient.sendGet("get_runs/" + projectId);
         return ((JSONArray) obj);
@@ -131,6 +136,11 @@ public class TestRailClient {
     public static JSONArray getRuns(Long projectId, Long createdAfterTimestamp) throws IOException, APIException, InterruptedException {
         Object obj = apiClient.sendGet("get_runs/" + projectId + "&created_after=" + createdAfterTimestamp);
         return ((JSONArray) obj);
+    }
+
+    public static JSONObject closeRun(Long runId) throws Exception {
+        Object obj = apiClient.sendPost("close_run/" + runId, null);
+        return ((JSONObject) obj);
     }
 
     private static Long findIdFromJSONArrayByName(JSONArray jsonArray, String name) {
