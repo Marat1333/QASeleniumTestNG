@@ -20,7 +20,7 @@ pipeline {
 			steps {
                 telegramSend(
                             chatId: env.TELEGRAM_CHAT,
-                            message: 'Извините, последний раз пробую. Результаты тестов тут -> [тут](https://jenkins.lmru.adeo.com/job/lego-front/view/MAGASIN%20mobile/job/lego-front-android-Run_API_tests/${env.BUILD_NUMBER}/allure) или тут -> https://jenkins.lmru.adeo.com/job/lego-front/view/MAGASIN%20mobile/job/lego-front-android-Run_API_tests/${env.BUILD_NUMBER}/allure'
+                            message: 'Извините, последний раз пробую. Результаты тестов тут -> https://jenkins.lmru.adeo.com/job/lego-front/view/MAGASIN%20mobile/job/lego-front-android-Run_API_tests/${env.BUILD_NUMBER}/allure'
                         )
 			}
         }
