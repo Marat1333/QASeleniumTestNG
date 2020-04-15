@@ -34,7 +34,7 @@ pipeline {
 			steps {
                 echo("Test")
                 echo(WORKSPACE)
-                echo(${env.BUILD_NUMBER})
+                echo(env.BUILD_NUMBER)
                 echo("https://jenkins.lmru.adeo.com/job/lego-front/view/MAGASIN mobile/job/lego-front-android-Run_API_tests/${env.BUILD_NUMBER})/allure")
 				echo("[тут](https://jenkins.lmru.adeo.com/job/lego-front/view/MAGASIN mobile/job/lego-front-android-Run_API_tests/${env.BUILD_NUMBER})/allure)")
 
