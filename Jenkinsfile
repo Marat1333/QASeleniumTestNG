@@ -63,12 +63,14 @@ pipeline {
             }
         }
         stage("notification") {
-            echo("Test")
-            echo(WORKSPACE)
-            telegramSend(
-                        chatId: QA_LEGO_FRONT,
-                        message: 'Результаты тестов тут -> https://jenkins.lmru.adeo.com/job/lego-front/view/MAGASIN%20mobile/job/lego-front-android-Run_API_tests/'
-                    )
+			steps {
+                echo("Test")
+                echo(WORKSPACE)
+                telegramSend(
+                            chatId: QA_LEGO_FRONT,
+                            message: 'Результаты тестов тут -> https://jenkins.lmru.adeo.com/job/lego-front/view/MAGASIN%20mobile/job/lego-front-android-Run_API_tests/'
+                        )
+			}
         }
     }
     post {
