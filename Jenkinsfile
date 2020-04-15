@@ -3,7 +3,7 @@ def mvn_run_str = "mvn clean test -Dmaven.test.failure.ignore=true -DrunWithIssu
 pipeline {
     agent { label 'dockerhost' }
     stages {
-        /*stage('test') {
+        stage('test') {
             agent {
                 docker {
                     reuseNode true
@@ -15,7 +15,7 @@ pipeline {
                 sh(mvn_run_str)
                 stash name: 'allure-results', includes: 'target/allure-results/*'
             }
-        }*/
+        }
         stage("notification") {
 			steps {
                 telegramSend(
