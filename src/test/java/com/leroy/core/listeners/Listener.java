@@ -105,8 +105,11 @@ public class Listener implements ITestListener, ISuiteListener,
     }
 
     private String readBrowserFromPropertyFile() {
+        String pathPropsFile = System.getProperty("mpropsFile");
+        if (pathPropsFile == null)
+            return null;
         Map<String, Object> properties = (Map<String, Object>)
-                DriverFactory.loadPropertiesFromFile(System.getProperty("mpropsFile"));
+                DriverFactory.loadPropertiesFromFile(pathPropsFile);
         Map<String, Object> settings = (Map<String, Object>) properties.get("settings");
         return DriverFactory.getPropertyValue("", settings, "browser",
                 System.getProperty("mBrowser"));
