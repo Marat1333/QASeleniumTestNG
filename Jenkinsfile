@@ -18,11 +18,9 @@ pipeline {
         }
         stage("notification") {
 			steps {
-			echo(env.BUILD_NUMBER)
-			echo("aaa" + env.BUILD_NUMBER + "bbb")
                 telegramSend(
                             chatId: env.TELEGRAM_CHAT,
-                            message: 'Результаты тут -> https://jenkins.lmru.adeo.com/job/lego-front/view/MAGASIN%20mobile/job/lego-front-android-Run_API_tests/34/allure'
+                            message: "Результаты тут -> https://jenkins.lmru.adeo.com/job/lego-front/view/MAGASIN\%20mobile/job/lego-front-android-Run_API_tests/"+ env.BUILD_NUMBER +"/allure"
                         )
 			}
         }
