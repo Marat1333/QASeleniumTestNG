@@ -6,7 +6,7 @@ import com.leroy.magmobile.api.data.sales.transfer.TransferDataList;
 import com.leroy.magmobile.api.data.sales.transfer.TransferSalesDocData;
 import com.leroy.magmobile.api.data.sales.transfer.TransferSearchFilters;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
-import io.qameta.allure.Muted;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -16,7 +16,7 @@ import static org.hamcrest.Matchers.*;
 
 public class TransferSearchTest extends BaseProjectApiTest {
 
-    @Muted
+    @Issue("BACKEND_ISSUE")
     @Test(description = "C3272535 SalesDoc transfers GET with status NEW")
     public void testTransferTaskSearchByStatus() {
         TransferClient transferClient = apiClientProvider.getTransferClient();

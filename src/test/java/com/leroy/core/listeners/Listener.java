@@ -11,6 +11,7 @@ import com.leroy.core.configuration.*;
 import com.leroy.core.listeners.helpers.RetryAnalyzer;
 import com.leroy.core.listeners.helpers.XMLSuiteResultWriter;
 import com.leroy.core.pages.AnyPage;
+import io.qameta.allure.Issue;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -117,6 +118,10 @@ public class Listener implements ITestListener, ISuiteListener,
 
     private boolean isTestNeedToDisable(Method method) {
         String smoke = System.getProperty("smoke");
+        String withIssues = System.getProperty("runWithIssues");
+        if (Strings.isNotNullAndNotEmpty(withIssues) && withIssues.equals("false")) {
+            return method.isAnnotationPresent(Issue.class);
+        }
         if (Strings.isNotNullAndNotEmpty(smoke) && smoke.equals("true")) {
             return !method.isAnnotationPresent(Smoke.class);
         }

@@ -37,7 +37,6 @@
             <class name="com.leroy.magmobile.api.tests.salesdoc.SalesDocTransferTest">
                 <methods>
                     <include name="testSalesDocTransferCreatePOST"/>
-                    <include name="testValidateJsonSchema"/>
                     <include name="testUpdateTransfer"/>
                     <include name="testSalesDocTransferAddProduct"/>
                     <include name="testGET"/>
