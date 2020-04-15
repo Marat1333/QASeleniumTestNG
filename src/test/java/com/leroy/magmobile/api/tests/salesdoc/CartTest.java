@@ -13,8 +13,11 @@ import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountReasonData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
+import org.testng.ITestResult;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.testng.internal.TestResult;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.Arrays;
@@ -22,9 +25,8 @@ import java.util.List;
 import java.util.Random;
 
 import static com.leroy.constants.sales.DiscountConst.TYPE_NEW_PRICE;
-
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasSize;
 
 public class CartTest extends BaseProjectApiTest {
 
@@ -49,28 +51,46 @@ public class CartTest extends BaseProjectApiTest {
         products = searchClient.getProducts(3);
     }
 
-    @Test(description = "C22906656 Creating Cart with 2 products")
-    public void testCreateCart() {
-        // Prepare request data
+    @AfterMethod
+    private void cartAfterMethod(ITestResult result) {
+        if (result.getStatus() != TestResult.SUCCESS)
+            cartData = null;
+    }
+
+    private List<CartProductOrderData> getTestProductData() {
         CartProductOrderData productOrderData1 = new CartProductOrderData(products.get(0));
         productOrderData1.setQuantity((double) new Random().nextInt(6) + 1);
         CartProductOrderData productOrderData2 = new CartProductOrderData(products.get(1));
         productOrderData2.setQuantity((double) new Random().nextInt(6) + 1);
+        return Arrays.asList(productOrderData1, productOrderData2);
+    }
+
+    private void initPreConditionCartData() {
+        Response<CartData> resp = cartClient.sendRequestCreate(
+                getTestProductData());
+        isResponseOk(resp);
+        cartData = resp.asJson();
+    }
+
+    @Test(description = "C22906656 Creating Cart with 2 products")
+    public void testCreateCart() {
+        // Prepare request data
+        List<CartProductOrderData> cartProductDataList = getTestProductData();
 
         // Create
         Response<CartData> response = cartClient.sendRequestCreate(
-                Arrays.asList(productOrderData1, productOrderData2));
+                cartProductDataList);
         // Check Create
         cartData = cartClient.assertThatIsCreatedAndGetData(response);
         // Check that created data contains added product
         cartClient.assertThatResponseContainsAddedProducts(response,
-                Arrays.asList(productOrderData1, productOrderData2));
+                cartProductDataList);
     }
 
     @Test(description = "C23194964 Cart - Confirm Quantity - happy path (with simple product - no AVS, no TOP EM)")
     public void testCartConfirmQuantity() {
         if (cartData == null)
-            throw new IllegalArgumentException("cart data hasn't been created");
+            initPreConditionCartData();
         CartProductOrderData cartProductOrderData = cartData.getProducts().get(0);
         cartProductOrderData.setStockAdditionBySalesman(999);
         Response<CartData> confirmQuantityResp = cartClient.confirmQuantity(cartData.getCartId(), 1,
@@ -81,12 +101,12 @@ public class CartTest extends BaseProjectApiTest {
     @Test(description = "C23194966 Cart - Add Discount")
     public void testCartDiscount() {
         if (cartData == null)
-            throw new IllegalArgumentException("cart data hasn't been created");
+            initPreConditionCartData();
         CartProductOrderData putCartProductOrderData = cartData.getProducts().get(0);
 
         CartDiscountData discountData = new CartDiscountData();
         discountData.setType(TYPE_NEW_PRICE);
-        discountData.setTypeValue(189);
+        discountData.setTypeValue(putCartProductOrderData.getPrice() - 1);
         discountData.setReason(new CartDiscountReasonData(DiscountConst.Reasons.PRODUCT_SAMPLE.getId()));
         putCartProductOrderData.setDiscount(discountData);
         Response<CartData> resp = cartClient.addDiscount(cartData.getCartId(), cartData.getDocumentVersion(),
@@ -101,13 +121,13 @@ public class CartTest extends BaseProjectApiTest {
         CatalogSearchFilter filtersData = new CatalogSearchFilter();
         filtersData.setAvs(false);
         filtersData.setTopEM(false);
-        filtersData.setHasAvailableStock(false);
-        CartProductOrderData productWithNegativeBalance = new CartProductOrderData(
-                apiClientProvider.getProducts(1, filtersData).get(0));
-        productWithNegativeBalance.setQuantity(1.0);
         filtersData.setHasAvailableStock(true);
+        List<ProductItemData> productItemDataList = apiClientProvider.getProducts(2, filtersData);
+        CartProductOrderData productWithNegativeBalance = new CartProductOrderData(
+                productItemDataList.get(0));
+        productWithNegativeBalance.setQuantity(productItemDataList.get(0).getAvailableStock() + 1.0);
         CartProductOrderData productWithPositiveBalance = new CartProductOrderData(
-                apiClientProvider.getProducts(1, filtersData).get(0));
+                productItemDataList.get(1));
         productWithPositiveBalance.setQuantity(1.0);
 
         step("Create Cart");
@@ -130,7 +150,7 @@ public class CartTest extends BaseProjectApiTest {
     @Test(description = "C23194965 Lego_Cart_Items - Remove 1 product from 2 from the Cart")
     public void testCartItems() {
         if (cartData == null)
-            throw new IllegalArgumentException("cart data hasn't been created");
+            initPreConditionCartData();
         int removeProductIndex = 1;
         String removeLineId = cartData.getProducts().get(removeProductIndex).getLineId();
         Response<CartData> resp = cartClient.removeItems(
@@ -143,7 +163,7 @@ public class CartTest extends BaseProjectApiTest {
     @Test(description = "C23194967 Update Cart - Add product")
     public void testUpdateCart() {
         if (cartData == null)
-            throw new IllegalArgumentException("cart data hasn't been created");
+            initPreConditionCartData();
         CartProductOrderData newProductData = new CartProductOrderData(products.get(2));
         newProductData.setQuantity(1.0);
         Response<CartData> resp = cartClient.addProduct(
@@ -156,13 +176,15 @@ public class CartTest extends BaseProjectApiTest {
     @Test(description = "C22906657 Get Cart info - Lego_Cart_Get")
     public void testGetCart() {
         if (cartData == null)
-            throw new IllegalArgumentException("cart data hasn't been created");
+            initPreConditionCartData();
         Response<CartData> getResp = cartClient.sendRequestGet(cartData.getCartId());
         cartClient.assertThatResponseMatches(getResp, cartData);
     }
 
     @Test(description = "C22906658 Lego_CartChangeStatus - make status is DELETED")
     public void testDeleteCart() {
+        if (cartData == null)
+            initPreConditionCartData();
         Response<JsonNode> response = cartClient.sendRequestDelete(cartData.getCartId(),
                 cartData.getDocumentVersion());
         cartClient.assertThatResponseResultIsOk(response);
