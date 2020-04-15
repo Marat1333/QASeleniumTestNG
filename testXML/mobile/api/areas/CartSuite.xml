@@ -22,4 +22,14 @@
         </classes>
     </test>
 
+    <test name="Cart - Consolidate products">
+        <classes>
+            <class name="com.leroy.magmobile.api.tests.salesdoc.CartTest">
+                <methods>
+                    <include name="testCartConsolidateProducts"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
 </suite>

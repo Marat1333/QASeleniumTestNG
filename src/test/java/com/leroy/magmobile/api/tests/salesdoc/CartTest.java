@@ -2,14 +2,16 @@ package com.leroy.magmobile.api.tests.salesdoc;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
-import com.leroy.constants.SalesDocumentsConst;
+import com.leroy.constants.sales.DiscountConst;
+import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.clients.CartClient;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
+import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.api.data.sales.DiscountReasonData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountReasonData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
-import com.leroy.magmobile.api.data.sales.cart_estimate.cart.DiscountData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -18,6 +20,11 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+
+import static com.leroy.constants.sales.DiscountConst.TYPE_NEW_PRICE;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 public class CartTest extends BaseProjectApiTest {
 
@@ -42,7 +49,7 @@ public class CartTest extends BaseProjectApiTest {
         products = searchClient.getProducts(3);
     }
 
-    @Test(description = "C22906656 Create Cart - Lego_Cart_Post")
+    @Test(description = "C22906656 Creating Cart with 2 products")
     public void testCreateCart() {
         // Prepare request data
         CartProductOrderData productOrderData1 = new CartProductOrderData(products.get(0));
@@ -60,7 +67,7 @@ public class CartTest extends BaseProjectApiTest {
                 Arrays.asList(productOrderData1, productOrderData2));
     }
 
-    @Test(description = "Cart - Confirm Quantity")
+    @Test(description = "C23194964 Cart - Confirm Quantity - happy path (with simple product - no AVS, no TOP EM)")
     public void testCartConfirmQuantity() {
         if (cartData == null)
             throw new IllegalArgumentException("cart data hasn't been created");
@@ -71,35 +78,56 @@ public class CartTest extends BaseProjectApiTest {
         cartClient.assertThatQuantityIsConfirmed(confirmQuantityResp, cartData);
     }
 
-    // TODO #unfinished
-    // https://jaeger-query-lego-preprod-apim-stage.apps.lmru.tech/trace/21d4607f004219af
-    @Test(description = "Cart - Add Discount")
+    @Test(description = "C23194966 Cart - Add Discount")
     public void testCartDiscount() {
         if (cartData == null)
             throw new IllegalArgumentException("cart data hasn't been created");
-        CartProductOrderData cartProductOrderData = cartData.getProducts().get(0);
-        CartProductOrderData putCartProductOrderData = new CartProductOrderData();
-        putCartProductOrderData.setLineId(cartProductOrderData.getLineId());
-        putCartProductOrderData.setLmCode(cartProductOrderData.getLmCode());
-        putCartProductOrderData.setPrice(cartProductOrderData.getPrice());
-        //putCartProductOrderData.setType(null);
-        DiscountData discountData = new DiscountData();
-        discountData.setType("NEW_PRICE");
+        CartProductOrderData putCartProductOrderData = cartData.getProducts().get(0);
+
+        CartDiscountData discountData = new CartDiscountData();
+        discountData.setType(TYPE_NEW_PRICE);
         discountData.setTypeValue(189);
-        //discountData.setReason(new DiscountReasonData(1));
+        discountData.setReason(new CartDiscountReasonData(DiscountConst.Reasons.PRODUCT_SAMPLE.getId()));
         putCartProductOrderData.setDiscount(discountData);
-        Response<CartData> resp = cartClient.addDiscount(cartData.getCartId(), 1,
+        Response<CartData> resp = cartClient.addDiscount(cartData.getCartId(), cartData.getDocumentVersion(),
                 putCartProductOrderData);
         cartClient.assertThatDiscountAdded(resp, cartData);
+        cartData.increaseDocumentVersion();
     }
 
-    @Test(description = "Lego_Cart_Consolidate_Products")
+    @Test(description = "C23194968 Lego_Cart_Consolidate_Products - happy path")
     public void testCartConsolidateProducts() {
-        // TODO #unfinished
-        // Kak???
+        step("Find products");
+        CatalogSearchFilter filtersData = new CatalogSearchFilter();
+        filtersData.setAvs(false);
+        filtersData.setTopEM(false);
+        filtersData.setHasAvailableStock(false);
+        CartProductOrderData productWithNegativeBalance = new CartProductOrderData(
+                apiClientProvider.getProducts(1, filtersData).get(0));
+        productWithNegativeBalance.setQuantity(1.0);
+        filtersData.setHasAvailableStock(true);
+        CartProductOrderData productWithPositiveBalance = new CartProductOrderData(
+                apiClientProvider.getProducts(1, filtersData).get(0));
+        productWithPositiveBalance.setQuantity(1.0);
+
+        step("Create Cart");
+        Response<CartData> response = cartClient.sendRequestCreate(
+                Arrays.asList(productWithNegativeBalance, productWithPositiveBalance));
+        // Check Create
+        cartData = cartClient.assertThatIsCreatedAndGetData(response);
+        assertThat("Group count", cartData.getGroups(), hasSize(2));
+        step("Consolidate Products");
+        Response<JsonNode> consolidateResp = cartClient.consolidateProducts(
+                cartData.getCartId(), cartData.getDocumentVersion(), cartData.getProducts().get(1).getLineId());
+        cartClient.assertThatResponseResultIsOk(consolidateResp);
+
+        step("Send get request and check data");
+        Response<CartData> getResp = cartClient.sendRequestGet(cartData.getCartId());
+        cartClient.assertThatResponseMatches(getResp, cartData);
+        assertThat("Group count", getResp.asJson().getGroups(), hasSize(1));
     }
 
-    @Test(description = "Lego_Cart_Items")
+    @Test(description = "C23194965 Lego_Cart_Items - Remove 1 product from 2 from the Cart")
     public void testCartItems() {
         if (cartData == null)
             throw new IllegalArgumentException("cart data hasn't been created");
@@ -112,7 +140,7 @@ public class CartTest extends BaseProjectApiTest {
         cartClient.assertThatResponseMatches(resp, cartData);
     }
 
-    @Test(description = "Update Cart - Add product")
+    @Test(description = "C23194967 Update Cart - Add product")
     public void testUpdateCart() {
         if (cartData == null)
             throw new IllegalArgumentException("cart data hasn't been created");
@@ -133,11 +161,11 @@ public class CartTest extends BaseProjectApiTest {
         cartClient.assertThatResponseMatches(getResp, cartData);
     }
 
-    @Test(description = "C22906658 Delete Cart - Lego_CartChangeStatus")
+    @Test(description = "C22906658 Lego_CartChangeStatus - make status is DELETED")
     public void testDeleteCart() {
         Response<JsonNode> response = cartClient.sendRequestDelete(cartData.getCartId(),
                 cartData.getDocumentVersion());
-        cartClient.assertThatResponseChangeStatusIsOk(response);
+        cartClient.assertThatResponseResultIsOk(response);
 
         Response<CartData> getResponse = cartClient.sendRequestGet(cartData.getCartId());
         cartData.setSalesDocStatus(SalesDocumentsConst.States.DELETED.getApiVal());

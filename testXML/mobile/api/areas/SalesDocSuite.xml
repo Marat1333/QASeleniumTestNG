@@ -32,15 +32,27 @@
         </classes>
     </test>
 
-    <test name="SalesDoc Transfer">
+    <test name="SalesDoc Transfer: Create/Update - Delete">
         <classes>
             <class name="com.leroy.magmobile.api.tests.salesdoc.SalesDocTransferTest">
                 <methods>
                     <include name="testSalesDocTransferCreatePOST"/>
                     <include name="testValidateJsonSchema"/>
-                    <include name="testSalesDocTransferAddPUT"/>
+                    <include name="testUpdateTransfer"/>
+                    <include name="testSalesDocTransferAddProduct"/>
                     <include name="testGET"/>
                     <include name="testDelete"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="SalesDoc Transfer: Run and check status">
+        <classes>
+            <class name="com.leroy.magmobile.api.tests.salesdoc.SalesDocTransferTest">
+                <methods>
+                    <include name="testTransferRun"/>
+                    <include name="testTransferStatus"/>
                 </methods>
             </class>
         </classes>

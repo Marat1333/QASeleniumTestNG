@@ -2,7 +2,7 @@ package com.leroy.magmobile.api.tests.salesdoc;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.leroy.constants.SalesDocumentsConst;
+import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import com.leroy.magmobile.api.clients.MagMobileClient;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;

@@ -19,5 +19,5 @@ public class CartProductOrderData extends CartEstimateProductOrderData {
     }
 
     private Integer stockAdditionBySalesman;
-    private DiscountData discount;
+    private CartDiscountData discount;
 }
