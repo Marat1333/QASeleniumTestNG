@@ -48,6 +48,22 @@ public class OrderTest extends BaseProjectApiTest {
         productItemDataList = apiClientProvider.getProducts(2);
     }
 
+    private void sendGetOrderRequestAndCheckData() {
+        sendGetOrderRequestAndCheckData(false);
+    }
+
+    private void sendGetOrderRequestAndCheckData(boolean afterCancelOrder) {
+        Response<OrderData> getResp = orderClient.getOrder(orderData.getOrderId());
+        if (getResp.getStatusCode() == StatusCodes.ST_500_ERROR) {
+            Log.error(getResp.toString());
+            getResp = orderClient.getOrder(orderData.getOrderId());
+        }
+        MagMobileClient.ResponseType responseType =
+                afterCancelOrder ? MagMobileClient.ResponseType.DELETE : MagMobileClient.ResponseType.GET;
+        orderClient.assertThatResponseMatches(
+                getResp, orderData, responseType);
+    }
+
     @Test(description = "C23195019 POST Order")
     public void testCreateOrder() {
         // Prepare request data
@@ -90,10 +106,6 @@ public class OrderTest extends BaseProjectApiTest {
         if (orderData == null)
             throw new IllegalArgumentException("order data hasn't been created");
         Response<OrderData> getResp = orderClient.getOrder(orderData.getOrderId());
-        if (getResp.getStatusCode() == StatusCodes.ST_500_ERROR) {
-            Log.error(getResp.toString());
-            getResp = orderClient.getOrder(orderData.getOrderId());
-        }
         orderClient.assertThatResponseMatches(getResp, orderData);
     }
 
@@ -186,7 +198,7 @@ public class OrderTest extends BaseProjectApiTest {
         orderData.setSalesDocStatus(SalesDocumentsConst.States.CANCELLED.getApiVal());
         orderData.increaseFulfillmentVersion();
         step("Check that Order is cancelled after GET request");
-        testGetOrder();
+        sendGetOrderRequestAndCheckData(true);
     }
 
     @Test(description = "C23195040 PUT Order - Remove Product line from Draft Order")
@@ -236,7 +248,7 @@ public class OrderTest extends BaseProjectApiTest {
         assertThat("Count of documents found", respSearch.asJson().getSalesDocuments(), hasSize(1));
 
         step("Send GET request and check that one product is removed");
-        testGetOrder();
+        sendGetOrderRequestAndCheckData();
     }
 
     @Test(description = "C23195043 PUT Order - Change status to Deleted from Draft")
