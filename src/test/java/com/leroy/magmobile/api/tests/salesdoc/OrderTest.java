@@ -1,43 +1,40 @@
 package com.leroy.magmobile.api.tests.salesdoc;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.inject.Inject;
-import com.leroy.constants.SalesDocumentsConst;
 import com.leroy.constants.StatusCodes;
+import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.CartClient;
-import com.leroy.magmobile.api.clients.CatalogSearchClient;
+import com.leroy.magmobile.api.clients.MagMobileClient;
 import com.leroy.magmobile.api.clients.OrderClient;
-import com.leroy.magmobile.api.clients.SalesDocSearchClient;
-import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
+import com.leroy.magmobile.api.data.catalog.ProductItemData;
+import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
-import com.leroy.magmobile.api.data.sales.orders.GiveAwayData;
-import com.leroy.magmobile.api.data.sales.orders.OrderData;
-import com.leroy.magmobile.api.data.sales.orders.PostOrderData;
-import com.leroy.magmobile.api.data.sales.orders.PostOrderProductData;
+import com.leroy.magmobile.api.data.sales.orders.*;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+
+import static com.leroy.core.matchers.Matchers.successful;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 
 public class OrderTest extends BaseProjectApiTest {
 
-    @Inject
     private CartClient cartClient;
-
-    @Inject
     private OrderClient orderClient;
 
-    @Inject
-    private SalesDocSearchClient salesDocSearchClient;
-
-    private CatalogSearchClient searchClient;
-
     private OrderData orderData;
+
+    private List<ProductItemData> productItemDataList;
 
     @Override
     protected boolean isNeedAccessToken() {
@@ -46,17 +43,16 @@ public class OrderTest extends BaseProjectApiTest {
 
     @BeforeClass
     private void setUp() {
-        searchClient = getCatalogSearchClient();
-        cartClient.setSessionData(sessionData);
-        orderClient.setSessionData(sessionData);
-        salesDocSearchClient.setSessionData(sessionData);
+        cartClient = apiClientProvider.getCartClient();
+        orderClient = apiClientProvider.getOrderClient();
+        productItemDataList = apiClientProvider.getProducts(2);
     }
 
-    @Test(description = "Create Order")
+    @Test(description = "C23195019 POST Order")
     public void testCreateOrder() {
         // Prepare request data
         CartProductOrderData productOrderData = new CartProductOrderData(
-                searchClient.getProducts(1).get(0));
+                productItemDataList.get(0));
         productOrderData.setQuantity(1.0);
 
         // Create
@@ -65,22 +61,22 @@ public class OrderTest extends BaseProjectApiTest {
         CartData cartData = cartClient.assertThatIsCreatedAndGetData(response, true);
 
         step("Create Order");
-        PostOrderData postOrderData = new PostOrderData();
-        postOrderData.setCartId(cartData.getCartId());
-        postOrderData.setDateOfGiveAway(LocalDateTime.now().plusDays(5));
-        postOrderData.setDocumentVersion(1);
+        ReqOrderData reqOrderData = new ReqOrderData();
+        reqOrderData.setCartId(cartData.getCartId());
+        reqOrderData.setDateOfGiveAway(LocalDateTime.now().plusDays(5));
+        reqOrderData.setDocumentVersion(1);
 
         CartEstimateProductOrderData cardProduct = cartData.getProducts().get(0);
 
-        PostOrderProductData postProductData = new PostOrderProductData();
+        ReqOrderProductData postProductData = new ReqOrderProductData();
         postProductData.setLineId(cardProduct.getLineId());
         postProductData.setLmCode(cardProduct.getLmCode());
         postProductData.setQuantity(cardProduct.getQuantity());
         postProductData.setPrice(cardProduct.getPrice());
 
-        postOrderData.getProducts().add(postProductData);
+        reqOrderData.getProducts().add(postProductData);
 
-        Response<OrderData> orderResp = orderClient.createOrder(postOrderData);
+        Response<OrderData> orderResp = orderClient.createOrder(reqOrderData);
         orderData = orderClient.assertThatIsCreatedAndGetData(orderResp);
 
         orderClient.assertThatResponseContainsAddedProducts(orderResp,
@@ -89,7 +85,7 @@ public class OrderTest extends BaseProjectApiTest {
         orderData.increasePaymentVersion(); // TODO это правильно или баг?
     }
 
-    @Test(description = "Get Order")
+    @Test(description = "C23195023 GET Order")
     public void testGetOrder() {
         if (orderData == null)
             throw new IllegalArgumentException("order data hasn't been created");
@@ -98,22 +94,21 @@ public class OrderTest extends BaseProjectApiTest {
             Log.error(getResp.toString());
             getResp = orderClient.getOrder(orderData.getOrderId());
         }
-        orderClient.assertThatGetResponseMatches(getResp, orderData);
+        orderClient.assertThatResponseMatches(getResp, orderData);
     }
 
-    @Test(description = "Set PinCode")
+    @Test(description = "C23195024 PUT SetPinCode")
     public void testSetPinCode() {
         if (orderData == null)
             throw new IllegalArgumentException("order data hasn't been created");
-        String validPinCode = salesDocSearchClient.getValidPinCode();
+        String validPinCode = apiClientProvider.getValidPinCode();
         Response<JsonNode> response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
         orderClient.assertThatPinCodeIsSet(response);
         orderData.setPinCode(validPinCode);
         orderData.increasePaymentVersion();
-        orderData.increaseFulfillmentVersion();
     }
 
-    @Test(description = "Confirm Order")
+    @Test(description = "C23195027 PUT Confirm Order")
     public void testConfirmOrder() {
         if (orderData == null)
             throw new IllegalArgumentException("order data hasn't been created");
@@ -133,22 +128,57 @@ public class OrderTest extends BaseProjectApiTest {
         giveAwayData.setShopId(Integer.valueOf(sessionData.getUserShopId()));
         confirmOrderData.setGiveAway(giveAwayData);
 
-        Response<OrderData> getResp = orderClient.confirmOrder(orderData.getOrderId(), confirmOrderData);
-        orderClient.assertThatIsConfirmed(getResp, orderData);
+        Response<OrderData> resp = orderClient.confirmOrder(orderData.getOrderId(), confirmOrderData);
+        orderClient.assertThatIsConfirmed(resp, orderData);
+        orderData.setStatus(SalesDocumentsConst.States.CONFIRMED.getApiVal());
+        orderData.setSalesDocStatus(SalesDocumentsConst.States.CONFIRMED.getApiVal());
         orderData.increaseFulfillmentVersion();
     }
 
-    @Test(description = "Check Quantity Order")
-    public void testCheckQuantity() {
-        orderClient.addProductAfterConfirmation(); // TODO #unfinished Как узнать, в какой заказ добавлять товары?
-    }
-
-    @Test(description = "Cancel Order")
-    public void testCancelOrder() throws Exception {
+    @Test(description = "C23195028 PUT Rearrange Order - Add new product in confirmed order")
+    public void testRearrangeOrder() throws Exception {
         if (orderData == null)
             throw new IllegalArgumentException("order data hasn't been created");
+        ProductItemData productItemData = productItemDataList.get(1);
+        OrderProductData orderProductData = new OrderProductData(productItemData);
+        orderProductData.setQuantity(1.0);
+
         step("Wait until order is confirmed");
         orderClient.waitUntilOrderIsConfirmed(orderData.getOrderId());
+        orderData.setStatus(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal());
+        orderData.increaseFulfillmentVersion();
+
+        step("Rearrange Order");
+        Response<JsonNode> resp = orderClient.rearrange(orderData, orderProductData);
+        orderClient.assertThatRearranged(resp);
+        orderData.getProducts().add(orderProductData);
+
+        step("Check that Order is rearranged after GET request");
+        Response<OrderData> getResp = orderClient.getOrder(orderData.getOrderId());
+        orderClient.assertThatResponseMatches(getResp, orderData, MagMobileClient.ResponseType.GET, false);
+        orderData.setProducts(getResp.asJson().getProducts());
+    }
+
+    @Test(description = "C23195026 POST Check Quantity Order - happy path")
+    public void testCheckQuantity() {
+        OrderProductData orderProductData = orderData.getProducts().get(0);
+
+        ReqOrderProductData putProductData = new ReqOrderProductData();
+        putProductData.setLmCode(orderProductData.getLmCode());
+        putProductData.setQuantity(orderProductData.getQuantity() + 1);
+
+        ReqOrderData reqOrderData = new ReqOrderData();
+        reqOrderData.setDateOfGiveAway(orderData.getGiveAway().getDate());
+        reqOrderData.setProducts(Collections.singletonList(putProductData));
+
+        Response<ResOrderCheckQuantityData> resp = orderClient.checkQuantity(reqOrderData);
+        orderClient.assertThatCheckQuantityIsOk(resp, reqOrderData.getProducts());
+    }
+
+    @Test(description = "C23195030 PUT OrderWorkflow - cancel confirmed order")
+    public void testCancelOrder() {
+        if (orderData == null)
+            throw new IllegalArgumentException("order data hasn't been created");
         step("Cancel Order");
         Response<JsonNode> resp = orderClient.cancelOrder(orderData.getOrderId());
         orderClient.assertThatIsCancelled(resp);
@@ -156,8 +186,66 @@ public class OrderTest extends BaseProjectApiTest {
         orderData.setSalesDocStatus(SalesDocumentsConst.States.CANCELLED.getApiVal());
         orderData.increaseFulfillmentVersion();
         step("Check that Order is cancelled after GET request");
-        Response<OrderData> getResp = orderClient.getOrder(orderData.getOrderId());
-        orderClient.assertThatGetResponseMatches(getResp, orderData);
+        testGetOrder();
+    }
+
+    @Test(description = "C23195040 PUT Order - Remove Product line from Draft Order")
+    public void testUpdateDraftOrderRemoveProductLine() {
+        // Prepare request data
+        CartProductOrderData productOrderData1 = new CartProductOrderData(
+                productItemDataList.get(0));
+        productOrderData1.setQuantity(1.0);
+        CartProductOrderData productOrderData2 = new CartProductOrderData(
+                productItemDataList.get(1));
+        productOrderData2.setQuantity(1.0);
+
+        // Create
+        step("Create Cart");
+        Response<CartData> response = cartClient.sendRequestCreate(Arrays.asList(productOrderData1, productOrderData2));
+        CartData cartData = cartClient.assertThatIsCreatedAndGetData(response, true);
+
+        step("Create Order");
+        ReqOrderData reqOrderData = new ReqOrderData();
+        reqOrderData.setCartId(cartData.getCartId());
+        reqOrderData.setDateOfGiveAway(LocalDateTime.now().plusDays(1));
+        reqOrderData.setDocumentVersion(1);
+
+        for (CartEstimateProductOrderData cardProduct : cartData.getProducts()) {
+            ReqOrderProductData postProductData = new ReqOrderProductData();
+            postProductData.setLineId(cardProduct.getLineId());
+            postProductData.setLmCode(cardProduct.getLmCode());
+            postProductData.setQuantity(cardProduct.getQuantity());
+            postProductData.setPrice(cardProduct.getPrice());
+            reqOrderData.getProducts().add(postProductData);
+        }
+
+        Response<OrderData> orderResp = orderClient.createOrder(reqOrderData);
+        orderData = orderClient.assertThatIsCreatedAndGetData(orderResp);
+
+        step("Remove one product item from Draft Order");
+        orderData.getProducts().remove(1);
+        orderData.setPriority(SalesDocumentsConst.Priorities.HIGH.getApiVal());
+        Response<OrderData> respPut = orderClient.updateDraftOrder(orderData);
+        orderClient.assertThatResponseMatches(respPut, orderData, MagMobileClient.ResponseType.PUT);
+        orderData.setPriority(null);
+
+        step("Search for the created order document");
+        Response<SalesDocumentListResponse> respSearch = apiClientProvider.getSalesDocSearchClient()
+                .searchForDocumentsByDocId(orderData.getFullDocId());
+        assertThat(respSearch, successful());
+        assertThat("Count of documents found", respSearch.asJson().getSalesDocuments(), hasSize(1));
+
+        step("Send GET request and check that one product is removed");
+        testGetOrder();
+    }
+
+    @Test(description = "C23195043 PUT Order - Change status to Deleted from Draft")
+    public void testDeleteDraftOrder() {
+        if (orderData == null)
+            throw new IllegalArgumentException("order data hasn't been created");
+        step("Change status to Deleted for the order");
+        orderClient.assertThatResponseChangeStatusIsOk(
+                orderClient.deleteDraftOrder(orderData.getOrderId()));
     }
 
 }

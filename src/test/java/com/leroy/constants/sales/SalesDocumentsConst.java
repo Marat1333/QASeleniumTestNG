@@ -1,20 +1,19 @@
-package com.leroy.constants;
+package com.leroy.constants.sales;
 
 public class SalesDocumentsConst {
 
     // Состояния документа
     public enum States {
         CONFIRMED("CONFIRMED", "Создан"),
+        ALLOWED_FOR_PICKING("ALLOWED_FOR_PICKING", ""),
         IN_PROGRESS("CONFIRMATION_IN_PROGRESS","Автообработка"),
         TRANSFORMED("","Преобразован"),
+        DELETED("DELETED", ""),
         CANCELLED("CANCELLED", "Отменен"),
         DRAFT("DRAFT","Черновик"),
 
         // Transfer
-        NEW("NEW", ""),
-
-        // Cart
-        DELETED("DELETED", "");
+        NEW("NEW", "");
 
         private String uiVal;
         private String apiVal;

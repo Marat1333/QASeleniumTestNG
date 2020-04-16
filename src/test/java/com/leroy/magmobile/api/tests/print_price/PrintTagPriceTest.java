@@ -1,7 +1,7 @@
 package com.leroy.magmobile.api.tests.print_price;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.leroy.constants.SalesDocumentsConst;
+import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.clients.CatalogProductClient;
 import com.leroy.magmobile.api.clients.PrintPriceClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;

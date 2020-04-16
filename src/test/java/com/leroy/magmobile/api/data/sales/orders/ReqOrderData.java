@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class PostOrderData {
+public class ReqOrderData {
     private String cartId;
     private Integer documentVersion = 1;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SS'Z'")
     private LocalDateTime dateOfGiveAway;
     private List<CustomerData> customers = new ArrayList<>();
-    private List<PostOrderProductData> products = new ArrayList<>();
+    private List<ReqOrderProductData> products = new ArrayList<>();
 }

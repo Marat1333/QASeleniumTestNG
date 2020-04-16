@@ -9,6 +9,10 @@ public class CommonLegoRequest<J extends CommonLegoRequest<J>> extends RequestBu
         return header("ldap", val);
     }
 
+    public J setAppVersion(String val) {
+        return header("appversion", val);
+    }
+
     // Query params
 
     public J setShopId(String val) {

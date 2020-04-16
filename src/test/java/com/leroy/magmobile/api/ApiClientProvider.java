@@ -4,21 +4,21 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.leroy.core.SessionData;
+import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.*;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
-import com.leroy.magmobile.api.data.catalog.ServiceItemData;
-import com.leroy.magmobile.api.data.catalog.ServiceItemDataList;
+import com.leroy.magmobile.api.data.catalog.*;
 import com.leroy.magmobile.api.data.customer.CustomerData;
 import com.leroy.magmobile.api.data.customer.CustomerListData;
 import com.leroy.magmobile.api.data.customer.CustomerSearchFilters;
+import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
+import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateCustomerData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateProductOrderData;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogServicesSearch;
-import com.leroy.magmobile.ui.models.search.FiltersData;
 import lombok.Setter;
+import org.apache.commons.lang.RandomStringUtils;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.ArrayList;
@@ -52,13 +52,21 @@ public class ApiClientProvider {
     @Inject
     private Provider<SalesDocSearchClient> salesDocSearchClientProvider;
     @Inject
-    private Provider<SalesDocTransferClient> salesDocTransferClientProvider;
+    private Provider<TransferClient> salesDocTransferClientProvider;
     @Inject
     private Provider<SmsNotificationClient> smsNotificationClientProvider;
     @Inject
     private Provider<PrintPriceClient> printPriceClientProvider;
     @Inject
     private Provider<CatalogProductClient> catalogProductClientProvider;
+    @Inject
+    private Provider<PickingTaskClient> pickingTaskClientProvider;
+    @Inject
+    private Provider<ShopClient> shopClientProvider;
+    @Inject
+    private Provider<LsAddressClient> lsAddressClientProvider;
+    @Inject
+    private Provider<RupturesClient> rupturesClientProvider;
 
     private <J extends MagMobileClient> J getClient(Provider<J> provider) {
         MagMobileClient cl = provider.get();
@@ -94,7 +102,7 @@ public class ApiClientProvider {
         return getClient(salesDocSearchClientProvider);
     }
 
-    public SalesDocTransferClient getSalesDocTransferClient() {
+    public TransferClient getTransferClient() {
         return getClient(salesDocTransferClientProvider);
     }
 
@@ -108,6 +116,22 @@ public class ApiClientProvider {
 
     public CatalogProductClient getCatalogProductClient() {
         return getClient(catalogProductClientProvider);
+    }
+
+    public PickingTaskClient getPickingTaskClient() {
+        return getClient(pickingTaskClientProvider);
+    }
+
+    public ShopClient getShopClient() {
+        return getClient(shopClientProvider);
+    }
+
+    public LsAddressClient getLsAddressClient() {
+        return getClient(lsAddressClientProvider);
+    }
+
+    public RupturesClient getRupturesClient() {
+        return getClient(rupturesClientProvider);
     }
 
 
@@ -126,15 +150,16 @@ public class ApiClientProvider {
         return services;
     }
 
-    public List<ProductItemData> getProducts(int necessaryCount, FiltersData filtersData) {
+    public List<ProductItemData> getProducts(int necessaryCount, CatalogSearchFilter filtersData) {
         if (filtersData == null)
-            filtersData = new FiltersData();
+            filtersData = new CatalogSearchFilter();
         String[] badLmCodes = {"10008698", "10008751"}; // Из-за отсутствия синхронизации бэков на тесте, мы можем получить некорректные данные
         GetCatalogSearch params = new GetCatalogSearch()
                 .setShopId(sessionData.getUserShopId())
                 .setDepartmentId(sessionData.getUserDepartmentId())
-                .setTopEM(filtersData.isTopEM())
-                .setHasAvailableStock(filtersData.isHasAvailableStock());
+                .setTopEM(filtersData.getTopEM())
+                .setPageSize(50)
+                .setHasAvailableStock(filtersData.getHasAvailableStock());
         Response<ProductItemDataList> resp = getCatalogSearchClient().searchProductsBy(params);
         assertThat("Catalog search request:", resp, successful());
         List<ProductItemData> items = resp.asJson().getItems();
@@ -142,8 +167,8 @@ public class ApiClientProvider {
         int i = 0;
         for (ProductItemData item : items) {
             if (!Arrays.asList(badLmCodes).contains(item.getLmCode()))
-                if (!filtersData.isAvs() && item.getAvsDate() == null ||
-                        filtersData.isAvs() && item.getAvsDate() != null) {
+                if (filtersData.getAvs() == null || !filtersData.getAvs() && item.getAvsDate() == null ||
+                        filtersData.getAvs() && item.getAvsDate() != null) {
                     resultList.add(item);
                     i++;
                 }
@@ -155,7 +180,9 @@ public class ApiClientProvider {
     }
 
     public List<ProductItemData> getProducts(int necessaryCount) {
-        return getProducts(necessaryCount, null);
+        CatalogSearchFilter filter = new CatalogSearchFilter();
+        filter.setHasAvailableStock(true);
+        return getProducts(necessaryCount, filter);
     }
 
     public List<String> getProductLmCodes(int necessaryCount) {
@@ -177,6 +204,30 @@ public class ApiClientProvider {
         assertThat("GetAnyCustomer Method. Count of customers", customers,
                 hasSize(greaterThan(0)));
         return customers.get(0);
+    }
+
+    // SalesDoc
+
+    public String getValidPinCode() {
+        int tryCount = 10;
+        for (int i = 0; i < tryCount; i++) {
+            String generatedPinCode;
+            do {
+                generatedPinCode = RandomStringUtils.randomNumeric(5);
+            } while (generatedPinCode.startsWith("9"));
+            SalesDocumentListResponse salesDocumentsResponse = getSalesDocSearchClient()
+                    .getSalesDocumentsByPinCodeOrDocId(generatedPinCode)
+                    .asJson();
+            if (salesDocumentsResponse.getTotalCount() == 0) {
+                Log.info("API: None documents found with PIN: " + generatedPinCode);
+                return generatedPinCode;
+            }
+            List<SalesDocumentResponseData> salesDocs = salesDocumentsResponse.getSalesDocuments();
+            if (!generatedPinCode.equals(salesDocs.get(0).getPinCode())) {
+                return generatedPinCode;
+            }
+        }
+        throw new RuntimeException("Couldn't find valid pin code for " + tryCount + " trying");
     }
 
     // ESTIMATE

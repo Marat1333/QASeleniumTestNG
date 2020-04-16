@@ -3,11 +3,22 @@
 <suite name="API Mag Mobile Global Suite">
 
     <suite-files>
+        <suite-file path="areas/AuthorizationSuite.xml"/>
         <suite-file path="areas/CartSuite.xml"/>
+        <suite-file path="areas/CatalogSearchSuite.xml"/>
+        <suite-file path="areas/CustomerSearchSuite.xml"/>
+        <suite-file path="areas/CustomerSuite.xml"/>
         <suite-file path="areas/EstimateSuite.xml"/>
+        <suite-file path="areas/LsAddressSuite.xml"/>
+        <suite-file path="areas/NotificationSuite.xml"/>
         <suite-file path="areas/OrderSuite.xml"/>
+        <suite-file path="areas/PickingTaskSearchSuite.xml"/>
+        <suite-file path="areas/PrintTagPriceTest.xml"/>
+        <suite-file path="areas/RupturesSessionSuite.xml"/>
+        <suite-file path="areas/RuptureSessionSearchSuite.xml"/>
         <suite-file path="areas/SalesDocSearchSuite.xml"/>
         <suite-file path="areas/SalesDocSuite.xml"/>
+        <suite-file path="areas/ShopsSuite.xml"/>
         <suite-file path="areas/SupplyPlan.xml"/>
         <suite-file path="areas/CatalogSearchSuite.xml"/>
         <suite-file path="areas/CatalogProductTest.xml"/>
