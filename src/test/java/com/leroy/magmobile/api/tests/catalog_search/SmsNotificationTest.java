@@ -34,7 +34,7 @@ public class SmsNotificationTest extends BaseProjectApiTest {
         customerClient.setSessionData(sessionData);
     }
 
-    @Test(description = "Create Notification")
+    @Test(description = "C3175887 SMS post")
     public void testCreateNotification() {
         // Get test data:
         ProductItemData product = apiClientProvider.getProducts(1).get(0);
@@ -60,7 +60,7 @@ public class SmsNotificationTest extends BaseProjectApiTest {
         smsNotificationClient.assertThatIsCreated(resp, smsNotificationData);
     }
 
-    @Test(description = "Get Notification")
+    @Test(description = "C3175886 SMS get")
     public void testGetNotification() {
         Response<SmsNotificationData> resp = smsNotificationClient.getNotification(
                 smsNotificationData.getProduct().getLmCode());

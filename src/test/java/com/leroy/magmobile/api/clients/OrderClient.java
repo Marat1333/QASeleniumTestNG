@@ -202,8 +202,10 @@ public class OrderClient extends MagMobileClient {
                 assertThat(String.format("Product #%s - lineId", i + 1),
                         actualProduct.getLineId(), not(emptyOrNullString()));
             }
-            assertThat(String.format("Product #%s - Quantity", i + 1),
-                    actualProduct.getQuantity(), is(expectedProduct.getQuantity()));
+            if (!ResponseType.DELETE.equals(responseType)) {
+                assertThat(String.format("Product #%s - Quantity", i + 1),
+                        actualProduct.getQuantity(), is(expectedProduct.getQuantity()));
+            }
             assertThat(String.format("Product #%s - Price", i + 1),
                     actualProduct.getPrice(), is(expectedProduct.getPrice()));
             assertThat(String.format("Product #%s - Type", i + 1),

@@ -18,6 +18,6 @@ public class CartProductOrderData extends CartEstimateProductOrderData {
         super(productItemData);
     }
 
-    private Integer stockAdditionBySalesman;
+    private Double stockAdditionBySalesman;
     private CartDiscountData discount;
 }

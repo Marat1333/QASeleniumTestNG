@@ -25,7 +25,7 @@ public class CartEstimateProductOrderData extends ProductItemData {
         // to be continued if needed
     }
 
-    private final String type = "PRODUCT";
+    private String type = "PRODUCT";
     private Double quantity;
     private String lineId;
 

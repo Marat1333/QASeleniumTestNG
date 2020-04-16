@@ -18,6 +18,7 @@ import com.leroy.magmobile.api.requests.supply_plan.GetSupplyPlanDetails;
 import com.leroy.magmobile.api.requests.supply_plan.GetSupplyPlanSuppliers;
 import com.leroy.magmobile.api.requests.supply_plan.GetSupplyPlanTotal;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -405,8 +406,8 @@ public class SupplyPlanTest extends BaseProjectApiTest {
         }
     }
 
-    //bug
-    @Test(description = "C23185311 shipments sort by secRecDate")
+    @Issue("Need to Create Minor BUG")
+    @Test(description = "C23185311 shipments sort by secRecDate", enabled = false)
     public void testVerifySortBySecRecDate() {
         String warehouse = "922";
         String documentNumber = "1101831359";

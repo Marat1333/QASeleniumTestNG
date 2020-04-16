@@ -61,9 +61,14 @@ public class CartClient extends MagMobileClient {
         req.setCartId(cartId);
         req.setShopId(sessionData.getUserShopId());
         req.setLdap(sessionData.getUserLdap());
+
         CartData putData = new CartData();
         putData.setDocumentVersion(documentVersion);
-        putData.setProducts(Collections.singletonList(productData));
+        CartProductOrderData putProductCartData = new CartProductOrderData();
+        putProductCartData.setType(null);
+        putProductCartData.setLineId(productData.getLineId());
+        putProductCartData.setStockAdditionBySalesman(productData.getStockAdditionBySalesman());
+        putData.setProducts(Collections.singletonList(putProductCartData));
         req.jsonBody(putData);
         return execute(req, CartData.class);
     }
@@ -147,7 +152,7 @@ public class CartClient extends MagMobileClient {
     }
 
     private void shortVerifyProducts(
-            int i, CartEstimateProductOrderData actualProduct, CartEstimateProductOrderData expectedProduct) {
+            int i, CartEstimateProductOrderData actualProduct, CartProductOrderData expectedProduct) {
         assertThat(String.format("Product #%s - lmCode", i + 1),
                 actualProduct.getLmCode(), is(expectedProduct.getLmCode()));
         assertThat(String.format("Product #%s - title", i + 1),
@@ -169,12 +174,12 @@ public class CartClient extends MagMobileClient {
     }
 
     public CartClient assertThatResponseContainsAddedProducts(
-            Response<CartData> resp, List<CartEstimateProductOrderData> expectedProducts) {
+            Response<CartData> resp, List<CartProductOrderData> expectedProducts) {
         assertThatResponseIsOk(resp);
         CartData actualData = resp.asJson();
         for (int i = 0; i < actualData.getProducts().size(); i++) {
-            CartEstimateProductOrderData actualProduct = actualData.getProducts().get(i);
-            CartEstimateProductOrderData expectedProduct = expectedProducts.get(i);
+            CartProductOrderData actualProduct = actualData.getProducts().get(i);
+            CartProductOrderData expectedProduct = expectedProducts.get(i);
             shortVerifyProducts(i, actualProduct, expectedProduct);
         }
         return this;
@@ -255,21 +260,26 @@ public class CartClient extends MagMobileClient {
                     is(expectedProductData.getLineId()));
             assertThat("Product #" + (i + 1) + " lmCode", actualProductData.getLmCode(),
                     is(expectedProductData.getLmCode()));
-            assertThat("Product #" + (i + 1) + " Discount.type",
-                    actualProductData.getDiscount().getType(),
-                    is(expectedProductData.getDiscount().getType()));
-            assertThat("Product #" + (i + 1) + " Discount.typeValue",
-                    actualProductData.getDiscount().getTypeValue(),
-                    is(expectedProductData.getDiscount().getTypeValue()));
-            assertThat("Product #" + (i + 1) + " Discount.actor",
-                    actualProductData.getDiscount().getActor(),
-                    is(sessionData.getUserLdap()));
-            //assertThat("Product #" + (i + 1) + " Discount.updated",
-            //        actualProductData.getDiscount().getUpdated(),
-            //        approximatelyEqual(LocalDateTime.now())); // #bug ?
-            assertThat("Product #" + (i + 1) + " Discount.reason",
-                    actualProductData.getDiscount().getReason(),
-                    is(expectedProductData.getDiscount().getReason()));
+            if (expectedProductData.getDiscount() == null) {
+                assertThat("Product #" + (i + 1) + " Discount",
+                        actualProductData.getDiscount(), nullValue());
+            } else {
+                assertThat("Product #" + (i + 1) + " Discount.type",
+                        actualProductData.getDiscount().getType(),
+                        is(expectedProductData.getDiscount().getType()));
+                assertThat("Product #" + (i + 1) + " Discount.typeValue",
+                        actualProductData.getDiscount().getTypeValue(),
+                        is(expectedProductData.getDiscount().getTypeValue()));
+                assertThat("Product #" + (i + 1) + " Discount.actor",
+                        actualProductData.getDiscount().getActor(),
+                        is(sessionData.getUserLdap()));
+                //assertThat("Product #" + (i + 1) + " Discount.updated",
+                //        actualProductData.getDiscount().getUpdated(),
+                //        approximatelyEqual(LocalDateTime.now())); // #bug ?
+                assertThat("Product #" + (i + 1) + " Discount.reason",
+                        actualProductData.getDiscount().getReason(),
+                        is(expectedProductData.getDiscount().getReason()));
+            }
         }
     }
 

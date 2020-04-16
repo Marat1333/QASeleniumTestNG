@@ -1,4 +1,4 @@
-def mvn_run_str = "mvn clean test -Dmaven.test.failure.ignore=true -DxmlPath=testXML/mobile/api/${env.SUITE_XML} -DmpropsFile=src/main/resources/configurationFiles/${env.CONFIGURATION}_grid.yml -DmSuite=258 -DmProject=10 -Denv=${env.ENVIROMENT}"
+def mvn_run_str = "mvn clean test -Dmaven.test.failure.ignore=true -DrunWithIssues=${env.RUN_CASE_WITH_ISSUE} -DxmlPath=testXML/mobile/api/${env.SUITE_XML} -DthreadCount=${env.THREAD_COUNT} -DmRun=${env.RUN} -DmSuite=29833 -DmProject=10 -Denv=${env.ENVIROMENT}"
 
 pipeline {
     agent { label 'dockerhost' }
@@ -7,15 +7,22 @@ pipeline {
             agent {
                 docker {
                     reuseNode true
-                    image 'docker-local-lego-front.art.lmru.tech/img-jdk8-maven-allure'
+                    image 'maven:3.6.3-jdk-8-openj9'
                     args '-v $HOME/.m2:/root/.m2'
                 }
             }
             steps {
                 sh(mvn_run_str)
                 stash name: 'allure-results', includes: 'target/allure-results/*'
-                sh 'echo Finish'
             }
+        }
+        stage("notification") {
+			steps {
+                telegramSend(
+                            chatId: env.TELEGRAM_CHAT,
+                            message: "Результаты тестов тут -> https://jenkins.lmru.adeo.com/job/lego-front/job/lego-front-android-Run-API-tests/"+ env.BUILD_NUMBER +"/allure"
+                        )
+			}
         }
     }
     post {
