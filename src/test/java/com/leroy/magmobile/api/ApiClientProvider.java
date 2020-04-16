@@ -169,8 +169,12 @@ public class ApiClientProvider {
             if (!Arrays.asList(badLmCodes).contains(item.getLmCode()))
                 if (filtersData.getAvs() == null || !filtersData.getAvs() && item.getAvsDate() == null ||
                         filtersData.getAvs() && item.getAvsDate() != null) {
-                    resultList.add(item);
-                    i++;
+                    if (filtersData.getHasAvailableStock() != null &&
+                            (filtersData.getHasAvailableStock() && item.getAvailableStock() > 0 ||
+                                    !filtersData.getHasAvailableStock() && item.getAvailableStock() <=0)) {
+                        resultList.add(item);
+                        i++;
+                    }
                 }
             if (necessaryCount == i)
                 break;

@@ -89,10 +89,21 @@ public class CartTest extends BaseProjectApiTest {
 
     @Test(description = "C23194964 Cart - Confirm Quantity - happy path (with simple product - no AVS, no TOP EM)")
     public void testCartConfirmQuantity() {
-        if (cartData == null)
-            initPreConditionCartData();
-        CartProductOrderData cartProductOrderData = cartData.getProducts().get(0);
-        cartProductOrderData.setStockAdditionBySalesman(999);
+        CatalogSearchFilter filter = new CatalogSearchFilter();
+        filter.setHasAvailableStock(false);
+        ProductItemData product = apiClientProvider.getProducts(1, filter).get(0);
+        CartProductOrderData cartProductOrderData = new CartProductOrderData(product);
+        cartProductOrderData.setQuantity(product.getAvailableStock() + 1.0);
+        step("Create Cart with product quantity greater than Available stock");
+        Response<CartData> resp = cartClient.sendRequestCreate(cartProductOrderData);
+        isResponseOk(resp);
+        cartData = resp.asJson();
+        assertThat("Product counts when Cart created", cartData.getProducts(), hasSize(1));
+        cartProductOrderData = cartData.getProducts().get(0);
+
+        step("Confirm quantity");
+        cartProductOrderData.setStockAdditionBySalesman(
+                cartProductOrderData.getQuantity() - cartProductOrderData.getAvailableStock());
         Response<CartData> confirmQuantityResp = cartClient.confirmQuantity(cartData.getCartId(), 1,
                 cartProductOrderData);
         cartClient.assertThatQuantityIsConfirmed(confirmQuantityResp, cartData);

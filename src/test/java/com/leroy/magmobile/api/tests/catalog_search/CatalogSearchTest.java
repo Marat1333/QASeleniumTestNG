@@ -279,7 +279,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         }
     }
 
-    @TestCase(22893334)
+    @Issue("BACKEND_ISSUE")
     @Test(description = "C22893334 search by topEm filter")
     public void testSearchByTopEmFilter() {
         final boolean topEm = true;
