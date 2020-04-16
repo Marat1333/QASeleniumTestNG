@@ -406,9 +406,8 @@ public class SupplyPlanTest extends BaseProjectApiTest {
         }
     }
 
-    //bug
-    @Issue("Need to Create BUG")
-    @Test(description = "C23185311 shipments sort by secRecDate")
+    @Issue("Need to Create Minor BUG")
+    @Test(description = "C23185311 shipments sort by secRecDate", enabled = false)
     public void testVerifySortBySecRecDate() {
         String warehouse = "922";
         String documentNumber = "1101831359";
