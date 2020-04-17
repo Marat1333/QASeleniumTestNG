@@ -11,7 +11,7 @@ public class CatalogReviewsOfProductsData {
     private String origin;
     private String id;
     private Author author;
-    private List<String> photos;
+    private List<Object> photos;
     private String syndication_source;
     private Boolean syndicated;
     private Boolean noindex;
