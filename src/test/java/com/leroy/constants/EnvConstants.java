@@ -14,15 +14,10 @@ public class EnvConstants {
     private static final Properties properties = getPropertiesForEnv(ENV);
 
     // User options
-    public static final String BASIC_USER_NAME = getProperty("basic.user.name");
-    public static final String BASIC_USER_FULL_NAME = getProperty("basic.user.fullName");
     public static final String BASIC_USER_LDAP = getProperty("basic.user.ldap");
     public static final String BASIC_USER_PASS = getProperty("basic.user.password");
     public static final String BASIC_USER_SHOP_ID = getProperty("basic.user.shopId");
     public static final String BASIC_USER_DEPARTMENT_ID = getProperty("basic.user.departmentId");
-    public static final String BASIC_USER_SHOP_NAME = getProperty("basic.user.shopName");
-    public static final String BASIC_USER_DEPARTMENT_NAME = getProperty("basic.user.departmentName");
-    public static final String BASIC_USER_CITY_NAME = getProperty("basic.user.cityName");
 
     // URLs
     private static String getUrlMagPortal() {
@@ -38,11 +33,6 @@ public class EnvConstants {
     // Shops
     public static final String SHOP_WITH_NEW_INTERFACE = getProperty("data.shop.new_interface");
     public static final String SHOP_WITH_OLD_INTERFACE = getProperty("data.shop.old_interface");
-    // Products
-    public static final String PRODUCT_1_LM_CODE = getProperty("data.simple_product1.lmCode");
-    public static final String PRODUCT_2_LM_CODE = getProperty("data.simple_product2.lmCode");
-    public static final String TOP_EM_PRODUCT_1_LM_CODE = getProperty("data.topEm_product1.lmCode");
-    public static final String WITH_AVS_PRODUCT_1_LM_CODE = getProperty("data.withAvs_product1.lmCode");
 
     // Services
     public static final String SERVICE_1_LM_CODE = getProperty("data.service1.lmCode");

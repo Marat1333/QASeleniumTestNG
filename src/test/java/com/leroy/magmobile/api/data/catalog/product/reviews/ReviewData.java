@@ -1,6 +1,6 @@
 package com.leroy.magmobile.api.data.catalog.product.reviews;
 
-import com.leroy.magmobile.api.data.shop.ShopData;
+import com.leroy.magmobile.api.data.shops.ShopData;
 import com.leroy.magmobile.api.data.user.UserData;
 import lombok.Data;
 

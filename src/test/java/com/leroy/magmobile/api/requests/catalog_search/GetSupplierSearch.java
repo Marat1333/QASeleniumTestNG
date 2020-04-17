@@ -1,16 +1,13 @@
 package com.leroy.magmobile.api.requests.catalog_search;
 
-import com.leroy.magmobile.api.requests.supply_plan.GetSupplyPlanSuppliers;
+import com.leroy.magmobile.api.requests.CommonSearchRequestBuilder;
 import ru.leroymerlin.qa.core.clients.base.Method;
 
-@Method(value = "GET",path = "/suppliers/search")
-public class GetSupplierSearch extends GetSupplyPlanSuppliers {
+@Method(value = "GET", path = "/suppliers/search")
+public class GetSupplierSearch extends CommonSearchRequestBuilder<GetSupplierSearch> {
 
     public GetSupplierSearch setQuery(String value) {
-        return (GetSupplierSearch) super.setQuery(value);
+        return queryParam("query", value);
     }
 
-    public GetSupplierSearch setPageSize(int pageSize){
-        return (GetSupplierSearch) queryParam("pageSize", pageSize);
-    }
 }

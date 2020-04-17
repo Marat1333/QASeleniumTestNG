@@ -1,11 +1,10 @@
 package com.leroy.magmobile.api.clients;
 
-import com.leroy.constants.EnvConstants;
-import com.leroy.constants.SalesDocumentsConst;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.data.catalog.product.*;
-import com.leroy.magmobile.api.data.catalog.product.reviews.CatalogReviewsOfProduct;
+import com.leroy.magmobile.api.data.catalog.product.reviews.CatalogReviewsOfProductList;
 import com.leroy.magmobile.api.data.catalog.product.reviews.ReviewData;
-import com.leroy.magmobile.api.data.catalog.product.reviews.ReviewDataResponse;
 import com.leroy.magmobile.api.requests.catalog.*;
 import lombok.Builder;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -34,72 +33,71 @@ public class CatalogProductClient extends MagMobileClient {
         }
     }
 
-    public Response<CatalogProductData> searchProduct(String lmCode) {
+    public Response<CatalogProductData> getProduct(String lmCode) {
         GetCatalogProduct req = new GetCatalogProduct();
         req.setLmCode(lmCode);
         req.setShopId(sessionData.getUserShopId());
         return execute(req, CatalogProductData.class);
     }
 
-    public Response<CatalogProductData> searchProduct(
+    public Response<CatalogProductData> getProduct(
             String lmCode, SalesDocumentsConst.GiveAwayPoints pointOfGiveAway, Extend extend) {
         GetCatalogProduct req = new GetCatalogProduct();
         req.setLmCode(lmCode);
-        req.setShopId(EnvConstants.BASIC_USER_SHOP_ID);
+        req.setShopId(sessionData.getUserShopId());
         req.setPointOfGiveAway(pointOfGiveAway.getApiVal());
         req.setExtend(extend.toString());
         return execute(req, CatalogProductData.class);
     }
 
-    public Response<CatalogReviewsOfProduct> getProductReviews(String lmCode, int startFrom, int page) {
+    public Response<CatalogReviewsOfProductList> getProductReviews(String lmCode, int pageNumber, int pageSize) {
         GetCatalogProductReviews params = new GetCatalogProductReviews()
                 .setLmCode(lmCode)
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .setStartFrom(startFrom)
-                .setPageNumber(page)
-                .setPageSize(10);
-        return execute(params, CatalogReviewsOfProduct.class);
+                .setShopId(sessionData.getUserShopId())
+                .setPageNumber(pageNumber)
+                .setPageSize(pageSize);
+        return execute(params, CatalogReviewsOfProductList.class);
     }
 
-    public Response<Nomenclature> getNomenclature(GetCatalogNomenclature params) {
-        return execute(params, Nomenclature.class);
+    public Response<Object> getNomenclature() {
+        GetCatalogNomenclatureRequest req = new GetCatalogNomenclatureRequest();
+        return execute(req, Object.class);
     }
 
-    public Response<CatalogSupplierData> getSupplyInfo(String lmCode, String shopId) {
+    public Response<CatalogSupplierData> getSupplyInfo(String lmCode) {
         GetCatalogSupplier params = new GetCatalogSupplier()
                 .setLmCode(lmCode)
-                .setShopId(shopId);
+                .setShopId(sessionData.getUserShopId());
         return execute(params, CatalogSupplierData.class);
     }
 
-    public Response<SalesHistory> getProductSales(String lmCode) {
+    public Response<Object> getProductSales(String lmCode) {
         GetCatalogProductSales params = new GetCatalogProductSales()
                 .setLmCode(lmCode)
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID);
-        return execute(params, SalesHistory.class);
+                .setShopId(sessionData.getUserShopId());
+        return execute(params, Object.class);
     }
 
-    public Response<CatalogShops> getProductShopsPriceAndQuantity(String lmCode, String... shops) {
+    public Response<Object> getProductShopsPriceAndQuantity(String lmCode, String... shops) {
         GetCatalogShops params = new GetCatalogShops()
                 .setLmCode(lmCode);
-
         String shopsAsString = String.join(",", shops);
         params.setShopId(shopsAsString);
-        return execute(params, CatalogShops.class);
+        return execute(params, Object.class);
     }
 
     public Response<CatalogSimilarProducts> getSimilarProducts(String lmCode, Extend extend) {
-        GetCatalogSimilarProducts params = new GetCatalogSimilarProducts()
+        GetCatalogSimilarProductsReq params = new GetCatalogSimilarProductsReq()
                 .setLmCode(lmCode)
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setShopId(sessionData.getUserShopId())
                 .setExtend(extend.toString());
         return execute(params, CatalogSimilarProducts.class);
     }
 
-    public Response<ReviewDataResponse> sendReview(ReviewData data) {
+    public Response<JsonNode> sendReview(ReviewData data) {
         PostCatalogProductReviewCreate params = new PostCatalogProductReviewCreate()
                 .jsonBody(data);
-        return execute(params, ReviewDataResponse.class);
+        return execute(params, JsonNode.class);
     }
 
 }

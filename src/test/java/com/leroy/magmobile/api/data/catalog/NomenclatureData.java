@@ -1,4 +1,4 @@
-package com.leroy.magmobile.api.data.catalog.product;
+package com.leroy.magmobile.api.data.catalog;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Data;

@@ -804,24 +804,28 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23195045 search supplier by code")
-    public void testSearchSupplierByCode(){
+    public void testSearchSupplierByCode() {
         String query = "123";
-        Response<SupplierDataList> response = getCatalogSearchClient().searchSupplierBy(query, 100);
+        Response<SupplierDataList> response = getCatalogSearchClient().searchSupplierBy(query, 3);
         isResponseOk(response);
-        List<SupplierData> data = response.asJson().getItems();
-        for (SupplierData supplierData: data){
-            assertThat(supplierData.getSupplierId(), containsString(query));
+        SupplierDataList supplierDataList = response.asJson();
+        assertThat("item counts", supplierDataList.getItems(), hasSize(3));
+        for (SupplierData supplierData : supplierDataList.getItems()) {
+            assertThat("Supplier id", supplierData.getSupplierId(), containsString(query));
+            assertThat("Supplier name", supplierData.getName(), not(emptyOrNullString()));
         }
     }
 
     @Test(description = "C23195044 search supplier by name")
-    public void testSearchSupplierByName(){
+    public void testSearchSupplierByName() {
         String query = "сази";
-        Response<SupplierDataList> response = getCatalogSearchClient().searchSupplierBy(query, 100);
+        Response<SupplierDataList> response = getCatalogSearchClient().searchSupplierBy(query, 30);
         isResponseOk(response);
-        List<SupplierData> data = response.asJson().getItems();
-        for (SupplierData supplierData: data){
-            assertThat(supplierData.getName(), containsStringIgnoringCase(query));
+        SupplierDataList supplierDataList = response.asJson();
+        assertThat("item counts", supplierDataList.getItems(), hasSize(greaterThan(0)));
+        for (SupplierData supplierData : supplierDataList.getItems()) {
+            assertThat("Supplier id", supplierData.getSupplierId(), not(emptyOrNullString()));
+            assertThat("Supplier name", supplierData.getName(), containsStringIgnoringCase(query));
         }
     }
 }
