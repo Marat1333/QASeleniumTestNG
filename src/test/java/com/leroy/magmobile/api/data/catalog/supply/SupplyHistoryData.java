@@ -1,4 +1,4 @@
-package com.leroy.magmobile.api.data.catalog.product;
+package com.leroy.magmobile.api.data.catalog.supply;
 
 import lombok.Data;
 

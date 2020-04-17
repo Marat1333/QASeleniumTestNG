@@ -1,6 +1,6 @@
 package com.leroy.magmobile.api.clients;
 
-import com.leroy.magmobile.api.data.catalog.SmsNotificationData;
+import com.leroy.magmobile.api.data.notification.SmsNotificationData;
 import com.leroy.magmobile.api.requests.notification.SmsNotificationCreateRequest;
 import com.leroy.magmobile.api.requests.notification.SmsNotificationGetRequest;
 import ru.leroymerlin.qa.core.clients.base.Response;

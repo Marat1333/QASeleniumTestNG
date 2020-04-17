@@ -2,9 +2,11 @@ package com.leroy.magmobile.api.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.sales.SalesDocumentsConst;
-import com.leroy.magmobile.api.data.catalog.product.*;
+import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
+import com.leroy.magmobile.api.data.catalog.product.CatalogSimilarProducts;
 import com.leroy.magmobile.api.data.catalog.product.reviews.CatalogReviewsOfProductList;
 import com.leroy.magmobile.api.data.catalog.product.reviews.ReviewData;
+import com.leroy.magmobile.api.data.catalog.supply.CatalogSupplierData;
 import com.leroy.magmobile.api.requests.catalog.*;
 import lombok.Builder;
 import ru.leroymerlin.qa.core.clients.base.Response;
