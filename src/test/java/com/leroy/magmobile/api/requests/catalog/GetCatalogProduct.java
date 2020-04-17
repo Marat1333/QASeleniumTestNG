@@ -1,4 +1,4 @@
-package com.leroy.magmobile.api.requests.catalog_product;
+package com.leroy.magmobile.api.requests.catalog;
 
 import com.leroy.magmobile.api.requests.CommonLegoRequest;
 import ru.leroymerlin.qa.core.clients.base.Method;
@@ -12,10 +12,6 @@ public class GetCatalogProduct extends CommonLegoRequest<GetCatalogProduct> {
 
     public GetCatalogProduct setExtend(String value) {
         return queryParam("extend", value);
-    }
-
-    public GetCatalogProduct setExtend(String... values) {
-        return queryParam("extend", String.join(",", values));
     }
 
     public GetCatalogProduct setPointOfGiveAway(String value) {

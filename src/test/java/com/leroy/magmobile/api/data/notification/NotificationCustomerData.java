@@ -1,4 +1,4 @@
-package com.leroy.magmobile.api.data.catalog;
+package com.leroy.magmobile.api.data.notification;
 
 import lombok.Data;
 

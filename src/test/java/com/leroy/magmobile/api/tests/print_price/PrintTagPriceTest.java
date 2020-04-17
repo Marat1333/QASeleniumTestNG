@@ -49,7 +49,7 @@ public class PrintTagPriceTest extends BaseProjectApiTest {
         for (String eachLm : lmCode) {
             CatalogProductClient.Extend extendOptions = CatalogProductClient.Extend.builder()
                     .inventory(true).logistic(true).rating(true).build();
-            Response<CatalogProductData> resp = catalogProductClient.searchProduct(
+            Response<CatalogProductData> resp = catalogProductClient.getProduct(
                     eachLm, SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR, extendOptions);
             assertThat(resp, successful());
             catalogProductList.add(resp.asJson());
