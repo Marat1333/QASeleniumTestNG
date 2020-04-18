@@ -132,6 +132,15 @@ public class TransferClient extends MagMobileClient {
         return execute(req, TransferDataList.class);
     }
 
+    public Response<TransferSearchProductDataList> searchForTransferProducts(
+            SalesDocumentsConst.GiveAwayPoints pointOfGiveAway) {
+        TransferProductSearchRequest req = new TransferProductSearchRequest();
+        req.setShopId(sessionData.getUserShopId());
+        req.setDepartmentId(sessionData.getUserDepartmentId());
+        req.setPointOfGiveAway(pointOfGiveAway.getApiVal());
+        return execute(req, TransferSearchProductDataList.class);
+    }
+
     /**
      * ---------- Verifications ------------
      */
