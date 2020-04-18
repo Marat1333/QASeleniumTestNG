@@ -1,11 +1,13 @@
 package com.leroy.magmobile.api.tests.address;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.inject.Inject;
 import com.leroy.magmobile.api.clients.LsAddressClient;
 import com.leroy.magmobile.api.clients.MagMobileClient;
 import com.leroy.magmobile.api.data.address.*;
 import com.leroy.magmobile.api.data.address.cellproducts.*;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
+import com.leroy.umbrella_extension.lsaddress.LsAddressBackClient;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -27,6 +29,9 @@ public class LsAddressTest extends BaseProjectApiTest {
 
     private LsAddressClient lsAddressClient;
 
+    @Inject
+    private LsAddressBackClient lsAddressBackClient;
+
     private AlleyData alleyData;
 
     private StandDataList standDataList;
@@ -43,17 +48,22 @@ public class LsAddressTest extends BaseProjectApiTest {
         lsAddressClient = apiClientProvider.getLsAddressClient();
     }
 
-    @Test(description = "Create Alley") // TODO #unfinished
+    @Test(description = "C3316285 lsAddress POST alleys")
     public void testCreateAlley() {
+        step("Create Alley");
         AlleyData postAlleyData = new AlleyData();
         postAlleyData.setType(0);
-        postAlleyData.setCode("kas3");
+        postAlleyData.setCode("Alley_C3316285");
         Response<AlleyData> resp = lsAddressClient.createAlley(postAlleyData);
         this.alleyData = lsAddressClient.assertThatAlleyIsCreatedAndGetData(resp, postAlleyData);
+
+        step("Delete Alley");
+        Response<JsonNode> deleteResp = lsAddressBackClient.deleteAlley(alleyData.getId());
+        isResponseOk(deleteResp);
     }
 
-    @Test(description = "Search for Alleys")
-    public void testSearchForAlleys() {
+    @Test(description = "C3316284 lsAddress GET alleys")
+    public void testGetAlleys() {
         Response<AlleyDataItems> resp = lsAddressClient.searchForAlleys();
         assertThat(resp, successful());
         List<AlleyData> items = resp.asJson().getItems();
@@ -64,7 +74,8 @@ public class LsAddressTest extends BaseProjectApiTest {
             assertThat("count", alleyData.getId(), notNullValue());
             assertThat("type", alleyData.getType(), notNullValue());
             assertThat("storeId", alleyData.getStoreId(), is(Integer.parseInt(sessionData.getUserShopId())));
-            assertThat("departmentId", alleyData.getDepartmentId(), is(Integer.parseInt(sessionData.getUserDepartmentId())));
+            assertThat("departmentId", alleyData.getDepartmentId(),
+                    is(Integer.parseInt(sessionData.getUserDepartmentId())));
             assertThat("code", alleyData.getCode(), not(emptyOrNullString()));
         }
     }
