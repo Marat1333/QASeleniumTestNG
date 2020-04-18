@@ -21,7 +21,7 @@ import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @Dependencies(bricks = Application.MAGMOBILE)
-public class MagMobileClient extends BaseClient {
+public abstract class MagMobileClient extends BaseClient {
 
     private String gatewayUrl;
 

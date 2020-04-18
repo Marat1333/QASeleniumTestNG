@@ -21,6 +21,7 @@
         <suite-file path="areas/SalesDocSuite.xml"/>
         <suite-file path="areas/ShopsSuite.xml"/>
         <suite-file path="areas/SupplyPlanSuite.xml"/>
+        <suite-file path="areas/SupportSuite.xml"/>
     </suite-files>
 
 </suite>
