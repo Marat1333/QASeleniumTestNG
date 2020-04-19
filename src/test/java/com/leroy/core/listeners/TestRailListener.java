@@ -4,6 +4,7 @@ import com.leroy.core.configuration.Log;
 import com.leroy.core.testrail.TestRailClient;
 import com.leroy.core.testrail.models.ResultModel;
 import com.leroy.core.testrail.models.StepResultModel;
+import io.qameta.allure.model.Status;
 import org.testng.IInvokedMethod;
 import org.testng.ISuite;
 import org.testng.ITestResult;
@@ -13,6 +14,8 @@ import org.testng.util.Strings;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static io.qameta.allure.Allure.getLifecycle;
 
 public class TestRailListener extends Listener {
 
@@ -65,6 +68,9 @@ public class TestRailListener extends Listener {
             StepResultModel stepResultModel = stepResultList.get(stepResultList.size() - 1);
             if (testResult.getStatus() == ITestResult.FAILURE && testResult.getThrowable() != null) {
                 stepResultModel.setStatus_id(ResultModel.ST_FAILED);
+                Status status = testResult.getThrowable() instanceof AssertionError? Status.FAILED : Status.BROKEN;
+                getLifecycle().updateStep(stepResultModel.getUuid(), s -> s.setStatus(status));
+                getLifecycle().stopStep(stepResultModel.getUuid());
                 String msg = testResult.getThrowable().getMessage();
                 /*if (msg.contains("Expected")) {
                     String reason = StringUtils.substringBefore(msg, "Expected")
@@ -80,8 +86,11 @@ public class TestRailListener extends Listener {
                     stepResultModel.addActualResult(msg);
                 }*/
             } else {
-                if (stepResultModel != null)
+                if (stepResultModel != null) {
                     stepResultModel.setStatus_id(ResultModel.ST_PASSED);
+                    getLifecycle().updateStep(stepResultModel.getUuid(), s -> s.setStatus(Status.PASSED));
+                    getLifecycle().stopStep(stepResultModel.getUuid());
+                }
             }
         }
     }

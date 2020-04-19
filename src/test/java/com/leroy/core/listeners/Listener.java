@@ -179,9 +179,8 @@ public class Listener implements ITestListener, ISuiteListener,
         String threadCount = System.getProperty("threadCount");
         // Setting the environment parameters
         if (threadCount != null) {
-            arg0.getXmlSuite().setParallel("tests");
             arg0.getXmlSuite().setThreadCount(Integer.parseInt(threadCount));
-            arg0.getXmlSuite().setPreserveOrder("true");
+            arg0.getXmlSuite().setPreserveOrder(true);
         }
 
         suites.add(arg0);
@@ -283,7 +282,6 @@ public class Listener implements ITestListener, ISuiteListener,
     // method including @Before @After @Test
     @Override
     public void beforeInvocation(IInvokedMethod arg0, ITestResult arg1) {
-        //Log.info("Start on: + " + EnvConstants.URL_SOLUTION_VIEWER_WITHOUT_USER_INFO);
         Log.info("Started execution of the following method: "
                 + returnMethodName(arg0.getTestMethod()));
     }

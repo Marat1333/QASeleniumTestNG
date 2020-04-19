@@ -40,6 +40,10 @@ public class EnvConstants {
     // -------------- API HOSTS --------------- //
     public static final String MAIN_API_HOST = getProperty("url.api.main_host");
 
+    // Jaeger
+    public static final String JAEGER_HOST = getProperty("url.jaeger.host");
+    public static final String JAEGER_SERVICE = getProperty("url.jaeger.service");
+
     /**
      * Get the value of a property key
      *

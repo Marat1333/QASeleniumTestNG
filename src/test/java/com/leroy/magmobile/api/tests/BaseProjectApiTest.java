@@ -1,14 +1,12 @@
 package com.leroy.magmobile.api.tests;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.SessionData;
 import com.leroy.core.api.Module;
 import com.leroy.core.listeners.TestRailListener;
 import com.leroy.core.testrail.helpers.StepLog;
 import com.leroy.magmobile.api.ApiClientProvider;
-import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.umbrella_extension.authorization.AuthClient;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -17,6 +15,7 @@ import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,7 +32,7 @@ public abstract class BaseProjectApiTest {
     protected ApiClientProvider apiClientProvider;
 
     protected SessionData sessionData;
-    protected StepLog log;
+    private HashMap<Long, StepLog> stepLogs = new HashMap<>();
 
     private String getTestCaseId(String text) {
         String result = "undefined";
@@ -63,14 +62,15 @@ public abstract class BaseProjectApiTest {
 
     @BeforeMethod
     protected void baseTestBeforeMethod(Method method) throws Exception {
-        log = new StepLog();
+        StepLog log = new StepLog();
+        stepLogs.put(Thread.currentThread().getId(), log);
         String tcId = getTestCaseId(method.getAnnotation(Test.class).description());
         if (TestRailListener.STEPS_INFO != null)
             TestRailListener.STEPS_INFO.put(tcId, log.getStepResults());
     }
 
     protected void step(String step) {
-        log.step(step);
+        stepLogs.get(Thread.currentThread().getId()).step(step);
     }
 
     protected void isResponseOk(Response<?> response) {
