@@ -27,15 +27,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public abstract class BaseProjectApiTest {
 
     @Inject
-    private Provider<CatalogSearchClient> searchClientProvider;
-
-    public CatalogSearchClient getCatalogSearchClient() {
-        CatalogSearchClient searchClient = searchClientProvider.get();
-        searchClient.setSessionData(sessionData);
-        return searchClient;
-    }
-
-    @Inject
     private AuthClient authClient;
 
     @Inject

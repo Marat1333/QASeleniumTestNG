@@ -32,7 +32,7 @@ public class SalesDocDiscountTest extends BaseProjectApiTest {
 
     @BeforeClass
     private void setUp() {
-        productLmCode = getCatalogSearchClient().getProductLmCodes(1).get(0);
+        productLmCode = apiClientProvider.getProductLmCodes(1).get(0);
     }
 
     @Test(description = "C3254680 SalesDoc GET discounts")
