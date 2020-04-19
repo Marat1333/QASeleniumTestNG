@@ -6,9 +6,9 @@
         <listener class-name="com.leroy.core.listeners.TestRailListener"/>
     </listeners>
 
-    <test name="Shops SEARCH">
+    <test name="Shops / Kladr">
         <classes>
-            <class name="com.leroy.magmobile.api.tests.shops.ShopTest"/>
+            <class name="com.leroy.magmobile.api.tests.shops_kladr.ShopKladrTest"/>
         </classes>
     </test>
 

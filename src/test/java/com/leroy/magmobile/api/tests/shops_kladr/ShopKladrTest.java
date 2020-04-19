@@ -1,6 +1,8 @@
-package com.leroy.magmobile.api.tests.shops;
+package com.leroy.magmobile.api.tests.shops_kladr;
 
-import com.leroy.magmobile.api.clients.ShopClient;
+import com.leroy.magmobile.api.clients.ShopKladrClient;
+import com.leroy.magmobile.api.data.kladr.KladrItemData;
+import com.leroy.magmobile.api.data.kladr.KladrItemDataList;
 import com.leroy.magmobile.api.data.shops.ShopData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import org.testng.annotations.Test;
@@ -12,12 +14,12 @@ import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class ShopTest extends BaseProjectApiTest {
+public class ShopKladrTest extends BaseProjectApiTest {
 
     @Test(description = "C23195091 GET shops")
     public void testGetShops() {
-        ShopClient shopClient = apiClientProvider.getShopClient();
-        Response<ShopData> resp = shopClient.getShops();
+        ShopKladrClient shopKladrClient = apiClientProvider.getShopClient();
+        Response<ShopData> resp = shopKladrClient.getShops();
         assertThat(resp, successful());
         List<ShopData> dataList = resp.asJsonList(ShopData.class);
         assertThat("count shops", dataList, hasSize(greaterThan(100)));
@@ -33,6 +35,22 @@ public class ShopTest extends BaseProjectApiTest {
             assertThat("lat for id=" + shopData.getId(), shopData.getLat(), notNullValue());
             assertThat("long for id=" + shopData.getId(), shopData.getLongitude(), notNullValue());
             assertThat("availableFeature for id=" + shopData.getId(), shopData.getAvailableFeatures(), notNullValue());
+        }
+    }
+
+    @Test(description = "C3165821 Kladr gets a city that exists")
+    public void testKladrGetsExistedCity() {
+        int limit = 12;
+        ShopKladrClient shopKladrClient = apiClientProvider.getShopClient();
+        Response<KladrItemDataList> resp = shopKladrClient.getKladrByCity("2900000000000", 12);
+        assertThat(resp, successful());
+        KladrItemDataList dataList = resp.asJson();
+        assertThat("total count", dataList.getTotalCount(), is(limit));
+        assertThat("items count", dataList.getItems(), hasSize(limit));
+        for (KladrItemData kladrItemData : dataList.getItems()) {
+            assertThat("id", kladrItemData.getId(), not(emptyOrNullString()));
+            assertThat("label", kladrItemData.getLabel(), not(emptyOrNullString()));
+            assertThat("value", kladrItemData.getValue(), not(emptyOrNullString()));
         }
     }
 

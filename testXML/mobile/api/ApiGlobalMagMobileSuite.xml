@@ -19,7 +19,7 @@
         <suite-file path="areas/RuptureSessionSearchSuite.xml"/>
         <suite-file path="areas/SalesDocSearchSuite.xml"/>
         <suite-file path="areas/SalesDocSuite.xml"/>
-        <suite-file path="areas/ShopsSuite.xml"/>
+        <suite-file path="areas/ShopsKladrSuite.xml"/>
         <suite-file path="areas/SupplyPlanSuite.xml"/>
         <suite-file path="areas/SupportSuite.xml"/>
     </suite-files>

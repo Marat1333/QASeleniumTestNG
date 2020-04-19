@@ -62,7 +62,7 @@ public class ApiClientProvider {
     @Inject
     private Provider<PickingTaskClient> pickingTaskClientProvider;
     @Inject
-    private Provider<ShopClient> shopClientProvider;
+    private Provider<ShopKladrClient> shopClientProvider;
     @Inject
     private Provider<LsAddressClient> lsAddressClientProvider;
     @Inject
@@ -124,7 +124,7 @@ public class ApiClientProvider {
         return getClient(pickingTaskClientProvider);
     }
 
-    public ShopClient getShopClient() {
+    public ShopKladrClient getShopClient() {
         return getClient(shopClientProvider);
     }
 
