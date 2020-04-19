@@ -16,14 +16,7 @@ import static org.hamcrest.Matchers.*;
 
 public class TransferSearchTest extends BaseProjectApiTest {
 
-    @Issue("BACKEND_ISSUE")
-    @Test(description = "C3272535 SalesDoc transfers GET with status NEW")
-    public void testTransferTaskSearchByStatus() {
-        TransferClient transferClient = apiClientProvider.getTransferClient();
-
-        TransferSearchFilters filters = new TransferSearchFilters();
-        filters.setStatus(SalesDocumentsConst.States.NEW.getApiVal());
-        Response<TransferDataList> resp = transferClient.searchForTasks(filters);
+    private void verifyTypicalResponse(Response<TransferDataList> resp, TransferSearchFilters filters) {
         assertThat(resp, successful());
         TransferDataList transferDataList = resp.asJson();
         assertThat("items count", transferDataList.getItems(), hasSize(greaterThan(0)));
@@ -35,5 +28,26 @@ public class TransferSearchTest extends BaseProjectApiTest {
             assertThat("createdBy", transferSalesDocData.getTaskId(), not(emptyOrNullString()));
             assertThat("products", transferSalesDocData.getProducts(), hasSize(greaterThan(0)));
         }
+    }
+
+    @Issue("BACKEND_ISSUE")
+    @Test(description = "C3272535 SalesDoc transfers GET with status NEW")
+    public void testTransferTaskSearchByStatusNew() {
+        TransferClient transferClient = apiClientProvider.getTransferClient();
+
+        TransferSearchFilters filters = new TransferSearchFilters();
+        filters.setStatus(SalesDocumentsConst.States.NEW.getApiVal());
+        Response<TransferDataList> resp = transferClient.searchForTasks(filters);
+        verifyTypicalResponse(resp, filters);
+    }
+
+    @Test(description = "C3272536 SalesDoc transfers GET with status=CONFIRMED")
+    public void testTransferTaskSearchByStatusConfirmed() {
+        TransferClient transferClient = apiClientProvider.getTransferClient();
+
+        TransferSearchFilters filters = new TransferSearchFilters();
+        filters.setStatus(SalesDocumentsConst.States.CONFIRMED.getApiVal());
+        Response<TransferDataList> resp = transferClient.searchForTasks(filters);
+        verifyTypicalResponse(resp, filters);
     }
 }
