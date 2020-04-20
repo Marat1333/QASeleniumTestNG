@@ -355,7 +355,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     //может работать некорректно, т.к. есть бизнес дефект
-    @TestCase(22893337)
+    @Issue("BUSINESS_DEFECT")
     @Test(description = "C22893337 search by limitedOffer filter")
     public void testSearchByLimitedOfferFilter() {
         final boolean limitedOffer = true;
@@ -373,7 +373,8 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
 
         for (ProductItemData data : responseData) {
-            assertThat("price category in product " + data.getLmCode() + " is " + data.getPriceCategory(), data.getPriceCategory(), equalTo("LOF"));
+            assertThat("price category in product " + data.getLmCode() + " is " + data.getPriceCategory(),
+                    data.getPriceCategory(), equalTo("LOF"));
         }
     }
 

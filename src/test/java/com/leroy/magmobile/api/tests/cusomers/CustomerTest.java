@@ -2,6 +2,7 @@ package com.leroy.magmobile.api.tests.cusomers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
+import com.leroy.constants.StatusCodes;
 import com.leroy.magmobile.api.clients.CustomerClient;
 import com.leroy.magmobile.api.data.customer.CustomerData;
 import com.leroy.magmobile.api.data.customer.CustomerResponseBodyData;
@@ -40,6 +41,8 @@ public class CustomerTest extends BaseProjectApiTest {
         if (customerData == null)
             throw new IllegalArgumentException("customerData hasn't been created");
         Response<CustomerResponseBodyData> resp = customerClient.getCustomer(customerData.getCustomerNumber());
+        if (resp.getStatusCode() == StatusCodes.ST_404_NOT_FOUND) // workaround for backend issue
+            resp = customerClient.getCustomer(customerData.getCustomerNumber());
         customerClient.assertThatGetResponseMatches(resp, customerData);
     }
 
