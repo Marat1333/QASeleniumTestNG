@@ -3,6 +3,7 @@ package com.leroy.magmobile.api.clients;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.magmobile.api.data.ruptures.*;
 import com.leroy.magmobile.api.requests.ruptures.*;
+import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.Collections;
@@ -13,12 +14,13 @@ import static org.hamcrest.Matchers.*;
 
 public class RupturesClient extends MagMobileClient {
 
-    private String appVersion = "1.6.4";
+    private String appVersion = "1.6.4-autotest";
 
     /**
      * ---------- Executable Requests -------------
      **/
 
+    @Step("Create Rupture session product")
     public Response<JsonNode> createProduct(ReqRuptureSessionData postData) {
         RupturesSessionProductPostRequest req = new RupturesSessionProductPostRequest();
         req.setAppVersion(appVersion);
@@ -27,6 +29,7 @@ public class RupturesClient extends MagMobileClient {
         return execute(req, JsonNode.class);
     }
 
+    @Step("Update rupture session product")
     public Response<JsonNode> updateProduct(ReqRuptureSessionData putData) {
         RupturesSessionProductRequest req = new RupturesSessionProductRequest();
         req.setAppVersion(appVersion);
@@ -35,6 +38,7 @@ public class RupturesClient extends MagMobileClient {
         return execute(req, JsonNode.class);
     }
 
+    @Step("Delete rupture session product for lmCode={lmCode}")
     public Response<JsonNode> deleteProduct(String lmCode, int sessionId) {
         RupturesSessionProductDeleteRequest req = new RupturesSessionProductDeleteRequest();
         req.setLmCode(lmCode);
@@ -43,6 +47,7 @@ public class RupturesClient extends MagMobileClient {
         return execute(req, JsonNode.class);
     }
 
+    @Step("Change actions for rupture session products")
     public Response<ResActionDataList> actionProduct(ReqRuptureSessionWithActionsData putData) {
         RupturesSessionProductActionRequest req = new RupturesSessionProductActionRequest();
         req.setAppVersion(appVersion);
@@ -50,6 +55,7 @@ public class RupturesClient extends MagMobileClient {
         return execute(req, ResActionDataList.class);
     }
 
+    @Step("Get products for sessionId={sessionId}")
     public Response<RuptureProductDataList> getProducts(Integer sessionId) {
         RupturesSessionProductsRequest req = new RupturesSessionProductsRequest();
         req.setAppVersion(appVersion);
@@ -57,6 +63,7 @@ public class RupturesClient extends MagMobileClient {
         return execute(req, RuptureProductDataList.class);
     }
 
+    @Step("Get rupture sessions")
     public Response<ResRuptureSessionDataList> getSessions() {
         RupturesSessionsRequest req = new RupturesSessionsRequest();
         req.setAppVersion(appVersion);
@@ -65,6 +72,7 @@ public class RupturesClient extends MagMobileClient {
         return execute(req, ResRuptureSessionDataList.class);
     }
 
+    @Step("Get groups for sessionId={sessionId}")
     public Response<RuptureSessionGroupData> getGroups(int sessionId) {
         RupturesSessionGroupsRequest req = new RupturesSessionGroupsRequest();
         req.setAppVersion(appVersion);
@@ -72,6 +80,7 @@ public class RupturesClient extends MagMobileClient {
         return execute(req, RuptureSessionGroupData.class);
     }
 
+    @Step("Finish session with id = {sessionId}")
     public Response<JsonNode> finishSession(int sessionId) {
         RupturesSessionFinishRequest req = new RupturesSessionFinishRequest();
         req.setAppVersion(appVersion);
@@ -79,6 +88,7 @@ public class RupturesClient extends MagMobileClient {
         return execute(req, JsonNode.class);
     }
 
+    @Step("Delete session with id = {sessionId}")
     public Response<JsonNode> deleteSession(int sessionId) {
         RupturesSessionDeleteRequest req = new RupturesSessionDeleteRequest();
         req.setSessionId(sessionId);
@@ -88,6 +98,7 @@ public class RupturesClient extends MagMobileClient {
 
     //Verifications
 
+    @Step("Check that session is created")
     public Integer assertThatSessionIsCreatedAndGetId(Response<JsonNode> resp) {
         assertThatResponseIsOk(resp);
         Integer sessionId = resp.asJson().get("sessionId").intValue();
@@ -95,11 +106,13 @@ public class RupturesClient extends MagMobileClient {
         return sessionId;
     }
 
+    @Step("Check that updated/deleted is successful")
     public void assertThatIsUpdatedOrDeleted(Response<JsonNode> resp) {
         assertThatResponseIsOk(resp);
         assertThat("success", resp.asJson().get("success").booleanValue());
     }
 
+    @Step("Check that session is activated")
     public void assertThatSessionIsActivated(Response<ResActionDataList> resp, List<ActionData> expectedActions) {
         assertThatResponseIsOk(resp);
         ResActionDataList actualData = resp.asJson();
@@ -112,6 +125,7 @@ public class RupturesClient extends MagMobileClient {
         }
     }
 
+    @Step("Check that Response body matches expectedData")
     public void assertThatDataMatches(Response<RuptureProductDataList> resp, RuptureProductDataList expectedData) {
         assertThatResponseIsOk(resp);
         RuptureProductDataList actualData = resp.asJson();

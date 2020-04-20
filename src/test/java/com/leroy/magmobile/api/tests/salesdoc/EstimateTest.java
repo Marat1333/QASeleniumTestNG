@@ -34,7 +34,7 @@ public class EstimateTest extends BaseProjectApiTest {
 
     @BeforeClass
     private void setUp() {
-        searchClient = getCatalogSearchClient();
+        searchClient = apiClientProvider.getCatalogSearchClient();
         estimateClient.setSessionData(sessionData);
     }
 

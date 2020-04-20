@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.magmobile.api.data.address.*;
 import com.leroy.magmobile.api.data.address.cellproducts.*;
 import com.leroy.magmobile.api.requests.address.*;
+import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.List;
@@ -16,6 +17,7 @@ public class LsAddressClient extends MagMobileClient {
     // REQUESTS //
 
     // Alleys
+    @Step("Create Alley")
     public Response<AlleyData> createAlley(AlleyData alleyData) {
         LsAddressAlleysPostRequest req = new LsAddressAlleysPostRequest();
         req.jsonBody(alleyData);
@@ -24,6 +26,7 @@ public class LsAddressClient extends MagMobileClient {
         return execute(req, AlleyData.class);
     }
 
+    @Step("Search for alleys")
     public Response<AlleyDataItems> searchForAlleys() {
         LsAddressAlleysRequest req = new LsAddressAlleysRequest();
         req.setDepartmentId(sessionData.getUserDepartmentId());
@@ -33,6 +36,7 @@ public class LsAddressClient extends MagMobileClient {
 
     // Stands
 
+    @Step("Create stand with alleyId={alleyId}")
     public Response<StandDataList> createStand(Integer alleyId, StandDataList postData) {
         LsAddressStandsPostRequest req = new LsAddressStandsPostRequest();
         req.setAlleyId(alleyId);
@@ -42,6 +46,7 @@ public class LsAddressClient extends MagMobileClient {
         return execute(req, StandDataList.class);
     }
 
+    @Step("Search for stands with alleyId={alleyId}")
     public Response<StandDataList> searchForStand(Integer alleyId) {
         LsAddressStandsRequest req = new LsAddressStandsRequest();
         req.setAlleyId(alleyId);
@@ -52,6 +57,7 @@ public class LsAddressClient extends MagMobileClient {
 
     // Scheme
 
+    @Step("Get scheme")
     public Response<SchemeData> getScheme() {
         LsAddressSchemeRequest req = new LsAddressSchemeRequest();
         req.setShopId(sessionData.getUserShopId());
@@ -59,6 +65,7 @@ public class LsAddressClient extends MagMobileClient {
         return execute(req, SchemeData.class);
     }
 
+    @Step("Update scheme with schemeType={schemeType}")
     public Response<JsonNode> putScheme(int schemeType) {
         LsAddressSchemePutRequest req = new LsAddressSchemePutRequest();
         req.setShopId(sessionData.getUserShopId());
@@ -71,6 +78,7 @@ public class LsAddressClient extends MagMobileClient {
 
     // Cells
 
+    @Step("Create Cell for standId={standId}")
     public Response<CellDataList> createCell(int standId, CellDataList postData) {
         LsAddressCellsPostRequest req = new LsAddressCellsPostRequest();
         req.setStandId(standId);
@@ -78,12 +86,14 @@ public class LsAddressClient extends MagMobileClient {
         return execute(req, CellDataList.class);
     }
 
+    @Step("Get cells with standId={standId}")
     public Response<CellDataList> getCells(int standId) {
         LsAddressCellsRequest req = new LsAddressCellsRequest();
         req.setStandId(standId);
         return execute(req, CellDataList.class);
     }
 
+    @Step("Update cells with standId={standId}")
     public Response<CellDataList> updateCells(int standId, CellDataList putData) {
         LsAddressCellsPutRequest req = new LsAddressCellsPutRequest();
         req.setStandId(standId);
@@ -91,12 +101,14 @@ public class LsAddressClient extends MagMobileClient {
         return execute(req, CellDataList.class);
     }
 
+    @Step("Delete cell with cellId={cellId}")
     public Response<JsonNode> deleteCell(String cellId) {
         LsAddressCellsDeleteRequest req = new LsAddressCellsDeleteRequest();
         req.setCellId(cellId);
         return execute(req, JsonNode.class);
     }
 
+    @Step("Search product cells with lmCode={lmCode}")
     public Response<ProductCellDataList> searchProductCells(String lmCode) {
         LsAddressCellSearchRequest req = new LsAddressCellSearchRequest();
         req.setShopId(sessionData.getUserShopId());
@@ -106,6 +118,7 @@ public class LsAddressClient extends MagMobileClient {
 
     // Cell Products
 
+    @Step("Create cell products for cellId={cellId}")
     public Response<CellProductDataList> createCellProducts(String cellId, ReqCellProductDataList postData) {
         LsAddressCellProductsPostRequest req = new LsAddressCellProductsPostRequest();
         req.setCellId(cellId);
@@ -115,6 +128,7 @@ public class LsAddressClient extends MagMobileClient {
         return execute(req, CellProductDataList.class);
     }
 
+    @Step("Get cell products for cellId={cellId}")
     public Response<CellProductDataList> getCellProducts(String cellId) {
         LsAddressCellProductsRequest req = new LsAddressCellProductsRequest();
         req.setShopId(sessionData.getUserShopId());
@@ -122,6 +136,7 @@ public class LsAddressClient extends MagMobileClient {
         return execute(req, CellProductDataList.class);
     }
 
+    @Step("Update cell products for cellId={cellId}, lmCode={lmCode}")
     public Response<CellProductData> updateCellProducts(String cellId, String lmCode, ReqCellProductData putData) {
         LsAddressCellProductsPut req = new LsAddressCellProductsPut();
         req.setLdap(sessionData.getUserLdap());
@@ -132,6 +147,7 @@ public class LsAddressClient extends MagMobileClient {
         return execute(req, CellProductData.class);
     }
 
+    @Step("Move cell products for cellId={cellId}")
     public Response<JsonNode> moveCellProducts(String cellId, ReqCellProductData putData) {
         LsAddressCellProductsMove req = new LsAddressCellProductsMove();
         req.setLdap(sessionData.getUserLdap());
@@ -140,6 +156,7 @@ public class LsAddressClient extends MagMobileClient {
         return execute(req, JsonNode.class);
     }
 
+    @Step("Delete cell products for cellId={cellId}")
     public Response<JsonNode> deleteCellProducts(String cellId, String lmCode) {
         LsAddressCellProductsDelete req = new LsAddressCellProductsDelete();
         req.setCellId(cellId);
@@ -154,6 +171,7 @@ public class LsAddressClient extends MagMobileClient {
 
     // Alley
 
+    @Step("Check that alley is created and response matches postData")
     public AlleyData assertThatAlleyIsCreatedAndGetData(Response<AlleyData> resp, AlleyData postData) {
         assertThatResponseIsOk(resp);
         AlleyData actualData = resp.asJson();
@@ -169,6 +187,7 @@ public class LsAddressClient extends MagMobileClient {
 
     // Stand
 
+    @Step("Check that stand is created and response matches postData")
     public StandDataList assertThatStandIsCreatedAndGetData(Response<StandDataList> resp, StandDataList postData) {
         assertThatResponseIsOk(resp);
         StandDataList actualData = resp.asJson();
@@ -189,13 +208,14 @@ public class LsAddressClient extends MagMobileClient {
         return actualData;
     }
 
-    public void assertThatDataMatches(Response<StandDataList> resp, StandDataList postData) {
+    @Step("Check that response matches expected Data")
+    public void assertThatDataMatches(Response<StandDataList> resp, StandDataList expectedData) {
         assertThatResponseIsOk(resp);
         StandDataList actualData = resp.asJson();
-        assertThat("items count", actualData.getItems(), hasSize(postData.getItems().size()));
+        assertThat("items count", actualData.getItems(), hasSize(expectedData.getItems().size()));
         for (int i = 0; i < actualData.getItems().size(); i++) {
             StandData actualItem = actualData.getItems().get(i);
-            StandData expectedItem = postData.getItems().get(i);
+            StandData expectedItem = expectedData.getItems().get(i);
             assertThat("id", actualItem.getId(), is(expectedItem.getId()));
             assertThat("code", actualItem.getCode(), is(expectedItem.getCode()));
             assertThat("side", actualItem.getSide(), is(expectedItem.getSide()));
@@ -208,6 +228,7 @@ public class LsAddressClient extends MagMobileClient {
     }
 
     // Scheme
+    @Step("Check that response is success")
     public void assertThatSchemeIsUpdated(Response<JsonNode> resp) {
         assertThatResponseIsOk(resp);
         assertThat("success", resp.asJson().get("success").asText(), is("true"));
@@ -215,6 +236,7 @@ public class LsAddressClient extends MagMobileClient {
 
     // Cell
 
+    @Step("Check that cell is created and response has valid data")
     public CellDataList assertThatCellIsCreatedAndGetData(Response<CellDataList> resp, int standId, CellDataList postData) {
         assertThatResponseIsOk(resp);
         CellDataList actualData = resp.asJson();
@@ -237,6 +259,7 @@ public class LsAddressClient extends MagMobileClient {
         assertThatDataMatches(resp, expectedData, ResponseType.GET);
     }
 
+    @Step("Check that response matches expected Data")
     public void assertThatDataMatches(Response<CellDataList> resp, CellDataList expectedData, ResponseType respType) {
         assertThatResponseIsOk(resp);
         CellDataList actualData = resp.asJson();
@@ -268,6 +291,7 @@ public class LsAddressClient extends MagMobileClient {
         }
     }
 
+    @Step("Check that cell is deleted. CellId={deletedCellId}")
     public void assertThatCellIsDeleted(Response<JsonNode> resp, String deletedCellId) {
         assertThatResponseIsOk(resp);
         JsonNode respData = resp.asJson();
@@ -276,6 +300,7 @@ public class LsAddressClient extends MagMobileClient {
     }
 
     // Cell products
+    @Step("Check that cell products are created")
     public CellProductDataList assertThatIsCellProductsIsCreatedAndGetData(
             Response<CellProductDataList> resp, ReqCellProductDataList postData, CellData cellData) {
         assertThatResponseIsOk(resp);
@@ -301,12 +326,14 @@ public class LsAddressClient extends MagMobileClient {
         return actualRespData;
     }
 
+    @Step("Check that response matches expected Data")
     public void assertThatDataMatches(Response<CellProductDataList> resp, CellProductDataList expectedData) {
         assertThatResponseIsOk(resp);
         CellProductDataList actualRespData = resp.asJson();
         assertThat("Cell Products items", actualRespData, equalTo(expectedData));
     }
 
+    @Step("Check that response matches expected Data")
     public void assertThatDataMatches(Response<CellProductData> resp, CellProductData expectedData) {
         assertThatResponseIsOk(resp);
         CellProductData actualRespData = resp.asJson();
@@ -315,12 +342,14 @@ public class LsAddressClient extends MagMobileClient {
         // to be continued if necessary
     }
 
+    @Step("Check that response matches expected Data")
     public void assertThatDataMatches(Response<ProductCellDataList> resp, List<ProductCellData> expectedData) {
         assertThatResponseIsOk(resp);
         ProductCellDataList actualRespData = resp.asJson();
         assertThat("Ls Address Cells", actualRespData.getItems(), equalTo(expectedData));
     }
 
+    @Step("Check that cell products are deleted for cellId={deletedCellId}")
     public void assertThatCellProductsIsDeleted(Response<JsonNode> resp, String deletedCellId) {
         assertThatResponseIsOk(resp);
         JsonNode respData = resp.asJson();

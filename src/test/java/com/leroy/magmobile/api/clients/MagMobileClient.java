@@ -6,6 +6,7 @@ import com.leroy.magmobile.api.data.sales.SalesDocDiscountData;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.requests.salesdoc.discount.GetSalesDocDiscount;
 import com.leroy.magmobile.api.requests.salesdoc.search.SalesDocSearchV3Get;
+import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import lombok.Setter;
 import ru.leroymerlin.qa.core.clients.base.BaseClient;
@@ -16,6 +17,7 @@ import ru.leroymerlin.qa.core.commons.annotations.Dependencies;
 import ru.leroymerlin.qa.core.commons.enums.Application;
 
 import javax.annotation.PostConstruct;
+import java.util.Optional;
 
 import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -36,7 +38,12 @@ public class MagMobileClient extends BaseClient {
 
     @Step("Send {request.method} request")
     private <J> Response<J> executeRequest(Request request, Class<J> type) {
-        return super.execute(request, type);
+        Response<J> response = super.execute(request, type);
+        Optional<String> requestId = response.getHeader("x-request-id");
+        requestId.ifPresent(s -> Allure.addAttachment("Jaeger Link", "text/uri-list",
+                EnvConstants.JAEGER_HOST + "/search?service=" + EnvConstants.JAEGER_SERVICE +
+                        "&tags=%7B\"x-request-id\"%3A\"" + s + "\"%7D"));
+        return response;
     }
 
     @PostConstruct

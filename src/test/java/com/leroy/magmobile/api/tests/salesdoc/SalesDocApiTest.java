@@ -30,7 +30,7 @@ public class SalesDocApiTest extends BaseProjectApiTest {
     @BeforeClass
     private void setUp() {
         salesDocProductClient.setSessionData(sessionData);
-        searchClient = getCatalogSearchClient();
+        searchClient = apiClientProvider.getCatalogSearchClient();
     }
 
     @Test(description = "C3232445 SalesDoc add product")
