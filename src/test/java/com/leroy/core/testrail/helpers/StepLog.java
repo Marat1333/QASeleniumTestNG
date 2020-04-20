@@ -3,7 +3,6 @@ package com.leroy.core.testrail.helpers;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.testrail.models.ResultModel;
 import com.leroy.core.testrail.models.StepResultModel;
-import io.qameta.allure.model.Stage;
 import io.qameta.allure.model.Status;
 import io.qameta.allure.model.StepResult;
 
@@ -30,10 +29,7 @@ public class StepLog {
 
         final String uuid = UUID.randomUUID().toString();
         final StepResult allureResult = new StepResult()
-                .setName(message)
-                .setDescription("Description")
-                .setDescriptionHtml("DescHTML")
-                .setStage(Stage.PENDING);
+                .setName(message);
         getLifecycle().startStep(uuid, allureResult);
         currentStepResult = new StepResultModel();
         currentStepResult.setUuid(uuid);
