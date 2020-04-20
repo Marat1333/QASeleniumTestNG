@@ -6,6 +6,7 @@ import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.data.sales.BaseProductOrderData;
 import com.leroy.magmobile.api.data.sales.orders.*;
 import com.leroy.magmobile.api.requests.order.*;
+import io.qameta.allure.Step;
 import org.json.simple.JSONObject;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -21,12 +22,14 @@ public class OrderClient extends MagMobileClient {
      * ---------- Executable Requests -------------
      **/
 
+    @Step("Get order with id = {orderId}")
     public Response<OrderData> getOrder(String orderId) {
         OrderGet req = new OrderGet();
         req.setOrderId(orderId);
         return execute(req, OrderData.class);
     }
 
+    @Step("Create order")
     public Response<OrderData> createOrder(ReqOrderData reqOrderData) {
         OrderPost orderPost = new OrderPost();
         orderPost.bearerAuthHeader(sessionData.getAccessToken());
@@ -36,6 +39,7 @@ public class OrderClient extends MagMobileClient {
         return execute(orderPost, OrderData.class);
     }
 
+    @Step("Confirm order with id = {orderId}")
     public Response<OrderData> confirmOrder(String orderId, OrderData putOrderData) {
         OrderConfirmRequest req = new OrderConfirmRequest();
         req.setShopId(sessionData.getUserShopId());
@@ -45,6 +49,7 @@ public class OrderClient extends MagMobileClient {
         return execute(req, OrderData.class);
     }
 
+    @Step("Check quantity")
     public Response<ResOrderCheckQuantityData> checkQuantity(ReqOrderData data) {
         OrderCheckQuantityRequest req = new OrderCheckQuantityRequest();
         req.setShopId(sessionData.getUserShopId());
@@ -52,6 +57,7 @@ public class OrderClient extends MagMobileClient {
         return execute(req, ResOrderCheckQuantityData.class);
     }
 
+    @Step("Set {pinCode} PIN code for order with id = {orderId}")
     public Response<JsonNode> setPinCode(String orderId, String pinCode) {
         OrderSetPinCodeRequest req = new OrderSetPinCodeRequest();
         req.setOrderId(orderId);
@@ -61,6 +67,7 @@ public class OrderClient extends MagMobileClient {
         return execute(req, JsonNode.class);
     }
 
+    @Step("Update Order")
     public Response<OrderData> updateDraftOrder(OrderData orderData) {
         OrderPutRequest req = new OrderPutRequest();
         req.setShopId(sessionData.getUserShopId());
@@ -69,6 +76,7 @@ public class OrderClient extends MagMobileClient {
         return execute(req, OrderData.class);
     }
 
+    @Step("Rearrange order")
     public Response<JsonNode> rearrange(OrderData orderData,
                                         BaseProductOrderData productData) {
         OrderRearrangeRequest req = new OrderRearrangeRequest();
@@ -94,6 +102,7 @@ public class OrderClient extends MagMobileClient {
         return execute(req, JsonNode.class);
     }
 
+    @Step("Make status DELETED for order with id = {orderId}")
     public Response<JsonNode> deleteDraftOrder(String orderId) {
         OrderChangeStatusRequest req = new OrderChangeStatusRequest();
         req.setOrderId(orderId);
@@ -104,6 +113,7 @@ public class OrderClient extends MagMobileClient {
         return execute(req, JsonNode.class);
     }
 
+    @Step("Cancel order with id = {orderId}")
     public Response<JsonNode> cancelOrder(String orderId) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("action", "cancel-order");
@@ -116,6 +126,7 @@ public class OrderClient extends MagMobileClient {
     /**
      * ------------  Verifications -----------------
      **/
+    @Step("Check that order is created and response has valid data")
     public OrderData assertThatIsCreatedAndGetData(Response<OrderData> response) {
         assertThatResponseIsOk(response);
         OrderData data = response.asJson();
@@ -134,6 +145,7 @@ public class OrderClient extends MagMobileClient {
         return data;
     }
 
+    @Step("Check that Response body contains products: {expectedProducts}")
     public OrderClient assertThatResponseContainsAddedProducts(
             Response<OrderData> resp, List<ReqOrderProductData> expectedProducts) {
         assertThatResponseIsOk(resp);
@@ -163,6 +175,7 @@ public class OrderClient extends MagMobileClient {
         assertThatResponseMatches(resp, expectedData, responseType, true);
     }
 
+    @Step("Check that Response body matches expectedData")
     public void assertThatResponseMatches(Response<OrderData> resp, OrderData expectedData, ResponseType responseType,
                                           boolean checkProductLineId) {
         assertThatResponseIsOk(resp);
@@ -213,14 +226,17 @@ public class OrderClient extends MagMobileClient {
         }
     }
 
+    @Step("Check that PIN code is set")
     public void assertThatPinCodeIsSet(Response<JsonNode> resp) {
         assertThatResponseIsOk(resp);
     }
 
+    @Step("Check that response is OK")
     public void assertThatRearranged(Response<JsonNode> resp) {
         assertThatResponseIsOk(resp);
     }
 
+    @Step("Check that is confirmed. Response body matches expected data.")
     public void assertThatIsConfirmed(Response<OrderData> resp, OrderData expectedData) {
         assertThatResponseIsOk(resp);
         OrderData actualData = resp.asJson();
@@ -231,6 +247,7 @@ public class OrderClient extends MagMobileClient {
                 is(SalesDocumentsConst.States.IN_PROGRESS.getApiVal()));
     }
 
+    @Step("Check that check Quantity response is OK. Response body matches expected data")
     public void assertThatCheckQuantityIsOk(Response<ResOrderCheckQuantityData> resp,
                                             List<ReqOrderProductData> expectedProductDataList) {
         assertThatResponseIsOk(resp);
@@ -250,6 +267,7 @@ public class OrderClient extends MagMobileClient {
         }
     }
 
+    @Step("Check that order is cancelled")
     public OrderClient assertThatIsCancelled(Response<JsonNode> resp) {
         assertThatResponseIsOk(resp);
         JsonNode respData = resp.asJson();
@@ -258,6 +276,7 @@ public class OrderClient extends MagMobileClient {
         return this;
     }
 
+    @Step("Check that change status response has result is OK")
     public void assertThatResponseChangeStatusIsOk(Response<JsonNode> resp) {
         assertThatResponseIsOk(resp);
         assertThat("result", resp.asJson().get("result").asText(), is("OK"));
@@ -271,6 +290,7 @@ public class OrderClient extends MagMobileClient {
      *
      * @param orderId - order Id
      */
+    @Step("Wait until order is confirmed")
     public void waitUntilOrderIsConfirmed(String orderId) throws Exception {
         int maxTimeoutInSeconds = 60;
         long currentTimeMillis = System.currentTimeMillis();

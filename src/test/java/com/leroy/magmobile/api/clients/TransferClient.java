@@ -6,6 +6,7 @@ import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.data.sales.transfer.*;
 import com.leroy.magmobile.api.requests.salesdoc.transfer.*;
+import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.time.ZonedDateTime;
@@ -24,6 +25,7 @@ public class TransferClient extends MagMobileClient {
      **/
 
     // Lego SalesDoc Transfer
+    @Step("Create Transfer task")
     public Response<TransferSalesDocData> sendRequestCreate(
             TransferSalesDocData transferSalesDocData) {
         PostSalesDocTransfer params = new PostSalesDocTransfer();
@@ -32,6 +34,7 @@ public class TransferClient extends MagMobileClient {
         return execute(params, TransferSalesDocData.class);
     }
 
+    @Step("Add products for task with id = {taskId}")
     public Response<TransferSalesDocData> sendRequestAddProducts(
             String taskId, List<TransferProductOrderData> productDataList) {
         PutSalesDocTransferAdd params = new PutSalesDocTransferAdd();
@@ -50,6 +53,7 @@ public class TransferClient extends MagMobileClient {
         return sendRequestAddProducts(taskId, Collections.singletonList(productData));
     }
 
+    @Step("Get information about transfer task with id = {taskId}")
     public Response<TransferSalesDocData> sendRequestGet(String taskId) {
         GetSalesDocTransfer request = new GetSalesDocTransfer();
         request.setTaskId(taskId);
@@ -62,6 +66,7 @@ public class TransferClient extends MagMobileClient {
                 transferSalesDocData.getDateOfGiveAway());
     }
 
+    @Step("Run transfer task with id = {taskId}")
     public Response<TransferRunRespData> run(String taskId, String pointOfGiveAway, ZonedDateTime dateOfGiveAway) {
         TransferRunRequest req = new TransferRunRequest();
         req.setTaskId(taskId);
@@ -72,6 +77,7 @@ public class TransferClient extends MagMobileClient {
         return execute(req, TransferRunRespData.class);
     }
 
+    @Step("Update task with id = {taskId}")
     public Response<TransferSalesDocData> update(String taskId, TransferProductOrderData productData) {
         TransferUpdateRequest req = new TransferUpdateRequest();
         req.setTaskId(taskId);
@@ -82,6 +88,7 @@ public class TransferClient extends MagMobileClient {
         return execute(req, TransferSalesDocData.class);
     }
 
+    @Step("Get status transfer task with id = {taskId}")
     public Response<TransferStatusRespData> getStatus(String taskId) {
         TransferStatusRequest req = new TransferStatusRequest();
         req.setTaskId(taskId);
@@ -93,6 +100,7 @@ public class TransferClient extends MagMobileClient {
      *
      * @param taskId - task Id
      */
+    @Step("Wait until transfer task with id={taskId} status is SUCCESS")
     public void waitUntilIsSuccess(String taskId) throws Exception {
         String successStatus = "SUCCESS";
         int maxTimeoutInSeconds = 60;
@@ -114,6 +122,7 @@ public class TransferClient extends MagMobileClient {
                 "Status:", r.asJson().getStatus(), is(successStatus));
     }
 
+    @Step("Delete transfer task with id = {taskId}")
     public Response<JsonNode> sendRequestDelete(String taskId) {
         DeleteSalesDocTransferRequest request = new DeleteSalesDocTransferRequest();
         request.setTaskId(taskId);
@@ -121,7 +130,7 @@ public class TransferClient extends MagMobileClient {
     }
 
     // Search
-
+    @Step("Search for transfer tasks")
     public Response<TransferDataList> searchForTasks(TransferSearchFilters filters) {
         TransferSearchRequest req = new TransferSearchRequest();
         req.setShopId(sessionData.getUserShopId());
@@ -132,6 +141,7 @@ public class TransferClient extends MagMobileClient {
         return execute(req, TransferDataList.class);
     }
 
+    @Step("Search for transfer products")
     public Response<TransferSearchProductDataList> searchForTransferProducts(
             SalesDocumentsConst.GiveAwayPoints pointOfGiveAway) {
         TransferProductSearchRequest req = new TransferProductSearchRequest();
@@ -145,7 +155,9 @@ public class TransferClient extends MagMobileClient {
      * ---------- Verifications ------------
      */
 
-    public TransferSalesDocData assertThatIsCreatedAndGetData(Response<TransferSalesDocData> response, TransferSalesDocData postSalesDocData) {
+    @Step("Check that transfer task is created")
+    public TransferSalesDocData assertThatIsCreatedAndGetData(
+            Response<TransferSalesDocData> response, TransferSalesDocData postSalesDocData) {
         assertThatResponseIsOk(response);
         TransferSalesDocData data = response.asJson();
         assertThat("taskId", data.getTaskId(), not(emptyOrNullString()));
@@ -178,6 +190,7 @@ public class TransferClient extends MagMobileClient {
         return data;
     }
 
+    @Step("Check that products are added")
     public void assertThatIsProductAdded(Response<TransferSalesDocData> response,
                                          TransferSalesDocData putSalesDocData, int expectedNewLineId) {
         assertThatResponseIsOk(response);
@@ -204,6 +217,7 @@ public class TransferClient extends MagMobileClient {
         }
     }
 
+    @Step("Check that task is run")
     public void assertThatIsRun(Response<TransferRunRespData> resp, TransferSalesDocData expectedData) {
         assertThatResponseIsOk(resp);
         TransferRunRespData actualData = resp.asJson();
@@ -217,6 +231,7 @@ public class TransferClient extends MagMobileClient {
         assertThatResponseMatches(resp, expectedData, ResponseType.GET);
     }
 
+    @Step("Check that response body data matches expected data")
     public void assertThatResponseMatches(Response<TransferSalesDocData> resp, TransferSalesDocData expectedData,
                                           ResponseType responseType) {
         assertThatResponseIsOk(resp);
@@ -251,16 +266,19 @@ public class TransferClient extends MagMobileClient {
         }
     }
 
+    @Step("Check that response has body with success=true")
     public void assertThatIsDeleted(Response<JsonNode> resp) {
         assertThatResponseIsOk(resp);
         JsonNode respData = resp.asJson();
         assertThat("success", respData.get("success").booleanValue());
     }
 
+    @Step("Check that document shouldn't exist")
     public void assertThatDocumentIsNotExist(Response<TransferSalesDocData> resp) {
         assertThat("Status code", resp.getStatusCode(), is(StatusCodes.ST_404_NOT_FOUND));
     }
 
+    @Step("Check response by json schema")
     public void assertThatResponseIsValid(Response<TransferSalesDocData> resp) {
         assertThatResponseIsOk(resp);
         assertThat(resp, valid(TransferSalesDocData.class));

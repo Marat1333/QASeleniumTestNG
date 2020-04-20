@@ -8,6 +8,7 @@ import com.leroy.magmobile.api.data.customer.CustomerListData;
 import com.leroy.magmobile.api.requests.customer.*;
 import com.leroy.magmobile.api.data.customer.CustomerResponseBodyData;
 import com.leroy.magmobile.api.data.customer.CustomerSearchFilters;
+import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class CustomerClient extends MagMobileClient {
      * ---------- Executable Requests -------------
      **/
 
+    @Step("Search for customers")
     public Response<CustomerListData> searchForCustomers(CustomerSearchFilters filters) {
         CustomerAccountsSearchRequest req = new CustomerAccountsSearchRequest();
         req.setCustomerType(filters.getCustomerType());
@@ -30,6 +32,7 @@ public class CustomerClient extends MagMobileClient {
         return execute(req, CustomerListData.class);
     }
 
+    @Step("Create customer")
     public Response<CustomerResponseBodyData> createCustomer(CustomerData customerData) {
         CustomerAccountCreateRequest req = new CustomerAccountCreateRequest();
         req.setShopId(sessionData.getUserShopId());
@@ -38,6 +41,7 @@ public class CustomerClient extends MagMobileClient {
         return execute(req, CustomerResponseBodyData.class);
     }
 
+    @Step("Update customer")
     public Response<CustomerResponseBodyData> updateCustomer(CustomerData customerData) {
         CustomerAccountUpdateRequest req = new CustomerAccountUpdateRequest();
         req.setShopId(sessionData.getUserShopId());
@@ -46,12 +50,14 @@ public class CustomerClient extends MagMobileClient {
         return execute(req, CustomerResponseBodyData.class);
     }
 
+    @Step("Get customer with customerNumber={customerNumber}")
     public Response<CustomerResponseBodyData> getCustomer(String customerNumber) {
         CustomerAccountGetRequest req = new CustomerAccountGetRequest();
         req.setCustomerNumber(customerNumber);
         return execute(req, CustomerResponseBodyData.class);
     }
 
+    @Step("Get customer balance for customer with customerNumber={customerNumber}")
     public Response<JsonNode> getCustomerBalance(String customerNumber) {
         CustomerAccountBalanceRequest req = new CustomerAccountBalanceRequest();
         req.setCustomerNumber(customerNumber);
@@ -76,6 +82,7 @@ public class CustomerClient extends MagMobileClient {
 
     }
 
+    @Step("Check that customer is created and response body matches expectedCustomerData")
     public CustomerData assertThatIsCreatedAndGetData(Response<CustomerResponseBodyData> resp,
                                                       CustomerData expectedCustomerData) {
         assertThatResponseIsOk(resp);
@@ -101,6 +108,7 @@ public class CustomerClient extends MagMobileClient {
         return actualCustomerData;
     }
 
+    @Step("Check that response body matches expectedData")
     public CustomerClient assertThatGetResponseMatches(Response<CustomerResponseBodyData> resp, CustomerData expectedData) {
         assertThatResponseIsOk(resp);
         CustomerResponseBodyData d = resp.asJson();
@@ -135,26 +143,11 @@ public class CustomerClient extends MagMobileClient {
 
     // Negative verifications
 
+    @Step("Check that Customer balance not found")
     public void assertThatBalanceNotFound(Response<JsonNode> resp) {
         assertThat(resp.toString(), resp.getStatusCode(), is(StatusCodes.ST_404_NOT_FOUND));
         assertThat("Error text is wrong", resp.asJson().get("error").asText(),
                 is("Customer balance not found!"));
 
-    }
-
-    // Help Methods
-
-    public CustomerData getAnyCustomer() {
-        CustomerSearchFilters customerSearchFilters = new CustomerSearchFilters();
-        customerSearchFilters.setCustomerType(CustomerSearchFilters.CustomerType.NATURAL);
-        customerSearchFilters.setDiscriminantType(CustomerSearchFilters.DiscriminantType.PHONENUMBER);
-        customerSearchFilters.setCustomerType(CustomerSearchFilters.CustomerType.NATURAL);
-        customerSearchFilters.setDiscriminantValue("+71111111111");
-        Response<CustomerListData> resp = searchForCustomers(customerSearchFilters);
-        assertThatResponseIsOk(resp);
-        List<CustomerData> customers = resp.asJson().getItems();
-        assertThat("GetAnyCustomer Method. Count of customers", customers,
-                hasSize(greaterThan(0)));
-        return customers.get(0);
     }
 }

@@ -9,6 +9,7 @@ import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogServicesSearch;
 import com.leroy.magmobile.api.requests.catalog_search.GetSupplierSearch;
 import com.leroy.magmobile.ui.models.search.FiltersData;
+import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.ArrayList;
@@ -27,16 +28,19 @@ public class CatalogSearchClient extends MagMobileClient {
      * ---------- Requests -------------
      **/
 
+    @Step("Search for products")
     public Response<ProductItemDataList> searchProductsBy(GetCatalogSearch params) {
         params.setLdap(sessionData.getUserLdap());
         return execute(params, ProductItemDataList.class);
     }
 
+    @Step("Search for services")
     public Response<ServiceItemDataList> searchServicesBy(GetCatalogServicesSearch params) {
         params.setLdap(sessionData.getUserLdap());
         return execute(params, ServiceItemDataList.class);
     }
 
+    @Step("Search for suppliers by query={query}, pageSize={pageSize}")
     public Response<SupplierDataList> searchSupplierBy(String query, int pageSize) {
         GetSupplierSearch params = new GetSupplierSearch()
                 .setQuery(query)
@@ -46,6 +50,7 @@ public class CatalogSearchClient extends MagMobileClient {
 
     // Help methods
 
+    @Step("Find {necessaryCount} services")
     public List<ServiceItemData> getServices(int necessaryCount) {
         GetCatalogServicesSearch params = new GetCatalogServicesSearch();
         params.setShopId(sessionData.getUserShopId())
@@ -57,6 +62,7 @@ public class CatalogSearchClient extends MagMobileClient {
         return services;
     }
 
+    @Step("Find {necessaryCount} products")
     public List<ProductItemData> getProducts(int necessaryCount, FiltersData filtersData) {
         if (filtersData == null)
             filtersData = new FiltersData();

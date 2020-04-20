@@ -6,6 +6,7 @@ import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrder
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magmobile.api.requests.salesdoc.cart.*;
+import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.*;
@@ -24,12 +25,14 @@ public class CartClient extends MagMobileClient {
      * ---------- Executable Requests -------------
      **/
 
+    @Step("Get Cart info by cartId={cartId}")
     public Response<CartData> sendRequestGet(String cartId) {
         return execute(new CartGet().setCartId(cartId)
                 .bearerAuthHeader(sessionData.getAccessToken())
                 .setShopId(sessionData.getUserShopId()), CartData.class);
     }
 
+    @Step("Create Cart")
     public Response<CartData> sendRequestCreate(List<CartProductOrderData> productOrderDataList) {
         CartData cartData = new CartData();
         cartData.setProducts(productOrderDataList);
@@ -44,6 +47,7 @@ public class CartClient extends MagMobileClient {
         return sendRequestCreate(Collections.singletonList(productOrderData));
     }
 
+    @Step("Add product for cartId={cartId}")
     public Response<CartData> addProduct(String cartId, Integer documentVersion,
                                          CartProductOrderData productData) {
         CartUpdateRequest req = new CartUpdateRequest();
@@ -56,6 +60,7 @@ public class CartClient extends MagMobileClient {
         return execute(req, CartData.class);
     }
 
+    @Step("Confirm Quantity for cartId={cartId}")
     public Response<CartData> confirmQuantity(String cartId, int documentVersion, CartProductOrderData productData) {
         CartConfirmQuantityRequest req = new CartConfirmQuantityRequest();
         req.setCartId(cartId);
@@ -73,6 +78,7 @@ public class CartClient extends MagMobileClient {
         return execute(req, CartData.class);
     }
 
+    @Step("Add discount for cartId={cartId}")
     public Response<CartData> addDiscount(String cartId, int documentVersion, CartProductOrderData productData) {
         CartProductOrderData putProductData = new CartProductOrderData();
         putProductData.setLineId(productData.getLineId());
@@ -91,6 +97,7 @@ public class CartClient extends MagMobileClient {
         return execute(req, CartData.class);
     }
 
+    @Step("Remove line item with lineId={lineId} for cartId={cartId}")
     public Response<CartData> removeItems(String cartId, Integer documentVersion, String lineId) {
         CartItemsRequest req = new CartItemsRequest();
         req.setCartId(cartId);
@@ -100,6 +107,7 @@ public class CartClient extends MagMobileClient {
         return execute(req, CartData.class);
     }
 
+    @Step("Consolidate products for cartId={cartId}")
     public Response<JsonNode> consolidateProducts(String cartId, Integer documentVersion, String lineId) {
         CartConsolidateProductsRequest req = new CartConsolidateProductsRequest();
         req.setLdap(sessionData.getUserLdap());
@@ -114,6 +122,7 @@ public class CartClient extends MagMobileClient {
         return execute(req, JsonNode.class);
     }
 
+    @Step("Make DELETE status for cartId={cartId}")
     public Response<JsonNode> sendRequestDelete(String cartId, int documentVersion) {
         Map<String, String> body = new HashMap<>();
         body.put("status", SalesDocumentsConst.States.DELETED.getApiVal());
@@ -127,6 +136,7 @@ public class CartClient extends MagMobileClient {
     /**
      * ------------  Verifications -----------------
      **/
+    @Step("Check that Cart is created and response body has valid data")
     public CartData assertThatIsCreatedAndGetData(Response<CartData> response, boolean shortCheck) {
         assertThatResponseIsOk(response);
         CartData data = response.asJson();
@@ -173,6 +183,7 @@ public class CartClient extends MagMobileClient {
                 actualProduct.getTopEM(), is(expectedProduct.getTopEM()));
     }
 
+    @Step("Check that Response body contains products: {expectedProducts}")
     public CartClient assertThatResponseContainsAddedProducts(
             Response<CartData> resp, List<CartProductOrderData> expectedProducts) {
         assertThatResponseIsOk(resp);
@@ -189,6 +200,7 @@ public class CartClient extends MagMobileClient {
         return assertThatResponseMatches(resp, RequestType.GET, expectedData);
     }
 
+    @Step("Check that Response body matches expectedData")
     public CartData assertThatResponseMatches(Response<CartData> resp, RequestType reqType, CartData expectedData) {
         assertThatResponseIsOk(resp);
         CartData actualData = resp.asJson();
@@ -221,6 +233,7 @@ public class CartClient extends MagMobileClient {
         return actualData;
     }
 
+    @Step("Check that Response body matches expectedData")
     public void assertThatQuantityIsConfirmed(Response<CartData> resp, CartData expectedData) {
         assertThatResponseIsOk(resp);
         CartData actualData = resp.asJson();
@@ -244,6 +257,7 @@ public class CartClient extends MagMobileClient {
 
     }
 
+    @Step("Check that Response body matches expectedData")
     public void assertThatDiscountAdded(Response<CartData> resp, CartData expectedData) {
         assertThatResponseIsOk(resp);
         CartData actualData = resp.asJson();
@@ -283,6 +297,7 @@ public class CartClient extends MagMobileClient {
         }
     }
 
+    @Step("Check that Response body has 'Result - OK'")
     public void assertThatResponseResultIsOk(Response<JsonNode> resp) {
         assertThatResponseIsOk(resp);
         assertThat("result", resp.asJson().get("result").asText(), is("OK"));

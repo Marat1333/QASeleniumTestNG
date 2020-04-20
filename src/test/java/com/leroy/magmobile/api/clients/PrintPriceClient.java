@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.magmobile.api.data.print.*;
 import com.leroy.magmobile.api.requests.print.PrintDocumentsPrintersRequest;
 import com.leroy.magmobile.api.requests.print.PrintPriceTaskRequest;
+import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.Collections;
@@ -18,6 +19,7 @@ public class PrintPriceClient extends MagMobileClient {
         return getDepartmentPrinterList(sessionData.getUserShopId());
     }
 
+    @Step("Get department printers info")
     public Response<PrintDepartmentList> getDepartmentPrinterList(String shopId) {
         PrintDocumentsPrintersRequest req = new PrintDocumentsPrintersRequest();
         req.setShopId(shopId);
@@ -29,6 +31,7 @@ public class PrintPriceClient extends MagMobileClient {
         return sendPrintTask(printerName, Collections.singletonList(printProductData));
     }
 
+    @Step("Send printer task on the printer = {printerName}")
     public Response<JsonNode> sendPrintTask(
             String printerName, List<PrintTaskProductData> printProductDataList) {
         PrintTaskProductsList printTaskProductsList = new PrintTaskProductsList();
@@ -43,6 +46,7 @@ public class PrintPriceClient extends MagMobileClient {
 
     // Verifications
 
+    @Step("Check that print task is sent successfully")
     public void assertThatSendPrintTaskIsSuccessful(Response<JsonNode> response) {
         assertThatResponseIsOk(response);
         assertThat("Response body", response.asString(), emptyString());

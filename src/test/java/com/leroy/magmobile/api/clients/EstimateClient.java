@@ -8,6 +8,7 @@ import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.SendEmailData;
 import com.leroy.magmobile.api.requests.salesdoc.estimate.*;
+import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.*;
@@ -22,12 +23,14 @@ public class EstimateClient extends MagMobileClient {
      * ---------- Executable Requests -------------
      **/
 
+    @Step("Get Estimate info for estimateId={estimateId}")
     public Response<EstimateData> sendRequestGet(String estimateId) {
         return execute(new EstimateGet().setEstimateId(estimateId)
                 .bearerAuthHeader(sessionData.getAccessToken())
                 .setShopId(sessionData.getUserShopId()), EstimateData.class);
     }
 
+    @Step("Create Estimate")
     public Response<EstimateData> sendRequestCreate(List<EstimateCustomerData> customerDataList,
                                                     List<EstimateProductOrderData> productOrderDataList) {
         List<EstimateProductOrderData> filteredProducts = new ArrayList<>();
@@ -57,6 +60,7 @@ public class EstimateClient extends MagMobileClient {
                 Collections.singletonList(productOrderData));
     }
 
+    @Step("Update Estimate for estimateId={estimateId}")
     public Response<EstimateData> sendRequestUpdate(String estimateId,
                                                     List<EstimateProductOrderData> productOrderDataList) {
         EstimateData estimateData = new EstimateData();
@@ -73,6 +77,7 @@ public class EstimateClient extends MagMobileClient {
         return sendRequestUpdate(estimateId, Collections.singletonList(productOrderData));
     }
 
+    @Step("Make status DELETED for estimateId={estimateId}")
     public Response<JsonNode> sendRequestDelete(String estimateId, int documentVersion) {
         Map<String, String> body = new HashMap<>();
         body.put("status", SalesDocumentsConst.States.DELETED.getApiVal());
@@ -83,6 +88,7 @@ public class EstimateClient extends MagMobileClient {
                 .formBody(body), JsonNode.class);
     }
 
+    @Step("Confirm estimate for estimateId={estimateId}")
     public Response<JsonNode> confirm(String estimateId) {
         Map<String, String> body = new HashMap<>();
         body.put("status", SalesDocumentsConst.States.CONFIRMED.getApiVal());
@@ -92,6 +98,7 @@ public class EstimateClient extends MagMobileClient {
                 .formBody(body), JsonNode.class);
     }
 
+    @Step("Send email for estimateId={estimateId}")
     public Response<JsonNode> sendEmail(String estimateId, SendEmailData emailData) {
         EstimateSendEmailRequest req = new EstimateSendEmailRequest();
         req.setEstimateId(estimateId);
@@ -102,6 +109,8 @@ public class EstimateClient extends MagMobileClient {
     /**
      * ------------  Verifications -----------------
      **/
+
+    @Step("Check that Estimate is created and response body has valid data")
     public EstimateData assertThatIsCreatedAndGetData(Response<EstimateData> response) {
         assertThatResponseIsOk(response);
         EstimateData data = response.asJson();
@@ -132,6 +141,7 @@ public class EstimateClient extends MagMobileClient {
                 actualProduct.getType(), is(expectedProduct.getType()));
     }
 
+    @Step("Check that Response body contains products: {expectedProducts}")
     public EstimateClient assertThatResponseContainsAddedProducts(
             Response<EstimateData> resp, List<CartEstimateProductOrderData> expectedProducts) {
         assertThatResponseIsOk(resp);
@@ -144,6 +154,7 @@ public class EstimateClient extends MagMobileClient {
         return this;
     }
 
+    @Step("Check that Response body matches expectedData")
     public EstimateClient assertThatGetResponseMatches(Response<EstimateData> resp, EstimateData expectedData) {
         assertThatResponseIsOk(resp);
         EstimateData actualData = resp.asJson();
@@ -172,6 +183,7 @@ public class EstimateClient extends MagMobileClient {
         return this;
     }
 
+    @Step("Check that Response body has 'Result - OK'")
     public void assertThatResponseChangeStatusIsOk(Response<JsonNode> resp) {
         assertThatResponseIsOk(resp);
         assertThat("result", resp.asJson().get("result").asText(), is("OK"));

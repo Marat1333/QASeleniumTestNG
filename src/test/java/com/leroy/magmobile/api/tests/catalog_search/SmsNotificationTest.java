@@ -38,7 +38,7 @@ public class SmsNotificationTest extends BaseProjectApiTest {
     public void testCreateNotification() {
         // Get test data:
         ProductItemData product = apiClientProvider.getProducts(1).get(0);
-        CustomerData customerData = customerClient.getAnyCustomer();
+        CustomerData customerData = apiClientProvider.getAnyCustomer();
 
         NotificationCustomerData notifyCustomerData = new NotificationCustomerData();
         notifyCustomerData.setCustomerNumber(customerData.getCustomerNumber());

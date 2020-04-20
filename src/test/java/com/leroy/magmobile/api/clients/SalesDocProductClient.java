@@ -8,6 +8,7 @@ import com.leroy.magmobile.api.requests.salesdoc.SalesDocParametersUpdatePut;
 import com.leroy.magmobile.api.requests.salesdoc.products.SalesDocProductsGet;
 import com.leroy.magmobile.api.requests.salesdoc.products.SalesDocProductsPost;
 import com.leroy.magmobile.api.requests.salesdoc.products.SalesDocProductsPut;
+import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.Arrays;
@@ -31,6 +32,7 @@ public class SalesDocProductClient extends MagMobileClient {
      **/
 
     // GET
+    @Step("Get Sales Doc Product information for fullDocId={fullDocId}")
     public SalesDocProductClient sendRequestGet(String fullDocId) {
         response = execute(new SalesDocProductsGet()
                 .setFullDocId(fullDocId), SalesDocumentResponseData.class);
@@ -38,6 +40,7 @@ public class SalesDocProductClient extends MagMobileClient {
     }
 
     // Create (POST)
+    @Step("Create Sales Document Product")
     private SalesDocProductClient sendRequestCreate(SalesDocumentResponseData data) {
         SalesDocProductsPost params = new SalesDocProductsPost();
         params.setShopId(sessionData.getUserShopId())
@@ -72,6 +75,7 @@ public class SalesDocProductClient extends MagMobileClient {
     }
 
     // Update (PUT)
+    @Step("Update Sales Document Product with fullDocId={fullDocId}")
     private SalesDocProductClient updateSalesDocProducts(String fullDocId,
                                                          SalesDocumentResponseData putSalesDocData) {
         SalesDocProductsPut params = new SalesDocProductsPut();
@@ -109,6 +113,7 @@ public class SalesDocProductClient extends MagMobileClient {
     }
 
     // Lego_Salesdoc_Parameters_Update
+    @Step("Make status CANCEL for Sales Document Product with fullDocId={fullDocId}")
     public SalesDocProductClient cancelSalesDoc(String fullDocId) {
         SalesDocParametersUpdatePut params = new SalesDocParametersUpdatePut();
         params.setAccessToken(sessionData.getAccessToken())
@@ -124,6 +129,7 @@ public class SalesDocProductClient extends MagMobileClient {
      * ---------- Verifications -------------
      **/
 
+    @Step("Check that Sales Doc product is created and response body has valid data")
     public SalesDocProductClient assertThatIsCreated(boolean isServiceAdded) {
         assertThatResponseIsOk(response);
         SalesDocumentResponseData data = response.asJson();
@@ -138,6 +144,7 @@ public class SalesDocProductClient extends MagMobileClient {
         return this;
     }
 
+    @Step("Check that SalesDocument product is updated and response body matches expectedData")
     public SalesDocProductClient assertThatIsUpdated(SalesDocumentResponseData expectedData, boolean isServiceAdded) {
         assertThatResponseIsOk(response);
         SalesDocumentResponseData responseData = response.asJson();
@@ -152,6 +159,7 @@ public class SalesDocProductClient extends MagMobileClient {
         return this;
     }
 
+    @Step("Check that Sales Doc Product is Cancelled")
     public SalesDocProductClient assertThatIsCancelled(SalesDocumentResponseData expectedData) {
         assertThatResponseIsOk(response);
         SalesDocumentResponseData responseData = response.asJson();
@@ -162,6 +170,7 @@ public class SalesDocProductClient extends MagMobileClient {
         return this;
     }
 
+    @Step("Check that Response body matches expectedData")
     public SalesDocProductClient assertThatGetResponseMatches(SalesDocumentResponseData expectedData) {
         assertThatResponseIsOk(response);
         SalesDocumentResponseData actualData = response.asJson();

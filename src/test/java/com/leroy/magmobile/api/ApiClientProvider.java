@@ -17,6 +17,7 @@ import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateProductOrderData;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogServicesSearch;
+import io.qameta.allure.Step;
 import lombok.Setter;
 import org.apache.commons.lang.RandomStringUtils;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -144,6 +145,7 @@ public class ApiClientProvider {
 
     // SEARCH PRODUCTS
 
+    @Step("Find {necessaryCount} services")
     public List<ServiceItemData> getServices(int necessaryCount) {
         GetCatalogServicesSearch params = new GetCatalogServicesSearch();
         params.setShopId(sessionData.getUserShopId())
@@ -155,6 +157,7 @@ public class ApiClientProvider {
         return services;
     }
 
+    @Step("Find {necessaryCount} products")
     public List<ProductItemData> getProducts(int necessaryCount, CatalogSearchFilter filtersData) {
         if (filtersData == null)
             filtersData = new CatalogSearchFilter();
@@ -201,6 +204,7 @@ public class ApiClientProvider {
 
     // SEARCH CUSTOMERS
 
+    @Step("Find any customer")
     public CustomerData getAnyCustomer() {
         CustomerSearchFilters customerSearchFilters = new CustomerSearchFilters();
         customerSearchFilters.setCustomerType(CustomerSearchFilters.CustomerType.NATURAL);
@@ -217,6 +221,7 @@ public class ApiClientProvider {
 
     // SalesDoc
 
+    @Step("Try to get nonexistent Pin Code")
     public String getValidPinCode() {
         int tryCount = 10;
         for (int i = 0; i < tryCount; i++) {
@@ -241,6 +246,7 @@ public class ApiClientProvider {
 
     // ESTIMATE
 
+    @Step("Создаем черновик Сметы через API")
     public String createDraftEstimateAndGetCartId() {
         String lmCode = getProducts(1).get(0).getLmCode();
         CustomerData customerData = getAnyCustomer();
@@ -259,6 +265,7 @@ public class ApiClientProvider {
         return estimateDataResponse.asJson().getEstimateId();
     }
 
+    @Step("Создаем подтвержденную Смету через API")
     public String createConfirmedEstimateAndGetCartId() {
         EstimateClient client = getEstimateClient();
         String cartId = createDraftEstimateAndGetCartId();
