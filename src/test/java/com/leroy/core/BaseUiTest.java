@@ -79,4 +79,8 @@ public abstract class BaseUiTest extends EnvironmentConfigurator {
         cleanContext();
     }
 
+    public void step(String msg) {
+        log.step(msg);
+    }
+
 }

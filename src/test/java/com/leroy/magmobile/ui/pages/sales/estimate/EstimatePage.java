@@ -152,7 +152,7 @@ public class EstimatePage extends CommonMagMobilePage {
         orderData.setOrderCardDataList(cardDataList);
         String ps = getPageSource();
         orderData.setTotalPrice(Converter.strToDouble(totalPriceVal.getText(ps)));
-        orderData.setProductCount(Converter.strToDouble(countProductLbl.getText(ps)));
+        orderData.setProductCount(Converter.strToInt(countProductLbl.getText(ps)));
         orderData.setTotalWeight(Converter.strToDouble(weightProductLbl.getText(ps)));
         return orderData;
     }
@@ -180,6 +180,12 @@ public class EstimatePage extends CommonMagMobilePage {
     @Step("Нажмите кнопку 'Товары и Услуги'")
     public SearchProductPage clickProductAndServiceButton() {
         productAndServiceBtn.click();
+        return new SearchProductPage(context);
+    }
+
+    @Step("Нажмите кнопку '+Товар'")
+    public SearchProductPage clickProductButton() {
+        addProductBtn.click();
         return new SearchProductPage(context);
     }
 

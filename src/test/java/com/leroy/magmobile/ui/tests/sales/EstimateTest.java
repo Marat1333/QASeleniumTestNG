@@ -6,24 +6,49 @@ import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
 import com.leroy.magmobile.ui.models.sales.SalesOrderCardData;
 import com.leroy.magmobile.ui.models.sales.SalesOrderData;
 import com.leroy.magmobile.ui.models.search.ProductCardData;
-import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
-import com.leroy.magmobile.ui.pages.sales.EditProduct35Page;
-import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
-import com.leroy.magmobile.ui.pages.sales.SalesDocumentsPage;
+import com.leroy.magmobile.ui.pages.sales.*;
 import com.leroy.magmobile.ui.pages.sales.basket.Basket35Page;
-import com.leroy.magmobile.ui.pages.sales.estimate.ActionWithProductCardModalPage;
-import com.leroy.magmobile.ui.pages.sales.estimate.ActionsWithEstimateModalPage;
-import com.leroy.magmobile.ui.pages.sales.estimate.EstimatePage;
-import com.leroy.magmobile.ui.pages.sales.estimate.EstimateSubmittedPage;
+import com.leroy.magmobile.ui.pages.sales.estimate.*;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SaleTypeModalPage;
 import com.leroy.magmobile.ui.pages.search.SearchCustomerPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
+import io.qameta.allure.Step;
 import org.testng.annotations.Test;
 
 import java.util.Random;
 
 public class EstimateTest extends SalesBaseTest {
+
+    @Step("Pre-condition: Создание сметы")
+    private void startFromScreenWithCreatedEstimate(boolean isConfirmed) throws Exception {
+        boolean byApi = false; // TODO should be true
+        if (!EstimatePage.isThisPage(context)) {
+            if (byApi) {
+                String estimateId = isConfirmed ? clientProvider.createConfirmedEstimateAndGetCartId() :
+                        clientProvider.createDraftEstimateAndGetCartId();
+                MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
+                        MainSalesDocumentsPage.class);
+                SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
+                salesDocumentsPage.searchForDocumentByTextAndSelectIt(estimateId);
+            } else {
+                String existedClientPhone = "1111111111";
+                String lmCode = getAnyLmCodeProductWithoutSpecificOptions();
+                MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
+                        MainSalesDocumentsPage.class);
+                SaleTypeModalPage modalPage = mainSalesDocumentsPage.clickCreateSalesDocumentButton();
+                modalPage.clickEstimateMenuItem()
+                        .clickCustomerField()
+                        .selectSearchType(SearchCustomerPage.SearchType.BY_PHONE)
+                        .enterTextInSearchField(existedClientPhone)
+                        .selectCustomerFromSearchList(1)
+                        .clickProductAndServiceButton()
+                        .enterTextInSearchFieldAndSubmit(lmCode);
+                AddProduct35Page addProduct35Page = new AddProduct35Page(context);
+                addProduct35Page.clickAddIntoEstimateButton();
+            }
+        }
+    }
 
     @Test(description = "C22797068 Создать смету с экрана Документы продажи")
     public void testCreatingEstimateFromSalesDocumentsScreen() throws Exception {
@@ -106,13 +131,7 @@ public class EstimateTest extends SalesBaseTest {
 
     @Test(description = "C22797074 Посмотреть подробнее о товаре")
     public void testViewProductDetailsFromEstimateScreen() throws Exception {
-        if (!EstimatePage.isThisPage(context)) {
-            String estimateId = clientProvider.createDraftEstimateAndGetCartId();
-            MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
-                    MainSalesDocumentsPage.class);
-            SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
-            salesDocumentsPage.searchForDocumentByTextAndSelectIt(estimateId);
-        }
+        startFromScreenWithCreatedEstimate(false);
 
         EstimatePage estimatePage = new EstimatePage(context);
         ProductCardData productCardData = estimatePage.getCardDataListFromPage()
@@ -132,13 +151,7 @@ public class EstimateTest extends SalesBaseTest {
 
     @Test(description = "C22797073 Изменить количество добавленного товара")
     public void testChangeProductQuantityFromEstimateScreen() throws Exception {
-        if (!EstimatePage.isThisPage(context)) {
-            String estimateId = clientProvider.createDraftEstimateAndGetCartId();
-            MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
-                    MainSalesDocumentsPage.class);
-            SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
-            salesDocumentsPage.searchForDocumentByTextAndSelectIt(estimateId);
-        }
+        startFromScreenWithCreatedEstimate(false);
 
         EstimatePage estimatePage = new EstimatePage(context);
         ProductCardData productCardDataBefore = estimatePage.getCardDataListFromPage()
@@ -180,13 +193,7 @@ public class EstimateTest extends SalesBaseTest {
 
     @Test(description = "C22797078 Преобразовать смету в корзину")
     public void testTransformEstimateToBasket() throws Exception {
-        if (!EstimatePage.isThisPage(context)) {
-            String estimateId = clientProvider.createConfirmedEstimateAndGetCartId();
-            MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
-                    MainSalesDocumentsPage.class);
-            SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
-            salesDocumentsPage.searchForDocumentByTextAndSelectIt(estimateId);
-        }
+        startFromScreenWithCreatedEstimate(true);
 
         EstimatePage estimatePage = new EstimatePage(context);
         // Collect test data from page
@@ -202,6 +209,48 @@ public class EstimateTest extends SalesBaseTest {
         Basket35Page basket35Page = modalPage.clickTransformToBasketMenuItem();
         basket35Page.verifyRequiredElements(new Basket35Page.PageState().setProductIsAdded(true));
         basket35Page.shouldOrderDataIs(testEstimateData);
+    }
+
+    @Test(description = "C22797070 Добавить существующий товар еще раз (из поиска)")
+    public void testAddProductIntoEstimateAgain() throws Exception {
+        startFromScreenWithCreatedEstimate(false);
+
+        // Step 1
+        step("Нажмите на кнопку +товары и услуги");
+        EstimatePage estimatePage = new EstimatePage(context);
+        SalesOrderData firstEstimateStateData = estimatePage.getEstimateDataFromPage();
+        SalesOrderCardData firstProductInEstimate = firstEstimateStateData.getOrderCardDataList().get(0);
+        SearchProductPage searchProductPage = estimatePage.clickProductButton();
+        searchProductPage.verifyRequiredElements();
+
+        // Step 2
+        step("Введите ЛМ код товара или название товара или отсканируйте товар, ранее добавленный в смету");
+        searchProductPage.searchProductAndSelect(firstProductInEstimate.getProductCardData().getLmCode());
+        EstimateAddProductPage addProductPage = new EstimateAddProductPage(context);
+        addProductPage.verifyRequiredElements();
+
+        // Step 3
+        step("Измените количество товара");
+        String quantityForProduct2 = String.valueOf(Math.round(firstProductInEstimate.getSelectedQuantity()) + 1);
+        addProductPage.enterQuantityOfProduct(quantityForProduct2)
+                .shouldEditQuantityFieldIs(quantityForProduct2)
+                .shouldTotalPriceCalculateCorrectly();
+
+        // Step 4
+        step("Нажмите на Добавить в смету");
+        SalesOrderData estimateData = addProductPage.clickAddIntoEstimateButton().getEstimateDataFromPage();
+        SalesOrderCardData newProduct = estimateData.getOrderCardDataList().get(0);
+        softAssert.isEquals(estimateData.getProductCount(), 2, "Метка с кол-вом товара не верна");
+        softAssert.isEquals(estimateData.getOrderCardDataList().size(), 2,
+                "Кол-во добавленного в смету товара неверно");
+        softAssert.isEquals(newProduct.getSelectedQuantity(),
+                Double.parseDouble(quantityForProduct2), "Кол-во товара №2 неверно");
+        softAssert.isEquals(estimateData.getTotalPrice(),
+                firstProductInEstimate.getTotalPrice() +
+                        newProduct.getTotalPrice(), "Сумма итого неверна");
+        softAssert.isTrue(firstEstimateStateData.getTotalWeight() < estimateData.getTotalWeight(),
+                "Вес должен был увеличиться после добавления нового товара");
+        softAssert.verifyAll();
     }
 
 }

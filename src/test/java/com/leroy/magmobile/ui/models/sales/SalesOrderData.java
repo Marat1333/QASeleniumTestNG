@@ -7,7 +7,7 @@ import java.util.List;
 public class SalesOrderData extends CardWidgetData {
 
     private List<SalesOrderCardData> orderCardDataList;
-    private Double productCount;
+    private Integer productCount;
     private Double totalWeight; // кг
     private Double totalPrice; // Рубли
 
@@ -19,11 +19,11 @@ public class SalesOrderData extends CardWidgetData {
         this.orderCardDataList = orderCardDataList;
     }
 
-    public Double getProductCount() {
+    public Integer getProductCount() {
         return productCount;
     }
 
-    public void setProductCount(Double productCount) {
+    public void setProductCount(Integer productCount) {
         this.productCount = productCount;
     }
 

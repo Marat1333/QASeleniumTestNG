@@ -170,7 +170,8 @@ public class SalesBaseTest extends AppBaseSteps {
 
         // Step #3
         log.step("Нажмите на мини-карточку товара 16410291");
-        AddProductPage addProductPage = searchProductPage.searchProductAndSelect("16410291")
+        searchProductPage.searchProductAndSelect("16410291");
+        AddProductPage addProductPage = new AddProductPage(context)
                 .verifyRequiredElements();
 
         // Step #4
