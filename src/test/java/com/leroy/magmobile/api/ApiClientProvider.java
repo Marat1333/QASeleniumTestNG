@@ -247,12 +247,16 @@ public class ApiClientProvider {
     // ESTIMATE
 
     @Step("Создаем черновик Сметы через API")
-    public String createDraftEstimateAndGetCartId() {
-        String lmCode = getProducts(1).get(0).getLmCode();
+    public String createDraftEstimateAndGetCartId(int productCount) {
+        List<String> lmCodes = getProductLmCodes(productCount);
         CustomerData customerData = getAnyCustomer();
-        EstimateProductOrderData productOrderData = new EstimateProductOrderData();
-        productOrderData.setLmCode(lmCode);
-        productOrderData.setQuantity(1.0);
+        List<EstimateProductOrderData> productOrderDataList = new ArrayList<>();
+        for (int i = 1; i <= productCount; i++) {
+            EstimateProductOrderData productOrderData = new EstimateProductOrderData();
+            productOrderData.setLmCode(lmCodes.get(i-1));
+            productOrderData.setQuantity((double) i);
+            productOrderDataList.add(productOrderData);
+        }
         EstimateCustomerData estimateCustomerData = new EstimateCustomerData();
         estimateCustomerData.setCustomerNumber(customerData.getCustomerNumber());
         estimateCustomerData.setFirstName(customerData.getFirstName());
@@ -260,9 +264,13 @@ public class ApiClientProvider {
         estimateCustomerData.setType("PERSON");
         estimateCustomerData.setRoles(Collections.singletonList("PAYER"));
         Response<EstimateData> estimateDataResponse = getEstimateClient().sendRequestCreate(
-                estimateCustomerData, productOrderData);
+                Collections.singletonList(estimateCustomerData), productOrderDataList);
         assertThat(estimateDataResponse, successful());
         return estimateDataResponse.asJson().getEstimateId();
+    }
+
+    public String createDraftEstimateAndGetCartId() {
+        return createDraftEstimateAndGetCartId(1);
     }
 
     @Step("Создаем подтвержденную Смету через API")

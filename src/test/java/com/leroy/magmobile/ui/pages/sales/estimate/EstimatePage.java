@@ -184,7 +184,7 @@ public class EstimatePage extends CommonMagMobilePage {
     }
 
     @Step("Нажмите кнопку '+Товар'")
-    public SearchProductPage clickProductButton() {
+    public SearchProductPage clickAddProductButton() {
         addProductBtn.click();
         return new SearchProductPage(context);
     }

@@ -24,9 +24,8 @@ public class ConfirmRemoveCartModal extends CommonMagMobilePage {
 
     // Actions
     @Step("Нажмите кнопку для подтверждения 'Выйти'")
-    public SalesDocumentsPage clickConfirmButton() {
+    public void clickConfirmButton() {
         yesBtn.click();
-        return new SalesDocumentsPage(context);
     }
 
     // Verifications

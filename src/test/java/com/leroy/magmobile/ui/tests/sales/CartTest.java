@@ -151,7 +151,8 @@ public class CartTest extends SalesBaseTest {
 
         // Step 3
         log.step("Нажмите на Выйти");
-        SalesDocumentsPage salesDocumentsPage = confirmRemovingProductModal.clickConfirmButton();
+        confirmRemovingProductModal.clickConfirmButton();
+        SalesDocumentsPage salesDocumentsPage = new SalesDocumentsPage(context);
         salesDocumentsPage.shouldSalesDocumentIsNotPresent(cartDocNumber);
     }
 

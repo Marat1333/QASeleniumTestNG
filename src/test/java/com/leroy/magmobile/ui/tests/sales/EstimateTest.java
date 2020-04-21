@@ -6,7 +6,11 @@ import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
 import com.leroy.magmobile.ui.models.sales.SalesOrderCardData;
 import com.leroy.magmobile.ui.models.sales.SalesOrderData;
 import com.leroy.magmobile.ui.models.search.ProductCardData;
-import com.leroy.magmobile.ui.pages.sales.*;
+import com.leroy.magmobile.ui.pages.common.modal.ConfirmRemovingProductModal;
+import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
+import com.leroy.magmobile.ui.pages.sales.EditProduct35Page;
+import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
+import com.leroy.magmobile.ui.pages.sales.SalesDocumentsPage;
 import com.leroy.magmobile.ui.pages.sales.basket.Basket35Page;
 import com.leroy.magmobile.ui.pages.sales.estimate.*;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
@@ -21,12 +25,12 @@ import java.util.Random;
 public class EstimateTest extends SalesBaseTest {
 
     @Step("Pre-condition: Создание сметы")
-    private void startFromScreenWithCreatedEstimate(boolean isConfirmed) throws Exception {
-        boolean byApi = false; // TODO should be true
+    private void startFromScreenWithCreatedEstimate(int productCountInEstimate, boolean isConfirmed) throws Exception {
+        boolean byApi = true; // TODO should be true
         if (!EstimatePage.isThisPage(context)) {
             if (byApi) {
                 String estimateId = isConfirmed ? clientProvider.createConfirmedEstimateAndGetCartId() :
-                        clientProvider.createDraftEstimateAndGetCartId();
+                        clientProvider.createDraftEstimateAndGetCartId(productCountInEstimate);
                 MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
                         MainSalesDocumentsPage.class);
                 SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
@@ -131,7 +135,7 @@ public class EstimateTest extends SalesBaseTest {
 
     @Test(description = "C22797074 Посмотреть подробнее о товаре")
     public void testViewProductDetailsFromEstimateScreen() throws Exception {
-        startFromScreenWithCreatedEstimate(false);
+        startFromScreenWithCreatedEstimate(1, false);
 
         EstimatePage estimatePage = new EstimatePage(context);
         ProductCardData productCardData = estimatePage.getCardDataListFromPage()
@@ -151,7 +155,7 @@ public class EstimateTest extends SalesBaseTest {
 
     @Test(description = "C22797073 Изменить количество добавленного товара")
     public void testChangeProductQuantityFromEstimateScreen() throws Exception {
-        startFromScreenWithCreatedEstimate(false);
+        startFromScreenWithCreatedEstimate(1, false);
 
         EstimatePage estimatePage = new EstimatePage(context);
         ProductCardData productCardDataBefore = estimatePage.getCardDataListFromPage()
@@ -193,7 +197,7 @@ public class EstimateTest extends SalesBaseTest {
 
     @Test(description = "C22797078 Преобразовать смету в корзину")
     public void testTransformEstimateToBasket() throws Exception {
-        startFromScreenWithCreatedEstimate(true);
+        startFromScreenWithCreatedEstimate(1, true);
 
         EstimatePage estimatePage = new EstimatePage(context);
         // Collect test data from page
@@ -213,14 +217,14 @@ public class EstimateTest extends SalesBaseTest {
 
     @Test(description = "C22797070 Добавить существующий товар еще раз (из поиска)")
     public void testAddProductIntoEstimateAgain() throws Exception {
-        startFromScreenWithCreatedEstimate(false);
+        startFromScreenWithCreatedEstimate(1, false);
 
         // Step 1
         step("Нажмите на кнопку +товары и услуги");
         EstimatePage estimatePage = new EstimatePage(context);
         SalesOrderData firstEstimateStateData = estimatePage.getEstimateDataFromPage();
         SalesOrderCardData firstProductInEstimate = firstEstimateStateData.getOrderCardDataList().get(0);
-        SearchProductPage searchProductPage = estimatePage.clickProductButton();
+        SearchProductPage searchProductPage = estimatePage.clickAddProductButton();
         searchProductPage.verifyRequiredElements();
 
         // Step 2
@@ -250,6 +254,40 @@ public class EstimateTest extends SalesBaseTest {
                         newProduct.getTotalPrice(), "Сумма итого неверна");
         softAssert.isTrue(firstEstimateStateData.getTotalWeight() < estimateData.getTotalWeight(),
                 "Вес должен был увеличиться после добавления нового товара");
+        softAssert.verifyAll();
+    }
+
+    @Test(description = "C22797071 Удалить товар из сметы")
+    public void testRemoveProductFromEstimate() throws Exception {
+        startFromScreenWithCreatedEstimate(2, false);
+
+        // Step 1
+        step("Нажмите на мини-карточку любого товара в списке товаров сметы");
+        EstimatePage estimatePage = new EstimatePage(context);
+        SalesOrderData estimateDataBefore = estimatePage.getEstimateDataFromPage();
+        ActionWithProductCardModalPage actionWithProductCardModalPage = estimatePage.clickCardByIndex(1);
+        actionWithProductCardModalPage.verifyRequiredElements();
+
+        // Step 2
+        step("Выберите параметр Удалить товар");
+        actionWithProductCardModalPage.clickRemoveProductMenuItem();
+        ConfirmRemovingProductModal modal = new ConfirmRemovingProductModal(context);
+        modal.verifyRequiredElements();
+
+        // Step 3
+        step("Нажмите на Удалить");
+        modal.clickConfirmButton();
+        estimatePage = new EstimatePage(context);
+        SalesOrderData estimateDataAfter = estimatePage.getEstimateDataFromPage();
+        softAssert.isEquals(estimateDataAfter.getProductCount(), 1, "Метка кол-ва товаров неверна");
+        softAssert.isEquals(estimateDataAfter.getOrderCardDataList().size(), 1,
+                "Ошибочное кол-во товаров на странице");
+        softAssert.isTrue(estimateDataBefore.getTotalWeight() > estimateDataAfter.getTotalWeight() &&
+                        estimateDataAfter.getTotalWeight() > 0,
+                "Вес должен был уменьшиться");
+        softAssert.isEquals(estimateDataAfter.getTotalPrice(),
+                estimateDataAfter.getOrderCardDataList().get(0).getTotalPrice(),
+                "Общая стоимость не пересчитана");
         softAssert.verifyAll();
     }
 
