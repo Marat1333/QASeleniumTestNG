@@ -157,7 +157,7 @@ public class OrderTest extends BaseProjectApiTest {
 
         step("Wait until order is confirmed");
         orderClient.waitUntilOrderIsConfirmed(orderData.getOrderId());
-        orderData.setStatus(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal());
+        orderData.setStatus(SalesDocumentsConst.States.CONFIRMED.getApiVal());
         orderData.increaseFulfillmentVersion();
 
         step("Rearrange Order");
