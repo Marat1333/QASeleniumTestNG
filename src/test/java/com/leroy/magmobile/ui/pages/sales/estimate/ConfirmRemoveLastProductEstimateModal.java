@@ -1,25 +1,24 @@
-package com.leroy.magmobile.ui.pages.sales.basket;
+package com.leroy.magmobile.ui.pages.sales.estimate;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.sales.SalesDocumentsPage;
 import io.qameta.allure.Step;
 
-public class ConfirmRemoveCartModal extends CommonMagMobilePage {
+public class ConfirmRemoveLastProductEstimateModal extends CommonMagMobilePage {
 
-    public ConfirmRemoveCartModal(Context context) {
+    public ConfirmRemoveLastProductEstimateModal(Context context) {
         super(context);
     }
 
-    @AppFindBy(text = "Выйти и удалить корзину?")
+    @AppFindBy(text = "Удалить смету?")
     Element headerLbl;
 
-    @AppFindBy(text = "ВЫЙТИ")
+    @AppFindBy(text = "УДАЛИТЬ")
     Element yesBtn;
 
-    @AppFindBy(text = "ОТМЕНА")
+    @AppFindBy(text = "НЕТ, ОСТАВИТЬ")
     Element noBtn;
 
     // Actions
@@ -31,7 +30,7 @@ public class ConfirmRemoveCartModal extends CommonMagMobilePage {
     // Verifications
 
     @Step("Проверить, что модальное окно с подтверждением удаления 'Выйти и удалить корзину?' отображается корректно")
-    public ConfirmRemoveCartModal verifyRequiredElements() {
+    public ConfirmRemoveLastProductEstimateModal verifyRequiredElements() {
         softAssert.areElementsVisible(headerLbl, yesBtn, noBtn);
         softAssert.verifyAll();
         return this;

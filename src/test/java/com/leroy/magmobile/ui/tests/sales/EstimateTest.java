@@ -291,4 +291,28 @@ public class EstimateTest extends SalesBaseTest {
         softAssert.verifyAll();
     }
 
+    @Test(description = "C22797072 Удалить последний товар из сметы")
+    public void testRemoveLastProductFromEstimate() throws Exception {
+        startFromScreenWithCreatedEstimate(1, false);
+
+        // Step 1
+        step("Нажмите на мини-карточку любого товара в списке товаров сметы");
+        EstimatePage estimatePage = new EstimatePage(context);
+        String estimateId = estimatePage.getDocumentNumber(true);
+        ActionWithProductCardModalPage actionWithProductCardModalPage = estimatePage.clickCardByIndex(1);
+        actionWithProductCardModalPage.verifyRequiredElements();
+
+        // Step 2
+        step("Выберите параметр Удалить товар");
+        actionWithProductCardModalPage.clickRemoveProductMenuItem();
+        ConfirmRemoveLastProductEstimateModal modal = new ConfirmRemoveLastProductEstimateModal(context);
+        modal.verifyRequiredElements();
+
+        // Step 3
+        step("Нажмите на Удалить");
+        modal.clickConfirmButton();
+        SalesDocumentsPage salesDocumentsPage = new SalesDocumentsPage(context);
+        salesDocumentsPage.shouldSalesDocumentIsNotPresent(estimateId);
+    }
+
 }

@@ -8,7 +8,7 @@ import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
 import com.leroy.magmobile.ui.pages.sales.SalesDocumentsPage;
 import com.leroy.magmobile.ui.pages.sales.basket.Basket35Page;
 import com.leroy.magmobile.ui.pages.sales.basket.CartActionWithProductCardModalPage;
-import com.leroy.magmobile.ui.pages.sales.basket.ConfirmRemoveCartModal;
+import com.leroy.magmobile.ui.pages.sales.basket.ConfirmRemoveLastProductCartModal;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SaleTypeModalPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import org.testng.annotations.Test;
@@ -146,7 +146,7 @@ public class CartTest extends SalesBaseTest {
         // Step 2
         log.step("Выберите параметр Удалить товар");
         modalPage.clickRemoveProductMenuItem();
-        ConfirmRemoveCartModal confirmRemovingProductModal = new ConfirmRemoveCartModal(context)
+        ConfirmRemoveLastProductCartModal confirmRemovingProductModal = new ConfirmRemoveLastProductCartModal(context)
                 .verifyRequiredElements();
 
         // Step 3
