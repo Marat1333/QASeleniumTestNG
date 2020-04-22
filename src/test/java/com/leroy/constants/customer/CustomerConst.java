@@ -3,7 +3,7 @@ package com.leroy.constants.customer;
 public class CustomerConst {
 
     public enum Role {
-        RECEIVER
+        RECEIVER, PAYER
     }
 
     public enum Type {

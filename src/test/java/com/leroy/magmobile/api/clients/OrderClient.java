@@ -211,14 +211,12 @@ public class OrderClient extends MagMobileClient {
                     actualCustomer.getFirstName(), is(expectedCustomer.getFirstName()));
             assertThat(String.format("Customer #%s - lastName", i + 1),
                     actualCustomer.getLastName(), is(expectedCustomer.getLastName()));
-            assertThat(String.format("Customer #%s - fullName", i + 1),
-                    actualCustomer.getFullName(), is(expectedCustomer.getFullName()));
+            //assertThat(String.format("Customer #%s - fullName", i + 1),
+            //        actualCustomer.getFullName(), is(expectedCustomer.getFullName()));
             assertThat(String.format("Customer #%s - Phone Data", i + 1),
                     actualCustomer.getPhone(), is(expectedCustomer.getPhone()));
             assertThat(String.format("Customer #%s - email", i + 1),
                     actualCustomer.getEmail(), is(expectedCustomer.getEmail()));
-            assertThat(String.format("Customer #%s - role", i + 1),
-                    actualCustomer.getRole(), is(expectedCustomer.getRole()));
             assertThat(String.format("Customer #%s - roles", i + 1),
                     actualCustomer.getRoles(), is(expectedCustomer.getRoles()));
             assertThat(String.format("Customer #%s - type", i + 1),
