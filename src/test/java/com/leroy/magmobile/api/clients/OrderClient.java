@@ -201,6 +201,30 @@ public class OrderClient extends MagMobileClient {
                     is(expectedData.getStatus()));
         }
 
+        assertThat("Customers count", actualData.getCustomers(), hasSize(expectedData.getCustomers().size()));
+        for (int i = 0; i < actualData.getCustomers().size(); i++) {
+            OrderCustomerData actualCustomer = actualData.getCustomers().get(i);
+            OrderCustomerData expectedCustomer = expectedData.getCustomers().get(i);
+            assertThat(String.format("Customer #%s - customerNumber", i + 1),
+                    actualCustomer.getCustomerNumber(), is(expectedCustomer.getCustomerNumber()));
+            assertThat(String.format("Customer #%s - firstName", i + 1),
+                    actualCustomer.getFirstName(), is(expectedCustomer.getFirstName()));
+            assertThat(String.format("Customer #%s - lastName", i + 1),
+                    actualCustomer.getLastName(), is(expectedCustomer.getLastName()));
+            assertThat(String.format("Customer #%s - fullName", i + 1),
+                    actualCustomer.getFullName(), is(expectedCustomer.getFullName()));
+            assertThat(String.format("Customer #%s - Phone Data", i + 1),
+                    actualCustomer.getPhone(), is(expectedCustomer.getPhone()));
+            assertThat(String.format("Customer #%s - email", i + 1),
+                    actualCustomer.getEmail(), is(expectedCustomer.getEmail()));
+            assertThat(String.format("Customer #%s - role", i + 1),
+                    actualCustomer.getRole(), is(expectedCustomer.getRole()));
+            assertThat(String.format("Customer #%s - roles", i + 1),
+                    actualCustomer.getRoles(), is(expectedCustomer.getRoles()));
+            assertThat(String.format("Customer #%s - type", i + 1),
+                    actualCustomer.getType(), is(expectedCustomer.getType()));
+        }
+
         assertThat("products", actualData.getProducts(), hasSize(expectedData.getProducts().size()));
 
         for (int i = 0; i < actualData.getProducts().size(); i++) {
@@ -291,17 +315,18 @@ public class OrderClient extends MagMobileClient {
      * @param orderId - order Id
      */
     @Step("Wait until order is confirmed")
-    public void waitUntilOrderIsConfirmed(String orderId) throws Exception {
+    public OrderData waitUntilOrderHasStatusAndReturnOrderData(
+            String orderId, String expectedStatus) throws Exception {
         int maxTimeoutInSeconds = 60;
         long currentTimeMillis = System.currentTimeMillis();
         Response<OrderData> r = null;
         while (System.currentTimeMillis() - currentTimeMillis < maxTimeoutInSeconds * 1000) {
             r = getOrder(orderId);
-            if (r.isSuccessful() && !r.asJson().getStatus()
-                    .equals(SalesDocumentsConst.States.IN_PROGRESS.getApiVal())) {
+            if (r.isSuccessful() && r.asJson().getStatus()
+                    .equals(expectedStatus)) {
                 Log.info("waitUntilOrderIsConfirmed() has executed for " +
                         (System.currentTimeMillis() - currentTimeMillis) / 1000 + " seconds");
-                return;
+                return r.asJson();
             }
             Thread.sleep(3000);
         }
@@ -310,7 +335,8 @@ public class OrderClient extends MagMobileClient {
                 r.isSuccessful());
         assertThat("Could not wait for the order to be confirmed. Timeout=" + maxTimeoutInSeconds + ". " +
                 "Status:", r.asJson().getStatus(),
-                not(SalesDocumentsConst.States.IN_PROGRESS.getApiVal()));
+                is(expectedStatus));
+        return null;
     }
 
 
