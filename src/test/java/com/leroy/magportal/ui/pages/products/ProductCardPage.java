@@ -82,4 +82,16 @@ public class ProductCardPage extends MenuPage {
     }
     */
 
+    //Verifications
+    @Step("Проверить наличие поискового критерия в карте товара")
+    public ProductCardPage shouldProductCardContainsText(String text){
+        if (text.matches("\\D+")) {
+            anAssert.isElementTextContains(productTitle, text);
+        }else {
+            anAssert.isTrue(lmCodeLbl.getText().contains(text)||
+                    barCodeLbl.getText(()-> barCodeLbl.getText().replaceAll("\\D+","")).equals(text),
+                    "Карта товара не содержит критерий поиска "+text);
+        }
+        return this;
+    }
 }

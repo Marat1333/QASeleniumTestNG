@@ -12,12 +12,12 @@ import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.webelements.MagPortalComboBox;
 import com.leroy.magportal.ui.webelements.searchelements.SupplierComboBox;
 import com.leroy.magportal.ui.webelements.widgets.*;
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import io.qameta.allure.Step;
-import org.openqa.selenium.By;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Collections;
 
 public class SearchProductPage extends MenuPage {
     public SearchProductPage(TestContext context) {
@@ -51,10 +51,11 @@ public class SearchProductPage extends MenuPage {
     }
 
     public enum SortType {
+        DEFAULT("По умолчанию"),
         LM_CODE_DESC("По ЛМ-коду: 9 → 1"),
         LM_CODE_ASC("По ЛМ-коду: 1 → 9"),
-        AVAILABLE_STOCK_DESC("По запасу (больше → меньше)"),
-        AVAILABLE_STOCK_ASC("По запасу (меньше → больше)");
+        NAME_DESC("По названию (Я → А)"),
+        NAME_ASC("По названию (А → Я)");
 
         private String name;
 
@@ -183,6 +184,17 @@ public class SearchProductPage extends MenuPage {
     @WebFindBy(text = "Больше ничего не найдено.")
     Element noMoreResultsLbl;
 
+    @Override
+    public void waitForPageIsLoaded() {
+        searchInput.waitForVisibility();
+        applyFiltersBtn.waitForVisibility();
+
+    }
+
+    public String getCurrentNomenclatureName() {
+        return currentNomenclatureLbl.getText();
+    }
+
     @Step("Ввести в поисковую строку {value} и осуществить поиск")
     public SearchProductPage searchByPhrase(String value) {
         searchInput.clearFillAndSubmit(value);
@@ -193,6 +205,7 @@ public class SearchProductPage extends MenuPage {
     @Step("Очистить поисковую строку нажатием на крест")
     public SearchProductPage clearSearchInputByClearBtn() {
         clearSearchInput.click();
+        waitForSpinnerAppearAndDisappear();
         return this;
     }
 
@@ -251,6 +264,7 @@ public class SearchProductPage extends MenuPage {
 
     @Step("Перейти по хлебным крошкам в {value}")
     public SearchProductPage navigateToPreviousNomenclatureElement(String value) {
+        waitForPageIsLoaded();
         for (Element element : nomenclaturePathButtons) {
             if (element.getText().contains(value)) {
                 element.click();
@@ -269,10 +283,10 @@ public class SearchProductPage extends MenuPage {
 
     @Step("Выбрать чек-бокс и применить фильтры - {applyFilters}")
     public SearchProductPage choseCheckboxFilter(Filters filter, boolean applyFilters) {
-        Element checkbox = E("contains(" + filter.getName() + ")");
         if (!(filter.equals(Filters.HAS_AVAILABLE_STOCK) || filter.equals(Filters.TOP_EM))) {
             showAllFilters();
         }
+        Element checkbox = E("contains(" + filter.getName() + ")");
         checkbox.click();
         if (applyFilters) {
             applyFilters();
@@ -339,13 +353,14 @@ public class SearchProductPage extends MenuPage {
         return this;
     }
 
-    /*
     @Step("Выбрать тип сортировки")
     public SearchProductPage choseSortType(SortType sortType) {
-        Button sortBtn = (Button) findElement(By.xpath("//span[contains(text(),'" + sortType.getName() + "')]/ancestor::button"));
+        sortComboBox.click();
+        Element sortBtn = E("//span[contains(text(),'" + sortType.getName() + "')]/ancestor::button");
         sortBtn.click();
+        waitForSpinnerAppearAndDisappear();
         return this;
-    }*/
+    }
 
     @Step("Выбрать вариант отображения товаров")
     public SearchProductPage choseViewMode(ViewMode mode) {
@@ -449,4 +464,83 @@ public class SearchProductPage extends MenuPage {
         return this;
     }
 
+    @Step("Проверяем наличие поискового критерия {searchCriterion} в карточке товара")
+    public SearchProductPage shouldProductCardContainsText(String searchCriterion) throws Exception {
+        anAssert.isElementNotVisible(notFoundMsgLbl);
+        if (searchCriterion.matches("\\D+") || searchCriterion.length() < 4) {
+            for (int i = 0; i < extendedProductCardList.getCount(); i++) {
+                anAssert.isTextContainsIgnoringCase(extendedProductCardList.get(i).getTitle(), searchCriterion,
+                        extendedProductCardList.get(i).getTitle() + " не содержит " + searchCriterion);
+            }
+        } else {
+            for (int i = 0; i < extendedProductCardList.getCount(); i++) {
+                anAssert.isTrue((extendedProductCardList.get(i).getLmCode().contains(searchCriterion) ||
+                                extendedProductCardList.get(i).getBarCode().contains(searchCriterion)),
+                        extendedProductCardList.get(i).toString() + " не содержит " + searchCriterion);
+            }
+        }
+        return this;
+    }
+
+    @Step("Проверить, что поисковая строка пуста")
+    public SearchProductPage shouldSearchInputBeEmpty() {
+        anAssert.isElementTextEqual(searchInput, "");
+        return this;
+    }
+
+    @Step("Проверить, что текущий элемент номенклатуры отобразился")
+    public SearchProductPage shouldCurrentNomenclatureElementNameIsDisplayed(String nomenclatureName) {
+        anAssert.isElementTextContains(currentNomenclatureLbl, nomenclatureName);
+        return this;
+    }
+
+    @Step("Проверить, что хлебные крошки содержат предыдущий роидтельскую номенклатуру")
+    public SearchProductPage shouldBreadCrumbsContainsPreviousNomenclatureName(String nomenclatureParentName) {
+        int condition = 0;
+        for (Element tmp : nomenclaturePathButtons) {
+            if (tmp.getText().contains(nomenclatureParentName)) {
+                condition++;
+            }
+        }
+        anAssert.isTrue(condition == 1, nomenclatureParentName + " либо отсутствует, либо встречается более 1 раза");
+        return this;
+    }
+
+    @Step("Проверить, что товары отсортированы")
+    public SearchProductPage shouldProductsAreSorted(SortType order) throws Exception {
+        List<String> sortedNameList = new ArrayList<>();
+        List<Integer> sortedLmCodesList = new ArrayList<>();
+        for (ExtendedProductCardWidget tmp:extendedProductCardList){
+            sortedLmCodesList.add(Integer.parseInt(tmp.getLmCode()));
+            sortedNameList.add(tmp.getTitle());
+        }
+        switch (order){
+            case LM_CODE_DESC:
+                Collections.sort(sortedLmCodesList, Collections.reverseOrder());
+                for (int i=0; i<extendedProductCardList.getCount();i++){
+                    anAssert.isEquals(extendedProductCardList.get(i).getLmCode(), String.valueOf(sortedLmCodesList.get(i)), "Wrong sorting order for visible content");
+                }
+                return this;
+            case LM_CODE_ASC:
+                Collections.sort(sortedLmCodesList);
+                for (int i=0; i<extendedProductCardList.getCount();i++){
+                    anAssert.isEquals(extendedProductCardList.get(i).getLmCode(), String.valueOf(sortedLmCodesList.get(i)), "Wrong sorting order for visible content");
+                }
+                return this;
+            case NAME_DESC:
+                Collections.sort(sortedNameList, Collections.reverseOrder());
+                for (int i=0; i<extendedProductCardList.getCount();i++){
+                    anAssert.isEquals(extendedProductCardList.get(i).getTitle(), sortedNameList.get(i), "Wrong sorting order for visible content");
+                }
+                return this;
+            case NAME_ASC:
+                Collections.sort(sortedNameList);
+                for (int i=0; i<extendedProductCardList.getCount();i++){
+                    anAssert.isEquals(extendedProductCardList.get(i).getTitle(), sortedNameList.get(i), "Wrong sorting order for visible content");
+                }
+                return this;
+            default:
+                throw new Exception("Wrong sorting order");
+        }
+    }
 }

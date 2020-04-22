@@ -1,6 +1,5 @@
 package com.leroy.core.asserts;
 
-import com.leroy.core.asserts.BaseCustomAssert;
 import com.leroy.core.testrail.helpers.StepLog;
 import com.leroy.core.web_elements.general.BaseWidget;
 import com.leroy.core.web_elements.general.Element;
@@ -31,6 +30,10 @@ public class CustomAssert extends BaseCustomAssert {
 
     public void isNotEquals(Object actual, Object expected, String desc) {
         super.logIsNotEquals(actual, expected, desc, false);
+    }
+
+    public void isTextContainsIgnoringCase(String actual, String expected, String desc){
+        super.logIsTextContainsIgnoringCase(actual, expected, desc, false);
     }
 
     public void isNull(Object object, String actualResult, String expectedResult) {

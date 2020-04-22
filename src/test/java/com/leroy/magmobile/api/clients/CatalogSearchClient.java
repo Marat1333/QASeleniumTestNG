@@ -1,5 +1,7 @@
 package com.leroy.magmobile.api.clients;
 
+import com.leroy.constants.EnvConstants;
+import com.leroy.core.SessionData;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.data.catalog.ServiceItemData;
