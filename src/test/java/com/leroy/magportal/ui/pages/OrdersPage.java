@@ -9,5 +9,8 @@ public class OrdersPage extends MenuPage {
         super(context);
     }
 
-
+    @Override
+    public void waitForPageIsLoaded() {
+        super.waitForPageIsLoaded();
+    }
 }

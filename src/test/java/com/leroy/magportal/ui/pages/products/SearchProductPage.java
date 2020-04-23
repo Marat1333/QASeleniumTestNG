@@ -199,7 +199,7 @@ public class SearchProductPage extends MenuPage {
     }
 
     @Step("Ввести в поисковую строку значение без инициализации поиска")
-    public SearchProductPage enterStringInSearchInput(String value){
+    public SearchProductPage enterStringInSearchInput(String value) {
         searchInput.fill(value);
         return this;
     }
@@ -345,14 +345,15 @@ public class SearchProductPage extends MenuPage {
     }*/
 
     @Step("Выбрать фильтр по поставщику {value}")
-    public SearchProductPage choseSupplier(String value) {
-        if (!supplierDropBox.isVisible()){
+    public SearchProductPage choseSupplier(String value) throws Exception {
+        if (!supplierDropBox.isVisible()) {
             showAllFilters.click();
         }
-        supplierDropBox.click();
         SupplierDropDown supplierDropDown = supplierDropBox.supplierDropDown;
+        if (!supplierDropDown.isVisible()) {
+            supplierDropBox.click();
+        }
         supplierDropDown.loadingSpinner.waitForInvisibility();
-        //TODO слишком быстрый ввод, надо замедлять - поиск не происходит
         supplierDropDown.searchSupplier(value);
         supplierDropDown.loadingSpinner.waitForVisibility(short_timeout);
         supplierDropDown.loadingSpinner.waitForInvisibility();
@@ -367,25 +368,26 @@ public class SearchProductPage extends MenuPage {
     }
 
     @Step("Удалить выбранного поставщиков {supplierName} по нажатию на кнопку крестик в овальной области с именем поставщика")
-    public SearchProductPage deleteChosenSuppliers(String supplierName){
+    public SearchProductPage deleteChosenSuppliers(String supplierName) {
         SupplierDropDown supplierDropDown = supplierDropBox.supplierDropDown;
-        if (!supplierDropDown.isVisible()){
+        if (!supplierDropDown.isVisible()) {
             supplierDropBox.click();
             waitForSpinnerAppearAndDisappear();
         }
-        for (ChosenSupplierWidget widget: supplierDropDown.getChosenSuppliers()){
-            if (widget.getChosenSupplierName().equals(supplierName){
+        for (ChosenSupplierWidget widget : supplierDropDown.getChosenSuppliers()) {
+            if (widget.getChosenSupplierName().equals(supplierName)) {
                 widget.deleteChosenSupplier();
                 break;
             }
         }
+        supplierDropBox.click();
         return this;
     }
 
     @Step("Удалить всех выбранных поставщиков по нажатию на кнопку \"Очистить\"")
-    public SearchProductPage deleteAllChosenSuppliers(){
+    public SearchProductPage deleteAllChosenSuppliers() {
         SupplierDropDown supplierDropDown = supplierDropBox.supplierDropDown;
-        if (!supplierDropDown.isVisible()){
+        if (!supplierDropDown.isVisible()) {
             supplierDropBox.click();
             waitForSpinnerAppearAndDisappear();
         }
@@ -610,18 +612,25 @@ public class SearchProductPage extends MenuPage {
     }
 
     @Step("Проверить, что история поиска содержит элементы, совпадающая с введенным критерием поиска")
-    public SearchProductPage shouldSearchHistoryElementsContainsSearchCriterion(String criterion){
+    public SearchProductPage shouldSearchHistoryElementsContainsSearchCriterion(String criterion) {
         anAssert.isTrue(searchHistoryMatchesElements.getCount() > 0, "История поиска не содержит записей");
-        for (Element tmp : searchHistoryMatchesElements){
-            anAssert.isEquals(tmp.getText(), criterion,"Элемент истории поиска не содержит введенную фразу");
+        for (Element tmp : searchHistoryMatchesElements) {
+            anAssert.isEquals(tmp.getText(), criterion, "Элемент истории поиска не содержит введенную фразу");
         }
         return this;
     }
 
     @Step("Проверить, что поле с выбором поставщика содержит корректный текст")
-    public void SearchProductPage shouldSupplierComboBoxContainsCorrectText(String ...name){
-        if (name.length==0){
-
+    public SearchProductPage shouldSupplierComboBoxContainsCorrectText(String... name) {
+        String elemText;
+        if (name == null) {
+            anAssert.isElementNotVisible(supplierDropBox.chosenSupplierName);
+        } else if (name.length == 1) {
+            elemText = supplierDropBox.chosenSupplierName.getText();
+            anAssert.isTextContainsIgnoringCase(elemText, name[0], "Не отображено имя поставщика " + name[0]);
+        } else {
+            elemText = supplierDropBox.chosenSupplierName.getText();
+            anAssert.isTextContainsIgnoringCase(elemText, "Поставщик (" + name.length + ")", "Отображаемый текст не соответствует паттерну");
         }
         return this;
     }

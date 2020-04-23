@@ -12,8 +12,11 @@ public class SupplierDropDown extends BaseWidget {
         super(driver, locator);
     }
 
-    @WebFindBy(xpath = ".//div[contains(@class,'inputContainer')]/input")
+    @WebFindBy(xpath = "./ancestor::div[2]//input[@placeholder='Поиск']")
     EditBox searchString;
+
+    @WebFindBy(xpath = ".//input[@placeholder='Поиск']/following-sibling::button")
+    Button clearTextInputBtn;
 
     @WebFindBy(xpath = ".//span[text()='Очистить']/ancestor::button")
     Button clearBtn;
@@ -30,7 +33,7 @@ public class SupplierDropDown extends BaseWidget {
     @WebFindBy(xpath = ".//div[contains(@class, 'Spinner-active')]")
     public Element loadingSpinner;
 
-    public void searchSupplier(String value) {
+    public void searchSupplier(String value) throws Exception {
         searchString.clearAndFill(value, true);
         loadingSpinner.waitForInvisibility(short_timeout);
     }

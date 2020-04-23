@@ -60,22 +60,25 @@ public class EditBox extends Element {
         return this;
     }
 
-    public EditBox fill(String text, boolean imitateTyping) {
+    public EditBox fill(String text, boolean imitateTyping) throws Exception {
         if (!imitateTyping) {
             this.fill(text);
         } else {
             for (int i = 0; i < text.length(); ++i) {
-                this.fill(Character.toString(text.charAt(i)));
+                synchronized (this) {
+                    this.fill(Character.toString(text.charAt(i)));
+                    wait(200L);
+                }
             }
         }
         return this;
     }
 
-    public void clearAndFill(String text) {
+    public void clearAndFill(String text) throws Exception{
         clearAndFill(text, false);
     }
 
-    public void clearAndFill(String text, boolean imitateTyping) {
+    public void clearAndFill(String text, boolean imitateTyping) throws Exception {
         if (text != null) {
             clear();
             fill(text, imitateTyping);

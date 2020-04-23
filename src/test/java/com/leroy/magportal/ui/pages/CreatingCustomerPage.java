@@ -148,7 +148,7 @@ public class CreatingCustomerPage extends MenuPage {
     }
 
     @Step("Введите {text} в поле 'Имя'")
-    public CreatingCustomerPage enterTextInFirstNameInputField(String text) {
+    public CreatingCustomerPage enterTextInFirstNameInputField(String text) throws Exception {
         firstNameFld.clearAndFill(text);
         return this;
     }
@@ -195,7 +195,7 @@ public class CreatingCustomerPage extends MenuPage {
     }
 
     @Step("Заполните все необходимые поля для клиента")
-    public CreatingCustomerPage enterCustomerData(CustomerData customerData) {
+    public CreatingCustomerPage enterCustomerData(CustomerData customerData) throws Exception {
         switch (customerData.getGender()) {
             case MALE:
                 maleOptionBtn.click();

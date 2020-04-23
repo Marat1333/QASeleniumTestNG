@@ -301,25 +301,29 @@ public class SearchTest extends WebBaseSteps {
 
     @Test(description = "C23384739 searchHistory")
     public void testSearchHistory() throws Exception {
-        String searchCriterion="qqqq";
+        String searchCriterion = "qqqq";
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
         searchProductPage.shouldSearchHistoryContainsEachElement(searchProductPage.createSearchHistory(11))
-            .enterStringInSearchInput(searchCriterion)
-            .shouldSearchHistoryElementsContainsSearchCriterion(searchCriterion);
+                .enterStringInSearchInput(searchCriterion)
+                .shouldSearchHistoryElementsContainsSearchCriterion(searchCriterion);
     }
 
     @Test(description = "C22782963 Supplier")
-    public void testSupplierFilter() throws Exception{
+    public void testSupplierFilter() throws Exception {
         final String FIRST_SUPPLIER_CODE = "1001123001";
         final String FIRST_SUPPLIER_NAME = "ООО Бард-Спб";
         final String SECOND_SUPPLIER_CODE = "12301";
         final String SECOND_SUPPLIER_NAME = "САЗИ";
 
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
-        searchProductPage.navigateToPreviousNomenclatureElement(allDepartments);
-        searchProductPage.choseSupplier(FIRST_SUPPLIER_CODE);
+        searchProductPage.navigateToPreviousNomenclatureElement(allDepartments)
+                .choseSupplier(FIRST_SUPPLIER_CODE)
+                .shouldSupplierComboBoxContainsCorrectText(FIRST_SUPPLIER_NAME)
+                .deleteChosenSuppliers(FIRST_SUPPLIER_NAME)
+                .shouldSupplierComboBoxContainsCorrectText(null)
+                .choseSupplier(FIRST_SUPPLIER_CODE)
+                .choseSupplier(SECOND_SUPPLIER_CODE)
+                .shouldSupplierComboBoxContainsCorrectText(FIRST_SUPPLIER_CODE, SECOND_SUPPLIER_CODE);
 
     }
-
-
 }

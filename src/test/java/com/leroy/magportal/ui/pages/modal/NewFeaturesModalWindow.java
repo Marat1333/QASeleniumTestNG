@@ -18,6 +18,8 @@ public class NewFeaturesModalWindow extends BaseWidget {
     @WebFindBy(xpath = ".//button[@type='button']")
     private Element submitBtn;
 
+
+
     public void clickSubmitButton() {
         submitBtn.click();
         waitForInvisibility();

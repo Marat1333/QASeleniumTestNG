@@ -19,7 +19,7 @@ public class LoginWebPage extends BaseWebPage {
 
     private Button loginBtn = E("//*[@value='login']", "Кнопка 'Войти'", Button.class);
 
-    public void logIn(String ldap, String password) {
+    public void logIn(String ldap, String password) throws Exception{
         usernameFld.clearAndFill(ldap);
         passwordFld.clearAndFill(password);
         if (DriverFactory.isAppProfile())
@@ -32,7 +32,7 @@ public class LoginWebPage extends BaseWebPage {
         return usernameFld.isVisible();
     }
 
-    public void logIn() {
+    public void logIn() throws Exception {
         logIn(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS);
     }
 

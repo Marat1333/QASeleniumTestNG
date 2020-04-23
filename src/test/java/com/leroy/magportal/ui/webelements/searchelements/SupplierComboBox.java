@@ -2,6 +2,7 @@ package com.leroy.magportal.ui.webelements.searchelements;
 
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
+import com.leroy.core.web_elements.general.Element;
 import com.leroy.magportal.ui.webelements.MagPortalComboBox;
 import com.leroy.magportal.ui.webelements.widgets.SupplierCardWidget;
 import org.openqa.selenium.WebDriver;
@@ -15,6 +16,9 @@ public class SupplierComboBox extends MagPortalComboBox {
 
     @WebFindBy(xpath = "./ancestor::div[1]/following-sibling::div[contains(@class, 'Select__menu lmui')]")
     public SupplierDropDown supplierDropDown;
+
+    @WebFindBy(xpath = ".//span[contains(@class,'single')]")
+    public Element chosenSupplierName;
 
     @Override
     public void selectOptions(List<String> elements) throws Exception {

@@ -48,7 +48,7 @@ public class MenuPage extends MagPortalBasePage {
     public MenuPage closeNewFeaturesModalWindowIfExist() {
         //TODO не ждать появления элемента
         NewFeaturesModalWindow modalWindow = new NewFeaturesModalWindow(driver);
-        modalWindow.waitForVisibility(short_timeout);
+        modalWindow.waitForVisibility(10);
         if (modalWindow.isVisible())
             modalWindow.clickSubmitButton();
         modalWindow.waitForInvisibility();
