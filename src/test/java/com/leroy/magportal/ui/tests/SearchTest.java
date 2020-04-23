@@ -13,6 +13,7 @@ import com.leroy.magportal.api.clients.CatalogSearchClient;
 import com.leroy.magportal.ui.WebBaseSteps;
 import com.leroy.magportal.ui.pages.products.ProductCardPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -22,8 +23,23 @@ import java.util.HashMap;
 @Guice(modules = {Module.class})
 public class SearchTest extends WebBaseSteps {
 
-    @Inject
+    // 1-ый Способ
     private CatalogSearchClient apiClient;
+
+    @BeforeClass
+    private void setUpSearchTests() {
+        apiClient = apiClientProvider.getCatalogSearchClient();
+    }
+
+    // 2-ой способ
+
+    private CatalogSearchClient apiClient() {
+        return apiClientProvider.getCatalogSearchClient();
+    }
+
+    // Надо оставить что-то одно:
+    // В 1-ом случае у нас одна переменная на все тесты, и для UI тестов это ок.
+    // Во 2-ом случае мы получаем клиент в самих тестах
 
     private final int defaultPageSize = 12;
     private final String allDepartments = "Каталог товаров";

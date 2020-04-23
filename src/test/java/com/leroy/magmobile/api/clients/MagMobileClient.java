@@ -28,7 +28,7 @@ public class MagMobileClient extends BaseClient {
     private String gatewayUrl;
 
     @Setter
-    protected SessionData sessionData = new SessionData();
+    protected SessionData sessionData;
 
     protected <J> Response<J> execute(RequestBuilder<?> request, final Class<J> type) {
         if (sessionData != null && sessionData.getAccessToken() != null)
@@ -49,7 +49,6 @@ public class MagMobileClient extends BaseClient {
     @PostConstruct
     private void init() {
         gatewayUrl = EnvConstants.MAIN_API_HOST;
-        sessionData.setUserLdap(EnvConstants.BASIC_USER_LDAP);
     }
 
     // ---------  SalesDoc & Orders -------------------- //
