@@ -35,6 +35,10 @@ public class SupplierDropDown extends BaseWidget {
         loadingSpinner.waitForInvisibility(short_timeout);
     }
 
+    public void deleteAllChosenSuppliers(){
+        clearBtn.click();
+    }
+
     public ElementList<SupplierCardWidget> getSupplierCards() {
         return supplierCards;
     }

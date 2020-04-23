@@ -11,13 +11,13 @@ import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.webelements.MagPortalComboBox;
 import com.leroy.magportal.ui.webelements.searchelements.SupplierComboBox;
+import com.leroy.magportal.ui.webelements.searchelements.SupplierDropDown;
 import com.leroy.magportal.ui.webelements.widgets.*;
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import io.qameta.allure.Step;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Collections;
+import java.util.List;
 
 public class SearchProductPage extends MenuPage {
     public SearchProductPage(TestContext context) {
@@ -82,8 +82,11 @@ public class SearchProductPage extends MenuPage {
     @WebFindBy(xpath = "//input[@placeholder='ЛМ, название или штрихкод']/following-sibling::button")
     Button clearSearchInput;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'history')]//div[contains(@class, 'optionText')]//span[2]")
+    @WebFindBy(xpath = "//div[contains(@class, 'history')]//div[contains(@class, 'optionText')]//span[3]")
     ElementList<Element> searchHistoryElements;
+
+    @WebFindBy(xpath = "//div[contains(@class, 'history')]//div[contains(@class, 'optionText')]//span[2]")
+    ElementList<Element> searchHistoryMatchesElements;
 
     @WebFindBy(xpath = "//button[@id='MyShop']")
     Button myShopFilterBtn;
@@ -193,6 +196,26 @@ public class SearchProductPage extends MenuPage {
 
     public String getCurrentNomenclatureName() {
         return currentNomenclatureLbl.getText();
+    }
+
+    @Step("Ввести в поисковую строку значение без инициализации поиска")
+    public SearchProductPage enterStringInSearchInput(String value){
+        searchInput.fill(value);
+        return this;
+    }
+
+    @Step("Наполнить историю поиска")
+    public List<String> createSearchHistory(int notesQuantity) {
+        List<String> searchHistoryList = new ArrayList<>();
+        String searchContext = "q";
+        for (int i = 0; i < notesQuantity; i++) {
+            searchByPhrase(searchContext);
+            searchHistoryList.add(searchContext);
+            searchContext = searchContext + "q";
+            clearSearchInputByClearBtn();
+        }
+        Collections.sort(searchHistoryList, Collections.reverseOrder());
+        return searchHistoryList;
     }
 
     @Step("Ввести в поисковую строку {value} и осуществить поиск")
@@ -321,8 +344,11 @@ public class SearchProductPage extends MenuPage {
         return this;
     }*/
 
-    /*@Step("Выбрать фильтр по поставщику {value}")
+    @Step("Выбрать фильтр по поставщику {value}")
     public SearchProductPage choseSupplier(String value) {
+        if (!supplierDropBox.isVisible()){
+            showAllFilters.click();
+        }
         supplierDropBox.click();
         SupplierDropDown supplierDropDown = supplierDropBox.supplierDropDown;
         supplierDropDown.loadingSpinner.waitForInvisibility();
@@ -338,7 +364,34 @@ public class SearchProductPage extends MenuPage {
         }
         supplierDropBox.click();
         return this;
-    }*/
+    }
+
+    @Step("Удалить выбранного поставщиков {supplierName} по нажатию на кнопку крестик в овальной области с именем поставщика")
+    public SearchProductPage deleteChosenSuppliers(String supplierName){
+        SupplierDropDown supplierDropDown = supplierDropBox.supplierDropDown;
+        if (!supplierDropDown.isVisible()){
+            supplierDropBox.click();
+            waitForSpinnerAppearAndDisappear();
+        }
+        for (ChosenSupplierWidget widget: supplierDropDown.getChosenSuppliers()){
+            if (widget.getChosenSupplierName().equals(supplierName){
+                widget.deleteChosenSupplier();
+                break;
+            }
+        }
+        return this;
+    }
+
+    @Step("Удалить всех выбранных поставщиков по нажатию на кнопку \"Очистить\"")
+    public SearchProductPage deleteAllChosenSuppliers(){
+        SupplierDropDown supplierDropDown = supplierDropBox.supplierDropDown;
+        if (!supplierDropDown.isVisible()){
+            supplierDropBox.click();
+            waitForSpinnerAppearAndDisappear();
+        }
+        supplierDropDown.deleteAllChosenSuppliers();
+        return this;
+    }
 
     @Step("Очистить все фильтры")
     public SearchProductPage clearAllFilters() {
@@ -510,32 +563,32 @@ public class SearchProductPage extends MenuPage {
     public SearchProductPage shouldProductsAreSorted(SortType order) throws Exception {
         List<String> sortedNameList = new ArrayList<>();
         List<Integer> sortedLmCodesList = new ArrayList<>();
-        for (ExtendedProductCardWidget tmp:extendedProductCardList){
+        for (ExtendedProductCardWidget tmp : extendedProductCardList) {
             sortedLmCodesList.add(Integer.parseInt(tmp.getLmCode()));
             sortedNameList.add(tmp.getTitle());
         }
-        switch (order){
+        switch (order) {
             case LM_CODE_DESC:
                 Collections.sort(sortedLmCodesList, Collections.reverseOrder());
-                for (int i=0; i<extendedProductCardList.getCount();i++){
+                for (int i = 0; i < extendedProductCardList.getCount(); i++) {
                     anAssert.isEquals(extendedProductCardList.get(i).getLmCode(), String.valueOf(sortedLmCodesList.get(i)), "Wrong sorting order for visible content");
                 }
                 return this;
             case LM_CODE_ASC:
                 Collections.sort(sortedLmCodesList);
-                for (int i=0; i<extendedProductCardList.getCount();i++){
+                for (int i = 0; i < extendedProductCardList.getCount(); i++) {
                     anAssert.isEquals(extendedProductCardList.get(i).getLmCode(), String.valueOf(sortedLmCodesList.get(i)), "Wrong sorting order for visible content");
                 }
                 return this;
             case NAME_DESC:
                 Collections.sort(sortedNameList, Collections.reverseOrder());
-                for (int i=0; i<extendedProductCardList.getCount();i++){
+                for (int i = 0; i < extendedProductCardList.getCount(); i++) {
                     anAssert.isEquals(extendedProductCardList.get(i).getTitle(), sortedNameList.get(i), "Wrong sorting order for visible content");
                 }
                 return this;
             case NAME_ASC:
                 Collections.sort(sortedNameList);
-                for (int i=0; i<extendedProductCardList.getCount();i++){
+                for (int i = 0; i < extendedProductCardList.getCount(); i++) {
                     anAssert.isEquals(extendedProductCardList.get(i).getTitle(), sortedNameList.get(i), "Wrong sorting order for visible content");
                 }
                 return this;
@@ -543,4 +596,34 @@ public class SearchProductPage extends MenuPage {
                 throw new Exception("Wrong sorting order");
         }
     }
+
+    @Step("Проверить, что история поиска содержит элементы массива")
+    public SearchProductPage shouldSearchHistoryContainsEachElement(List<String> searchRequests) throws Exception {
+        anAssert.isTrue(searchHistoryElements.getCount() > 0, "История поиска не содержит записей");
+        String elemText;
+        for (int i = 0; i < searchHistoryElements.getCount(); i++) {
+            elemText = searchHistoryElements.get(i).getText();
+            anAssert.isEquals(elemText, searchRequests.get(i), "Элементы истории поиска отличаются: отображенный - " +
+                    elemText + " ожидаемый - " + searchRequests.get(i));
+        }
+        return this;
+    }
+
+    @Step("Проверить, что история поиска содержит элементы, совпадающая с введенным критерием поиска")
+    public SearchProductPage shouldSearchHistoryElementsContainsSearchCriterion(String criterion){
+        anAssert.isTrue(searchHistoryMatchesElements.getCount() > 0, "История поиска не содержит записей");
+        for (Element tmp : searchHistoryMatchesElements){
+            anAssert.isEquals(tmp.getText(), criterion,"Элемент истории поиска не содержит введенную фразу");
+        }
+        return this;
+    }
+
+    @Step("Проверить, что поле с выбором поставщика содержит корректный текст")
+    public void SearchProductPage shouldSupplierComboBoxContainsCorrectText(String ...name){
+        if (name.length==0){
+
+        }
+        return this;
+    }
+
 }

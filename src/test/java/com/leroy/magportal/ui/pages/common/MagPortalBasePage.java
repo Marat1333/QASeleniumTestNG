@@ -2,11 +2,8 @@ package com.leroy.magportal.ui.pages.common;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.WebFindBy;
-import com.leroy.core.configuration.Log;
 import com.leroy.core.pages.BaseWebPage;
 import com.leroy.core.web_elements.general.Element;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
@@ -38,6 +35,12 @@ public class MagPortalBasePage extends BaseWebPage {
      */
     protected boolean isAlertErrorMessageVisible() {
         return alertErrorMessage.isVisible();
+    }
+
+    public <J extends MenuPage> J verifyUrlContainsString(String value) {
+        String currentUrl=driver.getCurrentUrl();
+        anAssert.isTextContainsIgnoringCase(currentUrl, value, "current url hasn`t contains " + value+" current url is "+currentUrl);
+        return (J) this;
     }
 
 }
