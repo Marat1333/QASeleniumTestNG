@@ -24,5 +24,6 @@ public class ChosenSupplierWidget extends BaseWidget {
 
     public void deleteChosenSupplier(){
         deleteChosenSupplierBtn.click();
+        waitForInvisibility(tiny_timeout);
     }
 }

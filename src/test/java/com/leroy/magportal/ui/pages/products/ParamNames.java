@@ -9,5 +9,7 @@ public class ParamNames {
     public final static String subdepartmentId = "subdepartmentId=";
     public final static String classId = "classId=";
     public final static String subclassId = "subclassId=";
-    public final static String sortBy="sortBy=";
+    public final static String sortBy = "sortBy=";
+    public final static String supplierId = "supplierId=";
+    public final static String avsDate = "avsDate=";
 }

@@ -17,6 +17,7 @@ import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 
 @Guice(modules = {Module.class})
@@ -313,17 +314,85 @@ public class SearchTest extends WebBaseSteps {
         final String FIRST_SUPPLIER_CODE = "1001123001";
         final String FIRST_SUPPLIER_NAME = "ООО Бард-Спб";
         final String SECOND_SUPPLIER_CODE = "12301";
-        final String SECOND_SUPPLIER_NAME = "САЗИ";
+
+        GetCatalogSearch fewSuppliersParams = new GetCatalogSearch()
+                .setSupId(FIRST_SUPPLIER_CODE + "," + SECOND_SUPPLIER_CODE)
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setPageSize(defaultPageSize);
+
+        HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> resultMap =
+                sendRequestsSearchProductsBy(fewSuppliersParams);
 
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
+
         searchProductPage.navigateToPreviousNomenclatureElement(allDepartments)
-                .choseSupplier(FIRST_SUPPLIER_CODE)
+                .choseSupplier(false, FIRST_SUPPLIER_CODE, SECOND_SUPPLIER_CODE)
+                .shouldSupplierComboBoxContainsCorrectText(FIRST_SUPPLIER_CODE, SECOND_SUPPLIER_CODE)
+                .applyFilters()
+                .verifyUrlContainsString(ParamNames.supplierId + FIRST_SUPPLIER_CODE + "%2C" + SECOND_SUPPLIER_CODE);
+
+        ProductItemDataList fewSuppliersData = resultMap.get(0).getData();
+        searchProductPage.shouldResponseEntityEqualsToViewEntity(fewSuppliersData, SearchProductPage.FilterFrame.MY_SHOP,
+                SearchProductPage.ViewMode.EXTENDED);
+
+        searchProductPage.deleteAllChosenSuppliers()
+                .choseSupplier(false, FIRST_SUPPLIER_CODE)
+                .shouldChosenSupplierCheckboxHasCorrectCondition(true, FIRST_SUPPLIER_NAME)
                 .shouldSupplierComboBoxContainsCorrectText(FIRST_SUPPLIER_NAME)
-                .deleteChosenSuppliers(FIRST_SUPPLIER_NAME)
-                .shouldSupplierComboBoxContainsCorrectText(null)
-                .choseSupplier(FIRST_SUPPLIER_CODE)
-                .choseSupplier(SECOND_SUPPLIER_CODE)
-                .shouldSupplierComboBoxContainsCorrectText(FIRST_SUPPLIER_CODE, SECOND_SUPPLIER_CODE);
+                .deleteChosenSuppliers(false, FIRST_SUPPLIER_NAME)
+                .shouldChosenSupplierCheckboxHasCorrectCondition(false, FIRST_SUPPLIER_NAME)
+                .shouldSupplierComboBoxContainsCorrectText(null);
+    }
+
+    //bug
+    @Test(description = "C22782965 AVS")
+    public void testAvsFilter() throws Exception {
+        LocalDate avsDate = LocalDate.of(2020, 3, 3);
+
+        GetCatalogSearch avsParam = new GetCatalogSearch()
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setPageSize(defaultPageSize)
+                .setAvsDate(String.format("between%%7C%s-0%s-0%sT00:00:00.000Z%%7C%s-0%s-0%sT00:00:00.000Z",
+                        avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth(),
+                        avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth() + 1))
+                .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);
+
+        GetCatalogSearch avsNeqNullParam = new GetCatalogSearch()
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setPageSize(defaultPageSize)
+                .setAvsDate("neq|null")
+                .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);
+
+        HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> resultsMap =
+                sendRequestsSearchProductsBy(avsParam, avsNeqNullParam);
+
+        SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
+        searchProductPage.choseCheckboxFilter(SearchProductPage.Filters.AVS,false)
+                .shouldCheckboxFilterHasCorrectCondition(true, SearchProductPage.Filters.AVS)
+                .choseAvsDate(avsDate)
+                .shouldAvsContainerContainsCorrectText(avsDate)
+                .applyFilters();
+
+        ProductItemDataList avsDateResponse = resultsMap.get(0).getData();
+        ProductItemDataList avsNeqNullResponse = resultsMap.get(1).getData();
+        searchProductPage.shouldResponseEntityEqualsToViewEntity(avsDateResponse, SearchProductPage.FilterFrame.MY_SHOP,
+                        SearchProductPage.ViewMode.EXTENDED)
+                .clearAllFilters()
+                .choseCheckboxFilter(SearchProductPage.Filters.AVS, true)
+                .shouldAvsContainerContainsCorrectText(null)
+                .shouldResponseEntityEqualsToViewEntity(avsNeqNullResponse, SearchProductPage.FilterFrame.MY_SHOP,
+                        SearchProductPage.ViewMode.EXTENDED);
+
+        searchProductPage.enterAvsDateManually(avsDate)
+                .applyFilters()
+                .shouldResponseEntityEqualsToViewEntity(avsDateResponse, SearchProductPage.FilterFrame.MY_SHOP,
+                        SearchProductPage.ViewMode.EXTENDED)
+                //bug of manually import
+                .verifyUrlContainsString(ParamNames.avsDate+String.format(
+                        "between%%7C%s-0%s-0%sT00%3A00%3A00.000Z%%7C%s-0%s-0%sT00%3A00%3A00.000Z",avsDate.getYear(),
+                        avsDate.getMonthValue(), avsDate.getDayOfMonth(),
+                        avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth() + 1));
+
 
     }
 }

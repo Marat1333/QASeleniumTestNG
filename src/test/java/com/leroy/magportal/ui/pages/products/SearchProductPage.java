@@ -2,6 +2,7 @@ package com.leroy.magportal.ui.pages.products;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.WebFindBy;
+import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
@@ -10,13 +11,20 @@ import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.webelements.MagPortalComboBox;
+import com.leroy.magportal.ui.webelements.commonelements.MagPortalCheckBox;
+import com.leroy.magportal.ui.webelements.searchelements.CalendarComboBox;
 import com.leroy.magportal.ui.webelements.searchelements.SupplierComboBox;
 import com.leroy.magportal.ui.webelements.searchelements.SupplierDropDown;
 import com.leroy.magportal.ui.webelements.widgets.*;
 import io.qameta.allure.Step;
+import org.openqa.selenium.By;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class SearchProductPage extends MenuPage {
@@ -139,7 +147,7 @@ public class SearchProductPage extends MenuPage {
     SupplierComboBox supplierDropBox;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//input[@placeholder='Дата AVS']")
-    MagPortalComboBox avsDropBox;
+    CalendarComboBox avsDropBox;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'DatePicker__dayPicker')]")
     CalendarWidget avsDropDownCalendar;
@@ -299,14 +307,14 @@ public class SearchProductPage extends MenuPage {
     }
 
     @Step("Нажать на кнопку \"ЕЩЕ\" для просмотра всех фильтров")
-    private SearchProductPage showAllFilters() {
+    public SearchProductPage showAllFilters() {
         showAllFilters.click();
         return this;
     }
 
     @Step("Выбрать чек-бокс и применить фильтры - {applyFilters}")
     public SearchProductPage choseCheckboxFilter(Filters filter, boolean applyFilters) {
-        if (!(filter.equals(Filters.HAS_AVAILABLE_STOCK) || filter.equals(Filters.TOP_EM))) {
+        if (!(filter.equals(Filters.HAS_AVAILABLE_STOCK) || filter.equals(Filters.TOP_EM))&&(!supplierDropBox.isVisible())) {
             showAllFilters();
         }
         Element checkbox = E("contains(" + filter.getName() + ")");
@@ -315,6 +323,22 @@ public class SearchProductPage extends MenuPage {
             applyFilters();
             waitForSpinnerAppearAndDisappear();
         }
+        return this;
+    }
+
+    @Step("Ввести дату AVS вручную")
+    public SearchProductPage enterAvsDateManually(LocalDate date) throws Exception{
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yy");
+        String convertedDate = sdf.format(Date.from(date.atStartOfDay()
+                .atZone(ZoneId.systemDefault())
+                .toInstant()));
+        avsDropBox.clearAndFill(convertedDate);
+        return this;
+    }
+
+    @Step("Очистить содержимое комбобокса \"Дата AVS\"")
+    public SearchProductPage clearAvsDateInput(){
+        avsDropBox.clearInput();
         return this;
     }
 
@@ -333,42 +357,44 @@ public class SearchProductPage extends MenuPage {
         topComboBox.click();
         topComboBox.selectOptions(tmpFilters);
         return this;
-    }
-
-    @Step("выбрать дату AVS {date}")
-    public SearchProductPage choseAvsDate(boolean neqNull, LocalDate date) throws Exception {
-        avsDropBox.click();
-        if (!neqNull) {
-            avsDropDownCalendar.selectDate(date);
-        }
-        return this;
     }*/
 
+    @Step("выбрать дату AVS {date}")
+    public SearchProductPage choseAvsDate(LocalDate date) throws Exception {
+        avsDropBox.click();
+        avsDropDownCalendar.selectDate(date);
+        return this;
+    }
+
     @Step("Выбрать фильтр по поставщику {value}")
-    public SearchProductPage choseSupplier(String value) throws Exception {
+    public SearchProductPage choseSupplier(boolean closeAfter, String... values) throws Exception {
         if (!supplierDropBox.isVisible()) {
             showAllFilters.click();
         }
         SupplierDropDown supplierDropDown = supplierDropBox.supplierDropDown;
         if (!supplierDropDown.isVisible()) {
             supplierDropBox.click();
+            supplierDropDown.loadingSpinner.waitForInvisibility();
         }
-        supplierDropDown.loadingSpinner.waitForInvisibility();
-        supplierDropDown.searchSupplier(value);
-        supplierDropDown.loadingSpinner.waitForVisibility(short_timeout);
-        supplierDropDown.loadingSpinner.waitForInvisibility();
 
-        for (SupplierCardWidget widget : supplierDropDown.getSupplierCards()) {
-            if (widget.getSupplierCode().equals(value) || widget.getSupplierName().equals(value)) {
-                widget.click();
+        for (String tmp : values) {
+            supplierDropDown.searchSupplier(tmp);
+            supplierDropDown.loadingSpinner.waitForVisibility(short_timeout);
+            supplierDropDown.loadingSpinner.waitForInvisibility();
+            for (SupplierCardWidget widget : supplierDropDown.getSupplierCards()) {
+                if (widget.getSupplierCode().equals(tmp) || widget.getSupplierName().equals(tmp)) {
+                    widget.click();
+                }
             }
         }
-        supplierDropBox.click();
+        if (closeAfter) {
+            supplierDropBox.click();
+        }
         return this;
     }
 
     @Step("Удалить выбранного поставщиков {supplierName} по нажатию на кнопку крестик в овальной области с именем поставщика")
-    public SearchProductPage deleteChosenSuppliers(String supplierName) {
+    public SearchProductPage deleteChosenSuppliers(boolean closeAfter, String supplierName) {
         SupplierDropDown supplierDropDown = supplierDropBox.supplierDropDown;
         if (!supplierDropDown.isVisible()) {
             supplierDropBox.click();
@@ -380,7 +406,9 @@ public class SearchProductPage extends MenuPage {
                 break;
             }
         }
-        supplierDropBox.click();
+        if (closeAfter) {
+            supplierDropBox.click();
+        }
         return this;
     }
 
@@ -389,7 +417,8 @@ public class SearchProductPage extends MenuPage {
         SupplierDropDown supplierDropDown = supplierDropBox.supplierDropDown;
         if (!supplierDropDown.isVisible()) {
             supplierDropBox.click();
-            waitForSpinnerAppearAndDisappear();
+            waitForSpinnerAppearAndDisappear(short_timeout);
+            supplierDropDown.getSupplierCards().waitUntilElementCountEqualsOrAbove(1);
         }
         supplierDropDown.deleteAllChosenSuppliers();
         return this;
@@ -398,6 +427,7 @@ public class SearchProductPage extends MenuPage {
     @Step("Очистить все фильтры")
     public SearchProductPage clearAllFilters() {
         clearAllFiltersInFilterFrameBtn.click();
+        waitForSpinnerAppearAndDisappear();
         return this;
     }
 
@@ -632,6 +662,57 @@ public class SearchProductPage extends MenuPage {
             elemText = supplierDropBox.chosenSupplierName.getText();
             anAssert.isTextContainsIgnoringCase(elemText, "Поставщик (" + name.length + ")", "Отображаемый текст не соответствует паттерну");
         }
+        return this;
+    }
+
+    @Step("Проверить состояние чек-бокса выбранного поставщика")
+    public SearchProductPage shouldChosenSupplierCheckboxHasCorrectCondition(boolean isChecked, String supplier) throws Exception {
+        MagPortalCheckBox supplierCheckBox = null;
+        SupplierDropDown supplierDropDown = supplierDropBox.supplierDropDown;
+        supplierDropDown.searchSupplier(supplier);
+        for (SupplierCardWidget widget : supplierDropDown.getSupplierCards()) {
+            if (widget.getSupplierCode().contains(supplier) || widget.getSupplierName().contains(supplier)) {
+                supplierCheckBox = widget.checkbox;
+                break;
+            }
+        }
+        anAssert.isNotNull(supplierCheckBox, "Чек-бокс для поставщика " + supplier + " не найден", "Чек-бокс должен быть");
+        if (isChecked) {
+            anAssert.isTrue(supplierCheckBox.isChecked(), "Чек-бокс в состоянии disabled");
+        } else {
+            anAssert.isTrue(!supplierCheckBox.isChecked(), "Чек-бокс в состоянии enabled");
+        }
+        return this;
+    }
+
+    @Step("Проверить, что чек-бокс переведен в корректное состояние")
+    public SearchProductPage shouldCheckboxFilterHasCorrectCondition(boolean isEnabled, Filters filter) throws Exception {
+        MagPortalCheckBox checkbox = new MagPortalCheckBox(driver, new CustomLocator(By.xpath(
+                "//*[contains(text(),'" + filter.getName() + "')]/ancestor::button")));
+        if (isEnabled) {
+            anAssert.isTrue(checkbox.isChecked(), "Чекбокс в состоянии disabled");
+        } else {
+            anAssert.isTrue(!checkbox.isChecked(), "Чекбокс в состоянии enabled");
+        }
+        return this;
+    }
+
+    @Step("Проверить, что в комбобоксе \"Дата AVS\" содержится корректный текст")
+    public SearchProductPage shouldAvsContainerContainsCorrectText(LocalDate date) {
+        String visibleText = avsDropBox.getText(() -> {
+            initElements();
+            return avsDropBox.getAttribute("defaultValue");});
+        if (date == null) {
+            anAssert.isTextContainsIgnoringCase(visibleText, "", "Дата не должна быть отображена, однако отображается - " +
+                    visibleText);
+            return this;
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yy");
+        String convertedDate = sdf.format(Date.from(date.atStartOfDay()
+                .atZone(ZoneId.systemDefault())
+                .toInstant()));
+        anAssert.isTextContainsIgnoringCase(visibleText, convertedDate, "Даты отличаются. Отображаемая дата - " +
+                visibleText + " ожидаемая дата - " + convertedDate);
         return this;
     }
 

@@ -103,7 +103,7 @@ public abstract class BaseCustomAssert {
             actualResultText = desc + " Актуальное значение: " + actual;
         actual=actual.toLowerCase();
         expected=expected.toLowerCase();
-        if (actual.contains(expected)) {
+        if (!actual.contains(expected)) {
             addResultsToCurrentStepAndThrowAssertException(
                     actualResultText, "Значение, которого не ожидалось: " + expected);
         }

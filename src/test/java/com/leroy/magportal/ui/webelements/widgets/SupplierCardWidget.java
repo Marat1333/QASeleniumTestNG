@@ -4,6 +4,7 @@ import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Checkbox;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magportal.ui.webelements.commonelements.MagPortalCheckBox;
 import org.openqa.selenium.WebDriver;
 
 public class SupplierCardWidget extends Element {
@@ -12,7 +13,7 @@ public class SupplierCardWidget extends Element {
     }
 
     @WebFindBy(xpath = ".//button")
-    Checkbox checkbox;
+    public MagPortalCheckBox checkbox;
 
     @WebFindBy(xpath = "./div/span")
     Element supplierName;

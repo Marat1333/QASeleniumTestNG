@@ -37,10 +37,4 @@ public class MagPortalBasePage extends BaseWebPage {
         return alertErrorMessage.isVisible();
     }
 
-    public <J extends MenuPage> J verifyUrlContainsString(String value) {
-        String currentUrl=driver.getCurrentUrl();
-        anAssert.isTextContainsIgnoringCase(currentUrl, value, "current url hasn`t contains " + value+" current url is "+currentUrl);
-        return (J) this;
-    }
-
 }

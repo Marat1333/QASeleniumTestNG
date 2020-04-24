@@ -34,11 +34,16 @@ public class SupplierDropDown extends BaseWidget {
     public Element loadingSpinner;
 
     public void searchSupplier(String value) throws Exception {
-        searchString.clearAndFill(value, true);
+        searchString.click();
+        if (!searchString.getText().isEmpty()){
+            clearTextInputBtn.click();
+        }
+        searchString.clearAndFill(value, false);
         loadingSpinner.waitForInvisibility(short_timeout);
     }
 
     public void deleteAllChosenSuppliers(){
+        clearBtn.waitForClickability(short_timeout, 0);
         clearBtn.click();
     }
 

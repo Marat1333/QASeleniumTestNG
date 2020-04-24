@@ -65,10 +65,8 @@ public class EditBox extends Element {
             this.fill(text);
         } else {
             for (int i = 0; i < text.length(); ++i) {
-                synchronized (this) {
-                    this.fill(Character.toString(text.charAt(i)));
-                    wait(200L);
-                }
+                this.fill(Character.toString(text.charAt(i)));
+
             }
         }
         return this;
