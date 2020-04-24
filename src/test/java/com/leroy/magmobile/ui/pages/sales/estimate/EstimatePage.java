@@ -11,7 +11,7 @@ import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.sales.basket.OrderRowProductWidget;
 import com.leroy.magmobile.ui.models.CustomerData;
-import com.leroy.magmobile.ui.pages.search.SearchCustomerPage;
+import com.leroy.magmobile.ui.pages.customers.SearchCustomerPage;
 import com.leroy.magmobile.ui.pages.search.widgets.SearchCustomerWidget;
 import com.leroy.magmobile.ui.models.sales.SalesOrderCardData;
 import com.leroy.magmobile.ui.models.sales.SalesOrderData;
@@ -74,6 +74,10 @@ public class EstimatePage extends CommonMagMobilePage {
 
     @AppFindBy(text = "Клиент", metaName = "Поле 'Клиент' (добавить)")
     Element selectCustomerBtn;
+
+    @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.TextView[@text='СМЕТА ДЛЯ КЛИЕНТА']]/following::android.widget.TextView",
+            metaName = "Имя выбранного клиента")
+    Element selectedCustomerName;
 
     @AppFindBy(xpath = "//android.widget.ScrollView//android.view.ViewGroup[android.widget.TextView[@index='2']]",
             metaName = "Поле 'Клиент' (клиент выбран)")
@@ -145,6 +149,11 @@ public class EstimatePage extends CommonMagMobilePage {
 
     // ------ Grab info from Page methods -----------//
 
+    @Step("Забираем со страницы имя выбранного клиента")
+    public String getCustomerName() {
+        return selectedCustomerName.getText();
+    }
+
     @Step("Забираем со страницы информацию о смете")
     public SalesOrderData getEstimateDataFromPage() {
         List<SalesOrderCardData> cardDataList = orderCardDataScrollView.getFullDataList();
@@ -171,10 +180,16 @@ public class EstimatePage extends CommonMagMobilePage {
         return new ActionWithProductCardModalPage(context);
     }
 
-    @Step("Нажмите на поле 'Клиенты'")
+    @Step("Нажмите на поле 'Клиенты' (клиент не был выбран)")
     public SearchCustomerPage clickCustomerField() {
         selectCustomerBtn.click();
         return new SearchCustomerPage(context);
+    }
+
+    @Step("Нажмите на поле с Клиентом (клиент был выбран)")
+    public EditCustomerModalPage clickEditCustomerField() {
+        selectedCustomerName.click();
+        return new EditCustomerModalPage(context);
     }
 
     @Step("Нажмите кнопку 'Товары и Услуги'")

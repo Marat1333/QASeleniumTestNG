@@ -7,6 +7,8 @@ import com.leroy.magmobile.ui.models.sales.SalesOrderCardData;
 import com.leroy.magmobile.ui.models.sales.SalesOrderData;
 import com.leroy.magmobile.ui.models.search.ProductCardData;
 import com.leroy.magmobile.ui.pages.common.modal.ConfirmRemovingProductModal;
+import com.leroy.magmobile.ui.pages.customers.EditCustomerContactDetailsPage;
+import com.leroy.magmobile.ui.pages.customers.EditCustomerInfoPage;
 import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
 import com.leroy.magmobile.ui.pages.sales.EditProduct35Page;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
@@ -15,7 +17,7 @@ import com.leroy.magmobile.ui.pages.sales.basket.Basket35Page;
 import com.leroy.magmobile.ui.pages.sales.estimate.*;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SaleTypeModalPage;
-import com.leroy.magmobile.ui.pages.search.SearchCustomerPage;
+import com.leroy.magmobile.ui.pages.customers.SearchCustomerPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import io.qameta.allure.Step;
 import org.testng.annotations.Test;
@@ -23,6 +25,9 @@ import org.testng.annotations.Test;
 import java.util.Random;
 
 public class EstimateTest extends SalesBaseTest {
+
+    private String firstCustomerPhone = "1111111111";
+    private String secondCustomerPhone = "2222222222";
 
     @Step("Pre-condition: Создание сметы")
     private void startFromScreenWithCreatedEstimate(int productCountInEstimate, boolean isConfirmed) throws Exception {
@@ -36,7 +41,6 @@ public class EstimateTest extends SalesBaseTest {
                 SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
                 salesDocumentsPage.searchForDocumentByTextAndSelectIt(estimateId);
             } else {
-                String existedClientPhone = "1111111111";
                 String lmCode = getAnyLmCodeProductWithoutSpecificOptions();
                 MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
                         MainSalesDocumentsPage.class);
@@ -44,7 +48,7 @@ public class EstimateTest extends SalesBaseTest {
                 modalPage.clickEstimateMenuItem()
                         .clickCustomerField()
                         .selectSearchType(SearchCustomerPage.SearchType.BY_PHONE)
-                        .enterTextInSearchField(existedClientPhone)
+                        .enterTextInSearchField(firstCustomerPhone)
                         .selectCustomerFromSearchList(1)
                         .clickProductAndServiceButton()
                         .enterTextInSearchFieldAndSubmit(lmCode);
@@ -57,7 +61,6 @@ public class EstimateTest extends SalesBaseTest {
     @Test(description = "C22797068 Создать смету с экрана Документы продажи")
     public void testCreatingEstimateFromSalesDocumentsScreen() throws Exception {
         // Test data
-        String existedClientPhone = "1111111111";
         String lmCode = getAnyLmCodeProductWithoutSpecificOptions();
         // Pre-condition
         MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
@@ -83,7 +86,7 @@ public class EstimateTest extends SalesBaseTest {
         // Step 4
         log.step("Введите номер телефона/ №карты клиента/ эл. почту");
         CustomerData customerData = searchCustomerPage.selectSearchType(SearchCustomerPage.SearchType.BY_PHONE)
-                .enterTextInSearchField(existedClientPhone)
+                .enterTextInSearchField(firstCustomerPhone)
                 .getCustomerDataFromSearchListByIndex(1);
         estimatePage = searchCustomerPage.selectCustomerFromSearchList(1);
         pageState = new EstimatePage.PageState()
@@ -313,6 +316,63 @@ public class EstimateTest extends SalesBaseTest {
         modal.clickConfirmButton();
         SalesDocumentsPage salesDocumentsPage = new SalesDocumentsPage(context);
         salesDocumentsPage.shouldSalesDocumentIsNotPresent(estimateId);
+    }
+
+    @Test(description = "C22797075 Выбрать другого клиента для сметы")
+    public void testEditCustomerInEstimate() throws Exception {
+        startFromScreenWithCreatedEstimate(1, false);
+
+        // Step 1
+        step("Нажать на кнопку редактирования клиента");
+        EstimatePage estimatePage = new EstimatePage(context);
+        String customerNameBefore = estimatePage.getCustomerName();
+        EditCustomerModalPage modalPage = estimatePage.clickEditCustomerField();
+        modalPage.verifyRequiredElements();
+
+        // Step 2
+        step("Выберете параметр Выбрать другого клиента");
+        SearchCustomerPage searchCustomerPage = modalPage.clickSelectAnotherCustomer()
+                .verifyRequiredElements();
+
+        // Step 3
+        step("Введите номер телефона/ №карты клиента/ эл. почту");
+        CustomerData customerData = searchCustomerPage.selectSearchType(SearchCustomerPage.SearchType.BY_PHONE)
+                .enterTextInSearchField(secondCustomerPhone)
+                .getCustomerDataFromSearchListByIndex(1);
+        anAssert.isNotEquals(customerData.getName(), customerNameBefore,
+                "В поиске мы нашли клиента с тем же именем, который был и до этого");
+
+        // Step 4
+        step("Нажмите на мини-карточку нужного клиента");
+        estimatePage = searchCustomerPage.selectCustomerFromSearchList(1);
+        anAssert.isEquals(estimatePage.getCustomerName(), customerData.getName(),
+                "На странице отображается не тот клиент, которого выбрали");
+    }
+
+    @Test(description = "C22797076 Изменить контактные данные клиента")
+    public void testChangeCustomerContactDetailsInEstimate() throws Exception {
+        startFromScreenWithCreatedEstimate(1, false);
+
+        // Step 1
+        step("Нажать на кнопку редактирования клиента");
+        EstimatePage estimatePage = new EstimatePage(context);
+        String customerNameBefore = estimatePage.getCustomerName();
+        EditCustomerModalPage modalPage = estimatePage.clickEditCustomerField();
+        modalPage.verifyRequiredElements();
+
+        // Step 2
+        step("Выберете параметр Изменить контактные данные");
+        EditCustomerContactDetailsPage editCustomerContactDetailsPage = modalPage.clickChangeContactDetails()
+                .verifyRequiredElements();
+
+        // Step 3
+        step("Нажмите на пустое поле Телефон и Введите новый номер");
+        editCustomerContactDetailsPage.fillInPhoneNumber("232323");
+
+        // Step 4
+        step("Нажмите на Сохранить");
+        editCustomerContactDetailsPage.clickSaveButton();
+        String s = "";
     }
 
 }
