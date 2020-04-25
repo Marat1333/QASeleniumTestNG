@@ -20,6 +20,7 @@ import com.leroy.magmobile.ui.pages.sales.product_card.modal.SaleTypeModalPage;
 import com.leroy.magmobile.ui.pages.customers.SearchCustomerPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import io.qameta.allure.Step;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
 
 import java.util.Random;
@@ -351,12 +352,19 @@ public class EstimateTest extends SalesBaseTest {
 
     @Test(description = "C22797076 Изменить контактные данные клиента")
     public void testChangeCustomerContactDetailsInEstimate() throws Exception {
-        startFromScreenWithCreatedEstimate(1, false);
+        step("Pre-condition: Создаем смету");
+        com.leroy.magmobile.api.data.customer.CustomerData customerData =
+                new com.leroy.magmobile.api.data.customer.CustomerData();
+        customerData.generateRandomValidRequiredData(true);
+        String estimateId = clientProvider.createDraftEstimateAndGetCartId(customerData, 1);
+        MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
+                MainSalesDocumentsPage.class);
+        SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
+        salesDocumentsPage.searchForDocumentByTextAndSelectIt(estimateId);
 
         // Step 1
         step("Нажать на кнопку редактирования клиента");
         EstimatePage estimatePage = new EstimatePage(context);
-        String customerNameBefore = estimatePage.getCustomerName();
         EditCustomerModalPage modalPage = estimatePage.clickEditCustomerField();
         modalPage.verifyRequiredElements();
 
@@ -367,12 +375,17 @@ public class EstimateTest extends SalesBaseTest {
 
         // Step 3
         step("Нажмите на пустое поле Телефон и Введите новый номер");
-        editCustomerContactDetailsPage.fillInPhoneNumber("232323");
+        String newPhone = RandomStringUtils.randomNumeric(10);
+        editCustomerContactDetailsPage.fillInPhoneNumber(newPhone);
+        editCustomerContactDetailsPage.shouldNewPhoneEqualTo(newPhone);
 
         // Step 4
         step("Нажмите на Сохранить");
-        editCustomerContactDetailsPage.clickSaveButton();
-        String s = "";
+        estimatePage = editCustomerContactDetailsPage.clickSaveButton();
+        CustomerData expectedCustomer = new CustomerData();
+        expectedCustomer.setName(customerData.getFirstName() + " " + customerData.getLastName());
+        expectedCustomer.setPhone(newPhone);
+        estimatePage.shouldSelectedCustomerIs(expectedCustomer);
     }
 
 }

@@ -79,6 +79,10 @@ public class EstimatePage extends CommonMagMobilePage {
             metaName = "Имя выбранного клиента")
     Element selectedCustomerName;
 
+    @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.TextView[@text='СМЕТА ДЛЯ КЛИЕНТА']]/following::android.widget.TextView[contains(@text, '+7')]",
+            metaName = "Номер телефона выбранного клиента")
+    Element selectedCustomerPhoneNumber;
+
     @AppFindBy(xpath = "//android.widget.ScrollView//android.view.ViewGroup[android.widget.TextView[@index='2']]",
             metaName = "Поле 'Клиент' (клиент выбран)")
     SearchCustomerWidget customerWidget;
@@ -120,6 +124,8 @@ public class EstimatePage extends CommonMagMobilePage {
     @AppFindBy(text = "СОЗДАТЬ")
     private MagMobGreenSubmitButton createBtn;
 
+    // ------ Grab info from Page methods -----------//
+
     /**
      * Получить Итоговую стоимость
      */
@@ -147,11 +153,14 @@ public class EstimatePage extends CommonMagMobilePage {
             return documentNumber.getText();
     }
 
-    // ------ Grab info from Page methods -----------//
-
     @Step("Забираем со страницы имя выбранного клиента")
     public String getCustomerName() {
         return selectedCustomerName.getText();
+    }
+
+    @Step("Забираем со страницы номер телефона выбранного клиента")
+    public String getCustomerPhoneNumber() {
+        return selectedCustomerPhoneNumber.getText();
     }
 
     @Step("Забираем со страницы информацию о смете")
@@ -260,9 +269,14 @@ public class EstimatePage extends CommonMagMobilePage {
         if (expectedCustomerData.getCardType() != null)
             softAssert.isEquals(actualCustomerData.getCardType(), expectedCustomerData.getCardType(),
                     "Тип карты выбранного клиента неверен");
-        if (expectedCustomerData.getPhone() != null)
-            softAssert.isEquals(actualCustomerData.getPhone(), expectedCustomerData.getPhone(),
+        if (expectedCustomerData.getPhone() != null) {
+            String actualPhone = actualCustomerData.getPhone().replaceAll(" |-", "");
+            String expectedPhone = expectedCustomerData.getPhone();
+            if (!expectedPhone.startsWith("+7"))
+                expectedPhone = "+7" + expectedPhone;
+            softAssert.isEquals(actualPhone, expectedPhone,
                     "Телефон выбранного клиента неверен");
+        }
         if (expectedCustomerData.getEmail() != null)
             softAssert.isEquals(actualCustomerData.getEmail(), expectedCustomerData.getEmail(),
                     "Email выбранного клиента неверен");

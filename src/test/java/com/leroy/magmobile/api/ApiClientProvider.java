@@ -9,6 +9,7 @@ import com.leroy.magmobile.api.clients.*;
 import com.leroy.magmobile.api.data.catalog.*;
 import com.leroy.magmobile.api.data.customer.CustomerData;
 import com.leroy.magmobile.api.data.customer.CustomerListData;
+import com.leroy.magmobile.api.data.customer.CustomerResponseBodyData;
 import com.leroy.magmobile.api.data.customer.CustomerSearchFilters;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
@@ -179,7 +180,7 @@ public class ApiClientProvider {
                         filtersData.getAvs() && item.getAvsDate() != null) {
                     if (filtersData.getHasAvailableStock() == null ||
                             (filtersData.getHasAvailableStock() && item.getAvailableStock() > 0 ||
-                                    !filtersData.getHasAvailableStock() && item.getAvailableStock() <=0)) {
+                                    !filtersData.getHasAvailableStock() && item.getAvailableStock() <= 0)) {
                         resultList.add(item);
                         i++;
                     }
@@ -247,13 +248,21 @@ public class ApiClientProvider {
     // ESTIMATE
 
     @Step("Создаем черновик Сметы через API")
-    public String createDraftEstimateAndGetCartId(int productCount) {
+    public String createDraftEstimateAndGetCartId(CustomerData newCustomerData, int productCount) {
         List<String> lmCodes = getProductLmCodes(productCount);
-        CustomerData customerData = getAnyCustomer();
+        CustomerData customerData;
+        if (newCustomerData == null) {
+          customerData = getAnyCustomer();
+        } else {
+            Response<CustomerResponseBodyData> respCustomer = getCustomerClient()
+                    .createCustomer(newCustomerData);
+            assertThat(respCustomer, successful());
+            customerData = respCustomer.asJson().getEntity();
+        }
         List<EstimateProductOrderData> productOrderDataList = new ArrayList<>();
         for (int i = 1; i <= productCount; i++) {
             EstimateProductOrderData productOrderData = new EstimateProductOrderData();
-            productOrderData.setLmCode(lmCodes.get(i-1));
+            productOrderData.setLmCode(lmCodes.get(i - 1));
             productOrderData.setQuantity((double) i);
             productOrderDataList.add(productOrderData);
         }
@@ -267,6 +276,10 @@ public class ApiClientProvider {
                 Collections.singletonList(estimateCustomerData), productOrderDataList);
         assertThat(estimateDataResponse, successful());
         return estimateDataResponse.asJson().getEstimateId();
+    }
+
+    public String createDraftEstimateAndGetCartId(int productCount) {
+        return createDraftEstimateAndGetCartId(null, productCount);
     }
 
     public String createDraftEstimateAndGetCartId() {
