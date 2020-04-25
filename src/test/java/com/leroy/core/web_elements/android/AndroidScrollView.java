@@ -245,7 +245,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
         tmpCardDataList = new ArrayList<>();
         String prevPageSource = null;
         int i = 0;
-        while (true) {
+        while (i < 50) {
             ElementList<CardWidget<T>> cardWidgetList = this.findChildElements(eachRowXpath, rowWidgetClass);
             List<T> currentVisibleDataList = new ArrayList<>();
             boolean textFound = false;

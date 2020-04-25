@@ -9,6 +9,7 @@ import com.leroy.magmobile.api.clients.*;
 import com.leroy.magmobile.api.data.catalog.*;
 import com.leroy.magmobile.api.data.customer.CustomerData;
 import com.leroy.magmobile.api.data.customer.CustomerListData;
+import com.leroy.magmobile.api.data.customer.CustomerResponseBodyData;
 import com.leroy.magmobile.api.data.customer.CustomerSearchFilters;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
@@ -179,7 +180,7 @@ public class ApiClientProvider {
                         filtersData.getAvs() && item.getAvsDate() != null) {
                     if (filtersData.getHasAvailableStock() == null ||
                             (filtersData.getHasAvailableStock() && item.getAvailableStock() > 0 ||
-                                    !filtersData.getHasAvailableStock() && item.getAvailableStock() <=0)) {
+                                    !filtersData.getHasAvailableStock() && item.getAvailableStock() <= 0)) {
                         resultList.add(item);
                         i++;
                     }
@@ -247,12 +248,24 @@ public class ApiClientProvider {
     // ESTIMATE
 
     @Step("Создаем черновик Сметы через API")
-    public String createDraftEstimateAndGetCartId() {
-        String lmCode = getProducts(1).get(0).getLmCode();
-        CustomerData customerData = getAnyCustomer();
-        EstimateProductOrderData productOrderData = new EstimateProductOrderData();
-        productOrderData.setLmCode(lmCode);
-        productOrderData.setQuantity(1.0);
+    public String createDraftEstimateAndGetCartId(CustomerData newCustomerData, int productCount) {
+        List<String> lmCodes = getProductLmCodes(productCount);
+        CustomerData customerData;
+        if (newCustomerData == null) {
+          customerData = getAnyCustomer();
+        } else {
+            Response<CustomerResponseBodyData> respCustomer = getCustomerClient()
+                    .createCustomer(newCustomerData);
+            assertThat(respCustomer, successful());
+            customerData = respCustomer.asJson().getEntity();
+        }
+        List<EstimateProductOrderData> productOrderDataList = new ArrayList<>();
+        for (int i = 1; i <= productCount; i++) {
+            EstimateProductOrderData productOrderData = new EstimateProductOrderData();
+            productOrderData.setLmCode(lmCodes.get(i - 1));
+            productOrderData.setQuantity((double) i);
+            productOrderDataList.add(productOrderData);
+        }
         EstimateCustomerData estimateCustomerData = new EstimateCustomerData();
         estimateCustomerData.setCustomerNumber(customerData.getCustomerNumber());
         estimateCustomerData.setFirstName(customerData.getFirstName());
@@ -260,9 +273,17 @@ public class ApiClientProvider {
         estimateCustomerData.setType("PERSON");
         estimateCustomerData.setRoles(Collections.singletonList("PAYER"));
         Response<EstimateData> estimateDataResponse = getEstimateClient().sendRequestCreate(
-                estimateCustomerData, productOrderData);
+                Collections.singletonList(estimateCustomerData), productOrderDataList);
         assertThat(estimateDataResponse, successful());
         return estimateDataResponse.asJson().getEstimateId();
+    }
+
+    public String createDraftEstimateAndGetCartId(int productCount) {
+        return createDraftEstimateAndGetCartId(null, productCount);
+    }
+
+    public String createDraftEstimateAndGetCartId() {
+        return createDraftEstimateAndGetCartId(1);
     }
 
     @Step("Создаем подтвержденную Смету через API")
