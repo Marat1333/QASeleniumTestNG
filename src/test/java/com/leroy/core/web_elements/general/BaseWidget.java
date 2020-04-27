@@ -169,6 +169,10 @@ public abstract class BaseWidget extends BaseWrapper {
         return isPresent;
     }
 
+    public boolean isEnabled(){
+        return findElement(locator).isEnabled();
+    }
+
     /**
      * Wait for the web element is visible
      *

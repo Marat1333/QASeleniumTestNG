@@ -26,7 +26,7 @@ public class MagPortalComboBox extends Element {
     public void selectOptions(List<String> elements) throws Exception {
         for (String element : elements) {
             for (Element tmp : dropDownElementsList) {
-                if (tmp.findChildElement("//span[contains(@class, 'SwitchButton-label')]").getText().equals(element)) {
+                if (tmp.findChildElement(".//span[contains(@class, 'SwitchButton-label')]").getText().equals(element)) {
                     tmp.click();
                 }
             }

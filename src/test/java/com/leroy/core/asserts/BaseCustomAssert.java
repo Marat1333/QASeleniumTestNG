@@ -113,6 +113,24 @@ public abstract class BaseCustomAssert {
             Assert.assertTrue(actual.contains(expected), desc);
     }
 
+    protected void logIsTextContainsNotIgnoringCase(String actual, String expected, String desc, boolean isSoft){
+        String actualResultText;
+        if (desc.contains("%s"))
+            actualResultText = String.format(desc, actual);
+        else
+            actualResultText = desc + " Актуальное значение: " + actual;
+        actual=actual.toLowerCase();
+        expected=expected.toLowerCase();
+        if (actual.contains(expected)) {
+            addResultsToCurrentStepAndThrowAssertException(
+                    actualResultText, "Значение, которого не ожидалось: " + expected);
+        }
+        if (isSoft)
+            softAssert.assertFalse(actual.contains(expected), desc);
+        else
+            Assert.assertFalse(actual.contains(expected), desc);
+    }
+
     protected void logIsNull(Object object, String actualResult, String expectedResult, boolean isSoft) {
         if (object != null) {
             addResultsToCurrentStepAndThrowAssertException(actualResult, expectedResult);

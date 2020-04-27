@@ -9,37 +9,29 @@ import com.leroy.magmobile.api.enums.SortingOrder;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magportal.api.clients.CatalogSearchClient;
 import com.leroy.magportal.ui.WebBaseSteps;
+import com.leroy.magportal.ui.models.search.FiltersData;
 import com.leroy.magportal.ui.pages.products.ParamNames;
 import com.leroy.magportal.ui.pages.products.ProductCardPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
+import com.mongodb.client.model.Filters;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.util.HashMap;
 
 @Guice(modules = {Module.class})
 public class SearchTest extends WebBaseSteps {
 
-    // 1-ый Способ
     private CatalogSearchClient apiClient;
 
     @BeforeClass
     private void setUpSearchTests() {
         apiClient = apiClientProvider.getCatalogSearchClient();
     }
-
-    // 2-ой способ
-
-    private CatalogSearchClient apiClient() {
-        return apiClientProvider.getCatalogSearchClient();
-    }
-
-    // Надо оставить что-то одно:
-    // В 1-ом случае у нас одна переменная на все тесты, и для UI тестов это ок.
-    // Во 2-ом случае мы получаем клиент в самих тестах
 
     private final int defaultPageSize = 12;
     private final String allDepartments = "Каталог товаров";
@@ -72,7 +64,7 @@ public class SearchTest extends WebBaseSteps {
 
         //Step 2
         log.step("выбрать любой фильтр и применить его");
-        searchProductPage.choseCheckboxFilter(SearchProductPage.Filters.HAS_AVAILABLE_STOCK, true);
+        searchProductPage.choseCheckboxFilter(true, SearchProductPage.Filters.HAS_AVAILABLE_STOCK);
         searchProductPage.shouldNotFoundMsgIsDisplayed(true, SEARCH_PHRASE);
     }
 
@@ -104,7 +96,7 @@ public class SearchTest extends WebBaseSteps {
         //Step 1
         log.step("осуществить поиск по фильтру номенклатуры так, чтобы результат поиска содержал менее 12 артикулов");
         searchProductPage.choseNomenclature(DEPT_ID, SUB_DEPT_ID, CLASS_ID, null);
-        searchProductPage.choseCheckboxFilter(SearchProductPage.Filters.TOP_EM, true);
+        searchProductPage.choseCheckboxFilter(true, SearchProductPage.Filters.TOP_EM);
         searchProductPage.choseSortType(SearchProductPage.SortType.LM_CODE_ASC);
         ProductItemDataList productItemListResponse = apiThreads.get(0).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(productItemListResponse,
@@ -367,7 +359,7 @@ public class SearchTest extends WebBaseSteps {
                 sendRequestsSearchProductsBy(avsParam, avsNeqNullParam);
 
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
-        searchProductPage.choseCheckboxFilter(SearchProductPage.Filters.AVS,false)
+        searchProductPage.choseCheckboxFilter(false, SearchProductPage.Filters.AVS)
                 .shouldCheckboxFilterHasCorrectCondition(true, SearchProductPage.Filters.AVS)
                 .choseAvsDate(avsDate)
                 .shouldAvsContainerContainsCorrectText(avsDate)
@@ -376,9 +368,9 @@ public class SearchTest extends WebBaseSteps {
         ProductItemDataList avsDateResponse = resultsMap.get(0).getData();
         ProductItemDataList avsNeqNullResponse = resultsMap.get(1).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(avsDateResponse, SearchProductPage.FilterFrame.MY_SHOP,
-                        SearchProductPage.ViewMode.EXTENDED)
+                SearchProductPage.ViewMode.EXTENDED)
                 .clearAllFilters()
-                .choseCheckboxFilter(SearchProductPage.Filters.AVS, true)
+                .choseCheckboxFilter(true, SearchProductPage.Filters.AVS)
                 .shouldAvsContainerContainsCorrectText(null)
                 .shouldResponseEntityEqualsToViewEntity(avsNeqNullResponse, SearchProductPage.FilterFrame.MY_SHOP,
                         SearchProductPage.ViewMode.EXTENDED);
@@ -388,11 +380,151 @@ public class SearchTest extends WebBaseSteps {
                 .shouldResponseEntityEqualsToViewEntity(avsDateResponse, SearchProductPage.FilterFrame.MY_SHOP,
                         SearchProductPage.ViewMode.EXTENDED)
                 //bug of manually import
-                .verifyUrlContainsString(ParamNames.avsDate+String.format(
-                        "between%%7C%s-0%s-0%sT00%3A00%3A00.000Z%%7C%s-0%s-0%sT00%3A00%3A00.000Z",avsDate.getYear(),
+                .verifyUrlContainsString(ParamNames.avsDate + String.format(
+                        "between%%7C%s-0%s-0%sT00%3A00%3A00.000Z%%7C%s-0%s-0%sT00%3A00%3A00.000Z", avsDate.getYear(),
                         avsDate.getMonthValue(), avsDate.getDayOfMonth(),
                         avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth() + 1));
+    }
 
+    @Test(description = "C23384959 search by my shop filters group")
+    public void testMyShopFiltersGroupSearch() throws Exception {
 
+        GetCatalogSearch myShopFiltersParam = new GetCatalogSearch()
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setPageSize(defaultPageSize)
+                .setGamma("A,S")
+                .setTop("1,2")
+                .setHasAvailableStock(true)
+                .setTopEM(true)
+                .setCtm(true);
+
+        GetCatalogSearch bestPriceParams = new GetCatalogSearch()
+                .setTop1000(true)
+                .setBestPrice(true)
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setPageSize(defaultPageSize);
+
+        GetCatalogSearch limitedOfferParams = new GetCatalogSearch()
+                .setLimitedOffer(true)
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setPageSize(defaultPageSize);
+
+        GetCatalogSearch orderTypeParams = new GetCatalogSearch()
+                .setOrderType("MBO")
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setPageSize(defaultPageSize);
+
+        HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> resultMap =
+                sendRequestsSearchProductsBy(myShopFiltersParam,bestPriceParams, limitedOfferParams, orderTypeParams);
+
+        FiltersData filtersData = new FiltersData();
+        filtersData.setGammaFilters(new String[]{"Гамма А", "Гамма S"});
+        filtersData.setTopFilters(new String[]{"Топ 1", "Топ 2"});
+        filtersData.setCheckBoxes(new SearchProductPage.Filters[]{SearchProductPage.Filters.HAS_AVAILABLE_STOCK,
+                SearchProductPage.Filters.TOP_EM, SearchProductPage.Filters.CTM});
+
+        SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
+        searchProductPage.navigateToPreviousNomenclatureElement(allDepartments);
+        searchProductPage.choseSeveralFilters(filtersData, true);
+        ProductItemDataList myShopResponse = resultMap.get(0).getData();
+        searchProductPage.shouldResponseEntityEqualsToViewEntity(myShopResponse, SearchProductPage.FilterFrame.MY_SHOP,
+                SearchProductPage.ViewMode.EXTENDED);
+        searchProductPage.verifyUrlContainsString(ParamNames.gamma+"A%2CS", ParamNames.top+"1%2C2",
+                ParamNames.hasAvailableStock+"true", ParamNames.topEM+"true", ParamNames.ctm+"true");
+
+        filtersData.clearFilterData();
+        searchProductPage.clearAllFilters();
+
+        filtersData.setCheckBoxes(new SearchProductPage.Filters[]{SearchProductPage.Filters.TOP_1000,
+        SearchProductPage.Filters.BEST_PRICE});
+        searchProductPage.choseSeveralFilters(filtersData, true);
+
+        ProductItemDataList bestPrice = resultMap.get(1).getData();
+        searchProductPage.shouldResponseEntityEqualsToViewEntity(bestPrice, SearchProductPage.FilterFrame.MY_SHOP,
+                SearchProductPage.ViewMode.EXTENDED);
+        searchProductPage.verifyUrlContainsString(ParamNames.bestPrice+"true", ParamNames.top1000+"true",
+                ParamNames.shopId+EnvConstants.BASIC_USER_SHOP_ID);
+
+        searchProductPage.clearAllFilters();
+        searchProductPage.choseCheckboxFilter(true, SearchProductPage.Filters.LIMITED_OFFER);
+        ProductItemDataList limitedOffer = resultMap.get(2).getData();
+        searchProductPage.shouldResponseEntityEqualsToViewEntity(limitedOffer, SearchProductPage.FilterFrame.MY_SHOP,
+                SearchProductPage.ViewMode.EXTENDED);
+        searchProductPage.verifyUrlContainsString(ParamNames.limitedOffer+"true");
+
+        searchProductPage.clearAllFilters();
+        searchProductPage.choseCheckboxFilter(true, SearchProductPage.Filters.ORDERED);
+        ProductItemDataList orderType = resultMap.get(3).getData();
+        searchProductPage.shouldResponseEntityEqualsToViewEntity(orderType, SearchProductPage.FilterFrame.MY_SHOP,
+                SearchProductPage.ViewMode.EXTENDED);
+        searchProductPage.verifyUrlContainsString(ParamNames.orderType+"MBO");
+    }
+
+    @Test(description = "C23384960 search by all gamma filters group")
+    public void testAllGammaFiltersGroupSearch() throws Exception {
+
+        GetCatalogSearch ctmParam = new GetCatalogSearch()
+                .setPageSize(defaultPageSize)
+                .setGamma("A,S")
+                .setCtm(true);
+
+        GetCatalogSearch bestPriceParams = new GetCatalogSearch()
+                .setTop1000(true)
+                .setBestPrice(true)
+                .setPageSize(defaultPageSize);
+
+        GetCatalogSearch limitedOfferParams = new GetCatalogSearch()
+                .setLimitedOffer(true)
+                .setPageSize(defaultPageSize);
+
+        GetCatalogSearch orderTypeParams = new GetCatalogSearch()
+                .setOrderType("MBO")
+                .setPageSize(defaultPageSize);
+
+        HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> resultMap =
+                sendRequestsSearchProductsBy(ctmParam,bestPriceParams, limitedOfferParams, orderTypeParams);
+
+        FiltersData filtersData = new FiltersData();
+        filtersData.setGammaFilters(new String[]{"Гамма А", "Гамма S"});
+        filtersData.setCheckBoxes(new SearchProductPage.Filters[]{SearchProductPage.Filters.CTM});
+
+        SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
+        searchProductPage.switchFiltersFrame(SearchProductPage.FilterFrame.ALL_GAMMA_LM);
+        searchProductPage.navigateToPreviousNomenclatureElement(allDepartments);
+        searchProductPage.choseSeveralFilters(filtersData, true);
+        ProductItemDataList ctmResponse = resultMap.get(0).getData();
+        searchProductPage.shouldResponseEntityEqualsToViewEntity(ctmResponse, SearchProductPage.FilterFrame.ALL_GAMMA_LM,
+                SearchProductPage.ViewMode.EXTENDED);
+        searchProductPage.verifyUrlContainsString(ParamNames.gamma+"A%2CS", ParamNames.ctm+"true");
+        searchProductPage.verifyUrlContainsStringNot(ParamNames.shopId);
+
+        filtersData.clearFilterData();
+        searchProductPage.clearAllFilters();
+
+        filtersData.setCheckBoxes(new SearchProductPage.Filters[]{SearchProductPage.Filters.TOP_1000,
+                SearchProductPage.Filters.BEST_PRICE});
+        searchProductPage.choseSeveralFilters(filtersData, true);
+
+        ProductItemDataList bestPrice = resultMap.get(1).getData();
+        searchProductPage.shouldResponseEntityEqualsToViewEntity(bestPrice, SearchProductPage.FilterFrame.ALL_GAMMA_LM,
+                SearchProductPage.ViewMode.EXTENDED);
+        searchProductPage.verifyUrlContainsString(ParamNames.bestPrice+"true", ParamNames.top1000+"true");
+        searchProductPage.verifyUrlContainsStringNot(ParamNames.shopId);
+
+        searchProductPage.clearAllFilters();
+        searchProductPage.choseCheckboxFilter(true, SearchProductPage.Filters.LIMITED_OFFER);
+        ProductItemDataList limitedOffer = resultMap.get(2).getData();
+        searchProductPage.shouldResponseEntityEqualsToViewEntity(limitedOffer, SearchProductPage.FilterFrame.ALL_GAMMA_LM,
+                SearchProductPage.ViewMode.EXTENDED);
+        searchProductPage.verifyUrlContainsString(ParamNames.limitedOffer+"true");
+        searchProductPage.verifyUrlContainsStringNot(ParamNames.shopId);
+
+        searchProductPage.clearAllFilters();
+        searchProductPage.choseCheckboxFilter(true, SearchProductPage.Filters.ORDERED);
+        ProductItemDataList orderType = resultMap.get(3).getData();
+        searchProductPage.shouldResponseEntityEqualsToViewEntity(orderType, SearchProductPage.FilterFrame.ALL_GAMMA_LM,
+                SearchProductPage.ViewMode.EXTENDED);
+        searchProductPage.verifyUrlContainsString(ParamNames.orderType+"MBO");
+        searchProductPage.verifyUrlContainsStringNot(ParamNames.shopId);
     }
 }

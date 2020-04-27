@@ -32,8 +32,12 @@ public class CustomAssert extends BaseCustomAssert {
         super.logIsNotEquals(actual, expected, desc, false);
     }
 
-    public void isTextContainsIgnoringCase(String actual, String expected, String desc){
+    public void isTextContainsIgnoringCase(String actual, String expected, String desc) {
         super.logIsTextContainsIgnoringCase(actual, expected, desc, false);
+    }
+
+    public void isTextContainsNotIgnoringCase(String actual, String expected, String desc) {
+        super.logIsTextContainsNotIgnoringCase(actual, expected, desc, false);
     }
 
     public void isNull(Object object, String actualResult, String expectedResult) {

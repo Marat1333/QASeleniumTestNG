@@ -9,6 +9,7 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
+import com.leroy.magportal.ui.models.search.FiltersData;
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.webelements.MagPortalComboBox;
 import com.leroy.magportal.ui.webelements.commonelements.MagPortalCheckBox;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Arrays;
 
 public class SearchProductPage extends MenuPage {
     public SearchProductPage(TestContext context) {
@@ -246,6 +248,7 @@ public class SearchProductPage extends MenuPage {
             myShopFilterBtn.click();
         } else {
             allGammaFilterBtn.click();
+
         }
         return this;
     }
@@ -313,15 +316,17 @@ public class SearchProductPage extends MenuPage {
     }
 
     @Step("Выбрать чек-бокс и применить фильтры - {applyFilters}")
-    public SearchProductPage choseCheckboxFilter(Filters filter, boolean applyFilters) {
-        if (!(filter.equals(Filters.HAS_AVAILABLE_STOCK) || filter.equals(Filters.TOP_EM))&&(!supplierDropBox.isVisible())) {
-            showAllFilters();
-        }
-        Element checkbox = E("contains(" + filter.getName() + ")");
-        checkbox.click();
-        if (applyFilters) {
-            applyFilters();
-            waitForSpinnerAppearAndDisappear();
+    public SearchProductPage choseCheckboxFilter(boolean applyFilters, Filters ... filters) {
+        for (Filters filter : filters) {
+            if (!(filter.equals(Filters.HAS_AVAILABLE_STOCK) || filter.equals(Filters.TOP_EM)) && (!supplierDropBox.isVisible())) {
+                showAllFilters();
+            }
+            Element checkbox = E("contains(" + filter.getName() + ")");
+            checkbox.click();
+            if (applyFilters) {
+                applyFilters();
+                waitForSpinnerAppearAndDisappear();
+            }
         }
         return this;
     }
@@ -342,22 +347,21 @@ public class SearchProductPage extends MenuPage {
         return this;
     }
 
-    // Может не массив String'ов? А один класс FiltersData как в magportal
-    /*@Step("Выбрать фильтры Гамма {gammaFilters.toString}")
-    public SearchProductPage selectGammaFilter(String... gammaFilters) throws Exception {
+    @Step("Выбрать фильтры Гамма")
+    public SearchProductPage choseGammaFilter(String... gammaFilters) throws Exception {
         gammaComboBox.click();
         gammaComboBox.selectOptions(Arrays.asList(gammaFilters));
         return this;
     }
 
-    @Step("Выбрать фильтры Топ {topFilters.toString}")
-    public SearchProductPage selectTopFilter(String... topFilters) throws Exception {
+    @Step("Выбрать фильтры Топ")
+    public SearchProductPage choseTopFilter(String... topFilters) throws Exception {
         List<String> tmpFilters = new ArrayList<>();
         tmpFilters.addAll(java.util.Arrays.asList(topFilters));
         topComboBox.click();
         topComboBox.selectOptions(tmpFilters);
         return this;
-    }*/
+    }
 
     @Step("выбрать дату AVS {date}")
     public SearchProductPage choseAvsDate(LocalDate date) throws Exception {
@@ -389,6 +393,29 @@ public class SearchProductPage extends MenuPage {
         }
         if (closeAfter) {
             supplierDropBox.click();
+        }
+        return this;
+    }
+
+    @Step("Выбрать несколько фильтров")
+    public SearchProductPage choseSeveralFilters(FiltersData data, boolean applyFilters) throws Exception{
+        if (data.getGammaFilters().length>0){
+            choseGammaFilter(data.getGammaFilters());
+        }
+        if (data.getTopFilters().length>0){
+            choseTopFilter(data.getTopFilters());
+        }
+        if (data.getCheckBoxes().length>0){
+            choseCheckboxFilter(false, data.getCheckBoxes());
+        }
+        if (data.getSuppliers().length > 0) {
+            choseSupplier(false, data.getSuppliers());
+        }
+        if (data.getAvsDate()!=null){
+            choseAvsDate(data.getAvsDate());
+        }
+        if (applyFilters){
+            applyFilters();
         }
         return this;
     }
@@ -713,6 +740,18 @@ public class SearchProductPage extends MenuPage {
                 .toInstant()));
         anAssert.isTextContainsIgnoringCase(visibleText, convertedDate, "Даты отличаются. Отображаемая дата - " +
                 visibleText + " ожидаемая дата - " + convertedDate);
+        return this;
+    }
+
+    @Step("Проверить, что фильтры не выбраны")
+    public SearchProductPage checkFilterNotChosen(FiltersData data){
+
+        return this;
+    }
+
+    @Step("Проверить, что фильтры выбраны")
+    public SearchProductPage checkFilterChosen(FiltersData data){
+
         return this;
     }
 

@@ -2,10 +2,8 @@ package com.leroy.core.pages;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.configuration.Log;
-import com.leroy.core.web_elements.general.Checkbox;
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import io.appium.java_client.ios.IOSDriver;
-import io.qameta.allure.Step;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
@@ -938,10 +936,21 @@ public abstract class BaseWebPage extends BasePage {
         jsExecute("document.body.style.zoom='" + percent + "%'");
     }
 
-    public <J extends MenuPage> J verifyUrlContainsString(String value) {
-        String currentUrl=driver.getCurrentUrl();
-        anAssert.isTextContainsIgnoringCase(currentUrl, value, "current url hasn`t contains " + value+" current url is "+currentUrl);
+    public <J extends MenuPage> J verifyUrlContainsString(String... values) {
+        String currentUrl = driver.getCurrentUrl();
+        for (String value : values) {
+            anAssert.isTextContainsIgnoringCase(currentUrl, value, "current url hasn`t contains " + value + " current url is " + currentUrl);
+        }
         return (J) this;
     }
+
+    public <J extends MenuPage> J verifyUrlContainsStringNot(String... values) {
+        String currentUrl = driver.getCurrentUrl();
+        for (String value : values) {
+            anAssert.isTextContainsNotIgnoringCase(currentUrl, value, "current url contains " + value + " current url is " + currentUrl);
+        }
+        return (J) this;
+    }
+
 }
 
