@@ -135,4 +135,10 @@ public class RupturesClient extends MagMobileClient {
         assertThat("rupture session product items", actualData.getItems(), equalTo(expectedData.getItems()));
     }
 
+    @Step("Check that action is unavailable")
+    public void assertThatActionIsNotAllowed(Response<JsonNode> resp, Integer sessionId) {
+        assertThat("Response code", resp.getStatusCode(), equalTo(400));
+        assertThat("Error", resp.asJson().get("error").asText(), equalTo(String.format("Session with SessionId = %d not found or already finished", sessionId)));
+    }
+
 }
