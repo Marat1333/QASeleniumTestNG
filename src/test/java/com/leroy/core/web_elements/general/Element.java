@@ -871,4 +871,14 @@ public class Element extends BaseWidget {
     public boolean isElementContentScrolledToRight() {
         return getContentHorizontalScrollPositionJs() >= getContentScrollWidthJs() - getClientWidthJs();
     }
+
+
+    public void waitForAttributeChanged(String attributeName, String attributeValue){
+        WebDriverWait wait = new WebDriverWait(this.driver, timeout);
+        try {
+            wait.until((ExpectedCondition<Boolean>) driverObject-> !this.getAttribute(attributeName).equals(attributeValue));
+        } catch (org.openqa.selenium.TimeoutException e) {
+            Log.warn(String.format("waitForInvisibility failed (tried for %d second(s))", timeout));
+        }
+    }
 }

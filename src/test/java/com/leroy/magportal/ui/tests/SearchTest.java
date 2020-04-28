@@ -317,7 +317,7 @@ public class SearchTest extends WebBaseSteps {
 
         searchProductPage.navigateToPreviousNomenclatureElement(allDepartments)
                 .choseSupplier(false, FIRST_SUPPLIER_CODE, SECOND_SUPPLIER_CODE)
-                .shouldSupplierComboBoxContainsCorrectText(FIRST_SUPPLIER_CODE, SECOND_SUPPLIER_CODE)
+                .shouldSupplierComboBoxContainsCorrectText(false, FIRST_SUPPLIER_CODE, SECOND_SUPPLIER_CODE)
                 .applyFilters()
                 .verifyUrlContainsString(ParamNames.supplierId + FIRST_SUPPLIER_CODE + "%2C" + SECOND_SUPPLIER_CODE);
 
@@ -328,10 +328,10 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.deleteAllChosenSuppliers()
                 .choseSupplier(false, FIRST_SUPPLIER_CODE)
                 .shouldChosenSupplierCheckboxHasCorrectCondition(true, FIRST_SUPPLIER_NAME)
-                .shouldSupplierComboBoxContainsCorrectText(FIRST_SUPPLIER_NAME)
+                .shouldSupplierComboBoxContainsCorrectText(false, FIRST_SUPPLIER_NAME)
                 .deleteChosenSuppliers(false, FIRST_SUPPLIER_NAME)
                 .shouldChosenSupplierCheckboxHasCorrectCondition(false, FIRST_SUPPLIER_NAME)
-                .shouldSupplierComboBoxContainsCorrectText(null);
+                .shouldSupplierComboBoxContainsCorrectText(true, null);
     }
 
     //bug
@@ -360,7 +360,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.choseCheckboxFilter(false, SearchProductPage.Filters.AVS)
                 .shouldCheckboxFilterHasCorrectCondition(true, SearchProductPage.Filters.AVS)
                 .choseAvsDate(avsDate)
-                .shouldAvsContainerContainsCorrectText(avsDate)
+                .shouldAvsContainerContainsCorrectText(false, avsDate)
                 .applyFilters();
 
         ProductItemDataList avsDateResponse = resultsMap.get(0).getData();
@@ -369,7 +369,7 @@ public class SearchTest extends WebBaseSteps {
                 SearchProductPage.ViewMode.EXTENDED)
                 .clearAllFilters()
                 .choseCheckboxFilter(true, SearchProductPage.Filters.AVS)
-                .shouldAvsContainerContainsCorrectText(null)
+                .shouldAvsContainerContainsCorrectText(true, null)
                 .shouldResponseEntityEqualsToViewEntity(avsNeqNullResponse, SearchProductPage.FilterFrame.MY_SHOP,
                         SearchProductPage.ViewMode.EXTENDED);
 
@@ -524,5 +524,68 @@ public class SearchTest extends WebBaseSteps {
                 SearchProductPage.ViewMode.EXTENDED);
         searchProductPage.verifyUrlContainsString(ParamNames.orderType + "MBO");
         searchProductPage.verifyUrlContainsStringNot(ParamNames.shopId);
+    }
+
+    @Test(description = "C23384975 switching between My shop frame and All gamma frame")
+    public void testSwitchMyShopToAllGamma() throws Exception {
+        LocalDate avsDate = LocalDate.of(2020, 4, 9);
+        LocalDate allGammaAvsDate = LocalDate.of(2020, 3, 2);
+        final String FIRST_SUPPLIER_CODE = "1001123001";
+        final String SECOND_SUPPLIER_CODE = "1002258015";
+
+        GetCatalogSearch myShopParams = new GetCatalogSearch()
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setGamma("A,S")
+                .setTop("1,2")
+                .setHasAvailableStock(true)
+                .setSupId(FIRST_SUPPLIER_CODE + "," + SECOND_SUPPLIER_CODE)
+                .setAvsDate(String.format("between%%7C%s-0%s-0%sT00:00:00.000Z%%7C%s-0%s-%sT00:00:00.000Z",
+                        avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth(),
+                        avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth() + 1));
+
+        GetCatalogSearch allGammaParams = new GetCatalogSearch()
+                .setGamma("P,T")
+                .setLimitedOffer(true)
+                .setAvsDate(String.format("between%%7C%s-0%s-0%sT00:00:00.000Z%%7C%s-0%s-0%sT00:00:00.000Z",
+                        allGammaAvsDate.getYear(), allGammaAvsDate.getMonthValue(), allGammaAvsDate.getDayOfMonth(),
+                        allGammaAvsDate.getYear(), allGammaAvsDate.getMonthValue(), allGammaAvsDate.getDayOfMonth() + 1));
+
+        HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> resultMap =
+                sendRequestsSearchProductsBy(allGammaParams, myShopParams);
+
+        FiltersData myShopFilterData = new FiltersData();
+        myShopFilterData.setCheckBoxes(new SearchProductPage.Filters[]{SearchProductPage.Filters.HAS_AVAILABLE_STOCK});
+        myShopFilterData.setTopFilters(new String[]{"Топ 1", "Топ 2"});
+        myShopFilterData.setGammaFilters(new String[]{"Гамма А", "Гамма S"});
+        myShopFilterData.setAvsDate(avsDate);
+        myShopFilterData.setSuppliers(new String[]{FIRST_SUPPLIER_CODE, SECOND_SUPPLIER_CODE});
+
+        FiltersData allGammaFilterData = new FiltersData();
+        allGammaFilterData.setGammaFilters(new String[]{"Гамма P", "Гамма T"});
+        allGammaFilterData.setCheckBoxes(new SearchProductPage.Filters[]{SearchProductPage.Filters.LIMITED_OFFER});
+        allGammaFilterData.setAvsDate(allGammaAvsDate);
+
+        SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
+        searchProductPage.navigateToPreviousNomenclatureElement(allDepartments);
+
+        searchProductPage.choseSeveralFilters(myShopFilterData, true);
+        searchProductPage.checkFiltersChosen(myShopFilterData);
+
+        searchProductPage.switchFiltersFrame(SearchProductPage.FilterFrame.ALL_GAMMA_LM);
+        searchProductPage.checkFiltersNotChosen(myShopFilterData);
+        searchProductPage.choseSeveralFilters(allGammaFilterData, true);
+        searchProductPage.checkFiltersChosen(allGammaFilterData);
+        ProductItemDataList allGammaData = resultMap.get(0).getData();
+                searchProductPage.shouldResponseEntityEqualsToViewEntity(allGammaData,
+                        SearchProductPage.FilterFrame.ALL_GAMMA_LM, SearchProductPage.ViewMode.EXTENDED);
+                searchProductPage.verifyUrlContainsStringNot(ParamNames.shopId);
+
+        searchProductPage.switchFiltersFrame(SearchProductPage.FilterFrame.MY_SHOP);
+        searchProductPage.checkFiltersChosen(myShopFilterData);
+        searchProductPage.applyFilters();
+        ProductItemDataList myShopData = resultMap.get(1).getData();
+                searchProductPage.shouldResponseEntityEqualsToViewEntity(myShopData,
+                        SearchProductPage.FilterFrame.MY_SHOP, SearchProductPage.ViewMode.EXTENDED);
+        searchProductPage.verifyUrlContainsString(ParamNames.shopId);
     }
 }

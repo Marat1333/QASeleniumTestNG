@@ -6,6 +6,7 @@ import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.util.XmlUtil;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -58,12 +59,7 @@ public abstract class BaseWidget extends BaseWrapper {
     protected void initialWebElementIfNeeded(int timeout) {
         try {
             if (locator != null) {
-                if (webElement == null) {
-                    initWebElement(timeout);
-                } else {
-                    if (!isCacheLookup() && isStaleReference())
-                        initWebElement(timeout);
-                }
+                initWebElement(timeout);
             }
         } catch (Exception err) {
             Log.error("Element " + (getMetaName() != null ? getMetaName() : "") + " not found. " + err.getMessage());
@@ -356,6 +352,4 @@ public abstract class BaseWidget extends BaseWrapper {
                         + ". Method: getRectangleJs() - " + e.getMessage());
         }
     }
-
-
 }

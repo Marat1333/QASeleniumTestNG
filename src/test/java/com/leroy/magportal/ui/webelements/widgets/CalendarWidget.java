@@ -5,6 +5,7 @@ import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.BaseWidget;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 import java.text.SimpleDateFormat;
@@ -24,15 +25,16 @@ public class CalendarWidget extends BaseWidget {
     @WebFindBy(xpath = ".//span[contains(@class,'DatePicker__captionYear')]")
     Element selectedYearLabel;
 
-    @WebFindBy(xpath = ".//button[contains(@class,'NavButton--prev')]")
-    Button previousMonthBtn;
-
-    @WebFindBy(xpath = ".//button[contains(@class,'NavButton--next')]")
-    Button nextMonthBtn;
-
+    private Button getPreviousMonthBtn(){
+        return new Button(driver, new CustomLocator(By.xpath(".//button[contains(@class,'NavButton--prev')]")));
+    }
+    
+    private Button getNextMonthBtn(){
+        return new Button(driver, new CustomLocator(By.xpath(".//button[contains(@class,'NavButton--next')]")));
+    }
 
     private void selectDayByLabel(String value) throws Exception {
-        Element dayLbl = findChildElement("//*[contains(text(), '" + value + "')]");
+        Element dayLbl = new Element(driver, new CustomLocator(By.xpath(getXpath()+"//*[text()='" + value + "']")));
         dayLbl.click();
     }
 
@@ -50,9 +52,9 @@ public class CalendarWidget extends BaseWidget {
 
         for (int i = 0; i < differenceInMonth; i++) {
             if (needToSelectDate.before(calendarDate)) {
-                previousMonthBtn.click();
+                getPreviousMonthBtn().click();
             } else if (needToSelectDate.after(calendarDate)) {
-                nextMonthBtn.click();
+                getNextMonthBtn().click();
             } else
                 break;
         }

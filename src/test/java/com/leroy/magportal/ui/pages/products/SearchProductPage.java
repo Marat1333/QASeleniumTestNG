@@ -23,11 +23,7 @@ import org.openqa.selenium.By;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Arrays;
+import java.util.*;
 
 public class SearchProductPage extends MenuPage {
     public SearchProductPage(TestContext context) {
@@ -101,8 +97,14 @@ public class SearchProductPage extends MenuPage {
     @WebFindBy(xpath = "//button[@id='MyShop']")
     Button myShopFilterBtn;
 
+    @WebFindBy(xpath = "//button[@id='MyShop']/ancestor::div[4]/following-sibling::div[1]")
+    Element myShopContainer;
+
     @WebFindBy(xpath = "//button[@id='AllGamma']")
     Button allGammaFilterBtn;
+
+    @WebFindBy(xpath = "//button[@id='MyShop']/ancestor::div[4]/following-sibling::div[2]")
+    Element allGammaContainer;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[text()=\"Каталог товаров\"]" +
             "/ancestor::div[2]/div/span[1]/span")
@@ -125,12 +127,6 @@ public class SearchProductPage extends MenuPage {
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(@class, 'Nomenclatures__link-text')]")
     ElementList<Element> nomenclatureElementsList;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'active')]//input[@placeholder='Гамма']/ancestor::div[1]")
-    MagPortalComboBox gammaComboBox;
-
-    @WebFindBy(xpath = "//div[contains(@class, 'active')]//input[@placeholder='Топ пополнения']/ancestor::div[1]")
-    MagPortalComboBox topComboBox;
-
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[text()='еще']/ancestor::button")
     Button showAllFilters;
 
@@ -147,12 +143,6 @@ public class SearchProductPage extends MenuPage {
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//label[text()='Поставщик']/ancestor::div[1]")
     SupplierComboBox supplierDropBox;
-
-    @WebFindBy(xpath = "//div[contains(@class, 'active')]//input[@placeholder='Дата AVS']")
-    CalendarComboBox avsDropBox;
-
-    @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'DatePicker__dayPicker')]")
-    CalendarWidget avsDropDownCalendar;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(@class,'singleValue')]/ancestor::div[2]")
     MagPortalComboBox sortComboBox;
@@ -203,6 +193,21 @@ public class SearchProductPage extends MenuPage {
         applyFiltersBtn.waitForVisibility();
 
     }
+    private CalendarWidget getAvsDropDownCalendar(){
+        return new CalendarWidget(driver, new CustomLocator(By.xpath("//div[contains(@class, 'active')]//div[contains(@class, 'DatePicker__dayPicker')]")));
+    }
+
+    private EditBox getAvsDropBox(){
+        return new EditBox (driver, new CustomLocator(By.xpath("//div[contains(@class, 'active')]//input[@placeholder='Дата AVS']")));
+    }
+    
+    private MagPortalComboBox getGammaComboBox(){
+        return new MagPortalComboBox(driver, new CustomLocator(By.xpath("//div[contains(@class, 'active')]//input[@placeholder='Гамма']/ancestor::div[1]")));
+    }
+    
+    private MagPortalComboBox getTopComboBox(){
+        return new MagPortalComboBox(driver, new CustomLocator(By.xpath("//div[contains(@class, 'active')]//input[@placeholder='Топ пополнения']/ancestor::div[1]")));
+    }
 
     public String getCurrentNomenclatureName() {
         return currentNomenclatureLbl.getText();
@@ -244,11 +249,16 @@ public class SearchProductPage extends MenuPage {
 
     @Step("Выбрать группу фильтров {frame}")
     public SearchProductPage switchFiltersFrame(FilterFrame frame) {
+        String attributeValue;
+        String attributeName = "className";
         if (frame.equals(FilterFrame.MY_SHOP)) {
+            attributeValue=myShopContainer.getAttribute(attributeName);
             myShopFilterBtn.click();
+            myShopContainer.waitForAttributeChanged(attributeName, attributeValue);
         } else {
+            attributeValue = allGammaContainer.getAttribute(attributeName);
             allGammaFilterBtn.click();
-
+            allGammaContainer.waitForAttributeChanged(attributeName, attributeValue);
         }
         return this;
     }
@@ -316,12 +326,12 @@ public class SearchProductPage extends MenuPage {
     }
 
     @Step("Выбрать чек-бокс и применить фильтры - {applyFilters}")
-    public SearchProductPage choseCheckboxFilter(boolean applyFilters, Filters ... filters) {
+    public SearchProductPage choseCheckboxFilter(boolean applyFilters, Filters... filters) {
         for (Filters filter : filters) {
             if (!(filter.equals(Filters.HAS_AVAILABLE_STOCK) || filter.equals(Filters.TOP_EM)) && (!supplierDropBox.isVisible())) {
                 showAllFilters();
             }
-            Element checkbox = E("contains(" + filter.getName() + ")");
+            Element checkbox = E("//div[contains(@class, 'active')]//*[contains(text(),'" + filter.getName() + "')]");
             checkbox.click();
             if (applyFilters) {
                 applyFilters();
@@ -332,25 +342,19 @@ public class SearchProductPage extends MenuPage {
     }
 
     @Step("Ввести дату AVS вручную")
-    public SearchProductPage enterAvsDateManually(LocalDate date) throws Exception{
+    public SearchProductPage enterAvsDateManually(LocalDate date) throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yy");
         String convertedDate = sdf.format(Date.from(date.atStartOfDay()
                 .atZone(ZoneId.systemDefault())
                 .toInstant()));
-        avsDropBox.clearAndFill(convertedDate);
-        return this;
-    }
-
-    @Step("Очистить содержимое комбобокса \"Дата AVS\"")
-    public SearchProductPage clearAvsDateInput(){
-        avsDropBox.clearInput();
+        getAvsDropBox().clearAndFill(convertedDate);
         return this;
     }
 
     @Step("Выбрать фильтры Гамма")
     public SearchProductPage choseGammaFilter(String... gammaFilters) throws Exception {
-        gammaComboBox.click();
-        gammaComboBox.selectOptions(Arrays.asList(gammaFilters));
+        getGammaComboBox().click();
+        getGammaComboBox().selectOptions(Arrays.asList(gammaFilters));
         return this;
     }
 
@@ -358,15 +362,18 @@ public class SearchProductPage extends MenuPage {
     public SearchProductPage choseTopFilter(String... topFilters) throws Exception {
         List<String> tmpFilters = new ArrayList<>();
         tmpFilters.addAll(java.util.Arrays.asList(topFilters));
-        topComboBox.click();
-        topComboBox.selectOptions(tmpFilters);
+        getTopComboBox().click();
+        getTopComboBox().selectOptions(tmpFilters);
         return this;
     }
 
     @Step("выбрать дату AVS {date}")
     public SearchProductPage choseAvsDate(LocalDate date) throws Exception {
-        avsDropBox.click();
-        avsDropDownCalendar.selectDate(date);
+        if (!getAvsDropBox().isVisible()){
+            choseCheckboxFilter(false, Filters.AVS);
+        }
+        getAvsDropBox().click();
+        getAvsDropDownCalendar().selectDate(date);
         return this;
     }
 
@@ -398,23 +405,23 @@ public class SearchProductPage extends MenuPage {
     }
 
     @Step("Выбрать несколько фильтров")
-    public SearchProductPage choseSeveralFilters(FiltersData data, boolean applyFilters) throws Exception{
-        if (data.getGammaFilters().length>0){
+    public SearchProductPage choseSeveralFilters(FiltersData data, boolean applyFilters) throws Exception {
+        if (data.getGammaFilters().length > 0) {
             choseGammaFilter(data.getGammaFilters());
         }
-        if (data.getTopFilters().length>0){
+        if (data.getTopFilters().length > 0) {
             choseTopFilter(data.getTopFilters());
         }
-        if (data.getCheckBoxes().length>0){
+        if (data.getCheckBoxes().length > 0) {
             choseCheckboxFilter(false, data.getCheckBoxes());
         }
         if (data.getSuppliers().length > 0) {
             choseSupplier(false, data.getSuppliers());
         }
-        if (data.getAvsDate()!=null){
+        if (data.getAvsDate() != null) {
             choseAvsDate(data.getAvsDate());
         }
-        if (applyFilters){
+        if (applyFilters) {
             applyFilters();
         }
         return this;
@@ -678,9 +685,9 @@ public class SearchProductPage extends MenuPage {
     }
 
     @Step("Проверить, что поле с выбором поставщика содержит корректный текст")
-    public SearchProductPage shouldSupplierComboBoxContainsCorrectText(String... name) {
+    public SearchProductPage shouldSupplierComboBoxContainsCorrectText(boolean isEmpty, String... name) {
         String elemText;
-        if (name == null) {
+        if (isEmpty) {
             anAssert.isElementNotVisible(supplierDropBox.chosenSupplierName);
         } else if (name.length == 1) {
             elemText = supplierDropBox.chosenSupplierName.getText();
@@ -713,45 +720,127 @@ public class SearchProductPage extends MenuPage {
     }
 
     @Step("Проверить, что чек-бокс переведен в корректное состояние")
-    public SearchProductPage shouldCheckboxFilterHasCorrectCondition(boolean isEnabled, Filters filter) throws Exception {
-        MagPortalCheckBox checkbox = new MagPortalCheckBox(driver, new CustomLocator(By.xpath(
-                "//*[contains(text(),'" + filter.getName() + "')]/ancestor::button")));
-        if (isEnabled) {
-            anAssert.isTrue(checkbox.isChecked(), "Чекбокс в состоянии disabled");
-        } else {
-            anAssert.isTrue(!checkbox.isChecked(), "Чекбокс в состоянии enabled");
+    public SearchProductPage shouldCheckboxFilterHasCorrectCondition(boolean isEnabled, Filters... filters) throws Exception {
+        for (Filters filter : filters) {
+            MagPortalCheckBox checkbox = new MagPortalCheckBox(driver, new CustomLocator(By.xpath(
+                    "//div[contains(@class, 'active')]//*[contains(text(),'" + filter.getName() + "')]/ancestor::button")));
+            if (isEnabled) {
+                anAssert.isTrue(checkbox.isChecked(), "Чекбокс в состоянии disabled");
+            } else {
+                anAssert.isTrue(!checkbox.isChecked(), "Чекбокс в состоянии enabled");
+            }
         }
         return this;
     }
 
     @Step("Проверить, что в комбобоксе \"Дата AVS\" содержится корректный текст")
-    public SearchProductPage shouldAvsContainerContainsCorrectText(LocalDate date) {
-        String visibleText = avsDropBox.getText(() -> {
-            initElements();
-            return avsDropBox.getAttribute("defaultValue");});
-        if (date == null) {
-            anAssert.isTextContainsIgnoringCase(visibleText, "", "Дата не должна быть отображена, однако отображается - " +
-                    visibleText);
+    public SearchProductPage shouldAvsContainerContainsCorrectText(boolean isEmpty, LocalDate date) {
+        if (!getAvsDropBox().isVisible()&&isEmpty){
             return this;
         }
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yy");
-        String convertedDate = sdf.format(Date.from(date.atStartOfDay()
-                .atZone(ZoneId.systemDefault())
-                .toInstant()));
-        anAssert.isTextContainsIgnoringCase(visibleText, convertedDate, "Даты отличаются. Отображаемая дата - " +
-                visibleText + " ожидаемая дата - " + convertedDate);
+        String visibleText = getAvsDropBox().getText(() -> {
+            initElements();
+            return getAvsDropBox().getAttribute("defaultValue");
+        });
+        if (isEmpty) {
+            anAssert.isTextContainsIgnoringCase(visibleText, "", "Дата не должна быть отображена, однако отображается - " +
+                    visibleText);
+        } else {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yy");
+            String convertedDate = sdf.format(Date.from(date.atStartOfDay()
+                    .atZone(ZoneId.systemDefault())
+                    .toInstant()));
+            anAssert.isTextContainsIgnoringCase(visibleText, convertedDate, "Даты отличаются. Отображаемая дата - " +
+                    visibleText + " ожидаемая дата - " + convertedDate);
+
+        }
         return this;
     }
 
-    @Step("Проверить, что фильтры не выбраны")
-    public SearchProductPage checkFilterNotChosen(FiltersData data){
+    @Step("Проверить, что комбо-бокс фильтра гамма содержит корректный текст")
+    public SearchProductPage shouldGammaDropBoxContainsCorrectText(boolean isEmpty, String... gammaFilters) throws Exception {
+        if (gammaFilters.length > 0 && !isEmpty) {
+            String visibleText = "";
+            try {
+                visibleText = getGammaComboBox().findChildElement(".//span[contains(@class, 'sing')]").getText();
+            } catch (NoSuchElementException e) {
+                throw new AssertionError("Комбо-бокс не содержит текста");
+            }
+            if (gammaFilters.length == 1) {
+                anAssert.isEquals(visibleText, gammaFilters[0], "Текст не соответствует паттерну \"Гамма Х\"");
+            } else {
+                anAssert.isEquals(visibleText, "Гамма (" + gammaFilters.length + ")", "Текст не соответсвует " +
+                        "паттерну \"Гамма (i)\"");
+            }
+        } else {
+            String emptyText = getGammaComboBox().findChildElement(".//input").getAttribute("defaultValue");
+            anAssert.isEquals(emptyText, "", "Комбо-бокс содержит текст");
+        }
+        return this;
+    }
 
+    @Step("Проверить, что комбо-бокс фильтра гамма содержит корректный текст")
+    public SearchProductPage shouldTopDropBoxContainsCorrectText(boolean isEmpty, String... topFilters) throws Exception {
+        if (topFilters.length > 0 && !isEmpty) {
+            String visibleText = "";
+            try {
+                visibleText = getTopComboBox().findChildElement(".//span[contains(@class, 'sing')]").getText();
+            } catch (NoSuchElementException e) {
+                throw new AssertionError("Комбо-бокс не содержит текста");
+            }
+            if (topFilters.length == 1) {
+                anAssert.isEquals(visibleText, topFilters[0], "Текст не соответствует паттерну \"Топ Х\"");
+            } else {
+                anAssert.isEquals(visibleText, "Топ (" + topFilters.length + ")", "Текст не соответсвует " +
+                        "паттерну \"Топ (i)\"");
+            }
+        } else {
+            String emptyText = getTopComboBox().findChildElement(".//input").getAttribute("defaultValue");
+            anAssert.isEquals(emptyText, "", "Комбо-бокс содержит текст");
+        }
         return this;
     }
 
     @Step("Проверить, что фильтры выбраны")
-    public SearchProductPage checkFilterChosen(FiltersData data){
+    public SearchProductPage checkFiltersChosen(FiltersData data) throws Exception {
+        if (data.getGammaFilters().length > 0) {
+            shouldGammaDropBoxContainsCorrectText(false, data.getGammaFilters());
+        }
+        if (data.getTopFilters().length > 0) {
+            shouldTopDropBoxContainsCorrectText(false, data.getTopFilters());
+        }
+        if (data.getCheckBoxes().length > 0) {
+            shouldCheckboxFilterHasCorrectCondition(true, data.getCheckBoxes());
+        }
+        if (data.getSuppliers().length > 0) {
+            shouldSupplierComboBoxContainsCorrectText(false, data.getSuppliers());
+        }
+        if (data.getAvsDate() != null) {
+            shouldAvsContainerContainsCorrectText(false, data.getAvsDate());
+        }
+        return this;
+    }
 
+    @Step("Проверить, что фильтры не выбраны")
+    public SearchProductPage checkFiltersNotChosen(FiltersData data) throws Exception {
+        if (!supplierDropBox.isVisible()){
+            showAllFilters();
+        }
+        if (data.getGammaFilters().length > 0) {
+            shouldGammaDropBoxContainsCorrectText(true, data.getGammaFilters());
+        }
+        if (data.getTopFilters().length > 0) {
+            shouldTopDropBoxContainsCorrectText(true, data.getTopFilters());
+        }
+        if (data.getCheckBoxes().length > 0) {
+            shouldCheckboxFilterHasCorrectCondition(false, data.getCheckBoxes());
+        }
+        if (data.getSuppliers().length > 0) {
+            shouldSupplierComboBoxContainsCorrectText(true, data.getSuppliers());
+        }
+        if (data.getAvsDate() != null) {
+            shouldAvsContainerContainsCorrectText(true, data.getAvsDate());
+        }
         return this;
     }
 
