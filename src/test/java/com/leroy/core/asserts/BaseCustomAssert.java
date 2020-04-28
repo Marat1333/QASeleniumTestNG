@@ -113,7 +113,7 @@ public abstract class BaseCustomAssert {
             Assert.assertTrue(actual.contains(expected), desc);
     }
 
-    protected void logIsTextContainsNotIgnoringCase(String actual, String expected, String desc, boolean isSoft){
+    protected void logIsTextNotContainsIgnoringCase(String actual, String expected, String desc, boolean isSoft){
         String actualResultText;
         if (desc.contains("%s"))
             actualResultText = String.format(desc, actual);

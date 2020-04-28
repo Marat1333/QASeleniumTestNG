@@ -13,13 +13,11 @@ import com.leroy.magportal.ui.models.search.FiltersData;
 import com.leroy.magportal.ui.pages.products.ParamNames;
 import com.leroy.magportal.ui.pages.products.ProductCardPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
-import com.mongodb.client.model.Filters;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.util.HashMap;
 
@@ -415,7 +413,7 @@ public class SearchTest extends WebBaseSteps {
                 .setPageSize(defaultPageSize);
 
         HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> resultMap =
-                sendRequestsSearchProductsBy(myShopFiltersParam,bestPriceParams, limitedOfferParams, orderTypeParams);
+                sendRequestsSearchProductsBy(myShopFiltersParam, bestPriceParams, limitedOfferParams, orderTypeParams);
 
         FiltersData filtersData = new FiltersData();
         filtersData.setGammaFilters(new String[]{"Гамма А", "Гамма S"});
@@ -429,35 +427,35 @@ public class SearchTest extends WebBaseSteps {
         ProductItemDataList myShopResponse = resultMap.get(0).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(myShopResponse, SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
-        searchProductPage.verifyUrlContainsString(ParamNames.gamma+"A%2CS", ParamNames.top+"1%2C2",
-                ParamNames.hasAvailableStock+"true", ParamNames.topEM+"true", ParamNames.ctm+"true");
+        searchProductPage.verifyUrlContainsString(ParamNames.gamma + "A%2CS", ParamNames.top + "1%2C2",
+                ParamNames.hasAvailableStock + "true", ParamNames.topEM + "true", ParamNames.ctm + "true");
 
         filtersData.clearFilterData();
         searchProductPage.clearAllFilters();
 
         filtersData.setCheckBoxes(new SearchProductPage.Filters[]{SearchProductPage.Filters.TOP_1000,
-        SearchProductPage.Filters.BEST_PRICE});
+                SearchProductPage.Filters.BEST_PRICE});
         searchProductPage.choseSeveralFilters(filtersData, true);
 
         ProductItemDataList bestPrice = resultMap.get(1).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(bestPrice, SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
-        searchProductPage.verifyUrlContainsString(ParamNames.bestPrice+"true", ParamNames.top1000+"true",
-                ParamNames.shopId+EnvConstants.BASIC_USER_SHOP_ID);
+        searchProductPage.verifyUrlContainsString(ParamNames.bestPrice + "true", ParamNames.top1000 + "true",
+                ParamNames.shopId + EnvConstants.BASIC_USER_SHOP_ID);
 
         searchProductPage.clearAllFilters();
         searchProductPage.choseCheckboxFilter(true, SearchProductPage.Filters.LIMITED_OFFER);
         ProductItemDataList limitedOffer = resultMap.get(2).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(limitedOffer, SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
-        searchProductPage.verifyUrlContainsString(ParamNames.limitedOffer+"true");
+        searchProductPage.verifyUrlContainsString(ParamNames.limitedOffer + "true");
 
         searchProductPage.clearAllFilters();
         searchProductPage.choseCheckboxFilter(true, SearchProductPage.Filters.ORDERED);
         ProductItemDataList orderType = resultMap.get(3).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(orderType, SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
-        searchProductPage.verifyUrlContainsString(ParamNames.orderType+"MBO");
+        searchProductPage.verifyUrlContainsString(ParamNames.orderType + "MBO");
     }
 
     @Test(description = "C23384960 search by all gamma filters group")
@@ -482,7 +480,7 @@ public class SearchTest extends WebBaseSteps {
                 .setPageSize(defaultPageSize);
 
         HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> resultMap =
-                sendRequestsSearchProductsBy(ctmParam,bestPriceParams, limitedOfferParams, orderTypeParams);
+                sendRequestsSearchProductsBy(ctmParam, bestPriceParams, limitedOfferParams, orderTypeParams);
 
         FiltersData filtersData = new FiltersData();
         filtersData.setGammaFilters(new String[]{"Гамма А", "Гамма S"});
@@ -495,7 +493,7 @@ public class SearchTest extends WebBaseSteps {
         ProductItemDataList ctmResponse = resultMap.get(0).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(ctmResponse, SearchProductPage.FilterFrame.ALL_GAMMA_LM,
                 SearchProductPage.ViewMode.EXTENDED);
-        searchProductPage.verifyUrlContainsString(ParamNames.gamma+"A%2CS", ParamNames.ctm+"true");
+        searchProductPage.verifyUrlContainsString(ParamNames.gamma + "A%2CS", ParamNames.ctm + "true");
         searchProductPage.verifyUrlContainsStringNot(ParamNames.shopId);
 
         filtersData.clearFilterData();
@@ -508,7 +506,7 @@ public class SearchTest extends WebBaseSteps {
         ProductItemDataList bestPrice = resultMap.get(1).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(bestPrice, SearchProductPage.FilterFrame.ALL_GAMMA_LM,
                 SearchProductPage.ViewMode.EXTENDED);
-        searchProductPage.verifyUrlContainsString(ParamNames.bestPrice+"true", ParamNames.top1000+"true");
+        searchProductPage.verifyUrlContainsString(ParamNames.bestPrice + "true", ParamNames.top1000 + "true");
         searchProductPage.verifyUrlContainsStringNot(ParamNames.shopId);
 
         searchProductPage.clearAllFilters();
@@ -516,7 +514,7 @@ public class SearchTest extends WebBaseSteps {
         ProductItemDataList limitedOffer = resultMap.get(2).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(limitedOffer, SearchProductPage.FilterFrame.ALL_GAMMA_LM,
                 SearchProductPage.ViewMode.EXTENDED);
-        searchProductPage.verifyUrlContainsString(ParamNames.limitedOffer+"true");
+        searchProductPage.verifyUrlContainsString(ParamNames.limitedOffer + "true");
         searchProductPage.verifyUrlContainsStringNot(ParamNames.shopId);
 
         searchProductPage.clearAllFilters();
@@ -524,7 +522,7 @@ public class SearchTest extends WebBaseSteps {
         ProductItemDataList orderType = resultMap.get(3).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(orderType, SearchProductPage.FilterFrame.ALL_GAMMA_LM,
                 SearchProductPage.ViewMode.EXTENDED);
-        searchProductPage.verifyUrlContainsString(ParamNames.orderType+"MBO");
+        searchProductPage.verifyUrlContainsString(ParamNames.orderType + "MBO");
         searchProductPage.verifyUrlContainsStringNot(ParamNames.shopId);
     }
 }
