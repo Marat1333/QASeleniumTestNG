@@ -1,4 +1,4 @@
-package com.leroy.magmobile.ui.pages.search;
+package com.leroy.magmobile.ui.pages.customers;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
@@ -25,7 +25,7 @@ public class SearchCustomerPage extends CommonMagMobilePage {
 
     AndroidScrollView<CustomerData> mainScrollView = new AndroidScrollView<>(driver,
             AndroidScrollView.TYPICAL_LOCATOR,
-            ".//android.view.ViewGroup[android.widget.TextView[@index='2']]",
+            ".//android.view.ViewGroup[android.widget.TextView[@index='1']]",
             SearchCustomerWidget.class);
 
     @AppFindBy(accessibilityId = "BackCloseModal")
@@ -57,7 +57,7 @@ public class SearchCustomerPage extends CommonMagMobilePage {
         searchFld.waitForVisibility();
     }
 
-    // ACTIONS
+    // Grab data from page
 
     @Step("Получаем данные о {index}-ом клиенте")
     public CustomerData getCustomerDataFromSearchListByIndex(int index) {
@@ -66,6 +66,8 @@ public class SearchCustomerPage extends CommonMagMobilePage {
         anAssert.isFalse(customerData.getName().isEmpty(), "Клиент не содержит имени");
         return customerData;
     }
+
+    // ACTIONS
 
     @Step("Выберите {index}-ого клиента из списка поиска")
     public EstimatePage selectCustomerFromSearchList(int index) throws Exception {

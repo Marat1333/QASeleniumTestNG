@@ -73,7 +73,7 @@ public class SalesDocumentWidget extends CardWidget<SalesDocumentData> {
 
     @Override
     public boolean isFullyVisible(String pageSource) {
-        return image.isVisible(pageSource) && date.isVisible(pageSource);
+        return image.isVisible(pageSource) && number.getText(pageSource).contains("№") && date.isVisible(pageSource);
     }
 
     @Override

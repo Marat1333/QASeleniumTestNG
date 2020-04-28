@@ -2,12 +2,15 @@ package com.leroy.magmobile.api.tests.salesdoc;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.StatusCodes;
+import com.leroy.constants.customer.CustomerConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.CartClient;
 import com.leroy.magmobile.api.clients.MagMobileClient;
 import com.leroy.magmobile.api.clients.OrderClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
+import com.leroy.magmobile.api.data.customer.CustomerData;
+import com.leroy.magmobile.api.data.customer.PhoneData;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
@@ -124,6 +127,16 @@ public class OrderTest extends BaseProjectApiTest {
     public void testConfirmOrder() {
         if (orderData == null)
             throw new IllegalArgumentException("order data hasn't been created");
+        step("Search for a customer");
+        CustomerData customerData = apiClientProvider.getAnyCustomer();
+        OrderCustomerData orderCustomerData = new OrderCustomerData();
+        orderCustomerData.setFirstName(customerData.getFirstName());
+        orderCustomerData.setLastName(customerData.getLastName());
+        orderCustomerData.setRoles(Collections.singletonList(CustomerConst.Role.RECEIVER.name()));
+        orderCustomerData.setType(CustomerConst.Type.PERSON.name());
+        orderCustomerData.setPhone(new PhoneData(customerData.getMainPhoneFromCommunication()));
+
+        step("Confirm order");
         OrderData confirmOrderData = new OrderData();
         confirmOrderData.setPriority(SalesDocumentsConst.Priorities.HIGH.getApiVal());
         confirmOrderData.setShopId(sessionData.getUserShopId());
@@ -133,6 +146,7 @@ public class OrderTest extends BaseProjectApiTest {
         confirmOrderData.setFulfillmentTaskId(orderData.getFulfillmentTaskId());
         confirmOrderData.setPaymentTaskId(orderData.getPaymentTaskId());
         confirmOrderData.setProducts(orderData.getProducts());
+        confirmOrderData.setCustomers(Collections.singletonList(orderCustomerData));
 
         GiveAwayData giveAwayData = new GiveAwayData();
         giveAwayData.setDate(LocalDateTime.now().plusDays(1));
@@ -142,9 +156,8 @@ public class OrderTest extends BaseProjectApiTest {
 
         Response<OrderData> resp = orderClient.confirmOrder(orderData.getOrderId(), confirmOrderData);
         orderClient.assertThatIsConfirmed(resp, orderData);
-        orderData.setStatus(SalesDocumentsConst.States.CONFIRMED.getApiVal());
-        orderData.setSalesDocStatus(SalesDocumentsConst.States.CONFIRMED.getApiVal());
-        orderData.increaseFulfillmentVersion();
+        OrderData confirmResponseData = resp.asJson();
+        orderData.setCustomers(confirmResponseData.getCustomers());
     }
 
     @Test(description = "C23195028 PUT Rearrange Order - Add new product in confirmed order")
@@ -156,9 +169,10 @@ public class OrderTest extends BaseProjectApiTest {
         orderProductData.setQuantity(1.0);
 
         step("Wait until order is confirmed");
-        orderClient.waitUntilOrderIsConfirmed(orderData.getOrderId());
-        orderData.setStatus(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal());
-        orderData.increaseFulfillmentVersion();
+        OrderData respData = orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderData.getOrderId(),
+                SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal());
+        orderData.setStatus(respData.getStatus());
+        orderData.setFulfillmentVersion(respData.getFulfillmentVersion());
 
         step("Rearrange Order");
         Response<JsonNode> resp = orderClient.rearrange(orderData, orderProductData);
@@ -167,7 +181,8 @@ public class OrderTest extends BaseProjectApiTest {
 
         step("Check that Order is rearranged after GET request");
         Response<OrderData> getResp = orderClient.getOrder(orderData.getOrderId());
-        orderClient.assertThatResponseMatches(getResp, orderData, MagMobileClient.ResponseType.GET, false);
+        orderClient.assertThatResponseMatches(getResp, orderData,
+                MagMobileClient.ResponseType.GET, false);
         orderData.setProducts(getResp.asJson().getProducts());
     }
 

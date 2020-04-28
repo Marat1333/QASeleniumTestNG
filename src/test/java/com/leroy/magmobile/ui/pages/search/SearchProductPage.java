@@ -163,7 +163,7 @@ public class SearchProductPage extends CommonMagMobilePage {
     }
 
     @Step("Найдите и перейдите в карточку товара {text}")
-    public AddProductPage searchProductAndSelect(String text) throws Exception {
+    public void searchProductAndSelect(String text) throws Exception {
         searchField.clearFillAndSubmit(text);
         waitUntilProgressBarIsVisible();
         waitUntilProgressBarIsInvisible();
@@ -172,7 +172,6 @@ public class SearchProductPage extends CommonMagMobilePage {
                     String.format("Не найден ни один товар по ключевому слову '%s'", text));
             productCards.get(0).click();
         }
-        return new AddProductPage(context);
     }
 
     @Step("Перейти в {index} карточку товара")
