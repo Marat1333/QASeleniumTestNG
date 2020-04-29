@@ -13,7 +13,6 @@ import com.leroy.magportal.ui.models.search.FiltersData;
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.webelements.MagPortalComboBox;
 import com.leroy.magportal.ui.webelements.commonelements.MagPortalCheckBox;
-import com.leroy.magportal.ui.webelements.searchelements.CalendarComboBox;
 import com.leroy.magportal.ui.webelements.searchelements.SupplierComboBox;
 import com.leroy.magportal.ui.webelements.searchelements.SupplierDropDown;
 import com.leroy.magportal.ui.webelements.widgets.*;
@@ -193,19 +192,20 @@ public class SearchProductPage extends MenuPage {
         applyFiltersBtn.waitForVisibility();
 
     }
-    private CalendarWidget getAvsDropDownCalendar(){
+
+    private CalendarWidget getAvsDropDownCalendar() {
         return new CalendarWidget(driver, new CustomLocator(By.xpath("//div[contains(@class, 'active')]//div[contains(@class, 'DatePicker__dayPicker')]")));
     }
 
-    private EditBox getAvsDropBox(){
-        return new EditBox (driver, new CustomLocator(By.xpath("//div[contains(@class, 'active')]//input[@placeholder='Дата AVS']")));
+    private EditBox getAvsDropBox() {
+        return new EditBox(driver, new CustomLocator(By.xpath("//div[contains(@class, 'active')]//input[@placeholder='Дата AVS']")));
     }
-    
-    private MagPortalComboBox getGammaComboBox(){
+
+    private MagPortalComboBox getGammaComboBox() {
         return new MagPortalComboBox(driver, new CustomLocator(By.xpath("//div[contains(@class, 'active')]//input[@placeholder='Гамма']/ancestor::div[1]")));
     }
-    
-    private MagPortalComboBox getTopComboBox(){
+
+    private MagPortalComboBox getTopComboBox() {
         return new MagPortalComboBox(driver, new CustomLocator(By.xpath("//div[contains(@class, 'active')]//input[@placeholder='Топ пополнения']/ancestor::div[1]")));
     }
 
@@ -240,6 +240,12 @@ public class SearchProductPage extends MenuPage {
         return this;
     }
 
+    @Step("Ввести в поисковую строку {value} без поиска")
+    public SearchProductPage fillSearchInput(String value)throws Exception{
+        searchInput.clearAndFill(value);
+        return this;
+    }
+
     @Step("Очистить поисковую строку нажатием на крест")
     public SearchProductPage clearSearchInputByClearBtn() {
         clearSearchInput.click();
@@ -252,7 +258,7 @@ public class SearchProductPage extends MenuPage {
         String attributeValue;
         String attributeName = "className";
         if (frame.equals(FilterFrame.MY_SHOP)) {
-            attributeValue=myShopContainer.getAttribute(attributeName);
+            attributeValue = myShopContainer.getAttribute(attributeName);
             myShopFilterBtn.click();
             myShopContainer.waitForAttributeChanged(attributeName, attributeValue);
         } else {
@@ -369,7 +375,7 @@ public class SearchProductPage extends MenuPage {
 
     @Step("выбрать дату AVS {date}")
     public SearchProductPage choseAvsDate(LocalDate date) throws Exception {
-        if (!getAvsDropBox().isVisible()){
+        if (!getAvsDropBox().isVisible()) {
             choseCheckboxFilter(false, Filters.AVS);
         }
         getAvsDropBox().click();
@@ -494,6 +500,7 @@ public class SearchProductPage extends MenuPage {
     @Step("Очистить фильтры по нажатию на клавишу \"СБРОСИТЬ ФИЛЬТРЫ\"")
     public SearchProductPage clearAllFiltersInProductFrame() {
         clearAllFiltersInProductFrame.click();
+        waitForSpinnerAppearAndDisappear();
         return this;
     }
 
@@ -614,14 +621,18 @@ public class SearchProductPage extends MenuPage {
     }
 
     @Step("Проверить, что хлебные крошки содержат предыдущий роидтельскую номенклатуру")
-    public SearchProductPage shouldBreadCrumbsContainsPreviousNomenclatureName(String nomenclatureParentName) {
+    public SearchProductPage shouldBreadCrumbsContainsNomenclatureName(boolean contains, String nomenclatureElementName) {
         int condition = 0;
         for (Element tmp : nomenclaturePathButtons) {
-            if (tmp.getText().contains(nomenclatureParentName)) {
+            if (tmp.getText().contains(nomenclatureElementName)) {
                 condition++;
             }
         }
-        anAssert.isTrue(condition == 1, nomenclatureParentName + " либо отсутствует, либо встречается более 1 раза");
+        if (contains) {
+            anAssert.isTrue(condition == 1, nomenclatureElementName + " либо отсутствует, либо встречается более 1 раза");
+        }else {
+            anAssert.isTrue(condition==0, nomenclatureElementName + " содержится в хлебных крошках");
+        }
         return this;
     }
 
@@ -735,7 +746,7 @@ public class SearchProductPage extends MenuPage {
 
     @Step("Проверить, что в комбобоксе \"Дата AVS\" содержится корректный текст")
     public SearchProductPage shouldAvsContainerContainsCorrectText(boolean isEmpty, LocalDate date) {
-        if (!getAvsDropBox().isVisible()&&isEmpty){
+        if (!getAvsDropBox().isVisible() && isEmpty) {
             return this;
         }
         String visibleText = getAvsDropBox().getText(() -> {
@@ -823,7 +834,7 @@ public class SearchProductPage extends MenuPage {
 
     @Step("Проверить, что фильтры не выбраны")
     public SearchProductPage checkFiltersNotChosen(FiltersData data) throws Exception {
-        if (!supplierDropBox.isVisible()){
+        if (!supplierDropBox.isVisible()) {
             showAllFilters();
         }
         if (data.getGammaFilters().length > 0) {
@@ -844,4 +855,16 @@ public class SearchProductPage extends MenuPage {
         return this;
     }
 
+    @Step("Проверить, что отображается текст с текущим поисковым критерием {searchCriterion}")
+    public SearchProductPage shouldSearchCriterionIs(boolean isVisible,String searchCriterion){
+        if (isVisible) {
+            anAssert.isEquals(getCurrentNomenclatureName(), "Результаты поиска «" + searchCriterion + "»",
+                    "Поисковой критерий не отрисован на странице");
+        }
+        else {
+            anAssert.isNotEquals(getCurrentNomenclatureName(), "Результаты поиска «" + searchCriterion + "»",
+                    "Поисковой критерий отрисован на странице");
+        }
+        return this;
+    }
 }

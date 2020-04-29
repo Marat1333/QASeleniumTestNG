@@ -168,9 +168,14 @@ public class SearchTest extends WebBaseSteps {
         HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> results = sendRequestsSearchProductsBy(params);
 
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
-        searchProductPage.searchByPhrase(searchPhrase);
+        searchProductPage.searchByPhrase(searchPhrase)
+                .shouldSearchCriterionIs(true, searchPhrase)
+                .shouldBreadCrumbsContainsNomenclatureName(true, EnvConstants.BASIC_USER_DEPARTMENT_ID);
 
-        searchProductPage.clearSearchInputByClearBtn();
+        searchProductPage.clearSearchInputByClearBtn()
+                .shouldSearchCriterionIs(false, searchPhrase)
+                .shouldBreadCrumbsContainsNomenclatureName(false, EnvConstants.BASIC_USER_DEPARTMENT_ID);
+        ;
         ProductItemDataList responseData = results.get(0).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(responseData, SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
@@ -228,7 +233,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.choseNomenclature(dept, null, null, null);
         searchProductPage.verifyUrlContainsString(ParamNames.departmentId + dept.substring(2));
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(dept);
-        searchProductPage.shouldBreadCrumbsContainsPreviousNomenclatureName(allDepartments);
+        searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, allDepartments);
         ProductItemDataList departmentData = resultsMap.get(1).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(departmentData, SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
@@ -236,7 +241,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.choseNomenclature(dept, subDept, null, null);
         searchProductPage.verifyUrlContainsString(ParamNames.subdepartmentId + subDept);
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(subDept);
-        searchProductPage.shouldBreadCrumbsContainsPreviousNomenclatureName(dept);
+        searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, dept);
         ProductItemDataList subDepartmentData = resultsMap.get(2).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(subDepartmentData, SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
@@ -244,7 +249,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.choseNomenclature(dept, subDept, classId, null);
         searchProductPage.verifyUrlContainsString(ParamNames.classId + classId.substring(1));
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(classId);
-        searchProductPage.shouldBreadCrumbsContainsPreviousNomenclatureName(subDept);
+        searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, subDept);
         ProductItemDataList classData = resultsMap.get(3).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(classData, SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
@@ -252,7 +257,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.choseNomenclature(dept, subDept, classId, subClassId);
         searchProductPage.verifyUrlContainsString(ParamNames.subclassId + subClassId.substring(1));
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(subClassId);
-        searchProductPage.shouldBreadCrumbsContainsPreviousNomenclatureName(classId);
+        searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, classId);
         ProductItemDataList subClassData = resultsMap.get(4).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(subClassData, SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
@@ -576,16 +581,158 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.choseSeveralFilters(allGammaFilterData, true);
         searchProductPage.checkFiltersChosen(allGammaFilterData);
         ProductItemDataList allGammaData = resultMap.get(0).getData();
-                searchProductPage.shouldResponseEntityEqualsToViewEntity(allGammaData,
-                        SearchProductPage.FilterFrame.ALL_GAMMA_LM, SearchProductPage.ViewMode.EXTENDED);
-                searchProductPage.verifyUrlContainsStringNot(ParamNames.shopId);
+        searchProductPage.shouldResponseEntityEqualsToViewEntity(allGammaData,
+                SearchProductPage.FilterFrame.ALL_GAMMA_LM, SearchProductPage.ViewMode.EXTENDED);
+        searchProductPage.verifyUrlContainsStringNot(ParamNames.shopId);
 
         searchProductPage.switchFiltersFrame(SearchProductPage.FilterFrame.MY_SHOP);
         searchProductPage.checkFiltersChosen(myShopFilterData);
         searchProductPage.applyFilters();
         ProductItemDataList myShopData = resultMap.get(1).getData();
-                searchProductPage.shouldResponseEntityEqualsToViewEntity(myShopData,
-                        SearchProductPage.FilterFrame.MY_SHOP, SearchProductPage.ViewMode.EXTENDED);
+        searchProductPage.shouldResponseEntityEqualsToViewEntity(myShopData,
+                SearchProductPage.FilterFrame.MY_SHOP, SearchProductPage.ViewMode.EXTENDED);
         searchProductPage.verifyUrlContainsString(ParamNames.shopId);
     }
+
+    @Test(description = "C22782968 Clear filters")
+    public void testClearFilters() throws Exception {
+        GetCatalogSearch myShopDefaultParams = new GetCatalogSearch()
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
+                .setPageSize(defaultPageSize);
+
+        GetCatalogSearch myShopAllCatalogParams = new GetCatalogSearch()
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setPageSize(defaultPageSize);
+
+        GetCatalogSearch allGammaAllCatalogParams = new GetCatalogSearch()
+                .setPageSize(defaultPageSize);
+
+        HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> resultMap =
+                sendRequestsSearchProductsBy(myShopDefaultParams, myShopAllCatalogParams, allGammaAllCatalogParams);
+
+        LocalDate avsDate = LocalDate.of(2020, 4, 9);
+        final String FIRST_SUPPLIER_CODE = "1001123001";
+        final String SECOND_SUPPLIER_CODE = "1002258015";
+
+        FiltersData myShopFilterData = new FiltersData();
+        myShopFilterData.setCheckBoxes(new SearchProductPage.Filters[]{SearchProductPage.Filters.BEST_PRICE,
+                SearchProductPage.Filters.HAS_AVAILABLE_STOCK});
+        myShopFilterData.setTopFilters(new String[]{"Топ 1", "Топ 2"});
+        myShopFilterData.setSuppliers(new String[]{FIRST_SUPPLIER_CODE, SECOND_SUPPLIER_CODE});
+        myShopFilterData.setAvsDate(avsDate);
+
+        FiltersData allGammaFilterData = new FiltersData();
+        allGammaFilterData.setCheckBoxes(new SearchProductPage.Filters[]{SearchProductPage.Filters.LIMITED_OFFER,
+                SearchProductPage.Filters.CTM});
+        allGammaFilterData.setGammaFilters(new String[]{"Гамма S", "Гамма P"});
+        allGammaFilterData.setAvsDate(avsDate);
+
+        SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
+        searchProductPage.choseSeveralFilters(myShopFilterData, true);
+        searchProductPage.clearAllFilters();
+        searchProductPage.checkFiltersNotChosen(myShopFilterData);
+        ProductItemDataList myShopDefaultResponse = resultMap.get(0).getData();
+        searchProductPage.shouldResponseEntityEqualsToViewEntity(myShopDefaultResponse, SearchProductPage.FilterFrame.MY_SHOP,
+                SearchProductPage.ViewMode.EXTENDED);
+        searchProductPage.verifyUrlContainsStringNot(ParamNames.top, ParamNames.hasAvailableStock, ParamNames.bestPrice,
+                ParamNames.supplierId, ParamNames.avsDate);
+
+        searchProductPage.choseSeveralFilters(myShopFilterData, true);
+        searchProductPage.navigateToPreviousNomenclatureElement(allDepartments);
+        searchProductPage.checkFiltersNotChosen(myShopFilterData);
+        ProductItemDataList myShopAllDepartmentsResponse = resultMap.get(1).getData();
+        searchProductPage.shouldResponseEntityEqualsToViewEntity(myShopAllDepartmentsResponse, SearchProductPage.FilterFrame.MY_SHOP,
+                SearchProductPage.ViewMode.EXTENDED);
+        searchProductPage.verifyUrlContainsStringNot(ParamNames.top, ParamNames.hasAvailableStock, ParamNames.bestPrice,
+                ParamNames.supplierId, ParamNames.avsDate, ParamNames.departmentId);
+
+        searchProductPage.choseSeveralFilters(myShopFilterData, true);
+        searchProductPage.clearAllFiltersInProductFrame();
+        searchProductPage.checkFiltersNotChosen(myShopFilterData);
+        searchProductPage.shouldResponseEntityEqualsToViewEntity(myShopAllDepartmentsResponse, SearchProductPage.FilterFrame.MY_SHOP,
+                SearchProductPage.ViewMode.EXTENDED);
+        searchProductPage.verifyUrlContainsStringNot(ParamNames.top, ParamNames.hasAvailableStock, ParamNames.bestPrice,
+                ParamNames.supplierId, ParamNames.avsDate);
+
+        searchProductPage.switchFiltersFrame(SearchProductPage.FilterFrame.ALL_GAMMA_LM);
+        searchProductPage.choseNomenclature("0" + EnvConstants.BASIC_USER_DEPARTMENT_ID, null, null, null);
+        searchProductPage.choseSeveralFilters(allGammaFilterData, true);
+        searchProductPage.navigateToPreviousNomenclatureElement(allDepartments);
+        searchProductPage.checkFiltersNotChosen(allGammaFilterData);
+        ProductItemDataList allGammaAllDepartmentsResponse = resultMap.get(2).getData();
+        searchProductPage.shouldResponseEntityEqualsToViewEntity(allGammaAllDepartmentsResponse, SearchProductPage.FilterFrame.ALL_GAMMA_LM,
+                SearchProductPage.ViewMode.EXTENDED);
+        searchProductPage.verifyUrlContainsStringNot(ParamNames.gamma, ParamNames.top, ParamNames.hasAvailableStock, ParamNames.bestPrice,
+                ParamNames.supplierId, ParamNames.avsDate, ParamNames.shopId, ParamNames.limitedOffer, ParamNames.ctm);
+
+        searchProductPage.choseSeveralFilters(allGammaFilterData, true);
+        searchProductPage.clearAllFilters();
+        searchProductPage.checkFiltersNotChosen(allGammaFilterData);
+        searchProductPage.shouldResponseEntityEqualsToViewEntity(allGammaAllDepartmentsResponse, SearchProductPage.FilterFrame.ALL_GAMMA_LM,
+                SearchProductPage.ViewMode.EXTENDED);
+        searchProductPage.verifyUrlContainsStringNot(ParamNames.gamma, ParamNames.top, ParamNames.hasAvailableStock, ParamNames.bestPrice,
+                ParamNames.supplierId, ParamNames.avsDate, ParamNames.shopId, ParamNames.limitedOffer, ParamNames.ctm);
+
+        searchProductPage.choseSeveralFilters(allGammaFilterData, true);
+        searchProductPage.clearAllFiltersInProductFrame();
+        searchProductPage.checkFiltersNotChosen(allGammaFilterData);
+        searchProductPage.shouldResponseEntityEqualsToViewEntity(allGammaAllDepartmentsResponse, SearchProductPage.FilterFrame.ALL_GAMMA_LM,
+                SearchProductPage.ViewMode.EXTENDED);
+        searchProductPage.verifyUrlContainsStringNot(ParamNames.gamma, ParamNames.top, ParamNames.hasAvailableStock, ParamNames.bestPrice,
+                ParamNames.supplierId, ParamNames.avsDate, ParamNames.shopId, ParamNames.limitedOffer, ParamNames.ctm);
+
+        searchProductPage.choseSeveralFilters(allGammaFilterData, false);
+        searchProductPage.searchByPhrase("1234");
+        searchProductPage.checkFiltersNotChosen(allGammaFilterData);
+    }
+
+    @Test(description = "C23385397 search without submit")
+    public void testSearchWithoutSubmit() throws Exception {
+        String byLmCodeParamValue = "1234";
+        String deptId = EnvConstants.BASIC_USER_DEPARTMENT_ID;
+
+        GetCatalogSearch nomenclatureParam = new GetCatalogSearch()
+                .setByLmCode(byLmCodeParamValue)
+                .setDepartmentId(deptId)
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setPageSize(defaultPageSize);
+
+        GetCatalogSearch filterParam = new GetCatalogSearch()
+                .setByLmCode(byLmCodeParamValue)
+                .setGamma("A")
+                .setDepartmentId(deptId)
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setPageSize(defaultPageSize);
+
+        HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> resultMap =
+                sendRequestsSearchProductsBy(nomenclatureParam, filterParam);
+
+        SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
+        searchProductPage.navigateToPreviousNomenclatureElement(allDepartments);
+        searchProductPage.fillSearchInput(byLmCodeParamValue);
+        searchProductPage.choseNomenclature(0 + deptId, null, null, null);
+        ProductItemDataList nomenclatureResponse = resultMap.get(0).getData();
+        searchProductPage.shouldResponseEntityEqualsToViewEntity(nomenclatureResponse, SearchProductPage.FilterFrame.MY_SHOP,
+                SearchProductPage.ViewMode.EXTENDED);
+        searchProductPage.verifyUrlContainsString(ParamNames.bylmCodeParamName + byLmCodeParamValue);
+
+        searchProductPage.clearSearchInputByClearBtn();
+        searchProductPage.fillSearchInput(byLmCodeParamValue);
+        searchProductPage.choseNomenclature(0 + deptId, "1505", null, null);
+        searchProductPage.navigateToPreviousNomenclatureElement(deptId);
+        searchProductPage.shouldResponseEntityEqualsToViewEntity(nomenclatureResponse, SearchProductPage.FilterFrame.MY_SHOP,
+                SearchProductPage.ViewMode.EXTENDED);
+        searchProductPage.verifyUrlContainsString(ParamNames.bylmCodeParamName + byLmCodeParamValue);
+
+        searchProductPage.clearSearchInputByClearBtn();
+        searchProductPage.fillSearchInput(byLmCodeParamValue);
+        searchProductPage.choseGammaFilter("Гамма А");
+        searchProductPage.applyFilters();
+        ProductItemDataList filterResponse = resultMap.get(1).getData();
+        searchProductPage.shouldResponseEntityEqualsToViewEntity(filterResponse, SearchProductPage.FilterFrame.MY_SHOP,
+                SearchProductPage.ViewMode.EXTENDED);
+        searchProductPage.verifyUrlContainsString(ParamNames.bylmCodeParamName + byLmCodeParamValue);
+    }
+
 }
