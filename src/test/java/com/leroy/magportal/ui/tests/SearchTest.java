@@ -735,4 +735,13 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.verifyUrlContainsString(ParamNames.bylmCodeParamName + byLmCodeParamValue);
     }
 
+    @Test(description = "C23385398 search without changes")
+    public void testSearchWithoutChanges()throws Exception{
+        SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
+        searchProductPage.fillSearchInput("1234").
+                shouldRequestHasBeenInitializedNTimes(3, true);
+
+        searchProductPage.shouldRequestHasBeenInitializedNTimes(4, false);
+    }
+
 }

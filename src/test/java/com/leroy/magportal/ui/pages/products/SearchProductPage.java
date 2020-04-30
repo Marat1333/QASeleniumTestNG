@@ -241,7 +241,7 @@ public class SearchProductPage extends MenuPage {
     }
 
     @Step("Ввести в поисковую строку {value} без поиска")
-    public SearchProductPage fillSearchInput(String value)throws Exception{
+    public SearchProductPage fillSearchInput(String value) throws Exception {
         searchInput.clearAndFill(value);
         return this;
     }
@@ -630,8 +630,8 @@ public class SearchProductPage extends MenuPage {
         }
         if (contains) {
             anAssert.isTrue(condition == 1, nomenclatureElementName + " либо отсутствует, либо встречается более 1 раза");
-        }else {
-            anAssert.isTrue(condition==0, nomenclatureElementName + " содержится в хлебных крошках");
+        } else {
+            anAssert.isTrue(condition == 0, nomenclatureElementName + " содержится в хлебных крошках");
         }
         return this;
     }
@@ -856,15 +856,32 @@ public class SearchProductPage extends MenuPage {
     }
 
     @Step("Проверить, что отображается текст с текущим поисковым критерием {searchCriterion}")
-    public SearchProductPage shouldSearchCriterionIs(boolean isVisible,String searchCriterion){
+    public SearchProductPage shouldSearchCriterionIs(boolean isVisible, String searchCriterion) {
         if (isVisible) {
             anAssert.isEquals(getCurrentNomenclatureName(), "Результаты поиска «" + searchCriterion + "»",
                     "Поисковой критерий не отрисован на странице");
-        }
-        else {
+        } else {
             anAssert.isNotEquals(getCurrentNomenclatureName(), "Результаты поиска «" + searchCriterion + "»",
                     "Поисковой критерий отрисован на странице");
         }
+        return this;
+    }
+
+    @Step("Проверить, что запрос на поиск уходит {n} раз")
+    public SearchProductPage shouldRequestHasBeenInitializedNTimes(int n, boolean bySearchInput) {
+        int spinnerAppearCounter = 0;
+        for (int i = 0; i < n; i++) {
+            if (bySearchInput) {
+                searchInput.submit();
+            } else {
+                applyFiltersBtn.click();
+            }
+            if (loadingSpinner.isVisible()) {
+                spinnerAppearCounter++;
+                loadingSpinner.waitForInvisibility();
+            }
+        }
+        anAssert.isEquals(spinnerAppearCounter, n, "Запрос не был отправлен " + n + " раз");
         return this;
     }
 }
