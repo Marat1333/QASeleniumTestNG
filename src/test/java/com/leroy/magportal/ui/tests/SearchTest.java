@@ -736,7 +736,7 @@ public class SearchTest extends WebBaseSteps {
     }
 
     @Test(description = "C23385398 search without changes")
-    public void testSearchWithoutChanges()throws Exception{
+    public void testSearchWithoutChanges() throws Exception {
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
         searchProductPage.fillSearchInput("1234").
                 shouldRequestHasBeenInitializedNTimes(3, true);
