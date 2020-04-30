@@ -25,6 +25,7 @@ public abstract class BaseUiTest extends EnvironmentConfigurator {
 
     protected void updateContext(
             CustomSoftAssert customSoftAssert, CustomAssert customAssert, StepLog stepLog, String tcId) {
+        initContext(driver);
         getContext().setSoftAssert(customSoftAssert);
         getContext().setAnAssert(customAssert);
         getContext().setLog(stepLog);
@@ -60,8 +61,10 @@ public abstract class BaseUiTest extends EnvironmentConfigurator {
 
     @AfterMethod
     public void baseStateAfterMethod() {
-        if (this.isEvalAfterMethod())
-            cleanContext();
+        if (this.isEvalAfterMethod()) {
+            cleanUp();
+        }
+
     }
 
     @AfterClass
