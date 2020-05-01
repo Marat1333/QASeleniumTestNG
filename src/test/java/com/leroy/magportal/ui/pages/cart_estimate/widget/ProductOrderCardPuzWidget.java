@@ -4,15 +4,14 @@ import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.models.sales.SalesOrderCardData;
-import com.leroy.magmobile.ui.models.search.ProductCardData;
+import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardPuzData;
 import com.leroy.magportal.ui.webelements.CardWebWidget;
 import com.leroy.utils.Converter;
 import org.openqa.selenium.WebDriver;
 
-public class PuzProductOrderCardWidget extends CardWebWidget<SalesOrderCardData> {
+public class ProductOrderCardPuzWidget extends CardWebWidget<ProductOrderCardPuzData> {
 
-    public PuzProductOrderCardWidget(WebDriver driver, CustomLocator customLocator) {
+    public ProductOrderCardPuzWidget(WebDriver driver, CustomLocator customLocator) {
         super(driver, customLocator);
     }
 
@@ -72,18 +71,16 @@ public class PuzProductOrderCardWidget extends CardWebWidget<SalesOrderCardData>
     }
 
     @Override
-    public SalesOrderCardData collectDataFromPage() {
-        SalesOrderCardData salesOrderCardData = new SalesOrderCardData();
-        ProductCardData productCardData = new ProductCardData();
-        productCardData.setLmCode(getLmCode());
-        productCardData.setBarCode(Converter.strToStrWithoutDigits(getBarCode()));
-        productCardData.setName(getTitle());
-        salesOrderCardData.setProductCardData(productCardData);
-        salesOrderCardData.setWeight(Converter.strToDouble(getWeight()));
-        salesOrderCardData.setTotalPrice(Converter.strToDouble(getTotalPrice()));
-        salesOrderCardData.setSelectedQuantity(Converter.strToDouble(getQuantity()));
-        salesOrderCardData.setAvailableTodayQuantity(Converter.strToDouble(getAvailableStock()));
-        return salesOrderCardData;
+    public ProductOrderCardPuzData collectDataFromPage() {
+        ProductOrderCardPuzData productOrderCardWebData = new ProductOrderCardPuzData();
+        productOrderCardWebData.setLmCode(getLmCode());
+        productOrderCardWebData.setBarCode(Converter.strToStrWithoutDigits(getBarCode()));
+        productOrderCardWebData.setTitle(getTitle());
+        productOrderCardWebData.setWeight(Converter.strToDouble(getWeight()));
+        productOrderCardWebData.setTotalPrice(Converter.strToDouble(getTotalPrice()));
+        productOrderCardWebData.setSelectedQuantity(Converter.strToDouble(getQuantity()));
+        productOrderCardWebData.setAvailableTodayQuantity(Converter.strToDouble(getAvailableStock()));
+        return productOrderCardWebData;
     }
 
     public void clickCopy() {

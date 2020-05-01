@@ -4,10 +4,10 @@ import com.leroy.core.TestContext;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magmobile.ui.models.sales.SalesOrderCardData;
-import com.leroy.magmobile.ui.models.sales.SalesOrderData;
+import com.leroy.magportal.ui.models.salesdoc.EstimatePuzData;
+import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardPuzData;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SubmittedEstimateModal;
-import com.leroy.magportal.ui.pages.cart_estimate.widget.PuzProductOrderCardWidget;
+import com.leroy.magportal.ui.pages.cart_estimate.widget.ProductOrderCardPuzWidget;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import com.leroy.utils.Converter;
 import io.qameta.allure.Step;
@@ -25,11 +25,11 @@ public class CreateEstimatePage extends CreateCartEstimatePage {
     Element estimateNumber;
 
     @WebFindBy(xpath = "//div[contains(@class, 'Estimate-EstimatesView__cart')]/div[contains(@class, 'SalesDocProduct')]",
-            clazz = PuzProductOrderCardWidget.class)
-    CardWebWidgetList<PuzProductOrderCardWidget, SalesOrderCardData> products;
+            clazz = ProductOrderCardPuzWidget.class)
+    CardWebWidgetList<ProductOrderCardPuzWidget, ProductOrderCardPuzData> products;
 
     @Override
-    public ElementList<PuzProductOrderCardWidget> products() {
+    public ElementList<ProductOrderCardPuzWidget> products() {
         return products;
     }
 
@@ -59,14 +59,14 @@ public class CreateEstimatePage extends CreateCartEstimatePage {
     }
 
     @Step("Получить информацию о добавленных в смету продуктах со страницы")
-    public List<SalesOrderCardData> getEstimateProducts() {
+    public List<ProductOrderCardPuzData> getEstimateProducts() {
         return products.getDataList();
     }
 
     @Step("Получить информацию о смете со страницы")
-    public SalesOrderData getEstimateData() {
-        SalesOrderData estimateData = new SalesOrderData();
-        estimateData.setOrderCardDataList(products.getDataList());
+    public EstimatePuzData getEstimateData() {
+        EstimatePuzData estimateData = new EstimatePuzData();
+        estimateData.setProductCardDataList(products.getDataList());
 
         String[] productCountAndWeight = countAndWeightProductLbl.getText().split("•");
         anAssert.isTrue(productCountAndWeight.length == 2,
@@ -113,7 +113,7 @@ public class CreateEstimatePage extends CreateCartEstimatePage {
     @Step("Проверить, что в Смете добавлены товары с ЛМ кодами: {lmCodes}")
     public CreateEstimatePage shouldEstimateHasProducts(List<String> lmCodes) {
         List<String> actualLmCodes = new ArrayList<>();
-        for (PuzProductOrderCardWidget widget : products) {
+        for (ProductOrderCardPuzWidget widget : products) {
             actualLmCodes.add(widget.getLmCode());
         }
         anAssert.isEquals(actualLmCodes, lmCodes, "Ожидались другие товары в смете");
@@ -121,13 +121,14 @@ public class CreateEstimatePage extends CreateCartEstimatePage {
     }
 
     @Step("Проверить, что на странице сметы содержатся ожидаемые данные")
-    public CreateEstimatePage shouldEstimateHasData(SalesOrderData expectedEstimateData) {
-        SalesOrderData actualEstimateData = getEstimateData();
-        anAssert.isEquals(actualEstimateData.getOrderCardDataList().size(), expectedEstimateData.getOrderCardDataList().size(),
+    public CreateEstimatePage shouldEstimateHasData(EstimatePuzData expectedEstimateData) {
+        EstimatePuzData actualEstimateData = getEstimateData();
+        anAssert.isEquals(actualEstimateData.getProductCardDataList().size(),
+                expectedEstimateData.getProductCardDataList().size(),
                 "Ожидалось другое кол-во товаров в смете");
-        for (int i = 0; i < actualEstimateData.getOrderCardDataList().size(); i++) {
-            SalesOrderCardData actualProduct = actualEstimateData.getOrderCardDataList().get(i);
-            SalesOrderCardData expectedProduct = expectedEstimateData.getOrderCardDataList().get(i);
+        for (int i = 0; i < actualEstimateData.getProductCardDataList().size(); i++) {
+            ProductOrderCardPuzData actualProduct = actualEstimateData.getProductCardDataList().get(i);
+            ProductOrderCardPuzData expectedProduct = expectedEstimateData.getProductCardDataList().get(i);
             if (expectedProduct.getSelectedQuantity() != null)
                 softAssert.isEquals(actualProduct.getSelectedQuantity(), expectedProduct.getSelectedQuantity(),
                         "Товар #" + i + " - ожидался другое кол-во");

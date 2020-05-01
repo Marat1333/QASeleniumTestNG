@@ -9,7 +9,6 @@ public class SalesOrderCardData extends CardWidgetData {
     private Double selectedQuantity;
     private Double totalPrice;
     private Double availableTodayQuantity;
-    private Double weight; // only Puz?
 
     public ProductCardData getProductCardData() {
         return productCardData;
@@ -52,11 +51,4 @@ public class SalesOrderCardData extends CardWidgetData {
                 equalsIfRightNotNull(availableTodayQuantity, orderCardData.getAvailableTodayQuantity());
     }
 
-    public Double getWeight() {
-        return weight;
-    }
-
-    public void setWeight(Double weight) {
-        this.weight = weight;
-    }
 }

@@ -8,7 +8,7 @@ import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.pages.modal.CustomersFoundWithThisPhoneModalWindow;
-import com.leroy.magportal.ui.models.CustomerData;
+import com.leroy.magportal.ui.models.customers.CustomerData;
 import io.qameta.allure.Step;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.support.Color;

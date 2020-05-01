@@ -1,4 +1,4 @@
-package com.leroy.magportal.ui.models;
+package com.leroy.magportal.ui.models.customers;
 
 import com.leroy.constants.Gender;
 import org.apache.commons.lang3.RandomStringUtils;

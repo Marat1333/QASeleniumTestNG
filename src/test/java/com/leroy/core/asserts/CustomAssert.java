@@ -1,6 +1,5 @@
 package com.leroy.core.asserts;
 
-import com.leroy.core.asserts.BaseCustomAssert;
 import com.leroy.core.testrail.helpers.StepLog;
 import com.leroy.core.web_elements.general.BaseWidget;
 import com.leroy.core.web_elements.general.Element;

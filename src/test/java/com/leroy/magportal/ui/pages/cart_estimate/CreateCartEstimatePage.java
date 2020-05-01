@@ -5,7 +5,7 @@ import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magportal.ui.pages.cart_estimate.widget.PuzProductOrderCardWidget;
+import com.leroy.magportal.ui.pages.cart_estimate.widget.ProductOrderCardPuzWidget;
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import io.qameta.allure.Step;
 
@@ -51,7 +51,7 @@ public abstract class CreateCartEstimatePage extends MenuPage {
     @WebFindBy(xpath = "//input[@name='productSearchValue']", metaName = "Поле поиска товаров")
     EditBox searchProductFld;
 
-    public abstract ElementList<PuzProductOrderCardWidget> products();
+    public abstract ElementList<ProductOrderCardPuzWidget> products();
 
     // Actions
 

@@ -1,10 +1,9 @@
 package com.leroy.magportal.ui.tests;
 
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.ui.models.sales.SalesOrderCardData;
-import com.leroy.magmobile.ui.models.sales.SalesOrderData;
-import com.leroy.magmobile.ui.models.search.ProductCardData;
 import com.leroy.magportal.ui.WebBaseSteps;
+import com.leroy.magportal.ui.models.salesdoc.EstimatePuzData;
+import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardPuzData;
 import com.leroy.magportal.ui.pages.cart_estimate.CreateEstimatePage;
 import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SubmittedEstimateModal;
@@ -91,21 +90,18 @@ public class EstimateTest extends WebBaseSteps {
 
         // Step 3
         step("Введите ЛМ товара и нажмите 'Enter'");
-        ProductCardData expectedProductCardData = new ProductCardData();
-        expectedProductCardData.setName(testProduct.getTitle());
-        expectedProductCardData.setBarCode(testProduct.getBarCode());
-        expectedProductCardData.setLmCode(testProduct.getLmCode());
-        expectedProductCardData.setPrice(testProduct.getPrice());
-
-        SalesOrderCardData expectedProduct = new SalesOrderCardData();
-        expectedProduct.setProductCardData(expectedProductCardData);
+        ProductOrderCardPuzData expectedProduct = new ProductOrderCardPuzData();
+        expectedProduct.setTitle(testProduct.getTitle());
+        expectedProduct.setBarCode(testProduct.getBarCode());
+        expectedProduct.setLmCode(testProduct.getLmCode());
+        expectedProduct.setPrice(testProduct.getPrice());
         expectedProduct.setSelectedQuantity(1.0);
         expectedProduct.setTotalPrice(testProduct.getPrice());
 
-        SalesOrderData expectedEstimateData = new SalesOrderData();
+        EstimatePuzData expectedEstimateData = new EstimatePuzData();
         expectedEstimateData.setProductCount(1);
         expectedEstimateData.setTotalPrice(testProduct.getPrice());
-        expectedEstimateData.setOrderCardDataList(Collections.singletonList(expectedProduct));
+        expectedEstimateData.setProductCardDataList(Collections.singletonList(expectedProduct));
         createEstimatePage.shouldEstimateHasData(expectedEstimateData);
     }
 
@@ -128,21 +124,18 @@ public class EstimateTest extends WebBaseSteps {
 
         // Step 3
         step("Введите ЛМ товара и нажмите 'Enter'");
-        ProductCardData expectedProductCardData = new ProductCardData();
-        expectedProductCardData.setName(testProduct.getTitle());
-        expectedProductCardData.setBarCode(testProduct.getBarCode());
-        expectedProductCardData.setLmCode(testProduct.getLmCode());
-        expectedProductCardData.setPrice(testProduct.getPrice());
-
-        SalesOrderCardData expectedProduct = new SalesOrderCardData();
-        expectedProduct.setProductCardData(expectedProductCardData);
+        ProductOrderCardPuzData expectedProduct = new ProductOrderCardPuzData();
+        expectedProduct.setTitle(testProduct.getTitle());
+        expectedProduct.setBarCode(testProduct.getBarCode());
+        expectedProduct.setLmCode(testProduct.getLmCode());
+        expectedProduct.setPrice(testProduct.getPrice());
         expectedProduct.setSelectedQuantity(1.0);
         expectedProduct.setTotalPrice(testProduct.getPrice());
 
-        SalesOrderData expectedEstimateData = new SalesOrderData();
+        EstimatePuzData expectedEstimateData = new EstimatePuzData();
         expectedEstimateData.setProductCount(1);
         expectedEstimateData.setTotalPrice(testProduct.getPrice());
-        expectedEstimateData.setOrderCardDataList(Collections.singletonList(expectedProduct));
+        expectedEstimateData.setProductCardDataList(Collections.singletonList(expectedProduct));
         createEstimatePage.shouldEstimateHasData(expectedEstimateData);
     }
 
@@ -159,12 +152,13 @@ public class EstimateTest extends WebBaseSteps {
 
         createEstimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
 
-        SalesOrderData estimateData = createEstimatePage.getEstimateData();
+        EstimatePuzData estimateData = createEstimatePage.getEstimateData();
 
         step("Нажмите на поле 'Добавление товара'");
         createEstimatePage.enterTextInSearchProductField(testProduct2.getLmCode());
-        List<SalesOrderCardData> products = createEstimatePage.getEstimateProducts();
-        estimateData.setOrderCardDataList(Arrays.asList(products.get(0), estimateData.getOrderCardDataList().get(0)));
+        List<ProductOrderCardPuzData> products = createEstimatePage.getEstimateProducts();
+        estimateData.setProductCardDataList(Arrays.asList(products.get(0),
+                estimateData.getProductCardDataList().get(0)));
         estimateData.setProductCount(estimateData.getProductCount() + 1);
         estimateData.setTotalWeight(estimateData.getTotalWeight() + products.get(0).getWeight());
         estimateData.setTotalPrice(estimateData.getTotalPrice() + products.get(0).getTotalPrice());

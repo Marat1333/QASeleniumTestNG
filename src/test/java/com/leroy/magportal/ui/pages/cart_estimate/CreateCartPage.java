@@ -3,7 +3,7 @@ package com.leroy.magportal.ui.pages.cart_estimate;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magportal.ui.pages.cart_estimate.widget.PuzProductOrderCardWidget;
+import com.leroy.magportal.ui.pages.cart_estimate.widget.ProductOrderCardPuzWidget;
 
 public class CreateCartPage extends CreateCartEstimatePage {
 
@@ -12,11 +12,11 @@ public class CreateCartPage extends CreateCartEstimatePage {
     }
 
     @WebFindBy(xpath = "//div[contains(@class, 'Cart-CartsView__cart__group')]/div[contains(@class, 'SalesDocProduct')]",
-            clazz = PuzProductOrderCardWidget.class)
-    ElementList<PuzProductOrderCardWidget> products;
+            clazz = ProductOrderCardPuzWidget.class)
+    ElementList<ProductOrderCardPuzWidget> products;
 
     @Override
-    public ElementList<PuzProductOrderCardWidget> products() {
+    public ElementList<ProductOrderCardPuzWidget> products() {
         return products;
     }
 }
