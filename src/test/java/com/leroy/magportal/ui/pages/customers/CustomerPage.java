@@ -1,4 +1,4 @@
-package com.leroy.magportal.ui.pages;
+package com.leroy.magportal.ui.pages.customers;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.WebFindBy;

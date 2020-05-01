@@ -8,9 +8,9 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
 import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
-import com.leroy.magportal.ui.pages.CustomerPage;
+import com.leroy.magportal.ui.pages.customers.CustomerPage;
 import com.leroy.magportal.ui.pages.OrdersPage;
-import com.leroy.magportal.ui.pages.modal.NewFeaturesModalWindow;
+import com.leroy.magportal.ui.pages.NewFeaturesModalWindow;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
 import org.openqa.selenium.By;
 

@@ -2,9 +2,9 @@ package com.leroy.magportal.ui.tests;
 
 import com.leroy.magportal.ui.WebBaseSteps;
 import com.leroy.magportal.ui.models.customers.CustomerData;
-import com.leroy.magportal.ui.pages.CreatingCustomerPage;
-import com.leroy.magportal.ui.pages.CustomerPage;
-import com.leroy.magportal.ui.pages.CustomerPersonalInfoPage;
+import com.leroy.magportal.ui.pages.customers.CreatingCustomerPage;
+import com.leroy.magportal.ui.pages.customers.CustomerPage;
+import com.leroy.magportal.ui.pages.customers.CustomerPersonalInfoPage;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
 
