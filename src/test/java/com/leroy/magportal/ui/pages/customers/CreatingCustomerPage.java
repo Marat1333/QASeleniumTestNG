@@ -6,6 +6,7 @@ import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.pages.customers.modal.CustomersFoundWithThisPhoneModalWindow;
 import com.leroy.magportal.ui.models.customers.CustomerData;
@@ -21,7 +22,7 @@ public class CreatingCustomerPage extends MenuPage {
 
     static final String HEADER = "Создание клиента";
 
-    public CreatingCustomerPage(TestContext context) {
+    public CreatingCustomerPage(Context context) {
         super(context);
     }
 

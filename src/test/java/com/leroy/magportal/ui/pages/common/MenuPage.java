@@ -6,17 +6,18 @@ import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.pages.BaseWebPage;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
-import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
-import com.leroy.magportal.ui.pages.customers.CustomerPage;
-import com.leroy.magportal.ui.pages.OrdersPage;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.pages.NewFeaturesModalWindow;
+import com.leroy.magportal.ui.pages.OrdersPage;
+import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
+import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
+import com.leroy.magportal.ui.pages.customers.CustomerPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
 import org.openqa.selenium.By;
 
 public class MenuPage extends MagPortalBasePage {
 
-    public MenuPage(TestContext context) {
+    public MenuPage(Context context) {
         super(context);
     }
 

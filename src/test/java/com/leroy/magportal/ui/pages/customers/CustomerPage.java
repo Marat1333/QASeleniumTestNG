@@ -3,6 +3,7 @@ package com.leroy.magportal.ui.pages.customers;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.*;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import io.qameta.allure.Step;
 
@@ -15,7 +16,7 @@ public class CustomerPage extends MenuPage {
 
     private String SPECIFIC_SEARCH_OPTION_XPATH = "//div[contains(@class, 'CustomerListSearch__select-menu-item') and contains(.,'%s')]";
 
-    public CustomerPage(TestContext context) {
+    public CustomerPage(Context context) {
         super(context);
     }
 

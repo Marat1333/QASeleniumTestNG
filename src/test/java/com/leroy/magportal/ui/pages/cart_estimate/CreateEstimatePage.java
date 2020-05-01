@@ -1,9 +1,9 @@
 package com.leroy.magportal.ui.pages.cart_estimate;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.models.salesdoc.EstimatePuzData;
 import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardPuzData;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SubmittedEstimateModal;
@@ -17,7 +17,7 @@ import java.util.List;
 
 public class CreateEstimatePage extends CreateCartEstimatePage {
 
-    public CreateEstimatePage(TestContext context) {
+    public CreateEstimatePage(Context context) {
         super(context);
     }
 

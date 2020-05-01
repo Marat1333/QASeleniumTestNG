@@ -1,17 +1,17 @@
 package com.leroy.magportal.ui.pages.cart_estimate;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.pages.cart_estimate.widget.ProductOrderCardPuzWidget;
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import io.qameta.allure.Step;
 
 public abstract class CreateCartEstimatePage extends MenuPage {
 
-    public CreateCartEstimatePage(TestContext context) {
+    public CreateCartEstimatePage(Context context) {
         super(context);
     }
 

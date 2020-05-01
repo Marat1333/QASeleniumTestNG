@@ -17,7 +17,7 @@ import java.lang.reflect.Method;
 @Guice(modules = {Module.class})
 public class MagPortalBaseTest extends BaseUiTest {
 
-    Context context;
+    protected Context context;
     protected SessionData sessionData;
 
     @Inject

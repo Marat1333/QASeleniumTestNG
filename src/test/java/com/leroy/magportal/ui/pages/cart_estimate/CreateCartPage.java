@@ -1,13 +1,13 @@
 package com.leroy.magportal.ui.pages.cart_estimate;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.pages.cart_estimate.widget.ProductOrderCardPuzWidget;
 
 public class CreateCartPage extends CreateCartEstimatePage {
 
-    public CreateCartPage(TestContext context) {
+    public CreateCartPage(Context context) {
         super(context);
     }
 

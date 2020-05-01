@@ -12,7 +12,7 @@ public class CommonMagMobilePage extends BaseAppPage {
 
     public CommonMagMobilePage(Context context) {
         super(context);
-        initContext(context);
+        //initContext(context);
         shouldNotAnyErrorVisible();
     }
 

@@ -287,7 +287,7 @@ public class EstimatePage extends CommonMagMobilePage {
             String actualPhone = actualCustomerData.getPhone().replaceAll(" |-", "");
             String expectedPhone = expectedCustomerData.getPhone();
             if (!expectedPhone.startsWith("+7"))
-                expectedPhone = "+7" + expectedPhone;
+                expectedPhone = "+7" + expectedPhone.replaceAll(" |-", "");
             softAssert.isEquals(actualPhone, expectedPhone,
                     "Телефон выбранного клиента неверен");
         }

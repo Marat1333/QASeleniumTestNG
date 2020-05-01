@@ -1,15 +1,15 @@
 package com.leroy.magportal.ui.pages.cart_estimate.modal;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
 import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
 import io.qameta.allure.Step;
 
 public class SubmittedEstimateModal extends MagPortalBasePage {
 
-    public SubmittedEstimateModal(TestContext context) {
+    public SubmittedEstimateModal(Context context) {
         super(context);
     }
 
