@@ -9,13 +9,13 @@ import io.qameta.allure.Step;
 public class WebBaseSteps extends MagPortalBaseTest {
 
     @Step("Авторизоваться на портале и зайти на страницу {pageClass}")
-    public <T> T loginAndGoTo(String ldap, String password, Class<? extends BaseWebPage> pageClass) throws Exception {
+    public <T extends BaseWebPage> T loginAndGoTo(String ldap, String password, Class<T> pageClass) throws Exception {
         new LoginWebPage(context).logIn(ldap, password);
         return new OrdersPage(context).closeNewFeaturesModalWindowIfExist()
                 .goToPage(pageClass);
     }
 
-    public <T> T loginAndGoTo(Class<? extends BaseWebPage> pageClass) throws Exception {
+    public <T extends BaseWebPage> T loginAndGoTo(Class<T> pageClass) throws Exception {
         return loginAndGoTo(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS, pageClass);
     }
 

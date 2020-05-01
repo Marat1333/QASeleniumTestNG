@@ -6,12 +6,9 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magportal.ui.pages.CartPage;
-import com.leroy.magportal.ui.pages.EstimatePage;
 import com.leroy.magportal.ui.webelements.commonelements.PriceContainer;
 import com.leroy.magportal.ui.webelements.widgets.ExtendedProductCardWidget;
 import com.leroy.magportal.ui.webelements.widgets.ShopCardWidget;
-import io.qameta.allure.Step;
 
 public class ExtendedProductCardPage extends ProductCardPage {
     public ExtendedProductCardPage(TestContext context) {
