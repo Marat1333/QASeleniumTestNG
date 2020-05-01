@@ -1,5 +1,6 @@
 package com.leroy.core.asserts;
 
+import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.testrail.helpers.StepLog;
 import com.leroy.core.testrail.models.ResultModel;
@@ -140,7 +141,7 @@ public abstract class BaseCustomAssert {
     protected void logAreElementsVisible(List<BaseWidget> elements, boolean isSoft, String pageSource) {
         if (elements.size() == 0)
             throw new IllegalArgumentException("List should contain at least one element");
-        if (pageSource == null)
+        if (pageSource == null && DriverFactory.isAppProfile())
             pageSource = elements.get(0).getPageSource();
         for (BaseWidget elem : elements) {
             logIsElementVisible(elem, pageSource, true);
