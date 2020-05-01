@@ -248,11 +248,13 @@ public class ApiClientProvider {
     // ESTIMATE
 
     @Step("Создаем черновик Сметы через API")
-    public String createDraftEstimateAndGetCartId(CustomerData newCustomerData, int productCount) {
-        List<String> lmCodes = getProductLmCodes(productCount);
+    private String createDraftEstimateAndGetCartId(
+            CustomerData newCustomerData, List<String> lmCodes, int productCount) {
+        if (lmCodes == null)
+            lmCodes = getProductLmCodes(productCount);
         CustomerData customerData;
         if (newCustomerData == null) {
-          customerData = getAnyCustomer();
+            customerData = getAnyCustomer();
         } else {
             Response<CustomerResponseBodyData> respCustomer = getCustomerClient()
                     .createCustomer(newCustomerData);
@@ -260,7 +262,7 @@ public class ApiClientProvider {
             customerData = respCustomer.asJson().getEntity();
         }
         List<EstimateProductOrderData> productOrderDataList = new ArrayList<>();
-        for (int i = 1; i <= productCount; i++) {
+        for (int i = 1; i <= lmCodes.size(); i++) {
             EstimateProductOrderData productOrderData = new EstimateProductOrderData();
             productOrderData.setLmCode(lmCodes.get(i - 1));
             productOrderData.setQuantity((double) i);
@@ -278,8 +280,17 @@ public class ApiClientProvider {
         return estimateDataResponse.asJson().getEstimateId();
     }
 
+    public String createDraftEstimateAndGetCartId(List<String> lmCodes) {
+        return createDraftEstimateAndGetCartId(null, lmCodes, 1);
+    }
+
+    public String createDraftEstimateAndGetCartId(
+            CustomerData newCustomerData, int productCount) {
+        return createDraftEstimateAndGetCartId(newCustomerData, null, productCount);
+    }
+
     public String createDraftEstimateAndGetCartId(int productCount) {
-        return createDraftEstimateAndGetCartId(null, productCount);
+        return createDraftEstimateAndGetCartId(null, null, productCount);
     }
 
     public String createDraftEstimateAndGetCartId() {
@@ -287,9 +298,9 @@ public class ApiClientProvider {
     }
 
     @Step("Создаем подтвержденную Смету через API")
-    public String createConfirmedEstimateAndGetCartId() {
+    public String createConfirmedEstimateAndGetCartId(List<String> lmCodes) {
         EstimateClient client = getEstimateClient();
-        String cartId = createDraftEstimateAndGetCartId();
+        String cartId = createDraftEstimateAndGetCartId(lmCodes);
         Response<JsonNode> resp = client.confirm(cartId);
         client.assertThatResponseChangeStatusIsOk(resp);
         return cartId;
