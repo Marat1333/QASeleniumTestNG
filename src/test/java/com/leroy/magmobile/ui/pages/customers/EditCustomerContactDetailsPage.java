@@ -41,6 +41,7 @@ public class EditCustomerContactDetailsPage extends CommonMagMobilePage {
     @Step("Ввести новый номер телефона")
     public void fillInPhoneNumber(String value) {
         E("$phone").click();
+        newPhoneFld.click();
         newPhoneFld.fill(value);
         newPhoneFld.submit();
     }

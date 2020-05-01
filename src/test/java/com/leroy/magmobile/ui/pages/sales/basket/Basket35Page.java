@@ -217,7 +217,7 @@ public class Basket35Page extends CommonMagMobilePage {
         anAssert.isTrue(actualCountProductAndWeight.length == 2,
                 "Что-то не так с меткой содержащей информацию о кол-ве и весе товара");
         String actualTotalPrice = totalPriceVal.getText(pageSource).replaceAll("\\D+", "");
-        softAssert.isEquals(Converter.strToDouble(actualCountProductAndWeight[0]),
+        softAssert.isEquals(Converter.strToInt(actualCountProductAndWeight[0]),
                 expectedOrderData.getProductCount(), "Неверное кол-во товара");
         softAssert.isEquals(Converter.strToDouble(actualCountProductAndWeight[1]),
                 Precision.round(expectedOrderData.getTotalWeight(), 1), "Неверный вес товара");
