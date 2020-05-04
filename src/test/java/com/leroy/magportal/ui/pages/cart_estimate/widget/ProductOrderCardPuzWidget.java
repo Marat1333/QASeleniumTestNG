@@ -4,12 +4,12 @@ import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardPuzData;
+import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardWebData;
 import com.leroy.magportal.ui.webelements.CardWebWidget;
 import com.leroy.utils.Converter;
 import org.openqa.selenium.WebDriver;
 
-public class ProductOrderCardPuzWidget extends CardWebWidget<ProductOrderCardPuzData> {
+public class ProductOrderCardPuzWidget extends CardWebWidget<ProductOrderCardWebData> {
 
     public ProductOrderCardPuzWidget(WebDriver driver, CustomLocator customLocator) {
         super(driver, customLocator);
@@ -71,8 +71,8 @@ public class ProductOrderCardPuzWidget extends CardWebWidget<ProductOrderCardPuz
     }
 
     @Override
-    public ProductOrderCardPuzData collectDataFromPage() {
-        ProductOrderCardPuzData productOrderCardWebData = new ProductOrderCardPuzData();
+    public ProductOrderCardWebData collectDataFromPage() {
+        ProductOrderCardWebData productOrderCardWebData = new ProductOrderCardWebData();
         productOrderCardWebData.setLmCode(getLmCode());
         productOrderCardWebData.setBarCode(Converter.strToStrWithoutDigits(getBarCode()));
         productOrderCardWebData.setTitle(getTitle());

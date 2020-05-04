@@ -56,8 +56,12 @@ public class CustomSoftAssert extends BaseCustomAssert {
         super.logIsElementTextContains(element, expectedText, pageSource, true);
     }
 
+    public boolean isElementVisible(BaseWidget element, int timeout) {
+        return super.logIsElementVisible(element, null, true, timeout);
+    }
+
     public boolean isElementVisible(BaseWidget element, String pageSource) {
-        return super.logIsElementVisible(element, pageSource, true);
+        return super.logIsElementVisible(element, pageSource, true, 0);
     }
 
     public boolean isElementVisible(BaseWidget element) {

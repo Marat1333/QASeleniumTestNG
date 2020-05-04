@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Estimate Mag Portal Suite">
+
+    <listeners>
+        <listener class-name="com.leroy.core.listeners.TestRailListener"/>
+    </listeners>
+
+    <test name="C3302188 Create estimate">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.EstimateTest">
+                <methods>
+                    <include name="testCreateEstimate"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="Products modification - DRAFT">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.EstimateTest">
+                <methods>
+                    <include name="testSearchProductByLmCodeInEstimate"/>
+                    <include name="testSearchProductByBarcodeInEstimate"/>
+                    <include name="testAddNewProductToEstimate"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+</suite>

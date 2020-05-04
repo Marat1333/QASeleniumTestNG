@@ -44,4 +44,8 @@ public class Converter {
         else
             return String.format("%s", d);
     }
+
+    public static String standardPhoneFmt(String phoneNumber) {
+        return phoneNumber.replaceAll(" |-", "");
+    }
 }

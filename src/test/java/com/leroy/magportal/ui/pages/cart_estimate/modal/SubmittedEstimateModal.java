@@ -54,6 +54,7 @@ public class SubmittedEstimateModal extends MagPortalBasePage {
 
     @Step("Проверить, что номер сметы = {val}")
     public SubmittedEstimateModal shouldEstimateNumberIs(String val) {
+        anAssert.isFalse(val.isEmpty(), "Ожидаемый номер сметы - пустое значение");
         anAssert.isEquals(numberEstimate.getText().replaceAll(" ", ""), val,
                 "Ожидался другой номер сметы");
         return this;

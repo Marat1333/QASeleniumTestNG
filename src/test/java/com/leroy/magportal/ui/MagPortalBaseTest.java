@@ -45,13 +45,4 @@ public class MagPortalBaseTest extends BaseUiTest {
         return context;
     }
 
-    private void openStartPage() {
-        driver.get(EnvConstants.URL_MAG_PORTAL);
-    }
-
-    @BeforeMethod
-    protected void magPortalBaseBeforeMethod(Method method) throws Exception {
-        openStartPage();
-    }
-
 }

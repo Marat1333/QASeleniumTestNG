@@ -47,7 +47,7 @@ public class MenuPage extends MagPortalBasePage {
         menuItem.waitForVisibility();
         anAssert.isTrue(menuItem.isVisible(), "Не удалось найти пункт меню " + expectedMenuItem);
         menuItem.click();
-        return (T) pageClass.getConstructor(TestContext.class).newInstance(context);
+        return (T) pageClass.getConstructor(Context.class).newInstance(context);
     }
 
     public MenuPage closeNewFeaturesModalWindowIfExist() {

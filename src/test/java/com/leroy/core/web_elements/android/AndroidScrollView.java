@@ -345,7 +345,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
         if (useUiSelectors) {
             uiAutomatorScroll("flingToBeginning(2)");
         } else {
-            // todo
+            // to do
         }
         return this;
     }
@@ -354,7 +354,7 @@ public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
         if (useUiSelectors) {
             uiAutomatorScroll("flingToEnd(2)");
         } else {
-            // todo
+            // to do
         }
         return this;
     }

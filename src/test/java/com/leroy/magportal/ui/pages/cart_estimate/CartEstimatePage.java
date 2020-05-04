@@ -5,13 +5,21 @@ import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.ui.Context;
-import com.leroy.magportal.ui.pages.cart_estimate.widget.ProductOrderCardPuzWidget;
+import com.leroy.magportal.ui.models.salesdoc.OrderWebData;
+import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardWebData;
+import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
+import com.leroy.magportal.ui.pages.cart_estimate.widget.CustomerPuzWidget;
+import com.leroy.magportal.ui.pages.cart_estimate.widget.OrderPuzWidget;
 import com.leroy.magportal.ui.pages.common.MenuPage;
+import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import io.qameta.allure.Step;
 
-public abstract class CreateCartEstimatePage extends MenuPage {
+import java.util.ArrayList;
+import java.util.List;
 
-    public CreateCartEstimatePage(Context context) {
+public abstract class CartEstimatePage extends MenuPage {
+
+    public CartEstimatePage(Context context) {
         super(context);
     }
 
@@ -35,15 +43,8 @@ public abstract class CreateCartEstimatePage extends MenuPage {
     ElementList<Element> customerSearchItems;
 
     // When Customer is selected
-    private final String CUSTOMER_VIEW_CARD_XPATH = "//div[contains(@class, 'CustomerControl-ViewCard')]";
-
-    @WebFindBy(xpath = CUSTOMER_VIEW_CARD_XPATH + "//a/p",
-            metaName = "Имя выбранного клиента")
-    Element selectedCustomerName;
-
-    @WebFindBy(xpath = CUSTOMER_VIEW_CARD_XPATH + "//a/following::span[1]",
-            metaName = "Телефон выбранного клиента")
-    Element selectedCustomerPhone;
+    @WebFindBy(xpath = "//div[contains(@class, 'CustomerControl__mode-VIEW')]", metaName = "Карточка клиента")
+    CustomerPuzWidget selectedCustomerCard;
 
     // Product area
     @WebFindBy(text = "Добавление товара")
@@ -51,20 +52,50 @@ public abstract class CreateCartEstimatePage extends MenuPage {
     @WebFindBy(xpath = "//input[@name='productSearchValue']", metaName = "Поле поиска товаров")
     EditBox searchProductFld;
 
-    public abstract ElementList<ProductOrderCardPuzWidget> products();
+    protected abstract CardWebWidgetList<OrderPuzWidget, OrderWebData> orders();
+
+    // Grab information
+
+    @Step("Получить номер документа со страницы")
+    public abstract String getDocumentNumber();
+
+    @Step("Получить статус документа со страницы")
+    public abstract String getDocumentStatus();
+
+    @Step("Получить имя создателя документа со страницы")
+    public abstract String getDocumentAuthor();
+
+    @Step("Получить информацию о документе со страницы")
+    public SalesDocWebData getSalesDocData() {
+        SalesDocWebData salesDocWebData = new SalesDocWebData();
+        salesDocWebData.setOrders(orders().getDataList());
+        salesDocWebData.setNumber(getDocumentNumber());
+        salesDocWebData.setStatus(getDocumentStatus());
+        salesDocWebData.setAuthorName(getDocumentAuthor());
+        salesDocWebData.setClient(selectedCustomerCard.collectDataFromPage());
+        return salesDocWebData;
+    }
+
+    @Step("Получить информацию о добавленных в документ продуктах со страницы")
+    public List<ProductOrderCardWebData> getProductDataList() {
+        List<ProductOrderCardWebData> resultList = new ArrayList<>();
+        for (OrderPuzWidget orderWidget : orders()) {
+            resultList.addAll(orderWidget.getProductDataList());
+        }
+        return resultList;
+    }
 
     // Actions
 
     @Step("Ввести {text} в поле для добавления товара и нажать Enter")
     public void enterTextInSearchProductField(String text) {
-        int productCountBefore = products().getCount();
         searchProductFld.clearFillAndSubmit(text);
-        products().waitUntilElementCountEquals(productCountBefore + 1); // временное решение, возможно, стоит изменить wait
+        waitForSpinnerAppearAndDisappear();
         addProductLbl.click();
     }
 
     @Step("Нажать на кнопку 'Добавить клиента'")
-    public CreateCartEstimatePage clickAddCustomer() {
+    public CartEstimatePage clickAddCustomer() {
         addCustomerBtnLbl.click();
         legalPersonBtn.waitForVisibility();
         return this;
@@ -79,8 +110,10 @@ public abstract class CreateCartEstimatePage extends MenuPage {
     }
 
     @Step("Выбираем клиента по номеру телефона {phone}")
-    public CreateCartEstimatePage selectCustomerByPhone(String phone) throws Exception {
+    public CartEstimatePage selectCustomerByPhone(String phone) throws Exception {
         enterPhoneInSearchCustomerField(phone);
+        anAssert.isTrue(customerSearchItems.waitUntilAtLeastOneElementIsPresent(short_timeout),
+                "Клиент с номером +7" + phone + "нельзя выбрать");
         customerSearchItems.get(0).click();
         customerSearchItems.waitUntilElementCountEquals(0);
         return this;
@@ -89,17 +122,20 @@ public abstract class CreateCartEstimatePage extends MenuPage {
     // Verifications
 
     @Step("Проверить, что все необходимые элементы для добавления клиента доступны")
-    public CreateCartEstimatePage shouldAddingNewUserAvailable() {
+    public CartEstimatePage shouldAddingNewUserAvailable() {
         softAssert.areElementsVisible(naturalPersonBtn, legalPersonBtn, customerPhoneFld);
         softAssert.verifyAll();
         return this;
     }
 
     @Step("Проверить, что выбранный клиент имеет телефон {val}")
-    public CreateCartEstimatePage shouldSelectedCustomerHasPhone(String val) {
+    public CartEstimatePage shouldSelectedCustomerHasPhone(String val) {
+        softAssert.isElementNotVisible(naturalPersonBtn);
+        softAssert.isElementNotVisible(legalPersonBtn);
+        softAssert.isElementNotVisible(customerPhoneFld);
         if (!val.startsWith("+7"))
             val = "+7" + val;
-        anAssert.isEquals(selectedCustomerPhone.getText().replaceAll(" |-", ""),
+        softAssert.isEquals(selectedCustomerCard.getPhone(),
                 val, "Ожидался другой номер телефона у выбранного клиента");
         return this;
     }

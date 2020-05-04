@@ -1,7 +1,11 @@
 package com.leroy.core.configuration;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.testng.annotations.*;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Optional;
+import org.testng.annotations.Parameters;
 
 public class EnvironmentConfigurator {
     protected RemoteWebDriver driver = null;
@@ -29,7 +33,7 @@ public class EnvironmentConfigurator {
     }
 
     private void createDriver(String browser, String platform, String host, String environment,
-                                String propsFile, String build, String timeout) throws Exception {
+                              String propsFile, String build, String timeout) throws Exception {
         browser = System.getProperty("mbrowser", browser);
         platform = System.getProperty("mplatform", platform);
         host = System.getProperty(DriverFactory.HOST_ENV_VAR, host);

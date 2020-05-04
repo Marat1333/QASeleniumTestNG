@@ -3,7 +3,7 @@ package com.leroy.magportal.ui.models.salesdoc;
 import lombok.Data;
 
 @Data
-public class ProductOrderCardPuzData {
+public class ProductOrderCardWebData {
 
     private String lmCode;
     private String barCode;
