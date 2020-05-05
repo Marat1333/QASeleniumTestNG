@@ -10,14 +10,14 @@ import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardWebData;
 import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
 import com.leroy.magportal.ui.pages.cart_estimate.widget.CustomerPuzWidget;
 import com.leroy.magportal.ui.pages.cart_estimate.widget.OrderPuzWidget;
-import com.leroy.magportal.ui.pages.common.MenuPage;
+import com.leroy.magportal.ui.pages.common.LeftDocumentListPage;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import io.qameta.allure.Step;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class CartEstimatePage extends MenuPage {
+public abstract class CartEstimatePage extends LeftDocumentListPage {
 
     public CartEstimatePage(Context context) {
         super(context);
@@ -65,11 +65,15 @@ public abstract class CartEstimatePage extends MenuPage {
     @Step("Получить имя создателя документа со страницы")
     public abstract String getDocumentAuthor();
 
+    @Step("Получить дату создания документа со страницы")
+    public abstract String getCreationDate();
+
     @Step("Получить информацию о документе со страницы")
     public SalesDocWebData getSalesDocData() {
         SalesDocWebData salesDocWebData = new SalesDocWebData();
         salesDocWebData.setOrders(orders().getDataList());
         salesDocWebData.setNumber(getDocumentNumber());
+        salesDocWebData.setCreationDate(getCreationDate());
         salesDocWebData.setStatus(getDocumentStatus());
         salesDocWebData.setAuthorName(getDocumentAuthor());
         salesDocWebData.setClient(selectedCustomerCard.collectDataFromPage());
@@ -91,6 +95,7 @@ public abstract class CartEstimatePage extends MenuPage {
     public void enterTextInSearchProductField(String text) {
         searchProductFld.clearFillAndSubmit(text);
         waitForSpinnerAppearAndDisappear();
+        waitForSpinnerDisappear();
         addProductLbl.click();
     }
 

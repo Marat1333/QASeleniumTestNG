@@ -7,7 +7,6 @@ import com.leroy.magportal.ui.WebBaseSteps;
 import com.leroy.magportal.ui.models.salesdoc.OrderWebData;
 import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardWebData;
 import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
-import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
 import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SubmittedEstimateModal;
 import org.testng.annotations.BeforeClass;
@@ -16,6 +15,7 @@ import org.testng.annotations.Test;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class EstimateTest extends WebBaseSteps {
 
@@ -69,7 +69,8 @@ public class EstimateTest extends WebBaseSteps {
         step("Кликнете правой кнопкой мышки по экрану");
         estimatePage = submittedEstimateModal.closeWindow();
         estimateData.setStatus(SalesDocumentsConst.States.CONFIRMED.getUiVal());
-        estimatePage.shouldEstimateHasData(estimateData);
+        estimatePage.shouldEstimateHasData(estimateData)
+                .shouldDocumentIsPresent(estimateData.getNumber());
     }
 
     @Test(description = "C3302208 Search product by lm code")
@@ -158,6 +159,7 @@ public class EstimateTest extends WebBaseSteps {
 
         SalesDocWebData estimateData = estimatePage.getSalesDocData();
 
+        // Step 1
         step("Нажмите на поле 'Добавление товара'");
         estimatePage.enterTextInSearchProductField(testProduct2.getLmCode());
 
@@ -183,26 +185,142 @@ public class EstimateTest extends WebBaseSteps {
         // Pre-condition
         ProductItemData testProduct1 = productList.get(0);
         ProductItemData testProduct2 = productList.get(1);
-        EstimatePage estimatePage = loginAndGoTo(EstimatePage.class);
+        EstimatePage estimatePage;
+        step("Выполнение предусловий:");
+        if (isStartFromScratch()) {
+            estimatePage = loginAndGoTo(EstimatePage.class).clickCreateEstimateButton();
+            estimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
+            estimatePage.enterTextInSearchProductField(testProduct2.getLmCode());
+        } else
+            estimatePage = new EstimatePage(context);
 
-        EstimatePage createEstimatePage = estimatePage.clickCreateEstimateButton()
-                .verifyRequiredElements(EstimatePage.PageState.CREATING_EMPTY);
+        SalesDocWebData estimateData = estimatePage.getSalesDocData();
+        OrderWebData orderWebData = estimateData.getOrders().get(0);
+        ProductOrderCardWebData copyProduct = orderWebData.getProductCardDataList().get(0);
+        orderWebData.addFirstProduct(copyProduct, true);
 
-        createEstimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
-        createEstimatePage.enterTextInSearchProductField(testProduct2.getLmCode());
-
-        step("Нажмите на кнопку \"Добавить еще раз\" любого товара в списке товаров сметы");
-        createEstimatePage.copyProductByIndex(1, 1);
-        String s = "";
-
+        // Step 1
+        step("Нажмите на кнопку 'Добавить еще раз' любого товара в списке товаров сметы");
+        estimatePage.copyProductByIndex(1);
+        estimatePage.shouldEstimateHasData(estimateData);
     }
 
-    @Test
-    public void test() throws Exception {
-        CartPage estimatePage = loginAndGoTo(CartPage.class);
-        getDriver().get("https://dev.prudevlegowp.hq.ru.corp.leroymerlin.com/carts/view/200500032384");
-        SalesDocWebData salesDocWebData = estimatePage.getSalesDocData();
-        String s = "";
+    @Test(description = "C3302213 Change quantity of product")
+    public void testChangeQuantityOfProductInEstimate() throws Exception {
+        // Pre-condition
+        int newQuantity = 5;
+        ProductItemData testProduct1 = productList.get(0);
+        ProductItemData testProduct2 = productList.get(1);
+        EstimatePage estimatePage;
+        step("Выполнение предусловий:");
+        if (isStartFromScratch()) {
+            estimatePage = loginAndGoTo(EstimatePage.class).clickCreateEstimateButton();
+            estimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
+            estimatePage.enterTextInSearchProductField(testProduct2.getLmCode());
+        } else
+            estimatePage = new EstimatePage(context);
+
+        SalesDocWebData estimateData = estimatePage.getSalesDocData();
+        estimateData.getOrders().get(0).changeProductQuantity(0, newQuantity, true);
+
+        // Step 1
+        step("Нажмите на поле изменения количества товара и введите новое значение");
+        estimatePage.changeQuantityProductByIndex(newQuantity, 1);
+        estimatePage.shouldEstimateHasData(estimateData);
+
+        // Step 2
+        step("Нажмите на плашку '+' или '-'");
+        boolean clickPlus = new Random().nextBoolean();
+        if (clickPlus) {
+            estimatePage.increaseQuantityProductByIndex(1);
+            estimateData.getOrders().get(0).changeProductQuantity(
+                    0, newQuantity + 1, true);
+        } else {
+            estimatePage.decreaseQuantityProductByIndex(1);
+            estimateData.getOrders().get(0).changeProductQuantity(
+                    0, newQuantity - 1, true);
+        }
+        estimatePage.shouldEstimateHasData(estimateData);
+
+        // Step 3
+        step("Обновите страницу");
+        // Если сразу после изменения кол-ва обновить страницу, то данные могут не сохраниться
+        Thread.sleep(3000); // Так делать плохо!
+        estimatePage.reloadPage();
+        new EstimatePage(context).shouldEstimateHasData(estimateData);
+    }
+
+    @Test(description = "C3302216 Ordered quantity of product more than existing")
+    public void testOrderedQuantityOfProductMoreThanExisting() throws Exception {
+        // Pre-condition
+        ProductItemData testProduct1 = productList.get(0);
+        EstimatePage estimatePage;
+        step("Выполнение предусловий:");
+        if (isStartFromScratch()) {
+            estimatePage = loginAndGoTo(EstimatePage.class).clickCreateEstimateButton();
+            estimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
+        } else
+            estimatePage = new EstimatePage(context);
+
+        Number newQuantity = testProduct1.getAvailableStock() + 1;
+        SalesDocWebData estimateData = estimatePage.getSalesDocData();
+        estimateData.getOrders().get(0).changeProductQuantity(0, newQuantity, true);
+
+        // Step 4
+        step("Измените количество товара на число, большее доступного для заказа");
+        estimatePage.changeQuantityProductByIndex(newQuantity, 1);
+        estimatePage.shouldEstimateHasData(estimateData);
+        estimatePage.shouldProductAvailableStockLabelIsRed(1,1);
+    }
+
+    @Test(description = "C3302214 Remove product from estimate")
+    public void testRemoveProductFromEstimate() throws Exception {
+        // Pre-condition
+        ProductItemData testProduct1 = productList.get(0);
+        ProductItemData testProduct2 = productList.get(1);
+        EstimatePage estimatePage;
+        step("Выполнение предусловий:");
+        if (isStartFromScratch()) {
+            estimatePage = loginAndGoTo(EstimatePage.class).clickCreateEstimateButton();
+            estimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
+            estimatePage.enterTextInSearchProductField(testProduct2.getLmCode());
+        } else
+            estimatePage = new EstimatePage(context);
+
+        SalesDocWebData estimateData = estimatePage.getSalesDocData();
+
+        // Step 1
+        step("Нажмите на кнопку 'Удалить' в мини-карточке выбранного товара и подтвердите удаление");
+        estimatePage.removeProductByIndex(1);
+        estimateData.getOrders().get(0).removeProduct(0, true);
+        estimatePage.shouldEstimateHasData(estimateData);
+    }
+
+    @Test(description = "C3302215 Remove last product from estimate")
+    public void testRemoveLastProductFromEstimate() throws Exception {
+        // Pre-condition
+        ProductItemData testProduct1 = productList.get(0);
+        EstimatePage estimatePage;
+        step("Выполнение предусловий:");
+        if (isStartFromScratch()) {
+            estimatePage = loginAndGoTo(EstimatePage.class).clickCreateEstimateButton();
+            estimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
+        } else
+            estimatePage = new EstimatePage(context);
+
+        String docNumber = estimatePage.getDocumentNumber();
+
+        step("Удаляем 'лишние' продукты из сметы, если они есть");
+        int productCount = estimatePage.getProductDataList().size();
+        for (int i = 0; i < productCount - 1; i++) {
+            estimatePage.removeProductByIndex(1);
+        }
+
+        // Step 1
+        step("Нажмите на кнопку 'Удалить' в мини-карточке выбранного товара и подтвердите удаление");
+        estimatePage.removeProductByIndex(1)
+                .verifyRequiredElements(EstimatePage.PageState.EMPTY)
+                .shouldDocumentIsNotPresent(docNumber);
     }
 
 }

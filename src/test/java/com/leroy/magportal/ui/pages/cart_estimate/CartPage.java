@@ -47,6 +47,11 @@ public class CartPage extends CartEstimatePage {
         return null; //todo
     }
 
+    @Override
+    public String getCreationDate() {
+        return null; // todo
+    }
+
     // Actions
 
     @Step("Нажать кнопку 'Создать корзину'")

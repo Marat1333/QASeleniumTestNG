@@ -8,6 +8,7 @@ import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardWebData;
 import com.leroy.magportal.ui.webelements.CardWebWidget;
 import com.leroy.utils.Converter;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.Color;
 
 public class ProductOrderCardPuzWidget extends CardWebWidget<ProductOrderCardWebData> {
 
@@ -27,11 +28,20 @@ public class ProductOrderCardPuzWidget extends CardWebWidget<ProductOrderCardWeb
     @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__header')]/div[contains(@class, 'lmui-View')][3]/span[2]")
     Element weight;
 
+    @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__content__price')]/span")
+    Element price;
+
     @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__content__price')]//span")
     Element totalPrice;
 
+    @WebFindBy(xpath = ".//span[@id='inputCounterDecrementButton']/div")
+    EditBox minusQuantityBtn;
+
     @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__content__qty__input-counter')]//input")
     EditBox quantityFld;
+
+    @WebFindBy(xpath = ".//span[@id='inputCounterIncrementButton']/div")
+    EditBox plusQuantityBtn;
 
     @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__content__available')]//span")
     Element availableStock;
@@ -58,6 +68,10 @@ public class ProductOrderCardPuzWidget extends CardWebWidget<ProductOrderCardWeb
         return weight.getText();
     }
 
+    public String getPrice() {
+        return price.isVisible() ? price.getText() : getTotalPrice();
+    }
+
     public String getTotalPrice() {
         return totalPrice.getText();
     }
@@ -77,14 +91,33 @@ public class ProductOrderCardPuzWidget extends CardWebWidget<ProductOrderCardWeb
         productOrderCardWebData.setBarCode(Converter.strToStrWithoutDigits(getBarCode()));
         productOrderCardWebData.setTitle(getTitle());
         productOrderCardWebData.setWeight(Converter.strToDouble(getWeight()));
+        productOrderCardWebData.setPrice(Converter.strToDouble(getPrice()));
         productOrderCardWebData.setTotalPrice(Converter.strToDouble(getTotalPrice()));
         productOrderCardWebData.setSelectedQuantity(Converter.strToDouble(getQuantity()));
         productOrderCardWebData.setAvailableTodayQuantity(Converter.strToDouble(getAvailableStock()));
         return productOrderCardWebData;
     }
 
+    public void editQuantity(Number value) {
+        quantityFld.clear(true);
+        quantityFld.fill(String.valueOf(value.intValue()));
+        quantityFld.sendBlurEvent();
+    }
+
+    public void clickPlusQuantity() {
+        plusQuantityBtn.click();
+    }
+
+    public void clickMinusQuantity() {
+        minusQuantityBtn.click();
+    }
+
     public void clickCopy() {
         copyBtn.click();
+    }
+
+    public Color getColorOfAvailableStockLbl() {
+        return availableStock.getColor();
     }
 
     public void clickDelete() {

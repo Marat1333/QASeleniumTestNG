@@ -6,12 +6,15 @@ import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.models.salesdoc.OrderWebData;
 import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardWebData;
 import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
+import com.leroy.magportal.ui.pages.cart_estimate.modal.ConfirmRemoveProductModal;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SubmittedEstimateModal;
 import com.leroy.magportal.ui.pages.cart_estimate.widget.OrderPuzWidget;
 import com.leroy.magportal.ui.pages.cart_estimate.widget.ProductOrderCardPuzWidget;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import com.leroy.utils.Converter;
 import io.qameta.allure.Step;
+import org.openqa.selenium.support.Colors;
+import org.testng.util.Strings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +45,10 @@ public class EstimatePage extends CartEstimatePage {
             metaName = "Статус сметы")
     Element estimateStatus;
 
+    @WebFindBy(xpath = "//div[contains(@class, 'Estimate-EstimatesView__header-info__row')][2]//div[1]/span",
+            metaName = "Создатель документа")
+    Element creationDate;
+
     @WebFindBy(xpath = "//div[contains(@class, 'Estimate-EstimatesView__header-info__row')][2]//div[2]/span",
             metaName = "Создатель документа")
     Element estimateAuthor;
@@ -65,6 +72,7 @@ public class EstimatePage extends CartEstimatePage {
     @Override
     public void waitForPageIsLoaded() {
         anAssert.isElementVisible(headerLbl, timeout);
+        waitForSpinnerDisappear();
     }
 
     // Grab information from page
@@ -84,12 +92,18 @@ public class EstimatePage extends CartEstimatePage {
         return estimateAuthor.getText();
     }
 
+    @Override
+    public String getCreationDate() {
+        return creationDate.getText();
+    }
+
     // Actions
 
     @Step("Нажать кнопку 'Создать смету'")
     public EstimatePage clickCreateEstimateButton() {
         createEstimateBtn.click();
         searchProductFld.waitForVisibility();
+        createBtn.waitForVisibility();
         return this;
     }
 
@@ -99,13 +113,83 @@ public class EstimatePage extends CartEstimatePage {
         return new SubmittedEstimateModal(context);
     }
 
+    @Step("Установить кол-во {quantity} для товара #{productIdx} из заказа #{orderIdx}")
+    public EstimatePage changeQuantityProductByIndex(Number quantity, int orderIdx, int productIdx) throws Exception {
+        productIdx--;
+        orderIdx--;
+        orders.get(orderIdx).getProductWidget(productIdx).editQuantity(quantity);
+        return this;
+    }
+
+    @Step("Установить кол-во {quantity} для товара #{productIdx}")
+    public EstimatePage changeQuantityProductByIndex(Number quantity, int productIdx) throws Exception {
+        return changeQuantityProductByIndex(quantity, 1, productIdx);
+    }
+
+    @Step("Нажать '+' для увеличения кол-ва товара #{productIdx} из заказа #{orderIdx}")
+    public EstimatePage increaseQuantityProductByIndex(int orderIdx, int productIdx) throws Exception {
+        productIdx--;
+        orderIdx--;
+        orders.get(orderIdx).getProductWidget(productIdx).clickPlusQuantity();
+        return this;
+    }
+
+    @Step("Нажать '+' для увеличения кол-ва товара #{productIdx}")
+    public EstimatePage increaseQuantityProductByIndex(int productIdx) throws Exception {
+        return increaseQuantityProductByIndex(1, productIdx);
+    }
+
+    @Step("Нажать '-' для уменьшения кол-ва товара #{productIdx} из заказа #{orderIdx}")
+    public EstimatePage decreaseQuantityProductByIndex(int orderIdx, int productIdx) throws Exception {
+        productIdx--;
+        orderIdx--;
+        orders.get(orderIdx).getProductWidget(productIdx).clickMinusQuantity();
+        return this;
+    }
+
+    @Step("Нажать '-' для уменьшения кол-ва товара #{productIdx}")
+    public EstimatePage decreaseQuantityProductByIndex(int productIdx) throws Exception {
+        return decreaseQuantityProductByIndex(1, productIdx);
+    }
+
     @Step("Скопировать товар #{productIdx} из заказа #{orderIdx}")
     public EstimatePage copyProductByIndex(int orderIdx, int productIdx) throws Exception {
         productIdx--;
         orderIdx--;
-        orders.get(orderIdx).getProductWidget(productIdx).clickCopy();
+        OrderPuzWidget orderWidget = orders.get(orderIdx);
+        int productCountBefore = orderWidget.getProductWidgets().getCount();
+        orderWidget.getProductWidget(productIdx).clickCopy();
         waitForSpinnerAppearAndDisappear();
+        orderWidget.getProductWidgets().waitUntilElementCountEqualsOrAbove(productCountBefore + 1);
         return this;
+    }
+
+    @Step("Скопировать товар #{productIdx}")
+    public EstimatePage copyProductByIndex(int productIdx) throws Exception {
+        return copyProductByIndex(1, productIdx);
+    }
+
+    @Step("Удалить товар #{productIdx} из заказа #{orderIdx}")
+    public EstimatePage removeProductByIndex(int orderIdx, int productIdx) throws Exception {
+        productIdx--;
+        orderIdx--;
+        OrderPuzWidget orderWidget = orders.get(orderIdx);
+        int productCountBefore = orderWidget.getProductWidgets().getCount();
+        orderWidget.getProductWidget(productIdx).clickDelete();
+        new ConfirmRemoveProductModal(context)
+                .verifyRequiredElements()
+                .clickYesButton();
+        waitForSpinnerAppearAndDisappear();
+        if (productCountBefore > 1)
+            orderWidget.getProductWidgets().waitUntilElementCountEquals(productCountBefore - 1);
+        else
+            searchProductFld.waitForInvisibility();
+        return this;
+    }
+
+    @Step("Удалить товар #{productIdx}")
+    public EstimatePage removeProductByIndex(int productIdx) throws Exception {
+        return removeProductByIndex(1, productIdx);
     }
 
     // Verifications
@@ -113,7 +197,11 @@ public class EstimatePage extends CartEstimatePage {
     @Step("Проверить, что страница 'Создания сметы' отображается корректно")
     public EstimatePage verifyRequiredElements(PageState pageState) {
         if (pageState.equals(PageState.EMPTY)) {
-            softAssert.areElementsVisible(createEstimateBtn);
+            softAssert.isElementVisible(createEstimateBtn);
+            softAssert.isElementNotVisible(addCustomerBtnLbl);
+            softAssert.isElementNotVisible(searchProductFld);
+            softAssert.isElementNotVisible(createBtn);
+            softAssert.isElementNotVisible(addDeliveryBtn);
         } else if (pageState.equals(PageState.CREATING_EMPTY)) {
             softAssert.areElementsVisible(addCustomerBtnLbl, searchProductFld, createBtn, addDeliveryBtn);
             softAssert.isEquals(getDocumentNumber(), "", "Смета имеет номер");
@@ -135,6 +223,15 @@ public class EstimatePage extends CartEstimatePage {
         return this;
     }
 
+    @Step("Проверить, что у товара #{productIdx} из заказа #{orderIdx} доступное кол-во выделено красным")
+    public EstimatePage shouldProductAvailableStockLabelIsRed(int orderIdx, int productIdx) throws Exception {
+        productIdx--;
+        orderIdx--;
+        anAssert.isEquals(orders.get(orderIdx).getProductWidget(productIdx).getColorOfAvailableStockLbl(),
+                Colors.RED.getColorValue(), "Цвет у товара #" + (productIdx+1) + " должен быть красный");
+        return this;
+    }
+
     @Step("Проверить, что на странице сметы содержатся ожидаемые данные")
     public EstimatePage shouldEstimateHasData(SalesDocWebData expectedEstimateData) {
         SalesDocWebData actualEstimateData = getSalesDocData();
@@ -147,6 +244,20 @@ public class EstimatePage extends CartEstimatePage {
                 "Ожидался другой автор документа");
         softAssert.isEquals(actualEstimateData.getStatus(), expectedEstimateData.getStatus().toUpperCase(),
                 "Ожидался другой статус документа");
+        if (expectedEstimateData.getCreationDate() != null) {
+            softAssert.isEquals(actualEstimateData.getCreationDate(), expectedEstimateData.getCreationDate(),
+                    "Ожидался другая дата создания документа");
+        } else {
+            softAssert.isFalse(Strings.isNullOrEmpty(actualEstimateData.getCreationDate()),
+                    "Дата создания документа не отображается");
+        }
+        if (actualEstimateData.getClient() == null) {
+            softAssert.isTrue(expectedEstimateData.getClient() == null,
+                    "Информация о клиенте отсутствует");
+        } else {
+            softAssert.isEquals(actualEstimateData.getClient(), expectedEstimateData.getClient(),
+                    "Ожидался другой клиент в документе");
+        }
         anAssert.isEquals(actualEstimateData.getOrders().size(),
                 expectedEstimateData.getOrders().size(),
                 "Ожидалось другое кол-во заказов в смете");

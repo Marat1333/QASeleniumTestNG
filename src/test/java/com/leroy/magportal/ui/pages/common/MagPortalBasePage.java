@@ -38,6 +38,10 @@ public class MagPortalBasePage extends BaseWebPage {
         spinnerIcon.waitForInvisibility();
     }
 
+    protected void waitForSpinnerDisappear() {
+        spinnerIcon.waitForInvisibility();
+    }
+
     /**
      * Is alert message with something error visible?
      */
