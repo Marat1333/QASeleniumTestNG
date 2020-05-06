@@ -1,19 +1,16 @@
 package com.leroy.magportal.ui.pages.products;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.WebFindBy;
-import com.leroy.core.configuration.Log;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.utils.Converter;
 import io.qameta.allure.Step;
 
-import java.util.NoSuchElementException;
-
 public class ProductCardPage extends MenuPage {
-    public ProductCardPage(TestContext context) {
+    public ProductCardPage(Context context) {
         super(context);
     }
 
@@ -85,14 +82,14 @@ public class ProductCardPage extends MenuPage {
 
     //Verifications
     @Step("Проверить наличие поискового критерия в карте товара")
-    public ProductCardPage shouldProductCardContainsText(String text){
+    public ProductCardPage shouldProductCardContainsText(String text) {
         if (text.matches("\\D+")) {
             anAssert.isElementTextContains(productTitle, text);
-        }else {
+        } else {
             String barCode = Converter.strToStrWithoutDigits(barCodeLbl.getText());
-            anAssert.isTrue(lmCodeLbl.getText().contains(text)||
+            anAssert.isTrue(lmCodeLbl.getText().contains(text) ||
                             barCode.equals(text),
-                    "Карта товара не содержит критерий поиска "+text);
+                    "Карта товара не содержит критерий поиска " + text);
         }
         return this;
     }

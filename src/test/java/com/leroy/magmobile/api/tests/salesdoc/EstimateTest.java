@@ -41,7 +41,8 @@ public class EstimateTest extends BaseProjectApiTest {
     @Test(description = "C3311701 POST estimate product - HP")
     public void testCreateEstimate() {
         // Prepare request data
-        EstimateProductOrderData productOrderData = new EstimateProductOrderData(searchClient.getProducts(1).get(0));
+        EstimateProductOrderData productOrderData = new EstimateProductOrderData(
+                apiClientProvider.getProducts(1).get(0));
         productOrderData.setQuantity((double) new Random().nextInt(6) + 1);
 
         // Create

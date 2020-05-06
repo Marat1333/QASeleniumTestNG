@@ -4,12 +4,20 @@ import com.leroy.core.TestContext;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.pages.BaseWebPage;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.Context;
 
 import java.time.Duration;
 
 public class MagPortalBasePage extends BaseWebPage {
 
-    public MagPortalBasePage(TestContext context) {
+    protected Context context;
+
+    @Override
+    public void initContext(TestContext context) {
+        this.context = (Context) context;
+    }
+
+    public MagPortalBasePage(Context context) {
         super(context);
         this.context = context;
     }
@@ -27,6 +35,10 @@ public class MagPortalBasePage extends BaseWebPage {
 
     protected void waitForSpinnerAppearAndDisappear() {
         spinnerIcon.waitForVisibility(tiny_timeout, Duration.ofMillis(100));
+        spinnerIcon.waitForInvisibility();
+    }
+
+    protected void waitForSpinnerDisappear() {
         spinnerIcon.waitForInvisibility();
     }
 

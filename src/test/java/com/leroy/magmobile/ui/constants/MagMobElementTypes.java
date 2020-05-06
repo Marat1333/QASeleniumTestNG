@@ -1,4 +1,4 @@
-package com.leroy.constants;
+package com.leroy.magmobile.ui.constants;
 
 public enum MagMobElementTypes {
 

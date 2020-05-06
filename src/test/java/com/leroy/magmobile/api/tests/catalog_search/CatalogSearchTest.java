@@ -282,7 +282,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         for (ProductItemData data : responseData) {
             //стоки на разных бэках отличаются
             assertThat("available stock in product " + data.getLmCode() + " is " + data.getAvailableStock(),
-                    data.getAvailableStock(), greaterThan(0f));
+                    data.getAvailableStock(), greaterThan(0.0));
         }
     }
 
@@ -602,12 +602,12 @@ public class CatalogSearchTest extends BaseProjectApiTest {
 
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
 
-        List<Float> availableStocks = responseData.stream().map(ProductItemData::getAvailableStock)
+        List<Double> availableStocks = responseData.stream().map(ProductItemData::getAvailableStock)
                 .collect(Collectors.toList());
         for (int y = 0; y < availableStocks.size(); y++) {
             for (int i = availableStocks.size() - 1; i > y; i--) {
                 if (availableStocks.get(i) > availableStocks.get(y)) {
-                    float tmp = availableStocks.get(i);
+                    double tmp = availableStocks.get(i);
                     availableStocks.set(i, availableStocks.get(y));
                     availableStocks.set(y, tmp);
                 }
@@ -635,14 +635,14 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         List<ProductItemData> responseData = response.asJson().getItems();
         isResponseSuccessfulAndContainsMoreThanOneEntity(response, responseData);
 
-        List<Float> availableStocks = new ArrayList<>();
+        List<Double> availableStocks = new ArrayList<>();
         for (ProductItemData data : responseData) {
             availableStocks.add(data.getAvailableStock());
         }
         for (int y = 0; y < availableStocks.size(); y++) {
             for (int i = availableStocks.size() - 1; i > y; i--) {
                 if (availableStocks.get(i) < availableStocks.get(y)) {
-                    float tmp = availableStocks.get(i);
+                    double tmp = availableStocks.get(i);
                     availableStocks.set(i, availableStocks.get(y));
                     availableStocks.set(y, tmp);
                 }

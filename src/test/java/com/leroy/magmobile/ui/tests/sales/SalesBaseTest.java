@@ -7,13 +7,13 @@ import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.api.Module;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.ApiClientProvider;
+import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
-import com.leroy.magmobile.ui.models.search.FiltersData;
 import com.leroy.magmobile.ui.pages.sales.AddProductPage;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
 import com.leroy.magmobile.ui.pages.sales.SubmittedSalesDocumentPage;
@@ -60,7 +60,7 @@ public class SalesBaseTest extends AppBaseSteps {
     // Получить ЛМ код для обычного продукта без специфичных опций
     protected List<String> getAnyLmCodesProductWithoutSpecificOptions(
             int necessaryCount) {
-        return clientProvider.getCatalogSearchClient().getProductLmCodes(necessaryCount);
+        return clientProvider.getProductLmCodes(necessaryCount);
     }
 
     protected String getAnyLmCodeProductWithoutSpecificOptions() {
@@ -69,17 +69,17 @@ public class SalesBaseTest extends AppBaseSteps {
 
     // Получить ЛМ код для продукта с AVS
     protected String getAnyLmCodeProductWithAvs() {
-        FiltersData filtersData = new FiltersData();
+        CatalogSearchFilter filtersData = new CatalogSearchFilter();
         filtersData.setAvs(true);
-        return clientProvider.getCatalogSearchClient().getProducts(1, filtersData).get(0).getLmCode();
+        return clientProvider.getProducts(1, filtersData).get(0).getLmCode();
     }
 
     // Получить ЛМ код для продукта с опцией TopEM
     protected String getAnyLmCodeProductWithTopEM() {
-        FiltersData filtersData = new FiltersData();
+        CatalogSearchFilter filtersData = new CatalogSearchFilter();
         filtersData.setTopEM(true);
         context.getSessionData().setUserDepartmentId("15");
-        return clientProvider.getCatalogSearchClient().getProducts(1, filtersData).get(0).getLmCode();
+        return clientProvider.getProducts(1, filtersData).get(0).getLmCode();
     }
 
     // Получить ЛМ код для продукта, доступного для отзыва с RM

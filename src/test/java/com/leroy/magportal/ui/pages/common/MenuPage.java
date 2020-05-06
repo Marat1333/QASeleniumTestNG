@@ -6,15 +6,18 @@ import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.pages.BaseWebPage;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magportal.ui.pages.CustomerPage;
+import com.leroy.magmobile.ui.Context;
+import com.leroy.magportal.ui.pages.NewFeaturesModalWindow;
 import com.leroy.magportal.ui.pages.OrdersPage;
-import com.leroy.magportal.ui.pages.modal.NewFeaturesModalWindow;
+import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
+import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
+import com.leroy.magportal.ui.pages.customers.CustomerPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
 import org.openqa.selenium.By;
 
 public class MenuPage extends MagPortalBasePage {
 
-    public MenuPage(TestContext context) {
+    public MenuPage(Context context) {
         super(context);
     }
 
@@ -27,13 +30,15 @@ public class MenuPage extends MagPortalBasePage {
     private static final String LEFT_MENU_SPECIFIC_ITEM_XPATH =
             "//div[contains(@class, 'lmui-View-column lmui-View-start')]//span[text()='%s']";
 
-    public <T> T goToPage(Class<? extends BaseWebPage> pageClass) throws Exception {
+    public <T extends BaseWebPage> T goToPage(Class<T> pageClass) throws Exception {
         if (!menuTitle.isVisible())
             burgerMenuBtn.click();
         String expectedMenuItem;
         if (OrdersPage.class == pageClass) expectedMenuItem = "Заказы";
         else if (CustomerPage.class == pageClass) expectedMenuItem = "Клиенты";
         else if (SearchProductPage.class == pageClass) expectedMenuItem = "Товары";
+        else if (CartPage.class == pageClass) expectedMenuItem = "Корзины";
+        else if (EstimatePage.class == pageClass) expectedMenuItem = "Сметы";
         else
             throw new IllegalArgumentException("Переход на страницу " + pageClass.getName() + " еще не реализован через класс MenuPage");
         Element menuItem = new Element(driver, new CustomLocator(
@@ -42,7 +47,7 @@ public class MenuPage extends MagPortalBasePage {
         menuItem.waitForVisibility();
         anAssert.isTrue(menuItem.isVisible(), "Не удалось найти пункт меню " + expectedMenuItem);
         menuItem.click();
-        return (T) pageClass.getConstructor(TestContext.class).newInstance(context);
+        return (T) pageClass.getConstructor(Context.class).newInstance(context);
     }
 
     public MenuPage closeNewFeaturesModalWindowIfExist() {

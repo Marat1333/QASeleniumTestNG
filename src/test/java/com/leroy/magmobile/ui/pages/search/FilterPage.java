@@ -1,6 +1,6 @@
 package com.leroy.magmobile.ui.pages.search;
 
-import com.leroy.constants.MagMobElementTypes;
+import com.leroy.magmobile.ui.constants.MagMobElementTypes;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;

@@ -1,5 +1,6 @@
 package com.leroy.core.asserts;
 
+import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.testrail.helpers.StepLog;
 import com.leroy.core.testrail.models.ResultModel;
@@ -153,7 +154,9 @@ public abstract class BaseCustomAssert {
 
     // For UI
 
-    protected boolean logIsElementVisible(BaseWidget element, String pageSource, boolean isSoft) {
+    protected boolean logIsElementVisible(BaseWidget element, String pageSource, boolean isSoft, int timeout) {
+        if (timeout > 0)
+            element.waitForVisibility(timeout);
         Assert.assertNotNull(element.getMetaName(), "Element meta name is NULL!");
         boolean elementVisibility = pageSource == null ? element.isVisible() : element.isVisible(pageSource);
         String desc = element.getMetaName() + " не отображается";
@@ -170,16 +173,16 @@ public abstract class BaseCustomAssert {
     }
 
     protected boolean logIsElementVisible(BaseWidget element, boolean isSoft) {
-        return logIsElementVisible(element, null, isSoft);
+        return logIsElementVisible(element, null, isSoft, 0);
     }
 
     protected void logAreElementsVisible(List<BaseWidget> elements, boolean isSoft, String pageSource) {
         if (elements.size() == 0)
             throw new IllegalArgumentException("List should contain at least one element");
-        if (pageSource == null)
+        if (pageSource == null && DriverFactory.isAppProfile())
             pageSource = elements.get(0).getPageSource();
         for (BaseWidget elem : elements) {
-            logIsElementVisible(elem, pageSource, true);
+            logIsElementVisible(elem, pageSource, true, 0);
         }
         if (!isSoft)
             verifyAll();
@@ -201,7 +204,7 @@ public abstract class BaseCustomAssert {
     }
 
     protected void logIsElementTextEqual(Element elem, String expectedText, String pageSource, boolean isSoft) {
-        if (logIsElementVisible(elem, pageSource, isSoft)) {
+        if (logIsElementVisible(elem, pageSource, isSoft, 0)) {
             String actualText = elem.getText(pageSource);
             String expectedResult = String.format("Элемент '%s' должен иметь текст '%s'",
                     elem.getMetaName(), expectedText);
@@ -218,7 +221,7 @@ public abstract class BaseCustomAssert {
     }
 
     protected void logIsElementTextContains(Element element, String expectedText, String pageSource, boolean isSoft) {
-        if (logIsElementVisible(element, pageSource, isSoft)) {
+        if (logIsElementVisible(element, pageSource, isSoft, 0)) {
             String actualText = element.getText(pageSource);
             String expectedResult = String.format("Элемент '%s' должен содержать часть текста '%s'",
                     element.getMetaName(), expectedText);

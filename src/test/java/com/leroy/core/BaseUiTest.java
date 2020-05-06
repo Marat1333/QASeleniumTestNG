@@ -6,7 +6,9 @@ import com.leroy.core.configuration.EnvironmentConfigurator;
 import com.leroy.core.listeners.TestRailListener;
 import com.leroy.core.testrail.helpers.StepLog;
 import org.openqa.selenium.WebDriver;
+import org.testng.ITestResult;
 import org.testng.annotations.*;
+import org.testng.internal.TestResult;
 
 import java.lang.reflect.Method;
 import java.util.regex.Matcher;
@@ -25,7 +27,6 @@ public abstract class BaseUiTest extends EnvironmentConfigurator {
 
     protected void updateContext(
             CustomSoftAssert customSoftAssert, CustomAssert customAssert, StepLog stepLog, String tcId) {
-        initContext(driver);
         getContext().setSoftAssert(customSoftAssert);
         getContext().setAnAssert(customAssert);
         getContext().setLog(stepLog);
@@ -34,14 +35,6 @@ public abstract class BaseUiTest extends EnvironmentConfigurator {
 
     protected abstract void cleanContext();
 
-    private String getTestCaseId(String text) {
-        String result = "undefined";
-        Matcher matcher = Pattern.compile("C\\d+").matcher(text);
-        if (matcher.find()) {
-            result = matcher.group(0);
-        }
-        return result;
-    }
 
     @BeforeClass
     protected void baseStateBeforeClass() {
@@ -50,6 +43,8 @@ public abstract class BaseUiTest extends EnvironmentConfigurator {
 
     @BeforeMethod
     protected void baseStateBeforeMethod(Method method) throws Exception {
+        if (getContext() == null)
+            initContext(driver);
         log = new StepLog();
         softAssert = new CustomSoftAssert(log);
         anAssert = new CustomAssert(log);
@@ -60,11 +55,12 @@ public abstract class BaseUiTest extends EnvironmentConfigurator {
     }
 
     @AfterMethod
-    public void baseStateAfterMethod() {
-        if (this.isEvalAfterMethod()) {
+    public void baseStateAfterMethod(ITestResult tResult) {
+        if (tResult.getTestContext().getSuite().getName().equals("Default Suite") ||
+                tResult.getStatus() != TestResult.SUCCESS)
             cleanUp();
-        }
-
+        else
+            cleanContext();
     }
 
     @AfterClass
@@ -84,6 +80,15 @@ public abstract class BaseUiTest extends EnvironmentConfigurator {
 
     public void step(String msg) {
         log.step(msg);
+    }
+
+    private String getTestCaseId(String text) {
+        String result = "undefined";
+        Matcher matcher = Pattern.compile("C\\d+").matcher(text);
+        if (matcher.find()) {
+            result = matcher.group(0);
+        }
+        return result;
     }
 
 }

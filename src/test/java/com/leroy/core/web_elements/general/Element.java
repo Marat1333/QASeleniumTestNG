@@ -652,7 +652,7 @@ public class Element extends BaseWidget {
         return Color.fromString(getCssValue("border-color"));
     }
 
-    public Color getColor() throws Exception {
+    public Color getColor() {
         return Color.fromString(getCssValue("color"));
     }
 
