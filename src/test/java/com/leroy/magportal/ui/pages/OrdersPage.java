@@ -8,9 +8,4 @@ public class OrdersPage extends MenuPage {
     public OrdersPage(TestContext context) {
         super(context);
     }
-
-    @Override
-    public void waitForPageIsLoaded() {
-        super.waitForPageIsLoaded();
-    }
 }

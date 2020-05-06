@@ -7,6 +7,7 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magportal.ui.pages.common.MenuPage;
+import com.leroy.utils.Converter;
 import io.qameta.allure.Step;
 
 import java.util.NoSuchElementException;
@@ -88,8 +89,9 @@ public class ProductCardPage extends MenuPage {
         if (text.matches("\\D+")) {
             anAssert.isElementTextContains(productTitle, text);
         }else {
+            String barCode = Converter.strToStrWithoutDigits(barCodeLbl.getText());
             anAssert.isTrue(lmCodeLbl.getText().contains(text)||
-                    barCodeLbl.getText(()-> barCodeLbl.getText().replaceAll("\\D+","")).equals(text),
+                            barCode.equals(text),
                     "Карта товара не содержит критерий поиска "+text);
         }
         return this;

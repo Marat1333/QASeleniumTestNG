@@ -383,7 +383,7 @@ public class Element extends BaseWidget {
         return getText(false);
     }
 
-    public String getText(GetTextAble fun){
+    public String getText(GetTextAble fun) {
         return fun.getText();
     }
 
@@ -873,12 +873,12 @@ public class Element extends BaseWidget {
     }
 
 
-    public void waitForAttributeChanged(String attributeName, String attributeValue){
+    public void waitForAttributeChanged(String attributeName, String attributeValue) {
         WebDriverWait wait = new WebDriverWait(this.driver, timeout);
         try {
-            wait.until((ExpectedCondition<Boolean>) driverObject-> !this.getAttribute(attributeName).equals(attributeValue));
+            wait.until((ExpectedCondition<Boolean>) driverObject -> !this.getAttribute(attributeName).equals(attributeValue));
         } catch (org.openqa.selenium.TimeoutException e) {
-            Log.warn(String.format("waitForInvisibility failed (tried for %d second(s))", timeout));
+            Log.warn(String.format("waitForAttributeChanged failed (tried for %d second(s))", timeout));
         }
     }
 }

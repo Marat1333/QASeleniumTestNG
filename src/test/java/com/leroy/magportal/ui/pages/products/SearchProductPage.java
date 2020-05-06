@@ -1,5 +1,6 @@
 package com.leroy.magportal.ui.pages.products;
 
+import com.leroy.constants.EnvConstants;
 import com.leroy.core.TestContext;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
@@ -217,6 +218,17 @@ public class SearchProductPage extends MenuPage {
     public SearchProductPage enterStringInSearchInput(String value) {
         searchInput.fill(value);
         return this;
+    }
+
+    @Step("Перейти по адресу, содержащему фильтры")
+    public SearchProductPage navigateToWithFilters(Map<String, String> params) throws Exception {
+        StringBuilder paramsBuilder = new StringBuilder();
+        paramsBuilder.append(EnvConstants.URL_MAG_PORTAL).append("/catalogproducts?");
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            paramsBuilder.append(entry.getKey() + entry.getValue()).append("&");
+        }
+        navigateTo(paramsBuilder.deleteCharAt(paramsBuilder.length() - 1).toString());
+        return new SearchProductPage(context);
     }
 
     @Step("Наполнить историю поиска")
@@ -735,6 +747,9 @@ public class SearchProductPage extends MenuPage {
         for (Filters filter : filters) {
             MagPortalCheckBox checkbox = new MagPortalCheckBox(driver, new CustomLocator(By.xpath(
                     "//div[contains(@class, 'active')]//*[contains(text(),'" + filter.getName() + "')]/ancestor::button")));
+            if (!checkbox.isVisible()) {
+                showAllFilters();
+            }
             if (isEnabled) {
                 anAssert.isTrue(checkbox.isChecked(), "Чекбокс в состоянии disabled");
             } else {

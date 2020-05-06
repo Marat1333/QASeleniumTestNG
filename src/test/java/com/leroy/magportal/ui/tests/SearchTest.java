@@ -13,6 +13,7 @@ import com.leroy.magportal.ui.models.search.FiltersData;
 import com.leroy.magportal.ui.pages.products.ParamNames;
 import com.leroy.magportal.ui.pages.products.ProductCardPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
+import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
@@ -20,6 +21,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.Map;
 
 @Guice(modules = {Module.class})
 public class SearchTest extends WebBaseSteps {
@@ -339,7 +341,7 @@ public class SearchTest extends WebBaseSteps {
                 .shouldSupplierComboBoxContainsCorrectText(true, null);
     }
 
-    //bug
+    @Issue("PUZ2-2209")
     @Test(description = "C22782965 AVS")
     public void testAvsFilter() throws Exception {
         LocalDate avsDate = LocalDate.of(2020, 3, 3);
@@ -369,14 +371,15 @@ public class SearchTest extends WebBaseSteps {
                 .applyFilters();
 
         ProductItemDataList avsDateResponse = resultsMap.get(0).getData();
-        ProductItemDataList avsNeqNullResponse = resultsMap.get(1).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(avsDateResponse, SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED)
                 .clearAllFilters()
                 .choseCheckboxFilter(true, SearchProductPage.Filters.AVS)
-                .shouldAvsContainerContainsCorrectText(true, null)
-                .shouldResponseEntityEqualsToViewEntity(avsNeqNullResponse, SearchProductPage.FilterFrame.MY_SHOP,
-                        SearchProductPage.ViewMode.EXTENDED);
+                .shouldAvsContainerContainsCorrectText(true, null);
+
+        ProductItemDataList avsNeqNullResponse = resultsMap.get(1).getData();
+        searchProductPage.shouldResponseEntityEqualsToViewEntity(avsNeqNullResponse, SearchProductPage.FilterFrame.MY_SHOP,
+                SearchProductPage.ViewMode.EXTENDED);
 
         searchProductPage.enterAvsDateManually(avsDate)
                 .applyFilters()
@@ -742,6 +745,52 @@ public class SearchTest extends WebBaseSteps {
                 shouldRequestHasBeenInitializedNTimes(3, true);
 
         searchProductPage.shouldRequestHasBeenInitializedNTimes(4, false);
+    }
+
+    @Test(description = "C23388802 search by browser url input")
+    public void testSearchByUrl() throws Exception {
+        LocalDate avsDate = LocalDate.of(2020, 4, 9);
+        final String FIRST_SUPPLIER_CODE = "1001123001";
+        final String SECOND_SUPPLIER_CODE = "1002258015";
+
+        FiltersData myShopFilterData = new FiltersData();
+        myShopFilterData.setCheckBoxes(new SearchProductPage.Filters[]{SearchProductPage.Filters.BEST_PRICE,
+                SearchProductPage.Filters.HAS_AVAILABLE_STOCK});
+        myShopFilterData.setTopFilters(new String[]{"Топ 1", "Топ 2"});
+        myShopFilterData.setSuppliers(new String[]{FIRST_SUPPLIER_CODE, SECOND_SUPPLIER_CODE});
+        myShopFilterData.setAvsDate(avsDate);
+
+        FiltersData allGammaFilterData = new FiltersData();
+        allGammaFilterData.setCheckBoxes(new SearchProductPage.Filters[]{SearchProductPage.Filters.LIMITED_OFFER,
+                SearchProductPage.Filters.CTM});
+        allGammaFilterData.setGammaFilters(new String[]{"Гамма S", "Гамма P"});
+        allGammaFilterData.setAvsDate(avsDate);
+
+        Map<String, String> myShopParamMap = new HashMap<String, String>();
+        myShopParamMap.put(ParamNames.shopId, EnvConstants.BASIC_USER_SHOP_ID);
+        myShopParamMap.put(ParamNames.bestPrice, "true");
+        myShopParamMap.put(ParamNames.hasAvailableStock, "true");
+        myShopParamMap.put(ParamNames.top, "1,2");
+        myShopParamMap.put(ParamNames.supplierId, FIRST_SUPPLIER_CODE + "," + SECOND_SUPPLIER_CODE);
+        myShopParamMap.put(ParamNames.avsDate, String.format("between%%7C%s-0%s-0%sT00:00:00.000Z%%7C%s-0%s-%sT00:00:00.000Z", +
+                avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth(), +
+                avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth() + 1));
+
+        Map<String, String> allGammaParamMap = new HashMap<String, String>();
+        allGammaParamMap.put(ParamNames.limitedOffer, "true");
+        allGammaParamMap.put(ParamNames.ctm, "true");
+        allGammaParamMap.put(ParamNames.gamma, "S,P");
+        allGammaParamMap.put(ParamNames.avsDate, String.format("between%%7C%s-0%s-0%sT00:00:00.000Z%%7C%s-0%s-%sT00:00:00.000Z", +
+                avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth(), +
+                avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth() + 1));
+
+        SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
+        searchProductPage.navigateToWithFilters(myShopParamMap);
+        searchProductPage.checkFiltersChosen(myShopFilterData);
+
+        searchProductPage.navigateToWithFilters(allGammaParamMap);
+        searchProductPage.checkFiltersChosen(allGammaFilterData);
+
     }
 
 }

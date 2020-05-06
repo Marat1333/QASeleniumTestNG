@@ -936,20 +936,18 @@ public abstract class BaseWebPage extends BasePage {
         jsExecute("document.body.style.zoom='" + percent + "%'");
     }
 
-    public <J extends MenuPage> J verifyUrlContainsString(String... values) {
+    public void verifyUrlContainsString(String... values) {
         String currentUrl = driver.getCurrentUrl();
         for (String value : values) {
             anAssert.isTextContainsIgnoringCase(currentUrl, value, "current url hasn`t contains " + value + " current url is " + currentUrl);
         }
-        return (J) this;
     }
 
-    public <J extends MenuPage> J verifyUrlContainsStringNot(String... values) {
+    public void verifyUrlContainsStringNot(String... values) {
         String currentUrl = driver.getCurrentUrl();
         for (String value : values) {
             anAssert.isTextContainsNotIgnoringCase(currentUrl, value, "current url contains " + value + " current url is " + currentUrl);
         }
-        return (J) this;
     }
 
 }

@@ -61,6 +61,7 @@ public class CatalogSearchClient extends MagMobileClient {
         Response<ServiceItemDataList> resp = searchServicesBy(params);
         List<ServiceItemData> services =
                 resp.asJson().getItems().stream().limit(necessaryCount).collect(Collectors.toList());
+
         return services;
     }
 
