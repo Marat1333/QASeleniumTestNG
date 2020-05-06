@@ -1,8 +1,6 @@
 package com.leroy.magmobile.ui.models;
 
-import com.leroy.core.BaseModel;
-
-public abstract class CardWidgetData extends BaseModel {
+public abstract class CardWidgetData {
 
     protected boolean equalsIfLeftNotNull(Object arg1, Object arg2) {
         if (arg1 != null)

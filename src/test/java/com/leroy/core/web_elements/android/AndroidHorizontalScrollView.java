@@ -101,7 +101,7 @@ public class AndroidHorizontalScrollView<T extends CardWidgetData> extends BaseW
                     "new UiScrollable(new UiSelector().scrollable(true)).setAsHorizontalList()" +
                             ".scrollTextIntoView(\"" + text + "\");");
         } else {
-            // TODO
+            // to do
         }
         return this;
     }

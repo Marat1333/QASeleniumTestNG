@@ -1,20 +1,17 @@
 package com.leroy.magportal.ui.pages.products;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magportal.ui.pages.CartPage;
-import com.leroy.magportal.ui.pages.EstimatePage;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.webelements.commonelements.PriceContainer;
 import com.leroy.magportal.ui.webelements.widgets.ExtendedProductCardWidget;
 import com.leroy.magportal.ui.webelements.widgets.ShopCardWidget;
-import io.qameta.allure.Step;
 
 public class ExtendedProductCardPage extends ProductCardPage {
-    public ExtendedProductCardPage(TestContext context) {
+    public ExtendedProductCardPage(Context context) {
         super(context);
     }
 

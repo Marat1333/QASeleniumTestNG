@@ -44,7 +44,7 @@ public class SmsNotificationClient extends MagMobileClient {
     public void assertThatGetResponseMatches(Response<SmsNotificationData> resp,
                                              SmsNotificationData expectedData) {
         assertThatResponseIsOk(resp);
-        // TODO
+        // to do
     }
 
 }

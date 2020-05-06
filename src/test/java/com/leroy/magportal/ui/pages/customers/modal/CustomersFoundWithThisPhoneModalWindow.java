@@ -1,4 +1,4 @@
-package com.leroy.magportal.ui.pages.modal;
+package com.leroy.magportal.ui.pages.customers.modal;
 
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;

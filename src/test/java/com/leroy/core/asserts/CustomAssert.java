@@ -1,6 +1,5 @@
 package com.leroy.core.asserts;
 
-import com.leroy.core.asserts.BaseCustomAssert;
 import com.leroy.core.testrail.helpers.StepLog;
 import com.leroy.core.web_elements.general.BaseWidget;
 import com.leroy.core.web_elements.general.Element;
@@ -49,16 +48,20 @@ public class CustomAssert extends BaseCustomAssert {
         super.logIsElementTextEqual(element, expectedText, null, false);
     }
 
-    public boolean isElementVisible(BaseWidget element, String pageSource) {
-        return super.logIsElementVisible(element, pageSource, false);
-    }
-
     public void isElementTextContains(Element element, String expectedText) {
         super.logIsElementTextContains(element, expectedText, null, false);
     }
 
     public void isElementTextContains(Element element, String expectedText, String pageSource) {
         super.logIsElementTextContains(element, expectedText, pageSource, false);
+    }
+
+    public boolean isElementVisible(BaseWidget element, int timeout) {
+        return super.logIsElementVisible(element, null, false, timeout);
+    }
+
+    public boolean isElementVisible(BaseWidget element, String pageSource) {
+        return super.logIsElementVisible(element, pageSource, false, 0);
     }
 
     public boolean isElementVisible(BaseWidget element) {

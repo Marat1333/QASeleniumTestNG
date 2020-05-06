@@ -16,6 +16,7 @@ public class EnvConstants {
     // User options
     public static final String BASIC_USER_LDAP = getProperty("basic.user.ldap");
     public static final String BASIC_USER_PASS = getProperty("basic.user.password");
+    public static final String BASIC_USER_FIRST_NAME = getProperty("basic.user.name");
     public static final String BASIC_USER_SHOP_ID = getProperty("basic.user.shopId");
     public static final String BASIC_USER_DEPARTMENT_ID = getProperty("basic.user.departmentId");
 
@@ -69,7 +70,7 @@ public class EnvConstants {
             properties.load(reader);
 
         } catch (IOException e) {
-
+            Log.error(e.getMessage());
         }
         return properties;
     }

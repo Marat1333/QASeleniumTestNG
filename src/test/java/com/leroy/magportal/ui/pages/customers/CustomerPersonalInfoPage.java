@@ -1,12 +1,12 @@
-package com.leroy.magportal.ui.pages;
+package com.leroy.magportal.ui.pages.customers;
 
 import com.leroy.constants.Gender;
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.magmobile.ui.Context;
+import com.leroy.magportal.ui.models.customers.CustomerData;
 import com.leroy.magportal.ui.pages.common.MenuPage;
-import com.leroy.magportal.ui.models.CustomerData;
 import io.qameta.allure.Step;
 import org.apache.commons.lang3.StringUtils;
 
@@ -14,7 +14,7 @@ public class CustomerPersonalInfoPage extends MenuPage {
 
     public static final String HEADER = "Клиенты";
 
-    public CustomerPersonalInfoPage(TestContext context) {
+    public CustomerPersonalInfoPage(Context context) {
         super(context);
     }
 

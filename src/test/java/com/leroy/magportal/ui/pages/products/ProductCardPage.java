@@ -1,18 +1,14 @@
 package com.leroy.magportal.ui.pages.products;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.WebFindBy;
-import com.leroy.core.configuration.Log;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.pages.common.MenuPage;
-import io.qameta.allure.Step;
-
-import java.util.NoSuchElementException;
 
 public class ProductCardPage extends MenuPage {
-    public ProductCardPage(TestContext context) {
+    public ProductCardPage(Context context) {
         super(context);
     }
 

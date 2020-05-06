@@ -44,4 +44,12 @@ public class Converter {
         else
             return String.format("%s", d);
     }
+
+    public static Double sum(double a, double b, int decimalPlaces) {
+        return Math.round((a + b) * Math.pow(10, decimalPlaces)) / Math.pow(10, decimalPlaces);
+    }
+
+    public static String standardPhoneFmt(String phoneNumber) {
+        return phoneNumber.replaceAll(" |-", "");
+    }
 }

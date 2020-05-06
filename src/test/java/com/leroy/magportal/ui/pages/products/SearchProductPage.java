@@ -1,6 +1,5 @@
 package com.leroy.magportal.ui.pages.products;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
@@ -8,19 +7,17 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.webelements.MagPortalComboBox;
 import com.leroy.magportal.ui.webelements.searchelements.SupplierComboBox;
 import com.leroy.magportal.ui.webelements.widgets.*;
 import io.qameta.allure.Step;
-import org.openqa.selenium.By;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class SearchProductPage extends MenuPage {
-    public SearchProductPage(TestContext context) {
+    public SearchProductPage(Context context) {
         super(context);
     }
 

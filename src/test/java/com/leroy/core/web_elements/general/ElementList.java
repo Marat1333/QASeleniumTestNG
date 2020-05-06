@@ -232,11 +232,22 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
     }
 
     /**
+     * Wait until at least one element appears
+     */
+    public boolean waitUntilAtLeastOneElementIsPresent(int timeout) {
+        return waitUntilElementCountEqualsOrAbove(1, timeout);
+    }
+
+    public boolean waitUntilAtLeastOneElementIsPresent() {
+        return waitUntilElementCountEqualsOrAbove(1);
+    }
+
+    /**
      * Wait for count of elements is above or equals to the specified number
      *
      * @param expectedCount
      */
-    public boolean waitUntilElementCountEqualsOrAbove(int expectedCount) {
+    public boolean waitUntilElementCountEqualsOrAbove(int expectedCount, int timeout) {
         try {
             new WebDriverWait(this.driver, timeout).until((driver) -> {
                 try {
@@ -251,6 +262,10 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
                     "Expected condition failed: waitForElementCountEqualsOrAbove (tried for %d second(s))", timeout));
             return false;
         }
+    }
+
+    public boolean waitUntilElementCountEqualsOrAbove(int expectedCount) {
+        return waitUntilElementCountEqualsOrAbove(expectedCount, timeout);
     }
 
     /**
