@@ -68,6 +68,10 @@ public class EstimatePage extends CommonMagMobilePage {
     @AppFindBy(text = "Смета", metaName = "Заголовок экрана")
     Element headerLbl;
 
+    @AppFindBy(xpath = "//*[@text='Смета']/following::android.view.ViewGroup[@content-desc='Button']",
+            metaName = "Кнопка редактирования/удаления сметы")
+    Element editTrashBtn;
+
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='EstimateDocumentScreenId']//android.widget.TextView[contains(@text, '№')]",
             metaName = "Номер документа")
     Element documentNumber;
@@ -123,6 +127,9 @@ public class EstimatePage extends CommonMagMobilePage {
 
     @AppFindBy(text = "СОЗДАТЬ")
     private MagMobGreenSubmitButton createBtn;
+
+    @AppFindBy(text = "СОХРАНИТЬ")
+    private MagMobGreenSubmitButton saveBtn;
 
     // ------ Grab info from Page methods -----------//
 
@@ -181,6 +188,13 @@ public class EstimatePage extends CommonMagMobilePage {
     }
 
     // ACTIONS
+
+    @Step("Нажать кнопку для редактирования сметы (перейти в режим редактирования)")
+    public EstimatePage clickEditEstimateButton() {
+        editTrashBtn.click();
+        addProductBtn.waitForVisibility();
+        return this;
+    }
 
     @Step("Нажмите на {index}-ую карточку товара/услуги")
     public ActionWithProductCardModalPage clickCardByIndex(int index) throws Exception {
@@ -280,6 +294,13 @@ public class EstimatePage extends CommonMagMobilePage {
         if (expectedCustomerData.getEmail() != null)
             softAssert.isEquals(actualCustomerData.getEmail(), expectedCustomerData.getEmail(),
                     "Email выбранного клиента неверен");
+        softAssert.verifyAll();
+        return this;
+    }
+
+    @Step("Проверить, что смета находится в режиме редактирования")
+    public EstimatePage shouldEditModeOn() {
+        softAssert.areElementsVisible(addProductBtn, saveBtn);
         softAssert.verifyAll();
         return this;
     }
