@@ -17,9 +17,9 @@ public class SupplierComboBox extends MagPortalComboBox {
     private SupplierDropDown supplierDropDown;
 
     @Override
-    public void selectOptions(List<String> elements) throws Exception {
+    public void selectOptions(List<String> options) throws Exception {
         List<SupplierCardWidget> supplierCards;
-        for (String tmp : elements) {
+        for (String tmp : options) {
             supplierDropDown.searchSupplier(tmp);
             supplierCards = supplierDropDown.getSupplierCards().convertToList();
             for (SupplierCardWidget widget : supplierCards) {
