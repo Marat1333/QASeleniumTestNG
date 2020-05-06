@@ -48,7 +48,7 @@ public class CartTest extends BaseProjectApiTest {
     private void setUp() {
         searchClient = apiClientProvider.getCatalogSearchClient();
         cartClient.setSessionData(sessionData);
-        products = searchClient.getProducts(3);
+        products = apiClientProvider.getProducts(3);
     }
 
     @AfterMethod

@@ -36,7 +36,8 @@ public class SalesDocApiTest extends BaseProjectApiTest {
     @Test(description = "C3232445 SalesDoc add product")
     public void testSalesDocAddProduct() {
         // Prepare request data
-        CartEstimateProductOrderData productOrderData = new CartEstimateProductOrderData(searchClient.getProducts(1).get(0));
+        CartEstimateProductOrderData productOrderData = new CartEstimateProductOrderData(
+                apiClientProvider.getProducts(1).get(0));
         productOrderData.setQuantity((double) new Random().nextInt(6) + 1);
 
         // Create and check
@@ -55,7 +56,8 @@ public class SalesDocApiTest extends BaseProjectApiTest {
     @Test(description = "C3232446 SalesDoc add services")
     public void testSalesDocAddService() {
         // Prepare request data
-        ServiceOrderData serviceOrderData = new ServiceOrderData(searchClient.getServices(1).get(0));
+        ServiceOrderData serviceOrderData = new ServiceOrderData(
+                apiClientProvider.getServices(1).get(0));
         serviceOrderData.setPrice(10.0);
 
         // Send requests and verification
