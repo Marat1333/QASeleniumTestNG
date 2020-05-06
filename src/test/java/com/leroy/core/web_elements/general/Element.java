@@ -383,10 +383,6 @@ public class Element extends BaseWidget {
         return getText(false);
     }
 
-    public String getText(GetTextAble fun) {
-        return fun.getText();
-    }
-
     /**
      * Get text if the element is present, otherwise return null
      */

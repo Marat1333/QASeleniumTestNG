@@ -25,13 +25,11 @@ public class CalendarWidget extends BaseWidget {
     @WebFindBy(xpath = ".//span[contains(@class,'DatePicker__captionYear')]")
     Element selectedYearLabel;
 
-    private Button getPreviousMonthBtn(){
-        return new Button(driver, new CustomLocator(By.xpath(".//button[contains(@class,'NavButton--prev')]")));
-    }
-    
-    private Button getNextMonthBtn(){
-        return new Button(driver, new CustomLocator(By.xpath(".//button[contains(@class,'NavButton--next')]")));
-    }
+    @WebFindBy(xpath = ".//button[contains(@class,'NavButton--prev')]")
+    Button previousMonthBtn;
+
+    @WebFindBy(xpath = ".//button[contains(@class,'NavButton--next')]")
+    Button nextMonthBtn;
 
     private void selectDayByLabel(String value) throws Exception {
         Element dayLbl = new Element(driver, new CustomLocator(By.xpath(getXpath()+"//*[text()='" + value + "']")));
@@ -52,9 +50,9 @@ public class CalendarWidget extends BaseWidget {
 
         for (int i = 0; i < differenceInMonth; i++) {
             if (needToSelectDate.before(calendarDate)) {
-                getPreviousMonthBtn().click();
+                previousMonthBtn.click();
             } else if (needToSelectDate.after(calendarDate)) {
-                getNextMonthBtn().click();
+                nextMonthBtn.click();
             } else
                 break;
         }

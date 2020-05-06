@@ -129,7 +129,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.navigateToPreviousNomenclatureElement("Каталог товаров");
 
         searchProductPage.searchByPhrase(lmCode);
-        ProductCardPage productCardPage = new ProductCardPage(getContext());
+        ProductCardPage productCardPage = new ProductCardPage(context);
         productCardPage.shouldProductCardContainsText(lmCode);
         productCardPage.verifyUrlContainsString(lmCode);
         productCardPage.navigateBack();
@@ -338,7 +338,7 @@ public class SearchTest extends WebBaseSteps {
                 .shouldSupplierComboBoxContainsCorrectText(false, FIRST_SUPPLIER_NAME)
                 .deleteChosenSuppliers(false, FIRST_SUPPLIER_NAME)
                 .shouldChosenSupplierCheckboxHasCorrectCondition(false, FIRST_SUPPLIER_NAME)
-                .shouldSupplierComboBoxContainsCorrectText(true, null);
+                .shouldSupplierComboBoxContainsCorrectText(true);
     }
 
     @Issue("PUZ2-2209")

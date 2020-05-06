@@ -59,7 +59,12 @@ public abstract class BaseWidget extends BaseWrapper {
     protected void initialWebElementIfNeeded(int timeout) {
         try {
             if (locator != null) {
-                initWebElement(timeout);
+                if (webElement == null || isRefreshEveryTime()) {
+                    initWebElement(timeout);
+                } else {
+                    if (!isCacheLookup() && isStaleReference())
+                        initWebElement(timeout);
+                }
             }
         } catch (Exception err) {
             Log.error("Element " + (getMetaName() != null ? getMetaName() : "") + " not found. " + err.getMessage());
