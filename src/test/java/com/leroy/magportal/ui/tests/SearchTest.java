@@ -282,22 +282,27 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.choseSortType(SearchProductPage.SortType.LM_CODE_DESC);
         searchProductPage.verifyUrlContainsString(ParamNames.sortBy + "lmCode%7CDESC");
         searchProductPage.shouldProductsAreSorted(SearchProductPage.SortType.LM_CODE_DESC);
+        searchProductPage.shouldSortComboBoxContainsText(SearchProductPage.SortType.LM_CODE_DESC.getName());
 
         searchProductPage.choseSortType(SearchProductPage.SortType.LM_CODE_ASC);
         searchProductPage.verifyUrlContainsString(ParamNames.sortBy + "lmCode%7CASC");
         searchProductPage.shouldProductsAreSorted(SearchProductPage.SortType.LM_CODE_ASC);
+        searchProductPage.shouldSortComboBoxContainsText(SearchProductPage.SortType.LM_CODE_ASC.getName());
 
         searchProductPage.choseSortType(SearchProductPage.SortType.NAME_DESC);
         searchProductPage.verifyUrlContainsString(ParamNames.sortBy + "name%7CDESC");
         searchProductPage.shouldProductsAreSorted(SearchProductPage.SortType.NAME_DESC);
+        searchProductPage.shouldSortComboBoxContainsText(SearchProductPage.SortType.NAME_DESC.getName());
 
         searchProductPage.choseSortType(SearchProductPage.SortType.NAME_ASC);
         searchProductPage.verifyUrlContainsString(ParamNames.sortBy + "name%7CASC");
         searchProductPage.shouldProductsAreSorted(SearchProductPage.SortType.NAME_ASC);
+        searchProductPage.shouldSortComboBoxContainsText(SearchProductPage.SortType.NAME_ASC.getName());
 
         searchProductPage.choseSortType(SearchProductPage.SortType.DEFAULT);
         searchProductPage.shouldResponseEntityEqualsToViewEntity(response.asJson(), SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
+        searchProductPage.shouldSortComboBoxContainsText(SearchProductPage.SortType.DEFAULT.getName());
     }
 
     @Test(description = "C23384739 searchHistory")
