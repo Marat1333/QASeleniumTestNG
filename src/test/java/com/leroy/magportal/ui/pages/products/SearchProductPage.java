@@ -146,32 +146,34 @@ public class SearchProductPage extends MenuPage {
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//label[text()='Поставщик']/ancestor::div[1]")
     SupplierComboBox supplierDropBox;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(@class,'singleValue')]/ancestor::div[2]")
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(text(),'Сортировать')]/ancestor::div[2]"/*"//div[contains(@class, 'active')]//span[contains(@class,'singleValue')]/ancestor::div[2]"*/)
     MagPortalComboBox sortComboBox;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(@class,'singleValue')]" +
-            "/ancestor::div[6]/following-sibling::button[1]")
+            "/ancestor::div[6]/following-sibling::button[1]", refreshEveryTime = true)
     Button extendedViewBtn;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(@class,'singleValue')]" +
-            "/ancestor::div[6]/following-sibling::button[2]")
+            "/ancestor::div[6]/following-sibling::button[2]", refreshEveryTime = true)
     Button listViewBtn;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(text(), 'ПОКАЗАТЬ ЕЩЕ')]")
     Element showMoreProductsBtn;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, " +
-            "'BarViewProductCard__container')]", clazz = ProductCardWidget.class)
+            "'BarViewProductCard__container')]", clazz = ProductCardWidget.class, refreshEveryTime = true)
     ElementList<ProductCardWidget> productCardsList;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'BarViewProductCard__container')]" +
-            "//p/following-sibling::div/ancestor::div[1]", clazz = ExtendedProductCardWidget.class)
+            "//p/following-sibling::div/ancestor::div[1]", clazz = ExtendedProductCardWidget.class,refreshEveryTime = true)
     ElementList<ExtendedProductCardWidget> extendedProductCardList;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'TableView__row')]", clazz = ProductCardTableViewWidget.class)
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'TableView__row')]", clazz = ProductCardTableViewWidget.class,
+    refreshEveryTime = true)
     ElementList<ProductCardTableViewWidget> productCardListTableView;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'TableView__row')]/div[5]/ancestor::div[1]", clazz = ExtendedProductCardTableViewWidget.class)
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'TableView__row')]/div[5]/ancestor::div[1]",
+            clazz = ExtendedProductCardTableViewWidget.class, refreshEveryTime = true)
     ElementList<ExtendedProductCardTableViewWidget> extendedProductCardListTableView;
 
     @WebFindBy(text = "Произошла ошибка")
@@ -193,7 +195,7 @@ public class SearchProductPage extends MenuPage {
     public void waitForPageIsLoaded() {
         searchInput.waitForVisibility();
         applyFiltersBtn.waitForVisibility();
-
+        waitForSpinnerAppearAndDisappear();
     }
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'DatePicker__dayPicker')]",
@@ -222,6 +224,51 @@ public class SearchProductPage extends MenuPage {
         return this;
     }
 
+    @Step("Перейти в карточку продукта {lmCode}")
+    public <T> T navigateToProductCart(String lmCode, FilterFrame frame, ViewMode viewMode) throws Exception {
+        Set<String> windows = driver.getWindowHandles();
+        switch (frame){
+            case MY_SHOP:
+                switch (viewMode){
+                    case EXTENDED:
+                        for (ExtendedProductCardWidget widget:extendedProductCardList){
+                            if (widget.getLmCode().equals(lmCode)){
+                                widget.click();
+                            }
+                        }
+                        break;
+                    case LIST:
+                        for (ExtendedProductCardTableViewWidget widget:extendedProductCardListTableView){
+                            if (widget.getLmCode().equals(lmCode)){
+                                widget.click();
+                            }
+                        }
+                        break;
+                }
+                break;
+            case ALL_GAMMA_LM:
+                switch (viewMode){
+                    case EXTENDED:
+                        for (ProductCardWidget widget : productCardsList){
+                            if (widget.getLmCode().equals(lmCode)){
+                                widget.click();
+                            }
+                        }
+                        break;
+                    case LIST:
+                        for (ProductCardTableViewWidget widget : productCardListTableView){
+                            if (widget.getLmCode().equals(lmCode)){
+                                widget.click();
+                            }
+                        }
+                        break;
+                }
+                break;
+        }
+        this.switchToNewWindow(windows);
+        return frame.equals(FilterFrame.MY_SHOP) ? (T)new ExtendedProductCardPage(context) : (T)new ProductCardPage(context);
+    }
+
     @Step("Перейти по адресу, содержащему фильтры")
     public SearchProductPage navigateToWithFilters(Map<String, String> params) throws Exception {
         StringBuilder paramsBuilder = new StringBuilder();
@@ -234,7 +281,7 @@ public class SearchProductPage extends MenuPage {
     }
 
     @Step("Наполнить историю поиска")
-    public List<String> createSearchHistory(int notesQuantity) {
+    public List<String> createSearchHistory(int notesQuantity) throws Exception {
         List<String> searchHistoryList = new ArrayList<>();
         String searchContext = "q";
         for (int i = 0; i < notesQuantity; i++) {
@@ -248,10 +295,16 @@ public class SearchProductPage extends MenuPage {
     }
 
     @Step("Ввести в поисковую строку {value} и осуществить поиск")
-    public SearchProductPage searchByPhrase(String value) {
+    public <T> T searchByPhrase(String value) throws Exception {
+        Set<String> windows = driver.getWindowHandles();
         searchInput.clearFillAndSubmit(value);
         waitForSpinnerAppearAndDisappear();
-        return this;
+        if (value.matches("\\d{8}") || value.matches("\\d{13}")) {
+            this.switchToNewWindow(windows);
+            return (T) new ProductCardPage(context);
+        }
+        waitForSpinnerAppearAndDisappear();
+        return (T) this;
     }
 
     @Step("Ввести в поисковую строку {value} без поиска")
@@ -267,7 +320,7 @@ public class SearchProductPage extends MenuPage {
         return this;
     }
 
-    @Step("Выбрать группу фильтров {frame}")
+    @Step("Выбрать группу фильтров")
     public SearchProductPage switchFiltersFrame(FilterFrame frame) {
         String attributeValue;
         String attributeName = "className";
@@ -279,6 +332,16 @@ public class SearchProductPage extends MenuPage {
             attributeValue = allGammaContainer.getAttribute(attributeName);
             allGammaFilterBtn.click();
             allGammaContainer.waitForAttributeChanged(attributeName, attributeValue);
+        }
+        return this;
+    }
+
+    @Step("Выбрать режим отображения карточек товара")
+    public SearchProductPage switchViewMode(ViewMode mode){
+        if (mode.equals(ViewMode.EXTENDED)){
+            extendedViewBtn.click();
+        }else {
+            listViewBtn.click();
         }
         return this;
     }
@@ -896,6 +959,19 @@ public class SearchProductPage extends MenuPage {
             }
         }
         anAssert.isEquals(spinnerAppearCounter, n, "Запрос не был отправлен " + n + " раз");
+        return this;
+    }
+
+    @Step("Проверить, что поисковая строка содержит {value}")
+    public SearchProductPage shouldSearchInputContainsText(String value) {
+        anAssert.isElementTextEqual(searchInput, value);
+        return this;
+    }
+
+    @Step("Проверить, что кмобо-бокс сортировки содержит {value}")
+    public SearchProductPage shouldSortComboBoxContainsText(String value) throws Exception {
+        String actualText = sortComboBox.findChildElement(".//span[ancestor::div[contains(@class,'multi')]]").getText();
+        anAssert.isTextContainsIgnoringCase(actualText, value, actualText + " не содержит " + value);
         return this;
     }
 }

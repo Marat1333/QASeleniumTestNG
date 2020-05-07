@@ -18,10 +18,10 @@ public class ExtendedProductCardPage extends ProductCardPage {
     public enum Tabs {
         SIMILAR_PRODUCTS,
         COMPLEMENT_PRODUCTS,
-        PRICES_AND_STOCKS_IN_OTHER_SHOPS;
+        PRICES_AND_STOCKS_IN_OTHER_SHOPS
     }
 
-    @WebFindBy(xpath = "//span[contains(@class, 'Badge')][2]")
+    @WebFindBy(xpath = "//span[contains(@class, 'Badge') and contains(text(),'Топ')]")
     Element topBadge;
 
     @WebFindBy(xpath = "//span[contains(@class, 'Badge')][3]")
@@ -49,6 +49,9 @@ public class ExtendedProductCardPage extends ProductCardPage {
     @WebFindBy(xpath = "//span[contains(text(),'Закупочная')]/ancestor::div[2]/div[contains(@class, 'textAlign')]" +
             "//div[contains(@class,'ProductCard')][1]")
     PriceContainer hiddenPurchasingPrice;
+
+    @WebFindBy(xpath = "//span[contains(text(),'Доступно для продажи')]/../following-sibling::*/span")
+    Element availableForSaleLbl;
 
     @WebFindBy(xpath = "//button[@id='ANALOG']")
     Button similarProducts;
@@ -79,6 +82,11 @@ public class ExtendedProductCardPage extends ProductCardPage {
 
     @WebFindBy(xpath = "//span[text()='в смету']")
     Button addProductToEstimate;
+
+    @Override
+    public void waitForPageIsLoaded() {
+        super.waitForPageIsLoaded();
+    }
 
     /*private PriceContainer getHiddenRecommendedPrice() {
         hiddenRecommendedPrice.click();
@@ -140,5 +148,15 @@ public class ExtendedProductCardPage extends ProductCardPage {
         return this;
     }*/
 
-
+    @Override
+    public void verifyRequiredElement() {
+        super.verifyRequiredElement();
+        softAssert.isElementVisible(topBadge);
+        softAssert.isElementVisible(addProductToCart);
+        softAssert.isElementVisible(addProductToEstimate);
+        softAssert.isElementVisible(productPriceLbl);
+        softAssert.isElementVisible(availableForSaleLbl);
+        softAssert.verifyAll();
+        verifyUrlContainsString("isAllGammaView=false");
+    }
 }

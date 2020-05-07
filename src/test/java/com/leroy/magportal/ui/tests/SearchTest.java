@@ -10,6 +10,7 @@ import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magportal.api.clients.CatalogSearchClient;
 import com.leroy.magportal.ui.WebBaseSteps;
 import com.leroy.magportal.ui.models.search.FiltersData;
+import com.leroy.magportal.ui.pages.products.ExtendedProductCardPage;
 import com.leroy.magportal.ui.pages.products.ParamNames;
 import com.leroy.magportal.ui.pages.products.ProductCardPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
@@ -75,10 +76,10 @@ public class SearchTest extends WebBaseSteps {
         final String CLASS_ID = "20";
 
         GetCatalogSearch filterParams = new GetCatalogSearch()
+                .setGamma("A")
                 .setDepartmentId(DEPT_ID.substring(2))
                 .setSubDepartmentId(SUB_DEPT_ID)
                 .setClassId(CLASS_ID)
-                .setTopEM(true)
                 .setPageSize(12)
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.ASC);
@@ -96,8 +97,9 @@ public class SearchTest extends WebBaseSteps {
         //Step 1
         log.step("осуществить поиск по фильтру номенклатуры так, чтобы результат поиска содержал менее 12 артикулов");
         searchProductPage.choseNomenclature(DEPT_ID, SUB_DEPT_ID, CLASS_ID, null);
-        searchProductPage.choseCheckboxFilter(true, SearchProductPage.Filters.TOP_EM);
         searchProductPage.choseSortType(SearchProductPage.SortType.LM_CODE_ASC);
+        searchProductPage.choseGammaFilter("Гамма А");
+        searchProductPage.applyFilters();
         ProductItemDataList productItemListResponse = apiThreads.get(0).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(productItemListResponse,
                 SearchProductPage.FilterFrame.MY_SHOP, SearchProductPage.ViewMode.EXTENDED);
@@ -128,17 +130,17 @@ public class SearchTest extends WebBaseSteps {
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
         searchProductPage.navigateToPreviousNomenclatureElement("Каталог товаров");
 
-        searchProductPage.searchByPhrase(lmCode);
-        ProductCardPage productCardPage = new ProductCardPage(context);
+        ProductCardPage productCardPage = searchProductPage.searchByPhrase(lmCode);
         productCardPage.shouldProductCardContainsText(lmCode);
         productCardPage.verifyUrlContainsString(lmCode);
-        productCardPage.navigateBack();
+        searchProductPage.switchToWindow();
 
         //Могут вернуться результаты, которые не содержат в названии поискового критерия
         /*searchProductPage.searchByPhrase(searchContext);
         searchProductPage.shouldProductCardContainsText(searchContext);
         searchProductPage.clearSearchInputByClearBtn();*/
 
+        searchProductPage.clearSearchInputByClearBtn();
         searchProductPage.searchByPhrase(shortSearchPhrase);
         searchProductPage.verifyUrlContainsString(ParamNames.byNameLikeParamName + shortSearchPhrase);
         searchProductPage.shouldProductCardContainsText(shortSearchPhrase);
@@ -146,8 +148,9 @@ public class SearchTest extends WebBaseSteps {
 
         searchProductPage.searchByPhrase(barCode);
         productCardPage.shouldProductCardContainsText(barCode);
-        productCardPage.navigateBack();
+        searchProductPage.switchToWindow();
 
+        searchProductPage.clearSearchInputByClearBtn();
         searchProductPage.searchByPhrase(shortLmCode);
         searchProductPage.verifyUrlContainsString(ParamNames.bylmCodeParamName + shortLmCode);
         searchProductPage.shouldProductCardContainsText(shortLmCode);
@@ -170,7 +173,7 @@ public class SearchTest extends WebBaseSteps {
         HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> results = sendRequestsSearchProductsBy(params);
 
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
-        searchProductPage.searchByPhrase(searchPhrase)
+        searchProductPage.<SearchProductPage>searchByPhrase(searchPhrase)
                 .shouldSearchCriterionIs(true, searchPhrase)
                 .shouldBreadCrumbsContainsNomenclatureName(true, EnvConstants.BASIC_USER_DEPARTMENT_ID);
 
@@ -752,6 +755,7 @@ public class SearchTest extends WebBaseSteps {
         LocalDate avsDate = LocalDate.of(2020, 4, 9);
         final String FIRST_SUPPLIER_CODE = "1001123001";
         final String SECOND_SUPPLIER_CODE = "1002258015";
+        final String LM_CODE_PART = "1234";
 
         FiltersData myShopFilterData = new FiltersData();
         myShopFilterData.setCheckBoxes(new SearchProductPage.Filters[]{SearchProductPage.Filters.BEST_PRICE,
@@ -768,6 +772,9 @@ public class SearchTest extends WebBaseSteps {
 
         Map<String, String> myShopParamMap = new HashMap<String, String>();
         myShopParamMap.put(ParamNames.shopId, EnvConstants.BASIC_USER_SHOP_ID);
+        myShopParamMap.put(ParamNames.departmentId, EnvConstants.BASIC_USER_DEPARTMENT_ID);
+        myShopParamMap.put(ParamNames.bylmCodeParamName, LM_CODE_PART);
+        myShopParamMap.put(ParamNames.sortBy, "name%7CASC");
         myShopParamMap.put(ParamNames.bestPrice, "true");
         myShopParamMap.put(ParamNames.hasAvailableStock, "true");
         myShopParamMap.put(ParamNames.top, "1,2");
@@ -787,9 +794,40 @@ public class SearchTest extends WebBaseSteps {
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
         searchProductPage.navigateToWithFilters(myShopParamMap);
         searchProductPage.checkFiltersChosen(myShopFilterData);
+        searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, EnvConstants.BASIC_USER_DEPARTMENT_ID);
+        searchProductPage.shouldSearchCriterionIs(true, LM_CODE_PART);
+        searchProductPage.shouldSearchInputContainsText(LM_CODE_PART);
+        searchProductPage.shouldSortComboBoxContainsText(SearchProductPage.SortType.NAME_ASC.getName());
 
         searchProductPage.navigateToWithFilters(allGammaParamMap);
         searchProductPage.checkFiltersChosen(allGammaFilterData);
+    }
+
+    @Test(description = "C23388851 navigate to product card")
+    public void testNavigateToProductCard() throws Exception {
+        String lmCode = "11284539";
+        SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
+        ExtendedProductCardPage extendedProductCardPage = searchProductPage.navigateToProductCart(lmCode,
+                SearchProductPage.FilterFrame.MY_SHOP, SearchProductPage.ViewMode.EXTENDED);
+        extendedProductCardPage.verifyRequiredElement();
+
+        searchProductPage.switchToWindow();
+        searchProductPage.switchViewMode(SearchProductPage.ViewMode.LIST);
+        extendedProductCardPage = searchProductPage.navigateToProductCart(lmCode,
+                SearchProductPage.FilterFrame.MY_SHOP, SearchProductPage.ViewMode.LIST);
+        extendedProductCardPage.verifyRequiredElement();
+
+        searchProductPage.switchToWindow();
+        searchProductPage.switchFiltersFrame(SearchProductPage.FilterFrame.ALL_GAMMA_LM);
+        ProductCardPage productCardPage = searchProductPage.navigateToProductCart(lmCode, SearchProductPage.FilterFrame.ALL_GAMMA_LM,
+                SearchProductPage.ViewMode.EXTENDED);
+        productCardPage.verifyRequiredElement();
+
+        searchProductPage.switchToWindow();
+        searchProductPage.switchViewMode(SearchProductPage.ViewMode.LIST);
+        productCardPage = searchProductPage.navigateToProductCart(lmCode, SearchProductPage.FilterFrame.ALL_GAMMA_LM,
+                SearchProductPage.ViewMode.LIST);
+        productCardPage.verifyRequiredElement();
 
     }
 
