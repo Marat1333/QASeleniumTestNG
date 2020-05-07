@@ -355,7 +355,6 @@ public class SearchProductPage extends MenuPage {
             checkbox.click();
             if (applyFilters) {
                 applyFilters();
-                waitForSpinnerAppearAndDisappear();
             }
         }
         return this;
@@ -397,7 +396,7 @@ public class SearchProductPage extends MenuPage {
         return this;
     }
 
-    @Step("Выбрать фильтр по поставщику {value}")
+    @Step("Выбрать фильтр по поставщику")
     public SearchProductPage choseSupplier(boolean closeAfter, String... values) throws Exception {
         if (!supplierDropBox.isVisible()) {
             showAllFilters.click();
@@ -768,7 +767,7 @@ public class SearchProductPage extends MenuPage {
         }
         String visibleText = avsDropBox.getAttribute("defaultValue");
         if (isEmpty) {
-            anAssert.isTextContainsIgnoringCase(visibleText, "",
+            anAssert.isTrue(visibleText.isEmpty(),
                     "Дата не должна быть отображена, однако отображается - " + visibleText);
         } else {
             SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yy");
