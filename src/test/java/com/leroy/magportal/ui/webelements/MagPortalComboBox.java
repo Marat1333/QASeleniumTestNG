@@ -18,8 +18,8 @@ public class MagPortalComboBox extends BaseWidget {
     @WebFindBy(xpath = ".//button", metaName = "Кнопка 'v'")
     Element dropBtn;
 
-    @WebFindBy(xpath = ".//span[contains(@class, 'singleValue')]")
-    ElementList<Element> chosenStringValue;
+    @WebFindBy(xpath = ".//div[contains(@class, 'Select__valueContainer')]")
+    Element selectedStringValue;
 
     private final String CONTAINER_OPTION_XPATH = "//div[contains(@class, 'optionsContainer')]/div";
     private final String SWITCH_BTN_LABEL_XPATH = CONTAINER_OPTION_XPATH + "//span[contains(@class, 'SwitchButton-label') and text()='%s']";
@@ -30,8 +30,8 @@ public class MagPortalComboBox extends BaseWidget {
     /**
      * Получить список выбранных опций в выпадающем списке
      */
-    public List<String> getSelectedOptionsText() throws Exception {
-        return chosenStringValue.getTextList();
+    public String getSelectedOptionText() {
+        return selectedStringValue.getText();
     }
 
     private void clickOptions(List<String> options, boolean isActivate) throws Exception{

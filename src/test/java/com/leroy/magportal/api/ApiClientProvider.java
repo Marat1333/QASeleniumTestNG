@@ -3,14 +3,21 @@ package com.leroy.magportal.api;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.leroy.core.SessionData;
+import com.leroy.core.configuration.Log;
+import com.leroy.magmobile.api.clients.CartClient;
 import com.leroy.magmobile.api.clients.MagMobileClient;
+import com.leroy.magmobile.api.clients.OrderClient;
+import com.leroy.magmobile.api.clients.SalesDocSearchClient;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
+import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
+import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magportal.api.clients.CatalogSearchClient;
 import io.qameta.allure.Step;
 import lombok.Setter;
+import org.apache.commons.lang.RandomStringUtils;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.ArrayList;
@@ -29,15 +36,33 @@ public class ApiClientProvider {
 
     @Inject
     private Provider<CatalogSearchClient> catalogSearchClientProvider;
+    @Inject
+    private Provider<CartClient> cartClientProvider;
+    @Inject
+    private Provider<OrderClient> orderClientProvider;
+    @Inject
+    private Provider<SalesDocSearchClient> salesDocSearchClientProvider;
 
     private <J extends MagMobileClient> J getClient(Provider<J> provider) {
-        MagMobileClient cl = provider.get();
+        J cl = provider.get();
         cl.setSessionData(sessionData);
-        return (J) cl;
+        return cl;
     }
 
     public CatalogSearchClient getCatalogSearchClient() {
         return getClient(catalogSearchClientProvider);
+    }
+
+    public OrderClient getOrderClient() {
+        return getClient(orderClientProvider);
+    }
+
+    public CartClient getCartClient() {
+        return getClient(cartClientProvider);
+    }
+
+    public SalesDocSearchClient getSalesDocSearchClient() {
+        return getClient(salesDocSearchClientProvider);
     }
 
 
@@ -88,6 +113,29 @@ public class ApiClientProvider {
     public List<String> getProductLmCodes(int necessaryCount) {
         List<ProductItemData> productItemResponseList = getProducts(necessaryCount, null);
         return productItemResponseList.stream().map(ProductItemData::getLmCode).collect(Collectors.toList());
+    }
+
+    @Step("Try to get nonexistent Pin Code")
+    public String getValidPinCode() {
+        int tryCount = 10;
+        for (int i = 0; i < tryCount; i++) {
+            String generatedPinCode;
+            do {
+                generatedPinCode = RandomStringUtils.randomNumeric(5);
+            } while (generatedPinCode.startsWith("9"));
+            SalesDocumentListResponse salesDocumentsResponse = getSalesDocSearchClient()
+                    .getSalesDocumentsByPinCodeOrDocId(generatedPinCode)
+                    .asJson();
+            if (salesDocumentsResponse.getTotalCount() == 0) {
+                Log.info("API: None documents found with PIN: " + generatedPinCode);
+                return generatedPinCode;
+            }
+            List<SalesDocumentResponseData> salesDocs = salesDocumentsResponse.getSalesDocuments();
+            if (!generatedPinCode.equals(salesDocs.get(0).getPinCode())) {
+                return generatedPinCode;
+            }
+        }
+        throw new RuntimeException("Couldn't find valid pin code for " + tryCount + " trying");
     }
 }
 

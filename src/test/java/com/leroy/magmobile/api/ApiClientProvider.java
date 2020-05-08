@@ -73,9 +73,9 @@ public class ApiClientProvider {
     private Provider<SupportClient> supportClientProvider;
 
     private <J extends MagMobileClient> J getClient(Provider<J> provider) {
-        MagMobileClient cl = provider.get();
+        J cl = provider.get();
         cl.setSessionData(sessionData);
-        return (J) cl;
+        return cl;
     }
 
     public CatalogSearchClient getCatalogSearchClient() {

@@ -413,7 +413,7 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
      */
     public List<String> getTextList(String pageSource) throws Exception {
         initWebElementListIfNeeded();
-        if (pageSource == null)
+        if (pageSource == null && DriverFactory.isAppProfile())
             pageSource = getPageSource();
         ArrayList<String> text = new ArrayList<>();
         for (E we : getElementList()) {

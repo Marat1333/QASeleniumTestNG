@@ -1,6 +1,7 @@
 package com.leroy.magportal.ui.pages.cart_estimate;
 
 import com.leroy.core.annotations.WebFindBy;
+import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
@@ -8,8 +9,10 @@ import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.models.salesdoc.OrderWebData;
 import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardWebData;
 import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
+import com.leroy.magportal.ui.models.salesdoc.ShortSalesDocWebData;
 import com.leroy.magportal.ui.pages.cart_estimate.widget.CustomerPuzWidget;
 import com.leroy.magportal.ui.pages.cart_estimate.widget.OrderPuzWidget;
+import com.leroy.magportal.ui.pages.cart_estimate.widget.ShortCartEstimateDocumentCardWidget;
 import com.leroy.magportal.ui.pages.common.LeftDocumentListPage;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import io.qameta.allure.Step;
@@ -17,10 +20,30 @@ import io.qameta.allure.Step;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class CartEstimatePage extends LeftDocumentListPage {
+public abstract class CartEstimatePage extends
+        LeftDocumentListPage<ShortCartEstimateDocumentCardWidget, ShortSalesDocWebData> {
 
     public CartEstimatePage(Context context) {
         super(context);
+    }
+
+    // Left menu with document list
+    @WebFindBy(xpath = "//div[contains(@class, 'Refresh-banner')]//button",
+            metaName = "Кнопка Обновить список документов")
+    private Button refreshDocumentListBtn;
+
+    @WebFindBy(xpath = "//div[contains(@class, 'Documents-ListItemCard__content')]",
+            clazz = ShortCartEstimateDocumentCardWidget.class)
+    private CardWebWidgetList<ShortCartEstimateDocumentCardWidget, ShortSalesDocWebData> documentCardList;
+
+    @Override
+    protected Button refreshDocumentListBtn() {
+        return refreshDocumentListBtn;
+    }
+
+    @Override
+    protected CardWebWidgetList<ShortCartEstimateDocumentCardWidget, ShortSalesDocWebData> documentCardList() {
+        return documentCardList;
     }
 
     // Customer area
