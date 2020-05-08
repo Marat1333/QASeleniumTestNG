@@ -2,7 +2,6 @@ package com.leroy.core.pages;
 
 import com.leroy.core.TestContext;
 import com.leroy.core.configuration.Log;
-import com.leroy.magportal.ui.pages.common.MenuPage;
 import io.appium.java_client.ios.IOSDriver;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.Dimension;
@@ -946,7 +945,7 @@ public abstract class BaseWebPage extends BasePage {
     public void verifyUrlContainsStringNot(String... values) {
         String currentUrl = driver.getCurrentUrl();
         for (String value : values) {
-            anAssert.isTextContainsNotIgnoringCase(currentUrl, value, "current url contains " + value + " current url is " + currentUrl);
+            anAssert.isTextNotContainsIgnoringCase(currentUrl, value, "current url contains " + value + " current url is " + currentUrl);
         }
     }
 

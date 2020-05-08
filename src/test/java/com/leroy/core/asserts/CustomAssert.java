@@ -36,7 +36,7 @@ public class CustomAssert extends BaseCustomAssert {
         super.logIsTextContainsIgnoringCase(actual, expected, desc, false);
     }
 
-    public void isTextContainsNotIgnoringCase(String actual, String expected, String desc) {
+    public void isTextNotContainsIgnoringCase(String actual, String expected, String desc) {
         super.logIsTextNotContainsIgnoringCase(actual, expected, desc, false);
     }
 
