@@ -83,11 +83,6 @@ public class ExtendedProductCardPage extends ProductCardPage {
     @WebFindBy(xpath = "//span[text()='в смету']")
     Button addProductToEstimate;
 
-    @Override
-    public void waitForPageIsLoaded() {
-        super.waitForPageIsLoaded();
-    }
-
     /*private PriceContainer getHiddenRecommendedPrice() {
         hiddenRecommendedPrice.click();
         waitUntilContentHasChanged(getPageSource());
@@ -149,14 +144,12 @@ public class ExtendedProductCardPage extends ProductCardPage {
     }*/
 
     @Override
-    public void verifyRequiredElement() {
-        super.verifyRequiredElement();
-        softAssert.isElementVisible(topBadge);
-        softAssert.isElementVisible(addProductToCart);
-        softAssert.isElementVisible(addProductToEstimate);
-        softAssert.isElementVisible(productPriceLbl);
-        softAssert.isElementVisible(availableForSaleLbl);
+    public ExtendedProductCardPage verifyRequiredElements() {
+        super.verifyRequiredElements();
+        softAssert.areElementsVisible(topBadge, addProductToCart,
+                addProductToEstimate, productPriceLbl, availableForSaleLbl);
         softAssert.verifyAll();
-        verifyUrlContainsString("isAllGammaView=false");
+        shouldUrlContains("isAllGammaView=false");
+        return this;
     }
 }

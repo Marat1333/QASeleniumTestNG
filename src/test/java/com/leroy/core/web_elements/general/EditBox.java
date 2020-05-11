@@ -71,7 +71,7 @@ public class EditBox extends Element {
         return this;
     }
 
-    public EditBox fill(String text, boolean imitateTyping) throws Exception {
+    public EditBox fill(String text, boolean imitateTyping) {
         if (!imitateTyping) {
             this.fill(text);
         } else {
@@ -83,11 +83,11 @@ public class EditBox extends Element {
         return this;
     }
 
-    public void clearAndFill(String text) throws Exception{
+    public void clearAndFill(String text) {
         clearAndFill(text, false);
     }
 
-    public void clearAndFill(String text, boolean imitateTyping) throws Exception {
+    public void clearAndFill(String text, boolean imitateTyping) {
         if (text != null) {
             clear();
             fill(text, imitateTyping);

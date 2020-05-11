@@ -935,17 +935,28 @@ public abstract class BaseWebPage extends BasePage {
         jsExecute("document.body.style.zoom='" + percent + "%'");
     }
 
-    public void verifyUrlContainsString(String... values) {
+    // Verifications
+
+    /**
+     * Verify that the current page Url contains:
+     * @param values - text that should be present in Url, otherwise test case fails
+     */
+    public void shouldUrlContains(String... values) {
         String currentUrl = driver.getCurrentUrl();
         for (String value : values) {
-            anAssert.isTextContainsIgnoringCase(currentUrl, value, "current url hasn`t contains " + value + " current url is " + currentUrl);
+            anAssert.isElementTextContainsIgnoringCase(currentUrl, value,
+                    "current url hasn`t contains " + value + "; current url is " + currentUrl);
         }
     }
 
-    public void verifyUrlContainsStringNot(String... values) {
+    /**
+     * Verify that the current page Url doesn't contain:
+     * @param values - text that should not be present in Url, otherwise test case fails
+     */
+    public void shouldUrlNotContains(String... values) {
         String currentUrl = driver.getCurrentUrl();
         for (String value : values) {
-            anAssert.isTextNotContainsIgnoringCase(currentUrl, value, "current url contains " + value + " current url is " + currentUrl);
+            anAssert.isElementTextNotContains(currentUrl, value, "current url contains " + value + "; current url is " + currentUrl);
         }
     }
 

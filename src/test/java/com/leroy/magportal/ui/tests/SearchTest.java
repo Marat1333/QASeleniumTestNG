@@ -8,9 +8,9 @@ import com.leroy.magmobile.api.enums.SortingOrder;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magportal.api.clients.CatalogSearchClient;
 import com.leroy.magportal.ui.WebBaseSteps;
+import com.leroy.magportal.ui.constants.search.CatalogSearchParams;
 import com.leroy.magportal.ui.models.search.FiltersData;
 import com.leroy.magportal.ui.pages.products.ExtendedProductCardPage;
-import com.leroy.magportal.ui.pages.products.ParamNames;
 import com.leroy.magportal.ui.pages.products.ProductCardPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
 import io.qameta.allure.Issue;
@@ -132,7 +132,7 @@ public class SearchTest extends WebBaseSteps {
         step("Выполнить поиск по полному лм коду " + lmCode);
         ProductCardPage productCardPage = searchProductPage.searchByPhrase(lmCode);
         productCardPage.shouldProductCardContainsText(lmCode);
-        productCardPage.verifyUrlContainsString(lmCode);
+        productCardPage.shouldUrlContains(lmCode);
         searchProductPage.switchToWindow();
 
         //Могут вернуться результаты, которые не содержат в названии поискового критерия
@@ -144,7 +144,7 @@ public class SearchTest extends WebBaseSteps {
         step("Выполнить поиск по имени, длинной менее 4 символов " + shortSearchPhrase);
         searchProductPage.clearSearchInputByClearBtn();
         searchProductPage.searchByPhrase(shortSearchPhrase);
-        searchProductPage.verifyUrlContainsString(ParamNames.byNameLikeParamName + shortSearchPhrase);
+        searchProductPage.shouldUrlContains(CatalogSearchParams.byNameLikeParamName + shortSearchPhrase);
         searchProductPage.shouldProductCardContainsText(shortSearchPhrase);
         searchProductPage.clearSearchInputByClearBtn();
 
@@ -158,14 +158,14 @@ public class SearchTest extends WebBaseSteps {
         step("Выполнить поиск по короткому лм коду " + shortLmCode);
         searchProductPage.clearSearchInputByClearBtn();
         searchProductPage.searchByPhrase(shortLmCode);
-        searchProductPage.verifyUrlContainsString(ParamNames.bylmCodeParamName + shortLmCode);
+        searchProductPage.shouldUrlContains(CatalogSearchParams.bylmCodeParamName + shortLmCode);
         searchProductPage.shouldProductCardContainsText(shortLmCode);
         searchProductPage.clearSearchInputByClearBtn();
 
         //Step 5
         step("Выполнить поиск по короткому штрих-коду " + shortBarCode);
         searchProductPage.searchByPhrase(shortBarCode);
-        searchProductPage.verifyUrlContainsString(ParamNames.byBarCodeParamName + shortBarCode);
+        searchProductPage.shouldUrlContains(CatalogSearchParams.byBarCodeParamName + shortBarCode);
         searchProductPage.shouldProductCardContainsText(shortBarCode);
     }
 
@@ -256,7 +256,7 @@ public class SearchTest extends WebBaseSteps {
         //Step 2
         step("Выбрать отдел");
         searchProductPage.choseNomenclature(dept, null, null, null);
-        searchProductPage.verifyUrlContainsString(ParamNames.departmentId + dept.substring(2));
+        searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId + dept.substring(2));
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(dept);
         searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, allDepartments);
         ProductItemDataList departmentData = resultsMap.get(1).getData();
@@ -266,7 +266,7 @@ public class SearchTest extends WebBaseSteps {
         //Step 3
         step("Выбрать подотдел");
         searchProductPage.choseNomenclature(dept, subDept, null, null);
-        searchProductPage.verifyUrlContainsString(ParamNames.subdepartmentId + subDept);
+        searchProductPage.shouldUrlContains(CatalogSearchParams.subdepartmentId + subDept);
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(subDept);
         searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, dept);
         ProductItemDataList subDepartmentData = resultsMap.get(2).getData();
@@ -276,7 +276,7 @@ public class SearchTest extends WebBaseSteps {
         //Step 4
         step("Выбрать тип");
         searchProductPage.choseNomenclature(dept, subDept, classId, null);
-        searchProductPage.verifyUrlContainsString(ParamNames.classId + classId.substring(1));
+        searchProductPage.shouldUrlContains(CatalogSearchParams.classId + classId.substring(1));
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(classId);
         searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, subDept);
         ProductItemDataList classData = resultsMap.get(3).getData();
@@ -286,7 +286,7 @@ public class SearchTest extends WebBaseSteps {
         //Step 5
         step("Выбрать подтип");
         searchProductPage.choseNomenclature(dept, subDept, classId, subClassId);
-        searchProductPage.verifyUrlContainsString(ParamNames.subclassId + subClassId.substring(1));
+        searchProductPage.shouldUrlContains(CatalogSearchParams.subclassId + subClassId.substring(1));
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(subClassId);
         searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, classId);
         ProductItemDataList subClassData = resultsMap.get(4).getData();
@@ -310,28 +310,28 @@ public class SearchTest extends WebBaseSteps {
         //Step 1
         step("Выбрать тип сортировки - по лмкоду DESC");
         searchProductPage.choseSortType(SearchProductPage.SortType.LM_CODE_DESC);
-        searchProductPage.verifyUrlContainsString(ParamNames.sortBy + "lmCode%7CDESC");
+        searchProductPage.shouldUrlContains(CatalogSearchParams.sortBy + "lmCode%7CDESC");
         searchProductPage.shouldProductsAreSorted(SearchProductPage.SortType.LM_CODE_DESC);
         searchProductPage.shouldSortComboBoxContainsText(SearchProductPage.SortType.LM_CODE_DESC.getName());
 
         //Step 2
         step("Выбрать тип сортировки - по лмкоду ASC");
         searchProductPage.choseSortType(SearchProductPage.SortType.LM_CODE_ASC);
-        searchProductPage.verifyUrlContainsString(ParamNames.sortBy + "lmCode%7CASC");
+        searchProductPage.shouldUrlContains(CatalogSearchParams.sortBy + "lmCode%7CASC");
         searchProductPage.shouldProductsAreSorted(SearchProductPage.SortType.LM_CODE_ASC);
         searchProductPage.shouldSortComboBoxContainsText(SearchProductPage.SortType.LM_CODE_ASC.getName());
 
         //Step 3
         step("Выбрать тип сортировки - по названию DESC");
         searchProductPage.choseSortType(SearchProductPage.SortType.NAME_DESC);
-        searchProductPage.verifyUrlContainsString(ParamNames.sortBy + "name%7CDESC");
+        searchProductPage.shouldUrlContains(CatalogSearchParams.sortBy + "name%7CDESC");
         searchProductPage.shouldProductsAreSorted(SearchProductPage.SortType.NAME_DESC);
         searchProductPage.shouldSortComboBoxContainsText(SearchProductPage.SortType.NAME_DESC.getName());
 
         //Step 4
         step("Выбрать тип сортировки - по названию ASC");
         searchProductPage.choseSortType(SearchProductPage.SortType.NAME_ASC);
-        searchProductPage.verifyUrlContainsString(ParamNames.sortBy + "name%7CASC");
+        searchProductPage.shouldUrlContains(CatalogSearchParams.sortBy + "name%7CASC");
         searchProductPage.shouldProductsAreSorted(SearchProductPage.SortType.NAME_ASC);
         searchProductPage.shouldSortComboBoxContainsText(SearchProductPage.SortType.NAME_ASC.getName());
 
@@ -340,7 +340,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.choseSortType(SearchProductPage.SortType.DEFAULT);
         searchProductPage.shouldResponseEntityEqualsToViewEntity(response.asJson(), SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED)
-                .verifyUrlContainsStringNot(ParamNames.sortBy);
+                .shouldUrlNotContains(CatalogSearchParams.sortBy);
         searchProductPage.shouldSortComboBoxContainsText(SearchProductPage.SortType.DEFAULT.getName());
     }
 
@@ -384,7 +384,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.choseSupplier(false, FIRST_SUPPLIER_CODE, SECOND_SUPPLIER_CODE)
                 .shouldSupplierComboBoxContainsCorrectText(false, FIRST_SUPPLIER_CODE, SECOND_SUPPLIER_CODE)
                 .applyFilters()
-                .verifyUrlContainsString(ParamNames.supplierId + FIRST_SUPPLIER_CODE + "%2C" + SECOND_SUPPLIER_CODE);
+                .shouldUrlContains(CatalogSearchParams.supplierId + FIRST_SUPPLIER_CODE + "%2C" + SECOND_SUPPLIER_CODE);
         ProductItemDataList fewSuppliersData = resultMap.get(0).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(fewSuppliersData, SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
@@ -455,7 +455,7 @@ public class SearchTest extends WebBaseSteps {
                 .shouldResponseEntityEqualsToViewEntity(avsDateResponse, SearchProductPage.FilterFrame.MY_SHOP,
                         SearchProductPage.ViewMode.EXTENDED)
                 //bug of manually import
-                .verifyUrlContainsString(ParamNames.avsDate + String.format(
+                .shouldUrlContains(CatalogSearchParams.avsDate + String.format(
                         "between%%7C%s-0%s-0%sT00%3A00%3A00.000Z%%7C%s-0%s-0%sT00%3A00%3A00.000Z", avsDate.getYear(),
                         avsDate.getMonthValue(), avsDate.getDayOfMonth(),
                         avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth() + 1));
@@ -508,8 +508,8 @@ public class SearchTest extends WebBaseSteps {
         ProductItemDataList myShopResponse = resultMap.get(0).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(myShopResponse, SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
-        searchProductPage.verifyUrlContainsString(ParamNames.gamma + "A%2CS", ParamNames.top + "1%2C2",
-                ParamNames.hasAvailableStock + "true", ParamNames.topEM + "true", ParamNames.ctm + "true");
+        searchProductPage.shouldUrlContains(CatalogSearchParams.gamma + "A%2CS", CatalogSearchParams.top + "1%2C2",
+                CatalogSearchParams.hasAvailableStock + "true", CatalogSearchParams.topEM + "true", CatalogSearchParams.ctm + "true");
 
         filtersData.clearFilterData();
         searchProductPage.clearAllFilters();
@@ -522,8 +522,8 @@ public class SearchTest extends WebBaseSteps {
         ProductItemDataList bestPrice = resultMap.get(1).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(bestPrice, SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
-        searchProductPage.verifyUrlContainsString(ParamNames.bestPrice + "true", ParamNames.top1000 + "true",
-                ParamNames.shopId + EnvConstants.BASIC_USER_SHOP_ID);
+        searchProductPage.shouldUrlContains(CatalogSearchParams.bestPrice + "true", CatalogSearchParams.top1000 + "true",
+                CatalogSearchParams.shopId + EnvConstants.BASIC_USER_SHOP_ID);
 
         //Step 3
         step("Выбрать фильтр \"предложение ограничено\" и выполнить поиск по нему");
@@ -532,7 +532,7 @@ public class SearchTest extends WebBaseSteps {
         ProductItemDataList limitedOffer = resultMap.get(2).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(limitedOffer, SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
-        searchProductPage.verifyUrlContainsString(ParamNames.limitedOffer + "true");
+        searchProductPage.shouldUrlContains(CatalogSearchParams.limitedOffer + "true");
 
         //Step 4
         step("Выбрать фильтр \"под заказ\" и выполнить поиск по нему");
@@ -541,7 +541,7 @@ public class SearchTest extends WebBaseSteps {
         ProductItemDataList orderType = resultMap.get(3).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(orderType, SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
-        searchProductPage.verifyUrlContainsString(ParamNames.orderType + "MBO");
+        searchProductPage.shouldUrlContains(CatalogSearchParams.orderType + "MBO");
     }
 
     @Test(description = "C23384960 search by all gamma filters group")
@@ -584,8 +584,8 @@ public class SearchTest extends WebBaseSteps {
         ProductItemDataList ctmResponse = resultMap.get(0).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(ctmResponse, SearchProductPage.FilterFrame.ALL_GAMMA_LM,
                 SearchProductPage.ViewMode.EXTENDED);
-        searchProductPage.verifyUrlContainsString(ParamNames.gamma + "A%2CS", ParamNames.ctm + "true");
-        searchProductPage.verifyUrlContainsStringNot(ParamNames.shopId);
+        searchProductPage.shouldUrlContains(CatalogSearchParams.gamma + "A%2CS", CatalogSearchParams.ctm + "true");
+        searchProductPage.shouldUrlNotContains(CatalogSearchParams.shopId);
 
         filtersData.clearFilterData();
         searchProductPage.clearAllFilters();
@@ -598,8 +598,8 @@ public class SearchTest extends WebBaseSteps {
         ProductItemDataList bestPrice = resultMap.get(1).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(bestPrice, SearchProductPage.FilterFrame.ALL_GAMMA_LM,
                 SearchProductPage.ViewMode.EXTENDED);
-        searchProductPage.verifyUrlContainsString(ParamNames.bestPrice + "true", ParamNames.top1000 + "true");
-        searchProductPage.verifyUrlContainsStringNot(ParamNames.shopId);
+        searchProductPage.shouldUrlContains(CatalogSearchParams.bestPrice + "true", CatalogSearchParams.top1000 + "true");
+        searchProductPage.shouldUrlNotContains(CatalogSearchParams.shopId);
 
         //Step 3
         step("Выбрать фильтр \"предложение ограничено\" и выполнить поиск по нему");
@@ -608,8 +608,8 @@ public class SearchTest extends WebBaseSteps {
         ProductItemDataList limitedOffer = resultMap.get(2).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(limitedOffer, SearchProductPage.FilterFrame.ALL_GAMMA_LM,
                 SearchProductPage.ViewMode.EXTENDED);
-        searchProductPage.verifyUrlContainsString(ParamNames.limitedOffer + "true");
-        searchProductPage.verifyUrlContainsStringNot(ParamNames.shopId);
+        searchProductPage.shouldUrlContains(CatalogSearchParams.limitedOffer + "true");
+        searchProductPage.shouldUrlNotContains(CatalogSearchParams.shopId);
 
         //Step 4
         step("выбрать фильтр \"под заказ\" и выполнить поиск по нему");
@@ -618,8 +618,8 @@ public class SearchTest extends WebBaseSteps {
         ProductItemDataList orderType = resultMap.get(3).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(orderType, SearchProductPage.FilterFrame.ALL_GAMMA_LM,
                 SearchProductPage.ViewMode.EXTENDED);
-        searchProductPage.verifyUrlContainsString(ParamNames.orderType + "MBO");
-        searchProductPage.verifyUrlContainsStringNot(ParamNames.shopId);
+        searchProductPage.shouldUrlContains(CatalogSearchParams.orderType + "MBO");
+        searchProductPage.shouldUrlNotContains(CatalogSearchParams.shopId);
     }
 
     @Test(description = "C23384975 switching between My shop frame and All gamma frame")
@@ -682,7 +682,7 @@ public class SearchTest extends WebBaseSteps {
         ProductItemDataList allGammaData = resultMap.get(0).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(allGammaData,
                 SearchProductPage.FilterFrame.ALL_GAMMA_LM, SearchProductPage.ViewMode.EXTENDED);
-        searchProductPage.verifyUrlContainsStringNot(ParamNames.shopId);
+        searchProductPage.shouldUrlNotContains(CatalogSearchParams.shopId);
 
         //Step 4
         step("Переключится на группу фильтров \"Мой магазин\" и выполнить поиск по ранее выбранным фильтрам");
@@ -692,7 +692,7 @@ public class SearchTest extends WebBaseSteps {
         ProductItemDataList myShopData = resultMap.get(1).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(myShopData,
                 SearchProductPage.FilterFrame.MY_SHOP, SearchProductPage.ViewMode.EXTENDED);
-        searchProductPage.verifyUrlContainsString(ParamNames.shopId);
+        searchProductPage.shouldUrlContains(CatalogSearchParams.shopId);
     }
 
     @Test(description = "C22782968 Clear filters")
@@ -741,8 +741,8 @@ public class SearchTest extends WebBaseSteps {
         ProductItemDataList myShopDefaultResponse = resultMap.get(0).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(myShopDefaultResponse, SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
-        searchProductPage.verifyUrlContainsStringNot(ParamNames.top, ParamNames.hasAvailableStock, ParamNames.bestPrice,
-                ParamNames.supplierId, ParamNames.avsDate);
+        searchProductPage.shouldUrlNotContains(CatalogSearchParams.top, CatalogSearchParams.hasAvailableStock, CatalogSearchParams.bestPrice,
+                CatalogSearchParams.supplierId, CatalogSearchParams.avsDate);
 
         //Step 2
         step("Выбрать несколько фильтров из группы фильтров \"Мой магазин\", выполнить поиск по ним и очистить " +
@@ -753,8 +753,8 @@ public class SearchTest extends WebBaseSteps {
         ProductItemDataList myShopAllDepartmentsResponse = resultMap.get(1).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(myShopAllDepartmentsResponse, SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
-        searchProductPage.verifyUrlContainsStringNot(ParamNames.top, ParamNames.hasAvailableStock, ParamNames.bestPrice,
-                ParamNames.supplierId, ParamNames.avsDate, ParamNames.departmentId);
+        searchProductPage.shouldUrlNotContains(CatalogSearchParams.top, CatalogSearchParams.hasAvailableStock, CatalogSearchParams.bestPrice,
+                CatalogSearchParams.supplierId, CatalogSearchParams.avsDate, CatalogSearchParams.departmentId);
 
         //Step 3
         step("Выбрать несколько фильтров из группы фильтров \"Мой магазин\", выполнить поиск по ним и очистить " +
@@ -764,8 +764,8 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.checkFiltersNotChosen(myShopFilterData);
         searchProductPage.shouldResponseEntityEqualsToViewEntity(myShopAllDepartmentsResponse, SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
-        searchProductPage.verifyUrlContainsStringNot(ParamNames.top, ParamNames.hasAvailableStock, ParamNames.bestPrice,
-                ParamNames.supplierId, ParamNames.avsDate);
+        searchProductPage.shouldUrlNotContains(CatalogSearchParams.top, CatalogSearchParams.hasAvailableStock, CatalogSearchParams.bestPrice,
+                CatalogSearchParams.supplierId, CatalogSearchParams.avsDate);
 
         //Step 4
         step("Выбрать несколько фильтров из группы фильтров \"Вся гамма ЛМ\", выполнить поиск по ним и очистить " +
@@ -778,8 +778,8 @@ public class SearchTest extends WebBaseSteps {
         ProductItemDataList allGammaAllDepartmentsResponse = resultMap.get(2).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(allGammaAllDepartmentsResponse, SearchProductPage.FilterFrame.ALL_GAMMA_LM,
                 SearchProductPage.ViewMode.EXTENDED);
-        searchProductPage.verifyUrlContainsStringNot(ParamNames.gamma, ParamNames.top, ParamNames.hasAvailableStock, ParamNames.bestPrice,
-                ParamNames.supplierId, ParamNames.avsDate, ParamNames.shopId, ParamNames.limitedOffer, ParamNames.ctm);
+        searchProductPage.shouldUrlNotContains(CatalogSearchParams.gamma, CatalogSearchParams.top, CatalogSearchParams.hasAvailableStock, CatalogSearchParams.bestPrice,
+                CatalogSearchParams.supplierId, CatalogSearchParams.avsDate, CatalogSearchParams.shopId, CatalogSearchParams.limitedOffer, CatalogSearchParams.ctm);
 
         //Step 5
         step("Выбрать несколько фильтров из группы фильтров \"Вся гамма ЛМ\", выполнить поиск по ним и очистить " +
@@ -789,8 +789,8 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.checkFiltersNotChosen(allGammaFilterData);
         searchProductPage.shouldResponseEntityEqualsToViewEntity(allGammaAllDepartmentsResponse, SearchProductPage.FilterFrame.ALL_GAMMA_LM,
                 SearchProductPage.ViewMode.EXTENDED);
-        searchProductPage.verifyUrlContainsStringNot(ParamNames.gamma, ParamNames.top, ParamNames.hasAvailableStock, ParamNames.bestPrice,
-                ParamNames.supplierId, ParamNames.avsDate, ParamNames.shopId, ParamNames.limitedOffer, ParamNames.ctm);
+        searchProductPage.shouldUrlNotContains(CatalogSearchParams.gamma, CatalogSearchParams.top, CatalogSearchParams.hasAvailableStock, CatalogSearchParams.bestPrice,
+                CatalogSearchParams.supplierId, CatalogSearchParams.avsDate, CatalogSearchParams.shopId, CatalogSearchParams.limitedOffer, CatalogSearchParams.ctm);
 
         //Step 6
         step("Выбрать несколько фильтров из группы фильтров \"Вся гамма ЛМ\", выполнить поиск по ним и очистить " +
@@ -800,8 +800,8 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.checkFiltersNotChosen(allGammaFilterData);
         searchProductPage.shouldResponseEntityEqualsToViewEntity(allGammaAllDepartmentsResponse, SearchProductPage.FilterFrame.ALL_GAMMA_LM,
                 SearchProductPage.ViewMode.EXTENDED);
-        searchProductPage.verifyUrlContainsStringNot(ParamNames.gamma, ParamNames.top, ParamNames.hasAvailableStock, ParamNames.bestPrice,
-                ParamNames.supplierId, ParamNames.avsDate, ParamNames.shopId, ParamNames.limitedOffer, ParamNames.ctm);
+        searchProductPage.shouldUrlNotContains(CatalogSearchParams.gamma, CatalogSearchParams.top, CatalogSearchParams.hasAvailableStock, CatalogSearchParams.bestPrice,
+                CatalogSearchParams.supplierId, CatalogSearchParams.avsDate, CatalogSearchParams.shopId, CatalogSearchParams.limitedOffer, CatalogSearchParams.ctm);
 
         //Step 7
         step("Выбрать несколько фильтров из группы фильтров \"Вся гамма ЛМ\", не применяя их, ввести в поисковую " +
@@ -843,7 +843,7 @@ public class SearchTest extends WebBaseSteps {
         ProductItemDataList nomenclatureResponse = resultMap.get(0).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(nomenclatureResponse, SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
-        searchProductPage.verifyUrlContainsString(ParamNames.bylmCodeParamName + byLmCodeParamValue);
+        searchProductPage.shouldUrlContains(CatalogSearchParams.bylmCodeParamName + byLmCodeParamValue);
 
         //Step 2
         step("ввести поисковую фразу в поисковую строку");
@@ -856,7 +856,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.navigateToPreviousNomenclatureElement(deptId);
         searchProductPage.shouldResponseEntityEqualsToViewEntity(nomenclatureResponse, SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
-        searchProductPage.verifyUrlContainsString(ParamNames.bylmCodeParamName + byLmCodeParamValue);
+        searchProductPage.shouldUrlContains(CatalogSearchParams.bylmCodeParamName + byLmCodeParamValue);
 
         //Step 4
         step("ввести поисковую фразу в поисковую строку, выбрать фильтр и осуществить поиск");
@@ -867,7 +867,7 @@ public class SearchTest extends WebBaseSteps {
         ProductItemDataList filterResponse = resultMap.get(1).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(filterResponse, SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
-        searchProductPage.verifyUrlContainsString(ParamNames.bylmCodeParamName + byLmCodeParamValue);
+        searchProductPage.shouldUrlContains(CatalogSearchParams.bylmCodeParamName + byLmCodeParamValue);
     }
 
     @Test(description = "C23385398 search without changes")
@@ -906,23 +906,23 @@ public class SearchTest extends WebBaseSteps {
         allGammaFilterData.setAvsDate(avsDate);
 
         Map<String, String> myShopParamMap = new HashMap<String, String>();
-        myShopParamMap.put(ParamNames.shopId, EnvConstants.BASIC_USER_SHOP_ID);
-        myShopParamMap.put(ParamNames.departmentId, EnvConstants.BASIC_USER_DEPARTMENT_ID);
-        myShopParamMap.put(ParamNames.bylmCodeParamName, LM_CODE_PART);
-        myShopParamMap.put(ParamNames.sortBy, "name%7CASC");
-        myShopParamMap.put(ParamNames.bestPrice, "true");
-        myShopParamMap.put(ParamNames.hasAvailableStock, "true");
-        myShopParamMap.put(ParamNames.top, "1,2");
-        myShopParamMap.put(ParamNames.supplierId, FIRST_SUPPLIER_CODE + "," + SECOND_SUPPLIER_CODE);
-        myShopParamMap.put(ParamNames.avsDate, String.format("between%%7C%s-0%s-0%sT00:00:00.000Z%%7C%s-0%s-%sT00:00:00.000Z", +
+        myShopParamMap.put(CatalogSearchParams.shopId, EnvConstants.BASIC_USER_SHOP_ID);
+        myShopParamMap.put(CatalogSearchParams.departmentId, EnvConstants.BASIC_USER_DEPARTMENT_ID);
+        myShopParamMap.put(CatalogSearchParams.bylmCodeParamName, LM_CODE_PART);
+        myShopParamMap.put(CatalogSearchParams.sortBy, "name%7CASC");
+        myShopParamMap.put(CatalogSearchParams.bestPrice, "true");
+        myShopParamMap.put(CatalogSearchParams.hasAvailableStock, "true");
+        myShopParamMap.put(CatalogSearchParams.top, "1,2");
+        myShopParamMap.put(CatalogSearchParams.supplierId, FIRST_SUPPLIER_CODE + "," + SECOND_SUPPLIER_CODE);
+        myShopParamMap.put(CatalogSearchParams.avsDate, String.format("between%%7C%s-0%s-0%sT00:00:00.000Z%%7C%s-0%s-%sT00:00:00.000Z", +
                 avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth(), +
                 avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth() + 1));
 
         Map<String, String> allGammaParamMap = new HashMap<String, String>();
-        allGammaParamMap.put(ParamNames.limitedOffer, "true");
-        allGammaParamMap.put(ParamNames.ctm, "true");
-        allGammaParamMap.put(ParamNames.gamma, "S,P");
-        allGammaParamMap.put(ParamNames.avsDate, String.format("between%%7C%s-0%s-0%sT00:00:00.000Z%%7C%s-0%s-%sT00:00:00.000Z", +
+        allGammaParamMap.put(CatalogSearchParams.limitedOffer, "true");
+        allGammaParamMap.put(CatalogSearchParams.ctm, "true");
+        allGammaParamMap.put(CatalogSearchParams.gamma, "S,P");
+        allGammaParamMap.put(CatalogSearchParams.avsDate, String.format("between%%7C%s-0%s-0%sT00:00:00.000Z%%7C%s-0%s-%sT00:00:00.000Z", +
                 avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth(), +
                 avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth() + 1));
 
@@ -955,7 +955,7 @@ public class SearchTest extends WebBaseSteps {
         step("Перейти в карточку товара при примененном расширенном режиме отображения и фильтре \"Мой магазин\"");
         ExtendedProductCardPage extendedProductCardPage = searchProductPage.navigateToProductCart(lmCode,
                 SearchProductPage.FilterFrame.MY_SHOP, SearchProductPage.ViewMode.EXTENDED);
-        extendedProductCardPage.verifyRequiredElement();
+        extendedProductCardPage.verifyRequiredElements();
 
         //Step 2
         step("Перейти в карточку товара при примененном табличном режиме отображения и фильтре \"Мой магазин\"");
@@ -963,7 +963,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.switchViewMode(SearchProductPage.ViewMode.LIST);
         extendedProductCardPage = searchProductPage.navigateToProductCart(lmCode,
                 SearchProductPage.FilterFrame.MY_SHOP, SearchProductPage.ViewMode.LIST);
-        extendedProductCardPage.verifyRequiredElement();
+        extendedProductCardPage.verifyRequiredElements();
 
         //Step 3
         step("Перейти в карточку товара при примененном расширенном режиме отображения и фильтре \"Вся гамма ЛМ\"");
@@ -971,7 +971,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.switchFiltersFrame(SearchProductPage.FilterFrame.ALL_GAMMA_LM);
         ProductCardPage productCardPage = searchProductPage.navigateToProductCart(lmCode, SearchProductPage.FilterFrame.ALL_GAMMA_LM,
                 SearchProductPage.ViewMode.EXTENDED);
-        productCardPage.verifyRequiredElement();
+        productCardPage.verifyRequiredElements();
 
         //Step 4
         step("Перейти в карточку товара при примененном табличном режиме отображения и фильтре \"Вся гамма ЛМ\"");
@@ -979,7 +979,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.switchViewMode(SearchProductPage.ViewMode.LIST);
         productCardPage = searchProductPage.navigateToProductCart(lmCode, SearchProductPage.FilterFrame.ALL_GAMMA_LM,
                 SearchProductPage.ViewMode.LIST);
-        productCardPage.verifyRequiredElement();
+        productCardPage.verifyRequiredElements();
 
     }
 

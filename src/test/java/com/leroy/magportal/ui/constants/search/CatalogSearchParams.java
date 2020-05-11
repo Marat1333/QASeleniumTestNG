@@ -1,7 +1,7 @@
-package com.leroy.magportal.ui.pages.products;
+package com.leroy.magportal.ui.constants.search;
 
 
-public class ParamNames {
+public class CatalogSearchParams {
     public final static String bylmCodeParamName = "byLmCode=";
     public final static String byBarCodeParamName = "byBarCode=";
     public final static String byNameLikeParamName = "byNameLike=";
@@ -17,8 +17,8 @@ public class ParamNames {
     public final static String bestPrice = "bestPrice=";
     public final static String top1000 = "top1000=";
     public final static String limitedOffer = "limitedOffer=";
-    public final static String hasAvailableStock= "hasAvailableStock=";
-    public final static String ctm= "ctm=";
+    public final static String hasAvailableStock = "hasAvailableStock=";
+    public final static String ctm = "ctm=";
     public final static String orderType = "orderType=";
     public final static String shopId = "shopId=";
     public final static String topEM = "topEM=";

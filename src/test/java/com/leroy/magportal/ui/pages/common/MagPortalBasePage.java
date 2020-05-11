@@ -49,7 +49,4 @@ public class MagPortalBasePage extends BaseWebPage {
         return alertErrorMessage.isVisible();
     }
 
-    protected void verifyRequiredElement(){
-    }
-
 }

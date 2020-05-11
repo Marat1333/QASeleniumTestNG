@@ -46,9 +46,7 @@ public class ProductCardPage extends MenuPage {
 
     @Override
     public void waitForPageIsLoaded() {
-        //спиннер появляется и исчезает дважды
-        waitForSpinnerAppearAndDisappear();
-        waitForSpinnerAppearAndDisappear();
+        lmCodeLbl.waitForVisibility();
     }
 
     /*@Step("Вернуться к результатам поиска")
@@ -88,6 +86,7 @@ public class ProductCardPage extends MenuPage {
     */
 
     //Verifications
+
     @Step("Проверить наличие поискового критерия в карте товара")
     public ProductCardPage shouldProductCardContainsText(String text) {
         if (text.matches("\\D+")) {
@@ -101,11 +100,10 @@ public class ProductCardPage extends MenuPage {
         return this;
     }
 
-    @Override
-    public void verifyRequiredElement() {
-        softAssert.isElementVisible(gammaBadge);
-        softAssert.isElementVisible(productTitle);
-        softAssert.isElementVisible(lmCodeLbl);
+    @Step("Проверить, что страница 'Карта товара' отображается корректно")
+    public ProductCardPage verifyRequiredElements() {
+        softAssert.areElementsVisible(gammaBadge, productTitle, lmCodeLbl);
         softAssert.verifyAll();
+        return this;
     }
 }

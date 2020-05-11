@@ -20,12 +20,11 @@ import com.leroy.magportal.ui.webelements.widgets.*;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.*;
 
 public class SearchProductPage extends MenuPage {
+
     public SearchProductPage(Context context) {
         super(context);
     }
@@ -165,11 +164,11 @@ public class SearchProductPage extends MenuPage {
     ElementList<ProductCardWidget> productCardsList;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'BarViewProductCard__container')]" +
-            "//p/following-sibling::div/ancestor::div[1]", clazz = ExtendedProductCardWidget.class,refreshEveryTime = true)
+            "//p/following-sibling::div/ancestor::div[1]", clazz = ExtendedProductCardWidget.class, refreshEveryTime = true)
     ElementList<ExtendedProductCardWidget> extendedProductCardList;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'TableView__row')]", clazz = ProductCardTableViewWidget.class,
-    refreshEveryTime = true)
+            refreshEveryTime = true)
     ElementList<ProductCardTableViewWidget> productCardListTableView;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'TableView__row')]/div[5]/ancestor::div[1]",
@@ -195,16 +194,12 @@ public class SearchProductPage extends MenuPage {
     public void waitForPageIsLoaded() {
         searchInput.waitForVisibility();
         applyFiltersBtn.waitForVisibility();
-        waitForSpinnerAppearAndDisappear();
+        waitForSpinnerDisappear();
     }
 
-    @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'DatePicker__dayPicker')]",
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'DatePicker__container')][descendant::input[@placeholder='Дата AVS']]",
             refreshEveryTime = true)
-    CalendarWidget avsDropDownCalendar;
-
-    @WebFindBy(xpath = "//div[contains(@class, 'active')]//input[@placeholder='Дата AVS']",
-            refreshEveryTime = true)
-    EditBox avsDropBox;
+    CalendarInputBox avsCalendarInputBox;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//input[@placeholder='Гамма']/ancestor::div[1]",
             refreshEveryTime = true)
@@ -227,19 +222,19 @@ public class SearchProductPage extends MenuPage {
     @Step("Перейти в карточку продукта {lmCode}")
     public <T> T navigateToProductCart(String lmCode, FilterFrame frame, ViewMode viewMode) throws Exception {
         Set<String> windows = driver.getWindowHandles();
-        switch (frame){
+        switch (frame) {
             case MY_SHOP:
-                switch (viewMode){
+                switch (viewMode) {
                     case EXTENDED:
-                        for (ExtendedProductCardWidget widget:extendedProductCardList){
-                            if (widget.getLmCode().equals(lmCode)){
+                        for (ExtendedProductCardWidget widget : extendedProductCardList) {
+                            if (widget.getLmCode().equals(lmCode)) {
                                 widget.click();
                             }
                         }
                         break;
                     case LIST:
-                        for (ExtendedProductCardTableViewWidget widget:extendedProductCardListTableView){
-                            if (widget.getLmCode().equals(lmCode)){
+                        for (ExtendedProductCardTableViewWidget widget : extendedProductCardListTableView) {
+                            if (widget.getLmCode().equals(lmCode)) {
                                 widget.click();
                             }
                         }
@@ -247,17 +242,17 @@ public class SearchProductPage extends MenuPage {
                 }
                 break;
             case ALL_GAMMA_LM:
-                switch (viewMode){
+                switch (viewMode) {
                     case EXTENDED:
-                        for (ProductCardWidget widget : productCardsList){
-                            if (widget.getLmCode().equals(lmCode)){
+                        for (ProductCardWidget widget : productCardsList) {
+                            if (widget.getLmCode().equals(lmCode)) {
                                 widget.click();
                             }
                         }
                         break;
                     case LIST:
-                        for (ProductCardTableViewWidget widget : productCardListTableView){
-                            if (widget.getLmCode().equals(lmCode)){
+                        for (ProductCardTableViewWidget widget : productCardListTableView) {
+                            if (widget.getLmCode().equals(lmCode)) {
                                 widget.click();
                             }
                         }
@@ -266,7 +261,7 @@ public class SearchProductPage extends MenuPage {
                 break;
         }
         this.switchToNewWindow(windows);
-        return frame.equals(FilterFrame.MY_SHOP) ? (T)new ExtendedProductCardPage(context) : (T)new ProductCardPage(context);
+        return frame.equals(FilterFrame.MY_SHOP) ? (T) new ExtendedProductCardPage(context) : (T) new ProductCardPage(context);
     }
 
     @Step("Перейти по адресу, содержащему фильтры")
@@ -327,20 +322,20 @@ public class SearchProductPage extends MenuPage {
         if (frame.equals(FilterFrame.MY_SHOP)) {
             attributeValue = myShopContainer.getAttribute(attributeName);
             myShopFilterBtn.click();
-            myShopContainer.waitForAttributeChanged(attributeName, attributeValue);
+            myShopContainer.waitUntilAttributeIsEqual(attributeName, attributeValue);
         } else {
             attributeValue = allGammaContainer.getAttribute(attributeName);
             allGammaFilterBtn.click();
-            allGammaContainer.waitForAttributeChanged(attributeName, attributeValue);
+            allGammaContainer.waitUntilAttributeIsEqual(attributeName, attributeValue);
         }
         return this;
     }
 
     @Step("Выбрать режим отображения карточек товара")
-    public SearchProductPage switchViewMode(ViewMode mode){
-        if (mode.equals(ViewMode.EXTENDED)){
+    public SearchProductPage switchViewMode(ViewMode mode) {
+        if (mode.equals(ViewMode.EXTENDED)) {
             extendedViewBtn.click();
-        }else {
+        } else {
             listViewBtn.click();
         }
         return this;
@@ -391,7 +386,7 @@ public class SearchProductPage extends MenuPage {
 
     @Step("Перейти по хлебным крошкам в {value}")
     public SearchProductPage navigateToPreviousNomenclatureElement(String value) {
-        waitForPageIsLoaded();
+        nomenclaturePathButtons.waitUntilAtLeastOneElementIsPresent();
         for (Element element : nomenclaturePathButtons) {
             if (element.getText().contains(value)) {
                 element.click();
@@ -425,11 +420,7 @@ public class SearchProductPage extends MenuPage {
 
     @Step("Ввести дату AVS вручную")
     public SearchProductPage enterAvsDateManually(LocalDate date) throws Exception {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yy");
-        String convertedDate = sdf.format(Date.from(date.atStartOfDay()
-                .atZone(ZoneId.systemDefault())
-                .toInstant()));
-        avsDropBox.clearAndFill(convertedDate);
+        avsCalendarInputBox.enterDateInField(date);
         return this;
     }
 
@@ -451,11 +442,10 @@ public class SearchProductPage extends MenuPage {
 
     @Step("выбрать дату AVS {date}")
     public SearchProductPage choseAvsDate(LocalDate date) throws Exception {
-        if (!avsDropBox.isVisible()) {
+        if (!avsCalendarInputBox.isVisible()) {
             choseCheckboxFilter(false, Filters.AVS);
         }
-        avsDropBox.click();
-        avsDropDownCalendar.selectDate(date);
+        avsCalendarInputBox.selectDate(date);
         return this;
     }
 
@@ -472,7 +462,7 @@ public class SearchProductPage extends MenuPage {
 
         for (String tmp : values) {
             supplierDropDown.searchSupplier(tmp);
-            supplierDropDown.loadingSpinner.waitForVisibility(short_timeout);
+            supplierDropDown.loadingSpinner.waitForVisibility(short_timeout); // C23384975
             supplierDropDown.loadingSpinner.waitForInvisibility();
             for (SupplierCardWidget widget : supplierDropDown.getSupplierCards()) {
                 if (widget.getSupplierCode().equals(tmp) || widget.getSupplierName().equals(tmp)) {
@@ -671,7 +661,7 @@ public class SearchProductPage extends MenuPage {
         anAssert.isElementNotVisible(notFoundMsgLbl);
         if (searchCriterion.matches("\\D+") || searchCriterion.length() < 4) {
             for (int i = 0; i < extendedProductCardList.getCount(); i++) {
-                anAssert.isTextContainsIgnoringCase(extendedProductCardList.get(i).getTitle(), searchCriterion,
+                anAssert.isElementTextContainsIgnoringCase(extendedProductCardList.get(i).getTitle(), searchCriterion,
                         extendedProductCardList.get(i).getTitle() + " не содержит " + searchCriterion);
             }
         } else {
@@ -778,10 +768,11 @@ public class SearchProductPage extends MenuPage {
             anAssert.isElementNotVisible(supplierDropBox.chosenSupplierName);
         } else if (name.length == 1) {
             elemText = supplierDropBox.chosenSupplierName.getText();
-            anAssert.isTextContainsIgnoringCase(elemText, name[0], "Не отображено имя поставщика " + name[0]);
+            anAssert.isElementTextContainsIgnoringCase(elemText, name[0], "Не отображено имя поставщика " + name[0]);
         } else {
             elemText = supplierDropBox.chosenSupplierName.getText();
-            anAssert.isTextContainsIgnoringCase(elemText, "Поставщик (" + name.length + ")", "Отображаемый текст не соответствует паттерну");
+            anAssert.isEquals(elemText, "Поставщик (" + name.length + ")",
+                    "Отображаемый текст не соответствует паттерну");
         }
         return this;
     }
@@ -823,23 +814,20 @@ public class SearchProductPage extends MenuPage {
         return this;
     }
 
-    @Step("Проверить, что в комбобоксе \"Дата AVS\" содержится корректный текст")
-    public SearchProductPage shouldAvsContainerContainsCorrectText(boolean isEmpty, LocalDate date) {
-        if (!avsDropBox.isVisible() && isEmpty) {
+    @Step("Проверить, что в комбобоксе 'Дата AVS' отображается дата: {expectedDate}")
+    public SearchProductPage shouldAvsContainerContainsCorrectText(
+            boolean isEmpty, LocalDate expectedDate) {
+        if (isEmpty && !avsCalendarInputBox.isVisible()) {
             return this;
         }
-        String visibleText = avsDropBox.getAttribute("defaultValue");
         if (isEmpty) {
+            String visibleText = avsCalendarInputBox.getSelectedText();
             anAssert.isTrue(visibleText.isEmpty(),
                     "Дата не должна быть отображена, однако отображается - " + visibleText);
         } else {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yy");
-            String convertedDate = sdf.format(Date.from(date.atStartOfDay()
-                    .atZone(ZoneId.systemDefault())
-                    .toInstant()));
-            anAssert.isTextContainsIgnoringCase(visibleText, convertedDate,
-                    "Даты отличаются. Отображаемая дата - " +
-                            visibleText + " ожидаемая дата - " + convertedDate);
+            LocalDate actualDate = avsCalendarInputBox.getSelectedDate();
+            anAssert.isEquals(actualDate, expectedDate,
+                    "Ожидалась другая avs Дата в соответстующем фильтре");
 
         }
         return this;
@@ -968,10 +956,11 @@ public class SearchProductPage extends MenuPage {
         return this;
     }
 
-    @Step("Проверить, что кмобо-бокс сортировки содержит {value}")
+    @Step("Проверить, что комбо-бокс сортировки содержит {value}")
     public SearchProductPage shouldSortComboBoxContainsText(String value) throws Exception {
         String actualText = sortComboBox.findChildElement(".//span[ancestor::div[contains(@class,'multi')]]").getText();
-        anAssert.isTextContainsIgnoringCase(actualText, value, actualText + " не содержит " + value);
+        anAssert.isElementTextContainsIgnoringCase(actualText, value,
+                actualText + " не содержит " + value);
         return this;
     }
 }

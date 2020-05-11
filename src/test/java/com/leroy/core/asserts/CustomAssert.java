@@ -32,14 +32,6 @@ public class CustomAssert extends BaseCustomAssert {
         super.logIsNotEquals(actual, expected, desc, false);
     }
 
-    public void isTextContainsIgnoringCase(String actual, String expected, String desc) {
-        super.logIsTextContainsIgnoringCase(actual, expected, desc, false);
-    }
-
-    public void isTextNotContainsIgnoringCase(String actual, String expected, String desc) {
-        super.logIsTextNotContainsIgnoringCase(actual, expected, desc, false);
-    }
-
     public void isNull(Object object, String actualResult, String expectedResult) {
         super.logIsNull(object, actualResult, expectedResult, false);
     }
@@ -62,6 +54,14 @@ public class CustomAssert extends BaseCustomAssert {
 
     public void isElementTextContains(Element element, String expectedText, String pageSource) {
         super.logIsElementTextContains(element, expectedText, pageSource, false);
+    }
+
+    public void isElementTextContainsIgnoringCase(String actual, String expected, String desc) {
+        super.logIsElementTextContainsIgnoringCase(actual, expected, desc, false);
+    }
+
+    public void isElementTextNotContains(String actual, String expected, String desc) {
+        super.logIsElementTextNotContains(actual, expected, desc, false);
     }
 
     public boolean isElementVisible(BaseWidget element, int timeout) {
