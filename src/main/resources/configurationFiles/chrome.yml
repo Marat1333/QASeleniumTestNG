@@ -4,7 +4,7 @@
 settings:
   platform: windows
   browser: chrome
-  proxy: localhost:8080
+  #proxy: localhost:8080
   timeout: 30 # default wait timeout in seconds
 
 #---------------------------------

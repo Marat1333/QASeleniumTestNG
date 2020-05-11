@@ -1,7 +1,6 @@
 package com.leroy.magportal.ui.tests;
 
 import com.leroy.constants.EnvConstants;
-import com.leroy.core.api.Module;
 import com.leroy.core.api.ThreadApiClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.enums.CatalogSearchFields;
@@ -16,7 +15,6 @@ import com.leroy.magportal.ui.pages.products.ProductCardPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
 import io.qameta.allure.Issue;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -24,7 +22,6 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
-@Guice(modules = {Module.class})
 public class SearchTest extends WebBaseSteps {
 
     private CatalogSearchClient apiClient;
@@ -59,12 +56,12 @@ public class SearchTest extends WebBaseSteps {
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
 
         //Step 1
-        log.step("ввести в поисковую строку нерелевантный поисковой запрос");
+        step("ввести в поисковую строку нерелевантный поисковой запрос");
         searchProductPage.searchByPhrase(SEARCH_PHRASE);
         searchProductPage.shouldNotFoundMsgIsDisplayed(false, SEARCH_PHRASE);
 
         //Step 2
-        log.step("выбрать любой фильтр и применить его");
+        step("выбрать любой фильтр и применить его");
         searchProductPage.choseCheckboxFilter(true, SearchProductPage.Filters.HAS_AVAILABLE_STOCK);
         searchProductPage.shouldNotFoundMsgIsDisplayed(true, SEARCH_PHRASE);
     }
@@ -95,7 +92,7 @@ public class SearchTest extends WebBaseSteps {
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
 
         //Step 1
-        log.step("осуществить поиск по фильтру номенклатуры так, чтобы результат поиска содержал менее 12 артикулов");
+        step("осуществить поиск по фильтру номенклатуры так, чтобы результат поиска содержал менее 12 артикулов");
         searchProductPage.choseNomenclature(DEPT_ID, SUB_DEPT_ID, CLASS_ID, null);
         searchProductPage.choseSortType(SearchProductPage.SortType.LM_CODE_ASC);
         searchProductPage.choseGammaFilter("Гамма А");
@@ -106,12 +103,12 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.shouldNoMoreResultsBeVisible();
 
         //Step 2
-        log.step("осуществить поиск по фильтрам так, чтобы результат поиска содержал более 12 артикулов");
+        step("осуществить поиск по фильтрам так, чтобы результат поиска содержал более 12 артикулов");
         searchProductPage.navigateToPreviousNomenclatureElement("Каталог товаров");
         searchProductPage.shouldShowMoreBtnBeVisible();
 
         //Step 3
-        log.step("Нажать на кнопку \"Показать еще\"");
+        step("Нажать на кнопку \"Показать еще\"");
         searchProductPage.showMoreResults();
         ProductItemDataList productItemListResponse1 = apiThreads.get(1).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(productItemListResponse1,
@@ -132,7 +129,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.navigateToPreviousNomenclatureElement("Каталог товаров");
 
         //Step 1
-        log.step("Выполнить поиск по полному лм коду " + lmCode);
+        step("Выполнить поиск по полному лм коду " + lmCode);
         ProductCardPage productCardPage = searchProductPage.searchByPhrase(lmCode);
         productCardPage.shouldProductCardContainsText(lmCode);
         productCardPage.verifyUrlContainsString(lmCode);
@@ -144,7 +141,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.clearSearchInputByClearBtn();*/
 
         //Step 2
-        log.step("Выполнить поиск по имени, длинной менее 4 символов " + shortSearchPhrase);
+        step("Выполнить поиск по имени, длинной менее 4 символов " + shortSearchPhrase);
         searchProductPage.clearSearchInputByClearBtn();
         searchProductPage.searchByPhrase(shortSearchPhrase);
         searchProductPage.verifyUrlContainsString(ParamNames.byNameLikeParamName + shortSearchPhrase);
@@ -152,13 +149,13 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.clearSearchInputByClearBtn();
 
         //Step 3
-        log.step("Выполнить поиск по штрихкоду " + barCode);
+        step("Выполнить поиск по штрихкоду " + barCode);
         searchProductPage.searchByPhrase(barCode);
         productCardPage.shouldProductCardContainsText(barCode);
         searchProductPage.switchToWindow();
 
         //Step 4
-        log.step("Выполнить поиск по короткому лм коду " + shortLmCode);
+        step("Выполнить поиск по короткому лм коду " + shortLmCode);
         searchProductPage.clearSearchInputByClearBtn();
         searchProductPage.searchByPhrase(shortLmCode);
         searchProductPage.verifyUrlContainsString(ParamNames.bylmCodeParamName + shortLmCode);
@@ -166,7 +163,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.clearSearchInputByClearBtn();
 
         //Step 5
-        log.step("Выполнить поиск по короткому штрих-коду " + shortBarCode);
+        step("Выполнить поиск по короткому штрих-коду " + shortBarCode);
         searchProductPage.searchByPhrase(shortBarCode);
         searchProductPage.verifyUrlContainsString(ParamNames.byBarCodeParamName + shortBarCode);
         searchProductPage.shouldProductCardContainsText(shortBarCode);
@@ -187,13 +184,13 @@ public class SearchTest extends WebBaseSteps {
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
 
         //Step 1
-        log.step("Выполнить поиск по поисковой фразе " + searchPhrase);
+        step("Выполнить поиск по поисковой фразе " + searchPhrase);
         searchProductPage.<SearchProductPage>searchByPhrase(searchPhrase)
                 .shouldSearchCriterionIs(true, searchPhrase)
                 .shouldBreadCrumbsContainsNomenclatureName(true, EnvConstants.BASIC_USER_DEPARTMENT_ID);
 
         //Step 2
-        log.step("Очистить поисковую строку по нажатию на кнопку \"крест\" в поисковом инпуте");
+        step("Очистить поисковую строку по нажатию на кнопку \"крест\" в поисковом инпуте");
         searchProductPage.clearSearchInputByClearBtn()
                 .shouldSearchCriterionIs(false, searchPhrase)
                 .shouldBreadCrumbsContainsNomenclatureName(false, EnvConstants.BASIC_USER_DEPARTMENT_ID);
@@ -249,7 +246,7 @@ public class SearchTest extends WebBaseSteps {
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
 
         //Step 1
-        log.step("Перейти на уровень товарной иерархии - все отделы");
+        step("Перейти на уровень товарной иерархии - все отделы");
         searchProductPage.navigateToPreviousNomenclatureElement(allDepartments);
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(allDepartments);
         ProductItemDataList allDepartmentsData = resultsMap.get(0).getData();
@@ -257,7 +254,7 @@ public class SearchTest extends WebBaseSteps {
                 SearchProductPage.ViewMode.EXTENDED);
 
         //Step 2
-        log.step("Выбрать отдел");
+        step("Выбрать отдел");
         searchProductPage.choseNomenclature(dept, null, null, null);
         searchProductPage.verifyUrlContainsString(ParamNames.departmentId + dept.substring(2));
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(dept);
@@ -267,7 +264,7 @@ public class SearchTest extends WebBaseSteps {
                 SearchProductPage.ViewMode.EXTENDED);
 
         //Step 3
-        log.step("Выбрать подотдел");
+        step("Выбрать подотдел");
         searchProductPage.choseNomenclature(dept, subDept, null, null);
         searchProductPage.verifyUrlContainsString(ParamNames.subdepartmentId + subDept);
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(subDept);
@@ -277,7 +274,7 @@ public class SearchTest extends WebBaseSteps {
                 SearchProductPage.ViewMode.EXTENDED);
 
         //Step 4
-        log.step("Выбрать тип");
+        step("Выбрать тип");
         searchProductPage.choseNomenclature(dept, subDept, classId, null);
         searchProductPage.verifyUrlContainsString(ParamNames.classId + classId.substring(1));
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(classId);
@@ -287,7 +284,7 @@ public class SearchTest extends WebBaseSteps {
                 SearchProductPage.ViewMode.EXTENDED);
 
         //Step 5
-        log.step("Выбрать подтип");
+        step("Выбрать подтип");
         searchProductPage.choseNomenclature(dept, subDept, classId, subClassId);
         searchProductPage.verifyUrlContainsString(ParamNames.subclassId + subClassId.substring(1));
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(subClassId);
@@ -311,35 +308,35 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.choseNomenclature("005", null, null, null);
 
         //Step 1
-        log.step("Выбрать тип сортировки - по лмкоду DESC");
+        step("Выбрать тип сортировки - по лмкоду DESC");
         searchProductPage.choseSortType(SearchProductPage.SortType.LM_CODE_DESC);
         searchProductPage.verifyUrlContainsString(ParamNames.sortBy + "lmCode%7CDESC");
         searchProductPage.shouldProductsAreSorted(SearchProductPage.SortType.LM_CODE_DESC);
         searchProductPage.shouldSortComboBoxContainsText(SearchProductPage.SortType.LM_CODE_DESC.getName());
 
         //Step 2
-        log.step("Выбрать тип сортировки - по лмкоду ASC");
+        step("Выбрать тип сортировки - по лмкоду ASC");
         searchProductPage.choseSortType(SearchProductPage.SortType.LM_CODE_ASC);
         searchProductPage.verifyUrlContainsString(ParamNames.sortBy + "lmCode%7CASC");
         searchProductPage.shouldProductsAreSorted(SearchProductPage.SortType.LM_CODE_ASC);
         searchProductPage.shouldSortComboBoxContainsText(SearchProductPage.SortType.LM_CODE_ASC.getName());
 
         //Step 3
-        log.step("Выбрать тип сортировки - по названию DESC");
+        step("Выбрать тип сортировки - по названию DESC");
         searchProductPage.choseSortType(SearchProductPage.SortType.NAME_DESC);
         searchProductPage.verifyUrlContainsString(ParamNames.sortBy + "name%7CDESC");
         searchProductPage.shouldProductsAreSorted(SearchProductPage.SortType.NAME_DESC);
         searchProductPage.shouldSortComboBoxContainsText(SearchProductPage.SortType.NAME_DESC.getName());
 
         //Step 4
-        log.step("Выбрать тип сортировки - по названию ASC");
+        step("Выбрать тип сортировки - по названию ASC");
         searchProductPage.choseSortType(SearchProductPage.SortType.NAME_ASC);
         searchProductPage.verifyUrlContainsString(ParamNames.sortBy + "name%7CASC");
         searchProductPage.shouldProductsAreSorted(SearchProductPage.SortType.NAME_ASC);
         searchProductPage.shouldSortComboBoxContainsText(SearchProductPage.SortType.NAME_ASC.getName());
 
         //Step 5
-        log.step("Выбрать тип сортировки - по умолчанию (по популярности товара)");
+        step("Выбрать тип сортировки - по умолчанию (по популярности товара)");
         searchProductPage.choseSortType(SearchProductPage.SortType.DEFAULT);
         searchProductPage.shouldResponseEntityEqualsToViewEntity(response.asJson(), SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED)
@@ -355,11 +352,11 @@ public class SearchTest extends WebBaseSteps {
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
 
         //Step 1
-        log.step("Создать историю поиска из " + notesQuantity + " элементов");
+        step("Создать историю поиска из " + notesQuantity + " элементов");
         searchProductPage.shouldSearchHistoryContainsEachElement(searchProductPage.createSearchHistory(notesQuantity));
 
         //Step 2
-        log.step("Ввести поисковой критерий который идентичен хотя бы 1 записи в истории поиска");
+        step("Ввести поисковой критерий который идентичен хотя бы 1 записи в истории поиска");
         searchProductPage.enterStringInSearchInput(searchCriterion)
                 .shouldSearchHistoryElementsContainsSearchCriterion(searchCriterion);
     }
@@ -383,7 +380,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.navigateToPreviousNomenclatureElement(allDepartments);
 
         //Step 1
-        log.step("Выбрать двух поставщиков и осуществить поиск по фильтру поставщиков");
+        step("Выбрать двух поставщиков и осуществить поиск по фильтру поставщиков");
         searchProductPage.choseSupplier(false, FIRST_SUPPLIER_CODE, SECOND_SUPPLIER_CODE)
                 .shouldSupplierComboBoxContainsCorrectText(false, FIRST_SUPPLIER_CODE, SECOND_SUPPLIER_CODE)
                 .applyFilters()
@@ -393,14 +390,14 @@ public class SearchTest extends WebBaseSteps {
                 SearchProductPage.ViewMode.EXTENDED);
 
         //Step 2
-        log.step("Очистить выбранный фильтр по поставщику по нажатию на кнопку \"Очистить\" и выбрать одного поставщика");
+        step("Очистить выбранный фильтр по поставщику по нажатию на кнопку \"Очистить\" и выбрать одного поставщика");
         searchProductPage.deleteAllChosenSuppliers()
                 .choseSupplier(false, FIRST_SUPPLIER_CODE)
                 .shouldChosenSupplierCheckboxHasCorrectCondition(true, FIRST_SUPPLIER_NAME)
                 .shouldSupplierComboBoxContainsCorrectText(false, FIRST_SUPPLIER_NAME);
 
         //Step 3
-        log.step("Отменить выбор поставщика по нажатию на крест в овальном элементе с названием поставщика");
+        step("Отменить выбор поставщика по нажатию на крест в овальном элементе с названием поставщика");
         searchProductPage.deleteChosenSuppliers(false, FIRST_SUPPLIER_NAME)
                 .shouldChosenSupplierCheckboxHasCorrectCondition(false, FIRST_SUPPLIER_NAME)
                 .shouldSupplierComboBoxContainsCorrectText(true);
@@ -432,7 +429,7 @@ public class SearchTest extends WebBaseSteps {
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
 
         //Step 1
-        log.step("Выбрать фильтр \"Дата AVS\", указать дату и выполнить поиск");
+        step("Выбрать фильтр \"Дата AVS\", указать дату и выполнить поиск");
         searchProductPage.choseCheckboxFilter(false, SearchProductPage.Filters.AVS)
                 .shouldCheckboxFilterHasCorrectCondition(true, SearchProductPage.Filters.AVS)
                 .choseAvsDate(avsDate)
@@ -444,7 +441,7 @@ public class SearchTest extends WebBaseSteps {
                 .clearAllFilters();
 
         //Step 2
-        log.step("Выбрать фильтр \"Дата AVS\", не выбирая даты");
+        step("Выбрать фильтр \"Дата AVS\", не выбирая даты");
         searchProductPage.choseCheckboxFilter(true, SearchProductPage.Filters.AVS)
                 .shouldAvsContainerContainsCorrectText(true, null);
         ProductItemDataList avsNeqNullResponse = resultsMap.get(1).getData();
@@ -452,7 +449,7 @@ public class SearchTest extends WebBaseSteps {
                 SearchProductPage.ViewMode.EXTENDED);
 
         //Step 3
-        log.step("Выбрать фильтр \"Дата AVS\", ввести дату вручную и выполнить поиск");
+        step("Выбрать фильтр \"Дата AVS\", ввести дату вручную и выполнить поиск");
         searchProductPage.enterAvsDateManually(avsDate)
                 .applyFilters()
                 .shouldResponseEntityEqualsToViewEntity(avsDateResponse, SearchProductPage.FilterFrame.MY_SHOP,
@@ -506,7 +503,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.navigateToPreviousNomenclatureElement(allDepartments);
 
         //Step 1
-        log.step("Выбрать фильтры: гамма А, гамма S, топ 1, топ 2, есть теор. запас, топ ЕМ, CTM и выполнить поиск по ним");
+        step("Выбрать фильтры: гамма А, гамма S, топ 1, топ 2, есть теор. запас, топ ЕМ, CTM и выполнить поиск по ним");
         searchProductPage.choseSeveralFilters(filtersData, true);
         ProductItemDataList myShopResponse = resultMap.get(0).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(myShopResponse, SearchProductPage.FilterFrame.MY_SHOP,
@@ -518,7 +515,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.clearAllFilters();
 
         //Step 2
-        log.step("Выбрать фильтры: топ 1000, лучшая цена и выполнить поиск по ним");
+        step("Выбрать фильтры: топ 1000, лучшая цена и выполнить поиск по ним");
         filtersData.setCheckBoxes(new SearchProductPage.Filters[]{SearchProductPage.Filters.TOP_1000,
                 SearchProductPage.Filters.BEST_PRICE});
         searchProductPage.choseSeveralFilters(filtersData, true);
@@ -529,7 +526,7 @@ public class SearchTest extends WebBaseSteps {
                 ParamNames.shopId + EnvConstants.BASIC_USER_SHOP_ID);
 
         //Step 3
-        log.step("Выбрать фильтр \"предложение ограничено\" и выполнить поиск по нему");
+        step("Выбрать фильтр \"предложение ограничено\" и выполнить поиск по нему");
         searchProductPage.clearAllFilters();
         searchProductPage.choseCheckboxFilter(true, SearchProductPage.Filters.LIMITED_OFFER);
         ProductItemDataList limitedOffer = resultMap.get(2).getData();
@@ -538,7 +535,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.verifyUrlContainsString(ParamNames.limitedOffer + "true");
 
         //Step 4
-        log.step("Выбрать фильтр \"под заказ\" и выполнить поиск по нему");
+        step("Выбрать фильтр \"под заказ\" и выполнить поиск по нему");
         searchProductPage.clearAllFilters();
         searchProductPage.choseCheckboxFilter(true, SearchProductPage.Filters.ORDERED);
         ProductItemDataList orderType = resultMap.get(3).getData();
@@ -579,7 +576,7 @@ public class SearchTest extends WebBaseSteps {
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
 
         //Step 1
-        log.step("Переключиться на группу фильтров \"Вся гамма ЛМ\" и выбрать фильтры:" +
+        step("Переключиться на группу фильтров \"Вся гамма ЛМ\" и выбрать фильтры:" +
                 " гамма А, гамма S, сtm и выполнить поиск по ним");
         searchProductPage.switchFiltersFrame(SearchProductPage.FilterFrame.ALL_GAMMA_LM);
         searchProductPage.navigateToPreviousNomenclatureElement(allDepartments);
@@ -594,7 +591,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.clearAllFilters();
 
         //Step 2
-        log.step("Выбрать фильтры: лучшая цена, топ 1000 и выполнить поиск по ним");
+        step("Выбрать фильтры: лучшая цена, топ 1000 и выполнить поиск по ним");
         filtersData.setCheckBoxes(new SearchProductPage.Filters[]{SearchProductPage.Filters.TOP_1000,
                 SearchProductPage.Filters.BEST_PRICE});
         searchProductPage.choseSeveralFilters(filtersData, true);
@@ -605,7 +602,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.verifyUrlContainsStringNot(ParamNames.shopId);
 
         //Step 3
-        log.step("Выбрать фильтр \"предложение ограничено\" и выполнить поиск по нему");
+        step("Выбрать фильтр \"предложение ограничено\" и выполнить поиск по нему");
         searchProductPage.clearAllFilters();
         searchProductPage.choseCheckboxFilter(true, SearchProductPage.Filters.LIMITED_OFFER);
         ProductItemDataList limitedOffer = resultMap.get(2).getData();
@@ -615,7 +612,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.verifyUrlContainsStringNot(ParamNames.shopId);
 
         //Step 4
-        log.step("выбрать фильтр \"под заказ\" и выполнить поиск по нему");
+        step("выбрать фильтр \"под заказ\" и выполнить поиск по нему");
         searchProductPage.clearAllFilters();
         searchProductPage.choseCheckboxFilter(true, SearchProductPage.Filters.ORDERED);
         ProductItemDataList orderType = resultMap.get(3).getData();
@@ -669,17 +666,17 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.navigateToPreviousNomenclatureElement(allDepartments);
 
         //Step 1
-        log.step("Выбрать несколько фильтров из группы фильтров \"Мой магазин\" и выполнить поиск по ним");
+        step("Выбрать несколько фильтров из группы фильтров \"Мой магазин\" и выполнить поиск по ним");
         searchProductPage.choseSeveralFilters(myShopFilterData, true);
         searchProductPage.checkFiltersChosen(myShopFilterData);
 
         //Step 2
-        log.step("Переключится на группу фильтров \"Вся гамма ЛМ\"");
+        step("Переключится на группу фильтров \"Вся гамма ЛМ\"");
         searchProductPage.switchFiltersFrame(SearchProductPage.FilterFrame.ALL_GAMMA_LM);
         searchProductPage.checkFiltersNotChosen(myShopFilterData);
 
         //Step 3
-        log.step("Выбрать несколько фильтров из группы фильтров \"Вся гамма ЛМ\" и выполнить поиск по ним");
+        step("Выбрать несколько фильтров из группы фильтров \"Вся гамма ЛМ\" и выполнить поиск по ним");
         searchProductPage.choseSeveralFilters(allGammaFilterData, true);
         searchProductPage.checkFiltersChosen(allGammaFilterData);
         ProductItemDataList allGammaData = resultMap.get(0).getData();
@@ -688,7 +685,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.verifyUrlContainsStringNot(ParamNames.shopId);
 
         //Step 4
-        log.step("Переключится на группу фильтров \"Мой магазин\" и выполнить поиск по ранее выбранным фильтрам");
+        step("Переключится на группу фильтров \"Мой магазин\" и выполнить поиск по ранее выбранным фильтрам");
         searchProductPage.switchFiltersFrame(SearchProductPage.FilterFrame.MY_SHOP);
         searchProductPage.checkFiltersChosen(myShopFilterData);
         searchProductPage.applyFilters();
@@ -736,7 +733,7 @@ public class SearchTest extends WebBaseSteps {
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
 
         //Step 1
-        log.step("Выбрать несколько фильтров из группы фильтров \"Мой магазин\", выполнить поиск по ним и очистить " +
+        step("Выбрать несколько фильтров из группы фильтров \"Мой магазин\", выполнить поиск по ним и очистить " +
                 "фильтры по нажатию на кнопку в виде метлы");
         searchProductPage.choseSeveralFilters(myShopFilterData, true);
         searchProductPage.clearAllFilters();
@@ -748,7 +745,7 @@ public class SearchTest extends WebBaseSteps {
                 ParamNames.supplierId, ParamNames.avsDate);
 
         //Step 2
-        log.step("Выбрать несколько фильтров из группы фильтров \"Мой магазин\", выполнить поиск по ним и очистить " +
+        step("Выбрать несколько фильтров из группы фильтров \"Мой магазин\", выполнить поиск по ним и очистить " +
                 "фильтры по нажатию на элемент в хлебных крошках");
         searchProductPage.choseSeveralFilters(myShopFilterData, true);
         searchProductPage.navigateToPreviousNomenclatureElement(allDepartments);
@@ -760,7 +757,7 @@ public class SearchTest extends WebBaseSteps {
                 ParamNames.supplierId, ParamNames.avsDate, ParamNames.departmentId);
 
         //Step 3
-        log.step("Выбрать несколько фильтров из группы фильтров \"Мой магазин\", выполнить поиск по ним и очистить " +
+        step("Выбрать несколько фильтров из группы фильтров \"Мой магазин\", выполнить поиск по ним и очистить " +
                 "фильтры по нажатию на кнопку \"Очистить фильтры\" в области результатов поиска");
         searchProductPage.choseSeveralFilters(myShopFilterData, true);
         searchProductPage.clearAllFiltersInProductFrame();
@@ -771,7 +768,7 @@ public class SearchTest extends WebBaseSteps {
                 ParamNames.supplierId, ParamNames.avsDate);
 
         //Step 4
-        log.step("Выбрать несколько фильтров из группы фильтров \"Вся гамма ЛМ\", выполнить поиск по ним и очистить " +
+        step("Выбрать несколько фильтров из группы фильтров \"Вся гамма ЛМ\", выполнить поиск по ним и очистить " +
                 "фильтры по нажатию на элемент в хлебных крошках");
         searchProductPage.switchFiltersFrame(SearchProductPage.FilterFrame.ALL_GAMMA_LM);
         searchProductPage.choseNomenclature("0" + EnvConstants.BASIC_USER_DEPARTMENT_ID, null, null, null);
@@ -785,7 +782,7 @@ public class SearchTest extends WebBaseSteps {
                 ParamNames.supplierId, ParamNames.avsDate, ParamNames.shopId, ParamNames.limitedOffer, ParamNames.ctm);
 
         //Step 5
-        log.step("Выбрать несколько фильтров из группы фильтров \"Вся гамма ЛМ\", выполнить поиск по ним и очистить " +
+        step("Выбрать несколько фильтров из группы фильтров \"Вся гамма ЛМ\", выполнить поиск по ним и очистить " +
                 "фильтры по нажатию на кнопку в виде метлы");
         searchProductPage.choseSeveralFilters(allGammaFilterData, true);
         searchProductPage.clearAllFilters();
@@ -796,7 +793,7 @@ public class SearchTest extends WebBaseSteps {
                 ParamNames.supplierId, ParamNames.avsDate, ParamNames.shopId, ParamNames.limitedOffer, ParamNames.ctm);
 
         //Step 6
-        log.step("Выбрать несколько фильтров из группы фильтров \"Вся гамма ЛМ\", выполнить поиск по ним и очистить " +
+        step("Выбрать несколько фильтров из группы фильтров \"Вся гамма ЛМ\", выполнить поиск по ним и очистить " +
                 "фильтры по нажатию на кнопку \"Очистить фильтры\" в области результатов поиска");
         searchProductPage.choseSeveralFilters(allGammaFilterData, true);
         searchProductPage.clearAllFiltersInProductFrame();
@@ -807,7 +804,7 @@ public class SearchTest extends WebBaseSteps {
                 ParamNames.supplierId, ParamNames.avsDate, ParamNames.shopId, ParamNames.limitedOffer, ParamNames.ctm);
 
         //Step 7
-        log.step("Выбрать несколько фильтров из группы фильтров \"Вся гамма ЛМ\", не применяя их, ввести в поисковую " +
+        step("Выбрать несколько фильтров из группы фильтров \"Вся гамма ЛМ\", не применяя их, ввести в поисковую " +
                 "строку фразу и выполнить поиск по ней");
         searchProductPage.choseSeveralFilters(allGammaFilterData, false);
         searchProductPage.searchByPhrase("1234");
@@ -840,7 +837,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.navigateToPreviousNomenclatureElement(allDepartments);
 
         //Step 1
-        log.step("Заполнить поисковую строку и выбрать элемент товарной иерархии");
+        step("Заполнить поисковую строку и выбрать элемент товарной иерархии");
         searchProductPage.fillSearchInput(byLmCodeParamValue);
         searchProductPage.choseNomenclature(0 + deptId, null, null, null);
         ProductItemDataList nomenclatureResponse = resultMap.get(0).getData();
@@ -849,12 +846,12 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.verifyUrlContainsString(ParamNames.bylmCodeParamName + byLmCodeParamValue);
 
         //Step 2
-        log.step("ввести поисковую фразу в поисковую строку");
+        step("ввести поисковую фразу в поисковую строку");
         searchProductPage.clearSearchInputByClearBtn();
         searchProductPage.fillSearchInput(byLmCodeParamValue);
 
         //Step 3
-        log.step("Выбрать подотдел в товарной иерархии и перейти на уровень отдела");
+        step("Выбрать подотдел в товарной иерархии и перейти на уровень отдела");
         searchProductPage.choseNomenclature(0 + deptId, "1505", null, null);
         searchProductPage.navigateToPreviousNomenclatureElement(deptId);
         searchProductPage.shouldResponseEntityEqualsToViewEntity(nomenclatureResponse, SearchProductPage.FilterFrame.MY_SHOP,
@@ -862,7 +859,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.verifyUrlContainsString(ParamNames.bylmCodeParamName + byLmCodeParamValue);
 
         //Step 4
-        log.step("ввести поисковую фразу в поисковую строку, выбрать фильтр и осуществить поиск");
+        step("ввести поисковую фразу в поисковую строку, выбрать фильтр и осуществить поиск");
         searchProductPage.clearSearchInputByClearBtn();
         searchProductPage.fillSearchInput(byLmCodeParamValue);
         searchProductPage.choseGammaFilter("Гамма А");
@@ -879,12 +876,12 @@ public class SearchTest extends WebBaseSteps {
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
 
         //Step 1
-        log.step("Ввести в поисковую строку фразу и несколько раз выполнить поиск по ней");
+        step("Ввести в поисковую строку фразу и несколько раз выполнить поиск по ней");
         searchProductPage.fillSearchInput("1234").
                 shouldRequestHasBeenInitializedNTimes(3, true);
 
         //Step 2
-        log.step("Выполнить несколько раз поиск по нажатию на кнопку \"Показать товары\"");
+        step("Выполнить несколько раз поиск по нажатию на кнопку \"Показать товары\"");
         searchProductPage.shouldRequestHasBeenInitializedNTimes(4, false);
     }
 
@@ -933,7 +930,7 @@ public class SearchTest extends WebBaseSteps {
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
 
         //Step 1
-        log.step("Перейти по url с параметрами фильтров, номенклатуры, сортировки, поисковой фразы и фильтру \"Мой магазин\"");
+        step("Перейти по url с параметрами фильтров, номенклатуры, сортировки, поисковой фразы и фильтру \"Мой магазин\"");
         searchProductPage.navigateToWithFilters(myShopParamMap);
         searchProductPage.checkFiltersChosen(myShopFilterData);
         searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, EnvConstants.BASIC_USER_DEPARTMENT_ID);
@@ -942,7 +939,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.shouldSortComboBoxContainsText(SearchProductPage.SortType.NAME_ASC.getName());
 
         //Step 2
-        log.step("Перейти по url с параметрами фильтров и фильтру \"Вся гамма ЛМ\"");
+        step("Перейти по url с параметрами фильтров и фильтру \"Вся гамма ЛМ\"");
         searchProductPage.navigateToWithFilters(allGammaParamMap);
         searchProductPage.checkFiltersChosen(allGammaFilterData);
     }
@@ -955,13 +952,13 @@ public class SearchTest extends WebBaseSteps {
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
 
         //Step 1
-        log.step("Перейти в карточку товара при примененном расширенном режиме отображения и фильтре \"Мой магазин\"");
+        step("Перейти в карточку товара при примененном расширенном режиме отображения и фильтре \"Мой магазин\"");
         ExtendedProductCardPage extendedProductCardPage = searchProductPage.navigateToProductCart(lmCode,
                 SearchProductPage.FilterFrame.MY_SHOP, SearchProductPage.ViewMode.EXTENDED);
         extendedProductCardPage.verifyRequiredElement();
 
         //Step 2
-        log.step("Перейти в карточку товара при примененном табличном режиме отображения и фильтре \"Мой магазин\"");
+        step("Перейти в карточку товара при примененном табличном режиме отображения и фильтре \"Мой магазин\"");
         searchProductPage.switchToWindow();
         searchProductPage.switchViewMode(SearchProductPage.ViewMode.LIST);
         extendedProductCardPage = searchProductPage.navigateToProductCart(lmCode,
@@ -969,7 +966,7 @@ public class SearchTest extends WebBaseSteps {
         extendedProductCardPage.verifyRequiredElement();
 
         //Step 3
-        log.step("Перейти в карточку товара при примененном расширенном режиме отображения и фильтре \"Вся гамма ЛМ\"");
+        step("Перейти в карточку товара при примененном расширенном режиме отображения и фильтре \"Вся гамма ЛМ\"");
         searchProductPage.switchToWindow();
         searchProductPage.switchFiltersFrame(SearchProductPage.FilterFrame.ALL_GAMMA_LM);
         ProductCardPage productCardPage = searchProductPage.navigateToProductCart(lmCode, SearchProductPage.FilterFrame.ALL_GAMMA_LM,
@@ -977,7 +974,7 @@ public class SearchTest extends WebBaseSteps {
         productCardPage.verifyRequiredElement();
 
         //Step 4
-        log.step("Перейти в карточку товара при примененном табличном режиме отображения и фильтре \"Вся гамма ЛМ\"");
+        step("Перейти в карточку товара при примененном табличном режиме отображения и фильтре \"Вся гамма ЛМ\"");
         searchProductPage.switchToWindow();
         searchProductPage.switchViewMode(SearchProductPage.ViewMode.LIST);
         productCardPage = searchProductPage.navigateToProductCart(lmCode, SearchProductPage.FilterFrame.ALL_GAMMA_LM,
