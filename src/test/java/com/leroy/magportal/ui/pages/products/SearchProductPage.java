@@ -9,7 +9,7 @@ import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.pages.common.MenuPage;
-import com.leroy.magportal.ui.webelements.MagPortalComboBox;
+import com.leroy.magportal.ui.webelements.PuzMultiSelectComboBox;
 import com.leroy.magportal.ui.webelements.searchelements.SupplierComboBox;
 import com.leroy.magportal.ui.webelements.widgets.*;
 import io.qameta.allure.Step;
@@ -109,10 +109,10 @@ public class SearchProductPage extends MenuPage {
     ElementList<Element> nomenclatureElementsList;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//input[@placeholder='Гамма']/ancestor::div[1]")
-    MagPortalComboBox gammaComboBox;
+    PuzMultiSelectComboBox gammaComboBox;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//input[@placeholder='Топ пополнения']/ancestor::div[1]")
-    MagPortalComboBox topComboBox;
+    PuzMultiSelectComboBox topComboBox;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[text()='еще']/ancestor::button")
     Button showAllFilters;
@@ -132,13 +132,13 @@ public class SearchProductPage extends MenuPage {
     SupplierComboBox supplierDropBox;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//input[@placeholder='Дата AVS']")
-    MagPortalComboBox avsDropBox;
+    PuzMultiSelectComboBox avsDropBox;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'DatePicker__dayPicker')]")
     CalendarWidget avsDropDownCalendar;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(@class,'singleValue')]/ancestor::div[2]")
-    MagPortalComboBox sortComboBox;
+    PuzMultiSelectComboBox sortComboBox;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(@class,'singleValue')]" +
             "/ancestor::div[6]/following-sibling::button[1]")

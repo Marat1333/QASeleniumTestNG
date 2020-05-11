@@ -10,8 +10,8 @@ import org.openqa.selenium.WebDriver;
 import java.util.Arrays;
 import java.util.List;
 
-public class MagPortalComboBox extends BaseWidget {
-    public MagPortalComboBox(WebDriver driver, CustomLocator customLocator) {
+public class PuzMultiSelectComboBox extends BaseWidget {
+    public PuzMultiSelectComboBox(WebDriver driver, CustomLocator customLocator) {
         super(driver, customLocator);
     }
 

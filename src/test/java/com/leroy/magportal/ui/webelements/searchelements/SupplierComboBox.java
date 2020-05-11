@@ -2,13 +2,13 @@ package com.leroy.magportal.ui.webelements.searchelements;
 
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
-import com.leroy.magportal.ui.webelements.MagPortalComboBox;
+import com.leroy.magportal.ui.webelements.PuzMultiSelectComboBox;
 import com.leroy.magportal.ui.webelements.widgets.SupplierCardWidget;
 import org.openqa.selenium.WebDriver;
 
 import java.util.List;
 
-public class SupplierComboBox extends MagPortalComboBox {
+public class SupplierComboBox extends PuzMultiSelectComboBox {
     public SupplierComboBox(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
     }

@@ -5,7 +5,7 @@ import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.models.search.ProductCardData;
-import com.leroy.utils.Converter;
+import com.leroy.utils.ParserUtil;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 
@@ -84,8 +84,8 @@ public class SearchProductCardWidget extends SearchProductAllGammaCardWidget {
         productCardData.setBarCode(getBarCode(true, ps));
         productCardData.setName(getTitle(ps));
         if (priceObj.isVisible(ps))
-            productCardData.setPrice(Converter.strToDouble(getPrice(ps)));
-        productCardData.setAvailableQuantity(Converter.strToDouble(getQuantity(ps)));
+            productCardData.setPrice(ParserUtil.strToDouble(getPrice(ps)));
+        productCardData.setAvailableQuantity(ParserUtil.strToDouble(getQuantity(ps)));
         return productCardData;
     }
 

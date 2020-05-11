@@ -6,7 +6,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Locale;
 
-public class Converter {
+public class ParserUtil {
 
     /**
      * Convert String to Double and cut off non-digits if necessary
@@ -32,7 +32,12 @@ public class Converter {
         return Integer.parseInt(str.replaceAll("\\D+", ""));
     }
 
-    public static String strToStrWithoutDigits(String str) {
+    /**
+     * Leave only digits and remove any letters and other non-digit symbols including space character
+     * @param str - string (text)
+     * @return string with only digits
+     */
+    public static String strWithOnlyDigits(String str) {
         if (str == null)
             return null;
         return str.replaceAll("\\D+", "");
@@ -52,4 +57,19 @@ public class Converter {
     public static String standardPhoneFmt(String phoneNumber) {
         return phoneNumber.replaceAll(" |-", "");
     }
+
+    public static String parseFirstName(String fullName) {
+        String[] nameArr = fullName.split(" ");
+        if (nameArr.length > 0)
+            return nameArr[0].trim();
+        return null;
+    }
+
+    public static String parseLastName(String fullName) {
+        String[] nameArr = fullName.split(" ");
+        if (nameArr.length > 1)
+            return nameArr[1].trim();
+        return null;
+    }
+
 }

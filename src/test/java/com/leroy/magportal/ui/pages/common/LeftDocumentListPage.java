@@ -5,12 +5,14 @@ import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.models.salesdoc.IDataWithNumberAndStatus;
 import com.leroy.magportal.ui.webelements.CardWebWidget;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
+import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends IDataWithNumberAndStatus>
         extends MenuPage {
@@ -36,6 +38,11 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
         return documentCardList().getDataList();
     }
 
+    @Step("Получить кол-во документов в списке слева")
+    public int getDocumentCount() {
+        return documentCardList().getCount();
+    }
+
     // Actions
 
     @Step("Обновить список документов")
@@ -48,7 +55,7 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
 
     private boolean isDocumentPresentInList(String number) {
         for (D docData : documentCardList().getDataList()) {
-            if (docData.getNumber().equals(number)) {
+            if (ParserUtil.strWithOnlyDigits(docData.getNumber()).equals(number)) {
                 return true;
             }
         }
@@ -83,5 +90,37 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
     public void shouldDocumentListIs(List<D> expectedDocuments) {
         anAssert.isEquals(documentCardList().getDataList(), expectedDocuments,
                 "Ожидались другие документы");
+    }
+
+    @Step("Проверить, что в списке документов слева на текущей странице отображается {value} документов")
+    public void shouldDocumentCountIs(int value) {
+        anAssert.isEquals(documentCardList().getCount(), value,
+                "Ожидалось другое кол-во документов");
+    }
+
+    @Step("Проверить, что в списке документов слева присутствуют документы с номерами: {expectedNumbers}")
+    public void shouldDocumentListNumbersEqual(List<String> expectedNumbers) {
+        anAssert.isEquals(documentCardList().getDataList().stream().map(
+                d -> ParserUtil.strWithOnlyDigits(d.getNumber()))
+                        .collect(Collectors.toList()), expectedNumbers,
+                "Ожидались другие номера документов");
+    }
+
+    @Step("Проверить, что в списке документов слева присутствуют документы, содержащие номер: {expectedNumber}")
+    public void shouldDocumentListFilteredByNumber(String expectedNumber) {
+        List<String> actualDocumentNumbers = documentCardList().getDataList().stream().map(D::getNumber)
+                .collect(Collectors.toList());
+        anAssert.isTrue(actualDocumentNumbers.size() > 0,
+                "Не найден ни один документ");
+        for (String docNumber : actualDocumentNumbers) {
+            anAssert.isTrue(ParserUtil.strWithOnlyDigits(docNumber).contains(expectedNumber),
+                    String.format("Номер документа %s не содержит %s", docNumber, expectedNumber));
+        }
+    }
+
+    @Step("Проверить, что в список документов слева пуст")
+    public void shouldDocumentListIsEmpty() {
+        anAssert.isTrue(documentCardList().getDataList().size() == 0,
+                "Список документов не пустой (содержит документы)");
     }
 }

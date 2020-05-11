@@ -5,12 +5,12 @@ import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
+import com.leroy.magmobile.ui.models.sales.SalesOrderCardData;
+import com.leroy.magmobile.ui.models.search.ProductCardData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.basket.Basket35Page;
 import com.leroy.magmobile.ui.pages.sales.estimate.EstimatePage;
-import com.leroy.magmobile.ui.models.sales.SalesOrderCardData;
-import com.leroy.magmobile.ui.models.search.ProductCardData;
-import com.leroy.utils.Converter;
+import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
 public class AddProduct35Page extends CommonMagMobilePage {
@@ -104,17 +104,17 @@ public class AddProduct35Page extends CommonMagMobilePage {
 
         // Карточка товара
         ProductCardData cardData = new ProductCardData();
-        cardData.setAvailableQuantity(Converter.strToDouble(shoppingRoomAvailableQuantity.getText(ps)));
-        cardData.setPrice(Converter.strToDouble(price.getText(ps)));
+        cardData.setAvailableQuantity(ParserUtil.strToDouble(shoppingRoomAvailableQuantity.getText(ps)));
+        cardData.setPrice(ParserUtil.strToDouble(price.getText(ps)));
         cardData.setName(name.getText(ps));
-        cardData.setLmCode(Converter.strToStrWithoutDigits(lmCode.getText(ps)));
-        cardData.setBarCode(Converter.strToStrWithoutDigits(barCode.getText(ps)));
+        cardData.setLmCode(ParserUtil.strWithOnlyDigits(lmCode.getText(ps)));
+        cardData.setBarCode(ParserUtil.strWithOnlyDigits(barCode.getText(ps)));
         cardData.setPriceUnit(shoppingRoomAvailablePriceUnit.getText(ps));
 
         // Детали выбора товара (Строка заказа)
         SalesOrderCardData orderCardData = new SalesOrderCardData();
-        orderCardData.setSelectedQuantity(Converter.strToDouble(editQuantityFld.getText(ps)));
-        orderCardData.setTotalPrice(Converter.strToDouble(totalPrice.getText(ps)));
+        orderCardData.setSelectedQuantity(ParserUtil.strToDouble(editQuantityFld.getText(ps)));
+        orderCardData.setTotalPrice(ParserUtil.strToDouble(totalPrice.getText(ps)));
         orderCardData.setProductCardData(cardData);
         return orderCardData;
     }
@@ -174,10 +174,10 @@ public class AddProduct35Page extends CommonMagMobilePage {
 
     @Step("Убедиться, что итоговая сумма рассчитана корректно на основе цены и введенного кол-ва")
     public AddProduct35Page shouldTotalPriceCalculateCorrectly() {
-        double _price = Converter.strToDouble(getPrice());
-        double _quantity = Converter.strToDouble(editQuantityFld.getText());
-        String expectedTotalPrice = Converter.prettyDoubleFmt(_price * _quantity);
-        anAssert.isEquals(Converter.strToStrWithoutDigits(totalPrice.getText()), expectedTotalPrice,
+        double _price = ParserUtil.strToDouble(getPrice());
+        double _quantity = ParserUtil.strToDouble(editQuantityFld.getText());
+        String expectedTotalPrice = ParserUtil.prettyDoubleFmt(_price * _quantity);
+        anAssert.isEquals(ParserUtil.strWithOnlyDigits(totalPrice.getText()), expectedTotalPrice,
                 "Сумма итого (как цена * кол-во) рассчитана не верно");
         return this;
     }

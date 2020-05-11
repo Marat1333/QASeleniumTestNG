@@ -4,17 +4,13 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.leroy.core.SessionData;
 import com.leroy.core.configuration.Log;
-import com.leroy.magmobile.api.clients.CartClient;
-import com.leroy.magmobile.api.clients.MagMobileClient;
-import com.leroy.magmobile.api.clients.OrderClient;
-import com.leroy.magmobile.api.clients.SalesDocSearchClient;
+import com.leroy.magmobile.api.clients.*;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
-import com.leroy.magportal.api.clients.CatalogSearchClient;
 import io.qameta.allure.Step;
 import lombok.Setter;
 import org.apache.commons.lang.RandomStringUtils;
@@ -39,9 +35,33 @@ public class ApiClientProvider {
     @Inject
     private Provider<CartClient> cartClientProvider;
     @Inject
+    private Provider<CustomerClient> customerClientProvider;
+    @Inject
+    private Provider<EstimateClient> estimateClientProvider;
+    @Inject
     private Provider<OrderClient> orderClientProvider;
     @Inject
+    private Provider<SalesDocProductClient> salesDocProductClientProvider;
+    @Inject
     private Provider<SalesDocSearchClient> salesDocSearchClientProvider;
+    @Inject
+    private Provider<TransferClient> salesDocTransferClientProvider;
+    @Inject
+    private Provider<SmsNotificationClient> smsNotificationClientProvider;
+    @Inject
+    private Provider<PrintPriceClient> printPriceClientProvider;
+    @Inject
+    private Provider<CatalogProductClient> catalogProductClientProvider;
+    @Inject
+    private Provider<PickingTaskClient> pickingTaskClientProvider;
+    @Inject
+    private Provider<ShopKladrClient> shopClientProvider;
+    @Inject
+    private Provider<LsAddressClient> lsAddressClientProvider;
+    @Inject
+    private Provider<RupturesClient> rupturesClientProvider;
+    @Inject
+    private Provider<SupportClient> supportClientProvider;
 
     private <J extends MagMobileClient> J getClient(Provider<J> provider) {
         J cl = provider.get();
@@ -49,20 +69,68 @@ public class ApiClientProvider {
         return cl;
     }
 
-    public CatalogSearchClient getCatalogSearchClient() {
+    public com.leroy.magmobile.api.clients.CatalogSearchClient getCatalogSearchClient() {
         return getClient(catalogSearchClientProvider);
-    }
-
-    public OrderClient getOrderClient() {
-        return getClient(orderClientProvider);
     }
 
     public CartClient getCartClient() {
         return getClient(cartClientProvider);
     }
 
+    public CustomerClient getCustomerClient() {
+        return getClient(customerClientProvider);
+    }
+
+    public EstimateClient getEstimateClient() {
+        return getClient(estimateClientProvider);
+    }
+
+    public OrderClient getOrderClient() {
+        return getClient(orderClientProvider);
+    }
+
+    public SalesDocProductClient getSalesDocProductClient() {
+        return getClient(salesDocProductClientProvider);
+    }
+
     public SalesDocSearchClient getSalesDocSearchClient() {
         return getClient(salesDocSearchClientProvider);
+    }
+
+    public TransferClient getTransferClient() {
+        return getClient(salesDocTransferClientProvider);
+    }
+
+    public SmsNotificationClient getSmsNotificationClient() {
+        return getClient(smsNotificationClientProvider);
+    }
+
+    public PrintPriceClient getPrintPriceClient() {
+        return getClient(printPriceClientProvider);
+    }
+
+    public CatalogProductClient getCatalogProductClient() {
+        return getClient(catalogProductClientProvider);
+    }
+
+    public PickingTaskClient getPickingTaskClient() {
+        return getClient(pickingTaskClientProvider);
+    }
+
+    public ShopKladrClient getShopClient() {
+        return getClient(shopClientProvider);
+    }
+
+    public LsAddressClient getLsAddressClient() {
+        return getClient(lsAddressClientProvider);
+    }
+
+    public RupturesClient getRupturesClient() {
+        return getClient(rupturesClientProvider);
+    }
+
+    public SupportClient getSupportClient() {
+        return getClient(supportClientProvider);
     }
 
 

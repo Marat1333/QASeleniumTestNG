@@ -15,7 +15,7 @@ import com.leroy.magmobile.ui.pages.customers.SearchCustomerPage;
 import com.leroy.magmobile.ui.pages.search.widgets.SearchCustomerWidget;
 import com.leroy.magmobile.ui.models.sales.SalesOrderCardData;
 import com.leroy.magmobile.ui.models.sales.SalesOrderData;
-import com.leroy.utils.Converter;
+import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 
@@ -176,9 +176,9 @@ public class EstimatePage extends CommonMagMobilePage {
         SalesOrderData orderData = new SalesOrderData();
         orderData.setOrderCardDataList(cardDataList);
         String ps = getPageSource();
-        orderData.setTotalPrice(Converter.strToDouble(totalPriceVal.getText(ps)));
-        orderData.setProductCount(Converter.strToInt(countProductLbl.getText(ps)));
-        orderData.setTotalWeight(Converter.strToDouble(weightProductLbl.getText(ps)));
+        orderData.setTotalPrice(ParserUtil.strToDouble(totalPriceVal.getText(ps)));
+        orderData.setProductCount(ParserUtil.strToInt(countProductLbl.getText(ps)));
+        orderData.setTotalWeight(ParserUtil.strToDouble(weightProductLbl.getText(ps)));
         return orderData;
     }
 

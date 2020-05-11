@@ -2,22 +2,32 @@ package com.leroy.magportal.ui.pages.orders;
 
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
+import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.models.salesdoc.ShortOrderDocWebData;
 import com.leroy.magportal.ui.pages.common.LeftDocumentListPage;
 import com.leroy.magportal.ui.pages.orders.widget.ShortOrderDocumentCardWidget;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
-import com.leroy.magportal.ui.webelements.MagPortalComboBox;
+import com.leroy.magportal.ui.webelements.PuzComboBox;
+import com.leroy.magportal.ui.webelements.PuzMultiSelectComboBox;
 import io.qameta.allure.Step;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class OrdersPage extends LeftDocumentListPage<ShortOrderDocumentCardWidget, ShortOrderDocWebData> {
+public class OrderHeaderPage extends LeftDocumentListPage<ShortOrderDocumentCardWidget, ShortOrderDocWebData> {
 
-    public OrdersPage(Context context) {
+    public OrderHeaderPage(Context context) {
         super(context);
+    }
+
+    public static class SearchTypes {
+        public static final String ORDER_NUMBER = "Номер заказа";
+        public static final String PHONE_NUMBER = "Номер телефона";
+        public static final String CUSTOMER_FIRST_NAME = "Имя покупателя";
+        public static final String CUSTOMER_LAST_NAME = "Фамилия покупателя";
+        public static final String CUSTOMER_EMAIL = "Email покупателя";
     }
 
     // Left menu with document list
@@ -41,13 +51,23 @@ public class OrdersPage extends LeftDocumentListPage<ShortOrderDocumentCardWidge
 
     // Header with Filters
 
+    @WebFindBy(xpath = "//div[contains(@class, 'Order-OrderQuickFilter__select')]",
+            metaName = "Раскрывающийся список типа поиска")
+    PuzComboBox searchTypeComboBox;
+
+    @WebFindBy(xpath = "//input[@name='orderId']", metaName = "Поле поиска по номеру заказа")
+    EditBox searchByOrderNumberFld;
+
+    @WebFindBy(xpath = "//input[@name='customerPhone']", metaName = "Поле поиска по номеру телефона")
+    EditBox searchByPhoneFld;
+
     @WebFindBy(xpath = "//div[contains(@class, 'Select__container')][descendant::label[text()='Статус заказа']]",
             metaName = "Фильтр статус заказа")
-    MagPortalComboBox statusFilter;
+    PuzMultiSelectComboBox statusFilter;
 
     @WebFindBy(xpath = "//div[contains(@class, 'Select__container')][descendant::label[text()='Способ получения']]",
             metaName = "Фильтр способ доставки")
-    MagPortalComboBox deliveryTypeFilter;
+    PuzMultiSelectComboBox deliveryTypeFilter;
 
     @WebFindBy(xpath = "//div[contains(@class, 'OrderFilterClearBtn')]//button", metaName = "Кнопка метла (Очистить)")
     Button clearFiltersBtn;
@@ -57,39 +77,60 @@ public class OrdersPage extends LeftDocumentListPage<ShortOrderDocumentCardWidge
 
     // Actions
 
+    @Step("Выбрать тип поиска - {value}")
+    public OrderHeaderPage selectSearchType(String value) throws Exception {
+        searchTypeComboBox.selectOptions(value);
+        return this;
+    }
+
+    @Step("Ввести в поле поиска '{value}' и нажать 'Показать товары'")
+    public void enterSearchTextAndSubmit(String value) {
+        if (value.startsWith("+7"))
+            value = value.substring(2);
+        if (searchByOrderNumberFld.isPresent())
+            searchByOrderNumberFld.clearAndFill(value);
+        else if (searchByPhoneFld.isPresent()) {
+            searchByPhoneFld.click();
+            searchByPhoneFld.clear(true);
+            searchByPhoneFld.fill(value);
+        }
+        applyFiltersBtn.click();
+        waitForSpinnerAppearAndDisappear();
+    }
+
     @Step("Выбрать в соотетствующем фильтре статусы: {values}")
-    public OrdersPage selectStatusFilters(String... values) throws Exception {
+    public OrderHeaderPage selectStatusFilters(String... values) throws Exception {
         statusFilter.selectOptions(values);
         return this;
     }
 
     @Step("Отключить в соотетствующем фильтре статусы: {values}")
-    public OrdersPage deselectStatusFilters(String... values) throws Exception {
+    public OrderHeaderPage deselectStatusFilters(String... values) throws Exception {
         statusFilter.deselectOptions(values);
         return this;
     }
 
     @Step("Выбрать в соотетствующем фильтре способ доставки: {values}")
-    public OrdersPage selectDeliveryTypeFilters(String... values) throws Exception {
+    public OrderHeaderPage selectDeliveryTypeFilters(String... values) throws Exception {
         deliveryTypeFilter.selectOptions(values);
         return this;
     }
 
     @Step("Отключить в соотетствующем фильтре способ доставки: {values}")
-    public OrdersPage deselectDeliveryTypeFilters(String... values) throws Exception {
+    public OrderHeaderPage deselectDeliveryTypeFilters(String... values) throws Exception {
         deliveryTypeFilter.deselectOptions(values);
         return this;
     }
 
     @Step("Нажать кнопку 'Показать заказы'")
-    public OrdersPage clickApplyFilters() {
+    public OrderHeaderPage clickApplyFilters() {
         applyFiltersBtn.click();
         waitForSpinnerAppearAndDisappear();
         return this;
     }
 
     @Step("Очистить фильтры")
-    public OrdersPage clearFilters() {
+    public OrderHeaderPage clearFilters() {
         clearFiltersBtn.click();
         anAssert.isTrue(statusFilter.getSelectedOptionText().isEmpty(),
                 "Фильтр 'Статус заказа' не был очищен");
@@ -98,7 +139,7 @@ public class OrdersPage extends LeftDocumentListPage<ShortOrderDocumentCardWidge
     }
 
     @Step("Очистить фильтры и подтвердить")
-    public OrdersPage clearFiltersAndSubmit() {
+    public OrderHeaderPage clearFiltersAndSubmit() {
         return clearFilters()
                 .clickApplyFilters();
     }
