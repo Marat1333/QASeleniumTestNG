@@ -5,7 +5,7 @@ import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
 import com.leroy.magportal.ui.webelements.CardWebWidget;
-import com.leroy.utils.Converter;
+import com.leroy.utils.ParserUtil;
 import org.openqa.selenium.WebDriver;
 
 public class CustomerPuzWidget extends CardWebWidget<SimpleCustomerData> {
@@ -30,7 +30,7 @@ public class CustomerPuzWidget extends CardWebWidget<SimpleCustomerData> {
     }
 
     public String getPhone() {
-        return Converter.standardPhoneFmt(phoneNumber.getText());
+        return ParserUtil.standardPhoneFmt(phoneNumber.getText());
     }
 
     public String getEmail() {

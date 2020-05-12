@@ -6,7 +6,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Locale;
 
-public class Converter {
+public class ParserUtil {
 
     /**
      * Convert String to Double and cut off non-digits if necessary
@@ -32,7 +32,7 @@ public class Converter {
         return Integer.parseInt(str.replaceAll("\\D+", ""));
     }
 
-    public static String strToStrWithoutDigits(String str) {
+    public static String strWithOnlyDigits(String str) {
         if (str == null)
             return null;
         return str.replaceAll("\\D+", "");

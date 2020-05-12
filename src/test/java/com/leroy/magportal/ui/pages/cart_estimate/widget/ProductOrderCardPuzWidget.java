@@ -6,7 +6,7 @@ import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardWebData;
 import com.leroy.magportal.ui.webelements.CardWebWidget;
-import com.leroy.utils.Converter;
+import com.leroy.utils.ParserUtil;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.Color;
 
@@ -88,13 +88,13 @@ public class ProductOrderCardPuzWidget extends CardWebWidget<ProductOrderCardWeb
     public ProductOrderCardWebData collectDataFromPage() {
         ProductOrderCardWebData productOrderCardWebData = new ProductOrderCardWebData();
         productOrderCardWebData.setLmCode(getLmCode());
-        productOrderCardWebData.setBarCode(Converter.strToStrWithoutDigits(getBarCode()));
+        productOrderCardWebData.setBarCode(ParserUtil.strWithOnlyDigits(getBarCode()));
         productOrderCardWebData.setTitle(getTitle());
-        productOrderCardWebData.setWeight(Converter.strToDouble(getWeight()));
-        productOrderCardWebData.setPrice(Converter.strToDouble(getPrice()));
-        productOrderCardWebData.setTotalPrice(Converter.strToDouble(getTotalPrice()));
-        productOrderCardWebData.setSelectedQuantity(Converter.strToDouble(getQuantity()));
-        productOrderCardWebData.setAvailableTodayQuantity(Converter.strToDouble(getAvailableStock()));
+        productOrderCardWebData.setWeight(ParserUtil.strToDouble(getWeight()));
+        productOrderCardWebData.setPrice(ParserUtil.strToDouble(getPrice()));
+        productOrderCardWebData.setTotalPrice(ParserUtil.strToDouble(getTotalPrice()));
+        productOrderCardWebData.setSelectedQuantity(ParserUtil.strToDouble(getQuantity()));
+        productOrderCardWebData.setAvailableTodayQuantity(ParserUtil.strToDouble(getAvailableStock()));
         return productOrderCardWebData;
     }
 
