@@ -8,6 +8,7 @@ import com.leroy.core.TestContext;
 import com.leroy.core.api.Module;
 import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.api.ApiClientProvider;
+import com.leroy.umbrella_extension.authorization.AuthClient;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.Guice;
 
@@ -19,6 +20,8 @@ public class MagPortalBaseTest extends BaseUiTest {
 
     @Inject
     protected ApiClientProvider apiClientProvider;
+    @Inject
+    private AuthClient authClient;
 
 
     @Override
@@ -31,10 +34,18 @@ public class MagPortalBaseTest extends BaseUiTest {
         context = new Context(driver);
         sessionData = new SessionData();
         sessionData.setUserLdap(EnvConstants.BASIC_USER_LDAP);
-        sessionData.setUserShopId("35");
-        sessionData.setUserDepartmentId("1");
+        sessionData.setUserShopId(EnvConstants.BASIC_USER_SHOP_ID);
+        sessionData.setUserDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);
+        if (isNeedAccessToken()) {
+            sessionData.setAccessToken(authClient.getAccessToken(EnvConstants.BASIC_USER_LDAP,
+                    EnvConstants.BASIC_USER_PASS));
+        }
         context.setSessionData(sessionData);
         apiClientProvider.setSessionData(sessionData);
+    }
+
+    protected boolean isNeedAccessToken() {
+        return false;
     }
 
     @Override

@@ -7,7 +7,7 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.pages.NewFeaturesModalWindow;
-import com.leroy.magportal.ui.pages.OrdersPage;
+import com.leroy.magportal.ui.pages.orders.OrderHeaderPage;
 import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
 import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
 import com.leroy.magportal.ui.pages.customers.CustomerPage;
@@ -34,7 +34,7 @@ public class MenuPage extends MagPortalBasePage {
         if (!menuTitle.isVisible())
             burgerMenuBtn.click();
         String expectedMenuItem;
-        if (OrdersPage.class == pageClass) expectedMenuItem = "Заказы";
+        if (OrderHeaderPage.class == pageClass) expectedMenuItem = "Заказы";
         else if (CustomerPage.class == pageClass) expectedMenuItem = "Клиенты";
         else if (SearchProductPage.class == pageClass) expectedMenuItem = "Товары";
         else if (CartPage.class == pageClass) expectedMenuItem = "Корзины";

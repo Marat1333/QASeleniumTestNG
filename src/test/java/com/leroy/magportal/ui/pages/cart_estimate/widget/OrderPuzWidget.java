@@ -13,6 +13,11 @@ import org.testng.Assert;
 
 import java.util.List;
 
+/**
+ * Карточки с заказами в смете и корзине.
+ * (В смете может быть только 1 заказ, в корзине несколько)
+ * Каждый заказ может включать в себя несколько карточек с продуктами @products
+ */
 public class OrderPuzWidget extends CardWebWidget<OrderWebData> {
 
     public OrderPuzWidget(WebDriver driver, CustomLocator customLocator) {

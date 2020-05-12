@@ -39,10 +39,9 @@ public class ParserUtil {
     }
 
     /**
-     * Cut off non-digits characters
-     *
-     * @param str - string value
-     * @return String
+     * Leave only digits and remove any letters and other non-digit symbols including space character
+     * @param str - string (text)
+     * @return string with only digits
      */
     public static String strWithOnlyDigits(String str) {
         if (str == null)
@@ -77,4 +76,19 @@ public class ParserUtil {
     public static String standardPhoneFmt(String phoneNumber) {
         return phoneNumber.replaceAll(" |-", "");
     }
+
+    public static String parseFirstName(String fullName) {
+        String[] nameArr = fullName.split(" ");
+        if (nameArr.length > 0)
+            return nameArr[0].trim();
+        return null;
+    }
+
+    public static String parseLastName(String fullName) {
+        String[] nameArr = fullName.split(" ");
+        if (nameArr.length > 1)
+            return nameArr[1].trim();
+        return null;
+    }
+
 }

@@ -1,40 +1,61 @@
 package com.leroy.magportal.ui.pages.common;
 
-import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.magmobile.ui.Context;
-import com.leroy.magportal.ui.models.salesdoc.ShortSalesDocWebData;
-import com.leroy.magportal.ui.pages.cart_estimate.widget.ShortDocumentCardWidget;
+import com.leroy.magportal.ui.models.salesdoc.IDataWithNumberAndStatus;
+import com.leroy.magportal.ui.webelements.CardWebWidget;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
+import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
-public class LeftDocumentListPage extends MenuPage {
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends IDataWithNumberAndStatus>
+        extends MenuPage {
 
     public LeftDocumentListPage(Context context) {
         super(context);
     }
 
-    @WebFindBy(xpath = "//div[contains(@class, 'Refresh-banner')]//button",
-            metaName = "Кнопка Обновить список документов")
-    Button refreshDocumentListBtn;
+    @Override
+    public void waitForPageIsLoaded() {
+        refreshDocumentListBtn().waitForVisibility();
+        waitForSpinnerDisappear();
+    }
 
-    @WebFindBy(xpath = "//div[contains(@class, 'Documents-ListItemCard__content')]",
-            clazz = ShortDocumentCardWidget.class)
-    CardWebWidgetList<ShortDocumentCardWidget, ShortSalesDocWebData> documentCardList;
+    protected abstract Button refreshDocumentListBtn();
+
+    protected abstract CardWebWidgetList<W, D> documentCardList();
+
+    // Grab info
+
+    @Step("Получить информацию о документах в списке слева")
+    public List<D> getDocumentDataList() {
+        return documentCardList().getDataList();
+    }
+
+    @Step("Получить кол-во документов в списке слева")
+    public int getDocumentCount() {
+        return documentCardList().getCount();
+    }
 
     // Actions
 
     @Step("Обновить список документов")
     public void refreshDocumentList() {
-        refreshDocumentListBtn.click();
+        refreshDocumentListBtn().click();
         waitForSpinnerAppearAndDisappear();
     }
 
     // Verifications
 
     private boolean isDocumentPresentInList(String number) {
-        for (ShortSalesDocWebData docData : documentCardList.getDataList()) {
-            if (docData.getNumber().equals(number)) {
+        for (D docData : documentCardList().getDataList()) {
+            if (ParserUtil.strWithOnlyDigits(docData.getNumber()).equals(number)) {
                 return true;
             }
         }
@@ -51,5 +72,55 @@ public class LeftDocumentListPage extends MenuPage {
     public void shouldDocumentIsNotPresent(String number) throws Exception {
         anAssert.isFalse(isDocumentPresentInList(number),
                 "Документ №" + number + " найден в списке слева");
+    }
+
+    @Step("Проверить, что в списке документов слева присутствуют только имеющие статусы: {statuses}")
+    public void shouldDocumentListContainsOnlyWithStatuses(String... statuses) {
+        Set<String> actualStatuses = new HashSet<>();
+        for (D docData : documentCardList().getDataList()) {
+            actualStatuses.add(docData.getStatus());
+        }
+        actualStatuses.removeAll(Arrays.asList(statuses));
+        anAssert.isTrue(actualStatuses.isEmpty(),
+                "В списке слева обнаружены документы, которых быть не должно, со статусами:" +
+                        actualStatuses.toString());
+    }
+
+    @Step("Проверить, что в списке документов слева присутствуют нужные документы (expectedDocuments)")
+    public void shouldDocumentListIs(List<D> expectedDocuments) {
+        anAssert.isEquals(documentCardList().getDataList(), expectedDocuments,
+                "Ожидались другие документы");
+    }
+
+    @Step("Проверить, что в списке документов слева на текущей странице отображается {value} документов")
+    public void shouldDocumentCountIs(int value) {
+        anAssert.isEquals(documentCardList().getCount(), value,
+                "Ожидалось другое кол-во документов");
+    }
+
+    @Step("Проверить, что в списке документов слева присутствуют документы с номерами: {expectedNumbers}")
+    public void shouldDocumentListNumbersEqual(List<String> expectedNumbers) {
+        anAssert.isEquals(documentCardList().getDataList().stream().map(
+                d -> ParserUtil.strWithOnlyDigits(d.getNumber()))
+                        .collect(Collectors.toList()), expectedNumbers,
+                "Ожидались другие номера документов");
+    }
+
+    @Step("Проверить, что в списке документов слева присутствуют документы, содержащие номер: {expectedNumber}")
+    public void shouldDocumentListFilteredByNumber(String expectedNumber) {
+        List<String> actualDocumentNumbers = documentCardList().getDataList().stream().map(D::getNumber)
+                .collect(Collectors.toList());
+        anAssert.isTrue(actualDocumentNumbers.size() > 0,
+                "Не найден ни один документ");
+        for (String docNumber : actualDocumentNumbers) {
+            anAssert.isTrue(ParserUtil.strWithOnlyDigits(docNumber).contains(expectedNumber),
+                    String.format("Номер документа %s не содержит %s", docNumber, expectedNumber));
+        }
+    }
+
+    @Step("Проверить, что в список документов слева пуст")
+    public void shouldDocumentListIsEmpty() {
+        anAssert.isTrue(documentCardList().getDataList().size() == 0,
+                "Список документов не пустой (содержит документы)");
     }
 }
