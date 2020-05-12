@@ -297,6 +297,8 @@ public class SearchProductPage extends MenuPage {
         searchInput.clearFillAndSubmit(value);
         waitForSpinnerAppearAndDisappear();
         if (value.matches("\\d{8}") || value.matches("\\d{13}")) {
+            anAssert.isTrue(driver.getWindowHandles().size() > windows.size(),
+                    "Должно было открыться новое окно с карточкой товара");
             this.switchToNewWindow(windows);
             return (T) new ProductCardPage(context);
         }
