@@ -26,6 +26,12 @@ public class ParserUtil {
         }
     }
 
+    /**
+     * Convert String to Int and cut off non-digits if necessary
+     *
+     * @param str - string value
+     * @return Integer
+     */
     public static Integer strToInt(String str) {
         if (str == null)
             return null;
@@ -50,10 +56,23 @@ public class ParserUtil {
             return String.format("%s", d);
     }
 
+    /**
+     * Sum double / float numbers and round the decimal part
+     *
+     * @param a - the first number
+     * @param b - the second number
+     * @param decimalPlaces - count of digits after the dot
+     * @return Double
+     */
     public static Double sum(double a, double b, int decimalPlaces) {
         return Math.round((a + b) * Math.pow(10, decimalPlaces)) / Math.pow(10, decimalPlaces);
     }
 
+    /**
+     * Converts a phone number to just a number without spaces and "-"
+     * @param phoneNumber - phone number
+     * @return String
+     */
     public static String standardPhoneFmt(String phoneNumber) {
         return phoneNumber.replaceAll(" |-", "");
     }

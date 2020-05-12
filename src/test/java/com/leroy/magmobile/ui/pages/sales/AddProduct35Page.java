@@ -10,6 +10,9 @@ import com.leroy.magmobile.ui.models.search.ProductCardData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.basket.Basket35Page;
 import com.leroy.magmobile.ui.pages.sales.estimate.EstimatePage;
+import com.leroy.magmobile.ui.models.sales.SalesOrderCardData;
+import com.leroy.magmobile.ui.models.search.ProductCardData;
+import com.leroy.utils.ParserUtil;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 

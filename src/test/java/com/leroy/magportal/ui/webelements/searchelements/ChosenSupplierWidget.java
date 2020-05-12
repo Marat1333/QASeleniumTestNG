@@ -1,4 +1,4 @@
-package com.leroy.magportal.ui.webelements.widgets;
+package com.leroy.magportal.ui.webelements.searchelements;
 
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
@@ -24,5 +24,6 @@ public class ChosenSupplierWidget extends BaseWidget {
 
     public void deleteChosenSupplier(){
         deleteChosenSupplierBtn.click();
+        waitForInvisibility(tiny_timeout);
     }
 }

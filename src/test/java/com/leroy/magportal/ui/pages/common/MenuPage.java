@@ -12,6 +12,7 @@ import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
 import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
 import com.leroy.magportal.ui.pages.customers.CustomerPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 
 public class MenuPage extends MagPortalBasePage {
@@ -49,8 +50,8 @@ public class MenuPage extends MagPortalBasePage {
         return (T) pageClass.getConstructor(Context.class).newInstance(context);
     }
 
+    @Step("Подождать появления окна с новыми фичами и закрыть его, если оно появится")
     public MenuPage closeNewFeaturesModalWindowIfExist() {
-        //TODO не ждать появления элемента
         NewFeaturesModalWindow modalWindow = new NewFeaturesModalWindow(driver);
         modalWindow.waitForVisibility(short_timeout);
         if (modalWindow.isVisible())

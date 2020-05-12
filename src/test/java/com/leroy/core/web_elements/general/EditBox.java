@@ -77,6 +77,7 @@ public class EditBox extends Element {
         } else {
             for (int i = 0; i < text.length(); ++i) {
                 this.fill(Character.toString(text.charAt(i)));
+
             }
         }
         return this;

@@ -22,4 +22,5 @@ public class CommonLegoRequest<J extends CommonLegoRequest<J>> extends RequestBu
     public J setDepartmentId(Object val) {
         return queryParam("departmentId", val);
     }
+
 }

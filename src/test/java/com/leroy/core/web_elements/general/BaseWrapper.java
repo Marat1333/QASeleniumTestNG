@@ -23,6 +23,10 @@ public abstract class BaseWrapper extends BaseContainer {
         return locator.isCacheLookup();
     }
 
+    public boolean isRefreshEveryTime() {
+        return locator.isRefreshEveryTime();
+    }
+
     /**
      * Get xpath of the element
      *
