@@ -19,7 +19,8 @@ public class CustomFieldElementLocator {
 
     public CustomFieldElementLocator(Field field, By parentBy) {
         this.field = field;
-        this.locator = new CustomLocator(buildBy(parentBy), parentBy, buildMetaName(), isNeedToCacheLookupField());
+        this.locator = new CustomLocator(buildBy(parentBy), parentBy,
+                buildMetaName(), isNeedToCacheLookupField(), isNeedToRefreshEveryTime());
         if (DriverFactory.isAppProfile())
             this.locator.setAccessibilityId(getAccessibilityId());
     }
@@ -128,6 +129,10 @@ public class CustomFieldElementLocator {
         return DriverFactory.isAppProfile() ?
                 field.getAnnotation(AppFindBy.class).cacheLookup() :
                 field.getAnnotation(WebFindBy.class).cacheLookup();
+    }
+
+    private boolean isNeedToRefreshEveryTime() {
+        return !DriverFactory.isAppProfile() && field.getAnnotation(WebFindBy.class).refreshEveryTime();
     }
 }
 

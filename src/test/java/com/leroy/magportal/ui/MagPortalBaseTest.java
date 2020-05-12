@@ -9,10 +9,7 @@ import com.leroy.core.api.Module;
 import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.api.ApiClientProvider;
 import org.openqa.selenium.WebDriver;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Guice;
-
-import java.lang.reflect.Method;
 
 @Guice(modules = {Module.class})
 public class MagPortalBaseTest extends BaseUiTest {

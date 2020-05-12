@@ -8,6 +8,7 @@ public class CustomLocator {
     private By parentBy;
     private String metaName;
     private boolean cacheLookup;
+    private boolean refreshEveryTime;
 
     // Specific mobile selector options
     private String accessibilityId;
@@ -26,11 +27,12 @@ public class CustomLocator {
         this.metaName = metaName;
     }
 
-    public CustomLocator(By by, By parentBy, String metaName, boolean cacheLookup) {
+    public CustomLocator(By by, By parentBy, String metaName, boolean cacheLookup, boolean refreshEveryTime) {
         this(by);
         this.parentBy = parentBy;
         this.metaName = metaName;
         this.cacheLookup = cacheLookup;
+        this.refreshEveryTime = refreshEveryTime;
     }
 
     public By getBy() {
@@ -63,5 +65,13 @@ public class CustomLocator {
 
     public void setCacheLookup(boolean cacheLookup) {
         this.cacheLookup = cacheLookup;
+    }
+
+    public boolean isRefreshEveryTime() {
+        return refreshEveryTime;
+    }
+
+    public void setRefreshEveryTime(boolean refreshEveryTime) {
+        this.refreshEveryTime = refreshEveryTime;
     }
 }

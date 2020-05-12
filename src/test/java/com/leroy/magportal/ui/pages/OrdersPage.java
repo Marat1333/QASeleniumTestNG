@@ -8,6 +8,4 @@ public class OrdersPage extends MenuPage {
     public OrdersPage(Context context) {
         super(context);
     }
-
-
 }
