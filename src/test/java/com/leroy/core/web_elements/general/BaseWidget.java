@@ -104,10 +104,10 @@ public abstract class BaseWidget extends BaseWrapper {
         return findChildElement(xpath, Element.class);
     }
 
-    public <T extends BaseWidget> T findChildElement(String xpath, Class<? extends BaseWidget> clazz) throws Exception {
+    public <T extends BaseWidget> T findChildElement(String xpath, Class<T> clazz) throws Exception {
         if (xpath.startsWith("."))
             xpath = xpath.replaceFirst(".", "");
-        return (T) clazz.getConstructor(WebDriver.class, CustomLocator.class)
+        return clazz.getConstructor(WebDriver.class, CustomLocator.class)
                 .newInstance(driver, new CustomLocator(By.xpath(getXpath() + xpath)));
     }
 

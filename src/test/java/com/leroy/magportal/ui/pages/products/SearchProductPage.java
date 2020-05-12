@@ -12,10 +12,10 @@ import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.models.search.FiltersData;
 import com.leroy.magportal.ui.pages.common.MenuPage;
-import com.leroy.magportal.ui.webelements.MagPortalComboBox;
-import com.leroy.magportal.ui.webelements.commonelements.MagPortalCheckBox;
+import com.leroy.magportal.ui.webelements.PuzComboBox;
+import com.leroy.magportal.ui.webelements.PuzMultiSelectComboBox;
+import com.leroy.magportal.ui.webelements.commonelements.PuzCheckBox;
 import com.leroy.magportal.ui.webelements.searchelements.SupplierComboBox;
-import com.leroy.magportal.ui.webelements.searchelements.SupplierDropDown;
 import com.leroy.magportal.ui.webelements.widgets.*;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
@@ -142,11 +142,11 @@ public class SearchProductPage extends MenuPage {
             refreshEveryTime = true)
     Element applyFiltersBtn;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'active')]//label[text()='Поставщик']/ancestor::div[1]")
-    SupplierComboBox supplierDropBox;
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'Select__container') and descendant::label[text()='Поставщик']]")
+    SupplierComboBox supplierComboBox;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(text(),'Сортировать')]/ancestor::div[2]"/*"//div[contains(@class, 'active')]//span[contains(@class,'singleValue')]/ancestor::div[2]"*/)
-    MagPortalComboBox sortComboBox;
+    @WebFindBy(xpath = "//div[contains(@class, 'Select__container') and descendant::span[contains(text(),'Сортировать')]]")
+    PuzComboBox sortComboBox;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(@class,'singleValue')]" +
             "/ancestor::div[6]/following-sibling::button[1]", refreshEveryTime = true)
@@ -201,13 +201,13 @@ public class SearchProductPage extends MenuPage {
             refreshEveryTime = true)
     CalendarInputBox avsCalendarInputBox;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'active')]//input[@placeholder='Гамма']/ancestor::div[1]",
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'Select__container')][descendant::input[@placeholder='Гамма']]",
             refreshEveryTime = true)
-    MagPortalComboBox gammaComboBox;
+    PuzMultiSelectComboBox gammaComboBox;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'active')]//input[@placeholder='Топ пополнения']/ancestor::div[1]",
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'Select__container')][descendant::input[@placeholder='Топ пополнения']]",
             refreshEveryTime = true)
-    MagPortalComboBox topComboBox;
+    PuzMultiSelectComboBox topComboBox;
 
     private String getCurrentNomenclatureName() {
         return currentNomenclatureLbl.getText();
@@ -298,7 +298,6 @@ public class SearchProductPage extends MenuPage {
             this.switchToNewWindow(windows);
             return (T) new ProductCardPage(context);
         }
-        waitForSpinnerAppearAndDisappear();
         return (T) this;
     }
 
@@ -406,7 +405,8 @@ public class SearchProductPage extends MenuPage {
     @Step("Выбрать чек-бокс и применить фильтры - {applyFilters}")
     public SearchProductPage choseCheckboxFilter(boolean applyFilters, Filters... filters) {
         for (Filters filter : filters) {
-            if (!(filter.equals(Filters.HAS_AVAILABLE_STOCK) || filter.equals(Filters.TOP_EM)) && (!supplierDropBox.isVisible())) {
+            if (!(filter.equals(Filters.HAS_AVAILABLE_STOCK) ||
+                    filter.equals(Filters.TOP_EM)) && (!supplierComboBox.isVisible())) {
                 showAllFilters();
             }
             Element checkbox = E("//div[contains(@class, 'active')]//*[contains(text(),'" + filter.getName() + "')]");
@@ -426,17 +426,13 @@ public class SearchProductPage extends MenuPage {
 
     @Step("Выбрать фильтры Гамма")
     public SearchProductPage choseGammaFilter(String... gammaFilters) throws Exception {
-        gammaComboBox.click();
-        gammaComboBox.selectOptions(Arrays.asList(gammaFilters));
+        gammaComboBox.selectOptions(gammaFilters);
         return this;
     }
 
     @Step("Выбрать фильтры Топ")
     public SearchProductPage choseTopFilter(String... topFilters) throws Exception {
-        List<String> tmpFilters = new ArrayList<>();
-        tmpFilters.addAll(java.util.Arrays.asList(topFilters));
-        topComboBox.click();
-        topComboBox.selectOptions(tmpFilters);
+        topComboBox.selectOptions(topFilters);
         return this;
     }
 
@@ -451,27 +447,15 @@ public class SearchProductPage extends MenuPage {
 
     @Step("Выбрать фильтр по поставщику")
     public SearchProductPage choseSupplier(boolean closeAfter, String... values) throws Exception {
-        if (!supplierDropBox.isVisible()) {
+        if (!supplierComboBox.isVisible()) {
             showAllFilters.click();
         }
-        SupplierDropDown supplierDropDown = supplierDropBox.supplierDropDown;
-        if (!supplierDropDown.isVisible()) {
-            supplierDropBox.click();
-            supplierDropDown.loadingSpinner.waitForInvisibility();
-        }
 
-        for (String tmp : values) {
-            supplierDropDown.searchSupplier(tmp);
-            supplierDropDown.loadingSpinner.waitForVisibility(short_timeout); // C23384975
-            supplierDropDown.loadingSpinner.waitForInvisibility();
-            for (SupplierCardWidget widget : supplierDropDown.getSupplierCards()) {
-                if (widget.getSupplierCode().equals(tmp) || widget.getSupplierName().equals(tmp)) {
-                    widget.click();
-                }
-            }
+        for (String value : values) {
+            supplierComboBox.searchSupplierAndSelect(value);
         }
         if (closeAfter) {
-            supplierDropBox.click();
+            supplierComboBox.close();
         }
         return this;
     }
@@ -501,32 +485,16 @@ public class SearchProductPage extends MenuPage {
 
     @Step("Удалить выбранного поставщиков {supplierName} по нажатию на кнопку крестик в овальной области с именем поставщика")
     public SearchProductPage deleteChosenSuppliers(boolean closeAfter, String supplierName) {
-        SupplierDropDown supplierDropDown = supplierDropBox.supplierDropDown;
-        if (!supplierDropDown.isVisible()) {
-            supplierDropBox.click();
-            waitForSpinnerAppearAndDisappear();
-        }
-        for (ChosenSupplierWidget widget : supplierDropDown.getChosenSuppliers()) {
-            if (widget.getChosenSupplierName().equals(supplierName)) {
-                widget.deleteChosenSupplier();
-                break;
-            }
-        }
+        supplierComboBox.deleteChosenSuppliers(supplierName);
         if (closeAfter) {
-            supplierDropBox.click();
+            supplierComboBox.close();
         }
         return this;
     }
 
     @Step("Удалить всех выбранных поставщиков по нажатию на кнопку \"Очистить\"")
     public SearchProductPage deleteAllChosenSuppliers() {
-        SupplierDropDown supplierDropDown = supplierDropBox.supplierDropDown;
-        if (!supplierDropDown.isVisible()) {
-            supplierDropBox.click();
-            waitForSpinnerAppearAndDisappear(short_timeout);
-            supplierDropDown.getSupplierCards().waitUntilElementCountEqualsOrAbove(1);
-        }
-        supplierDropDown.deleteAllChosenSuppliers();
+        supplierComboBox.deleteAllChosenSuppliers();
         return this;
     }
 
@@ -544,11 +512,9 @@ public class SearchProductPage extends MenuPage {
         return this;
     }
 
-    @Step("Выбрать тип сортировки")
-    public SearchProductPage choseSortType(SortType sortType) {
-        sortComboBox.click();
-        Element sortBtn = E("//span[contains(text(),'" + sortType.getName() + "')]/ancestor::button");
-        sortBtn.click();
+    @Step("Выбрать тип сортировки {sortType}")
+    public SearchProductPage choseSortType(SortType sortType) throws Exception {
+        sortComboBox.selectOption(sortType.getName());
         waitForSpinnerAppearAndDisappear();
         return this;
     }
@@ -765,12 +731,14 @@ public class SearchProductPage extends MenuPage {
     public SearchProductPage shouldSupplierComboBoxContainsCorrectText(boolean isEmpty, String... name) {
         String elemText;
         if (isEmpty) {
-            anAssert.isElementNotVisible(supplierDropBox.chosenSupplierName);
+            anAssert.isTrue(supplierComboBox.getSelectedOptionText().isEmpty(),
+                    "Поле с выбором поставщика не пустое");
         } else if (name.length == 1) {
-            elemText = supplierDropBox.chosenSupplierName.getText();
-            anAssert.isElementTextContainsIgnoringCase(elemText, name[0], "Не отображено имя поставщика " + name[0]);
+            elemText = supplierComboBox.getSelectedOptionText();
+            anAssert.isElementTextContainsIgnoringCase(elemText, name[0],
+                    "Не отображено имя поставщика " + name[0]);
         } else {
-            elemText = supplierDropBox.chosenSupplierName.getText();
+            elemText = supplierComboBox.getSelectedOptionText();
             anAssert.isEquals(elemText, "Поставщик (" + name.length + ")",
                     "Отображаемый текст не соответствует паттерну");
         }
@@ -779,20 +747,14 @@ public class SearchProductPage extends MenuPage {
 
     @Step("Проверить состояние чек-бокса выбранного поставщика")
     public SearchProductPage shouldChosenSupplierCheckboxHasCorrectCondition(boolean isChecked, String supplier) throws Exception {
-        MagPortalCheckBox supplierCheckBox = null;
-        SupplierDropDown supplierDropDown = supplierDropBox.supplierDropDown;
-        supplierDropDown.searchSupplier(supplier);
-        for (SupplierCardWidget widget : supplierDropDown.getSupplierCards()) {
-            if (widget.getSupplierCode().contains(supplier) || widget.getSupplierName().contains(supplier)) {
-                supplierCheckBox = widget.checkbox;
-                break;
-            }
-        }
-        anAssert.isNotNull(supplierCheckBox, "Чек-бокс для поставщика " + supplier + " не найден", "Чек-бокс должен быть");
+        supplierComboBox.searchSupplier(supplier);
+        Boolean val = supplierComboBox.isSupplierSelected(supplier);
+        anAssert.isNotNull(val, "Чек-бокс для поставщика " + supplier + " не найден",
+                "Чек-бокс должен быть");
         if (isChecked) {
-            anAssert.isTrue(supplierCheckBox.isChecked(), "Чек-бокс в состоянии disabled");
+            anAssert.isTrue(val, "Чек-бокс в состоянии disabled");
         } else {
-            anAssert.isTrue(!supplierCheckBox.isChecked(), "Чек-бокс в состоянии enabled");
+            anAssert.isFalse(val, "Чек-бокс в состоянии enabled");
         }
         return this;
     }
@@ -800,7 +762,7 @@ public class SearchProductPage extends MenuPage {
     @Step("Проверить, что чек-бокс переведен в корректное состояние")
     public SearchProductPage shouldCheckboxFilterHasCorrectCondition(boolean isEnabled, Filters... filters) throws Exception {
         for (Filters filter : filters) {
-            MagPortalCheckBox checkbox = new MagPortalCheckBox(driver, new CustomLocator(By.xpath(
+            PuzCheckBox checkbox = new PuzCheckBox(driver, new CustomLocator(By.xpath(
                     "//div[contains(@class, 'active')]//*[contains(text(),'" + filter.getName() + "')]/ancestor::button")));
             if (!checkbox.isVisible()) {
                 showAllFilters();
@@ -899,7 +861,7 @@ public class SearchProductPage extends MenuPage {
 
     @Step("Проверить, что фильтры не выбраны")
     public SearchProductPage checkFiltersNotChosen(FiltersData data) throws Exception {
-        if (!supplierDropBox.isVisible()) {
+        if (!supplierComboBox.isVisible()) {
             showAllFilters();
         }
         if (data.getGammaFilters().length > 0) {
@@ -957,8 +919,8 @@ public class SearchProductPage extends MenuPage {
     }
 
     @Step("Проверить, что комбо-бокс сортировки содержит {value}")
-    public SearchProductPage shouldSortComboBoxContainsText(String value) throws Exception {
-        String actualText = sortComboBox.findChildElement(".//span[ancestor::div[contains(@class,'multi')]]").getText();
+    public SearchProductPage shouldSortComboBoxContainsText(String value) {
+        String actualText = sortComboBox.getSelectedOptionText();
         anAssert.isElementTextContainsIgnoringCase(actualText, value,
                 actualText + " не содержит " + value);
         return this;
