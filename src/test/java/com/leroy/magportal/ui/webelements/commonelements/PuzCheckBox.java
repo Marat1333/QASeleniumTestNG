@@ -5,6 +5,7 @@ import com.leroy.core.web_elements.general.Checkbox;
 import org.openqa.selenium.WebDriver;
 
 public class PuzCheckBox extends Checkbox {
+
     public PuzCheckBox(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
     }
