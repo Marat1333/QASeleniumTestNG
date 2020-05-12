@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Order Search Suite" parallel="tests">
+
+    <listeners>
+        <listener class-name="com.leroy.core.listeners.TestRailListener"/>
+    </listeners>
+
+    <test name="C22829624 Ордерс. Фильтрация по статусу заказа">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.OrderTest">
+                <methods>
+                    <include name="testOrderFilterByStatus"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22893768 Ордерс. Фильтрация по Способу получения">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.OrderTest">
+                <methods>
+                    <include name="testOrderFilterByDeliveryType"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22893769 Ордерс. Фильтрация по Номеру заказа и Номеру телефона">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.OrderTest">
+                <methods>
+                    <include name="testOrderFilterByDocNumberAndPhoneNumber"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22893767 Ордерс. Фильтрация по Дате">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.OrderTest">
+                <methods>
+                    <include name="testOrderFilterByDate"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+</suite>
