@@ -8,8 +8,8 @@ import com.leroy.magportal.ui.models.salesdoc.ShortOrderDocWebData;
 import com.leroy.magportal.ui.pages.common.LeftDocumentListPage;
 import com.leroy.magportal.ui.pages.orders.widget.ShortOrderDocumentCardWidget;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
-import com.leroy.magportal.ui.webelements.PuzComboBox;
-import com.leroy.magportal.ui.webelements.PuzMultiSelectComboBox;
+import com.leroy.magportal.ui.webelements.commonelements.PuzComboBox;
+import com.leroy.magportal.ui.webelements.commonelements.PuzMultiSelectComboBox;
 import io.qameta.allure.Step;
 
 import java.util.Arrays;
@@ -79,7 +79,7 @@ public class OrderHeaderPage extends LeftDocumentListPage<ShortOrderDocumentCard
 
     @Step("Выбрать тип поиска - {value}")
     public OrderHeaderPage selectSearchType(String value) throws Exception {
-        searchTypeComboBox.selectOptions(value);
+        searchTypeComboBox.selectOption(value);
         return this;
     }
 

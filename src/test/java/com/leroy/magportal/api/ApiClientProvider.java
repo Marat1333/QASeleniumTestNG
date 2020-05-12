@@ -31,7 +31,7 @@ public class ApiClientProvider {
     private SessionData sessionData;
 
     @Inject
-    private Provider<CatalogSearchClient> catalogSearchClientProvider;
+    private Provider<com.leroy.magportal.api.clients.CatalogSearchClient> catalogSearchClientProvider;
     @Inject
     private Provider<CartClient> cartClientProvider;
     @Inject
@@ -69,7 +69,7 @@ public class ApiClientProvider {
         return cl;
     }
 
-    public com.leroy.magmobile.api.clients.CatalogSearchClient getCatalogSearchClient() {
+    public com.leroy.magportal.api.clients.CatalogSearchClient getCatalogSearchClient() {
         return getClient(catalogSearchClientProvider);
     }
 
