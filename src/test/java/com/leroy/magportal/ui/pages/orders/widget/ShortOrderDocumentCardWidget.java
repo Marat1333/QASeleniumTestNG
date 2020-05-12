@@ -1,6 +1,5 @@
 package com.leroy.magportal.ui.pages.orders.widget;
 
-import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
@@ -9,7 +8,10 @@ import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magportal.ui.constants.OrderConst;
 import com.leroy.magportal.ui.models.salesdoc.ShortOrderDocWebData;
 import com.leroy.magportal.ui.webelements.CardWebWidget;
+import com.leroy.utils.DateTimeUtil;
 import org.openqa.selenium.WebDriver;
+
+import java.time.LocalDateTime;
 
 public class ShortOrderDocumentCardWidget extends CardWebWidget<ShortOrderDocWebData> {
 
@@ -25,6 +27,9 @@ public class ShortOrderDocumentCardWidget extends CardWebWidget<ShortOrderDocWeb
     @WebFindBy(xpath = ".//span[contains(@class, 'OrderListItem__firstLine-orderId')]")
     Element number;
 
+    @WebFindBy(xpath = ".//span[contains(@class, 'OrderListItem__createdAt')]")
+    Element creationDate;
+
     @WebFindBy(xpath = ".//span[contains(@class, 'Status-container')]")
     Element status;
 
@@ -37,6 +42,10 @@ public class ShortOrderDocumentCardWidget extends CardWebWidget<ShortOrderDocWeb
 
     public String getStatus() {
         return status.getText();
+    }
+
+    public LocalDateTime getCreationDate() {
+        return DateTimeUtil.strToLocalDateTime(creationDate.getText(), "dd MMMM, hh:mm");
     }
 
     public String getDeliveryType() {
@@ -61,6 +70,7 @@ public class ShortOrderDocumentCardWidget extends CardWebWidget<ShortOrderDocWeb
         ShortOrderDocWebData salesDocData = new ShortOrderDocWebData();
         salesDocData.setNumber(getNumber());
         salesDocData.setStatus(getStatus());
+        salesDocData.setCreationDate(getCreationDate());
         salesDocData.setDeliveryType(getDeliveryType());
         return salesDocData;
     }

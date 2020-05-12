@@ -5,6 +5,7 @@ import com.leroy.core.configuration.Log;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Locale;
 
@@ -31,9 +32,23 @@ public class DateTimeUtil {
         try {
             Date date = new SimpleDateFormat(dateFormat, new Locale("ru", "RU")).
                     parse(dateString);
-            return LocalDate.of(date.getYear()+1900, date.getMonth()+1, date.getDate());
+            return LocalDate.of(date.getYear() == 70 ? LocalDate.now().getYear() : date.getYear() + 1900,
+                    date.getMonth() + 1, date.getDate());
         } catch (ParseException err) {
             Log.error("strToLocalDate() method: " + err.getMessage());
+            return null;
+        }
+    }
+
+    public static LocalDateTime strToLocalDateTime(String dateString, String dateFormat) {
+        try {
+            Date date = new SimpleDateFormat(dateFormat, new Locale("ru", "RU")).
+                    parse(dateString);
+            return LocalDateTime.of(date.getYear() == 70 ? LocalDate.now().getYear() : date.getYear() + 1900,
+                    date.getMonth() + 1, date.getDate(),
+                    date.getHours(), date.getMinutes());
+        } catch (ParseException err) {
+            Log.error("strToLocalDateTime() method: " + err.getMessage());
             return null;
         }
     }

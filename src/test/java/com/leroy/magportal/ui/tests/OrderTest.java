@@ -17,10 +17,12 @@ import com.leroy.magportal.ui.models.salesdoc.OrderDetailData;
 import com.leroy.magportal.ui.models.salesdoc.ShortOrderDocWebData;
 import com.leroy.magportal.ui.pages.orders.OrderHeaderPage;
 import com.leroy.utils.ParserUtil;
+import io.qameta.allure.Issue;
 import io.qameta.allure.Step;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -197,6 +199,7 @@ public class OrderTest extends WebBaseSteps {
                 .shouldDocumentListIs(documentListFirst);
     }
 
+    @Issue("PUZ2-2092")
     @Test(description = "C22893769 Ордерс. Фильтрация по Номеру заказа и Номеру телефона")
     public void testOrderFilterByDocNumberAndPhoneNumber() throws Exception {
         // Pre-conditions
@@ -214,7 +217,6 @@ public class OrderTest extends WebBaseSteps {
         OrderDetailData orderData2 = new OrderDetailData();
         orderData2.setCustomer(customerRecipientData);
         orderData2.setRecipient(customerRecipientData);
-
 
         String orderId_1 = createOrderByApi(orderData1, false);
         String orderId_2 = createOrderByApi(orderData2, false);
@@ -259,8 +261,6 @@ public class OrderTest extends WebBaseSteps {
 
             // Step 7
             step("Вбить номер телефона клиента из предусловия п.1");
-            ordersPage.clearFiltersAndSubmit(); // TODO это баг, что нужно сбрасывать фильтры?
-            ordersPage.selectSearchType(OrderHeaderPage.SearchTypes.PHONE_NUMBER);
             ordersPage.enterSearchTextAndSubmit(customerData.getPhoneNumber());
             ordersPage.shouldDocumentIsPresent(orderId_1);
 
@@ -287,4 +287,62 @@ public class OrderTest extends WebBaseSteps {
         }
 
     }
+
+    @Test(description = "C22893767 Ордерс. Фильтрация по Дате")
+    public void testOrderFilterByDate() throws Exception {
+        // Step 1
+        step("Открыть страницу с Заказами");
+        OrderHeaderPage ordersPage = loginAndGoTo(OrderHeaderPage.class);
+        int ordersCountBefore = ordersPage.getDocumentCount();
+
+        // Step 2
+        step("В фильтре 'Дата' выставить дату = От - сегодня, До - сегодня, " +
+                "нажать кнопку 'Показать заказы'");
+        LocalDate fromDate = LocalDate.now();
+        LocalDate toDate = LocalDate.now();
+        ordersPage.selectDateCreationsFilters(fromDate, toDate)
+                .clickApplyFilters();
+        ordersPage.shouldDocumentListFilteredByDates(fromDate, toDate);
+
+        // Step 3
+        step("Нажать на кнопку 'Очистить фильтры'(изображена метла), нажать 'Показать заказы'");
+        ordersPage.clearFiltersAndSubmit();
+        ordersPage.shouldDocumentCountIs(ordersCountBefore);
+
+        // Step 4
+        step("В фильтре 'Дата' выставить дату = От - завтра, До - завтра, нажать кнопку 'Показать заказы'");
+        fromDate = LocalDate.now().plusDays(1);
+        toDate = LocalDate.now().plusDays(1);
+        ordersPage.selectDateCreationsFilters(fromDate, toDate)
+                .clickApplyFilters();
+        ordersPage.shouldDocumentListIsEmpty();
+
+        // Step 5
+        step("Нажать крестик в фильтре");
+        ordersPage.clearDateCreationsFilters();
+        ordersPage.shouldCreationDateFilterIs(null, null);
+
+        // Step 6
+        step("В фильтре 'Дата' выставить дату = От - сегодня, До - вчера, нажать кнопку 'Показать заказы'");
+        fromDate = LocalDate.now();
+        toDate = LocalDate.now().minusDays(1);
+        ordersPage.selectDateCreationsFilters(fromDate, toDate);
+        ordersPage.shouldCreationDateFilterIs(toDate, fromDate);
+        ordersPage.clickApplyFilters();
+        ordersPage.shouldDocumentListFilteredByDates(toDate, fromDate);
+
+        // Step 7
+        step("Выставить в фильтре 'Дата' диапазон = неделя, нажать кнопку 'Показать заказы'");
+        fromDate = LocalDate.now().minusDays(3);
+        toDate = LocalDate.now().plusDays(4);
+        ordersPage.selectDateCreationsFilters(fromDate, toDate)
+                .clickApplyFilters();
+        ordersPage.shouldDocumentListFilteredByDates(fromDate, toDate);
+
+        // Step 8
+        step("Нажать на кнопку 'Очистить фильтры'(изображена метла), нажать 'Показать заказы'");
+        ordersPage.clearFiltersAndSubmit();
+        ordersPage.shouldDocumentCountIs(ordersCountBefore);
+    }
+
 }

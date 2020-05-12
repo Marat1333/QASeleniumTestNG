@@ -8,10 +8,12 @@ import com.leroy.magportal.ui.models.salesdoc.ShortOrderDocWebData;
 import com.leroy.magportal.ui.pages.common.LeftDocumentListPage;
 import com.leroy.magportal.ui.pages.orders.widget.ShortOrderDocumentCardWidget;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
+import com.leroy.magportal.ui.webelements.commonelements.DualCalendarInputBox;
 import com.leroy.magportal.ui.webelements.commonelements.PuzComboBox;
 import com.leroy.magportal.ui.webelements.commonelements.PuzMultiSelectComboBox;
 import io.qameta.allure.Step;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -65,6 +67,10 @@ public class OrderHeaderPage extends LeftDocumentListPage<ShortOrderDocumentCard
             metaName = "Фильтр статус заказа")
     PuzMultiSelectComboBox statusFilter;
 
+    @WebFindBy(xpath = "//div[contains(@class, 'DatePicker__container') and descendant::label[text()='Создан']]",
+            metaName = "Фильтр по дате создания")
+    DualCalendarInputBox dateCreationFilter;
+
     @WebFindBy(xpath = "//div[contains(@class, 'Select__container')][descendant::label[text()='Способ получения']]",
             metaName = "Фильтр способ доставки")
     PuzMultiSelectComboBox deliveryTypeFilter;
@@ -110,6 +116,18 @@ public class OrderHeaderPage extends LeftDocumentListPage<ShortOrderDocumentCard
         return this;
     }
 
+    @Step("Выбрать в фильтре дата создания с {fromDate} по {toDate}")
+    public OrderHeaderPage selectDateCreationsFilters(LocalDate fromDate, LocalDate toDate) throws Exception {
+        dateCreationFilter.selectDate(fromDate, toDate);
+        return this;
+    }
+
+    @Step("Очистить фильтр с датой создания, нажав на 'крестик'")
+    public OrderHeaderPage clearDateCreationsFilters() throws Exception {
+        dateCreationFilter.clear();
+        return this;
+    }
+
     @Step("Выбрать в соотетствующем фильтре способ доставки: {values}")
     public OrderHeaderPage selectDeliveryTypeFilters(String... values) throws Exception {
         deliveryTypeFilter.selectOptions(values);
@@ -134,6 +152,12 @@ public class OrderHeaderPage extends LeftDocumentListPage<ShortOrderDocumentCard
         clearFiltersBtn.click();
         anAssert.isTrue(statusFilter.getSelectedOptionText().isEmpty(),
                 "Фильтр 'Статус заказа' не был очищен");
+        anAssert.isTrue(deliveryTypeFilter.getSelectedOptionText().isEmpty(),
+                "Фильтр 'Способ доставки' не был очищен");
+        anAssert.isNull(dateCreationFilter.getSelectedFromDate(), "В поле 'С' присутствует дата",
+                "Поле 'С' пустое");
+        anAssert.isNull(dateCreationFilter.getSelectedToDate(), "В поле 'По' присутствует дата",
+                "Поле 'По' пустое");
         // todo все фильтры тут должны быть
         return this;
     }
@@ -145,6 +169,24 @@ public class OrderHeaderPage extends LeftDocumentListPage<ShortOrderDocumentCard
     }
 
     // Verifications
+
+    @Step("Проверить, что в фильтре даты создания следующие даты: с {fromDate} по {toDate}")
+    public OrderHeaderPage shouldCreationDateFilterIs(LocalDate fromDate, LocalDate toDate) {
+        if (fromDate == null && toDate == null) {
+            softAssert.isNull(dateCreationFilter.getSelectedFromDate(), "В поле 'С' присутствует дата",
+                    "Поле 'С' пустое");
+            softAssert.isNull(dateCreationFilter.getSelectedToDate(), "В поле 'По' присутствует дата",
+                    "Поле 'По' пустое");
+
+        } else {
+            softAssert.isEquals(dateCreationFilter.getSelectedFromDate(), fromDate,
+                    "Ожидалась другая дата в поле 'С'");
+            softAssert.isEquals(dateCreationFilter.getSelectedToDate(), toDate,
+                    "Ожидалась другая дата в поле 'По'");
+        }
+        softAssert.verifyAll();
+        return this;
+    }
 
     @Step("Проверить, что в списке документов слева присутствуют только имеющие тип доставки: {types}")
     public void shouldDocumentListContainsOnlyWithDeliveryTypes(String... types) {
@@ -158,5 +200,19 @@ public class OrderHeaderPage extends LeftDocumentListPage<ShortOrderDocumentCard
                         actualTypes.toString());
     }
 
+    @Step("Проверить, что в списке документов слева присутствуют только документы созданные " +
+            "с {fromDate} по {toDate}")
+    public void shouldDocumentListFilteredByDates(LocalDate fromDate, LocalDate toDate) {
+        for (ShortOrderDocWebData docData : documentCardList().getDataList()) {
+            LocalDate actualDate = docData.getCreationDate().toLocalDate();
+            softAssert.isTrue((actualDate.equals(fromDate) || actualDate.isAfter(fromDate)) &&
+                            (actualDate.equals(toDate) || actualDate.isBefore(toDate)),
+                    String.format(
+                            "Документ №%s создан %s; Не попадает в диапазон с %s по %s",
+                            docData.getNumber(), docData.getCreationDate(),
+                            fromDate, toDate));
+        }
+        softAssert.verifyAll();
+    }
 
 }
