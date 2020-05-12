@@ -133,6 +133,7 @@ public class OrderTest extends WebBaseSteps {
         return orderData.getOrderId();
     }
 
+    @Issue("BACKEND_ISSUE")
     @Test(description = "C22829624 Ордерс. Фильтрация по статусу заказа")
     public void testOrderFilterByStatus() throws Exception {
         // Step 1
