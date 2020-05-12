@@ -2,7 +2,6 @@ package com.leroy.magportal.ui.pages.products;
 
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.annotations.WebFindBy;
-import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
@@ -16,13 +15,12 @@ import com.leroy.magportal.ui.pages.products.widget.ExtendedProductCardTableView
 import com.leroy.magportal.ui.pages.products.widget.ExtendedProductCardWidget;
 import com.leroy.magportal.ui.pages.products.widget.ProductCardTableViewWidget;
 import com.leroy.magportal.ui.pages.products.widget.ProductCardWidget;
-import com.leroy.magportal.ui.webelements.commonelements.PuzComboBox;
-import com.leroy.magportal.ui.webelements.commonelements.PuzMultiSelectComboBox;
 import com.leroy.magportal.ui.webelements.commonelements.CalendarInputBox;
 import com.leroy.magportal.ui.webelements.commonelements.PuzCheckBox;
+import com.leroy.magportal.ui.webelements.commonelements.PuzComboBox;
+import com.leroy.magportal.ui.webelements.commonelements.PuzMultiSelectComboBox;
 import com.leroy.magportal.ui.webelements.searchelements.SupplierComboBox;
 import io.qameta.allure.Step;
-import org.openqa.selenium.By;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -766,8 +764,8 @@ public class SearchProductPage extends MenuPage {
     @Step("Проверить, что чек-бокс переведен в корректное состояние")
     public SearchProductPage shouldCheckboxFilterHasCorrectCondition(boolean isEnabled, Filters... filters) throws Exception {
         for (Filters filter : filters) {
-            PuzCheckBox checkbox = new PuzCheckBox(driver, new CustomLocator(By.xpath(
-                    "//div[contains(@class, 'active')]//*[contains(text(),'" + filter.getName() + "')]/ancestor::button")));
+            PuzCheckBox checkbox = E("//div[contains(@class, 'active')]//*[contains(text(),'" +
+                    filter.getName() + "')]/ancestor::button", PuzCheckBox.class);
             if (!checkbox.isVisible()) {
                 showAllFilters();
             }
