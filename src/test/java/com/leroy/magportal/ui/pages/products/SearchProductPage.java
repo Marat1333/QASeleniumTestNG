@@ -12,11 +12,15 @@ import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.models.search.FiltersData;
 import com.leroy.magportal.ui.pages.common.MenuPage;
-import com.leroy.magportal.ui.webelements.PuzComboBox;
-import com.leroy.magportal.ui.webelements.PuzMultiSelectComboBox;
+import com.leroy.magportal.ui.pages.products.widget.ExtendedProductCardTableViewWidget;
+import com.leroy.magportal.ui.pages.products.widget.ExtendedProductCardWidget;
+import com.leroy.magportal.ui.pages.products.widget.ProductCardTableViewWidget;
+import com.leroy.magportal.ui.pages.products.widget.ProductCardWidget;
+import com.leroy.magportal.ui.webelements.commonelements.PuzComboBox;
+import com.leroy.magportal.ui.webelements.commonelements.PuzMultiSelectComboBox;
+import com.leroy.magportal.ui.webelements.commonelements.CalendarInputBox;
 import com.leroy.magportal.ui.webelements.commonelements.PuzCheckBox;
 import com.leroy.magportal.ui.webelements.searchelements.SupplierComboBox;
-import com.leroy.magportal.ui.webelements.widgets.*;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 

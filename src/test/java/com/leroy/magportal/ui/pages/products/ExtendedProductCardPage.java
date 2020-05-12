@@ -7,8 +7,8 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.webelements.commonelements.PriceContainer;
-import com.leroy.magportal.ui.webelements.widgets.ExtendedProductCardWidget;
-import com.leroy.magportal.ui.webelements.widgets.ShopCardWidget;
+import com.leroy.magportal.ui.pages.products.widget.ExtendedProductCardWidget;
+import com.leroy.magportal.ui.pages.products.widget.ShopCardWidget;
 
 public class ExtendedProductCardPage extends ProductCardPage {
     public ExtendedProductCardPage(Context context) {

@@ -6,9 +6,7 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magportal.ui.webelements.PuzMultiSelectComboBox;
-import com.leroy.magportal.ui.webelements.widgets.ChosenSupplierWidget;
-import com.leroy.magportal.ui.webelements.widgets.SupplierCardWidget;
+import com.leroy.magportal.ui.webelements.commonelements.PuzMultiSelectComboBox;
 import org.openqa.selenium.WebDriver;
 
 public class SupplierComboBox extends PuzMultiSelectComboBox {
