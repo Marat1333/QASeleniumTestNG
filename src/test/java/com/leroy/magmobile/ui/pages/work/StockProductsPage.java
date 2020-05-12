@@ -10,7 +10,7 @@ import com.leroy.magmobile.ui.pages.widgets.ProductCardWidget;
 import com.leroy.magmobile.ui.pages.widgets.SelectedCardWidget;
 import com.leroy.magmobile.ui.models.search.ProductCardData;
 import com.leroy.magmobile.ui.models.work.WithdrawalOrderCardData;
-import com.leroy.utils.Converter;
+import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
 public class StockProductsPage extends CommonMagMobilePage {
@@ -63,7 +63,7 @@ public class StockProductsPage extends CommonMagMobilePage {
         cardData.setLmCode(cardObj.getNumber());
         cardData.setName(cardObj.getName());
         cardData.setPriceUnit(cardObj.getQuantityUnit());
-        cardData.setAvailableQuantity(Converter.strToDouble(cardObj.getQuantity()));
+        cardData.setAvailableQuantity(ParserUtil.strToDouble(cardObj.getQuantity()));
         return cardData;
     }
 
@@ -75,11 +75,11 @@ public class StockProductsPage extends CommonMagMobilePage {
         cardData.setLmCode(cardObj.getNumber());
         cardData.setName(cardObj.getName());
         cardData.setPriceUnit(cardObj.getQuantityUnit());
-        cardData.setAvailableQuantity(Converter.strToDouble(cardObj.getQuantity()));
+        cardData.setAvailableQuantity(ParserUtil.strToDouble(cardObj.getQuantity()));
 
         WithdrawalOrderCardData withdrawalOrderCardData = new WithdrawalOrderCardData();
         withdrawalOrderCardData.setProductCardData(cardData);
-        withdrawalOrderCardData.setSelectedQuantity(Converter.strToDouble(cardObj.getSelectedQuantity()));
+        withdrawalOrderCardData.setSelectedQuantity(ParserUtil.strToDouble(cardObj.getSelectedQuantity()));
         return withdrawalOrderCardData;
     }
 

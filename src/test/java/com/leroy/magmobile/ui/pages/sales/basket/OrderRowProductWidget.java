@@ -6,7 +6,7 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
 import com.leroy.magmobile.ui.models.sales.SalesOrderCardData;
 import com.leroy.magmobile.ui.models.search.ProductCardData;
-import com.leroy.utils.Converter;
+import com.leroy.utils.ParserUtil;
 import org.openqa.selenium.WebDriver;
 
 public class OrderRowProductWidget extends CardWidget<SalesOrderCardData> {
@@ -71,13 +71,13 @@ public class OrderRowProductWidget extends CardWidget<SalesOrderCardData> {
         ProductCardData cardData = new ProductCardData();
         cardData.setLmCode(getLmCode(true, ps));
         cardData.setName(getName(ps));
-        cardData.setPrice(Converter.strToDouble(getPrice(ps)));
+        cardData.setPrice(ParserUtil.strToDouble(getPrice(ps)));
         cardData.setPriceUnit(getPriceUnit(ps));
 
         SalesOrderCardData orderCardData = new SalesOrderCardData();
         orderCardData.setProductCardData(cardData);
-        orderCardData.setSelectedQuantity(Converter.strToDouble(getSelectedProductQuantity(ps)));
-        orderCardData.setTotalPrice(Converter.strToDouble(getTotalPrice(ps)));
+        orderCardData.setSelectedQuantity(ParserUtil.strToDouble(getSelectedProductQuantity(ps)));
+        orderCardData.setTotalPrice(ParserUtil.strToDouble(getTotalPrice(ps)));
 
         // Доступное кол-во отображается не всегда, и находится внизу карточки.
         // Нужно придумывать способ как реализовывать метод isFullyVisible или искать workaround

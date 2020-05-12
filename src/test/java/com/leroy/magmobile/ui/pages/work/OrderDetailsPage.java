@@ -8,7 +8,7 @@ import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.widgets.ProductCardWidget;
 import com.leroy.magmobile.ui.models.search.ProductCardData;
 import com.leroy.magmobile.ui.models.work.WithdrawalOrderCardData;
-import com.leroy.utils.Converter;
+import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
 import java.time.LocalDate;
@@ -76,7 +76,7 @@ public class OrderDetailsPage extends CommonMagMobilePage {
                 "Номер товара на отзыв должен быть %s");
         softAssert.isEquals(productCardWidget.getName(), productCardData.getName(),
                 "Название товара на отзыв должно быть %s");
-        softAssert.isEquals(Converter.strToDouble(productCardWidget.getQuantity()),
+        softAssert.isEquals(ParserUtil.strToDouble(productCardWidget.getQuantity()),
                 cardData.getSelectedQuantity(),
                 "Кол-во товара на отзыв должно быть %s");
         softAssert.isEquals(productCardWidget.getQuantityUnit(), productCardData.getPriceUnit(),

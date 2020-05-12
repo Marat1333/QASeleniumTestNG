@@ -1,6 +1,6 @@
 package com.leroy.magportal.ui.models.salesdoc;
 
-import com.leroy.utils.Converter;
+import com.leroy.utils.ParserUtil;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class OrderWebData {
     public void removeProduct(int index, boolean recalculateOrder) {
         if (recalculateOrder) {
             ProductOrderCardWebData removeProduct = productCardDataList.get(index);
-            totalWeight = Converter.sum(totalWeight, - removeProduct.getWeight(), 2);
+            totalWeight = ParserUtil.sum(totalWeight, - removeProduct.getWeight(), 2);
             totalPrice -= removeProduct.getTotalPrice();
             productCount--;
         }

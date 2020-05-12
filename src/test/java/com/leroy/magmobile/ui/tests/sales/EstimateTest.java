@@ -18,7 +18,7 @@ import com.leroy.magmobile.ui.pages.sales.estimate.*;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SaleTypeModalPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
-import com.leroy.utils.Converter;
+import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.BeforeClass;
@@ -433,7 +433,7 @@ public class EstimateTest extends SalesBaseTest {
                 1.0, "Кол-во товара №2 неверно");
         softAssert.isEquals(estimateDataAfter.getTotalPrice(),
                 estimateDataBefore.getTotalPrice() +
-                        Converter.strToDouble(priceNewProduct), "Сумма итого неверна");
+                        ParserUtil.strToDouble(priceNewProduct), "Сумма итого неверна");
         softAssert.isTrue(estimateDataBefore.getTotalWeight() < estimateDataAfter.getTotalWeight(),
                 "Вес должен был увеличиться после добавления нового товара");
         softAssert.verifyAll();

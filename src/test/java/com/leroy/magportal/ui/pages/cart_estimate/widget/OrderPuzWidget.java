@@ -7,7 +7,7 @@ import com.leroy.magportal.ui.models.salesdoc.OrderWebData;
 import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardWebData;
 import com.leroy.magportal.ui.webelements.CardWebWidget;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
-import com.leroy.utils.Converter;
+import com.leroy.utils.ParserUtil;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 
@@ -62,9 +62,9 @@ public class OrderPuzWidget extends CardWebWidget<OrderWebData> {
         Assert.assertEquals(productCountAndWeight.length, 2,
                 "Что-то изменилось в метке содержащей информацию о кол-ве и весе товара");
 
-        orderWebData.setTotalPrice(Converter.strToDouble(totalPriceValue.getText()));
-        orderWebData.setTotalWeight(Converter.strToDouble(productCountAndWeight[1]));
-        orderWebData.setProductCount(Converter.strToInt(productCountAndWeight[0]));
+        orderWebData.setTotalPrice(ParserUtil.strToDouble(totalPriceValue.getText()));
+        orderWebData.setTotalWeight(ParserUtil.strToDouble(productCountAndWeight[1]));
+        orderWebData.setProductCount(ParserUtil.strToInt(productCountAndWeight[0]));
 
         return orderWebData;
     }

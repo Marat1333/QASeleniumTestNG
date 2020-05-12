@@ -6,7 +6,7 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.pages.common.MenuPage;
-import com.leroy.utils.Converter;
+import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
 public class ProductCardPage extends MenuPage {
@@ -92,7 +92,7 @@ public class ProductCardPage extends MenuPage {
         if (text.matches("\\D+")) {
             anAssert.isElementTextContains(productTitle, text);
         } else {
-            String barCode = Converter.strToStrWithoutDigits(barCodeLbl.getText());
+            String barCode = ParserUtil.strWithOnlyDigits(barCodeLbl.getText());
             anAssert.isTrue(lmCodeLbl.getText().contains(text) ||
                             barCode.equals(text),
                     "Карта товара не содержит критерий поиска " + text);
