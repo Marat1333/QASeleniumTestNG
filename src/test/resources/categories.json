@@ -19,7 +19,7 @@
     "messageRegex": ".*Failed to deserialize java.time.ZonedDateTime.*"
   },
   {
-    "name": "All failed defects",
+    "name": "All failed tests",
     "matchedStatuses": ["failed", "broken"]
   }
 ]
