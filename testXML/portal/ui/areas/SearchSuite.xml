@@ -176,4 +176,14 @@
         </classes>
     </test>
 
+    <test name="C23388805 navigation forward and back">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.SearchTest">
+                <methods>
+                    <include name="testBrowserNavigation"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
 </suite>
