@@ -4,7 +4,7 @@
 settings:
   platform: linux
   browser: android_app
-  host: https://moon-e2e-x2.apps.lmru.tech
+  host: https://moon-e2e.apps.lmru.tech
   #build: 1.0.0 # Build version for NativeApps or run id for browser tests
   timeout: 30 # default wait timeout in seconds
 

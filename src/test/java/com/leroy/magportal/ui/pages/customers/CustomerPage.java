@@ -38,7 +38,7 @@ public class CustomerPage extends MenuPage {
             metaName = "Кнопка поиска")
     private Button scanBarCodeBtn;
 
-    @WebFindBy(id = "inputId", metaName = "Поле для ввода телефона")
+    @WebFindBy(xpath = "//input[@name='phone']", metaName = "Поле для ввода телефона")
     private EditBox searchFld;
 
     @WebFindBy(xpath = "//button[descendant::span[text()='Создать клиента']]",
