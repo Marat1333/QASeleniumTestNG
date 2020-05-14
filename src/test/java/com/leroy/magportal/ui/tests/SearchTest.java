@@ -203,9 +203,9 @@ public class SearchTest extends WebBaseSteps {
 
     @Test(description = "C23384732 nomenclature filters and navigation")
     public void testNomenclature() throws Exception {
-        String dept = "005";
-        String subDept = "510";
-        String classId = "010";
+        String dept = "011";
+        String subDept = "1115";
+        String classId = "030";
         String subClassId = "010";
 
         GetCatalogSearch allDepartmentsParams = new GetCatalogSearch()
@@ -213,25 +213,25 @@ public class SearchTest extends WebBaseSteps {
                 .setPageSize(defaultPageSize);
 
         GetCatalogSearch departmentParams = new GetCatalogSearch()
-                .setDepartmentId(dept.substring(2))
+                .setDepartmentId(dept.substring(1))
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setPageSize(defaultPageSize);
 
         GetCatalogSearch subDepartmentParams = new GetCatalogSearch()
-                .setDepartmentId(dept.substring(2))
+                .setDepartmentId(dept.substring(1))
                 .setSubDepartmentId(subDept)
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setPageSize(defaultPageSize);
 
         GetCatalogSearch classParams = new GetCatalogSearch()
-                .setDepartmentId(dept.substring(2))
+                .setDepartmentId(dept.substring(1))
                 .setSubDepartmentId(subDept)
                 .setClassId(classId.substring(1))
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setPageSize(defaultPageSize);
 
         GetCatalogSearch subClassParams = new GetCatalogSearch()
-                .setDepartmentId(dept.substring(2))
+                .setDepartmentId(dept.substring(1))
                 .setSubDepartmentId(subDept)
                 .setClassId(classId.substring(1))
                 .setSubclassId(subClassId.substring(1))
@@ -256,7 +256,7 @@ public class SearchTest extends WebBaseSteps {
         //Step 2
         step("Выбрать отдел");
         searchProductPage.choseNomenclature(dept, null, null, null);
-        searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId + dept.substring(2));
+        searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId + dept.substring(1));
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(dept);
         searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, allDepartments);
         ProductItemDataList departmentData = resultsMap.get(1).getData();
@@ -981,6 +981,77 @@ public class SearchTest extends WebBaseSteps {
                 SearchProductPage.ViewMode.LIST);
         productCardPage.verifyRequiredElements();
 
+    }
+
+    @Test(description = "C23388805 navigation forward and back")
+    public void testBrowserNavigation() throws Exception {
+        String searchPhrase = "ротбанд";
+        String chosenDepartmentId = "001";
+
+        //Pre-conditions
+        SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
+
+        //Step 1
+        log.step("Выбрать фильтр топ ЕМ, выполнить поиск по фразе " + searchPhrase + ", перейти на уровень товарной иерархии" +
+                "\"все отделы\", изменить группу фильтров на \"Вся гамма лм\", выбрать 1 отдел");
+        searchProductPage.searchByPhrase(searchPhrase);
+        searchProductPage.navigateToPreviousNomenclatureElement(allDepartments);
+        searchProductPage.choseCheckboxFilter(true, SearchProductPage.Filters.TOP_EM);
+        searchProductPage.switchFiltersFrame(SearchProductPage.FilterFrame.ALL_GAMMA_LM);
+        searchProductPage.choseNomenclature(chosenDepartmentId, null, null, null);
+
+        //Step 2
+        log.step("Нажать на браузерную кнопку назад");
+        searchProductPage.navigateBack();
+        searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, "Каталог товаров");
+        searchProductPage.shouldSearchCriterionIs(true, searchPhrase);
+        searchProductPage.shouldCheckboxFilterHasCorrectCondition(false, SearchProductPage.Filters.TOP_EM);
+        searchProductPage.shouldFilterGroupHasBeenChosen(SearchProductPage.FilterFrame.ALL_GAMMA_LM);
+        searchProductPage.shouldUrlContains(CatalogSearchParams.byNameLikeParamName);
+        searchProductPage.shouldUrlNotContains(CatalogSearchParams.shopId, CatalogSearchParams.departmentId,
+                CatalogSearchParams.topEM + "true");
+
+        //Step 3
+        log.step("Нажать на браузерную кнопку назад");
+        searchProductPage.navigateBack();
+        searchProductPage.shouldSearchCriterionIs(true, searchPhrase);
+        searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, "Каталог товаров");
+        searchProductPage.shouldCheckboxFilterHasCorrectCondition(true, SearchProductPage.Filters.TOP_EM);
+        searchProductPage.shouldFilterGroupHasBeenChosen(SearchProductPage.FilterFrame.MY_SHOP);
+        searchProductPage.shouldUrlContains(CatalogSearchParams.shopId + EnvConstants.BASIC_USER_SHOP_ID,
+                CatalogSearchParams.topEM + "true");
+
+        //Step 4
+        log.step("Нажать на браузерную кнопку назад");
+        searchProductPage.navigateBack();
+        searchProductPage.shouldCheckboxFilterHasCorrectCondition(false, SearchProductPage.Filters.TOP_EM);
+        searchProductPage.shouldUrlNotContains(CatalogSearchParams.topEM);
+
+        //Step 5
+        log.step("Нажать на браузерную кнопку назад");
+        searchProductPage.navigateBack();
+        searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, EnvConstants.BASIC_USER_DEPARTMENT_ID);
+        searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId + EnvConstants.BASIC_USER_DEPARTMENT_ID);
+
+
+        //Step 6
+        log.step("Нажать на браузерную кнопку назад");
+        searchProductPage.navigateBack();
+        searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(EnvConstants.BASIC_USER_DEPARTMENT_ID);
+        searchProductPage.shouldSearchCriterionIs(false, searchPhrase);
+        searchProductPage.shouldUrlNotContains(CatalogSearchParams.byNameLikeParamName);
+
+        //Step 7
+        log.step("Нажать на браузерную кнопку вперед столько раз сколько нажали назад");
+        searchProductPage.navigateNTimes(SearchProductPage.Direction.FORWARD, 5);
+        searchProductPage.shouldFilterGroupHasBeenChosen(SearchProductPage.FilterFrame.ALL_GAMMA_LM);
+        searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, chosenDepartmentId);
+        searchProductPage.shouldSearchInputContainsText(searchPhrase);
+        searchProductPage.shouldSearchCriterionIs(true, searchPhrase);
+        searchProductPage.shouldCheckboxFilterHasCorrectCondition(false, SearchProductPage.Filters.TOP_EM);
+        searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId+chosenDepartmentId.replaceAll("0",""),
+                CatalogSearchParams.byNameLikeParamName);
+        searchProductPage.shouldUrlNotContains(CatalogSearchParams.shopId);
     }
 
 }

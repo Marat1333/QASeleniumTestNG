@@ -115,7 +115,7 @@ public class SearchProductPage extends MenuPage {
     Element allDepartmentsBtn;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'lmui-View-row lmui-View-middle')]" +
-            "//span[contains(@class, 'color-mainText') and not(contains(text(), 'Показаны'))]")
+            "//span[contains(@class, 'color-mainText') and not(contains(text(), 'Показаны'))]", refreshEveryTime = true)
     Element currentNomenclatureLbl;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(text(),'результаты поиска по')]")
@@ -192,13 +192,6 @@ public class SearchProductPage extends MenuPage {
     @WebFindBy(text = "Больше ничего не найдено.")
     Element noMoreResultsLbl;
 
-    @Override
-    public void waitForPageIsLoaded() {
-        searchInput.waitForVisibility();
-        applyFiltersBtn.waitForVisibility();
-        waitForSpinnerDisappear();
-    }
-
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'DatePicker__container')][descendant::input[@placeholder='Дата AVS']]",
             refreshEveryTime = true)
     CalendarInputBox avsCalendarInputBox;
@@ -210,6 +203,44 @@ public class SearchProductPage extends MenuPage {
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'Select__container')][descendant::input[@placeholder='Топ пополнения']]",
             refreshEveryTime = true)
     PuzMultiSelectComboBox topComboBox;
+
+    @Override
+    public void waitForPageIsLoaded() {
+        searchInput.waitForVisibility();
+        applyFiltersBtn.waitForVisibility();
+        waitForSpinnerDisappear();
+    }
+
+    @Override
+    public boolean navigateForward() throws InterruptedException {
+        boolean result = super.navigateForward();
+        waitForSpinnerAppearAndDisappear();
+        return result;
+    }
+
+    public enum Direction {
+        FORWARD,
+        BACK
+    }
+
+    public void navigateNTimes(Direction direction, int n) throws Exception {
+        if (direction.equals(Direction.FORWARD)){
+            for (int i=0;i<n;i++){
+                navigateForward();
+            }
+        }else {
+            for (int i=0;i<n;i++) {
+                navigateBack();
+            }
+        }
+    }
+
+    @Override
+    public boolean navigateBack() throws InterruptedException {
+        boolean result = super.navigateBack();
+        waitForSpinnerAppearAndDisappear();
+        return result;
+    }
 
     private String getCurrentNomenclatureName() {
         return currentNomenclatureLbl.getText();
@@ -927,6 +958,20 @@ public class SearchProductPage extends MenuPage {
         String actualText = sortComboBox.getSelectedOptionText();
         anAssert.isElementTextContainsIgnoringCase(actualText, value,
                 actualText + " не содержит " + value);
+        return this;
+    }
+
+    @Step("Проверить, что группа фильтров выбрана")
+    public SearchProductPage shouldFilterGroupHasBeenChosen(FilterFrame frame) {
+        String attributeName = "className";
+        String condition = "active";
+        if (frame.equals(FilterFrame.MY_SHOP)) {
+            anAssert.isElementTextContainsIgnoringCase(myShopContainer.getAttribute(attributeName), condition,
+                    "группа фильтров \"Мой магазин\" не выбрана");
+        } else {
+            anAssert.isElementTextContainsIgnoringCase(allGammaContainer.getAttribute(attributeName), condition,
+                    "группа фильтров \"Вся гамма ЛМ\" не выбрана");
+        }
         return this;
     }
 }
