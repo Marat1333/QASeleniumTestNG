@@ -741,7 +741,9 @@ public class SearchTest extends WebBaseSteps {
         //Step 1
         step("Выбрать несколько фильтров из группы фильтров \"Мой магазин\", выполнить поиск по ним и очистить " +
                 "фильтры по нажатию на кнопку в виде метлы");
+        searchProductPage.shouldCleatAllFiltersButtonHasCorrectCondition(false);
         searchProductPage.choseSeveralFilters(myShopFilterData, true);
+        searchProductPage.shouldCleatAllFiltersButtonHasCorrectCondition(true);
         searchProductPage.clearAllFilters();
         searchProductPage.checkFiltersNotChosen(myShopFilterData);
         ProductItemDataList myShopDefaultResponse = resultMap.get(0).getData();

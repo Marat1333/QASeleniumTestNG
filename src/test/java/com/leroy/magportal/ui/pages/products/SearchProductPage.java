@@ -1031,4 +1031,14 @@ public class SearchProductPage extends MenuPage {
         softAssert.verifyAll();
         return this;
     }
+
+    @Step("Проверить, что кнопка очистки фильтров имеет корректное состояние")
+    public SearchProductPage shouldCleatAllFiltersButtonHasCorrectCondition(boolean isEnabled){
+        if (isEnabled) {
+            anAssert.isTrue(clearAllFiltersInFilterFrameBtn.isEnabled(), "clear all filters btn is disabled");
+        }else {
+            anAssert.isFalse(clearAllFiltersInFilterFrameBtn.isEnabled(), "clear all filters btn is enabled");
+        }
+        return this;
+    }
 }
