@@ -332,7 +332,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         }
     }
 
-    @TestCase(22893336)
+    @Issue("BACKEND_ISSUE")
     @Test(description = "C22893336 search by top1000 filter")
     public void testSearchByTop1000Filter() {
         final boolean top1000 = true;
@@ -451,7 +451,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         }
     }
 
-    @TestCase(22893343)
+    @Issue("BACKEND_ISSUE")
     @Test(description = "C22893343 search by avs neq null filter")
     public void testSearchByAvsNeqNullFilter() {
 
