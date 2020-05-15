@@ -459,6 +459,11 @@ public class SearchTest extends WebBaseSteps {
                         "between%%7C%s-0%s-0%sT00%3A00%3A00.000Z%%7C%s-0%s-0%sT00%3A00%3A00.000Z", avsDate.getYear(),
                         avsDate.getMonthValue(), avsDate.getDayOfMonth(),
                         avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth() + 1));
+
+        //Step 4
+        step("Убрать чек-бокс AVS");
+        searchProductPage.choseCheckboxFilter(false, SearchProductPage.Filters.AVS);
+        searchProductPage.shouldAvsDateComboBoxHasCorrectCondition();
     }
 
     @Test(description = "C23384959 search by my shop filters group")

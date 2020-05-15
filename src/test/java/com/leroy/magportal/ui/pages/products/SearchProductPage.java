@@ -21,7 +21,6 @@ import com.leroy.magportal.ui.webelements.commonelements.PuzComboBox;
 import com.leroy.magportal.ui.webelements.commonelements.PuzMultiSelectComboBox;
 import com.leroy.magportal.ui.webelements.searchelements.SupplierComboBox;
 import io.qameta.allure.Step;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -148,6 +147,9 @@ public class SearchProductPage extends MenuPage {
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'Select__container') and descendant::label[text()='Поставщик']]")
     SupplierComboBox supplierComboBox;
 
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//*[contains(text(),'AVS')]")
+    PuzCheckBox avsCheckBox;
+
     @WebFindBy(xpath = "//div[contains(@class, 'Select__container') and descendant::span[contains(text(),'Сортировать')]]")
     PuzComboBox sortComboBox;
 
@@ -228,12 +230,12 @@ public class SearchProductPage extends MenuPage {
     }
 
     public void navigateNTimes(Direction direction, int n) throws Exception {
-        if (direction.equals(Direction.FORWARD)){
-            for (int i=0;i<n;i++){
+        if (direction.equals(Direction.FORWARD)) {
+            for (int i = 0; i < n; i++) {
                 navigateForward();
             }
-        }else {
-            for (int i=0;i<n;i++) {
+        } else {
+            for (int i = 0; i < n; i++) {
                 navigateBack();
             }
         }
@@ -440,7 +442,7 @@ public class SearchProductPage extends MenuPage {
         if (additionalFiltersArea.isVisible()) {
             showAllFilters.click();
             additionalFiltersArea.waitForInvisibility();
-        }else {
+        } else {
             showAllFilters.click();
             additionalFiltersArea.waitForVisibility();
         }
@@ -986,13 +988,23 @@ public class SearchProductPage extends MenuPage {
     }
 
     @Step("Проверить, что счетчик фильтров равен {count}")
-    public SearchProductPage shouldFilterCounterHasCorrectCondition(int count){
-        if (count==0) {
+    public SearchProductPage shouldFilterCounterHasCorrectCondition(int count) {
+        if (count == 0) {
             anAssert.isElementNotVisible(filtersCounter);
-        }else if (count>0){
+        } else if (count > 0) {
             anAssert.isElementTextContains(filtersCounter, String.valueOf(count));
-        }else {
+        } else {
             throw new IllegalArgumentException("count should be more than 0");
+        }
+        return this;
+    }
+
+    @Step("Проверить, что комбобокс \"Дата AVS\" не отображается")
+    public SearchProductPage shouldAvsDateComboBoxHasCorrectCondition() throws Exception {
+        if (avsCheckBox.isChecked()) {
+            anAssert.isElementVisible(avsCalendarInputBox);
+        }else{
+            anAssert.isElementNotVisible(avsCalendarInputBox);
         }
         return this;
     }
