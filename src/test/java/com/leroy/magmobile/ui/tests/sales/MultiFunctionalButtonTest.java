@@ -297,7 +297,7 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
         productDescriptionPage.clickActionWithProductButton();
         if (is35Shop) {
             ActionWithProduct35ModalPage modalPage = new ActionWithProduct35ModalPage(context);
-            return (T) modalPage.verifyRequiredElements(productData.isHasAvailableStock(),
+            return (T) modalPage.verifyRequiredElements(productData.getHasAvailableStock(),
                     productType.equals(ProductTypes.AVS));
         } else {
             ActionWithProductModalPage modalPage = new ActionWithProductModalPage(context);

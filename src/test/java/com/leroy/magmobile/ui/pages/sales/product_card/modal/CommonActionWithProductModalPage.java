@@ -24,6 +24,7 @@ public abstract class CommonActionWithProductModalPage extends CommonMagMobilePa
     @Override
     public void waitForPageIsLoaded() {
         headerLbl.waitForVisibility();
+        waitUntilProgressBarIsInvisible();
     }
 
     // Verifications

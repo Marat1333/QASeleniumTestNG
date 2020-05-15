@@ -31,8 +31,7 @@ import java.util.stream.Collectors;
 
 import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 
 public class ApiClientProvider {
 
@@ -195,6 +194,14 @@ public class ApiClientProvider {
     public List<ProductItemData> getProducts(int necessaryCount) {
         CatalogSearchFilter filter = new CatalogSearchFilter();
         filter.setHasAvailableStock(true);
+        return getProducts(necessaryCount, filter);
+    }
+
+    public List<ProductItemData> getProducts(int necessaryCount, boolean isAvs, boolean isTopEm) {
+        CatalogSearchFilter filter = new CatalogSearchFilter();
+        filter.setHasAvailableStock(true);
+        filter.setTopEM(isTopEm);
+        filter.setAvs(isAvs);
         return getProducts(necessaryCount, filter);
     }
 

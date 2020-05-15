@@ -1,6 +1,5 @@
 package com.leroy.magmobile.ui.pages.sales.product_card.modal;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.Context;

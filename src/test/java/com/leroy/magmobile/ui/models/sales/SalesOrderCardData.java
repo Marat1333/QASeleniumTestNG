@@ -2,45 +2,17 @@ package com.leroy.magmobile.ui.models.sales;
 
 import com.leroy.magmobile.ui.models.CardWidgetData;
 import com.leroy.magmobile.ui.models.search.ProductCardData;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = false)
+@Data
 public class SalesOrderCardData extends CardWidgetData {
 
     private ProductCardData productCardData;
     private Double selectedQuantity;
     private Double totalPrice;
     private Double availableTodayQuantity;
-
-    public ProductCardData getProductCardData() {
-        return productCardData;
-    }
-
-    public void setProductCardData(ProductCardData productCardData) {
-        this.productCardData = productCardData;
-    }
-
-    public Double getSelectedQuantity() {
-        return selectedQuantity;
-    }
-
-    public void setSelectedQuantity(Double selectedQuantity) {
-        this.selectedQuantity = selectedQuantity;
-    }
-
-    public Double getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(Double totalPrice) {
-        this.totalPrice = totalPrice;
-    }
-
-    public Double getAvailableTodayQuantity() {
-        return availableTodayQuantity;
-    }
-
-    public void setAvailableTodayQuantity(Double availableTodayQuantity) {
-        this.availableTodayQuantity = availableTodayQuantity;
-    }
 
     public boolean compareOnlyNotNullFields(SalesOrderCardData orderCardData) {
         if (orderCardData == null || orderCardData.getProductCardData() == null)
