@@ -992,7 +992,7 @@ public class SearchTest extends WebBaseSteps {
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
 
         //Step 1
-        log.step("Выбрать фильтр топ ЕМ, выполнить поиск по фразе " + searchPhrase + ", перейти на уровень товарной иерархии" +
+        step("Выбрать фильтр топ ЕМ, выполнить поиск по фразе " + searchPhrase + ", перейти на уровень товарной иерархии" +
                 "\"все отделы\", изменить группу фильтров на \"Вся гамма лм\", выбрать 1 отдел");
         searchProductPage.searchByPhrase(searchPhrase);
         searchProductPage.navigateToPreviousNomenclatureElement(allDepartments);
@@ -1001,7 +1001,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.choseNomenclature(chosenDepartmentId, null, null, null);
 
         //Step 2
-        log.step("Нажать на браузерную кнопку назад");
+        step("Нажать на браузерную кнопку назад");
         searchProductPage.navigateBack();
         searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, "Каталог товаров");
         searchProductPage.shouldSearchCriterionIs(true, searchPhrase);
@@ -1012,7 +1012,7 @@ public class SearchTest extends WebBaseSteps {
                 CatalogSearchParams.topEM + "true");
 
         //Step 3
-        log.step("Нажать на браузерную кнопку назад");
+        step("Нажать на браузерную кнопку назад");
         searchProductPage.navigateBack();
         searchProductPage.shouldSearchCriterionIs(true, searchPhrase);
         searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, "Каталог товаров");
@@ -1022,36 +1022,69 @@ public class SearchTest extends WebBaseSteps {
                 CatalogSearchParams.topEM + "true");
 
         //Step 4
-        log.step("Нажать на браузерную кнопку назад");
+        step("Нажать на браузерную кнопку назад");
         searchProductPage.navigateBack();
         searchProductPage.shouldCheckboxFilterHasCorrectCondition(false, SearchProductPage.Filters.TOP_EM);
         searchProductPage.shouldUrlNotContains(CatalogSearchParams.topEM);
 
         //Step 5
-        log.step("Нажать на браузерную кнопку назад");
+        step("Нажать на браузерную кнопку назад");
         searchProductPage.navigateBack();
         searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, EnvConstants.BASIC_USER_DEPARTMENT_ID);
         searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId + EnvConstants.BASIC_USER_DEPARTMENT_ID);
 
 
         //Step 6
-        log.step("Нажать на браузерную кнопку назад");
+        step("Нажать на браузерную кнопку назад");
         searchProductPage.navigateBack();
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(EnvConstants.BASIC_USER_DEPARTMENT_ID);
         searchProductPage.shouldSearchCriterionIs(false, searchPhrase);
         searchProductPage.shouldUrlNotContains(CatalogSearchParams.byNameLikeParamName);
 
         //Step 7
-        log.step("Нажать на браузерную кнопку вперед столько раз сколько нажали назад");
+        step("Нажать на браузерную кнопку вперед столько раз сколько нажали назад");
         searchProductPage.navigateNTimes(SearchProductPage.Direction.FORWARD, 5);
         searchProductPage.shouldFilterGroupHasBeenChosen(SearchProductPage.FilterFrame.ALL_GAMMA_LM);
         searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, chosenDepartmentId);
         searchProductPage.shouldSearchInputContainsText(searchPhrase);
         searchProductPage.shouldSearchCriterionIs(true, searchPhrase);
         searchProductPage.shouldCheckboxFilterHasCorrectCondition(false, SearchProductPage.Filters.TOP_EM);
-        searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId+chosenDepartmentId.replaceAll("0",""),
+        searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId + chosenDepartmentId.replaceAll("0", ""),
                 CatalogSearchParams.byNameLikeParamName);
         searchProductPage.shouldUrlNotContains(CatalogSearchParams.shopId);
+    }
+
+    @Test(description = "C22782967 Counter of used filters")
+    public void testUsedFilterCounter() throws Exception {
+        LocalDate avsDate = LocalDate.of(2020, 4, 9);
+        final String FIRST_SUPPLIER_CODE = "1001123001";
+        final String SECOND_SUPPLIER_CODE = "1002258015";
+
+        FiltersData filtersData = new FiltersData();
+        filtersData.setGammaFilters(new String[]{"Гамма А"});
+        filtersData.setCheckBoxes(new SearchProductPage.Filters[]{SearchProductPage.Filters.LIMITED_OFFER});
+        filtersData.setAvsDate(avsDate);
+        filtersData.setSuppliers(new String[]{FIRST_SUPPLIER_CODE, SECOND_SUPPLIER_CODE});
+
+        //Pre-conditions
+        SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
+
+        //Step 1
+        step("Выбрать несколько фильтров и скрыть часть выбранных фильтров по нажатию на кнопку \"еще\"");
+        searchProductPage.choseSeveralFilters(filtersData, false);
+        searchProductPage.showAllFilters();
+        searchProductPage.shouldFilterCounterHasCorrectCondition(3);
+
+        //Step 2
+        step("Отобразить все фильтры");
+        searchProductPage.showAllFilters();
+        searchProductPage.shouldFilterCounterHasCorrectCondition(0);
+
+        //Step 3
+        step("Скрыть фильтры и очистить все фильтры");
+        searchProductPage.showAllFilters();
+        searchProductPage.clearAllFilters();
+        searchProductPage.shouldFilterCounterHasCorrectCondition(0);
     }
 
 }

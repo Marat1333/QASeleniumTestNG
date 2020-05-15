@@ -186,4 +186,14 @@
         </classes>
     </test>
 
+    <test name="C22782967 Counter of used filters">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.SearchTest">
+                <methods>
+                    <include name="testUsedFilterCounter"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
 </suite>

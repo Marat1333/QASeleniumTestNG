@@ -21,6 +21,7 @@ import com.leroy.magportal.ui.webelements.commonelements.PuzComboBox;
 import com.leroy.magportal.ui.webelements.commonelements.PuzMultiSelectComboBox;
 import com.leroy.magportal.ui.webelements.searchelements.SupplierComboBox;
 import io.qameta.allure.Step;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -132,8 +133,8 @@ public class SearchProductPage extends MenuPage {
             refreshEveryTime = true)
     Button showAllFilters;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[text()='еще']/ancestor::button" +
-            "/following-sibling::div/span")
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[text()='еще']/ancestor::button[1]/following-sibling::" +
+            "div[contains(@class, 'counter')]/span", refreshEveryTime = true)
     Element filtersCounter;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[text()='ПОКАЗАТЬ ТОВАРЫ']" +
@@ -203,6 +204,9 @@ public class SearchProductPage extends MenuPage {
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'Select__container')][descendant::input[@placeholder='Топ пополнения']]",
             refreshEveryTime = true)
     PuzMultiSelectComboBox topComboBox;
+
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//form/div[2]", refreshEveryTime = true)
+    Element additionalFiltersArea;
 
     @Override
     public void waitForPageIsLoaded() {
@@ -433,7 +437,13 @@ public class SearchProductPage extends MenuPage {
 
     @Step("Нажать на кнопку 'ЕЩЕ' для просмотра всех фильтров")
     public SearchProductPage showAllFilters() {
-        showAllFilters.click();
+        if (additionalFiltersArea.isVisible()) {
+            showAllFilters.click();
+            additionalFiltersArea.waitForInvisibility();
+        }else {
+            showAllFilters.click();
+            additionalFiltersArea.waitForVisibility();
+        }
         return this;
     }
 
@@ -971,6 +981,18 @@ public class SearchProductPage extends MenuPage {
         } else {
             anAssert.isElementTextContainsIgnoringCase(allGammaContainer.getAttribute(attributeName), condition,
                     "группа фильтров \"Вся гамма ЛМ\" не выбрана");
+        }
+        return this;
+    }
+
+    @Step("Проверить, что счетчик фильтров равен {count}")
+    public SearchProductPage shouldFilterCounterHasCorrectCondition(int count){
+        if (count==0) {
+            anAssert.isElementNotVisible(filtersCounter);
+        }else if (count>0){
+            anAssert.isElementTextContains(filtersCounter, String.valueOf(count));
+        }else {
+            throw new IllegalArgumentException("count should be more than 0");
         }
         return this;
     }
