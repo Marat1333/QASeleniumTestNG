@@ -1076,11 +1076,21 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.shouldFilterCounterHasCorrectCondition(3);
 
         //Step 2
+        step("Перейти во фрейм группы фиьтров \"Вся гамма ЛМ\"");
+        searchProductPage.switchFiltersFrame(SearchProductPage.FilterFrame.ALL_GAMMA_LM);
+        searchProductPage.shouldFilterCounterHasCorrectCondition(0);
+
+        //Step 3
+        step("Перейти во фрейм группы фиьтров \"Мой магазин\"");
+        searchProductPage.switchFiltersFrame(SearchProductPage.FilterFrame.MY_SHOP);
+        searchProductPage.shouldFilterCounterHasCorrectCondition(3);
+
+        //Step 4
         step("Отобразить все фильтры");
         searchProductPage.showAllFilters();
         searchProductPage.shouldFilterCounterHasCorrectCondition(0);
 
-        //Step 3
+        //Step 5
         step("Скрыть фильтры и очистить все фильтры");
         searchProductPage.showAllFilters();
         searchProductPage.clearAllFilters();
