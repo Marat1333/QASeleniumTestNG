@@ -586,6 +586,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.switchFiltersFrame(SearchProductPage.FilterFrame.ALL_GAMMA_LM);
         searchProductPage.navigateToPreviousNomenclatureElement(allDepartments);
         searchProductPage.choseSeveralFilters(filtersData, true);
+        searchProductPage.shouldAllGammaFiltersHasCorrectCondition();
         ProductItemDataList ctmResponse = resultMap.get(0).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(ctmResponse, SearchProductPage.FilterFrame.ALL_GAMMA_LM,
                 SearchProductPage.ViewMode.EXTENDED);
