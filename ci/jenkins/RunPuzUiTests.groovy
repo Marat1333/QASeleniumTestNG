@@ -68,7 +68,7 @@ timestamps {
         }
 
         stage('Send notification') {
-            telegramMessage("Puz UI тесты. Результаты тут -> https://jenkins.lmru.adeo.com/job/lego-front/job/Puz2-UI-autotests/"+ env.BUILD_NUMBER +"/allure")
+            telegramMessage("Puz UI тесты. Результаты тут -> https://jenkins.lmru.adeo.com/job/lego-front/job/PUZ2-UI-autotests/"+ env.BUILD_NUMBER +"/allure")
         }
     }
 }
