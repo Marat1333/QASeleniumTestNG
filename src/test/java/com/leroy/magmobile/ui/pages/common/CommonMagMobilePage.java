@@ -14,6 +14,7 @@ public class CommonMagMobilePage extends BaseAppPage {
         super(context, false);
         shouldNotAnyErrorVisible();
         waitForPageIsLoaded();
+        shouldNotAnyErrorVisible();
     }
 
     @Override
