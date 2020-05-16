@@ -52,18 +52,16 @@ timestamps {
                 docker.image('maven:3.6.3-jdk-8-openj9').inside("-v android-maven-cache:/root/.m2 --privileged") {
                     dir('auto-tests') {
                         sh(getMvnStrRun())
-                        stash name: 'allure-results', includes: 'target/allure-results/*'
                     }
                 }
             } finally {
-                unstash 'allure-results'
                 stage('Generate Allure Reports') {
                     allure([
                             includeProperties: false,
                             jdk              : '',
                             properties       : [],
                             reportBuildPolicy: 'ALWAYS',
-                            results          : [[path: 'target/allure-results']]
+                            results          : [[path: 'auto-tests/target/allure-results']]
                     ])
                 }
             }
