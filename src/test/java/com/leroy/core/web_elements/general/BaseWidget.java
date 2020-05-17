@@ -6,6 +6,7 @@ import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.util.XmlUtil;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -58,7 +59,7 @@ public abstract class BaseWidget extends BaseWrapper {
     protected void initialWebElementIfNeeded(int timeout) {
         try {
             if (locator != null) {
-                if (webElement == null) {
+                if (webElement == null || isRefreshEveryTime()) {
                     initWebElement(timeout);
                 } else {
                     if (!isCacheLookup() && isStaleReference())
@@ -103,10 +104,10 @@ public abstract class BaseWidget extends BaseWrapper {
         return findChildElement(xpath, Element.class);
     }
 
-    public <T extends BaseWidget> T findChildElement(String xpath, Class<? extends BaseWidget> clazz) throws Exception {
+    public <T extends BaseWidget> T findChildElement(String xpath, Class<T> clazz) throws Exception {
         if (xpath.startsWith("."))
             xpath = xpath.replaceFirst(".", "");
-        return (T) clazz.getConstructor(WebDriver.class, CustomLocator.class)
+        return clazz.getConstructor(WebDriver.class, CustomLocator.class)
                 .newInstance(driver, new CustomLocator(By.xpath(getXpath() + xpath)));
     }
 
@@ -352,6 +353,4 @@ public abstract class BaseWidget extends BaseWrapper {
                         + ". Method: getRectangleJs() - " + e.getMessage());
         }
     }
-
-
 }

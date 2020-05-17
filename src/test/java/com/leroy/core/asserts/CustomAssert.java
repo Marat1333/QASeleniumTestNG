@@ -56,6 +56,14 @@ public class CustomAssert extends BaseCustomAssert {
         super.logIsElementTextContains(element, expectedText, pageSource, false);
     }
 
+    public void isElementTextContainsIgnoringCase(String actual, String expected, String desc) {
+        super.logIsElementTextContainsIgnoringCase(actual, expected, desc, false);
+    }
+
+    public void isElementTextNotContains(String actual, String expected, String desc) {
+        super.logIsElementTextNotContains(actual, expected, desc, false);
+    }
+
     public boolean isElementVisible(BaseWidget element, int timeout) {
         return super.logIsElementVisible(element, null, false, timeout);
     }

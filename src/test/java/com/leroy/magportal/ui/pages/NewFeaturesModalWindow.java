@@ -10,7 +10,8 @@ import org.openqa.selenium.WebDriver;
 public class NewFeaturesModalWindow extends BaseWidget {
 
     public NewFeaturesModalWindow(WebDriver driver) {
-        super(driver, new CustomLocator(By.xpath(MAIN_DIV_XPATH)));
+        super(driver, new CustomLocator(By.xpath(MAIN_DIV_XPATH),
+                "Модальное окно 'Что нового?'"));
     }
 
     private static final String MAIN_DIV_XPATH = "//div[contains(@class, 'WhatIsNewModal')]";

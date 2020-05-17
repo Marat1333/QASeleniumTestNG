@@ -3,14 +3,17 @@ package com.leroy.magportal.api;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.leroy.core.SessionData;
-import com.leroy.magmobile.api.clients.MagMobileClient;
+import com.leroy.core.configuration.Log;
+import com.leroy.magmobile.api.clients.*;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
+import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
+import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
-import com.leroy.magportal.api.clients.CatalogSearchClient;
 import io.qameta.allure.Step;
 import lombok.Setter;
+import org.apache.commons.lang.RandomStringUtils;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.ArrayList;
@@ -28,16 +31,106 @@ public class ApiClientProvider {
     private SessionData sessionData;
 
     @Inject
-    private Provider<CatalogSearchClient> catalogSearchClientProvider;
+    private Provider<com.leroy.magportal.api.clients.CatalogSearchClient> catalogSearchClientProvider;
+    @Inject
+    private Provider<CartClient> cartClientProvider;
+    @Inject
+    private Provider<CustomerClient> customerClientProvider;
+    @Inject
+    private Provider<EstimateClient> estimateClientProvider;
+    @Inject
+    private Provider<OrderClient> orderClientProvider;
+    @Inject
+    private Provider<SalesDocProductClient> salesDocProductClientProvider;
+    @Inject
+    private Provider<SalesDocSearchClient> salesDocSearchClientProvider;
+    @Inject
+    private Provider<TransferClient> salesDocTransferClientProvider;
+    @Inject
+    private Provider<SmsNotificationClient> smsNotificationClientProvider;
+    @Inject
+    private Provider<PrintPriceClient> printPriceClientProvider;
+    @Inject
+    private Provider<CatalogProductClient> catalogProductClientProvider;
+    @Inject
+    private Provider<PickingTaskClient> pickingTaskClientProvider;
+    @Inject
+    private Provider<ShopKladrClient> shopClientProvider;
+    @Inject
+    private Provider<LsAddressClient> lsAddressClientProvider;
+    @Inject
+    private Provider<RupturesClient> rupturesClientProvider;
+    @Inject
+    private Provider<SupportClient> supportClientProvider;
 
     private <J extends MagMobileClient> J getClient(Provider<J> provider) {
-        MagMobileClient cl = provider.get();
+        J cl = provider.get();
         cl.setSessionData(sessionData);
-        return (J) cl;
+        return cl;
     }
 
-    public CatalogSearchClient getCatalogSearchClient() {
+    public com.leroy.magportal.api.clients.CatalogSearchClient getCatalogSearchClient() {
         return getClient(catalogSearchClientProvider);
+    }
+
+    public CartClient getCartClient() {
+        return getClient(cartClientProvider);
+    }
+
+    public CustomerClient getCustomerClient() {
+        return getClient(customerClientProvider);
+    }
+
+    public EstimateClient getEstimateClient() {
+        return getClient(estimateClientProvider);
+    }
+
+    public OrderClient getOrderClient() {
+        return getClient(orderClientProvider);
+    }
+
+    public SalesDocProductClient getSalesDocProductClient() {
+        return getClient(salesDocProductClientProvider);
+    }
+
+    public SalesDocSearchClient getSalesDocSearchClient() {
+        return getClient(salesDocSearchClientProvider);
+    }
+
+    public TransferClient getTransferClient() {
+        return getClient(salesDocTransferClientProvider);
+    }
+
+    public SmsNotificationClient getSmsNotificationClient() {
+        return getClient(smsNotificationClientProvider);
+    }
+
+    public PrintPriceClient getPrintPriceClient() {
+        return getClient(printPriceClientProvider);
+    }
+
+    public CatalogProductClient getCatalogProductClient() {
+        return getClient(catalogProductClientProvider);
+    }
+
+    public PickingTaskClient getPickingTaskClient() {
+        return getClient(pickingTaskClientProvider);
+    }
+
+    public ShopKladrClient getShopClient() {
+        return getClient(shopClientProvider);
+    }
+
+    public LsAddressClient getLsAddressClient() {
+        return getClient(lsAddressClientProvider);
+    }
+
+    public RupturesClient getRupturesClient() {
+        return getClient(rupturesClientProvider);
+    }
+
+    public SupportClient getSupportClient() {
+        return getClient(supportClientProvider);
     }
 
 
@@ -88,6 +181,29 @@ public class ApiClientProvider {
     public List<String> getProductLmCodes(int necessaryCount) {
         List<ProductItemData> productItemResponseList = getProducts(necessaryCount, null);
         return productItemResponseList.stream().map(ProductItemData::getLmCode).collect(Collectors.toList());
+    }
+
+    @Step("Try to get nonexistent Pin Code")
+    public String getValidPinCode() {
+        int tryCount = 10;
+        for (int i = 0; i < tryCount; i++) {
+            String generatedPinCode;
+            do {
+                generatedPinCode = RandomStringUtils.randomNumeric(5);
+            } while (generatedPinCode.startsWith("9"));
+            SalesDocumentListResponse salesDocumentsResponse = getSalesDocSearchClient()
+                    .getSalesDocumentsByPinCodeOrDocId(generatedPinCode)
+                    .asJson();
+            if (salesDocumentsResponse.getTotalCount() == 0) {
+                Log.info("API: None documents found with PIN: " + generatedPinCode);
+                return generatedPinCode;
+            }
+            List<SalesDocumentResponseData> salesDocs = salesDocumentsResponse.getSalesDocuments();
+            if (!generatedPinCode.equals(salesDocs.get(0).getPinCode())) {
+                return generatedPinCode;
+            }
+        }
+        throw new RuntimeException("Couldn't find valid pin code for " + tryCount + " trying");
     }
 }
 

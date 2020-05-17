@@ -7,9 +7,9 @@ import com.leroy.magportal.ui.models.salesdoc.ShortSalesDocWebData;
 import com.leroy.magportal.ui.webelements.CardWebWidget;
 import org.openqa.selenium.WebDriver;
 
-public class ShortDocumentCardWidget extends CardWebWidget<ShortSalesDocWebData> {
+public class ShortCartEstimateDocumentCardWidget extends CardWebWidget<ShortSalesDocWebData> {
 
-    public ShortDocumentCardWidget(WebDriver driver, CustomLocator customLocator) {
+    public ShortCartEstimateDocumentCardWidget(WebDriver driver, CustomLocator customLocator) {
         super(driver, customLocator);
     }
 

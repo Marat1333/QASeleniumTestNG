@@ -140,7 +140,7 @@ public class SearchProductPage extends CommonMagMobilePage {
     }
 
     @Step("Введите {text} в поле поиска товара")
-    public SearchProductPage enterTextInSearchField(String text) {
+    public SearchProductPage enterTextInSearchField(String text) throws Exception {
         searchField.clearAndFill(text);
         hideKeyboard();
         return this;

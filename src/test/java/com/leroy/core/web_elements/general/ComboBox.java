@@ -9,9 +9,9 @@ import org.openqa.selenium.support.ui.Select;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Combobox extends BaseWidget {
+public class ComboBox extends BaseWidget {
 
-    public Combobox(WebDriver driver, CustomLocator locator) {
+    public ComboBox(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
     }
 

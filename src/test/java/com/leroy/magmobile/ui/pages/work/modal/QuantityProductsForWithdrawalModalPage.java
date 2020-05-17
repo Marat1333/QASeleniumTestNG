@@ -32,7 +32,7 @@ public class QuantityProductsForWithdrawalModalPage extends CommonMagMobilePage 
     /* ------------------------- ACTION STEPS -------------------------- */
 
     @Step("Ввести количество товара для отзыва - {quantity}")
-    public QuantityProductsForWithdrawalModalPage enterCountOfItems(String quantity) {
+    public QuantityProductsForWithdrawalModalPage enterCountOfItems(String quantity) throws Exception {
         quantityItemsFld.clearAndFill(quantity);
         return this;
     }

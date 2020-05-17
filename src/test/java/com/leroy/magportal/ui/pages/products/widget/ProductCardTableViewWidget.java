@@ -1,4 +1,4 @@
-package com.leroy.magportal.ui.webelements.widgets;
+package com.leroy.magportal.ui.pages.products.widget;
 
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
