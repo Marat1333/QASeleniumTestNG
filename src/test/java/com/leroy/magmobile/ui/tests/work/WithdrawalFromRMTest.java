@@ -24,28 +24,28 @@ public class WithdrawalFromRMTest extends AppBaseSteps {
                 MainProductAndServicesPage.class);
 
         // Step #1
-        log.step("Зайти в раздел Работа");
+        step("Зайти в раздел Работа");
         WorkPage workPage = mainProductAndServicesPage.goToWork()
                 .verifyRequiredElements();
 
         // Step #2
-        log.step("Нажать на иконку + рядом с Отзыв с RM");
+        step("Нажать на иконку + рядом с Отзыв с RM");
         StockProductsPage stockProductsPage = workPage.clickWithdrawalFromRMPlusIcon()
                 .shouldAnyProductAvailableOnPage();
 
         // Step #3
-        log.step("Выбрать первый товар, который поштучно хранится на складе");
+        step("Выбрать первый товар, который поштучно хранится на складе");
         ProductCardData selectedProductDataBefore = stockProductsPage.getPieceProductInfoByIndex(0);
         StockProductCardPage productCardPage = stockProductsPage.clickFirstPieceProduct()
                 .verifyRequiredElements();
 
         // Step #4
-        log.step("Нажать кнопку ОТОЗВАТЬ");
+        step("Нажать кнопку ОТОЗВАТЬ");
         QuantityProductsForWithdrawalModalPage modalPage = productCardPage.clickWithdrawalBtnForEnterQuantity();
         modalPage.verifyRequiredElements();
 
         // Step #5
-        log.step("Ввести количество товара для отзыва");
+        step("Ввести количество товара для отзыва");
         String numberForRM = String.valueOf(new Random().nextInt(11) + 1);
         WithdrawalOrderCardData orderCardDataBefore = new WithdrawalOrderCardData();
         selectedProductDataBefore.addAvailableQuantity(-Double.parseDouble(numberForRM));
@@ -56,48 +56,48 @@ public class WithdrawalFromRMTest extends AppBaseSteps {
                 .shouldWithdrawalButtonHasQuantity(numberForRM);
 
         // Step #6
-        log.step("Нажать кнопку ОТОЗВАТЬ");
+        step("Нажать кнопку ОТОЗВАТЬ");
         modalPage.clickSubmitBtn()
                 .verifyRequiredElements()
                 .shouldCountOfSelectedProductsIs(1)
                 .shouldSelectedProductIs(1, orderCardDataBefore);
 
         // Step #7
-        log.step("Нажать кнопку ДАЛЕЕ К ПАРАМЕТРАМ ЗАЯВКИ");
+        step("Нажать кнопку ДАЛЕЕ К ПАРАМЕТРАМ ЗАЯВКИ");
         OrderPage orderPage = stockProductsPage.clickSubmitBtn()
                 .verifyRequiredElements();
         String orderNumber = orderPage.getOrderNumber();
 
         // Step #8
-        log.step("Нажать на поле даты поставки и меняем дату и подтвердить изменение");
+        step("Нажать на поле даты поставки и меняем дату и подтвердить изменение");
         LocalDate testDate = LocalDate.now().plusDays(1);
         orderPage.editDeliveryDate(testDate)
                 .shouldDateFieldIs(testDate);
 
         // Step #9
-        log.step("Изменить ожидаемое время доставки и подтвердить его");
+        step("Изменить ожидаемое время доставки и подтвердить его");
         LocalTime timeForSelect = LocalTime.now().plusHours(1).plusMinutes(5);
         orderPage.editDeliveryTime(timeForSelect)
                 .shouldTimeFieldIs(timeForSelect);
 
         // Step #10
-        log.step("Ввести комментарий и подтвердить его");
+        step("Ввести комментарий и подтвердить его");
         String testText = RandomStringUtils.randomAlphanumeric(10);
         orderPage.editComment(testText)
                 .shouldCommentFieldIs(testText);
 
         // Step #11
-        log.step("Нажать кнопку ОТПРАВИТЬ ЗАЯВКУ");
+        step("Нажать кнопку ОТПРАВИТЬ ЗАЯВКУ");
         SubmittedWithdrawalOrderPage submittedWithdrawalOrderPage = orderPage.clickSubmitBtn()
                 .verifyRequiredElements();
 
         // Step #12
-        log.step("Нажать кнопку ПЕРЕЙТИ В СПИСОК ЗАЯВОК");
+        step("Нажать кнопку ПЕРЕЙТИ В СПИСОК ЗАЯВОК");
         OrdersListPage ordersListPage = submittedWithdrawalOrderPage.clickSubmitBtn()
                 .shouldOrderByIndexIs(1, orderNumber, null, "Создана");
 
         // Step #13
-        log.step("Открыть заявку и проверить заполненные поля и товары");
+        step("Открыть заявку и проверить заполненные поля и товары");
         OrderDetailsPage orderDetailsPage = ordersListPage.clickOrderByIndex(0)
                 .shouldFormDataIs("Торговый зал", testDate,
                         timeForSelect, testText)

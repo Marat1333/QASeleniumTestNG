@@ -78,24 +78,24 @@ public class EstimateTest extends SalesBaseTest {
                 MainSalesDocumentsPage.class);
 
         // Step 1
-        log.step("Нажать кнопку Оформить продажу");
+        step("Нажать кнопку Оформить продажу");
         SaleTypeModalPage modalPage = mainSalesDocumentsPage.clickCreateSalesDocumentButton();
         modalPage.verifyRequiredElementsWhenFromSalesDocuments();
 
         // Step 2
-        log.step("Выбрать параметр Смета");
+        step("Выбрать параметр Смета");
         EstimatePage estimatePage = modalPage.clickEstimateMenuItem();
         EstimatePage.PageState pageState = new EstimatePage.PageState()
                 .setCustomerIsSelected(false).setProductIsAdded(false);
         estimatePage.verifyRequiredElements(pageState);
 
         // Step 3
-        log.step("Нажмите на поле Клиенты");
+        step("Нажмите на поле Клиенты");
         SearchCustomerPage searchCustomerPage = estimatePage.clickCustomerField();
         searchCustomerPage.verifyRequiredElements();
 
         // Step 4
-        log.step("Введите номер телефона/ №карты клиента/ эл. почту");
+        step("Введите номер телефона/ №карты клиента/ эл. почту");
         CustomerData customerData = searchCustomerPage.selectSearchType(SearchCustomerPage.SearchType.BY_PHONE)
                 .enterTextInSearchField(firstCustomerPhone)
                 .getCustomerDataFromSearchListByIndex(1);
@@ -106,32 +106,32 @@ public class EstimateTest extends SalesBaseTest {
         estimatePage.shouldSelectedCustomerIs(customerData);
 
         // Step 5
-        log.step("Нажмите на кнопку +товары и услуги");
+        step("Нажмите на кнопку +товары и услуги");
         SearchProductPage searchProductPage = estimatePage.clickProductAndServiceButton();
         searchProductPage.verifyRequiredElements();
 
         // Step 6
-        log.step("Введите ЛМ код товара или название товара или отсканируйте товар");
+        step("Введите ЛМ код товара или название товара или отсканируйте товар");
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
         AddProduct35Page addProduct35Page = new AddProduct35Page(context);
         addProduct35Page.verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_ESTIMATE);
 
         // Step 7
-        log.step("Нажмите на Добавить в смету");
+        step("Нажмите на Добавить в смету");
         estimatePage = addProduct35Page.clickAddIntoEstimateButton();
         pageState = new EstimatePage.PageState()
                 .setCustomerIsSelected(true).setProductIsAdded(true);
         estimatePage.verifyRequiredElements(pageState);
 
         // Step 8
-        log.step("Нажмите на Создать");
+        step("Нажмите на Создать");
         String expectedTotalPrice = estimatePage.getTotalPrice();
         String documentNumber = estimatePage.getDocumentNumber(true);
         EstimateSubmittedPage estimateSubmittedPage = estimatePage.clickCreateButton()
                 .verifyRequiredElements();
 
         // Step 9
-        log.step("Нажать на Перейти в список документов");
+        step("Нажать на Перейти в список документов");
         SalesDocumentData expectedSalesDocument = new SalesDocumentData();
         expectedSalesDocument.setPrice(expectedTotalPrice);
         expectedSalesDocument.setDocumentState(SalesDocumentsConst.States.CONFIRMED.getUiVal());
@@ -141,7 +141,7 @@ public class EstimateTest extends SalesBaseTest {
         salesDocumentsPage.verifyRequiredElements()
                 .shouldSalesDocumentIsPresentAndDataMatches(expectedSalesDocument);
         // Post actions
-        log.step("(Доп. шаг) Найти и открыть созданную смету");
+        step("(Доп. шаг) Найти и открыть созданную смету");
         salesDocumentsPage.searchForDocumentByTextAndSelectIt(
                 expectedSalesDocument.getNumber());
         new EstimatePage(context);
@@ -156,12 +156,12 @@ public class EstimateTest extends SalesBaseTest {
                 .get(0).getProductCardData();
 
         // Step 1
-        log.step("Нажмите на мини-карточку любого товара в списке товаров сметы");
+        step("Нажмите на мини-карточку любого товара в списке товаров сметы");
         ActionWithProductCardModalPage modalPage = estimatePage.clickCardByIndex(1)
                 .verifyRequiredElements();
 
         // Step 2
-        log.step("Выберите параметр Подробнее о товаре");
+        step("Выберите параметр Подробнее о товаре");
         ProductDescriptionPage productDescriptionPage = modalPage.clickProductDetailsMenuItem();
         productDescriptionPage.verifyRequiredElements(false)
                 .shouldProductLMCodeIs(productCardData.getLmCode());
@@ -176,17 +176,17 @@ public class EstimateTest extends SalesBaseTest {
                 .get(0).getProductCardData(); // TODO мы должны из API брать эти данные
 
         // Step 1
-        log.step("Нажмите на мини-карточку любого товара в списке товаров сметы");
+        step("Нажмите на мини-карточку любого товара в списке товаров сметы");
         ActionWithProductCardModalPage modalPage = estimatePage.clickCardByIndex(1)
                 .verifyRequiredElements();
 
         // Step 2
-        log.step("Выберите параметр Изменить количество");
+        step("Выберите параметр Изменить количество");
         EditProduct35Page editProduct35Page = modalPage.clickChangeQuantityMenuItem();
         editProduct35Page.verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.SAVE);
 
         // Step 3
-        log.step("Измените количество товара");
+        step("Измените количество товара");
         String testEditQuantityValue = String.valueOf(new Random().nextInt(10) + 1);
         Double expectedTotalCost = Double.parseDouble(testEditQuantityValue) * productCardDataBefore.getPrice();
         editProduct35Page.enterQuantityOfProduct(testEditQuantityValue)
@@ -194,7 +194,7 @@ public class EstimateTest extends SalesBaseTest {
                 .shouldTotalPriceCalculateCorrectly();
 
         // Step 4
-        log.step("Нажмите на кнопку Сохранить");
+        step("Нажмите на кнопку Сохранить");
         estimatePage = editProduct35Page.clickSaveButton();
         SalesOrderCardData productCardDataAfter = estimatePage.getCardDataListFromPage()
                 .get(0); // TODO Заменить на ProductOrderData
@@ -218,12 +218,12 @@ public class EstimateTest extends SalesBaseTest {
         SalesOrderData testEstimateData = estimatePage.getEstimateDataFromPage();
 
         // Step 1
-        log.step("Нажмите на кнопку Действия со сметой");
+        step("Нажмите на кнопку Действия со сметой");
         ActionsWithEstimateModalPage modalPage = estimatePage.clickActionsWithEstimateButton();
         modalPage.verifyRequiredElements();
 
         // Step 2
-        log.step("Выберите параметр Преобразовать в корзину");
+        step("Выберите параметр Преобразовать в корзину");
         Basket35Page basket35Page = modalPage.clickTransformToBasketMenuItem();
         basket35Page.verifyRequiredElements(new Basket35Page.PageState().setProductIsAdded(true));
         basket35Page.shouldOrderDataIs(testEstimateData);
