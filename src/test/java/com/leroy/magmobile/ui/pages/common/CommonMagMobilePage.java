@@ -11,8 +11,9 @@ public class CommonMagMobilePage extends BaseAppPage {
     protected Context context;
 
     public CommonMagMobilePage(Context context) {
-        super(context);
-        //initContext(context);
+        super(context, false);
+        shouldNotAnyErrorVisible();
+        waitForPageIsLoaded();
         shouldNotAnyErrorVisible();
     }
 

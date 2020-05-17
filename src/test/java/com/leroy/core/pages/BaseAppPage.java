@@ -24,9 +24,13 @@ public abstract class BaseAppPage extends BasePage {
     @AppFindBy(xpath = "//android.widget.ProgressBar", cacheLookup = false, metaName = "Progress bar")
     private Element progressBar;
 
-    public BaseAppPage(TestContext context) {
-        super(context);
+    protected BaseAppPage(TestContext context, boolean isWaitForPageIsLoaded) {
+        super(context, isWaitForPageIsLoaded);
         androidDriver = (AndroidDriver) driver;
+    }
+
+    public BaseAppPage(TestContext context) {
+        this(context, true);
     }
 
     protected boolean isKeyboardVisible() {
@@ -64,7 +68,9 @@ public abstract class BaseAppPage extends BasePage {
     }
 
     protected void waitUntilProgressBarIsVisible() {
-        progressBar.waitForVisibility(tiny_timeout, Duration.ofMillis(300));
+        // Уменьшил до 1 секунды (не всегда появляется progress bar, лишнее ожидание из-за этого)
+        // Если будет не хватать 1 секунды, надо вернуть обратно на tiny_timeout)
+        progressBar.waitForVisibility(1, Duration.ofMillis(300));
     }
 
     protected void waitUntilProgressBarIsInvisible() {

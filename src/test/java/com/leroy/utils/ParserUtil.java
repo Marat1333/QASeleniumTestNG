@@ -74,6 +74,8 @@ public class ParserUtil {
      * @return String
      */
     public static String standardPhoneFmt(String phoneNumber) {
+        if (!phoneNumber.startsWith("+7"))
+            phoneNumber = "+7" + phoneNumber;
         return phoneNumber.replaceAll(" |-", "");
     }
 

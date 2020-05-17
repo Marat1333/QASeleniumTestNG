@@ -23,14 +23,19 @@ public abstract class BasePage extends BaseContainer {
 
     private static String screenshotPath = System.getProperty("output.path");
 
-    public BasePage(TestContext context) {
+    protected BasePage(TestContext context, boolean isWaitForPageIsLoaded) {
         super(context.getDriver());
         this.log = context.getLog();
         this.softAssert = context.getSoftAssert();
         this.anAssert = context.getAnAssert();
         initContext(context);
         initElements();
-        waitForPageIsLoaded();
+        if (isWaitForPageIsLoaded)
+            waitForPageIsLoaded();
+    }
+
+    public BasePage(TestContext context) {
+        this(context, true);
     }
 
     public void initContext(TestContext context) {

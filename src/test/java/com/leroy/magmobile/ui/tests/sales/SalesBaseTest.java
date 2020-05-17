@@ -8,6 +8,7 @@ import com.leroy.core.api.Module;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.ApiClientProvider;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
+import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
@@ -32,6 +33,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -60,7 +62,8 @@ public class SalesBaseTest extends AppBaseSteps {
     // Получить ЛМ код для обычного продукта без специфичных опций
     protected List<String> getAnyLmCodesProductWithoutSpecificOptions(
             int necessaryCount) {
-        return clientProvider.getProductLmCodes(necessaryCount);
+        return clientProvider.getProducts(necessaryCount, false, false)
+                .stream().map(ProductItemData::getLmCode).collect(Collectors.toList());
     }
 
     protected String getAnyLmCodeProductWithoutSpecificOptions() {

@@ -5,6 +5,7 @@
     <suite-files>
         <suite-file path="areas/SearchSuite.xml"/>
         <suite-file path="areas/ClientSuite.xml"/>
+        <suite-file path="areas/EstimateSuite.xml"/>
     </suite-files>
 
 </suite>

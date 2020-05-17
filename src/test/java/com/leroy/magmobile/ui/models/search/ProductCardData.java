@@ -1,7 +1,11 @@
 package com.leroy.magmobile.ui.models.search;
 
 import com.leroy.magmobile.ui.models.CardWidgetData;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = false)
+@Data
 public class ProductCardData extends CardWidgetData {
 
     private String lmCode;
@@ -19,64 +23,8 @@ public class ProductCardData extends CardWidgetData {
         this.lmCode = lmCode;
     }
 
-    public String getLmCode() {
-        return lmCode;
-    }
-
-    public void setLmCode(String lmCode) {
-        this.lmCode = lmCode;
-    }
-
-    public String getBarCode() {
-        return barCode;
-    }
-
-    public void setBarCode(String barCode) {
-        this.barCode = barCode;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public Double getAvailableQuantity() {
-        return availableQuantity;
-    }
-
-    public void setAvailableQuantity(Double availableQuantity) {
-        this.availableQuantity = availableQuantity;
-    }
-
     public void addAvailableQuantity(Double availableQuantity) {
         this.availableQuantity += availableQuantity;
-    }
-
-    public String getPriceUnit() {
-        return priceUnit;
-    }
-
-    public void setPriceUnit(String priceUnit) {
-        this.priceUnit = priceUnit;
-    }
-
-    public Boolean isHasAvailableStock() {
-        return hasAvailableStock;
-    }
-
-    public void setHasAvailableStock(Boolean hasAvailableStock) {
-        this.hasAvailableStock = hasAvailableStock;
     }
 
     public boolean compareOnlyNotNullFields(ProductCardData cardData) {
@@ -86,7 +34,7 @@ public class ProductCardData extends CardWidgetData {
                 equalsIfRightNotNull(barCode, cardData.getBarCode()) &&
                 equalsIfRightNotNull(name, cardData.getName()) &&
                 equalsIfRightNotNull(price, cardData.getPrice()) &&
-                equalsIfRightNotNull(hasAvailableStock, cardData.isHasAvailableStock()) &&
+                equalsIfRightNotNull(hasAvailableStock, cardData.getHasAvailableStock()) &&
                 equalsIfRightNotNull(availableQuantity, cardData.getAvailableQuantity()) &&
                 equalsIfRightNotNull(priceUnit, cardData.getPriceUnit());
     }

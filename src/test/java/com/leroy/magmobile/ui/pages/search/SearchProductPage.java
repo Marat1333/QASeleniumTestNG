@@ -15,7 +15,6 @@ import com.leroy.magmobile.ui.models.TextViewData;
 import com.leroy.magmobile.ui.models.search.ProductCardData;
 import com.leroy.magmobile.ui.models.search.ServiceCardData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.sales.AddProductPage;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.widget.SearchProductAllGammaCardWidget;
@@ -499,12 +498,20 @@ public class SearchProductPage extends CommonMagMobilePage {
         if (serviceCardDataList.size() != serviceData.size()) {
             throw new AssertionError("Page size param should be equals to maxEntityCount");
         }
-        anAssert.isTrue(serviceCardDataList.equals(serviceData), "Товары не совпадают");
+        for (int i = 0; i < serviceCardDataList.size(); i++) {
+            ServiceCardData actualService = serviceCardDataList.get(i);
+            ServiceItemData expectedService = serviceData.get(i);
+            softAssert.isEquals(actualService.getLmCode(), expectedService.getLmCode(),
+                    "ЛМ код товаров не сопадает");
+            softAssert.isEquals(actualService.getName(), expectedService.getTitle(),
+                    "Названия товаров не совпадают");
+        }
+        softAssert.verifyAll();
         return this;
     }
 
     @Step("Проверить, что история поиска отображается")
-    public SearchProductPage shouldSearchHistoryBeVisible(){
+    public SearchProductPage shouldSearchHistoryBeVisible() {
         anAssert.isElementVisible(searchHistoryScrollView);
         return this;
     }

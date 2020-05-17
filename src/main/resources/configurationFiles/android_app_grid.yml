@@ -4,7 +4,7 @@
 settings:
   platform: linux
   browser: android_app
-  host: https://moon-e2e-x2.apps.lmru.tech
+  host: https://moon-e2e.apps.lmru.tech
   #build: 1.0.0 # Build version for NativeApps or run id for browser tests
   timeout: 30 # default wait timeout in seconds
 
@@ -32,7 +32,7 @@ capabilities:
       #deviceOrientation: portrait
       autoAcceptAlerts: true
       automationName: uiautomator2
-      app: https://art.lmru.tech/generic-local-lego-front/apk/LMLF-1.7.2-TEST-b77-WITHOUT_GAP.apk
+      app: https://art.lmru.tech/generic-local-lego-front/apk/LMLF-1.8.13-TEST-b78-WITHOUT_GAP.apk
       enableVNC: true
       enableVideo: false
       env:

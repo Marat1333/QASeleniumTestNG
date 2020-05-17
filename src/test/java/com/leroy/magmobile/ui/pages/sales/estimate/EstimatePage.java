@@ -284,11 +284,9 @@ public class EstimatePage extends CommonMagMobilePage {
             softAssert.isEquals(actualCustomerData.getCardType(), expectedCustomerData.getCardType(),
                     "Тип карты выбранного клиента неверен");
         if (expectedCustomerData.getPhone() != null) {
-            String actualPhone = actualCustomerData.getPhone().replaceAll(" |-", "");
+            String actualPhone = ParserUtil.standardPhoneFmt(actualCustomerData.getPhone());
             String expectedPhone = expectedCustomerData.getPhone();
-            if (!expectedPhone.startsWith("+7"))
-                expectedPhone = "+7" + expectedPhone.replaceAll(" |-", "");
-            softAssert.isEquals(actualPhone, expectedPhone,
+            softAssert.isEquals(actualPhone, ParserUtil.standardPhoneFmt(expectedPhone),
                     "Телефон выбранного клиента неверен");
         }
         if (expectedCustomerData.getEmail() != null)

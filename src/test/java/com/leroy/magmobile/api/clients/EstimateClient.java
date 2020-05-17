@@ -78,10 +78,9 @@ public class EstimateClient extends MagMobileClient {
     }
 
     @Step("Make status DELETED for estimateId={estimateId}")
-    public Response<JsonNode> sendRequestDelete(String estimateId, int documentVersion) {
+    public Response<JsonNode> sendRequestDelete(String estimateId) {
         Map<String, String> body = new HashMap<>();
         body.put("status", SalesDocumentsConst.States.DELETED.getApiVal());
-        body.put("documentVersion", String.valueOf(documentVersion));
         return execute(new EstimateChangeStatusPut()
                 .bearerAuthHeader(sessionData.getAccessToken())
                 .setEstimateId(estimateId)
@@ -155,7 +154,8 @@ public class EstimateClient extends MagMobileClient {
     }
 
     @Step("Check that Response body matches expectedData")
-    public EstimateClient assertThatGetResponseMatches(Response<EstimateData> resp, EstimateData expectedData) {
+    public EstimateClient assertThatGetResponseMatches(
+            Response<EstimateData> resp, EstimateData expectedData, ResponseType responseType) {
         assertThatResponseIsOk(resp);
         EstimateData actualData = resp.asJson();
         assertThat("FullDocId", actualData.getFullDocId(), equalTo(expectedData.getFullDocId()));
@@ -173,14 +173,21 @@ public class EstimateClient extends MagMobileClient {
             CartEstimateProductOrderData actualProduct = actualData.getProducts().get(i);
             CartEstimateProductOrderData expectedProduct = expectedData.getProducts().get(i);
             shortVerifyProducts(i, actualProduct, expectedProduct);
-            assertThat(String.format("Product #%s - barCode", i + 1),
-                    actualProduct.getBarCode(), is(expectedProduct.getBarCode()));
-            assertThat(String.format("Product #%s - priceCategory", i + 1),
-                    actualProduct.getBarCode(), not(nullValue()));
+            if (responseType.equals(ResponseType.GET)) {
+                assertThat(String.format("Product #%s - barCode", i + 1),
+                        actualProduct.getBarCode(), is(expectedProduct.getBarCode()));
+                assertThat(String.format("Product #%s - priceCategory", i + 1),
+                        actualProduct.getBarCode(), not(nullValue()));
+            }
             assertThat(String.format("Product #%s - lineId", i + 1),
                     actualProduct.getLineId(), is(expectedProduct.getLineId()));
         }
         return this;
+    }
+
+    public EstimateClient assertThatGetResponseMatches(
+            Response<EstimateData> resp, EstimateData expectedData) {
+        return assertThatGetResponseMatches(resp, expectedData, ResponseType.GET);
     }
 
     @Step("Check that Response body has 'Result - OK'")

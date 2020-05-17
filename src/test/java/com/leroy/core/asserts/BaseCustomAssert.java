@@ -65,19 +65,21 @@ public abstract class BaseCustomAssert {
     }
 
     protected void logIsEquals(Object actual, Object expected, String desc, boolean isSoft) {
-        String actualResultText;
-        if (desc.contains("%s"))
-            actualResultText = String.format(desc, actual.toString());
-        else
-            actualResultText = desc + " Актуальное значение: " + actual.toString();
-        if (!actual.equals(expected)) {
-            addResultsToCurrentStepAndThrowAssertException(
-                    actualResultText, "Ожидаемое значение: " + expected.toString());
+        if (actual != null || expected != null) {
+            String actualResultText;
+            if (desc.contains("%s"))
+                actualResultText = String.format(desc, actual.toString());
+            else
+                actualResultText = desc + " Актуальное значение: " + actual.toString();
+            if (!actual.equals(expected)) {
+                addResultsToCurrentStepAndThrowAssertException(
+                        actualResultText, "Ожидаемое значение: " + expected.toString());
+            }
+            if (isSoft)
+                softAssert.assertEquals(actual, expected, actualResultText);
+            else
+                Assert.assertEquals(actual, expected, desc);
         }
-        if (isSoft)
-            softAssert.assertEquals(actual, expected, actualResultText);
-        else
-            Assert.assertEquals(actual, expected, desc);
     }
 
     protected void logIsNotEquals(Object actual, Object expected, String desc, boolean isSoft) {
