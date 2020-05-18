@@ -1,14 +1,19 @@
 package com.leroy.magportal.ui.pages.products;
 
 import com.leroy.core.annotations.WebFindBy;
+import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.ui.Context;
+import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
+import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
 import com.leroy.magportal.ui.webelements.commonelements.PriceContainer;
 import com.leroy.magportal.ui.pages.products.widget.ExtendedProductCardWidget;
 import com.leroy.magportal.ui.pages.products.widget.ShopCardWidget;
+import io.qameta.allure.Step;
+import org.openqa.selenium.By;
 
 public class ExtendedProductCardPage extends ProductCardPage {
     public ExtendedProductCardPage(Context context) {
@@ -85,7 +90,6 @@ public class ExtendedProductCardPage extends ProductCardPage {
 
     /*private PriceContainer getHiddenRecommendedPrice() {
         hiddenRecommendedPrice.click();
-        waitUntilContentHasChanged(getPageSource());
         initElements(new CustomLocator(By.xpath(hiddenRecommendedPrice.getXpath())));
         return hiddenRecommendedPrice;
     }
@@ -93,7 +97,7 @@ public class ExtendedProductCardPage extends ProductCardPage {
     private PriceContainer getHiddenPurchasePrice() {
         hiddenPurchasingPrice.click();
         return hiddenPurchasingPrice;
-    }
+    }*/
 
     @Step("перейти во вкладку с дополнительной информацией")
     public ExtendedProductCardPage switchExtraInfoTabs(Tabs tab) {
@@ -141,7 +145,7 @@ public class ExtendedProductCardPage extends ProductCardPage {
     public ExtendedProductCardPage showAllSpecifications() {
         showAllSpecifications.click();
         return this;
-    }*/
+    }
 
     @Override
     public ExtendedProductCardPage verifyRequiredElements() {

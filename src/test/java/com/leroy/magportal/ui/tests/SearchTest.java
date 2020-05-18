@@ -980,7 +980,6 @@ public class SearchTest extends WebBaseSteps {
         productCardPage = searchProductPage.navigateToProductCart(lmCode, SearchProductPage.FilterFrame.ALL_GAMMA_LM,
                 SearchProductPage.ViewMode.LIST);
         productCardPage.verifyRequiredElements();
-
     }
 
 }

@@ -221,6 +221,15 @@ public class SearchProductPage extends MenuPage {
         return this;
     }
 
+    @Step("Перейти в карточку товара по {lmCode}")
+    public <T> T searchProductCardByLmCode(String lmCode, FilterFrame frame) throws Exception {
+        if (lmCode.length()!=8){
+            throw new IllegalArgumentException("Wrong lmCode length");
+        }
+        switchFiltersFrame(frame);
+        return this.searchByPhrase(lmCode);
+    }
+
     @Step("Перейти в карточку продукта {lmCode}")
     public <T> T navigateToProductCart(String lmCode, FilterFrame frame, ViewMode viewMode) throws Exception {
         Set<String> windows = driver.getWindowHandles();
@@ -322,12 +331,19 @@ public class SearchProductPage extends MenuPage {
     public SearchProductPage switchFiltersFrame(FilterFrame frame) {
         String attributeValue;
         String attributeName = "className";
+        String condition = "active";
         if (frame.equals(FilterFrame.MY_SHOP)) {
             attributeValue = myShopContainer.getAttribute(attributeName);
+            if (attributeValue.contains(condition)){
+                return this;
+            }
             myShopFilterBtn.click();
             myShopContainer.waitUntilAttributeIsEqual(attributeName, attributeValue);
         } else {
             attributeValue = allGammaContainer.getAttribute(attributeName);
+            if (attributeValue.contains(condition)){
+                return this;
+            }
             allGammaFilterBtn.click();
             allGammaContainer.waitUntilAttributeIsEqual(attributeName, attributeValue);
         }
