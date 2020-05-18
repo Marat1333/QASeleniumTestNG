@@ -1079,7 +1079,7 @@ public class SearchTest extends WebBaseSteps {
 
         //Step 1
         step("Выбрать несколько фильтров и скрыть часть выбранных фильтров по нажатию на кнопку \"еще\"");
-        searchProductPage.choseSeveralFilters(filtersData, false);
+        searchProductPage.choseSeveralFilters(filtersData, true);
         searchProductPage.showAllFilters();
         searchProductPage.shouldFilterCounterHasCorrectCondition(3);
 
