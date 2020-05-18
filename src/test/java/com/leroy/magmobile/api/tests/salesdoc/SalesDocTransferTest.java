@@ -14,12 +14,15 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.time.ZonedDateTime;
 import java.util.Collections;
+import java.util.List;
 
 public class SalesDocTransferTest extends BaseProjectApiTest {
 
     private TransferClient transferClient;
 
     private TransferSalesDocData transferSalesDocData;
+
+    private List<String> productLmCodes;
 
     @Override
     protected boolean isNeedAccessToken() {
@@ -31,11 +34,15 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
         transferClient = apiClientProvider.getTransferClient();
     }
 
+    @BeforeClass
+    private void findProducts() {
+        productLmCodes = apiClientProvider.getProductLmCodes(2);
+    }
+
     @Test(description = "C3248457 SalesDoc transfer create POST")
     public void testSalesDocTransferCreatePOST() {
         // Prepare Test Data
-        String productLmCode =
-                apiClientProvider.getProductLmCodes(1).get(0);
+        String productLmCode = productLmCodes.get(0);
 
         TransferProductOrderData productOrderData = new TransferProductOrderData();
         productOrderData.setLmCode(productLmCode);
@@ -70,7 +77,7 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
             throw new IllegalArgumentException("Transfer SalesDoc hasn't been created");
         }
         TransferProductOrderData productOrderData = new TransferProductOrderData();
-        productOrderData.setLmCode("82234002");
+        productOrderData.setLmCode(productLmCodes.get(1));
         productOrderData.setOrderedQuantity(4);
 
         TransferSalesDocData expectedDocument = new TransferSalesDocData();
