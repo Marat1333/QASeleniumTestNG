@@ -15,9 +15,6 @@ public class CartPage extends CartEstimatePage {
         super(context);
     }
 
-    /*@WebFindBy(xpath = "//div[contains(@class,'cart__group')]/div[contains(@class,'SalesDocProduct')]", clazz = )
-    ElementList<Element> productWidgets;*/
-
     @WebFindBy(xpath = "//button[descendant::span[text()='Создать корзину']]",
             metaName = "Текст кнопки 'Создать корзину'")
     Element createCartBtn;
