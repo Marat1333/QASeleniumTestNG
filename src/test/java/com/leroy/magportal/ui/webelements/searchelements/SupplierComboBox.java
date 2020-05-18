@@ -44,6 +44,7 @@ public class SupplierComboBox extends PuzMultiSelectComboBox {
     @WebFindBy(xpath = ".//div[contains(@class, 'Spinner-active')]")
     Element loadingSpinner;
 
+
     public void searchSupplier(String value) {
         open();
         if (!searchString.getText().isEmpty()) {
