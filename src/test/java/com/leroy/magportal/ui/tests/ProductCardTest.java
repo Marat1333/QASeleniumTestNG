@@ -1,13 +1,13 @@
 package com.leroy.magportal.ui.tests;
 
 import com.google.inject.Inject;
-import com.leroy.constants.EnvConstants;
-import com.leroy.core.SessionData;
 import com.leroy.magmobile.api.ApiClientProvider;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magportal.ui.WebBaseSteps;
+import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
+import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
 import com.leroy.magportal.ui.pages.products.ExtendedProductCardPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage.FilterFrame;
@@ -20,17 +20,16 @@ public class ProductCardTest extends WebBaseSteps {
     @Inject
     private ApiClientProvider apiClientProvider;
 
+    private String lmCode;
+
     @BeforeMethod
     private void precondition() throws Exception {
         searchProductPage = loginAndGoTo(SearchProductPage.class);
+        lmCode = getRandomLmCode();
     }
 
-    private static <T> T navigateToNeededCard(String lmCode, FilterFrame frame) throws Exception {
-        if (frame.equals(FilterFrame.MY_SHOP)) {
-            return (T) searchProductPage.<ExtendedProductCardPage>searchProductCardByLmCode(lmCode, frame);
-        }else {
-            return (T) searchProductPage.<ProductCardTest>searchProductCardByLmCode(lmCode, frame);
-        }
+    private <T> T navigateToNeededCard(String lmCode, FilterFrame frame) throws Exception {
+        return searchProductPage.searchProductCardByLmCode(lmCode, frame);
     }
 
     private String getRandomLmCode() {
@@ -42,7 +41,15 @@ public class ProductCardTest extends WebBaseSteps {
 
     @Test(description = "C23388813 add Product to cart")
     public void testAddProductToCart() throws Exception {
-        ExtendedProductCardPage extendedProductCardPage = navigateToNeededCard(getRandomLmCode(), FilterFrame.MY_SHOP);
-        extendedProductCardPage.addProductToCart();
+        ExtendedProductCardPage extendedProductCardPage = navigateToNeededCard(lmCode, FilterFrame.MY_SHOP);
+        CartPage cartPage = extendedProductCardPage.addProductToCart();
+        cartPage.shouldAnyOrderContainsLmCode(lmCode);
+    }
+
+    @Test(description = "C23388814 add Product to estimate")
+    public void testAddProductToEstimate() throws Exception {
+        ExtendedProductCardPage extendedProductCardPage = navigateToNeededCard(lmCode, FilterFrame.MY_SHOP);
+        EstimatePage estimatePage = extendedProductCardPage.addProductToEstimate();
+        estimatePage.shouldAnyOrderContainsLmCode(lmCode);
     }
 }

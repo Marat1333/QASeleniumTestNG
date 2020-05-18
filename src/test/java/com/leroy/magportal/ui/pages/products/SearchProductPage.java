@@ -267,11 +267,11 @@ public class SearchProductPage extends MenuPage {
 
     @Step("Перейти в карточку товара по {lmCode}")
     public <T> T searchProductCardByLmCode(String lmCode, FilterFrame frame) throws Exception {
-        if (lmCode.length()!=8){
+        if (lmCode.length() != 8) {
             throw new IllegalArgumentException("Wrong lmCode length");
         }
         switchFiltersFrame(frame);
-        return this.searchByPhrase(lmCode);
+        return searchByPhrase(lmCode);
     }
 
     @Step("Перейти в карточку продукта {lmCode}")
@@ -350,10 +350,11 @@ public class SearchProductPage extends MenuPage {
         searchInput.clearFillAndSubmit(value);
         waitForSpinnerAppearAndDisappear();
         if (value.matches("\\d{8}") || value.matches("\\d{13}")) {
+            boolean isMyShop = myShopContainer.getAttribute("className").contains("active");
             anAssert.isTrue(driver.getWindowHandles().size() > windows.size(),
                     "Должно было открыться новое окно с карточкой товара");
             this.switchToNewWindow(windows);
-            return (T) new ProductCardPage(context);
+            return isMyShop ? (T) new ExtendedProductCardPage(context) : (T) new ProductCardPage(context);
         }
         return (T) this;
     }
@@ -378,14 +379,14 @@ public class SearchProductPage extends MenuPage {
         String condition = "active";
         if (frame.equals(FilterFrame.MY_SHOP)) {
             attributeValue = myShopContainer.getAttribute(attributeName);
-            if (attributeValue.contains(condition)){
+            if (attributeValue.contains(condition)) {
                 return this;
             }
             myShopFilterBtn.click();
             myShopContainer.waitUntilAttributeIsEqual(attributeName, attributeValue);
         } else {
             attributeValue = allGammaContainer.getAttribute(attributeName);
-            if (attributeValue.contains(condition)){
+            if (attributeValue.contains(condition)) {
                 return this;
             }
             allGammaFilterBtn.click();
@@ -489,7 +490,7 @@ public class SearchProductPage extends MenuPage {
     }
 
     @Step("Ввести дату AVS вручную")
-    public SearchProductPage enterAvsDateManually(LocalDate date) throws Exception {
+    public SearchProductPage enterAvsDateManually(LocalDate date) {
         avsCalendarInputBox.enterDateInField(date);
         return this;
     }
@@ -516,7 +517,7 @@ public class SearchProductPage extends MenuPage {
     }
 
     @Step("Выбрать фильтр по поставщику")
-    public SearchProductPage choseSupplier(boolean closeAfter, String... values) throws Exception {
+    public SearchProductPage choseSupplier(boolean closeAfter, String... values) {
         if (!supplierComboBox.isVisible()) {
             showAllFilters.click();
         }

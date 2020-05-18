@@ -18,6 +18,7 @@ import org.openqa.selenium.By;
 public class ExtendedProductCardPage extends ProductCardPage {
     public ExtendedProductCardPage(Context context) {
         super(context);
+        waitForPageIsLoaded();
     }
 
     public enum Tabs {
@@ -82,10 +83,10 @@ public class ExtendedProductCardPage extends ProductCardPage {
     @WebFindBy(xpath = "//div[contains(@class,'Catalog-NearestShopList__item_container')]", clazz = ShopCardWidget.class)
     ElementList<ShopCardWidget> shopsList;
 
-    @WebFindBy(xpath = "//span[text()='в корзину']")
+    @WebFindBy(xpath = "//span[text()='в корзину']/ancestor::button[1]")
     Button addProductToCart;
 
-    @WebFindBy(xpath = "//span[text()='в смету']")
+    @WebFindBy(xpath = "//span[text()='в смету']/ancestor::button[1]")
     Button addProductToEstimate;
 
     /*private PriceContainer getHiddenRecommendedPrice() {

@@ -71,8 +71,8 @@ public class EstimatePage extends CartEstimatePage {
 
     @Override
     public void waitForPageIsLoaded() {
+        super.waitForPageIsLoaded();
         anAssert.isElementVisible(headerLbl, timeout);
-        waitForSpinnerDisappear();
     }
 
     // Grab information from page

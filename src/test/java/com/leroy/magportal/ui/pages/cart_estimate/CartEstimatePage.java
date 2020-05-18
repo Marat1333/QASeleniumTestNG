@@ -46,6 +46,11 @@ public abstract class CartEstimatePage extends
         return documentCardList;
     }
 
+    @Override
+    public void waitForPageIsLoaded() {
+        documentCardList.waitUntilAtLeastOneElementIsPresent();
+    }
+
     // Customer area
     @WebFindBy(xpath = "//button[descendant::span[text()='Добавить клиента']]",
             metaName = "Текст на кнопке 'Добавить клиента'")
@@ -165,6 +170,15 @@ public abstract class CartEstimatePage extends
             val = "+7" + val;
         softAssert.isEquals(selectedCustomerCard.getPhone(),
                 val, "Ожидался другой номер телефона у выбранного клиента");
+        return this;
+    }
+
+    @Step("Проверить, что любой заказ содержит {lmCode}")
+    public CartEstimatePage shouldAnyOrderContainsLmCode(String lmCode){
+        List<ProductOrderCardWebData> productData = getProductDataList();
+        for (ProductOrderCardWebData eachProduct : productData){
+            anAssert.isEquals(eachProduct.getLmCode(), lmCode,"Лм коды отличаются");
+        }
         return this;
     }
 

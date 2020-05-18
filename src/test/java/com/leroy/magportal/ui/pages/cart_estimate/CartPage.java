@@ -2,6 +2,7 @@ package com.leroy.magportal.ui.pages.cart_estimate;
 
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.models.salesdoc.OrderWebData;
 import com.leroy.magportal.ui.pages.cart_estimate.widget.OrderPuzWidget;
@@ -13,6 +14,9 @@ public class CartPage extends CartEstimatePage {
     public CartPage(Context context) {
         super(context);
     }
+
+    /*@WebFindBy(xpath = "//div[contains(@class,'cart__group')]/div[contains(@class,'SalesDocProduct')]", clazz = )
+    ElementList<Element> productWidgets;*/
 
     @WebFindBy(xpath = "//button[descendant::span[text()='Создать корзину']]",
             metaName = "Текст кнопки 'Создать корзину'")
@@ -28,6 +32,11 @@ public class CartPage extends CartEstimatePage {
     @Override
     protected CardWebWidgetList<OrderPuzWidget, OrderWebData> orders() {
         return orders;
+    }
+
+    @Override
+    public void waitForPageIsLoaded() {
+        super.waitForPageIsLoaded();
     }
 
     // Grab info
