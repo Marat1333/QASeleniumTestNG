@@ -2,7 +2,6 @@ package com.leroy.magportal.ui.pages.products;
 
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.annotations.WebFindBy;
-import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
@@ -22,7 +21,6 @@ import com.leroy.magportal.ui.webelements.commonelements.PuzComboBox;
 import com.leroy.magportal.ui.webelements.commonelements.PuzMultiSelectComboBox;
 import com.leroy.magportal.ui.webelements.searchelements.SupplierComboBox;
 import io.qameta.allure.Step;
-import org.openqa.selenium.By;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -237,6 +235,7 @@ public class SearchProductPage extends MenuPage {
         BACK
     }
 
+    @Step("Используя браузерную навигацию, перейти в заданном направлении {n} раз")
     public void navigateNTimes(Direction direction, int n) throws Exception {
         if (direction.equals(Direction.FORWARD)) {
             for (int i = 0; i < n; i++) {
@@ -1011,32 +1010,30 @@ public class SearchProductPage extends MenuPage {
     public SearchProductPage shouldAvsDateComboBoxHasCorrectCondition() throws Exception {
         if (avsCheckBox.isChecked()) {
             anAssert.isElementVisible(avsCalendarInputBox);
-        }else{
+        } else {
             anAssert.isElementNotVisible(avsCalendarInputBox);
         }
         return this;
     }
 
     @Step("Проверить, что недоступны фильтры: топ пополнения, топ ЕМ, есть теор. запас, поставщик")
-    public SearchProductPage shouldAllGammaFiltersHasCorrectCondition()throws Exception{
-        if (!supplierComboBox.isVisible()){
+    public SearchProductPage shouldAllGammaFiltersHasCorrectCondition() {
+        if (!supplierComboBox.isVisible()) {
             showAllFilters();
         }
-        softAssert.isFalse(new Button(driver,new CustomLocator(By.xpath(topComboBox.findChildElement(".//input")
-                .getXpath()))).isEnabled(), "top comboBox is enabled");
-        softAssert.isFalse(new Button(driver,new CustomLocator(By.xpath(supplierComboBox.findChildElement(".//input")
-                .getXpath()))).isEnabled(), "supplier comboBox is enabled");
-        softAssert.isFalse(hasAvailableStockButton.isEnabled(),"hasAvailableStock is enabled");
-        softAssert.isFalse(topEmButton.isEnabled(),"top EM is enabled");
+        softAssert.isFalse(topComboBox.isEnabled(), "top comboBox is enabled");
+        softAssert.isFalse(supplierComboBox.isEnabled(), "supplier comboBox is enabled");
+        softAssert.isFalse(hasAvailableStockButton.isEnabled(), "hasAvailableStock is enabled");
+        softAssert.isFalse(topEmButton.isEnabled(), "top EM is enabled");
         softAssert.verifyAll();
         return this;
     }
 
     @Step("Проверить, что кнопка очистки фильтров имеет корректное состояние")
-    public SearchProductPage shouldCleatAllFiltersButtonHasCorrectCondition(boolean isEnabled){
+    public SearchProductPage shouldCleatAllFiltersButtonHasCorrectCondition(boolean isEnabled) {
         if (isEnabled) {
             anAssert.isTrue(clearAllFiltersInFilterFrameBtn.isEnabled(), "clear all filters btn is disabled");
-        }else {
+        } else {
             anAssert.isFalse(clearAllFiltersInFilterFrameBtn.isEnabled(), "clear all filters btn is enabled");
         }
         return this;
