@@ -3,6 +3,7 @@ package com.leroy.core.pages;
 import com.leroy.core.TestContext;
 import com.leroy.core.configuration.Log;
 import io.appium.java_client.ios.IOSDriver;
+import io.qameta.allure.Step;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
@@ -150,6 +151,7 @@ public abstract class BaseWebPage extends BasePage {
         }
     }
 
+    @Step("Перейти назад")
     public boolean navigateBack() throws InterruptedException {
         try {
             this.driver.navigate().back();
@@ -162,6 +164,7 @@ public abstract class BaseWebPage extends BasePage {
         }
     }
 
+    @Step("Перейти вперед")
     public boolean navigateForward() throws InterruptedException {
         try {
             this.driver.navigate().forward();

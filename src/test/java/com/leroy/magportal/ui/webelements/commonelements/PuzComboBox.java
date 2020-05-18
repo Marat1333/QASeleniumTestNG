@@ -2,6 +2,7 @@ package com.leroy.magportal.ui.webelements.commonelements;
 
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
+import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import org.openqa.selenium.WebDriver;
@@ -15,6 +16,9 @@ public class PuzComboBox extends Element {
         super(driver, customLocator);
     }
 
+    @WebFindBy(xpath = ".//input")
+    EditBox input;
+
     @WebFindBy(xpath = ".//button", metaName = "Кнопка 'v'")
     protected Element dropBtn;
 
@@ -26,6 +30,10 @@ public class PuzComboBox extends Element {
 
     @WebFindBy(xpath = "." + CONTAINER_OPTION_XPATH)
     protected ElementList<Element> dropDownElementsList;
+
+    public boolean isEnabled(){
+        return input.isEnabled();
+    }
 
     protected void clickOptions(List<String> options, boolean isActivate, boolean closeAfter) throws Exception {
         dropBtn.click();
