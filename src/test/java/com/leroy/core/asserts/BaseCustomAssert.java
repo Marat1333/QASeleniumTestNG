@@ -154,6 +154,18 @@ public abstract class BaseCustomAssert {
             verifyAll();
     }
 
+    protected void logAreElementsNotVisible(List<BaseWidget> elements, boolean isSoft, String pageSource) {
+        if (elements.size() == 0)
+            throw new IllegalArgumentException("List should contain at least one element");
+        if (pageSource == null && DriverFactory.isAppProfile())
+            pageSource = elements.get(0).getPageSource();
+        for (BaseWidget elem : elements) {
+            logIsElementNotVisible(elem, pageSource, true);
+        }
+        if (!isSoft)
+            verifyAll();
+    }
+
     protected boolean logIsElementNotVisible(BaseWidget element, String pageSource, boolean isSoft) {
         Assert.assertNotNull(element.getMetaName(), "Element meta name is NULL!");
         boolean elementVisibility = pageSource == null ? element.isVisible() : element.isVisible(pageSource);

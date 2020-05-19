@@ -2,10 +2,12 @@ package com.leroy.magportal.ui.pages.products;
 
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
+import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.pages.common.MenuPage;
+import com.leroy.magportal.ui.pages.products.widget.ShopCardWidget;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
@@ -20,7 +22,8 @@ public class ProductCardPage extends MenuPage {
     @WebFindBy(xpath = "//span[contains(text(), 'Каталог товаров')]/ancestor::div[2]/div", clazz = Button.class)
     ElementList<Button> nomenclaturePath;
 
-    @WebFindBy(xpath = "//span[contains(@class, 'LmCode')]/following-sibling::span")
+    @WebFindBy(xpath = "//div[contains(@id,'barCodeButton')]/ancestor::div[3]/preceding-sibling::div" +
+            "//span[contains(@class, 'LmCode')]/following-sibling::span")
     Element lmCodeLbl;
 
     @WebFindBy(xpath = "//div[@id='barCodeButton']/div[1]/span")
@@ -44,9 +47,32 @@ public class ProductCardPage extends MenuPage {
     @WebFindBy(xpath = "//span[contains(text(),'ВСЕ ОПИСАНИЕ')]")
     Element showFullDescription;
 
+    @WebFindBy(xpath = "//button[@id='SHOPS']")
+    Button pricesAndStocksInOtherShops;
+
+    @WebFindBy(xpath = "//input[@placeholder='Номер или название магазина']")
+    EditBox searchForShop;
+
+    @WebFindBy(xpath = "//div[contains(@class,'Catalog-NearestShopList__item_container')]", clazz = ShopCardWidget.class)
+    ElementList<ShopCardWidget> shopsList;
+
     @Override
     public void waitForPageIsLoaded() {
-        lmCodeLbl.waitForVisibility();
+        pricesAndStocksInOtherShops.waitForVisibility();
+    }
+
+    @Override
+    public boolean navigateBack() throws InterruptedException {
+        boolean result = super.navigateBack();
+        waitForPageIsLoaded();
+        return result;
+    }
+
+    @Override
+    public boolean navigateForward() throws InterruptedException {
+        boolean result = super.navigateForward();
+        waitForPageIsLoaded();
+        return result;
     }
 
     /*@Step("Вернуться к результатам поиска")
@@ -88,7 +114,7 @@ public class ProductCardPage extends MenuPage {
     //Verifications
 
     @Step("Проверить наличие поискового критерия в карте товара")
-    public ProductCardPage shouldProductCardContainsText(String text) {
+    public ProductCardPage shouldProductCardContainsLmOrBarCode(String text) {
         if (text.matches("\\D+")) {
             anAssert.isElementTextContains(productTitle, text);
         } else {
@@ -102,7 +128,11 @@ public class ProductCardPage extends MenuPage {
 
     @Step("Проверить, что страница 'Карта товара' отображается корректно")
     public ProductCardPage verifyRequiredElements() {
-        softAssert.areElementsVisible(gammaBadge, productTitle, lmCodeLbl);
+        softAssert.areElementsVisible(gammaBadge, productTitle, lmCodeLbl, pricesAndStocksInOtherShops);
+        softAssert.areElementsNotVisible(ExtendedProductCardPage.topBadge, ExtendedProductCardPage.addProductToCart,
+                ExtendedProductCardPage.addProductToEstimate, ExtendedProductCardPage.availableForSaleLbl,
+                ExtendedProductCardPage.productPriceLbl);
+        shouldUrlContains("isAllGammaView=true");
         softAssert.verifyAll();
         return this;
     }

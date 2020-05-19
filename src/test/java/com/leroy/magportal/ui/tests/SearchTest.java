@@ -131,7 +131,7 @@ public class SearchTest extends WebBaseSteps {
         //Step 1
         step("Выполнить поиск по полному лм коду " + lmCode);
         ProductCardPage productCardPage = searchProductPage.searchByPhrase(lmCode);
-        productCardPage.shouldProductCardContainsText(lmCode);
+        productCardPage.shouldProductCardContainsLmOrBarCode(lmCode);
         productCardPage.shouldUrlContains(lmCode);
         searchProductPage.switchToWindow();
 
@@ -151,7 +151,7 @@ public class SearchTest extends WebBaseSteps {
         //Step 3
         step("Выполнить поиск по штрихкоду " + barCode);
         searchProductPage.searchByPhrase(barCode);
-        productCardPage.shouldProductCardContainsText(barCode);
+        productCardPage.shouldProductCardContainsLmOrBarCode(barCode);
         searchProductPage.switchToWindow();
 
         //Step 4

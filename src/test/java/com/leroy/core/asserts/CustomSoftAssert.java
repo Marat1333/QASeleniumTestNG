@@ -76,6 +76,14 @@ public class CustomSoftAssert extends BaseCustomAssert {
         logAreElementsVisible(Arrays.asList(elements), true, pageSource);
     }
 
+    public void areElementsNotVisible(BaseWidget... elements) {
+        logAreElementsNotVisible(Arrays.asList(elements), true, null);
+    }
+
+    public void areElementsNotVisible(String pageSource, BaseWidget... elements) {
+        logAreElementsNotVisible(Arrays.asList(elements), true, pageSource);
+    }
+
     public boolean isElementNotVisible(BaseWidget element) {
         return super.logIsElementNotVisible(element, null, true);
     }
