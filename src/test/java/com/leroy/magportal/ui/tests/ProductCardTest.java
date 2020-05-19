@@ -80,8 +80,9 @@ public class ProductCardTest extends WebBaseSteps {
     }
 
     @Test(description = "C22790554 Go to another card (similar or related products)")
-    public void testGoToSimilarOrComplementProductCard() throws Exception{
+    public void testGoToAdditionalProductCard() throws Exception{
         String sourceLmCode = "15057456";
+        //TODO добавить генерацию случайных лмкодов для similar and complement products
         String similarProductLmCode = "82486029";
         String complementProductLmCode = "81947865";
         ExtendedProductCardPage extendedProductCardPage = navigateToProductCardByUrl(sourceLmCode, false);
