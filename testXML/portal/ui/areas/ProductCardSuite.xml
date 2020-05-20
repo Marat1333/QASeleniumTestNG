@@ -16,6 +16,34 @@
         </classes>
     </test>
 
+    <test name="C23388814 add Product to estimate">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.ProductCardTest">
+                <methods>
+                    <include name="testAddProductToEstimate"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
 
+    <test name="C23388974 go to card by url">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.ProductCardTest">
+                <methods>
+                    <include name="testGoToCardByUrl"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22790554 Go to another card (similar or related products)">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.ProductCardTest">
+                <methods>
+                    <include name="testGoToAdditionalProductCard"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
 
 </suite>
