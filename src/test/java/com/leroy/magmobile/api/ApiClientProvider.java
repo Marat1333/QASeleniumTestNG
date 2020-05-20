@@ -18,6 +18,7 @@ import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateProductOrderData;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogServicesSearch;
+import com.leroy.magportal.api.clients.MagPortalCatalogProductClient;
 import io.qameta.allure.Step;
 import lombok.Setter;
 import org.apache.commons.lang.RandomStringUtils;
@@ -70,6 +71,8 @@ public class ApiClientProvider {
     private Provider<RupturesClient> rupturesClientProvider;
     @Inject
     private Provider<SupportClient> supportClientProvider;
+    @Inject
+    private Provider<MagPortalCatalogProductClient> magPortalCatalogProductClientProvider;
 
     private <J extends MagMobileClient> J getClient(Provider<J> provider) {
         J cl = provider.get();
@@ -139,6 +142,10 @@ public class ApiClientProvider {
 
     public SupportClient getSupportClient() {
         return getClient(supportClientProvider);
+    }
+
+    public MagPortalCatalogProductClient getMagPortalCatalogProductClientProvider(){
+        return getClient(magPortalCatalogProductClientProvider);
     }
 
     /// --------------- HELP METHODS ------------------ //

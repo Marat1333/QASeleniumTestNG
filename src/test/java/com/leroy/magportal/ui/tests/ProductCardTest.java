@@ -7,6 +7,7 @@ import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
+import com.leroy.magportal.api.data.CatalogSimilarProductsData;
 import com.leroy.magportal.ui.WebBaseSteps;
 import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
 import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
@@ -51,10 +52,19 @@ public class ProductCardTest extends WebBaseSteps {
         return productItemData.get((int) (Math.random() * productItemData.size())).getLmCode();
     }
 
-    /*private String getRandomSimilarProductLmCode() {
+    private String getRandomSimilarProductLmCode(String sourceLmCode) {
+        CatalogSimilarProductsData data = apiClientProvider.getMagPortalCatalogProductClientProvider().getSimilarProducts(sourceLmCode).asJson();
+        List<ProductItemData> resultList = data.getSubstitutes();
+        String result = resultList.get((int) (Math.random() * resultList.size())).getLmCode();
+        return result;
+    }
 
-        return
-    }*/
+    private String getRandomComplementProductLmCode(String sourceLmCode) {
+        CatalogSimilarProductsData data = apiClientProvider.getMagPortalCatalogProductClientProvider().getSimilarProducts(sourceLmCode).asJson();
+        List<ProductItemData> resultList = data.getComplements();
+        String result = resultList.get((int) (Math.random() * resultList.size())).getLmCode();
+        return result;
+    }
 
     @Test(description = "C23388813 add Product to cart")
     public void testAddProductToCart() throws Exception {
@@ -80,11 +90,11 @@ public class ProductCardTest extends WebBaseSteps {
     }
 
     @Test(description = "C22790554 Go to another card (similar or related products)")
-    public void testGoToAdditionalProductCard() throws Exception{
+    public void testGoToAdditionalProductCard() throws Exception {
         String sourceLmCode = "15057456";
-        //TODO добавить генерацию случайных лмкодов для similar and complement products
-        String similarProductLmCode = "82486029";
-        String complementProductLmCode = "81947865";
+        String similarProductLmCode = getRandomSimilarProductLmCode(sourceLmCode);
+        String complementProductLmCode = getRandomComplementProductLmCode(sourceLmCode);
+
         ExtendedProductCardPage extendedProductCardPage = navigateToProductCardByUrl(sourceLmCode, false);
 
         extendedProductCardPage.goToAdditionalProduct(similarProductLmCode, ExtendedProductCardPage.Tab.SIMILAR_PRODUCTS);
