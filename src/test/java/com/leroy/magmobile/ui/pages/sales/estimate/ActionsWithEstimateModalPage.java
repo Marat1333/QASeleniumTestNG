@@ -37,6 +37,13 @@ public class ActionsWithEstimateModalPage extends CommonMagMobilePage {
         return new Basket35Page(context);
     }
 
+    @Step("Выберите пункт меню 'Отправить на email'")
+    public SendEmailPage clickSendEmailMenuItem() {
+        sendEmailMenuItem.click();
+        return new SendEmailPage(context);
+    }
+
+
     // Verifications
 
     @Step("Проверить, что страница 'Действия со сметой' отображается корректно")

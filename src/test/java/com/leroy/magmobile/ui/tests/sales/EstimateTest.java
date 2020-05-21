@@ -439,4 +439,61 @@ public class EstimateTest extends SalesBaseTest {
         softAssert.verifyAll();
     }
 
+    @Test(description = "C22797077 Отправить смету на почту (с экрана успеха или из сметы в статусе Создан)")
+    public void testSendEstimateByEmail() throws Exception {
+        String estimateDraftId = clientProvider.createDraftEstimateAndGetCartId(productLmCodes.subList(0, 1));
+        startFromScreenWithCreatedEstimate(productLmCodes.subList(0, 1), true);
+
+        // Step 1
+        step("Нажмите на кнопку Действие со сметой");
+        EstimatePage estimatePage = new EstimatePage(context);
+        ActionsWithEstimateModalPage actionsWithEstimateModalPage = estimatePage
+                .clickActionsWithEstimateButton()
+                .verifyRequiredElements();
+
+        // Step 2
+        step("Нажмите на Отправить на email");
+        SendEmailPage sendEmailPage = actionsWithEstimateModalPage.clickSendEmailMenuItem()
+                .verifyRequiredElements();
+
+        // Step 3
+        step("Нажмите на Отправить");
+        String email = RandomStringUtils.randomAlphabetic(5) + "@mail.com";
+        SubmittedSendEmailPage submittedSendEmailPage = sendEmailPage.enterTextInEmailField(email)
+                .clickSubmitButton();
+        submittedSendEmailPage.shouldSendToThisEmail(email);
+
+        // Step 4
+        step("Нажмите на Перейти в список документов");
+        SalesDocumentsPage salesDocumentsPage = submittedSendEmailPage.clickSubmitButton();
+        salesDocumentsPage.verifyRequiredElements();
+
+        // Step 5
+        step("Нажмите на мини-карточку сметы в статусе черновик");
+        salesDocumentsPage.searchForDocumentByTextAndSelectIt(estimateDraftId);
+        estimatePage = new EstimatePage(context);
+
+        // Step 6
+        step("Нажмите на кнопку Создать");
+        EstimateSubmittedPage estimateSubmittedPage = estimatePage.clickCreateButton()
+                .verifyRequiredElements();
+
+        // Step 7
+        step("Нажмите на Отправить на email");
+        sendEmailPage = estimateSubmittedPage.clickSendToEmailButton()
+                .verifyRequiredElements();
+
+        // Step 8
+        step("Нажмите на Отправить");
+        String email2 = RandomStringUtils.randomAlphabetic(9) + "@mail.com";
+        submittedSendEmailPage = sendEmailPage.enterTextInEmailField(email2)
+                .clickSubmitButton();
+        submittedSendEmailPage.shouldSendToThisEmail(email2);
+
+        // Step 9
+        step("Нажмите на Перейти в список документов");
+        submittedSendEmailPage.clickSubmitButton()
+                .verifyRequiredElements();
+    }
+
 }

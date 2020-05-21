@@ -16,6 +16,11 @@ public class EstimateSubmittedPage extends CommonMagMobilePage {
     @AppFindBy(containsText = "Смета создана")
     Element headerLbl;
 
+    @AppFindBy(xpath = "//*[@content-desc='Button'][1]", metaName = "Кнопка 'Отправить на email'")
+    Element sendToEmailBtn;
+    @AppFindBy(containsText = "на email")
+    Element sendToEmailLbl;
+
     @AppFindBy(text = "ПЕРЕЙТИ В СПИСОК ДОКУМЕНТОВ")
     Element submitBtn;
 
@@ -30,6 +35,12 @@ public class EstimateSubmittedPage extends CommonMagMobilePage {
     public SalesDocumentsPage clickSubmitButton() {
         submitBtn.click();
         return new SalesDocumentsPage(context);
+    }
+
+    @Step("Нажать на 'Отправить на email'")
+    public SendEmailPage clickSendToEmailButton() {
+        sendToEmailBtn.click();
+        return new SendEmailPage(context);
     }
 
     // VERIFICATIONS
