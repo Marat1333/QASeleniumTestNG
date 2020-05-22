@@ -94,10 +94,9 @@ public class SearchTest extends AppBaseSteps {
         String searchContext = "Тепломир радиатор";
         String shortSearchPhrase = "12";
         String barCode = "5902120110575";
-        String shortLmCode = "1234";
+        String shortLmCode = "1506";
         String shortBarCode = "590212011";
         int entityCount = 3;
-        final String departmentId = "11";
 
         GetCatalogSearch byLmParams = new GetCatalogSearch()
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
@@ -107,11 +106,9 @@ public class SearchTest extends AppBaseSteps {
                 .setByBarCode(barCode);
 
         GetCatalogSearch byShortLmCodeParams = buildDefaultCatalogSearchParams()
-                .setDepartmentId(departmentId)
                 .setByLmCode(shortLmCode);
 
         GetCatalogSearch byShortBarCodeParams = buildDefaultCatalogSearchParams()
-                .setDepartmentId(departmentId)
                 .setByBarCode(shortBarCode);
 
         HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> apiThreads =
@@ -131,8 +128,7 @@ public class SearchTest extends AppBaseSteps {
         // Step 3
         step("Вернитесь на окно выбора отдела");
         nomenclatureSearchPage.returnBackNTimes(1)
-                .verifyNomenclatureBackBtnVisibility(false)
-                .choseDepartmentId("0" + departmentId, null, null, null);
+                .verifyNomenclatureBackBtnVisibility(false);
         // Step 4
         step("Нажмите 'Показать все товары'");
         nomenclatureSearchPage.clickShowAllProductsBtn()
@@ -182,7 +178,6 @@ public class SearchTest extends AppBaseSteps {
         // Step 10
         step("Ввести в поисковую строку положительное число длинной >8 символов (" + shortBarCode + ") и инициировать поиск");
         searchProductPage.enterTextInSearchFieldAndSubmit(shortBarCode);
-        productCardPage.returnBack();
         ProductItemDataList d4 = apiThreads.get(3).getData();
         searchProductPage.shouldCatalogResponseEqualsContent(
                 d4, SearchProductPage.CardType.COMMON, entityCount);
@@ -680,14 +675,12 @@ public class SearchTest extends AppBaseSteps {
     @Test(description = "C3200999 Проверка пагинации", priority = 2)
     public void testSearchPagePagination() throws Exception {
         String searchCriterion = "12";
-        String dept = "015";
-        String subDept = "1510";
+        String dept = "005";
         final String GAMMA = "A";
         final int ENTITY_COUNT = 20;
 
         GetCatalogSearch paginationParams = new GetCatalogSearch()
                 .setDepartmentId(dept.replaceAll("^0+", ""))
-                .setSubDepartmentId(subDept.replaceAll("^0+", ""))
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setSortBy(CatalogSearchFields.NAME, SortingOrder.ASC)
                 .setByNameLike(searchCriterion)
@@ -706,7 +699,7 @@ public class SearchTest extends AppBaseSteps {
         step("Выбрать подотдел в номенклатуре");
         NomenclatureSearchPage nomenclatureSearchPage = searchProductPage.goToNomenclatureWindow();
         nomenclatureSearchPage.returnBackNTimes(1);
-        nomenclatureSearchPage.choseDepartmentId(dept, subDept, null, null);
+        nomenclatureSearchPage.choseDepartmentId(dept, null, null, null);
         nomenclatureSearchPage.clickShowAllProductsBtn();
 
         // Step 2
@@ -1011,7 +1004,7 @@ public class SearchTest extends AppBaseSteps {
         // Step 3
         step("перейти на страницу фильтров");
         searchProductPage.goToFilterPage();
-        myShopFilterPage.shouldFilterHasBeenChosen(FilterPage.TOP + TOP);
+        myShopFilterPage.shouldFilterHasNotBeenChosen(FilterPage.TOP + TOP);
 
         // Step 4
         step("нажать \"показать товары\"");
@@ -1360,6 +1353,7 @@ public class SearchTest extends AppBaseSteps {
 
         // Step 5
         step("Нажать на \"Показать все фильтры\", выбрать фильтр среди вновь отображенных и нажать \"Показать товары\"");
+        filterPage.clearAllFilters();
         filterPage.clickShowAllFiltersBtn();
         filterPage.choseCheckBoxFilter(FilterPage.BEST_PRICE);
         filterPage.applyChosenFilters();
