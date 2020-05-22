@@ -303,4 +303,13 @@ public class EstimatePage extends CommonMagMobilePage {
         return this;
     }
 
+    @Step("Проверить, что смета содержит ожидаемые данные (expectedData)")
+    public EstimatePage shouldEstimateDataIs(SalesOrderData expectedData) {
+        SalesOrderData actualData = getEstimateDataFromPage();
+        // Лучше расписать отдельно по полям потом:
+        softAssert.isEquals(actualData, expectedData, "Ожидались другие данные в смете");
+        softAssert.verifyAll();
+        return this;
+    }
+
 }

@@ -496,4 +496,44 @@ public class EstimateTest extends SalesBaseTest {
                 .verifyRequiredElements();
     }
 
+    @Test(description = "C22797084 Изменение товара в смету в статусе Создан")
+    public void testChangeProductInConfirmedEstimate() throws Exception {
+        startFromScreenWithCreatedEstimate(productLmCodes.subList(0, 1), true);
+
+        // Step 1
+        step("Нажмите на ручку в верхней правой части экрана");
+        EstimatePage estimatePage = new EstimatePage(context);
+        SalesOrderData estimateDataBefore = estimatePage.getEstimateDataFromPage();
+        estimatePage.clickEditEstimateButton()
+                .shouldEditModeOn();
+
+        // Step 2
+        step("Нажмите на ручку редактирования товара");
+        ActionWithProductCardModalPage actionWithProductCardModalPage = estimatePage.clickCardByIndex(1)
+                .verifyRequiredElements();
+
+        // Step 3
+        step("Выберете параметр Изменить количество");
+        EditProduct35Page editProduct35Page = actionWithProductCardModalPage.clickChangeQuantityMenuItem();
+        editProduct35Page.verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.SAVE);
+
+        // Step 4
+        step("Измените количество товара");
+        String newQuantity = String.valueOf(new Random().nextInt(6)+2);
+        editProduct35Page.enterQuantityOfProduct(newQuantity);
+        editProduct35Page.shouldEditQuantityFieldIs(newQuantity);
+
+        // Step 5
+        step("Нажмите на Сохранить");
+        estimatePage = editProduct35Page.clickSaveButton();
+
+        SalesOrderCardData product = estimateDataBefore.getOrderCardDataList().get(0);
+        product.setSelectedQuantity(ParserUtil.strToDouble(newQuantity));
+        product.setTotalPrice(product.getProductCardData().getPrice() * ParserUtil.strToDouble(newQuantity));
+        estimateDataBefore.setTotalWeight(estimateDataBefore.getTotalWeight() * ParserUtil.strToDouble(newQuantity));
+        estimateDataBefore.setTotalPrice(product.getTotalPrice());
+        estimatePage.shouldEstimateDataIs(estimateDataBefore);
+
+    }
+
 }
