@@ -189,7 +189,7 @@ public class Element extends BaseWidget {
         }
     }
 
-    private void waitForClickability(int timeout, int attempt) {
+    protected void waitForClickability(int timeout, int attempt) {
         initialWebElementIfNeeded();
         try {
             new WebDriverWait(this.driver, timeout).until(

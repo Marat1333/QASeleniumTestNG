@@ -7,16 +7,18 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.elements.MagMobWhiteSubmitButton;
-import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.search.SearchProductPage;
-import com.leroy.magmobile.ui.pages.sales.basket.OrderRowProductWidget;
 import com.leroy.magmobile.ui.models.CustomerData;
-import com.leroy.magmobile.ui.pages.customers.SearchCustomerPage;
-import com.leroy.magmobile.ui.pages.search.widgets.SearchCustomerWidget;
 import com.leroy.magmobile.ui.models.sales.SalesOrderCardData;
 import com.leroy.magmobile.ui.models.sales.SalesOrderData;
+import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import com.leroy.magmobile.ui.pages.customers.SearchCustomerPage;
+import com.leroy.magmobile.ui.pages.sales.basket.OrderRowProductWidget;
+import com.leroy.magmobile.ui.pages.search.SearchProductPage;
+import com.leroy.magmobile.ui.pages.search.widgets.SearchCustomerWidget;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import org.openqa.selenium.By;
 
 import java.util.ArrayList;
@@ -29,27 +31,12 @@ public class EstimatePage extends CommonMagMobilePage {
         super(context);
     }
 
+    @Builder
+    @AllArgsConstructor
     public static class PageState {
-        boolean customerIsSelected;
-        boolean productIsAdded;
-
-        public boolean isCustomerIsSelected() {
-            return customerIsSelected;
-        }
-
-        public PageState setCustomerIsSelected(boolean customerIsSelected) {
-            this.customerIsSelected = customerIsSelected;
-            return this;
-        }
-
-        public boolean isProductIsAdded() {
-            return productIsAdded;
-        }
-
-        public PageState setProductIsAdded(boolean productIsAdded) {
-            this.productIsAdded = productIsAdded;
-            return this;
-        }
+        private boolean customerIsSelected;
+        private boolean productIsAdded;
+        private boolean estimateIsConfirmed;
     }
 
     public static boolean isThisPage(TestContext context) {
@@ -245,22 +232,25 @@ public class EstimatePage extends CommonMagMobilePage {
     public EstimatePage verifyRequiredElements(PageState state) {
         List<Element> expectedElements = new ArrayList<>(Arrays.asList(
                 backBtn, headerLbl));
-        if (!state.isCustomerIsSelected())
+        if (!state.customerIsSelected)
             expectedElements.add(selectCustomerBtn);
-        if (state.isProductIsAdded()) {
+        if (state.productIsAdded) {
             expectedElements.add(countProductLbl);
             expectedElements.add(weightProductLbl);
             expectedElements.add(totalPriceLbl);
             expectedElements.add(totalPriceVal);
             expectedElements.add(addProductBtn);
-            expectedElements.add(createBtn);
+            if (state.estimateIsConfirmed)
+                expectedElements.add(saveBtn);
+            else
+                expectedElements.add(createBtn);
             expectedElements.add(productCardWidget);
         } else {
             expectedElements.add(productAndServiceBtn);
         }
         softAssert.areElementsVisible(expectedElements.toArray(new Element[0]));
-        if (!state.isProductIsAdded()) {
-            if (!state.isCustomerIsSelected())
+        if (!state.productIsAdded) {
+            if (!state.customerIsSelected)
                 softAssert.isFalse(productAndServiceBtn.isEnabled(),
                         "Кнопка '+ Товары и Услуги' активна");
             else

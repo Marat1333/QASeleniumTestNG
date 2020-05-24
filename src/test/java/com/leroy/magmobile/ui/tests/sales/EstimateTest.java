@@ -85,8 +85,8 @@ public class EstimateTest extends SalesBaseTest {
         // Step 2
         step("Выбрать параметр Смета");
         EstimatePage estimatePage = modalPage.clickEstimateMenuItem();
-        EstimatePage.PageState pageState = new EstimatePage.PageState()
-                .setCustomerIsSelected(false).setProductIsAdded(false);
+        EstimatePage.PageState pageState = EstimatePage.PageState.builder()
+                .customerIsSelected(false).productIsAdded(false).build();
         estimatePage.verifyRequiredElements(pageState);
 
         // Step 3
@@ -100,8 +100,8 @@ public class EstimateTest extends SalesBaseTest {
                 .enterTextInSearchField(firstCustomerPhone)
                 .getCustomerDataFromSearchListByIndex(1);
         estimatePage = searchCustomerPage.selectCustomerFromSearchList(1);
-        pageState = new EstimatePage.PageState()
-                .setCustomerIsSelected(true).setProductIsAdded(false);
+        pageState = EstimatePage.PageState.builder()
+                .customerIsSelected(true).productIsAdded(false).build();
         estimatePage.verifyRequiredElements(pageState);
         estimatePage.shouldSelectedCustomerIs(customerData);
 
@@ -119,8 +119,8 @@ public class EstimateTest extends SalesBaseTest {
         // Step 7
         step("Нажмите на Добавить в смету");
         estimatePage = addProduct35Page.clickAddIntoEstimateButton();
-        pageState = new EstimatePage.PageState()
-                .setCustomerIsSelected(true).setProductIsAdded(true);
+        pageState = EstimatePage.PageState.builder()
+                .customerIsSelected(true).productIsAdded(true).build();
         estimatePage.verifyRequiredElements(pageState);
 
         // Step 8
@@ -386,7 +386,7 @@ public class EstimateTest extends SalesBaseTest {
         // Step 3
         step("Нажмите на пустое поле Телефон и Введите новый номер");
         String newPhone = RandomStringUtils.randomNumeric(10);
-        editCustomerContactDetailsPage.fillInPhoneNumber(newPhone);
+        editCustomerContactDetailsPage.enterNewPhoneNumber(newPhone);
         editCustomerContactDetailsPage.shouldNewPhoneEqualTo(newPhone);
 
         // Step 4
@@ -519,7 +519,7 @@ public class EstimateTest extends SalesBaseTest {
 
         // Step 4
         step("Измените количество товара");
-        String newQuantity = String.valueOf(new Random().nextInt(6)+2);
+        String newQuantity = String.valueOf(new Random().nextInt(6) + 2);
         editProduct35Page.enterQuantityOfProduct(newQuantity);
         editProduct35Page.shouldEditQuantityFieldIs(newQuantity);
 
@@ -533,7 +533,53 @@ public class EstimateTest extends SalesBaseTest {
         estimateDataBefore.setTotalWeight(estimateDataBefore.getTotalWeight() * ParserUtil.strToDouble(newQuantity));
         estimateDataBefore.setTotalPrice(product.getTotalPrice());
         estimatePage.shouldEstimateDataIs(estimateDataBefore);
+    }
 
+    @Test(description = "C22797085 Изменение контактных данных клиента в смете в статусе Создан")
+    public void testChangeProduct() throws Exception {
+        startFromScreenWithCreatedEstimate(productLmCodes.subList(0, 1), true);
+
+        // Step 1
+        step("Нажмите на кнопку редактирования сметы в правом верхнем углу");
+        EstimatePage estimatePage = new EstimatePage(context);
+        String customerNameBefore = estimatePage.getCustomerName();
+        estimatePage.clickEditEstimateButton()
+                .shouldEditModeOn();
+
+        // Step 2
+        step("Нажмите на поле Смета для клиента");
+        EditCustomerModalPage editCustomerModalPage = estimatePage.clickEditCustomerField()
+                .verifyRequiredElements();
+
+        // Step 3
+        step("Выберете параметр Изменить контактные данные");
+        EditCustomerContactDetailsPage editCustomerContactDetailsPage =
+                editCustomerModalPage.clickChangeContactDetails()
+                        .verifyRequiredElements();
+
+        // Step 4, 5
+        step("Ведите новый номер в пустое поле Телефон");
+        String newPhone = RandomStringUtils.randomNumeric(10);
+        editCustomerContactDetailsPage.enterNewPhoneNumber(newPhone);
+        editCustomerContactDetailsPage.shouldNewPhoneEqualTo(newPhone);
+
+        // Step 6
+        step("Нажмите на Сохранить");
+        estimatePage = editCustomerContactDetailsPage.clickSaveButton()
+                .verifyRequiredElements(EstimatePage.PageState.builder()
+                        .customerIsSelected(true)
+                        .productIsAdded(true)
+                        .estimateIsConfirmed(true).build());
+
+        CustomerData expectedCustomer = new CustomerData();
+        expectedCustomer.setName(customerNameBefore);
+        expectedCustomer.setPhone(newPhone);
+        estimatePage.shouldSelectedCustomerIs(expectedCustomer);
+
+        // Step 7
+        step("Нажмите на кнопку Сохранить");
+
+        //estimatePage.verifyRequiredElements()
     }
 
 }
