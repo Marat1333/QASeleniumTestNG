@@ -13,8 +13,6 @@ public class CustomersFoundWithThisPhoneModalWindow extends BaseWidget {
         super(driver, locator);
     }
 
-    private static final String MAIN_DIV_XPATH = "//div[contains(@class, 'modal-content')]";
-
     @WebFindBy(text = "Найдены клиенты с этим телефоном")
     public Element customersFoundWithThisPhoneLbl;
 
@@ -24,7 +22,7 @@ public class CustomersFoundWithThisPhoneModalWindow extends BaseWidget {
     @WebFindBy(xpath = "//span[text()='Вернуться']/ancestor::button", metaName = "Кнопка Вернуться")
     public Element returnBtn;
 
-    @WebFindBy(xpath = MAIN_DIV_XPATH + "//div[contains(@class, 'CustomerList__items')]/div")
+    @WebFindBy(xpath = ".//div[contains(@class, 'Common-SearchResultListItem')]")
     public ElementList<Element> customerRows;
 
 }

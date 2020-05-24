@@ -28,7 +28,7 @@ public class PuzComboBox extends Element {
     private final String CONTAINER_OPTION_XPATH = "//div[contains(@class, 'optionsContainer')]/div";
     private final String SWITCH_BTN_LABEL_XPATH = CONTAINER_OPTION_XPATH + "//span[contains(@class, 'SwitchButton-label') and text()='%s']";
 
-    @WebFindBy(xpath = "." + CONTAINER_OPTION_XPATH)
+    @WebFindBy(xpath = "." + CONTAINER_OPTION_XPATH + "//span[contains(@class, 'label')]")
     protected ElementList<Element> dropDownElementsList;
 
     public boolean isEnabled(){
@@ -36,7 +36,7 @@ public class PuzComboBox extends Element {
     }
 
     protected void clickOptions(List<String> options, boolean isActivate, boolean closeAfter) throws Exception {
-        dropBtn.click();
+        open();
         dropDownElementsList.waitUntilAtLeastOneElementIsPresent(short_timeout);
         for (String option : options) {
             Element optionElem = E(getXpath() + String.format(
@@ -50,6 +50,16 @@ public class PuzComboBox extends Element {
             }
         }
         if (closeAfter)
+            close();
+    }
+
+    protected void open() {
+        if (!E(CONTAINER_OPTION_XPATH).isVisible())
+            dropBtn.click();
+    }
+
+    protected void close() {
+        if (E(CONTAINER_OPTION_XPATH).isVisible())
             dropBtn.click();
     }
 
@@ -58,6 +68,16 @@ public class PuzComboBox extends Element {
      */
     public String getSelectedOptionText() {
         return selectedStringValue.getText();
+    }
+
+    /**
+     * Получить список опций в выпадающем списке
+     */
+    public List<String> getOptionList() throws Exception {
+        open();
+        List<String> result = dropDownElementsList.getTextList();
+        close();
+        return result;
     }
 
     /**

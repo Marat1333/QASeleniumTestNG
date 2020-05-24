@@ -1,5 +1,6 @@
 package com.leroy.magportal.api;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.leroy.core.SessionData;
@@ -8,16 +9,25 @@ import com.leroy.magmobile.api.clients.*;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
+import com.leroy.magmobile.api.data.customer.CustomerData;
+import com.leroy.magmobile.api.data.customer.CustomerListData;
+import com.leroy.magmobile.api.data.customer.CustomerResponseBodyData;
+import com.leroy.magmobile.api.data.customer.CustomerSearchFilters;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateCustomerData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateProductOrderData;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import io.qameta.allure.Step;
 import lombok.Setter;
 import org.apache.commons.lang.RandomStringUtils;
+import org.testng.Assert;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -179,7 +189,7 @@ public class ApiClientProvider {
     }
 
     public List<String> getProductLmCodes(int necessaryCount) {
-        List<ProductItemData> productItemResponseList = getProducts(necessaryCount, null);
+        List<ProductItemData> productItemResponseList = getProducts(necessaryCount);
         return productItemResponseList.stream().map(ProductItemData::getLmCode).collect(Collectors.toList());
     }
 
@@ -204,6 +214,113 @@ public class ApiClientProvider {
             }
         }
         throw new RuntimeException("Couldn't find valid pin code for " + tryCount + " trying");
+    }
+
+    // SEARCH CUSTOMERS
+
+    @Step("Find any customer")
+    public CustomerData getAnyCustomer() {
+        CustomerSearchFilters customerSearchFilters = new CustomerSearchFilters();
+        customerSearchFilters.setCustomerType(CustomerSearchFilters.CustomerType.NATURAL);
+        customerSearchFilters.setDiscriminantType(CustomerSearchFilters.DiscriminantType.PHONENUMBER);
+        customerSearchFilters.setCustomerType(CustomerSearchFilters.CustomerType.NATURAL);
+        customerSearchFilters.setDiscriminantValue("+71111111111");
+        Response<CustomerListData> resp = getCustomerClient().searchForCustomers(customerSearchFilters);
+        assertThat("GetAnyCustomer Method. Response: " + resp.toString(), resp.isSuccessful());
+        List<CustomerData> customers = resp.asJson().getItems();
+        assertThat("GetAnyCustomer Method. Count of customers", customers,
+                hasSize(greaterThan(0)));
+        return customers.get(0);
+    }
+
+    @Step("Try to find phone number which is connected to no one customer")
+    public String findUnusedPhoneNumber() {
+        int attemptsCount = 10;
+
+        CustomerClient customerClient = getCustomerClient();
+        CustomerSearchFilters customerSearchFilters = new CustomerSearchFilters();
+        customerSearchFilters.setDiscriminantType(CustomerSearchFilters.DiscriminantType.PHONENUMBER);
+        customerSearchFilters.setCustomerType(CustomerSearchFilters.CustomerType.NATURAL);
+
+        for (int i = 0; i < attemptsCount; i++) {
+            String phoneNumber = "+7" + RandomStringUtils.randomNumeric(10);
+            customerSearchFilters.setDiscriminantValue(phoneNumber);
+            Response<CustomerListData> resp = customerClient.searchForCustomers(customerSearchFilters);
+            if (resp.isSuccessful()) {
+                if (resp.asJson().getItems().size() == 0)
+                    return phoneNumber;
+            } else {
+                Log.error(resp.toString());
+                return phoneNumber;
+            }
+        }
+        Assert.fail("Couldn't find unused phone number for " + attemptsCount + " attempts");
+        return null;
+    }
+
+    // ESTIMATE
+
+    @Step("Создаем черновик Сметы через API")
+    private String createDraftEstimateAndGetCartId(
+            CustomerData newCustomerData, List<String> lmCodes, int productCount) {
+        if (lmCodes == null)
+            lmCodes = getProductLmCodes(productCount);
+        CustomerData customerData;
+        if (newCustomerData == null) {
+            customerData = getAnyCustomer();
+        } else {
+            Response<CustomerResponseBodyData> respCustomer = getCustomerClient()
+                    .createCustomer(newCustomerData);
+            assertThat(respCustomer, successful());
+            customerData = respCustomer.asJson().getEntity();
+        }
+        List<EstimateProductOrderData> productOrderDataList = new ArrayList<>();
+        for (int i = 1; i <= lmCodes.size(); i++) {
+            EstimateProductOrderData productOrderData = new EstimateProductOrderData();
+            productOrderData.setLmCode(lmCodes.get(i - 1));
+            productOrderData.setQuantity((double) i);
+            productOrderDataList.add(productOrderData);
+        }
+        EstimateCustomerData estimateCustomerData = new EstimateCustomerData();
+        estimateCustomerData.setCustomerNumber(customerData.getCustomerNumber());
+        estimateCustomerData.setFirstName(customerData.getFirstName());
+        estimateCustomerData.setLastName(customerData.getLastName());
+        estimateCustomerData.setType("PERSON");
+        estimateCustomerData.setRoles(Collections.singletonList("PAYER"));
+        Response<EstimateData> estimateDataResponse = getEstimateClient().sendRequestCreate(
+                Collections.singletonList(estimateCustomerData), productOrderDataList);
+        assertThat(estimateDataResponse, successful());
+        return estimateDataResponse.asJson().getEstimateId();
+    }
+
+    public String createDraftEstimateAndGetCartId(List<String> lmCodes) {
+        return createDraftEstimateAndGetCartId(null, lmCodes, 1);
+    }
+
+    public String createDraftEstimateAndGetCartId(
+            CustomerData newCustomerData, int productCount) {
+        return createDraftEstimateAndGetCartId(newCustomerData, null, productCount);
+    }
+
+    public String createDraftEstimateAndGetCartId(int productCount) {
+        return createDraftEstimateAndGetCartId(null, null, productCount);
+    }
+
+    public String createDraftEstimateAndGetCartId() {
+        return createDraftEstimateAndGetCartId(1);
+    }
+
+    @Step("Создаем подтвержденную Смету через API")
+    public String createConfirmedEstimateAndGetCartId(List<String> lmCodes) {
+        EstimateClient client = getEstimateClient();
+        String cartId = createDraftEstimateAndGetCartId(lmCodes);
+        Response<JsonNode> resp = client.confirm(cartId);
+        client.assertThatResponseChangeStatusIsOk(resp);
+        return cartId;
+    }
+
+    public String createConfirmedEstimateAndGetCartId() {
+        return createConfirmedEstimateAndGetCartId(getProductLmCodes(1));
     }
 }
 

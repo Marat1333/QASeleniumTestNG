@@ -352,6 +352,20 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
     }
 
     /**
+     * Find Element by text
+     *
+     * @param text
+     */
+    public E findElemByText(String text, boolean isContains) throws Exception {
+        String xpath = getXpath() + (isContains ? "[contains(text(), '" + text + "')]" : "[text()='" + text + "']");
+        CustomLocator elementLocator = new CustomLocator(
+                By.xpath(xpath));
+        elementLocator.setCacheLookup(true);
+        return (E) getElementClass().getConstructor(WebDriver.class, CustomLocator.class).
+                newInstance(driver, elementLocator);
+    }
+
+    /**
      * Get count of visible elements
      *
      * @return int

@@ -33,4 +33,50 @@
         </classes>
     </test>
 
+    <test name="Client for estimate">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.EstimateTest">
+                <methods>
+                    <include name="testAddNewClientToEstimate"/>
+                    <include name="testSearchClientByPhoneNumberInEstimate"/>
+                    <include name="testSearchClientByEmailInEstimate"/>
+                    <include name="testSearchClientByServiceCardInEstimate"/>
+                    <include name="testChangeClientToAnotherOne"/>
+                    <include name="testChangeParametersOfClient"/>
+                    <include name="testValidateCreationEstimateWithoutClient"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="Delete Estimate - Draft">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.EstimateTest">
+                <methods>
+                    <include name="testRemoveDraftEstimate"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="Delete Estimate - Confirmed">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.EstimateTest">
+                <methods>
+                    <include name="testRemoveConfirmedEstimate"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="Search of documents">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.EstimateTest">
+                <methods>
+                    <include name="testSearchDocumentEstimate"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
 </suite>

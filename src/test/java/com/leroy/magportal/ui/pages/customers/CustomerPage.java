@@ -1,10 +1,12 @@
 package com.leroy.magportal.ui.pages.customers;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.WebFindBy;
-import com.leroy.core.web_elements.general.*;
+import com.leroy.core.web_elements.general.Button;
+import com.leroy.core.web_elements.general.EditBox;
+import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.pages.common.MenuPage;
+import com.leroy.magportal.ui.webelements.commonelements.PuzComboBox;
 import io.qameta.allure.Step;
 
 public class CustomerPage extends MenuPage {
@@ -14,21 +16,15 @@ public class CustomerPage extends MenuPage {
     public static final String CLIENT_CARD_OPTION = "Карта клиента";
     public static final String EMAIL_OPTION = "Email";
 
-    private String SPECIFIC_SEARCH_OPTION_XPATH = "//div[contains(@class, 'CustomerListSearch__select-menu-item') and contains(.,'%s')]";
-
     public CustomerPage(Context context) {
         super(context);
     }
 
-    @WebFindBy(xpath = "//span[text()='"+HEADER+"']", metaName = "Заголовок страницы")
+    @WebFindBy(xpath = "//span[text()='" + HEADER + "']", metaName = "Заголовок страницы")
     private Element headerLbl;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'lmui-View lmui-Select')]/span",
-            metaName = "Текст обозначающий выбранный тип поиска")
-    private Element searchTypeLbl;
-
-    Element showSearchOptionsBtn = E("//div[contains(@class, 'CustomerListSearch__mode-opener')]//span[contains(@class, 'Icon')]",
-            "Кнопка для отображения опций поиска");
+    @WebFindBy(xpath = "//div[contains(@class, 'Common-Filter__select')]", metaName = "Контрол выбора типа поиска")
+    PuzComboBox searchTypeComboBox;
 
     @WebFindBy(xpath = "//button[contains(@class, 'lmui-Input__icon_left-xl-1 with-action')]",
             metaName = "Кнопка поиска")
@@ -39,7 +35,9 @@ public class CustomerPage extends MenuPage {
     private Button scanBarCodeBtn;
 
     @WebFindBy(xpath = "//input[@name='phone']", metaName = "Поле для ввода телефона")
-    private EditBox searchFld;
+    private EditBox searchPhoneFld;
+    @WebFindBy(xpath = "//input[@name='email']", metaName = "Поле для ввода email")
+    private EditBox searchEmailFld;
 
     @WebFindBy(xpath = "//button[descendant::span[text()='Создать клиента']]",
             metaName = "Кнопка 'Создать клиента'")
@@ -69,14 +67,16 @@ public class CustomerPage extends MenuPage {
     }
 
     @Step("Выберите тип поиска по {text}")
-    public CustomerPage selectSearchOption(String text) {
-        showSearchOptionsBtn.click();
-        E(String.format(SPECIFIC_SEARCH_OPTION_XPATH, text)).click();
+    public CustomerPage selectSearchOption(String text) throws Exception{
+        searchTypeComboBox.selectOption(text);
         return this;
     }
 
     @Step("Введите {text} в поле поиска и нажмите иконку поиска")
     public CustomerPage searchClient(String text) {
+        EditBox searchFld = searchPhoneFld.isVisible()? searchPhoneFld : searchEmailFld;
+        if (text.startsWith("+7"))
+            text = text.substring(2);
         searchFld.clear();
         searchFld.click();
         searchFld.fill(text);
@@ -89,9 +89,9 @@ public class CustomerPage extends MenuPage {
 
     public CustomerPage verifyRequiredElements() {
         softAssert.isElementTextEqual(headerLbl, HEADER);
-        softAssert.isElementVisible(searchTypeLbl);
+        softAssert.isElementVisible(searchTypeComboBox);
         softAssert.isElementVisible(searchBtn);
-        softAssert.isElementVisible(searchFld);
+        softAssert.isElementVisible(searchPhoneFld);
         softAssert.isElementVisible(scanBarCodeBtn);
         softAssert.isElementVisible(createClientBtn);
         softAssert.verifyAll();
@@ -100,7 +100,8 @@ public class CustomerPage extends MenuPage {
 
     @Step("Проверить, что текущий тип поиска - {text}")
     public CustomerPage shouldCurrentSearchTypeLabelIs(String text) {
-        anAssert.isEquals(searchTypeLbl.getText(), text, "Текущий тип поиска должен быть %s");
+        anAssert.isEquals(searchTypeComboBox.getSelectedOptionText(), text,
+                "Текущий тип поиска должен быть %s");
         return this;
     }
 
@@ -109,12 +110,12 @@ public class CustomerPage extends MenuPage {
         softAssert.isFalse(isAlertErrorMessageVisible(), "Не должно быть видно никаких ошибок");
         notFoundFormCreateClientBtn.waitForVisibility(tiny_timeout);
         softAssert.isElementVisible(E("contains(Не найдено)"));
-        if (searchTypeLbl.getText().equals(PHONE_OPTION)) {
+        if (searchTypeComboBox.getSelectedOptionText().equals(PHONE_OPTION)) {
             softAssert.isElementTextEqual(E("contains(Клиента с таким телефоном)"),
-                    "Клиента с таким телефоном не найдено. Ты можешь создать нового клиента.");
+                    "Клиента с таким телефоном не найдено.");
         } else {
             softAssert.isElementTextEqual(E("contains(Клиента с таким email)"),
-                    "Клиента с таким email’ом не найдено. Ты можешь создать нового клиента.");
+                    "Клиента с таким email’ом не найдено.");
         }
         softAssert.isElementVisible(notFoundFormCreateClientBtn);
         softAssert.verifyAll();
