@@ -6,6 +6,9 @@ import com.leroy.core.BaseUiTest;
 import com.leroy.core.SessionData;
 import com.leroy.core.TestContext;
 import com.leroy.core.api.Module;
+import com.leroy.core.asserts.CustomAssert;
+import com.leroy.core.asserts.CustomSoftAssert;
+import com.leroy.core.testrail.helpers.StepLog;
 import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.api.ApiClientProvider;
 import com.leroy.umbrella_extension.authorization.AuthClient;
@@ -26,7 +29,12 @@ public class MagPortalBaseTest extends BaseUiTest {
 
     @Override
     protected void cleanContext() {
-        context = null;
+        if (context != null) {
+            context.setTcId(null);
+            context.setLog(null);
+            context.setAnAssert(null);
+            context.setSoftAssert(null);
+        }
     }
 
     @Override
@@ -37,15 +45,25 @@ public class MagPortalBaseTest extends BaseUiTest {
         sessionData.setUserShopId(EnvConstants.BASIC_USER_SHOP_ID);
         sessionData.setUserDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);
         if (isNeedAccessToken()) {
-            sessionData.setAccessToken(authClient.getAccessToken(EnvConstants.BASIC_USER_LDAP,
-                    EnvConstants.BASIC_USER_PASS));
+            sessionData.setAccessToken(getAccessToken());
         }
         context.setSessionData(sessionData);
         apiClientProvider.setSessionData(sessionData);
     }
 
+    @Override
+    protected void updateContext(WebDriver driver, CustomSoftAssert customSoftAssert, CustomAssert customAssert, StepLog stepLog, String tcId) {
+        super.updateContext(driver, customSoftAssert, customAssert, stepLog, tcId);
+        context.setSessionData(sessionData);
+    }
+
     protected boolean isNeedAccessToken() {
         return false;
+    }
+
+    protected String getAccessToken() {
+        return authClient.getAccessToken(EnvConstants.BASIC_USER_LDAP,
+                EnvConstants.BASIC_USER_PASS);
     }
 
     @Override

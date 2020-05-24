@@ -5,7 +5,7 @@ import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.ui.Context;
-import com.leroy.magportal.ui.models.customers.CustomerData;
+import com.leroy.magportal.ui.models.customers.CustomerWebData;
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import io.qameta.allure.Step;
 import org.apache.commons.lang3.StringUtils;
@@ -45,6 +45,7 @@ public class CustomerPersonalInfoPage extends MenuPage {
     @Override
     public void waitForPageIsLoaded() {
         headerClientNameLbl.waitForVisibility();
+        genderObj.waitForVisibility();
         headerLbl.waitUntilTextIsEqualTo(HEADER, timeout);
     }
 
@@ -58,7 +59,7 @@ public class CustomerPersonalInfoPage extends MenuPage {
 
     // Verifications
     @Step("Проверить, что на странице отображается следующая информация о клиенте: {data}")
-    public CustomerPersonalInfoPage shouldCustomerDataOnPageIs(CustomerData data) {
+    public CustomerPersonalInfoPage shouldCustomerDataOnPageIs(CustomerWebData data) {
         if (data.getFirstName() != null)
             softAssert.isEquals(headerClientNameLbl.getText(), StringUtils.capitalize(data.getFirstName()),
                     "Неверное Имя клиента");
@@ -80,8 +81,10 @@ public class CustomerPersonalInfoPage extends MenuPage {
         return this;
     }
 
+    @Step("Проверить, что среди недавно выбранных клиентов {index}-ый с именем {name} и телефоном {phone}")
     public CustomerPersonalInfoPage shouldMyRecentlyCustomerIs(int index, String name, String phone)
             throws Exception {
+        anAssert.isTrue(myRecentlyCustomers.getCount() > 0, "Не отображаются 'Недавние клиенты'");
         Element customerElem = myRecentlyCustomers.get(index);
         softAssert.isEquals(customerElem.findChildElement("./div/span").getText(), StringUtils.capitalize(name),
                 "Имя " + index + "-ого клиента неверно из списка 'Мои недавние клиенты'");

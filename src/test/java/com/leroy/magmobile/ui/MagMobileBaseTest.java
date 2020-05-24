@@ -2,6 +2,9 @@ package com.leroy.magmobile.ui;
 
 import com.leroy.core.BaseUiTest;
 import com.leroy.core.SessionData;
+import com.leroy.core.asserts.CustomAssert;
+import com.leroy.core.asserts.CustomSoftAssert;
+import com.leroy.core.testrail.helpers.StepLog;
 import org.openqa.selenium.WebDriver;
 
 public class MagMobileBaseTest extends BaseUiTest {
@@ -17,6 +20,12 @@ public class MagMobileBaseTest extends BaseUiTest {
     }
 
     @Override
+    protected void updateContext(WebDriver driver, CustomSoftAssert customSoftAssert, CustomAssert customAssert, StepLog stepLog, String tcId) {
+        super.updateContext(driver, customSoftAssert, customAssert, stepLog, tcId);
+        context.setSessionData(sessionData);
+    }
+
+    @Override
     protected Context getContext() {
         return context;
     }
@@ -24,6 +33,12 @@ public class MagMobileBaseTest extends BaseUiTest {
 
     @Override
     protected void cleanContext() {
-        context = null;
+        if (context != null) {
+            context.setTcId(null);
+            context.setLog(null);
+            context.setAnAssert(null);
+            context.setSoftAssert(null);
+            context.setDriver(null);
+        }
     }
 }

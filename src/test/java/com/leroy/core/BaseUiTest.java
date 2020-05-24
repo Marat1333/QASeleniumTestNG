@@ -25,8 +25,9 @@ public abstract class BaseUiTest extends EnvironmentConfigurator {
 
     protected abstract TestContext getContext();
 
-    protected void updateContext(
+    protected void updateContext(WebDriver driver,
             CustomSoftAssert customSoftAssert, CustomAssert customAssert, StepLog stepLog, String tcId) {
+        getContext().setDriver(driver);
         getContext().setSoftAssert(customSoftAssert);
         getContext().setAnAssert(customAssert);
         getContext().setLog(stepLog);
@@ -49,7 +50,7 @@ public abstract class BaseUiTest extends EnvironmentConfigurator {
         softAssert = new CustomSoftAssert(log);
         anAssert = new CustomAssert(log);
         String tcId = getTestCaseId(method.getAnnotation(Test.class).description());
-        updateContext(softAssert, anAssert, log, tcId);
+        updateContext(driver, softAssert, anAssert, log, tcId);
         if (TestRailListener.STEPS_INFO != null)
             TestRailListener.STEPS_INFO.put(tcId, log.getStepResults());
     }

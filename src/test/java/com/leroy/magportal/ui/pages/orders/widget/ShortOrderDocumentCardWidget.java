@@ -9,6 +9,7 @@ import com.leroy.magportal.ui.constants.OrderConst;
 import com.leroy.magportal.ui.models.salesdoc.ShortOrderDocWebData;
 import com.leroy.magportal.ui.webelements.CardWebWidget;
 import com.leroy.utils.DateTimeUtil;
+import com.leroy.utils.ParserUtil;
 import org.openqa.selenium.WebDriver;
 
 import java.time.LocalDateTime;
@@ -37,7 +38,7 @@ public class ShortOrderDocumentCardWidget extends CardWebWidget<ShortOrderDocWeb
     ElementList<Element> icons;
 
     public String getNumber() {
-        return number.getText();
+        return ParserUtil.strWithOnlyDigits(number.getText());
     }
 
     public String getStatus() {
