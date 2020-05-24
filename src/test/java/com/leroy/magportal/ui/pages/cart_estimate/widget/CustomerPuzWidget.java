@@ -22,7 +22,11 @@ public class CustomerPuzWidget extends CardWebWidget<SimpleCustomerData> {
     @WebFindBy(xpath = VIEW_CARD_XPATH + "/div/div[2]//span", metaName = "Номер телефона")
     Element phoneNumber;
 
-    @WebFindBy(xpath = VIEW_CARD_XPATH + "/div/div[2]/div[2]//span", metaName = "email")
+    @WebFindBy(xpath = VIEW_CARD_XPATH + "//div[contains(@class, 'lmui-View lmui-View-mt-gap2')]//span",
+            metaName = "Номер карты")
+    Element cardNumber;
+
+    @WebFindBy(xpath = VIEW_CARD_XPATH + "//span[contains(text(), '@')]", metaName = "email")
     Element email;
 
     public String getName() {
@@ -37,6 +41,10 @@ public class CustomerPuzWidget extends CardWebWidget<SimpleCustomerData> {
         return email.getText();
     }
 
+    public String getCardNumber() {
+        return ParserUtil.strWithOnlyDigits(cardNumber.getText());
+    }
+
     @Override
     public SimpleCustomerData collectDataFromPage() {
         if (!this.isVisible())
@@ -46,6 +54,8 @@ public class CustomerPuzWidget extends CardWebWidget<SimpleCustomerData> {
             customerData.setEmail(email.getText());
         if (phoneNumber.isVisible())
             customerData.setPhoneNumber(getPhone());
+        if (cardNumber.isVisible())
+            customerData.setCardNumber(getCardNumber());
         customerData.setName(name.getText());
         return customerData;
     }

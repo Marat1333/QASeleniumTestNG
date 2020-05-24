@@ -29,7 +29,7 @@ public class OrderWebData {
     public void removeProduct(int index, boolean recalculateOrder) {
         if (recalculateOrder) {
             ProductOrderCardWebData removeProduct = productCardDataList.get(index);
-            totalWeight = ParserUtil.sum(totalWeight, - removeProduct.getWeight(), 2);
+            totalWeight = ParserUtil.plus(totalWeight, -removeProduct.getWeight(), 2);
             totalPrice -= removeProduct.getTotalPrice();
             productCount--;
         }
@@ -44,11 +44,11 @@ public class OrderWebData {
             double newPrice = quantity.intValue() * productData.getPrice();
             double newWeight = weightOneProduct * quantity.intValue();
             double diffTotalPrice = newPrice - productData.getTotalPrice();
-            double diffTotalWeight = newWeight - productData.getWeight();
+            double diffTotalWeight = ParserUtil.minus(newWeight, productData.getWeight(), 2);
             productData.setTotalPrice(newPrice);
             productData.setWeight(newWeight);
-            totalPrice+=diffTotalPrice;
-            totalWeight+=diffTotalWeight;
+            totalPrice += diffTotalPrice;
+            totalWeight = ParserUtil.plus(totalWeight, diffTotalWeight, 2);
         }
     }
 
