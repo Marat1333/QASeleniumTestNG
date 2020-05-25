@@ -2,15 +2,10 @@ package com.leroy.magmobile.ui.pages.sales.basket;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.sales.estimate.ActionWithProductCardModalPage;
 import io.qameta.allure.Step;
 
 public class CartActionWithProductCardModalPage extends ActionWithProductCardModalPage {
-
-    public CartActionWithProductCardModalPage(Context context) {
-        super(context);
-    }
 
     @AppFindBy(text = "Заменить товар на аналог")
     Element replaceWithAnalog;
