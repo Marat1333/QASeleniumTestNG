@@ -2,15 +2,10 @@ package com.leroy.magmobile.ui.pages.sales.product_card.modal;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.sales.AddProductPage;
 import io.qameta.allure.Step;
 
 public class ActionWithProductModalPage extends CommonActionWithProductModalPage {
-
-    public ActionWithProductModalPage(Context context) {
-        super(context);
-    }
 
     @AppFindBy(text = "Добавить в документ продажи")
     Element addIntoSalesDocumentBtn;
@@ -45,10 +40,10 @@ public class ActionWithProductModalPage extends CommonActionWithProductModalPage
         boolean draftsPresent = addIntoSalesDocumentCountLbl.isVisible();
         clickAddIntoSalesDocumentButton();
         if (draftsPresent)
-            return new AddIntoSalesDocumentModalPage(context)
+            return new AddIntoSalesDocumentModalPage()
                     .clickCreateSalesDocumentBtn();
         else
-            return new AddProductPage(context);
+            return new AddProductPage();
     }
 
     // VERIFICATIONS
