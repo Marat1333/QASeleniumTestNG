@@ -1,14 +1,9 @@
 package com.leroy.core.pages;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.web_elements.general.Element;
 import org.openqa.selenium.By;
 
 public class ChromeCertificateErrorPage extends BaseAppPage {
-
-    public ChromeCertificateErrorPage(TestContext context) {
-        super(context);
-    }
 
     // For NATIVE APP context
     private Element advancedBtn = new Element(driver, By.xpath("//*[@resource-id='details-button']"));

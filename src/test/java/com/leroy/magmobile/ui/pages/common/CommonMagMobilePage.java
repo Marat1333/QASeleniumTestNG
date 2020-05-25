@@ -1,25 +1,16 @@
 package com.leroy.magmobile.ui.pages.common;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 
 public class CommonMagMobilePage extends BaseAppPage {
 
-    protected Context context;
-
-    public CommonMagMobilePage(Context context) {
-        super(context, false);
+    public CommonMagMobilePage() {
+        super(false);
         shouldNotAnyErrorVisible();
         waitForPageIsLoaded();
         shouldNotAnyErrorVisible();
-    }
-
-    @Override
-    public void initContext(TestContext context) {
-        this.context = (Context) context;
     }
 
     @AppFindBy(accessibilityId = "ErrorNotification")
