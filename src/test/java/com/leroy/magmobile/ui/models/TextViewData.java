@@ -1,18 +1,15 @@
 package com.leroy.magmobile.ui.models;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode(callSuper = false)
+@Data
 public class TextViewData extends CardWidgetData {
 
     private String text;
 
     public TextViewData(String text) {
-        this.text = text;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
         this.text = text;
     }
 

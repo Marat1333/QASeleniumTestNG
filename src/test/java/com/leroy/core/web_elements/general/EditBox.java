@@ -38,11 +38,22 @@ public class EditBox extends Element {
     }
 
     public void clear() {
+        clear(false);
+    }
+
+    public void clear(boolean useBackSpace) {
         initialWebElementIfNeeded();
         if (DriverFactory.isAppProfile())
             click();
         waitForVisibility();
-        webElement.clear();
+        if (!useBackSpace)
+            webElement.clear();
+        else {
+            int length = webElement.getAttribute("value").length();
+            for (int i = 0; i < length; i++) {
+                webElement.sendKeys(Keys.BACK_SPACE);
+            }
+        }
     }
 
     @Override
@@ -66,6 +77,7 @@ public class EditBox extends Element {
         } else {
             for (int i = 0; i < text.length(); ++i) {
                 this.fill(Character.toString(text.charAt(i)));
+
             }
         }
         return this;

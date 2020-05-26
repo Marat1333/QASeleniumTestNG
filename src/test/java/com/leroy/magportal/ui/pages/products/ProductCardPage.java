@@ -1,18 +1,16 @@
 package com.leroy.magportal.ui.pages.products;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.WebFindBy;
-import com.leroy.core.configuration.Log;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.pages.common.MenuPage;
+import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
-import java.util.NoSuchElementException;
-
 public class ProductCardPage extends MenuPage {
-    public ProductCardPage(TestContext context) {
+    public ProductCardPage(Context context) {
         super(context);
     }
 
@@ -32,10 +30,10 @@ public class ProductCardPage extends MenuPage {
     Element nomenclatureBadge;
 
     @WebFindBy(xpath = "//span[contains(@class, 'Badge')][2]")
-    private Element gammaBadge;
+    Element gammaBadge;
 
     @WebFindBy(xpath = "//span[contains(@class, 'Badge')][3]")
-    private Element categoryBadge;
+    Element categoryBadge;
 
     @WebFindBy(xpath = "//p[contains(text(), 'Характеристики')]/ancestor::div[3]/preceding-sibling::span")
     Element productTitle;
@@ -45,6 +43,11 @@ public class ProductCardPage extends MenuPage {
 
     @WebFindBy(xpath = "//span[contains(text(),'ВСЕ ОПИСАНИЕ')]")
     Element showFullDescription;
+
+    @Override
+    public void waitForPageIsLoaded() {
+        lmCodeLbl.waitForVisibility();
+    }
 
     /*@Step("Вернуться к результатам поиска")
     public SearchProductPage backToSearchResult() {
@@ -82,4 +85,25 @@ public class ProductCardPage extends MenuPage {
     }
     */
 
+    //Verifications
+
+    @Step("Проверить наличие поискового критерия в карте товара")
+    public ProductCardPage shouldProductCardContainsText(String text) {
+        if (text.matches("\\D+")) {
+            anAssert.isElementTextContains(productTitle, text);
+        } else {
+            String barCode = ParserUtil.strWithOnlyDigits(barCodeLbl.getText());
+            anAssert.isTrue(lmCodeLbl.getText().contains(text) ||
+                            barCode.equals(text),
+                    "Карта товара не содержит критерий поиска " + text);
+        }
+        return this;
+    }
+
+    @Step("Проверить, что страница 'Карта товара' отображается корректно")
+    public ProductCardPage verifyRequiredElements() {
+        softAssert.areElementsVisible(gammaBadge, productTitle, lmCodeLbl);
+        softAssert.verifyAll();
+        return this;
+    }
 }

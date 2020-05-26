@@ -1,0 +1,25 @@
+[
+  {
+    "name": "Ignored tests",
+    "matchedStatuses": ["skipped"]
+  },
+  {
+    "name": "Mashup issues",
+    "matchedStatuses": ["failed"],
+    "messageRegex": ".*stack.*"
+  },
+  {
+    "name": "Backend issues",
+    "matchedStatuses": ["failed"],
+    "messageRegex": ".*(Status: 400|\"error\":\").*"
+  },
+  {
+    "name": "DateTime format was changed",
+    "matchedStatuses": ["broken"],
+    "messageRegex": ".*Failed to deserialize java.time.ZonedDateTime.*"
+  },
+  {
+    "name": "All failed tests",
+    "matchedStatuses": ["failed", "broken"]
+  }
+]

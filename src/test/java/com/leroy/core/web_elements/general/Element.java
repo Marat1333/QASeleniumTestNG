@@ -648,7 +648,7 @@ public class Element extends BaseWidget {
         return Color.fromString(getCssValue("border-color"));
     }
 
-    public Color getColor() throws Exception {
+    public Color getColor() {
         return Color.fromString(getCssValue("color"));
     }
 
@@ -866,5 +866,19 @@ public class Element extends BaseWidget {
      */
     public boolean isElementContentScrolledToRight() {
         return getContentHorizontalScrollPositionJs() >= getContentScrollWidthJs() - getClientWidthJs();
+    }
+
+    /**
+     * Wait until attribute is equal to specific value
+     * @param attributeName - what is attribute
+     * @param attributeValue - what value should be
+     */
+    public void waitUntilAttributeIsEqual(String attributeName, String attributeValue) {
+        WebDriverWait wait = new WebDriverWait(this.driver, timeout);
+        try {
+            wait.until((ExpectedCondition<Boolean>) driverObject -> !this.getAttribute(attributeName).equals(attributeValue));
+        } catch (TimeoutException e) {
+            Log.warn(String.format("waitUntilAttributeIsEqual failed (tried for %d second(s))", timeout));
+        }
     }
 }

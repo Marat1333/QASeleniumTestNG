@@ -101,7 +101,7 @@ public class AndroidHorizontalScrollView<T extends CardWidgetData> extends BaseW
                     "new UiScrollable(new UiSelector().scrollable(true)).setAsHorizontalList()" +
                             ".scrollTextIntoView(\"" + text + "\");");
         } else {
-            // TODO
+            // to do
         }
         return this;
     }
@@ -138,7 +138,8 @@ public class AndroidHorizontalScrollView<T extends CardWidgetData> extends BaseW
         List<T> currentElementsDataList = new ArrayList<>();
         int prevSize;
         int currSize;
-        while (true) {
+        int i = 0;
+        while (i < 10) {
             ElementList<CardWidget<T>> elementsList = this.findChildElements(eachElementXpath, eachElementClass);
             prevSize = uniqueContent.size();
             for (CardWidget<T> widget : elementsList) {
@@ -159,6 +160,7 @@ public class AndroidHorizontalScrollView<T extends CardWidgetData> extends BaseW
                 simpleHorizontalScroll(ScrollDirection.RIGHT);
             else
                 simpleHorizontalScrollByUIAutomator(ScrollDirection.RIGHT);
+            i++;
         }
 
         return uniqueContent;

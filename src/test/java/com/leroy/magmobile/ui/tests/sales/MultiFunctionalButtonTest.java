@@ -15,7 +15,7 @@ import com.leroy.magmobile.ui.pages.work.OrderPage;
 import com.leroy.magmobile.ui.pages.work.StockProductCardPage;
 import com.leroy.magmobile.ui.pages.work.StockProductsPage;
 import com.leroy.magmobile.ui.pages.work.modal.QuantityProductsForWithdrawalModalPage;
-import com.leroy.utils.Converter;
+import com.leroy.utils.ParserUtil;
 import org.apache.commons.lang.RandomStringUtils;
 import org.testng.annotations.Test;
 
@@ -45,57 +45,57 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
         MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
 
         // Step #1
-        log.step("Нажмите в поле поиска");
+        step("Нажмите в поле поиска");
         SearchProductPage searchPage = mainProductAndServicesPage.clickSearchBar(false)
                 .verifyRequiredElements();
 
         // Step #2
-        log.step("Введите ЛМ код товара (напр., " + lmCode + ")");
+        step("Введите ЛМ код товара (напр., " + lmCode + ")");
         searchPage.enterTextInSearchFieldAndSubmit(lmCode);
         AddServicePage addServicePage = new AddServicePage(context).verifyRequiredElements()
                 .shouldFieldsAre("", AddServicePage.Constants.DEFAULT_QUANTITY_VALUE,
                         AddServicePage.Constants.EMPTY_TOTAL_PRICE_VALUE);
 
         // Step #3
-        log.step("Нажмите на поле Цена за единицу услуги и введите значение цены");
+        step("Нажмите на поле Цена за единицу услуги и введите значение цены");
         String testPrice = RandomStringUtils.randomNumeric(3);
         addServicePage.enterValueInPriceServiceField(testPrice)
                 .shouldFieldsAre(testPrice, AddServicePage.Constants.DEFAULT_QUANTITY_VALUE,
                         testPrice);
 
         // Step #4
-        log.step("Нажмите на поле Количество для продажи и введите новое значение количества");
+        step("Нажмите на поле Количество для продажи и введите новое значение количества");
         String testQuantity = String.valueOf(new Random().nextInt(9) + 1);
         addServicePage.enterValueInQuantityServiceField(testQuantity)
                 .shouldFieldsAre(testPrice, testQuantity,
                         String.valueOf(Integer.parseInt(testPrice) * Integer.parseInt(testQuantity)));
 
         // Step #5
-        log.step("Нажмите на кнопку Добавить в документ продажи.");
+        step("Нажмите на кнопку Добавить в документ продажи.");
         BasketStep1Page basketStep1Page = addServicePage.clickAddIntoDocumentSalesButton()
                 .verifyRequiredElements();
         String documentNumber = basketStep1Page.getDocumentNumber();
 
         // Step #6
-        log.step("Нажмите Далее к параметрам");
+        step("Нажмите Далее к параметрам");
         BasketStep2Page basketStep2Page = basketStep1Page.clickNextParametersButton()
                 .verifyRequiredElements()
                 .shouldFieldsHaveDefaultValues();
 
         // Step #7
-        log.step("Нажмите на кнопку Создать документ продажи");
+        step("Нажмите на кнопку Создать документ продажи");
         String testPinCode = getValidPinCode();
         BasketStep3Page basketStep3Page = basketStep2Page.clickCreateSalesDocumentButton()
                 .verifyRequiredElements();
 
         // Step #8
-        log.step("Введите пятизначный PIN-код, не использованный ранее");
+        step("Введите пятизначный PIN-код, не использованный ранее");
         basketStep3Page.enterPinCode(testPinCode)
                 .shouldPinCodeFieldIs(testPinCode)
                 .shouldSubmitButtonIsActive();
 
         // Step #9
-        log.step("Нажмите кнопку Подтвердить");
+        step("Нажмите кнопку Подтвердить");
         SubmittedSalesDocumentPage submittedSalesDocumentPage = basketStep3Page.clickSubmitButton();
         submittedSalesDocumentPage.verifyRequiredElements()
                 .shouldPinCodeIs(testPinCode)
@@ -116,18 +116,18 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
                         null, new ProductCardData(lmCode), ProductTypes.NORMAL);
 
         // Step #4
-        log.step("Нажмите Добавить в документ продажи");
+        step("Нажмите Добавить в документ продажи");
         actionWithProductModalPage.clickAddIntoSalesDocumentButton();
         AddIntoSalesDocumentModalPage modalPage = new AddIntoSalesDocumentModalPage(context)
                 .verifyRequiredElements();
 
         // Step #5
-        log.step("Нажмите на любой элемент списка документов продажи");
+        step("Нажмите на любой элемент списка документов продажи");
         AddProductPage addProductPage = modalPage.selectDraftWithNumber(documentNumber)
                 .verifyRequiredElements();
 
         // Step #6
-        log.step("Нажмите Добавить");
+        step("Нажмите Добавить");
         BasketStep1Page basketStep1Page = addProductPage.clickAddButton();
         basketStep1Page.verifyRequiredElements()
                 .shouldDocumentNumberIs(documentNumber)
@@ -148,39 +148,39 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
                         ProductTypes.NORMAL);
 
         // Step 4
-        log.step("Нажмите на кнопку Добавить в заявку на Отзыв с RM");
+        step("Нажмите на кнопку Добавить в заявку на Отзыв с RM");
         actionWithProductModalPage.clickAddIntoWithdrawalOrderFromRMButton();
         StockProductCardPage stockProductCardPage = new StockProductCardPage(context);
         stockProductCardPage.verifyRequiredElements();
 
         // Step 5
-        log.step("Нажмите на нкопку Отозвать");
+        step("Нажмите на нкопку Отозвать");
         String withdrawalCountItems = String.valueOf(new Random().nextInt(10) + 1);
         QuantityProductsForWithdrawalModalPage modalPage = stockProductCardPage.clickWithdrawalBtnForEnterQuantity()
                 .verifyRequiredElements()
                 .shouldSubmitButtonActivityIs(false);
 
         // Step 6
-        log.step("Ввести значение количества товара на отзыв");
+        step("Ввести значение количества товара на отзыв");
         modalPage.enterCountOfItems(withdrawalCountItems)
                 .shouldWithdrawalButtonHasQuantity(withdrawalCountItems)
                 .shouldSubmitButtonActivityIs(true);
 
         // Step 7
-        log.step("Нажать на кнопку Отозвать");
+        step("Нажать на кнопку Отозвать");
         StockProductsPage stockProductsPage = modalPage.clickSubmitBtn()
                 .verifyRequiredElements()
                 .shouldCountOfSelectedProductsIs(1);
 
         // Step 8
-        log.step("Нажмите Далее к параметрам заявки");
+        step("Нажмите Далее к параметрам заявки");
         OrderPage orderPage = stockProductsPage.clickSubmitBtn()
                 .verifyRequiredElements()
                 .shouldFieldsAreNotEmptyExceptCommentField();
         String orderNumber = orderPage.getOrderNumber();
 
         // Step 9
-        log.step("Нажмите кнопку Отправить заявку");
+        step("Нажмите кнопку Отправить заявку");
         orderPage.clickSubmitBtn()
                 .verifyRequiredElements()
                 .clickSubmitBtn()
@@ -202,28 +202,28 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
                         mainProductAndServicesPage, productData, ProductTypes.NORMAL, true);
 
         // Step #4
-        log.step("Нажмите Оформить продажу");
+        step("Нажмите Оформить продажу");
         SaleTypeModalPage modalPage = actionWithProductModalPage.clickMakeSaleButton()
                 .verifyRequiredElementsWhenFromProductCard(false);
 
         // Step #5
-        log.step("Нажмите Корзина");
+        step("Нажмите Корзина");
         AddProduct35Page addProduct35Page = modalPage.clickBasketMenuItem();
         addProduct35Page.verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_BASKET);
-        String expectedTotalPrice = Converter.strToStrWithoutDigits(addProduct35Page.getPrice());
+        String expectedTotalPrice = ParserUtil.strWithOnlyDigits(addProduct35Page.getPrice());
 
         // Step #6
-        log.step("Нажмите Добавить в корзину");
+        step("Нажмите Добавить в корзину");
         Basket35Page basket35Page = addProduct35Page.clickAddIntoBasketButton()
                 .verifyRequiredElements(new Basket35Page.PageState().setProductIsAdded(true));
 
         // Step #7
-        log.step("Нажмите Оформить");
+        step("Нажмите Оформить");
         ProcessOrder35Page processOrder35Page = basket35Page.clickMakeSalesButton()
                 .verifyRequiredElements();
 
         // Step #8
-        log.step("Заполните поля Имя и Фамилия, Телефон, PIN-код для оплаты");
+        step("Заполните поля Имя и Фамилия, Телефон, PIN-код для оплаты");
         OrderDetailsData orderDetailsData = new OrderDetailsData().setRequiredRandomData();
         orderDetailsData.setPinCode(getValidPinCode());
         orderDetailsData.setDeliveryType(OrderDetailsData.DeliveryType.PICKUP);
@@ -231,14 +231,14 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
                 .shouldFormFieldsAre(orderDetailsData);
 
         // Step #9
-        log.step("Нажмите на кнопку Подтвердить заказ");
+        step("Нажмите на кнопку Подтвердить заказ");
         SubmittedSalesDocument35Page submittedDocument35Page = processOrder35Page.clickSubmitButton()
                 .verifyRequiredElements()
                 .shouldPinCodeIs(orderDetailsData.getPinCode());
         String documentNumber = submittedDocument35Page.getDocumentNumber(true);
 
         // Step #10
-        log.step("Нажмите на кнопку Перейти в список документов");
+        step("Нажмите на кнопку Перейти в список документов");
         SalesDocumentData expectedSalesDocument = new SalesDocumentData();
         expectedSalesDocument.setPrice(expectedTotalPrice);
 
@@ -250,7 +250,7 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
                 .shouldSalesDocumentIsPresentAndDataMatches(expectedSalesDocument);
 
         // Additional Step
-        log.step("(Доп шаг) Уходим со страницы и возвращаемся обратно");
+        step("(Доп шаг) Уходим со страницы и возвращаемся обратно");
         expectedSalesDocument.setPin(orderDetailsData.getPinCode());
         expectedSalesDocument.setDocumentState(null);
         salesDocumentsPage.clickBackButton();
@@ -260,7 +260,7 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
         salesDocumentsPage.shouldSalesDocumentIsPresentAndDataMatches(expectedSalesDocument);
 
         // Clean up
-        log.step("(Доп шаг) Отменяем заказ через API запрос");
+        step("(Доп шаг) Отменяем заказ через API запрос");
         cancelOrder(documentNumber);
     }
 
@@ -281,23 +281,23 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
         }
 
         // Step #1
-        log.step("Нажмите в поле поиска");
+        step("Нажмите в поле поиска");
         SearchProductPage searchPage = mainProductAndServicesPage.clickSearchBar(false);
         searchPage.shouldKeyboardVisible();
         searchPage.verifyRequiredElements();
 
         // Step #2
-        log.step("Введите ЛМ код товара (напр., " + productData.getLmCode() + ")");
+        step("Введите ЛМ код товара (напр., " + productData.getLmCode() + ")");
         searchPage.enterTextInSearchFieldAndSubmit(productData.getLmCode());
         ProductDescriptionPage productDescriptionPage = new ProductDescriptionPage(context)
                 .verifyRequiredElements(true);
 
         // Step #3
-        log.step("Нажмите на кнопку Действия с товаром");
+        step("Нажмите на кнопку Действия с товаром");
         productDescriptionPage.clickActionWithProductButton();
         if (is35Shop) {
             ActionWithProduct35ModalPage modalPage = new ActionWithProduct35ModalPage(context);
-            return (T) modalPage.verifyRequiredElements(productData.isHasAvailableStock(),
+            return (T) modalPage.verifyRequiredElements(productData.getHasAvailableStock(),
                     productType.equals(ProductTypes.AVS));
         } else {
             ActionWithProductModalPage modalPage = new ActionWithProductModalPage(context);
@@ -318,7 +318,7 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
                         productType);
 
         // Step #4
-        log.step("Нажмите Добавить в документ продажи");
+        step("Нажмите Добавить в документ продажи");
         // Если продукт имеет опцию Топ-ЕМ, тогда невозможно оформить документ продажи по нему
         if (productType.equals(ProductTypes.TOP_EM)) {
             actionWithProductModalPage.clickAddIntoSalesDocumentButton();
@@ -326,7 +326,7 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
                     new ImpossibleCreateDocumentWithTopEmModalPage(context).verifyRequiredElements();
 
             // Step #5
-            log.step("Нажмите на кнопку Понятно");
+            step("Нажмите на кнопку Понятно");
             modalScreen.clickSubmitButton()
                     .verifyRequiredElements(true);
         } else {
@@ -334,32 +334,32 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
                     .verifyRequiredElements();
 
             // Step #5
-            log.step("Нажмите Добавить");
+            step("Нажмите Добавить");
             BasketStep1Page basketStep1Page = addProductPage.clickAddButton()
                     .verifyRequiredElements();
             basketStep1Page.shouldDocumentTypeIs(BasketPage.Constants.DRAFT_DOCUMENT_TYPE);
             String documentNumber = basketStep1Page.getDocumentNumber();
 
             // Step #6
-            log.step("Нажмите Далее к параметрам");
+            step("Нажмите Далее к параметрам");
             BasketStep2Page basketStep2Page = basketStep1Page.clickNextParametersButton()
                     .verifyRequiredElements()
                     .shouldFieldsHaveDefaultValues();
 
             // Step #7
-            log.step("Нажмите кнопку Создать документ продажи");
+            step("Нажмите кнопку Создать документ продажи");
             BasketStep3Page basketStep3Page = basketStep2Page.clickCreateSalesDocumentButton()
                     .verifyRequiredElements();
 
             // Step #8
-            log.step("Введите пятизначный PIN-код, не использованный ранее");
+            step("Введите пятизначный PIN-код, не использованный ранее");
             String testPinCode = getValidPinCode();
             basketStep3Page.enterPinCode(testPinCode)
                     .shouldPinCodeFieldIs(testPinCode)
                     .shouldSubmitButtonIsActive();
 
             // Step #9
-            log.step("Нажмите кнопку Подтвердить");
+            step("Нажмите кнопку Подтвердить");
             basketStep3Page.clickSubmitButton()
                     .verifyRequiredElements()
                     .shouldPinCodeIs(testPinCode)

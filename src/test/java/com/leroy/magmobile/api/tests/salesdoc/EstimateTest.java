@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.EstimateClient;
+import com.leroy.magmobile.api.clients.MagMobileClient;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.SendEmailData;
@@ -41,7 +42,8 @@ public class EstimateTest extends BaseProjectApiTest {
     @Test(description = "C3311701 POST estimate product - HP")
     public void testCreateEstimate() {
         // Prepare request data
-        EstimateProductOrderData productOrderData = new EstimateProductOrderData(searchClient.getProducts(1).get(0));
+        EstimateProductOrderData productOrderData = new EstimateProductOrderData(
+                apiClientProvider.getProducts(1).get(0));
         productOrderData.setQuantity((double) new Random().nextInt(6) + 1);
 
         // Create
@@ -88,7 +90,7 @@ public class EstimateTest extends BaseProjectApiTest {
                 productOrderData);
         // Check update
         estimateData.increaseDocumentVersion();
-        estimateClient.assertThatGetResponseMatches(response, estimateData);
+        estimateClient.assertThatGetResponseMatches(response, estimateData, MagMobileClient.ResponseType.PUT);
 
         // Send get request and check again that the estimate has been updated
         Response<EstimateData> getResp = estimateClient.sendRequestGet(estimateData.getEstimateId());
@@ -99,8 +101,7 @@ public class EstimateTest extends BaseProjectApiTest {
     public void testDeleteEstimate() {
         if (estimateData == null)
             throw new IllegalArgumentException("estimate data hasn't been created");
-        Response<JsonNode> response = estimateClient.sendRequestDelete(estimateData.getEstimateId(),
-                estimateData.getDocumentVersion());
+        Response<JsonNode> response = estimateClient.sendRequestDelete(estimateData.getEstimateId());
         estimateClient.assertThatResponseChangeStatusIsOk(response);
 
         Response<EstimateData> getResponse = estimateClient.sendRequestGet(estimateData.getEstimateId());

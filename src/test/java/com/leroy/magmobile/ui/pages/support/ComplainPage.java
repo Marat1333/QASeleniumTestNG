@@ -1,6 +1,6 @@
 package com.leroy.magmobile.ui.pages.support;
 
-import com.leroy.constants.MagMobElementTypes;
+import com.leroy.magmobile.ui.constants.MagMobElementTypes;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;

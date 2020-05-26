@@ -232,11 +232,22 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
     }
 
     /**
+     * Wait until at least one element appears
+     */
+    public boolean waitUntilAtLeastOneElementIsPresent(int timeout) {
+        return waitUntilElementCountEqualsOrAbove(1, timeout);
+    }
+
+    public boolean waitUntilAtLeastOneElementIsPresent() {
+        return waitUntilElementCountEqualsOrAbove(1);
+    }
+
+    /**
      * Wait for count of elements is above or equals to the specified number
      *
      * @param expectedCount
      */
-    public boolean waitUntilElementCountEqualsOrAbove(int expectedCount) {
+    public boolean waitUntilElementCountEqualsOrAbove(int expectedCount, int timeout) {
         try {
             new WebDriverWait(this.driver, timeout).until((driver) -> {
                 try {
@@ -251,6 +262,10 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
                     "Expected condition failed: waitForElementCountEqualsOrAbove (tried for %d second(s))", timeout));
             return false;
         }
+    }
+
+    public boolean waitUntilElementCountEqualsOrAbove(int expectedCount) {
+        return waitUntilElementCountEqualsOrAbove(expectedCount, timeout);
     }
 
     /**
@@ -337,6 +352,20 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
     }
 
     /**
+     * Find Element by text
+     *
+     * @param text
+     */
+    public E findElemByText(String text, boolean isContains) throws Exception {
+        String xpath = getXpath() + (isContains ? "[contains(text(), '" + text + "')]" : "[text()='" + text + "']");
+        CustomLocator elementLocator = new CustomLocator(
+                By.xpath(xpath));
+        elementLocator.setCacheLookup(true);
+        return (E) getElementClass().getConstructor(WebDriver.class, CustomLocator.class).
+                newInstance(driver, elementLocator);
+    }
+
+    /**
      * Get count of visible elements
      *
      * @return int
@@ -398,7 +427,7 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
      */
     public List<String> getTextList(String pageSource) throws Exception {
         initWebElementListIfNeeded();
-        if (pageSource == null)
+        if (pageSource == null && DriverFactory.isAppProfile())
             pageSource = getPageSource();
         ArrayList<String> text = new ArrayList<>();
         for (E we : getElementList()) {

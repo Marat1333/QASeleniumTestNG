@@ -9,6 +9,7 @@ import com.leroy.magmobile.api.clients.*;
 import com.leroy.magmobile.api.data.catalog.*;
 import com.leroy.magmobile.api.data.customer.CustomerData;
 import com.leroy.magmobile.api.data.customer.CustomerListData;
+import com.leroy.magmobile.api.data.customer.CustomerResponseBodyData;
 import com.leroy.magmobile.api.data.customer.CustomerSearchFilters;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
@@ -30,8 +31,7 @@ import java.util.stream.Collectors;
 
 import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 
 public class ApiClientProvider {
 
@@ -72,9 +72,9 @@ public class ApiClientProvider {
     private Provider<SupportClient> supportClientProvider;
 
     private <J extends MagMobileClient> J getClient(Provider<J> provider) {
-        MagMobileClient cl = provider.get();
+        J cl = provider.get();
         cl.setSessionData(sessionData);
-        return (J) cl;
+        return cl;
     }
 
     public CatalogSearchClient getCatalogSearchClient() {
@@ -179,7 +179,7 @@ public class ApiClientProvider {
                         filtersData.getAvs() && item.getAvsDate() != null) {
                     if (filtersData.getHasAvailableStock() == null ||
                             (filtersData.getHasAvailableStock() && item.getAvailableStock() > 0 ||
-                                    !filtersData.getHasAvailableStock() && item.getAvailableStock() <=0)) {
+                                    !filtersData.getHasAvailableStock() && item.getAvailableStock() <= 0)) {
                         resultList.add(item);
                         i++;
                     }
@@ -194,6 +194,14 @@ public class ApiClientProvider {
     public List<ProductItemData> getProducts(int necessaryCount) {
         CatalogSearchFilter filter = new CatalogSearchFilter();
         filter.setHasAvailableStock(true);
+        return getProducts(necessaryCount, filter);
+    }
+
+    public List<ProductItemData> getProducts(int necessaryCount, boolean isAvs, boolean isTopEm) {
+        CatalogSearchFilter filter = new CatalogSearchFilter();
+        filter.setHasAvailableStock(true);
+        filter.setTopEM(isTopEm);
+        filter.setAvs(isAvs);
         return getProducts(necessaryCount, filter);
     }
 
@@ -247,12 +255,26 @@ public class ApiClientProvider {
     // ESTIMATE
 
     @Step("Создаем черновик Сметы через API")
-    public String createDraftEstimateAndGetCartId() {
-        String lmCode = getProducts(1).get(0).getLmCode();
-        CustomerData customerData = getAnyCustomer();
-        EstimateProductOrderData productOrderData = new EstimateProductOrderData();
-        productOrderData.setLmCode(lmCode);
-        productOrderData.setQuantity(1.0);
+    private String createDraftEstimateAndGetCartId(
+            CustomerData newCustomerData, List<String> lmCodes, int productCount) {
+        if (lmCodes == null)
+            lmCodes = getProductLmCodes(productCount);
+        CustomerData customerData;
+        if (newCustomerData == null) {
+            customerData = getAnyCustomer();
+        } else {
+            Response<CustomerResponseBodyData> respCustomer = getCustomerClient()
+                    .createCustomer(newCustomerData);
+            assertThat(respCustomer, successful());
+            customerData = respCustomer.asJson().getEntity();
+        }
+        List<EstimateProductOrderData> productOrderDataList = new ArrayList<>();
+        for (int i = 1; i <= lmCodes.size(); i++) {
+            EstimateProductOrderData productOrderData = new EstimateProductOrderData();
+            productOrderData.setLmCode(lmCodes.get(i - 1));
+            productOrderData.setQuantity((double) i);
+            productOrderDataList.add(productOrderData);
+        }
         EstimateCustomerData estimateCustomerData = new EstimateCustomerData();
         estimateCustomerData.setCustomerNumber(customerData.getCustomerNumber());
         estimateCustomerData.setFirstName(customerData.getFirstName());
@@ -260,15 +282,32 @@ public class ApiClientProvider {
         estimateCustomerData.setType("PERSON");
         estimateCustomerData.setRoles(Collections.singletonList("PAYER"));
         Response<EstimateData> estimateDataResponse = getEstimateClient().sendRequestCreate(
-                estimateCustomerData, productOrderData);
+                Collections.singletonList(estimateCustomerData), productOrderDataList);
         assertThat(estimateDataResponse, successful());
         return estimateDataResponse.asJson().getEstimateId();
     }
 
+    public String createDraftEstimateAndGetCartId(List<String> lmCodes) {
+        return createDraftEstimateAndGetCartId(null, lmCodes, 1);
+    }
+
+    public String createDraftEstimateAndGetCartId(
+            CustomerData newCustomerData, int productCount) {
+        return createDraftEstimateAndGetCartId(newCustomerData, null, productCount);
+    }
+
+    public String createDraftEstimateAndGetCartId(int productCount) {
+        return createDraftEstimateAndGetCartId(null, null, productCount);
+    }
+
+    public String createDraftEstimateAndGetCartId() {
+        return createDraftEstimateAndGetCartId(1);
+    }
+
     @Step("Создаем подтвержденную Смету через API")
-    public String createConfirmedEstimateAndGetCartId() {
+    public String createConfirmedEstimateAndGetCartId(List<String> lmCodes) {
         EstimateClient client = getEstimateClient();
-        String cartId = createDraftEstimateAndGetCartId();
+        String cartId = createDraftEstimateAndGetCartId(lmCodes);
         Response<JsonNode> resp = client.confirm(cartId);
         client.assertThatResponseChangeStatusIsOk(resp);
         return cartId;

@@ -1,6 +1,5 @@
 package com.leroy.magmobile.api.data.sales.orders;
 
-import com.leroy.magmobile.api.data.customer.CustomerData;
 import lombok.Data;
 
 import java.util.List;
@@ -19,7 +18,7 @@ public class OrderData {
     private String channel;
     private String paymentStatus;
     private String comment;
-    private List<CustomerData> customers;
+    private List<OrderCustomerData> customers;
     private List<OrderProductData> products;
     private List<String> userComments;
     private Integer solutionVersion;
@@ -49,7 +48,7 @@ public class OrderData {
     }
 
     public void increaseFulfillmentVersion(int val) {
-        fulfillmentVersion+=val;
+        fulfillmentVersion += val;
     }
 
 }

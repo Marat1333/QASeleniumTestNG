@@ -15,7 +15,6 @@ import com.leroy.magmobile.ui.models.TextViewData;
 import com.leroy.magmobile.ui.models.search.ProductCardData;
 import com.leroy.magmobile.ui.models.search.ServiceCardData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.sales.AddProductPage;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.widget.SearchProductAllGammaCardWidget;
@@ -141,7 +140,7 @@ public class SearchProductPage extends CommonMagMobilePage {
     }
 
     @Step("Введите {text} в поле поиска товара")
-    public SearchProductPage enterTextInSearchField(String text) {
+    public SearchProductPage enterTextInSearchField(String text) throws Exception {
         searchField.clearAndFill(text);
         hideKeyboard();
         return this;
@@ -163,7 +162,7 @@ public class SearchProductPage extends CommonMagMobilePage {
     }
 
     @Step("Найдите и перейдите в карточку товара {text}")
-    public AddProductPage searchProductAndSelect(String text) throws Exception {
+    public void searchProductAndSelect(String text) throws Exception {
         searchField.clearFillAndSubmit(text);
         waitUntilProgressBarIsVisible();
         waitUntilProgressBarIsInvisible();
@@ -172,7 +171,6 @@ public class SearchProductPage extends CommonMagMobilePage {
                     String.format("Не найден ни один товар по ключевому слову '%s'", text));
             productCards.get(0).click();
         }
-        return new AddProductPage(context);
     }
 
     @Step("Перейти в {index} карточку товара")
@@ -500,12 +498,20 @@ public class SearchProductPage extends CommonMagMobilePage {
         if (serviceCardDataList.size() != serviceData.size()) {
             throw new AssertionError("Page size param should be equals to maxEntityCount");
         }
-        anAssert.isTrue(serviceCardDataList.equals(serviceData), "Товары не совпадают");
+        for (int i = 0; i < serviceCardDataList.size(); i++) {
+            ServiceCardData actualService = serviceCardDataList.get(i);
+            ServiceItemData expectedService = serviceData.get(i);
+            softAssert.isEquals(actualService.getLmCode(), expectedService.getLmCode(),
+                    "ЛМ код товаров не сопадает");
+            softAssert.isEquals(actualService.getName(), expectedService.getTitle(),
+                    "Названия товаров не совпадают");
+        }
+        softAssert.verifyAll();
         return this;
     }
 
     @Step("Проверить, что история поиска отображается")
-    public SearchProductPage shouldSearchHistoryBeVisible(){
+    public SearchProductPage shouldSearchHistoryBeVisible() {
         anAssert.isElementVisible(searchHistoryScrollView);
         return this;
     }

@@ -161,9 +161,10 @@ public abstract class BaseContainer {
 
     /**
      * Get Source from Page / Screen
+     *
      * @return page source
      */
-     protected static String getPageSource(WebDriver driver) {
+    protected static String getPageSource(WebDriver driver) {
         try {
             return driver.getPageSource();
         } catch (WebDriverException err) {
@@ -178,7 +179,7 @@ public abstract class BaseContainer {
 
     protected CustomLocator buildLocator(String str, String metaName) {
         CustomLocator locator;
-        if (str.startsWith("/")) {
+        if (str.startsWith("/") || str.startsWith("(/")) {
             locator = new CustomLocator(By.xpath(str), metaName);
         } else if (str.startsWith("#")) {
             locator = new CustomLocator(By.cssSelector(str), metaName);

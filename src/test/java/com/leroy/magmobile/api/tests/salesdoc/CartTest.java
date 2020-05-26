@@ -48,7 +48,7 @@ public class CartTest extends BaseProjectApiTest {
     private void setUp() {
         searchClient = apiClientProvider.getCatalogSearchClient();
         cartClient.setSessionData(sessionData);
-        products = searchClient.getProducts(3);
+        products = apiClientProvider.getProducts(3);
     }
 
     @AfterMethod
@@ -136,7 +136,7 @@ public class CartTest extends BaseProjectApiTest {
         List<ProductItemData> productItemDataList = apiClientProvider.getProducts(2, filtersData);
         CartProductOrderData productWithNegativeBalance = new CartProductOrderData(
                 productItemDataList.get(0));
-        productWithNegativeBalance.setQuantity(productItemDataList.get(0).getAvailableStock() + 1.0);
+        productWithNegativeBalance.setQuantity(productItemDataList.get(0).getAvailableStock() + 10.0);
         CartProductOrderData productWithPositiveBalance = new CartProductOrderData(
                 productItemDataList.get(1));
         productWithPositiveBalance.setQuantity(1.0);

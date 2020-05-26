@@ -1,30 +1,27 @@
 package com.leroy.magportal.ui.pages.products;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magportal.ui.pages.CartPage;
-import com.leroy.magportal.ui.pages.EstimatePage;
+import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.webelements.commonelements.PriceContainer;
-import com.leroy.magportal.ui.webelements.widgets.ExtendedProductCardWidget;
-import com.leroy.magportal.ui.webelements.widgets.ShopCardWidget;
-import io.qameta.allure.Step;
+import com.leroy.magportal.ui.pages.products.widget.ExtendedProductCardWidget;
+import com.leroy.magportal.ui.pages.products.widget.ShopCardWidget;
 
 public class ExtendedProductCardPage extends ProductCardPage {
-    public ExtendedProductCardPage(TestContext context) {
+    public ExtendedProductCardPage(Context context) {
         super(context);
     }
 
     public enum Tabs {
         SIMILAR_PRODUCTS,
         COMPLEMENT_PRODUCTS,
-        PRICES_AND_STOCKS_IN_OTHER_SHOPS;
+        PRICES_AND_STOCKS_IN_OTHER_SHOPS
     }
 
-    @WebFindBy(xpath = "//span[contains(@class, 'Badge')][2]")
+    @WebFindBy(xpath = "//span[contains(@class, 'Badge') and contains(text(),'Топ')]")
     Element topBadge;
 
     @WebFindBy(xpath = "//span[contains(@class, 'Badge')][3]")
@@ -52,6 +49,9 @@ public class ExtendedProductCardPage extends ProductCardPage {
     @WebFindBy(xpath = "//span[contains(text(),'Закупочная')]/ancestor::div[2]/div[contains(@class, 'textAlign')]" +
             "//div[contains(@class,'ProductCard')][1]")
     PriceContainer hiddenPurchasingPrice;
+
+    @WebFindBy(xpath = "//span[contains(text(),'Доступно для продажи')]/../following-sibling::*/span")
+    Element availableForSaleLbl;
 
     @WebFindBy(xpath = "//button[@id='ANALOG']")
     Button similarProducts;
@@ -143,5 +143,13 @@ public class ExtendedProductCardPage extends ProductCardPage {
         return this;
     }*/
 
-
+    @Override
+    public ExtendedProductCardPage verifyRequiredElements() {
+        super.verifyRequiredElements();
+        softAssert.areElementsVisible(topBadge, addProductToCart,
+                addProductToEstimate, productPriceLbl, availableForSaleLbl);
+        softAssert.verifyAll();
+        shouldUrlContains("isAllGammaView=false");
+        return this;
+    }
 }

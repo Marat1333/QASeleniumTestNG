@@ -3,6 +3,7 @@ package com.leroy.core.pages;
 import com.leroy.core.TestContext;
 import com.leroy.core.configuration.Log;
 import io.appium.java_client.ios.IOSDriver;
+import io.qameta.allure.Step;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
@@ -150,6 +151,7 @@ public abstract class BaseWebPage extends BasePage {
         }
     }
 
+    @Step("Перейти назад")
     public boolean navigateBack() throws InterruptedException {
         try {
             this.driver.navigate().back();
@@ -162,6 +164,7 @@ public abstract class BaseWebPage extends BasePage {
         }
     }
 
+    @Step("Перейти вперед")
     public boolean navigateForward() throws InterruptedException {
         try {
             this.driver.navigate().forward();
@@ -934,5 +937,31 @@ public abstract class BaseWebPage extends BasePage {
     public void setPageZoomJs(int percent) throws InterruptedException {
         jsExecute("document.body.style.zoom='" + percent + "%'");
     }
+
+    // Verifications
+
+    /**
+     * Verify that the current page Url contains:
+     * @param values - text that should be present in Url, otherwise test case fails
+     */
+    public void shouldUrlContains(String... values) {
+        String currentUrl = driver.getCurrentUrl();
+        for (String value : values) {
+            anAssert.isElementTextContainsIgnoringCase(currentUrl, value,
+                    "current url hasn`t contains " + value + "; current url is " + currentUrl);
+        }
+    }
+
+    /**
+     * Verify that the current page Url doesn't contain:
+     * @param values - text that should not be present in Url, otherwise test case fails
+     */
+    public void shouldUrlNotContains(String... values) {
+        String currentUrl = driver.getCurrentUrl();
+        for (String value : values) {
+            anAssert.isElementTextNotContains(currentUrl, value, "current url contains " + value + "; current url is " + currentUrl);
+        }
+    }
+
 }
 

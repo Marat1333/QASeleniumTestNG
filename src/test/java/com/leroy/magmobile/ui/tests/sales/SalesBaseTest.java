@@ -7,13 +7,14 @@ import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.api.Module;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.ApiClientProvider;
+import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
+import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
-import com.leroy.magmobile.ui.models.search.FiltersData;
 import com.leroy.magmobile.ui.pages.sales.AddProductPage;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
 import com.leroy.magmobile.ui.pages.sales.SubmittedSalesDocumentPage;
@@ -32,6 +33,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -60,7 +62,8 @@ public class SalesBaseTest extends AppBaseSteps {
     // Получить ЛМ код для обычного продукта без специфичных опций
     protected List<String> getAnyLmCodesProductWithoutSpecificOptions(
             int necessaryCount) {
-        return clientProvider.getCatalogSearchClient().getProductLmCodes(necessaryCount);
+        return clientProvider.getProducts(necessaryCount, false, false)
+                .stream().map(ProductItemData::getLmCode).collect(Collectors.toList());
     }
 
     protected String getAnyLmCodeProductWithoutSpecificOptions() {
@@ -69,17 +72,17 @@ public class SalesBaseTest extends AppBaseSteps {
 
     // Получить ЛМ код для продукта с AVS
     protected String getAnyLmCodeProductWithAvs() {
-        FiltersData filtersData = new FiltersData();
+        CatalogSearchFilter filtersData = new CatalogSearchFilter();
         filtersData.setAvs(true);
-        return clientProvider.getCatalogSearchClient().getProducts(1, filtersData).get(0).getLmCode();
+        return clientProvider.getProducts(1, filtersData).get(0).getLmCode();
     }
 
     // Получить ЛМ код для продукта с опцией TopEM
     protected String getAnyLmCodeProductWithTopEM() {
-        FiltersData filtersData = new FiltersData();
+        CatalogSearchFilter filtersData = new CatalogSearchFilter();
         filtersData.setTopEM(true);
         context.getSessionData().setUserDepartmentId("15");
-        return clientProvider.getCatalogSearchClient().getProducts(1, filtersData).get(0).getLmCode();
+        return clientProvider.getProducts(1, filtersData).get(0).getLmCode();
     }
 
     // Получить ЛМ код для продукта, доступного для отзыва с RM
@@ -158,23 +161,24 @@ public class SalesBaseTest extends AppBaseSteps {
         sessionData.setUserShopId(EnvConstants.SHOP_WITH_OLD_INTERFACE);
         //sessionData.setUserDepartmentId("15");
         // Step #1
-        log.step("На главном экране выберите раздел Документы продажи");
+        step("На главном экране выберите раздел Документы продажи");
         MainSalesDocumentsPage salesDocumentsPage = loginSelectShopAndGoTo(
                 MainSalesDocumentsPage.class);
         salesDocumentsPage.verifyRequiredElements();
 
         // Step #2
-        log.step("Нажмите 'Создать документ продажи'");
+        step("Нажмите 'Создать документ продажи'");
         SearchProductPage searchProductPage = salesDocumentsPage.clickCreateSalesDocumentButton();
         searchProductPage.verifyRequiredElements();
 
         // Step #3
-        log.step("Нажмите на мини-карточку товара 16410291");
-        AddProductPage addProductPage = searchProductPage.searchProductAndSelect("16410291")
+        step("Нажмите на мини-карточку товара 16410291");
+        searchProductPage.searchProductAndSelect("16410291");
+        AddProductPage addProductPage = new AddProductPage(context)
                 .verifyRequiredElements();
 
         // Step #4
-        log.step("Нажмите на поле количества");
+        step("Нажмите на поле количества");
         addProductPage.clickEditQuantityField()
                 .shouldKeyboardVisible();
         addProductPage.shouldEditQuantityFieldIs("1,00")
@@ -182,47 +186,47 @@ public class SalesBaseTest extends AppBaseSteps {
                         addProductPage.getPrice()))); // TODO Jenkins job failed here
 
         // Step #5
-        log.step("Введите значение 20,5 количества товара");
+        step("Введите значение 20,5 количества товара");
         String expectedTotalPrice = String.format("%.2f",
                 Double.parseDouble(addProductPage.getPrice()) * 20.5);
         addProductPage.enterQuantityOfProduct("20,5")
                 .shouldTotalPriceIs(expectedTotalPrice);
 
         // Step #6
-        log.step("Нажмите кнопку Добавить");
+        step("Нажмите кнопку Добавить");
         BasketStep1Page basketStep1Page = addProductPage.clickAddButton()
                 .verifyRequiredElements();
         basketStep1Page.shouldDocumentTypeIs(BasketPage.Constants.DRAFT_DOCUMENT_TYPE);
         String documentNumber = basketStep1Page.getDocumentNumber();
 
         // Step #7
-        log.step("Нажмите Далее к параметрам");
+        step("Нажмите Далее к параметрам");
         BasketStep2Page basketStep2Page = basketStep1Page.clickNextParametersButton()
                 .verifyRequiredElements()
                 .shouldFieldsHaveDefaultValues();
 
         // Step #8
-        log.step("Нажмите кнопку Создать документ продажи");
+        step("Нажмите кнопку Создать документ продажи");
         BasketStep3Page basketStep3Page = basketStep2Page.clickCreateSalesDocumentButton()
                 .verifyRequiredElements();
         basketStep3Page.shouldKeyboardVisible();
 
         // Step #9
-        log.step("Введите 5 цифр PIN-кода");
+        step("Введите 5 цифр PIN-кода");
         String testPinCode = getValidPinCode();
         basketStep3Page.enterPinCode(testPinCode)
                 .shouldPinCodeFieldIs(testPinCode)
                 .shouldSubmitButtonIsActive();
 
         // Step #10
-        log.step("Нажмите кнопку Подтвердить");
+        step("Нажмите кнопку Подтвердить");
         SubmittedSalesDocumentPage submittedSalesDocumentPage = basketStep3Page.clickSubmitButton()
                 .verifyRequiredElements()
                 .shouldPinCodeIs(testPinCode)
                 .shouldDocumentNumberIs(documentNumber);
 
         // Step #11
-        log.step("Нажмите кнопку Перейти в список документов");
+        step("Нажмите кнопку Перейти в список документов");
         SalesDocumentData expectedSalesDocument = new SalesDocumentData();
         expectedSalesDocument.setPrice(expectedTotalPrice);
         expectedSalesDocument.setPin(testPinCode);

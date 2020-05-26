@@ -27,5 +27,7 @@ public @interface WebFindBy {
 
     String metaName() default "";
 
-    boolean cacheLookup() default true;
+    boolean cacheLookup() default false;
+
+    boolean refreshEveryTime() default false;
 }

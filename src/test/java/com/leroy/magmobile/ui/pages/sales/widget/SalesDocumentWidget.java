@@ -5,6 +5,7 @@ import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
 import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
+import com.leroy.utils.ParserUtil;
 import org.openqa.selenium.WebDriver;
 
 public class SalesDocumentWidget extends CardWidget<SalesDocumentData> {
@@ -54,7 +55,7 @@ public class SalesDocumentWidget extends CardWidget<SalesDocumentData> {
         if (sDocNumber == null)
             return null;
         else
-            return sDocNumber.replaceAll("₽|\\s", "");
+            return ParserUtil.strWithOnlyDigits(sDocNumber);
     }
 
     @Override
@@ -73,7 +74,8 @@ public class SalesDocumentWidget extends CardWidget<SalesDocumentData> {
 
     @Override
     public boolean isFullyVisible(String pageSource) {
-        return image.isVisible(pageSource) && date.isVisible(pageSource);
+        return image.isVisible(pageSource) && number.isVisible(pageSource) &&
+                number.getText(pageSource).contains("№") && date.isVisible(pageSource);
     }
 
     @Override
