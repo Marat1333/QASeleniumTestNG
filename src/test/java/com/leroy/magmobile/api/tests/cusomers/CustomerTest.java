@@ -1,7 +1,6 @@
 package com.leroy.magmobile.api.tests.cusomers;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.inject.Inject;
 import com.leroy.constants.StatusCodes;
 import com.leroy.magmobile.api.clients.CustomerClient;
 import com.leroy.magmobile.api.data.customer.CustomerData;
@@ -13,19 +12,18 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class CustomerTest extends BaseProjectApiTest {
 
-    @Inject
     private CustomerClient customerClient;
 
     private CustomerData customerData;
 
+    @BeforeClass
+    private void initClients() {
+        customerClient = apiClientProvider.getCustomerClient();
+    }
+
     @Override
     protected boolean isNeedAccessToken() {
         return true;
-    }
-
-    @BeforeClass
-    private void setUp() {
-        customerClient.setSessionData(sessionData);
     }
 
     @Test(description = "C3164926 Create Customer - happy path")

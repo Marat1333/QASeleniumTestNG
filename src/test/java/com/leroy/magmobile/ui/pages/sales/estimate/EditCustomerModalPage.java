@@ -2,7 +2,6 @@ package com.leroy.magmobile.ui.pages.sales.estimate;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.customers.EditCustomerContactDetailsPage;
 import com.leroy.magmobile.ui.pages.customers.EditCustomerInfoPage;
@@ -10,10 +9,6 @@ import com.leroy.magmobile.ui.pages.customers.SearchCustomerPage;
 import io.qameta.allure.Step;
 
 public class EditCustomerModalPage extends CommonMagMobilePage {
-
-    public EditCustomerModalPage(Context context) {
-        super(context);
-    }
 
     @AppFindBy(xpath = "//android.widget.TextView")
     Element headerLbl;
@@ -36,19 +31,19 @@ public class EditCustomerModalPage extends CommonMagMobilePage {
     @Step("Нажмите 'Изменить контактные данные'")
     public EditCustomerContactDetailsPage clickChangeContactDetails() {
         changeContactDetails.click();
-        return new EditCustomerContactDetailsPage(context);
+        return new EditCustomerContactDetailsPage();
     }
 
     @Step("Нажмите 'Редактировать данные клиента'")
     public EditCustomerInfoPage clickEditCustomerInfo() {
         editCustomerInfo.click();
-        return new EditCustomerInfoPage(context);
+        return new EditCustomerInfoPage();
     }
 
     @Step("Нажмите 'Выбрать другого клиента'")
     public SearchCustomerPage clickSelectAnotherCustomer() {
         selectAnotherCustomer.click();
-        return new SearchCustomerPage(context);
+        return new SearchCustomerPage();
     }
 
     // Verifications

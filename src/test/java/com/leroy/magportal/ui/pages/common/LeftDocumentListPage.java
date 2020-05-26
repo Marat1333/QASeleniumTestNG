@@ -17,10 +17,6 @@ import java.util.stream.Collectors;
 public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends IDataWithNumberAndStatus>
         extends MenuPage {
 
-    public LeftDocumentListPage(Context context) {
-        super(context);
-    }
-
     @Override
     public void waitForPageIsLoaded() {
         refreshDocumentListBtn().waitForVisibility();

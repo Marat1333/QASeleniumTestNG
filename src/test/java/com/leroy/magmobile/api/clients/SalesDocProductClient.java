@@ -43,10 +43,10 @@ public class SalesDocProductClient extends MagMobileClient {
     @Step("Create Sales Document Product")
     private SalesDocProductClient sendRequestCreate(SalesDocumentResponseData data) {
         SalesDocProductsPost params = new SalesDocProductsPost();
-        params.setShopId(sessionData.getUserShopId())
-                .setAccessToken(sessionData.getAccessToken());
-        if (sessionData.getRegionId() != null)
-            params.setRegionId(sessionData.getRegionId());
+        params.setShopId(userSessionData.getUserShopId())
+                .setAccessToken(userSessionData.getAccessToken());
+        if (userSessionData.getRegionId() != null)
+            params.setRegionId(userSessionData.getRegionId());
         params.setSalesDocumentData(data);
         response = execute(params, SalesDocumentResponseData.class);
         return this;
@@ -81,10 +81,10 @@ public class SalesDocProductClient extends MagMobileClient {
         SalesDocProductsPut params = new SalesDocProductsPut();
         params.setFullDocId(fullDocId);
         params.setSalesDocumentData(putSalesDocData);
-        params.setShopId(sessionData.getUserShopId())
-                .setAccessToken(sessionData.getAccessToken());
-        if (sessionData.getRegionId() != null)
-            params.setRegionId(sessionData.getRegionId());
+        params.setShopId(userSessionData.getUserShopId())
+                .setAccessToken(userSessionData.getAccessToken());
+        if (userSessionData.getRegionId() != null)
+            params.setRegionId(userSessionData.getRegionId());
         response = execute(params, SalesDocumentResponseData.class);
 
         return this;
@@ -116,9 +116,9 @@ public class SalesDocProductClient extends MagMobileClient {
     @Step("Make status CANCEL for Sales Document Product with fullDocId={fullDocId}")
     public SalesDocProductClient cancelSalesDoc(String fullDocId) {
         SalesDocParametersUpdatePut params = new SalesDocParametersUpdatePut();
-        params.setAccessToken(sessionData.getAccessToken())
-                .setLdap(sessionData.getUserLdap())
-                .setShopId(sessionData.getUserShopId())
+        params.setAccessToken(userSessionData.getAccessToken())
+                .setLdap(userSessionData.getUserLdap())
+                .setShopId(userSessionData.getUserShopId())
                 .setFullDocId(fullDocId)
                 .setStatus(SalesDocumentsConst.States.CANCELLED.getApiVal());
         response = execute(params, SalesDocumentResponseData.class);

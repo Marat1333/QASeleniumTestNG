@@ -2,17 +2,12 @@ package com.leroy.magmobile.ui.pages.sales.product_card.modal;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.ProductCardPage;
 import io.qameta.allure.Step;
 
 public class ImpossibleCreateDocumentWithTopEmModalPage extends CommonMagMobilePage {
-
-    public ImpossibleCreateDocumentWithTopEmModalPage(Context context) {
-        super(context);
-    }
 
     @Override
     public void waitForPageIsLoaded() {
@@ -33,7 +28,7 @@ public class ImpossibleCreateDocumentWithTopEmModalPage extends CommonMagMobileP
     @Step("Нажать кнопку 'Понятно'")
     public ProductCardPage clickSubmitButton() {
         submitBtn.click();
-        return new ProductCardPage(context);
+        return new ProductCardPage();
     }
 
     // Verifications

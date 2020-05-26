@@ -2,16 +2,11 @@ package com.leroy.magmobile.ui.pages.sales.estimate;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.SalesDocumentsPage;
 import io.qameta.allure.Step;
 
 public class EstimateSubmittedPage extends CommonMagMobilePage {
-
-    public EstimateSubmittedPage(Context context) {
-        super(context);
-    }
 
     @AppFindBy(containsText = "Смета создана")
     Element headerLbl;
@@ -34,7 +29,7 @@ public class EstimateSubmittedPage extends CommonMagMobilePage {
     @Step("Нажмите кнопку 'Перейти в список документов'")
     public SalesDocumentsPage clickSubmitButton() {
         submitBtn.click();
-        return new SalesDocumentsPage(context);
+        return new SalesDocumentsPage();
     }
 
     @Step("Нажать на 'Отправить на email'")

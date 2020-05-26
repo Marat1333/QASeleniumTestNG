@@ -2,7 +2,6 @@ package com.leroy.magmobile.ui.pages.sales.basket;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import io.qameta.allure.Step;
 
@@ -11,10 +10,6 @@ public abstract class BasketPage extends CommonMagMobilePage {
     public static class Constants {
         // Типы документа
         public static final String DRAFT_DOCUMENT_TYPE = "Черновик";
-    }
-
-    public BasketPage(Context context) {
-        super(context);
     }
 
     @AppFindBy(xpath = "(//android.view.ViewGroup[@content-desc=\"Button\"])[1]/android.view.ViewGroup",

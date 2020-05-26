@@ -3,7 +3,6 @@ package com.leroy.magportal.ui.pages.orders;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.models.salesdoc.ShortOrderDocWebData;
 import com.leroy.magportal.ui.pages.common.LeftDocumentListPage;
 import com.leroy.magportal.ui.pages.orders.widget.ShortOrderDocumentCardWidget;
@@ -19,10 +18,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class OrderHeaderPage extends LeftDocumentListPage<ShortOrderDocumentCardWidget, ShortOrderDocWebData> {
-
-    public OrderHeaderPage(Context context) {
-        super(context);
-    }
 
     public static class SearchTypes {
         public static final String ORDER_NUMBER = "Номер заказа";

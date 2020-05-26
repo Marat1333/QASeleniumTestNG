@@ -1,16 +1,10 @@
 package com.leroy.magmobile.ui.pages.sales.product_card.modal;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import io.qameta.allure.Step;
 
 public class ActionWithProduct35ModalPage extends CommonActionWithProductModalPage {
-
-    public ActionWithProduct35ModalPage(Context context) {
-        super(context);
-    }
 
     @AppFindBy(text = "Оформить продажу")
     Element makeSaleBtn;
@@ -28,7 +22,7 @@ public class ActionWithProduct35ModalPage extends CommonActionWithProductModalPa
     @Step("Нажмите кнопку 'Оформить продажу'")
     public SaleTypeModalPage clickMakeSaleButton() {
         makeSaleBtn.click();
-        return new SaleTypeModalPage(context);
+        return new SaleTypeModalPage();
     }
 
     // Verifications

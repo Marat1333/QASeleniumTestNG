@@ -1,10 +1,9 @@
 package com.leroy.magmobile.ui.pages.sales.estimate;
 
-import com.leroy.core.TestContext;
+import com.leroy.core.ContextProvider;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.elements.MagMobWhiteSubmitButton;
 import com.leroy.magmobile.ui.models.CustomerData;
@@ -27,10 +26,6 @@ import java.util.List;
 
 public class EstimatePage extends CommonMagMobilePage {
 
-    public EstimatePage(Context context) {
-        super(context);
-    }
-
     @Builder
     @AllArgsConstructor
     public static class PageState {
@@ -39,8 +34,8 @@ public class EstimatePage extends CommonMagMobilePage {
         private boolean estimateIsConfirmed;
     }
 
-    public static boolean isThisPage(TestContext context) {
-        return new Element(context.getDriver(),
+    public static boolean isThisPage() {
+        return new Element(ContextProvider.getDriver(),
                 By.xpath("//*[@content-desc='EstimateDocumentScreenId']")).isVisible();
     }
 
@@ -124,14 +119,7 @@ public class EstimatePage extends CommonMagMobilePage {
      * Получить Итоговую стоимость
      */
     public String getTotalPrice() {
-        String _priceValue = totalPriceVal.getText().replaceAll("₽", "").trim();
-        try {
-            Double.parseDouble(_priceValue);
-            return _priceValue;
-        } catch (NumberFormatException err) {
-            anAssert.isTrue(false, "Итого цена имеет не правильный формат: " + _priceValue);
-            throw err;
-        }
+        return ParserUtil.strWithOnlyDigits(totalPriceVal.getText());
     }
 
     /**
@@ -187,43 +175,43 @@ public class EstimatePage extends CommonMagMobilePage {
     public ActionWithProductCardModalPage clickCardByIndex(int index) throws Exception {
         index--;
         orderCardDataScrollView.clickElemByIndex(index);
-        return new ActionWithProductCardModalPage(context);
+        return new ActionWithProductCardModalPage();
     }
 
     @Step("Нажмите на поле 'Клиенты' (клиент не был выбран)")
     public SearchCustomerPage clickCustomerField() {
         selectCustomerBtn.click();
-        return new SearchCustomerPage(context);
+        return new SearchCustomerPage();
     }
 
     @Step("Нажмите на поле с Клиентом (клиент был выбран)")
     public EditCustomerModalPage clickEditCustomerField() {
         selectedCustomerName.click();
-        return new EditCustomerModalPage(context);
+        return new EditCustomerModalPage();
     }
 
     @Step("Нажмите кнопку 'Товары и Услуги'")
     public SearchProductPage clickProductAndServiceButton() {
         productAndServiceBtn.click();
-        return new SearchProductPage(context);
+        return new SearchProductPage();
     }
 
     @Step("Нажмите кнопку '+Товар'")
     public SearchProductPage clickAddProductButton() {
         addProductBtn.click();
-        return new SearchProductPage(context);
+        return new SearchProductPage();
     }
 
     @Step("Нажмите кнопку 'Создать'")
     public EstimateSubmittedPage clickCreateButton() {
         createBtn.click();
-        return new EstimateSubmittedPage(context);
+        return new EstimateSubmittedPage();
     }
 
     @Step("Нажмите кнопку 'Действия со сметой'")
     public ActionsWithEstimateModalPage clickActionsWithEstimateButton() {
         actionsWithEstimateBtn.click();
-        return new ActionsWithEstimateModalPage(context);
+        return new ActionsWithEstimateModalPage();
     }
 
     // VERIFICATIONS

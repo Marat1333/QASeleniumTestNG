@@ -1,6 +1,5 @@
 package com.leroy.core.pages;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.configuration.Log;
 import io.appium.java_client.ios.IOSDriver;
 import io.qameta.allure.Step;
@@ -37,13 +36,13 @@ public abstract class BaseWebPage extends BasePage {
     public static final String TRANSITION_URL = "about:blank";
     protected String initialHandle;  //stores the window handle obtained when the object was created
 
-    public BaseWebPage(TestContext context) {
-        super(context);
+    public BaseWebPage() {
+        super();
         initialHandle = this.driver.getWindowHandle();
     }
 
-    protected BaseWebPage(TestContext context, String expectedUrl, Boolean isURL) throws IllegalStateException {
-        this(context);
+    protected BaseWebPage(String expectedUrl, Boolean isURL) throws IllegalStateException {
+        this();
         long startTimer = System.currentTimeMillis();
         String actualUrl = null;
         this.waitFor(NON_EMPTY_PAGE_TITLE, (long) timeout);
@@ -62,8 +61,8 @@ public abstract class BaseWebPage extends BasePage {
         }
     }
 
-    protected BaseWebPage(TestContext context, String expectedTitle) throws IllegalStateException {
-        this(context);
+    protected BaseWebPage(String expectedTitle) throws IllegalStateException {
+        this();
         long startTimer = System.currentTimeMillis();
         String actualTitle = this.waitForPageTitle(expectedTitle);
         long endTimer = System.currentTimeMillis();
@@ -942,6 +941,7 @@ public abstract class BaseWebPage extends BasePage {
 
     /**
      * Verify that the current page Url contains:
+     *
      * @param values - text that should be present in Url, otherwise test case fails
      */
     public void shouldUrlContains(String... values) {
@@ -954,6 +954,7 @@ public abstract class BaseWebPage extends BasePage {
 
     /**
      * Verify that the current page Url doesn't contain:
+     *
      * @param values - text that should not be present in Url, otherwise test case fails
      */
     public void shouldUrlNotContains(String... values) {

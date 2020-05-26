@@ -1,7 +1,5 @@
 package com.leroy.magmobile.api.tests.catalog_search;
 
-import com.google.inject.Inject;
-import com.leroy.magmobile.api.clients.CustomerClient;
 import com.leroy.magmobile.api.clients.SmsNotificationClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.customer.CustomerData;
@@ -15,24 +13,14 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class SmsNotificationTest extends BaseProjectApiTest {
 
-    @Inject
     private SmsNotificationClient smsNotificationClient;
 
-    @Inject
-    private CustomerClient customerClient;
+    @BeforeClass
+    private void initClients() {
+        smsNotificationClient = apiClientProvider.getSmsNotificationClient();
+    }
 
     private SmsNotificationData smsNotificationData;
-
-    @Override
-    protected boolean isNeedAccessToken() {
-        return false;
-    }
-
-    @BeforeClass
-    private void setUp() {
-        smsNotificationClient.setSessionData(sessionData);
-        customerClient.setSessionData(sessionData);
-    }
 
     @Test(description = "C3175887 SMS post")
     public void testCreateNotification() {
@@ -54,7 +42,8 @@ public class SmsNotificationTest extends BaseProjectApiTest {
 
         smsNotificationData = new SmsNotificationData();
         smsNotificationData.setCustomer(notifyCustomerData);
-        smsNotificationData.setShopId(Integer.valueOf(sessionData.getUserShopId()));
+        smsNotificationData.setShopId(Integer.valueOf(
+                getUserSessionData().getUserShopId()));
         smsNotificationData.setProduct(productOrderData);
         Response<SmsNotificationData> resp = smsNotificationClient.createNotification(smsNotificationData);
         smsNotificationClient.assertThatIsCreated(resp, smsNotificationData);

@@ -8,6 +8,18 @@ public class RetryAnalyzer implements IRetryAnalyzer {
     int counter = 0;
     int retryLimit = 0;
 
+    int forceCounter = 0;
+
+    private static final ThreadLocal<Boolean> forceRetry = new ThreadLocal<>();
+
+    public static void enableForceRetry() {
+        forceRetry.set(true);
+    }
+
+    public static void disableForceRetry() {
+        forceRetry.set(false);
+    }
+
     /*
      * (non-Javadoc)
      * @see org.testng.IRetryAnalyzer#retry(org.testng.ITestResult)
@@ -24,9 +36,15 @@ public class RetryAnalyzer implements IRetryAnalyzer {
     @Override
     public boolean retry(ITestResult result) {
 
+        if (forceRetry.get() != null && forceRetry.get() && forceCounter < 1) {
+            disableForceRetry();
+            forceCounter++;
+            return true;
+        }
+
         retryLimit = Integer.parseInt(System.getProperty("retryOnFailCount", "0"));
 
-        if(counter < retryLimit) {
+        if (counter < retryLimit) {
             counter++;
             return true;
         }

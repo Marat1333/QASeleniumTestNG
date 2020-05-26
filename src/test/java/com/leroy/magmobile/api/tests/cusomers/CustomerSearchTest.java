@@ -1,5 +1,6 @@
 package com.leroy.magmobile.api.tests.cusomers;
 
+import com.leroy.magmobile.api.clients.CustomerClient;
 import com.leroy.magmobile.api.data.customer.Communication;
 import com.leroy.magmobile.api.data.customer.CustomerData;
 import com.leroy.magmobile.api.data.customer.CustomerListData;
@@ -14,13 +15,17 @@ import static org.hamcrest.Matchers.*;
 
 public class CustomerSearchTest extends BaseProjectApiTest {
 
+    private CustomerClient customerClient() {
+        return apiClientProvider.getCustomerClient();
+    }
+
     @Test(description = "C23194969 Simple Search Customers by Phone")
     public void testSimpleSearchCustomers() {
         CustomerSearchFilters customerSearchFilters = new CustomerSearchFilters();
         customerSearchFilters.setCustomerType(CustomerSearchFilters.CustomerType.NATURAL);
         customerSearchFilters.setDiscriminantType(CustomerSearchFilters.DiscriminantType.PHONENUMBER);
         customerSearchFilters.setDiscriminantValue("+71111111111");
-        Response<CustomerListData> resp = apiClientProvider.getCustomerClient()
+        Response<CustomerListData> resp = customerClient()
                 .searchForCustomers(customerSearchFilters);
         assertThat(resp, successful());
         CustomerListData data = resp.asJson();

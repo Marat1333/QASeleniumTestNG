@@ -1,6 +1,5 @@
 package com.leroy.magmobile.api.tests.salesdoc;
 
-import com.google.inject.Inject;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.SalesDocProductClient;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
@@ -15,22 +14,20 @@ import java.util.Random;
 
 public class SalesDocApiTest extends BaseProjectApiTest {
 
-    @Inject
     private SalesDocProductClient salesDocProductClient;
-
     private CatalogSearchClient searchClient;
 
     private SalesDocumentResponseData salesDocument;
 
+    @BeforeClass
+    private void initClients() {
+        salesDocProductClient = apiClientProvider.getSalesDocProductClient();
+        searchClient = apiClientProvider.getCatalogSearchClient();
+    }
+
     @Override
     protected boolean isNeedAccessToken() {
         return true;
-    }
-
-    @BeforeClass
-    private void setUp() {
-        salesDocProductClient.setSessionData(sessionData);
-        searchClient = apiClientProvider.getCatalogSearchClient();
     }
 
     @Test(description = "C3232445 SalesDoc add product")

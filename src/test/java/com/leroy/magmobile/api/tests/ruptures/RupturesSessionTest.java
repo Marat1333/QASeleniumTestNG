@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.magmobile.api.clients.RupturesClient;
 import com.leroy.magmobile.api.data.ruptures.*;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -18,7 +17,9 @@ import static org.hamcrest.core.Is.is;
 
 public class RupturesSessionTest extends BaseProjectApiTest {
 
-    private RupturesClient rupturesClient;
+    private RupturesClient rupturesClient() {
+        return apiClientProvider.getRupturesClient();
+    }
 
     @Override
     protected boolean isNeedAccessToken() {
@@ -28,13 +29,9 @@ public class RupturesSessionTest extends BaseProjectApiTest {
     private Integer sessionId;
     private RuptureProductDataList ruptureProductDataList;
 
-    @BeforeClass
-    public void setUp() {
-        rupturesClient = apiClientProvider.getRupturesClient();
-    }
-
     @Test(description = "C3233579 POST rupture session product")
     public void testCreateRuptureSessionProduct() {
+        RupturesClient rupturesClient = rupturesClient();
         ActionData action1 = new ActionData();
         action1.setAction(0);
         action1.setState(false);
@@ -54,9 +51,9 @@ public class RupturesSessionTest extends BaseProjectApiTest {
 
         ReqRuptureSessionData rupturePostData = new ReqRuptureSessionData();
         rupturePostData.setProduct(productData);
-        rupturePostData.setShopId(Integer.parseInt(sessionData.getUserShopId()));
-        rupturePostData.setStoreId(Integer.parseInt(sessionData.getUserShopId()));
-        rupturePostData.setDepartmentId(Integer.parseInt(sessionData.getUserDepartmentId()));
+        rupturePostData.setShopId(Integer.parseInt(getUserSessionData().getUserShopId()));
+        rupturePostData.setStoreId(Integer.parseInt(getUserSessionData().getUserShopId()));
+        rupturePostData.setDepartmentId(Integer.parseInt(getUserSessionData().getUserDepartmentId()));
 
         Response<JsonNode> resp = rupturesClient.createProduct(rupturePostData);
         sessionId = rupturesClient.assertThatSessionIsCreatedAndGetId(resp);
@@ -66,6 +63,7 @@ public class RupturesSessionTest extends BaseProjectApiTest {
 
     @Test(description = "C3233582 PUT ruptures product - Add new product")
     public void testUpdateRuptureSessionProduct() {
+        RupturesClient rupturesClient = rupturesClient();
         ActionData action1 = new ActionData();
         action1.setAction(0);
         action1.setState(false);
@@ -78,9 +76,9 @@ public class RupturesSessionTest extends BaseProjectApiTest {
         ReqRuptureSessionData rupturePostData = new ReqRuptureSessionData();
         rupturePostData.setSessionId(sessionId);
         rupturePostData.setProduct(productData);
-        rupturePostData.setShopId(Integer.parseInt(sessionData.getUserShopId()));
-        rupturePostData.setStoreId(Integer.parseInt(sessionData.getUserShopId()));
-        rupturePostData.setDepartmentId(Integer.parseInt(sessionData.getUserDepartmentId()));
+        rupturePostData.setShopId(Integer.parseInt(getUserSessionData().getUserShopId()));
+        rupturePostData.setStoreId(Integer.parseInt(getUserSessionData().getUserShopId()));
+        rupturePostData.setDepartmentId(Integer.parseInt(getUserSessionData().getUserDepartmentId()));
 
         Response<JsonNode> resp = rupturesClient.updateProduct(rupturePostData);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
@@ -89,6 +87,7 @@ public class RupturesSessionTest extends BaseProjectApiTest {
 
     @Test(description = "C23195088 PUT rupture actions with different states")
     public void testActionRuptureSessionProduct() {
+        RupturesClient rupturesClient = rupturesClient();
         RuptureProductData ruptureProductData = ruptureProductDataList.getItems().get(0);
         for (ActionData actionData : ruptureProductData.getActions()) {
             actionData.setState(!actionData.getState());
@@ -105,12 +104,14 @@ public class RupturesSessionTest extends BaseProjectApiTest {
 
     @Test(description = "C3233583 GET ruptures products")
     public void testSearchForRuptureSessionProducts() {
+        RupturesClient rupturesClient = rupturesClient();
         Response<RuptureProductDataList> resp = rupturesClient.getProducts(sessionId);
         rupturesClient.assertThatDataMatches(resp, ruptureProductDataList);
     }
 
     @Test(description = "C3285462 GET ruptures groups for new session with groups")
     public void testRuptureSessionGrouping() {
+        RupturesClient rupturesClient = rupturesClient();
         Response<RuptureSessionGroupData> resp = rupturesClient.getGroups(sessionId);
         isResponseOk(resp);
         List<RuptureSessionGroupData> groups = resp.asJsonList(RuptureSessionGroupData.class);
@@ -133,6 +134,7 @@ public class RupturesSessionTest extends BaseProjectApiTest {
 
     @Test(description = "C3233585 PUT ruptures session finish")
     public void testFinishRuptureSession() {
+        RupturesClient rupturesClient = rupturesClient();
         Response<JsonNode> resp = rupturesClient.finishSession(sessionId);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
     }
@@ -140,6 +142,7 @@ public class RupturesSessionTest extends BaseProjectApiTest {
     @Test(description = "C3298403 DELETE ruptures product from finished session")
     public void testDeleteRuptureSessionProducts() {
         step("Delete product");
+        RupturesClient rupturesClient = rupturesClient();
         String deleteLmCode = ruptureProductDataList.getItems().get(0).getLmCode();
         Response<JsonNode> resp = rupturesClient.deleteProduct(deleteLmCode, sessionId);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
@@ -153,6 +156,7 @@ public class RupturesSessionTest extends BaseProjectApiTest {
     @Test(description = "C3233587 DELETE finished ruptures session")
     public void testDeleteFinishedRuptureSession() {
         step("Delete session");
+        RupturesClient rupturesClient = rupturesClient();
         Response<JsonNode> resp = rupturesClient.deleteSession(sessionId);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
         if (ruptureProductDataList.getItems().size() > 0)

@@ -1,33 +1,22 @@
 package com.leroy.magmobile.ui;
 
-import com.leroy.core.TestContext;
-import com.leroy.core.asserts.CustomAssert;
-import com.leroy.core.asserts.CustomSoftAssert;
+import com.leroy.core.UserSessionData;
+import com.leroy.core.asserts.AssertWrapper;
+import com.leroy.core.asserts.SoftAssertWrapper;
 import com.leroy.core.testrail.helpers.StepLog;
-import com.leroy.core.SessionData;
-import org.openqa.selenium.WebDriver;
+import lombok.Data;
 
-public class Context extends TestContext {
+@Data
+public class Context {
 
-    private SessionData sessionData;
+    private SoftAssertWrapper softAssert;
+    private AssertWrapper anAssert;
+    private String tcId;
+    private StepLog log;
+    private UserSessionData userSessionData;
 
-    public Context(WebDriver driver) {
-        super(driver);
-    }
-
-    public Context(WebDriver driver, CustomSoftAssert softAssert, CustomAssert anAssert, StepLog log, String tcId) {
-        super(driver, softAssert, anAssert, log, tcId);
-    }
-
+    // TODO Remove
     public boolean isNewShopFunctionality() {
-        return sessionData.getUserShopId().equals("35");
-    }
-
-    public SessionData getSessionData() {
-        return sessionData;
-    }
-
-    public void setSessionData(SessionData sessionData) {
-        this.sessionData = sessionData;
+        return userSessionData.getUserShopId().equals("35");
     }
 }

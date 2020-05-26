@@ -5,7 +5,6 @@ import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.models.CustomerData;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.estimate.EstimatePage;
 import com.leroy.magmobile.ui.pages.search.widgets.SearchCustomerWidget;
@@ -17,10 +16,6 @@ public class SearchCustomerPage extends CommonMagMobilePage {
 
     public enum SearchType {
         BY_PHONE, BY_CARD, BY_EMAIL;
-    }
-
-    public SearchCustomerPage(Context context) {
-        super(context);
     }
 
     AndroidScrollView<CustomerData> mainScrollView = new AndroidScrollView<>(driver,
@@ -73,7 +68,7 @@ public class SearchCustomerPage extends CommonMagMobilePage {
     public EstimatePage selectCustomerFromSearchList(int index) throws Exception {
         index--;
         mainScrollView.clickElemByIndex(index);
-        return new EstimatePage(context);
+        return new EstimatePage();
     }
 
     @Step("Введите {text} в поле поиска")
@@ -106,7 +101,7 @@ public class SearchCustomerPage extends CommonMagMobilePage {
         phoneOptionLbl.click();
         enterTextInSearchField(value);
         mainScrollView.clickElemByIndex(0);
-        return new EstimatePage(context);
+        return new EstimatePage();
     }
 
     @Step("Найдите клиента по номеру карты: {value}")
