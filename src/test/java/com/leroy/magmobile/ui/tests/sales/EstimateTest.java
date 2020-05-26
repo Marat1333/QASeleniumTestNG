@@ -439,14 +439,15 @@ public class EstimateTest extends SalesBaseTest {
         softAssert().verifyAll();
     }
 
-    @Test(description = "C22797077 Отправить смету на почту (с экрана успеха или из сметы в статусе Создан)")
+    @Test(description = "C22797077 Отправить смету на почту (с экрана успеха или из сметы в статусе Создан)",
+            groups = NEED_ACCESS_TOKEN_GROUP)
     public void testSendEstimateByEmail() throws Exception {
-        String estimateDraftId = clientProvider.createDraftEstimateAndGetCartId(productLmCodes.subList(0, 1));
+        String estimateDraftId = apiClientProvider.createDraftEstimateAndGetCartId(productLmCodes.subList(0, 1));
         startFromScreenWithCreatedEstimate(productLmCodes.subList(0, 1), true);
 
         // Step 1
         step("Нажмите на кнопку Действие со сметой");
-        EstimatePage estimatePage = new EstimatePage(context);
+        EstimatePage estimatePage = new EstimatePage();
         ActionsWithEstimateModalPage actionsWithEstimateModalPage = estimatePage
                 .clickActionsWithEstimateButton()
                 .verifyRequiredElements();
@@ -471,7 +472,7 @@ public class EstimateTest extends SalesBaseTest {
         // Step 5
         step("Нажмите на мини-карточку сметы в статусе черновик");
         salesDocumentsPage.searchForDocumentByTextAndSelectIt(estimateDraftId);
-        estimatePage = new EstimatePage(context);
+        estimatePage = new EstimatePage();
 
         // Step 6
         step("Нажмите на кнопку Создать");
@@ -496,13 +497,14 @@ public class EstimateTest extends SalesBaseTest {
                 .verifyRequiredElements();
     }
 
-    @Test(description = "C22797084 Изменение товара в смету в статусе Создан")
+    @Test(description = "C22797084 Изменение товара в смету в статусе Создан",
+            groups = NEED_ACCESS_TOKEN_GROUP)
     public void testChangeProductInConfirmedEstimate() throws Exception {
         startFromScreenWithCreatedEstimate(productLmCodes.subList(0, 1), true);
 
         // Step 1
         step("Нажмите на ручку в верхней правой части экрана");
-        EstimatePage estimatePage = new EstimatePage(context);
+        EstimatePage estimatePage = new EstimatePage();
         SalesOrderData estimateDataBefore = estimatePage.getEstimateDataFromPage();
         estimatePage.clickEditEstimateButton()
                 .shouldEditModeOn();
@@ -535,13 +537,14 @@ public class EstimateTest extends SalesBaseTest {
         estimatePage.shouldEstimateDataIs(estimateDataBefore);
     }
 
-    @Test(description = "C22797085 Изменение контактных данных клиента в смете в статусе Создан")
-    public void testChangeProduct() throws Exception {
+    @Test(description = "C22797085 Изменение контактных данных клиента в смете в статусе Создан",
+            groups = NEED_ACCESS_TOKEN_GROUP)
+    public void testChangeCustomerContactsInConfirmedEstimate() throws Exception {
         startFromScreenWithCreatedEstimate(productLmCodes.subList(0, 1), true);
 
         // Step 1
         step("Нажмите на кнопку редактирования сметы в правом верхнем углу");
-        EstimatePage estimatePage = new EstimatePage(context);
+        EstimatePage estimatePage = new EstimatePage();
         String customerNameBefore = estimatePage.getCustomerName();
         estimatePage.clickEditEstimateButton()
                 .shouldEditModeOn();
@@ -569,7 +572,7 @@ public class EstimateTest extends SalesBaseTest {
                 .verifyRequiredElements(EstimatePage.PageState.builder()
                         .customerIsSelected(true)
                         .productIsAdded(true)
-                        .estimateIsConfirmed(true).build());
+                        .editModeOn(true).build());
 
         CustomerData expectedCustomer = new CustomerData();
         expectedCustomer.setName(customerNameBefore);
@@ -578,8 +581,51 @@ public class EstimateTest extends SalesBaseTest {
 
         // Step 7
         step("Нажмите на кнопку Сохранить");
+        estimatePage.clickSaveButton()
+                .verifyRequiredElements(EstimatePage.PageState.builder()
+                        .customerIsSelected(true)
+                        .productIsAdded(true)
+                        .estimateIsConfirmed(true).build());
+        estimatePage.shouldSelectedCustomerIs(expectedCustomer);
+    }
 
-        //estimatePage.verifyRequiredElements()
+    @Test(description = "C22797086 Удаление товара из сметы в статусе Создан",
+            groups = NEED_ACCESS_TOKEN_GROUP)
+    public void testRemoveProductFromConfirmedEstimate() throws Exception {
+        startFromScreenWithCreatedEstimate(productLmCodes.subList(0, 2), true);
+
+        // Step 1
+        step("Нажмите на ручку в верхней правой части экрана");
+        EstimatePage estimatePage = new EstimatePage();
+        SalesOrderData estimateData = estimatePage.getEstimateDataFromPage();
+        estimatePage.clickEditEstimateButton()
+                .shouldEditModeOn();
+
+        // Step 2
+        step("Нажмите на мини-карточку любого товара в списке товаров сметы");
+        ActionWithProductCardModalPage actionWithProductCardModalPage = estimatePage.clickCardByIndex(1)
+                .verifyRequiredElements();
+
+        // Step 3
+        step("Выберите параметр Удалить товар");
+        actionWithProductCardModalPage.clickRemoveProductMenuItem();
+        ConfirmRemovingProductModal modal = new ConfirmRemovingProductModal();
+        modal.verifyRequiredElements();
+
+        // Step 4
+        step("Нажмите на Удалить");
+        modal.clickConfirmButton();
+        estimatePage = new EstimatePage().verifyRequiredElements(
+                EstimatePage.PageState.builder()
+                        .productIsAdded(true)
+                        .customerIsSelected(true)
+                        .estimateIsConfirmed(true)
+                        .editModeOn(true)
+                        .build());
+
+        estimateData.removeProduct(0, true);
+        estimateData.setTotalWeight(null);
+        estimatePage.shouldEstimateDataIs(estimateData);
     }
 
 }

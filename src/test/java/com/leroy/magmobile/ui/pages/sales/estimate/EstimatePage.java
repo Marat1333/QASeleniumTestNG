@@ -32,6 +32,7 @@ public class EstimatePage extends CommonMagMobilePage {
         private boolean customerIsSelected;
         private boolean productIsAdded;
         private boolean estimateIsConfirmed;
+        private boolean editModeOn;
     }
 
     public static boolean isThisPage() {
@@ -208,6 +209,13 @@ public class EstimatePage extends CommonMagMobilePage {
         return new EstimateSubmittedPage();
     }
 
+    @Step("Нажмите кнопку 'Сохранить'")
+    public EstimatePage clickSaveButton() {
+        saveBtn.click();
+        saveBtn.waitForInvisibility();
+        return this;
+    }
+
     @Step("Нажмите кнопку 'Действия со сметой'")
     public ActionsWithEstimateModalPage clickActionsWithEstimateButton() {
         actionsWithEstimateBtn.click();
@@ -227,9 +235,12 @@ public class EstimatePage extends CommonMagMobilePage {
             expectedElements.add(weightProductLbl);
             expectedElements.add(totalPriceLbl);
             expectedElements.add(totalPriceVal);
-            expectedElements.add(addProductBtn);
-            if (state.estimateIsConfirmed)
+            if (state.editModeOn || !state.estimateIsConfirmed)
+                expectedElements.add(addProductBtn);
+            if (state.editModeOn)
                 expectedElements.add(saveBtn);
+            else if (state.estimateIsConfirmed)
+                expectedElements.add(actionsWithEstimateBtn);
             else
                 expectedElements.add(createBtn);
             expectedElements.add(productCardWidget);
@@ -284,8 +295,40 @@ public class EstimatePage extends CommonMagMobilePage {
     @Step("Проверить, что смета содержит ожидаемые данные (expectedData)")
     public EstimatePage shouldEstimateDataIs(SalesOrderData expectedData) {
         SalesOrderData actualData = getEstimateDataFromPage();
-        // Лучше расписать отдельно по полям потом:
-        softAssert.isEquals(actualData, expectedData, "Ожидались другие данные в смете");
+
+        softAssert.isEquals(actualData.getProductCount(), expectedData.getProductCount(),
+                "Разное кол-во позиций товаров в смете (цифра)");
+        softAssert.isEquals(actualData.getTotalPrice(), expectedData.getTotalPrice(),
+                "Разная стоимость Итого");
+        if (expectedData.getTotalWeight() != null) {
+            softAssert.isEquals(actualData.getTotalWeight(), expectedData.getTotalWeight(),
+                    "Разный итоговый вес");
+        }
+        anAssert.isEquals(actualData.getOrderCardDataList().size(), expectedData.getOrderCardDataList().size(),
+                "Разное кол-во товаров");
+        for (int i = 0; i < expectedData.getOrderCardDataList().size(); i++) {
+            SalesOrderCardData actualProduct = actualData.getOrderCardDataList().get(i);
+            SalesOrderCardData expectedProduct = expectedData.getOrderCardDataList().get(i);
+            softAssert.isEquals(actualProduct.getSelectedQuantity(), expectedProduct.getSelectedQuantity(),
+                    "Товар #" + (i + 1) + " - разное выбранное кол-во");
+            softAssert.isEquals(actualProduct.getTotalPrice(), expectedProduct.getTotalPrice(),
+                    "Товар #" + (i + 1) + " - разная стоимость товаров");
+            softAssert.isEquals(actualProduct.getProductCardData().getLmCode(),
+                    expectedProduct.getProductCardData().getLmCode(),
+                    "Товар #" + (i + 1) + " - разные ЛМ коды");
+            softAssert.isEquals(actualProduct.getProductCardData().getBarCode(),
+                    expectedProduct.getProductCardData().getBarCode(),
+                    "Товар #" + (i + 1) + " - разные Бар коды");
+            softAssert.isEquals(actualProduct.getProductCardData().getName(),
+                    expectedProduct.getProductCardData().getName(),
+                    "Товар #" + (i + 1) + " - разные названия товаров");
+            softAssert.isEquals(actualProduct.getProductCardData().getPrice(),
+                    expectedProduct.getProductCardData().getPrice(),
+                    "Товар #" + (i + 1) + " - разные цены товаров");
+            softAssert.isEquals(actualProduct.getProductCardData().getPriceUnit(),
+                    expectedProduct.getProductCardData().getPriceUnit(),
+                    "Товар #" + (i + 1) + " - разные price Unit");
+        }
         softAssert.verifyAll();
         return this;
     }

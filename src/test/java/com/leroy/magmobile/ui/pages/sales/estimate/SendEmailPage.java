@@ -3,16 +3,11 @@ package com.leroy.magmobile.ui.pages.sales.estimate;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import io.qameta.allure.Step;
 
 public class SendEmailPage extends CommonMagMobilePage {
-
-    public SendEmailPage(Context context) {
-        super(context);
-    }
 
     @AppFindBy(accessibilityId = "BackCloseModal", metaName = "Кнопка назад")
     Element backBtn;
@@ -62,7 +57,7 @@ public class SendEmailPage extends CommonMagMobilePage {
     @Step("Нажать кнопку 'Отправить'")
     public SubmittedSendEmailPage clickSubmitButton() {
         submitBtn.click();
-        return new SubmittedSendEmailPage(context);
+        return new SubmittedSendEmailPage();
     }
 
     // Verifications

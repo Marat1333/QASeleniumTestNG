@@ -15,4 +15,13 @@ public class SalesOrderData extends CardWidgetData {
     private Double totalWeight; // кг
     private Double totalPrice; // Рубли
 
+    public void removeProduct(int index, boolean recalculateOrder) {
+        if (recalculateOrder) {
+            SalesOrderCardData removeProduct = orderCardDataList.get(index);
+            totalPrice -= removeProduct.getTotalPrice();
+            productCount--;
+        }
+        orderCardDataList.remove(index);
+    }
+
 }

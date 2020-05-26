@@ -34,7 +34,7 @@ public class ActionsWithEstimateModalPage extends CommonMagMobilePage {
     @Step("Выберите пункт меню 'Отправить на email'")
     public SendEmailPage clickSendEmailMenuItem() {
         sendEmailMenuItem.click();
-        return new SendEmailPage(context);
+        return new SendEmailPage();
     }
 
 

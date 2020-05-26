@@ -35,7 +35,7 @@ public class EstimateSubmittedPage extends CommonMagMobilePage {
     @Step("Нажать на 'Отправить на email'")
     public SendEmailPage clickSendToEmailButton() {
         sendToEmailBtn.click();
-        return new SendEmailPage(context);
+        return new SendEmailPage();
     }
 
     // VERIFICATIONS
