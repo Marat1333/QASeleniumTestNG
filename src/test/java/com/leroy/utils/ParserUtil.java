@@ -64,9 +64,14 @@ public class ParserUtil {
      * @param decimalPlaces - count of digits after the dot
      * @return Double
      */
-    public static Double sum(double a, double b, int decimalPlaces) {
+    public static Double plus(double a, double b, int decimalPlaces) {
         return Math.round((a + b) * Math.pow(10, decimalPlaces)) / Math.pow(10, decimalPlaces);
     }
+
+    public static Double minus(double a, double b, int decimalPlaces) {
+        return plus(a, -b, decimalPlaces);
+    }
+
 
     /**
      * Converts a phone number to just a number without spaces and "-"
