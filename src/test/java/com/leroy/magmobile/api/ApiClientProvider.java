@@ -3,7 +3,8 @@ package com.leroy.magmobile.api;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.leroy.core.SessionData;
+import com.leroy.core.ContextProvider;
+import com.leroy.core.UserSessionData;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.*;
 import com.leroy.magmobile.api.data.catalog.*;
@@ -19,7 +20,6 @@ import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateProduct
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogServicesSearch;
 import io.qameta.allure.Step;
-import lombok.Setter;
 import org.apache.commons.lang.RandomStringUtils;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -31,12 +31,10 @@ import java.util.stream.Collectors;
 
 import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
 
 public class ApiClientProvider {
-
-    @Setter
-    private SessionData sessionData;
 
     @Inject
     private Provider<CatalogSearchClient> catalogSearchClientProvider;
@@ -70,10 +68,16 @@ public class ApiClientProvider {
     private Provider<RupturesClient> rupturesClientProvider;
     @Inject
     private Provider<SupportClient> supportClientProvider;
+    @Inject
+    private Provider<SupplyPlanClient> supplyPlanClientProvider;
+
+    private UserSessionData userSessionData() {
+        return ContextProvider.getContext().getUserSessionData();
+    }
 
     private <J extends MagMobileClient> J getClient(Provider<J> provider) {
         J cl = provider.get();
-        cl.setSessionData(sessionData);
+        cl.setUserSessionData(userSessionData());
         return cl;
     }
 
@@ -125,7 +129,7 @@ public class ApiClientProvider {
         return getClient(pickingTaskClientProvider);
     }
 
-    public ShopKladrClient getShopClient() {
+    public ShopKladrClient getShopKladrClient() {
         return getClient(shopClientProvider);
     }
 
@@ -141,6 +145,10 @@ public class ApiClientProvider {
         return getClient(supportClientProvider);
     }
 
+    public SupplyPlanClient getSupplyPlanClient() {
+        return getClient(supplyPlanClientProvider);
+    }
+
     /// --------------- HELP METHODS ------------------ //
 
     // SEARCH PRODUCTS
@@ -148,7 +156,7 @@ public class ApiClientProvider {
     @Step("Find {necessaryCount} services")
     public List<ServiceItemData> getServices(int necessaryCount) {
         GetCatalogServicesSearch params = new GetCatalogServicesSearch();
-        params.setShopId(sessionData.getUserShopId())
+        params.setShopId(userSessionData().getUserShopId())
                 .setStartFrom(1)
                 .setPageSize(necessaryCount); // TODO не работает. Почему?
         Response<ServiceItemDataList> resp = getCatalogSearchClient().searchServicesBy(params);
@@ -163,8 +171,8 @@ public class ApiClientProvider {
             filtersData = new CatalogSearchFilter();
         String[] badLmCodes = {"10008698", "10008751"}; // Из-за отсутствия синхронизации бэков на тесте, мы можем получить некорректные данные
         GetCatalogSearch params = new GetCatalogSearch()
-                .setShopId(sessionData.getUserShopId())
-                .setDepartmentId(sessionData.getUserDepartmentId())
+                .setShopId(userSessionData().getUserShopId())
+                .setDepartmentId(userSessionData().getUserDepartmentId())
                 .setTopEM(filtersData.getTopEM())
                 .setPageSize(50)
                 .setHasAvailableStock(filtersData.getHasAvailableStock());

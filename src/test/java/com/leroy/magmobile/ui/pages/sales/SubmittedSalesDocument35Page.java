@@ -2,16 +2,11 @@ package com.leroy.magmobile.ui.pages.sales;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import io.qameta.allure.Step;
 
 public class SubmittedSalesDocument35Page extends CommonMagMobilePage {
-
-    public SubmittedSalesDocument35Page(Context context) {
-        super(context);
-    }
 
     @AppFindBy(text = "Заказ на самовывоз оформлен,\nтовары зарезервированы")
     Element titleMsgLbl;
@@ -54,7 +49,7 @@ public class SubmittedSalesDocument35Page extends CommonMagMobilePage {
     @Step("Нажмите кнопку Перейти в список документов")
     public SalesDocumentsPage clickSubmitButton() {
         submitBtn.click();
-        return new SalesDocumentsPage(context);
+        return new SalesDocumentsPage();
     }
 
     /* ---------------------- Verifications -------------------------- */

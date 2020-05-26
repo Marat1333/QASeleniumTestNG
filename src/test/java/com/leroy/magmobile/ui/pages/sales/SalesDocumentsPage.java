@@ -1,15 +1,15 @@
 package com.leroy.magmobile.ui.pages.sales;
 
+import com.leroy.core.ContextProvider;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
-import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.search.SearchProductPage;
-import com.leroy.magmobile.ui.pages.sales.widget.SalesDocumentWidget;
-import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
 import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
+import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
+import com.leroy.magmobile.ui.pages.sales.widget.SalesDocumentWidget;
+import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import io.qameta.allure.Step;
 
 import java.util.List;
@@ -17,10 +17,6 @@ import java.util.List;
 // Продажа -> Документы продажи -> "Мои продажи" или "Продажи моего магазина" и т.п.
 // Или после того, как создали смету, то нажимаем "ПЕРЕЙТИ В СПИСОК ДОКУМЕНТОВ"
 public class SalesDocumentsPage extends CommonMagMobilePage {
-
-    public SalesDocumentsPage(Context context) {
-        super(context);
-    }
 
     @AppFindBy(accessibilityId = "BackCloseModal", metaName = "Кнопка назад")
     Element backBtn;
@@ -41,7 +37,7 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
     private MagMobGreenSubmitButton makeSaleBtn;
 
     private MagMobGreenSubmitButton getSubmitBtn() {
-        if (context.isNewShopFunctionality())
+        if (ContextProvider.getContext().isNewShopFunctionality())
             return makeSaleBtn;
         else
             return createSalesDocumentBtn;
@@ -72,13 +68,13 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
     @Step("Нажмите кнопку 'Создать документ продажи'")
     public SearchProductPage clickCreateSalesDocumentButton() {
         createSalesDocumentBtn.click();
-        return new SearchProductPage(context);
+        return new SearchProductPage();
     }
 
     @Step("Нажмите кнопку 'Оформить продажу'")
     public SearchProductPage clickMakeSaleButton() {
         makeSaleBtn.click();
-        return new SearchProductPage(context);
+        return new SearchProductPage();
     }
 
     /* ---------------------- Verifications -------------------------- */

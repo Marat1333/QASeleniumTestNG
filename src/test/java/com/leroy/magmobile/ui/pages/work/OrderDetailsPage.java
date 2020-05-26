@@ -3,11 +3,10 @@ package com.leroy.magmobile.ui.pages.work;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magmobile.ui.Context;
-import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.widgets.ProductCardWidget;
 import com.leroy.magmobile.ui.models.search.ProductCardData;
 import com.leroy.magmobile.ui.models.work.WithdrawalOrderCardData;
+import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import com.leroy.magmobile.ui.pages.widgets.ProductCardWidget;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
@@ -17,10 +16,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 public class OrderDetailsPage extends CommonMagMobilePage {
-
-    public OrderDetailsPage(Context context) {
-        super(context);
-    }
 
     // Parameters areas
     @AppFindBy(xpath = "//android.widget.TextView[@text='Способ пополнения']/following::android.widget.TextView[1]",

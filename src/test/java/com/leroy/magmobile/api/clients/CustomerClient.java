@@ -2,12 +2,8 @@ package com.leroy.magmobile.api.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.StatusCodes;
-import com.leroy.magmobile.api.data.customer.Communication;
-import com.leroy.magmobile.api.data.customer.CustomerData;
-import com.leroy.magmobile.api.data.customer.CustomerListData;
+import com.leroy.magmobile.api.data.customer.*;
 import com.leroy.magmobile.api.requests.customer.*;
-import com.leroy.magmobile.api.data.customer.CustomerResponseBodyData;
-import com.leroy.magmobile.api.data.customer.CustomerSearchFilters;
 import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -28,15 +24,15 @@ public class CustomerClient extends MagMobileClient {
         req.setCustomerType(filters.getCustomerType());
         req.setDiscriminantType(filters.getDiscriminantType());
         req.setDiscriminantValue(filters.getDiscriminantValue());
-        req.setShopId(sessionData.getUserShopId());
+        req.setShopId(userSessionData.getUserShopId());
         return execute(req, CustomerListData.class);
     }
 
     @Step("Create customer")
     public Response<CustomerResponseBodyData> createCustomer(CustomerData customerData) {
         CustomerAccountCreateRequest req = new CustomerAccountCreateRequest();
-        req.setShopId(sessionData.getUserShopId());
-        req.setLdap(sessionData.getUserLdap());
+        req.setShopId(userSessionData.getUserShopId());
+        req.setLdap(userSessionData.getUserLdap());
         req.jsonBody(customerData);
         return execute(req, CustomerResponseBodyData.class);
     }
@@ -44,8 +40,8 @@ public class CustomerClient extends MagMobileClient {
     @Step("Update customer")
     public Response<CustomerResponseBodyData> updateCustomer(CustomerData customerData) {
         CustomerAccountUpdateRequest req = new CustomerAccountUpdateRequest();
-        req.setShopId(sessionData.getUserShopId());
-        req.setLdap(sessionData.getUserLdap());
+        req.setShopId(userSessionData.getUserShopId());
+        req.setLdap(userSessionData.getUserLdap());
         req.jsonBody(customerData);
         return execute(req, CustomerResponseBodyData.class);
     }

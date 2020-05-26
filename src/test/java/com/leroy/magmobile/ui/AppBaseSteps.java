@@ -22,24 +22,18 @@ import io.appium.java_client.android.AndroidDriver;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.annotations.BeforeClass;
 
 public class AppBaseSteps extends MagMobileBaseTest {
 
-    @BeforeClass
-    public void appBaseStepsBeforeClass() {
-        sessionData.setUserLdap(EnvConstants.BASIC_USER_LDAP);
-        sessionData.setUserShopId(EnvConstants.SHOP_WITH_NEW_INTERFACE);
-        sessionData.setUserDepartmentId("1");
-    }
-
     public <T> T loginAndGoTo(String userLdap, String password, boolean selectShopAndDepartment,
                               Class<? extends BaseAppPage> pageClass) throws Exception {
+        WebDriver driver = getDriver();
         AndroidDriver<MobileElement> androidDriver = (AndroidDriver<MobileElement>) driver;
         Element redirectBtn = new Element(driver, By.xpath("//*[@resource-id='buttonRedirect']"));
-        new LoginAppPage(context).clickLoginButton();
+        new LoginAppPage().clickLoginButton();
         /// If the Chrome starts first time and we can see pop-up windows
         boolean moon = false;
         Element termsAcceptBtn = new Element(driver,
@@ -51,7 +45,7 @@ public class AppBaseSteps extends MagMobileBaseTest {
             driver.findElement(By.id("com.android.chrome:id/next_button")).click();
             //driver.findElement(By.id("com.android.chrome:id/negative_button")).click();
         }
-        new WebDriverWait(this.driver, 30).until(
+        new WebDriverWait(driver, 30).until(
                 a -> androidDriver.getContextHandles().size() > 1);
         ///
         boolean needToClickRedirectBtn;
@@ -66,16 +60,16 @@ public class AppBaseSteps extends MagMobileBaseTest {
         } else {
             Log.debug("Redirect Button is not visible");
             if (moon) {
-                new ChromeCertificateErrorPage(context).skipSiteSecureError();
+                new ChromeCertificateErrorPage().skipSiteSecureError();
                 androidDriver.context("WEBVIEW_chrome");
-                new LoginWebPage(context).logIn(userLdap, password);
+                new LoginWebPage().logIn(userLdap, password);
                 androidDriver.context("NATIVE_APP");
                 try {
                     redirectBtn.click();
                 } catch (NoSuchElementException err) {
                     // Если получили ошибку HTTP ERROR 500
                     androidDriver.context("WEBVIEW_chrome");
-                    LoginWebPage loginWebPage = new LoginWebPage(context);
+                    LoginWebPage loginWebPage = new LoginWebPage();
                     //String consoleErrors = loginWebPage.getJSErrorsFromConsole();
                     //Log.error("CONSOLE ERRORS:" + consoleErrors);
                     loginWebPage.reloadPage();
@@ -85,18 +79,18 @@ public class AppBaseSteps extends MagMobileBaseTest {
             } else {
                 if (new Element(driver, By.xpath("//*[@resource-id='Username']")).isVisible(1)) {
                     androidDriver.context("WEBVIEW_chrome");
-                    LoginWebPage loginWebPage = new LoginWebPage(context);
+                    LoginWebPage loginWebPage = new LoginWebPage();
                     loginWebPage.logIn(userLdap, password);
                     androidDriver.context("NATIVE_APP");
                 }
             }
         }
 
-        MainProductAndServicesPage mainProductAndServicesPage = new MainProductAndServicesPage(context);
+        MainProductAndServicesPage mainProductAndServicesPage = new MainProductAndServicesPage();
         UserProfilePage userProfilePage = null;
         if (selectShopAndDepartment) {
             userProfilePage = setShopAndDepartmentForUser(mainProductAndServicesPage,
-                    context.getSessionData().getUserShopId(), context.getSessionData().getUserDepartmentId());
+                    getUserSessionData().getUserShopId(), getUserSessionData().getUserDepartmentId());
         }
 
         if (pageClass.equals(MainProductAndServicesPage.class)) {
@@ -144,8 +138,8 @@ public class AppBaseSteps extends MagMobileBaseTest {
         mainProductAndServicesPage.clickSearchBar(false)
                 .enterTextInSearchFieldAndSubmit(lmCode);
 
-        new ProductDescriptionPage(context).clickActionWithProductButton();
-        ActionWithProductModalPage modalPage = new ActionWithProductModalPage(context);
+        new ProductDescriptionPage().clickActionWithProductButton();
+        ActionWithProductModalPage modalPage = new ActionWithProductModalPage();
         BasketStep1Page basketStep1Page = modalPage.startToCreateSalesDocument()
                 .clickAddButton();
         String documentNumber = basketStep1Page.getDocumentNumber();

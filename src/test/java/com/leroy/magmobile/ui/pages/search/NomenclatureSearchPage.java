@@ -5,10 +5,9 @@ import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
+import com.leroy.magmobile.ui.models.TextViewData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.widgets.TextViewWidget;
-import com.leroy.magmobile.ui.models.TextViewData;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -17,10 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NomenclatureSearchPage extends CommonMagMobilePage {
-
-    public NomenclatureSearchPage(Context context) {
-        super(context);
-    }
 
     @AppFindBy(accessibilityId = "ScreenTitle", metaName = "Номер выбранной номенклатуры")
     Element screenTitle;
@@ -52,7 +47,7 @@ public class NomenclatureSearchPage extends CommonMagMobilePage {
             nomenclatureBackBtn.click();
             screenTitle.waitUntilTextIsChanged(screenTitleText);
         }
-        return new NomenclatureSearchPage(context);
+        return new NomenclatureSearchPage();
     }
 
     @Step("Выбрать отдел {dept}, подотдел {subDept}, раздел {classId}, подраздел {subClass}")
@@ -96,14 +91,14 @@ public class NomenclatureSearchPage extends CommonMagMobilePage {
         if (!waitUntilContentIsChanged(pageSource, short_timeout)) {
             throw new IllegalArgumentException("There is no " + value + " nomenclature element");
         }
-        return new NomenclatureSearchPage(context);
+        return new NomenclatureSearchPage();
     }
 
     @Step("Нажмите 'Показать все товары'")
     public SearchProductPage clickShowAllProductsBtn() {
         scrollView.scrollToBeginning();
         showAllGoods.click();
-        return new SearchProductPage(context);
+        return new SearchProductPage();
     }
 
     // Verifications

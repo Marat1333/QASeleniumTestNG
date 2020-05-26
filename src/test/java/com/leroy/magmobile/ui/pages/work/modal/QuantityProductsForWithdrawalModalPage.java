@@ -3,17 +3,12 @@ package com.leroy.magmobile.ui.pages.work.modal;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.work.StockProductsPage;
 import io.qameta.allure.Step;
 
 public class QuantityProductsForWithdrawalModalPage extends CommonMagMobilePage {
-
-    public QuantityProductsForWithdrawalModalPage(Context context) {
-        super(context);
-    }
 
     @Override
     public void waitForPageIsLoaded() {
@@ -40,7 +35,7 @@ public class QuantityProductsForWithdrawalModalPage extends CommonMagMobilePage 
     @Step("Нажать кнопку ОТОЗВАТЬ (submit)")
     public StockProductsPage clickSubmitBtn() {
         withdrawalBtn.click();
-        return new StockProductsPage(context);
+        return new StockProductsPage();
     }
 
     // Verifications

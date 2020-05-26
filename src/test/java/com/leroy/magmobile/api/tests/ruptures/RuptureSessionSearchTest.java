@@ -14,6 +14,10 @@ import static org.hamcrest.Matchers.*;
 
 public class RuptureSessionSearchTest extends BaseProjectApiTest {
 
+    private RupturesClient rupturesClient() {
+        return apiClientProvider.getRupturesClient();
+    }
+
     @Override
     protected boolean isNeedAccessToken() {
         return true;
@@ -21,13 +25,13 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
 
     @Test(description = "C3233580 GET ruptures sessions without params")
     public void testSearchForRuptureSessionWithoutSpecificFilters() {
-        RupturesClient rupturesClient = apiClientProvider.getRupturesClient();
+        RupturesClient rupturesClient = rupturesClient();
         Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions();
         isResponseOk(resp);
         List<ResRuptureSessionData> items = resp.asJson().getItems();
         assertThat("items count", items, hasSize(greaterThan(0)));
         for (ResRuptureSessionData item : items) {
-            assertThat("storeId", item.getStoreId(), is(Integer.parseInt(sessionData.getUserShopId())));
+            assertThat("storeId", item.getStoreId(), is(Integer.parseInt(getUserSessionData().getUserShopId())));
             if (item.getStatus().equals("finished"))
                 assertThat("finishedOn", item.getFinishedOn(), notNullValue());
             else

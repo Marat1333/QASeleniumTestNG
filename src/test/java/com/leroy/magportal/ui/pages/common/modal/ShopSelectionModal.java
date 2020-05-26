@@ -2,16 +2,11 @@ package com.leroy.magportal.ui.pages.common.modal;
 
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
 import com.leroy.magportal.ui.webelements.commonelements.PuzSelectControl;
 import io.qameta.allure.Step;
 
 public class ShopSelectionModal extends MagPortalBasePage {
-
-    public ShopSelectionModal(Context context) {
-        super(context);
-    }
 
     @WebFindBy(id = "shops")
     PuzSelectControl shopComboBox;

@@ -10,7 +10,10 @@ import com.leroy.magportal.ui.WebBaseSteps;
 import com.leroy.magportal.ui.constants.TestDataConstants;
 import com.leroy.magportal.ui.models.customers.CustomerWebData;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
-import com.leroy.magportal.ui.models.salesdoc.*;
+import com.leroy.magportal.ui.models.salesdoc.OrderWebData;
+import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardWebData;
+import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
+import com.leroy.magportal.ui.models.salesdoc.ShortSalesDocWebData;
 import com.leroy.magportal.ui.pages.cart_estimate.CartEstimatePage;
 import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SubmittedEstimateModal;
@@ -45,7 +48,7 @@ public class EstimateTest extends WebBaseSteps {
 
     @BeforeGroups(NEED_ACCESS_TOKEN_GROUP)
     private void addAccessTokenToSessionData() {
-        sessionData.setAccessToken(getAccessToken());
+        getUserSessionData().setAccessToken(getAccessToken());
     }
 
     @Step("Создаем клиента через API")
@@ -79,9 +82,9 @@ public class EstimateTest extends WebBaseSteps {
         estimatePage.enterTextInSearchProductField(testProductLmCode);
         estimatePage.shouldEstimateHasProducts(Collections.singletonList(testProductLmCode));
         SalesDocWebData estimateData = estimatePage.getSalesDocData();
-        anAssert.isFalse(estimateData.getNumber().isEmpty(),
+        anAssert().isFalse(estimateData.getNumber().isEmpty(),
                 "Номер сметы отсутствует");
-        anAssert.isEquals(estimateData.getAuthorName(), EnvConstants.BASIC_USER_FIRST_NAME,
+        anAssert().isEquals(estimateData.getAuthorName(), EnvConstants.BASIC_USER_FIRST_NAME,
                 "Ожидалось другое имя создателя сметы");
 
         // Step 3
@@ -149,7 +152,7 @@ public class EstimateTest extends WebBaseSteps {
     public void testSearchProductByBarcodeInEstimate() throws Exception {
         ProductItemData testProduct = productList.get(0);
         EstimatePage estimatePage = isStartFromScratch() ? loginAndGoTo(EstimatePage.class) :
-                new EstimatePage(context);
+                new EstimatePage();
 
         // Step #1
         step("Нажмите на активную кнопку '+Создать смету' в правом верхнем углу экрана");
@@ -192,7 +195,7 @@ public class EstimateTest extends WebBaseSteps {
             estimatePage = loginAndGoTo(EstimatePage.class).clickCreateEstimateButton();
             estimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
         } else
-            estimatePage = new EstimatePage(context);
+            estimatePage = new EstimatePage();
 
         SalesDocWebData estimateData = estimatePage.getSalesDocData();
 
@@ -229,7 +232,7 @@ public class EstimateTest extends WebBaseSteps {
             estimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
             estimatePage.enterTextInSearchProductField(testProduct2.getLmCode());
         } else
-            estimatePage = new EstimatePage(context);
+            estimatePage = new EstimatePage();
 
         SalesDocWebData estimateData = estimatePage.getSalesDocData();
         OrderWebData orderWebData = estimateData.getOrders().get(0);
@@ -255,7 +258,7 @@ public class EstimateTest extends WebBaseSteps {
             estimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
             estimatePage.enterTextInSearchProductField(testProduct2.getLmCode());
         } else
-            estimatePage = new EstimatePage(context);
+            estimatePage = new EstimatePage();
 
         SalesDocWebData estimateData = estimatePage.getSalesDocData();
         estimateData.getOrders().get(0).changeProductQuantity(0, newQuantity, true);
@@ -284,7 +287,7 @@ public class EstimateTest extends WebBaseSteps {
         // Если сразу после изменения кол-ва обновить страницу, то данные могут не сохраниться
         Thread.sleep(3000); // Так делать плохо!
         estimatePage.reloadPage();
-        new EstimatePage(context).shouldEstimateHasData(estimateData);
+        new EstimatePage().shouldEstimateHasData(estimateData);
     }
 
     @Test(description = "C3302216 Ordered quantity of product more than existing", groups = NEED_PRODUCTS_GROUP)
@@ -297,7 +300,7 @@ public class EstimateTest extends WebBaseSteps {
             estimatePage = loginAndGoTo(EstimatePage.class).clickCreateEstimateButton();
             estimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
         } else
-            estimatePage = new EstimatePage(context);
+            estimatePage = new EstimatePage();
 
         Number newQuantity = testProduct1.getAvailableStock() + 1;
         SalesDocWebData estimateData = estimatePage.getSalesDocData();
@@ -322,7 +325,7 @@ public class EstimateTest extends WebBaseSteps {
             estimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
             estimatePage.enterTextInSearchProductField(testProduct2.getLmCode());
         } else
-            estimatePage = new EstimatePage(context);
+            estimatePage = new EstimatePage();
 
         SalesDocWebData estimateData = estimatePage.getSalesDocData();
 
@@ -343,7 +346,7 @@ public class EstimateTest extends WebBaseSteps {
             estimatePage = loginAndGoTo(EstimatePage.class).clickCreateEstimateButton();
             estimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
         } else
-            estimatePage = new EstimatePage(context);
+            estimatePage = new EstimatePage();
 
         String docNumber = estimatePage.getDocumentNumber();
 
@@ -371,7 +374,7 @@ public class EstimateTest extends WebBaseSteps {
             estimatePage = loginAndGoTo(EstimatePage.class)
                     .clickCreateEstimateButton();
         else {
-            estimatePage = new EstimatePage(context);
+            estimatePage = new EstimatePage();
             estimatePage.reloadPage();
         }
 
@@ -395,7 +398,7 @@ public class EstimateTest extends WebBaseSteps {
             estimatePage = loginAndGoTo(EstimatePage.class)
                     .clickCreateEstimateButton();
         else {
-            estimatePage = new EstimatePage(context);
+            estimatePage = new EstimatePage();
             estimatePage.reloadPage();
         }
 
@@ -425,7 +428,7 @@ public class EstimateTest extends WebBaseSteps {
             estimatePage = loginAndGoTo(EstimatePage.class)
                     .clickCreateEstimateButton();
         else {
-            estimatePage = new EstimatePage(context);
+            estimatePage = new EstimatePage();
             estimatePage.reloadPage();
         }
 
@@ -459,7 +462,7 @@ public class EstimateTest extends WebBaseSteps {
             estimatePage = loginAndGoTo(EstimatePage.class)
                     .clickCreateEstimateButton();
         } else {
-            estimatePage = new EstimatePage(context);
+            estimatePage = new EstimatePage();
             estimatePage.reloadPage();
         }
 
@@ -533,7 +536,7 @@ public class EstimateTest extends WebBaseSteps {
         step("Выполнение предусловий: авторизуемся, заходим на страницу сметы, выбираем пользователя");
         EstimatePage estimatePage;
         if (!isStartFromScratch()) {
-            estimatePage = new EstimatePage(context);
+            estimatePage = new EstimatePage();
             estimatePage.reloadPage();
         } else {
             estimatePage = loginAndGoTo(EstimatePage.class)
@@ -573,7 +576,7 @@ public class EstimateTest extends WebBaseSteps {
             estimatePage = loginAndGoTo(EstimatePage.class)
                     .clickCreateEstimateButton();
         } else {
-            estimatePage = new EstimatePage(context);
+            estimatePage = new EstimatePage();
             estimatePage.removeSelectedCustomer();
         }
 
@@ -596,7 +599,7 @@ public class EstimateTest extends WebBaseSteps {
         if (isStartFromScratch()) {
             estimatePage = loginAndGoTo(EstimatePage.class);
         } else {
-            estimatePage = new EstimatePage(context);
+            estimatePage = new EstimatePage();
         }
         estimatePage.openPageWithEstimate(estimateId);
 

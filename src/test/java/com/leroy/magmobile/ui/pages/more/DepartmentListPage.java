@@ -2,16 +2,11 @@ package com.leroy.magmobile.ui.pages.more;
 
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
-import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.models.TextViewData;
+import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import org.openqa.selenium.By;
 
 public class DepartmentListPage extends CommonMagMobilePage {
-
-    public DepartmentListPage(Context context) {
-        super(context);
-    }
 
     private static final String TYPICAL_DEPARTMENT_AREA_XPATH =
             "//android.widget.ScrollView//android.view.ViewGroup";
@@ -34,6 +29,6 @@ public class DepartmentListPage extends CommonMagMobilePage {
 
     public UserProfilePage selectDepartmentById(String id) throws Exception {
         getSpecificShopAreaById(id).click();
-        return new UserProfilePage(context);
+        return new UserProfilePage();
     }
 }

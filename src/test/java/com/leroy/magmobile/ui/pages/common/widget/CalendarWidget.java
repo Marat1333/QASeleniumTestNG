@@ -1,7 +1,7 @@
 package com.leroy.magmobile.ui.pages.common.widget;
 
-import com.leroy.core.BaseContainer;
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.web_elements.general.BaseWidget;
 import com.leroy.core.web_elements.general.Element;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.Locale;
 
-public class CalendarWidget extends BaseContainer {
+public class CalendarWidget extends BaseWidget {
 
     public CalendarWidget(WebDriver driver) {
         super(driver);
@@ -64,12 +64,10 @@ public class CalendarWidget extends BaseContainer {
             if (needToSelectDate.before(calendarDate)) {
                 previousMonthBtn.click();
                 wait(1);
-            }
-            else if (needToSelectDate.after(calendarDate)) {
+            } else if (needToSelectDate.after(calendarDate)) {
                 nextMonthBtn.click();
                 wait(1);
-            }
-            else
+            } else
                 break;
         }
         wait(1);

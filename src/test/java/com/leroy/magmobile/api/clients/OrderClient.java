@@ -10,7 +10,10 @@ import io.qameta.allure.Step;
 import org.json.simple.JSONObject;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.leroy.core.matchers.Matchers.isNumber;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -32,18 +35,18 @@ public class OrderClient extends MagMobileClient {
     @Step("Create order")
     public Response<OrderData> createOrder(ReqOrderData reqOrderData) {
         OrderPost orderPost = new OrderPost();
-        orderPost.bearerAuthHeader(sessionData.getAccessToken());
+        orderPost.bearerAuthHeader(userSessionData.getAccessToken());
         orderPost.jsonBody(reqOrderData);
-        orderPost.setShopId(sessionData.getUserShopId());
-        orderPost.setUserLdap(sessionData.getUserLdap());
+        orderPost.setShopId(userSessionData.getUserShopId());
+        orderPost.setUserLdap(userSessionData.getUserLdap());
         return execute(orderPost, OrderData.class);
     }
 
     @Step("Confirm order with id = {orderId}")
     public Response<OrderData> confirmOrder(String orderId, OrderData putOrderData) {
         OrderConfirmRequest req = new OrderConfirmRequest();
-        req.setShopId(sessionData.getUserShopId());
-        req.setUserLdap(sessionData.getUserLdap());
+        req.setShopId(userSessionData.getUserShopId());
+        req.setUserLdap(userSessionData.getUserLdap());
         req.setOrderId(orderId);
         req.jsonBody(putOrderData);
         return execute(req, OrderData.class);
@@ -52,7 +55,7 @@ public class OrderClient extends MagMobileClient {
     @Step("Check quantity")
     public Response<ResOrderCheckQuantityData> checkQuantity(ReqOrderData data) {
         OrderCheckQuantityRequest req = new OrderCheckQuantityRequest();
-        req.setShopId(sessionData.getUserShopId());
+        req.setShopId(userSessionData.getUserShopId());
         req.jsonBody(data);
         return execute(req, ResOrderCheckQuantityData.class);
     }
@@ -70,8 +73,8 @@ public class OrderClient extends MagMobileClient {
     @Step("Update Order")
     public Response<OrderData> updateDraftOrder(OrderData orderData) {
         OrderPutRequest req = new OrderPutRequest();
-        req.setShopId(sessionData.getUserShopId());
-        req.setUserLdap(sessionData.getUserLdap());
+        req.setShopId(userSessionData.getUserShopId());
+        req.setUserLdap(userSessionData.getUserLdap());
         req.jsonBody(orderData);
         return execute(req, OrderData.class);
     }
@@ -81,8 +84,8 @@ public class OrderClient extends MagMobileClient {
                                         BaseProductOrderData productData) {
         OrderRearrangeRequest req = new OrderRearrangeRequest();
         req.setOrderId(orderData.getOrderId());
-        req.setShopId(sessionData.getUserShopId());
-        req.setUserLdap(sessionData.getUserLdap());
+        req.setShopId(userSessionData.getUserShopId());
+        req.setUserLdap(userSessionData.getUserLdap());
         OrderData putOrderData = new OrderData();
         putOrderData.setSolutionVersion(orderData.getSolutionVersion());
         putOrderData.setPaymentVersion(orderData.getPaymentVersion());
@@ -106,7 +109,7 @@ public class OrderClient extends MagMobileClient {
     public Response<JsonNode> deleteDraftOrder(String orderId) {
         OrderChangeStatusRequest req = new OrderChangeStatusRequest();
         req.setOrderId(orderId);
-        req.setUserLdap(sessionData.getUserLdap());
+        req.setUserLdap(userSessionData.getUserLdap());
         Map<String, String> body = new HashMap<>();
         body.put("status", SalesDocumentsConst.States.DELETED.getApiVal());
         req.jsonBody(body);
@@ -119,7 +122,7 @@ public class OrderClient extends MagMobileClient {
         jsonObject.put("action", "cancel-order");
         return execute(new OrderWorkflowPut()
                 .setOrderId(orderId)
-                .setUserLdap(sessionData.getUserLdap())
+                .setUserLdap(userSessionData.getUserLdap())
                 .jsonBody(jsonObject), JsonNode.class);
     }
 
@@ -135,7 +138,7 @@ public class OrderClient extends MagMobileClient {
         assertThat("docType", data.getDocType(), is(SalesDocumentsConst.Types.ORDER.getApiVal()));
         assertThat("salesDocStatus", data.getSalesDocStatus(), is(SalesDocumentsConst.States.DRAFT.getApiVal()));
         assertThat("status", data.getStatus(), is(SalesDocumentsConst.States.DRAFT.getApiVal()));
-        assertThat("shopId", data.getShopId(), is(sessionData.getUserShopId()));
+        assertThat("shopId", data.getShopId(), is(userSessionData.getUserShopId()));
         assertThat("fulfillmentTaskId", data.getFulfillmentTaskId(), not(emptyOrNullString()));
         assertThat("paymentTaskId", data.getPaymentTaskId(), not(emptyOrNullString()));
 
@@ -183,7 +186,7 @@ public class OrderClient extends MagMobileClient {
         assertThat("orderId", actualData.getOrderId(), is(expectedData.getOrderId()));
         assertThat("shopId", actualData.getShopId(), is(expectedData.getShopId()));
         if (!ResponseType.PUT.equals(responseType)) {
-            assertThat("createdBy", actualData.getCreatedBy(), is(sessionData.getUserLdap()));
+            assertThat("createdBy", actualData.getCreatedBy(), is(userSessionData.getUserLdap()));
         }
         assertThat("fulfillmentTaskId", actualData.getFulfillmentTaskId(),
                 is(expectedData.getFulfillmentTaskId()));
@@ -332,7 +335,7 @@ public class OrderClient extends MagMobileClient {
                         "Response error:" + r.toString(),
                 r.isSuccessful());
         assertThat("Could not wait for the order to be confirmed. Timeout=" + maxTimeoutInSeconds + ". " +
-                "Status:", r.asJson().getStatus(),
+                        "Status:", r.asJson().getStatus(),
                 is(expectedStatus));
         return null;
     }

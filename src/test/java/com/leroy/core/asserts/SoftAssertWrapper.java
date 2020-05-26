@@ -6,9 +6,9 @@ import com.leroy.core.web_elements.general.Element;
 
 import java.util.Arrays;
 
-public class CustomSoftAssert extends BaseCustomAssert {
+public class SoftAssertWrapper extends BaseCustomAssert {
 
-    public CustomSoftAssert(StepLog stepLog) {
+    public SoftAssertWrapper(StepLog stepLog) {
         super(stepLog);
     }
 

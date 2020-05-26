@@ -1,6 +1,5 @@
 package com.leroy.core.pages;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.web_elements.general.Element;
@@ -24,13 +23,13 @@ public abstract class BaseAppPage extends BasePage {
     @AppFindBy(xpath = "//android.widget.ProgressBar", cacheLookup = false, metaName = "Progress bar")
     private Element progressBar;
 
-    protected BaseAppPage(TestContext context, boolean isWaitForPageIsLoaded) {
-        super(context, isWaitForPageIsLoaded);
+    protected BaseAppPage(boolean isWaitForPageIsLoaded) {
+        super(isWaitForPageIsLoaded);
         androidDriver = (AndroidDriver) driver;
     }
 
-    public BaseAppPage(TestContext context) {
-        this(context, true);
+    public BaseAppPage() {
+        this(true);
     }
 
     protected boolean isKeyboardVisible() {

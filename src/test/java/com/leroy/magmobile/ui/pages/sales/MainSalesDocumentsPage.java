@@ -1,8 +1,8 @@
 package com.leroy.magmobile.ui.pages.sales;
 
+import com.leroy.core.ContextProvider;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.TopMenuPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SaleTypeModalPage;
@@ -11,10 +11,6 @@ import io.qameta.allure.Step;
 
 // Раздел "Продажа" -> Страница "Документы продажи"
 public class MainSalesDocumentsPage extends TopMenuPage {
-
-    public MainSalesDocumentsPage(Context context) {
-        super(context);
-    }
 
     @AppFindBy(accessibilityId = "MainScreenTitle", metaName = "Строка поиска")
     Element searchArea;
@@ -45,16 +41,16 @@ public class MainSalesDocumentsPage extends TopMenuPage {
     @Step("Нажмите 'Создать документ продажи' (или 'Оформить продажу')")
     public <T> T clickCreateSalesDocumentButton() {
         createSalesDocumentBtn.click();
-        if (context.isNewShopFunctionality())
-            return (T) new SaleTypeModalPage(context);
+        if (ContextProvider.getContext().isNewShopFunctionality())
+            return (T) new SaleTypeModalPage();
         else
-            return (T) new SearchProductPage(context);
+            return (T) new SearchProductPage();
     }
 
     @Step("Перейти в 'Мои продажи'")
     public SalesDocumentsPage goToMySales() {
         mySalesLbl.click();
-        return new SalesDocumentsPage(context);
+        return new SalesDocumentsPage();
     }
 
     /* ---------------------- Verifications -------------------------- */

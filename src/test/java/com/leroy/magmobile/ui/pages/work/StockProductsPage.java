@@ -3,21 +3,16 @@ package com.leroy.magmobile.ui.pages.work;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
+import com.leroy.magmobile.ui.models.search.ProductCardData;
+import com.leroy.magmobile.ui.models.work.WithdrawalOrderCardData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.widgets.ProductCardWidget;
 import com.leroy.magmobile.ui.pages.widgets.SelectedCardWidget;
-import com.leroy.magmobile.ui.models.search.ProductCardData;
-import com.leroy.magmobile.ui.models.work.WithdrawalOrderCardData;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
 public class StockProductsPage extends CommonMagMobilePage {
-
-    public StockProductsPage(Context context) {
-        super(context);
-    }
 
     @AppFindBy(accessibilityId = "ScreenTitle")
     private Element searchArea;
@@ -88,7 +83,7 @@ public class StockProductsPage extends CommonMagMobilePage {
     @Step("Выбрать первый товар, который поштучно хранится на складе")
     public StockProductCardPage clickFirstPieceProduct() throws Exception {
         pieceProductCards.get(0).click();
-        StockProductCardPage productCardPage = new StockProductCardPage(context);
+        StockProductCardPage productCardPage = new StockProductCardPage();
         productCardPage.waitForPageIsLoaded();
         return productCardPage;
     }
@@ -96,7 +91,7 @@ public class StockProductsPage extends CommonMagMobilePage {
     @Step("Нажать кнопку ДАЛЕЕ К ПАРАМЕТРАМ ЗАЯВКИ")
     public OrderPage clickSubmitBtn() {
         submitBtn.click();
-        return new OrderPage(context);
+        return new OrderPage();
     }
 
     /* ------------------------- Verifications -------------------------- */

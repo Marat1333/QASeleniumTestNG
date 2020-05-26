@@ -2,16 +2,11 @@ package com.leroy.magmobile.ui.pages.sales;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import io.qameta.allure.Step;
 
 public class SubmittedSalesDocumentPage extends CommonMagMobilePage {
-
-    public SubmittedSalesDocumentPage(Context context) {
-        super(context);
-    }
 
     @AppFindBy(xpath = "//android.widget.TextView[1]", metaName = "Номер документа")
     private Element documentNumber;
@@ -51,7 +46,7 @@ public class SubmittedSalesDocumentPage extends CommonMagMobilePage {
     @Step("Нажмите кнопку Перейти в список документов")
     public SalesDocumentsPage clickSubmitButton() {
         submitBtn.click();
-        return new SalesDocumentsPage(context);
+        return new SalesDocumentsPage();
     }
 
     /* ---------------------- Verifications -------------------------- */

@@ -1,7 +1,9 @@
 package com.leroy.magmobile.api.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.leroy.magmobile.api.data.print.*;
+import com.leroy.magmobile.api.data.print.PrintDepartmentList;
+import com.leroy.magmobile.api.data.print.PrintTaskProductData;
+import com.leroy.magmobile.api.data.print.PrintTaskProductsList;
 import com.leroy.magmobile.api.requests.print.PrintDocumentsPrintersRequest;
 import com.leroy.magmobile.api.requests.print.PrintPriceTaskRequest;
 import io.qameta.allure.Step;
@@ -11,12 +13,12 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.emptyString;
 
 public class PrintPriceClient extends MagMobileClient {
 
     public Response<PrintDepartmentList> getDepartmentPrinterList() {
-        return getDepartmentPrinterList(sessionData.getUserShopId());
+        return getDepartmentPrinterList(userSessionData.getUserShopId());
     }
 
     @Step("Get department printers info")
@@ -38,7 +40,7 @@ public class PrintPriceClient extends MagMobileClient {
         printTaskProductsList.setData(printProductDataList);
         PrintPriceTaskRequest printTaskReq = new PrintPriceTaskRequest()
                 .setPrinterName(printerName)
-                .setShopId(sessionData.getUserShopId())
+                .setShopId(userSessionData.getUserShopId())
                 .jsonBody(printTaskProductsList);
 
         return execute(printTaskReq, JsonNode.class);

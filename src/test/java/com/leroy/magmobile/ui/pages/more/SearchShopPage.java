@@ -3,16 +3,11 @@ package com.leroy.magmobile.ui.pages.more;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 
 public class SearchShopPage extends CommonMagMobilePage {
-
-    public SearchShopPage(Context context) {
-        super(context);
-    }
 
     private static final String TYPICAL_SHOP_AREA_XPATH =
             "//android.view.ViewGroup[@content-desc='ScreenContent']/android.widget.ScrollView//android.view.ViewGroup/android.widget.TextView[@index='%s']";
@@ -39,7 +34,7 @@ public class SearchShopPage extends CommonMagMobilePage {
         E(String.format(TYPICAL_SHOP_AREA_XPATH, "0")).waitUntilTextIsEqualTo(id);
         getSpecificShopAreaById(id).doubleClick();
         confirmBtn.click();
-        return new UserProfilePage(context);
+        return new UserProfilePage();
     }
 
 }
