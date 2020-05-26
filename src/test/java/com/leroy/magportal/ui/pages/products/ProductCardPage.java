@@ -58,6 +58,7 @@ public class ProductCardPage extends MenuPage {
 
     @Override
     public void waitForPageIsLoaded() {
+        waitForSpinnerAppearAndDisappear();
         pricesAndStocksInOtherShops.waitForVisibility();
     }
 

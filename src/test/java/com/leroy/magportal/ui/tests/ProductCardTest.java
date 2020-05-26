@@ -49,6 +49,7 @@ public class ProductCardTest extends WebBaseSteps {
         CatalogSearchClient catalogSearchClient = apiClientProvider.getCatalogSearchClient();
         ProductItemDataList productItemDataList = catalogSearchClient.searchProductsBy(new GetCatalogSearch().setPageSize(24)).asJson();
         List<ProductItemData> productItemData = productItemDataList.getItems();
+        anAssert.isTrue(productItemData.size()>0,"size must be more than 0");
         return productItemData.get((int) (Math.random() * productItemData.size())).getLmCode();
     }
 
