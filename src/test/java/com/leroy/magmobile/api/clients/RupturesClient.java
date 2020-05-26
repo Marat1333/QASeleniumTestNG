@@ -64,11 +64,8 @@ public class RupturesClient extends MagMobileClient {
     }
 
     @Step("Get rupture sessions")
-    public Response<ResRuptureSessionDataList> getSessions() {
-        RupturesSessionsRequest req = new RupturesSessionsRequest();
+    public Response<ResRuptureSessionDataList> getSessions(RupturesSessionsRequest req) {
         req.setAppVersion(appVersion);
-        req.setShopId(sessionData.getUserShopId());
-        req.setDepartmentId(sessionData.getUserDepartmentId());
         return execute(req, ResRuptureSessionDataList.class);
     }
 
@@ -133,6 +130,13 @@ public class RupturesClient extends MagMobileClient {
         Collections.reverse(expectedProductItems);
         assertThat("total count", actualData.getTotalCount(), equalTo(expectedData.getTotalCount()));
         assertThat("rupture session product items", actualData.getItems(), equalTo(expectedData.getItems()));
+    }
+
+    @Step("Check that action is unavailable")
+    public void assertThatActionIsNotAllowed(Response<JsonNode> resp, Integer sessionId) {
+        assertThat("Response code", resp.getStatusCode(), equalTo(400));
+        assertThat("Error", resp.asJson().get("error").asText(),
+                equalTo(String.format("Session with SessionId = %d not found or already finished", sessionId)));
     }
 
 }
