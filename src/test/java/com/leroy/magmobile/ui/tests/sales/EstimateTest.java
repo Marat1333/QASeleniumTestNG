@@ -360,7 +360,7 @@ public class EstimateTest extends SalesBaseTest {
                 "На странице отображается не тот клиент, которого выбрали");
     }
 
-    @Test(description = "C22797076 Изменить контактные данные клиента")
+    @Test(description = "C22797076 Изменить контактные данные клиента", groups = NEED_ACCESS_TOKEN_GROUP)
     public void testChangeCustomerContactDetailsInEstimate() throws Exception {
         step("Pre-condition: Создаем смету");
         com.leroy.magmobile.api.data.customer.CustomerData customerData =

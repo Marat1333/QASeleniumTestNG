@@ -132,14 +132,7 @@ public class EstimatePage extends CommonMagMobilePage {
      * Получить Итоговую стоимость
      */
     public String getTotalPrice() {
-        String _priceValue = totalPriceVal.getText().replaceAll("₽", "").trim();
-        try {
-            Double.parseDouble(_priceValue);
-            return _priceValue;
-        } catch (NumberFormatException err) {
-            anAssert.isTrue(false, "Итого цена имеет не правильный формат: " + _priceValue);
-            throw err;
-        }
+        return ParserUtil.strWithOnlyDigits(totalPriceVal.getText());
     }
 
     /**

@@ -2,6 +2,7 @@ package com.leroy.magmobile.ui;
 
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.configuration.Log;
+import com.leroy.core.listeners.helpers.RetryAnalyzer;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.pages.ChromeCertificateErrorPage;
 import com.leroy.core.web_elements.general.Element;
@@ -30,86 +31,91 @@ public class AppBaseSteps extends MagMobileBaseTest {
 
     public <T> T loginAndGoTo(String userLdap, String password, boolean selectShopAndDepartment,
                               Class<? extends BaseAppPage> pageClass) throws Exception {
-        WebDriver driver = getDriver();
-        AndroidDriver<MobileElement> androidDriver = (AndroidDriver<MobileElement>) driver;
-        Element redirectBtn = new Element(driver, By.xpath("//*[@resource-id='buttonRedirect']"));
-        new LoginAppPage().clickLoginButton();
-        /// If the Chrome starts first time and we can see pop-up windows
-        boolean moon = false;
-        Element termsAcceptBtn = new Element(driver,
-                By.id("com.android.chrome:id/terms_accept"));
-        if (termsAcceptBtn.isVisible(5)) {
-            Log.debug("Accept & Continue button is visible");
-            termsAcceptBtn.click();
-            moon = true;
-            driver.findElement(By.id("com.android.chrome:id/next_button")).click();
-            //driver.findElement(By.id("com.android.chrome:id/negative_button")).click();
-        }
-        new WebDriverWait(driver, 30).until(
-                a -> androidDriver.getContextHandles().size() > 1);
-        ///
-        boolean needToClickRedirectBtn;
         try {
-            needToClickRedirectBtn = !moon && redirectBtn.isVisible(2);
-        } catch (WebDriverException err) {
-            needToClickRedirectBtn = false;
-        }
-        if (needToClickRedirectBtn) {
-            Log.debug("Click Redirect Button");
-            redirectBtn.click();
-        } else {
-            Log.debug("Redirect Button is not visible");
-            if (moon) {
-                new ChromeCertificateErrorPage().skipSiteSecureError();
-                androidDriver.context("WEBVIEW_chrome");
-                new LoginWebPage().logIn(userLdap, password);
-                androidDriver.context("NATIVE_APP");
-                try {
-                    redirectBtn.click();
-                } catch (NoSuchElementException err) {
-                    // Если получили ошибку HTTP ERROR 500
-                    androidDriver.context("WEBVIEW_chrome");
-                    LoginWebPage loginWebPage = new LoginWebPage();
-                    //String consoleErrors = loginWebPage.getJSErrorsFromConsole();
-                    //Log.error("CONSOLE ERRORS:" + consoleErrors);
-                    loginWebPage.reloadPage();
-                    androidDriver.context("NATIVE_APP");
-                    redirectBtn.click();
-                }
+            WebDriver driver = getDriver();
+            AndroidDriver<MobileElement> androidDriver = (AndroidDriver<MobileElement>) driver;
+            Element redirectBtn = new Element(driver, By.xpath("//*[@resource-id='buttonRedirect']"));
+            new LoginAppPage().clickLoginButton();
+            /// If the Chrome starts first time and we can see pop-up windows
+            boolean moon = false;
+            Element termsAcceptBtn = new Element(driver,
+                    By.id("com.android.chrome:id/terms_accept"));
+            if (termsAcceptBtn.isVisible(5)) {
+                Log.debug("Accept & Continue button is visible");
+                termsAcceptBtn.click();
+                moon = true;
+                driver.findElement(By.id("com.android.chrome:id/next_button")).click();
+                //driver.findElement(By.id("com.android.chrome:id/negative_button")).click();
+            }
+            new WebDriverWait(driver, 30).until(
+                    a -> androidDriver.getContextHandles().size() > 1);
+            ///
+            boolean needToClickRedirectBtn;
+            try {
+                needToClickRedirectBtn = !moon && redirectBtn.isVisible(2);
+            } catch (WebDriverException err) {
+                needToClickRedirectBtn = false;
+            }
+            if (needToClickRedirectBtn) {
+                Log.debug("Click Redirect Button");
+                redirectBtn.click();
             } else {
-                if (new Element(driver, By.xpath("//*[@resource-id='Username']")).isVisible(1)) {
+                Log.debug("Redirect Button is not visible");
+                if (moon) {
+                    new ChromeCertificateErrorPage().skipSiteSecureError();
                     androidDriver.context("WEBVIEW_chrome");
-                    LoginWebPage loginWebPage = new LoginWebPage();
-                    loginWebPage.logIn(userLdap, password);
+                    new LoginWebPage().logIn(userLdap, password);
                     androidDriver.context("NATIVE_APP");
+                    try {
+                        redirectBtn.click();
+                    } catch (NoSuchElementException err) {
+                        // Если получили ошибку HTTP ERROR 500
+                        androidDriver.context("WEBVIEW_chrome");
+                        LoginWebPage loginWebPage = new LoginWebPage();
+                        //String consoleErrors = loginWebPage.getJSErrorsFromConsole();
+                        //Log.error("CONSOLE ERRORS:" + consoleErrors);
+                        loginWebPage.reloadPage();
+                        androidDriver.context("NATIVE_APP");
+                        redirectBtn.click();
+                    }
+                } else {
+                    if (new Element(driver, By.xpath("//*[@resource-id='Username']")).isVisible(1)) {
+                        androidDriver.context("WEBVIEW_chrome");
+                        LoginWebPage loginWebPage = new LoginWebPage();
+                        loginWebPage.logIn(userLdap, password);
+                        androidDriver.context("NATIVE_APP");
+                    }
                 }
             }
-        }
 
-        MainProductAndServicesPage mainProductAndServicesPage = new MainProductAndServicesPage();
-        UserProfilePage userProfilePage = null;
-        if (selectShopAndDepartment) {
-            userProfilePage = setShopAndDepartmentForUser(mainProductAndServicesPage,
-                    getUserSessionData().getUserShopId(), getUserSessionData().getUserDepartmentId());
-        }
+            MainProductAndServicesPage mainProductAndServicesPage = new MainProductAndServicesPage();
+            UserProfilePage userProfilePage = null;
+            if (selectShopAndDepartment) {
+                userProfilePage = setShopAndDepartmentForUser(mainProductAndServicesPage,
+                        getUserSessionData().getUserShopId(), getUserSessionData().getUserDepartmentId());
+            }
 
-        if (pageClass.equals(MainProductAndServicesPage.class)) {
-            if (userProfilePage != null)
-                return (T) userProfilePage.goToSales();
-            return (T) mainProductAndServicesPage;
-        } else if (pageClass.equals(MainSalesDocumentsPage.class)) {
-            if (userProfilePage != null)
-                return (T) userProfilePage.goToSales().goToSalesDocumentsSection();
-            return (T) mainProductAndServicesPage.goToSalesDocumentsSection();
-        } else if (pageClass.equals(WorkPage.class)) {
-            return (T) mainProductAndServicesPage.goToWork();
-        } else if (pageClass.equals(SupportPage.class)) {
-            return (T) mainProductAndServicesPage.goToSupport();
-        } else if (pageClass.equals(MorePage.class)) {
-            return (T) mainProductAndServicesPage.goToMoreSection();
-        } else {
-            throw new IllegalArgumentException("Переход на страницу " + pageClass.getName() +
-                    " еще не реализован через класс TopMenuPage");
+            if (pageClass.equals(MainProductAndServicesPage.class)) {
+                if (userProfilePage != null)
+                    return (T) userProfilePage.goToSales();
+                return (T) mainProductAndServicesPage;
+            } else if (pageClass.equals(MainSalesDocumentsPage.class)) {
+                if (userProfilePage != null)
+                    return (T) userProfilePage.goToSales().goToSalesDocumentsSection();
+                return (T) mainProductAndServicesPage.goToSalesDocumentsSection();
+            } else if (pageClass.equals(WorkPage.class)) {
+                return (T) mainProductAndServicesPage.goToWork();
+            } else if (pageClass.equals(SupportPage.class)) {
+                return (T) mainProductAndServicesPage.goToSupport();
+            } else if (pageClass.equals(MorePage.class)) {
+                return (T) mainProductAndServicesPage.goToMoreSection();
+            } else {
+                throw new IllegalArgumentException("Переход на страницу " + pageClass.getName() +
+                        " еще не реализован через класс TopMenuPage");
+            }
+        } catch (NoSuchElementException err) {
+            RetryAnalyzer.enableForceRetry();
+            throw err;
         }
     }
 

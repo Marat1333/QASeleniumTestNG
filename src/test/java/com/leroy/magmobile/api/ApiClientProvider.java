@@ -176,7 +176,10 @@ public class ApiClientProvider {
                 .setTopEM(filtersData.getTopEM())
                 .setPageSize(50)
                 .setHasAvailableStock(filtersData.getHasAvailableStock());
-        Response<ProductItemDataList> resp = getCatalogSearchClient().searchProductsBy(params);
+        CatalogSearchClient catalogSearchClient = getCatalogSearchClient();
+        Response<ProductItemDataList> resp = catalogSearchClient.searchProductsBy(params);
+        if (!resp.isSuccessful())
+            resp = catalogSearchClient.searchProductsBy(params);
         assertThat("Catalog search request:", resp, successful());
         List<ProductItemData> items = resp.asJson().getItems();
         List<ProductItemData> resultList = new ArrayList<>();
