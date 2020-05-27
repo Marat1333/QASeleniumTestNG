@@ -117,15 +117,15 @@ public class ProductCardTest extends WebBaseSteps {
 
     @Test(description = "C22790552 additional products tabs")
     public void testAdditionalProducts() throws Exception{
-        String lessThan4Similars = "11912697";
-        String moreThan4Similars = "15057456";
+        String lessThan4Similar = "11912697";
+        String moreThan4Similar = "15057456";
         String lessThan4Complements = "10813144";
         String moreThan4Complements = "15057456";
 
-        CatalogSimilarProductsData data = apiClientProvider.getMagPortalCatalogProductClientProvider().getSimilarProducts(lessThan4Similars).asJson();
+        CatalogSimilarProductsData data = apiClientProvider.getMagPortalCatalogProductClientProvider().getSimilarProducts(lessThan4Similar).asJson();
         List<ProductItemData> lessThan4SimilarList = data.getSubstitutes();
 
-        data = apiClientProvider.getMagPortalCatalogProductClientProvider().getSimilarProducts(moreThan4Similars).asJson();
+        data = apiClientProvider.getMagPortalCatalogProductClientProvider().getSimilarProducts(moreThan4Similar).asJson();
         List<ProductItemData> moreThan4SimilarList = data.getSubstitutes();
 
         data = apiClientProvider.getMagPortalCatalogProductClientProvider().getSimilarProducts(lessThan4Complements).asJson();
@@ -137,12 +137,12 @@ public class ProductCardTest extends WebBaseSteps {
 
         //Step 1
         step("открыть карточку товара, у которого не более 4х аналогичных товаров");
-        ExtendedProductCardPage extendedProductCardPage = navigateToProductCardByUrl(lessThan4Similars, false);
+        ExtendedProductCardPage extendedProductCardPage = navigateToProductCardByUrl(lessThan4Similar, false);
         extendedProductCardPage.shouldAllAdditionalProductsIsVisible(lessThan4SimilarList);
 
         //Step 2
         step("открыть карточку товара, у которого более 4х аналогичных товаров");
-        extendedProductCardPage = navigateToProductCardByUrl(moreThan4Similars, false);
+        extendedProductCardPage = navigateToProductCardByUrl(moreThan4Similar, false);
         extendedProductCardPage.shouldAllAdditionalProductsIsVisible(moreThan4SimilarList);
 
         //Step 3
@@ -156,6 +156,5 @@ public class ProductCardTest extends WebBaseSteps {
         extendedProductCardPage = navigateToProductCardByUrl(moreThan4Complements, false);
         extendedProductCardPage.switchExtraInfoTabs(ExtendedProductCardPage.Tab.COMPLEMENT_PRODUCTS);
         extendedProductCardPage.shouldAllAdditionalProductsIsVisible(moreThan4ComplementsList);
-
     }
 }
