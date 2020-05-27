@@ -22,6 +22,7 @@ public class ExtendedProductCardPage extends ProductCardPage {
         PRICES_AND_STOCKS_IN_OTHER_SHOPS
     }
 
+    //TODO remove static modifier
     @WebFindBy(xpath = "//span[contains(@class, 'Badge') and contains(text(),'Топ')]")
     static Element topBadge;
 

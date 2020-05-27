@@ -719,17 +719,16 @@ public class SearchProductPage extends MenuPage {
     }
 
     @Step("Проверить, что хлебные крошки содержат предыдущий роидтельскую номенклатуру")
-    public SearchProductPage shouldBreadCrumbsContainsNomenclatureName(boolean contains, String nomenclatureElementName) {
+    public SearchProductPage shouldBreadCrumbsContainsNomenclatureName(boolean contains, String... nomenclatureElementName) {
         int condition = 0;
         for (Element tmp : nomenclaturePathButtons) {
-            if (tmp.getText().contains(nomenclatureElementName)) {
-                condition++;
+            for (String nomenclatureAttribute : nomenclatureElementName) {
+                if (tmp.getText().contains(nomenclatureAttribute)) {
+                    condition++;
+                }
             }
-        }
-        if (contains) {
-            anAssert.isTrue(condition == 1, nomenclatureElementName + " либо отсутствует, либо встречается более 1 раза");
-        } else {
-            anAssert.isTrue(condition == 0, nomenclatureElementName + " содержится в хлебных крошках");
+            anAssert.isTrue(condition == 1, "либо отсутствует, либо встречается более 1 раза");
+            condition = 0;
         }
         return this;
     }

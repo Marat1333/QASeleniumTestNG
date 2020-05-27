@@ -5,10 +5,14 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.magportal.ui.models.search.NomenclaturePath;
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.pages.products.widget.ShopCardWidget;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProductCardPage extends MenuPage {
 
@@ -70,6 +74,31 @@ public class ProductCardPage extends MenuPage {
         boolean result = super.navigateForward();
         waitForPageIsLoaded();
         return result;
+    }
+
+    public NomenclaturePath getNomenclaturePath() throws Exception {
+        List<String> nomenclatureAttributes = new ArrayList<>();
+        for (Button attribute : nomenclaturePath) {
+            nomenclatureAttributes.add(attribute.findChildElement("./span/span").getText());
+        }
+        NomenclaturePath nomenclature = new NomenclaturePath();
+        nomenclature.setAllDepartments(nomenclatureAttributes.get(0));
+        nomenclature.setDepartmentId(nomenclatureAttributes.get(1));
+        nomenclature.setSubDepartmentId(nomenclatureAttributes.get(2));
+        nomenclature.setClassId(nomenclatureAttributes.get(3));
+        nomenclature.setSubClassId(nomenclatureAttributes.get(4));
+        return nomenclature;
+    }
+
+    @Step("Перейти на страницу поиска с примененным фильтром по номенклатуре {attribute}")
+    public SearchProductPage navigateToSearchByNomenclatureAttribute(String attribute) throws Exception {
+        for (Button nomenclatureLvl : nomenclaturePath) {
+            if (nomenclatureLvl.findChildElement("./span/span").getText().equals(attribute)){
+                nomenclatureLvl.click();
+                break;
+            }
+        }
+        return new SearchProductPage();
     }
 
     /*@Step("Вернуться к результатам поиска")

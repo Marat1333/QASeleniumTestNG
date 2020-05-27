@@ -9,6 +9,8 @@ import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magportal.api.clients.MagPortalCatalogProductClient;
 import com.leroy.magportal.api.data.CatalogSimilarProductsData;
 import com.leroy.magportal.ui.WebBaseSteps;
+import com.leroy.magportal.ui.constants.search.CatalogSearchParams;
+import com.leroy.magportal.ui.models.search.NomenclaturePath;
 import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
 import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
 import com.leroy.magportal.ui.pages.products.ExtendedProductCardPage;
@@ -117,7 +119,7 @@ public class ProductCardTest extends WebBaseSteps {
     }
 
     @Test(description = "C22790552 additional products tabs")
-    public void testAdditionalProducts() throws Exception{
+    public void testAdditionalProducts() throws Exception {
         String lessThan4Similar = "11912697";
         String moreThan4Similar = "15057456";
         String lessThan4Complements = "10813144";
@@ -159,5 +161,80 @@ public class ProductCardTest extends WebBaseSteps {
         extendedProductCardPage = navigateToProductCardByUrl(moreThan4Complements, false);
         extendedProductCardPage.switchExtraInfoTabs(ExtendedProductCardPage.Tab.COMPLEMENT_PRODUCTS);
         extendedProductCardPage.shouldAllAdditionalProductsIsVisible(moreThan4ComplementsList);
+    }
+
+    @Test(description = "C22789188 Check Breadcrumbs")
+    public void testBreadCrumbsNavigation() throws Exception {
+        ExtendedProductCardPage extendedProductCardPage = navigateToProductCardByUrl(lmCode, false);
+
+        NomenclaturePath path = extendedProductCardPage.getNomenclaturePath();
+        String allDepartments = path.getAllDepartments();
+        String department = path.getDepartmentId();
+        String subDepartment = path.getSubDepartmentId();
+        String classId = path.getClassId();
+        String subClass = path.getSubClassId();
+
+        SearchProductPage searchProductPage = extendedProductCardPage.navigateToSearchByNomenclatureAttribute(subClass);
+        searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId, CatalogSearchParams.subdepartmentId,
+                CatalogSearchParams.classId, CatalogSearchParams.subclassId);
+        searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(subClass);
+        searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, allDepartments, department, subDepartment,
+                classId);
+
+        extendedProductCardPage = navigateToProductCardByUrl(lmCode, false);
+        searchProductPage = extendedProductCardPage.navigateToSearchByNomenclatureAttribute(classId);
+        searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId, CatalogSearchParams.subdepartmentId,
+                CatalogSearchParams.classId);
+        searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(classId);
+        searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, allDepartments, department, subDepartment);
+
+        extendedProductCardPage = navigateToProductCardByUrl(lmCode, false);
+        searchProductPage = extendedProductCardPage.navigateToSearchByNomenclatureAttribute(subDepartment);
+        searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId, CatalogSearchParams.subdepartmentId);
+        searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(subDepartment);
+        searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, allDepartments, department);
+
+        extendedProductCardPage = navigateToProductCardByUrl(lmCode, false);
+        searchProductPage = extendedProductCardPage.navigateToSearchByNomenclatureAttribute(department);
+        searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId);
+        searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(department);
+        searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, allDepartments);
+
+        extendedProductCardPage = navigateToProductCardByUrl(lmCode, false);
+        searchProductPage = extendedProductCardPage.navigateToSearchByNomenclatureAttribute(allDepartments);
+        searchProductPage.shouldUrlNotContains(CatalogSearchParams.departmentId);
+        searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(allDepartments);
+
+        ProductCardPage productCardPage = navigateToProductCardByUrl(lmCode, true);
+        searchProductPage = productCardPage.navigateToSearchByNomenclatureAttribute(subClass);
+        searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId, CatalogSearchParams.subdepartmentId,
+                CatalogSearchParams.classId, CatalogSearchParams.subclassId);
+        searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(subClass);
+        searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, allDepartments, department, subDepartment,
+                classId);
+
+        productCardPage = navigateToProductCardByUrl(lmCode, true);
+        searchProductPage = productCardPage.navigateToSearchByNomenclatureAttribute(classId);
+        searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId, CatalogSearchParams.subdepartmentId,
+                CatalogSearchParams.classId);
+        searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(classId);
+        searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, allDepartments, department, subDepartment);
+
+        productCardPage = navigateToProductCardByUrl(lmCode, true);
+        searchProductPage = productCardPage.navigateToSearchByNomenclatureAttribute(subDepartment);
+        searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId, CatalogSearchParams.subdepartmentId);
+        searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(subDepartment);
+        searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, allDepartments, department);
+
+        productCardPage = navigateToProductCardByUrl(lmCode, true);
+        searchProductPage = productCardPage.navigateToSearchByNomenclatureAttribute(department);
+        searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId);
+        searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(department);
+        searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, allDepartments);
+
+        productCardPage = navigateToProductCardByUrl(lmCode, true);
+        searchProductPage = productCardPage.navigateToSearchByNomenclatureAttribute(allDepartments);
+        searchProductPage.shouldUrlNotContains(CatalogSearchParams.departmentId);
+        searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(allDepartments);
     }
 }
