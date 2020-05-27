@@ -6,43 +6,9 @@
         <listener class-name="com.leroy.core.listeners.TestRailListener"/>
     </listeners>
 
-    <test name="C23388813 add Product to cart">
+    <test name="Product card tests">
         <classes>
-            <class name="com.leroy.magportal.ui.tests.ProductCardTest">
-                <methods>
-                    <include name="testAddProductToCart"/>
-                </methods>
-            </class>
-        </classes>
-    </test>
-
-    <test name="C23388814 add Product to estimate">
-        <classes>
-            <class name="com.leroy.magportal.ui.tests.ProductCardTest">
-                <methods>
-                    <include name="testAddProductToEstimate"/>
-                </methods>
-            </class>
-        </classes>
-    </test>
-
-    <test name="C23388974 go to card by url">
-        <classes>
-            <class name="com.leroy.magportal.ui.tests.ProductCardTest">
-                <methods>
-                    <include name="testGoToCardByUrl"/>
-                </methods>
-            </class>
-        </classes>
-    </test>
-
-    <test name="C22790554 Go to another card (similar or related products)">
-        <classes>
-            <class name="com.leroy.magportal.ui.tests.ProductCardTest">
-                <methods>
-                    <include name="testGoToAdditionalProductCard"/>
-                </methods>
-            </class>
+            <class name="com.leroy.magportal.ui.tests.ProductCardTest"/>
         </classes>
     </test>
 

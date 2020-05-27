@@ -4,11 +4,15 @@ import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
 import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
+import com.leroy.magportal.ui.pages.products.SearchProductPage.Direction;
 import com.leroy.magportal.ui.pages.products.widget.ExtendedProductCardWidget;
 import com.leroy.magportal.ui.webelements.commonelements.PriceContainer;
 import io.qameta.allure.Step;
+
+import java.util.List;
 
 public class ExtendedProductCardPage extends ProductCardPage {
 
@@ -190,6 +194,46 @@ public class ExtendedProductCardPage extends ProductCardPage {
                 availableForSaleLbl, pricesAndStocksInOtherShops);
         softAssert.verifyAll();
         shouldUrlContains("isAllGammaView=false");
+        return this;
+    }
+
+    public ExtendedProductCardPage shouldAllAdditionalProductsIsVisible(List<ProductItemData> data) throws Exception {
+        if (data.size() > 4) {
+            shouldNavigationBtnHasCorrectCondition(Direction.FORWARD, true);
+        } else {
+            shouldNavigationBtnHasCorrectCondition(Direction.FORWARD, false);
+        }
+        shouldNavigationBtnHasCorrectCondition(Direction.BACK, false);
+        String widgetLmCode;
+        int productCardIndex=0;
+        for (int i = 0; i < data.size(); i++) {
+            if (i%4==0&&i>0) {
+                shouldNavigationBtnHasCorrectCondition(Direction.FORWARD, true);
+                productCardsListRightPaginationBtn.click();
+                shouldNavigationBtnHasCorrectCondition(Direction.BACK, true);
+                productCardIndex=productCardIndex%4;
+            }
+            widgetLmCode = productCards.get(productCardIndex).getLmCode();
+            anAssert.isEquals(data.get(i).getLmCode(), widgetLmCode, "lmCode mismatch");
+            productCardIndex++;
+        }
+        return this;
+    }
+
+    public ExtendedProductCardPage shouldNavigationBtnHasCorrectCondition(Direction direction, boolean isVisible) {
+        if (direction.equals(Direction.FORWARD)) {
+            if (isVisible) {
+                anAssert.isElementVisible(productCardsListRightPaginationBtn);
+            } else {
+                anAssert.isElementNotVisible(productCardsListRightPaginationBtn);
+            }
+        } else {
+            if (isVisible) {
+                anAssert.isElementVisible(productCardsListLeftPaginationBtn);
+            } else {
+                anAssert.isElementNotVisible(productCardsListLeftPaginationBtn);
+            }
+        }
         return this;
     }
 }

@@ -114,4 +114,48 @@ public class ProductCardTest extends WebBaseSteps {
         extendedProductCardPage.navigateForward();
         extendedProductCardPage.shouldProductCardContainsLmOrBarCode(complementProductLmCode);
     }
+
+    @Test(description = "C22790552 additional products tabs")
+    public void testAdditionalProducts() throws Exception{
+        String lessThan4Similars = "11912697";
+        String moreThan4Similars = "15057456";
+        String lessThan4Complements = "10813144";
+        String moreThan4Complements = "15057456";
+
+        CatalogSimilarProductsData data = apiClientProvider.getMagPortalCatalogProductClientProvider().getSimilarProducts(lessThan4Similars).asJson();
+        List<ProductItemData> lessThan4SimilarList = data.getSubstitutes();
+
+        data = apiClientProvider.getMagPortalCatalogProductClientProvider().getSimilarProducts(moreThan4Similars).asJson();
+        List<ProductItemData> moreThan4SimilarList = data.getSubstitutes();
+
+        data = apiClientProvider.getMagPortalCatalogProductClientProvider().getSimilarProducts(lessThan4Complements).asJson();
+        List<ProductItemData> lessThan4ComplementsList = data.getComplements();
+
+        data = apiClientProvider.getMagPortalCatalogProductClientProvider().getSimilarProducts(moreThan4Complements).asJson();
+        List<ProductItemData> moreThan4ComplementsList = data.getComplements();
+
+
+        //Step 1
+        step("открыть карточку товара, у которого не более 4х аналогичных товаров");
+        ExtendedProductCardPage extendedProductCardPage = navigateToProductCardByUrl(lessThan4Similars, false);
+        extendedProductCardPage.shouldAllAdditionalProductsIsVisible(lessThan4SimilarList);
+
+        //Step 2
+        step("открыть карточку товара, у которого более 4х аналогичных товаров");
+        extendedProductCardPage = navigateToProductCardByUrl(moreThan4Similars, false);
+        extendedProductCardPage.shouldAllAdditionalProductsIsVisible(moreThan4SimilarList);
+
+        //Step 3
+        step("открыть карточку товара, у которого не более 4х комплементарных товаров");
+        extendedProductCardPage = navigateToProductCardByUrl(lessThan4Complements, false);
+        extendedProductCardPage.switchExtraInfoTabs(ExtendedProductCardPage.Tab.COMPLEMENT_PRODUCTS);
+        extendedProductCardPage.shouldAllAdditionalProductsIsVisible(lessThan4ComplementsList);
+
+        //Step 4
+        step("открыть карточку товара, у которого более 4х комплементарных товаров");
+        extendedProductCardPage = navigateToProductCardByUrl(moreThan4Complements, false);
+        extendedProductCardPage.switchExtraInfoTabs(ExtendedProductCardPage.Tab.COMPLEMENT_PRODUCTS);
+        extendedProductCardPage.shouldAllAdditionalProductsIsVisible(moreThan4ComplementsList);
+
+    }
 }
