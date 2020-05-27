@@ -1,8 +1,7 @@
 package com.leroy.magportal.ui.tests;
 
-import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
-import com.leroy.magmobile.api.ApiClientProvider;
+import com.leroy.core.ContextProvider;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
@@ -15,6 +14,7 @@ import com.leroy.magportal.ui.pages.products.ExtendedProductCardPage;
 import com.leroy.magportal.ui.pages.products.ProductCardPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage.FilterFrame;
+import org.openqa.selenium.WebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -23,15 +23,11 @@ import java.util.List;
 public class ProductCardTest extends WebBaseSteps {
     private static SearchProductPage searchProductPage;
 
-    @Inject
-    private ApiClientProvider apiClientProvider;
-
     private String lmCode;
 
     @BeforeMethod
     private void precondition() throws Exception {
         searchProductPage = loginAndGoTo(SearchProductPage.class);
-        apiClientProvider.setSessionData(sessionData);
         lmCode = getRandomLmCode();
     }
 
@@ -40,16 +36,17 @@ public class ProductCardTest extends WebBaseSteps {
     }
 
     private <T> T navigateToProductCardByUrl(String lmCode, boolean isAllGammaView) {
+        WebDriver driver = ContextProvider.getDriver();
         String isAllGammaViewParam = "?isAllGammaView=";
         driver.get(EnvConstants.URL_MAG_PORTAL + "/catalogproducts/product/" + lmCode + isAllGammaViewParam + isAllGammaView);
-        return isAllGammaView ? (T) new ProductCardPage(context) : (T) new ExtendedProductCardPage(context);
+        return isAllGammaView ? (T) new ProductCardPage() : (T) new ExtendedProductCardPage();
     }
 
     private String getRandomLmCode() {
         CatalogSearchClient catalogSearchClient = apiClientProvider.getCatalogSearchClient();
         ProductItemDataList productItemDataList = catalogSearchClient.searchProductsBy(new GetCatalogSearch().setPageSize(24)).asJson();
         List<ProductItemData> productItemData = productItemDataList.getItems();
-        anAssert.isTrue(productItemData.size()>0,"size must be more than 0");
+        anAssert().isTrue(productItemData.size() > 0, "size must be more than 0");
         return productItemData.get((int) (Math.random() * productItemData.size())).getLmCode();
     }
 

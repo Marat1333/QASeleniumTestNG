@@ -114,7 +114,7 @@ public class ExtendedProductCardPage extends ProductCardPage {
             }
             productCardsListRightPaginationBtn.click();
         }
-        return new ExtendedProductCardPage(context);
+        return new ExtendedProductCardPage();
     }
 
     @Step("перейти во вкладку с дополнительной информацией")

@@ -70,8 +70,6 @@ public class ApiClientProvider {
     @Inject
     private Provider<SupportClient> supportClientProvider;
     @Inject
-    private Provider<MagPortalCatalogProductClient> magPortalCatalogProductClientProvider;
-    @Inject
     private Provider<SupplyPlanClient> supplyPlanClientProvider;
 
     private UserSessionData userSessionData() {
@@ -150,10 +148,6 @@ public class ApiClientProvider {
 
     public SupplyPlanClient getSupplyPlanClient() {
         return getClient(supplyPlanClientProvider);
-    }
-
-    public MagPortalCatalogProductClient getMagPortalCatalogProductClientProvider(){
-        return getClient(magPortalCatalogProductClientProvider);
     }
 
     /// --------------- HELP METHODS ------------------ //

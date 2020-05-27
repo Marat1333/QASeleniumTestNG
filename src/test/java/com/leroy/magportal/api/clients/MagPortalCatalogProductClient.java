@@ -7,9 +7,11 @@ import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class MagPortalCatalogProductClient extends MagMobileClient {
-    @Step("get similar and complement products")
-    public Response<CatalogSimilarProductsData> getSimilarProducts(String lmCode){
-        return execute(new GetCatalogProductSimilars().setLmCode(lmCode).setShopId(sessionData.getUserShopId()),
+
+    @Step("Get similar and complement products")
+    public Response<CatalogSimilarProductsData> getSimilarProducts(String lmCode) {
+        return execute(new GetCatalogProductSimilars().setLmCode(lmCode).setShopId(
+                userSessionData.getUserShopId()),
                 CatalogSimilarProductsData.class);
     }
 }
