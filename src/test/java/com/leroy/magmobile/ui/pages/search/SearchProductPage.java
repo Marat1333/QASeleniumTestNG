@@ -130,7 +130,7 @@ public class SearchProductPage extends CommonMagMobilePage {
         searchField.clearFillAndSubmit(text);
         waitUntilProgressBarIsVisible();
         waitUntilProgressBarIsInvisible();
-        //TODO Добавить проверку на наличие ошибки ответа сервака
+        shouldNotAnyErrorVisible();
         return this;
     }
 

@@ -628,4 +628,86 @@ public class EstimateTest extends SalesBaseTest {
         estimatePage.shouldEstimateDataIs(estimateData);
     }
 
+    @Test(description = "C22797088 Добавление товара в смету в количестве большем, чем доступно для продажи",
+            groups = NEED_ACCESS_TOKEN_GROUP)
+    public void testAddProductInEstimateMoreThanAvailable() throws Exception {
+        startFromScreenWithCreatedEstimate(productLmCodes.subList(0, 1), false);
+
+        // Step 1
+        step("Нажмите на кнопку +товары и услуги");
+        EstimatePage estimatePage = new EstimatePage();
+        SalesOrderData estimateData = estimatePage.getEstimateDataFromPage();
+        SearchProductPage searchProductPage = estimatePage.clickAddProductButton()
+                .verifyRequiredElements();
+
+        // Step 2
+        step("Введите ЛМ код товара или название товара или отсканируйте товар");
+        searchProductPage.enterTextInSearchFieldAndSubmit(productLmCodes.get(1));
+        AddProduct35Page addProduct35Page = new AddProduct35Page()
+                .verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_ESTIMATE);
+
+        // Step 3
+        step("Измените количество товара на число, большее доступного для заказа");
+        int totalAvailableQuantity = addProduct35Page.getAvailableQuantityInShoppingRoom() +
+                addProduct35Page.getAvailableQuantityInStock();
+        String editQuantity = String.valueOf(totalAvailableQuantity + 10);
+        addProduct35Page.enterQuantityOfProduct(editQuantity)
+                .shouldEditQuantityFieldIs(editQuantity)
+                .shouldTotalPriceCalculateCorrectly();
+
+        // Step 4
+        step("Нажмите на Добавить в смету");
+        SalesOrderCardData newProduct = addProduct35Page.getOrderRowDataFromPage();
+        newProduct.setNegativeAvailableQuantity(true);
+        estimatePage = addProduct35Page.clickAddIntoEstimateButton();
+        estimatePage.verifyRequiredElements(
+                EstimatePage.PageState.builder()
+                        .productIsAdded(true)
+                        .customerIsSelected(true)
+                        .build());
+
+        estimateData.addFirstProduct(newProduct, true);
+        estimateData.setTotalWeight(null);
+        estimatePage.shouldEstimateDataIs(estimateData);
+    }
+
+    @Test(description = "C22797110 Добавить существующий товар еще раз (из модалки действий с товаром)",
+            groups = NEED_ACCESS_TOKEN_GROUP)
+    public void testAddProductInEstimateFromActionWithProductsModal() throws Exception {
+        startFromScreenWithCreatedEstimate(productLmCodes.subList(0, 1), false);
+
+        // Step 1
+        step("Нажмите на мини-карточку любого товара в списке товаров сметы");
+        EstimatePage estimatePage = new EstimatePage();
+        SalesOrderData estimateData = estimatePage.getEstimateDataFromPage();
+        ActionWithProductCardModalPage actionWithProductCardModalPage = estimatePage.clickCardByIndex(1)
+                .verifyRequiredElements();
+
+        // Step 2
+        step("Выберите параметр Добавить товар еще раз");
+        AddProduct35Page addProduct35Page = actionWithProductCardModalPage.clickAddProductAgainMenuItem()
+                .verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_ESTIMATE);
+
+        // Step 3
+        step("Измените количество товара");
+        String quantityForProduct2 = "3";
+        addProduct35Page.enterQuantityOfProduct(quantityForProduct2)
+                .shouldEditQuantityFieldIs(quantityForProduct2)
+                .shouldTotalPriceCalculateCorrectly();
+
+        // Step 4
+        step("Нажмите на Добавить в смету");
+        SalesOrderCardData newProduct = addProduct35Page.getOrderRowDataFromPage();
+        estimatePage = addProduct35Page.clickAddIntoEstimateButton();
+        estimatePage.verifyRequiredElements(
+                EstimatePage.PageState.builder()
+                        .productIsAdded(true)
+                        .customerIsSelected(true)
+                        .build());
+
+        estimateData.addFirstProduct(newProduct, true);
+        estimateData.setTotalWeight(ParserUtil.multiply(estimateData.getTotalWeight(), 4, 2));
+        estimatePage.shouldEstimateDataIs(estimateData);
+    }
+
 }

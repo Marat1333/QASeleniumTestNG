@@ -12,7 +12,8 @@ public class SalesOrderCardData extends CardWidgetData {
     private ProductCardData productCardData;
     private Double selectedQuantity;
     private Double totalPrice;
-    private Double availableTodayQuantity;
+    private Integer availableTodayQuantity;
+    private boolean negativeAvailableQuantity;
 
     public boolean compareOnlyNotNullFields(SalesOrderCardData orderCardData) {
         if (orderCardData == null || orderCardData.getProductCardData() == null)

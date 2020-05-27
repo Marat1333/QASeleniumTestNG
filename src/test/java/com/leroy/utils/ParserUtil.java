@@ -72,6 +72,9 @@ public class ParserUtil {
         return plus(a, -b, decimalPlaces);
     }
 
+    public static Double multiply(double a, double b, int decimalPlaces) {
+        return Math.round((a * b) * Math.pow(10, decimalPlaces)) / Math.pow(10, decimalPlaces);
+    }
 
     /**
      * Converts a phone number to just a number without spaces and "-"

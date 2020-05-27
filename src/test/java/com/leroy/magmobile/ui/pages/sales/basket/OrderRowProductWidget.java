@@ -3,9 +3,9 @@ package com.leroy.magmobile.ui.pages.sales.basket;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
 import com.leroy.magmobile.ui.models.sales.SalesOrderCardData;
 import com.leroy.magmobile.ui.models.search.ProductCardData;
+import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
 import com.leroy.utils.ParserUtil;
 import org.openqa.selenium.WebDriver;
 
@@ -62,8 +62,12 @@ public class OrderRowProductWidget extends CardWidget<SalesOrderCardData> {
         return totalPrice.getText(ps);
     }
 
-    public String getAvailableTodayProductQuantity(String ps) {
-        return availableTodayProductCount.getTextIfPresent(ps);
+    public Integer getAvailableTodayProductQuantity(String ps) {
+        String val = availableTodayProductCount.getTextIfPresent(ps);
+        if (val == null)
+            return null;
+        else
+            return ParserUtil.strToInt(val);
     }
 
     @Override
@@ -81,7 +85,7 @@ public class OrderRowProductWidget extends CardWidget<SalesOrderCardData> {
 
         // Доступное кол-во отображается не всегда, и находится внизу карточки.
         // Нужно придумывать способ как реализовывать метод isFullyVisible или искать workaround
-        //orderCardData.setAvailableTodayQuantity(Converter.strToDouble(getAvailableTodayProductQuantity(ps)));
+        orderCardData.setAvailableTodayQuantity(getAvailableTodayProductQuantity(ps));
         return orderCardData;
     }
 

@@ -48,6 +48,12 @@ public class AddProduct35Page extends CommonMagMobilePage {
     @AppFindBy(xpath = "//android.widget.TextView[@text='Торговый зал']/following-sibling::android.widget.TextView[@content-desc='priceUnit']")
     private Element shoppingRoomAvailablePriceUnit;
 
+    @AppFindBy(text = "На складе")
+    private Element inStockLbl;
+
+    @AppFindBy(xpath = "//android.widget.TextView[@text='На складе']/following-sibling::android.widget.TextView[@content-desc='presenceValue']")
+    private Element inStockAvailableQuantity;
+
     // White Bottom Area
 
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ScreenContent']//android.widget.EditText",
@@ -84,14 +90,22 @@ public class AddProduct35Page extends CommonMagMobilePage {
         waitUntilProgressBarIsInvisible();
     }
 
-    /**
-     * Получить Цену продукта за единицу товара
-     */
+    // ----- Grab Data from Page ----------//
+
+    @Step("Получить Цену продукта за единицу товара")
     public String getPrice() {
         return price.getText();
     }
 
-    // ----- Grab Data from Page ----------//
+    @Step("Получить значение кол-ва товара в торговом зале")
+    public int getAvailableQuantityInShoppingRoom() {
+        return ParserUtil.strToInt(shoppingRoomAvailableQuantity.getText());
+    }
+
+    @Step("Получить значение кол-ва товара на складе")
+    public int getAvailableQuantityInStock() {
+        return ParserUtil.strToInt(inStockAvailableQuantity.getText());
+    }
 
     @Step("Получить информацию со страницы о товаре/услуги/выбранном кол-ве и т.п.")
     public SalesOrderCardData getOrderRowDataFromPage() {
@@ -111,6 +125,8 @@ public class AddProduct35Page extends CommonMagMobilePage {
         orderCardData.setSelectedQuantity(ParserUtil.strToDouble(editQuantityFld.getText(ps)));
         orderCardData.setTotalPrice(ParserUtil.strToDouble(totalPrice.getText(ps)));
         orderCardData.setProductCardData(cardData);
+        orderCardData.setAvailableTodayQuantity(getAvailableQuantityInShoppingRoom() +
+                getAvailableQuantityInStock());
         return orderCardData;
     }
 

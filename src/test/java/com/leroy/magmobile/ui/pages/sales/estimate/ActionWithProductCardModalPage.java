@@ -3,6 +3,7 @@ package com.leroy.magmobile.ui.pages.sales.estimate;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
 import com.leroy.magmobile.ui.pages.sales.EditProduct35Page;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import io.qameta.allure.Step;
@@ -35,6 +36,12 @@ public class ActionWithProductCardModalPage extends CommonMagMobilePage {
     public ProductDescriptionPage clickProductDetailsMenuItem() {
         detailsAboutProductMenuItem.click();
         return new ProductDescriptionPage();
+    }
+
+    @Step("Выберите пункт меню 'Добавить товар еще раз'")
+    public AddProduct35Page clickAddProductAgainMenuItem() {
+        addProductAgainMenuItem.click();
+        return new AddProduct35Page();
     }
 
     @Step("Выберите пункт меню 'Изменить кол-во'")

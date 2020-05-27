@@ -123,7 +123,8 @@ public class CartTest extends SalesBaseTest {
                 salesOrderCardDataBefore.getProductCardData().getLmCode());
     }
 
-    @Test(description = "C22797099 Удалить последний товар из корзины", groups = NEED_ACCESS_TOKEN_GROUP)
+    @Test(description = "C22797099 Удалить последний товар из корзины",
+            groups = NEED_ACCESS_TOKEN_GROUP)
     public void testRemoveTheLastProductFromCart() throws Exception {
         String cartDocNumber = null;
         if (!Basket35Page.isThisPage()) {

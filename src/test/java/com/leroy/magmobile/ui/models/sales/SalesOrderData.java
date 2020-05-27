@@ -4,6 +4,7 @@ import com.leroy.magmobile.ui.models.CardWidgetData;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = false)
@@ -22,6 +23,17 @@ public class SalesOrderData extends CardWidgetData {
             productCount--;
         }
         orderCardDataList.remove(index);
+    }
+
+    public void addFirstProduct(SalesOrderCardData product, boolean recalculateOrder) {
+        List<SalesOrderCardData> result = new ArrayList<>();
+        result.add(product);
+        result.addAll(orderCardDataList);
+        orderCardDataList = result;
+        if (recalculateOrder) {
+            productCount++;
+            totalPrice += product.getTotalPrice();
+        }
     }
 
 }

@@ -22,20 +22,20 @@ public abstract class BaseTest {
     private boolean evalBeforeMethod = true;
     private boolean evalBeforeClass = true;
 
-    private UserSessionData sessionDataFirstState;
+    private UserSessionData testClassUserSessionDataTemplate;
 
     /**
      * The setup for session data
      */
-    protected abstract UserSessionData initUserSessionData();
+    protected abstract UserSessionData initTestClassUserSessionDataTemplate();
 
     @BeforeClass
     protected void configurationBeforeClass() {
         if (ContextProvider.getContext() == null) {
             ContextProvider.setContext(new Context());
         }
-        sessionDataFirstState = initUserSessionData();
-        ContextProvider.getContext().setUserSessionData(sessionDataFirstState.copy());
+        testClassUserSessionDataTemplate = initTestClassUserSessionDataTemplate();
+        ContextProvider.getContext().setUserSessionData(testClassUserSessionDataTemplate);
     }
 
     @BeforeMethod
@@ -51,7 +51,7 @@ public abstract class BaseTest {
         SoftAssertWrapper softAssert = new SoftAssertWrapper(log);
         AssertWrapper anAssert = new AssertWrapper(log);
         String tcId = getTestCaseId(method.getAnnotation(Test.class).description());
-        context.setUserSessionData(sessionDataFirstState.copy());
+        context.setUserSessionData(testClassUserSessionDataTemplate.copy());
         context.setLog(log);
         context.setAnAssert(anAssert);
         context.setSoftAssert(softAssert);

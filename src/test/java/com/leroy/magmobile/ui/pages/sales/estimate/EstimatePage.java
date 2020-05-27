@@ -313,12 +313,21 @@ public class EstimatePage extends CommonMagMobilePage {
                     "Товар #" + (i + 1) + " - разное выбранное кол-во");
             softAssert.isEquals(actualProduct.getTotalPrice(), expectedProduct.getTotalPrice(),
                     "Товар #" + (i + 1) + " - разная стоимость товаров");
+            if (expectedProduct.isNegativeAvailableQuantity()) {
+                softAssert.isTrue(actualProduct.getAvailableTodayQuantity() != null,
+                        "Товар #" + (i + 1) + " - не видно кол-во доступного товара");
+                if (expectedProduct.getAvailableTodayQuantity() != null) {
+                    softAssert.isEquals(actualProduct.getAvailableTodayQuantity(), expectedProduct.getAvailableTodayQuantity(),
+                            "Товар #" + (i + 1) + " - разное доступное кол-во товаров");
+                }
+            }
             softAssert.isEquals(actualProduct.getProductCardData().getLmCode(),
                     expectedProduct.getProductCardData().getLmCode(),
                     "Товар #" + (i + 1) + " - разные ЛМ коды");
-            softAssert.isEquals(actualProduct.getProductCardData().getBarCode(),
-                    expectedProduct.getProductCardData().getBarCode(),
-                    "Товар #" + (i + 1) + " - разные Бар коды");
+            // Бар код не отображается на этой странице
+            //softAssert.isEquals(actualProduct.getProductCardData().getBarCode(),
+            //        expectedProduct.getProductCardData().getBarCode(),
+            //        "Товар #" + (i + 1) + " - разные Бар коды");
             softAssert.isEquals(actualProduct.getProductCardData().getName(),
                     expectedProduct.getProductCardData().getName(),
                     "Товар #" + (i + 1) + " - разные названия товаров");

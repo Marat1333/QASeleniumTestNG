@@ -23,7 +23,6 @@ import com.leroy.magmobile.ui.pages.sales.basket.BasketStep2Page;
 import com.leroy.magmobile.ui.pages.sales.basket.BasketStep3Page;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import org.apache.commons.lang.RandomStringUtils;
-import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -38,19 +37,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 @Guice(modules = {Module.class})
 public class SalesBaseTest extends AppBaseSteps {
-
-    protected final String OLD_SHOP_GROUP = "old_shop";
-    protected final static String NEED_ACCESS_TOKEN_GROUP = "need_access_token";
-
-    @BeforeGroups(OLD_SHOP_GROUP)
-    protected void setSessionDataForOldShop() {
-        getUserSessionData().setUserShopId(EnvConstants.SHOP_WITH_OLD_INTERFACE);
-    }
-
-    @BeforeGroups(NEED_ACCESS_TOKEN_GROUP)
-    protected void addAccessTokenToSessionData() {
-        getUserSessionData().setAccessToken(getAccessToken());
-    }
 
     // Получить ЛМ код для услуги
     protected String getAnyLmCodeOfService() {
