@@ -9,7 +9,10 @@ import com.leroy.magmobile.api.requests.salesdoc.cart.*;
 import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.leroy.core.matchers.Matchers.isNumber;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -28,8 +31,8 @@ public class CartClient extends MagMobileClient {
     @Step("Get Cart info by cartId={cartId}")
     public Response<CartData> sendRequestGet(String cartId) {
         return execute(new CartGet().setCartId(cartId)
-                .bearerAuthHeader(sessionData.getAccessToken())
-                .setShopId(sessionData.getUserShopId()), CartData.class);
+                .bearerAuthHeader(userSessionData.getAccessToken())
+                .setShopId(userSessionData.getUserShopId()), CartData.class);
     }
 
     @Step("Create Cart")
@@ -37,8 +40,8 @@ public class CartClient extends MagMobileClient {
         CartData cartData = new CartData();
         cartData.setProducts(productOrderDataList);
         return execute(new CartPOST()
-                .bearerAuthHeader(sessionData.getAccessToken())
-                .setShopId(sessionData.getUserShopId())
+                .bearerAuthHeader(userSessionData.getAccessToken())
+                .setShopId(userSessionData.getUserShopId())
                 .jsonBody(cartData), CartData.class);
     }
 
@@ -52,7 +55,7 @@ public class CartClient extends MagMobileClient {
                                          CartProductOrderData productData) {
         CartUpdateRequest req = new CartUpdateRequest();
         req.setCartId(cartId);
-        req.setShopId(sessionData.getUserShopId());
+        req.setShopId(userSessionData.getUserShopId());
         CartData putDat = new CartData();
         putDat.setDocumentVersion(documentVersion);
         putDat.setProducts(Collections.singletonList(productData));
@@ -64,8 +67,8 @@ public class CartClient extends MagMobileClient {
     public Response<CartData> confirmQuantity(String cartId, int documentVersion, CartProductOrderData productData) {
         CartConfirmQuantityRequest req = new CartConfirmQuantityRequest();
         req.setCartId(cartId);
-        req.setShopId(sessionData.getUserShopId());
-        req.setLdap(sessionData.getUserLdap());
+        req.setShopId(userSessionData.getUserShopId());
+        req.setLdap(userSessionData.getUserLdap());
 
         CartData putData = new CartData();
         putData.setDocumentVersion(documentVersion);
@@ -87,8 +90,8 @@ public class CartClient extends MagMobileClient {
         putProductData.setDiscount(productData.getDiscount());
 
         CartDiscountRequest req = new CartDiscountRequest();
-        req.setShopId(sessionData.getUserShopId());
-        req.setLdap(sessionData.getUserLdap());
+        req.setShopId(userSessionData.getUserShopId());
+        req.setLdap(userSessionData.getUserLdap());
         req.setCartId(cartId);
         CartData putData = new CartData();
         putData.setDocumentVersion(documentVersion);
@@ -103,15 +106,15 @@ public class CartClient extends MagMobileClient {
         req.setCartId(cartId);
         req.setDocumentVersion(documentVersion);
         req.setLineId(lineId);
-        req.setShopId(sessionData.getUserShopId());
+        req.setShopId(userSessionData.getUserShopId());
         return execute(req, CartData.class);
     }
 
     @Step("Consolidate products for cartId={cartId}")
     public Response<JsonNode> consolidateProducts(String cartId, Integer documentVersion, String lineId) {
         CartConsolidateProductsRequest req = new CartConsolidateProductsRequest();
-        req.setLdap(sessionData.getUserLdap());
-        req.setShopId(sessionData.getUserShopId());
+        req.setLdap(userSessionData.getUserLdap());
+        req.setShopId(userSessionData.getUserShopId());
         req.setCartId(cartId);
         CartData putData = new CartData();
         putData.setDocumentVersion(documentVersion);
@@ -128,7 +131,7 @@ public class CartClient extends MagMobileClient {
         body.put("status", SalesDocumentsConst.States.DELETED.getApiVal());
         body.put("documentVersion", String.valueOf(documentVersion));
         return execute(new CartChangeStatusRequest()
-                .bearerAuthHeader(sessionData.getAccessToken())
+                .bearerAuthHeader(userSessionData.getAccessToken())
                 .setCartId(cartId)
                 .formBody(body), JsonNode.class);
     }
@@ -146,7 +149,7 @@ public class CartClient extends MagMobileClient {
             assertThat("salesDocStatus", data.getSalesDocStatus(), is(SalesDocumentsConst.States.DRAFT.getApiVal()));
             assertThat("documentType", data.getDocumentType(), is(SalesDocumentsConst.Types.CART.getApiVal()));
             assertThat("status", data.getStatus(), is(SalesDocumentsConst.States.DRAFT.getApiVal()));
-            assertThat("shopId", data.getShopId(), is(sessionData.getUserShopId()));
+            assertThat("shopId", data.getShopId(), is(userSessionData.getUserShopId()));
             assertThat("cartId", data.getCartId(), is(data.getFullDocId()));
             assertThat("documentVersion", data.getDocumentVersion(), is(1));
             assertThat("groupingId", data.getGroupingId(), not(emptyOrNullString()));
@@ -286,7 +289,7 @@ public class CartClient extends MagMobileClient {
                         is(expectedProductData.getDiscount().getTypeValue()));
                 assertThat("Product #" + (i + 1) + " Discount.actor",
                         actualProductData.getDiscount().getActor(),
-                        is(sessionData.getUserLdap()));
+                        is(userSessionData.getUserLdap()));
                 //assertThat("Product #" + (i + 1) + " Discount.updated",
                 //        actualProductData.getDiscount().getUpdated(),
                 //        approximatelyEqual(LocalDateTime.now())); // #bug ?

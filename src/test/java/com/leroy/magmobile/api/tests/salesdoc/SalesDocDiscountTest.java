@@ -3,8 +3,8 @@ package com.leroy.magmobile.api.tests.salesdoc;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.leroy.magmobile.api.clients.MagMobileClient;
-import com.leroy.magmobile.api.data.sales.SalesDocDiscountData;
 import com.leroy.magmobile.api.data.sales.DiscountReasonData;
+import com.leroy.magmobile.api.data.sales.SalesDocDiscountData;
 import com.leroy.magmobile.api.requests.salesdoc.discount.GetSalesDocDiscount;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import org.testng.annotations.BeforeClass;
@@ -39,7 +39,7 @@ public class SalesDocDiscountTest extends BaseProjectApiTest {
     public void testSalesDocGetDiscounts() {
         Response<SalesDocDiscountData> resp = magMobileClient.get().getSalesDocDiscount(new GetSalesDocDiscount()
                 .setLmCode(productLmCode)
-                .setShopId(sessionData.getUserShopId()));
+                .setShopId(getUserSessionData().getUserShopId()));
         assertThat(resp, successful());
         SalesDocDiscountData salesDocDiscountData = resp.asJson();
         assertThat("maxDiscount", salesDocDiscountData.getMaxDiscount(), greaterThan(0.0));

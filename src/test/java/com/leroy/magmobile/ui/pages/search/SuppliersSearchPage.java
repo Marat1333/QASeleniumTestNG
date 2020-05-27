@@ -7,23 +7,18 @@ import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobCheckBox;
+import com.leroy.magmobile.ui.models.SupplierCardData;
+import com.leroy.magmobile.ui.models.TextViewData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.search.widgets.SupplierCardWidget;
 import com.leroy.magmobile.ui.pages.widgets.TextViewWidget;
-import com.leroy.magmobile.ui.models.SupplierCardData;
-import com.leroy.magmobile.ui.models.TextViewData;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 
 import java.util.List;
 
 public class SuppliersSearchPage extends CommonMagMobilePage {
-
-    public SuppliersSearchPage(Context context) {
-        super(context);
-    }
 
     private String SCREEN_CONTENT_XPATH = "//android.view.ViewGroup[@content-desc='ScreenContent']";
 
@@ -62,14 +57,14 @@ public class SuppliersSearchPage extends CommonMagMobilePage {
     @Step("Перейти назад")
     public FilterPage clickBackBtn() {
         backBtn.click();
-        return new FilterPage(context);
+        return new FilterPage();
     }
 
     @Step("Отменить выбор поставщика нажатием на крест в овальной области с именем поставщика")
     public SuppliersSearchPage cancelChosenSuppler() throws Exception {
         Element chosenSupplierCancelBtn = E(OVAL_BTN_DELETE_SUPPLIER_BTN_XPATH);
         chosenSupplierCancelBtn.click();
-        return new SuppliersSearchPage(context);
+        return new SuppliersSearchPage();
     }
 
     @Step("Найти поставщика по {value} и выбрать его")
@@ -86,7 +81,7 @@ public class SuppliersSearchPage extends CommonMagMobilePage {
     @Step("Подтвердить выбор")
     public FilterPage applyChosenSupplier() {
         confirmBtn.click();
-        return new FilterPage(context);
+        return new FilterPage();
     }
 
     //VERIFICATIONS
@@ -104,7 +99,7 @@ public class SuppliersSearchPage extends CommonMagMobilePage {
         for (TextViewData data : namesOfSuppliers) {
             anAssert.isTrue(supplierName.contains(data.getText()), "В овальной области не отображено имя выбранного поставщика");
         }
-        return new SuppliersSearchPage(context);
+        return new SuppliersSearchPage();
     }
 
     @Step("Поставщик с кодом/именем {value} выбран")

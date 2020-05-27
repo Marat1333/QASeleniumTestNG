@@ -1,10 +1,8 @@
 package com.leroy.magmobile.ui.pages.sales;
 
-import com.leroy.core.TestContext;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.basket.BasketStep1Page;
@@ -13,10 +11,6 @@ import io.qameta.allure.Step;
 public class AddProductPage extends CommonMagMobilePage {
 
     private static final String SCREEN_TITLE = "Добавление товара";
-
-    public AddProductPage(Context context) {
-        super(context);
-    }
 
     @AppFindBy(accessibilityId = "ScreenTitle")
     private Element screenTitle;
@@ -96,7 +90,7 @@ public class AddProductPage extends CommonMagMobilePage {
     @Step("Нажмите кнопку Добавить")
     public BasketStep1Page clickAddButton() {
         addBtn.click();
-        return new BasketStep1Page(context);
+        return new BasketStep1Page();
     }
 
     // ---------------- Verifications ----------------------- //

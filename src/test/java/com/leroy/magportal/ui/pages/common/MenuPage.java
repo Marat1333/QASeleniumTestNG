@@ -7,20 +7,16 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.pages.NewFeaturesModalWindow;
-import com.leroy.magportal.ui.pages.common.modal.ShopSelectionModal;
-import com.leroy.magportal.ui.pages.orders.OrderHeaderPage;
 import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
 import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
+import com.leroy.magportal.ui.pages.common.modal.ShopSelectionModal;
 import com.leroy.magportal.ui.pages.customers.CustomerPage;
+import com.leroy.magportal.ui.pages.orders.OrderHeaderPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 
 public class MenuPage extends MagPortalBasePage {
-
-    public MenuPage(Context context) {
-        super(context);
-    }
 
     // User Profile
 
@@ -77,7 +73,7 @@ public class MenuPage extends MagPortalBasePage {
     public MenuPage selectShopInUserProfile(String value) throws Exception {
         userProfileBtn.click();
         userProfileShopArea.click();
-        new ShopSelectionModal(context)
+        new ShopSelectionModal()
                 .selectShop(value)
                 .clickSaveButton();
         waitForSpinnerAppearAndDisappear();

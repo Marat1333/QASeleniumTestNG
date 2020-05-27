@@ -3,7 +3,8 @@ package com.leroy.magportal.api;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.leroy.core.SessionData;
+import com.leroy.core.ContextProvider;
+import com.leroy.core.UserSessionData;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.*;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
@@ -20,7 +21,6 @@ import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateProductOrderData;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import io.qameta.allure.Step;
-import lombok.Setter;
 import org.apache.commons.lang.RandomStringUtils;
 import org.testng.Assert;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -37,8 +37,6 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasSize;
 
 public class ApiClientProvider {
-    @Setter
-    private SessionData sessionData;
 
     @Inject
     private Provider<com.leroy.magportal.api.clients.CatalogSearchClient> catalogSearchClientProvider;
@@ -73,9 +71,13 @@ public class ApiClientProvider {
     @Inject
     private Provider<SupportClient> supportClientProvider;
 
+    private UserSessionData userSessionData() {
+        return ContextProvider.getContext().getUserSessionData();
+    }
+
     private <J extends MagMobileClient> J getClient(Provider<J> provider) {
         J cl = provider.get();
-        cl.setSessionData(sessionData);
+        cl.setUserSessionData(ContextProvider.getContext().getUserSessionData());
         return cl;
     }
 
@@ -154,8 +156,8 @@ public class ApiClientProvider {
         }
         String[] badLmCodes = {"10008698", "10008751"}; // Из-за отсутствия синхронизации бэков на тесте, мы можем получить некорректные данные
         GetCatalogSearch params = new GetCatalogSearch()
-                .setShopId(sessionData.getUserShopId())
-                .setDepartmentId(sessionData.getUserDepartmentId())
+                .setShopId(userSessionData().getUserShopId())
+                .setDepartmentId(userSessionData().getUserDepartmentId())
                 .setTopEM(filtersData.getTopEM())
                 .setPageSize(50)
                 .setHasAvailableStock(filtersData.getHasAvailableStock());

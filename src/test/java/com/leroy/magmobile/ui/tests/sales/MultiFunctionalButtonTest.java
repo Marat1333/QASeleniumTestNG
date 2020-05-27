@@ -17,23 +17,31 @@ import com.leroy.magmobile.ui.pages.work.StockProductsPage;
 import com.leroy.magmobile.ui.pages.work.modal.QuantityProductsForWithdrawalModalPage;
 import com.leroy.utils.ParserUtil;
 import org.apache.commons.lang.RandomStringUtils;
+import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Test;
 
 import java.util.Random;
 
 public class MultiFunctionalButtonTest extends SalesBaseTest {
 
-    @Test(description = "C3201023 Создание документа продажи")
+    private final String OLD_SHOP_GROUP = "old_shop";
+
+    @BeforeGroups(OLD_SHOP_GROUP)
+    public void setSessionDataForOldShop() {
+        getUserSessionData().setUserShopId(EnvConstants.SHOP_WITH_OLD_INTERFACE);
+    }
+
+    @Test(description = "C3201023 Создание документа продажи", groups = OLD_SHOP_GROUP)
     public void testC3201023() throws Exception {
         testCreateSalesDocument(getAnyLmCodeProductWithoutSpecificOptions(), ProductTypes.NORMAL);
     }
 
-    @Test(description = "C22846947 Создание документа продажи с товаром AVS")
+    @Test(description = "C22846947 Создание документа продажи с товаром AVS", groups = OLD_SHOP_GROUP)
     public void testC22846947() throws Exception {
         testCreateSalesDocument(getAnyLmCodeProductWithAvs(), ProductTypes.AVS);
     }
 
-    @Test(description = "C22846948 Создание документа продажи с товаром Топ-EM")
+    @Test(description = "C22846948 Создание документа продажи с товаром Топ-EM", groups = OLD_SHOP_GROUP)
     public void testC22846948() throws Exception {
         testCreateSalesDocument(getAnyLmCodeProductWithTopEM(), ProductTypes.TOP_EM);
     }
@@ -52,7 +60,7 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
         // Step #2
         step("Введите ЛМ код товара (напр., " + lmCode + ")");
         searchPage.enterTextInSearchFieldAndSubmit(lmCode);
-        AddServicePage addServicePage = new AddServicePage(context).verifyRequiredElements()
+        AddServicePage addServicePage = new AddServicePage().verifyRequiredElements()
                 .shouldFieldsAre("", AddServicePage.Constants.DEFAULT_QUANTITY_VALUE,
                         AddServicePage.Constants.EMPTY_TOTAL_PRICE_VALUE);
 
@@ -102,9 +110,8 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
                 .shouldDocumentNumberIs(documentNumber);
     }
 
-    @Test(description = "C3201024 Добавление в существующий документ продажи")
+    @Test(description = "C3201024 Добавление в существующий документ продажи", groups = OLD_SHOP_GROUP)
     public void testC3201024() throws Exception {
-        sessionData.setUserShopId(EnvConstants.SHOP_WITH_OLD_INTERFACE);
         // Pre-condition
         // - Имеются документы продажи в статусе черновик
         String lmCode = getAnyLmCodeProductWithoutSpecificOptions();
@@ -118,7 +125,7 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
         // Step #4
         step("Нажмите Добавить в документ продажи");
         actionWithProductModalPage.clickAddIntoSalesDocumentButton();
-        AddIntoSalesDocumentModalPage modalPage = new AddIntoSalesDocumentModalPage(context)
+        AddIntoSalesDocumentModalPage modalPage = new AddIntoSalesDocumentModalPage()
                 .verifyRequiredElements();
 
         // Step #5
@@ -134,9 +141,8 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
                 .shouldLmCodeOfProductIs(lmCode);
     }
 
-    @Test(description = "C22744177 Создание заявки на Отзыв RM")
+    @Test(description = "C22744177 Создание заявки на Отзыв RM", groups = OLD_SHOP_GROUP)
     public void testCreateOrderForWithdrawalFromRM() throws Exception {
-        sessionData.setUserShopId(EnvConstants.SHOP_WITH_OLD_INTERFACE);
         // Pre-condition
         String lmCode = getAnyLmCodeProductIsAvailableForWithdrawalFromRM();
         MainProductAndServicesPage mainProductAndServicesPage = loginSelectShopAndGoTo(
@@ -150,7 +156,7 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
         // Step 4
         step("Нажмите на кнопку Добавить в заявку на Отзыв с RM");
         actionWithProductModalPage.clickAddIntoWithdrawalOrderFromRMButton();
-        StockProductCardPage stockProductCardPage = new StockProductCardPage(context);
+        StockProductCardPage stockProductCardPage = new StockProductCardPage();
         stockProductCardPage.verifyRequiredElements();
 
         // Step 5
@@ -254,7 +260,7 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
         expectedSalesDocument.setPin(orderDetailsData.getPinCode());
         expectedSalesDocument.setDocumentState(null);
         salesDocumentsPage.clickBackButton();
-        mainProductAndServicesPage = new MainProductAndServicesPage(context); // Workaround for minor #bug
+        mainProductAndServicesPage = new MainProductAndServicesPage(); // Workaround for minor #bug
         mainProductAndServicesPage.goToSalesDocumentsSection()
                 .goToMySales();
         salesDocumentsPage.shouldSalesDocumentIsPresentAndDataMatches(expectedSalesDocument);
@@ -276,7 +282,6 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
             ProductTypes productType, boolean is35Shop) throws Exception {
         // Pre-condition
         if (mainProductAndServicesPage == null) {
-            sessionData.setUserShopId(EnvConstants.SHOP_WITH_OLD_INTERFACE);
             mainProductAndServicesPage = loginSelectShopAndGoTo(MainProductAndServicesPage.class);
         }
 
@@ -289,18 +294,18 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
         // Step #2
         step("Введите ЛМ код товара (напр., " + productData.getLmCode() + ")");
         searchPage.enterTextInSearchFieldAndSubmit(productData.getLmCode());
-        ProductDescriptionPage productDescriptionPage = new ProductDescriptionPage(context)
+        ProductDescriptionPage productDescriptionPage = new ProductDescriptionPage()
                 .verifyRequiredElements(true);
 
         // Step #3
         step("Нажмите на кнопку Действия с товаром");
         productDescriptionPage.clickActionWithProductButton();
         if (is35Shop) {
-            ActionWithProduct35ModalPage modalPage = new ActionWithProduct35ModalPage(context);
+            ActionWithProduct35ModalPage modalPage = new ActionWithProduct35ModalPage();
             return (T) modalPage.verifyRequiredElements(productData.getHasAvailableStock(),
                     productType.equals(ProductTypes.AVS));
         } else {
-            ActionWithProductModalPage modalPage = new ActionWithProductModalPage(context);
+            ActionWithProductModalPage modalPage = new ActionWithProductModalPage();
             return (T) modalPage.verifyRequiredElements(productType.equals(ProductTypes.AVS));
         }
     }
@@ -323,7 +328,7 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
         if (productType.equals(ProductTypes.TOP_EM)) {
             actionWithProductModalPage.clickAddIntoSalesDocumentButton();
             ImpossibleCreateDocumentWithTopEmModalPage modalScreen =
-                    new ImpossibleCreateDocumentWithTopEmModalPage(context).verifyRequiredElements();
+                    new ImpossibleCreateDocumentWithTopEmModalPage().verifyRequiredElements();
 
             // Step #5
             step("Нажмите на кнопку Понятно");

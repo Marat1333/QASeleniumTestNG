@@ -2,14 +2,9 @@ package com.leroy.magmobile.ui.pages.common;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
 
 public class TopMenuPage extends BottomMenuPage {
-
-    public TopMenuPage(Context context) {
-        super(context);
-    }
 
     private static final String TYPICAL_BUTTON_XPATH = "(//android.view.ViewGroup[@content-desc='Button'])";
 
@@ -37,7 +32,7 @@ public class TopMenuPage extends BottomMenuPage {
 
     public MainSalesDocumentsPage goToSalesDocumentsSection() {
         salesDocumentsBtn.click();
-        return new MainSalesDocumentsPage(context);
+        return new MainSalesDocumentsPage();
     }
 
     public void goToClientsSection() {

@@ -1,12 +1,11 @@
 package com.leroy.magmobile.ui.tests.sales;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.api.Module;
 import com.leroy.core.configuration.Log;
-import com.leroy.magmobile.api.ApiClientProvider;
+import com.leroy.magmobile.api.clients.OrderClient;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
@@ -23,9 +22,8 @@ import com.leroy.magmobile.ui.pages.sales.basket.BasketStep1Page;
 import com.leroy.magmobile.ui.pages.sales.basket.BasketStep2Page;
 import com.leroy.magmobile.ui.pages.sales.basket.BasketStep3Page;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
-import com.leroy.umbrella_extension.authorization.AuthClient;
 import org.apache.commons.lang.RandomStringUtils;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -41,17 +39,17 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @Guice(modules = {Module.class})
 public class SalesBaseTest extends AppBaseSteps {
 
-    @Inject
-    private AuthClient authClient;
+    protected final String OLD_SHOP_GROUP = "old_shop";
+    protected final static String NEED_ACCESS_TOKEN_GROUP = "need_access_token";
 
-    @Inject
-    protected ApiClientProvider clientProvider;
+    @BeforeGroups(OLD_SHOP_GROUP)
+    protected void setSessionDataForOldShop() {
+        getUserSessionData().setUserShopId(EnvConstants.SHOP_WITH_OLD_INTERFACE);
+    }
 
-    @BeforeClass
-    public void salesBaseTestBeforeClass() {
-        String token = authClient.getAccessToken(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS);
-        sessionData.setAccessToken(token);
-        clientProvider.setSessionData(sessionData);
+    @BeforeGroups(NEED_ACCESS_TOKEN_GROUP)
+    protected void addAccessTokenToSessionData() {
+        getUserSessionData().setAccessToken(getAccessToken());
     }
 
     // Получить ЛМ код для услуги
@@ -62,7 +60,7 @@ public class SalesBaseTest extends AppBaseSteps {
     // Получить ЛМ код для обычного продукта без специфичных опций
     protected List<String> getAnyLmCodesProductWithoutSpecificOptions(
             int necessaryCount) {
-        return clientProvider.getProducts(necessaryCount, false, false)
+        return apiClientProvider.getProducts(necessaryCount, false, false)
                 .stream().map(ProductItemData::getLmCode).collect(Collectors.toList());
     }
 
@@ -74,15 +72,15 @@ public class SalesBaseTest extends AppBaseSteps {
     protected String getAnyLmCodeProductWithAvs() {
         CatalogSearchFilter filtersData = new CatalogSearchFilter();
         filtersData.setAvs(true);
-        return clientProvider.getProducts(1, filtersData).get(0).getLmCode();
+        return apiClientProvider.getProducts(1, filtersData).get(0).getLmCode();
     }
 
     // Получить ЛМ код для продукта с опцией TopEM
     protected String getAnyLmCodeProductWithTopEM() {
         CatalogSearchFilter filtersData = new CatalogSearchFilter();
         filtersData.setTopEM(true);
-        context.getSessionData().setUserDepartmentId("15");
-        return clientProvider.getProducts(1, filtersData).get(0).getLmCode();
+        getUserSessionData().setUserDepartmentId("15");
+        return apiClientProvider.getProducts(1, filtersData).get(0).getLmCode();
     }
 
     // Получить ЛМ код для продукта, доступного для отзыва с RM
@@ -97,7 +95,8 @@ public class SalesBaseTest extends AppBaseSteps {
             do {
                 generatedPinCode = RandomStringUtils.randomNumeric(5);
             } while (generatedPinCode.startsWith("9"));
-            SalesDocumentListResponse salesDocumentsResponse = clientProvider.getCatalogSearchClient().getSalesDocumentsByPinCodeOrDocId(generatedPinCode)
+            SalesDocumentListResponse salesDocumentsResponse = apiClientProvider.getSalesDocSearchClient()
+                    .getSalesDocumentsByPinCodeOrDocId(generatedPinCode)
                     .asJson();
             if (salesDocumentsResponse.getTotalCount() == 0) {
                 Log.info("API: Не найдено ни одного документа с PIN кодом: " + generatedPinCode);
@@ -113,16 +112,6 @@ public class SalesBaseTest extends AppBaseSteps {
 
     // CREATING PRE-CONDITIONS:
 
-    /*protected String createDraftEstimate() {
-        String lmCode = getAnyLmCodeProductWithoutSpecificOptions();
-        CartEstimateProductOrderData productOrderData = new CartEstimateProductOrderData();
-        productOrderData.setLmCode(lmCode);
-        productOrderData.setQuantity(1.0);
-        Response<EstimateData> estimateDataResponse = estimateClient.sendRequestCreate(productOrderData);
-        assertThat(estimateDataResponse, successful());
-        return estimateDataResponse.asJson().getEstimateId();
-    }*/
-
     protected String createDraftCart(int productCount) {
         List<String> lmCodes = getAnyLmCodesProductWithoutSpecificOptions(productCount);
         List<CartProductOrderData> productOrderDataList = new ArrayList<>();
@@ -133,19 +122,21 @@ public class SalesBaseTest extends AppBaseSteps {
             productOrderData.setQuantity((double) (r.nextInt(9) + 1));
             productOrderDataList.add(productOrderData);
         }
-        Response<CartData> cartDataResponse = clientProvider.getCartClient().sendRequestCreate(productOrderDataList);
+        Response<CartData> cartDataResponse = apiClientProvider.getCartClient()
+                .sendRequestCreate(productOrderDataList);
         assertThat(cartDataResponse, successful());
         return cartDataResponse.asJson().getFullDocId();
     }
 
     protected void cancelOrder(String orderId) throws Exception {
-        Response<JsonNode> r = clientProvider.getOrderClient().cancelOrder(orderId);
+        OrderClient orderClient = apiClientProvider.getOrderClient();
+        Response<JsonNode> r = orderClient.cancelOrder(orderId);
         if (!r.isSuccessful()) {
             Thread.sleep(10000); // TODO можно подумать над не implicit wait'ом
             Log.warn(r.toString());
-            r = clientProvider.getOrderClient().cancelOrder(orderId);
+            r = orderClient.cancelOrder(orderId);
         }
-        anAssert.isTrue(r.isSuccessful(),
+        anAssert().isTrue(r.isSuccessful(),
                 "Не смогли удалить заказ №" + orderId + ". Ошибка: " + r.toString());
     }
 
@@ -156,10 +147,8 @@ public class SalesBaseTest extends AppBaseSteps {
 
     // TESTS
 
-    @Test(description = "C3201029 Создание документа продажи")
+    @Test(description = "C3201029 Создание документа продажи", groups = OLD_SHOP_GROUP)
     public void testCreateDocumentSales() throws Exception {
-        sessionData.setUserShopId(EnvConstants.SHOP_WITH_OLD_INTERFACE);
-        //sessionData.setUserDepartmentId("15");
         // Step #1
         step("На главном экране выберите раздел Документы продажи");
         MainSalesDocumentsPage salesDocumentsPage = loginSelectShopAndGoTo(
@@ -174,7 +163,7 @@ public class SalesBaseTest extends AppBaseSteps {
         // Step #3
         step("Нажмите на мини-карточку товара 16410291");
         searchProductPage.searchProductAndSelect("16410291");
-        AddProductPage addProductPage = new AddProductPage(context)
+        AddProductPage addProductPage = new AddProductPage()
                 .verifyRequiredElements();
 
         // Step #4

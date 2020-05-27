@@ -1,17 +1,12 @@
 package com.leroy.magportal.ui.pages;
 
 import com.leroy.constants.EnvConstants;
-import com.leroy.core.TestContext;
 import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.pages.BaseWebPage;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 
 public class LoginWebPage extends BaseWebPage {
-
-    public LoginWebPage(TestContext context) {
-        super(context);
-    }
 
     private EditBox usernameFld = E("#Username", "Поле для ввода username", EditBox.class);
 

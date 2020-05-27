@@ -14,7 +14,6 @@ import com.leroy.magportal.ui.pages.products.ExtendedProductCardPage;
 import com.leroy.magportal.ui.pages.products.ProductCardPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
 import io.qameta.allure.Issue;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -24,11 +23,8 @@ import java.util.Map;
 
 public class SearchTest extends WebBaseSteps {
 
-    private CatalogSearchClient apiClient;
-
-    @BeforeClass
-    private void setUpSearchTests() {
-        apiClient = apiClientProvider.getCatalogSearchClient();
+    private CatalogSearchClient catalogSearchClient() {
+        return apiClientProvider.getCatalogSearchClient();
     }
 
     private final int defaultPageSize = 12;
@@ -40,7 +36,7 @@ public class SearchTest extends WebBaseSteps {
         int i = 0;
         for (GetCatalogSearch param : paramsArray) {
             ThreadApiClient<ProductItemDataList, CatalogSearchClient> myThread = new ThreadApiClient<>(
-                    apiClient);
+                    catalogSearchClient());
             myThread.sendRequest(client -> client.searchProductsBy(param));
             resultMap.put(i, myThread);
             i++;
@@ -301,7 +297,8 @@ public class SearchTest extends WebBaseSteps {
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setPageSize(defaultPageSize);
 
-        Response<ProductItemDataList> response = apiClient.searchProductsBy(defaultSort);
+        Response<ProductItemDataList> response = catalogSearchClient()
+                .searchProductsBy(defaultSort);
 
         //Pre-conditions
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);

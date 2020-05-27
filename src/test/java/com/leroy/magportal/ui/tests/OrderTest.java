@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.StatusCodes;
 import com.leroy.constants.customer.CustomerConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
+import com.leroy.core.UserSessionData;
 import com.leroy.magmobile.api.clients.CartClient;
 import com.leroy.magmobile.api.clients.OrderClient;
 import com.leroy.magmobile.api.data.customer.PhoneData;
@@ -43,6 +44,7 @@ public class OrderTest extends WebBaseSteps {
     @Step("Pre-condition: Создание заказа через API")
     private String createOrderByApi(OrderDetailData orderDetailData,
                                     boolean waitUntilIsConfirmed) throws Exception {
+        UserSessionData userSessionData = getUserSessionData();
         CartClient cartClient = apiClientProvider.getCartClient();
         OrderClient orderClient = apiClientProvider.getOrderClient();
 
@@ -109,7 +111,7 @@ public class OrderTest extends WebBaseSteps {
 
         OrderData confirmOrderData = new OrderData();
         confirmOrderData.setPriority(SalesDocumentsConst.Priorities.HIGH.getApiVal());
-        confirmOrderData.setShopId(sessionData.getUserShopId());
+        confirmOrderData.setShopId(userSessionData.getUserShopId());
         confirmOrderData.setSolutionVersion(orderData.getSolutionVersion());
         confirmOrderData.setPaymentVersion(orderData.getPaymentVersion());
         confirmOrderData.setFulfillmentVersion(orderData.getFulfillmentVersion());
@@ -121,7 +123,7 @@ public class OrderTest extends WebBaseSteps {
         GiveAwayData giveAwayData = new GiveAwayData();
         giveAwayData.setDate(LocalDateTime.now());
         giveAwayData.setPoint(SalesDocumentsConst.GiveAwayPoints.PICKUP.getApiVal());
-        giveAwayData.setShopId(Integer.valueOf(sessionData.getUserShopId()));
+        giveAwayData.setShopId(Integer.valueOf(userSessionData.getUserShopId()));
         confirmOrderData.setGiveAway(giveAwayData);
 
         Response<OrderData> respConfirm = orderClient.confirmOrder(orderData.getOrderId(), confirmOrderData);

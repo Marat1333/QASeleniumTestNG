@@ -21,16 +21,16 @@ public class LsAddressClient extends MagMobileClient {
     public Response<AlleyData> createAlley(AlleyData alleyData) {
         LsAddressAlleysPostRequest req = new LsAddressAlleysPostRequest();
         req.jsonBody(alleyData);
-        req.setDepartmentId(sessionData.getUserDepartmentId());
-        req.setShopId(sessionData.getUserShopId());
+        req.setDepartmentId(userSessionData.getUserDepartmentId());
+        req.setShopId(userSessionData.getUserShopId());
         return execute(req, AlleyData.class);
     }
 
     @Step("Search for alleys")
     public Response<AlleyDataItems> searchForAlleys() {
         LsAddressAlleysRequest req = new LsAddressAlleysRequest();
-        req.setDepartmentId(sessionData.getUserDepartmentId());
-        req.setShopId(sessionData.getUserShopId());
+        req.setDepartmentId(userSessionData.getUserDepartmentId());
+        req.setShopId(userSessionData.getUserShopId());
         return execute(req, AlleyDataItems.class);
     }
 
@@ -40,8 +40,8 @@ public class LsAddressClient extends MagMobileClient {
     public Response<StandDataList> createStand(Integer alleyId, StandDataList postData) {
         LsAddressStandsPostRequest req = new LsAddressStandsPostRequest();
         req.setAlleyId(alleyId);
-        req.setShopId(sessionData.getUserShopId());
-        req.setDepartmentId(sessionData.getUserDepartmentId());
+        req.setShopId(userSessionData.getUserShopId());
+        req.setDepartmentId(userSessionData.getUserDepartmentId());
         req.jsonBody(postData);
         return execute(req, StandDataList.class);
     }
@@ -50,8 +50,8 @@ public class LsAddressClient extends MagMobileClient {
     public Response<StandDataList> searchForStand(Integer alleyId) {
         LsAddressStandsRequest req = new LsAddressStandsRequest();
         req.setAlleyId(alleyId);
-        req.setDepartmentId(sessionData.getUserDepartmentId());
-        req.setShopId(sessionData.getUserShopId());
+        req.setDepartmentId(userSessionData.getUserDepartmentId());
+        req.setShopId(userSessionData.getUserShopId());
         return execute(req, StandDataList.class);
     }
 
@@ -60,16 +60,16 @@ public class LsAddressClient extends MagMobileClient {
     @Step("Get scheme")
     public Response<SchemeData> getScheme() {
         LsAddressSchemeRequest req = new LsAddressSchemeRequest();
-        req.setShopId(sessionData.getUserShopId());
-        req.setDepartmentId(sessionData.getUserDepartmentId());
+        req.setShopId(userSessionData.getUserShopId());
+        req.setDepartmentId(userSessionData.getUserDepartmentId());
         return execute(req, SchemeData.class);
     }
 
     @Step("Update scheme with schemeType={schemeType}")
     public Response<JsonNode> putScheme(int schemeType) {
         LsAddressSchemePutRequest req = new LsAddressSchemePutRequest();
-        req.setShopId(sessionData.getUserShopId());
-        req.setDepartmentId(sessionData.getUserDepartmentId());
+        req.setShopId(userSessionData.getUserShopId());
+        req.setDepartmentId(userSessionData.getUserDepartmentId());
         SchemeData schemeData = new SchemeData();
         schemeData.setSchemeType(schemeType);
         req.jsonBody(schemeData);
@@ -111,7 +111,7 @@ public class LsAddressClient extends MagMobileClient {
     @Step("Search product cells with lmCode={lmCode}")
     public Response<ProductCellDataList> searchProductCells(String lmCode) {
         LsAddressCellSearchRequest req = new LsAddressCellSearchRequest();
-        req.setShopId(sessionData.getUserShopId());
+        req.setShopId(userSessionData.getUserShopId());
         req.setLmCode(lmCode);
         return execute(req, ProductCellDataList.class);
     }
@@ -122,8 +122,8 @@ public class LsAddressClient extends MagMobileClient {
     public Response<CellProductDataList> createCellProducts(String cellId, ReqCellProductDataList postData) {
         LsAddressCellProductsPostRequest req = new LsAddressCellProductsPostRequest();
         req.setCellId(cellId);
-        req.setLdap(sessionData.getUserLdap());
-        req.setShopId(sessionData.getUserShopId());
+        req.setLdap(userSessionData.getUserLdap());
+        req.setShopId(userSessionData.getUserShopId());
         req.jsonBody(postData);
         return execute(req, CellProductDataList.class);
     }
@@ -131,7 +131,7 @@ public class LsAddressClient extends MagMobileClient {
     @Step("Get cell products for cellId={cellId}")
     public Response<CellProductDataList> getCellProducts(String cellId) {
         LsAddressCellProductsRequest req = new LsAddressCellProductsRequest();
-        req.setShopId(sessionData.getUserShopId());
+        req.setShopId(userSessionData.getUserShopId());
         req.setCellId(cellId);
         return execute(req, CellProductDataList.class);
     }
@@ -139,8 +139,8 @@ public class LsAddressClient extends MagMobileClient {
     @Step("Update cell products for cellId={cellId}, lmCode={lmCode}")
     public Response<CellProductData> updateCellProducts(String cellId, String lmCode, ReqCellProductData putData) {
         LsAddressCellProductsPut req = new LsAddressCellProductsPut();
-        req.setLdap(sessionData.getUserLdap());
-        req.setShopId(sessionData.getUserShopId());
+        req.setLdap(userSessionData.getUserLdap());
+        req.setShopId(userSessionData.getUserShopId());
         req.setCellId(cellId);
         req.setLmCode(lmCode);
         req.jsonBody(putData);
@@ -150,7 +150,7 @@ public class LsAddressClient extends MagMobileClient {
     @Step("Move cell products for cellId={cellId}")
     public Response<JsonNode> moveCellProducts(String cellId, ReqCellProductData putData) {
         LsAddressCellProductsMove req = new LsAddressCellProductsMove();
-        req.setLdap(sessionData.getUserLdap());
+        req.setLdap(userSessionData.getUserLdap());
         req.setCellId(cellId);
         req.jsonBody(putData);
         return execute(req, JsonNode.class);
@@ -161,8 +161,8 @@ public class LsAddressClient extends MagMobileClient {
         LsAddressCellProductsDelete req = new LsAddressCellProductsDelete();
         req.setCellId(cellId);
         req.setLmCode(lmCode);
-        req.setLdap(sessionData.getUserLdap());
-        req.setShopId(sessionData.getUserShopId());
+        req.setLdap(userSessionData.getUserLdap());
+        req.setShopId(userSessionData.getUserShopId());
         return execute(req, JsonNode.class);
     }
 
@@ -178,9 +178,9 @@ public class LsAddressClient extends MagMobileClient {
         assertThat("id", actualData.getId(), greaterThan(0));
         assertThat("count", actualData.getCount(), is(0));
         assertThat("type", actualData.getType(), is(postData.getType()));
-        assertThat("storeId", actualData.getStoreId(), is(Integer.valueOf(sessionData.getUserShopId())));
+        assertThat("storeId", actualData.getStoreId(), is(Integer.valueOf(userSessionData.getUserShopId())));
         assertThat("departmentId", actualData.getDepartmentId(),
-                is(Integer.valueOf(sessionData.getUserDepartmentId())));
+                is(Integer.valueOf(userSessionData.getUserDepartmentId())));
         assertThat("code", actualData.getCode(), is(postData.getCode()));
         return actualData;
     }

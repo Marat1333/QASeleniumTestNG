@@ -3,16 +3,12 @@ package com.leroy.magmobile.ui.pages.sales;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.models.sales.SalesOrderCardData;
 import com.leroy.magmobile.ui.models.search.ProductCardData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.basket.Basket35Page;
 import com.leroy.magmobile.ui.pages.sales.estimate.EstimatePage;
-import com.leroy.magmobile.ui.models.sales.SalesOrderCardData;
-import com.leroy.magmobile.ui.models.search.ProductCardData;
-import com.leroy.utils.ParserUtil;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
@@ -20,10 +16,6 @@ public class AddProduct35Page extends CommonMagMobilePage {
 
     protected String SCREEN_TITLE_VALUE() {
         return "Добавление товара";
-    }
-
-    public AddProduct35Page(Context context) {
-        super(context);
     }
 
     @AppFindBy(accessibilityId = "ScreenTitle")
@@ -139,13 +131,13 @@ public class AddProduct35Page extends CommonMagMobilePage {
     @Step("Нажмите кнопку Добавить в корзину")
     public Basket35Page clickAddIntoBasketButton() {
         submitBtn.click();
-        return new Basket35Page(context);
+        return new Basket35Page();
     }
 
     @Step("Нажмите кнопку Добавить в смету")
     public EstimatePage clickAddIntoEstimateButton() {
         submitBtn.click();
-        return new EstimatePage(context);
+        return new EstimatePage();
     }
 
     // ---------------- Verifications ----------------------- //

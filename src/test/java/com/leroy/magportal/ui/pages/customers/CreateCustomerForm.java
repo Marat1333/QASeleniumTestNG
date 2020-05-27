@@ -6,7 +6,6 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.models.customers.CustomerWebData;
 import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
 import com.leroy.magportal.ui.pages.customers.modal.CustomersFoundWithThisPhoneModalWindow;
@@ -17,13 +16,10 @@ import org.openqa.selenium.support.Color;
 import org.testng.util.Strings;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class CreateCustomerForm extends MagPortalBasePage {
-
-    public CreateCustomerForm(Context context) {
-        super(context);
-    }
 
     static final String HEADER = "Создание клиента";
 
@@ -155,7 +151,7 @@ public class CreateCustomerForm extends MagPortalBasePage {
     @Step("Нажмите кнопку вернуться назад")
     public CustomerPage clickBackButton() {
         backBtn.click();
-        return new CustomerPage(context);
+        return new CustomerPage();
     }
 
     @Step("Введите {text} в поле 'Имя'")
@@ -349,10 +345,12 @@ public class CreateCustomerForm extends MagPortalBasePage {
         return this;
     }
 
+    @Step("Проверить подсказку-ошибку о введенном телефоне")
     public CreateCustomerForm shouldErrorTooltipUnderPhoneFldHasValidText() throws Exception {
-        shouldControlsHighlightedInRed(Arrays.asList(PageControls.PhoneFld));
-        anAssert.isElementTextEqual(phoneTooltipErrorLabels.get(0),
-                "Введи телефон в формате +7 XXX XXX-XX-XX");
+        shouldControlsHighlightedInRed(Collections.singletonList(PageControls.PhoneFld));
+        anAssert.isEquals(phoneTooltipErrorLabels.get(0).getText(),
+                "Введи телефон в формате +7 XXX XXX-XX-XX",
+                "Неверное сообщение об ошибке введенных данных в поле Телефон");
         return this;
     }
 

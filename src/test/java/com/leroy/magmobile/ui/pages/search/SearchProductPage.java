@@ -9,7 +9,6 @@ import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.data.catalog.ServiceItemData;
 import com.leroy.magmobile.api.data.catalog.ServiceItemDataList;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.models.CardWidgetData;
 import com.leroy.magmobile.ui.models.TextViewData;
 import com.leroy.magmobile.ui.models.search.ProductCardData;
@@ -29,10 +28,6 @@ import java.util.Comparator;
 import java.util.List;
 
 public class SearchProductPage extends CommonMagMobilePage {
-
-    public SearchProductPage(Context context) {
-        super(context);
-    }
 
     @AppFindBy(accessibilityId = "back", metaName = "Кнопка назад")
     private Element backBtn;
@@ -108,7 +103,7 @@ public class SearchProductPage extends CommonMagMobilePage {
     @Step("Перейти на главную страницу 'Документы продажи'")
     public MainProductAndServicesPage backToSalesPage() {
         backBtn.click();
-        return new MainProductAndServicesPage(context);
+        return new MainProductAndServicesPage();
     }
 
     @Step("Ввести поисковой запрос со случайным текстом {value} раз и инициировать поиск")
@@ -152,13 +147,13 @@ public class SearchProductPage extends CommonMagMobilePage {
         if (hideKeyboard) {
             hideKeyboard();
         }
-        return new SearchProductPage(context);
+        return new SearchProductPage();
     }
 
     @Step("Очистить поисковой инпут")
     public SearchProductPage clearSearchInput() {
         clearTextInputBtn.click();
-        return new SearchProductPage(context);
+        return new SearchProductPage();
     }
 
     @Step("Найдите и перейдите в карточку товара {text}")
@@ -178,25 +173,25 @@ public class SearchProductPage extends CommonMagMobilePage {
         anAssert.isTrue(productCards.getCount() > index, "Не найдена " + index + " по счету карточка товара");
         index--;
         productCards.get(index).click();
-        return new ProductDescriptionPage(context);
+        return new ProductDescriptionPage();
     }
 
     @Step("Перейти в окно выбора единицы номенклатуры")
     public NomenclatureSearchPage goToNomenclatureWindow() {
         nomenclature.click();
-        return new NomenclatureSearchPage(context);
+        return new NomenclatureSearchPage();
     }
 
     @Step("Перейти на страницу выбора фильтров")
     public FilterPage goToFilterPage() {
         filter.click();
-        return new FilterPage(context);
+        return new FilterPage();
     }
 
     @Step("Открыть окно сортировки")
     public SortPage openSortPage() {
         sort.click();
-        return new SortPage(context);
+        return new SortPage();
     }
 
     // ---------------- Verifications ----------------------- //

@@ -2,7 +2,6 @@ package com.leroy.magmobile.ui.pages.sales.basket;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.sales.ProductCardPage;
@@ -10,10 +9,6 @@ import com.leroy.magmobile.ui.pages.sales.widget.SearchProductCardWidget;
 import io.qameta.allure.Step;
 
 public class BasketStep1Page extends BasketPage {
-
-    public BasketStep1Page(Context context) {
-        super(context);
-    }
 
     @AppFindBy(xpath = "//android.view.ViewGroup[android.view.ViewGroup[@content-desc='lmCode']]")
     private SearchProductCardWidget productCard;
@@ -43,13 +38,13 @@ public class BasketStep1Page extends BasketPage {
     @Step("Нажмите Далее к параметрам")
     public BasketStep2Page clickNextParametersButton() {
         nextParametersBtn.click();
-        return new BasketStep2Page(context);
+        return new BasketStep2Page();
     }
 
     @Step("Нажмите кнопку назад в верхнем меню")
     public ProductCardPage clickBackButton() {
         backBtn.click();
-        return new ProductCardPage(context);
+        return new ProductCardPage();
     }
 
     // --------- Verifications ------------------//
