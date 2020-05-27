@@ -17,6 +17,7 @@ import com.leroy.magportal.ui.pages.products.ExtendedProductCardPage;
 import com.leroy.magportal.ui.pages.products.ProductCardPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage.FilterFrame;
+import io.qameta.allure.Issue;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -163,6 +164,7 @@ public class ProductCardTest extends WebBaseSteps {
         extendedProductCardPage.shouldAllAdditionalProductsIsVisible(moreThan4ComplementsList);
     }
 
+    @Issue("PUZ2-2271")
     @Test(description = "C22789188 Check Breadcrumbs")
     public void testBreadCrumbsNavigation() throws Exception {
         ExtendedProductCardPage extendedProductCardPage = navigateToProductCardByUrl(lmCode, false);
@@ -204,6 +206,9 @@ public class ProductCardTest extends WebBaseSteps {
         searchProductPage = extendedProductCardPage.navigateToSearchByNomenclatureAttribute(allDepartments);
         searchProductPage.shouldUrlNotContains(CatalogSearchParams.departmentId);
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(allDepartments);
+        searchProductPage.navigateBack();
+        //bug
+        extendedProductCardPage.verifyRequiredElements();
 
         ProductCardPage productCardPage = navigateToProductCardByUrl(lmCode, true);
         searchProductPage = productCardPage.navigateToSearchByNomenclatureAttribute(subClass);
@@ -236,5 +241,7 @@ public class ProductCardTest extends WebBaseSteps {
         searchProductPage = productCardPage.navigateToSearchByNomenclatureAttribute(allDepartments);
         searchProductPage.shouldUrlNotContains(CatalogSearchParams.departmentId);
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(allDepartments);
+        searchProductPage.navigateBack();
+        productCardPage.verifyRequiredElements();
     }
 }
