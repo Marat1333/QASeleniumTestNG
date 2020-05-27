@@ -43,7 +43,6 @@ public abstract class BaseTest {
         Context context;
         if (ContextProvider.getContext() == null) {
             context = new Context();
-            context.setUserSessionData(sessionDataFirstState.copy());
             ContextProvider.setContext(context);
         } else {
             context = ContextProvider.getContext();
@@ -52,6 +51,7 @@ public abstract class BaseTest {
         SoftAssertWrapper softAssert = new SoftAssertWrapper(log);
         AssertWrapper anAssert = new AssertWrapper(log);
         String tcId = getTestCaseId(method.getAnnotation(Test.class).description());
+        context.setUserSessionData(sessionDataFirstState.copy());
         context.setLog(log);
         context.setAnAssert(anAssert);
         context.setSoftAssert(softAssert);
