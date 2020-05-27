@@ -3,11 +3,10 @@ package com.leroy.magmobile.ui.pages.sales.product_and_service;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.sales.basket.BasketStep1Page;
+import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import io.qameta.allure.Step;
 
 import java.text.DecimalFormat;
@@ -20,10 +19,6 @@ public class AddServicePage extends CommonMagMobilePage {
         private static final String SCREEN_TITLE = "Добавление услуги";
         public static final String DEFAULT_QUANTITY_VALUE = "1,00";
         public static final String EMPTY_TOTAL_PRICE_VALUE = "— ₽";
-    }
-
-    public AddServicePage(Context context) {
-        super(context);
     }
 
     @AppFindBy(accessibilityId = "ScreenTitle", metaName = "Загаловок страницы")
@@ -74,13 +69,13 @@ public class AddServicePage extends CommonMagMobilePage {
     @Step("Нажмите на кнопку Добавить в документ продажи")
     public BasketStep1Page clickAddIntoDocumentSalesButton() {
         submitBtn.click();
-        return new BasketStep1Page(context);
+        return new BasketStep1Page();
     }
 
     @Step("Нажать на зеленую кнопку назад")
-    public SearchProductPage returnBack(){
+    public SearchProductPage returnBack() {
         backBtn.click();
-        return new SearchProductPage(context);
+        return new SearchProductPage();
     }
 
     // Verifications
@@ -96,7 +91,7 @@ public class AddServicePage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что страница содержит имя услуги {serviceName} и ее ЛМ код {lmCode}")
-    public AddServicePage shouldServiceNameAndLmCodeBeOnPage(String serviceName, String lmCode){
+    public AddServicePage shouldServiceNameAndLmCodeBeOnPage(String serviceName, String lmCode) {
         String pageSource = getPageSource();
         softAssert.isElementTextContains(this.lmCode, lmCode, pageSource);
         softAssert.isElementTextEqual(this.serviceName, serviceName, pageSource);

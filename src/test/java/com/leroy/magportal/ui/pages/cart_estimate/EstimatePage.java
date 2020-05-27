@@ -4,7 +4,6 @@ import com.leroy.constants.EnvConstants;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.models.salesdoc.OrderWebData;
 import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardWebData;
 import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
@@ -24,10 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EstimatePage extends CartEstimatePage {
-
-    public EstimatePage(Context context) {
-        super(context);
-    }
 
     public enum PageState {
         EMPTY, // Пустая страница, видна кнопка "Создать смету"
@@ -128,7 +123,7 @@ public class EstimatePage extends CartEstimatePage {
     public <T extends MagPortalBasePage> T clickCreateButton() {
         createBtn.click();
         if (selectedCustomerCard.isVisible())
-            return (T) new SubmittedEstimateModal(context);
+            return (T) new SubmittedEstimateModal();
         else
             return (T) this;
     }
@@ -136,7 +131,7 @@ public class EstimatePage extends CartEstimatePage {
     @Step("Удалить смету")
     public EstimatePage removeEstimate() {
         trashBtn.click();
-        new ConfirmRemoveModal(context).clickConfirmBtn();
+        new ConfirmRemoveModal().clickConfirmBtn();
         trashBtn.waitForInvisibility();
         waitForSpinnerDisappear();
         return this;
@@ -205,7 +200,7 @@ public class EstimatePage extends CartEstimatePage {
         OrderPuzWidget orderWidget = orders.get(orderIdx);
         int productCountBefore = orderWidget.getProductWidgets().getCount();
         orderWidget.getProductWidget(productIdx).clickDelete();
-        new ConfirmRemoveProductModal(context)
+        new ConfirmRemoveProductModal()
                 .verifyRequiredElements()
                 .clickYesButton();
         waitForSpinnerAppearAndDisappear();

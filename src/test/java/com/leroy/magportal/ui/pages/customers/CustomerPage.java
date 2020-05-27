@@ -16,10 +16,6 @@ public class CustomerPage extends MenuPage {
     public static final String CLIENT_CARD_OPTION = "Карта клиента";
     public static final String EMAIL_OPTION = "Email";
 
-    public CustomerPage(Context context) {
-        super(context);
-    }
-
     @WebFindBy(xpath = "//span[text()='" + HEADER + "']", metaName = "Заголовок страницы")
     private Element headerLbl;
 
@@ -57,13 +53,13 @@ public class CustomerPage extends MenuPage {
     @Step("Нажмите кнопку 'Создать клиента'")
     public CreatingCustomerPage clickCreateClientButton() {
         createClientBtn.click();
-        return new CreatingCustomerPage(context);
+        return new CreatingCustomerPage();
     }
 
     @Step("Нажмите кнопку 'Создать клиента' под формой 'Не найдено'")
     public CreatingCustomerPage clickNotFoundCreateClientButton() {
         notFoundFormCreateClientBtn.click();
-        return new CreatingCustomerPage(context);
+        return new CreatingCustomerPage();
     }
 
     @Step("Выберите тип поиска по {text}")

@@ -2,12 +2,13 @@ package com.leroy.magmobile.ui.tests.work;
 
 import com.leroy.constants.EnvConstants;
 import com.leroy.magmobile.ui.AppBaseSteps;
+import com.leroy.magmobile.ui.models.search.ProductCardData;
+import com.leroy.magmobile.ui.models.work.WithdrawalOrderCardData;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
 import com.leroy.magmobile.ui.pages.work.*;
 import com.leroy.magmobile.ui.pages.work.modal.QuantityProductsForWithdrawalModalPage;
-import com.leroy.magmobile.ui.models.search.ProductCardData;
-import com.leroy.magmobile.ui.models.work.WithdrawalOrderCardData;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Test;
 
 import java.time.LocalDate;
@@ -16,9 +17,15 @@ import java.util.Random;
 
 public class WithdrawalFromRMTest extends AppBaseSteps {
 
-    @Test(description = "C3132493 Создание заявки на Отзыв RM из раздела Работа")
+    private final String OLD_SHOP_GROUP = "old_shop";
+
+    @BeforeGroups(OLD_SHOP_GROUP)
+    public void setSessionDataForOldShop() {
+        getUserSessionData().setUserShopId(EnvConstants.SHOP_WITH_OLD_INTERFACE);
+    }
+
+    @Test(description = "C3132493 Создание заявки на Отзыв RM из раздела Работа", groups = OLD_SHOP_GROUP)
     public void testC3132493() throws Exception {
-        sessionData.setUserShopId(EnvConstants.SHOP_WITH_OLD_INTERFACE);
         // Pre-condition
         MainProductAndServicesPage mainProductAndServicesPage = loginSelectShopAndGoTo(
                 MainProductAndServicesPage.class);

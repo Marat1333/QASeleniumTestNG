@@ -1,7 +1,7 @@
 package com.leroy.magportal.ui;
 
 import com.leroy.constants.EnvConstants;
-import com.leroy.magmobile.ui.Context;
+import com.leroy.core.configuration.Log;
 import com.leroy.magportal.ui.pages.LoginWebPage;
 import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
 import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
@@ -29,10 +29,18 @@ public class WebBaseSteps extends MagPortalBaseTest {
 
     @Step("Авторизоваться на портале и зайти на страницу {pageClass}")
     public <T extends MenuPage> T loginAndGoTo(String ldap, String password, Class<T> pageClass) throws Exception {
-        driver.get(getPageUrl(pageClass));
-        new LoginWebPage(context).logIn(ldap, password);
-        return (T) pageClass.getConstructor(Context.class).newInstance(context)
-                .closeNewFeaturesModalWindowIfExist();
+        getDriver().get(getPageUrl(pageClass));
+        new LoginWebPage().logIn(ldap, password);
+        T page = (T) pageClass.getConstructor().newInstance();
+        String title = page.getCurrentTitle();
+        String expectedTitle = "Клиентские заказы";
+        if (!title.equals(expectedTitle)) {
+            page.reloadPage();
+            Log.error("Страница 'Клиентские заказы' не загрузилась. Текущий title = " + title);
+        }
+        page.waitUntilTitleIs(expectedTitle, 30);
+        page.closeNewFeaturesModalWindowIfExist();
+        return page;
     }
 
     /*@Step("Авторизоваться на портале и зайти на страницу {pageClass}")
@@ -50,7 +58,7 @@ public class WebBaseSteps extends MagPortalBaseTest {
      * Тест начинается с пустой страницы, т.е. с нуля?
      */
     protected boolean isStartFromScratch() {
-        return driver.getTitle().isEmpty();
+        return getDriver().getTitle().isEmpty();
     }
 
 }

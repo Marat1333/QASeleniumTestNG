@@ -1,11 +1,12 @@
 package com.leroy.core.pages;
 
 import com.leroy.core.BaseContainer;
-import com.leroy.core.TestContext;
-import com.leroy.core.asserts.CustomAssert;
-import com.leroy.core.asserts.CustomSoftAssert;
+import com.leroy.core.ContextProvider;
+import com.leroy.core.asserts.AssertWrapper;
+import com.leroy.core.asserts.SoftAssertWrapper;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.testrail.helpers.StepLog;
+import com.leroy.magmobile.ui.Context;
 import io.qameta.allure.Attachment;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
@@ -16,30 +17,25 @@ import java.io.IOException;
 
 public abstract class BasePage extends BaseContainer {
 
-    protected TestContext context;
     protected StepLog log;
-    protected CustomSoftAssert softAssert;
-    protected CustomAssert anAssert;
+    protected SoftAssertWrapper softAssert;
+    protected AssertWrapper anAssert;
 
     private static String screenshotPath = System.getProperty("output.path");
 
-    protected BasePage(TestContext context, boolean isWaitForPageIsLoaded) {
-        super(context.getDriver());
+    protected BasePage(boolean isWaitForPageIsLoaded) {
+        super(ContextProvider.getDriver());
+        Context context = ContextProvider.getContext();
         this.log = context.getLog();
         this.softAssert = context.getSoftAssert();
         this.anAssert = context.getAnAssert();
-        initContext(context);
         initElements();
         if (isWaitForPageIsLoaded)
             waitForPageIsLoaded();
     }
 
-    public BasePage(TestContext context) {
-        this(context, true);
-    }
-
-    public void initContext(TestContext context) {
-        this.context = context;
+    public BasePage() {
+        this(true);
     }
 
     public void waitForPageIsLoaded() {

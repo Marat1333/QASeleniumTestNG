@@ -16,6 +16,10 @@ import static org.hamcrest.Matchers.*;
 
 public class TransferSearchTest extends BaseProjectApiTest {
 
+    private TransferClient client() {
+        return apiClientProvider.getTransferClient();
+    }
+
     private void verifyTypicalResponse(Response<TransferDataList> resp, TransferSearchFilters filters) {
         assertThat(resp, successful());
         TransferDataList transferDataList = resp.asJson();
@@ -33,7 +37,7 @@ public class TransferSearchTest extends BaseProjectApiTest {
     @Issue("BACKEND_ISSUE")
     @Test(description = "C3272535 SalesDoc transfers GET with status NEW")
     public void testTransferTaskSearchByStatusNew() {
-        TransferClient transferClient = apiClientProvider.getTransferClient();
+        TransferClient transferClient = client();
 
         TransferSearchFilters filters = new TransferSearchFilters();
         filters.setStatus(SalesDocumentsConst.States.NEW.getApiVal());
@@ -43,7 +47,7 @@ public class TransferSearchTest extends BaseProjectApiTest {
 
     @Test(description = "C3272536 SalesDoc transfers GET with status=CONFIRMED")
     public void testTransferTaskSearchByStatusConfirmed() {
-        TransferClient transferClient = apiClientProvider.getTransferClient();
+        TransferClient transferClient = client();
 
         TransferSearchFilters filters = new TransferSearchFilters();
         filters.setStatus(SalesDocumentsConst.States.CONFIRMED.getApiVal());

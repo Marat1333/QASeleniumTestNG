@@ -2,7 +2,6 @@ package com.leroy.magmobile.ui.pages.sales.product_card.modal;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
 import com.leroy.magmobile.ui.pages.sales.basket.Basket35Page;
@@ -16,10 +15,6 @@ import java.util.List;
 // 1) Из карточки товара -> Действия с товаром -> Оформить продажу
 // 2) Продажа -> Документы продажи -> Оформить продажу
 public class SaleTypeModalPage extends CommonMagMobilePage {
-
-    public SaleTypeModalPage(Context context) {
-        super(context);
-    }
 
     @Override
     public void waitForPageIsLoaded() {
@@ -60,16 +55,16 @@ public class SaleTypeModalPage extends CommonMagMobilePage {
         // Плохо так хардкодить. Не повторяйте:
         if (E("//*[contains(@content-desc, 'Screen')]//android.widget.TextView")
                 .getText().equals(Basket35Page.SCREEN_TITLE))
-            return (T) new Basket35Page(context);
+            return (T) new Basket35Page();
         else
-            return (T) new AddProduct35Page(context);
+            return (T) new AddProduct35Page();
 
     }
 
     @Step("Нажмите пункт меню 'Смета'")
     public EstimatePage clickEstimateMenuItem() {
         estimateBtn.click();
-        return new EstimatePage(context);
+        return new EstimatePage();
     }
 
     // VERIFICATIONS

@@ -3,7 +3,6 @@ package com.leroy.magmobile.ui.pages.search.modal;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobRadioButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
@@ -11,10 +10,6 @@ import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 
 public class SortPage extends CommonMagMobilePage {
-
-    public SortPage(Context context) {
-        super(context);
-    }
 
     private final String CHECK_BOX_XPATH = "//android.widget.TextView[contains(@text,'%s')]/following-sibling::android.view.ViewGroup";
     public final static String SORT_BY_LM_ASC = "По ЛМ-коду: 1→9";
@@ -61,14 +56,14 @@ public class SortPage extends CommonMagMobilePage {
                 neededElement.click();
                 break;
         }
-        return new SearchProductPage(context);
+        return new SearchProductPage();
     }
 
     public SortPage verifyRequiredElements() {
         softAssert.areElementsVisible(sortByLmAscLbl, sortByLmDescLbl,
                 sortByAlphabetDescLbl, sortByAlphabetAscLbl);
         softAssert.verifyAll();
-        return new SortPage(context);
+        return new SortPage();
 
     }
 

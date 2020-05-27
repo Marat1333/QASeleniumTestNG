@@ -24,10 +24,6 @@ public class FilterPage extends CommonMagMobilePage {
 
     private static final String SCREEN_TITLE = "Фильтры по товарам";
 
-    public FilterPage(Context context) {
-        super(context);
-    }
-
     @Override
     public void waitForPageIsLoaded() {
         screenTitleLbl.waitUntilTextIsEqualTo(SCREEN_TITLE);
@@ -164,7 +160,7 @@ public class FilterPage extends CommonMagMobilePage {
         if (hideKeyboard) {
             hideKeyboard();
         }
-        return new SuppliersSearchPage(context);
+        return new SuppliersSearchPage();
     }
 
     @Step("Выбрать поставщика: {val}")
@@ -215,7 +211,7 @@ public class FilterPage extends CommonMagMobilePage {
     @Step("Вернуться на страницу поиска товаров и услуг")
     public SearchProductPage returnBack() {
         backBtn.click();
-        return new SearchProductPage(context);
+        return new SearchProductPage();
     }
 
     @Step("Выбрать фрейм фильтров {value}")
@@ -340,7 +336,7 @@ public class FilterPage extends CommonMagMobilePage {
     public FilterPage choseAvsDate(LocalDate date) throws Exception {
         mainScrollView.scrollToEnd();
         avsDateBtn.click();
-        CalendarWidget calendarWidget = new CalendarWidget(context.getDriver());
+        CalendarWidget calendarWidget = new CalendarWidget(getDriver());
         calendarWidget.selectDate(date);
         chosenAvsDate.waitForVisibility();
         return this;
@@ -350,7 +346,7 @@ public class FilterPage extends CommonMagMobilePage {
     public SearchProductPage applyChosenFilters() {
         showGoodsBtn.click();
         waitUntilProgressBarIsVisible();
-        SearchProductPage page = new SearchProductPage(context);
+        SearchProductPage page = new SearchProductPage();
         hideKeyboard();
         return page;
     }

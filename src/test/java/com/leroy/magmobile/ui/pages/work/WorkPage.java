@@ -1,17 +1,12 @@
 package com.leroy.magmobile.ui.pages.work;
 
-import com.leroy.magmobile.ui.constants.MagMobElementTypes;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
+import com.leroy.magmobile.ui.constants.MagMobElementTypes;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import io.qameta.allure.Step;
 
 public class WorkPage extends CommonMagMobilePage {
-
-    public WorkPage(Context context) {
-        super(context);
-    }
 
     private static final String XPATH_WITHDRAWAL_FROM_RM_AREA =
             "//android.widget.ScrollView//android.view.ViewGroup[android.widget.TextView[contains(@text, 'Отзыв')]]";
@@ -56,7 +51,7 @@ public class WorkPage extends CommonMagMobilePage {
     @Step("Нажать на иконку + рядом с Отзыв с RM")
     public StockProductsPage clickWithdrawalFromRMPlusIcon() {
         withdrawalFromRMPlusIcon.click();
-        return new StockProductsPage(context);
+        return new StockProductsPage();
     }
 
     // ------------------------ Verifications ------------------------//

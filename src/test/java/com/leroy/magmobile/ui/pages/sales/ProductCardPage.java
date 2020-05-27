@@ -2,21 +2,16 @@ package com.leroy.magmobile.ui.pages.sales;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ReviewsPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.SimilarProductsPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.SpecificationsPage;
+import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import io.qameta.allure.Step;
 
 public class ProductCardPage extends CommonMagMobilePage {
-
-    public ProductCardPage(Context context) {
-        super(context);
-    }
 
     @AppFindBy(accessibilityId = "Tabs")
     protected Element mainArea;
@@ -42,7 +37,7 @@ public class ProductCardPage extends CommonMagMobilePage {
     @Step("Перейти назад на страницу поиска товара")
     public SearchProductPage returnBack() {
         returnBackBtn.click();
-        return new SearchProductPage(context);
+        return new SearchProductPage();
     }
 
     @Step("Перейти во вкладку {value}")
@@ -53,22 +48,22 @@ public class ProductCardPage extends CommonMagMobilePage {
                 element = E(DESCRIPTION);
                 swipeLeftTo(mainArea, element);
                 element.click();
-                return (T) new ProductDescriptionPage(context);
+                return (T) new ProductDescriptionPage();
             case SPECIFICATION:
                 element = E(SPECIFICATION);
                 swipeLeftTo(mainArea, element);
                 element.click();
-                return (T) new SpecificationsPage(context);
+                return (T) new SpecificationsPage();
             case REVIEWS:
                 element = E(REVIEWS);
                 swipeRightTo(mainArea, element);
                 element.click();
-                return (T) new ReviewsPage(context);
+                return (T) new ReviewsPage();
             case SIMILAR_PRODUCTS:
                 element = E(SIMILAR_PRODUCTS);
                 swipeRightTo(mainArea, element);
                 element.click();
-                return (T) new SimilarProductsPage(context);
+                return (T) new SimilarProductsPage();
             default:
                 throw new IllegalArgumentException("Unknown argument: " + value);
         }

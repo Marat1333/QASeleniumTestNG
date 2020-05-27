@@ -1,7 +1,10 @@
 package com.leroy.magmobile.api.tests.catalog_products;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.leroy.constants.sales.SalesDocumentsConst;
+import com.leroy.core.UserSessionData;
 import com.leroy.magmobile.api.clients.CatalogProductClient;
 import com.leroy.magmobile.api.data.catalog.NomenclatureData;
 import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
@@ -31,9 +34,15 @@ public class CatalogTest extends BaseProjectApiTest {
     private String lmProductWithReviews = "10073940";
     private String lmProductWithSalesHistory = "10073940";
 
+    @Override
+    protected UserSessionData initUserSessionData() {
+        UserSessionData userSessionData = super.initUserSessionData();
+        userSessionData.setUserShopId("32");
+        return super.initUserSessionData();
+    }
+
     @BeforeClass
-    private void initSessionData() {
-        sessionData.setUserShopId("32");
+    private void setUp() {
         lmCode = apiClientProvider.getProductLmCodes(1).get(0);
     }
 
@@ -119,16 +128,16 @@ public class CatalogTest extends BaseProjectApiTest {
         CatalogSupplierData data = response.asJson();
         assertThat("supplier code", data.getCode(), not(emptyOrNullString()));
         assertThat("store id",
-                data.getStoreId(), equalTo(Integer.parseInt(sessionData.getUserShopId())));
+                data.getStoreId(), equalTo(Integer.parseInt(getUserSessionData().getUserShopId())));
     }
 
     @Test(description = "C23195049 POST product review default values")
     public void testSendReview() {
         UserData userData = new UserData();
-        userData.setLdap(sessionData.getUserLdap());
+        userData.setLdap(getUserSessionData().getUserLdap());
 
         ShopData shopData = new ShopData();
-        shopData.setId(Integer.parseInt(sessionData.getUserShopId()));
+        shopData.setId(Integer.parseInt(getUserSessionData().getUserShopId()));
 
         ReviewData reviewData = new ReviewData();
         reviewData.setLmCode(RandomStringUtils.randomNumeric(6));

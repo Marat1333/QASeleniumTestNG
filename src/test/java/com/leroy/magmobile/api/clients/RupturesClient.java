@@ -24,7 +24,7 @@ public class RupturesClient extends MagMobileClient {
     public Response<JsonNode> createProduct(ReqRuptureSessionData postData) {
         RupturesSessionProductPostRequest req = new RupturesSessionProductPostRequest();
         req.setAppVersion(appVersion);
-        req.bearerAuthHeader(sessionData.getAccessToken());
+        req.bearerAuthHeader(userSessionData.getAccessToken());
         req.jsonBody(postData);
         return execute(req, JsonNode.class);
     }
@@ -34,7 +34,7 @@ public class RupturesClient extends MagMobileClient {
         RupturesSessionProductRequest req = new RupturesSessionProductRequest();
         req.setAppVersion(appVersion);
         req.jsonBody(putData);
-        req.bearerAuthHeader(sessionData.getAccessToken());
+        req.bearerAuthHeader(userSessionData.getAccessToken());
         return execute(req, JsonNode.class);
     }
 

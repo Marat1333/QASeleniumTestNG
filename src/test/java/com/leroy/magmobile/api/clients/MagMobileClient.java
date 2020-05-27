@@ -1,7 +1,7 @@
 package com.leroy.magmobile.api.clients;
 
 import com.leroy.constants.EnvConstants;
-import com.leroy.core.SessionData;
+import com.leroy.core.UserSessionData;
 import com.leroy.magmobile.api.data.sales.SalesDocDiscountData;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.requests.salesdoc.discount.GetSalesDocDiscount;
@@ -28,11 +28,11 @@ public class MagMobileClient extends BaseClient {
     private String gatewayUrl;
 
     @Setter
-    protected SessionData sessionData;
+    protected UserSessionData userSessionData;
 
     protected <J> Response<J> execute(RequestBuilder<?> request, final Class<J> type) {
-        if (sessionData != null && sessionData.getAccessToken() != null)
-            request.bearerAuthHeader(sessionData.getAccessToken());
+        if (userSessionData != null && userSessionData.getAccessToken() != null)
+            request.bearerAuthHeader(userSessionData.getAccessToken());
         return executeRequest(request.build(gatewayUrl), type);
     }
 

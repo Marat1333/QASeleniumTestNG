@@ -74,7 +74,7 @@ public class ClientTest extends WebBaseSteps {
         // Step #11
         step("Click on the button 'Создать'");
         createCustomerForm.clickCreateButton();
-        CustomerPersonalInfoPage personalInfoPage = new CustomerPersonalInfoPage(context)
+        CustomerPersonalInfoPage personalInfoPage = new CustomerPersonalInfoPage()
                 .shouldCustomerDataOnPageIs(customerData);
 
         // Step #12
@@ -138,7 +138,7 @@ public class ClientTest extends WebBaseSteps {
         // Step #8
         step("Click on the button \"Создать\"");
         createCustomerForm.clickCreateButton();
-        CustomerPersonalInfoPage personalInfoPage = new CustomerPersonalInfoPage(context)
+        CustomerPersonalInfoPage personalInfoPage = new CustomerPersonalInfoPage()
                 .verifyRequiredElements()
                 .shouldCustomerDataOnPageIs(data);
 

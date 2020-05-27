@@ -8,16 +8,20 @@ import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import static com.leroy.core.matchers.Matchers.*;
+import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class PickingTaskTest extends BaseProjectApiTest {
 
+    private PickingTaskClient pickingTaskClient() {
+        return apiClientProvider.getPickingTaskClient();
+    }
+
     @Test(description = "C23195055 Picking search without filters")
     public void testPickingSearchWithoutFilters() {
         int pageSize = 14;
-        PickingTaskClient pickingTaskClient = apiClientProvider.getPickingTaskClient();
+        PickingTaskClient pickingTaskClient = pickingTaskClient();
         Response<PickingTaskDataList> resp = pickingTaskClient.searchForTasks(new PickingTaskFilter(), 1, pageSize);
         assertThat(resp, successful());
         PickingTaskDataList dataList = resp.asJson();

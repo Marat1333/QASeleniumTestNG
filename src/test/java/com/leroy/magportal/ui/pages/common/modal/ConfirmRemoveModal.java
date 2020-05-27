@@ -2,15 +2,10 @@ package com.leroy.magportal.ui.pages.common.modal;
 
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
 import io.qameta.allure.Step;
 
 public class ConfirmRemoveModal extends MagPortalBasePage {
-
-    public ConfirmRemoveModal(Context context) {
-        super(context);
-    }
 
     @WebFindBy(xpath = "//div[contains(@class, 'Modal')]//button[descendant::span[text()='Удалить']]",
             metaName = "Кнопка 'Удалить'")
