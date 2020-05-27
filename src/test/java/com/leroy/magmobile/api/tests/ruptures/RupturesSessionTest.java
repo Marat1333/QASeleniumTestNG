@@ -142,6 +142,7 @@ public class RupturesSessionTest extends BaseProjectApiTest {
 
     @Test(description = "C3285352 PUT ruptures session finish for finished session")
     public void testFinishFinishedRuptureSession() {
+        RupturesClient rupturesClient = rupturesClient();
         Response<JsonNode> resp = rupturesClient.finishSession(sessionId);
         rupturesClient.assertThatActionIsNotAllowed(resp, sessionId);
     }
@@ -176,6 +177,7 @@ public class RupturesSessionTest extends BaseProjectApiTest {
 
     @Test(description = "C3285353 PUT ruptures session finish for deleted session")
     public void testFinishDeletedRuptureSession() {
+        RupturesClient rupturesClient = rupturesClient();
         Response<JsonNode> resp = rupturesClient.finishSession(sessionId);
         rupturesClient.assertThatActionIsNotAllowed(resp, sessionId);
     }

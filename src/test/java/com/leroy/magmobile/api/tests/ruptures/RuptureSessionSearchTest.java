@@ -1,6 +1,7 @@
 package com.leroy.magmobile.api.tests.ruptures;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.leroy.core.UserSessionData;
 import com.leroy.magmobile.api.clients.RupturesClient;
 import com.leroy.magmobile.api.data.ruptures.*;
 import com.leroy.magmobile.api.requests.ruptures.RupturesSessionsRequest;
@@ -17,7 +18,11 @@ import static org.hamcrest.Matchers.*;
 
 public class RuptureSessionSearchTest extends BaseProjectApiTest {
 
-    private RupturesClient rupturesClient;
+    private RupturesClient rupturesClient() {
+        return apiClientProvider.getRupturesClient();
+    }
+
+    private UserSessionData defaultUserSessionData;
 
     @Override
     protected boolean isNeedAccessToken() {
@@ -29,10 +34,11 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
 
     @BeforeClass
     public void setUp() {
-        rupturesClient = apiClientProvider.getRupturesClient();
+        RupturesClient rupturesClient = rupturesClient();
+        defaultUserSessionData = getUserSessionData();
         RupturesSessionsRequest req = new RupturesSessionsRequest();
-        req.setShopId(sessionData.getUserShopId());
-        req.setDepartmentId(sessionData.getUserDepartmentId());
+        req.setShopId(defaultUserSessionData.getUserShopId());
+        req.setDepartmentId(defaultUserSessionData.getUserDepartmentId());
         req.setPageSize(100);
 
         // Clear department sessions
@@ -52,9 +58,9 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
 
         ReqRuptureSessionData rupturePostData = new ReqRuptureSessionData();
         rupturePostData.setProduct(productData);
-        rupturePostData.setShopId(Integer.parseInt(sessionData.getUserShopId()));
-        rupturePostData.setStoreId(Integer.parseInt(sessionData.getUserShopId()));
-        rupturePostData.setDepartmentId(Integer.parseInt(sessionData.getUserDepartmentId()));
+        rupturePostData.setShopId(Integer.parseInt(defaultUserSessionData.getUserShopId()));
+        rupturePostData.setStoreId(Integer.parseInt(defaultUserSessionData.getUserShopId()));
+        rupturePostData.setDepartmentId(Integer.parseInt(defaultUserSessionData.getUserDepartmentId()));
 
         for (int i = 0; i < 11; i++) {
             Response<JsonNode> resp = rupturesClient.createProduct(rupturePostData);
@@ -71,9 +77,10 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
 
     @Test(description = "C3285388 GET ruptures sessions status active")
     public void testSearchForActiveRuptureSessions() {
+        RupturesClient rupturesClient = rupturesClient();
         RupturesSessionsRequest req = new RupturesSessionsRequest();
-        req.setShopId(sessionData.getUserShopId());
-        req.setDepartmentId(sessionData.getUserDepartmentId());
+        req.setShopId(defaultUserSessionData.getUserShopId());
+        req.setDepartmentId(defaultUserSessionData.getUserDepartmentId());
         req.setStatus("active");
         Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(req);
         isResponseOk(resp);
@@ -86,9 +93,10 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
 
     @Test(description = "C3285383 GET ruptures sessions status finished")
     public void testSearchForFinishedRuptureSessions() {
+        RupturesClient rupturesClient = rupturesClient();
         RupturesSessionsRequest req = new RupturesSessionsRequest();
-        req.setShopId(sessionData.getUserShopId());
-        req.setDepartmentId(sessionData.getUserDepartmentId());
+        req.setShopId(defaultUserSessionData.getUserShopId());
+        req.setDepartmentId(defaultUserSessionData.getUserDepartmentId());
         req.setStatus("finished");
         Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(req);
         isResponseOk(resp);
@@ -101,9 +109,10 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
 
     @Test(description = "C3285389 GET ruptures sessions pagination first page")
     public void testSearchForRuptureSessionsPaginationFirstPage() {
+        RupturesClient rupturesClient = rupturesClient();
         RupturesSessionsRequest req = new RupturesSessionsRequest();
-        req.setShopId(sessionData.getUserShopId());
-        req.setDepartmentId(sessionData.getUserDepartmentId());
+        req.setShopId(defaultUserSessionData.getUserShopId());
+        req.setDepartmentId(defaultUserSessionData.getUserDepartmentId());
         req.setPageSize(4);
         req.setPageNumber(1);
         Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(req);
@@ -117,21 +126,22 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
 
     @Test(description = "C3233580 GET ruptures sessions only shop and department")
     public void testSearchForRuptureSessionsWithoutSpecificFilters() {
+        RupturesClient rupturesClient = rupturesClient();
         RupturesSessionsRequest req = new RupturesSessionsRequest();
-        req.setShopId(sessionData.getUserShopId());
-        req.setDepartmentId(sessionData.getUserDepartmentId());
+        req.setShopId(defaultUserSessionData.getUserShopId());
+        req.setDepartmentId(defaultUserSessionData.getUserDepartmentId());
         Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(req);
         isResponseOk(resp);
         List<ResRuptureSessionData> items = resp.asJson().getItems();
         assertThat("items count", items, hasSize(equalTo(10)));
         for (ResRuptureSessionData item : items) {
-            assertThat("storeId", item.getStoreId(), is(Integer.parseInt(sessionData.getUserShopId())));
+            assertThat("storeId", item.getStoreId(), is(Integer.parseInt(defaultUserSessionData.getUserShopId())));
             if (item.getStatus().equals("finished"))
                 assertThat("finishedOn", item.getFinishedOn(), notNullValue());
             else
                 assertThat("finishedOn", item.getFinishedOn(), nullValue());
             assertThat("createdOn", item.getCreatedOn(), notNullValue());
-            assertThat("createdByLdap", item.getCreatedByLdap(), equalTo(sessionData.getUserLdap()));
+            assertThat("createdByLdap", item.getCreatedByLdap(), equalTo(defaultUserSessionData.getUserLdap()));
             assertThat("completedProductCount", item.getCompletedProductCount(), notNullValue());
             assertThat("totalProductCount", item.getTotalProductCount(), notNullValue());
             assertThat("userFullName", item.getUserFullName(), not(emptyOrNullString()));
