@@ -6,6 +6,7 @@ import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
+import com.leroy.magportal.api.clients.MagPortalCatalogProductClient;
 import com.leroy.magportal.api.data.CatalogSimilarProductsData;
 import com.leroy.magportal.ui.WebBaseSteps;
 import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
@@ -122,16 +123,18 @@ public class ProductCardTest extends WebBaseSteps {
         String lessThan4Complements = "10813144";
         String moreThan4Complements = "15057456";
 
-        CatalogSimilarProductsData data = apiClientProvider.getMagPortalCatalogProductClientProvider().getSimilarProducts(lessThan4Similar).asJson();
+        MagPortalCatalogProductClient client = apiClientProvider.getMagPortalCatalogProductClientProvider();
+
+        CatalogSimilarProductsData data = client.getSimilarProducts(lessThan4Similar).asJson();
         List<ProductItemData> lessThan4SimilarList = data.getSubstitutes();
 
-        data = apiClientProvider.getMagPortalCatalogProductClientProvider().getSimilarProducts(moreThan4Similar).asJson();
+        data = client.getSimilarProducts(moreThan4Similar).asJson();
         List<ProductItemData> moreThan4SimilarList = data.getSubstitutes();
 
-        data = apiClientProvider.getMagPortalCatalogProductClientProvider().getSimilarProducts(lessThan4Complements).asJson();
+        data = client.getSimilarProducts(lessThan4Complements).asJson();
         List<ProductItemData> lessThan4ComplementsList = data.getComplements();
 
-        data = apiClientProvider.getMagPortalCatalogProductClientProvider().getSimilarProducts(moreThan4Complements).asJson();
+        data = client.getSimilarProducts(moreThan4Complements).asJson();
         List<ProductItemData> moreThan4ComplementsList = data.getComplements();
 
 
