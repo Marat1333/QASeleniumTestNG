@@ -8,6 +8,7 @@ import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.CartClient;
 import com.leroy.magmobile.api.clients.MagMobileClient;
 import com.leroy.magmobile.api.clients.OrderClient;
+import com.leroy.magmobile.api.clients.SalesDocSearchClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.customer.CustomerData;
 import com.leroy.magmobile.api.data.customer.PhoneData;
@@ -32,12 +33,19 @@ import static org.hamcrest.Matchers.hasSize;
 
 public class OrderTest extends BaseProjectApiTest {
 
+    private SalesDocSearchClient salesDocSearchClient;
     private CartClient cartClient;
     private OrderClient orderClient;
 
     private OrderData orderData;
-
     private List<ProductItemData> productItemDataList;
+
+    @BeforeClass
+    private void initClients() {
+        salesDocSearchClient = apiClientProvider.getSalesDocSearchClient();
+        cartClient = apiClientProvider.getCartClient();
+        orderClient = apiClientProvider.getOrderClient();
+    }
 
     @Override
     protected boolean isNeedAccessToken() {
@@ -46,8 +54,6 @@ public class OrderTest extends BaseProjectApiTest {
 
     @BeforeClass
     private void setUp() {
-        cartClient = apiClientProvider.getCartClient();
-        orderClient = apiClientProvider.getOrderClient();
         productItemDataList = apiClientProvider.getProducts(2);
     }
 
@@ -143,7 +149,7 @@ public class OrderTest extends BaseProjectApiTest {
         step("Confirm order");
         OrderData confirmOrderData = new OrderData();
         confirmOrderData.setPriority(SalesDocumentsConst.Priorities.HIGH.getApiVal());
-        confirmOrderData.setShopId(sessionData.getUserShopId());
+        confirmOrderData.setShopId(getUserSessionData().getUserShopId());
         confirmOrderData.setSolutionVersion(orderData.getSolutionVersion());
         confirmOrderData.setPaymentVersion(orderData.getPaymentVersion());
         confirmOrderData.setFulfillmentVersion(orderData.getFulfillmentVersion());
@@ -155,7 +161,7 @@ public class OrderTest extends BaseProjectApiTest {
         GiveAwayData giveAwayData = new GiveAwayData();
         giveAwayData.setDate(LocalDateTime.now().plusDays(1));
         giveAwayData.setPoint(SalesDocumentsConst.GiveAwayPoints.PICKUP.getApiVal());
-        giveAwayData.setShopId(Integer.valueOf(sessionData.getUserShopId()));
+        giveAwayData.setShopId(Integer.valueOf(getUserSessionData().getUserShopId()));
         confirmOrderData.setGiveAway(giveAwayData);
 
         Response<OrderData> resp = orderClient.confirmOrder(orderData.getOrderId(), confirmOrderData);
@@ -261,7 +267,7 @@ public class OrderTest extends BaseProjectApiTest {
         orderData.setPriority(null);
 
         step("Search for the created order document");
-        Response<SalesDocumentListResponse> respSearch = apiClientProvider.getSalesDocSearchClient()
+        Response<SalesDocumentListResponse> respSearch = salesDocSearchClient
                 .searchForDocumentsByDocId(orderData.getFullDocId());
         assertThat(respSearch, successful());
         assertThat("Count of documents found", respSearch.asJson().getSalesDocuments(), hasSize(1));

@@ -5,7 +5,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.Random;
 
-public class CustomerData {
+public class CustomerWebData {
 
     private Gender gender;
     private String firstName;
@@ -29,20 +29,20 @@ public class CustomerData {
     private String floor;
     private String intercom;
 
-    public CustomerData setRandomRequiredData() {
-        int _gender = new Random().nextInt(2);
-        if (_gender == 0)
+    public CustomerWebData setRandomRequiredData() {
+        boolean _gender = new Random().nextBoolean();
+        if (_gender)
             setGender(Gender.MALE);
         else
             setGender(Gender.FEMALE);
         setFirstName(getRandomCyrillicCharacters(8));
-        int _phone = new Random().nextInt(2);
-        if (_phone == 0) {
+        boolean _phone = new Random().nextBoolean();
+        if (_phone) {
             setPersonalPhone(true);
         } else {
             setWorkPhone(true);
         }
-        setPhoneNumber(RandomStringUtils.randomNumeric(10));
+        setPhoneNumber("+7" + RandomStringUtils.randomNumeric(10));
         return this;
     }
 
@@ -210,7 +210,7 @@ public class CustomerData {
     // Private methods
     public String getRandomCyrillicCharacters(int count) {
         String cyrillicCharacters = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя";
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
 
         for (int i = 0; i < count; i++) {
             result.append(cyrillicCharacters.charAt(

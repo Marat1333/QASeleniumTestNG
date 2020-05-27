@@ -3,16 +3,11 @@ package com.leroy.magmobile.ui.pages.customers;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import io.qameta.allure.Step;
 
 public class EditCustomerInfoPage extends CommonMagMobilePage {
-
-    public EditCustomerInfoPage(Context context) {
-        super(context);
-    }
 
     @AppFindBy(xpath = "//*[@content-desc='ScreenHeader']/android.widget.TextView",
             metaName = "Загаловок")

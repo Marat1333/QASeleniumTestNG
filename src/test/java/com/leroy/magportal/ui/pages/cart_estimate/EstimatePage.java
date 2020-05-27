@@ -1,8 +1,9 @@
 package com.leroy.magportal.ui.pages.cart_estimate;
 
+import com.leroy.constants.EnvConstants;
 import com.leroy.core.annotations.WebFindBy;
+import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.models.salesdoc.OrderWebData;
 import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardWebData;
 import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
@@ -10,6 +11,8 @@ import com.leroy.magportal.ui.pages.cart_estimate.modal.ConfirmRemoveProductModa
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SubmittedEstimateModal;
 import com.leroy.magportal.ui.pages.cart_estimate.widget.OrderPuzWidget;
 import com.leroy.magportal.ui.pages.cart_estimate.widget.ProductOrderCardPuzWidget;
+import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
+import com.leroy.magportal.ui.pages.common.modal.ConfirmRemoveModal;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
@@ -20,10 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EstimatePage extends CartEstimatePage {
-
-    public EstimatePage(Context context) {
-        super(context);
-    }
 
     public enum PageState {
         EMPTY, // Пустая страница, видна кнопка "Создать смету"
@@ -46,12 +45,16 @@ public class EstimatePage extends CartEstimatePage {
     Element estimateStatus;
 
     @WebFindBy(xpath = "//div[contains(@class, 'Estimate-EstimatesView__header-info__row')][2]//div[1]/span",
-            metaName = "Создатель документа")
+            metaName = "Дата создания документа")
     Element creationDate;
 
     @WebFindBy(xpath = "//div[contains(@class, 'Estimate-EstimatesView__header-info__row')][2]//div[2]/span",
             metaName = "Создатель документа")
     Element estimateAuthor;
+
+    @WebFindBy(xpath = "//div[contains(@class, 'EstimatesView__header-buttons')]//div[@class = 'lmui-popover'][last()]//button",
+            metaName = "Кнопка корзина (удалить)")
+    Button trashBtn;
 
     @WebFindBy(xpath = "//div[contains(@class, 'Estimate-EstimatesView__cart')]",
             clazz = OrderPuzWidget.class)
@@ -73,6 +76,14 @@ public class EstimatePage extends CartEstimatePage {
     public void waitForPageIsLoaded() {
         super.waitForPageIsLoaded();
         anAssert.isElementVisible(headerLbl, timeout);
+    }
+
+    // Follow URLs
+
+    @Step("Открыть страницу со сметой №{id} (прямой переход по URL)")
+    public EstimatePage openPageWithEstimate(String id) {
+        driver.get(EnvConstants.URL_MAG_PORTAL + "/estimates/view/" + id);
+        return this;
     }
 
     // Grab information from page
@@ -107,10 +118,23 @@ public class EstimatePage extends CartEstimatePage {
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     @Step("Нажимаем кнопку 'Создать'")
-    public SubmittedEstimateModal clickCreateButton() {
+    public <T extends MagPortalBasePage> T clickCreateButton() {
         createBtn.click();
-        return new SubmittedEstimateModal(context);
+        if (selectedCustomerCard.isVisible())
+            return (T) new SubmittedEstimateModal();
+        else
+            return (T) this;
+    }
+
+    @Step("Удалить смету")
+    public EstimatePage removeEstimate() {
+        trashBtn.click();
+        new ConfirmRemoveModal().clickConfirmBtn();
+        trashBtn.waitForInvisibility();
+        waitForSpinnerDisappear();
+        return this;
     }
 
     @Step("Установить кол-во {quantity} для товара #{productIdx} из заказа #{orderIdx}")
@@ -176,7 +200,7 @@ public class EstimatePage extends CartEstimatePage {
         OrderPuzWidget orderWidget = orders.get(orderIdx);
         int productCountBefore = orderWidget.getProductWidgets().getCount();
         orderWidget.getProductWidget(productIdx).clickDelete();
-        new ConfirmRemoveProductModal(context)
+        new ConfirmRemoveProductModal()
                 .verifyRequiredElements()
                 .clickYesButton();
         waitForSpinnerAppearAndDisappear();
@@ -228,7 +252,7 @@ public class EstimatePage extends CartEstimatePage {
         productIdx--;
         orderIdx--;
         anAssert.isEquals(orders.get(orderIdx).getProductWidget(productIdx).getColorOfAvailableStockLbl(),
-                Colors.RED.getColorValue(), "Цвет у товара #" + (productIdx+1) + " должен быть красный");
+                Colors.RED.getColorValue(), "Цвет у товара #" + (productIdx + 1) + " должен быть красный");
         return this;
     }
 
@@ -299,13 +323,16 @@ public class EstimatePage extends CartEstimatePage {
             else {
                 softAssert.isTrue(actualOrder.getTotalWeight() > 0,
                         "Заказ #" + (i + 1) + " Ожидался итого вес > 0");
+                double expectedTotalWeight = 0.0;
+                for (ProductOrderCardWebData pr : actualOrder.getProductCardDataList()) {
+                    expectedTotalWeight = ParserUtil.plus(pr.getWeight(), expectedTotalWeight, 2);
+                }
                 softAssert.isEquals(actualOrder.getTotalWeight(),
-                        actualOrder.getProductCardDataList().stream()
-                                .mapToDouble(ProductOrderCardWebData::getWeight).sum(),
+                        expectedTotalWeight,
                         "Заказ #" + (i + 1) + " Итого вес должен быть равен сумме весов всех продуктов");
             }
             softAssert.isEquals(actualOrder.getProductCount(), expectedOrder.getProductCount(),
-                    "Заказ #" + (i + 1) + " Неверный итого вес");
+                    "Заказ #" + (i + 1) + " Неверное кол-во продуктов в заказе");
         }
         softAssert.verifyAll();
         return this;

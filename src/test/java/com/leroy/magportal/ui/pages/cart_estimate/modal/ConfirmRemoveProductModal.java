@@ -2,15 +2,10 @@ package com.leroy.magportal.ui.pages.cart_estimate.modal;
 
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
 import io.qameta.allure.Step;
 
 public class ConfirmRemoveProductModal extends MagPortalBasePage {
-
-    public ConfirmRemoveProductModal(Context context) {
-        super(context);
-    }
 
     private final String MODAL_DIV_XPATH = "//div[contains(@class, 'Modal-contentFill-wrapper')]";
 

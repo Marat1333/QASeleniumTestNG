@@ -2,6 +2,7 @@ package com.leroy.magmobile.api.tests.print_price;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.sales.SalesDocumentsConst;
+import com.leroy.core.UserSessionData;
 import com.leroy.magmobile.api.clients.CatalogProductClient;
 import com.leroy.magmobile.api.clients.PrintPriceClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
@@ -36,12 +37,18 @@ public class PrintTagPriceTest extends BaseProjectApiTest {
 
     @BeforeClass
     private void beforeSetUp() {
-        sessionData.setUserShopId("20");
         printPriceClient = apiClientProvider.getPrintPriceClient();
         catalogProductClient = apiClientProvider.getCatalogProductClient();
-        String[] lmCodes = apiClientProvider.getProducts(2) .stream()
+        String[] lmCodes = apiClientProvider.getProducts(2).stream()
                 .map(ProductItemData::getLmCode).toArray(String[]::new);
         initCatalogProductDataList(lmCodes);
+    }
+
+    @Override
+    protected UserSessionData initUserSessionData() {
+        UserSessionData sessionData = super.initUserSessionData();
+        sessionData.setUserShopId("20");
+        return sessionData;
     }
 
     private void initCatalogProductDataList(String... lmCode) {

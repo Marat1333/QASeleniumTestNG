@@ -2,17 +2,12 @@ package com.leroy.magmobile.ui.pages.sales;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
-import com.leroy.magmobile.ui.Context;
-import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.common.TopMenuPage;
+import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import io.qameta.allure.Step;
 
 // Продажа -> Товары и услуги
 public class MainProductAndServicesPage extends TopMenuPage {
-
-    public MainProductAndServicesPage(Context context) {
-        super(context);
-    }
 
     @AppFindBy(accessibilityId = "MainScreenTitle")
     EditBox searchBar;
@@ -27,7 +22,7 @@ public class MainProductAndServicesPage extends TopMenuPage {
     @Step("Переходим на страницу поиска")
     public SearchProductPage clickSearchBar(boolean hideKeyboard) {
         searchBar.click();
-        SearchProductPage page = new SearchProductPage(context);
+        SearchProductPage page = new SearchProductPage();
         if (hideKeyboard)
             hideKeyboard();
         return page;

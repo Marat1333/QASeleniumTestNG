@@ -1,7 +1,6 @@
 package com.leroy.magmobile.api.tests.supply_plan;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
+import com.leroy.core.UserSessionData;
 import com.leroy.magmobile.api.clients.SupplyPlanClient;
 import com.leroy.magmobile.api.data.supply_plan.Card.SupplyCardData;
 import com.leroy.magmobile.api.data.supply_plan.Card.SupplyCardProductsData;
@@ -36,14 +35,24 @@ import static org.hamcrest.Matchers.*;
 
 public class SupplyPlanTest extends BaseProjectApiTest {
 
+    private UserSessionData userSessionData;
+
     @BeforeClass
-    public void setUp() {
-        sessionData.setUserShopId("35");
-        sessionData.setUserDepartmentId("15");
+    private void setUp() {
+        userSessionData = getUserSessionData();
     }
 
-    @Inject
-    Provider<SupplyPlanClient> supplyPlanClient;
+    @Override
+    protected UserSessionData initUserSessionData() {
+        UserSessionData sessionData = super.initUserSessionData();
+        sessionData.setUserShopId("35");
+        sessionData.setUserDepartmentId("15");
+        return sessionData;
+    }
+
+    private SupplyPlanClient supplyPlanClient() {
+        return apiClientProvider.getSupplyPlanClient();
+    }
 
     private final String SUPPLIER = "1001802015";
 
@@ -151,10 +160,10 @@ public class SupplyPlanTest extends BaseProjectApiTest {
 
         GetSupplyPlanTotal params = new GetSupplyPlanTotal()
                 .setDate(date)
-                .setDepartmentId(sessionData.getUserDepartmentId())
-                .setShopId(sessionData.getUserShopId());
+                .setDepartmentId(getUserSessionData().getUserDepartmentId())
+                .setShopId(getUserSessionData().getUserShopId());
 
-        Response<TotalPalletDataList> response = supplyPlanClient.get().getTotalPallets(params);
+        Response<TotalPalletDataList> response = supplyPlanClient().getTotalPallets(params);
         isResponseOk(response);
         List<TotalPalletData> dataList = response.asJson().getItems();
         assertThat(dataList.size(), greaterThan(0));
@@ -174,10 +183,10 @@ public class SupplyPlanTest extends BaseProjectApiTest {
 
         GetSupplyPlanTotal params = new GetSupplyPlanTotal()
                 .setDate(testDate, testDate1)
-                .setDepartmentId(sessionData.getUserDepartmentId())
-                .setShopId(sessionData.getUserShopId());
+                .setDepartmentId(userSessionData.getUserDepartmentId())
+                .setShopId(userSessionData.getUserShopId());
 
-        Response<TotalPalletDataList> response = supplyPlanClient.get().getTotalPallets(params);
+        Response<TotalPalletDataList> response = supplyPlanClient().getTotalPallets(params);
         isResponseOk(response);
         List<TotalPalletData> dataList = response.asJson().getItems();
         assertThat(dataList.size(), greaterThan(0));
@@ -195,7 +204,7 @@ public class SupplyPlanTest extends BaseProjectApiTest {
                 .setQuery(supplierName)
                 .setDepartmentId(1);
 
-        Response<SupplierDataList> response = supplyPlanClient.get().getSuppliers(params);
+        Response<SupplierDataList> response = supplyPlanClient().getSuppliers(params);
         isResponseOk(response);
         List<SupplierData> dataList = response.asJson().getItems();
         assertThat(dataList.size(), greaterThan(0));
@@ -211,9 +220,9 @@ public class SupplyPlanTest extends BaseProjectApiTest {
 
         GetSupplyPlanSuppliers params = new GetSupplyPlanSuppliers()
                 .setQuery(supplierCode)
-                .setDepartmentId(sessionData.getUserDepartmentId());
+                .setDepartmentId(userSessionData.getUserDepartmentId());
 
-        Response<SupplierDataList> response = supplyPlanClient.get().getSuppliers(params);
+        Response<SupplierDataList> response = supplyPlanClient().getSuppliers(params);
         isResponseOk(response);
         List<SupplierData> dataList = response.asJson().getItems();
         assertThat(dataList.size(), greaterThan(0));
@@ -229,10 +238,10 @@ public class SupplyPlanTest extends BaseProjectApiTest {
 
         GetSupplyPlanDetails params = new GetSupplyPlanDetails()
                 .setDate(testDate)
-                .setDepartmentId(sessionData.getUserDepartmentId())
-                .setShopId(sessionData.getUserShopId());
+                .setDepartmentId(userSessionData.getUserDepartmentId())
+                .setShopId(userSessionData.getUserShopId());
 
-        Response<ShipmentDataList> response = supplyPlanClient.get().getShipments(params);
+        Response<ShipmentDataList> response = supplyPlanClient().getShipments(params);
         isResponseOk(response);
         List<ShipmentData> dataList = response.asJson().getItems();
         assertThat(dataList.size(), greaterThan(0));
@@ -249,10 +258,10 @@ public class SupplyPlanTest extends BaseProjectApiTest {
         GetSupplyPlanDetails params = new GetSupplyPlanDetails()
                 .setDate(testDate)
                 .setSendingLocations(SUPPLIER)
-                .setDepartmentId(sessionData.getUserDepartmentId())
-                .setShopId(sessionData.getUserShopId());
+                .setDepartmentId(userSessionData.getUserDepartmentId())
+                .setShopId(userSessionData.getUserShopId());
 
-        Response<ShipmentDataList> response = supplyPlanClient.get().getShipments(params);
+        Response<ShipmentDataList> response = supplyPlanClient().getShipments(params);
         isResponseOk(response);
         List<ShipmentData> dataList = response.asJson().getItems();
         assertThat(dataList.size(), greaterThan(0));
@@ -272,10 +281,10 @@ public class SupplyPlanTest extends BaseProjectApiTest {
         GetSupplyPlanDetails params = new GetSupplyPlanDetails()
                 .setDate(daysList)
                 .setSendingLocations(SUPPLIER)
-                .setDepartmentId(sessionData.getUserDepartmentId())
-                .setShopId(sessionData.getUserShopId());
+                .setDepartmentId(userSessionData.getUserDepartmentId())
+                .setShopId(userSessionData.getUserShopId());
 
-        Response<ShipmentDataList> response = supplyPlanClient.get().getShipments(params);
+        Response<ShipmentDataList> response = supplyPlanClient().getShipments(params);
         isResponseOk(response);
         List<ShipmentData> dataList = response.asJson().getItems();
         assertThat(dataList.size(), greaterThan(0));
@@ -295,10 +304,10 @@ public class SupplyPlanTest extends BaseProjectApiTest {
         GetSupplyPlanDetails params = new GetSupplyPlanDetails()
                 .setDate(daysList)
                 .setSendingLocations(SUPPLIER)
-                .setDepartmentId(sessionData.getUserDepartmentId())
-                .setShopId(sessionData.getUserShopId());
+                .setDepartmentId(userSessionData.getUserDepartmentId())
+                .setShopId(userSessionData.getUserShopId());
 
-        Response<ShipmentDataList> response = supplyPlanClient.get().getShipments(params);
+        Response<ShipmentDataList> response = supplyPlanClient().getShipments(params);
         isResponseOk(response);
         List<ShipmentData> dataList = response.asJson().getItems();
         assertThat(dataList.size(), greaterThan(0));
@@ -324,10 +333,10 @@ public class SupplyPlanTest extends BaseProjectApiTest {
         GetSupplyPlanDetails params = new GetSupplyPlanDetails()
                 .setDate(daysList)
                 .setSendingLocations(SUPPLIER)
-                .setDepartmentId(sessionData.getUserDepartmentId())
-                .setShopId(sessionData.getUserShopId());
+                .setDepartmentId(userSessionData.getUserDepartmentId())
+                .setShopId(userSessionData.getUserShopId());
 
-        Response<ShipmentDataList> response = supplyPlanClient.get().getShipments(params);
+        Response<ShipmentDataList> response = supplyPlanClient().getShipments(params);
         isResponseOk(response);
         List<ShipmentData> dataList = response.asJson().getItems();
         assertThat(dataList.size(), greaterThan(0));
@@ -349,7 +358,7 @@ public class SupplyPlanTest extends BaseProjectApiTest {
                 .setDocumentType(DocumentType.TRANSFER.getTypeName())
                 .setDocumentNo(documentNumber);
 
-        Response<SupplyCardData> response = supplyPlanClient.get().getSupplyCard(params);
+        Response<SupplyCardData> response = supplyPlanClient().getSupplyCard(params);
         isResponseOk(response);
         List<SupplyCardSendingLocationData> dataList = response.asJson().getSendingLocation();
         assertThat(dataList.size(), greaterThan(0));
@@ -374,7 +383,7 @@ public class SupplyPlanTest extends BaseProjectApiTest {
                 .setDocumentType(DocumentType.TRANSFER.getTypeName())
                 .setDocumentNo(documentNumber);
 
-        Response<SupplyCardData> response = supplyPlanClient.get().getSupplyCard(params);
+        Response<SupplyCardData> response = supplyPlanClient().getSupplyCard(params);
         isResponseOk(response);
         List<SupplyCardShipmentsData> dataList = response.asJson().getShipments();
         assertThat(dataList.size(), greaterThan(0));
@@ -418,7 +427,7 @@ public class SupplyPlanTest extends BaseProjectApiTest {
                 .setDocumentType(DocumentType.TRANSFER.getTypeName())
                 .setDocumentNo(documentNumber);
 
-        Response<SupplyCardData> response = supplyPlanClient.get().getSupplyCard(params);
+        Response<SupplyCardData> response = supplyPlanClient().getSupplyCard(params);
         isResponseOk(response);
         List<SupplyCardShipmentsData> dataList = response.asJson().getShipments();
         assertThat(dataList.size(), greaterThan(0));

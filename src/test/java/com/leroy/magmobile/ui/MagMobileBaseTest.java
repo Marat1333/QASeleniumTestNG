@@ -1,29 +1,38 @@
 package com.leroy.magmobile.ui;
 
-import com.leroy.core.BaseUiTest;
-import com.leroy.core.SessionData;
-import org.openqa.selenium.WebDriver;
+import com.google.inject.Inject;
+import com.leroy.constants.EnvConstants;
+import com.leroy.core.UserSessionData;
+import com.leroy.core.configuration.BaseUiTest;
+import com.leroy.magmobile.api.ApiClientProvider;
+import com.leroy.umbrella_extension.authorization.AuthClient;
 
 public class MagMobileBaseTest extends BaseUiTest {
 
-    protected Context context;
-    protected SessionData sessionData;
+    @Inject
+    protected ApiClientProvider apiClientProvider;
+    @Inject
+    private AuthClient authClient;
 
     @Override
-    protected void initContext(WebDriver driver) {
-        context = new Context(driver);
-        sessionData = new SessionData();
-        context.setSessionData(sessionData);
+    public UserSessionData initUserSessionData() {
+        UserSessionData userSessionData = new UserSessionData();
+        userSessionData.setUserLdap(EnvConstants.BASIC_USER_LDAP);
+        userSessionData.setUserShopId(EnvConstants.SHOP_WITH_NEW_INTERFACE);
+        userSessionData.setUserDepartmentId("1");
+        if (isNeedAccessToken()) {
+            userSessionData.setAccessToken(getAccessToken());
+        }
+        return userSessionData;
     }
 
-    @Override
-    protected Context getContext() {
-        return context;
+    protected boolean isNeedAccessToken() {
+        return false;
     }
 
-
-    @Override
-    protected void cleanContext() {
-        context = null;
+    protected String getAccessToken() {
+        return authClient.getAccessToken(EnvConstants.BASIC_USER_LDAP,
+                EnvConstants.BASIC_USER_PASS);
     }
+
 }

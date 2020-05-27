@@ -4,20 +4,15 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
+import com.leroy.magmobile.ui.models.TextViewData;
+import com.leroy.magmobile.ui.models.sales.OrderDetailsData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.SubmittedSalesDocument35Page;
-import com.leroy.magmobile.ui.models.sales.OrderDetailsData;
-import com.leroy.magmobile.ui.models.TextViewData;
 import io.qameta.allure.Step;
 
 public class ProcessOrder35Page extends CommonMagMobilePage {
-
-    public ProcessOrder35Page(Context context) {
-        super(context);
-    }
 
     @AppFindBy(text = "Оформление заказа")
     Element headerLbl;
@@ -75,7 +70,7 @@ public class ProcessOrder35Page extends CommonMagMobilePage {
     public SubmittedSalesDocument35Page clickSubmitButton() throws Exception {
         mainScrollView.scrollDownToElement(submitButton);
         submitButton.click();
-        return new SubmittedSalesDocument35Page(context);
+        return new SubmittedSalesDocument35Page();
     }
 
     private void fillInPhoneFld(String value) {

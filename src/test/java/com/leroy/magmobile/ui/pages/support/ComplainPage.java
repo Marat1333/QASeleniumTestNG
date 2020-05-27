@@ -1,10 +1,9 @@
 package com.leroy.magmobile.ui.pages.support;
 
-import com.leroy.magmobile.ui.constants.MagMobElementTypes;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
+import com.leroy.magmobile.ui.constants.MagMobElementTypes;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import io.qameta.allure.Step;
@@ -12,10 +11,6 @@ import io.qameta.allure.Step;
 public class ComplainPage extends CommonMagMobilePage {
 
     private static final String WHAT_HAPPEN_TEXT = "Что у нас в приложении случилось?";
-
-    public ComplainPage(Context context) {
-        super(context);
-    }
 
     @AppFindBy(text = WHAT_HAPPEN_TEXT)
     private Element whatHappenLbl;
@@ -69,7 +64,7 @@ public class ComplainPage extends CommonMagMobilePage {
     @Step("Нажмите кнопку 'Отправить'")
     public SubmittedIncidentPage clickSendButton() {
         submitBtn.click();
-        return new SubmittedIncidentPage(context);
+        return new SubmittedIncidentPage();
     }
 
     /* ---------------------- Verifications -------------------------- */

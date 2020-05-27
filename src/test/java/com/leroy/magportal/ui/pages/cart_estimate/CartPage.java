@@ -11,10 +11,6 @@ import io.qameta.allure.Step;
 
 public class CartPage extends CartEstimatePage {
 
-    public CartPage(Context context) {
-        super(context);
-    }
-
     @WebFindBy(xpath = "//button[descendant::span[text()='Создать корзину']]",
             metaName = "Текст кнопки 'Создать корзину'")
     Element createCartBtn;
@@ -29,11 +25,6 @@ public class CartPage extends CartEstimatePage {
     @Override
     protected CardWebWidgetList<OrderPuzWidget, OrderWebData> orders() {
         return orders;
-    }
-
-    @Override
-    public void waitForPageIsLoaded() {
-        super.waitForPageIsLoaded();
     }
 
     // Grab info

@@ -3,7 +3,7 @@ package com.leroy.core.listeners;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.leroy.core.TestContext;
+import com.leroy.core.ContextProvider;
 import com.leroy.core.annotations.DisableTestWhen;
 import com.leroy.core.annotations.Smoke;
 import com.leroy.core.annotations.Team;
@@ -251,7 +251,7 @@ public class Listener implements ITestListener, ISuiteListener,
         currentScreenshotPath = null;
         Object currentClass = arg0.getInstance();
         try {
-            RemoteWebDriver driver = (RemoteWebDriver) ((EnvironmentConfigurator) currentClass).getDriver();
+            RemoteWebDriver driver = (RemoteWebDriver) ContextProvider.getDriver();
             if (driver != null) {
                 Log.info("Test started on the following configuration " + driver.getCapabilities().toString());
                 // Add run configuration
@@ -625,13 +625,13 @@ public class Listener implements ITestListener, ISuiteListener,
     }
 
     private void updateResultWithScreenshot(ITestResult arg0) {
-        if (arg0.getInstance() instanceof EnvironmentConfigurator && !disableScreenshots) {
-            RemoteWebDriver driver = (RemoteWebDriver) ((EnvironmentConfigurator) arg0.getInstance()).getDriver();
+        if (arg0.getInstance() instanceof BaseUiTest && !disableScreenshots) {
+            RemoteWebDriver driver = (RemoteWebDriver) ContextProvider.getDriver();
             if (driver != null) {
                 try {
                     String screenShotName = getTestCaseId(arg0);
                     screenShotName = screenShotName + "_" + RandomStringUtils.randomNumeric(6);
-                    String screenShotPath = new AnyPage(new TestContext(driver, null, null, null, null))
+                    String screenShotPath = new AnyPage()
                             .takeScreenShot(screenShotName + ".png");
                     currentScreenshotPath = screenShotPath;
                     arg0.setAttribute("screenshot", screenShotPath);

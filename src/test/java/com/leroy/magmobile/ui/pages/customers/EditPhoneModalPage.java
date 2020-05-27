@@ -3,15 +3,10 @@ package com.leroy.magmobile.ui.pages.customers;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import io.qameta.allure.Step;
 
 public class EditPhoneModalPage extends CommonMagMobilePage {
-
-    public EditPhoneModalPage(Context context) {
-        super(context);
-    }
 
     @AppFindBy(text = "Телефон")
     Element headerLbl;
@@ -28,7 +23,7 @@ public class EditPhoneModalPage extends CommonMagMobilePage {
     public EditCustomerInfoPage editPhoneNumber(String value) {
         phoneFld.clearFillAndSubmit(value);
         confirmBtn.click();
-        return new EditCustomerInfoPage(context);
+        return new EditCustomerInfoPage();
     }
 
     @Step("Проверить, что модальное окно для редактирования телефонного номера отображается корректно")

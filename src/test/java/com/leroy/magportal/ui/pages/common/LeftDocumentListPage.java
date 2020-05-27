@@ -17,10 +17,6 @@ import java.util.stream.Collectors;
 public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends IDataWithNumberAndStatus>
         extends MenuPage {
 
-    public LeftDocumentListPage(Context context) {
-        super(context);
-    }
-
     @Override
     public void waitForPageIsLoaded() {
         refreshDocumentListBtn().waitForVisibility();
@@ -86,6 +82,16 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
                         actualStatuses.toString());
     }
 
+    @Step("Проверить, что в списке документов слева присутствуют только содержащие номер: {value}")
+    public LeftDocumentListPage<W, D> shouldDocumentListHaveNumberContains(String value) {
+        for (D docData : documentCardList().getDataList()) {
+            softAssert.isTrue(docData.getNumber().contains(value),
+                    docData.getNumber() + " документ не содержит " + value);
+        }
+        softAssert.verifyAll();
+        return this;
+    }
+
     @Step("Проверить, что в списке документов слева присутствуют нужные документы (expectedDocuments)")
     public void shouldDocumentListIs(List<D> expectedDocuments) {
         anAssert.isEquals(documentCardList().getDataList(), expectedDocuments,
@@ -106,6 +112,16 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
                 "Ожидались другие номера документов");
     }
 
+    @Step("Проверить, что в списке документов слева другие документы, отличные от : {expectedNumbers}")
+    public void shouldDocumentListNumbersNotEqual(List<String> expectedNumbers) {
+        List<String> actualNumbers = documentCardList().getDataList().stream().map(
+                d -> ParserUtil.strWithOnlyDigits(d.getNumber()))
+                .collect(Collectors.toList());
+        anAssert.isTrue(actualNumbers.size() > 0, "Не найдено ни одного номера документа");
+        anAssert.isNotEquals(actualNumbers, expectedNumbers,
+                "Номера документов в списке остались прежними (не изменились)");
+    }
+
     @Step("Проверить, что в списке документов слева присутствуют документы, содержащие номер: {expectedNumber}")
     public void shouldDocumentListFilteredByNumber(String expectedNumber) {
         List<String> actualDocumentNumbers = documentCardList().getDataList().stream().map(D::getNumber)
@@ -122,5 +138,11 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
     public void shouldDocumentListIsEmpty() {
         anAssert.isTrue(documentCardList().getDataList().size() == 0,
                 "Список документов не пустой (содержит документы)");
+    }
+
+    @Step("Проверить, что список документов слева содержит хотя бы один документ")
+    public void shouldDocumentListIsNotEmpty() {
+        anAssert.isTrue(documentCardList().getDataList().size() > 0,
+                "Список документов пустой");
     }
 }

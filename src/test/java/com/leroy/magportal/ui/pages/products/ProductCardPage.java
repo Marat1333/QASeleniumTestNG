@@ -5,16 +5,12 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.pages.products.widget.ShopCardWidget;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
 public class ProductCardPage extends MenuPage {
-    public ProductCardPage(Context context) {
-        super(context);
-    }
 
     @WebFindBy(xpath = "//span[contains(text(), 'К результатам поиска')]")
     Button backToSearchResults;

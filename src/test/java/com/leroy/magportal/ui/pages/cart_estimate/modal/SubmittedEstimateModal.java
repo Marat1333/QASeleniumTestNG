@@ -2,16 +2,11 @@ package com.leroy.magportal.ui.pages.cart_estimate.modal;
 
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
 import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
 import io.qameta.allure.Step;
 
 public class SubmittedEstimateModal extends MagPortalBasePage {
-
-    public SubmittedEstimateModal(Context context) {
-        super(context);
-    }
 
     private final String MODAL_WINDOW_XPATH = "//div[contains(@class, 'ConfirmModal')]";
     private final String MODAL_BACKDROP_XPATH = "//div[contains(@class, 'Modal-backdrop')]";
@@ -40,7 +35,7 @@ public class SubmittedEstimateModal extends MagPortalBasePage {
     @Step("Закрыть окно с информацией о том, что смета создана")
     public EstimatePage closeWindow() {
         E(MODAL_BACKDROP_XPATH).clickJS();
-        return new EstimatePage(context);
+        return new EstimatePage();
     }
 
     // Verifications

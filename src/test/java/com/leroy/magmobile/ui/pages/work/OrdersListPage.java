@@ -3,16 +3,11 @@ package com.leroy.magmobile.ui.pages.work;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.widgets.OrderWidget;
 import io.qameta.allure.Step;
 
 public class OrdersListPage extends CommonMagMobilePage {
-
-    public OrdersListPage(Context context) {
-        super(context);
-    }
 
     @AppFindBy(accessibilityId = "ScreenTitle")
     private Element titleLbl;
@@ -32,7 +27,7 @@ public class OrdersListPage extends CommonMagMobilePage {
     @Step("Открыть {index}-ую заявку")
     public OrderDetailsPage clickOrderByIndex(int index) throws Exception {
         orderList.get(index).click();
-        return new OrderDetailsPage(context);
+        return new OrderDetailsPage();
     }
 
     /* -------------------------  Verifications -------------------------- */

@@ -14,6 +14,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.time.ZonedDateTime;
 import java.util.Collections;
+import java.util.List;
 
 public class SalesDocTransferTest extends BaseProjectApiTest {
 
@@ -21,21 +22,27 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
 
     private TransferSalesDocData transferSalesDocData;
 
+    private List<String> productLmCodes;
+
+    @BeforeClass
+    private void initClients() {
+        transferClient = apiClientProvider.getTransferClient();
+    }
+
     @Override
     protected boolean isNeedAccessToken() {
         return false;
     }
 
     @BeforeClass
-    private void setUp() {
-        transferClient = apiClientProvider.getTransferClient();
+    private void findProducts() {
+        productLmCodes = apiClientProvider.getProductLmCodes(2);
     }
 
     @Test(description = "C3248457 SalesDoc transfer create POST")
     public void testSalesDocTransferCreatePOST() {
         // Prepare Test Data
-        String productLmCode =
-                apiClientProvider.getProductLmCodes(1).get(0);
+        String productLmCode = productLmCodes.get(0);
 
         TransferProductOrderData productOrderData = new TransferProductOrderData();
         productOrderData.setLmCode(productLmCode);
@@ -43,8 +50,8 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
 
         TransferSalesDocData postSalesDocData = new TransferSalesDocData();
         postSalesDocData.setProducts(Collections.singletonList(productOrderData));
-        postSalesDocData.setShopId(Integer.valueOf(sessionData.getUserShopId()));
-        postSalesDocData.setDepartmentId(sessionData.getUserDepartmentId());
+        postSalesDocData.setShopId(Integer.valueOf(getUserSessionData().getUserShopId()));
+        postSalesDocData.setDepartmentId(getUserSessionData().getUserDepartmentId());
         postSalesDocData.setDateOfGiveAway(ZonedDateTime.now().plusDays(5).withFixedOffsetZone());
         postSalesDocData.setPointOfGiveAway(SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR.getApiVal());
 
@@ -70,7 +77,7 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
             throw new IllegalArgumentException("Transfer SalesDoc hasn't been created");
         }
         TransferProductOrderData productOrderData = new TransferProductOrderData();
-        productOrderData.setLmCode("82234002");
+        productOrderData.setLmCode(productLmCodes.get(1));
         productOrderData.setOrderedQuantity(4);
 
         TransferSalesDocData expectedDocument = new TransferSalesDocData();

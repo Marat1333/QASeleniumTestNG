@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.api.Module;
 import com.leroy.core.api.ThreadApiClient;
-import com.leroy.magmobile.api.ApiClientProvider;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.data.catalog.ServiceItemDataList;
@@ -26,7 +25,6 @@ import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.search.SuppliersSearchPage;
 import com.leroy.magmobile.ui.pages.search.modal.SortPage;
 import io.qameta.allure.Issue;
-import org.apache.tools.ant.taskdefs.Get;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
@@ -41,12 +39,8 @@ public class SearchTest extends AppBaseSteps {
 
     private CatalogSearchClient searchClient;
 
-    @Inject
-    private ApiClientProvider apiClientProvider;
-
     @BeforeClass
     public void setUp() {
-        apiClientProvider.setSessionData(sessionData);
         searchClient = apiClientProvider.getCatalogSearchClient();
     }
 
@@ -94,10 +88,9 @@ public class SearchTest extends AppBaseSteps {
         String searchContext = "Тепломир радиатор";
         String shortSearchPhrase = "12";
         String barCode = "5902120110575";
-        String shortLmCode = "1234";
+        String shortLmCode = "1506";
         String shortBarCode = "590212011";
         int entityCount = 3;
-        final String departmentId = "11";
 
         GetCatalogSearch byLmParams = new GetCatalogSearch()
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
@@ -107,11 +100,9 @@ public class SearchTest extends AppBaseSteps {
                 .setByBarCode(barCode);
 
         GetCatalogSearch byShortLmCodeParams = buildDefaultCatalogSearchParams()
-                .setDepartmentId(departmentId)
                 .setByLmCode(shortLmCode);
 
         GetCatalogSearch byShortBarCodeParams = buildDefaultCatalogSearchParams()
-                .setDepartmentId(departmentId)
                 .setByBarCode(shortBarCode);
 
         HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> apiThreads =
@@ -131,8 +122,7 @@ public class SearchTest extends AppBaseSteps {
         // Step 3
         step("Вернитесь на окно выбора отдела");
         nomenclatureSearchPage.returnBackNTimes(1)
-                .verifyNomenclatureBackBtnVisibility(false)
-                .choseDepartmentId("0" + departmentId, null, null, null);
+                .verifyNomenclatureBackBtnVisibility(false);
         // Step 4
         step("Нажмите 'Показать все товары'");
         nomenclatureSearchPage.clickShowAllProductsBtn()
@@ -142,7 +132,7 @@ public class SearchTest extends AppBaseSteps {
         // Step 5
         step("Введите полное значение для поиска по ЛМ коду| 10008698");
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
-        ProductDescriptionPage productCardPage = new ProductDescriptionPage(context)
+        ProductDescriptionPage productCardPage = new ProductDescriptionPage()
                 .verifyRequiredElements(true)
                 .shouldProductLMCodeIs(lmCode);
         searchProductPage = productCardPage.returnBack();
@@ -164,7 +154,7 @@ public class SearchTest extends AppBaseSteps {
         // Step 8
         step("Ввести штрихкод вручную");
         searchProductPage.enterTextInSearchFieldAndSubmit(barCode);
-        productCardPage = new ProductDescriptionPage(context)
+        productCardPage = new ProductDescriptionPage()
                 .verifyRequiredElements(true)
                 .shouldProductBarCodeIs(barCode);
         searchProductPage = productCardPage.returnBack();
@@ -182,7 +172,6 @@ public class SearchTest extends AppBaseSteps {
         // Step 10
         step("Ввести в поисковую строку положительное число длинной >8 символов (" + shortBarCode + ") и инициировать поиск");
         searchProductPage.enterTextInSearchFieldAndSubmit(shortBarCode);
-        productCardPage.returnBack();
         ProductItemDataList d4 = apiThreads.get(3).getData();
         searchProductPage.shouldCatalogResponseEqualsContent(
                 d4, SearchProductPage.CardType.COMMON, entityCount);
@@ -364,7 +353,7 @@ public class SearchTest extends AppBaseSteps {
 
         // Step 2
         step("выбрать одну из гамм");
-        FilterPage allGammaFilterPage = new FilterPage(context);
+        FilterPage allGammaFilterPage = new FilterPage();
         allGammaFilterPage.choseGammaFilter(FilterPage.GAMMA + " " + GAMMA);
         allGammaFilterPage.applyChosenFilters();
         ProductItemDataList gammaResponse = apiThreads.get(0).getData();
@@ -680,14 +669,12 @@ public class SearchTest extends AppBaseSteps {
     @Test(description = "C3200999 Проверка пагинации", priority = 2)
     public void testSearchPagePagination() throws Exception {
         String searchCriterion = "12";
-        String dept = "015";
-        String subDept = "1510";
+        String dept = "005";
         final String GAMMA = "A";
         final int ENTITY_COUNT = 20;
 
         GetCatalogSearch paginationParams = new GetCatalogSearch()
                 .setDepartmentId(dept.replaceAll("^0+", ""))
-                .setSubDepartmentId(subDept.replaceAll("^0+", ""))
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setSortBy(CatalogSearchFields.NAME, SortingOrder.ASC)
                 .setByNameLike(searchCriterion)
@@ -706,7 +693,7 @@ public class SearchTest extends AppBaseSteps {
         step("Выбрать подотдел в номенклатуре");
         NomenclatureSearchPage nomenclatureSearchPage = searchProductPage.goToNomenclatureWindow();
         nomenclatureSearchPage.returnBackNTimes(1);
-        nomenclatureSearchPage.choseDepartmentId(dept, subDept, null, null);
+        nomenclatureSearchPage.choseDepartmentId(dept, null, null, null);
         nomenclatureSearchPage.clickShowAllProductsBtn();
 
         // Step 2
@@ -869,7 +856,7 @@ public class SearchTest extends AppBaseSteps {
         // Step 3
         step("Выполнить поиск услуг по полному лм коду");
         searchProductPage.enterTextInSearchFieldAndSubmit(SERVICE_FULL_LM_CODE);
-        AddServicePage addServicePage = new AddServicePage(context);
+        AddServicePage addServicePage = new AddServicePage();
         addServicePage.verifyRequiredElements()
                 .shouldServiceNameAndLmCodeBeOnPage(SERVICE_FULL_NAME, SERVICE_FULL_LM_CODE);
         addServicePage.returnBack();
@@ -907,7 +894,7 @@ public class SearchTest extends AppBaseSteps {
         // Step 7
         step("Выполнить поиск по короткому штрихкоду");
         searchProductPage.enterTextInSearchFieldAndSubmit(SHORT_BARCODE);
-        ProductCardPage productCardPage = new ProductCardPage(context);
+        ProductCardPage productCardPage = new ProductCardPage();
         productCardPage.returnBack();
         searchProductPage.shouldNotCardsBeOnPage(SearchProductPage.CardType.SERVICE);
     }
@@ -1011,7 +998,7 @@ public class SearchTest extends AppBaseSteps {
         // Step 3
         step("перейти на страницу фильтров");
         searchProductPage.goToFilterPage();
-        myShopFilterPage.shouldFilterHasBeenChosen(FilterPage.TOP + TOP);
+        myShopFilterPage.shouldFilterHasNotBeenChosen(FilterPage.TOP + TOP);
 
         // Step 4
         step("нажать \"показать товары\"");
@@ -1360,6 +1347,7 @@ public class SearchTest extends AppBaseSteps {
 
         // Step 5
         step("Нажать на \"Показать все фильтры\", выбрать фильтр среди вновь отображенных и нажать \"Показать товары\"");
+        filterPage.clearAllFilters();
         filterPage.clickShowAllFiltersBtn();
         filterPage.choseCheckBoxFilter(FilterPage.BEST_PRICE);
         filterPage.applyChosenFilters();

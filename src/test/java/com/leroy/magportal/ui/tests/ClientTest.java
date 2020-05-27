@@ -1,15 +1,18 @@
 package com.leroy.magportal.ui.tests;
 
 import com.leroy.magportal.ui.WebBaseSteps;
-import com.leroy.magportal.ui.models.customers.CustomerData;
+import com.leroy.magportal.ui.models.customers.CustomerWebData;
+import com.leroy.magportal.ui.pages.customers.CreateCustomerForm;
 import com.leroy.magportal.ui.pages.customers.CreatingCustomerPage;
 import com.leroy.magportal.ui.pages.customers.CustomerPage;
 import com.leroy.magportal.ui.pages.customers.CustomerPersonalInfoPage;
+import io.qameta.allure.Issue;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
 
 public class ClientTest extends WebBaseSteps {
 
+    @Issue("PAO-465")
     @Test(description = "C22783064 Create client via button on client's page")
     public void testC22783064() throws Exception { //TODO Обновить кейс в тестрейл
         // Step #1
@@ -19,57 +22,59 @@ public class ClientTest extends WebBaseSteps {
 
         // Step #2
         step("Click on the button 'Создание клиента'");
-        CreatingCustomerPage creatingClientPage = clientPage.clickCreateClientButton()
-                .verifyRequiredElements();
+        CreatingCustomerPage creatingClientPage = clientPage.clickCreateClientButton();
+        CreateCustomerForm createCustomerForm = creatingClientPage.getCreateCustomerForm();
+        createCustomerForm.verifyRequiredElements();
 
         // Step #3
         step("Click on the button 'Создать'");
-        creatingClientPage.clickCreateButtonNegativePath()
-                .shouldAllRequiredFieldsHighlightedInRed();
+        createCustomerForm.clickCreateButton();
+        createCustomerForm.shouldAllRequiredFieldsHighlightedInRed();
 
         // Step #4
         step("Enter to field 'Имя' Latin characters and remove focus from the field");
-        creatingClientPage.enterTextInFirstNameInputField("SomeText")
-                .clickCreateButtonNegativePath()
-                .shouldErrorTooltipUnderFirstNameFldHasValidText();
+        createCustomerForm.enterTextInFirstNameInputField("SomeText")
+                .clickCreateButton();
+        createCustomerForm.shouldErrorTooltipUnderFirstNameFldHasValidText();
 
         // Step #5
         step("Enter to field 'Телефон' 5 characters and remove focus from the field");
-        creatingClientPage.enterTextInPhoneInputField(RandomStringUtils.randomNumeric(5))
-                .clickCreateButtonNegativePath()
-                .shouldErrorTooltipUnderPhoneFldHasValidText();
+        createCustomerForm.enterTextInPhoneInputField(RandomStringUtils.randomNumeric(5))
+                .clickCreateButton();
+        createCustomerForm.shouldErrorTooltipUnderPhoneFldHasValidText();
 
         // Step #6
         step("Click on 'Показать все поля'");
-        creatingClientPage.clickShowAllFieldsButton()
+        createCustomerForm.clickShowAllFieldsButton()
                 .verifyAllAdditionalFields();
 
         // Step #7
         step("Scroll to down of the page and click on 'Скрыть все поля'");
-        creatingClientPage.clickHideAllFieldsButton()
+        createCustomerForm.clickHideAllFieldsButton()
                 .verifyRequiredElements();
 
         // Step #8
         step("Enter to field 'Телефон' number of '1111111111' and remove focus from the field");
-        creatingClientPage.enterTextInPhoneInputField("1111111111")
+        createCustomerForm.enterTextInPhoneInputField("1111111111")
                 .verifyModalWindowRequiredElements()
                 .shouldCustomerRecordsArePresentInModalWindow();
 
         // Step #9
         step("Click on button 'Вернуться'");
-        creatingClientPage.clickModalWindowReturnButton()
+        createCustomerForm.clickModalWindowReturnButton()
                 .verifyRequiredElements()
                 .shouldModalWindowInvisible();
 
         // Step #10
         step("Entering correct fields for input text and choice gender, type of the phone");
-        CustomerData customerData = new CustomerData().setRandomRequiredData();
-        creatingClientPage.enterCustomerData(customerData)
+        CustomerWebData customerData = new CustomerWebData().setRandomRequiredData();
+        createCustomerForm.enterCustomerData(customerData)
                 .shouldBeEnteredDataMatchThis(customerData);
 
         // Step #11
         step("Click on the button 'Создать'");
-        CustomerPersonalInfoPage personalInfoPage = creatingClientPage.clickCreateButtonHappyPath()
+        createCustomerForm.clickCreateButton();
+        CustomerPersonalInfoPage personalInfoPage = new CustomerPersonalInfoPage()
                 .shouldCustomerDataOnPageIs(customerData);
 
         // Step #12
@@ -81,7 +86,7 @@ public class ClientTest extends WebBaseSteps {
     @Test(description = "C22783068 Create client via modal window after search")
     public void testC22783068() throws Exception { //TODO Обновить кейс в тестрейл
         // Pre-condition
-        String phoneNumber = RandomStringUtils.randomNumeric(10);
+        String phoneNumber = apiClientProvider.findUnusedPhoneNumber();
         String email = RandomStringUtils.randomAlphanumeric(8) + "@mail.com";
         CustomerPage clientPage = loginAndGoTo(CustomerPage.class);
 
@@ -92,15 +97,16 @@ public class ClientTest extends WebBaseSteps {
 
         // Step #2
         step("Click on the button 'Создать клиента'");
-        CustomerData data = new CustomerData();
+        CustomerWebData data = new CustomerWebData();
         data.setPhoneNumber(phoneNumber);
-        CreatingCustomerPage creatingCustomerPage = customerPage.clickNotFoundCreateClientButton()
-                .verifyRequiredElements()
+        CreatingCustomerPage creatingCustomerPage = customerPage.clickNotFoundCreateClientButton();
+        CreateCustomerForm createCustomerForm = creatingCustomerPage.getCreateCustomerForm();
+        createCustomerForm.verifyRequiredElements()
                 .shouldBeEnteredDataMatchThis(data);
 
         // Step #3
         step("Close creation mode and return to main page");
-        customerPage = creatingCustomerPage.clickBackButton()
+        customerPage = createCustomerForm.clickBackButton()
                 .verifyRequiredElements();
 
         // Step #4
@@ -115,23 +121,24 @@ public class ClientTest extends WebBaseSteps {
 
         // Step #6
         step("Click on the button 'Создать клиента'");
-        data = new CustomerData();
+        data = new CustomerWebData();
         data.setEmail(email);
-        creatingCustomerPage = customerPage.clickNotFoundCreateClientButton()
+        createCustomerForm = customerPage.clickNotFoundCreateClientButton().getCreateCustomerForm()
                 .verifyRequiredElements(true)
                 .shouldBeEnteredDataMatchThis(data);
 
         // Step #7
         step("Entering correct fields for input text and choice gender, type of the phone");
-        data = new CustomerData().setRandomRequiredData();
+        data = new CustomerWebData().setRandomRequiredData();
         data.setEmail(email);
         data.setPersonalEmail(true);
-        creatingCustomerPage.enterCustomerData(data)
+        createCustomerForm.enterCustomerData(data)
                 .shouldBeEnteredDataMatchThis(data);
 
         // Step #8
         step("Click on the button \"Создать\"");
-        CustomerPersonalInfoPage personalInfoPage = creatingCustomerPage.clickCreateButtonHappyPath()
+        createCustomerForm.clickCreateButton();
+        CustomerPersonalInfoPage personalInfoPage = new CustomerPersonalInfoPage()
                 .verifyRequiredElements()
                 .shouldCustomerDataOnPageIs(data);
 

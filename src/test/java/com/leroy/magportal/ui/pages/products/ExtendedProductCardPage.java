@@ -4,7 +4,6 @@ import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
 import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
 import com.leroy.magportal.ui.pages.products.widget.ExtendedProductCardWidget;
@@ -12,10 +11,6 @@ import com.leroy.magportal.ui.webelements.commonelements.PriceContainer;
 import io.qameta.allure.Step;
 
 public class ExtendedProductCardPage extends ProductCardPage {
-    public ExtendedProductCardPage(Context context) {
-        super(context);
-        waitForPageIsLoaded();
-    }
 
     public enum Tab {
         SIMILAR_PRODUCTS,
@@ -92,12 +87,12 @@ public class ExtendedProductCardPage extends ProductCardPage {
     }*/
 
     @Step("Перейти в карточку аналогичного товара {lmCode}")
-    public ExtendedProductCardPage goToAdditionalProduct(String lmCode, Tab tab) throws Exception{
+    public ExtendedProductCardPage goToAdditionalProduct(String lmCode, Tab tab) throws Exception {
         if (tab.equals(Tab.SIMILAR_PRODUCTS)) {
             anAssert.isElementVisible(similarProducts);
         } else if (tab.equals(Tab.COMPLEMENT_PRODUCTS)) {
             anAssert.isElementVisible(complementProducts);
-        } else{
+        } else {
             throw new IllegalArgumentException();
         }
         switchExtraInfoTabs(tab);
@@ -146,8 +141,8 @@ public class ExtendedProductCardPage extends ProductCardPage {
                 if (similarProducts.isVisible() && complementProducts.isVisible() &&
                         tabContainerList.get(2).getAttribute(attribute).contains(condition)) {
                     return this;
-                }else if ((similarProducts.isVisible() || complementProducts.isVisible()) &&
-                        tabContainerList.get(1).getAttribute(attribute).contains(condition)){
+                } else if ((similarProducts.isVisible() || complementProducts.isVisible()) &&
+                        tabContainerList.get(1).getAttribute(attribute).contains(condition)) {
                     return this;
                 }
                 pricesAndStocksInOtherShops.scrollTo();
@@ -166,13 +161,13 @@ public class ExtendedProductCardPage extends ProductCardPage {
     @Step("Добавить товар в корзину")
     public CartPage addProductToCart() {
         addProductToCart.click();
-        return new CartPage(context);
+        return new CartPage();
     }
 
     @Step("Добавить товар в смету")
     public EstimatePage addProductToEstimate() {
         addProductToEstimate.click();
-        return new EstimatePage(context);
+        return new EstimatePage();
     }
 
     //Overloaded

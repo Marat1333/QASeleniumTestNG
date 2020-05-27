@@ -5,6 +5,7 @@ import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magportal.ui.models.salesdoc.ShortSalesDocWebData;
 import com.leroy.magportal.ui.webelements.CardWebWidget;
+import com.leroy.utils.ParserUtil;
 import org.openqa.selenium.WebDriver;
 
 public class ShortCartEstimateDocumentCardWidget extends CardWebWidget<ShortSalesDocWebData> {
@@ -17,7 +18,7 @@ public class ShortCartEstimateDocumentCardWidget extends CardWebWidget<ShortSale
     Element number;
 
     public String getNumber() {
-        return number.getText();
+        return ParserUtil.strWithOnlyDigits(number.getText());
     }
 
     @Override

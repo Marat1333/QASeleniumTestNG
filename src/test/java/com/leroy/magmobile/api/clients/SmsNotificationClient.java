@@ -18,7 +18,7 @@ public class SmsNotificationClient extends MagMobileClient {
     @Step("Create Notification")
     public Response<SmsNotificationData> createNotification(SmsNotificationData data) {
         SmsNotificationCreateRequest req = new SmsNotificationCreateRequest();
-        req.setLdap(sessionData.getUserLdap());
+        req.setLdap(userSessionData.getUserLdap());
         req.jsonBody(data);
         return execute(req, SmsNotificationData.class);
     }
@@ -26,7 +26,7 @@ public class SmsNotificationClient extends MagMobileClient {
     @Step("Get notification with lmCode={lmCode}")
     public Response<SmsNotificationData> getNotification(String lmCode) {
         SmsNotificationGetRequest req = new SmsNotificationGetRequest();
-        req.setShopId(sessionData.getUserShopId());
+        req.setShopId(userSessionData.getUserShopId());
         req.setLmCode(lmCode);
         return execute(req, SmsNotificationData.class);
     }

@@ -29,7 +29,7 @@ public class TransferClient extends MagMobileClient {
     public Response<TransferSalesDocData> sendRequestCreate(
             TransferSalesDocData transferSalesDocData) {
         PostSalesDocTransfer params = new PostSalesDocTransfer();
-        params.setLdap(sessionData.getUserLdap());
+        params.setLdap(userSessionData.getUserLdap());
         params.jsonBody(transferSalesDocData);
         return execute(params, TransferSalesDocData.class);
     }
@@ -38,9 +38,9 @@ public class TransferClient extends MagMobileClient {
     public Response<TransferSalesDocData> sendRequestAddProducts(
             String taskId, List<TransferProductOrderData> productDataList) {
         PutSalesDocTransferAdd params = new PutSalesDocTransferAdd();
-        params.setLdap(sessionData.getUserLdap());
+        params.setLdap(userSessionData.getUserLdap());
         params.setTaskId(taskId);
-        params.setShopId(sessionData.getUserShopId());
+        params.setShopId(userSessionData.getUserShopId());
 
         TransferSalesDocData transferSalesDocData = new TransferSalesDocData();
         transferSalesDocData.setProducts(productDataList);
@@ -57,7 +57,7 @@ public class TransferClient extends MagMobileClient {
     public Response<TransferSalesDocData> sendRequestGet(String taskId) {
         GetSalesDocTransfer request = new GetSalesDocTransfer();
         request.setTaskId(taskId);
-        request.setLdap(sessionData.getUserLdap());
+        request.setLdap(userSessionData.getUserLdap());
         return execute(request, TransferSalesDocData.class);
     }
 
@@ -81,7 +81,7 @@ public class TransferClient extends MagMobileClient {
     public Response<TransferSalesDocData> update(String taskId, TransferProductOrderData productData) {
         TransferUpdateRequest req = new TransferUpdateRequest();
         req.setTaskId(taskId);
-        req.setLdap(sessionData.getUserLdap());
+        req.setLdap(userSessionData.getUserLdap());
         TransferSalesDocData putData = new TransferSalesDocData();
         putData.setProducts(Collections.singletonList(productData));
         req.jsonBody(putData);
@@ -133,7 +133,7 @@ public class TransferClient extends MagMobileClient {
     @Step("Search for transfer tasks")
     public Response<TransferDataList> searchForTasks(TransferSearchFilters filters) {
         TransferSearchRequest req = new TransferSearchRequest();
-        req.setShopId(sessionData.getUserShopId());
+        req.setShopId(userSessionData.getUserShopId());
         if (filters.getStatus() != null)
             req.setStatus(filters.getStatus());
         if (filters.getCreatedBy() != null)
@@ -145,8 +145,8 @@ public class TransferClient extends MagMobileClient {
     public Response<TransferSearchProductDataList> searchForTransferProducts(
             SalesDocumentsConst.GiveAwayPoints pointOfGiveAway) {
         TransferProductSearchRequest req = new TransferProductSearchRequest();
-        req.setShopId(sessionData.getUserShopId());
-        req.setDepartmentId(sessionData.getUserDepartmentId());
+        req.setShopId(userSessionData.getUserShopId());
+        req.setDepartmentId(userSessionData.getUserDepartmentId());
         req.setPointOfGiveAway(pointOfGiveAway.getApiVal());
         return execute(req, TransferSearchProductDataList.class);
     }
@@ -162,7 +162,7 @@ public class TransferClient extends MagMobileClient {
         TransferSalesDocData data = response.asJson();
         assertThat("taskId", data.getTaskId(), not(emptyOrNullString()));
         assertThat("status", data.getStatus(), is(SalesDocumentsConst.States.NEW.getApiVal()));
-        assertThat("createdBy", data.getCreatedBy(), is(sessionData.getUserLdap()));
+        assertThat("createdBy", data.getCreatedBy(), is(userSessionData.getUserLdap()));
         assertThat("createdDate", data.getCreatedDate(),
                 approximatelyEqual(ZonedDateTime.now()));
         assertThat("pointOfGiveAway", data.getPointOfGiveAway(),

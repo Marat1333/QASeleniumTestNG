@@ -40,7 +40,7 @@ public class CatalogProductClient extends MagMobileClient {
     public Response<CatalogProductData> getProduct(String lmCode) {
         GetCatalogProduct req = new GetCatalogProduct();
         req.setLmCode(lmCode);
-        req.setShopId(sessionData.getUserShopId());
+        req.setShopId(userSessionData.getUserShopId());
         return execute(req, CatalogProductData.class);
     }
 
@@ -49,7 +49,7 @@ public class CatalogProductClient extends MagMobileClient {
             String lmCode, SalesDocumentsConst.GiveAwayPoints pointOfGiveAway, Extend extend) {
         GetCatalogProduct req = new GetCatalogProduct();
         req.setLmCode(lmCode);
-        req.setShopId(sessionData.getUserShopId());
+        req.setShopId(userSessionData.getUserShopId());
         req.setPointOfGiveAway(pointOfGiveAway.getApiVal());
         req.setExtend(extend.toString());
         return execute(req, CatalogProductData.class);
@@ -59,7 +59,7 @@ public class CatalogProductClient extends MagMobileClient {
     public Response<CatalogReviewsOfProductList> getProductReviews(String lmCode, int pageNumber, int pageSize) {
         GetCatalogProductReviews params = new GetCatalogProductReviews()
                 .setLmCode(lmCode)
-                .setShopId(sessionData.getUserShopId())
+                .setShopId(userSessionData.getUserShopId())
                 .setPageNumber(pageNumber)
                 .setPageSize(pageSize);
         return execute(params, CatalogReviewsOfProductList.class);
@@ -75,7 +75,7 @@ public class CatalogProductClient extends MagMobileClient {
     public Response<CatalogSupplierData> getSupplyInfo(String lmCode) {
         GetCatalogSupplier params = new GetCatalogSupplier()
                 .setLmCode(lmCode)
-                .setShopId(sessionData.getUserShopId());
+                .setShopId(userSessionData.getUserShopId());
         return execute(params, CatalogSupplierData.class);
     }
 
@@ -83,7 +83,7 @@ public class CatalogProductClient extends MagMobileClient {
     public Response<Object> getProductSales(String lmCode) {
         GetCatalogProductSales params = new GetCatalogProductSales()
                 .setLmCode(lmCode)
-                .setShopId(sessionData.getUserShopId());
+                .setShopId(userSessionData.getUserShopId());
         return execute(params, Object.class);
     }
 
@@ -100,7 +100,7 @@ public class CatalogProductClient extends MagMobileClient {
     public Response<CatalogSimilarProducts> getSimilarProducts(String lmCode, Extend extend) {
         GetCatalogSimilarProductsReq params = new GetCatalogSimilarProductsReq()
                 .setLmCode(lmCode)
-                .setShopId(sessionData.getUserShopId())
+                .setShopId(userSessionData.getUserShopId())
                 .setExtend(extend.toString());
         return execute(params, CatalogSimilarProducts.class);
     }
