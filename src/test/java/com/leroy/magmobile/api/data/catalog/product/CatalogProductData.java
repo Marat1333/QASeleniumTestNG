@@ -11,17 +11,19 @@ import lombok.ToString;
 public class CatalogProductData extends ProductItemData {
     private Integer topEMQuantity;
     private ExtStocks extStocks;
-    private SalesPrice salesPrice;
+    private PriceInfo priceInfo;
     private Logistic logistic;
-    private Double purchasePrice;
+    private PriceInfo purchasePrice;
     private String purchasePriceCurrency;
     private Double primeCost;
     private String primeCostCurrency;
-    private Double futurePrice;
+    private PriceInfo futurePrice;
     private String futurePriceFromDate;
     private String priceReasonOfChange;
     private Float rating;
     private Integer reviewsCount;
     private StockAreas stockAreas;
     private Inventory inventory;
+    private PriceInfo recommendedPrice;
+
 }

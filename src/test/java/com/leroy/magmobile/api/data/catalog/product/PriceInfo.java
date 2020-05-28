@@ -3,8 +3,10 @@ package com.leroy.magmobile.api.data.catalog.product;
 import lombok.Data;
 
 @Data
-public class SalesPrice {
+public class PriceInfo {
     private Double price;
+    private String priceUnit;
+    private String priceCurrency;
     private Double altPrice;
     private String altPriceUnit;
     private String dateOfChange;

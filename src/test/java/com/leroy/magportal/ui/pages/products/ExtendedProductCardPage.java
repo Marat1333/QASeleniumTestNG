@@ -5,11 +5,13 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
+import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
 import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
 import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage.Direction;
 import com.leroy.magportal.ui.pages.products.widget.ExtendedProductCardWidget;
-import com.leroy.magportal.ui.webelements.commonelements.PriceContainer;
+import com.leroy.magportal.ui.webelements.searchelements.ProductPriceInfoWidget;
+import com.leroy.magportal.ui.webelements.searchelements.ProductQuantityInfoWidget;
 import io.qameta.allure.Step;
 
 import java.util.List;
@@ -21,39 +23,6 @@ public class ExtendedProductCardPage extends ProductCardPage {
         COMPLEMENT_PRODUCTS,
         PRICES_AND_STOCKS_IN_OTHER_SHOPS
     }
-
-    //TODO remove static modifier
-    @WebFindBy(xpath = "//span[contains(@class, 'Badge') and contains(text(),'Топ')]")
-    static Element topBadge;
-
-    @WebFindBy(xpath = "//span[contains(@class, 'Badge')][3]")
-    Element gammaBadge;
-
-    @WebFindBy(xpath = "//span[contains(@class, 'Badge')][4]")
-    Element categoryBadge;
-
-    @WebFindBy(xpath = "//span[contains(text(),'Цена')]/ancestor::div[2]/div[3]")
-    static PriceContainer productPriceLbl;
-
-    @WebFindBy(xpath = "//span[contains(text(),'Цена')]/ancestor::div[1]/following-sibling::div[1]/span")
-    PriceContainer lastPriceChangeDateLbl;
-
-    @WebFindBy(xpath = "//span[contains(text(),'Цена')]/ancestor::div[2]/following-sibling::div[2]" +
-            "/div[contains(@class, 'textAlign')]")
-    PriceContainer pricePerUnit;
-
-    //сначала кликнуть по нему
-    @WebFindBy(xpath = "//span[contains(text(),'Рекомендованная')]/ancestor::div[2]/div[contains(@class, 'textAlign')]" +
-            "//div[contains(@class,'ProductCard')][1]")
-    PriceContainer hiddenRecommendedPrice;
-
-    //сначала кликнуть по нему
-    @WebFindBy(xpath = "//span[contains(text(),'Закупочная')]/ancestor::div[2]/div[contains(@class, 'textAlign')]" +
-            "//div[contains(@class,'ProductCard')][1]")
-    PriceContainer hiddenPurchasingPrice;
-
-    @WebFindBy(xpath = "//span[contains(text(),'Доступно для продажи')]/../following-sibling::*/span")
-    static Element availableForSaleLbl;
 
     @WebFindBy(xpath = "//button[@id='ANALOG']")
     static Button similarProducts;
@@ -80,16 +49,26 @@ public class ExtendedProductCardPage extends ProductCardPage {
     @WebFindBy(xpath = "//div[contains(@class,'Tabs-Title-outer')]/following-sibling::div")
     ElementList<Element> tabContainerList;
 
-    /*private PriceContainer getHiddenRecommendedPrice() {
-        hiddenRecommendedPrice.click();
-        initElements(new CustomLocator(By.xpath(hiddenRecommendedPrice.getXpath())));
-        return hiddenRecommendedPrice;
-    }
+    //DATA
 
-    private PriceContainer getHiddenPurchasePrice() {
-        hiddenPurchasingPrice.click();
-        return hiddenPurchasingPrice;
-    }*/
+    @WebFindBy(xpath = "//p[contains(text(), 'Код поставщика')]/../*")
+    ElementList<Element> supplierInfo;
+
+    @WebFindBy(xpath = "//span[contains(text(),'Цена')]/ancestor::div[contains(@class,'bottom')]")
+    static ProductPriceInfoWidget productPriceInfoWidget;
+
+    @WebFindBy(xpath = "//span[contains(text(),'Доступно для продажи')]/ancestor::div[contains(@class,'bottom')]")
+    static ProductQuantityInfoWidget productQuantityInfoWidget;
+
+    //TODO remove static modifier
+    @WebFindBy(xpath = "//span[contains(@class, 'Badge') and contains(text(),'Топ')]")
+    static Element topBadge;
+
+    @WebFindBy(xpath = "//span[contains(@class, 'Badge')][3]")
+    Element gammaBadge;
+
+    @WebFindBy(xpath = "//span[contains(@class, 'Badge')][4]")
+    Element categoryBadge;
 
     @Step("Перейти в карточку аналогичного товара {lmCode}")
     public ExtendedProductCardPage goToAdditionalProduct(String lmCode, Tab tab) throws Exception {
@@ -191,8 +170,8 @@ public class ExtendedProductCardPage extends ProductCardPage {
 
     @Override
     public ExtendedProductCardPage verifyRequiredElements() {
-        softAssert.areElementsVisible(topBadge, addProductToCart, addProductToEstimate, productPriceLbl,
-                availableForSaleLbl, pricesAndStocksInOtherShops);
+        softAssert.areElementsVisible(topBadge, addProductToCart, addProductToEstimate, productPriceInfoWidget,
+                productQuantityInfoWidget, pricesAndStocksInOtherShops);
         softAssert.verifyAll();
         shouldUrlContains("isAllGammaView=false");
         return this;
@@ -206,13 +185,13 @@ public class ExtendedProductCardPage extends ProductCardPage {
         }
         shouldNavigationBtnHasCorrectCondition(Direction.BACK, false);
         String widgetLmCode;
-        int productCardIndex=0;
+        int productCardIndex = 0;
         for (int i = 0; i < data.size(); i++) {
-            if (i%4==0&&i>0) {
+            if (i % 4 == 0 && i > 0) {
                 shouldNavigationBtnHasCorrectCondition(Direction.FORWARD, true);
                 productCardsListRightPaginationBtn.click();
                 shouldNavigationBtnHasCorrectCondition(Direction.BACK, true);
-                productCardIndex=productCardIndex%4;
+                productCardIndex = productCardIndex % 4;
             }
             widgetLmCode = productCards.get(productCardIndex).getLmCode();
             anAssert.isEquals(data.get(i).getLmCode(), widgetLmCode, "lmCode mismatch");
@@ -236,5 +215,11 @@ public class ExtendedProductCardPage extends ProductCardPage {
             }
         }
         return this;
+    }
+
+    @Override
+    public void shouldProductCardContainsAllData(CatalogProductData data) throws Exception {
+        super.shouldProductCardContainsAllData(data);
+
     }
 }

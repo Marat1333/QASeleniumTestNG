@@ -5,6 +5,7 @@ import com.leroy.core.ContextProvider;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
+import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magportal.api.clients.MagPortalCatalogProductClient;
 import com.leroy.magportal.api.data.CatalogSimilarProductsData;
@@ -243,5 +244,13 @@ public class ProductCardTest extends WebBaseSteps {
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(allDepartments);
         searchProductPage.navigateBack();
         productCardPage.verifyRequiredElements();
+    }
+
+    @Test(description = "C23389190 Check short card data")
+    public void testCheckShortCardData() throws Exception {
+        CatalogProductData data = apiClientProvider.getMagPortalCatalogProductClientProvider().getProductData(lmCode).asJson();
+
+        ProductCardPage productCardPage = navigateToProductCardByUrl(lmCode, true);
+        productCardPage.shouldProductCardContainsAllData(data);
     }
 }

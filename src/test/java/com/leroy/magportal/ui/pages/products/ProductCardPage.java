@@ -5,6 +5,8 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.magmobile.api.data.catalog.Characteristic;
+import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
 import com.leroy.magportal.ui.models.search.NomenclaturePath;
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.pages.products.widget.ShopCardWidget;
@@ -22,25 +24,6 @@ public class ProductCardPage extends MenuPage {
     @WebFindBy(xpath = "//span[contains(text(), 'Каталог товаров')]/ancestor::div[2]/div", clazz = Button.class)
     ElementList<Button> nomenclaturePath;
 
-    @WebFindBy(xpath = "//div[contains(@id,'barCodeButton')]/ancestor::div[3]/preceding-sibling::div" +
-            "//span[contains(@class, 'LmCode')]/following-sibling::span")
-    Element lmCodeLbl;
-
-    @WebFindBy(xpath = "//div[@id='barCodeButton']/div[1]/span")
-    Element barCodeLbl;
-
-    @WebFindBy(xpath = "//span[contains(@class, 'Badge')][1]")
-    Element nomenclatureBadge;
-
-    @WebFindBy(xpath = "//span[contains(@class, 'Badge')][2]")
-    Element gammaBadge;
-
-    @WebFindBy(xpath = "//span[contains(@class, 'Badge')][3]")
-    Element categoryBadge;
-
-    @WebFindBy(xpath = "//p[contains(text(), 'Характеристики')]/ancestor::div[3]/preceding-sibling::span")
-    Element productTitle;
-
     @WebFindBy(xpath = "//span[contains(text(),'ВСЕ ХАРАКТЕРИСТИКИ')]")
     Element showAllSpecifications;
 
@@ -55,6 +38,33 @@ public class ProductCardPage extends MenuPage {
 
     @WebFindBy(xpath = "//div[contains(@class,'Catalog-NearestShopList__item_container')]", clazz = ShopCardWidget.class)
     ElementList<ShopCardWidget> shopsList;
+
+    //DATA
+    @WebFindBy(xpath = "//span[contains(@class, 'Badge')][1]")
+    Element nomenclatureBadge;
+
+    @WebFindBy(xpath = "//span[contains(@class, 'Badge')][2]")
+    Element gammaBadge;
+
+    @WebFindBy(xpath = "//div[contains(@id,'barCodeButton')]/ancestor::div[3]/preceding-sibling::div" +
+            "//span[contains(@class, 'LmCode')]/following-sibling::span")
+    Element lmCodeLbl;
+
+    @WebFindBy(xpath = "//div[@id='barCodeButton']/div[1]/span")
+    Element barCodeLbl;
+
+    @WebFindBy(xpath = "//span[contains(@class, 'Badge')][3]")
+    Element categoryBadge;
+
+    @WebFindBy(xpath = "//p[contains(text(), 'Характеристики')]/ancestor::div[3]/preceding-sibling::span")
+    Element productTitle;
+
+    @WebFindBy(xpath = "//p[contains(text(), 'Характеристики')]/following-sibling::div")
+    ElementList<Element> characteristics;
+
+    @WebFindBy(xpath = "//p[contains(text(), 'Описание')]/following-sibling::div//*[contains(text(),'')]")
+    ElementList<Element> description;
+
 
     @Override
     public void waitForPageIsLoaded() {
@@ -93,7 +103,7 @@ public class ProductCardPage extends MenuPage {
     @Step("Перейти на страницу поиска с примененным фильтром по номенклатуре {attribute}")
     public SearchProductPage navigateToSearchByNomenclatureAttribute(String attribute) throws Exception {
         for (Button nomenclatureLvl : nomenclaturePath) {
-            if (nomenclatureLvl.findChildElement("./span/span").getText().equals(attribute)){
+            if (nomenclatureLvl.findChildElement("./span/span").getText().equals(attribute)) {
                 nomenclatureLvl.click();
                 break;
             }
@@ -105,24 +115,7 @@ public class ProductCardPage extends MenuPage {
     public SearchProductPage backToSearchResult() {
         backToSearchResults.click();
         return new SearchProductPage(context);
-    }
-
-    @Step("Перейти на страницу с результатами поиска по элементу номенклатуры {nomenclatureElementName}")
-    public SearchProductPage backToNomenclatureElement(String nomenclatureElementName) throws Exception {
-        Button targetElement = null;
-        for (Button each : nomenclaturePath) {
-            try {
-                targetElement = (Button) each.findChildElement("/descendant::span[2][contains(text(),'" + nomenclatureElementName + "')]/ancestor::div[1]");
-                if (targetElement.isPresent()) {
-                    break;
-                }
-            } catch (NoSuchElementException e) {
-                Log.warn("Try to find element");
-            }
-        }
-        targetElement.click();
-        return new SearchProductPage(context);
-    }
+    }*/
 
     @Step("Открыть полное описание товара")
     public ProductCardPage showFullDescription() {
@@ -135,7 +128,6 @@ public class ProductCardPage extends MenuPage {
         showAllSpecifications.click();
         return this;
     }
-    */
 
     //Verifications
 
@@ -146,18 +138,51 @@ public class ProductCardPage extends MenuPage {
         } else {
             String barCode = ParserUtil.strWithOnlyDigits(barCodeLbl.getText());
             anAssert.isTrue(lmCodeLbl.getText().contains(text) ||
-                            barCode.equals(text),
-                    "Карта товара не содержит критерий поиска " + text);
+                            barCode.equals(text), "Карта товара не содержит критерий поиска " + text);
         }
         return this;
+    }
+
+    @Step("Проверить, что все данные по товару корректно отобразились")
+    public void shouldProductCardContainsAllData(CatalogProductData data) throws Exception {
+        shouldCharacteristicsIsVisible(data.getCharacteristics());
+        shouldDescriptionIsVisible(data.getDescription());
+    }
+
+    @Step("Проверить, что характеристики товара отображены")
+    private void shouldCharacteristicsIsVisible(List<Characteristic> characteristics) throws Exception {
+        if (!showAllSpecifications.isVisible()) {
+            showAllSpecifications();
+        }
+        anAssert.isEquals(this.characteristics.getCount(), characteristics.size(), "data and viewData size mismatch");
+        Element key, value;
+        for (int i = 0; i < this.characteristics.getCount(); i++) {
+            key = this.characteristics.get(i).findChildElement("./div[1]/p");
+            value = this.characteristics.get(i).findChildElement("./div[2]/p");
+            anAssert.isElementTextEqual(key, characteristics.get(i).getName() + ":");
+            anAssert.isElementTextEqual(value, characteristics.get(i).getValue());
+        }
+    }
+
+    @Step("Проверить, что описание товара отображено")
+    private void shouldDescriptionIsVisible(String description) {
+        if (!showFullDescription.isVisible()) {
+            showFullDescription();
+        }
+        String eachDescriptionElementText;
+        for (Element each : this.description) {
+            eachDescriptionElementText = each.getText();
+            anAssert.isElementTextContainsIgnoringCase(description, eachDescriptionElementText,
+                    "description hasn`t cantains " + eachDescriptionElementText);
+        }
     }
 
     @Step("Проверить, что страница 'Карта товара' отображается корректно")
     public ProductCardPage verifyRequiredElements() {
         softAssert.areElementsVisible(gammaBadge, productTitle, lmCodeLbl, pricesAndStocksInOtherShops);
         softAssert.areElementsNotVisible(ExtendedProductCardPage.topBadge, ExtendedProductCardPage.addProductToCart,
-                ExtendedProductCardPage.addProductToEstimate, ExtendedProductCardPage.availableForSaleLbl,
-                ExtendedProductCardPage.productPriceLbl);
+                ExtendedProductCardPage.addProductToEstimate, ExtendedProductCardPage.productPriceInfoWidget,
+                ExtendedProductCardPage.productQuantityInfoWidget);
         shouldUrlContains("isAllGammaView=true");
         softAssert.verifyAll();
         return this;
