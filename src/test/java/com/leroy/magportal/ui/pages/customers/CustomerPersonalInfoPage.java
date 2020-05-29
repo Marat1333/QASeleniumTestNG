@@ -14,10 +14,6 @@ public class CustomerPersonalInfoPage extends MenuPage {
 
     public static final String HEADER = "Клиенты";
 
-    public CustomerPersonalInfoPage(Context context) {
-        super(context);
-    }
-
     @WebFindBy(xpath = "//span[text()='" + HEADER + "']",
             metaName = "Основной заголовок страницы - 'Клиенты'")
     Element headerLbl;
@@ -45,7 +41,7 @@ public class CustomerPersonalInfoPage extends MenuPage {
     @Override
     public void waitForPageIsLoaded() {
         headerClientNameLbl.waitForVisibility();
-        genderObj.waitForVisibility();
+        genderObj.waitForVisibility(tiny_timeout);
         headerLbl.waitUntilTextIsEqualTo(HEADER, timeout);
     }
 

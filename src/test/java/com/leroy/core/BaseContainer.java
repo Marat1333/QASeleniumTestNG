@@ -30,6 +30,10 @@ public abstract class BaseContainer {
     protected int timeout = 30;
     protected int long_timeout = 60;
 
+    public BaseContainer() {
+        this(ContextProvider.getDriver());
+    }
+
     public BaseContainer(WebDriver driver) {
         this.driver = driver;
     }

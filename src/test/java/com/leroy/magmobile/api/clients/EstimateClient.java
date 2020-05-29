@@ -26,8 +26,8 @@ public class EstimateClient extends MagMobileClient {
     @Step("Get Estimate info for estimateId={estimateId}")
     public Response<EstimateData> sendRequestGet(String estimateId) {
         return execute(new EstimateGet().setEstimateId(estimateId)
-                .bearerAuthHeader(sessionData.getAccessToken())
-                .setShopId(sessionData.getUserShopId()), EstimateData.class);
+                .bearerAuthHeader(userSessionData.getAccessToken())
+                .setShopId(userSessionData.getUserShopId()), EstimateData.class);
     }
 
     @Step("Create Estimate")
@@ -44,8 +44,8 @@ public class EstimateClient extends MagMobileClient {
         estimateData.setProducts(filteredProducts);
         estimateData.setCustomers(customerDataList);
         return execute(new EstimatePost()
-                .bearerAuthHeader(sessionData.getAccessToken())
-                .setShopId(sessionData.getUserShopId())
+                .bearerAuthHeader(userSessionData.getAccessToken())
+                .setShopId(userSessionData.getUserShopId())
                 .jsonBody(estimateData), EstimateData.class);
     }
 
@@ -67,8 +67,8 @@ public class EstimateClient extends MagMobileClient {
         estimateData.setProducts(productOrderDataList);
         return execute(new EstimatePut()
                 .setEstimateId(estimateId)
-                .bearerAuthHeader(sessionData.getAccessToken())
-                .setShopId(sessionData.getUserShopId())
+                .bearerAuthHeader(userSessionData.getAccessToken())
+                .setShopId(userSessionData.getUserShopId())
                 .jsonBody(estimateData), EstimateData.class);
     }
 
@@ -82,7 +82,7 @@ public class EstimateClient extends MagMobileClient {
         Map<String, String> body = new HashMap<>();
         body.put("status", SalesDocumentsConst.States.DELETED.getApiVal());
         return execute(new EstimateChangeStatusPut()
-                .bearerAuthHeader(sessionData.getAccessToken())
+                .bearerAuthHeader(userSessionData.getAccessToken())
                 .setEstimateId(estimateId)
                 .formBody(body), JsonNode.class);
     }
@@ -92,7 +92,7 @@ public class EstimateClient extends MagMobileClient {
         Map<String, String> body = new HashMap<>();
         body.put("status", SalesDocumentsConst.States.CONFIRMED.getApiVal());
         return execute(new EstimateChangeStatusPut()
-                .bearerAuthHeader(sessionData.getAccessToken())
+                .bearerAuthHeader(userSessionData.getAccessToken())
                 .setEstimateId(estimateId)
                 .formBody(body), JsonNode.class);
     }
@@ -119,7 +119,7 @@ public class EstimateClient extends MagMobileClient {
         assertThat("salesDocStatus", data.getSalesDocStatus(), is(SalesDocumentsConst.States.DRAFT.getApiVal()));
         assertThat("documentType", data.getDocumentType(), is(SalesDocumentsConst.Types.QUOTATION.getApiVal()));
         assertThat("status", data.getStatus(), is(SalesDocumentsConst.States.DRAFT.getApiVal()));
-        assertThat("shopId", data.getShopId(), is(sessionData.getUserShopId()));
+        assertThat("shopId", data.getShopId(), is(userSessionData.getUserShopId()));
         assertThat("documentVersion", data.getDocumentVersion(), is(1));
 
         assertThat("products", data.getProducts(), hasSize(greaterThan(0)));

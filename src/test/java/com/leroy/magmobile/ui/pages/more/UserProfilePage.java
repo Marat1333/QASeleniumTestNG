@@ -2,16 +2,11 @@ package com.leroy.magmobile.ui.pages.more;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.common.BottomMenuPage;
 
 public class UserProfilePage extends BottomMenuPage {
 
     private static final String TYPICAL_OPTION_XPATH = "//android.view.ViewGroup[@content-desc='ScreenContent']//android.view.ViewGroup";
-
-    public UserProfilePage(Context context) {
-        super(context);
-    }
 
     @AppFindBy(xpath = TYPICAL_OPTION_XPATH + "[android.widget.TextView[@text='Магазин']]")
     private Element shopArea;
@@ -21,12 +16,12 @@ public class UserProfilePage extends BottomMenuPage {
 
     public SearchShopPage goToEditShopForm() {
         shopArea.click();
-        return new SearchShopPage(context);
+        return new SearchShopPage();
     }
 
     public DepartmentListPage goToEditDepartmentForm() {
         departmentArea.click();
-        return new DepartmentListPage(context);
+        return new DepartmentListPage();
     }
 
 }

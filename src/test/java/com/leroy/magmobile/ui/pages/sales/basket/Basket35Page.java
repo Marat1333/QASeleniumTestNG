@@ -1,21 +1,21 @@
 package com.leroy.magmobile.ui.pages.sales.basket;
 
-import com.leroy.core.TestContext;
+import com.leroy.core.ContextProvider;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.elements.MagMobWhiteSubmitButton;
-import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.search.SearchProductPage;
-import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
 import com.leroy.magmobile.ui.models.sales.SalesOrderCardData;
 import com.leroy.magmobile.ui.models.sales.SalesOrderData;
+import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
+import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 import org.apache.commons.math3.util.Precision;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,10 +24,6 @@ import java.util.List;
 public class Basket35Page extends CommonMagMobilePage {
 
     public final static String SCREEN_TITLE = "Корзина";
-
-    public Basket35Page(Context context) {
-        super(context);
-    }
 
     public static class PageState {
         boolean productIsAdded;
@@ -97,9 +93,10 @@ public class Basket35Page extends CommonMagMobilePage {
         waitUntilProgressBarIsInvisible();
     }
 
-    public static boolean isThisPage(TestContext context) {
-        String ps = getPageSource(context.getDriver());
-        Element el = new Element(context.getDriver(),
+    public static boolean isThisPage() {
+        WebDriver driver = ContextProvider.getDriver();
+        String ps = getPageSource(driver);
+        Element el = new Element(driver,
                 By.xpath("//*[contains(@content-desc, 'Screen')]//android.widget.TextView"));
         return el.isVisible(ps) && el.getText(ps).equals(Basket35Page.SCREEN_TITLE);
     }
@@ -128,13 +125,13 @@ public class Basket35Page extends CommonMagMobilePage {
     public CartActionWithProductCardModalPage clickCardByIndex(int index) throws Exception {
         index--;
         orderCardsScrollView.clickElemByIndex(index);
-        return new CartActionWithProductCardModalPage(context);
+        return new CartActionWithProductCardModalPage();
     }
 
     @Step("Нажмите ОФОРМИТЬ")
     public ProcessOrder35Page clickMakeSalesButton() {
         makeSalesBtn.click();
-        return new ProcessOrder35Page(context);
+        return new ProcessOrder35Page();
     }
 
     @Step("Нажмите кнопку для добавления товара в корзину")
@@ -143,7 +140,7 @@ public class Basket35Page extends CommonMagMobilePage {
             addProductBtn.click();
         else
             productAndServiceBtn.click();
-        return new SearchProductPage(context);
+        return new SearchProductPage();
     }
 
     // ------------- Verifications ----------------------//

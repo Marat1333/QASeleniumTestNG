@@ -5,15 +5,11 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magmobile.ui.Context;
-import com.leroy.magportal.ui.webelements.commonelements.PriceContainer;
 import com.leroy.magportal.ui.pages.products.widget.ExtendedProductCardWidget;
 import com.leroy.magportal.ui.pages.products.widget.ShopCardWidget;
+import com.leroy.magportal.ui.webelements.commonelements.PriceContainer;
 
 public class ExtendedProductCardPage extends ProductCardPage {
-    public ExtendedProductCardPage(Context context) {
-        super(context);
-    }
 
     public enum Tabs {
         SIMILAR_PRODUCTS,

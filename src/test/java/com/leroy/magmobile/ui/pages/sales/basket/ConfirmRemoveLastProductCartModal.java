@@ -2,15 +2,10 @@ package com.leroy.magmobile.ui.pages.sales.basket;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import io.qameta.allure.Step;
 
 public class ConfirmRemoveLastProductCartModal extends CommonMagMobilePage {
-
-    public ConfirmRemoveLastProductCartModal(Context context) {
-        super(context);
-    }
 
     @AppFindBy(text = "Выйти и удалить корзину?")
     Element headerLbl;

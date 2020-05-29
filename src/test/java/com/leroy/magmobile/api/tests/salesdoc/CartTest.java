@@ -30,7 +30,6 @@ import static org.hamcrest.Matchers.hasSize;
 
 public class CartTest extends BaseProjectApiTest {
 
-    @Inject
     private CartClient cartClient;
 
     private CatalogSearchClient searchClient;
@@ -46,8 +45,8 @@ public class CartTest extends BaseProjectApiTest {
 
     @BeforeClass
     private void setUp() {
+        cartClient = apiClientProvider.getCartClient();
         searchClient = apiClientProvider.getCatalogSearchClient();
-        cartClient.setSessionData(sessionData);
         products = apiClientProvider.getProducts(3);
     }
 

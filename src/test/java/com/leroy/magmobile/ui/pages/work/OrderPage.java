@@ -3,7 +3,6 @@ package com.leroy.magmobile.ui.pages.work;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.common.widget.CalendarWidget;
 import com.leroy.magmobile.ui.pages.widgets.TimePickerWidget;
@@ -15,10 +14,6 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class OrderPage extends CommonMagMobilePage {
-
-    public OrderPage(Context context) {
-        super(context);
-    }
 
     @AppFindBy(text = "ПАРАМЕТРЫ ЗАЯВКИ", metaName = "Заголовок 'ПАРАМЕТРЫ ЗАЯВКИ'")
     private Element headerObj;
@@ -100,7 +95,7 @@ public class OrderPage extends CommonMagMobilePage {
     @Step("Нажать кнопку ОТПРАВИТЬ ЗАЯВКУ")
     public SubmittedWithdrawalOrderPage clickSubmitBtn() {
         submitBtn.click();
-        return new SubmittedWithdrawalOrderPage(context);
+        return new SubmittedWithdrawalOrderPage();
     }
 
     /* ------------------------- Verifications -------------------------- */

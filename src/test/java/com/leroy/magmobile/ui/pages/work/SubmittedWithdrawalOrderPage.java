@@ -2,16 +2,11 @@ package com.leroy.magmobile.ui.pages.work;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import io.qameta.allure.Step;
 
 public class SubmittedWithdrawalOrderPage extends CommonMagMobilePage {
-
-    public SubmittedWithdrawalOrderPage(Context context) {
-        super(context);
-    }
 
     @AppFindBy(xpath = "//android.widget.TextView[1]")
     private Element headerLbl;
@@ -32,7 +27,7 @@ public class SubmittedWithdrawalOrderPage extends CommonMagMobilePage {
     @Step("Нажать кнопку ПЕРЕЙТИ В СПИСОК ЗАЯВОК")
     public OrdersListPage clickSubmitBtn() {
         submitBtn.click();
-        return new OrdersListPage(context);
+        return new OrdersListPage();
     }
 
     /* ------------------------- Verifications  -------------------------- */

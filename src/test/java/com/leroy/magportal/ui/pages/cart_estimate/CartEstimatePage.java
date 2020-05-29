@@ -5,7 +5,6 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
 import com.leroy.magportal.ui.models.salesdoc.OrderWebData;
 import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardWebData;
@@ -27,10 +26,6 @@ import java.util.List;
 
 public abstract class CartEstimatePage extends
         LeftDocumentListPage<ShortCartEstimateDocumentCardWidget, ShortSalesDocWebData> {
-
-    public CartEstimatePage(Context context) {
-        super(context);
-    }
 
     public static class SearchType {
         public static final String PHONE = "Телефон";
@@ -187,7 +182,7 @@ public abstract class CartEstimatePage extends
     public CreateCustomerForm clickOptionEditCustomer() {
         customerActionBtn.click();
         editCustomerOptionBtn.click();
-        return new CreateCustomerForm(context);
+        return new CreateCustomerForm();
     }
 
     @Step("Действия с клиентом: Выбрать другого клиента")
@@ -207,7 +202,7 @@ public abstract class CartEstimatePage extends
     @Step("Удалить выбранного клиента")
     public CartEstimatePage removeSelectedCustomer() {
         clickOptionRemoveCustomer();
-        new ConfirmRemoveModal(context).clickConfirmBtn();
+        new ConfirmRemoveModal().clickConfirmBtn();
         return this;
     }
 
@@ -270,7 +265,7 @@ public abstract class CartEstimatePage extends
         anAssert.isTrue(createCustomerBtn.isVisible(tiny_timeout),
                 createCustomerBtn.getMetaName() + " не отображается");
         createCustomerBtn.click();
-        return new CreateCustomerForm(context);
+        return new CreateCustomerForm();
     }
 
     // Verifications

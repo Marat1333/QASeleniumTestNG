@@ -3,17 +3,12 @@ package com.leroy.magmobile.ui.pages.customers;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.estimate.EstimatePage;
 import io.qameta.allure.Step;
 
 public class EditCustomerContactDetailsPage extends CommonMagMobilePage {
-
-    public EditCustomerContactDetailsPage(Context context) {
-        super(context);
-    }
 
     @AppFindBy(containsText = "Изменение контактных", metaName = "Основной заголовок")
     Element headerLbl;
@@ -49,7 +44,7 @@ public class EditCustomerContactDetailsPage extends CommonMagMobilePage {
     @Step("Нажать кнопку Сохранить")
     public EstimatePage clickSaveButton() {
         saveBtn.click();
-        return new EstimatePage(context);
+        return new EstimatePage();
     }
 
     // Verifications
@@ -59,7 +54,7 @@ public class EditCustomerContactDetailsPage extends CommonMagMobilePage {
         if (!value.startsWith("+7"))
             value = "+7" + value;
         String actualValue = newPhoneFld.getText();
-        anAssert.isEquals(actualValue.replaceAll(" |-",""), value,
+        anAssert.isEquals(actualValue.replaceAll(" |-", ""), value,
                 "В поле для добавления нового телефонна ожидался другой номер");
         return this;
     }

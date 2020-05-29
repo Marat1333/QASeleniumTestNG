@@ -8,7 +8,6 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.models.search.FiltersData;
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.pages.products.widget.ExtendedProductCardTableViewWidget;
@@ -26,10 +25,6 @@ import java.time.LocalDate;
 import java.util.*;
 
 public class SearchProductPage extends MenuPage {
-
-    public SearchProductPage(Context context) {
-        super(context);
-    }
 
     public enum FilterFrame {
         MY_SHOP,
@@ -307,7 +302,7 @@ public class SearchProductPage extends MenuPage {
                 break;
         }
         this.switchToNewWindow(windows);
-        return frame.equals(FilterFrame.MY_SHOP) ? (T) new ExtendedProductCardPage(context) : (T) new ProductCardPage(context);
+        return frame.equals(FilterFrame.MY_SHOP) ? (T) new ExtendedProductCardPage() : (T) new ProductCardPage();
     }
 
     @Step("Перейти по адресу, содержащему фильтры")
@@ -318,7 +313,7 @@ public class SearchProductPage extends MenuPage {
             paramsBuilder.append(entry.getKey() + entry.getValue()).append("&");
         }
         navigateTo(paramsBuilder.deleteCharAt(paramsBuilder.length() - 1).toString());
-        return new SearchProductPage(context);
+        return new SearchProductPage();
     }
 
     @Step("Наполнить историю поиска")
@@ -344,7 +339,7 @@ public class SearchProductPage extends MenuPage {
             anAssert.isTrue(driver.getWindowHandles().size() > windows.size(),
                     "Должно было открыться новое окно с карточкой товара");
             this.switchToNewWindow(windows);
-            return (T) new ProductCardPage(context);
+            return (T) new ProductCardPage();
         }
         return (T) this;
     }

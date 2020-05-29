@@ -24,14 +24,14 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
 
     private List<String> productLmCodes;
 
+    @BeforeClass
+    private void initClients() {
+        transferClient = apiClientProvider.getTransferClient();
+    }
+
     @Override
     protected boolean isNeedAccessToken() {
         return false;
-    }
-
-    @BeforeClass
-    private void setUp() {
-        transferClient = apiClientProvider.getTransferClient();
     }
 
     @BeforeClass
@@ -50,8 +50,8 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
 
         TransferSalesDocData postSalesDocData = new TransferSalesDocData();
         postSalesDocData.setProducts(Collections.singletonList(productOrderData));
-        postSalesDocData.setShopId(Integer.valueOf(sessionData.getUserShopId()));
-        postSalesDocData.setDepartmentId(sessionData.getUserDepartmentId());
+        postSalesDocData.setShopId(Integer.valueOf(getUserSessionData().getUserShopId()));
+        postSalesDocData.setDepartmentId(getUserSessionData().getUserDepartmentId());
         postSalesDocData.setDateOfGiveAway(ZonedDateTime.now().plusDays(5).withFixedOffsetZone());
         postSalesDocData.setPointOfGiveAway(SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR.getApiVal());
 

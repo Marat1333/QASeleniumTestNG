@@ -17,13 +17,13 @@ public class CatalogSearchClient extends MagMobileClient {
 
     @Step("Search for products")
     public Response<ProductItemDataList> searchProductsBy(GetCatalogSearch params) {
-        params.setLdap(sessionData.getUserLdap());
+        params.setLdap(userSessionData.getUserLdap());
         return execute(params, ProductItemDataList.class);
     }
 
     @Step("Search for services")
     public Response<ServiceItemDataList> searchServicesBy(GetCatalogServicesSearch params) {
-        params.setLdap(sessionData.getUserLdap());
+        params.setLdap(userSessionData.getUserLdap());
         return execute(params, ServiceItemDataList.class);
     }
 

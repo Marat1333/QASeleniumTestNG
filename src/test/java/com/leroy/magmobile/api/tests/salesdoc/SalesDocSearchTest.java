@@ -3,11 +3,11 @@ package com.leroy.magmobile.api.tests.salesdoc;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.leroy.constants.sales.SalesDocumentsConst;
-import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import com.leroy.magmobile.api.clients.MagMobileClient;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.requests.salesdoc.search.SalesDocSearchV3Get;
+import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -111,13 +111,14 @@ public class SalesDocSearchTest extends BaseProjectApiTest {
 
     private void assertThatSalesDocumentsMatch(List<SalesDocumentResponseData> salesDocList,
                                                String docType, String shopId, String docId) {
+        String shopId2 = shopId != null && shopId.length() == 1 ? "00" + shopId : shopId;
         for (SalesDocumentResponseData salesDoc : salesDocList) {
             assertThat("docId", salesDoc.getDocId(), not(isEmptyOrNullString()));
             assertThat("fullDocId", salesDoc.getFullDocId(), is(endsWith(salesDoc.getDocId())));
             if (docType != null)
                 assertThat("docType", salesDoc.getDocType(), is(docType));
             if (shopId != null)
-                assertThat("shopId", salesDoc.getShopId(), is(shopId));
+                assertThat("shopId", salesDoc.getShopId(), oneOf(shopId, shopId2));
             if (docId != null)
                 assertThat("docId", salesDoc.getDocId(), is(containsString(docId)));
         }

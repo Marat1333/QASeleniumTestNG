@@ -2,15 +2,10 @@ package com.leroy.magmobile.ui.pages.sales.estimate;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import io.qameta.allure.Step;
 
 public class ConfirmRemoveLastProductEstimateModal extends CommonMagMobilePage {
-
-    public ConfirmRemoveLastProductEstimateModal(Context context) {
-        super(context);
-    }
 
     @AppFindBy(text = "Удалить смету?")
     Element headerLbl;

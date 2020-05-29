@@ -39,7 +39,7 @@ public class CartTest extends SalesBaseTest {
         SearchProductPage searchProductPage = basket35Page.clickAddProductButton()
                 .verifyRequiredElements();
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
-        AddProduct35Page addProduct35Page = new AddProduct35Page(context);
+        AddProduct35Page addProduct35Page = new AddProduct35Page();
         addProduct35Page.verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_BASKET);
 
         // Step 4
@@ -54,14 +54,14 @@ public class CartTest extends SalesBaseTest {
         String lmCode = getAnyLmCodeProductWithTopEM();
         // Если выполняется после "C22797089 Создать корзину с экрана Документы продажи",
         // то можно пропустить pre-condition шаги
-        if (!Basket35Page.isThisPage(context)) {
+        if (!Basket35Page.isThisPage()) {
             MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
                     MainSalesDocumentsPage.class);
             SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
             salesDocumentsPage.searchForDocumentByTextAndSelectIt(
                     SalesDocumentsConst.Types.CART.getUiVal());
         } // TODO через API
-        Basket35Page basket35Page = new Basket35Page(context);
+        Basket35Page basket35Page = new Basket35Page();
         int productCountInBasket = basket35Page.getCountOfOrderCards();
         // Step 1
         step("Нажмите на кнопку +Товар");
@@ -71,7 +71,7 @@ public class CartTest extends SalesBaseTest {
         // Step 2
         step("Введите ЛМ код товара или название товара или отсканируйте товар");
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
-        AddProduct35Page addProduct35Page = new AddProduct35Page(context)
+        AddProduct35Page addProduct35Page = new AddProduct35Page()
                 .verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_BASKET);
         SalesOrderCardData expectedOrderCardData = addProduct35Page.getOrderRowDataFromPage();
 
@@ -87,9 +87,9 @@ public class CartTest extends SalesBaseTest {
                 expectedOrderCardData);
     }
 
-    @Test(description = "C22797098 Удалить товар из корзины")
+    @Test(description = "C22797098 Удалить товар из корзины", groups = NEED_ACCESS_TOKEN_GROUP)
     public void testRemoveProductFromCart() throws Exception {
-        if (!Basket35Page.isThisPage(context)) {
+        if (!Basket35Page.isThisPage()) {
             String cartDocId = createDraftCart(2);
             MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
                     MainSalesDocumentsPage.class);
@@ -98,7 +98,7 @@ public class CartTest extends SalesBaseTest {
                     cartDocId);
         }
 
-        Basket35Page basket35Page = new Basket35Page(context);
+        Basket35Page basket35Page = new Basket35Page();
         SalesOrderCardData salesOrderCardDataBefore = basket35Page.getSalesOrderCardDataByIndex(1);
 
         // Step 1
@@ -109,13 +109,13 @@ public class CartTest extends SalesBaseTest {
         // Step 2
         step("Выберите параметр Удалить товар");
         modalPage.clickRemoveProductMenuItem();
-        ConfirmRemovingProductModal confirmRemovingProductModal = new ConfirmRemovingProductModal(context)
+        ConfirmRemovingProductModal confirmRemovingProductModal = new ConfirmRemovingProductModal()
                 .verifyRequiredElements();
 
         // Step 3
         step("Нажмите на Удалить");
         confirmRemovingProductModal.clickConfirmButton();
-        basket35Page = new Basket35Page(context);
+        basket35Page = new Basket35Page();
         basket35Page.verifyRequiredElements(new Basket35Page.PageState()
                 .setProductIsAdded(true)
                 .setManyOrders(false));
@@ -123,10 +123,10 @@ public class CartTest extends SalesBaseTest {
                 salesOrderCardDataBefore.getProductCardData().getLmCode());
     }
 
-    @Test(description = "C22797099 Удалить последний товар из корзины")
+    @Test(description = "C22797099 Удалить последний товар из корзины", groups = NEED_ACCESS_TOKEN_GROUP)
     public void testRemoveTheLastProductFromCart() throws Exception {
         String cartDocNumber = null;
-        if (!Basket35Page.isThisPage(context)) {
+        if (!Basket35Page.isThisPage()) {
             cartDocNumber = createDraftCart(1);
             MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
                     MainSalesDocumentsPage.class);
@@ -135,7 +135,7 @@ public class CartTest extends SalesBaseTest {
                     cartDocNumber);
         }
 
-        Basket35Page basket35Page = new Basket35Page(context);
+        Basket35Page basket35Page = new Basket35Page();
         // if (cartDocId == null) TODO если будет тест запускаться в цепочке
 
         // Step 1
@@ -146,13 +146,13 @@ public class CartTest extends SalesBaseTest {
         // Step 2
         step("Выберите параметр Удалить товар");
         modalPage.clickRemoveProductMenuItem();
-        ConfirmRemoveLastProductCartModal confirmRemovingProductModal = new ConfirmRemoveLastProductCartModal(context)
+        ConfirmRemoveLastProductCartModal confirmRemovingProductModal = new ConfirmRemoveLastProductCartModal()
                 .verifyRequiredElements();
 
         // Step 3
         step("Нажмите на Выйти");
         confirmRemovingProductModal.clickConfirmButton();
-        SalesDocumentsPage salesDocumentsPage = new SalesDocumentsPage(context);
+        SalesDocumentsPage salesDocumentsPage = new SalesDocumentsPage();
         salesDocumentsPage.shouldSalesDocumentIsNotPresent(cartDocNumber);
     }
 
