@@ -1,10 +1,7 @@
 package com.leroy.magportal.ui.pages.products;
 
 import com.leroy.core.annotations.WebFindBy;
-import com.leroy.core.web_elements.general.Button;
-import com.leroy.core.web_elements.general.EditBox;
-import com.leroy.core.web_elements.general.Element;
-import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.core.web_elements.general.*;
 import com.leroy.magmobile.api.data.catalog.Characteristic;
 import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
 import com.leroy.magportal.ui.models.search.NomenclaturePath;
@@ -24,10 +21,10 @@ public class ProductCardPage extends MenuPage {
     @WebFindBy(xpath = "//span[contains(text(), 'Каталог товаров')]/ancestor::div[2]/div", clazz = Button.class)
     ElementList<Button> nomenclaturePath;
 
-    @WebFindBy(xpath = "//span[contains(text(),'ВСЕ ХАРАКТЕРИСТИКИ')]")
+    @WebFindBy(xpath = "//span[contains(text(),'ВСЕ ХАРАКТЕРИСТИКИ')]/..")
     Element showAllSpecifications;
 
-    @WebFindBy(xpath = "//span[contains(text(),'ВСЕ ОПИСАНИЕ')]")
+    @WebFindBy(xpath = "//span[contains(text(),'ВСЕ ОПИСАНИЕ')]/..")
     Element showFullDescription;
 
     @WebFindBy(xpath = "//button[@id='SHOPS']")
@@ -43,7 +40,7 @@ public class ProductCardPage extends MenuPage {
     @WebFindBy(xpath = "//span[contains(@class, 'Badge')][1]")
     Element nomenclatureBadge;
 
-    @WebFindBy(xpath = "//span[contains(@class, 'Badge')][2]")
+    @WebFindBy(xpath = "//span[contains(text(),'Гамма')]")
     Element gammaBadge;
 
     @WebFindBy(xpath = "//div[contains(@id,'barCodeButton')]/ancestor::div[3]/preceding-sibling::div" +
@@ -62,9 +59,20 @@ public class ProductCardPage extends MenuPage {
     @WebFindBy(xpath = "//p[contains(text(), 'Характеристики')]/following-sibling::div")
     ElementList<Element> characteristics;
 
-    @WebFindBy(xpath = "//p[contains(text(), 'Описание')]/following-sibling::div//*[contains(text(),'')]")
+    @WebFindBy(xpath = "//p[contains(text(), 'Описание')]/following-sibling::div//*[contains(text(),'') and not(contains(name(),'ul'))]")
     ElementList<Element> description;
 
+    @WebFindBy(xpath = "//*[@id='barCodeButton']")
+    Element barCodeListOpenerBtn;
+
+    @WebFindBy(xpath = "//*[@id='barCodeButton']/ancestor::div[@class='lmui-popover__opener']/following-sibling::*//span[contains(text(),'')]")
+    ElementList<Element> productBarCodes;
+
+    @WebFindBy(xpath = "//div[contains(@class,'lmui-View lmui-ImageGallery__container')]/div[not(contains(@class,'Preview'))]//img", clazz = Image.class)
+    ElementList<Image> productImagesGallery;
+
+    @WebFindBy(xpath = "//div[contains(@class,'imageSlideContainer')]//img", clazz = Image.class)
+    ElementList<Image> productPreviewImagesGallery;
 
     @Override
     public void waitForPageIsLoaded() {
@@ -119,12 +127,14 @@ public class ProductCardPage extends MenuPage {
 
     @Step("Открыть полное описание товара")
     public ProductCardPage showFullDescription() {
+        showFullDescription.scrollTo();
         showFullDescription.click();
         return this;
     }
 
     @Step("Показать все характеристики товара")
     public ProductCardPage showAllSpecifications() {
+        showAllSpecifications.scrollTo();
         showAllSpecifications.click();
         return this;
     }
@@ -138,7 +148,7 @@ public class ProductCardPage extends MenuPage {
         } else {
             String barCode = ParserUtil.strWithOnlyDigits(barCodeLbl.getText());
             anAssert.isTrue(lmCodeLbl.getText().contains(text) ||
-                            barCode.equals(text), "Карта товара не содержит критерий поиска " + text);
+                    barCode.equals(text), "Карта товара не содержит критерий поиска " + text);
         }
         return this;
     }
@@ -147,11 +157,74 @@ public class ProductCardPage extends MenuPage {
     public void shouldProductCardContainsAllData(CatalogProductData data) throws Exception {
         shouldCharacteristicsIsVisible(data.getCharacteristics());
         shouldDescriptionIsVisible(data.getDescription());
+        shouldNomenclaturePathIsCorrect(data);
+        shouldProductSpecificationsIsDisplayed(data);
+        shouldImagesIsVisible(data.getImages());
+    }
+
+    @Step("Проверить, что на карточке товары отображены изображения")
+    private void shouldImagesIsVisible(List<String> images) throws Exception {
+        String imageLink;
+        Image img;
+        String attributeValue;
+        for (int i = 0; i < images.size(); i++) {
+            img = productImagesGallery.get(i);
+            attributeValue = img.findChildElement("/ancestor::div[3]").getAttribute("aria-hidden");
+            if (i == 0) {
+                anAssert.isElementTextContainsIgnoringCase(attributeValue, "false", "Изображение не отображено");
+            } else {
+                anAssert.isElementTextContainsIgnoringCase(attributeValue, "true", "Изображение не отображено");
+            }
+            imageLink = images.get(i);
+            anAssert.isEquals(imageLink, img.getLink(), "Ссылки на изображения не совпадают");
+            anAssert.isEquals(imageLink, productPreviewImagesGallery.get(i).getLink(), "Ссылки на изображения не совпадают");
+        }
+    }
+
+    @Step("Проверить, что признаки товара отображены")
+    private void shouldProductSpecificationsIsDisplayed(CatalogProductData data) throws Exception {
+        softAssert.isElementTextContains(gammaBadge, data.getGamma());
+        softAssert.isEquals(productTitle.getText(), data.getTitle(), "Название отображено некорректно");
+        softAssert.isEquals(lmCodeLbl.getText(), data.getLmCode(), "LmCode отображен некорректно");
+        softAssert.isEquals(ParserUtil.strWithOnlyDigits(barCodeLbl.getText()), data.getBarCode(), "BarCode отображен некорректно");
+        barCodeListOpenerBtn.click();
+        List<String> barCodes = data.getBarCodes();
+        for (int i = 0; i < productBarCodes.getCount(); i++) {
+            anAssert.isEquals(ParserUtil.strWithOnlyDigits(productBarCodes.get(i).getText()), barCodes.get(i), "BarCode отображен некорректно");
+        }
+        softAssert.verifyAll();
+    }
+
+    @Step("Проверить, что товарная иерархия продукта отображена")
+    private void shouldNomenclaturePathIsCorrect(CatalogProductData data) throws Exception {
+        NomenclaturePath path = getNomenclaturePath();
+        String departmentId = path.getDepartmentId();
+        String subDepartmentId = path.getSubDepartmentId();
+        String classId = path.getClassId();
+        String subClassId = path.getSubClassId();
+        while (departmentId.startsWith("0")) {
+            departmentId = departmentId.substring(1);
+        }
+        while (subDepartmentId.startsWith("0")) {
+            subDepartmentId = subDepartmentId.substring(1);
+        }
+        while (classId.startsWith("0")) {
+            classId = classId.substring(1);
+        }
+        while (subClassId.startsWith("0")) {
+            subClassId = subClassId.substring(1);
+        }
+        softAssert.isElementTextContains(nomenclatureBadge, departmentId);
+        softAssert.isContains(departmentId, data.getGroupId(), "Отделы не равны");
+        softAssert.isContains(subDepartmentId, data.getDepartmentId(), "Подотделы не равны");
+        softAssert.isContains(classId, data.getClassId(), "Типы не равны");
+        softAssert.isContains(subClassId, data.getSubclassId(), "Подтипы не равны");
+        softAssert.verifyAll();
     }
 
     @Step("Проверить, что характеристики товара отображены")
     private void shouldCharacteristicsIsVisible(List<Characteristic> characteristics) throws Exception {
-        if (!showAllSpecifications.isVisible()) {
+        if (showAllSpecifications.isVisible()) {
             showAllSpecifications();
         }
         anAssert.isEquals(this.characteristics.getCount(), characteristics.size(), "data and viewData size mismatch");
@@ -166,14 +239,14 @@ public class ProductCardPage extends MenuPage {
 
     @Step("Проверить, что описание товара отображено")
     private void shouldDescriptionIsVisible(String description) {
-        if (!showFullDescription.isVisible()) {
+        if (showFullDescription.isVisible()) {
             showFullDescription();
         }
         String eachDescriptionElementText;
         for (Element each : this.description) {
             eachDescriptionElementText = each.getText();
             anAssert.isElementTextContainsIgnoringCase(description, eachDescriptionElementText,
-                    "description hasn`t cantains " + eachDescriptionElementText);
+                    description + " hasn`t cantains " + eachDescriptionElementText);
         }
     }
 

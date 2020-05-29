@@ -61,11 +61,8 @@ public class ExtendedProductCardPage extends ProductCardPage {
     static ProductQuantityInfoWidget productQuantityInfoWidget;
 
     //TODO remove static modifier
-    @WebFindBy(xpath = "//span[contains(@class, 'Badge') and contains(text(),'Топ')]")
+    @WebFindBy(xpath = "//span[contains(text(),'Топ')]")
     static Element topBadge;
-
-    @WebFindBy(xpath = "//span[contains(@class, 'Badge')][3]")
-    Element gammaBadge;
 
     @WebFindBy(xpath = "//span[contains(@class, 'Badge')][4]")
     Element categoryBadge;

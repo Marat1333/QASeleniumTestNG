@@ -249,7 +249,6 @@ public class ProductCardTest extends WebBaseSteps {
     @Test(description = "C23389190 Check short card data")
     public void testCheckShortCardData() throws Exception {
         CatalogProductData data = apiClientProvider.getMagPortalCatalogProductClientProvider().getProductData(lmCode).asJson();
-
         ProductCardPage productCardPage = navigateToProductCardByUrl(lmCode, true);
         productCardPage.shouldProductCardContainsAllData(data);
     }
