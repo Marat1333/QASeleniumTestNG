@@ -2,6 +2,7 @@ package com.leroy.magmobile.api.clients;
 
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.UserSessionData;
+import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.data.sales.SalesDocDiscountData;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.requests.salesdoc.discount.GetSalesDocDiscount;
@@ -17,6 +18,7 @@ import ru.leroymerlin.qa.core.commons.annotations.Dependencies;
 import ru.leroymerlin.qa.core.commons.enums.Application;
 
 import javax.annotation.PostConstruct;
+import javax.ws.rs.ProcessingException;
 import java.util.Optional;
 
 import static com.leroy.core.matchers.Matchers.successful;
@@ -33,7 +35,12 @@ public class MagMobileClient extends BaseClient {
     protected <J> Response<J> execute(RequestBuilder<?> request, final Class<J> type) {
         if (userSessionData != null && userSessionData.getAccessToken() != null)
             request.bearerAuthHeader(userSessionData.getAccessToken());
-        return executeRequest(request.build(gatewayUrl), type);
+        try {
+            return executeRequest(request.build(gatewayUrl), type);
+        } catch (ProcessingException err) {
+            Log.error("Failed execute request: " + request.build(gatewayUrl).toString());
+            throw err;
+        }
     }
 
     @Step("Send {request.method} request")

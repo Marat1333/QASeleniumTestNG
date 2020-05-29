@@ -63,7 +63,7 @@ public class MagMobileBaseTest extends BaseUiTest {
             userSessionData.setAccessToken(accessToken);
         }
         if (groups.contains(OLD_SHOP_GROUP)) {
-            userSessionData.setUserDepartmentId(EnvConstants.SHOP_WITH_OLD_INTERFACE);
+            userSessionData.setUserShopId(EnvConstants.SHOP_WITH_OLD_INTERFACE);
         }
     }
 

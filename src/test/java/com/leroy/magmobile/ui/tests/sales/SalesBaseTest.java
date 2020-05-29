@@ -65,6 +65,7 @@ public class SalesBaseTest extends AppBaseSteps {
     protected String getAnyLmCodeProductWithTopEM() {
         CatalogSearchFilter filtersData = new CatalogSearchFilter();
         filtersData.setTopEM(true);
+        filtersData.setAvs(false);
         getUserSessionData().setUserDepartmentId("15");
         return apiClientProvider.getProducts(1, filtersData).get(0).getLmCode();
     }
