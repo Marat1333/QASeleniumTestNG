@@ -252,10 +252,11 @@ public class ProductCardPage extends MenuPage {
 
     @Step("Проверить, что страница 'Карта товара' отображается корректно")
     public ProductCardPage verifyRequiredElements() {
+        ExtendedProductCardPage extendedProductCardPage = new ExtendedProductCardPage();
         softAssert.areElementsVisible(gammaBadge, productTitle, lmCodeLbl, pricesAndStocksInOtherShops);
-        softAssert.areElementsNotVisible(ExtendedProductCardPage.topBadge, ExtendedProductCardPage.addProductToCart,
-                ExtendedProductCardPage.addProductToEstimate, ExtendedProductCardPage.productPriceInfoWidget,
-                ExtendedProductCardPage.productQuantityInfoWidget);
+        softAssert.areElementsNotVisible(extendedProductCardPage.topBadge, extendedProductCardPage.addProductToCart,
+                extendedProductCardPage.addProductToEstimate, extendedProductCardPage.productPriceInfoWidget,
+                extendedProductCardPage.productQuantityInfoWidget);
         shouldUrlContains("isAllGammaView=true");
         softAssert.verifyAll();
         return this;

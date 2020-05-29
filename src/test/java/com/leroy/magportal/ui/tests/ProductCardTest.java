@@ -252,4 +252,5 @@ public class ProductCardTest extends WebBaseSteps {
         ProductCardPage productCardPage = navigateToProductCardByUrl(lmCode, true);
         productCardPage.shouldProductCardContainsAllData(data);
     }
+
 }

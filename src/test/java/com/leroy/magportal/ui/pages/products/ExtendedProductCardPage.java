@@ -25,10 +25,10 @@ public class ExtendedProductCardPage extends ProductCardPage {
     }
 
     @WebFindBy(xpath = "//button[@id='ANALOG']")
-    static Button similarProducts;
+    Button similarProducts;
 
     @WebFindBy(xpath = "//button[@id='COMPLEMENT']")
-    static Button complementProducts;
+    Button complementProducts;
 
     @WebFindBy(xpath = "//div[contains(@class,'active')]//div[contains(@class, 'BarViewProductCard__container')]",
             clazz = ExtendedProductCardWidget.class, refreshEveryTime = true)
@@ -41,10 +41,10 @@ public class ExtendedProductCardPage extends ProductCardPage {
     Button productCardsListLeftPaginationBtn;
 
     @WebFindBy(xpath = "//span[text()='в корзину']/ancestor::button[1]")
-    static Button addProductToCart;
+    Button addProductToCart;
 
     @WebFindBy(xpath = "//span[text()='в смету']/ancestor::button[1]")
-    static Button addProductToEstimate;
+    Button addProductToEstimate;
 
     @WebFindBy(xpath = "//div[contains(@class,'Tabs-Title-outer')]/following-sibling::div")
     ElementList<Element> tabContainerList;
@@ -55,14 +55,13 @@ public class ExtendedProductCardPage extends ProductCardPage {
     ElementList<Element> supplierInfo;
 
     @WebFindBy(xpath = "//span[contains(text(),'Цена')]/ancestor::div[contains(@class,'bottom')]")
-    static ProductPriceInfoWidget productPriceInfoWidget;
+    ProductPriceInfoWidget productPriceInfoWidget;
 
     @WebFindBy(xpath = "//span[contains(text(),'Доступно для продажи')]/ancestor::div[contains(@class,'bottom')]")
-    static ProductQuantityInfoWidget productQuantityInfoWidget;
+    ProductQuantityInfoWidget productQuantityInfoWidget;
 
-    //TODO remove static modifier
     @WebFindBy(xpath = "//span[contains(text(),'Топ')]")
-    static Element topBadge;
+    Element topBadge;
 
     @WebFindBy(xpath = "//span[contains(@class, 'Badge')][4]")
     Element categoryBadge;
