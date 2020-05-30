@@ -6,14 +6,29 @@ import com.leroy.magmobile.ui.pages.common.modal.ConfirmRemovingProductModal;
 import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
 import com.leroy.magmobile.ui.pages.sales.SalesDocumentsPage;
-import com.leroy.magmobile.ui.pages.sales.basket.Basket35Page;
-import com.leroy.magmobile.ui.pages.sales.basket.CartActionWithProductCardModalPage;
-import com.leroy.magmobile.ui.pages.sales.basket.ConfirmRemoveLastProductCartModal;
+import com.leroy.magmobile.ui.pages.sales.basket.*;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SaleTypeModalPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
+import io.qameta.allure.Step;
 import org.testng.annotations.Test;
 
 public class CartTest extends SalesBaseTest {
+
+    private void startFromScreenWithCreatedCart() throws Exception {
+        startFromScreenWithCreatedCart(false);
+    }
+
+    @Step("Pre-condition: Создание корзины")
+    private void startFromScreenWithCreatedCart(boolean hasDiscount) throws Exception {
+        if (!Basket35Page.isThisPage()) {
+            String cartDocNumber = "200500036442";//createDraftCart(1, hasDiscount);
+            MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
+                    MainSalesDocumentsPage.class);
+            SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
+            salesDocumentsPage.searchForDocumentByTextAndSelectIt(
+                    cartDocNumber);
+        }
+    }
 
     @Test(description = "C22797089 Создать корзину с экрана Документы продажи")
     public void testCreateBasketFromSalesDocumentsScreen() throws Exception {
@@ -155,6 +170,101 @@ public class CartTest extends SalesBaseTest {
         confirmRemovingProductModal.clickConfirmButton();
         SalesDocumentsPage salesDocumentsPage = new SalesDocumentsPage();
         salesDocumentsPage.shouldSalesDocumentIsNotPresent(cartDocNumber);
+    }
+
+    @Test(description = "C22797101 Создать скидку", groups = NEED_ACCESS_TOKEN_GROUP)
+    public void testCreateDiscount() throws Exception {
+        startFromScreenWithCreatedCart();
+
+        // Step 1
+        step("Нажмите на мини-карточку любого товара в списке товаров корзины");
+        Basket35Page basket35Page = new Basket35Page();
+        double productTotalPrice = basket35Page.getSalesOrderCardDataByIndex(1).getTotalPrice();
+        CartActionWithProductCardModalPage modalPage = basket35Page.clickCardByIndex(1);
+        modalPage.verifyRequiredElements();
+
+        // Step 2
+        step("Выберите параметр Создать скидку");
+        CreatingDiscountPage creatingDiscountPage = modalPage.clickCreateDiscountMenuItem()
+                .shouldProductTotalPriceIs(productTotalPrice)
+                .verifyRequiredElements();
+
+        // Step 3
+        step("Нажмите на Причина скидки");
+        DiscountReasonModal discountReasonModal = creatingDiscountPage.clickDiscountReasonFld()
+                .verifyRequiredElements();
+
+        // Step 4
+        step("Выбираем причину скидки");
+        String selectedReason = DiscountReasonModal.PRODUCT_SAMPLE_REASON;
+        creatingDiscountPage = discountReasonModal.selectDiscountReason(selectedReason)
+                .shouldDiscountReasonIs(selectedReason);
+
+        // Step 5, 6, 7
+        step("Нажимаем на 'Скидка' и Изменяем процент скидки товара");
+        double discountPercent = 10.0;
+        creatingDiscountPage.enterDiscountPercent(discountPercent)
+                .shouldProductTotalPriceIs(productTotalPrice)
+                .shouldDiscountPercentIs(discountPercent)
+                .shouldDiscountCalculatedCorrectly();
+
+        // Step 8
+        step("Нажмите на кнопку Применить");
+        basket35Page = creatingDiscountPage.clickConfirmButton()
+                .verifyRequiredElements(new Basket35Page.PageState()
+                        .setProductIsAdded(true)
+                        .setManyOrders(false));
+        //basket35Page.shouldOrderDataIs()
+    }
+
+    @Test(description = "C22797102 Изменить скидку", groups = NEED_ACCESS_TOKEN_GROUP)
+    public void testChangeDiscount() throws Exception {
+        startFromScreenWithCreatedCart(true);
+
+        // Step 1
+        step("Нажмите на мини-карточку любого товара в списке товаров корзины");
+        Basket35Page basket35Page = new Basket35Page();
+        SalesOrderCardData productData = basket35Page.getSalesOrderCardDataByIndex(1);
+        double productTotalPrice = productData.getTotalPrice();
+        double productTotalPriceWithDiscount = productData.getTotalPriceWithDiscount();
+        CartActionWithProductCardModalPage modalPage = basket35Page.clickCardByIndex(1);
+        modalPage.verifyRequiredElements(true);
+
+        // Step 2
+        step("Выберите параметр Изменить скидку");
+        CreatingDiscountPage creatingDiscountPage = modalPage.clickChangeDiscountMenuItem()
+                .shouldDiscountReasonIs(DiscountReasonModal.PRODUCT_SAMPLE_REASON)
+                .shouldProductTotalPriceIs(productTotalPrice)
+                .shouldDiscountNewPriceIs(productTotalPriceWithDiscount)
+                .shouldDiscountCalculatedCorrectly()
+                .verifyRequiredElements();
+
+        // Step 3
+        step("Нажмите на Причина скидки");
+        DiscountReasonModal discountReasonModal = creatingDiscountPage.clickDiscountReasonFld()
+                .verifyRequiredElements();
+
+        // Step 4
+        step("Изменяем причину скидки");
+        String newSelectedReason = DiscountReasonModal.NOT_COMPLETE_SET_REASON;
+        creatingDiscountPage = discountReasonModal.selectDiscountReason(newSelectedReason)
+                .shouldDiscountReasonIs(newSelectedReason);
+
+        // Step 5, 6, 7
+        step("Нажимаем на 'Скидка' и Изменяем процент скидки товара");
+        double discountPercent = 7.0;
+        creatingDiscountPage.enterDiscountPercent(discountPercent)
+                .shouldProductTotalPriceIs(productTotalPrice)
+                .shouldDiscountPercentIs(discountPercent)
+                .shouldDiscountCalculatedCorrectly();
+
+        // Step 8
+        step("Нажмите на кнопку Применить");
+        basket35Page = creatingDiscountPage.clickConfirmButton()
+                .verifyRequiredElements(new Basket35Page.PageState()
+                        .setProductIsAdded(true)
+                        .setManyOrders(false));
+        //basket35Page.shouldOrderDataIs()
     }
 
 }

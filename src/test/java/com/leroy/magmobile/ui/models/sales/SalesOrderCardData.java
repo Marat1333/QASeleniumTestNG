@@ -12,7 +12,9 @@ public class SalesOrderCardData extends CardWidgetData {
     private ProductCardData productCardData;
     private Double selectedQuantity;
     private Double totalPrice;
+    private Double totalPriceWithDiscount;
     private Integer availableTodayQuantity;
+    private Double discountPercent;
     private boolean negativeAvailableQuantity;
 
     public boolean compareOnlyNotNullFields(SalesOrderCardData orderCardData) {

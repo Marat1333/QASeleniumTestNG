@@ -2,15 +2,19 @@ package com.leroy.magmobile.ui.tests.sales;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.EnvConstants;
+import com.leroy.constants.sales.DiscountConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.api.Module;
 import com.leroy.core.configuration.Log;
+import com.leroy.magmobile.api.clients.CartClient;
 import com.leroy.magmobile.api.clients.OrderClient;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountReasonData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
@@ -32,6 +36,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import static com.leroy.constants.sales.DiscountConst.TYPE_NEW_PRICE;
 import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -100,6 +105,11 @@ public class SalesBaseTest extends AppBaseSteps {
     // CREATING PRE-CONDITIONS:
 
     protected String createDraftCart(int productCount) {
+        return createDraftCart(productCount, false);
+    }
+
+    protected String createDraftCart(int productCount, boolean hasDiscount) {
+        CartClient cartClient = apiClientProvider.getCartClient();
         List<String> lmCodes = getAnyLmCodesProductWithoutSpecificOptions(productCount);
         List<CartProductOrderData> productOrderDataList = new ArrayList<>();
         Random r = new Random();
@@ -109,10 +119,23 @@ public class SalesBaseTest extends AppBaseSteps {
             productOrderData.setQuantity((double) (r.nextInt(9) + 1));
             productOrderDataList.add(productOrderData);
         }
-        Response<CartData> cartDataResponse = apiClientProvider.getCartClient()
-                .sendRequestCreate(productOrderDataList);
+        Response<CartData> cartDataResponse = cartClient.sendRequestCreate(productOrderDataList);
         assertThat(cartDataResponse, successful());
-        return cartDataResponse.asJson().getFullDocId();
+        CartData cartData = cartDataResponse.asJson();
+        if (hasDiscount) {
+            productOrderDataList = cartData.getProducts();
+            for (CartProductOrderData putProduct : productOrderDataList) {
+                CartDiscountData discountData = new CartDiscountData();
+                discountData.setType(TYPE_NEW_PRICE);
+                discountData.setTypeValue(putProduct.getPrice() - 1);
+                discountData.setReason(new CartDiscountReasonData(DiscountConst.Reasons.PRODUCT_SAMPLE.getId()));
+                putProduct.setDiscount(discountData);
+            }
+            Response<CartData> respDiscount = cartClient.addDiscount(
+                    cartData.getCartId(), cartData.getDocumentVersion(), productOrderDataList);
+            assertThat(respDiscount, successful());
+        }
+        return cartData.getFullDocId();
     }
 
     protected void cancelOrder(String orderId) throws Exception {

@@ -30,6 +30,13 @@ public class OrderRowProductWidget extends CardWidget<SalesOrderCardData> {
     @AppFindBy(xpath = ".//android.widget.TextView[5]", metaName = "Итого стоимость")
     Element totalPrice;
 
+    @AppFindBy(xpath = ".//android.widget.TextView[contains(@text, 'Скидка')]", metaName = "Скидка %")
+    Element discountPercent;
+
+    @AppFindBy(xpath = ".//android.widget.TextView[contains(@text, 'Скидка')]/following-sibling::android.widget.TextView",
+            metaName = "Итого стоимость с учетом скидки")
+    Element totalPriceWithDiscount;
+
     @AppFindBy(xpath = ".//android.widget.TextView[contains(@text, 'оступно')]",
             metaName = "Элемент с информацией о доступном кол-ве")
     Element availableTodayProductCount;
@@ -62,6 +69,14 @@ public class OrderRowProductWidget extends CardWidget<SalesOrderCardData> {
         return totalPrice.getText(ps);
     }
 
+    public String getTotalPriceWithDiscount(String ps) {
+        return totalPriceWithDiscount.getTextIfPresent(ps);
+    }
+
+    public String getDiscountPercent(String ps) {
+        return discountPercent.getTextIfPresent(ps);
+    }
+
     public Integer getAvailableTodayProductQuantity(String ps) {
         String val = availableTodayProductCount.getTextIfPresent(ps);
         if (val == null)
@@ -82,6 +97,8 @@ public class OrderRowProductWidget extends CardWidget<SalesOrderCardData> {
         orderCardData.setProductCardData(cardData);
         orderCardData.setSelectedQuantity(ParserUtil.strToDouble(getSelectedProductQuantity(ps)));
         orderCardData.setTotalPrice(ParserUtil.strToDouble(getTotalPrice(ps)));
+        orderCardData.setDiscountPercent(ParserUtil.strToDouble(getDiscountPercent(ps)));
+        orderCardData.setTotalPriceWithDiscount(ParserUtil.strToDouble(getTotalPriceWithDiscount(ps)));
 
         // Доступное кол-во отображается не всегда, и находится внизу карточки.
         // Нужно придумывать способ как реализовывать метод isFullyVisible или искать workaround
