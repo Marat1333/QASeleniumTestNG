@@ -12,7 +12,7 @@ import com.leroy.magmobile.ui.pages.more.MorePage;
 import com.leroy.magmobile.ui.pages.more.UserProfilePage;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
-import com.leroy.magmobile.ui.pages.sales.orders.basket.BasketStep1Page;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.CartStep1Page;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.ActionWithProductModalPage;
 import com.leroy.magmobile.ui.pages.support.SupportPage;
@@ -146,7 +146,7 @@ public class AppBaseSteps extends MagMobileBaseTest {
 
         new ProductDescriptionPage().clickActionWithProductButton();
         ActionWithProductModalPage modalPage = new ActionWithProductModalPage();
-        BasketStep1Page basketStep1Page = modalPage.startToCreateSalesDocument()
+        CartStep1Page basketStep1Page = modalPage.startToCreateSalesDocument()
                 .clickAddButton();
         String documentNumber = basketStep1Page.getDocumentNumber();
         basketStep1Page.clickBackButton()

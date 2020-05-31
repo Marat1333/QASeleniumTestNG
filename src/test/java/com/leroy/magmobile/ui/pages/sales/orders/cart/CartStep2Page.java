@@ -1,4 +1,4 @@
-package com.leroy.magmobile.ui.pages.sales.orders.basket;
+package com.leroy.magmobile.ui.pages.sales.orders.cart;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
@@ -6,7 +6,7 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import io.qameta.allure.Step;
 
-public class BasketStep2Page extends BasketPage {
+public class CartStep2Page extends CartPage {
 
     @AppFindBy(text = "ПАРАМЕТРЫ ДОКУМЕНТА")
     private Element documentParametersLbl;
@@ -40,16 +40,16 @@ public class BasketStep2Page extends BasketPage {
     // -------------Action steps ------------------//
 
     @Step("Нажмите кнопку Создать документ продажи")
-    public BasketStep3Page clickCreateSalesDocumentButton() {
+    public CartStep3Page clickCreateSalesDocumentButton() {
         createSalesDocumentBtn.click();
-        return new BasketStep3Page();
+        return new CartStep3Page();
     }
 
     // ------------ Verifications ------------------//
 
     @Override
     @Step("Убедиться, что мы находимся на странице Корзина - Шаг 2, и все необходимые элементы отражаются корректно")
-    public BasketStep2Page verifyRequiredElements() {
+    public CartStep2Page verifyRequiredElements() {
         super.verifyRequiredElements();
         softAssert.isElementVisible(documentParametersLbl);
         softAssert.isElementVisible(issuePlaceLbl);
@@ -61,7 +61,7 @@ public class BasketStep2Page extends BasketPage {
     }
 
     @Step("Проверить, что поля 'Место выдачи', 'Дата выдачи' предзаполнены, а поле 'Комментарий' пустое")
-    public BasketStep2Page shouldFieldsHaveDefaultValues() {
+    public CartStep2Page shouldFieldsHaveDefaultValues() {
         softAssert.isElementTextEqual(issuePlaceFld, "Линия касс");
         softAssert.isElementTextEqual(issueDateFld, "Сейчас");
         softAssert.isElementTextEqual(commentFld, "");

@@ -6,7 +6,7 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.sales.orders.basket.Basket35Page;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.Cart35Page;
 import com.leroy.magmobile.ui.pages.sales.orders.estimate.EstimatePage;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
@@ -143,9 +143,9 @@ public class AddProduct35Page extends CommonMagMobilePage {
     }
 
     @Step("Нажмите кнопку Добавить в корзину")
-    public Basket35Page clickAddIntoBasketButton() {
+    public Cart35Page clickAddIntoBasketButton() {
         submitBtn.click();
-        return new Basket35Page();
+        return new Cart35Page();
     }
 
     @Step("Нажмите кнопку Добавить в смету")

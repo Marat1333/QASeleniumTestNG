@@ -6,7 +6,7 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.pages.sales.PricesAndQuantityPage;
 import com.leroy.magmobile.ui.pages.sales.ProductCardPage;
-import com.leroy.magmobile.ui.pages.sales.orders.basket.Basket35Page;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.Cart35Page;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -44,7 +44,7 @@ public class ProductDescriptionPage extends ProductCardPage {
         String ps = getPageSource(driver);
         Element el = new Element(driver,
                 By.xpath("//*[contains(@content-desc, 'Screen')]//android.widget.TextView"));
-        return el.isVisible(ps) && el.getText(ps).equals(Basket35Page.SCREEN_TITLE);
+        return el.isVisible(ps) && el.getText(ps).equals(Cart35Page.SCREEN_TITLE);
     }
 
     // Actions

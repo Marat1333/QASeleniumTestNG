@@ -1,11 +1,11 @@
-package com.leroy.magmobile.ui.pages.sales.orders.basket;
+package com.leroy.magmobile.ui.pages.sales.orders.cart;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import io.qameta.allure.Step;
 
-public abstract class BasketPage extends CommonMagMobilePage {
+public abstract class CartPage extends CommonMagMobilePage {
 
     public static class Constants {
         // Типы документа
@@ -32,7 +32,7 @@ public abstract class BasketPage extends CommonMagMobilePage {
 
     // ------------- Verifications ----------------------//
 
-    public BasketPage verifyRequiredElements() {
+    public CartPage verifyRequiredElements() {
         String ps = getPageSource();
         String titleText = screenTitle.getText(ps);
         softAssert.isTrue(titleText.matches("Корзина № \\d{8}"),
@@ -44,7 +44,7 @@ public abstract class BasketPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что тип документа - {text}")
-    public BasketPage shouldDocumentTypeIs(String text) {
+    public CartPage shouldDocumentTypeIs(String text) {
         anAssert.isElementTextEqual(documentType, text);
         return this;
     }

@@ -3,7 +3,7 @@ package com.leroy.magmobile.ui.pages.sales.orders.estimate;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.sales.orders.basket.Basket35Page;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.Cart35Page;
 import io.qameta.allure.Step;
 
 public class ActionsWithEstimateModalPage extends CommonMagMobilePage {
@@ -26,9 +26,9 @@ public class ActionsWithEstimateModalPage extends CommonMagMobilePage {
     // Actions
 
     @Step("Выберите пункт меню 'Преобразовать в корзину'")
-    public Basket35Page clickTransformToBasketMenuItem() {
+    public Cart35Page clickTransformToBasketMenuItem() {
         transformToBasketMenuItem.click();
-        return new Basket35Page();
+        return new Cart35Page();
     }
 
     @Step("Выберите пункт меню 'Отправить на email'")

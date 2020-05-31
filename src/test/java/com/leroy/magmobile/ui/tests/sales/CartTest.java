@@ -6,7 +6,7 @@ import com.leroy.magmobile.ui.pages.common.modal.ConfirmRemovingProductModal;
 import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
 import com.leroy.magmobile.ui.pages.sales.SalesDocumentsPage;
-import com.leroy.magmobile.ui.pages.sales.orders.basket.*;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.*;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SaleTypeModalPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import io.qameta.allure.Step;
@@ -20,7 +20,7 @@ public class CartTest extends SalesBaseTest {
 
     @Step("Pre-condition: Создание корзины")
     private void startFromScreenWithCreatedCart(boolean hasDiscount) throws Exception {
-        if (!Basket35Page.isThisPage()) {
+        if (!Cart35Page.isThisPage()) {
             String cartDocNumber = createDraftCart(1, hasDiscount);
             MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
                     MainSalesDocumentsPage.class);
@@ -45,13 +45,13 @@ public class CartTest extends SalesBaseTest {
 
         // Step 2
         step("Выбрать параметр Корзина");
-        Basket35Page basket35Page = modalPage.clickBasketMenuItem();
-        basket35Page.verifyRequiredElements(
-                new Basket35Page.PageState().setProductIsAdded(false));
+        Cart35Page cart35Page = modalPage.clickBasketMenuItem();
+        cart35Page.verifyRequiredElements(
+                new Cart35Page.PageState().setProductIsAdded(false));
 
         // Step 3
         step("Нажмите на кнопку +товары и услуги");
-        SearchProductPage searchProductPage = basket35Page.clickAddProductButton()
+        SearchProductPage searchProductPage = cart35Page.clickAddProductButton()
                 .verifyRequiredElements();
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
         AddProduct35Page addProduct35Page = new AddProduct35Page();
@@ -59,8 +59,8 @@ public class CartTest extends SalesBaseTest {
 
         // Step 4
         step("Нажмите на Добавить в корзину");
-        basket35Page = addProduct35Page.clickAddIntoBasketButton();
-        basket35Page.verifyRequiredElements(new Basket35Page.PageState().setProductIsAdded(true));
+        cart35Page = addProduct35Page.clickAddIntoBasketButton();
+        cart35Page.verifyRequiredElements(new Cart35Page.PageState().setProductIsAdded(true));
     }
 
     @Test(description = "C22797090 Добавить новый товар в корзину")
@@ -69,18 +69,18 @@ public class CartTest extends SalesBaseTest {
         String lmCode = getAnyLmCodeProductWithTopEM();
         // Если выполняется после "C22797089 Создать корзину с экрана Документы продажи",
         // то можно пропустить pre-condition шаги
-        if (!Basket35Page.isThisPage()) {
+        if (!Cart35Page.isThisPage()) {
             MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
                     MainSalesDocumentsPage.class);
             SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
             salesDocumentsPage.searchForDocumentByTextAndSelectIt(
                     SalesDocumentsConst.Types.CART.getUiVal());
         } // TODO через API
-        Basket35Page basket35Page = new Basket35Page();
-        int productCountInBasket = basket35Page.getCountOfOrderCards();
+        Cart35Page cart35Page = new Cart35Page();
+        int productCountInBasket = cart35Page.getCountOfOrderCards();
         // Step 1
         step("Нажмите на кнопку +Товар");
-        SearchProductPage searchProductPage = basket35Page.clickAddProductButton()
+        SearchProductPage searchProductPage = cart35Page.clickAddProductButton()
                 .verifyRequiredElements();
 
         // Step 2
@@ -92,19 +92,19 @@ public class CartTest extends SalesBaseTest {
 
         // Step 3
         step("Нажмите на Добавить в корзину");
-        basket35Page = addProduct35Page.clickAddIntoBasketButton();
-        basket35Page.verifyRequiredElements(
-                new Basket35Page.PageState()
+        cart35Page = addProduct35Page.clickAddIntoBasketButton();
+        cart35Page.verifyRequiredElements(
+                new Cart35Page.PageState()
                         .setProductIsAdded(true)
                         .setManyOrders(null));
-        basket35Page.shouldCountOfCardsIs(productCountInBasket + 1);
-        basket35Page.shouldProductCardDataWithTextIs(expectedOrderCardData.getLmCode(),
+        cart35Page.shouldCountOfCardsIs(productCountInBasket + 1);
+        cart35Page.shouldProductCardDataWithTextIs(expectedOrderCardData.getLmCode(),
                 expectedOrderCardData);
     }
 
     @Test(description = "C22797098 Удалить товар из корзины", groups = NEED_ACCESS_TOKEN_GROUP)
     public void testRemoveProductFromCart() throws Exception {
-        if (!Basket35Page.isThisPage()) {
+        if (!Cart35Page.isThisPage()) {
             String cartDocId = createDraftCart(2);
             MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
                     MainSalesDocumentsPage.class);
@@ -113,12 +113,12 @@ public class CartTest extends SalesBaseTest {
                     cartDocId);
         }
 
-        Basket35Page basket35Page = new Basket35Page();
-        ProductOrderCardAppData productOrderCardAppDataBefore = basket35Page.getSalesOrderCardDataByIndex(1);
+        Cart35Page cart35Page = new Cart35Page();
+        ProductOrderCardAppData productOrderCardAppDataBefore = cart35Page.getSalesOrderCardDataByIndex(1);
 
         // Step 1
         step("Нажмите на мини-карточку любого товара в списке товаров корзины");
-        CartActionWithProductCardModalPage modalPage = basket35Page.clickCardByIndex(1)
+        CartActionWithProductCardModalPage modalPage = cart35Page.clickCardByIndex(1)
                 .verifyRequiredElements();
 
         // Step 2
@@ -130,11 +130,11 @@ public class CartTest extends SalesBaseTest {
         // Step 3
         step("Нажмите на Удалить");
         confirmRemovingProductModal.clickConfirmButton();
-        basket35Page = new Basket35Page();
-        basket35Page.verifyRequiredElements(new Basket35Page.PageState()
+        cart35Page = new Cart35Page();
+        cart35Page.verifyRequiredElements(new Cart35Page.PageState()
                 .setProductIsAdded(true)
                 .setManyOrders(false));
-        basket35Page.shouldProductBeNotPresentInCart(
+        cart35Page.shouldProductBeNotPresentInCart(
                 productOrderCardAppDataBefore.getLmCode());
     }
 
@@ -142,7 +142,7 @@ public class CartTest extends SalesBaseTest {
             groups = NEED_ACCESS_TOKEN_GROUP)
     public void testRemoveTheLastProductFromCart() throws Exception {
         String cartDocNumber = null;
-        if (!Basket35Page.isThisPage()) {
+        if (!Cart35Page.isThisPage()) {
             cartDocNumber = createDraftCart(1);
             MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
                     MainSalesDocumentsPage.class);
@@ -151,12 +151,12 @@ public class CartTest extends SalesBaseTest {
                     cartDocNumber);
         }
 
-        Basket35Page basket35Page = new Basket35Page();
+        Cart35Page cart35Page = new Cart35Page();
         // if (cartDocId == null) TODO если будет тест запускаться в цепочке
 
         // Step 1
         step("Нажмите на мини-карточку любого товара в списке товаров корзины");
-        CartActionWithProductCardModalPage modalPage = basket35Page.clickCardByIndex(1)
+        CartActionWithProductCardModalPage modalPage = cart35Page.clickCardByIndex(1)
                 .verifyRequiredElements();
 
         // Step 2
@@ -178,9 +178,9 @@ public class CartTest extends SalesBaseTest {
 
         // Step 1
         step("Нажмите на мини-карточку любого товара в списке товаров корзины");
-        Basket35Page basket35Page = new Basket35Page();
-        double productTotalPrice = basket35Page.getSalesOrderCardDataByIndex(1).getTotalPrice();
-        CartActionWithProductCardModalPage modalPage = basket35Page.clickCardByIndex(1);
+        Cart35Page cart35Page = new Cart35Page();
+        double productTotalPrice = cart35Page.getSalesOrderCardDataByIndex(1).getTotalPrice();
+        CartActionWithProductCardModalPage modalPage = cart35Page.clickCardByIndex(1);
         modalPage.verifyRequiredElements();
 
         // Step 2
@@ -210,8 +210,8 @@ public class CartTest extends SalesBaseTest {
 
         // Step 8
         step("Нажмите на кнопку Применить");
-        basket35Page = creatingDiscountPage.clickConfirmButton()
-                .verifyRequiredElements(new Basket35Page.PageState()
+        cart35Page = creatingDiscountPage.clickConfirmButton()
+                .verifyRequiredElements(new Cart35Page.PageState()
                         .setProductIsAdded(true)
                         .setManyOrders(false));
         //basket35Page.shouldOrderDataIs()
@@ -223,11 +223,11 @@ public class CartTest extends SalesBaseTest {
 
         // Step 1
         step("Нажмите на мини-карточку любого товара в списке товаров корзины");
-        Basket35Page basket35Page = new Basket35Page();
-        ProductOrderCardAppData productData = basket35Page.getSalesOrderCardDataByIndex(1);
+        Cart35Page cart35Page = new Cart35Page();
+        ProductOrderCardAppData productData = cart35Page.getSalesOrderCardDataByIndex(1);
         double productTotalPrice = productData.getTotalPrice();
         double productTotalPriceWithDiscount = productData.getTotalPriceWithDiscount();
-        CartActionWithProductCardModalPage modalPage = basket35Page.clickCardByIndex(1);
+        CartActionWithProductCardModalPage modalPage = cart35Page.clickCardByIndex(1);
         modalPage.verifyRequiredElements(true);
 
         // Step 2
@@ -260,8 +260,8 @@ public class CartTest extends SalesBaseTest {
 
         // Step 8
         step("Нажмите на кнопку Применить");
-        basket35Page = creatingDiscountPage.clickConfirmButton()
-                .verifyRequiredElements(new Basket35Page.PageState()
+        cart35Page = creatingDiscountPage.clickConfirmButton()
+                .verifyRequiredElements(new Cart35Page.PageState()
                         .setProductIsAdded(true)
                         .setManyOrders(false));
         //basket35Page.shouldOrderDataIs()

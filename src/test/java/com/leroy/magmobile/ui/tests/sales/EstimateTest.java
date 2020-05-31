@@ -12,7 +12,7 @@ import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
 import com.leroy.magmobile.ui.pages.sales.EditProduct35Page;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
 import com.leroy.magmobile.ui.pages.sales.SalesDocumentsPage;
-import com.leroy.magmobile.ui.pages.sales.orders.basket.Basket35Page;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.Cart35Page;
 import com.leroy.magmobile.ui.pages.sales.orders.estimate.*;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SaleTypeModalPage;
@@ -223,9 +223,9 @@ public class EstimateTest extends SalesBaseTest {
 
         // Step 2
         step("Выберите параметр Преобразовать в корзину");
-        Basket35Page basket35Page = modalPage.clickTransformToBasketMenuItem();
-        basket35Page.verifyRequiredElements(new Basket35Page.PageState().setProductIsAdded(true));
-        basket35Page.shouldOrderDataIs(testEstimateData);
+        Cart35Page cart35Page = modalPage.clickTransformToBasketMenuItem();
+        cart35Page.verifyRequiredElements(new Cart35Page.PageState().setProductIsAdded(true));
+        cart35Page.shouldOrderDataIs(testEstimateData);
     }
 
     @Test(description = "C22797070 Добавить существующий товар еще раз (из поиска)", groups = NEED_ACCESS_TOKEN_GROUP)

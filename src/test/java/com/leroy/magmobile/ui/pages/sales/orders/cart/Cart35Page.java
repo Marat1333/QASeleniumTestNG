@@ -1,4 +1,4 @@
-package com.leroy.magmobile.ui.pages.sales.orders.basket;
+package com.leroy.magmobile.ui.pages.sales.orders.cart;
 
 import com.leroy.core.ContextProvider;
 import com.leroy.core.annotations.AppFindBy;
@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Basket35Page extends CommonMagMobilePage {
+public class Cart35Page extends CommonMagMobilePage {
 
     public final static String SCREEN_TITLE = "Корзина";
 
@@ -116,7 +116,7 @@ public class Basket35Page extends CommonMagMobilePage {
         String ps = getPageSource(driver);
         Element el = new Element(driver,
                 By.xpath("//*[contains(@content-desc, 'Screen')]//android.widget.TextView"));
-        return el.isVisible(ps) && el.getText(ps).equals(Basket35Page.SCREEN_TITLE);
+        return el.isVisible(ps) && el.getText(ps).equals(Cart35Page.SCREEN_TITLE);
     }
 
     private boolean isMoreThanOneOrder(String ps) {
@@ -228,7 +228,7 @@ public class Basket35Page extends CommonMagMobilePage {
     // ------------- Verifications ----------------------//
 
     @Step("Проверить, что страница 'Корзина' отображается корректно")
-    public Basket35Page verifyRequiredElements(PageState state) {
+    public Cart35Page verifyRequiredElements(PageState state) {
         String ps = getPageSource();
         // Всегда есть эти элементы:
         softAssert.areElementsVisible(ps, backBtn, screenTitle);
@@ -252,14 +252,14 @@ public class Basket35Page extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что общее кол-во карточек товаров/услуг в корзине = {count}")
-    public Basket35Page shouldCountOfCardsIs(int count) {
+    public Cart35Page shouldCountOfCardsIs(int count) {
         anAssert.isEquals(getCountOfOrderCards(), count,
                 "Неверное кол-во товаров на странице");
         return this;
     }
 
     @Step("Проверить, что карточка продукта/услуги с текстом '{text}' содержит следующие данные: {expectedOrderCardData}")
-    public Basket35Page shouldProductCardDataWithTextIs(String text, ProductOrderCardAppData expectedProductCardData) {
+    public Cart35Page shouldProductCardDataWithTextIs(String text, ProductOrderCardAppData expectedProductCardData) {
         CardWidget<ProductOrderCardAppData> widget = productCardsScrollView.searchForWidgetByText(text);
         anAssert.isNotNull(widget, String.format("Не найдена карточка содержащая текст %s", text),
                 String.format("Карточка с текстом %s должна быть", text));
@@ -269,7 +269,7 @@ public class Basket35Page extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что информация о заказе (единственном) в корзине должна быть ожидаемой (expectedOrderData)")
-    public Basket35Page shouldOrderDataIs(OrderAppData expectedOrderData) {
+    public Cart35Page shouldOrderDataIs(OrderAppData expectedOrderData) {
         SalesDocumentData salesDocumentData = getSalesDocumentData();
         anAssert.isEquals(salesDocumentData.getOrderAppDataList().size(), 1,
                 "Заказ должен быть только один");
@@ -279,7 +279,7 @@ public class Basket35Page extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что в корзине нет товара с ЛМ кодом {expLmCode}")
-    public Basket35Page shouldProductBeNotPresentInCart(String expLmCode) {
+    public Cart35Page shouldProductBeNotPresentInCart(String expLmCode) {
         List<ProductOrderCardAppData> productOrderCardAppDataList = productCardsScrollView.getFullDataList();
         for (ProductOrderCardAppData productCardData : productOrderCardAppDataList) {
             anAssert.isNotEquals(productCardData.getLmCode(), expLmCode,

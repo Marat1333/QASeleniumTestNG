@@ -1,4 +1,4 @@
-package com.leroy.magmobile.ui.pages.sales.orders.basket;
+package com.leroy.magmobile.ui.pages.sales.orders.cart;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
@@ -86,9 +86,9 @@ public class CreatingDiscountPage extends CommonMagMobilePage {
     }
 
     @Step("Нажать кнопку ПРИМЕНИТЬ")
-    public Basket35Page clickConfirmButton() {
+    public Cart35Page clickConfirmButton() {
         confirmBtn.click();
-        return new Basket35Page();
+        return new Cart35Page();
     }
 
     // VERIFICATIONS

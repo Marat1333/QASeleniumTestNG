@@ -6,7 +6,7 @@ import com.leroy.magmobile.ui.models.sales.DocumentDetailsData;
 import com.leroy.magmobile.ui.models.sales.ShortSalesDocumentData;
 import com.leroy.magmobile.ui.models.search.ProductCardData;
 import com.leroy.magmobile.ui.pages.sales.*;
-import com.leroy.magmobile.ui.pages.sales.orders.basket.*;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.*;
 import com.leroy.magmobile.ui.pages.sales.product_and_service.AddServicePage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.*;
@@ -80,20 +80,20 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
 
         // Step #5
         step("Нажмите на кнопку Добавить в документ продажи.");
-        BasketStep1Page basketStep1Page = addServicePage.clickAddIntoDocumentSalesButton()
+        CartStep1Page basketStep1Page = addServicePage.clickAddIntoDocumentSalesButton()
                 .verifyRequiredElements();
         String documentNumber = basketStep1Page.getDocumentNumber();
 
         // Step #6
         step("Нажмите Далее к параметрам");
-        BasketStep2Page basketStep2Page = basketStep1Page.clickNextParametersButton()
+        CartStep2Page basketStep2Page = basketStep1Page.clickNextParametersButton()
                 .verifyRequiredElements()
                 .shouldFieldsHaveDefaultValues();
 
         // Step #7
         step("Нажмите на кнопку Создать документ продажи");
         String testPinCode = getValidPinCode();
-        BasketStep3Page basketStep3Page = basketStep2Page.clickCreateSalesDocumentButton()
+        CartStep3Page basketStep3Page = basketStep2Page.clickCreateSalesDocumentButton()
                 .verifyRequiredElements();
 
         // Step #8
@@ -135,7 +135,7 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
 
         // Step #6
         step("Нажмите Добавить");
-        BasketStep1Page basketStep1Page = addProductPage.clickAddButton();
+        CartStep1Page basketStep1Page = addProductPage.clickAddButton();
         basketStep1Page.verifyRequiredElements()
                 .shouldDocumentNumberIs(documentNumber)
                 .shouldLmCodeOfProductIs(lmCode);
@@ -220,12 +220,12 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
 
         // Step #6
         step("Нажмите Добавить в корзину");
-        Basket35Page basket35Page = addProduct35Page.clickAddIntoBasketButton()
-                .verifyRequiredElements(new Basket35Page.PageState().setProductIsAdded(true));
+        Cart35Page cart35Page = addProduct35Page.clickAddIntoBasketButton()
+                .verifyRequiredElements(new Cart35Page.PageState().setProductIsAdded(true));
 
         // Step #7
         step("Нажмите Оформить");
-        ProcessOrder35Page processOrder35Page = basket35Page.clickMakeSalesButton()
+        ProcessOrder35Page processOrder35Page = cart35Page.clickMakeSalesButton()
                 .verifyRequiredElements();
 
         // Step #8
@@ -340,20 +340,20 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
 
             // Step #5
             step("Нажмите Добавить");
-            BasketStep1Page basketStep1Page = addProductPage.clickAddButton()
+            CartStep1Page basketStep1Page = addProductPage.clickAddButton()
                     .verifyRequiredElements();
-            basketStep1Page.shouldDocumentTypeIs(BasketPage.Constants.DRAFT_DOCUMENT_TYPE);
+            basketStep1Page.shouldDocumentTypeIs(CartPage.Constants.DRAFT_DOCUMENT_TYPE);
             String documentNumber = basketStep1Page.getDocumentNumber();
 
             // Step #6
             step("Нажмите Далее к параметрам");
-            BasketStep2Page basketStep2Page = basketStep1Page.clickNextParametersButton()
+            CartStep2Page basketStep2Page = basketStep1Page.clickNextParametersButton()
                     .verifyRequiredElements()
                     .shouldFieldsHaveDefaultValues();
 
             // Step #7
             step("Нажмите кнопку Создать документ продажи");
-            BasketStep3Page basketStep3Page = basketStep2Page.clickCreateSalesDocumentButton()
+            CartStep3Page basketStep3Page = basketStep2Page.clickCreateSalesDocumentButton()
                     .verifyRequiredElements();
 
             // Step #8

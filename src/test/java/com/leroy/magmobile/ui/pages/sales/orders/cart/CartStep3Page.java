@@ -1,4 +1,4 @@
-package com.leroy.magmobile.ui.pages.sales.orders.basket;
+package com.leroy.magmobile.ui.pages.sales.orders.cart;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
@@ -7,7 +7,7 @@ import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.sales.SubmittedSalesDocumentPage;
 import io.qameta.allure.Step;
 
-public class BasketStep3Page extends BasketPage {
+public class CartStep3Page extends CartPage {
 
     @AppFindBy(text = "PIN-код для оплаты")
     private Element pinCodeHeaderLbl;
@@ -32,7 +32,7 @@ public class BasketStep3Page extends BasketPage {
     }
 
     @Step("Введите {pin} в PIN-код поле")
-    public BasketStep3Page enterPinCode(String pin) {
+    public CartStep3Page enterPinCode(String pin) {
         pinCodeFld.clearFillAndSubmit(pin);
         return this;
     }
@@ -40,7 +40,7 @@ public class BasketStep3Page extends BasketPage {
     // ---------------- Verifications ------------------//
 
     @Override
-    public BasketStep3Page verifyRequiredElements() {
+    public CartStep3Page verifyRequiredElements() {
         softAssert.isElementVisible(pinCodeHeaderLbl);
         softAssert.isElementVisible(pinCodeFld);
         softAssert.isElementVisible(submitBtn);
@@ -50,13 +50,13 @@ public class BasketStep3Page extends BasketPage {
         return this;
     }
 
-    public BasketStep3Page shouldPinCodeFieldIs(String text) {
+    public CartStep3Page shouldPinCodeFieldIs(String text) {
         anAssert.isElementTextEqual(pinCodeFld, text);
         return this;
     }
 
     @Step("Проверить, что Кнопка 'Подтвердить' активна")
-    public BasketStep3Page shouldSubmitButtonIsActive() {
+    public CartStep3Page shouldSubmitButtonIsActive() {
         anAssert.isTrue(submitBtn.isEnabled(),
                 "Кнопка 'Подтвердить должна быть активна'");
         return this;
