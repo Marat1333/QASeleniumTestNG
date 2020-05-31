@@ -20,9 +20,5 @@ public class ProductCardData extends CommonSearchCardData {
         setLmCode(lmCode);
     }
 
-    public void addAvailableQuantity(Double availableQuantity) {
-        this.availableQuantity += availableQuantity;
-    }
-
 }
 

@@ -1,14 +1,11 @@
 package com.leroy.magmobile.ui.tests.work;
 
-import com.leroy.constants.EnvConstants;
 import com.leroy.magmobile.ui.AppBaseSteps;
-import com.leroy.magmobile.ui.models.search.ProductCardData;
-import com.leroy.magmobile.ui.models.work.WithdrawalOrderCardData;
+import com.leroy.magmobile.ui.models.work.WithdrawalProductCardData;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
 import com.leroy.magmobile.ui.pages.work.*;
 import com.leroy.magmobile.ui.pages.work.modal.QuantityProductsForWithdrawalModalPage;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Test;
 
 import java.time.LocalDate;
@@ -16,13 +13,6 @@ import java.time.LocalTime;
 import java.util.Random;
 
 public class WithdrawalFromRMTest extends AppBaseSteps {
-
-    private final String OLD_SHOP_GROUP = "old_shop";
-
-    @BeforeGroups(OLD_SHOP_GROUP)
-    public void setSessionDataForOldShop() {
-        getUserSessionData().setUserShopId(EnvConstants.SHOP_WITH_OLD_INTERFACE);
-    }
 
     @Test(description = "C3132493 Создание заявки на Отзыв RM из раздела Работа", groups = OLD_SHOP_GROUP)
     public void testC3132493() throws Exception {
@@ -42,7 +32,7 @@ public class WithdrawalFromRMTest extends AppBaseSteps {
 
         // Step #3
         step("Выбрать первый товар, который поштучно хранится на складе");
-        ProductCardData selectedProductDataBefore = stockProductsPage.getPieceProductInfoByIndex(0);
+        WithdrawalProductCardData selectedProductDataBefore = stockProductsPage.getProductInfoByIndex(0);
         StockProductCardPage productCardPage = stockProductsPage.clickFirstPieceProduct()
                 .verifyRequiredElements();
 
@@ -54,10 +44,8 @@ public class WithdrawalFromRMTest extends AppBaseSteps {
         // Step #5
         step("Ввести количество товара для отзыва");
         String numberForRM = String.valueOf(new Random().nextInt(11) + 1);
-        WithdrawalOrderCardData orderCardDataBefore = new WithdrawalOrderCardData();
-        selectedProductDataBefore.addAvailableQuantity(-Double.parseDouble(numberForRM));
-        orderCardDataBefore.setProductCardData(selectedProductDataBefore);
-        orderCardDataBefore.setSelectedQuantity(Double.valueOf(numberForRM));
+        selectedProductDataBefore.minusAvailableQuantity(Double.parseDouble(numberForRM));
+        selectedProductDataBefore.setSelectedQuantity(Double.valueOf(numberForRM));
 
         modalPage.enterCountOfItems(numberForRM)
                 .shouldWithdrawalButtonHasQuantity(numberForRM);
@@ -67,7 +55,7 @@ public class WithdrawalFromRMTest extends AppBaseSteps {
         modalPage.clickSubmitBtn()
                 .verifyRequiredElements()
                 .shouldCountOfSelectedProductsIs(1)
-                .shouldSelectedProductIs(1, orderCardDataBefore);
+                .shouldSelectedProductIs(1, selectedProductDataBefore);
 
         // Step #7
         step("Нажать кнопку ДАЛЕЕ К ПАРАМЕТРАМ ЗАЯВКИ");
@@ -108,7 +96,7 @@ public class WithdrawalFromRMTest extends AppBaseSteps {
         OrderDetailsPage orderDetailsPage = ordersListPage.clickOrderByIndex(0)
                 .shouldFormDataIs("Торговый зал", testDate,
                         timeForSelect, testText)
-                .shouldProductByIndexIs(1, orderCardDataBefore);
+                .shouldProductByIndexIs(1, selectedProductDataBefore);
     }
 
 }

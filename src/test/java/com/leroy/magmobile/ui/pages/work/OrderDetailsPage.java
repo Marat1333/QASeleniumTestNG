@@ -3,8 +3,7 @@ package com.leroy.magmobile.ui.pages.work;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magmobile.ui.models.search.ProductCardData;
-import com.leroy.magmobile.ui.models.work.WithdrawalOrderCardData;
+import com.leroy.magmobile.ui.models.work.WithdrawalProductCardData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.widgets.ProductCardWidget;
 import com.leroy.utils.ParserUtil;
@@ -63,20 +62,15 @@ public class OrderDetailsPage extends CommonMagMobilePage {
 
     @Step("{index}-ий товар должен соответствовать: {cardData}")
     public OrderDetailsPage shouldProductByIndexIs(
-            int index, WithdrawalOrderCardData cardData) throws Exception {
+            int index, WithdrawalProductCardData expectedCardData) throws Exception {
         index--;
-        ProductCardWidget productCardWidget = productsForWithdrawal.get(index);
-        ProductCardData productCardData = cardData.getProductCardData();
-        softAssert.isEquals(productCardWidget.getNumber(), productCardData.getLmCode(),
-                "Номер товара на отзыв должен быть %s");
-        softAssert.isEquals(productCardWidget.getName(), productCardData.getName(),
-                "Название товара на отзыв должно быть %s");
-        softAssert.isEquals(ParserUtil.strToDouble(productCardWidget.getQuantity()),
-                cardData.getSelectedQuantity(),
-                "Кол-во товара на отзыв должно быть %s");
-        softAssert.isEquals(productCardWidget.getQuantityUnit(), productCardData.getPriceUnit(),
-                "Тип кол-ва должен быть %s");
-        softAssert.verifyAll();
+        ProductCardWidget cardObj = productsForWithdrawal.get(index);
+        WithdrawalProductCardData actualCardData = new WithdrawalProductCardData();
+        actualCardData.setLmCode(cardObj.getNumber());
+        actualCardData.setTitle(cardObj.getName());
+        actualCardData.setPriceUnit(cardObj.getQuantityUnit());
+        actualCardData.setAvailableQuantity(ParserUtil.strToDouble(cardObj.getQuantity()));
+        actualCardData.assertEqualsNotNullExpectedFields(index, expectedCardData);
         return this;
     }
 }
