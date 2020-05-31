@@ -49,18 +49,19 @@ public class MagMobileBaseTest extends BaseUiTest {
     protected final String OLD_SHOP_GROUP = "old_shop";
     protected final String NEED_ACCESS_TOKEN_GROUP = "need_access_token";
 
-    @BeforeGroups(NEED_ACCESS_TOKEN_GROUP)
+    /*@BeforeGroups(NEED_ACCESS_TOKEN_GROUP)
     protected void setAccessTokenForSessionData() {
         if (!isNeedAccessToken())
             accessToken = getAccessToken();
-    }
+    }*/
 
     @BeforeMethod
     protected void setUserSessionDataByGroup(Method method) {
         List<String> groups = Arrays.asList(method.getAnnotation(Test.class).groups());
         UserSessionData userSessionData = getUserSessionData();
         if (groups.contains(NEED_ACCESS_TOKEN_GROUP)) {
-            userSessionData.setAccessToken(accessToken);
+            //userSessionData.setAccessToken(accessToken);
+            userSessionData.setAccessToken(getAccessToken());
         }
         if (groups.contains(OLD_SHOP_GROUP)) {
             userSessionData.setUserShopId(EnvConstants.SHOP_WITH_OLD_INTERFACE);

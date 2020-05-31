@@ -1,6 +1,5 @@
 package com.leroy.magmobile.ui.tests;
 
-import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.api.Module;
 import com.leroy.core.api.ThreadApiClient;

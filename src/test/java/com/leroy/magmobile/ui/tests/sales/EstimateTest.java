@@ -41,8 +41,8 @@ public class EstimateTest extends SalesBaseTest {
     @Step("Pre-condition: Создание сметы")
     private void startFromScreenWithCreatedEstimate(List<String> lmCodes,
                                                     boolean isConfirmed) throws Exception {
-        boolean byApi = true; // TODO should be true
-        if (!EstimatePage.isThisPage()) {
+        boolean byApi = true; // should be true; (false - if only backend has problems)
+        if (isStartFromScratch()) {
             if (byApi) {
                 String estimateId = isConfirmed ? apiClientProvider.createConfirmedEstimateAndGetCartId(lmCodes) :
                         apiClientProvider.createDraftEstimateAndGetCartId(lmCodes);
@@ -164,6 +164,10 @@ public class EstimateTest extends SalesBaseTest {
         ProductDescriptionPage productDescriptionPage = modalPage.clickProductDetailsMenuItem();
         productDescriptionPage.verifyRequiredElements(false)
                 .shouldProductLMCodeIs(productCardData.getLmCode());
+
+        // Post-action:
+        step("Вернитесь обратно в смету");
+        productDescriptionPage.returnBack(EstimatePage.class);
     }
 
     @Test(description = "C22797073 Изменить количество добавленного товара", groups = NEED_ACCESS_TOKEN_GROUP)
@@ -436,6 +440,10 @@ public class EstimateTest extends SalesBaseTest {
         softAssert().isTrue(estimateDataBefore.getTotalWeight() < estimateDataAfter.getTotalWeight(),
                 "Вес должен был увеличиться после добавления нового товара");
         softAssert().verifyAll();
+
+        // Post action
+        step("Нажмите 'Сохранить'");
+        estimatePage.clickSaveButton();
     }
 
     @Test(description = "C22797077 Отправить смету на почту (с экрана успеха или из сметы в статусе Создан)",
@@ -534,6 +542,10 @@ public class EstimateTest extends SalesBaseTest {
         estimateDataBefore.setTotalWeight(estimateDataBefore.getTotalWeight() * ParserUtil.strToDouble(newQuantity));
         estimateDataBefore.setTotalPrice(product.getTotalPrice());
         estimatePage.shouldOrderDataIs(estimateDataBefore);
+
+        // Post action
+        step("Нажмите 'Сохранить' на странице сметы");
+        estimatePage.clickSaveButton();
     }
 
     @Test(description = "C22797085 Изменение контактных данных клиента в смете в статусе Создан",

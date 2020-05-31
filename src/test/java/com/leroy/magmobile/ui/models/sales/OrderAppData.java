@@ -4,6 +4,8 @@ import com.leroy.core.ContextProvider;
 import com.leroy.core.asserts.SoftAssertWrapper;
 import lombok.Data;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,8 +64,12 @@ public class OrderAppData {
             softAssert.isEquals(date, expectedOrderCardData.getDate(),
                     "Заказ " + (index + 1) + " - неверная дата исполнения заказа");
         }
-        softAssert.isEquals(totalWeight, expectedOrderCardData.getTotalWeight(),
-                "Заказ " + (index + 1) + " - неверный вес заказа");
+
+        if (expectedOrderCardData.getTotalWeight() != null) {
+            softAssert.isEquals(BigDecimal.valueOf(totalWeight).setScale(1, RoundingMode.HALF_UP),
+                    BigDecimal.valueOf(expectedOrderCardData.getTotalWeight()).setScale(1, RoundingMode.HALF_UP),
+                    "Заказ " + (index + 1) + " - неверный вес заказа");
+        }
         softAssert.isEquals(totalPrice, expectedOrderCardData.getTotalPrice(),
                 "Заказ " + (index + 1) + " - неверная стоимость заказа");
         softAssert.isEquals(productCardDataList.size(), expectedOrderCardData.getProductCardDataList().size(),

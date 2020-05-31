@@ -68,8 +68,9 @@ public class AndroidScrollView<T> extends BaseWidget {
         this.useUiSelectors = useUiSelectors;
     }
 
-    public void setSwipeDeadZonePercentage(int swipeDeadZonePercentage) {
+    public AndroidScrollView<T> setSwipeDeadZonePercentage(int swipeDeadZonePercentage) {
         this.swipeDeadZonePercentage = swipeDeadZonePercentage;
+        return this;
     }
 
     private Class<? extends BaseWidget> rowWidgetClass;

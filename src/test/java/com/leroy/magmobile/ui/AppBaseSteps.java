@@ -40,7 +40,7 @@ public class AppBaseSteps extends MagMobileBaseTest {
             boolean moon = false;
             Element termsAcceptBtn = new Element(driver,
                     By.id("com.android.chrome:id/terms_accept"));
-            if (termsAcceptBtn.isVisible(5)) {
+            if (termsAcceptBtn.isVisible(6)) {
                 Log.debug("Accept & Continue button is visible");
                 termsAcceptBtn.click();
                 moon = true;
@@ -113,7 +113,7 @@ public class AppBaseSteps extends MagMobileBaseTest {
                 throw new IllegalArgumentException("Переход на страницу " + pageClass.getName() +
                         " еще не реализован через класс TopMenuPage");
             }
-        } catch (NoSuchElementException err) {
+        } catch (Exception err) {
             RetryAnalyzer.enableForceRetry();
             throw err;
         }
@@ -165,6 +165,16 @@ public class AppBaseSteps extends MagMobileBaseTest {
                 .searchForShopAndSelectById(shop)
                 .goToEditDepartmentForm()
                 .selectDepartmentById(department);
+    }
+
+    /**
+     * Тест начинается со страницы авторизации, т.е. с нуля?
+     */
+    protected boolean isStartFromScratch() {
+        String ps = getDriver().getPageSource();
+        Element authScreen = new Element(getDriver(), By.xpath("//*[@content-desc='AuthScreen__btn_getVersionNumber']"));
+        Element anyViewGroup = new Element(getDriver(), By.xpath("//android.view.ViewGroup"));
+        return authScreen.isVisible(ps) || !anyViewGroup.isVisible(ps);
     }
 
 }

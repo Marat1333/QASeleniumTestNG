@@ -1,6 +1,5 @@
 package com.leroy.magmobile.ui.tests.sales;
 
-import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.ui.models.sales.DocumentDetailsData;
 import com.leroy.magmobile.ui.models.sales.ShortSalesDocumentData;
@@ -17,19 +16,11 @@ import com.leroy.magmobile.ui.pages.work.StockProductsPage;
 import com.leroy.magmobile.ui.pages.work.modal.QuantityProductsForWithdrawalModalPage;
 import com.leroy.utils.ParserUtil;
 import org.apache.commons.lang.RandomStringUtils;
-import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Test;
 
 import java.util.Random;
 
 public class MultiFunctionalButtonTest extends SalesBaseTest {
-
-    private final String OLD_SHOP_GROUP = "old_shop";
-
-    @BeforeGroups(OLD_SHOP_GROUP)
-    public void setSessionDataForOldShop() {
-        getUserSessionData().setUserShopId(EnvConstants.SHOP_WITH_OLD_INTERFACE);
-    }
 
     @Test(description = "C3201023 Создание документа продажи", groups = OLD_SHOP_GROUP)
     public void testC3201023() throws Exception {

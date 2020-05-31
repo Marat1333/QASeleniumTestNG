@@ -42,7 +42,8 @@ public class EstimatePage extends CommonMagMobilePage {
 
     @Override
     public void waitForPageIsLoaded() {
-        E("$EstimateDocumentScreenId", "EstimateDocumentScreen").waitForVisibility();
+        anAssert.isTrue(E("$EstimateDocumentScreenId", "EstimateDocumentScreen").waitForVisibility(),
+                "Страница Сметы не загрузилась");
     }
 
     @AppFindBy(accessibilityId = "BackCloseMaster", metaName = "Кнопка назад")
