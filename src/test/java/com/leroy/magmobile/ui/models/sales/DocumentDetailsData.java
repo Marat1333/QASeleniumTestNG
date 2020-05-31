@@ -2,7 +2,7 @@ package com.leroy.magmobile.ui.models.sales;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
-public class OrderDetailsData {
+public class DocumentDetailsData {
 
     public enum DeliveryType {
         PICKUP("Самовывоз"), DELIVERY("Доставка");
@@ -81,7 +81,7 @@ public class OrderDetailsData {
         this.comment = comment;
     }
 
-    public OrderDetailsData setRequiredRandomData() {
+    public DocumentDetailsData setRequiredRandomData() {
         this.fullName = String.format("%s %s", RandomStringUtils.randomAlphanumeric(6),
                 RandomStringUtils.randomAlphabetic(6));
         this.phone = RandomStringUtils.randomNumeric(10);

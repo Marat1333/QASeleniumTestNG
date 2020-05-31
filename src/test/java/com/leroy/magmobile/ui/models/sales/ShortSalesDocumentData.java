@@ -2,14 +2,14 @@ package com.leroy.magmobile.ui.models.sales;
 
 import lombok.Data;
 
-import java.util.List;
-
 @Data
-public class SalesDocumentData {
+public class ShortSalesDocumentData {
+
     private String title;
+    private String documentTotalPrice;
     private String number;
+    private String pin;
     private String date;
     private String documentState;
 
-    private List<OrderAppData> orderAppDataList;
 }
