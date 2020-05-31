@@ -4,7 +4,6 @@ import com.leroy.constants.Fonts;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.util.ImageUtil;
-import com.leroy.core.util.XpathUtil;
 import io.appium.java_client.MobileElement;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
@@ -68,11 +67,8 @@ public class Element extends BaseWidget {
     public String getXpath() {
         if (locator == null)
             return getAbsoluteXPath();
-        else if (locator.getAccessibilityId() != null && !locator.getAccessibilityId().isEmpty()) {
-            return XpathUtil.getXpathByAccessibilityId(locator.getAccessibilityId());
-        } else {
+        else
             return super.getXpath();
-        }
     }
 
     /**
@@ -870,7 +866,8 @@ public class Element extends BaseWidget {
 
     /**
      * Wait until attribute is equal to specific value
-     * @param attributeName - what is attribute
+     *
+     * @param attributeName  - what is attribute
      * @param attributeValue - what value should be
      */
     public void waitUntilAttributeIsEqual(String attributeName, String attributeValue) {
