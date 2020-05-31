@@ -6,7 +6,7 @@ import com.leroy.magmobile.ui.pages.common.modal.ConfirmRemovingProductModal;
 import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
 import com.leroy.magmobile.ui.pages.sales.SalesDocumentsPage;
-import com.leroy.magmobile.ui.pages.sales.basket.*;
+import com.leroy.magmobile.ui.pages.sales.orders.basket.*;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SaleTypeModalPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import io.qameta.allure.Step;
