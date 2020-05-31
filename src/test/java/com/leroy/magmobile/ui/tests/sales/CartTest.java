@@ -1,7 +1,7 @@
 package com.leroy.magmobile.ui.tests.sales;
 
 import com.leroy.constants.sales.SalesDocumentsConst;
-import com.leroy.magmobile.ui.models.sales.SalesOrderCardData;
+import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.pages.common.modal.ConfirmRemovingProductModal;
 import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
@@ -21,7 +21,7 @@ public class CartTest extends SalesBaseTest {
     @Step("Pre-condition: Создание корзины")
     private void startFromScreenWithCreatedCart(boolean hasDiscount) throws Exception {
         if (!Basket35Page.isThisPage()) {
-            String cartDocNumber = "200500036442";//createDraftCart(1, hasDiscount);
+            String cartDocNumber = createDraftCart(1, hasDiscount);
             MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
                     MainSalesDocumentsPage.class);
             SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
@@ -88,7 +88,7 @@ public class CartTest extends SalesBaseTest {
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
         AddProduct35Page addProduct35Page = new AddProduct35Page()
                 .verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_BASKET);
-        SalesOrderCardData expectedOrderCardData = addProduct35Page.getOrderRowDataFromPage();
+        ProductOrderCardAppData expectedOrderCardData = addProduct35Page.getProductOrderDataFromPage();
 
         // Step 3
         step("Нажмите на Добавить в корзину");
@@ -98,7 +98,7 @@ public class CartTest extends SalesBaseTest {
                         .setProductIsAdded(true)
                         .setManyOrders(null));
         basket35Page.shouldCountOfCardsIs(productCountInBasket + 1);
-        basket35Page.shouldOrderCardDataWithTextIs(expectedOrderCardData.getProductCardData().getLmCode(),
+        basket35Page.shouldProductCardDataWithTextIs(expectedOrderCardData.getLmCode(),
                 expectedOrderCardData);
     }
 
@@ -114,7 +114,7 @@ public class CartTest extends SalesBaseTest {
         }
 
         Basket35Page basket35Page = new Basket35Page();
-        SalesOrderCardData salesOrderCardDataBefore = basket35Page.getSalesOrderCardDataByIndex(1);
+        ProductOrderCardAppData productOrderCardAppDataBefore = basket35Page.getSalesOrderCardDataByIndex(1);
 
         // Step 1
         step("Нажмите на мини-карточку любого товара в списке товаров корзины");
@@ -135,7 +135,7 @@ public class CartTest extends SalesBaseTest {
                 .setProductIsAdded(true)
                 .setManyOrders(false));
         basket35Page.shouldProductBeNotPresentInCart(
-                salesOrderCardDataBefore.getProductCardData().getLmCode());
+                productOrderCardAppDataBefore.getLmCode());
     }
 
     @Test(description = "C22797099 Удалить последний товар из корзины",
@@ -224,7 +224,7 @@ public class CartTest extends SalesBaseTest {
         // Step 1
         step("Нажмите на мини-карточку любого товара в списке товаров корзины");
         Basket35Page basket35Page = new Basket35Page();
-        SalesOrderCardData productData = basket35Page.getSalesOrderCardDataByIndex(1);
+        ProductOrderCardAppData productData = basket35Page.getSalesOrderCardDataByIndex(1);
         double productTotalPrice = productData.getTotalPrice();
         double productTotalPriceWithDiscount = productData.getTotalPriceWithDiscount();
         CartActionWithProductCardModalPage modalPage = basket35Page.clickCardByIndex(1);
