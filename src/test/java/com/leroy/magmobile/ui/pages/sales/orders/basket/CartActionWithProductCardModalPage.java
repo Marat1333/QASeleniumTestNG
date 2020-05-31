@@ -1,8 +1,8 @@
-package com.leroy.magmobile.ui.pages.sales.basket;
+package com.leroy.magmobile.ui.pages.sales.orders.basket;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.pages.sales.estimate.ActionWithProductCardModalPage;
+import com.leroy.magmobile.ui.pages.sales.orders.estimate.ActionWithProductCardModalPage;
 import io.qameta.allure.Step;
 
 import java.util.ArrayList;

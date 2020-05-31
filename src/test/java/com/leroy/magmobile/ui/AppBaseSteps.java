@@ -12,7 +12,7 @@ import com.leroy.magmobile.ui.pages.more.MorePage;
 import com.leroy.magmobile.ui.pages.more.UserProfilePage;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
-import com.leroy.magmobile.ui.pages.sales.basket.BasketStep1Page;
+import com.leroy.magmobile.ui.pages.sales.orders.basket.BasketStep1Page;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.ActionWithProductModalPage;
 import com.leroy.magmobile.ui.pages.support.SupportPage;

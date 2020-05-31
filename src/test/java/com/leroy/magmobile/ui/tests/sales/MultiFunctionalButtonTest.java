@@ -6,7 +6,7 @@ import com.leroy.magmobile.ui.models.sales.DocumentDetailsData;
 import com.leroy.magmobile.ui.models.sales.ShortSalesDocumentData;
 import com.leroy.magmobile.ui.models.search.ProductCardData;
 import com.leroy.magmobile.ui.pages.sales.*;
-import com.leroy.magmobile.ui.pages.sales.basket.*;
+import com.leroy.magmobile.ui.pages.sales.orders.basket.*;
 import com.leroy.magmobile.ui.pages.sales.product_and_service.AddServicePage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.*;

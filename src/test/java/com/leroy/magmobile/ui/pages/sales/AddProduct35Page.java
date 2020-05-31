@@ -6,8 +6,8 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.sales.basket.Basket35Page;
-import com.leroy.magmobile.ui.pages.sales.estimate.EstimatePage;
+import com.leroy.magmobile.ui.pages.sales.orders.basket.Basket35Page;
+import com.leroy.magmobile.ui.pages.sales.orders.estimate.EstimatePage;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 

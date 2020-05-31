@@ -1,4 +1,4 @@
-package com.leroy.magmobile.ui.pages.sales.estimate;
+package com.leroy.magmobile.ui.pages.sales.orders.estimate;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;

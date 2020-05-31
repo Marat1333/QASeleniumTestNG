@@ -1,4 +1,4 @@
-package com.leroy.magmobile.ui.pages.sales.basket;
+package com.leroy.magmobile.ui.pages.sales.orders.basket;
 
 import com.leroy.core.ContextProvider;
 import com.leroy.core.annotations.AppFindBy;

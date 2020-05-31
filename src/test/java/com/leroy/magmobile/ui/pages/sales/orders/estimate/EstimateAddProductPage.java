@@ -1,4 +1,4 @@
-package com.leroy.magmobile.ui.pages.sales.estimate;
+package com.leroy.magmobile.ui.pages.sales.orders.estimate;
 
 import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
 import io.qameta.allure.Step;

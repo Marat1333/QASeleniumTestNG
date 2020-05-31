@@ -6,7 +6,7 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.pages.sales.PricesAndQuantityPage;
 import com.leroy.magmobile.ui.pages.sales.ProductCardPage;
-import com.leroy.magmobile.ui.pages.sales.basket.Basket35Page;
+import com.leroy.magmobile.ui.pages.sales.orders.basket.Basket35Page;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;

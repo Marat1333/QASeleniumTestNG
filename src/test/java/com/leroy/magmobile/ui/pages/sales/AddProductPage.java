@@ -5,7 +5,7 @@ import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.sales.basket.BasketStep1Page;
+import com.leroy.magmobile.ui.pages.sales.orders.basket.BasketStep1Page;
 import io.qameta.allure.Step;
 
 public class AddProductPage extends CommonMagMobilePage {
