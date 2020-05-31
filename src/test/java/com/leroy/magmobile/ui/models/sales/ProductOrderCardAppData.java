@@ -24,25 +24,25 @@ public class ProductOrderCardAppData {
     private Double discountPercent;
     private boolean selectedMoreThanAvailable;
 
-    public void assertEqualsNotNullExpectedFields(int index, ProductOrderCardAppData expectedOrderCardData) {
+    public void assertEqualsNotNullExpectedFields(int index, ProductOrderCardAppData expectedProductCardData) {
         SoftAssertWrapper softAssert = ContextProvider.getContext().getSoftAssert();
-        softAssert.isEquals(lmCode, expectedOrderCardData.getLmCode(),
+        softAssert.isEquals(lmCode, expectedProductCardData.getLmCode(),
                 "Товар " + (index + 1) + " - неверный ЛМ код");
-        softAssert.isEquals(title, expectedOrderCardData.getTitle(),
+        softAssert.isEquals(title, expectedProductCardData.getTitle(),
                 "Товар " + (index + 1) + " - неверное название товара");
-        softAssert.isEquals(price, expectedOrderCardData.getPrice(),
+        softAssert.isEquals(price, expectedProductCardData.getPrice(),
                 "Товар " + (index + 1) + " - неверная цена товара");
-        softAssert.isEquals(priceUnit, expectedOrderCardData.getPriceUnit(),
+        softAssert.isEquals(priceUnit, expectedProductCardData.getPriceUnit(),
                 "Товар " + (index + 1) + " - неверный price unit товара");
-        softAssert.isEquals(selectedQuantity, expectedOrderCardData.getSelectedQuantity(),
+        softAssert.isEquals(selectedQuantity, expectedProductCardData.getSelectedQuantity(),
                 "Товар " + (index + 1) + " - неверное выбранное кол-во товара");
-        softAssert.isEquals(totalPrice, expectedOrderCardData.getTotalPrice(),
+        softAssert.isEquals(totalPrice, expectedProductCardData.getTotalPrice(),
                 "Товар " + (index + 1) + " - неверная сумма товара");
-        softAssert.isEquals(totalPriceWithDiscount, expectedOrderCardData.getTotalPriceWithDiscount(),
+        softAssert.isEquals(totalPriceWithDiscount, expectedProductCardData.getTotalPriceWithDiscount(),
                 "Товар " + (index + 1) + " - неверная сумма (с учетом скидки) товара");
-        softAssert.isEquals(availableTodayQuantity, expectedOrderCardData.getAvailableTodayQuantity(),
+        softAssert.isEquals(availableTodayQuantity, expectedProductCardData.getAvailableTodayQuantity(),
                 "Товар " + (index + 1) + " - неверное доступное кол-во товара");
-        softAssert.isEquals(discountPercent, expectedOrderCardData.getDiscountPercent(),
+        softAssert.isEquals(discountPercent, expectedProductCardData.getDiscountPercent(),
                 "Товар " + (index + 1) + " - неверная скидка % товара");
         softAssert.verifyAll();
     }
