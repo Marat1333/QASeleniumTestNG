@@ -5,7 +5,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
-import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
+import com.leroy.magmobile.ui.models.sales.ShortSalesDocumentData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
 import com.leroy.magmobile.ui.pages.sales.widget.SalesDocumentWidget;
@@ -25,7 +25,7 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
             metaName = "Кнопка 'Фильтр'")
     private MagMobGreenSubmitButton filterBtn;
 
-    AndroidScrollView<SalesDocumentData> salesDocumentScrollList = new AndroidScrollView<>(
+    AndroidScrollView<ShortSalesDocumentData> salesDocumentScrollList = new AndroidScrollView<>(
             driver, AndroidScrollView.TYPICAL_LOCATOR,
             "//android.view.ViewGroup[android.view.ViewGroup[android.widget.TextView[contains(@text, '№')]]]",
             SalesDocumentWidget.class);
@@ -57,7 +57,7 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
 
     @Step("Найти и выбрать документ, содержащий текст: {containsText}")
     public void searchForDocumentByTextAndSelectIt(String containsText) {
-        CardWidget<SalesDocumentData> cardWidget =
+        CardWidget<ShortSalesDocumentData> cardWidget =
                 salesDocumentScrollList.searchForWidgetByText(containsText);
         anAssert.isNotNull(cardWidget, "Не нашли нужный документ",
                 String.format("Документ содержащий текст %s должен быть найден",
@@ -87,13 +87,13 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что документ на странице имеется документ с данными: {expectedDocument}")
-    public SalesDocumentsPage shouldSalesDocumentIsPresentAndDataMatches(SalesDocumentData expectedDocument) {
-        CardWidget<SalesDocumentData> widget = salesDocumentScrollList.searchForWidgetByText(
+    public SalesDocumentsPage shouldSalesDocumentIsPresentAndDataMatches(ShortSalesDocumentData expectedDocument) {
+        CardWidget<ShortSalesDocumentData> widget = salesDocumentScrollList.searchForWidgetByText(
                 expectedDocument.getNumber());
         anAssert.isNotNull(widget,
                 "Документ " + expectedDocument.getNumber() + " не найден",
                 "Документ " + expectedDocument.getNumber() + " должен присутствовать на странице");
-        SalesDocumentData documentFromPage = widget.collectDataFromPage();
+        ShortSalesDocumentData documentFromPage = widget.collectDataFromPage();
         if (expectedDocument.getDate() != null) {
             softAssert.isEquals(documentFromPage.getDate(), expectedDocument.getDate(),
                     "Документ дата - не верна");
@@ -111,7 +111,7 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
                 softAssert.isEquals(documentFromPage.getPin(), expectedDocument.getPin(),
                         "PIN документа должен быть %s");
         }
-        softAssert.isEquals(documentFromPage.getPrice(), expectedDocument.getPrice(),
+        softAssert.isEquals(documentFromPage.getDocumentTotalPrice(), expectedDocument.getDocumentTotalPrice(),
                 "Сумма в документе - не верна");
         softAssert.isEquals(documentFromPage.getTitle(), expectedDocument.getTitle(),
                 "Место отзыва документа - не верно");
@@ -121,11 +121,11 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
 
     @Step("Проверить, что среди последних 5 документов, документа с номером {expDocNumber} на странице нет")
     public SalesDocumentsPage shouldSalesDocumentIsNotPresent(String expDocNumber) {
-        List<SalesDocumentData> salesDocumentDataList = salesDocumentScrollList
+        List<ShortSalesDocumentData> shortSalesDocumentDataList = salesDocumentScrollList
                 .getFullDataList(5);
-        anAssert.isTrue(salesDocumentDataList.size() > 0,
+        anAssert.isTrue(shortSalesDocumentDataList.size() > 0,
                 "На странице нет ни одного документа");
-        for (SalesDocumentData data : salesDocumentDataList) {
+        for (ShortSalesDocumentData data : shortSalesDocumentDataList) {
             anAssert.isNotEquals(data.getNumber(), expDocNumber,
                     "Документ с соответсвующим номером найден");
         }

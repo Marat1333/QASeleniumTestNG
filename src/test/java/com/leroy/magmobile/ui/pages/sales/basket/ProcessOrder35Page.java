@@ -6,8 +6,7 @@ import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
-import com.leroy.magmobile.ui.models.TextViewData;
-import com.leroy.magmobile.ui.models.sales.OrderDetailsData;
+import com.leroy.magmobile.ui.models.sales.DocumentDetailsData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.SubmittedSalesDocument35Page;
 import io.qameta.allure.Step;
@@ -22,7 +21,7 @@ public class ProcessOrder35Page extends CommonMagMobilePage {
     Element backBtn;
 
     @AppFindBy(xpath = AndroidScrollView.TYPICAL_XPATH, metaName = "Основная прокручиваемая область страницы")
-    AndroidScrollView<TextViewData> mainScrollView;
+    AndroidScrollView<String> mainScrollView;
 
     // Выбери способ получения
     @AppFindBy(text = "Самовывоз")
@@ -80,7 +79,7 @@ public class ProcessOrder35Page extends CommonMagMobilePage {
     }
 
     @Step("Заполнить поля формы 'Оформление заказа'")
-    public ProcessOrder35Page fillInFormFields(OrderDetailsData data) throws Exception {
+    public ProcessOrder35Page fillInFormFields(DocumentDetailsData data) throws Exception {
         fullNameFld.clearFillAndSubmit(data.getFullName());
         mainScrollView.scrollDownToElement(phoneFld);
         fillInPhoneFld(data.getPhone(false));
@@ -102,7 +101,7 @@ public class ProcessOrder35Page extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что поля формы заполнены соответствующим образом")
-    public ProcessOrder35Page shouldFormFieldsAre(OrderDetailsData data) throws Exception {
+    public ProcessOrder35Page shouldFormFieldsAre(DocumentDetailsData data) throws Exception {
         if (!fullNameFld.isVisible())
             mainScrollView.scrollUpToElement(fullNameFld);
         if (data.getFullName() != null)

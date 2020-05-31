@@ -1,5 +1,7 @@
 package com.leroy.magmobile.ui.models.sales;
 
+import com.leroy.core.ContextProvider;
+import com.leroy.core.asserts.SoftAssertWrapper;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -38,6 +40,45 @@ public class OrderAppData {
             productCount++;
             totalPrice += product.getTotalPrice();
         }
+    }
+
+    public void assertEqualsNotNullExpectedFields(int index, OrderAppData expectedOrderCardData) {
+        SoftAssertWrapper softAssert = ContextProvider.getContext().getSoftAssert();
+        if (expectedOrderCardData.getOrderIndex() != null) {
+            softAssert.isEquals(orderIndex, expectedOrderCardData.getOrderIndex(),
+                    "Заказ " + (index + 1) + " - неверный номер/индекс заказа");
+        }
+        if (expectedOrderCardData.getOrderMaxCount() != null) {
+            softAssert.isEquals(orderMaxCount, expectedOrderCardData.getOrderMaxCount(),
+                    "Заказ " + (index + 1) + " - неверное общее кол-во заказов");
+        }
+        if (expectedOrderCardData.getProductCountTotal() != null) {
+            softAssert.isEquals(productCountTotal, expectedOrderCardData.getProductCountTotal(),
+                    "Заказ " + (index + 1) + " - неверное общее кол-во товаров");
+        }
+        softAssert.isEquals(productCount, expectedOrderCardData.getProductCount(),
+                "Заказ " + (index + 1) + " - неверное кол-во товаров в заказе");
+        if (expectedOrderCardData.getDate() != null) {
+            softAssert.isEquals(date, expectedOrderCardData.getDate(),
+                    "Заказ " + (index + 1) + " - неверная дата исполнения заказа");
+        }
+        softAssert.isEquals(totalWeight, expectedOrderCardData.getTotalWeight(),
+                "Заказ " + (index + 1) + " - неверный вес заказа");
+        softAssert.isEquals(totalPrice, expectedOrderCardData.getTotalPrice(),
+                "Заказ " + (index + 1) + " - неверная стоимость заказа");
+        softAssert.isEquals(productCardDataList.size(), expectedOrderCardData.getProductCardDataList().size(),
+                "Разное кол-во товаров в заказе");
+        softAssert.verifyAll();
+
+        for (int i = 0; i < expectedOrderCardData.getProductCardDataList().size(); i++) {
+            productCardDataList.get(i).assertEqualsNotNullExpectedFields(i, expectedOrderCardData.getProductCardDataList().get(i));
+        }
+
+        softAssert.verifyAll();
+    }
+
+    public void assertEqualsNotNullExpectedFields(OrderAppData expectedOrderCardData) {
+        assertEqualsNotNullExpectedFields(0, expectedOrderCardData);
     }
 
 }

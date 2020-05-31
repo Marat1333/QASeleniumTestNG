@@ -2,8 +2,8 @@ package com.leroy.magmobile.ui.tests.sales;
 
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.SalesDocumentsConst;
-import com.leroy.magmobile.ui.models.sales.OrderDetailsData;
-import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
+import com.leroy.magmobile.ui.models.sales.DocumentDetailsData;
+import com.leroy.magmobile.ui.models.sales.ShortSalesDocumentData;
 import com.leroy.magmobile.ui.models.search.ProductCardData;
 import com.leroy.magmobile.ui.pages.sales.*;
 import com.leroy.magmobile.ui.pages.sales.basket.*;
@@ -230,26 +230,26 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
 
         // Step #8
         step("Заполните поля Имя и Фамилия, Телефон, PIN-код для оплаты");
-        OrderDetailsData orderDetailsData = new OrderDetailsData().setRequiredRandomData();
-        orderDetailsData.setPinCode(getValidPinCode());
-        orderDetailsData.setDeliveryType(OrderDetailsData.DeliveryType.PICKUP);
-        processOrder35Page.fillInFormFields(orderDetailsData)
-                .shouldFormFieldsAre(orderDetailsData);
+        DocumentDetailsData documentDetailsData = new DocumentDetailsData().setRequiredRandomData();
+        documentDetailsData.setPinCode(getValidPinCode());
+        documentDetailsData.setDeliveryType(DocumentDetailsData.DeliveryType.PICKUP);
+        processOrder35Page.fillInFormFields(documentDetailsData)
+                .shouldFormFieldsAre(documentDetailsData);
 
         // Step #9
         step("Нажмите на кнопку Подтвердить заказ");
         SubmittedSalesDocument35Page submittedDocument35Page = processOrder35Page.clickSubmitButton()
                 .verifyRequiredElements()
-                .shouldPinCodeIs(orderDetailsData.getPinCode());
+                .shouldPinCodeIs(documentDetailsData.getPinCode());
         String documentNumber = submittedDocument35Page.getDocumentNumber(true);
 
         // Step #10
         step("Нажмите на кнопку Перейти в список документов");
-        SalesDocumentData expectedSalesDocument = new SalesDocumentData();
-        expectedSalesDocument.setPrice(expectedTotalPrice);
+        ShortSalesDocumentData expectedSalesDocument = new ShortSalesDocumentData();
+        expectedSalesDocument.setDocumentTotalPrice(expectedTotalPrice);
 
         expectedSalesDocument.setDocumentState(SalesDocumentsConst.States.IN_PROGRESS.getUiVal());
-        expectedSalesDocument.setTitle(orderDetailsData.getDeliveryType().getValue());
+        expectedSalesDocument.setTitle(documentDetailsData.getDeliveryType().getValue());
         expectedSalesDocument.setNumber(documentNumber);
         SalesDocumentsPage salesDocumentsPage = submittedDocument35Page
                 .clickSubmitButton()
@@ -257,7 +257,7 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
 
         // Additional Step
         step("(Доп шаг) Уходим со страницы и возвращаемся обратно");
-        expectedSalesDocument.setPin(orderDetailsData.getPinCode());
+        expectedSalesDocument.setPin(documentDetailsData.getPinCode());
         expectedSalesDocument.setDocumentState(null);
         salesDocumentsPage.clickBackButton();
         mainProductAndServicesPage = new MainProductAndServicesPage(); // Workaround for minor #bug
