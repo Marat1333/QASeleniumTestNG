@@ -34,10 +34,14 @@ public class ProductCardPage extends CommonMagMobilePage {
 
     /* ------------------------- ACTION STEPS -------------------------- */
 
+    public SearchProductPage returnBack() throws Exception {
+        return returnBack(SearchProductPage.class);
+    }
+
     @Step("Перейти назад на страницу поиска товара")
-    public SearchProductPage returnBack() {
+    public <T extends CommonMagMobilePage> T returnBack(Class<T> page) throws Exception {
         returnBackBtn.click();
-        return new SearchProductPage();
+        return page.getConstructor().newInstance();
     }
 
     @Step("Перейти во вкладку {value}")

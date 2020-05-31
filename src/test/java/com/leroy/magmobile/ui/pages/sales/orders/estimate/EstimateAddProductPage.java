@@ -1,0 +1,14 @@
+package com.leroy.magmobile.ui.pages.sales.orders.estimate;
+
+import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
+import io.qameta.allure.Step;
+
+public class EstimateAddProductPage extends AddProduct35Page {
+
+    @Step("Проверить, что страница 'Добавление товара' отображается корректно")
+    public EstimateAddProductPage verifyRequiredElements() {
+        verifyRequiredElements(SubmitBtnCaptions.ADD_TO_ESTIMATE);
+        return this;
+    }
+
+}

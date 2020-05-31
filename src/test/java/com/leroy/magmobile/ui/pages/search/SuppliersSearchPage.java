@@ -9,7 +9,6 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.ui.elements.MagMobCheckBox;
 import com.leroy.magmobile.ui.models.SupplierCardData;
-import com.leroy.magmobile.ui.models.TextViewData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.search.widgets.SupplierCardWidget;
 import com.leroy.magmobile.ui.pages.widgets.TextViewWidget;
@@ -29,7 +28,7 @@ public class SuppliersSearchPage extends CommonMagMobilePage {
     private AndroidScrollView<SupplierCardData> supplierCardScrollView = new AndroidScrollView<>(driver, AndroidScrollView.TYPICAL_LOCATOR,
             "./descendant::android.view.ViewGroup[7]/android.view.ViewGroup", SupplierCardWidget.class);
 
-    AndroidHorizontalScrollView<TextViewData> suppliersOvalElements = new AndroidHorizontalScrollView<>(driver,
+    AndroidHorizontalScrollView<String> suppliersOvalElements = new AndroidHorizontalScrollView<>(driver,
             By.xpath("//android.widget.HorizontalScrollView"),
             "./descendant::android.view.ViewGroup[2]/android.widget.TextView",
             TextViewWidget.class);
@@ -94,10 +93,11 @@ public class SuppliersSearchPage extends CommonMagMobilePage {
 
     @Step("Проверить, что в овальной области отображено имя выбранного поставщика")
     public SuppliersSearchPage shouldNameOfChosenIsDisplayedInOvalElement(String supplierName) {
-        List<TextViewData> namesOfSuppliers = suppliersOvalElements.getFullDataList();
+        List<String> namesOfSuppliers = suppliersOvalElements.getFullDataList();
         anAssert.isFalse(namesOfSuppliers.isEmpty(), "Не найдено выбранных поставщиков");
-        for (TextViewData data : namesOfSuppliers) {
-            anAssert.isTrue(supplierName.contains(data.getText()), "В овальной области не отображено имя выбранного поставщика");
+        for (String text : namesOfSuppliers) {
+            anAssert.isTrue(supplierName.contains(text),
+                    "В овальной области не отображено имя выбранного поставщика");
         }
         return new SuppliersSearchPage();
     }

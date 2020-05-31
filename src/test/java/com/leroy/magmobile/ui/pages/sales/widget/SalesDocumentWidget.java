@@ -4,11 +4,11 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
-import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
+import com.leroy.magmobile.ui.models.sales.ShortSalesDocumentData;
 import com.leroy.utils.ParserUtil;
 import org.openqa.selenium.WebDriver;
 
-public class SalesDocumentWidget extends CardWidget<SalesDocumentData> {
+public class SalesDocumentWidget extends CardWidget<ShortSalesDocumentData> {
 
     public SalesDocumentWidget(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
@@ -59,12 +59,12 @@ public class SalesDocumentWidget extends CardWidget<SalesDocumentData> {
     }
 
     @Override
-    public SalesDocumentData collectDataFromPage(String pageSource) {
+    public ShortSalesDocumentData collectDataFromPage(String pageSource) {
         if (pageSource == null)
             pageSource = getPageSource();
-        SalesDocumentData document = new SalesDocumentData();
+        ShortSalesDocumentData document = new ShortSalesDocumentData();
         document.setTitle(title.getText(pageSource));
-        document.setPrice(price.getText(pageSource).replaceAll("₽|\\s", ""));
+        document.setDocumentTotalPrice(price.getText(pageSource).replaceAll("₽|\\s", ""));
         document.setNumber(getDocNumber(true, pageSource));
         document.setPin(getPinCode(true, pageSource));
         document.setDate(date.getText(pageSource));

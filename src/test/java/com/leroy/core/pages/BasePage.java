@@ -6,7 +6,7 @@ import com.leroy.core.asserts.AssertWrapper;
 import com.leroy.core.asserts.SoftAssertWrapper;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.testrail.helpers.StepLog;
-import com.leroy.magmobile.ui.Context;
+import com.leroy.core.Context;
 import io.qameta.allure.Attachment;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;

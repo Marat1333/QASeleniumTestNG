@@ -1,15 +1,13 @@
 package com.leroy.magmobile.ui.pages.search;
 
-import com.leroy.magmobile.ui.constants.MagMobElementTypes;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.android.AndroidHorizontalScrollView;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
+import com.leroy.magmobile.ui.constants.MagMobElementTypes;
 import com.leroy.magmobile.ui.elements.MagMobCheckBox;
-import com.leroy.magmobile.ui.models.TextViewData;
 import com.leroy.magmobile.ui.models.search.FiltersData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.common.widget.CalendarWidget;
@@ -55,9 +53,9 @@ public class FilterPage extends CommonMagMobilePage {
     Element clearAllFiltersBtn;
 
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ScreenContent']/android.widget.ScrollView[1]", metaName = "Основная прокручиваемая область страницы")
-    AndroidScrollView<TextViewData> mainScrollView;
+    AndroidScrollView<String> mainScrollView;
 
-    AndroidHorizontalScrollView<TextViewData> gammaFilterScrollView = new AndroidHorizontalScrollView<>(driver,
+    AndroidHorizontalScrollView<String> gammaFilterScrollView = new AndroidHorizontalScrollView<>(driver,
             By.xpath("//android.widget.ScrollView//android.view.ViewGroup[3]/android.widget.HorizontalScrollView"));
 
     @AppFindBy(text = "МОЙ МАГАЗИН")

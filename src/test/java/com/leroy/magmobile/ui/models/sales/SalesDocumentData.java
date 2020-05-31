@@ -1,18 +1,15 @@
 package com.leroy.magmobile.ui.models.sales;
 
-import com.leroy.magmobile.ui.models.CardWidgetData;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode(callSuper = false)
+import java.util.List;
+
 @Data
-public class SalesDocumentData extends CardWidgetData {
-
+public class SalesDocumentData {
     private String title;
-    private String price;
     private String number;
-    private String pin;
     private String date;
     private String documentState;
 
+    private List<OrderAppData> orderAppDataList;
 }

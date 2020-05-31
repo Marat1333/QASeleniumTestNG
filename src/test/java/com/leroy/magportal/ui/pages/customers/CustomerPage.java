@@ -4,7 +4,6 @@ import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.webelements.commonelements.PuzComboBox;
 import io.qameta.allure.Step;

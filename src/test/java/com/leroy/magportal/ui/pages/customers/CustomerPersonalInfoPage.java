@@ -4,7 +4,6 @@ import com.leroy.constants.Gender;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.models.customers.CustomerWebData;
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import io.qameta.allure.Step;

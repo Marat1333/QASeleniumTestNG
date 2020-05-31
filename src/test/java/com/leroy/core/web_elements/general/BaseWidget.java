@@ -6,7 +6,6 @@ import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.util.XmlUtil;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -172,26 +171,26 @@ public abstract class BaseWidget extends BaseWrapper {
 
     /**
      * Wait for the web element is visible
-     *
-     * @param timeout
-     * @throws Exception
      */
-    private void waitForVisibilityAndSearchAgain(int timeout, Duration sleepTimeout, boolean isSearchingAgain) {
+    private boolean waitForVisibilityAndSearchAgain(int timeout, Duration sleepTimeout, boolean isSearchingAgain) {
         WebDriverWait wait = new WebDriverWait(this.driver, timeout);
         if (sleepTimeout != null)
             wait.pollingEvery(sleepTimeout);
         try {
             wait.until((ExpectedCondition<Boolean>) driverObject -> isVisible());
+            return true;
         } catch (StaleElementReferenceException e) {
             if (isSearchingAgain) {
                 webElement = null;
                 if (locator != null)
                     locator.setCacheLookup(false);
                 initialWebElementIfNeeded();
-                waitForVisibilityAndSearchAgain(timeout, sleepTimeout, false);
+                return waitForVisibilityAndSearchAgain(timeout, sleepTimeout, false);
             }
+            return false;
         } catch (org.openqa.selenium.TimeoutException e) {
             Log.warn(String.format("waitForVisibilityAndSearchAgain for " + getMetaName() + " failed (tried for %d second(s))", timeout));
+            return false;
         }
     }
 
@@ -230,23 +229,23 @@ public abstract class BaseWidget extends BaseWrapper {
         return webElementList.size() > 0 && webElementList.get(0).isDisplayed();
     }
 
-    public void waitForVisibility() {
-        waitForVisibility(timeout);
+    public boolean waitForVisibility() {
+        return waitForVisibility(timeout);
     }
 
-    public void waitForVisibility(int timeout) {
-        waitForVisibilityAndSearchAgain(timeout, null, true);
+    public boolean waitForVisibility(int timeout) {
+        return waitForVisibilityAndSearchAgain(timeout, null, true);
     }
 
-    public void waitForVisibility(int timeout, Duration sleepTimeout) {
-        waitForVisibilityAndSearchAgain(timeout, sleepTimeout, true);
+    public boolean waitForVisibility(int timeout, Duration sleepTimeout) {
+        return waitForVisibilityAndSearchAgain(timeout, sleepTimeout, true);
     }
 
-    public void waitForInvisibility() {
-        waitForInvisibility(timeout);
+    public boolean waitForInvisibility() {
+        return waitForInvisibility(timeout);
     }
 
-    public void waitForInvisibility(int timeout) {
+    public boolean waitForInvisibility(int timeout) {
         WebDriverWait wait = new WebDriverWait(this.driver, (long) timeout);
         try {
             wait.until((ExpectedCondition<Boolean>) driverObject -> {
@@ -256,8 +255,10 @@ public abstract class BaseWidget extends BaseWrapper {
                     return false;
                 }
             });
+            return true;
         } catch (org.openqa.selenium.TimeoutException e) {
             Log.warn(String.format("waitForInvisibility failed (tried for %d second(s))", timeout));
+            return false;
         }
     }
 

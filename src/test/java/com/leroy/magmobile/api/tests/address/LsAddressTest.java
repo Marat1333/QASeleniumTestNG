@@ -40,8 +40,8 @@ public class LsAddressTest extends BaseProjectApiTest {
     private int schemeType;
 
     @Override
-    protected UserSessionData initUserSessionData() {
-        UserSessionData sessionData = super.initUserSessionData();
+    protected UserSessionData initTestClassUserSessionDataTemplate() {
+        UserSessionData sessionData = super.initTestClassUserSessionDataTemplate();
         sessionData.setUserShopId("25");
         return sessionData;
     }

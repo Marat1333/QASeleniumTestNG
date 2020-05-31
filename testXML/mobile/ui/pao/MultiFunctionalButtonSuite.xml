@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Multifunctional Button Suite" parallel="tests">
+
+    <listeners>
+        <listener class-name="com.leroy.core.listeners.TestRailListener"/>
+    </listeners>
+
+    <test name="C3201023 Создание документа продажи">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.MultiFunctionalButtonTest">
+                <methods>
+                    <include name="testC3201023"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22846947 Создание документа продажи с товаром AVS">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.MultiFunctionalButtonTest">
+                <methods>
+                    <include name="testC22846947"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22846948 Создание документа продажи с товаром Топ-EM">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.MultiFunctionalButtonTest">
+                <methods>
+                    <include name="testC22846948"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C3201049 Создание документа продажи из карточки услуги">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.MultiFunctionalButtonTest">
+                <methods>
+                    <include name="testC3201049"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C3201024 Добавление в существующий документ продажи">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.MultiFunctionalButtonTest">
+                <methods>
+                    <include name="testC3201024"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22744177 Создание заявки на Отзыв RM">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.MultiFunctionalButtonTest">
+                <methods>
+                    <include name="testCreateOrderForWithdrawalFromRM"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22847027 35 магазин - создание заказа">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.MultiFunctionalButtonTest">
+                <methods>
+                    <include name="test35ShopCreatingOrder"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+</suite>
