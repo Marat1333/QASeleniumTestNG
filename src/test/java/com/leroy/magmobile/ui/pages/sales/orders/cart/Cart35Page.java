@@ -186,18 +186,18 @@ public class Cart35Page extends CommonMagMobilePage {
     }
 
     @Step("Получить из корзины информацию о {index} товаре/услуге")
-    public ProductOrderCardAppData getSalesOrderCardDataByIndex(int index) {
+    public ProductOrderCardAppData getProductCardDataByIndex(int index) {
         index--;
         return productCardsScrollView.getDataObj(index);
     }
 
     @Step("Получить из корзины информацию о всех добавленных товарах/услугах")
-    public List<ProductOrderCardAppData> getSalesOrderCardDataList() {
+    public List<ProductOrderCardAppData> getProductCardDataList() {
         return productCardsScrollView.getFullDataList();
     }
 
     @Step("Посчитать кол-во товаров/услуг в корзине")
-    public int getCountOfOrderCards() {
+    public int getCountOfProductCards() {
         return productCardsScrollView.getRowCount();
     }
 
@@ -253,7 +253,7 @@ public class Cart35Page extends CommonMagMobilePage {
 
     @Step("Проверить, что общее кол-во карточек товаров/услуг в корзине = {count}")
     public Cart35Page shouldCountOfCardsIs(int count) {
-        anAssert.isEquals(getCountOfOrderCards(), count,
+        anAssert.isEquals(getCountOfProductCards(), count,
                 "Неверное кол-во товаров на странице");
         return this;
     }

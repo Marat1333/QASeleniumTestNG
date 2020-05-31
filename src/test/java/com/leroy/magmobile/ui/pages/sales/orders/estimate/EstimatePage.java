@@ -78,7 +78,7 @@ public class EstimatePage extends CommonMagMobilePage {
             metaName = "Карточка товара")
     ProductOrderCardAppWidget productCardWidget;
 
-    AndroidScrollView<ProductOrderCardAppData> orderCardDataScrollView = new AndroidScrollView<>(driver,
+    AndroidScrollView<ProductOrderCardAppData> productCardDataScrollView = new AndroidScrollView<>(driver,
             AndroidScrollView.TYPICAL_LOCATOR,
             "//android.view.ViewGroup[android.view.ViewGroup[android.view.ViewGroup[android.widget.ImageView]]]",
             ProductOrderCardAppWidget.class);
@@ -147,8 +147,8 @@ public class EstimatePage extends CommonMagMobilePage {
     }
 
     @Step("Забираем со страницы информацию о смете")
-    public OrderAppData getEstimateDataFromPage() {
-        List<ProductOrderCardAppData> cardDataList = orderCardDataScrollView.getFullDataList();
+    public OrderAppData getOrderDataFromPage() {
+        List<ProductOrderCardAppData> cardDataList = productCardDataScrollView.getFullDataList();
         OrderAppData orderData = new OrderAppData();
         orderData.setProductCardDataList(cardDataList);
         String ps = getPageSource();
@@ -160,7 +160,7 @@ public class EstimatePage extends CommonMagMobilePage {
 
     @Step("Получить список добавленных в смету карточек товаров/услуг с информацией о них")
     public List<ProductOrderCardAppData> getCardDataListFromPage() {
-        return orderCardDataScrollView.getFullDataList();
+        return productCardDataScrollView.getFullDataList();
     }
 
     // ACTIONS
@@ -175,7 +175,7 @@ public class EstimatePage extends CommonMagMobilePage {
     @Step("Нажмите на {index}-ую карточку товара/услуги")
     public ActionWithProductCardModalPage clickCardByIndex(int index) throws Exception {
         index--;
-        orderCardDataScrollView.clickElemByIndex(index);
+        productCardDataScrollView.clickElemByIndex(index);
         return new ActionWithProductCardModalPage();
     }
 
@@ -293,52 +293,9 @@ public class EstimatePage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что смета содержит ожидаемые данные (expectedData)")
-    public EstimatePage shouldEstimateDataIs(OrderAppData expectedData) {
-        OrderAppData actualData = getEstimateDataFromPage();
-
-        /*softAssert.isEquals(actualData.getProductCount(), expectedData.getProductCount(),
-                "Разное кол-во позиций товаров в смете (цифра)");
-        softAssert.isEquals(actualData.getTotalPrice(), expectedData.getTotalPrice(),
-                "Разная стоимость Итого");
-        if (expectedData.getTotalWeight() != null) {
-            softAssert.isEquals(actualData.getTotalWeight(), expectedData.getTotalWeight(),
-                    "Разный итоговый вес");
-        }
-        anAssert.isEquals(actualData.getOrderCardDataList().size(), expectedData.getOrderCardDataList().size(),
-                "Разное кол-во товаров");
-        for (int i = 0; i < expectedData.getOrderCardDataList().size(); i++) {
-            ProductOrderCardAppData actualProduct = actualData.getOrderCardDataList().get(i);
-            ProductOrderCardAppData expectedProduct = expectedData.getOrderCardDataList().get(i);
-            softAssert.isEquals(actualProduct.getSelectedQuantity(), expectedProduct.getSelectedQuantity(),
-                    "Товар #" + (i + 1) + " - разное выбранное кол-во");
-            softAssert.isEquals(actualProduct.getTotalPrice(), expectedProduct.getTotalPrice(),
-                    "Товар #" + (i + 1) + " - разная стоимость товаров");
-            if (expectedProduct.isSelectedMoreThanAvailable()) {
-                softAssert.isTrue(actualProduct.getAvailableTodayQuantity() != null,
-                        "Товар #" + (i + 1) + " - не видно кол-во доступного товара");
-                if (expectedProduct.getAvailableTodayQuantity() != null) {
-                    softAssert.isEquals(actualProduct.getAvailableTodayQuantity(), expectedProduct.getAvailableTodayQuantity(),
-                            "Товар #" + (i + 1) + " - разное доступное кол-во товаров");
-                }
-            }
-            softAssert.isEquals(actualProduct.getProductCardData().getLmCode(),
-                    expectedProduct.getProductCardData().getLmCode(),
-                    "Товар #" + (i + 1) + " - разные ЛМ коды");
-            // Бар код не отображается на этой странице
-            //softAssert.isEquals(actualProduct.getProductCardData().getBarCode(),
-            //        expectedProduct.getProductCardData().getBarCode(),
-            //        "Товар #" + (i + 1) + " - разные Бар коды");
-            softAssert.isEquals(actualProduct.getProductCardData().getName(),
-                    expectedProduct.getProductCardData().getName(),
-                    "Товар #" + (i + 1) + " - разные названия товаров");
-            softAssert.isEquals(actualProduct.getProductCardData().getPrice(),
-                    expectedProduct.getProductCardData().getPrice(),
-                    "Товар #" + (i + 1) + " - разные цены товаров");
-            softAssert.isEquals(actualProduct.getProductCardData().getPriceUnit(),
-                    expectedProduct.getProductCardData().getPriceUnit(),
-                    "Товар #" + (i + 1) + " - разные price Unit");
-        }*/
-        softAssert.verifyAll();
+    public EstimatePage shouldOrderDataIs(OrderAppData expectedData) {
+        OrderAppData actualData = getOrderDataFromPage();
+        actualData.assertEqualsNotNullExpectedFields(expectedData);
         return this;
     }
 
