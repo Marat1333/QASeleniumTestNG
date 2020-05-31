@@ -7,7 +7,6 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
 import com.leroy.magmobile.ui.pages.widgets.TextViewWidget;
-import com.leroy.magmobile.ui.models.CardWidgetData;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
@@ -21,7 +20,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AndroidHorizontalScrollView<T extends CardWidgetData> extends BaseWidget {
+public class AndroidHorizontalScrollView<T> extends BaseWidget {
 
     private boolean experiment = false;
     private final int MAX_SCROLL_COUNT = 10;

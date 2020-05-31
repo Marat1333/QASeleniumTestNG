@@ -8,7 +8,6 @@ import com.leroy.core.util.XpathUtil;
 import com.leroy.core.web_elements.general.BaseWidget;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magmobile.ui.models.CardWidgetData;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
 import com.leroy.magmobile.ui.pages.widgets.TextViewWidget;
 import io.appium.java_client.MobileElement;
@@ -24,7 +23,7 @@ import static io.appium.java_client.touch.WaitOptions.waitOptions;
 import static io.appium.java_client.touch.offset.PointOption.point;
 import static java.time.Duration.ofMillis;
 
-public class AndroidScrollView<T extends CardWidgetData> extends BaseWidget {
+public class AndroidScrollView<T> extends BaseWidget {
 
     AndroidDriver<MobileElement> androidDriver;
 
