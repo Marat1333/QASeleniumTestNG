@@ -6,7 +6,7 @@ import com.leroy.core.asserts.AssertWrapper;
 import com.leroy.core.asserts.SoftAssertWrapper;
 import com.leroy.core.listeners.TestRailListener;
 import com.leroy.core.testrail.helpers.StepLog;
-import com.leroy.magmobile.ui.Context;
+import com.leroy.core.Context;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
