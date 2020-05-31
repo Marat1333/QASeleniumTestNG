@@ -214,7 +214,7 @@ public class EstimateTest extends SalesBaseTest {
 
         EstimatePage estimatePage = new EstimatePage();
         // Collect test data from page
-        OrderAppData testEstimateData = estimatePage.getEstimateDataFromPage();
+        OrderAppData testEstimateData = estimatePage.getOrderDataFromPage();
 
         // Step 1
         step("Нажмите на кнопку Действия со сметой");
@@ -235,7 +235,7 @@ public class EstimateTest extends SalesBaseTest {
         // Step 1
         step("Нажмите на кнопку +товары и услуги");
         EstimatePage estimatePage = new EstimatePage();
-        OrderAppData firstEstimateStateData = estimatePage.getEstimateDataFromPage();
+        OrderAppData firstEstimateStateData = estimatePage.getOrderDataFromPage();
         ProductOrderCardAppData firstProductInEstimate = firstEstimateStateData.getProductCardDataList().get(0);
         SearchProductPage searchProductPage = estimatePage.clickAddProductButton();
         searchProductPage.verifyRequiredElements();
@@ -255,7 +255,7 @@ public class EstimateTest extends SalesBaseTest {
 
         // Step 4
         step("Нажмите на Добавить в смету");
-        OrderAppData estimateData = addProductPage.clickAddIntoEstimateButton().getEstimateDataFromPage();
+        OrderAppData estimateData = addProductPage.clickAddIntoEstimateButton().getOrderDataFromPage();
         ProductOrderCardAppData newProduct = estimateData.getProductCardDataList().get(0);
         softAssert().isEquals(estimateData.getProductCount(), 2, "Метка с кол-вом товара не верна");
         softAssert().isEquals(estimateData.getProductCardDataList().size(), 2,
@@ -277,7 +277,7 @@ public class EstimateTest extends SalesBaseTest {
         // Step 1
         step("Нажмите на мини-карточку любого товара в списке товаров сметы");
         EstimatePage estimatePage = new EstimatePage();
-        OrderAppData estimateDataBefore = estimatePage.getEstimateDataFromPage();
+        OrderAppData estimateDataBefore = estimatePage.getOrderDataFromPage();
         ActionWithProductCardModalPage actionWithProductCardModalPage = estimatePage.clickCardByIndex(1);
         actionWithProductCardModalPage.verifyRequiredElements();
 
@@ -291,7 +291,7 @@ public class EstimateTest extends SalesBaseTest {
         step("Нажмите на Удалить");
         modal.clickConfirmButton();
         estimatePage = new EstimatePage();
-        OrderAppData estimateDataAfter = estimatePage.getEstimateDataFromPage();
+        OrderAppData estimateDataAfter = estimatePage.getOrderDataFromPage();
         softAssert().isEquals(estimateDataAfter.getProductCount(), 1, "Метка кол-ва товаров неверна");
         softAssert().isEquals(estimateDataAfter.getProductCardDataList().size(), 1,
                 "Ошибочное кол-во товаров на странице");
@@ -404,7 +404,7 @@ public class EstimateTest extends SalesBaseTest {
         // Step 1
         step("Нажмите на ручку в верхней правой части экрана");
         EstimatePage estimatePage = new EstimatePage();
-        OrderAppData estimateDataBefore = estimatePage.getEstimateDataFromPage();
+        OrderAppData estimateDataBefore = estimatePage.getOrderDataFromPage();
         estimatePage.clickEditEstimateButton()
                 .shouldEditModeOn();
 
@@ -423,7 +423,7 @@ public class EstimateTest extends SalesBaseTest {
         // Step 4
         step("Нажмите на Добавить в смету");
         OrderAppData estimateDataAfter = addProductPage.clickAddIntoEstimateButton()
-                .getEstimateDataFromPage();
+                .getOrderDataFromPage();
         ProductOrderCardAppData newProduct = estimateDataAfter.getProductCardDataList().get(0);
         softAssert().isEquals(estimateDataAfter.getProductCount(), 2, "Метка с кол-вом товара не верна");
         softAssert().isEquals(estimateDataAfter.getProductCardDataList().size(), 2,
@@ -504,7 +504,7 @@ public class EstimateTest extends SalesBaseTest {
         // Step 1
         step("Нажмите на ручку в верхней правой части экрана");
         EstimatePage estimatePage = new EstimatePage();
-        OrderAppData estimateDataBefore = estimatePage.getEstimateDataFromPage();
+        OrderAppData estimateDataBefore = estimatePage.getOrderDataFromPage();
         estimatePage.clickEditEstimateButton()
                 .shouldEditModeOn();
 
@@ -533,7 +533,7 @@ public class EstimateTest extends SalesBaseTest {
         product.setTotalPrice(product.getPrice() * ParserUtil.strToDouble(newQuantity));
         estimateDataBefore.setTotalWeight(estimateDataBefore.getTotalWeight() * ParserUtil.strToDouble(newQuantity));
         estimateDataBefore.setTotalPrice(product.getTotalPrice());
-        estimatePage.shouldEstimateDataIs(estimateDataBefore);
+        estimatePage.shouldOrderDataIs(estimateDataBefore);
     }
 
     @Test(description = "C22797085 Изменение контактных данных клиента в смете в статусе Создан",
@@ -596,7 +596,7 @@ public class EstimateTest extends SalesBaseTest {
         // Step 1
         step("Нажмите на ручку в верхней правой части экрана");
         EstimatePage estimatePage = new EstimatePage();
-        OrderAppData estimateData = estimatePage.getEstimateDataFromPage();
+        OrderAppData estimateData = estimatePage.getOrderDataFromPage();
         estimatePage.clickEditEstimateButton()
                 .shouldEditModeOn();
 
@@ -624,7 +624,7 @@ public class EstimateTest extends SalesBaseTest {
 
         estimateData.removeProduct(0, true);
         estimateData.setTotalWeight(null);
-        estimatePage.shouldEstimateDataIs(estimateData);
+        estimatePage.shouldOrderDataIs(estimateData);
     }
 
     @Test(description = "C22797088 Добавление товара в смету в количестве большем, чем доступно для продажи",
@@ -635,7 +635,7 @@ public class EstimateTest extends SalesBaseTest {
         // Step 1
         step("Нажмите на кнопку +товары и услуги");
         EstimatePage estimatePage = new EstimatePage();
-        OrderAppData estimateData = estimatePage.getEstimateDataFromPage();
+        OrderAppData estimateData = estimatePage.getOrderDataFromPage();
         SearchProductPage searchProductPage = estimatePage.clickAddProductButton()
                 .verifyRequiredElements();
 
@@ -667,7 +667,7 @@ public class EstimateTest extends SalesBaseTest {
 
         estimateData.addFirstProduct(newProduct, true);
         estimateData.setTotalWeight(null);
-        estimatePage.shouldEstimateDataIs(estimateData);
+        estimatePage.shouldOrderDataIs(estimateData);
     }
 
     @Test(description = "C22797110 Добавить существующий товар еще раз (из модалки действий с товаром)",
@@ -678,7 +678,7 @@ public class EstimateTest extends SalesBaseTest {
         // Step 1
         step("Нажмите на мини-карточку любого товара в списке товаров сметы");
         EstimatePage estimatePage = new EstimatePage();
-        OrderAppData estimateData = estimatePage.getEstimateDataFromPage();
+        OrderAppData estimateData = estimatePage.getOrderDataFromPage();
         ActionWithProductCardModalPage actionWithProductCardModalPage = estimatePage.clickCardByIndex(1)
                 .verifyRequiredElements();
 
@@ -706,7 +706,7 @@ public class EstimateTest extends SalesBaseTest {
 
         estimateData.addFirstProduct(newProduct, true);
         estimateData.setTotalWeight(ParserUtil.multiply(estimateData.getTotalWeight(), 4, 2));
-        estimatePage.shouldEstimateDataIs(estimateData);
+        estimatePage.shouldOrderDataIs(estimateData);
     }
 
 }

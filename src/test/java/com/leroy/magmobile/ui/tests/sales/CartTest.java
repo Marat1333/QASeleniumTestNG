@@ -77,7 +77,7 @@ public class CartTest extends SalesBaseTest {
                     SalesDocumentsConst.Types.CART.getUiVal());
         } // TODO через API
         Cart35Page cart35Page = new Cart35Page();
-        int productCountInBasket = cart35Page.getCountOfOrderCards();
+        int productCountInBasket = cart35Page.getCountOfProductCards();
         // Step 1
         step("Нажмите на кнопку +Товар");
         SearchProductPage searchProductPage = cart35Page.clickAddProductButton()
@@ -114,7 +114,7 @@ public class CartTest extends SalesBaseTest {
         }
 
         Cart35Page cart35Page = new Cart35Page();
-        ProductOrderCardAppData productOrderCardAppDataBefore = cart35Page.getSalesOrderCardDataByIndex(1);
+        ProductOrderCardAppData productOrderCardAppDataBefore = cart35Page.getProductCardDataByIndex(1);
 
         // Step 1
         step("Нажмите на мини-карточку любого товара в списке товаров корзины");
@@ -179,7 +179,7 @@ public class CartTest extends SalesBaseTest {
         // Step 1
         step("Нажмите на мини-карточку любого товара в списке товаров корзины");
         Cart35Page cart35Page = new Cart35Page();
-        double productTotalPrice = cart35Page.getSalesOrderCardDataByIndex(1).getTotalPrice();
+        double productTotalPrice = cart35Page.getProductCardDataByIndex(1).getTotalPrice();
         CartActionWithProductCardModalPage modalPage = cart35Page.clickCardByIndex(1);
         modalPage.verifyRequiredElements();
 
@@ -224,7 +224,7 @@ public class CartTest extends SalesBaseTest {
         // Step 1
         step("Нажмите на мини-карточку любого товара в списке товаров корзины");
         Cart35Page cart35Page = new Cart35Page();
-        ProductOrderCardAppData productData = cart35Page.getSalesOrderCardDataByIndex(1);
+        ProductOrderCardAppData productData = cart35Page.getProductCardDataByIndex(1);
         double productTotalPrice = productData.getTotalPrice();
         double productTotalPriceWithDiscount = productData.getTotalPriceWithDiscount();
         CartActionWithProductCardModalPage modalPage = cart35Page.clickCardByIndex(1);
