@@ -1,17 +1,20 @@
-package com.leroy.magmobile.ui.pages.sales.basket;
+package com.leroy.magmobile.ui.pages.sales.widget;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.models.sales.SalesOrderCardData;
-import com.leroy.magmobile.ui.models.search.ProductCardData;
+import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
 import com.leroy.utils.ParserUtil;
 import org.openqa.selenium.WebDriver;
 
-public class OrderRowProductWidget extends CardWidget<SalesOrderCardData> {
+/**
+ * Карточка товара внутри заказа
+ * Экраны: Корзина, Смета и т.д.
+ */
+public class ProductOrderCardAppWidget extends CardWidget<ProductOrderCardAppData> {
 
-    public OrderRowProductWidget(WebDriver driver, CustomLocator locator) {
+    public ProductOrderCardAppWidget(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
     }
 
@@ -86,24 +89,21 @@ public class OrderRowProductWidget extends CardWidget<SalesOrderCardData> {
     }
 
     @Override
-    public SalesOrderCardData collectDataFromPage(String ps) {
-        ProductCardData cardData = new ProductCardData();
+    public ProductOrderCardAppData collectDataFromPage(String ps) {
+        ProductOrderCardAppData cardData = new ProductOrderCardAppData();
         cardData.setLmCode(getLmCode(true, ps));
-        cardData.setName(getName(ps));
+        cardData.setTitle(getName(ps));
         cardData.setPrice(ParserUtil.strToDouble(getPrice(ps)));
         cardData.setPriceUnit(getPriceUnit(ps));
-
-        SalesOrderCardData orderCardData = new SalesOrderCardData();
-        orderCardData.setProductCardData(cardData);
-        orderCardData.setSelectedQuantity(ParserUtil.strToDouble(getSelectedProductQuantity(ps)));
-        orderCardData.setTotalPrice(ParserUtil.strToDouble(getTotalPrice(ps)));
-        orderCardData.setDiscountPercent(ParserUtil.strToDouble(getDiscountPercent(ps)));
-        orderCardData.setTotalPriceWithDiscount(ParserUtil.strToDouble(getTotalPriceWithDiscount(ps)));
+        cardData.setSelectedQuantity(ParserUtil.strToDouble(getSelectedProductQuantity(ps)));
+        cardData.setTotalPrice(ParserUtil.strToDouble(getTotalPrice(ps)));
+        cardData.setDiscountPercent(ParserUtil.strToDouble(getDiscountPercent(ps)));
+        cardData.setTotalPriceWithDiscount(ParserUtil.strToDouble(getTotalPriceWithDiscount(ps)));
 
         // Доступное кол-во отображается не всегда, и находится внизу карточки.
         // Нужно придумывать способ как реализовывать метод isFullyVisible или искать workaround
-        orderCardData.setAvailableTodayQuantity(getAvailableTodayProductQuantity(ps));
-        return orderCardData;
+        cardData.setAvailableTodayQuantity(getAvailableTodayProductQuantity(ps));
+        return cardData;
     }
 
     @Override
