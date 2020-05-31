@@ -1,6 +1,5 @@
-package com.leroy.magmobile.ui;
+package com.leroy.core;
 
-import com.leroy.core.UserSessionData;
 import com.leroy.core.asserts.AssertWrapper;
 import com.leroy.core.asserts.SoftAssertWrapper;
 import com.leroy.core.testrail.helpers.StepLog;
