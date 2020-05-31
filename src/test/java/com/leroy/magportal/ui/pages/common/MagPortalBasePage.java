@@ -3,7 +3,7 @@ package com.leroy.magportal.ui.pages.common;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.pages.BaseWebPage;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
+import com.leroy.core.Context;
 
 import java.time.Duration;
 

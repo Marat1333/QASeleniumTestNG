@@ -4,8 +4,8 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
-import com.leroy.magmobile.ui.pages.sales.basket.Basket35Page;
-import com.leroy.magmobile.ui.pages.sales.estimate.EstimatePage;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.Cart35Page;
+import com.leroy.magmobile.ui.pages.sales.orders.estimate.EstimatePage;
 import io.qameta.allure.Step;
 
 import java.util.ArrayList;
@@ -54,8 +54,8 @@ public class SaleTypeModalPage extends CommonMagMobilePage {
         headerLbl.waitForInvisibility();
         // Плохо так хардкодить. Не повторяйте:
         if (E("//*[contains(@content-desc, 'Screen')]//android.widget.TextView")
-                .getText().equals(Basket35Page.SCREEN_TITLE))
-            return (T) new Basket35Page();
+                .getText().equals(Cart35Page.SCREEN_TITLE))
+            return (T) new Cart35Page();
         else
             return (T) new AddProduct35Page();
 

@@ -5,7 +5,6 @@ import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.models.TextViewData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.widgets.TextViewWidget;
 import io.qameta.allure.Step;
@@ -26,9 +25,9 @@ public class NomenclatureSearchPage extends CommonMagMobilePage {
     @AppFindBy(text = "ПОКАЗАТЬ ВСЕ ТОВАРЫ")
     Element showAllGoods;
 
-    AndroidScrollView<TextViewData> nomenclatureElementsList = new AndroidScrollView<>(driver, new CustomLocator(By.xpath("//android.widget.ScrollView/android.view.ViewGroup")), ".//android.widget.TextView", TextViewWidget.class);
+    AndroidScrollView<String> nomenclatureElementsList = new AndroidScrollView<>(driver, new CustomLocator(By.xpath("//android.widget.ScrollView/android.view.ViewGroup")), ".//android.widget.TextView", TextViewWidget.class);
 
-    private AndroidScrollView<TextViewData> scrollView = new AndroidScrollView<>(driver, AndroidScrollView.TYPICAL_LOCATOR);
+    private AndroidScrollView<String> scrollView = new AndroidScrollView<>(driver, AndroidScrollView.TYPICAL_LOCATOR);
 
     @Override
     public void waitForPageIsLoaded() {
@@ -112,14 +111,14 @@ public class NomenclatureSearchPage extends CommonMagMobilePage {
 
     @Step("Проверить, что отображено 15 отделов")
     public NomenclatureSearchPage shouldDepartmentsCountIs15() {
-        List<TextViewData> uniqueElementsArray = nomenclatureElementsList.getFullDataList();
+        List<String> uniqueElementsArray = nomenclatureElementsList.getFullDataList();
         List<String> result = new ArrayList<>();
         String tmp;
-        for (TextViewData data : uniqueElementsArray) {
-            tmp = data.toString();
+        for (String data : uniqueElementsArray) {
+            tmp = data;
             tmp = tmp.substring(0, 2);
             if (tmp.matches("\\d+")) {
-                result.add(data.toString());
+                result.add(data);
             }
         }
         anAssert.isEquals(result.size(), 15,

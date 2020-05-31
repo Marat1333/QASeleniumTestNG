@@ -67,6 +67,8 @@ public class EditBox extends Element {
 
     public EditBox fill(String text) {
         initialWebElementIfNeeded();
+        if (DriverFactory.isAppProfile())
+            waitForClickability(short_timeout, 1);
         webElement.sendKeys(text);
         return this;
     }

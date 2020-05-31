@@ -23,7 +23,7 @@ public abstract class BaseProjectApiTest extends BaseTest {
     protected ApiClientProvider apiClientProvider;
 
     @Override
-    protected UserSessionData initUserSessionData() {
+    protected UserSessionData initTestClassUserSessionDataTemplate() {
         UserSessionData userSessionData = new UserSessionData();
         userSessionData.setUserLdap(EnvConstants.BASIC_USER_LDAP);
         userSessionData.setUserShopId(EnvConstants.SHOP_WITH_NEW_INTERFACE);

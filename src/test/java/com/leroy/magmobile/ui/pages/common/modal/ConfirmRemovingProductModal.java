@@ -25,6 +25,7 @@ public class ConfirmRemovingProductModal extends CommonMagMobilePage {
     @Step("Нажмите кнопку для подтверждения 'Удалить'")
     public void clickConfirmButton() {
         yesBtn.click();
+        yesBtn.waitForInvisibility();
     }
 
     // Verifications
