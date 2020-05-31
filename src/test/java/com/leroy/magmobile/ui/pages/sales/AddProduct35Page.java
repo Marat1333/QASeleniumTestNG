@@ -4,8 +4,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
-import com.leroy.magmobile.ui.models.sales.SalesOrderCardData;
-import com.leroy.magmobile.ui.models.search.ProductCardData;
+import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.basket.Basket35Page;
 import com.leroy.magmobile.ui.pages.sales.estimate.EstimatePage;
@@ -31,7 +30,7 @@ public class AddProduct35Page extends CommonMagMobilePage {
     private Element barCode;
 
     @AppFindBy(xpath = "//android.widget.TextView[@content-desc='barCode']/following::android.widget.TextView")
-    private Element name;
+    private Element title;
 
     @AppFindBy(text = "Цена")
     private Element priceLbl;
@@ -108,26 +107,25 @@ public class AddProduct35Page extends CommonMagMobilePage {
     }
 
     @Step("Получить информацию со страницы о товаре/услуги/выбранном кол-ве и т.п.")
-    public SalesOrderCardData getOrderRowDataFromPage() {
+    public ProductOrderCardAppData getProductOrderDataFromPage() {
         String ps = getPageSource();
 
         // Карточка товара
-        ProductCardData cardData = new ProductCardData();
-        cardData.setAvailableQuantity(ParserUtil.strToDouble(shoppingRoomAvailableQuantity.getText(ps)));
-        cardData.setPrice(ParserUtil.strToDouble(price.getText(ps)));
-        cardData.setName(name.getText(ps));
-        cardData.setLmCode(ParserUtil.strWithOnlyDigits(lmCode.getText(ps)));
-        cardData.setBarCode(ParserUtil.strWithOnlyDigits(barCode.getText(ps)));
-        cardData.setPriceUnit(shoppingRoomAvailablePriceUnit.getText(ps));
+        ProductOrderCardAppData productData = new ProductOrderCardAppData();
+        //productData.setAvailableTodayQuantity(
+        //        ParserUtil.strToInt(shoppingRoomAvailableQuantity.getText(ps)));
+        productData.setPrice(ParserUtil.strToDouble(price.getText(ps)));
+        productData.setTitle(title.getText(ps));
+        productData.setLmCode(ParserUtil.strWithOnlyDigits(lmCode.getText(ps)));
+        productData.setBarCode(ParserUtil.strWithOnlyDigits(barCode.getText(ps)));
+        productData.setPriceUnit(shoppingRoomAvailablePriceUnit.getText(ps));
 
         // Детали выбора товара (Строка заказа)
-        SalesOrderCardData orderCardData = new SalesOrderCardData();
-        orderCardData.setSelectedQuantity(ParserUtil.strToDouble(editQuantityFld.getText(ps)));
-        orderCardData.setTotalPrice(ParserUtil.strToDouble(totalPrice.getText(ps)));
-        orderCardData.setProductCardData(cardData);
-        orderCardData.setAvailableTodayQuantity(getAvailableQuantityInShoppingRoom() +
+        productData.setSelectedQuantity(ParserUtil.strToDouble(editQuantityFld.getText(ps)));
+        productData.setTotalPrice(ParserUtil.strToDouble(totalPrice.getText(ps)));
+        productData.setAvailableTodayQuantity(getAvailableQuantityInShoppingRoom() +
                 getAvailableQuantityInStock());
-        return orderCardData;
+        return productData;
     }
 
     // ---------------- Action Steps -------------------------//

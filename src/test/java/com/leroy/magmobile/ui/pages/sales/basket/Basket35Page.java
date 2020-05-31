@@ -6,14 +6,17 @@ import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.elements.MagMobWhiteSubmitButton;
-import com.leroy.magmobile.ui.models.sales.SalesOrderCardData;
-import com.leroy.magmobile.ui.models.sales.SalesOrderData;
+import com.leroy.magmobile.ui.models.sales.OrderAppData;
+import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
+import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
+import com.leroy.magmobile.ui.pages.sales.widget.BottomOrderInfoWidget;
+import com.leroy.magmobile.ui.pages.sales.widget.HeaderOrderInfoWidget;
+import com.leroy.magmobile.ui.pages.sales.widget.ProductOrderCardAppWidget;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
-import org.apache.commons.math3.util.Precision;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -58,14 +61,29 @@ public class Basket35Page extends CommonMagMobilePage {
     @AppFindBy(text = "Пока пусто")
     Element emptyInfoMessageLbl;
 
-    AndroidScrollView<SalesOrderCardData> orderCardsScrollView = new AndroidScrollView<>(
+    // Карточки товаров
+    AndroidScrollView<ProductOrderCardAppData> productCardsScrollView = new AndroidScrollView<>(
             driver, AndroidScrollView.TYPICAL_LOCATOR,
             "//android.view.ViewGroup[android.view.ViewGroup[android.view.ViewGroup[android.widget.ImageView]]]",
-            OrderRowProductWidget.class
+            ProductOrderCardAppWidget.class
+    );
+
+    // Верхняя шапка заказов (Заказ # из # и т.д.)
+    AndroidScrollView<OrderAppData> headerOrderInfoScrollView = new AndroidScrollView<>(
+            driver, AndroidScrollView.TYPICAL_LOCATOR,
+            "//android.view.ViewGroup[android.view.ViewGroup[@content-desc='Badge-View']]",
+            HeaderOrderInfoWidget.class
+    );
+
+    // Нижняя информация о заказе (вес, Итого стоимость и т.д.)
+    AndroidScrollView<OrderAppData> bottomOrderInfoScrollView = new AndroidScrollView<>(
+            driver, AndroidScrollView.TYPICAL_LOCATOR,
+            "//android.view.ViewGroup[android.widget.TextView[contains(@text, 'Итого:')]]",
+            BottomOrderInfoWidget.class
     );
 
     @AppFindBy(xpath = "//android.view.ViewGroup[android.view.ViewGroup[android.view.ViewGroup[android.widget.ImageView]]]")
-    private OrderRowProductWidget singleProductCard;
+    private ProductOrderCardAppWidget singleProductCard;
 
     // Bottom Area
     @AppFindBy(xpath = "//android.widget.TextView[contains(@text, 'Итого:')]/preceding-sibling::android.widget.TextView",
@@ -101,22 +119,86 @@ public class Basket35Page extends CommonMagMobilePage {
         return el.isVisible(ps) && el.getText(ps).equals(Basket35Page.SCREEN_TITLE);
     }
 
+    private boolean isMoreThanOneOrder(String ps) {
+        return E("contains(Заказ 1 из)").isVisible(ps);
+    }
+
     // --------- GRAB DATA ----------------------- //
 
+    @Step("Получить цифру кол-ва товаров в корзине на нижней панели")
+    public int getProductCount(String ps) {
+        String[] actualCountProductAndWeight = countAndWeightProductLbl.getText(ps).split("•");
+        return ParserUtil.strToInt(actualCountProductAndWeight[0]);
+    }
+
+    @Step("Получить общий вес товаров в корзине на нижней панели")
+    public Double getTotalWeight(String ps) {
+        String[] actualCountProductAndWeight = countAndWeightProductLbl.getText(ps).split("•");
+        return ParserUtil.strToDouble(actualCountProductAndWeight[1]);
+    }
+
+    @Step("Получить общую стоимость товаров с нижней панели")
+    public Double getTotalPrice(String ps) {
+        return ParserUtil.strToDouble(totalPriceVal.getText(ps));
+    }
+
+    @Step("Получить информацию о документе")
+    public SalesDocumentData getSalesDocumentData() {
+        List<OrderAppData> actualOrderDataList = new ArrayList<>();
+        String ps = getPageSource();
+        SalesDocumentData salesDocumentData = new SalesDocumentData();
+        salesDocumentData.setTitle(screenTitle.getText(ps));
+        List<ProductOrderCardAppData> products = productCardsScrollView.getFullDataList();
+        if (isMoreThanOneOrder(ps)) { // Если несколько заказов в одной корзине
+            List<OrderAppData> headerOrderDataList = headerOrderInfoScrollView
+                    .getFullDataList(2, true);
+            List<OrderAppData> bottomOrderDataList = bottomOrderInfoScrollView.getFullDataList(
+                    2, true);
+            if (headerOrderDataList.size() != bottomOrderDataList.size())
+                throw new RuntimeException(
+                        "Тест нашел разное кол-во верхних и нижних плашек с информацией о заказе");
+
+            int iProductCount = 0;
+            for (int i = 0; i < headerOrderDataList.size(); i++) {
+                OrderAppData orderAppData = headerOrderDataList.get(i);
+                OrderAppData bottomOrderInfoData = bottomOrderDataList.get(i);
+                orderAppData.setTotalWeight(bottomOrderInfoData.getTotalWeight());
+                orderAppData.setTotalPrice(bottomOrderInfoData.getTotalPrice());
+                if (orderAppData.getProductCount() != null) {
+                    anAssert.isEquals(orderAppData.getProductCount(), bottomOrderInfoData.getProductCount(),
+                            "Разная информация о кол-ве товаров в заказе в нижней (зеленой) и верхней плашке");
+                }
+                orderAppData.setProductCount(bottomOrderInfoData.getProductCount());
+                orderAppData.setProductCardDataList(products.subList(iProductCount, products.size()));
+                actualOrderDataList.add(orderAppData);
+                iProductCount += orderAppData.getProductCount();
+            }
+        } else { // Если один заказ в корзине
+            OrderAppData orderAppData = new OrderAppData();
+            orderAppData.setTotalWeight(getTotalWeight(ps));
+            orderAppData.setTotalPrice(getTotalPrice(ps));
+            orderAppData.setProductCount(getProductCount(ps));
+            orderAppData.setProductCardDataList(products);
+            actualOrderDataList.add(orderAppData);
+        }
+        salesDocumentData.setOrderAppDataList(actualOrderDataList);
+        return salesDocumentData;
+    }
+
     @Step("Получить из корзины информацию о {index} товаре/услуге")
-    public SalesOrderCardData getSalesOrderCardDataByIndex(int index) {
+    public ProductOrderCardAppData getSalesOrderCardDataByIndex(int index) {
         index--;
-        return orderCardsScrollView.getDataObj(index);
+        return productCardsScrollView.getDataObj(index);
     }
 
     @Step("Получить из корзины информацию о всех добавленных товарах/услугах")
-    public List<SalesOrderCardData> getSalesOrderCardDataList() {
-        return orderCardsScrollView.getFullDataList();
+    public List<ProductOrderCardAppData> getSalesOrderCardDataList() {
+        return productCardsScrollView.getFullDataList();
     }
 
     @Step("Посчитать кол-во товаров/услуг в корзине")
     public int getCountOfOrderCards() {
-        return orderCardsScrollView.getRowCount();
+        return productCardsScrollView.getRowCount();
     }
 
     // -------------- ACTIONS ---------------------------//
@@ -124,7 +206,7 @@ public class Basket35Page extends CommonMagMobilePage {
     @Step("Нажмите на {index}-ую карточку товара/услуги")
     public CartActionWithProductCardModalPage clickCardByIndex(int index) throws Exception {
         index--;
-        orderCardsScrollView.clickElemByIndex(index);
+        productCardsScrollView.clickElemByIndex(index);
         return new CartActionWithProductCardModalPage();
     }
 
@@ -177,58 +259,30 @@ public class Basket35Page extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что карточка продукта/услуги с текстом '{text}' содержит следующие данные: {expectedOrderCardData}")
-    public Basket35Page shouldOrderCardDataWithTextIs(String text, SalesOrderCardData expectedOrderCardData) {
-        // Поля, которые мы не можем проверить, убираем из проверки:
-        expectedOrderCardData.getProductCardData().setBarCode(null);
-        expectedOrderCardData.getProductCardData().setAvailableQuantity(null);
-
-        CardWidget<SalesOrderCardData> widget = orderCardsScrollView.searchForWidgetByText(text);
+    public Basket35Page shouldProductCardDataWithTextIs(String text, ProductOrderCardAppData expectedProductCardData) {
+        CardWidget<ProductOrderCardAppData> widget = productCardsScrollView.searchForWidgetByText(text);
         anAssert.isNotNull(widget, String.format("Не найдена карточка содержащая текст %s", text),
                 String.format("Карточка с текстом %s должна быть", text));
-        SalesOrderCardData actualOrderCardData = widget.collectDataFromPage();
-        anAssert.isTrue(actualOrderCardData.compareOnlyNotNullFields(expectedOrderCardData),
-                "Неправильная карточка, содержащая текст '" + text + "'. " +
-                        "Актуальное значение: " + actualOrderCardData.toString(),
-                "Ожидалось: " + expectedOrderCardData.toString());
+        ProductOrderCardAppData actualOrderCardData = widget.collectDataFromPage();
+        actualOrderCardData.assertEqualsNotNullExpectedFields(expectedProductCardData);
         return this;
     }
 
-    @Step("Проверить, что информация о заказе в корзине должна быть следующая: {expectedOrderData}")
-    public Basket35Page shouldOrderDataIs(SalesOrderData expectedOrderData) {
-        List<SalesOrderCardData> actualOrderCardDataList = orderCardsScrollView.getFullDataList();
-        anAssert.isEquals(actualOrderCardDataList.size(), expectedOrderData.getOrderCardDataList().size(),
-                "Разное кол-во карточек товаров");
-        for (int i = 0; i < actualOrderCardDataList.size(); i++) {
-            SalesOrderCardData expectedOrderCardData = expectedOrderData.getOrderCardDataList().get(i);
-            SalesOrderCardData actualOrderCardData = actualOrderCardDataList.get(i);
-
-            softAssert.isTrue(actualOrderCardData.compareOnlyNotNullFields(expectedOrderCardData),
-                    (i + 1) + "-ая карточка, содержит неверные данные. " +
-                            "Актуальное значение: " + actualOrderCardData.toString(),
-                    "Ожидалось: " + expectedOrderCardData.toString());
-        }
-
-        // Проверяем Total информацию
-        String pageSource = getPageSource();
-        String[] actualCountProductAndWeight = countAndWeightProductLbl.getText(pageSource).split("•");
-        anAssert.isTrue(actualCountProductAndWeight.length == 2,
-                "Что-то не так с меткой содержащей информацию о кол-ве и весе товара");
-        String actualTotalPrice = totalPriceVal.getText(pageSource).replaceAll("\\D+", "");
-        softAssert.isEquals(ParserUtil.strToInt(actualCountProductAndWeight[0]),
-                expectedOrderData.getProductCount(), "Неверное кол-во товара");
-        softAssert.isEquals(ParserUtil.strToDouble(actualCountProductAndWeight[1]),
-                Precision.round(expectedOrderData.getTotalWeight(), 1), "Неверный вес товара");
-        softAssert.isEquals(ParserUtil.strToDouble(actualTotalPrice), expectedOrderData.getTotalPrice(),
-                "Неверное сумма итого");
-        softAssert.verifyAll();
+    @Step("Проверить, что информация о заказе (единственном) в корзине должна быть ожидаемой (expectedOrderData)")
+    public Basket35Page shouldOrderDataIs(OrderAppData expectedOrderData) {
+        SalesDocumentData salesDocumentData = getSalesDocumentData();
+        anAssert.isEquals(salesDocumentData.getOrderAppDataList().size(), 1,
+                "Заказ должен быть только один");
+        OrderAppData actualOrderData = salesDocumentData.getOrderAppDataList().get(0);
+        actualOrderData.assertEqualsNotNullExpectedFields(expectedOrderData);
         return this;
     }
 
     @Step("Проверить, что в корзине нет товара с ЛМ кодом {expLmCode}")
     public Basket35Page shouldProductBeNotPresentInCart(String expLmCode) {
-        List<SalesOrderCardData> salesOrderCardDataList = orderCardsScrollView.getFullDataList();
-        for (SalesOrderCardData orderCardData : salesOrderCardDataList) {
-            anAssert.isNotEquals(orderCardData.getProductCardData().getLmCode(), expLmCode,
+        List<ProductOrderCardAppData> productOrderCardAppDataList = productCardsScrollView.getFullDataList();
+        for (ProductOrderCardAppData productCardData : productOrderCardAppDataList) {
+            anAssert.isNotEquals(productCardData.getLmCode(), expLmCode,
                     "Продукта с таким ЛМ код быть не должно");
         }
         return this;
