@@ -21,10 +21,10 @@ import com.leroy.magmobile.ui.models.sales.ShortSalesDocumentData;
 import com.leroy.magmobile.ui.pages.sales.AddProductPage;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
 import com.leroy.magmobile.ui.pages.sales.SubmittedSalesDocumentPage;
-import com.leroy.magmobile.ui.pages.sales.orders.basket.BasketPage;
-import com.leroy.magmobile.ui.pages.sales.orders.basket.BasketStep1Page;
-import com.leroy.magmobile.ui.pages.sales.orders.basket.BasketStep2Page;
-import com.leroy.magmobile.ui.pages.sales.orders.basket.BasketStep3Page;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.CartPage;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.CartStep1Page;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.CartStep2Page;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.CartStep3Page;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import org.apache.commons.lang.RandomStringUtils;
 import org.testng.annotations.Guice;
@@ -193,20 +193,20 @@ public class SalesBaseTest extends AppBaseSteps {
 
         // Step #6
         step("Нажмите кнопку Добавить");
-        BasketStep1Page basketStep1Page = addProductPage.clickAddButton()
+        CartStep1Page basketStep1Page = addProductPage.clickAddButton()
                 .verifyRequiredElements();
-        basketStep1Page.shouldDocumentTypeIs(BasketPage.Constants.DRAFT_DOCUMENT_TYPE);
+        basketStep1Page.shouldDocumentTypeIs(CartPage.Constants.DRAFT_DOCUMENT_TYPE);
         String documentNumber = basketStep1Page.getDocumentNumber();
 
         // Step #7
         step("Нажмите Далее к параметрам");
-        BasketStep2Page basketStep2Page = basketStep1Page.clickNextParametersButton()
+        CartStep2Page basketStep2Page = basketStep1Page.clickNextParametersButton()
                 .verifyRequiredElements()
                 .shouldFieldsHaveDefaultValues();
 
         // Step #8
         step("Нажмите кнопку Создать документ продажи");
-        BasketStep3Page basketStep3Page = basketStep2Page.clickCreateSalesDocumentButton()
+        CartStep3Page basketStep3Page = basketStep2Page.clickCreateSalesDocumentButton()
                 .verifyRequiredElements();
         basketStep3Page.shouldKeyboardVisible();
 
