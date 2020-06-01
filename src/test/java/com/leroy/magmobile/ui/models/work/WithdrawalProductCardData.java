@@ -23,8 +23,10 @@ public class WithdrawalProductCardData {
                 "Товар " + (index + 1) + " - неверный price unit товара");
         softAssert.isEquals(selectedQuantity, expectedProductCardData.getSelectedQuantity(),
                 "Товар " + (index + 1) + " - неверное выбранное кол-во товара");
-        softAssert.isEquals(availableQuantity, expectedProductCardData.getAvailableQuantity(),
-                "Товар " + (index + 1) + " - неверное доступное кол-во товара");
+        if (expectedProductCardData.getAvailableQuantity() != null) {
+            softAssert.isEquals(availableQuantity, expectedProductCardData.getAvailableQuantity(),
+                    "Товар " + (index + 1) + " - неверное доступное кол-во товара");
+        }
         softAssert.verifyAll();
     }
 
