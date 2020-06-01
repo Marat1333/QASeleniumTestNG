@@ -727,8 +727,11 @@ public class SearchProductPage extends MenuPage {
                     condition++;
                 }
             }
+        }
+        if (contains){
             anAssert.isTrue(condition == 1, "либо отсутствует, либо встречается более 1 раза");
-            condition = 0;
+        }else {
+            anAssert.isTrue(condition == 0, "Уровень товарной иерархии содержится в элементе UI");
         }
         return this;
     }

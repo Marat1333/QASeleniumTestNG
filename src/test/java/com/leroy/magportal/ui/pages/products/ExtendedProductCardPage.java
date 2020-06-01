@@ -4,8 +4,8 @@ import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
+import com.leroy.magportal.api.data.ProductData;
 import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
 import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage.Direction;
@@ -173,7 +173,8 @@ public class ExtendedProductCardPage extends ProductCardPage {
         return this;
     }
 
-    public ExtendedProductCardPage shouldAllAdditionalProductsIsVisible(List<ProductItemData> data) throws Exception {
+    @Step("Проверить, что все дополнительные товары отображен")
+    public ExtendedProductCardPage shouldAllAdditionalProductsIsVisible(List<ProductData> data) throws Exception {
         if (data.size() > 4) {
             shouldNavigationBtnHasCorrectCondition(Direction.FORWARD, true);
         } else {
@@ -196,7 +197,7 @@ public class ExtendedProductCardPage extends ProductCardPage {
         return this;
     }
 
-    public ExtendedProductCardPage shouldNavigationBtnHasCorrectCondition(Direction direction, boolean isVisible) {
+    private ExtendedProductCardPage shouldNavigationBtnHasCorrectCondition(Direction direction, boolean isVisible) {
         if (direction.equals(Direction.FORWARD)) {
             if (isVisible) {
                 anAssert.isElementVisible(productCardsListRightPaginationBtn);
@@ -215,7 +216,18 @@ public class ExtendedProductCardPage extends ProductCardPage {
 
     @Override
     public void shouldProductCardContainsAllData(CatalogProductData data) throws Exception {
+        //TODO must add currency and unit checks
+        //TODO convert string to double
         super.shouldProductCardContainsAllData(data);
-
+        softAssert.isElementTextContains(topBadge, data.getTop());
+        softAssert.isEquals(productPriceInfoWidget.getSalesPrice(), data.getSalesPrice().getPrice(), "SalePrice mismatch");
+        softAssert.isEquals(productPriceInfoWidget.getPricePerUnit(), data.getAltPrice().getPrice(), "AltPrice mismatch");
+        softAssert.isEquals(productPriceInfoWidget.getHiddenRecommendedPrice(), data.getRecommendedPrice().getPrice(), "RecommendedPrice mismatch");
+        softAssert.isEquals(productPriceInfoWidget.getHiddenPurchasePrice(), data.getPurchasePrice().getPrice(), "PurchasePrice mismatch");
+        if (productPriceInfoWidget.isPriceMismatchRecommendedPrice()) {
+            softAssert.isTrue(productPriceInfoWidget.getRecommendedPriceNotMatchesLbl().isVisible(), "SalePrice and RecommendedPrice mismatch lbl is invisible");
+        }
+        softAssert.isEquals(productPriceInfoWidget.getReasonOfChange(), data.getSalesPrice().getReasonOfChange(), "Price reason of change mismatch");
+        softAssert.verifyAll();
     }
 }

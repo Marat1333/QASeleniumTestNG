@@ -190,7 +190,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.clearSearchInputByClearBtn()
                 .shouldSearchCriterionIs(false, searchPhrase)
                 .shouldBreadCrumbsContainsNomenclatureName(false, EnvConstants.BASIC_USER_DEPARTMENT_ID);
-        ;
+
         ProductItemDataList responseData = results.get(0).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(responseData, SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);

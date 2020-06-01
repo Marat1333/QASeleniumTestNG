@@ -19,6 +19,6 @@ public class MagPortalCatalogProductClient extends MagMobileClient {
 
     @Step("Get product data")
     public Response<CatalogProductData> getProductData(String lmCode){
-        return execute(new GetCatalogProduct().setLmCode(lmCode), CatalogProductData.class);
+        return execute(new GetCatalogProduct().setLmCode(lmCode).setShopId(userSessionData.getUserShopId()), CatalogProductData.class);
     }
 }

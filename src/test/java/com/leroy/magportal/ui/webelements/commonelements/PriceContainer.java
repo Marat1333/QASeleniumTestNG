@@ -24,14 +24,18 @@ public class PriceContainer extends Element {
     @WebFindBy(xpath = "./span[2]")
     private Element pricePerUnit;
 
-    public String getIntegerPrice() {
-        return priceIntegerPart.getText().replaceAll("\\D+", "");
+    private String getIntegerPrice() {
+        try{
+            return priceIntegerPart.getText().split(",")[0];
+        }catch (NoSuchElementException e){
+            return null;
+        }
     }
 
     public String getDecimalPrice() {
-        String tmp = priceIntegerPart.getText().replaceAll("\\D+", "");
+        String tmp = getIntegerPrice();
         try {
-            return tmp + priceDecimalPart.getText();
+            return tmp + "." + priceDecimalPart.getText();
         } catch (NoSuchElementException e) {
             Log.error("Price haven`t got decimal part");
             return tmp;

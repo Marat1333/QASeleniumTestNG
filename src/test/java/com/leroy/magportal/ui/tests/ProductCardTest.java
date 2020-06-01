@@ -9,6 +9,7 @@ import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magportal.api.clients.MagPortalCatalogProductClient;
 import com.leroy.magportal.api.data.CatalogSimilarProductsData;
+import com.leroy.magportal.api.data.ProductData;
 import com.leroy.magportal.ui.WebBaseSteps;
 import com.leroy.magportal.ui.constants.search.CatalogSearchParams;
 import com.leroy.magportal.ui.models.search.NomenclaturePath;
@@ -26,17 +27,14 @@ import org.testng.annotations.Test;
 import java.util.List;
 
 public class ProductCardTest extends WebBaseSteps {
-    private static SearchProductPage searchProductPage;
-
-    private String lmCode;
 
     @BeforeMethod
     private void precondition() throws Exception {
-        searchProductPage = loginAndGoTo(SearchProductPage.class);
-        lmCode = getRandomLmCode();
+        loginAndGoTo(SearchProductPage.class);
     }
 
     private <T> T navigateToNeededCard(String lmCode, FilterFrame frame) throws Exception {
+        SearchProductPage searchProductPage = new SearchProductPage();
         return searchProductPage.searchProductCardByLmCode(lmCode, frame);
     }
 
@@ -57,20 +55,21 @@ public class ProductCardTest extends WebBaseSteps {
 
     private String getRandomSimilarProductLmCode(String sourceLmCode) {
         CatalogSimilarProductsData data = apiClientProvider.getMagPortalCatalogProductClientProvider().getSimilarProducts(sourceLmCode).asJson();
-        List<ProductItemData> resultList = data.getSubstitutes();
+        List<ProductData> resultList = data.getSubstitutes();
         String result = resultList.get((int) (Math.random() * resultList.size())).getLmCode();
         return result;
     }
 
     private String getRandomComplementProductLmCode(String sourceLmCode) {
         CatalogSimilarProductsData data = apiClientProvider.getMagPortalCatalogProductClientProvider().getSimilarProducts(sourceLmCode).asJson();
-        List<ProductItemData> resultList = data.getComplements();
+        List<ProductData> resultList = data.getComplements();
         String result = resultList.get((int) (Math.random() * resultList.size())).getLmCode();
         return result;
     }
 
     @Test(description = "C23388813 add Product to cart")
     public void testAddProductToCart() throws Exception {
+        String lmCode = getRandomLmCode();
         ExtendedProductCardPage extendedProductCardPage = navigateToNeededCard(lmCode, FilterFrame.MY_SHOP);
         CartPage cartPage = extendedProductCardPage.addProductToCart();
         cartPage.shouldAnyOrderContainsLmCode(lmCode);
@@ -78,6 +77,7 @@ public class ProductCardTest extends WebBaseSteps {
 
     @Test(description = "C23388814 add Product to estimate")
     public void testAddProductToEstimate() throws Exception {
+        String lmCode = getRandomLmCode();
         ExtendedProductCardPage extendedProductCardPage = navigateToNeededCard(lmCode, FilterFrame.MY_SHOP);
         EstimatePage estimatePage = extendedProductCardPage.addProductToEstimate();
         estimatePage.shouldAnyOrderContainsLmCode(lmCode);
@@ -85,6 +85,7 @@ public class ProductCardTest extends WebBaseSteps {
 
     @Test(description = "C23388974 go to card by url")
     public void testGoToCardByUrl() {
+        String lmCode = getRandomLmCode();
         ExtendedProductCardPage extendedProductCardPage = navigateToProductCardByUrl(lmCode, false);
         extendedProductCardPage.verifyRequiredElements();
 
@@ -130,16 +131,16 @@ public class ProductCardTest extends WebBaseSteps {
         MagPortalCatalogProductClient client = apiClientProvider.getMagPortalCatalogProductClientProvider();
 
         CatalogSimilarProductsData data = client.getSimilarProducts(lessThan4Similar).asJson();
-        List<ProductItemData> lessThan4SimilarList = data.getSubstitutes();
+        List<ProductData> lessThan4SimilarList = data.getSubstitutes();
 
         data = client.getSimilarProducts(moreThan4Similar).asJson();
-        List<ProductItemData> moreThan4SimilarList = data.getSubstitutes();
+        List<ProductData> moreThan4SimilarList = data.getSubstitutes();
 
         data = client.getSimilarProducts(lessThan4Complements).asJson();
-        List<ProductItemData> lessThan4ComplementsList = data.getComplements();
+        List<ProductData> lessThan4ComplementsList = data.getComplements();
 
         data = client.getSimilarProducts(moreThan4Complements).asJson();
-        List<ProductItemData> moreThan4ComplementsList = data.getComplements();
+        List<ProductData> moreThan4ComplementsList = data.getComplements();
 
 
         //Step 1
@@ -168,6 +169,7 @@ public class ProductCardTest extends WebBaseSteps {
     @Issue("PUZ2-2271")
     @Test(description = "C22789188 Check Breadcrumbs")
     public void testBreadCrumbsNavigation() throws Exception {
+        String lmCode = getRandomLmCode();
         ExtendedProductCardPage extendedProductCardPage = navigateToProductCardByUrl(lmCode, false);
 
         NomenclaturePath path = extendedProductCardPage.getNomenclaturePath();
@@ -248,9 +250,17 @@ public class ProductCardTest extends WebBaseSteps {
 
     @Test(description = "C23389190 Check short card data")
     public void testCheckShortCardData() throws Exception {
+        String lmCode = getRandomLmCode();
         CatalogProductData data = apiClientProvider.getMagPortalCatalogProductClientProvider().getProductData(lmCode).asJson();
         ProductCardPage productCardPage = navigateToProductCardByUrl(lmCode, true);
         productCardPage.shouldProductCardContainsAllData(data);
     }
 
+    @Test(description = "C22782997 Check extended card data")
+    public void testCheckExtendedCardData() throws Exception{
+        String lmCode = getRandomLmCode();
+        CatalogProductData data = apiClientProvider.getMagPortalCatalogProductClientProvider().getProductData(lmCode).asJson();
+        ExtendedProductCardPage extendedProductCardPage = navigateToProductCardByUrl(lmCode, false);
+        extendedProductCardPage.shouldProductCardContainsAllData(data);
+    }
 }

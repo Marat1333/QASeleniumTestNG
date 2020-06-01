@@ -12,6 +12,7 @@ public class StockAreas {
     private Integer Reception;
     private Integer RM;
     private Integer RMBuffer;
+    private Integer LS;
     private Integer SalesBuffer;
     private Integer TBC;
     private Integer TsfFromRD;
