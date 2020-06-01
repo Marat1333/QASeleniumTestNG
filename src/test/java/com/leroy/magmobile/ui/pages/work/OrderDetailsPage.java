@@ -60,16 +60,17 @@ public class OrderDetailsPage extends CommonMagMobilePage {
         return this;
     }
 
-    @Step("{index}-ий товар должен соответствовать: {cardData}")
+    @Step("{index}-ий товар должен соответствовать: (expectedCardData)")
     public OrderDetailsPage shouldProductByIndexIs(
             int index, WithdrawalProductCardData expectedCardData) throws Exception {
         index--;
+        expectedCardData.setAvailableQuantity(null);
         ProductCardWidget cardObj = productsForWithdrawal.get(index);
         WithdrawalProductCardData actualCardData = new WithdrawalProductCardData();
         actualCardData.setLmCode(cardObj.getNumber());
         actualCardData.setTitle(cardObj.getName());
         actualCardData.setPriceUnit(cardObj.getQuantityUnit());
-        actualCardData.setAvailableQuantity(ParserUtil.strToDouble(cardObj.getQuantity()));
+        actualCardData.setSelectedQuantity(ParserUtil.strToDouble(cardObj.getQuantity()));
         actualCardData.assertEqualsNotNullExpectedFields(index, expectedCardData);
         return this;
     }

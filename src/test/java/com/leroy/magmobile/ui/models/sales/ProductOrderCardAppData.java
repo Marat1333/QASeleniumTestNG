@@ -40,8 +40,10 @@ public class ProductOrderCardAppData {
                 "Товар " + (index + 1) + " - неверная сумма товара");
         softAssert.isEquals(totalPriceWithDiscount, expectedProductCardData.getTotalPriceWithDiscount(),
                 "Товар " + (index + 1) + " - неверная сумма (с учетом скидки) товара");
-        softAssert.isEquals(availableTodayQuantity, expectedProductCardData.getAvailableTodayQuantity(),
-                "Товар " + (index + 1) + " - неверное доступное кол-во товара");
+        if (expectedProductCardData.getAvailableTodayQuantity() != null) {
+            softAssert.isEquals(availableTodayQuantity, expectedProductCardData.getAvailableTodayQuantity(),
+                    "Товар " + (index + 1) + " - неверное доступное кол-во товара");
+        }
         softAssert.isEquals(discountPercent, expectedProductCardData.getDiscountPercent(),
                 "Товар " + (index + 1) + " - неверная скидка % товара");
         softAssert.verifyAll();

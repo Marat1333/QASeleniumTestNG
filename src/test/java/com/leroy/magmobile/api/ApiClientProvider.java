@@ -302,6 +302,10 @@ public class ApiClientProvider {
         return createDraftEstimateAndGetCartId(null, lmCodes, 1);
     }
 
+    public String createDraftEstimateAndGetCartId(CustomerData newCustomerData, List<String> lmCodes) {
+        return createDraftEstimateAndGetCartId(newCustomerData, lmCodes, 1);
+    }
+
     public String createDraftEstimateAndGetCartId(
             CustomerData newCustomerData, int productCount) {
         return createDraftEstimateAndGetCartId(newCustomerData, null, productCount);
@@ -316,12 +320,16 @@ public class ApiClientProvider {
     }
 
     @Step("Создаем подтвержденную Смету через API")
-    public String createConfirmedEstimateAndGetCartId(List<String> lmCodes) {
+    public String createConfirmedEstimateAndGetCartId(CustomerData newCustomerData, List<String> lmCodes) {
         EstimateClient client = getEstimateClient();
-        String cartId = createDraftEstimateAndGetCartId(lmCodes);
+        String cartId = createDraftEstimateAndGetCartId(newCustomerData, lmCodes);
         Response<JsonNode> resp = client.confirm(cartId);
         client.assertThatResponseChangeStatusIsOk(resp);
         return cartId;
+    }
+
+    public String createConfirmedEstimateAndGetCartId(List<String> lmCodes) {
+        return createConfirmedEstimateAndGetCartId(null, lmCodes);
     }
 
 }

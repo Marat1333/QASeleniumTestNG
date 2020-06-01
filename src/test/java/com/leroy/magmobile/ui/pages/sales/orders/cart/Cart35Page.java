@@ -258,12 +258,15 @@ public class Cart35Page extends CommonMagMobilePage {
         return this;
     }
 
-    @Step("Проверить, что карточка продукта/услуги с текстом '{text}' содержит следующие данные: {expectedOrderCardData}")
+    @Step("Проверить, что карточка продукта/услуги с текстом '{text}' содержит следующие данные: (expectedProductCardData)")
     public Cart35Page shouldProductCardDataWithTextIs(String text, ProductOrderCardAppData expectedProductCardData) {
         CardWidget<ProductOrderCardAppData> widget = productCardsScrollView.searchForWidgetByText(text);
         anAssert.isNotNull(widget, String.format("Не найдена карточка содержащая текст %s", text),
                 String.format("Карточка с текстом %s должна быть", text));
         ProductOrderCardAppData actualOrderCardData = widget.collectDataFromPage();
+        if (expectedProductCardData.getAvailableTodayQuantity() != null &&
+                expectedProductCardData.getAvailableTodayQuantity() > expectedProductCardData.getSelectedQuantity())
+            expectedProductCardData.setAvailableTodayQuantity(null);
         actualOrderCardData.assertEqualsNotNullExpectedFields(expectedProductCardData);
         return this;
     }
