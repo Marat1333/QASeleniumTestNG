@@ -28,13 +28,21 @@
                     <include name="testCreatingEstimateFromSalesDocumentsScreen"/> <!-- C22797068 -->
                     <include name="testChangeProductInConfirmedEstimate"/> <!-- C22797084 -->
                     <include name="testAddProductInConfirmedEstimate"/> <!-- C22797082 -->
-                    <include name="testChangeCustomerContactsInConfirmedEstimate"/> <!-- C22797085 -->
                     <include name="testRemoveProductFromConfirmedEstimate"/> <!-- C22797086 -->
                 </methods>
             </class>
         </classes>
     </test>
 
+    <test name="C22797085 Изменение контактных данных клиента в смете в статусе Создан">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.EstimateTest">
+                <methods>
+                    <include name="testChangeCustomerContactsInConfirmedEstimate"/> <!-- C22797085 -->
+                </methods>
+            </class>
+        </classes>
+    </test>
 
     <test name="C22797076 Изменить контактные данные клиента">
         <classes>

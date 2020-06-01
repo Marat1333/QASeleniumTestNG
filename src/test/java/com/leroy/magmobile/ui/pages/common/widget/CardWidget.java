@@ -11,7 +11,7 @@ public abstract class CardWidget<T> extends Element {
     }
 
     public T collectDataFromPage() {
-        return collectDataFromPage(null);
+        return collectDataFromPage(getPageSource());
     }
 
     public abstract T collectDataFromPage(String pageSource);

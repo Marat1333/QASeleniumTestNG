@@ -551,7 +551,16 @@ public class EstimateTest extends SalesBaseTest {
     @Test(description = "C22797085 Изменение контактных данных клиента в смете в статусе Создан",
             groups = NEED_ACCESS_TOKEN_GROUP)
     public void testChangeCustomerContactsInConfirmedEstimate() throws Exception {
-        startFromScreenWithCreatedEstimate(productLmCodes.subList(0, 1), true);
+        step("Pre-condition: Создаем смету в статусе создан");
+        com.leroy.magmobile.api.data.customer.CustomerData customerData =
+                new com.leroy.magmobile.api.data.customer.CustomerData();
+        customerData.generateRandomValidRequiredData(true);
+        String estimateId = apiClientProvider.createConfirmedEstimateAndGetCartId(customerData,
+                productLmCodes.subList(0, 1));
+        MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
+                MainSalesDocumentsPage.class);
+        SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
+        salesDocumentsPage.searchForDocumentByTextAndSelectIt(estimateId);
 
         // Step 1
         step("Нажмите на кнопку редактирования сметы в правом верхнем углу");

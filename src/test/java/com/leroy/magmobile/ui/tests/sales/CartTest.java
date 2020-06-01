@@ -1,6 +1,5 @@
 package com.leroy.magmobile.ui.tests.sales;
 
-import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.pages.common.modal.ConfirmRemovingProductModal;
 import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
@@ -63,19 +62,14 @@ public class CartTest extends SalesBaseTest {
         cart35Page.verifyRequiredElements(new Cart35Page.PageState().setProductIsAdded(true));
     }
 
-    @Test(description = "C22797090 Добавить новый товар в корзину")
+    @Test(description = "C22797090 Добавить новый товар в корзину", groups = NEED_ACCESS_TOKEN_GROUP)
     public void testAddNewProductIntoBasket() throws Exception {
         // Test data
-        String lmCode = getAnyLmCodeProductWithTopEM();
-        // Если выполняется после "C22797089 Создать корзину с экрана Документы продажи",
-        // то можно пропустить pre-condition шаги
-        if (!Cart35Page.isThisPage()) {
-            MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
-                    MainSalesDocumentsPage.class);
-            SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
-            salesDocumentsPage.searchForDocumentByTextAndSelectIt(
-                    SalesDocumentsConst.Types.CART.getUiVal());
-        } // TODO через API
+        String lmCode = apiClientProvider.getProductLmCodes(1).get(0);
+
+        step("Pre-condition: Создание корзины");
+        startFromScreenWithCreatedCart();
+
         Cart35Page cart35Page = new Cart35Page();
         int productCountInBasket = cart35Page.getCountOfProductCards();
         // Step 1

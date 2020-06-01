@@ -19,7 +19,6 @@ public class StepLog {
     public StepResultModel currentStepResult;
 
     public void step(String message) {
-
         if (currentStepResult != null) {
             if (currentStepResult.getStatus_id() == ResultModel.ST_UNTESTED)
                 currentStepResult.setStatus_id(ResultModel.ST_PASSED);
@@ -27,16 +26,16 @@ public class StepLog {
             getLifecycle().stopStep(currentStepResult.getUuid());
         }
 
+        stepCounter++;
         final String uuid = UUID.randomUUID().toString();
         final StepResult allureResult = new StepResult()
-                .setName(message);
+                .setName(stepCounter + ". " + message);
         getLifecycle().startStep(uuid, allureResult);
         currentStepResult = new StepResultModel();
         currentStepResult.setUuid(uuid);
         currentStepResult.setStatus_id(ResultModel.ST_UNTESTED);
         currentStepResult.setContent(message);
         stepResults.add(currentStepResult);
-        stepCounter++;
         Log.step(stepCounter + ". " + message);
     }
 
