@@ -92,8 +92,8 @@ public class AddProduct35Page extends CommonMagMobilePage {
     // ----- Grab Data from Page ----------//
 
     @Step("Получить Цену продукта за единицу товара")
-    public String getPrice() {
-        return price.getText();
+    public Double getPrice() {
+        return ParserUtil.strToDouble(price.getText());
     }
 
     @Step("Получить значение кол-ва товара в торговом зале")
@@ -183,7 +183,7 @@ public class AddProduct35Page extends CommonMagMobilePage {
 
     @Step("Убедиться, что итоговая сумма рассчитана корректно на основе цены и введенного кол-ва")
     public AddProduct35Page shouldTotalPriceCalculateCorrectly() {
-        double _price = ParserUtil.strToDouble(getPrice());
+        double _price = getPrice();
         double _quantity = ParserUtil.strToDouble(editQuantityFld.getText());
         String expectedTotalPrice = ParserUtil.prettyDoubleFmt(_price * _quantity);
         anAssert.isEquals(ParserUtil.strWithOnlyDigits(totalPrice.getText()), expectedTotalPrice,

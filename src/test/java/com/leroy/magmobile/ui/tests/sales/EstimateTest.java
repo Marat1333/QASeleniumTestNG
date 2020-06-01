@@ -2,9 +2,9 @@ package com.leroy.magmobile.ui.tests.sales;
 
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.ui.models.CustomerData;
-import com.leroy.magmobile.ui.models.sales.ShortSalesDocumentData;
-import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.models.sales.OrderAppData;
+import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
+import com.leroy.magmobile.ui.models.sales.ShortSalesDocumentData;
 import com.leroy.magmobile.ui.pages.common.modal.ConfirmRemovingProductModal;
 import com.leroy.magmobile.ui.pages.customers.EditCustomerContactDetailsPage;
 import com.leroy.magmobile.ui.pages.customers.SearchCustomerPage;
@@ -124,7 +124,7 @@ public class EstimateTest extends SalesBaseTest {
 
         // Step 8
         step("Нажмите на Создать");
-        String expectedTotalPrice = estimatePage.getTotalPrice();
+        Double expectedTotalPrice = estimatePage.getTotalPrice();
         String documentNumber = estimatePage.getDocumentNumber(true);
         EstimateSubmittedPage estimateSubmittedPage = estimatePage.clickCreateButton()
                 .verifyRequiredElements();
@@ -422,7 +422,7 @@ public class EstimateTest extends SalesBaseTest {
         searchProductPage.searchProductAndSelect(productLmCodes.get(1));
         EstimateAddProductPage addProductPage = new EstimateAddProductPage();
         addProductPage.verifyRequiredElements();
-        String priceNewProduct = addProductPage.getPrice();
+        Double priceNewProduct = addProductPage.getPrice();
 
         // Step 4
         step("Нажмите на Добавить в смету");
@@ -436,7 +436,7 @@ public class EstimateTest extends SalesBaseTest {
                 1.0, "Кол-во товара №2 неверно");
         softAssert().isEquals(estimateDataAfter.getTotalPrice(),
                 estimateDataBefore.getTotalPrice() +
-                        ParserUtil.strToDouble(priceNewProduct), "Сумма итого неверна");
+                        priceNewProduct, "Сумма итого неверна");
         softAssert().isTrue(estimateDataBefore.getTotalWeight() < estimateDataAfter.getTotalWeight(),
                 "Вес должен был увеличиться после добавления нового товара");
         softAssert().verifyAll();

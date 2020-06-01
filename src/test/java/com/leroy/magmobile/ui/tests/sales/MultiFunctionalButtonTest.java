@@ -207,7 +207,7 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
         step("Нажмите Корзина");
         AddProduct35Page addProduct35Page = modalPage.clickBasketMenuItem();
         addProduct35Page.verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_BASKET);
-        String expectedTotalPrice = ParserUtil.strWithOnlyDigits(addProduct35Page.getPrice());
+        Double expectedTotalPrice = addProduct35Page.getPrice();
 
         // Step #6
         step("Нажмите Добавить в корзину");

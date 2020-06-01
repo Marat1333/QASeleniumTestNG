@@ -120,8 +120,8 @@ public class EstimatePage extends CommonMagMobilePage {
     /**
      * Получить Итоговую стоимость
      */
-    public String getTotalPrice() {
-        return ParserUtil.strWithOnlyDigits(totalPriceVal.getText());
+    public Double getTotalPrice() {
+        return ParserUtil.strToDouble(totalPriceVal.getText());
     }
 
     /**

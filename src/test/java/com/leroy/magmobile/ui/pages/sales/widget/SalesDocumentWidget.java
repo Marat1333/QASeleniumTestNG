@@ -64,7 +64,7 @@ public class SalesDocumentWidget extends CardWidget<ShortSalesDocumentData> {
             pageSource = getPageSource();
         ShortSalesDocumentData document = new ShortSalesDocumentData();
         document.setTitle(title.getText(pageSource));
-        document.setDocumentTotalPrice(price.getText(pageSource).replaceAll("₽|\\s", ""));
+        document.setDocumentTotalPrice(ParserUtil.strToDouble(price.getText(pageSource)));
         document.setNumber(getDocNumber(true, pageSource));
         document.setPin(getPinCode(true, pageSource));
         document.setDate(date.getText(pageSource));

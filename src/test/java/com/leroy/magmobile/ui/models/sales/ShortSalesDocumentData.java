@@ -6,7 +6,7 @@ import lombok.Data;
 public class ShortSalesDocumentData {
 
     private String title;
-    private String documentTotalPrice;
+    private Double documentTotalPrice;
     private String number;
     private String pin;
     private String date;
