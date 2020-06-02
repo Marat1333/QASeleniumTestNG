@@ -212,7 +212,9 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
         // Step #6
         step("Нажмите Добавить в корзину");
         Cart35Page cart35Page = addProduct35Page.clickAddIntoBasketButton()
-                .verifyRequiredElements(new Cart35Page.PageState().setProductIsAdded(true));
+                .verifyRequiredElements(Cart35Page.PageState.builder()
+                        .productIsAdded(true)
+                        .build());
 
         // Step #7
         step("Нажмите Оформить");

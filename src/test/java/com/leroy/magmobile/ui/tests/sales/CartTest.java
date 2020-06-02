@@ -45,8 +45,9 @@ public class CartTest extends SalesBaseTest {
         // Step 2
         step("Выбрать параметр Корзина");
         Cart35Page cart35Page = modalPage.clickBasketMenuItem();
-        cart35Page.verifyRequiredElements(
-                new Cart35Page.PageState().setProductIsAdded(false));
+        cart35Page.verifyRequiredElements(Cart35Page.PageState.builder()
+                .productIsAdded(false)
+                .build());
 
         // Step 3
         step("Нажмите на кнопку +товары и услуги");
@@ -59,7 +60,9 @@ public class CartTest extends SalesBaseTest {
         // Step 4
         step("Нажмите на Добавить в корзину");
         cart35Page = addProduct35Page.clickAddIntoBasketButton();
-        cart35Page.verifyRequiredElements(new Cart35Page.PageState().setProductIsAdded(true));
+        cart35Page.verifyRequiredElements(Cart35Page.PageState.builder()
+                .productIsAdded(true)
+                .build());
     }
 
     @Test(description = "C22797090 Добавить новый товар в корзину", groups = NEED_ACCESS_TOKEN_GROUP)
@@ -87,10 +90,10 @@ public class CartTest extends SalesBaseTest {
         // Step 3
         step("Нажмите на Добавить в корзину");
         cart35Page = addProduct35Page.clickAddIntoBasketButton();
-        cart35Page.verifyRequiredElements(
-                new Cart35Page.PageState()
-                        .setProductIsAdded(true)
-                        .setManyOrders(null));
+        cart35Page.verifyRequiredElements(Cart35Page.PageState.builder()
+                .productIsAdded(true)
+                .manyOrders(null)
+                .build());
         cart35Page.shouldCountOfCardsIs(productCountInBasket + 1);
         cart35Page.shouldProductCardDataWithTextIs(expectedOrderCardData.getLmCode(),
                 expectedOrderCardData);
@@ -125,9 +128,10 @@ public class CartTest extends SalesBaseTest {
         step("Нажмите на Удалить");
         confirmRemovingProductModal.clickConfirmButton();
         cart35Page = new Cart35Page();
-        cart35Page.verifyRequiredElements(new Cart35Page.PageState()
-                .setProductIsAdded(true)
-                .setManyOrders(false));
+        cart35Page.verifyRequiredElements(Cart35Page.PageState.builder()
+                .productIsAdded(true)
+                .manyOrders(false)
+                .build());
         cart35Page.shouldProductBeNotPresentInCart(
                 productOrderCardAppDataBefore.getLmCode());
     }
@@ -205,9 +209,9 @@ public class CartTest extends SalesBaseTest {
         // Step 8
         step("Нажмите на кнопку Применить");
         cart35Page = creatingDiscountPage.clickConfirmButton()
-                .verifyRequiredElements(new Cart35Page.PageState()
-                        .setProductIsAdded(true)
-                        .setManyOrders(false));
+                .verifyRequiredElements(Cart35Page.PageState.builder()
+                        .productIsAdded(true)
+                        .build());
         //basket35Page.shouldOrderDataIs()
     }
 
@@ -255,9 +259,9 @@ public class CartTest extends SalesBaseTest {
         // Step 8
         step("Нажмите на кнопку Применить");
         cart35Page = creatingDiscountPage.clickConfirmButton()
-                .verifyRequiredElements(new Cart35Page.PageState()
-                        .setProductIsAdded(true)
-                        .setManyOrders(false));
+                .verifyRequiredElements(Cart35Page.PageState.builder()
+                        .productIsAdded(true)
+                        .build());
         //basket35Page.shouldOrderDataIs()
     }
 

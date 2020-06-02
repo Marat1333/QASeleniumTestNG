@@ -17,6 +17,8 @@ import com.leroy.magmobile.ui.pages.sales.widget.ProductOrderCardAppWidget;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
+import lombok.Builder;
+import lombok.Data;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -28,27 +30,11 @@ public class Cart35Page extends CommonMagMobilePage {
 
     public final static String SCREEN_TITLE = "Корзина";
 
+    @Builder
+    @Data
     public static class PageState {
         boolean productIsAdded;
-        Boolean manyOrders = false;
-
-        public boolean isProductIsAdded() {
-            return productIsAdded;
-        }
-
-        public PageState setProductIsAdded(boolean productIsAdded) {
-            this.productIsAdded = productIsAdded;
-            return this;
-        }
-
-        public Boolean isManyOrders() {
-            return manyOrders;
-        }
-
-        public PageState setManyOrders(Boolean manyOrders) {
-            this.manyOrders = manyOrders;
-            return this;
-        }
+        Boolean manyOrders;
     }
 
     @AppFindBy(accessibilityId = "BackButton",
@@ -239,8 +225,8 @@ public class Cart35Page extends CommonMagMobilePage {
                     singleProductCard, totalPriceLbl, totalPriceVal, countAndWeightProductLbl));
         else
             expectedElements.addAll(Arrays.asList(productAndServiceBtn, emptyInfoMessageLbl));
-        if (state.isManyOrders() != null) {
-            if (state.isManyOrders() || !state.isProductIsAdded())
+        if (state.getManyOrders() != null) {
+            if (state.getManyOrders() || !state.isProductIsAdded())
                 expectedElements.add(productAndServiceBtn);
             else
                 expectedElements.addAll(Arrays.asList(addProductBtn, makeSalesBtn));

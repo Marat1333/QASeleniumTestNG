@@ -228,7 +228,9 @@ public class EstimateTest extends SalesBaseTest {
         // Step 2
         step("Выберите параметр Преобразовать в корзину");
         Cart35Page cart35Page = modalPage.clickTransformToBasketMenuItem();
-        cart35Page.verifyRequiredElements(new Cart35Page.PageState().setProductIsAdded(true));
+        cart35Page.verifyRequiredElements(Cart35Page.PageState.builder()
+                .productIsAdded(true)
+                .build());
         cart35Page.shouldOrderDataIs(testEstimateData);
     }
 
