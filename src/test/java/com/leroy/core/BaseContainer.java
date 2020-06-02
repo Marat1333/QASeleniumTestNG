@@ -6,6 +6,7 @@ import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.fieldfactory.FieldInitializer;
+import com.leroy.core.util.XpathUtil;
 import com.leroy.core.web_elements.general.BaseWidget;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
@@ -94,8 +95,11 @@ public abstract class BaseContainer {
     protected WebElement findElement(CustomLocator locator) {
         if (Strings.isNullOrEmpty(locator.getAccessibilityId()))
             return findElement(locator.getBy());
-        else
+        else if (locator.getParentBy() == null)
             return ((AndroidDriver) driver).findElementByAccessibilityId(locator.getAccessibilityId());
+        else
+            return findElement(By.xpath(XpathUtil.getXpath(locator.getParentBy()) +
+                    "//*[@content-desc='" + locator.getAccessibilityId() + "']"));
     }
 
     protected WebElement findElement(CustomLocator locator, int timeout) {

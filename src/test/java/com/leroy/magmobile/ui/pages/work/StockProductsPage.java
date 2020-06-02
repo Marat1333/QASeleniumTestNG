@@ -4,8 +4,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
-import com.leroy.magmobile.ui.models.search.ProductCardData;
-import com.leroy.magmobile.ui.models.work.WithdrawalOrderCardData;
+import com.leroy.magmobile.ui.models.work.WithdrawalProductCardData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.widgets.ProductCardWidget;
 import com.leroy.magmobile.ui.pages.widgets.SelectedCardWidget;
@@ -48,34 +47,33 @@ public class StockProductsPage extends CommonMagMobilePage {
     }
 
     // -------------------- GRAB Info from Page ----------------------------//
-    public ProductCardData getPieceProductInfoByIndex(int index) throws Exception {
-        ProductCardData cardData = new ProductCardData();
+
+    @Step("Получить информацию о продукте с экрана поиска товаров на складе")
+    public WithdrawalProductCardData getProductInfoByIndex(int index) throws Exception {
+        WithdrawalProductCardData cardData = new WithdrawalProductCardData();
         int count = pieceProductCards.getCount();
         if (index >= count)
             throw new IndexOutOfBoundsException("На странице " + count +
                     " штучных товаров. Тест пытался выбрать " + (index + 1));
         ProductCardWidget cardObj = pieceProductCards.get(index);
         cardData.setLmCode(cardObj.getNumber());
-        cardData.setName(cardObj.getName());
+        cardData.setTitle(cardObj.getName());
         cardData.setPriceUnit(cardObj.getQuantityUnit());
         cardData.setAvailableQuantity(ParserUtil.strToDouble(cardObj.getQuantity()));
         return cardData;
     }
 
     @Step("Забрать со страницы информацию о {index} товаре")
-    public WithdrawalOrderCardData getSelectedProductInfoByIndex(int index) throws Exception {
+    public WithdrawalProductCardData getSelectedProductInfoByIndex(int index) throws Exception {
         index--;
-        ProductCardData cardData = new ProductCardData();
-        SelectedCardWidget cardObj = selectedProductCards.get(index);
-        cardData.setLmCode(cardObj.getNumber());
-        cardData.setName(cardObj.getName());
-        cardData.setPriceUnit(cardObj.getQuantityUnit());
-        cardData.setAvailableQuantity(ParserUtil.strToDouble(cardObj.getQuantity()));
-
-        WithdrawalOrderCardData withdrawalOrderCardData = new WithdrawalOrderCardData();
-        withdrawalOrderCardData.setProductCardData(cardData);
-        withdrawalOrderCardData.setSelectedQuantity(ParserUtil.strToDouble(cardObj.getSelectedQuantity()));
-        return withdrawalOrderCardData;
+        SelectedCardWidget cardWidget = selectedProductCards.get(index);
+        WithdrawalProductCardData cardData = new WithdrawalProductCardData();
+        cardData.setLmCode(cardWidget.getNumber());
+        cardData.setTitle(cardWidget.getName());
+        cardData.setPriceUnit(cardWidget.getQuantityUnit());
+        cardData.setAvailableQuantity(ParserUtil.strToDouble(cardWidget.getQuantity()));
+        cardData.setSelectedQuantity(ParserUtil.strToDouble(cardWidget.getSelectedQuantity()));
+        return cardData;
     }
 
     /* ------------------------- ACTION STEPS -------------------------- */
@@ -123,11 +121,9 @@ public class StockProductsPage extends CommonMagMobilePage {
 
     @Step("Проверить, что выбранный продукт имеет следующие параметры: {expectedOrderCardData}")
     public StockProductsPage shouldSelectedProductIs(
-            int index, WithdrawalOrderCardData expectedOrderCardData) throws Exception {
-        WithdrawalOrderCardData selectedProductDataAfter = getSelectedProductInfoByIndex(index);
-        anAssert.isTrue(selectedProductDataAfter.compareOnlyNotNullFields(expectedOrderCardData),
-                "Неверная карточка выбранного товара. Актуальное зн.: " + selectedProductDataAfter.toString(),
-                expectedOrderCardData.toString());
+            int index, WithdrawalProductCardData expectedOrderCardData) throws Exception {
+        WithdrawalProductCardData selectedProductData = getSelectedProductInfoByIndex(index);
+        selectedProductData.assertEqualsNotNullExpectedFields(index - 1, expectedOrderCardData);
         return this;
     }
 

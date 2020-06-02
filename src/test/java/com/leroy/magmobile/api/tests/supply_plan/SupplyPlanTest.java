@@ -43,8 +43,8 @@ public class SupplyPlanTest extends BaseProjectApiTest {
     }
 
     @Override
-    protected UserSessionData initUserSessionData() {
-        UserSessionData sessionData = super.initUserSessionData();
+    protected UserSessionData initTestClassUserSessionDataTemplate() {
+        UserSessionData sessionData = super.initTestClassUserSessionDataTemplate();
         sessionData.setUserShopId("35");
         sessionData.setUserDepartmentId("15");
         return sessionData;

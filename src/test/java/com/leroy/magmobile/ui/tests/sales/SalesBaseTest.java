@@ -2,28 +2,31 @@ package com.leroy.magmobile.ui.tests.sales;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.EnvConstants;
+import com.leroy.constants.sales.DiscountConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.api.Module;
 import com.leroy.core.configuration.Log;
+import com.leroy.magmobile.api.clients.CartClient;
 import com.leroy.magmobile.api.clients.OrderClient;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountReasonData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magmobile.ui.AppBaseSteps;
-import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
+import com.leroy.magmobile.ui.models.sales.ShortSalesDocumentData;
 import com.leroy.magmobile.ui.pages.sales.AddProductPage;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
 import com.leroy.magmobile.ui.pages.sales.SubmittedSalesDocumentPage;
-import com.leroy.magmobile.ui.pages.sales.basket.BasketPage;
-import com.leroy.magmobile.ui.pages.sales.basket.BasketStep1Page;
-import com.leroy.magmobile.ui.pages.sales.basket.BasketStep2Page;
-import com.leroy.magmobile.ui.pages.sales.basket.BasketStep3Page;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.CartPage;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.CartStep1Page;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.CartStep2Page;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.CartStep3Page;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import org.apache.commons.lang.RandomStringUtils;
-import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -33,24 +36,12 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import static com.leroy.constants.sales.DiscountConst.TYPE_NEW_PRICE;
 import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @Guice(modules = {Module.class})
 public class SalesBaseTest extends AppBaseSteps {
-
-    protected final String OLD_SHOP_GROUP = "old_shop";
-    protected final static String NEED_ACCESS_TOKEN_GROUP = "need_access_token";
-
-    @BeforeGroups(OLD_SHOP_GROUP)
-    protected void setSessionDataForOldShop() {
-        getUserSessionData().setUserShopId(EnvConstants.SHOP_WITH_OLD_INTERFACE);
-    }
-
-    @BeforeGroups(NEED_ACCESS_TOKEN_GROUP)
-    protected void addAccessTokenToSessionData() {
-        getUserSessionData().setAccessToken(getAccessToken());
-    }
 
     // Получить ЛМ код для услуги
     protected String getAnyLmCodeOfService() {
@@ -79,6 +70,7 @@ public class SalesBaseTest extends AppBaseSteps {
     protected String getAnyLmCodeProductWithTopEM() {
         CatalogSearchFilter filtersData = new CatalogSearchFilter();
         filtersData.setTopEM(true);
+        filtersData.setAvs(false);
         getUserSessionData().setUserDepartmentId("15");
         return apiClientProvider.getProducts(1, filtersData).get(0).getLmCode();
     }
@@ -113,6 +105,11 @@ public class SalesBaseTest extends AppBaseSteps {
     // CREATING PRE-CONDITIONS:
 
     protected String createDraftCart(int productCount) {
+        return createDraftCart(productCount, false);
+    }
+
+    protected String createDraftCart(int productCount, boolean hasDiscount) {
+        CartClient cartClient = apiClientProvider.getCartClient();
         List<String> lmCodes = getAnyLmCodesProductWithoutSpecificOptions(productCount);
         List<CartProductOrderData> productOrderDataList = new ArrayList<>();
         Random r = new Random();
@@ -122,10 +119,23 @@ public class SalesBaseTest extends AppBaseSteps {
             productOrderData.setQuantity((double) (r.nextInt(9) + 1));
             productOrderDataList.add(productOrderData);
         }
-        Response<CartData> cartDataResponse = apiClientProvider.getCartClient()
-                .sendRequestCreate(productOrderDataList);
+        Response<CartData> cartDataResponse = cartClient.sendRequestCreate(productOrderDataList);
         assertThat(cartDataResponse, successful());
-        return cartDataResponse.asJson().getFullDocId();
+        CartData cartData = cartDataResponse.asJson();
+        if (hasDiscount) {
+            productOrderDataList = cartData.getProducts();
+            for (CartProductOrderData putProduct : productOrderDataList) {
+                CartDiscountData discountData = new CartDiscountData();
+                discountData.setType(TYPE_NEW_PRICE);
+                discountData.setTypeValue(putProduct.getPrice() - 1);
+                discountData.setReason(new CartDiscountReasonData(DiscountConst.Reasons.PRODUCT_SAMPLE.getId()));
+                putProduct.setDiscount(discountData);
+            }
+            Response<CartData> respDiscount = cartClient.addDiscount(
+                    cartData.getCartId(), cartData.getDocumentVersion(), productOrderDataList);
+            assertThat(respDiscount, successful());
+        }
+        return cartData.getFullDocId();
     }
 
     protected void cancelOrder(String orderId) throws Exception {
@@ -171,32 +181,30 @@ public class SalesBaseTest extends AppBaseSteps {
         addProductPage.clickEditQuantityField()
                 .shouldKeyboardVisible();
         addProductPage.shouldEditQuantityFieldIs("1,00")
-                .shouldTotalPriceIs(String.format("%.2f", Double.parseDouble(
-                        addProductPage.getPrice()))); // TODO Jenkins job failed here
+                .shouldTotalPriceIs( addProductPage.getPrice());
 
         // Step #5
         step("Введите значение 20,5 количества товара");
-        String expectedTotalPrice = String.format("%.2f",
-                Double.parseDouble(addProductPage.getPrice()) * 20.5);
+        Double expectedTotalPrice = addProductPage.getPrice() * 20.5;
         addProductPage.enterQuantityOfProduct("20,5")
                 .shouldTotalPriceIs(expectedTotalPrice);
 
         // Step #6
         step("Нажмите кнопку Добавить");
-        BasketStep1Page basketStep1Page = addProductPage.clickAddButton()
+        CartStep1Page basketStep1Page = addProductPage.clickAddButton()
                 .verifyRequiredElements();
-        basketStep1Page.shouldDocumentTypeIs(BasketPage.Constants.DRAFT_DOCUMENT_TYPE);
+        basketStep1Page.shouldDocumentTypeIs(CartPage.Constants.DRAFT_DOCUMENT_TYPE);
         String documentNumber = basketStep1Page.getDocumentNumber();
 
         // Step #7
         step("Нажмите Далее к параметрам");
-        BasketStep2Page basketStep2Page = basketStep1Page.clickNextParametersButton()
+        CartStep2Page basketStep2Page = basketStep1Page.clickNextParametersButton()
                 .verifyRequiredElements()
                 .shouldFieldsHaveDefaultValues();
 
         // Step #8
         step("Нажмите кнопку Создать документ продажи");
-        BasketStep3Page basketStep3Page = basketStep2Page.clickCreateSalesDocumentButton()
+        CartStep3Page basketStep3Page = basketStep2Page.clickCreateSalesDocumentButton()
                 .verifyRequiredElements();
         basketStep3Page.shouldKeyboardVisible();
 
@@ -216,8 +224,8 @@ public class SalesBaseTest extends AppBaseSteps {
 
         // Step #11
         step("Нажмите кнопку Перейти в список документов");
-        SalesDocumentData expectedSalesDocument = new SalesDocumentData();
-        expectedSalesDocument.setPrice(expectedTotalPrice);
+        ShortSalesDocumentData expectedSalesDocument = new ShortSalesDocumentData();
+        expectedSalesDocument.setDocumentTotalPrice(expectedTotalPrice);
         expectedSalesDocument.setPin(testPinCode);
         expectedSalesDocument.setDocumentState(SalesDocumentsConst.States.CONFIRMED.getUiVal());
         expectedSalesDocument.setTitle("Из торгового зала");

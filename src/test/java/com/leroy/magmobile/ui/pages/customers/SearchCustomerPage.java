@@ -6,7 +6,7 @@ import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.models.CustomerData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.sales.estimate.EstimatePage;
+import com.leroy.magmobile.ui.pages.sales.orders.estimate.EstimatePage;
 import com.leroy.magmobile.ui.pages.search.widgets.SearchCustomerWidget;
 import io.qameta.allure.Step;
 

@@ -5,7 +5,8 @@ import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.sales.basket.BasketStep1Page;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.CartStep1Page;
+import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
 public class AddProductPage extends CommonMagMobilePage {
@@ -62,15 +63,8 @@ public class AddProductPage extends CommonMagMobilePage {
         waitUntilProgressBarIsInvisible();
     }
 
-    public String getPrice() {
-        String _priceValue = price.getText().replaceAll(" ₽/м²", "").trim();
-        try {
-            Double.parseDouble(_priceValue);
-            return _priceValue;
-        } catch (NumberFormatException err) {
-            anAssert.isTrue(false, "Цена имеет не правильный формат: " + _priceValue);
-            throw err;
-        }
+    public Double getPrice() {
+        return ParserUtil.strToDouble(price.getText());
     }
 
     // ---------------- Action Steps -------------------------//
@@ -88,9 +82,9 @@ public class AddProductPage extends CommonMagMobilePage {
     }
 
     @Step("Нажмите кнопку Добавить")
-    public BasketStep1Page clickAddButton() {
+    public CartStep1Page clickAddButton() {
         addBtn.click();
-        return new BasketStep1Page();
+        return new CartStep1Page();
     }
 
     // ---------------- Verifications ----------------------- //
@@ -119,10 +113,9 @@ public class AddProductPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что итогова сумма равна {number}")
-    public AddProductPage shouldTotalPriceIs(String number) {
-        String sTotalPrice = totalPrice.getText().replaceAll(" ₽", "")
-                .trim();
-        anAssert.isEquals(sTotalPrice, number, "Сумма должна быть равна %s");
+    public AddProductPage shouldTotalPriceIs(Double expectedTotalPrice) {
+        Double actualTotalPrice = ParserUtil.strToDouble(totalPrice.getText());
+        anAssert.isEquals(actualTotalPrice, expectedTotalPrice, "Неверная итого стоимость");
         return this;
     }
 }

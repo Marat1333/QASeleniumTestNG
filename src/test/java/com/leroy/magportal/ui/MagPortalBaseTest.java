@@ -18,7 +18,7 @@ public class MagPortalBaseTest extends BaseUiTest {
     private AuthClient authClient;
 
     @Override
-    protected UserSessionData initUserSessionData() {
+    protected UserSessionData initTestClassUserSessionDataTemplate() {
         UserSessionData userSessionData = new UserSessionData();
         userSessionData.setUserLdap(EnvConstants.BASIC_USER_LDAP);
         userSessionData.setUserShopId(EnvConstants.BASIC_USER_SHOP_ID);

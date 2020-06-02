@@ -21,6 +21,7 @@ public class StockProductCardPage extends CommonMagMobilePage {
     @Override
     public void waitForPageIsLoaded() {
         productCardHeaderArea.waitForVisibility();
+        waitUntilProgressBarIsInvisible();
     }
 
     /* ------------------------- ACTION STEPS -------------------------- */

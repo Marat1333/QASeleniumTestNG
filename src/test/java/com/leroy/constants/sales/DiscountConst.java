@@ -4,7 +4,6 @@ public class DiscountConst {
 
     public static final String TYPE_NEW_PRICE = "NEW_PRICE";
 
-
     public enum Reasons {
         DEFECT(1, "Товар с браком"),
         AFTER_REPAIR(2, "Товар после ремонта в сервисном центре"),

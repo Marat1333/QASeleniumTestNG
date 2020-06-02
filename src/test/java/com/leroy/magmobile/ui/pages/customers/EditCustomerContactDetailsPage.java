@@ -5,7 +5,7 @@ import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.sales.estimate.EstimatePage;
+import com.leroy.magmobile.ui.pages.sales.orders.estimate.EstimatePage;
 import io.qameta.allure.Step;
 
 public class EditCustomerContactDetailsPage extends CommonMagMobilePage {
@@ -34,7 +34,7 @@ public class EditCustomerContactDetailsPage extends CommonMagMobilePage {
     // Actions
 
     @Step("Ввести новый номер телефона")
-    public void fillInPhoneNumber(String value) {
+    public void enterNewPhoneNumber(String value) {
         E("$phone").click();
         newPhoneFld.click();
         newPhoneFld.fill(value);

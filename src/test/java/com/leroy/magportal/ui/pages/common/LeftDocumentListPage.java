@@ -1,7 +1,6 @@
 package com.leroy.magportal.ui.pages.common;
 
 import com.leroy.core.web_elements.general.Button;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.models.salesdoc.IDataWithNumberAndStatus;
 import com.leroy.magportal.ui.webelements.CardWebWidget;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;

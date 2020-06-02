@@ -40,6 +40,7 @@ public class ParserUtil {
 
     /**
      * Leave only digits and remove any letters and other non-digit symbols including space character
+     *
      * @param str - string (text)
      * @return string with only digits
      */
@@ -59,8 +60,8 @@ public class ParserUtil {
     /**
      * Sum double / float numbers and round the decimal part
      *
-     * @param a - the first number
-     * @param b - the second number
+     * @param a             - the first number
+     * @param b             - the second number
      * @param decimalPlaces - count of digits after the dot
      * @return Double
      */
@@ -72,9 +73,13 @@ public class ParserUtil {
         return plus(a, -b, decimalPlaces);
     }
 
+    public static Double multiply(double a, double b, int decimalPlaces) {
+        return Math.round((a * b) * Math.pow(10, decimalPlaces)) / Math.pow(10, decimalPlaces);
+    }
 
     /**
      * Converts a phone number to just a number without spaces and "-"
+     *
      * @param phoneNumber - phone number
      * @return String
      */
