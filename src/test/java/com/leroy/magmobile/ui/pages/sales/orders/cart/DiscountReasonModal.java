@@ -39,9 +39,9 @@ public class DiscountReasonModal extends CommonMagMobilePage {
     // Actions
 
     @Step("Выбрать причину скидки '{value}'")
-    public CreatingDiscountPage selectDiscountReason(String value) {
+    public DiscountPage selectDiscountReason(String value) {
         E(value).click();
-        return new CreatingDiscountPage();
+        return new DiscountPage();
     }
 
     // Verifications

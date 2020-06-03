@@ -1,6 +1,7 @@
 package com.leroy.magmobile.ui.tests.sales;
 
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
+import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
 import com.leroy.magmobile.ui.pages.common.modal.ConfirmRemovingProductModal;
 import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
@@ -174,95 +175,128 @@ public class CartTest extends SalesBaseTest {
     public void testCreateDiscount() throws Exception {
         startFromScreenWithCreatedCart();
 
+        Cart35Page cart35Page = new Cart35Page();
+        SalesDocumentData salesDocumentData = cart35Page.getSalesDocumentData();
+        double productTotalPrice = salesDocumentData.getOrderAppDataList().get(0)
+                .getProductCardDataList().get(0).getTotalPrice();
+
         // Step 1
         step("Нажмите на мини-карточку любого товара в списке товаров корзины");
-        Cart35Page cart35Page = new Cart35Page();
-        double productTotalPrice = cart35Page.getProductCardDataByIndex(1).getTotalPrice();
         CartActionWithProductCardModalPage modalPage = cart35Page.clickCardByIndex(1);
         modalPage.verifyRequiredElements();
 
         // Step 2
         step("Выберите параметр Создать скидку");
-        CreatingDiscountPage creatingDiscountPage = modalPage.clickCreateDiscountMenuItem()
-                .shouldProductTotalPriceIs(productTotalPrice)
+        DiscountPage discountPage = modalPage.clickCreateDiscountMenuItem()
+                .shouldProductTotalPriceBeforeIs(productTotalPrice)
                 .verifyRequiredElements();
 
         // Step 3
         step("Нажмите на Причина скидки");
-        DiscountReasonModal discountReasonModal = creatingDiscountPage.clickDiscountReasonFld()
+        DiscountReasonModal discountReasonModal = discountPage.clickDiscountReasonFld()
                 .verifyRequiredElements();
 
         // Step 4
         step("Выбираем причину скидки");
         String selectedReason = DiscountReasonModal.PRODUCT_SAMPLE_REASON;
-        creatingDiscountPage = discountReasonModal.selectDiscountReason(selectedReason)
+        discountPage = discountReasonModal.selectDiscountReason(selectedReason)
                 .shouldDiscountReasonIs(selectedReason);
 
         // Step 5, 6, 7
         step("Нажимаем на 'Скидка' и Изменяем процент скидки товара");
         double discountPercent = 10.0;
-        creatingDiscountPage.enterDiscountPercent(discountPercent)
-                .shouldProductTotalPriceIs(productTotalPrice)
+        salesDocumentData.getOrderAppDataList().get(0).setDiscountPercentToProduct(0, discountPercent);
+        discountPage.enterDiscountPercent(discountPercent)
+                .shouldProductTotalPriceBeforeIs(productTotalPrice)
                 .shouldDiscountPercentIs(discountPercent)
-                .shouldDiscountCalculatedCorrectly();
+                .shouldDiscountCalculatedCorrectly(productTotalPrice);
 
         // Step 8
         step("Нажмите на кнопку Применить");
-        cart35Page = creatingDiscountPage.clickConfirmButton()
+        cart35Page = discountPage.clickConfirmButton()
                 .verifyRequiredElements(Cart35Page.PageState.builder()
                         .productIsAdded(true)
                         .build());
-        //basket35Page.shouldOrderDataIs()
+        cart35Page.shouldSalesDocumentDataIs(salesDocumentData);
     }
 
     @Test(description = "C22797102 Изменить скидку", groups = NEED_ACCESS_TOKEN_GROUP)
     public void testChangeDiscount() throws Exception {
         startFromScreenWithCreatedCart(true);
 
-        // Step 1
-        step("Нажмите на мини-карточку любого товара в списке товаров корзины");
         Cart35Page cart35Page = new Cart35Page();
-        ProductOrderCardAppData productData = cart35Page.getProductCardDataByIndex(1);
+        SalesDocumentData salesDocumentData = cart35Page.getSalesDocumentData();
+        ProductOrderCardAppData productData = salesDocumentData.getOrderAppDataList().get(0)
+                .getProductCardDataList().get(0);
         double productTotalPrice = productData.getTotalPrice();
         double productTotalPriceWithDiscount = productData.getTotalPriceWithDiscount();
+        // Step 1
+        step("Нажмите на мини-карточку любого товара в списке товаров корзины");
         CartActionWithProductCardModalPage modalPage = cart35Page.clickCardByIndex(1);
         modalPage.verifyRequiredElements(true);
 
         // Step 2
         step("Выберите параметр Изменить скидку");
-        CreatingDiscountPage creatingDiscountPage = modalPage.clickChangeDiscountMenuItem()
+        DiscountPage discountPage = modalPage.clickChangeDiscountMenuItem()
                 .shouldDiscountReasonIs(DiscountReasonModal.PRODUCT_SAMPLE_REASON)
-                .shouldProductTotalPriceIs(productTotalPrice)
+                .shouldProductTotalPriceBeforeIs(productTotalPriceWithDiscount)
                 .shouldDiscountNewPriceIs(productTotalPriceWithDiscount)
-                .shouldDiscountCalculatedCorrectly()
+                .shouldDiscountCalculatedCorrectly(productTotalPrice)
                 .verifyRequiredElements();
 
         // Step 3
         step("Нажмите на Причина скидки");
-        DiscountReasonModal discountReasonModal = creatingDiscountPage.clickDiscountReasonFld()
+        DiscountReasonModal discountReasonModal = discountPage.clickDiscountReasonFld()
                 .verifyRequiredElements();
 
         // Step 4
         step("Изменяем причину скидки");
         String newSelectedReason = DiscountReasonModal.NOT_COMPLETE_SET_REASON;
-        creatingDiscountPage = discountReasonModal.selectDiscountReason(newSelectedReason)
+        discountPage = discountReasonModal.selectDiscountReason(newSelectedReason)
                 .shouldDiscountReasonIs(newSelectedReason);
 
         // Step 5, 6, 7
         step("Нажимаем на 'Скидка' и Изменяем процент скидки товара");
-        double discountPercent = 7.0;
-        creatingDiscountPage.enterDiscountPercent(discountPercent)
-                .shouldProductTotalPriceIs(productTotalPrice)
+        double discountPercent = 6.0;
+        salesDocumentData.getOrderAppDataList().get(0).setDiscountPercentToProduct(0, discountPercent);
+        discountPage.enterDiscountPercent(discountPercent)
+                .shouldProductTotalPriceBeforeIs(productTotalPriceWithDiscount)
                 .shouldDiscountPercentIs(discountPercent)
-                .shouldDiscountCalculatedCorrectly();
+                .shouldDiscountCalculatedCorrectly(productTotalPrice);
 
         // Step 8
         step("Нажмите на кнопку Применить");
-        cart35Page = creatingDiscountPage.clickConfirmButton()
+        cart35Page = discountPage.clickConfirmButton()
                 .verifyRequiredElements(Cart35Page.PageState.builder()
                         .productIsAdded(true)
                         .build());
-        //basket35Page.shouldOrderDataIs()
+        cart35Page.shouldSalesDocumentDataIs(salesDocumentData);
+    }
+
+    @Test(description = "C22797103 Удалить скидку", groups = NEED_ACCESS_TOKEN_GROUP)
+    public void testRemoveDiscount() throws Exception {
+        startFromScreenWithCreatedCart(true);
+
+        Cart35Page cart35Page = new Cart35Page();
+        SalesDocumentData salesDocumentData = cart35Page.getSalesDocumentData();
+        ProductOrderCardAppData productData = salesDocumentData.getOrderAppDataList().get(0)
+                .getProductCardDataList().get(0);
+        // Step 1
+        step("Нажмите на мини-карточку любого товара в списке товаров корзины");
+        CartActionWithProductCardModalPage modalPage = cart35Page.clickCardByIndex(1);
+        modalPage.verifyRequiredElements(true);
+
+        // Step 2
+        step("Выберите параметр Изменить скидку");
+        DiscountPage discountPage = modalPage.clickChangeDiscountMenuItem()
+                .verifyRequiredElements();
+
+        // Step 3, 4
+        step("Удаляем скидку");
+        salesDocumentData.getOrderAppDataList().get(0).removeDiscountProduct(0);
+        discountPage.clickRemoveDiscount()
+                .shouldProductDoesNotHaveDiscount(productData)
+                .shouldSalesDocumentDataIs(salesDocumentData);
     }
 
 }

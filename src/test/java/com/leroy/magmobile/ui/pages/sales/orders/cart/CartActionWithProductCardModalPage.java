@@ -23,15 +23,15 @@ public class CartActionWithProductCardModalPage extends ActionWithProductCardMod
     // ACTIONS
 
     @Step("Выберите пункт меню 'Создать скидку'")
-    public CreatingDiscountPage clickCreateDiscountMenuItem() {
+    public DiscountPage clickCreateDiscountMenuItem() {
         createDiscount.click();
-        return new CreatingDiscountPage();
+        return new DiscountPage();
     }
 
     @Step("Выберите пункт меню 'Изменить скидку'")
-    public CreatingDiscountPage clickChangeDiscountMenuItem() {
+    public DiscountPage clickChangeDiscountMenuItem() {
         changeDiscount.click();
-        return new CreatingDiscountPage();
+        return new DiscountPage();
     }
 
     // Verifications

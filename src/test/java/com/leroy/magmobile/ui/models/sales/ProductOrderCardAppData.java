@@ -2,6 +2,7 @@ package com.leroy.magmobile.ui.models.sales;
 
 import com.leroy.core.ContextProvider;
 import com.leroy.core.asserts.SoftAssertWrapper;
+import com.leroy.utils.ParserUtil;
 import lombok.Data;
 
 /**
@@ -24,6 +25,17 @@ public class ProductOrderCardAppData {
     private Double discountPercent;
     private boolean selectedMoreThanAvailable;
 
+    public void setDiscountPercent(Double discountPercent) {
+        setDiscountPercent(discountPercent, false);
+    }
+
+    public void setDiscountPercent(Double discountPercent, boolean reCalculate) {
+        this.discountPercent = discountPercent;
+        if (reCalculate) {
+            this.totalPriceWithDiscount = ParserUtil.minus(totalPrice, (totalPrice * discountPercent / 100), 2);
+        }
+    }
+
     public void assertEqualsNotNullExpectedFields(int index, ProductOrderCardAppData expectedProductCardData) {
         SoftAssertWrapper softAssert = ContextProvider.getContext().getSoftAssert();
         softAssert.isEquals(lmCode, expectedProductCardData.getLmCode(),
@@ -38,14 +50,21 @@ public class ProductOrderCardAppData {
                 "Товар " + (index + 1) + " - неверное выбранное кол-во товара");
         softAssert.isEquals(totalPrice, expectedProductCardData.getTotalPrice(),
                 "Товар " + (index + 1) + " - неверная сумма товара");
-        softAssert.isEquals(totalPriceWithDiscount, expectedProductCardData.getTotalPriceWithDiscount(),
-                "Товар " + (index + 1) + " - неверная сумма (с учетом скидки) товара");
+        if (expectedProductCardData.getTotalPriceWithDiscount() != null &&
+                !(expectedProductCardData.getTotalPriceWithDiscount()
+                        .equals(expectedProductCardData.getTotalPrice()) &&
+                        totalPriceWithDiscount == null)) {
+            softAssert.isEquals(totalPriceWithDiscount, expectedProductCardData.getTotalPriceWithDiscount(),
+                    "Товар " + (index + 1) + " - неверная сумма (с учетом скидки) товара");
+        }
         if (expectedProductCardData.getAvailableTodayQuantity() != null) {
             softAssert.isEquals(availableTodayQuantity, expectedProductCardData.getAvailableTodayQuantity(),
                     "Товар " + (index + 1) + " - неверное доступное кол-во товара");
         }
-        softAssert.isEquals(discountPercent, expectedProductCardData.getDiscountPercent(),
-                "Товар " + (index + 1) + " - неверная скидка % товара");
+        if (!(expectedProductCardData.getDiscountPercent() == 0.0 && discountPercent == null)) {
+            softAssert.isEquals(discountPercent, expectedProductCardData.getDiscountPercent(),
+                    "Товар " + (index + 1) + " - неверная скидка % товара");
+        }
         softAssert.verifyAll();
     }
 

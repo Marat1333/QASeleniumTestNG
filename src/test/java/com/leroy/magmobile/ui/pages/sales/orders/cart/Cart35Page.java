@@ -249,11 +249,27 @@ public class Cart35Page extends CommonMagMobilePage {
         CardWidget<ProductOrderCardAppData> widget = productCardsScrollView.searchForWidgetByText(text);
         anAssert.isNotNull(widget, String.format("Не найдена карточка содержащая текст %s", text),
                 String.format("Карточка с текстом %s должна быть", text));
-        ProductOrderCardAppData actualOrderCardData = widget.collectDataFromPage();
+        ProductOrderCardAppData actualProductCardData = widget.collectDataFromPage();
         if (expectedProductCardData.getAvailableTodayQuantity() != null &&
                 expectedProductCardData.getAvailableTodayQuantity() > expectedProductCardData.getSelectedQuantity())
             expectedProductCardData.setAvailableTodayQuantity(null);
-        actualOrderCardData.assertEqualsNotNullExpectedFields(expectedProductCardData);
+        actualProductCardData.assertEqualsNotNullExpectedFields(expectedProductCardData);
+        return this;
+    }
+
+    @Step("Проверить, что у товара отсутствует скидка")
+    public Cart35Page shouldProductDoesNotHaveDiscount(ProductOrderCardAppData productCardData) {
+        CardWidget<ProductOrderCardAppData> widget = productCardsScrollView.searchForWidgetByText(
+                productCardData.getLmCode());
+        anAssert.isNotNull(widget, String.format("Не найдена карточка товара с ЛМ %s", productCardData.getLmCode()),
+                String.format("Карточка с ЛМ %s должна быть", productCardData.getLmCode()));
+        ProductOrderCardAppData actualProductCardData = widget.collectDataFromPage();
+        softAssert.isNull(actualProductCardData.getDiscountPercent(), "Обнаружена скидка % у товара с ЛМ" +
+                actualProductCardData.getLmCode(), "Скидка должна отсутствовать");
+        softAssert.isNull(actualProductCardData.getTotalPriceWithDiscount(),
+                "Обнаружена сумма со скидкой у товара с ЛМ" +
+                actualProductCardData.getLmCode(), "Сумма со скидкой должна отсутствовать");
+        softAssert.verifyAll();
         return this;
     }
 
@@ -264,6 +280,13 @@ public class Cart35Page extends CommonMagMobilePage {
                 "Заказ должен быть только один");
         OrderAppData actualOrderData = salesDocumentData.getOrderAppDataList().get(0);
         actualOrderData.assertEqualsNotNullExpectedFields(expectedOrderData);
+        return this;
+    }
+
+    @Step("Проверить, что данные корзины, как ожидались (expectedDocumentData)")
+    public Cart35Page shouldSalesDocumentDataIs(SalesDocumentData expectedDocumentData) {
+        SalesDocumentData salesDocumentData = getSalesDocumentData();
+        salesDocumentData.assertEqualsNotNullExpectedFields(expectedDocumentData);
         return this;
     }
 

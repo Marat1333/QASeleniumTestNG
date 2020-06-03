@@ -2,6 +2,7 @@ package com.leroy.magmobile.ui.models.sales;
 
 import com.leroy.core.ContextProvider;
 import com.leroy.core.asserts.SoftAssertWrapper;
+import com.leroy.utils.ParserUtil;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -23,6 +24,19 @@ public class OrderAppData {
     private List<ProductOrderCardAppData> productCardDataList;
     private Double totalWeight; // кг
     private Double totalPrice; // Рубли
+
+    public void removeDiscountProduct(int productIndex) {
+        setDiscountPercentToProduct(productIndex, 0);
+    }
+
+    public void setDiscountPercentToProduct(int productIndex, double discountPercent) {
+        ProductOrderCardAppData product = productCardDataList.get(productIndex);
+        Double discountAmountBefore = product.getTotalPrice() - (product.getTotalPriceWithDiscount() != null?
+                product.getTotalPriceWithDiscount() : product.getTotalPrice());
+        product.setDiscountPercent(discountPercent, true);
+        this.totalPrice = ParserUtil.minus(
+                totalPrice + discountAmountBefore, (product.getTotalPrice() * discountPercent / 100), 2);
+    }
 
     public void removeProduct(int index, boolean recalculateOrder) {
         if (recalculateOrder) {

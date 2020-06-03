@@ -32,6 +32,7 @@ import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
