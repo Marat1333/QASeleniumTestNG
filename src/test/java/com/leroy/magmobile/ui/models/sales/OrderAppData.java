@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Инфа о продуктах внутри заказа и суммарная информация о них (Итого стоимость, вес и т.д.)
@@ -96,7 +97,14 @@ public class OrderAppData {
         softAssert.verifyAll();
 
         for (int i = 0; i < expectedOrderCardData.getProductCardDataList().size(); i++) {
-            productCardDataList.get(i).assertEqualsNotNullExpectedFields(i, expectedOrderCardData.getProductCardDataList().get(i));
+            int iCount = i;
+            Optional<ProductOrderCardAppData> expProduct = expectedOrderCardData.getProductCardDataList().stream().filter(
+                    p -> p.getLmCode().equals(productCardDataList.get(iCount).getLmCode())).findFirst();
+            softAssert.isTrue(expProduct.isPresent(),
+                    "Заказ " + (index + 1) + " - обнаружен лишний товар с ЛМ " +
+                            productCardDataList.get(iCount).getLmCode());
+            if (expProduct.isPresent())
+                productCardDataList.get(iCount).assertEqualsNotNullExpectedFields(i, expProduct.get());
         }
 
         softAssert.verifyAll();

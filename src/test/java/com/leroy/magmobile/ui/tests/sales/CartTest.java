@@ -9,14 +9,27 @@ import com.leroy.magmobile.ui.pages.sales.EditProduct35Page;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
 import com.leroy.magmobile.ui.pages.sales.SalesDocumentsPage;
 import com.leroy.magmobile.ui.pages.sales.orders.cart.*;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.modal.ChangeProductModal;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SaleTypeModalPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import io.qameta.allure.Step;
 import org.testng.annotations.Test;
 
+import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 public class CartTest extends SalesBaseTest {
+
+    @Step("Pre-condition: Начать тест с экрана пустой корзины")
+    private void startFromScreenWithEmptyCart() throws Exception {
+        if (!Cart35Page.isThisPage()) {
+            MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
+                    MainSalesDocumentsPage.class);
+            SaleTypeModalPage modalPage = mainSalesDocumentsPage.clickCreateSalesDocumentButton();
+            modalPage.clickBasketMenuItem();
+        }
+    }
 
     private void startFromScreenWithCreatedCart() throws Exception {
         startFromScreenWithCreatedCart(null, false);
@@ -141,6 +154,101 @@ public class CartTest extends SalesBaseTest {
         order.setTotalWeight(order.getTotalWeight() * newQuantity);
         cart35Page = editProduct35Page.clickSaveButton();
         cart35Page.shouldSalesDocumentDataIs(salesDocumentData);
+    }
+
+    @Test(description = "C22797095 Добавить товар AVS или Топ ЕМ (количество товара достаточно)",
+            groups = NEED_ACCESS_TOKEN_GROUP)
+    public void testAddAvsOrTopEmProductIntoBasket() throws Exception {
+        // Test data
+        boolean oddDay = LocalDate.now().getDayOfMonth() % 2 == 1;
+        String lmCode = oddDay ? getAnyLmCodeProductWithTopEM() : getAnyLmCodeProductWithAvs();
+
+        startFromScreenWithCreatedCart();
+
+        Cart35Page cart35Page = new Cart35Page();
+        SalesDocumentData salesDocumentData = cart35Page.getSalesDocumentData();
+        salesDocumentData.getOrderAppDataList().get(0).setTotalWeight(null);
+        // Step 1
+        step("Нажмите на кнопку +Товар");
+        SearchProductPage searchProductPage = cart35Page.clickAddProductButton()
+                .verifyRequiredElements();
+
+        // Step 2
+        step("Введите ЛМ код " + (oddDay ? "TOP EM" : "AVS") + " товара");
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
+        AddProduct35Page<Cart35Page> addProduct35Page = new AddProduct35Page<>(Cart35Page.class)
+                .verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_BASKET);
+        ProductOrderCardAppData expectedProductCardData = addProduct35Page.getProductOrderDataFromPage();
+        expectedProductCardData.setAvailableTodayQuantity(null);
+
+        // Step 3
+        step("Нажмите на Добавить в корзину");
+        cart35Page = addProduct35Page.clickAddIntoBasketButton();
+        cart35Page.verifyRequiredElements(Cart35Page.PageState.builder()
+                .productIsAdded(true)
+                .manyOrders(null)
+                .build());
+        salesDocumentData.getOrderAppDataList().get(0).addFirstProduct(expectedProductCardData);
+        cart35Page.shouldSalesDocumentDataIs(salesDocumentData);
+    }
+
+    @Test(description = "C22797096 Добавить товар AVS или Топ ЕМ (количество товара меньше необходимого)",
+            groups = NEED_ACCESS_TOKEN_GROUP)
+    public void testAddAvsOrTopEmProductIntoBasketLessThanAvailable() throws Exception {
+        // Test data
+        boolean oddDay = LocalDate.now().getDayOfMonth() % 2 == 1;
+        String lmCode = oddDay ? getAnyLmCodeProductWithTopEM(false) :
+                getAnyLmCodeProductWithAvs(false);
+
+        startFromScreenWithCreatedCart();
+
+        Cart35Page cart35Page = new Cart35Page();
+        SalesDocumentData salesDocumentData = cart35Page.getSalesDocumentData();
+        salesDocumentData.getOrderAppDataList().get(0).setTotalWeight(null);
+        // Step 1
+        step("Нажмите на кнопку +Товар");
+        SearchProductPage searchProductPage = cart35Page.clickAddProductButton()
+                .verifyRequiredElements();
+
+        // Step 2
+        step("Введите ЛМ код " + (oddDay ? "TOP EM" : "AVS") + " товара c количеством товара меньше необходимого)");
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
+        AddProduct35Page<Cart35Page> addProduct35Page = new AddProduct35Page<>(Cart35Page.class)
+                .verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_BASKET);
+        ProductOrderCardAppData expectedProductCardData = addProduct35Page.getProductOrderDataFromPage();
+        expectedProductCardData.setAvailableTodayQuantity(null);
+        expectedProductCardData.setHasAvailableQuantity(false);
+
+        // Step 3
+        step("Нажмите на Добавить в корзину");
+        if (oddDay)
+            expectedProductCardData.setTopEm(true);
+        else
+            expectedProductCardData.setAvs(true);
+        salesDocumentData.getOrderAppDataList().get(0).addFirstProduct(expectedProductCardData);
+        cart35Page = addProduct35Page.clickAddIntoBasketButton()
+                .shouldCartCanNotBeConfirmed()
+                .shouldSalesDocumentDataIs(salesDocumentData);
+
+        // Step 4
+        step("Нажмите на Изменить");
+        ChangeProductModal changeProductModal = cart35Page.clickChangeByProductLmCode(
+                expectedProductCardData.getLmCode())
+                .verifyRequiredElements();
+
+        // Step 5
+        step("Выберите параметр Товара достаточно в магазине");
+        expectedProductCardData.setHasAvailableQuantity(true);
+        expectedProductCardData.setAvailableTodayQuantity(1);
+        expectedProductCardData.setTopEm(null);
+
+        // Почему-то порядок товаров меняется, поэтому приходится и ожидаемый порядок менять тоже:
+        OrderAppData orderAppData = salesDocumentData.getOrderAppDataList().get(0);
+        Collections.reverse(orderAppData.getProductCardDataList());
+
+        changeProductModal.clickEnoughProductInStore()
+                .shouldCartCanBeConfirmed()
+                .shouldSalesDocumentDataIs(salesDocumentData);
     }
 
     @Test(description = "C22797098 Удалить товар из корзины", groups = NEED_ACCESS_TOKEN_GROUP)

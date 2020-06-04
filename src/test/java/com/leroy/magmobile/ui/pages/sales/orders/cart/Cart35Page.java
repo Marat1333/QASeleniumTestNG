@@ -11,6 +11,7 @@ import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
 import com.leroy.magmobile.ui.pages.sales.orders.CartEstimatePage;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.modal.ChangeProductModal;
 import com.leroy.magmobile.ui.pages.sales.widget.BottomOrderInfoWidget;
 import com.leroy.magmobile.ui.pages.sales.widget.HeaderOrderInfoWidget;
 import com.leroy.magmobile.ui.pages.sales.widget.ProductOrderCardAppWidget;
@@ -46,6 +47,10 @@ public class Cart35Page extends CartEstimatePage {
 
     @AppFindBy(text = "Пока пусто")
     Element emptyInfoMessageLbl;
+
+    @AppFindBy(containsText = "Есть товары с недостаточным запасом",
+            metaName = "Сообщение о недостаточном запасе")
+    Element insufficientStockMessage;
 
     // Карточки товаров
     AndroidScrollView<ProductOrderCardAppData> productCardsScrollView = new AndroidScrollView<>(
@@ -196,6 +201,13 @@ public class Cart35Page extends CartEstimatePage {
         return new CartActionWithProductCardModal();
     }
 
+    @Step("Нажмите 'Изменить' для товара с ЛМ код {lmCode}")
+    public ChangeProductModal clickChangeByProductLmCode(String lmCode) {
+        ProductOrderCardAppWidget widget = (ProductOrderCardAppWidget) productCardsScrollView.searchForWidgetByText(lmCode);
+        widget.clickChange();
+        return new ChangeProductModal();
+    }
+
     @Step("Нажмите ОФОРМИТЬ")
     public ProcessOrder35Page clickMakeSalesButton() {
         makeSalesBtn.click();
@@ -297,6 +309,23 @@ public class Cart35Page extends CartEstimatePage {
             anAssert.isNotEquals(productCardData.getLmCode(), expLmCode,
                     "Продукта с таким ЛМ код быть не должно");
         }
+        return this;
+    }
+
+    @Step("Убедиться, что корзину нельзя создать из-за товаров с недостаточным количеством")
+    public Cart35Page shouldCartCanNotBeConfirmed() {
+        softAssert.isElementVisible(insufficientStockMessage);
+        softAssert.isFalse(makeSalesBtn.isEnabled(), "Кнопка Оформить должна быть неактивна");
+        softAssert.verifyAll();
+        makeSalesBtn.click();
+        return this;
+    }
+
+    @Step("Убедиться, что заказ может быть создан из корзины")
+    public Cart35Page shouldCartCanBeConfirmed() {
+        softAssert.isElementNotVisible(insufficientStockMessage);
+        softAssert.isTrue(makeSalesBtn.isEnabled(), "Кнопка Оформить должна быть неактивна");
+        softAssert.verifyAll();
         return this;
     }
 

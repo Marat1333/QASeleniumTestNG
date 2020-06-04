@@ -21,9 +21,13 @@ public class ProductOrderCardAppData {
     private Double selectedQuantity;
     private Double totalPrice;
     private Double totalPriceWithDiscount;
-    private Integer availableTodayQuantity;
     private Double discountPercent;
     private boolean selectedMoreThanAvailable;
+
+    private Integer availableTodayQuantity;
+    private Boolean avs;
+    private Boolean topEm;
+    private Boolean hasAvailableQuantity;
 
     public void setDiscountPercent(Double discountPercent) {
         setDiscountPercent(discountPercent, false);
@@ -60,6 +64,22 @@ public class ProductOrderCardAppData {
         if (expectedProductCardData.getAvailableTodayQuantity() != null) {
             softAssert.isEquals(availableTodayQuantity, expectedProductCardData.getAvailableTodayQuantity(),
                     "Товар " + (index + 1) + " - неверное доступное кол-во товара");
+        }
+        if (expectedProductCardData.getHasAvailableQuantity() != null) {
+            if (expectedProductCardData.getHasAvailableQuantity())
+                softAssert.isTrue(availableTodayQuantity > 0,
+                        "Товар " + (index + 1) + " - ожидалось, что доступное кол-во товара больше нуля");
+            else
+                softAssert.isTrue(availableTodayQuantity <= 0,
+                        "Товар " + (index + 1) + " - ожидалось, что доступное кол-во товара ноль или меньше");
+        }
+        if (expectedProductCardData.getAvs() != null) {
+            softAssert.isEquals(avs, expectedProductCardData.getAvs(),
+                    "Товар " + (index + 1) + " - должен иметь признак AVS");
+        }
+        if (expectedProductCardData.getTopEm() != null) {
+            softAssert.isEquals(topEm, expectedProductCardData.getTopEm(),
+                    "Товар " + (index + 1) + " - должен иметь признак TOP EM");
         }
         if (!((expectedProductCardData.getDiscountPercent() == null || expectedProductCardData.getDiscountPercent() == 0.0) &&
                 discountPercent == null)) {

@@ -26,6 +26,7 @@ import com.leroy.magmobile.ui.pages.sales.orders.cart.CartStep1Page;
 import com.leroy.magmobile.ui.pages.sales.orders.cart.CartStep2Page;
 import com.leroy.magmobile.ui.pages.sales.orders.cart.CartStep3Page;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
+import io.qameta.allure.Step;
 import org.apache.commons.lang.RandomStringUtils;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
@@ -58,20 +59,30 @@ public class SalesBaseTest extends AppBaseSteps {
         return getAnyLmCodesProductWithoutSpecificOptions(1).get(0);
     }
 
-    // Получить ЛМ код для продукта с AVS
-    protected String getAnyLmCodeProductWithAvs() {
+    @Step("Ищем ЛМ код для продукта с признаком AVS")
+    protected String getAnyLmCodeProductWithAvs(Boolean hasAvailableStock) {
         CatalogSearchFilter filtersData = new CatalogSearchFilter();
         filtersData.setAvs(true);
+        filtersData.setHasAvailableStock(hasAvailableStock);
         return apiClientProvider.getProducts(1, filtersData).get(0).getLmCode();
     }
 
-    // Получить ЛМ код для продукта с опцией TopEM
-    protected String getAnyLmCodeProductWithTopEM() {
+    protected String getAnyLmCodeProductWithAvs() {
+        return getAnyLmCodeProductWithAvs(null);
+    }
+
+    @Step("Ищем ЛМ код для продукта с опцией TopEM")
+    protected String getAnyLmCodeProductWithTopEM(Boolean hasAvailableStock) {
         CatalogSearchFilter filtersData = new CatalogSearchFilter();
         filtersData.setTopEM(true);
         filtersData.setAvs(false);
+        filtersData.setHasAvailableStock(hasAvailableStock);
         getUserSessionData().setUserDepartmentId("15");
         return apiClientProvider.getProducts(1, filtersData).get(0).getLmCode();
+    }
+
+    protected String getAnyLmCodeProductWithTopEM() {
+        return getAnyLmCodeProductWithTopEM(null);
     }
 
     // Получить ЛМ код для продукта, доступного для отзыва с RM
