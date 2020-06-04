@@ -26,6 +26,16 @@
         </classes>
     </test>
 
+    <test name="C22797092 Изменить количество товара (товар остается в том же заказе)">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.CartTest">
+                <methods>
+                    <include name="testChangeQuantityProductInCartWhenOneOrder"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
     <test name="C22797098 Удалить товар из корзины">
         <classes>
             <class name="com.leroy.magmobile.ui.tests.sales.CartTest">
@@ -71,6 +81,16 @@
             <class name="com.leroy.magmobile.ui.tests.sales.CartTest">
                 <methods>
                     <include name="testRemoveDiscount"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22797109 Добавить существующий товар из модалки действий с товаром">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.CartTest">
+                <methods>
+                    <include name="testAddProductFromActionWithProductModal"/>
                 </methods>
             </class>
         </classes>

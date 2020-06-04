@@ -32,9 +32,7 @@ import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import static com.leroy.constants.sales.DiscountConst.TYPE_NEW_PRICE;
@@ -110,14 +108,22 @@ public class SalesBaseTest extends AppBaseSteps {
     }
 
     protected String createDraftCart(int productCount, boolean hasDiscount) {
+        return createDraftCart(null, productCount, hasDiscount);
+    }
+
+    protected String createDraftCart(List<String> lmCodes, boolean hasDiscount) {
+        return createDraftCart(lmCodes, 1, hasDiscount);
+    }
+
+    private String createDraftCart(List<String> lmCodes, int productCount, boolean hasDiscount) {
         CartClient cartClient = apiClientProvider.getCartClient();
-        List<String> lmCodes = getAnyLmCodesProductWithoutSpecificOptions(productCount);
+        if (lmCodes == null)
+            lmCodes = getAnyLmCodesProductWithoutSpecificOptions(productCount);
         List<CartProductOrderData> productOrderDataList = new ArrayList<>();
-        Random r = new Random();
         for (String lmCode : lmCodes) {
             CartProductOrderData productOrderData = new CartProductOrderData();
             productOrderData.setLmCode(lmCode);
-            productOrderData.setQuantity((double) (r.nextInt(9) + 1));
+            productOrderData.setQuantity(1.0);
             productOrderDataList.add(productOrderData);
         }
         Response<CartData> cartDataResponse = cartClient.sendRequestCreate(productOrderDataList);
@@ -182,7 +188,7 @@ public class SalesBaseTest extends AppBaseSteps {
         addProductPage.clickEditQuantityField()
                 .shouldKeyboardVisible();
         addProductPage.shouldEditQuantityFieldIs("1,00")
-                .shouldTotalPriceIs( addProductPage.getPrice());
+                .shouldTotalPriceIs(addProductPage.getPrice());
 
         // Step #5
         step("Введите значение 20,5 количества товара");

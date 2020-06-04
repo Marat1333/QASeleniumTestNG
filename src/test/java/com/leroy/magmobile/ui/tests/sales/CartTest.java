@@ -1,9 +1,11 @@
 package com.leroy.magmobile.ui.tests.sales;
 
+import com.leroy.magmobile.ui.models.sales.OrderAppData;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
 import com.leroy.magmobile.ui.pages.common.modal.ConfirmRemovingProductModal;
 import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
+import com.leroy.magmobile.ui.pages.sales.EditProduct35Page;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
 import com.leroy.magmobile.ui.pages.sales.SalesDocumentsPage;
 import com.leroy.magmobile.ui.pages.sales.orders.cart.*;
@@ -12,16 +14,22 @@ import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import io.qameta.allure.Step;
 import org.testng.annotations.Test;
 
+import java.util.List;
+
 public class CartTest extends SalesBaseTest {
 
     private void startFromScreenWithCreatedCart() throws Exception {
-        startFromScreenWithCreatedCart(false);
+        startFromScreenWithCreatedCart(null, false);
+    }
+
+    private void startFromScreenWithCreatedCart(boolean hasDiscount) throws Exception {
+        startFromScreenWithCreatedCart(null, hasDiscount);
     }
 
     @Step("Pre-condition: Создание корзины")
-    private void startFromScreenWithCreatedCart(boolean hasDiscount) throws Exception {
+    private void startFromScreenWithCreatedCart(List<String> lmCodes, boolean hasDiscount) throws Exception {
         if (!Cart35Page.isThisPage()) {
-            String cartDocNumber = createDraftCart(1, hasDiscount);
+            String cartDocNumber = createDraftCart(lmCodes, hasDiscount);
             MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
                     MainSalesDocumentsPage.class);
             SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
@@ -55,7 +63,7 @@ public class CartTest extends SalesBaseTest {
         SearchProductPage searchProductPage = cart35Page.clickAddProductButton()
                 .verifyRequiredElements();
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
-        AddProduct35Page addProduct35Page = new AddProduct35Page();
+        AddProduct35Page<Cart35Page> addProduct35Page = new AddProduct35Page<>(Cart35Page.class);
         addProduct35Page.verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_BASKET);
 
         // Step 4
@@ -84,7 +92,7 @@ public class CartTest extends SalesBaseTest {
         // Step 2
         step("Введите ЛМ код товара или название товара или отсканируйте товар");
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
-        AddProduct35Page addProduct35Page = new AddProduct35Page()
+        AddProduct35Page<Cart35Page> addProduct35Page = new AddProduct35Page<>(Cart35Page.class)
                 .verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_BASKET);
         ProductOrderCardAppData expectedOrderCardData = addProduct35Page.getProductOrderDataFromPage();
 
@@ -98,6 +106,41 @@ public class CartTest extends SalesBaseTest {
         cart35Page.shouldCountOfCardsIs(productCountInBasket + 1);
         cart35Page.shouldProductCardDataWithTextIs(expectedOrderCardData.getLmCode(),
                 expectedOrderCardData);
+    }
+
+    @Test(description = "C22797092 Изменить количество товара (товар остается в том же заказе)",
+            groups = NEED_ACCESS_TOKEN_GROUP)
+    public void testChangeQuantityProductInCartWhenOneOrder() throws Exception {
+        // Test data
+        List<String> lmCodes = apiClientProvider.getProductLmCodes(1);
+
+        step("Pre-condition: Создание корзины");
+        startFromScreenWithCreatedCart(lmCodes, false);
+
+        Cart35Page cart35Page = new Cart35Page();
+        SalesDocumentData salesDocumentData = cart35Page.getSalesDocumentData();
+        // Step 1
+        step("Нажмите на мини-карточку любого товара в списке товаров корзины");
+        CartActionWithProductCardModal modalPage = cart35Page.clickCardByIndex(1)
+                .verifyRequiredElements();
+
+        // Step 2
+        step("Выберите параметр Изменить количество");
+        EditProduct35Page<Cart35Page> editProduct35Page = modalPage.clickChangeQuantityMenuItem();
+        editProduct35Page.verifyRequiredElements();
+
+        // Step 3, 4, 5
+        step("Измените количество товара");
+        int newQuantity = 2;
+        editProduct35Page.enterQuantityOfProduct(newQuantity, true);
+
+        // Step 6
+        step("Нажмите на кнопку Сохранить");
+        OrderAppData order = salesDocumentData.getOrderAppDataList().get(0);
+        order.changeProductQuantity(0, newQuantity);
+        order.setTotalWeight(order.getTotalWeight() * newQuantity);
+        cart35Page = editProduct35Page.clickSaveButton();
+        cart35Page.shouldSalesDocumentDataIs(salesDocumentData);
     }
 
     @Test(description = "C22797098 Удалить товар из корзины", groups = NEED_ACCESS_TOKEN_GROUP)
@@ -116,7 +159,7 @@ public class CartTest extends SalesBaseTest {
 
         // Step 1
         step("Нажмите на мини-карточку любого товара в списке товаров корзины");
-        CartActionWithProductCardModalPage modalPage = cart35Page.clickCardByIndex(1)
+        CartActionWithProductCardModal modalPage = cart35Page.clickCardByIndex(1)
                 .verifyRequiredElements();
 
         // Step 2
@@ -155,7 +198,7 @@ public class CartTest extends SalesBaseTest {
 
         // Step 1
         step("Нажмите на мини-карточку любого товара в списке товаров корзины");
-        CartActionWithProductCardModalPage modalPage = cart35Page.clickCardByIndex(1)
+        CartActionWithProductCardModal modalPage = cart35Page.clickCardByIndex(1)
                 .verifyRequiredElements();
 
         // Step 2
@@ -171,6 +214,39 @@ public class CartTest extends SalesBaseTest {
         salesDocumentsPage.shouldSalesDocumentIsNotPresent(cartDocNumber);
     }
 
+    @Test(description = "C22797109 Добавить существующий товар из модалки действий с товаром",
+            groups = NEED_ACCESS_TOKEN_GROUP)
+    public void testAddProductFromActionWithProductModal() throws Exception {
+        int newQuantity = 3;
+
+        startFromScreenWithCreatedCart();
+
+        Cart35Page cart35Page = new Cart35Page();
+        SalesDocumentData salesDocumentData = cart35Page.getSalesDocumentData();
+        OrderAppData orderAppData = salesDocumentData.getOrderAppDataList().get(0);
+        orderAppData.addFirstProduct(orderAppData.getProductCardDataList().get(0).copy());
+        orderAppData.changeProductQuantity(0, newQuantity);
+        orderAppData.setTotalWeight(orderAppData.getTotalWeight() * 4);
+        // Step 1
+        step("Нажмите на мини-карточку любого товара в списке товаров корзины");
+        CartActionWithProductCardModal modalPage = cart35Page.clickCardByIndex(1);
+        modalPage.verifyRequiredElements();
+
+        // Step 2
+        step("Выберите параметр Добавить товар еще раз");
+        AddProduct35Page<Cart35Page> addProduct35Page = modalPage.clickAddProductAgainMenuItem()
+                .verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_BASKET);
+
+        // Step 3, 4, 5
+        step("Измените количество товара");
+        addProduct35Page.enterQuantityOfProduct(newQuantity, true);
+
+        // Step 6
+        step("Нажмите на кнопку Добавить в корзину");
+        cart35Page = addProduct35Page.clickAddIntoBasketButton();
+        cart35Page.shouldSalesDocumentDataIs(salesDocumentData);
+    }
+
     @Test(description = "C22797101 Создать скидку", groups = NEED_ACCESS_TOKEN_GROUP)
     public void testCreateDiscount() throws Exception {
         startFromScreenWithCreatedCart();
@@ -182,7 +258,7 @@ public class CartTest extends SalesBaseTest {
 
         // Step 1
         step("Нажмите на мини-карточку любого товара в списке товаров корзины");
-        CartActionWithProductCardModalPage modalPage = cart35Page.clickCardByIndex(1);
+        CartActionWithProductCardModal modalPage = cart35Page.clickCardByIndex(1);
         modalPage.verifyRequiredElements();
 
         // Step 2
@@ -232,7 +308,7 @@ public class CartTest extends SalesBaseTest {
         double productTotalPriceWithDiscount = productData.getTotalPriceWithDiscount();
         // Step 1
         step("Нажмите на мини-карточку любого товара в списке товаров корзины");
-        CartActionWithProductCardModalPage modalPage = cart35Page.clickCardByIndex(1);
+        CartActionWithProductCardModal modalPage = cart35Page.clickCardByIndex(1);
         modalPage.verifyRequiredElements(true);
 
         // Step 2
@@ -283,7 +359,7 @@ public class CartTest extends SalesBaseTest {
                 .getProductCardDataList().get(0);
         // Step 1
         step("Нажмите на мини-карточку любого товара в списке товаров корзины");
-        CartActionWithProductCardModalPage modalPage = cart35Page.clickCardByIndex(1);
+        CartActionWithProductCardModal modalPage = cart35Page.clickCardByIndex(1);
         modalPage.verifyRequiredElements(true);
 
         // Step 2

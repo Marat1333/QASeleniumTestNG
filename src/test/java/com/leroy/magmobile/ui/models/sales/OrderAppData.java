@@ -31,31 +31,36 @@ public class OrderAppData {
 
     public void setDiscountPercentToProduct(int productIndex, double discountPercent) {
         ProductOrderCardAppData product = productCardDataList.get(productIndex);
-        Double discountAmountBefore = product.getTotalPrice() - (product.getTotalPriceWithDiscount() != null?
+        Double discountAmountBefore = product.getTotalPrice() - (product.getTotalPriceWithDiscount() != null ?
                 product.getTotalPriceWithDiscount() : product.getTotalPrice());
         product.setDiscountPercent(discountPercent, true);
         this.totalPrice = ParserUtil.minus(
                 totalPrice + discountAmountBefore, (product.getTotalPrice() * discountPercent / 100), 2);
     }
 
-    public void removeProduct(int index, boolean recalculateOrder) {
-        if (recalculateOrder) {
-            ProductOrderCardAppData removeProduct = productCardDataList.get(index);
-            totalPrice -= removeProduct.getTotalPrice();
-            productCount--;
-        }
+    public void removeProduct(int index) {
+        ProductOrderCardAppData removeProduct = productCardDataList.get(index);
+        totalPrice -= removeProduct.getTotalPrice();
+        productCount--;
         productCardDataList.remove(index);
     }
 
-    public void addFirstProduct(ProductOrderCardAppData product, boolean recalculateOrder) {
+    public void addFirstProduct(ProductOrderCardAppData product) {
         List<ProductOrderCardAppData> result = new ArrayList<>();
         result.add(product);
         result.addAll(productCardDataList);
         productCardDataList = result;
-        if (recalculateOrder) {
-            productCount++;
-            totalPrice += product.getTotalPrice();
-        }
+        productCount++;
+        totalPrice += product.getTotalPrice();
+    }
+
+    public void changeProductQuantity(int index, double quantity) {
+        ProductOrderCardAppData product = productCardDataList.get(index);
+        double price = product.getPrice();
+        double quantityDiff = quantity - product.getSelectedQuantity();
+        product.setSelectedQuantity(quantity);
+        product.setTotalPrice(price * quantity);
+        totalPrice += ParserUtil.multiply(price, quantityDiff, 2);
     }
 
     public void assertEqualsNotNullExpectedFields(int index, OrderAppData expectedOrderCardData) {

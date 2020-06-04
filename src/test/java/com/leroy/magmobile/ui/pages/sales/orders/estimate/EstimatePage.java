@@ -9,8 +9,8 @@ import com.leroy.magmobile.ui.elements.MagMobWhiteSubmitButton;
 import com.leroy.magmobile.ui.models.CustomerData;
 import com.leroy.magmobile.ui.models.sales.OrderAppData;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
-import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.customers.SearchCustomerPage;
+import com.leroy.magmobile.ui.pages.sales.orders.CartEstimatePage;
 import com.leroy.magmobile.ui.pages.sales.widget.ProductOrderCardAppWidget;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.search.widgets.SearchCustomerWidget;
@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class EstimatePage extends CommonMagMobilePage {
+public class EstimatePage extends CartEstimatePage {
 
     @Builder
     @AllArgsConstructor
@@ -174,10 +174,10 @@ public class EstimatePage extends CommonMagMobilePage {
     }
 
     @Step("Нажмите на {index}-ую карточку товара/услуги")
-    public ActionWithProductCardModalPage clickCardByIndex(int index) throws Exception {
+    public EstimateActionWithProductCardModal clickCardByIndex(int index) throws Exception {
         index--;
         productCardDataScrollView.clickElemByIndex(index);
-        return new ActionWithProductCardModalPage();
+        return new EstimateActionWithProductCardModal();
     }
 
     @Step("Нажмите на поле 'Клиенты' (клиент не был выбран)")

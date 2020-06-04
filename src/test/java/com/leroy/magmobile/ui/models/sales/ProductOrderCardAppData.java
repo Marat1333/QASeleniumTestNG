@@ -61,7 +61,8 @@ public class ProductOrderCardAppData {
             softAssert.isEquals(availableTodayQuantity, expectedProductCardData.getAvailableTodayQuantity(),
                     "Товар " + (index + 1) + " - неверное доступное кол-во товара");
         }
-        if (!(expectedProductCardData.getDiscountPercent() == 0.0 && discountPercent == null)) {
+        if (!((expectedProductCardData.getDiscountPercent() == null || expectedProductCardData.getDiscountPercent() == 0.0) &&
+                discountPercent == null)) {
             softAssert.isEquals(discountPercent, expectedProductCardData.getDiscountPercent(),
                     "Товар " + (index + 1) + " - неверная скидка % товара");
         }
@@ -70,6 +71,22 @@ public class ProductOrderCardAppData {
 
     public void assertEqualsNotNullExpectedFields(ProductOrderCardAppData orderCardData) {
         assertEqualsNotNullExpectedFields(0, orderCardData);
+    }
+
+    public ProductOrderCardAppData copy() {
+        ProductOrderCardAppData productData = new ProductOrderCardAppData();
+        productData.setLmCode(lmCode);
+        productData.setBarCode(barCode);
+        productData.setTitle(title);
+        productData.setPrice(price);
+        productData.setPriceUnit(priceUnit);
+        productData.setSelectedQuantity(selectedQuantity);
+        productData.setTotalPrice(totalPrice);
+        productData.setTotalPriceWithDiscount(totalPriceWithDiscount);
+        productData.setAvailableTodayQuantity(availableTodayQuantity);
+        productData.setDiscountPercent(discountPercent);
+        productData.setSelectedMoreThanAvailable(selectedMoreThanAvailable);
+        return productData;
     }
 
 }

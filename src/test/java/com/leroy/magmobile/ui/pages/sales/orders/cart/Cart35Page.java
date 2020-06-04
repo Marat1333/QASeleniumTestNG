@@ -9,8 +9,8 @@ import com.leroy.magmobile.ui.elements.MagMobWhiteSubmitButton;
 import com.leroy.magmobile.ui.models.sales.OrderAppData;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
-import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
+import com.leroy.magmobile.ui.pages.sales.orders.CartEstimatePage;
 import com.leroy.magmobile.ui.pages.sales.widget.BottomOrderInfoWidget;
 import com.leroy.magmobile.ui.pages.sales.widget.HeaderOrderInfoWidget;
 import com.leroy.magmobile.ui.pages.sales.widget.ProductOrderCardAppWidget;
@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Cart35Page extends CommonMagMobilePage {
+public class Cart35Page extends CartEstimatePage {
 
     public final static String SCREEN_TITLE = "Корзина";
 
@@ -190,10 +190,10 @@ public class Cart35Page extends CommonMagMobilePage {
     // -------------- ACTIONS ---------------------------//
 
     @Step("Нажмите на {index}-ую карточку товара/услуги")
-    public CartActionWithProductCardModalPage clickCardByIndex(int index) throws Exception {
+    public CartActionWithProductCardModal clickCardByIndex(int index) throws Exception {
         index--;
         productCardsScrollView.clickElemByIndex(index);
-        return new CartActionWithProductCardModalPage();
+        return new CartActionWithProductCardModal();
     }
 
     @Step("Нажмите ОФОРМИТЬ")
@@ -268,7 +268,7 @@ public class Cart35Page extends CommonMagMobilePage {
                 actualProductCardData.getLmCode(), "Скидка должна отсутствовать");
         softAssert.isNull(actualProductCardData.getTotalPriceWithDiscount(),
                 "Обнаружена сумма со скидкой у товара с ЛМ" +
-                actualProductCardData.getLmCode(), "Сумма со скидкой должна отсутствовать");
+                        actualProductCardData.getLmCode(), "Сумма со скидкой должна отсутствовать");
         softAssert.verifyAll();
         return this;
     }
