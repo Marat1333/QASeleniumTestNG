@@ -1,20 +1,31 @@
 package com.leroy.magportal.ui.pages.products;
 
+import com.leroy.constants.Currency;
+import com.leroy.constants.Units;
 import com.leroy.core.annotations.WebFindBy;
+import com.leroy.core.configuration.Log;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
 import com.leroy.magportal.api.data.ProductData;
+import com.leroy.magportal.ui.models.search.PriceContainerData;
 import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
 import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage.Direction;
 import com.leroy.magportal.ui.pages.products.widget.ExtendedProductCardWidget;
+import com.leroy.magportal.ui.webelements.commonelements.PriceContainer;
 import com.leroy.magportal.ui.webelements.searchelements.ProductPriceInfoWidget;
 import com.leroy.magportal.ui.webelements.searchelements.ProductQuantityInfoWidget;
+import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
-import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 public class ExtendedProductCardPage extends ProductCardPage {
 
@@ -174,7 +185,7 @@ public class ExtendedProductCardPage extends ProductCardPage {
     }
 
     @Step("Проверить, что все дополнительные товары отображен")
-    public ExtendedProductCardPage shouldAllAdditionalProductsIsVisible(List<ProductData> data) throws Exception {
+    public ExtendedProductCardPage shouldAllAdditionalProductsIsVisible(List<ProductItemData> data) throws Exception {
         if (data.size() > 4) {
             shouldNavigationBtnHasCorrectCondition(Direction.FORWARD, true);
         } else {
@@ -216,18 +227,93 @@ public class ExtendedProductCardPage extends ProductCardPage {
 
     @Override
     public void shouldProductCardContainsAllData(CatalogProductData data) throws Exception {
-        //TODO must add currency and unit checks
-        //TODO convert string to double
         super.shouldProductCardContainsAllData(data);
+        //get prices from data and convert them to Front-end format
+        String salesPrice = ParserUtil.parseDoubleZeroFormatInStringDouble(data.getSalesPrice().getPrice());
+        String pricePerUnit = ParserUtil.parseDoubleZeroFormatInStringDouble(data.getAltPrice().getPrice());
+        String recommendedPrice = ParserUtil.parseDoubleZeroFormatInStringDouble(data.getRecommendedPrice().getPrice());
+        String purchasePrice = ParserUtil.parseDoubleZeroFormatInStringDouble(data.getPurchasePrice().getPrice());
+        //get price containers from front-end
+        PriceContainer salesPriceContainer = productPriceInfoWidget.getSalesPrice();
+        PriceContainerData salesPriceContainerData = new PriceContainerData(salesPriceContainer.getDecimalPrice(),
+                salesPriceContainer.getPriceCurrency(), salesPriceContainer.getUnit());
+
+        PriceContainer pricePerUnitContainer = productPriceInfoWidget.getPricePerUnit();
+        PriceContainerData pricePerUnitContainerData = new PriceContainerData(pricePerUnitContainer.getDecimalPrice(),
+                pricePerUnitContainer.getPriceCurrency(), pricePerUnitContainer.getUnit());
+
+        PriceContainer recommendedPriceContainer = productPriceInfoWidget.getHiddenRecommendedPrice();
+        PriceContainerData recommendedPriceContainerData = new PriceContainerData(recommendedPriceContainer.getDecimalPrice(),
+                recommendedPriceContainer.getPriceCurrency(), recommendedPriceContainer.getUnit());
+
+        PriceContainer purchasePriceContainer = productPriceInfoWidget.getHiddenPurchasePrice();
+        PriceContainerData purchasePriceContainerData = new PriceContainerData(purchasePriceContainer.getDecimalPrice(),
+                purchasePriceContainer.getPriceCurrency(), purchasePriceContainer.getUnit());
+
         softAssert.isElementTextContains(topBadge, data.getTop());
-        softAssert.isEquals(productPriceInfoWidget.getSalesPrice(), data.getSalesPrice().getPrice(), "SalePrice mismatch");
-        softAssert.isEquals(productPriceInfoWidget.getPricePerUnit(), data.getAltPrice().getPrice(), "AltPrice mismatch");
-        softAssert.isEquals(productPriceInfoWidget.getHiddenRecommendedPrice(), data.getRecommendedPrice().getPrice(), "RecommendedPrice mismatch");
-        softAssert.isEquals(productPriceInfoWidget.getHiddenPurchasePrice(), data.getPurchasePrice().getPrice(), "PurchasePrice mismatch");
-        if (productPriceInfoWidget.isPriceMismatchRecommendedPrice()) {
+        softAssert.isEquals(salesPriceContainerData.getPrice(), salesPrice, "SalePrice mismatch");
+        shouldCurrencyIsCorrect(salesPriceContainerData.getCurrency(), data.getSalesPrice().getPriceCurrency());
+        shouldUnitsIsCorrect(salesPriceContainerData.getUnits(), data.getSalesPrice().getPriceUnit());
+        softAssert.isEquals(pricePerUnitContainerData.getPrice(), pricePerUnit, "AltPrice mismatch");
+        shouldCurrencyIsCorrect(pricePerUnitContainerData.getCurrency(), data.getAltPrice().getPriceCurrency());
+        softAssert.isEquals(recommendedPriceContainerData.getPrice(), recommendedPrice, "RecommendedPrice mismatch");
+        shouldCurrencyIsCorrect(recommendedPriceContainerData.getCurrency(), data.getRecommendedPrice().getPriceCurrency());
+        shouldUnitsIsCorrect(recommendedPriceContainerData.getUnits(), data.getRecommendedPrice().getPriceUnit());
+        softAssert.isEquals(purchasePriceContainerData.getPrice(), purchasePrice, "PurchasePrice mismatch");
+        shouldCurrencyIsCorrect(purchasePriceContainerData.getCurrency(), data.getPurchasePrice().getPriceCurrency());
+        shouldPriceChangeDateIsCorrect(data.getSalesPrice().getDateOfChange());
+
+        if (productPriceInfoWidget.isPriceMismatchRecommendedPrice(recommendedPrice)) {
             softAssert.isTrue(productPriceInfoWidget.getRecommendedPriceNotMatchesLbl().isVisible(), "SalePrice and RecommendedPrice mismatch lbl is invisible");
         }
         softAssert.isEquals(productPriceInfoWidget.getReasonOfChange(), data.getSalesPrice().getReasonOfChange(), "Price reason of change mismatch");
         softAssert.verifyAll();
+    }
+
+    private void shouldCurrencyIsCorrect(String priceCurrency, String currency) {
+        if (priceCurrency != null) {
+            switch (currency) {
+                case "RUR":
+                    softAssert.isEquals(Currency.RUB.getName(), priceCurrency, "Currency mismatch");
+                    break;
+                default:
+                    throw new AssertionError("Undefined currency");
+            }
+        }
+    }
+
+    private void shouldUnitsIsCorrect(String priceUnit, String unit) {
+        if (priceUnit != null) {
+            switch (unit) {
+                case "EA":
+                    softAssert.isEquals(Units.EA.getName(), priceUnit, "Units mismatch");
+                    break;
+                default:
+                    throw new AssertionError("Undefined unit");
+            }
+        }
+    }
+
+    private void shouldPriceChangeDateIsCorrect(String date) {
+        Locale locale = new Locale("ru");
+        DateTimeFormatter shortFormatter = DateTimeFormatter.ofPattern("d MMM", locale);
+        DateTimeFormatter longFormatter = DateTimeFormatter.ofPattern("d MMM yyyy", locale);
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
+
+        LocalDateTime dataDate = LocalDateTime.parse(date, inputFormatter);
+        dataDate = dataDate.plusHours(3);
+
+        Calendar calendar = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault());
+        calendar.setTime(new Date());
+        int currentYear = calendar.get(java.util.Calendar.YEAR);
+
+        String formattedDataDate;
+        if (dataDate.getYear()==currentYear){
+            formattedDataDate = shortFormatter.format(dataDate);
+        }else {
+            formattedDataDate = longFormatter.format(dataDate);
+        }
+        String viewDate = productPriceInfoWidget.getLastPriceChangeDateLbl();
+        softAssert.isContains(viewDate, formattedDataDate, "Даты не совпадают: отображается "+ viewDate+" ожидаемая дата: "+ formattedDataDate);
     }
 }

@@ -11,7 +11,7 @@ public class PrintTaskProductData {
     private Double price;
     private String priceUnit;
     private String title;
-    private Double salesPrice;
+    private String salesPrice;
     private String futurePriceFromDate;
     private String priceReasonOfChange;
     private Double recommendedPrice;

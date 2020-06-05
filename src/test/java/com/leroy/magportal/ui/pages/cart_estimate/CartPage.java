@@ -2,8 +2,6 @@ package com.leroy.magportal.ui.pages.cart_estimate;
 
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magmobile.ui.Context;
 import com.leroy.magportal.ui.models.salesdoc.OrderWebData;
 import com.leroy.magportal.ui.pages.cart_estimate.widget.OrderPuzWidget;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;

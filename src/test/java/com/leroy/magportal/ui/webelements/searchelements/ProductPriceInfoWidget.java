@@ -21,7 +21,7 @@ public class ProductPriceInfoWidget extends BaseWidget {
     PriceContainer hiddenRecommendedPrice;
 
     @WebFindBy(xpath = ".//span[contains(text(),'Цена')]/ancestor::div[1]/following-sibling::div[1]/span")
-    Element lastPriceChangeDateLbl;
+    private Element lastPriceChangeDateLbl;
 
     @WebFindBy(xpath = ".//span[contains(text(),'За шт.')]/../following-sibling::div")
     PriceContainer pricePerUnit;
@@ -39,30 +39,34 @@ public class ProductPriceInfoWidget extends BaseWidget {
         return reasonOfChangeLbl.isVisible() ? reasonOfChangeLbl.getText() : null;
     }
 
-    public Element getRecommendedPriceNotMatchesLbl(){
+    public Element getRecommendedPriceNotMatchesLbl() {
         return recommendedPriceNotMatchesLbl;
     }
 
-    public boolean isPriceMismatchRecommendedPrice() throws Exception{
-        String salePrice = getSalesPrice();
-        return getHiddenRecommendedPrice().equals(salePrice);
+    public String getLastPriceChangeDateLbl() {
+        return lastPriceChangeDateLbl.getText();
     }
 
-    public String getSalesPrice(){
-        return productPriceLbl.getDecimalPrice();
+    public boolean isPriceMismatchRecommendedPrice(String recommendedPrice) {
+        String salePrice = getSalesPrice().getDecimalPrice();
+        return !recommendedPrice.equals(salePrice);
     }
 
-    public String getPricePerUnit(){
-        return pricePerUnit.getDecimalPrice();
+    public PriceContainer getSalesPrice() {
+        return productPriceLbl;
     }
 
-    public String getHiddenRecommendedPrice() throws Exception{
+    public PriceContainer getPricePerUnit() {
+        return pricePerUnit.isVisible() ? pricePerUnit : null;
+    }
+
+    public PriceContainer getHiddenRecommendedPrice() throws Exception {
         hiddenRecommendedPrice.findChildElement("./..").click();
-        return hiddenRecommendedPrice.getDecimalPrice();
+        return hiddenRecommendedPrice;
     }
 
-    public String getHiddenPurchasePrice() throws Exception{
+    public PriceContainer getHiddenPurchasePrice() throws Exception {
         hiddenPurchasingPrice.findChildElement("./..").click();
-        return hiddenPurchasingPrice.getDecimalPrice();
+        return hiddenPurchasingPrice;
     }
 }

@@ -379,6 +379,7 @@ public class SearchTest extends WebBaseSteps {
         //Step 1
         step("Выбрать двух поставщиков и осуществить поиск по фильтру поставщиков");
         searchProductPage.choseSupplier(false, FIRST_SUPPLIER_CODE, SECOND_SUPPLIER_CODE)
+                //TODO fix verification
                 .shouldSupplierComboBoxContainsCorrectText(false, FIRST_SUPPLIER_CODE, SECOND_SUPPLIER_CODE)
                 .applyFilters()
                 .shouldUrlContains(CatalogSearchParams.supplierId + FIRST_SUPPLIER_CODE + "%2C" + SECOND_SUPPLIER_CODE);
@@ -951,7 +952,7 @@ public class SearchTest extends WebBaseSteps {
 
     @Test(description = "C23388851 navigate to product card")
     public void testNavigateToProductCard() throws Exception {
-        String lmCode = "11284539";
+        String lmCode = "10813371";
 
         //Pre-conditions
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);

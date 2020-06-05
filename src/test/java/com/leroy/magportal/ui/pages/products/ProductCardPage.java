@@ -192,6 +192,7 @@ public class ProductCardPage extends MenuPage {
         for (int i = 0; i < productBarCodes.getCount(); i++) {
             anAssert.isEquals(ParserUtil.strWithOnlyDigits(productBarCodes.get(i).getText()), barCodes.get(i), "BarCode отображен некорректно");
         }
+        barCodeListOpenerBtn.click();
         softAssert.verifyAll();
     }
 
@@ -239,6 +240,7 @@ public class ProductCardPage extends MenuPage {
 
     @Step("Проверить, что описание товара отображено")
     private void shouldDescriptionIsVisible(String description) {
+        description = ParserUtil.replaceSpecialSymbols(description);
         if (showFullDescription.isVisible()) {
             showFullDescription();
         }

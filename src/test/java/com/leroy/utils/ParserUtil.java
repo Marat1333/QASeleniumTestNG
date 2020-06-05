@@ -103,4 +103,19 @@ public class ParserUtil {
         return null;
     }
 
+    public static String replaceSpecialSymbols(String source) {
+        if (source==null){
+            return null;
+        }
+        source = source.replaceAll("[*]", "").replaceAll("[\\s]{2,}", " ");
+        return source;
+    }
+
+    public static String parseDoubleZeroFormatInStringDouble(String doubleS) {
+        if (doubleS==null){
+            return null;
+        }
+        return doubleS.contains(".") ? String.format("%.2f", Double.parseDouble(doubleS)) : doubleS;
+    }
+
 }
