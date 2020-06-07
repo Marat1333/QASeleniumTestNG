@@ -229,7 +229,9 @@ public class CartTest extends SalesBaseTest {
 
         Cart35Page cart35Page = new Cart35Page();
         SalesDocumentData salesDocumentData = cart35Page.getSalesDocumentData();
-        double totalWeightBefore = salesDocumentData.getOrderAppDataList().get(0).getTotalWeight();
+        double weightPerOneProductBefore = salesDocumentData.getOrderAppDataList().get(0).getTotalWeight() /
+                salesDocumentData.getOrderAppDataList().get(0).getProductCardDataList()
+                .get(0).getSelectedQuantity();
         // Step 1
         step("Нажмите на мини-карточку любого товара в списке товаров корзины");
         CartActionWithProductCardModal modalPage = cart35Page.clickCardByIndex(1)
@@ -251,7 +253,7 @@ public class CartTest extends SalesBaseTest {
         step("Нажмите на кнопку Сохранить");
         OrderAppData order = salesDocumentData.getOrderAppDataList().get(0);
         order.changeProductQuantity(0, newQuantity);
-        order.setTotalWeight(order.getTotalWeight() * newQuantity);
+        order.setTotalWeight(weightPerOneProductBefore * newQuantity);
         order.setDate(LocalDate.now().plusDays(14));
         cart35Page = editProduct35Page.clickSaveButton();
         cart35Page.shouldSalesDocumentDataIs(salesDocumentData);
@@ -274,7 +276,7 @@ public class CartTest extends SalesBaseTest {
         // Step 12
         step("Нажмите на кнопку Сохранить");
         order.changeProductQuantity(0, 1);
-        order.setTotalWeight(totalWeightBefore);
+        order.setTotalWeight(weightPerOneProductBefore);
         order.setDate(LocalDate.now());
         cart35Page = editProduct35Page.clickSaveButton();
         cart35Page.shouldSalesDocumentDataIs(salesDocumentData);

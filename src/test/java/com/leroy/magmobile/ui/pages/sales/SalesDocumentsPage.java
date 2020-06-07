@@ -46,6 +46,7 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
     @Override
     public void waitForPageIsLoaded() {
         getSubmitBtn().waitForVisibility();
+        waitUntilProgressBarIsInvisible();
     }
 
     /* ------------------------- ACTION STEPS -------------------------- */
