@@ -46,6 +46,7 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
     @Override
     public void waitForPageIsLoaded() {
         getSubmitBtn().waitForVisibility();
+        waitUntilProgressBarIsInvisible();
     }
 
     /* ------------------------- ACTION STEPS -------------------------- */
@@ -110,6 +111,10 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
             else
                 softAssert.isEquals(documentFromPage.getPin(), expectedDocument.getPin(),
                         "PIN документа должен быть %s");
+        }
+        if (expectedDocument.getCustomerName() != null) {
+            softAssert.isEquals(documentFromPage.getCustomerName(), expectedDocument.getCustomerName(),
+                    "Неверное имя клиента");
         }
         softAssert.isEquals(documentFromPage.getDocumentTotalPrice(), expectedDocument.getDocumentTotalPrice(),
                 "Сумма в документе - не верна");

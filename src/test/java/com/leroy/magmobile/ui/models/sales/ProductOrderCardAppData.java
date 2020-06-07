@@ -2,6 +2,7 @@ package com.leroy.magmobile.ui.models.sales;
 
 import com.leroy.core.ContextProvider;
 import com.leroy.core.asserts.SoftAssertWrapper;
+import com.leroy.utils.ParserUtil;
 import lombok.Data;
 
 /**
@@ -20,9 +21,24 @@ public class ProductOrderCardAppData {
     private Double selectedQuantity;
     private Double totalPrice;
     private Double totalPriceWithDiscount;
-    private Integer availableTodayQuantity;
     private Double discountPercent;
     private boolean selectedMoreThanAvailable;
+
+    private Integer availableTodayQuantity;
+    private Boolean avs;
+    private Boolean topEm;
+    private Boolean hasAvailableQuantity;
+
+    public void setDiscountPercent(Double discountPercent) {
+        setDiscountPercent(discountPercent, false);
+    }
+
+    public void setDiscountPercent(Double discountPercent, boolean reCalculate) {
+        this.discountPercent = discountPercent;
+        if (reCalculate) {
+            this.totalPriceWithDiscount = ParserUtil.minus(totalPrice, (totalPrice * discountPercent / 100), 2);
+        }
+    }
 
     public void assertEqualsNotNullExpectedFields(int index, ProductOrderCardAppData expectedProductCardData) {
         SoftAssertWrapper softAssert = ContextProvider.getContext().getSoftAssert();
@@ -38,19 +54,59 @@ public class ProductOrderCardAppData {
                 "Товар " + (index + 1) + " - неверное выбранное кол-во товара");
         softAssert.isEquals(totalPrice, expectedProductCardData.getTotalPrice(),
                 "Товар " + (index + 1) + " - неверная сумма товара");
-        softAssert.isEquals(totalPriceWithDiscount, expectedProductCardData.getTotalPriceWithDiscount(),
-                "Товар " + (index + 1) + " - неверная сумма (с учетом скидки) товара");
+        if (expectedProductCardData.getTotalPriceWithDiscount() != null &&
+                !(expectedProductCardData.getTotalPriceWithDiscount()
+                        .equals(expectedProductCardData.getTotalPrice()) &&
+                        totalPriceWithDiscount == null)) {
+            softAssert.isEquals(totalPriceWithDiscount, expectedProductCardData.getTotalPriceWithDiscount(),
+                    "Товар " + (index + 1) + " - неверная сумма (с учетом скидки) товара");
+        }
         if (expectedProductCardData.getAvailableTodayQuantity() != null) {
             softAssert.isEquals(availableTodayQuantity, expectedProductCardData.getAvailableTodayQuantity(),
                     "Товар " + (index + 1) + " - неверное доступное кол-во товара");
         }
-        softAssert.isEquals(discountPercent, expectedProductCardData.getDiscountPercent(),
-                "Товар " + (index + 1) + " - неверная скидка % товара");
+        if (expectedProductCardData.getHasAvailableQuantity() != null) {
+            if (expectedProductCardData.getHasAvailableQuantity())
+                softAssert.isTrue(availableTodayQuantity > 0,
+                        "Товар " + (index + 1) + " - ожидалось, что доступное кол-во товара больше нуля");
+            else
+                softAssert.isTrue(availableTodayQuantity <= 0,
+                        "Товар " + (index + 1) + " - ожидалось, что доступное кол-во товара ноль или меньше");
+        }
+        if (expectedProductCardData.getAvs() != null) {
+            softAssert.isEquals(avs, expectedProductCardData.getAvs(),
+                    "Товар " + (index + 1) + " - должен иметь признак AVS");
+        }
+        if (expectedProductCardData.getTopEm() != null) {
+            softAssert.isEquals(topEm, expectedProductCardData.getTopEm(),
+                    "Товар " + (index + 1) + " - должен иметь признак TOP EM");
+        }
+        if (!((expectedProductCardData.getDiscountPercent() == null || expectedProductCardData.getDiscountPercent() == 0.0) &&
+                discountPercent == null)) {
+            softAssert.isEquals(discountPercent, expectedProductCardData.getDiscountPercent(),
+                    "Товар " + (index + 1) + " - неверная скидка % товара");
+        }
         softAssert.verifyAll();
     }
 
     public void assertEqualsNotNullExpectedFields(ProductOrderCardAppData orderCardData) {
         assertEqualsNotNullExpectedFields(0, orderCardData);
+    }
+
+    public ProductOrderCardAppData copy() {
+        ProductOrderCardAppData productData = new ProductOrderCardAppData();
+        productData.setLmCode(lmCode);
+        productData.setBarCode(barCode);
+        productData.setTitle(title);
+        productData.setPrice(price);
+        productData.setPriceUnit(priceUnit);
+        productData.setSelectedQuantity(selectedQuantity);
+        productData.setTotalPrice(totalPrice);
+        productData.setTotalPriceWithDiscount(totalPriceWithDiscount);
+        productData.setAvailableTodayQuantity(availableTodayQuantity);
+        productData.setDiscountPercent(discountPercent);
+        productData.setSelectedMoreThanAvailable(selectedMoreThanAvailable);
+        return productData;
     }
 
 }

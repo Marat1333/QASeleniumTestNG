@@ -3,9 +3,11 @@ package com.leroy.magmobile.ui.pages.sales.widget;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
 import com.leroy.utils.ParserUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.WebDriver;
 
 /**
@@ -43,6 +45,17 @@ public class ProductOrderCardAppWidget extends CardWidget<ProductOrderCardAppDat
     @AppFindBy(xpath = ".//android.widget.TextView[contains(@text, 'оступно')]",
             metaName = "Элемент с информацией о доступном кол-ве")
     Element availableTodayProductCount;
+
+    @AppFindBy(xpath = ".//android.widget.TextView[@text='AVS' and @content-desc='Badge-Text']",
+            metaName = "Метка 'AVS'")
+    Element avsLbl;
+
+    @AppFindBy(xpath = ".//android.widget.TextView[@text='Топ ЕМ' and @content-desc='Badge-Text']",
+            metaName = "Метка 'AVS'")
+    Element topEmLbl;
+
+    @AppFindBy(xpath = ".//android.view.ViewGroup[@content-desc='Button'][android.widget.TextView[@text='ИЗМЕНИТЬ']]")
+    MagMobButton changeBtn;
 
     public String getLmCode(boolean onlyDigits, String ps) {
         if (onlyDigits)
@@ -84,8 +97,19 @@ public class ProductOrderCardAppWidget extends CardWidget<ProductOrderCardAppDat
         String val = availableTodayProductCount.getTextIfPresent(ps);
         if (val == null)
             return null;
-        else
-            return ParserUtil.strToInt(val);
+        else {
+            if (val.contains("+")) {
+                int oneNumber = ParserUtil.strToInt(StringUtils.substringBefore(val, "+"));
+                int secondNumber = ParserUtil.strToInt(StringUtils.substringAfter(val, "+"));
+                return oneNumber + secondNumber;
+            } else {
+                return ParserUtil.strToInt(val);
+            }
+        }
+    }
+
+    public void clickChange() {
+        changeBtn.click();
     }
 
     @Override
@@ -99,6 +123,10 @@ public class ProductOrderCardAppWidget extends CardWidget<ProductOrderCardAppDat
         cardData.setTotalPrice(ParserUtil.strToDouble(getTotalPrice(ps)));
         cardData.setDiscountPercent(ParserUtil.strToDouble(getDiscountPercent(ps)));
         cardData.setTotalPriceWithDiscount(ParserUtil.strToDouble(getTotalPriceWithDiscount(ps)));
+        if (avsLbl.isVisible(ps))
+            cardData.setAvs(true);
+        if (topEmLbl.isVisible(ps))
+            cardData.setTopEm(true);
 
         // Доступное кол-во отображается не всегда, и находится внизу карточки.
         // Нужно придумывать способ как реализовывать метод isFullyVisible или искать workaround
