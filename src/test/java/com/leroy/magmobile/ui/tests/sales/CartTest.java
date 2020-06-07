@@ -17,6 +17,7 @@ import com.leroy.magmobile.ui.pages.sales.orders.cart.*;
 import com.leroy.magmobile.ui.pages.sales.orders.cart.modal.ChangeProductModal;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SaleTypeModalPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
+import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -141,6 +142,38 @@ public class CartTest extends SalesBaseTest {
         cart35Page.shouldCountOfCardsIs(productCountInBasket + 1);
         cart35Page.shouldProductCardDataWithTextIs(expectedOrderCardData.getLmCode(),
                 expectedOrderCardData);
+    }
+
+    @Test(description = "C22797091 Добавить существующий товар из поиска", groups = NEED_ACCESS_TOKEN_GROUP)
+    public void testAddTheSameProductIntoBasketFromSearch() throws Exception {
+        step("Pre-condition: Создание корзины");
+        startFromScreenWithCreatedCart();
+
+        Cart35Page cart35Page = new Cart35Page();
+        SalesDocumentData salesDocumentData = cart35Page.getSalesDocumentData();
+        OrderAppData orderData = salesDocumentData.getOrderAppDataList().get(0);
+        ProductOrderCardAppData product1 = orderData.getProductCardDataList().get(0);
+        // Step 1
+        step("Нажмите на кнопку +Товар");
+        SearchProductPage searchProductPage = cart35Page.clickAddProductButton()
+                .verifyRequiredElements();
+
+        // Step 2
+        step("Введите ЛМ код товара, который добавлен ранее в корзину");
+        searchProductPage.enterTextInSearchFieldAndSubmit(product1.getLmCode());
+        AddProduct35Page<Cart35Page> addProduct35Page = new AddProduct35Page<>(Cart35Page.class)
+                .verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_BASKET);
+
+        // Step 3
+        step("Нажмите на Добавить в корзину");
+        orderData.addFirstProduct(product1);
+        orderData.setTotalWeight(ParserUtil.multiply(orderData.getTotalWeight(), 2, 2));
+        cart35Page = addProduct35Page.clickAddIntoBasketButton();
+        cart35Page.verifyRequiredElements(Cart35Page.PageState.builder()
+                .productIsAdded(true)
+                .manyOrders(null)
+                .build());
+        cart35Page.shouldSalesDocumentDataIs(salesDocumentData);
     }
 
     @Test(description = "C22797092 Изменить количество товара (товар остается в том же заказе)",
