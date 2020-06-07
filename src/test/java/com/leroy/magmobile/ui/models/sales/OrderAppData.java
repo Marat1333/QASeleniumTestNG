@@ -107,7 +107,13 @@ public class OrderAppData {
         for (int i = 0; i < expectedOrderCardData.getProductCardDataList().size(); i++) {
             int iCount = i;
             Optional<ProductOrderCardAppData> expProduct = expectedOrderCardData.getProductCardDataList().stream().filter(
-                    p -> p.getLmCode().equals(productCardDataList.get(iCount).getLmCode())).findFirst();
+                    p -> p.getLmCode().equals(productCardDataList.get(iCount).getLmCode()) &&
+                            p.getSelectedQuantity().equals(productCardDataList.get(iCount).getSelectedQuantity()))
+                    .findFirst();
+            if (!expProduct.isPresent()) {
+                expProduct = expectedOrderCardData.getProductCardDataList().stream().filter(
+                        p -> p.getLmCode().equals(productCardDataList.get(iCount).getLmCode())).findFirst();
+            }
             softAssert.isTrue(expProduct.isPresent(),
                     "Заказ " + (index + 1) + " - обнаружен лишний товар с ЛМ " +
                             productCardDataList.get(iCount).getLmCode());
