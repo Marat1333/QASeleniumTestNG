@@ -32,6 +32,9 @@ public class SalesDocumentWidget extends CardWidget<ShortSalesDocumentData> {
     @AppFindBy(xpath = ".//android.widget.TextView[4 and starts-with(@text, 'PIN')]")
     private Element pin;
 
+    @AppFindBy(xpath = ".//android.widget.TextView[contains(@text, 'Клиент:')]")
+    private Element customerName;
+
     @AppFindBy(xpath = ".//android.view.ViewGroup[count(android.widget.TextView) > 1][2]/android.widget.TextView[1]")
     private Element date;
 
@@ -58,6 +61,10 @@ public class SalesDocumentWidget extends CardWidget<ShortSalesDocumentData> {
             return ParserUtil.strWithOnlyDigits(sDocNumber);
     }
 
+    public String getCustomerName() {
+        return customerName.getText().replaceAll("Клиент:", "").trim();
+    }
+
     @Override
     public ShortSalesDocumentData collectDataFromPage(String pageSource) {
         if (pageSource == null)
@@ -69,6 +76,7 @@ public class SalesDocumentWidget extends CardWidget<ShortSalesDocumentData> {
         document.setPin(getPinCode(true, pageSource));
         document.setDate(date.getText(pageSource));
         document.setDocumentState(documentType.getTextIfPresent(pageSource));
+        document.setCustomerName(getCustomerName());
         return document;
     }
 

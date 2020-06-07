@@ -11,6 +11,7 @@ import com.leroy.magmobile.ui.models.sales.OrderAppData;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
+import com.leroy.magmobile.ui.pages.sales.SalesDocumentsPage;
 import com.leroy.magmobile.ui.pages.sales.orders.CartEstimatePage;
 import com.leroy.magmobile.ui.pages.sales.orders.cart.modal.ChangeProductModal;
 import com.leroy.magmobile.ui.pages.sales.orders.cart.modal.ConsolidateOrdersModal;
@@ -135,7 +136,7 @@ public class Cart35Page extends CartEstimatePage {
     public Double getTotalWeight(String ps) {
         String[] actualCountProductAndWeight = countAndWeightProductLbl.getText(ps).split("•");
         double weight = ParserUtil.strToDouble(actualCountProductAndWeight[1]);
-        return actualCountProductAndWeight[1].endsWith("кг")? weight : weight * 1000;
+        return actualCountProductAndWeight[1].endsWith("кг") ? weight : weight * 1000;
     }
 
     @Step("Получить общую стоимость товаров с нижней панели")
@@ -204,6 +205,12 @@ public class Cart35Page extends CartEstimatePage {
     }
 
     // -------------- ACTIONS ---------------------------//
+
+    @Step("Нажмите на кнопку стрелку назад")
+    public SalesDocumentsPage clickBackButton() {
+        backBtn.click();
+        return new SalesDocumentsPage();
+    }
 
     @Step("Нажмите на {index}-ую карточку товара/услуги")
     public CartActionWithProductCardModal clickCardByIndex(int index) throws Exception {

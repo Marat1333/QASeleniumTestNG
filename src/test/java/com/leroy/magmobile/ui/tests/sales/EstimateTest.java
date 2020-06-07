@@ -134,7 +134,7 @@ public class EstimateTest extends SalesBaseTest {
         ShortSalesDocumentData expectedSalesDocument = new ShortSalesDocumentData();
         expectedSalesDocument.setDocumentTotalPrice(expectedTotalPrice);
         expectedSalesDocument.setDocumentState(SalesDocumentsConst.States.CONFIRMED.getUiVal());
-        expectedSalesDocument.setTitle(SalesDocumentsConst.Types.QUOTATION.getUiVal());
+        expectedSalesDocument.setTitle(SalesDocumentsConst.Types.ESTIMATE.getUiVal());
         expectedSalesDocument.setNumber(documentNumber);
         SalesDocumentsPage salesDocumentsPage = estimateSubmittedPage.clickSubmitButton();
         salesDocumentsPage.verifyRequiredElements()
@@ -217,6 +217,8 @@ public class EstimateTest extends SalesBaseTest {
         EstimatePage estimatePage = new EstimatePage();
         // Collect test data from page
         OrderAppData testEstimateData = estimatePage.getOrderDataFromPage();
+        String estimateNumber = estimatePage.getDocumentNumber(true);
+        String customerName = estimatePage.getCustomerName();
 
         // Step 1
         step("Нажмите на кнопку Действия со сметой");
@@ -230,6 +232,26 @@ public class EstimateTest extends SalesBaseTest {
                 .productIsAdded(true)
                 .build());
         cart35Page.shouldOrderDataIs(testEstimateData);
+
+        // Step 3
+        ShortSalesDocumentData expectedEstimateDocument = new ShortSalesDocumentData();
+        expectedEstimateDocument.setDocumentTotalPrice(testEstimateData.getTotalPrice());
+        expectedEstimateDocument.setDocumentState(SalesDocumentsConst.States.TRANSFORMED.getUiVal());
+        expectedEstimateDocument.setTitle(SalesDocumentsConst.Types.ESTIMATE.getUiVal());
+        expectedEstimateDocument.setNumber(estimateNumber);
+        expectedEstimateDocument.setCustomerName(customerName);
+
+        SalesDocumentsPage salesDocumentsPage = cart35Page.clickBackButton();
+        salesDocumentsPage.shouldSalesDocumentIsPresentAndDataMatches(expectedEstimateDocument);
+
+        // Step 4
+        salesDocumentsPage.searchForDocumentByTextAndSelectIt(estimateNumber);
+        estimatePage = new EstimatePage();
+        estimatePage.verifyRequiredElements(EstimatePage.PageState.builder()
+                .customerIsSelected(true)
+                .productIsAdded(true)
+                .transformed(true)
+                .build());
     }
 
     @Test(description = "C22797070 Добавить существующий товар еще раз (из поиска)", groups = NEED_ACCESS_TOKEN_GROUP)
@@ -602,7 +624,7 @@ public class EstimateTest extends SalesBaseTest {
                 .verifyRequiredElements(EstimatePage.PageState.builder()
                         .customerIsSelected(true)
                         .productIsAdded(true)
-                        .estimateIsConfirmed(true).build());
+                        .confirmed(true).build());
         estimatePage.shouldSelectedCustomerIs(expectedCustomer);
     }
 
@@ -636,7 +658,7 @@ public class EstimateTest extends SalesBaseTest {
                 EstimatePage.PageState.builder()
                         .productIsAdded(true)
                         .customerIsSelected(true)
-                        .estimateIsConfirmed(true)
+                        .confirmed(true)
                         .editModeOn(true)
                         .build());
 
