@@ -4,6 +4,7 @@ import com.leroy.core.ContextProvider;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.elements.MagMobWhiteSubmitButton;
 import com.leroy.magmobile.ui.models.sales.OrderAppData;
@@ -12,10 +13,12 @@ import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
 import com.leroy.magmobile.ui.pages.sales.orders.CartEstimatePage;
 import com.leroy.magmobile.ui.pages.sales.orders.cart.modal.ChangeProductModal;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.modal.ConsolidateOrdersModal;
 import com.leroy.magmobile.ui.pages.sales.widget.BottomOrderInfoWidget;
 import com.leroy.magmobile.ui.pages.sales.widget.HeaderOrderInfoWidget;
 import com.leroy.magmobile.ui.pages.sales.widget.ProductOrderCardAppWidget;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
+import com.leroy.utils.DateTimeUtil;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 import lombok.Builder;
@@ -45,12 +48,18 @@ public class Cart35Page extends CartEstimatePage {
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='DefaultScreenHeader']/android.widget.TextView[1]")
     protected Element screenTitle;
 
+    @AppFindBy(xpath = "//android.widget.TextView[@content-desc='Badge-Text']")
+    Element dateOrder;
+
     @AppFindBy(text = "Пока пусто")
     Element emptyInfoMessageLbl;
 
     @AppFindBy(containsText = "Есть товары с недостаточным запасом",
             metaName = "Сообщение о недостаточном запасе")
     Element insufficientStockMessage;
+
+    @AppFindBy(text = "ОБЪЕДИНИТЬ ЗАКАЗЫ")
+    MagMobButton consolidateOrdersBtn;
 
     // Карточки товаров
     AndroidScrollView<ProductOrderCardAppData> productCardsScrollView = new AndroidScrollView<>(
@@ -125,7 +134,8 @@ public class Cart35Page extends CartEstimatePage {
     @Step("Получить общий вес товаров в корзине на нижней панели")
     public Double getTotalWeight(String ps) {
         String[] actualCountProductAndWeight = countAndWeightProductLbl.getText(ps).split("•");
-        return ParserUtil.strToDouble(actualCountProductAndWeight[1]);
+        double weight = ParserUtil.strToDouble(actualCountProductAndWeight[1]);
+        return actualCountProductAndWeight[1].endsWith("кг")? weight : weight * 1000;
     }
 
     @Step("Получить общую стоимость товаров с нижней панели")
@@ -160,7 +170,7 @@ public class Cart35Page extends CartEstimatePage {
                             "Разная информация о кол-ве товаров в заказе в нижней (зеленой) и верхней плашке");
                 }
                 orderAppData.setProductCount(bottomOrderInfoData.getProductCount());
-                orderAppData.setProductCardDataList(products.subList(iProductCount, products.size()));
+                orderAppData.setProductCardDataList(products.subList(iProductCount, iProductCount + orderAppData.getProductCount()));
                 actualOrderDataList.add(orderAppData);
                 iProductCount += orderAppData.getProductCount();
             }
@@ -168,6 +178,7 @@ public class Cart35Page extends CartEstimatePage {
             OrderAppData orderAppData = new OrderAppData();
             orderAppData.setTotalWeight(getTotalWeight(ps));
             orderAppData.setTotalPrice(getTotalPrice(ps));
+            orderAppData.setDate(DateTimeUtil.strToLocalDate(dateOrder.getText(ps), "dd MMM"));
             orderAppData.setProductCount(getProductCount(ps));
             orderAppData.setProductCardDataList(products);
             actualOrderDataList.add(orderAppData);
@@ -221,6 +232,15 @@ public class Cart35Page extends CartEstimatePage {
         else
             productAndServiceBtn.click();
         return new SearchProductPage();
+    }
+
+    @Step("Объединить заказы")
+    public Cart35Page clickConsolidateOrdersAndConfirm() {
+        productCardsScrollView.scrollToEnd();
+        anAssert.isElementVisible(consolidateOrdersBtn);
+        consolidateOrdersBtn.click();
+        new ConsolidateOrdersModal().clickConfirmButton();
+        return new Cart35Page();
     }
 
     // ------------- Verifications ----------------------//

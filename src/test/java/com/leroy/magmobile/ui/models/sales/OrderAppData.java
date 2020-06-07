@@ -7,6 +7,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +22,7 @@ public class OrderAppData {
     private Integer orderMaxCount;
     private Integer productCount;
     private Integer productCountTotal; // Товаров: {productCount} из {productCountTotal}
-    private String date;
+    private LocalDate date;
     private List<ProductOrderCardAppData> productCardDataList;
     private Double totalWeight; // кг
     private Double totalPrice; // Рубли
@@ -86,9 +87,16 @@ public class OrderAppData {
         }
 
         if (expectedOrderCardData.getTotalWeight() != null) {
-            softAssert.isEquals(BigDecimal.valueOf(totalWeight).setScale(1, RoundingMode.HALF_UP),
-                    BigDecimal.valueOf(expectedOrderCardData.getTotalWeight()).setScale(1, RoundingMode.HALF_UP),
-                    "Заказ " + (index + 1) + " - неверный вес заказа");
+            if (totalWeight > 1000 || expectedOrderCardData.getTotalWeight() > 1000) {
+                softAssert.isTrue(Math.abs(totalWeight - expectedOrderCardData.getTotalWeight()) < 10,
+                        "Заказ " + (index + 1) +
+                                " - неверный вес заказа. Actual: " + totalWeight +
+                                "; Expected: " + expectedOrderCardData.getTotalWeight());
+            } else {
+                softAssert.isEquals(BigDecimal.valueOf(totalWeight).setScale(1, RoundingMode.HALF_UP),
+                        BigDecimal.valueOf(expectedOrderCardData.getTotalWeight()).setScale(1, RoundingMode.HALF_UP),
+                        "Заказ " + (index + 1) + " - неверный вес заказа");
+            }
         }
         softAssert.isEquals(totalPrice, expectedOrderCardData.getTotalPrice(),
                 "Заказ " + (index + 1) + " - неверная стоимость заказа");
