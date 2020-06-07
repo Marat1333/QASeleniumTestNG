@@ -75,6 +75,10 @@ public class AddProduct35Page<T extends CartEstimatePage> extends CommonMagMobil
             metaName = "Сумма")
     private Element totalPrice;
 
+    @AppFindBy(xpath = "//android.widget.EditText/following-sibling::android.widget.TextView[contains(@text, 'Доступно для продажи')]",
+            metaName = "Предупреждающее красное сообщение о доступном кол-ве товара")
+    Element availableStockAlertMsgLbl;
+
     public enum SubmitBtnCaptions {
         ADD_TO_BASKET("ДОБАВИТЬ В КОРЗИНУ"),
         ADD_TO_ESTIMATE("ДОБАВИТЬ В СМЕТУ"),
@@ -208,6 +212,18 @@ public class AddProduct35Page<T extends CartEstimatePage> extends CommonMagMobil
         String expectedTotalPrice = ParserUtil.prettyDoubleFmt(_price * _quantity);
         anAssert.isEquals(ParserUtil.strWithOnlyDigits(totalPrice.getText()), expectedTotalPrice,
                 "Сумма итого (как цена * кол-во) рассчитана не верно");
+        return this;
+    }
+
+    @Step("Проерить, что предупреждающее сообщение о доступном кол-ве товара отображается")
+    public AddProduct35Page<T> shouldAvailableStockAlertMessageIsVisible() {
+        anAssert.isElementVisible(availableStockAlertMsgLbl);
+        return this;
+    }
+
+    @Step("Проерить, что предупреждающее сообщение о доступном кол-ве товара НЕ отображается")
+    public AddProduct35Page<T> shouldAvailableStockAlertMessageIsNotVisible() {
+        anAssert.isElementNotVisible(availableStockAlertMsgLbl);
         return this;
     }
 

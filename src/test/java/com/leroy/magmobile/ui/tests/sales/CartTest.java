@@ -178,7 +178,7 @@ public class CartTest extends SalesBaseTest {
 
     @Test(description = "C22797092 Изменить количество товара (товар остается в том же заказе)",
             groups = NEED_ACCESS_TOKEN_GROUP)
-    public void testChangeQuantityProductInCartWhenOneOrder() throws Exception {
+    public void testChangeQuantityProductInCartWhenProductCountIsAvailable() throws Exception {
         // Test data
         List<String> lmCodes = apiClientProvider.getProductLmCodes(1);
 
@@ -207,6 +207,68 @@ public class CartTest extends SalesBaseTest {
         OrderAppData order = salesDocumentData.getOrderAppDataList().get(0);
         order.changeProductQuantity(0, newQuantity);
         order.setTotalWeight(order.getTotalWeight() * newQuantity);
+        cart35Page = editProduct35Page.clickSaveButton();
+        cart35Page.shouldSalesDocumentDataIs(salesDocumentData);
+    }
+
+    @Test(description = "C22797094 Изменить количество товара (товар переносится в другой заказ)",
+            groups = NEED_ACCESS_TOKEN_GROUP)
+    public void testChangeQuantityProductInCartWhenCountOfProductMoreThanAvailable() throws Exception {
+        // Test data
+        List<String> lmCodes = apiClientProvider.getProductLmCodes(1);
+
+        step("Pre-condition: Создание корзины");
+        startFromScreenWithCreatedCart(lmCodes, false);
+
+        Cart35Page cart35Page = new Cart35Page();
+        SalesDocumentData salesDocumentData = cart35Page.getSalesDocumentData();
+        double totalWeightBefore = salesDocumentData.getOrderAppDataList().get(0).getTotalWeight();
+        // Step 1
+        step("Нажмите на мини-карточку любого товара в списке товаров корзины");
+        CartActionWithProductCardModal modalPage = cart35Page.clickCardByIndex(1)
+                .verifyRequiredElements();
+
+        // Step 2
+        step("Выберите параметр Изменить количество");
+        EditProduct35Page<Cart35Page> editProduct35Page = modalPage.clickChangeQuantityMenuItem();
+        editProduct35Page.verifyRequiredElements();
+        ProductOrderCardAppData productData = editProduct35Page.getProductOrderDataFromPage();
+
+        // Step 3, 4, 5
+        step("Измените количество товара (на большее, чем доступно для заказа)");
+        int newQuantity = productData.getAvailableTodayQuantity() + 10;
+        editProduct35Page.enterQuantityOfProduct(newQuantity, true);
+        editProduct35Page.shouldAvailableStockAlertMessageIsVisible();
+
+        // Step 6
+        step("Нажмите на кнопку Сохранить");
+        OrderAppData order = salesDocumentData.getOrderAppDataList().get(0);
+        order.changeProductQuantity(0, newQuantity);
+        order.setTotalWeight(order.getTotalWeight() * newQuantity);
+        order.setDate(LocalDate.now().plusDays(14));
+        cart35Page = editProduct35Page.clickSaveButton();
+        cart35Page.shouldSalesDocumentDataIs(salesDocumentData);
+
+        // Step 7
+        step("Нажмите на мини-карточку товара в списке товаров корзины");
+        modalPage = cart35Page.clickCardByIndex(1)
+                .verifyRequiredElements();
+
+        // Step 8
+        step("Выберите параметр Изменить количество");
+        editProduct35Page = modalPage.clickChangeQuantityMenuItem();
+        editProduct35Page.verifyRequiredElements();
+
+        // Step 9, 10, 11
+        step("Измените количество товара (на меньшее, чем доступно для заказа)");
+        editProduct35Page.enterQuantityOfProduct(1, true);
+        editProduct35Page.shouldAvailableStockAlertMessageIsNotVisible();
+
+        // Step 12
+        step("Нажмите на кнопку Сохранить");
+        order.changeProductQuantity(0, 1);
+        order.setTotalWeight(totalWeightBefore);
+        order.setDate(LocalDate.now());
         cart35Page = editProduct35Page.clickSaveButton();
         cart35Page.shouldSalesDocumentDataIs(salesDocumentData);
     }
