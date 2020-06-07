@@ -115,9 +115,9 @@ public class EstimateClient extends MagMobileClient {
         EstimateData data = response.asJson();
         assertThat("fullDocId", data.getFullDocId(), isNumber());
         assertThat("estimateId", data.getEstimateId(), is(data.getFullDocId()));
-        assertThat("docType", data.getDocType(), is(SalesDocumentsConst.Types.QUOTATION.getApiVal()));
+        assertThat("docType", data.getDocType(), is(SalesDocumentsConst.Types.ESTIMATE.getApiVal()));
         assertThat("salesDocStatus", data.getSalesDocStatus(), is(SalesDocumentsConst.States.DRAFT.getApiVal()));
-        assertThat("documentType", data.getDocumentType(), is(SalesDocumentsConst.Types.QUOTATION.getApiVal()));
+        assertThat("documentType", data.getDocumentType(), is(SalesDocumentsConst.Types.ESTIMATE.getApiVal()));
         assertThat("status", data.getStatus(), is(SalesDocumentsConst.States.DRAFT.getApiVal()));
         assertThat("shopId", data.getShopId(), is(userSessionData.getUserShopId()));
         assertThat("documentVersion", data.getDocumentVersion(), is(1));

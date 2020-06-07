@@ -6,15 +6,27 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import com.leroy.magmobile.ui.pages.sales.orders.CartEstimatePage;
 import com.leroy.magmobile.ui.pages.sales.orders.cart.Cart35Page;
 import com.leroy.magmobile.ui.pages.sales.orders.estimate.EstimatePage;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
-public class AddProduct35Page extends CommonMagMobilePage {
+public class AddProduct35Page<T extends CartEstimatePage> extends CommonMagMobilePage {
+
+    private Class<T> parentPage;
+
+    public AddProduct35Page(Class<T> type) {
+        super();
+        parentPage = type;
+    }
 
     protected String SCREEN_TITLE_VALUE() {
         return "Добавление товара";
+    }
+
+    protected T newCartOrEstimatePage() throws Exception {
+        return parentPage.getConstructor().newInstance();
     }
 
     @AppFindBy(accessibilityId = "ScreenTitle")
@@ -62,6 +74,10 @@ public class AddProduct35Page extends CommonMagMobilePage {
     @AppFindBy(xpath = "//android.widget.EditText/following-sibling::android.widget.TextView[2]",
             metaName = "Сумма")
     private Element totalPrice;
+
+    @AppFindBy(xpath = "//android.widget.EditText/following-sibling::android.widget.TextView[contains(@text, 'Доступно для продажи')]",
+            metaName = "Предупреждающее красное сообщение о доступном кол-ве товара")
+    Element availableStockAlertMsgLbl;
 
     public enum SubmitBtnCaptions {
         ADD_TO_BASKET("ДОБАВИТЬ В КОРЗИНУ"),
@@ -131,15 +147,23 @@ public class AddProduct35Page extends CommonMagMobilePage {
     // ---------------- Action Steps -------------------------//
 
     @Step("Нажмите на поле количества")
-    public AddProduct35Page clickEditQuantityField() {
+    public AddProduct35Page<T> clickEditQuantityField() {
         editQuantityFld.click();
         return this;
     }
 
     @Step("Введите {text} количества товара")
-    public AddProduct35Page enterQuantityOfProduct(String text) {
+    public AddProduct35Page<T> enterQuantityOfProduct(String text, boolean actionVerification) {
         editQuantityFld.clearFillAndSubmit(text);
+        if (actionVerification) {
+            shouldEditQuantityFieldIs(text);
+            shouldTotalPriceCalculateCorrectly();
+        }
         return this;
+    }
+
+    public AddProduct35Page<T> enterQuantityOfProduct(int value, boolean actionVerification) {
+        return enterQuantityOfProduct(String.valueOf(value), actionVerification);
     }
 
     @Step("Нажмите кнопку Добавить в корзину")
@@ -157,7 +181,7 @@ public class AddProduct35Page extends CommonMagMobilePage {
     // ---------------- Verifications ----------------------- //
 
     @Step("Проверить, что страница 'Добавление товара' отображается корректно")
-    public AddProduct35Page verifyRequiredElements(SubmitBtnCaptions caption) {
+    public AddProduct35Page<T> verifyRequiredElements(SubmitBtnCaptions caption) {
         String ps = getPageSource();
         softAssert.isElementTextEqual(screenTitle, SCREEN_TITLE_VALUE(), ps);
         softAssert.isElementVisible(backBtn, ps);
@@ -172,7 +196,7 @@ public class AddProduct35Page extends CommonMagMobilePage {
     }
 
     @Step("Убедиться, что поле для редактирования кол-ва = {text}")
-    public AddProduct35Page shouldEditQuantityFieldIs(String text) {
+    public AddProduct35Page<T> shouldEditQuantityFieldIs(String text) {
         if (!text.contains(","))
             text = text + ",00";
         else if (text.length() - text.indexOf(",") == 2)
@@ -182,12 +206,24 @@ public class AddProduct35Page extends CommonMagMobilePage {
     }
 
     @Step("Убедиться, что итоговая сумма рассчитана корректно на основе цены и введенного кол-ва")
-    public AddProduct35Page shouldTotalPriceCalculateCorrectly() {
+    public AddProduct35Page<T> shouldTotalPriceCalculateCorrectly() {
         double _price = getPrice();
         double _quantity = ParserUtil.strToDouble(editQuantityFld.getText());
         String expectedTotalPrice = ParserUtil.prettyDoubleFmt(_price * _quantity);
         anAssert.isEquals(ParserUtil.strWithOnlyDigits(totalPrice.getText()), expectedTotalPrice,
                 "Сумма итого (как цена * кол-во) рассчитана не верно");
+        return this;
+    }
+
+    @Step("Проерить, что предупреждающее сообщение о доступном кол-ве товара отображается")
+    public AddProduct35Page<T> shouldAvailableStockAlertMessageIsVisible() {
+        anAssert.isElementVisible(availableStockAlertMsgLbl);
+        return this;
+    }
+
+    @Step("Проерить, что предупреждающее сообщение о доступном кол-ве товара НЕ отображается")
+    public AddProduct35Page<T> shouldAvailableStockAlertMessageIsNotVisible() {
+        anAssert.isElementNotVisible(availableStockAlertMsgLbl);
         return this;
     }
 

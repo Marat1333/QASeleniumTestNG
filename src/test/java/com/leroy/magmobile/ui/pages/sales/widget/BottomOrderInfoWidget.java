@@ -20,7 +20,7 @@ public class BottomOrderInfoWidget extends CardWidget<OrderAppData> {
     @AppFindBy(xpath = ".//android.widget.TextView[contains(@text, 'Итого:')]/following-sibling::android.widget.TextView")
     Element totalPriceVal;
 
-    @AppFindBy(xpath = "//android.widget.TextView[contains(@text, 'Итого:')]/preceding-sibling::android.widget.TextView",
+    @AppFindBy(xpath = ".//android.widget.TextView[contains(@text, 'Итого:')]/preceding-sibling::android.widget.TextView",
             metaName = "Текст с количеством и весом товара")
     Element countAndWeightProductLbl;
 
@@ -31,7 +31,8 @@ public class BottomOrderInfoWidget extends CardWidget<OrderAppData> {
 
     public Double getTotalWeight(String ps) {
         String[] actualCountProductAndWeight = countAndWeightProductLbl.getText(ps).split("•");
-        return ParserUtil.strToDouble(actualCountProductAndWeight[1]);
+        double weight = ParserUtil.strToDouble(actualCountProductAndWeight[1]);
+        return actualCountProductAndWeight[1].endsWith("кг")? weight : weight * 1000;
     }
 
     public Double getTotalPrice(String ps) {

@@ -4,19 +4,26 @@ import com.leroy.core.ContextProvider;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.elements.MagMobWhiteSubmitButton;
 import com.leroy.magmobile.ui.models.sales.OrderAppData;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
-import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
+import com.leroy.magmobile.ui.pages.sales.SalesDocumentsPage;
+import com.leroy.magmobile.ui.pages.sales.orders.CartEstimatePage;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.modal.ChangeProductModal;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.modal.ConsolidateOrdersModal;
 import com.leroy.magmobile.ui.pages.sales.widget.BottomOrderInfoWidget;
 import com.leroy.magmobile.ui.pages.sales.widget.HeaderOrderInfoWidget;
 import com.leroy.magmobile.ui.pages.sales.widget.ProductOrderCardAppWidget;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
+import com.leroy.utils.DateTimeUtil;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
+import lombok.Builder;
+import lombok.Data;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -24,31 +31,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Cart35Page extends CommonMagMobilePage {
+public class Cart35Page extends CartEstimatePage {
 
     public final static String SCREEN_TITLE = "Корзина";
 
+    @Builder
+    @Data
     public static class PageState {
         boolean productIsAdded;
-        Boolean manyOrders = false;
-
-        public boolean isProductIsAdded() {
-            return productIsAdded;
-        }
-
-        public PageState setProductIsAdded(boolean productIsAdded) {
-            this.productIsAdded = productIsAdded;
-            return this;
-        }
-
-        public Boolean isManyOrders() {
-            return manyOrders;
-        }
-
-        public PageState setManyOrders(Boolean manyOrders) {
-            this.manyOrders = manyOrders;
-            return this;
-        }
+        Boolean manyOrders;
     }
 
     @AppFindBy(accessibilityId = "BackButton",
@@ -58,8 +49,18 @@ public class Cart35Page extends CommonMagMobilePage {
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='DefaultScreenHeader']/android.widget.TextView[1]")
     protected Element screenTitle;
 
+    @AppFindBy(xpath = "//android.widget.TextView[@content-desc='Badge-Text']")
+    Element dateOrder;
+
     @AppFindBy(text = "Пока пусто")
     Element emptyInfoMessageLbl;
+
+    @AppFindBy(containsText = "Есть товары с недостаточным запасом",
+            metaName = "Сообщение о недостаточном запасе")
+    Element insufficientStockMessage;
+
+    @AppFindBy(text = "ОБЪЕДИНИТЬ ЗАКАЗЫ")
+    MagMobButton consolidateOrdersBtn;
 
     // Карточки товаров
     AndroidScrollView<ProductOrderCardAppData> productCardsScrollView = new AndroidScrollView<>(
@@ -134,7 +135,8 @@ public class Cart35Page extends CommonMagMobilePage {
     @Step("Получить общий вес товаров в корзине на нижней панели")
     public Double getTotalWeight(String ps) {
         String[] actualCountProductAndWeight = countAndWeightProductLbl.getText(ps).split("•");
-        return ParserUtil.strToDouble(actualCountProductAndWeight[1]);
+        double weight = ParserUtil.strToDouble(actualCountProductAndWeight[1]);
+        return actualCountProductAndWeight[1].endsWith("кг") ? weight : weight * 1000;
     }
 
     @Step("Получить общую стоимость товаров с нижней панели")
@@ -169,7 +171,7 @@ public class Cart35Page extends CommonMagMobilePage {
                             "Разная информация о кол-ве товаров в заказе в нижней (зеленой) и верхней плашке");
                 }
                 orderAppData.setProductCount(bottomOrderInfoData.getProductCount());
-                orderAppData.setProductCardDataList(products.subList(iProductCount, products.size()));
+                orderAppData.setProductCardDataList(products.subList(iProductCount, iProductCount + orderAppData.getProductCount()));
                 actualOrderDataList.add(orderAppData);
                 iProductCount += orderAppData.getProductCount();
             }
@@ -177,6 +179,7 @@ public class Cart35Page extends CommonMagMobilePage {
             OrderAppData orderAppData = new OrderAppData();
             orderAppData.setTotalWeight(getTotalWeight(ps));
             orderAppData.setTotalPrice(getTotalPrice(ps));
+            orderAppData.setDate(DateTimeUtil.strToLocalDate(dateOrder.getText(ps), "dd MMM"));
             orderAppData.setProductCount(getProductCount(ps));
             orderAppData.setProductCardDataList(products);
             actualOrderDataList.add(orderAppData);
@@ -203,11 +206,24 @@ public class Cart35Page extends CommonMagMobilePage {
 
     // -------------- ACTIONS ---------------------------//
 
+    @Step("Нажмите на кнопку стрелку назад")
+    public SalesDocumentsPage clickBackButton() {
+        backBtn.click();
+        return new SalesDocumentsPage();
+    }
+
     @Step("Нажмите на {index}-ую карточку товара/услуги")
-    public CartActionWithProductCardModalPage clickCardByIndex(int index) throws Exception {
+    public CartActionWithProductCardModal clickCardByIndex(int index) throws Exception {
         index--;
         productCardsScrollView.clickElemByIndex(index);
-        return new CartActionWithProductCardModalPage();
+        return new CartActionWithProductCardModal();
+    }
+
+    @Step("Нажмите 'Изменить' для товара с ЛМ код {lmCode}")
+    public ChangeProductModal clickChangeByProductLmCode(String lmCode) {
+        ProductOrderCardAppWidget widget = (ProductOrderCardAppWidget) productCardsScrollView.searchForWidgetByText(lmCode);
+        widget.clickChange();
+        return new ChangeProductModal();
     }
 
     @Step("Нажмите ОФОРМИТЬ")
@@ -225,6 +241,15 @@ public class Cart35Page extends CommonMagMobilePage {
         return new SearchProductPage();
     }
 
+    @Step("Объединить заказы")
+    public Cart35Page clickConsolidateOrdersAndConfirm() {
+        productCardsScrollView.scrollToEnd();
+        anAssert.isElementVisible(consolidateOrdersBtn);
+        consolidateOrdersBtn.click();
+        new ConsolidateOrdersModal().clickConfirmButton();
+        return new Cart35Page();
+    }
+
     // ------------- Verifications ----------------------//
 
     @Step("Проверить, что страница 'Корзина' отображается корректно")
@@ -239,8 +264,8 @@ public class Cart35Page extends CommonMagMobilePage {
                     singleProductCard, totalPriceLbl, totalPriceVal, countAndWeightProductLbl));
         else
             expectedElements.addAll(Arrays.asList(productAndServiceBtn, emptyInfoMessageLbl));
-        if (state.isManyOrders() != null) {
-            if (state.isManyOrders() || !state.isProductIsAdded())
+        if (state.getManyOrders() != null) {
+            if (state.getManyOrders() || !state.isProductIsAdded())
                 expectedElements.add(productAndServiceBtn);
             else
                 expectedElements.addAll(Arrays.asList(addProductBtn, makeSalesBtn));
@@ -263,11 +288,27 @@ public class Cart35Page extends CommonMagMobilePage {
         CardWidget<ProductOrderCardAppData> widget = productCardsScrollView.searchForWidgetByText(text);
         anAssert.isNotNull(widget, String.format("Не найдена карточка содержащая текст %s", text),
                 String.format("Карточка с текстом %s должна быть", text));
-        ProductOrderCardAppData actualOrderCardData = widget.collectDataFromPage();
+        ProductOrderCardAppData actualProductCardData = widget.collectDataFromPage();
         if (expectedProductCardData.getAvailableTodayQuantity() != null &&
                 expectedProductCardData.getAvailableTodayQuantity() > expectedProductCardData.getSelectedQuantity())
             expectedProductCardData.setAvailableTodayQuantity(null);
-        actualOrderCardData.assertEqualsNotNullExpectedFields(expectedProductCardData);
+        actualProductCardData.assertEqualsNotNullExpectedFields(expectedProductCardData);
+        return this;
+    }
+
+    @Step("Проверить, что у товара отсутствует скидка")
+    public Cart35Page shouldProductDoesNotHaveDiscount(ProductOrderCardAppData productCardData) {
+        CardWidget<ProductOrderCardAppData> widget = productCardsScrollView.searchForWidgetByText(
+                productCardData.getLmCode());
+        anAssert.isNotNull(widget, String.format("Не найдена карточка товара с ЛМ %s", productCardData.getLmCode()),
+                String.format("Карточка с ЛМ %s должна быть", productCardData.getLmCode()));
+        ProductOrderCardAppData actualProductCardData = widget.collectDataFromPage();
+        softAssert.isNull(actualProductCardData.getDiscountPercent(), "Обнаружена скидка % у товара с ЛМ" +
+                actualProductCardData.getLmCode(), "Скидка должна отсутствовать");
+        softAssert.isNull(actualProductCardData.getTotalPriceWithDiscount(),
+                "Обнаружена сумма со скидкой у товара с ЛМ" +
+                        actualProductCardData.getLmCode(), "Сумма со скидкой должна отсутствовать");
+        softAssert.verifyAll();
         return this;
     }
 
@@ -281,6 +322,13 @@ public class Cart35Page extends CommonMagMobilePage {
         return this;
     }
 
+    @Step("Проверить, что данные корзины, как ожидались (expectedDocumentData)")
+    public Cart35Page shouldSalesDocumentDataIs(SalesDocumentData expectedDocumentData) {
+        SalesDocumentData salesDocumentData = getSalesDocumentData();
+        salesDocumentData.assertEqualsNotNullExpectedFields(expectedDocumentData);
+        return this;
+    }
+
     @Step("Проверить, что в корзине нет товара с ЛМ кодом {expLmCode}")
     public Cart35Page shouldProductBeNotPresentInCart(String expLmCode) {
         List<ProductOrderCardAppData> productOrderCardAppDataList = productCardsScrollView.getFullDataList();
@@ -288,6 +336,23 @@ public class Cart35Page extends CommonMagMobilePage {
             anAssert.isNotEquals(productCardData.getLmCode(), expLmCode,
                     "Продукта с таким ЛМ код быть не должно");
         }
+        return this;
+    }
+
+    @Step("Убедиться, что корзину нельзя создать из-за товаров с недостаточным количеством")
+    public Cart35Page shouldCartCanNotBeConfirmed() {
+        softAssert.isElementVisible(insufficientStockMessage);
+        softAssert.isFalse(makeSalesBtn.isEnabled(), "Кнопка Оформить должна быть неактивна");
+        softAssert.verifyAll();
+        makeSalesBtn.click();
+        return this;
+    }
+
+    @Step("Убедиться, что заказ может быть создан из корзины")
+    public Cart35Page shouldCartCanBeConfirmed() {
+        softAssert.isElementNotVisible(insufficientStockMessage);
+        softAssert.isTrue(makeSalesBtn.isEnabled(), "Кнопка Оформить должна быть неактивна");
+        softAssert.verifyAll();
         return this;
     }
 

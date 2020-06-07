@@ -5,13 +5,17 @@ import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import com.leroy.magmobile.ui.pages.common.modal.ConfirmRemovingProductModal;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
-public class CreatingDiscountPage extends CommonMagMobilePage {
+public class DiscountPage extends CommonMagMobilePage {
 
-    @AppFindBy(text = "Создание скидки", metaName = "Заголовок")
+    @AppFindBy(containsText = "скидки", metaName = "Заголовок")
     Element headerLbl;
+
+    @AppFindBy(xpath = "//*[@content-desc='Button']", metaName = "Иконка корзины")
+    Element trashBtn;
 
     // Карточка товара
     @AppFindBy(xpath = "//android.widget.TextView[@content-desc='lmCode']", metaName = "ЛМ код товара")
@@ -74,13 +78,13 @@ public class CreatingDiscountPage extends CommonMagMobilePage {
     }
 
     @Step("Ввести значение {value} в поле 'Скидка'")
-    public CreatingDiscountPage enterDiscountPercent(double value) {
+    public DiscountPage enterDiscountPercent(double value) {
         discountPercentFld.clearFillAndSubmit(String.valueOf(value));
         return this;
     }
 
     @Step("Ввести значение {value} в поле 'Разовая скидка'")
-    public CreatingDiscountPage enterDiscountAmount(double value) {
+    public DiscountPage enterDiscountAmount(double value) {
         discountAmountFld.clearFillAndSubmit(String.valueOf(value));
         return this;
     }
@@ -91,10 +95,17 @@ public class CreatingDiscountPage extends CommonMagMobilePage {
         return new Cart35Page();
     }
 
+    @Step("Нажать кнопку удаления скидки")
+    public Cart35Page clickRemoveDiscount() {
+        trashBtn.click();
+        new ConfirmRemovingProductModal().clickConfirmButton();
+        return new Cart35Page();
+    }
+
     // VERIFICATIONS
 
     @Step("Проверить, что страница 'Создание скидки' отображается корректно")
-    public CreatingDiscountPage verifyRequiredElements() {
+    public DiscountPage verifyRequiredElements() {
         softAssert.areElementsVisible(headerLbl, discountReasonFld,
                 discountPercentFld, discountAmountFld, confirmBtn);
         softAssert.verifyAll();
@@ -102,27 +113,27 @@ public class CreatingDiscountPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что причина скидки: {value}")
-    public CreatingDiscountPage shouldDiscountReasonIs(double value) {
+    public DiscountPage shouldDiscountReasonIs(double value) {
         anAssert.isEquals(discountReasonFld.getText(),
                 value, "Неверная причина скидки");
         return this;
     }
 
-    @Step("Проверить, что первоначальная сумма товара равна: {value}")
-    public CreatingDiscountPage shouldProductTotalPriceIs(double value) {
+    @Step("Проверить, что сумма товара до добавления/изменения скидки равна: {value}")
+    public DiscountPage shouldProductTotalPriceBeforeIs(double value) {
         anAssert.isEquals(ParserUtil.strToDouble(totalPrice.getText()),
                 value, "Неверная суммма товара");
         return this;
     }
 
     @Step("Проверить, что причина скидки выбрана: {value}")
-    public CreatingDiscountPage shouldDiscountReasonIs(String value) {
+    public DiscountPage shouldDiscountReasonIs(String value) {
         anAssert.isElementTextEqual(discountReasonFld, value);
         return this;
     }
 
     @Step("Проверить, что 'Скидка (%)' = {value}")
-    public CreatingDiscountPage shouldDiscountPercentIs(double value) {
+    public DiscountPage shouldDiscountPercentIs(double value) {
         anAssert.isEquals(ParserUtil.strToDouble(discountPercentFld.getText()),
                 value, "Неверная Скидка % в соответствующем поле");
         anAssert.isEquals(ParserUtil.strToDouble(totalDiscountPercentLbl.getText()),
@@ -131,26 +142,27 @@ public class CreatingDiscountPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что разовая скидка = {value}")
-    public CreatingDiscountPage shouldDiscountAmountIs(double value) {
-        anAssert.isEquals(ParserUtil.strToDouble(discountAmountFld.getText()),
-                value, "Неверная разовая скидка");
+    public DiscountPage shouldDiscountAmountIs(double value) {
+        double actualDiscountAmount = ParserUtil.strToDouble(discountAmountFld.getText());
+        anAssert.isTrue(Math.abs(value - actualDiscountAmount) < 0.011,
+                "Неверная разовая скидка. Actual: " + actualDiscountAmount + " \n Expected:" + value);
         return this;
     }
 
     @Step("Проверить, что Новая цена = {value}")
-    public CreatingDiscountPage shouldDiscountNewPriceIs(double value) {
-        anAssert.isEquals(ParserUtil.strToDouble(discountNewPriceFld.getText()),
-                value, "Неверная новая цена");
+    public DiscountPage shouldDiscountNewPriceIs(double value) {
+        double actualDiscountNewPrice = ParserUtil.strToDouble(discountNewPriceFld.getText());
+        anAssert.isTrue(Math.abs(value - actualDiscountNewPrice) <= 0.01,
+                "Неверная новая цена. Actual: " + actualDiscountNewPrice + " \n Expected:" + value);
         return this;
     }
 
     @Step("Проверить, что скидка расчитана правильно на основе введенных данных и стоимости товара")
-    public CreatingDiscountPage shouldDiscountCalculatedCorrectly() {
-        double totalPriceVal = ParserUtil.strToDouble(totalPrice.getText());
+    public DiscountPage shouldDiscountCalculatedCorrectly(Double totalPriceWithoutDiscount) {
         double newTotalPriceVal = ParserUtil.strToDouble(totalDiscountAmountLbl.getText());
         shouldDiscountPercentIs(ParserUtil.minus(
-                100, newTotalPriceVal / totalPriceVal * 100, 2));
-        shouldDiscountAmountIs(ParserUtil.minus(totalPriceVal, newTotalPriceVal, 2));
+                100, newTotalPriceVal / totalPriceWithoutDiscount * 100, 2));
+        shouldDiscountAmountIs(ParserUtil.minus(totalPriceWithoutDiscount, newTotalPriceVal, 2));
         shouldDiscountNewPriceIs(newTotalPriceVal);
         return this;
     }

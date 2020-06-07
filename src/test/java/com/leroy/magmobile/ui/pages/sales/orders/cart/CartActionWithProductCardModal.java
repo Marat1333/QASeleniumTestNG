@@ -2,14 +2,18 @@ package com.leroy.magmobile.ui.pages.sales.orders.cart;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.pages.sales.orders.estimate.ActionWithProductCardModalPage;
+import com.leroy.magmobile.ui.pages.sales.orders.ActionWithProductCardModal;
 import io.qameta.allure.Step;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class CartActionWithProductCardModalPage extends ActionWithProductCardModalPage {
+public class CartActionWithProductCardModal extends ActionWithProductCardModal<Cart35Page> {
+
+    public CartActionWithProductCardModal() {
+        super(Cart35Page.class);
+    }
 
     @AppFindBy(text = "Заменить товар на аналог")
     Element replaceWithAnalog;
@@ -23,21 +27,21 @@ public class CartActionWithProductCardModalPage extends ActionWithProductCardMod
     // ACTIONS
 
     @Step("Выберите пункт меню 'Создать скидку'")
-    public CreatingDiscountPage clickCreateDiscountMenuItem() {
+    public DiscountPage clickCreateDiscountMenuItem() {
         createDiscount.click();
-        return new CreatingDiscountPage();
+        return new DiscountPage();
     }
 
     @Step("Выберите пункт меню 'Изменить скидку'")
-    public CreatingDiscountPage clickChangeDiscountMenuItem() {
+    public DiscountPage clickChangeDiscountMenuItem() {
         changeDiscount.click();
-        return new CreatingDiscountPage();
+        return new DiscountPage();
     }
 
     // Verifications
 
     @Step("Проверить, что страница 'Действия с товаром' отображается корректно")
-    public CartActionWithProductCardModalPage verifyRequiredElements(boolean hasDiscount) {
+    public CartActionWithProductCardModal verifyRequiredElements(boolean hasDiscount) {
         List<Element> expectedElements = new ArrayList<>(Arrays.asList(headerLbl, changeQuantityMenuItem, addProductAgainMenuItem,
                 detailsAboutProductMenuItem, removeProductMenuItem, replaceWithAnalog));
         if (hasDiscount)
@@ -49,7 +53,7 @@ public class CartActionWithProductCardModalPage extends ActionWithProductCardMod
         return this;
     }
 
-    public CartActionWithProductCardModalPage verifyRequiredElements() {
+    public CartActionWithProductCardModal verifyRequiredElements() {
         return verifyRequiredElements(false);
     }
 

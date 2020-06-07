@@ -33,11 +33,13 @@ public class AuthClient extends BaseClient {
 
     public String getAccessToken(String username, String password) {
         Response<TokenData> resp = getResponseToken(username, password);
-        int tryCount = 5;
-        for (int i=0; i < tryCount;i++) {
-            resp = getResponseToken(username, password);
-            if (resp.isSuccessful())
-                break;
+        if (!resp.isSuccessful()) {
+            int tryCount = 1;
+            for (int i = 0; i < tryCount; i++) {
+                resp = getResponseToken(username, password);
+                if (resp.isSuccessful())
+                    break;
+            }
         }
         Assert.assertTrue(resp.isSuccessful(),
                 "API: Impossible to get Access Token. Response: " + resp.toString());
