@@ -205,14 +205,16 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
 
         // Step #5
         step("Нажмите Корзина");
-        AddProduct35Page addProduct35Page = modalPage.clickBasketMenuItem();
+        AddProduct35Page<Cart35Page> addProduct35Page = modalPage.clickBasketMenuItem();
         addProduct35Page.verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_BASKET);
         Double expectedTotalPrice = addProduct35Page.getPrice();
 
         // Step #6
         step("Нажмите Добавить в корзину");
         Cart35Page cart35Page = addProduct35Page.clickAddIntoBasketButton()
-                .verifyRequiredElements(new Cart35Page.PageState().setProductIsAdded(true));
+                .verifyRequiredElements(Cart35Page.PageState.builder()
+                        .productIsAdded(true)
+                        .build());
 
         // Step #7
         step("Нажмите Оформить");

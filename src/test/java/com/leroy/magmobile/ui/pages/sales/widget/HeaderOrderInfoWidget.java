@@ -5,9 +5,12 @@ import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.models.sales.OrderAppData;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
+import com.leroy.utils.DateTimeUtil;
 import com.leroy.utils.ParserUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.WebDriver;
+
+import java.time.LocalDate;
 
 /**
  * Верхняя информация о заказе (Заказ # из #), Дата исполнения заказа и кол-во товаров в заказе
@@ -46,8 +49,8 @@ public class HeaderOrderInfoWidget extends CardWidget<OrderAppData> {
     /**
      * Получить дату исполнения заказа
      */
-    public String getDate(String ps) {
-        return date.getText(ps);
+    public LocalDate getDate(String ps) {
+        return DateTimeUtil.strToLocalDate(date.getText(ps), "dd MMM");
     }
 
     /**

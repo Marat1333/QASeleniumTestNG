@@ -52,7 +52,7 @@ public class SalesDocSearchTest extends BaseProjectApiTest {
     @Test(description = "C3164798 Search by docType")
     public void testSearchByDocType() {
         String testDocType1 = SalesDocumentsConst.Types.CART.getApiVal();
-        String testDocType2 = SalesDocumentsConst.Types.QUOTATION.getApiVal();
+        String testDocType2 = SalesDocumentsConst.Types.ESTIMATE.getApiVal();
         String testDocType3 = SalesDocumentsConst.Types.ORDER.getApiVal();
         String testDocType4 = SalesDocumentsConst.Types.SALE.getApiVal();
 

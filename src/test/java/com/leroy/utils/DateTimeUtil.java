@@ -30,6 +30,8 @@ public class DateTimeUtil {
 
     public static LocalDate strToLocalDate(String dateString, String dateFormat) {
         try {
+            if (dateString.toLowerCase().equals("сегодня"))
+                return LocalDate.now();
             Date date = new SimpleDateFormat(dateFormat, new Locale("ru", "RU")).
                     parse(dateString);
             return LocalDate.of(date.getYear() == 70 ? LocalDate.now().getYear() : date.getYear() + 1900,
