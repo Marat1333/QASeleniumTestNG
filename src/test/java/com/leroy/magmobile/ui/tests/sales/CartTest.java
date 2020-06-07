@@ -98,16 +98,23 @@ public class CartTest extends SalesBaseTest {
         step("Нажмите на кнопку +товары и услуги");
         SearchProductPage searchProductPage = cart35Page.clickAddProductButton()
                 .verifyRequiredElements();
+
+        // Step 4
+        step("Введите ЛМ код товара");
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
         AddProduct35Page<Cart35Page> addProduct35Page = new AddProduct35Page<>(Cart35Page.class);
         addProduct35Page.verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_BASKET);
 
-        // Step 4
+        // Step 5
         step("Нажмите на Добавить в корзину");
         cart35Page = addProduct35Page.clickAddIntoBasketButton();
         cart35Page.verifyRequiredElements(Cart35Page.PageState.builder()
                 .productIsAdded(true)
                 .build());
+
+        // TODO
+        // Шаги 6 и 7 пропущены пока что, так как номер корзины на странице корзины не отображается, а
+        // по каким другим критериям можно найти именно созданную корзину в списке - не понятно.
     }
 
     @Test(description = "C22797090 Добавить новый товар в корзину", groups = NEED_ACCESS_TOKEN_GROUP)
