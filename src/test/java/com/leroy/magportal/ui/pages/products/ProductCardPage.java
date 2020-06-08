@@ -233,8 +233,8 @@ public class ProductCardPage extends MenuPage {
         for (int i = 0; i < this.characteristics.getCount(); i++) {
             key = this.characteristics.get(i).findChildElement("./div[1]/p");
             value = this.characteristics.get(i).findChildElement("./div[2]/p");
-            anAssert.isElementTextEqual(key, characteristics.get(i).getName() + ":");
-            anAssert.isElementTextEqual(value, characteristics.get(i).getValue());
+            anAssert.isEquals(key.getText(), characteristics.get(i).getName() + ":", "Характеристика отличается");
+            anAssert.isEquals(value.getText(), characteristics.get(i).getValue(), "Значение характеристики");
         }
     }
 
