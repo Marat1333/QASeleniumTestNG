@@ -35,7 +35,7 @@ public class ParserUtil {
     public static Integer strToInt(String str) {
         if (str == null)
             return null;
-        return Integer.parseInt(str.replaceAll("\\D+", ""));
+        return Integer.parseInt(str.replaceAll("[^\\d+\\,\\-]", ""));
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.leroy.magmobile.ui.pages.sales.orders.estimate;
+package com.leroy.magmobile.ui.pages.sales.orders;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
@@ -8,7 +8,23 @@ import com.leroy.magmobile.ui.pages.sales.EditProduct35Page;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import io.qameta.allure.Step;
 
-public class ActionWithProductCardModalPage extends CommonMagMobilePage {
+public abstract class ActionWithProductCardModal<T extends CartEstimatePage> extends CommonMagMobilePage {
+
+    private Class<T> parentPage;
+
+    public ActionWithProductCardModal(Class<T> type) {
+        super();
+        parentPage = type;
+    }
+
+    protected T newCartOrEstimatePage() throws Exception {
+        return parentPage.getConstructor().newInstance();
+    }
+
+    @Override
+    public void waitForPageIsLoaded() {
+        removeProductMenuItem.waitForVisibility();
+    }
 
     @AppFindBy(xpath = "//android.widget.TextView", metaName = "Загаловок модального окна")
     protected Element headerLbl;
@@ -25,12 +41,19 @@ public class ActionWithProductCardModalPage extends CommonMagMobilePage {
     @AppFindBy(text = "Удалить товар")
     protected Element removeProductMenuItem;
 
-    @Override
-    public void waitForPageIsLoaded() {
-        removeProductMenuItem.waitForVisibility();
+    // Actions
+
+    @Step("Выберите пункт меню 'Добавить товар еще раз'")
+    public AddProduct35Page<T> clickAddProductAgainMenuItem() {
+        addProductAgainMenuItem.click();
+        return new AddProduct35Page<>(parentPage);
     }
 
-    // Actions
+    @Step("Выберите пункт меню 'Изменить кол-во'")
+    public EditProduct35Page<T> clickChangeQuantityMenuItem() {
+        changeQuantityMenuItem.click();
+        return new EditProduct35Page<>(parentPage);
+    }
 
     @Step("Выберите пункт меню 'Подробнее о товаре'")
     public ProductDescriptionPage clickProductDetailsMenuItem() {
@@ -38,31 +61,8 @@ public class ActionWithProductCardModalPage extends CommonMagMobilePage {
         return new ProductDescriptionPage();
     }
 
-    @Step("Выберите пункт меню 'Добавить товар еще раз'")
-    public AddProduct35Page clickAddProductAgainMenuItem() {
-        addProductAgainMenuItem.click();
-        return new AddProduct35Page();
-    }
-
-    @Step("Выберите пункт меню 'Изменить кол-во'")
-    public EditProduct35Page clickChangeQuantityMenuItem() {
-        changeQuantityMenuItem.click();
-        return new EditProduct35Page();
-    }
-
     @Step("Выберите пункт меню 'Удалить товар'")
     public void clickRemoveProductMenuItem() {
         removeProductMenuItem.click();
     }
-
-    // Verifications
-
-    @Step("Проверить, что страница 'Действия с товаром' отображается корректно")
-    public ActionWithProductCardModalPage verifyRequiredElements() {
-        softAssert.areElementsVisible(headerLbl, changeQuantityMenuItem, addProductAgainMenuItem,
-                detailsAboutProductMenuItem, removeProductMenuItem);
-        softAssert.verifyAll();
-        return this;
-    }
-
 }

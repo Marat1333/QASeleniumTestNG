@@ -11,5 +11,6 @@ public class ShortSalesDocumentData {
     private String pin;
     private String date;
     private String documentState;
+    private String customerName;
 
 }

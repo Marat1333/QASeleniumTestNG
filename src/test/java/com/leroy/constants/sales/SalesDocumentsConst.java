@@ -36,7 +36,7 @@ public class SalesDocumentsConst {
     public enum Types {
         SALE("SALE", ""),
         CART("CART","Корзина"),
-        QUOTATION("QUOTATION","Смета"),
+        ESTIMATE("QUOTATION","Смета"),
         ORDER("ORDER","");
 
         private String uiVal;

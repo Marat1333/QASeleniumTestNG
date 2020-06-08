@@ -9,8 +9,8 @@ import com.leroy.magmobile.ui.elements.MagMobWhiteSubmitButton;
 import com.leroy.magmobile.ui.models.CustomerData;
 import com.leroy.magmobile.ui.models.sales.OrderAppData;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
-import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.customers.SearchCustomerPage;
+import com.leroy.magmobile.ui.pages.sales.orders.CartEstimatePage;
 import com.leroy.magmobile.ui.pages.sales.widget.ProductOrderCardAppWidget;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.search.widgets.SearchCustomerWidget;
@@ -24,15 +24,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class EstimatePage extends CommonMagMobilePage {
+public class EstimatePage extends CartEstimatePage {
 
     @Builder
     @AllArgsConstructor
     public static class PageState {
         private boolean customerIsSelected;
         private boolean productIsAdded;
-        private boolean estimateIsConfirmed;
+        private boolean confirmed;
         private boolean editModeOn;
+        private boolean transformed;
     }
 
     public static boolean isThisPage() {
@@ -174,10 +175,10 @@ public class EstimatePage extends CommonMagMobilePage {
     }
 
     @Step("Нажмите на {index}-ую карточку товара/услуги")
-    public ActionWithProductCardModalPage clickCardByIndex(int index) throws Exception {
+    public EstimateActionWithProductCardModal clickCardByIndex(int index) throws Exception {
         index--;
         productCardDataScrollView.clickElemByIndex(index);
-        return new ActionWithProductCardModalPage();
+        return new EstimateActionWithProductCardModal();
     }
 
     @Step("Нажмите на поле 'Клиенты' (клиент не был выбран)")
@@ -236,19 +237,20 @@ public class EstimatePage extends CommonMagMobilePage {
             expectedElements.add(weightProductLbl);
             expectedElements.add(totalPriceLbl);
             expectedElements.add(totalPriceVal);
-            if (state.editModeOn || !state.estimateIsConfirmed)
+            if (!state.transformed && (state.editModeOn || !state.confirmed))
                 expectedElements.add(addProductBtn);
             if (state.editModeOn)
                 expectedElements.add(saveBtn);
-            else if (state.estimateIsConfirmed)
+            else if (state.confirmed)
                 expectedElements.add(actionsWithEstimateBtn);
-            else
+            else if (!state.transformed)
                 expectedElements.add(createBtn);
             expectedElements.add(productCardWidget);
         } else {
             expectedElements.add(productAndServiceBtn);
         }
-        softAssert.areElementsVisible(expectedElements.toArray(new Element[0]));
+        String ps = getPageSource();
+        softAssert.areElementsVisible(ps, expectedElements.toArray(new Element[0]));
         if (!state.productIsAdded) {
             if (!state.customerIsSelected)
                 softAssert.isFalse(productAndServiceBtn.isEnabled(),
@@ -256,6 +258,12 @@ public class EstimatePage extends CommonMagMobilePage {
             else
                 softAssert.isTrue(productAndServiceBtn.isEnabled(),
                         "Кнопка '+ Товары и Услуги' неактивна");
+        }
+        if (state.transformed) {
+            softAssert.isElementNotVisible(productAndServiceBtn, ps);
+            softAssert.isElementNotVisible(actionsWithEstimateBtn, ps);
+            softAssert.isElementNotVisible(addProductBtn, ps);
+            softAssert.isElementNotVisible(editTrashBtn, ps);
         }
         softAssert.verifyAll();
         return this;

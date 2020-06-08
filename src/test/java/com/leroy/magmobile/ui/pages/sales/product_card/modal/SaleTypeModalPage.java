@@ -57,7 +57,7 @@ public class SaleTypeModalPage extends CommonMagMobilePage {
                 .getText().equals(Cart35Page.SCREEN_TITLE))
             return (T) new Cart35Page();
         else
-            return (T) new AddProduct35Page();
+            return (T) new AddProduct35Page(Cart35Page.class);
 
     }
 

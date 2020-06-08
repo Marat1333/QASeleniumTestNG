@@ -1,5 +1,6 @@
 package com.leroy.magmobile.api.clients;
 
+import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.data.catalog.ServiceItemDataList;
 import com.leroy.magmobile.api.data.supply_plan.suppliers.SupplierDataList;
@@ -19,6 +20,21 @@ public class CatalogSearchClient extends MagMobileClient {
     public Response<ProductItemDataList> searchProductsBy(GetCatalogSearch params) {
         params.setLdap(userSessionData.getUserLdap());
         return execute(params, ProductItemDataList.class);
+    }
+
+    @Step("Search for products")
+    public Response<ProductItemDataList> searchProductsBy(CatalogSearchFilter filters) {
+        GetCatalogSearch req = new GetCatalogSearch();
+        req.setLdap(userSessionData.getUserLdap());
+        if (filters.getHasAvailableStock() != null)
+            req.setHasAvailableStock(filters.getHasAvailableStock());
+        if (filters.getTopEM() != null)
+            req.setTopEM(filters.getTopEM());
+        if (filters.getBestPrice() != null)
+            req.setBestPrice(filters.getBestPrice());
+        if (filters.getTop1000() != null)
+            req.setTop1000(filters.getTop1000());
+        return execute(req, ProductItemDataList.class);
     }
 
     @Step("Search for services")
