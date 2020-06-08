@@ -184,7 +184,6 @@ public class ProductCardTest extends WebBaseSteps {
         searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId, CatalogSearchParams.subdepartmentId,
                 CatalogSearchParams.classId, CatalogSearchParams.subclassId);
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(subClass);
-        //TODO fix verification
         searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, allDepartments, department, subDepartment,
                 classId);
 

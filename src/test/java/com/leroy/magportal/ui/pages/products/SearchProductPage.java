@@ -725,11 +725,12 @@ public class SearchProductPage extends MenuPage {
             for (String nomenclatureAttribute : nomenclatureElementName) {
                 if (tmp.getText().contains(nomenclatureAttribute)) {
                     condition++;
+                    break;
                 }
             }
         }
         if (contains){
-            anAssert.isTrue(condition == 1, "либо отсутствует, либо встречается более 1 раза");
+            anAssert.isTrue(condition == nomenclatureElementName.length, "не соответсвует кол-ву переданных элементов");
         }else {
             anAssert.isTrue(condition == 0, "Уровень товарной иерархии содержится в элементе UI");
         }

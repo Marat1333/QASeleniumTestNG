@@ -3,14 +3,15 @@ package com.leroy.magportal.ui.pages.products;
 import com.leroy.constants.Currency;
 import com.leroy.constants.Units;
 import com.leroy.core.annotations.WebFindBy;
-import com.leroy.core.configuration.Log;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
-import com.leroy.magportal.api.data.ProductData;
+import com.leroy.magmobile.api.data.catalog.product.CatalogSupplierData;
+import com.leroy.magmobile.api.data.catalog.product.StockAreas;
 import com.leroy.magportal.ui.models.search.PriceContainerData;
+import com.leroy.magportal.ui.models.search.StocksData;
 import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
 import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage.Direction;
@@ -21,10 +22,8 @@ import com.leroy.magportal.ui.webelements.searchelements.ProductQuantityInfoWidg
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class ExtendedProductCardPage extends ProductCardPage {
@@ -267,6 +266,8 @@ public class ExtendedProductCardPage extends ProductCardPage {
             softAssert.isTrue(productPriceInfoWidget.getRecommendedPriceNotMatchesLbl().isVisible(), "SalePrice and RecommendedPrice mismatch lbl is invisible");
         }
         softAssert.isEquals(productPriceInfoWidget.getReasonOfChange(), data.getSalesPrice().getReasonOfChange(), "Price reason of change mismatch");
+        shouldStocksIsCorrect(data);
+        shouldSupplierDataIsCorrect(data.getSupplier());
         softAssert.verifyAll();
     }
 
@@ -308,12 +309,31 @@ public class ExtendedProductCardPage extends ProductCardPage {
         int currentYear = calendar.get(java.util.Calendar.YEAR);
 
         String formattedDataDate;
-        if (dataDate.getYear()==currentYear){
+        if (dataDate.getYear() == currentYear) {
             formattedDataDate = shortFormatter.format(dataDate);
-        }else {
+        } else {
             formattedDataDate = longFormatter.format(dataDate);
         }
         String viewDate = productPriceInfoWidget.getLastPriceChangeDateLbl();
-        softAssert.isContains(viewDate, formattedDataDate, "Даты не совпадают: отображается "+ viewDate+" ожидаемая дата: "+ formattedDataDate);
+        softAssert.isContains(viewDate, formattedDataDate, "Даты не совпадают: отображается " + viewDate + " ожидаемая дата: " + formattedDataDate);
+    }
+
+    private void shouldStocksIsCorrect(CatalogProductData data) {
+        StocksData stockData = productQuantityInfoWidget.getDataFromWidget();
+        StockAreas stockAreas = data.getStockAreas();
+        softAssert.isEquals(stockData.getAvailableForSale(), data.getAvailableStock(), "Доступный остаток");
+        softAssert.isEquals(stockData.getSaleHall(), stockAreas.getLS(), "Торговый зал");
+        softAssert.isEquals(stockData.getRm(), stockAreas.getRM(), "Склад RM");
+        softAssert.isEquals(stockData.getEm(), stockAreas.getEM(), "Склад EM");
+        softAssert.isEquals(stockData.getRd(), stockAreas.getRD(), "Склад RD");
+        softAssert.isEquals(stockData.getUnavailableForSale(), data.getExtStocks().getUnavailableStockSum(), "Недоступный остаток");
+    }
+
+    private void shouldSupplierDataIsCorrect(CatalogSupplierData data) throws Exception{
+        softAssert.isEquals(data.getSupName(), supplierInfo.get(0), "Название поставщика");
+        softAssert.isEquals(data.getSupCode(), "Код поставщика: "+supplierInfo.get(1), "Код поставщика");
+        softAssert.isEquals(data.getSupPhone(), supplierInfo.get(2), "Телефон");
+        softAssert.isEquals(data.getSupContactName(), supplierInfo.get(3), "Имя представителя");
+        softAssert.isEquals(data.getSupEmail(), supplierInfo.get(4), "Email");
     }
 }

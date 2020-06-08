@@ -33,4 +33,6 @@ public class CatalogProductData extends ProductData {
     private List<String> barCodes;
     private String itemType;
     private PriceInfo salesPrice;
+    private CatalogSupplierData supplier;
+    private StockAreas stocks;
 }

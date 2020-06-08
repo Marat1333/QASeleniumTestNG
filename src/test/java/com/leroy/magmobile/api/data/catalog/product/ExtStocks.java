@@ -1,10 +1,10 @@
 package com.leroy.magmobile.api.data.catalog.product;
 
 import lombok.Data;
-import scala.Int;
 
 @Data
 public class ExtStocks {
+    private Integer unavailableStockSum;
     private String ItemID;
     private String StoreID;
     private Integer C3;
@@ -17,6 +17,7 @@ public class ExtStocks {
     private Integer TBC;
     private Integer RTV_on_DC;
     private Integer TSF_outbound_confirmed;
+    private Integer TSF_outbound;
     private Integer TSF_inbound_confirmed;
     private Integer TSF_inbound_delivered;
     private Integer BUID;
@@ -28,4 +29,7 @@ public class ExtStocks {
     private Integer correctionStockInWait;
     private Integer transferReserve;
     private Integer onTheWay;
+    {
+        unavailableStockSum = WHB + WHBP + COR + TSF_outbound + RTV + UTSP + TBC + EXPO;
+    }
 }
