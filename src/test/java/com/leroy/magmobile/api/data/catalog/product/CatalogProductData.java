@@ -1,6 +1,5 @@
 package com.leroy.magmobile.api.data.catalog.product;
 
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magportal.api.data.ProductData;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

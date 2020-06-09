@@ -9,6 +9,7 @@ import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
 import com.leroy.magmobile.api.data.catalog.product.CatalogSupplierData;
+import com.leroy.magmobile.api.data.catalog.product.ExtStocks;
 import com.leroy.magmobile.api.data.catalog.product.StockAreas;
 import com.leroy.magportal.ui.models.search.PriceContainerData;
 import com.leroy.magportal.ui.models.search.StocksData;
@@ -91,6 +92,7 @@ public class ExtendedProductCardPage extends ProductCardPage {
             for (ExtendedProductCardWidget widget : productCards) {
                 String widgetLmCode = widget.getLmCode();
                 if (widgetLmCode.equals(lmCode)) {
+                    widget.scrollTo();
                     widget.click();
                     condition = true;
                     break;
@@ -133,6 +135,8 @@ public class ExtendedProductCardPage extends ProductCardPage {
                     return this;
                 } else if ((similarProducts.isVisible() || complementProducts.isVisible()) &&
                         tabContainerList.get(1).getAttribute(attribute).contains(condition)) {
+                    return this;
+                } else if (!similarProducts.isVisible()&&!complementProducts.isVisible()){
                     return this;
                 }
                 pricesAndStocksInOtherShops.scrollTo();
@@ -320,20 +324,24 @@ public class ExtendedProductCardPage extends ProductCardPage {
 
     private void shouldStocksIsCorrect(CatalogProductData data) {
         StocksData stockData = productQuantityInfoWidget.getDataFromWidget();
-        StockAreas stockAreas = data.getStockAreas();
+        StockAreas stockAreas = data.getStocks();
+        stockAreas.replaceNull();
         softAssert.isEquals(stockData.getAvailableForSale(), data.getAvailableStock(), "Доступный остаток");
-        softAssert.isEquals(stockData.getSaleHall(), stockAreas.getLS(), "Торговый зал");
-        softAssert.isEquals(stockData.getRm(), stockAreas.getRM(), "Склад RM");
-        softAssert.isEquals(stockData.getEm(), stockAreas.getEM(), "Склад EM");
-        softAssert.isEquals(stockData.getRd(), stockAreas.getRD(), "Склад RD");
-        softAssert.isEquals(stockData.getUnavailableForSale(), data.getExtStocks().getUnavailableStockSum(), "Недоступный остаток");
+        softAssert.isEquals(stockData.getSaleHall(), stockAreas.getLs(), "Торговый зал");
+        softAssert.isEquals(stockData.getRm(), stockAreas.getRm(), "Склад RM");
+        softAssert.isEquals(stockData.getEm(), stockAreas.getEm(), "Склад EM");
+        softAssert.isEquals(stockData.getRd(), stockAreas.getRd(), "Склад RD");
+        ExtStocks extStocks = data.getExtStocks();
+        int unavailableStockSum = extStocks.getWhb() + extStocks.getWhbp() + extStocks.getCor() + extStocks.getTsfOutbound()
+                + extStocks.getRtv() + extStocks.getUtsp() + extStocks.getTbc() + extStocks.getExpo();
+        softAssert.isEquals(stockData.getUnavailableForSale(), unavailableStockSum, "Недоступный остаток");
     }
 
     private void shouldSupplierDataIsCorrect(CatalogSupplierData data) throws Exception{
-        softAssert.isEquals(data.getSupName(), supplierInfo.get(0), "Название поставщика");
-        softAssert.isEquals(data.getSupCode(), "Код поставщика: "+supplierInfo.get(1), "Код поставщика");
-        softAssert.isEquals(data.getSupPhone(), supplierInfo.get(2), "Телефон");
-        softAssert.isEquals(data.getSupContactName(), supplierInfo.get(3), "Имя представителя");
-        softAssert.isEquals(data.getSupEmail(), supplierInfo.get(4), "Email");
+        softAssert.isEquals(data.getSupName(), supplierInfo.get(0).getText(), "Название поставщика");
+        softAssert.isEquals("Код поставщика: "+data.getSupCode(), supplierInfo.get(1).getText(), "Код поставщика");
+        softAssert.isEquals(data.getSupPhone(), supplierInfo.get(2).getText(), "Телефон");
+        softAssert.isEquals(data.getSupContactName(), supplierInfo.get(3).getText(), "Имя представителя");
+        softAssert.isEquals(data.getSupEmail(), supplierInfo.get(4).getText(), "Email");
     }
 }

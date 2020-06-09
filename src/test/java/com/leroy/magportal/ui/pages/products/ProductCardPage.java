@@ -4,7 +4,10 @@ import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.*;
 import com.leroy.magmobile.api.data.catalog.Characteristic;
 import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
+import com.leroy.magportal.api.data.NearestShopsData;
+import com.leroy.magportal.api.data.NearestShopsList;
 import com.leroy.magportal.ui.models.search.NomenclaturePath;
+import com.leroy.magportal.ui.models.search.ShopCardData;
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.pages.products.widget.ShopCardWidget;
 import com.leroy.utils.ParserUtil;
@@ -12,6 +15,7 @@ import io.qameta.allure.Step;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 public class ProductCardPage extends MenuPage {
 
@@ -33,7 +37,8 @@ public class ProductCardPage extends MenuPage {
     @WebFindBy(xpath = "//input[@placeholder='Номер или название магазина']")
     EditBox searchForShop;
 
-    @WebFindBy(xpath = "//div[contains(@class,'Catalog-NearestShopList__item_container')]", clazz = ShopCardWidget.class)
+    @WebFindBy(xpath = "//div[contains(@class,'Catalog-NearestShopList__item_container')]", clazz = ShopCardWidget.class,
+            refreshEveryTime = true)
     ElementList<ShopCardWidget> shopsList;
 
     //DATA
@@ -137,6 +142,11 @@ public class ProductCardPage extends MenuPage {
         showAllSpecifications.scrollTo();
         showAllSpecifications.click();
         return this;
+    }
+
+    @Step("Искать магазин по критерию {criterion}")
+    public void searchShopBy(String criterion) {
+        searchForShop.clearAndFill(criterion);
     }
 
     //Verifications
@@ -263,4 +273,42 @@ public class ProductCardPage extends MenuPage {
         softAssert.verifyAll();
         return this;
     }
+
+    public void shouldNearestShopInfoIsCorrect(NearestShopsList dataList) throws Exception {
+        ShopCardData data;
+        NearestShopsData nearestShopsData;
+        TreeMap<Double, Integer> sortedByDistanceShopId = new TreeMap<>();
+        for (NearestShopsData tmp : dataList) {
+            sortedByDistanceShopId.put(tmp.getDistance(), tmp.getId());
+        }
+        List<Integer> shopIdList = new ArrayList<>(sortedByDistanceShopId.values());
+        for (int i = 0; i < dataList.size(); i++) {
+            data = shopsList.get(i).grabDataFromWidget();
+            nearestShopsData = dataList.get(i);
+            anAssert.isEquals(data.getId(), shopIdList.get(i), "Sort mismatch");
+            anAssert.isEquals(data.getId(), nearestShopsData.getId(), "ID");
+            anAssert.isEquals(data.getName(), nearestShopsData.getName(), "City name");
+            anAssert.isEquals(data.getAddress(), nearestShopsData.getCityName() + ", " +
+                    ParserUtil.replaceSpecialSymbols(nearestShopsData.getAddress()), "Address");
+            anAssert.isEquals(data.getPrice(), nearestShopsData.getPrice(), "Price");
+            anAssert.isEquals(data.getQuantity(), nearestShopsData.getAvailableStock(), "Stocks");
+            anAssert.isEquals(data.getDistance(), ParserUtil.parseNZeroFormatInStringDouble(String.valueOf(nearestShopsData.getDistance()),
+                    1), "Distance");
+        }
+    }
+
+    public void shouldFoundShopsIsCorrect(String criterion) {
+        ShopCardData data;
+        for (ShopCardWidget tmp : shopsList) {
+            data = tmp.grabDataFromWidget();
+            if (criterion.matches("\\^.?+D+.?+")) {
+                anAssert.isElementTextContainsIgnoringCase(data.getName(), criterion, "Name expected: " + criterion
+                        + "actual" + data.getName());
+            } else {
+                anAssert.isTrue(String.valueOf(data.getId()).contains(criterion)||data.getName().contains(criterion), "ID expected: "
+                        + criterion + " actual" + data.getId());
+            }
+        }
+    }
+
 }

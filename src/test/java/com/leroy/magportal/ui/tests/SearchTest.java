@@ -13,7 +13,6 @@ import com.leroy.magportal.ui.models.search.FiltersData;
 import com.leroy.magportal.ui.pages.products.ExtendedProductCardPage;
 import com.leroy.magportal.ui.pages.products.ProductCardPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
-import io.qameta.allure.Issue;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -120,6 +119,9 @@ public class SearchTest extends WebBaseSteps {
         String shortLmCode = "1234";
         String shortBarCode = "590212011";
 
+        ProductItemDataList productItemDataList = apiClientProvider.getCatalogSearchClient().searchProductsBy(
+                new GetCatalogSearch().setByNameLike(shortSearchPhrase).setPageSize(defaultPageSize)).asJson();
+
         //Pre-conditions
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
         searchProductPage.navigateToPreviousNomenclatureElement("Каталог товаров");
@@ -141,7 +143,8 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.clearSearchInputByClearBtn();
         searchProductPage.searchByPhrase(shortSearchPhrase);
         searchProductPage.shouldUrlContains(CatalogSearchParams.byNameLikeParamName + shortSearchPhrase);
-        searchProductPage.shouldProductCardContainsText(shortSearchPhrase);
+        searchProductPage.shouldResponseEntityEqualsToViewEntity(productItemDataList, SearchProductPage.FilterFrame.MY_SHOP,
+                SearchProductPage.ViewMode.EXTENDED);
         searchProductPage.clearSearchInputByClearBtn();
 
         //Step 3
@@ -401,7 +404,6 @@ public class SearchTest extends WebBaseSteps {
                 .shouldSupplierComboBoxContainsCorrectText(true);
     }
 
-    @Issue("PUZ2-2209")
     @Test(description = "C22782965 AVS")
     public void testAvsFilter() throws Exception {
         LocalDate avsDate = LocalDate.of(2020, 3, 3);
@@ -452,11 +454,10 @@ public class SearchTest extends WebBaseSteps {
                 .applyFilters()
                 .shouldResponseEntityEqualsToViewEntity(avsDateResponse, SearchProductPage.FilterFrame.MY_SHOP,
                         SearchProductPage.ViewMode.EXTENDED)
-                //bug of manually import
-                .shouldUrlContains(CatalogSearchParams.avsDate + String.format(
-                        "between%%7C%s-0%s-0%sT00%3A00%3A00.000Z%%7C%s-0%s-0%sT00%3A00%3A00.000Z", avsDate.getYear(),
-                        avsDate.getMonthValue(), avsDate.getDayOfMonth(),
-                        avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth() + 1));
+                .shouldUrlContains(CatalogSearchParams.avsDate +
+                        "between%7C" + avsDate.getYear() + "-0" + avsDate.getMonthValue() + "-0" + avsDate.getDayOfMonth() +
+                        "T00%3A00%3A00.000Z%7C" + avsDate.getYear() + "-0" + avsDate.getMonthValue() + "-0" +
+                        (avsDate.getDayOfMonth() + 1) + "T00%3A00%3A00.000Z");
 
         //Step 4
         step("Убрать чек-бокс AVS");

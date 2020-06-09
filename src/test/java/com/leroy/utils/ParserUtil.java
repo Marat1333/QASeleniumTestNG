@@ -108,6 +108,9 @@ public class ParserUtil {
             return null;
         }
         source = source.replaceAll("[*]", "").replaceAll("[\\s]{2,}", " ");
+        if (source.equals("undefined")) {
+            source = null;
+        }
         return source;
     }
 
@@ -116,6 +119,14 @@ public class ParserUtil {
             return null;
         }
         return doubleS.contains(".") ? String.format("%.2f", Double.parseDouble(doubleS)) : doubleS;
+    }
+
+    public static Double parseNZeroFormatInStringDouble(String doubleS, int numbersAfterDot) {
+        if (doubleS==null){
+            return null;
+        }
+        return doubleS.contains(".") ? Double.parseDouble(String.format("%."+numbersAfterDot+"f",
+                Double.parseDouble(doubleS))) : Double.parseDouble(doubleS);
     }
 
 }
