@@ -20,19 +20,19 @@ import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.models.sales.ShortSalesDocumentData;
 import com.leroy.magmobile.ui.pages.sales.AddProductPage;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
+import com.leroy.magmobile.ui.pages.sales.SalesDocumentsPage;
 import com.leroy.magmobile.ui.pages.sales.SubmittedSalesDocumentPage;
-import com.leroy.magmobile.ui.pages.sales.orders.cart.CartPage;
-import com.leroy.magmobile.ui.pages.sales.orders.cart.CartStep1Page;
-import com.leroy.magmobile.ui.pages.sales.orders.cart.CartStep2Page;
-import com.leroy.magmobile.ui.pages.sales.orders.cart.CartStep3Page;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.*;
+import com.leroy.magmobile.ui.pages.sales.product_card.modal.SaleTypeModalPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
+import com.leroy.utils.RandomUtil;
 import io.qameta.allure.Step;
-import org.apache.commons.lang.RandomStringUtils;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,6 +42,76 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 @Guice(modules = {Module.class})
 public class SalesBaseTest extends AppBaseSteps {
+
+    // СТАРТ ТЕСТА С ЭКРАНА КОРЗИНЫ:
+    @Step("Pre-condition: Начать тест с экрана пустой корзины")
+    protected void startFromScreenWithEmptyCart() throws Exception {
+        if (!Cart35Page.isThisPage()) {
+            MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
+                    MainSalesDocumentsPage.class);
+            SaleTypeModalPage modalPage = mainSalesDocumentsPage.clickCreateSalesDocumentButton();
+            modalPage.clickBasketMenuItem();
+        }
+    }
+
+    protected void startFromScreenWithCreatedCart() throws Exception {
+        startFromScreenWithCreatedCart(null, false);
+    }
+
+    protected void startFromScreenWithCreatedCart(boolean hasDiscount) throws Exception {
+        startFromScreenWithCreatedCart(null, hasDiscount);
+    }
+
+    @Step("Pre-condition: Создание корзины")
+    protected void startFromScreenWithCreatedCart(List<String> lmCodes, boolean hasDiscount) throws Exception {
+        if (!Cart35Page.isThisPage()) {
+            String cartDocNumber = createDraftCart(lmCodes, hasDiscount);
+            MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
+                    MainSalesDocumentsPage.class);
+            SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
+            salesDocumentsPage.searchForDocumentByTextAndSelectIt(
+                    cartDocNumber);
+        }
+    }
+
+    @Step("Pre-condition: Создание корзины")
+    protected void startFromScreenWithCreatedCart(List<CartProductOrderData> productDataList) throws Exception {
+        if (!Cart35Page.isThisPage()) {
+            CartClient cartClient = apiClientProvider.getCartClient();
+            Response<CartData> response = cartClient.sendRequestCreate(productDataList);
+            CartData cartData = cartClient.assertThatIsCreatedAndGetData(response, true);
+            String cartDocNumber = cartData.getCartId();
+            MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
+                    MainSalesDocumentsPage.class);
+            SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
+            salesDocumentsPage.searchForDocumentByTextAndSelectIt(
+                    cartDocNumber);
+        }
+    }
+
+    // Заказы
+    @Step("Pre-condition: Создаем черновик заказа")
+    protected void startFromScreenWithOrderDraft(boolean hasDiscount) throws Exception {
+        startFromScreenWithCreatedCart(hasDiscount);
+
+        Cart35Page cart35Page = new Cart35Page();
+        cart35Page.clickMakeSalesButton()
+                .verifyRequiredElements();
+    }
+
+    protected void startFromScreenWithOrderDraft() throws Exception {
+        startFromScreenWithOrderDraft(false);
+    }
+
+    @Step("Pre-condition: Создаем черновик заказа")
+    protected void startFromScreenWithOrderDraft(List<CartProductOrderData> productDataList) throws Exception {
+        startFromScreenWithCreatedCart(productDataList);
+        Cart35Page cart35Page = new Cart35Page();
+        cart35Page.clickMakeSalesButton()
+                .verifyRequiredElements();
+    }
+
+    // ПОИСК ТОВАРОВ
 
     // Получить ЛМ код для услуги
     protected String getAnyLmCodeOfService() {
@@ -90,13 +160,28 @@ public class SalesBaseTest extends AppBaseSteps {
         return "18845896";
     }
 
-    protected String getValidPinCode() {
+    // Поиск продуктов для создания корзины с несколькими заказами:
+    @Step("Ищем подходящие продукты для создания корзины с несколькими заказами")
+    protected List<CartProductOrderData> findProductsForSeveralOrdersInCart() {
+        CatalogSearchFilter filtersData = new CatalogSearchFilter();
+        filtersData.setAvs(false);
+        filtersData.setTopEM(false);
+        filtersData.setHasAvailableStock(true);
+        List<ProductItemData> productItemDataList = apiClientProvider.getProducts(2, filtersData);
+        CartProductOrderData productWithNegativeBalance = new CartProductOrderData(
+                productItemDataList.get(0));
+        productWithNegativeBalance.setQuantity(productItemDataList.get(0).getAvailableStock() + 10.0);
+        CartProductOrderData productWithPositiveBalance = new CartProductOrderData(
+                productItemDataList.get(1));
+        productWithPositiveBalance.setQuantity(1.0);
+
+        return Arrays.asList(productWithNegativeBalance, productWithPositiveBalance);
+    }
+
+    protected String getValidPinCode(boolean isPickup) {
         int tryCount = 10;
         for (int i = 0; i < tryCount; i++) {
-            String generatedPinCode;
-            do {
-                generatedPinCode = RandomStringUtils.randomNumeric(5);
-            } while (generatedPinCode.startsWith("9"));
+            String generatedPinCode = RandomUtil.randomPinCode(isPickup);
             SalesDocumentListResponse salesDocumentsResponse = apiClientProvider.getSalesDocSearchClient()
                     .getSalesDocumentsByPinCodeOrDocId(generatedPinCode)
                     .asJson();
@@ -228,7 +313,7 @@ public class SalesBaseTest extends AppBaseSteps {
 
         // Step #9
         step("Введите 5 цифр PIN-кода");
-        String testPinCode = getValidPinCode();
+        String testPinCode = getValidPinCode(true);
         basketStep3Page.enterPinCode(testPinCode)
                 .shouldPinCodeFieldIs(testPinCode)
                 .shouldSubmitButtonIsActive();

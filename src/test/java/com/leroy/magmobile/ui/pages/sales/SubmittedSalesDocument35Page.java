@@ -4,6 +4,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
 public class SubmittedSalesDocument35Page extends CommonMagMobilePage {
@@ -37,11 +38,8 @@ public class SubmittedSalesDocument35Page extends CommonMagMobilePage {
         submitBtn.waitForVisibility(long_timeout);
     }
 
-    public String getDocumentNumber(boolean withoutSpaces) {
-        if (withoutSpaces)
-            return orderNumberVal.getText().replaceAll(" ", "");
-        else
-            return orderNumberVal.getText();
+    public String getDocumentNumber() {
+        return ParserUtil.strWithOnlyDigits(orderNumberVal.getText());
     }
 
     /* ------------------------- ACTION STEPS -------------------------- */

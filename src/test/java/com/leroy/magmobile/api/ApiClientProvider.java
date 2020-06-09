@@ -19,8 +19,8 @@ import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateProductOrderData;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogServicesSearch;
+import com.leroy.utils.RandomUtil;
 import io.qameta.allure.Step;
-import org.apache.commons.lang.RandomStringUtils;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.ArrayList;
@@ -244,10 +244,7 @@ public class ApiClientProvider {
     public String getValidPinCode() {
         int tryCount = 10;
         for (int i = 0; i < tryCount; i++) {
-            String generatedPinCode;
-            do {
-                generatedPinCode = RandomStringUtils.randomNumeric(5);
-            } while (generatedPinCode.startsWith("9"));
+            String generatedPinCode = RandomUtil.randomPinCode(true);
             SalesDocumentListResponse salesDocumentsResponse = getSalesDocSearchClient()
                     .getSalesDocumentsByPinCodeOrDocId(generatedPinCode)
                     .asJson();

@@ -4,7 +4,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.models.CustomerData;
+import com.leroy.magmobile.ui.models.MagCustomerData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.orders.estimate.EstimatePage;
 import com.leroy.magmobile.ui.pages.search.widgets.SearchCustomerWidget;
@@ -18,7 +18,7 @@ public class SearchCustomerPage extends CommonMagMobilePage {
         BY_PHONE, BY_CARD, BY_EMAIL;
     }
 
-    AndroidScrollView<CustomerData> mainScrollView = new AndroidScrollView<>(driver,
+    AndroidScrollView<MagCustomerData> mainScrollView = new AndroidScrollView<>(driver,
             AndroidScrollView.TYPICAL_LOCATOR,
             ".//android.view.ViewGroup[android.widget.TextView[@index='1']]",
             SearchCustomerWidget.class);
@@ -55,9 +55,9 @@ public class SearchCustomerPage extends CommonMagMobilePage {
     // Grab data from page
 
     @Step("Получаем данные о {index}-ом клиенте")
-    public CustomerData getCustomerDataFromSearchListByIndex(int index) {
-        List<CustomerData> customerDataList = mainScrollView.getFullDataList(index);
-        CustomerData customerData = customerDataList.get(customerDataList.size() - 1);
+    public MagCustomerData getCustomerDataFromSearchListByIndex(int index) {
+        List<MagCustomerData> customerDataList = mainScrollView.getFullDataList(index);
+        MagCustomerData customerData = customerDataList.get(customerDataList.size() - 1);
         anAssert.isFalse(customerData.getName().isEmpty(), "Клиент не содержит имени");
         return customerData;
     }
@@ -68,7 +68,7 @@ public class SearchCustomerPage extends CommonMagMobilePage {
     public EstimatePage selectCustomerFromSearchList(int index) throws Exception {
         index--;
         mainScrollView.clickElemByIndex(index);
-        return new EstimatePage();
+        return new EstimatePage(); // возможно, надо этот метод сделать просто void.
     }
 
     @Step("Введите {text} в поле поиска")
@@ -97,17 +97,21 @@ public class SearchCustomerPage extends CommonMagMobilePage {
     }
 
     @Step("Найдите клиента по номеру телефона: {value}")
-    public EstimatePage searchCustomerByPhone(String value) throws Exception {
+    public void searchCustomerByPhone(String value) throws Exception {
         phoneOptionLbl.click();
+        if (value.startsWith("+7"))
+            value = value.substring(2);
         enterTextInSearchField(value);
         mainScrollView.clickElemByIndex(0);
-        return new EstimatePage();
     }
 
     @Step("Найдите клиента по номеру карты: {value}")
-    public SearchCustomerPage searchCustomerByCard(String value) {
+    public SearchCustomerPage searchCustomerByCard(String value) throws Exception {
         customerCardOptionLbl.click();
+        if (value.length() == 17)
+            value = value.substring(7);
         enterTextInSearchField(value);
+        mainScrollView.clickElemByIndex(0);
         return this;
     }
 
