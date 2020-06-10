@@ -25,6 +25,12 @@ public class CartPage extends CartEstimatePage {
         return orders;
     }
 
+    @Override
+    public void waitForPageIsLoaded() {
+        super.waitForPageIsLoaded();
+        anAssert.isElementVisible(cartNumber, timeout);
+    }
+
     // Grab info
 
     @Override

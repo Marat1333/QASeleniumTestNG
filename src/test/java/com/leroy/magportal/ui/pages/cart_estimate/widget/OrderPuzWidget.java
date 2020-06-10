@@ -24,7 +24,7 @@ public class OrderPuzWidget extends CardWebWidget<OrderWebData> {
         super(driver, customLocator);
     }
 
-    @WebFindBy(xpath = ".//div[substring(@class, string-length(@class) - 14) = 'SalesDocProduct']",
+    @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct') and not(contains(@class, 'SalesDocProduct_'))]",
             clazz = ProductOrderCardPuzWidget.class)
     CardWebWidgetList<ProductOrderCardPuzWidget, ProductOrderCardWebData> products;
 
