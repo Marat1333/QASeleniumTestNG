@@ -1,11 +1,13 @@
 package com.leroy.magmobile.ui.pages.sales.orders.estimate;
 
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.configuration.Log;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import io.qameta.allure.Step;
+import org.openqa.selenium.InvalidElementStateException;
 
 public class SendEmailPage extends CommonMagMobilePage {
 
@@ -38,7 +40,12 @@ public class SendEmailPage extends CommonMagMobilePage {
     @Step("Ввести {text} в поле 'Email клиента'")
     public SendEmailPage enterTextInEmailField(String text) {
         emailFld.click();
-        emailFld.clearFillAndSubmit(text);
+        try {
+            emailFld.clearFillAndSubmit(text);
+        } catch (InvalidElementStateException err) {
+            Log.debug(err.getMessage());
+            emailFld.clearFillAndSubmit(text);
+        }
         return this;
     }
 

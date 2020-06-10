@@ -22,7 +22,6 @@ public class ProductOrderCardAppData {
     private Double totalPrice;
     private Double totalPriceWithDiscount;
     private Double discountPercent;
-    private boolean selectedMoreThanAvailable;
 
     private Integer availableTodayQuantity;
     private Boolean avs;
@@ -105,7 +104,9 @@ public class ProductOrderCardAppData {
         productData.setTotalPriceWithDiscount(totalPriceWithDiscount);
         productData.setAvailableTodayQuantity(availableTodayQuantity);
         productData.setDiscountPercent(discountPercent);
-        productData.setSelectedMoreThanAvailable(selectedMoreThanAvailable);
+        productData.setAvs(avs);
+        productData.setTopEm(topEm);
+        productData.setHasAvailableQuantity(hasAvailableQuantity);
         return productData;
     }
 
