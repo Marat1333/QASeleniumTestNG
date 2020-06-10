@@ -1,6 +1,6 @@
-package com.leroy.magmobile.api.data.catalog.product;
+package com.leroy.magportal.api.data;
 
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
+import com.leroy.magmobile.api.data.catalog.product.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -10,22 +10,28 @@ import java.util.List;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class CatalogProductData extends ProductItemData {
+public class CatalogProductData extends ProductData {
     private Integer topEMQuantity;
     private ExtStocks extStocks;
-    private PriceInfo salesPrice;
     private PriceInfo priceInfo;
     private Logistic logistic;
-    private Double purchasePrice;
+    private PriceInfo purchasePrice;
     private String purchasePriceCurrency;
     private Double primeCost;
     private String primeCostCurrency;
-    private Double futurePrice;
+    private PriceInfo futurePrice;
     private String futurePriceFromDate;
-    private String priceReasonOfChange;
     private Float rating;
     private Integer reviewsCount;
     private StockAreas stockAreas;
     private Inventory inventory;
+    private PriceInfo recommendedPrice;
+    private String groupId;
+    private String classId;
+    private String subclassId;
     private List<String> barCodes;
+    private String itemType;
+    private PriceInfo salesPrice;
+    private CatalogSupplierData supplier;
+    private StockAreas stocks;
 }
