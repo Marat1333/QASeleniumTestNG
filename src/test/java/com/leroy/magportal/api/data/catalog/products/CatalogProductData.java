@@ -1,6 +1,10 @@
-package com.leroy.magportal.api.data.products;
+package com.leroy.magportal.api.data.catalog.products;
 
-import com.leroy.magportal.api.data.ProductData;
+import com.leroy.magportal.api.data.catalog.products.product_fields.ExtStocks;
+import com.leroy.magportal.api.data.catalog.products.product_fields.Inventory;
+import com.leroy.magportal.api.data.catalog.products.product_fields.PriceInfo;
+import com.leroy.magportal.api.data.catalog.products.product_fields.StockAreas;
+import com.leroy.magportal.api.data.catalog.suppliers.CatalogSupplierData;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

@@ -1,4 +1,4 @@
-package com.leroy.magportal.api.data;
+package com.leroy.magportal.api.data.catalog.shops;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -13,7 +13,7 @@ public class NearestShopsData {
     String regionName;
     Double lat;
     @JsonProperty("long")
-    Double longg;
+    Double longitude;
     String timezone;
     String cityName;
     String regionKladr;

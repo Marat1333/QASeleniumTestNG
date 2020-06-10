@@ -1,4 +1,4 @@
-package com.leroy.magportal.api.data.products;
+package com.leroy.magportal.api.data.catalog.products.product_fields;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

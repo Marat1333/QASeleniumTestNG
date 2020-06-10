@@ -3,7 +3,7 @@ package com.leroy.constants;
 public enum Currency {
     RUB("₽");
 
-    Currency(String name){
+    Currency(String name) {
         this.name = name;
     }
 

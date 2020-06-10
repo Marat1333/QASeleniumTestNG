@@ -3,9 +3,8 @@ package com.leroy.magportal.ui.pages.products;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.*;
 import com.leroy.magmobile.api.data.catalog.Characteristic;
-import com.leroy.magportal.api.data.products.CatalogProductData;
-import com.leroy.magportal.api.data.NearestShopsData;
-import com.leroy.magportal.api.data.NearestShopsList;
+import com.leroy.magportal.api.data.catalog.products.CatalogProductData;
+import com.leroy.magportal.api.data.catalog.shops.NearestShopsData;
 import com.leroy.magportal.ui.models.search.NomenclaturePath;
 import com.leroy.magportal.ui.models.search.ShopCardData;
 import com.leroy.magportal.ui.pages.common.MenuPage;
@@ -181,9 +180,9 @@ public class ProductCardPage extends MenuPage {
             img = productImagesGallery.get(i);
             attributeValue = img.findChildElement("/ancestor::div[3]").getAttribute("aria-hidden");
             if (i == 0) {
-                anAssert.isElementTextContainsIgnoringCase(attributeValue, "false", "Изображение не отображено");
+                anAssert.isContainsIgnoringCase(attributeValue, "false", "Изображение не отображено");
             } else {
-                anAssert.isElementTextContainsIgnoringCase(attributeValue, "true", "Изображение не отображено");
+                anAssert.isContainsIgnoringCase(attributeValue, "true", "Изображение не отображено");
             }
             imageLink = images.get(i);
             anAssert.isEquals(imageLink, img.getLink(), "Ссылки на изображения не совпадают");
@@ -226,10 +225,10 @@ public class ProductCardPage extends MenuPage {
             subClassId = subClassId.substring(1);
         }
         softAssert.isElementTextContains(nomenclatureBadge, departmentId);
-        softAssert.isContains(departmentId, data.getGroupId(), "Отделы не равны");
-        softAssert.isContains(subDepartmentId, data.getDepartmentId(), "Подотделы не равны");
-        softAssert.isContains(classId, data.getClassId(), "Типы не равны");
-        softAssert.isContains(subClassId, data.getSubclassId(), "Подтипы не равны");
+        softAssert.isContainsIgnoringCase(departmentId, data.getGroupId(), "Отделы не равны");
+        softAssert.isContainsIgnoringCase(subDepartmentId, data.getDepartmentId(), "Подотделы не равны");
+        softAssert.isContainsIgnoringCase(classId, data.getClassId(), "Типы не равны");
+        softAssert.isContainsIgnoringCase(subClassId, data.getSubclassId(), "Подтипы не равны");
         softAssert.verifyAll();
     }
 
@@ -257,7 +256,7 @@ public class ProductCardPage extends MenuPage {
         String eachDescriptionElementText;
         for (Element each : this.description) {
             eachDescriptionElementText = each.getText();
-            anAssert.isElementTextContainsIgnoringCase(description, eachDescriptionElementText,
+            anAssert.isContainsIgnoringCase(description, eachDescriptionElementText,
                     description + " hasn`t cantains " + eachDescriptionElementText);
         }
     }
@@ -274,7 +273,7 @@ public class ProductCardPage extends MenuPage {
         return this;
     }
 
-    public void shouldNearestShopInfoIsCorrect(NearestShopsList dataList) throws Exception {
+    public void shouldNearestShopInfoIsCorrect(List<NearestShopsData> dataList) throws Exception {
         ShopCardData data;
         NearestShopsData nearestShopsData;
         TreeMap<Double, Integer> sortedByDistanceShopId = new TreeMap<>();
@@ -302,7 +301,7 @@ public class ProductCardPage extends MenuPage {
         for (ShopCardWidget tmp : shopsList) {
             data = tmp.grabDataFromWidget();
             if (criterion.matches("\\^.?+D+.?+")) {
-                anAssert.isElementTextContainsIgnoringCase(data.getName(), criterion, "Name expected: " + criterion
+                anAssert.isContainsIgnoringCase(data.getName(), criterion, "Name expected: " + criterion
                         + "actual" + data.getName());
             } else {
                 anAssert.isTrue(String.valueOf(data.getId()).contains(criterion)||data.getName().contains(criterion), "ID expected: "

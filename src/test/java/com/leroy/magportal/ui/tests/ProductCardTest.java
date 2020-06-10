@@ -7,10 +7,10 @@ import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magportal.api.clients.MagPortalCatalogProductClient;
-import com.leroy.magportal.api.data.ProductData;
-import com.leroy.magportal.api.data.products.CatalogProductData;
-import com.leroy.magportal.api.data.CatalogSimilarProductsData;
-import com.leroy.magportal.api.data.NearestShopsList;
+import com.leroy.magportal.api.data.catalog.products.CatalogProductData;
+import com.leroy.magportal.api.data.catalog.products.CatalogSimilarProductsData;
+import com.leroy.magportal.api.data.catalog.products.ProductData;
+import com.leroy.magportal.api.data.catalog.shops.NearestShopsData;
 import com.leroy.magportal.ui.WebBaseSteps;
 import com.leroy.magportal.ui.constants.search.CatalogSearchParams;
 import com.leroy.magportal.ui.models.search.NomenclaturePath;
@@ -326,8 +326,8 @@ public class ProductCardTest extends WebBaseSteps {
         String shopId = "3";
         String shopName = "Химки";
         String lmCode = getRandomLmCode();
-        NearestShopsList nearestShopsList = apiClientProvider.getMagPortalCatalogProductClientProvider()
-                .getNearestShopsInfo(lmCode).asJson();
+        List<NearestShopsData> nearestShopsList = apiClientProvider.getMagPortalCatalogProductClientProvider()
+                .getNearestShopsInfo(lmCode).asJsonList(NearestShopsData.class);
 
         //Pre-condition
         ExtendedProductCardPage extendedProductCardPage = navigateToProductCardByUrl(lmCode, false);

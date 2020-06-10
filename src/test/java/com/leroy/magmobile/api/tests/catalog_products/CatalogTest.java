@@ -103,7 +103,7 @@ public class CatalogTest extends BaseProjectApiTest {
         assertThat("Catalog shops size", catalogShopsList, hasSize(shops.length));
         for (CatalogShopsData data : catalogShopsList) {
             assertThat("shopId", String.valueOf(data.getShopId()), oneOf(shops));
-            assertThat("price", Double.parseDouble(data.getPrice()), greaterThan(0.0));
+            assertThat("price", data.getPrice(), greaterThan(0.0));
         }
     }
 

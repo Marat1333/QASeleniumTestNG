@@ -1,9 +1,9 @@
-package com.leroy.magportal.api.data;
+package com.leroy.magportal.api.data.catalog.products;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.leroy.magmobile.api.data.catalog.Characteristic;
-import com.leroy.magportal.api.data.products.PriceInfo;
+import com.leroy.magportal.api.data.catalog.products.product_fields.PriceInfo;
 import lombok.Data;
 
 import java.util.Date;

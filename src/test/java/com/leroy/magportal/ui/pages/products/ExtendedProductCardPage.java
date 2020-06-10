@@ -6,11 +6,11 @@ import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magportal.api.data.ProductData;
-import com.leroy.magportal.api.data.products.CatalogProductData;
-import com.leroy.magportal.api.data.products.CatalogSupplierData;
-import com.leroy.magportal.api.data.products.ExtStocks;
-import com.leroy.magportal.api.data.products.StockAreas;
+import com.leroy.magportal.api.data.catalog.products.ProductData;
+import com.leroy.magportal.api.data.catalog.products.CatalogProductData;
+import com.leroy.magportal.api.data.catalog.suppliers.CatalogSupplierData;
+import com.leroy.magportal.api.data.catalog.products.product_fields.ExtStocks;
+import com.leroy.magportal.api.data.catalog.products.product_fields.StockAreas;
 import com.leroy.magportal.ui.models.search.PriceContainerData;
 import com.leroy.magportal.ui.models.search.StocksData;
 import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
@@ -321,7 +321,7 @@ public class ExtendedProductCardPage extends ProductCardPage {
             formattedDataDate = longFormatter.format(dataDate);
         }
         String viewDate = productPriceInfoWidget.getLastPriceChangeDateLbl();
-        softAssert.isContains(viewDate, formattedDataDate, "Даты не совпадают: отображается " + viewDate + " ожидаемая дата: " + formattedDataDate);
+        softAssert.isContainsIgnoringCase(viewDate, formattedDataDate, "Даты не совпадают: отображается " + viewDate + " ожидаемая дата: " + formattedDataDate);
     }
 
     private void shouldStocksIsCorrect(CatalogProductData data) {

@@ -28,8 +28,8 @@ public class SoftAssertWrapper extends BaseCustomAssert {
         super.logIsEquals(actual, expected, desc, true);
     }
 
-    public void isContains(String source, String inner, String desc) {
-        super.logIsElementTextContainsIgnoringCase(source, inner, desc, true);
+    public void isContainsIgnoringCase(String source, String inner, String desc) {
+        super.logIsContainsIgnoringCase(source, inner, desc, true);
     }
 
     public void isNotEquals(Object actual, Object expected, String desc) {

@@ -693,7 +693,7 @@ public class SearchProductPage extends MenuPage {
         anAssert.isElementNotVisible(notFoundMsgLbl);
         if (searchCriterion.matches("\\D+") || searchCriterion.length() < 4) {
             for (int i = 0; i < extendedProductCardList.getCount(); i++) {
-                anAssert.isElementTextContainsIgnoringCase(extendedProductCardList.get(i).getTitle(), searchCriterion,
+                anAssert.isContainsIgnoringCase(extendedProductCardList.get(i).getTitle(), searchCriterion,
                         extendedProductCardList.get(i).getTitle() + " не содержит " + searchCriterion);
             }
         } else {
@@ -804,7 +804,7 @@ public class SearchProductPage extends MenuPage {
                     "Поле с выбором поставщика не пустое");
         } else if (name.length == 1) {
             elemText = supplierComboBox.getSelectedOptionText();
-            anAssert.isElementTextContainsIgnoringCase(elemText, name[0],
+            anAssert.isContainsIgnoringCase(elemText, name[0],
                     "Не отображено имя поставщика " + name[0]);
         } else {
             elemText = supplierComboBox.getSelectedOptionText();
@@ -990,7 +990,7 @@ public class SearchProductPage extends MenuPage {
     @Step("Проверить, что комбо-бокс сортировки содержит {value}")
     public SearchProductPage shouldSortComboBoxContainsText(String value) {
         String actualText = sortComboBox.getSelectedOptionText();
-        anAssert.isElementTextContainsIgnoringCase(actualText, value,
+        anAssert.isContainsIgnoringCase(actualText, value,
                 actualText + " не содержит " + value);
         return this;
     }
@@ -1000,10 +1000,10 @@ public class SearchProductPage extends MenuPage {
         String attributeName = "className";
         String condition = "active";
         if (frame.equals(FilterFrame.MY_SHOP)) {
-            anAssert.isElementTextContainsIgnoringCase(myShopContainer.getAttribute(attributeName), condition,
+            anAssert.isContainsIgnoringCase(myShopContainer.getAttribute(attributeName), condition,
                     "группа фильтров \"Мой магазин\" не выбрана");
         } else {
-            anAssert.isElementTextContainsIgnoringCase(allGammaContainer.getAttribute(attributeName), condition,
+            anAssert.isContainsIgnoringCase(allGammaContainer.getAttribute(attributeName), condition,
                     "группа фильтров \"Вся гамма ЛМ\" не выбрана");
         }
         return this;
