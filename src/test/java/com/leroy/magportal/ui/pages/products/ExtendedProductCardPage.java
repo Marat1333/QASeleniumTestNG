@@ -88,7 +88,8 @@ public class ExtendedProductCardPage extends ProductCardPage {
         }
         switchExtraInfoTabs(tab);
         boolean condition = false;
-        while (true) {
+        int i=0;
+        while (i!=20) {
             for (ExtendedProductCardWidget widget : productCards) {
                 String widgetLmCode = widget.getLmCode();
                 if (widgetLmCode.equals(lmCode)) {
@@ -105,6 +106,7 @@ public class ExtendedProductCardPage extends ProductCardPage {
                 throw new AssertionError("There is no needed lmCode");
             }
             productCardsListRightPaginationBtn.click();
+            i++;
         }
         return new ExtendedProductCardPage();
     }
