@@ -69,10 +69,10 @@ public class PrintTagPriceTest extends BaseProjectApiTest {
             printTaskProductData.setTitle(catalogProductData.getTitle());
             printTaskProductData.setPrice(catalogProductData.getPrice());
             printTaskProductData.setPriceCurrency(catalogProductData.getPurchasePriceCurrency());
-            printTaskProductData.setRecommendedPrice(catalogProductData.getPriceInfo().getRecommendedPrice());
-            printTaskProductData.setSalesPrice(catalogProductData.getPriceInfo().getPrice());
-            printTaskProductData.setPriceReasonOfChange(catalogProductData.getPriceInfo().getReasonOfChange());
-            printTaskProductData.setFuturePriceFromDate(catalogProductData.getPriceInfo().getDateOfChange());
+            printTaskProductData.setRecommendedPrice(catalogProductData.getSalesPrice().getRecommendedPrice());
+            printTaskProductData.setSalesPrice(catalogProductData.getSalesPrice().getPrice());
+            printTaskProductData.setPriceReasonOfChange(catalogProductData.getSalesPrice().getReasonOfChange());
+            printTaskProductData.setFuturePriceFromDate(catalogProductData.getSalesPrice().getDateOfChange());
             printTaskProductData.setPriceUnit(catalogProductData.getPriceUnit());
             printTaskProductData.setQuantity(3);
             printTaskProductData.setSize("pricetag-small-50x40mm");

@@ -7,7 +7,7 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
+import com.leroy.magportal.api.data.CatalogProductData;
 import com.leroy.magmobile.api.data.catalog.product.CatalogSupplierData;
 import com.leroy.magmobile.api.data.catalog.product.ExtStocks;
 import com.leroy.magmobile.api.data.catalog.product.StockAreas;

@@ -1,7 +1,7 @@
 package com.leroy.magportal.api.clients;
 
 import com.leroy.magmobile.api.clients.MagMobileClient;
-import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
+import com.leroy.magportal.api.data.CatalogProductData;
 import com.leroy.magportal.api.data.CatalogSimilarProductsData;
 import com.leroy.magportal.api.data.NearestShopsList;
 import com.leroy.magportal.api.requests.GetCatalogProduct;

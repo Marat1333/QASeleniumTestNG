@@ -19,7 +19,8 @@ public class ProductItemData {
     private String title;
     private String description;
     private String gamma;
-    private String avsDate;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss[.SSS][.S]['Z'][XXX]")
+    private ZonedDateTime avsDate;
     private String brand;
     private String priceCategory;
     private Boolean ctm;

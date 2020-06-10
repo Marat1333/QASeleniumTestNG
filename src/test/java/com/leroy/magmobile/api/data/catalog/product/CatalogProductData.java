@@ -14,7 +14,6 @@ public class CatalogProductData extends ProductItemData {
     private Integer topEMQuantity;
     private ExtStocks extStocks;
     private PriceInfo salesPrice;
-    private PriceInfo priceInfo;
     private Logistic logistic;
     private Double purchasePrice;
     private String purchasePriceCurrency;
