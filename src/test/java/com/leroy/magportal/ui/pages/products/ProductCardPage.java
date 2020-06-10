@@ -259,7 +259,7 @@ public class ProductCardPage extends MenuPage {
         for (Element each : this.description) {
             eachDescriptionElementText = each.getText();
             anAssert.isContainsIgnoringCase(description, eachDescriptionElementText,
-                    description + " hasn`t cantains " + eachDescriptionElementText);
+                    description + " hasn`t contains " + eachDescriptionElementText);
         }
     }
 

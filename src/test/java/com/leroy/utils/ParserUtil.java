@@ -114,25 +114,4 @@ public class ParserUtil {
         return source;
     }
 
-    /**
-     * @deprecated - Используй BigDecimal класс и метод setScale()
-     */
-    public static String parseDoubleZeroFormatInStringDouble(String doubleS) {
-        if (doubleS == null) {
-            return null;
-        }
-        return doubleS.contains(".") ? String.format("%.2f", Double.parseDouble(doubleS)) : doubleS;
-    }
-
-    /**
-     * @deprecated - Используй BigDecimal класс и метод setScale()
-     */
-    public static Double parseNZeroFormatInStringDouble(String doubleS, int numbersAfterDot) {
-        if (doubleS == null) {
-            return null;
-        }
-        return doubleS.contains(".") ? Double.parseDouble(String.format("%." + numbersAfterDot + "f",
-                Double.parseDouble(doubleS))) : Double.parseDouble(doubleS);
-    }
-
 }

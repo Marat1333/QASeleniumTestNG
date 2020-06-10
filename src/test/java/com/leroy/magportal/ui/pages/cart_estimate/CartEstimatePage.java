@@ -352,7 +352,6 @@ public abstract class CartEstimatePage extends
 
     @Step("Проверить, что в документ добавлены товары с ЛМ кодами: {lmCodes}")
     public CartEstimatePage shouldDocumentHasProducts(List<String> lmCodes) {
-        orders().waitUntilAtLeastOneElementIsPresent();
         List<ProductOrderCardWebData> productData = getProductDataList();
         List<String> actualLmCodes = productData.stream().map(
                 ProductOrderCardWebData::getLmCode).collect(Collectors.toList());

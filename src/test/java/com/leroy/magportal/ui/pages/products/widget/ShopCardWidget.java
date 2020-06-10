@@ -39,12 +39,7 @@ public class ShopCardWidget extends BaseWidget {
         data.setAddress(shopAddress.getText());
         data.setDistance(Double.parseDouble(distance.getText().split(" ")[0]));
         data.setPrice(price.getDecimalPrice());
-        String quantity = ParserUtil.replaceSpecialSymbols(availableStock.getText().split(" ")[0]);
-        if (quantity == null) {
-            data.setQuantity(null);
-        } else {
-            data.setQuantity(Double.parseDouble(quantity));
-        }
+        data.setQuantity(ParserUtil.strToDouble(availableStock.getText()));
         return data;
     }
 }
