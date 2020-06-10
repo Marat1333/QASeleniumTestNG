@@ -695,7 +695,6 @@ public class EstimateTest extends SalesBaseTest {
         // Step 4
         step("Нажмите на Добавить в смету");
         ProductOrderCardAppData newProduct = addProduct35Page.getProductOrderDataFromPage();
-        newProduct.setSelectedMoreThanAvailable(true);
         estimatePage = addProduct35Page.clickAddIntoEstimateButton();
         estimatePage.verifyRequiredElements(
                 EstimatePage.PageState.builder()
@@ -733,6 +732,7 @@ public class EstimateTest extends SalesBaseTest {
         // Step 4
         step("Нажмите на Добавить в смету");
         ProductOrderCardAppData newProduct = addProduct35Page.getProductOrderDataFromPage();
+        newProduct.setAvailableTodayQuantity(null);
         estimatePage = addProduct35Page.clickAddIntoEstimateButton();
         estimatePage.verifyRequiredElements(
                 EstimatePage.PageState.builder()
