@@ -3,7 +3,7 @@ package com.leroy.magportal.api.data;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.leroy.magmobile.api.data.catalog.Characteristic;
-import com.leroy.magmobile.api.data.catalog.product.PriceInfo;
+import com.leroy.magportal.api.data.products.PriceInfo;
 import lombok.Data;
 
 import java.util.Date;

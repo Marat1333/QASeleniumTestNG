@@ -5,13 +5,10 @@ import lombok.Data;
 
 @Data
 public class ExtStocks {
-    private String ItemID;
-    private String StoreID;
-    private Integer C3;
-    @JsonProperty("RTV")
-    private Integer rtv;
     @JsonProperty("WHB")
     private Integer whb;
+    @JsonProperty("RTV")
+    private Integer rtv;
     @JsonProperty("EXPO")
     private Integer expo;
     @JsonProperty("COR")
@@ -22,13 +19,8 @@ public class ExtStocks {
     private Integer utsp;
     @JsonProperty("TBC")
     private Integer tbc;
-    private Integer RTV_on_DC;
-    private Integer TSF_outbound_confirmed;
     @JsonProperty("TSF_outbound")
     private Integer tsfOutbound;
-    private Integer TSF_inbound_confirmed;
-    private Integer TSF_inbound_delivered;
-    private Integer BUID;
     private Integer returnReserve;
     private Integer clientsReserve;
     private Integer bufferEM;

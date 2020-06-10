@@ -1,6 +1,6 @@
-package com.leroy.magportal.api.data;
+package com.leroy.magportal.api.data.products;
 
-import com.leroy.magmobile.api.data.catalog.product.*;
+import com.leroy.magportal.api.data.ProductData;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -14,7 +14,6 @@ public class CatalogProductData extends ProductData {
     private Integer topEMQuantity;
     private ExtStocks extStocks;
     private PriceInfo priceInfo;
-    private Logistic logistic;
     private PriceInfo purchasePrice;
     private String purchasePriceCurrency;
     private Double primeCost;

@@ -6,11 +6,11 @@ import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magportal.api.data.CatalogProductData;
-import com.leroy.magmobile.api.data.catalog.product.CatalogSupplierData;
-import com.leroy.magmobile.api.data.catalog.product.ExtStocks;
-import com.leroy.magmobile.api.data.catalog.product.StockAreas;
+import com.leroy.magportal.api.data.ProductData;
+import com.leroy.magportal.api.data.products.CatalogProductData;
+import com.leroy.magportal.api.data.products.CatalogSupplierData;
+import com.leroy.magportal.api.data.products.ExtStocks;
+import com.leroy.magportal.api.data.products.StockAreas;
 import com.leroy.magportal.ui.models.search.PriceContainerData;
 import com.leroy.magportal.ui.models.search.StocksData;
 import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
@@ -88,8 +88,8 @@ public class ExtendedProductCardPage extends ProductCardPage {
         }
         switchExtraInfoTabs(tab);
         boolean condition = false;
-        int i=0;
-        while (i!=20) {
+        int i = 0;
+        while (i != 20) {
             for (ExtendedProductCardWidget widget : productCards) {
                 String widgetLmCode = widget.getLmCode();
                 if (widgetLmCode.equals(lmCode)) {
@@ -138,7 +138,7 @@ public class ExtendedProductCardPage extends ProductCardPage {
                 } else if ((similarProducts.isVisible() || complementProducts.isVisible()) &&
                         tabContainerList.get(1).getAttribute(attribute).contains(condition)) {
                     return this;
-                } else if (!similarProducts.isVisible()&&!complementProducts.isVisible()){
+                } else if (!similarProducts.isVisible() && !complementProducts.isVisible()) {
                     return this;
                 }
                 pricesAndStocksInOtherShops.scrollTo();
@@ -190,7 +190,7 @@ public class ExtendedProductCardPage extends ProductCardPage {
     }
 
     @Step("Проверить, что все дополнительные товары отображен")
-    public ExtendedProductCardPage shouldAllAdditionalProductsIsVisible(List<ProductItemData> data) throws Exception {
+    public ExtendedProductCardPage shouldAllAdditionalProductsIsVisible(List<ProductData> data) throws Exception {
         if (data.size() > 4) {
             shouldNavigationBtnHasCorrectCondition(Direction.FORWARD, true);
         } else {
@@ -339,9 +339,9 @@ public class ExtendedProductCardPage extends ProductCardPage {
         softAssert.isEquals(stockData.getUnavailableForSale(), unavailableStockSum, "Недоступный остаток");
     }
 
-    private void shouldSupplierDataIsCorrect(CatalogSupplierData data) throws Exception{
+    private void shouldSupplierDataIsCorrect(CatalogSupplierData data) throws Exception {
         softAssert.isEquals(data.getSupName(), supplierInfo.get(0).getText(), "Название поставщика");
-        softAssert.isEquals("Код поставщика: "+data.getSupCode(), supplierInfo.get(1).getText(), "Код поставщика");
+        softAssert.isEquals("Код поставщика: " + data.getSupCode(), supplierInfo.get(1).getText(), "Код поставщика");
         softAssert.isEquals(data.getSupPhone(), supplierInfo.get(2).getText(), "Телефон");
         softAssert.isEquals(data.getSupContactName(), supplierInfo.get(3).getText(), "Имя представителя");
         softAssert.isEquals(data.getSupEmail(), supplierInfo.get(4).getText(), "Email");
