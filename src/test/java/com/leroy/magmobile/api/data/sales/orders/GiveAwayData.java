@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class GiveAwayData {
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss[.SS]'Z'")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss[.SSS][.S]'Z'")
     private LocalDateTime date;
     private Integer shopId;
     private String point;

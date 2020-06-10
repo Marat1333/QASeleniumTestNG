@@ -218,8 +218,7 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
 
         // Step #7
         step("Нажмите Оформить");
-        ProcessOrder35Page processOrder35Page = cart35Page.clickMakeSalesButton()
-                .verifyRequiredElements();
+        ProcessOrder35Page processOrder35Page = cart35Page.clickMakeSalesButton();
 
         // Step #8
         step("Заполните поля Имя и Фамилия, Телефон, PIN-код для оплаты");
@@ -245,7 +244,7 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
         expectedSalesDocument.setTitle(orderDetailsData.getDeliveryType().getValue());
         expectedSalesDocument.setNumber(documentNumber);
         SalesDocumentsPage salesDocumentsPage = submittedDocument35Page
-                .clickSubmitButton()
+                .clickGoToDocumentListButton()
                 .shouldSalesDocumentIsPresentAndDataMatches(expectedSalesDocument);
 
         // Additional Step

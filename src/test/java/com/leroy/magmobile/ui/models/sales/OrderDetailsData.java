@@ -34,7 +34,7 @@ public class OrderDetailsData {
         MagCustomerData customerData = new MagCustomerData();
         customerData.setName(String.format("%s %s", RandomStringUtils.randomAlphanumeric(6),
                 RandomStringUtils.randomAlphabetic(6)));
-        customerData.setPhone(RandomStringUtils.randomNumeric(10));
+        customerData.setPhone(RandomUtil.randomPhoneNumber());
         this.customer = customerData;
         this.pinCode = RandomUtil.randomPinCode(true);
         return this;

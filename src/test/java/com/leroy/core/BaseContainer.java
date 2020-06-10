@@ -1,6 +1,7 @@
 package com.leroy.core;
 
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.annotations.Form;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.configuration.Log;
@@ -52,7 +53,8 @@ public abstract class BaseContainer {
         Class<?> current = this.getClass();
         while (current.getSuperclass() != null) {
             for (Field field : current.getDeclaredFields()) {
-                if (field.getAnnotation(WebFindBy.class) != null || field.getAnnotation(AppFindBy.class) != null) {
+                if (field.getAnnotation(WebFindBy.class) != null || field.getAnnotation(AppFindBy.class) != null ||
+                        field.getAnnotation(Form.class) != null) {
                     FieldInitializer decorator = new FieldInitializer(driver, field, locator);
                     Object value = decorator.initField();
                     if (value != null) {
@@ -143,6 +145,7 @@ public abstract class BaseContainer {
 
     /**
      * Wait until at least one of the elements is visible
+     *
      * @return true if at least one element is visible; false - otherwise
      */
     protected boolean waitForAnyOneOfElementsIsVisible(BaseWidget... elements) {

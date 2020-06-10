@@ -66,6 +66,24 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
         cardWidget.click();
     }
 
+    @Step("Ждем, пока документ №{docNumber} не будет в состоянии {expectedStatus}")
+    public SalesDocumentsPage waitUntilDocumentIsInCorrectStatus(String docNumber, String expectedStatus) {
+        String actualStatus;
+        int iCount = 0;
+        do {
+            if (iCount > 0)
+                salesDocumentScrollList.scrollToBeginning();
+            CardWidget<ShortSalesDocumentData> cardWidget =
+                    salesDocumentScrollList.searchForWidgetByText(docNumber);
+            anAssert.isNotNull(cardWidget, "Не нашли документ " + docNumber,
+                    String.format("Документ №%s должен быть найден",
+                            docNumber));
+            actualStatus = cardWidget.collectDataFromPage().getDocumentState();
+            iCount++;
+        } while (!actualStatus.equals(expectedStatus) || iCount < 5);
+        return this;
+    }
+
     @Step("Нажмите кнопку 'Создать документ продажи'")
     public SearchProductPage clickCreateSalesDocumentButton() {
         createSalesDocumentBtn.click();

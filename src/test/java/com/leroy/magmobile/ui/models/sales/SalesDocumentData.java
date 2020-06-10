@@ -6,6 +6,7 @@ import com.leroy.utils.ParserUtil;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,10 +15,28 @@ import java.util.List;
 public class SalesDocumentData {
     private String title;
     private String number;
-    private String date;
-    private String documentState;
+    private LocalDateTime date;
+    private String status;
+    private String creator;
 
     private List<OrderAppData> orderAppDataList;
+
+    public void setFieldsFrom(ShortSalesDocumentData shortSalesDocumentData) {
+        title = shortSalesDocumentData.getTitle();
+        number = shortSalesDocumentData.getNumber();
+        date = shortSalesDocumentData.getDate();
+        status = shortSalesDocumentData.getDocumentState();
+    }
+
+    public void removeOrder(int index) {
+        orderAppDataList.remove(index);
+        if (orderAppDataList.size() == 1) {
+            OrderAppData orderAppData = orderAppDataList.get(0);
+            orderAppData.setOrderIndex(null);
+            orderAppData.setOrderMaxCount(null);
+            orderAppData.setProductCountTotal(null);
+        }
+    }
 
     public void consolidateOrders() {
         OrderAppData newOrder = new OrderAppData();
@@ -51,9 +70,13 @@ public class SalesDocumentData {
             softAssert.isEquals(date, expectedSalesDocumentData.getDate(),
                     "Неверная дата создания документа");
         }
-        if (expectedSalesDocumentData.getDocumentState() != null) {
-            softAssert.isEquals(documentState, expectedSalesDocumentData.getDocumentState(),
+        if (expectedSalesDocumentData.getStatus() != null) {
+            softAssert.isEquals(status, expectedSalesDocumentData.getStatus(),
                     "Неверный статус документа");
+        }
+        if (expectedSalesDocumentData.getCreator() != null) {
+            softAssert.isEquals(creator, expectedSalesDocumentData.getCreator(),
+                    "Неверный автор документа");
         }
         softAssert.verifyAll();
         softAssert.isEquals(orderAppDataList.size(), expectedSalesDocumentData.getOrderAppDataList().size(),

@@ -4,6 +4,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.Cart35Page;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
@@ -31,11 +32,14 @@ public class SubmittedSalesDocument35Page extends CommonMagMobilePage {
     Element statusCanBeMonitoringInDocumentListLbl;
 
     @AppFindBy(text = "ПЕРЕЙТИ В СПИСОК ДОКУМЕНТОВ")
-    private MagMobButton submitBtn;
+    private MagMobButton goToDocumentListBtn;
+
+    @AppFindBy(text = "ПЕРЕЙТИ В КОРЗИНУ")
+    private MagMobButton goToCartBtn;
 
     @Override
     public void waitForPageIsLoaded() {
-        submitBtn.waitForVisibility(long_timeout);
+        titleMsgLbl.waitForVisibility(long_timeout);
     }
 
     public String getDocumentNumber() {
@@ -45,20 +49,35 @@ public class SubmittedSalesDocument35Page extends CommonMagMobilePage {
     /* ------------------------- ACTION STEPS -------------------------- */
 
     @Step("Нажмите кнопку Перейти в список документов")
-    public SalesDocumentsPage clickSubmitButton() {
-        submitBtn.click();
+    public SalesDocumentsPage clickGoToDocumentListButton() {
+        goToDocumentListBtn.click();
         return new SalesDocumentsPage();
+    }
+
+    @Step("Нажмите кнопку Перейти в корзину")
+    public Cart35Page clickGoToCartButton() {
+        goToCartBtn.click();
+        return new Cart35Page();
     }
 
     /* ---------------------- Verifications -------------------------- */
 
     @Step("Проверить, что страница подтверждения заказа отображается корректно")
-    public SubmittedSalesDocument35Page verifyRequiredElements() {
-        softAssert.areElementsVisible(titleMsgLbl, orderNumberLbl,
-                orderNumberVal, pinCodeLbl, pinCodeVal, offerCustomerToTakeScreenshotLbl,
-                statusCanBeMonitoringInDocumentListLbl, submitBtn);
+    public SubmittedSalesDocument35Page verifyRequiredElements(boolean severalOrdersInCart) {
+        String ps = getPageSource();
+        softAssert.areElementsVisible(ps, titleMsgLbl, orderNumberLbl,
+                orderNumberVal, pinCodeLbl, pinCodeVal, offerCustomerToTakeScreenshotLbl);
+        if (severalOrdersInCart) {
+            softAssert.isElementVisible(goToCartBtn, ps);
+        } else {
+            softAssert.areElementsVisible(ps, statusCanBeMonitoringInDocumentListLbl, goToDocumentListBtn);
+        }
         softAssert.verifyAll();
         return this;
+    }
+
+    public SubmittedSalesDocument35Page verifyRequiredElements() {
+        return verifyRequiredElements(false);
     }
 
     @Step("Проверить, что Пин-код = {text}")

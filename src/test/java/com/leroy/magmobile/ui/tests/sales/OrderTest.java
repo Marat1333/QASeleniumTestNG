@@ -12,6 +12,8 @@ import com.leroy.magmobile.ui.pages.customers.SearchCustomerPage;
 import com.leroy.magmobile.ui.pages.sales.SalesDocumentsPage;
 import com.leroy.magmobile.ui.pages.sales.SubmittedSalesDocument35Page;
 import com.leroy.magmobile.ui.pages.sales.orders.cart.Cart35Page;
+import com.leroy.magmobile.ui.pages.sales.orders.order.CartProcessOrder35Page;
+import com.leroy.magmobile.ui.pages.sales.orders.order.ConfirmedOrderPage;
 import com.leroy.magmobile.ui.pages.sales.orders.order.ProcessOrder35Page;
 import org.testng.annotations.Test;
 
@@ -35,8 +37,7 @@ public class OrderTest extends SalesBaseTest {
 
         // Step
         step("Нажмите на кнопку Оформить");
-        ProcessOrder35Page processOrder35Page = cart35Page.clickMakeSalesButton()
-                .verifyRequiredElements();
+        ProcessOrder35Page processOrder35Page = cart35Page.clickMakeSalesButton();
 
         // Step 2, 3, 4, 5, 6, 7
         step("Введите имя и фамилию нового пользователя, Введите PIN-код для оплаты");
@@ -60,7 +61,7 @@ public class OrderTest extends SalesBaseTest {
         expectedSalesDocument.setDocumentState(SalesDocumentsConst.States.IN_PROGRESS.getUiVal());
         expectedSalesDocument.setTitle(orderDetailsData.getDeliveryType().getValue());
         expectedSalesDocument.setNumber(documentNumber);
-        SalesDocumentsPage salesDocumentsPage = submittedDocument35Page.clickSubmitButton();
+        SalesDocumentsPage salesDocumentsPage = submittedDocument35Page.clickGoToDocumentListButton();
         salesDocumentsPage.shouldSalesDocumentIsPresentAndDataMatches(expectedSalesDocument);
 
         // Clean up
@@ -77,8 +78,7 @@ public class OrderTest extends SalesBaseTest {
 
         // Step 1
         step("Нажмите на кнопку Оформить Заказ №1");
-        ProcessOrder35Page processOrder35Page = cart35Page.clickMakeSalesButton(1)
-                .verifyRequiredElements();
+        ProcessOrder35Page processOrder35Page = cart35Page.clickMakeSalesButton(1);
 
         // Steps 2 - 7
         step("Введите имя и фамилию нового пользователя, Введите PIN-код для оплаты");
@@ -91,14 +91,19 @@ public class OrderTest extends SalesBaseTest {
         // Step 8
         step("Нажмите на кнопку Подтвердить заказ");
         SubmittedSalesDocument35Page submittedDocument35Page = processOrder35Page.clickSubmitButton()
-                .verifyRequiredElements()
+                .verifyRequiredElements(true)
                 .shouldPinCodeIs(orderDetailsData.getPinCode());
         String documentNumber = submittedDocument35Page.getDocumentNumber();
 
         // Step 9
         step("Нажмите на Перейти в корзину");
-        // TODO
+        cart35Page = submittedDocument35Page.clickGoToCartButton();
+        salesDocumentData.removeOrder(0);
+        cart35Page.shouldSalesDocumentDataIs(salesDocumentData);
 
+        // Clean up
+        step("(Доп шаг) Отменяем заказ через API запрос");
+        cancelOrder(documentNumber);
     }
 
     @Test(description = "C22797114 Подтвердить заказ на самовывоз сегодня")
@@ -106,7 +111,7 @@ public class OrderTest extends SalesBaseTest {
         // Test Data
         MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
 
-        startFromScreenWithOrderDraft();
+        SalesDocumentData salesDocumentData = startFromScreenWithOrderDraft(true);
 
         ProcessOrder35Page processOrder35Page = new ProcessOrder35Page();
 
@@ -138,15 +143,35 @@ public class OrderTest extends SalesBaseTest {
         // Step 7
         step("Нажмите на кнопку Подтвердить заказ");
         SubmittedSalesDocument35Page submittedDocument35Page = processOrder35Page.clickSubmitButton()
-                .verifyRequiredElements(); // TODO
+                .verifyRequiredElements()
+                .shouldPinCodeIs(orderDetailsData.getPinCode());
+        String documentNumber = submittedDocument35Page.getDocumentNumber();
 
         // Step 8
         step("Нажмите на Перейти в список документов");
+        ShortSalesDocumentData documentData = new ShortSalesDocumentData();
+        documentData.setNumber(documentNumber);
+        documentData.setDocumentState(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal());
+        documentData.setTitle(SalesDocumentsConst.GiveAwayPoints.PICKUP.getUiVal());
+        documentData.setPin(orderDetailsData.getPinCode());
+        documentData.setCustomerName(customerData.getName());
+        documentData.setDocumentTotalPrice(salesDocumentData.getOrderAppDataList().get(0).getTotalPrice());
+
+        SalesDocumentsPage salesDocumentsPage = submittedDocument35Page.clickGoToDocumentListButton();
+        salesDocumentsPage.waitUntilDocumentIsInCorrectStatus(documentNumber, documentData.getDocumentState())
+                .shouldSalesDocumentIsPresentAndDataMatches(documentData);
 
         // Step 9
         step("Нажать на мини-карточку созданного документа Самовывоз");
-        // TODO
+        salesDocumentData.setFieldsFrom(documentData);
+        salesDocumentsPage.searchForDocumentByTextAndSelectIt(documentData.getNumber());
+        new ConfirmedOrderPage()
+                .shouldSalesDocumentDataIs(salesDocumentData)
+                .shouldFormFieldsAre(orderDetailsData);
 
+        // Clean up
+        step("(Доп шаг) Отменяем заказ через API запрос");
+        cancelOrder(documentNumber);
     }
 
     @Test(description = "C22797115 Подтвердить заказ на доставку на завтра")
@@ -155,7 +180,7 @@ public class OrderTest extends SalesBaseTest {
         MagCustomerData customerData = TestDataConstants.CUSTOMER_WITH_SERVICE_CARD;
 
         // Pre-conditions
-        startFromScreenWithOrderDraft();
+        startFromScreenWithOrderDraft(false);
 
         // Step 1
         step("В поле Выбери способ получения нажмите на кнопу Доставка");
@@ -196,6 +221,10 @@ public class OrderTest extends SalesBaseTest {
         // Step 9
         step("Нажать на мини-карточку созданного документа Самовывоз");
         // TODO
+
+        // Clean up
+        //step("(Доп шаг) Отменяем заказ через API запрос");
+        //cancelOrder(documentNumber);
 
     }
 
@@ -257,16 +286,64 @@ public class OrderTest extends SalesBaseTest {
 
         // TODO
 
+        // Clean up
+        //step("(Доп шаг) Отменяем заказ через API запрос");
+        //cancelOrder(documentNumber);
     }
 
     @Test(description = "C22797118 Создать заказ из корзины со скидкой")
     public void testCreateOrderFromCartWithDiscount() throws Exception {
         // Pre-condition + step 1
-        startFromScreenWithOrderDraft(true);
+        SalesDocumentData salesDocumentData = startFromScreenWithOrderDraftWithDiscount();
+        anAssert().isNotNull(salesDocumentData.getOrderAppDataList().get(0)
+                        .getProductCardDataList().get(0).getDiscountPercent(),
+                "У товара в корзине отсутствует скидка", "Товар в корзине должен иметь скидку");
 
+        ProcessOrder35Page processOrder35Page = new ProcessOrder35Page();
         // Step 2
         step("Нажмите на иконку корзины в поле оформления заказа");
+        CartProcessOrder35Page cartProcessOrder35Page = processOrder35Page.clickCartIcon();
+        cartProcessOrder35Page.shouldSalesDocumentDataIs(salesDocumentData);
 
+        // Step 3
+        step("Нажмите на иконку оформления заказа");
+        processOrder35Page = cartProcessOrder35Page.clickProcessOrderIcon();
+
+        // Steps 4 - 12
+        step("Введите ФИЛ нового клиента, телефон и Введите PIN-код для оплаты");
+        OrderDetailsData orderDetailsData = new OrderDetailsData().setRequiredRandomData();
+        orderDetailsData.setPinCode(getValidPinCode(true));
+        orderDetailsData.setDeliveryType(OrderDetailsData.DeliveryType.PICKUP);
+        processOrder35Page.fillInFormFields(orderDetailsData)
+                .shouldFormFieldsAre(orderDetailsData);
+
+        // Step 13
+        step("Нажмите на кнопку Подтвердить заказ");
+        SubmittedSalesDocument35Page submittedDocument35Page = processOrder35Page.clickSubmitButton()
+                .verifyRequiredElements()
+                .shouldPinCodeIs(orderDetailsData.getPinCode());
+        String documentNumber = submittedDocument35Page.getDocumentNumber();
+
+        // Step 14
+        step("Нажмите на Перейти в список документов");
+        ShortSalesDocumentData documentData = new ShortSalesDocumentData();
+        documentData.setNumber(documentNumber);
+        documentData.setDocumentState(SalesDocumentsConst.States.IN_PROGRESS.getUiVal());
+        documentData.setTitle(SalesDocumentsConst.GiveAwayPoints.PICKUP.getUiVal());
+        //documentData.setPin(orderDetailsData.getPinCode()); Иногда PIN не отображается при Автообработке
+        documentData.setDocumentTotalPrice(salesDocumentData.getOrderAppDataList().get(0).getTotalPrice());
+        SalesDocumentsPage salesDocumentsPage = submittedDocument35Page.clickGoToDocumentListButton()
+                .shouldSalesDocumentIsPresentAndDataMatches(documentData);
+
+        // Step 15
+        step("Нажать на мини-карточку созданного документа");
+        salesDocumentsPage.searchForDocumentByTextAndSelectIt(documentData.getNumber());
+        ConfirmedOrderPage confirmedOrderPage = new ConfirmedOrderPage();
+        confirmedOrderPage.shouldSalesDocumentDataIs(salesDocumentData);
+
+        // Clean up
+        step("(Доп шаг) Отменяем заказ через API запрос");
+        cancelOrder(documentNumber);
     }
 
 }

@@ -1,11 +1,14 @@
 package com.leroy.utils;
 
 import com.leroy.core.configuration.Log;
+import org.apache.commons.lang3.StringUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 
@@ -46,6 +49,11 @@ public class DateTimeUtil {
 
     public static LocalDateTime strToLocalDateTime(String dateString, String dateFormat) {
         try {
+            if (dateString.toLowerCase().contains("сегодня")) {
+                LocalTime time = LocalTime.parse(StringUtils.substringAfter(dateString, ",").trim(),
+                        DateTimeFormatter.ofPattern(StringUtils.substringAfter(dateFormat, ",").trim()));
+                return LocalDateTime.of(LocalDate.now(), time);
+            }
             Date date = new SimpleDateFormat(dateFormat, new Locale("ru", "RU")).
                     parse(dateString);
             return LocalDateTime.of(date.getYear() == 70 ? LocalDate.now().getYear() : date.getYear() + 1900,

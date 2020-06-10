@@ -17,6 +17,7 @@ import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountReasonData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magmobile.ui.AppBaseSteps;
+import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
 import com.leroy.magmobile.ui.models.sales.ShortSalesDocumentData;
 import com.leroy.magmobile.ui.pages.sales.AddProductPage;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
@@ -90,25 +91,34 @@ public class SalesBaseTest extends AppBaseSteps {
     }
 
     // Заказы
-    @Step("Pre-condition: Создаем черновик заказа")
-    protected void startFromScreenWithOrderDraft(boolean hasDiscount) throws Exception {
-        startFromScreenWithCreatedCart(hasDiscount);
+    private SalesDocumentData startFromScreenWithOrderDraftAndReturnSalesDocData(
+            List<CartProductOrderData> productDataList, boolean hasDiscount, boolean returnSalesDocData) throws Exception {
+        if (productDataList != null)
+            startFromScreenWithCreatedCart(productDataList);
+        else
+            startFromScreenWithCreatedCart(hasDiscount);
 
         Cart35Page cart35Page = new Cart35Page();
-        cart35Page.clickMakeSalesButton()
-                .verifyRequiredElements();
+        SalesDocumentData salesDocumentData = null;
+        if (returnSalesDocData)
+            salesDocumentData = cart35Page.getSalesDocumentData();
+        cart35Page.clickMakeSalesButton();
+        return salesDocumentData;
     }
 
-    protected void startFromScreenWithOrderDraft() throws Exception {
-        startFromScreenWithOrderDraft(false);
+    @Step("Pre-condition: Создаем черновик заказа")
+    protected SalesDocumentData startFromScreenWithOrderDraftWithDiscount() throws Exception {
+        return startFromScreenWithOrderDraftAndReturnSalesDocData(
+                null, true, true);
+    }
+
+    protected SalesDocumentData startFromScreenWithOrderDraft(boolean returnSalesDocData) throws Exception {
+        return startFromScreenWithOrderDraftAndReturnSalesDocData(null, false, returnSalesDocData);
     }
 
     @Step("Pre-condition: Создаем черновик заказа")
     protected void startFromScreenWithOrderDraft(List<CartProductOrderData> productDataList) throws Exception {
-        startFromScreenWithCreatedCart(productDataList);
-        Cart35Page cart35Page = new Cart35Page();
-        cart35Page.clickMakeSalesButton()
-                .verifyRequiredElements();
+        startFromScreenWithOrderDraftAndReturnSalesDocData(productDataList, false, false);
     }
 
     // ПОИСК ТОВАРОВ
@@ -243,12 +253,9 @@ public class SalesBaseTest extends AppBaseSteps {
 
     protected void cancelOrder(String orderId) throws Exception {
         OrderClient orderClient = apiClientProvider.getOrderClient();
+        orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderId,
+                SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal());
         Response<JsonNode> r = orderClient.cancelOrder(orderId);
-        if (!r.isSuccessful()) {
-            Thread.sleep(10000); // TODO можно подумать над не implicit wait'ом
-            Log.warn(r.toString());
-            r = orderClient.cancelOrder(orderId);
-        }
         anAssert().isTrue(r.isSuccessful(),
                 "Не смогли удалить заказ №" + orderId + ". Ошибка: " + r.toString());
     }

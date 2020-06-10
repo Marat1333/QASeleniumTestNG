@@ -13,4 +13,8 @@ public class RandomUtil {
         return generatedPinCode;
     }
 
+    public static String randomPhoneNumber() {
+        return "+7" + RandomStringUtils.randomNumeric(10);
+    }
+
 }
