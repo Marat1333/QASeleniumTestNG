@@ -31,13 +31,13 @@ public class ProductQuantityInfoWidget extends BaseWidget {
     @WebFindBy(xpath = ".//span[contains(text(), 'Недоступно')]/../following-sibling::div/*")
     Element unavailableForSaleQuantityLbl;
 
-    public StocksData getDataFromWidget(){
-        return new StocksData(Double.parseDouble(ParserUtil.strWithOnlyDigits(availableForSaleLbl.getText())),
-                Integer.parseInt(ParserUtil.strWithOnlyDigits(unavailableForSaleQuantityLbl.getText())),
-                Integer.parseInt(ParserUtil.strWithOnlyDigits(saleHallQuantityLbl.getText())),
-                Integer.parseInt(ParserUtil.strWithOnlyDigits(rmWarehouseQuantityLbl.getText())),
-                Integer.parseInt(ParserUtil.strWithOnlyDigits(emWarehouseQuantityLbl.getText())),
-                Integer.parseInt(ParserUtil.strWithOnlyDigits(rdWarehouseQuantityLbl.getText())));
+    public StocksData getDataFromWidget() {
+        return new StocksData(ParserUtil.strToDouble(availableForSaleLbl.getText()),
+                ParserUtil.strToInt(unavailableForSaleQuantityLbl.getText()),
+                ParserUtil.strToInt(saleHallQuantityLbl.getText()),
+                ParserUtil.strToInt(rmWarehouseQuantityLbl.getText()),
+                ParserUtil.strToInt(emWarehouseQuantityLbl.getText()),
+                ParserUtil.strToInt(rdWarehouseQuantityLbl.getText()));
     }
 
 }

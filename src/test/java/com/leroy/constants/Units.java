@@ -1,7 +1,7 @@
 package com.leroy.constants;
 
 public enum Units {
-    EA("/шт.");
+    EA("шт.");
 
     Units(String name) {
         this.name = name;

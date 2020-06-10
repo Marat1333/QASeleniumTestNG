@@ -23,6 +23,7 @@ import io.qameta.allure.Step;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class CartEstimatePage extends
         LeftDocumentListPage<ShortCartEstimateDocumentCardWidget, ShortSalesDocWebData> {
@@ -55,11 +56,6 @@ public abstract class CartEstimatePage extends
     @Override
     protected CardWebWidgetList<ShortCartEstimateDocumentCardWidget, ShortSalesDocWebData> documentCardList() {
         return documentCardList;
-    }
-
-    @Override
-    public void waitForPageIsLoaded() {
-        documentCardList.waitUntilAtLeastOneElementIsPresent();
     }
 
     // Customer area
@@ -354,12 +350,13 @@ public abstract class CartEstimatePage extends
         return this;
     }
 
-    @Step("Проверить, что любой заказ содержит {lmCode}")
-    public CartEstimatePage shouldAnyOrderContainsLmCode(String lmCode){
+    @Step("Проверить, что в документ добавлены товары с ЛМ кодами: {lmCodes}")
+    public CartEstimatePage shouldDocumentHasProducts(List<String> lmCodes) {
+        orders().waitUntilAtLeastOneElementIsPresent();
         List<ProductOrderCardWebData> productData = getProductDataList();
-        for (ProductOrderCardWebData eachProduct : productData){
-            anAssert.isEquals(eachProduct.getLmCode(), lmCode,"Лм коды отличаются");
-        }
+        List<String> actualLmCodes = productData.stream().map(
+                ProductOrderCardWebData::getLmCode).collect(Collectors.toList());
+        anAssert.isEquals(actualLmCodes, lmCodes, "Ожидались другие товары в смете");
         return this;
     }
 

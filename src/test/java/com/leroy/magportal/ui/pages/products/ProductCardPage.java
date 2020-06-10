@@ -275,6 +275,7 @@ public class ProductCardPage extends MenuPage {
         return this;
     }
 
+    // TODO Добавить @Step
     public void shouldNearestShopInfoIsCorrect(List<NearestShopsData> dataList) throws Exception {
         ShopCardData data;
         NearestShopsData nearestShopsData;
@@ -299,6 +300,7 @@ public class ProductCardPage extends MenuPage {
         }
     }
 
+    // TODO Добавить @Step
     public void shouldFoundShopsIsCorrect(String criterion) {
         ShopCardData data;
         for (ShopCardWidget tmp : shopsList) {

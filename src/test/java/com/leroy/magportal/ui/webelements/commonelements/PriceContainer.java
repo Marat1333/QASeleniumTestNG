@@ -33,7 +33,6 @@ public class PriceContainer extends Element {
         if (priceDecimalPart.isVisible()) {
             return tmp + "," + priceDecimalPart.getText();
         } else {
-            Log.warn("Price haven`t got decimal part");
             return tmp;
         }
     }
@@ -43,7 +42,10 @@ public class PriceContainer extends Element {
     }
 
     public String getUnit() {
-        return pricePerUnit.isVisible() ? pricePerUnit.getText() : null;
+        String val = pricePerUnit.getTextIfPresent();
+        if (val == null)
+            return null;
+        return val.replaceAll("/", "");
     }
 
 }

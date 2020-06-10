@@ -24,6 +24,7 @@ import org.openqa.selenium.WebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.Collections;
 import java.util.List;
 
 public class ProductCardTest extends WebBaseSteps {
@@ -77,7 +78,7 @@ public class ProductCardTest extends WebBaseSteps {
         //Step 1
         step("Добавить товар в корзину");
         CartPage cartPage = extendedProductCardPage.addProductToCart();
-        cartPage.shouldAnyOrderContainsLmCode(lmCode);
+        cartPage.shouldDocumentHasProducts(Collections.singletonList(lmCode));
     }
 
     @Test(description = "C23388814 add Product to estimate")
@@ -90,7 +91,7 @@ public class ProductCardTest extends WebBaseSteps {
         //Step 1
         step("Добавить товар в смету");
         EstimatePage estimatePage = extendedProductCardPage.addProductToEstimate();
-        estimatePage.shouldAnyOrderContainsLmCode(lmCode);
+        estimatePage.shouldDocumentHasProducts(Collections.singletonList(lmCode));
     }
 
     @Test(description = "C23388974 go to card by url")

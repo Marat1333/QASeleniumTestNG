@@ -236,17 +236,6 @@ public class EstimatePage extends CartEstimatePage {
         return this;
     }
 
-    @Step("Проверить, что в Смете добавлены товары с ЛМ кодами: {lmCodes}")
-    public EstimatePage shouldEstimateHasProducts(List<String> lmCodes) throws Exception {
-        List<String> actualLmCodes = new ArrayList<>();
-        for (OrderPuzWidget orderWidget : orders()) {
-            for (ProductOrderCardPuzWidget productWidget : orderWidget.getProductWidgets())
-                actualLmCodes.add(productWidget.getLmCode());
-        }
-        anAssert.isEquals(actualLmCodes, lmCodes, "Ожидались другие товары в смете");
-        return this;
-    }
-
     @Step("Проверить, что у товара #{productIdx} из заказа #{orderIdx} доступное кол-во выделено красным")
     public EstimatePage shouldProductAvailableStockLabelIsRed(int orderIdx, int productIdx) throws Exception {
         productIdx--;
