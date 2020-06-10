@@ -12,6 +12,8 @@ import com.leroy.magportal.ui.pages.products.widget.ShopCardWidget;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
@@ -291,8 +293,9 @@ public class ProductCardPage extends MenuPage {
                     ParserUtil.replaceSpecialSymbols(nearestShopsData.getAddress()), "Address");
             anAssert.isEquals(data.getPrice(), nearestShopsData.getPrice(), "Price");
             anAssert.isEquals(data.getQuantity(), nearestShopsData.getAvailableStock(), "Stocks");
-            anAssert.isEquals(data.getDistance(), ParserUtil.parseNZeroFormatInStringDouble(String.valueOf(nearestShopsData.getDistance()),
-                    1), "Distance");
+            anAssert.isEquals(data.getDistance(),
+                    BigDecimal.valueOf(nearestShopsData.getDistance()).setScale(1, RoundingMode.HALF_UP).doubleValue(),
+                    "Distance");
         }
     }
 

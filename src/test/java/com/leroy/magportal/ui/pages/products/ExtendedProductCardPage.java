@@ -6,21 +6,19 @@ import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magportal.api.data.catalog.products.ProductData;
+import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magportal.api.data.catalog.products.CatalogProductData;
-import com.leroy.magportal.api.data.catalog.suppliers.CatalogSupplierData;
 import com.leroy.magportal.api.data.catalog.products.product_fields.ExtStocks;
 import com.leroy.magportal.api.data.catalog.products.product_fields.StockAreas;
+import com.leroy.magportal.api.data.catalog.suppliers.CatalogSupplierData;
 import com.leroy.magportal.ui.models.search.PriceContainerData;
 import com.leroy.magportal.ui.models.search.StocksData;
 import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
 import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage.Direction;
 import com.leroy.magportal.ui.pages.products.widget.ExtendedProductCardWidget;
-import com.leroy.magportal.ui.webelements.commonelements.PriceContainer;
 import com.leroy.magportal.ui.webelements.searchelements.ProductPriceInfoWidget;
 import com.leroy.magportal.ui.webelements.searchelements.ProductQuantityInfoWidget;
-import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
 import java.time.LocalDateTime;
@@ -166,20 +164,6 @@ public class ExtendedProductCardPage extends ProductCardPage {
         return new EstimatePage();
     }
 
-    //Overloaded
-    @Step("Открыть полное описание товара")
-    public ExtendedProductCardPage showFullDescription() {
-        showFullDescription.click();
-        return this;
-    }
-
-    //Overloaded
-    @Step("Показать все характеристики товара")
-    public ExtendedProductCardPage showAllSpecifications() {
-        showAllSpecifications.click();
-        return this;
-    }
-
     @Override
     public ExtendedProductCardPage verifyRequiredElements() {
         softAssert.areElementsVisible(topBadge, addProductToCart, addProductToEstimate, productPriceInfoWidget,
@@ -190,7 +174,7 @@ public class ExtendedProductCardPage extends ProductCardPage {
     }
 
     @Step("Проверить, что все дополнительные товары отображен")
-    public ExtendedProductCardPage shouldAllAdditionalProductsIsVisible(List<ProductData> data) throws Exception {
+    public ExtendedProductCardPage shouldAllAdditionalProductsIsVisible(List<ProductItemData> data) throws Exception {
         if (data.size() > 4) {
             shouldNavigationBtnHasCorrectCondition(Direction.FORWARD, true);
         } else {
@@ -234,26 +218,15 @@ public class ExtendedProductCardPage extends ProductCardPage {
     public void shouldProductCardContainsAllData(CatalogProductData data) throws Exception {
         super.shouldProductCardContainsAllData(data);
         //get prices from data and convert them to Front-end format
-        String salesPrice = ParserUtil.parseDoubleZeroFormatInStringDouble(data.getSalesPrice().getPrice());
-        String pricePerUnit = ParserUtil.parseDoubleZeroFormatInStringDouble(data.getAltPrice().getPrice());
-        String recommendedPrice = ParserUtil.parseDoubleZeroFormatInStringDouble(data.getRecommendedPrice().getPrice());
-        String purchasePrice = ParserUtil.parseDoubleZeroFormatInStringDouble(data.getPurchasePrice().getPrice());
+        Double salesPrice = data.getSalesPrice().getPrice();
+        Double pricePerUnit = data.getAltPrice().getPrice();
+        Double recommendedPrice = data.getRecommendedPrice().getPrice();
+        Double purchasePrice = data.getPurchasePrice().getPrice();
         //get price containers from front-end
-        PriceContainer salesPriceContainer = productPriceInfoWidget.getSalesPrice();
-        PriceContainerData salesPriceContainerData = new PriceContainerData(salesPriceContainer.getDecimalPrice(),
-                salesPriceContainer.getPriceCurrency(), salesPriceContainer.getUnit());
-
-        PriceContainer pricePerUnitContainer = productPriceInfoWidget.getPricePerUnit();
-        PriceContainerData pricePerUnitContainerData = new PriceContainerData(pricePerUnitContainer.getDecimalPrice(),
-                pricePerUnitContainer.getPriceCurrency(), pricePerUnitContainer.getUnit());
-
-        PriceContainer recommendedPriceContainer = productPriceInfoWidget.getHiddenRecommendedPrice();
-        PriceContainerData recommendedPriceContainerData = new PriceContainerData(recommendedPriceContainer.getDecimalPrice(),
-                recommendedPriceContainer.getPriceCurrency(), recommendedPriceContainer.getUnit());
-
-        PriceContainer purchasePriceContainer = productPriceInfoWidget.getHiddenPurchasePrice();
-        PriceContainerData purchasePriceContainerData = new PriceContainerData(purchasePriceContainer.getDecimalPrice(),
-                purchasePriceContainer.getPriceCurrency(), purchasePriceContainer.getUnit());
+        PriceContainerData salesPriceContainerData = productPriceInfoWidget.getPriceContainerData();
+        PriceContainerData pricePerUnitContainerData = productPriceInfoWidget.getPricePerUnitContainerData();
+        PriceContainerData recommendedPriceContainerData = productPriceInfoWidget.getHiddenRecommendedPriceContainerData();
+        PriceContainerData purchasePriceContainerData = productPriceInfoWidget.getHiddenPurchasePriceContainerData();
 
         softAssert.isElementTextContains(topBadge, data.getTop());
         softAssert.isEquals(salesPriceContainerData.getPrice(), salesPrice, "SalePrice mismatch");
@@ -267,11 +240,10 @@ public class ExtendedProductCardPage extends ProductCardPage {
         softAssert.isEquals(purchasePriceContainerData.getPrice(), purchasePrice, "PurchasePrice mismatch");
         shouldCurrencyIsCorrect(purchasePriceContainerData.getCurrency(), data.getPurchasePrice().getPriceCurrency());
         shouldPriceChangeDateIsCorrect(data.getSalesPrice().getDateOfChange());
-
-        if (productPriceInfoWidget.isPriceMismatchRecommendedPrice(recommendedPrice)) {
-            softAssert.isTrue(productPriceInfoWidget.getRecommendedPriceNotMatchesLbl().isVisible(), "SalePrice and RecommendedPrice mismatch lbl is invisible");
-        }
-        softAssert.isEquals(productPriceInfoWidget.getReasonOfChange(), data.getSalesPrice().getReasonOfChange(), "Price reason of change mismatch");
+        softAssert.isEquals(productPriceInfoWidget.isMismatchPriceThanRecommendedTooltipVisible(), !recommendedPrice.equals(salesPrice),
+                "SalePrice and RecommendedPrice mismatch lbl is invisible");
+        softAssert.isEquals(productPriceInfoWidget.getReasonOfChange(), data.getSalesPrice().getReasonOfChange(),
+                "Price reason of change mismatch");
         shouldStocksIsCorrect(data);
         shouldSupplierDataIsCorrect(data.getSupplier());
         softAssert.verifyAll();

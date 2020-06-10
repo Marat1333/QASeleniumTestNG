@@ -31,7 +31,7 @@ public class PriceContainer extends Element {
     public String getDecimalPrice() {
         String tmp = ParserUtil.strWithOnlyDigits(getIntegerPrice());
         if (priceDecimalPart.isVisible()) {
-            return tmp + "." + priceDecimalPart.getText();
+            return tmp + "," + priceDecimalPart.getText();
         } else {
             Log.warn("Price haven`t got decimal part");
             return tmp;

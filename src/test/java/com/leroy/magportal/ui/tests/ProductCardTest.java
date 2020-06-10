@@ -9,7 +9,6 @@ import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magportal.api.clients.MagPortalCatalogProductClient;
 import com.leroy.magportal.api.data.catalog.products.CatalogProductData;
 import com.leroy.magportal.api.data.catalog.products.CatalogSimilarProductsData;
-import com.leroy.magportal.api.data.catalog.products.ProductData;
 import com.leroy.magportal.api.data.catalog.shops.NearestShopsData;
 import com.leroy.magportal.ui.WebBaseSteps;
 import com.leroy.magportal.ui.constants.search.CatalogSearchParams;
@@ -56,14 +55,14 @@ public class ProductCardTest extends WebBaseSteps {
 
     private String getRandomSimilarProductLmCode(String sourceLmCode) {
         CatalogSimilarProductsData data = apiClientProvider.getMagPortalCatalogProductClientProvider().getSimilarProducts(sourceLmCode).asJson();
-        List<ProductData> resultList = data.getSubstitutes();
+        List<ProductItemData> resultList = data.getSubstitutes();
         String result = resultList.get((int) (Math.random() * resultList.size())).getLmCode();
         return result;
     }
 
     private String getRandomComplementProductLmCode(String sourceLmCode) {
         CatalogSimilarProductsData data = apiClientProvider.getMagPortalCatalogProductClientProvider().getSimilarProducts(sourceLmCode).asJson();
-        List<ProductData> resultList = data.getComplements();
+        List<ProductItemData> resultList = data.getComplements();
         String result = resultList.get((int) (Math.random() * resultList.size())).getLmCode();
         return result;
     }
@@ -160,16 +159,16 @@ public class ProductCardTest extends WebBaseSteps {
         MagPortalCatalogProductClient client = apiClientProvider.getMagPortalCatalogProductClientProvider();
 
         CatalogSimilarProductsData data = client.getSimilarProducts(lessThan4Similar).asJson();
-        List<ProductData> lessThan4SimilarList = data.getSubstitutes();
+        List<ProductItemData> lessThan4SimilarList = data.getSubstitutes();
 
         data = client.getSimilarProducts(moreThan4Similar).asJson();
-        List<ProductData> moreThan4SimilarList = data.getSubstitutes();
+        List<ProductItemData> moreThan4SimilarList = data.getSubstitutes();
 
         data = client.getSimilarProducts(lessThan4Complements).asJson();
-        List<ProductData> lessThan4ComplementsList = data.getComplements();
+        List<ProductItemData> lessThan4ComplementsList = data.getComplements();
 
         data = client.getSimilarProducts(moreThan4Complements).asJson();
-        List<ProductData> moreThan4ComplementsList = data.getComplements();
+        List<ProductItemData> moreThan4ComplementsList = data.getComplements();
 
 
         //Step 1

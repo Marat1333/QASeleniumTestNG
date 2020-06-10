@@ -31,7 +31,7 @@ public class ProductItemData {
     private String supCode;
     private List<String> images;
     private Double price;
-    private String altPrice;
+    private Double altPrice;
     private String altPriceUnit;
     private String priceUnit;
     private String priceCurrency;

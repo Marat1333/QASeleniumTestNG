@@ -4,7 +4,9 @@ import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.BaseWidget;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magportal.ui.models.search.PriceContainerData;
 import com.leroy.magportal.ui.webelements.commonelements.PriceContainer;
+import com.leroy.utils.ParserUtil;
 import org.openqa.selenium.WebDriver;
 
 public class ProductPriceInfoWidget extends BaseWidget {
@@ -16,8 +18,8 @@ public class ProductPriceInfoWidget extends BaseWidget {
             refreshEveryTime = true)
     PriceContainer hiddenPurchasingPrice;
 
-    @WebFindBy(xpath = ".//span[contains(text(),'Рекомендованная')]/ancestor::div[2]/div[contains(@class, 'textAlign')]" +
-            "//div[contains(@class,'ProductCard')][1]", refreshEveryTime = true)
+    @WebFindBy(xpath = ".//span[contains(text(),'Рекомендованная')]/ancestor::div[2]/div[contains(@class, 'textAlign')]//div[contains(@class,'ProductCard')][1]",
+            refreshEveryTime = true)
     PriceContainer hiddenRecommendedPrice;
 
     @WebFindBy(xpath = ".//span[contains(text(),'Цена')]/ancestor::div[1]/following-sibling::div[1]/span")
@@ -39,34 +41,35 @@ public class ProductPriceInfoWidget extends BaseWidget {
         return reasonOfChangeLbl.isVisible() ? reasonOfChangeLbl.getText() : null;
     }
 
-    public Element getRecommendedPriceNotMatchesLbl() {
-        return recommendedPriceNotMatchesLbl;
+    public boolean isMismatchPriceThanRecommendedTooltipVisible() {
+        return recommendedPriceNotMatchesLbl.isVisible();
     }
 
     public String getLastPriceChangeDateLbl() {
         return lastPriceChangeDateLbl.getText();
     }
 
-    public boolean isPriceMismatchRecommendedPrice(String recommendedPrice) {
-        String salePrice = getSalesPrice().getDecimalPrice();
-        return !recommendedPrice.equals(salePrice);
-    }
-
-    public PriceContainer getSalesPrice() {
-        return productPriceLbl;
-    }
-
-    public PriceContainer getPricePerUnit() {
-        return pricePerUnit.isVisible() ? pricePerUnit : null;
-    }
-
-    public PriceContainer getHiddenRecommendedPrice() throws Exception {
+    public PriceContainerData getHiddenRecommendedPriceContainerData() throws Exception {
         hiddenRecommendedPrice.findChildElement("./..").click();
-        return hiddenRecommendedPrice;
+        return new PriceContainerData(ParserUtil.strToDouble(hiddenRecommendedPrice.getDecimalPrice()),
+                hiddenRecommendedPrice.getPriceCurrency(), hiddenRecommendedPrice.getUnit());
     }
 
-    public PriceContainer getHiddenPurchasePrice() throws Exception {
+    public PriceContainerData getHiddenPurchasePriceContainerData() throws Exception {
         hiddenPurchasingPrice.findChildElement("./..").click();
-        return hiddenPurchasingPrice;
+        return new PriceContainerData(ParserUtil.strToDouble(hiddenPurchasingPrice.getDecimalPrice()),
+                hiddenPurchasingPrice.getPriceCurrency(), hiddenPurchasingPrice.getUnit());
     }
+
+    public PriceContainerData getPriceContainerData() {
+        return new PriceContainerData(ParserUtil.strToDouble(productPriceLbl.getDecimalPrice()),
+                productPriceLbl.getPriceCurrency(), productPriceLbl.getUnit());
+    }
+
+    public PriceContainerData getPricePerUnitContainerData() {
+        return new PriceContainerData(ParserUtil.strToDouble(pricePerUnit.getDecimalPrice()),
+                pricePerUnit.getPriceCurrency(), pricePerUnit.getUnit());
+    }
+
+
 }

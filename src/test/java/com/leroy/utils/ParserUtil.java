@@ -104,7 +104,7 @@ public class ParserUtil {
     }
 
     public static String replaceSpecialSymbols(String source) {
-        if (source==null){
+        if (source == null) {
             return null;
         }
         source = source.replaceAll("[*]", "").replaceAll("[\\s]{2,}", " ");
@@ -114,18 +114,24 @@ public class ParserUtil {
         return source;
     }
 
+    /**
+     * @deprecated - Используй BigDecimal класс и метод setScale()
+     */
     public static String parseDoubleZeroFormatInStringDouble(String doubleS) {
-        if (doubleS==null){
+        if (doubleS == null) {
             return null;
         }
         return doubleS.contains(".") ? String.format("%.2f", Double.parseDouble(doubleS)) : doubleS;
     }
 
+    /**
+     * @deprecated - Используй BigDecimal класс и метод setScale()
+     */
     public static Double parseNZeroFormatInStringDouble(String doubleS, int numbersAfterDot) {
-        if (doubleS==null){
+        if (doubleS == null) {
             return null;
         }
-        return doubleS.contains(".") ? Double.parseDouble(String.format("%."+numbersAfterDot+"f",
+        return doubleS.contains(".") ? Double.parseDouble(String.format("%." + numbersAfterDot + "f",
                 Double.parseDouble(doubleS))) : Double.parseDouble(doubleS);
     }
 

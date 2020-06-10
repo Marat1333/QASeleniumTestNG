@@ -32,7 +32,7 @@ public class ShopCardWidget extends BaseWidget {
     @WebFindBy(xpath = "./div[3]/p")
     Element availableStock;
 
-    public ShopCardData grabDataFromWidget(){
+    public ShopCardData grabDataFromWidget() {
         ShopCardData data = new ShopCardData();
         data.setId(Integer.valueOf(shopId.getText()));
         data.setName(shopName.getText());
@@ -40,9 +40,9 @@ public class ShopCardWidget extends BaseWidget {
         data.setDistance(Double.parseDouble(distance.getText().split(" ")[0]));
         data.setPrice(price.getDecimalPrice());
         String quantity = ParserUtil.replaceSpecialSymbols(availableStock.getText().split(" ")[0]);
-        if (quantity==null){
+        if (quantity == null) {
             data.setQuantity(null);
-        }else {
+        } else {
             data.setQuantity(Double.parseDouble(quantity));
         }
         return data;
