@@ -19,6 +19,7 @@ import com.leroy.magportal.ui.pages.products.SearchProductPage.Direction;
 import com.leroy.magportal.ui.pages.products.widget.ExtendedProductCardWidget;
 import com.leroy.magportal.ui.webelements.searchelements.ProductPriceInfoWidget;
 import com.leroy.magportal.ui.webelements.searchelements.ProductQuantityInfoWidget;
+import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
 import java.time.LocalDateTime;
@@ -314,7 +315,7 @@ public class ExtendedProductCardPage extends ProductCardPage {
     private void shouldSupplierDataIsCorrect(CatalogSupplierData data) throws Exception {
         softAssert.isEquals(data.getSupName(), supplierInfo.get(0).getText(), "Название поставщика");
         softAssert.isEquals("Код поставщика: " + data.getSupCode(), supplierInfo.get(1).getText(), "Код поставщика");
-        softAssert.isEquals(data.getSupPhone(), supplierInfo.get(2).getText(), "Телефон");
+        softAssert.isEquals(ParserUtil.replaceSpecialSymbols(data.getSupPhone()), supplierInfo.get(2).getText(), "Телефон");
         softAssert.isEquals(data.getSupContactName(), supplierInfo.get(3).getText(), "Имя представителя");
         softAssert.isEquals(data.getSupEmail(), supplierInfo.get(4).getText(), "Email");
     }
