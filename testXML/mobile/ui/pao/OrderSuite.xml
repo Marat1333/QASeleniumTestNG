@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Order Suite" parallel="tests">
+
+    <listeners>
+        <listener class-name="com.leroy.core.listeners.TestRailListener"/>
+    </listeners>
+
+    <test name="C22797112 Создать заказ из корзины с одним заказом">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
+                <methods>
+                    <include name="testCreateOrderFromCartWithOneOrder"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22797113 Создать последовательно заказы из корзины с двумя заказами">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
+                <methods>
+                    <include name="testCreateOrdersFromCartWithTwoOrders"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="Подтвердить заказ на самовывоз сегодня + проверка на использование существующего пин кода">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
+                <methods>
+                    <include name="testEnterExistedPinCode"/>
+                    <include name="testConfirmOrderAsPickupToday"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22797115 Подтвердить заказ на доставку на завтра">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
+                <methods>
+                    <include name="testConfirmOrderAsDeliveryTomorrow"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22797117 Подтвердить заказ на доставку через 15 дней">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
+                <methods>
+                    <include name="testConfirmOrderAsDeliveryAfter15Days"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22797118 Создать заказ из корзины со скидкой">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
+                <methods>
+                    <include name="testCreateOrderFromCartWithDiscount"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+<!--    <test name="">-->
+<!--        <classes>-->
+<!--            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">-->
+<!--                <methods>-->
+<!--                    <include name=""/>-->
+<!--                </methods>-->
+<!--            </class>-->
+<!--        </classes>-->
+<!--    </test>-->
+
+
+
+
+</suite>
