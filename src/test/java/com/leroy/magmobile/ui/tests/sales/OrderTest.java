@@ -23,6 +23,10 @@ import java.util.List;
 
 public class OrderTest extends SalesBaseTest {
 
+    private String existedPickupPinCode = "11111";
+
+    private SalesDocumentData salesDocumentData;
+
     @Override
     protected boolean isNeedAccessToken() {
         return true;
@@ -42,7 +46,8 @@ public class OrderTest extends SalesBaseTest {
         // Step 2, 3, 4, 5, 6, 7
         step("Введите имя и фамилию нового пользователя, Введите PIN-код для оплаты");
         OrderDetailsData orderDetailsData = new OrderDetailsData().setRequiredRandomData();
-        orderDetailsData.setPinCode(getValidPinCode(true));
+        orderDetailsData.setPinCode(existedPickupPinCode); // Чтобы быть уверенным, что данный пин код используется
+        // Данный тест все равно подберет несипользуемый ПИН
         orderDetailsData.setDeliveryType(SalesDocumentsConst.GiveAwayPoints.PICKUP);
         processOrder35Page.fillInFormFields(orderDetailsData)
                 .shouldFormFieldsAre(orderDetailsData);
@@ -106,12 +111,27 @@ public class OrderTest extends SalesBaseTest {
         cancelOrder(documentNumber);
     }
 
+    @Test(description = "C22797121 Ввод существующего пин кода")
+    public void testEnterExistedPinCode() throws Exception {
+        salesDocumentData = startFromScreenWithOrderDraft(true);
+        ProcessOrder35Page processOrder35Page = new ProcessOrder35Page();
+
+        // Steps 1
+        step("Введите существующий PIN-код в соответствующее поле");
+        OrderDetailsData orderDetailsData = new OrderDetailsData();
+        orderDetailsData.setPinCode(existedPickupPinCode);
+        processOrder35Page.enterPinCode(orderDetailsData, false);
+        processOrder35Page.shouldErrorPinCodeTooltipVisible();
+    }
+
     @Test(description = "C22797114 Подтвердить заказ на самовывоз сегодня")
     public void testConfirmOrderAsPickupToday() throws Exception {
         // Test Data
         MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
 
-        SalesDocumentData salesDocumentData = startFromScreenWithOrderDraft(true);
+        if (isStartFromScratch()) {
+            salesDocumentData = startFromScreenWithOrderDraft(true);
+        }
 
         ProcessOrder35Page processOrder35Page = new ProcessOrder35Page();
 

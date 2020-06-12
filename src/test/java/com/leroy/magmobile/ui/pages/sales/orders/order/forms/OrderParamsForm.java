@@ -165,4 +165,10 @@ public class OrderParamsForm extends BaseAppPage {
         softAssert.verifyAll();
         return this;
     }
+
+    public OrderParamsForm shouldErrorPinCodeTooltipVisible() {
+        anAssert.isTrue(pinErrorTooltip.isVisible(),
+                "Сообщение о том, что пин код уже используется, не отображается");
+        return this;
+    }
 }

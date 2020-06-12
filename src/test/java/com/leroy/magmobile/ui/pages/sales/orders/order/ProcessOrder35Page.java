@@ -70,4 +70,11 @@ public class ProcessOrder35Page extends HeaderProcessOrder35Page {
         orderParamsForm.shouldFormFieldsAre(data);
         return this;
     }
+
+    @Step("Проверить, что уведомление о том, что пин код уже используется, отображается")
+    public ProcessOrder35Page shouldErrorPinCodeTooltipVisible() {
+        orderParamsForm.shouldErrorPinCodeTooltipVisible();
+        return this;
+    }
+
 }
