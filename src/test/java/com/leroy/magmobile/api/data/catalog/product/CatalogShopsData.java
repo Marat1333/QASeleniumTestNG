@@ -7,7 +7,7 @@ import lombok.ToString;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class CatalogShopsData extends SalesPrice {
+public class CatalogShopsData extends PriceInfo {
     private Integer shopId;
     private Double availableStock;
 }

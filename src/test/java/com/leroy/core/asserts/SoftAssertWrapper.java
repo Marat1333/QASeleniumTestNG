@@ -28,6 +28,10 @@ public class SoftAssertWrapper extends BaseCustomAssert {
         super.logIsEquals(actual, expected, desc, true);
     }
 
+    public void isContainsIgnoringCase(String source, String inner, String desc) {
+        super.logIsContainsIgnoringCase(source, inner, desc, true);
+    }
+
     public void isNotEquals(Object actual, Object expected, String desc) {
         super.logIsNotEquals(actual, expected, desc, true);
     }
@@ -74,6 +78,14 @@ public class SoftAssertWrapper extends BaseCustomAssert {
 
     public void areElementsVisible(String pageSource, BaseWidget... elements) {
         logAreElementsVisible(Arrays.asList(elements), true, pageSource);
+    }
+
+    public void areElementsNotVisible(BaseWidget... elements) {
+        logAreElementsNotVisible(Arrays.asList(elements), true, null);
+    }
+
+    public void areElementsNotVisible(String pageSource, BaseWidget... elements) {
+        logAreElementsNotVisible(Arrays.asList(elements), true, pageSource);
     }
 
     public boolean isElementNotVisible(BaseWidget element) {

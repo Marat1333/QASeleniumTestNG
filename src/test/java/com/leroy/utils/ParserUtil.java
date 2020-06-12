@@ -103,4 +103,15 @@ public class ParserUtil {
         return null;
     }
 
+    public static String replaceSpecialSymbols(String source) {
+        if (source == null) {
+            return null;
+        }
+        source = source.replaceAll("[*]", "").replaceAll("[\\s]{2,}", " ");
+        if (source.equals("undefined")) {
+            source = null;
+        }
+        return source;
+    }
+
 }

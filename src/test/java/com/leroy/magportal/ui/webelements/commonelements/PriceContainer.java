@@ -4,7 +4,7 @@ import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
-import org.openqa.selenium.NoSuchElementException;
+import com.leroy.utils.ParserUtil;
 import org.openqa.selenium.WebDriver;
 
 public class PriceContainer extends Element {
@@ -24,31 +24,28 @@ public class PriceContainer extends Element {
     @WebFindBy(xpath = "./span[2]")
     private Element pricePerUnit;
 
-    public String getIntegerPrice() {
-        return priceIntegerPart.getText().replaceAll("\\D+", "");
+    private String getIntegerPrice() {
+        return priceIntegerPart.isVisible() ? priceIntegerPart.getText().split(",")[0] : null;
     }
 
     public String getDecimalPrice() {
-        String tmp = priceIntegerPart.getText().replaceAll("\\D+", "");
-        try {
-            return tmp + priceDecimalPart.getText();
-        } catch (NoSuchElementException e) {
-            Log.error("Price haven`t got decimal part");
+        String tmp = ParserUtil.strWithOnlyDigits(getIntegerPrice());
+        if (priceDecimalPart.isVisible()) {
+            return tmp + "," + priceDecimalPart.getText();
+        } else {
             return tmp;
         }
     }
 
     public String getPriceCurrency() {
-        return priceCurrency.getText();
+        return priceCurrency.isVisible() ? priceCurrency.getText() : null;
     }
 
     public String getUnit() {
-        try {
-            return pricePerUnit.getText();
-        } catch (NoSuchElementException e) {
-            Log.error("There is no price unit");
+        String val = pricePerUnit.getTextIfPresent();
+        if (val == null)
             return null;
-        }
+        return val.replaceAll("/", "");
     }
 
 }

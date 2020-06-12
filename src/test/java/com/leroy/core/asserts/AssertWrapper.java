@@ -56,8 +56,8 @@ public class AssertWrapper extends BaseCustomAssert {
         super.logIsElementTextContains(element, expectedText, pageSource, false);
     }
 
-    public void isElementTextContainsIgnoringCase(String actual, String expected, String desc) {
-        super.logIsElementTextContainsIgnoringCase(actual, expected, desc, false);
+    public void isContainsIgnoringCase(String actual, String expected, String desc) {
+        super.logIsContainsIgnoringCase(actual, expected, desc, false);
     }
 
     public void isElementTextNotContains(String actual, String expected, String desc) {

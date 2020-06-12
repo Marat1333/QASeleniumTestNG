@@ -260,6 +260,15 @@ public class SearchProductPage extends MenuPage {
         return this;
     }
 
+    @Step("Перейти в карточку товара по {lmCode}")
+    public <T> T searchProductCardByLmCode(String lmCode, FilterFrame frame) throws Exception {
+        if (lmCode.length() != 8) {
+            throw new IllegalArgumentException("Wrong lmCode length");
+        }
+        switchFiltersFrame(frame);
+        return searchByPhrase(lmCode);
+    }
+
     @Step("Перейти в карточку продукта {lmCode}")
     public <T> T navigateToProductCart(String lmCode, FilterFrame frame, ViewMode viewMode) throws Exception {
         Set<String> windows = driver.getWindowHandles();
@@ -336,10 +345,11 @@ public class SearchProductPage extends MenuPage {
         searchInput.clearFillAndSubmit(value);
         waitForSpinnerAppearAndDisappear();
         if (value.matches("\\d{8}") || value.matches("\\d{13}")) {
+            boolean isMyShop = myShopContainer.getAttribute("className").contains("active");
             anAssert.isTrue(driver.getWindowHandles().size() > windows.size(),
                     "Должно было открыться новое окно с карточкой товара");
             this.switchToNewWindow(windows);
-            return (T) new ProductCardPage();
+            return isMyShop ? (T) new ExtendedProductCardPage() : (T) new ProductCardPage();
         }
         return (T) this;
     }
@@ -361,12 +371,19 @@ public class SearchProductPage extends MenuPage {
     public SearchProductPage switchFiltersFrame(FilterFrame frame) {
         String attributeValue;
         String attributeName = "className";
+        String condition = "active";
         if (frame.equals(FilterFrame.MY_SHOP)) {
             attributeValue = myShopContainer.getAttribute(attributeName);
+            if (attributeValue.contains(condition)) {
+                return this;
+            }
             myShopFilterBtn.click();
             myShopContainer.waitUntilAttributeIsEqual(attributeName, attributeValue);
         } else {
             attributeValue = allGammaContainer.getAttribute(attributeName);
+            if (attributeValue.contains(condition)) {
+                return this;
+            }
             allGammaFilterBtn.click();
             allGammaContainer.waitUntilAttributeIsEqual(attributeName, attributeValue);
         }
@@ -468,7 +485,7 @@ public class SearchProductPage extends MenuPage {
     }
 
     @Step("Ввести дату AVS вручную")
-    public SearchProductPage enterAvsDateManually(LocalDate date) throws Exception {
+    public SearchProductPage enterAvsDateManually(LocalDate date) {
         avsCalendarInputBox.enterDateInField(date);
         return this;
     }
@@ -495,7 +512,7 @@ public class SearchProductPage extends MenuPage {
     }
 
     @Step("Выбрать фильтр по поставщику")
-    public SearchProductPage choseSupplier(boolean closeAfter, String... values) throws Exception {
+    public SearchProductPage choseSupplier(boolean closeAfter, String... values) {
         if (!supplierComboBox.isVisible()) {
             showAllFilters.click();
         }
@@ -676,7 +693,7 @@ public class SearchProductPage extends MenuPage {
         anAssert.isElementNotVisible(notFoundMsgLbl);
         if (searchCriterion.matches("\\D+") || searchCriterion.length() < 4) {
             for (int i = 0; i < extendedProductCardList.getCount(); i++) {
-                anAssert.isElementTextContainsIgnoringCase(extendedProductCardList.get(i).getTitle(), searchCriterion,
+                anAssert.isContainsIgnoringCase(extendedProductCardList.get(i).getTitle(), searchCriterion,
                         extendedProductCardList.get(i).getTitle() + " не содержит " + searchCriterion);
             }
         } else {
@@ -702,17 +719,20 @@ public class SearchProductPage extends MenuPage {
     }
 
     @Step("Проверить, что хлебные крошки содержат предыдущий роидтельскую номенклатуру")
-    public SearchProductPage shouldBreadCrumbsContainsNomenclatureName(boolean contains, String nomenclatureElementName) {
+    public SearchProductPage shouldBreadCrumbsContainsNomenclatureName(boolean contains, String... nomenclatureElementName) {
         int condition = 0;
         for (Element tmp : nomenclaturePathButtons) {
-            if (tmp.getText().contains(nomenclatureElementName)) {
-                condition++;
+            for (String nomenclatureAttribute : nomenclatureElementName) {
+                if (tmp.getText().contains(nomenclatureAttribute)) {
+                    condition++;
+                    break;
+                }
             }
         }
-        if (contains) {
-            anAssert.isTrue(condition == 1, nomenclatureElementName + " либо отсутствует, либо встречается более 1 раза");
-        } else {
-            anAssert.isTrue(condition == 0, nomenclatureElementName + " содержится в хлебных крошках");
+        if (contains){
+            anAssert.isTrue(condition == nomenclatureElementName.length, "не соответсвует кол-ву переданных элементов");
+        }else {
+            anAssert.isTrue(condition == 0, "Уровень товарной иерархии содержится в элементе UI");
         }
         return this;
     }
@@ -784,7 +804,7 @@ public class SearchProductPage extends MenuPage {
                     "Поле с выбором поставщика не пустое");
         } else if (name.length == 1) {
             elemText = supplierComboBox.getSelectedOptionText();
-            anAssert.isElementTextContainsIgnoringCase(elemText, name[0],
+            anAssert.isContainsIgnoringCase(elemText, name[0],
                     "Не отображено имя поставщика " + name[0]);
         } else {
             elemText = supplierComboBox.getSelectedOptionText();
@@ -970,7 +990,7 @@ public class SearchProductPage extends MenuPage {
     @Step("Проверить, что комбо-бокс сортировки содержит {value}")
     public SearchProductPage shouldSortComboBoxContainsText(String value) {
         String actualText = sortComboBox.getSelectedOptionText();
-        anAssert.isElementTextContainsIgnoringCase(actualText, value,
+        anAssert.isContainsIgnoringCase(actualText, value,
                 actualText + " не содержит " + value);
         return this;
     }
@@ -980,10 +1000,10 @@ public class SearchProductPage extends MenuPage {
         String attributeName = "className";
         String condition = "active";
         if (frame.equals(FilterFrame.MY_SHOP)) {
-            anAssert.isElementTextContainsIgnoringCase(myShopContainer.getAttribute(attributeName), condition,
+            anAssert.isContainsIgnoringCase(myShopContainer.getAttribute(attributeName), condition,
                     "группа фильтров \"Мой магазин\" не выбрана");
         } else {
-            anAssert.isElementTextContainsIgnoringCase(allGammaContainer.getAttribute(attributeName), condition,
+            anAssert.isContainsIgnoringCase(allGammaContainer.getAttribute(attributeName), condition,
                     "группа фильтров \"Вся гамма ЛМ\" не выбрана");
         }
         return this;

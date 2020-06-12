@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite name="Search Suite" parallel="methods">
+<suite name="Product card Suite" parallel="methods">
 
     <listeners>
         <listener class-name="com.leroy.core.listeners.TestRailListener"/>
     </listeners>
 
-    <test name="Search tests">
+    <test name="Product card tests">
         <classes>
-            <class name="com.leroy.magportal.ui.tests.SearchTest"/>
+            <class name="com.leroy.magportal.ui.tests.ProductCardTest"/>
         </classes>
     </test>
 
