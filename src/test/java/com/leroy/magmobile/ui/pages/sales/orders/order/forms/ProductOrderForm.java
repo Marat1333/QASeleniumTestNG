@@ -4,10 +4,13 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
+import com.leroy.magmobile.ui.elements.MagMobWhiteSubmitButton;
 import com.leroy.magmobile.ui.models.sales.OrderAppData;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
 import com.leroy.magmobile.ui.pages.sales.widget.ProductOrderCardAppWidget;
+import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.utils.DateTimeUtil;
 import com.leroy.utils.ParserUtil;
 
@@ -41,6 +44,14 @@ public class ProductOrderForm extends BaseAppPage {
     @AppFindBy(xpath = "//android.widget.TextView[contains(@text, 'Итого:')]/following-sibling::android.widget.TextView")
     Element totalPriceVal;
 
+    // Buttons
+
+    @AppFindBy(text = "ТОВАР")
+    private MagMobWhiteSubmitButton addProductBtn;
+
+    @AppFindBy(text = "ДАЛЕЕ")
+    private MagMobGreenSubmitButton nextBtn;
+
     public boolean waitUntilFormIsVisible() {
         return countAndWeightProductLbl.waitForVisibility();
     }
@@ -69,17 +80,23 @@ public class ProductOrderForm extends BaseAppPage {
     public SalesDocumentData getSalesDocumentData() {
         List<OrderAppData> actualOrderDataList = new ArrayList<>();
         SalesDocumentData salesDocumentData = new SalesDocumentData();
-        List<ProductOrderCardAppData> products = productCardsScrollView.getFullDataList();
         String ps = getPageSource();
         OrderAppData orderAppData = new OrderAppData();
+        orderAppData.setDate(DateTimeUtil.strToLocalDate(dateOrder.getTextIfPresent(ps), "dd MMM"));
         orderAppData.setTotalWeight(getTotalWeight(ps));
         orderAppData.setTotalPrice(getTotalPrice(ps));
-        orderAppData.setDate(DateTimeUtil.strToLocalDate(dateOrder.getText(ps), "dd MMM"));
         orderAppData.setProductCount(getProductCount(ps));
+        List<ProductOrderCardAppData> products = productCardsScrollView.getFullDataList();
         orderAppData.setProductCardDataList(products);
         actualOrderDataList.add(orderAppData);
         salesDocumentData.setOrderAppDataList(actualOrderDataList);
         return salesDocumentData;
     }
 
+    // Actions
+
+    public SearchProductPage clickAddProductButton() {
+        addProductBtn.click();
+        return new SearchProductPage();
+    }
 }

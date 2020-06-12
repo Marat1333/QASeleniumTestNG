@@ -1,20 +1,26 @@
 package com.leroy.magmobile.ui.tests.sales;
 
 import com.leroy.constants.sales.SalesDocumentsConst;
+import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magmobile.ui.constants.TestDataConstants;
 import com.leroy.magmobile.ui.models.MagCustomerData;
 import com.leroy.magmobile.ui.models.sales.OrderDetailsData;
+import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
 import com.leroy.magmobile.ui.models.sales.ShortSalesDocumentData;
 import com.leroy.magmobile.ui.pages.customers.SearchCustomerPage;
+import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
 import com.leroy.magmobile.ui.pages.sales.SalesDocumentsPage;
 import com.leroy.magmobile.ui.pages.sales.SubmittedSalesDocument35Page;
 import com.leroy.magmobile.ui.pages.sales.orders.cart.Cart35Page;
 import com.leroy.magmobile.ui.pages.sales.orders.order.CartProcessOrder35Page;
 import com.leroy.magmobile.ui.pages.sales.orders.order.ConfirmedOrderPage;
 import com.leroy.magmobile.ui.pages.sales.orders.order.ProcessOrder35Page;
+import com.leroy.magmobile.ui.pages.search.SearchProductPage;
+import com.leroy.utils.ParserUtil;
+import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Test;
 
 import java.time.LocalDate;
@@ -23,13 +29,21 @@ import java.util.List;
 
 public class OrderTest extends SalesBaseTest {
 
+    private final static String NEED_PRODUCTS_GROUP = "need_products";
+
     private String existedPickupPinCode = "11111";
 
+    private List<String> lmCodes;
     private SalesDocumentData salesDocumentData;
 
     @Override
     protected boolean isNeedAccessToken() {
         return true;
+    }
+
+    @BeforeGroups(groups = NEED_PRODUCTS_GROUP)
+    private void findProducts() {
+        lmCodes = apiClientProvider.getProductLmCodes(2, false, false);
     }
 
     @Test(description = "C22797112 Создать заказ из корзины с одним заказом")
@@ -284,7 +298,7 @@ public class OrderTest extends SalesBaseTest {
         productWithNegativeBalance.setQuantity(productItemDataList.get(0).getAvailableStock() + 10.0);
 
         // Pre-conditions
-        SalesDocumentData salesDocumentData = startFromScreenWithOrderDraft(
+        SalesDocumentData salesDocumentData = startFromScreenWithOrderDraft(null,
                 Collections.singletonList(productWithNegativeBalance), true);
 
         // Step 1
@@ -407,5 +421,133 @@ public class OrderTest extends SalesBaseTest {
         step("(Доп шаг) Отменяем заказ через API запрос");
         cancelOrder(documentNumber);
     }
+
+    @Test(description = "C22808291 Добавить товар в неподтвержденный заказ (количества товара достаточно)",
+            groups = NEED_PRODUCTS_GROUP)
+    public void testAddProductInNotConfirmedOrderWhenProductHasAvailableStock() throws Exception {
+        salesDocumentData = startFromScreenWithOrderDraft(
+                Collections.singletonList(lmCodes.get(0)), null, true);
+
+        String newProductLmCode = lmCodes.get(1);
+
+        // Step 1
+        step("Нажать на иконку корзины в поле оформления заказа");
+        CartProcessOrder35Page cartProcessOrder35Page = stepClickCartIconWhenProcessOrder(
+                new ProcessOrder35Page(), false);
+
+        // Step 2
+        step("Нажмите на кнопку +Товар");
+        SearchProductPage searchProductPage = stepClickAddProductButton(cartProcessOrder35Page);
+
+        // Step 3
+        step("Введите ЛМ код товара (количество товара достаточно)");
+        AddProduct35Page<CartProcessOrder35Page> addProduct35Page = stepSearchForProduct(
+                searchProductPage, newProductLmCode);
+
+        // Step 4
+        step("Нажмите на Добавить в заказ");
+        stepAddProductInOrder(addProduct35Page, true);
+    }
+
+    @Test(description = "C22808292 Добавить товар в неподтвержденный заказ (количества товара недостаточно)")
+    public void testAddProductInNotConfirmedOrderWhenProductHasNotAvailableStock() throws Exception {
+        // Pre-conditions
+        CatalogSearchFilter filter = new CatalogSearchFilter();
+        filter.setHasAvailableStock(true);
+        ProductItemData product1 = apiClientProvider.getProducts(1, filter).get(0);
+        filter.setHasAvailableStock(false);
+        ProductItemData product2 = apiClientProvider.getProducts(1, filter).get(0);
+
+        CartProductOrderData cartProductOrderData = new CartProductOrderData(product1);
+        cartProductOrderData.setQuantity(1.0);
+
+        salesDocumentData = startFromScreenWithOrderDraft(null,
+                Collections.singletonList(cartProductOrderData), true);
+
+        String newProductLmCode = product2.getLmCode();
+
+        // Step 1
+        step("Нажать на иконку корзины в поле оформления заказа");
+        CartProcessOrder35Page cartProcessOrder35Page = stepClickCartIconWhenProcessOrder(
+                new ProcessOrder35Page(), false);
+
+        // Step 2
+        step("Нажмите на кнопку +Товар");
+        SearchProductPage searchProductPage = stepClickAddProductButton(cartProcessOrder35Page);
+
+        // Step 3
+        step("Введите ЛМ код товара (количество товара достаточно)");
+        AddProduct35Page<CartProcessOrder35Page> addProduct35Page = stepSearchForProduct(
+                searchProductPage, newProductLmCode);
+
+        // Step 4
+        step("Нажмите на Добавить в заказ");
+        stepAddProductInOrderWithEditQuantity(addProduct35Page,
+                product2.getAvailableStock() + 10, true);
+    }
+
+
+    //   ============ Шаги тестов =================== //
+
+    /**
+     * Нажать на иконку корзины в поле оформления заказа
+     */
+    private CartProcessOrder35Page stepClickCartIconWhenProcessOrder(
+            ProcessOrder35Page processOrder35Page, boolean verifyProducts) {
+        step("Нажать на иконку корзины в поле оформления заказа");
+        CartProcessOrder35Page cartProcessOrder35Page = processOrder35Page.clickCartIcon();
+        if (verifyProducts)
+            cartProcessOrder35Page.shouldSalesDocumentDataIs(salesDocumentData);
+        return cartProcessOrder35Page;
+    }
+
+    /**
+     * Нажмите на кнопку +Товар
+     */
+    private SearchProductPage stepClickAddProductButton(CartProcessOrder35Page cartProcessOrder35Page) {
+        return cartProcessOrder35Page.clickAddProductButton()
+                .verifyRequiredElements();
+    }
+
+    /**
+     * Введите ЛМ код товара на экране поиска товаров
+     */
+    private AddProduct35Page<CartProcessOrder35Page> stepSearchForProduct(
+            SearchProductPage searchProductPage, String searchText) {
+        searchProductPage.enterTextInSearchFieldAndSubmit(searchText);
+        return new AddProduct35Page<>(CartProcessOrder35Page.class)
+                .verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_ORDER);
+    }
+
+    /**
+     * Изменить кол-во товара и Добавить товар в заказ
+     */
+    private CartProcessOrder35Page stepAddProductInOrderWithEditQuantity(
+            AddProduct35Page<CartProcessOrder35Page> addProduct35Page, Double quantity, boolean verifyProducts) {
+        ProductOrderCardAppData productData = addProduct35Page.getProductOrderDataFromPage();
+        productData.setAvailableTodayQuantity(null);;
+        if (quantity != null) {
+            productData.setSelectedQuantity(quantity);
+            productData.setTotalPrice(ParserUtil.multiply(quantity, productData.getPrice(), 2));
+            addProduct35Page.enterQuantityOfProduct((int) Math.round(quantity), false);
+        }
+
+        salesDocumentData.getOrderAppDataList().get(0).addFirstProduct(productData);
+        salesDocumentData.getOrderAppDataList().get(0).setTotalWeight(null);
+
+        CartProcessOrder35Page cartProcessOrder35Page = addProduct35Page.clickAddIntoOrderButton();
+        if (verifyProducts)
+            cartProcessOrder35Page.shouldSalesDocumentDataIs(salesDocumentData);
+        return cartProcessOrder35Page;
+    }
+
+    /**
+     * Добавить товар в заказ
+     */
+    private CartProcessOrder35Page stepAddProductInOrder(
+            AddProduct35Page<CartProcessOrder35Page> addProduct35Page, boolean verifyProducts) {
+        return stepAddProductInOrderWithEditQuantity(addProduct35Page, null, verifyProducts);
+    }
+
 
 }

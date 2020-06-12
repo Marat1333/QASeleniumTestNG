@@ -2,10 +2,10 @@ package com.leroy.magmobile.ui.pages.sales.orders.order;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import com.leroy.magmobile.ui.pages.sales.orders.CartOrderEstimatePage;
 import io.qameta.allure.Step;
 
-public abstract class HeaderProcessOrder35Page extends CommonMagMobilePage {
+public abstract class HeaderProcessOrder35Page extends CartOrderEstimatePage {
 
     @AppFindBy(text = "Оформление заказа")
     protected Element headerLbl;

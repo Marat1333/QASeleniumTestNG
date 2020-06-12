@@ -10,7 +10,7 @@ import com.leroy.magmobile.ui.models.MagCustomerData;
 import com.leroy.magmobile.ui.models.sales.OrderAppData;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.pages.customers.SearchCustomerPage;
-import com.leroy.magmobile.ui.pages.sales.orders.CartEstimatePage;
+import com.leroy.magmobile.ui.pages.sales.orders.CartOrderEstimatePage;
 import com.leroy.magmobile.ui.pages.sales.widget.ProductOrderCardAppWidget;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.search.widgets.SearchCustomerWidget;
@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class EstimatePage extends CartEstimatePage {
+public class EstimatePage extends CartOrderEstimatePage {
 
     @Builder
     @AllArgsConstructor

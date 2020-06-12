@@ -169,7 +169,7 @@ public class ApiClientProvider {
     public List<ProductItemData> getProducts(int necessaryCount, CatalogSearchFilter filtersData) {
         if (filtersData == null)
             filtersData = new CatalogSearchFilter();
-        String[] badLmCodes = {"10008698", "10008751", "11756217"}; // Из-за отсутствия синхронизации бэков на тесте, мы можем получить некорректные данные
+        String[] badLmCodes = {"10008698", "10008751", "11756217", "10690746"}; // Из-за отсутствия синхронизации бэков на тесте, мы можем получить некорректные данные
         GetCatalogSearch params = new GetCatalogSearch()
                 .setShopId(userSessionData().getUserShopId())
                 .setDepartmentId(userSessionData().getUserDepartmentId())
@@ -218,6 +218,11 @@ public class ApiClientProvider {
 
     public List<String> getProductLmCodes(int necessaryCount) {
         List<ProductItemData> productItemResponseList = getProducts(necessaryCount, null);
+        return productItemResponseList.stream().map(ProductItemData::getLmCode).collect(Collectors.toList());
+    }
+
+    public List<String> getProductLmCodes(int necessaryCount, boolean isAvs, boolean isTopEm) {
+        List<ProductItemData> productItemResponseList = getProducts(necessaryCount, isAvs, isTopEm);
         return productItemResponseList.stream().map(ProductItemData::getLmCode).collect(Collectors.toList());
     }
 

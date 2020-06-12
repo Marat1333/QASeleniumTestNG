@@ -32,6 +32,8 @@ public class DateTimeUtil {
     }
 
     public static LocalDate strToLocalDate(String dateString, String dateFormat) {
+        if (dateString == null)
+            return null;
         try {
             if (dateString.toLowerCase().equals("сегодня"))
                 return LocalDate.now();

@@ -3,6 +3,7 @@ package com.leroy.magmobile.ui.pages.sales.orders.order;
 import com.leroy.core.annotations.Form;
 import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
 import com.leroy.magmobile.ui.pages.sales.orders.order.forms.ProductOrderForm;
+import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import io.qameta.allure.Step;
 
 /**
@@ -20,6 +21,13 @@ public class CartProcessOrder35Page extends HeaderProcessOrder35Page {
     }
 
     // Grab info
+
+    // Actions
+
+    @Step("Нажмите кнопку для добавления товара в корзину")
+    public SearchProductPage clickAddProductButton() {
+        return productOrderForm.clickAddProductButton();
+    }
 
 
     // Verifications

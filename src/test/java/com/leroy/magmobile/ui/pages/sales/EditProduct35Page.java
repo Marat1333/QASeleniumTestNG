@@ -1,9 +1,9 @@
 package com.leroy.magmobile.ui.pages.sales;
 
-import com.leroy.magmobile.ui.pages.sales.orders.CartEstimatePage;
+import com.leroy.magmobile.ui.pages.sales.orders.CartOrderEstimatePage;
 import io.qameta.allure.Step;
 
-public class EditProduct35Page<T extends CartEstimatePage> extends AddProduct35Page<T> {
+public class EditProduct35Page<T extends CartOrderEstimatePage> extends AddProduct35Page<T> {
 
     public EditProduct35Page(Class<T> parentPage) {
         super(parentPage);

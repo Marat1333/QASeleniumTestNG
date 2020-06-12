@@ -12,7 +12,7 @@ import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
 import com.leroy.magmobile.ui.pages.sales.SalesDocumentsPage;
-import com.leroy.magmobile.ui.pages.sales.orders.CartEstimatePage;
+import com.leroy.magmobile.ui.pages.sales.orders.CartOrderEstimatePage;
 import com.leroy.magmobile.ui.pages.sales.orders.cart.modal.ChangeProductModal;
 import com.leroy.magmobile.ui.pages.sales.orders.cart.modal.ConsolidateOrdersModal;
 import com.leroy.magmobile.ui.pages.sales.orders.order.ProcessOrder35Page;
@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Cart35Page extends CartEstimatePage {
+public class Cart35Page extends CartOrderEstimatePage {
 
     public final static String SCREEN_TITLE = "Корзина";
 

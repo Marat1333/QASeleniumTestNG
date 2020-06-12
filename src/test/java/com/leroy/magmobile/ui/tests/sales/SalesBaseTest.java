@@ -92,8 +92,11 @@ public class SalesBaseTest extends AppBaseSteps {
 
     // Заказы
     private SalesDocumentData startFromScreenWithOrderDraftAndReturnSalesDocData(
+            List<String> lmCodes,
             List<CartProductOrderData> productDataList, boolean hasDiscount, boolean returnSalesDocData) throws Exception {
-        if (productDataList != null)
+        if (lmCodes != null)
+            startFromScreenWithCreatedCart(lmCodes, hasDiscount);
+        else if (productDataList != null)
             startFromScreenWithCreatedCart(productDataList);
         else
             startFromScreenWithCreatedCart(hasDiscount);
@@ -108,18 +111,20 @@ public class SalesBaseTest extends AppBaseSteps {
 
     @Step("Pre-condition: Создаем черновик заказа")
     protected SalesDocumentData startFromScreenWithOrderDraftWithDiscount() throws Exception {
-        return startFromScreenWithOrderDraftAndReturnSalesDocData(
+        return startFromScreenWithOrderDraftAndReturnSalesDocData(null,
                 null, true, true);
     }
 
     protected SalesDocumentData startFromScreenWithOrderDraft(boolean returnSalesDocData) throws Exception {
-        return startFromScreenWithOrderDraftAndReturnSalesDocData(null, false, returnSalesDocData);
+        return startFromScreenWithOrderDraftAndReturnSalesDocData(
+                null, null, false, returnSalesDocData);
     }
 
     @Step("Pre-condition: Создаем черновик заказа")
     protected SalesDocumentData startFromScreenWithOrderDraft(
-            List<CartProductOrderData> productDataList, boolean returnSalesDocData) throws Exception {
-        return startFromScreenWithOrderDraftAndReturnSalesDocData(productDataList, false, returnSalesDocData);
+            List<String> lmCodes, List<CartProductOrderData> productDataList,
+            boolean returnSalesDocData) throws Exception {
+        return startFromScreenWithOrderDraftAndReturnSalesDocData(lmCodes, productDataList, false, returnSalesDocData);
     }
 
     // ПОИСК ТОВАРОВ

@@ -67,15 +67,25 @@
         </classes>
     </test>
 
-<!--    <test name="">-->
-<!--        <classes>-->
-<!--            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">-->
-<!--                <methods>-->
-<!--                    <include name=""/>-->
-<!--                </methods>-->
-<!--            </class>-->
-<!--        </classes>-->
-<!--    </test>-->
+    <test name="C22808291 Добавить товар в неподтвержденный заказ (количества товара достаточно)">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
+                <methods>
+                    <include name="testAddProductInNotConfirmedOrderWhenProductHasAvailableStock"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22808292 Добавить товар в неподтвержденный заказ (количества товара недостаточно)">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
+                <methods>
+                    <include name="testAddProductInNotConfirmedOrderWhenProductHasNotAvailableStock"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
 
 
 
