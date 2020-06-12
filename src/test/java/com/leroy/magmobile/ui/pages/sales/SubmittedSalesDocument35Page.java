@@ -1,5 +1,6 @@
 package com.leroy.magmobile.ui.pages.sales;
 
+import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobButton;
@@ -10,7 +11,7 @@ import io.qameta.allure.Step;
 
 public class SubmittedSalesDocument35Page extends CommonMagMobilePage {
 
-    @AppFindBy(text = "Заказ на самовывоз оформлен,\nтовары зарезервированы")
+    @AppFindBy(containsText = "Заказ на ")
     Element titleMsgLbl;
 
     private static final String orderNumberText = "Номер заказа";
@@ -39,7 +40,9 @@ public class SubmittedSalesDocument35Page extends CommonMagMobilePage {
 
     @Override
     public void waitForPageIsLoaded() {
-        titleMsgLbl.waitForVisibility(long_timeout);
+        String desc = "Экран с успешно оформленным заказом не открылся";
+        anAssert.isTrue(titleMsgLbl.waitForVisibility(), desc);
+        anAssert.isTrue(pinCodeLbl.waitForVisibility(), desc);
     }
 
     public String getDocumentNumber() {
@@ -63,9 +66,13 @@ public class SubmittedSalesDocument35Page extends CommonMagMobilePage {
     /* ---------------------- Verifications -------------------------- */
 
     @Step("Проверить, что страница подтверждения заказа отображается корректно")
-    public SubmittedSalesDocument35Page verifyRequiredElements(boolean severalOrdersInCart) {
+    public SubmittedSalesDocument35Page verifyRequiredElements(SalesDocumentsConst.GiveAwayPoints type, boolean severalOrdersInCart) {
         String ps = getPageSource();
-        softAssert.areElementsVisible(ps, titleMsgLbl, orderNumberLbl,
+        if (SalesDocumentsConst.GiveAwayPoints.PICKUP.equals(type))
+            softAssert.isElementTextContains(titleMsgLbl, "Заказ на самовывоз оформлен,");
+        else
+            softAssert.isElementTextContains(titleMsgLbl, "Заказ на доставку оформлен,");
+        softAssert.areElementsVisible(ps, orderNumberLbl,
                 orderNumberVal, pinCodeLbl, pinCodeVal, offerCustomerToTakeScreenshotLbl);
         if (severalOrdersInCart) {
             softAssert.isElementVisible(goToCartBtn, ps);
@@ -76,8 +83,8 @@ public class SubmittedSalesDocument35Page extends CommonMagMobilePage {
         return this;
     }
 
-    public SubmittedSalesDocument35Page verifyRequiredElements() {
-        return verifyRequiredElements(false);
+    public SubmittedSalesDocument35Page verifyRequiredElements(SalesDocumentsConst.GiveAwayPoints type) {
+        return verifyRequiredElements(type, false);
     }
 
     @Step("Проверить, что Пин-код = {text}")

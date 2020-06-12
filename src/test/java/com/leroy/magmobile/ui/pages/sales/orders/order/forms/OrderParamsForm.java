@@ -1,5 +1,6 @@
 package com.leroy.magmobile.ui.pages.sales.orders.order.forms;
 
+import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.pages.BaseAppPage;
@@ -65,8 +66,8 @@ public class OrderParamsForm extends BaseAppPage {
 
     // ACTION STEPS
 
-    public OrderParamsForm selectDeliveryType(OrderDetailsData.DeliveryType type) {
-        if (OrderDetailsData.DeliveryType.DELIVERY.equals(type))
+    public OrderParamsForm selectDeliveryType(SalesDocumentsConst.GiveAwayPoints type) {
+        if (SalesDocumentsConst.GiveAwayPoints.DELIVERY.equals(type))
             deliveryBtn.click();
         else
             pickupBtn.click();
@@ -95,7 +96,7 @@ public class OrderParamsForm extends BaseAppPage {
             Log.debug("Пробуем подобрать валидный PIN. Осталось попыток " + iTryCount);
             iTryCount--;
             data.setPinCode(RandomUtil.randomPinCode(
-                    !OrderDetailsData.DeliveryType.DELIVERY.equals(data.getDeliveryType())));
+                    !SalesDocumentsConst.GiveAwayPoints.DELIVERY.equals(data.getDeliveryType())));
             pinCodeFld.clearFillAndSubmit(data.getPinCode());
         }
         if (tryToFindValidPin)
@@ -123,10 +124,10 @@ public class OrderParamsForm extends BaseAppPage {
 
     public OrderParamsForm shouldFormFieldsAre(OrderDetailsData data) {
         // Способ получения
+        if (!deliveryDateFld.isVisible())
+            mainScrollView.scrollToBeginning();
         if (data.getDeliveryDate() != null) {
-            if (!deliveryDateFld.isVisible())
-                mainScrollView.scrollToBeginning();
-            if (OrderDetailsData.DeliveryType.DELIVERY.equals(data.getDeliveryType())) {
+            if (SalesDocumentsConst.GiveAwayPoints.DELIVERY.equals(data.getDeliveryType())) {
                 softAssert.isEquals(DateTimeUtil.strToLocalDate(deliveryDateFld.getText(), "dd MMM"),
                         data.getDeliveryDate(), "Неверная ближайшая дата доставки");
             } else {

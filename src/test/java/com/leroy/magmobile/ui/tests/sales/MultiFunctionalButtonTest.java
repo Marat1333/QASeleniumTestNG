@@ -224,14 +224,14 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
         step("Заполните поля Имя и Фамилия, Телефон, PIN-код для оплаты");
         OrderDetailsData orderDetailsData = new OrderDetailsData().setRequiredRandomData();
         orderDetailsData.setPinCode(getValidPinCode(true));
-        orderDetailsData.setDeliveryType(OrderDetailsData.DeliveryType.PICKUP);
+        orderDetailsData.setDeliveryType(SalesDocumentsConst.GiveAwayPoints.PICKUP);
         processOrder35Page.fillInFormFields(orderDetailsData)
                 .shouldFormFieldsAre(orderDetailsData);
 
         // Step #9
         step("Нажмите на кнопку Подтвердить заказ");
         SubmittedSalesDocument35Page submittedDocument35Page = processOrder35Page.clickSubmitButton()
-                .verifyRequiredElements()
+                .verifyRequiredElements(SalesDocumentsConst.GiveAwayPoints.PICKUP)
                 .shouldPinCodeIs(orderDetailsData.getPinCode());
         String documentNumber = submittedDocument35Page.getDocumentNumber();
 
@@ -241,7 +241,7 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
         expectedSalesDocument.setDocumentTotalPrice(expectedTotalPrice);
 
         expectedSalesDocument.setDocumentState(SalesDocumentsConst.States.IN_PROGRESS.getUiVal());
-        expectedSalesDocument.setTitle(orderDetailsData.getDeliveryType().getValue());
+        expectedSalesDocument.setTitle(orderDetailsData.getDeliveryType().getUiVal());
         expectedSalesDocument.setNumber(documentNumber);
         SalesDocumentsPage salesDocumentsPage = submittedDocument35Page
                 .clickGoToDocumentListButton()

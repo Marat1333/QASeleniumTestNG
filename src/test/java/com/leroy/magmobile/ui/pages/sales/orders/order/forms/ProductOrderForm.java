@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class ProductOrderForm extends BaseAppPage {
 
-    @AppFindBy(xpath = "//android.widget.TextView[@text='Товары доступны']/following::android.widget.TextView[@content-desc='Badge-Text']",
+    @AppFindBy(xpath = "//android.widget.TextView[contains(@text, 'Товары') and contains(@text, 'доступны')]/following::android.widget.TextView[@content-desc='Badge-Text']",
             metaName = "Дата осуществления заказа")
     Element dateOrder;
 

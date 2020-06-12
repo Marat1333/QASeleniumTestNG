@@ -1,5 +1,6 @@
 package com.leroy.magmobile.ui.models.sales;
 
+import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.ui.models.MagCustomerData;
 import com.leroy.utils.RandomUtil;
 import lombok.Data;
@@ -10,21 +11,7 @@ import java.time.LocalDate;
 @Data
 public class OrderDetailsData {
 
-    public enum DeliveryType {
-        PICKUP("Самовывоз"), DELIVERY("Доставка");
-
-        String value;
-
-        DeliveryType(String val) {
-            this.value = val;
-        }
-
-        public String getValue() {
-            return value;
-        }
-    }
-
-    private DeliveryType deliveryType;
+    private SalesDocumentsConst.GiveAwayPoints deliveryType;
     private MagCustomerData customer;
     private LocalDate deliveryDate;
     private String pinCode;

@@ -1,5 +1,6 @@
 package com.leroy.magmobile.ui.pages.sales.orders.order;
 
+import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.annotations.Form;
 import com.leroy.core.web_elements.android.AndroidScrollView;
@@ -33,7 +34,7 @@ public class ProcessOrder35Page extends HeaderProcessOrder35Page {
     // ACTION STEPS
 
     @Step("Выбираем способ получения {type}")
-    public ProcessOrder35Page selectDeliveryType(OrderDetailsData.DeliveryType type) {
+    public ProcessOrder35Page selectDeliveryType(SalesDocumentsConst.GiveAwayPoints type) {
         orderParamsForm.selectDeliveryType(type);
         return this;
     }

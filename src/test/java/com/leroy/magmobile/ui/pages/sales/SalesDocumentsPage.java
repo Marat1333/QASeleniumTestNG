@@ -71,8 +71,10 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
         String actualStatus;
         int iCount = 0;
         do {
-            if (iCount > 0)
+            if (iCount > 0) {
                 salesDocumentScrollList.scrollToBeginning();
+                waitUntilProgressBarAppearsAndDisappear();
+            }
             CardWidget<ShortSalesDocumentData> cardWidget =
                     salesDocumentScrollList.searchForWidgetByText(docNumber);
             anAssert.isNotNull(cardWidget, "Не нашли документ " + docNumber,
@@ -80,7 +82,7 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
                             docNumber));
             actualStatus = cardWidget.collectDataFromPage().getDocumentState();
             iCount++;
-        } while (!actualStatus.equals(expectedStatus) || iCount < 5);
+        } while (!actualStatus.equals(expectedStatus) && iCount < 10);
         return this;
     }
 

@@ -117,8 +117,9 @@ public class SalesBaseTest extends AppBaseSteps {
     }
 
     @Step("Pre-condition: Создаем черновик заказа")
-    protected void startFromScreenWithOrderDraft(List<CartProductOrderData> productDataList) throws Exception {
-        startFromScreenWithOrderDraftAndReturnSalesDocData(productDataList, false, false);
+    protected SalesDocumentData startFromScreenWithOrderDraft(
+            List<CartProductOrderData> productDataList, boolean returnSalesDocData) throws Exception {
+        return startFromScreenWithOrderDraftAndReturnSalesDocData(productDataList, false, returnSalesDocData);
     }
 
     // ПОИСК ТОВАРОВ
