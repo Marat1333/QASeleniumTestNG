@@ -287,7 +287,7 @@ public class CartTest extends SalesBaseTest {
     public void testAddAvsOrTopEmProductIntoBasket() throws Exception {
         // Test data
         boolean oddDay = LocalDate.now().getDayOfMonth() % 2 == 1;
-        String lmCode = oddDay ? getAnyLmCodeProductWithTopEM() : getAnyLmCodeProductWithAvs();
+        String lmCode = oddDay ? getAnyLmCodeProductWithTopEM(true) : getAnyLmCodeProductWithAvs(true);
 
         startFromScreenWithCreatedCart();
 

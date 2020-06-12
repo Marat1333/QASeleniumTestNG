@@ -72,7 +72,7 @@ public class Cart35Page extends CartEstimatePage {
     // Верхняя шапка заказов (Заказ # из # и т.д.)
     AndroidScrollView<OrderAppData> headerOrderInfoScrollView = new AndroidScrollView<>(
             driver, AndroidScrollView.TYPICAL_LOCATOR,
-            "//android.view.ViewGroup[android.view.ViewGroup[@content-desc='Badge-View']]",
+            "//android.view.ViewGroup[android.widget.TextView[contains(@text, 'Заказ')] and android.widget.TextView[contains(@text, 'Товаров:')]]",
             HeaderOrderInfoWidget.class
     );
 
