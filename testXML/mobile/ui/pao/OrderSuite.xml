@@ -87,6 +87,26 @@
         </classes>
     </test>
 
+    <test name="C22808293 Изменить количество товара в неподтвержденном заказе">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
+                <methods>
+                    <include name="testChangeProductQuantityInNotConfirmedOrder"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22808294 Добавить Топ ЕМ или AVS товар в неподтвержденный заказ">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
+                <methods>
+                    <include name="testAddTopEmOrAvsProductInNotConfirmedOrder"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
 
 
 

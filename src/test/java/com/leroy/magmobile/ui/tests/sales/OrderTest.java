@@ -514,6 +514,32 @@ public class OrderTest extends SalesBaseTest {
         stepSaveEditProductChanges(true);
     }
 
+    @Test(description = "C22808294 Добавить Топ ЕМ или AVS товар в неподтвержденный заказ")
+    public void testAddTopEmOrAvsProductInNotConfirmedOrder() throws Exception {
+        // Pre-conditions
+        salesDocumentData = startFromScreenWithOrderDraft(true);
+
+        boolean oddDay = LocalDate.now().getDayOfMonth() % 2 == 1;
+        String newProductLmCode = !oddDay ? getAnyLmCodeProductWithTopEM(true) :
+                getAnyLmCodeProductWithAvs(true);
+
+        // Step 1
+        step("Нажать на иконку корзины в поле оформления заказа");
+        stepClickCartIconWhenProcessOrder(false);
+
+        // Step 2
+        step("Нажмите на кнопку +Товар");
+        stepClickAddProductButton();
+
+        // Step 3
+        step("Введите ЛМ код товара (товар Топ ЕМ или AVS)");
+        stepSearchForProduct(newProductLmCode);
+
+        // Step 4
+        step("Нажмите на Добавить в заказ");
+        stepAddProductInOrder(true);
+    }
+
 
     //   ============ Шаги тестов =================== //
 
