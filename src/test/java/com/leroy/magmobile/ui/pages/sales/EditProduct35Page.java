@@ -19,14 +19,16 @@ public class EditProduct35Page<T extends CartOrderEstimatePage> extends AddProdu
     @Step("Нажмите кнопку сохранить")
     public T clickSaveButton() throws Exception {
         submitBtn.click();
+        submitBtn.waitForInvisibility();
         return newCartOrEstimatePage();
     }
 
     // Verifications
 
     @Step("Проверить, что страница 'Изменение количества товара' отображается корректно")
-    public AddProduct35Page<T> verifyRequiredElements() {
-        return super.verifyRequiredElements(SubmitBtnCaptions.SAVE);
+    public EditProduct35Page<T> verifyRequiredElements() {
+        super.verifyRequiredElements(SubmitBtnCaptions.SAVE);
+        return this;
     }
 
 }

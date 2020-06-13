@@ -21,6 +21,17 @@ public class SalesDocumentData {
 
     private List<OrderAppData> orderAppDataList;
 
+    // Experiment field (для понимание над каким товаром происходят взаимодействия в UI)
+    private ProductOrderCardAppData productDataInEditModeNow;
+
+    public OrderAppData getOrderDataInEditModeNow() {
+        for (OrderAppData orderAppData : orderAppDataList) {
+            if (orderAppData.getProductCardDataList().indexOf(productDataInEditModeNow) >= 0)
+                return orderAppData;
+        }
+        return null;
+    }
+
     public void setFieldsFrom(ShortSalesDocumentData shortSalesDocumentData) {
         title = shortSalesDocumentData.getTitle();
         number = shortSalesDocumentData.getNumber();

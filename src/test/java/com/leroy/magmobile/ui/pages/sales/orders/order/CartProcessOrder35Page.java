@@ -20,6 +20,12 @@ public class CartProcessOrder35Page extends HeaderProcessOrder35Page {
                 "Экран 'Оформление заказа' с корзиной не отобразился");
     }
 
+    @Step("Ждем, когда стоимость в заказе будет равна {value}")
+    public CartProcessOrder35Page waitUntilTotalOrderPriceIs(Double value) {
+        productOrderForm.waitUntilTotalOrderPriceIs(value);
+        return this;
+    }
+
     // Grab info
 
     // Actions
@@ -27,6 +33,11 @@ public class CartProcessOrder35Page extends HeaderProcessOrder35Page {
     @Step("Нажмите кнопку для добавления товара в корзину")
     public SearchProductPage clickAddProductButton() {
         return productOrderForm.clickAddProductButton();
+    }
+
+    @Step("Нажмите на {index}-ую карточку товара/услуги")
+    public OrderActionWithProductCardModel clickCardByIndex(int index) throws Exception {
+        return productOrderForm.clickCardByIndex(index);
     }
 
 

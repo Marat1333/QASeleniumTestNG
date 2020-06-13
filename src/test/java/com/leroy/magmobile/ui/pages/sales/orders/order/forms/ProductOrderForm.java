@@ -1,5 +1,6 @@
 package com.leroy.magmobile.ui.pages.sales.orders.order.forms;
 
+import com.leroy.constants.Currency;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.android.AndroidScrollView;
@@ -9,6 +10,7 @@ import com.leroy.magmobile.ui.elements.MagMobWhiteSubmitButton;
 import com.leroy.magmobile.ui.models.sales.OrderAppData;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
+import com.leroy.magmobile.ui.pages.sales.orders.order.OrderActionWithProductCardModel;
 import com.leroy.magmobile.ui.pages.sales.widget.ProductOrderCardAppWidget;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.utils.DateTimeUtil;
@@ -56,6 +58,14 @@ public class ProductOrderForm extends BaseAppPage {
         return countAndWeightProductLbl.waitForVisibility();
     }
 
+    public void waitUntilTotalOrderPriceIs(Double value) {
+        String expectedValue = String.format("%s %s",
+                ParserUtil.doubleToStr(value, 2, false), Currency.RUB.getName());
+        anAssert.isTrue(totalPriceVal.waitUntilTextIsEqualTo(expectedValue),
+                "Не дождались, когда стоимость в заказе будет равна '" + expectedValue +
+                        "'. Фактическое значение: " + totalPriceVal.getText());
+    }
+
     // Grab info
 
     public int getProductCount(String ps) {
@@ -98,5 +108,11 @@ public class ProductOrderForm extends BaseAppPage {
     public SearchProductPage clickAddProductButton() {
         addProductBtn.click();
         return new SearchProductPage();
+    }
+
+    public OrderActionWithProductCardModel clickCardByIndex(int index) throws Exception {
+        index--;
+        productCardsScrollView.clickElemByIndex(index);
+        return new OrderActionWithProductCardModel();
     }
 }

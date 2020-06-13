@@ -58,6 +58,10 @@ public class OrderAppData {
 
     public void changeProductQuantity(int index, double quantity) {
         ProductOrderCardAppData product = productCardDataList.get(index);
+        changeProductQuantity(product, quantity);
+    }
+
+    public void changeProductQuantity(ProductOrderCardAppData product, double quantity) {
         double price = product.getPrice();
         double quantityDiff = quantity - product.getSelectedQuantity();
         product.setSelectedQuantity(quantity);
