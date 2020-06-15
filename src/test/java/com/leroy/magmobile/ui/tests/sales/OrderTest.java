@@ -17,7 +17,7 @@ import com.leroy.magmobile.ui.pages.sales.orders.order.CartProcessOrder35Page;
 import com.leroy.magmobile.ui.pages.sales.orders.order.ConfirmedOrderPage;
 import com.leroy.magmobile.ui.pages.sales.orders.order.OrderActionWithProductCardModel;
 import com.leroy.magmobile.ui.pages.sales.orders.order.ProcessOrder35Page;
-import com.leroy.magmobile.ui.pages.sales.orders.order.modal.ConfirmRemoveLastProductOrderModal;
+import com.leroy.magmobile.ui.pages.sales.orders.order.modal.ConfirmRemoveOrderModal;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
@@ -38,6 +38,7 @@ public class OrderTest extends SalesBaseTest {
     private SalesDocumentData salesDocumentData;
 
     // Страницы (экраны), участвующие в данных тестах:
+    SalesDocumentsPage salesDocumentsPage;
     CartProcessOrder35Page cartProcessOrder35Page;
     ProcessOrder35Page processOrder35Page;
     AddProduct35Page<CartProcessOrder35Page> addProduct35Page;
@@ -57,7 +58,7 @@ public class OrderTest extends SalesBaseTest {
 
     // Создание Pre-condition
 
-    private SalesDocumentData startFromScreenWithOrderDraftAndReturnSalesDocData(
+    private void startFromScreenWithOrderDraftAndReturnSalesDocData(
             List<String> lmCodes,
             List<CartProductOrderData> productDataList, boolean hasDiscount, boolean returnSalesDocData) throws Exception {
         if (lmCodes != null)
@@ -68,32 +69,30 @@ public class OrderTest extends SalesBaseTest {
             startFromScreenWithCreatedCart(hasDiscount);
 
         Cart35Page cart35Page = new Cart35Page();
-        SalesDocumentData salesDocumentData = null;
         if (returnSalesDocData)
             salesDocumentData = cart35Page.getSalesDocumentData();
         cart35Page.clickMakeSalesButton();
         processOrder35Page = new ProcessOrder35Page();
         if (returnSalesDocData)
             salesDocumentData.setNumber(processOrder35Page.getOrderNumber());
-        return salesDocumentData;
     }
 
     @Step("Pre-condition: Создаем черновик заказа")
-    protected SalesDocumentData startFromScreenWithOrderDraftWithDiscount() throws Exception {
-        return startFromScreenWithOrderDraftAndReturnSalesDocData(null,
+    protected void startFromScreenWithOrderDraftWithDiscount() throws Exception {
+        startFromScreenWithOrderDraftAndReturnSalesDocData(null,
                 null, true, true);
     }
 
-    protected SalesDocumentData startFromScreenWithOrderDraft(boolean returnSalesDocData) throws Exception {
-        return startFromScreenWithOrderDraftAndReturnSalesDocData(
+    protected void startFromScreenWithOrderDraft(boolean returnSalesDocData) throws Exception {
+        startFromScreenWithOrderDraftAndReturnSalesDocData(
                 null, null, false, returnSalesDocData);
     }
 
     @Step("Pre-condition: Создаем черновик заказа")
-    protected SalesDocumentData startFromScreenWithOrderDraft(
+    protected void startFromScreenWithOrderDraft(
             List<String> lmCodes, List<CartProductOrderData> productDataList,
             boolean returnSalesDocData) throws Exception {
-        return startFromScreenWithOrderDraftAndReturnSalesDocData(lmCodes, productDataList, false, returnSalesDocData);
+        startFromScreenWithOrderDraftAndReturnSalesDocData(lmCodes, productDataList, false, returnSalesDocData);
     }
 
     @Test(description = "C22797112 Создать заказ из корзины с одним заказом")
@@ -177,7 +176,7 @@ public class OrderTest extends SalesBaseTest {
 
     @Test(description = "C22797121 Ввод существующего пин кода")
     public void testEnterExistedPinCode() throws Exception {
-        salesDocumentData = startFromScreenWithOrderDraft(true);
+        startFromScreenWithOrderDraft(true);
         ProcessOrder35Page processOrder35Page = new ProcessOrder35Page();
 
         // Steps 1
@@ -194,7 +193,7 @@ public class OrderTest extends SalesBaseTest {
         MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
 
         if (isStartFromScratch()) {
-            salesDocumentData = startFromScreenWithOrderDraft(true);
+            startFromScreenWithOrderDraft(true);
         }
 
         ProcessOrder35Page processOrder35Page = new ProcessOrder35Page();
@@ -264,7 +263,7 @@ public class OrderTest extends SalesBaseTest {
         MagCustomerData customerData = TestDataConstants.CUSTOMER_WITH_SERVICE_CARD;
 
         // Pre-conditions
-        SalesDocumentData salesDocumentData = startFromScreenWithOrderDraft(true);
+        startFromScreenWithOrderDraft(true);
 
         // Step 1
         step("В поле Выбери способ получения нажмите на кнопу Доставка");
@@ -348,7 +347,7 @@ public class OrderTest extends SalesBaseTest {
         productWithNegativeBalance.setQuantity(productItemDataList.get(0).getAvailableStock() + 10.0);
 
         // Pre-conditions
-        SalesDocumentData salesDocumentData = startFromScreenWithOrderDraft(null,
+        startFromScreenWithOrderDraft(null,
                 Collections.singletonList(productWithNegativeBalance), true);
 
         // Step 1
@@ -418,7 +417,7 @@ public class OrderTest extends SalesBaseTest {
     @Test(description = "C22797118 Создать заказ из корзины со скидкой")
     public void testCreateOrderFromCartWithDiscount() throws Exception {
         // Pre-condition + step 1
-        SalesDocumentData salesDocumentData = startFromScreenWithOrderDraftWithDiscount();
+        startFromScreenWithOrderDraftWithDiscount();
         anAssert().isNotNull(salesDocumentData.getOrderAppDataList().get(0)
                         .getProductCardDataList().get(0).getDiscountPercent(),
                 "У товара в корзине отсутствует скидка", "Товар в корзине должен иметь скидку");
@@ -475,7 +474,7 @@ public class OrderTest extends SalesBaseTest {
     @Test(description = "C22808291 Добавить товар в неподтвержденный заказ (количества товара достаточно)",
             groups = NEED_PRODUCTS_GROUP)
     public void testAddProductInNotConfirmedOrderWhenProductHasAvailableStock() throws Exception {
-        salesDocumentData = startFromScreenWithOrderDraft(
+        startFromScreenWithOrderDraft(
                 Collections.singletonList(lmCodes.get(0)), null, true);
 
         String newProductLmCode = lmCodes.get(1);
@@ -509,7 +508,7 @@ public class OrderTest extends SalesBaseTest {
         CartProductOrderData cartProductOrderData = new CartProductOrderData(product1);
         cartProductOrderData.setQuantity(1.0);
 
-        salesDocumentData = startFromScreenWithOrderDraft(null,
+        startFromScreenWithOrderDraft(null,
                 Collections.singletonList(cartProductOrderData), true);
 
         String newProductLmCode = product2.getLmCode();
@@ -534,7 +533,7 @@ public class OrderTest extends SalesBaseTest {
     @Test(description = "C22808293 Изменить количество товара в неподтвержденном заказе")
     public void testChangeProductQuantityInNotConfirmedOrder() throws Exception {
         // Pre-conditions
-        salesDocumentData = startFromScreenWithOrderDraft(true);
+        startFromScreenWithOrderDraft(true);
 
         // Step 1
         step("Нажать на иконку корзины в поле оформления заказа");
@@ -560,7 +559,7 @@ public class OrderTest extends SalesBaseTest {
     @Test(description = "C22808294 Добавить Топ ЕМ или AVS товар в неподтвержденный заказ")
     public void testAddTopEmOrAvsProductInNotConfirmedOrder() throws Exception {
         // Pre-conditions
-        salesDocumentData = startFromScreenWithOrderDraft(true);
+        startFromScreenWithOrderDraft(true);
 
         boolean oddDay = LocalDate.now().getDayOfMonth() % 2 == 1;
         String newProductLmCode = oddDay ? getAnyLmCodeProductWithTopEM(true) :
@@ -586,7 +585,7 @@ public class OrderTest extends SalesBaseTest {
     @Test(description = "C22808295 Удалить товар из неподтвержденного заказа", groups = NEED_PRODUCTS_GROUP)
     public void testRemoveProductFromNotConfirmedOrder() throws Exception {
         // Pre-conditions
-        salesDocumentData = startFromScreenWithOrderDraft(lmCodes.subList(0, 3), null, true);
+        startFromScreenWithOrderDraft(lmCodes.subList(0, 3), null, true);
 
         // Step 1
         step("Нажать на иконку корзины в поле оформления заказа");
@@ -601,10 +600,28 @@ public class OrderTest extends SalesBaseTest {
         stepSelectRemoveProductInModalWindowAndConfirm(true);
     }
 
-    @Test(description = "C22847244 Удалить последний товар из неподтвержденного заказа", groups = NEED_PRODUCTS_GROUP)
+    @Test(description = "C22808296 Добавить товар в неподтвержденный заказ (из модалки действий с товаром)")
+    public void testAddProductInNotConfirmedOrderFromActionWithProductModal() throws Exception {
+        startFromScreenWithOrderDraft(true);
+        stepClickCartIconWhenProcessOrder(false);
+
+        // Step 1
+        step("Нажать на мини-карточку товара из списка доступных");
+        stepClickProductCard(1);
+
+        // Step 2
+        step("Выберите параметр Добавить товар еще раз");
+        stepClickAddProductAgainInModalWindow();
+
+        // Steps 3 - 6
+        step("Измените кол-во товара и добавьте его ");
+        stepAddProductInOrderWithEditQuantity(2.0, true);
+    }
+
+    @Test(description = "C22847244 Удалить последний товар из неподтвержденного заказа")
     public void testRemoveLastProductFromNotConfirmedOrder() throws Exception {
         // Pre-conditions
-        salesDocumentData = startFromScreenWithOrderDraft(lmCodes.subList(0, 1), null, true);
+        startFromScreenWithOrderDraft(true);
 
         // Step 1
         step("Нажать на иконку корзины в поле оформления заказа");
@@ -617,6 +634,15 @@ public class OrderTest extends SalesBaseTest {
         // Step 3 and 4
         step("Выберите параметр Удалить товар и подтвердите удаление");
         stepRemoveLastProductAndRemoveOrder(true);
+    }
+
+    @Test(description = "C22847242 Удалить неподтвержденный заказ")
+    public void testRemoveNotConfirmedOrder() throws Exception {
+        startFromScreenWithOrderDraft(true);
+
+        // Step 1 and 2
+        step("В правом верхнем углу нажмите на кнопку удаления заказа");
+        stepRemoveOrder(true);
     }
 
 
@@ -669,11 +695,21 @@ public class OrderTest extends SalesBaseTest {
     }
 
     /**
+     * Удалить заказ, нажав на иконку удаления (мусорка)
+     */
+    private void stepRemoveOrder(boolean checkThatOrderIsDeleted) {
+        processOrder35Page.clickTrashIcon()
+                .verifyRequiredElements().clickConfirmButton();
+        if (checkThatOrderIsDeleted)
+            new SalesDocumentsPage().shouldSalesDocumentIsNotPresent(salesDocumentData.getNumber());
+    }
+
+    /**
      * Удалить последний товар из заказа (удалить заказ)
      */
     private void stepRemoveLastProductAndRemoveOrder(boolean checkThatOrderIsDeleted) throws Exception {
         actionWithProductCardModal.clickRemoveProductMenuItem();
-        ConfirmRemoveLastProductOrderModal modal = new ConfirmRemoveLastProductOrderModal();
+        ConfirmRemoveOrderModal modal = new ConfirmRemoveOrderModal();
         modal.verifyRequiredElements();
         modal.clickConfirmButton();
         if (checkThatOrderIsDeleted)
@@ -686,6 +722,14 @@ public class OrderTest extends SalesBaseTest {
     private void stepClickChangeQuantityInModalWindow() {
         editProduct35Page = actionWithProductCardModal.clickChangeQuantityMenuItem()
                 .verifyRequiredElements();
+    }
+
+    /**
+     * Выберите параметр Добавить товар еще раз в модальном окне
+     */
+    private void stepClickAddProductAgainInModalWindow() {
+        addProduct35Page = actionWithProductCardModal.clickAddProductAgainMenuItem()
+                .verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_ORDER);
     }
 
     /**
