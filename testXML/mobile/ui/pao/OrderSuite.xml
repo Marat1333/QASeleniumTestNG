@@ -107,6 +107,36 @@
         </classes>
     </test>
 
+    <test name="C22808295 Удалить товар из неподтвержденного заказа">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
+                <methods>
+                    <include name="testRemoveProductFromNotConfirmedOrder"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22847244 Удалить последний товар из неподтвержденного заказа">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
+                <methods>
+                    <include name="testRemoveLastProductFromNotConfirmedOrder"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
+                <methods>
+                    <include name=""/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
 
 
 

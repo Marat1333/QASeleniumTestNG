@@ -3,6 +3,7 @@ package com.leroy.magmobile.ui.pages.sales.orders.order;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.sales.orders.CartOrderEstimatePage;
+import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
 public abstract class HeaderProcessOrder35Page extends CartOrderEstimatePage {
@@ -14,6 +15,10 @@ public abstract class HeaderProcessOrder35Page extends CartOrderEstimatePage {
             metaName = "Кнопка назад")
     protected Element backBtn;
 
+    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ORDER_SCREEN_ID']//android.widget.TextView[contains(@text, '№')]",
+            metaName = "Номер заказа")
+    private Element orderNumber;
+
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ORDER_SCREEN_ID']//android.view.ViewGroup[@index='6']/android.view.ViewGroup[1]",
             metaName = "Иконка корзины")
     protected Element headerCartIcon;
@@ -21,6 +26,15 @@ public abstract class HeaderProcessOrder35Page extends CartOrderEstimatePage {
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ORDER_SCREEN_ID']//android.view.ViewGroup[@index='6']/android.view.ViewGroup[4]",
             metaName = "Иконка корзины")
     protected Element headerProcessOrderIcon;
+
+    // Grab info
+
+    @Step("Получить номер заказа")
+    public String getOrderNumber() {
+        return ParserUtil.strWithOnlyDigits(orderNumber.getText());
+    }
+
+    // Actions
 
     @Step("Нажмите на иконку корзины для перехода к ней")
     public CartProcessOrder35Page clickCartIcon() {

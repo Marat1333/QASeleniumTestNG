@@ -45,7 +45,7 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
 
     @Override
     public void waitForPageIsLoaded() {
-        getSubmitBtn().waitForVisibility();
+        anAssert.isTrue(getSubmitBtn().waitForVisibility(), "Страница 'Документы продажи' не загрузилась");
         waitUntilProgressBarIsInvisible();
     }
 

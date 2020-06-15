@@ -17,8 +17,10 @@ import com.leroy.magmobile.ui.pages.sales.orders.order.CartProcessOrder35Page;
 import com.leroy.magmobile.ui.pages.sales.orders.order.ConfirmedOrderPage;
 import com.leroy.magmobile.ui.pages.sales.orders.order.OrderActionWithProductCardModel;
 import com.leroy.magmobile.ui.pages.sales.orders.order.ProcessOrder35Page;
+import com.leroy.magmobile.ui.pages.sales.orders.order.modal.ConfirmRemoveLastProductOrderModal;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.utils.ParserUtil;
+import io.qameta.allure.Step;
 import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Test;
 
@@ -51,6 +53,47 @@ public class OrderTest extends SalesBaseTest {
     @BeforeGroups(groups = NEED_PRODUCTS_GROUP)
     private void findProducts() {
         lmCodes = apiClientProvider.getProductLmCodes(3, false, false);
+    }
+
+    // Создание Pre-condition
+
+    private SalesDocumentData startFromScreenWithOrderDraftAndReturnSalesDocData(
+            List<String> lmCodes,
+            List<CartProductOrderData> productDataList, boolean hasDiscount, boolean returnSalesDocData) throws Exception {
+        if (lmCodes != null)
+            startFromScreenWithCreatedCart(lmCodes, hasDiscount);
+        else if (productDataList != null)
+            startFromScreenWithCreatedCart(productDataList);
+        else
+            startFromScreenWithCreatedCart(hasDiscount);
+
+        Cart35Page cart35Page = new Cart35Page();
+        SalesDocumentData salesDocumentData = null;
+        if (returnSalesDocData)
+            salesDocumentData = cart35Page.getSalesDocumentData();
+        cart35Page.clickMakeSalesButton();
+        processOrder35Page = new ProcessOrder35Page();
+        if (returnSalesDocData)
+            salesDocumentData.setNumber(processOrder35Page.getOrderNumber());
+        return salesDocumentData;
+    }
+
+    @Step("Pre-condition: Создаем черновик заказа")
+    protected SalesDocumentData startFromScreenWithOrderDraftWithDiscount() throws Exception {
+        return startFromScreenWithOrderDraftAndReturnSalesDocData(null,
+                null, true, true);
+    }
+
+    protected SalesDocumentData startFromScreenWithOrderDraft(boolean returnSalesDocData) throws Exception {
+        return startFromScreenWithOrderDraftAndReturnSalesDocData(
+                null, null, false, returnSalesDocData);
+    }
+
+    @Step("Pre-condition: Создаем черновик заказа")
+    protected SalesDocumentData startFromScreenWithOrderDraft(
+            List<String> lmCodes, List<CartProductOrderData> productDataList,
+            boolean returnSalesDocData) throws Exception {
+        return startFromScreenWithOrderDraftAndReturnSalesDocData(lmCodes, productDataList, false, returnSalesDocData);
     }
 
     @Test(description = "C22797112 Создать заказ из корзины с одним заказом")
@@ -558,6 +601,24 @@ public class OrderTest extends SalesBaseTest {
         stepSelectRemoveProductInModalWindowAndConfirm(true);
     }
 
+    @Test(description = "C22847244 Удалить последний товар из неподтвержденного заказа", groups = NEED_PRODUCTS_GROUP)
+    public void testRemoveLastProductFromNotConfirmedOrder() throws Exception {
+        // Pre-conditions
+        salesDocumentData = startFromScreenWithOrderDraft(lmCodes.subList(0, 1), null, true);
+
+        // Step 1
+        step("Нажать на иконку корзины в поле оформления заказа");
+        stepClickCartIconWhenProcessOrder(false);
+
+        // Step 2
+        step("Нажать на мини-карточку товара из списка доступных");
+        stepClickProductCard(1);
+
+        // Step 3 and 4
+        step("Выберите параметр Удалить товар и подтвердите удаление");
+        stepRemoveLastProductAndRemoveOrder(true);
+    }
+
 
     //   ============ Шаги тестов =================== //
 
@@ -605,6 +666,18 @@ public class OrderTest extends SalesBaseTest {
         cartProcessOrder35Page = new CartProcessOrder35Page();
         if (verifyProducts)
             cartProcessOrder35Page.shouldSalesDocumentDataIs(salesDocumentData);
+    }
+
+    /**
+     * Удалить последний товар из заказа (удалить заказ)
+     */
+    private void stepRemoveLastProductAndRemoveOrder(boolean checkThatOrderIsDeleted) throws Exception {
+        actionWithProductCardModal.clickRemoveProductMenuItem();
+        ConfirmRemoveLastProductOrderModal modal = new ConfirmRemoveLastProductOrderModal();
+        modal.verifyRequiredElements();
+        modal.clickConfirmButton();
+        if (checkThatOrderIsDeleted)
+            new SalesDocumentsPage().shouldSalesDocumentIsNotPresent(salesDocumentData.getNumber());
     }
 
     /**

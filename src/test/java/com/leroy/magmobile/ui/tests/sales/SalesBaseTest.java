@@ -90,43 +90,6 @@ public class SalesBaseTest extends AppBaseSteps {
         }
     }
 
-    // Заказы
-    private SalesDocumentData startFromScreenWithOrderDraftAndReturnSalesDocData(
-            List<String> lmCodes,
-            List<CartProductOrderData> productDataList, boolean hasDiscount, boolean returnSalesDocData) throws Exception {
-        if (lmCodes != null)
-            startFromScreenWithCreatedCart(lmCodes, hasDiscount);
-        else if (productDataList != null)
-            startFromScreenWithCreatedCart(productDataList);
-        else
-            startFromScreenWithCreatedCart(hasDiscount);
-
-        Cart35Page cart35Page = new Cart35Page();
-        SalesDocumentData salesDocumentData = null;
-        if (returnSalesDocData)
-            salesDocumentData = cart35Page.getSalesDocumentData();
-        cart35Page.clickMakeSalesButton();
-        return salesDocumentData;
-    }
-
-    @Step("Pre-condition: Создаем черновик заказа")
-    protected SalesDocumentData startFromScreenWithOrderDraftWithDiscount() throws Exception {
-        return startFromScreenWithOrderDraftAndReturnSalesDocData(null,
-                null, true, true);
-    }
-
-    protected SalesDocumentData startFromScreenWithOrderDraft(boolean returnSalesDocData) throws Exception {
-        return startFromScreenWithOrderDraftAndReturnSalesDocData(
-                null, null, false, returnSalesDocData);
-    }
-
-    @Step("Pre-condition: Создаем черновик заказа")
-    protected SalesDocumentData startFromScreenWithOrderDraft(
-            List<String> lmCodes, List<CartProductOrderData> productDataList,
-            boolean returnSalesDocData) throws Exception {
-        return startFromScreenWithOrderDraftAndReturnSalesDocData(lmCodes, productDataList, false, returnSalesDocData);
-    }
-
     // ПОИСК ТОВАРОВ
 
     // Получить ЛМ код для услуги
