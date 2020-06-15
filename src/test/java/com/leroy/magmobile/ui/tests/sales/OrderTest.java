@@ -50,7 +50,7 @@ public class OrderTest extends SalesBaseTest {
 
     @BeforeGroups(groups = NEED_PRODUCTS_GROUP)
     private void findProducts() {
-        lmCodes = apiClientProvider.getProductLmCodes(2, false, false);
+        lmCodes = apiClientProvider.getProductLmCodes(3, false, false);
     }
 
     @Test(description = "C22797112 Создать заказ из корзины с одним заказом")
@@ -520,7 +520,7 @@ public class OrderTest extends SalesBaseTest {
         salesDocumentData = startFromScreenWithOrderDraft(true);
 
         boolean oddDay = LocalDate.now().getDayOfMonth() % 2 == 1;
-        String newProductLmCode = !oddDay ? getAnyLmCodeProductWithTopEM(true) :
+        String newProductLmCode = oddDay ? getAnyLmCodeProductWithTopEM(true) :
                 getAnyLmCodeProductWithAvs(true);
 
         // Step 1
@@ -538,6 +538,24 @@ public class OrderTest extends SalesBaseTest {
         // Step 4
         step("Нажмите на Добавить в заказ");
         stepAddProductInOrder(true);
+    }
+
+    @Test(description = "C22808295 Удалить товар из неподтвержденного заказа", groups = NEED_PRODUCTS_GROUP)
+    public void testRemoveProductFromNotConfirmedOrder() throws Exception {
+        // Pre-conditions
+        salesDocumentData = startFromScreenWithOrderDraft(lmCodes.subList(0, 3), null, true);
+
+        // Step 1
+        step("Нажать на иконку корзины в поле оформления заказа");
+        stepClickCartIconWhenProcessOrder(false);
+
+        // Step 2
+        step("Нажать на мини-карточку товара из списка доступных");
+        stepClickProductCard(1);
+
+        // Step 3 and 4
+        step("Выберите параметр Удалить товар и подтвердите удаление");
+        stepSelectRemoveProductInModalWindowAndConfirm(true);
     }
 
 
@@ -571,6 +589,22 @@ public class OrderTest extends SalesBaseTest {
                 salesDocumentData.getOrderAppDataList().get(0).getProductCardDataList().get(index - 1));
         actionWithProductCardModal = cartProcessOrder35Page.clickCardByIndex(index)
                 .verifyRequiredElements();
+    }
+
+    /**
+     * Выберите параметр Удалить товар в модальном окне и подтвердите удаление
+     */
+    private void stepSelectRemoveProductInModalWindowAndConfirm(boolean verifyProducts) throws Exception {
+        actionWithProductCardModal.clickRemoveProductMenuItem();
+        /*ConfirmRemovingProductModal confirmRemovingProductModal = new ConfirmRemovingProductModal()
+                .verifyRequiredElements();
+        confirmRemovingProductModal.clickConfirmButton();*/ // TODO Из-за бага нет окна о подтверждении удаления
+        Thread.sleep(3000); // Из-за бага нет прогресс бара. Если баг не будут чинить, то стоит добавить ожидание изменение кол-ва товара
+        salesDocumentData.getOrderDataInEditModeNow().removeProduct(salesDocumentData.getProductDataInEditModeNow());
+        salesDocumentData.getOrderAppDataList().get(0).setTotalWeight(null);
+        cartProcessOrder35Page = new CartProcessOrder35Page();
+        if (verifyProducts)
+            cartProcessOrder35Page.shouldSalesDocumentDataIs(salesDocumentData);
     }
 
     /**
