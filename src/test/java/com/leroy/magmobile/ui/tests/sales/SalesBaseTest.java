@@ -2,6 +2,8 @@ package com.leroy.magmobile.ui.tests.sales;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.EnvConstants;
+import com.leroy.constants.StatusCodes;
+import com.leroy.constants.customer.CustomerConst;
 import com.leroy.constants.sales.DiscountConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.api.Module;
@@ -10,14 +12,17 @@ import com.leroy.magmobile.api.clients.CartClient;
 import com.leroy.magmobile.api.clients.OrderClient;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
+import com.leroy.magmobile.api.data.customer.PhoneData;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountReasonData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
+import com.leroy.magmobile.api.data.sales.orders.*;
 import com.leroy.magmobile.ui.AppBaseSteps;
-import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
+import com.leroy.magmobile.ui.constants.TestDataConstants;
+import com.leroy.magmobile.ui.models.MagCustomerData;
 import com.leroy.magmobile.ui.models.sales.ShortSalesDocumentData;
 import com.leroy.magmobile.ui.pages.sales.AddProductPage;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
@@ -26,14 +31,17 @@ import com.leroy.magmobile.ui.pages.sales.SubmittedSalesDocumentPage;
 import com.leroy.magmobile.ui.pages.sales.orders.cart.*;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SaleTypeModalPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
+import com.leroy.utils.ParserUtil;
 import com.leroy.utils.RandomUtil;
 import io.qameta.allure.Step;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -218,6 +226,92 @@ public class SalesBaseTest extends AppBaseSteps {
             assertThat(respDiscount, successful());
         }
         return cartData.getFullDocId();
+    }
+
+    protected String createConfirmedOrder(List<String> lmCodes, List<CartProductOrderData> productDataList) {
+        // Создание корзины
+        List<CartProductOrderData> productOrderDataList = productDataList == null ? new ArrayList<>() : productDataList;
+        if (productDataList == null) {
+            for (String lmCode : lmCodes) {
+                CartProductOrderData productOrderData = new CartProductOrderData();
+                productOrderData.setLmCode(lmCode);
+                productOrderData.setQuantity(1.0);
+                productOrderDataList.add(productOrderData);
+            }
+        }
+        CartClient cartClient = apiClientProvider.getCartClient();
+        Response<CartData> cartDataResponse = cartClient.sendRequestCreate(productOrderDataList);
+        assertThat(cartDataResponse, successful());
+
+        CartData cartData = cartDataResponse.asJson();
+
+        // Создание черновика заказа
+        ReqOrderData reqOrderData = new ReqOrderData();
+        reqOrderData.setCartId(cartData.getCartId());
+        reqOrderData.setDateOfGiveAway(LocalDateTime.now().plusDays(1));
+        reqOrderData.setDocumentVersion(1);
+
+        List<ReqOrderProductData> orderProducts = new ArrayList<>();
+        for (CartProductOrderData cartProduct : cartData.getProducts()) {
+            ReqOrderProductData postProductData = new ReqOrderProductData();
+            postProductData.setLineId(cartProduct.getLineId());
+            postProductData.setLmCode(cartProduct.getLmCode());
+            postProductData.setQuantity(cartProduct.getQuantity());
+            postProductData.setPrice(cartProduct.getPrice());
+            orderProducts.add(postProductData);
+        }
+
+        reqOrderData.setProducts(orderProducts);
+
+        OrderClient orderClient = apiClientProvider.getOrderClient();
+        Response<OrderData> orderResp = orderClient.createOrder(reqOrderData);
+        OrderData orderData = orderClient.assertThatIsCreatedAndGetData(orderResp);
+
+        Response<OrderData> r1 = orderClient.getOrder(orderData.getOrderId());
+        // Установка ПИН кода
+        String validPinCode = apiClientProvider.getValidPinCode();
+        Response<JsonNode> response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
+        if (response.getStatusCode() == StatusCodes.ST_400_BAD_REQ) {
+            validPinCode = apiClientProvider.getValidPinCode();
+            response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
+        }
+        orderClient.assertThatPinCodeIsSet(response);
+        orderData.setPinCode(validPinCode);
+        orderData.increasePaymentVersion();
+
+        Response<OrderData> r15 = orderClient.getOrder(orderData.getOrderId());
+
+        // Подтверждение заказа
+        MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
+        OrderCustomerData orderCustomerData = new OrderCustomerData();
+        orderCustomerData.setFirstName(ParserUtil.parseFirstName(customerData.getName()));
+        orderCustomerData.setLastName(ParserUtil.parseLastName(customerData.getName()));
+        orderCustomerData.setRoles(Collections.singletonList(CustomerConst.Role.RECEIVER.name()));
+        orderCustomerData.setType(CustomerConst.Type.PERSON.name());
+        orderCustomerData.setPhone(new PhoneData(customerData.getPhone()));
+
+        OrderData confirmOrderData = new OrderData();
+        confirmOrderData.setPriority(SalesDocumentsConst.Priorities.HIGH.getApiVal());
+        confirmOrderData.setShopId(getUserSessionData().getUserShopId());
+        confirmOrderData.setSolutionVersion(orderData.getSolutionVersion());
+        confirmOrderData.setPaymentVersion(orderData.getPaymentVersion());
+        confirmOrderData.setFulfillmentVersion(orderData.getFulfillmentVersion());
+        confirmOrderData.setFulfillmentTaskId(orderData.getFulfillmentTaskId());
+        confirmOrderData.setPaymentTaskId(orderData.getPaymentTaskId());
+        confirmOrderData.setProducts(orderData.getProducts());
+        confirmOrderData.setCustomers(Collections.singletonList(orderCustomerData));
+
+        GiveAwayData giveAwayData = new GiveAwayData();
+        giveAwayData.setDate(LocalDateTime.now().plusDays(1));
+        giveAwayData.setPoint(SalesDocumentsConst.GiveAwayPoints.PICKUP.getApiVal());
+        giveAwayData.setShopId(Integer.valueOf(getUserSessionData().getUserShopId()));
+        confirmOrderData.setGiveAway(giveAwayData);
+
+        Response<OrderData> r2 = orderClient.getOrder(orderData.getOrderId());
+        orderData.increasePaymentVersion(); // ????
+        Response<OrderData> resp = orderClient.confirmOrder(orderData.getOrderId(), confirmOrderData);
+        orderClient.assertThatIsConfirmed(resp, orderData);
+        return orderData.getOrderId();
     }
 
     protected void cancelOrder(String orderId) throws Exception {

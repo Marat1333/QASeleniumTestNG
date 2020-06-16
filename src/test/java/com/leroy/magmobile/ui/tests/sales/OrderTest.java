@@ -8,10 +8,7 @@ import com.leroy.magmobile.ui.constants.TestDataConstants;
 import com.leroy.magmobile.ui.models.MagCustomerData;
 import com.leroy.magmobile.ui.models.sales.*;
 import com.leroy.magmobile.ui.pages.customers.SearchCustomerPage;
-import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
-import com.leroy.magmobile.ui.pages.sales.EditProduct35Page;
-import com.leroy.magmobile.ui.pages.sales.SalesDocumentsPage;
-import com.leroy.magmobile.ui.pages.sales.SubmittedSalesDocument35Page;
+import com.leroy.magmobile.ui.pages.sales.*;
 import com.leroy.magmobile.ui.pages.sales.orders.cart.Cart35Page;
 import com.leroy.magmobile.ui.pages.sales.orders.order.CartProcessOrder35Page;
 import com.leroy.magmobile.ui.pages.sales.orders.order.ConfirmedOrderPage;
@@ -41,6 +38,7 @@ public class OrderTest extends SalesBaseTest {
     SalesDocumentsPage salesDocumentsPage;
     CartProcessOrder35Page cartProcessOrder35Page;
     ProcessOrder35Page processOrder35Page;
+    ConfirmedOrderPage confirmedOrderPage;
     AddProduct35Page<CartProcessOrder35Page> addProduct35Page;
     EditProduct35Page<CartProcessOrder35Page> editProduct35Page;
     SearchProductPage searchProductPage;
@@ -77,6 +75,20 @@ public class OrderTest extends SalesBaseTest {
             salesDocumentData.setNumber(processOrder35Page.getOrderNumber());
     }
 
+    private void startFromScreenWithConfirmedOrder(
+            List<String> lmCodes,
+            List<CartProductOrderData> productDataList, boolean returnSalesDocumentData) throws Exception {
+        String orderId = createConfirmedOrder(lmCodes, productDataList);
+
+        MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
+                MainSalesDocumentsPage.class);
+        SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
+        salesDocumentsPage.searchForDocumentByTextAndSelectIt(orderId);
+        confirmedOrderPage = new ConfirmedOrderPage();
+        if (returnSalesDocumentData)
+            salesDocumentData = confirmedOrderPage.getSalesDocumentData();
+    }
+
     @Step("Pre-condition: Создаем черновик заказа")
     protected void startFromScreenWithOrderDraftWithDiscount() throws Exception {
         startFromScreenWithOrderDraftAndReturnSalesDocData(null,
@@ -93,6 +105,12 @@ public class OrderTest extends SalesBaseTest {
             List<String> lmCodes, List<CartProductOrderData> productDataList,
             boolean returnSalesDocData) throws Exception {
         startFromScreenWithOrderDraftAndReturnSalesDocData(lmCodes, productDataList, false, returnSalesDocData);
+    }
+
+    // Подтвержденный заказ
+    @Step("Pre-condition: Создаем подтвержденный заказ")
+    protected void startFromScreenWithConfirmedOrder(List<String> lmCodes, boolean returnSalesDocumentData) throws Exception {
+        startFromScreenWithConfirmedOrder(lmCodes, null, returnSalesDocumentData);
     }
 
     @Test(description = "C22797112 Создать заказ из корзины с одним заказом")
@@ -645,6 +663,37 @@ public class OrderTest extends SalesBaseTest {
         stepRemoveOrder(true);
     }
 
+    @Test(description = "C22847029 Добавить товар в подтвержденный закакз", groups = NEED_PRODUCTS_GROUP)
+    public void testAddProductInConfirmedOrder() throws Exception {
+        startFromScreenWithConfirmedOrder(lmCodes.subList(0, 1), true);
+
+        // Step 1
+        step("Нажмите на кнопку +Товар");
+        stepClickAddProductButton();
+
+        // Step 2
+        step("Введите ЛМ код товара");
+        stepSearchForProduct(lmCodes.get(1));
+
+        // Step 3
+        step("Нажмите на Добавить в заказ");
+        stepAddProductInOrder(true);
+
+        // Step 4
+        step("Нажмите на кнопку Сохранить");
+        stepClickSaveButton();
+
+        // Step 5
+        step("Нажмите на Перейти в список документов");
+        stepClickGoToSalesDocumentsList();
+
+        // Step 6
+        step("Нажмите на мини-карточку созданного документа");
+        stepClickSalesDocumentCard();
+
+        String s = "";
+    }
+
 
     //   ============ Шаги тестов =================== //
 
@@ -664,8 +713,19 @@ public class OrderTest extends SalesBaseTest {
      * Нажмите на кнопку +Товар
      */
     private void stepClickAddProductButton() {
-        searchProductPage = cartProcessOrder35Page.clickAddProductButton()
-                .verifyRequiredElements();
+        if (confirmedOrderPage != null) {
+            searchProductPage = confirmedOrderPage.clickAddProductButton();
+        } else {
+            searchProductPage = cartProcessOrder35Page.clickAddProductButton();
+        }
+        searchProductPage.verifyRequiredElements();
+    }
+
+    /**
+     * Нажмите на кнопку Сохранить
+     */
+    private void stepClickSaveButton() {
+        String s = "";
     }
 
     /**
@@ -743,7 +803,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     /**
-     * Нажмите на кнопку Сохранить
+     * Нажмите на кнопку Сохранить на экране редактирования товара
      */
     private void stepSaveEditProductChanges(boolean verifyChanges) throws Exception {
         cartProcessOrder35Page = editProduct35Page.clickSaveButton();
@@ -787,6 +847,20 @@ public class OrderTest extends SalesBaseTest {
      */
     private void stepAddProductInOrder(boolean verifyProducts) {
         stepAddProductInOrderWithEditQuantity(null, verifyProducts);
+    }
+
+    /**
+     * Нажмите на Перейти в список документов
+     */
+    private void stepClickGoToSalesDocumentsList() {
+        String s = "";
+    }
+
+    /**
+     * Нажмите на мини-карточку созданного документа.
+     */
+    private void stepClickSalesDocumentCard() {
+        String s = "";
     }
 
 
