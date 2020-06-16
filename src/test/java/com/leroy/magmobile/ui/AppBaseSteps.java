@@ -8,6 +8,7 @@ import com.leroy.core.pages.ChromeCertificateErrorPage;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.LoginAppPage;
 import com.leroy.magmobile.ui.pages.common.BottomMenuPage;
+import com.leroy.magmobile.ui.pages.customers.CustomerPage;
 import com.leroy.magmobile.ui.pages.more.MorePage;
 import com.leroy.magmobile.ui.pages.more.UserProfilePage;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
@@ -29,8 +30,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class AppBaseSteps extends MagMobileBaseTest {
 
-    public <T> T loginAndGoTo(String userLdap, String password, boolean selectShopAndDepartment,
-                              Class<? extends BaseAppPage> pageClass) throws Exception {
+    public <T extends BaseAppPage> T loginAndGoTo(String userLdap, String password, boolean selectShopAndDepartment,
+                                                  Class<T> pageClass) throws Exception {
         try {
             WebDriver driver = getDriver();
             AndroidDriver<MobileElement> androidDriver = (AndroidDriver<MobileElement>) driver;
@@ -103,6 +104,8 @@ public class AppBaseSteps extends MagMobileBaseTest {
                 if (userProfilePage != null)
                     return (T) userProfilePage.goToSales().goToSalesDocumentsSection();
                 return (T) mainProductAndServicesPage.goToSalesDocumentsSection();
+            } else if (pageClass.equals(CustomerPage.class)) {
+                return (T) mainProductAndServicesPage.goToClientsSection();
             } else if (pageClass.equals(WorkPage.class)) {
                 return (T) mainProductAndServicesPage.goToWork();
             } else if (pageClass.equals(SupportPage.class)) {
@@ -119,12 +122,12 @@ public class AppBaseSteps extends MagMobileBaseTest {
         }
     }
 
-    public <T> T loginAndGoTo(Class<? extends BaseAppPage> pageClass) throws Exception {
+    public <T extends BaseAppPage> T loginAndGoTo(Class<T> pageClass) throws Exception {
         return loginAndGoTo(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS,
                 false, pageClass);
     }
 
-    public <T> T loginSelectShopAndGoTo(Class<? extends BaseAppPage> pageClass) throws Exception {
+    public <T extends BaseAppPage> T loginSelectShopAndGoTo(Class<T> pageClass) throws Exception {
         return loginAndGoTo(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS,
                 true, pageClass);
     }
