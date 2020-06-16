@@ -9,6 +9,7 @@ import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.orders.order.forms.OrderParamsForm;
 import com.leroy.magmobile.ui.pages.sales.orders.order.forms.ProductOrderForm;
+import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.utils.DateTimeUtil;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
@@ -49,6 +50,25 @@ public class ConfirmedOrderPage extends CommonMagMobilePage {
         orderParamsForm.waitUntilFormIsVisible();
     }
 
+    // Grab data
+    @Step("Получить информацию о документе со страницы")
+    public SalesDocumentData getSalesDocumentData() {
+        SalesDocumentData salesDocumentData = productOrderForm.getSalesDocumentData();
+        String ps = getPageSource();
+        salesDocumentData.setTitle(documentTitle.getText(ps));
+        salesDocumentData.setNumber(ParserUtil.strWithOnlyDigits(documentNumber.getText(ps)));
+        salesDocumentData.setDate(DateTimeUtil.strToLocalDateTime(documentDate.getText(ps), "dd MMM, HH:mm"));
+        salesDocumentData.setStatus(documentStatus.getText(ps));
+        return salesDocumentData;
+    }
+
+    // Actions
+
+    @Step("Нажмите кнопку для добавления товара в корзину")
+    public SearchProductPage clickAddProductButton() {
+        return productOrderForm.clickAddProductButton();
+    }
+
     // Verifications
 
     @Step("Проверить, что данные о товарах в заказе верны (expectedDocumentData)")
@@ -56,12 +76,7 @@ public class ConfirmedOrderPage extends CommonMagMobilePage {
         for (ProductOrderCardAppData productCardData : expectedDocumentData.getOrderAppDataList().get(0).getProductCardDataList()) {
             productCardData.setAvailableTodayQuantity(null);
         } // TODO Из-за рассинхрона данных на тесте идет отличие в доступном количестве
-        SalesDocumentData salesDocumentData = productOrderForm.getSalesDocumentData();
-        String ps = getPageSource();
-        salesDocumentData.setTitle(documentTitle.getText(ps));
-        salesDocumentData.setNumber(ParserUtil.strWithOnlyDigits(documentNumber.getText(ps)));
-        salesDocumentData.setDate(DateTimeUtil.strToLocalDateTime(documentDate.getText(ps), "dd MMM, HH:mm"));
-        salesDocumentData.setStatus(documentStatus.getText(ps));
+        SalesDocumentData salesDocumentData = getSalesDocumentData();
         salesDocumentData.assertEqualsNotNullExpectedFields(expectedDocumentData);
         return this;
     }
