@@ -9,7 +9,6 @@ import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.orders.CartOrderEstimatePage;
 import com.leroy.magmobile.ui.pages.sales.orders.cart.Cart35Page;
 import com.leroy.magmobile.ui.pages.sales.orders.estimate.EstimatePage;
-import com.leroy.magmobile.ui.pages.sales.orders.order.CartProcessOrder35Page;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
@@ -169,9 +168,9 @@ public class AddProduct35Page<T extends CartOrderEstimatePage> extends CommonMag
     }
 
     @Step("Нажмите кнопку Добавить в заказ")
-    public CartProcessOrder35Page clickAddIntoOrderButton() {
+    public T clickAddIntoOrderButton() throws Exception {
         submitBtn.click();
-        return new CartProcessOrder35Page();
+        return newCartOrEstimatePage();
     }
 
     @Step("Нажмите кнопку Добавить в корзину")

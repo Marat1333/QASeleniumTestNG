@@ -6,7 +6,8 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.models.sales.OrderDetailsData;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
-import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import com.leroy.magmobile.ui.pages.sales.SubmittedSalesDocument35Page;
+import com.leroy.magmobile.ui.pages.sales.orders.CartOrderEstimatePage;
 import com.leroy.magmobile.ui.pages.sales.orders.order.forms.OrderParamsForm;
 import com.leroy.magmobile.ui.pages.sales.orders.order.forms.ProductOrderForm;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
@@ -17,7 +18,7 @@ import io.qameta.allure.Step;
 /**
  * Экран подтвержденного заказа
  */
-public class ConfirmedOrderPage extends CommonMagMobilePage {
+public class ConfirmedOrderPage extends CartOrderEstimatePage {
 
     @AppFindBy(xpath = "//*[@content-desc='DefaultScreenHeader']//android.widget.TextView",
             metaName = "Загаловок заказа")
@@ -53,7 +54,9 @@ public class ConfirmedOrderPage extends CommonMagMobilePage {
     // Grab data
     @Step("Получить информацию о документе со страницы")
     public SalesDocumentData getSalesDocumentData() {
+        OrderDetailsData orderDetailsData = orderParamsForm.getOrderDetailData();
         SalesDocumentData salesDocumentData = productOrderForm.getSalesDocumentData();
+        salesDocumentData.setOrderDetailsData(orderDetailsData);
         String ps = getPageSource();
         salesDocumentData.setTitle(documentTitle.getText(ps));
         salesDocumentData.setNumber(ParserUtil.strWithOnlyDigits(documentNumber.getText(ps)));
@@ -67,6 +70,11 @@ public class ConfirmedOrderPage extends CommonMagMobilePage {
     @Step("Нажмите кнопку для добавления товара в корзину")
     public SearchProductPage clickAddProductButton() {
         return productOrderForm.clickAddProductButton();
+    }
+
+    @Step("Нажмите кнопку Сохранить")
+    public SubmittedSalesDocument35Page clickSaveButton() {
+        return productOrderForm.clickSaveButton();
     }
 
     // Verifications

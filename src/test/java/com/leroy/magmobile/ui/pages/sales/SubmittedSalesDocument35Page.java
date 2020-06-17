@@ -66,12 +66,13 @@ public class SubmittedSalesDocument35Page extends CommonMagMobilePage {
     /* ---------------------- Verifications -------------------------- */
 
     @Step("Проверить, что страница подтверждения заказа отображается корректно")
-    public SubmittedSalesDocument35Page verifyRequiredElements(SalesDocumentsConst.GiveAwayPoints type, boolean severalOrdersInCart) {
+    public SubmittedSalesDocument35Page verifyRequiredElements(
+            SalesDocumentsConst.GiveAwayPoints type, boolean isNewOrder, boolean severalOrdersInCart) {
         String ps = getPageSource();
-        if (SalesDocumentsConst.GiveAwayPoints.PICKUP.equals(type))
-            softAssert.isElementTextContains(titleMsgLbl, "Заказ на самовывоз оформлен,");
-        else
-            softAssert.isElementTextContains(titleMsgLbl, "Заказ на доставку оформлен,");
+        String expectedTitleEnd = isNewOrder ? "оформлен" : "сохранен";
+        String expectedTitle = (SalesDocumentsConst.GiveAwayPoints.PICKUP.equals(type) ?
+                "Заказ на самовывоз " : "Заказ на доставку ") + expectedTitleEnd;
+        softAssert.isElementTextContains(titleMsgLbl, expectedTitle);
         softAssert.areElementsVisible(ps, orderNumberLbl,
                 orderNumberVal, pinCodeLbl, pinCodeVal, offerCustomerToTakeScreenshotLbl);
         if (severalOrdersInCart) {
@@ -83,13 +84,24 @@ public class SubmittedSalesDocument35Page extends CommonMagMobilePage {
         return this;
     }
 
+    public SubmittedSalesDocument35Page verifyRequiredElements(SalesDocumentsConst.GiveAwayPoints type, boolean severalOrdersInCart) {
+        return verifyRequiredElements(type, true, severalOrdersInCart);
+    }
+
     public SubmittedSalesDocument35Page verifyRequiredElements(SalesDocumentsConst.GiveAwayPoints type) {
-        return verifyRequiredElements(type, false);
+        return verifyRequiredElements(type, true, false);
     }
 
     @Step("Проверить, что Пин-код = {text}")
     public SubmittedSalesDocument35Page shouldPinCodeIs(String text) {
         anAssert.isElementTextEqual(pinCodeVal, text);
+        return this;
+    }
+
+    @Step("Проверить, что номер документа = {text}")
+    public SubmittedSalesDocument35Page shouldDocumentNumberIs(String text) {
+        anAssert.isEquals(ParserUtil.strWithOnlyDigits(orderNumberVal.getText()), text,
+                "Ожидался другой номер заказа");
         return this;
     }
 

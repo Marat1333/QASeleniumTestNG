@@ -10,6 +10,7 @@ import com.leroy.magmobile.ui.elements.MagMobWhiteSubmitButton;
 import com.leroy.magmobile.ui.models.sales.OrderAppData;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
+import com.leroy.magmobile.ui.pages.sales.SubmittedSalesDocument35Page;
 import com.leroy.magmobile.ui.pages.sales.orders.order.OrderActionWithProductCardModel;
 import com.leroy.magmobile.ui.pages.sales.widget.ProductOrderCardAppWidget;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
@@ -54,6 +55,9 @@ public class ProductOrderForm extends BaseAppPage {
     @AppFindBy(text = "ДАЛЕЕ")
     private MagMobGreenSubmitButton nextBtn;
 
+    @AppFindBy(text = "СОХРАНИТЬ")
+    private MagMobGreenSubmitButton saveBtn;
+
     public boolean waitUntilFormIsVisible() {
         return countAndWeightProductLbl.waitForVisibility();
     }
@@ -92,11 +96,11 @@ public class ProductOrderForm extends BaseAppPage {
         SalesDocumentData salesDocumentData = new SalesDocumentData();
         String ps = getPageSource();
         OrderAppData orderAppData = new OrderAppData();
-        orderAppData.setDate(DateTimeUtil.strToLocalDate(dateOrder.getTextIfPresent(ps), "dd MMM"));
         orderAppData.setTotalWeight(getTotalWeight(ps));
         orderAppData.setTotalPrice(getTotalPrice(ps));
         orderAppData.setProductCount(getProductCount(ps));
         List<ProductOrderCardAppData> products = productCardsScrollView.getFullDataList();
+        orderAppData.setDate(DateTimeUtil.strToLocalDate(dateOrder.getTextIfPresent(), "dd MMM"));
         orderAppData.setProductCardDataList(products);
         actualOrderDataList.add(orderAppData);
         salesDocumentData.setOrderAppDataList(actualOrderDataList);
@@ -110,9 +114,22 @@ public class ProductOrderForm extends BaseAppPage {
         return new SearchProductPage();
     }
 
+    public SubmittedSalesDocument35Page clickSaveButton() {
+        saveBtn.click();
+        return new SubmittedSalesDocument35Page();
+    }
+
     public OrderActionWithProductCardModel clickCardByIndex(int index) throws Exception {
         index--;
         productCardsScrollView.clickElemByIndex(index);
         return new OrderActionWithProductCardModel();
+    }
+
+    public void scrollToBeginning() {
+        productCardsScrollView.scrollToBeginning();
+    }
+
+    public void scrollToEnd() {
+        productCardsScrollView.scrollToEnd();
     }
 }

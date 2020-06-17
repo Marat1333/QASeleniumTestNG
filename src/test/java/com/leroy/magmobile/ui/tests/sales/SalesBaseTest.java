@@ -267,7 +267,6 @@ public class SalesBaseTest extends AppBaseSteps {
         Response<OrderData> orderResp = orderClient.createOrder(reqOrderData);
         OrderData orderData = orderClient.assertThatIsCreatedAndGetData(orderResp);
 
-        Response<OrderData> r1 = orderClient.getOrder(orderData.getOrderId());
         // Установка ПИН кода
         String validPinCode = apiClientProvider.getValidPinCode();
         Response<JsonNode> response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
@@ -278,8 +277,6 @@ public class SalesBaseTest extends AppBaseSteps {
         orderClient.assertThatPinCodeIsSet(response);
         orderData.setPinCode(validPinCode);
         orderData.increasePaymentVersion();
-
-        Response<OrderData> r15 = orderClient.getOrder(orderData.getOrderId());
 
         // Подтверждение заказа
         MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
@@ -307,8 +304,6 @@ public class SalesBaseTest extends AppBaseSteps {
         giveAwayData.setShopId(Integer.valueOf(getUserSessionData().getUserShopId()));
         confirmOrderData.setGiveAway(giveAwayData);
 
-        Response<OrderData> r2 = orderClient.getOrder(orderData.getOrderId());
-        orderData.increasePaymentVersion(); // ????
         Response<OrderData> resp = orderClient.confirmOrder(orderData.getOrderId(), confirmOrderData);
         orderClient.assertThatIsConfirmed(resp, orderData);
         return orderData.getOrderId();

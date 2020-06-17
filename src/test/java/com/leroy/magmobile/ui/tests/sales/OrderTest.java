@@ -18,6 +18,7 @@ import com.leroy.magmobile.ui.pages.sales.orders.order.modal.ConfirmRemoveOrderM
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Test;
 
@@ -39,10 +40,12 @@ public class OrderTest extends SalesBaseTest {
     CartProcessOrder35Page cartProcessOrder35Page;
     ProcessOrder35Page processOrder35Page;
     ConfirmedOrderPage confirmedOrderPage;
-    AddProduct35Page<CartProcessOrder35Page> addProduct35Page;
+    AddProduct35Page<CartProcessOrder35Page> draftOrderAddProduct35Page;
+    AddProduct35Page<ConfirmedOrderPage> confirmedOrderAddProduct35Page;
     EditProduct35Page<CartProcessOrder35Page> editProduct35Page;
     SearchProductPage searchProductPage;
     OrderActionWithProductCardModel actionWithProductCardModal;
+    SubmittedSalesDocument35Page submittedSalesDocument35Page;
 
     @Override
     protected boolean isNeedAccessToken() {
@@ -52,6 +55,15 @@ public class OrderTest extends SalesBaseTest {
     @BeforeGroups(groups = NEED_PRODUCTS_GROUP)
     private void findProducts() {
         lmCodes = apiClientProvider.getProductLmCodes(3, false, false);
+    }
+
+    @AfterMethod
+    private void cancelConfirmedOrder() throws Exception{
+        // Clean up
+        if (salesDocumentData != null &&
+                salesDocumentData.getStatus().equals(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal())) {
+            cancelOrder(salesDocumentData.getNumber());
+        }
     }
 
     // Создание Pre-condition
@@ -685,13 +697,11 @@ public class OrderTest extends SalesBaseTest {
 
         // Step 5
         step("Нажмите на Перейти в список документов");
-        stepClickGoToSalesDocumentsList();
+        stepClickGoToSalesDocumentsList(true);
 
         // Step 6
         step("Нажмите на мини-карточку созданного документа");
-        stepClickSalesDocumentCard();
-
-        String s = "";
+        stepClickSalesDocumentCard(true);
     }
 
 
@@ -725,7 +735,14 @@ public class OrderTest extends SalesBaseTest {
      * Нажмите на кнопку Сохранить
      */
     private void stepClickSaveButton() {
-        String s = "";
+        submittedSalesDocument35Page = confirmedOrderPage.clickSaveButton()
+                .verifyRequiredElements(
+                        salesDocumentData.getOrderDetailsData().getDeliveryType(), false, false);
+        if (salesDocumentData != null) {
+            submittedSalesDocument35Page.shouldPinCodeIs(salesDocumentData.getOrderDetailsData().getPinCode());
+            if (salesDocumentData.getNumber() != null)
+                submittedSalesDocument35Page.shouldDocumentNumberIs(salesDocumentData.getNumber());
+        }
     }
 
     /**
@@ -788,7 +805,7 @@ public class OrderTest extends SalesBaseTest {
      * Выберите параметр Добавить товар еще раз в модальном окне
      */
     private void stepClickAddProductAgainInModalWindow() {
-        addProduct35Page = actionWithProductCardModal.clickAddProductAgainMenuItem()
+        draftOrderAddProduct35Page = actionWithProductCardModal.clickAddProductAgainMenuItem()
                 .verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_ORDER);
     }
 
@@ -817,50 +834,81 @@ public class OrderTest extends SalesBaseTest {
      */
     private void stepSearchForProduct(String searchText) {
         searchProductPage.enterTextInSearchFieldAndSubmit(searchText);
-        addProduct35Page = new AddProduct35Page<>(CartProcessOrder35Page.class)
-                .verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_ORDER);
+        if (confirmedOrderPage != null) {
+            confirmedOrderAddProduct35Page = new AddProduct35Page<>(ConfirmedOrderPage.class)
+                    .verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_ORDER);
+        } else {
+            draftOrderAddProduct35Page = new AddProduct35Page<>(CartProcessOrder35Page.class)
+                    .verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_ORDER);
+        }
     }
 
     /**
      * Изменить кол-во товара и Добавить товар в заказ
      */
-    private void stepAddProductInOrderWithEditQuantity(Double quantity, boolean verifyProducts) {
-        ProductOrderCardAppData productData = addProduct35Page.getProductOrderDataFromPage();
+    private void stepAddProductInOrderWithEditQuantity(Double quantity, boolean verifyProducts) throws Exception {
+        boolean isConfirmedOrder = draftOrderAddProduct35Page == null;
+        AddProduct35Page page = isConfirmedOrder ? confirmedOrderAddProduct35Page : draftOrderAddProduct35Page;
+        ProductOrderCardAppData productData = page.getProductOrderDataFromPage();
         productData.setAvailableTodayQuantity(null);
 
         if (quantity != null) {
             productData.setSelectedQuantity(quantity);
             productData.setTotalPrice(ParserUtil.multiply(quantity, productData.getPrice(), 2));
-            addProduct35Page.enterQuantityOfProduct((int) Math.round(quantity), false);
+            page.enterQuantityOfProduct((int) Math.round(quantity), false);
         }
 
         salesDocumentData.getOrderAppDataList().get(0).addFirstProduct(productData);
         salesDocumentData.getOrderAppDataList().get(0).setTotalWeight(null);
 
-        cartProcessOrder35Page = addProduct35Page.clickAddIntoOrderButton();
+        if (isConfirmedOrder) {
+            confirmedOrderPage = confirmedOrderAddProduct35Page.clickAddIntoOrderButton();
+        } else {
+            cartProcessOrder35Page = draftOrderAddProduct35Page.clickAddIntoOrderButton();
+        }
         if (verifyProducts)
-            cartProcessOrder35Page.shouldSalesDocumentDataIs(salesDocumentData);
+            if (isConfirmedOrder)
+                confirmedOrderPage.shouldSalesDocumentDataIs(salesDocumentData);
+            else
+                cartProcessOrder35Page.shouldSalesDocumentDataIs(salesDocumentData);
     }
 
     /**
      * Добавить товар в заказ
      */
-    private void stepAddProductInOrder(boolean verifyProducts) {
+    private void stepAddProductInOrder(boolean verifyProducts) throws Exception {
         stepAddProductInOrderWithEditQuantity(null, verifyProducts);
     }
 
     /**
      * Нажмите на Перейти в список документов
      */
-    private void stepClickGoToSalesDocumentsList() {
-        String s = "";
+    private void stepClickGoToSalesDocumentsList(boolean verifyDocumentDataMatches) {
+        salesDocumentsPage = submittedSalesDocument35Page.clickGoToDocumentListButton();
+        if (verifyDocumentDataMatches) {
+            ShortSalesDocumentData expectedSalesDocument = new ShortSalesDocumentData();
+            expectedSalesDocument.setDocumentTotalPrice(salesDocumentData.getOrderAppDataList().get(0).getTotalPrice());
+            expectedSalesDocument.setDocumentState(salesDocumentData.getStatus());
+            expectedSalesDocument.setTitle(salesDocumentData.getTitle());
+            expectedSalesDocument.setNumber(salesDocumentData.getNumber());
+            expectedSalesDocument.setPin(salesDocumentData.getOrderDetailsData().getPinCode());
+            //expectedSalesDocument.setDate(salesDocumentData.getDate()); - Дата может отличаться на минуту
+            if (SalesDocumentsConst.GiveAwayPoints.DELIVERY.equals(salesDocumentData.getOrderDetailsData().getDeliveryType())) {
+                expectedSalesDocument.setCustomerName(salesDocumentData.getOrderDetailsData().getCustomer().getName());
+            }
+            salesDocumentsPage.shouldSalesDocumentIsPresentAndDataMatches(expectedSalesDocument);
+        }
     }
 
     /**
      * Нажмите на мини-карточку созданного документа.
      */
-    private void stepClickSalesDocumentCard() {
-        String s = "";
+    private void stepClickSalesDocumentCard(boolean verifyProducts) {
+        salesDocumentsPage.searchForDocumentByTextAndSelectIt(salesDocumentData.getNumber());
+        if (confirmedOrderPage != null)
+            confirmedOrderPage = new ConfirmedOrderPage();
+        if (verifyProducts)
+            confirmedOrderPage.shouldSalesDocumentDataIs(salesDocumentData);
     }
 
 

@@ -64,6 +64,35 @@ public class OrderParamsForm extends BaseAppPage {
         return waitForAnyOneOfElementsIsVisible(pickupBtn, phoneFld, commentFld);
     }
 
+    // ------- Grab info --------- //
+
+    public OrderDetailsData getOrderDetailData() {
+        mainScrollView.scrollToBeginning();
+        String ps = getPageSource();
+        OrderDetailsData orderDetailsData = new OrderDetailsData();
+        boolean isPickup = !deliveryDateFld.isVisible(ps);
+        orderDetailsData.setDeliveryType(isPickup?
+                SalesDocumentsConst.GiveAwayPoints.PICKUP : SalesDocumentsConst.GiveAwayPoints.DELIVERY);
+        String deliveryDate = isPickup? pickupDateFld.getText(ps) : deliveryDateFld.getText(ps);
+        orderDetailsData.setDeliveryDate(DateTimeUtil.strToLocalDate(deliveryDate, "dd MMM"));
+
+        MagCustomerData customerData = new MagCustomerData();
+        if (!fullNameFld.isVisible(ps))
+            mainScrollView.scrollDownToElement(fullNameFld);
+        customerData.setName(fullNameFld.getText());
+        mainScrollView.scrollDownToElement(phoneFld);
+        customerData.setPhone(ParserUtil.standardPhoneFmt(phoneFld.getText()));
+        mainScrollView.scrollDownToElement(emailFld);
+        customerData.setEmail(emailFld.getText());
+
+        orderDetailsData.setCustomer(customerData);
+        mainScrollView.scrollDownToElement(pinCodeFld);
+        orderDetailsData.setPinCode(pinCodeFld.getText());
+        mainScrollView.scrollDownToElement(commentFld);
+        orderDetailsData.setComment(commentFld.getText());
+        return orderDetailsData;
+    }
+
     // ACTION STEPS
 
     public OrderParamsForm selectDeliveryType(SalesDocumentsConst.GiveAwayPoints type) {

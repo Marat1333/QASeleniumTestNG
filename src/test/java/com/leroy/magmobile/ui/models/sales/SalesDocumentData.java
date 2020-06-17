@@ -13,6 +13,7 @@ import java.util.List;
 
 @Data
 public class SalesDocumentData {
+    private OrderDetailsData orderDetailsData;
     private String title;
     private String number;
     private LocalDateTime date;
