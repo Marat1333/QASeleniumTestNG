@@ -80,10 +80,10 @@ public class CatalogProductClient extends MagMobileClient {
     }
 
     @Step("Get Product Sales for lmCode={lmCode}")
-    public Response<Object> getProductSales(String lmCode) {
+    public Response<Object> getProductSales(String lmCode, String shopId) {
         GetCatalogProductSales params = new GetCatalogProductSales()
                 .setLmCode(lmCode)
-                .setShopId(userSessionData.getUserShopId());
+                .setShopId(shopId);
         return execute(params, Object.class);
     }
 

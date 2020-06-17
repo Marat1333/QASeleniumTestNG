@@ -2,6 +2,7 @@ package com.leroy.magmobile.ui.pages.sales.product_card;
 
 import com.leroy.core.ContextProvider;
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.pages.sales.PricesAndQuantityPage;
@@ -34,6 +35,9 @@ public class ProductDescriptionPage extends ProductCardPage {
     @AppFindBy(text = "Цены в магазинах")
     MagMobButton productPriceGammaCardBtn;
 
+    @AppFindBy(xpath = "//android.widget.ScrollView", metaName = "Основная прокручиваемая область страницы")
+    AndroidScrollView<String> mainScrollView;
+
     @Override
     public void waitForPageIsLoaded() {
         lmCode.waitForVisibility();
@@ -53,6 +57,13 @@ public class ProductDescriptionPage extends ProductCardPage {
     public PricesAndQuantityPage goToPricesAndQuantityPage() {
         productPriceGammaCardBtn.click();
         return new PricesAndQuantityPage();
+    }
+
+    @Step("Перейти на страницу с историей продаж")
+    public SalesHistoryPage goToSalesHistoryPage(){
+        mainScrollView.scrollToEnd();
+        salesHistoryBtn.click();
+        return new SalesHistoryPage();
     }
 
     // Verifications

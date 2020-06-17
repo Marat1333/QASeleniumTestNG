@@ -30,8 +30,8 @@ capabilities:
 
     android_browser:
       browserName: chrome
-      deviceName: Nexus 5 #samsung SM-A207F
-      platformVersion: '10.0' #'9.0'
+      deviceName: samsung SM-J530FM
+      platformVersion: '8.1'
       platformName: Android
       automationName: uiautomator2
       newCommandTimeout: 60000

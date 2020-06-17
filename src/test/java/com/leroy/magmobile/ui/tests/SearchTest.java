@@ -487,12 +487,12 @@ public class SearchTest extends AppBaseSteps {
 
         // Step 3
         step("Перейти во вкладку \"Аналогичные товары\"");
-        SimilarProductsPage similarProductsPage = productDescriptionCardPage.switchTab(productDescriptionCardPage.SIMILAR_PRODUCTS);
+        SimilarProductsPage similarProductsPage = productDescriptionCardPage.switchTab(ProductCardPage.Tabs.SIMILAR_PRODUCTS);
         similarProductsPage.verifyProductCardsHaveAllGammaView();
 
         // Step 4
         step("Вернуться на вкладку \"Описание\" и Нажать на строку \"Цены в магазинах\"");
-        productDescriptionCardPage = similarProductsPage.switchTab(similarProductsPage.DESCRIPTION);
+        productDescriptionCardPage = similarProductsPage.switchTab(ProductCardPage.Tabs.DESCRIPTION);
         PricesAndQuantityPage pricesAndQuantityPage = productDescriptionCardPage.goToPricesAndQuantityPage();
         pricesAndQuantityPage.shouldNotSupplyBtnBeDisplayed();
 

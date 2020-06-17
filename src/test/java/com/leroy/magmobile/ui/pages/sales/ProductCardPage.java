@@ -27,10 +27,22 @@ public class ProductCardPage extends CommonMagMobilePage {
         mainArea.waitForVisibility();
     }
 
-    public final String DESCRIPTION = "ОПИСАНИЕ ТОВАРА";
-    public final String SPECIFICATION = "ХАРАКТЕРИСТИКИ";
-    public final String REVIEWS = "ОТЗЫВЫ";
-    public final String SIMILAR_PRODUCTS = "АНАЛОГИЧНЫЕ ТОВАРЫ";
+    public enum Tabs{
+        DESCRIPTION("ОПИСАНИЕ ТОВАРА"),
+        SPECIFICATION("ХАРАКТЕРИСТИКИ"),
+        REVIEWS("ОТЗЫВЫ"),
+        SIMILAR_PRODUCTS("АНАЛОГИЧНЫЕ ТОВАРЫ");
+
+        private String name;
+
+        Tabs(String name){
+            this.name=name;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
 
     /* ------------------------- ACTION STEPS -------------------------- */
 
@@ -44,32 +56,32 @@ public class ProductCardPage extends CommonMagMobilePage {
         return page.getConstructor().newInstance();
     }
 
-    @Step("Перейти во вкладку {value}")
-    public <T> T switchTab(String value) {
+    @Step("Перейти во вкладку")
+    public <T> T switchTab(Tabs tabs) {
         Element element;
-        switch (value) {
+        switch (tabs) {
             case DESCRIPTION:
-                element = E(DESCRIPTION);
+                element = E(Tabs.DESCRIPTION.getName());
                 swipeLeftTo(mainArea, element);
                 element.click();
                 return (T) new ProductDescriptionPage();
             case SPECIFICATION:
-                element = E(SPECIFICATION);
+                element = E(Tabs.SPECIFICATION.getName());
                 swipeLeftTo(mainArea, element);
                 element.click();
                 return (T) new SpecificationsPage();
             case REVIEWS:
-                element = E(REVIEWS);
+                element = E(Tabs.REVIEWS.getName());
                 swipeRightTo(mainArea, element);
                 element.click();
                 return (T) new ReviewsPage();
             case SIMILAR_PRODUCTS:
-                element = E(SIMILAR_PRODUCTS);
+                element = E(Tabs.SIMILAR_PRODUCTS.getName());
                 swipeRightTo(mainArea, element);
                 element.click();
                 return (T) new SimilarProductsPage();
             default:
-                throw new IllegalArgumentException("Unknown argument: " + value);
+                throw new IllegalArgumentException("Unknown argument");
         }
     }
 
