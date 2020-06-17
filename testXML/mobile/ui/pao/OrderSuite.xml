@@ -157,6 +157,16 @@
         </classes>
     </test>
 
+    <test name="C22847030 Изменить количество товара в подтвержденном заказе">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
+                <methods>
+                    <include name="testChangeQuantityProductInConfirmedOrder"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
 
 
 

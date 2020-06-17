@@ -17,7 +17,7 @@ public abstract class ActionWithProductCardModal<T extends CartOrderEstimatePage
         parentPage = type;
     }
 
-    protected T newCartOrEstimatePage() throws Exception {
+    protected T newParentPage() throws Exception {
         return parentPage.getConstructor().newInstance();
     }
 

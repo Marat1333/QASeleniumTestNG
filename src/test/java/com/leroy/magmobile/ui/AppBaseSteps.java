@@ -59,7 +59,11 @@ public class AppBaseSteps extends MagMobileBaseTest {
             }
             if (needToClickRedirectBtn) {
                 Log.debug("Click Redirect Button");
-                redirectBtn.click();
+                try {
+                    redirectBtn.click();
+                } catch (Exception err) {
+                    Log.error(err.getMessage());
+                }
             } else {
                 Log.debug("Redirect Button is not visible");
                 if (moon) {

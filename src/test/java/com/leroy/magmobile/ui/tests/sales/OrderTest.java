@@ -17,6 +17,7 @@ import com.leroy.magmobile.ui.pages.sales.orders.order.ProcessOrder35Page;
 import com.leroy.magmobile.ui.pages.sales.orders.order.modal.ConfirmRemoveOrderModal;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.utils.ParserUtil;
+import io.qameta.allure.Issue;
 import io.qameta.allure.Step;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeGroups;
@@ -42,9 +43,11 @@ public class OrderTest extends SalesBaseTest {
     ConfirmedOrderPage confirmedOrderPage;
     AddProduct35Page<CartProcessOrder35Page> draftOrderAddProduct35Page;
     AddProduct35Page<ConfirmedOrderPage> confirmedOrderAddProduct35Page;
-    EditProduct35Page<CartProcessOrder35Page> editProduct35Page;
+    EditProduct35Page<CartProcessOrder35Page> draftOrderEditProduct35Page;
+    EditProduct35Page<ConfirmedOrderPage> confirmedOrderEditProduct35Page;
     SearchProductPage searchProductPage;
-    OrderActionWithProductCardModel actionWithProductCardModal;
+    OrderActionWithProductCardModel<CartProcessOrder35Page> draftOrderActionWithProductCardModal;
+    OrderActionWithProductCardModel<ConfirmedOrderPage> confirmedOrderActionWithProductCardModal;
     SubmittedSalesDocument35Page submittedSalesDocument35Page;
 
     @Override
@@ -58,7 +61,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @AfterMethod
-    private void cancelConfirmedOrder() throws Exception{
+    private void cancelConfirmedOrder() throws Exception {
         // Clean up
         if (salesDocumentData != null &&
                 salesDocumentData.getStatus().equals(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal())) {
@@ -87,6 +90,7 @@ public class OrderTest extends SalesBaseTest {
             salesDocumentData.setNumber(processOrder35Page.getOrderNumber());
     }
 
+    @Step("Pre-condition: Создаем подтвержденный заказ")
     private void startFromScreenWithConfirmedOrder(
             List<String> lmCodes,
             List<CartProductOrderData> productDataList, boolean returnSalesDocumentData) throws Exception {
@@ -120,9 +124,12 @@ public class OrderTest extends SalesBaseTest {
     }
 
     // Подтвержденный заказ
-    @Step("Pre-condition: Создаем подтвержденный заказ")
-    protected void startFromScreenWithConfirmedOrder(List<String> lmCodes, boolean returnSalesDocumentData) throws Exception {
-        startFromScreenWithConfirmedOrder(lmCodes, null, returnSalesDocumentData);
+    protected void startFromScreenWithConfirmedOrder(List<String> lmCodes) throws Exception {
+        startFromScreenWithConfirmedOrder(lmCodes, null, true);
+    }
+
+    protected void startFromScreenWithConfirmedOrder() throws Exception {
+        startFromScreenWithConfirmedOrder(null, null, true);
     }
 
     @Test(description = "C22797112 Создать заказ из корзины с одним заказом")
@@ -675,9 +682,9 @@ public class OrderTest extends SalesBaseTest {
         stepRemoveOrder(true);
     }
 
-    @Test(description = "C22847029 Добавить товар в подтвержденный закакз", groups = NEED_PRODUCTS_GROUP)
+    @Test(description = "C22847029 Добавить товар в подтвержденный заказ", groups = NEED_PRODUCTS_GROUP)
     public void testAddProductInConfirmedOrder() throws Exception {
-        startFromScreenWithConfirmedOrder(lmCodes.subList(0, 1), true);
+        startFromScreenWithConfirmedOrder(lmCodes.subList(0, 1));
 
         // Step 1
         step("Нажмите на кнопку +Товар");
@@ -693,13 +700,50 @@ public class OrderTest extends SalesBaseTest {
 
         // Step 4
         step("Нажмите на кнопку Сохранить");
-        stepClickSaveButton();
+        stepClickSaveButtonForChangesConfirmedOrder();
 
         // Step 5
         step("Нажмите на Перейти в список документов");
         stepClickGoToSalesDocumentsList(true);
 
         // Step 6
+        step("Нажмите на мини-карточку созданного документа");
+        stepClickSalesDocumentCard(true);
+    }
+
+    @Issue("NEW_BUG")
+    @Test(description = "C22847030 Изменить количество товара в подтвержденном заказе")
+    public void testChangeQuantityProductInConfirmedOrder() throws Exception {
+        startFromScreenWithConfirmedOrder();
+        anAssert().isTrue(salesDocumentData.getOrderAppDataList().get(0)
+                        .getProductCardDataList().get(0).getSelectedQuantity() > 1,
+                "Для того, чтобы тест был валиден. Штук товара в корзине должно быть больше 1-ого");
+
+        // Step 1
+        step("Нажмите на мини-карточку товара в списке доступных товаров");
+        stepClickProductCard(1);
+
+        // Step 2
+        step("Выберите параметр Изменить количество");
+        stepClickChangeQuantityInModalWindow();
+
+        // Step 3 - 5
+        step("Измените количество товара");
+        stepChangeQuantityProduct(1);
+
+        // Step 6
+        step("Нажмите на кнопку Сохранить");
+        stepSaveEditProductChanges(true);
+
+        // Step 7
+        step("Нажмите на кнопку Сохранить");
+        stepClickSaveButtonForChangesConfirmedOrder();
+
+        // Step 8
+        step("Нажмите на Перейти в список документов");
+        stepClickGoToSalesDocumentsList(true);
+
+        // Step 9
         step("Нажмите на мини-карточку созданного документа");
         stepClickSalesDocumentCard(true);
     }
@@ -732,9 +776,9 @@ public class OrderTest extends SalesBaseTest {
     }
 
     /**
-     * Нажмите на кнопку Сохранить
+     * Нажмите на кнопку Сохранить (После редактирования подтвержденного закона)
      */
-    private void stepClickSaveButton() {
+    private void stepClickSaveButtonForChangesConfirmedOrder() {
         submittedSalesDocument35Page = confirmedOrderPage.clickSaveButton()
                 .verifyRequiredElements(
                         salesDocumentData.getOrderDetailsData().getDeliveryType(), false, false);
@@ -751,15 +795,20 @@ public class OrderTest extends SalesBaseTest {
     private void stepClickProductCard(int index) throws Exception {
         salesDocumentData.setProductDataInEditModeNow(
                 salesDocumentData.getOrderAppDataList().get(0).getProductCardDataList().get(index - 1));
-        actionWithProductCardModal = cartProcessOrder35Page.clickCardByIndex(index)
-                .verifyRequiredElements();
+        if (confirmedOrderPage == null) {
+            draftOrderActionWithProductCardModal = cartProcessOrder35Page.clickCardByIndex(index)
+                    .verifyRequiredElements();
+        } else {
+            confirmedOrderActionWithProductCardModal = confirmedOrderPage.clickCardByIndex(index)
+                    .verifyRequiredElements();
+        }
     }
 
     /**
      * Выберите параметр Удалить товар в модальном окне и подтвердите удаление
      */
     private void stepSelectRemoveProductInModalWindowAndConfirm(boolean verifyProducts) throws Exception {
-        actionWithProductCardModal.clickRemoveProductMenuItem();
+        draftOrderActionWithProductCardModal.clickRemoveProductMenuItem();
         /*ConfirmRemovingProductModal confirmRemovingProductModal = new ConfirmRemovingProductModal()
                 .verifyRequiredElements();
         confirmRemovingProductModal.clickConfirmButton();*/ // TODO Из-за бага нет окна о подтверждении удаления
@@ -785,7 +834,7 @@ public class OrderTest extends SalesBaseTest {
      * Удалить последний товар из заказа (удалить заказ)
      */
     private void stepRemoveLastProductAndRemoveOrder(boolean checkThatOrderIsDeleted) throws Exception {
-        actionWithProductCardModal.clickRemoveProductMenuItem();
+        draftOrderActionWithProductCardModal.clickRemoveProductMenuItem();
         ConfirmRemoveOrderModal modal = new ConfirmRemoveOrderModal();
         modal.verifyRequiredElements();
         modal.clickConfirmButton();
@@ -797,36 +846,37 @@ public class OrderTest extends SalesBaseTest {
      * Выберите параметр Изменить количество в модальном окне
      */
     private void stepClickChangeQuantityInModalWindow() {
-        editProduct35Page = actionWithProductCardModal.clickChangeQuantityMenuItem()
-                .verifyRequiredElements();
+        if (draftOrderActionWithProductCardModal != null) {
+            draftOrderEditProduct35Page = draftOrderActionWithProductCardModal.clickChangeQuantityMenuItem()
+                    .verifyRequiredElements();
+        } else {
+            confirmedOrderEditProduct35Page = confirmedOrderActionWithProductCardModal.clickChangeQuantityMenuItem()
+                    .verifyRequiredElements();
+        }
     }
 
     /**
      * Выберите параметр Добавить товар еще раз в модальном окне
      */
     private void stepClickAddProductAgainInModalWindow() {
-        draftOrderAddProduct35Page = actionWithProductCardModal.clickAddProductAgainMenuItem()
+        draftOrderAddProduct35Page = draftOrderActionWithProductCardModal.clickAddProductAgainMenuItem()
                 .verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_ORDER);
-    }
-
-    /**
-     * Измените количество товара на странице для редактирования товара
-     */
-    private void stepChangeQuantityProduct(int quantity) {
-        OrderAppData curOrder = salesDocumentData.getOrderDataInEditModeNow();
-        curOrder.changeProductQuantity(salesDocumentData.getProductDataInEditModeNow(), quantity);
-        curOrder.setTotalWeight(null);
-        editProduct35Page.enterQuantityOfProduct(quantity, true);
     }
 
     /**
      * Нажмите на кнопку Сохранить на экране редактирования товара
      */
     private void stepSaveEditProductChanges(boolean verifyChanges) throws Exception {
-        cartProcessOrder35Page = editProduct35Page.clickSaveButton();
-        cartProcessOrder35Page.waitUntilTotalOrderPriceIs(salesDocumentData.getOrderAppDataList().get(0).getTotalPrice());
-        if (verifyChanges)
-            cartProcessOrder35Page.shouldSalesDocumentDataIs(salesDocumentData);
+        if (draftOrderEditProduct35Page != null) {
+            cartProcessOrder35Page = draftOrderEditProduct35Page.clickSaveButton();
+            cartProcessOrder35Page.waitUntilTotalOrderPriceIs(salesDocumentData.getOrderAppDataList().get(0).getTotalPrice());
+            if (verifyChanges)
+                cartProcessOrder35Page.shouldSalesDocumentDataIs(salesDocumentData);
+        } else {
+            confirmedOrderPage = confirmedOrderEditProduct35Page.clickSaveButton();
+            if (verifyChanges)
+                confirmedOrderPage.shouldSalesDocumentDataIs(salesDocumentData);
+        }
     }
 
     /**
@@ -878,6 +928,19 @@ public class OrderTest extends SalesBaseTest {
      */
     private void stepAddProductInOrder(boolean verifyProducts) throws Exception {
         stepAddProductInOrderWithEditQuantity(null, verifyProducts);
+    }
+
+    /**
+     * Измените количество товара на странице для редактирования товара
+     */
+    private void stepChangeQuantityProduct(int quantity) {
+        OrderAppData curOrder = salesDocumentData.getOrderDataInEditModeNow();
+        curOrder.changeProductQuantity(salesDocumentData.getProductDataInEditModeNow(), quantity);
+        curOrder.setTotalWeight(null);
+        if (draftOrderEditProduct35Page != null)
+            draftOrderEditProduct35Page.enterQuantityOfProduct(quantity, true);
+        else
+            confirmedOrderEditProduct35Page.enterQuantityOfProduct(quantity, true);
     }
 
     /**

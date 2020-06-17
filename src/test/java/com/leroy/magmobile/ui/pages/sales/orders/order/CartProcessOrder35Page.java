@@ -36,8 +36,9 @@ public class CartProcessOrder35Page extends HeaderProcessOrder35Page {
     }
 
     @Step("Нажмите на {index}-ую карточку товара/услуги")
-    public OrderActionWithProductCardModel clickCardByIndex(int index) throws Exception {
-        return productOrderForm.clickCardByIndex(index);
+    public OrderActionWithProductCardModel<CartProcessOrder35Page> clickCardByIndex(int index) throws Exception {
+        productOrderForm.clickCardByIndex(index);
+        return new OrderActionWithProductCardModel<>(CartProcessOrder35Page.class);
     }
 
 

@@ -119,10 +119,9 @@ public class ProductOrderForm extends BaseAppPage {
         return new SubmittedSalesDocument35Page();
     }
 
-    public OrderActionWithProductCardModel clickCardByIndex(int index) throws Exception {
+    public void clickCardByIndex(int index) throws Exception {
         index--;
         productCardsScrollView.clickElemByIndex(index);
-        return new OrderActionWithProductCardModel();
     }
 
     public void scrollToBeginning() {

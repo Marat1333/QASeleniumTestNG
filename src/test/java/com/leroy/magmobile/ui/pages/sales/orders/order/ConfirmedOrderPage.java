@@ -67,6 +67,12 @@ public class ConfirmedOrderPage extends CartOrderEstimatePage {
 
     // Actions
 
+    @Step("Нажмите на {index}-ую карточку товара/услуги")
+    public OrderActionWithProductCardModel<ConfirmedOrderPage> clickCardByIndex(int index) throws Exception {
+        productOrderForm.clickCardByIndex(index);
+        return new OrderActionWithProductCardModel<>(ConfirmedOrderPage.class);
+    }
+
     @Step("Нажмите кнопку для добавления товара в корзину")
     public SearchProductPage clickAddProductButton() {
         return productOrderForm.clickAddProductButton();

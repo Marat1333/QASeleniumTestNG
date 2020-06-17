@@ -232,10 +232,12 @@ public class SalesBaseTest extends AppBaseSteps {
         // Создание корзины
         List<CartProductOrderData> productOrderDataList = productDataList == null ? new ArrayList<>() : productDataList;
         if (productDataList == null) {
+            if (lmCodes == null)
+                lmCodes = apiClientProvider.getProductLmCodes(1);
             for (String lmCode : lmCodes) {
                 CartProductOrderData productOrderData = new CartProductOrderData();
                 productOrderData.setLmCode(lmCode);
-                productOrderData.setQuantity(1.0);
+                productOrderData.setQuantity(2.0);
                 productOrderDataList.add(productOrderData);
             }
         }

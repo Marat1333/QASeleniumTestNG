@@ -1,12 +1,13 @@
 package com.leroy.magmobile.ui.pages.sales.orders.order;
 
 import com.leroy.magmobile.ui.pages.sales.orders.ActionWithProductCardModal;
+import com.leroy.magmobile.ui.pages.sales.orders.CartOrderEstimatePage;
 import io.qameta.allure.Step;
 
-public class OrderActionWithProductCardModel extends ActionWithProductCardModal<CartProcessOrder35Page> {
+public class OrderActionWithProductCardModel<T extends CartOrderEstimatePage> extends ActionWithProductCardModal<T> {
 
-    public OrderActionWithProductCardModel() {
-        super(CartProcessOrder35Page.class);
+    public OrderActionWithProductCardModel(Class<T> type) {
+        super(type);
     }
 
     // Actions
@@ -15,7 +16,7 @@ public class OrderActionWithProductCardModel extends ActionWithProductCardModal<
     // Verifications
 
     @Step("Проверить, что страница 'Действия с товаром' отображается корректно")
-    public OrderActionWithProductCardModel verifyRequiredElements() {
+    public OrderActionWithProductCardModel<T> verifyRequiredElements() {
         softAssert.areElementsVisible(headerLbl, changeQuantityMenuItem, addProductAgainMenuItem,
                 detailsAboutProductMenuItem, removeProductMenuItem);
         softAssert.verifyAll();
