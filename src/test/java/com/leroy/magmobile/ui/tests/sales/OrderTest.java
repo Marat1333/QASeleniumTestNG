@@ -634,7 +634,7 @@ public class OrderTest extends SalesBaseTest {
 
         // Step 3 and 4
         step("Выберите параметр Удалить товар и подтвердите удаление");
-        stepSelectRemoveProductInModalWindowAndConfirm(true);
+        stepSelectRemoveProductInModalWindow(true);
     }
 
     @Test(description = "C22808296 Добавить товар в неподтвержденный заказ (из модалки действий с товаром)")
@@ -748,6 +748,38 @@ public class OrderTest extends SalesBaseTest {
         stepClickSalesDocumentCard(true);
     }
 
+    @Test(description = "C22847031 Удалить товар из подтвержденного заказа", groups = NEED_PRODUCTS_GROUP)
+    public void testRemoveProductFromConfirmedOrder() throws Exception {
+        startFromScreenWithConfirmedOrder(lmCodes.subList(0, 2));
+        OrderAppData orderAppData = salesDocumentData.getOrderAppDataList().get(0);
+        // Т.к. в списке документов стоимость может отличаться от стоимости при открытии карточки,
+        // приходиться делать такие вот "костыли"
+        double totalPriceBefore = orderAppData.getTotalPrice();
+
+        // Step 1
+        step("Нажать на мини-карточку последнего добавленного товара из списка доступных");
+        stepClickProductCard(1);
+
+        // Step 2
+        step("Выберите параметр Удалить товар");
+        stepSelectRemoveProductInModalWindow(true);
+
+        // Step 3
+        step("Нажмите на кнопку Сохранить");
+        stepClickSaveButtonForChangesConfirmedOrder();
+
+        // Step 4
+        step("Нажмите на Перейти в список документов");
+        double totalPriceAfter = orderAppData.getTotalPrice();
+        orderAppData.setTotalPrice(totalPriceBefore);
+        stepClickGoToSalesDocumentsList(true);
+        orderAppData.setTotalPrice(totalPriceAfter);
+
+        // Step 5
+        step("Нажмите на мини-карточку оформленного документа");
+        stepClickSalesDocumentCard(true);
+    }
+
 
     //   ============ Шаги тестов =================== //
 
@@ -807,17 +839,26 @@ public class OrderTest extends SalesBaseTest {
     /**
      * Выберите параметр Удалить товар в модальном окне и подтвердите удаление
      */
-    private void stepSelectRemoveProductInModalWindowAndConfirm(boolean verifyProducts) throws Exception {
-        draftOrderActionWithProductCardModal.clickRemoveProductMenuItem();
-        /*ConfirmRemovingProductModal confirmRemovingProductModal = new ConfirmRemovingProductModal()
-                .verifyRequiredElements();
-        confirmRemovingProductModal.clickConfirmButton();*/ // TODO Из-за бага нет окна о подтверждении удаления
-        Thread.sleep(3000); // Из-за бага нет прогресс бара. Если баг не будут чинить, то стоит добавить ожидание изменение кол-ва товара
-        salesDocumentData.getOrderDataInEditModeNow().removeProduct(salesDocumentData.getProductDataInEditModeNow());
-        salesDocumentData.getOrderAppDataList().get(0).setTotalWeight(null);
-        cartProcessOrder35Page = new CartProcessOrder35Page();
-        if (verifyProducts)
-            cartProcessOrder35Page.shouldSalesDocumentDataIs(salesDocumentData);
+    private void stepSelectRemoveProductInModalWindow(boolean verifyProducts) throws Exception {
+        if (confirmedOrderActionWithProductCardModal != null) {
+            confirmedOrderActionWithProductCardModal.clickRemoveProductMenuItem();
+            int productCount = salesDocumentData.getOrderAppDataList().get(0).getProductCount();
+            OrderAppData orderAppData = salesDocumentData.getOrderDataInEditModeNow();
+            orderAppData.removeProduct(salesDocumentData.getProductDataInEditModeNow());
+            orderAppData.setTotalWeight(null);
+            orderAppData.setProductCount(productCount); // Кол-во товаров в Confirmed заказе не изменяется
+            confirmedOrderPage = new ConfirmedOrderPage();
+            if (verifyProducts)
+                confirmedOrderPage.shouldSalesDocumentDataIs(salesDocumentData);
+        } else {
+            draftOrderActionWithProductCardModal.clickRemoveProductMenuItem();
+            salesDocumentData.getOrderDataInEditModeNow().removeProduct(salesDocumentData.getProductDataInEditModeNow());
+            salesDocumentData.getOrderAppDataList().get(0).setTotalWeight(null);
+            cartProcessOrder35Page = new CartProcessOrder35Page();
+            cartProcessOrder35Page.waitUntilTotalOrderPriceIs(salesDocumentData.getOrderAppDataList().get(0).getTotalPrice());
+            if (verifyProducts)
+                cartProcessOrder35Page.shouldSalesDocumentDataIs(salesDocumentData);
+        }
     }
 
     /**

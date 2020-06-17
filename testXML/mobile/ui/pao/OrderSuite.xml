@@ -167,6 +167,16 @@
         </classes>
     </test>
 
+    <test name="C22847031 Удалить товар из подтвержденного заказа">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
+                <methods>
+                    <include name="testRemoveProductFromConfirmedOrder"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
 
 
 
