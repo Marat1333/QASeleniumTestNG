@@ -114,9 +114,8 @@ public class ProductOrderForm extends BaseAppPage {
         return new SearchProductPage();
     }
 
-    public SubmittedSalesDocument35Page clickSaveButton() {
+    public void clickSaveButton() {
         saveBtn.click();
-        return new SubmittedSalesDocument35Page();
     }
 
     public void clickCardByIndex(int index) throws Exception {

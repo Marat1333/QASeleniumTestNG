@@ -780,6 +780,27 @@ public class OrderTest extends SalesBaseTest {
         stepClickSalesDocumentCard(true);
     }
 
+    @Test(description = "C22847245 Удалить последний товар из подтвержденного заказа")
+    public void testRemoveLastProductFromConfirmedOrder() throws Exception {
+        startFromScreenWithConfirmedOrder();
+
+        // Step 1
+        step("Нажать на мини-карточку последнего добавленного товара из списка доступных");
+        stepClickProductCard(1);
+
+        // Step 2
+        step("Выберите параметр Удалить товар");
+        stepRemoveLastProductAndRemoveOrder(true);
+
+        // Step 3 - 4
+        step("Нажмите на кнопку Сохранить и подтвердите удаление");
+        stepClickSaveButtonForChangesConfirmedOrder();
+
+        // Step 5
+        step("Нажмите на мини-карточку отмененного документа");
+        stepClickSalesDocumentCard(true);
+    }
+
 
     //   ============ Шаги тестов =================== //
 
@@ -810,14 +831,36 @@ public class OrderTest extends SalesBaseTest {
     /**
      * Нажмите на кнопку Сохранить (После редактирования подтвержденного закона)
      */
-    private void stepClickSaveButtonForChangesConfirmedOrder() {
-        submittedSalesDocument35Page = confirmedOrderPage.clickSaveButton()
-                .verifyRequiredElements(
-                        salesDocumentData.getOrderDetailsData().getDeliveryType(), false, false);
-        if (salesDocumentData != null) {
-            submittedSalesDocument35Page.shouldPinCodeIs(salesDocumentData.getOrderDetailsData().getPinCode());
-            if (salesDocumentData.getNumber() != null)
-                submittedSalesDocument35Page.shouldDocumentNumberIs(salesDocumentData.getNumber());
+    private void stepClickSaveButtonForChangesConfirmedOrder() throws Exception {
+        if (salesDocumentData.getOrderAppDataList().get(0).getTotalPrice() == 0) {
+            ConfirmRemoveOrderModal confirmRemoveOrderModal = confirmedOrderPage.clickSaveButton(
+                    ConfirmRemoveOrderModal.class);
+            confirmRemoveOrderModal.clickConfirmButton();
+
+            salesDocumentData.setStatus(SalesDocumentsConst.States.CANCELLED.getUiVal());
+
+            salesDocumentsPage = new SalesDocumentsPage();
+            ShortSalesDocumentData expectedSalesDocument = new ShortSalesDocumentData();
+            // Итого стоимость остается прежней и не особо важна при отмененном заказе:
+            //expectedSalesDocument.setDocumentTotalPrice(salesDocumentData.getOrderAppDataList().get(0).getTotalPrice());
+            expectedSalesDocument.setDocumentState(salesDocumentData.getStatus());
+            expectedSalesDocument.setTitle(salesDocumentData.getTitle());
+            expectedSalesDocument.setNumber(salesDocumentData.getNumber());
+            expectedSalesDocument.setPin("");
+            //expectedSalesDocument.setDate(salesDocumentData.getDate()); - Дата может отличаться на минуту
+            if (SalesDocumentsConst.GiveAwayPoints.DELIVERY.equals(salesDocumentData.getOrderDetailsData().getDeliveryType())) {
+                expectedSalesDocument.setCustomerName(salesDocumentData.getOrderDetailsData().getCustomer().getName());
+            }
+            salesDocumentsPage.shouldSalesDocumentIsPresentAndDataMatches(expectedSalesDocument, true);
+        } else {
+            submittedSalesDocument35Page = confirmedOrderPage.clickSaveButton(SubmittedSalesDocument35Page.class)
+                    .verifyRequiredElements(
+                            salesDocumentData.getOrderDetailsData().getDeliveryType(), false, false);
+            if (salesDocumentData != null) {
+                submittedSalesDocument35Page.shouldPinCodeIs(salesDocumentData.getOrderDetailsData().getPinCode());
+                if (salesDocumentData.getNumber() != null)
+                    submittedSalesDocument35Page.shouldDocumentNumberIs(salesDocumentData.getNumber());
+            }
         }
     }
 
@@ -874,13 +917,26 @@ public class OrderTest extends SalesBaseTest {
     /**
      * Удалить последний товар из заказа (удалить заказ)
      */
-    private void stepRemoveLastProductAndRemoveOrder(boolean checkThatOrderIsDeleted) throws Exception {
-        draftOrderActionWithProductCardModal.clickRemoveProductMenuItem();
-        ConfirmRemoveOrderModal modal = new ConfirmRemoveOrderModal();
-        modal.verifyRequiredElements();
-        modal.clickConfirmButton();
-        if (checkThatOrderIsDeleted)
-            new SalesDocumentsPage().shouldSalesDocumentIsNotPresent(salesDocumentData.getNumber());
+    private void stepRemoveLastProductAndRemoveOrder(boolean verification) throws Exception {
+        if (confirmedOrderActionWithProductCardModal != null) {
+            confirmedOrderActionWithProductCardModal.clickRemoveProductMenuItem();
+            confirmedOrderPage = new ConfirmedOrderPage();
+
+            OrderAppData orderAppData = salesDocumentData.getOrderDataInEditModeNow();
+            orderAppData.removeProduct(salesDocumentData.getProductDataInEditModeNow());
+            orderAppData.setTotalWeight(0.0);
+            orderAppData.setProductCount(1);
+
+            if (verification)
+                confirmedOrderPage.shouldSalesDocumentDataIs(salesDocumentData);
+        } else {
+            draftOrderActionWithProductCardModal.clickRemoveProductMenuItem();
+            ConfirmRemoveOrderModal modal = new ConfirmRemoveOrderModal();
+            modal.verifyRequiredElements();
+            modal.clickConfirmButton();
+            if (verification)
+                new SalesDocumentsPage().shouldSalesDocumentIsNotPresent(salesDocumentData.getNumber());
+        }
     }
 
     /**
@@ -1011,8 +1067,11 @@ public class OrderTest extends SalesBaseTest {
         salesDocumentsPage.searchForDocumentByTextAndSelectIt(salesDocumentData.getNumber());
         if (confirmedOrderPage != null)
             confirmedOrderPage = new ConfirmedOrderPage();
-        if (verifyProducts)
+        if (verifyProducts) {
             confirmedOrderPage.shouldSalesDocumentDataIs(salesDocumentData);
+
+            String s = ""; // TODO  !!!!!!!!
+        }
     }
 
 

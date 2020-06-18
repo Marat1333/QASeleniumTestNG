@@ -307,6 +307,8 @@ public class SalesBaseTest extends AppBaseSteps {
         confirmOrderData.setGiveAway(giveAwayData);
 
         Response<OrderData> resp = orderClient.confirmOrder(orderData.getOrderId(), confirmOrderData);
+        if (!resp.isSuccessful())
+            resp = orderClient.confirmOrder(orderData.getOrderId(), confirmOrderData);
         orderClient.assertThatIsConfirmed(resp, orderData);
         return orderData.getOrderId();
     }

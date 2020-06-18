@@ -6,7 +6,7 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.models.sales.OrderDetailsData;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
-import com.leroy.magmobile.ui.pages.sales.SubmittedSalesDocument35Page;
+import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.orders.CartOrderEstimatePage;
 import com.leroy.magmobile.ui.pages.sales.orders.order.forms.OrderParamsForm;
 import com.leroy.magmobile.ui.pages.sales.orders.order.forms.ProductOrderForm;
@@ -24,15 +24,15 @@ public class ConfirmedOrderPage extends CartOrderEstimatePage {
             metaName = "Загаловок заказа")
     Element documentTitle;
 
-    @AppFindBy(xpath = "//*[@content-desc='DefaultScreenHeader']//android.widget.TextView[@index='3']",
+    @AppFindBy(xpath = "//*[@content-desc='DefaultScreenHeader']//android.widget.TextView[contains(@text, '№')]/preceding-sibling::android.widget.TextView[2]",
             metaName = "Дата создания заказа")
     Element documentDate;
 
-    @AppFindBy(xpath = "//*[@content-desc='DefaultScreenHeader']//android.widget.TextView[@index='4']",
+    @AppFindBy(xpath = "//*[@content-desc='DefaultScreenHeader']//android.widget.TextView[contains(@text, '№')]/preceding-sibling::android.widget.TextView[1]",
             metaName = "Автор созданного заказа")
     Element documentCreator;
 
-    @AppFindBy(xpath = "//*[@content-desc='DefaultScreenHeader']//android.widget.TextView[@index='5']",
+    @AppFindBy(xpath = "//*[@content-desc='DefaultScreenHeader']//android.widget.TextView[contains(@text, '№')]",
             metaName = "Номер документа")
     Element documentNumber;
 
@@ -79,8 +79,9 @@ public class ConfirmedOrderPage extends CartOrderEstimatePage {
     }
 
     @Step("Нажмите кнопку Сохранить")
-    public SubmittedSalesDocument35Page clickSaveButton() {
-        return productOrderForm.clickSaveButton();
+    public <T extends CommonMagMobilePage> T clickSaveButton(Class<T> page) throws Exception {
+        productOrderForm.clickSaveButton();
+        return page.getConstructor().newInstance();
     }
 
     // Verifications
