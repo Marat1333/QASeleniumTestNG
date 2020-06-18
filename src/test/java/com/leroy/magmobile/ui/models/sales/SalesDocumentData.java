@@ -91,6 +91,13 @@ public class SalesDocumentData {
                     "Неверный автор документа");
         }
         softAssert.verifyAll();
+
+        // Детали подтвержденного заказа:
+        if (expectedSalesDocumentData.getOrderDetailsData() != null) {
+            this.orderDetailsData.assertEqualsNotNullExpectedFields(expectedSalesDocumentData.getOrderDetailsData());
+        }
+
+        // Заказы и товары:
         softAssert.isEquals(orderAppDataList.size(), expectedSalesDocumentData.getOrderAppDataList().size(),
                 "Неверное кол-во заказов в документе");
         softAssert.verifyAll();

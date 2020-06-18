@@ -22,7 +22,7 @@ import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderDat
 import com.leroy.magmobile.api.data.sales.orders.*;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.constants.TestDataConstants;
-import com.leroy.magmobile.ui.models.MagCustomerData;
+import com.leroy.magmobile.ui.models.customer.MagCustomerData;
 import com.leroy.magmobile.ui.models.sales.ShortSalesDocumentData;
 import com.leroy.magmobile.ui.pages.sales.AddProductPage;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
@@ -88,6 +88,8 @@ public class SalesBaseTest extends AppBaseSteps {
         if (!Cart35Page.isThisPage()) {
             CartClient cartClient = apiClientProvider.getCartClient();
             Response<CartData> response = cartClient.sendRequestCreate(productDataList);
+            if (!response.isSuccessful())
+                response = cartClient.sendRequestCreate(productDataList);
             CartData cartData = cartClient.assertThatIsCreatedAndGetData(response, true);
             String cartDocNumber = cartData.getCartId();
             MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
@@ -313,13 +315,17 @@ public class SalesBaseTest extends AppBaseSteps {
         return orderData.getOrderId();
     }
 
-    protected void cancelOrder(String orderId) throws Exception {
+    protected void cancelOrder(String orderId, String expectedStatusBefore) throws Exception {
         OrderClient orderClient = apiClientProvider.getOrderClient();
         orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderId,
-                SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal());
+                expectedStatusBefore);
         Response<JsonNode> r = orderClient.cancelOrder(orderId);
         anAssert().isTrue(r.isSuccessful(),
                 "Не смогли удалить заказ №" + orderId + ". Ошибка: " + r.toString());
+    }
+
+    protected void cancelOrder(String orderId) throws Exception {
+        cancelOrder(orderId, SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal());
     }
 
     // Product Types

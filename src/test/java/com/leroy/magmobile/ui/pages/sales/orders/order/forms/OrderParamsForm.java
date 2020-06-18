@@ -8,7 +8,7 @@ import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobButton;
-import com.leroy.magmobile.ui.models.MagCustomerData;
+import com.leroy.magmobile.ui.models.customer.MagCustomerData;
 import com.leroy.magmobile.ui.models.sales.OrderDetailsData;
 import com.leroy.magmobile.ui.pages.customers.SearchCustomerPage;
 import com.leroy.utils.DateTimeUtil;
@@ -71,9 +71,9 @@ public class OrderParamsForm extends BaseAppPage {
         String ps = getPageSource();
         OrderDetailsData orderDetailsData = new OrderDetailsData();
         boolean isPickup = !deliveryDateFld.isVisible(ps);
-        orderDetailsData.setDeliveryType(isPickup?
+        orderDetailsData.setDeliveryType(isPickup ?
                 SalesDocumentsConst.GiveAwayPoints.PICKUP : SalesDocumentsConst.GiveAwayPoints.DELIVERY);
-        String deliveryDate = isPickup? pickupDateFld.getText(ps) : deliveryDateFld.getText(ps);
+        String deliveryDate = isPickup ? pickupDateFld.getText(ps) : deliveryDateFld.getText(ps);
         orderDetailsData.setDeliveryDate(DateTimeUtil.strToLocalDate(deliveryDate, "dd MMM"));
 
         MagCustomerData customerData = new MagCustomerData();
@@ -165,20 +165,22 @@ public class OrderParamsForm extends BaseAppPage {
             }
         }
         // Получатель
-        if (data.getCustomer() != null) {
-            if (data.getCustomer().getName() != null) {
+        if (data.getCustomer() != null || data.getOrgAccount() != null) {
+            MagCustomerData expectedCustomer = data.getCustomer() != null ? data.getCustomer() :
+                    data.getOrgAccount().getChargePerson();
+            if (expectedCustomer.getName() != null) {
                 if (!fullNameFld.isVisible())
                     mainScrollView.scrollDownToElement(fullNameFld);
-                softAssert.isElementTextEqual(fullNameFld, data.getCustomer().getName());
+                softAssert.isElementTextEqual(fullNameFld, expectedCustomer.getName());
             }
-            if (data.getCustomer().getPhone() != null) {
+            if (expectedCustomer.getPhone() != null) {
                 mainScrollView.scrollDownToElement(phoneFld);
-                softAssert.isEquals(ParserUtil.standardPhoneFmt(phoneFld.getText()), data.getCustomer().getPhone(),
+                softAssert.isEquals(ParserUtil.standardPhoneFmt(phoneFld.getText()), expectedCustomer.getPhone(),
                         "Неверный телефон номера у получателя");
             }
-            if (data.getCustomer().getEmail() != null) {
+            if (expectedCustomer.getEmail() != null) {
                 mainScrollView.scrollDownToElement(emailFld);
-                softAssert.isElementTextEqual(emailFld, data.getCustomer().getEmail());
+                softAssert.isElementTextEqual(emailFld, expectedCustomer.getEmail());
             }
         }
 

@@ -1,7 +1,7 @@
 package com.leroy.magmobile.ui.tests.sales;
 
 import com.leroy.constants.sales.SalesDocumentsConst;
-import com.leroy.magmobile.ui.models.MagCustomerData;
+import com.leroy.magmobile.ui.models.customer.MagCustomerData;
 import com.leroy.magmobile.ui.models.sales.OrderAppData;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.models.sales.ShortSalesDocumentData;

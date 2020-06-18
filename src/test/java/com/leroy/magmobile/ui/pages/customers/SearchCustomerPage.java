@@ -4,7 +4,8 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.models.MagCustomerData;
+import com.leroy.magmobile.ui.elements.MagMobButton;
+import com.leroy.magmobile.ui.models.customer.MagCustomerData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.orders.estimate.EstimatePage;
 import com.leroy.magmobile.ui.pages.search.widgets.SearchCustomerWidget;
@@ -15,7 +16,11 @@ import java.util.List;
 public class SearchCustomerPage extends CommonMagMobilePage {
 
     public enum SearchType {
-        BY_PHONE, BY_CARD, BY_EMAIL;
+        BY_PHONE, BY_CARD, BY_EMAIL, BY_CONTRACT;
+    }
+
+    public enum CustomerType {
+        INDIVIDUAL, LEGAL;
     }
 
     AndroidScrollView<MagCustomerData> mainScrollView = new AndroidScrollView<>(driver,
@@ -28,14 +33,28 @@ public class SearchCustomerPage extends CommonMagMobilePage {
 
     private static final String searchOptionsXpath = "(//android.widget.HorizontalScrollView//android.widget.TextView)";
 
-    @AppFindBy(xpath = searchOptionsXpath + "[1]")
+    @AppFindBy(text = "Физ. лица и профи")
+    MagMobButton individualCustomerTypeBtn;
+
+    @AppFindBy(text = "Юридические лица")
+    MagMobButton legalCustomerTypeBtn;
+
+    // Поля для физ лица
+    @AppFindBy(text = "Телефон")
     Element phoneOptionLbl;
 
-    @AppFindBy(xpath = searchOptionsXpath + "[2]")
+    @AppFindBy(text = "№ карты клиента")
     Element customerCardOptionLbl;
 
-    @AppFindBy(xpath = searchOptionsXpath + "[3]")
+    @AppFindBy(text = "Эл. почта")
     Element emailOptionLbl;
+
+    // Поля для юр лица
+    @AppFindBy(text = "№ договора")
+    Element contractNumberOption;
+
+    @AppFindBy(text = "№ корп. карты")
+    Element numberCorpCardOption;
 
     private static final String screenHeaderId = "ScreenHeader-CustomerSearchScreen ";
 
@@ -64,6 +83,21 @@ public class SearchCustomerPage extends CommonMagMobilePage {
 
     // ACTIONS
 
+    @Step("Выбираем тип клиента (Физ или Юр лицо)")
+    public SearchCustomerPage selectCustomerType(CustomerType type) {
+        switch (type) {
+            case LEGAL:
+                legalCustomerTypeBtn.click();
+                contractNumberOption.waitForVisibility();
+                break;
+            case INDIVIDUAL:
+                individualCustomerTypeBtn.click();
+                phoneOptionLbl.waitForVisibility();
+                break;
+        }
+        return this;
+    }
+
     @Step("Выберите {index}-ого клиента из списка поиска")
     public EstimatePage selectCustomerFromSearchList(int index) throws Exception {
         index--;
@@ -83,8 +117,14 @@ public class SearchCustomerPage extends CommonMagMobilePage {
     @Step("Выбрать тип поиска по {searchType}")
     public SearchCustomerPage selectSearchType(SearchType searchType) {
         switch (searchType) {
+            case BY_CONTRACT:
+                contractNumberOption.click();
+                break;
             case BY_CARD:
-                customerCardOptionLbl.click();
+                if (customerCardOptionLbl.isVisible())
+                    customerCardOptionLbl.click();
+                else
+                    numberCorpCardOption.click();
                 break;
             case BY_EMAIL:
                 emailOptionLbl.click();
@@ -110,6 +150,17 @@ public class SearchCustomerPage extends CommonMagMobilePage {
         customerCardOptionLbl.click();
         if (value.length() == 17)
             value = value.substring(7);
+        enterTextInSearchField(value);
+        mainScrollView.clickElemByIndex(0);
+        return this;
+    }
+
+    @Step("Найдите Юридическое лицо по номеру договора: {value}")
+    public SearchCustomerPage searchLegalCustomerByContractNumber(String value) throws Exception {
+        if (!contractNumberOption.isVisible())
+            selectCustomerType(CustomerType.LEGAL);
+        if (value.length() == 9)
+            value = value.substring(3);
         enterTextInSearchField(value);
         mainScrollView.clickElemByIndex(0);
         return this;

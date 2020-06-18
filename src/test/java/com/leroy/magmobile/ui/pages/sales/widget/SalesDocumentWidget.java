@@ -33,7 +33,7 @@ public class SalesDocumentWidget extends CardWidget<ShortSalesDocumentData> {
     @AppFindBy(xpath = ".//android.widget.TextView[4 and starts-with(@text, 'PIN')]")
     private Element pin;
 
-    @AppFindBy(xpath = ".//android.widget.TextView[contains(@text, 'Клиент:')]")
+    @AppFindBy(xpath = ".//android.widget.TextView[contains(@text, 'Клиент:') or contains(@text, 'Юр. лицо:')]")
     private Element customerName;
 
     @AppFindBy(xpath = ".//android.view.ViewGroup[count(android.widget.TextView) > 1][2]/android.widget.TextView[1]")
@@ -67,7 +67,7 @@ public class SalesDocumentWidget extends CardWidget<ShortSalesDocumentData> {
         if (name == null)
             return null;
         else
-            return name.replaceAll("Клиент:", "").trim();
+            return name.replaceAll("Клиент:", "").replaceAll("Юр. лицо:", "").trim();
     }
 
     @Override

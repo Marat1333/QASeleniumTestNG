@@ -5,7 +5,8 @@ import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magmobile.ui.constants.TestDataConstants;
-import com.leroy.magmobile.ui.models.MagCustomerData;
+import com.leroy.magmobile.ui.models.customer.MagCustomerData;
+import com.leroy.magmobile.ui.models.customer.MagLegalCustomerData;
 import com.leroy.magmobile.ui.models.sales.*;
 import com.leroy.magmobile.ui.pages.customers.SearchCustomerPage;
 import com.leroy.magmobile.ui.pages.sales.*;
@@ -63,9 +64,12 @@ public class OrderTest extends SalesBaseTest {
     @AfterMethod
     private void cancelConfirmedOrder() throws Exception {
         // Clean up
-        if (salesDocumentData != null &&
-                salesDocumentData.getStatus().equals(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal())) {
-            cancelOrder(salesDocumentData.getNumber());
+        if (salesDocumentData != null && salesDocumentData.getStatus() != null &&
+                (salesDocumentData.getStatus().equals(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal()) ||
+                        salesDocumentData.getStatus().equals(SalesDocumentsConst.States.CONFIRMED.getUiVal()))) {
+            String statusApi = SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal().equals(salesDocumentData.getStatus()) ?
+                    SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal() : SalesDocumentsConst.States.CONFIRMED.getApiVal();
+            cancelOrder(salesDocumentData.getNumber(), statusApi);
         }
     }
 
@@ -369,12 +373,40 @@ public class OrderTest extends SalesBaseTest {
     @Test(description = "C22797116 Подтвердить заказ на самовывоз через 14 дней")
     public void testConfirmOrderAsPickupAfter14Days() throws Exception {
         // Test Data
-        MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
+        MagLegalCustomerData legalCustomerData = TestDataConstants.LEGAL_ENTITY_1;
 
         List<ProductItemData> productItemDataList = apiClientProvider.getProducts(1);
         CartProductOrderData productWithNegativeBalance = new CartProductOrderData(
                 productItemDataList.get(0));
         productWithNegativeBalance.setQuantity(productItemDataList.get(0).getAvailableStock() + 10.0);
+
+        // Pre-conditions
+        startFromScreenWithOrderDraft(null,
+                Collections.singletonList(productWithNegativeBalance), true);
+
+        // Step 1
+        step("В поле Выбери способ получения нажмите на кнопу Самовывоз (по умолчанию)");
+        stepSelectDeliveryType(SalesDocumentsConst.GiveAwayPoints.PICKUP, LocalDate.now().plusDays(14));
+
+        // Step 2
+        step("В поле Имя и Фамилия нажать на иконку клиента");
+        stepSearchForCustomerAndSelect(SearchCustomerPage.SearchType.BY_CONTRACT, legalCustomerData);
+
+        // Step 4, 5, 6
+        step("Введите PIN-код для оплаты (код начинается не с 9)");
+        stepEnterPinCode(SalesDocumentsConst.GiveAwayPoints.PICKUP);
+
+        // Step 7
+        step("Нажмите на кнопку Подтвердить заказ");
+        stepClickConfirmOrder();
+
+        // Step 8
+        step("Нажмите на Перейти в список документов");
+        stepClickGoToSalesDocumentsList(true);
+
+        // Step 9
+        step("Нажать на мини-карточку созданного документа Самовывоз");
+        stepClickSalesDocumentCard(true);
 
     }
 
@@ -822,6 +854,75 @@ public class OrderTest extends SalesBaseTest {
     //   ============ Шаги тестов =================== //
 
     /**
+     * В поле Выбери способ получения
+     */
+    private void stepSelectDeliveryType(SalesDocumentsConst.GiveAwayPoints type, LocalDate deliveryDate) {
+        OrderDetailsData orderDetailsData = salesDocumentData.getOrderDetailsData() == null ? new OrderDetailsData() :
+                salesDocumentData.getOrderDetailsData();
+        orderDetailsData.setDeliveryType(type);
+        orderDetailsData.setDeliveryDate(deliveryDate);
+        salesDocumentData.setOrderDetailsData(orderDetailsData);
+
+        ProcessOrder35Page processOrder35Page = new ProcessOrder35Page();
+        processOrder35Page.selectDeliveryType(orderDetailsData.getDeliveryType());
+        processOrder35Page.shouldFormFieldsAre(orderDetailsData);
+    }
+
+    /**
+     * Найдите и выберите клиента на форме оформления заказа
+     */
+    private void stepSearchForCustomerAndSelect(
+            SearchCustomerPage.SearchType searchType, MagLegalCustomerData searchCustomer) throws Exception {
+        SearchCustomerPage searchCustomerPage = processOrder35Page.clickCustomerIconToSearch()
+                .verifyRequiredElements();
+
+        switch (searchType) {
+            case BY_CONTRACT:
+                searchCustomerPage.searchLegalCustomerByContractNumber(searchCustomer.getContractNumber());
+                salesDocumentData.getOrderDetailsData().setOrgAccount(searchCustomer);
+                break;
+        }
+        processOrder35Page = new ProcessOrder35Page();
+        processOrder35Page.shouldFormFieldsAre(salesDocumentData.getOrderDetailsData());
+    }
+
+    /**
+     * Введите PIN-код для оплаты
+     */
+    private void stepEnterPinCode(SalesDocumentsConst.GiveAwayPoints deliveryType) {
+        OrderDetailsData orderDetailsData = salesDocumentData.getOrderDetailsData();
+        orderDetailsData.setPinCode(getValidPinCode(SalesDocumentsConst.GiveAwayPoints.PICKUP.equals(deliveryType)));
+        processOrder35Page.enterPinCode(orderDetailsData, true);
+        processOrder35Page.shouldFormFieldsAre(orderDetailsData);
+    }
+
+    /**
+     * Нажмите на кнопку Подтвердить заказ
+     */
+    private void stepClickConfirmOrder() throws Exception {
+        if (confirmedOrderPage != null)
+            submittedSalesDocument35Page = confirmedOrderPage.clickSaveButton(SubmittedSalesDocument35Page.class);
+        else
+            submittedSalesDocument35Page = processOrder35Page.clickSubmitButton();
+
+        submittedSalesDocument35Page.verifyRequiredElements(
+                salesDocumentData.getOrderDetailsData().getDeliveryType(), confirmedOrderPage == null, false);
+        if (salesDocumentData != null) {
+            submittedSalesDocument35Page.shouldPinCodeIs(salesDocumentData.getOrderDetailsData().getPinCode());
+            if (salesDocumentData.getNumber() != null)
+                submittedSalesDocument35Page.shouldDocumentNumberIs(salesDocumentData.getNumber());
+            if (salesDocumentData.getOrderDetailsData().getPinCode() == null)
+                salesDocumentData.getOrderDetailsData().setPinCode(submittedSalesDocument35Page.getDocumentNumber());
+
+            salesDocumentData.setTitle(salesDocumentData.getOrderDetailsData().getDeliveryType().getUiVal());
+
+            // Для Юр лиц статус "Создан", для физ лиц - "Готов к сборке". Баг или фича?
+            if (salesDocumentData.getOrderDetailsData().getOrgAccount() != null)
+                salesDocumentData.setStatus(SalesDocumentsConst.States.CONFIRMED.getUiVal());
+        }
+    }
+
+    /**
      * Нажать на иконку корзины в поле оформления заказа
      */
     private void stepClickCartIconWhenProcessOrder(boolean verifyProducts) {
@@ -849,7 +950,7 @@ public class OrderTest extends SalesBaseTest {
      * Нажмите на кнопку Сохранить (После редактирования подтвержденного закона)
      */
     private void stepClickSaveButtonForChangesConfirmedOrder() throws Exception {
-        if (salesDocumentData.getOrderAppDataList().get(0).getTotalPrice() == 0) {
+        if (salesDocumentData.getOrderAppDataList().get(0).getTotalPrice() == 0) { // Если в заказе не осталось товаров
             ConfirmRemoveOrderModal confirmRemoveOrderModal = confirmedOrderPage.clickSaveButton(
                     ConfirmRemoveOrderModal.class);
             confirmRemoveOrderModal.clickConfirmButton();
@@ -870,14 +971,7 @@ public class OrderTest extends SalesBaseTest {
             }
             salesDocumentsPage.shouldSalesDocumentIsPresentAndDataMatches(expectedSalesDocument, true);
         } else {
-            submittedSalesDocument35Page = confirmedOrderPage.clickSaveButton(SubmittedSalesDocument35Page.class)
-                    .verifyRequiredElements(
-                            salesDocumentData.getOrderDetailsData().getDeliveryType(), false, false);
-            if (salesDocumentData != null) {
-                submittedSalesDocument35Page.shouldPinCodeIs(salesDocumentData.getOrderDetailsData().getPinCode());
-                if (salesDocumentData.getNumber() != null)
-                    submittedSalesDocument35Page.shouldDocumentNumberIs(salesDocumentData.getNumber());
-            }
+            stepClickConfirmOrder();
         }
     }
 
@@ -1099,10 +1193,13 @@ public class OrderTest extends SalesBaseTest {
             expectedSalesDocument.setNumber(salesDocumentData.getNumber());
             expectedSalesDocument.setPin(salesDocumentData.getOrderDetailsData().getPinCode());
             //expectedSalesDocument.setDate(salesDocumentData.getDate()); - Дата может отличаться на минуту
-            if (SalesDocumentsConst.GiveAwayPoints.DELIVERY.equals(salesDocumentData.getOrderDetailsData().getDeliveryType())) {
+            if (salesDocumentData.getOrderDetailsData().getOrgAccount() != null)
+                expectedSalesDocument.setCustomerName(salesDocumentData.getOrderDetailsData().getOrgAccount().getOrgName());
+            else if (SalesDocumentsConst.GiveAwayPoints.DELIVERY.equals(salesDocumentData.getOrderDetailsData().getDeliveryType())) {
                 expectedSalesDocument.setCustomerName(salesDocumentData.getOrderDetailsData().getCustomer().getName());
             }
-            salesDocumentsPage.shouldSalesDocumentIsPresentAndDataMatches(expectedSalesDocument);
+            salesDocumentsPage.waitUntilDocumentIsInCorrectStatus(salesDocumentData.getNumber(), salesDocumentData.getStatus())
+                    .shouldSalesDocumentIsPresentAndDataMatches(expectedSalesDocument);
         }
     }
 
@@ -1110,8 +1207,17 @@ public class OrderTest extends SalesBaseTest {
      * Нажмите на мини-карточку созданного документа.
      */
     private void stepClickSalesDocumentCard(boolean verifyProducts) {
+        // workaround for minor bug - КОСТЫЛЬ!
+        if (salesDocumentData.getOrderDetailsData().getOrgAccount() != null) {
+            String name = salesDocumentData.getOrderDetailsData().getOrgAccount().getChargePerson().getName();
+            if (name != null && name.equals("Коротких, Александр Абрамович"))
+                salesDocumentData.getOrderDetailsData().getOrgAccount().getChargePerson().setName("Коротких, Александр");
+        }
+        //
+
         salesDocumentsPage.searchForDocumentByTextAndSelectIt(salesDocumentData.getNumber());
-        if (confirmedOrderPage != null)
+        if (SalesDocumentsConst.States.CONFIRMED.getUiVal().equals(salesDocumentData.getStatus()) ||
+                SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal().equals(salesDocumentData.getStatus()))
             confirmedOrderPage = new ConfirmedOrderPage();
         if (verifyProducts) {
             confirmedOrderPage.shouldSalesDocumentDataIs(salesDocumentData);

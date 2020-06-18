@@ -1,7 +1,8 @@
 package com.leroy.magmobile.ui.constants;
 
 import com.leroy.constants.EnvConstants;
-import com.leroy.magmobile.ui.models.MagCustomerData;
+import com.leroy.magmobile.ui.models.customer.MagCustomerData;
+import com.leroy.magmobile.ui.models.customer.MagLegalCustomerData;
 
 public class TestDataConstants extends EnvConstants {
 
@@ -15,6 +16,16 @@ public class TestDataConstants extends EnvConstants {
             .phone(getProperty("data.customer.simple2.phone"))
             .name(getProperty("data.customer.simple2.name"))
             .email(getProperty("data.customer.simple2.email"))
+            .build();
+
+    public static final MagLegalCustomerData LEGAL_ENTITY_1 = new MagLegalCustomerData().toBuilder()
+            .orgName("\"БАНК ЗАРЕЧЬЕ\" (АО)")
+            .orgPhone("+78009996655")
+            .contractNumber("000012947")
+            .chargePerson(new MagCustomerData().toBuilder()
+                    .name("Коротких, Александр Абрамович")
+                    .phone("+79653776820")
+                    .build())
             .build();
 
     public static final MagCustomerData CUSTOMER_WITH_PROFESSIONAL_CARD = new MagCustomerData().toBuilder()

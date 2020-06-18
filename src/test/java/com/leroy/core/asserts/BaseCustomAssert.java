@@ -204,7 +204,7 @@ public abstract class BaseCustomAssert {
             String expectedResult = String.format("Элемент '%s' должен содержать часть текста '%s'",
                     element.getMetaName(), expectedText);
             String actualResult = String.format(
-                    "Элемент '%s' имеет текст '%s'", element.getMetaName(), actualText);
+                    "Элемент %s имеет текст: %s. Ожидалось, что он содержит: %s", element.getMetaName(), actualText, expectedText);
             if (!actualText.contains(expectedText)) {
                 addResultsToCurrentStepAndThrowAssertException(actualResult, expectedResult);
             }
