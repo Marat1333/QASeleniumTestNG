@@ -368,8 +368,13 @@ public class OrderTest extends SalesBaseTest {
 
     @Test(description = "C22797116 Подтвердить заказ на самовывоз через 14 дней")
     public void testConfirmOrderAsPickupAfter14Days() throws Exception {
+        // Test Data
+        MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
 
-        // TODO
+        List<ProductItemData> productItemDataList = apiClientProvider.getProducts(1);
+        CartProductOrderData productWithNegativeBalance = new CartProductOrderData(
+                productItemDataList.get(0));
+        productWithNegativeBalance.setQuantity(productItemDataList.get(0).getAvailableStock() + 10.0);
 
     }
 
