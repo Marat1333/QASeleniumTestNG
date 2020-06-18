@@ -3,7 +3,9 @@ package com.leroy.magmobile.ui.pages.sales.product_card;
 import com.leroy.core.ContextProvider;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
+import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.api.data.catalog.product.reviews.CatalogReviewsOfProductList;
 import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.pages.sales.PricesAndQuantityPage;
 import com.leroy.magmobile.ui.pages.sales.ProductCardPage;
@@ -25,6 +27,9 @@ public class ProductDescriptionPage extends ProductCardPage {
     @AppFindBy(xpath = "//android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[4]/android.widget.TextView[1]",
             metaName = "Название товара")
     Element productName;
+
+    @AppFindBy(xpath = "//android.widget.TextView[contains(@text,'отзыв')]")
+    Button reviewNavigationBtn;
 
     @AppFindBy(text = "История продаж")
     MagMobButton salesHistoryBtn;
@@ -66,6 +71,12 @@ public class ProductDescriptionPage extends ProductCardPage {
         return new SalesHistoryPage();
     }
 
+    @Step("Перейти на страницу отзывов")
+    public ReviewsPage goToReviewsPage(){
+        reviewNavigationBtn.click();
+        return new ReviewsPage();
+    }
+
     // Verifications
 
     @Override
@@ -103,6 +114,12 @@ public class ProductDescriptionPage extends ProductCardPage {
     public ProductDescriptionPage shouldProductBarCodeIs(String text) {
         anAssert.isEquals(barCode.getText().replaceAll("\\D", ""), text,
                 "Бар код должен быть %s");
+        return this;
+    }
+
+    @Step("Проверить, что кол-во отзывов соответствует данным")
+    public ProductDescriptionPage shouldReviewCountIsCorrect(CatalogReviewsOfProductList data){
+        anAssert.isElementTextContains(reviewNavigationBtn, String.valueOf(data.getTotalCount()));
         return this;
     }
 

@@ -66,4 +66,9 @@ public class ReviewsPage extends ProductCardPage {
         }
         return this;
     }
+
+    public void verifyRequiredElements() {
+        softAssert.areElementsVisible(leaveReview, reviewCountLbl);
+        softAssert.verifyAll();
+    }
 }

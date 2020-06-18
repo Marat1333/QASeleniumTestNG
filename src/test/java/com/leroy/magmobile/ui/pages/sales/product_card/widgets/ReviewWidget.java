@@ -47,7 +47,7 @@ public class ReviewWidget extends CardWidget<ReviewCardData> {
         data.setDate(dateLbl.getText());
         data.setCity(cityLbl.getText());
         data.setReviewBody(reviewBodyLbl.getText());
-        if (advantagesLbl.isVisible()) {
+        /*if (advantagesLbl.isVisible()) {
             data.setAdvantages(advantagesLbl.getText());
         }
         if (disadvantagesLbl.isVisible()) {
@@ -57,7 +57,7 @@ public class ReviewWidget extends CardWidget<ReviewCardData> {
             data.setRecommendedProduct(true);
         } else {
             data.setRecommendedProduct(false);
-        }
+        }*/
         return data;
     }
 
@@ -69,15 +69,5 @@ public class ReviewWidget extends CardWidget<ReviewCardData> {
     @Override
     public boolean isFullyVisible(String pageSource) {
         return nameLbl.isVisible() && reviewBodyLbl.isVisible();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null) {
-            return false;
-        }
-        ReviewWidget widget = (ReviewWidget) o;
-        return this.reviewBodyLbl.getText().equals(widget.reviewBodyLbl.getText())
-                && this.dateLbl.getText().equals(widget.dateLbl.getText());
     }
 }

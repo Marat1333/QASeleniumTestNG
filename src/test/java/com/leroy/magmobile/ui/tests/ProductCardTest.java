@@ -1,12 +1,12 @@
 package com.leroy.magmobile.ui.tests;
 
 import com.leroy.core.api.Module;
-import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.CatalogProductClient;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
+import com.leroy.magmobile.api.data.catalog.product.CatalogSimilarProducts;
 import com.leroy.magmobile.api.data.catalog.product.SalesHistoryData;
 import com.leroy.magmobile.api.data.catalog.product.reviews.CatalogReviewsOfProductList;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
@@ -14,15 +14,12 @@ import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.more.SearchShopPage;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
 import com.leroy.magmobile.ui.pages.sales.ProductCardPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.ReviewsPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.SalesHistoryPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.SpecificationsPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.*;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SalesHistoryUnitsModalPage;
+import com.leroy.magmobile.ui.pages.search.FilterPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import io.qameta.allure.Step;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 
@@ -48,7 +45,7 @@ public class ProductCardTest extends AppBaseSteps {
     }
 
     @Step("Перейти в карточку товара {lmCode}")
-    private void preconditions(String lmCode) throws Exception{
+    private void preconditions(String lmCode) throws Exception {
         MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
         SearchProductPage searchProductPage = mainProductAndServicesPage.clickSearchBar(false);
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
@@ -101,13 +98,12 @@ public class ProductCardTest extends AppBaseSteps {
     }
 
     @Test(description = "C3201005 Проверить вкладку Отзывы")
-    public void testReview() throws Exception{
-        String lmCode = "10009260";
+    public void testReview() throws Exception {
+        String lmCode = getRandomLmCode();
         CatalogReviewsOfProductList reviewsList = catalogProductClient.getProductReviews(lmCode, 1, 100).asJson();
 
         // Pre-conditions
         preconditions(lmCode);
-        //TODO verification on descriptionPage
 
         //Step 1
         step("Перейти во вкладку \"Отзывы\"");
@@ -115,5 +111,41 @@ public class ProductCardTest extends AppBaseSteps {
         ReviewsPage reviewsPage = productCardPage.switchTab(ProductCardPage.Tabs.REVIEWS);
         reviewsPage.shouldReviewsCountIsCorrect(reviewsList);
         reviewsPage.shouldReviewsAreCorrect(reviewsList);
+
+        //Step 2
+        step("Перейти в раздел \"Отзывы\" по нажатию на кнопку с кол-вом отзывов");
+        ProductDescriptionPage productDescriptionPage = productCardPage.switchTab(ProductCardPage.Tabs.DESCRIPTION);
+        productDescriptionPage.shouldReviewCountIsCorrect(reviewsList);
+        reviewsPage = productDescriptionPage.goToReviewsPage();
+        reviewsPage.verifyRequiredElements();
+    }
+
+    @Test(description = "C3201004 Проверить вкладку Аналогичные товары")
+    public void testSimilarProducts() throws Exception {
+        String lmCode = "10009260";
+        CatalogProductClient.Extend extendParam = CatalogProductClient.Extend.builder()
+                .rating(true).logistic(true).inventory(true).build();
+        CatalogSimilarProducts data = catalogProductClient.getSimilarProducts(lmCode, extendParam).asJson();
+
+        // Pre-conditions
+        preconditions(lmCode);
+
+        //Step 1
+        step("Перейти на страницу аналогичных товаров");
+        ProductCardPage productCardPage = new ProductCardPage();
+        SimilarProductsPage similarProductsPage = productCardPage.switchTab(ProductCardPage.Tabs.SIMILAR_PRODUCTS);
+        similarProductsPage.shouldCatalogResponseEqualsContent(data, SearchProductPage.CardType.COMMON, data.getTotalCount());
+
+        //Step 2
+        step("Проверить отображение урезанных карточек товара в разделе аналогичные товары");
+        SearchProductPage searchProductPage = productCardPage.returnBack();
+        FilterPage filterPage = searchProductPage.goToFilterPage();
+        filterPage.switchFiltersFrame(FilterPage.ALL_GAMMA_FRAME_TYPE);
+        filterPage.applyChosenFilters();
+        //из-за автоперехода в карточку, ждет элементов на странице поиска
+        productCardPage = new ProductCardPage();
+        similarProductsPage = productCardPage.switchTab(ProductCardPage.Tabs.SIMILAR_PRODUCTS);
+        similarProductsPage.verifyProductCardsHaveAllGammaView();
+        similarProductsPage.shouldCatalogResponseEqualsContent(data, SearchProductPage.CardType.ALL_GAMMA, data.getTotalCount());
     }
 }
