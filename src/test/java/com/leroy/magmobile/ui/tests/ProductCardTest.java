@@ -1,23 +1,28 @@
 package com.leroy.magmobile.ui.tests;
 
 import com.leroy.core.api.Module;
+import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.CatalogProductClient;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
 import com.leroy.magmobile.api.data.catalog.product.SalesHistoryData;
+import com.leroy.magmobile.api.data.catalog.product.reviews.CatalogReviewsOfProductList;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.more.SearchShopPage;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
 import com.leroy.magmobile.ui.pages.sales.ProductCardPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.ReviewsPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.SalesHistoryPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.SpecificationsPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SalesHistoryUnitsModalPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
+import io.qameta.allure.Step;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 
@@ -42,6 +47,13 @@ public class ProductCardTest extends AppBaseSteps {
         return productItemData.get((int) (Math.random() * productItemData.size())).getLmCode();
     }
 
+    @Step("Перейти в карточку товара {lmCode}")
+    private void preconditions(String lmCode) throws Exception{
+        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
+        SearchProductPage searchProductPage = mainProductAndServicesPage.clickSearchBar(false);
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
+    }
+
     @Test(description = "C3201001 Проверить Историю Продаж")
     public void testSalesHistory() throws Exception {
         String lmCode = getRandomLmCode();
@@ -51,13 +63,11 @@ public class ProductCardTest extends AppBaseSteps {
         List<SalesHistoryData> salesHistoryNotUserShopDataList = catalogProductClient
                 .getProductSales(lmCode, notUserShop).asJsonList(SalesHistoryData.class);
 
-        // Pre-conditions
-        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
-        SearchProductPage searchProductPage = mainProductAndServicesPage.clickSearchBar(false);
+        //Pre-conditions
+        preconditions(lmCode);
 
         //Step 1
         step("Найти товар и перейти в историю его продаж");
-        searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
         ProductDescriptionPage productDescriptionPage = new ProductDescriptionPage();
         SalesHistoryPage salesHistoryPage = productDescriptionPage.goToSalesHistoryPage();
         salesHistoryPage.shouldSalesHistoryIsCorrect(salesHistoryUserShopDataList, false);
@@ -81,14 +91,29 @@ public class ProductCardTest extends AppBaseSteps {
         CatalogProductData data = catalogProductClient.getProduct(lmCode).asJson();
 
         // Pre-conditions
-        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
-        SearchProductPage searchProductPage = mainProductAndServicesPage.clickSearchBar(false);
-        searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
+        preconditions(lmCode);
 
         //Step 1
         step("Перейти во вкладку \"Характеристики\"");
         ProductCardPage productCardPage = new ProductCardPage();
         SpecificationsPage specificationsPage = productCardPage.switchTab(ProductCardPage.Tabs.SPECIFICATION);
         specificationsPage.shouldDataIsCorrect(data);
+    }
+
+    @Test(description = "C3201005 Проверить вкладку Отзывы")
+    public void testReview() throws Exception{
+        String lmCode = "10009260";
+        CatalogReviewsOfProductList reviewsList = catalogProductClient.getProductReviews(lmCode, 1, 100).asJson();
+
+        // Pre-conditions
+        preconditions(lmCode);
+        //TODO verification on descriptionPage
+
+        //Step 1
+        step("Перейти во вкладку \"Отзывы\"");
+        ProductCardPage productCardPage = new ProductCardPage();
+        ReviewsPage reviewsPage = productCardPage.switchTab(ProductCardPage.Tabs.REVIEWS);
+        reviewsPage.shouldReviewsCountIsCorrect(reviewsList);
+        reviewsPage.shouldReviewsAreCorrect(reviewsList);
     }
 }
