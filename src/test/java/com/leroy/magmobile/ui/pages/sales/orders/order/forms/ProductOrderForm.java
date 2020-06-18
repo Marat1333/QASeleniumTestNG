@@ -10,8 +10,6 @@ import com.leroy.magmobile.ui.elements.MagMobWhiteSubmitButton;
 import com.leroy.magmobile.ui.models.sales.OrderAppData;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
-import com.leroy.magmobile.ui.pages.sales.SubmittedSalesDocument35Page;
-import com.leroy.magmobile.ui.pages.sales.orders.order.OrderActionWithProductCardModel;
 import com.leroy.magmobile.ui.pages.sales.widget.ProductOrderCardAppWidget;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.utils.DateTimeUtil;
@@ -130,4 +128,12 @@ public class ProductOrderForm extends BaseAppPage {
     public void scrollToEnd() {
         productCardsScrollView.scrollToEnd();
     }
+
+    // Verifications
+
+    public void shouldAllActiveButtonsAreDisabled() {
+        softAssert.areElementsNotVisible(addProductBtn, nextBtn, saveBtn);
+        softAssert.verifyAll();
+    }
+
 }

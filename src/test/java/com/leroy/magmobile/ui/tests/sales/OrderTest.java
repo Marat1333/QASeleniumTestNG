@@ -801,6 +801,18 @@ public class OrderTest extends SalesBaseTest {
         stepClickSalesDocumentCard(true);
     }
 
+    @Test(description = "C22847243 Отменить подтвержденный заказ")
+    public void testCancelConfirmedOrder() throws Exception {
+        startFromScreenWithConfirmedOrder();
+
+        // Step 1 - 2
+        step("В правом верхнем углу нажмите на кнопку удаления заказа");
+        stepRemoveOrder(true);
+
+        // Step 3
+        step("Нажмите на мини-карточку отмененного документа");
+        stepClickSalesDocumentCard(true);
+    }
 
     //   ============ Шаги тестов =================== //
 
@@ -908,10 +920,39 @@ public class OrderTest extends SalesBaseTest {
      * Удалить заказ, нажав на иконку удаления (мусорка)
      */
     private void stepRemoveOrder(boolean checkThatOrderIsDeleted) {
-        processOrder35Page.clickTrashIcon()
-                .verifyRequiredElements().clickConfirmButton();
-        if (checkThatOrderIsDeleted)
-            new SalesDocumentsPage().shouldSalesDocumentIsNotPresent(salesDocumentData.getNumber());
+        if (confirmedOrderPage != null) {
+            confirmedOrderPage.clickTrashIcon()
+                    .clickConfirmButton();
+            salesDocumentsPage = new SalesDocumentsPage();
+            salesDocumentData.setStatus(SalesDocumentsConst.States.CANCELLED.getUiVal());
+            OrderAppData orderAppData = salesDocumentData.getOrderAppDataList().get(0);
+            orderAppData.setTotalWeight(0.0);
+            int productCountBefore = orderAppData.getProductCount();
+            double totalPriceBefore = orderAppData.getTotalPrice();
+            for (int i = 0; i < orderAppData.getProductCardDataList().size(); i++) {
+                orderAppData.removeProduct(i);
+            }
+            orderAppData.setProductCount(productCountBefore);
+            if (checkThatOrderIsDeleted) {
+                ShortSalesDocumentData expectedSalesDocument = new ShortSalesDocumentData();
+                expectedSalesDocument.setDocumentTotalPrice(totalPriceBefore);
+                expectedSalesDocument.setDocumentState(salesDocumentData.getStatus());
+                expectedSalesDocument.setTitle(salesDocumentData.getTitle());
+                expectedSalesDocument.setNumber(salesDocumentData.getNumber());
+                expectedSalesDocument.setPin("");
+                //expectedSalesDocument.setDate(salesDocumentData.getDate()); - Дата может отличаться на минуту
+                if (SalesDocumentsConst.GiveAwayPoints.DELIVERY.equals(salesDocumentData.getOrderDetailsData().getDeliveryType())) {
+                    expectedSalesDocument.setCustomerName(salesDocumentData.getOrderDetailsData().getCustomer().getName());
+                }
+                salesDocumentsPage.shouldSalesDocumentIsPresentAndDataMatches(expectedSalesDocument, true);
+            }
+            orderAppData.setTotalPrice(0.0);
+        } else {
+            processOrder35Page.clickTrashIcon()
+                    .verifyRequiredElements().clickConfirmButton();
+            if (checkThatOrderIsDeleted)
+                new SalesDocumentsPage().shouldSalesDocumentIsNotPresent(salesDocumentData.getNumber());
+        }
     }
 
     /**
@@ -1069,8 +1110,9 @@ public class OrderTest extends SalesBaseTest {
             confirmedOrderPage = new ConfirmedOrderPage();
         if (verifyProducts) {
             confirmedOrderPage.shouldSalesDocumentDataIs(salesDocumentData);
-
-            String s = ""; // TODO  !!!!!!!!
+            if (SalesDocumentsConst.States.CANCELLED.getUiVal().equals(salesDocumentData.getStatus())) {
+                confirmedOrderPage.shouldAllActiveButtonsAreDisabled();
+            }
         }
     }
 

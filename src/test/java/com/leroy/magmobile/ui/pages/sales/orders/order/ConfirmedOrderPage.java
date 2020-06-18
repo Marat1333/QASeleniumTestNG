@@ -10,6 +10,7 @@ import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.orders.CartOrderEstimatePage;
 import com.leroy.magmobile.ui.pages.sales.orders.order.forms.OrderParamsForm;
 import com.leroy.magmobile.ui.pages.sales.orders.order.forms.ProductOrderForm;
+import com.leroy.magmobile.ui.pages.sales.orders.order.modal.ConfirmRemoveOrderModal;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.utils.DateTimeUtil;
 import com.leroy.utils.ParserUtil;
@@ -19,6 +20,9 @@ import io.qameta.allure.Step;
  * Экран подтвержденного заказа
  */
 public class ConfirmedOrderPage extends CartOrderEstimatePage {
+
+    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='DefaultScreenHeader']//android.view.ViewGroup[@content-desc='Button-icon']")
+    private Element trashIconBtn;
 
     @AppFindBy(xpath = "//*[@content-desc='DefaultScreenHeader']//android.widget.TextView",
             metaName = "Загаловок заказа")
@@ -67,6 +71,12 @@ public class ConfirmedOrderPage extends CartOrderEstimatePage {
 
     // Actions
 
+    @Step("Нажать иконку (мусорка) для удаления заказа")
+    public ConfirmRemoveOrderModal clickTrashIcon() {
+        trashIconBtn.click();
+        return new ConfirmRemoveOrderModal();
+    }
+
     @Step("Нажмите на {index}-ую карточку товара/услуги")
     public OrderActionWithProductCardModel<ConfirmedOrderPage> clickCardByIndex(int index) throws Exception {
         productOrderForm.clickCardByIndex(index);
@@ -99,6 +109,12 @@ public class ConfirmedOrderPage extends CartOrderEstimatePage {
     @Step("Проверить, что поля формы заполнены соответствующим образом")
     public ConfirmedOrderPage shouldFormFieldsAre(OrderDetailsData data) {
         orderParamsForm.shouldFormFieldsAre(data);
+        return this;
+    }
+
+    @Step("Проверить, что документ нельзя отредактировать - нет активных кнопок для добавления товара, кнопки сохранить и т.п.")
+    public ConfirmedOrderPage shouldAllActiveButtonsAreDisabled() {
+        productOrderForm.shouldAllActiveButtonsAreDisabled();
         return this;
     }
 }
