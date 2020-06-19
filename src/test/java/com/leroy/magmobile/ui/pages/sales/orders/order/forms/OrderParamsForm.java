@@ -54,7 +54,8 @@ public class OrderParamsForm extends BaseAppPage {
     @AppFindBy(accessibilityId = "pincode", metaName = "Поле 'PIN-код'")
     EditBox pinCodeFld;
 
-    @AppFindBy(text = "Уже используется, введи другой код", metaName = "Подсказка о том, что данный PIN уже используется")
+    @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.EditText[@content-desc='pincode']]/following-sibling::android.widget.TextView",
+            metaName = "Подсказка/ошибка, указывающая на проблемы ввода PIN кода")
     Element pinErrorTooltip;
 
     @AppFindBy(accessibilityId = "comment", metaName = "Поле 'Комментарий'")
@@ -62,6 +63,11 @@ public class OrderParamsForm extends BaseAppPage {
 
     public boolean waitUntilFormIsVisible() {
         return waitForAnyOneOfElementsIsVisible(pickupBtn, phoneFld, commentFld);
+    }
+
+    private boolean isPinErrorAnyTextVisible() {
+        return E("//android.view.ViewGroup[android.widget.EditText[@content-desc='pincode']]/../following-sibling::android.view.ViewGroup[@index='2']")
+                .isVisible();
     }
 
     // ------- Grab info --------- //
@@ -96,10 +102,16 @@ public class OrderParamsForm extends BaseAppPage {
     // ACTION STEPS
 
     public OrderParamsForm selectDeliveryType(SalesDocumentsConst.GiveAwayPoints type) {
-        if (SalesDocumentsConst.GiveAwayPoints.DELIVERY.equals(type))
+        if (!deliveryBtn.isVisible())
+            mainScrollView.scrollToBeginning();
+        if (SalesDocumentsConst.GiveAwayPoints.DELIVERY.equals(type)) {
             deliveryBtn.click();
-        else
+            deliveryDateFld.waitForVisibility();
+        }
+        else {
             pickupBtn.click();
+            pickupDateFld.waitForVisibility();
+        }
         return this;
     }
 
@@ -121,7 +133,7 @@ public class OrderParamsForm extends BaseAppPage {
             mainScrollView.scrollDownToElement(pinCodeFld);
         pinCodeFld.clearFillAndSubmit(data.getPinCode());
         int iTryCount = 3;
-        while (pinErrorTooltip.isVisible() && tryToFindValidPin && iTryCount > 0) {
+        while (isPinErrorAnyTextVisible() && tryToFindValidPin && iTryCount > 0) {
             Log.debug("Пробуем подобрать валидный PIN. Осталось попыток " + iTryCount);
             iTryCount--;
             data.setPinCode(RandomUtil.randomPinCode(
@@ -129,7 +141,7 @@ public class OrderParamsForm extends BaseAppPage {
             pinCodeFld.clearFillAndSubmit(data.getPinCode());
         }
         if (tryToFindValidPin)
-            anAssert.isFalse(pinErrorTooltip.isVisible(),
+            anAssert.isFalse(isPinErrorAnyTextVisible(),
                     "Не удалось подобрать валидный PIN, по-прежнему отображается ошибка");
         return this;
     }
@@ -163,7 +175,14 @@ public class OrderParamsForm extends BaseAppPage {
                 softAssert.isEquals(DateTimeUtil.strToLocalDate(pickupDateFld.getText(), "dd MMM"),
                         data.getDeliveryDate(), "Неверная ближайшая дата получения");
             }
+        } else if (data.getDeliveryType() != null) {
+            if (SalesDocumentsConst.GiveAwayPoints.DELIVERY.equals(data.getDeliveryType())) {
+                softAssert.isElementVisible(deliveryDateFld);
+            } else {
+                softAssert.isElementVisible(pickupDateFld);
+            }
         }
+
         // Получатель
         if (data.getCustomer() != null || data.getOrgAccount() != null) {
             MagCustomerData expectedCustomer = data.getCustomer() != null ? data.getCustomer() :
@@ -197,8 +216,8 @@ public class OrderParamsForm extends BaseAppPage {
         return this;
     }
 
-    public OrderParamsForm shouldErrorPinCodeTooltipVisible() {
-        anAssert.isTrue(pinErrorTooltip.isVisible(),
+    public OrderParamsForm shouldErrorPinAlreadyExistVisible() {
+        anAssert.isEquals(pinErrorTooltip.getText(), "Уже используется, введи другой код",
                 "Сообщение о том, что пин код уже используется, не отображается");
         return this;
     }

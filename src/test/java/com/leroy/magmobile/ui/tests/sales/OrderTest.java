@@ -220,12 +220,38 @@ public class OrderTest extends SalesBaseTest {
         startFromScreenWithOrderDraft(true);
         ProcessOrder35Page processOrder35Page = new ProcessOrder35Page();
 
-        // Steps 1
+        // Steps 1-2
         step("Введите существующий PIN-код в соответствующее поле");
         OrderDetailsData orderDetailsData = new OrderDetailsData();
         orderDetailsData.setPinCode(existedPickupPinCode);
         processOrder35Page.enterPinCode(orderDetailsData, false);
-        processOrder35Page.shouldErrorPinCodeTooltipVisible();
+        processOrder35Page.shouldErrorPinAlreadyExistVisible();
+
+        // Steps 3-4
+        step("Измените PIN-код для оплаты на валидный");
+        stepEnterPinCode(SalesDocumentsConst.GiveAwayPoints.PICKUP);
+    }
+
+    @Test(description = "C22888112 Смена типа получения товара при заполненном пинкоде в неподтвержденном заказе")
+    public void testChangeDeliveryTypeWhenPINCodeIsFilledInDraftOrder() throws Exception {
+        // Pre-condition
+        if (isStartFromScratch()) {
+            startFromScreenWithOrderDraft(false);
+            stepEnterPinCode(SalesDocumentsConst.GiveAwayPoints.PICKUP);
+        }
+
+        // Steps 1
+        step("В поле Выбери способ получения измените Самовывоз (по умолчанию) на Доставка или наоборот");
+        salesDocumentData.getOrderDetailsData().setPinCode("");
+        stepSelectDeliveryType(SalesDocumentsConst.GiveAwayPoints.DELIVERY, LocalDate.now().plusDays(1));
+
+        // Step 2 - 4
+        step("Введите PIN-код для оплаты");
+        stepEnterPinCode(SalesDocumentsConst.GiveAwayPoints.DELIVERY);
+
+        // Step 5
+        salesDocumentData.getOrderDetailsData().setPinCode("");
+        stepSelectDeliveryType(SalesDocumentsConst.GiveAwayPoints.PICKUP, LocalDate.now());
     }
 
     @Test(description = "C22797114 Подтвердить заказ на самовывоз сегодня")
@@ -890,6 +916,10 @@ public class OrderTest extends SalesBaseTest {
      * Введите PIN-код для оплаты
      */
     private void stepEnterPinCode(SalesDocumentsConst.GiveAwayPoints deliveryType) {
+        if (salesDocumentData == null)
+            salesDocumentData = new SalesDocumentData();
+        if (salesDocumentData.getOrderDetailsData() == null)
+            salesDocumentData.setOrderDetailsData(new OrderDetailsData());
         OrderDetailsData orderDetailsData = salesDocumentData.getOrderDetailsData();
         orderDetailsData.setPinCode(getValidPinCode(SalesDocumentsConst.GiveAwayPoints.PICKUP.equals(deliveryType)));
         processOrder35Page.enterPinCode(orderDetailsData, true);

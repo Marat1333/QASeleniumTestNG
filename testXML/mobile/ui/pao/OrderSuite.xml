@@ -26,11 +26,12 @@
         </classes>
     </test>
 
-    <test name="Подтвердить заказ на самовывоз сегодня + проверка на использование существующего пин кода">
+    <test name="Подтвердить заказ на самовывоз сегодня + проверки на Пин код">
         <classes>
             <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
                 <methods>
                     <include name="testEnterExistedPinCode"/>
+                    <include name="testChangeDeliveryTypeWhenPINCodeIsFilledInDraftOrder"/>
                     <include name="testConfirmOrderAsPickupToday"/>
                 </methods>
             </class>

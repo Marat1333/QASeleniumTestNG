@@ -212,6 +212,10 @@ public class SalesBaseTest extends AppBaseSteps {
             productOrderDataList.add(productOrderData);
         }
         Response<CartData> cartDataResponse = cartClient.sendRequestCreate(productOrderDataList);
+        if (!cartDataResponse.isSuccessful()) {
+            getUserSessionData().setAccessToken(getAccessToken());
+            cartDataResponse = cartClient.sendRequestCreate(productOrderDataList);
+        }
         assertThat(cartDataResponse, successful());
         CartData cartData = cartDataResponse.asJson();
         if (hasDiscount) {

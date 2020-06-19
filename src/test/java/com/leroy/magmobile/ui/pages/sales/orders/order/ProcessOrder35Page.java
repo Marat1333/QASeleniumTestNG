@@ -72,8 +72,8 @@ public class ProcessOrder35Page extends HeaderProcessOrder35Page {
     }
 
     @Step("Проверить, что уведомление о том, что пин код уже используется, отображается")
-    public ProcessOrder35Page shouldErrorPinCodeTooltipVisible() {
-        orderParamsForm.shouldErrorPinCodeTooltipVisible();
+    public ProcessOrder35Page shouldErrorPinAlreadyExistVisible() {
+        orderParamsForm.shouldErrorPinAlreadyExistVisible();
         return this;
     }
 
