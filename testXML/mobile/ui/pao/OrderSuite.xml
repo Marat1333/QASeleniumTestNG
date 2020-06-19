@@ -32,6 +32,7 @@
                 <methods>
                     <include name="testEnterExistedPinCode"/>
                     <include name="testChangeDeliveryTypeWhenPINCodeIsFilledInDraftOrder"/>
+                    <include name="testValidationPinCodeForDifferentDeliveryTypes"/>
                     <include name="testConfirmOrderAsPickupToday"/>
                 </methods>
             </class>

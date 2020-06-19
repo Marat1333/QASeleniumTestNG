@@ -254,6 +254,35 @@ public class OrderTest extends SalesBaseTest {
         stepSelectDeliveryType(SalesDocumentsConst.GiveAwayPoints.PICKUP, LocalDate.now());
     }
 
+    @Test(description = "C22888113 Валидация формата пинкода для разных типов получения товара")
+    public void testValidationPinCodeForDifferentDeliveryTypes() throws Exception {
+        // Pre-condition
+        if (isStartFromScratch()) {
+            startFromScreenWithOrderDraft(false);
+        }
+
+        // Step
+        step("В поле Выбери способ получения нажмите на кнопу Самовывоз (по умолчанию)");
+        stepSelectDeliveryType(SalesDocumentsConst.GiveAwayPoints.PICKUP, null);
+
+        // Step
+        step("Введите PIN-код для оплаты (код начинается с 9)");
+        OrderDetailsData orderDetailsData = new OrderDetailsData();
+        orderDetailsData.setPinCode(getValidPinCode(false));
+        processOrder35Page.enterPinCode(orderDetailsData, false);
+        processOrder35Page.shouldErrorPinVisibleShouldNotStartWith9();
+
+        // Step
+        step("В поле Выбери способ получения нажмите на кнопу Доставка");
+        stepSelectDeliveryType(SalesDocumentsConst.GiveAwayPoints.DELIVERY, null);
+
+        // Step
+        step("Введите PIN-код для оплаты (код начинается не с 9)");
+        orderDetailsData.setPinCode(getValidPinCode(true));
+        processOrder35Page.enterPinCode(orderDetailsData, false);
+        processOrder35Page.shouldErrorPinVisibleShouldStartWith9();
+    }
+
     @Test(description = "C22797114 Подтвердить заказ на самовывоз сегодня")
     public void testConfirmOrderAsPickupToday() throws Exception {
         // Test Data
@@ -263,65 +292,29 @@ public class OrderTest extends SalesBaseTest {
             startFromScreenWithOrderDraft(true);
         }
 
-        ProcessOrder35Page processOrder35Page = new ProcessOrder35Page();
-
         // Steps 1
         step("В поле Выбери способ получения нажмите на кнопу Самовывоз (по умолчанию)");
-        OrderDetailsData orderDetailsData = new OrderDetailsData();
-        orderDetailsData.setDeliveryType(SalesDocumentsConst.GiveAwayPoints.PICKUP);
-        orderDetailsData.setDeliveryDate(LocalDate.now());
-        processOrder35Page.shouldFormFieldsAre(orderDetailsData);
+        stepSelectDeliveryType(SalesDocumentsConst.GiveAwayPoints.PICKUP, LocalDate.now());
 
-        // Step 2
-        step("В поле Имя и Фамилия нажать на иконку клиента");
-        SearchCustomerPage searchCustomerPage = processOrder35Page.clickCustomerIconToSearch()
-                .verifyRequiredElements();
-
-        // Step 3
-        step("Введите номер телефона клиента и выберите нужного клиента");
-        orderDetailsData.setCustomer(customerData);
-        searchCustomerPage.searchCustomerByPhone(customerData.getPhone());
-        processOrder35Page = new ProcessOrder35Page();
-        processOrder35Page.shouldFormFieldsAre(orderDetailsData);
+        // Step 2 - 3
+        step("Найдите клиента по номеру телефона");
+        stepSearchForCustomerAndSelect(SearchCustomerPage.SearchType.BY_PHONE, customerData);
 
         // Step 4, 5, 6
         step("Введите PIN-код для оплаты (код начинается не с 9)");
-        orderDetailsData.setPinCode(getValidPinCode(true));
-        processOrder35Page.enterPinCode(orderDetailsData, true);
-        processOrder35Page.shouldFormFieldsAre(orderDetailsData);
+        stepEnterPinCode(SalesDocumentsConst.GiveAwayPoints.PICKUP);
 
         // Step 7
         step("Нажмите на кнопку Подтвердить заказ");
-        SubmittedSalesDocument35Page submittedDocument35Page = processOrder35Page.clickSubmitButton()
-                .verifyRequiredElements(SalesDocumentsConst.GiveAwayPoints.PICKUP)
-                .shouldPinCodeIs(orderDetailsData.getPinCode());
-        String documentNumber = submittedDocument35Page.getDocumentNumber();
+        stepClickConfirmOrder();
 
         // Step 8
         step("Нажмите на Перейти в список документов");
-        ShortSalesDocumentData documentData = new ShortSalesDocumentData();
-        documentData.setNumber(documentNumber);
-        documentData.setDocumentState(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal());
-        documentData.setTitle(SalesDocumentsConst.GiveAwayPoints.PICKUP.getUiVal());
-        documentData.setPin(orderDetailsData.getPinCode());
-        documentData.setCustomerName(customerData.getName());
-        documentData.setDocumentTotalPrice(salesDocumentData.getOrderAppDataList().get(0).getTotalPrice());
-
-        SalesDocumentsPage salesDocumentsPage = submittedDocument35Page.clickGoToDocumentListButton();
-        salesDocumentsPage.waitUntilDocumentIsInCorrectStatus(documentNumber, documentData.getDocumentState())
-                .shouldSalesDocumentIsPresentAndDataMatches(documentData);
+        stepClickGoToSalesDocumentsList(true);
 
         // Step 9
         step("Нажать на мини-карточку созданного документа Самовывоз");
-        salesDocumentData.setFieldsFrom(documentData);
-        salesDocumentsPage.searchForDocumentByTextAndSelectIt(documentData.getNumber());
-        new ConfirmedOrderPage()
-                .shouldSalesDocumentDataIs(salesDocumentData)
-                .shouldFormFieldsAre(orderDetailsData);
-
-        // Clean up
-        step("(Доп шаг) Отменяем заказ через API запрос");
-        cancelOrder(documentNumber);
+        stepClickSalesDocumentCard(true);
     }
 
     @Test(description = "C22797115 Подтвердить заказ на доставку на завтра")
@@ -883,13 +876,16 @@ public class OrderTest extends SalesBaseTest {
      * В поле Выбери способ получения
      */
     private void stepSelectDeliveryType(SalesDocumentsConst.GiveAwayPoints type, LocalDate deliveryDate) {
-        OrderDetailsData orderDetailsData = salesDocumentData.getOrderDetailsData() == null ? new OrderDetailsData() :
-                salesDocumentData.getOrderDetailsData();
+        if (salesDocumentData == null)
+            salesDocumentData = new SalesDocumentData();
+        OrderDetailsData orderDetailsData = salesDocumentData.getOrderDetailsData() == null ?
+                new OrderDetailsData() : salesDocumentData.getOrderDetailsData();
         orderDetailsData.setDeliveryType(type);
         orderDetailsData.setDeliveryDate(deliveryDate);
         salesDocumentData.setOrderDetailsData(orderDetailsData);
 
-        ProcessOrder35Page processOrder35Page = new ProcessOrder35Page();
+        if (processOrder35Page == null)
+            processOrder35Page = new ProcessOrder35Page();
         processOrder35Page.selectDeliveryType(orderDetailsData.getDeliveryType());
         processOrder35Page.shouldFormFieldsAre(orderDetailsData);
     }
@@ -898,18 +894,42 @@ public class OrderTest extends SalesBaseTest {
      * Найдите и выберите клиента на форме оформления заказа
      */
     private void stepSearchForCustomerAndSelect(
-            SearchCustomerPage.SearchType searchType, MagLegalCustomerData searchCustomer) throws Exception {
+            SearchCustomerPage.SearchType searchType, MagLegalCustomerData searchOrgCustomer, MagCustomerData searchIndCustomer) throws Exception {
         SearchCustomerPage searchCustomerPage = processOrder35Page.clickCustomerIconToSearch()
                 .verifyRequiredElements();
 
+        if (searchIndCustomer != null) {
+            searchIndCustomer.setExistedClient(true);
+            salesDocumentData.getOrderDetailsData().setCustomer(searchIndCustomer);
+        }
+
         switch (searchType) {
             case BY_CONTRACT:
-                searchCustomerPage.searchLegalCustomerByContractNumber(searchCustomer.getContractNumber());
-                salesDocumentData.getOrderDetailsData().setOrgAccount(searchCustomer);
+                searchCustomerPage.searchLegalCustomerByContractNumber(searchOrgCustomer.getContractNumber());
+                salesDocumentData.getOrderDetailsData().setOrgAccount(searchOrgCustomer);
+                break;
+            case BY_PHONE:
+                searchCustomerPage.searchCustomerByPhone(searchIndCustomer.getPhone());
                 break;
         }
         processOrder35Page = new ProcessOrder35Page();
         processOrder35Page.shouldFormFieldsAre(salesDocumentData.getOrderDetailsData());
+    }
+
+    /**
+     * Найдите и выберите клиента на форме оформления заказа
+     */
+    private void stepSearchForCustomerAndSelect(
+            SearchCustomerPage.SearchType searchType, MagLegalCustomerData searchCustomer) throws Exception {
+        stepSearchForCustomerAndSelect(searchType, searchCustomer, null);
+    }
+
+    /**
+     * Найдите и выберите клиента на форме оформления заказа
+     */
+    private void stepSearchForCustomerAndSelect(
+            SearchCustomerPage.SearchType searchType, MagCustomerData searchCustomer) throws Exception {
+        stepSearchForCustomerAndSelect(searchType, null, searchCustomer);
     }
 
     /**
@@ -949,6 +969,8 @@ public class OrderTest extends SalesBaseTest {
             // Для Юр лиц статус "Создан", для физ лиц - "Готов к сборке". Баг или фича?
             if (salesDocumentData.getOrderDetailsData().getOrgAccount() != null)
                 salesDocumentData.setStatus(SalesDocumentsConst.States.CONFIRMED.getUiVal());
+            else
+                salesDocumentData.setStatus(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal());
         }
     }
 
@@ -1225,7 +1247,7 @@ public class OrderTest extends SalesBaseTest {
             //expectedSalesDocument.setDate(salesDocumentData.getDate()); - Дата может отличаться на минуту
             if (salesDocumentData.getOrderDetailsData().getOrgAccount() != null)
                 expectedSalesDocument.setCustomerName(salesDocumentData.getOrderDetailsData().getOrgAccount().getOrgName());
-            else if (SalesDocumentsConst.GiveAwayPoints.DELIVERY.equals(salesDocumentData.getOrderDetailsData().getDeliveryType())) {
+            else if (salesDocumentData.getOrderDetailsData().getCustomer().isExistedClient()) {
                 expectedSalesDocument.setCustomerName(salesDocumentData.getOrderDetailsData().getCustomer().getName());
             }
             salesDocumentsPage.waitUntilDocumentIsInCorrectStatus(salesDocumentData.getNumber(), salesDocumentData.getStatus())

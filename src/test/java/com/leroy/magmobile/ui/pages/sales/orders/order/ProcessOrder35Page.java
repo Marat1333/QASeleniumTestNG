@@ -77,4 +77,16 @@ public class ProcessOrder35Page extends HeaderProcessOrder35Page {
         return this;
     }
 
+    @Step("Проверить, что уведомление о том, что пин код не должен начинаться с 9, отображается")
+    public ProcessOrder35Page shouldErrorPinVisibleShouldNotStartWith9() {
+        orderParamsForm.shouldErrorPinVisibleShouldNotStartWith9();
+        return this;
+    }
+
+    @Step("Проверить, что уведомление о том, что пин код должен начинаться с 9, отображается")
+    public ProcessOrder35Page shouldErrorPinVisibleShouldStartWith9() {
+        orderParamsForm.shouldErrorPinVisibleShouldStartWith9();
+        return this;
+    }
+
 }

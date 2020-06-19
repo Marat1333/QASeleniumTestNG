@@ -221,4 +221,16 @@ public class OrderParamsForm extends BaseAppPage {
                 "Сообщение о том, что пин код уже используется, не отображается");
         return this;
     }
+
+    public OrderParamsForm shouldErrorPinVisibleShouldNotStartWith9() {
+        anAssert.isEquals(pinErrorTooltip.getText(), "Не должен начинаться с 9",
+                "Должно быть видно сообщение о некорректном вводе PIN кода");
+        return this;
+    }
+
+    public OrderParamsForm shouldErrorPinVisibleShouldStartWith9() {
+        anAssert.isEquals(pinErrorTooltip.getText(), "Должен начинаться с 9",
+                "Должно быть видно сообщение о некорректном вводе PIN кода");
+        return this;
+    }
 }
