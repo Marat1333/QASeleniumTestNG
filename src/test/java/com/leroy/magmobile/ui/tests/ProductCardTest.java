@@ -9,12 +9,14 @@ import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
 import com.leroy.magmobile.api.data.catalog.product.CatalogSimilarProducts;
 import com.leroy.magmobile.api.data.catalog.product.SalesHistoryData;
 import com.leroy.magmobile.api.data.catalog.product.reviews.CatalogReviewsOfProductList;
+import com.leroy.magmobile.api.enums.ReviewOptions;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.more.SearchShopPage;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
 import com.leroy.magmobile.ui.pages.sales.ProductCardPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.*;
+import com.leroy.magmobile.ui.pages.sales.product_card.modal.PeriodOfUsageModalPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SalesHistoryUnitsModalPage;
 import com.leroy.magmobile.ui.pages.search.FilterPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
@@ -122,7 +124,7 @@ public class ProductCardTest extends AppBaseSteps {
 
     @Test(description = "C3201004 Проверить вкладку Аналогичные товары")
     public void testSimilarProducts() throws Exception {
-        String lmCode = "10009260";
+        String lmCode = getRandomLmCode();
         CatalogProductClient.Extend extendParam = CatalogProductClient.Extend.builder()
                 .rating(true).logistic(true).inventory(true).build();
         CatalogSimilarProducts data = catalogProductClient.getSimilarProducts(lmCode, extendParam).asJson();
@@ -148,4 +150,35 @@ public class ProductCardTest extends AppBaseSteps {
         similarProductsPage.verifyProductCardsHaveAllGammaView();
         similarProductsPage.shouldCatalogResponseEqualsContent(data, SearchProductPage.CardType.ALL_GAMMA, data.getTotalCount());
     }
+
+    @Test(description = "C3201006 Оставить Отзыв о товаре")
+    public void testLeaveReview() throws Exception{
+        String lmCode = "13443417";
+        String comment = "akdfnadksjfndjskanfkjadsnfkjsandfkjnsajdkfnsakjdfnkjsdanfknsajfdnsajdkfnadskjfnjsanfjsnafdks";
+        String shortComment = "asdafsf";
+
+        // Pre-conditions
+        preconditions(lmCode);
+
+        //Step 1
+        step("Перейти во вкладку \"Отзывы\" и нажать на кнопку \"Оставить отзыв\"");
+        ProductCardPage productCardPage = new ProductCardPage();
+        ReviewsPage reviewsPage = productCardPage.switchTab(ProductCardPage.Tabs.REVIEWS);
+        FirstLeaveReviewPage firstLeaveReviewPage = reviewsPage.leaveReview();
+        firstLeaveReviewPage.makeRates(3, 5, 4);
+        firstLeaveReviewPage.leaveRecommendation();
+        PeriodOfUsageModalPage periodOfUsageModalPage = firstLeaveReviewPage.callPeriodOfUsageModal();
+        periodOfUsageModalPage.chosePeriodOfUsage(ReviewOptions.TIME_USAGE_LESS_YEAR);
+
+        //Step 2
+        step("Перейти на вторую форму отзыва о товаре");
+        SecondLeaveReviewPage secondLeaveReviewPage = firstLeaveReviewPage.goToNextReviewPage();
+        secondLeaveReviewPage.fillAllFields(comment, shortComment, shortComment);
+        SuccessReviewSendingPage successReviewSendingPage = secondLeaveReviewPage.sendReview();
+        successReviewSendingPage.verifyRequiredElements();
+
+        successReviewSendingPage.backToProduct();
+        reviewsPage.verifyRequiredElements();
+    }
+
 }
