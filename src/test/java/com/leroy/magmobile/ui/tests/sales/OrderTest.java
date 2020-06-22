@@ -263,22 +263,22 @@ public class OrderTest extends SalesBaseTest {
             startFromScreenWithOrderDraft(false);
         }
 
-        // Step
+        // Step 1
         step("В поле Выбери способ получения нажмите на кнопу Самовывоз (по умолчанию)");
         stepSelectDeliveryType(SalesDocumentsConst.GiveAwayPoints.PICKUP, null);
 
-        // Step
+        // Step 2
         step("Введите PIN-код для оплаты (код начинается с 9)");
         OrderDetailsData orderDetailsData = new OrderDetailsData();
         orderDetailsData.setPinCode(getValidPinCode(false));
         processOrder35Page.enterPinCode(orderDetailsData, false);
         processOrder35Page.shouldErrorPinVisibleShouldNotStartWith9();
 
-        // Step
+        // Step 3
         step("В поле Выбери способ получения нажмите на кнопу Доставка");
         stepSelectDeliveryType(SalesDocumentsConst.GiveAwayPoints.DELIVERY, null);
 
-        // Step
+        // Step 4
         step("Введите PIN-код для оплаты (код начинается не с 9)");
         orderDetailsData.setPinCode(getValidPinCode(true));
         processOrder35Page.enterPinCode(orderDetailsData, false);
