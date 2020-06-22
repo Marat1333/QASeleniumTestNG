@@ -5,6 +5,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.annotations.Form;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
+import com.leroy.magmobile.ui.models.customer.MagCustomerData;
 import com.leroy.magmobile.ui.models.sales.OrderDetailsData;
 import com.leroy.magmobile.ui.pages.customers.SearchCustomerPage;
 import com.leroy.magmobile.ui.pages.sales.SubmittedSalesDocument35Page;
@@ -60,6 +61,12 @@ public class ProcessOrder35Page extends HeaderProcessOrder35Page {
     @Step("Введите {value} в поле телефон")
     public void enterPhone(String value) {
         orderParamsForm.enterPhone(value);
+    }
+
+    @Step("Заполнить поля 'Получатель'")
+    public ProcessOrder35Page enterCustomerInfo(MagCustomerData data) {
+        orderParamsForm.enterCustomer(data);
+        return this;
     }
 
     @Step("Заполнить поля формы 'Оформление заказа'")

@@ -11,6 +11,7 @@ import com.leroy.magmobile.ui.models.sales.*;
 import com.leroy.magmobile.ui.pages.customers.SearchCustomerPage;
 import com.leroy.magmobile.ui.pages.sales.*;
 import com.leroy.magmobile.ui.pages.sales.orders.cart.Cart35Page;
+import com.leroy.magmobile.ui.pages.sales.orders.estimate.EstimatePage;
 import com.leroy.magmobile.ui.pages.sales.orders.order.CartProcessOrder35Page;
 import com.leroy.magmobile.ui.pages.sales.orders.order.ConfirmedOrderPage;
 import com.leroy.magmobile.ui.pages.sales.orders.order.OrderActionWithProductCardModel;
@@ -614,6 +615,44 @@ public class OrderTest extends SalesBaseTest {
         stepClickSalesDocumentCard(true);
     }
 
+    @Test(description = "C22797122 Создание заказа из корзины, преобразованной из сметы", groups = NEED_PRODUCTS_GROUP)
+    public void testCreateOrderFromTransformedCart() throws Exception {
+        step("Pre-condition: Создаем смету, преобразуем в корзину");
+        String estimateId = apiClientProvider.createConfirmedEstimateAndGetCartId(lmCodes.subList(0, 1));
+        MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
+                MainSalesDocumentsPage.class);
+        SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
+        salesDocumentsPage.searchForDocumentByTextAndSelectIt(estimateId);
+
+        Cart35Page cart35Page = new EstimatePage().clickActionsWithEstimateButton()
+                .clickTransformToBasketMenuItem();
+        salesDocumentData = cart35Page.getSalesDocumentData();
+
+        // Step 1
+        step("Нажмите на кнопку Оформить");
+        processOrder35Page = cart35Page.clickMakeSalesButton();
+
+        // Step 2 - 7
+        step("Введите имя и фамилию нового клиента (физ.лицо), введите номер телефона");
+        stepEnterCustomerInfo(false);
+
+        // Step 8 - 10
+        step("Введите PIN-код для оплаты");
+        stepEnterPinCode(SalesDocumentsConst.GiveAwayPoints.PICKUP);
+
+        // Step 11
+        step("Нажмите на кнопку Подтвердить заказ");
+        stepClickConfirmOrder();
+
+        // Step 12
+        step("Нажмите на Перейти в список документов");
+        stepClickGoToSalesDocumentsList(true);
+
+        // Step 13
+        step("Нажать на мини-карточку созданного документа");
+        stepClickSalesDocumentCard(true);
+    }
+
     @Test(description = "C22808291 Добавить товар в неподтвержденный заказ (количества товара достаточно)",
             groups = NEED_PRODUCTS_GROUP)
     public void testAddProductInNotConfirmedOrderWhenProductHasAvailableStock() throws Exception {
@@ -1035,6 +1074,27 @@ public class OrderTest extends SalesBaseTest {
     private void stepSearchForCustomerAndSelect(
             SearchCustomerPage.SearchType searchType, MagCustomerData searchCustomer) throws Exception {
         stepSearchForCustomerAndSelect(searchType, null, searchCustomer);
+    }
+
+    /**
+     * Заполняем данные получателя
+     */
+    private void stepEnterCustomerInfo(MagCustomerData magCustomerData, boolean checkFields) {
+        if (magCustomerData == null) {
+            magCustomerData = new MagCustomerData();
+            magCustomerData.setName(RandomStringUtils.randomAlphabetic(5));
+            magCustomerData.setPhone(RandomUtil.randomPhoneNumber());
+            if (salesDocumentData.getOrderDetailsData() == null)
+                salesDocumentData.setOrderDetailsData(new OrderDetailsData());
+            salesDocumentData.getOrderDetailsData().setCustomer(magCustomerData);
+        }
+        processOrder35Page.enterCustomerInfo(magCustomerData);
+        if (checkFields)
+            processOrder35Page.shouldFormFieldsAre(salesDocumentData.getOrderDetailsData());
+    }
+
+    private void stepEnterCustomerInfo(boolean checkFields) {
+        stepEnterCustomerInfo(null, checkFields);
     }
 
     /**

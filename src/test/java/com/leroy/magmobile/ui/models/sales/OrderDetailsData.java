@@ -21,6 +21,10 @@ public class OrderDetailsData {
     private String pinCode;
     private String comment;
 
+    public OrderDetailsData() {
+        this.deliveryType = SalesDocumentsConst.GiveAwayPoints.PICKUP;
+    }
+
     public OrderDetailsData setRequiredRandomData() {
         MagCustomerData customerData = new MagCustomerData();
         customerData.setName(String.format("%s %s", RandomStringUtils.randomAlphanumeric(6),

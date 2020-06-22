@@ -136,7 +136,8 @@ public class ConfirmedOrderPage extends CartOrderEstimatePage {
             productCardData.setAvailableTodayQuantity(null);
         } // TODO Из-за рассинхрона данных на тесте идет отличие в доступном количестве
         SalesDocumentData salesDocumentData = getSalesDocumentData();
-        if (expectedDocumentData.getOrderDetailsData().getOrgAccount() != null) {
+        if (expectedDocumentData.getOrderDetailsData() != null &&
+                expectedDocumentData.getOrderDetailsData().getOrgAccount() != null) {
             expectedDocumentData.getOrderDetailsData().setCustomer(
                     expectedDocumentData.getOrderDetailsData().getOrgAccount().getChargePerson());
             expectedDocumentData.getOrderDetailsData().setOrgAccount(null);
