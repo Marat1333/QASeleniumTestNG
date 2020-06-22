@@ -248,6 +248,7 @@ public class SalesBaseTest extends AppBaseSteps {
             }
         }
         CartClient cartClient = apiClientProvider.getCartClient();
+        //getUserSessionData().setAccessToken(getAccessToken());
         Response<CartData> cartDataResponse = cartClient.sendRequestCreate(productOrderDataList);
         assertThat(cartDataResponse, successful());
 
@@ -313,8 +314,8 @@ public class SalesBaseTest extends AppBaseSteps {
         confirmOrderData.setGiveAway(giveAwayData);
 
         Response<OrderData> resp = orderClient.confirmOrder(orderData.getOrderId(), confirmOrderData);
-        if (!resp.isSuccessful())
-            resp = orderClient.confirmOrder(orderData.getOrderId(), confirmOrderData);
+        //if (!resp.isSuccessful())
+        //    resp = orderClient.confirmOrder(orderData.getOrderId(), confirmOrderData);
         orderClient.assertThatIsConfirmed(resp, orderData);
         return orderData.getOrderId();
     }

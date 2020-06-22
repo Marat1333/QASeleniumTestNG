@@ -15,6 +15,8 @@ import com.leroy.utils.DateTimeUtil;
 import com.leroy.utils.ParserUtil;
 import com.leroy.utils.RandomUtil;
 
+import java.time.LocalDate;
+
 public class OrderParamsForm extends BaseAppPage {
 
     @AppFindBy(xpath = AndroidScrollView.TYPICAL_XPATH, metaName = "Основная прокручиваемая область страницы")
@@ -61,6 +63,10 @@ public class OrderParamsForm extends BaseAppPage {
     @AppFindBy(accessibilityId = "comment", metaName = "Поле 'Комментарий'")
     EditBox commentFld;
 
+    @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.EditText[@content-desc='comment']]/../following-sibling::android.view.ViewGroup",
+            metaName = "Иконка рядом с полем Комментарий")
+    Element commentIconBtn;
+
     public boolean waitUntilFormIsVisible() {
         return waitForAnyOneOfElementsIsVisible(pickupBtn, phoneFld, commentFld);
     }
@@ -71,6 +77,14 @@ public class OrderParamsForm extends BaseAppPage {
     }
 
     // ------- Grab info --------- //
+
+    public LocalDate getDeliveryDate() {
+        mainScrollView.scrollToBeginning();
+        String ps = getPageSource();
+        boolean isPickup = !deliveryDateFld.isVisible(ps);
+        String strDeliveryDate = isPickup ? pickupDateFld.getText(ps) : deliveryDateFld.getText(ps);
+        return DateTimeUtil.strToLocalDate(strDeliveryDate, "dd MMM");
+    }
 
     public OrderDetailsData getOrderDetailData() {
         mainScrollView.scrollToBeginning();
@@ -115,8 +129,10 @@ public class OrderParamsForm extends BaseAppPage {
     }
 
     public SearchCustomerPage clickCustomerIconToSearch() {
-        if (!customerIconForSearchBtn.isVisible())
+        if (!customerIconForSearchBtn.isVisible()) {
+            mainScrollView.scrollToBeginning();
             mainScrollView.scrollDownToElement(customerIconForSearchBtn);
+        }
         customerIconForSearchBtn.click();
         return new SearchCustomerPage();
     }
@@ -145,18 +161,31 @@ public class OrderParamsForm extends BaseAppPage {
         return this;
     }
 
+    public void enterComment(String value) {
+        mainScrollView.scrollDownToElement(commentFld);
+        commentFld.clearFillAndSubmit(value);
+        commentIconBtn.click();
+    }
+
+    public void enterCustomer(MagCustomerData customerData) {
+        if (!fullNameFld.isVisible()) {
+            mainScrollView.scrollToBeginning();
+            mainScrollView.scrollDownToElement(fullNameFld);
+        }
+        fullNameFld.clearFillAndSubmit(customerData.getName());
+        mainScrollView.scrollDownToElement(phoneFld);
+        enterPhone(customerData.getPhone());
+        mainScrollView.scrollDownToElement(emailFld);
+        emailFld.clearFillAndSubmit(customerData.getEmail());
+    }
+
     public OrderParamsForm fillInFormFields(OrderDetailsData data) throws Exception {
         if (data.getCustomer() != null) {
             MagCustomerData customerData = data.getCustomer();
-            fullNameFld.clearFillAndSubmit(customerData.getName());
-            mainScrollView.scrollDownToElement(phoneFld);
-            enterPhone(customerData.getPhone());
-            mainScrollView.scrollDownToElement(emailFld);
-            emailFld.clearFillAndSubmit(customerData.getEmail());
+            enterCustomer(customerData);
         }
         enterPinCode(data, true);
-        mainScrollView.scrollDownToElement(commentFld);
-        commentFld.clearFillAndSubmit(data.getComment());
+        enterComment(data.getComment());
         return this;
     }
 

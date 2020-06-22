@@ -21,6 +21,7 @@ import com.leroy.utils.ParserUtil;
 import com.leroy.utils.RandomUtil;
 import io.qameta.allure.Issue;
 import io.qameta.allure.Step;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Test;
@@ -885,6 +886,42 @@ public class OrderTest extends SalesBaseTest {
         stepClickSalesDocumentCard(true);
     }
 
+    @Test(description = "C22847032 Изменить параметры подтвержденного заказа (тип получения, получателя или комментарий)")
+    public void testChangeParametersConfirmedOrder() throws Exception {
+        startFromScreenWithConfirmedOrder();
+
+        // Step 1
+        step("В поле Выбери способ получения измените Самовывоз (по умолчанию) на Доставка или наоборот");
+        stepSelectDeliveryType(SalesDocumentsConst.GiveAwayPoints.DELIVERY, null);
+        salesDocumentData.getOrderAppDataList().get(0).setDate(confirmedOrderPage.getDeliveryDate());
+
+        // Step 2 - 3
+        step("Введите новые данные клиента");
+        MagCustomerData newCustomerData = new MagCustomerData();
+        newCustomerData.setName(RandomStringUtils.randomAlphabetic(5));
+        newCustomerData.setPhone(RandomUtil.randomPhoneNumber());
+        confirmedOrderPage.enterCustomerInfo(newCustomerData);
+        salesDocumentData.getOrderDetailsData().setCustomer(newCustomerData);
+
+        // Steps 4 - 6
+        step("Измените комментарий");
+        String newComment = RandomStringUtils.randomAlphanumeric(10);
+        confirmedOrderPage.enterComment(newComment);
+        salesDocumentData.getOrderDetailsData().setComment(newComment);
+
+        // Step 7
+        step("Нажмите на кнопку Сохранить");
+        stepClickSaveButtonForChangesConfirmedOrder();
+
+        // Step 8
+        step("Нажмите на Перейти в список документов");
+        stepClickGoToSalesDocumentsList(true);
+
+        // Step 9
+        step("Нажмите на мини-карточку оформленного документа");
+        stepClickSalesDocumentCard(true);
+    }
+
     @Test(description = "C22847245 Удалить последний товар из подтвержденного заказа")
     public void testRemoveLastProductFromConfirmedOrder() throws Exception {
         startFromScreenWithConfirmedOrder();
@@ -933,10 +970,15 @@ public class OrderTest extends SalesBaseTest {
         orderDetailsData.setDeliveryDate(deliveryDate);
         salesDocumentData.setOrderDetailsData(orderDetailsData);
 
-        if (processOrder35Page == null)
-            processOrder35Page = new ProcessOrder35Page();
-        processOrder35Page.selectDeliveryType(orderDetailsData.getDeliveryType());
-        processOrder35Page.shouldFormFieldsAre(orderDetailsData);
+        if (confirmedOrderPage != null) {
+            confirmedOrderPage.selectDeliveryType(orderDetailsData.getDeliveryType());
+            confirmedOrderPage.shouldFormFieldsAre(orderDetailsData);
+        } else {
+            if (processOrder35Page == null)
+                processOrder35Page = new ProcessOrder35Page();
+            processOrder35Page.selectDeliveryType(orderDetailsData.getDeliveryType());
+            processOrder35Page.shouldFormFieldsAre(orderDetailsData);
+        }
     }
 
     /**
@@ -944,8 +986,13 @@ public class OrderTest extends SalesBaseTest {
      */
     private void stepSearchForCustomerAndSelect(
             SearchCustomerPage.SearchType searchType, MagLegalCustomerData searchOrgCustomer, MagCustomerData searchIndCustomer) throws Exception {
-        SearchCustomerPage searchCustomerPage = processOrder35Page.clickCustomerIconToSearch()
-                .verifyRequiredElements();
+        SearchCustomerPage searchCustomerPage;
+        if (confirmedOrderPage != null) {
+            searchCustomerPage = confirmedOrderPage.clickCustomerIconToSearch();
+        } else {
+            searchCustomerPage = processOrder35Page.clickCustomerIconToSearch();
+        }
+        searchCustomerPage.verifyRequiredElements();
 
         if (searchIndCustomer != null) {
             searchIndCustomer.setExistedClient(true);
@@ -965,8 +1012,13 @@ public class OrderTest extends SalesBaseTest {
                 searchCustomerPage.searchCustomerByPhone(searchIndCustomer.getPhone());
                 break;
         }
-        processOrder35Page = new ProcessOrder35Page();
-        processOrder35Page.shouldFormFieldsAre(salesDocumentData.getOrderDetailsData());
+        if (confirmedOrderPage != null) {
+            confirmedOrderPage = new ConfirmedOrderPage();
+            confirmedOrderPage.shouldFormFieldsAre(salesDocumentData.getOrderDetailsData());
+        } else {
+            processOrder35Page = new ProcessOrder35Page();
+            processOrder35Page.shouldFormFieldsAre(salesDocumentData.getOrderDetailsData());
+        }
     }
 
     /**
