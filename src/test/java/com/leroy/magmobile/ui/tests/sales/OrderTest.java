@@ -18,6 +18,7 @@ import com.leroy.magmobile.ui.pages.sales.orders.order.ProcessOrder35Page;
 import com.leroy.magmobile.ui.pages.sales.orders.order.modal.ConfirmRemoveOrderModal;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.utils.ParserUtil;
+import com.leroy.utils.RandomUtil;
 import io.qameta.allure.Issue;
 import io.qameta.allure.Step;
 import org.testng.annotations.AfterMethod;
@@ -526,7 +527,7 @@ public class OrderTest extends SalesBaseTest {
         processOrder35Page = cartProcessOrder35Page.clickProcessOrderIcon();
 
         // Steps 4 - 12
-        step("Введите ФИЛ нового клиента, телефон и Введите PIN-код для оплаты");
+        step("Введите ФИО нового клиента, телефон и Введите PIN-код для оплаты");
         OrderDetailsData orderDetailsData = new OrderDetailsData().setRequiredRandomData();
         orderDetailsData.setPinCode(getValidPinCode(true));
         orderDetailsData.setDeliveryType(SalesDocumentsConst.GiveAwayPoints.PICKUP);
@@ -562,6 +563,54 @@ public class OrderTest extends SalesBaseTest {
         // Clean up
         step("(Доп шаг) Отменяем заказ через API запрос");
         cancelOrder(documentNumber);
+    }
+
+    @Test(description = "C22797119 Создать заказ из корзины с авторской сборкой")
+    public void testCreateOrderFromCartWithAuthorAssembly() throws Exception {
+        // Test data
+        MagLegalCustomerData legalCustomerData = TestDataConstants.LEGAL_ENTITY_2;
+        String lmCode = getAnyLmCodeProductWithTopEM(false);
+        startFromScreenWithCreatedCart(Collections.singletonList(lmCode), false);
+
+        Cart35Page cart35Page = new Cart35Page();
+        salesDocumentData = cart35Page.clickChangeByProductLmCode(lmCode)
+                .clickEnoughProductInStore()
+                .getSalesDocumentData();
+
+        // Step 1
+        step("Нажмите на кнопку Оформить");
+        processOrder35Page = cart35Page.clickMakeSalesButton();
+
+        // Step 2
+        step("Нажмите на иконку корзины в поле оформления заказа");
+        stepClickCartIconWhenProcessOrder(true);
+
+        // Step 3
+        step("Нажмите на иконку оформления заказа");
+        processOrder35Page = cartProcessOrder35Page.clickProcessOrderIcon();
+        stepSelectDeliveryType(SalesDocumentsConst.GiveAwayPoints.PICKUP, null);
+
+        // Steps 4 - 5
+        step("Введите ФИО нового клиента, телефон и Введите PIN-код для оплаты");
+        stepSearchForCustomerAndSelect(SearchCustomerPage.SearchType.BY_ORG_CARD, legalCustomerData);
+        String orgPhone = RandomUtil.randomPhoneNumber();
+        processOrder35Page.enterPhone(orgPhone);
+        salesDocumentData.getOrderDetailsData().getOrgAccount().setOrgPhone(orgPhone);
+
+        // Step 6-8
+        stepEnterPinCode(SalesDocumentsConst.GiveAwayPoints.PICKUP);
+
+        // Step 9
+        step("Нажмите на кнопку Подтвердить заказ");
+        stepClickConfirmOrder();
+
+        // Step 10
+        step("Нажмите на Перейти в список документов");
+        stepClickGoToSalesDocumentsList(true);
+
+        // Step 11
+        step("Нажать на мини-карточку созданного документа");
+        stepClickSalesDocumentCard(true);
     }
 
     @Test(description = "C22808291 Добавить товар в неподтвержденный заказ (количества товара достаточно)",
@@ -908,6 +957,10 @@ public class OrderTest extends SalesBaseTest {
                 searchCustomerPage.searchLegalCustomerByContractNumber(searchOrgCustomer.getContractNumber());
                 salesDocumentData.getOrderDetailsData().setOrgAccount(searchOrgCustomer);
                 break;
+            case BY_ORG_CARD:
+                searchCustomerPage.searchLegalCustomerByCardNumber(searchOrgCustomer.getOrgCard());
+                salesDocumentData.getOrderDetailsData().setOrgAccount(searchOrgCustomer);
+                break;
             case BY_PHONE:
                 searchCustomerPage.searchCustomerByPhone(searchIndCustomer.getPhone());
                 break;
@@ -961,6 +1014,8 @@ public class OrderTest extends SalesBaseTest {
             submittedSalesDocument35Page.shouldPinCodeIs(salesDocumentData.getOrderDetailsData().getPinCode());
             if (salesDocumentData.getNumber() != null)
                 submittedSalesDocument35Page.shouldDocumentNumberIs(salesDocumentData.getNumber());
+            else
+                salesDocumentData.setNumber(submittedSalesDocument35Page.getDocumentNumber());
             if (salesDocumentData.getOrderDetailsData().getPinCode() == null)
                 salesDocumentData.getOrderDetailsData().setPinCode(submittedSalesDocument35Page.getDocumentNumber());
 
@@ -1260,7 +1315,8 @@ public class OrderTest extends SalesBaseTest {
      */
     private void stepClickSalesDocumentCard(boolean verifyProducts) {
         // workaround for minor bug - КОСТЫЛЬ!
-        if (salesDocumentData.getOrderDetailsData().getOrgAccount() != null) {
+        if (salesDocumentData.getOrderDetailsData().getOrgAccount() != null &&
+                salesDocumentData.getOrderDetailsData().getOrgAccount().getChargePerson() != null) {
             String name = salesDocumentData.getOrderDetailsData().getOrgAccount().getChargePerson().getName();
             if (name != null && name.equals("Коротких, Александр Абрамович"))
                 salesDocumentData.getOrderDetailsData().getOrgAccount().getChargePerson().setName("Коротких, Александр");

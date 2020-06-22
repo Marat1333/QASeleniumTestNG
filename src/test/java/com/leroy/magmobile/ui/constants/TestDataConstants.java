@@ -28,6 +28,12 @@ public class TestDataConstants extends EnvConstants {
                     .build())
             .build();
 
+    public static final MagLegalCustomerData LEGAL_ENTITY_2 = new MagLegalCustomerData().toBuilder()
+            .orgName("Общество с ограниченной ответственностью \"Энерго-Комплект\"")
+            .orgPhone("+7")
+            .orgCard(getProperty("data.customer.cardNumber.corporate"))
+            .build();
+
     public static final MagCustomerData CUSTOMER_WITH_PROFESSIONAL_CARD = new MagCustomerData().toBuilder()
             .phone("+79160343344")
             .name("Ольга Дядина")

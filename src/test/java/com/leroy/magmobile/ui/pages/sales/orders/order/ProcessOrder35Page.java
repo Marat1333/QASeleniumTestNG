@@ -57,6 +57,11 @@ public class ProcessOrder35Page extends HeaderProcessOrder35Page {
         return this;
     }
 
+    @Step("Введите {value} в поле телефон")
+    public void enterPhone(String value) {
+        orderParamsForm.enterPhone(value);
+    }
+
     @Step("Заполнить поля формы 'Оформление заказа'")
     public ProcessOrder35Page fillInFormFields(OrderDetailsData data) throws Exception {
         orderParamsForm.fillInFormFields(data);

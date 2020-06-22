@@ -16,7 +16,7 @@ import java.util.List;
 public class SearchCustomerPage extends CommonMagMobilePage {
 
     public enum SearchType {
-        BY_PHONE, BY_CARD, BY_EMAIL, BY_CONTRACT;
+        BY_PHONE, BY_CARD, BY_EMAIL, BY_CONTRACT, BY_ORG_CARD;
     }
 
     public enum CustomerType {
@@ -120,11 +120,11 @@ public class SearchCustomerPage extends CommonMagMobilePage {
             case BY_CONTRACT:
                 contractNumberOption.click();
                 break;
+            case BY_ORG_CARD:
+                numberCorpCardOption.click();
+                break;
             case BY_CARD:
-                if (customerCardOptionLbl.isVisible())
-                    customerCardOptionLbl.click();
-                else
-                    numberCorpCardOption.click();
+                customerCardOptionLbl.click();
                 break;
             case BY_EMAIL:
                 emailOptionLbl.click();
@@ -161,6 +161,18 @@ public class SearchCustomerPage extends CommonMagMobilePage {
             selectCustomerType(CustomerType.LEGAL);
         if (value.length() == 9)
             value = value.substring(3);
+        enterTextInSearchField(value);
+        mainScrollView.clickElemByIndex(0);
+        return this;
+    }
+
+    @Step("Найдите Юридическое лицо по номеру договора: {value}")
+    public SearchCustomerPage searchLegalCustomerByCardNumber(String value) throws Exception {
+        if (!contractNumberOption.isVisible())
+            selectCustomerType(CustomerType.LEGAL);
+        selectSearchType(SearchType.BY_ORG_CARD);
+        if (value.length() == 17)
+            value = value.substring(7);
         enterTextInSearchField(value);
         mainScrollView.clickElemByIndex(0);
         return this;

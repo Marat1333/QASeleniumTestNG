@@ -107,8 +107,7 @@ public class OrderParamsForm extends BaseAppPage {
         if (SalesDocumentsConst.GiveAwayPoints.DELIVERY.equals(type)) {
             deliveryBtn.click();
             deliveryDateFld.waitForVisibility();
-        }
-        else {
+        } else {
             pickupBtn.click();
             pickupDateFld.waitForVisibility();
         }
@@ -122,7 +121,7 @@ public class OrderParamsForm extends BaseAppPage {
         return new SearchCustomerPage();
     }
 
-    private void enterPhone(String value) {
+    public void enterPhone(String value) {
         if (value.startsWith("7"))
             value = "7" + value;
         phoneFld.clearFillAndSubmit(value);
@@ -185,8 +184,17 @@ public class OrderParamsForm extends BaseAppPage {
 
         // Получатель
         if (data.getCustomer() != null || data.getOrgAccount() != null) {
-            MagCustomerData expectedCustomer = data.getCustomer() != null ? data.getCustomer() :
-                    data.getOrgAccount().getChargePerson();
+            MagCustomerData expectedCustomer;
+            if (data.getCustomer() != null)
+                expectedCustomer = data.getCustomer();
+            else if (data.getOrgAccount().getChargePerson() != null)
+                expectedCustomer = data.getOrgAccount().getChargePerson();
+            else {
+                expectedCustomer = new MagCustomerData();
+                expectedCustomer.setName(data.getOrgAccount().getOrgName());
+                expectedCustomer.setPhone(data.getOrgAccount().getOrgPhone());
+                expectedCustomer.setEmail("Email (необязательно)");
+            }
             if (expectedCustomer.getName() != null) {
                 if (!fullNameFld.isVisible())
                     mainScrollView.scrollDownToElement(fullNameFld);

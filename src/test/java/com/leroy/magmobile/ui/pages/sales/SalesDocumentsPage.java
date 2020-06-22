@@ -82,7 +82,8 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
                             docNumber));
             actualStatus = cardWidget.collectDataFromPage().getDocumentState();
             iCount++;
-        } while (!actualStatus.equals(expectedStatus) && iCount < 10);
+        } while (!actualStatus.equals(expectedStatus) && iCount < 15);
+        anAssert.isEquals(actualStatus, expectedStatus, "Не смогли дождаться");
         return this;
     }
 

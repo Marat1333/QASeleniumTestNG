@@ -15,6 +15,7 @@ public class MagLegalCustomerData {
     private String orgName;
     private String contractNumber;
     private String orgPhone;
+    private String orgCard;
 
     private MagCustomerData chargePerson;
 
