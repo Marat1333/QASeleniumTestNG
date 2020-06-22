@@ -165,18 +165,34 @@ public class ProductCardTest extends AppBaseSteps {
         ProductCardPage productCardPage = new ProductCardPage();
         ReviewsPage reviewsPage = productCardPage.switchTab(ProductCardPage.Tabs.REVIEWS);
         FirstLeaveReviewPage firstLeaveReviewPage = reviewsPage.leaveReview();
-        firstLeaveReviewPage.makeRates(3, 5, 4);
-        firstLeaveReviewPage.leaveRecommendation();
-        PeriodOfUsageModalPage periodOfUsageModalPage = firstLeaveReviewPage.callPeriodOfUsageModal();
-        periodOfUsageModalPage.chosePeriodOfUsage(ReviewOptions.TIME_USAGE_LESS_YEAR);
+        firstLeaveReviewPage.shouldRatesIsCorrect(FirstLeaveReviewPage.CommonRate.NOT_CHOSEN,
+                FirstLeaveReviewPage.PriceAndQuantityRate.NOT_CHOSEN, FirstLeaveReviewPage.PriceAndQuantityRate.NOT_CHOSEN);
+        firstLeaveReviewPage.shouldPeriodOfUsageIsCorrect(ReviewOptions.DEFAULT);
 
         //Step 2
-        step("Перейти на вторую форму отзыва о товаре");
+        step("Заполнить поля первой формы отзыва");
+        firstLeaveReviewPage.makeRates(3, 5, 4);
+        firstLeaveReviewPage.shouldRatesIsCorrect(FirstLeaveReviewPage.CommonRate.GOOD,
+                FirstLeaveReviewPage.PriceAndQuantityRate.SATISFACTORILY, FirstLeaveReviewPage.PriceAndQuantityRate.PERFECT);
+        PeriodOfUsageModalPage periodOfUsageModalPage = firstLeaveReviewPage.callPeriodOfUsageModal();
+        periodOfUsageModalPage.chosePeriodOfUsage(ReviewOptions.TIME_USAGE_LESS_YEAR);
+        firstLeaveReviewPage.shouldPeriodOfUsageIsCorrect(ReviewOptions.TIME_USAGE_LESS_YEAR);
+
+        //Step 3
+        step("Перейти на вторую форму отзыва о товаре и заполнить комментарий строкой, не превышающей длинну в 40 символов");
         SecondLeaveReviewPage secondLeaveReviewPage = firstLeaveReviewPage.goToNextReviewPage();
+        secondLeaveReviewPage.leaveComment(shortComment);
+        secondLeaveReviewPage.shouldControlIsVisible(shortComment);
+
+        //Step 4
+        step("Перейти на вторую форму отзыва о товаре и заполнить все поля корректно");
         secondLeaveReviewPage.fillAllFields(comment, shortComment, shortComment);
+        secondLeaveReviewPage.shouldControlIsVisible(comment);
         SuccessReviewSendingPage successReviewSendingPage = secondLeaveReviewPage.sendReview();
         successReviewSendingPage.verifyRequiredElements();
 
+        //Step 5
+        step("Вернуться к товару");
         successReviewSendingPage.backToProduct();
         reviewsPage.verifyRequiredElements();
     }

@@ -4,12 +4,16 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
+import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import io.qameta.allure.Step;
 
 public class SecondLeaveReviewPage extends CommonMagMobilePage {
     @AppFindBy(accessibilityId = "comment")
     EditBox commentInput;
+
+    @AppFindBy(xpath = "//android.widget.TextView[contains(@text, 'Введи еще')]")
+    Element commentLengthControlLbl;
 
     @AppFindBy(accessibilityId = "pros")
     EditBox advantagesInput;
@@ -32,7 +36,7 @@ public class SecondLeaveReviewPage extends CommonMagMobilePage {
     }
 
     @Step("Оставить комментарией")
-    private SecondLeaveReviewPage leaveComment(String comment){
+    public SecondLeaveReviewPage leaveComment(String comment){
         commentInput.click();
         commentInput.waitForInvisibility();
         mainScrollView.scrollToBeginning();
@@ -59,5 +63,16 @@ public class SecondLeaveReviewPage extends CommonMagMobilePage {
     public SuccessReviewSendingPage sendReview(){
         sendBtn.click();
         return new SuccessReviewSendingPage();
+    }
+
+    @Step("Проверить, что появился визуальный контроль на длинну комментария")
+    public SecondLeaveReviewPage shouldControlIsVisible(String comment){
+        mainScrollView.scrollToBeginning();
+        if (comment.length()<40){
+            anAssert.isElementTextContains(commentLengthControlLbl, String.valueOf(40-comment.length()));
+        }else {
+            anAssert.isElementNotVisible(commentLengthControlLbl);
+        }
+        return this;
     }
 }
