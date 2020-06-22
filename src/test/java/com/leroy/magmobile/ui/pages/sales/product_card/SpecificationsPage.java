@@ -2,17 +2,21 @@ package com.leroy.magmobile.ui.pages.sales.product_card;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
+import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.api.data.catalog.Characteristic;
 import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
-import com.leroy.magmobile.ui.pages.sales.ProductCardPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.SuppliesPage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class SpecificationsPage extends ProductCardPage {
+    @AppFindBy(text = "Поставщик")
+    Button supplyInfoNavigationBtn;
+
     @AppFindBy(xpath = "//android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup/android.widget.TextView[2]/..")
     ElementList<Element> characteristicPairs;
 
@@ -21,6 +25,11 @@ public class SpecificationsPage extends ProductCardPage {
 
     @AppFindBy(xpath = "//android.widget.ScrollView")
     AndroidScrollView<String> mainScrollView;
+
+    public SuppliesPage goToSupplyInfoPage() {
+        supplyInfoNavigationBtn.click();
+        return new SuppliesPage();
+    }
 
     public SpecificationsPage shouldDataIsCorrect(CatalogProductData data) throws Exception {
         HashMap<String, String> frontCharacteristicsMap = grabCharacteristicsFromPage();

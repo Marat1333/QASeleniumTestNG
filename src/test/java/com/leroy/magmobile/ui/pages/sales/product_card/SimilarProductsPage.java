@@ -2,20 +2,14 @@ package com.leroy.magmobile.ui.pages.sales.product_card;
 
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
 import com.leroy.magmobile.api.data.catalog.product.CatalogSimilarProducts;
 import com.leroy.magmobile.ui.models.search.ProductCardData;
-import com.leroy.magmobile.ui.models.search.ServiceCardData;
-import com.leroy.magmobile.ui.pages.sales.ProductCardPage;
 import com.leroy.magmobile.ui.pages.sales.widget.SearchProductAllGammaCardWidget;
 import com.leroy.magmobile.ui.pages.sales.widget.SearchProductCardWidget;
-import com.leroy.magmobile.ui.pages.sales.widget.SearchServiceCardWidget;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import io.qameta.allure.Step;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 

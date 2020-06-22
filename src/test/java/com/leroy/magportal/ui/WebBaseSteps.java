@@ -41,6 +41,7 @@ public class WebBaseSteps extends MagPortalBaseTest {
         }
         page.waitUntilTitleIs(expectedTitle, 30);
         page.closeNewFeaturesModalWindowIfExist();
+        //До фикса
         page.selectShopInUserProfile(EnvConstants.BASIC_USER_SHOP_ID);
         return page;
     }

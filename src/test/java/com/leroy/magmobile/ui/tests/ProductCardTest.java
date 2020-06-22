@@ -14,10 +14,12 @@ import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.more.SearchShopPage;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
-import com.leroy.magmobile.ui.pages.sales.ProductCardPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.ProductCardPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.ProductPricesQuantitySupplyPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.*;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.PeriodOfUsageModalPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SalesHistoryUnitsModalPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.SuppliesPage;
 import com.leroy.magmobile.ui.pages.search.FilterPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import io.qameta.allure.Step;
@@ -153,7 +155,7 @@ public class ProductCardTest extends AppBaseSteps {
 
     @Test(description = "C3201006 Оставить Отзыв о товаре")
     public void testLeaveReview() throws Exception{
-        String lmCode = "13443417";
+        String lmCode = getRandomLmCode();
         String comment = "akdfnadksjfndjskanfkjadsnfkjsandfkjnsajdkfnsakjdfnkjsdanfknsajfdnsajdkfnadskjfnjsanfjsnafdks";
         String shortComment = "asdafsf";
 
@@ -165,6 +167,7 @@ public class ProductCardTest extends AppBaseSteps {
         ProductCardPage productCardPage = new ProductCardPage();
         ReviewsPage reviewsPage = productCardPage.switchTab(ProductCardPage.Tabs.REVIEWS);
         FirstLeaveReviewPage firstLeaveReviewPage = reviewsPage.leaveReview();
+        firstLeaveReviewPage.shouldLmCodeIsCorrect(lmCode);
         firstLeaveReviewPage.shouldRatesIsCorrect(FirstLeaveReviewPage.CommonRate.NOT_CHOSEN,
                 FirstLeaveReviewPage.PriceAndQuantityRate.NOT_CHOSEN, FirstLeaveReviewPage.PriceAndQuantityRate.NOT_CHOSEN);
         firstLeaveReviewPage.shouldPeriodOfUsageIsCorrect(ReviewOptions.DEFAULT);
@@ -185,7 +188,7 @@ public class ProductCardTest extends AppBaseSteps {
         secondLeaveReviewPage.shouldControlIsVisible(shortComment);
 
         //Step 4
-        step("Перейти на вторую форму отзыва о товаре и заполнить все поля корректно");
+        step("Перейти на вторую форму отзыва о товаре, заполнить все поля корректно и отправить отзыв");
         secondLeaveReviewPage.fillAllFields(comment, shortComment, shortComment);
         secondLeaveReviewPage.shouldControlIsVisible(comment);
         SuccessReviewSendingPage successReviewSendingPage = secondLeaveReviewPage.sendReview();
@@ -195,6 +198,20 @@ public class ProductCardTest extends AppBaseSteps {
         step("Вернуться к товару");
         successReviewSendingPage.backToProduct();
         reviewsPage.verifyRequiredElements();
+    }
+
+    @Test(description = "C23409157 Проверить навигацию и информацию во вкладке \"Поставки\"")
+    public void testSupply() throws Exception{
+        String lmCode = getRandomLmCode();
+
+        // Pre-conditions
+        preconditions(lmCode);
+
+        //Step 1
+        step("Перейти во вкладку \"Отзывы\" и нажать на кнопку \"Оставить отзыв\"");
+        ProductCardPage productCardPage = new ProductCardPage();
+        SpecificationsPage specificationsPage = productCardPage.switchTab(ProductCardPage.Tabs.SPECIFICATION);
+        SuppliesPage suppliesPage = specificationsPage.goToSupplyInfoPage();
     }
 
 }

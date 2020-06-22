@@ -7,7 +7,6 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.api.data.catalog.product.reviews.CatalogReviewsOfProductList;
 import com.leroy.magmobile.api.data.catalog.product.reviews.CatalogReviewsOfProductsData;
 import com.leroy.magmobile.ui.models.product_card.ReviewCardData;
-import com.leroy.magmobile.ui.pages.sales.ProductCardPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.widgets.ReviewWidget;
 import com.leroy.utils.DateTimeUtil;
 import io.qameta.allure.Step;

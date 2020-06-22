@@ -157,7 +157,7 @@ public class FirstLeaveReviewPage extends CommonMagMobilePage {
 
     @Step("Проверить, что лм код подтянулся корректно")
     public FirstLeaveReviewPage shouldLmCodeIsCorrect(String lmCode){
-        anAssert.isElementTextEqual(productLmCodeLbl, ParserUtil.strWithOnlyDigits(lmCode));
+        anAssert.isEquals(ParserUtil.strWithOnlyDigits(productLmCodeLbl.getText()), lmCode, "lmCode");
         return this;
     }
 

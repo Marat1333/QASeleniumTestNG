@@ -1,13 +1,9 @@
-package com.leroy.magmobile.ui.pages.sales;
+package com.leroy.magmobile.ui.pages.sales.product_card;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.ReviewsPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.SimilarProductsPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.SpecificationsPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import io.qameta.allure.Step;
 

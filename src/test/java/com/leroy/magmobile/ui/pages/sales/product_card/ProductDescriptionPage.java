@@ -7,9 +7,8 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.api.data.catalog.product.reviews.CatalogReviewsOfProductList;
 import com.leroy.magmobile.ui.elements.MagMobButton;
-import com.leroy.magmobile.ui.pages.sales.PricesAndQuantityPage;
-import com.leroy.magmobile.ui.pages.sales.ProductCardPage;
 import com.leroy.magmobile.ui.pages.sales.orders.cart.Cart35Page;
+import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.ProductPricesQuantitySupplyPage;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -59,9 +58,9 @@ public class ProductDescriptionPage extends ProductCardPage {
     // Actions
 
     @Step("Перейти на страницу с детализацией цен и запасов")
-    public PricesAndQuantityPage goToPricesAndQuantityPage() {
+    public ProductPricesQuantitySupplyPage goToPricesAndQuantityPage() {
         productPriceGammaCardBtn.click();
-        return new PricesAndQuantityPage();
+        return new ProductPricesQuantitySupplyPage();
     }
 
     @Step("Перейти на страницу с историей продаж")

@@ -13,8 +13,8 @@ import com.leroy.magmobile.api.requests.catalog_search.GetCatalogServicesSearch;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.models.search.FiltersData;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
-import com.leroy.magmobile.ui.pages.sales.PricesAndQuantityPage;
-import com.leroy.magmobile.ui.pages.sales.ProductCardPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.ProductPricesQuantitySupplyPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.ProductCardPage;
 import com.leroy.magmobile.ui.pages.sales.product_and_service.AddServicePage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.SimilarProductsPage;
@@ -493,8 +493,8 @@ public class SearchTest extends AppBaseSteps {
         // Step 4
         step("Вернуться на вкладку \"Описание\" и Нажать на строку \"Цены в магазинах\"");
         productDescriptionCardPage = similarProductsPage.switchTab(ProductCardPage.Tabs.DESCRIPTION);
-        PricesAndQuantityPage pricesAndQuantityPage = productDescriptionCardPage.goToPricesAndQuantityPage();
-        pricesAndQuantityPage.shouldNotSupplyBtnBeDisplayed();
+        ProductPricesQuantitySupplyPage productPricesQuantitySupplyPage = productDescriptionCardPage.goToPricesAndQuantityPage();
+        productPricesQuantitySupplyPage.shouldNotSupplyBtnBeDisplayed();
 
     }
 
