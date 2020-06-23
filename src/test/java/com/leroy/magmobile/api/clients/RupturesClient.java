@@ -63,9 +63,40 @@ public class RupturesClient extends MagMobileClient {
         return execute(req, RuptureProductDataList.class);
     }
 
-    @Step("Get rupture sessions")
-    public Response<ResRuptureSessionDataList> getSessions(RupturesSessionsRequest req) {
+    private RupturesSessionsRequest getSessionsRequest() {
+        RupturesSessionsRequest req = new RupturesSessionsRequest();
+        req.setShopId(userSessionData.getUserShopId());
+        req.setDepartmentId(userSessionData.getUserDepartmentId());
         req.setAppVersion(appVersion);
+        return req;
+    }
+
+    @Step("Get rupture sessions")
+    public Response<ResRuptureSessionDataList> getSessions() {
+        RupturesSessionsRequest req = getSessionsRequest();
+        return execute(req, ResRuptureSessionDataList.class);
+    }
+
+    @Step("Get rupture sessions")
+    public Response<ResRuptureSessionDataList> getSessions(int pageSize) {
+        RupturesSessionsRequest req = getSessionsRequest();
+        req.setPageSize(pageSize);
+        return execute(req, ResRuptureSessionDataList.class);
+    }
+
+    @Step("Get rupture sessions")
+    public Response<ResRuptureSessionDataList> getSessions(int startFrom, int pageSize) {
+        RupturesSessionsRequest req = getSessionsRequest();
+        req.setStartFrom(startFrom);
+        req.setPageSize(pageSize);
+        return execute(req, ResRuptureSessionDataList.class);
+    }
+
+    @Step("Get rupture sessions")
+    public Response<ResRuptureSessionDataList> getSessions(String status, int pageSize) {
+        RupturesSessionsRequest req = getSessionsRequest();
+        req.setStatus(status);
+        req.setPageSize(pageSize);
         return execute(req, ResRuptureSessionDataList.class);
     }
 
