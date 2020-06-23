@@ -1,11 +1,15 @@
 package com.leroy.magmobile.api.tests.ruptures;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.leroy.constants.api.ErrorTextConst;
+import com.leroy.constants.api.StatusCodes;
 import com.leroy.magmobile.api.clients.RupturesClient;
+import com.leroy.magmobile.api.data.CommonErrorResponseData;
 import com.leroy.magmobile.api.data.ruptures.ReqRuptureSessionData;
 import com.leroy.magmobile.api.data.ruptures.ResRuptureSessionData;
 import com.leroy.magmobile.api.data.ruptures.ResRuptureSessionDataList;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductData;
+import com.leroy.magmobile.api.requests.ruptures.RupturesSessionsRequest;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -164,6 +168,35 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
             assertThat(descPrefix + "sessionId", item.getSessionId(), in(ruptureStatuses.keySet()));
             assertThat(descPrefix + "status", item.getStatus(), oneOf(FINISHED_STATUS, ACTIVE_STATUS));
         }
+    }
+
+    @Test(description = "C3285386 GET ruptures sessions without params (check definition validation)")
+    public void testGetRupturesSessionsWithoutParamsCheckValidation() {
+        RupturesClient rupturesClient = rupturesClient();
+        Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(
+                new RupturesSessionsRequest().setAppVersion("1.6.4"));
+        assertThat("Response Code", resp.getStatusCode(), equalTo(StatusCodes.ST_400_BAD_REQ));
+        CommonErrorResponseData errorResp = resp.asJson(CommonErrorResponseData.class);
+        assertThat("error text", errorResp.getError(),
+                equalTo(ErrorTextConst.WRONG_QUERY_DATA));
+        assertThat("validation shopId", errorResp.getValidation().getShopId(),
+                equalTo(ErrorTextConst.REQUIRED));
+        assertThat("validation departmentId", errorResp.getValidation().getDepartmentId(),
+                equalTo(ErrorTextConst.REQUIRED));
+    }
+
+    @Test(description = "C3285387 GET ruptures sessions wrong shop and wrong department")
+    public void testGetRupturesSessionsWrongShopAndWrongDepartment() {
+        RupturesClient rupturesClient = rupturesClient();
+        Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(
+                new RupturesSessionsRequest()
+                        .setAppVersion("1.6.4")
+                        .setDepartmentId(50)
+                        .setShopId(500));
+        isResponseOk(resp);
+        ResRuptureSessionDataList body = resp.asJson();
+        assertThat("items count", body.getItems(), hasSize(0));
+        assertThat("total count", body.getTotalCount(), equalTo(0));
     }
 
 }

@@ -1,7 +1,7 @@
 package com.leroy.magmobile.api.tests.cusomers;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.leroy.constants.StatusCodes;
+import com.leroy.constants.api.StatusCodes;
 import com.leroy.magmobile.api.clients.CustomerClient;
 import com.leroy.magmobile.api.data.customer.CustomerData;
 import com.leroy.magmobile.api.data.customer.CustomerResponseBodyData;

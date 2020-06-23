@@ -63,7 +63,9 @@ public class RupturesClient extends MagMobileClient {
         return execute(req, RuptureProductDataList.class);
     }
 
-    private RupturesSessionsRequest getSessionsRequest() {
+    // ---------- GET /ruptures/sessions ---------------- //
+
+    private RupturesSessionsRequest getSessionsDefaultRequest() {
         RupturesSessionsRequest req = new RupturesSessionsRequest();
         req.setShopId(userSessionData.getUserShopId());
         req.setDepartmentId(userSessionData.getUserDepartmentId());
@@ -72,33 +74,36 @@ public class RupturesClient extends MagMobileClient {
     }
 
     @Step("Get rupture sessions")
+    public Response<ResRuptureSessionDataList> getSessions(RupturesSessionsRequest req) {
+        return execute(req, ResRuptureSessionDataList.class);
+    }
+
     public Response<ResRuptureSessionDataList> getSessions() {
-        RupturesSessionsRequest req = getSessionsRequest();
-        return execute(req, ResRuptureSessionDataList.class);
+        RupturesSessionsRequest req = getSessionsDefaultRequest();
+        return getSessions(req);
     }
 
-    @Step("Get rupture sessions")
     public Response<ResRuptureSessionDataList> getSessions(int pageSize) {
-        RupturesSessionsRequest req = getSessionsRequest();
+        RupturesSessionsRequest req = getSessionsDefaultRequest();
         req.setPageSize(pageSize);
-        return execute(req, ResRuptureSessionDataList.class);
+        return getSessions(req);
     }
 
-    @Step("Get rupture sessions")
     public Response<ResRuptureSessionDataList> getSessions(int startFrom, int pageSize) {
-        RupturesSessionsRequest req = getSessionsRequest();
+        RupturesSessionsRequest req = getSessionsDefaultRequest();
         req.setStartFrom(startFrom);
         req.setPageSize(pageSize);
-        return execute(req, ResRuptureSessionDataList.class);
+        return getSessions(req);
     }
 
-    @Step("Get rupture sessions")
     public Response<ResRuptureSessionDataList> getSessions(String status, int pageSize) {
-        RupturesSessionsRequest req = getSessionsRequest();
+        RupturesSessionsRequest req = getSessionsDefaultRequest();
         req.setStatus(status);
         req.setPageSize(pageSize);
-        return execute(req, ResRuptureSessionDataList.class);
+        return getSessions(req);
     }
+
+    // ---------------------- GET /ruptures/session/groups -------------- //
 
     @Step("Get groups for sessionId={sessionId}")
     public Response<RuptureSessionGroupData> getGroups(int sessionId) {
