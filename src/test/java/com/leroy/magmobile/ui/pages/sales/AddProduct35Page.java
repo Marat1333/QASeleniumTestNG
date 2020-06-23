@@ -4,18 +4,29 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
-import com.leroy.magmobile.ui.models.sales.SalesOrderCardData;
-import com.leroy.magmobile.ui.models.search.ProductCardData;
+import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.sales.basket.Basket35Page;
-import com.leroy.magmobile.ui.pages.sales.estimate.EstimatePage;
+import com.leroy.magmobile.ui.pages.sales.orders.CartOrderEstimatePage;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.Cart35Page;
+import com.leroy.magmobile.ui.pages.sales.orders.estimate.EstimatePage;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
-public class AddProduct35Page extends CommonMagMobilePage {
+public class AddProduct35Page<T extends CartOrderEstimatePage> extends CommonMagMobilePage {
+
+    private Class<T> parentPage;
+
+    public AddProduct35Page(Class<T> type) {
+        super();
+        parentPage = type;
+    }
 
     protected String SCREEN_TITLE_VALUE() {
         return "Добавление товара";
+    }
+
+    protected T newCartOrEstimatePage() throws Exception {
+        return parentPage.getConstructor().newInstance();
     }
 
     @AppFindBy(accessibilityId = "ScreenTitle")
@@ -31,7 +42,7 @@ public class AddProduct35Page extends CommonMagMobilePage {
     private Element barCode;
 
     @AppFindBy(xpath = "//android.widget.TextView[@content-desc='barCode']/following::android.widget.TextView")
-    private Element name;
+    private Element title;
 
     @AppFindBy(text = "Цена")
     private Element priceLbl;
@@ -48,6 +59,12 @@ public class AddProduct35Page extends CommonMagMobilePage {
     @AppFindBy(xpath = "//android.widget.TextView[@text='Торговый зал']/following-sibling::android.widget.TextView[@content-desc='priceUnit']")
     private Element shoppingRoomAvailablePriceUnit;
 
+    @AppFindBy(text = "На складе")
+    private Element inStockLbl;
+
+    @AppFindBy(xpath = "//android.widget.TextView[@text='На складе']/following-sibling::android.widget.TextView[@content-desc='presenceValue']")
+    private Element inStockAvailableQuantity;
+
     // White Bottom Area
 
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ScreenContent']//android.widget.EditText",
@@ -58,9 +75,14 @@ public class AddProduct35Page extends CommonMagMobilePage {
             metaName = "Сумма")
     private Element totalPrice;
 
+    @AppFindBy(xpath = "//android.widget.EditText/following-sibling::android.widget.TextView[contains(@text, 'Доступно для продажи')]",
+            metaName = "Предупреждающее красное сообщение о доступном кол-ве товара")
+    Element availableStockAlertMsgLbl;
+
     public enum SubmitBtnCaptions {
         ADD_TO_BASKET("ДОБАВИТЬ В КОРЗИНУ"),
         ADD_TO_ESTIMATE("ДОБАВИТЬ В СМЕТУ"),
+        ADD_TO_ORDER("ДОБАВИТЬ В ЗАКАЗ"),
         SAVE("СОХРАНИТЬ");
 
         String value;
@@ -84,54 +106,77 @@ public class AddProduct35Page extends CommonMagMobilePage {
         waitUntilProgressBarIsInvisible();
     }
 
-    /**
-     * Получить Цену продукта за единицу товара
-     */
-    public String getPrice() {
-        return price.getText();
-    }
-
     // ----- Grab Data from Page ----------//
 
+    @Step("Получить Цену продукта за единицу товара")
+    public Double getPrice() {
+        return ParserUtil.strToDouble(price.getText());
+    }
+
+    @Step("Получить значение кол-ва товара в торговом зале")
+    public int getAvailableQuantityInShoppingRoom() {
+        return ParserUtil.strToInt(shoppingRoomAvailableQuantity.getText());
+    }
+
+    @Step("Получить значение кол-ва товара на складе")
+    public int getAvailableQuantityInStock() {
+        return ParserUtil.strToInt(inStockAvailableQuantity.getText());
+    }
+
     @Step("Получить информацию со страницы о товаре/услуги/выбранном кол-ве и т.п.")
-    public SalesOrderCardData getOrderRowDataFromPage() {
+    public ProductOrderCardAppData getProductOrderDataFromPage() {
         String ps = getPageSource();
 
         // Карточка товара
-        ProductCardData cardData = new ProductCardData();
-        cardData.setAvailableQuantity(ParserUtil.strToDouble(shoppingRoomAvailableQuantity.getText(ps)));
-        cardData.setPrice(ParserUtil.strToDouble(price.getText(ps)));
-        cardData.setName(name.getText(ps));
-        cardData.setLmCode(ParserUtil.strWithOnlyDigits(lmCode.getText(ps)));
-        cardData.setBarCode(ParserUtil.strWithOnlyDigits(barCode.getText(ps)));
-        cardData.setPriceUnit(shoppingRoomAvailablePriceUnit.getText(ps));
+        ProductOrderCardAppData productData = new ProductOrderCardAppData();
+        //productData.setAvailableTodayQuantity(
+        //        ParserUtil.strToInt(shoppingRoomAvailableQuantity.getText(ps)));
+        productData.setPrice(ParserUtil.strToDouble(price.getText(ps)));
+        productData.setTitle(title.getText(ps));
+        productData.setLmCode(ParserUtil.strWithOnlyDigits(lmCode.getText(ps)));
+        productData.setBarCode(ParserUtil.strWithOnlyDigits(barCode.getText(ps)));
+        productData.setPriceUnit(shoppingRoomAvailablePriceUnit.getText(ps));
 
         // Детали выбора товара (Строка заказа)
-        SalesOrderCardData orderCardData = new SalesOrderCardData();
-        orderCardData.setSelectedQuantity(ParserUtil.strToDouble(editQuantityFld.getText(ps)));
-        orderCardData.setTotalPrice(ParserUtil.strToDouble(totalPrice.getText(ps)));
-        orderCardData.setProductCardData(cardData);
-        return orderCardData;
+        productData.setSelectedQuantity(ParserUtil.strToDouble(editQuantityFld.getText(ps)));
+        productData.setTotalPrice(ParserUtil.strToDouble(totalPrice.getText(ps)));
+        productData.setAvailableTodayQuantity(getAvailableQuantityInShoppingRoom() +
+                getAvailableQuantityInStock());
+        return productData;
     }
 
     // ---------------- Action Steps -------------------------//
 
     @Step("Нажмите на поле количества")
-    public AddProduct35Page clickEditQuantityField() {
+    public AddProduct35Page<T> clickEditQuantityField() {
         editQuantityFld.click();
         return this;
     }
 
     @Step("Введите {text} количества товара")
-    public AddProduct35Page enterQuantityOfProduct(String text) {
+    public AddProduct35Page<T> enterQuantityOfProduct(String text, boolean actionVerification) {
         editQuantityFld.clearFillAndSubmit(text);
+        if (actionVerification) {
+            shouldEditQuantityFieldIs(text);
+            shouldTotalPriceCalculateCorrectly();
+        }
         return this;
     }
 
-    @Step("Нажмите кнопку Добавить в корзину")
-    public Basket35Page clickAddIntoBasketButton() {
+    public AddProduct35Page<T> enterQuantityOfProduct(int value, boolean actionVerification) {
+        return enterQuantityOfProduct(String.valueOf(value), actionVerification);
+    }
+
+    @Step("Нажмите кнопку Добавить в заказ")
+    public T clickAddIntoOrderButton() throws Exception {
         submitBtn.click();
-        return new Basket35Page();
+        return newCartOrEstimatePage();
+    }
+
+    @Step("Нажмите кнопку Добавить в корзину")
+    public Cart35Page clickAddIntoBasketButton() {
+        submitBtn.click();
+        return new Cart35Page();
     }
 
     @Step("Нажмите кнопку Добавить в смету")
@@ -143,7 +188,7 @@ public class AddProduct35Page extends CommonMagMobilePage {
     // ---------------- Verifications ----------------------- //
 
     @Step("Проверить, что страница 'Добавление товара' отображается корректно")
-    public AddProduct35Page verifyRequiredElements(SubmitBtnCaptions caption) {
+    public AddProduct35Page<T> verifyRequiredElements(SubmitBtnCaptions caption) {
         String ps = getPageSource();
         softAssert.isElementTextEqual(screenTitle, SCREEN_TITLE_VALUE(), ps);
         softAssert.isElementVisible(backBtn, ps);
@@ -158,7 +203,7 @@ public class AddProduct35Page extends CommonMagMobilePage {
     }
 
     @Step("Убедиться, что поле для редактирования кол-ва = {text}")
-    public AddProduct35Page shouldEditQuantityFieldIs(String text) {
+    public AddProduct35Page<T> shouldEditQuantityFieldIs(String text) {
         if (!text.contains(","))
             text = text + ",00";
         else if (text.length() - text.indexOf(",") == 2)
@@ -168,12 +213,24 @@ public class AddProduct35Page extends CommonMagMobilePage {
     }
 
     @Step("Убедиться, что итоговая сумма рассчитана корректно на основе цены и введенного кол-ва")
-    public AddProduct35Page shouldTotalPriceCalculateCorrectly() {
-        double _price = ParserUtil.strToDouble(getPrice());
+    public AddProduct35Page<T> shouldTotalPriceCalculateCorrectly() {
+        double _price = getPrice();
         double _quantity = ParserUtil.strToDouble(editQuantityFld.getText());
         String expectedTotalPrice = ParserUtil.prettyDoubleFmt(_price * _quantity);
         anAssert.isEquals(ParserUtil.strWithOnlyDigits(totalPrice.getText()), expectedTotalPrice,
                 "Сумма итого (как цена * кол-во) рассчитана не верно");
+        return this;
+    }
+
+    @Step("Проерить, что предупреждающее сообщение о доступном кол-ве товара отображается")
+    public AddProduct35Page<T> shouldAvailableStockAlertMessageIsVisible() {
+        anAssert.isElementVisible(availableStockAlertMsgLbl);
+        return this;
+    }
+
+    @Step("Проерить, что предупреждающее сообщение о доступном кол-ве товара НЕ отображается")
+    public AddProduct35Page<T> shouldAvailableStockAlertMessageIsNotVisible() {
+        anAssert.isElementNotVisible(availableStockAlertMsgLbl);
         return this;
     }
 

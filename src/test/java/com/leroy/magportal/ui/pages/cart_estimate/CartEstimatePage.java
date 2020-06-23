@@ -23,6 +23,7 @@ import io.qameta.allure.Step;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class CartEstimatePage extends
         LeftDocumentListPage<ShortCartEstimateDocumentCardWidget, ShortSalesDocWebData> {
@@ -346,6 +347,15 @@ public abstract class CartEstimatePage extends
     @Step("Проверить, что тултип ошибки 'Необходимо добавить клиента' отображается")
     public CartEstimatePage shouldErrorTooltipCustomerIsRequiredVisible() {
         anAssert.isElementTextEqual(errorTooltipLbl, "Необходимо добавить клиента");
+        return this;
+    }
+
+    @Step("Проверить, что в документ добавлены товары с ЛМ кодами: {lmCodes}")
+    public CartEstimatePage shouldDocumentHasProducts(List<String> lmCodes) {
+        List<ProductOrderCardWebData> productData = getProductDataList();
+        List<String> actualLmCodes = productData.stream().map(
+                ProductOrderCardWebData::getLmCode).collect(Collectors.toList());
+        anAssert.isEquals(actualLmCodes, lmCodes, "Ожидались другие товары в смете");
         return this;
     }
 

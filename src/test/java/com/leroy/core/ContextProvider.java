@@ -1,6 +1,5 @@
 package com.leroy.core;
 
-import com.leroy.magmobile.ui.Context;
 import org.openqa.selenium.WebDriver;
 
 public class ContextProvider {

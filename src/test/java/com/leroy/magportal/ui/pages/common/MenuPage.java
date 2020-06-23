@@ -5,7 +5,7 @@ import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.pages.BaseWebPage;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.Context;
+import com.leroy.core.Context;
 import com.leroy.magportal.ui.pages.NewFeaturesModalWindow;
 import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
 import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
@@ -56,7 +56,7 @@ public class MenuPage extends MagPortalBasePage {
         menuItem.waitForVisibility();
         anAssert.isTrue(menuItem.isVisible(), "Не удалось найти пункт меню " + expectedMenuItem);
         menuItem.click();
-        return (T) pageClass.getConstructor(Context.class).newInstance(context);
+        return pageClass.getConstructor(Context.class).newInstance(context);
     }
 
     @Step("Подождать появления окна с новыми фичами и закрыть его, если оно появится")

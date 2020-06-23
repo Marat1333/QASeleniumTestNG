@@ -1,14 +1,17 @@
 package com.leroy.magmobile.ui.pages.sales;
 
+import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.Cart35Page;
+import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
 public class SubmittedSalesDocument35Page extends CommonMagMobilePage {
 
-    @AppFindBy(text = "Заказ на самовывоз оформлен,\nтовары зарезервированы")
+    @AppFindBy(containsText = "Заказ на ")
     Element titleMsgLbl;
 
     private static final String orderNumberText = "Номер заказа";
@@ -30,42 +33,75 @@ public class SubmittedSalesDocument35Page extends CommonMagMobilePage {
     Element statusCanBeMonitoringInDocumentListLbl;
 
     @AppFindBy(text = "ПЕРЕЙТИ В СПИСОК ДОКУМЕНТОВ")
-    private MagMobButton submitBtn;
+    private MagMobButton goToDocumentListBtn;
+
+    @AppFindBy(text = "ПЕРЕЙТИ В КОРЗИНУ")
+    private MagMobButton goToCartBtn;
 
     @Override
     public void waitForPageIsLoaded() {
-        submitBtn.waitForVisibility(long_timeout);
+        String desc = "Экран с успешно оформленным заказом не открылся";
+        anAssert.isTrue(titleMsgLbl.waitForVisibility(), desc);
+        anAssert.isTrue(pinCodeLbl.waitForVisibility(), desc);
     }
 
-    public String getDocumentNumber(boolean withoutSpaces) {
-        if (withoutSpaces)
-            return orderNumberVal.getText().replaceAll(" ", "");
-        else
-            return orderNumberVal.getText();
+    public String getDocumentNumber() {
+        return ParserUtil.strWithOnlyDigits(orderNumberVal.getText());
     }
 
     /* ------------------------- ACTION STEPS -------------------------- */
 
     @Step("Нажмите кнопку Перейти в список документов")
-    public SalesDocumentsPage clickSubmitButton() {
-        submitBtn.click();
+    public SalesDocumentsPage clickGoToDocumentListButton() {
+        goToDocumentListBtn.click();
         return new SalesDocumentsPage();
+    }
+
+    @Step("Нажмите кнопку Перейти в корзину")
+    public Cart35Page clickGoToCartButton() {
+        goToCartBtn.click();
+        return new Cart35Page();
     }
 
     /* ---------------------- Verifications -------------------------- */
 
     @Step("Проверить, что страница подтверждения заказа отображается корректно")
-    public SubmittedSalesDocument35Page verifyRequiredElements() {
-        softAssert.areElementsVisible(titleMsgLbl, orderNumberLbl,
-                orderNumberVal, pinCodeLbl, pinCodeVal, offerCustomerToTakeScreenshotLbl,
-                statusCanBeMonitoringInDocumentListLbl, submitBtn);
+    public SubmittedSalesDocument35Page verifyRequiredElements(
+            SalesDocumentsConst.GiveAwayPoints type, boolean isNewOrder, boolean severalOrdersInCart) {
+        String ps = getPageSource();
+        String expectedTitleEnd = isNewOrder ? "оформлен" : "сохранен";
+        String expectedTitle = (SalesDocumentsConst.GiveAwayPoints.PICKUP.equals(type) ?
+                "Заказ на самовывоз " : "Заказ на доставку ") + expectedTitleEnd;
+        softAssert.isElementTextContains(titleMsgLbl, expectedTitle);
+        softAssert.areElementsVisible(ps, orderNumberLbl,
+                orderNumberVal, pinCodeLbl, pinCodeVal, offerCustomerToTakeScreenshotLbl);
+        if (severalOrdersInCart) {
+            softAssert.isElementVisible(goToCartBtn, ps);
+        } else {
+            softAssert.areElementsVisible(ps, statusCanBeMonitoringInDocumentListLbl, goToDocumentListBtn);
+        }
         softAssert.verifyAll();
         return this;
+    }
+
+    public SubmittedSalesDocument35Page verifyRequiredElements(SalesDocumentsConst.GiveAwayPoints type, boolean severalOrdersInCart) {
+        return verifyRequiredElements(type, true, severalOrdersInCart);
+    }
+
+    public SubmittedSalesDocument35Page verifyRequiredElements(SalesDocumentsConst.GiveAwayPoints type) {
+        return verifyRequiredElements(type, true, false);
     }
 
     @Step("Проверить, что Пин-код = {text}")
     public SubmittedSalesDocument35Page shouldPinCodeIs(String text) {
         anAssert.isElementTextEqual(pinCodeVal, text);
+        return this;
+    }
+
+    @Step("Проверить, что номер документа = {text}")
+    public SubmittedSalesDocument35Page shouldDocumentNumberIs(String text) {
+        anAssert.isEquals(ParserUtil.strWithOnlyDigits(orderNumberVal.getText()), text,
+                "Ожидался другой номер заказа");
         return this;
     }
 

@@ -154,6 +154,18 @@ public abstract class BaseCustomAssert {
             verifyAll();
     }
 
+    protected void logAreElementsNotVisible(List<BaseWidget> elements, boolean isSoft, String pageSource) {
+        if (elements.size() == 0)
+            throw new IllegalArgumentException("List should contain at least one element");
+        if (pageSource == null && DriverFactory.isAppProfile())
+            pageSource = elements.get(0).getPageSource();
+        for (BaseWidget elem : elements) {
+            logIsElementNotVisible(elem, pageSource, true);
+        }
+        if (!isSoft)
+            verifyAll();
+    }
+
     protected boolean logIsElementNotVisible(BaseWidget element, String pageSource, boolean isSoft) {
         Assert.assertNotNull(element.getMetaName(), "Element meta name is NULL!");
         boolean elementVisibility = pageSource == null ? element.isVisible() : element.isVisible(pageSource);
@@ -192,7 +204,7 @@ public abstract class BaseCustomAssert {
             String expectedResult = String.format("Элемент '%s' должен содержать часть текста '%s'",
                     element.getMetaName(), expectedText);
             String actualResult = String.format(
-                    "Элемент '%s' имеет текст '%s'", element.getMetaName(), actualText);
+                    "Элемент %s имеет текст: %s. Ожидалось, что он содержит: %s", element.getMetaName(), actualText, expectedText);
             if (!actualText.contains(expectedText)) {
                 addResultsToCurrentStepAndThrowAssertException(actualResult, expectedResult);
             }
@@ -204,7 +216,7 @@ public abstract class BaseCustomAssert {
         }
     }
 
-    protected void logIsElementTextContainsIgnoringCase(String actual, String expected, String desc, boolean isSoft) {
+    protected void logIsContainsIgnoringCase(String actual, String expected, String desc, boolean isSoft) {
         String actualResultText;
         if (desc.contains("%s"))
             actualResultText = String.format(desc, actual);

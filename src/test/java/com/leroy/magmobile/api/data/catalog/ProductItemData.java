@@ -2,8 +2,8 @@ package com.leroy.magmobile.api.data.catalog;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.leroy.magmobile.api.data.catalog.product.PriceInfo;
 import lombok.Data;
-import org.apache.james.mime4j.field.datetime.DateTime;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -19,7 +19,7 @@ public class ProductItemData {
     private String title;
     private String description;
     private String gamma;
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss[.SSS][.S]['Z'][XXX]")
     private ZonedDateTime avsDate;
     private String brand;
     private String priceCategory;
@@ -27,11 +27,11 @@ public class ProductItemData {
     private Boolean top1000;
     private Double availableStock;
     private Boolean topEM;
-    private Integer top;
+    private String top;
     private String supCode;
     private List<String> images;
     private Double price;
-    private String altPrice;
+    private Double altPrice;
     private String altPriceUnit;
     private String priceUnit;
     private String priceCurrency;

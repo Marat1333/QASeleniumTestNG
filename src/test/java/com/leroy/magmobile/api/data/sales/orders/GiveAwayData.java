@@ -1,15 +1,23 @@
 package com.leroy.magmobile.api.data.sales.orders;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Data
 public class GiveAwayData {
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss[.SS]'Z'")
-    private LocalDateTime date;
+
+    private String date;
     private Integer shopId;
     private String point;
+
+    public LocalDateTime getDate() {
+        return LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss[.SSS][.S]'Z'"));
+    }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+    }
 
 }

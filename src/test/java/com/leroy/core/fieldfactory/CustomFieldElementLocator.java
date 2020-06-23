@@ -48,6 +48,7 @@ public class CustomFieldElementLocator {
     }
 
     private By buildBy(By parentBy) {
+        String parentXpath = parentBy == null ? "" : XpathUtil.getXpath(parentBy);
         boolean isApp = DriverFactory.isAppProfile();
         Annotation annotation = isApp ? field.getAnnotation(AppFindBy.class) : field.getAnnotation(WebFindBy.class);
         if (annotation == null)
@@ -66,7 +67,7 @@ public class CustomFieldElementLocator {
             return By.id(id);
         if (!xpath.isEmpty()) {
             if (xpath.startsWith("./")) {
-                return By.xpath(XpathUtil.getXpath(parentBy) + xpath.replaceFirst(".", ""));
+                return By.xpath(parentXpath + xpath.replaceFirst(".", ""));
             }
             return By.xpath(xpath);
         }
@@ -74,24 +75,24 @@ public class CustomFieldElementLocator {
             if (field.getType().equals(MagMobGreenSubmitButton.class) ||
                     field.getType().equals(MagMobWhiteSubmitButton.class) ||
                     field.getType().equals(MagMobButton.class))
-                return By.xpath("//android.view.ViewGroup[android.widget.TextView[@text='" + text + "']]");
+                return By.xpath(parentXpath + "//android.view.ViewGroup[android.widget.TextView[@text='" + text + "']]");
             if (isApp)
-                return By.xpath("//*[@text='" + text + "']");
+                return By.xpath(parentXpath + "//*[@text='" + text + "']");
             else
-                return By.xpath("//*[text()='" + text + "']");
+                return By.xpath(parentXpath + "//*[text()='" + text + "']");
         }
         if (!containsText.isEmpty()) {
             if (field.getType().equals(MagMobGreenSubmitButton.class) ||
                     field.getType().equals(MagMobWhiteSubmitButton.class) ||
                     field.getType().equals(MagMobButton.class))
-                return By.xpath("//android.view.ViewGroup[android.widget.TextView[contains(@text, '" + containsText + "')]]");
+                return By.xpath(parentXpath + "//android.view.ViewGroup[android.widget.TextView[contains(@text, '" + containsText + "')]]");
             if (isApp)
-                return By.xpath("//*[contains(@text, '" + containsText + "')]");
+                return By.xpath(parentXpath + "//*[contains(@text, '" + containsText + "')]");
             else
-                return By.xpath("//*[contains(text(), '" + containsText + "')]");
+                return By.xpath(parentXpath + "//*[contains(text(), '" + containsText + "')]");
         }
         if (!followingTextAfter.isEmpty()) {
-            return By.xpath("//android.widget.TextView[@text='" + followingTextAfter + "']/following-sibling::android.widget.TextView");
+            return By.xpath(parentXpath + "//android.widget.TextView[@text='" + followingTextAfter + "']/following-sibling::android.widget.TextView");
         }
         if (isApp)
             return null;

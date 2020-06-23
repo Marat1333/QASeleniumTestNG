@@ -3,12 +3,13 @@ package com.leroy.magmobile.ui.pages.sales.widget;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.models.sales.ShortSalesDocumentData;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
-import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
+import com.leroy.utils.DateTimeUtil;
 import com.leroy.utils.ParserUtil;
 import org.openqa.selenium.WebDriver;
 
-public class SalesDocumentWidget extends CardWidget<SalesDocumentData> {
+public class SalesDocumentWidget extends CardWidget<ShortSalesDocumentData> {
 
     public SalesDocumentWidget(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
@@ -31,6 +32,9 @@ public class SalesDocumentWidget extends CardWidget<SalesDocumentData> {
 
     @AppFindBy(xpath = ".//android.widget.TextView[4 and starts-with(@text, 'PIN')]")
     private Element pin;
+
+    @AppFindBy(xpath = ".//android.widget.TextView[contains(@text, 'Клиент:') or contains(@text, 'Юр. лицо:')]")
+    private Element customerName;
 
     @AppFindBy(xpath = ".//android.view.ViewGroup[count(android.widget.TextView) > 1][2]/android.widget.TextView[1]")
     private Element date;
@@ -58,17 +62,26 @@ public class SalesDocumentWidget extends CardWidget<SalesDocumentData> {
             return ParserUtil.strWithOnlyDigits(sDocNumber);
     }
 
+    public String getCustomerName(String pageSource) {
+        String name = customerName.getTextIfPresent(pageSource);
+        if (name == null)
+            return null;
+        else
+            return name.replaceAll("Клиент:", "").replaceAll("Юр. лицо:", "").trim();
+    }
+
     @Override
-    public SalesDocumentData collectDataFromPage(String pageSource) {
+    public ShortSalesDocumentData collectDataFromPage(String pageSource) {
         if (pageSource == null)
             pageSource = getPageSource();
-        SalesDocumentData document = new SalesDocumentData();
+        ShortSalesDocumentData document = new ShortSalesDocumentData();
         document.setTitle(title.getText(pageSource));
-        document.setPrice(price.getText(pageSource).replaceAll("₽|\\s", ""));
+        document.setDocumentTotalPrice(ParserUtil.strToDouble(price.getText(pageSource)));
         document.setNumber(getDocNumber(true, pageSource));
         document.setPin(getPinCode(true, pageSource));
-        document.setDate(date.getText(pageSource));
+        document.setDate((DateTimeUtil.strToLocalDateTime(date.getText(pageSource), "dd MMM, H:mm")));
         document.setDocumentState(documentType.getTextIfPresent(pageSource));
+        document.setCustomerName(getCustomerName(pageSource));
         return document;
     }
 

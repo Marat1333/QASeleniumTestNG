@@ -80,7 +80,7 @@ public class EstimateTest extends WebBaseSteps {
         // Step 2
         step("Введите ЛМ товара в поле 'Добавление товара' и нажмите Enter");
         estimatePage.enterTextInSearchProductField(testProductLmCode);
-        estimatePage.shouldEstimateHasProducts(Collections.singletonList(testProductLmCode));
+        estimatePage.shouldDocumentHasProducts(Collections.singletonList(testProductLmCode));
         SalesDocWebData estimateData = estimatePage.getSalesDocData();
         anAssert().isFalse(estimateData.getNumber().isEmpty(),
                 "Номер сметы отсутствует");
@@ -583,7 +583,7 @@ public class EstimateTest extends WebBaseSteps {
         // Step 1
         step("Введите ЛМ товара в поле 'Добавление товара' и нажмите Enter");
         estimatePage.enterTextInSearchProductField(testProductLmCode);
-        estimatePage.shouldEstimateHasProducts(Collections.singletonList(testProductLmCode))
+        estimatePage.shouldDocumentHasProducts(Collections.singletonList(testProductLmCode))
                 .shouldErrorTooltipCustomerIsRequiredVisible();
 
         // Step 2

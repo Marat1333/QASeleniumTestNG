@@ -4,7 +4,6 @@ import com.leroy.constants.Fonts;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.util.ImageUtil;
-import com.leroy.core.util.XpathUtil;
 import io.appium.java_client.MobileElement;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
@@ -68,11 +67,8 @@ public class Element extends BaseWidget {
     public String getXpath() {
         if (locator == null)
             return getAbsoluteXPath();
-        else if (locator.getAccessibilityId() != null && !locator.getAccessibilityId().isEmpty()) {
-            return XpathUtil.getXpathByAccessibilityId(locator.getAccessibilityId());
-        } else {
+        else
             return super.getXpath();
-        }
     }
 
     /**
@@ -189,7 +185,7 @@ public class Element extends BaseWidget {
         }
     }
 
-    private void waitForClickability(int timeout, int attempt) {
+    protected void waitForClickability(int timeout, int attempt) {
         initialWebElementIfNeeded();
         try {
             new WebDriverWait(this.driver, timeout).until(
@@ -584,20 +580,22 @@ public class Element extends BaseWidget {
         return !oldText.equals(getText());
     }
 
-    public void waitUntilTextIsEqualTo(String referenceText, int timeout) {
+    public boolean waitUntilTextIsEqualTo(String referenceText, int timeout) {
         WebDriverWait wait = new WebDriverWait(this.driver, timeout);
         try {
             wait.until((ExpectedCondition<Boolean>) driverObject -> this.isVisible() &&
                     this.getText().equals(referenceText));
+            return true;
         } catch (TimeoutException e) {
             Log.warn(String.format(
                     "Method: waitUntilTextIsEqualTo() - Text isn't equal to '%s' (tried for %d second(s))",
                     referenceText, timeout));
         }
+        return false;
     }
 
-    public void waitUntilTextIsEqualTo(String referenceText) {
-        waitUntilTextIsEqualTo(referenceText, short_timeout);
+    public boolean waitUntilTextIsEqualTo(String referenceText) {
+        return waitUntilTextIsEqualTo(referenceText, short_timeout);
     }
 
     public void waitUntilTextContains(String referenceText, int timeout) {
@@ -870,7 +868,8 @@ public class Element extends BaseWidget {
 
     /**
      * Wait until attribute is equal to specific value
-     * @param attributeName - what is attribute
+     *
+     * @param attributeName  - what is attribute
      * @param attributeValue - what value should be
      */
     public void waitUntilAttributeIsEqual(String attributeName, String attributeValue) {

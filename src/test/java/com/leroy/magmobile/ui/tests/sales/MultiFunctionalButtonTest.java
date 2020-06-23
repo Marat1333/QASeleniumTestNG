@@ -1,12 +1,12 @@
 package com.leroy.magmobile.ui.tests.sales;
 
-import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.ui.models.sales.OrderDetailsData;
-import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
+import com.leroy.magmobile.ui.models.sales.ShortSalesDocumentData;
 import com.leroy.magmobile.ui.models.search.ProductCardData;
 import com.leroy.magmobile.ui.pages.sales.*;
-import com.leroy.magmobile.ui.pages.sales.basket.*;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.*;
+import com.leroy.magmobile.ui.pages.sales.orders.order.ProcessOrder35Page;
 import com.leroy.magmobile.ui.pages.sales.product_and_service.AddServicePage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.*;
@@ -15,21 +15,12 @@ import com.leroy.magmobile.ui.pages.work.OrderPage;
 import com.leroy.magmobile.ui.pages.work.StockProductCardPage;
 import com.leroy.magmobile.ui.pages.work.StockProductsPage;
 import com.leroy.magmobile.ui.pages.work.modal.QuantityProductsForWithdrawalModalPage;
-import com.leroy.utils.ParserUtil;
 import org.apache.commons.lang.RandomStringUtils;
-import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Test;
 
 import java.util.Random;
 
 public class MultiFunctionalButtonTest extends SalesBaseTest {
-
-    private final String OLD_SHOP_GROUP = "old_shop";
-
-    @BeforeGroups(OLD_SHOP_GROUP)
-    public void setSessionDataForOldShop() {
-        getUserSessionData().setUserShopId(EnvConstants.SHOP_WITH_OLD_INTERFACE);
-    }
 
     @Test(description = "C3201023 Создание документа продажи", groups = OLD_SHOP_GROUP)
     public void testC3201023() throws Exception {
@@ -80,20 +71,20 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
 
         // Step #5
         step("Нажмите на кнопку Добавить в документ продажи.");
-        BasketStep1Page basketStep1Page = addServicePage.clickAddIntoDocumentSalesButton()
+        CartStep1Page basketStep1Page = addServicePage.clickAddIntoDocumentSalesButton()
                 .verifyRequiredElements();
         String documentNumber = basketStep1Page.getDocumentNumber();
 
         // Step #6
         step("Нажмите Далее к параметрам");
-        BasketStep2Page basketStep2Page = basketStep1Page.clickNextParametersButton()
+        CartStep2Page basketStep2Page = basketStep1Page.clickNextParametersButton()
                 .verifyRequiredElements()
                 .shouldFieldsHaveDefaultValues();
 
         // Step #7
         step("Нажмите на кнопку Создать документ продажи");
-        String testPinCode = getValidPinCode();
-        BasketStep3Page basketStep3Page = basketStep2Page.clickCreateSalesDocumentButton()
+        String testPinCode = getValidPinCode(true);
+        CartStep3Page basketStep3Page = basketStep2Page.clickCreateSalesDocumentButton()
                 .verifyRequiredElements();
 
         // Step #8
@@ -135,7 +126,7 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
 
         // Step #6
         step("Нажмите Добавить");
-        BasketStep1Page basketStep1Page = addProductPage.clickAddButton();
+        CartStep1Page basketStep1Page = addProductPage.clickAddButton();
         basketStep1Page.verifyRequiredElements()
                 .shouldDocumentNumberIs(documentNumber)
                 .shouldLmCodeOfProductIs(lmCode);
@@ -214,45 +205,46 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
 
         // Step #5
         step("Нажмите Корзина");
-        AddProduct35Page addProduct35Page = modalPage.clickBasketMenuItem();
+        AddProduct35Page<Cart35Page> addProduct35Page = modalPage.clickBasketMenuItem();
         addProduct35Page.verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_BASKET);
-        String expectedTotalPrice = ParserUtil.strWithOnlyDigits(addProduct35Page.getPrice());
+        Double expectedTotalPrice = addProduct35Page.getPrice();
 
         // Step #6
         step("Нажмите Добавить в корзину");
-        Basket35Page basket35Page = addProduct35Page.clickAddIntoBasketButton()
-                .verifyRequiredElements(new Basket35Page.PageState().setProductIsAdded(true));
+        Cart35Page cart35Page = addProduct35Page.clickAddIntoBasketButton()
+                .verifyRequiredElements(Cart35Page.PageState.builder()
+                        .productIsAdded(true)
+                        .build());
 
         // Step #7
         step("Нажмите Оформить");
-        ProcessOrder35Page processOrder35Page = basket35Page.clickMakeSalesButton()
-                .verifyRequiredElements();
+        ProcessOrder35Page processOrder35Page = cart35Page.clickMakeSalesButton();
 
         // Step #8
         step("Заполните поля Имя и Фамилия, Телефон, PIN-код для оплаты");
         OrderDetailsData orderDetailsData = new OrderDetailsData().setRequiredRandomData();
-        orderDetailsData.setPinCode(getValidPinCode());
-        orderDetailsData.setDeliveryType(OrderDetailsData.DeliveryType.PICKUP);
+        orderDetailsData.setPinCode(getValidPinCode(true));
+        orderDetailsData.setDeliveryType(SalesDocumentsConst.GiveAwayPoints.PICKUP);
         processOrder35Page.fillInFormFields(orderDetailsData)
                 .shouldFormFieldsAre(orderDetailsData);
 
         // Step #9
         step("Нажмите на кнопку Подтвердить заказ");
         SubmittedSalesDocument35Page submittedDocument35Page = processOrder35Page.clickSubmitButton()
-                .verifyRequiredElements()
+                .verifyRequiredElements(SalesDocumentsConst.GiveAwayPoints.PICKUP)
                 .shouldPinCodeIs(orderDetailsData.getPinCode());
-        String documentNumber = submittedDocument35Page.getDocumentNumber(true);
+        String documentNumber = submittedDocument35Page.getDocumentNumber();
 
         // Step #10
         step("Нажмите на кнопку Перейти в список документов");
-        SalesDocumentData expectedSalesDocument = new SalesDocumentData();
-        expectedSalesDocument.setPrice(expectedTotalPrice);
+        ShortSalesDocumentData expectedSalesDocument = new ShortSalesDocumentData();
+        expectedSalesDocument.setDocumentTotalPrice(expectedTotalPrice);
 
         expectedSalesDocument.setDocumentState(SalesDocumentsConst.States.IN_PROGRESS.getUiVal());
-        expectedSalesDocument.setTitle(orderDetailsData.getDeliveryType().getValue());
+        expectedSalesDocument.setTitle(orderDetailsData.getDeliveryType().getUiVal());
         expectedSalesDocument.setNumber(documentNumber);
         SalesDocumentsPage salesDocumentsPage = submittedDocument35Page
-                .clickSubmitButton()
+                .clickGoToDocumentListButton()
                 .shouldSalesDocumentIsPresentAndDataMatches(expectedSalesDocument);
 
         // Additional Step
@@ -340,25 +332,25 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
 
             // Step #5
             step("Нажмите Добавить");
-            BasketStep1Page basketStep1Page = addProductPage.clickAddButton()
+            CartStep1Page basketStep1Page = addProductPage.clickAddButton()
                     .verifyRequiredElements();
-            basketStep1Page.shouldDocumentTypeIs(BasketPage.Constants.DRAFT_DOCUMENT_TYPE);
+            basketStep1Page.shouldDocumentTypeIs(CartPage.Constants.DRAFT_DOCUMENT_TYPE);
             String documentNumber = basketStep1Page.getDocumentNumber();
 
             // Step #6
             step("Нажмите Далее к параметрам");
-            BasketStep2Page basketStep2Page = basketStep1Page.clickNextParametersButton()
+            CartStep2Page basketStep2Page = basketStep1Page.clickNextParametersButton()
                     .verifyRequiredElements()
                     .shouldFieldsHaveDefaultValues();
 
             // Step #7
             step("Нажмите кнопку Создать документ продажи");
-            BasketStep3Page basketStep3Page = basketStep2Page.clickCreateSalesDocumentButton()
+            CartStep3Page basketStep3Page = basketStep2Page.clickCreateSalesDocumentButton()
                     .verifyRequiredElements();
 
             // Step #8
             step("Введите пятизначный PIN-код, не использованный ранее");
-            String testPinCode = getValidPinCode();
+            String testPinCode = getValidPinCode(true);
             basketStep3Page.enterPinCode(testPinCode)
                     .shouldPinCodeFieldIs(testPinCode)
                     .shouldSubmitButtonIsActive();

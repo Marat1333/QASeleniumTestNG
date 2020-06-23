@@ -74,8 +74,8 @@ public class EstimatePage extends CartEstimatePage {
 
     @Override
     public void waitForPageIsLoaded() {
+        super.waitForPageIsLoaded();
         anAssert.isElementVisible(headerLbl, timeout);
-        waitForSpinnerDisappear();
     }
 
     // Follow URLs
@@ -233,17 +233,6 @@ public class EstimatePage extends CartEstimatePage {
             throw new IllegalArgumentException("Неизвестное состояние страницы сметы");
         }
         softAssert.verifyAll();
-        return this;
-    }
-
-    @Step("Проверить, что в Смете добавлены товары с ЛМ кодами: {lmCodes}")
-    public EstimatePage shouldEstimateHasProducts(List<String> lmCodes) throws Exception {
-        List<String> actualLmCodes = new ArrayList<>();
-        for (OrderPuzWidget orderWidget : orders()) {
-            for (ProductOrderCardPuzWidget productWidget : orderWidget.getProductWidgets())
-                actualLmCodes.add(productWidget.getLmCode());
-        }
-        anAssert.isEquals(actualLmCodes, lmCodes, "Ожидались другие товары в смете");
         return this;
     }
 

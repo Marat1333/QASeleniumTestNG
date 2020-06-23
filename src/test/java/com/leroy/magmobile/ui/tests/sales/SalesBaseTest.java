@@ -2,55 +2,105 @@ package com.leroy.magmobile.ui.tests.sales;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.EnvConstants;
+import com.leroy.constants.StatusCodes;
+import com.leroy.constants.customer.CustomerConst;
+import com.leroy.constants.sales.DiscountConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.api.Module;
 import com.leroy.core.configuration.Log;
+import com.leroy.magmobile.api.clients.CartClient;
 import com.leroy.magmobile.api.clients.OrderClient;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
+import com.leroy.magmobile.api.data.customer.PhoneData;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountReasonData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
+import com.leroy.magmobile.api.data.sales.orders.*;
 import com.leroy.magmobile.ui.AppBaseSteps;
-import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
+import com.leroy.magmobile.ui.constants.TestDataConstants;
+import com.leroy.magmobile.ui.models.customer.MagCustomerData;
+import com.leroy.magmobile.ui.models.sales.ShortSalesDocumentData;
 import com.leroy.magmobile.ui.pages.sales.AddProductPage;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
+import com.leroy.magmobile.ui.pages.sales.SalesDocumentsPage;
 import com.leroy.magmobile.ui.pages.sales.SubmittedSalesDocumentPage;
-import com.leroy.magmobile.ui.pages.sales.basket.BasketPage;
-import com.leroy.magmobile.ui.pages.sales.basket.BasketStep1Page;
-import com.leroy.magmobile.ui.pages.sales.basket.BasketStep2Page;
-import com.leroy.magmobile.ui.pages.sales.basket.BasketStep3Page;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.*;
+import com.leroy.magmobile.ui.pages.sales.product_card.modal.SaleTypeModalPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
-import org.apache.commons.lang.RandomStringUtils;
-import org.testng.annotations.BeforeGroups;
+import com.leroy.utils.ParserUtil;
+import com.leroy.utils.RandomUtil;
+import io.qameta.allure.Step;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
+import static com.leroy.constants.sales.DiscountConst.TYPE_NEW_PRICE;
 import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @Guice(modules = {Module.class})
 public class SalesBaseTest extends AppBaseSteps {
 
-    protected final String OLD_SHOP_GROUP = "old_shop";
-    protected final static String NEED_ACCESS_TOKEN_GROUP = "need_access_token";
-
-    @BeforeGroups(OLD_SHOP_GROUP)
-    protected void setSessionDataForOldShop() {
-        getUserSessionData().setUserShopId(EnvConstants.SHOP_WITH_OLD_INTERFACE);
+    // СТАРТ ТЕСТА С ЭКРАНА КОРЗИНЫ:
+    @Step("Pre-condition: Начать тест с экрана пустой корзины")
+    protected void startFromScreenWithEmptyCart() throws Exception {
+        if (!Cart35Page.isThisPage()) {
+            MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
+                    MainSalesDocumentsPage.class);
+            SaleTypeModalPage modalPage = mainSalesDocumentsPage.clickCreateSalesDocumentButton();
+            modalPage.clickBasketMenuItem();
+        }
     }
 
-    @BeforeGroups(NEED_ACCESS_TOKEN_GROUP)
-    protected void addAccessTokenToSessionData() {
-        getUserSessionData().setAccessToken(getAccessToken());
+    protected void startFromScreenWithCreatedCart() throws Exception {
+        startFromScreenWithCreatedCart(null, false);
     }
+
+    protected void startFromScreenWithCreatedCart(boolean hasDiscount) throws Exception {
+        startFromScreenWithCreatedCart(null, hasDiscount);
+    }
+
+    @Step("Pre-condition: Создание корзины")
+    protected void startFromScreenWithCreatedCart(List<String> lmCodes, boolean hasDiscount) throws Exception {
+        if (!Cart35Page.isThisPage()) {
+            String cartDocNumber = createDraftCart(lmCodes, hasDiscount);
+            MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
+                    MainSalesDocumentsPage.class);
+            SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
+            salesDocumentsPage.searchForDocumentByTextAndSelectIt(
+                    cartDocNumber);
+        }
+    }
+
+    @Step("Pre-condition: Создание корзины")
+    protected void startFromScreenWithCreatedCart(List<CartProductOrderData> productDataList) throws Exception {
+        if (!Cart35Page.isThisPage()) {
+            CartClient cartClient = apiClientProvider.getCartClient();
+            Response<CartData> response = cartClient.sendRequestCreate(productDataList);
+            if (!response.isSuccessful())
+                response = cartClient.sendRequestCreate(productDataList);
+            CartData cartData = cartClient.assertThatIsCreatedAndGetData(response, true);
+            String cartDocNumber = cartData.getCartId();
+            MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
+                    MainSalesDocumentsPage.class);
+            SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
+            salesDocumentsPage.searchForDocumentByTextAndSelectIt(
+                    cartDocNumber);
+        }
+    }
+
+    // ПОИСК ТОВАРОВ
 
     // Получить ЛМ код для услуги
     protected String getAnyLmCodeOfService() {
@@ -68,19 +118,30 @@ public class SalesBaseTest extends AppBaseSteps {
         return getAnyLmCodesProductWithoutSpecificOptions(1).get(0);
     }
 
-    // Получить ЛМ код для продукта с AVS
-    protected String getAnyLmCodeProductWithAvs() {
+    @Step("Ищем ЛМ код для продукта с признаком AVS")
+    protected String getAnyLmCodeProductWithAvs(Boolean hasAvailableStock) {
         CatalogSearchFilter filtersData = new CatalogSearchFilter();
         filtersData.setAvs(true);
+        filtersData.setHasAvailableStock(hasAvailableStock);
         return apiClientProvider.getProducts(1, filtersData).get(0).getLmCode();
     }
 
-    // Получить ЛМ код для продукта с опцией TopEM
-    protected String getAnyLmCodeProductWithTopEM() {
+    protected String getAnyLmCodeProductWithAvs() {
+        return getAnyLmCodeProductWithAvs(null);
+    }
+
+    @Step("Ищем ЛМ код для продукта с опцией TopEM")
+    protected String getAnyLmCodeProductWithTopEM(Boolean hasAvailableStock) {
         CatalogSearchFilter filtersData = new CatalogSearchFilter();
         filtersData.setTopEM(true);
+        filtersData.setAvs(false);
+        filtersData.setHasAvailableStock(hasAvailableStock);
         getUserSessionData().setUserDepartmentId("15");
         return apiClientProvider.getProducts(1, filtersData).get(0).getLmCode();
+    }
+
+    protected String getAnyLmCodeProductWithTopEM() {
+        return getAnyLmCodeProductWithTopEM(null);
     }
 
     // Получить ЛМ код для продукта, доступного для отзыва с RM
@@ -88,13 +149,28 @@ public class SalesBaseTest extends AppBaseSteps {
         return "18845896";
     }
 
-    protected String getValidPinCode() {
+    // Поиск продуктов для создания корзины с несколькими заказами:
+    @Step("Ищем подходящие продукты для создания корзины с несколькими заказами")
+    protected List<CartProductOrderData> findProductsForSeveralOrdersInCart() {
+        CatalogSearchFilter filtersData = new CatalogSearchFilter();
+        filtersData.setAvs(false);
+        filtersData.setTopEM(false);
+        filtersData.setHasAvailableStock(true);
+        List<ProductItemData> productItemDataList = apiClientProvider.getProducts(2, filtersData);
+        CartProductOrderData productWithNegativeBalance = new CartProductOrderData(
+                productItemDataList.get(0));
+        productWithNegativeBalance.setQuantity(productItemDataList.get(0).getAvailableStock() + 10.0);
+        CartProductOrderData productWithPositiveBalance = new CartProductOrderData(
+                productItemDataList.get(1));
+        productWithPositiveBalance.setQuantity(1.0);
+
+        return Arrays.asList(productWithNegativeBalance, productWithPositiveBalance);
+    }
+
+    protected String getValidPinCode(boolean isPickup) {
         int tryCount = 10;
         for (int i = 0; i < tryCount; i++) {
-            String generatedPinCode;
-            do {
-                generatedPinCode = RandomStringUtils.randomNumeric(5);
-            } while (generatedPinCode.startsWith("9"));
+            String generatedPinCode = RandomUtil.randomPinCode(isPickup);
             SalesDocumentListResponse salesDocumentsResponse = apiClientProvider.getSalesDocSearchClient()
                     .getSalesDocumentsByPinCodeOrDocId(generatedPinCode)
                     .asJson();
@@ -113,31 +189,148 @@ public class SalesBaseTest extends AppBaseSteps {
     // CREATING PRE-CONDITIONS:
 
     protected String createDraftCart(int productCount) {
-        List<String> lmCodes = getAnyLmCodesProductWithoutSpecificOptions(productCount);
+        return createDraftCart(productCount, false);
+    }
+
+    protected String createDraftCart(int productCount, boolean hasDiscount) {
+        return createDraftCart(null, productCount, hasDiscount);
+    }
+
+    protected String createDraftCart(List<String> lmCodes, boolean hasDiscount) {
+        return createDraftCart(lmCodes, 1, hasDiscount);
+    }
+
+    private String createDraftCart(List<String> lmCodes, int productCount, boolean hasDiscount) {
+        CartClient cartClient = apiClientProvider.getCartClient();
+        if (lmCodes == null)
+            lmCodes = getAnyLmCodesProductWithoutSpecificOptions(productCount);
         List<CartProductOrderData> productOrderDataList = new ArrayList<>();
-        Random r = new Random();
         for (String lmCode : lmCodes) {
             CartProductOrderData productOrderData = new CartProductOrderData();
             productOrderData.setLmCode(lmCode);
-            productOrderData.setQuantity((double) (r.nextInt(9) + 1));
+            productOrderData.setQuantity(1.0);
             productOrderDataList.add(productOrderData);
         }
-        Response<CartData> cartDataResponse = apiClientProvider.getCartClient()
-                .sendRequestCreate(productOrderDataList);
+        Response<CartData> cartDataResponse = cartClient.sendRequestCreate(productOrderDataList);
+        if (!cartDataResponse.isSuccessful()) {
+            getUserSessionData().setAccessToken(getAccessToken());
+            cartDataResponse = cartClient.sendRequestCreate(productOrderDataList);
+        }
         assertThat(cartDataResponse, successful());
-        return cartDataResponse.asJson().getFullDocId();
+        CartData cartData = cartDataResponse.asJson();
+        if (hasDiscount) {
+            productOrderDataList = cartData.getProducts();
+            for (CartProductOrderData putProduct : productOrderDataList) {
+                CartDiscountData discountData = new CartDiscountData();
+                discountData.setType(TYPE_NEW_PRICE);
+                discountData.setTypeValue(putProduct.getPrice() - 1);
+                discountData.setReason(new CartDiscountReasonData(DiscountConst.Reasons.PRODUCT_SAMPLE.getId()));
+                putProduct.setDiscount(discountData);
+            }
+            Response<CartData> respDiscount = cartClient.addDiscount(
+                    cartData.getCartId(), cartData.getDocumentVersion(), productOrderDataList);
+            assertThat(respDiscount, successful());
+        }
+        return cartData.getFullDocId();
+    }
+
+    protected String createConfirmedOrder(List<String> lmCodes, List<CartProductOrderData> productDataList) {
+        // Создание корзины
+        List<CartProductOrderData> productOrderDataList = productDataList == null ? new ArrayList<>() : productDataList;
+        if (productDataList == null) {
+            if (lmCodes == null)
+                lmCodes = apiClientProvider.getProductLmCodes(1);
+            for (String lmCode : lmCodes) {
+                CartProductOrderData productOrderData = new CartProductOrderData();
+                productOrderData.setLmCode(lmCode);
+                productOrderData.setQuantity(2.0);
+                productOrderDataList.add(productOrderData);
+            }
+        }
+        CartClient cartClient = apiClientProvider.getCartClient();
+        //getUserSessionData().setAccessToken(getAccessToken());
+        Response<CartData> cartDataResponse = cartClient.sendRequestCreate(productOrderDataList);
+        assertThat(cartDataResponse, successful());
+
+        CartData cartData = cartDataResponse.asJson();
+
+        // Создание черновика заказа
+        ReqOrderData reqOrderData = new ReqOrderData();
+        reqOrderData.setCartId(cartData.getCartId());
+        reqOrderData.setDateOfGiveAway(LocalDateTime.now().plusDays(1));
+        reqOrderData.setDocumentVersion(1);
+
+        List<ReqOrderProductData> orderProducts = new ArrayList<>();
+        for (CartProductOrderData cartProduct : cartData.getProducts()) {
+            ReqOrderProductData postProductData = new ReqOrderProductData();
+            postProductData.setLineId(cartProduct.getLineId());
+            postProductData.setLmCode(cartProduct.getLmCode());
+            postProductData.setQuantity(cartProduct.getQuantity());
+            postProductData.setPrice(cartProduct.getPrice());
+            orderProducts.add(postProductData);
+        }
+
+        reqOrderData.setProducts(orderProducts);
+
+        OrderClient orderClient = apiClientProvider.getOrderClient();
+        Response<OrderData> orderResp = orderClient.createOrder(reqOrderData);
+        OrderData orderData = orderClient.assertThatIsCreatedAndGetData(orderResp);
+
+        // Установка ПИН кода
+        String validPinCode = apiClientProvider.getValidPinCode();
+        Response<JsonNode> response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
+        if (response.getStatusCode() == StatusCodes.ST_400_BAD_REQ) {
+            validPinCode = apiClientProvider.getValidPinCode();
+            response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
+        }
+        orderClient.assertThatPinCodeIsSet(response);
+        orderData.setPinCode(validPinCode);
+        orderData.increasePaymentVersion();
+
+        // Подтверждение заказа
+        MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
+        OrderCustomerData orderCustomerData = new OrderCustomerData();
+        orderCustomerData.setFirstName(ParserUtil.parseFirstName(customerData.getName()));
+        orderCustomerData.setLastName(ParserUtil.parseLastName(customerData.getName()));
+        orderCustomerData.setRoles(Collections.singletonList(CustomerConst.Role.RECEIVER.name()));
+        orderCustomerData.setType(CustomerConst.Type.PERSON.name());
+        orderCustomerData.setPhone(new PhoneData(customerData.getPhone()));
+
+        OrderData confirmOrderData = new OrderData();
+        confirmOrderData.setPriority(SalesDocumentsConst.Priorities.HIGH.getApiVal());
+        confirmOrderData.setShopId(getUserSessionData().getUserShopId());
+        confirmOrderData.setSolutionVersion(orderData.getSolutionVersion());
+        confirmOrderData.setPaymentVersion(orderData.getPaymentVersion());
+        confirmOrderData.setFulfillmentVersion(orderData.getFulfillmentVersion());
+        confirmOrderData.setFulfillmentTaskId(orderData.getFulfillmentTaskId());
+        confirmOrderData.setPaymentTaskId(orderData.getPaymentTaskId());
+        confirmOrderData.setProducts(orderData.getProducts());
+        confirmOrderData.setCustomers(Collections.singletonList(orderCustomerData));
+
+        GiveAwayData giveAwayData = new GiveAwayData();
+        giveAwayData.setDate(LocalDateTime.now().plusDays(1));
+        giveAwayData.setPoint(SalesDocumentsConst.GiveAwayPoints.PICKUP.getApiVal());
+        giveAwayData.setShopId(Integer.valueOf(getUserSessionData().getUserShopId()));
+        confirmOrderData.setGiveAway(giveAwayData);
+
+        Response<OrderData> resp = orderClient.confirmOrder(orderData.getOrderId(), confirmOrderData);
+        //if (!resp.isSuccessful())
+        //    resp = orderClient.confirmOrder(orderData.getOrderId(), confirmOrderData);
+        orderClient.assertThatIsConfirmed(resp, orderData);
+        return orderData.getOrderId();
+    }
+
+    protected void cancelOrder(String orderId, String expectedStatusBefore) throws Exception {
+        OrderClient orderClient = apiClientProvider.getOrderClient();
+        orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderId,
+                expectedStatusBefore);
+        Response<JsonNode> r = orderClient.cancelOrder(orderId);
+        anAssert().isTrue(r.isSuccessful(),
+                "Не смогли удалить заказ №" + orderId + ". Ошибка: " + r.toString());
     }
 
     protected void cancelOrder(String orderId) throws Exception {
-        OrderClient orderClient = apiClientProvider.getOrderClient();
-        Response<JsonNode> r = orderClient.cancelOrder(orderId);
-        if (!r.isSuccessful()) {
-            Thread.sleep(10000); // TODO можно подумать над не implicit wait'ом
-            Log.warn(r.toString());
-            r = orderClient.cancelOrder(orderId);
-        }
-        anAssert().isTrue(r.isSuccessful(),
-                "Не смогли удалить заказ №" + orderId + ". Ошибка: " + r.toString());
+        cancelOrder(orderId, SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal());
     }
 
     // Product Types
@@ -171,38 +364,36 @@ public class SalesBaseTest extends AppBaseSteps {
         addProductPage.clickEditQuantityField()
                 .shouldKeyboardVisible();
         addProductPage.shouldEditQuantityFieldIs("1,00")
-                .shouldTotalPriceIs(String.format("%.2f", Double.parseDouble(
-                        addProductPage.getPrice()))); // TODO Jenkins job failed here
+                .shouldTotalPriceIs(addProductPage.getPrice());
 
         // Step #5
         step("Введите значение 20,5 количества товара");
-        String expectedTotalPrice = String.format("%.2f",
-                Double.parseDouble(addProductPage.getPrice()) * 20.5);
+        Double expectedTotalPrice = addProductPage.getPrice() * 20.5;
         addProductPage.enterQuantityOfProduct("20,5")
                 .shouldTotalPriceIs(expectedTotalPrice);
 
         // Step #6
         step("Нажмите кнопку Добавить");
-        BasketStep1Page basketStep1Page = addProductPage.clickAddButton()
+        CartStep1Page basketStep1Page = addProductPage.clickAddButton()
                 .verifyRequiredElements();
-        basketStep1Page.shouldDocumentTypeIs(BasketPage.Constants.DRAFT_DOCUMENT_TYPE);
+        basketStep1Page.shouldDocumentTypeIs(CartPage.Constants.DRAFT_DOCUMENT_TYPE);
         String documentNumber = basketStep1Page.getDocumentNumber();
 
         // Step #7
         step("Нажмите Далее к параметрам");
-        BasketStep2Page basketStep2Page = basketStep1Page.clickNextParametersButton()
+        CartStep2Page basketStep2Page = basketStep1Page.clickNextParametersButton()
                 .verifyRequiredElements()
                 .shouldFieldsHaveDefaultValues();
 
         // Step #8
         step("Нажмите кнопку Создать документ продажи");
-        BasketStep3Page basketStep3Page = basketStep2Page.clickCreateSalesDocumentButton()
+        CartStep3Page basketStep3Page = basketStep2Page.clickCreateSalesDocumentButton()
                 .verifyRequiredElements();
         basketStep3Page.shouldKeyboardVisible();
 
         // Step #9
         step("Введите 5 цифр PIN-кода");
-        String testPinCode = getValidPinCode();
+        String testPinCode = getValidPinCode(true);
         basketStep3Page.enterPinCode(testPinCode)
                 .shouldPinCodeFieldIs(testPinCode)
                 .shouldSubmitButtonIsActive();
@@ -216,8 +407,8 @@ public class SalesBaseTest extends AppBaseSteps {
 
         // Step #11
         step("Нажмите кнопку Перейти в список документов");
-        SalesDocumentData expectedSalesDocument = new SalesDocumentData();
-        expectedSalesDocument.setPrice(expectedTotalPrice);
+        ShortSalesDocumentData expectedSalesDocument = new ShortSalesDocumentData();
+        expectedSalesDocument.setDocumentTotalPrice(expectedTotalPrice);
         expectedSalesDocument.setPin(testPinCode);
         expectedSalesDocument.setDocumentState(SalesDocumentsConst.States.CONFIRMED.getUiVal());
         expectedSalesDocument.setTitle("Из торгового зала");

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Cart Suite" parallel="tests">
+
+    <listeners>
+        <listener class-name="com.leroy.core.listeners.TestRailListener"/>
+    </listeners>
+
+    <test name="Создание корзины, добавление и удаление товаров">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.CartTest">
+                <methods>
+                    <include name="testCreateBasketFromSalesDocumentsScreen"/>
+                    <include name="testAddNewProductIntoBasket"/>
+                    <include name="testRemoveProductFromCart"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="Изменение количества товара в корзине + Удаление последнего товара из корзины">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.CartTest">
+                <methods>
+                    <include name="testChangeQuantityProductInCartWhenProductCountIsAvailable"/>
+                    <include name="testChangeQuantityProductInCartWhenCountOfProductMoreThanAvailable"/>
+                    <include name="testRemoveTheLastProductFromCart"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="Создание/Изменение/Удаление скидки">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.CartTest">
+                <methods>
+                    <include name="testCreateDiscount"/>
+                    <include name="testChangeDiscount"/>
+                    <include name="testRemoveDiscount"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22797095 Добавить товар AVS или Топ ЕМ (количество товара достаточно)">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.CartTest">
+                <methods>
+                    <include name="testAddAvsOrTopEmProductIntoBasket"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22797096 Добавить товар AVS или Топ ЕМ (количество товара меньше необходимого)">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.CartTest">
+                <methods>
+                    <include name="testAddAvsOrTopEmProductIntoBasketLessThanAvailable"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22797091 Добавить существующий товар из поиска">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.CartTest">
+                <methods>
+                    <include name="testAddTheSameProductIntoBasketFromSearch"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22797109 Добавить существующий товар из модалки действий с товаром">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.CartTest">
+                <methods>
+                    <include name="testAddProductFromActionWithProductModal"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C22847028 Объединение заказов на позднюю дату">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.CartTest">
+                <methods>
+                    <include name="testConsolidateOrders"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+</suite>

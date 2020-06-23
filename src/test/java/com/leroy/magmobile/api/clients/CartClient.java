@@ -9,10 +9,7 @@ import com.leroy.magmobile.api.requests.salesdoc.cart.*;
 import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.leroy.core.matchers.Matchers.isNumber;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -82,12 +79,17 @@ public class CartClient extends MagMobileClient {
     }
 
     @Step("Add discount for cartId={cartId}")
-    public Response<CartData> addDiscount(String cartId, int documentVersion, CartProductOrderData productData) {
-        CartProductOrderData putProductData = new CartProductOrderData();
-        putProductData.setLineId(productData.getLineId());
-        putProductData.setLmCode(productData.getLmCode());
-        putProductData.setPrice(productData.getPrice());
-        putProductData.setDiscount(productData.getDiscount());
+    public Response<CartData> addDiscount(
+            String cartId, int documentVersion, List<CartProductOrderData> productDataList) {
+        List<CartProductOrderData> putProducts = new ArrayList<>();
+        for (CartProductOrderData productData : productDataList) {
+            CartProductOrderData putProductData = new CartProductOrderData();
+            putProductData.setLineId(productData.getLineId());
+            putProductData.setLmCode(productData.getLmCode());
+            putProductData.setPrice(productData.getPrice());
+            putProductData.setDiscount(productData.getDiscount());
+            putProducts.add(putProductData);
+        }
 
         CartDiscountRequest req = new CartDiscountRequest();
         req.setShopId(userSessionData.getUserShopId());
@@ -95,9 +97,13 @@ public class CartClient extends MagMobileClient {
         req.setCartId(cartId);
         CartData putData = new CartData();
         putData.setDocumentVersion(documentVersion);
-        putData.setProducts(Collections.singletonList(putProductData));
+        putData.setProducts(putProducts);
         req.jsonBody(putData);
         return execute(req, CartData.class);
+    }
+
+    public Response<CartData> addDiscount(String cartId, int documentVersion, CartProductOrderData productData) {
+        return addDiscount(cartId, documentVersion, Collections.singletonList(productData));
     }
 
     @Step("Remove line item with lineId={lineId} for cartId={cartId}")

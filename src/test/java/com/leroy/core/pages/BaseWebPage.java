@@ -947,7 +947,7 @@ public abstract class BaseWebPage extends BasePage {
     public void shouldUrlContains(String... values) {
         String currentUrl = driver.getCurrentUrl();
         for (String value : values) {
-            anAssert.isElementTextContainsIgnoringCase(currentUrl, value,
+            anAssert.isContainsIgnoringCase(currentUrl, value,
                     "current url hasn`t contains " + value + "; current url is " + currentUrl);
         }
     }

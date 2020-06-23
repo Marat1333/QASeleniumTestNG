@@ -27,6 +27,20 @@ public class ParserUtil {
     }
 
     /**
+     * Convert Double to String
+     *
+     * @param val - double value
+     * @return String
+     */
+    public static String doubleToStr(Double val, int decimalPlaces, boolean displayDecimalIfInt) {
+        if (val == null)
+            return null;
+        if (!displayDecimalIfInt && val == Math.round(val))
+            return String.valueOf(val.intValue());
+        return String.format("%." + decimalPlaces + "f", val);
+    }
+
+    /**
      * Convert String to Int and cut off non-digits if necessary
      *
      * @param str - string value
@@ -35,11 +49,12 @@ public class ParserUtil {
     public static Integer strToInt(String str) {
         if (str == null)
             return null;
-        return Integer.parseInt(str.replaceAll("\\D+", ""));
+        return Integer.parseInt(str.replaceAll("[^\\d+\\,\\-]", ""));
     }
 
     /**
      * Leave only digits and remove any letters and other non-digit symbols including space character
+     *
      * @param str - string (text)
      * @return string with only digits
      */
@@ -59,8 +74,8 @@ public class ParserUtil {
     /**
      * Sum double / float numbers and round the decimal part
      *
-     * @param a - the first number
-     * @param b - the second number
+     * @param a             - the first number
+     * @param b             - the second number
      * @param decimalPlaces - count of digits after the dot
      * @return Double
      */
@@ -72,9 +87,13 @@ public class ParserUtil {
         return plus(a, -b, decimalPlaces);
     }
 
+    public static Double multiply(double a, double b, int decimalPlaces) {
+        return Math.round((a * b) * Math.pow(10, decimalPlaces)) / Math.pow(10, decimalPlaces);
+    }
 
     /**
      * Converts a phone number to just a number without spaces and "-"
+     *
      * @param phoneNumber - phone number
      * @return String
      */
@@ -96,6 +115,17 @@ public class ParserUtil {
         if (nameArr.length > 1)
             return nameArr[1].trim();
         return null;
+    }
+
+    public static String replaceSpecialSymbols(String source) {
+        if (source == null) {
+            return null;
+        }
+        source = source.replaceAll("[*]", "").replaceAll("[\\s]{2,}", " ");
+        if (source.equals("undefined")) {
+            source = null;
+        }
+        return source;
     }
 
 }

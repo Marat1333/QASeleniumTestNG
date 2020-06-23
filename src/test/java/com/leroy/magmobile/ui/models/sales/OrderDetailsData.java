@@ -1,95 +1,64 @@
 package com.leroy.magmobile.ui.models.sales;
 
+import com.leroy.constants.sales.SalesDocumentsConst;
+import com.leroy.core.ContextProvider;
+import com.leroy.core.asserts.SoftAssertWrapper;
+import com.leroy.magmobile.ui.models.customer.MagCustomerData;
+import com.leroy.magmobile.ui.models.customer.MagLegalCustomerData;
+import com.leroy.utils.RandomUtil;
+import lombok.Data;
 import org.apache.commons.lang3.RandomStringUtils;
 
+import java.time.LocalDate;
+
+@Data
 public class OrderDetailsData {
 
-    public enum DeliveryType {
-        PICKUP("Самовывоз"), DELIVERY("Доставка");
-
-        String value;
-
-        DeliveryType(String val) {
-            this.value = val;
-        }
-
-        public String getValue() {
-            return value;
-        }
-    }
-
-    private DeliveryType deliveryType;
-    private String fullName;
-    private String phone;
-    private String email;
+    private SalesDocumentsConst.GiveAwayPoints deliveryType;
+    private MagCustomerData customer;
+    private MagLegalCustomerData orgAccount;
+    private LocalDate deliveryDate;
     private String pinCode;
     private String comment;
 
-    public DeliveryType getDeliveryType() {
-        return deliveryType;
-    }
-
-    public void setDeliveryType(DeliveryType deliveryType) {
-        this.deliveryType = deliveryType;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getPhone(boolean isFormatted) {
-        if (!isFormatted)
-            return phone;
-        else {
-            if (phone.length() != 10)
-                throw new IllegalArgumentException("Неправильное кол-во цифр. Ожидалось 10 цифр");
-            return String.format("+7 %s %s-%s-%s",
-                    phone.substring(0, 3), phone.substring(3, 6),
-                    phone.substring(6, 8), phone.substring(8, 10));
-        }
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPinCode() {
-        return pinCode;
-    }
-
-    public void setPinCode(String pinCode) {
-        this.pinCode = pinCode;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
+    public OrderDetailsData() {
+        this.deliveryType = SalesDocumentsConst.GiveAwayPoints.PICKUP;
     }
 
     public OrderDetailsData setRequiredRandomData() {
-        this.fullName = String.format("%s %s", RandomStringUtils.randomAlphanumeric(6),
-                RandomStringUtils.randomAlphabetic(6));
-        this.phone = RandomStringUtils.randomNumeric(10);
-        String generatedPinCode;
-        do {
-            generatedPinCode = RandomStringUtils.randomNumeric(5);
-        } while (generatedPinCode.startsWith("9"));
-        this.pinCode = generatedPinCode;
+        MagCustomerData customerData = new MagCustomerData();
+        customerData.setName(String.format("%s %s", RandomStringUtils.randomAlphanumeric(6),
+                RandomStringUtils.randomAlphabetic(6)));
+        customerData.setPhone(RandomUtil.randomPhoneNumber());
+        this.customer = customerData;
+        this.pinCode = RandomUtil.randomPinCode(true);
         return this;
+    }
+
+    public void assertEqualsNotNullExpectedFields(OrderDetailsData expectedOrderDetailsData) {
+        SoftAssertWrapper softAssert = ContextProvider.getContext().getSoftAssert();
+        if (expectedOrderDetailsData.getDeliveryType() != null) {
+            softAssert.isEquals(deliveryType, expectedOrderDetailsData.getDeliveryType(),
+                    "Неверный способ получения");
+        }
+        if (expectedOrderDetailsData.getDeliveryDate() != null) {
+            softAssert.isEquals(deliveryDate, expectedOrderDetailsData.getDeliveryDate(),
+                    "Неверная дата исполнения заказа");
+        }
+        if (expectedOrderDetailsData.getPinCode() != null) {
+            softAssert.isEquals(pinCode, expectedOrderDetailsData.getPinCode(),
+                    "Неверный PIN документа");
+        }
+        if (expectedOrderDetailsData.getComment() != null) {
+            softAssert.isEquals(comment, expectedOrderDetailsData.getComment(),
+                    "Неверный комментарий документа");
+        }
+        if (expectedOrderDetailsData.getOrgAccount() != null) {
+            orgAccount.assertEqualsNotNullExpectedFields(expectedOrderDetailsData.getOrgAccount());
+        }
+        if (expectedOrderDetailsData.getCustomer() != null) {
+            customer.assertEqualsNotNullExpectedFields(expectedOrderDetailsData.getCustomer());
+        }
+        softAssert.verifyAll();
     }
 }

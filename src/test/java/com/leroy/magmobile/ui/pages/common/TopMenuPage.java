@@ -2,7 +2,9 @@ package com.leroy.magmobile.ui.pages.common;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.pages.customers.CustomerPage;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
+import io.qameta.allure.Step;
 
 public class TopMenuPage extends BottomMenuPage {
 
@@ -30,13 +32,16 @@ public class TopMenuPage extends BottomMenuPage {
         calculationsBtn.click();
     }
 
+    @Step("Перейти в раздел 'Документы продажи'")
     public MainSalesDocumentsPage goToSalesDocumentsSection() {
         salesDocumentsBtn.click();
         return new MainSalesDocumentsPage();
     }
 
-    public void goToClientsSection() {
+    @Step("Перейти в раздел 'Клиенты'")
+    public CustomerPage goToClientsSection() {
         clientsBtn.click();
+        return new CustomerPage();
     }
 
 }

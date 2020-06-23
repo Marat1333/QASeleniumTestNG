@@ -32,7 +32,7 @@ capabilities:
       #deviceOrientation: portrait
       autoAcceptAlerts: true
       automationName: uiautomator2
-      app: https://art.lmru.tech/generic-local-lego-front/apk/LMLF-1.8.13-TEST-b78-WITHOUT_GAP.apk
+      app: https://art.lmru.tech/generic-local-lego-front/apk/LMLF-1.10.3-TEST-b92-WITHOUT_GAP.apk
       enableVNC: true
       enableVideo: false
       env:

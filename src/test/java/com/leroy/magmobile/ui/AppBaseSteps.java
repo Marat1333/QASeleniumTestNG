@@ -8,11 +8,12 @@ import com.leroy.core.pages.ChromeCertificateErrorPage;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.LoginAppPage;
 import com.leroy.magmobile.ui.pages.common.BottomMenuPage;
+import com.leroy.magmobile.ui.pages.customers.CustomerPage;
 import com.leroy.magmobile.ui.pages.more.MorePage;
 import com.leroy.magmobile.ui.pages.more.UserProfilePage;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
-import com.leroy.magmobile.ui.pages.sales.basket.BasketStep1Page;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.CartStep1Page;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.ActionWithProductModalPage;
 import com.leroy.magmobile.ui.pages.support.SupportPage;
@@ -29,8 +30,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class AppBaseSteps extends MagMobileBaseTest {
 
-    public <T> T loginAndGoTo(String userLdap, String password, boolean selectShopAndDepartment,
-                              Class<? extends BaseAppPage> pageClass) throws Exception {
+    public <T extends BaseAppPage> T loginAndGoTo(String userLdap, String password, boolean selectShopAndDepartment,
+                                                  Class<T> pageClass) throws Exception {
         try {
             WebDriver driver = getDriver();
             AndroidDriver<MobileElement> androidDriver = (AndroidDriver<MobileElement>) driver;
@@ -40,7 +41,7 @@ public class AppBaseSteps extends MagMobileBaseTest {
             boolean moon = false;
             Element termsAcceptBtn = new Element(driver,
                     By.id("com.android.chrome:id/terms_accept"));
-            if (termsAcceptBtn.isVisible(5)) {
+            if (termsAcceptBtn.isVisible(6)) {
                 Log.debug("Accept & Continue button is visible");
                 termsAcceptBtn.click();
                 moon = true;
@@ -58,7 +59,12 @@ public class AppBaseSteps extends MagMobileBaseTest {
             }
             if (needToClickRedirectBtn) {
                 Log.debug("Click Redirect Button");
-                redirectBtn.click();
+                try {
+                    if (redirectBtn.isVisible())
+                        redirectBtn.click();
+                } catch (Exception err) {
+                    Log.error(err.getMessage());
+                }
             } else {
                 Log.debug("Redirect Button is not visible");
                 if (moon) {
@@ -103,6 +109,8 @@ public class AppBaseSteps extends MagMobileBaseTest {
                 if (userProfilePage != null)
                     return (T) userProfilePage.goToSales().goToSalesDocumentsSection();
                 return (T) mainProductAndServicesPage.goToSalesDocumentsSection();
+            } else if (pageClass.equals(CustomerPage.class)) {
+                return (T) mainProductAndServicesPage.goToClientsSection();
             } else if (pageClass.equals(WorkPage.class)) {
                 return (T) mainProductAndServicesPage.goToWork();
             } else if (pageClass.equals(SupportPage.class)) {
@@ -113,18 +121,18 @@ public class AppBaseSteps extends MagMobileBaseTest {
                 throw new IllegalArgumentException("Переход на страницу " + pageClass.getName() +
                         " еще не реализован через класс TopMenuPage");
             }
-        } catch (NoSuchElementException err) {
+        } catch (Exception err) {
             RetryAnalyzer.enableForceRetry();
             throw err;
         }
     }
 
-    public <T> T loginAndGoTo(Class<? extends BaseAppPage> pageClass) throws Exception {
+    public <T extends BaseAppPage> T loginAndGoTo(Class<T> pageClass) throws Exception {
         return loginAndGoTo(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS,
                 false, pageClass);
     }
 
-    public <T> T loginSelectShopAndGoTo(Class<? extends BaseAppPage> pageClass) throws Exception {
+    public <T extends BaseAppPage> T loginSelectShopAndGoTo(Class<T> pageClass) throws Exception {
         return loginAndGoTo(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS,
                 true, pageClass);
     }
@@ -146,7 +154,7 @@ public class AppBaseSteps extends MagMobileBaseTest {
 
         new ProductDescriptionPage().clickActionWithProductButton();
         ActionWithProductModalPage modalPage = new ActionWithProductModalPage();
-        BasketStep1Page basketStep1Page = modalPage.startToCreateSalesDocument()
+        CartStep1Page basketStep1Page = modalPage.startToCreateSalesDocument()
                 .clickAddButton();
         String documentNumber = basketStep1Page.getDocumentNumber();
         basketStep1Page.clickBackButton()
@@ -165,6 +173,16 @@ public class AppBaseSteps extends MagMobileBaseTest {
                 .searchForShopAndSelectById(shop)
                 .goToEditDepartmentForm()
                 .selectDepartmentById(department);
+    }
+
+    /**
+     * Тест начинается со страницы авторизации, т.е. с нуля?
+     */
+    protected boolean isStartFromScratch() {
+        String ps = getDriver().getPageSource();
+        Element authScreen = new Element(getDriver(), By.xpath("//*[@content-desc='AuthScreen__btn_getVersionNumber']"));
+        Element anyViewGroup = new Element(getDriver(), By.xpath("//android.view.ViewGroup"));
+        return authScreen.isVisible(ps) || !anyViewGroup.isVisible(ps);
     }
 
 }

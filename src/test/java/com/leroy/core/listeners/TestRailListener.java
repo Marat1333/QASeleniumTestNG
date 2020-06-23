@@ -9,6 +9,7 @@ import org.testng.IInvokedMethod;
 import org.testng.ISuite;
 import org.testng.ITestResult;
 import org.testng.Reporter;
+import org.testng.internal.TestResult;
 import org.testng.util.Strings;
 
 import java.util.HashMap;
@@ -56,6 +57,8 @@ public class TestRailListener extends Listener {
     public void afterInvocation(IInvokedMethod arg0, ITestResult arg1) {
         super.afterInvocation(arg0, arg1);
         if (arg0.isTestMethod()) {
+            if (arg1.getStatus() == TestResult.FAILURE)
+                Log.error(arg1.getThrowable().getMessage());
             updateLastStepResult(arg1);
             addTestResult(arg1);
         }

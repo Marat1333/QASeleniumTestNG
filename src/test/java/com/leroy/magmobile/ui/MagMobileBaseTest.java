@@ -6,6 +6,13 @@ import com.leroy.core.UserSessionData;
 import com.leroy.core.configuration.BaseUiTest;
 import com.leroy.magmobile.api.ApiClientProvider;
 import com.leroy.umbrella_extension.authorization.AuthClient;
+import org.testng.annotations.BeforeGroups;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
 
 public class MagMobileBaseTest extends BaseUiTest {
 
@@ -14,8 +21,10 @@ public class MagMobileBaseTest extends BaseUiTest {
     @Inject
     private AuthClient authClient;
 
+    private String accessToken;
+
     @Override
-    public UserSessionData initUserSessionData() {
+    public UserSessionData initTestClassUserSessionDataTemplate() {
         UserSessionData userSessionData = new UserSessionData();
         userSessionData.setUserLdap(EnvConstants.BASIC_USER_LDAP);
         userSessionData.setUserShopId(EnvConstants.SHOP_WITH_NEW_INTERFACE);
@@ -33,6 +42,30 @@ public class MagMobileBaseTest extends BaseUiTest {
     protected String getAccessToken() {
         return authClient.getAccessToken(EnvConstants.BASIC_USER_LDAP,
                 EnvConstants.BASIC_USER_PASS);
+    }
+
+    // Groups
+
+    protected final String OLD_SHOP_GROUP = "old_shop";
+    protected final String NEED_ACCESS_TOKEN_GROUP = "need_access_token";
+
+    /*@BeforeGroups(NEED_ACCESS_TOKEN_GROUP)
+    protected void setAccessTokenForSessionData() {
+        if (!isNeedAccessToken())
+            accessToken = getAccessToken();
+    }*/
+
+    @BeforeMethod
+    protected void setUserSessionDataByGroup(Method method) {
+        List<String> groups = Arrays.asList(method.getAnnotation(Test.class).groups());
+        UserSessionData userSessionData = getUserSessionData();
+        if (groups.contains(NEED_ACCESS_TOKEN_GROUP) || isNeedAccessToken()) {
+            //userSessionData.setAccessToken(accessToken);
+            userSessionData.setAccessToken(getAccessToken());
+        }
+        if (groups.contains(OLD_SHOP_GROUP)) {
+            userSessionData.setUserShopId(EnvConstants.SHOP_WITH_OLD_INTERFACE);
+        }
     }
 
 }

@@ -1,8 +1,6 @@
 package com.leroy.magmobile.api.tests.catalog_products;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.UserSessionData;
 import com.leroy.magmobile.api.clients.CatalogProductClient;
@@ -35,10 +33,10 @@ public class CatalogTest extends BaseProjectApiTest {
     private String lmProductWithSalesHistory = "10073940";
 
     @Override
-    protected UserSessionData initUserSessionData() {
-        UserSessionData userSessionData = super.initUserSessionData();
+    protected UserSessionData initTestClassUserSessionDataTemplate() {
+        UserSessionData userSessionData = super.initTestClassUserSessionDataTemplate();
         userSessionData.setUserShopId("32");
-        return super.initUserSessionData();
+        return super.initTestClassUserSessionDataTemplate();
     }
 
     @BeforeClass
