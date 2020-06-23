@@ -580,20 +580,22 @@ public class Element extends BaseWidget {
         return !oldText.equals(getText());
     }
 
-    public void waitUntilTextIsEqualTo(String referenceText, int timeout) {
+    public boolean waitUntilTextIsEqualTo(String referenceText, int timeout) {
         WebDriverWait wait = new WebDriverWait(this.driver, timeout);
         try {
             wait.until((ExpectedCondition<Boolean>) driverObject -> this.isVisible() &&
                     this.getText().equals(referenceText));
+            return true;
         } catch (TimeoutException e) {
             Log.warn(String.format(
                     "Method: waitUntilTextIsEqualTo() - Text isn't equal to '%s' (tried for %d second(s))",
                     referenceText, timeout));
         }
+        return false;
     }
 
-    public void waitUntilTextIsEqualTo(String referenceText) {
-        waitUntilTextIsEqualTo(referenceText, short_timeout);
+    public boolean waitUntilTextIsEqualTo(String referenceText) {
+        return waitUntilTextIsEqualTo(referenceText, short_timeout);
     }
 
     public void waitUntilTextContains(String referenceText, int timeout) {

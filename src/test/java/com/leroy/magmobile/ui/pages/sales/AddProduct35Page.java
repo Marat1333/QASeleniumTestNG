@@ -6,13 +6,13 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.sales.orders.CartEstimatePage;
+import com.leroy.magmobile.ui.pages.sales.orders.CartOrderEstimatePage;
 import com.leroy.magmobile.ui.pages.sales.orders.cart.Cart35Page;
 import com.leroy.magmobile.ui.pages.sales.orders.estimate.EstimatePage;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
-public class AddProduct35Page<T extends CartEstimatePage> extends CommonMagMobilePage {
+public class AddProduct35Page<T extends CartOrderEstimatePage> extends CommonMagMobilePage {
 
     private Class<T> parentPage;
 
@@ -82,6 +82,7 @@ public class AddProduct35Page<T extends CartEstimatePage> extends CommonMagMobil
     public enum SubmitBtnCaptions {
         ADD_TO_BASKET("ДОБАВИТЬ В КОРЗИНУ"),
         ADD_TO_ESTIMATE("ДОБАВИТЬ В СМЕТУ"),
+        ADD_TO_ORDER("ДОБАВИТЬ В ЗАКАЗ"),
         SAVE("СОХРАНИТЬ");
 
         String value;
@@ -164,6 +165,12 @@ public class AddProduct35Page<T extends CartEstimatePage> extends CommonMagMobil
 
     public AddProduct35Page<T> enterQuantityOfProduct(int value, boolean actionVerification) {
         return enterQuantityOfProduct(String.valueOf(value), actionVerification);
+    }
+
+    @Step("Нажмите кнопку Добавить в заказ")
+    public T clickAddIntoOrderButton() throws Exception {
+        submitBtn.click();
+        return newCartOrEstimatePage();
     }
 
     @Step("Нажмите кнопку Добавить в корзину")

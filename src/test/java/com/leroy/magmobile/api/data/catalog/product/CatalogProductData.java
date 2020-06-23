@@ -5,13 +5,15 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.util.List;
+
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class CatalogProductData extends ProductItemData {
     private Integer topEMQuantity;
     private ExtStocks extStocks;
-    private SalesPrice salesPrice;
+    private PriceInfo salesPrice;
     private Logistic logistic;
     private Double purchasePrice;
     private String purchasePriceCurrency;
@@ -24,4 +26,5 @@ public class CatalogProductData extends ProductItemData {
     private Integer reviewsCount;
     private StockAreas stockAreas;
     private Inventory inventory;
+    private List<String> barCodes;
 }

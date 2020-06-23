@@ -6,18 +6,49 @@ import com.leroy.utils.ParserUtil;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 @Data
 public class SalesDocumentData {
+    private OrderDetailsData orderDetailsData;
     private String title;
     private String number;
-    private String date;
-    private String documentState;
+    private LocalDateTime date;
+    private String status;
+    private String creator;
 
     private List<OrderAppData> orderAppDataList;
+
+    // Experiment field (для понимание над каким товаром происходят взаимодействия в UI)
+    private ProductOrderCardAppData productDataInEditModeNow;
+
+    public OrderAppData getOrderDataInEditModeNow() {
+        for (OrderAppData orderAppData : orderAppDataList) {
+            if (orderAppData.getProductCardDataList().indexOf(productDataInEditModeNow) >= 0)
+                return orderAppData;
+        }
+        return null;
+    }
+
+    public void setFieldsFrom(ShortSalesDocumentData shortSalesDocumentData) {
+        title = shortSalesDocumentData.getTitle();
+        number = shortSalesDocumentData.getNumber();
+        date = shortSalesDocumentData.getDate();
+        status = shortSalesDocumentData.getDocumentState();
+    }
+
+    public void removeOrder(int index) {
+        orderAppDataList.remove(index);
+        if (orderAppDataList.size() == 1) {
+            OrderAppData orderAppData = orderAppDataList.get(0);
+            orderAppData.setOrderIndex(null);
+            orderAppData.setOrderMaxCount(null);
+            orderAppData.setProductCountTotal(null);
+        }
+    }
 
     public void consolidateOrders() {
         OrderAppData newOrder = new OrderAppData();
@@ -51,11 +82,22 @@ public class SalesDocumentData {
             softAssert.isEquals(date, expectedSalesDocumentData.getDate(),
                     "Неверная дата создания документа");
         }
-        if (expectedSalesDocumentData.getDocumentState() != null) {
-            softAssert.isEquals(documentState, expectedSalesDocumentData.getDocumentState(),
+        if (expectedSalesDocumentData.getStatus() != null) {
+            softAssert.isEquals(status, expectedSalesDocumentData.getStatus(),
                     "Неверный статус документа");
         }
+        if (expectedSalesDocumentData.getCreator() != null) {
+            softAssert.isEquals(creator, expectedSalesDocumentData.getCreator(),
+                    "Неверный автор документа");
+        }
         softAssert.verifyAll();
+
+        // Детали подтвержденного заказа:
+        if (expectedSalesDocumentData.getOrderDetailsData() != null) {
+            this.orderDetailsData.assertEqualsNotNullExpectedFields(expectedSalesDocumentData.getOrderDetailsData());
+        }
+
+        // Заказы и товары:
         softAssert.isEquals(orderAppDataList.size(), expectedSalesDocumentData.getOrderAppDataList().size(),
                 "Неверное кол-во заказов в документе");
         softAssert.verifyAll();

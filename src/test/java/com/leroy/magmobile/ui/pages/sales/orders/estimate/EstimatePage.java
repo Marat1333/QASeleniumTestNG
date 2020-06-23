@@ -6,11 +6,11 @@ import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.elements.MagMobWhiteSubmitButton;
-import com.leroy.magmobile.ui.models.CustomerData;
+import com.leroy.magmobile.ui.models.customer.MagCustomerData;
 import com.leroy.magmobile.ui.models.sales.OrderAppData;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.pages.customers.SearchCustomerPage;
-import com.leroy.magmobile.ui.pages.sales.orders.CartEstimatePage;
+import com.leroy.magmobile.ui.pages.sales.orders.CartOrderEstimatePage;
 import com.leroy.magmobile.ui.pages.sales.widget.ProductOrderCardAppWidget;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.search.widgets.SearchCustomerWidget;
@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class EstimatePage extends CartEstimatePage {
+public class EstimatePage extends CartOrderEstimatePage {
 
     @Builder
     @AllArgsConstructor
@@ -270,9 +270,9 @@ public class EstimatePage extends CartEstimatePage {
     }
 
     @Step("Проверить, что выбранный клиент содержит следующие данные: {expectedCustomerData}")
-    public EstimatePage shouldSelectedCustomerIs(CustomerData expectedCustomerData) {
+    public EstimatePage shouldSelectedCustomerIs(MagCustomerData expectedCustomerData) {
         String ps = getPageSource();
-        CustomerData actualCustomerData = customerWidget.collectDataFromPage(ps);
+        MagCustomerData actualCustomerData = customerWidget.collectDataFromPage(ps);
         softAssert.isEquals(actualCustomerData.getName(), expectedCustomerData.getName(),
                 "Имя выбранного клиента неверно");
         if (expectedCustomerData.getCardNumber() != null)

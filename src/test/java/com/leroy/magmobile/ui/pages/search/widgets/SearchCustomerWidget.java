@@ -3,11 +3,11 @@ package com.leroy.magmobile.ui.pages.search.widgets;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.models.CustomerData;
+import com.leroy.magmobile.ui.models.customer.MagCustomerData;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
 import org.openqa.selenium.WebDriver;
 
-public class SearchCustomerWidget extends CardWidget<CustomerData> {
+public class SearchCustomerWidget extends CardWidget<MagCustomerData> {
 
     public SearchCustomerWidget(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
@@ -25,10 +25,10 @@ public class SearchCustomerWidget extends CardWidget<CustomerData> {
     private Element emailVal;
 
     @Override
-    public CustomerData collectDataFromPage(String ps) {
+    public MagCustomerData collectDataFromPage(String ps) {
         if (ps == null)
             ps = getPageSource();
-        CustomerData customerData = new CustomerData();
+        MagCustomerData customerData = new MagCustomerData();
         customerData.setName(nameVal.getText(ps));
         //customerData.setCardNumber(cardNumberVal.getText(ps)); TODO
         //customerData.setCardType(cardTypeVal.getText(ps));

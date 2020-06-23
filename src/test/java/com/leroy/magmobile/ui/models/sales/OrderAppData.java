@@ -40,11 +40,15 @@ public class OrderAppData {
                 totalPrice + discountAmountBefore, (product.getTotalPrice() * discountPercent / 100), 2);
     }
 
-    public void removeProduct(int index) {
-        ProductOrderCardAppData removeProduct = productCardDataList.get(index);
+    public void removeProduct(ProductOrderCardAppData removeProduct) {
         totalPrice -= removeProduct.getTotalPrice();
         productCount--;
-        productCardDataList.remove(index);
+        productCardDataList.remove(removeProduct);
+    }
+
+    public void removeProduct(int index) {
+        ProductOrderCardAppData removeProduct = productCardDataList.get(index);
+        removeProduct(removeProduct);
     }
 
     public void addFirstProduct(ProductOrderCardAppData product) {
@@ -58,6 +62,10 @@ public class OrderAppData {
 
     public void changeProductQuantity(int index, double quantity) {
         ProductOrderCardAppData product = productCardDataList.get(index);
+        changeProductQuantity(product, quantity);
+    }
+
+    public void changeProductQuantity(ProductOrderCardAppData product, double quantity) {
         double price = product.getPrice();
         double quantityDiff = quantity - product.getSelectedQuantity();
         product.setSelectedQuantity(quantity);

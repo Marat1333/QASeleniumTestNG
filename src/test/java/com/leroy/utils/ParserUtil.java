@@ -27,6 +27,20 @@ public class ParserUtil {
     }
 
     /**
+     * Convert Double to String
+     *
+     * @param val - double value
+     * @return String
+     */
+    public static String doubleToStr(Double val, int decimalPlaces, boolean displayDecimalIfInt) {
+        if (val == null)
+            return null;
+        if (!displayDecimalIfInt && val == Math.round(val))
+            return String.valueOf(val.intValue());
+        return String.format("%." + decimalPlaces + "f", val);
+    }
+
+    /**
      * Convert String to Int and cut off non-digits if necessary
      *
      * @param str - string value
@@ -101,6 +115,17 @@ public class ParserUtil {
         if (nameArr.length > 1)
             return nameArr[1].trim();
         return null;
+    }
+
+    public static String replaceSpecialSymbols(String source) {
+        if (source == null) {
+            return null;
+        }
+        source = source.replaceAll("[*]", "").replaceAll("[\\s]{2,}", " ");
+        if (source.equals("undefined")) {
+            source = null;
+        }
+        return source;
     }
 
 }

@@ -1,7 +1,7 @@
 package com.leroy.magmobile.ui.tests.sales;
 
 import com.leroy.constants.sales.SalesDocumentsConst;
-import com.leroy.magmobile.ui.models.CustomerData;
+import com.leroy.magmobile.ui.models.customer.MagCustomerData;
 import com.leroy.magmobile.ui.models.sales.OrderAppData;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.models.sales.ShortSalesDocumentData;
@@ -95,7 +95,7 @@ public class EstimateTest extends SalesBaseTest {
 
         // Step 4
         step("Введите номер телефона/ №карты клиента/ эл. почту");
-        CustomerData customerData = searchCustomerPage.selectSearchType(SearchCustomerPage.SearchType.BY_PHONE)
+        MagCustomerData customerData = searchCustomerPage.selectSearchType(SearchCustomerPage.SearchType.BY_PHONE)
                 .enterTextInSearchField(firstCustomerPhone)
                 .getCustomerDataFromSearchListByIndex(1);
         estimatePage = searchCustomerPage.selectCustomerFromSearchList(1);
@@ -370,7 +370,7 @@ public class EstimateTest extends SalesBaseTest {
 
         // Step 3
         step("Введите номер телефона/ №карты клиента/ эл. почту");
-        CustomerData customerData = searchCustomerPage.selectSearchType(SearchCustomerPage.SearchType.BY_PHONE)
+        MagCustomerData customerData = searchCustomerPage.selectSearchType(SearchCustomerPage.SearchType.BY_PHONE)
                 .enterTextInSearchField(secondCustomerPhone)
                 .getCustomerDataFromSearchListByIndex(1);
         anAssert().isNotEquals(customerData.getName(), customerNameBefore,
@@ -415,7 +415,7 @@ public class EstimateTest extends SalesBaseTest {
         // Step 4
         step("Нажмите на Сохранить");
         estimatePage = editCustomerContactDetailsPage.clickSaveButton();
-        CustomerData expectedCustomer = new CustomerData();
+        MagCustomerData expectedCustomer = new MagCustomerData();
         expectedCustomer.setName(customerData.getFirstName() + " " + customerData.getLastName());
         expectedCustomer.setPhone(newPhone);
         estimatePage.shouldSelectedCustomerIs(expectedCustomer);
@@ -613,7 +613,7 @@ public class EstimateTest extends SalesBaseTest {
                         .productIsAdded(true)
                         .editModeOn(true).build());
 
-        CustomerData expectedCustomer = new CustomerData();
+        MagCustomerData expectedCustomer = new MagCustomerData();
         expectedCustomer.setName(customerNameBefore);
         expectedCustomer.setPhone(newPhone);
         estimatePage.shouldSelectedCustomerIs(expectedCustomer);
