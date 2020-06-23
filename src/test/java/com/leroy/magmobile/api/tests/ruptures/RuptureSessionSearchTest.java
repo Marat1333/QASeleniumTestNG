@@ -117,7 +117,7 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
         assertThat("items count", items, hasSize(equalTo(4)));
         int i = 0;
         for (ResRuptureSessionData item : items) {
-            if (i < 4)
+            if (i < 3)
                 assertThat("SessionId: " + item.getSessionId() + "; status",
                         item.getStatus(), equalTo(ACTIVE_STATUS));
             else

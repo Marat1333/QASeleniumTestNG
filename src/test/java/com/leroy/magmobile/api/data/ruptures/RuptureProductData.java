@@ -6,7 +6,7 @@ import lombok.Data;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -44,17 +44,17 @@ public class RuptureProductData {
         this.setTop(RandomStringUtils.randomNumeric(1));
         this.setProvider(RandomStringUtils.randomAlphabetic(10));
         this.setPlanningDeliveryTime(LocalDateTime.now());
-        this.setShopStock(0); // hardcode in magmobile???
-        this.setShelfStock(0); // hardcode in magmobile???
-        this.setTheoreticalStock(0); // hardcode in magmobile???
-        this.setPrice(new Random().nextInt(100)+1);
-        this.setLsStock(new Random().nextInt(22)+1);
-        this.setShoppingHallCount(this.getLsStock()); // equals in magmobile???
-        this.setShelfCount(new Random().nextInt(3)); // available only 0, 1, 2, 3
-        this.setStockRmCount(new Random().nextInt(22)+1);
-        this.setTwentyEighty(false); // hardcode in magmobile???
-        this.setRmFeedbackCount(0); // hardcode in magmobile???
+        this.setShopStock(0);
+        this.setShelfStock(0);
+        this.setTheoreticalStock(0);
+        this.setPrice(new Random().nextInt(100) + 1);
+        this.setLsStock(new Random().nextInt(22) + 1);
+        this.setShoppingHallCount(this.getLsStock());
+        this.setShelfCount(new Random().nextInt(4)); // available only 0, 1, 2, 3
+        this.setStockRmCount(new Random().nextInt(22) + 1);
+        this.setTwentyEighty(false);
+        this.setRmFeedbackCount(0);
         this.setComment(RandomStringUtils.randomAlphabetic(10));
-        this.setActions(Arrays.asList(ActionData.returnRandomData()));
+        this.setActions(Collections.singletonList(ActionData.returnRandomData()));
     }
 }
