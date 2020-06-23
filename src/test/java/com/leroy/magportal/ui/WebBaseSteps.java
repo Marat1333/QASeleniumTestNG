@@ -31,7 +31,7 @@ public class WebBaseSteps extends MagPortalBaseTest {
     public <T extends MenuPage> T loginAndGoTo(String ldap, String password, Class<T> pageClass) throws Exception {
         getDriver().get(getPageUrl(pageClass));
         new LoginWebPage().logIn(ldap, password);
-        T page = (T) pageClass.getConstructor().newInstance();
+        T page = pageClass.getConstructor().newInstance();
         String title = page.getCurrentTitle();
         String expectedTitle = "Клиентские заказы";
         if (!title.equals(expectedTitle)) {

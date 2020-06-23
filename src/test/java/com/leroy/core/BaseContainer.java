@@ -1,6 +1,7 @@
 package com.leroy.core;
 
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.annotations.Form;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.configuration.Log;
@@ -12,14 +13,15 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import io.appium.java_client.android.AndroidDriver;
 import org.apache.commons.lang.StringUtils;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Quotes;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.util.Strings;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -51,7 +53,8 @@ public abstract class BaseContainer {
         Class<?> current = this.getClass();
         while (current.getSuperclass() != null) {
             for (Field field : current.getDeclaredFields()) {
-                if (field.getAnnotation(WebFindBy.class) != null || field.getAnnotation(AppFindBy.class) != null) {
+                if (field.getAnnotation(WebFindBy.class) != null || field.getAnnotation(AppFindBy.class) != null ||
+                        field.getAnnotation(Form.class) != null) {
                     FieldInitializer decorator = new FieldInitializer(driver, field, locator);
                     Object value = decorator.initField();
                     if (value != null) {
@@ -138,6 +141,26 @@ public abstract class BaseContainer {
         List<WebElement> weList = findElements(locator);
         this.setImplicitWait(DriverFactory.IMPLICIT_WAIT_TIME_OUT);
         return weList;
+    }
+
+    /**
+     * Wait until at least one of the elements is visible
+     *
+     * @return true if at least one element is visible; false - otherwise
+     */
+    protected boolean waitForAnyOneOfElementsIsVisible(BaseWidget... elements) {
+        WebDriverWait wait = new WebDriverWait(this.driver, timeout);
+        List<ExpectedCondition<Boolean>> expectedConditionList = new ArrayList<>();
+        for (BaseWidget element : elements) {
+            expectedConditionList.add(d -> element.isVisible());
+        }
+        try {
+            wait.until(ExpectedConditions.or(expectedConditionList.toArray(new ExpectedCondition[0])));
+            return true;
+        } catch (TimeoutException e) {
+            Log.warn(String.format("waitForAnyOneOfElementsIsVisible() failed (tried for %d second(s))", timeout));
+            return false;
+        }
     }
 
     /**

@@ -5,6 +5,7 @@ import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.models.sales.ShortSalesDocumentData;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
+import com.leroy.utils.DateTimeUtil;
 import com.leroy.utils.ParserUtil;
 import org.openqa.selenium.WebDriver;
 
@@ -32,7 +33,7 @@ public class SalesDocumentWidget extends CardWidget<ShortSalesDocumentData> {
     @AppFindBy(xpath = ".//android.widget.TextView[4 and starts-with(@text, 'PIN')]")
     private Element pin;
 
-    @AppFindBy(xpath = ".//android.widget.TextView[contains(@text, 'Клиент:')]")
+    @AppFindBy(xpath = ".//android.widget.TextView[contains(@text, 'Клиент:') or contains(@text, 'Юр. лицо:')]")
     private Element customerName;
 
     @AppFindBy(xpath = ".//android.view.ViewGroup[count(android.widget.TextView) > 1][2]/android.widget.TextView[1]")
@@ -66,7 +67,7 @@ public class SalesDocumentWidget extends CardWidget<ShortSalesDocumentData> {
         if (name == null)
             return null;
         else
-            return name.replaceAll("Клиент:", "").trim();
+            return name.replaceAll("Клиент:", "").replaceAll("Юр. лицо:", "").trim();
     }
 
     @Override
@@ -78,7 +79,7 @@ public class SalesDocumentWidget extends CardWidget<ShortSalesDocumentData> {
         document.setDocumentTotalPrice(ParserUtil.strToDouble(price.getText(pageSource)));
         document.setNumber(getDocNumber(true, pageSource));
         document.setPin(getPinCode(true, pageSource));
-        document.setDate(date.getText(pageSource));
+        document.setDate((DateTimeUtil.strToLocalDateTime(date.getText(pageSource), "dd MMM, H:mm")));
         document.setDocumentState(documentType.getTextIfPresent(pageSource));
         document.setCustomerName(getCustomerName(pageSource));
         return document;

@@ -50,7 +50,10 @@ public class HeaderOrderInfoWidget extends CardWidget<OrderAppData> {
      * Получить дату исполнения заказа
      */
     public LocalDate getDate(String ps) {
-        return DateTimeUtil.strToLocalDate(date.getText(ps), "dd MMM");
+        String strDate = date.getTextIfPresent(ps);
+        if (strDate == null)
+            return null;
+        return DateTimeUtil.strToLocalDate(strDate, "dd MMM");
     }
 
     /**

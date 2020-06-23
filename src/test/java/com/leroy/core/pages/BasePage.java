@@ -38,7 +38,7 @@ public abstract class BasePage extends BaseContainer {
         this(true);
     }
 
-    public void waitForPageIsLoaded() {
+    protected void waitForPageIsLoaded() {
     }
 
     @Attachment(value = "Page screenshot", type = "image/png")

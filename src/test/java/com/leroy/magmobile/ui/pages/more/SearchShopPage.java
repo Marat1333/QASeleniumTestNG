@@ -28,7 +28,7 @@ public class SearchShopPage extends CommonMagMobilePage {
                 By.xpath(String.format(TYPICAL_SHOP_AREA_XPATH + "[@text='%s']", "1", name)));
     }
 
-    @Step("Найдите и выберете магазин с номером {id}")
+    @Step("Найдите и выберите магазин с номером {id}")
     public UserProfilePage searchForShopAndSelectById(String id) {
         searchFld.clearFillAndSubmit(id);
         E(String.format(TYPICAL_SHOP_AREA_XPATH, "0")).waitUntilTextIsEqualTo(id);

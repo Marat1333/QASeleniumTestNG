@@ -8,7 +8,7 @@ import com.leroy.magmobile.ui.pages.sales.EditProduct35Page;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import io.qameta.allure.Step;
 
-public abstract class ActionWithProductCardModal<T extends CartEstimatePage> extends CommonMagMobilePage {
+public abstract class ActionWithProductCardModal<T extends CartOrderEstimatePage> extends CommonMagMobilePage {
 
     private Class<T> parentPage;
 
@@ -17,7 +17,7 @@ public abstract class ActionWithProductCardModal<T extends CartEstimatePage> ext
         parentPage = type;
     }
 
-    protected T newCartOrEstimatePage() throws Exception {
+    protected T newParentPage() throws Exception {
         return parentPage.getConstructor().newInstance();
     }
 

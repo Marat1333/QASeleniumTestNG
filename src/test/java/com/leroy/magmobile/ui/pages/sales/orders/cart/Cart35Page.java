@@ -12,9 +12,10 @@ import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
 import com.leroy.magmobile.ui.pages.sales.SalesDocumentsPage;
-import com.leroy.magmobile.ui.pages.sales.orders.CartEstimatePage;
+import com.leroy.magmobile.ui.pages.sales.orders.CartOrderEstimatePage;
 import com.leroy.magmobile.ui.pages.sales.orders.cart.modal.ChangeProductModal;
 import com.leroy.magmobile.ui.pages.sales.orders.cart.modal.ConsolidateOrdersModal;
+import com.leroy.magmobile.ui.pages.sales.orders.order.ProcessOrder35Page;
 import com.leroy.magmobile.ui.pages.sales.widget.BottomOrderInfoWidget;
 import com.leroy.magmobile.ui.pages.sales.widget.HeaderOrderInfoWidget;
 import com.leroy.magmobile.ui.pages.sales.widget.ProductOrderCardAppWidget;
@@ -31,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Cart35Page extends CartEstimatePage {
+public class Cart35Page extends CartOrderEstimatePage {
 
     public final static String SCREEN_TITLE = "Корзина";
 
@@ -72,7 +73,7 @@ public class Cart35Page extends CartEstimatePage {
     // Верхняя шапка заказов (Заказ # из # и т.д.)
     AndroidScrollView<OrderAppData> headerOrderInfoScrollView = new AndroidScrollView<>(
             driver, AndroidScrollView.TYPICAL_LOCATOR,
-            "//android.view.ViewGroup[android.view.ViewGroup[@content-desc='Badge-View']]",
+            "//android.view.ViewGroup[android.widget.TextView[contains(@text, 'Заказ')] and android.widget.TextView[contains(@text, 'Товаров:')]]",
             HeaderOrderInfoWidget.class
     );
 
@@ -102,6 +103,9 @@ public class Cart35Page extends CartEstimatePage {
 
     @AppFindBy(text = "ОФОРМИТЬ")
     private MagMobGreenSubmitButton makeSalesBtn;
+
+    private String SPECIFIC_MAKE_SALES_BTN_XPATH =
+            "//android.view.ViewGroup[android.widget.TextView[@text='ОФОРМИТЬ ЗАКАЗ №%s']]";
 
     @AppFindBy(text = "ТОВАРЫ И УСЛУГИ", metaName = "Кнопка 'Товары и Услуги'")
     MagMobWhiteSubmitButton productAndServiceBtn;
@@ -140,7 +144,11 @@ public class Cart35Page extends CartEstimatePage {
     }
 
     @Step("Получить общую стоимость товаров с нижней панели")
-    public Double getTotalPrice(String ps) {
+    public Double getTotalPrice() {
+        return getTotalPrice(null);
+    }
+
+    private Double getTotalPrice(String ps) {
         return ParserUtil.strToDouble(totalPriceVal.getText(ps));
     }
 
@@ -229,6 +237,12 @@ public class Cart35Page extends CartEstimatePage {
     @Step("Нажмите ОФОРМИТЬ")
     public ProcessOrder35Page clickMakeSalesButton() {
         makeSalesBtn.click();
+        return new ProcessOrder35Page();
+    }
+
+    @Step("Нажмите ОФОРМИТЬ заказ №{index}")
+    public ProcessOrder35Page clickMakeSalesButton(int index) {
+        E(String.format(SPECIFIC_MAKE_SALES_BTN_XPATH, index)).click();
         return new ProcessOrder35Page();
     }
 

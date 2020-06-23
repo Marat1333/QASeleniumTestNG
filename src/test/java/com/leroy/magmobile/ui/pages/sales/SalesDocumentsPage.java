@@ -45,7 +45,7 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
 
     @Override
     public void waitForPageIsLoaded() {
-        getSubmitBtn().waitForVisibility();
+        anAssert.isTrue(getSubmitBtn().waitForVisibility(), "Страница 'Документы продажи' не загрузилась");
         waitUntilProgressBarIsInvisible();
     }
 
@@ -64,6 +64,27 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
                 String.format("Документ содержащий текст %s должен быть найден",
                         containsText));
         cardWidget.click();
+    }
+
+    @Step("Ждем, пока документ №{docNumber} не будет в состоянии {expectedStatus}")
+    public SalesDocumentsPage waitUntilDocumentIsInCorrectStatus(String docNumber, String expectedStatus) {
+        String actualStatus;
+        int iCount = 0;
+        do {
+            if (iCount > 0) {
+                salesDocumentScrollList.scrollToBeginning();
+                waitUntilProgressBarAppearsAndDisappear();
+            }
+            CardWidget<ShortSalesDocumentData> cardWidget =
+                    salesDocumentScrollList.searchForWidgetByText(docNumber);
+            anAssert.isNotNull(cardWidget, "Не нашли документ " + docNumber,
+                    String.format("Документ №%s должен быть найден",
+                            docNumber));
+            actualStatus = cardWidget.collectDataFromPage().getDocumentState();
+            iCount++;
+        } while (!actualStatus.equals(expectedStatus) && iCount < 15);
+        anAssert.isEquals(actualStatus, expectedStatus, "Не смогли дождаться");
+        return this;
     }
 
     @Step("Нажмите кнопку 'Создать документ продажи'")
@@ -88,9 +109,10 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что документ на странице имеется документ с данными: {expectedDocument}")
-    public SalesDocumentsPage shouldSalesDocumentIsPresentAndDataMatches(ShortSalesDocumentData expectedDocument) {
+    public SalesDocumentsPage shouldSalesDocumentIsPresentAndDataMatches(
+            ShortSalesDocumentData expectedDocument, boolean updateScreen) {
         CardWidget<ShortSalesDocumentData> widget = salesDocumentScrollList.searchForWidgetByText(
-                expectedDocument.getNumber());
+                expectedDocument.getNumber(), updateScreen);
         anAssert.isNotNull(widget,
                 "Документ " + expectedDocument.getNumber() + " не найден",
                 "Документ " + expectedDocument.getNumber() + " должен присутствовать на странице");
@@ -106,7 +128,10 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
         softAssert.isTrue(documentFromPage.getNumber().contains(expectedDocument.getNumber()),
                 "Номер документа должен быть '" + expectedDocument.getNumber() + "'");
         if (expectedDocument.getPin() != null) {
-            if (documentFromPage.getPin() == null)
+            if (expectedDocument.getPin().isEmpty())
+                softAssert.isNull(documentFromPage.getPin(), "PIN код документа виден",
+                        "PIN код документа не должно быть");
+            else if (documentFromPage.getPin() == null)
                 softAssert.isTrue(false, "PIN код документа отсутствует");
             else
                 softAssert.isEquals(documentFromPage.getPin(), expectedDocument.getPin(),
@@ -116,12 +141,18 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
             softAssert.isEquals(documentFromPage.getCustomerName(), expectedDocument.getCustomerName(),
                     "Неверное имя клиента");
         }
-        softAssert.isEquals(documentFromPage.getDocumentTotalPrice(), expectedDocument.getDocumentTotalPrice(),
-                "Сумма в документе - не верна");
+        if (expectedDocument.getDocumentTotalPrice() != null) {
+            softAssert.isEquals(documentFromPage.getDocumentTotalPrice(), expectedDocument.getDocumentTotalPrice(),
+                    "Сумма в документе - не верна");
+        }
         softAssert.isEquals(documentFromPage.getTitle(), expectedDocument.getTitle(),
                 "Место отзыва документа - не верно");
         softAssert.verifyAll();
         return this;
+    }
+
+    public SalesDocumentsPage shouldSalesDocumentIsPresentAndDataMatches(ShortSalesDocumentData expectedDocument) {
+        return shouldSalesDocumentIsPresentAndDataMatches(expectedDocument, false);
     }
 
     @Step("Проверить, что среди последних 5 документов, документа с номером {expDocNumber} на странице нет")
