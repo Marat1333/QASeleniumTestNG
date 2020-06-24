@@ -29,9 +29,9 @@ public class MagMobileBaseTest extends BaseUiTest {
         userSessionData.setUserLdap(EnvConstants.BASIC_USER_LDAP);
         userSessionData.setUserShopId(EnvConstants.SHOP_WITH_NEW_INTERFACE);
         userSessionData.setUserDepartmentId("1");
-        if (isNeedAccessToken()) {
-            userSessionData.setAccessToken(getAccessToken());
-        }
+//        if (isNeedAccessToken()) {
+//            userSessionData.setAccessToken(getAccessToken());
+//        }
         return userSessionData;
     }
 

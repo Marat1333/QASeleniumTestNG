@@ -34,7 +34,7 @@ public class AuthClient extends BaseClient {
     public String getAccessToken(String username, String password) {
         Response<TokenData> resp = getResponseToken(username, password);
         if (!resp.isSuccessful()) {
-            int tryCount = 1;
+            int tryCount = 2;
             for (int i = 0; i < tryCount; i++) {
                 resp = getResponseToken(username, password);
                 if (resp.isSuccessful())
