@@ -227,12 +227,6 @@ public class SalesDocProductClient extends MagMobileClient {
         return this;
     }
 
-    public SalesDocProductClient assertThatResponseIsValid() {
-        assertThatResponseIsOk(response);
-        assertThat(response, valid(SalesDocumentResponseData.class));
-        return this;
-    }
-
     // Help methods
 
     private double calculateDocSum(SalesDocumentResponseData actualData) {

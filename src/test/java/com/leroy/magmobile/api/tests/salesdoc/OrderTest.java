@@ -205,7 +205,7 @@ public class OrderTest extends BaseProjectApiTest {
         putProductData.setQuantity(orderProductData.getQuantity() + 1);
 
         ReqOrderData reqOrderData = new ReqOrderData();
-        reqOrderData.setDateOfGiveAway(orderData.getGiveAway().getDate());
+        reqOrderData.setDateOfGiveAway(orderData.getGiveAway().getDateAsLocalDateTime());
         reqOrderData.setProducts(Collections.singletonList(putProductData));
 
         Response<ResOrderCheckQuantityData> resp = orderClient.checkQuantity(reqOrderData);
