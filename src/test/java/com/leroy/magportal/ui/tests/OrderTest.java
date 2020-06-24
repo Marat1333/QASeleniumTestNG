@@ -1,7 +1,7 @@
 package com.leroy.magportal.ui.tests;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.leroy.constants.StatusCodes;
+import com.leroy.constants.api.StatusCodes;
 import com.leroy.constants.customer.CustomerConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.UserSessionData;

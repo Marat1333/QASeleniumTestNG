@@ -6,4 +6,8 @@ import ru.leroymerlin.qa.core.clients.base.Method;
 @Method(value = "GET", path = "/ruptures/sessions")
 public class RupturesSessionsRequest extends CommonSearchRequestBuilder<RupturesSessionsRequest> {
 
+    public RupturesSessionsRequest setStatus(String val) {
+        return queryParam("status", val);
+    }
+
 }

@@ -6,6 +6,7 @@ import lombok.Data;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -37,19 +38,23 @@ public class RuptureProductData {
     public void generateRandomData() {
         this.setLmCode(RandomStringUtils.randomNumeric(8));
         this.setBarCode(RandomStringUtils.randomNumeric(13));
+        this.setImage("https://res.cloudinary.com/lmru/image/upload/LMCode/82036754.jpg"); //hardcode
         this.setTitle(RandomStringUtils.randomAlphanumeric(12));
         this.setGamma(RandomStringUtils.randomAlphabetic(1));
         this.setTop(RandomStringUtils.randomNumeric(1));
-        this.setPrice(new Random().nextInt(100)+1);
-        this.setShoppingHallCount(new Random().nextInt(22)+1);
-        this.setShelfCount(new Random().nextInt(22)+1);
-        this.setStockRmCount(new Random().nextInt(22)+1);
         this.setProvider(RandomStringUtils.randomAlphabetic(10));
-        this.setShopStock(new Random().nextInt(22)+1);
-        this.setShelfStock(new Random().nextInt(22)+1);
-        this.setTheoreticalStock(new Random().nextInt(22)+1);
-        this.setLsStock(new Random().nextInt(22)+1);
-        this.setTwentyEighty(new Random().nextBoolean());
+        this.setPlanningDeliveryTime(LocalDateTime.now());
+        this.setShopStock(0);
+        this.setShelfStock(0);
+        this.setTheoreticalStock(0);
+        this.setPrice(new Random().nextInt(100) + 1);
+        this.setLsStock(new Random().nextInt(22) + 1);
+        this.setShoppingHallCount(this.getLsStock());
+        this.setShelfCount(new Random().nextInt(4)); // available only 0, 1, 2, 3
+        this.setStockRmCount(new Random().nextInt(22) + 1);
+        this.setTwentyEighty(false);
         this.setRmFeedbackCount(0);
+        this.setComment(RandomStringUtils.randomAlphabetic(10));
+        this.setActions(Collections.singletonList(ActionData.returnRandomData()));
     }
 }

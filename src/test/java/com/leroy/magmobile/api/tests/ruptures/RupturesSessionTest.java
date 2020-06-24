@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 
@@ -139,6 +140,13 @@ public class RupturesSessionTest extends BaseProjectApiTest {
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
     }
 
+    @Test(description = "C3285352 PUT ruptures session finish for finished session")
+    public void testFinishFinishedRuptureSession() {
+        RupturesClient rupturesClient = rupturesClient();
+        Response<JsonNode> resp = rupturesClient.finishSession(sessionId);
+        rupturesClient.assertThatActionIsNotAllowed(resp, sessionId);
+    }
+
     @Test(description = "C3298403 DELETE ruptures product from finished session")
     public void testDeleteRuptureSessionProducts() {
         step("Delete product");
@@ -165,6 +173,13 @@ public class RupturesSessionTest extends BaseProjectApiTest {
         step("Send get Request and check data");
         Response<RuptureProductDataList> getResp = rupturesClient.getProducts(sessionId);
         rupturesClient.assertThatDataMatches(getResp, ruptureProductDataList);
+    }
+
+    @Test(description = "C3285353 PUT ruptures session finish for deleted session")
+    public void testFinishDeletedRuptureSession() {
+        RupturesClient rupturesClient = rupturesClient();
+        Response<JsonNode> resp = rupturesClient.finishSession(sessionId);
+        rupturesClient.assertThatActionIsNotAllowed(resp, sessionId);
     }
 
 }
