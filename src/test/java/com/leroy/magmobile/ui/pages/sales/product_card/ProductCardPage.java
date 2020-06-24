@@ -1,16 +1,24 @@
 package com.leroy.magmobile.ui.pages.sales.product_card;
 
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.web_elements.android.AndroidHorizontalScrollView;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import io.qameta.allure.Step;
+import org.openqa.selenium.By;
 
 public class ProductCardPage extends CommonMagMobilePage {
 
+    public ProductCardPage(){
+        initElements();
+    }
+
     @AppFindBy(accessibilityId = "Tabs")
     protected Element mainArea;
+
+    AndroidHorizontalScrollView<String> tabsScrollView = new AndroidHorizontalScrollView<>(driver, By.xpath("//android.widget.HorizontalScrollView"));
 
     @AppFindBy(accessibilityId = "BackCloseModal")
     protected Element returnBackBtn;
@@ -58,22 +66,22 @@ public class ProductCardPage extends CommonMagMobilePage {
         switch (tabs) {
             case DESCRIPTION:
                 element = E(Tabs.DESCRIPTION.getName());
-                swipeLeftTo(mainArea, element);
+                tabsScrollView.scrollLeft(element);
                 element.click();
                 return (T) new ProductDescriptionPage();
             case SPECIFICATION:
                 element = E(Tabs.SPECIFICATION.getName());
-                swipeLeftTo(mainArea, element);
+                tabsScrollView.scrollLeft(element);
                 element.click();
                 return (T) new SpecificationsPage();
             case REVIEWS:
                 element = E(Tabs.REVIEWS.getName());
-                swipeRightTo(mainArea, element);
+                tabsScrollView.scrollRight(element);
                 element.click();
                 return (T) new ReviewsPage();
             case SIMILAR_PRODUCTS:
                 element = E(Tabs.SIMILAR_PRODUCTS.getName());
-                swipeRightTo(mainArea, element);
+                tabsScrollView.scrollRight(element);
                 element.click();
                 return (T) new SimilarProductsPage();
             default:

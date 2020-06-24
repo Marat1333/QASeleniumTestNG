@@ -2,6 +2,7 @@ package com.leroy.core.pages;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.configuration.Log;
+import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
@@ -9,6 +10,7 @@ import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.PointOption;
 import io.qameta.allure.Step;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
@@ -92,7 +94,7 @@ public abstract class BaseAppPage extends BasePage {
             breakCounter++;
         }
     }
-
+    
     public void swipeLeftTo(Element anchorElement, Element goalElement) {
         int anchorX = anchorElement.getLocation().getX();
         int anchorY = anchorElement.getLocation().getY();

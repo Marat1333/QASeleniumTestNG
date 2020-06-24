@@ -59,7 +59,12 @@ public class ProductDescriptionPage extends ProductCardPage {
 
     @Step("Перейти на страницу с детализацией цен и запасов")
     public ProductPricesQuantitySupplyPage goToPricesAndQuantityPage() {
-        productPriceGammaCardBtn.click();
+        mainScrollView.scrollToEnd();
+        if (!actionWithProductBtn.isVisible()) {
+            productPriceGammaCardBtn.click();
+        }else {
+            productPriceBtn.click();
+        }
         return new ProductPricesQuantitySupplyPage();
     }
 

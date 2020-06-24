@@ -9,6 +9,7 @@ import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
 import com.leroy.magmobile.api.data.catalog.product.CatalogSimilarProducts;
 import com.leroy.magmobile.api.data.catalog.product.SalesHistoryData;
 import com.leroy.magmobile.api.data.catalog.product.reviews.CatalogReviewsOfProductList;
+import com.leroy.magmobile.api.data.catalog.supply.CatalogSupplierData;
 import com.leroy.magmobile.api.enums.ReviewOptions;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magmobile.ui.AppBaseSteps;
@@ -203,15 +204,26 @@ public class ProductCardTest extends AppBaseSteps {
     @Test(description = "C23409157 Проверить навигацию и информацию во вкладке \"Поставки\"")
     public void testSupply() throws Exception{
         String lmCode = getRandomLmCode();
+        CatalogSupplierData data = catalogProductClient.getSupplyInfo(lmCode).asJson();
 
         // Pre-conditions
         preconditions(lmCode);
 
         //Step 1
-        step("Перейти во вкладку \"Отзывы\" и нажать на кнопку \"Оставить отзыв\"");
+        step("Перейти во вкладку \"Характеристики\" и нажать на кнопку \"Поставщик\"");
         ProductCardPage productCardPage = new ProductCardPage();
         SpecificationsPage specificationsPage = productCardPage.switchTab(ProductCardPage.Tabs.SPECIFICATION);
         SuppliesPage suppliesPage = specificationsPage.goToSupplyInfoPage();
+        suppliesPage.verifyRequiredElements();
+        suppliesPage.shouldAllSupplyDataIsCorrect(data);
+
+        //Step 2
+        step("Перейти во вкладку \"Характеристики\", нажать на кнопку \"Цены\" и открыть раздел \"Поставки\"");
+        suppliesPage.goBack();
+        ProductDescriptionPage productDescriptionPage = productCardPage.switchTab(ProductCardPage.Tabs.DESCRIPTION);
+        ProductPricesQuantitySupplyPage productPricesQuantitySupplyPage = productDescriptionPage.goToPricesAndQuantityPage();
+        productPricesQuantitySupplyPage.switchTab(ProductPricesQuantitySupplyPage.Tabs.SUPPLY);
+        suppliesPage.verifyRequiredElements();
     }
 
 }
