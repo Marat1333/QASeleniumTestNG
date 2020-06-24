@@ -17,4 +17,10 @@ public class ActionData {
         this.state = new Random().nextBoolean();
         this.userPosition = 0;
     }
+
+    public static ActionData returnRandomData() {
+        ActionData data = new ActionData();
+        data.generateRandomData();
+        return data;
+    }
 }

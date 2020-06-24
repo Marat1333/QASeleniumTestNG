@@ -12,7 +12,7 @@ public class GiveAwayData {
     private Integer shopId;
     private String point;
 
-    public LocalDateTime getDate() {
+    public LocalDateTime getDateAsLocalDateTime() {
         return LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss[.SSS][.S]'Z'"));
     }
 
