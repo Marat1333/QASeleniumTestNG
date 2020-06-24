@@ -65,8 +65,8 @@ public class DiscountPage extends CommonMagMobilePage {
 
     @Override
     public void waitForPageIsLoaded() {
-        headerLbl.waitForVisibility();
-        discountAmountFld.waitForVisibility();
+        headerLbl.waitForVisibility(short_timeout);
+        discountAmountFld.waitForVisibility(short_timeout);
     }
 
     // ACTIONS

@@ -14,6 +14,7 @@ import com.leroy.magmobile.ui.pages.sales.orders.cart.modal.ChangeProductModal;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SaleTypeModalPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.utils.ParserUtil;
+import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Test;
 
 import java.time.LocalDate;
@@ -22,10 +23,20 @@ import java.util.List;
 
 public class CartTest extends SalesBaseTest {
 
-    @Test(description = "C22797089 Создать корзину с экрана Документы продажи")
+    // Test groups
+    private final static String NEED_PRODUCTS_GROUP = "need_products";
+
+    private List<String> productLmCodes;
+
+    @BeforeGroups(groups = NEED_PRODUCTS_GROUP)
+    private void findProducts() {
+        productLmCodes = apiClientProvider.getProductLmCodes(2, false, false);
+    }
+
+    @Test(description = "C22797089 Создать корзину с экрана Документы продажи", groups = NEED_PRODUCTS_GROUP)
     public void testCreateBasketFromSalesDocumentsScreen() throws Exception {
         // Test data
-        String lmCode = getAnyLmCodeProductWithoutSpecificOptions();
+        String lmCode = productLmCodes.get(0);
         // Pre-condition
         MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
                 MainSalesDocumentsPage.class);
@@ -65,10 +76,10 @@ public class CartTest extends SalesBaseTest {
         // по каким другим критериям можно найти именно созданную корзину в списке - не понятно.
     }
 
-    @Test(description = "C22797090 Добавить новый товар в корзину", groups = NEED_ACCESS_TOKEN_GROUP)
+    @Test(description = "C22797090 Добавить новый товар в корзину", groups = {NEED_ACCESS_TOKEN_GROUP, NEED_PRODUCTS_GROUP})
     public void testAddNewProductIntoBasket() throws Exception {
         // Test data
-        String lmCode = apiClientProvider.getProductLmCodes(1).get(0);
+        String lmCode = productLmCodes.get(0);
 
         step("Pre-condition: Создание корзины");
         startFromScreenWithCreatedCart();
@@ -132,10 +143,10 @@ public class CartTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797092 Изменить количество товара (товар остается в том же заказе)",
-            groups = NEED_ACCESS_TOKEN_GROUP)
+            groups = {NEED_ACCESS_TOKEN_GROUP, NEED_PRODUCTS_GROUP})
     public void testChangeQuantityProductInCartWhenProductCountIsAvailable() throws Exception {
         // Test data
-        List<String> lmCodes = apiClientProvider.getProductLmCodes(1);
+        List<String> lmCodes = productLmCodes.subList(0, 1);
 
         step("Pre-condition: Создание корзины");
         startFromScreenWithCreatedCart(lmCodes, false);
@@ -167,10 +178,10 @@ public class CartTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797094 Изменить количество товара (товар переносится в другой заказ)",
-            groups = NEED_ACCESS_TOKEN_GROUP)
+            groups = {NEED_ACCESS_TOKEN_GROUP, NEED_PRODUCTS_GROUP})
     public void testChangeQuantityProductInCartWhenCountOfProductMoreThanAvailable() throws Exception {
         // Test data
-        List<String> lmCodes = apiClientProvider.getProductLmCodes(1);
+        List<String> lmCodes = productLmCodes.subList(0, 1);
 
         step("Pre-condition: Создание корзины");
         startFromScreenWithCreatedCart(lmCodes, false);

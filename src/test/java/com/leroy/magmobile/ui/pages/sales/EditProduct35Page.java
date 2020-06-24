@@ -19,7 +19,6 @@ public class EditProduct35Page<T extends CartOrderEstimatePage> extends AddProdu
     @Step("Нажмите кнопку сохранить")
     public T clickSaveButton() throws Exception {
         submitBtn.click();
-        submitBtn.waitForInvisibility();
         return newCartOrEstimatePage();
     }
 
