@@ -1,5 +1,6 @@
 package com.leroy.magmobile.ui.tests;
 
+import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.api.Module;
 import com.leroy.magmobile.api.clients.CatalogProductClient;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
@@ -224,6 +225,23 @@ public class ProductCardTest extends AppBaseSteps {
         ProductPricesQuantitySupplyPage productPricesQuantitySupplyPage = productDescriptionPage.goToPricesAndQuantityPage();
         productPricesQuantitySupplyPage.switchTab(ProductPricesQuantitySupplyPage.Tabs.SUPPLY);
         suppliesPage.verifyRequiredElements();
+    }
+
+    @Test(description = "C23409225 Проверить информацию на вкладке Описание товара")
+    public void testDescription() throws Exception {
+        String lmCode = getRandomLmCode();
+        CatalogProductClient.Extend extendOptions = CatalogProductClient.Extend.builder()
+                .inventory(true).logistic(true).rating(true).build();
+        CatalogProductData data = catalogProductClient.getProduct(lmCode, SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR,
+                extendOptions).asJson();
+
+        // Pre-conditions
+        preconditions(lmCode);
+
+        //Step 1
+        step("Перейти во вкладку \"Описание товара\"");
+        ProductDescriptionPage productDescriptionPage = new ProductDescriptionPage();
+        productDescriptionPage.shouldDataIsCorrect(data);
     }
 
 }
