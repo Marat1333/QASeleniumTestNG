@@ -6,6 +6,7 @@
         <suite-file path="CartSuite.xml"/>
         <suite-file path="EstimateSuite.xml"/>
         <suite-file path="MultiFunctionalButtonSuite.xml"/>
+        <suite-file path="OrderSuite.xml"/>
         <suite-file path="SalesDocumentsSuite.xml"/>
     </suite-files>
 
