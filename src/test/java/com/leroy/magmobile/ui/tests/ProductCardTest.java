@@ -17,10 +17,12 @@ import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.more.SearchShopPage;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductCardPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.PricesPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.ProductPricesQuantitySupplyPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.*;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.PeriodOfUsageModalPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SalesHistoryUnitsModalPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.StocksPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.SuppliesPage;
 import com.leroy.magmobile.ui.pages.search.FilterPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
@@ -242,6 +244,36 @@ public class ProductCardTest extends AppBaseSteps {
         step("Перейти во вкладку \"Описание товара\"");
         ProductDescriptionPage productDescriptionPage = new ProductDescriptionPage();
         productDescriptionPage.shouldDataIsCorrect(data);
+    }
+
+    @Test(description = "C3201002 Проверить данные во вкладках цены, запас")
+    public void testStocksSales() throws Exception {
+        String lmCode = "10009519";
+        CatalogProductClient.Extend extendOptions = CatalogProductClient.Extend.builder()
+                .inventory(true).logistic(true).rating(true).build();
+        CatalogProductData data = catalogProductClient.getProduct(lmCode, SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR,
+                extendOptions).asJson();
+
+        // Pre-conditions
+        preconditions(lmCode);
+
+        //Step 1
+        step("Перейти во вкладку \"Описание товара\" и открыть страницу с информацией о цене");
+        ProductDescriptionPage productDescriptionPage = new ProductDescriptionPage();
+        ProductPricesQuantitySupplyPage productPricesQuantitySupplyPage = productDescriptionPage.goToPricesAndQuantityPage();
+        PricesPage pricesPage = new PricesPage();
+        pricesPage.shouldDataIsCorrect(data);
+
+        //Step 2
+        step("Открыть вкладку с информацией о стоках");
+        StocksPage stocksPage = productPricesQuantitySupplyPage.switchTab(ProductPricesQuantitySupplyPage.Tabs.STOCKS);
+        stocksPage.shouldDataIsCorrect(data);
+
+        //Step 3
+        step("Проверить навигацию на страницу с информацией о стоках");
+        productPricesQuantitySupplyPage.goBack();
+        productDescriptionPage.goToStocksPage();
+        stocksPage.verifyRequiredElements();
     }
 
 }

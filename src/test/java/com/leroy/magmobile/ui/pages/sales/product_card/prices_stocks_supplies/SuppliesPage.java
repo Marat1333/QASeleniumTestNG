@@ -60,11 +60,6 @@ public class SuppliesPage extends ProductPricesQuantitySupplyPage {
             ".//*[contains(@text, 'факт приёмки')]/ancestor::*[1]",
             SupplyHistoryWidget.class);
 
-    public ProductCardPage goBack() {
-        backBtn.click();
-        return new ProductCardPage();
-    }
-
     public SuppliesPage verifyRequiredElements() {
         softAssert.areElementsVisible(supplierNameLbl, supplierCodeLbl);
         softAssert.verifyAll();

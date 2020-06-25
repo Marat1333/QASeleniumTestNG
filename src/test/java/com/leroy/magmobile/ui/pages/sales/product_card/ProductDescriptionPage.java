@@ -10,6 +10,7 @@ import com.leroy.magmobile.api.data.catalog.product.reviews.CatalogReviewsOfProd
 import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.pages.sales.orders.cart.Cart35Page;
 import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.ProductPricesQuantitySupplyPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.StocksPage;
 import com.leroy.utils.DateTimeUtil;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
@@ -90,6 +91,12 @@ public class ProductDescriptionPage extends ProductCardPage {
             productPriceBtn.click();
         }
         return new ProductPricesQuantitySupplyPage();
+    }
+
+    @Step("Перейти на страницу с информацией о стоках")
+    public StocksPage goToStocksPage(){
+        availableStockLbl.click();
+        return new StocksPage();
     }
 
     @Step("Перейти на страницу с историей продаж")

@@ -10,7 +10,7 @@ public class ProductCardTableViewWidget extends Element {
         super(driver, locator);
     }
 
-    @WebFindBy(xpath = "./div[1]/span[2]")
+    @WebFindBy(xpath = "./div[1]//span[contains(@class,'TableView')]/following-sibling::span")
     Element lmCode;
 
     @WebFindBy(xpath = "./div[2]/span")
