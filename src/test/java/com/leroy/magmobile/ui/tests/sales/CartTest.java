@@ -1,9 +1,5 @@
 package com.leroy.magmobile.ui.tests.sales;
 
-import com.leroy.magmobile.api.clients.CartClient;
-import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magmobile.ui.models.sales.OrderAppData;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
@@ -18,61 +14,13 @@ import com.leroy.magmobile.ui.pages.sales.orders.cart.modal.ChangeProductModal;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SaleTypeModalPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.utils.ParserUtil;
-import io.qameta.allure.Step;
 import org.testng.annotations.Test;
-import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class CartTest extends SalesBaseTest {
-
-    @Step("Pre-condition: Начать тест с экрана пустой корзины")
-    private void startFromScreenWithEmptyCart() throws Exception {
-        if (!Cart35Page.isThisPage()) {
-            MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
-                    MainSalesDocumentsPage.class);
-            SaleTypeModalPage modalPage = mainSalesDocumentsPage.clickCreateSalesDocumentButton();
-            modalPage.clickBasketMenuItem();
-        }
-    }
-
-    private void startFromScreenWithCreatedCart() throws Exception {
-        startFromScreenWithCreatedCart(null, false);
-    }
-
-    private void startFromScreenWithCreatedCart(boolean hasDiscount) throws Exception {
-        startFromScreenWithCreatedCart(null, hasDiscount);
-    }
-
-    @Step("Pre-condition: Создание корзины")
-    private void startFromScreenWithCreatedCart(List<String> lmCodes, boolean hasDiscount) throws Exception {
-        if (!Cart35Page.isThisPage()) {
-            String cartDocNumber = createDraftCart(lmCodes, hasDiscount);
-            MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
-                    MainSalesDocumentsPage.class);
-            SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
-            salesDocumentsPage.searchForDocumentByTextAndSelectIt(
-                    cartDocNumber);
-        }
-    }
-
-    @Step("Pre-condition: Создание корзины")
-    private void startFromScreenWithCreatedCart(List<CartProductOrderData> productDataList) throws Exception {
-        if (!Cart35Page.isThisPage()) {
-            CartClient cartClient = apiClientProvider.getCartClient();
-            Response<CartData> response = cartClient.sendRequestCreate(productDataList);
-            CartData cartData = cartClient.assertThatIsCreatedAndGetData(response, true);
-            String cartDocNumber = cartData.getCartId();
-            MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
-                    MainSalesDocumentsPage.class);
-            SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
-            salesDocumentsPage.searchForDocumentByTextAndSelectIt(
-                    cartDocNumber);
-        }
-    }
 
     @Test(description = "C22797089 Создать корзину с экрана Документы продажи")
     public void testCreateBasketFromSalesDocumentsScreen() throws Exception {
@@ -231,7 +179,7 @@ public class CartTest extends SalesBaseTest {
         SalesDocumentData salesDocumentData = cart35Page.getSalesDocumentData();
         double weightPerOneProductBefore = salesDocumentData.getOrderAppDataList().get(0).getTotalWeight() /
                 salesDocumentData.getOrderAppDataList().get(0).getProductCardDataList()
-                .get(0).getSelectedQuantity();
+                        .get(0).getSelectedQuantity();
         // Step 1
         step("Нажмите на мини-карточку любого товара в списке товаров корзины");
         CartActionWithProductCardModal modalPage = cart35Page.clickCardByIndex(1)
@@ -287,7 +235,7 @@ public class CartTest extends SalesBaseTest {
     public void testAddAvsOrTopEmProductIntoBasket() throws Exception {
         // Test data
         boolean oddDay = LocalDate.now().getDayOfMonth() % 2 == 1;
-        String lmCode = oddDay ? getAnyLmCodeProductWithTopEM() : getAnyLmCodeProductWithAvs();
+        String lmCode = oddDay ? getAnyLmCodeProductWithTopEM(true) : getAnyLmCodeProductWithAvs(true);
 
         startFromScreenWithCreatedCart();
 
@@ -612,19 +560,9 @@ public class CartTest extends SalesBaseTest {
     @Test(description = "C22847028 Объединение заказов на позднюю дату", groups = NEED_ACCESS_TOKEN_GROUP)
     public void testConsolidateOrders() throws Exception {
         step("Pre-condition: Поиск подходящих товаров и создание корзины с ними");
-        CatalogSearchFilter filtersData = new CatalogSearchFilter();
-        filtersData.setAvs(false);
-        filtersData.setTopEM(false);
-        filtersData.setHasAvailableStock(true);
-        List<ProductItemData> productItemDataList = apiClientProvider.getProducts(2, filtersData);
-        CartProductOrderData productWithNegativeBalance = new CartProductOrderData(
-                productItemDataList.get(0));
-        productWithNegativeBalance.setQuantity(productItemDataList.get(0).getAvailableStock() + 10.0);
-        CartProductOrderData productWithPositiveBalance = new CartProductOrderData(
-                productItemDataList.get(1));
-        productWithPositiveBalance.setQuantity(1.0);
+        List<CartProductOrderData> products = findProductsForSeveralOrdersInCart();
 
-        startFromScreenWithCreatedCart(Arrays.asList(productWithNegativeBalance, productWithPositiveBalance));
+        startFromScreenWithCreatedCart(products);
 
         Cart35Page cart35Page = new Cart35Page();
         SalesDocumentData salesDocumentData = cart35Page.getSalesDocumentData();

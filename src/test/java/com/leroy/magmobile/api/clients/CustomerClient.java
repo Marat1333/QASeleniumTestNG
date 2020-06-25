@@ -1,7 +1,7 @@
 package com.leroy.magmobile.api.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.leroy.constants.StatusCodes;
+import com.leroy.constants.api.StatusCodes;
 import com.leroy.magmobile.api.data.customer.*;
 import com.leroy.magmobile.api.requests.customer.*;
 import io.qameta.allure.Step;

@@ -1,6 +1,7 @@
 package com.leroy.core.fieldfactory;
 
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.annotations.Form;
 import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.core.annotations.WebFindBy;
@@ -48,6 +49,11 @@ public class FieldInitializer {
                 return createInstance(decoratableClass, fieldLocator, useClass);
             }
         }
+        // Init forms
+        if (field.getAnnotation(Form.class) != null) {
+            Class<?> decoratableClass = findImplementingClass(field.getType());
+            return createInstance(decoratableClass);
+        }
         return null;
     }
 
@@ -91,6 +97,8 @@ public class FieldInitializer {
      */
     private <T> T createInstance(Class<T> clazz, CustomFieldElementLocator fieldLocator, Class<?> listType) {
         try {
+            if (fieldLocator == null)
+                return clazz.getConstructor().newInstance();
             if (ElementList.class.isAssignableFrom(clazz))
                 return clazz.getConstructor(WebDriver.class, CustomLocator.class, listType.getClass())
                         .newInstance(driver, fieldLocator.getLocator(), listType);
@@ -102,5 +110,9 @@ public class FieldInitializer {
                     "WebElement can't be represented as " + clazz
             );
         }
+    }
+
+    private <T> T createInstance(Class<T> clazz) {
+        return createInstance(clazz, null, null);
     }
 }

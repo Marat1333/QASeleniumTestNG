@@ -24,6 +24,7 @@ capabilities:
       deviceOrientation: portrait
       automationName: uiautomator2
       newCommandTimeout: 60000
+      uiautomator2ServerInstallTimeout: 60000
       #deviceName: Use VM option -DmDeviceName
       #app: Use VM option -DmApp
       #platformVersion: 10.0 # not required option

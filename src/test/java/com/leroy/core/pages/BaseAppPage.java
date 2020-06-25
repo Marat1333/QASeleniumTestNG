@@ -78,6 +78,11 @@ public abstract class BaseAppPage extends BasePage {
         progressBar.waitForInvisibility();
     }
 
+    protected void waitUntilProgressBarAppearsAndDisappear() {
+        waitUntilProgressBarIsVisible();
+        waitUntilProgressBarIsInvisible();
+    }
+
     public void swipeRightTo(Element anchorElement, Element goalElement) {
         int anchorY = anchorElement.getLocation().getY();
         Dimension size = androidDriver.manage().window().getSize();

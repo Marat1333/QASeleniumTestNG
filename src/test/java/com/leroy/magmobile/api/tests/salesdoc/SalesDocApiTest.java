@@ -41,13 +41,9 @@ public class SalesDocApiTest extends BaseProjectApiTest {
         salesDocProductClient.sendRequestCreate(productOrderData)
                 .assertThatIsCreated(false);
 
-        // Get data
+        // update data variable
         salesDocument = salesDocProductClient.getResponseData();
         salesDocument.setProducts(Collections.singletonList(productOrderData));
-
-        // Send get
-        salesDocProductClient.sendRequestGet(salesDocument.getFullDocId());
-        salesDocProductClient.assertThatGetResponseMatches(salesDocument);
     }
 
     @Test(description = "C3232446 SalesDoc add services")
@@ -73,8 +69,9 @@ public class SalesDocApiTest extends BaseProjectApiTest {
     public void testSalesDocProductGET() {
         if (salesDocument == null)
             throw new IllegalArgumentException("SalesDoc hasn't been created");
-        salesDocProductClient.sendRequestGet(salesDocument.getFullDocId())
-                .assertThatResponseIsValid();
+        // Send get
+        salesDocProductClient.sendRequestGet(salesDocument.getFullDocId());
+        salesDocProductClient.assertThatGetResponseMatches(salesDocument);
     }
 
     @Test(description = "C22898131 SalesDoc service GET")

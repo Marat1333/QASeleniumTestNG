@@ -59,7 +59,7 @@ public class MagMobileBaseTest extends BaseUiTest {
     protected void setUserSessionDataByGroup(Method method) {
         List<String> groups = Arrays.asList(method.getAnnotation(Test.class).groups());
         UserSessionData userSessionData = getUserSessionData();
-        if (groups.contains(NEED_ACCESS_TOKEN_GROUP)) {
+        if (groups.contains(NEED_ACCESS_TOKEN_GROUP) || isNeedAccessToken()) {
             //userSessionData.setAccessToken(accessToken);
             userSessionData.setAccessToken(getAccessToken());
         }

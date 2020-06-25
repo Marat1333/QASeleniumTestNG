@@ -233,7 +233,8 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
 
         for (ProductItemData data : responseData) {
-            assertThat("top in product " + data.getLmCode() + " is " + data.getTop(), data.getTop(), equalTo(Integer.valueOf(TOP)));
+            assertThat("top in product " + data.getLmCode() + " is " + data.getTop(),
+                    data.getTop(), equalTo(TOP));
         }
     }
 
@@ -257,7 +258,8 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
 
         for (ProductItemData data : responseData) {
-            assertThat("top in product " + data.getLmCode() + " is " + data.getTop(), data.getTop(), oneOf(Integer.valueOf(FIRST_TOP), Integer.valueOf(SECOND_TOP)));
+            assertThat("top in product " + data.getLmCode() + " is " + data.getTop(),
+                    data.getTop(), oneOf(FIRST_TOP, SECOND_TOP));
         }
     }
 

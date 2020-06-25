@@ -27,6 +27,20 @@ public class ParserUtil {
     }
 
     /**
+     * Convert Double to String
+     *
+     * @param val - double value
+     * @return String
+     */
+    public static String doubleToStr(Double val, int decimalPlaces, boolean displayDecimalIfInt) {
+        if (val == null)
+            return null;
+        if (!displayDecimalIfInt && val == Math.round(val))
+            return String.valueOf(val.intValue());
+        return String.format("%." + decimalPlaces + "f", val);
+    }
+
+    /**
      * Convert String to Int and cut off non-digits if necessary
      *
      * @param str - string value
