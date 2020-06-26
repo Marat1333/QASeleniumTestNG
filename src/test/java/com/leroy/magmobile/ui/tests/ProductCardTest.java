@@ -4,34 +4,41 @@ import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.api.Module;
 import com.leroy.magmobile.api.clients.CatalogProductClient;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
+import com.leroy.magmobile.api.clients.ShopKladrClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
+import com.leroy.magmobile.api.data.catalog.product.CatalogShopsData;
 import com.leroy.magmobile.api.data.catalog.product.CatalogSimilarProducts;
 import com.leroy.magmobile.api.data.catalog.product.SalesHistoryData;
 import com.leroy.magmobile.api.data.catalog.product.reviews.CatalogReviewsOfProductList;
 import com.leroy.magmobile.api.data.catalog.supply.CatalogSupplierData;
+import com.leroy.magmobile.api.data.shops.PriceAndStockData;
+import com.leroy.magmobile.api.data.shops.ShopData;
 import com.leroy.magmobile.api.enums.ReviewOptions;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.more.SearchShopPage;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.ProductCardPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.PricesPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.ProductPricesQuantitySupplyPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.*;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.PeriodOfUsageModalPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SalesHistoryUnitsModalPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.PricesPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.ProductPricesQuantitySupplyPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.StocksPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.SuppliesPage;
 import com.leroy.magmobile.ui.pages.search.FilterPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import io.qameta.allure.Step;
+import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.util.LatLongUtils;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Guice(modules = {Module.class})
 public class ProductCardTest extends AppBaseSteps {
@@ -50,6 +57,30 @@ public class ProductCardTest extends AppBaseSteps {
         List<ProductItemData> productItemData = productItemDataList.getItems();
         anAssert().isTrue(productItemData.size() > 0, "size must be more than 0");
         return productItemData.get((int) (Math.random() * productItemData.size())).getLmCode();
+    }
+
+    private List<ShopData> sortShopsByDistance(List<ShopData> shopDataList) {
+        ShopData userShopData = shopDataList.stream().filter((i) -> i.getId().equals(getUserSessionData().getUserShopId())).findAny().orElse(null);
+        LatLong currentShop = new LatLong(userShopData.getLat(), userShopData.getLongitude());
+        for (ShopData data : shopDataList) {
+            LatLong goalShop = new LatLong(data.getLat(), data.getLongitude());
+            data.setDistance(LatLongUtils.sphericalDistance(currentShop, goalShop));
+        }
+        List<ShopData> sortedShopDataList = shopDataList.stream().sorted(Comparator.comparingDouble(ShopData::getDistance)).collect(Collectors.toList());
+        //магазин с которым сравнивали
+        sortedShopDataList.remove(0);
+        return sortedShopDataList;
+    }
+
+    private List<ShopData> setPricesAndStockForEachShopData(List<CatalogShopsData> catalogShopsData, List<ShopData> shopData) {
+        for (ShopData data : shopData) {
+            for (CatalogShopsData catalogData : catalogShopsData) {
+                if (data.getId().equals(catalogData.getShopId())){
+                    data.setPriceAndStock(new PriceAndStockData(catalogData.getPrice(), catalogData.getAvailableStock()));
+                }
+            }
+        }
+        return shopData;
     }
 
     @Step("Перейти в карточку товара {lmCode}")
@@ -158,7 +189,7 @@ public class ProductCardTest extends AppBaseSteps {
     }
 
     @Test(description = "C3201006 Оставить Отзыв о товаре")
-    public void testLeaveReview() throws Exception{
+    public void testLeaveReview() throws Exception {
         String lmCode = getRandomLmCode();
         String comment = "akdfnadksjfndjskanfkjadsnfkjsandfkjnsajdkfnsakjdfnkjsdanfknsajfdnsajdkfnadskjfnjsanfjsnafdks";
         String shortComment = "asdafsf";
@@ -205,7 +236,7 @@ public class ProductCardTest extends AppBaseSteps {
     }
 
     @Test(description = "C23409157 Проверить навигацию и информацию во вкладке \"Поставки\"")
-    public void testSupply() throws Exception{
+    public void testSupply() throws Exception {
         String lmCode = getRandomLmCode();
         CatalogSupplierData data = catalogProductClient.getSupplyInfo(lmCode).asJson();
 
@@ -248,7 +279,7 @@ public class ProductCardTest extends AppBaseSteps {
 
     @Test(description = "C3201002 Проверить данные во вкладках цены, запас")
     public void testStocksSales() throws Exception {
-        String lmCode = "10009519";
+        String lmCode = getRandomLmCode();
         CatalogProductClient.Extend extendOptions = CatalogProductClient.Extend.builder()
                 .inventory(true).logistic(true).rating(true).build();
         CatalogProductData data = catalogProductClient.getProduct(lmCode, SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR,
@@ -274,6 +305,31 @@ public class ProductCardTest extends AppBaseSteps {
         productPricesQuantitySupplyPage.goBack();
         productDescriptionPage.goToStocksPage();
         stocksPage.verifyRequiredElements();
+    }
+
+    @Test(description = "C3201003 Проверить цены и запас в ближайших магазинах")
+    public void testPricesAndStocksInNearestShops() throws Exception {
+        //get all shop id
+        ShopKladrClient shopKladrClient = apiClientProvider.getShopKladrClient();
+        List<ShopData> shopDataList = shopKladrClient.getShops().asJsonList(ShopData.class);
+        List<String> shopIdList = shopDataList.stream().map(ShopData::getId).collect(Collectors.toList());
+        String[] shopIdArray = new String[shopIdList.size()];
+        shopIdArray = shopIdList.toArray(shopIdArray);
+
+        //get prices and quantity in all shops
+        String lmCode = getRandomLmCode();
+        List<CatalogShopsData> catalogShopsList = catalogProductClient.getProductShopsPriceAndQuantity(lmCode, shopIdArray).asJsonList(CatalogShopsData.class);
+        List<ShopData> sortedShopDataList = sortShopsByDistance(shopDataList);
+        sortedShopDataList = setPricesAndStockForEachShopData(catalogShopsList, sortedShopDataList);
+
+        // Pre-conditions
+        preconditions(lmCode);
+
+        //Step 1
+        step("Перейти во вкладку \"Описание товара\" и открыть страницу с информацией о цене");
+        ProductDescriptionPage productDescriptionPage = new ProductDescriptionPage();
+        ProductPricesQuantitySupplyPage productPricesQuantitySupplyPage = productDescriptionPage.goToPricesAndQuantityPage();
+        PricesPage pricesPage = new PricesPage();
     }
 
 }

@@ -135,7 +135,7 @@ public class CatalogTest extends BaseProjectApiTest {
         userData.setLdap(getUserSessionData().getUserLdap());
 
         ShopData shopData = new ShopData();
-        shopData.setId(Integer.parseInt(getUserSessionData().getUserShopId()));
+        shopData.setId(getUserSessionData().getUserShopId());
 
         ReviewData reviewData = new ReviewData();
         reviewData.setLmCode(RandomStringUtils.randomNumeric(6));
