@@ -348,7 +348,7 @@ public class Cart35Page extends CartOrderEstimatePage {
         List<ProductOrderCardAppData> productOrderCardAppDataList = productCardsScrollView.getFullDataList();
         for (ProductOrderCardAppData productCardData : productOrderCardAppDataList) {
             anAssert.isNotEquals(productCardData.getLmCode(), expLmCode,
-                    "Продукта с таким ЛМ код быть не должно");
+                    "Продукта с таким ЛМ код быть не должно (" + expLmCode + ")");
         }
         return this;
     }
