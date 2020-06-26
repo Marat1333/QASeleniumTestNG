@@ -1,6 +1,7 @@
 package com.leroy.umbrella_extension.authorization;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.leroy.constants.EnvConstants;
 import com.leroy.umbrella_extension.authorization.data.TokenData;
 import com.leroy.umbrella_extension.authorization.requests.AccountLoginGetRequest;
 import com.leroy.umbrella_extension.authorization.requests.AccountLoginPostRequest;
@@ -20,9 +21,8 @@ public class AuthClient extends BaseClient {
 
     private String gatewayUrl;
 
-    // TODO should be get from properties:
-    private String clientId = "check-token-test";
-    private String secretKey = "secret";
+    private String clientId = EnvConstants.AUTH_CLIENT_ID;
+    private String secretKey = EnvConstants.AUTH_SECRET_KEY;
 
     public Response<TokenData> getResponseToken(String username, String password) {
         TokenRequest tokenRequest = new TokenRequest();
@@ -72,6 +72,6 @@ public class AuthClient extends BaseClient {
 
     @PostConstruct
     private void init() {
-        gatewayUrl = params.getProperty("mashup.is4Auth.url");
+        gatewayUrl = EnvConstants.IS4_AUTH_HOST;
     }
 }
