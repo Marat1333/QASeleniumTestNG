@@ -110,29 +110,6 @@ public class RupturesSessionTest extends BaseProjectApiTest {
         rupturesClient.assertThatDataMatches(resp, ruptureProductDataList);
     }
 
-    @Test(description = "C3285462 GET ruptures groups for new session with groups")
-    public void testRuptureSessionGrouping() {
-        RupturesClient rupturesClient = rupturesClient();
-        Response<RuptureSessionGroupData> resp = rupturesClient.getGroups(sessionId);
-        isResponseOk(resp);
-        List<RuptureSessionGroupData> groups = resp.asJsonList(RuptureSessionGroupData.class);
-        assertThat("groups count", groups, hasSize(3));
-        RuptureSessionGroupData gr1 = groups.get(0);
-        assertThat("gr1 - ", gr1.getAction(), is(0));
-        assertThat("gr1 - ", gr1.getActiveCount(), is(1));
-        assertThat("gr1 - ", gr1.getFinishedCount(), is(1));
-
-        RuptureSessionGroupData gr2 = groups.get(1);
-        assertThat("gr2 - ", gr2.getAction(), is(1));
-        assertThat("gr2 - ", gr2.getActiveCount(), is(0));
-        assertThat("gr2 - ", gr2.getFinishedCount(), is(1));
-
-        RuptureSessionGroupData gr3 = groups.get(2);
-        assertThat("gr3 - ", gr3.getAction(), is(2));
-        assertThat("gr3 - ", gr3.getActiveCount(), is(1));
-        assertThat("gr3 - ", gr3.getFinishedCount(), is(0));
-    }
-
     @Test(description = "C3233585 PUT ruptures session finish")
     public void testFinishRuptureSession() {
         RupturesClient rupturesClient = rupturesClient();

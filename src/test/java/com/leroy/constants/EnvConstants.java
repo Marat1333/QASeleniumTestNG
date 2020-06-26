@@ -13,6 +13,11 @@ public class EnvConstants {
     private static final String ENV = getEnvironment();
     private static final Properties properties = getPropertiesForEnv(ENV);
 
+    // Authorization
+    public static final String IS4_AUTH_HOST = getProperty("url.is4.auth.host");
+    public static final String AUTH_CLIENT_ID = getProperty("auth.clientId");
+    public static final String AUTH_SECRET_KEY = getProperty("auth.secretKey");
+
     // User options
     public static final String BASIC_USER_LDAP = getProperty("basic.user.ldap");
     public static final String BASIC_USER_PASS = getProperty("basic.user.password");
