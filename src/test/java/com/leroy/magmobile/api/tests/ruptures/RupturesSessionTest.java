@@ -8,13 +8,6 @@ import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.core.Is.is;
 
 public class RupturesSessionTest extends BaseProjectApiTest {
 
@@ -56,33 +49,9 @@ public class RupturesSessionTest extends BaseProjectApiTest {
         rupturePostData.setStoreId(Integer.parseInt(getUserSessionData().getUserShopId()));
         rupturePostData.setDepartmentId(Integer.parseInt(getUserSessionData().getUserDepartmentId()));
 
-        Response<JsonNode> resp = rupturesClient.createProduct(rupturePostData);
+        Response<JsonNode> resp = rupturesClient.createSession(rupturePostData);
         sessionId = rupturesClient.assertThatSessionIsCreatedAndGetId(resp);
         ruptureProductDataList = new RuptureProductDataList();
-        ruptureProductDataList.addItem(productData);
-    }
-
-    @Test(description = "C3233582 PUT ruptures product - Add new product")
-    public void testUpdateRuptureSessionProduct() {
-        RupturesClient rupturesClient = rupturesClient();
-        ActionData action1 = new ActionData();
-        action1.setAction(0);
-        action1.setState(false);
-        action1.setUserPosition(0);
-
-        RuptureProductData productData = new RuptureProductData();
-        productData.generateRandomData();
-        productData.setActions(Collections.singletonList(action1));
-
-        ReqRuptureSessionData rupturePostData = new ReqRuptureSessionData();
-        rupturePostData.setSessionId(sessionId);
-        rupturePostData.setProduct(productData);
-        rupturePostData.setShopId(Integer.parseInt(getUserSessionData().getUserShopId()));
-        rupturePostData.setStoreId(Integer.parseInt(getUserSessionData().getUserShopId()));
-        rupturePostData.setDepartmentId(Integer.parseInt(getUserSessionData().getUserDepartmentId()));
-
-        Response<JsonNode> resp = rupturesClient.updateProduct(rupturePostData);
-        rupturesClient.assertThatIsUpdatedOrDeleted(resp);
         ruptureProductDataList.addItem(productData);
     }
 
@@ -110,29 +79,6 @@ public class RupturesSessionTest extends BaseProjectApiTest {
         rupturesClient.assertThatDataMatches(resp, ruptureProductDataList);
     }
 
-    @Test(description = "C3285462 GET ruptures groups for new session with groups")
-    public void testRuptureSessionGrouping() {
-        RupturesClient rupturesClient = rupturesClient();
-        Response<RuptureSessionGroupData> resp = rupturesClient.getGroups(sessionId);
-        isResponseOk(resp);
-        List<RuptureSessionGroupData> groups = resp.asJsonList(RuptureSessionGroupData.class);
-        assertThat("groups count", groups, hasSize(3));
-        RuptureSessionGroupData gr1 = groups.get(0);
-        assertThat("gr1 - ", gr1.getAction(), is(0));
-        assertThat("gr1 - ", gr1.getActiveCount(), is(1));
-        assertThat("gr1 - ", gr1.getFinishedCount(), is(1));
-
-        RuptureSessionGroupData gr2 = groups.get(1);
-        assertThat("gr2 - ", gr2.getAction(), is(1));
-        assertThat("gr2 - ", gr2.getActiveCount(), is(0));
-        assertThat("gr2 - ", gr2.getFinishedCount(), is(1));
-
-        RuptureSessionGroupData gr3 = groups.get(2);
-        assertThat("gr3 - ", gr3.getAction(), is(2));
-        assertThat("gr3 - ", gr3.getActiveCount(), is(1));
-        assertThat("gr3 - ", gr3.getFinishedCount(), is(0));
-    }
-
     @Test(description = "C3233585 PUT ruptures session finish")
     public void testFinishRuptureSession() {
         RupturesClient rupturesClient = rupturesClient();
@@ -152,7 +98,7 @@ public class RupturesSessionTest extends BaseProjectApiTest {
         step("Delete product");
         RupturesClient rupturesClient = rupturesClient();
         String deleteLmCode = ruptureProductDataList.getItems().get(0).getLmCode();
-        Response<JsonNode> resp = rupturesClient.deleteProduct(deleteLmCode, sessionId);
+        Response<JsonNode> resp = rupturesClient.deleteProductInSession(deleteLmCode, sessionId);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
         ruptureProductDataList.removeItem(0);
 
