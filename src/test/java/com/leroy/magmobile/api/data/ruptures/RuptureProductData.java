@@ -1,11 +1,11 @@
 package com.leroy.magmobile.api.data.ruptures;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -20,8 +20,7 @@ public class RuptureProductData {
     private Integer price;
     private Boolean twentyEighty;
     private String provider;
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    private LocalDateTime planningDeliveryTime;
+    private String planningDeliveryTime;
     private Integer shopStock;
     private Integer shelfStock;
     private Integer theoreticalStock;
@@ -33,6 +32,14 @@ public class RuptureProductData {
     private List<ActionData> actions;
     private Integer shelfCount;
     private String comment;
+
+    public LocalDateTime getPlanningDeliveryTimeAsLocalDateTime() {
+        return LocalDateTime.parse(planningDeliveryTime, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss[.SSS][.S]'Z'"));
+    }
+
+    public void setPlanningDeliveryTime(LocalDateTime date) {
+        this.planningDeliveryTime = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+    }
 
     @JsonIgnore
     public void generateRandomData() {

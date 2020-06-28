@@ -69,7 +69,7 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
         rupturePostData.setDepartmentId(Integer.parseInt(getUserSessionData().getUserDepartmentId()));
 
         for (int i = 0; i < 11; i++) {
-            Response<JsonNode> resp = rupturesClient.createProduct(rupturePostData);
+            Response<JsonNode> resp = rupturesClient.createSession(rupturePostData);
             Integer sessionId = rupturesClient.assertThatSessionIsCreatedAndGetId(resp);
             ruptureStatuses.put(sessionId, ACTIVE_STATUS);
             if (i < 3) {
@@ -79,6 +79,11 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
             rupturesClient.assertThatIsUpdatedOrDeleted(resp);
             ruptureStatuses.put(sessionId, FINISHED_STATUS);
         }
+
+        // Create session in another department
+        rupturePostData.setDepartmentId(Integer.parseInt(getUserSessionData().getUserDepartmentId()) + 1);
+        Response<JsonNode> resp = rupturesClient.createSession(rupturePostData);
+        rupturesClient.assertThatSessionIsCreatedAndGetId(resp);
     }
 
     @Test(description = "C3285388 GET ruptures sessions status active")
@@ -148,11 +153,13 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
 
     @Test(description = "C3233580 GET ruptures sessions only shop and department")
     public void testSearchForRuptureSessionsWithoutSpecificFilters() {
+        int expectedTotalCount = 11;
         RupturesClient rupturesClient = rupturesClient();
-        Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions();
+        Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(20);
         isResponseOk(resp);
         List<ResRuptureSessionData> items = resp.asJson().getItems();
-        assertThat("items count", items, hasSize(equalTo(10)));
+        assertThat("items count", items, hasSize(equalTo(expectedTotalCount)));
+        assertThat("total count", resp.asJson().getTotalCount(), equalTo(expectedTotalCount));
         for (ResRuptureSessionData item : items) {
             String descPrefix = "SessionId: " + item.getSessionId() + "; ";
             assertThat(descPrefix + "storeId", item.getStoreId(), is(Integer.parseInt(getUserSessionData().getUserShopId())));
