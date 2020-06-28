@@ -31,7 +31,7 @@ public class PuzComboBox extends Element {
     @WebFindBy(xpath = "." + CONTAINER_OPTION_XPATH + "//span[contains(@class, 'label')]")
     protected ElementList<Element> dropDownElementsList;
 
-    public boolean isEnabled(){
+    public boolean isEnabled() {
         return input.isEnabled();
     }
 

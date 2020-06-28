@@ -17,11 +17,11 @@ public class ExtendedProductCardWidget extends ProductCardWidget {
     @WebFindBy(xpath = "./div[3]/div[1]/span")
     Element availableQuantity;
 
-    public String getPrice(){
+    public String getPrice() {
         return price.getText();
     }
 
-    public String getAvailableQuantity(){
+    public String getAvailableQuantity() {
         return availableQuantity.getText();
     }
 }

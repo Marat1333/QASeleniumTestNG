@@ -17,7 +17,7 @@ public class CellDataList {
 
     @JsonIgnore
     public void updateLastItem(CellData itemData) {
-        items.remove(items.size()-1);
+        items.remove(items.size() - 1);
         items.add(itemData);
     }
 }

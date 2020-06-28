@@ -2,7 +2,6 @@ package com.leroy.magmobile.api.requests.catalog_search;
 
 import com.leroy.magmobile.api.requests.CommonSearchRequestBuilder;
 import ru.leroymerlin.qa.core.clients.base.Method;
-import ru.leroymerlin.qa.core.clients.base.RequestBuilder;
 
 @Method(value = "GET", path = "/catalog/services/search")
 public class GetCatalogServicesSearch extends CommonSearchRequestBuilder<GetCatalogServicesSearch> {

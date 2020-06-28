@@ -66,7 +66,7 @@ public class TextUtil extends StringUtils {
             "h:mm a", Locale.US);
     public static final SimpleDateFormat TIME_FORMAT_24_HOUR = new SimpleDateFormat(
             "HH:mm", Locale.US);
-    public static final String[] wildcardchars = new String[] { "*", "?" };
+    public static final String[] wildcardchars = new String[]{"*", "?"};
 
     static {
         REGEX_ALPHANUMERIC = "/^[A-Za-z0-9]+$/";
@@ -129,8 +129,7 @@ public class TextUtil extends StringUtils {
      * Replace each token seperated by <seperator> from <input> with
      * <replaceWith>.
      *
-     * @param input
-     *            Input text variable
+     * @param input       Input text variable
      * @param seperator
      * @param replaceWith
      * @return
@@ -441,11 +440,9 @@ public class TextUtil extends StringUtils {
     /**
      * Suppress any sensitive attributes for specified xml string.
      *
-     * @param xml
-     *            the xml string
-     * @param attrs
-     *            String array of attributes that need to be suppressed, the
-     *            values will be replaced as "SUPPRESSED"
+     * @param xml   the xml string
+     * @param attrs String array of attributes that need to be suppressed, the
+     *              values will be replaced as "SUPPRESSED"
      * @return modified xml string
      */
     public static String suppressAttributes(String xml, String[] attrs) {
@@ -601,8 +598,7 @@ public class TextUtil extends StringUtils {
     /**
      * parse parameter string
      *
-     * @param paramString
-     *            The Parameter string
+     * @param paramString The Parameter string
      * @return A HashMap of parameters.
      */
     public static HashMap<String, String> parseParamString(String paramString) {
@@ -612,12 +608,9 @@ public class TextUtil extends StringUtils {
     /**
      * parse parameter string
      *
-     * @param paramString
-     *            The Parameter string
-     * @param paramPairDelim
-     *            The delimeter of the parameter pair
-     * @param paramDelim
-     *            The delimeter of the parameter
+     * @param paramString    The Parameter string
+     * @param paramPairDelim The delimeter of the parameter pair
+     * @param paramDelim     The delimeter of the parameter
      * @return A HashMap of parameters.
      */
     public static HashMap<String, String> parseParamString(String paramString,
@@ -775,12 +768,10 @@ public class TextUtil extends StringUtils {
     /**
      * Method will convert list into String by appending the separator
      *
-     * @param list
-     *            - List
-     * @param elementSeparator
-     *            - Separator to be used
+     * @param list             - List
+     * @param elementSeparator - Separator to be used
      * @return - String representation of List by calling toString() method on
-     *         all objects in list. e.g return something like 1,2,3,4 etc.
+     * all objects in list. e.g return something like 1,2,3,4 etc.
      */
     public static String listToString(List<Object> list, String elementSeparator) {
         return listToString(list, elementSeparator, "", "");
@@ -789,13 +780,11 @@ public class TextUtil extends StringUtils {
     /**
      * Method will convert list into String by appending the Separator
      *
-     * @param list
-     *            - List
-     * @param elementSeparator
-     *            - Separator to be used between element
+     * @param list             - List
+     * @param elementSeparator - Separator to be used between element
      * @param elementEnclosure
      * @return - String representation of List by calling toString() method on
-     *         all objects in list. e.g return something like 1,2,3,4 etc.
+     * all objects in list. e.g return something like 1,2,3,4 etc.
      */
     public static String listToString(List<Object> list,
                                       String elementSeparator, String elementEnclosure) {
@@ -806,16 +795,12 @@ public class TextUtil extends StringUtils {
     /**
      * Method will convert list into String by appending the Separator
      *
-     * @param list
-     *            - List
-     * @param elementSeparator
-     *            - Deliminator to be used
-     * @param elementPrefix
-     *            - Optional Prefix surrounding the element
-     * @param elementSuffix
-     *            - Optional Suffix surrounding the element
+     * @param list             - List
+     * @param elementSeparator - Deliminator to be used
+     * @param elementPrefix    - Optional Prefix surrounding the element
+     * @param elementSuffix    - Optional Suffix surrounding the element
      * @return - String representation of List by calling toString() method on
-     *         all objects in list. e.g return something like 1,2,3,4 etc.
+     * all objects in list. e.g return something like 1,2,3,4 etc.
      */
     public static String listToString(List<Object> list,
                                       String elementSeparator, String elementPrefix, String elementSuffix) {
@@ -847,7 +832,7 @@ public class TextUtil extends StringUtils {
     /**
      * This utility method is used to split the result string into multiple
      * strings if result string is larger than the maximum length limit.
-     *
+     * <p>
      * If maximum length limit value is smaller than the length of the result
      * string plus a single element, an IllegalArgumentException would be thrown
      * out. <br>
@@ -938,22 +923,14 @@ public class TextUtil extends StringUtils {
      * ,'G','H','I','J','K','L','M','N','O','P','Q','R');}</li> <br>
      * <br>
      *
-     * @param <T>
-     *            the generic type
-     * @param list
-     *            the list
-     * @param resultPrefix
-     *            the result prefix
-     * @param resultSuffix
-     *            the result suffix
-     * @param elementSeparator
-     *            the element separator
-     * @param elementPrefix
-     *            the element prefix
-     * @param elementSuffix
-     *            the element suffix
-     * @param maximumLengthLimit
-     *            the maximum length limit
+     * @param <T>                the generic type
+     * @param list               the list
+     * @param resultPrefix       the result prefix
+     * @param resultSuffix       the result suffix
+     * @param elementSeparator   the element separator
+     * @param elementPrefix      the element prefix
+     * @param elementSuffix      the element suffix
+     * @param maximumLengthLimit the maximum length limit
      * @return the list
      * @since 7.20.000
      */
@@ -979,7 +956,7 @@ public class TextUtil extends StringUtils {
                     + elementSuffix.length();
             int startIndex = 0, previousStartIndex = 0;
 
-            for (int i = 0; i < list.size();) {
+            for (int i = 0; i < list.size(); ) {
                 boolean first = true;
                 buffer = new StringBuffer(resultPrefix);
 
@@ -1030,10 +1007,9 @@ public class TextUtil extends StringUtils {
      * Method will convert int array into String by appending the Separator
      *
      * @param array
-     * @param elementSeparator
-     *            - Deliminator to be used
+     * @param elementSeparator - Deliminator to be used
      * @return - String representation of List by calling toString() method on
-     *         all objects in list. e.g return something like 1,2,3,4 etc.
+     * all objects in list. e.g return something like 1,2,3,4 etc.
      */
     public static String ArrayToString(int[] array, String elementSeparator) {
         return ArrayToString(array, elementSeparator, "", "");
@@ -1043,12 +1019,10 @@ public class TextUtil extends StringUtils {
      * Method will convert int array into String by appending the Separator
      *
      * @param array
-     * @param elementSeparator
-     *            - Seperator to be used
-     * @param elementEnclosure
-     *            - String surrounding the element
+     * @param elementSeparator - Seperator to be used
+     * @param elementEnclosure - String surrounding the element
      * @return - String representation of List by calling toString() method on
-     *         all objects in list. e.g return something like 1,2,3,4 etc.
+     * all objects in list. e.g return something like 1,2,3,4 etc.
      */
     public static String ArrayToString(int[] array, String elementSeparator,
                                        String elementEnclosure) {
@@ -1060,14 +1034,11 @@ public class TextUtil extends StringUtils {
      * Method will convert int array into String by appending the Separator
      *
      * @param array
-     * @param elementSeparator
-     *            - Deliminator to be used
-     * @param elementPrefix
-     *            - Optional Prefix surrounding the element
-     * @param elementSuffix
-     *            - Optional Suffix surrounding the element
+     * @param elementSeparator - Deliminator to be used
+     * @param elementPrefix    - Optional Prefix surrounding the element
+     * @param elementSuffix    - Optional Suffix surrounding the element
      * @return - String representation of List by calling toString() method on
-     *         all objects in list. e.g return something like 1,2,3,4 etc.
+     * all objects in list. e.g return something like 1,2,3,4 etc.
      */
     public static String ArrayToString(int[] array, String elementSeparator,
                                        String elementPrefix, String elementSuffix) {
@@ -1095,10 +1066,9 @@ public class TextUtil extends StringUtils {
      * Method will convert long array into String by appending the Separator
      *
      * @param array
-     * @param elementSeparator
-     *            - Deliminator to be used
+     * @param elementSeparator - Deliminator to be used
      * @return - String representation of List by calling toString() method on
-     *         all objects in list. e.g return something like 1,2,3,4 etc.
+     * all objects in list. e.g return something like 1,2,3,4 etc.
      */
     public static String ArrayToString(long[] array, String elementSeparator) {
         return ArrayToString(array, elementSeparator, "", "");
@@ -1108,12 +1078,10 @@ public class TextUtil extends StringUtils {
      * Method will convert long array into String by appending the Separator
      *
      * @param array
-     * @param elementSeparator
-     *            - Seperator to be used
-     * @param elementEnclosure
-     *            - String surrounding the element
+     * @param elementSeparator - Seperator to be used
+     * @param elementEnclosure - String surrounding the element
      * @return - String representation of List by calling toString() method on
-     *         all objects in list. e.g return something like 1,2,3,4 etc.
+     * all objects in list. e.g return something like 1,2,3,4 etc.
      */
     public static String ArrayToString(long[] array, String elementSeparator,
                                        String elementEnclosure) {
@@ -1125,14 +1093,11 @@ public class TextUtil extends StringUtils {
      * Method will convert long array into String by appending the Separator
      *
      * @param array
-     * @param elementSeparator
-     *            - Deliminator to be used
-     * @param elementPrefix
-     *            - Optional Prefix surrounding the element
-     * @param elementSuffix
-     *            - Optional Suffix surrounding the element
+     * @param elementSeparator - Deliminator to be used
+     * @param elementPrefix    - Optional Prefix surrounding the element
+     * @param elementSuffix    - Optional Suffix surrounding the element
      * @return - String representation of List by calling toString() method on
-     *         all objects in list. e.g return something like 1,2,3,4 etc.
+     * all objects in list. e.g return something like 1,2,3,4 etc.
      */
     public static String ArrayToString(long[] array, String elementSeparator,
                                        String elementPrefix, String elementSuffix) {
@@ -1160,10 +1125,9 @@ public class TextUtil extends StringUtils {
      * Method will convert long array into String by appending the Separator
      *
      * @param array
-     * @param elementSeparator
-     *            - Deliminator to be used
+     * @param elementSeparator - Deliminator to be used
      * @return - String representation of List by calling toString() method on
-     *         all objects in list. e.g return something like 1,2,3,4 etc.
+     * all objects in list. e.g return something like 1,2,3,4 etc.
      */
     public static String ArrayToString(Object[] array, String elementSeparator) {
         return ArrayToString(array, elementSeparator, "", "");
@@ -1173,12 +1137,10 @@ public class TextUtil extends StringUtils {
      * Method will convert long array into String by appending the Separator
      *
      * @param array
-     * @param elementSeparator
-     *            - Seperator to be used
-     * @param elementEnclosure
-     *            - String surrounding the element
+     * @param elementSeparator - Seperator to be used
+     * @param elementEnclosure - String surrounding the element
      * @return - String representation of List by calling toString() method on
-     *         all objects in list. e.g return something like 1,2,3,4 etc.
+     * all objects in list. e.g return something like 1,2,3,4 etc.
      */
     public static String ArrayToString(Object[] array, String elementSeparator,
                                        String elementEnclosure) {
@@ -1190,14 +1152,11 @@ public class TextUtil extends StringUtils {
      * Method will convert long array into String by appending the Separator
      *
      * @param array
-     * @param elementSeparator
-     *            - Deliminator to be used
-     * @param elementPrefix
-     *            - Optional Prefix surrounding the element
-     * @param elementSuffix
-     *            - Optional Suffix surrounding the element
+     * @param elementSeparator - Deliminator to be used
+     * @param elementPrefix    - Optional Prefix surrounding the element
+     * @param elementSuffix    - Optional Suffix surrounding the element
      * @return - String representation of List by calling toString() method on
-     *         all objects in list. e.g return something like 1,2,3,4 etc.
+     * all objects in list. e.g return something like 1,2,3,4 etc.
      */
     public static String ArrayToString(Object[] array, String elementSeparator,
                                        String elementPrefix, String elementSuffix) {
@@ -1307,8 +1266,7 @@ public class TextUtil extends StringUtils {
     /**
      * Convert contained '&' to xml format '&#38;' for a xml string
      *
-     * @param xml
-     *            original xml string
+     * @param xml original xml string
      * @return xml string
      */
     public static String convertCharAndToXmlFormat(String xml) {
@@ -1319,10 +1277,9 @@ public class TextUtil extends StringUtils {
      * Replace strings using the given string matrix. The format of the matrix is like {{target, replacement},{target, replacement}...}.
      *
      * @param text
-     * @param replpaceMatrix
-     *                 the string replacement matrix. For example {{ "&lt;", " <" }, {
-     *                 "&gt;", ">" } } means replace all the "&lt; with " <" and all
-     *                 the "&gt;" with">".
+     * @param replpaceMatrix the string replacement matrix. For example {{ "&lt;", " <" }, {
+     *                       "&gt;", ">" } } means replace all the "&lt; with " <" and all
+     *                       the "&gt;" with">".
      * @return replaced string
      */
     public static String batchReplace(String text, String[][] replpaceMatrix) {
@@ -1361,8 +1318,7 @@ public class TextUtil extends StringUtils {
      *
      * @param text1
      * @param text2
-     * @param isIgnoreCase
-     *            : true, to compare in ignore case way
+     * @param isIgnoreCase : true, to compare in ignore case way
      * @return true if the two strings are equal
      */
     public static boolean isEqualString(String text1, String text2,
@@ -1524,20 +1480,19 @@ public class TextUtil extends StringUtils {
      * Even java.util.Date doesn't contains any timezone information, and the
      * time millisecond is always a UTC based time, however, when we store the
      * date into date base with below statement:
-     *
+     * <p>
      * statement.setTimestamp(1, new Timestamp(System.currentMillis()))
-     *
+     * <p>
      * The time information with the timezone information would be stored into
      * database even the timezone setting of the database is GMT. To correct
      * this behaviour, we provide this method to substract the correponding
      * timezone information of the date from the original date and returned a
      * new equavlent date of the GMT timezone.
-     *
+     * <p>
      * For instance, with an original date of PST date "2012-03-21 00:33:11.87",
      * the result output date would be "2012-03-21 08:33:11.87"
      *
-     * @param date
-     *            the date
+     * @param date the date
      * @return the date
      */
     public static Date stripTimeZoneOffset(Date date) {
@@ -1557,8 +1512,7 @@ public class TextUtil extends StringUtils {
      * Strip time zone offset from a java.util.Date that the input time
      * millisecond stands for.
      *
-     * @param timeMillis
-     *            the time millis
+     * @param timeMillis the time millis
      * @return the date
      */
     public static long stripTimeZoneOffset(long timeMillis) {
@@ -1569,8 +1523,7 @@ public class TextUtil extends StringUtils {
     /**
      * To camel string.
      *
-     * @param text
-     *            the text
+     * @param text the text
      * @return the string
      */
     public static String toCamelString(String text) {
@@ -1580,10 +1533,8 @@ public class TextUtil extends StringUtils {
     /**
      * To camel string.
      *
-     * @param text
-     *            the text
-     * @param delimiter
-     *            the delimiter
+     * @param text      the text
+     * @param delimiter the delimiter
      * @return the string
      */
     public static String toCamelString(String text, String delimiter) {
@@ -1658,7 +1609,6 @@ public class TextUtil extends StringUtils {
      *
      * @param number
      * @return true if number is null, empty, or not numeric, false otherwise.
-     *
      * @since 8.0
      */
     public static boolean isMalformedStringNumber(String number) {
@@ -1726,6 +1676,7 @@ public class TextUtil extends StringUtils {
 
     /**
      * Check string to
+     *
      * @param value
      * @return
      */

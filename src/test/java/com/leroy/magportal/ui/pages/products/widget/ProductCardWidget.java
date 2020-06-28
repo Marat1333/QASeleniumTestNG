@@ -19,15 +19,15 @@ public class ProductCardWidget extends Element {
     @WebFindBy(xpath = ".//p[contains(@class, 'title')]")
     protected Element titleLbl;
 
-    public String getLmCode(){
+    public String getLmCode() {
         return lmCodeLbl.getText();
     }
 
-    public String getBarCode(){
-        return barCodeLbl.getText().replaceAll(" ","");
+    public String getBarCode() {
+        return barCodeLbl.getText().replaceAll(" ", "");
     }
 
-    public String getTitle(){
+    public String getTitle() {
         return titleLbl.getText();
     }
 }

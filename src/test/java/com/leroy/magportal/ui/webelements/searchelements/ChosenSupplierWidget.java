@@ -18,11 +18,11 @@ public class ChosenSupplierWidget extends BaseWidget {
     @WebFindBy(xpath = "./button")
     Button deleteChosenSupplierBtn;
 
-    public String getChosenSupplierName(){
+    public String getChosenSupplierName() {
         return chosenSupplierName.getText();
     }
 
-    public void deleteChosenSupplier(){
+    public void deleteChosenSupplier() {
         deleteChosenSupplierBtn.click();
         waitForInvisibility(tiny_timeout);
     }

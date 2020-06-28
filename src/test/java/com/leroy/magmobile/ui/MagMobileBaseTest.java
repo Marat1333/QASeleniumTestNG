@@ -6,7 +6,6 @@ import com.leroy.core.UserSessionData;
 import com.leroy.core.configuration.BaseUiTest;
 import com.leroy.magmobile.api.ApiClientProvider;
 import com.leroy.umbrella_extension.authorization.AuthClient;
-import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

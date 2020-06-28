@@ -13,5 +13,5 @@ public class SupplyCardShipmentsData {
     private String status;
     private Boolean isFullReceived;
     private String logFlow;
-    private List<SupplyCardProductsData>products;
+    private List<SupplyCardProductsData> products;
 }

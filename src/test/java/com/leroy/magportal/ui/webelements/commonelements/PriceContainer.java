@@ -1,7 +1,6 @@
 package com.leroy.magportal.ui.webelements.commonelements;
 
 import com.leroy.core.annotations.WebFindBy;
-import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.utils.ParserUtil;

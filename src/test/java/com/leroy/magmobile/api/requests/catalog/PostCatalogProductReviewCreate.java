@@ -6,7 +6,7 @@ import ru.leroymerlin.qa.core.clients.base.Method;
 
 @Method(value = "POST", path = "/catalog/product/review")
 public class PostCatalogProductReviewCreate extends CommonLegoRequest<PostCatalogProductReviewCreate> {
-    public PostCatalogProductReviewCreate setReviewData(ReviewData data){
+    public PostCatalogProductReviewCreate setReviewData(ReviewData data) {
         return this.jsonBody(data);
     }
 }

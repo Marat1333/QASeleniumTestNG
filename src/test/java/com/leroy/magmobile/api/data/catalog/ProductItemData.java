@@ -2,7 +2,6 @@ package com.leroy.magmobile.api.data.catalog;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.leroy.magmobile.api.data.catalog.product.PriceInfo;
 import lombok.Data;
 
 import java.time.ZonedDateTime;

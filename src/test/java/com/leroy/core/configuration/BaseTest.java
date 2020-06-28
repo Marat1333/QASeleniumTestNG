@@ -1,12 +1,12 @@
 package com.leroy.core.configuration;
 
+import com.leroy.core.Context;
 import com.leroy.core.ContextProvider;
 import com.leroy.core.UserSessionData;
 import com.leroy.core.asserts.AssertWrapper;
 import com.leroy.core.asserts.SoftAssertWrapper;
 import com.leroy.core.listeners.TestRailListener;
 import com.leroy.core.testrail.helpers.StepLog;
-import com.leroy.core.Context;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

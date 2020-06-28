@@ -10,7 +10,7 @@ public class ResOrderProductCheckQuantityData {
     private String lmCode;
     private Double quantity;
     private Integer availableStock;
-    private  String title;
+    private String title;
     private String barCode;
     private String departmentId;
     //logistic":{"weight":"1.595","depth":"3.4","width":"47","height":"118.9"},

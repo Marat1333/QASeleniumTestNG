@@ -21,7 +21,9 @@ public class OrderProductData extends BaseProductOrderData {
     private String pointOfSale;
     private String pointOfOrigin;
 
-    public OrderProductData() {}
+    public OrderProductData() {
+    }
+
     public OrderProductData(ProductItemData productItemResponse) {
         super(productItemResponse);
     }
