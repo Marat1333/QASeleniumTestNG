@@ -56,7 +56,7 @@ public class ReviewsPage extends ProductCardPage {
         for (int i=0; i<dataList.size();i++){
             tmpFrontData = reviewCardDataList.get(i);
             tmpApiData = dataList.get(i);
-            softAssert.isEquals(tmpApiData.getAuthor().getName(), tmpFrontData.getName(), "name");
+            softAssert.isContainsIgnoringCase(tmpApiData.getAuthor().getName(), tmpFrontData.getName().replaceAll("\\.\\.\\.",""), "name");
             softAssert.isEquals(tmpApiData.getAuthor().getLocation(), tmpFrontData.getCity(), "city");
             softAssert.isEquals(tmpApiData.getBody(), tmpFrontData.getReviewBody(), "review body");
             softAssert.isEquals(DateTimeUtil.strToLocalDate(tmpApiData.getCreated_at(), "yyyy-MM-dd'T'HH:mm:ss.SSS"),

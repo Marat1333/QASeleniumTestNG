@@ -263,7 +263,6 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         }
     }
 
-    @Issue("BACKEND_ISSUE")
     @Test(description = "C22893333 search by hasAvailableStock filter")
     public void testSearchByHasAvailableStockFilter() {
         final boolean hasAvailableStock = true;
@@ -453,7 +452,6 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         }
     }
 
-    @Issue("BACKEND_ISSUE")
     @Test(description = "C22893343 search by avs neq null filter")
     public void testSearchByAvsNeqNullFilter() {
 

@@ -237,7 +237,7 @@ public class ProductCardTest extends AppBaseSteps {
 
     @Test(description = "C23409157 Проверить навигацию и информацию во вкладке \"Поставки\"")
     public void testSupply() throws Exception {
-        String lmCode = getRandomLmCode();
+        String lmCode = "10009340";
         CatalogSupplierData data = catalogProductClient.getSupplyInfo(lmCode).asJson();
 
         // Pre-conditions

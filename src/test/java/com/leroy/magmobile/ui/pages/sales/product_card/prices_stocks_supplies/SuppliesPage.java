@@ -105,9 +105,15 @@ public class SuppliesPage extends ProductPricesQuantitySupplyPage {
             softAssert.isEquals(uiEntity.getId(), apiEntity.getOrderNo(), "order number");
             softAssert.isEquals(uiEntity.getOrderedAmount(), apiEntity.getOrderedItemQty(), "ordered quantity");
             softAssert.isEquals(uiEntity.getReceivedAmount(), apiEntity.getReceivedItemQty(), "received quantity");
-            softAssert.isEquals(uiEntity.getContractDate(), apiEntity.getPlannedDeliveryDate().plusHours(3).toLocalDate(), "contract date");
-            softAssert.isEquals(uiEntity.getNoteDate(), apiEntity.getSupplierDate().plusHours(3).toLocalDate(), "planned date");
-            softAssert.isEquals(uiEntity.getReceiveDate(), apiEntity.getActualDeliveryDate().plusHours(3).toLocalDate(), "receiving date");
+            if (apiEntity.getPlannedDeliveryDate()!=null){
+                softAssert.isEquals(uiEntity.getContractDate(), apiEntity.getPlannedDeliveryDate().plusHours(3).toLocalDate(), "contract date");
+            }
+            if (apiEntity.getSupplierDate()!=null) {
+                softAssert.isEquals(uiEntity.getNoteDate(), apiEntity.getSupplierDate().plusHours(3).toLocalDate(), "planned date");
+            }
+            if (apiEntity.getActualDeliveryDate()!=null){
+                softAssert.isEquals(uiEntity.getReceiveDate(), apiEntity.getActualDeliveryDate().plusHours(3).toLocalDate(), "receiving date");
+            }
         }
 
         mainScrollView.scrollDownToText("Способ получения товара клиентом");
