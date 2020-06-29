@@ -116,8 +116,7 @@ public class OrderParamsForm extends BaseAppPage {
     // ACTION STEPS
 
     public OrderParamsForm selectDeliveryType(SalesDocumentsConst.GiveAwayPoints type) {
-        if (!deliveryBtn.isVisible())
-            mainScrollView.scrollToBeginning();
+        mainScrollView.scrollToBeginning();
         if (SalesDocumentsConst.GiveAwayPoints.DELIVERY.equals(type)) {
             deliveryBtn.click();
             deliveryDateFld.waitForVisibility();

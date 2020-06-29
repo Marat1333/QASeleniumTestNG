@@ -152,7 +152,7 @@ public class DiscountPage extends CommonMagMobilePage {
     @Step("Проверить, что Новая цена = {value}")
     public DiscountPage shouldDiscountNewPriceIs(double value) {
         double actualDiscountNewPrice = ParserUtil.strToDouble(discountNewPriceFld.getText());
-        anAssert.isTrue(Math.abs(value - actualDiscountNewPrice) <= 0.01,
+        anAssert.isTrue(Math.abs(value - actualDiscountNewPrice) <= 0.02,
                 "Неверная новая цена. Actual: " + actualDiscountNewPrice + " \n Expected:" + value);
         return this;
     }

@@ -16,6 +16,7 @@ import com.leroy.magmobile.ui.pages.sales.orders.order.CartProcessOrder35Page;
 import com.leroy.magmobile.ui.pages.sales.orders.order.ConfirmedOrderPage;
 import com.leroy.magmobile.ui.pages.sales.orders.order.OrderActionWithProductCardModel;
 import com.leroy.magmobile.ui.pages.sales.orders.order.ProcessOrder35Page;
+import com.leroy.magmobile.ui.pages.sales.orders.order.modal.ConfirmExitOrderModal;
 import com.leroy.magmobile.ui.pages.sales.orders.order.modal.ConfirmRemoveOrderModal;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.utils.ParserUtil;
@@ -103,10 +104,18 @@ public class OrderTest extends SalesBaseTest {
             List<CartProductOrderData> productDataList, boolean returnSalesDocumentData) throws Exception {
         String orderId = createConfirmedOrder(lmCodes, productDataList);
 
-        MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
-                MainSalesDocumentsPage.class);
-        SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
-        salesDocumentsPage.searchForDocumentByTextAndSelectIt(orderId);
+        SalesDocumentsPage salesDocumentsPage;
+        boolean isStartFromScratch = isStartFromScratch();
+        if (isStartFromScratch) {
+            MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
+                    MainSalesDocumentsPage.class);
+            salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
+        } else {
+            salesDocumentsPage = new SalesDocumentsPage();
+            salesDocumentsPage.waitUntilDocumentIsInCorrectStatus(orderId,
+                    SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal());
+        }
+        salesDocumentsPage.searchForDocumentByTextAndSelectIt(orderId, !isStartFromScratch);
         confirmedOrderPage = new ConfirmedOrderPage();
         if (returnSalesDocumentData)
             salesDocumentData = confirmedOrderPage.getSalesDocumentData();
@@ -385,11 +394,8 @@ public class OrderTest extends SalesBaseTest {
         salesDocumentsPage.searchForDocumentByTextAndSelectIt(documentData.getNumber());
         new ConfirmedOrderPage()
                 .shouldSalesDocumentDataIs(salesDocumentData)
-                .shouldFormFieldsAre(orderDetailsData);
-
-        // Clean up
-        step("(Доп шаг) Отменяем заказ через API запрос");
-        cancelOrder(documentNumber);
+                .shouldFormFieldsAre(orderDetailsData)
+                .clickBack();
     }
 
     @Test(description = "C22797116 Подтвердить заказ на самовывоз через 14 дней")
@@ -503,11 +509,8 @@ public class OrderTest extends SalesBaseTest {
         salesDocumentsPage.searchForDocumentByTextAndSelectIt(documentData.getNumber());
         new ConfirmedOrderPage()
                 .shouldSalesDocumentDataIs(salesDocumentData)
-                .shouldFormFieldsAre(orderDetailsData);
-
-        // Clean up
-        step("(Доп шаг) Отменяем заказ через API запрос");
-        cancelOrder(documentNumber);
+                .shouldFormFieldsAre(orderDetailsData)
+                .clickBack();
     }
 
     @Test(description = "C22797118 Создать заказ из корзины со скидкой")
@@ -560,11 +563,8 @@ public class OrderTest extends SalesBaseTest {
         salesDocumentsPage.searchForDocumentByTextAndSelectIt(documentData.getNumber());
         new ConfirmedOrderPage()
                 .shouldSalesDocumentDataIs(salesDocumentData)
-                .shouldFormFieldsAre(orderDetailsData);
-
-        // Clean up
-        step("(Доп шаг) Отменяем заказ через API запрос");
-        cancelOrder(documentNumber);
+                .shouldFormFieldsAre(orderDetailsData)
+                .clickBack();
     }
 
     @Test(description = "C22797119 Создать заказ из корзины с авторской сборкой")
@@ -676,6 +676,8 @@ public class OrderTest extends SalesBaseTest {
         // Step 4
         step("Нажмите на Добавить в заказ");
         stepAddProductInOrder(true);
+
+        backToSalesDocumentPage();
     }
 
     @Test(description = "C22808292 Добавить товар в неподтвержденный заказ (количества товара недостаточно)")
@@ -710,6 +712,8 @@ public class OrderTest extends SalesBaseTest {
         // Step 4
         step("Нажмите на Добавить в заказ");
         stepAddProductInOrderWithEditQuantity(product2.getAvailableStock() + 10, true);
+
+        backToSalesDocumentPage();
     }
 
     @Test(description = "C22808293 Изменить количество товара в неподтвержденном заказе")
@@ -736,6 +740,8 @@ public class OrderTest extends SalesBaseTest {
         // Step 7
         step("Нажмите на кнопку Сохранить");
         stepSaveEditProductChanges(true);
+
+        backToSalesDocumentPage();
     }
 
     @Test(description = "C22808294 Добавить Топ ЕМ или AVS товар в неподтвержденный заказ")
@@ -762,6 +768,8 @@ public class OrderTest extends SalesBaseTest {
         // Step 4
         step("Нажмите на Добавить в заказ");
         stepAddProductInOrder(true);
+
+        backToSalesDocumentPage();
     }
 
     @Test(description = "C22808295 Удалить товар из неподтвержденного заказа", groups = NEED_PRODUCTS_GROUP)
@@ -780,6 +788,8 @@ public class OrderTest extends SalesBaseTest {
         // Step 3 and 4
         step("Выберите параметр Удалить товар и подтвердите удаление");
         stepSelectRemoveProductInModalWindow(true);
+
+        backToSalesDocumentPage();
     }
 
     @Test(description = "C22808296 Добавить товар в неподтвержденный заказ (из модалки действий с товаром)")
@@ -798,6 +808,8 @@ public class OrderTest extends SalesBaseTest {
         // Steps 3 - 6
         step("Измените кол-во товара и добавьте его ");
         stepAddProductInOrderWithEditQuantity(2.0, true);
+
+        backToSalesDocumentPage();
     }
 
     @Test(description = "C22847244 Удалить последний товар из неподтвержденного заказа")
@@ -1134,10 +1146,10 @@ public class OrderTest extends SalesBaseTest {
             salesDocumentData.setTitle(salesDocumentData.getOrderDetailsData().getDeliveryType().getUiVal());
 
             // Для Юр лиц статус "Создан", для физ лиц - "Готов к сборке". Баг или фича?
-            if (salesDocumentData.getOrderDetailsData().getOrgAccount() != null)
-                salesDocumentData.setStatus(SalesDocumentsConst.States.CONFIRMED.getUiVal());
-            else
-                salesDocumentData.setStatus(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal());
+            //if (salesDocumentData.getOrderDetailsData().getOrgAccount() != null)
+            //    salesDocumentData.setStatus(SalesDocumentsConst.States.CONFIRMED.getUiVal());
+            //else
+            salesDocumentData.setStatus(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal());
         }
     }
 
@@ -1268,6 +1280,9 @@ public class OrderTest extends SalesBaseTest {
         } else {
             processOrder35Page.clickTrashIcon()
                     .verifyRequiredElements().clickConfirmButton();
+            // workaround for bug?
+            new Cart35Page().clickBack();
+            //
             if (checkThatOrderIsDeleted)
                 new SalesDocumentsPage().shouldSalesDocumentIsNotPresent(salesDocumentData.getNumber());
         }
@@ -1293,6 +1308,9 @@ public class OrderTest extends SalesBaseTest {
             ConfirmRemoveOrderModal modal = new ConfirmRemoveOrderModal();
             modal.verifyRequiredElements();
             modal.clickConfirmButton();
+            // workaround for bug?
+            new Cart35Page().clickBack();
+            //
             if (verification)
                 new SalesDocumentsPage().shouldSalesDocumentIsNotPresent(salesDocumentData.getNumber());
         }
@@ -1445,7 +1463,24 @@ public class OrderTest extends SalesBaseTest {
                 confirmedOrderPage.shouldAllActiveButtonsAreDisabled();
             }
         }
+        confirmedOrderPage.clickBack();
+        salesDocumentsPage = new SalesDocumentsPage();
     }
 
+    /**
+     * Нажимаем назад и возвращаемся на страницу документы продажи
+     */
+    private void backToSalesDocumentPage() {
+        if (confirmedOrderPage != null) {
+            confirmedOrderPage.clickBack();
+        } else {
+            if (cartProcessOrder35Page != null)
+                cartProcessOrder35Page.clickBack();
+            else if (processOrder35Page != null)
+                processOrder35Page.clickBack();
+            new ConfirmExitOrderModal().clickConfirmButton();
+        }
+        salesDocumentsPage = new Cart35Page().clickBackButton();
+    }
 
 }

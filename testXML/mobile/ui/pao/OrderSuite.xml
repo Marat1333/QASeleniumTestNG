@@ -6,21 +6,50 @@
         <listener class-name="com.leroy.core.listeners.TestRailListener"/>
     </listeners>
 
-    <test name="C22797112 Создать заказ из корзины с одним заказом">
+    <test name="Создание и подтверждение заказа">
         <classes>
             <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
                 <methods>
+                    <include name="testCreateOrdersFromCartWithTwoOrders"/>
                     <include name="testCreateOrderFromCartWithOneOrder"/>
+                    <include name="testConfirmOrderAsDeliveryTomorrow"/>
+                    <include name="testConfirmOrderAsPickupAfter14Days"/>
+                    <include name="testConfirmOrderAsDeliveryAfter15Days"/>
+                    <include name="testCreateOrderFromCartWithDiscount"/>
+                    <include name="testCreateOrderFromCartWithAuthorAssembly"/>
+                    <include name="testCreateOrderFromTransformedCart"/>
                 </methods>
             </class>
         </classes>
     </test>
 
-    <test name="C22797113 Создать последовательно заказы из корзины с двумя заказами">
+    <test name="Редактирование неподтвержденного заказа">
         <classes>
             <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
                 <methods>
-                    <include name="testCreateOrdersFromCartWithTwoOrders"/>
+                    <include name="testAddProductInNotConfirmedOrderWhenProductHasAvailableStock"/>
+                    <include name="testAddProductInNotConfirmedOrderWhenProductHasNotAvailableStock"/>
+                    <include name="testChangeProductQuantityInNotConfirmedOrder"/>
+                    <include name="testAddTopEmOrAvsProductInNotConfirmedOrder"/>
+                    <include name="testAddProductInNotConfirmedOrderFromActionWithProductModal"/>
+                    <include name="testRemoveProductFromNotConfirmedOrder"/>
+                    <include name="testRemoveLastProductFromNotConfirmedOrder"/>
+                    <include name="testRemoveNotConfirmedOrder"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="Редактирование подтвержденного заказа">
+        <classes>
+            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
+                <methods>
+                    <include name="testAddProductInConfirmedOrder"/>
+                    <include name="testRemoveProductFromConfirmedOrder"/>
+                    <include name="testChangeParametersConfirmedOrder"/>
+                    <include name="testRemoveLastProductFromConfirmedOrder"/>
+                    <include name="testCancelConfirmedOrder"/>
+                    <include name="testChangeQuantityProductInConfirmedOrder"/>
                 </methods>
             </class>
         </classes>
@@ -38,208 +67,5 @@
             </class>
         </classes>
     </test>
-
-    <test name="C22797115 Подтвердить заказ на доставку на завтра">
-        <classes>
-            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
-                <methods>
-                    <include name="testConfirmOrderAsDeliveryTomorrow"/>
-                </methods>
-            </class>
-        </classes>
-    </test>
-
-    <test name="C22797116 Подтвердить заказ на самовывоз через 14 дней">
-        <classes>
-            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
-                <methods>
-                    <include name="testConfirmOrderAsPickupAfter14Days"/>
-                </methods>
-            </class>
-        </classes>
-    </test>
-
-    <test name="C22797117 Подтвердить заказ на доставку через 15 дней">
-        <classes>
-            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
-                <methods>
-                    <include name="testConfirmOrderAsDeliveryAfter15Days"/>
-                </methods>
-            </class>
-        </classes>
-    </test>
-
-    <test name="C22797118 Создать заказ из корзины со скидкой">
-        <classes>
-            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
-                <methods>
-                    <include name="testCreateOrderFromCartWithDiscount"/>
-                </methods>
-            </class>
-        </classes>
-    </test>
-
-    <test name="C22797119 Создать заказ из корзины с авторской сборкой">
-        <classes>
-            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
-                <methods>
-                    <include name="testCreateOrderFromCartWithAuthorAssembly"/>
-                </methods>
-            </class>
-        </classes>
-    </test>
-
-    <test name="C22797122 Создание заказа из корзины, преобразованной из сметы">
-        <classes>
-            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
-                <methods>
-                    <include name="testCreateOrderFromTransformedCart"/>
-                </methods>
-            </class>
-        </classes>
-    </test>
-
-    <test name="C22808291 Добавить товар в неподтвержденный заказ (количества товара достаточно)">
-        <classes>
-            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
-                <methods>
-                    <include name="testAddProductInNotConfirmedOrderWhenProductHasAvailableStock"/>
-                </methods>
-            </class>
-        </classes>
-    </test>
-
-    <test name="C22808292 Добавить товар в неподтвержденный заказ (количества товара недостаточно)">
-        <classes>
-            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
-                <methods>
-                    <include name="testAddProductInNotConfirmedOrderWhenProductHasNotAvailableStock"/>
-                </methods>
-            </class>
-        </classes>
-    </test>
-
-    <test name="C22808293 Изменить количество товара в неподтвержденном заказе">
-        <classes>
-            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
-                <methods>
-                    <include name="testChangeProductQuantityInNotConfirmedOrder"/>
-                </methods>
-            </class>
-        </classes>
-    </test>
-
-    <test name="C22808294 Добавить Топ ЕМ или AVS товар в неподтвержденный заказ">
-        <classes>
-            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
-                <methods>
-                    <include name="testAddTopEmOrAvsProductInNotConfirmedOrder"/>
-                </methods>
-            </class>
-        </classes>
-    </test>
-
-    <test name="C22808295 Удалить товар из неподтвержденного заказа">
-        <classes>
-            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
-                <methods>
-                    <include name="testRemoveProductFromNotConfirmedOrder"/>
-                </methods>
-            </class>
-        </classes>
-    </test>
-
-    <test name="C22847244 Удалить последний товар из неподтвержденного заказа">
-        <classes>
-            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
-                <methods>
-                    <include name="testRemoveLastProductFromNotConfirmedOrder"/>
-                </methods>
-            </class>
-        </classes>
-    </test>
-
-    <test name="C22808296 Добавить товар в неподтвержденный заказ (из модалки действий с товаром)">
-        <classes>
-            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
-                <methods>
-                    <include name="testAddProductInNotConfirmedOrderFromActionWithProductModal"/>
-                </methods>
-            </class>
-        </classes>
-    </test>
-
-    <test name="C22847242 Удалить неподтвержденный заказ">
-        <classes>
-            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
-                <methods>
-                    <include name="testRemoveNotConfirmedOrder"/>
-                </methods>
-            </class>
-        </classes>
-    </test>
-
-    <test name="C22847029 Добавить товар в подтвержденный закакз">
-        <classes>
-            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
-                <methods>
-                    <include name="testAddProductInConfirmedOrder"/>
-                </methods>
-            </class>
-        </classes>
-    </test>
-
-    <test name="C22847030 Изменить количество товара в подтвержденном заказе">
-        <classes>
-            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
-                <methods>
-                    <include name="testChangeQuantityProductInConfirmedOrder"/>
-                </methods>
-            </class>
-        </classes>
-    </test>
-
-    <test name="C22847031 Удалить товар из подтвержденного заказа">
-        <classes>
-            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
-                <methods>
-                    <include name="testRemoveProductFromConfirmedOrder"/>
-                </methods>
-            </class>
-        </classes>
-    </test>
-
-    <test name="C22847032 Изменить параметры подтвержденного заказа (тип получения, получателя или комментарий)">
-        <classes>
-            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
-                <methods>
-                    <include name="testChangeParametersConfirmedOrder"/>
-                </methods>
-            </class>
-        </classes>
-    </test>
-
-    <test name="C22847245 Удалить последний товар из подтвержденного заказа">
-        <classes>
-            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
-                <methods>
-                    <include name="testRemoveLastProductFromConfirmedOrder"/>
-                </methods>
-            </class>
-        </classes>
-    </test>
-
-    <test name="C22847243 Отменить подтвержденный заказ">
-        <classes>
-            <class name="com.leroy.magmobile.ui.tests.sales.OrderTest">
-                <methods>
-                    <include name="testCancelConfirmedOrder"/>
-                </methods>
-            </class>
-        </classes>
-    </test>
-
-
-
 
 </suite>
