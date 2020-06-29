@@ -123,7 +123,8 @@ public class TestRailListener extends Listener {
             case 1:
                 return ResultModel.ST_PASSED;
             case 2:
-                return ResultModel.ST_FAILED;
+                //return ResultModel.ST_FAILED;
+                return ResultModel.ST_RETEST;
             case 3:
                 return ResultModel.ST_SKIPPED;
             default:

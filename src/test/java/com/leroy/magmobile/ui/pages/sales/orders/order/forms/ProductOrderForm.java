@@ -1,7 +1,7 @@
 package com.leroy.magmobile.ui.pages.sales.orders.order.forms;
 
-import com.leroy.constants.Currency;
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.configuration.Log;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
@@ -14,6 +14,8 @@ import com.leroy.magmobile.ui.pages.sales.widget.ProductOrderCardAppWidget;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.utils.DateTimeUtil;
 import com.leroy.utils.ParserUtil;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,10 +62,16 @@ public class ProductOrderForm extends BaseAppPage {
         return countAndWeightProductLbl.waitForVisibility();
     }
 
-    public void waitUntilTotalOrderPriceIs(Double value) {
-        String expectedValue = String.format("%s %s",
-                ParserUtil.doubleToStr(value, 2, false), Currency.RUB.getName());
-        anAssert.isTrue(totalPriceVal.waitUntilTextIsEqualTo(expectedValue),
+    public void waitUntilTotalOrderPriceIs(Double expectedValue) {
+        boolean result = false;
+        try {
+            new WebDriverWait(driver, timeout)
+                    .until(driverObject -> ParserUtil.strToDouble(totalPriceVal.getText()).equals(expectedValue));
+            result = true;
+        } catch (TimeoutException e) {
+            Log.warn(String.format("waitUntilTotalOrderPriceIs failed (tried for %d second(s))", timeout));
+        }
+        anAssert.isTrue(result,
                 "Не дождались, когда стоимость в заказе будет равна '" + expectedValue +
                         "'. Фактическое значение: " + totalPriceVal.getText());
     }
