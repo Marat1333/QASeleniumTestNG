@@ -14,4 +14,14 @@ public class SalesDocWebData {
     private String authorName;
     private SimpleCustomerData client;
     private List<OrderWebData> orders;
+
+    public boolean isDocumentContainsProduct(String lmCode) {
+        for (OrderWebData orderWebData  : orders) {
+            for (ProductOrderCardWebData productOrderCardWebData : orderWebData.getProductCardDataList()) {
+                if (productOrderCardWebData.getLmCode().equals(lmCode))
+                    return true;
+            }
+        }
+        return false;
+    }
 }

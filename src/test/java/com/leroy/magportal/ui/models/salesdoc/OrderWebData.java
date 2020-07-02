@@ -14,6 +14,10 @@ public class OrderWebData {
     private Double totalWeight; // кг
     private Double totalPrice; // Рубли
 
+    public ProductOrderCardWebData getLastProduct() {
+        return productCardDataList.get(productCardDataList.size() - 1);
+    }
+
     public void addFirstProduct(ProductOrderCardWebData product, boolean recalculateOrder) {
         List<ProductOrderCardWebData> result = new ArrayList<>();
         result.add(product);
