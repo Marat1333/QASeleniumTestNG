@@ -6,7 +6,6 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magportal.ui.models.salesdoc.OrderWebData;
 import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
-import com.leroy.magportal.ui.pages.cart_estimate.modal.ConfirmRemoveProductModal;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SubmittedEstimateModal;
 import com.leroy.magportal.ui.pages.cart_estimate.widget.OrderPuzWidget;
 import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
@@ -129,29 +128,6 @@ public class EstimatePage extends CartEstimatePage {
         trashBtn.waitForInvisibility();
         waitForSpinnerDisappear();
         return this;
-    }
-
-    @Step("Удалить товар #{productIdx} из заказа #{orderIdx}")
-    public EstimatePage removeProductByIndex(int orderIdx, int productIdx) throws Exception {
-        productIdx--;
-        orderIdx--;
-        OrderPuzWidget orderWidget = orders.get(orderIdx);
-        int productCountBefore = orderWidget.getProductWidgets().getCount();
-        orderWidget.getProductWidget(productIdx).clickDelete();
-        new ConfirmRemoveProductModal()
-                .verifyRequiredElements()
-                .clickYesButton();
-        waitForSpinnerAppearAndDisappear();
-        if (productCountBefore > 1)
-            orderWidget.getProductWidgets().waitUntilElementCountEquals(productCountBefore - 1);
-        else
-            searchProductFld.waitForInvisibility();
-        return this;
-    }
-
-    @Step("Удалить товар #{productIdx}")
-    public EstimatePage removeProductByIndex(int productIdx) throws Exception {
-        return removeProductByIndex(1, productIdx);
     }
 
     // Verifications

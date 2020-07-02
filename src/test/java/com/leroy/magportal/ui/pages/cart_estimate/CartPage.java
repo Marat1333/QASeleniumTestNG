@@ -81,10 +81,21 @@ public class CartPage extends CartEstimatePage {
      * Проверить состояние страницы после нажатия на кнопку "+Создать корзину"
      * То, что отображаются все необходимые элементы на странице
      */
+    @Step("Проверить, что страница Корзины отображается корректно после нажатия на кнопку 'Создать корзину'")
     public void verificationAfterClickCreateNewCartButton() {
         softAssert.areElementsVisible(addCustomerBtnLbl, searchProductFld);
         softAssert.isElementTextEqual(cartNumber, "№ —");
         softAssert.verifyAll();
+    }
+
+    @Step("Проверить, что страница 'Корзины' отображается корректно, когда она пустая")
+    public CartPage verifyEmptyCartPage() {
+        softAssert.isElementVisible(createCartBtn);
+        softAssert.areElementsNotVisible(addCustomerBtnLbl, searchProductFld, cartNumber, cartAuthor,
+                customerPhoneSearchFld);
+        softAssert.isEquals(orders.getCount(), 0, "Отображаются заказы");
+        softAssert.verifyAll();
+        return this;
     }
 
     @Step("Проверить, что на странице корзины содержатся ожидаемые данные")

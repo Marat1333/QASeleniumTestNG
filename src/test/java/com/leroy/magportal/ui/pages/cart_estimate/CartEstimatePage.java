@@ -10,6 +10,7 @@ import com.leroy.magportal.ui.models.salesdoc.OrderWebData;
 import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardWebData;
 import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
 import com.leroy.magportal.ui.models.salesdoc.ShortSalesDocWebData;
+import com.leroy.magportal.ui.pages.cart_estimate.modal.ConfirmRemoveProductModal;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.ExtendedSearchModal;
 import com.leroy.magportal.ui.pages.cart_estimate.widget.CustomerPuzWidget;
 import com.leroy.magportal.ui.pages.cart_estimate.widget.OrderPuzWidget;
@@ -237,6 +238,29 @@ public abstract class CartEstimatePage extends
         return decreaseQuantityProductByIndex(1, productIdx);
     }
 
+    @Step("Удалить товар #{productIdx} из заказа #{orderIdx}")
+    public CartEstimatePage removeProductByIndex(int orderIdx, int productIdx) throws Exception {
+        productIdx--;
+        orderIdx--;
+        OrderPuzWidget orderWidget = orders().get(orderIdx);
+        int productCountBefore = orderWidget.getProductWidgets().getCount();
+        orderWidget.getProductWidget(productIdx).clickDelete();
+        new ConfirmRemoveProductModal()
+                .verifyRequiredElements()
+                .clickYesButton();
+        waitForSpinnerAppearAndDisappear();
+        if (productCountBefore > 1)
+            orderWidget.getProductWidgets().waitUntilElementCountEquals(productCountBefore - 1);
+        else
+            searchProductFld.waitForInvisibility();
+        waitForSpinnerDisappear();
+        return this;
+    }
+
+    public CartEstimatePage removeProductByIndex(int productIdx) throws Exception {
+        return removeProductByIndex(1, productIdx);
+    }
+
     @Step("Нажать на кнопку 'Добавить клиента'")
     public CartEstimatePage clickAddCustomer() {
         addCustomerBtnLbl.click();
@@ -286,8 +310,6 @@ public abstract class CartEstimatePage extends
         inputBox.fill(value);
         inputBox.submit();
         waitForSpinnerAppearAndDisappear();
-        if (this instanceof CartPage)
-            waitForSpinnerAppearAndDisappear();
     }
 
     @Step("Вводим номер телефона {value} для поиска клиента")

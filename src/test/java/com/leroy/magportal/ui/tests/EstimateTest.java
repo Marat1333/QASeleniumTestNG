@@ -31,41 +31,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-public class EstimateTest extends WebBaseSteps {
-
-    // Test groups
-    private final static String NEED_ACCESS_TOKEN_GROUP = "need_access_token";
-    private final static String NEED_PRODUCTS_GROUP = "need_products";
-
-    private List<ProductItemData> productList;
-
-    private String customerPhone = "1111111111";
-
-    @BeforeGroups(groups = NEED_PRODUCTS_GROUP)
-    private void findProducts() {
-        productList = apiClientProvider.getProducts(3);
-    }
-
-    @BeforeGroups(NEED_ACCESS_TOKEN_GROUP)
-    private void addAccessTokenToSessionData() {
-        getUserSessionData().setAccessToken(getAccessToken());
-    }
-
-    @Step("Создаем клиента через API")
-    private SimpleCustomerData createCustomerByApi() {
-        CustomerClient customerClient = apiClientProvider.getCustomerClient();
-        CustomerData customerData = new CustomerData();
-        customerData.generateRandomValidRequiredData(true, true);
-        Response<CustomerResponseBodyData> resp = customerClient.createCustomer(customerData);
-        customerData = customerClient.assertThatIsCreatedAndGetData(resp, customerData);
-
-        SimpleCustomerData uiCustomerData = new SimpleCustomerData();
-        uiCustomerData.setName(customerData.getFirstName(), customerData.getLastName());
-        uiCustomerData.setPhoneNumber(customerData.getMainPhoneFromCommunication());
-        uiCustomerData.setEmail(customerData.getMainEmailFromCommunication());
-
-        return uiCustomerData;
-    }
+public class EstimateTest extends BasePAOTest {
 
     @Test(description = "C3302188 Create estimate", groups = NEED_PRODUCTS_GROUP)
     public void testCreateEstimate() throws Exception {
@@ -358,8 +324,8 @@ public class EstimateTest extends WebBaseSteps {
 
         // Step 1
         step("Нажмите на кнопку 'Удалить' в мини-карточке выбранного товара и подтвердите удаление");
-        estimatePage.removeProductByIndex(1)
-                .verifyRequiredElements(EstimatePage.PageState.EMPTY)
+        estimatePage.removeProductByIndex(1);
+        estimatePage.verifyRequiredElements(EstimatePage.PageState.EMPTY)
                 .shouldDocumentIsNotPresent(docNumber);
     }
 

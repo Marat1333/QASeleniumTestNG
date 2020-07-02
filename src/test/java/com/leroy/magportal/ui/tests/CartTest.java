@@ -2,7 +2,6 @@ package com.leroy.magportal.ui.tests;
 
 import com.leroy.constants.EnvConstants;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magportal.ui.WebBaseSteps;
 import com.leroy.magportal.ui.constants.TestDataConstants;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
 import com.leroy.magportal.ui.models.salesdoc.OrderWebData;
@@ -11,31 +10,15 @@ import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
 import com.leroy.magportal.ui.pages.cart_estimate.CartEstimatePage;
 import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.ExtendedSearchModal;
+import com.leroy.magportal.ui.pages.customers.CreateCustomerForm;
 import io.qameta.allure.Step;
-import org.testng.annotations.BeforeGroups;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
 import org.testng.util.Strings;
 
-import java.util.List;
 import java.util.Random;
 
-public class CartTest extends WebBaseSteps {
-
-    // Test groups
-    private final static String NEED_ACCESS_TOKEN_GROUP = "need_access_token";
-    private final static String NEED_PRODUCTS_GROUP = "need_products";
-
-    private List<ProductItemData> productList;
-
-    @BeforeGroups(groups = NEED_PRODUCTS_GROUP)
-    private void findProducts() {
-        productList = apiClientProvider.getProducts(3);
-    }
-
-    @BeforeGroups(NEED_ACCESS_TOKEN_GROUP)
-    private void addAccessTokenToSessionData() {
-        getUserSessionData().setAccessToken(getAccessToken());
-    }
+public class CartTest extends BasePAOTest {
 
     // Страницы используемые в тестах текущего класса:
     CartPage cartPage;
@@ -168,6 +151,134 @@ public class CartTest extends WebBaseSteps {
         step("Обновите страницу");
         cartPage.reloadPage();
         cartPage = new CartPage().shouldCartHasData(documentData);
+    }
+
+    @Test(description = "C22797249 Delete item from cart", groups = NEED_PRODUCTS_GROUP)
+    public void testDeleteItemFromCart() throws Exception {
+        // Pre-condition
+        ProductItemData testProduct1 = productList.get(0);
+        ProductItemData testProduct2 = productList.get(1);
+        step("Выполнение предусловий:");
+        if (isStartFromScratch()) {
+            stepLoginAndGoToCartPage();
+            stepClickCreateCartButton();
+            stepSearchForProduct(testProduct1.getLmCode());
+            stepSearchForProduct(testProduct2.getLmCode());
+        }
+
+        SalesDocWebData documentData = cartPage.getSalesDocData();
+
+        // Step 1
+        step("Нажмите на кнопку 'Удалить' в мини-карточке выбранного товара и подтвердите удаление");
+        cartPage.removeProductByIndex(1);
+        documentData.getOrders().get(0).removeProduct(0, true);
+        cartPage.shouldCartHasData(documentData);
+    }
+
+    @Test(description = "C22797250 Delete last item from cart", groups = NEED_PRODUCTS_GROUP)
+    public void testDeleteLastItemFromCart() throws Exception {
+        // Pre-condition
+        ProductItemData testProduct1 = productList.get(0);
+        step("Выполнение предусловий:");
+        if (isStartFromScratch()) {
+            stepLoginAndGoToCartPage();
+            stepClickCreateCartButton();
+            stepSearchForProduct(testProduct1.getLmCode());
+        }
+
+        String docNumber = cartPage.getDocumentNumber();
+
+        // "Удаляем 'лишние' продукты из корзины, если они есть"
+        int productCount = cartPage.getProductDataList().size();
+        for (int i = 0; i < productCount - 1; i++) {
+            cartPage.removeProductByIndex(1);
+        }
+
+        // Step 1
+        step("Нажмите на кнопку 'Удалить' в мини-карточке выбранного товара и подтвердите удаление");
+        cartPage.removeProductByIndex(1);
+        cartPage.verifyEmptyCartPage();
+        // workaround - небольшой баг - корзина не сразу удаляется
+        Thread.sleep(3000);
+        cartPage.reloadPage();
+        cartPage = new CartPage();
+        cartPage.shouldDocumentIsNotPresent(docNumber);
+    }
+
+    @Test(description = "C22797258 Search customer (by telephone, service card number, email, barcode scanning)")
+    public void testSearchClientByPhoneNumberInEstimate() throws Exception {
+        SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+
+        if (isStartFromScratch()) {
+            stepLoginAndGoToCartPage();
+            stepClickCreateCartButton();
+        }
+
+        // Step 1
+        step("Нажмите на кнопку 'Добавить клиента'");
+        cartPage.clickAddCustomer()
+                .shouldAddingNewUserAvailable();
+
+        // Step 2 and 3
+        step("Введите номер телефона, нажмите, 'Enter', кликните по мини-карточке нужного клиента");
+        cartPage.selectCustomerByPhone(customerData.getPhoneNumber())
+                .shouldSelectedCustomerIs(customerData);
+    }
+
+    @Test(description = "C22797337 Edit customer data", groups = NEED_ACCESS_TOKEN_GROUP)
+    public void testEditCustomerDataInCart() throws Exception {
+        SimpleCustomerData customerData = createCustomerByApi();
+        step("Выполнение предусловий: авторизуемся, заходим на страницу корзины, выбираем пользователя");
+        if (isStartFromScratch()) {
+            stepLoginAndGoToCartPage();
+            stepClickCreateCartButton();
+        }
+        cartPage.clickAddCustomer()
+                .selectCustomerByPhone(customerData.getPhoneNumber());
+
+        // Step 1, 2
+        step("Нажмите на '...' справа в карточке клиента и Выберите параметр Редактировать данные клиента");
+        CreateCustomerForm createCustomerForm = cartPage.clickOptionEditCustomer();
+
+        // Step 3
+        step("Нажмите на Добавить еще телефон");
+        createCustomerForm.clickAddPhoneButton();
+
+        // Step 4
+        step("Введите телефон, выберите параметр Рабочий и проставьте чекбокс Основной.");
+        String secondPhone = "+7" + RandomStringUtils.randomNumeric(10);
+        createCustomerForm.enterTextInPhoneInputField(2, secondPhone)
+                .clickTypePhone(2, CreateCustomerForm.CommunicationType.WORK)
+                .makePhoneAsMain(2);
+
+        // Step 5
+        step("Нажмите на кнопку 'Сохранить'");
+        createCustomerForm.clickCreateButton();
+        customerData.setPhoneNumber(secondPhone);
+        cartPage.shouldSelectedCustomerIs(customerData);
+    }
+
+    @Test(description = "C22797260 Change customer")
+    public void testChangeCustomerToAnotherOneInCart() throws Exception {
+        SimpleCustomerData customer1 = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+        SimpleCustomerData customer2 = TestDataConstants.SIMPLE_CUSTOMER_DATA_2;
+        step("Выполнение предусловий: авторизуемся, заходим на страницу корзины, выбираем пользователя");
+        if (isStartFromScratch()) {
+            stepLoginAndGoToCartPage();
+            stepClickCreateCartButton();
+        }
+        cartPage.clickAddCustomer()
+                .selectCustomerByPhone(customer1.getPhoneNumber());
+
+        // Step 1 and 2
+        step("Нажмите на '...' справа в карточке клиента и Выберите параметр 'Выбрать другого клиента'");
+        cartPage.clickOptionSelectAnotherCustomer()
+                .shouldAddingNewUserAvailable();
+
+        // Step 3 and 4
+        step("Введите номер телефона другого клиента и нажмите Enter");
+        cartPage.selectCustomerByPhone(customer2.getPhoneNumber())
+                .shouldSelectedCustomerIs(customer2);
     }
 
 

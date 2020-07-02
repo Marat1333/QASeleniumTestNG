@@ -49,7 +49,7 @@ public class ProductOrderCardPuzWidget extends CardWebWidget<ProductOrderCardWeb
     @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__content__buttons')]/div[1]//button")
     Element copyBtn;
 
-    @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__content__buttons')]/div[2]//button")
+    @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__content__buttons')]/div[last()]//button")
     Element deleteBtn;
 
     public String getLmCode() {
