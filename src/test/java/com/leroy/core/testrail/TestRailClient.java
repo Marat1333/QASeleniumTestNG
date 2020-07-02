@@ -114,7 +114,7 @@ public class TestRailClient {
     }
 
     public static JSONArray getRuns(Long projectId, boolean isCompleted) throws IOException, APIException, InterruptedException {
-        Object obj = apiClient.sendGet("get_runs/" + projectId + "&is_completed=" + (isCompleted? "1" : "0"));
+        Object obj = apiClient.sendGet("get_runs/" + projectId + "&is_completed=" + (isCompleted ? "1" : "0"));
         return ((JSONArray) obj);
     }
 

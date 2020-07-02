@@ -17,7 +17,7 @@ public class TestDataConstants extends EnvConstants {
             .email(getProperty("data.customer.simple2.email"))
             .build();
 
-    public static final SimpleCustomerData CUSTOMER_WITH_PROFESSIONAL_CARD =  new SimpleCustomerData().toBuilder()
+    public static final SimpleCustomerData CUSTOMER_WITH_PROFESSIONAL_CARD = new SimpleCustomerData().toBuilder()
             .phoneNumber("+79160343344")
             .name("Ольга Дядина")
             .email("u910or@gmail.com")

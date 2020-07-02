@@ -3,9 +3,7 @@ package com.leroy.magmobile.api.tests.ruptures;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.magmobile.api.clients.RupturesClient;
 import com.leroy.magmobile.api.data.ruptures.*;
-import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import io.qameta.allure.Step;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -14,28 +12,7 @@ import java.util.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class RupturesSessionGroupsTest extends BaseProjectApiTest {
-
-    private RupturesClient rupturesClient() {
-        return apiClientProvider.getRupturesClient();
-    }
-
-    @Override
-    protected boolean isNeedAccessToken() {
-        return true;
-    }
-
-    private ThreadLocal<Integer> sessionId = new ThreadLocal<>();
-    private ThreadLocal<RuptureProductDataList> ruptureProductDataList = new ThreadLocal<>();
-
-    @AfterMethod
-    private void deleteSessionAfter() {
-        if (sessionId.get() != null) {
-            RupturesClient rupturesClient = rupturesClient();
-            Response<JsonNode> r = rupturesClient.deleteSession(sessionId.get());
-            rupturesClient.assertThatIsUpdatedOrDeleted(r);
-        }
-    }
+public class RupturesSessionGroupsTest extends BaseRuptureTest {
 
     // Pre-conditions
 
@@ -74,44 +51,42 @@ public class RupturesSessionGroupsTest extends BaseProjectApiTest {
         rupturePostData.setStoreId(Integer.parseInt(getUserSessionData().getUserShopId()));
         rupturePostData.setDepartmentId(Integer.parseInt(getUserSessionData().getUserDepartmentId()));
 
-        Response<JsonNode> resp = rupturesClient.createProduct(rupturePostData);
-        sessionId.set(rupturesClient.assertThatSessionIsCreatedAndGetId(resp));
+        Response<JsonNode> resp = rupturesClient.createSession(rupturePostData);
+        sessionId = rupturesClient.assertThatSessionIsCreatedAndGetId(resp);
 
-        RuptureProductDataList dataList = new RuptureProductDataList();
-        dataList.addItem(productData1);
-
-        ruptureProductDataList.set(dataList);
+        ruptureProductDataList = new RuptureProductDataList();
+        ruptureProductDataList.addItem(productData1);
 
         // Добавляем оставшиеся товары
 
         // Товар 2
-        rupturePostData.setSessionId(sessionId.get());
+        rupturePostData.setSessionId(sessionId);
         rupturePostData.setProduct(productData2);
 
-        resp = rupturesClient.updateProduct(rupturePostData);
+        resp = rupturesClient.updateSession(rupturePostData);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
-        dataList.addItem(productData2);
+        ruptureProductDataList.addItem(productData2);
 
         // Товар 3
         rupturePostData.setProduct(productData3);
 
-        resp = rupturesClient.updateProduct(rupturePostData);
+        resp = rupturesClient.updateSession(rupturePostData);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
-        dataList.addItem(productData3);
+        ruptureProductDataList.addItem(productData3);
 
         // Товар 4
         rupturePostData.setProduct(productData4);
 
-        resp = rupturesClient.updateProduct(rupturePostData);
+        resp = rupturesClient.updateSession(rupturePostData);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
-        dataList.addItem(productData4);
+        ruptureProductDataList.addItem(productData4);
 
         // Товар 5
         rupturePostData.setProduct(productData5);
 
-        resp = rupturesClient.updateProduct(rupturePostData);
+        resp = rupturesClient.updateSession(rupturePostData);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
-        dataList.addItem(productData5);
+        ruptureProductDataList.addItem(productData5);
     }
 
     @Step("Pre-conditions: Создаем сессию с товарами, со всеми добавленными экшенами и случайными выполненными экшенами + Товар без экшена")
@@ -161,44 +136,42 @@ public class RupturesSessionGroupsTest extends BaseProjectApiTest {
         rupturePostData.setStoreId(Integer.parseInt(getUserSessionData().getUserShopId()));
         rupturePostData.setDepartmentId(Integer.parseInt(getUserSessionData().getUserDepartmentId()));
 
-        Response<JsonNode> resp = rupturesClient.createProduct(rupturePostData);
-        sessionId.set(rupturesClient.assertThatSessionIsCreatedAndGetId(resp));
+        Response<JsonNode> resp = rupturesClient.createSession(rupturePostData);
+        sessionId = rupturesClient.assertThatSessionIsCreatedAndGetId(resp);
 
-        RuptureProductDataList dataList = new RuptureProductDataList();
-        dataList.addItem(productData1);
-
-        ruptureProductDataList.set(dataList);
+        ruptureProductDataList = new RuptureProductDataList();
+        ruptureProductDataList.addItem(productData1);
 
         // Добавляем оставшиеся товары
 
         // Товар 2
-        rupturePostData.setSessionId(sessionId.get());
+        rupturePostData.setSessionId(sessionId);
         rupturePostData.setProduct(productData2);
 
-        resp = rupturesClient.updateProduct(rupturePostData);
+        resp = rupturesClient.updateSession(rupturePostData);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
-        dataList.addItem(productData2);
+        ruptureProductDataList.addItem(productData2);
 
         // Товар 3
         rupturePostData.setProduct(productData3);
 
-        resp = rupturesClient.updateProduct(rupturePostData);
+        resp = rupturesClient.updateSession(rupturePostData);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
-        dataList.addItem(productData3);
+        ruptureProductDataList.addItem(productData3);
 
         // Товар 4
         rupturePostData.setProduct(productData4);
 
-        resp = rupturesClient.updateProduct(rupturePostData);
+        resp = rupturesClient.updateSession(rupturePostData);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
-        dataList.addItem(productData4);
+        ruptureProductDataList.addItem(productData4);
 
         // Товар 5
         rupturePostData.setProduct(productData5);
 
-        resp = rupturesClient.updateProduct(rupturePostData);
+        resp = rupturesClient.updateSession(rupturePostData);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
-        dataList.addItem(productData5);
+        ruptureProductDataList.addItem(productData5);
     }
 
     @Step("Pre-conditions: Создаем сессию с товаром без Action")
@@ -215,13 +188,11 @@ public class RupturesSessionGroupsTest extends BaseProjectApiTest {
         rupturePostData.setStoreId(Integer.parseInt(getUserSessionData().getUserShopId()));
         rupturePostData.setDepartmentId(Integer.parseInt(getUserSessionData().getUserDepartmentId()));
 
-        Response<JsonNode> resp = rupturesClient.createProduct(rupturePostData);
-        sessionId.set(rupturesClient.assertThatSessionIsCreatedAndGetId(resp));
+        Response<JsonNode> resp = rupturesClient.createSession(rupturePostData);
+        sessionId = rupturesClient.assertThatSessionIsCreatedAndGetId(resp);
 
-        RuptureProductDataList dataList = new RuptureProductDataList();
-        dataList.addItem(productData1);
-
-        ruptureProductDataList.set(dataList);
+        ruptureProductDataList = new RuptureProductDataList();
+        ruptureProductDataList.addItem(productData1);
     }
 
     @Test(description = "C3285462 GET ruptures groups for new session with groups")
@@ -229,7 +200,7 @@ public class RupturesSessionGroupsTest extends BaseProjectApiTest {
         createSessionWithAllActions();
 
         HashMap<Integer, RuptureSessionGroupData> expectedGroups = new HashMap<>();
-        for (RuptureProductData item : ruptureProductDataList.get().getItems()) {
+        for (RuptureProductData item : ruptureProductDataList.getItems()) {
             if (item.getActions() == null)
                 continue;
             for (ActionData actionData : item.getActions()) {
@@ -253,7 +224,7 @@ public class RupturesSessionGroupsTest extends BaseProjectApiTest {
 
         step("Основная часть теста");
         RupturesClient rupturesClient = rupturesClient();
-        Response<RuptureSessionGroupData> resp = rupturesClient.getGroups(sessionId.get());
+        Response<RuptureSessionGroupData> resp = rupturesClient.getGroups(sessionId);
         isResponseOk(resp);
         List<RuptureSessionGroupData> groups = resp.asJsonList(RuptureSessionGroupData.class);
         assertThat("groups count", groups, hasSize(expectedGroups.size()));
@@ -272,7 +243,7 @@ public class RupturesSessionGroupsTest extends BaseProjectApiTest {
         createSessionWithOneActionAndSeveralProducts();
 
         HashMap<Integer, RuptureSessionGroupData> expectedGroups = new HashMap<>();
-        for (RuptureProductData item : ruptureProductDataList.get().getItems()) {
+        for (RuptureProductData item : ruptureProductDataList.getItems()) {
             if (item.getActions() == null)
                 continue;
             for (ActionData actionData : item.getActions()) {
@@ -296,7 +267,7 @@ public class RupturesSessionGroupsTest extends BaseProjectApiTest {
 
         step("Основная часть теста");
         RupturesClient rupturesClient = rupturesClient();
-        Response<RuptureSessionGroupData> resp = rupturesClient.getGroups(sessionId.get());
+        Response<RuptureSessionGroupData> resp = rupturesClient.getGroups(sessionId);
         isResponseOk(resp);
         List<RuptureSessionGroupData> groups = resp.asJsonList(RuptureSessionGroupData.class);
         assertThat("groups count", groups, hasSize(expectedGroups.size()));
@@ -316,7 +287,7 @@ public class RupturesSessionGroupsTest extends BaseProjectApiTest {
 
         step("Основная часть теста");
         RupturesClient rupturesClient = rupturesClient();
-        Response<RuptureSessionGroupData> resp = rupturesClient.getGroups(sessionId.get());
+        Response<RuptureSessionGroupData> resp = rupturesClient.getGroups(sessionId);
         isResponseOk(resp);
         assertThat("Response body", resp.asString(), equalTo("[]"));
     }

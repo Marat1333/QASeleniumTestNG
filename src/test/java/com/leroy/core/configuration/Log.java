@@ -27,17 +27,17 @@ public class Log {
 
     static {
         String level = System.getProperty("loglevel");
-        if(!StringUtils.isEmpty(level)) {
+        if (!StringUtils.isEmpty(level)) {
             logLevel = Integer.parseInt(level);
         }
 
         String interval = System.getProperty("printInterval");
-        if(!StringUtils.isEmpty(interval)) {
+        if (!StringUtils.isEmpty(interval)) {
             printActionInterval = Boolean.parseBoolean(interval);
         }
 
         String hideInfo = System.getProperty("hideInfoMessages");
-        if(!StringUtils.isEmpty(hideInfo)) {
+        if (!StringUtils.isEmpty(hideInfo)) {
             hideInfoMessages = Boolean.parseBoolean(hideInfo);
         }
     }
@@ -72,69 +72,69 @@ public class Log {
     }
 
     public static void step(String message) {
-        if(logLevel >= LOGLEVEL_STEP) {
+        if (logLevel >= LOGLEVEL_STEP) {
             printInterval();
             Reporter.log(dateFormat.format(new Date()) + " [step]  " + message, true);
         }
     }
 
     public static void action(String message) {
-        if(logLevel >= LOGLEVEL_ACTION) {
+        if (logLevel >= LOGLEVEL_ACTION) {
             printInterval();
             Reporter.log(dateFormat.format(new Date()) + "\t [action]  " + message, true);
         }
     }
 
     public static void warn(String message) {
-        if(logLevel >= LOGLEVEL_WARNING) {
+        if (logLevel >= LOGLEVEL_WARNING) {
             printInterval();
             Reporter.log(dateFormat.format(new Date()) + " [warn]  " + message, true);
         }
     }
 
     public static void error(String message) {
-        if(logLevel >= LOGLEVEL_ERROR) {
+        if (logLevel >= LOGLEVEL_ERROR) {
             printInterval();
             Reporter.log(dateFormat.format(new Date()) + " [error]  " + message, true);
         }
     }
 
     public static void debug(String message) {
-        if(logLevel >= LOGLEVEL_DEBUG) {
+        if (logLevel >= LOGLEVEL_DEBUG) {
             printInterval();
             Reporter.log(dateFormat.format(new Date()) + "\t\t [debug]  " + message, true);
         }
     }
 
     public static void trace(String message) {
-        if(logLevel >= LOGLEVEL_TRACE) {
+        if (logLevel >= LOGLEVEL_TRACE) {
             printInterval();
             Reporter.log(dateFormat.format(new Date()) + "\t\t\t [trace]  " + message, true);
         }
     }
 
     public static void meta(String message) {
-        if(logLevel >= LOGLEVEL_META) {
+        if (logLevel >= LOGLEVEL_META) {
             printInterval();
             Reporter.log(dateFormat.format(new Date()) + "\t\t [meta]  " + message, true);
         }
     }
 
     public static void assertFail(String message) {
-        if(logLevel >= LOGLEVEL_ASSERT_FAIL) {
+        if (logLevel >= LOGLEVEL_ASSERT_FAIL) {
             printInterval();
             Reporter.log(dateFormat.format(new Date()) + " [assertFail]  " + message, true);
         }
     }
 
     public static void info(String message) {
-        if(!hideInfoMessages) {
+        if (!hideInfoMessages) {
             Reporter.log(dateFormat.format(new Date()) + " [info]  " + message, true);
         }
     }
 
     public static void always(String message, boolean addDate) {
-        if(addDate) {
+        if (addDate) {
             message = dateFormat.format(new Date()) + "  " + message;
         }
 
@@ -146,10 +146,10 @@ public class Log {
     }
 
     private static void printInterval() {
-        if(printActionInterval) {
+        if (printActionInterval) {
             long curInt = System.currentTimeMillis();
 
-            if(previousTs > 0) {
+            if (previousTs > 0) {
                 Reporter.log(String.format("\n+%s ms", (curInt - previousTs)), true);
             }
 

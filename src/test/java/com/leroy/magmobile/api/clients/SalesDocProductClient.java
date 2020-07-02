@@ -14,7 +14,6 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.leroy.core.matchers.Matchers.valid;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 

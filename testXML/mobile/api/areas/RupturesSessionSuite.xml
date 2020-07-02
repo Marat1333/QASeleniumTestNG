@@ -11,7 +11,6 @@
             <class name="com.leroy.magmobile.api.tests.ruptures.RupturesSessionTest">
                 <methods>
                     <include name="testCreateRuptureSessionProduct"/>
-                    <include name="testUpdateRuptureSessionProduct"/>
                     <include name="testActionRuptureSessionProduct"/>
                     <include name="testSearchForRuptureSessionProducts"/>
                     <include name="testFinishRuptureSession"/>
@@ -27,6 +26,19 @@
     <test name="Get Rupture Groups">
         <classes>
             <class name="com.leroy.magmobile.api.tests.ruptures.RupturesSessionGroupsTest"/>
+        </classes>
+    </test>
+
+    <test name="PUT ruptures session product">
+        <classes>
+            <class name="com.leroy.magmobile.api.tests.ruptures.RupturesPutSessionProductTest">
+                <methods>
+                    <include name="testUpdateRuptureSessionProduct"/>
+                    <include name="testPutRupturesProductChangeExistingProduct"/>
+                    <include name="testPutRupturesProductToDeletedSession"/>
+                    <include name="testPutRupturesProductToFinishedSession"/>
+                </methods>
+            </class>
         </classes>
     </test>
 

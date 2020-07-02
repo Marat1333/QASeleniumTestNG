@@ -71,7 +71,7 @@ public class TestRailListener extends Listener {
             StepResultModel stepResultModel = stepResultList.get(stepResultList.size() - 1);
             if (testResult.getStatus() == ITestResult.FAILURE && testResult.getThrowable() != null) {
                 stepResultModel.setStatus_id(ResultModel.ST_FAILED);
-                Status status = testResult.getThrowable() instanceof AssertionError? Status.FAILED : Status.BROKEN;
+                Status status = testResult.getThrowable() instanceof AssertionError ? Status.FAILED : Status.BROKEN;
                 getLifecycle().updateStep(stepResultModel.getUuid(), s -> s.setStatus(status));
                 getLifecycle().stopStep(stepResultModel.getUuid());
                 String msg = testResult.getThrowable().getMessage();
@@ -123,7 +123,8 @@ public class TestRailListener extends Listener {
             case 1:
                 return ResultModel.ST_PASSED;
             case 2:
-                return ResultModel.ST_FAILED;
+                //return ResultModel.ST_FAILED;
+                return ResultModel.ST_RETEST;
             case 3:
                 return ResultModel.ST_SKIPPED;
             default:

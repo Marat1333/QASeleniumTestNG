@@ -2,9 +2,9 @@ package com.leroy.core.fieldfactory;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.annotations.Form;
+import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.core.annotations.WebFindBy;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 

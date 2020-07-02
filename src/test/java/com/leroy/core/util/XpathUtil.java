@@ -55,6 +55,7 @@ public class XpathUtil {
 
     /**
      * Convert Xpath to UiSelector
+     *
      * @param xpath
      * @return UiSelector
      */
@@ -67,13 +68,13 @@ public class XpathUtil {
                 if (oneNodeXpath.length() != 0)
                     nodesInXpath.add(oneNodeXpath.toString());
                 oneNodeXpath = new StringBuilder();
-                if (xpath.charAt(i+1) == '/') {
+                if (xpath.charAt(i + 1) == '/') {
                     oneNodeXpath.append("/");
                     i++;
                 }
             }
             oneNodeXpath.append(currentChar);
-            if ((i+1) == xpath.length())
+            if ((i + 1) == xpath.length())
                 nodesInXpath.add(oneNodeXpath.toString());
         }
         UiSelector selector = new UiSelector();

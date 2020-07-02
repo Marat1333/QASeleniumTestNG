@@ -7,7 +7,7 @@ import org.json.simple.JSONObject;
 public class Run {
 
     public static void main(String[] args) throws Exception {
-        int i =0;
+        int i = 0;
         while (i < 100) {
             i++;
             JSONArray runs = TestRailClient.getRuns(10L, false);

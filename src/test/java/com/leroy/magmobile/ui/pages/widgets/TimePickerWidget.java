@@ -68,9 +68,9 @@ public class TimePickerWidget extends BaseContainer {
 
         // Определяем в какую сторону проще и ближе докрутить до нужного нам числа:
         if (Math.abs(diffHours) > 12)
-            diffHours =  (24 - Math.abs(diffHours)) * (diffHours > 0 ? -1 : 1);
+            diffHours = (24 - Math.abs(diffHours)) * (diffHours > 0 ? -1 : 1);
         if (Math.abs(diffMinutes) > 30)
-            diffMinutes =  (60 - Math.abs(diffMinutes)) * (diffMinutes > 0 ? -1 : 1);
+            diffMinutes = (60 - Math.abs(diffMinutes)) * (diffMinutes > 0 ? -1 : 1);
 
         String uiSelector = "new UiSelector().className(\"android.view.View\").instance(%s)";
         String uiSelectorHours = String.format(uiSelector, "0");
