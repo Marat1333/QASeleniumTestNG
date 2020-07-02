@@ -1,6 +1,8 @@
 package com.leroy.magmobile.ui.tests;
 
+import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.SalesDocumentsConst;
+import com.leroy.core.UserSessionData;
 import com.leroy.core.api.Module;
 import com.leroy.magmobile.api.clients.CatalogProductClient;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
@@ -23,10 +25,7 @@ import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.*;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.PeriodOfUsageModalPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SalesHistoryUnitsModalPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.PricesPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.ProductPricesQuantitySupplyPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.StocksPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.SuppliesPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.*;
 import com.leroy.magmobile.ui.pages.search.FilterPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import io.qameta.allure.Step;
@@ -51,6 +50,13 @@ public class ProductCardTest extends AppBaseSteps {
         catalogProductClient = apiClientProvider.getCatalogProductClient();
     }
 
+    @Override
+    public UserSessionData initTestClassUserSessionDataTemplate() {
+        UserSessionData sessionData = super.initTestClassUserSessionDataTemplate();
+        sessionData.setUserShopId("32");
+        return sessionData;
+    }
+
     private String getRandomLmCode() {
         catalogSearchClient = apiClientProvider.getCatalogSearchClient();
         ProductItemDataList productItemDataList = catalogSearchClient.searchProductsBy(new GetCatalogSearch().setPageSize(24)).asJson();
@@ -60,7 +66,7 @@ public class ProductCardTest extends AppBaseSteps {
     }
 
     private List<ShopData> sortShopsByDistance(List<ShopData> shopDataList) {
-        ShopData userShopData = shopDataList.stream().filter((i) -> i.getId().equals(getUserSessionData().getUserShopId())).findAny().orElse(null);
+        ShopData userShopData = shopDataList.stream().filter((i) -> i.getId().equals(EnvConstants.BASIC_USER_SHOP_ID)).findAny().orElse(null);
         LatLong currentShop = new LatLong(userShopData.getLat(), userShopData.getLongitude());
         for (ShopData data : shopDataList) {
             LatLong goalShop = new LatLong(data.getLat(), data.getLongitude());
@@ -75,7 +81,7 @@ public class ProductCardTest extends AppBaseSteps {
     private List<ShopData> setPricesAndStockForEachShopData(List<CatalogShopsData> catalogShopsData, List<ShopData> shopData) {
         for (ShopData data : shopData) {
             for (CatalogShopsData catalogData : catalogShopsData) {
-                if (data.getId().equals(catalogData.getShopId())){
+                if (data.getId().equals(catalogData.getShopId())) {
                     data.setPriceAndStock(new PriceAndStockData(catalogData.getPrice(), catalogData.getAvailableStock()));
                 }
             }
@@ -282,11 +288,16 @@ public class ProductCardTest extends AppBaseSteps {
         String lmCode = getRandomLmCode();
         CatalogProductClient.Extend extendOptions = CatalogProductClient.Extend.builder()
                 .inventory(true).logistic(true).rating(true).build();
-        CatalogProductData data = catalogProductClient.getProduct(lmCode, SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR,
+
+        CatalogProductData data = catalogProductClient.getProduct("35", lmCode, SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR,
                 extendOptions).asJson();
 
         // Pre-conditions
-        preconditions(lmCode);
+        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
+        mainProductAndServicesPage = setShopAndDepartmentForUser(mainProductAndServicesPage, "35", "1").goToSales();
+        SearchProductPage searchProductPage = mainProductAndServicesPage.clickSearchBar(false);
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
+
 
         //Step 1
         step("Перейти во вкладку \"Описание товара\" и открыть страницу с информацией о цене");
@@ -309,6 +320,9 @@ public class ProductCardTest extends AppBaseSteps {
 
     @Test(description = "C3201003 Проверить цены и запас в ближайших магазинах")
     public void testPricesAndStocksInNearestShops() throws Exception {
+        String searchId = "34";
+        String searchName = "Спб П";
+
         //get all shop id
         ShopKladrClient shopKladrClient = apiClientProvider.getShopKladrClient();
         List<ShopData> shopDataList = shopKladrClient.getShops().asJsonList(ShopData.class);
@@ -330,6 +344,43 @@ public class ProductCardTest extends AppBaseSteps {
         ProductDescriptionPage productDescriptionPage = new ProductDescriptionPage();
         ProductPricesQuantitySupplyPage productPricesQuantitySupplyPage = productDescriptionPage.goToPricesAndQuantityPage();
         PricesPage pricesPage = new PricesPage();
+        pricesPage.shouldShopPricesAreCorrect(sortedShopDataList);
+
+        //Step 2
+        step("Проверить цены во всех магазинах по товару");
+        ShopPricesPage shopPricesPage = pricesPage.goToShopListPage();
+        shopPricesPage.shouldShopPricesAreCorrect(sortedShopDataList);
+
+        //Step 3
+        step("Искать магазин по id");
+        shopPricesPage.searchShopBy(searchId);
+        shopPricesPage.shouldShopCardsContainsSearchCriterion(searchId);
+
+        //Step 4
+        step("Искать магазин по имени");
+        shopPricesPage.searchShopBy(searchName);
+        shopPricesPage.shouldShopCardsContainsSearchCriterion(searchName);
+
+        //Step 5
+        step("Перейти на страницу с информацией об остатках");
+        shopPricesPage.goToPreviousPage();
+        StocksPage stocksPage = productPricesQuantitySupplyPage.switchTab(ProductPricesQuantitySupplyPage.Tabs.STOCKS);
+        stocksPage.shouldShopStocksAreCorrect(sortedShopDataList);
+
+        //Step 6
+        step("Проверить остатки во всех магазинах по товару");
+        ShopsStocksPage shopsStocksPage = stocksPage.goToShopListPage();
+        shopsStocksPage.shouldShopStocksAreCorrect(sortedShopDataList);
+
+        //Step 7
+        step("Искать магазин по id");
+        shopsStocksPage.searchShopBy(searchId);
+        shopsStocksPage.shouldShopCardsContainsSearchCriterion(searchId);
+
+        //Step 8
+        step("Искать магазин по имени");
+        shopsStocksPage.searchShopBy(searchName);
+        shopsStocksPage.shouldShopCardsContainsSearchCriterion(searchName);
     }
 
 }

@@ -11,10 +11,6 @@ import org.openqa.selenium.By;
 
 public class ProductCardPage extends CommonMagMobilePage {
 
-    public ProductCardPage(){
-        initElements();
-    }
-
     @AppFindBy(accessibilityId = "Tabs")
     protected Element mainArea;
 

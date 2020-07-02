@@ -4,6 +4,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.product_card.SalesHistoryPage;
+import io.qameta.allure.Step;
 
 public class SalesHistoryUnitsModalPage extends CommonMagMobilePage {
     @AppFindBy(accessibilityId = "CloseModal")
@@ -27,6 +28,7 @@ public class SalesHistoryUnitsModalPage extends CommonMagMobilePage {
         closeModalBtn.waitForVisibility();
     }
 
+    @Step("Выбрать единицу измерения")
     public SalesHistoryPage choseOption(Option option){
         switch (option){
             case PRICE:

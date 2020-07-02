@@ -2,12 +2,18 @@ package com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
+import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
 import com.leroy.magmobile.api.data.catalog.product.ExtStocks;
 import com.leroy.magmobile.api.data.catalog.product.StockAreas;
+import com.leroy.magmobile.api.data.shops.ShopData;
+import com.leroy.magmobile.ui.models.product_card.ShopCardData;
+import com.leroy.magmobile.ui.pages.sales.product_card.widgets.ShopStockInfoWidget;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
+
+import java.util.List;
 
 public class StocksPage extends ProductPricesQuantitySupplyPage{
     @AppFindBy(xpath = "//*[@text='Доступно для продажи']/following-sibling::*[1]")
@@ -58,6 +64,20 @@ public class StocksPage extends ProductPricesQuantitySupplyPage{
     @AppFindBy(xpath = "//android.widget.ScrollView", metaName = "Основная прокручиваемая область страницы")
     AndroidScrollView<String> mainScrollView;
 
+    private AndroidScrollView<ShopCardData> shopCardsScrollView = new AndroidScrollView<>(driver,
+            AndroidScrollView.TYPICAL_LOCATOR,
+            ".//*[contains(@text,'км')]/..", ShopStockInfoWidget.class);
+
+    @AppFindBy(containsText = "Все (1")
+    Button shopListNavBtn;
+
+    @Step("Перейти на страницу со списком магазинов")
+    public ShopsStocksPage goToShopListPage(){
+        mainScrollView.scrollUpToElement(shopListNavBtn);
+        shopListNavBtn.click();
+        return new ShopsStocksPage();
+    }
+
     @Override
     public void waitForPageIsLoaded() {
         availableStockLbl.waitForVisibility();
@@ -88,6 +108,19 @@ public class StocksPage extends ProductPricesQuantitySupplyPage{
         softAssert.isEquals(ParserUtil.strWithOnlyDigits(defectEm.getText()), String.valueOf(extStocks.getDefectEM()), "defect EM");
         softAssert.isEquals(ParserUtil.strWithOnlyDigits(correctionStockInWait.getText()), String.valueOf(extStocks.getCorrectionStockInWait()), "correction stock in wait");
         softAssert.isEquals(ParserUtil.strWithOnlyDigits(expo.getText()), String.valueOf(extStocks.getExpo()), "expo");
+        softAssert.verifyAll();
+        return this;
+    }
+
+    public StocksPage shouldShopStocksAreCorrect(List<ShopData> data){
+        mainScrollView.scrollDownToElement(shopListNavBtn);
+        List<ShopCardData> shopData = shopCardsScrollView.getFullDataList();
+        for (int i=0;i<shopData.size();i++){
+            ShopCardData uiData = shopData.get(i);
+            ShopData apiData = data.get(i);
+            softAssert.isEquals(uiData.getId(), apiData.getId()+" "+apiData.getName(), "id and name");
+            softAssert.isEquals(uiData.getStock(), apiData.getPriceAndStock().getStock(), "stock");
+        }
         softAssert.verifyAll();
         return this;
     }

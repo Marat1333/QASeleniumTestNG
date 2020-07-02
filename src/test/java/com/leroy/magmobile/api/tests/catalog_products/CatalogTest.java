@@ -79,7 +79,7 @@ public class CatalogTest extends BaseProjectApiTest {
 
     @Test(description = "C23195048 GET info about sales history")
     public void testCatalogProductSales() {
-        Response<?> salesHistoryResponse = client().getProductSales(lmProductWithSalesHistory, getUserSessionData().getUserShopId());
+        Response<?> salesHistoryResponse = client().getProductSales(lmProductWithSalesHistory);
         isResponseOk(salesHistoryResponse);
         List<SalesHistoryData> salesHistoryData = salesHistoryResponse.asJsonList(SalesHistoryData.class);
         assertThat("Count of items", salesHistoryData.size(), greaterThan(0));
