@@ -16,6 +16,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
 import org.testng.util.Strings;
 
+import java.time.LocalDate;
 import java.util.Random;
 
 public class CartTest extends BasePAOTest {
@@ -279,6 +280,26 @@ public class CartTest extends BasePAOTest {
         step("Введите номер телефона другого клиента и нажмите Enter");
         cartPage.selectCustomerByPhone(customer2.getPhoneNumber())
                 .shouldSelectedCustomerIs(customer2);
+    }
+
+    @Test(description = "C22797247 Add AVS, Топ EM items (sufficient stock)")
+    public void testAddAVSOrTopEMItemsSufficientStock() throws Exception {
+        // TODO
+        // Test data
+        boolean oddDay = true;// LocalDate.now().getDayOfMonth() % 2 == 1;
+        String lmCode = oddDay ? getAnyLmCodeProductWithTopEM(true) : getAnyLmCodeProductWithAvs(true);
+
+        step("Выполнение предусловий: авторизуемся, заходим на страницу корзины");
+        if (isStartFromScratch()) {
+            stepLoginAndGoToCartPage();
+            stepClickCreateCartButton();
+        }
+
+        // Step 1
+        step("Введите ЛМ код товара в поле 'Добавление товара' (товар AVS или Топ ЕМ, количество товара достаточно)");
+        stepSearchForProduct(lmCode);
+
+        String s = "";
     }
 
 

@@ -1,6 +1,7 @@
 package com.leroy.magportal.ui.tests;
 
 import com.leroy.magmobile.api.clients.CustomerClient;
+import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.customer.CustomerData;
 import com.leroy.magmobile.api.data.customer.CustomerResponseBodyData;
@@ -46,6 +47,32 @@ public abstract class BasePAOTest extends WebBaseSteps {
         uiCustomerData.setEmail(customerData.getMainEmailFromCommunication());
 
         return uiCustomerData;
+    }
+
+    @Step("Ищем ЛМ код для продукта с признаком AVS")
+    protected String getAnyLmCodeProductWithAvs(Boolean hasAvailableStock) {
+        CatalogSearchFilter filtersData = new CatalogSearchFilter();
+        filtersData.setAvs(true);
+        filtersData.setHasAvailableStock(hasAvailableStock);
+        return apiClientProvider.getProducts(1, filtersData).get(0).getLmCode();
+    }
+
+    protected String getAnyLmCodeProductWithAvs() {
+        return getAnyLmCodeProductWithAvs(null);
+    }
+
+    @Step("Ищем ЛМ код для продукта с опцией TopEM")
+    protected String getAnyLmCodeProductWithTopEM(Boolean hasAvailableStock) {
+        CatalogSearchFilter filtersData = new CatalogSearchFilter();
+        filtersData.setTopEM(true);
+        filtersData.setAvs(false);
+        filtersData.setHasAvailableStock(hasAvailableStock);
+        getUserSessionData().setUserDepartmentId("15");
+        return apiClientProvider.getProducts(1, filtersData).get(0).getLmCode();
+    }
+
+    protected String getAnyLmCodeProductWithTopEM() {
+        return getAnyLmCodeProductWithTopEM(null);
     }
 
 }
