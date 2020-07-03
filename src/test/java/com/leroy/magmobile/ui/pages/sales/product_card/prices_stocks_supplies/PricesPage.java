@@ -76,6 +76,7 @@ public class PricesPage extends ProductPricesQuantitySupplyPage{
         return this;
     }
 
+    @Step("Проверить данные о ценах")
     public PricesPage shouldShopPricesAreCorrect(List<ShopData> data){
         mainScrollView.scrollDownToElement(shopListNavBtn);
         List<ShopCardData> shopData = shopCardsScrollView.getFullDataList();

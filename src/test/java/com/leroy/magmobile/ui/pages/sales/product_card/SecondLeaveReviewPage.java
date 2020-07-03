@@ -37,9 +37,6 @@ public class SecondLeaveReviewPage extends CommonMagMobilePage {
 
     @Step("Оставить комментарией")
     public SecondLeaveReviewPage leaveComment(String comment){
-        commentInput.click();
-        commentInput.waitForInvisibility();
-        mainScrollView.scrollToBeginning();
         commentInput.clearAndFill(comment);
         return this;
     }

@@ -528,6 +528,9 @@ public class SearchProductPage extends MenuPage {
 
     @Step("Выбрать несколько фильтров")
     public SearchProductPage choseSeveralFilters(FiltersData data, boolean applyFilters) throws Exception {
+        if (data.getSuppliers().length > 0) {
+            choseSupplier(true, data.getSuppliers());
+        }
         if (data.getGammaFilters().length > 0) {
             choseGammaFilter(data.getGammaFilters());
         }
@@ -536,9 +539,6 @@ public class SearchProductPage extends MenuPage {
         }
         if (data.getCheckBoxes().length > 0) {
             choseCheckboxFilter(false, data.getCheckBoxes());
-        }
-        if (data.getSuppliers().length > 0) {
-            choseSupplier(false, data.getSuppliers());
         }
         if (data.getAvsDate() != null) {
             choseAvsDate(data.getAvsDate());
@@ -633,8 +633,7 @@ public class SearchProductPage extends MenuPage {
                     "Кол-во артикулов отличается: отображено - " + extendedProductCardList.getCount() + ", получено - "
                             + dataList.size());
             for (int i = 0; i < dataList.size(); i++) {
-                anAssert.isTrue(dataList.get(i).getLmCode().equals(extendedProductCardList.get(i).getLmCode()) &&
-                                dataList.get(i).getBarCode().equals(extendedProductCardList.get(i).getBarCode()),
+                anAssert.isTrue(dataList.get(i).getLmCode().equals(extendedProductCardList.get(i).getLmCode()),
                         "У артикулов не совпадают лм или баркод: ответ мэшапера - " + dataList.get(i).getLmCode() +
                                 " отображено - " + extendedProductCardList.get(i).getLmCode());
             }
@@ -643,8 +642,7 @@ public class SearchProductPage extends MenuPage {
                     "Кол-во артикулов отличается: отображено - " + extendedProductCardListTableView.getCount() + ", получено - "
                             + dataList.size());
             for (int i = 0; i < dataList.size(); i++) {
-                anAssert.isTrue(dataList.get(i).getLmCode().equals(extendedProductCardListTableView.get(i).getLmCode()) &&
-                                dataList.get(i).getBarCode().equals(extendedProductCardListTableView.get(i).getBarCode()),
+                anAssert.isTrue(dataList.get(i).getLmCode().equals(extendedProductCardListTableView.get(i).getLmCode()),
                         "У артикулов не совпадают лм или баркод: ответ мэшапера - " + dataList.get(i).getLmCode() +
                                 " отображено - " + extendedProductCardListTableView.get(i).getLmCode());
             }
@@ -653,8 +651,7 @@ public class SearchProductPage extends MenuPage {
                     "Кол-во артикулов отличается: отображено - " + productCardsList.getCount() + ", получено - "
                             + dataList.size());
             for (int i = 0; i < dataList.size(); i++) {
-                anAssert.isTrue(dataList.get(i).getLmCode().equals(productCardsList.get(i).getLmCode()) &&
-                                dataList.get(i).getBarCode().equals(productCardsList.get(i).getBarCode()),
+                anAssert.isTrue(dataList.get(i).getLmCode().equals(productCardsList.get(i).getLmCode()),
                         "У артикулов не совпадают лм или баркод: ответ мэшапера - " + dataList.get(i).getLmCode() +
                                 " отображено - " + productCardsList.get(i).getLmCode());
             }
@@ -663,8 +660,7 @@ public class SearchProductPage extends MenuPage {
                     "Кол-во артикулов отличается: отображено - " + productCardListTableView.getCount() + ", получено - "
                             + dataList.size());
             for (int i = 0; i < dataList.size(); i++) {
-                anAssert.isTrue(dataList.get(i).getLmCode().equals(productCardListTableView.get(i).getLmCode()) &&
-                                dataList.get(i).getBarCode().equals(productCardListTableView.get(i).getBarCode()),
+                anAssert.isTrue(dataList.get(i).getLmCode().equals(productCardListTableView.get(i).getLmCode()),
                         "У артикулов не совпадают лм или баркод: ответ мэшапера - " + dataList.get(i).getLmCode() +
                                 " отображено - " + productCardListTableView.get(i).getLmCode());
             }

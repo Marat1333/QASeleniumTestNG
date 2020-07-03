@@ -36,7 +36,7 @@ public class ShopPricesPage extends CommonMagMobilePage {
         title.waitForVisibility();
     }
 
-    public AndroidScrollView<ShopCardData> getShopCardsScrollView() {
+    protected AndroidScrollView<ShopCardData> getShopCardsScrollView() {
         return shopCardsScrollView;
     }
 
@@ -45,7 +45,7 @@ public class ShopPricesPage extends CommonMagMobilePage {
         openInputBtn.click();
         input.waitForVisibility();
         input.clearAndFill(criterion);
-        E(String.format("//android.widget.ScrollView/*/*[%s]", "0")).waitUntilTextContains(criterion);
+        E("//android.widget.ScrollView//android.widget.TextView").waitUntilTextContains(criterion);
     }
 
     @Step("Перейти на предыдущую страницу")
@@ -54,6 +54,7 @@ public class ShopPricesPage extends CommonMagMobilePage {
         return new ProductPricesQuantitySupplyPage();
     }
 
+    @Step("Проверить цены в магазинах")
     public ShopPricesPage shouldShopPricesAreCorrect(List<ShopData> data) {
         List<ShopCardData> shopData = shopCardsScrollView.getFullDataList();
         for (int i = 0; i < shopData.size(); i++) {
@@ -66,6 +67,7 @@ public class ShopPricesPage extends CommonMagMobilePage {
         return this;
     }
 
+    @Step("Проверить, что карточки магазинов содержат поисковой критерий")
     public void shouldShopCardsContainsSearchCriterion(String criterion) {
         List<ShopCardData> shopData = getShopCardsScrollView().getFullDataList();
         for (ShopCardData data : shopData) {

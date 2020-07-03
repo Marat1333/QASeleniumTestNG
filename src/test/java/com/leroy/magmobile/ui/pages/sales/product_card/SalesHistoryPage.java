@@ -53,8 +53,8 @@ public class SalesHistoryPage extends CommonMagMobilePage {
             if (byPrice) {
                 anAssert.isElementTextContains(unitsLbl, "в рублях", pageSource);
                 for (int i = 0; i < salesResult.size(); i++) {
-                    while (salesResult.get(i) == 0.0) {
-                        i++;
+                    if (salesResult.get(i) == 0.0) {
+                        continue;
                     }
                     anAssert.isEquals(salesResult.get(i), data.get(dataCounter).getAmount(), "price mismatch");
                     dataCounter++;
@@ -62,8 +62,8 @@ public class SalesHistoryPage extends CommonMagMobilePage {
             } else {
                 anAssert.isElementTextContains(unitsLbl, "в штуках", pageSource);
                 for (int i = 0; i < salesResult.size(); i++) {
-                    while (salesResult.get(i) == 0.0) {
-                        i++;
+                    if (salesResult.get(i) == 0.0) {
+                        continue;
                     }
                     anAssert.isEquals(data.get(dataCounter).getQuantity(), salesResult.get(i), "quantity mismatch");
                     dataCounter++;
