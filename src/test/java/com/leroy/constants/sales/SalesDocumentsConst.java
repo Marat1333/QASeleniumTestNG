@@ -6,11 +6,11 @@ public class SalesDocumentsConst {
     public enum States {
         CONFIRMED("CONFIRMED", "Создан"),
         ALLOWED_FOR_PICKING("ALLOWED_FOR_PICKING", "Готов к сборке"),
-        IN_PROGRESS("CONFIRMATION_IN_PROGRESS","Автообработка"),
-        TRANSFORMED("","Преобразован"),
+        IN_PROGRESS("CONFIRMATION_IN_PROGRESS", "Автообработка"),
+        TRANSFORMED("", "Преобразован"),
         DELETED("DELETED", ""),
         CANCELLED("CANCELLED", "Отменен"),
-        DRAFT("DRAFT","Черновик"),
+        DRAFT("DRAFT", "Черновик"),
 
         // Transfer
         NEW("NEW", "");
@@ -35,9 +35,9 @@ public class SalesDocumentsConst {
     // Типы документов
     public enum Types {
         SALE("SALE", ""),
-        CART("CART","Корзина"),
-        ESTIMATE("QUOTATION","Смета"),
-        ORDER("ORDER","");
+        CART("CART", "Корзина"),
+        ESTIMATE("QUOTATION", "Смета"),
+        ORDER("ORDER", "");
 
         private String uiVal;
         private String apiVal;

@@ -1,7 +1,6 @@
 package com.leroy.magportal.ui.webelements.commonelements;
 
 import com.leroy.core.fieldfactory.CustomLocator;
-import com.leroy.magportal.ui.webelements.commonelements.PuzComboBox;
 import org.openqa.selenium.WebDriver;
 
 import java.util.Arrays;

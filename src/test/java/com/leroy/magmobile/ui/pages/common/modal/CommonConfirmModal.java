@@ -7,6 +7,7 @@ import io.qameta.allure.Step;
 public abstract class CommonConfirmModal extends CommonMagMobilePage {
 
     protected abstract Element confirmBtn();
+
     protected abstract Element cancelBtn();
 
     @Override

@@ -5,7 +5,7 @@ import ru.leroymerlin.qa.core.clients.base.Method;
 
 @Method(value = "GET", path = "/catalog/product/nearestShops")
 public class GetNearestShops extends CommonLegoRequest<GetNearestShops> {
-    public GetNearestShops setLmCode(String lmCode){
+    public GetNearestShops setLmCode(String lmCode) {
         return queryParam("lmCode", lmCode);
     }
 }

@@ -40,7 +40,6 @@ public class XMLSuiteResultMethodAsTestWriter extends XMLSuiteResultWriter {
     }
 
 
-
     private Properties getTestAttributes(ITestResult testResult) {
         Properties attributes = new Properties();
         ITestContext tc = testResult.getTestContext();
@@ -68,7 +67,7 @@ public class XMLSuiteResultMethodAsTestWriter extends XMLSuiteResultWriter {
             }
 
             List<ITestResult> sortedResults = result.getValue();
-            Collections.sort( sortedResults );
+            Collections.sort(sortedResults);
             for (ITestResult testResult : sortedResults) {
                 addTestResult(xmlBuffer, testResult, attributes);
             }

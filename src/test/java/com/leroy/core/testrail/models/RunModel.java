@@ -1,7 +1,5 @@
 package com.leroy.core.testrail.models;
 
-import com.leroy.core.configuration.Log;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

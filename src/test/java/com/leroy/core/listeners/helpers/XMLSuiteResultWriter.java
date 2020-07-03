@@ -119,7 +119,7 @@ public class XMLSuiteResultWriter {
 
             xmlBuffer.push(XMLReporterConfig.TAG_CLASS, attributes);
             List<ITestResult> sortedResults = result.getValue();
-            Collections.sort( sortedResults );
+            Collections.sort(sortedResults);
             for (ITestResult testResult : sortedResults) {
                 addTestResult(xmlBuffer, testResult);
             }
@@ -315,7 +315,7 @@ public class XMLSuiteResultWriter {
     protected void addTestResultAttributes(XMLStringBuffer xmlBuffer, ITestResult testResult) {
         if (testResult.getAttributeNames() != null && testResult.getAttributeNames().size() > 0) {
             xmlBuffer.push(XMLReporterConfig.TAG_ATTRIBUTES);
-            for (String attrName: testResult.getAttributeNames()) {
+            for (String attrName : testResult.getAttributeNames()) {
                 if (attrName == null) {
                     continue;
                 }

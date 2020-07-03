@@ -32,7 +32,7 @@ public class BottomOrderInfoWidget extends CardWidget<OrderAppData> {
     public Double getTotalWeight(String ps) {
         String[] actualCountProductAndWeight = countAndWeightProductLbl.getText(ps).split("•");
         double weight = ParserUtil.strToDouble(actualCountProductAndWeight[1]);
-        return actualCountProductAndWeight[1].endsWith("кг")? weight : weight * 1000;
+        return actualCountProductAndWeight[1].endsWith("кг") ? weight : weight * 1000;
     }
 
     public Double getTotalPrice(String ps) {

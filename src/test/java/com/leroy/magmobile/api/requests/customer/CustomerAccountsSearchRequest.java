@@ -21,8 +21,7 @@ public class CustomerAccountsSearchRequest extends CommonSearchRequestBuilder<Cu
     public CustomerAccountsSearchRequest setDiscriminantValue(String value) {
         if (value != null) {
             return queryParam("discriminantValue", value.replaceAll("\\+", "%2B"));
-        }
-        else return this;
+        } else return this;
     }
 
 }

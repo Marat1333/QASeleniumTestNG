@@ -57,13 +57,17 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
     }
 
     @Step("Найти и выбрать документ, содержащий текст: {containsText}")
-    public void searchForDocumentByTextAndSelectIt(String containsText) {
+    public void searchForDocumentByTextAndSelectIt(String containsText, boolean updateDocumentListBefore) {
         CardWidget<ShortSalesDocumentData> cardWidget =
-                salesDocumentScrollList.searchForWidgetByText(containsText);
+                salesDocumentScrollList.searchForWidgetByText(containsText, updateDocumentListBefore);
         anAssert.isNotNull(cardWidget, "Не нашли нужный документ",
                 String.format("Документ содержащий текст %s должен быть найден",
                         containsText));
         cardWidget.click();
+    }
+
+    public void searchForDocumentByTextAndSelectIt(String containsText) {
+        searchForDocumentByTextAndSelectIt(containsText, false);
     }
 
     @Step("Ждем, пока документ №{docNumber} не будет в состоянии {expectedStatus}")
@@ -76,7 +80,7 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
                 waitUntilProgressBarAppearsAndDisappear();
             }
             CardWidget<ShortSalesDocumentData> cardWidget =
-                    salesDocumentScrollList.searchForWidgetByText(docNumber);
+                    salesDocumentScrollList.searchForWidgetByText(docNumber, true);
             anAssert.isNotNull(cardWidget, "Не нашли документ " + docNumber,
                     String.format("Документ №%s должен быть найден",
                             docNumber));

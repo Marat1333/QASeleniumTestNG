@@ -149,7 +149,7 @@ public class ApiClientProvider {
         return getClient(supportClientProvider);
     }
 
-    public MagPortalCatalogProductClient getMagPortalCatalogProductClientProvider(){
+    public MagPortalCatalogProductClient getMagPortalCatalogProductClientProvider() {
         return getClient(magPortalCatalogProductClientProvider);
     }
 

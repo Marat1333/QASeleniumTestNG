@@ -12,7 +12,9 @@ public class BaseProductOrderData {
     private Double price;
     private Double quantity;
 
-    public BaseProductOrderData() {}
+    public BaseProductOrderData() {
+    }
+
     public BaseProductOrderData(ProductItemData productItemResponse) {
         this.setLmCode(productItemResponse.getLmCode());
         this.setPrice(productItemResponse.getPrice());

@@ -9,11 +9,11 @@ public enum ReviewOptions {
 
     private String name;
 
-    ReviewOptions(String name){
+    ReviewOptions(String name) {
         this.name = name;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 }

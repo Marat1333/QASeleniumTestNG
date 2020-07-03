@@ -10,7 +10,6 @@ import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.ConfirmRemoveProductModal;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SubmittedEstimateModal;
 import com.leroy.magportal.ui.pages.cart_estimate.widget.OrderPuzWidget;
-import com.leroy.magportal.ui.pages.cart_estimate.widget.ProductOrderCardPuzWidget;
 import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
 import com.leroy.magportal.ui.pages.common.modal.ConfirmRemoveModal;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
@@ -18,9 +17,6 @@ import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 import org.openqa.selenium.support.Colors;
 import org.testng.util.Strings;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class EstimatePage extends CartEstimatePage {
 

@@ -23,26 +23,26 @@ public class MobileActions {
 
     private AndroidDriver driver;
 
-    public MobileActions (WebDriver driver) {
+    public MobileActions(WebDriver driver) {
         this.driver = (AndroidDriver) driver;
     }
 
     //Tap to an element for 250 milliseconds
-    public void tapByElement (AndroidElement androidElement) {
+    public void tapByElement(AndroidElement androidElement) {
         new TouchAction(driver)
                 .tap(tapOptions().withElement(element(androidElement)))
                 .waitAction(waitOptions(Duration.ofMillis(250))).perform();
     }
 
     //Tap by coordinates
-    public void tapByCoordinates (int x,  int y) {
+    public void tapByCoordinates(int x, int y) {
         new TouchAction(driver)
-                .tap(point(x,y))
+                .tap(point(x, y))
                 .waitAction(waitOptions(Duration.ofMillis(250))).perform();
     }
 
     //Press by element
-    public void pressByElement (AndroidElement element, long seconds) {
+    public void pressByElement(AndroidElement element, long seconds) {
         new TouchAction(driver)
                 .press(element(element))
                 .waitAction(waitOptions(ofSeconds(seconds)))
@@ -51,16 +51,16 @@ public class MobileActions {
     }
 
     //Press by coordinates
-    public void pressByCoordinates (int x, int y, long seconds) {
+    public void pressByCoordinates(int x, int y, long seconds) {
         new TouchAction(driver)
-                .press(point(x,y))
+                .press(point(x, y))
                 .waitAction(waitOptions(ofSeconds(seconds)))
                 .release()
                 .perform();
     }
 
     //Horizontal Swipe by percentages
-    public void horizontalSwipeByPercentage (double startPercentage, double endPercentage, double anchorPercentage) {
+    public void horizontalSwipeByPercentage(double startPercentage, double endPercentage, double anchorPercentage) {
         Dimension size = driver.manage().window().getSize();
         int anchor = (int) (size.height * anchorPercentage);
         int startPoint = (int) (size.width * startPercentage);
@@ -88,7 +88,7 @@ public class MobileActions {
     }
 
     //Swipe by elements
-    public void swipeByElements (AndroidElement startElement, AndroidElement endElement) {
+    public void swipeByElements(AndroidElement startElement, AndroidElement endElement) {
         int startX = startElement.getLocation().getX() + (startElement.getSize().getWidth() / 2);
         int startY = startElement.getLocation().getY() + (startElement.getSize().getHeight() / 2);
 
@@ -96,14 +96,14 @@ public class MobileActions {
         int endY = endElement.getLocation().getY() + (endElement.getSize().getHeight() / 2);
 
         new TouchAction(driver)
-                .press(point(startX,startY))
+                .press(point(startX, startY))
                 .waitAction(waitOptions(ofMillis(1000)))
                 .moveTo(point(endX, endY))
                 .release().perform();
     }
 
     //Multitouch action by using an android element
-    public void multiTouchByElement (AndroidElement androidElement) {
+    public void multiTouchByElement(AndroidElement androidElement) {
         TouchAction press = new TouchAction(driver)
                 .press(element(androidElement))
                 .waitAction(waitOptions(ofSeconds(1)))

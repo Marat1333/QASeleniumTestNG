@@ -729,9 +729,9 @@ public class SearchProductPage extends MenuPage {
                 }
             }
         }
-        if (contains){
+        if (contains) {
             anAssert.isTrue(condition == nomenclatureElementName.length, "не соответсвует кол-ву переданных элементов");
-        }else {
+        } else {
             anAssert.isTrue(condition == 0, "Уровень товарной иерархии содержится в элементе UI");
         }
         return this;

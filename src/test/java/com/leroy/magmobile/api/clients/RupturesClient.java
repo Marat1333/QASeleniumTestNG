@@ -6,6 +6,7 @@ import com.leroy.magmobile.api.requests.ruptures.*;
 import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class RupturesClient extends MagMobileClient {
      **/
 
     @Step("Create Rupture session product")
-    public Response<JsonNode> createProduct(ReqRuptureSessionData postData) {
+    public Response<JsonNode> createSession(ReqRuptureSessionData postData) {
         RupturesSessionProductPostRequest req = new RupturesSessionProductPostRequest();
         req.setAppVersion(appVersion);
         req.bearerAuthHeader(userSessionData.getAccessToken());
@@ -30,7 +31,7 @@ public class RupturesClient extends MagMobileClient {
     }
 
     @Step("Update rupture session product")
-    public Response<JsonNode> updateProduct(ReqRuptureSessionData putData) {
+    public Response<JsonNode> updateSession(ReqRuptureSessionData putData) {
         RupturesSessionProductRequest req = new RupturesSessionProductRequest();
         req.setAppVersion(appVersion);
         req.jsonBody(putData);
@@ -39,7 +40,7 @@ public class RupturesClient extends MagMobileClient {
     }
 
     @Step("Delete rupture session product for lmCode={lmCode}")
-    public Response<JsonNode> deleteProduct(String lmCode, int sessionId) {
+    public Response<JsonNode> deleteProductInSession(String lmCode, int sessionId) {
         RupturesSessionProductDeleteRequest req = new RupturesSessionProductDeleteRequest();
         req.setLmCode(lmCode);
         req.setSessionId(sessionId);
@@ -162,10 +163,10 @@ public class RupturesClient extends MagMobileClient {
     public void assertThatDataMatches(Response<RuptureProductDataList> resp, RuptureProductDataList expectedData) {
         assertThatResponseIsOk(resp);
         RuptureProductDataList actualData = resp.asJson();
-        List<RuptureProductData> expectedProductItems = expectedData.getItems();
+        List<RuptureProductData> expectedProductItems = new ArrayList<>(expectedData.getItems());
         Collections.reverse(expectedProductItems);
         assertThat("total count", actualData.getTotalCount(), equalTo(expectedData.getTotalCount()));
-        assertThat("rupture session product items", actualData.getItems(), equalTo(expectedData.getItems()));
+        assertThat("rupture session product items", actualData.getItems(), equalTo(expectedProductItems));
     }
 
     @Step("Check that action is unavailable")

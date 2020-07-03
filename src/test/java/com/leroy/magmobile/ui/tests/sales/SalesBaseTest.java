@@ -75,11 +75,17 @@ public class SalesBaseTest extends AppBaseSteps {
     protected void startFromScreenWithCreatedCart(List<String> lmCodes, boolean hasDiscount) throws Exception {
         if (!Cart35Page.isThisPage()) {
             String cartDocNumber = createDraftCart(lmCodes, hasDiscount);
-            MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
-                    MainSalesDocumentsPage.class);
-            SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
+            SalesDocumentsPage salesDocumentsPage;
+            boolean isStartFromScratch = isStartFromScratch();
+            if (isStartFromScratch) {
+                MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
+                        MainSalesDocumentsPage.class);
+                salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
+            } else {
+                salesDocumentsPage = new SalesDocumentsPage();
+            }
             salesDocumentsPage.searchForDocumentByTextAndSelectIt(
-                    cartDocNumber);
+                    cartDocNumber, !isStartFromScratch);
         }
     }
 
@@ -92,11 +98,17 @@ public class SalesBaseTest extends AppBaseSteps {
                 response = cartClient.sendRequestCreate(productDataList);
             CartData cartData = cartClient.assertThatIsCreatedAndGetData(response, true);
             String cartDocNumber = cartData.getCartId();
-            MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
-                    MainSalesDocumentsPage.class);
-            SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
+            SalesDocumentsPage salesDocumentsPage;
+            boolean isStartFromScratch = isStartFromScratch();
+            if (isStartFromScratch) {
+                MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
+                        MainSalesDocumentsPage.class);
+                salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
+            } else {
+                salesDocumentsPage = new SalesDocumentsPage();
+            }
             salesDocumentsPage.searchForDocumentByTextAndSelectIt(
-                    cartDocNumber);
+                    cartDocNumber, !isStartFromScratch);
         }
     }
 
@@ -327,6 +339,8 @@ public class SalesBaseTest extends AppBaseSteps {
         Response<JsonNode> r = orderClient.cancelOrder(orderId);
         anAssert().isTrue(r.isSuccessful(),
                 "Не смогли удалить заказ №" + orderId + ". Ошибка: " + r.toString());
+        orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderId,
+                SalesDocumentsConst.States.CANCELLED.getApiVal());
     }
 
     protected void cancelOrder(String orderId) throws Exception {

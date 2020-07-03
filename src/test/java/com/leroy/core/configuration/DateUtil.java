@@ -51,8 +51,7 @@ public class DateUtil {
      * Parses the given string into a {@link Date} for the format:
      * "11/03/2011 02:55:40 pm".
      *
-     * @param strToParse
-     *            String timestamp to parse
+     * @param strToParse String timestamp to parse
      * @return A parsed Date object
      * @throws ParseException
      */
@@ -71,8 +70,7 @@ public class DateUtil {
      * Parses the given string into a {@link Date} for the format:
      * "11/03/2011 14:55:40".
      *
-     * @param strToParse
-     *            String timestamp to parse
+     * @param strToParse String timestamp to parse
      * @return A parsed Date object
      * @throws ParseException
      */
@@ -85,8 +83,7 @@ public class DateUtil {
      * Parses the given string into a {@link Date} for the format:
      * "11/03/2011 02:55:40 pm".
      *
-     * @param strToParse
-     *            String timestamp to parse
+     * @param strToParse String timestamp to parse
      * @return A parsed Date object
      * @throws ParseException
      */
@@ -99,8 +96,7 @@ public class DateUtil {
      * This method was created for the timestamp format on the Open Webmail
      * page. assumes time is today
      *
-     * @param strTime
-     *            String timestamp to parse
+     * @param strTime String timestamp to parse
      * @return A parsed Date object
      * @throws ParseException
      */

@@ -309,7 +309,7 @@ public class ProductCardPage extends MenuPage {
                 anAssert.isContainsIgnoringCase(data.getName(), criterion, "Name expected: " + criterion
                         + "actual" + data.getName());
             } else {
-                anAssert.isTrue(String.valueOf(data.getId()).contains(criterion)||data.getName().contains(criterion), "ID expected: "
+                anAssert.isTrue(String.valueOf(data.getId()).contains(criterion) || data.getName().contains(criterion), "ID expected: "
                         + criterion + " actual" + data.getId());
             }
         }

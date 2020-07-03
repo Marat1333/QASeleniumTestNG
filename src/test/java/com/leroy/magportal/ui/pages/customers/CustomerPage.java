@@ -62,14 +62,14 @@ public class CustomerPage extends MenuPage {
     }
 
     @Step("Выберите тип поиска по {text}")
-    public CustomerPage selectSearchOption(String text) throws Exception{
+    public CustomerPage selectSearchOption(String text) throws Exception {
         searchTypeComboBox.selectOption(text);
         return this;
     }
 
     @Step("Введите {text} в поле поиска и нажмите иконку поиска")
     public CustomerPage searchClient(String text) {
-        EditBox searchFld = searchPhoneFld.isVisible()? searchPhoneFld : searchEmailFld;
+        EditBox searchFld = searchPhoneFld.isVisible() ? searchPhoneFld : searchEmailFld;
         if (text.startsWith("+7"))
             text = text.substring(2);
         searchFld.clear();
