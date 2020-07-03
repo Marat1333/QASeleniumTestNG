@@ -34,7 +34,7 @@ public class ShortOrderDocumentCardWidget extends CardWebWidget<ShortOrderDocWeb
     @WebFindBy(xpath = ".//span[contains(@class, 'Status-container')]")
     Element status;
 
-    @WebFindBy(xpath = ".//div[contains(@class, 'popover__opener')]")
+    @WebFindBy(xpath = ".//div[contains(@class, 'Tooltip__title')]")
     ElementList<Element> icons;
 
     public String getNumber() {
