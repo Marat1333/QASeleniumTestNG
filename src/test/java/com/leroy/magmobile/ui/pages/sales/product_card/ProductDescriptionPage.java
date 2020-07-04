@@ -164,20 +164,21 @@ public class ProductDescriptionPage extends ProductCardPage {
     public ProductDescriptionPage shouldDataIsCorrect(CatalogProductData data){
         String uiDateFormat = "d.MM.yy";
         String apiDateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-
-        softAssert.isElementTextContains(gammaLbl, data.getGamma());
-        softAssert.isElementTextContains(topLbl, data.getTop());
-        softAssert.isElementTextContains(departmentLbl, data.getDepartmentId());
+        String ps = getPageSource();
+        softAssert.isElementTextContains(gammaLbl, data.getGamma(), ps);
+        softAssert.isElementTextContains(topLbl, data.getTop(), ps);
+        softAssert.isElementTextContains(departmentLbl, data.getDepartmentId(), ps);
         shouldProductLMCodeIs(data.getLmCode());
         shouldProductBarCodeIs(data.getBarCode());
-        softAssert.isElementTextEqual(productName, data.getTitle());
+        softAssert.isElementTextEqual(productName, data.getTitle(), ps);
         mainScrollView.scrollToEnd();
-        softAssert.isElementTextContains(priceLbl, ParserUtil.prettyDoubleFmt(data.getPrice()));
+        ps = getPageSource();
+        softAssert.isElementTextContains(priceLbl, ParserUtil.prettyDoubleFmt(data.getPrice()), ps);
         unitComparison(priceLbl, data.getPriceUnit());
-        String priceChangeDate = dateOfPriceChangeLbl.getText().replaceAll("c ", "");
-        softAssert.isEquals(DateTimeUtil.strToLocalDateTime(priceChangeDate, uiDateFormat),
-                DateTimeUtil.strToLocalDateTime(data.getSalesPrice().getDateOfChange(),apiDateFormat).plusHours(3), "date of price change");
-        softAssert.isElementTextContains(availableStockLbl, ParserUtil.prettyDoubleFmt(data.getAvailableStock()));
+        String priceChangeDate = dateOfPriceChangeLbl.getText(ps).replaceAll("c ", "");
+        softAssert.isEquals(DateTimeUtil.strToLocalDate(priceChangeDate, uiDateFormat),
+                DateTimeUtil.strToLocalDate(data.getSalesPrice().getDateOfChange(),apiDateFormat), "date of price change");
+        softAssert.isElementTextContains(availableStockLbl, ParserUtil.prettyDoubleFmt(data.getAvailableStock()), ps);
         unitComparison(availableStockUnitLbl, data.getPriceUnit());
         softAssert.verifyAll();
         return this;

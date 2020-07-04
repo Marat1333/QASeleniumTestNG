@@ -599,9 +599,10 @@ public class Element extends BaseWidget {
     }
 
     public void waitUntilTextContains(String referenceText, int timeout) {
-        WebDriverWait wait = new WebDriverWait(this.driver, (long) timeout);
+        WebDriverWait wait = new WebDriverWait(this.driver, timeout);
         try {
-            wait.until((ExpectedCondition<Boolean>) driverObject -> this.getText().contains(referenceText));
+            wait.until((ExpectedCondition<Boolean>) driverObject -> this.getText().toLowerCase()
+                    .contains(referenceText.toLowerCase()));
         } catch (TimeoutException e) {
             Log.warn(String.format(
                     "Method: waitUntilTextContains() - the text doesn't contain a specified (tried for %d second(s))",

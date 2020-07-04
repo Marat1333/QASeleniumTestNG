@@ -22,13 +22,13 @@ public class ShopStockInfoWidget extends CardWidget<ShopCardData> {
     @Override
     public ShopCardData collectDataFromPage(String pageSource) {
         ShopCardData data = new ShopCardData();
-        data.setId(id.getText());
-        data.setStock(stock.getText());
+        data.setId(id.getText(pageSource));
+        data.setStock(stock.getText(pageSource));
         return data;
     }
 
     @Override
     public boolean isFullyVisible(String pageSource) {
-        return id.isVisible() && stock.isVisible();
+        return id.isVisible(pageSource) && stock.isVisible(pageSource);
     }
 }

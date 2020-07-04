@@ -42,13 +42,13 @@ public class SupplyHistoryWidget extends CardWidget<SupplyHistoryData> {
     public SupplyHistoryData collectDataFromPage(String pageSource) {
         String dateFormat = "dd.MM.yy";
         SupplyHistoryData data = new SupplyHistoryData();
-        data.setId(ParserUtil.strWithOnlyDigits(id.getText()));
-        String[] orderedReceivedNumbersArray = orderedReceivedAmount.getText().split("/");
+        data.setId(ParserUtil.strWithOnlyDigits(id.getText(pageSource)));
+        String[] orderedReceivedNumbersArray = orderedReceivedAmount.getText(pageSource).split("/");
         data.setOrderedAmount(ParserUtil.strWithOnlyDigits(orderedReceivedNumbersArray[0]));
         data.setReceivedAmount(ParserUtil.strWithOnlyDigits(orderedReceivedNumbersArray[1]));
-        data.setContractDate(DateTimeUtil.strToLocalDate(contractDate.getText(), dateFormat));
-        data.setNoteDate(DateTimeUtil.strToLocalDate(notesDate.getText(), dateFormat));
-        data.setReceiveDate(DateTimeUtil.strToLocalDate(receiveDate.getText(), dateFormat));
+        data.setContractDate(DateTimeUtil.strToLocalDate(contractDate.getText(pageSource), dateFormat));
+        data.setNoteDate(DateTimeUtil.strToLocalDate(notesDate.getText(pageSource), dateFormat));
+        data.setReceiveDate(DateTimeUtil.strToLocalDate(receiveDate.getText(pageSource), dateFormat));
         return data;
     }
 
@@ -59,6 +59,6 @@ public class SupplyHistoryWidget extends CardWidget<SupplyHistoryData> {
 
     @Override
     public boolean isFullyVisible(String pageSource) {
-        return id.isVisible() && anchorLbl.isVisible();
+        return id.isVisible(pageSource) && anchorLbl.isVisible(pageSource);
     }
 }

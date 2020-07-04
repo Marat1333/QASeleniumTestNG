@@ -51,6 +51,6 @@ public class SearchServiceCardWidget extends CardWidget<ServiceCardData> {
 
     @Override
     public boolean isFullyVisible(String pageSource) {
-        return lmCodeObj.isVisible() && addToSalesListBtn.isVisible();
+        return lmCodeObj.isVisible(pageSource) && addToSalesListBtn.isVisible(pageSource);
     }
 }

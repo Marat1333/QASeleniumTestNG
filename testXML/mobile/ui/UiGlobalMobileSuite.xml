@@ -4,10 +4,9 @@
 
     <suite-files>
         <suite-file path="pao/PAOGlobalMobileSuite.xml"/>
-        <suite-file path="catalog/SearchSuite.xml"/>
+        <suite-file path="catalog/GlobalCatalogSuite.xml"/>
         <suite-file path="areas/SupportSuite.xml"/>
         <suite-file path="areas/WithdrawalFromRMSuite.xml"/>
-        <suite-file path="catalog/CatalogProductSuite.xml"/>
     </suite-files>
 
 </suite>

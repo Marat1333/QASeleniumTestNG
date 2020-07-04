@@ -55,9 +55,9 @@ public class SearchProductAllGammaCardWidget extends CardWidget<ProductCardData>
     @Override
     public ProductCardData collectDataFromPage(String pageSource) {
         ProductCardData productCardData = new ProductCardData();
-        productCardData.setLmCode(getLmCode(true));
-        productCardData.setBarCode(getBarCode(true));
-        productCardData.setName(getTitle());
+        productCardData.setLmCode(getLmCode(true, pageSource));
+        productCardData.setBarCode(getBarCode(true, pageSource));
+        productCardData.setName(getTitle(pageSource));
         return productCardData;
     }
 

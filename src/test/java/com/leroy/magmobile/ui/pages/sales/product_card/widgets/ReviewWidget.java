@@ -43,10 +43,10 @@ public class ReviewWidget extends CardWidget<ReviewCardData> {
     @Override
     public ReviewCardData collectDataFromPage(String pageSource) {
         ReviewCardData data = new ReviewCardData();
-        data.setName(nameLbl.getText());
-        data.setDate(dateLbl.getText());
-        data.setCity(cityLbl.getText());
-        data.setReviewBody(reviewBodyLbl.getText());
+        data.setName(nameLbl.getText(pageSource));
+        data.setDate(dateLbl.getText(pageSource));
+        data.setCity(cityLbl.getText(pageSource));
+        data.setReviewBody(reviewBodyLbl.getText(pageSource));
         /*if (advantagesLbl.isVisible()) {
             data.setAdvantages(advantagesLbl.getText());
         }
@@ -68,6 +68,6 @@ public class ReviewWidget extends CardWidget<ReviewCardData> {
 
     @Override
     public boolean isFullyVisible(String pageSource) {
-        return nameLbl.isVisible() && reviewBodyLbl.isVisible();
+        return nameLbl.isVisible(pageSource) && reviewBodyLbl.isVisible(pageSource);
     }
 }

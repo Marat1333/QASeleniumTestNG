@@ -66,8 +66,8 @@ public class PricesPage extends ProductPricesQuantitySupplyPage{
         softAssert.isElementTextContains(priceLbl, String.valueOf(priceInfo.getPrice()).replaceAll("\\.", ","));
         softAssert.isElementTextContains(purchasePriceLbl, String.valueOf(data.getPurchasePrice()).replaceAll("\\.", ","));
         softAssert.isElementTextContains(recommendedPriceLbl, String.valueOf(priceInfo.getRecommendedPrice()).replaceAll("\\.", ","));
-        softAssert.isEquals(DateTimeUtil.strToLocalDateTime(priceChangeDateLbl.getText().replaceAll("c ", ""), uiDateFormat),
-                DateTimeUtil.strToLocalDateTime(priceInfo.getDateOfChange(), apiDateFormat).plusHours(3), "date of price change");
+        softAssert.isEquals(DateTimeUtil.strToLocalDate(priceChangeDateLbl.getText().replaceAll("c ", ""), uiDateFormat),
+                DateTimeUtil.strToLocalDate(priceInfo.getDateOfChange(), apiDateFormat), "date of price change");
         softAssert.isElementTextEqual(reasonOfChangeLbl, priceInfo.getReasonOfChange());
         if (priceInfo.getPrice()-priceInfo.getRecommendedPrice()!=0.0){
             softAssert.isElementVisible(recommendedPriceMismatchLbl);
