@@ -152,7 +152,11 @@ public class ProductDescriptionPage extends ProductCardPage {
 
     @Step("Проверить, что кол-во отзывов соответствует данным")
     public ProductDescriptionPage shouldReviewCountIsCorrect(CatalogReviewsOfProductList data){
-        anAssert.isElementTextContains(reviewNavigationBtn, String.valueOf(data.getTotalCount()));
+        if (data.getTotalCount()==0) {
+            anAssert.isElementTextContains(reviewNavigationBtn, "Твой отзыв будет первым");
+        }else {
+            anAssert.isElementTextContains(reviewNavigationBtn, String.valueOf(data.getTotalCount()));
+        }
         return this;
     }
 

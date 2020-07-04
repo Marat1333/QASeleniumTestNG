@@ -8,6 +8,7 @@ import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.api.data.catalog.Characteristic;
 import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
 import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.SuppliesPage;
+import io.qameta.allure.Step;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,11 +27,13 @@ public class SpecificationsPage extends ProductCardPage {
     @AppFindBy(xpath = "//android.widget.ScrollView")
     AndroidScrollView<String> mainScrollView;
 
+    @Step("Перейти на страницу с информацией о поставщике")
     public SuppliesPage goToSupplyInfoPage() {
         supplyInfoNavigationBtn.click();
         return new SuppliesPage();
     }
 
+    @Step("Проверить корректность данных")
     public SpecificationsPage shouldDataIsCorrect(CatalogProductData data) throws Exception {
         HashMap<String, String> frontCharacteristicsMap = grabCharacteristicsFromPage();
         List<Characteristic> characteristicList = data.getCharacteristics();

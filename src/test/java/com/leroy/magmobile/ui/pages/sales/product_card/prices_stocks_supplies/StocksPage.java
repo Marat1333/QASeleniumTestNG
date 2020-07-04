@@ -84,6 +84,7 @@ public class StocksPage extends ProductPricesQuantitySupplyPage{
         unavailableStockLbl.waitForVisibility();
     }
 
+    @Step("Проверить что данные по остаткам товара отображены корректно")
     public StocksPage shouldDataIsCorrect(CatalogProductData data){
         StockAreas stockAreas = data.getStockAreas();
         ExtStocks extStocks = data.getExtStocks();
@@ -112,6 +113,7 @@ public class StocksPage extends ProductPricesQuantitySupplyPage{
         return this;
     }
 
+    @Step("Проверить что данные по остаткам товара в ближайших магазинах отображены корректно")
     public StocksPage shouldShopStocksAreCorrect(List<ShopData> data){
         mainScrollView.scrollDownToElement(shopListNavBtn);
         List<ShopCardData> shopData = shopCardsScrollView.getFullDataList();

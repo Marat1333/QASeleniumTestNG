@@ -49,28 +49,24 @@ public class SalesHistoryPage extends CommonMagMobilePage {
         List<Double> salesResult = salesHistoryWidget.grabDataFromWidget();
         String pageSource = getPageSource();
         int dataCounter = 0;
-        try {
-            if (byPrice) {
-                anAssert.isElementTextContains(unitsLbl, "в рублях", pageSource);
-                for (int i = 0; i < salesResult.size(); i++) {
-                    while (salesResult.get(i) == 0.0) {
-                        i++;
-                    }
-                    anAssert.isEquals(salesResult.get(i), data.get(dataCounter).getAmount(), "price mismatch");
-                    dataCounter++;
+        if (byPrice) {
+            anAssert.isElementTextContains(unitsLbl, "в рублях", pageSource);
+            for (int i = 0; i < salesResult.size(); i++) {
+                if (salesResult.get(i) == 0.0) {
+                    continue;
                 }
-            } else {
-                anAssert.isElementTextContains(unitsLbl, "в штуках", pageSource);
-                for (int i = 0; i < salesResult.size(); i++) {
-                    while (salesResult.get(i) == 0.0) {
-                        i++;
-                    }
-                    anAssert.isEquals(data.get(dataCounter).getQuantity(), salesResult.get(i), "quantity mismatch");
-                    dataCounter++;
-                }
+                anAssert.isEquals(salesResult.get(i), data.get(dataCounter).getAmount(), "price mismatch");
+                dataCounter++;
             }
-        }catch (IndexOutOfBoundsException e){
-            //nothing to do
+        } else {
+            anAssert.isElementTextContains(unitsLbl, "в штуках", pageSource);
+            for (int i = 0; i < salesResult.size(); i++) {
+                if (salesResult.get(i) == 0.0) {
+                    continue;
+                }
+                anAssert.isEquals(data.get(dataCounter).getQuantity(), salesResult.get(i), "quantity mismatch");
+                dataCounter++;
+            }
         }
         return this;
     }

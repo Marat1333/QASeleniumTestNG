@@ -17,7 +17,7 @@ public class SimilarProductsPage extends ProductCardPage {
 
     private AndroidScrollView<ProductCardData> productCardsScrollView = new AndroidScrollView<>(driver,
             AndroidScrollView.TYPICAL_LOCATOR,
-            ".//android.widget.TextView[@content-desc='presenceValue']/..", SearchProductCardWidget.class);
+            ".//android.widget.TextView[@text='доступно']/..", SearchProductCardWidget.class);
 
     private AndroidScrollView<ProductCardData> allGammaProductCardsScrollView = new AndroidScrollView<>(driver,
             AndroidScrollView.TYPICAL_LOCATOR,

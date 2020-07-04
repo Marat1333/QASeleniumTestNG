@@ -36,9 +36,8 @@ public class ProductPricesQuantitySupplyPage extends CommonMagMobilePage {
     }
 
     @Step("Перейти назад")
-    public ProductDescriptionPage goBack(){
+    public void goBack(){
         backBtn.click();
-        return new ProductDescriptionPage();
     }
 
     @Step("Перейти во вкладку")
@@ -62,6 +61,7 @@ public class ProductPricesQuantitySupplyPage extends CommonMagMobilePage {
         }
     }
 
+    @Step("Проверить, что отсутствует кнопка \"Поставки\"")
     public void shouldNotSupplyBtnBeDisplayed() {
         anAssert.isFalse(supplyBtn.isVisible(), "Раздел \"Поставки\" не отображен");
     }

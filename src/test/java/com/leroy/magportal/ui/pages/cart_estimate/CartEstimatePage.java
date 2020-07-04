@@ -18,7 +18,9 @@ import com.leroy.magportal.ui.pages.common.modal.ConfirmRemoveModal;
 import com.leroy.magportal.ui.pages.customers.CreateCustomerForm;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import com.leroy.magportal.ui.webelements.commonelements.PuzComboBox;
+import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
+import org.testng.util.Strings;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -358,5 +360,91 @@ public abstract class CartEstimatePage extends
         anAssert.isEquals(actualLmCodes, lmCodes, "Ожидались другие товары в смете");
         return this;
     }
+
+    /**
+     * Проверить, что на странице сметы содержатся ожидаемые данные
+     */
+    protected void shouldDocumentHasData(SalesDocWebData expectedDocumentData) {
+        SalesDocWebData actualEstimateData = getSalesDocData();
+        if (expectedDocumentData.getNumber() == null)
+            anAssert.isFalse(getDocumentNumber().isEmpty(), "Отсутствует номер документа");
+        else
+            softAssert.isEquals(actualEstimateData.getNumber(), expectedDocumentData.getNumber(),
+                    "Ожидался другой номер документа");
+        softAssert.isEquals(actualEstimateData.getAuthorName(), expectedDocumentData.getAuthorName(),
+                "Ожидался другой автор документа");
+        if (expectedDocumentData.getStatus() != null) {
+            softAssert.isEquals(actualEstimateData.getStatus(), expectedDocumentData.getStatus().toUpperCase(),
+                    "Ожидался другой статус документа");
+        }
+        if (expectedDocumentData.getCreationDate() != null) {
+            softAssert.isEquals(actualEstimateData.getCreationDate(), expectedDocumentData.getCreationDate(),
+                    "Ожидался другая дата создания документа");
+        } else {
+            softAssert.isFalse(Strings.isNullOrEmpty(actualEstimateData.getCreationDate()),
+                    "Дата создания документа не отображается");
+        }
+        if (actualEstimateData.getClient() == null) {
+            softAssert.isTrue(expectedDocumentData.getClient() == null,
+                    "Информация о клиенте отсутствует");
+        } else {
+            softAssert.isEquals(actualEstimateData.getClient(), expectedDocumentData.getClient(),
+                    "Ожидался другой клиент в документе");
+        }
+        anAssert.isEquals(actualEstimateData.getOrders().size(),
+                expectedDocumentData.getOrders().size(),
+                "Ожидалось другое кол-во заказов в документе");
+        for (int i = 0; i < actualEstimateData.getOrders().size(); i++) {
+            OrderWebData actualOrder = actualEstimateData.getOrders().get(i);
+            OrderWebData expectedOrder = expectedDocumentData.getOrders().get(i);
+
+            anAssert.isEquals(actualOrder.getProductCardDataList().size(),
+                    expectedOrder.getProductCardDataList().size(),
+                    "Ожидалось другое кол-во товаров в документе (Заказ #" + (i + 1) + ")");
+            for (int j = 0; j < actualOrder.getProductCardDataList().size(); j++) {
+                ProductOrderCardWebData actualProduct = actualOrder.getProductCardDataList().get(j);
+                ProductOrderCardWebData expectedProduct = expectedOrder.getProductCardDataList().get(j);
+                if (expectedProduct.getSelectedQuantity() != null)
+                    softAssert.isEquals(actualProduct.getSelectedQuantity(), expectedProduct.getSelectedQuantity(),
+                            "Заказ #" + (i + 1) + " Товар #" + (j + 1) + " - ожидался другое кол-во");
+                if (expectedProduct.getTotalPrice() != null)
+                    softAssert.isEquals(actualProduct.getTotalPrice(), expectedProduct.getTotalPrice(),
+                            "Заказ #" + (i + 1) + " Товар #" + (j + 1) + " - ожидалась другая стоимость");
+                if (expectedProduct.getAvailableTodayQuantity() != null)
+                    softAssert.isEquals(actualProduct.getAvailableTodayQuantity(), expectedProduct.getAvailableTodayQuantity(),
+                            "Заказ #" + (i + 1) + " Товар #" + (j + 1) + " - ожидалось другое доступное кол-во");
+                else
+                    softAssert.isTrue(actualProduct.getAvailableTodayQuantity() >= 0,
+                            "Заказ #" + (i + 1) + " Товар #" + (j + 1) + " - ожидалось, что доступное кол-во >= 0");
+                if (expectedProduct.getWeight() != null)
+                    softAssert.isTrue(Math.abs(actualProduct.getWeight() - expectedProduct.getWeight()) <= 0.03,
+                            "Заказ #" + (i + 1) + " Товар #" + (j + 1) + " - ожидался другой вес");
+                else
+                    softAssert.isTrue(actualProduct.getWeight() > 0,
+                            "Заказ #" + (i + 1) + " Товар #" + (j + 1) + " - ожидался вес > 0");
+            }
+
+            softAssert.isEquals(actualOrder.getTotalPrice(), expectedOrder.getTotalPrice(),
+                    "Заказ #" + (i + 1) + " Неверное сумма итого");
+            if (expectedOrder.getTotalWeight() != null)
+                softAssert.isTrue(Math.abs(actualOrder.getTotalWeight() - expectedOrder.getTotalWeight()) <= 0.03,
+                        "Заказ #" + (i + 1) + " Неверный итого вес");
+            else {
+                softAssert.isTrue(actualOrder.getTotalWeight() > 0,
+                        "Заказ #" + (i + 1) + " Ожидался итого вес > 0");
+                double expectedTotalWeight = 0.0;
+                for (ProductOrderCardWebData pr : actualOrder.getProductCardDataList()) {
+                    expectedTotalWeight = ParserUtil.plus(pr.getWeight(), expectedTotalWeight, 2);
+                }
+                softAssert.isTrue(Math.abs(actualOrder.getTotalWeight() - expectedTotalWeight) <= 0.03,
+                        "Заказ #" + (i + 1) + " Итого вес должен быть равен сумме весов всех продуктов;\n" +
+                                "Actual: " + actualOrder.getTotalWeight() + "; Expected: " + expectedTotalWeight + ";");
+            }
+            softAssert.isEquals(actualOrder.getProductCount(), expectedOrder.getProductCount(),
+                    "Заказ #" + (i + 1) + " Неверное кол-во продуктов в заказе");
+        }
+        softAssert.verifyAll();
+    }
+
 
 }

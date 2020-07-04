@@ -144,7 +144,7 @@ public class ProductCardTest extends AppBaseSteps {
 
     @Test(description = "C3201005 Проверить вкладку Отзывы")
     public void testReview() throws Exception {
-        String lmCode = getRandomLmCode();
+        String lmCode = "10009084";
         CatalogReviewsOfProductList reviewsList = catalogProductClient.getProductReviews(lmCode, 1, 100).asJson();
 
         // Pre-conditions
@@ -167,7 +167,7 @@ public class ProductCardTest extends AppBaseSteps {
 
     @Test(description = "C3201004 Проверить вкладку Аналогичные товары")
     public void testSimilarProducts() throws Exception {
-        String lmCode = getRandomLmCode();
+        String lmCode = "10009965";
         CatalogProductClient.Extend extendParam = CatalogProductClient.Extend.builder()
                 .rating(true).logistic(true).inventory(true).build();
         CatalogSimilarProducts data = catalogProductClient.getSimilarProducts(lmCode, extendParam).asJson();
@@ -260,7 +260,8 @@ public class ProductCardTest extends AppBaseSteps {
         //Step 2
         step("Перейти во вкладку \"Характеристики\", нажать на кнопку \"Цены\" и открыть раздел \"Поставки\"");
         suppliesPage.goBack();
-        ProductDescriptionPage productDescriptionPage = productCardPage.switchTab(ProductCardPage.Tabs.DESCRIPTION);
+        productCardPage.switchTab(ProductCardPage.Tabs.DESCRIPTION);
+        ProductDescriptionPage productDescriptionPage = new ProductDescriptionPage();
         ProductPricesQuantitySupplyPage productPricesQuantitySupplyPage = productDescriptionPage.goToPricesAndQuantityPage();
         productPricesQuantitySupplyPage.switchTab(ProductPricesQuantitySupplyPage.Tabs.SUPPLY);
         suppliesPage.verifyRequiredElements();
@@ -285,7 +286,7 @@ public class ProductCardTest extends AppBaseSteps {
 
     @Test(description = "C3201002 Проверить данные во вкладках цены, запас")
     public void testStocksSales() throws Exception {
-        String lmCode = getRandomLmCode();
+        String lmCode = "10008698";
         CatalogProductClient.Extend extendOptions = CatalogProductClient.Extend.builder()
                 .inventory(true).logistic(true).rating(true).build();
 
@@ -314,6 +315,7 @@ public class ProductCardTest extends AppBaseSteps {
         //Step 3
         step("Проверить навигацию на страницу с информацией о стоках");
         productPricesQuantitySupplyPage.goBack();
+        productDescriptionPage = new ProductDescriptionPage();
         productDescriptionPage.goToStocksPage();
         stocksPage.verifyRequiredElements();
     }
