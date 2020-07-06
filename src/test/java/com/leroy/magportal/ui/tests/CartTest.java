@@ -1,6 +1,7 @@
 package com.leroy.magportal.ui.tests;
 
 import com.leroy.constants.EnvConstants;
+import com.leroy.constants.sales.DiscountConst;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magportal.ui.constants.TestDataConstants;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
@@ -9,6 +10,7 @@ import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardWebData;
 import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
 import com.leroy.magportal.ui.pages.cart_estimate.CartEstimatePage;
 import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
+import com.leroy.magportal.ui.pages.cart_estimate.modal.DiscountModal;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.ExtendedSearchModal;
 import com.leroy.magportal.ui.pages.customers.CreateCustomerForm;
 import io.qameta.allure.Step;
@@ -16,10 +18,11 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
 import org.testng.util.Strings;
 
-import java.time.LocalDate;
 import java.util.Random;
 
 public class CartTest extends BasePAOTest {
+
+    String discountReason = DiscountConst.Reasons.PRODUCT_SAMPLE.getName();
 
     // Страницы используемые в тестах текущего класса:
     CartPage cartPage;
@@ -300,6 +303,117 @@ public class CartTest extends BasePAOTest {
         stepSearchForProduct(lmCode);
 
         String s = "";
+    }
+
+    @Test(description = "C22797254 Create discount", groups = NEED_PRODUCTS_GROUP)
+    public void testCreateDiscount() throws Exception {
+        // Pre-condition
+        ProductItemData testProduct1 = productList.get(0);
+
+        stepLoginAndGoToCartPage();
+        stepClickCreateCartButton();
+        stepSearchForProduct(testProduct1.getLmCode());
+
+        SalesDocWebData cartData = cartPage.getSalesDocData();
+
+        // Step 1 and 2
+        step("Нажмите на 'Сделать скидку' в мини-карточке любого товара в списке товаров корзины");
+        DiscountModal discountModal = cartPage.clickDiscountIcon(1, 1)
+                .verifyAvailableDiscountReasonOptions();
+
+        // Step 3
+        step("Выбираем причину скидки");
+        discountModal.selectReasonDiscount(discountReason)
+                .shouldDiscountReasonIs(discountReason);
+
+        // Step 4
+        step("Нажимаем на Скидка, изменяем процент скидки");
+        double discountPercent = 10.0;
+        double productTotalPrice = testProduct1.getPrice();
+        discountModal.enterDiscountPercent(discountPercent)
+                .shouldProductTotalPriceWithoutDiscount(productTotalPrice)
+                .shouldDiscountPercentIs(discountPercent)
+                .shouldDiscountCalculatedCorrectly(productTotalPrice);
+
+        // Step 5
+        step("Нажмите на кнопку Применить");
+        cartPage = discountModal.clickConfirmButton();
+        cartData.getOrders().get(0).setDiscountPercentToProduct(0, discountPercent);
+        cartPage.shouldCartHasData(cartData);
+
+    }
+
+    @Test(description = "C22797256 Edit discount", groups = NEED_PRODUCTS_GROUP)
+    public void testEditDiscount() throws Exception {
+        // Test data
+        ProductItemData testProduct1 = productList.get(0);
+        double discountPercent = 10.0;
+
+        // Pre-condition
+        if (isStartFromScratch()) {
+            step("Выполнение предусловий");
+            stepLoginAndGoToCartPage();
+            stepClickCreateCartButton();
+            stepSearchForProduct(testProduct1.getLmCode());
+            cartPage.clickDiscountIcon(1, 1)
+                    .selectReasonDiscount(discountReason)
+                    .enterDiscountPercent(discountPercent)
+                    .clickConfirmButton();
+        }
+
+        SalesDocWebData cartData = cartPage.getSalesDocData();
+        double totalPriceWithoutDiscount = cartData.getOrders().get(0).getProductCardDataList().get(0).getTotalPrice();
+
+        // Step 1
+        step("Выберите параметр Изменить скидку в мини-карточке выбранного товара");
+        DiscountModal discountModal = cartPage.clickDiscountIcon(1, 1)
+                .shouldDiscountCalculatedCorrectly(totalPriceWithoutDiscount)
+                .shouldDiscountReasonIs(discountReason);
+
+        // Step 2
+        step("Нажмите на 'Скидка', измените процент скидки товара");
+        double editDiscountPercent = 6.0;
+        cartData.getOrders().get(0).setDiscountPercentToProduct(0, editDiscountPercent);
+        discountModal.enterDiscountPercent(editDiscountPercent)
+                .shouldProductTotalPriceWithoutDiscount(totalPriceWithoutDiscount)
+                .shouldDiscountPercentIs(editDiscountPercent)
+                .shouldDiscountCalculatedCorrectly(totalPriceWithoutDiscount);
+
+        // Step 3
+        step("Нажмите на кнопку 'Сохранить'");
+        cartPage = discountModal.clickConfirmButton()
+                .shouldCartHasData(cartData);
+    }
+
+    @Test(description = "C22797255 Delete discount", groups = NEED_PRODUCTS_GROUP)
+    public void testDeleteDiscount() throws Exception {
+        // Test data
+        ProductItemData testProduct1 = productList.get(0);
+        double discountPercent = 10.0;
+
+        // Pre-condition
+        if (isStartFromScratch()) {
+            step("Выполнение предусловий");
+            stepLoginAndGoToCartPage();
+            stepClickCreateCartButton();
+            stepSearchForProduct(testProduct1.getLmCode());
+            cartPage.clickDiscountIcon(1, 1)
+                    .selectReasonDiscount(discountReason)
+                    .enterDiscountPercent(discountPercent)
+                    .clickConfirmButton();
+        }
+
+        SalesDocWebData cartData = cartPage.getSalesDocData();
+
+        // Step 1
+        step("Выберите параметр Изменить скидку в мини-карточке выбранного товара");
+        DiscountModal discountModal = cartPage.clickDiscountIcon(1, 1);
+
+        // Step 2
+        step("Нажмите на кнопку 'Удалить скидку'");
+        cartData.getOrders().get(0).removeDiscountProduct(0);
+        cartPage = discountModal.clickRemoveDiscount()
+                .shouldCartHasData(cartData);
     }
 
 

@@ -4,6 +4,7 @@ import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magportal.ui.models.salesdoc.OrderWebData;
 import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
+import com.leroy.magportal.ui.pages.cart_estimate.modal.DiscountModal;
 import com.leroy.magportal.ui.pages.cart_estimate.widget.OrderPuzWidget;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import com.leroy.utils.ParserUtil;
@@ -73,6 +74,15 @@ public class CartPage extends CartEstimatePage {
     public CartPage clickCreateCartButton() {
         createCartBtn.click();
         return this;
+    }
+
+    @Step("Нажать на иконку 'Сделать скидку'")
+    public DiscountModal clickDiscountIcon(int orderIdx, int productIdx) throws Exception {
+        productIdx--;
+        orderIdx--;
+        OrderPuzWidget orderWidget = orders().get(orderIdx);
+        orderWidget.getProductWidget(productIdx).clickCreateDiscount();
+        return new DiscountModal();
     }
 
     // Verifications

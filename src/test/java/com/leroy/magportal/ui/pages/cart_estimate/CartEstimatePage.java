@@ -497,6 +497,12 @@ public abstract class CartEstimatePage extends
                 if (expectedProduct.getTotalPrice() != null)
                     softAssert.isEquals(actualProduct.getTotalPrice(), expectedProduct.getTotalPrice(),
                             "Заказ #" + (i + 1) + " Товар #" + (j + 1) + " - ожидалась другая стоимость");
+                if (expectedProduct.getTotalPriceWithDiscount() != null)
+                    softAssert.isEquals(actualProduct.getTotalPriceWithDiscount(), expectedProduct.getTotalPriceWithDiscount(),
+                            "Заказ #" + (i + 1) + " Товар #" + (j + 1) + " - ожидалась другая стоимость (с учетом скидки)");
+                if (expectedProduct.getDiscountPercent() != null)
+                    softAssert.isEquals(actualProduct.getDiscountPercent(), expectedProduct.getDiscountPercent(),
+                            "Заказ #" + (i + 1) + " Товар #" + (j + 1) + " - ожидалась другая скидка %");
                 if (expectedProduct.getAvailableTodayQuantity() != null)
                     softAssert.isEquals(actualProduct.getAvailableTodayQuantity(), expectedProduct.getAvailableTodayQuantity(),
                             "Заказ #" + (i + 1) + " Товар #" + (j + 1) + " - ожидалось другое доступное кол-во");
