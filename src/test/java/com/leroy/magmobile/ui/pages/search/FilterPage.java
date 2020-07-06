@@ -341,13 +341,18 @@ public class FilterPage extends CommonMagMobilePage {
     }
 
     @Step("Показать товары по выбранным фильтрам")
-    public SearchProductPage applyChosenFilters() {
+    public <T> T applyChosenFilters(Class<T> pageClass) throws Exception {
         showGoodsBtn.click();
         waitUntilProgressBarIsVisible();
-        SearchProductPage page = new SearchProductPage();
+        T page = pageClass.newInstance();
         hideKeyboard();
         return page;
     }
+
+    public SearchProductPage applyChosenFilters() throws Exception {
+        return applyChosenFilters(SearchProductPage.class);
+    }
+
 
     // -------------- Verifications ------------------------ //
 
