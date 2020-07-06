@@ -18,6 +18,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
 import org.testng.util.Strings;
 
+import java.time.LocalDate;
 import java.util.Random;
 
 public class CartTest extends BasePAOTest {
@@ -287,9 +288,9 @@ public class CartTest extends BasePAOTest {
 
     @Test(description = "C22797247 Add AVS, Топ EM items (sufficient stock)")
     public void testAddAVSOrTopEMItemsSufficientStock() throws Exception {
-        // TODO
+        // TODO CHECK
         // Test data
-        boolean oddDay = true;// LocalDate.now().getDayOfMonth() % 2 == 1;
+        boolean oddDay = LocalDate.now().getDayOfMonth() % 2 == 1;
         String lmCode = oddDay ? getAnyLmCodeProductWithTopEM(true) : getAnyLmCodeProductWithAvs(true);
 
         step("Выполнение предусловий: авторизуемся, заходим на страницу корзины");
@@ -301,8 +302,32 @@ public class CartTest extends BasePAOTest {
         // Step 1
         step("Введите ЛМ код товара в поле 'Добавление товара' (товар AVS или Топ ЕМ, количество товара достаточно)");
         stepSearchForProduct(lmCode);
+    }
 
+    @Test(description = "C22797248 Add AVS, Топ EM items (insufficient stock)")
+    public void testAddAVSOrTopEMItemsInsufficientStock() throws Exception {
+        // Test data
+        boolean oddDay = false;//LocalDate.now().getDayOfMonth() % 2 == 1;
+        String lmCode = oddDay ? getAnyLmCodeProductWithTopEM(false) : getAnyLmCodeProductWithAvs(false);
+
+        step("Выполнение предусловий: авторизуемся, заходим на страницу корзины");
+        if (isStartFromScratch()) {
+            stepLoginAndGoToCartPage();
+            stepClickCreateCartButton();
+        }
+
+        // Step 1
+        step("Введите ЛМ код товара в поле 'Добавление товара' (товар AVS или Топ ЕМ, количество товара НЕ достаточно)");
+        stepSearchForProduct(lmCode);
         String s = "";
+
+        // Step 2
+        step("Нажмите на 'Изменить'");
+
+        // Step 3
+        step("Выберите параметр Товара достаточно в магазине");
+
+        // TODO
     }
 
     @Test(description = "C22797254 Create discount", groups = NEED_PRODUCTS_GROUP)
