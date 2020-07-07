@@ -520,7 +520,7 @@ public abstract class CartEstimatePage extends
                     softAssert.isTrue(actualProduct.getAvailableTodayQuantity() >= 0,
                             "Заказ #" + (i + 1) + " Товар #" + (j + 1) + " - ожидалось, что доступное кол-во >= 0");
                 if (expectedProduct.getWeight() != null)
-                    softAssert.isTrue(Math.abs(actualProduct.getWeight() - expectedProduct.getWeight()) <= 0.03,
+                    softAssert.isTrue(Math.abs(actualProduct.getWeight() - expectedProduct.getWeight()) <= expectedProduct.getSelectedQuantity() * 0.01,
                             "Заказ #" + (i + 1) + " Товар #" + (j + 1) + " - ожидался другой вес");
                 else
                     softAssert.isTrue(actualProduct.getWeight() > 0,
@@ -529,9 +529,11 @@ public abstract class CartEstimatePage extends
 
             softAssert.isEquals(actualOrder.getTotalPrice(), expectedOrder.getTotalPrice(),
                     "Заказ #" + (i + 1) + " Неверное сумма итого");
-            if (expectedOrder.getTotalWeight() != null)
-                softAssert.isTrue(Math.abs(actualOrder.getTotalWeight() - expectedOrder.getTotalWeight()) <= 0.03,
+            if (expectedOrder.getTotalWeight() != null) {
+                double totalSelectedQuantity = expectedOrder.getProductCardDataList().stream().mapToDouble(ProductOrderCardWebData::getSelectedQuantity).sum();
+                softAssert.isTrue(Math.abs(actualOrder.getTotalWeight() - expectedOrder.getTotalWeight()) <= totalSelectedQuantity * 0.01,
                         "Заказ #" + (i + 1) + " Неверный итого вес");
+            }
             else {
                 softAssert.isTrue(actualOrder.getTotalWeight() > 0,
                         "Заказ #" + (i + 1) + " Ожидался итого вес > 0");
@@ -548,5 +550,6 @@ public abstract class CartEstimatePage extends
         }
         softAssert.verifyAll();
     }
+
 
 }

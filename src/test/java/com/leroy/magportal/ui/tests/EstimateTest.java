@@ -63,7 +63,7 @@ public class EstimateTest extends BasePAOTest {
         SubmittedEstimateModal submittedEstimateModal = estimatePage.clickCreateButton();
         submittedEstimateModal.verifyRequiredElements()
                 .shouldEstimateNumberIs(estimateData.getNumber())
-                .shouldPricesAreFixedAt("5");
+                .shouldPricesAreFixedAt("14");
 
         // Step 6
         step("Кликнете правой кнопкой мышки по экрану");
