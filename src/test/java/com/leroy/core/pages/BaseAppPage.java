@@ -78,6 +78,10 @@ public abstract class BaseAppPage extends BasePage {
         progressBar.waitForInvisibility();
     }
 
+    protected void waitUntilProgressBarIsInvisible(int timeout) {
+        progressBar.waitForInvisibility(timeout);
+    }
+
     protected void waitUntilProgressBarAppearsAndDisappear() {
         waitUntilProgressBarIsVisible();
         waitUntilProgressBarIsInvisible();

@@ -27,9 +27,9 @@ public class SalesHistoryPage extends CommonMagMobilePage {
 
     @Override
     public void waitForPageIsLoaded() {
-        waitUntilProgressBarAppearsAndDisappear();
+        unitsLbl.waitForVisibility();
+        waitUntilProgressBarIsInvisible(long_timeout);
         shopBtn.waitForVisibility();
-        quantityAmountModalCallBtn.waitForVisibility();
     }
 
     @Step("Открыть модальное окно выбора формата")
