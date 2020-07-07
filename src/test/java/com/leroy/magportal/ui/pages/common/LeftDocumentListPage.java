@@ -46,6 +46,17 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
         waitForSpinnerAppearAndDisappear();
     }
 
+    @Step("Выберите документ в списке слева")
+    public void clickDocumentInLeftMenu(String number) {
+        for (W widget : documentCardList()) {
+            D data = widget.collectDataFromPage();
+            if (data.getNumber().equals(number)) {
+                widget.click();
+                break;
+            }
+        }
+    }
+
     // Verifications
 
     private boolean isDocumentPresentInList(String number) {

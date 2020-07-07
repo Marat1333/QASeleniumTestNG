@@ -1,6 +1,7 @@
 package com.leroy.magportal.ui.pages.cart_estimate;
 
 import com.leroy.constants.EnvConstants;
+import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
@@ -60,6 +61,10 @@ public class EstimatePage extends CartEstimatePage {
             metaName = "Кнопка 'Добавить доставку'")
     Element addDeliveryBtn;
 
+    @WebFindBy(xpath = "//div[contains(@class, 'SalesDoc-ViewFooter__action')]//button",
+            metaName = "Кнопка 'В корзину'")
+    Element transformToCartBtn;
+
     @Override
     protected CardWebWidgetList<OrderPuzWidget, OrderWebData> orders() {
         return orders;
@@ -69,6 +74,15 @@ public class EstimatePage extends CartEstimatePage {
     public void waitForPageIsLoaded() {
         super.waitForPageIsLoaded();
         anAssert.isElementVisible(headerLbl, timeout);
+        String expectedHeader = "Сметы";
+        anAssert.isTrue(headerLbl.waitUntilTextIsEqualTo(expectedHeader),
+                "Страница 'Сметы' не загрузилась'");
+        waitForSpinnerDisappear();
+    }
+
+    @Step("Ждем, когда данные в ранее созданной смете загрузятся")
+    public void waitUntilEstimateDataIsLoaded() {
+        estimateNumber.waitForVisibility();
     }
 
     // Follow URLs
@@ -76,7 +90,7 @@ public class EstimatePage extends CartEstimatePage {
     @Step("Открыть страницу со сметой №{id} (прямой переход по URL)")
     public EstimatePage openPageWithEstimate(String id) {
         driver.get(EnvConstants.URL_MAG_PORTAL + "/estimates/view/" + id);
-        return this;
+        return new EstimatePage();
     }
 
     // Grab information from page
@@ -130,6 +144,12 @@ public class EstimatePage extends CartEstimatePage {
         return this;
     }
 
+    @Step("Преобразовать в корзину")
+    public CartPage clickTransformToCart() {
+        transformToCartBtn.click();
+        return new CartPage();
+    }
+
     // Verifications
 
     @Step("Проверить, что страница 'Создания сметы' отображается корректно")
@@ -156,6 +176,16 @@ public class EstimatePage extends CartEstimatePage {
         orderIdx--;
         anAssert.isEquals(orders.get(orderIdx).getProductWidget(productIdx).getColorOfAvailableStockLbl(),
                 Colors.RED.getColorValue(), "Цвет у товара #" + (productIdx + 1) + " должен быть красный");
+        return this;
+    }
+
+    @Step("Убедиться, что смета имеет статус 'Преобразован', нет активных кнопок")
+    public EstimatePage shouldEstimateHasTransformedStatus() {
+        softAssert.areElementsNotVisible(createBtn, addDeliveryBtn, trashBtn, transformToCartBtn, createCustomerBtn,
+                customerActionBtn, clearCustomerOptionBtn, editCustomerOptionBtn, searchCustomerOptionBtn);
+        softAssert.isEquals(getDocumentStatus(), SalesDocumentsConst.States.TRANSFORMED.getUiVal().toUpperCase(),
+                "Неверный статус сметы");
+        softAssert.verifyAll();
         return this;
     }
 

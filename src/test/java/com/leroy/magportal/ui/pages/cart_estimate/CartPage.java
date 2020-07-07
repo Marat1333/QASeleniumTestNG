@@ -44,6 +44,10 @@ public class CartPage extends CartEstimatePage {
     public void waitForPageIsLoaded() {
         super.waitForPageIsLoaded();
         anAssert.isElementVisible(mainCartHeaderLbl, timeout);
+        String expectedHeader = "Корзины";
+        anAssert.isTrue(mainCartHeaderLbl.waitUntilTextIsEqualTo(expectedHeader),
+                "Страница 'Корзины' не загрузилась'");
+        waitForSpinnerDisappear();
     }
 
     // Grab info

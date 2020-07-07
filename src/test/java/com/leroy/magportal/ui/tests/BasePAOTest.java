@@ -1,5 +1,6 @@
 package com.leroy.magportal.ui.tests;
 
+import com.leroy.core.UserSessionData;
 import com.leroy.magmobile.api.clients.CustomerClient;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
@@ -9,8 +10,12 @@ import com.leroy.magportal.ui.WebBaseSteps;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
 import io.qameta.allure.Step;
 import org.testng.annotations.BeforeGroups;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 
 public abstract class BasePAOTest extends WebBaseSteps {
@@ -28,9 +33,13 @@ public abstract class BasePAOTest extends WebBaseSteps {
         productList = apiClientProvider.getProducts(3);
     }
 
-    @BeforeGroups(NEED_ACCESS_TOKEN_GROUP)
-    protected void addAccessTokenToSessionData() {
-        getUserSessionData().setAccessToken(getAccessToken());
+    @BeforeMethod
+    protected void setUserSessionDataByGroup(Method method) {
+        List<String> groups = Arrays.asList(method.getAnnotation(Test.class).groups());
+        UserSessionData userSessionData = getUserSessionData();
+        if (groups.contains(NEED_ACCESS_TOKEN_GROUP) || isNeedAccessToken()) {
+            userSessionData.setAccessToken(getAccessToken());
+        }
     }
 
     @Step("Создаем клиента через API")

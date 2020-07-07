@@ -448,6 +448,16 @@ public abstract class CartEstimatePage extends
         return this;
     }
 
+    @Step("Проверить, что документ (Смета / Корзина) в списке слева отображается")
+    public void shouldDocumentIsPresent(ShortSalesDocWebData expectedDocumentData) {
+        List<ShortSalesDocWebData> documentList = documentCardList().getDataList()
+                .stream().filter(d -> d.getNumber().equals(expectedDocumentData.getNumber()))
+                .collect(Collectors.toList());
+        anAssert.isEquals(documentList.size(), 1,
+                String.format("Документ с номером %s не найден", expectedDocumentData.getNumber()));
+        documentList.get(0).assertEqualsNotNullExpectedFields(expectedDocumentData);
+    }
+
     /**
      * Проверить, что на странице сметы содержатся ожидаемые данные
      */

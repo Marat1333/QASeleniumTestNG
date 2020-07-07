@@ -288,7 +288,6 @@ public class CartTest extends BasePAOTest {
 
     @Test(description = "C22797247 Add AVS, Топ EM items (sufficient stock)")
     public void testAddAVSOrTopEMItemsSufficientStock() throws Exception {
-        // TODO CHECK
         // Test data
         boolean oddDay = LocalDate.now().getDayOfMonth() % 2 == 1;
         String lmCode = oddDay ? getAnyLmCodeProductWithTopEM(true) : getAnyLmCodeProductWithAvs(true);

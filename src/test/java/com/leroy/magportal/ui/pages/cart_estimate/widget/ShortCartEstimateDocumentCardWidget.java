@@ -17,6 +17,18 @@ public class ShortCartEstimateDocumentCardWidget extends CardWebWidget<ShortSale
     @WebFindBy(xpath = ".//div[contains(@class, 'Documents-ListItemCard__heading-text')]//span")
     Element number;
 
+    @WebFindBy(xpath = ".//div[contains(@class, '-price')]")
+    Element price;
+
+    @WebFindBy(xpath = ".//span[contains(@class, '-status-label')]")
+    Element status;
+
+    @WebFindBy(xpath = ".//div[contains(@class, 'Documents-ListItemCard__footer-row')]/div/div//span")
+    Element creationDate;
+
+    @WebFindBy(xpath = ".//div[contains(@class, 'Documents-ListItemCard__footer__name')]")
+    Element author;
+
     public String getNumber() {
         return ParserUtil.strWithOnlyDigits(number.getText());
     }
@@ -25,6 +37,10 @@ public class ShortCartEstimateDocumentCardWidget extends CardWebWidget<ShortSale
     public ShortSalesDocWebData collectDataFromPage() {
         ShortSalesDocWebData salesDocData = new ShortSalesDocWebData();
         salesDocData.setNumber(getNumber());
+        salesDocData.setTotalPrice(ParserUtil.strToDouble(price.getText()));
+        salesDocData.setStatus(status.getText());
+        salesDocData.setCreationDate(creationDate.getText());
+        salesDocData.setAuthor(author.getText());
         return salesDocData;
     }
 
