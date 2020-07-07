@@ -124,6 +124,7 @@ public class ProductCardTest extends AppBaseSteps {
         step("Проверить данные по товару в другом магазине");
         SearchShopPage searchShopPage = salesHistoryPage.openSearchShopPage();
         searchShopPage.searchForShopAndSelectById(notUserShop);
+        salesHistoryPage = new SalesHistoryPage();
         salesHistoryPage.shouldSalesHistoryIsCorrect(salesHistoryNotUserShopDataList, true);
     }
 
@@ -186,9 +187,7 @@ public class ProductCardTest extends AppBaseSteps {
         SearchProductPage searchProductPage = productCardPage.returnBack();
         FilterPage filterPage = searchProductPage.goToFilterPage();
         filterPage.switchFiltersFrame(FilterPage.ALL_GAMMA_FRAME_TYPE);
-        filterPage.applyChosenFilters();
-        //из-за автоперехода в карточку, ждет элементов на странице поиска
-        productCardPage = new ProductCardPage();
+        filterPage.applyChosenFilters(ProductCardPage.class);
         similarProductsPage = productCardPage.switchTab(ProductCardPage.Tabs.SIMILAR_PRODUCTS);
         similarProductsPage.verifyProductCardsHaveAllGammaView();
         similarProductsPage.shouldCatalogResponseEqualsContent(data, SearchProductPage.CardType.ALL_GAMMA, data.getTotalCount());
