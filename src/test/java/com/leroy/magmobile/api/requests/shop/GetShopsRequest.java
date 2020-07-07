@@ -5,4 +5,5 @@ import ru.leroymerlin.qa.core.clients.base.RequestBuilder;
 
 @Method(value = "GET", path = "/shops")
 public class GetShopsRequest extends RequestBuilder<GetShopsRequest> {
+
 }

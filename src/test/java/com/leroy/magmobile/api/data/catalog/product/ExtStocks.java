@@ -10,6 +10,7 @@ public class ExtStocks {
     @JsonProperty("RTV")
     private Integer rtv;
     @JsonProperty("EXPO")
+    private Integer expoo;
     private Integer expo;
     @JsonProperty("COR")
     private Integer cor;

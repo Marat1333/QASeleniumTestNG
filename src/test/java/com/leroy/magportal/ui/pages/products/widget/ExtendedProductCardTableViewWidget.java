@@ -10,6 +10,9 @@ public class ExtendedProductCardTableViewWidget extends ProductCardTableViewWidg
         super(driver, locator);
     }
 
+    @WebFindBy(xpath = "./div[1]//span[contains(@class,'LmCode')]/following-sibling::span")
+    Element lmCode;
+
     @WebFindBy(xpath = "./div[4]/p")
     Element availableStock;
 
@@ -53,6 +56,11 @@ public class ExtendedProductCardTableViewWidget extends ProductCardTableViewWidg
     @Override
     public String getGamma() {
         return gamma.getText();
+    }
+
+    @Override
+    public String getLmCode() {
+        return lmCode.getText();
     }
 
     public String getSupplierName() {

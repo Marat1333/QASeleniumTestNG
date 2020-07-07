@@ -1,20 +1,20 @@
-package com.leroy.magmobile.ui.pages.sales;
+package com.leroy.magmobile.ui.pages.sales.product_card;
 
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.web_elements.android.AndroidHorizontalScrollView;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.ReviewsPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.SimilarProductsPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.SpecificationsPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import io.qameta.allure.Step;
+import org.openqa.selenium.By;
 
 public class ProductCardPage extends CommonMagMobilePage {
 
     @AppFindBy(accessibilityId = "Tabs")
     protected Element mainArea;
+
+    AndroidHorizontalScrollView<String> tabsScrollView = new AndroidHorizontalScrollView<>(driver, By.xpath("//android.widget.HorizontalScrollView"));
 
     @AppFindBy(accessibilityId = "BackCloseModal")
     protected Element returnBackBtn;
@@ -27,10 +27,22 @@ public class ProductCardPage extends CommonMagMobilePage {
         mainArea.waitForVisibility();
     }
 
-    public final String DESCRIPTION = "ОПИСАНИЕ ТОВАРА";
-    public final String SPECIFICATION = "ХАРАКТЕРИСТИКИ";
-    public final String REVIEWS = "ОТЗЫВЫ";
-    public final String SIMILAR_PRODUCTS = "АНАЛОГИЧНЫЕ ТОВАРЫ";
+    public enum Tabs{
+        DESCRIPTION("ОПИСАНИЕ ТОВАРА"),
+        SPECIFICATION("ХАРАКТЕРИСТИКИ"),
+        REVIEWS("ОТЗЫВЫ"),
+        SIMILAR_PRODUCTS("АНАЛОГИЧНЫЕ ТОВАРЫ");
+
+        private String name;
+
+        Tabs(String name){
+            this.name=name;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
 
     /* ------------------------- ACTION STEPS -------------------------- */
 
@@ -44,32 +56,32 @@ public class ProductCardPage extends CommonMagMobilePage {
         return page.getConstructor().newInstance();
     }
 
-    @Step("Перейти во вкладку {value}")
-    public <T> T switchTab(String value) {
+    @Step("Перейти во вкладку")
+    public <T> T switchTab(Tabs tabs) {
         Element element;
-        switch (value) {
+        switch (tabs) {
             case DESCRIPTION:
-                element = E(DESCRIPTION);
-                swipeLeftTo(mainArea, element);
+                element = E(Tabs.DESCRIPTION.getName());
+                tabsScrollView.scrollLeft(element);
                 element.click();
                 return (T) new ProductDescriptionPage();
             case SPECIFICATION:
-                element = E(SPECIFICATION);
-                swipeLeftTo(mainArea, element);
+                element = E(Tabs.SPECIFICATION.getName());
+                tabsScrollView.scrollLeft(element);
                 element.click();
                 return (T) new SpecificationsPage();
             case REVIEWS:
-                element = E(REVIEWS);
-                swipeRightTo(mainArea, element);
+                element = E(Tabs.REVIEWS.getName());
+                tabsScrollView.scrollRight(element);
                 element.click();
                 return (T) new ReviewsPage();
             case SIMILAR_PRODUCTS:
-                element = E(SIMILAR_PRODUCTS);
-                swipeRightTo(mainArea, element);
+                element = E(Tabs.SIMILAR_PRODUCTS.getName());
+                tabsScrollView.scrollRight(element);
                 element.click();
                 return (T) new SimilarProductsPage();
             default:
-                throw new IllegalArgumentException("Unknown argument: " + value);
+                throw new IllegalArgumentException("Unknown argument");
         }
     }
 

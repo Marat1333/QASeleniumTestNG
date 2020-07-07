@@ -9,6 +9,7 @@ import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.pages.customers.CustomerPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
 import io.qameta.allure.Step;
+import org.rocksdb.Env;
 
 public class WebBaseSteps extends MagPortalBaseTest {
 
@@ -40,6 +41,8 @@ public class WebBaseSteps extends MagPortalBaseTest {
         }
         page.waitUntilTitleIs(expectedTitle, 30);
         page.closeNewFeaturesModalWindowIfExist();
+        //До фикса
+        page.selectShopInUserProfile(EnvConstants.BASIC_USER_SHOP_ID);
         return page;
     }
 
