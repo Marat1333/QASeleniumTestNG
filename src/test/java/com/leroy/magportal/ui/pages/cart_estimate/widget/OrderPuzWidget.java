@@ -38,7 +38,7 @@ public class OrderPuzWidget extends CardWebWidget<OrderWebData> {
                 FOOTER_INFO_XPATH : getXpath() + FOOTER_INFO_XPATH;
         countAndWeightProductLbl = E(footerXpath + "/span[1]",
                 "Информация о кол-ве товаров и их общем весе");
-        totalPriceValue = E(footerXpath + "/div/span[1]",
+        totalPriceValue = E(footerXpath + "/div[@role='presentation']",
                 "Значение суммы итого");
     }
 

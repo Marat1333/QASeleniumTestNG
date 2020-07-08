@@ -12,4 +12,8 @@ public abstract class CardWebWidget<T> extends BaseWidget {
 
     public abstract T collectDataFromPage();
 
+    public void click() {
+        E(this.getXpath()).click();
+    }
+
 }

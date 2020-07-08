@@ -2,11 +2,7 @@ package com.leroy.magportal.ui.tests;
 
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.SalesDocumentsConst;
-import com.leroy.magmobile.api.clients.CustomerClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.api.data.customer.CustomerData;
-import com.leroy.magmobile.api.data.customer.CustomerResponseBodyData;
-import com.leroy.magportal.ui.WebBaseSteps;
 import com.leroy.magportal.ui.constants.TestDataConstants;
 import com.leroy.magportal.ui.models.customers.CustomerWebData;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
@@ -15,15 +11,13 @@ import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardWebData;
 import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
 import com.leroy.magportal.ui.models.salesdoc.ShortSalesDocWebData;
 import com.leroy.magportal.ui.pages.cart_estimate.CartEstimatePage;
+import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
 import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SubmittedEstimateModal;
 import com.leroy.magportal.ui.pages.customers.CreateCustomerForm;
-import io.qameta.allure.Step;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Test;
-import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -31,41 +25,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-public class EstimateTest extends WebBaseSteps {
-
-    // Test groups
-    private final static String NEED_ACCESS_TOKEN_GROUP = "need_access_token";
-    private final static String NEED_PRODUCTS_GROUP = "need_products";
-
-    private List<ProductItemData> productList;
-
-    private String customerPhone = "1111111111";
-
-    @BeforeGroups(groups = NEED_PRODUCTS_GROUP)
-    private void findProducts() {
-        productList = apiClientProvider.getProducts(3);
-    }
-
-    @BeforeGroups(NEED_ACCESS_TOKEN_GROUP)
-    private void addAccessTokenToSessionData() {
-        getUserSessionData().setAccessToken(getAccessToken());
-    }
-
-    @Step("Создаем клиента через API")
-    private SimpleCustomerData createCustomerByApi() {
-        CustomerClient customerClient = apiClientProvider.getCustomerClient();
-        CustomerData customerData = new CustomerData();
-        customerData.generateRandomValidRequiredData(true, true);
-        Response<CustomerResponseBodyData> resp = customerClient.createCustomer(customerData);
-        customerData = customerClient.assertThatIsCreatedAndGetData(resp, customerData);
-
-        SimpleCustomerData uiCustomerData = new SimpleCustomerData();
-        uiCustomerData.setName(customerData.getFirstName(), customerData.getLastName());
-        uiCustomerData.setPhoneNumber(customerData.getMainPhoneFromCommunication());
-        uiCustomerData.setEmail(customerData.getMainEmailFromCommunication());
-
-        return uiCustomerData;
-    }
+public class EstimateTest extends BasePAOTest {
 
     @Test(description = "C3302188 Create estimate", groups = NEED_PRODUCTS_GROUP)
     public void testCreateEstimate() throws Exception {
@@ -358,8 +318,8 @@ public class EstimateTest extends WebBaseSteps {
 
         // Step 1
         step("Нажмите на кнопку 'Удалить' в мини-карточке выбранного товара и подтвердите удаление");
-        estimatePage.removeProductByIndex(1)
-                .verifyRequiredElements(EstimatePage.PageState.EMPTY)
+        estimatePage.removeProductByIndex(1);
+        estimatePage.verifyRequiredElements(EstimatePage.PageState.EMPTY)
                 .shouldDocumentIsNotPresent(docNumber);
     }
 
@@ -619,6 +579,54 @@ public class EstimateTest extends WebBaseSteps {
     public void testRemoveConfirmedEstimate() throws Exception {
         String estimateId = apiClientProvider.createConfirmedEstimateAndGetCartId();
         testRemoveEstimate(estimateId);
+    }
+
+    @Test(description = "C22797239 Convert estimate to cart", groups = NEED_ACCESS_TOKEN_GROUP)
+    public void testConvertEstimateToCart() throws Exception {
+        String estimateId;
+        EstimatePage estimatePage;
+        if (isStartFromScratch()) {
+            estimateId = apiClientProvider.createConfirmedEstimateAndGetCartId();
+            estimatePage = loginAndGoTo(EstimatePage.class);
+            estimatePage.openPageWithEstimate(estimateId);
+        } else {
+            estimatePage = new EstimatePage();
+            estimateId = estimatePage.getDocumentNumber();
+        }
+
+        SalesDocWebData documentData = estimatePage.getSalesDocData();
+        ShortSalesDocWebData shortSalesDocWebData = new ShortSalesDocWebData();
+        shortSalesDocWebData.setNumber(documentData.getNumber());
+        shortSalesDocWebData.setStatus(SalesDocumentsConst.States.TRANSFORMED.getUiVal().toUpperCase());
+        shortSalesDocWebData.setAuthor(documentData.getAuthorName());
+        shortSalesDocWebData.setCreationDate(documentData.getCreationDate());
+        shortSalesDocWebData.setTotalPrice(documentData.getOrders().get(0).getTotalPrice());
+
+        documentData.setNumber(null);
+        documentData.setStatus(null);
+        documentData.setCreationDate(null);
+        anAssert().isTrue(documentData.getOrders().size() > 0, "В смете должны присутствовать заказы");
+        documentData.getOrders().get(0).getProductCardDataList().get(0).setAvailableTodayQuantity(null);
+
+        // Step 1
+        step("Нажмите на кнопку В корзину");
+        CartPage cartPage = estimatePage.clickTransformToCart();
+        cartPage.shouldCartHasData(documentData);
+
+        // Step 2
+        step("Нажмите на бургер-меню и выберете раздел Сметы");
+        estimatePage = cartPage.goToPage(EstimatePage.class);
+        estimatePage.shouldDocumentIsPresent(shortSalesDocWebData);
+
+        // Step 3
+        step("Нажмите на мини-карточку преобразованной сметы");
+        cartPage.clickDocumentInLeftMenu(estimateId);
+        estimatePage = new EstimatePage();
+        estimatePage.waitUntilEstimateDataIsLoaded();
+        documentData.setNumber(estimateId);
+        documentData.setStatus(shortSalesDocWebData.getStatus());
+        estimatePage.shouldEstimateHasData(documentData);
+        estimatePage.shouldEstimateHasTransformedStatus();
     }
 
     // Search

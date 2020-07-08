@@ -1,5 +1,6 @@
 package com.leroy.magportal.ui.pages.cart_estimate;
 
+import com.leroy.constants.DefectConst;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
@@ -10,6 +11,8 @@ import com.leroy.magportal.ui.models.salesdoc.OrderWebData;
 import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardWebData;
 import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
 import com.leroy.magportal.ui.models.salesdoc.ShortSalesDocWebData;
+import com.leroy.magportal.ui.pages.cart_estimate.modal.ConfirmRemoveProductModal;
+import com.leroy.magportal.ui.pages.cart_estimate.modal.ExtendedSearchModal;
 import com.leroy.magportal.ui.pages.cart_estimate.widget.CustomerPuzWidget;
 import com.leroy.magportal.ui.pages.cart_estimate.widget.OrderPuzWidget;
 import com.leroy.magportal.ui.pages.cart_estimate.widget.ShortCartEstimateDocumentCardWidget;
@@ -168,10 +171,96 @@ public abstract class CartEstimatePage extends
 
     @Step("Ввести {text} в поле для добавления товара и нажать Enter")
     public void enterTextInSearchProductField(String text) {
+        searchProductFld.clear(true);
         searchProductFld.clearFillAndSubmit(text);
         waitForSpinnerAppearAndDisappear();
+        if (!ExtendedSearchModal.isModalVisible()) {
+            if (this instanceof CartPage)
+                waitForSpinnerAppearAndDisappear();
+            addProductLbl.click();
+        }
+    }
+
+    @Step("Скопировать товар #{productIdx} из заказа #{orderIdx}")
+    public CartEstimatePage copyProductByIndex(int orderIdx, int productIdx) throws Exception {
+        productIdx--;
+        orderIdx--;
+        OrderPuzWidget orderWidget = orders().get(orderIdx);
+        int productCountBefore = orderWidget.getProductWidgets().getCount();
+        orderWidget.getProductWidget(productIdx).clickCopy();
+        waitForSpinnerAppearAndDisappear();
+        orderWidget.getProductWidgets().waitUntilElementCountEqualsOrAbove(productCountBefore + 1);
+        return this;
+    }
+
+    @Step("Скопировать товар #{productIdx}")
+    public CartEstimatePage copyProductByIndex(int productIdx) throws Exception {
+        return copyProductByIndex(1, productIdx);
+    }
+
+    @Step("Установить кол-во {quantity} для товара #{productIdx} из заказа #{orderIdx}")
+    public CartEstimatePage changeQuantityProductByIndex(Number quantity, int orderIdx, int productIdx) throws Exception {
+        productIdx--;
+        orderIdx--;
+        orders().get(orderIdx).getProductWidget(productIdx).editQuantity(quantity);
+        if (this instanceof CartPage)
+            waitForSpinnerAppearAndDisappear();
+        return this;
+    }
+
+    public CartEstimatePage changeQuantityProductByIndex(Number quantity, int productIdx) throws Exception {
+        return changeQuantityProductByIndex(quantity, 1, productIdx);
+    }
+
+    @Step("Нажать '+' для увеличения кол-ва товара #{productIdx} из заказа #{orderIdx}")
+    public CartEstimatePage increaseQuantityProductByIndex(int orderIdx, int productIdx) throws Exception {
+        productIdx--;
+        orderIdx--;
+        orders().get(orderIdx).getProductWidget(productIdx).clickPlusQuantity();
+        if (this instanceof CartPage)
+            waitForSpinnerAppearAndDisappear();
+        return this;
+    }
+
+    public CartEstimatePage increaseQuantityProductByIndex(int productIdx) throws Exception {
+        return increaseQuantityProductByIndex(1, productIdx);
+    }
+
+    @Step("Нажать '-' для уменьшения кол-ва товара #{productIdx} из заказа #{orderIdx}")
+    public CartEstimatePage decreaseQuantityProductByIndex(int orderIdx, int productIdx) throws Exception {
+        productIdx--;
+        orderIdx--;
+        orders().get(orderIdx).getProductWidget(productIdx).clickMinusQuantity();
+        if (this instanceof CartPage)
+            waitForSpinnerAppearAndDisappear();
+        return this;
+    }
+
+    public CartEstimatePage decreaseQuantityProductByIndex(int productIdx) throws Exception {
+        return decreaseQuantityProductByIndex(1, productIdx);
+    }
+
+    @Step("Удалить товар #{productIdx} из заказа #{orderIdx}")
+    public CartEstimatePage removeProductByIndex(int orderIdx, int productIdx) throws Exception {
+        productIdx--;
+        orderIdx--;
+        OrderPuzWidget orderWidget = orders().get(orderIdx);
+        int productCountBefore = orderWidget.getProductWidgets().getCount();
+        orderWidget.getProductWidget(productIdx).clickDelete();
+        new ConfirmRemoveProductModal()
+                .verifyRequiredElements()
+                .clickYesButton();
+        waitForSpinnerAppearAndDisappear();
+        if (productCountBefore > 1)
+            orderWidget.getProductWidgets().waitUntilElementCountEquals(productCountBefore - 1);
+        else
+            searchProductFld.waitForInvisibility();
         waitForSpinnerDisappear();
-        addProductLbl.click();
+        return this;
+    }
+
+    public CartEstimatePage removeProductByIndex(int productIdx) throws Exception {
+        return removeProductByIndex(1, productIdx);
     }
 
     @Step("Нажать на кнопку 'Добавить клиента'")
@@ -246,6 +335,8 @@ public abstract class CartEstimatePage extends
             phone = phone.substring(2);
         enterPhoneInSearchCustomerField(phone);
         int foundCustomerAccount = customerSearchItems.getCount();
+        if (foundCustomerAccount == 0)
+            customerPhoneSearchFld.waitForInvisibility(short_timeout);
         anAssert.isTrue(foundCustomerAccount > 0 || !customerPhoneSearchFld.isVisible(),
                 "Клиент с номером +7" + phone + " не удалось выбрать");
         if (foundCustomerAccount > 0) {
@@ -361,6 +452,26 @@ public abstract class CartEstimatePage extends
         return this;
     }
 
+    @Step("Проверить, что в документе {index}-ый товар имеет определенные характеристики (expectedProductData)")
+    public CartEstimatePage shouldDocumentHasProduct(int index, ProductOrderCardWebData expectedProductData) {
+        index--;
+        List<ProductOrderCardWebData> actualProductData = getProductDataList();
+        if (DefectConst.STOCK_ISSUE)
+            expectedProductData.setAvailableTodayQuantity(null);
+        actualProductData.get(index).assertEqualsNotNullExpectedFields(expectedProductData, 0, index);
+        return this;
+    }
+
+    @Step("Проверить, что документ (Смета / Корзина) в списке слева отображается")
+    public void shouldDocumentIsPresent(ShortSalesDocWebData expectedDocumentData) {
+        List<ShortSalesDocWebData> documentList = documentCardList().getDataList()
+                .stream().filter(d -> d.getNumber().equals(expectedDocumentData.getNumber()))
+                .collect(Collectors.toList());
+        anAssert.isEquals(documentList.size(), 1,
+                String.format("Документ с номером %s не найден", expectedDocumentData.getNumber()));
+        documentList.get(0).assertEqualsNotNullExpectedFields(expectedDocumentData);
+    }
+
     /**
      * Проверить, что на странице сметы содержатся ожидаемые данные
      */
@@ -371,8 +482,10 @@ public abstract class CartEstimatePage extends
         else
             softAssert.isEquals(actualEstimateData.getNumber(), expectedDocumentData.getNumber(),
                     "Ожидался другой номер документа");
-        softAssert.isEquals(actualEstimateData.getAuthorName(), expectedDocumentData.getAuthorName(),
-                "Ожидался другой автор документа");
+        if (expectedDocumentData.getAuthorName() != null) {
+            softAssert.isEquals(actualEstimateData.getAuthorName(), expectedDocumentData.getAuthorName(),
+                    "Ожидался другой автор документа");
+        }
         if (expectedDocumentData.getStatus() != null) {
             softAssert.isEquals(actualEstimateData.getStatus(), expectedDocumentData.getStatus().toUpperCase(),
                     "Ожидался другой статус документа");
@@ -404,34 +517,16 @@ public abstract class CartEstimatePage extends
             for (int j = 0; j < actualOrder.getProductCardDataList().size(); j++) {
                 ProductOrderCardWebData actualProduct = actualOrder.getProductCardDataList().get(j);
                 ProductOrderCardWebData expectedProduct = expectedOrder.getProductCardDataList().get(j);
-                if (expectedProduct.getSelectedQuantity() != null)
-                    softAssert.isEquals(actualProduct.getSelectedQuantity(), expectedProduct.getSelectedQuantity(),
-                            "Заказ #" + (i + 1) + " Товар #" + (j + 1) + " - ожидался другое кол-во");
-                if (expectedProduct.getTotalPrice() != null)
-                    softAssert.isEquals(actualProduct.getTotalPrice(), expectedProduct.getTotalPrice(),
-                            "Заказ #" + (i + 1) + " Товар #" + (j + 1) + " - ожидалась другая стоимость");
-                if (expectedProduct.getAvailableTodayQuantity() != null)
-                    softAssert.isEquals(actualProduct.getAvailableTodayQuantity(), expectedProduct.getAvailableTodayQuantity(),
-                            "Заказ #" + (i + 1) + " Товар #" + (j + 1) + " - ожидалось другое доступное кол-во");
-                else
-                    softAssert.isTrue(actualProduct.getAvailableTodayQuantity() >= 0,
-                            "Заказ #" + (i + 1) + " Товар #" + (j + 1) + " - ожидалось, что доступное кол-во >= 0");
-                if (expectedProduct.getWeight() != null)
-                    softAssert.isTrue(Math.abs(actualProduct.getWeight() - expectedProduct.getWeight()) <= expectedProduct.getSelectedQuantity() * 0.01,
-                            "Заказ #" + (i + 1) + " Товар #" + (j + 1) + " - ожидался другой вес");
-                else
-                    softAssert.isTrue(actualProduct.getWeight() > 0,
-                            "Заказ #" + (i + 1) + " Товар #" + (j + 1) + " - ожидался вес > 0");
+                actualProduct.assertEqualsNotNullExpectedFields(expectedProduct, i, j);
             }
 
             softAssert.isEquals(actualOrder.getTotalPrice(), expectedOrder.getTotalPrice(),
                     "Заказ #" + (i + 1) + " Неверное сумма итого");
             if (expectedOrder.getTotalWeight() != null) {
                 double totalSelectedQuantity = expectedOrder.getProductCardDataList().stream().mapToDouble(ProductOrderCardWebData::getSelectedQuantity).sum();
-                softAssert.isTrue(Math.abs(actualOrder.getTotalWeight() - expectedOrder.getTotalWeight()) <= totalSelectedQuantity * 0.01,
+                softAssert.isTrue(Math.abs(actualOrder.getTotalWeight() - expectedOrder.getTotalWeight()) <= totalSelectedQuantity * 0.011,
                         "Заказ #" + (i + 1) + " Неверный итого вес");
-            }
-            else {
+            } else {
                 softAssert.isTrue(actualOrder.getTotalWeight() > 0,
                         "Заказ #" + (i + 1) + " Ожидался итого вес > 0");
                 double expectedTotalWeight = 0.0;

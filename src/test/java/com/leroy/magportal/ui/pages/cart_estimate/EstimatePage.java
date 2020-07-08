@@ -1,13 +1,12 @@
 package com.leroy.magportal.ui.pages.cart_estimate;
 
 import com.leroy.constants.EnvConstants;
+import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magportal.ui.models.salesdoc.OrderWebData;
-import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardWebData;
 import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
-import com.leroy.magportal.ui.pages.cart_estimate.modal.ConfirmRemoveProductModal;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SubmittedEstimateModal;
 import com.leroy.magportal.ui.pages.cart_estimate.widget.OrderPuzWidget;
 import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
@@ -16,7 +15,6 @@ import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 import org.openqa.selenium.support.Colors;
-import org.testng.util.Strings;
 
 public class EstimatePage extends CartEstimatePage {
 
@@ -63,6 +61,10 @@ public class EstimatePage extends CartEstimatePage {
             metaName = "Кнопка 'Добавить доставку'")
     Element addDeliveryBtn;
 
+    @WebFindBy(xpath = "//div[contains(@class, 'SalesDoc-ViewFooter__action')]//button",
+            metaName = "Кнопка 'В корзину'")
+    Element transformToCartBtn;
+
     @Override
     protected CardWebWidgetList<OrderPuzWidget, OrderWebData> orders() {
         return orders;
@@ -72,6 +74,15 @@ public class EstimatePage extends CartEstimatePage {
     public void waitForPageIsLoaded() {
         super.waitForPageIsLoaded();
         anAssert.isElementVisible(headerLbl, timeout);
+        String expectedHeader = "Сметы";
+        anAssert.isTrue(headerLbl.waitUntilTextIsEqualTo(expectedHeader),
+                "Страница 'Сметы' не загрузилась'");
+        waitForSpinnerDisappear();
+    }
+
+    @Step("Ждем, когда данные в ранее созданной смете загрузятся")
+    public void waitUntilEstimateDataIsLoaded() {
+        estimateNumber.waitForVisibility();
     }
 
     // Follow URLs
@@ -79,7 +90,7 @@ public class EstimatePage extends CartEstimatePage {
     @Step("Открыть страницу со сметой №{id} (прямой переход по URL)")
     public EstimatePage openPageWithEstimate(String id) {
         driver.get(EnvConstants.URL_MAG_PORTAL + "/estimates/view/" + id);
-        return this;
+        return new EstimatePage();
     }
 
     // Grab information from page
@@ -133,83 +144,10 @@ public class EstimatePage extends CartEstimatePage {
         return this;
     }
 
-    @Step("Установить кол-во {quantity} для товара #{productIdx} из заказа #{orderIdx}")
-    public EstimatePage changeQuantityProductByIndex(Number quantity, int orderIdx, int productIdx) throws Exception {
-        productIdx--;
-        orderIdx--;
-        orders.get(orderIdx).getProductWidget(productIdx).editQuantity(quantity);
-        return this;
-    }
-
-    @Step("Установить кол-во {quantity} для товара #{productIdx}")
-    public EstimatePage changeQuantityProductByIndex(Number quantity, int productIdx) throws Exception {
-        return changeQuantityProductByIndex(quantity, 1, productIdx);
-    }
-
-    @Step("Нажать '+' для увеличения кол-ва товара #{productIdx} из заказа #{orderIdx}")
-    public EstimatePage increaseQuantityProductByIndex(int orderIdx, int productIdx) throws Exception {
-        productIdx--;
-        orderIdx--;
-        orders.get(orderIdx).getProductWidget(productIdx).clickPlusQuantity();
-        return this;
-    }
-
-    @Step("Нажать '+' для увеличения кол-ва товара #{productIdx}")
-    public EstimatePage increaseQuantityProductByIndex(int productIdx) throws Exception {
-        return increaseQuantityProductByIndex(1, productIdx);
-    }
-
-    @Step("Нажать '-' для уменьшения кол-ва товара #{productIdx} из заказа #{orderIdx}")
-    public EstimatePage decreaseQuantityProductByIndex(int orderIdx, int productIdx) throws Exception {
-        productIdx--;
-        orderIdx--;
-        orders.get(orderIdx).getProductWidget(productIdx).clickMinusQuantity();
-        return this;
-    }
-
-    @Step("Нажать '-' для уменьшения кол-ва товара #{productIdx}")
-    public EstimatePage decreaseQuantityProductByIndex(int productIdx) throws Exception {
-        return decreaseQuantityProductByIndex(1, productIdx);
-    }
-
-    @Step("Скопировать товар #{productIdx} из заказа #{orderIdx}")
-    public EstimatePage copyProductByIndex(int orderIdx, int productIdx) throws Exception {
-        productIdx--;
-        orderIdx--;
-        OrderPuzWidget orderWidget = orders.get(orderIdx);
-        int productCountBefore = orderWidget.getProductWidgets().getCount();
-        orderWidget.getProductWidget(productIdx).clickCopy();
-        waitForSpinnerAppearAndDisappear();
-        orderWidget.getProductWidgets().waitUntilElementCountEqualsOrAbove(productCountBefore + 1);
-        return this;
-    }
-
-    @Step("Скопировать товар #{productIdx}")
-    public EstimatePage copyProductByIndex(int productIdx) throws Exception {
-        return copyProductByIndex(1, productIdx);
-    }
-
-    @Step("Удалить товар #{productIdx} из заказа #{orderIdx}")
-    public EstimatePage removeProductByIndex(int orderIdx, int productIdx) throws Exception {
-        productIdx--;
-        orderIdx--;
-        OrderPuzWidget orderWidget = orders.get(orderIdx);
-        int productCountBefore = orderWidget.getProductWidgets().getCount();
-        orderWidget.getProductWidget(productIdx).clickDelete();
-        new ConfirmRemoveProductModal()
-                .verifyRequiredElements()
-                .clickYesButton();
-        waitForSpinnerAppearAndDisappear();
-        if (productCountBefore > 1)
-            orderWidget.getProductWidgets().waitUntilElementCountEquals(productCountBefore - 1);
-        else
-            searchProductFld.waitForInvisibility();
-        return this;
-    }
-
-    @Step("Удалить товар #{productIdx}")
-    public EstimatePage removeProductByIndex(int productIdx) throws Exception {
-        return removeProductByIndex(1, productIdx);
+    @Step("Преобразовать в корзину")
+    public CartPage clickTransformToCart() {
+        transformToCartBtn.click();
+        return new CartPage();
     }
 
     // Verifications
@@ -238,6 +176,16 @@ public class EstimatePage extends CartEstimatePage {
         orderIdx--;
         anAssert.isEquals(orders.get(orderIdx).getProductWidget(productIdx).getColorOfAvailableStockLbl(),
                 Colors.RED.getColorValue(), "Цвет у товара #" + (productIdx + 1) + " должен быть красный");
+        return this;
+    }
+
+    @Step("Убедиться, что смета имеет статус 'Преобразован', нет активных кнопок")
+    public EstimatePage shouldEstimateHasTransformedStatus() {
+        softAssert.areElementsNotVisible(createBtn, addDeliveryBtn, trashBtn, transformToCartBtn, createCustomerBtn,
+                customerActionBtn, clearCustomerOptionBtn, editCustomerOptionBtn, searchCustomerOptionBtn);
+        softAssert.isEquals(getDocumentStatus(), SalesDocumentsConst.States.TRANSFORMED.getUiVal().toUpperCase(),
+                "Неверный статус сметы");
+        softAssert.verifyAll();
         return this;
     }
 

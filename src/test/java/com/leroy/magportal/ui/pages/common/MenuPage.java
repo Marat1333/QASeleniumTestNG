@@ -56,7 +56,7 @@ public class MenuPage extends MagPortalBasePage {
         menuItem.waitForVisibility();
         anAssert.isTrue(menuItem.isVisible(), "Не удалось найти пункт меню " + expectedMenuItem);
         menuItem.click();
-        return pageClass.getConstructor(Context.class).newInstance(context);
+        return pageClass.getConstructor().newInstance();
     }
 
     @Step("Подождать появления окна с новыми фичами и закрыть его, если оно появится")
