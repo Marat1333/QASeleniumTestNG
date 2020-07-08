@@ -9,10 +9,10 @@ import com.leroy.utils.DateTimeUtil;
 import org.openqa.selenium.WebDriver;
 
 public class ShipmentWidget extends CardWidget<ShipmentCardData> {
-    @AppFindBy(xpath = "./android.widget.TextView[1]")
+    @AppFindBy(xpath = "./*[contains(@text,'получено') or (contains(@text,'ожидается'))]/preceding-sibling::*[2]")
     Element supplierName;
 
-    @AppFindBy(xpath = "./android.widget.TextView[2]")
+    @AppFindBy(xpath = ".//*[contains(@text,'получено') or (contains(@text,'ожидается'))]/preceding-sibling::*[1]")
     Element supplyDate;
 
     @AppFindBy(xpath = "./*[@text='ожидается палет']")
@@ -37,16 +37,16 @@ public class ShipmentWidget extends CardWidget<ShipmentCardData> {
     public ShipmentCardData collectDataFromPage(String pageSource) {
         ShipmentCardData data = new ShipmentCardData();
         data.setName(supplierName.getText());
-        data.setDateAndTime(DateTimeUtil.strToLocalDateTime(supplyDate.getText(),"d MMM, H:mm"));
+        data.setDateAndTime(DateTimeUtil.strToLocalDateTime(supplyDate.getText(), "d MMM, H:mm"));
         String quantity = quantityLbl.getText();
         if (quantity.contains("/")) {
-            String [] tmp = quantity.split("/");
+            String[] tmp = quantity.split("/");
             int fact = Integer.parseInt(tmp[0]);
             int plan = Integer.parseInt(tmp[1]);
             data.setReceivedQuantity(fact);
             data.setExpectedQuantity(plan);
             data.setIsFullReceived(fact >= plan);
-        }else {
+        } else {
             data.setReceivedQuantity(0);
             data.setExpectedQuantity(Integer.valueOf(quantity));
             data.setIsFullReceived(false);

@@ -4,6 +4,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.api.data.supply_plan.Details.ShipmentData;
 import com.leroy.magmobile.api.data.supply_plan.Details.ShipmentDataList;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
@@ -34,24 +35,22 @@ public class OneDateSuppliesPage extends CommonMagMobilePage {
 
     AndroidScrollView<String> mainScrollView = new AndroidScrollView<>(driver, AndroidScrollView.TYPICAL_LOCATOR);
 
-    AndroidScrollView<AppointmentCardData> singleDateAppointmentWidgetList = new AndroidScrollView<>(driver,
-            AndroidScrollView.TYPICAL_LOCATOR, ".//android.view.ViewGroup/android.widget.TextView[2][not(following-sibling::android.widget.TextView[contains(@text,'палет')]) and not(contains(@text,'палет'))]/..",
+    AndroidScrollView<AppointmentCardData> singleDateReserveWidgetList = new AndroidScrollView<>(driver,
+            AndroidScrollView.TYPICAL_LOCATOR, ".//android.view.ViewGroup/android.widget.TextView[2][not" +
+            "(following-sibling::android.widget.TextView[contains(@text,'палет')]) and not(contains(@text,'палет')) and not(contains(@text,'не найдено'))]/..",
             AppointmentWidget.class);
 
     //немного кривой xpath, без локаторов не придумал как по другому сделать
     AndroidScrollView<ShipmentCardData> singleDateShipmentWidgetList = new AndroidScrollView<>(driver,
-            AndroidScrollView.TYPICAL_LOCATOR, ".//*[contains(@text,'получено') or (contains(@text,'ожидается'))]/..[not(android.widget.TextView[@text='Сегодня' or @text='Вчера'])]",
+            AndroidScrollView.TYPICAL_LOCATOR, ".//*[contains(@text,'получено') or (contains(@text,'ожидается'))]" +
+            "/..[not(android.widget.TextView[@text='Сегодня' or @text='Вчера' or @text='Завтра' or contains(@text,'пн') or contains(@text,'вт') or " +
+            "contains(@text,'ср') or contains(@text,'чт') or contains(@text,'пт') or contains(@text,'сб') or contains(@text,'вс')])]",
             ShipmentWidget.class);
 
-    AndroidScrollView<AppointmentCardData> multiDateAppointmentWidgetList = new AndroidScrollView<>(driver,
-            AndroidScrollView.TYPICAL_LOCATOR, "./descendant::android.view.ViewGroup[1]/android.view.ViewGroup" +
-            "/descendant::android.view.ViewGroup[2]/android.view.ViewGroup[./android.view.ViewGroup]//android.view.ViewGroup" +
-            "[not(./android.widget.TextView[3]) and ./android.widget.TextView]", AppointmentWidget.class);
-
-    AndroidScrollView<ShipmentCardData> multiDateShipmentWidgetList = new AndroidScrollView<>(driver,
-            AndroidScrollView.TYPICAL_LOCATOR, "./descendant::android.view.ViewGroup[1]/android.view.ViewGroup" +
-            "/descendant::android.view.ViewGroup[2]/android.view.ViewGroup[./android.view.ViewGroup]//android.view.ViewGroup" +
-            "/android.widget.TextView[3]/ancestor::android.view.ViewGroup[1]", ShipmentWidget.class);
+    @AppFindBy(xpath = "//android.widget.TextView[@text='Сегодня' or @text='Вчера' or @text='Завтра' or contains(@text,'пн') " +
+            "or contains(@text,'вт') or contains(@text,'ср') or contains(@text,'чт') or contains(@text,'пт') " +
+            "or contains(@text,'сб') or contains(@text,'вс')]")
+    ElementList<Element> weekOptions;
 
     @Override
     public void waitForPageIsLoaded() {
@@ -73,33 +72,71 @@ public class OneDateSuppliesPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что данные корректно отображены")
-    public OneDateSuppliesPage shouldDataIsCorrect(ShipmentDataList data) {
+    public OneDateSuppliesPage shouldDataIsCorrect(ShipmentDataList data) throws Exception {
         List<ShipmentData> dataList = data.getItems();
-        List<AppointmentCardData> appointmentUiData = singleDateAppointmentWidgetList.getFullDataList();
+        List<AppointmentCardData> appointmentUiData = singleDateReserveWidgetList.getFullDataList();
         mainScrollView.scrollToBeginning();
         List<ShipmentCardData> shipmentsUiData = singleDateShipmentWidgetList.getFullDataList();
-        for (ShipmentData eachData : dataList){
+        for (ShipmentData eachData : dataList) {
             String rowType = eachData.getRowType();
-            if (rowType.equals("FR_APPOINTMENT")){
+            if (rowType.equals("FR_APPOINTMENT")) {
                 ShipmentCardData eachShipment = shipmentsUiData.get(0);
-                softAssert.isEquals(eachData.getSendingLocationName(), eachShipment.getName(),"name");
-                softAssert.isEquals(DateTimeUtil.strToLocalDateTime(eachData.getDate().toString()+" "+eachData.getTime(),"yyyy-MM-dd HH:mm:ss"),
-                        eachShipment.getDateAndTime(),"date");
-                softAssert.isEquals(eachData.getIsFullReceived(), eachShipment.getIsFullReceived(), "isFullReceived");
-                softAssert.isEquals(eachData.getPalletPlan(), eachShipment.getExpectedQuantity(),"pallet plan");
+                softAssert.isEquals(eachData.getSendingLocationName(), eachShipment.getName(), "name");
+                softAssert.isEquals(DateTimeUtil.strToLocalDateTime(eachData.getDate().toString() + " " + eachData.getTime(), "yyyy-MM-dd HH:mm:ss"),
+                        eachShipment.getDateAndTime(), "date");
+                int fact = eachData.getPalletFact();
+                int plan = eachData.getPalletPlan();
+                boolean isFullReceived;
+                if (fact != 0 && plan != 0) {
+                    isFullReceived = fact >= plan;
+                } else {
+                    //некорректные данные на бэке
+                    isFullReceived = false;
+                }
+                softAssert.isEquals(isFullReceived, eachShipment.getIsFullReceived(), "isFullReceived");
+                softAssert.isEquals(eachData.getPalletPlan(), eachShipment.getExpectedQuantity(), "pallet plan");
                 softAssert.isEquals(eachData.getPalletFact(), eachShipment.getReceivedQuantity(), "pallet fact");
                 shipmentsUiData.remove(0);
-            }else if (rowType.equals("FIX_RESERVE")){
+            } else if (rowType.equals("FIX_RESERVE")) {
                 AppointmentCardData eachAppointment = appointmentUiData.get(0);
-                softAssert.isEquals(eachData.getSendingLocationName(), eachAppointment.getName(),"name");
-                softAssert.isEquals(DateTimeUtil.strToLocalDateTime(eachData.getDate().toString()+" "+eachData.getTime(),"yyyy-MM-dd HH:mm:ss"),
-                        eachAppointment.getDateAndTime(),"date");
+                softAssert.isEquals(eachData.getSendingLocationName(), eachAppointment.getName(), "name");
+                softAssert.isEquals(DateTimeUtil.strToLocalDateTime(eachData.getDate().toString() + " " + eachData.getTime(), "yyyy-MM-dd HH:mm:ss"),
+                        eachAppointment.getDateAndTime(), "date");
                 appointmentUiData.remove(0);
-            }else {
+            } else {
                 throw new IllegalArgumentException("Wrong supply row type");
             }
         }
         softAssert.verifyAll();
+        return this;
+    }
+
+    @Step("Проверить, что данные корректно отображены")
+    public OneDateSuppliesPage shouldWeekDataIsCorrect(ShipmentDataList... data) throws Exception {
+        if (data.length != 7) {
+            throw new IllegalArgumentException("Need 7 days data to verify");
+        }
+        for (int i = 0; i < data.length; i++) {
+            List<ShipmentData> dataList = data[i].getItems();
+            boolean needToVerify = false;
+            for (ShipmentData tmp : dataList) {
+                if (tmp.getRowType().equals("FR_APPOINTMENT")) {
+                    needToVerify = true;
+                }
+            }
+            Element dayOfWeekOption = weekOptions.get(i);
+            if (!needToVerify) {
+                softAssert.isTrue(dayOfWeekOption.findChildElement("./following-sibling::*[contains(@text,'поставок не найдено')]").isVisible(), "поставок не должно быть");
+            } else {
+                dayOfWeekOption.waitForVisibility();
+                dayOfWeekOption.click();
+                waitUntilProgressBarAppearsAndDisappear();
+                shouldDataIsCorrect(data[i]);
+                mainScrollView.scrollUpToText(dayOfWeekOption.getText());
+                dayOfWeekOption.waitForVisibility();
+                dayOfWeekOption.click();
+            }
+        }
         return this;
     }
 

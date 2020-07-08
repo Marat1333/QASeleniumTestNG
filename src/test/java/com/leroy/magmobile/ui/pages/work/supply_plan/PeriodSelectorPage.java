@@ -16,13 +16,13 @@ public class PeriodSelectorPage extends CommonMagMobilePage {
     @AppFindBy(accessibilityId = "CloseModal")
     Button closeModalBtn;
 
-    @AppFindBy(xpath = "//android.widget.TextView[contains(text(),'Вчера')]/following-sibling::android.view.ViewGroup")
+    @AppFindBy(xpath = "//android.widget.TextView[contains(@text,'Вчера')]/following-sibling::android.view.ViewGroup")
     RadioButton yesterdayOption;
 
-    @AppFindBy(xpath = "//android.widget.TextView[contains(text(),'Вчера')]/following-sibling::android.view.ViewGroup")
+    @AppFindBy(xpath = "//android.widget.TextView[contains(@text,'Сегодня')]/following-sibling::android.view.ViewGroup")
     RadioButton todayOption;
 
-    @AppFindBy(xpath = "//android.widget.TextView[contains(text(),'Вчера')]/following-sibling::android.view.ViewGroup")
+    @AppFindBy(xpath = "//android.widget.TextView[contains(@text,'Неделя')]/following-sibling::android.view.ViewGroup")
     RadioButton weekOption;
 
     public OneDateSuppliesPage selectPeriodOption(PeriodOption option) {

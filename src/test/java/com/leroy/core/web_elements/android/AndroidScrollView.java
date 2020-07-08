@@ -309,6 +309,10 @@ public class AndroidScrollView<T> extends BaseWidget {
      * @param maxScrollCount - limit of scroll count
      * @return this
      */
+    public AndroidScrollView<T> scrollUpToText(String findText) {
+        return scrollUpToText(findText, 30);
+    }
+
     public AndroidScrollView<T> scrollUpToText(String findText, int maxScrollCount) {
         SearchContext searchContext = new SearchContext();
         searchContext.findText = findText;

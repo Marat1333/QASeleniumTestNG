@@ -11,7 +11,6 @@ import com.leroy.magmobile.ui.pages.more.DepartmentListPage;
 import com.leroy.magmobile.ui.pages.work.WorkPage;
 import com.leroy.magmobile.ui.pages.work.supply_plan.OneDateSuppliesPage;
 import com.leroy.magmobile.ui.pages.work.supply_plan.PeriodSelectorPage;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 
@@ -23,7 +22,7 @@ public class SupplyPlanTest extends AppBaseSteps {
     @Inject
     SupplyPlanClient client;
 
-    private OneDateSuppliesPage precondition() throws Exception{
+    private OneDateSuppliesPage precondition() throws Exception {
         WorkPage workPage = loginAndGoTo(WorkPage.class);
         return workPage.goToShipmentListPage();
     }
@@ -61,20 +60,55 @@ public class SupplyPlanTest extends AppBaseSteps {
     @Test(description = "C3293182 Изменение даты по фильтру")
     public void testChangeDateByFilter() throws Exception {
         LocalDate date = LocalDate.now();
-        LocalDate yesterday = date.minusDays(1);
 
-        GetSupplyPlanDetails params = new GetSupplyPlanDetails()
+        GetSupplyPlanDetails yesterdayParams = new GetSupplyPlanDetails()
+                .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setDate(date.minusDays(1));
+
+        GetSupplyPlanDetails todayParams = new GetSupplyPlanDetails()
                 .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setDate(date);
 
-        GetSupplyPlanDetails params1 = new GetSupplyPlanDetails()
+        GetSupplyPlanDetails tomorrowParams = new GetSupplyPlanDetails()
                 .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .setDate(yesterday);
+                .setDate(date.plusDays(1));
 
-        ShipmentDataList todayResponse = client.getShipments(params).asJson();
-        ShipmentDataList yesterdayResponse = client.getShipments(params1).asJson();
+        GetSupplyPlanDetails todayPlus2Params = new GetSupplyPlanDetails()
+                .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setDate(date.plusDays(2));
+
+        GetSupplyPlanDetails todayPlus3Params = new GetSupplyPlanDetails()
+                .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setDate(date.plusDays(3));
+
+        GetSupplyPlanDetails todayPlus4Params = new GetSupplyPlanDetails()
+                .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setDate(date.plusDays(4));
+
+        GetSupplyPlanDetails todayPlus5Params = new GetSupplyPlanDetails()
+                .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setDate(date.plusDays(5));
+
+        GetSupplyPlanDetails todayPlus6Params = new GetSupplyPlanDetails()
+                .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setDate(date.plusDays(6));
+
+        ShipmentDataList yesterdayResponse = client.getShipments(yesterdayParams).asJson();
+        ShipmentDataList todayResponse = client.getShipments(todayParams).asJson();
+        ShipmentDataList tomorrowResponse = client.getShipments(tomorrowParams).asJson();
+        ShipmentDataList todayPlus2Response = client.getShipments(todayPlus2Params).asJson();
+        ShipmentDataList todayPlus3Response = client.getShipments(todayPlus3Params).asJson();
+        ShipmentDataList todayPlus4Response = client.getShipments(todayPlus4Params).asJson();
+        ShipmentDataList todayPlus5Response = client.getShipments(todayPlus5Params).asJson();
+        ShipmentDataList todayPlus6Response = client.getShipments(todayPlus6Params).asJson();
 
         //Step 1
         step("Проверить данные по поставкам и бронированиям на поставку за сегодня");
@@ -89,8 +123,10 @@ public class SupplyPlanTest extends AppBaseSteps {
 
         //Step 3
         step("Проверить данные по поставкам и бронированиям на поставку за неделю");
-
-
+        oneDateSuppliesPage.openPeriodSelectorPage();
+        periodSelectorPage.selectPeriodOption(PeriodSelectorPage.PeriodOption.WEEK);
+        oneDateSuppliesPage.shouldWeekDataIsCorrect(todayResponse, tomorrowResponse, todayPlus2Response, todayPlus3Response,
+                todayPlus4Response, todayPlus5Response, todayPlus6Response);
     }
 
 }
