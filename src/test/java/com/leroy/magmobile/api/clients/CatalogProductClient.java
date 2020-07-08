@@ -55,6 +55,17 @@ public class CatalogProductClient extends MagMobileClient {
         return execute(req, CatalogProductData.class);
     }
 
+    @Step("Get Catalog Product for lmCode={lmCode}, pointOfGiveAway={pointOfGiveAway}, extend={extend}")
+    public Response<CatalogProductData> getProduct(String shopId,
+            String lmCode, SalesDocumentsConst.GiveAwayPoints pointOfGiveAway, Extend extend) {
+        GetCatalogProduct req = new GetCatalogProduct();
+        req.setLmCode(lmCode);
+        req.setShopId(shopId);
+        req.setPointOfGiveAway(pointOfGiveAway.getApiVal());
+        req.setExtend(extend.toString());
+        return execute(req, CatalogProductData.class);
+    }
+
     @Step("Get Product Reviews for lmCode={lmCode}, pageNumber={pageNumber}, pageSize={pageSize}")
     public Response<CatalogReviewsOfProductList> getProductReviews(String lmCode, int pageNumber, int pageSize) {
         GetCatalogProductReviews params = new GetCatalogProductReviews()
@@ -80,11 +91,16 @@ public class CatalogProductClient extends MagMobileClient {
     }
 
     @Step("Get Product Sales for lmCode={lmCode}")
-    public Response<Object> getProductSales(String lmCode) {
+    public Response<Object> getProductSales(String lmCode, String shopId) {
         GetCatalogProductSales params = new GetCatalogProductSales()
                 .setLmCode(lmCode)
-                .setShopId(userSessionData.getUserShopId());
+                .setShopId(shopId);
         return execute(params, Object.class);
+    }
+
+    @Step("Get Product Sales for lmCode={lmCode}")
+    public Response<Object> getProductSales(String lmCode) {
+        return getProductSales(lmCode, userSessionData.getUserShopId());
     }
 
     @Step("Get price and quantity of products by shops for lmCode={lmCode} and shops: {shops}")

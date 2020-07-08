@@ -8,8 +8,9 @@ public class DiscountConst {
         DEFECT(1, "Товар с браком"),
         AFTER_REPAIR(2, "Товар после ремонта в сервисном центре"),
         BALANCE_MEASURED_PRODUCT(3, "Остаток мерного товара"),
-        INCOMPLETE_KIT(4, "Неполный комплект"),
-        PRODUCT_SAMPLE(5, "Образец товара");
+        INCOMPLETE_KIT(4, "Не полный комплект"),
+        PRODUCT_SAMPLE(5, "Образец товара"),
+        CUSTOMER_EQUIVALENT_REASON(6, "Аналог для клиента ИМ");
 
         private int id;
         private String name;

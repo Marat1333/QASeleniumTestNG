@@ -14,6 +14,25 @@ public class OrderWebData {
     private Double totalWeight; // кг
     private Double totalPrice; // Рубли
 
+    public ProductOrderCardWebData getLastProduct() {
+        return productCardDataList.get(productCardDataList.size() - 1);
+    }
+
+    public void removeDiscountProduct(int productIndex) {
+        setDiscountPercentToProduct(productIndex, 0);
+        productCardDataList.get(productIndex).setTotalPriceWithDiscount(null);
+        productCardDataList.get(productIndex).setDiscountPercent(null);
+    }
+
+    public void setDiscountPercentToProduct(int productIndex, double discountPercent) {
+        ProductOrderCardWebData product = productCardDataList.get(productIndex);
+        Double discountAmountBefore = product.getTotalPrice() - (product.getTotalPriceWithDiscount() != null ?
+                product.getTotalPriceWithDiscount() : product.getTotalPrice());
+        product.setDiscountPercent(discountPercent, true);
+        this.totalPrice = ParserUtil.minus(
+                totalPrice + discountAmountBefore, (product.getTotalPrice() * discountPercent / 100), 2);
+    }
+
     public void addFirstProduct(ProductOrderCardWebData product, boolean recalculateOrder) {
         List<ProductOrderCardWebData> result = new ArrayList<>();
         result.add(product);

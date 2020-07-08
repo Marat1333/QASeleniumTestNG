@@ -35,13 +35,13 @@ public class SupplierCardWidget extends CardWidget<SupplierCardData> {
     @Override
     public SupplierCardData collectDataFromPage(String pageSource) {
         SupplierCardData supplierCardData = new SupplierCardData();
-        supplierCardData.setSupplierCode(supplierCodeLbl.getText());
-        supplierCardData.setSupplierName(supplierNameLbl.getText());
+        supplierCardData.setSupplierCode(supplierCodeLbl.getText(pageSource));
+        supplierCardData.setSupplierName(supplierNameLbl.getText(pageSource));
         return supplierCardData;
     }
 
     @Override
     public boolean isFullyVisible(String pageSource) {
-        return supplierNameLbl.isVisible() && checkBoxBtn.isVisible() && supplierCodeLbl.isVisible();
+        return supplierNameLbl.isVisible(pageSource) && checkBoxBtn.isVisible(pageSource) && supplierCodeLbl.isVisible(pageSource);
     }
 }

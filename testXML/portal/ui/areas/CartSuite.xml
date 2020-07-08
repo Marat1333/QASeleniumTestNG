@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Cart Suite" parallel="tests">
+
+    <listeners>
+        <listener class-name="com.leroy.core.listeners.TestRailListener"/>
+    </listeners>
+
+    <test name="Создание / Редактирование содержимого корзины">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.CartTest">
+                <methods>
+                    <include name="testNewCartCreation"/> <!-- C22797240 -->
+                    <include name="testAddCurrentItemToCart"/> <!-- C22797243 -->
+                    <include name="testCopyExistingProductToCart"/> <!-- C23406349 -->
+                    <include name="testItemQuantityEditing"/> <!-- C22797244 -->
+                    <include name="testDeleteItemFromCart"/> <!-- C22797249 -->
+                    <include name="testDeleteLastItemFromCart"/> <!-- C22797250 -->
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="Действия с клиентом">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.CartTest">
+                <methods>
+                    <include name="testSearchClientByPhoneNumberInEstimate"/> <!-- C22797258 -->
+                    <include name="testEditCustomerDataInCart"/> <!-- C22797337 -->
+                    <include name="testChangeCustomerToAnotherOneInCart"/> <!-- C22797260 -->
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="Поиск товаров в корзине">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.CartTest">
+                <methods>
+                    <include name="testSearchItemsByLmCodeByNameByBarcode"/> <!-- C22797241 -->
+                    <include name="testAddAVSOrTopEMItemsSufficientStock"/> <!-- C22797247 -->
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="Создание/Изменение/Удаление скидки">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.CartTest">
+                <methods>
+                    <include name="testCreateDiscount"/>
+                    <include name="testEditDiscount"/>
+                    <include name="testDeleteDiscount"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+</suite>

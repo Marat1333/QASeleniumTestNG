@@ -20,12 +20,19 @@ public class CardWebWidgetList<E extends CardWebWidget<D>, D> extends ElementLis
         super(driver, locator, elementClass);
     }
 
-    public List<D> getDataList() {
+    public List<D> getDataList(int limit) {
         List<D> dataList = new ArrayList<>();
         for (CardWebWidget<D> cardWidget : this) {
+            if (limit <= 0)
+                break;
             dataList.add(cardWidget.collectDataFromPage());
+            limit--;
         }
         return dataList;
+    }
+
+    public List<D> getDataList() {
+        return getDataList(Integer.MAX_VALUE);
     }
 
 

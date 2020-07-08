@@ -4,7 +4,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.sales.ProductCardPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.ProductCardPage;
 import io.qameta.allure.Step;
 
 public class ImpossibleCreateDocumentWithTopEmModalPage extends CommonMagMobilePage {

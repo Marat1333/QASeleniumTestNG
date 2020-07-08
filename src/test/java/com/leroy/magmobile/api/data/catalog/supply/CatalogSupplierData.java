@@ -18,7 +18,7 @@ public class CatalogSupplierData {
     private String status;
     private String deliveryType;
     private String franko;
-    private Double packSize;
+    private String packSize;
     private String deliveryMethod;
     private List<SupplyHistoryData> history;
 }

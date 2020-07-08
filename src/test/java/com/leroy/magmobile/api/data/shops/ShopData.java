@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class ShopData {
-    private Integer id;
+    private String id;
     private String name;
     private String address;
     private String phone;
@@ -19,4 +19,6 @@ public class ShopData {
     private String regionKladr;
     private String cityKladr;
     private ShopAvailableFeatureData availableFeatures;
+    private Double distance;
+    private PriceAndStockData priceAndStock;
 }

@@ -68,7 +68,7 @@ public class SearchTest extends WebBaseSteps {
         final String CLASS_ID = "20";
 
         GetCatalogSearch filterParams = new GetCatalogSearch()
-                .setGamma("A")
+                .setTopEM(true)
                 .setDepartmentId(DEPT_ID.substring(2))
                 .setSubDepartmentId(SUB_DEPT_ID)
                 .setClassId(CLASS_ID)
@@ -90,7 +90,7 @@ public class SearchTest extends WebBaseSteps {
         step("осуществить поиск по фильтру номенклатуры так, чтобы результат поиска содержал менее 12 артикулов");
         searchProductPage.choseNomenclature(DEPT_ID, SUB_DEPT_ID, CLASS_ID, null);
         searchProductPage.choseSortType(SearchProductPage.SortType.LM_CODE_ASC);
-        searchProductPage.choseGammaFilter("Гамма А");
+        searchProductPage.choseCheckboxFilter(false, SearchProductPage.Filters.TOP_EM);
         searchProductPage.applyFilters();
         ProductItemDataList productItemListResponse = apiThreads.get(0).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(productItemListResponse,

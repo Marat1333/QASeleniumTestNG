@@ -88,7 +88,7 @@ public class CatalogTest extends BaseProjectApiTest {
             assertThat("month", rowData.getYearmonth(), not(emptyOrNullString()));
             assertThat("yearmonth", rowData.getYearmonth(),
                     equalTo(rowData.getYear() + rowData.getMonth()));
-            assertThat("quantity", rowData.getQuantity(), greaterThan(0));
+            assertThat("quantity", rowData.getQuantity(), greaterThan(0.0));
             assertThat("amount", rowData.getAmount(), greaterThan(0.0));
         }
     }
@@ -135,7 +135,7 @@ public class CatalogTest extends BaseProjectApiTest {
         userData.setLdap(getUserSessionData().getUserLdap());
 
         ShopData shopData = new ShopData();
-        shopData.setId(Integer.parseInt(getUserSessionData().getUserShopId()));
+        shopData.setId(getUserSessionData().getUserShopId());
 
         ReviewData reviewData = new ReviewData();
         reviewData.setLmCode(RandomStringUtils.randomNumeric(6));

@@ -167,10 +167,11 @@ public class AppBaseSteps extends MagMobileBaseTest {
             throws Exception {
         if (department.length() == 1)
             department = "0" + department;
-        return page.goToMoreSection()
+        page.goToMoreSection()
                 .goToUserProfile()
                 .goToEditShopForm()
-                .searchForShopAndSelectById(shop)
+                .searchForShopAndSelectById(shop);
+        return new UserProfilePage()
                 .goToEditDepartmentForm()
                 .selectDepartmentById(department);
     }

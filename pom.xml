@@ -360,5 +360,12 @@
             <artifactId>base</artifactId>
         </dependency>
 
+        <!-- GeoCoordinates -->
+        <dependency>
+            <groupId>org.mapsforge</groupId>
+            <artifactId>mapsforge-core</artifactId>
+            <version>0.13.0</version>
+        </dependency>
+
     </dependencies>
 </project>

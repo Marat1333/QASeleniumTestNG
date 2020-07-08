@@ -29,12 +29,11 @@ public class SearchShopPage extends CommonMagMobilePage {
     }
 
     @Step("Найдите и выберите магазин с номером {id}")
-    public UserProfilePage searchForShopAndSelectById(String id) {
+    public void searchForShopAndSelectById(String id) {
         searchFld.clearFillAndSubmit(id);
         E(String.format(TYPICAL_SHOP_AREA_XPATH, "0")).waitUntilTextIsEqualTo(id);
         getSpecificShopAreaById(id).doubleClick();
         confirmBtn.click();
-        return new UserProfilePage();
     }
 
 }

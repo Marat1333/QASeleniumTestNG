@@ -19,7 +19,7 @@ public class SearchProductAllGammaCardWidget extends CardWidget<ProductCardData>
     @AppFindBy(xpath = ".//android.view.ViewGroup[@content-desc='barCode']/android.widget.TextView")
     private Element barCodeObj;
 
-    @AppFindBy(xpath = ".//android.view.ViewGroup[@content-desc='name']/android.widget.TextView")
+    @AppFindBy(xpath = ".//android.widget.TextView[not(contains(@content-desc,'lmCode')) and not(contains(@content-desc,'barCode'))]")
     private Element titleObj;
 
     public String getLmCode(boolean onlyDigits, String pageSource) {
@@ -55,9 +55,9 @@ public class SearchProductAllGammaCardWidget extends CardWidget<ProductCardData>
     @Override
     public ProductCardData collectDataFromPage(String pageSource) {
         ProductCardData productCardData = new ProductCardData();
-        productCardData.setLmCode(getLmCode(true));
-        productCardData.setBarCode(getBarCode(true));
-        productCardData.setName(getTitle());
+        productCardData.setLmCode(getLmCode(true, pageSource));
+        productCardData.setBarCode(getBarCode(true, pageSource));
+        productCardData.setName(getTitle(pageSource));
         return productCardData;
     }
 

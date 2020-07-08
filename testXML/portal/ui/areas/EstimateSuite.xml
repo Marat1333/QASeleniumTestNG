@@ -6,11 +6,12 @@
         <listener class-name="com.leroy.core.listeners.TestRailListener"/>
     </listeners>
 
-    <test name="C3302188 Create estimate">
+    <test name="Create estimate and convert it to Cart">
         <classes>
             <class name="com.leroy.magportal.ui.tests.EstimateTest">
                 <methods>
                     <include name="testCreateEstimate"/>
+                    <include name="testConvertEstimateToCart"/>
                 </methods>
             </class>
         </classes>
