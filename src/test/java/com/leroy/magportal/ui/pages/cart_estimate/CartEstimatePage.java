@@ -171,6 +171,7 @@ public abstract class CartEstimatePage extends
 
     @Step("Ввести {text} в поле для добавления товара и нажать Enter")
     public void enterTextInSearchProductField(String text) {
+        searchProductFld.clear(true);
         searchProductFld.clearFillAndSubmit(text);
         waitForSpinnerAppearAndDisappear();
         if (!ExtendedSearchModal.isModalVisible()) {
@@ -334,6 +335,8 @@ public abstract class CartEstimatePage extends
             phone = phone.substring(2);
         enterPhoneInSearchCustomerField(phone);
         int foundCustomerAccount = customerSearchItems.getCount();
+        if (foundCustomerAccount == 0)
+            customerPhoneSearchFld.waitForInvisibility(short_timeout);
         anAssert.isTrue(foundCustomerAccount > 0 || !customerPhoneSearchFld.isVisible(),
                 "Клиент с номером +7" + phone + " не удалось выбрать");
         if (foundCustomerAccount > 0) {
@@ -479,8 +482,10 @@ public abstract class CartEstimatePage extends
         else
             softAssert.isEquals(actualEstimateData.getNumber(), expectedDocumentData.getNumber(),
                     "Ожидался другой номер документа");
-        softAssert.isEquals(actualEstimateData.getAuthorName(), expectedDocumentData.getAuthorName(),
-                "Ожидался другой автор документа");
+        if (expectedDocumentData.getAuthorName() != null) {
+            softAssert.isEquals(actualEstimateData.getAuthorName(), expectedDocumentData.getAuthorName(),
+                    "Ожидался другой автор документа");
+        }
         if (expectedDocumentData.getStatus() != null) {
             softAssert.isEquals(actualEstimateData.getStatus(), expectedDocumentData.getStatus().toUpperCase(),
                     "Ожидался другой статус документа");
@@ -519,10 +524,9 @@ public abstract class CartEstimatePage extends
                     "Заказ #" + (i + 1) + " Неверное сумма итого");
             if (expectedOrder.getTotalWeight() != null) {
                 double totalSelectedQuantity = expectedOrder.getProductCardDataList().stream().mapToDouble(ProductOrderCardWebData::getSelectedQuantity).sum();
-                softAssert.isTrue(Math.abs(actualOrder.getTotalWeight() - expectedOrder.getTotalWeight()) <= totalSelectedQuantity * 0.01,
+                softAssert.isTrue(Math.abs(actualOrder.getTotalWeight() - expectedOrder.getTotalWeight()) <= totalSelectedQuantity * 0.011,
                         "Заказ #" + (i + 1) + " Неверный итого вес");
-            }
-            else {
+            } else {
                 softAssert.isTrue(actualOrder.getTotalWeight() > 0,
                         "Заказ #" + (i + 1) + " Ожидался итого вес > 0");
                 double expectedTotalWeight = 0.0;

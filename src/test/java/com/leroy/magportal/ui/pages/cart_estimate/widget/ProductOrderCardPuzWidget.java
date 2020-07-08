@@ -1,12 +1,14 @@
 package com.leroy.magportal.ui.pages.cart_estimate.widget;
 
 import com.leroy.core.annotations.WebFindBy;
+import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardWebData;
 import com.leroy.magportal.ui.webelements.CardWebWidget;
 import com.leroy.utils.ParserUtil;
+import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.Color;
 
@@ -148,6 +150,12 @@ public class ProductOrderCardPuzWidget extends CardWebWidget<ProductOrderCardWeb
     }
 
     public void clickDelete() {
-        deleteBtn.click();
+        try {
+            deleteBtn.click();
+        } catch (ElementClickInterceptedException err) {
+            Log.error(err.getMessage());
+            deleteBtn.scrollTo();
+            deleteBtn.click();
+        }
     }
 }

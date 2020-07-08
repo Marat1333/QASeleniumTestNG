@@ -38,7 +38,7 @@ public class ShortCartEstimateDocumentCardWidget extends CardWebWidget<ShortSale
         ShortSalesDocWebData salesDocData = new ShortSalesDocWebData();
         salesDocData.setNumber(getNumber());
         salesDocData.setTotalPrice(ParserUtil.strToDouble(price.getText()));
-        salesDocData.setStatus(status.getText());
+        salesDocData.setStatus(status.getTextIfPresent());
         salesDocData.setCreationDate(creationDate.getText());
         salesDocData.setAuthor(author.getText());
         return salesDocData;

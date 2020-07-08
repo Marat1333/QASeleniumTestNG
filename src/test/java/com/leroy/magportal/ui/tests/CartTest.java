@@ -13,6 +13,7 @@ import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.DiscountModal;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.ExtendedSearchModal;
 import com.leroy.magportal.ui.pages.customers.CreateCustomerForm;
+import io.qameta.allure.Issue;
 import io.qameta.allure.Step;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
@@ -20,6 +21,8 @@ import org.testng.util.Strings;
 
 import java.time.LocalDate;
 import java.util.Random;
+
+import static com.leroy.constants.DefectConst.PAO_884;
 
 public class CartTest extends BasePAOTest {
 
@@ -88,7 +91,7 @@ public class CartTest extends BasePAOTest {
         step("Нажмите на поле количества и введите нужное количество товара (например 5) " +
                 "и нажмите на крестик (х) закрытия модального окна Добавление товаров в корзину");
         extendedSearchModal.enterQuantity(5, 1);
-        ProductOrderCardWebData productData =  extendedSearchModal.getProductData(1);
+        ProductOrderCardWebData productData = extendedSearchModal.getProductData(1);
         extendedSearchModal.closeModalWindow();
         cartPage = new CartPage();
         cartPage.shouldDocumentHasProduct(3, productData);
@@ -96,29 +99,32 @@ public class CartTest extends BasePAOTest {
 
     @Test(description = "C22797243 Add current item to cart", groups = NEED_PRODUCTS_GROUP)
     public void testAddCurrentItemToCart() throws Exception {
-        String lmCode1 = productList.get(0).getLmCode();
-        step("Pre-condition: Авторизоваться, добавить 1 товар в корзину");
-        stepLoginAndGoToCartPage();
-        stepClickCreateCartButton();
-        stepSearchForProduct(lmCode1);
+        if (isStartFromScratch()) {
+            String lmCode1 = productList.get(0).getLmCode();
+            step("Pre-condition: Авторизоваться, добавить 1 товар в корзину");
+            stepLoginAndGoToCartPage();
+            stepClickCreateCartButton();
+            stepSearchForProduct(lmCode1);
+        }
 
         SalesDocWebData documentData = cartPage.getSalesDocData();
 
         // Step 1
         step("Введите ЛМ товара в поле 'Добавление товара' и нажмите Enter");
-        stepSearchForProduct(lmCode1);
-        // Доп (специфические) проверки, которые не содержит метод-шаг, и которые вряд ли будут нужны в других тестах
+        stepSearchForProduct(documentData.getOrders().get(0).getProductCardDataList().get(0).getLmCode());
         documentData.getOrders().get(0).changeProductQuantity(0, 2, true);
         cartPage.shouldCartHasData(documentData);
     }
 
     @Test(description = "C23406349 Copy existing product to cart", groups = NEED_PRODUCTS_GROUP)
     public void testCopyExistingProductToCart() throws Exception {
-        String lmCode1 = productList.get(0).getLmCode();
-        step("Pre-condition: Авторизоваться, добавить 1 товар в корзину");
-        stepLoginAndGoToCartPage();
-        stepClickCreateCartButton();
-        stepSearchForProduct(lmCode1);
+        if (isStartFromScratch()) {
+            String lmCode1 = productList.get(0).getLmCode();
+            step("Pre-condition: Авторизоваться, добавить 1 товар в корзину");
+            stepLoginAndGoToCartPage();
+            stepClickCreateCartButton();
+            stepSearchForProduct(lmCode1);
+        }
 
         SalesDocWebData documentData = cartPage.getSalesDocData();
 
@@ -127,19 +133,22 @@ public class CartTest extends BasePAOTest {
         cartPage.copyProductByIndex(1);
 
         OrderWebData orderWebData = documentData.getOrders().get(0);
-        ProductOrderCardWebData copyProduct = orderWebData.getProductCardDataList().get(0);
+        ProductOrderCardWebData copyProduct = orderWebData.getProductCardDataList().get(0).clone();
         orderWebData.addFirstProduct(copyProduct, true);
+        orderWebData.changeProductQuantity(1, 1, true);
         cartPage.shouldCartHasData(documentData);
     }
 
     @Test(description = "C22797244 Item quantity editing", groups = NEED_PRODUCTS_GROUP)
     public void testItemQuantityEditing() throws Exception {
         int newQuantity = 3;
-        String lmCode1 = productList.get(0).getLmCode();
-        step("Pre-condition: Авторизоваться, добавить 1 товар в корзину");
-        stepLoginAndGoToCartPage();
-        stepClickCreateCartButton();
-        stepSearchForProduct(lmCode1);
+        if (isStartFromScratch()) {
+            String lmCode1 = productList.get(0).getLmCode();
+            step("Pre-condition: Авторизоваться, добавить 1 товар в корзину");
+            stepLoginAndGoToCartPage();
+            stepClickCreateCartButton();
+            stepSearchForProduct(lmCode1);
+        }
 
         SalesDocWebData documentData = cartPage.getSalesDocData();
         documentData.getOrders().get(0).changeProductQuantity(0, newQuantity, true);
@@ -248,6 +257,8 @@ public class CartTest extends BasePAOTest {
         if (isStartFromScratch()) {
             stepLoginAndGoToCartPage();
             stepClickCreateCartButton();
+        } else {
+            cartPage.removeSelectedCustomer();
         }
         cartPage.clickAddCustomer()
                 .selectCustomerByPhone(customerData.getPhoneNumber());
@@ -282,6 +293,8 @@ public class CartTest extends BasePAOTest {
         if (isStartFromScratch()) {
             stepLoginAndGoToCartPage();
             stepClickCreateCartButton();
+        } else {
+            cartPage.removeSelectedCustomer();
         }
         cartPage.clickAddCustomer()
                 .selectCustomerByPhone(customer1.getPhoneNumber());
@@ -340,6 +353,7 @@ public class CartTest extends BasePAOTest {
         // TODO
     }
 
+    @Issue("PAO-884")
     @Test(description = "C22797254 Create discount", groups = NEED_PRODUCTS_GROUP)
     public void testCreateDiscount() throws Exception {
         // Pre-condition
@@ -373,6 +387,8 @@ public class CartTest extends BasePAOTest {
         // Step 5
         step("Нажмите на кнопку Применить");
         cartPage = discountModal.clickConfirmButton();
+        if (PAO_884)
+            cartData.setAuthorName(null);
         cartData.getOrders().get(0).setDiscountPercentToProduct(0, discountPercent);
         cartPage.shouldCartHasData(cartData);
 

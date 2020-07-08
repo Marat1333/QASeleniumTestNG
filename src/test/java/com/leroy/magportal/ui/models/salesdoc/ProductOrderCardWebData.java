@@ -22,6 +22,20 @@ public class ProductOrderCardWebData {
     private Double totalPriceWithDiscount;
     private Double discountPercent;
 
+    public ProductOrderCardWebData clone() {
+        ProductOrderCardWebData productOrderCardWebData = new ProductOrderCardWebData();
+        productOrderCardWebData.setLmCode(lmCode);
+        productOrderCardWebData.setBarCode(barCode);
+        productOrderCardWebData.setTitle(title);
+        productOrderCardWebData.setPriceUnit(priceUnit);
+        productOrderCardWebData.setPrice(price);
+        productOrderCardWebData.setSelectedQuantity(selectedQuantity);
+        productOrderCardWebData.setTotalPrice(totalPrice);
+        productOrderCardWebData.setAvailableTodayQuantity(availableTodayQuantity);
+        productOrderCardWebData.setWeight(weight);
+        return productOrderCardWebData;
+    }
+
     public void setDiscountPercent(Double discountPercent) {
         setDiscountPercent(discountPercent, false);
     }
