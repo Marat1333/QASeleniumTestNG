@@ -78,9 +78,20 @@ public class CartTest extends BasePAOTest {
         step("Введите название товара в поле 'Добавление товара' и нажмите Enter");
         cartPage.enterTextInSearchProductField(titleSearch);
         ExtendedSearchModal extendedSearchModal = new ExtendedSearchModal();
+        extendedSearchModal.shouldProductsContainInTitle(titleSearch, 3);
 
-        String s = ""; // TODO не доделан
+        // Step 5
+        step("Выберите нужный товар и нажмите на кнопку '+Добавить'");
+        extendedSearchModal.clickAddButton(1);
 
+        // Step 6
+        step("Нажмите на поле количества и введите нужное количество товара (например 5) " +
+                "и нажмите на крестик (х) закрытия модального окна Добавление товаров в корзину");
+        extendedSearchModal.enterQuantity(5, 1);
+        ProductOrderCardWebData productData =  extendedSearchModal.getProductData(1);
+        extendedSearchModal.closeModalWindow();
+        cartPage = new CartPage();
+        cartPage.shouldDocumentHasProduct(3, productData);
     }
 
     @Test(description = "C22797243 Add current item to cart", groups = NEED_PRODUCTS_GROUP)

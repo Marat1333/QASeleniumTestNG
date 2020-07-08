@@ -1,5 +1,6 @@
 package com.leroy.magportal.ui.pages.cart_estimate;
 
+import com.leroy.constants.DefectConst;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
@@ -448,6 +449,16 @@ public abstract class CartEstimatePage extends
         return this;
     }
 
+    @Step("Проверить, что в документе {index}-ый товар имеет определенные характеристики (expectedProductData)")
+    public CartEstimatePage shouldDocumentHasProduct(int index, ProductOrderCardWebData expectedProductData) {
+        index--;
+        List<ProductOrderCardWebData> actualProductData = getProductDataList();
+        if (DefectConst.STOCK_ISSUE)
+            expectedProductData.setAvailableTodayQuantity(null);
+        actualProductData.get(index).assertEqualsNotNullExpectedFields(expectedProductData, 0, index);
+        return this;
+    }
+
     @Step("Проверить, что документ (Смета / Корзина) в списке слева отображается")
     public void shouldDocumentIsPresent(ShortSalesDocWebData expectedDocumentData) {
         List<ShortSalesDocWebData> documentList = documentCardList().getDataList()
@@ -501,30 +512,7 @@ public abstract class CartEstimatePage extends
             for (int j = 0; j < actualOrder.getProductCardDataList().size(); j++) {
                 ProductOrderCardWebData actualProduct = actualOrder.getProductCardDataList().get(j);
                 ProductOrderCardWebData expectedProduct = expectedOrder.getProductCardDataList().get(j);
-                if (expectedProduct.getSelectedQuantity() != null)
-                    softAssert.isEquals(actualProduct.getSelectedQuantity(), expectedProduct.getSelectedQuantity(),
-                            "Заказ #" + (i + 1) + " Товар #" + (j + 1) + " - ожидался другое кол-во");
-                if (expectedProduct.getTotalPrice() != null)
-                    softAssert.isEquals(actualProduct.getTotalPrice(), expectedProduct.getTotalPrice(),
-                            "Заказ #" + (i + 1) + " Товар #" + (j + 1) + " - ожидалась другая стоимость");
-                if (expectedProduct.getTotalPriceWithDiscount() != null)
-                    softAssert.isEquals(actualProduct.getTotalPriceWithDiscount(), expectedProduct.getTotalPriceWithDiscount(),
-                            "Заказ #" + (i + 1) + " Товар #" + (j + 1) + " - ожидалась другая стоимость (с учетом скидки)");
-                if (expectedProduct.getDiscountPercent() != null)
-                    softAssert.isEquals(actualProduct.getDiscountPercent(), expectedProduct.getDiscountPercent(),
-                            "Заказ #" + (i + 1) + " Товар #" + (j + 1) + " - ожидалась другая скидка %");
-                if (expectedProduct.getAvailableTodayQuantity() != null)
-                    softAssert.isEquals(actualProduct.getAvailableTodayQuantity(), expectedProduct.getAvailableTodayQuantity(),
-                            "Заказ #" + (i + 1) + " Товар #" + (j + 1) + " - ожидалось другое доступное кол-во");
-                else
-                    softAssert.isTrue(actualProduct.getAvailableTodayQuantity() >= 0,
-                            "Заказ #" + (i + 1) + " Товар #" + (j + 1) + " - ожидалось, что доступное кол-во >= 0");
-                if (expectedProduct.getWeight() != null)
-                    softAssert.isTrue(Math.abs(actualProduct.getWeight() - expectedProduct.getWeight()) <= expectedProduct.getSelectedQuantity() * 0.01,
-                            "Заказ #" + (i + 1) + " Товар #" + (j + 1) + " - ожидался другой вес");
-                else
-                    softAssert.isTrue(actualProduct.getWeight() > 0,
-                            "Заказ #" + (i + 1) + " Товар #" + (j + 1) + " - ожидался вес > 0");
+                actualProduct.assertEqualsNotNullExpectedFields(expectedProduct, i, j);
             }
 
             softAssert.isEquals(actualOrder.getTotalPrice(), expectedOrder.getTotalPrice(),
