@@ -13,8 +13,10 @@ import com.leroy.magportal.ui.models.salesdoc.ShortSalesDocWebData;
 import com.leroy.magportal.ui.pages.cart_estimate.CartEstimatePage;
 import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
 import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
+import com.leroy.magportal.ui.pages.cart_estimate.modal.SendEstimateToEmailModal;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SubmittedEstimateModal;
 import com.leroy.magportal.ui.pages.customers.CreateCustomerForm;
+import com.leroy.utils.RandomUtil;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.annotations.Test;
@@ -656,6 +658,79 @@ public class EstimateTest extends BasePAOTest {
         estimatePage.selectShopInUserProfile("35");
         estimatePage.shouldDocumentListHaveNumberContains(partEstimateId)
                 .shouldDocumentListNumbersNotEqual(docNumberList);
+    }
+
+    // Estimate sending
+
+    @Test(description = "C3302200 Auto filling email address from client profile", groups = NEED_PRODUCTS_GROUP)
+    public void testAutoFillingEmailFromClientProfile() throws Exception {
+        // Test Data
+        ProductItemData testProduct1 = productList.get(0);
+        SimpleCustomerData customer1 = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+        step("Выполнение предусловий");
+        EstimatePage estimatePage;
+        if (isStartFromScratch()) {
+            estimatePage = loginAndGoTo(EstimatePage.class)
+                    .clickCreateEstimateButton();
+            estimatePage.clickAddCustomer()
+                    .selectCustomerByPhone(customer1.getPhoneNumber());
+            estimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
+        } else {
+            estimatePage = new EstimatePage();
+        }
+
+        // Step 1
+        step("Нажмите на кнопку 'Создать'");
+        SubmittedEstimateModal submittedEstimateModal = estimatePage.clickCreateButton();
+        submittedEstimateModal.verifyRequiredElements();
+
+        // Step 2
+        step("Нажмите на кнопку 'Отправить на email'");
+        SendEstimateToEmailModal sendEstimateToEmailModal = submittedEstimateModal.clickSendByEmail()
+                .verifyRequiredElements()
+                .shouldEmailFieldIs(1, customer1.getEmail());
+
+        // Step 3
+        step("Нажмите на Отправить");
+        sendEstimateToEmailModal.clickSendButton()
+                .shouldSentToEmail(customer1.getEmail());
+    }
+
+    @Test(description = "C3302201 Send email to several email addresses", groups = NEED_PRODUCTS_GROUP)
+    public void testSendEmailToSeveralEmailAddresses() throws Exception {
+        // Test Data
+        ProductItemData testProduct1 = productList.get(0);
+        SimpleCustomerData customer1 = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+        step("Выполнение предусловий");
+        EstimatePage estimatePage;
+        if (isStartFromScratch()) {
+            estimatePage = loginAndGoTo(EstimatePage.class)
+                    .clickCreateEstimateButton();
+            estimatePage.clickAddCustomer()
+                    .selectCustomerByPhone(customer1.getPhoneNumber());
+            estimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
+            estimatePage = estimatePage.<SubmittedEstimateModal>clickCreateButton()
+                    .closeWindow();
+        } else {
+            estimatePage = new EstimatePage();
+        }
+
+        // Step 1
+        step("Нажмите на кнопку Отправить на email в правом верхнем углу");
+        SendEstimateToEmailModal sendEstimateToEmailModal = estimatePage.clickSendByEmail()
+                .verifyRequiredElements()
+                .shouldEmailFieldIs(1, customer1.getEmail());
+
+        // Step 2
+        step("Нажмите на Добавить еще email");
+        String secondEmail = RandomUtil.randomEmail();
+        sendEstimateToEmailModal.clickAddOneMoreEmailButton();
+        sendEstimateToEmailModal.enterEmail(2, secondEmail);
+
+        // Step 3
+        step("Нажмите на Отправить");
+        sendEstimateToEmailModal.clickSendButton()
+                .shouldSentToEmail(customer1.getEmail(), secondEmail);
     }
 
 }

@@ -17,4 +17,8 @@ public class RandomUtil {
         return "+7" + RandomStringUtils.randomNumeric(10);
     }
 
+    public static String randomEmail() {
+        return RandomStringUtils.randomAlphabetic(6) + "@automail.com";
+    }
+
 }

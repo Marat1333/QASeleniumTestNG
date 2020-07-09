@@ -7,6 +7,7 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magportal.ui.models.salesdoc.OrderWebData;
 import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
+import com.leroy.magportal.ui.pages.cart_estimate.modal.SendEstimateToEmailModal;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SubmittedEstimateModal;
 import com.leroy.magportal.ui.pages.cart_estimate.widget.OrderPuzWidget;
 import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
@@ -45,6 +46,10 @@ public class EstimatePage extends CartEstimatePage {
     @WebFindBy(xpath = "//div[contains(@class, 'Estimate-EstimatesView__header-info__row')][2]//div[2]/span",
             metaName = "Создатель документа")
     Element estimateAuthor;
+
+    @WebFindBy(xpath = "//div[contains(@class, 'EstimatesView__header-buttons')]//div[@class = 'lmui-popover'][1]//button",
+            metaName = "Кнопка корзина (удалить)")
+    Button sendEmailBtn;
 
     @WebFindBy(xpath = "//div[contains(@class, 'EstimatesView__header-buttons')]//div[@class = 'lmui-popover'][last()]//button",
             metaName = "Кнопка корзина (удалить)")
@@ -142,6 +147,12 @@ public class EstimatePage extends CartEstimatePage {
         trashBtn.waitForInvisibility();
         waitForSpinnerDisappear();
         return this;
+    }
+
+    @Step("Нажать 'Отправить на почту'")
+    public SendEstimateToEmailModal clickSendByEmail() {
+        sendEmailBtn.click();
+        return new SendEstimateToEmailModal();
     }
 
     @Step("Преобразовать в корзину")
