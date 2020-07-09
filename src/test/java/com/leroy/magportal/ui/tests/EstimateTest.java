@@ -770,4 +770,45 @@ public class EstimateTest extends BasePAOTest {
         estimatePage.shouldSelectedCustomerIs(customerData);
     }
 
+    @Test(description = "C3302206 Validate email format", groups = NEED_PRODUCTS_GROUP)
+    public void testValidateEmailFormat() throws Exception {
+        // Test Data
+        ProductItemData testProduct1 = productList.get(0);
+        SimpleCustomerData customer1 = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+        step("Выполнение предусловий");
+        EstimatePage estimatePage;
+        if (isStartFromScratch()) {
+            estimatePage = loginAndGoTo(EstimatePage.class)
+                    .clickCreateEstimateButton();
+            estimatePage.clickAddCustomer()
+                    .selectCustomerByPhone(customer1.getPhoneNumber());
+            estimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
+        } else {
+            estimatePage = new EstimatePage();
+        }
+
+        // Step 1
+        step("Нажмите на кнопку 'Создать'");
+        SubmittedEstimateModal submittedEstimateModal = estimatePage.clickCreateButton();
+        submittedEstimateModal.verifyRequiredElements();
+
+        // Step 2
+        step("Нажмите на кнопку 'Отправить на email'");
+        SendEstimateToEmailModal sendEstimateToEmailModal = submittedEstimateModal.clickSendByEmail()
+                .verifyRequiredElements()
+                .shouldEmailFieldIs(1, customer1.getEmail());
+
+        // Step 3
+        step("Введите невалидный email (например r@r) и нажмите на кнопку 'Отправить'");
+        sendEstimateToEmailModal.enterEmail(1, "r@r");
+        sendEstimateToEmailModal.shouldErrorTooltipIs("Введи email в формате username@example.ru");
+
+        // Step 4
+        step("Введите валидный email (например r@r.ru) и нажмите на кнопку 'Отправить'");
+        String email = "r@r.ru";
+        sendEstimateToEmailModal.enterEmail(1, email)
+                .clickSendButton()
+                .shouldSentToEmail(email);
+    }
+
 }

@@ -3,6 +3,7 @@ package com.leroy.magportal.ui.pages.cart_estimate.modal;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
+import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.TextArea;
 import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
 import io.qameta.allure.Step;
@@ -24,6 +25,10 @@ public class SendEstimateToEmailModal extends MagPortalBasePage {
     @WebFindBy(xpath = MODAL_WINDOW_XPATH + "//input[@id='emails[2]']", metaName = "Поле 'email' 3")
     EditBox email3Fld;
 
+    @WebFindBy(xpath = MODAL_WINDOW_XPATH + "//div[contains(@class, 'Bordered__tooltipContainer')]//span",
+            metaName = "Подсказки ошибки рядом с полем email")
+    Element errorTooltip;
+
     @WebFindBy(xpath = MODAL_WINDOW_XPATH + "//button[descendant::span[contains(text(), 'Добавить еще')]]",
             metaName = "Кнопка 'Добавить еще email'")
     Button addOneMoreEmailBtn;
@@ -38,7 +43,7 @@ public class SendEstimateToEmailModal extends MagPortalBasePage {
     // Actions
 
     @Step("Заполнить поле email #{index}")
-    public void enterEmail(int index, String value) {
+    public SendEstimateToEmailModal enterEmail(int index, String value) {
         switch (index) {
             case 1:
                 email1Fld.clearFillAndSubmit(value);
@@ -50,6 +55,7 @@ public class SendEstimateToEmailModal extends MagPortalBasePage {
                 email3Fld.clearFillAndSubmit(value);
                 break;
         }
+        return this;
     }
 
     @Step("Заполнить поле комментарий")
@@ -87,6 +93,13 @@ public class SendEstimateToEmailModal extends MagPortalBasePage {
                 throw new IllegalArgumentException("Всего может быть только 3 поля email");
         }
         anAssert.isEquals(actualEmail, expectedEmail, "Ожидался другой email #" + index);
+        return this;
+    }
+
+    @Step("Проверить, что подсказка-ошибка отображается под полем email")
+    public SendEstimateToEmailModal shouldErrorTooltipIs(String text) {
+        anAssert.isElementVisible(errorTooltip);
+        anAssert.isEquals(errorTooltip.getText(), text, "Ожидался другой текст ошибки");
         return this;
     }
 
