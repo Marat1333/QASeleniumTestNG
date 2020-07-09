@@ -69,9 +69,8 @@ public class SendEstimateToEmailModal extends MagPortalBasePage {
     }
 
     @Step("Нажать кнопку 'Отправить'")
-    public SubmittedSendEstimateModal clickSendButton() {
+    public void clickSendButton() {
         sendBtn.click();
-        return new SubmittedSendEstimateModal();
     }
 
     // Verifications

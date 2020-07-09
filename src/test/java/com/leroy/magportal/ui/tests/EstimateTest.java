@@ -15,6 +15,7 @@ import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
 import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SendEstimateToEmailModal;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SubmittedEstimateModal;
+import com.leroy.magportal.ui.pages.cart_estimate.modal.SubmittedSendEstimateModal;
 import com.leroy.magportal.ui.pages.customers.CreateCustomerForm;
 import com.leroy.utils.RandomUtil;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -28,6 +29,8 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 public class EstimateTest extends BasePAOTest {
+
+    private String VALIDATION_EMAIL_ERROR_TEXT = "Введи email в формате username@example.ru";
 
     @Test(description = "C3302188 Create estimate", groups = NEED_PRODUCTS_GROUP)
     public void testCreateEstimate() throws Exception {
@@ -692,8 +695,8 @@ public class EstimateTest extends BasePAOTest {
 
         // Step 3
         step("Нажмите на Отправить");
-        sendEstimateToEmailModal.clickSendButton()
-                .shouldSentToEmail(customer1.getEmail());
+        sendEstimateToEmailModal.clickSendButton();
+        new SubmittedSendEstimateModal().shouldSentToEmail(customer1.getEmail());
     }
 
     @Test(description = "C3302201 Send email to several email addresses", groups = NEED_PRODUCTS_GROUP)
@@ -729,8 +732,8 @@ public class EstimateTest extends BasePAOTest {
 
         // Step 3
         step("Нажмите на Отправить");
-        sendEstimateToEmailModal.clickSendButton()
-                .shouldSentToEmail(customer1.getEmail(), secondEmail);
+        sendEstimateToEmailModal.clickSendButton();
+        new SubmittedSendEstimateModal().shouldSentToEmail(customer1.getEmail(), secondEmail);
     }
 
     @Test(description = "C3302202 Change email (exist in client profile)", groups = NEED_ACCESS_TOKEN_GROUP)
@@ -801,14 +804,50 @@ public class EstimateTest extends BasePAOTest {
         // Step 3
         step("Введите невалидный email (например r@r) и нажмите на кнопку 'Отправить'");
         sendEstimateToEmailModal.enterEmail(1, "r@r");
-        sendEstimateToEmailModal.shouldErrorTooltipIs("Введи email в формате username@example.ru");
+        sendEstimateToEmailModal.shouldErrorTooltipIs(VALIDATION_EMAIL_ERROR_TEXT);
 
         // Step 4
         step("Введите валидный email (например r@r.ru) и нажмите на кнопку 'Отправить'");
         String email = "r@r.ru";
-        sendEstimateToEmailModal.enterEmail(1, email)
-                .clickSendButton()
-                .shouldSentToEmail(email);
+        sendEstimateToEmailModal.enterEmail(1, email);
+        sendEstimateToEmailModal.clickSendButton();
+        SubmittedSendEstimateModal submittedSendEstimateModal = new SubmittedSendEstimateModal();
+        submittedSendEstimateModal.shouldSentToEmail(email);
+    }
+
+    @Test(description = "C3302207 Validation: Send email without email address", groups = NEED_PRODUCTS_GROUP)
+    public void testValidationSendEmailWithEmptyEmail() throws Exception {
+        // Test Data
+        ProductItemData testProduct1 = productList.get(0);
+        SimpleCustomerData customer1 = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+        step("Выполнение предусловий");
+        EstimatePage estimatePage;
+        if (isStartFromScratch()) {
+            estimatePage = loginAndGoTo(EstimatePage.class)
+                    .clickCreateEstimateButton();
+            estimatePage.clickAddCustomer()
+                    .selectCustomerByPhone(customer1.getPhoneNumber());
+            estimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
+        } else {
+            estimatePage = new EstimatePage();
+        }
+
+        // Step 1
+        step("Нажмите на кнопку 'Создать'");
+        SubmittedEstimateModal submittedEstimateModal = estimatePage.clickCreateButton();
+        submittedEstimateModal.verifyRequiredElements();
+
+        // Step 2
+        step("Нажмите на кнопку 'Отправить на email'");
+        SendEstimateToEmailModal sendEstimateToEmailModal = submittedEstimateModal.clickSendByEmail()
+                .verifyRequiredElements()
+                .shouldEmailFieldIs(1, customer1.getEmail());
+
+        // Step 3
+        step("Оставьте поле Email клиента пустым и нажмите на кнопку 'Отправить'");
+        sendEstimateToEmailModal.enterEmail(1, "");
+        sendEstimateToEmailModal.clickSendButton();
+        sendEstimateToEmailModal.shouldErrorTooltipIs(VALIDATION_EMAIL_ERROR_TEXT);
     }
 
 }
