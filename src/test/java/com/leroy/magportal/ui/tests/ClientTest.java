@@ -28,19 +28,19 @@ public class ClientTest extends WebBaseSteps {
 
         // Step #3
         step("Click on the button 'Создать'");
-        createCustomerForm.clickCreateButton();
+        createCustomerForm.clickConfirmButton();
         createCustomerForm.shouldAllRequiredFieldsHighlightedInRed();
 
         // Step #4
         step("Enter to field 'Имя' Latin characters and remove focus from the field");
         createCustomerForm.enterTextInFirstNameInputField("SomeText")
-                .clickCreateButton();
+                .clickConfirmButton();
         createCustomerForm.shouldErrorTooltipUnderFirstNameFldHasValidText();
 
         // Step #5
         step("Enter to field 'Телефон' 5 characters and remove focus from the field");
         createCustomerForm.enterTextInPhoneInputField(RandomStringUtils.randomNumeric(5))
-                .clickCreateButton();
+                .clickConfirmButton();
         createCustomerForm.shouldErrorTooltipUnderPhoneFldHasValidText();
 
         // Step #6
@@ -73,7 +73,7 @@ public class ClientTest extends WebBaseSteps {
 
         // Step #11
         step("Click on the button 'Создать'");
-        createCustomerForm.clickCreateButton();
+        createCustomerForm.clickConfirmButton();
         CustomerPersonalInfoPage personalInfoPage = new CustomerPersonalInfoPage()
                 .shouldCustomerDataOnPageIs(customerData);
 
@@ -137,7 +137,7 @@ public class ClientTest extends WebBaseSteps {
 
         // Step #8
         step("Click on the button \"Создать\"");
-        createCustomerForm.clickCreateButton();
+        createCustomerForm.clickConfirmButton();
         CustomerPersonalInfoPage personalInfoPage = new CustomerPersonalInfoPage()
                 .verifyRequiredElements()
                 .shouldCustomerDataOnPageIs(data);

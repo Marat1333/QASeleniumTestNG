@@ -484,7 +484,7 @@ public class EstimateTest extends BasePAOTest {
 
         // Step 9
         step("Нажмите на Создать");
-        createCustomerForm.clickCreateButton();
+        createCustomerForm.clickConfirmButton();
         estimatePage.shouldSelectedCustomerIs(new SimpleCustomerData().toBuilder()
                 .name(StringUtils.capitalize(customerWebData.getFirstName()) + " " +
                         StringUtils.capitalize(customerWebData.getLastName()))
@@ -524,7 +524,7 @@ public class EstimateTest extends BasePAOTest {
 
         // Step 5
         step("Нажмите на кнопку 'Сохранить'");
-        createCustomerForm.clickCreateButton();
+        createCustomerForm.clickConfirmButton();
         customerData.setPhoneNumber(secondPhone);
         estimatePage.shouldSelectedCustomerIs(customerData);
     }
@@ -731,6 +731,43 @@ public class EstimateTest extends BasePAOTest {
         step("Нажмите на Отправить");
         sendEstimateToEmailModal.clickSendButton()
                 .shouldSentToEmail(customer1.getEmail(), secondEmail);
+    }
+
+    @Test(description = "C3302202 Change email (exist in client profile)", groups = NEED_ACCESS_TOKEN_GROUP)
+    public void testChangeEmailInClientProfile() throws Exception {
+        // Test Data
+        SimpleCustomerData customerData = createCustomerByApi();
+        step("Выполнение предусловий");
+        EstimatePage estimatePage;
+        if (isStartFromScratch()) {
+            estimatePage = loginAndGoTo(EstimatePage.class)
+                    .clickCreateEstimateButton();
+            estimatePage.clickAddCustomer()
+                    .selectCustomerByPhone(customerData.getPhoneNumber());
+        } else {
+            estimatePage = new EstimatePage();
+        }
+
+        // Step 1, 2
+        step("Нажмите на '...' справа в карточке клиента и Выберите параметр Редактировать данные клиента");
+        CreateCustomerForm createCustomerForm = estimatePage.clickOptionEditCustomer();
+
+        // Step 3
+        step("Нажмите на Добавить еще email");
+        createCustomerForm.clickAddEmailButton();
+
+        // Step 4
+        step("Введите email, выберите параметр Рабочий и проставьте чекбокс Основной.");
+        String newEmail = RandomUtil.randomEmail();
+        createCustomerForm.enterEmail(2, newEmail);
+        createCustomerForm.clickTypeEmail(2, CreateCustomerForm.CommunicationType.WORK);
+        createCustomerForm.makeEmailAsMain(2);
+
+        // Step 5
+        step("Нажмите на кнопку 'Сохранить'");
+        createCustomerForm.clickConfirmButton();
+        customerData.setEmail(newEmail);
+        estimatePage.shouldSelectedCustomerIs(customerData);
     }
 
 }
