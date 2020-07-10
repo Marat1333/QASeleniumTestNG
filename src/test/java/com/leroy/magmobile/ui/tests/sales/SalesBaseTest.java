@@ -291,6 +291,9 @@ public class SalesBaseTest extends AppBaseSteps {
         // Установка ПИН кода
         String validPinCode = apiClientProvider.getValidPinCode();
         Response<JsonNode> response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
+        if (response.getStatusCode() == StatusCodes.ST_409_CONFLICT) {
+            response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
+        }
         if (response.getStatusCode() == StatusCodes.ST_400_BAD_REQ) {
             validPinCode = apiClientProvider.getValidPinCode();
             response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
