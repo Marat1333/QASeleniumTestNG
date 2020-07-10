@@ -101,9 +101,9 @@ public class OrderAppData {
                                 " - неверный вес заказа. Actual: " + totalWeight +
                                 "; Expected: " + expectedOrderCardData.getTotalWeight());
             } else {
-                softAssert.isEquals(BigDecimal.valueOf(totalWeight).setScale(1, RoundingMode.HALF_UP),
-                        BigDecimal.valueOf(expectedOrderCardData.getTotalWeight()).setScale(1, RoundingMode.HALF_UP),
-                        "Заказ " + (index + 1) + " - неверный вес заказа");
+                softAssert.isTrue(Math.abs(totalWeight - expectedOrderCardData.getTotalWeight()) < 1.01,
+                        "Заказ " + (index + 1) + " - неверный вес заказа. Актуальное значение: " + totalWeight +
+                                " Ожидалось: " + expectedOrderCardData.getTotalWeight());
             }
         }
         softAssert.isEquals(totalPrice, expectedOrderCardData.getTotalPrice(),
