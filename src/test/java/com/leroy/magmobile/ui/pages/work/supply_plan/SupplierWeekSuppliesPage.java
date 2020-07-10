@@ -4,9 +4,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.api.data.supply_plan.Details.ShipmentData;
-import com.leroy.magmobile.api.data.supply_plan.Details.ShipmentDataList;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.more.DepartmentListPage;
 import com.leroy.magmobile.ui.pages.work.supply_plan.data.AppointmentCardData;
@@ -18,20 +16,21 @@ import io.qameta.allure.Step;
 
 import java.util.List;
 
-public class OneDateSuppliesPage extends CommonMagMobilePage {
-    @AppFindBy(accessibilityId = "BackButton")
+public class SupplierWeekSuppliesPage extends CommonMagMobilePage {
+    @AppFindBy(xpath = "//*[@content-desc='SuppliesPerWeek']/*[@content-desc='SuppliesPerWeek']//android.widget.TextView[1]")
+    Element supplierName;
+
+    @AppFindBy(xpath = "//*[@content-desc='ScreenContent']/*[2]//android.widget.TextView")
+    Button deptBtn;
+
+    @AppFindBy(xpath = "//*[contains(@text,'НАЙДЕНО ')]")
+    Element suppliesCount;
+
+    @AppFindBy(xpath = "//*[contains(@text,'Поставок не найдено')]")
+    Element notFoundMsg;
+
+    @AppFindBy(accessibilityId = "Button")
     Button backBtn;
-
-    @AppFindBy(text = "Поиск поставок")
-    Button navigateToSearchSupplierButton;
-
-    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ScreenContent']/android.view.ViewGroup[2]" +
-            "/android.view.ViewGroup[1]//android.widget.TextView")
-    Element selectDepartmentBtn;
-
-    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ScreenContent']/android.view.ViewGroup[2]" +
-            "/android.view.ViewGroup[2]//android.widget.TextView")
-    Element selectPeriodBtn;
 
     AndroidScrollView<String> mainScrollView = new AndroidScrollView<>(driver, AndroidScrollView.TYPICAL_LOCATOR);
 
@@ -47,33 +46,27 @@ public class OneDateSuppliesPage extends CommonMagMobilePage {
             "contains(@text,'ср') or contains(@text,'чт') or contains(@text,'пт') or contains(@text,'сб') or contains(@text,'вс')])]",
             ShipmentWidget.class);
 
-    @AppFindBy(xpath = "//android.widget.TextView[@text='Сегодня' or @text='Вчера' or @text='Завтра' or contains(@text,'пн') " +
-            "or contains(@text,'вт') or contains(@text,'ср') or contains(@text,'чт') or contains(@text,'пт') " +
-            "or contains(@text,'сб') or contains(@text,'вс')]")
-    ElementList<Element> weekOptions;
-
-    @Override
-    public void waitForPageIsLoaded() {
-        waitUntilProgressBarAppearsAndDisappear();
-        selectDepartmentBtn.waitForVisibility();
-        selectPeriodBtn.waitForVisibility();
-    }
-
     @Step("Открыть модальное окно выбора отдела")
     public DepartmentListPage openDepartmentSelectorPage() {
-        selectDepartmentBtn.click();
+        deptBtn.click();
         return new DepartmentListPage();
     }
 
-    @Step("Открыть модальное окно выбора периода")
-    public PeriodSelectorPage openPeriodSelectorPage() {
-        selectPeriodBtn.click();
-        return new PeriodSelectorPage();
+    @Step("Перейти назад")
+    public SuppliesListPage goBack(){
+        backBtn.click();
+        return new SuppliesListPage();
+    }
+
+    @Override
+    protected void waitForPageIsLoaded() {
+        supplierName.waitForVisibility();
+        deptBtn.waitForVisibility();
     }
 
     @Step("Проверить, что данные корректно отображены")
-    public OneDateSuppliesPage shouldDataIsCorrect(ShipmentDataList data) throws Exception {
-        List<ShipmentData> dataList = data.getItems();
+    public SupplierWeekSuppliesPage shouldDataIsCorrect(List<ShipmentData> dataList) {
+        softAssert.isElementTextContains(suppliesCount, String.valueOf(dataList.size()));
         List<AppointmentCardData> appointmentUiData = singleDateReserveWidgetList.getFullDataList();
         mainScrollView.scrollToBeginning();
         List<ShipmentCardData> shipmentsUiData = singleDateShipmentWidgetList.getFullDataList();
@@ -111,33 +104,15 @@ public class OneDateSuppliesPage extends CommonMagMobilePage {
         return this;
     }
 
-    @Step("Проверить, что данные корректно отображены")
-    public OneDateSuppliesPage shouldWeekDataIsCorrect(ShipmentDataList... data) throws Exception {
-        if (data.length != 7) {
-            throw new IllegalArgumentException("Need 7 days data to verify");
-        }
-        for (int i = 0; i < data.length; i++) {
-            List<ShipmentData> dataList = data[i].getItems();
-            boolean needToVerify = false;
-            for (ShipmentData tmp : dataList) {
-                if (tmp.getRowType().equals("FR_APPOINTMENT")) {
-                    needToVerify = true;
-                }
-            }
-            Element dayOfWeekOption = weekOptions.get(i);
-            if (!needToVerify) {
-                softAssert.isTrue(dayOfWeekOption.findChildElement("./following-sibling::*[contains(@text,'поставок не найдено')]").isVisible(), "поставок не должно быть");
-            } else {
-                dayOfWeekOption.waitForVisibility();
-                dayOfWeekOption.click();
-                waitUntilProgressBarAppearsAndDisappear();
-                shouldDataIsCorrect(data[i]);
-                mainScrollView.scrollUpToText(dayOfWeekOption.getText());
-                dayOfWeekOption.waitForVisibility();
-                dayOfWeekOption.click();
-            }
-        }
+    @Step("Проверить, что отображается сообщение: \"Ничего не найдено\"")
+    public SupplierWeekSuppliesPage shouldNotFoundMsgIsDisplayed(){
+        anAssert.isElementVisible(notFoundMsg);
         return this;
     }
 
+    @Step("Проверить, что имя поставщика отображено")
+    public SupplierWeekSuppliesPage shouldSupplierNameIsCorrect(String supplierName){
+        anAssert.isElementTextEqual(this.supplierName, supplierName);
+        return this;
+    }
 }

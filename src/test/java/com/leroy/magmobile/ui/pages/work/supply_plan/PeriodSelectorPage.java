@@ -25,7 +25,7 @@ public class PeriodSelectorPage extends CommonMagMobilePage {
     @AppFindBy(xpath = "//android.widget.TextView[contains(@text,'Неделя')]/following-sibling::android.view.ViewGroup")
     RadioButton weekOption;
 
-    public OneDateSuppliesPage selectPeriodOption(PeriodOption option) {
+    public SuppliesListPage selectPeriodOption(PeriodOption option) {
         switch (option) {
             case YESTERDAY:
                 yesterdayOption.click();
@@ -37,6 +37,6 @@ public class PeriodSelectorPage extends CommonMagMobilePage {
                 weekOption.click();
                 break;
         }
-        return new OneDateSuppliesPage();
+        return new SuppliesListPage();
     }
 }
