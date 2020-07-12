@@ -23,6 +23,13 @@ public class SubmittedSendEstimateModal extends MagPortalBasePage {
             metaName = "Кнопка 'Понятно'")
     Button confirmBtn;
 
+    // Actions
+
+    @Step("Нажать кнопку понятно")
+    public void clickConfirmButton() {
+        confirmBtn.click();
+    }
+
     // Verifications
 
     @Step("Проверить, что модальное окно 'Экран успеха отправления сметы на email' отображается корректно")

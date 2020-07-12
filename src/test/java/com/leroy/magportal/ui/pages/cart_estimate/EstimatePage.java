@@ -77,10 +77,9 @@ public class EstimatePage extends CartEstimatePage {
 
     @Override
     public void waitForPageIsLoaded() {
-        super.waitForPageIsLoaded();
         anAssert.isElementVisible(headerLbl, timeout);
         String expectedHeader = "Сметы";
-        anAssert.isTrue(headerLbl.waitUntilTextIsEqualTo(expectedHeader),
+        anAssert.isTrue(headerLbl.waitUntilTextContains(expectedHeader),
                 "Страница 'Сметы' не загрузилась'");
         waitForSpinnerDisappear();
     }

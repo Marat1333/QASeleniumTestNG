@@ -696,7 +696,9 @@ public class EstimateTest extends BasePAOTest {
         // Step 3
         step("Нажмите на Отправить");
         sendEstimateToEmailModal.clickSendButton();
-        new SubmittedSendEstimateModal().shouldSentToEmail(customer1.getEmail());
+        new SubmittedSendEstimateModal().shouldSentToEmail(customer1.getEmail())
+                .clickConfirmButton();
+        submittedEstimateModal.closeWindow();
     }
 
     @Test(description = "C3302201 Send email to several email addresses", groups = NEED_PRODUCTS_GROUP)
@@ -733,7 +735,8 @@ public class EstimateTest extends BasePAOTest {
         // Step 3
         step("Нажмите на Отправить");
         sendEstimateToEmailModal.clickSendButton();
-        new SubmittedSendEstimateModal().shouldSentToEmail(customer1.getEmail(), secondEmail);
+        new SubmittedSendEstimateModal().shouldSentToEmail(customer1.getEmail(), secondEmail)
+                .clickConfirmButton();
     }
 
     @Test(description = "C3302202 Change email (exist in client profile)", groups = NEED_ACCESS_TOKEN_GROUP)
@@ -745,11 +748,12 @@ public class EstimateTest extends BasePAOTest {
         if (isStartFromScratch()) {
             estimatePage = loginAndGoTo(EstimatePage.class)
                     .clickCreateEstimateButton();
-            estimatePage.clickAddCustomer()
-                    .selectCustomerByPhone(customerData.getPhoneNumber());
+            estimatePage.clickAddCustomer();
         } else {
             estimatePage = new EstimatePage();
+            estimatePage.clickOptionSelectAnotherCustomer();
         }
+        estimatePage.selectCustomerByPhone(customerData.getPhoneNumber());
 
         // Step 1, 2
         step("Нажмите на '...' справа в карточке клиента и Выберите параметр Редактировать данные клиента");
@@ -773,8 +777,8 @@ public class EstimateTest extends BasePAOTest {
         estimatePage.shouldSelectedCustomerIs(customerData);
     }
 
-    @Test(description = "C3302206 Validate email format", groups = NEED_PRODUCTS_GROUP)
-    public void testValidateEmailFormat() throws Exception {
+    @Test(description = "C3302204 Send email from final screen", groups = NEED_PRODUCTS_GROUP)
+    public void testSendEmailFromFinalScreen() throws Exception {
         // Test Data
         ProductItemData testProduct1 = productList.get(0);
         SimpleCustomerData customer1 = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
@@ -786,20 +790,63 @@ public class EstimateTest extends BasePAOTest {
             estimatePage.clickAddCustomer()
                     .selectCustomerByPhone(customer1.getPhoneNumber());
             estimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
+
+            // Step 1
+            step("Нажмите на кнопку 'Создать'");
+            estimatePage = estimatePage.<SubmittedEstimateModal>clickCreateButton()
+                    .closeWindow();
         } else {
             estimatePage = new EstimatePage();
         }
 
-        // Step 1
-        step("Нажмите на кнопку 'Создать'");
-        SubmittedEstimateModal submittedEstimateModal = estimatePage.clickCreateButton();
-        submittedEstimateModal.verifyRequiredElements();
+        SalesDocWebData salesDocWebData = estimatePage.getSalesDocData();
 
         // Step 2
         step("Нажмите на кнопку 'Отправить на email'");
-        SendEstimateToEmailModal sendEstimateToEmailModal = submittedEstimateModal.clickSendByEmail()
+        SendEstimateToEmailModal sendEstimateToEmailModal = estimatePage.clickSendByEmail()
                 .verifyRequiredElements()
                 .shouldEmailFieldIs(1, customer1.getEmail());
+
+        // Step 3
+        step("Введите email и Нажмите на Отправить");
+        String newEmail = RandomUtil.randomEmail();
+        sendEstimateToEmailModal.enterEmail(1, newEmail);
+        sendEstimateToEmailModal.clickSendButton();
+        SubmittedSendEstimateModal submittedSendEstimateModal = new SubmittedSendEstimateModal()
+                .shouldSentToEmail(newEmail);
+
+        // Step 4
+        step("Нажмите на Понятно");
+        submittedSendEstimateModal.clickConfirmButton();
+        new EstimatePage().shouldEstimateHasData(salesDocWebData);
+    }
+
+    @Test(description = "C3302206 Validate email format", groups = NEED_PRODUCTS_GROUP)
+    public void testValidateEmailFormat() throws Exception {
+        // Test Data
+        ProductItemData testProduct1 = productList.get(0);
+        SimpleCustomerData customer1 = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+        step("Выполнение предусловий");
+        SendEstimateToEmailModal sendEstimateToEmailModal;
+        if (isStartFromScratch()) {
+            EstimatePage estimatePage = loginAndGoTo(EstimatePage.class)
+                    .clickCreateEstimateButton();
+            estimatePage.clickAddCustomer()
+                    .selectCustomerByPhone(customer1.getPhoneNumber());
+            estimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
+
+            // Step 1
+            step("Нажмите на кнопку 'Создать'");
+            SubmittedEstimateModal submittedEstimateModal = estimatePage.clickCreateButton();
+            submittedEstimateModal.verifyRequiredElements();
+
+            // Step 2
+            step("Нажмите на кнопку 'Отправить на email'");
+            sendEstimateToEmailModal = submittedEstimateModal.clickSendByEmail()
+                    .verifyRequiredElements();
+        } else {
+            sendEstimateToEmailModal = new SendEstimateToEmailModal();
+        }
 
         // Step 3
         step("Введите невалидный email (например r@r) и нажмите на кнопку 'Отправить'");
@@ -827,10 +874,11 @@ public class EstimateTest extends BasePAOTest {
                     .clickCreateEstimateButton();
             estimatePage.clickAddCustomer()
                     .selectCustomerByPhone(customer1.getPhoneNumber());
-            estimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
         } else {
             estimatePage = new EstimatePage();
         }
+
+        estimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
 
         // Step 1
         step("Нажмите на кнопку 'Создать'");
@@ -840,8 +888,7 @@ public class EstimateTest extends BasePAOTest {
         // Step 2
         step("Нажмите на кнопку 'Отправить на email'");
         SendEstimateToEmailModal sendEstimateToEmailModal = submittedEstimateModal.clickSendByEmail()
-                .verifyRequiredElements()
-                .shouldEmailFieldIs(1, customer1.getEmail());
+                .verifyRequiredElements();
 
         // Step 3
         step("Оставьте поле Email клиента пустым и нажмите на кнопку 'Отправить'");
