@@ -32,6 +32,13 @@ public class SubmittedEstimateModal extends MagPortalBasePage {
     }
 
     // Action
+
+    @Step("Нажать 'Отправить на email'")
+    public SendEstimateToEmailModal clickSendByEmail() {
+        sendEmailBtn.click();
+        return new SendEstimateToEmailModal();
+    }
+
     @Step("Закрыть окно с информацией о том, что смета создана")
     public EstimatePage closeWindow() {
         E(MODAL_BACKDROP_XPATH).clickJS();
