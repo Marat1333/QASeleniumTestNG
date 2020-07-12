@@ -80,4 +80,28 @@
         </classes>
     </test>
 
+    <test name="Send estimate to email">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.EstimateTest">
+                <methods>
+                    <include name="testAutoFillingEmailFromClientProfile"/>
+                    <include name="testSendEmailToSeveralEmailAddresses"/>
+                    <include name="testSendEmailFromFinalScreen"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="Send estimate to email and validation">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.EstimateTest">
+                <methods>
+                    <include name="testChangeEmailInClientProfile"/>
+                    <include name="testValidationSendEmailWithEmptyEmail"/>
+                    <include name="testValidateEmailFormat"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
 </suite>

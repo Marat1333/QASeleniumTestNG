@@ -598,20 +598,22 @@ public class Element extends BaseWidget {
         return waitUntilTextIsEqualTo(referenceText, short_timeout);
     }
 
-    public void waitUntilTextContains(String referenceText, int timeout) {
+    public boolean waitUntilTextContains(String referenceText, int timeout) {
         WebDriverWait wait = new WebDriverWait(this.driver, timeout);
         try {
             wait.until((ExpectedCondition<Boolean>) driverObject -> this.getText().toLowerCase()
                     .contains(referenceText.toLowerCase()));
+            return true;
         } catch (TimeoutException e) {
             Log.warn(String.format(
                     "Method: waitUntilTextContains() - the text doesn't contain a specified (tried for %d second(s))",
                     timeout));
         }
+        return false;
     }
 
-    public void waitUntilTextContains(String referenceText) {
-        waitUntilTextContains(referenceText, short_timeout);
+    public boolean waitUntilTextContains(String referenceText) {
+        return waitUntilTextContains(referenceText, short_timeout);
     }
 
     public void scrollTo(String block, String inline) {

@@ -280,7 +280,7 @@ public class CartTest extends BasePAOTest {
 
         // Step 5
         step("Нажмите на кнопку 'Сохранить'");
-        createCustomerForm.clickCreateButton();
+        createCustomerForm.clickConfirmButton();
         customerData.setPhoneNumber(secondPhone);
         cartPage.shouldSelectedCustomerIs(customerData);
     }

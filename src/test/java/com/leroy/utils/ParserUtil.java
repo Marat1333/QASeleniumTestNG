@@ -4,7 +4,11 @@ import com.leroy.core.configuration.Log;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ParserUtil {
 
@@ -115,6 +119,33 @@ public class ParserUtil {
         if (nameArr.length > 1)
             return nameArr[1].trim();
         return null;
+    }
+
+    /**
+     * Выделяет из текста только email
+     *
+     * @param text - текст, содержащий в себе email
+     * @return - только слово, содержащее email (первое попавшееся)
+     */
+    public static String extractEmailFromString(String text) {
+        List<String> emails = extractEmailsFromString(text);
+        return emails.size() > 0 ? emails.get(0) : null;
+    }
+
+    /**
+     * Выделяет из текста только email'ы
+     *
+     * @param text - текст, содержащий в себе email(ы)
+     * @return - список всех email в тексте
+     */
+    public static List<String> extractEmailsFromString(String text) {
+        Matcher m = Pattern.compile("\\S+@[^\\s\\.]+\\.\\w+").matcher(
+                text);
+        List<String> emails = new ArrayList<>();
+        while (m.find()) {
+            emails.add(m.group());
+        }
+        return emails;
     }
 
     public static String replaceSpecialSymbols(String source) {

@@ -22,6 +22,11 @@ public class SmsNotificationTest extends BaseProjectApiTest {
 
     private SmsNotificationData smsNotificationData;
 
+    @Override
+    protected boolean isNeedAccessToken() {
+        return true;
+    }
+
     @Test(description = "C3175887 SMS post")
     public void testCreateNotification() {
         // Get test data:

@@ -4,7 +4,7 @@ import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
 import org.openqa.selenium.WebDriver;
 
-public class TextArea extends Element {
+public class TextArea extends EditBox {
 
     // ------ CONSTRUCTORS ------ //
     public TextArea(WebDriver driver, CustomLocator locator) {

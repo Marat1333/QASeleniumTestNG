@@ -88,14 +88,22 @@ public class CreateCustomerForm extends MagPortalBasePage {
             metaName = "Кнопка 'Добавить еще телефон'")
     Element addPhoneMoreBtn;
 
-    @WebFindBy(xpath = "//input[@name='emails[0].value']")
-    Element emailFld;
+    @WebFindBy(xpath = "//input[contains(@name, 'email')]", clazz = EditBox.class)
+    ElementList<EditBox> emailFields;
 
-    @WebFindBy(xpath = "//button[contains(@id, 'emails[0]_personal')]")
-    Button emailPersonalOptionBtn;
+    @WebFindBy(xpath = "//button[contains(@id, 'emails') and contains(@id, '_personal')]", clazz = Button.class)
+    ElementList<Button> emailPersonalOptionButtons;
 
-    @WebFindBy(xpath = "//button[contains(@id, 'emails[0]_work')]")
-    Button emailWorkOptionBtn;
+    @WebFindBy(xpath = "//button[contains(@id, 'emails') and contains(@id, '_work')]", clazz = Button.class)
+    ElementList<Button> emailWorkOptionButtons;
+
+    @WebFindBy(xpath = "//div[contains(@class, 'row') and descendant::label[text()='Email']]//button[descendant::span[text()='Основной']]",
+            clazz = PuzCheckBox.class, metaName = "Чек боксы email'ов 'Основной'")
+    ElementList<PuzCheckBox> emailMainCheckBoxes;
+
+    @WebFindBy(xpath = "//button[descendant::span[text()='Добавить ещё email']]",
+            metaName = "Кнопка 'Добавить еще email'")
+    Element addMoreEmailBtn;
 
     @WebFindBy(text = "Адреса")
     Element addressLbl;
@@ -181,6 +189,20 @@ public class CreateCustomerForm extends MagPortalBasePage {
         return enterTextInPhoneInputField(1, text);
     }
 
+    @Step("Введите {text} в поле 'email' #{index}")
+    public CreateCustomerForm enterEmail(int index, String text) throws Exception {
+        index--;
+        EditBox emailFld = emailFields.get(index);
+        emailFld.clear();
+        emailFld.click();
+        emailFld.fill(text);
+        return this;
+    }
+
+    public CreateCustomerForm enterEmail(String text) throws Exception {
+        return enterEmail(1, text);
+    }
+
     @Step("Обозначить телефон #{index} как {type}")
     public CreateCustomerForm clickTypePhone(int index, CommunicationType type) throws Exception {
         index--;
@@ -195,8 +217,28 @@ public class CreateCustomerForm extends MagPortalBasePage {
     public CreateCustomerForm makePhoneAsMain(int index) throws Exception {
         index--;
         anAssert.isTrue(phoneMainCheckBoxes.getCount() > index,
-                "Чекбокс #" + (index + 1) + "отсутствует на странице");
+                "Чекбокс #" + (index + 1) + " отсутствует на странице");
         PuzCheckBox checkBox = phoneMainCheckBoxes.get(index);
+        checkBox.setValue(true);
+        return this;
+    }
+
+    @Step("Обозначить email #{index} как {type}")
+    public CreateCustomerForm clickTypeEmail(int index, CommunicationType type) throws Exception {
+        index--;
+        if (type.equals(CommunicationType.PERSONAL))
+            emailPersonalOptionButtons.get(index).click();
+        else
+            emailWorkOptionButtons.get(index).click();
+        return this;
+    }
+
+    @Step("Сделать email #{index} основным")
+    public CreateCustomerForm makeEmailAsMain(int index) throws Exception {
+        index--;
+        anAssert.isTrue(emailMainCheckBoxes.getCount() > index,
+                "Чекбокс #" + (index + 1) + " отсутствует на странице");
+        PuzCheckBox checkBox = emailMainCheckBoxes.get(index);
         checkBox.setValue(true);
         return this;
     }
@@ -208,8 +250,15 @@ public class CreateCustomerForm extends MagPortalBasePage {
         return this;
     }
 
-    @Step("Нажмите кнопку 'Создать'")
-    public void clickCreateButton() {
+    @Step("Нажмите 'Добавить еще email'")
+    public CreateCustomerForm clickAddEmailButton() {
+        addMoreEmailBtn.scrollTo();
+        addMoreEmailBtn.click();
+        return this;
+    }
+
+    @Step("Нажмите кнопку 'Создать/Сохранить'")
+    public void clickConfirmButton() {
         createBtn.click();
     }
 
@@ -256,10 +305,10 @@ public class CreateCustomerForm extends MagPortalBasePage {
             enterTextInPhoneInputField(customerData.getPhoneNumber());
         // Email
         if (customerData.isPersonalEmail()) {
-            emailPersonalOptionBtn.click();
+            emailPersonalOptionButtons.get(0).click();
         }
         if (customerData.isWorkEmail()) {
-            emailWorkOptionBtn.click();
+            emailWorkOptionButtons.get(0).click();
         }
         if (customerData.getLastName() != null) {
             clickShowAllFieldsButton();
@@ -285,13 +334,13 @@ public class CreateCustomerForm extends MagPortalBasePage {
         softAssert.isElementNotVisible(middleNameFld);
         softAssert.isElementNotVisible(lastNameFld);
         if (emailShouldBeVisible) {
-            softAssert.isElementVisible(emailFld);
-            softAssert.isElementVisible(emailPersonalOptionBtn);
-            softAssert.isElementVisible(emailWorkOptionBtn);
+            softAssert.isTrue(emailFields.get(0).isVisible(), "Поле email не отображается");
+            softAssert.isTrue(emailPersonalOptionButtons.get(0).isVisible(), "Кнопка 'Личный' email не видна");
+            softAssert.isTrue(emailWorkOptionButtons.get(0).isVisible(), "Кнопка 'Рабочий' email не видна");
         } else {
-            softAssert.isElementNotVisible(emailFld);
-            softAssert.isElementNotVisible(emailPersonalOptionBtn);
-            softAssert.isElementNotVisible(emailWorkOptionBtn);
+            softAssert.isFalse(emailFields.get(0).isVisible(), "Поле email отображается");
+            softAssert.isFalse(emailPersonalOptionButtons.get(0).isVisible(), "Кнопка 'Личный' email видна");
+            softAssert.isFalse(emailWorkOptionButtons.get(0).isVisible(), "Кнопка 'Рабочий' email видна");
         }
         softAssert.isElementNotVisible(addressLbl);
         softAssert.isElementNotVisible(addressFld);
@@ -315,12 +364,12 @@ public class CreateCustomerForm extends MagPortalBasePage {
         return verifyRequiredElements(false);
     }
 
-    public CreateCustomerForm verifyAllAdditionalFields() {
+    public CreateCustomerForm verifyAllAdditionalFields() throws Exception {
         softAssert.isElementVisible(middleNameFld);
         softAssert.isElementVisible(lastNameFld);
-        softAssert.isElementVisible(emailFld);
-        softAssert.isElementVisible(emailPersonalOptionBtn);
-        softAssert.isElementVisible(emailWorkOptionBtn);
+        softAssert.isTrue(emailFields.get(0).isVisible(), "Поле email не отображается");
+        softAssert.isTrue(emailPersonalOptionButtons.get(0).isVisible(), "Кнопка 'Личный' email не видна");
+        softAssert.isTrue(emailWorkOptionButtons.get(0).isVisible(), "Кнопка 'Рабочий' email не видна");
         softAssert.isElementVisible(addressLbl);
         softAssert.isElementVisible(addressFld);
         softAssert.isElementVisible(regionFld);
