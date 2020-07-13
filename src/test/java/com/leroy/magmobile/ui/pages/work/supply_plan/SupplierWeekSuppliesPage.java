@@ -7,6 +7,7 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.api.data.supply_plan.Details.ShipmentData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.more.DepartmentListPage;
+import com.leroy.magmobile.ui.pages.search.SuppliersSearchPage;
 import com.leroy.magmobile.ui.pages.work.supply_plan.data.AppointmentCardData;
 import com.leroy.magmobile.ui.pages.work.supply_plan.data.ShipmentCardData;
 import com.leroy.magmobile.ui.pages.work.supply_plan.data.SupplyNavigationObject;
@@ -25,7 +26,7 @@ public class SupplierWeekSuppliesPage extends CommonMagMobilePage {
     @AppFindBy(xpath = "//*[@content-desc='SuppliesPerWeek']/*[@content-desc='SuppliesPerWeek']//android.widget.TextView[1]")
     Element supplierName;
 
-    @AppFindBy(xpath = "//*[@content-desc='ScreenContent']/*[2]//android.widget.TextView")
+    @AppFindBy(xpath = "//*[@content-desc='ScreenContent']/*[1]//android.widget.TextView")
     Button deptBtn;
 
     @AppFindBy(xpath = "//*[contains(@text,'НАЙДЕН')]")
