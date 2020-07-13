@@ -23,6 +23,11 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class RupturesGetSessionProductTest extends BaseRuptureTest {
 
+    @Override
+    protected boolean isDeleteSessionAfterEveryMethod() {
+        return false;
+    }
+
     @BeforeClass
     public void setUp() {
         RupturesClient rupturesClient = rupturesClient();
