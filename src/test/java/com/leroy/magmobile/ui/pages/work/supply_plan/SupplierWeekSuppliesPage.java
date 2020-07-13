@@ -7,6 +7,7 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.api.data.supply_plan.Details.ShipmentData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.more.DepartmentListPage;
+import com.leroy.magmobile.ui.pages.search.SuppliersSearchPage;
 import com.leroy.magmobile.ui.pages.work.supply_plan.data.AppointmentCardData;
 import com.leroy.magmobile.ui.pages.work.supply_plan.data.ShipmentCardData;
 import com.leroy.magmobile.ui.pages.work.supply_plan.widgets.AppointmentWidget;
@@ -20,7 +21,7 @@ public class SupplierWeekSuppliesPage extends CommonMagMobilePage {
     @AppFindBy(xpath = "//*[@content-desc='SuppliesPerWeek']/*[@content-desc='SuppliesPerWeek']//android.widget.TextView[1]")
     Element supplierName;
 
-    @AppFindBy(xpath = "//*[@content-desc='ScreenContent']/*[2]//android.widget.TextView")
+    @AppFindBy(xpath = "//*[@content-desc='ScreenContent']/*[1]//android.widget.TextView")
     Button deptBtn;
 
     @AppFindBy(xpath = "//*[contains(@text,'НАЙДЕНО ')]")
@@ -31,6 +32,9 @@ public class SupplierWeekSuppliesPage extends CommonMagMobilePage {
 
     @AppFindBy(accessibilityId = "Button")
     Button backBtn;
+
+    @AppFindBy(xpath = "//*[@content-desc='SuppliesPerWeek']/*[@content-desc='SuppliesPerWeek']//android.view.ViewGroup[3]")
+    Button clearTitleBtn;
 
     AndroidScrollView<String> mainScrollView = new AndroidScrollView<>(driver, AndroidScrollView.TYPICAL_LOCATOR);
 
@@ -56,6 +60,12 @@ public class SupplierWeekSuppliesPage extends CommonMagMobilePage {
     public SuppliesListPage goBack(){
         backBtn.click();
         return new SuppliesListPage();
+    }
+
+    @Step("Очистить тайтл")
+    public SearchSupplierPage clearTitle(){
+        clearTitleBtn.click();
+        return new SearchSupplierPage();
     }
 
     @Override
@@ -112,7 +122,13 @@ public class SupplierWeekSuppliesPage extends CommonMagMobilePage {
 
     @Step("Проверить, что имя поставщика отображено")
     public SupplierWeekSuppliesPage shouldSupplierNameIsCorrect(String supplierName){
-        anAssert.isElementTextEqual(this.supplierName, supplierName);
+        anAssert.isElementTextEqual(this.supplierName, supplierName.replaceAll("\"",""));
+        return this;
+    }
+
+    public SupplierWeekSuppliesPage verifyRequiredElements(){
+        softAssert.areElementsVisible(supplierName, clearTitleBtn);
+        softAssert.verifyAll();
         return this;
     }
 }

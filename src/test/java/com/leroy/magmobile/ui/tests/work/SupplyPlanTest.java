@@ -6,9 +6,11 @@ import com.leroy.core.api.Module;
 import com.leroy.magmobile.api.clients.SupplyPlanClient;
 import com.leroy.magmobile.api.data.supply_plan.Details.ShipmentData;
 import com.leroy.magmobile.api.data.supply_plan.Details.ShipmentDataList;
+import com.leroy.magmobile.api.data.supply_plan.Total.TotalPalletData;
 import com.leroy.magmobile.api.data.supply_plan.suppliers.SupplierData;
 import com.leroy.magmobile.api.requests.supply_plan.GetSupplyPlanDetails;
 import com.leroy.magmobile.api.requests.supply_plan.GetSupplyPlanSuppliers;
+import com.leroy.magmobile.api.requests.supply_plan.GetSupplyPlanTotal;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.more.DepartmentListPage;
 import com.leroy.magmobile.ui.pages.work.WorkPage;
@@ -22,6 +24,7 @@ import org.testng.annotations.Test;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Guice(modules = {Module.class})
 public class SupplyPlanTest extends AppBaseSteps {
@@ -34,13 +37,27 @@ public class SupplyPlanTest extends AppBaseSteps {
         return workPage.goToShipmentListPage();
     }
 
-    private List<LocalDate> getCurrentCalendarWeek(){
-        List<LocalDate> week = new ArrayList<>();
+    private LocalDate[] getCurrentCalendarWeek() {
+        LocalDate[] week = new LocalDate[7];
         LocalDate date = LocalDate.now();
-        for (int i=0;i<7;i++){
-            week.add(date.plusDays(i));
+        for (int i = 0; i < 7; i++) {
+            week[i] = date.plusDays(i);
         }
         return week;
+    }
+
+    private ShipmentData getRandomShipment(String departmentId) {
+        LocalDate date = LocalDate.now();
+        List<ShipmentDataList> responses = new ArrayList<>();
+        for (int i = 0; i < 7; i++) {
+            responses.add(client.getShipments(new GetSupplyPlanDetails().setDate(date.plusDays(i))
+                    .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                    .setDepartmentId(departmentId)).asJson());
+        }
+        List<ShipmentDataList> nonEmptyResponses = responses.stream().filter((i) -> i.getItems().size() > 0).collect(Collectors.toList());
+        int randomDay = (int) (Math.random() * nonEmptyResponses.size());
+        List<ShipmentData> randomSupplyList = nonEmptyResponses.get(randomDay).getItems();
+        return randomSupplyList.get((int) (Math.random() * randomSupplyList.size()));
     }
 
     @Test(description = "C3293181 Смена отдела по фильтру")
@@ -75,8 +92,22 @@ public class SupplyPlanTest extends AppBaseSteps {
 
     @Test(description = "C3293182 Изменение даты по фильтру")
     public void testChangeDateByFilter() throws Exception {
-        //TODO add verification for totalPallet quantity
         LocalDate date = LocalDate.now();
+
+        GetSupplyPlanTotal yesterdayTotalPalletsParams = new GetSupplyPlanTotal()
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
+                .setDate(date.minusDays(1));
+
+        GetSupplyPlanTotal todayTotalPalletsParams = new GetSupplyPlanTotal()
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
+                .setDate(date);
+
+        GetSupplyPlanTotal weekTotalPalletsParam = new GetSupplyPlanTotal()
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
+                .setDate(getCurrentCalendarWeek());
 
         GetSupplyPlanDetails yesterdayParams = new GetSupplyPlanDetails()
                 .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
@@ -118,6 +149,10 @@ public class SupplyPlanTest extends AppBaseSteps {
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setDate(date.plusDays(6));
 
+        List<TotalPalletData> yesterdayTotalPalletResponse = client.getTotalPallets(yesterdayTotalPalletsParams).asJson().getItems();
+        List<TotalPalletData> todayTotalPalletResponse = client.getTotalPallets(todayTotalPalletsParams).asJson().getItems();
+        List<TotalPalletData> weekTotalPalletResponse = client.getTotalPallets(weekTotalPalletsParam).asJson().getItems();
+
         ShipmentDataList yesterdayResponse = client.getShipments(yesterdayParams).asJson();
         ShipmentDataList todayResponse = client.getShipments(todayParams).asJson();
         ShipmentDataList tomorrowResponse = client.getShipments(tomorrowParams).asJson();
@@ -130,18 +165,21 @@ public class SupplyPlanTest extends AppBaseSteps {
         //Step 1
         step("Проверить данные по поставкам и бронированиям на поставку за сегодня");
         SuppliesListPage suppliesListPage = precondition();
+        suppliesListPage.shouldTotalPalletDataIsCorrect(todayTotalPalletResponse);
         suppliesListPage.shouldDataIsCorrect(todayResponse);
 
         //Step 2
         step("Проверить данные по поставкам и бронированиям на поставку за вчера");
         PeriodSelectorPage periodSelectorPage = suppliesListPage.openPeriodSelectorPage();
         periodSelectorPage.selectPeriodOption(PeriodSelectorPage.PeriodOption.YESTERDAY);
+        suppliesListPage.shouldTotalPalletDataIsCorrect(yesterdayTotalPalletResponse);
         suppliesListPage.shouldDataIsCorrect(yesterdayResponse);
 
         //Step 3
         step("Проверить данные по поставкам и бронированиям на поставку за неделю");
         suppliesListPage.openPeriodSelectorPage();
         periodSelectorPage.selectPeriodOption(PeriodSelectorPage.PeriodOption.WEEK);
+        suppliesListPage.shouldTotalPalletDataIsCorrect(weekTotalPalletResponse);
         suppliesListPage.shouldWeekDataIsCorrect(todayResponse, tomorrowResponse, todayPlus2Response, todayPlus3Response,
                 todayPlus4Response, todayPlus5Response, todayPlus6Response);
     }
@@ -180,13 +218,13 @@ public class SupplyPlanTest extends AppBaseSteps {
 
     @Test(description = "C3293184 Поиск поставок по поставщику")
     public void testSearchForSuppliesBySupplier() throws Exception {
-        //TODO добавить получение поставщиков с хотя бы одной поставкой на неделе
         //TODO посмотреть что там с модалкой выбора отдела
-        String firstSupplierCode = "1002245001";
-        String firstSupplierName = "ООО КНАУФ ГИПС";
+        String department = "1";
+        ShipmentData supplierDataSource = getRandomShipment(department);
+        String firstSupplierCode = supplierDataSource.getSendingLocation();
+        String firstSupplierName = supplierDataSource.getSendingLocationName();
         String secondSupplierCode = "12301";
         String secondSupplierName = "ЗАО САЗИ";
-        String department = "1";
 
         GetSupplyPlanDetails param = new GetSupplyPlanDetails()
                 .setPagination(true)
@@ -223,6 +261,61 @@ public class SupplyPlanTest extends AppBaseSteps {
         searchSupplierPage.goToSupplierWeekSuppliesPage(secondSupplierCode);
         supplierWeekSuppliesPage.shouldSupplierNameIsCorrect(secondSupplierName);
         supplierWeekSuppliesPage.shouldNotFoundMsgIsDisplayed();
+    }
+
+    @Test(description = "C23409944 история поиска поставщиков")
+    public void testSearchHistory() throws Exception {
+        GetSupplyPlanSuppliers suppliersParam = new GetSupplyPlanSuppliers().setQuery("14").setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);
+        List<SupplierData> suppliersResponse = client.getSuppliers(suppliersParam).asJson().getItems();
+        List<String> supplierIdList = suppliersResponse.stream().map(SupplierData::getSupplierId).limit(11).collect(Collectors.toList());
+
+        //Step 1
+        step("Создать исотрию поиска из 11 элементов");
+        SuppliesListPage suppliesListPage = precondition();
+        SearchSupplierPage searchSupplierPage = suppliesListPage.goToSearchSupplierPage();
+        searchSupplierPage.shouldFirstSearchMsgBeVisible();
+        searchSupplierPage.createSearchHistory(supplierIdList);
+        supplierIdList.remove(0);
+        searchSupplierPage.shouldSearchHistoryIsCorrect(supplierIdList);
+    }
+
+    @Test(description = "C23409945 навигация по поиску поставщиков")
+    public void testNavigation() throws Exception {
+        GetSupplyPlanSuppliers suppliersParam = new GetSupplyPlanSuppliers().setQuery("1").setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);
+        List<SupplierData> suppliersResponse = client.getSuppliers(suppliersParam).asJson().getItems();
+        String supplierId = suppliersResponse.stream().map(SupplierData::getSupplierId).limit(1).collect(Collectors.toList()).get(0);
+
+        //Step 1
+        step("Перейти на страницу поставок поставщика и нажать на крест");
+        SuppliesListPage suppliesListPage = precondition();
+        SearchSupplierPage searchSupplierPage = suppliesListPage.goToSearchSupplierPage();
+        searchSupplierPage.searchForSupplier(supplierId);
+        SupplierWeekSuppliesPage supplierWeekSuppliesPage = searchSupplierPage.goToSupplierWeekSuppliesPage(supplierId);
+        supplierWeekSuppliesPage.clearTitle();
+        searchSupplierPage.verifyRequiredElements();
+
+        //Step 2
+        step("Перейти на страницу поставок поставщика и нажать на кнопку назад");
+        searchSupplierPage.searchForSupplier(supplierId);
+        searchSupplierPage.goToSupplierWeekSuppliesPage(supplierId);
+        supplierWeekSuppliesPage.goBack();
+        suppliesListPage.verifyRequiredElements(false);
+
+        //Step 3
+        step("Выбрать недельный вид отображения поставок и перейти на страницу поставок поставщика и нажать на кнопку назад");
+        PeriodSelectorPage periodSelectorPage = suppliesListPage.openPeriodSelectorPage();
+        periodSelectorPage.selectPeriodOption(PeriodSelectorPage.PeriodOption.WEEK);
+        suppliesListPage.goToSearchSupplierPage();
+        searchSupplierPage.searchForSupplier(supplierId);
+        searchSupplierPage.goToSupplierWeekSuppliesPage(supplierId);
+        supplierWeekSuppliesPage.goBack();
+        suppliesListPage.verifyRequiredElements(true);
+
+        //Step 4
+        step("Перейти на страницу поставок поставщика через элемент истории поиска");
+        suppliesListPage.goToSearchSupplierPage();
+        searchSupplierPage.goToSupplierWeekPageBySearchHistory(supplierId);
+        supplierWeekSuppliesPage.verifyRequiredElements();
     }
 
 }

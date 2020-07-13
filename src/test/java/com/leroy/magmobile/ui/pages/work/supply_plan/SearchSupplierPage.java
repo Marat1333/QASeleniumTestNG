@@ -59,6 +59,12 @@ public class SearchSupplierPage extends CommonMagMobilePage {
     @AppFindBy(text = "Ничего не найдено")
     Element notFoundMsg;
 
+    @Override
+    protected void waitForPageIsLoaded() {
+        backBtn.waitForVisibility();
+        searchInput.waitForVisibility();
+    }
+
     @Step("Ввести {value} в поисковую строку")
     public SearchSupplierPage searchForSupplier(String value) {
         searchInput.clearAndFill(value);
@@ -69,7 +75,23 @@ public class SearchSupplierPage extends CommonMagMobilePage {
 
     @Step("Выбрать поставщика по коду")
     public SupplierWeekSuppliesPage goToSupplierWeekSuppliesPage(String id) {
-        E(String.format("//*[contains(@text,'Код: %s')]", id)).click();
+        E(String.format("//android.widget.ScrollView//*[contains(@text,'%s')]", id)).click();
+        return new SupplierWeekSuppliesPage();
+    }
+
+    @Step("Создать историю поиска")
+    public SearchSupplierPage createSearchHistory(List<String> searchRequests) {
+        for (String eachReq : searchRequests) {
+            searchForSupplier(eachReq);
+            SupplierWeekSuppliesPage supplierWeekSuppliesPage = goToSupplierWeekSuppliesPage(eachReq);
+            supplierWeekSuppliesPage.clearTitle();
+        }
+        return new SearchSupplierPage();
+    }
+
+    @Step("Перейти по элементу из истории поиска")
+    public SupplierWeekSuppliesPage goToSupplierWeekPageBySearchHistory(String id){
+        E(String.format("//android.widget.ScrollView//*[contains(@text,'Код: %s')]", id)).click();
         return new SupplierWeekSuppliesPage();
     }
 
@@ -151,6 +173,28 @@ public class SearchSupplierPage extends CommonMagMobilePage {
     @Step("Проверить, что отображено сообщение: \"Ничего не найдено\"")
     public SearchSupplierPage shouldNotFoundMsgIsDisplayed() {
         anAssert.isElementVisible(notFoundMsg);
+        return this;
+    }
+
+    @Step("Проверить, что отображена надпись:\"Ты пока ничего не искал\"")
+    public SearchSupplierPage shouldFirstSearchMsgBeVisible() {
+        anAssert.isElementVisible(emptySearchHistoryLbl);
+        return this;
+    }
+
+    @Step("Проверить историю поиска")
+    public SearchSupplierPage shouldSearchHistoryIsCorrect(List<String> searchHistory) {
+        List<SearchHistoryElementData> searchHistoryData = this.searchHistory.getFullDataList();
+        for (int i = 0; i < searchHistory.size(); i++) {
+            softAssert.isEquals(searchHistory.get(i), searchHistoryData.get(searchHistoryData.size()-1-i).getCode(), "id");
+        }
+        softAssert.verifyAll();
+        return this;
+    }
+
+    public SearchSupplierPage verifyRequiredElements(){
+        softAssert.areElementsVisible(backBtn, searchInput);
+        softAssert.verifyAll();
         return this;
     }
 

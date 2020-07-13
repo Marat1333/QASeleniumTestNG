@@ -7,6 +7,7 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.api.data.supply_plan.Details.ShipmentData;
 import com.leroy.magmobile.api.data.supply_plan.Details.ShipmentDataList;
+import com.leroy.magmobile.api.data.supply_plan.Total.TotalPalletData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.more.DepartmentListPage;
 import com.leroy.magmobile.ui.pages.work.supply_plan.data.AppointmentCardData;
@@ -43,14 +44,19 @@ public class SuppliesListPage extends CommonMagMobilePage {
     //немного кривой xpath, без локаторов не придумал как по другому сделать
     AndroidScrollView<ShipmentCardData> singleDateShipmentWidgetList = new AndroidScrollView<>(driver,
             AndroidScrollView.TYPICAL_LOCATOR, ".//*[contains(@text,'получено') or (contains(@text,'ожидается'))]" +
-            "/..[not(android.widget.TextView[@text='Сегодня' or @text='Вчера' or @text='Завтра' or contains(@text,'пн') or contains(@text,'вт') or " +
-            "contains(@text,'ср') or contains(@text,'чт') or contains(@text,'пт') or contains(@text,'сб') or contains(@text,'вс')])]",
+            "/..[not(android.widget.TextView[@text='Сегодня' or @text='Вчера' or @text='Завтра' or contains(@text,', пн') or contains(@text,', вт') or " +
+            "contains(@text,', ср') or contains(@text,', чт') or contains(@text,', пт') or contains(@text,', сб') or contains(@text,', вс')])]",
             ShipmentWidget.class);
 
-    @AppFindBy(xpath = "//android.widget.TextView[@text='Сегодня' or @text='Вчера' or @text='Завтра' or contains(@text,'пн') " +
-            "or contains(@text,'вт') or contains(@text,'ср') or contains(@text,'чт') or contains(@text,'пт') " +
-            "or contains(@text,'сб') or contains(@text,'вс')]")
+    @AppFindBy(xpath = "//android.widget.ScrollView//android.widget.TextView[@text='Сегодня' or @text='Вчера' or @text='Завтра' or contains(@text,', пн') " +
+            "or contains(@text,', вт') or contains(@text,', ср') or contains(@text,', чт') or contains(@text,', пт') " +
+            "or contains(@text,', сб') or contains(@text,', вс')]")
     ElementList<Element> weekOptions;
+
+    @AppFindBy(xpath = "//android.widget.ScrollView//android.widget.TextView[@text='Сегодня' or @text='Вчера' or @text='Завтра' or contains(@text,', пн') " +
+            "or contains(@text,', вт') or contains(@text,', ср') or contains(@text,', чт') or contains(@text,', пт') or contains(@text,', сб') " +
+            "or contains(@text,', вс')]/following-sibling::*[1]")
+    ElementList<Element> suppliesCondition;
 
     @Override
     public void waitForPageIsLoaded() {
@@ -77,8 +83,36 @@ public class SuppliesListPage extends CommonMagMobilePage {
         return new SearchSupplierPage();
     }
 
+    @Step("Проверить, что данные о поставках за день отображены корректно")
+    public SuppliesListPage shouldTotalPalletDataIsCorrect(List<TotalPalletData> dataList) throws Exception{
+        int apiDataCounter = 0;
+        for (int i=0;i<suppliesCondition.getCount();i++){
+            Element each = suppliesCondition.get(i);
+            TotalPalletData data = dataList.get(apiDataCounter);
+            String condition = each.getText();
+            String receivedQuantity;
+            String plannedQuantity;
+            switch(condition){
+                case "получено палет":
+                    receivedQuantity = each.findChildElement("./following-sibling::*[1]").getText();
+                    plannedQuantity = each.findChildElement("./following-sibling::*[3]").getText();
+                    softAssert.isEquals(receivedQuantity+" из "+plannedQuantity, data.getSummPalletFact()+" из "+data.getSummPalletPlan(), "wrong quantity");
+                    apiDataCounter++;
+                    break;
+                case "ожидается палет":
+                    plannedQuantity = each.findChildElement("./following-sibling::*[1]").getText();
+                    softAssert.isEquals(plannedQuantity, String.valueOf(data.getSummPalletPlan()), "planned quantity");
+                    apiDataCounter++;
+                    break;
+                case "поставок не найдено":
+            }
+        }
+        softAssert.verifyAll();
+        return this;
+    }
+
     @Step("Проверить, что данные корректно отображены")
-    public SuppliesListPage shouldDataIsCorrect(ShipmentDataList data) throws Exception {
+    public SuppliesListPage shouldDataIsCorrect(ShipmentDataList data) {
         List<ShipmentData> dataList = data.getItems();
         List<AppointmentCardData> appointmentUiData = singleDateReserveWidgetList.getFullDataList();
         mainScrollView.scrollToBeginning();
@@ -143,6 +177,19 @@ public class SuppliesListPage extends CommonMagMobilePage {
                 dayOfWeekOption.click();
             }
         }
+        return this;
+    }
+
+    public SuppliesListPage verifyRequiredElements(boolean weekView){
+        if (weekView){
+            softAssert.isTrue(weekOptions.getCount()>1,"Отображено не более одного дня");
+            softAssert.isTrue(suppliesCondition.getCount()>1, "Отображено не более одной суммы паллет");
+        }else {
+            softAssert.isTrue(weekOptions.getCount()==1,"Отображено некорректное кол-во дней");
+            softAssert.isTrue(suppliesCondition.getCount()==1, "Отображено некорректное кол-во сумм паллет");
+        }
+        softAssert.areElementsVisible(selectDepartmentBtn, selectPeriodBtn, navigateToSearchSupplierButton);
+        softAssert.verifyAll();
         return this;
     }
 
