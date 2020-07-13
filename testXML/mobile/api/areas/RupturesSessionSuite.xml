@@ -12,7 +12,6 @@
                 <methods>
                     <include name="testCreateRuptureSessionProduct"/>
                     <include name="testActionRuptureSessionProduct"/>
-                    <include name="testSearchForRuptureSessionProducts"/>
                     <include name="testFinishRuptureSession"/>
                     <include name="testFinishFinishedRuptureSession"/>
                     <include name="testDeleteRuptureSessionProducts"/>
@@ -20,6 +19,12 @@
                     <include name="testFinishDeletedRuptureSession"/>
                 </methods>
             </class>
+        </classes>
+    </test>
+
+    <test name="GET ruptures session products">
+        <classes>
+            <class name="com.leroy.magmobile.api.tests.ruptures.RupturesGetSessionProductTest"/>
         </classes>
     </test>
 

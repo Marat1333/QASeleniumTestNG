@@ -6,4 +6,5 @@ import lombok.Data;
 public class CommonValidationData {
     private String shopId;
     private String departmentId;
+    private String sessionId;
 }

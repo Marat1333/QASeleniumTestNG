@@ -72,13 +72,6 @@ public class RupturesSessionTest extends BaseProjectApiTest {
         rupturesClient.assertThatSessionIsActivated(resp, ruptureData.getActions());
     }
 
-    @Test(description = "C3233583 GET ruptures products")
-    public void testSearchForRuptureSessionProducts() {
-        RupturesClient rupturesClient = rupturesClient();
-        Response<RuptureProductDataList> resp = rupturesClient.getProducts(sessionId);
-        rupturesClient.assertThatDataMatches(resp, ruptureProductDataList);
-    }
-
     @Test(description = "C3233585 PUT ruptures session finish")
     public void testFinishRuptureSession() {
         RupturesClient rupturesClient = rupturesClient();
