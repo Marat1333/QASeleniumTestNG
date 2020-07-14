@@ -13,7 +13,6 @@
                     <include name="testCreateRuptureSessionProduct"/>
                     <include name="testFinishRuptureSession"/>
                     <include name="testFinishFinishedRuptureSession"/>
-                    <include name="testDeleteRuptureSessionProducts"/>
                     <include name="testDeleteFinishedRuptureSession"/>
                     <include name="testFinishDeletedRuptureSession"/>
                 </methods>
@@ -56,6 +55,20 @@
                     <include name="testPutRupturesProductChangeExistingProduct"/>
                     <include name="testPutRupturesProductToDeletedSession"/>
                     <include name="testPutRupturesProductToFinishedSession"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="DELETE ruptures product">
+        <classes>
+            <class name="com.leroy.magmobile.api.tests.ruptures.RupturesDeleteProductTest">
+                <methods>
+                    <include name="testDeleteRupturesProduct"/>
+                    <include name="testDeleteRupturesProductForDeletedProduct"/>
+                    <include name="testDeleteRupturesProductFromFinishedSession"/>
+                    <include name="testDeleteRupturesProductMashupValidation"/>
+                    <include name="testDeleteRupturesProductForNotExistingSession"/>
                 </methods>
             </class>
         </classes>

@@ -42,10 +42,12 @@ public class RupturesClient extends MagMobileClient {
     }
 
     @Step("Delete rupture session product for lmCode={lmCode}")
-    public Response<JsonNode> deleteProductInSession(String lmCode, int sessionId) {
+    public Response<JsonNode> deleteProductInSession(String lmCode, Integer sessionId) {
         RupturesSessionProductDeleteRequest req = new RupturesSessionProductDeleteRequest();
-        req.setLmCode(lmCode);
-        req.setSessionId(sessionId);
+        if (lmCode != null)
+            req.setLmCode(lmCode);
+        if (sessionId != null)
+            req.setSessionId(sessionId);
         req.setAppVersion(appVersion);
         return execute(req, JsonNode.class);
     }
