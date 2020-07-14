@@ -86,20 +86,6 @@ public class RupturesSessionTest extends BaseProjectApiTest {
         rupturesClient.assertThatActionIsNotAllowed(resp, sessionId);
     }
 
-    @Test(description = "C3233587 DELETE finished ruptures session")
-    public void testDeleteFinishedRuptureSession() {
-        step("Delete session");
-        RupturesClient rupturesClient = rupturesClient();
-        Response<JsonNode> resp = rupturesClient.deleteSession(sessionId);
-        rupturesClient.assertThatIsUpdatedOrDeleted(resp);
-        if (ruptureProductDataList.getItems().size() > 0)
-            ruptureProductDataList.removeItem(0);
-
-        step("Send get Request and check data");
-        Response<RuptureProductDataList> getResp = rupturesClient.getProducts(sessionId);
-        rupturesClient.assertThatDataMatches(getResp, ruptureProductDataList);
-    }
-
     @Test(description = "C3285353 PUT ruptures session finish for deleted session")
     public void testFinishDeletedRuptureSession() {
         RupturesClient rupturesClient = rupturesClient();

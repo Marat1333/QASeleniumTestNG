@@ -155,9 +155,10 @@ public class RupturesClient extends MagMobileClient {
     }
 
     @Step("Delete session with id = {sessionId}")
-    public Response<JsonNode> deleteSession(int sessionId) {
+    public Response<JsonNode> deleteSession(Integer sessionId) {
         RupturesSessionDeleteRequest req = new RupturesSessionDeleteRequest();
-        req.setSessionId(sessionId);
+        if (sessionId != null)
+            req.setSessionId(sessionId);
         req.setAppVersion(appVersion);
         return execute(req, JsonNode.class);
     }
