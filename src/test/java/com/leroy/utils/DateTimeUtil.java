@@ -12,6 +12,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+
 public class DateTimeUtil {
 
     /**
@@ -65,6 +67,10 @@ public class DateTimeUtil {
             Log.error("strToLocalDateTime() method: " + err.getMessage());
             return null;
         }
+    }
+
+    public static long getDateDifferenceInDays(LocalDate before, LocalDate after){
+        return DAYS.between(before, after);
     }
 
 }

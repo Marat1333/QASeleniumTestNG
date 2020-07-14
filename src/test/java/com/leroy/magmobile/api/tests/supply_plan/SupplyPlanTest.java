@@ -25,6 +25,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -126,32 +127,6 @@ public class SupplyPlanTest extends BaseProjectApiTest {
             assertThat("Shipments sorted incorrect by date", formattedString, containsString(data.get(i).getDate().toString()));
             assertThat("Shipments sorted incorrect by time", formattedString, containsString(data.get(i).getTime()));
         }
-    }
-
-    private List<String> sortDates(List<String> datesList, boolean descendingOrder) {
-        List<Date> dateList = new ArrayList<>();
-        List<String> result = new ArrayList<>();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        Date tmpDate;
-        for (String data1 : datesList) {
-            try {
-                tmpDate = sdf.parse(data1);
-                dateList.add(tmpDate);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-        if (!descendingOrder) {
-            Collections.sort(dateList);
-        } else {
-            dateList.sort(Collections.reverseOrder());
-        }
-        String formattedString;
-        for (int i = 0; i < dateList.size(); i++) {
-            formattedString = sdf.format(dateList.get(i));
-            result.add(formattedString);
-        }
-        return result;
     }
 
     @Test(description = "C23184440 one date")
@@ -360,16 +335,13 @@ public class SupplyPlanTest extends BaseProjectApiTest {
 
         Response<SupplyCardData> response = supplyPlanClient().getSupplyCard(params);
         isResponseOk(response);
-        List<SupplyCardSendingLocationData> dataList = response.asJson().getSendingLocation();
-        assertThat(dataList.size(), greaterThan(0));
-        for (SupplyCardSendingLocationData data : dataList) {
-            assertThat("store/warehouse phone is " + data.getContactPhone() + " not mathes " + defaultContactPhone,
-                    data.getContactPhone(), equalTo(defaultContactPhone));
-            assertThat("store/warehouse email is " + data.getEmail() + " not matches " + defaultEmail,
-                    data.getEmail(), equalTo(defaultEmail));
-            assertThat("store/warehouse contact name is " + data.getContactName() + " not matches " + defaultContactName,
-                    data.getContactName(), equalTo(defaultContactName));
-        }
+        SupplyCardSendingLocationData data = response.asJson().getSendingLocation();
+        assertThat("store/warehouse phone is " + data.getContactPhone() + " not mathes " + defaultContactPhone,
+                data.getContactPhone(), equalTo(defaultContactPhone));
+        assertThat("store/warehouse email is " + data.getEmail() + " not matches " + defaultEmail,
+                data.getEmail(), equalTo(defaultEmail));
+        assertThat("store/warehouse contact name is " + data.getContactName() + " not matches " + defaultContactName,
+                data.getContactName(), equalTo(defaultContactName));
     }
 
     @Test(description = "C23185310 isFullReceived flag correct")
@@ -431,16 +403,16 @@ public class SupplyPlanTest extends BaseProjectApiTest {
         isResponseOk(response);
         List<SupplyCardShipmentsData> dataList = response.asJson().getShipments();
         assertThat(dataList.size(), greaterThan(0));
-        List<String> datesList = new ArrayList<>();
+        List<LocalDateTime> datesList = new ArrayList<>();
 
         for (SupplyCardShipmentsData data : dataList) {
             datesList.add(data.getSecRecDate());
         }
-        List<String> sorted = sortDates(datesList, false);
+        Collections.sort(datesList);
         for (int i = 0; i < dataList.size(); i++) {
-            assertThat("date sorting is incorrect: date should be " + sorted.get(i) + " but date is " +
+            assertThat("date sorting is incorrect: date should be " + datesList.get(i) + " but date is " +
                             dataList.get(i).getSecRecDate(),
-                    sorted.get(i), equalTo(dataList.get(i).getSecRecDate()));
+                    datesList.get(i), equalTo(dataList.get(i).getSecRecDate()));
         }
 
     }

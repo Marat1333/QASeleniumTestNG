@@ -17,7 +17,10 @@ import com.leroy.magmobile.ui.pages.work.supply_plan.widgets.ShipmentWidget;
 import com.leroy.utils.DateTimeUtil;
 import io.qameta.allure.Step;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 public class SuppliesListPage extends CommonMagMobilePage {
     @AppFindBy(accessibilityId = "BackButton")
@@ -65,6 +68,31 @@ public class SuppliesListPage extends CommonMagMobilePage {
         selectPeriodBtn.waitForVisibility();
     }
 
+    @Step("Выбрать нужный день недели")
+    public SuppliesListPage choseDayOfWeek(long dateDiff) throws Exception {
+        if (dateDiff > 6 || dateDiff < 0) {
+            throw new IllegalArgumentException("date difference should be less than 7 days");
+        } else {
+            weekOptions.get((int) dateDiff).click();
+        }
+        return this;
+    }
+
+    @Step("Выбрать нужную поставку")
+    public SupplyCardPage goToSupplyCard(String supplierName, LocalDateTime shipmentDate) throws Exception {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM, H:mm", new Locale("ru"));
+        String formattedDateTime = shipmentDate.format(formatter);
+
+        Element supplierShipment = singleDateShipmentWidgetList.findChildElement(
+                String.format(".//*[contains(@text,'%s')]/following-sibling::*[contains(@text,'%s')]",
+                        supplierName, formattedDateTime));
+        if (!supplierShipment.isVisible()) {
+            mainScrollView.scrollDownToElement(supplierShipment);
+        }
+        supplierShipment.click();
+        return new SupplyCardPage();
+    }
+
     @Step("Открыть модальное окно выбора отдела")
     public DepartmentListPage openDepartmentSelectorPage() {
         selectDepartmentBtn.click();
@@ -78,25 +106,25 @@ public class SuppliesListPage extends CommonMagMobilePage {
     }
 
     @Step("Перейти на страницу поиска поставщиков")
-    public SearchSupplierPage goToSearchSupplierPage(){
+    public SearchSupplierPage goToSearchSupplierPage() {
         navigateToSearchSupplierButton.click();
         return new SearchSupplierPage();
     }
 
     @Step("Проверить, что данные о поставках за день отображены корректно")
-    public SuppliesListPage shouldTotalPalletDataIsCorrect(List<TotalPalletData> dataList) throws Exception{
+    public SuppliesListPage shouldTotalPalletDataIsCorrect(List<TotalPalletData> dataList) throws Exception {
         int apiDataCounter = 0;
-        for (int i=0;i<suppliesCondition.getCount();i++){
+        for (int i = 0; i < suppliesCondition.getCount(); i++) {
             Element each = suppliesCondition.get(i);
             TotalPalletData data = dataList.get(apiDataCounter);
             String condition = each.getText();
             String receivedQuantity;
             String plannedQuantity;
-            switch(condition){
+            switch (condition) {
                 case "получено палет":
                     receivedQuantity = each.findChildElement("./following-sibling::*[1]").getText();
                     plannedQuantity = each.findChildElement("./following-sibling::*[3]").getText();
-                    softAssert.isEquals(receivedQuantity+" из "+plannedQuantity, data.getSummPalletFact()+" из "+data.getSummPalletPlan(), "wrong quantity");
+                    softAssert.isEquals(receivedQuantity + " из " + plannedQuantity, data.getSummPalletFact() + " из " + data.getSummPalletPlan(), "wrong quantity");
                     apiDataCounter++;
                     break;
                 case "ожидается палет":
@@ -180,13 +208,13 @@ public class SuppliesListPage extends CommonMagMobilePage {
         return this;
     }
 
-    public SuppliesListPage verifyRequiredElements(boolean weekView){
-        if (weekView){
-            softAssert.isTrue(weekOptions.getCount()>1,"Отображено не более одного дня");
-            softAssert.isTrue(suppliesCondition.getCount()>1, "Отображено не более одной суммы паллет");
-        }else {
-            softAssert.isTrue(weekOptions.getCount()==1,"Отображено некорректное кол-во дней");
-            softAssert.isTrue(suppliesCondition.getCount()==1, "Отображено некорректное кол-во сумм паллет");
+    public SuppliesListPage verifyRequiredElements(boolean weekView) {
+        if (weekView) {
+            softAssert.isTrue(weekOptions.getCount() > 1, "Отображено не более одного дня");
+            softAssert.isTrue(suppliesCondition.getCount() > 1, "Отображено не более одной суммы паллет");
+        } else {
+            softAssert.isTrue(weekOptions.getCount() == 1, "Отображено некорректное кол-во дней");
+            softAssert.isTrue(suppliesCondition.getCount() == 1, "Отображено некорректное кол-во сумм паллет");
         }
         softAssert.areElementsVisible(selectDepartmentBtn, selectPeriodBtn, navigateToSearchSupplierButton);
         softAssert.verifyAll();
