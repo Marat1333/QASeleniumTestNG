@@ -176,8 +176,7 @@ public class RupturesClient extends MagMobileClient {
         assertThat("success", resp.asJson().get("success").booleanValue());
     }
 
-    @Step("Check that session is activated")
-    public void assertThatSessionIsActivated(Response<ResActionDataList> resp, List<ActionData> expectedActions) {
+    private void assertThatSessionIsActivated(Response<ResActionDataList> resp, List<ActionData> expectedActions, boolean isSuccessful) {
         assertThatResponseIsOk(resp);
         ResActionDataList actualData = resp.asJson();
         assertThat("action count", actualData.getActions(), hasSize(expectedActions.size()));
@@ -185,8 +184,18 @@ public class RupturesClient extends MagMobileClient {
             ResActionData actualActionData = actualData.getActions().get(i);
             ActionData expectedActionData = expectedActions.get(i);
             assertThat("action", actualActionData.getAction(), is(expectedActionData.getAction()));
-            assertThat("result", actualActionData.getResult(), is(true));
+            assertThat("result", actualActionData.getResult(), is(isSuccessful));
         }
+    }
+
+    @Step("Check that session is activated")
+    public void assertThatSessionIsActivated(Response<ResActionDataList> resp, List<ActionData> expectedActions) {
+        assertThatSessionIsActivated(resp, expectedActions, true);
+    }
+
+    @Step("Check that session is NOT activated")
+    public void assertThatSessionIsNotActivated(Response<ResActionDataList> resp, List<ActionData> expectedActions) {
+        assertThatSessionIsActivated(resp, expectedActions, false);
     }
 
     @Step("Check that Response body matches expectedData")

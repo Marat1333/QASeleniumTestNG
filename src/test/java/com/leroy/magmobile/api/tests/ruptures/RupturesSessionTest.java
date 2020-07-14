@@ -55,7 +55,7 @@ public class RupturesSessionTest extends BaseProjectApiTest {
         ruptureProductDataList.addItem(productData);
     }
 
-    @Test(description = "C23195088 PUT rupture actions with different states")
+    @Test(description = "C23195088 PUT rupture actions with different states", enabled = false) // TODO Removed from TestRail
     public void testActionRuptureSessionProduct() {
         RupturesClient rupturesClient = rupturesClient();
         RuptureProductData ruptureProductData = ruptureProductDataList.getItems().get(0);
