@@ -105,9 +105,7 @@ public class RupturesPutSessionProductTest extends BaseRuptureTest {
         ReqRuptureSessionData rupturePostData = getTypicalReqRuptureSessionData(productData);
 
         Response<JsonNode> resp = rupturesClient.updateSession(rupturePostData);
-        assertThat("Response code", resp.getStatusCode(), equalTo(StatusCodes.ST_400_BAD_REQ));
-        assertThat("Error text", resp.asJson(CommonErrorResponseData.class).getError(),
-                equalTo(String.format(ErrorTextConst.SESSION_NOT_FOUND_OR_FINISHED, sessionId)));
+        rupturesClient.assertThatActionIsNotAllowed(resp, sessionId);
 
         step("Отправляем GET запрос и проверяем, что данные действительно не изменились");
         Response<RuptureProductDataList> getResp = rupturesClient.getProducts(sessionId);
@@ -128,9 +126,7 @@ public class RupturesPutSessionProductTest extends BaseRuptureTest {
         ReqRuptureSessionData rupturePostData = getTypicalReqRuptureSessionData(deletedSessionId, productData);
 
         Response<JsonNode> resp = rupturesClient.updateSession(rupturePostData);
-        assertThat("Response code", resp.getStatusCode(), equalTo(StatusCodes.ST_400_BAD_REQ));
-        assertThat("Error text", resp.asJson(CommonErrorResponseData.class).getError(),
-                equalTo(String.format(ErrorTextConst.SESSION_NOT_FOUND_OR_FINISHED, deletedSessionId)));
+        rupturesClient.assertThatActionIsNotAllowed(resp, deletedSessionId);
     }
 
     @Test(description = "C23409188 PUT ruptures product - Change existing product")

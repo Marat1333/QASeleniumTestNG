@@ -3,25 +3,18 @@ package com.leroy.magmobile.api.tests.ruptures;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.magmobile.api.clients.RupturesClient;
 import com.leroy.magmobile.api.data.ruptures.*;
-import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
-public class RupturesSessionTest extends BaseProjectApiTest {
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 
-    private RupturesClient rupturesClient() {
-        return apiClientProvider.getRupturesClient();
-    }
-
-    @Override
-    protected boolean isNeedAccessToken() {
-        return true;
-    }
-
-    private Integer sessionId;
-    private RuptureProductDataList ruptureProductDataList;
+public class RupturesPostSessionTest extends BaseRuptureTest {
 
     @Test(description = "C3233579 POST rupture session product")
     public void testCreateRuptureSessionProduct() {
@@ -49,16 +42,31 @@ public class RupturesSessionTest extends BaseProjectApiTest {
         rupturePostData.setStoreId(Integer.parseInt(getUserSessionData().getUserShopId()));
         rupturePostData.setDepartmentId(Integer.parseInt(getUserSessionData().getUserDepartmentId()));
 
+        step("Создаем сессию");
         Response<JsonNode> resp = rupturesClient.createSession(rupturePostData);
         sessionId = rupturesClient.assertThatSessionIsCreatedAndGetId(resp);
-        ruptureProductDataList = new RuptureProductDataList();
-        ruptureProductDataList.addItem(productData);
+        ruptureProductDataListBody = new RuptureProductDataList();
+        ruptureProductDataListBody.setTotalCount(1);
+        ruptureProductDataListBody.setItems(Collections.singletonList(productData));
+
+        step("GET /ruptures/sessions - Проверяем, что сессия была создана");
+        Response<ResRuptureSessionDataList> getResp = rupturesClient.getSessions(50);
+        isResponseOk(getResp);
+        ResRuptureSessionDataList respBody = getResp.asJson();
+        List<ResRuptureSessionData> items = respBody.getItems().stream().filter(
+                a -> a.getSessionId().equals(sessionId)).collect(Collectors.toList());
+        assertThat("Session " + sessionId + " wasn't found", items, hasSize(1));
+
+        step("GET /ruptures/session/products - Проверяем, что товар был добавлен в сессию");
+        Response<RuptureProductDataList> respGetProducts = rupturesClient.getProducts(sessionId);
+        rupturesClient.assertThatDataMatches(respGetProducts, ruptureProductDataListBody);
     }
 
-    @Test(description = "C23195088 PUT rupture actions with different states", enabled = false) // TODO Removed from TestRail
+    @Test(description = "C23195088 PUT rupture actions with different states", enabled = false)
+    // TODO Removed from TestRail
     public void testActionRuptureSessionProduct() {
         RupturesClient rupturesClient = rupturesClient();
-        RuptureProductData ruptureProductData = ruptureProductDataList.getItems().get(0);
+        RuptureProductData ruptureProductData = ruptureProductDataListBody.getItems().get(0);
         for (ActionData actionData : ruptureProductData.getActions()) {
             actionData.setState(!actionData.getState());
         }
@@ -70,27 +78,6 @@ public class RupturesSessionTest extends BaseProjectApiTest {
 
         Response<ResActionDataList> resp = rupturesClient.actionProduct(ruptureData);
         rupturesClient.assertThatSessionIsActivated(resp, ruptureData.getActions());
-    }
-
-    @Test(description = "C3233585 PUT ruptures session finish")
-    public void testFinishRuptureSession() {
-        RupturesClient rupturesClient = rupturesClient();
-        Response<JsonNode> resp = rupturesClient.finishSession(sessionId);
-        rupturesClient.assertThatIsUpdatedOrDeleted(resp);
-    }
-
-    @Test(description = "C3285352 PUT ruptures session finish for finished session")
-    public void testFinishFinishedRuptureSession() {
-        RupturesClient rupturesClient = rupturesClient();
-        Response<JsonNode> resp = rupturesClient.finishSession(sessionId);
-        rupturesClient.assertThatActionIsNotAllowed(resp, sessionId);
-    }
-
-    @Test(description = "C3285353 PUT ruptures session finish for deleted session")
-    public void testFinishDeletedRuptureSession() {
-        RupturesClient rupturesClient = rupturesClient();
-        Response<JsonNode> resp = rupturesClient.finishSession(sessionId);
-        rupturesClient.assertThatActionIsNotAllowed(resp, sessionId);
     }
 
 }

@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.leroy.constants.api.ErrorTextConst.SESSION_NOT_FOUND_OR_FINISHED;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -147,10 +148,11 @@ public class RupturesClient extends MagMobileClient {
     }
 
     @Step("Finish session with id = {sessionId}")
-    public Response<JsonNode> finishSession(int sessionId) {
+    public Response<JsonNode> finishSession(Integer sessionId) {
         RupturesSessionFinishRequest req = new RupturesSessionFinishRequest();
         req.setAppVersion(appVersion);
-        req.setSessionId(sessionId);
+        if (sessionId != null)
+            req.setSessionId(sessionId);
         return execute(req, JsonNode.class);
     }
 
@@ -267,7 +269,7 @@ public class RupturesClient extends MagMobileClient {
     public void assertThatActionIsNotAllowed(Response<JsonNode> resp, Integer sessionId) {
         assertThat("Response code", resp.getStatusCode(), equalTo(400));
         assertThat("Error", resp.asJson().get("error").asText(),
-                equalTo(String.format("Session with SessionId = %d not found or already finished", sessionId)));
+                equalTo(String.format(SESSION_NOT_FOUND_OR_FINISHED, sessionId)));
     }
 
 }

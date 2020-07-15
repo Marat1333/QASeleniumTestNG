@@ -6,14 +6,11 @@
         <listener class-name="com.leroy.core.listeners.TestRailListener"/>
     </listeners>
 
-    <test name="Rupture session">
+    <test name="POST Rupture session">
         <classes>
-            <class name="com.leroy.magmobile.api.tests.ruptures.RupturesSessionTest">
+            <class name="com.leroy.magmobile.api.tests.ruptures.RupturesPostSessionTest">
                 <methods>
                     <include name="testCreateRuptureSessionProduct"/>
-                    <include name="testFinishRuptureSession"/>
-                    <include name="testFinishFinishedRuptureSession"/>
-                    <include name="testFinishDeletedRuptureSession"/>
                 </methods>
             </class>
         </classes>
@@ -54,6 +51,20 @@
                     <include name="testPutRupturesProductChangeExistingProduct"/>
                     <include name="testPutRupturesProductToDeletedSession"/>
                     <include name="testPutRupturesProductToFinishedSession"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="PUT ruptures session finish">
+        <classes>
+            <class name="com.leroy.magmobile.api.tests.ruptures.RupturesPutSessionFinishTest">
+                <methods>
+                    <include name="testFinishRuptureSession"/>
+                    <include name="testFinishFinishedRuptureSession"/>
+                    <include name="testFinishDeletedRuptureSession"/>
+                    <include name="testPutRupturesSessionFinishForNotExistingSession"/>
+                    <include name="testPutRupturesSessionFinishMashupValidation"/>
                 </methods>
             </class>
         </classes>
