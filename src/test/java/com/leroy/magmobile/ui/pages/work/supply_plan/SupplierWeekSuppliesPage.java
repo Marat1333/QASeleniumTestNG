@@ -7,15 +7,18 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.api.data.supply_plan.Details.ShipmentData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.more.DepartmentListPage;
-import com.leroy.magmobile.ui.pages.search.SuppliersSearchPage;
 import com.leroy.magmobile.ui.pages.work.supply_plan.data.AppointmentCardData;
 import com.leroy.magmobile.ui.pages.work.supply_plan.data.ShipmentCardData;
-import com.leroy.magmobile.ui.pages.work.supply_plan.widgets.AppointmentWidget;
+import com.leroy.magmobile.ui.pages.work.supply_plan.modal.ReserveModalPage;
+import com.leroy.magmobile.ui.pages.work.supply_plan.widgets.ReserveWidget;
 import com.leroy.magmobile.ui.pages.work.supply_plan.widgets.ShipmentWidget;
 import com.leroy.utils.DateTimeUtil;
 import io.qameta.allure.Step;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 public class SupplierWeekSuppliesPage extends CommonMagMobilePage {
     @AppFindBy(xpath = "//*[@content-desc='SuppliesPerWeek']/*[@content-desc='SuppliesPerWeek']//android.widget.TextView[1]")
@@ -41,7 +44,7 @@ public class SupplierWeekSuppliesPage extends CommonMagMobilePage {
     AndroidScrollView<AppointmentCardData> singleDateReserveWidgetList = new AndroidScrollView<>(driver,
             AndroidScrollView.TYPICAL_LOCATOR, ".//android.view.ViewGroup/android.widget.TextView[2][not" +
             "(following-sibling::android.widget.TextView[contains(@text,'палет')]) and not(contains(@text,'палет')) and not(contains(@text,'не найдено'))]/..",
-            AppointmentWidget.class);
+            ReserveWidget.class);
 
     //немного кривой xpath, без локаторов не придумал как по другому сделать
     AndroidScrollView<ShipmentCardData> singleDateShipmentWidgetList = new AndroidScrollView<>(driver,
@@ -49,6 +52,36 @@ public class SupplierWeekSuppliesPage extends CommonMagMobilePage {
             "/..[not(android.widget.TextView[@text='Сегодня' or @text='Вчера' or @text='Завтра' or contains(@text,'пн') or contains(@text,'вт') or " +
             "contains(@text,'ср') or contains(@text,'чт') or contains(@text,'пт') or contains(@text,'сб') or contains(@text,'вс')])]",
             ShipmentWidget.class);
+
+    @Step("Выбрать нужную поставку")
+    public SupplyCardPage goToSupplyCard(String supplierName, LocalDateTime shipmentDate, Integer plannedQuantity) throws Exception {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM, H:mm", new Locale("ru"));
+        String formattedDateTime = shipmentDate.format(formatter);
+
+        Element supplierShipment = singleDateShipmentWidgetList.findChildElement(
+                String.format(".//*[contains(@text,'%s')]/following-sibling::*[contains(@text,'%s')]/following-sibling::android.view.ViewGroup[*[contains(@text,'%s')]]",
+                        supplierName, formattedDateTime, plannedQuantity));
+        if (!supplierShipment.isVisible()) {
+            mainScrollView.scrollDownToElement(supplierShipment);
+        }
+        supplierShipment.click();
+        return new SupplyCardPage();
+    }
+
+    @Step("Открыть модальное окно резерва на поставку")
+    public ReserveModalPage openReserveModal(String supplierName, LocalDateTime shipmentDate) throws Exception {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM, H:mm", new Locale("ru"));
+        String formattedDateTime = shipmentDate.format(formatter);
+
+        Element supplierReserve = singleDateReserveWidgetList.findChildElement(
+                String.format(".//*[contains(@text,'%s')]/following-sibling::*[contains(@text,'%s')]",
+                        supplierName, formattedDateTime));
+        if (!supplierReserve.isVisible()) {
+            mainScrollView.scrollDownToElement(supplierReserve);
+        }
+        supplierReserve.click();
+        return new ReserveModalPage();
+    }
 
     @Step("Открыть модальное окно выбора отдела")
     public DepartmentListPage openDepartmentSelectorPage() {

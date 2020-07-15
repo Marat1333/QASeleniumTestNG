@@ -3,6 +3,7 @@ package com.leroy.magmobile.ui.tests.work;
 import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.api.Module;
+import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.SupplyPlanClient;
 import com.leroy.magmobile.api.data.supply_plan.Card.SupplyCardData;
 import com.leroy.magmobile.api.data.supply_plan.Details.ShipmentData;
@@ -17,11 +18,17 @@ import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.more.DepartmentListPage;
 import com.leroy.magmobile.ui.pages.work.WorkPage;
 import com.leroy.magmobile.ui.pages.work.supply_plan.*;
+import com.leroy.magmobile.ui.pages.work.supply_plan.data.SupplyDailyReserveInfo;
+import com.leroy.magmobile.ui.pages.work.supply_plan.data.SupplyDetailsCardInfo;
+import com.leroy.magmobile.ui.pages.work.supply_plan.modal.FewShipmentsModalPage;
+import com.leroy.magmobile.ui.pages.work.supply_plan.modal.OtherProductsModal;
+import com.leroy.magmobile.ui.pages.work.supply_plan.modal.ReserveModalPage;
 import com.leroy.utils.DateTimeUtil;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,6 +54,84 @@ public class SupplyPlanTest extends AppBaseSteps {
     }
 
     private ShipmentData getRandomShipment(String departmentId) {
+        List<ShipmentData> weekShipments = getWeekShipments(departmentId);
+        return weekShipments.get((int) (Math.random() * weekShipments.size()));
+    }
+
+    private SupplyDetailsCardInfo getMultiShipmentSupply() {
+        List<ShipmentData> weekShipments;
+        for (int i = 1; i < 16; i++) {
+            weekShipments = getWeekShipments(String.valueOf(i));
+            for (ShipmentData eachSupply : weekShipments) {
+                SupplyCardData supplyCardData = client.getSupplyCard(new GetSupplyPlanCard().setDocumentNo(eachSupply.getDocumentNo().asText())
+                        .setDocumentType(eachSupply.getDocumentType().asText())
+                        .setSendingLocation(eachSupply.getSendingLocation())
+                        .setSendingLocationType(eachSupply.getSendingLocationType())).asJson();
+                try {
+                    if (supplyCardData.getShipments().size() > 1) {
+                        return new SupplyDetailsCardInfo(eachSupply, supplyCardData, String.valueOf(i));
+                    }
+                } catch (NullPointerException e) {
+                    Log.warn("Mash-up load error");
+                }
+            }
+        }
+        return null;
+    }
+
+    private SupplyDetailsCardInfo getSupplyWithExtraProducts() {
+        List<ShipmentData> weekShipments;
+        for (int i = 1; i < 16; i++) {
+            weekShipments = getWeekShipments(String.valueOf(i));
+            for (ShipmentData eachSupply : weekShipments) {
+                SupplyCardData supplyCardData = client.getSupplyCard(new GetSupplyPlanCard().setDocumentNo(eachSupply.getDocumentNo().asText())
+                        .setDocumentType(eachSupply.getDocumentType().asText())
+                        .setSendingLocation(eachSupply.getSendingLocation())
+                        .setSendingLocationType(eachSupply.getSendingLocationType())).asJson();
+                try {
+                    //условие на случай, ошибки бэка, когда все товары будут в otherProducts
+                    if (supplyCardData.getOtherProducts().size() > 0 && supplyCardData.getShipments().get(0).getProducts().get(0).getLmCode() != null) {
+                        return new SupplyDetailsCardInfo(eachSupply, supplyCardData, String.valueOf(i));
+                    }
+                } catch (NullPointerException e) {
+                    Log.warn("Mash-up load error");
+                }
+            }
+        }
+        return null;
+    }
+
+    private SupplyDailyReserveInfo getTodayReserve() {
+        LocalDate date = LocalDate.now();
+        for (int i = 1; i < 16; i++) {
+            List<ShipmentData> data = client.getShipments(new GetSupplyPlanDetails().setDate(date)
+                    .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                    .setDepartmentId(i)).asJson().getItems();
+            data = data.stream().filter(y -> y.getRowType().equals("FIX_RESERVE")).collect(Collectors.toList());
+            if (data.size() > 0) {
+                return new SupplyDailyReserveInfo(data.get((int) (Math.random()) * data.size()), String.valueOf(i));
+            }
+        }
+        return null;
+    }
+
+    private SupplyDailyReserveInfo getNotTodayReserve() {
+        LocalDate date = LocalDate.now();
+        for (int i = 1; i < 16; i++) {
+            for (int z = 1; z < 7; z++) {
+                List<ShipmentData> data = client.getShipments(new GetSupplyPlanDetails().setDate(date.plusDays(z))
+                        .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                        .setDepartmentId(i)).asJson().getItems();
+                data = data.stream().filter(y -> y.getRowType().equals("FIX_RESERVE")).collect(Collectors.toList());
+                if (data.size() > 0) {
+                    return new SupplyDailyReserveInfo(data.get((int) (Math.random()) * data.size()), String.valueOf(i));
+                }
+            }
+        }
+        return null;
+    }
+
+    private List<ShipmentData> getWeekReserves(String departmentId) {
         LocalDate date = LocalDate.now();
         List<ShipmentDataList> responses = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
@@ -55,12 +140,29 @@ public class SupplyPlanTest extends AppBaseSteps {
                     .setDepartmentId(departmentId)).asJson());
         }
         List<ShipmentDataList> nonEmptyResponses = responses.stream().filter((i) -> i.getItems().size() > 0).collect(Collectors.toList());
-        List<ShipmentData> randomSupplyList = new ArrayList<>();
+        List<ShipmentData> weekReservesList = new ArrayList<>();
         for (ShipmentDataList each : nonEmptyResponses) {
-            randomSupplyList.addAll(each.getItems());
+            weekReservesList.addAll(each.getItems());
         }
-        randomSupplyList = randomSupplyList.stream().filter(i -> !i.getRowType().equals("FIX_RESERVE")).collect(Collectors.toList());
-        return randomSupplyList.get((int) (Math.random() * randomSupplyList.size()));
+        weekReservesList = weekReservesList.stream().filter(i -> i.getRowType().equals("FIX_RESERVE")).collect(Collectors.toList());
+        return weekReservesList;
+    }
+
+    private List<ShipmentData> getWeekShipments(String departmentId) {
+        LocalDate date = LocalDate.now();
+        List<ShipmentDataList> responses = new ArrayList<>();
+        for (int i = 0; i < 7; i++) {
+            responses.add(client.getShipments(new GetSupplyPlanDetails().setDate(date.plusDays(i))
+                    .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                    .setDepartmentId(departmentId)).asJson());
+        }
+        List<ShipmentDataList> nonEmptyResponses = responses.stream().filter((i) -> i.getItems().size() > 0).collect(Collectors.toList());
+        List<ShipmentData> weekSupplyList = new ArrayList<>();
+        for (ShipmentDataList each : nonEmptyResponses) {
+            weekSupplyList.addAll(each.getItems());
+        }
+        weekSupplyList = weekSupplyList.stream().filter(i -> !i.getRowType().equals("FIX_RESERVE")).collect(Collectors.toList());
+        return weekSupplyList;
     }
 
     @Test(description = "C3293181 Смена отдела по фильтру")
@@ -323,14 +425,13 @@ public class SupplyPlanTest extends AppBaseSteps {
 
     @Test(description = "C3293186 проверить детали поставки")
     public void testSupplyCard() throws Exception {
-        String apiDateFormat = "yyyy-MM-dd HH:mm:ss";
         ShipmentData randomSupply = getRandomShipment(EnvConstants.BASIC_USER_DEPARTMENT_ID);
         String supplierId = randomSupply.getSendingLocation();
         String supplierName = randomSupply.getSendingLocationName();
 
+        LocalDate today = LocalDate.now();
         LocalDate shipmentDate = randomSupply.getDate();
-        LocalDate date = LocalDate.now();
-        long dateDiff = DateTimeUtil.getDateDifferenceInDays(date, shipmentDate);
+        long dateDiff = DateTimeUtil.getDateDifferenceInDays(today, shipmentDate);
 
         GetSupplyPlanCard param = new GetSupplyPlanCard().setDocumentNo(randomSupply.getDocumentNo().asText())
                 .setDocumentType(randomSupply.getDocumentType().asText())
@@ -346,9 +447,172 @@ public class SupplyPlanTest extends AppBaseSteps {
             periodSelectorPage.selectPeriodOption(PeriodSelectorPage.PeriodOption.WEEK);
             suppliesListPage.choseDayOfWeek(dateDiff);
         }
+        String apiDateFormat = "yyyy-MM-dd HH:mm:ss";
         SupplyCardPage supplyCardPage = suppliesListPage.goToSupplyCard(supplierName,
-                DateTimeUtil.strToLocalDateTime(shipmentDate.toString() + " " + randomSupply.getTime(), apiDateFormat));
+                DateTimeUtil.strToLocalDateTime(shipmentDate.toString() + " " + randomSupply.getTime(), apiDateFormat), randomSupply.getPalletPlan());
         supplyCardPage.shouldDataIsCorrect(randomSupply, data);
     }
 
+    @Test(description = "C3293187 Переключение между табами в карточке заказа/трансфера")
+    public void testSupplyCardTabSwitch() throws Exception {
+        //Pre-conditions
+        String apiDateFormat = "yyyy-MM-dd HH:mm:ss";
+        SupplyDetailsCardInfo multiShipment = getMultiShipmentSupply();
+        SupplyDetailsCardInfo otherProductsSupply = getSupplyWithExtraProducts();
+
+        SuppliesListPage suppliesListPage = precondition();
+        SupplyCardPage supplyCardPage;
+
+        if (otherProductsSupply != null) {
+            ShipmentData randomSupply = otherProductsSupply.getDetails();
+            String supplierName = randomSupply.getSendingLocationName();
+
+            String tmpDepartment = otherProductsSupply.getDepartmentId();
+            String department = tmpDepartment.length() > 1 ? tmpDepartment : "0" + tmpDepartment;
+            DepartmentListPage departmentListPage = suppliesListPage.openDepartmentSelectorPage();
+            departmentListPage.selectDepartmentById(department);
+
+            LocalDate today = LocalDate.now();
+            LocalDate shipmentDate = randomSupply.getDate();
+            long dateDiff = DateTimeUtil.getDateDifferenceInDays(today, shipmentDate);
+            if (dateDiff > 0) {
+                PeriodSelectorPage periodSelectorPage = suppliesListPage.openPeriodSelectorPage();
+                periodSelectorPage.selectPeriodOption(PeriodSelectorPage.PeriodOption.WEEK);
+                suppliesListPage.choseDayOfWeek(dateDiff);
+            }
+            //Step 1
+            step("Перейти в карточку поставки у которой есть дополнительные товары");
+            supplyCardPage = suppliesListPage.goToSupplyCard(supplierName,
+                    DateTimeUtil.strToLocalDateTime(shipmentDate.toString() + " " + randomSupply.getTime(), apiDateFormat), randomSupply.getPalletPlan());
+            supplyCardPage.shouldSwitchToNeededTabIsComplete(SupplyCardPage.Tab.FIRST_SHIPMENT);
+
+            //Step 2
+            step("Открыть вкладку \"Остальное\"");
+            supplyCardPage.switchTab(SupplyCardPage.Tab.OTHER_PRODUCTS);
+            supplyCardPage.shouldSwitchToNeededTabIsComplete(SupplyCardPage.Tab.OTHER_PRODUCTS);
+            supplyCardPage.goBack();
+        }
+        if (multiShipment != null) {
+            ShipmentData randomSupply = multiShipment.getDetails();
+            String supplierName = randomSupply.getSendingLocationName();
+
+            String tmpDepartment = multiShipment.getDepartmentId();
+            String department = tmpDepartment.length() > 1 ? tmpDepartment : "0" + tmpDepartment;
+            DepartmentListPage departmentListPage = suppliesListPage.openDepartmentSelectorPage();
+            departmentListPage.selectDepartmentById(department);
+
+            LocalDate today = LocalDate.now();
+            LocalDate shipmentDate = randomSupply.getDate();
+            long dateDiff = DateTimeUtil.getDateDifferenceInDays(today, shipmentDate);
+            if (dateDiff > 0) {
+                PeriodSelectorPage periodSelectorPage = suppliesListPage.openPeriodSelectorPage();
+                periodSelectorPage.selectPeriodOption(PeriodSelectorPage.PeriodOption.WEEK);
+                suppliesListPage.choseDayOfWeek(dateDiff);
+            }
+            //Step 3
+            step("Перейти в карточку поставки у которой есть более одной отгрузки");
+            supplyCardPage = suppliesListPage.goToSupplyCard(supplierName,
+                    DateTimeUtil.strToLocalDateTime(shipmentDate.toString() + " " + randomSupply.getTime(), apiDateFormat), randomSupply.getPalletPlan());
+            supplyCardPage.shouldSwitchToNeededTabIsComplete(SupplyCardPage.Tab.FIRST_SHIPMENT);
+
+            //Step 4
+            step("Открыть вкладку \"2 отгрузка\"");
+            supplyCardPage.switchTab(SupplyCardPage.Tab.SECOND_SHIPMENT);
+            supplyCardPage.shouldSwitchToNeededTabIsComplete(SupplyCardPage.Tab.SECOND_SHIPMENT);
+        }
+    }
+
+    @Test(description = "C3293191 Модальные окна справки")
+    public void testHintsModal() throws Exception {
+        String apiDateFormat = "yyyy-MM-dd HH:mm:ss";
+        SupplyDailyReserveInfo todayReserve = getTodayReserve();
+        SupplyDailyReserveInfo notTodayReserve = getNotTodayReserve();
+        String dept;
+        ShipmentData data;
+        ReserveModalPage reserveModalPage;
+
+        SuppliesListPage suppliesListPage = precondition();
+        DepartmentListPage departmentListPage = suppliesListPage.openDepartmentSelectorPage();
+
+        if (todayReserve != null) {
+            String tmpDepartment = todayReserve.getDepartmentId();
+            dept = tmpDepartment.length() > 1 ? tmpDepartment : "0" + tmpDepartment;
+            departmentListPage.selectDepartmentById(dept);
+            data = todayReserve.getData();
+
+            //Step 1
+            step("Открыть модальное окно-подсказку о резерве поставки через дневной вид");
+            reserveModalPage = suppliesListPage.openReserveModal(data.getSendingLocationName(),
+                    DateTimeUtil.strToLocalDateTime(data.getDate().toString() + " " + data.getTime(), apiDateFormat));
+            reserveModalPage.verifyRequiredElements();
+            reserveModalPage.closeModal();
+        }
+        if (notTodayReserve != null) {
+            String tmpDepartment = notTodayReserve.getDepartmentId();
+            dept = tmpDepartment.length() > 1 ? tmpDepartment : "0" + tmpDepartment;
+            suppliesListPage.openDepartmentSelectorPage();
+            departmentListPage.selectDepartmentById(dept);
+            PeriodSelectorPage periodSelectorPage = suppliesListPage.openPeriodSelectorPage();
+            periodSelectorPage.selectPeriodOption(PeriodSelectorPage.PeriodOption.WEEK);
+
+            data = notTodayReserve.getData();
+            String supplierId = data.getSendingLocation();
+            String supplierName = data.getSendingLocationName();
+            LocalDateTime reserveTime = DateTimeUtil.strToLocalDateTime(data.getDate().toString() + " " + data.getTime(), apiDateFormat);
+
+            LocalDate today = LocalDate.now();
+            LocalDate shipmentDate = data.getDate();
+            long dateDiff = DateTimeUtil.getDateDifferenceInDays(today, shipmentDate);
+            suppliesListPage.choseDayOfWeek(dateDiff);
+
+            //Step 2
+            step("Открыть модальное окно-подсказку о резерве поставки через недельный вид");
+            reserveModalPage = suppliesListPage.openReserveModal(supplierName, reserveTime);
+            reserveModalPage.verifyRequiredElements();
+            reserveModalPage.closeModal();
+
+            SearchSupplierPage searchSupplierPage = suppliesListPage.goToSearchSupplierPage();
+            searchSupplierPage.searchForSupplier(supplierId);
+            SupplierWeekSuppliesPage supplierWeekSuppliesPage = searchSupplierPage.goToSupplierWeekSuppliesPage(supplierId);
+
+            //Step 3
+            step("Открыть модальное окно-подсказку о резерве поставки через поиск поставок поставщика");
+            supplierWeekSuppliesPage.openReserveModal(supplierName, reserveTime);
+            reserveModalPage.verifyRequiredElements();
+            reserveModalPage.closeModal();
+            supplierWeekSuppliesPage.goBack();
+        }
+        SupplyDetailsCardInfo otherProductsSupply = getSupplyWithExtraProducts();
+        if (otherProductsSupply != null) {
+            String tmpDepartment = otherProductsSupply.getDepartmentId();
+            dept = tmpDepartment.length() > 1 ? tmpDepartment : "0" + tmpDepartment;
+            data = otherProductsSupply.getDetails();
+            String supplierId = data.getSendingLocation();
+            String supplierName = data.getSendingLocationName();
+            Integer plannedPalletQuantity = data.getPalletPlan();
+            LocalDateTime shipmentTime = DateTimeUtil.strToLocalDateTime(data.getDate().toString() + " " + data.getTime(), apiDateFormat);
+
+            suppliesListPage.openDepartmentSelectorPage();
+            departmentListPage.selectDepartmentById(dept);
+            SearchSupplierPage searchSupplierPage = suppliesListPage.goToSearchSupplierPage();
+            searchSupplierPage.searchForSupplier(supplierId);
+            SupplierWeekSuppliesPage supplierWeekSuppliesPage = searchSupplierPage.goToSupplierWeekSuppliesPage(supplierId);
+            SupplyCardPage supplyCardPage = supplierWeekSuppliesPage.goToSupplyCard(supplierName, shipmentTime, plannedPalletQuantity);
+
+            //Step 4
+            step("Перейти в карточку поставки, у которой есть дополнительные товары и открыть модалку при выбранном табе отгрузки");
+            supplyCardPage.openHintModal();
+            FewShipmentsModalPage fewShipmentsModalPage = new FewShipmentsModalPage();
+            fewShipmentsModalPage.verifyRequiredElements();
+            fewShipmentsModalPage.closeModal();
+            supplyCardPage = new SupplyCardPage();
+
+            //Step 5
+            step("переключится на таб остальных товаров и открыть модалку");
+            supplyCardPage.switchTab(SupplyCardPage.Tab.OTHER_PRODUCTS);
+            supplyCardPage.openHintModal();
+            OtherProductsModal otherProductsModal = new OtherProductsModal();
+            otherProductsModal.verifyRequiredElements();
+        }
+    }
 }

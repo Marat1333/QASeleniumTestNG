@@ -1,6 +1,7 @@
 package com.leroy.magmobile.ui.pages.work.supply_plan;
 
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.configuration.Log;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
@@ -15,11 +16,15 @@ import com.leroy.utils.DateTimeUtil;
 import io.qameta.allure.Step;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class SupplyCardPage extends CommonMagMobilePage {
+    @AppFindBy(accessibilityId = "BackCloseModal")
+    Button backBtn;
+
     @AppFindBy(xpath = "//*[contains(@text,'Заказ №') or contains(@text,'Трансфер №')]")
     Element title;
 
@@ -67,10 +72,76 @@ public class SupplyCardPage extends CommonMagMobilePage {
 
     AndroidScrollView<String> mainScrollView = new AndroidScrollView<String>(driver, AndroidScrollView.TYPICAL_LOCATOR);
 
+    public enum Tab {
+        FIRST_SHIPMENT,
+        SECOND_SHIPMENT,
+        OTHER_PRODUCTS
+    }
+
     @Override
     protected void waitForPageIsLoaded() {
         title.waitForVisibility();
         supplierType.waitForVisibility();
+    }
+
+    @Step("вернуться назад")
+    public void goBack() {
+        backBtn.click();
+    }
+
+    @Step("Переключить на указанную вкладку")
+    public SupplyCardPage switchTab(Tab tab) throws Exception {
+        List<String> tabsText = new ArrayList<>();
+        for (Element each : shipmentsTabs) {
+            tabsText.add(each.getText());
+        }
+        switch (tab) {
+            case FIRST_SHIPMENT:
+                if (tabsText.contains("1 ОТГРУЗКА")) {
+                    shipmentsTabs.get(0).click();
+                    shipmentDate.waitForVisibility();
+                } else {
+                    Log.warn("There is no needed tab");
+                }
+                break;
+            case SECOND_SHIPMENT:
+                if (tabsText.contains("2 ОТГРУЗКА")) {
+                    shipmentsTabs.get(1).click();
+                    shipmentDate.waitForVisibility();
+                } else {
+                    Log.warn("There is no needed tab");
+                }
+                break;
+            case OTHER_PRODUCTS:
+                if (tabsText.contains("ОСТАЛЬНОЕ")) {
+                    shipmentsTabs.get(shipmentsTabs.getCount() - 1).click();
+                    shipmentReceivedCondition.waitForInvisibility();
+                } else {
+                    Log.warn("There is no needed tab");
+                }
+                break;
+        }
+        return this;
+    }
+
+    @Step("Открыть модальное окно-справку")
+    public void openHintModal() {
+        callHintModalBtn.click();
+    }
+
+    @Step("Проверить, что выполнено переключение на таб")
+    public SupplyCardPage shouldSwitchToNeededTabIsComplete(Tab tab) {
+        String pageSource = getPageSource();
+        if (tab.equals(Tab.FIRST_SHIPMENT) || tab.equals(Tab.SECOND_SHIPMENT)) {
+            softAssert.areElementsVisible(pageSource, shipmentDate, shipmentReceivedCondition, receivedPlannedQuantity);
+            softAssert.isTrue(shipmentNumber.getText().contains("№"), "number is invisible");
+        } else {
+            softAssert.areElementsNotVisible(pageSource, shipmentDate, shipmentReceivedCondition, receivedPlannedQuantity);
+            softAssert.isTrue(!shipmentNumber.getText().contains("№"), "number is visible");
+        }
+        softAssert.verifyAll();
+
+        return this;
     }
 
     @Step("Проверить, корректность отображенных данных")
@@ -99,8 +170,8 @@ public class SupplyCardPage extends CommonMagMobilePage {
         softAssert.isElementTextEqual(supplierPhoneNumber, sendingLocation.getContactPhone());
         softAssert.isElementTextEqual(supplierContactPersonName, sendingLocation.getContactName());
         softAssert.isElementTextEqual(emailAddress, sendingLocation.getEmail());
-        if (shipments.size()==1&&otherProducts.size()==0){
-            softAssert.isTrue(shipmentsTabs.getCount()==0, "Wrong tabs count");
+        if (shipments.size() == 1 && otherProducts.size() == 0) {
+            softAssert.isTrue(shipmentsTabs.getCount() == 0, "Wrong tabs count");
         }
 
         for (int i = 0; i < shipments.size(); i++) {

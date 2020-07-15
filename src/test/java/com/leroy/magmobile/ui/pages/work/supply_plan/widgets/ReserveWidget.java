@@ -8,14 +8,14 @@ import com.leroy.magmobile.ui.pages.work.supply_plan.data.AppointmentCardData;
 import com.leroy.utils.DateTimeUtil;
 import org.openqa.selenium.WebDriver;
 
-public class AppointmentWidget extends CardWidget<AppointmentCardData> {
+public class ReserveWidget extends CardWidget<AppointmentCardData> {
     @AppFindBy(xpath = "./android.widget.TextView[1]")
     Element supplierName;
 
     @AppFindBy(xpath = "./android.widget.TextView[2]")
     Element supplyDate;
 
-    public AppointmentWidget(WebDriver driver, CustomLocator locator) {
+    public ReserveWidget(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
     }
 
