@@ -30,15 +30,15 @@ public class ShipmentWidget extends CardWidget<ShipmentCardData> {
 
     @Override
     public boolean isFullyVisible(String pageSource) {
-        return supplierName.isVisible(pageSource) && quantityLbl.isVisible(pageSource);
+        return supplierName.isVisible() && quantityLbl.isVisible();
     }
 
     @Override
     public ShipmentCardData collectDataFromPage(String pageSource) {
         ShipmentCardData data = new ShipmentCardData();
-        data.setName(supplierName.getText(pageSource));
-        data.setDateAndTime(DateTimeUtil.strToLocalDateTime(supplyDate.getText(pageSource), "d MMM, H:mm"));
-        String quantity = quantityLbl.getText(pageSource);
+        data.setName(supplierName.getText());
+        data.setDateAndTime(DateTimeUtil.strToLocalDateTime(supplyDate.getText(), "d MMM, H:mm"));
+        String quantity = quantityLbl.getText();
         if (quantity.contains("/")) {
             String[] tmp = quantity.split("/");
             int fact = Integer.parseInt(tmp[0]);
