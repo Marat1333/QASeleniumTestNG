@@ -13,6 +13,7 @@ import com.leroy.magportal.ui.models.salesdoc.ShortSalesDocWebData;
 import com.leroy.magportal.ui.pages.cart_estimate.CartEstimatePage;
 import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
 import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
+import com.leroy.magportal.ui.pages.cart_estimate.PrintEstimatePage;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SendEstimateToEmailModal;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SubmittedEstimateModal;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SubmittedSendEstimateModal;
@@ -22,10 +23,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.annotations.Test;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class EstimateTest extends BasePAOTest {
@@ -895,6 +893,43 @@ public class EstimateTest extends BasePAOTest {
         sendEstimateToEmailModal.enterEmail(1, "");
         sendEstimateToEmailModal.clickSendButton();
         sendEstimateToEmailModal.shouldErrorTooltipIs(VALIDATION_EMAIL_ERROR_TEXT);
+    }
+
+    // Print Estimate
+
+    @Test(description = "C23393377 Печать сметы с одним товаром", groups = NEED_PRODUCTS_GROUP)
+    public void testPrintEstimateWithOneProduct() throws Exception {
+        // Test Data
+        ProductItemData testProduct1 = productList.get(0);
+        SimpleCustomerData customer1 = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+        step("Выполнение предусловий");
+        EstimatePage estimatePage;
+        if (isStartFromScratch()) {
+            estimatePage = loginAndGoTo(EstimatePage.class)
+                    .clickCreateEstimateButton();
+            estimatePage.clickAddCustomer()
+                    .selectCustomerByPhone(customer1.getPhoneNumber());
+            estimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
+        } else {
+            estimatePage = new EstimatePage();
+        }
+
+        SalesDocWebData estimateData = estimatePage.getSalesDocData();
+
+        // Step 1
+        step("Нажмите на кнопку 'Создать'");
+        SubmittedEstimateModal submittedEstimateModal = estimatePage.clickCreateButton();
+        submittedEstimateModal.verifyRequiredElements();
+
+        // Step 2
+        step("Нажмите на кнопку 'Распечатать'");
+        PrintEstimatePage printEstimatePage = submittedEstimateModal.clickPrint();
+        printEstimatePage.shouldPrintPreviewAreVisible();
+
+        // Step 3
+        step("Нажмите на кнопку 'Отмена'");
+        printEstimatePage.clickCancelButton();
+        String s = "";
     }
 
 }
