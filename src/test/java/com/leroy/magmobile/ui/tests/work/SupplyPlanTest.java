@@ -170,14 +170,14 @@ public class SupplyPlanTest extends AppBaseSteps {
         step("Проверить данные по поставкам и бронированиям на поставку за сегодня");
         SuppliesListPage suppliesListPage = precondition();
         suppliesListPage.shouldTotalPalletDataIsCorrect(todayTotalPalletResponse);
-        //suppliesListPage.shouldDataIsCorrect(todayResponse);
+        suppliesListPage.shouldDataIsCorrect(todayResponse);
 
         //Step 2
         step("Проверить данные по поставкам и бронированиям на поставку за вчера");
         PeriodSelectorPage periodSelectorPage = suppliesListPage.openPeriodSelectorPage();
         periodSelectorPage.selectPeriodOption(PeriodSelectorPage.PeriodOption.YESTERDAY);
         suppliesListPage.shouldTotalPalletDataIsCorrect(yesterdayTotalPalletResponse);
-        //suppliesListPage.shouldDataIsCorrect(yesterdayResponse);
+        suppliesListPage.shouldDataIsCorrect(yesterdayResponse);
 
         //Step 3
         step("Проверить данные по поставкам и бронированиям на поставку за неделю");
