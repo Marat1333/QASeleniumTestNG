@@ -12,13 +12,13 @@ import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.more.DepartmentListPage;
 import com.leroy.magmobile.ui.pages.work.supply_plan.data.AppointmentCardData;
 import com.leroy.magmobile.ui.pages.work.supply_plan.data.ShipmentCardData;
+import com.leroy.magmobile.ui.pages.work.supply_plan.data.SupplyNavigationObject;
 import com.leroy.magmobile.ui.pages.work.supply_plan.modal.ReserveModalPage;
 import com.leroy.magmobile.ui.pages.work.supply_plan.widgets.ReserveWidget;
 import com.leroy.magmobile.ui.pages.work.supply_plan.widgets.ShipmentWidget;
 import com.leroy.utils.DateTimeUtil;
 import io.qameta.allure.Step;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
@@ -64,9 +64,9 @@ public class SuppliesListPage extends CommonMagMobilePage {
 
     @Override
     public void waitForPageIsLoaded() {
-        waitUntilProgressBarAppearsAndDisappear();
         selectDepartmentBtn.waitForVisibility();
         selectPeriodBtn.waitForVisibility();
+        waitUntilProgressBarIsInvisible();
     }
 
     @Step("Выбрать нужный день недели")
@@ -86,13 +86,13 @@ public class SuppliesListPage extends CommonMagMobilePage {
     }
 
     @Step("Выбрать нужную поставку")
-    public SupplyCardPage goToSupplyCard(String supplierName, LocalDateTime shipmentDate, Integer plannedQuantity) throws Exception {
+    public SupplyCardPage goToSupplyCard(SupplyNavigationObject object) throws Exception {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM, H:mm", new Locale("ru"));
-        String formattedDateTime = shipmentDate.format(formatter);
+        String formattedDateTime = object.getShipmentDate().format(formatter);
 
         Element supplierShipment = singleDateShipmentWidgetList.findChildElement(
                 String.format(".//*[contains(@text,'%s')]/following-sibling::*[contains(@text,'%s')]/following-sibling::android.view.ViewGroup[*[contains(@text,'%s')]]",
-                        supplierName, formattedDateTime, plannedQuantity));
+                        object.getSupplierName(), formattedDateTime, object.getPlannedQuantity()));
         if (!supplierShipment.isVisible()) {
             mainScrollView.scrollDownToElement(supplierShipment);
         }
@@ -101,13 +101,13 @@ public class SuppliesListPage extends CommonMagMobilePage {
     }
 
     @Step("Открыть модальное окно резерва на поставку")
-    public ReserveModalPage openReserveModal(String supplierName, LocalDateTime shipmentDate) throws Exception {
+    public ReserveModalPage openReserveModal(SupplyNavigationObject object) throws Exception {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM, H:mm", new Locale("ru"));
-        String formattedDateTime = shipmentDate.format(formatter);
+        String formattedDateTime = object.getShipmentDate().format(formatter);
 
         Element supplierReserve = singleDateReserveWidgetList.findChildElement(
                 String.format(".//*[contains(@text,'%s')]/following-sibling::*[contains(@text,'%s')]",
-                        supplierName, formattedDateTime));
+                        object.getSupplierName(), formattedDateTime));
         if (!supplierReserve.isVisible()) {
             mainScrollView.scrollDownToElement(supplierReserve);
         }

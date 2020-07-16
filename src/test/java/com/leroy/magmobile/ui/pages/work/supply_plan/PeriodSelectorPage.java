@@ -4,6 +4,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.RadioButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import io.qameta.allure.Step;
 
 public class PeriodSelectorPage extends CommonMagMobilePage {
 
@@ -25,6 +26,7 @@ public class PeriodSelectorPage extends CommonMagMobilePage {
     @AppFindBy(xpath = "//android.widget.TextView[contains(@text,'Неделя')]/following-sibling::android.view.ViewGroup")
     RadioButton weekOption;
 
+    @Step("Выбрать период")
     public SuppliesListPage selectPeriodOption(PeriodOption option) {
         switch (option) {
             case YESTERDAY:

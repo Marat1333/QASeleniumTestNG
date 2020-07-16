@@ -3,7 +3,6 @@ package com.leroy.magmobile.ui.tests.work;
 import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.api.Module;
-import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.SupplyPlanClient;
 import com.leroy.magmobile.api.data.supply_plan.Card.SupplyCardData;
 import com.leroy.magmobile.api.data.supply_plan.Details.ShipmentData;
@@ -20,6 +19,7 @@ import com.leroy.magmobile.ui.pages.work.WorkPage;
 import com.leroy.magmobile.ui.pages.work.supply_plan.*;
 import com.leroy.magmobile.ui.pages.work.supply_plan.data.SupplyDailyShipmentInfo;
 import com.leroy.magmobile.ui.pages.work.supply_plan.data.SupplyDetailsCardInfo;
+import com.leroy.magmobile.ui.pages.work.supply_plan.data.SupplyNavigationObject;
 import com.leroy.magmobile.ui.pages.work.supply_plan.modal.FewShipmentsModalPage;
 import com.leroy.magmobile.ui.pages.work.supply_plan.modal.OtherProductsModal;
 import com.leroy.magmobile.ui.pages.work.supply_plan.modal.ReserveModalPage;
@@ -28,8 +28,6 @@ import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,8 +42,6 @@ public class SupplyPlanTest extends AppBaseSteps {
         return workPage.goToShipmentListPage();
     }
 
-    //TODO create several helpers
-
     private LocalDate[] getCurrentCalendarWeek() {
         LocalDate[] week = new LocalDate[7];
         LocalDate date = LocalDate.now();
@@ -53,131 +49,6 @@ public class SupplyPlanTest extends AppBaseSteps {
             week[i] = date.plusDays(i);
         }
         return week;
-    }
-
-    private ShipmentData getRandomShipment(String departmentId) {
-        List<ShipmentData> weekShipments = getWeekShipments(departmentId);
-        return weekShipments.get((int) (Math.random() * weekShipments.size()));
-    }
-
-    private SupplyDetailsCardInfo getMultiShipmentSupply() {
-        List<ShipmentData> weekShipments;
-        for (int i = 1; i < 16; i++) {
-            weekShipments = getWeekShipments(String.valueOf(i));
-            for (ShipmentData eachSupply : weekShipments) {
-                SupplyCardData supplyCardData = client.getSupplyCard(new GetSupplyPlanCard().setDocumentNo(eachSupply.getDocumentNo().asText())
-                        .setDocumentType(eachSupply.getDocumentType().asText())
-                        .setSendingLocation(eachSupply.getSendingLocation())
-                        .setSendingLocationType(eachSupply.getSendingLocationType())).asJson();
-                try {
-                    if (supplyCardData.getShipments().size() > 1) {
-                        return new SupplyDetailsCardInfo(eachSupply, supplyCardData, String.valueOf(i));
-                    }
-                } catch (NullPointerException e) {
-                    Log.warn("Mash-up load error");
-                }
-            }
-        }
-        return null;
-    }
-
-    private SupplyDetailsCardInfo getSupplyWithExtraProducts() {
-        List<ShipmentData> weekShipments;
-        for (int i = 1; i < 16; i++) {
-            weekShipments = getWeekShipments(String.valueOf(i));
-            for (ShipmentData eachSupply : weekShipments) {
-                SupplyCardData supplyCardData = client.getSupplyCard(new GetSupplyPlanCard().setDocumentNo(eachSupply.getDocumentNo().asText())
-                        .setDocumentType(eachSupply.getDocumentType().asText())
-                        .setSendingLocation(eachSupply.getSendingLocation())
-                        .setSendingLocationType(eachSupply.getSendingLocationType())).asJson();
-                try {
-                    //условие на случай, ошибки бэка, когда все товары будут в otherProducts
-                    if (supplyCardData.getOtherProducts().size() > 0 && supplyCardData.getShipments().get(0).getProducts().get(0).getLmCode() != null) {
-                        return new SupplyDetailsCardInfo(eachSupply, supplyCardData, String.valueOf(i));
-                    }
-                } catch (NullPointerException e) {
-                    Log.warn("Mash-up load error");
-                }
-            }
-        }
-        return null;
-    }
-
-    private SupplyDailyShipmentInfo getTodayReserve() {
-        LocalDate date = LocalDate.now();
-        for (int i = 1; i < 16; i++) {
-            List<ShipmentData> data = client.getShipments(new GetSupplyPlanDetails().setDate(date)
-                    .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                    .setDepartmentId(i)).asJson().getItems();
-            data = data.stream().filter(y -> y.getRowType().equals("FIX_RESERVE")).collect(Collectors.toList());
-            if (data.size() > 0) {
-                return new SupplyDailyShipmentInfo(data.get((int) (Math.random()) * data.size()), String.valueOf(i));
-            }
-        }
-        return null;
-    }
-
-    private SupplyDailyShipmentInfo getNotTodayReserve() {
-        LocalDate date = LocalDate.now();
-        for (int i = 1; i < 16; i++) {
-            for (int z = 1; z < 7; z++) {
-                List<ShipmentData> data = client.getShipments(new GetSupplyPlanDetails().setDate(date.plusDays(z))
-                        .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                        .setDepartmentId(i)).asJson().getItems();
-                data = data.stream().filter(y -> y.getRowType().equals("FIX_RESERVE")).collect(Collectors.toList());
-                if (data.size() > 0) {
-                    return new SupplyDailyShipmentInfo(data.get((int) (Math.random()) * data.size()), String.valueOf(i));
-                }
-            }
-        }
-        return null;
-    }
-
-    private List<ShipmentData> getWeekShipments(String departmentId) {
-        LocalDate date = LocalDate.now();
-        List<ShipmentDataList> responses = new ArrayList<>();
-        for (int i = 0; i < 7; i++) {
-            responses.add(client.getShipments(new GetSupplyPlanDetails().setDate(date.plusDays(i))
-                    .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                    .setDepartmentId(departmentId)).asJson());
-        }
-        List<ShipmentDataList> nonEmptyResponses = responses.stream().filter((i) -> i.getItems().size() > 0).collect(Collectors.toList());
-        List<ShipmentData> weekSupplyList = new ArrayList<>();
-        for (ShipmentDataList each : nonEmptyResponses) {
-            weekSupplyList.addAll(each.getItems());
-        }
-        weekSupplyList = weekSupplyList.stream().filter(i -> !i.getRowType().equals("FIX_RESERVE")).collect(Collectors.toList());
-        return weekSupplyList;
-    }
-
-    private SupplyDailyShipmentInfo getTodayShipment() {
-        LocalDate date = LocalDate.now();
-        for (int i = 1; i < 16; i++) {
-            List<ShipmentData> data = client.getShipments(new GetSupplyPlanDetails().setDate(date)
-                    .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                    .setDepartmentId(i)).asJson().getItems();
-            data = data.stream().filter(y -> !y.getRowType().equals("FIX_RESERVE")).collect(Collectors.toList());
-            if (data.size() > 0) {
-                return new SupplyDailyShipmentInfo(data.get((int) (Math.random()) * data.size()), String.valueOf(i));
-            }
-        }
-        return null;
-    }
-
-    private SupplyDailyShipmentInfo getNotTodayShipment() {
-        LocalDate date = LocalDate.now();
-        for (int i = 1; i < 16; i++) {
-            for (int z = 1; z < 7; z++) {
-                List<ShipmentData> data = client.getShipments(new GetSupplyPlanDetails().setDate(date.plusDays(z))
-                        .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                        .setDepartmentId(i)).asJson().getItems();
-                data = data.stream().filter(y -> !y.getRowType().equals("FIX_RESERVE")).collect(Collectors.toList());
-                if (data.size() > 0) {
-                    return new SupplyDailyShipmentInfo(data.get((int) (Math.random()) * data.size()), String.valueOf(i));
-                }
-            }
-        }
-        return null;
     }
 
     @Test(description = "C3293181 Смена отдела по фильтру")
@@ -338,9 +209,8 @@ public class SupplyPlanTest extends AppBaseSteps {
 
     @Test(description = "C3293184 Поиск поставок по поставщику")
     public void testSearchForSuppliesBySupplier() throws Exception {
-        //TODO посмотреть что там с модалкой выбора отдела
         String department = "1";
-        ShipmentData supplierDataSource = getRandomShipment(department);
+        ShipmentData supplierDataSource = client.getRandomShipment(department);
         String firstSupplierCode = supplierDataSource.getSendingLocation();
         String firstSupplierName = supplierDataSource.getSendingLocationName();
         String secondSupplierCode = "12301";
@@ -363,22 +233,22 @@ public class SupplyPlanTest extends AppBaseSteps {
         searchSupplierPage = searchSupplierPage.searchForSupplier(firstSupplierCode);
         SupplierWeekSuppliesPage supplierWeekSuppliesPage = searchSupplierPage.goToSupplierWeekSuppliesPage(firstSupplierCode);
         supplierWeekSuppliesPage.shouldSupplierNameIsCorrect(firstSupplierName);
-        //supplierWeekSuppliesPage.shouldDataIsCorrect(byIdResponse);
+        supplierWeekSuppliesPage.shouldDataIsCorrect(byIdResponse);
 
         //Step 2
         step("Проверить сообщение об отсутствии поставок у поставщика в другом отделе");
-        supplierWeekSuppliesPage.openDepartmentSelectorPage();
+        departmentListPage = supplierWeekSuppliesPage.openDepartmentSelectorPage();
         departmentListPage.selectDepartmentById("02");
         supplierWeekSuppliesPage.shouldNotFoundMsgIsDisplayed();
 
         //Step 3
         step("Проверить сообщение об отсутствии поставок у поставщика при переходе на страницу со списком его поставок");
         suppliesListPage = supplierWeekSuppliesPage.goBack();
-        suppliesListPage.openDepartmentSelectorPage();
+        departmentListPage = suppliesListPage.openDepartmentSelectorPage();
         departmentListPage.selectDepartmentById("01");
         suppliesListPage.goToSearchSupplierPage();
         searchSupplierPage.searchForSupplier(secondSupplierCode);
-        searchSupplierPage.goToSupplierWeekSuppliesPage(secondSupplierCode);
+        supplierWeekSuppliesPage = searchSupplierPage.goToSupplierWeekSuppliesPage(secondSupplierCode);
         supplierWeekSuppliesPage.shouldSupplierNameIsCorrect(secondSupplierName);
         supplierWeekSuppliesPage.shouldNotFoundMsgIsDisplayed();
     }
@@ -440,13 +310,8 @@ public class SupplyPlanTest extends AppBaseSteps {
 
     @Test(description = "C3293186 проверить детали поставки")
     public void testSupplyCard() throws Exception {
-        ShipmentData randomSupply = getRandomShipment(EnvConstants.BASIC_USER_DEPARTMENT_ID);
+        ShipmentData randomSupply = client.getRandomShipment(EnvConstants.BASIC_USER_DEPARTMENT_ID);
         String supplierId = randomSupply.getSendingLocation();
-        String supplierName = randomSupply.getSendingLocationName();
-
-        LocalDate today = LocalDate.now();
-        LocalDate shipmentDate = randomSupply.getDate();
-        long dateDiff = DateTimeUtil.getDateDifferenceInDays(today, shipmentDate);
 
         GetSupplyPlanCard param = new GetSupplyPlanCard().setDocumentNo(randomSupply.getDocumentNo().asText())
                 .setDocumentType(randomSupply.getDocumentType().asText())
@@ -457,48 +322,29 @@ public class SupplyPlanTest extends AppBaseSteps {
         //Step 1
         step("Проверить, что все данные в карточке поставки отображены корректно");
         SuppliesListPage suppliesListPage = precondition();
-        if (dateDiff > 0) {
-            PeriodSelectorPage periodSelectorPage = suppliesListPage.openPeriodSelectorPage();
-            periodSelectorPage.selectPeriodOption(PeriodSelectorPage.PeriodOption.WEEK);
-            suppliesListPage.choseDayOfWeek(dateDiff);
-        }
-        String apiDateFormat = "yyyy-MM-dd HH:mm:ss";
-        SupplyCardPage supplyCardPage = suppliesListPage.goToSupplyCard(supplierName,
-                DateTimeUtil.strToLocalDateTime(shipmentDate.toString() + " " + randomSupply.getTime(), apiDateFormat), randomSupply.getPalletPlan());
+        SupplyNavigationObject supplyNavigationObject = new SupplyNavigationObject(new SupplyDailyShipmentInfo(randomSupply, EnvConstants.BASIC_USER_DEPARTMENT_ID));
+        supplyNavigationObject.choseDepartment();
+        supplyNavigationObject.choseNavigationPeriod();
+        SupplyCardPage supplyCardPage = suppliesListPage.goToSupplyCard(supplyNavigationObject);
         supplyCardPage.shouldDataIsCorrect(randomSupply, data);
     }
 
     @Test(description = "C3293187 Переключение между табами в карточке заказа/трансфера")
     public void testSupplyCardTabSwitch() throws Exception {
         //Pre-conditions
-        String apiDateFormat = "yyyy-MM-dd HH:mm:ss";
-        SupplyDetailsCardInfo multiShipment = getMultiShipmentSupply();
-        SupplyDetailsCardInfo otherProductsSupply = getSupplyWithExtraProducts();
+        SupplyDetailsCardInfo multiShipment = client.getMultiShipmentSupply();
+        SupplyDetailsCardInfo otherProductsSupply = client.getSupplyWithExtraProducts();
 
         SuppliesListPage suppliesListPage = precondition();
         SupplyCardPage supplyCardPage;
 
         if (otherProductsSupply != null) {
-            ShipmentData randomSupply = otherProductsSupply.getDetails();
-            String supplierName = randomSupply.getSendingLocationName();
-
-            String tmpDepartment = otherProductsSupply.getDepartmentId();
-            String department = tmpDepartment.length() > 1 ? tmpDepartment : "0" + tmpDepartment;
-            DepartmentListPage departmentListPage = suppliesListPage.openDepartmentSelectorPage();
-            departmentListPage.selectDepartmentById(department);
-
-            LocalDate today = LocalDate.now();
-            LocalDate shipmentDate = randomSupply.getDate();
-            long dateDiff = DateTimeUtil.getDateDifferenceInDays(today, shipmentDate);
-            if (dateDiff > 0) {
-                PeriodSelectorPage periodSelectorPage = suppliesListPage.openPeriodSelectorPage();
-                periodSelectorPage.selectPeriodOption(PeriodSelectorPage.PeriodOption.WEEK);
-                suppliesListPage.choseDayOfWeek(dateDiff);
-            }
             //Step 1
             step("Перейти в карточку поставки у которой есть дополнительные товары");
-            supplyCardPage = suppliesListPage.goToSupplyCard(supplierName,
-                    DateTimeUtil.strToLocalDateTime(shipmentDate.toString() + " " + randomSupply.getTime(), apiDateFormat), randomSupply.getPalletPlan());
+            SupplyNavigationObject supplyNavigationObject = new SupplyNavigationObject(new SupplyDailyShipmentInfo(otherProductsSupply.getDetails(), otherProductsSupply.getDepartmentId()));
+            supplyNavigationObject.choseDepartment();
+            supplyNavigationObject.choseNavigationPeriod();
+            supplyCardPage = suppliesListPage.goToSupplyCard(supplyNavigationObject);
             supplyCardPage.shouldSwitchToNeededTabIsComplete(SupplyCardPage.Tab.FIRST_SHIPMENT);
 
             //Step 2
@@ -508,26 +354,10 @@ public class SupplyPlanTest extends AppBaseSteps {
             supplyCardPage.goBack();
         }
         if (multiShipment != null) {
-            ShipmentData randomSupply = multiShipment.getDetails();
-            String supplierName = randomSupply.getSendingLocationName();
-
-            String tmpDepartment = multiShipment.getDepartmentId();
-            String department = tmpDepartment.length() > 1 ? tmpDepartment : "0" + tmpDepartment;
-            DepartmentListPage departmentListPage = suppliesListPage.openDepartmentSelectorPage();
-            departmentListPage.selectDepartmentById(department);
-
-            LocalDate today = LocalDate.now();
-            LocalDate shipmentDate = randomSupply.getDate();
-            long dateDiff = DateTimeUtil.getDateDifferenceInDays(today, shipmentDate);
-            if (dateDiff > 0) {
-                PeriodSelectorPage periodSelectorPage = suppliesListPage.openPeriodSelectorPage();
-                periodSelectorPage.selectPeriodOption(PeriodSelectorPage.PeriodOption.WEEK);
-                suppliesListPage.choseDayOfWeek(dateDiff);
-            }
+            SupplyNavigationObject supplyNavigationObject = new SupplyNavigationObject(new SupplyDailyShipmentInfo(multiShipment.getDetails(), multiShipment.getDepartmentId()));
             //Step 3
             step("Перейти в карточку поставки у которой есть более одной отгрузки");
-            supplyCardPage = suppliesListPage.goToSupplyCard(supplierName,
-                    DateTimeUtil.strToLocalDateTime(shipmentDate.toString() + " " + randomSupply.getTime(), apiDateFormat), randomSupply.getPalletPlan());
+            supplyCardPage = suppliesListPage.goToSupplyCard(supplyNavigationObject);
             supplyCardPage.shouldSwitchToNeededTabIsComplete(SupplyCardPage.Tab.FIRST_SHIPMENT);
 
             //Step 4
@@ -539,50 +369,31 @@ public class SupplyPlanTest extends AppBaseSteps {
 
     @Test(description = "C3293191 Модальные окна справки")
     public void testHintsModal() throws Exception {
-        String apiDateFormat = "yyyy-MM-dd HH:mm:ss";
-        SupplyDailyShipmentInfo todayReserve = getTodayReserve();
-        SupplyDailyShipmentInfo notTodayReserve = getNotTodayReserve();
-        String dept;
-        ShipmentData data;
+        SupplyDailyShipmentInfo todayReserve = client.getTodayReserve();
+        SupplyDailyShipmentInfo notTodayReserve = client.getNotTodayReserve();
         ReserveModalPage reserveModalPage;
 
         SuppliesListPage suppliesListPage = precondition();
-        DepartmentListPage departmentListPage = suppliesListPage.openDepartmentSelectorPage();
 
         if (todayReserve != null) {
-            String tmpDepartment = todayReserve.getDepartmentId();
-            dept = tmpDepartment.length() > 1 ? tmpDepartment : "0" + tmpDepartment;
-            departmentListPage.selectDepartmentById(dept);
-            data = todayReserve.getData();
+            SupplyNavigationObject supplyNavigationObject = new SupplyNavigationObject(todayReserve);
+            supplyNavigationObject.choseDepartment();
 
             //Step 1
             step("Открыть модальное окно-подсказку о резерве поставки через дневной вид");
-            reserveModalPage = suppliesListPage.openReserveModal(data.getSendingLocationName(),
-                    DateTimeUtil.strToLocalDateTime(data.getDate().toString() + " " + data.getTime(), apiDateFormat));
+            reserveModalPage = suppliesListPage.openReserveModal(supplyNavigationObject);
             reserveModalPage.verifyRequiredElements();
             reserveModalPage.closeModal();
         }
         if (notTodayReserve != null) {
-            String tmpDepartment = notTodayReserve.getDepartmentId();
-            dept = tmpDepartment.length() > 1 ? tmpDepartment : "0" + tmpDepartment;
-            suppliesListPage.openDepartmentSelectorPage();
-            departmentListPage.selectDepartmentById(dept);
-            PeriodSelectorPage periodSelectorPage = suppliesListPage.openPeriodSelectorPage();
-            periodSelectorPage.selectPeriodOption(PeriodSelectorPage.PeriodOption.WEEK);
-
-            data = notTodayReserve.getData();
-            String supplierId = data.getSendingLocation();
-            String supplierName = data.getSendingLocationName();
-            LocalDateTime reserveTime = DateTimeUtil.strToLocalDateTime(data.getDate().toString() + " " + data.getTime(), apiDateFormat);
-
-            LocalDate today = LocalDate.now();
-            LocalDate shipmentDate = data.getDate();
-            long dateDiff = DateTimeUtil.getDateDifferenceInDays(today, shipmentDate);
-            suppliesListPage.choseDayOfWeek(dateDiff);
+            String supplierId = notTodayReserve.getData().getSendingLocation();
+            SupplyNavigationObject supplyNavigationObject = new SupplyNavigationObject(notTodayReserve);
+            supplyNavigationObject.choseDepartment();
+            supplyNavigationObject.choseNavigationPeriod();
 
             //Step 2
             step("Открыть модальное окно-подсказку о резерве поставки через недельный вид");
-            reserveModalPage = suppliesListPage.openReserveModal(supplierName, reserveTime);
+            reserveModalPage = suppliesListPage.openReserveModal(supplyNavigationObject);
             reserveModalPage.verifyRequiredElements();
             reserveModalPage.closeModal();
 
@@ -592,27 +403,22 @@ public class SupplyPlanTest extends AppBaseSteps {
 
             //Step 3
             step("Открыть модальное окно-подсказку о резерве поставки через поиск поставок поставщика");
-            supplierWeekSuppliesPage.openReserveModal(supplierName, reserveTime);
+            supplierWeekSuppliesPage.openReserveModal(supplyNavigationObject);
             reserveModalPage.verifyRequiredElements();
             reserveModalPage.closeModal();
             supplierWeekSuppliesPage.goBack();
         }
-        SupplyDetailsCardInfo otherProductsSupply = getSupplyWithExtraProducts();
+        SupplyDetailsCardInfo otherProductsSupply = client.getSupplyWithExtraProducts();
         if (otherProductsSupply != null) {
-            String tmpDepartment = otherProductsSupply.getDepartmentId();
-            dept = tmpDepartment.length() > 1 ? tmpDepartment : "0" + tmpDepartment;
-            data = otherProductsSupply.getDetails();
-            String supplierId = data.getSendingLocation();
-            String supplierName = data.getSendingLocationName();
-            Integer plannedPalletQuantity = data.getPalletPlan();
-            LocalDateTime shipmentTime = DateTimeUtil.strToLocalDateTime(data.getDate().toString() + " " + data.getTime(), apiDateFormat);
+            String supplierId = otherProductsSupply.getDetails().getSendingLocation();
+            SupplyNavigationObject supplyNavigationObject = new SupplyNavigationObject(new SupplyDailyShipmentInfo(otherProductsSupply.getDetails(), otherProductsSupply.getDepartmentId()));
+            supplyNavigationObject.choseDepartment();
+            supplyNavigationObject.choseNavigationPeriod();
 
-            suppliesListPage.openDepartmentSelectorPage();
-            departmentListPage.selectDepartmentById(dept);
             SearchSupplierPage searchSupplierPage = suppliesListPage.goToSearchSupplierPage();
             searchSupplierPage.searchForSupplier(supplierId);
             SupplierWeekSuppliesPage supplierWeekSuppliesPage = searchSupplierPage.goToSupplierWeekSuppliesPage(supplierId);
-            SupplyCardPage supplyCardPage = supplierWeekSuppliesPage.goToSupplyCard(supplierName, shipmentTime, plannedPalletQuantity);
+            SupplyCardPage supplyCardPage = supplierWeekSuppliesPage.goToSupplyCard(supplyNavigationObject);
 
             //Step 4
             step("Перейти в карточку поставки, у которой есть дополнительные товары и открыть модалку при выбранном табе отгрузки");
@@ -633,58 +439,36 @@ public class SupplyPlanTest extends AppBaseSteps {
 
     @Test(description = "C3293192 Навигация в/из карточки заказа/трансфера")
     public void testNavigationToSupplyCard() throws Exception {
-        String apiDateFormat = "yyyy-MM-dd HH:mm:ss";
-        String dept;
         SupplyCardPage supplyCardPage;
-
-        SupplyDailyShipmentInfo todayShipment = getTodayShipment();
-        SupplyDailyShipmentInfo notTodayShipment = getNotTodayShipment();
+        SupplyDailyShipmentInfo todayShipment = client.getTodayShipment();
+        SupplyDailyShipmentInfo notTodayShipment = client.getNotTodayShipment();
 
         SuppliesListPage suppliesListPage = precondition();
-        DepartmentListPage departmentListPage = suppliesListPage.openDepartmentSelectorPage();
-        if (todayShipment!=null){
-            String tmpDepartment = todayShipment.getDepartmentId();
-            dept = tmpDepartment.length() > 1 ? tmpDepartment : "0" + tmpDepartment;
-            ShipmentData supplyData = todayShipment.getData();
-            String supplierName = supplyData.getSendingLocationName();
-            LocalDateTime supplyDate = DateTimeUtil.strToLocalDateTime(supplyData.getDate()+" "+supplyData.getTime(), apiDateFormat);
-            Integer plannedQuantity = supplyData.getPalletPlan();
-
-            departmentListPage.selectDepartmentById(dept);
+        if (todayShipment != null) {
+            SupplyNavigationObject supplyNavigationObject = new SupplyNavigationObject(todayShipment);
+            supplyNavigationObject.choseDepartment();
 
             //Step 1
             step("Перейти в карточку товара из дневного вида списка поставок и обратно");
-            supplyCardPage = suppliesListPage.goToSupplyCard(supplierName, supplyDate, plannedQuantity);
+            supplyCardPage = suppliesListPage.goToSupplyCard(supplyNavigationObject);
             supplyCardPage.verifyRequiredElements();
             supplyCardPage.goBack();
             suppliesListPage = new SuppliesListPage();
             suppliesListPage.verifyRequiredElements(false);
         }
-        if (notTodayShipment!=null){
-            String tmpDepartment = notTodayShipment.getDepartmentId();
-            dept = tmpDepartment.length() > 1 ? tmpDepartment : "0" + tmpDepartment;
-
-            ShipmentData supplyData = notTodayShipment.getData();
-            String supplierName = supplyData.getSendingLocationName();
-            String supplierId = supplyData.getSendingLocation();
-            LocalDateTime supplyDate = DateTimeUtil.strToLocalDateTime(supplyData.getDate()+" "+supplyData.getTime(), apiDateFormat);
-            Integer plannedQuantity = supplyData.getPalletPlan();
-
+        if (notTodayShipment != null) {
+            String supplierId = notTodayShipment.getData().getSendingLocation();
             LocalDate today = LocalDate.now();
-            LocalDate shipmentDate = supplyData.getDate();
+            LocalDate shipmentDate = notTodayShipment.getData().getDate();
             long dateDiff = DateTimeUtil.getDateDifferenceInDays(today, shipmentDate);
 
-            suppliesListPage.openDepartmentSelectorPage();
-            departmentListPage.selectDepartmentById(dept);
-            if (dateDiff > 0) {
-                PeriodSelectorPage periodSelectorPage = suppliesListPage.openPeriodSelectorPage();
-                periodSelectorPage.selectPeriodOption(PeriodSelectorPage.PeriodOption.WEEK);
-                suppliesListPage.choseDayOfWeek(dateDiff);
-            }
+            SupplyNavigationObject supplyNavigationObject = new SupplyNavigationObject(notTodayShipment);
+            supplyNavigationObject.choseDepartment();
+            supplyNavigationObject.choseNavigationPeriod();
 
             //Step 2
             step("Перейти в карточку товара из недельного вида списка поставок и обратно");
-            supplyCardPage = suppliesListPage.goToSupplyCard(supplierName, supplyDate, plannedQuantity);
+            supplyCardPage = suppliesListPage.goToSupplyCard(supplyNavigationObject);
             supplyCardPage.verifyRequiredElements();
             supplyCardPage.goBack();
             suppliesListPage = new SuppliesListPage();
@@ -696,7 +480,7 @@ public class SupplyPlanTest extends AppBaseSteps {
             SearchSupplierPage searchSupplierPage = suppliesListPage.goToSearchSupplierPage();
             searchSupplierPage.searchForSupplier(supplierId);
             SupplierWeekSuppliesPage supplierWeekSuppliesPage = searchSupplierPage.goToSupplierWeekSuppliesPage(supplierId);
-            supplyCardPage = supplierWeekSuppliesPage.goToSupplyCard(supplierName, supplyDate, plannedQuantity);
+            supplyCardPage = supplierWeekSuppliesPage.goToSupplyCard(supplyNavigationObject);
             supplyCardPage.verifyRequiredElements();
             supplyCardPage.goBack();
             supplierWeekSuppliesPage = new SupplierWeekSuppliesPage();

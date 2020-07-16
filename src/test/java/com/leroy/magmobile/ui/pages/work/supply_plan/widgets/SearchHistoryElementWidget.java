@@ -24,14 +24,14 @@ public class SearchHistoryElementWidget extends CardWidget<SearchHistoryElementD
     @Override
     public SearchHistoryElementData collectDataFromPage(String pageSource) {
         SearchHistoryElementData data = new SearchHistoryElementData();
-        data.setCode(codeLbl.getText().replaceAll("\\D+",""));
-        data.setName(nameLbl.getText());
+        data.setCode(codeLbl.getText(pageSource).replaceAll("\\D+", ""));
+        data.setName(nameLbl.getText(pageSource));
         return data;
     }
 
     @Override
     public boolean isFullyVisible(String pageSource) {
-        return nameLbl.isVisible()&&codeLbl.isVisible();
+        return nameLbl.isVisible(pageSource) && codeLbl.isVisible(pageSource);
     }
 }
 

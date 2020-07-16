@@ -15,6 +15,7 @@ import java.util.Locale;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 public class DateTimeUtil {
+    public static final String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
 
     /**
      * Check if the date matches the format
