@@ -354,6 +354,15 @@ public class AndroidScrollView<T> extends BaseWidget {
         return this;
     }
 
+    public AndroidScrollView<T> scrollToBeginning(int count) {
+        if (useUiSelectors) {
+            uiAutomatorScroll(String.format("flingToBeginning(%s)", count));
+        } else {
+            // to do
+        }
+        return this;
+    }
+
     public AndroidScrollView<T> scrollToEnd() {
         if (useUiSelectors) {
             uiAutomatorScroll("flingToEnd(2)");

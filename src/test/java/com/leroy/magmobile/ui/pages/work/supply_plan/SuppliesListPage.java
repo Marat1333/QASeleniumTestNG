@@ -20,6 +20,7 @@ import com.leroy.utils.DateTimeUtil;
 import io.qameta.allure.Step;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -47,7 +48,7 @@ public class SuppliesListPage extends CommonMagMobilePage {
 
     //немного кривой xpath, без локаторов не придумал как по другому сделать
     AndroidScrollView<ShipmentCardData> singleDateShipmentWidgetList = new AndroidScrollView<>(driver,
-            AndroidScrollView.TYPICAL_LOCATOR, ".//*[contains(@text,'получено') or (contains(@text,'ожидается'))]" +
+            AndroidScrollView.TYPICAL_LOCATOR, ".//*[contains(@text,'получено') or contains(@text,'ожидается')]" +
             "/..[not(android.widget.TextView[@text='Сегодня' or @text='Вчера' or @text='Завтра' or contains(@text,', пн') or contains(@text,', вт') or " +
             "contains(@text,', ср') or contains(@text,', чт') or contains(@text,', пт') or contains(@text,', сб') or contains(@text,', вс')])]",
             ShipmentWidget.class);
@@ -165,7 +166,7 @@ public class SuppliesListPage extends CommonMagMobilePage {
     public SuppliesListPage shouldDataIsCorrect(ShipmentDataList data) {
         List<ShipmentData> dataList = data.getItems();
         List<AppointmentCardData> appointmentUiData = singleDateReserveWidgetList.getFullDataList();
-        mainScrollView.scrollToBeginning();
+        mainScrollView.scrollToBeginning(1);
         List<ShipmentCardData> shipmentsUiData = singleDateShipmentWidgetList.getFullDataList();
         for (ShipmentData eachData : dataList) {
             String rowType = eachData.getRowType();
@@ -206,6 +207,9 @@ public class SuppliesListPage extends CommonMagMobilePage {
         if (data.length != 7) {
             throw new IllegalArgumentException("Need 7 days data to verify");
         }
+        List<String> dayOfWeekOptions = new ArrayList<>();
+        weekOptions.forEach(y->dayOfWeekOptions.add(y.getText()));
+
         for (int i = 0; i < data.length; i++) {
             List<ShipmentData> dataList = data[i].getItems();
             boolean needToVerify = false;
@@ -214,7 +218,7 @@ public class SuppliesListPage extends CommonMagMobilePage {
                     needToVerify = true;
                 }
             }
-            Element dayOfWeekOption = weekOptions.get(i);
+            Element dayOfWeekOption = E(dayOfWeekOptions.get(i));
             if (!needToVerify) {
                 softAssert.isTrue(dayOfWeekOption.findChildElement("./following-sibling::*[contains(@text,'поставок не найдено')]").isVisible(), "поставок не должно быть");
             } else {
@@ -225,6 +229,7 @@ public class SuppliesListPage extends CommonMagMobilePage {
                 mainScrollView.scrollUpToText(dayOfWeekOption.getText());
                 dayOfWeekOption.waitForVisibility();
                 dayOfWeekOption.click();
+                dayOfWeekOption.findChildElement("./following-sibling::android.view.ViewGroup[2]").waitForInvisibility();
             }
         }
         return this;

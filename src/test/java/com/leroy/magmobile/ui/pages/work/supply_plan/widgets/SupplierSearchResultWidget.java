@@ -22,13 +22,13 @@ public class SupplierSearchResultWidget extends CardWidget<SupplierData> {
     @Override
     public SupplierData collectDataFromPage(String pageSource) {
         SupplierData data = new SupplierData();
-        data.setSupplierId(id.getText(pageSource));
-        data.setName(name.getText(pageSource));
+        data.setSupplierId(id.getText());
+        data.setName(name.getText());
         return data;
     }
 
     @Override
     public boolean isFullyVisible(String pageSource) {
-        return name.isVisible(pageSource) && id.isVisible(pageSource);
+        return name.isVisible() && id.isVisible();
     }
 }

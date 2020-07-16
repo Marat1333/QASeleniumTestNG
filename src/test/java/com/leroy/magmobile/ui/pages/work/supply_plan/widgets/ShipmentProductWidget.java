@@ -33,20 +33,20 @@ public class ShipmentProductWidget extends CardWidget<ShipmentProductData> {
     @Override
     public ShipmentProductData collectDataFromPage(String pageSource) {
         ShipmentProductData data = new ShipmentProductData();
-        data.setLmCode(ParserUtil.strWithOnlyDigits(lmCode.getText(pageSource)));
-        data.setBarCode(barCode.getText(pageSource));
-        data.setTitle(title.getText(pageSource));
+        data.setLmCode(ParserUtil.strWithOnlyDigits(lmCode.getText()));
+        data.setBarCode(barCode.getText());
+        data.setTitle(title.getText());
         try {
-            data.setReceivedQuantity(Integer.valueOf(receivedQuantity.getText(pageSource)));
+            data.setReceivedQuantity(Integer.valueOf(receivedQuantity.getText()));
         }catch (NoSuchElementException e){
             Log.warn("product wasn`t received");
         }
-        data.setPlannedQuantity(Integer.valueOf(plannedQuantity.getText(pageSource)));
+        data.setPlannedQuantity(Integer.valueOf(plannedQuantity.getText()));
         return data;
     }
 
     @Override
     public boolean isFullyVisible(String pageSource) {
-        return lmCode.isVisible(pageSource) && plannedQuantity.isVisible(pageSource);
+        return lmCode.isVisible() && plannedQuantity.isVisible();
     }
 }

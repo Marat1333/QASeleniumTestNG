@@ -28,15 +28,15 @@ public class ShipmentOtherProductWidget extends CardWidget<ShipmentProductData> 
     @Override
     public ShipmentProductData collectDataFromPage(String pageSource) {
         ShipmentProductData data = new ShipmentProductData();
-        data.setLmCode(ParserUtil.strWithOnlyDigits(lmCode.getText(pageSource)));
-        data.setBarCode(barCode.getText(pageSource));
-        data.setTitle(title.getText(pageSource));
-        data.setPlannedQuantity(Integer.valueOf(expectedQuantity.getText(pageSource)));
+        data.setLmCode(ParserUtil.strWithOnlyDigits(lmCode.getText()));
+        data.setBarCode(barCode.getText());
+        data.setTitle(title.getText());
+        data.setPlannedQuantity(Integer.valueOf(expectedQuantity.getText()));
         return data;
     }
 
     @Override
     public boolean isFullyVisible(String pageSource) {
-        return lmCode.isVisible(pageSource) && expectedQuantity.isVisible(pageSource);
+        return lmCode.isVisible() && expectedQuantity.isVisible();
     }
 }
