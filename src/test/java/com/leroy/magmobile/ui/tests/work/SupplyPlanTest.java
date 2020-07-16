@@ -18,7 +18,7 @@ import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.more.DepartmentListPage;
 import com.leroy.magmobile.ui.pages.work.WorkPage;
 import com.leroy.magmobile.ui.pages.work.supply_plan.*;
-import com.leroy.magmobile.ui.pages.work.supply_plan.data.SupplyDailyReserveInfo;
+import com.leroy.magmobile.ui.pages.work.supply_plan.data.SupplyDailyShipmentInfo;
 import com.leroy.magmobile.ui.pages.work.supply_plan.data.SupplyDetailsCardInfo;
 import com.leroy.magmobile.ui.pages.work.supply_plan.modal.FewShipmentsModalPage;
 import com.leroy.magmobile.ui.pages.work.supply_plan.modal.OtherProductsModal;
@@ -43,6 +43,8 @@ public class SupplyPlanTest extends AppBaseSteps {
         WorkPage workPage = loginAndGoTo(WorkPage.class);
         return workPage.goToShipmentListPage();
     }
+
+    //TODO create several helpers
 
     private LocalDate[] getCurrentCalendarWeek() {
         LocalDate[] week = new LocalDate[7];
@@ -101,7 +103,7 @@ public class SupplyPlanTest extends AppBaseSteps {
         return null;
     }
 
-    private SupplyDailyReserveInfo getTodayReserve() {
+    private SupplyDailyShipmentInfo getTodayReserve() {
         LocalDate date = LocalDate.now();
         for (int i = 1; i < 16; i++) {
             List<ShipmentData> data = client.getShipments(new GetSupplyPlanDetails().setDate(date)
@@ -109,13 +111,13 @@ public class SupplyPlanTest extends AppBaseSteps {
                     .setDepartmentId(i)).asJson().getItems();
             data = data.stream().filter(y -> y.getRowType().equals("FIX_RESERVE")).collect(Collectors.toList());
             if (data.size() > 0) {
-                return new SupplyDailyReserveInfo(data.get((int) (Math.random()) * data.size()), String.valueOf(i));
+                return new SupplyDailyShipmentInfo(data.get((int) (Math.random()) * data.size()), String.valueOf(i));
             }
         }
         return null;
     }
 
-    private SupplyDailyReserveInfo getNotTodayReserve() {
+    private SupplyDailyShipmentInfo getNotTodayReserve() {
         LocalDate date = LocalDate.now();
         for (int i = 1; i < 16; i++) {
             for (int z = 1; z < 7; z++) {
@@ -124,28 +126,11 @@ public class SupplyPlanTest extends AppBaseSteps {
                         .setDepartmentId(i)).asJson().getItems();
                 data = data.stream().filter(y -> y.getRowType().equals("FIX_RESERVE")).collect(Collectors.toList());
                 if (data.size() > 0) {
-                    return new SupplyDailyReserveInfo(data.get((int) (Math.random()) * data.size()), String.valueOf(i));
+                    return new SupplyDailyShipmentInfo(data.get((int) (Math.random()) * data.size()), String.valueOf(i));
                 }
             }
         }
         return null;
-    }
-
-    private List<ShipmentData> getWeekReserves(String departmentId) {
-        LocalDate date = LocalDate.now();
-        List<ShipmentDataList> responses = new ArrayList<>();
-        for (int i = 0; i < 7; i++) {
-            responses.add(client.getShipments(new GetSupplyPlanDetails().setDate(date.plusDays(i))
-                    .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                    .setDepartmentId(departmentId)).asJson());
-        }
-        List<ShipmentDataList> nonEmptyResponses = responses.stream().filter((i) -> i.getItems().size() > 0).collect(Collectors.toList());
-        List<ShipmentData> weekReservesList = new ArrayList<>();
-        for (ShipmentDataList each : nonEmptyResponses) {
-            weekReservesList.addAll(each.getItems());
-        }
-        weekReservesList = weekReservesList.stream().filter(i -> i.getRowType().equals("FIX_RESERVE")).collect(Collectors.toList());
-        return weekReservesList;
     }
 
     private List<ShipmentData> getWeekShipments(String departmentId) {
@@ -163,6 +148,36 @@ public class SupplyPlanTest extends AppBaseSteps {
         }
         weekSupplyList = weekSupplyList.stream().filter(i -> !i.getRowType().equals("FIX_RESERVE")).collect(Collectors.toList());
         return weekSupplyList;
+    }
+
+    private SupplyDailyShipmentInfo getTodayShipment() {
+        LocalDate date = LocalDate.now();
+        for (int i = 1; i < 16; i++) {
+            List<ShipmentData> data = client.getShipments(new GetSupplyPlanDetails().setDate(date)
+                    .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                    .setDepartmentId(i)).asJson().getItems();
+            data = data.stream().filter(y -> !y.getRowType().equals("FIX_RESERVE")).collect(Collectors.toList());
+            if (data.size() > 0) {
+                return new SupplyDailyShipmentInfo(data.get((int) (Math.random()) * data.size()), String.valueOf(i));
+            }
+        }
+        return null;
+    }
+
+    private SupplyDailyShipmentInfo getNotTodayShipment() {
+        LocalDate date = LocalDate.now();
+        for (int i = 1; i < 16; i++) {
+            for (int z = 1; z < 7; z++) {
+                List<ShipmentData> data = client.getShipments(new GetSupplyPlanDetails().setDate(date.plusDays(z))
+                        .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                        .setDepartmentId(i)).asJson().getItems();
+                data = data.stream().filter(y -> !y.getRowType().equals("FIX_RESERVE")).collect(Collectors.toList());
+                if (data.size() > 0) {
+                    return new SupplyDailyShipmentInfo(data.get((int) (Math.random()) * data.size()), String.valueOf(i));
+                }
+            }
+        }
+        return null;
     }
 
     @Test(description = "C3293181 Смена отдела по фильтру")
@@ -525,8 +540,8 @@ public class SupplyPlanTest extends AppBaseSteps {
     @Test(description = "C3293191 Модальные окна справки")
     public void testHintsModal() throws Exception {
         String apiDateFormat = "yyyy-MM-dd HH:mm:ss";
-        SupplyDailyReserveInfo todayReserve = getTodayReserve();
-        SupplyDailyReserveInfo notTodayReserve = getNotTodayReserve();
+        SupplyDailyShipmentInfo todayReserve = getTodayReserve();
+        SupplyDailyShipmentInfo notTodayReserve = getNotTodayReserve();
         String dept;
         ShipmentData data;
         ReserveModalPage reserveModalPage;
@@ -613,6 +628,79 @@ public class SupplyPlanTest extends AppBaseSteps {
             supplyCardPage.openHintModal();
             OtherProductsModal otherProductsModal = new OtherProductsModal();
             otherProductsModal.verifyRequiredElements();
+        }
+    }
+
+    @Test(description = "C3293192 Навигация в/из карточки заказа/трансфера")
+    public void testNavigationToSupplyCard() throws Exception {
+        String apiDateFormat = "yyyy-MM-dd HH:mm:ss";
+        String dept;
+        SupplyCardPage supplyCardPage;
+
+        SupplyDailyShipmentInfo todayShipment = getTodayShipment();
+        SupplyDailyShipmentInfo notTodayShipment = getNotTodayShipment();
+
+        SuppliesListPage suppliesListPage = precondition();
+        DepartmentListPage departmentListPage = suppliesListPage.openDepartmentSelectorPage();
+        if (todayShipment!=null){
+            String tmpDepartment = todayShipment.getDepartmentId();
+            dept = tmpDepartment.length() > 1 ? tmpDepartment : "0" + tmpDepartment;
+            ShipmentData supplyData = todayShipment.getData();
+            String supplierName = supplyData.getSendingLocationName();
+            LocalDateTime supplyDate = DateTimeUtil.strToLocalDateTime(supplyData.getDate()+" "+supplyData.getTime(), apiDateFormat);
+            Integer plannedQuantity = supplyData.getPalletPlan();
+
+            departmentListPage.selectDepartmentById(dept);
+
+            //Step 1
+            step("Перейти в карточку товара из дневного вида списка поставок и обратно");
+            supplyCardPage = suppliesListPage.goToSupplyCard(supplierName, supplyDate, plannedQuantity);
+            supplyCardPage.verifyRequiredElements();
+            supplyCardPage.goBack();
+            suppliesListPage = new SuppliesListPage();
+            suppliesListPage.verifyRequiredElements(false);
+        }
+        if (notTodayShipment!=null){
+            String tmpDepartment = notTodayShipment.getDepartmentId();
+            dept = tmpDepartment.length() > 1 ? tmpDepartment : "0" + tmpDepartment;
+
+            ShipmentData supplyData = notTodayShipment.getData();
+            String supplierName = supplyData.getSendingLocationName();
+            String supplierId = supplyData.getSendingLocation();
+            LocalDateTime supplyDate = DateTimeUtil.strToLocalDateTime(supplyData.getDate()+" "+supplyData.getTime(), apiDateFormat);
+            Integer plannedQuantity = supplyData.getPalletPlan();
+
+            LocalDate today = LocalDate.now();
+            LocalDate shipmentDate = supplyData.getDate();
+            long dateDiff = DateTimeUtil.getDateDifferenceInDays(today, shipmentDate);
+
+            suppliesListPage.openDepartmentSelectorPage();
+            departmentListPage.selectDepartmentById(dept);
+            if (dateDiff > 0) {
+                PeriodSelectorPage periodSelectorPage = suppliesListPage.openPeriodSelectorPage();
+                periodSelectorPage.selectPeriodOption(PeriodSelectorPage.PeriodOption.WEEK);
+                suppliesListPage.choseDayOfWeek(dateDiff);
+            }
+
+            //Step 2
+            step("Перейти в карточку товара из недельного вида списка поставок и обратно");
+            supplyCardPage = suppliesListPage.goToSupplyCard(supplierName, supplyDate, plannedQuantity);
+            supplyCardPage.verifyRequiredElements();
+            supplyCardPage.goBack();
+            suppliesListPage = new SuppliesListPage();
+            suppliesListPage.closeChosenDayOfWeek(dateDiff);
+            suppliesListPage.verifyRequiredElements(true);
+
+            //Step 3
+            step("Перейти в карточку товара из поиска поставок и обратно");
+            SearchSupplierPage searchSupplierPage = suppliesListPage.goToSearchSupplierPage();
+            searchSupplierPage.searchForSupplier(supplierId);
+            SupplierWeekSuppliesPage supplierWeekSuppliesPage = searchSupplierPage.goToSupplierWeekSuppliesPage(supplierId);
+            supplyCardPage = supplierWeekSuppliesPage.goToSupplyCard(supplierName, supplyDate, plannedQuantity);
+            supplyCardPage.verifyRequiredElements();
+            supplyCardPage.goBack();
+            supplierWeekSuppliesPage = new SupplierWeekSuppliesPage();
+            supplierWeekSuppliesPage.verifyRequiredElements();
         }
     }
 }

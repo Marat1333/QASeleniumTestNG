@@ -6,11 +6,11 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class SupplyDailyReserveInfo {
+public class SupplyDailyShipmentInfo {
     String departmentId;
     ShipmentData data;
 
-    public SupplyDailyReserveInfo(ShipmentData data, String departmentId){
+    public SupplyDailyShipmentInfo(ShipmentData data, String departmentId){
         this.data = data;
         this.departmentId = departmentId;
     }

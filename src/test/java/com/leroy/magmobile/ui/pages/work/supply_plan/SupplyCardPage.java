@@ -238,4 +238,11 @@ public class SupplyCardPage extends CommonMagMobilePage {
         softAssert.verifyAll();
         return this;
     }
+
+    public SupplyCardPage verifyRequiredElements(){
+        String pageSource = getPageSource();
+        softAssert.areElementsVisible(pageSource, title, supplierType, supplierName, supplierCode, shipmentNumber);
+        softAssert.verifyAll();
+        return this;
+    }
 }

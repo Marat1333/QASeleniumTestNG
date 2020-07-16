@@ -79,6 +79,12 @@ public class SuppliesListPage extends CommonMagMobilePage {
         return this;
     }
 
+    @Step("Закрыть выбранный день недели")
+    public SuppliesListPage closeChosenDayOfWeek(long dateDiff) throws Exception {
+        choseDayOfWeek(dateDiff);
+        return new SuppliesListPage();
+    }
+
     @Step("Выбрать нужную поставку")
     public SupplyCardPage goToSupplyCard(String supplierName, LocalDateTime shipmentDate, Integer plannedQuantity) throws Exception {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM, H:mm", new Locale("ru"));
@@ -225,6 +231,7 @@ public class SuppliesListPage extends CommonMagMobilePage {
     }
 
     public SuppliesListPage verifyRequiredElements(boolean weekView) {
+        String pageSource = getPageSource();
         if (weekView) {
             softAssert.isTrue(weekOptions.getCount() > 1, "Отображено не более одного дня");
             softAssert.isTrue(suppliesCondition.getCount() > 1, "Отображено не более одной суммы паллет");
@@ -232,7 +239,7 @@ public class SuppliesListPage extends CommonMagMobilePage {
             softAssert.isTrue(weekOptions.getCount() == 1, "Отображено некорректное кол-во дней");
             softAssert.isTrue(suppliesCondition.getCount() == 1, "Отображено некорректное кол-во сумм паллет");
         }
-        softAssert.areElementsVisible(selectDepartmentBtn, selectPeriodBtn, navigateToSearchSupplierButton);
+        softAssert.areElementsVisible(pageSource, selectDepartmentBtn, selectPeriodBtn, navigateToSearchSupplierButton);
         softAssert.verifyAll();
         return this;
     }
