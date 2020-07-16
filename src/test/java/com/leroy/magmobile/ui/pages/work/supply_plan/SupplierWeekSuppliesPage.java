@@ -26,7 +26,7 @@ public class SupplierWeekSuppliesPage extends CommonMagMobilePage {
     @AppFindBy(xpath = "//*[@content-desc='SuppliesPerWeek']/*[@content-desc='SuppliesPerWeek']//android.widget.TextView[1]")
     Element supplierName;
 
-    @AppFindBy(xpath = "//*[@content-desc='ScreenContent']/*[1]//android.widget.TextView")
+    @AppFindBy(xpath = "//*[@content-desc='ScreenContent']/*[2]//android.widget.TextView")
     Button deptBtn;
 
     @AppFindBy(xpath = "//*[contains(@text,'НАЙДЕН')]")

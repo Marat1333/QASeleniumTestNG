@@ -22,14 +22,14 @@ public class ReserveWidget extends CardWidget<AppointmentCardData> {
     @Override
     public AppointmentCardData collectDataFromPage(String pageSource) {
         AppointmentCardData data = new AppointmentCardData();
-        data.setDateAndTime(DateTimeUtil.strToLocalDateTime(supplyDate.getText(), "d MMM, H:mm"));
-        data.setName(supplierName.getText());
+        data.setDateAndTime(DateTimeUtil.strToLocalDateTime(supplyDate.getText(pageSource), "d MMM, H:mm"));
+        data.setName(supplierName.getText(pageSource));
         return data;
     }
 
     @Override
     public boolean isFullyVisible(String pageSource) {
-        return supplierName.isVisible() && supplyDate.isVisible();
+        return supplierName.isVisible(pageSource) && supplyDate.isVisible(pageSource);
     }
 }
 
