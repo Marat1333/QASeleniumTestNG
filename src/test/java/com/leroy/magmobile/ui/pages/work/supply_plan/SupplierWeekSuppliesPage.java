@@ -105,7 +105,7 @@ public class SupplierWeekSuppliesPage extends CommonMagMobilePage {
     @Override
     protected void waitForPageIsLoaded() {
         supplierName.waitForVisibility();
-        deptBtn.waitForVisibility();
+        clearTitleBtn.waitForVisibility();
     }
 
     @Step("Проверить, что данные корректно отображены")

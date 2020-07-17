@@ -30,9 +30,10 @@ public class DepartmentListPage extends CommonMagMobilePage {
         id = id.length() > 1 ? id : "0" + id;
         Element area = getSpecificShopAreaById(id);
         area.click();
+        area.waitForInvisibility(short_timeout);
         if (area.isVisible()){
             area.click();
-            area.waitForInvisibility();
+            area.waitForInvisibility(short_timeout);
         }
         return new UserProfilePage();
     }
