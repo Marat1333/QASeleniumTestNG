@@ -103,7 +103,7 @@ public class SearchProductPage extends MenuPage {
     Element allGammaContainer;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[text()=\"Каталог товаров\"]" +
-            "/ancestor::div[2]/div/span[1]/span", refreshEveryTime = true)
+            "/ancestor::div[2]/div/span[1]/span")
     ElementList<Element> nomenclaturePathButtons;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[text()=\"Каталог товаров\"]/ancestor::div[1]")
