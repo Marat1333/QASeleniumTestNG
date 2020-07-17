@@ -42,7 +42,6 @@ public class CartPage extends CartEstimatePage {
 
     @Override
     public void waitForPageIsLoaded() {
-        super.waitForPageIsLoaded();
         anAssert.isElementVisible(mainCartHeaderLbl, timeout);
         String expectedHeader = "Корзины";
         anAssert.isTrue(mainCartHeaderLbl.waitUntilTextIsEqualTo(expectedHeader),
@@ -77,6 +76,7 @@ public class CartPage extends CartEstimatePage {
     @Step("Нажать кнопку 'Создать корзину'")
     public CartPage clickCreateCartButton() {
         createCartBtn.click();
+        createCartBtn.waitForInvisibility();
         return this;
     }
 

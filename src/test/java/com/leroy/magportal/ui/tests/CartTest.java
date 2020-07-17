@@ -175,7 +175,9 @@ public class CartTest extends BasePAOTest {
         // Step 3
         step("Обновите страницу");
         cartPage.reloadPage();
-        cartPage = new CartPage().shouldCartHasData(documentData);
+        cartPage = new CartPage();
+        cartPage.clickDocumentInLeftMenu(documentData.getNumber());
+        cartPage.shouldCartHasData(documentData);
     }
 
     @Test(description = "C22797249 Delete item from cart", groups = NEED_PRODUCTS_GROUP)

@@ -42,7 +42,7 @@ public class ProductCardTest extends WebBaseSteps {
     private <T> T navigateToProductCardByUrl(String lmCode, boolean isAllGammaView) {
         WebDriver driver = ContextProvider.getDriver();
         String isAllGammaViewParam = "?isAllGammaView=";
-        driver.get(EnvConstants.URL_MAG_PORTAL + "/catalogproducts/product/" + lmCode + isAllGammaViewParam + isAllGammaView);
+        driver.get(EnvConstants.URL_MAG_PORTAL + "/orders/catalogproducts/product/" + lmCode + isAllGammaViewParam + isAllGammaView);
         return isAllGammaView ? (T) new ProductCardPage() : (T) new ExtendedProductCardPage();
     }
 
