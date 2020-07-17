@@ -44,6 +44,9 @@ public class AppBaseSteps extends MagMobileBaseTest {
             if (termsAcceptBtn.isVisible(6)) {
                 Log.debug("Accept & Continue button is visible");
                 termsAcceptBtn.click();
+                termsAcceptBtn.waitForInvisibility();
+                if (termsAcceptBtn.isVisible())
+                    termsAcceptBtn.click();
                 moon = true;
                 driver.findElement(By.id("com.android.chrome:id/next_button")).click();
                 //driver.findElement(By.id("com.android.chrome:id/negative_button")).click();

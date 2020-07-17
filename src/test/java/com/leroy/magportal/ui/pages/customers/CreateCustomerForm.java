@@ -338,9 +338,9 @@ public class CreateCustomerForm extends MagPortalBasePage {
             softAssert.isTrue(emailPersonalOptionButtons.get(0).isVisible(), "Кнопка 'Личный' email не видна");
             softAssert.isTrue(emailWorkOptionButtons.get(0).isVisible(), "Кнопка 'Рабочий' email не видна");
         } else {
-            softAssert.isFalse(emailFields.get(0).isVisible(), "Поле email отображается");
-            softAssert.isFalse(emailPersonalOptionButtons.get(0).isVisible(), "Кнопка 'Личный' email видна");
-            softAssert.isFalse(emailWorkOptionButtons.get(0).isVisible(), "Кнопка 'Рабочий' email видна");
+            softAssert.isTrue(emailFields.getCount() == 0, "Поле email отображается");
+            softAssert.isTrue(emailPersonalOptionButtons.getCount() == 0, "Кнопка 'Личный' email видна");
+            softAssert.isTrue(emailWorkOptionButtons.getCount() == 0, "Кнопка 'Рабочий' email видна");
         }
         softAssert.isElementNotVisible(addressLbl);
         softAssert.isElementNotVisible(addressFld);

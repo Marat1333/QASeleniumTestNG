@@ -16,15 +16,15 @@ public class WebBaseSteps extends MagPortalBaseTest {
     private String getPageUrl(Class<?> pageClass) {
         String path;
         if (pageClass == CustomerPage.class)
-            path = "customers";
+            path = "orders/customers";
         else if (pageClass == SearchProductPage.class)
-            path = "catalogproducts";
+            path = "orders/catalogproducts";
         else if (pageClass == CartPage.class)
-            path = "carts";
+            path = "orders/carts";
         else if (pageClass == EstimatePage.class)
-            path = "estimates";
+            path = "orders/estimates";
         else
-            path = "orders_v2";
+            path = "orders/orders_v2";
         return EnvConstants.URL_MAG_PORTAL + "/" + path;
     }
 
@@ -34,15 +34,15 @@ public class WebBaseSteps extends MagPortalBaseTest {
         new LoginWebPage().logIn(ldap, password);
         T page = pageClass.getConstructor().newInstance();
         String title = page.getCurrentTitle();
-        String expectedTitle = "Клиентские заказы";
+        String expectedTitle = "МагПортал";
         if (!title.equals(expectedTitle)) {
             page.reloadPage();
             Log.error("Страница 'Клиентские заказы' не загрузилась. Текущий title = " + title);
         }
         page.waitUntilTitleIs(expectedTitle, 30);
-        page.closeNewFeaturesModalWindowIfExist();
+        //page.closeNewFeaturesModalWindowIfExist();
         //До фикса
-        page.selectShopInUserProfile(EnvConstants.BASIC_USER_SHOP_ID);
+        //page.selectShopInUserProfile(EnvConstants.BASIC_USER_SHOP_ID);
         return page;
     }
 

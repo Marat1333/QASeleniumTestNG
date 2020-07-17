@@ -12,6 +12,7 @@ import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 public class DiscountModal extends MagPortalBasePage {
@@ -88,11 +89,13 @@ public class DiscountModal extends MagPortalBasePage {
     // Verifications
 
     @Step("Проверить, что доступны все необходимые опции в выпадающем списке 'Причина скидки'")
-    public DiscountModal verifyAvailableDiscountReasonOptions() throws Exception{
+    public DiscountModal verifyAvailableDiscountReasonOptions() throws Exception {
         List<String> expectedOptions = Arrays.asList(DiscountConst.Reasons.AFTER_REPAIR.getName(),
                 DiscountConst.Reasons.PRODUCT_SAMPLE.getName(), DiscountConst.Reasons.BALANCE_MEASURED_PRODUCT.getName(),
-                DiscountConst.Reasons.INCOMPLETE_KIT.getName(), DiscountConst.Reasons.DEFECT.getName());
-        anAssert.isEquals(discountReasonCmbBox.getOptionList(), expectedOptions, "Ожидались другие причины скидки");
+                DiscountConst.Reasons.INCOMPLETE_KIT.getName(), DiscountConst.Reasons.DEFECT.getName(),
+                DiscountConst.Reasons.B2B_PRICE_ADJUSTMENT.getName());
+        anAssert.isEquals(new HashSet<>(discountReasonCmbBox.getOptionList()), new HashSet<>(expectedOptions),
+                "Ожидались другие причины скидки");
         return this;
     }
 

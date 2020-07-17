@@ -9,8 +9,11 @@ import com.leroy.core.configuration.Log;
 import com.leroy.core.testrail.helpers.StepLog;
 import io.qameta.allure.Attachment;
 import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,19 +26,28 @@ public abstract class BasePage extends BaseContainer {
 
     private static String screenshotPath = System.getProperty("output.path");
 
-    protected BasePage(boolean isWaitForPageIsLoaded) {
+    protected BasePage(By frameLocator, boolean isWaitForPageIsLoaded) {
         super(ContextProvider.getDriver());
         Context context = ContextProvider.getContext();
         this.log = context.getLog();
         this.softAssert = context.getSoftAssert();
         this.anAssert = context.getAnAssert();
         initElements();
+        if (frameLocator != null) {
+            driver.switchTo().defaultContent();
+            new WebDriverWait(driver, short_timeout).until(
+                    ExpectedConditions.frameToBeAvailableAndSwitchToIt(frameLocator));
+        }
         if (isWaitForPageIsLoaded)
             waitForPageIsLoaded();
     }
 
+    public BasePage(By frameLocator) {
+        this(frameLocator, true);
+    }
+
     public BasePage() {
-        this(true);
+        this(null, true);
     }
 
     protected void waitForPageIsLoaded() {

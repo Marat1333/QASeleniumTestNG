@@ -13,7 +13,6 @@ import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.DiscountModal;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.ExtendedSearchModal;
 import com.leroy.magportal.ui.pages.customers.CreateCustomerForm;
-import io.qameta.allure.Issue;
 import io.qameta.allure.Step;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
@@ -21,8 +20,6 @@ import org.testng.util.Strings;
 
 import java.time.LocalDate;
 import java.util.Random;
-
-import static com.leroy.constants.DefectConst.PAO_884;
 
 public class CartTest extends BasePAOTest {
 
@@ -175,7 +172,9 @@ public class CartTest extends BasePAOTest {
         // Step 3
         step("Обновите страницу");
         cartPage.reloadPage();
-        cartPage = new CartPage().shouldCartHasData(documentData);
+        cartPage = new CartPage();
+        cartPage.clickDocumentInLeftMenu(documentData.getNumber());
+        cartPage.shouldCartHasData(documentData);
     }
 
     @Test(description = "C22797249 Delete item from cart", groups = NEED_PRODUCTS_GROUP)
@@ -353,7 +352,6 @@ public class CartTest extends BasePAOTest {
         // TODO
     }
 
-    @Issue("PAO-884")
     @Test(description = "C22797254 Create discount", groups = NEED_PRODUCTS_GROUP)
     public void testCreateDiscount() throws Exception {
         // Pre-condition
@@ -387,8 +385,6 @@ public class CartTest extends BasePAOTest {
         // Step 5
         step("Нажмите на кнопку Применить");
         cartPage = discountModal.clickConfirmButton();
-        if (PAO_884)
-            cartData.setAuthorName(null);
         cartData.getOrders().get(0).setDiscountPercentToProduct(0, discountPercent);
         cartPage.shouldCartHasData(cartData);
 

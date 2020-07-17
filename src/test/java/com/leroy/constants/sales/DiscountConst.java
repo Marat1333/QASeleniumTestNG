@@ -10,7 +10,8 @@ public class DiscountConst {
         BALANCE_MEASURED_PRODUCT(3, "Остаток мерного товара"),
         INCOMPLETE_KIT(4, "Не полный комплект"),
         PRODUCT_SAMPLE(5, "Образец товара"),
-        CUSTOMER_EQUIVALENT_REASON(6, "Аналог для клиента ИМ");
+        CUSTOMER_EQUIVALENT_REASON(6, "Аналог для клиента ИМ"),
+        B2B_PRICE_ADJUSTMENT(0, "Корректировка цены B2B");
 
         private int id;
         private String name;
