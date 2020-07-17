@@ -31,7 +31,7 @@ public class SupplyPlanClient extends MagMobileClient {
     @Step("Get shipments")
     public Response<ShipmentDataList> getShipments(LocalDate date, int i) {
         return getShipments((new GetSupplyPlanDetails().setDate(date)
-                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setShopId(userSessionData.getUserShopId())
                 .setDepartmentId(i)));
     }
 

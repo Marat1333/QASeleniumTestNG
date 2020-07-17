@@ -310,7 +310,7 @@ public class AndroidScrollView<T> extends BaseWidget {
      * @return this
      */
     public AndroidScrollView<T> scrollUpToText(String findText) {
-        return scrollUpToText(findText, 30);
+        return scrollUpToText(findText, MAX_SCROLL_COUNT);
     }
 
     public AndroidScrollView<T> scrollUpToText(String findText, int maxScrollCount) {
