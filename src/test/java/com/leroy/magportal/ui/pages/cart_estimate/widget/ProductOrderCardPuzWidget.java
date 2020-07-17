@@ -21,7 +21,7 @@ public class ProductOrderCardPuzWidget extends CardWebWidget<ProductOrderCardWeb
     @WebFindBy(xpath = ".//div[span[normalize-space(.)='ЛМ']]/div/span[not(.='')]")
     Element lmCode;
 
-    @WebFindBy(xpath = ".//div[@id='barCodeButton']//span")
+    @WebFindBy(xpath = ".//div[contains(@class, 'Dropdown__title')]//span")
     Element barCode;
 
     @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__content__title')]//p")
@@ -68,7 +68,7 @@ public class ProductOrderCardPuzWidget extends CardWebWidget<ProductOrderCardWeb
     }
 
     public String getBarCode() {
-        return barCode.getText();
+        return ParserUtil.strWithOnlyDigits(barCode.getText());
     }
 
     public String getTitle() {
@@ -107,7 +107,7 @@ public class ProductOrderCardPuzWidget extends CardWebWidget<ProductOrderCardWeb
     public ProductOrderCardWebData collectDataFromPage() {
         ProductOrderCardWebData productOrderCardWebData = new ProductOrderCardWebData();
         productOrderCardWebData.setLmCode(getLmCode());
-        productOrderCardWebData.setBarCode(ParserUtil.strWithOnlyDigits(getBarCode()));
+        productOrderCardWebData.setBarCode(getBarCode());
         productOrderCardWebData.setTitle(getTitle());
         productOrderCardWebData.setWeight(ParserUtil.strToDouble(getWeight()));
         productOrderCardWebData.setPrice(ParserUtil.strToDouble(getPrice()));

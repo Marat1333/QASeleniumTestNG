@@ -124,7 +124,8 @@ public abstract class BaseCustomAssert {
         if (timeout > 0)
             element.waitForVisibility(timeout);
         Assert.assertNotNull(element.getMetaName(), "Element meta name is NULL!");
-        boolean elementVisibility = pageSource == null ? element.isVisible() : element.isVisible(pageSource);
+        boolean elementVisibility = pageSource == null || !DriverFactory.isAppProfile() ?
+                element.isVisible() : element.isVisible(pageSource);
         String desc = element.getMetaName() + " не отображается";
         if (!elementVisibility) {
             addResultsToCurrentStepAndThrowAssertException(
@@ -168,7 +169,8 @@ public abstract class BaseCustomAssert {
 
     protected boolean logIsElementNotVisible(BaseWidget element, String pageSource, boolean isSoft) {
         Assert.assertNotNull(element.getMetaName(), "Element meta name is NULL!");
-        boolean elementVisibility = pageSource == null ? element.isVisible() : element.isVisible(pageSource);
+        boolean elementVisibility = pageSource == null || !DriverFactory.isAppProfile() ?
+                element.isVisible() : element.isVisible(pageSource);
         String expectedResult = element.getMetaName() + " не должен отображаться";
         String actualResult = element.getMetaName() + " отображается";
         if (elementVisibility) {
