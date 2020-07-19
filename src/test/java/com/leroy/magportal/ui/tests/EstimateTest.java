@@ -16,6 +16,7 @@ import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SendEstimateToEmailModal;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SubmittedEstimateModal;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SubmittedSendEstimateModal;
+import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.pages.customers.CreateCustomerForm;
 import com.leroy.utils.RandomUtil;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -623,7 +624,8 @@ public class EstimateTest extends BasePAOTest {
 
         // Step 2
         step("Нажмите на бургер-меню и выберете раздел Сметы");
-        estimatePage = cartPage.goToPage(EstimatePage.class);
+        MenuPage menuPage = new MenuPage();
+        estimatePage = menuPage.goToPage(EstimatePage.class);
         estimatePage.shouldDocumentIsPresent(shortSalesDocWebData);
 
         // Step 3
