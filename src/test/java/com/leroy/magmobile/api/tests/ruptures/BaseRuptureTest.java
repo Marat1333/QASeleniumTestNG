@@ -20,7 +20,7 @@ public abstract class BaseRuptureTest extends BaseProjectApiTest {
     }
 
     protected Integer sessionId;
-    protected RuptureProductDataList ruptureProductDataList;
+    protected RuptureProductDataList ruptureProductDataListBody;
 
     private void deleteSessionAfter() {
         if (sessionId != null) {

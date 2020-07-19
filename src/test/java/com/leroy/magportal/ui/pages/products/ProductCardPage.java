@@ -7,7 +7,7 @@ import com.leroy.magportal.api.data.catalog.products.CatalogProductData;
 import com.leroy.magportal.api.data.catalog.shops.NearestShopsData;
 import com.leroy.magportal.ui.models.search.NomenclaturePath;
 import com.leroy.magportal.ui.models.search.ShopCardData;
-import com.leroy.magportal.ui.pages.common.MenuPage;
+import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
 import com.leroy.magportal.ui.pages.products.widget.ShopCardWidget;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
-public class ProductCardPage extends MenuPage {
+public class ProductCardPage extends MagPortalBasePage {
 
     @WebFindBy(xpath = "//span[contains(text(), 'К результатам поиска')]")
     Button backToSearchResults;

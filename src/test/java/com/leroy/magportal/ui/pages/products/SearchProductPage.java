@@ -9,7 +9,7 @@ import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magportal.ui.models.search.FiltersData;
-import com.leroy.magportal.ui.pages.common.MenuPage;
+import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
 import com.leroy.magportal.ui.pages.products.widget.ExtendedProductCardTableViewWidget;
 import com.leroy.magportal.ui.pages.products.widget.ExtendedProductCardWidget;
 import com.leroy.magportal.ui.pages.products.widget.ProductCardTableViewWidget;
@@ -24,7 +24,7 @@ import io.qameta.allure.Step;
 import java.time.LocalDate;
 import java.util.*;
 
-public class SearchProductPage extends MenuPage {
+public class SearchProductPage extends MagPortalBasePage {
 
     public enum FilterFrame {
         MY_SHOP,

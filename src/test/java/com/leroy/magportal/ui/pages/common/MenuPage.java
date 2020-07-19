@@ -15,32 +15,40 @@ import com.leroy.magportal.ui.pages.products.SearchProductPage;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 
-public class MenuPage extends MagPortalBasePage {
+public class MenuPage extends BaseWebPage {
+
+    public MenuPage() {
+        super();
+        driver.switchTo().defaultContent();
+    }
 
     // User Profile
 
-    @WebFindBy(xpath = "//span[@id='Button']//div", metaName = "Кнопка профиль пользователя")
-    Element userProfileBtn;
-
-    @WebFindBy(xpath = "(//div[contains(@class, 'Main-AvatarDropDownItem')])[2]",
-            metaName = "Поле выбора магазина")
-    Element userProfileShopArea;
+    @WebFindBy(xpath = "//div[contains(@class, 'UserCaption')]//p", metaName = "Имя пользователя")
+    Element userNameLbl;
 
 
     // Left menu
 
-    @WebFindBy(id = "burgerMenuButton", metaName = "Бургер меню кнопка")
+    @WebFindBy(xpath = "//button[contains(@class, 'burger-btn')]", metaName = "Бургер меню кнопка")
     private Button burgerMenuBtn;
 
     @WebFindBy(text = "Магазин портал")
     private Element menuTitle;
 
+    @WebFindBy(xpath = "//button[contains(@class, 'UserCardLg__supportBtn')]", metaName = "Написать в поддержку")
+    Button supportButton;
+
     private static final String LEFT_MENU_SPECIFIC_ITEM_XPATH =
-            "//div[contains(@class, 'lmui-View-column lmui-View-start')]//span[text()='%s']";
+            "//div[contains(@class, 'side-menu-buttons-container')]//button[descendant::span[text()='%s']]";
+
+    private void openMenu() {
+        if (!supportButton.isVisible())
+            burgerMenuBtn.click();
+    }
 
     public <T extends BaseWebPage> T goToPage(Class<T> pageClass) throws Exception {
-        if (!menuTitle.isVisible())
-            burgerMenuBtn.click();
+        openMenu();
         String expectedMenuItem;
         if (OrderHeaderPage.class == pageClass) expectedMenuItem = "Заказы";
         else if (CustomerPage.class == pageClass) expectedMenuItem = "Клиенты";
@@ -68,14 +76,12 @@ public class MenuPage extends MagPortalBasePage {
         return this;
     }
 
-    @Step("Выберите магазин {value} в профиле пользователя")
+    @Step("Открываем левое меню, идет в профиль пользователя и выбераем магазин {value}")
     public MenuPage selectShopInUserProfile(String value) throws Exception {
-        userProfileBtn.click();
-        userProfileShopArea.click();
-        new ShopSelectionModal()
-                .selectShop(value)
-                .clickSaveButton();
-        waitForSpinnerAppearAndDisappear();
+        openMenu();
+        userNameLbl.click();
+        new LeftUserProfileMenuPage()
+                .selectShop(value);
         return this;
     }
 

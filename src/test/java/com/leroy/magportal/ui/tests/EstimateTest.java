@@ -16,6 +16,7 @@ import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SendEstimateToEmailModal;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SubmittedEstimateModal;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SubmittedSendEstimateModal;
+import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.pages.customers.CreateCustomerForm;
 import com.leroy.utils.RandomUtil;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -623,7 +624,8 @@ public class EstimateTest extends BasePAOTest {
 
         // Step 2
         step("Нажмите на бургер-меню и выберете раздел Сметы");
-        estimatePage = cartPage.goToPage(EstimatePage.class);
+        MenuPage menuPage = new MenuPage();
+        estimatePage = menuPage.goToPage(EstimatePage.class);
         estimatePage.shouldDocumentIsPresent(shortSalesDocWebData);
 
         // Step 3
@@ -661,7 +663,8 @@ public class EstimateTest extends BasePAOTest {
         step("Нажмите на кнопку профиля пользователя в правом верхнем углу и выберите другой магазин");
         List<String> docNumberList = estimatePage.getDocumentDataList()
                 .stream().map(ShortSalesDocWebData::getNumber).collect(Collectors.toList());
-        estimatePage.selectShopInUserProfile("35");
+        new MenuPage().selectShopInUserProfile("35");
+        estimatePage = new EstimatePage();
         estimatePage.shouldDocumentListHaveNumberContains(partEstimateId)
                 .shouldDocumentListNumbersNotEqual(docNumberList);
     }
