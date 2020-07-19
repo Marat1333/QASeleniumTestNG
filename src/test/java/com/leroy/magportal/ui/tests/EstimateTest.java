@@ -249,10 +249,13 @@ public class EstimateTest extends BasePAOTest {
 
         // Step 3
         step("Обновите страницу");
-        // Если сразу после изменения кол-ва обновить страницу, то данные могут не сохраниться
         Thread.sleep(3000); // Так делать плохо!
+        // Если сразу после изменения кол-ва обновить страницу, то данные могут не сохраниться
         estimatePage.reloadPage();
-        new EstimatePage().shouldEstimateHasData(estimateData);
+        estimatePage = new EstimatePage();
+        estimatePage.clickDocumentInLeftMenu(estimateData.getNumber());
+        new EstimatePage().waitUntilEstimateDataIsLoaded()
+                .shouldEstimateHasData(estimateData);
     }
 
     @Test(description = "C3302216 Ordered quantity of product more than existing", groups = NEED_PRODUCTS_GROUP)
@@ -340,7 +343,7 @@ public class EstimateTest extends BasePAOTest {
                     .clickCreateEstimateButton();
         else {
             estimatePage = new EstimatePage();
-            estimatePage.reloadPage();
+            estimatePage.removeSelectedCustomer();
         }
 
         // Step 1
@@ -364,7 +367,7 @@ public class EstimateTest extends BasePAOTest {
                     .clickCreateEstimateButton();
         else {
             estimatePage = new EstimatePage();
-            estimatePage.reloadPage();
+            estimatePage.removeSelectedCustomer();
         }
 
         // Step 1
@@ -394,7 +397,7 @@ public class EstimateTest extends BasePAOTest {
                     .clickCreateEstimateButton();
         else {
             estimatePage = new EstimatePage();
-            estimatePage.reloadPage();
+            estimatePage.removeSelectedCustomer();
         }
 
         // Step 1
@@ -428,7 +431,7 @@ public class EstimateTest extends BasePAOTest {
                     .clickCreateEstimateButton();
         } else {
             estimatePage = new EstimatePage();
-            estimatePage.reloadPage();
+            estimatePage.removeSelectedCustomer();
         }
 
         estimatePage.clickAddCustomer()
@@ -502,7 +505,7 @@ public class EstimateTest extends BasePAOTest {
         EstimatePage estimatePage;
         if (!isStartFromScratch()) {
             estimatePage = new EstimatePage();
-            estimatePage.reloadPage();
+            estimatePage.removeSelectedCustomer();
         } else {
             estimatePage = loginAndGoTo(EstimatePage.class)
                     .clickCreateEstimateButton();

@@ -89,7 +89,7 @@ public class DiscountModal extends MagPortalBasePage {
     // Verifications
 
     @Step("Проверить, что доступны все необходимые опции в выпадающем списке 'Причина скидки'")
-    public DiscountModal verifyAvailableDiscountReasonOptions() throws Exception{
+    public DiscountModal verifyAvailableDiscountReasonOptions() throws Exception {
         List<String> expectedOptions = Arrays.asList(DiscountConst.Reasons.AFTER_REPAIR.getName(),
                 DiscountConst.Reasons.PRODUCT_SAMPLE.getName(), DiscountConst.Reasons.BALANCE_MEASURED_PRODUCT.getName(),
                 DiscountConst.Reasons.INCOMPLETE_KIT.getName(), DiscountConst.Reasons.DEFECT.getName(),

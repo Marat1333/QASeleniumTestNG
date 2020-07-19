@@ -55,6 +55,7 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
                 break;
             }
         }
+        waitForSpinnerDisappear();
     }
 
     // Verifications

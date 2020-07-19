@@ -85,16 +85,20 @@ public class EstimatePage extends CartEstimatePage {
     }
 
     @Step("Ждем, когда данные в ранее созданной смете загрузятся")
-    public void waitUntilEstimateDataIsLoaded() {
+    public EstimatePage waitUntilEstimateDataIsLoaded() {
         estimateNumber.waitForVisibility();
+        return this;
     }
 
     // Follow URLs
 
     @Step("Открыть страницу со сметой №{id} (прямой переход по URL)")
     public EstimatePage openPageWithEstimate(String id) {
-        driver.get(EnvConstants.URL_MAG_PORTAL + "/estimates/view/" + id);
-        return new EstimatePage();
+        driver.get(EnvConstants.URL_MAG_PORTAL + "/orders/estimates");
+        EstimatePage estimatePage = new EstimatePage();
+        estimatePage.clickDocumentInLeftMenu(id);
+        estimatePage.waitUntilEstimateDataIsLoaded();
+        return estimatePage;
     }
 
     // Grab information from page
