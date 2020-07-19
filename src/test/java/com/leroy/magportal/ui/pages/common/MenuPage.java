@@ -24,12 +24,8 @@ public class MenuPage extends BaseWebPage {
 
     // User Profile
 
-    @WebFindBy(xpath = "//span[@id='Button']//div", metaName = "Кнопка профиль пользователя")
-    Element userProfileBtn;
-
-    @WebFindBy(xpath = "(//div[contains(@class, 'Main-AvatarDropDownItem')])[2]",
-            metaName = "Поле выбора магазина")
-    Element userProfileShopArea;
+    @WebFindBy(xpath = "//div[contains(@class, 'UserCaption')]//p", metaName = "Имя пользователя")
+    Element userNameLbl;
 
 
     // Left menu
@@ -46,9 +42,13 @@ public class MenuPage extends BaseWebPage {
     private static final String LEFT_MENU_SPECIFIC_ITEM_XPATH =
             "//div[contains(@class, 'side-menu-buttons-container')]//button[descendant::span[text()='%s']]";
 
-    public <T extends BaseWebPage> T goToPage(Class<T> pageClass) throws Exception {
+    private void openMenu() {
         if (!supportButton.isVisible())
             burgerMenuBtn.click();
+    }
+
+    public <T extends BaseWebPage> T goToPage(Class<T> pageClass) throws Exception {
+        openMenu();
         String expectedMenuItem;
         if (OrderHeaderPage.class == pageClass) expectedMenuItem = "Заказы";
         else if (CustomerPage.class == pageClass) expectedMenuItem = "Клиенты";
@@ -76,14 +76,12 @@ public class MenuPage extends BaseWebPage {
         return this;
     }
 
-    @Step("Выберите магазин {value} в профиле пользователя")
+    @Step("Открываем левое меню, идет в профиль пользователя и выбераем магазин {value}")
     public MenuPage selectShopInUserProfile(String value) throws Exception {
-        userProfileBtn.click();
-        userProfileShopArea.click();
-        new ShopSelectionModal()
-                .selectShop(value)
-                .clickSaveButton();
-        //waitForSpinnerAppearAndDisappear();
+        openMenu();
+        userNameLbl.click();
+        new LeftUserProfileMenuPage()
+                .selectShop(value);
         return this;
     }
 

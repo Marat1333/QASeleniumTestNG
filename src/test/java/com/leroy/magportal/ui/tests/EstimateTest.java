@@ -663,7 +663,8 @@ public class EstimateTest extends BasePAOTest {
         step("Нажмите на кнопку профиля пользователя в правом верхнем углу и выберите другой магазин");
         List<String> docNumberList = estimatePage.getDocumentDataList()
                 .stream().map(ShortSalesDocWebData::getNumber).collect(Collectors.toList());
-        estimatePage.selectShopInUserProfile("35");
+        new MenuPage().selectShopInUserProfile("35");
+        estimatePage = new EstimatePage();
         estimatePage.shouldDocumentListHaveNumberContains(partEstimateId)
                 .shouldDocumentListNumbersNotEqual(docNumberList);
     }
