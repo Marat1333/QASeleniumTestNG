@@ -62,22 +62,4 @@ public class RupturesPostSessionTest extends BaseRuptureTest {
         rupturesClient.assertThatDataMatches(respGetProducts, ruptureProductDataListBody);
     }
 
-    @Test(description = "C23195088 PUT rupture actions with different states", enabled = false)
-    // TODO Removed from TestRail
-    public void testActionRuptureSessionProduct() {
-        RupturesClient rupturesClient = rupturesClient();
-        RuptureProductData ruptureProductData = ruptureProductDataListBody.getItems().get(0);
-        for (ActionData actionData : ruptureProductData.getActions()) {
-            actionData.setState(!actionData.getState());
-        }
-
-        ReqRuptureSessionWithActionsData ruptureData = new ReqRuptureSessionWithActionsData();
-        ruptureData.setSessionId(sessionId);
-        ruptureData.setLmCode(ruptureProductData.getLmCode());
-        ruptureData.setActions(ruptureProductData.getActions());
-
-        Response<ResActionDataList> resp = rupturesClient.actionProduct(ruptureData);
-        rupturesClient.assertThatSessionIsActivated(resp, ruptureData.getActions());
-    }
-
 }
