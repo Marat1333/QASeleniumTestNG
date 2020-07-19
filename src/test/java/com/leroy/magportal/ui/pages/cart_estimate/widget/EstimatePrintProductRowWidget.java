@@ -5,6 +5,8 @@ import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magportal.ui.models.salesdoc.EstimatePrintProductData;
 import com.leroy.magportal.ui.webelements.CardWebWidget;
+import com.leroy.utils.ParserUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.WebDriver;
 
 public class EstimatePrintProductRowWidget extends CardWebWidget<EstimatePrintProductData> {
@@ -36,11 +38,11 @@ public class EstimatePrintProductRowWidget extends CardWebWidget<EstimatePrintPr
     public EstimatePrintProductData collectDataFromPage() {
         EstimatePrintProductData estimatePrintProductData = new EstimatePrintProductData();
         estimatePrintProductData.setTitle(title.getText());
-        estimatePrintProductData.setLmCode(lmCode.getText());
-        estimatePrintProductData.setQuantity(quantity.getText());
-        estimatePrintProductData.setPercentNDS(nds.getText());
-        estimatePrintProductData.setPrice(price.getText());
-        estimatePrintProductData.setTotalPriceWithNDS(totalPriceWithNDS.getText());
+        estimatePrintProductData.setLmCode(ParserUtil.strWithOnlyDigits(lmCode.getText()));
+        estimatePrintProductData.setQuantity(ParserUtil.strToDouble(StringUtils.substringAfter(quantity.getText(), "):")));
+        estimatePrintProductData.setPercentNDS(ParserUtil.strToDouble(nds.getText()));
+        estimatePrintProductData.setPrice(ParserUtil.strToDouble(price.getText()));
+        estimatePrintProductData.setTotalPriceWithNDS(ParserUtil.strToDouble(totalPriceWithNDS.getText()));
         return estimatePrintProductData;
     }
 }

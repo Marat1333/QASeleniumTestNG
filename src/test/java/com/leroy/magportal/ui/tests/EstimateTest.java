@@ -932,7 +932,7 @@ public class EstimateTest extends BasePAOTest {
         // Step 3
         step("Нажмите на кнопку 'Отмена'");
         printEstimatePage.clickCancelButton();
-        String s = "";
+        printEstimatePage.shouldEstimatePrintDataIs(estimateData);
     }
 
 }

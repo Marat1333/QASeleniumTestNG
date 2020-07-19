@@ -17,6 +17,8 @@ import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 import org.openqa.selenium.support.Colors;
 
+import java.util.Set;
+
 public class EstimatePage extends CartEstimatePage {
 
     public enum PageState {
@@ -48,8 +50,12 @@ public class EstimatePage extends CartEstimatePage {
     Element estimateAuthor;
 
     @WebFindBy(xpath = "//div[contains(@class, 'EstimatesView__header-buttons')]//div[@class = 'lmui-popover'][1]//button",
-            metaName = "Кнопка корзина (удалить)")
+            metaName = "Кнопка отправить на почту")
     Button sendEmailBtn;
+
+    @WebFindBy(xpath = "//div[contains(@class, 'EstimatesView__header-buttons')]//div[@class = 'lmui-popover'][2]//button",
+            metaName = "Кнопка 'На печать'")
+    Button printBtn;
 
     @WebFindBy(xpath = "//div[contains(@class, 'EstimatesView__header-buttons')]//div[@class = 'lmui-popover'][last()]//button",
             metaName = "Кнопка корзина (удалить)")
@@ -156,6 +162,21 @@ public class EstimatePage extends CartEstimatePage {
     public SendEstimateToEmailModal clickSendByEmail() {
         sendEmailBtn.click();
         return new SendEstimateToEmailModal();
+    }
+
+    @Step("Нажать 'Распечатать'")
+    public PrintEstimatePage clickPrintButton() throws Exception {
+        Set<String> oldHandles = getDriver().getWindowHandles();
+        printBtn.click();
+        waitUntilNewWindowIsOpened(oldHandles);
+
+        Set<String> newHandles = driver.getWindowHandles();
+        newHandles.removeAll(oldHandles);
+        String handlePrintEstimate = newHandles.toArray()[0].toString();
+
+        oldHandles = getDriver().getWindowHandles();
+        switchToNewWindow(oldHandles);
+        return new PrintEstimatePage(handlePrintEstimate);
     }
 
     @Step("Преобразовать в корзину")
