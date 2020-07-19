@@ -54,8 +54,8 @@ public class RupturesSessionGroupsTest extends BaseRuptureTest {
         Response<JsonNode> resp = rupturesClient.createSession(rupturePostData);
         sessionId = rupturesClient.assertThatSessionIsCreatedAndGetId(resp);
 
-        ruptureProductDataList = new RuptureProductDataList();
-        ruptureProductDataList.addItem(productData1);
+        ruptureProductDataListBody = new RuptureProductDataList();
+        ruptureProductDataListBody.addItem(productData1);
 
         // Добавляем оставшиеся товары
 
@@ -65,28 +65,28 @@ public class RupturesSessionGroupsTest extends BaseRuptureTest {
 
         resp = rupturesClient.updateSession(rupturePostData);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
-        ruptureProductDataList.addItem(productData2);
+        ruptureProductDataListBody.addItem(productData2);
 
         // Товар 3
         rupturePostData.setProduct(productData3);
 
         resp = rupturesClient.updateSession(rupturePostData);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
-        ruptureProductDataList.addItem(productData3);
+        ruptureProductDataListBody.addItem(productData3);
 
         // Товар 4
         rupturePostData.setProduct(productData4);
 
         resp = rupturesClient.updateSession(rupturePostData);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
-        ruptureProductDataList.addItem(productData4);
+        ruptureProductDataListBody.addItem(productData4);
 
         // Товар 5
         rupturePostData.setProduct(productData5);
 
         resp = rupturesClient.updateSession(rupturePostData);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
-        ruptureProductDataList.addItem(productData5);
+        ruptureProductDataListBody.addItem(productData5);
     }
 
     @Step("Pre-conditions: Создаем сессию с товарами, со всеми добавленными экшенами и случайными выполненными экшенами + Товар без экшена")
@@ -139,8 +139,8 @@ public class RupturesSessionGroupsTest extends BaseRuptureTest {
         Response<JsonNode> resp = rupturesClient.createSession(rupturePostData);
         sessionId = rupturesClient.assertThatSessionIsCreatedAndGetId(resp);
 
-        ruptureProductDataList = new RuptureProductDataList();
-        ruptureProductDataList.addItem(productData1);
+        ruptureProductDataListBody = new RuptureProductDataList();
+        ruptureProductDataListBody.addItem(productData1);
 
         // Добавляем оставшиеся товары
 
@@ -150,28 +150,28 @@ public class RupturesSessionGroupsTest extends BaseRuptureTest {
 
         resp = rupturesClient.updateSession(rupturePostData);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
-        ruptureProductDataList.addItem(productData2);
+        ruptureProductDataListBody.addItem(productData2);
 
         // Товар 3
         rupturePostData.setProduct(productData3);
 
         resp = rupturesClient.updateSession(rupturePostData);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
-        ruptureProductDataList.addItem(productData3);
+        ruptureProductDataListBody.addItem(productData3);
 
         // Товар 4
         rupturePostData.setProduct(productData4);
 
         resp = rupturesClient.updateSession(rupturePostData);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
-        ruptureProductDataList.addItem(productData4);
+        ruptureProductDataListBody.addItem(productData4);
 
         // Товар 5
         rupturePostData.setProduct(productData5);
 
         resp = rupturesClient.updateSession(rupturePostData);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
-        ruptureProductDataList.addItem(productData5);
+        ruptureProductDataListBody.addItem(productData5);
     }
 
     @Step("Pre-conditions: Создаем сессию с товаром без Action")
@@ -191,8 +191,8 @@ public class RupturesSessionGroupsTest extends BaseRuptureTest {
         Response<JsonNode> resp = rupturesClient.createSession(rupturePostData);
         sessionId = rupturesClient.assertThatSessionIsCreatedAndGetId(resp);
 
-        ruptureProductDataList = new RuptureProductDataList();
-        ruptureProductDataList.addItem(productData1);
+        ruptureProductDataListBody = new RuptureProductDataList();
+        ruptureProductDataListBody.addItem(productData1);
     }
 
     @Test(description = "C3285462 GET ruptures groups for new session with groups")
@@ -200,7 +200,7 @@ public class RupturesSessionGroupsTest extends BaseRuptureTest {
         createSessionWithAllActions();
 
         HashMap<Integer, RuptureSessionGroupData> expectedGroups = new HashMap<>();
-        for (RuptureProductData item : ruptureProductDataList.getItems()) {
+        for (RuptureProductData item : ruptureProductDataListBody.getItems()) {
             if (item.getActions() == null)
                 continue;
             for (ActionData actionData : item.getActions()) {
@@ -243,7 +243,7 @@ public class RupturesSessionGroupsTest extends BaseRuptureTest {
         createSessionWithOneActionAndSeveralProducts();
 
         HashMap<Integer, RuptureSessionGroupData> expectedGroups = new HashMap<>();
-        for (RuptureProductData item : ruptureProductDataList.getItems()) {
+        for (RuptureProductData item : ruptureProductDataListBody.getItems()) {
             if (item.getActions() == null)
                 continue;
             for (ActionData actionData : item.getActions()) {

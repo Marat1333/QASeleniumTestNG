@@ -46,8 +46,8 @@ public class RupturesPutSessionProductTest extends BaseRuptureTest {
 
         Response<JsonNode> resp = rupturesClient.createSession(rupturePostData);
         sessionId = rupturesClient.assertThatSessionIsCreatedAndGetId(resp);
-        ruptureProductDataList = new RuptureProductDataList();
-        ruptureProductDataList.addItem(productData);
+        ruptureProductDataListBody = new RuptureProductDataList();
+        ruptureProductDataListBody.addItem(productData);
     }
 
     private ReqRuptureSessionData getTypicalReqRuptureSessionData(RuptureProductData productData) {
@@ -81,11 +81,11 @@ public class RupturesPutSessionProductTest extends BaseRuptureTest {
         step("Добавляем новый продукт");
         Response<JsonNode> resp = rupturesClient.updateSession(rupturePostData);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
-        ruptureProductDataList.addItem(productData);
+        ruptureProductDataListBody.addItem(productData);
 
         step("Отправляем GET запрос и проверяем, что данные действительно изменились");
         Response<RuptureProductDataList> getResp = rupturesClient.getProducts(sessionId);
-        rupturesClient.assertThatDataMatches(getResp, ruptureProductDataList);
+        rupturesClient.assertThatDataMatches(getResp, ruptureProductDataListBody);
     }
 
     @Test(description = "C3285581 PUT ruptures product to finished session")
@@ -105,13 +105,11 @@ public class RupturesPutSessionProductTest extends BaseRuptureTest {
         ReqRuptureSessionData rupturePostData = getTypicalReqRuptureSessionData(productData);
 
         Response<JsonNode> resp = rupturesClient.updateSession(rupturePostData);
-        assertThat("Response code", resp.getStatusCode(), equalTo(StatusCodes.ST_400_BAD_REQ));
-        assertThat("Error text", resp.asJson(CommonErrorResponseData.class).getError(),
-                equalTo(String.format(ErrorTextConst.SESSION_NOT_FOUND_OR_FINISHED, sessionId)));
+        rupturesClient.assertThatActionIsNotAllowed(resp, sessionId);
 
         step("Отправляем GET запрос и проверяем, что данные действительно не изменились");
         Response<RuptureProductDataList> getResp = rupturesClient.getProducts(sessionId);
-        rupturesClient.assertThatDataMatches(getResp, ruptureProductDataList);
+        rupturesClient.assertThatDataMatches(getResp, ruptureProductDataListBody);
     }
 
     @Test(description = "C3285582 PUT ruptures product to deleted session")
@@ -128,14 +126,12 @@ public class RupturesPutSessionProductTest extends BaseRuptureTest {
         ReqRuptureSessionData rupturePostData = getTypicalReqRuptureSessionData(deletedSessionId, productData);
 
         Response<JsonNode> resp = rupturesClient.updateSession(rupturePostData);
-        assertThat("Response code", resp.getStatusCode(), equalTo(StatusCodes.ST_400_BAD_REQ));
-        assertThat("Error text", resp.asJson(CommonErrorResponseData.class).getError(),
-                equalTo(String.format(ErrorTextConst.SESSION_NOT_FOUND_OR_FINISHED, deletedSessionId)));
+        rupturesClient.assertThatActionIsNotAllowed(resp, deletedSessionId);
     }
 
     @Test(description = "C23409188 PUT ruptures product - Change existing product")
     public void testPutRupturesProductChangeExistingProduct() {
-        RuptureProductData productData = ruptureProductDataList.getItems().get(0);
+        RuptureProductData productData = ruptureProductDataListBody.getItems().get(0);
         // Меняем shelfCount
         productData.setShelfCount(new Random().nextInt(4));
         // Меняем комментарий
@@ -158,7 +154,7 @@ public class RupturesPutSessionProductTest extends BaseRuptureTest {
 
         step("Отправляем GET запрос и проверяем, что товар был изменен");
         Response<RuptureProductDataList> getResp = rupturesClient.getProducts(sessionId);
-        rupturesClient.assertThatDataMatches(getResp, ruptureProductDataList);
+        rupturesClient.assertThatDataMatches(getResp, ruptureProductDataListBody);
     }
 
 }
