@@ -142,7 +142,7 @@ public class CreateCustomerForm extends MagPortalBasePage {
             metaName = "Кнопка 'Показать/Скрыть дополнительные поля'")
     Element showHideAdditionalFieldsBtn;
 
-    @WebFindBy(xpath = "//button[contains(@class, 'lmui-Button-shadow')]")
+    @WebFindBy(xpath = "//form[contains(@class, 'lm-clients-Common-CustomerEditForm')]//button[contains(@class, 'lmui-Button-shadow')]")
     Button createBtn;
 
     @Override

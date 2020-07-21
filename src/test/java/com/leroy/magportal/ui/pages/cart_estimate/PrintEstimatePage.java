@@ -17,6 +17,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -122,7 +124,7 @@ public class PrintEstimatePage extends BaseWebPage {
         String descriptionText = description.getText();
         softAssert.isContainsIgnoringCase(descriptionText, estimateData.getNumber(),
                 "В описании сметы должен быть номер сметы");
-        softAssert.isContainsIgnoringCase(descriptionText, ParserUtil.doubleToStr(
+        softAssert.isContainsIgnoringCase(descriptionText.replaceAll(" ", ""), ParserUtil.doubleToStr(
                 estimateData.getOrders().get(0).getTotalPrice(), 2, true),
                 "В описании сметы должна быть итоговая сумма");
         softAssert.isContainsIgnoringCase(estimateExpiredDate.getText(),
@@ -143,7 +145,7 @@ public class PrintEstimatePage extends BaseWebPage {
 
             softAssert.isEquals(actualProduct.getLmCode(), expectedProduct.getLmCode(),
                     "Товар " + (i + 1) + " - неверный ЛМ код");
-            softAssert.isEquals(actualProduct.getTitle(), expectedProduct.getTitle(),
+            softAssert.isEquals(actualProduct.getTitle(), expectedProduct.getTitle().isEmpty()? "-" : expectedProduct.getTitle(),
                     "Товар " + (i + 1) + " - неверное название");
             softAssert.isEquals(actualProduct.getQuantity(), expectedProduct.getSelectedQuantity(),
                     "Товар " + (i + 1) + " - неверное кол-во");
@@ -158,7 +160,8 @@ public class PrintEstimatePage extends BaseWebPage {
 
         // Итого суммы:
         double expectedTotalPriceWithNDS = estimateData.getOrders().get(0).getTotalPrice();
-        double expectedTotalPriceWithoutNDS = expectedTotalPriceWithNDS / 1.2;
+        double expectedTotalPriceWithoutNDS = new BigDecimal(expectedTotalPriceWithNDS / 1.2)
+                .setScale(2, RoundingMode.HALF_UP).doubleValue();
         softAssert.isEquals(ParserUtil.strToDouble(totalPriceWithoutNDS.getText()), expectedTotalPriceWithoutNDS,
                 "Неверная итого без НДС");
         softAssert.isEquals(ParserUtil.strToDouble(StringUtils.substringAfter(amountNDS.getText(), "):")),

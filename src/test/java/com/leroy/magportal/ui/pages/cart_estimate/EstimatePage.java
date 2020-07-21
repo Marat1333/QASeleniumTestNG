@@ -3,6 +3,7 @@ package com.leroy.magportal.ui.pages.cart_estimate;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.annotations.WebFindBy;
+import com.leroy.core.configuration.Log;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magportal.ui.models.salesdoc.OrderWebData;
@@ -15,6 +16,7 @@ import com.leroy.magportal.ui.pages.common.modal.ConfirmRemoveModal;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
+import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.support.Colors;
 
 import java.util.Set;
@@ -167,8 +169,12 @@ public class EstimatePage extends CartEstimatePage {
     @Step("Нажать 'Распечатать'")
     public PrintEstimatePage clickPrintButton() throws Exception {
         Set<String> oldHandles = getDriver().getWindowHandles();
-        printBtn.click();
-        waitUntilNewWindowIsOpened(oldHandles);
+        try {
+            printBtn.click(timeout);
+        } catch (ElementClickInterceptedException err) {
+            Log.warn(err.getMessage());
+            printBtn.click(timeout);
+        }
 
         Set<String> newHandles = driver.getWindowHandles();
         newHandles.removeAll(oldHandles);

@@ -23,7 +23,7 @@ public class CatalogSearchClient extends MagMobileClient {
     }
 
     @Step("Search for products")
-    public Response<ProductItemDataList> searchProductsBy(CatalogSearchFilter filters) {
+    public Response<ProductItemDataList> searchProductsBy(CatalogSearchFilter filters, Integer startFrom, Integer pageSize) {
         GetCatalogSearch req = new GetCatalogSearch();
         req.setLdap(userSessionData.getUserLdap());
         if (filters.getHasAvailableStock() != null)
@@ -34,7 +34,15 @@ public class CatalogSearchClient extends MagMobileClient {
             req.setBestPrice(filters.getBestPrice());
         if (filters.getTop1000() != null)
             req.setTop1000(filters.getTop1000());
+        if (startFrom != null)
+            req.setStartFrom(startFrom);
+        if (pageSize != null)
+            req.setPageSize(pageSize);
         return execute(req, ProductItemDataList.class);
+    }
+
+    public Response<ProductItemDataList> searchProductsBy(CatalogSearchFilter filters) {
+        return searchProductsBy(filters, null, null);
     }
 
     @Step("Search for services")
