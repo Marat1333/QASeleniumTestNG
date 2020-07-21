@@ -552,6 +552,7 @@ public class EstimateTest extends BasePAOTest {
         // Step 1
         step("Введите ЛМ товара в поле 'Добавление товара' и нажмите Enter");
         estimatePage.enterTextInSearchProductField(testProductLmCode);
+        estimatePage.waitUntilEstimateDataIsLoaded();
         estimatePage.shouldDocumentHasProducts(Collections.singletonList(testProductLmCode))
                 .shouldErrorTooltipCustomerIsRequiredVisible();
 
