@@ -1,7 +1,7 @@
 package com.leroy.magmobile.ui.tests.work;
 
-import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
+import com.leroy.core.UserSessionData;
 import com.leroy.core.api.Module;
 import com.leroy.magmobile.api.clients.SupplyPlanClient;
 import com.leroy.magmobile.api.data.supply_plan.Card.SupplyCardData;
@@ -24,6 +24,7 @@ import com.leroy.magmobile.ui.pages.work.supply_plan.modal.FewShipmentsModalPage
 import com.leroy.magmobile.ui.pages.work.supply_plan.modal.OtherProductsModal;
 import com.leroy.magmobile.ui.pages.work.supply_plan.modal.ReserveModalPage;
 import com.leroy.utils.DateTimeUtil;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 
@@ -34,12 +35,24 @@ import java.util.stream.Collectors;
 @Guice(modules = {Module.class})
 public class SupplyPlanTest extends AppBaseSteps {
 
-    @Inject
-    SupplyPlanClient client;
+    private SupplyPlanClient client;
+
+    @BeforeClass
+    private void setUpClient() {
+        client = apiClientProvider.getSupplyPlanClient();
+    }
+
 
     private SuppliesListPage precondition() throws Exception {
         WorkPage workPage = loginAndGoTo(WorkPage.class);
         return workPage.goToShipmentListPage();
+    }
+
+    @Override
+    public UserSessionData initTestClassUserSessionDataTemplate() {
+        UserSessionData sessionData = super.initTestClassUserSessionDataTemplate();
+        sessionData.setUserShopId("32");
+        return sessionData;
     }
 
     private LocalDate[] getCurrentCalendarWeek() {
@@ -169,7 +182,7 @@ public class SupplyPlanTest extends AppBaseSteps {
         //Step 3
         step("Проверить данные по поставкам и бронированиям на поставку за неделю");
         suppliesListPage.openPeriodSelectorPage();
-        periodSelectorPage.selectPeriodOption(PeriodSelectorPage.PeriodOption.WEEK);
+        suppliesListPage = periodSelectorPage.selectPeriodOption(PeriodSelectorPage.PeriodOption.WEEK);
         suppliesListPage.shouldTotalPalletDataIsCorrect(weekTotalPalletResponse);
         suppliesListPage.shouldWeekDataIsCorrect(todayResponse, tomorrowResponse, todayPlus2Response, todayPlus3Response,
                 todayPlus4Response, todayPlus5Response, todayPlus6Response);
@@ -381,6 +394,7 @@ public class SupplyPlanTest extends AppBaseSteps {
 
             //Step 1
             step("Открыть модальное окно-подсказку о резерве поставки через дневной вид");
+            suppliesListPage = new SuppliesListPage();
             reserveModalPage = suppliesListPage.openReserveModal(supplyNavigationObject);
             reserveModalPage.verifyRequiredElements();
             reserveModalPage.closeModal();

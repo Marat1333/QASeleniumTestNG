@@ -44,6 +44,10 @@ public abstract class BaseAppPage extends BasePage {
         }
     }
 
+    protected boolean isProgressBarVisible(){
+        return progressBar.isVisible();
+    }
+
     protected void hideKeyboard() {
         androidDriver.hideKeyboard();
     }

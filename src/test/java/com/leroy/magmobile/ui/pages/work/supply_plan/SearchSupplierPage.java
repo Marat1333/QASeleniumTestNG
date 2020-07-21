@@ -69,7 +69,8 @@ public class SearchSupplierPage extends CommonMagMobilePage {
     public SearchSupplierPage searchForSupplier(String value) {
         searchInput.clearAndFill(value);
         hideKeyboard();
-        E("//android.widget.ScrollView//android.widget.TextView").waitUntilTextContains(value);
+        E("//android.widget.ScrollView//android.widget.TextView[not(contains(@text,'СКЛАД') or contains(@text,'МАГАЗИН') or contains(@text,'ПОСТАВЩИК'))]")
+                .waitUntilTextContains(value);
         return new SearchSupplierPage();
     }
 

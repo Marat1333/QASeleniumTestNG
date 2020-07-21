@@ -1,6 +1,7 @@
 package com.leroy.magmobile.ui.pages.work.supply_plan;
 
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.configuration.Log;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
@@ -165,9 +166,15 @@ public class SuppliesListPage extends CommonMagMobilePage {
     @Step("Проверить, что данные корректно отображены")
     public SuppliesListPage shouldDataIsCorrect(ShipmentDataList data) {
         List<ShipmentData> dataList = data.getItems();
-        List<AppointmentCardData> appointmentUiData = singleDateReserveWidgetList.getFullDataList();
-        mainScrollView.scrollToBeginning(1);
         List<ShipmentCardData> shipmentsUiData = singleDateShipmentWidgetList.getFullDataList();
+        Element anchor = E("Сегодня");
+        if (!anchor.isVisible()){
+            mainScrollView.scrollToBeginning(1);
+        }
+        if (isProgressBarVisible()){
+            waitUntilProgressBarIsInvisible();
+        }
+        List<AppointmentCardData> appointmentUiData = singleDateReserveWidgetList.getFullDataList();
         for (ShipmentData eachData : dataList) {
             String rowType = eachData.getRowType();
             if (rowType.equals("FR_APPOINTMENT")) {
@@ -226,7 +233,9 @@ public class SuppliesListPage extends CommonMagMobilePage {
                 dayOfWeekOption.click();
                 waitUntilProgressBarAppearsAndDisappear();
                 shouldDataIsCorrect(data[i]);
-                mainScrollView.scrollUpToText(dayOfWeekOption.getText());
+                if (!dayOfWeekOption.isVisible()){
+                    mainScrollView.scrollToBeginning(1);
+                }
                 dayOfWeekOption.waitForVisibility();
                 dayOfWeekOption.click();
                 dayOfWeekOption.findChildElement("./following-sibling::android.view.ViewGroup[2]").waitForInvisibility();

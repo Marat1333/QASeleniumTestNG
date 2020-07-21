@@ -29,12 +29,8 @@ public class DepartmentListPage extends CommonMagMobilePage {
     public UserProfilePage selectDepartmentById(String id) throws Exception {
         id = id.length() > 1 ? id : "0" + id;
         Element area = getSpecificShopAreaById(id);
-        area.click();
-        area.waitForInvisibility(short_timeout);
-        if (area.isVisible()){
-            area.click();
-            area.waitForInvisibility(short_timeout);
-        }
+        area.doubleClick();
+        area.waitForInvisibility();
         return new UserProfilePage();
     }
 }
