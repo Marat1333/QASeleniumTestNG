@@ -391,6 +391,7 @@ public abstract class BaseWebPage extends BasePage {
     }
 
     public void switchToNewWindow(Set<String> oldHandles) throws Exception {
+        waitUntilNewWindowIsOpened(oldHandles);
         Set<String> newHandles = driver.getWindowHandles();
         newHandles.removeAll(oldHandles);
         wait(1); // workaround for safari
