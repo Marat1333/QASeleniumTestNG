@@ -12,7 +12,7 @@ import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.more.DepartmentListPage;
 import com.leroy.magmobile.ui.pages.work.supply_plan.data.AppointmentCardData;
 import com.leroy.magmobile.ui.pages.work.supply_plan.data.ShipmentCardData;
-import com.leroy.magmobile.ui.pages.work.supply_plan.data.SupplyNavigationObject;
+import com.leroy.magmobile.ui.pages.work.supply_plan.data.SupplyNavigationData;
 import com.leroy.magmobile.ui.pages.work.supply_plan.modal.ReserveModalPage;
 import com.leroy.magmobile.ui.pages.work.supply_plan.widgets.ReserveWidget;
 import com.leroy.magmobile.ui.pages.work.supply_plan.widgets.ShipmentWidget;
@@ -88,7 +88,7 @@ public class SuppliesListPage extends CommonMagMobilePage {
     }
 
     @Step("Выбрать нужную поставку")
-    public SupplyCardPage goToSupplyCard(SupplyNavigationObject object) throws Exception {
+    public SupplyCardPage goToSupplyCard(SupplyNavigationData object) throws Exception {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM, H:mm", new Locale("ru"));
         String formattedDateTime = object.getShipmentDate().format(formatter);
 
@@ -103,7 +103,7 @@ public class SuppliesListPage extends CommonMagMobilePage {
     }
 
     @Step("Открыть модальное окно резерва на поставку")
-    public ReserveModalPage openReserveModal(SupplyNavigationObject object) throws Exception {
+    public ReserveModalPage openReserveModal(SupplyNavigationData object) throws Exception {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM, H:mm", new Locale("ru"));
         String formattedDateTime = object.getShipmentDate().format(formatter);
 

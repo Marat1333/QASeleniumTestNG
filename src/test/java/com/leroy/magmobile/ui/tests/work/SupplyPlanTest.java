@@ -19,11 +19,12 @@ import com.leroy.magmobile.ui.pages.work.WorkPage;
 import com.leroy.magmobile.ui.pages.work.supply_plan.*;
 import com.leroy.magmobile.ui.pages.work.supply_plan.data.SupplyDailyShipmentInfo;
 import com.leroy.magmobile.ui.pages.work.supply_plan.data.SupplyDetailsCardInfo;
-import com.leroy.magmobile.ui.pages.work.supply_plan.data.SupplyNavigationObject;
+import com.leroy.magmobile.ui.pages.work.supply_plan.data.SupplyNavigationData;
 import com.leroy.magmobile.ui.pages.work.supply_plan.modal.FewShipmentsModalPage;
 import com.leroy.magmobile.ui.pages.work.supply_plan.modal.OtherProductsModal;
 import com.leroy.magmobile.ui.pages.work.supply_plan.modal.ReserveModalPage;
 import com.leroy.utils.DateTimeUtil;
+import io.qameta.allure.Step;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
@@ -62,6 +63,24 @@ public class SupplyPlanTest extends AppBaseSteps {
             week[i] = date.plusDays(i);
         }
         return week;
+    }
+
+    @Step("Выбрать период")
+    public void choseNavigationPeriod(LocalDate date) throws Exception{
+        long dateDiff = DateTimeUtil.getDateDifferenceInDays(LocalDate.now(), date);
+        if (dateDiff > 0) {
+            SuppliesListPage suppliesListPage = new SuppliesListPage();
+            PeriodSelectorPage periodSelectorPage = suppliesListPage.openPeriodSelectorPage();
+            periodSelectorPage.selectPeriodOption(PeriodSelectorPage.PeriodOption.WEEK);
+            suppliesListPage.choseDayOfWeek(dateDiff);
+        }
+    }
+
+    @Step("Выбрать отдел")
+    public void choseDepartment(String departmentId) throws Exception{
+        SuppliesListPage suppliesListPage = new SuppliesListPage();
+        DepartmentListPage departmentListPage = suppliesListPage.openDepartmentSelectorPage();
+        departmentListPage.selectDepartmentById(departmentId);
     }
 
     @Test(description = "C3293181 Смена отдела по фильтру")
@@ -335,10 +354,10 @@ public class SupplyPlanTest extends AppBaseSteps {
         //Step 1
         step("Проверить, что все данные в карточке поставки отображены корректно");
         SuppliesListPage suppliesListPage = precondition();
-        SupplyNavigationObject supplyNavigationObject = new SupplyNavigationObject(new SupplyDailyShipmentInfo(randomSupply, EnvConstants.BASIC_USER_DEPARTMENT_ID));
-        supplyNavigationObject.choseDepartment();
-        supplyNavigationObject.choseNavigationPeriod();
-        SupplyCardPage supplyCardPage = suppliesListPage.goToSupplyCard(supplyNavigationObject);
+        SupplyNavigationData supplyNavigationData = new SupplyNavigationData(new SupplyDailyShipmentInfo(randomSupply, EnvConstants.BASIC_USER_DEPARTMENT_ID));
+        choseDepartment(supplyNavigationData.getDepartmentId());
+        choseNavigationPeriod(supplyNavigationData.getDate());
+        SupplyCardPage supplyCardPage = suppliesListPage.goToSupplyCard(supplyNavigationData);
         supplyCardPage.shouldDataIsCorrect(randomSupply, data);
     }
 
@@ -354,10 +373,10 @@ public class SupplyPlanTest extends AppBaseSteps {
         if (otherProductsSupply != null) {
             //Step 1
             step("Перейти в карточку поставки у которой есть дополнительные товары");
-            SupplyNavigationObject supplyNavigationObject = new SupplyNavigationObject(new SupplyDailyShipmentInfo(otherProductsSupply.getDetails(), otherProductsSupply.getDepartmentId()));
-            supplyNavigationObject.choseDepartment();
-            supplyNavigationObject.choseNavigationPeriod();
-            supplyCardPage = suppliesListPage.goToSupplyCard(supplyNavigationObject);
+            SupplyNavigationData supplyNavigationData = new SupplyNavigationData(new SupplyDailyShipmentInfo(otherProductsSupply.getDetails(), otherProductsSupply.getDepartmentId()));
+            choseDepartment(supplyNavigationData.getDepartmentId());
+            choseNavigationPeriod(supplyNavigationData.getDate());
+            supplyCardPage = suppliesListPage.goToSupplyCard(supplyNavigationData);
             supplyCardPage.shouldSwitchToNeededTabIsComplete(SupplyCardPage.Tab.FIRST_SHIPMENT);
 
             //Step 2
@@ -367,10 +386,10 @@ public class SupplyPlanTest extends AppBaseSteps {
             supplyCardPage.goBack();
         }
         if (multiShipment != null) {
-            SupplyNavigationObject supplyNavigationObject = new SupplyNavigationObject(new SupplyDailyShipmentInfo(multiShipment.getDetails(), multiShipment.getDepartmentId()));
+            SupplyNavigationData supplyNavigationData = new SupplyNavigationData(new SupplyDailyShipmentInfo(multiShipment.getDetails(), multiShipment.getDepartmentId()));
             //Step 3
             step("Перейти в карточку поставки у которой есть более одной отгрузки");
-            supplyCardPage = suppliesListPage.goToSupplyCard(supplyNavigationObject);
+            supplyCardPage = suppliesListPage.goToSupplyCard(supplyNavigationData);
             supplyCardPage.shouldSwitchToNeededTabIsComplete(SupplyCardPage.Tab.FIRST_SHIPMENT);
 
             //Step 4
@@ -389,25 +408,25 @@ public class SupplyPlanTest extends AppBaseSteps {
         SuppliesListPage suppliesListPage = precondition();
 
         if (todayReserve != null) {
-            SupplyNavigationObject supplyNavigationObject = new SupplyNavigationObject(todayReserve);
-            supplyNavigationObject.choseDepartment();
+            SupplyNavigationData supplyNavigationData = new SupplyNavigationData(todayReserve);
+            choseDepartment(supplyNavigationData.getDepartmentId());
 
             //Step 1
             step("Открыть модальное окно-подсказку о резерве поставки через дневной вид");
             suppliesListPage = new SuppliesListPage();
-            reserveModalPage = suppliesListPage.openReserveModal(supplyNavigationObject);
+            reserveModalPage = suppliesListPage.openReserveModal(supplyNavigationData);
             reserveModalPage.verifyRequiredElements();
             reserveModalPage.closeModal();
         }
         if (notTodayReserve != null) {
             String supplierId = notTodayReserve.getData().getSendingLocation();
-            SupplyNavigationObject supplyNavigationObject = new SupplyNavigationObject(notTodayReserve);
-            supplyNavigationObject.choseDepartment();
-            supplyNavigationObject.choseNavigationPeriod();
+            SupplyNavigationData supplyNavigationData = new SupplyNavigationData(notTodayReserve);
+            choseDepartment(supplyNavigationData.getDepartmentId());
+            choseNavigationPeriod(supplyNavigationData.getDate());
 
             //Step 2
             step("Открыть модальное окно-подсказку о резерве поставки через недельный вид");
-            reserveModalPage = suppliesListPage.openReserveModal(supplyNavigationObject);
+            reserveModalPage = suppliesListPage.openReserveModal(supplyNavigationData);
             reserveModalPage.verifyRequiredElements();
             reserveModalPage.closeModal();
 
@@ -417,7 +436,7 @@ public class SupplyPlanTest extends AppBaseSteps {
 
             //Step 3
             step("Открыть модальное окно-подсказку о резерве поставки через поиск поставок поставщика");
-            supplierWeekSuppliesPage.openReserveModal(supplyNavigationObject);
+            supplierWeekSuppliesPage.openReserveModal(supplyNavigationData);
             reserveModalPage.verifyRequiredElements();
             reserveModalPage.closeModal();
             supplierWeekSuppliesPage.goBack();
@@ -425,14 +444,14 @@ public class SupplyPlanTest extends AppBaseSteps {
         SupplyDetailsCardInfo otherProductsSupply = client.getSupplyWithExtraProducts();
         if (otherProductsSupply != null) {
             String supplierId = otherProductsSupply.getDetails().getSendingLocation();
-            SupplyNavigationObject supplyNavigationObject = new SupplyNavigationObject(new SupplyDailyShipmentInfo(otherProductsSupply.getDetails(), otherProductsSupply.getDepartmentId()));
-            supplyNavigationObject.choseDepartment();
-            supplyNavigationObject.choseNavigationPeriod();
+            SupplyNavigationData supplyNavigationData = new SupplyNavigationData(new SupplyDailyShipmentInfo(otherProductsSupply.getDetails(), otherProductsSupply.getDepartmentId()));
+            choseDepartment(supplyNavigationData.getDepartmentId());
+            choseNavigationPeriod(supplyNavigationData.getDate());
 
             SearchSupplierPage searchSupplierPage = suppliesListPage.goToSearchSupplierPage();
             searchSupplierPage.searchForSupplier(supplierId);
             SupplierWeekSuppliesPage supplierWeekSuppliesPage = searchSupplierPage.goToSupplierWeekSuppliesPage(supplierId);
-            SupplyCardPage supplyCardPage = supplierWeekSuppliesPage.goToSupplyCard(supplyNavigationObject);
+            SupplyCardPage supplyCardPage = supplierWeekSuppliesPage.goToSupplyCard(supplyNavigationData);
 
             //Step 4
             step("Перейти в карточку поставки, у которой есть дополнительные товары и открыть модалку при выбранном табе отгрузки");
@@ -459,12 +478,12 @@ public class SupplyPlanTest extends AppBaseSteps {
 
         SuppliesListPage suppliesListPage = precondition();
         if (todayShipment != null) {
-            SupplyNavigationObject supplyNavigationObject = new SupplyNavigationObject(todayShipment);
-            supplyNavigationObject.choseDepartment();
+            SupplyNavigationData supplyNavigationData = new SupplyNavigationData(todayShipment);
+            choseDepartment(supplyNavigationData.getDepartmentId());
 
             //Step 1
             step("Перейти в карточку товара из дневного вида списка поставок и обратно");
-            supplyCardPage = suppliesListPage.goToSupplyCard(supplyNavigationObject);
+            supplyCardPage = suppliesListPage.goToSupplyCard(supplyNavigationData);
             supplyCardPage.verifyRequiredElements();
             supplyCardPage.goBack();
             suppliesListPage = new SuppliesListPage();
@@ -476,13 +495,13 @@ public class SupplyPlanTest extends AppBaseSteps {
             LocalDate shipmentDate = notTodayShipment.getData().getDate();
             long dateDiff = DateTimeUtil.getDateDifferenceInDays(today, shipmentDate);
 
-            SupplyNavigationObject supplyNavigationObject = new SupplyNavigationObject(notTodayShipment);
-            supplyNavigationObject.choseDepartment();
-            supplyNavigationObject.choseNavigationPeriod();
+            SupplyNavigationData supplyNavigationData = new SupplyNavigationData(notTodayShipment);
+            choseDepartment(supplyNavigationData.getDepartmentId());
+            choseNavigationPeriod(supplyNavigationData.getDate());
 
             //Step 2
             step("Перейти в карточку товара из недельного вида списка поставок и обратно");
-            supplyCardPage = suppliesListPage.goToSupplyCard(supplyNavigationObject);
+            supplyCardPage = suppliesListPage.goToSupplyCard(supplyNavigationData);
             supplyCardPage.verifyRequiredElements();
             supplyCardPage.goBack();
             suppliesListPage = new SuppliesListPage();
@@ -494,7 +513,7 @@ public class SupplyPlanTest extends AppBaseSteps {
             SearchSupplierPage searchSupplierPage = suppliesListPage.goToSearchSupplierPage();
             searchSupplierPage.searchForSupplier(supplierId);
             SupplierWeekSuppliesPage supplierWeekSuppliesPage = searchSupplierPage.goToSupplierWeekSuppliesPage(supplierId);
-            supplyCardPage = supplierWeekSuppliesPage.goToSupplyCard(supplyNavigationObject);
+            supplyCardPage = supplierWeekSuppliesPage.goToSupplyCard(supplyNavigationData);
             supplyCardPage.verifyRequiredElements();
             supplyCardPage.goBack();
             supplierWeekSuppliesPage = new SupplierWeekSuppliesPage();

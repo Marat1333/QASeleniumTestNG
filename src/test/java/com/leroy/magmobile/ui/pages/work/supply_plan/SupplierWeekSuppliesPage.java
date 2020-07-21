@@ -7,17 +7,15 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.api.data.supply_plan.Details.ShipmentData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.more.DepartmentListPage;
-import com.leroy.magmobile.ui.pages.search.SuppliersSearchPage;
 import com.leroy.magmobile.ui.pages.work.supply_plan.data.AppointmentCardData;
 import com.leroy.magmobile.ui.pages.work.supply_plan.data.ShipmentCardData;
-import com.leroy.magmobile.ui.pages.work.supply_plan.data.SupplyNavigationObject;
+import com.leroy.magmobile.ui.pages.work.supply_plan.data.SupplyNavigationData;
 import com.leroy.magmobile.ui.pages.work.supply_plan.modal.ReserveModalPage;
 import com.leroy.magmobile.ui.pages.work.supply_plan.widgets.ReserveWidget;
 import com.leroy.magmobile.ui.pages.work.supply_plan.widgets.ShipmentWidget;
 import com.leroy.utils.DateTimeUtil;
 import io.qameta.allure.Step;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
@@ -56,7 +54,7 @@ public class SupplierWeekSuppliesPage extends CommonMagMobilePage {
             ShipmentWidget.class);
 
     @Step("Выбрать нужную поставку")
-    public SupplyCardPage goToSupplyCard(SupplyNavigationObject object) throws Exception {
+    public SupplyCardPage goToSupplyCard(SupplyNavigationData object) throws Exception {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM, H:mm", new Locale("ru"));
         String formattedDateTime = object.getShipmentDate().format(formatter);
 
@@ -71,7 +69,7 @@ public class SupplierWeekSuppliesPage extends CommonMagMobilePage {
     }
 
     @Step("Открыть модальное окно резерва на поставку")
-    public ReserveModalPage openReserveModal(SupplyNavigationObject object) throws Exception {
+    public ReserveModalPage openReserveModal(SupplyNavigationData object) throws Exception {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM, H:mm", new Locale("ru"));
         String formattedDateTime = object.getShipmentDate().format(formatter);
 

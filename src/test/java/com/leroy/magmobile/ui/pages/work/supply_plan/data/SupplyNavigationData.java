@@ -9,7 +9,7 @@ import com.leroy.utils.DateTimeUtil;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class SupplyNavigationObject {
+public class SupplyNavigationData {
     private SupplyDailyShipmentInfo info;
     private ShipmentData data;
     private String supplierId;
@@ -17,7 +17,7 @@ public class SupplyNavigationObject {
     private LocalDateTime shipmentDate;
     private int plannedQuantity;
 
-    public SupplyNavigationObject(SupplyDailyShipmentInfo info) {
+    public SupplyNavigationData(SupplyDailyShipmentInfo info) {
         this.info = info;
         data = this.info.getData();
         supplierId = data.getSendingLocation();
@@ -42,20 +42,12 @@ public class SupplyNavigationObject {
         return shipmentDate;
     }
 
-    public void choseNavigationPeriod() throws Exception{
-        long dateDiff = DateTimeUtil.getDateDifferenceInDays(LocalDate.now(), data.getDate());
-        if (dateDiff > 0) {
-            SuppliesListPage suppliesListPage = new SuppliesListPage();
-            PeriodSelectorPage periodSelectorPage = suppliesListPage.openPeriodSelectorPage();
-            periodSelectorPage.selectPeriodOption(PeriodSelectorPage.PeriodOption.WEEK);
-            suppliesListPage.choseDayOfWeek(dateDiff);
-        }
+    public String getDepartmentId(){
+        return info.getDepartmentId();
     }
 
-    public void choseDepartment() throws Exception{
-        SuppliesListPage suppliesListPage = new SuppliesListPage();
-        DepartmentListPage departmentListPage = suppliesListPage.openDepartmentSelectorPage();
-        departmentListPage.selectDepartmentById(info.getDepartmentId());
+    public LocalDate getDate(){
+        return data.getDate();
     }
 
 }
