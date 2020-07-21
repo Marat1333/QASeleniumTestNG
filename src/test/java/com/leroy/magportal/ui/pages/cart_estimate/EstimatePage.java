@@ -3,10 +3,12 @@ package com.leroy.magportal.ui.pages.cart_estimate;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.annotations.WebFindBy;
+import com.leroy.core.configuration.Log;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magportal.ui.models.salesdoc.OrderWebData;
 import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
+import com.leroy.magportal.ui.pages.cart_estimate.modal.AddDeliveryModal;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SendEstimateToEmailModal;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SubmittedEstimateModal;
 import com.leroy.magportal.ui.pages.cart_estimate.widget.OrderPuzWidget;
@@ -15,7 +17,10 @@ import com.leroy.magportal.ui.pages.common.modal.ConfirmRemoveModal;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
+import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.support.Colors;
+
+import java.util.Set;
 
 public class EstimatePage extends CartEstimatePage {
 
@@ -48,8 +53,12 @@ public class EstimatePage extends CartEstimatePage {
     Element estimateAuthor;
 
     @WebFindBy(xpath = "//div[contains(@class, 'EstimatesView__header-buttons')]//div[@class = 'lmui-popover'][1]//button",
-            metaName = "Кнопка корзина (удалить)")
+            metaName = "Кнопка отправить на почту")
     Button sendEmailBtn;
+
+    @WebFindBy(xpath = "//div[contains(@class, 'EstimatesView__header-buttons')]//div[@class = 'lmui-popover'][2]//button",
+            metaName = "Кнопка 'На печать'")
+    Button printBtn;
 
     @WebFindBy(xpath = "//div[contains(@class, 'EstimatesView__header-buttons')]//div[@class = 'lmui-popover'][last()]//button",
             metaName = "Кнопка корзина (удалить)")
@@ -67,7 +76,7 @@ public class EstimatePage extends CartEstimatePage {
     Element addDeliveryBtn;
 
     @WebFindBy(xpath = "//div[contains(@class, 'SalesDoc-ViewFooter__action')]//button",
-            metaName = "Кнопка 'В корзину'")
+            metaName = "Кнопка 'Преобразовать в корзину'")
     Element transformToCartBtn;
 
     @Override
@@ -87,6 +96,7 @@ public class EstimatePage extends CartEstimatePage {
     @Step("Ждем, когда данные в ранее созданной смете загрузятся")
     public EstimatePage waitUntilEstimateDataIsLoaded() {
         estimateNumber.waitForVisibility();
+        waitForSpinnerDisappear();
         return this;
     }
 
@@ -158,10 +168,35 @@ public class EstimatePage extends CartEstimatePage {
         return new SendEstimateToEmailModal();
     }
 
+    @Step("Нажать 'Распечатать'")
+    public PrintEstimatePage clickPrintButton() throws Exception {
+        Set<String> oldHandles = getDriver().getWindowHandles();
+        try {
+            printBtn.click(timeout);
+        } catch (ElementClickInterceptedException err) {
+            Log.warn(err.getMessage());
+            printBtn.click(timeout);
+        }
+
+        Set<String> newHandles = driver.getWindowHandles();
+        newHandles.removeAll(oldHandles);
+        String handlePrintEstimate = newHandles.toArray()[0].toString();
+
+        oldHandles = getDriver().getWindowHandles();
+        switchToNewWindow(oldHandles);
+        return new PrintEstimatePage(handlePrintEstimate);
+    }
+
     @Step("Преобразовать в корзину")
     public CartPage clickTransformToCart() {
         transformToCartBtn.click();
         return new CartPage();
+    }
+
+    @Step("Нажать 'Добавить доставку'")
+    public AddDeliveryModal clickAddDelivery() {
+        addDeliveryBtn.click();
+        return new AddDeliveryModal();
     }
 
     // Verifications
