@@ -367,12 +367,5 @@
             <version>0.13.0</version>
         </dependency>
 
-        <!-- UI Automator -->
-        <dependency>
-            <groupId>androidx.test.uiautomator</groupId>
-            <artifactId>uiautomator</artifactId>
-            <version>2.2.0</version>
-        </dependency>
-
     </dependencies>
 </project>
