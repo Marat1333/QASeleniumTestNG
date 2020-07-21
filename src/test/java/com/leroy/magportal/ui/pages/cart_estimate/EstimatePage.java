@@ -8,6 +8,7 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magportal.ui.models.salesdoc.OrderWebData;
 import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
+import com.leroy.magportal.ui.pages.cart_estimate.modal.AddDeliveryModal;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SendEstimateToEmailModal;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SubmittedEstimateModal;
 import com.leroy.magportal.ui.pages.cart_estimate.widget.OrderPuzWidget;
@@ -75,7 +76,7 @@ public class EstimatePage extends CartEstimatePage {
     Element addDeliveryBtn;
 
     @WebFindBy(xpath = "//div[contains(@class, 'SalesDoc-ViewFooter__action')]//button",
-            metaName = "Кнопка 'В корзину'")
+            metaName = "Кнопка 'Преобразовать в корзину'")
     Element transformToCartBtn;
 
     @Override
@@ -190,6 +191,12 @@ public class EstimatePage extends CartEstimatePage {
     public CartPage clickTransformToCart() {
         transformToCartBtn.click();
         return new CartPage();
+    }
+
+    @Step("Нажать 'Добавить доставку'")
+    public AddDeliveryModal clickAddDelivery() {
+        addDeliveryBtn.click();
+        return new AddDeliveryModal();
     }
 
     // Verifications

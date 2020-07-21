@@ -296,4 +296,48 @@ public class EstimatePrintTest extends BasePAOTest {
         submittedEstimateModal.closeWindow();
     }
 
+    @Test(description = "C23393380 Печать сметы с доставкой", groups = NEED_PRODUCTS_GROUP)
+    public void testPrintEstimateWithDelivery() throws Exception {
+        // Test Data
+        Double deliveryPrice = 1000.0;
+        ProductItemData testProduct1 = productList.get(0);
+        SimpleCustomerData customer1 = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+        step("Выполнение предусловий");
+        EstimatePage estimatePage;
+        if (isStartFromScratch()) {
+            estimatePage = loginAndGoTo(EstimatePage.class);
+        } else {
+            estimatePage = new EstimatePage();
+        }
+
+        estimatePage.clickCreateEstimateButton()
+                .clickAddCustomer()
+                .selectCustomerByPhone(customer1.getPhoneNumber())
+                .enterTextInSearchProductField(testProduct1.getLmCode());
+        estimatePage.clickAddDelivery()
+                .enterPriceDelivery(deliveryPrice)
+                .clickConfirmButton();
+
+        SalesDocWebData estimateData = estimatePage.getSalesDocData();
+
+        // Step 1
+        step("Нажмите на кнопку 'Создать'");
+        SubmittedEstimateModal submittedEstimateModal = estimatePage.clickCreateButton();
+        submittedEstimateModal.verifyRequiredElements();
+
+        // Step 2
+        step("Нажмите на кнопку 'Распечатать'");
+        PrintEstimatePage printEstimatePage = submittedEstimateModal.clickPrint();
+        printEstimatePage.shouldPrintPreviewAreVisible();
+
+        // Step 3
+        step("Нажмите на кнопку 'Отмена'");
+        printEstimatePage.clickCancelButton();
+        printEstimatePage.shouldEstimatePrintDataIs(estimateData);
+
+        printEstimatePage.closeCurrentWindowAndSwitchToSpecified(submittedEstimateModal);
+        submittedEstimateModal = new SubmittedEstimateModal();
+        submittedEstimateModal.closeWindow();
+    }
+
 }

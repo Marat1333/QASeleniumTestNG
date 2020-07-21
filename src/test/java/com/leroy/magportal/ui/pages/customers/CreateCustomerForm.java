@@ -260,6 +260,8 @@ public class CreateCustomerForm extends MagPortalBasePage {
     @Step("Нажмите кнопку 'Создать/Сохранить'")
     public void clickConfirmButton() {
         createBtn.click();
+        waitForSpinnerAppearAndDisappear();
+        waitForSpinnerDisappear();
     }
 
     @Step("Нажмите кнопку 'Показать все поля'")
