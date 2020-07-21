@@ -92,6 +92,10 @@ public class EstimatePrintTest extends BasePAOTest {
         step("Нажмите на кнопку 'Отмена'");
         printEstimatePage.clickCancelButton();
         printEstimatePage.shouldEstimatePrintDataIs(estimateData);
+
+        printEstimatePage.closeCurrentWindowAndSwitchToSpecified(submittedEstimateModal);
+        submittedEstimateModal = new SubmittedEstimateModal();
+        submittedEstimateModal.closeWindow();
     }
 
     @Test(description = "C23393381 Печать сметы с разными категориями (мерами)")
@@ -102,15 +106,16 @@ public class EstimatePrintTest extends BasePAOTest {
         step("Выполнение предусловий");
         EstimatePage estimatePage;
         if (isStartFromScratch()) {
-            estimatePage = loginAndGoTo(EstimatePage.class)
-                    .clickCreateEstimateButton();
-            estimatePage.clickAddCustomer()
-                    .selectCustomerByPhone(customer1.getPhoneNumber());
-            for (String lmCode : lmCodes) {
-                estimatePage.enterTextInSearchProductField(lmCode);
-            }
+            estimatePage = loginAndGoTo(EstimatePage.class);
         } else {
             estimatePage = new EstimatePage();
+        }
+
+        estimatePage.clickCreateEstimateButton();
+        estimatePage.clickAddCustomer()
+                .selectCustomerByPhone(customer1.getPhoneNumber());
+        for (String lmCode : lmCodes) {
+            estimatePage.enterTextInSearchProductField(lmCode);
         }
 
         SalesDocWebData estimateData = estimatePage.getSalesDocData();
@@ -129,6 +134,10 @@ public class EstimatePrintTest extends BasePAOTest {
         step("Нажмите на кнопку 'Отмена'");
         printEstimatePage.clickCancelButton();
         printEstimatePage.shouldEstimatePrintDataIs(estimateData);
+
+        printEstimatePage.closeCurrentWindowAndSwitchToSpecified(submittedEstimateModal);
+        submittedEstimateModal = new SubmittedEstimateModal();
+        submittedEstimateModal.closeWindow();
     }
 
     @Test(description = "C3302226 Печать сметы в статусе Создан", groups = NEED_PRODUCTS_GROUP)
@@ -161,6 +170,8 @@ public class EstimatePrintTest extends BasePAOTest {
         step("Нажмите на кнопку 'Отмена'");
         printEstimatePage.clickCancelButton();
         printEstimatePage.shouldEstimatePrintDataIs(estimateData);
+
+        printEstimatePage.closeCurrentWindowAndSwitchToSpecified(estimatePage);
     }
 
     @Test(description = "C23398086 Печать сметы физ. лицо", groups = {NEED_PRODUCTS_GROUP, NEED_ACCESS_TOKEN_GROUP})
@@ -171,14 +182,15 @@ public class EstimatePrintTest extends BasePAOTest {
         step("Выполнение предусловий");
         EstimatePage estimatePage;
         if (isStartFromScratch()) {
-            estimatePage = loginAndGoTo(EstimatePage.class)
-                    .clickCreateEstimateButton();
-            estimatePage.clickAddCustomer()
-                    .selectCustomerByPhone(customer1.getPhoneNumber());
-            estimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
+            estimatePage = loginAndGoTo(EstimatePage.class);
         } else {
             estimatePage = new EstimatePage();
         }
+
+        estimatePage.clickCreateEstimateButton();
+        estimatePage.clickAddCustomer()
+                .selectCustomerByPhone(customer1.getPhoneNumber());
+        estimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
 
         SalesDocWebData estimateData = estimatePage.getSalesDocData();
 
@@ -238,6 +250,8 @@ public class EstimatePrintTest extends BasePAOTest {
         step("Нажмите на кнопку 'Отмена'");
         printEstimatePage.clickCancelButton();
         printEstimatePage.shouldEstimatePrintDataIs(estimateData);
+
+        printEstimatePage.closeCurrentWindowAndSwitchToSpecified(estimatePage);
     }
 
     @Test(description = "C23393379 Печать сметы 50 товаров")
@@ -249,13 +263,14 @@ public class EstimatePrintTest extends BasePAOTest {
         EstimatePage estimatePage;
         if (isStartFromScratch()) {
             estimatePage = loginAndGoTo(EstimatePage.class);
-            estimatePage.clickDocumentInLeftMenu(estimateId);
-            estimatePage.waitUntilEstimateDataIsLoaded();
-            estimatePage.clickAddCustomer()
-                    .selectCustomerByPhone(customer1.getPhoneNumber());
         } else {
             estimatePage = new EstimatePage();
+            estimatePage.refreshDocumentList();
         }
+        estimatePage.clickDocumentInLeftMenu(estimateId);
+        estimatePage.waitUntilEstimateDataIsLoaded();
+        estimatePage.clickAddCustomer()
+                .selectCustomerByPhone(customer1.getPhoneNumber());
 
         SalesDocWebData estimateData = estimatePage.getSalesDocData();
         anAssert().isEquals(estimateData.getOrders().get(0).getProductCardDataList().size(), 50,
@@ -275,6 +290,10 @@ public class EstimatePrintTest extends BasePAOTest {
         step("Нажмите на кнопку 'Отмена'");
         printEstimatePage.clickCancelButton();
         printEstimatePage.shouldEstimatePrintDataIs(estimateData);
+
+        printEstimatePage.closeCurrentWindowAndSwitchToSpecified(submittedEstimateModal);
+        submittedEstimateModal = new SubmittedEstimateModal();
+        submittedEstimateModal.closeWindow();
     }
 
 }

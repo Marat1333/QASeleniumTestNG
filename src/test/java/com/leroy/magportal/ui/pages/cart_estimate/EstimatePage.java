@@ -95,6 +95,7 @@ public class EstimatePage extends CartEstimatePage {
     @Step("Ждем, когда данные в ранее созданной смете загрузятся")
     public EstimatePage waitUntilEstimateDataIsLoaded() {
         estimateNumber.waitForVisibility();
+        waitForSpinnerDisappear();
         return this;
     }
 
