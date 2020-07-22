@@ -7,6 +7,7 @@ import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
 import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
 import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
 import com.leroy.magportal.ui.pages.customers.CustomerPage;
+import com.leroy.magportal.ui.pages.picking.PickingPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
 import io.qameta.allure.Step;
 
@@ -22,6 +23,8 @@ public class WebBaseSteps extends MagPortalBaseTest {
             path = "orders/carts";
         else if (pageClass == EstimatePage.class)
             path = "orders/estimates";
+        else if (pageClass == PickingPage.class)
+            path = "orders/pickingtask";
         else
             path = "orders/orders_v2";
         return EnvConstants.URL_MAG_PORTAL + "/" + path;

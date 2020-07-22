@@ -29,7 +29,7 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
     // Grab info
 
     @Step("Получить информацию о документах в списке слева")
-    public List<D> getDocumentDataList() {
+    public List<D> getDocumentDataList() throws Exception {
         return documentCardList().getDataList();
     }
 
@@ -47,7 +47,7 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
     }
 
     @Step("Выберите документ в списке слева")
-    public void clickDocumentInLeftMenu(String number) {
+    public void clickDocumentInLeftMenu(String number) throws Exception {
         for (W widget : documentCardList()) {
             D data = widget.collectDataFromPage();
             if (data.getNumber().equals(number)) {
@@ -60,7 +60,7 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
 
     // Verifications
 
-    private boolean isDocumentPresentInList(String number) {
+    private boolean isDocumentPresentInList(String number) throws Exception {
         for (D docData : documentCardList().getDataList()) {
             if (ParserUtil.strWithOnlyDigits(docData.getNumber()).equals(number)) {
                 return true;
@@ -70,7 +70,7 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
     }
 
     @Step("Проверить, что документ №{number} в списке слева отображается")
-    public void shouldDocumentIsPresent(String number) {
+    public void shouldDocumentIsPresent(String number) throws Exception {
         anAssert.isTrue(isDocumentPresentInList(number),
                 "Документ №" + number + " не найден в списке слева");
     }
@@ -82,7 +82,7 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
     }
 
     @Step("Проверить, что в списке документов слева присутствуют только имеющие статусы: {statuses}")
-    public void shouldDocumentListContainsOnlyWithStatuses(String... statuses) {
+    public void shouldDocumentListContainsOnlyWithStatuses(String... statuses) throws Exception {
         Set<String> actualStatuses = new HashSet<>();
         for (D docData : documentCardList().getDataList()) {
             actualStatuses.add(docData.getStatus());
@@ -94,7 +94,7 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
     }
 
     @Step("Проверить, что в списке документов слева присутствуют только содержащие номер: {value}")
-    public LeftDocumentListPage<W, D> shouldDocumentListHaveNumberContains(String value) {
+    public LeftDocumentListPage<W, D> shouldDocumentListHaveNumberContains(String value) throws Exception {
         for (D docData : documentCardList().getDataList()) {
             softAssert.isTrue(docData.getNumber().contains(value),
                     docData.getNumber() + " документ не содержит " + value);
@@ -104,19 +104,19 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
     }
 
     @Step("Проверить, что в списке документов слева присутствуют нужные документы (expectedDocuments)")
-    public void shouldDocumentListIs(List<D> expectedDocuments) {
+    public void shouldDocumentListIs(List<D> expectedDocuments) throws Exception {
         anAssert.isEquals(documentCardList().getDataList(), expectedDocuments,
                 "Ожидались другие документы");
     }
 
     @Step("Проверить, что в списке документов слева на текущей странице отображается {value} документов")
-    public void shouldDocumentCountIs(int value) {
+    public void shouldDocumentCountIs(int value) throws Exception {
         anAssert.isEquals(documentCardList().getCount(), value,
                 "Ожидалось другое кол-во документов");
     }
 
     @Step("Проверить, что в списке документов слева присутствуют документы с номерами: {expectedNumbers}")
-    public void shouldDocumentListNumbersEqual(List<String> expectedNumbers) {
+    public void shouldDocumentListNumbersEqual(List<String> expectedNumbers) throws Exception {
         anAssert.isEquals(documentCardList().getDataList().stream().map(
                 d -> ParserUtil.strWithOnlyDigits(d.getNumber()))
                         .collect(Collectors.toList()), expectedNumbers,
@@ -124,7 +124,7 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
     }
 
     @Step("Проверить, что в списке документов слева другие документы, отличные от : {expectedNumbers}")
-    public void shouldDocumentListNumbersNotEqual(List<String> expectedNumbers) {
+    public void shouldDocumentListNumbersNotEqual(List<String> expectedNumbers) throws Exception {
         List<String> actualNumbers = documentCardList().getDataList().stream().map(
                 d -> ParserUtil.strWithOnlyDigits(d.getNumber()))
                 .collect(Collectors.toList());
@@ -134,7 +134,7 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
     }
 
     @Step("Проверить, что в списке документов слева присутствуют документы, содержащие номер: {expectedNumber}")
-    public void shouldDocumentListFilteredByNumber(String expectedNumber) {
+    public void shouldDocumentListFilteredByNumber(String expectedNumber) throws Exception {
         List<String> actualDocumentNumbers = documentCardList().getDataList().stream().map(D::getNumber)
                 .collect(Collectors.toList());
         anAssert.isTrue(actualDocumentNumbers.size() > 0,
@@ -146,13 +146,13 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
     }
 
     @Step("Проверить, что в список документов слева пуст")
-    public void shouldDocumentListIsEmpty() {
+    public void shouldDocumentListIsEmpty() throws Exception {
         anAssert.isTrue(documentCardList().getDataList().size() == 0,
                 "Список документов не пустой (содержит документы)");
     }
 
     @Step("Проверить, что список документов слева содержит хотя бы один документ")
-    public void shouldDocumentListIsNotEmpty() {
+    public void shouldDocumentListIsNotEmpty() throws Exception {
         anAssert.isTrue(documentCardList().getDataList().size() > 0,
                 "Список документов пустой");
     }
