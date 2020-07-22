@@ -66,7 +66,7 @@ public class SupplyPlanTest extends AppBaseSteps {
     }
 
     @Step("Выбрать период")
-    public void choseNavigationPeriod(LocalDate date) throws Exception{
+    private SuppliesListPage choseNavigationPeriod(LocalDate date) throws Exception{
         long dateDiff = DateTimeUtil.getDateDifferenceInDays(LocalDate.now(), date);
         if (dateDiff > 0) {
             SuppliesListPage suppliesListPage = new SuppliesListPage();
@@ -74,13 +74,15 @@ public class SupplyPlanTest extends AppBaseSteps {
             periodSelectorPage.selectPeriodOption(PeriodSelectorPage.PeriodOption.WEEK);
             suppliesListPage.choseDayOfWeek(dateDiff);
         }
+        return new SuppliesListPage();
     }
 
     @Step("Выбрать отдел")
-    public void choseDepartment(String departmentId) throws Exception{
+    private SuppliesListPage choseDepartment(String departmentId) throws Exception{
         SuppliesListPage suppliesListPage = new SuppliesListPage();
         DepartmentListPage departmentListPage = suppliesListPage.openDepartmentSelectorPage();
         departmentListPage.selectDepartmentById(departmentId);
+        return new SuppliesListPage();
     }
 
     @Test(description = "C3293181 Смена отдела по фильтру")
@@ -194,7 +196,7 @@ public class SupplyPlanTest extends AppBaseSteps {
         //Step 2
         step("Проверить данные по поставкам и бронированиям на поставку за вчера");
         PeriodSelectorPage periodSelectorPage = suppliesListPage.openPeriodSelectorPage();
-        periodSelectorPage.selectPeriodOption(PeriodSelectorPage.PeriodOption.YESTERDAY);
+        suppliesListPage = periodSelectorPage.selectPeriodOption(PeriodSelectorPage.PeriodOption.YESTERDAY);
         suppliesListPage.shouldTotalPalletDataIsCorrect(yesterdayTotalPalletResponse);
         suppliesListPage.shouldDataIsCorrect(yesterdayResponse);
 
@@ -446,7 +448,6 @@ public class SupplyPlanTest extends AppBaseSteps {
             String supplierId = otherProductsSupply.getDetails().getSendingLocation();
             SupplyNavigationData supplyNavigationData = new SupplyNavigationData(new SupplyDailyShipmentInfo(otherProductsSupply.getDetails(), otherProductsSupply.getDepartmentId()));
             choseDepartment(supplyNavigationData.getDepartmentId());
-            choseNavigationPeriod(supplyNavigationData.getDate());
 
             SearchSupplierPage searchSupplierPage = suppliesListPage.goToSearchSupplierPage();
             searchSupplierPage.searchForSupplier(supplierId);
