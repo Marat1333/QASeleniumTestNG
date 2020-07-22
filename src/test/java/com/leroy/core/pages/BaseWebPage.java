@@ -35,10 +35,16 @@ public abstract class BaseWebPage extends BasePage {
     public static final String TRANSITION_TITLE = "loading";
     public static final String TRANSITION_URL = "about:blank";
     protected String initialHandle;  //stores the window handle obtained when the object was created
+    protected By mainFrame;
+
+    public BaseWebPage(By frameLocator) {
+        super(frameLocator);
+        initialHandle = this.driver.getWindowHandle();
+        mainFrame = frameLocator;
+    }
 
     public BaseWebPage() {
-        super();
-        initialHandle = this.driver.getWindowHandle();
+        this((By) null);
     }
 
     protected BaseWebPage(String expectedUrl, Boolean isURL) throws IllegalStateException {
@@ -339,7 +345,11 @@ public abstract class BaseWebPage extends BasePage {
 
     public boolean switchToWindow() throws InterruptedException {
         try {
-            return this.switchToWindow(initialHandle, timeout);
+            boolean r = this.switchToWindow(initialHandle, timeout);
+            if (mainFrame != null)
+                new WebDriverWait(driver, short_timeout).until(
+                        ExpectedConditions.frameToBeAvailableAndSwitchToIt(mainFrame));
+            return r;
         } catch (Exception var3) {
             Log.error("Method: switchToWindow");
             Log.error("Error: There was a problem switching the focus to a specific window in " + timeout + " seconds");
@@ -381,6 +391,7 @@ public abstract class BaseWebPage extends BasePage {
     }
 
     public void switchToNewWindow(Set<String> oldHandles) throws Exception {
+        waitUntilNewWindowIsOpened(oldHandles);
         Set<String> newHandles = driver.getWindowHandles();
         newHandles.removeAll(oldHandles);
         wait(1); // workaround for safari

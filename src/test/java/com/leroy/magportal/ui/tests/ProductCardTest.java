@@ -42,7 +42,7 @@ public class ProductCardTest extends WebBaseSteps {
     private <T> T navigateToProductCardByUrl(String lmCode, boolean isAllGammaView) {
         WebDriver driver = ContextProvider.getDriver();
         String isAllGammaViewParam = "?isAllGammaView=";
-        driver.get(EnvConstants.URL_MAG_PORTAL + "/catalogproducts/product/" + lmCode + isAllGammaViewParam + isAllGammaView);
+        driver.get(EnvConstants.URL_MAG_PORTAL + "/orders/catalogproducts/product/" + lmCode + isAllGammaViewParam + isAllGammaView);
         return isAllGammaView ? (T) new ProductCardPage() : (T) new ExtendedProductCardPage();
     }
 
@@ -126,27 +126,32 @@ public class ProductCardTest extends WebBaseSteps {
         //Step 2
         step("Перейти назад в исходную карточку товара");
         extendedProductCardPage.navigateBack();
+        extendedProductCardPage = new ExtendedProductCardPage();
         extendedProductCardPage.shouldProductCardContainsLmOrBarCode(sourceLmCode);
 
         //Step 3
         step("Перейти вперед в карточку аналогичного товара");
         extendedProductCardPage.navigateForward();
+        extendedProductCardPage = new ExtendedProductCardPage();
         extendedProductCardPage.shouldProductCardContainsLmOrBarCode(similarProductLmCode);
 
         //Step 4
         step("Перейти назад в исходную карточку товара и затем перейти в любую карточку комплементарных товаров");
         extendedProductCardPage.navigateBack();
+        extendedProductCardPage = new ExtendedProductCardPage();
         extendedProductCardPage.goToAdditionalProduct(complementProductLmCode, ExtendedProductCardPage.Tab.COMPLEMENT_PRODUCTS);
         extendedProductCardPage.shouldProductCardContainsLmOrBarCode(complementProductLmCode);
 
         //Step 5
         step("Перейти назад в исходную карточку товара");
         extendedProductCardPage.navigateBack();
+        extendedProductCardPage = new ExtendedProductCardPage();
         extendedProductCardPage.shouldProductCardContainsLmOrBarCode(sourceLmCode);
 
         //Step 6
         step("Перейти вперед в карточку комплементарного товара");
         extendedProductCardPage.navigateForward();
+        extendedProductCardPage = new ExtendedProductCardPage();
         extendedProductCardPage.shouldProductCardContainsLmOrBarCode(complementProductLmCode);
     }
 

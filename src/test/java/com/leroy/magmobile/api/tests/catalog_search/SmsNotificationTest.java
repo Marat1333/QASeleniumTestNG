@@ -1,5 +1,6 @@
 package com.leroy.magmobile.api.tests.catalog_search;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.magmobile.api.clients.SmsNotificationClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.customer.CustomerData;
@@ -50,8 +51,8 @@ public class SmsNotificationTest extends BaseProjectApiTest {
         smsNotificationData.setShopId(Integer.valueOf(
                 getUserSessionData().getUserShopId()));
         smsNotificationData.setProduct(productOrderData);
-        Response<SmsNotificationData> resp = smsNotificationClient.createNotification(smsNotificationData);
-        smsNotificationClient.assertThatIsCreated(resp, smsNotificationData);
+        Response<JsonNode> resp = smsNotificationClient.createNotification(smsNotificationData);
+        smsNotificationClient.assertThatIsCreated(resp);
     }
 
     @Test(description = "C3175886 SMS get")

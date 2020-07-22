@@ -5,11 +5,11 @@ import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magportal.ui.models.customers.CustomerWebData;
-import com.leroy.magportal.ui.pages.common.MenuPage;
+import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
 import io.qameta.allure.Step;
 import org.apache.commons.lang3.StringUtils;
 
-public class CustomerPersonalInfoPage extends MenuPage {
+public class CustomerPersonalInfoPage extends MagPortalBasePage {
 
     public static final String HEADER = "Клиенты";
 

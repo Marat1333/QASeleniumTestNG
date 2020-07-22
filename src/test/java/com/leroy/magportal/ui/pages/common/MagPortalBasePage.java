@@ -4,10 +4,15 @@ import com.leroy.core.Context;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.pages.BaseWebPage;
 import com.leroy.core.web_elements.general.Element;
+import org.openqa.selenium.By;
 
 import java.time.Duration;
 
 public class MagPortalBasePage extends BaseWebPage {
+
+    public MagPortalBasePage() {
+        super(By.id("ClientOrdersApp"));
+    }
 
     protected Context context;
 

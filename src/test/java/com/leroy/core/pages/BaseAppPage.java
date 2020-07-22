@@ -27,7 +27,7 @@ public abstract class BaseAppPage extends BasePage {
     private Element progressBar;
 
     protected BaseAppPage(boolean isWaitForPageIsLoaded) {
-        super(isWaitForPageIsLoaded);
+        super(null, isWaitForPageIsLoaded);
         androidDriver = (AndroidDriver) driver;
     }
 

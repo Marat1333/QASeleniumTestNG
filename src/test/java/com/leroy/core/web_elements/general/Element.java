@@ -164,15 +164,14 @@ public class Element extends BaseWidget {
         } catch (Exception err) {
             Log.debug("doubleClick() - second click failed");
         }
-
     }
 
     private void simpleClick(int additionalAttemptNum) {
         try {
             webElement.click();
         } catch (StaleElementReferenceException err) {
-            Log.debug("simpleClick() failed. Err: " + err.getMessage());
             if (additionalAttemptNum > 0) {
+                Log.debug("simpleClick() failed. Err: " + err.getMessage());
                 initWebElement();
                 simpleClick(additionalAttemptNum - 1);
             } else

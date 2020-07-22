@@ -3,8 +3,11 @@ package com.leroy.magportal.ui.pages.cart_estimate.modal;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
+import com.leroy.magportal.ui.pages.cart_estimate.PrintEstimatePage;
 import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
 import io.qameta.allure.Step;
+
+import java.util.Set;
 
 public class SubmittedEstimateModal extends MagPortalBasePage {
 
@@ -37,6 +40,21 @@ public class SubmittedEstimateModal extends MagPortalBasePage {
     public SendEstimateToEmailModal clickSendByEmail() {
         sendEmailBtn.click();
         return new SendEstimateToEmailModal();
+    }
+
+    @Step("Нажать 'Распечатать'")
+    public PrintEstimatePage clickPrint() throws Exception {
+        Set<String> oldHandles = getDriver().getWindowHandles();
+        printBtn.click();
+        waitUntilNewWindowIsOpened(oldHandles);
+
+        Set<String> newHandles = driver.getWindowHandles();
+        newHandles.removeAll(oldHandles);
+        String handlePrintEstimate = newHandles.toArray()[0].toString();
+
+        oldHandles = getDriver().getWindowHandles();
+        switchToNewWindow(oldHandles);
+        return new PrintEstimatePage(handlePrintEstimate);
     }
 
     @Step("Закрыть окно с информацией о том, что смета создана")

@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends IDataWithNumberAndStatus>
-        extends MenuPage {
+        extends MagPortalBasePage {
 
     @Override
     public void waitForPageIsLoaded() {
@@ -55,6 +55,7 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
                 break;
             }
         }
+        waitForSpinnerDisappear();
     }
 
     // Verifications

@@ -22,6 +22,8 @@ public class ProductOrderCardWebData {
     private Double totalPriceWithDiscount;
     private Double discountPercent;
 
+    private boolean isService;
+
     public ProductOrderCardWebData clone() {
         ProductOrderCardWebData productOrderCardWebData = new ProductOrderCardWebData();
         productOrderCardWebData.setLmCode(lmCode);

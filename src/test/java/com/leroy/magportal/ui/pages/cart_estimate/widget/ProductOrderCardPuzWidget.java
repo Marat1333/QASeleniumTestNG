@@ -21,10 +21,10 @@ public class ProductOrderCardPuzWidget extends CardWebWidget<ProductOrderCardWeb
     @WebFindBy(xpath = ".//div[span[normalize-space(.)='ЛМ']]/div/span[not(.='')]")
     Element lmCode;
 
-    @WebFindBy(xpath = ".//div[@id='barCodeButton']//span")
+    @WebFindBy(xpath = ".//div[contains(@class, 'Dropdown__title')]//span")
     Element barCode;
 
-    @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__content__title')]//p")
+    @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__content__title')]//*")
     Element title;
 
     @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__header')]/div[contains(@class, 'lmui-View')][3]/span[2]")
@@ -39,7 +39,7 @@ public class ProductOrderCardPuzWidget extends CardWebWidget<ProductOrderCardWeb
     @WebFindBy(xpath = ".//span[contains(@class, 'SalesDocProduct__content__discount-price')]")
     Element totalPriceWithoutDiscount;
 
-    @WebFindBy(xpath = ".//div[contains(@class, 'Estimate-price')]")
+    @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__content__price')]/*")
     Element totalPrice;
 
     @WebFindBy(xpath = ".//span[@id='inputCounterDecrementButton']/div")
@@ -47,6 +47,9 @@ public class ProductOrderCardPuzWidget extends CardWebWidget<ProductOrderCardWeb
 
     @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__content__qty__input-counter')]//input")
     EditBox quantityFld;
+
+    @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__content__qty')]//span[1]")
+    Element quantityDeliveryLbl;
 
     @WebFindBy(xpath = ".//span[@id='inputCounterIncrementButton']/div")
     EditBox plusQuantityBtn;
@@ -68,7 +71,7 @@ public class ProductOrderCardPuzWidget extends CardWebWidget<ProductOrderCardWeb
     }
 
     public String getBarCode() {
-        return barCode.getText();
+        return ParserUtil.strWithOnlyDigits(barCode.getTextIfPresent());
     }
 
     public String getTitle() {
@@ -107,9 +110,16 @@ public class ProductOrderCardPuzWidget extends CardWebWidget<ProductOrderCardWeb
     public ProductOrderCardWebData collectDataFromPage() {
         ProductOrderCardWebData productOrderCardWebData = new ProductOrderCardWebData();
         productOrderCardWebData.setLmCode(getLmCode());
-        productOrderCardWebData.setBarCode(ParserUtil.strWithOnlyDigits(getBarCode()));
+        productOrderCardWebData.setBarCode(getBarCode());
         productOrderCardWebData.setTitle(getTitle());
-        productOrderCardWebData.setWeight(ParserUtil.strToDouble(getWeight()));
+        if (productOrderCardWebData.getTitle().toLowerCase().equals("доставка")) {
+            productOrderCardWebData.setService(true);
+            productOrderCardWebData.setSelectedQuantity(ParserUtil.strToDouble(quantityDeliveryLbl.getText()));
+        } else {
+            productOrderCardWebData.setWeight(ParserUtil.strToDouble(getWeight()));
+            productOrderCardWebData.setSelectedQuantity(ParserUtil.strToDouble(getQuantity()));
+            productOrderCardWebData.setAvailableTodayQuantity(ParserUtil.strToDouble(getAvailableStock()));
+        }
         productOrderCardWebData.setPrice(ParserUtil.strToDouble(getPrice()));
         if (totalPriceWithoutDiscount.isVisible()) {
             productOrderCardWebData.setTotalPrice(ParserUtil.strToDouble(getTotalPriceWithoutDiscount()));
@@ -117,9 +127,6 @@ public class ProductOrderCardPuzWidget extends CardWebWidget<ProductOrderCardWeb
         } else
             productOrderCardWebData.setTotalPrice(ParserUtil.strToDouble(getTotalPrice()));
         productOrderCardWebData.setDiscountPercent(ParserUtil.strToDouble(getDiscountPercent()));
-
-        productOrderCardWebData.setSelectedQuantity(ParserUtil.strToDouble(getQuantity()));
-        productOrderCardWebData.setAvailableTodayQuantity(ParserUtil.strToDouble(getAvailableStock()));
         return productOrderCardWebData;
     }
 

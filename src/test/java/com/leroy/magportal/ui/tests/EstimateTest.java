@@ -16,6 +16,7 @@ import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SendEstimateToEmailModal;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SubmittedEstimateModal;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SubmittedSendEstimateModal;
+import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.pages.customers.CreateCustomerForm;
 import com.leroy.utils.RandomUtil;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -249,10 +250,13 @@ public class EstimateTest extends BasePAOTest {
 
         // Step 3
         step("Обновите страницу");
-        // Если сразу после изменения кол-ва обновить страницу, то данные могут не сохраниться
         Thread.sleep(3000); // Так делать плохо!
+        // Если сразу после изменения кол-ва обновить страницу, то данные могут не сохраниться
         estimatePage.reloadPage();
-        new EstimatePage().shouldEstimateHasData(estimateData);
+        estimatePage = new EstimatePage();
+        estimatePage.clickDocumentInLeftMenu(estimateData.getNumber());
+        new EstimatePage().waitUntilEstimateDataIsLoaded()
+                .shouldEstimateHasData(estimateData);
     }
 
     @Test(description = "C3302216 Ordered quantity of product more than existing", groups = NEED_PRODUCTS_GROUP)
@@ -340,7 +344,7 @@ public class EstimateTest extends BasePAOTest {
                     .clickCreateEstimateButton();
         else {
             estimatePage = new EstimatePage();
-            estimatePage.reloadPage();
+            estimatePage.removeSelectedCustomer();
         }
 
         // Step 1
@@ -364,7 +368,7 @@ public class EstimateTest extends BasePAOTest {
                     .clickCreateEstimateButton();
         else {
             estimatePage = new EstimatePage();
-            estimatePage.reloadPage();
+            estimatePage.removeSelectedCustomer();
         }
 
         // Step 1
@@ -394,7 +398,7 @@ public class EstimateTest extends BasePAOTest {
                     .clickCreateEstimateButton();
         else {
             estimatePage = new EstimatePage();
-            estimatePage.reloadPage();
+            estimatePage.removeSelectedCustomer();
         }
 
         // Step 1
@@ -428,7 +432,7 @@ public class EstimateTest extends BasePAOTest {
                     .clickCreateEstimateButton();
         } else {
             estimatePage = new EstimatePage();
-            estimatePage.reloadPage();
+            estimatePage.removeSelectedCustomer();
         }
 
         estimatePage.clickAddCustomer()
@@ -502,7 +506,7 @@ public class EstimateTest extends BasePAOTest {
         EstimatePage estimatePage;
         if (!isStartFromScratch()) {
             estimatePage = new EstimatePage();
-            estimatePage.reloadPage();
+            estimatePage.removeSelectedCustomer();
         } else {
             estimatePage = loginAndGoTo(EstimatePage.class)
                     .clickCreateEstimateButton();
@@ -548,6 +552,7 @@ public class EstimateTest extends BasePAOTest {
         // Step 1
         step("Введите ЛМ товара в поле 'Добавление товара' и нажмите Enter");
         estimatePage.enterTextInSearchProductField(testProductLmCode);
+        estimatePage.waitUntilEstimateDataIsLoaded();
         estimatePage.shouldDocumentHasProducts(Collections.singletonList(testProductLmCode))
                 .shouldErrorTooltipCustomerIsRequiredVisible();
 
@@ -620,7 +625,8 @@ public class EstimateTest extends BasePAOTest {
 
         // Step 2
         step("Нажмите на бургер-меню и выберете раздел Сметы");
-        estimatePage = cartPage.goToPage(EstimatePage.class);
+        MenuPage menuPage = new MenuPage();
+        estimatePage = menuPage.goToPage(EstimatePage.class);
         estimatePage.shouldDocumentIsPresent(shortSalesDocWebData);
 
         // Step 3
@@ -658,7 +664,8 @@ public class EstimateTest extends BasePAOTest {
         step("Нажмите на кнопку профиля пользователя в правом верхнем углу и выберите другой магазин");
         List<String> docNumberList = estimatePage.getDocumentDataList()
                 .stream().map(ShortSalesDocWebData::getNumber).collect(Collectors.toList());
-        estimatePage.selectShopInUserProfile("35");
+        new MenuPage().selectShopInUserProfile("35");
+        estimatePage = new EstimatePage();
         estimatePage.shouldDocumentListHaveNumberContains(partEstimateId)
                 .shouldDocumentListNumbersNotEqual(docNumberList);
     }

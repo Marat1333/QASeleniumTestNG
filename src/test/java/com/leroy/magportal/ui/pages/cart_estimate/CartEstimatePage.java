@@ -173,12 +173,13 @@ public abstract class CartEstimatePage extends
     public void enterTextInSearchProductField(String text) {
         searchProductFld.clear(true);
         searchProductFld.clearFillAndSubmit(text);
-        waitForSpinnerAppearAndDisappear();
+        waitForSpinnerAppearAndDisappear(short_timeout);
         if (!ExtendedSearchModal.isModalVisible()) {
             if (this instanceof CartPage)
                 waitForSpinnerAppearAndDisappear();
             addProductLbl.click();
         }
+        waitForSpinnerDisappear();
     }
 
     @Step("Скопировать товар #{productIdx} из заказа #{orderIdx}")

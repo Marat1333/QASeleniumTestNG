@@ -1,5 +1,6 @@
 package com.leroy.magmobile.api.clients;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.magmobile.api.data.notification.SmsNotificationData;
 import com.leroy.magmobile.api.requests.notification.SmsNotificationCreateRequest;
 import com.leroy.magmobile.api.requests.notification.SmsNotificationGetRequest;
@@ -7,7 +8,6 @@ import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 
 public class SmsNotificationClient extends MagMobileClient {
 
@@ -16,11 +16,11 @@ public class SmsNotificationClient extends MagMobileClient {
      **/
 
     @Step("Create Notification")
-    public Response<SmsNotificationData> createNotification(SmsNotificationData data) {
+    public Response<JsonNode> createNotification(SmsNotificationData data) {
         SmsNotificationCreateRequest req = new SmsNotificationCreateRequest();
         req.setLdap(userSessionData.getUserLdap());
         req.jsonBody(data);
-        return execute(req, SmsNotificationData.class);
+        return execute(req, JsonNode.class);
     }
 
     @Step("Get notification with lmCode={lmCode}")
@@ -34,10 +34,9 @@ public class SmsNotificationClient extends MagMobileClient {
     // ---------- Verifications -------------------- //
 
     @Step("Check that notification is created")
-    public void assertThatIsCreated(Response<SmsNotificationData> resp, SmsNotificationData expectedData) {
+    public void assertThatIsCreated(Response<JsonNode> resp) {
         assertThatResponseIsOk(resp);
-        assertThat("Response with sms notification data",
-                resp.asJson(), is(expectedData));
+        assertThat("success", resp.asJson().get("success").booleanValue());
     }
 
     @Step("Check that GET response is OK")

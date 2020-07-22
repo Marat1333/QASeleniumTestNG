@@ -52,6 +52,11 @@ public class DateTimeUtil {
         }
     }
 
+    public static String localDateToStr(LocalDate date, String dateFormat) {
+        return date.format(DateTimeFormatter.ofPattern(
+                dateFormat, new Locale("ru")));
+    }
+
     public static LocalDateTime strToLocalDateTime(String dateString, String dateFormat) {
         try {
             if (dateString.toLowerCase().contains("сегодня")) {
