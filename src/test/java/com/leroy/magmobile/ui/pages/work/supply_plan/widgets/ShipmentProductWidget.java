@@ -11,20 +11,20 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 
 public class ShipmentProductWidget extends CardWidget<ShipmentProductData> {
-    @AppFindBy(xpath = "./*[contains(@text,'ЛМ ')]")
+    @AppFindBy(xpath = "./*[@content-desc='lmCode']")
     Element lmCode;
 
-    @AppFindBy(xpath = "./*[@content-desc=\"lmui-Icon\"]/following-sibling::*[1]")
+    @AppFindBy(xpath = "./*[@content-desc='barCode']")
     Element barCode;
 
-    @AppFindBy(xpath = "./*[@content-desc=\"lmui-Icon\"]/following-sibling::*[2]")
+    @AppFindBy(xpath = "./*[@content-desc='title']")
     Element title;
 
-    @AppFindBy(xpath = "./*[contains(@text,'получено')]/following-sibling::*[1]")
+    @AppFindBy(xpath = "./*[@content-desc='receivedQuantity']")
     Element receivedQuantity;
 
-    @AppFindBy(xpath = "./*[contains(@text,'шт.')]/preceding-sibling::*[1]")
-    Element plannedQuantity;
+    @AppFindBy(xpath = "./*[@content-desc='expectedQuantity']")
+    Element expectedQuantity;
 
     public ShipmentProductWidget(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
@@ -41,12 +41,12 @@ public class ShipmentProductWidget extends CardWidget<ShipmentProductData> {
         }catch (NoSuchElementException e){
             Log.warn("product wasn`t received");
         }
-        data.setPlannedQuantity(Integer.valueOf(plannedQuantity.getText()));
+        data.setPlannedQuantity(Integer.valueOf(expectedQuantity.getText()));
         return data;
     }
 
     @Override
     public boolean isFullyVisible(String pageSource) {
-        return lmCode.isVisible() && plannedQuantity.isVisible();
+        return lmCode.isVisible() && expectedQuantity.isVisible();
     }
 }
