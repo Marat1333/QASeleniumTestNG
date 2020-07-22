@@ -64,6 +64,9 @@ public class SupplyCardPage extends CommonMagMobilePage {
     @AppFindBy(xpath = "//*[contains(@text,' артикул')]/following-sibling::android.view.ViewGroup[android.widget.TextView]//*")
     Element receivedPlannedQuantity;
 
+    @AppFindBy(text = "ПОВТОРИТЬ")
+    Element sendReqOneMoreTime;
+
     AndroidScrollView<ShipmentProductData> shipmentProducts = new AndroidScrollView(driver, AndroidScrollView.TYPICAL_LOCATOR,
             ".//android.widget.ScrollView/*/*/*", ShipmentProductWidget.class);
 
@@ -80,6 +83,12 @@ public class SupplyCardPage extends CommonMagMobilePage {
 
     @Override
     protected void waitForPageIsLoaded() {
+        if (sendReqOneMoreTime.isVisible()){
+            Log.warn("hasn`t get data, trying again");
+            sendReqOneMoreTime.click();
+            waitUntilProgressBarIsInvisible();
+
+        }
         title.waitForVisibility();
         supplierType.waitForVisibility();
     }
