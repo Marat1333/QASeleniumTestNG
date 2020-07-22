@@ -66,16 +66,6 @@ public class MenuPage extends BaseWebPage {
         return pageClass.getConstructor().newInstance();
     }
 
-    @Step("Подождать появления окна с новыми фичами и закрыть его, если оно появится")
-    public MenuPage closeNewFeaturesModalWindowIfExist() {
-        NewFeaturesModalWindow modalWindow = new NewFeaturesModalWindow(driver);
-        modalWindow.waitForVisibility(short_timeout);
-        if (modalWindow.isVisible())
-            modalWindow.clickSubmitButton();
-        modalWindow.waitForInvisibility();
-        return this;
-    }
-
     @Step("Открываем левое меню, идет в профиль пользователя и выбераем магазин {value}")
     public MenuPage selectShopInUserProfile(String value) throws Exception {
         openMenu();

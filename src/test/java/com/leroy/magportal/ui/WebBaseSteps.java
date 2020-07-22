@@ -42,7 +42,7 @@ public class WebBaseSteps extends MagPortalBaseTest {
             Log.error("Страница 'Клиентские заказы' не загрузилась. Текущий title = " + title);
         }
         page.waitUntilTitleIs(expectedTitle, 30);
-        //page.closeNewFeaturesModalWindowIfExist();
+        page.closeNewFeaturesModalWindowIfExist();
         //До фикса
         //page.selectShopInUserProfile(EnvConstants.BASIC_USER_SHOP_ID);
         return page;
