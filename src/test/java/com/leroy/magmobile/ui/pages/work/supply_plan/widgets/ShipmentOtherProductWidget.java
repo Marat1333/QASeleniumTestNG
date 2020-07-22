@@ -9,16 +9,16 @@ import com.leroy.utils.ParserUtil;
 import org.openqa.selenium.WebDriver;
 
 public class ShipmentOtherProductWidget extends CardWidget<ShipmentProductData> {
-    @AppFindBy(xpath = "./*[contains(@text,'ЛМ ')]")
+    @AppFindBy(xpath = "./*[@content-desc='lmCode']")
     Element lmCode;
 
-    @AppFindBy(xpath = "./*[@content-desc=\"lmui-Icon\"]/following-sibling::*[1]")
+    @AppFindBy(xpath = "./*[@content-desc='barCode']")
     Element barCode;
 
-    @AppFindBy(xpath = "./*[@content-desc=\"lmui-Icon\"]/following-sibling::*[2]")
+    @AppFindBy(xpath = "./*[@content-desc='title']")
     Element title;
 
-    @AppFindBy(xpath = "./*[@text='шт.']/preceding-sibling::*[1]")
+    @AppFindBy(xpath = "./*[@content-desc='expectedQuantity']")
     Element expectedQuantity;
 
     public ShipmentOtherProductWidget(WebDriver driver, CustomLocator locator) {
