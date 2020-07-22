@@ -103,7 +103,7 @@ public class EstimatePage extends CartEstimatePage {
     // Follow URLs
 
     @Step("Открыть страницу со сметой №{id} (прямой переход по URL)")
-    public EstimatePage openPageWithEstimate(String id) {
+    public EstimatePage openPageWithEstimate(String id) throws Exception {
         driver.get(EnvConstants.URL_MAG_PORTAL + "/orders/estimates");
         EstimatePage estimatePage = new EstimatePage();
         estimatePage.clickDocumentInLeftMenu(id);
@@ -239,7 +239,7 @@ public class EstimatePage extends CartEstimatePage {
     }
 
     @Step("Проверить, что на странице сметы содержатся ожидаемые данные")
-    public EstimatePage shouldEstimateHasData(SalesDocWebData expectedEstimateData) {
+    public EstimatePage shouldEstimateHasData(SalesDocWebData expectedEstimateData) throws Exception {
         shouldDocumentHasData(expectedEstimateData);
         return this;
     }

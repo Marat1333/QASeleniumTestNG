@@ -134,7 +134,7 @@ public abstract class CartEstimatePage extends
     public abstract String getCreationDate();
 
     @Step("Получить информацию о документе со страницы")
-    public SalesDocWebData getSalesDocData() {
+    public SalesDocWebData getSalesDocData() throws Exception {
         SalesDocWebData salesDocWebData = new SalesDocWebData();
         salesDocWebData.setOrders(orders().getDataList());
         salesDocWebData.setNumber(getDocumentNumber());
@@ -151,7 +151,7 @@ public abstract class CartEstimatePage extends
     }
 
     @Step("Получить информацию о добавленных в документ продуктах со страницы")
-    public List<ProductOrderCardWebData> getProductDataList() {
+    public List<ProductOrderCardWebData> getProductDataList() throws Exception {
         List<ProductOrderCardWebData> resultList = new ArrayList<>();
         for (OrderPuzWidget orderWidget : orders()) {
             resultList.addAll(orderWidget.getProductDataList());
@@ -445,7 +445,7 @@ public abstract class CartEstimatePage extends
     }
 
     @Step("Проверить, что в документ добавлены товары с ЛМ кодами: {lmCodes}")
-    public CartEstimatePage shouldDocumentHasProducts(List<String> lmCodes) {
+    public CartEstimatePage shouldDocumentHasProducts(List<String> lmCodes) throws Exception {
         List<ProductOrderCardWebData> productData = getProductDataList();
         List<String> actualLmCodes = productData.stream().map(
                 ProductOrderCardWebData::getLmCode).collect(Collectors.toList());
@@ -454,7 +454,7 @@ public abstract class CartEstimatePage extends
     }
 
     @Step("Проверить, что в документе {index}-ый товар имеет определенные характеристики (expectedProductData)")
-    public CartEstimatePage shouldDocumentHasProduct(int index, ProductOrderCardWebData expectedProductData) {
+    public CartEstimatePage shouldDocumentHasProduct(int index, ProductOrderCardWebData expectedProductData) throws Exception {
         index--;
         List<ProductOrderCardWebData> actualProductData = getProductDataList();
         if (DefectConst.STOCK_ISSUE)
@@ -464,7 +464,7 @@ public abstract class CartEstimatePage extends
     }
 
     @Step("Проверить, что документ (Смета / Корзина) в списке слева отображается")
-    public void shouldDocumentIsPresent(ShortSalesDocWebData expectedDocumentData) {
+    public void shouldDocumentIsPresent(ShortSalesDocWebData expectedDocumentData) throws Exception {
         List<ShortSalesDocWebData> documentList = documentCardList().getDataList()
                 .stream().filter(d -> d.getNumber().equals(expectedDocumentData.getNumber()))
                 .collect(Collectors.toList());
@@ -476,7 +476,7 @@ public abstract class CartEstimatePage extends
     /**
      * Проверить, что на странице сметы содержатся ожидаемые данные
      */
-    protected void shouldDocumentHasData(SalesDocWebData expectedDocumentData) {
+    protected void shouldDocumentHasData(SalesDocWebData expectedDocumentData) throws Exception {
         SalesDocWebData actualEstimateData = getSalesDocData();
         if (expectedDocumentData.getNumber() == null)
             anAssert.isFalse(getDocumentNumber().isEmpty(), "Отсутствует номер документа");
