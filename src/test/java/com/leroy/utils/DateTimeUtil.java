@@ -12,7 +12,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+
 public class DateTimeUtil {
+    public static final String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
 
     /**
      * Check if the date matches the format
@@ -70,6 +73,10 @@ public class DateTimeUtil {
             Log.error("strToLocalDateTime() method: " + err.getMessage());
             return null;
         }
+    }
+
+    public static long getDateDifferenceInDays(LocalDate before, LocalDate after){
+        return DAYS.between(before, after);
     }
 
 }

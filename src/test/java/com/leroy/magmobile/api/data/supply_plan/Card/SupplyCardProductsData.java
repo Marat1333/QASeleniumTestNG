@@ -6,7 +6,7 @@ import java.util.List;
 
 @Data
 public class SupplyCardProductsData {
-    private String departmentId;
+    private Integer departmentId;
     private String lmCode;
     private String barCode;
     private Integer expectedQuantity;

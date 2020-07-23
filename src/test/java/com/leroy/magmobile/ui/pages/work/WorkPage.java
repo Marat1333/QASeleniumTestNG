@@ -4,6 +4,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.constants.MagMobElementTypes;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import com.leroy.magmobile.ui.pages.work.supply_plan.SuppliesListPage;
 import io.qameta.allure.Step;
 
 public class WorkPage extends CommonMagMobilePage {
@@ -54,6 +55,13 @@ public class WorkPage extends CommonMagMobilePage {
         return new StockProductsPage();
     }
 
+    @Step("Перейти в План поставок")
+    public SuppliesListPage goToShipmentListPage(){
+        departmentSupplyPlanLbl.click();
+        return new SuppliesListPage();
+    }
+
+
     // ------------------------ Verifications ------------------------//
 
     @Step("Проверить, что страница 'Ежедневная работа' отображается корректно")
@@ -64,7 +72,7 @@ public class WorkPage extends CommonMagMobilePage {
                 MagMobElementTypes.CIRCLE_PLUS.getPictureName());
         softAssert.isElementVisible(departmentSupplyPlanLbl);
         softAssert.isElementVisible(withdrawalAndDisposalLbl);
-        //softAssert.isElementVisible(priceTagPrintingLbl); - Отображается только на определенных магазинах (например, 20)
+        softAssert.isElementVisible(priceTagPrintingLbl);
         softAssert.isElementVisible(orderBalisageLbl);
         softAssert.isElementVisible(miniInventoryLbl);
         softAssert.verifyAll();
