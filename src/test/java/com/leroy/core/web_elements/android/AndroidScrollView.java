@@ -309,6 +309,10 @@ public class AndroidScrollView<T> extends BaseWidget {
      * @param maxScrollCount - limit of scroll count
      * @return this
      */
+    public AndroidScrollView<T> scrollUpToText(String findText) {
+        return scrollUpToText(findText, MAX_SCROLL_COUNT);
+    }
+
     public AndroidScrollView<T> scrollUpToText(String findText, int maxScrollCount) {
         SearchContext searchContext = new SearchContext();
         searchContext.findText = findText;
@@ -344,6 +348,15 @@ public class AndroidScrollView<T> extends BaseWidget {
     public AndroidScrollView<T> scrollToBeginning() {
         if (useUiSelectors) {
             uiAutomatorScroll("flingToBeginning(2)");
+        } else {
+            // to do
+        }
+        return this;
+    }
+
+    public AndroidScrollView<T> scrollToBeginning(int count) {
+        if (useUiSelectors) {
+            uiAutomatorScroll(String.format("flingToBeginning(%s)", count));
         } else {
             // to do
         }
