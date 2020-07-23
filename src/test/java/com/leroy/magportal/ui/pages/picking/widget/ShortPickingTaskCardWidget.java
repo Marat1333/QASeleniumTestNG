@@ -33,7 +33,7 @@ public class ShortPickingTaskCardWidget extends CardWebWidget<ShortPickingTaskDa
     @WebFindBy(xpath = "//span[contains(@class, 'Status-container')]")
     Element status;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'PickingListItem__departments-item')]")
+    @WebFindBy(xpath = ".//div[contains(@class, 'PickingListItem__departments-item')]")
     ElementList<Element> departments;
 
     @Override
@@ -41,8 +41,8 @@ public class ShortPickingTaskCardWidget extends CardWebWidget<ShortPickingTaskDa
         ShortPickingTaskData pickingTaskData = new ShortPickingTaskData();
         pickingTaskData.setNumber(number.getText());
         pickingTaskData.setBuildType(buildType.getText());
-        pickingTaskData.setMaxSize(ParserUtil.strToDouble(maxSize.getText()));
-        pickingTaskData.setWeight(ParserUtil.strToDouble(weight.getText()));
+        pickingTaskData.setMaxSize(ParserUtil.strToDouble(maxSize.getText(), "."));
+        pickingTaskData.setWeight(ParserUtil.strToDouble(weight.getText(), "."));
         pickingTaskData.setStatus(status.getText());
         pickingTaskData.setDepartments(departments.getTextList().stream()
                 .map(Integer::valueOf).collect(Collectors.toList()));

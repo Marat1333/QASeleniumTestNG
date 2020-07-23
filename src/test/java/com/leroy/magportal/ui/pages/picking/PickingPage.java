@@ -65,7 +65,7 @@ public class PickingPage extends LeftDocumentListPage<ShortPickingTaskCardWidget
     private Button refreshDocumentListBtn;
 
     @WebFindBy(xpath = "//div[substring(@class, string-length(@class) - string-length('Picking-PickingListItem') +1) = 'Picking-PickingListItem']",
-            clazz = ShortCartEstimateDocumentCardWidget.class)
+            clazz = ShortPickingTaskCardWidget.class)
     private CardWebWidgetList<ShortPickingTaskCardWidget, ShortPickingTaskData> documentCardList;
 
     // Данные сборки (Информация вверху - над вкладками 'Содержание', 'Комментарии', 'Информация')
