@@ -29,6 +29,12 @@ public class TagsListPage extends CommonMagMobilePage {
             AndroidScrollView.TYPICAL_LOCATOR, ".//android.view.ViewGroup[@content-desc=\"lmCode\"]/..",
             ProductWidget.class);
 
+    @Override
+    protected void waitForPageIsLoaded() {
+        createSessionTimeStamp.waitForVisibility();
+        deleteSessionBtn.waitForVisibility();
+    }
+
     @Step("Перейти назад")
     public ConfirmSessionExitModalPage goBack() {
         backBtn.click();
@@ -43,5 +49,10 @@ public class TagsListPage extends CommonMagMobilePage {
         }
         softAssert.verifyAll();
         return this;
+    }
+
+    public void verifyRequiredElements(){
+        softAssert.areElementsVisible(backBtn, createSessionTimeStamp, deleteSessionBtn, switchToMassiveEditorModeBtn);
+        softAssert.verifyAll();
     }
 }

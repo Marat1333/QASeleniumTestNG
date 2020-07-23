@@ -66,6 +66,7 @@ public class PrintTagsTest extends AppBaseSteps {
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
         EditTagModalPage editTagModalPage = new EditTagModalPage();
         TagsListPage tagsListPage = editTagModalPage.addProductToPrintSession();
+        tagsListPage.verifyRequiredElements();
         tagsListPage.shouldProductsAreCorrect(lmCode);
 
         //Step 2
