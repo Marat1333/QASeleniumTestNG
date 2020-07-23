@@ -4,6 +4,7 @@ import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.magportal.ui.constants.picking.PickingConst;
 import com.leroy.magportal.ui.models.picking.ShortPickingTaskData;
 import com.leroy.magportal.ui.webelements.CardWebWidget;
 import com.leroy.utils.ParserUtil;
@@ -22,7 +23,7 @@ public class ShortPickingTaskCardWidget extends CardWebWidget<ShortPickingTaskDa
     Element number;
 
     @WebFindBy(xpath = HEADER_XPATH + "/div[1]/span[2]")
-    Element buildType;
+    Element assemblyType;
 
     @WebFindBy(xpath = HEADER_XPATH + "/div[2]/span[1]")
     Element maxSize;
@@ -30,22 +31,43 @@ public class ShortPickingTaskCardWidget extends CardWebWidget<ShortPickingTaskDa
     @WebFindBy(xpath = HEADER_XPATH + "/div[2]/span[3]")
     Element weight;
 
-    @WebFindBy(xpath = "//span[contains(@class, 'Status-container')]")
+    @WebFindBy(xpath = ".//span[contains(@class, 'Status-container')]")
     Element status;
+
+    @WebFindBy(xpath = ".//div[span[contains(text(), 'Сборщик') or contains(text(), 'Клиент')]]")
+    Element collectorOrClientLbl;
+
+    @WebFindBy(xpath = ".//div[contains(@class, 'PickingListItem__time')]/div/div/span[3]")
+    Element creationDate;
 
     @WebFindBy(xpath = ".//div[contains(@class, 'PickingListItem__departments-item')]")
     ElementList<Element> departments;
+
+    private PickingConst.AssemblyType getAssemblyType() {
+        String assemblyTypeText = this.assemblyType.getText();
+        switch (assemblyTypeText) {
+            case "торг.зал":
+                return PickingConst.AssemblyType.SHOPPING_ROOM;
+        }
+        return null;
+    }
 
     @Override
     public ShortPickingTaskData collectDataFromPage() throws Exception {
         ShortPickingTaskData pickingTaskData = new ShortPickingTaskData();
         pickingTaskData.setNumber(number.getText());
-        pickingTaskData.setBuildType(buildType.getText());
+        pickingTaskData.setAssemblyType(getAssemblyType());
         pickingTaskData.setMaxSize(ParserUtil.strToDouble(maxSize.getText(), "."));
         pickingTaskData.setWeight(ParserUtil.strToDouble(weight.getText(), "."));
         pickingTaskData.setStatus(status.getText());
         pickingTaskData.setDepartments(departments.getTextList().stream()
                 .map(Integer::valueOf).collect(Collectors.toList()));
+        pickingTaskData.setCreationDate(creationDate.getText());
+        String collectorOrClient = collectorOrClientLbl.getText();
+        if (collectorOrClient.contains("Сборщик:"))
+            pickingTaskData.setCollector(collectorOrClient.replaceAll("Сборщик:", "").trim());
+        else
+            pickingTaskData.setClient(collectorOrClient.replaceAll("Клиент:", "").trim());
         return pickingTaskData;
     }
 }

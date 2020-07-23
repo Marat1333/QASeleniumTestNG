@@ -2,6 +2,7 @@ package com.leroy.magportal.ui.pages.picking.widget;
 
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
+import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magportal.ui.models.picking.PickingProductCardData;
 import com.leroy.magportal.ui.webelements.CardWebWidget;
@@ -9,9 +10,9 @@ import com.leroy.magportal.ui.webelements.commonelements.PuzCheckBox;
 import com.leroy.utils.ParserUtil;
 import org.openqa.selenium.WebDriver;
 
-public class BuildProductCardWidget extends CardWebWidget<PickingProductCardData> {
+public class AssemblyProductCardWidget extends CardWebWidget<PickingProductCardData> {
 
-    public BuildProductCardWidget(WebDriver driver, CustomLocator locator) {
+    public AssemblyProductCardWidget(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
     }
 
@@ -39,6 +40,17 @@ public class BuildProductCardWidget extends CardWebWidget<PickingProductCardData
     @WebFindBy(xpath = ".//div[contains(@class, 'ProductCardFooter__bigSide')]//p[2]", metaName = "Габариты")
     Element dimension;
 
+    @WebFindBy(xpath = ".//div[contains(@id, 'StockInformationExpander')]/span[2]", metaName = "Кол-во на складе")
+    Element stockQuantity;
+
+    @WebFindBy(xpath = ".//div[contains(@class, 'ProductCard__quantities')]/div[2]//input",
+            metaName = "Поле 'Заказано'")
+    EditBox orderedQuantityFld;
+
+    @WebFindBy(xpath = ".//div[contains(@class, 'ProductCard__quantities')]/div[3]//input",
+            metaName = "Поле 'Собрано'")
+    EditBox collectedQuantityFld;
+
     public void setSplitOption(boolean val) throws Exception {
         splitChkBox.setValue(val);
     }
@@ -46,13 +58,16 @@ public class BuildProductCardWidget extends CardWebWidget<PickingProductCardData
     @Override
     public PickingProductCardData collectDataFromPage() {
         PickingProductCardData pickingProductCardData = new PickingProductCardData();
-        pickingProductCardData.setBarCode(barCode.getText());
+        pickingProductCardData.setBarCode(barCode.getText().replaceAll(">|<|\n| ", "").trim());
         pickingProductCardData.setLmCode(lmCode.getText());
         pickingProductCardData.setDepartment(ParserUtil.strToInt(department.getText()));
         pickingProductCardData.setDimension(dimension.getText());
         pickingProductCardData.setTitle(title.getText());
         pickingProductCardData.setPrice(ParserUtil.strToDouble(price.getText()));
-        pickingProductCardData.setWeight(ParserUtil.strToDouble(weight.getText()));
+        pickingProductCardData.setWeight(ParserUtil.strToDouble(weight.getText(), "."));
+        pickingProductCardData.setStockQuantity(ParserUtil.strToInt(stockQuantity.getText()));
+        pickingProductCardData.setCollectedQuantity(ParserUtil.strToInt(collectedQuantityFld.getText()));
+        pickingProductCardData.setOrderedQuantity(ParserUtil.strToInt(orderedQuantityFld.getText()));
         return pickingProductCardData;
     }
 }

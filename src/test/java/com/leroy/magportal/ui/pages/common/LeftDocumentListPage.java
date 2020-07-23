@@ -48,13 +48,16 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
 
     @Step("Выберите документ в списке слева")
     public void clickDocumentInLeftMenu(String number) throws Exception {
+        boolean result = false;
         for (W widget : documentCardList()) {
             D data = widget.collectDataFromPage();
             if (data.getNumber().equals(number)) {
                 widget.click();
+                result = true;
                 break;
             }
         }
+        anAssert.isTrue(result, String.format("Документ с номером %s не найдено", number));
         waitForSpinnerDisappear();
     }
 
@@ -107,6 +110,16 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
     public void shouldDocumentListIs(List<D> expectedDocuments) throws Exception {
         anAssert.isEquals(documentCardList().getDataList(), expectedDocuments,
                 "Ожидались другие документы");
+    }
+
+    @Step("Проверить, что в списке документов слева присутствуют нужные документы (expectedDocuments)")
+    public void shouldDocumentListContainsThis(D expectedDocument) throws Exception {
+        List<D> actualDocuments = documentCardList().getDataList().stream().filter(
+                d -> d.getNumber().equals(expectedDocument.getNumber())).collect(Collectors.toList());
+        anAssert.isEquals(actualDocuments.size(), 1,
+                "Документ с номером " + expectedDocument.getNumber() + " не найден");
+        anAssert.isEquals(actualDocuments.get(0), expectedDocument,
+                "Неверная информация в документе");
     }
 
     @Step("Проверить, что в списке документов слева на текущей странице отображается {value} документов")

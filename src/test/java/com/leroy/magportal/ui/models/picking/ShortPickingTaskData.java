@@ -1,5 +1,6 @@
 package com.leroy.magportal.ui.models.picking;
 
+import com.leroy.magportal.ui.constants.picking.PickingConst;
 import com.leroy.magportal.ui.models.salesdoc.IDataWithNumberAndStatus;
 import lombok.Data;
 
@@ -10,7 +11,7 @@ public class ShortPickingTaskData implements IDataWithNumberAndStatus {
 
     private String number;
     //private String orderLinkNumber;
-    private String buildType;
+    private PickingConst.AssemblyType assemblyType;
     private List<Integer> departments;
     private String status;
     private String client;

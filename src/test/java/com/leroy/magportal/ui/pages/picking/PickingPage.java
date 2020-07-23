@@ -4,13 +4,14 @@ import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magportal.ui.constants.picking.PickingConst;
 import com.leroy.magportal.ui.models.picking.ShortPickingTaskData;
-import com.leroy.magportal.ui.pages.cart_estimate.widget.ShortCartEstimateDocumentCardWidget;
 import com.leroy.magportal.ui.pages.common.LeftDocumentListPage;
 import com.leroy.magportal.ui.pages.picking.widget.ShortPickingTaskCardWidget;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import com.leroy.magportal.ui.webelements.commonelements.PuzCheckBox;
 import com.leroy.magportal.ui.webelements.commonelements.PuzComboBox;
+import io.qameta.allure.Step;
 
 public class PickingPage extends LeftDocumentListPage<ShortPickingTaskCardWidget, ShortPickingTaskData> {
 
@@ -64,13 +65,13 @@ public class PickingPage extends LeftDocumentListPage<ShortPickingTaskCardWidget
             metaName = "Кнопка Обновить список документов")
     private Button refreshDocumentListBtn;
 
-    @WebFindBy(xpath = "//div[substring(@class, string-length(@class) - string-length('Picking-PickingListItem') +1) = 'Picking-PickingListItem']",
+    @WebFindBy(xpath = "//div[substring(@class, string-length(@class) - string-length('Picking-PickingListItem') +1) = 'Picking-PickingListItem' or contains(@class, 'Picking-PickingListItem__active')]",
             clazz = ShortPickingTaskCardWidget.class)
     private CardWebWidgetList<ShortPickingTaskCardWidget, ShortPickingTaskData> documentCardList;
 
     // Данные сборки (Информация вверху - над вкладками 'Содержание', 'Комментарии', 'Информация')
 
-    private static final String PICKING_VIEW_HEADER = "div[contains(@class, 'PickingView__header__orderLink')]";
+    private static final String PICKING_VIEW_HEADER = "div[contains(@class, 'PickingViewHeader__orderLink')]";
 
     @WebFindBy(xpath = "//div[" + PICKING_VIEW_HEADER + "]/span[1]",
             metaName = "Номер сборки")
@@ -82,7 +83,7 @@ public class PickingPage extends LeftDocumentListPage<ShortPickingTaskCardWidget
 
     @WebFindBy(xpath = "//div[" + PICKING_VIEW_HEADER + "]/span[2]",
             metaName = "Тип сборки")
-    Element buildType;
+    Element assemblyType;
 
     @WebFindBy(xpath = "//div[" + PICKING_VIEW_HEADER + "]/span[3]",
             metaName = "Статус")
@@ -91,6 +92,10 @@ public class PickingPage extends LeftDocumentListPage<ShortPickingTaskCardWidget
     @WebFindBy(xpath = "//div[" + PICKING_VIEW_HEADER + "]/span[4]",
             metaName = "Дата?")
     Element date; // TODO что это за время?
+
+    @WebFindBy(xpath = "//div[contains(@class, 'Picking-PickingViewHeader')]/div[2]/span[1]",
+            metaName = "Дата создания")
+    Element creationDate;
 
     // Tabs
 
@@ -108,7 +113,6 @@ public class PickingPage extends LeftDocumentListPage<ShortPickingTaskCardWidget
             metaName = "Вкладка 'Информация'")
     Element informationTab;
 
-
     @Override
     protected Button refreshDocumentListBtn() {
         return refreshDocumentListBtn;
@@ -119,5 +123,44 @@ public class PickingPage extends LeftDocumentListPage<ShortPickingTaskCardWidget
         return documentCardList;
     }
 
+    protected String getNumber() {
+        return buildNumber.getText() + " " + orderLink.getText();
+    }
 
+    protected PickingConst.AssemblyType getAssemblyType() {
+        String assemblyTypeText = this.assemblyType.getText();
+        switch (assemblyTypeText) {
+            case "торг.зал":
+                return PickingConst.AssemblyType.SHOPPING_ROOM;
+            default:
+                anAssert.isTrue(false, "Обнаружен неизвестный тип сборки - " + assemblyTypeText);
+        }
+        return null;
+    }
+
+    protected String getStatus() {
+        return status.getText();
+    }
+
+    protected String getDate() {
+        return date.getText();
+    }
+
+    protected String getCreationDate() {
+        return creationDate.getText();
+    }
+
+    // Actions
+
+    @Step("Переключиться на вкладку 'Комментарий'")
+    public PickingCommentPage switchToCommentTab() {
+        commentTab.click();
+        return new PickingCommentPage();
+    }
+
+    @Step("Переключиться на вкладку 'Содержание'")
+    public PickingContentPage switchToContentTab() {
+        contentTab.click();
+        return new PickingContentPage();
+    }
 }
