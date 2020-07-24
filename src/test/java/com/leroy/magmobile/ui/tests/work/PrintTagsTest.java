@@ -5,25 +5,34 @@ import com.leroy.core.api.Module;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.PrintPriceClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
-import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magmobile.ui.AppBaseSteps;
+import com.leroy.magmobile.ui.pages.common.BottomMenuPage;
+import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.ProductCardPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.modal.ActionWithProductModalPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.work.WorkPage;
 import com.leroy.magmobile.ui.pages.work.print_tags.PrintTagsScannerPage;
 import com.leroy.magmobile.ui.pages.work.print_tags.SessionsListPage;
 import com.leroy.magmobile.ui.pages.work.print_tags.TagsListPage;
+import com.leroy.magmobile.ui.pages.work.print_tags.data.ProductTagData;
 import com.leroy.magmobile.ui.pages.work.print_tags.modal.ConfirmSessionExitModalPage;
 import com.leroy.magmobile.ui.pages.work.print_tags.modal.EditTagModalPage;
 import com.leroy.magmobile.ui.pages.work.print_tags.modal.UnsuccessfullSessionCreationModalPage;
+import io.qameta.allure.Step;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Guice(modules = {Module.class})
 public class PrintTagsTest extends AppBaseSteps {
+
     private CatalogSearchClient catalogSearchClient;
     private PrintPriceClient printPriceClient;
 
@@ -40,16 +49,23 @@ public class PrintTagsTest extends AppBaseSteps {
         return sessionData;
     }
 
-    private ProductItemData getRandomProduct() {
-        ProductItemDataList productItemDataList = catalogSearchClient.searchProductsBy(new GetCatalogSearch().setPageSize(24)).asJson();
-        List<ProductItemData> productItemData = productItemDataList.getItems();
-        anAssert().isTrue(productItemData.size() > 0, "size must be more than 0");
-        return productItemData.get((int) (Math.random() * productItemData.size()));
+    @Step("Добавить в сессию товары")
+    private List<ProductTagData> addUniqueProductsToSessionByManualSearch(List<String> lmCodes) {
+        List<ProductTagData> productTagDataList = new ArrayList<>();
+        for (String lmCode : lmCodes) {
+            TagsListPage tagsListPage = new TagsListPage();
+            PrintTagsScannerPage scannerPage = tagsListPage.addProductToSession();
+            SearchProductPage searchProductPage = scannerPage.navigateToSearchProductPage();
+            searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
+            EditTagModalPage editTagModalPage = new EditTagModalPage();
+            productTagDataList.add(editTagModalPage.addProductToPrintSession());
+        }
+        return productTagDataList;
     }
 
     @Test(description = "C23389191 Создание сессии через раздел \"Работа\"")
-    public void testCreateSessionFromWorkPage()throws Exception{
-        ProductItemData randomProduct = getRandomProduct();
+    public void testCreateSessionFromWorkPage() throws Exception {
+        ProductItemData randomProduct = catalogSearchClient.getRandomProduct();
         String lmCode = randomProduct.getLmCode();
 
         //Pre-conditions
@@ -65,21 +81,148 @@ public class PrintTagsTest extends AppBaseSteps {
         SearchProductPage searchProductPage = scannerPage.navigateToSearchProductPage();
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
         EditTagModalPage editTagModalPage = new EditTagModalPage();
-        TagsListPage tagsListPage = editTagModalPage.addProductToPrintSession();
+        editTagModalPage.addProductToPrintSession();
+        TagsListPage tagsListPage = new TagsListPage();
         tagsListPage.verifyRequiredElements();
         tagsListPage.shouldProductsAreCorrect(lmCode);
 
         //Step 2
         step("Попробовать создать еще одну сессию");
         ConfirmSessionExitModalPage exitModalPage = tagsListPage.goBack();
-        exitModalPage.verifyRequiredElements();
         exitModalPage.exit();
         sessionsListPage = new SessionsListPage();
-        sessionsListPage.shouldViewTypeIsCorrect(false);
         sessionsListPage.createNewSession();
         UnsuccessfullSessionCreationModalPage errorModal = new UnsuccessfullSessionCreationModalPage();
         errorModal.verifyRequiredElements();
         errorModal.confirm();
         sessionsListPage.verifyRequiredElements();
+    }
+
+    @Test(description = "C23389192 Создание сессии через карточку товара")
+    public void testCreateSessionFromProductCard() throws Exception {
+        ProductItemData randomProduct = catalogSearchClient.getRandomProduct();
+        String lmCode = randomProduct.getLmCode();
+
+        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
+
+        // Step 1
+        step("Добавить товар в сессию печати через карточку товара");
+        SearchProductPage searchProductPage = mainProductAndServicesPage.clickSearchBar(false);
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
+        ProductCardPage productCardPage = new ProductCardPage();
+        productCardPage.clickActionWithProductButton();
+        ActionWithProductModalPage multiFunctionModal = new ActionWithProductModalPage();
+        EditTagModalPage editTagModalPage = multiFunctionModal.printTag();
+        editTagModalPage.addProductToPrintSession();
+        TagsListPage tagsListPage = new TagsListPage();
+        tagsListPage.verifyRequiredElements();
+        tagsListPage.shouldProductsAreCorrect(lmCode);
+    }
+
+    @Test(description = "C23389199 возвращение в созданную ранее сессию")
+    public void testReturnToCreatedSession() throws Exception {
+        ProductItemData randomProduct = catalogSearchClient.getRandomProduct();
+        String lmCode = randomProduct.getLmCode();
+
+        //Pre-conditions
+        WorkPage workPage = loginAndGoTo(WorkPage.class);
+        SessionsListPage sessionsListPage = workPage.goToSessionsListPage();
+
+        //Step 1
+        step("Создать сессию печати через страницу \"Работа\" и выйти из нее");
+        sessionsListPage.createNewSession();
+        PrintTagsScannerPage scannerPage = new PrintTagsScannerPage();
+        SearchProductPage searchProductPage = scannerPage.navigateToSearchProductPage();
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
+        EditTagModalPage editTagModalPage = new EditTagModalPage();
+        editTagModalPage.addProductToPrintSession();
+        TagsListPage tagsListPage = new TagsListPage();
+        ConfirmSessionExitModalPage exitModalPage = tagsListPage.goBack();
+        exitModalPage.verifyRequiredElements();
+        exitModalPage.exit();
+        sessionsListPage = new SessionsListPage();
+        sessionsListPage.shouldViewTypeIsCorrect(false);
+
+        //Step 2
+        step("нажать на активную сессию");
+        sessionsListPage.navigateToActiveSession();
+        tagsListPage.verifyRequiredElements();
+        tagsListPage.shouldProductsAreCorrect(lmCode);
+    }
+
+    @Test(description = "C23389193 добавление товара в сессию")
+    public void testAddProductToCreatedSession() throws Exception {
+        int productsCount = 3;
+        List<ProductItemData> randomProducts = catalogSearchClient.getRandomUniqueProductsWithTitles(productsCount);
+        List<String> lmCodesList = randomProducts.stream().map(ProductItemData::getLmCode).collect(Collectors.toList());
+        String[] lmCodes = new String[lmCodesList.size()];
+        lmCodes = lmCodesList.toArray(lmCodes);
+
+        //Pre-conditions
+        WorkPage workPage = loginAndGoTo(WorkPage.class);
+        SessionsListPage sessionsListPage = workPage.goToSessionsListPage();
+
+        //Step 1
+        step("добавить товар через поиск");
+        sessionsListPage.createNewSession();
+        PrintTagsScannerPage scannerPage = new PrintTagsScannerPage();
+        scannerPage.verifyRequiredElements();
+        SearchProductPage searchProductPage = scannerPage.navigateToSearchProductPage();
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCodesList.get(0));
+        EditTagModalPage editTagModalPage = new EditTagModalPage();
+        editTagModalPage.addProductToPrintSession();
+
+        addUniqueProductsToSessionByManualSearch(Collections.singletonList(lmCodesList.get(1)));
+        TagsListPage tagsListPage = new TagsListPage();
+        tagsListPage.shouldProductsAreCorrect(Arrays.copyOfRange(lmCodes, 0, 2));
+
+        //Step 2
+        step("добавить товар через карточку");
+        ConfirmSessionExitModalPage confirmSessionExitModalPage = tagsListPage.goBack();
+        confirmSessionExitModalPage.exit();
+        sessionsListPage = new SessionsListPage();
+        sessionsListPage.goBack();
+        BottomMenuPage bottomMenuPage = new BottomMenuPage();
+        MainProductAndServicesPage mainProductAndServicesPage = bottomMenuPage.goToSales();
+        searchProductPage = mainProductAndServicesPage.clickSearchBar(false);
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCodesList.get(2));
+        ProductCardPage productCardPage = new ProductCardPage();
+        productCardPage.clickActionWithProductButton();
+        ActionWithProductModalPage multiFunctionModal = new ActionWithProductModalPage();
+        editTagModalPage = multiFunctionModal.printTag();
+        ProductTagData productTagData = editTagModalPage.addProductToPrintSession();
+        tagsListPage = new TagsListPage();
+        tagsListPage.verifyRequiredElements();
+        tagsListPage.shouldProductsAreCorrect(lmCodes);
+
+        //Step 3
+        step("добавление уже добавленного ранее товара через поиск");
+        scannerPage = tagsListPage.addProductToSession();
+        //TODO проверка счетчика сканера
+        searchProductPage = scannerPage.navigateToSearchProductPage();
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCodesList.get(2));
+        //workaround for minor bug
+        searchProductPage.searchProductAndSelect(lmCodesList.get(2));
+        //
+        editTagModalPage = new EditTagModalPage();
+        editTagModalPage.shouldSizeValuesAreCorrect(productTagData);
+        //TODO проверка на отображение кнопки корзины
+        editTagModalPage.addProductToPrintSession();
+        tagsListPage = new TagsListPage();
+        tagsListPage.shouldProductCountIsCorrect(3);
+
+        //Step 4
+        step("добавление уже добавленного ранее товара через карточку");
+        confirmSessionExitModalPage = tagsListPage.goBack();
+        confirmSessionExitModalPage.exit();
+        productCardPage= new ProductCardPage();
+        searchProductPage = productCardPage.returnBack();
+        //вид поиска немного изменился
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCodesList.get(2));
+        editTagModalPage = new EditTagModalPage();
+        editTagModalPage.shouldSizeValuesAreCorrect(productTagData);
+        editTagModalPage.addProductToPrintSession();
+        tagsListPage = new TagsListPage();
+        tagsListPage.shouldProductCountIsCorrect(3);
     }
 }

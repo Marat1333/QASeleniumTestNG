@@ -1,8 +1,11 @@
 package com.leroy.magmobile.ui.pages.sales.product_card.modal;
 
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import com.leroy.magmobile.ui.pages.work.print_tags.modal.EditTagModalPage;
+import io.qameta.allure.Step;
 
 public abstract class CommonActionWithProductModalPage extends CommonMagMobilePage {
 
@@ -15,6 +18,15 @@ public abstract class CommonActionWithProductModalPage extends CommonMagMobilePa
 
     @AppFindBy(text = "Уведомить клиента о наличии")
     Element notifyClientBtn;
+
+    @AppFindBy(text = "Напечатать ценник")
+    Button printTagBtn;
+
+    @Step("Напечатать ценник")
+    public EditTagModalPage printTag(){
+        printTagBtn.click();
+        return new EditTagModalPage();
+    }
 
     @Override
     public void waitForPageIsLoaded() {

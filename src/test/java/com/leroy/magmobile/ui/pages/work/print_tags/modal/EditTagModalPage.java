@@ -4,7 +4,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.work.print_tags.TagsListPage;
+import com.leroy.magmobile.ui.pages.work.print_tags.data.ProductTagData;
 import io.qameta.allure.Step;
 
 public class EditTagModalPage extends CommonMagMobilePage {
@@ -40,8 +40,23 @@ public class EditTagModalPage extends CommonMagMobilePage {
     }
 
     @Step("Добавить товар в сессию печати ценников")
-    public TagsListPage addProductToPrintSession(){
+    public ProductTagData addProductToPrintSession() {
+        return addProductToPrintSession(3, 0, 0);
+    }
+
+    @Step("Добавить товар в сессию печати ценников")
+    public ProductTagData addProductToPrintSession(int smallCount, int midCount, int bigCount) {
+        ProductTagData data = new ProductTagData();
+        data.setSmallSizeCount(smallCount);
+        data.setMiddleSizeCount(midCount);
+        data.setBigSizeCount(bigCount);
         addProductBtn.click();
-        return new TagsListPage();
+        return data;
+    }
+
+    @Step("Проверить, что для товары корректно предвыбраны значения")
+    public EditTagModalPage shouldSizeValuesAreCorrect(ProductTagData data){
+
+        return this;
     }
 }

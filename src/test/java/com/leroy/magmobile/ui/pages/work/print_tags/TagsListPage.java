@@ -25,9 +25,20 @@ public class TagsListPage extends CommonMagMobilePage {
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"ScreenHeader\"]/android.view.ViewGroup[2]")
     Button switchToMassiveEditorModeBtn;
 
-    AndroidScrollView<ProductTagData> productsScrollView = new AndroidScrollView<ProductTagData>(driver,
+    AndroidScrollView<ProductTagData> productsScrollView = new AndroidScrollView<>(driver,
             AndroidScrollView.TYPICAL_LOCATOR, ".//android.view.ViewGroup[@content-desc=\"lmCode\"]/..",
             ProductWidget.class);
+
+    @AppFindBy(text = "ТОВАР")
+    Button addProductBtn;
+
+    @AppFindBy(text = "НАПЕЧАТАТЬ")
+    Button printSession;
+
+    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"lmui-Icon\"][following-sibling::android.widget.TextView]" +
+            "/following-sibling::android.widget.TextView")
+    Button printerNameBtn;
+
 
     @Override
     protected void waitForPageIsLoaded() {
@@ -41,13 +52,26 @@ public class TagsListPage extends CommonMagMobilePage {
         return new ConfirmSessionExitModalPage();
     }
 
+    @Step("Добавить товар в сессию")
+    public PrintTagsScannerPage addProductToSession(){
+        addProductBtn.click();
+        return new PrintTagsScannerPage();
+    }
+
     @Step("Проверить, что список содержит все переданные товары")
     public TagsListPage shouldProductsAreCorrect(String...lmCodes) {
-        List<ProductTagData> productTagsList = productsScrollView.getFullDataList(lmCodes.length);
+        List<ProductTagData> productTagsList = productsScrollView.getFullDataList();
         for (int i = 0; i < productTagsList.size(); i++) {
             softAssert.isEquals(productTagsList.get(i).getLmCode(), lmCodes[i], "lmCode");
         }
         softAssert.verifyAll();
+        return this;
+    }
+
+    @Step("Проверить, что кол-во товаров равно {count}")
+    public TagsListPage shouldProductCountIsCorrect(int count){
+        List<ProductTagData> productTagsList = productsScrollView.getFullDataList();
+        anAssert.isEquals(productTagsList.size(), count, "products count");
         return this;
     }
 

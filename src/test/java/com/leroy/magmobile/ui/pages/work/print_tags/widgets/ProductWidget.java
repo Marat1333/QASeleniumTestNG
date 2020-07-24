@@ -9,10 +9,10 @@ import com.leroy.utils.ParserUtil;
 import org.openqa.selenium.WebDriver;
 
 public class ProductWidget extends CardWidget<ProductTagData> {
-    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc=\"lmCode\"")
+    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc=\"lmCode\"]")
     Element lmCode;
 
-    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc=\"barCode\"")
+    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc=\"barCode\"]")
     Element barCode;
 
     @AppFindBy(xpath = ".//android.view.ViewGroup[@content-desc=\"barCode\"]/following-sibling::*[1]")

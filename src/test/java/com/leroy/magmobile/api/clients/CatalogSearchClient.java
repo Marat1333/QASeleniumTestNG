@@ -1,6 +1,7 @@
 package com.leroy.magmobile.api.clients;
 
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
+import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.data.catalog.ServiceItemDataList;
 import com.leroy.magmobile.api.data.supply_plan.suppliers.SupplierDataList;
@@ -10,7 +11,13 @@ import com.leroy.magmobile.api.requests.catalog_search.GetSupplierSearch;
 import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class CatalogSearchClient extends MagMobileClient {
+    //back-end limit
+    final static int MAX_PAGE_SIZE = 90;
 
     /**
      * ---------- Requests -------------
@@ -59,5 +66,26 @@ public class CatalogSearchClient extends MagMobileClient {
         return execute(params, SupplierDataList.class);
     }
 
+    @Step("Return random product")
+    public ProductItemData getRandomProduct() {
+        ProductItemDataList productItemDataList = this.searchProductsBy(new GetCatalogSearch().setPageSize(24)).asJson();
+        List<ProductItemData> productItemData = productItemDataList.getItems();
+        return productItemData.get((int) (Math.random() * productItemData.size()));
+    }
+
+    @Step("Return random product")
+    public List<ProductItemData> getRandomUniqueProductsWithTitles(int countOfProducts) {
+        List<ProductItemData> randomProductsList = new ArrayList<>();
+        ProductItemDataList productItemDataList = this.searchProductsBy(new GetCatalogSearch().setPageSize(MAX_PAGE_SIZE)).asJson();
+        List<ProductItemData> productItemData = productItemDataList.getItems();
+        productItemData = productItemData.stream().filter(i->i.getTitle()!=null).collect(Collectors.toList());
+        int randomIndex;
+        for (int i = 0; i < countOfProducts; i++) {
+            randomIndex = (int) (Math.random() * productItemData.size());
+            randomProductsList.add(productItemData.get(randomIndex));
+            productItemData.remove(randomIndex);
+        }
+        return randomProductsList;
+    }
 
 }

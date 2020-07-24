@@ -7,10 +7,7 @@ public class ProductTagData {
     private String lmCode;
     private String barCode;
     private String title;
-    private boolean smallSize;
-    private boolean middleSize;
-    private boolean bigSize;
-    private String smallSizeCount;
-    private String middleSizeCount;
-    private String bigSizeCount;
+    private int smallSizeCount;
+    private int middleSizeCount;
+    private int bigSizeCount;
 }
