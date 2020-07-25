@@ -4,27 +4,35 @@ import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.TextArea;
 import com.leroy.magportal.ui.webelements.commonelements.PuzCheckBox;
-import com.leroy.magportal.ui.webelements.commonelements.PuzSelectControl;
+import com.leroy.magportal.ui.webelements.commonelements.PuzComboBox;
 import io.qameta.allure.Step;
 
 public class SplitPickingModalStep2 extends SplitPickingModal {
 
-    @WebFindBy(xpath = "//button[contains(@class, 'SplitModal__switchButton')][1]", metaName = "Опция 'Мой отдел'")
+    @WebFindBy(xpath = MODAL_DIV_XPATH + "//button[contains(@class, 'SplitModal__switchButton')][1]", metaName = "Опция 'Мой отдел'")
     PuzCheckBox myDepartmentRadioBtn;
 
-    @WebFindBy(xpath = "//button[contains(@class, 'SplitModal__switchButton')][2]", metaName = "Опция 'Я'")
+    @WebFindBy(xpath = MODAL_DIV_XPATH + "//button[contains(@class, 'SplitModal__switchButton')][2]", metaName = "Опция 'Я'")
     PuzCheckBox iAmRadioBtn;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'Select__container')]", metaName = "Выпадающий список с выбором отдела")
-    PuzSelectControl departmentSelector;
+    @WebFindBy(xpath = MODAL_DIV_XPATH + "//div[contains(@class, 'Select__container')]", metaName = "Выпадающий список с выбором отдела")
+    PuzComboBox departmentSelector;
 
     @WebFindBy(id = "textAreaId", metaName = "Поле Комментарий")
     TextArea commentFld;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'SplitModal__footer')]//button", metaName = "Кнопка Создать сборку")
+    @WebFindBy(xpath = MODAL_DIV_XPATH + "//div[contains(@class, 'SplitModal__footer')]//button", metaName = "Кнопка Создать сборку")
     Button createAssemblyBtn;
 
     // Actions
+
+    @Step("Выбрать отдел")
+    public SplitPickingModalStep2 selectDepartment(String text) throws Exception {
+        if (text.length() == 1)
+            text = "0" + text;
+        departmentSelector.selectOption(text);
+        return this;
+    }
 
     @Step("Заполнить комментарий")
     public SplitPickingModalStep2 enterComment(String text) {
@@ -50,7 +58,7 @@ public class SplitPickingModalStep2 extends SplitPickingModal {
     }
 
     @Step("Проверить, что ответственный за сборку выбран 'Я'")
-    public SplitPickingModalStep2 shouldIamResponsibleForAssemblyOptionSelected() throws Exception{
+    public SplitPickingModalStep2 shouldIamResponsibleForAssemblyOptionSelected() throws Exception {
         anAssert.isTrue(iAmRadioBtn.isChecked(), "Опция 'Я' не выбрана");
         return this;
     }

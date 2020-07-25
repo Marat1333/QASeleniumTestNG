@@ -1,13 +1,18 @@
 package com.leroy.magportal.ui.pages.picking.modal;
 
 import com.leroy.core.annotations.WebFindBy;
+import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magportal.ui.constants.picking.PickingConst;
 import com.leroy.magportal.ui.models.picking.PickingProductCardData;
+import com.leroy.magportal.ui.webelements.CardWebWidget;
+import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import com.leroy.magportal.ui.webelements.commonelements.PuzCheckBox;
+import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
+import lombok.Data;
+import org.openqa.selenium.WebDriver;
 
 import java.util.List;
 
@@ -25,9 +30,11 @@ public class SplitPickingModalStep1 extends SplitPickingModal {
             metaName = "Опция 'СС'")
     PuzCheckBox ssRadioBtn;
 
+    // Собрать из торгового зала (LS)
+    // Нужно вручную создать Заказ в RMS под заказ Клиента
     @WebFindBy(xpath = MODAL_DIV_XPATH + "//div[contains(@class, 'Picking-SplitModal__WHZones')]//button",
-            metaName = "Опция 'Собрать из торгового зала (LS)'")
-    PuzCheckBox collectFromShoppingRoomChkBox;
+            metaName = "Чек-бокс для подтверждения разделения сборки")
+    PuzCheckBox confirmCheckBox;
 
     @WebFindBy(xpath = MODAL_DIV_XPATH + "//div[contains(@class, 'Picking-SplitModal__footer')]//button[contains(@class, 'iconButton')]",
             metaName = "Кнопка редактирования (карандаш)")
@@ -39,14 +46,8 @@ public class SplitPickingModalStep1 extends SplitPickingModal {
 
     // Таблица с товарами:
 
-    @WebFindBy(xpath = MODAL_DIV_XPATH + "//div[span[contains(@class, 'LmCode__accent')]]/span[2]")
-    ElementList<Element> lmCodes;
-
-    @WebFindBy(xpath = MODAL_DIV_XPATH + "//div[contains(@class, 'SplitModal__product__container')]//p")
-    ElementList<Element> titles;
-
-    @WebFindBy(xpath = MODAL_DIV_XPATH + "//div[contains(@class, 'icking-SplitModal__product')]/div[2]//span")
-    ElementList<Element> originalAssemblyQuantities;
+    @WebFindBy(xpath = MODAL_DIV_XPATH + "", clazz = PickingSplitModalProductWidget.class)
+    CardWebWidgetList<PickingSplitModalProductWidget, SplitProductCardData> productWidgets;
 
     // Actions
 
@@ -66,9 +67,9 @@ public class SplitPickingModalStep1 extends SplitPickingModal {
         return this;
     }
 
-    @Step("Выбрать опцию 'Собрать из торгового зала (LS)'")
-    public SplitPickingModalStep1 selectCollectFromShoppingRoomOption(boolean value) throws Exception {
-        collectFromShoppingRoomChkBox.setValue(value);
+    @Step("Выбрать опцию подтверждения разделения сборки")
+    public SplitPickingModalStep1 selectConfirmCheckBox(boolean value) throws Exception {
+        confirmCheckBox.setValue(value);
         return this;
     }
 
@@ -88,17 +89,36 @@ public class SplitPickingModalStep1 extends SplitPickingModal {
 
     @Step("Проверить информацию о товарах, которая отображается в окне")
     public SplitPickingModalStep1 shouldContainsProducts(List<PickingProductCardData> expectedProducts) throws Exception {
-        anAssert.isEquals(titles.getCount(), expectedProducts.size(), "Обнаружено другое кол-во товаров (названия)");
-        anAssert.isEquals(lmCodes.getCount(), expectedProducts.size(), "Обнаружено другое кол-во товаров (ЛМ Коды)");
-        anAssert.isEquals(originalAssemblyQuantities.getCount(), expectedProducts.size(),
-                "Обнаружено другое кол-во товаров (Цифра Исходная сборка)");
+        List<SplitProductCardData> splitProductCardDataList = productWidgets.getDataList();
+        anAssert.isEquals(splitProductCardDataList.size(), expectedProducts.size(), "Обнаружено другое кол-во товаров");
+        boolean somethingSelected = shoppingRoomRadioBtn.isChecked() || ssRadioBtn.isChecked() || stockRadioBtn.isChecked();
         for (int i = 0; i < expectedProducts.size(); i++) {
-            softAssert.isEquals(titles.get(i).getText(), expectedProducts.get(i).getTitle(),
+            softAssert.isEquals(splitProductCardDataList.get(i).getTitle(), expectedProducts.get(i).getTitle(),
                     "Товар #" + (i + 1) + " - неверное название");
-            softAssert.isEquals(lmCodes.get(i).getText(), expectedProducts.get(i).getLmCode(),
+            softAssert.isEquals(splitProductCardDataList.get(i).getLmCode(), expectedProducts.get(i).getLmCode(),
                     "Товар #" + (i + 1) + " - неверный ЛМ код");
-            softAssert.isEquals(originalAssemblyQuantities.get(i).getText(), "1", // От чего это число зависит?
+            softAssert.isEquals(splitProductCardDataList.get(i).getOriginalAssemblyQuantity(),
+                    expectedProducts.get(i).getOrderedQuantity(),
                     "Товар #" + (i + 1) + " - неверное кол-во исходной сборки");
+            if (somethingSelected) {
+                softAssert.isEquals(splitProductCardDataList.get(i).getWantToMoveQuantity(),
+                        expectedProducts.get(i).getOrderedQuantity(), // Что это за значение?
+                        "Товар #" + (i + 1) + " - неверное кол-во 'хочу перенести'");
+                softAssert.isEquals(splitProductCardDataList.get(i).getMoveToNewQuantity(),
+                        expectedProducts.get(i).getOrderedQuantity(), // Что это за значение?
+                        "Товар #" + (i + 1) + " - неверное кол-во 'перейдет в новую'");
+                softAssert.isEquals(splitProductCardDataList.get(i).getRemainInOriginalQuantity(),
+                        0, // Что это за значение?
+                        "Товар #" + (i + 1) + " - неверное кол-во 'останется в исходной'");
+            } else {
+                softAssert.isTrue(splitProductCardDataList.get(i).getWantToMoveQuantity() == null,
+                        "'хочу перенести' - отображается");
+                softAssert.isTrue(splitProductCardDataList.get(i).getMoveToNewQuantity() == null,
+                        "'перейдет в новую' - отображается");
+                softAssert.isTrue(splitProductCardDataList.get(i).getRemainInOriginalQuantity() == null,
+                        "'останется в исходной' - отображается");
+            }
+
         }
         softAssert.verifyAll();
         return this;
@@ -114,6 +134,55 @@ public class SplitPickingModalStep1 extends SplitPickingModal {
     public SplitPickingModalStep1 shouldContinueButtonIsDisabled() {
         anAssert.isFalse(continueBtn.isEnabled(), "Кнопка 'Продолжить' активна");
         return this;
+    }
+
+    // ------------ Widgets ----------------
+
+    @Data
+    private static class SplitProductCardData {
+        private String lmCode;
+        private String title;
+        private Integer originalAssemblyQuantity;
+        private Integer wantToMoveQuantity;
+        private Integer moveToNewQuantity;
+        private Integer remainInOriginalQuantity;
+    }
+
+    private static class PickingSplitModalProductWidget extends CardWebWidget<SplitProductCardData> {
+
+        public PickingSplitModalProductWidget(WebDriver driver, CustomLocator locator) {
+            super(driver, locator);
+        }
+
+        @WebFindBy(xpath = ".//div[span[contains(@class, 'LmCode__accent')]]/span[2]")
+        Element lmCode;
+
+        @WebFindBy(xpath = ".//div[contains(@class, 'SplitModal__product__container')]//p")
+        Element title;
+
+        @WebFindBy(xpath = ".//div[contains(@class, 'icking-SplitModal__product')]/div[2]//span")
+        Element originalAssemblyQuantity;
+
+        @WebFindBy(xpath = ".//div[contains(@class, 'icking-SplitModal__product')]/div[3]//span")
+        Element wantToMoveQuantity;
+
+        @WebFindBy(xpath = ".//div[contains(@class, 'icking-SplitModal__product')]/div[3]/div[3]/div[1]")
+        Element moveToNewQuantity;
+
+        @WebFindBy(xpath = ".//div[contains(@class, 'icking-SplitModal__product')]/div[3]/div[3]/div[2]")
+        Element remainInOriginalQuantity;
+
+        @Override
+        public SplitProductCardData collectDataFromPage() throws Exception {
+            SplitProductCardData splitProductCardData = new SplitProductCardData();
+            splitProductCardData.setLmCode(lmCode.getText());
+            splitProductCardData.setTitle(title.getText());
+            splitProductCardData.setOriginalAssemblyQuantity(ParserUtil.strToInt(originalAssemblyQuantity.getText()));
+            splitProductCardData.setWantToMoveQuantity(ParserUtil.strToInt(wantToMoveQuantity.getTextIfPresent()));
+            splitProductCardData.setMoveToNewQuantity(ParserUtil.strToInt(moveToNewQuantity.getTextIfPresent()));
+            splitProductCardData.setRemainInOriginalQuantity(ParserUtil.strToInt(remainInOriginalQuantity.getTextIfPresent()));
+            return splitProductCardData;
+        }
     }
 
 }

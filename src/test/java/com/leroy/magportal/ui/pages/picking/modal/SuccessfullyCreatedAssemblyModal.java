@@ -49,9 +49,10 @@ public class SuccessfullyCreatedAssemblyModal extends MagPortalBasePage {
     }
 
     @Step("Нажать кнопку 'Вернуться к Оригинальной сборке'")
-    public SuccessfullyCreatedAssemblyModal clickRemainOldTaskButton() {
+    public PickingContentPage clickRemainOldTaskButton() {
         remainOldTaskBtn.click();
-        return this;
+        waitForSpinnerAppearAndDisappear();
+        return new PickingContentPage();
     }
 
     // Verifications

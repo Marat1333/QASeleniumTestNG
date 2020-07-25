@@ -19,6 +19,21 @@ public class PickingProductCardData {
     private Integer orderedQuantity;
     private Integer collectedQuantity;
 
+    public PickingProductCardData clone() {
+        PickingProductCardData pickingProductCardData = new PickingProductCardData();
+        pickingProductCardData.setLmCode(lmCode);
+        pickingProductCardData.setBarCode(barCode);
+        pickingProductCardData.setTitle(title);
+        pickingProductCardData.setDepartment(department);
+        pickingProductCardData.setDimension(dimension);
+        pickingProductCardData.setPrice(price);
+        pickingProductCardData.setWeight(weight);
+        pickingProductCardData.setStockQuantity(stockQuantity);
+        pickingProductCardData.setOrderedQuantity(orderedQuantity);
+        pickingProductCardData.setCollectedQuantity(collectedQuantity);
+        return pickingProductCardData;
+    }
+
 
     private static class Dimension3D {
         private Double length;

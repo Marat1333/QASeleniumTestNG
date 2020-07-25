@@ -10,6 +10,9 @@ import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import com.leroy.magportal.ui.webelements.commonelements.PuzCheckBox;
 import io.qameta.allure.Step;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PickingContentPage extends PickingPage {
 
     @WebFindBy(xpath = "//button[contains(@class, 'PickingView__tab__checkbox')]", metaName = "Опция 'Выбрать все'")
@@ -45,7 +48,17 @@ public class PickingContentPage extends PickingPage {
         pickingTaskData.setAssemblyType(getAssemblyType());
         pickingTaskData.setStatus(getStatus());
         pickingTaskData.setCreationDate(getCreationDate());
-        pickingTaskData.setProducts(productCards.getDataList());
+        boolean onlySelectedProducts = false;
+        if (!onlySelectedProducts)
+            pickingTaskData.setProducts(productCards.getDataList());
+        else {
+            List<PickingProductCardData> productCardDataList = new ArrayList<>();
+            for (AssemblyProductCardWidget widget : productCards) {
+                if (widget.isSplitChecked())
+                    productCardDataList.add(widget.collectDataFromPage());
+            }
+            pickingTaskData.setProducts(productCardDataList);
+        }
         return pickingTaskData;
     }
 

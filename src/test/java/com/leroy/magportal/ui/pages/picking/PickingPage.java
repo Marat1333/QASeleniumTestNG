@@ -128,10 +128,12 @@ public class PickingPage extends LeftDocumentListPage<ShortPickingTaskCardWidget
     }
 
     protected PickingConst.AssemblyType getAssemblyType() {
-        String assemblyTypeText = this.assemblyType.getText();
+        String assemblyTypeText = this.assemblyType.getText().toLowerCase();
         switch (assemblyTypeText) {
             case "торг.зал":
                 return PickingConst.AssemblyType.SHOPPING_ROOM;
+            case ">":
+                return PickingConst.AssemblyType.SS;
             default:
                 anAssert.isTrue(false, "Обнаружен неизвестный тип сборки - " + assemblyTypeText);
         }
@@ -162,5 +164,19 @@ public class PickingPage extends LeftDocumentListPage<ShortPickingTaskCardWidget
     public PickingContentPage switchToContentTab() {
         contentTab.click();
         return new PickingContentPage();
+    }
+
+    @Step("Ввести {text} в поле поиска заказа")
+    public PickingPage enterOrderNumberInSearchFld(String text) {
+        orderSearchFld.clearFillAndSubmit(text);
+        waitForSpinnerAppearAndDisappear();
+        return this;
+    }
+
+    @Step("Нажать кнопку 'Применить фильтр'")
+    public PickingPage clickApplyFilter() {
+        confirmFiltersBtn.click();
+        waitForSpinnerAppearAndDisappear();
+        return this;
     }
 }

@@ -55,6 +55,10 @@ public class AssemblyProductCardWidget extends CardWebWidget<PickingProductCardD
         splitChkBox.setValue(val);
     }
 
+    public boolean isSplitChecked() throws Exception {
+        return splitChkBox.isChecked();
+    }
+
     @Override
     public PickingProductCardData collectDataFromPage() {
         PickingProductCardData pickingProductCardData = new PickingProductCardData();
