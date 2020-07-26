@@ -3,6 +3,7 @@ package com.leroy.magmobile.api.clients;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.api.StatusCodes;
 import com.leroy.constants.sales.SalesDocumentsConst;
+import com.leroy.core.api.BaseMashupClient;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.data.sales.transfer.*;
 import com.leroy.magmobile.api.requests.salesdoc.transfer.*;

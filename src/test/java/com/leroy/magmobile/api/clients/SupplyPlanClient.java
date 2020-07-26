@@ -1,5 +1,6 @@
 package com.leroy.magmobile.api.clients;
 
+import com.leroy.core.api.BaseMashupClient;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.data.supply_plan.Card.SupplyCardData;
 import com.leroy.magmobile.api.data.supply_plan.Details.ShipmentData;

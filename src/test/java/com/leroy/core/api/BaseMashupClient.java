@@ -1,12 +1,8 @@
-package com.leroy.magmobile.api.clients;
+package com.leroy.core.api;
 
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.UserSessionData;
 import com.leroy.core.configuration.Log;
-import com.leroy.magmobile.api.data.sales.SalesDocDiscountData;
-import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
-import com.leroy.magmobile.api.requests.salesdoc.discount.GetSalesDocDiscount;
-import com.leroy.magmobile.api.requests.salesdoc.search.SalesDocSearchV3Get;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import lombok.Setter;

@@ -1,5 +1,6 @@
 package com.leroy.magmobile.api.clients;
 
+import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.requests.salesdoc.search.SalesDocSearchV3Get;
 import io.qameta.allure.Step;

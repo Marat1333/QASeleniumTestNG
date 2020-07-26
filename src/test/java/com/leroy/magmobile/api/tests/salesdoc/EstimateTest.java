@@ -2,7 +2,7 @@ package com.leroy.magmobile.api.tests.salesdoc;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.sales.SalesDocumentsConst;
-import com.leroy.magmobile.api.clients.BaseMashupClient;
+import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.clients.EstimateClient;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateProductOrderData;

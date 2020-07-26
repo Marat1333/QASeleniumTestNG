@@ -1,6 +1,7 @@
 package com.leroy.magmobile.api.clients;
 
 import com.leroy.constants.sales.SalesDocumentsConst;
+import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.sales.SalesDocDiscountData;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;

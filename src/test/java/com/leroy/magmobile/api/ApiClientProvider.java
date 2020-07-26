@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.leroy.core.ContextProvider;
 import com.leroy.core.UserSessionData;
+import com.leroy.core.api.BaseMashupClient;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.*;
 import com.leroy.magmobile.api.data.catalog.*;

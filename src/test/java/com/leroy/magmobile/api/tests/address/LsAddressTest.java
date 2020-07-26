@@ -3,7 +3,7 @@ package com.leroy.magmobile.api.tests.address;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.core.UserSessionData;
-import com.leroy.magmobile.api.clients.BaseMashupClient;
+import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.clients.LsAddressClient;
 import com.leroy.magmobile.api.data.address.*;
 import com.leroy.magmobile.api.data.address.cellproducts.*;

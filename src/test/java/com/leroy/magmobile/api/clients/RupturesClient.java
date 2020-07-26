@@ -1,6 +1,7 @@
 package com.leroy.magmobile.api.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.ruptures.*;
 import com.leroy.magmobile.api.requests.ruptures.*;
 import io.qameta.allure.Step;

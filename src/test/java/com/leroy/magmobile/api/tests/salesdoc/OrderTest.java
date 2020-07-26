@@ -6,7 +6,7 @@ import com.leroy.constants.customer.CustomerConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.CartClient;
-import com.leroy.magmobile.api.clients.BaseMashupClient;
+import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.clients.OrderClient;
 import com.leroy.magmobile.api.clients.SalesDocSearchClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;

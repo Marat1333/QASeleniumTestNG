@@ -1,5 +1,6 @@
 package com.leroy.magmobile.api.clients;
 
+import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.support.SupportTicketData;
 import com.leroy.magmobile.api.requests.support.SupportTicketRequest;
 import io.qameta.allure.Step;
