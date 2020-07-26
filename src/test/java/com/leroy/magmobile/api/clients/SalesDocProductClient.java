@@ -1,10 +1,12 @@
 package com.leroy.magmobile.api.clients;
 
 import com.leroy.constants.sales.SalesDocumentsConst;
+import com.leroy.magmobile.api.data.sales.SalesDocDiscountData;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.ServiceOrderData;
 import com.leroy.magmobile.api.requests.salesdoc.SalesDocParametersUpdatePut;
+import com.leroy.magmobile.api.requests.salesdoc.discount.GetSalesDocDiscount;
 import com.leroy.magmobile.api.requests.salesdoc.products.SalesDocProductsGet;
 import com.leroy.magmobile.api.requests.salesdoc.products.SalesDocProductsPost;
 import com.leroy.magmobile.api.requests.salesdoc.products.SalesDocProductsPut;
@@ -122,6 +124,16 @@ public class SalesDocProductClient extends BaseMashupClient {
                 .setStatus(SalesDocumentsConst.States.CANCELLED.getApiVal());
         response = execute(params, SalesDocumentResponseData.class);
         return this;
+    }
+
+    // Discount
+
+    @Step("GET Sales Doc Discount by lmCode={lmCode}")
+    public Response<SalesDocDiscountData> getSalesDocDiscountByLmCode(String lmCode) {
+        GetSalesDocDiscount req = new GetSalesDocDiscount();
+        req.setLmCode(lmCode);
+        req.setShopId(userSessionData.getUserShopId());
+        return execute(req, SalesDocDiscountData.class);
     }
 
     /**

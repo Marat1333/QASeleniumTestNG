@@ -2,7 +2,7 @@ package com.leroy.magmobile.api.tests.salesdoc;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.sales.SalesDocumentsConst;
-import com.leroy.magmobile.api.clients.MagMobileClient;
+import com.leroy.magmobile.api.clients.BaseMashupClient;
 import com.leroy.magmobile.api.clients.TransferClient;
 import com.leroy.magmobile.api.data.sales.transfer.TransferProductOrderData;
 import com.leroy.magmobile.api.data.sales.transfer.TransferRunRespData;
@@ -68,7 +68,7 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
         TransferProductOrderData productOrderData = transferSalesDocData.getProducts().get(0);
         productOrderData.setOrderedQuantity(productOrderData.getOrderedQuantity() + 1);
         Response<TransferSalesDocData> resp = transferClient.update(transferSalesDocData.getTaskId(), productOrderData);
-        transferClient.assertThatResponseMatches(resp, transferSalesDocData, MagMobileClient.ResponseType.PUT);
+        transferClient.assertThatResponseMatches(resp, transferSalesDocData, BaseMashupClient.ResponseType.PUT);
     }
 
     @Test(description = "C3248458 SalesDoc transfer add Product")

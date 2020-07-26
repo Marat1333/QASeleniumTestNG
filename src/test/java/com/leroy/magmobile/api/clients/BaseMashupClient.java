@@ -25,7 +25,7 @@ import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @Dependencies(bricks = Application.MAGMOBILE)
-public class BaseMashupClient extends BaseClient {
+public abstract class BaseMashupClient extends BaseClient {
 
     private String gatewayUrl;
 
@@ -56,26 +56,6 @@ public class BaseMashupClient extends BaseClient {
     @PostConstruct
     private void init() {
         gatewayUrl = EnvConstants.MAIN_API_HOST;
-    }
-
-    // ---------  SalesDoc & Orders -------------------- //
-
-    // Lego_salesdoc_search
-    public Response<SalesDocumentListResponse> searchForSalesDocumentBy(SalesDocSearchV3Get params) {
-        return execute(params
-                .build(gatewayUrl), SalesDocumentListResponse.class);
-    }
-
-    public Response<SalesDocumentListResponse> getSalesDocumentsByPinCodeOrDocId(String pinCodeOrDocId) {
-        return execute(new SalesDocSearchV3Get()
-                .queryParam("pinCodeOrDocId", pinCodeOrDocId)
-                .build(gatewayUrl), SalesDocumentListResponse.class);
-    }
-
-    // Discount
-
-    public Response<SalesDocDiscountData> getSalesDocDiscount(GetSalesDocDiscount params) {
-        return execute(params.build(gatewayUrl), SalesDocDiscountData.class);
     }
 
     // ---------------- VERIFICATIONS --------------- //
