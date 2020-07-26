@@ -2,6 +2,7 @@ package com.leroy.magmobile.api.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.api.StatusCodes;
+import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.customer.*;
 import com.leroy.magmobile.api.requests.customer.*;
 import io.qameta.allure.Step;
@@ -12,7 +13,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class CustomerClient extends MagMobileClient {
+public class CustomerClient extends BaseMashupClient {
 
     /**
      * ---------- Executable Requests -------------

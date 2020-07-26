@@ -16,6 +16,8 @@ public class CommonLegoRequest<J extends CommonLegoRequest<J>> extends RequestBu
     // Query params
 
     public J setShopId(Object val) {
+        if (val == null)
+            return (J) this;
         return queryParam("shopId", val);
     }
 

@@ -1,5 +1,6 @@
 package com.leroy.magmobile.api.clients;
 
+import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.oauth.Is4TokenData;
 import com.leroy.magmobile.api.requests.oauth.Is4AuthCodeResponse;
 import com.leroy.magmobile.api.requests.oauth.Is4AuthRefreshResponse;
@@ -9,7 +10,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Is4AuthClient extends MagMobileClient {
+public class Is4AuthClient extends BaseMashupClient {
 
     @Step("(Is4AuthCode) Try to log in with code={code}")
     public Response<Is4TokenData> sendPostCodeRequest(String code) {

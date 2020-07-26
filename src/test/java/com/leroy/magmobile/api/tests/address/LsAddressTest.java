@@ -3,8 +3,8 @@ package com.leroy.magmobile.api.tests.address;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.core.UserSessionData;
+import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.clients.LsAddressClient;
-import com.leroy.magmobile.api.clients.MagMobileClient;
 import com.leroy.magmobile.api.data.address.*;
 import com.leroy.magmobile.api.data.address.cellproducts.*;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
@@ -154,7 +154,7 @@ public class LsAddressTest extends BaseProjectApiTest {
         step("Add Item");
         Response<CellDataList> resp = lsAddressClient.updateCells(standId, updateCellDataList);
         cellDataList.addItem(newCellData);
-        lsAddressClient.assertThatDataMatches(resp, cellDataList, MagMobileClient.ResponseType.PUT);
+        lsAddressClient.assertThatDataMatches(resp, cellDataList, BaseMashupClient.ResponseType.PUT);
         cellDataList.updateLastItem(resp.asJson().getItems().get(2));
         step("Send Get request and check data");
         Response<CellDataList> getResp = lsAddressClient.getCells(standId);

@@ -1,6 +1,6 @@
 package com.leroy.magportal.api.clients;
 
-import com.leroy.magmobile.api.clients.MagMobileClient;
+import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magportal.api.data.catalog.products.CatalogProductData;
 import com.leroy.magportal.api.data.catalog.products.CatalogSimilarProductsData;
 import com.leroy.magportal.api.data.catalog.shops.NearestShopsData;
@@ -10,7 +10,7 @@ import com.leroy.magportal.api.requests.GetNearestShops;
 import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-public class MagPortalCatalogProductClient extends MagMobileClient {
+public class MagPortalCatalogProductClient extends BaseMashupClient {
 
     @Step("Get similar and complement products")
     public Response<CatalogSimilarProductsData> getSimilarProducts(String lmCode) {

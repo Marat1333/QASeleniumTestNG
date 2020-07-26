@@ -6,7 +6,7 @@ import com.leroy.constants.customer.CustomerConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.CartClient;
-import com.leroy.magmobile.api.clients.MagMobileClient;
+import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.clients.OrderClient;
 import com.leroy.magmobile.api.clients.SalesDocSearchClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
@@ -67,8 +67,8 @@ public class OrderTest extends BaseProjectApiTest {
             Log.error(getResp.toString());
             getResp = orderClient.getOrder(orderData.getOrderId());
         }
-        MagMobileClient.ResponseType responseType =
-                afterCancelOrder ? MagMobileClient.ResponseType.DELETE : MagMobileClient.ResponseType.GET;
+        BaseMashupClient.ResponseType responseType =
+                afterCancelOrder ? BaseMashupClient.ResponseType.DELETE : BaseMashupClient.ResponseType.GET;
         orderClient.assertThatResponseMatches(
                 getResp, orderData, responseType);
     }
@@ -192,7 +192,7 @@ public class OrderTest extends BaseProjectApiTest {
         step("Check that Order is rearranged after GET request");
         Response<OrderData> getResp = orderClient.getOrder(orderData.getOrderId());
         orderClient.assertThatResponseMatches(getResp, orderData,
-                MagMobileClient.ResponseType.GET, false);
+                BaseMashupClient.ResponseType.GET, false);
         orderData.setProducts(getResp.asJson().getProducts());
     }
 
@@ -263,7 +263,7 @@ public class OrderTest extends BaseProjectApiTest {
         orderData.getProducts().remove(1);
         orderData.setPriority(SalesDocumentsConst.Priorities.HIGH.getApiVal());
         Response<OrderData> respPut = orderClient.updateDraftOrder(orderData);
-        orderClient.assertThatResponseMatches(respPut, orderData, MagMobileClient.ResponseType.PUT);
+        orderClient.assertThatResponseMatches(respPut, orderData, BaseMashupClient.ResponseType.PUT);
         orderData.setPriority(null);
 
         step("Search for the created order document");
