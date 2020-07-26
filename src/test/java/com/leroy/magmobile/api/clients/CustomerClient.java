@@ -12,7 +12,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class CustomerClient extends MagMobileClient {
+public class CustomerClient extends BaseMashupClient {
 
     /**
      * ---------- Executable Requests -------------

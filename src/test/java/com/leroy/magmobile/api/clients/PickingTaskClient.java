@@ -6,7 +6,7 @@ import com.leroy.magmobile.api.requests.salesdoc.picking.PickingTasksSearchReque
 import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-public class PickingTaskClient extends MagMobileClient {
+public class PickingTaskClient extends BaseMashupClient {
 
     /**
      * ---------- Executable Requests -------------

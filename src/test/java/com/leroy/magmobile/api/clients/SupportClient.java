@@ -5,7 +5,7 @@ import com.leroy.magmobile.api.requests.support.SupportTicketRequest;
 import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-public class SupportClient extends MagMobileClient {
+public class SupportClient extends BaseMashupClient {
 
     /**
      * ---------- Executable Requests -------------

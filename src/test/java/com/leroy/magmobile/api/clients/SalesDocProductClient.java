@@ -17,7 +17,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class SalesDocProductClient extends MagMobileClient {
+public class SalesDocProductClient extends BaseMashupClient {
 
     private Response<SalesDocumentResponseData> response;
 

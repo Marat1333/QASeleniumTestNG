@@ -5,7 +5,7 @@ import com.leroy.magmobile.api.requests.salesdoc.search.SalesDocSearchV3Get;
 import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-public class SalesDocSearchClient extends MagMobileClient {
+public class SalesDocSearchClient extends BaseMashupClient {
 
     /**
      * ---------- Requests -------------

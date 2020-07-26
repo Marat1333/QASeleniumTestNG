@@ -12,7 +12,7 @@ import io.qameta.allure.Step;
 import lombok.Builder;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-public class CatalogProductClient extends MagMobileClient {
+public class CatalogProductClient extends BaseMashupClient {
 
     @Builder
     public static class Extend {

@@ -9,7 +9,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Is4AuthClient extends MagMobileClient {
+public class Is4AuthClient extends BaseMashupClient {
 
     @Step("(Is4AuthCode) Try to log in with code={code}")
     public Response<Is4TokenData> sendPostCodeRequest(String code) {

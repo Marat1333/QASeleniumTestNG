@@ -17,7 +17,7 @@ import static com.leroy.core.matchers.Matchers.isNumber;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class EstimateClient extends MagMobileClient {
+public class EstimateClient extends BaseMashupClient {
 
     /**
      * ---------- Executable Requests -------------

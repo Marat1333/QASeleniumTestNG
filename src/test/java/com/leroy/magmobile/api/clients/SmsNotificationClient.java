@@ -9,7 +9,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class SmsNotificationClient extends MagMobileClient {
+public class SmsNotificationClient extends BaseMashupClient {
 
     /**
      * ---------- Requests -------------

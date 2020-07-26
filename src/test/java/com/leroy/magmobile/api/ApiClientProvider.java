@@ -75,7 +75,7 @@ public class ApiClientProvider {
         return ContextProvider.getContext().getUserSessionData();
     }
 
-    private <J extends MagMobileClient> J getClient(Provider<J> provider) {
+    private <J extends BaseMashupClient> J getClient(Provider<J> provider) {
         J cl = provider.get();
         cl.setUserSessionData(userSessionData());
         return cl;

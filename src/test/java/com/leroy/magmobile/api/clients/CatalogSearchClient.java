@@ -10,7 +10,7 @@ import com.leroy.magmobile.api.requests.catalog_search.GetSupplierSearch;
 import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-public class CatalogSearchClient extends MagMobileClient {
+public class CatalogSearchClient extends BaseMashupClient {
 
     /**
      * ---------- Requests -------------

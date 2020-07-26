@@ -7,7 +7,7 @@ import com.leroy.magmobile.api.requests.shop.GetShopsRequest;
 import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-public class ShopKladrClient extends MagMobileClient {
+public class ShopKladrClient extends BaseMashupClient {
 
     /**
      * ---------- Executable Requests -------------

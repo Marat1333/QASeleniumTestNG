@@ -15,7 +15,7 @@ import static com.leroy.core.matchers.Matchers.isNumber;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class CartClient extends MagMobileClient {
+public class CartClient extends BaseMashupClient {
 
     public enum RequestType {
         UPDATE, GET;

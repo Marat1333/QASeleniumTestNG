@@ -1,6 +1,5 @@
 package com.leroy.magmobile.api.clients;
 
-import com.leroy.constants.EnvConstants;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.data.supply_plan.Card.SupplyCardData;
 import com.leroy.magmobile.api.data.supply_plan.Details.ShipmentData;
@@ -21,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SupplyPlanClient extends MagMobileClient {
+public class SupplyPlanClient extends BaseMashupClient {
 
     @Step("Get shipments")
     public Response<ShipmentDataList> getShipments(GetSupplyPlanDetails params) {

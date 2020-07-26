@@ -15,7 +15,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyString;
 
-public class PrintPriceClient extends MagMobileClient {
+public class PrintPriceClient extends BaseMashupClient {
 
     public Response<PrintDepartmentList> getDepartmentPrinterList() {
         return getDepartmentPrinterList(userSessionData.getUserShopId());

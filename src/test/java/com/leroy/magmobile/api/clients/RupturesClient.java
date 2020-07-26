@@ -16,7 +16,7 @@ import static com.leroy.constants.api.ErrorTextConst.SESSION_NOT_FOUND_OR_FINISH
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class RupturesClient extends MagMobileClient {
+public class RupturesClient extends BaseMashupClient {
 
     private String appVersion = "1.6.4-autotest";
 
