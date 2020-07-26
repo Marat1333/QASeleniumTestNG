@@ -139,6 +139,7 @@ public class EstimatePage extends CartEstimatePage {
     public EstimatePage clickCreateEstimateButton() {
         createEstimateBtn.click();
         searchProductFld.waitForVisibility();
+        addCustomerBtnLbl.waitForVisibility();
         createBtn.waitForVisibility();
         return this;
     }
