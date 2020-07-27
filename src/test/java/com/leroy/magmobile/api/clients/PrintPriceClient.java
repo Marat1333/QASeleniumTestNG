@@ -1,6 +1,7 @@
 package com.leroy.magmobile.api.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.print.PrintDepartmentList;
 import com.leroy.magmobile.api.data.print.PrintTaskProductData;
 import com.leroy.magmobile.api.data.print.PrintTaskProductsList;
@@ -15,7 +16,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyString;
 
-public class PrintPriceClient extends MagMobileClient {
+public class PrintPriceClient extends BaseMashupClient {
 
     public Response<PrintDepartmentList> getDepartmentPrinterList() {
         return getDepartmentPrinterList(userSessionData.getUserShopId());

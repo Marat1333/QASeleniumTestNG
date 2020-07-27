@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.leroy.core.ContextProvider;
 import com.leroy.core.UserSessionData;
+import com.leroy.core.api.BaseMashupClient;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.*;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
@@ -79,7 +80,7 @@ public class ApiClientProvider {
         return ContextProvider.getContext().getUserSessionData();
     }
 
-    private <J extends MagMobileClient> J getClient(Provider<J> provider) {
+    private <J extends BaseMashupClient> J getClient(Provider<J> provider) {
         J cl = provider.get();
         cl.setUserSessionData(ContextProvider.getContext().getUserSessionData());
         return cl;

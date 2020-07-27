@@ -26,9 +26,9 @@
                     <include name="testAddNewProductToEstimate"/>
                     <include name="testCopyExistingProductToEstimate"/>
                     <include name="testChangeQuantityOfProductInEstimate"/>
-                    <include name="testOrderedQuantityOfProductMoreThanExisting"/>
                     <include name="testRemoveProductFromEstimate"/>
                     <include name="testRemoveLastProductFromEstimate"/>
+                    <include name="testOrderedQuantityOfProductMoreThanExisting"/>
                 </methods>
             </class>
         </classes>

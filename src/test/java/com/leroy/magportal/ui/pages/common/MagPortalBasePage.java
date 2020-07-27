@@ -7,6 +7,7 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magportal.ui.pages.NewFeaturesModalWindow;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 
 import java.time.Duration;
 
@@ -35,13 +36,16 @@ public class MagPortalBasePage extends BaseWebPage {
     }
 
     protected void waitForSpinnerAppearAndDisappear(int timeout) {
-        spinnerIcon.waitForVisibility(timeout, Duration.ofMillis(100));
+        try {
+            spinnerIcon.waitForVisibility(timeout, Duration.ofMillis(100));
+        } catch (TimeoutException err) {
+            // nothing to do
+        }
         spinnerIcon.waitForInvisibility();
     }
 
     protected void waitForSpinnerAppearAndDisappear() {
-        spinnerIcon.waitForVisibility(tiny_timeout, Duration.ofMillis(100));
-        spinnerIcon.waitForInvisibility();
+        waitForSpinnerAppearAndDisappear(tiny_timeout);
     }
 
     protected void waitForSpinnerDisappear() {

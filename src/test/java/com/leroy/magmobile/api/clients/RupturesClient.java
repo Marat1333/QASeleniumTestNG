@@ -1,6 +1,7 @@
 package com.leroy.magmobile.api.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.ruptures.*;
 import com.leroy.magmobile.api.requests.ruptures.*;
 import io.qameta.allure.Step;
@@ -16,7 +17,7 @@ import static com.leroy.constants.api.ErrorTextConst.SESSION_NOT_FOUND_OR_FINISH
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class RupturesClient extends MagMobileClient {
+public class RupturesClient extends BaseMashupClient {
 
     private String appVersion = "1.6.4-autotest";
 

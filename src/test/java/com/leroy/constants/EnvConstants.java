@@ -25,6 +25,9 @@ public class EnvConstants {
     public static final String BASIC_USER_SHOP_ID = getProperty("basic.user.shopId");
     public static final String BASIC_USER_DEPARTMENT_ID = getProperty("basic.user.departmentId");
 
+    // Backend environment
+    public static final String BACKEND_CLIENT_ENV = getProperty("backend.environment");
+
     // URLs
     private static String getUrlMagPortal() {
         String branchForTesting = System.getProperty("testBranch");

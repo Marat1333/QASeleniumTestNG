@@ -7,11 +7,16 @@ import ru.leroymerlin.qa.core.clients.base.Method;
 public class SalesDocSearchV3Get extends CommonSearchRequestBuilder<SalesDocSearchV3Get> {
 
     public SalesDocSearchV3Get setDocType(String val) {
+        if (val == null)
+            return this;
         return queryParam("docType", val);
     }
 
     public SalesDocSearchV3Get setDocId(String val) {
+        if (val == null)
+            return this;
         return queryParam("docId", val);
     }
+
 
 }

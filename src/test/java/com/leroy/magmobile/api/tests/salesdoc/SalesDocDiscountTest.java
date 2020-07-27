@@ -1,11 +1,8 @@
 package com.leroy.magmobile.api.tests.salesdoc;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
-import com.leroy.magmobile.api.clients.MagMobileClient;
+import com.leroy.magmobile.api.clients.SalesDocProductClient;
 import com.leroy.magmobile.api.data.sales.DiscountReasonData;
 import com.leroy.magmobile.api.data.sales.SalesDocDiscountData;
-import com.leroy.magmobile.api.requests.salesdoc.discount.GetSalesDocDiscount;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -20,10 +17,11 @@ import static org.hamcrest.Matchers.*;
 
 public class SalesDocDiscountTest extends BaseProjectApiTest {
 
-    @Inject
-    private Provider<MagMobileClient> magMobileClient;
-
     private String productLmCode;
+
+    private SalesDocProductClient client() {
+        return apiClientProvider.getSalesDocProductClient();
+    }
 
     @Override
     protected boolean isNeedAccessToken() {
@@ -37,9 +35,7 @@ public class SalesDocDiscountTest extends BaseProjectApiTest {
 
     @Test(description = "C3254680 SalesDoc GET discounts")
     public void testSalesDocGetDiscounts() {
-        Response<SalesDocDiscountData> resp = magMobileClient.get().getSalesDocDiscount(new GetSalesDocDiscount()
-                .setLmCode(productLmCode)
-                .setShopId(getUserSessionData().getUserShopId()));
+        Response<SalesDocDiscountData> resp = client().getSalesDocDiscountByLmCode(productLmCode);
         assertThat(resp, successful());
         SalesDocDiscountData salesDocDiscountData = resp.asJson();
         assertThat("maxDiscount", salesDocDiscountData.getMaxDiscount(), greaterThan(0.0));

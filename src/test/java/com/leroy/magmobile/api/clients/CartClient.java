@@ -2,6 +2,7 @@ package com.leroy.magmobile.api.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.sales.SalesDocumentsConst;
+import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
@@ -15,7 +16,7 @@ import static com.leroy.core.matchers.Matchers.isNumber;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class CartClient extends MagMobileClient {
+public class CartClient extends BaseMashupClient {
 
     public enum RequestType {
         UPDATE, GET;
@@ -238,6 +239,25 @@ public class CartClient extends MagMobileClient {
             assertThat(String.format("Product #%s - stockAdditionBySalesman", i + 1),
                     actualProduct.getStockAdditionBySalesman(),
                     is(expectedProduct.getStockAdditionBySalesman()));
+            // Discount
+            if (expectedProduct.getDiscount() != null) {
+                assertThat(String.format("Product #%s - Discount", i + 1),
+                        actualProduct.getDiscount(), notNullValue());
+                assertThat(String.format("Product #%s - Discount.reason", i + 1),
+                        actualProduct.getDiscount().getReason(),
+                        is(expectedProduct.getDiscount().getReason()));
+                assertThat(String.format("Product #%s - Discount.type", i + 1),
+                        actualProduct.getDiscount().getType(),
+                        is(expectedProduct.getDiscount().getType()));
+                assertThat(String.format("Product #%s - Discount.typeValue", i + 1),
+                        actualProduct.getDiscount().getTypeValue(),
+                        is(expectedProduct.getDiscount().getTypeValue()));
+                assertThat(String.format("Product #%s - Discount.actor", i + 1),
+                        actualProduct.getDiscount().getActor(),
+                        is(expectedProduct.getDiscount().getActor()));
+                assertThat(String.format("Product #%s - Discount.updated", i + 1),
+                        actualProduct.getDiscount().getUpdated(), notNullValue());
+            }
         }
         return actualData;
     }
