@@ -15,6 +15,7 @@ public class PickingProductCardData {
     private Double price;
     private Double weight;
 
+    private String reasonOfLack;
     private Integer stockQuantity;
     private Integer orderedQuantity;
     private Integer collectedQuantity;
@@ -28,6 +29,7 @@ public class PickingProductCardData {
         pickingProductCardData.setDimension(dimension);
         pickingProductCardData.setPrice(price);
         pickingProductCardData.setWeight(weight);
+        pickingProductCardData.setReasonOfLack(reasonOfLack);
         pickingProductCardData.setStockQuantity(stockQuantity);
         pickingProductCardData.setOrderedQuantity(orderedQuantity);
         pickingProductCardData.setCollectedQuantity(collectedQuantity);
@@ -64,6 +66,8 @@ public class PickingProductCardData {
                 "Товар #" + (i + 1) + " - неверная цена");
         softAssert.isEquals(weight, expectedProductData.getWeight(),
                 "Товар #" + (i + 1) + " - неверный вес");
+        softAssert.isEquals(reasonOfLack, expectedProductData.getReasonOfLack(),
+                "Товар #" + (i + 1) + " - неверная причина отсутствия товара");
         softAssert.isEquals(stockQuantity, expectedProductData.getStockQuantity(),
                 "Товар #" + (i + 1) + " - неверное кол-во на складе");
         softAssert.isEquals(orderedQuantity, expectedProductData.getOrderedQuantity(),

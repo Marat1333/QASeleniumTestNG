@@ -43,20 +43,59 @@ public class AssemblyProductCardWidget extends CardWebWidget<PickingProductCardD
     @WebFindBy(xpath = ".//div[contains(@id, 'StockInformationExpander')]/span[2]", metaName = "Кол-во на складе")
     Element stockQuantity;
 
+    public String getStockQuantity() {
+        return stockQuantity.getText();
+    }
+
     @WebFindBy(xpath = ".//div[contains(@class, 'ProductCard__quantities')]/div[2]//input",
             metaName = "Поле 'Заказано'")
     EditBox orderedQuantityFld;
+
+    public String getOrderedQuantity() {
+        return orderedQuantityFld.getText();
+    }
 
     @WebFindBy(xpath = ".//div[contains(@class, 'ProductCard__quantities')]/div[3]//input",
             metaName = "Поле 'Собрано'")
     EditBox collectedQuantityFld;
 
+    public String getCollectedQuantity() {
+        return collectedQuantityFld.getText();
+    }
+
+    @WebFindBy(xpath = ".//div[contains(@class, 'Picking-ProductCard__reason')]"
+            , metaName = "Причина отсутствия")
+    Element productCardReason;
+
+
+    // Actions
+
+    public void editCollectQuantity(String val) {
+        collectedQuantityFld.clear(true);
+        collectedQuantityFld.fill(val);
+        collectedQuantityFld.sendBlurEvent();
+    }
+
+    public void editCollectQuantity(int val) {
+        editCollectQuantity(String.valueOf(val));
+    }
+
     public void setSplitOption(boolean val) throws Exception {
         splitChkBox.setValue(val);
     }
 
+    public void clickReason() {
+        productCardReason.scrollTo();
+        productCardReason.click(short_timeout);
+    }
+
+    // Check or Get data
     public boolean isSplitChecked() throws Exception {
         return splitChkBox.isChecked();
+    }
+
+    public String getReason() {
+        return productCardReason.getTextIfPresent();
     }
 
     @Override
@@ -69,6 +108,7 @@ public class AssemblyProductCardWidget extends CardWebWidget<PickingProductCardD
         pickingProductCardData.setTitle(title.getText());
         pickingProductCardData.setPrice(ParserUtil.strToDouble(price.getText()));
         pickingProductCardData.setWeight(ParserUtil.strToDouble(weight.getText(), "."));
+        pickingProductCardData.setReasonOfLack(productCardReason.getTextIfPresent());
         pickingProductCardData.setStockQuantity(ParserUtil.strToInt(stockQuantity.getText()));
         pickingProductCardData.setCollectedQuantity(ParserUtil.strToInt(collectedQuantityFld.getText()));
         pickingProductCardData.setOrderedQuantity(ParserUtil.strToInt(orderedQuantityFld.getText()));

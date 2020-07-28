@@ -319,7 +319,7 @@ public class OrderClient extends BaseMashupClient {
     @Step("Wait until order is confirmed")
     public OrderData waitUntilOrderHasStatusAndReturnOrderData(
             String orderId, String expectedStatus) throws Exception {
-        int maxTimeoutInSeconds = 60;
+        int maxTimeoutInSeconds = 180;
         long currentTimeMillis = System.currentTimeMillis();
         Response<OrderData> r = null;
         while (System.currentTimeMillis() - currentTimeMillis < maxTimeoutInSeconds * 1000) {

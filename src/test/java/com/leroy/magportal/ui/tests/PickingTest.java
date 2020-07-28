@@ -17,6 +17,7 @@ import com.leroy.magportal.api.clients.PickingTaskClient;
 import com.leroy.magportal.api.data.picking.PickingTaskDataList;
 import com.leroy.magportal.ui.WebBaseSteps;
 import com.leroy.magportal.ui.constants.picking.PickingConst;
+import com.leroy.magportal.ui.models.picking.PickingProductCardData;
 import com.leroy.magportal.ui.models.picking.PickingTaskData;
 import com.leroy.magportal.ui.models.picking.ShortPickingTaskData;
 import com.leroy.magportal.ui.pages.picking.PickingContentPage;
@@ -27,6 +28,7 @@ import com.leroy.magportal.ui.pages.picking.modal.SuccessfullyCreatedAssemblyMod
 import com.leroy.utils.ParserUtil;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -76,6 +78,13 @@ public class PickingTest extends WebBaseSteps {
             Response<JsonNode> resp = orderClient.cancelOrder(orderId);
             assertThat(resp, successful());
         }
+    }
+
+    @BeforeMethod(enabled = false)
+    private void cancelConfirmedOrderBefore() throws Exception {
+        OrderClient orderClient = apiClientProvider.getOrderClient();
+        Response<JsonNode> resp = orderClient.cancelOrder("200701046026");
+        assertThat(resp, successful());
     }
 
     protected String createConfirmedOrder(
@@ -475,6 +484,89 @@ public class PickingTest extends WebBaseSteps {
 
         pickingContentPage.refreshDocumentList();
         pickingContentPage.shouldDocumentListContainsThis(shortPickingTaskData);
+    }
+
+    @Test(description = "C23185844 Частичная сборка заказа")
+    public void testPartialOrderAssembly() throws Exception {
+        initCreateOrder(3);
+
+        PickingPage pickingPage = loginSelectShopAndGoTo(PickingPage.class);
+        initFindPickingTask();
+        String assemblyNumber = pickingTaskId.substring(pickingTaskId.length() - 4);
+        String orderNumber = orderId.substring(orderId.length() - 4);
+        String fullNumber = assemblyNumber + " *" + orderNumber;
+        pickingPage.enterOrderNumberInSearchFld(orderId);
+        pickingPage.clickDocumentInLeftMenu(fullNumber);
+        PickingContentPage pickingContentPage = new PickingContentPage();
+
+        PickingTaskData pickingTaskDataBefore = pickingContentPage.getPickingTaskData();
+
+        // Step 1
+        step("Нажать на кнопку Начать сборку");
+        pickingContentPage.clickStartAssemblyButton();
+
+        // Step 2
+        step("Товар 1: Ввести в инпут Собрано количество больше, чем указано в Заказано");
+        int collectedQuantityProduct1 = pickingTaskDataBefore.getProducts().get(0).getOrderedQuantity();
+        pickingContentPage.shouldProductCollectedQuantityIs(1, 0)
+                .editCollectQuantity(1, collectedQuantityProduct1 + 1)
+                .shouldProductCollectedQuantityIs(1, collectedQuantityProduct1);
+
+        // Step 3
+        step("Товар 1: Ввести в инпут Собрано количество меньше, чем указано в Заказано. " +
+                "Указать причину отсутствия");
+        collectedQuantityProduct1 = 1;
+        PickingContentPage.ReasonForLackOfProductModal.Reasons reason1 =
+                PickingContentPage.ReasonForLackOfProductModal.Reasons.EXAMPLE_PRODUCT;
+        pickingContentPage
+                .editCollectQuantity(1, collectedQuantityProduct1)
+                .selectReasonForLackOfProduct(1, reason1)
+                .shouldProductReasonIs(1, reason1)
+                .shouldProductCollectedQuantityIs(1, collectedQuantityProduct1);
+
+        // Step 4
+        step("Товар 2: Оставить в инпуте Собрано дефолтное значение 0");
+        pickingContentPage.shouldProductCollectedQuantityIs(2, 0);
+
+        // Step 5
+        step("Товар 3: Ввести в инпут Собрано количество равное указанному в Заказано");
+        int collectedQuantityProduct3 = pickingTaskDataBefore.getProducts().get(2).getOrderedQuantity();
+        pickingContentPage
+                .editCollectQuantity(3, collectedQuantityProduct3)
+                .shouldProductCollectedQuantityIs(3, collectedQuantityProduct3);
+
+        // Step 6
+        step("Проверить кнопку Завершить");
+        pickingContentPage.shouldFinishButtonCountIs(1, 3)
+                .checkIfFinishButtonIsEnabled(false);
+
+        // Step 7
+        step("Товар 2: Указать причину отсутствия");
+        PickingContentPage.ReasonForLackOfProductModal.Reasons reason2 =
+                PickingContentPage.ReasonForLackOfProductModal.Reasons.DEFECTIVE_PRODUCT;
+        pickingContentPage.selectReasonForLackOfProduct(2, reason2)
+                .shouldProductReasonIs(2, reason2);
+
+        // Step 8
+        step("Проверить кнопку Завершить");
+        pickingContentPage.shouldFinishButtonCountIs(1, 3)
+                .checkIfFinishButtonIsEnabled(true);
+
+        // Step 9
+        step("Нажать на кнопку Завершить");
+        pickingTaskDataBefore.setStatus(SalesDocumentsConst.States.PARTIALLY_ASSEMBLED.getUiVal() + " 1/3");
+        List<PickingProductCardData> pickingProducts = pickingTaskDataBefore.getProducts();
+        pickingProducts.get(0).setCollectedQuantity(collectedQuantityProduct1);
+        pickingProducts.get(0).setReasonOfLack(reason1.getTitle());
+        pickingProducts.get(2).setCollectedQuantity(collectedQuantityProduct3);
+        pickingProducts.get(1).setReasonOfLack(reason2.getTitle());
+        pickingContentPage.clickFinishAssemblyButton()
+                .shouldPickingTaskDataIs(pickingTaskDataBefore);
+
+        // Step 10
+        step("Перейти в заказ, кликнув на ссылку в названии сборки");
+        pickingContentPage.clickOrderLinkAndGoToOrderPage()
+                .shouldOrderStatusIs("ЧАСТИЧНО СОБРАН");
     }
 
 }
