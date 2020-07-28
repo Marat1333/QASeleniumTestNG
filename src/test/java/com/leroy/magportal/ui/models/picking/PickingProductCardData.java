@@ -34,6 +34,13 @@ public class PickingProductCardData {
         return pickingProductCardData;
     }
 
+    public void increaseOrderedQuantity(int val) {
+        this.orderedQuantity += val;
+    }
+
+    public void decreaseOrderedQuantity(int val) {
+        this.orderedQuantity -= val;
+    }
 
     private static class Dimension3D {
         private Double length;

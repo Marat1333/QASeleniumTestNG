@@ -80,6 +80,12 @@ public class PickingContentPage extends PickingPage {
         return this;
     }
 
+    @Step("Нажать на 'Выбрать все'")
+    public PickingContentPage setSelectAllOption(boolean val) throws Exception {
+        selectAllChkBox.setValue(val);
+        return this;
+    }
+
     @Step("Нажать кнопку 'Разделить' на нижней панели")
     public SplitPickingModalStep1 clickSplitAssemblyButton() {
         splitAssemblyBtn.click();

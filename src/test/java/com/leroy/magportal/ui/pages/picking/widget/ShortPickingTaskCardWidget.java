@@ -62,7 +62,7 @@ public class ShortPickingTaskCardWidget extends CardWebWidget<ShortPickingTaskDa
         pickingTaskData.setStatus(status.getText());
         pickingTaskData.setDepartments(departments.getTextList().stream()
                 .map(Integer::valueOf).collect(Collectors.toList()));
-        pickingTaskData.setCreationDate(creationDate.getText());
+        pickingTaskData.setCreationDate(creationDate.getTextIfPresent());
         String collectorOrClient = collectorOrClientLbl.getText();
         if (collectorOrClient.contains("Сборщик:"))
             pickingTaskData.setCollector(collectorOrClient.replaceAll("Сборщик:", "").trim());

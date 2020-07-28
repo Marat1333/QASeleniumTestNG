@@ -3,6 +3,7 @@ package com.leroy.magportal.ui.models.picking;
 import com.leroy.core.ContextProvider;
 import com.leroy.core.asserts.SoftAssertWrapper;
 import com.leroy.magportal.ui.constants.picking.PickingConst;
+import com.leroy.magportal.ui.pages.picking.modal.SplitPickingModalStep1;
 import com.leroy.utils.ParserUtil;
 import lombok.Data;
 
@@ -21,6 +22,21 @@ public class PickingTaskData {
 
     public String getOrderLinkNumber() {
         return number.split(" ")[1].replaceAll("\\*", "");
+    }
+
+    public List<SplitPickingModalStep1.SplitProductCardData> getSplitPickingProductDataList() {
+        List<SplitPickingModalStep1.SplitProductCardData > splitProductCardDataList = new ArrayList<>();
+        for (PickingProductCardData productCardData : products) {
+            SplitPickingModalStep1.SplitProductCardData splitProduct = new SplitPickingModalStep1.SplitProductCardData();
+            splitProduct.setLmCode(productCardData.getLmCode());
+            splitProduct.setTitle(productCardData.getTitle());
+            splitProduct.setOriginalAssemblyQuantity(productCardData.getOrderedQuantity());
+            splitProduct.setWantToMoveQuantity(productCardData.getOrderedQuantity());
+            splitProduct.setMoveToNewQuantity(productCardData.getOrderedQuantity());
+            splitProduct.setRemainInOriginalQuantity(0);
+            splitProductCardDataList.add(splitProduct);
+        }
+        return splitProductCardDataList;
     }
 
     public PickingTaskData clone() {
