@@ -559,8 +559,9 @@ public class Element extends BaseWidget {
                 }
             });
         } catch (TimeoutException e) {
-            Log.warn(String.format(
+            Log.error(String.format(
                     "Expected condition failed: waitForTextIsNotEqual (tried for %d second(s))", short_timeout));
+            throw e;
         }
     }
 
@@ -577,9 +578,10 @@ public class Element extends BaseWidget {
                 }
             });
         } catch (TimeoutException err) {
-            Log.warn(String.format(
+            Log.error(String.format(
                     "Expected condition failed: waitAndGetUntilTextIsDifferent " +
                             "(tried for %d second(s)). Element: " + getMetaName(), timeout));
+            throw err;
         }
         return !oldText.equals(getText());
     }
@@ -587,15 +589,14 @@ public class Element extends BaseWidget {
     public boolean waitUntilTextIsEqualTo(String referenceText, int timeout) {
         WebDriverWait wait = new WebDriverWait(this.driver, timeout);
         try {
-            wait.until((ExpectedCondition<Boolean>) driverObject -> this.isVisible() &&
-                    this.getText().equals(referenceText));
+            wait.until((ExpectedCondition<Boolean>) driverObject -> this.getText().equals(referenceText));
             return true;
         } catch (TimeoutException e) {
-            Log.warn(String.format(
+            Log.error(String.format(
                     "Method: waitUntilTextIsEqualTo() - Text isn't equal to '%s' (tried for %d second(s))",
                     referenceText, timeout));
+            throw e;
         }
-        return false;
     }
 
     public boolean waitUntilTextIsEqualTo(String referenceText) {
@@ -609,11 +610,11 @@ public class Element extends BaseWidget {
                     .contains(referenceText.toLowerCase()));
             return true;
         } catch (TimeoutException e) {
-            Log.warn(String.format(
+            Log.error(String.format(
                     "Method: waitUntilTextContains() - the text doesn't contain a specified (tried for %d second(s))",
                     timeout));
+            throw e;
         }
-        return false;
     }
 
     public boolean waitUntilTextContains(String referenceText) {

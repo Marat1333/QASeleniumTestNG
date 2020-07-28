@@ -266,10 +266,12 @@ public class EstimateTest extends BasePAOTest {
         EstimatePage estimatePage;
         step("Выполнение предусловий:");
         if (isStartFromScratch()) {
-            estimatePage = loginAndGoTo(EstimatePage.class).clickCreateEstimateButton();
-            estimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
+            estimatePage = loginAndGoTo(EstimatePage.class);
         } else
             estimatePage = new EstimatePage();
+
+        estimatePage.clickCreateEstimateButton();
+        estimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
 
         Number newQuantity = testProduct1.getAvailableStock() + 1;
         SalesDocWebData estimateData = estimatePage.getSalesDocData();

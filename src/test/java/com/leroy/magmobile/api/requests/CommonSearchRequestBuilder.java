@@ -7,10 +7,14 @@ public class CommonSearchRequestBuilder<J extends CommonSearchRequestBuilder<J>>
     // Query params
 
     public J setPageSize(Integer val) {
+        if (val == null)
+            return (J) this;
         return queryParam("pageSize", val);
     }
 
     public J setStartFrom(Integer val) {
+        if (val == null)
+            return (J) this;
         return queryParam("startFrom", val);
     }
 

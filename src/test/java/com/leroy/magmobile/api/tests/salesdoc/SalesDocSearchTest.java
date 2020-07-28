@@ -1,12 +1,9 @@
 package com.leroy.magmobile.api.tests.salesdoc;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.leroy.constants.sales.SalesDocumentsConst;
-import com.leroy.magmobile.api.clients.MagMobileClient;
+import com.leroy.magmobile.api.clients.SalesDocSearchClient;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
-import com.leroy.magmobile.api.requests.salesdoc.search.SalesDocSearchV3Get;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -19,8 +16,9 @@ import static org.hamcrest.Matchers.*;
 
 public class SalesDocSearchTest extends BaseProjectApiTest {
 
-    @Inject
-    private Provider<MagMobileClient> magMobileClient;
+    private SalesDocSearchClient client() {
+        return apiClientProvider.getSalesDocSearchClient();
+    }
 
     @Override
     protected boolean isNeedAccessToken() {
@@ -30,18 +28,10 @@ public class SalesDocSearchTest extends BaseProjectApiTest {
     private final int PAGE_SIZE = 4;
     private final int MAX_COUNT_BACKEND = 4;
 
-    private SalesDocSearchV3Get buildDefaultSalesDocSearchV3Params() {
-        return new SalesDocSearchV3Get()
-                .setPageSize(PAGE_SIZE)
-                .setStartFrom(1);
-    }
-
     @Test(description = "C3164797 Search by shopId")
     public void testSearchByShopId() {
         String testShop = "5";
-        SalesDocSearchV3Get params = buildDefaultSalesDocSearchV3Params()
-                .setShopId(testShop);
-        Response<SalesDocumentListResponse> resp = magMobileClient.get().searchForSalesDocumentBy(params);
+        Response<SalesDocumentListResponse> resp = client().searchForDocumentsByShopId(testShop, 1, PAGE_SIZE);
         assertThat(resp, successful());
         List<SalesDocumentResponseData> salesDocList = resp.asJson().getSalesDocuments();
         assertThat("Count of the documents", salesDocList.size(),
@@ -51,16 +41,17 @@ public class SalesDocSearchTest extends BaseProjectApiTest {
 
     @Test(description = "C3164798 Search by docType")
     public void testSearchByDocType() {
+        int startFrom = 1;
+
         String testDocType1 = SalesDocumentsConst.Types.CART.getApiVal();
         String testDocType2 = SalesDocumentsConst.Types.ESTIMATE.getApiVal();
         String testDocType3 = SalesDocumentsConst.Types.ORDER.getApiVal();
         String testDocType4 = SalesDocumentsConst.Types.SALE.getApiVal();
+        SalesDocSearchClient client = client();
 
         // Step 1
         step("Search for documents with type = CART");
-        Response<SalesDocumentListResponse> resp = magMobileClient.get().searchForSalesDocumentBy(
-                buildDefaultSalesDocSearchV3Params().setDocType(testDocType1)
-        );
+        Response<SalesDocumentListResponse> resp = client.searchForDocumentsByDocType(testDocType1, startFrom, PAGE_SIZE);
         assertThat(resp, successful());
         List<SalesDocumentResponseData> salesDocList = resp.asJson().getSalesDocuments();
         assertThat("Count of the documents", salesDocList.size(), is(PAGE_SIZE));
@@ -68,9 +59,7 @@ public class SalesDocSearchTest extends BaseProjectApiTest {
 
         // Step 2
         step("Search for documents with type = QUOTATION");
-        resp = magMobileClient.get().searchForSalesDocumentBy(
-                buildDefaultSalesDocSearchV3Params().setDocType(testDocType2)
-        );
+        resp = client.searchForDocumentsByDocType(testDocType2, startFrom, PAGE_SIZE);
         assertThat(resp, successful());
         salesDocList = resp.asJson().getSalesDocuments();
         assertThat("Count of the documents", salesDocList.size(), is(PAGE_SIZE));
@@ -78,9 +67,7 @@ public class SalesDocSearchTest extends BaseProjectApiTest {
 
         // Step 3
         step("Search for documents with type = ORDER");
-        resp = magMobileClient.get().searchForSalesDocumentBy(
-                buildDefaultSalesDocSearchV3Params().setDocType(testDocType3)
-        );
+        resp = client.searchForDocumentsByDocType(testDocType3, startFrom, PAGE_SIZE);
         assertThat(resp, successful());
         salesDocList = resp.asJson().getSalesDocuments();
         assertThat("Count of the documents", salesDocList.size(), is(PAGE_SIZE));
@@ -88,9 +75,7 @@ public class SalesDocSearchTest extends BaseProjectApiTest {
 
         // Step 4
         step("Search for documents with type = SALE");
-        resp = magMobileClient.get().searchForSalesDocumentBy(
-                buildDefaultSalesDocSearchV3Params().setDocType(testDocType4)
-        );
+        resp = client.searchForDocumentsByDocType(testDocType4, startFrom, PAGE_SIZE);
         assertThat(resp, successful());
         salesDocList = resp.asJson().getSalesDocuments();
         assertThat("Count of the documents", salesDocList.size(), is(PAGE_SIZE));
@@ -100,9 +85,7 @@ public class SalesDocSearchTest extends BaseProjectApiTest {
     @Test(description = "C3164799 Search by docId")
     public void testSearchByDocId() {
         String testDocId = "1524";
-        SalesDocSearchV3Get params = buildDefaultSalesDocSearchV3Params()
-                .setDocId(testDocId);
-        Response<SalesDocumentListResponse> resp = magMobileClient.get().searchForSalesDocumentBy(params);
+        Response<SalesDocumentListResponse> resp = client().searchForDocumentsByDocId(testDocId);
         assertThat(resp, successful());
         List<SalesDocumentResponseData> salesDocList = resp.asJson().getSalesDocuments();
         assertThat("Count of the documents", salesDocList.size(), greaterThan(0));

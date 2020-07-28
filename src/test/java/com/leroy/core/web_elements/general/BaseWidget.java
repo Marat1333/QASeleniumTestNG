@@ -188,9 +188,9 @@ public abstract class BaseWidget extends BaseWrapper {
                 return waitForVisibilityAndSearchAgain(timeout, sleepTimeout, false);
             }
             return false;
-        } catch (org.openqa.selenium.TimeoutException e) {
-            Log.warn(String.format("waitForVisibilityAndSearchAgain for " + getMetaName() + " failed (tried for %d second(s))", timeout));
-            return false;
+        } catch (TimeoutException e) {
+            Log.error(String.format("waitForVisibility() for " + getMetaName() + " failed (tried for %d second(s))", timeout));
+            throw e;
         }
     }
 
@@ -256,7 +256,7 @@ public abstract class BaseWidget extends BaseWrapper {
                 }
             });
             return true;
-        } catch (org.openqa.selenium.TimeoutException e) {
+        } catch (TimeoutException e) {
             Log.warn(String.format("waitForInvisibility failed (tried for %d second(s))", timeout));
             return false;
         }

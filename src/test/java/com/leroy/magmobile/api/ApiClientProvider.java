@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.leroy.core.ContextProvider;
 import com.leroy.core.UserSessionData;
+import com.leroy.core.api.BaseMashupClient;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.*;
 import com.leroy.magmobile.api.data.catalog.*;
@@ -75,7 +76,7 @@ public class ApiClientProvider {
         return ContextProvider.getContext().getUserSessionData();
     }
 
-    private <J extends MagMobileClient> J getClient(Provider<J> provider) {
+    private <J extends BaseMashupClient> J getClient(Provider<J> provider) {
         J cl = provider.get();
         cl.setUserSessionData(userSessionData());
         return cl;
@@ -169,7 +170,7 @@ public class ApiClientProvider {
     public List<ProductItemData> getProducts(int necessaryCount, CatalogSearchFilter filtersData) {
         if (filtersData == null)
             filtersData = new CatalogSearchFilter();
-        String[] badLmCodes = {"11756305", "11756217", "11434955", "10009009"}; // Из-за отсутствия синхронизации бэков на тесте, мы можем получить некорректные данные
+        String[] badLmCodes = {"10008698"}; // Из-за отсутствия синхронизации бэков на тесте, мы можем получить некорректные данные
         GetCatalogSearch params = new GetCatalogSearch()
                 .setShopId(userSessionData().getUserShopId())
                 .setDepartmentId(userSessionData().getUserDepartmentId())
