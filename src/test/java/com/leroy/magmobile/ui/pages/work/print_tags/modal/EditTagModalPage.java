@@ -29,6 +29,9 @@ public class EditTagModalPage extends CommonMagMobilePage {
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"barCode\"]/following-sibling::android.widget.TextView[3]")
     Element dateOfPriceChangeLbl;
 
+    @AppFindBy(accessibilityId = "deleteProduct")
+    Button deleteProductBtn;
+
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"Button-container\"][last()]")
     Button addProductBtn;
 
@@ -57,6 +60,16 @@ public class EditTagModalPage extends CommonMagMobilePage {
     @Step("Проверить, что для товары корректно предвыбраны значения")
     public EditTagModalPage shouldSizeValuesAreCorrect(ProductTagData data){
 
+        return this;
+    }
+
+    @Step("Проверить, что кнопка удаления товара присутствует")
+    public EditTagModalPage shouldDeleteBtnHasCorrectCondition(boolean isVisible){
+        if (isVisible){
+            anAssert.isElementVisible(deleteProductBtn);
+        }else {
+            anAssert.isElementNotVisible(deleteProductBtn);
+        }
         return this;
     }
 }

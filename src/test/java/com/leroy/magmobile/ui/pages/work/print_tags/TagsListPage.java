@@ -46,6 +46,12 @@ public class TagsListPage extends CommonMagMobilePage {
         deleteSessionBtn.waitForVisibility();
     }
 
+    @Step("Перейти на страницу выбора принтера")
+    public PrinterSelectorPage goToPrinterSelectorPage(){
+        printerNameBtn.click();
+        return new PrinterSelectorPage();
+    }
+
     @Step("Перейти назад")
     public ConfirmSessionExitModalPage goBack() {
         backBtn.click();
@@ -56,6 +62,12 @@ public class TagsListPage extends CommonMagMobilePage {
     public PrintTagsScannerPage addProductToSession(){
         addProductBtn.click();
         return new PrintTagsScannerPage();
+    }
+
+    @Step("Проверить, что корректно выбран принтер")
+    public TagsListPage shouldPrinterIsCorrect(String printerDepartmentName){
+        anAssert.isElementTextContains(printerNameBtn, printerDepartmentName);
+        return this;
     }
 
     @Step("Проверить, что список содержит все переданные товары")

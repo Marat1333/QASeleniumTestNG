@@ -13,6 +13,7 @@ import com.leroy.magmobile.ui.pages.sales.product_card.modal.ActionWithProductMo
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.work.WorkPage;
 import com.leroy.magmobile.ui.pages.work.print_tags.PrintTagsScannerPage;
+import com.leroy.magmobile.ui.pages.work.print_tags.PrinterSelectorPage;
 import com.leroy.magmobile.ui.pages.work.print_tags.SessionsListPage;
 import com.leroy.magmobile.ui.pages.work.print_tags.TagsListPage;
 import com.leroy.magmobile.ui.pages.work.print_tags.data.ProductTagData;
@@ -36,6 +37,20 @@ public class PrintTagsTest extends AppBaseSteps {
     private CatalogSearchClient catalogSearchClient;
     private PrintPriceClient printPriceClient;
 
+    private TagsListPage createSession() throws Exception{
+        WorkPage workPage = loginAndGoTo(WorkPage.class);
+        SessionsListPage sessionsListPage = workPage.goToSessionsListPage();
+        sessionsListPage.createNewSession();
+        PrintTagsScannerPage scannerPage = new PrintTagsScannerPage();
+        scannerPage.verifyRequiredElements();
+        SearchProductPage searchProductPage = scannerPage.navigateToSearchProductPage();
+        searchProductPage.enterTextInSearchFieldAndSubmit(catalogSearchClient.getRandomProduct().getLmCode());
+        EditTagModalPage editTagModalPage = new EditTagModalPage();
+        editTagModalPage.shouldDeleteBtnHasCorrectCondition(false);
+        editTagModalPage.addProductToPrintSession();
+        return new TagsListPage();
+    }
+
     @BeforeClass
     private void initClients() {
         catalogSearchClient = apiClientProvider.getCatalogSearchClient();
@@ -46,6 +61,7 @@ public class PrintTagsTest extends AppBaseSteps {
     public UserSessionData initTestClassUserSessionDataTemplate() {
         UserSessionData sessionData = super.initTestClassUserSessionDataTemplate();
         sessionData.setUserShopId("32");
+        sessionData.setUserDepartmentId("15");
         return sessionData;
     }
 
@@ -170,6 +186,7 @@ public class PrintTagsTest extends AppBaseSteps {
         SearchProductPage searchProductPage = scannerPage.navigateToSearchProductPage();
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCodesList.get(0));
         EditTagModalPage editTagModalPage = new EditTagModalPage();
+        editTagModalPage.shouldDeleteBtnHasCorrectCondition(false);
         editTagModalPage.addProductToPrintSession();
 
         addUniqueProductsToSessionByManualSearch(Collections.singletonList(lmCodesList.get(1)));
@@ -190,6 +207,7 @@ public class PrintTagsTest extends AppBaseSteps {
         productCardPage.clickActionWithProductButton();
         ActionWithProductModalPage multiFunctionModal = new ActionWithProductModalPage();
         editTagModalPage = multiFunctionModal.printTag();
+        editTagModalPage.shouldDeleteBtnHasCorrectCondition(false);
         ProductTagData productTagData = editTagModalPage.addProductToPrintSession();
         tagsListPage = new TagsListPage();
         tagsListPage.verifyRequiredElements();
@@ -198,7 +216,7 @@ public class PrintTagsTest extends AppBaseSteps {
         //Step 3
         step("добавление уже добавленного ранее товара через поиск");
         scannerPage = tagsListPage.addProductToSession();
-        //TODO проверка счетчика сканера
+        scannerPage.shouldCounterIsCorrect(3);
         searchProductPage = scannerPage.navigateToSearchProductPage();
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCodesList.get(2));
         //workaround for minor bug
@@ -206,7 +224,7 @@ public class PrintTagsTest extends AppBaseSteps {
         //
         editTagModalPage = new EditTagModalPage();
         editTagModalPage.shouldSizeValuesAreCorrect(productTagData);
-        //TODO проверка на отображение кнопки корзины
+        editTagModalPage.shouldDeleteBtnHasCorrectCondition(true);
         editTagModalPage.addProductToPrintSession();
         tagsListPage = new TagsListPage();
         tagsListPage.shouldProductCountIsCorrect(3);
@@ -219,10 +237,54 @@ public class PrintTagsTest extends AppBaseSteps {
         searchProductPage = productCardPage.returnBack();
         //вид поиска немного изменился
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCodesList.get(2));
+
+        //как должно быть
+        /*productCardPage = new ProductCardPage();
+        productCardPage.clickActionWithProductButton();
+        multiFunctionModal = new ActionWithProductModalPage();
+        editTagModalPage = multiFunctionModal.printTag();
+        productTagData = editTagModalPage.addProductToPrintSession();*/
+
+        //workaround
         editTagModalPage = new EditTagModalPage();
         editTagModalPage.shouldSizeValuesAreCorrect(productTagData);
+        editTagModalPage.shouldDeleteBtnHasCorrectCondition(true);
         editTagModalPage.addProductToPrintSession();
+        //
+
         tagsListPage = new TagsListPage();
         tagsListPage.shouldProductCountIsCorrect(3);
+    }
+
+    @Test(description = "C23389194 выбор принтера")
+    public void testChosePrinter() throws Exception{
+        String chosenPrinterName = printPriceClient.getRandomPrinterName();
+        String userDept = getUserSessionData().getUserDepartmentId();
+
+        //Step 1
+        step("создать сессию");
+        TagsListPage tagsListPage = createSession();
+        tagsListPage.shouldPrinterIsCorrect(userDept);
+
+        //Step 2
+        step("выбрать принтер");
+        PrinterSelectorPage printerSelectorPage = tagsListPage.goToPrinterSelectorPage();
+        printerSelectorPage.shouldChosenPrinterIsCorrect(userDept, false);
+        printerSelectorPage.shouldAllFiltersIsDisplayed(printPriceClient.getPrinterNamesList());
+        tagsListPage = printerSelectorPage.chosePrinter(chosenPrinterName);
+        tagsListPage.shouldPrinterIsCorrect(chosenPrinterName);
+
+        //Step 3
+        step("Перезайти в сессию");
+        ConfirmSessionExitModalPage exitModalPage = tagsListPage.goBack();
+        exitModalPage.exit();
+        SessionsListPage sessionsListPage = new SessionsListPage();
+        tagsListPage = sessionsListPage.navigateToActiveSession();
+        tagsListPage.shouldPrinterIsCorrect(chosenPrinterName);
+
+        //Step 4
+        step("Перейти на страницу выбора принтера");
+        printerSelectorPage = tagsListPage.goToPrinterSelectorPage();
+        printerSelectorPage.shouldChosenPrinterIsCorrect(chosenPrinterName, true);
     }
 }
