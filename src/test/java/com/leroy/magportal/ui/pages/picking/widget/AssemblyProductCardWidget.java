@@ -16,7 +16,8 @@ public class AssemblyProductCardWidget extends CardWebWidget<PickingProductCardD
         super(driver, locator);
     }
 
-    @WebFindBy(xpath = "//button[contains(@class, 'Picking-ProductCard__checkbox')]", metaName = "Чекбокс разделить")
+    @WebFindBy(xpath = ".//button[contains(@class, 'Picking-ProductCard__checkbox')]",
+            metaName = "Чекбокс разделить")
     PuzCheckBox splitChkBox;
 
     @WebFindBy(xpath = ".//div[contains(@class, 'shared-order-StyledLabel')]", metaName = "Номер отдела")

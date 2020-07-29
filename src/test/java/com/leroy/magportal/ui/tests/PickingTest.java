@@ -20,6 +20,7 @@ import com.leroy.magportal.ui.constants.picking.PickingConst;
 import com.leroy.magportal.ui.models.picking.PickingProductCardData;
 import com.leroy.magportal.ui.models.picking.PickingTaskData;
 import com.leroy.magportal.ui.models.picking.ShortPickingTaskData;
+import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.pages.picking.PickingContentPage;
 import com.leroy.magportal.ui.pages.picking.PickingPage;
 import com.leroy.magportal.ui.pages.picking.modal.SplitPickingModalStep1;
@@ -27,7 +28,7 @@ import com.leroy.magportal.ui.pages.picking.modal.SplitPickingModalStep2;
 import com.leroy.magportal.ui.pages.picking.modal.SuccessfullyCreatedAssemblyModal;
 import com.leroy.utils.ParserUtil;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -71,7 +72,7 @@ public class PickingTest extends WebBaseSteps {
         pickingTaskId = respPickingTasks.asJson().getItems().get(0).getTaskId();
     }
 
-    @AfterMethod
+    @AfterClass(enabled = true)
     private void cancelConfirmedOrder() throws Exception {
         if (orderId != null) {
             OrderClient orderClient = apiClientProvider.getOrderClient();
@@ -200,7 +201,7 @@ public class PickingTest extends WebBaseSteps {
         // Step 2
         step("Нажать на чекбокс в правом верхнем углу карточки товара");
         pickingContentPage.setSplitForProductCard(1, true)
-                .shouldSelectAllOptionIsSelected();
+                .checkSelectAllOptionIsSelected(true);
 
         // Step 3
         step("Нажать на кнопку Разделить");
@@ -279,7 +280,7 @@ public class PickingTest extends WebBaseSteps {
         // Step 2
         step("Нажать на чекбокс в правом верхнем углу карточки товара");
         pickingContentPage.setSplitForProductCard(1, true)
-                .shouldSelectAllOptionIsSelected();
+                .checkSelectAllOptionIsSelected(true);
 
         // Step 3
         step("Нажать на кнопку Разделить");
@@ -367,7 +368,7 @@ public class PickingTest extends WebBaseSteps {
         // Step 2
         step("Нажать на чекбокс в правом верхнем углу карточки товара");
         pickingContentPage.setSplitForProductCard(1, true)
-                .shouldSelectAllOptionIsSelected();
+                .checkSelectAllOptionIsSelected(true);
 
         // Step 3
         step("Нажать на кнопку Разделить");
@@ -410,7 +411,7 @@ public class PickingTest extends WebBaseSteps {
         // Step 2
         step("Нажать на 'Выбрать все'");
         pickingContentPage.setSelectAllOption(true)
-                .shouldSelectAllOptionIsSelected();
+                .checkSelectAllOptionIsSelected(true);
 
         // Step 3
         step("Нажать на кнопку Разделить");
@@ -567,6 +568,115 @@ public class PickingTest extends WebBaseSteps {
         step("Перейти в заказ, кликнув на ссылку в названии сборки");
         pickingContentPage.clickOrderLinkAndGoToOrderPage()
                 .shouldOrderStatusIs("ЧАСТИЧНО СОБРАН");
+    }
+
+    @Test(description = "C23408358 Сплит сборки с изменением количества товара")
+    public void testSplitAssemblyWithChangingProductQuantity() throws Exception {
+        if (orderId == null)
+            throw new AssertionError("C23185844 должен быть выполнен успешно");
+
+        // Test data
+        PickingConst.AssemblyType assemblyType = PickingConst.AssemblyType.SHOPPING_ROOM;
+        PickingPage pickingPage;
+        if (isStartFromScratch()) {
+            pickingPage = loginSelectShopAndGoTo(PickingPage.class);
+        } else {
+            new MenuPage().goToPage(PickingPage.class);
+            pickingPage = new PickingPage();
+        }
+        String assemblyNumber = pickingTaskId.substring(pickingTaskId.length() - 4);
+        String orderNumber = orderId.substring(orderId.length() - 4);
+        String fullNumber = assemblyNumber + " *" + orderNumber;
+        pickingPage.clickDocumentInLeftMenu(fullNumber);
+
+        // Step 1
+        step("Нажать на кнопку редактирования (карандаш) в нижней части экрана");
+        PickingContentPage pickingContentPage = new PickingContentPage();
+        PickingTaskData pickingTaskDataBefore = pickingContentPage.getPickingTaskData();
+        PickingTaskData newPickingTaskData = pickingTaskDataBefore.clone();
+        pickingContentPage.clickEditAssemblyButton();
+
+        // Step 2
+        step("Нажать на чекбокс в правом верхнем углу карточки товара");
+        pickingContentPage.setSplitForProductCard(2, true)
+                .checkSelectAllOptionIsSelected(false);
+
+        // Step 3
+        step("Нажать на кнопку Разделить");
+        PickingProductCardData movePickingProduct = newPickingTaskData.getProducts().get(1);
+        SplitPickingModalStep1.SplitProductCardData splitProductData = new SplitPickingModalStep1.SplitProductCardData(movePickingProduct);
+
+        SplitPickingModalStep1 splitPickingModalStep1 = pickingContentPage.clickSplitAssemblyButton()
+                .verifyRequiredElements()
+                .shouldContainsProducts(Collections.singletonList(splitProductData))
+                .shouldContinueButtonIsDisabled();
+
+        // Step 4
+        step("Выбрать зону сборки Торговый зал");
+        splitPickingModalStep1.selectAssemblyType(assemblyType)
+                .shouldContainsProducts(Collections.singletonList(splitProductData))
+                .shouldContinueButtonIsDisabled();
+
+        // Step 5
+        step("Нажать на кнопку редактирования (карандаш)");
+        splitPickingModalStep1.clickEditButton();
+
+        // Step 6
+        step("Ввести число меньшее, чем товара в сборке. Нажать на кнопку Сохранить");
+        int editQuantity = 1;
+        splitProductData.setWantToMoveQuantity(editQuantity);
+        splitProductData.setMoveToNewQuantity(editQuantity);
+        splitProductData.setRemainInOriginalQuantity(splitProductData.getOriginalAssemblyQuantity() - editQuantity);
+        splitPickingModalStep1.editWantToMoveQuantity(1, editQuantity)
+                .clickSaveButton()
+                .shouldContainsProducts(Collections.singletonList(splitProductData));
+
+        // Step 7
+        step("Нажать чекбокс Собрать из торгового зала (LS)");
+        splitPickingModalStep1.selectConfirmCheckBox(true)
+                .shouldContinueButtonIsEnabled();
+
+        // Step 8
+        step("Нажать кнопку Продолжить");
+        SplitPickingModalStep2 splitPickingModalStep2 = splitPickingModalStep1.clickContinueButton()
+                .verifyRequiredElements()
+                .shouldIamResponsibleForAssemblyOptionSelected();
+
+        // Step 9
+        step("Заполнить комментарий и Нажать на кнопку Создать сборку");
+        String comment = RandomStringUtils.randomAlphabetic(15);
+        splitPickingModalStep2.enterComment(comment);
+        SuccessfullyCreatedAssemblyModal successfullyCreatedAssemblyModal = splitPickingModalStep2
+                .clickCreateAssemblyButton()
+                .verifyRequiredElements()
+                .shouldOrderNumberIs(orderNumber);
+        newPickingTaskData.setStatus(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal());
+        newPickingTaskData.setNumber(successfullyCreatedAssemblyModal.getAssemblyNumber());
+        newPickingTaskData.setAssemblyType(assemblyType);
+        newPickingTaskData.setCreationDate(null);
+        newPickingTaskData.setProducts(Collections.singletonList(movePickingProduct));
+        movePickingProduct.decreaseOrderedQuantity(editQuantity);
+
+        // Step 10
+        step("Нажать кнопку Перейти к исходной сборке");
+        pickingContentPage = successfullyCreatedAssemblyModal.clickRemainOldTaskButton();
+        pickingTaskDataBefore.getProducts().get(1).decreaseOrderedQuantity(editQuantity);
+        pickingContentPage.shouldPickingTaskDataIs(pickingTaskDataBefore);
+
+        // Step 11
+        step("Перейти к новой сборке");
+        pickingContentPage.enterOrderNumberInSearchFld(newPickingTaskData.getOrderLinkNumber());
+        pickingContentPage.clickDocumentInLeftMenu(newPickingTaskData.getNumber());
+
+        pickingContentPage.shouldPickingTaskDataIs(newPickingTaskData);
+
+        ShortPickingTaskData shortPickingTaskData = newPickingTaskData
+                .getShortData();
+        shortPickingTaskData.setCollector("Я");
+        pickingContentPage.shouldDocumentListContainsThis(shortPickingTaskData);
+
+        pickingContentPage.switchToCommentTab()
+                .shouldCommentIs(comment);
     }
 
 }

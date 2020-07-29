@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends IDataWithNumberAndStatus>
+public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends IDataWithNumberAndStatus<D>>
         extends MagPortalBasePage {
 
     @Override
@@ -118,8 +118,7 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
                 d -> d.getNumber().equals(expectedDocument.getNumber())).collect(Collectors.toList());
         anAssert.isEquals(actualDocuments.size(), 1,
                 "Документ с номером " + expectedDocument.getNumber() + " не найден");
-        anAssert.isEquals(actualDocuments.get(0), expectedDocument,
-                "Неверная информация в документе");
+        actualDocuments.get(0).assertEqualsNotNullExpectedFields(expectedDocument);
     }
 
     @Step("Проверить, что в списке документов слева на текущей странице отображается {value} документов")

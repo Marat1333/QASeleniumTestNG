@@ -27,13 +27,7 @@ public class PickingTaskData {
     public List<SplitPickingModalStep1.SplitProductCardData> getSplitPickingProductDataList() {
         List<SplitPickingModalStep1.SplitProductCardData > splitProductCardDataList = new ArrayList<>();
         for (PickingProductCardData productCardData : products) {
-            SplitPickingModalStep1.SplitProductCardData splitProduct = new SplitPickingModalStep1.SplitProductCardData();
-            splitProduct.setLmCode(productCardData.getLmCode());
-            splitProduct.setTitle(productCardData.getTitle());
-            splitProduct.setOriginalAssemblyQuantity(productCardData.getOrderedQuantity());
-            splitProduct.setWantToMoveQuantity(productCardData.getOrderedQuantity());
-            splitProduct.setMoveToNewQuantity(productCardData.getOrderedQuantity());
-            splitProduct.setRemainInOriginalQuantity(0);
+            SplitPickingModalStep1.SplitProductCardData splitProduct = new SplitPickingModalStep1.SplitProductCardData(productCardData);
             splitProductCardDataList.add(splitProduct);
         }
         return splitProductCardDataList;
@@ -60,7 +54,14 @@ public class PickingTaskData {
         shortPickingTaskData.setStatus(status);
         shortPickingTaskData.setCreationDate(creationDate);
         shortPickingTaskData.setWeight(products.get(0).getWeight());
-        shortPickingTaskData.setMaxSize(ParserUtil.strToDouble(products.get(0).getDimension().split(" ")[0]));
+        String[] dimension = products.get(0).getDimension().split(" ");
+        List<Double> dimensionDouble = new ArrayList<>();
+        for (String size : dimension) {
+            size = size.replaceAll("[^\\d+\\,\\-]", "");
+            if (!size.isEmpty())
+                dimensionDouble.add(ParserUtil.strToDouble(size));
+        }
+        shortPickingTaskData.setMaxSize(dimensionDouble.stream().max(Double::compare).get());
         shortPickingTaskData.setDepartments(Arrays.asList(products.get(0).getDepartment()));
         return shortPickingTaskData;
     }

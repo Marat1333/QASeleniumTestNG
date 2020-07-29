@@ -133,8 +133,9 @@ public class PickingContentPage extends PickingPage {
     // Verifications
 
     @Step("Проверить выбрана ли опция 'Выбрать все'")
-    public PickingContentPage shouldSelectAllOptionIsSelected() throws Exception {
-        anAssert.isTrue(selectAllChkBox.isChecked(), "Опция 'Выбрать все' должна быть выбрана");
+    public PickingContentPage checkSelectAllOptionIsSelected(boolean shouldBeSelected) throws Exception {
+        anAssert.isFalse(selectAllChkBox.isChecked() ^ shouldBeSelected,
+                "Опция 'Выбрать все' " + (shouldBeSelected ? "" : "не") + " должна быть выбрана");
         return this;
     }
 
