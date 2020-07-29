@@ -7,27 +7,32 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.work.print_tags.data.ProductTagData;
 import com.leroy.magmobile.ui.pages.work.print_tags.modal.ConfirmSessionExitModalPage;
+import com.leroy.magmobile.ui.pages.work.print_tags.modal.EditTagModalPage;
 import com.leroy.magmobile.ui.pages.work.print_tags.widgets.ProductWidget;
 import io.qameta.allure.Step;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TagsListPage extends CommonMagMobilePage {
     @AppFindBy(accessibilityId = "Button")
     Button backBtn;
 
     @AppFindBy(accessibilityId = "ScreenTitle")
-    Element createSessionTimeStamp;
+    Element header;
 
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"ScreenHeader\"]/android.view.ViewGroup[1]")
     Button deleteSessionBtn;
 
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"ScreenHeader\"]/android.view.ViewGroup[2]")
-    Button switchToMassiveEditorModeBtn;
+    Button switchToGroupEditorModeBtn;
 
     AndroidScrollView<ProductTagData> productsScrollView = new AndroidScrollView<>(driver,
             AndroidScrollView.TYPICAL_LOCATOR, ".//android.view.ViewGroup[@content-desc=\"lmCode\"]/..",
             ProductWidget.class);
+
+    @AppFindBy(xpath = "//android.widget.ScrollView//android.widget.ScrollView", metaName = "Основная прокручиваемая область страницы")
+    AndroidScrollView<String> mainScrollView;
 
     @AppFindBy(text = "ТОВАР")
     Button addProductBtn;
@@ -39,15 +44,31 @@ public class TagsListPage extends CommonMagMobilePage {
             "/following-sibling::android.widget.TextView")
     Button printerNameBtn;
 
+    @AppFindBy(text = "ИЗМЕНИТЬ ФОРМАТЫ")
+    Button changeFormatBtn;
+
+    @AppFindBy(text = "ВЫБРАТЬ ВСЕ")
+    Button choseAllProductsBtn;
 
     @Override
     protected void waitForPageIsLoaded() {
-        createSessionTimeStamp.waitForVisibility();
+        header.waitForVisibility();
         deleteSessionBtn.waitForVisibility();
+        waitUntilProgressBarIsInvisible(short_timeout);
+    }
+
+    public String getCurrentPrinterName(){
+        return printerNameBtn.getText();
+    }
+
+    @Step("Напечатать ценники")
+    public void printTags() {
+        printSession.click();
+        printSession.waitForInvisibility();
     }
 
     @Step("Перейти на страницу выбора принтера")
-    public PrinterSelectorPage goToPrinterSelectorPage(){
+    public PrinterSelectorPage goToPrinterSelectorPage() {
         printerNameBtn.click();
         return new PrinterSelectorPage();
     }
@@ -59,19 +80,61 @@ public class TagsListPage extends CommonMagMobilePage {
     }
 
     @Step("Добавить товар в сессию")
-    public PrintTagsScannerPage addProductToSession(){
+    public PrintTagsScannerPage addProductToSession() {
         addProductBtn.click();
         return new PrintTagsScannerPage();
     }
 
+    @Step("Открыть модальное окно редактирования формата и кол-ва у первого товара")
+    public EditTagModalPage callEditModalToProductByIndex(int index) throws Exception{
+        productsScrollView.clickElemByIndex(index);
+        return new EditTagModalPage();
+    }
+
+    @Step("Вызвать модалку редактирования для товара с кодом {lmCode}")
+    public EditTagModalPage callEditModal(String lmCode) {
+        Element productCard = E("ЛМ " + lmCode);
+        if (!productCard.isVisible()) {
+            mainScrollView.scrollDownToElement(productCard);
+        }
+        productCard.click();
+        return new EditTagModalPage();
+    }
+
+    @Step("Переключится на режим массового редактирования")
+    public TagsListPage switchToGroupEditorMode() {
+        switchToGroupEditorModeBtn.click();
+        changeFormatBtn.waitForVisibility();
+        choseAllProductsBtn.waitForVisibility();
+        return this;
+    }
+
+    @Step("Выбрать товары для редактирования и открыть модалку редактирования")
+    public EditTagModalPage choseProductsAndOpenEditModal(String... lmCodes) {
+        String chosenProductCount;
+        Element product;
+        for (String eachLm : lmCodes) {
+            chosenProductCount = header.getText();
+            product = E("ЛМ " + eachLm);
+            if (!product.isVisible()) {
+                mainScrollView.scrollDownToElement(product);
+            }
+            product.click();
+            header.waitUntilTextIsChanged(chosenProductCount);
+            mainScrollView.scrollToBeginning();
+        }
+        changeFormatBtn.click();
+        return new EditTagModalPage();
+    }
+
     @Step("Проверить, что корректно выбран принтер")
-    public TagsListPage shouldPrinterIsCorrect(String printerDepartmentName){
+    public TagsListPage shouldPrinterIsCorrect(String printerDepartmentName) {
         anAssert.isElementTextContains(printerNameBtn, printerDepartmentName);
         return this;
     }
 
     @Step("Проверить, что список содержит все переданные товары")
-    public TagsListPage shouldProductsAreCorrect(String...lmCodes) {
+    public TagsListPage shouldProductsAreCorrect(String... lmCodes) {
         List<ProductTagData> productTagsList = productsScrollView.getFullDataList();
         for (int i = 0; i < productTagsList.size(); i++) {
             softAssert.isEquals(productTagsList.get(i).getLmCode(), lmCodes[i], "lmCode");
@@ -81,14 +144,22 @@ public class TagsListPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что кол-во товаров равно {count}")
-    public TagsListPage shouldProductCountIsCorrect(int count){
+    public TagsListPage shouldProductCountIsCorrect(int count) {
         List<ProductTagData> productTagsList = productsScrollView.getFullDataList();
         anAssert.isEquals(productTagsList.size(), count, "products count");
         return this;
     }
 
-    public void verifyRequiredElements(){
-        softAssert.areElementsVisible(backBtn, createSessionTimeStamp, deleteSessionBtn, switchToMassiveEditorModeBtn);
+    @Step("Проверить, что список не содержит товара")
+    public TagsListPage shouldProductDeleted(String lmCode) {
+        List<ProductTagData> productTagsList = productsScrollView.getFullDataList();
+        List<String> uiLmCodes = productTagsList.stream().map(ProductTagData::getLmCode).collect(Collectors.toList());
+        anAssert.isFalse(uiLmCodes.contains(lmCode), "в списке содержится товар " + lmCode);
+        return this;
+    }
+
+    public void verifyRequiredElements() {
+        softAssert.areElementsVisible(backBtn, header, deleteSessionBtn, switchToGroupEditorModeBtn);
         softAssert.verifyAll();
     }
 }

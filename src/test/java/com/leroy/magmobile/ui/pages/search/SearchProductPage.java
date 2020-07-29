@@ -99,6 +99,11 @@ public class SearchProductPage extends CommonMagMobilePage {
 
     // ---------------- Action Steps -------------------------//
 
+    @Step("Перейти назад")
+    public void returnBack(){
+        backBtn.click();
+    }
+
     @Step("Перейти на главную страницу 'Документы продажи'")
     public MainProductAndServicesPage backToSalesPage() {
         backBtn.click();
