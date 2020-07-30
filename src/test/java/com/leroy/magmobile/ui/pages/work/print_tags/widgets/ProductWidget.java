@@ -21,6 +21,15 @@ public class ProductWidget extends CardWidget<ProductTagData> {
     @AppFindBy(xpath = ".//android.view.ViewGroup[@content-desc=\"barCode\"]/following-sibling::android.view.ViewGroup[1]")
     Element anchor;
 
+    @AppFindBy(accessibilityId = "count46")
+    Element smallCountLbl;
+
+    @AppFindBy(accessibilityId = "count610")
+    Element middleCountLbl;
+
+    @AppFindBy(accessibilityId = "count1018")
+    Element bigCountLbl;
+
     public ProductWidget(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
     }
@@ -29,8 +38,21 @@ public class ProductWidget extends CardWidget<ProductTagData> {
     public ProductTagData collectDataFromPage(String pageSource) {
         ProductTagData data = new ProductTagData();
         data.setLmCode(ParserUtil.strWithOnlyDigits(lmCode.getText()));
-        data.setBarCode(ParserUtil.strWithOnlyDigits(barCode.getText()));
-        data.setTitle(title.getText());
+        if (smallCountLbl.isVisible()){
+            data.setSmallSizeCount(Integer.parseInt(ParserUtil.strWithOnlyDigits(smallCountLbl.getText())));
+        }else {
+            data.setSmallSizeCount(0);
+        }
+        if (middleCountLbl.isVisible()){
+            data.setMiddleSizeCount(Integer.parseInt(ParserUtil.strWithOnlyDigits(middleCountLbl.getText())));
+        }else {
+            data.setMiddleSizeCount(0);
+        }
+        if (bigCountLbl.isVisible()){
+            data.setBigSizeCount(Integer.parseInt(ParserUtil.strWithOnlyDigits(bigCountLbl.getText())));
+        }else {
+            data.setBigSizeCount(0);
+        }
         return data;
     }
 

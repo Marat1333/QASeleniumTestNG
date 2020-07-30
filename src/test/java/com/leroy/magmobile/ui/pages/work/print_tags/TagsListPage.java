@@ -9,8 +9,10 @@ import com.leroy.magmobile.ui.pages.work.print_tags.data.ProductTagData;
 import com.leroy.magmobile.ui.pages.work.print_tags.modal.ConfirmSessionExitModalPage;
 import com.leroy.magmobile.ui.pages.work.print_tags.modal.EditTagModalPage;
 import com.leroy.magmobile.ui.pages.work.print_tags.widgets.ProductWidget;
+import com.leroy.utils.DateTimeUtil;
 import io.qameta.allure.Step;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,6 +57,10 @@ public class TagsListPage extends CommonMagMobilePage {
         header.waitForVisibility();
         deleteSessionBtn.waitForVisibility();
         waitUntilProgressBarIsInvisible(short_timeout);
+    }
+
+    public LocalDateTime getSessionCreationTimeStamp(){
+        return DateTimeUtil.strToLocalDateTime(header.getText(),DateTimeUtil.DD_MMMM_HH_MM);
     }
 
     public String getCurrentPrinterName(){
@@ -138,6 +144,16 @@ public class TagsListPage extends CommonMagMobilePage {
         List<ProductTagData> productTagsList = productsScrollView.getFullDataList();
         for (int i = 0; i < productTagsList.size(); i++) {
             softAssert.isEquals(productTagsList.get(i).getLmCode(), lmCodes[i], "lmCode");
+        }
+        softAssert.verifyAll();
+        return this;
+    }
+
+    @Step("Проверить, что список для всех товаров указано правильное кол-во ценников")
+    public TagsListPage shouldProductTagsHasCorrectSizesAndQuantity(ProductTagData...userTagData) {
+        List<ProductTagData> uiProductTagsList = productsScrollView.getFullDataList();
+        for (int i = 0; i < userTagData.length; i++) {
+            softAssert.isEquals(uiProductTagsList.get(i), userTagData[i], "sizes or quantity mismatch");
         }
         softAssert.verifyAll();
         return this;
