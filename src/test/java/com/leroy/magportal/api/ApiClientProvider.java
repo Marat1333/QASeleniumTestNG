@@ -75,7 +75,6 @@ public class ApiClientProvider {
     @Inject
     private Provider<MagPortalCatalogProductClient> magPortalCatalogProductClientProvider;
 
-
     private UserSessionData userSessionData() {
         return ContextProvider.getContext().getUserSessionData();
     }

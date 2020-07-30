@@ -34,7 +34,7 @@ import static com.leroy.magportal.ui.constants.OrderConst.DeliveryType.DELIVERY_
 import static com.leroy.magportal.ui.constants.OrderConst.DeliveryType.PICKUP;
 import static com.leroy.magportal.ui.constants.OrderConst.Status.*;
 
-public class OrderTest extends WebBaseSteps {
+public class OrderSearchTest extends WebBaseSteps {
 
     @Override
     protected boolean isNeedAccessToken() {

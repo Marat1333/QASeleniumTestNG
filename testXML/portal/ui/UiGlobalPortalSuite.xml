@@ -6,7 +6,7 @@
         <suite-file path="areas/ClientSuite.xml"/>
         <suite-file path="areas/EstimateSuite.xml"/>
         <suite-file path="areas/CartSuite.xml"/>
-        <suite-file path="areas/OrderSearchSuite.xml"/>
+        <suite-file path="areas/OrderSuite.xml"/>
         <suite-file path="areas/ProductCardSuite.xml"/>
         <suite-file path="areas/SearchSuite.xml"/>
     </suite-files>

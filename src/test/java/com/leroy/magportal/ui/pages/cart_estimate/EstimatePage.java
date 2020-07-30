@@ -139,7 +139,6 @@ public class EstimatePage extends CartEstimatePage {
     public EstimatePage clickCreateEstimateButton() {
         createEstimateBtn.click();
         searchProductFld.waitForVisibility();
-        addCustomerBtnLbl.waitForVisibility();
         createBtn.waitForVisibility();
         return this;
     }
@@ -148,7 +147,7 @@ public class EstimatePage extends CartEstimatePage {
     @Step("Нажимаем кнопку 'Создать'")
     public <T extends MagPortalBasePage> T clickCreateButton() {
         createBtn.click();
-        if (selectedCustomerCard.isVisible())
+        if (customerSearchForm.isCustomerSelected())
             return (T) new SubmittedEstimateModal();
         else
             return (T) this;
@@ -206,12 +205,11 @@ public class EstimatePage extends CartEstimatePage {
     public EstimatePage verifyRequiredElements(PageState pageState) {
         if (pageState.equals(PageState.EMPTY)) {
             softAssert.isElementVisible(createEstimateBtn);
-            softAssert.isElementNotVisible(addCustomerBtnLbl);
             softAssert.isElementNotVisible(searchProductFld);
             softAssert.isElementNotVisible(createBtn);
             softAssert.isElementNotVisible(addDeliveryBtn);
         } else if (pageState.equals(PageState.CREATING_EMPTY)) {
-            softAssert.areElementsVisible(addCustomerBtnLbl, searchProductFld, createBtn, addDeliveryBtn);
+            softAssert.areElementsVisible(searchProductFld, createBtn, addDeliveryBtn);
             softAssert.isEquals(getDocumentNumber(), "", "Смета имеет номер");
         } else {
             throw new IllegalArgumentException("Неизвестное состояние страницы сметы");
@@ -231,8 +229,7 @@ public class EstimatePage extends CartEstimatePage {
 
     @Step("Убедиться, что смета имеет статус 'Преобразован', нет активных кнопок")
     public EstimatePage shouldEstimateHasTransformedStatus() {
-        softAssert.areElementsNotVisible(createBtn, addDeliveryBtn, trashBtn, transformToCartBtn, createCustomerBtn,
-                customerActionBtn, clearCustomerOptionBtn, editCustomerOptionBtn, searchCustomerOptionBtn);
+        softAssert.areElementsNotVisible(createBtn, addDeliveryBtn, trashBtn, transformToCartBtn);
         softAssert.isEquals(getDocumentStatus(), SalesDocumentsConst.States.TRANSFORMED.getUiVal().toUpperCase(),
                 "Неверный статус сметы");
         softAssert.verifyAll();
