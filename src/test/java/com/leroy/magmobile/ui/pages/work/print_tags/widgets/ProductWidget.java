@@ -38,19 +38,19 @@ public class ProductWidget extends CardWidget<ProductTagData> {
     public ProductTagData collectDataFromPage(String pageSource) {
         ProductTagData data = new ProductTagData();
         data.setLmCode(ParserUtil.strWithOnlyDigits(lmCode.getText()));
-        if (smallCountLbl.isVisible()){
+        if (smallCountLbl.isVisible()) {
             data.setSmallSizeCount(Integer.parseInt(ParserUtil.strWithOnlyDigits(smallCountLbl.getText())));
-        }else {
+        } else {
             data.setSmallSizeCount(0);
         }
-        if (middleCountLbl.isVisible()){
+        if (middleCountLbl.isVisible()) {
             data.setMiddleSizeCount(Integer.parseInt(ParserUtil.strWithOnlyDigits(middleCountLbl.getText())));
-        }else {
+        } else {
             data.setMiddleSizeCount(0);
         }
-        if (bigCountLbl.isVisible()){
+        if (bigCountLbl.isVisible()) {
             data.setBigSizeCount(Integer.parseInt(ParserUtil.strWithOnlyDigits(bigCountLbl.getText())));
-        }else {
+        } else {
             data.setBigSizeCount(0);
         }
         return data;
@@ -58,6 +58,6 @@ public class ProductWidget extends CardWidget<ProductTagData> {
 
     @Override
     public boolean isFullyVisible(String pageSource) {
-        return lmCode.isVisible() && anchor.isVisible();
+        return lmCode.isVisible() && (smallCountLbl.isVisible() || middleCountLbl.isVisible() || bigCountLbl.isVisible());
     }
 }

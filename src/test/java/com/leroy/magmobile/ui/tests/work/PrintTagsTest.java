@@ -16,8 +16,8 @@ import com.leroy.magmobile.ui.pages.work.print_tags.*;
 import com.leroy.magmobile.ui.pages.work.print_tags.data.ProductTagData;
 import com.leroy.magmobile.ui.pages.work.print_tags.enums.Format;
 import com.leroy.magmobile.ui.pages.work.print_tags.modal.*;
-import com.leroy.magmobile.ui.tests.sales.MultiFunctionalButtonTest;
 import io.qameta.allure.Step;
+import org.apache.commons.lang.SerializationUtils;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
@@ -36,20 +36,22 @@ public class PrintTagsTest extends AppBaseSteps {
     private PrintPriceClient printPriceClient;
 
     private TagsListPage loginAndCreateSession() throws Exception {
+        return loginAndCreateSession(catalogSearchClient.getRandomProduct().getLmCode());
+    }
+
+    private TagsListPage loginAndCreateSession(String lmCode) throws Exception {
         WorkPage workPage = loginAndGoTo(WorkPage.class);
         workPage.goToSessionsListPage();
-        return createSession();
+        return createSession(lmCode);
     }
 
     private TagsListPage createSession(String lmCode) {
         SessionsListPage sessionsListPage = new SessionsListPage();
         sessionsListPage.createNewSession();
         PrintTagsScannerPage scannerPage = new PrintTagsScannerPage();
-        scannerPage.verifyRequiredElements();
         SearchProductPage searchProductPage = scannerPage.navigateToSearchProductPage();
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
         EditTagModalPage editTagModalPage = new EditTagModalPage();
-        editTagModalPage.shouldDeleteBtnHasCorrectCondition(false);
         editTagModalPage.addProductToPrintSession();
         return new TagsListPage();
     }
@@ -331,7 +333,7 @@ public class PrintTagsTest extends AppBaseSteps {
         //
 
         tagsListPage.switchToGroupEditorMode();
-        editTagModalPage = tagsListPage.choseProductsAndOpenEditModal(lmCodesList.get(0));
+        editTagModalPage = tagsListPage.choseProductsAndOpenGroupEditModal(lmCodesList.get(0));
         editTagModalPage.deleteProductFromSession();
         tagsListPage.shouldProductDeleted(lmCodesList.get(0));
         lmCodesList.remove(0);
@@ -495,13 +497,13 @@ public class PrintTagsTest extends AppBaseSteps {
         step("редактирование на странице со списком ценников");
         editTagModalPage = tagsListPage.callEditModal(lmCode);
         editTagModalPage.shouldSizeValuesAreCorrect(tagData);
-        tagData = editTagModalPage.addProductToPrintSession(3,2,1);
+        tagData = editTagModalPage.addProductToPrintSession(3, 2, 1);
         tagsListPage.shouldProductTagsHasCorrectSizesAndQuantity(tagData);
 
         //Step 3
         step("ввести кол-во >40 ценников");
         editTagModalPage = tagsListPage.callEditModal(lmCode);
-        editTagModalPage.addProductToPrintSession(41, 41,45);
+        editTagModalPage.addProductToPrintSession(41, 41, 45);
         editTagModalPage.shouldWrongCountControlIsVisible(true, true, true);
         editTagModalPage.verifyRequiredElements();
 
@@ -521,7 +523,7 @@ public class PrintTagsTest extends AppBaseSteps {
         step("перевести чек-боксы в disabled");
         editTagModalPage.selectCheckBoxes(Format.SMALL, Format.MIDDLE, Format.BIG);
         editTagModalPage.shouldSizeValuesAreCorrect(0, 0, 0);
-        editTagModalPage.addProductToPrintSession(0,0,0);
+        editTagModalPage.addProductToPrintSession(0, 0, 0);
         editTagModalPage.verifyRequiredElements();
 
         //Step 7
@@ -531,7 +533,7 @@ public class PrintTagsTest extends AppBaseSteps {
 
         //Step 8
         step("редактирование через карточку уже добавленного товара");
-        tagData = editTagModalPage.addProductToPrintSession(3, 2,2);
+        tagData = editTagModalPage.addProductToPrintSession(3, 2, 2);
         tagsListPage = new TagsListPage();
         tagsListPage.addProductToSession();
         scannerPage.navigateToSearchProductPage();
@@ -557,16 +559,114 @@ public class PrintTagsTest extends AppBaseSteps {
         ActionWithProductModalPage actionWithProductModalPage = new ActionWithProductModalPage();
         actionWithProductModalPage.printTag();
         editTagModalPage.shouldSizeValuesAreCorrect(tagData);
-        tagData = editTagModalPage.addProductToPrintSession(6,6,6);
+        tagData = editTagModalPage.addProductToPrintSession(6, 6, 6);
         tagsListPage = new TagsListPage();
         tagsListPage.shouldProductTagsHasCorrectSizesAndQuantity(tagData);
         sessionCreationTimeCheck = tagsListPage.getSessionCreationTimeStamp();
-        anAssert().isEquals(sessionCreationTime, sessionCreationTimeCheck,"creation time");
+        anAssert().isEquals(sessionCreationTime, sessionCreationTimeCheck, "creation time");
     }
 
     @Test(description = "C23389200 массовое редактирование формата ценников")
     public void testTagsGroupEdition() throws Exception {
+        int productsCount = 5;
+        List<ProductItemData> randomProducts = catalogSearchClient.getRandomUniqueProductsWithTitles(productsCount);
+        List<String> lmCodesList = randomProducts.stream().map(ProductItemData::getLmCode).collect(Collectors.toList());
+        List<ProductTagData> tagDataList = new ArrayList<>();
+        ProductTagData[] tagDataArray;
+        ProductTagData productTagData;
 
+        //Pre-conditions
+        WorkPage workPage = loginAndGoTo(WorkPage.class);
+        SessionsListPage sessionsListPage = workPage.goToSessionsListPage();
+        sessionsListPage.createNewSession();
+        PrintTagsScannerPage scannerPage = new PrintTagsScannerPage();
+        SearchProductPage searchProductPage = scannerPage.navigateToSearchProductPage();
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCodesList.get(0));
+        EditTagModalPage editTagModalPage = new EditTagModalPage();
+
+        tagDataList.add(editTagModalPage.addProductToPrintSession());
+        tagDataList.addAll(addUniqueProductsToSessionByManualSearch(lmCodesList.subList(1, lmCodesList.size())));
+        tagDataArray = new ProductTagData[tagDataList.size()];
+
+        TagsListPage tagsListPage = new TagsListPage();
+        editTagModalPage = tagsListPage.callEditModal(lmCodesList.get(2));
+        tagDataList.set(2, editTagModalPage.addProductToPrintSession(1, 0, 0));
+        tagsListPage = new TagsListPage();
+        tagsListPage.callEditModal(lmCodesList.get(3));
+        tagDataList.set(3,editTagModalPage.addProductToPrintSession(0, 2, 0));
+        tagsListPage = new TagsListPage();
+        tagsListPage.callEditModal(lmCodesList.get(4));
+        tagDataList.set(4, editTagModalPage.addProductToPrintSession(3, 2, 2));
+
+        //Step 1
+        step("проверить вид модалки группового редактирования при выборе 1 товара");
+        tagsListPage.switchToGroupEditorMode();
+        tagsListPage.choseProductsAndOpenGroupEditModal(lmCodesList.get(0));
+        editTagModalPage.shouldDeleteBtnHasCorrectCondition(true);
+        editTagModalPage.closeModal();
+
+        //Step 2
+        step("проверить вид модалки группового редактирования при выборе >1 товара");
+        tagsListPage.choseProductsAndOpenGroupEditModal(lmCodesList.get(1));
+        /*minor bug https://jira.lmru.tech/browse/LFRONT-3640
+        editTagModalPage.shouldDeleteBtnHasCorrectCondition(false);*/
+        editTagModalPage.closeModal();
+
+        //Step 3
+        step("выбрать 2 товара с разными форматами и открыть модалку гр. редактирования");
+        editTagModalPage = tagsListPage.choseProductsAndOpenGroupEditModal(lmCodesList.get(1), lmCodesList.get(3));
+        editTagModalPage.shouldCheckBoxesHasCorrectCondition(false, false, false);
+        editTagModalPage.shouldSizeValuesAreCorrect(0, 0, 0);
+        editTagModalPage.closeModal();
+
+        //Step 4
+        step("выбрать 2 товара с разным кол-вом, но одинаковыми форматами и открыть модалку гр. редактирования");
+        editTagModalPage = tagsListPage.choseProductsAndOpenGroupEditModal(lmCodesList.get(2), lmCodesList.get(3));
+        editTagModalPage.shouldCheckBoxesHasCorrectCondition(false, false, false);
+        editTagModalPage.shouldSizeValuesAreCorrect(0, 0, 0);
+        editTagModalPage.closeModal();
+
+        //Step 5
+        step("выбрать 2 товара с одинаковым кол-вом и форматами, открыть модалку гр. редактирования\n" +
+                "добавить им 1 формат с кол-вом, соответствующим одному из форматов последнего товара");
+        editTagModalPage = tagsListPage.choseProductsAndOpenGroupEditModal(lmCodesList.get(1), lmCodesList.get(2));
+        editTagModalPage.shouldCheckBoxesHasCorrectCondition(true, false, false);
+        editTagModalPage.shouldSizeValuesAreCorrect(3, 0, 0);
+        ProductTagData tmpTagData = editTagModalPage.editSizesAndQuantity(3, 2,0);
+        editTagModalPage.confirm();
+
+        tmpTagData.setLmCode(lmCodesList.get(0));
+        tagDataList.set(0, tmpTagData);
+        productTagData = (ProductTagData) SerializationUtils.clone(tmpTagData);
+        productTagData.setLmCode(lmCodesList.get(1));
+        tagDataList.set(1, productTagData);
+
+        tagDataArray = tagDataList.toArray(tagDataArray);
+        tagsListPage = new TagsListPage();
+        tagsListPage.shouldProductTagsHasCorrectSizesAndQuantity(tagDataArray);
+        tagsListPage.switchToGroupEditorMode();
+
+        //Step 6
+        step("отредактировать 2 товара:\n" +
+                "1. товар со всеми форматами\n" +
+                "2. товар с 1 форматом и тем же кол-вом конкретного формата, что и у первого товара");
+        editTagModalPage = tagsListPage.choseProductsAndOpenGroupEditModal(lmCodesList.get(0),lmCodesList.get(1),lmCodesList.get(4));
+        editTagModalPage.shouldCheckBoxesHasCorrectCondition(true, true, false);
+        editTagModalPage.shouldSizeValuesAreCorrect(3, 2, 0);
+        editTagModalPage.closeModal();
+
+        //Step 7
+        step("выбрать все товары в групповом редактировании и отредактировать их");
+        editTagModalPage = tagsListPage.choseAllProductsAndCallEditModal();
+        tmpTagData = editTagModalPage.editSizesAndQuantity(5,5,5);
+        editTagModalPage.confirm();
+        for (int i=0;i< tagDataArray.length;i++) {
+            ProductTagData data = (ProductTagData) SerializationUtils.clone(tmpTagData);
+            data.setLmCode(lmCodesList.get(i));
+            tagDataArray[i] = data;
+        }
+        tagsListPage = new TagsListPage();
+        tagsListPage.shouldProductTagsHasCorrectSizesAndQuantity(tagDataArray);
     }
 
 }

@@ -1,7 +1,6 @@
 package com.leroy.magmobile.ui.pages.work.print_tags.modal;
 
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.annotations.Form;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
@@ -105,7 +104,7 @@ public class EditTagModalPage extends CommonMagMobilePage {
     }
 
     @Step("Нажать на кнопку подтвердить")
-    public void confirm(){
+    public void confirm() {
         addProductBtn.click();
     }
 
@@ -116,13 +115,19 @@ public class EditTagModalPage extends CommonMagMobilePage {
 
     @Step("Добавить товар в сессию печати ценников")
     public ProductTagData addProductToPrintSession(int smallCount, int midCount, int bigCount) {
-        ProductTagData data = new ProductTagData();
+        ProductTagData data = editSizesAndQuantity(smallCount, midCount, bigCount);
         data.setLmCode(ParserUtil.strWithOnlyDigits(lmCode.getText()));
+        confirm();
+        return data;
+    }
+
+    @Step("Отредактировать форматы и кол-во в групповом редактировании")
+    public ProductTagData editSizesAndQuantity(int smallCount, int midCount, int bigCount) {
+        ProductTagData data = new ProductTagData();
         data.setSmallSizeCount(smallCount);
         data.setMiddleSizeCount(midCount);
         data.setBigSizeCount(bigCount);
         setSizesAndQuantity(smallCount, midCount, bigCount);
-        confirm();
         return data;
     }
 
@@ -139,17 +144,17 @@ public class EditTagModalPage extends CommonMagMobilePage {
     }
 
     @Step("нажать на чек-боксы")
-    public EditTagModalPage selectCheckBoxes(Format...formats){
-        for (Format each: formats){
+    public EditTagModalPage selectCheckBoxes(Format... formats) {
+        for (Format each : formats) {
             selectCheckBox(each);
         }
         return this;
     }
 
     @Step("Нажать на чек-бокс с размером")
-    public EditTagModalPage selectCheckBox(Format format){
+    public EditTagModalPage selectCheckBox(Format format) {
         String pageSource = getPageSource();
-        switch (format){
+        switch (format) {
             case SMALL:
                 smallSizeCheckBox.click();
                 break;
@@ -212,7 +217,7 @@ public class EditTagModalPage extends CommonMagMobilePage {
     @Step("Проверить состояния чек-боксов размеров")
     public EditTagModalPage shouldCheckBoxesHasCorrectCondition(boolean smallSizeEnabled,
                                                                 boolean middleSizeEnabled,
-                                                                boolean bigSizeEnabled) throws Exception{
+                                                                boolean bigSizeEnabled) throws Exception {
 
         if (smallSizeEnabled)
             anAssert.isTrue(smallSizeCheckBox.isChecked(), "small size checkbox unchecked");

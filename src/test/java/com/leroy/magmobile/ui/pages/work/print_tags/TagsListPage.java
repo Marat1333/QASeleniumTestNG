@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TagsListPage extends CommonMagMobilePage {
+    private final static int SWIPE_DEAD_ZONE_PERCENTAGE = 30;
+
     @AppFindBy(accessibilityId = "Button")
     Button backBtn;
 
@@ -54,6 +56,7 @@ public class TagsListPage extends CommonMagMobilePage {
 
     @Override
     protected void waitForPageIsLoaded() {
+        //TODO обработать ошибку при неполучении принтеров
         header.waitForVisibility();
         deleteSessionBtn.waitForVisibility();
         waitUntilProgressBarIsInvisible(short_timeout);
@@ -115,8 +118,25 @@ public class TagsListPage extends CommonMagMobilePage {
         return this;
     }
 
+    @Step("Выбрать товар")
+    public void clickOnProduct(String...lmCodes){
+        String chosenProductCount;
+        Element product;
+        for (String eachLm : lmCodes) {
+            chosenProductCount = header.getText();
+            product = E("ЛМ " + eachLm);
+            if (!product.isVisible()) {
+                mainScrollView.scrollDownToElement(product);
+            }
+            product.click();
+            header.waitUntilTextIsChanged(chosenProductCount);
+            mainScrollView.scrollToBeginning();
+        }
+        changeFormatBtn.click();
+    }
+
     @Step("Выбрать товары для редактирования и открыть модалку редактирования")
-    public EditTagModalPage choseProductsAndOpenEditModal(String... lmCodes) {
+    public EditTagModalPage choseProductsAndOpenGroupEditModal(String... lmCodes) {
         String chosenProductCount;
         Element product;
         for (String eachLm : lmCodes) {
@@ -133,6 +153,13 @@ public class TagsListPage extends CommonMagMobilePage {
         return new EditTagModalPage();
     }
 
+    @Step("Выбрать все товары в групповом редактировании и открыть модалку редактирования")
+    public EditTagModalPage choseAllProductsAndCallEditModal(){
+        choseAllProductsBtn.click();
+        changeFormatBtn.click();
+        return new EditTagModalPage();
+    }
+
     @Step("Проверить, что корректно выбран принтер")
     public TagsListPage shouldPrinterIsCorrect(String printerDepartmentName) {
         anAssert.isElementTextContains(printerNameBtn, printerDepartmentName);
@@ -141,6 +168,7 @@ public class TagsListPage extends CommonMagMobilePage {
 
     @Step("Проверить, что список содержит все переданные товары")
     public TagsListPage shouldProductsAreCorrect(String... lmCodes) {
+        productsScrollView.setSwipeDeadZonePercentage(SWIPE_DEAD_ZONE_PERCENTAGE);
         List<ProductTagData> productTagsList = productsScrollView.getFullDataList();
         for (int i = 0; i < productTagsList.size(); i++) {
             softAssert.isEquals(productTagsList.get(i).getLmCode(), lmCodes[i], "lmCode");
@@ -151,6 +179,7 @@ public class TagsListPage extends CommonMagMobilePage {
 
     @Step("Проверить, что список для всех товаров указано правильное кол-во ценников")
     public TagsListPage shouldProductTagsHasCorrectSizesAndQuantity(ProductTagData...userTagData) {
+        productsScrollView.setSwipeDeadZonePercentage(SWIPE_DEAD_ZONE_PERCENTAGE);
         List<ProductTagData> uiProductTagsList = productsScrollView.getFullDataList();
         for (int i = 0; i < userTagData.length; i++) {
             softAssert.isEquals(uiProductTagsList.get(i), userTagData[i], "sizes or quantity mismatch");
@@ -161,6 +190,7 @@ public class TagsListPage extends CommonMagMobilePage {
 
     @Step("Проверить, что кол-во товаров равно {count}")
     public TagsListPage shouldProductCountIsCorrect(int count) {
+        productsScrollView.setSwipeDeadZonePercentage(SWIPE_DEAD_ZONE_PERCENTAGE);
         List<ProductTagData> productTagsList = productsScrollView.getFullDataList();
         anAssert.isEquals(productTagsList.size(), count, "products count");
         return this;
@@ -168,6 +198,7 @@ public class TagsListPage extends CommonMagMobilePage {
 
     @Step("Проверить, что список не содержит товара")
     public TagsListPage shouldProductDeleted(String lmCode) {
+        productsScrollView.setSwipeDeadZonePercentage(SWIPE_DEAD_ZONE_PERCENTAGE);
         List<ProductTagData> productTagsList = productsScrollView.getFullDataList();
         List<String> uiLmCodes = productTagsList.stream().map(ProductTagData::getLmCode).collect(Collectors.toList());
         anAssert.isFalse(uiLmCodes.contains(lmCode), "в списке содержится товар " + lmCode);
