@@ -7,6 +7,7 @@ import com.leroy.magportal.ui.models.salesdoc.OrderWebData;
 import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.DiscountModal;
 import com.leroy.magportal.ui.pages.cart_estimate.widget.OrderPuzWidget;
+import com.leroy.magportal.ui.pages.orders.OrderDraftDeliveryWayPage;
 import com.leroy.magportal.ui.pages.orders.OrderDraftPage;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import com.leroy.utils.ParserUtil;
@@ -96,9 +97,9 @@ public class CartPage extends CartEstimatePage {
     }
 
     @Step("Нажать кнопку 'Оформить заказ'")
-    public OrderDraftPage clickConfirmButton() {
+    public OrderDraftDeliveryWayPage clickConfirmButton() {
         confirmBtn.click();
-        return new OrderDraftPage();
+        return new OrderDraftDeliveryWayPage();
     }
 
     // Verifications

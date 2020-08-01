@@ -166,6 +166,8 @@ public class CustomerSearchForm extends MagPortalBasePage {
     @Step("Проверить, что все необходимые элементы для добавления клиента доступны")
     public CustomerSearchForm shouldAddingNewUserAvailable() {
         softAssert.areElementsVisible(naturalPersonBtn, legalPersonBtn, customerPhoneSearchFld);
+        customerPhoneSearchFld.scrollTo();
+        customerPhoneSearchFld.click();
         softAssert.isEquals(customerPhoneSearchFld.getText(), "+7 (___) ___-__-__",
                 "Поле для заполнения телефона должно быть пустым");
         softAssert.verifyAll();

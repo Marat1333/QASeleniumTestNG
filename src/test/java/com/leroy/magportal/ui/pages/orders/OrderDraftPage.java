@@ -1,14 +1,19 @@
 package com.leroy.magportal.ui.pages.orders;
 
-import com.leroy.core.annotations.Form;
-import com.leroy.magportal.ui.pages.customers.form.CustomerSearchForm;
+import com.leroy.core.annotations.WebFindBy;
+import com.leroy.core.web_elements.general.Element;
+import io.qameta.allure.Step;
 
-public class OrderDraftPage extends OrderHeaderPage {
+public abstract class OrderDraftPage extends OrderHeaderPage {
 
-    @Form
-    CustomerSearchForm customerSearchForm;
+    @WebFindBy(xpath = "//div[contains(@class, 'OrderCreate__header')]//span[contains(@class, 'Status-container')]",
+            metaName = "Статус заказа")
+    Element documentStatus;
 
-    public CustomerSearchForm getCustomerSearchForm() {
-        return customerSearchForm;
+    @Step("Проверить, что статус заказа = {value}")
+    public OrderDraftPage shouldOrderStatusIs(String value) {
+        anAssert.isEquals(documentStatus.getText().toLowerCase(), value.toLowerCase(), "Неверный статусс заказа");
+        return this;
     }
+
 }

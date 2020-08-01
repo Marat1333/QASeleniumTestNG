@@ -1,5 +1,7 @@
 package com.leroy.magportal.ui.models.customers;
 
+import com.leroy.core.ContextProvider;
+import com.leroy.core.asserts.SoftAssertWrapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -37,5 +39,22 @@ public class SimpleCustomerData {
 
     public String getSecondPartCardNumber() {
         return cardNumber.substring(7);
+    }
+
+    public void assertEqualsNotNullExpectedFields(SimpleCustomerData expectedData) {
+        SoftAssertWrapper softAssert = ContextProvider.getContext().getSoftAssert();
+        if (expectedData.getName() != null)
+            softAssert.isEquals(this.getName(), expectedData.getName(),
+                    "Неверное имя клиента");
+        if (expectedData.getEmail() != null)
+            softAssert.isEquals(this.getEmail(), expectedData.getEmail(),
+                    "Неверный email клиента");
+        if (expectedData.getCardNumber() != null)
+            softAssert.isEquals(this.getCardNumber(), expectedData.getCardNumber(),
+                    "Неверный номер карточки клиента");
+        if (expectedData.getPhoneNumber() != null)
+            softAssert.isEquals(this.getPhoneNumber(), expectedData.getPhoneNumber(),
+                    "Неверный номер телефона клиента");
+        softAssert.verifyAll();
     }
 }

@@ -1,7 +1,12 @@
 package com.leroy.magportal.ui.models.salesdoc;
 
 
+import com.leroy.constants.sales.SalesDocumentsConst;
+import com.leroy.core.ContextProvider;
+import com.leroy.core.asserts.SoftAssertWrapper;
+import com.leroy.magportal.ui.constants.OrderConst;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
+import com.leroy.utils.DateTimeUtil;
 import lombok.Data;
 
 import java.util.List;
@@ -15,8 +20,12 @@ public class SalesDocWebData {
     private SimpleCustomerData client;
     private List<OrderWebData> orders;
 
+    // Order Details
+    private String pinCode;
+    private SalesDocumentsConst.GiveAwayPoints deliveryType;
+
     public boolean isDocumentContainsProduct(String lmCode) {
-        for (OrderWebData orderWebData  : orders) {
+        for (OrderWebData orderWebData : orders) {
             for (ProductOrderCardWebData productOrderCardWebData : orderWebData.getProductCardDataList()) {
                 if (productOrderCardWebData.getLmCode().equals(lmCode))
                     return true;
@@ -24,4 +33,51 @@ public class SalesDocWebData {
         }
         return false;
     }
+
+    public ShortOrderDocWebData getShortOrderData() {
+        ShortOrderDocWebData shortOrderDocWebData = new ShortOrderDocWebData();
+        shortOrderDocWebData.setNumber(number);
+        shortOrderDocWebData.setStatus(status);
+        shortOrderDocWebData.setCreationDate(DateTimeUtil.strToLocalDateTime(creationDate, "dd MMM, HH:mm"));
+        shortOrderDocWebData.setDeliveryType(deliveryType.equals(SalesDocumentsConst.GiveAwayPoints.PICKUP)?
+                OrderConst.DeliveryType.PICKUP : OrderConst.DeliveryType.DELIVERY_TK); // todo
+        shortOrderDocWebData.setTotalPrice(orders.get(0).getTotalPrice());
+        shortOrderDocWebData.setCustomer(client.getName());
+        return shortOrderDocWebData;
+    }
+
+    public void assertEqualsNotNullExpectedFields(SalesDocWebData expectedData) {
+        SoftAssertWrapper softAssert = ContextProvider.getContext().getSoftAssert();
+        if (expectedData.getNumber() != null)
+            softAssert.isEquals(this.getNumber(), expectedData.getNumber(),
+                    "Неверный номер документа");
+        if (expectedData.getAuthorName() != null)
+            softAssert.isEquals(this.getAuthorName(), expectedData.getAuthorName(),
+                    "Неверный автора документа");
+        if (expectedData.getStatus() != null)
+            softAssert.isEquals(this.getStatus().toLowerCase(), expectedData.getStatus().toLowerCase(),
+                    "Неверный статус документа");
+        if (expectedData.getCreationDate() != null)
+            softAssert.isEquals(this.getCreationDate(), expectedData.getCreationDate(),
+                    "Неверная дата создания документа");
+        if (expectedData.getPinCode() != null)
+            softAssert.isEquals(this.getPinCode(), expectedData.getPinCode(),
+                    "Неверный PIN код документа");
+        if (expectedData.getDeliveryType() != null)
+            softAssert.isEquals(this.getDeliveryType(), expectedData.getDeliveryType(),
+                    "Неверный способ получения документа");
+        if (expectedData.getClient() != null)
+            this.getClient().assertEqualsNotNullExpectedFields(expectedData.getClient());
+        if (expectedData.getOrders() != null) {
+            softAssert.isEquals(this.getOrders().size(), expectedData.getOrders().size(),
+                    "Неверное кол-во заказов в документе");
+            softAssert.verifyAll();
+            for (int i = 0; i < expectedData.getOrders().size(); i++) {
+                this.getOrders().get(i).assertEqualsNotNullExpectedFields(expectedData.getOrders().get(i), i);
+            }
+        }
+
+        softAssert.verifyAll();
+    }
+
 }

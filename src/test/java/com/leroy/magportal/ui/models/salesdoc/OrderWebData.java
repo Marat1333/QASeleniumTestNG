@@ -1,10 +1,15 @@
 package com.leroy.magportal.ui.models.salesdoc;
 
+import com.leroy.core.ContextProvider;
+import com.leroy.core.asserts.SoftAssertWrapper;
 import com.leroy.utils.ParserUtil;
 import lombok.Data;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Data
 public class OrderWebData {
@@ -70,5 +75,44 @@ public class OrderWebData {
             totalWeight = ParserUtil.plus(totalWeight, diffTotalWeight, 2);
         }
     }
+
+    public void assertEqualsNotNullExpectedFields(OrderWebData expectedOrder, int iOrder) {
+        SoftAssertWrapper softAssert = ContextProvider.getContext().getSoftAssert();
+        if (expectedOrder.getProductCount() != null)
+            softAssert.isEquals(this.getProductCount(), expectedOrder.getProductCount(),
+                    "Заказ #" + (iOrder + 1) + " - ожидалась другая информация о кол-ве товаров");
+        if (expectedOrder.getTotalPrice() != null)
+            softAssert.isEquals(this.getTotalPrice(), expectedOrder.getTotalPrice(),
+                    "Заказ #" + (iOrder + 1) + " - неверная Итого стоимость");
+        if (expectedOrder.getTotalWeight() != null)
+            softAssert.isEquals(BigDecimal.valueOf(this.getTotalWeight()).setScale(1, RoundingMode.HALF_UP),
+                    BigDecimal.valueOf(expectedOrder.getTotalWeight()).setScale(1, RoundingMode.HALF_UP),
+                    "Заказ #" + (iOrder + 1) + " - ожидался другой вес");
+
+        softAssert.isEquals(productCardDataList.size(), expectedOrder.getProductCardDataList().size(),
+                "Разное фактическое кол-во товаров в заказе");
+
+        softAssert.verifyAll();
+
+        for (int i = 0; i < expectedOrder.getProductCardDataList().size(); i++) {
+            int iCount = i;
+            Optional<ProductOrderCardWebData> expProduct = expectedOrder.getProductCardDataList().stream().filter(
+                    p -> p.getLmCode().equals(productCardDataList.get(iCount).getLmCode()) &&
+                            p.getSelectedQuantity().equals(productCardDataList.get(iCount).getSelectedQuantity()))
+                    .findFirst();
+            if (!expProduct.isPresent()) {
+                expProduct = expectedOrder.getProductCardDataList().stream().filter(
+                        p -> p.getLmCode().equals(productCardDataList.get(iCount).getLmCode())).findFirst();
+            }
+            softAssert.isTrue(expProduct.isPresent(),
+                    "Заказ " + (iOrder + 1) + " - обнаружен лишний товар с ЛМ " +
+                            productCardDataList.get(iCount).getLmCode());
+            if (expProduct.isPresent())
+                productCardDataList.get(iCount).assertEqualsNotNullExpectedFields(expProduct.get(), iOrder, i);
+        }
+        softAssert.verifyAll();
+
+    }
+
 
 }

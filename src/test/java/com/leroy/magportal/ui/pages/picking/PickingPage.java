@@ -7,7 +7,7 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magportal.ui.constants.picking.PickingConst;
 import com.leroy.magportal.ui.models.picking.ShortPickingTaskData;
 import com.leroy.magportal.ui.pages.common.LeftDocumentListPage;
-import com.leroy.magportal.ui.pages.orders.OrderCreatedPage;
+import com.leroy.magportal.ui.pages.orders.OrderCreatedContentPage;
 import com.leroy.magportal.ui.pages.picking.widget.ShortPickingTaskCardWidget;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import com.leroy.magportal.ui.webelements.commonelements.PuzCheckBox;
@@ -156,10 +156,10 @@ public class PickingPage extends LeftDocumentListPage<ShortPickingTaskCardWidget
     // Actions
 
     @Step("Нажать на номер заказа для перехода в этот заказ")
-    public OrderCreatedPage clickOrderLinkAndGoToOrderPage() {
+    public OrderCreatedContentPage clickOrderLinkAndGoToOrderPage() {
         orderLink.click();
         waitForSpinnerAppearAndDisappear();
-        return new OrderCreatedPage();
+        return new OrderCreatedContentPage();
     }
 
     @Step("Переключиться на вкладку 'Комментарий'")
