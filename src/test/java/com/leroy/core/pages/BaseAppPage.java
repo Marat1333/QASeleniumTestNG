@@ -76,7 +76,11 @@ public abstract class BaseAppPage extends BasePage {
     protected void waitUntilProgressBarIsVisible() {
         // Уменьшил до 1 секунды (не всегда появляется progress bar, лишнее ожидание из-за этого)
         // Если будет не хватать 1 секунды, надо вернуть обратно на tiny_timeout)
-        progressBar.waitForVisibility(1, Duration.ofMillis(300));
+        try {
+            progressBar.waitForVisibility(1, Duration.ofMillis(300));
+        } catch (TimeoutException err) {
+            // nothing to do
+        }
     }
 
     protected void waitUntilProgressBarIsInvisible() {

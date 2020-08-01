@@ -239,6 +239,25 @@ public class CartClient extends BaseMashupClient {
             assertThat(String.format("Product #%s - stockAdditionBySalesman", i + 1),
                     actualProduct.getStockAdditionBySalesman(),
                     is(expectedProduct.getStockAdditionBySalesman()));
+            // Discount
+            if (expectedProduct.getDiscount() != null) {
+                assertThat(String.format("Product #%s - Discount", i + 1),
+                        actualProduct.getDiscount(), notNullValue());
+                assertThat(String.format("Product #%s - Discount.reason", i + 1),
+                        actualProduct.getDiscount().getReason(),
+                        is(expectedProduct.getDiscount().getReason()));
+                assertThat(String.format("Product #%s - Discount.type", i + 1),
+                        actualProduct.getDiscount().getType(),
+                        is(expectedProduct.getDiscount().getType()));
+                assertThat(String.format("Product #%s - Discount.typeValue", i + 1),
+                        actualProduct.getDiscount().getTypeValue(),
+                        is(expectedProduct.getDiscount().getTypeValue()));
+                assertThat(String.format("Product #%s - Discount.actor", i + 1),
+                        actualProduct.getDiscount().getActor(),
+                        is(expectedProduct.getDiscount().getActor()));
+                assertThat(String.format("Product #%s - Discount.updated", i + 1),
+                        actualProduct.getDiscount().getUpdated(), notNullValue());
+            }
         }
         return actualData;
     }
