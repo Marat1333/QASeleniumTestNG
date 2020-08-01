@@ -38,8 +38,9 @@ public class SalesDocWebData {
         ShortOrderDocWebData shortOrderDocWebData = new ShortOrderDocWebData();
         shortOrderDocWebData.setNumber(number);
         shortOrderDocWebData.setStatus(status);
-        shortOrderDocWebData.setCreationDate(DateTimeUtil.strToLocalDateTime(creationDate, "dd MMM, HH:mm"));
-        shortOrderDocWebData.setDeliveryType(deliveryType.equals(SalesDocumentsConst.GiveAwayPoints.PICKUP)?
+        if (creationDate != null)
+            shortOrderDocWebData.setCreationDate(DateTimeUtil.strToLocalDateTime(creationDate, "dd MMM, HH:mm"));
+        shortOrderDocWebData.setDeliveryType(deliveryType.equals(SalesDocumentsConst.GiveAwayPoints.PICKUP) ?
                 OrderConst.DeliveryType.PICKUP : OrderConst.DeliveryType.DELIVERY_TK); // todo
         shortOrderDocWebData.setTotalPrice(orders.get(0).getTotalPrice());
         shortOrderDocWebData.setCustomer(client.getName());

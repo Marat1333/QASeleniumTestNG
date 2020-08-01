@@ -81,6 +81,7 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
         expectedOrderData.setAuthorName(null);
         expectedOrderData.setPinCode(null);
         expectedOrderData.setCreationDate(null); // TODO Надо приводить к LocalDate и проверять
+        expectedOrderData.getOrders().get(0).getProductCardDataList().forEach(p -> p.setAvailableTodayQuantity(null));
         actualData.getOrders().get(0).setProductCount(actualData.getOrders().get(0).getProductCardDataList().size());
         actualData.assertEqualsNotNullExpectedFields(expectedOrderData);
         return this;

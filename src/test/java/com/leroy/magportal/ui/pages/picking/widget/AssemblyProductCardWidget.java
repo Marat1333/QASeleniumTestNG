@@ -102,7 +102,7 @@ public class AssemblyProductCardWidget extends CardWebWidget<PickingProductCardD
     @Override
     public PickingProductCardData collectDataFromPage() {
         PickingProductCardData pickingProductCardData = new PickingProductCardData();
-        pickingProductCardData.setBarCode(barCode.getText().replaceAll(">|<|\n| ", "").trim());
+        pickingProductCardData.setBarCode(ParserUtil.strWithOnlyDigits(barCode.getText()));
         pickingProductCardData.setLmCode(lmCode.getText());
         pickingProductCardData.setDepartment(ParserUtil.strToInt(department.getText()));
         pickingProductCardData.setDimension(dimension.getText());

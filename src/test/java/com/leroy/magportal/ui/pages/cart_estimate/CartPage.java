@@ -99,6 +99,7 @@ public class CartPage extends CartEstimatePage {
     @Step("Нажать кнопку 'Оформить заказ'")
     public OrderDraftDeliveryWayPage clickConfirmButton() {
         confirmBtn.click();
+        waitForSpinnerAppearAndDisappear();
         return new OrderDraftDeliveryWayPage();
     }
 

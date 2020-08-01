@@ -14,11 +14,53 @@ public class ShortOrderDocWebData implements IDataWithNumberAndStatus<ShortOrder
     private LocalDateTime creationDate;
     private Double totalPrice;
     private String deliveryType;
+    private PayType payType;
+
+    public enum PayType {
+        ONLINE("Онлайн"), OFFLINE("Оффлайн");
+
+        private String title;
+
+        PayType(String title) {
+            this.title = title;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+    }
 
     @Override
     public void assertEqualsNotNullExpectedFields(ShortOrderDocWebData expectedData) {
         SoftAssertWrapper softAssert = ContextProvider.getContext().getSoftAssert();
-        softAssert.isEquals(this, expectedData, "Неверная информация в документе");
+        if (expectedData.getNumber() != null) {
+            softAssert.isEquals(number, expectedData.getNumber(),
+                    "Неверный номер документа");
+        }
+        if (expectedData.getStatus() != null) {
+            softAssert.isEquals(status.toLowerCase(), expectedData.getStatus().toLowerCase(),
+                    "Неверный статус документа");
+        }
+        if (expectedData.getCustomer() != null) {
+            softAssert.isEquals(customer, expectedData.getCustomer(),
+                    "Неверный клиент у документа");
+        }
+        if (expectedData.getCreationDate() != null) {
+            softAssert.isEquals(creationDate, expectedData.getCreationDate(),
+                    "Неверная дата создания документа");
+        }
+        if (expectedData.getTotalPrice() != null) {
+            softAssert.isEquals(totalPrice, expectedData.getTotalPrice(),
+                    "Неверная стоимость документа");
+        }
+        if (expectedData.getDeliveryType() != null) {
+            softAssert.isEquals(deliveryType, expectedData.getDeliveryType(),
+                    "Неверный тип доставки документа");
+        }
+        if (expectedData.getPayType() != null) {
+            softAssert.isEquals(payType, expectedData.getPayType(),
+                    "Неверный тип оплаты документа");
+        }
         softAssert.verifyAll();
     }
 }

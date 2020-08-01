@@ -12,6 +12,9 @@ public class SubmittedOrderModal extends MagPortalBasePage {
 
     private static final String MODAL_DIV_XPATH = "//div[contains(@class, 'OrderCreate__success-modal-container')]";
 
+    @WebFindBy(xpath = MODAL_DIV_XPATH + "//p", metaName = "Основное сообщение")
+    Element header;
+
     @WebFindBy(xpath = MODAL_DIV_XPATH + "//div[contains(@class, 'OrderCreate__barCodeBlock')]//p[2]", metaName = "Номер заказа")
     Element orderNumber;
 
@@ -23,7 +26,7 @@ public class SubmittedOrderModal extends MagPortalBasePage {
 
     @Override
     protected void waitForPageIsLoaded() {
-        super.waitForPageIsLoaded();
+        orderNumber.waitForVisibility();
     }
 
     // Grab information
@@ -44,19 +47,13 @@ public class SubmittedOrderModal extends MagPortalBasePage {
     @Step("Проверить, что модальное окно подтверждения заказа отображается корректно")
     public SubmittedOrderModal verifyRequiredElements(
             SalesDocumentsConst.GiveAwayPoints type) {
-        /*String ps = getPageSource();
-        String expectedTitleEnd = isNewOrder ? "оформлен" : "сохранен";
+        String ps = getPageSource();
+        String expectedTitleEnd = true ? "оформлен" : "сохранен";
         String expectedTitle = (SalesDocumentsConst.GiveAwayPoints.PICKUP.equals(type) ?
                 "Заказ на самовывоз " : "Заказ на доставку ") + expectedTitleEnd;
-        softAssert.isElementTextContains(titleMsgLbl, expectedTitle);
-        softAssert.areElementsVisible(ps, orderNumberLbl,
-                orderNumberVal, pinCodeLbl, pinCodeVal, offerCustomerToTakeScreenshotLbl);
-        if (severalOrdersInCart) {
-            softAssert.isElementVisible(goToCartBtn, ps);
-        } else {
-            softAssert.areElementsVisible(ps, statusCanBeMonitoringInDocumentListLbl, goToDocumentListBtn);
-        }
-        softAssert.verifyAll();*/
+        softAssert.isElementTextContains(header, expectedTitle);
+        softAssert.areElementsVisible(header, orderNumber, pinCode, goToOrderListBtn);
+        softAssert.verifyAll();
         return this;
     }
 

@@ -78,6 +78,7 @@ public class OrderTest extends BasePAOTest {
 
         // Step 3
         step("Введите номер телефона, нажмите Enter, нажмите на мини-карточку нужного клиента");
+        orderData.setClient(customerData);
         customerSearchForm.selectCustomerByPhone(customerData.getPhoneNumber())
                 .shouldSelectedCustomerIs(customerData);
 
@@ -94,6 +95,7 @@ public class OrderTest extends BasePAOTest {
 
         orderId = submittedOrderModal.getDocumentNumber();
         orderData.setNumber(orderId);
+        orderData.setDeliveryType(SalesDocumentsConst.GiveAwayPoints.PICKUP);
 
         // Step 6
         step("Нажмите на 'Перейти в список заказов'");
@@ -104,6 +106,7 @@ public class OrderTest extends BasePAOTest {
         // Step 7
         step("Обновите список документов слева");
         ShortOrderDocWebData shortOrderDocWebData = orderData.getShortOrderData();
+        shortOrderDocWebData.setPayType(ShortOrderDocWebData.PayType.OFFLINE);
         orderCreatedPage.refreshDocumentList();
         orderCreatedPage.shouldDocumentListContainsThis(shortOrderDocWebData);
     }

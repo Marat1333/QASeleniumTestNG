@@ -56,14 +56,15 @@ public class OrderProductCardWidget extends CardWebWidget<ProductOrderCardWebDat
     @Override
     public ProductOrderCardWebData collectDataFromPage() {
         ProductOrderCardWebData productOrderCardWebData = new ProductOrderCardWebData();
-        productOrderCardWebData.setBarCode(barCode.getText()/*.replaceAll(">|<|\n| ", "")*/.trim());
+        productOrderCardWebData.setBarCode(ParserUtil.strWithOnlyDigits(barCode.getText()));
         productOrderCardWebData.setLmCode(lmCode.getText());
         //productOrderCardWebData.setDepartment(ParserUtil.strToInt(department.getText()));
         //productOrderCardWebData.setDimension(dimension.getText());
         productOrderCardWebData.setTitle(title.getText());
         productOrderCardWebData.setPrice(ParserUtil.strToDouble(price.getText()));
-        productOrderCardWebData.setWeight(ParserUtil.strToDouble(weight.getText(), "."));
         productOrderCardWebData.setSelectedQuantity(ParserUtil.strToDouble(orderedQuantityFld.getText()));
+        productOrderCardWebData.setWeight(ParserUtil.strToDouble(weight.getText(), ".") * productOrderCardWebData.getSelectedQuantity());
+        productOrderCardWebData.setTotalPrice(productOrderCardWebData.getPrice() * productOrderCardWebData.getSelectedQuantity());
         return productOrderCardWebData;
     }
 }
