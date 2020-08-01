@@ -54,7 +54,7 @@ public class ShortPickingTaskData implements IDataWithNumberAndStatus<ShortPicki
                     "Неверная дата создания документа");
         }
         if (expectedData.getWeight() != null) {
-            softAssert.isEquals(weight, expectedData.getWeight(),
+            softAssert.isTrue(Math.abs(this.getWeight() - expectedData.getWeight()) <= 0.011,
                     "Неверный вес товаров в документе");
         }
         if (expectedData.getMaxSize() != null) {

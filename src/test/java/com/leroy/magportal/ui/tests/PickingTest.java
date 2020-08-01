@@ -1,21 +1,15 @@
 package com.leroy.magportal.ui.tests;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.leroy.constants.api.StatusCodes;
-import com.leroy.constants.customer.CustomerConst;
+import com.google.inject.Inject;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.UserSessionData;
-import com.leroy.magmobile.api.clients.CartClient;
-import com.leroy.magmobile.api.data.customer.PhoneData;
-import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
-import com.leroy.magmobile.api.data.sales.orders.*;
-import com.leroy.magmobile.ui.constants.TestDataConstants;
-import com.leroy.magmobile.ui.models.customer.MagCustomerData;
 import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.clients.PickingTaskClient;
 import com.leroy.magportal.api.data.picking.PickingTaskDataList;
-import com.leroy.magportal.ui.WebBaseSteps;
+import com.leroy.magportal.api.helpers.PAOHelper;
+import com.leroy.magportal.ui.constants.TestDataConstants;
 import com.leroy.magportal.ui.constants.picking.PickingConst;
 import com.leroy.magportal.ui.models.picking.PickingProductCardData;
 import com.leroy.magportal.ui.models.picking.PickingTaskData;
@@ -29,11 +23,9 @@ import com.leroy.magportal.ui.pages.picking.modal.SuccessfullyCreatedAssemblyMod
 import com.leroy.utils.ParserUtil;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,12 +33,10 @@ import java.util.List;
 import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class PickingTest extends WebBaseSteps {
+public class PickingTest extends BasePAOTest {
 
-    @Override
-    protected boolean isNeedAccessToken() {
-        return true;
-    }
+    @Inject
+    PAOHelper helper;
 
     @Override
     protected UserSessionData initTestClassUserSessionDataTemplate() {
@@ -59,7 +49,13 @@ public class PickingTest extends WebBaseSteps {
     private String pickingTaskId;
 
     private void initCreateOrder(int productCount) throws Exception {
-        orderId = createConfirmedOrder(null, null, productCount);
+        List<CartProductOrderData> productOrderDataList = new ArrayList<>();
+        for (int i = 0; i < productCount; i++) {
+            CartProductOrderData productOrderData = new CartProductOrderData(productList.get(i));
+            productOrderData.setQuantity(2.0);
+            productOrderDataList.add(productOrderData);
+        }
+        orderId = helper.createConfirmedOrder(productOrderDataList);
     }
 
     private void initFindPickingTask() throws Exception {
@@ -81,104 +77,7 @@ public class PickingTest extends WebBaseSteps {
         }
     }
 
-    @BeforeMethod(enabled = false)
-    private void cancelConfirmedOrderBefore() throws Exception {
-        OrderClient orderClient = apiClientProvider.getOrderClient();
-        Response<JsonNode> resp = orderClient.cancelOrder("200701046026");
-        assertThat(resp, successful());
-    }
-
-    protected String createConfirmedOrder(
-            List<String> lmCodes, List<CartProductOrderData> productDataList, Integer productCount) {
-        // Создание корзины
-        List<CartProductOrderData> productOrderDataList = productDataList == null ? new ArrayList<>() : productDataList;
-        if (productDataList == null) {
-            if (lmCodes == null)
-                lmCodes = apiClientProvider.getProductLmCodes(productCount);
-            for (String lmCode : lmCodes) {
-                CartProductOrderData productOrderData = new CartProductOrderData();
-                productOrderData.setLmCode(lmCode);
-                productOrderData.setQuantity(2.0);
-                productOrderDataList.add(productOrderData);
-            }
-        }
-        CartClient cartClient = apiClientProvider.getCartClient();
-        getUserSessionData().setAccessToken(getAccessToken());
-        Response<CartData> cartDataResponse = cartClient.sendRequestCreate(productOrderDataList);
-        assertThat(cartDataResponse, successful());
-
-        CartData cartData = cartDataResponse.asJson();
-
-        // Создание черновика заказа
-        ReqOrderData reqOrderData = new ReqOrderData();
-        reqOrderData.setCartId(cartData.getCartId());
-        reqOrderData.setDateOfGiveAway(LocalDateTime.now().plusDays(1));
-        reqOrderData.setDocumentVersion(1);
-
-        List<ReqOrderProductData> orderProducts = new ArrayList<>();
-        for (CartProductOrderData cartProduct : cartData.getProducts()) {
-            ReqOrderProductData postProductData = new ReqOrderProductData();
-            postProductData.setLineId(cartProduct.getLineId());
-            postProductData.setLmCode(cartProduct.getLmCode());
-            postProductData.setQuantity(cartProduct.getQuantity());
-            postProductData.setPrice(cartProduct.getPrice());
-            orderProducts.add(postProductData);
-        }
-
-        reqOrderData.setProducts(orderProducts);
-
-        OrderClient orderClient = apiClientProvider.getOrderClient();
-        Response<OrderData> orderResp = orderClient.createOrder(reqOrderData);
-        OrderData orderData = orderClient.assertThatIsCreatedAndGetData(orderResp);
-
-        // Установка ПИН кода
-        String validPinCode = apiClientProvider.getValidPinCode();
-        Response<JsonNode> response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
-        if (response.getStatusCode() == StatusCodes.ST_409_CONFLICT) {
-            response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
-        }
-        if (response.getStatusCode() == StatusCodes.ST_400_BAD_REQ) {
-            validPinCode = apiClientProvider.getValidPinCode();
-            response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
-        }
-        orderClient.assertThatPinCodeIsSet(response);
-        orderData.setPinCode(validPinCode);
-        orderData.increasePaymentVersion();
-
-        // Подтверждение заказа
-        MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
-        OrderCustomerData orderCustomerData = new OrderCustomerData();
-        orderCustomerData.setFirstName(ParserUtil.parseFirstName(customerData.getName()));
-        orderCustomerData.setLastName(ParserUtil.parseLastName(customerData.getName()));
-        orderCustomerData.setRoles(Collections.singletonList(CustomerConst.Role.RECEIVER.name()));
-        orderCustomerData.setType(CustomerConst.Type.PERSON.name());
-        orderCustomerData.setPhone(new PhoneData(customerData.getPhone()));
-
-        OrderData confirmOrderData = new OrderData();
-        confirmOrderData.setPriority(SalesDocumentsConst.Priorities.HIGH.getApiVal());
-        confirmOrderData.setShopId(getUserSessionData().getUserShopId());
-        confirmOrderData.setSolutionVersion(orderData.getSolutionVersion());
-        confirmOrderData.setPaymentVersion(orderData.getPaymentVersion());
-        confirmOrderData.setFulfillmentVersion(orderData.getFulfillmentVersion());
-        confirmOrderData.setFulfillmentTaskId(orderData.getFulfillmentTaskId());
-        confirmOrderData.setPaymentTaskId(orderData.getPaymentTaskId());
-        confirmOrderData.setProducts(orderData.getProducts());
-        confirmOrderData.setCustomers(Collections.singletonList(orderCustomerData));
-
-        GiveAwayData giveAwayData = new GiveAwayData();
-        giveAwayData.setDate(LocalDateTime.now().plusDays(1));
-        giveAwayData.setPoint(SalesDocumentsConst.GiveAwayPoints.PICKUP.getApiVal());
-        giveAwayData.setShopId(Integer.valueOf(getUserSessionData().getUserShopId()));
-        confirmOrderData.setGiveAway(giveAwayData);
-
-        Response<OrderData> resp = orderClient.confirmOrder(orderData.getOrderId(), confirmOrderData);
-        if (!resp.isSuccessful())
-            resp = orderClient.confirmOrder(orderData.getOrderId(), confirmOrderData);
-        orderClient.assertThatIsConfirmed(resp, orderData);
-        return orderData.getOrderId();
-    }
-
-    @Test(description = "C23408356 Сплит сборки (зона сборки Торговый зал)")
+    @Test(description = "C23408356 Сплит сборки (зона сборки Торговый зал)", groups = NEED_PRODUCTS_GROUP)
     public void testSplitAssemblyShoppingRoom() throws Exception {
         initCreateOrder(1);
         // Test data
@@ -255,7 +154,7 @@ public class PickingTest extends WebBaseSteps {
                 .shouldCommentIs(comment);
     }
 
-    @Test(description = "C23408338 Сплит сборки (зона сборки СС)")
+    @Test(description = "C23408338 Сплит сборки (зона сборки СС)", groups = NEED_PRODUCTS_GROUP)
     public void testSplitAssemblySS() throws Exception {
         initCreateOrder(1);
         // Test data
@@ -335,7 +234,8 @@ public class PickingTest extends WebBaseSteps {
 
         ShortPickingTaskData shortPickingTaskData = newPickingTaskData
                 .getShortData();
-        shortPickingTaskData.setClient(TestDataConstants.CUSTOMER_DATA_1.getName());
+        String customerName = TestDataConstants.SIMPLE_CUSTOMER_DATA_1.getName();
+        shortPickingTaskData.setClient(ParserUtil.parseLastName(customerName) + " " + ParserUtil.parseFirstName(customerName));
         pickingContentPage.shouldDocumentListContainsThis(shortPickingTaskData);
 
         pickingContentPage.switchToCommentTab()
@@ -385,7 +285,7 @@ public class PickingTest extends WebBaseSteps {
         // TODO
     }
 
-    @Test(description = "C23408737 Сплит сборки с несколькими товарами")
+    @Test(description = "C23408737 Сплит сборки с несколькими товарами", groups = NEED_PRODUCTS_GROUP)
     public void testSplitAssemblyWithDifferentProducts() throws Exception {
         initCreateOrder(2);
         // Test data
@@ -487,7 +387,7 @@ public class PickingTest extends WebBaseSteps {
         pickingContentPage.shouldDocumentListContainsThis(shortPickingTaskData);
     }
 
-    @Test(description = "C23185844 Частичная сборка заказа")
+    @Test(description = "C23185844 Частичная сборка заказа", groups = NEED_PRODUCTS_GROUP)
     public void testPartialOrderAssembly() throws Exception {
         initCreateOrder(3);
 
@@ -570,10 +470,10 @@ public class PickingTest extends WebBaseSteps {
                 .shouldOrderStatusIs("ЧАСТИЧНО СОБРАН");
     }
 
-    @Test(description = "C23408358 Сплит сборки с изменением количества товара")
+    @Test(description = "C23408358 Сплит сборки с изменением количества товара", groups = NEED_PRODUCTS_GROUP)
     public void testSplitAssemblyWithChangingProductQuantity() throws Exception {
-        if (orderId == null)
-            throw new AssertionError("C23185844 должен быть выполнен успешно");
+        if (isStartFromScratch())
+            testPartialOrderAssembly();
 
         // Test data
         PickingConst.AssemblyType assemblyType = PickingConst.AssemblyType.SHOPPING_ROOM;

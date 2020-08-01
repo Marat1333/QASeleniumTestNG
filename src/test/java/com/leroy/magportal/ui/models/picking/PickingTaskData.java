@@ -25,7 +25,7 @@ public class PickingTaskData {
     }
 
     public List<SplitPickingModalStep1.SplitProductCardData> getSplitPickingProductDataList() {
-        List<SplitPickingModalStep1.SplitProductCardData > splitProductCardDataList = new ArrayList<>();
+        List<SplitPickingModalStep1.SplitProductCardData> splitProductCardDataList = new ArrayList<>();
         for (PickingProductCardData productCardData : products) {
             SplitPickingModalStep1.SplitProductCardData splitProduct = new SplitPickingModalStep1.SplitProductCardData(productCardData);
             splitProductCardDataList.add(splitProduct);
@@ -53,7 +53,11 @@ public class PickingTaskData {
         shortPickingTaskData.setAssemblyType(assemblyType);
         shortPickingTaskData.setStatus(status);
         shortPickingTaskData.setCreationDate(creationDate);
-        shortPickingTaskData.setWeight(products.get(0).getWeight());
+        double thisWeight = 0.0;
+        for (PickingProductCardData productData : products) {
+            thisWeight += productData.getWeight() * productData.getOrderedQuantity();
+        }
+        shortPickingTaskData.setWeight(thisWeight);
         String[] dimension = products.get(0).getDimension().split(" ");
         List<Double> dimensionDouble = new ArrayList<>();
         for (String size : dimension) {

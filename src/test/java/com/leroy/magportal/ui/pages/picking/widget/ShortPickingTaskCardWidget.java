@@ -44,10 +44,12 @@ public class ShortPickingTaskCardWidget extends CardWebWidget<ShortPickingTaskDa
     ElementList<Element> departments;
 
     private PickingConst.AssemblyType getAssemblyType() {
-        String assemblyTypeText = this.assemblyType.getText();
+        String assemblyTypeText = this.assemblyType.getText().toLowerCase();
         switch (assemblyTypeText) {
             case "торг.зал":
                 return PickingConst.AssemblyType.SHOPPING_ROOM;
+            case ">":
+                return PickingConst.AssemblyType.SS;
         }
         return null;
     }

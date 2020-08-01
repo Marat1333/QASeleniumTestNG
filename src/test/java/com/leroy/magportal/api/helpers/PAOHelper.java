@@ -1,20 +1,27 @@
 package com.leroy.magportal.api.helpers;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.leroy.constants.api.StatusCodes;
+import com.leroy.constants.customer.CustomerConst;
+import com.leroy.constants.sales.SalesDocumentsConst;
+import com.leroy.core.ContextProvider;
 import com.leroy.magmobile.api.clients.CartClient;
-import com.leroy.magmobile.api.clients.CustomerClient;
-import com.leroy.magmobile.api.clients.EstimateClient;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
+import com.leroy.magmobile.api.data.customer.PhoneData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
-import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
+import com.leroy.magmobile.api.data.sales.orders.*;
 import com.leroy.magportal.api.clients.CatalogSearchClient;
+import com.leroy.magportal.api.clients.OrderClient;
+import com.leroy.magportal.ui.constants.TestDataConstants;
+import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
+import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -73,25 +80,10 @@ public class PAOHelper extends BaseHelper {
         return createCart(Collections.singletonList(product));
     }
 
-    /*protected String createConfirmedOrder(List<String> lmCodes, List<CartProductOrderData> productDataList) {
+    @Step("API: Создать подвтержденный заказ")
+    public String createConfirmedOrder(List<CartProductOrderData> products) {
         // Создание корзины
-        List<CartProductOrderData> productOrderDataList = productDataList == null ? new ArrayList<>() : productDataList;
-        if (productDataList == null) {
-            if (lmCodes == null)
-                lmCodes = apiClientProvider.getProductLmCodes(1);
-            for (String lmCode : lmCodes) {
-                CartProductOrderData productOrderData = new CartProductOrderData();
-                productOrderData.setLmCode(lmCode);
-                productOrderData.setQuantity(2.0);
-                productOrderDataList.add(productOrderData);
-            }
-        }
-        CartClient cartClient = apiClientProvider.getCartClient();
-        //getUserSessionData().setAccessToken(getAccessToken());
-        Response<CartData> cartDataResponse = cartClient.sendRequestCreate(productOrderDataList);
-        assertThat(cartDataResponse, successful());
-
-        CartData cartData = cartDataResponse.asJson();
+        CartData cartData = createCart(products);
 
         // Создание черновика заказа
         ReqOrderData reqOrderData = new ReqOrderData();
@@ -111,18 +103,18 @@ public class PAOHelper extends BaseHelper {
 
         reqOrderData.setProducts(orderProducts);
 
-        OrderClient orderClient = apiClientProvider.getOrderClient();
+        OrderClient orderClient = getOrderClient();
         Response<OrderData> orderResp = orderClient.createOrder(reqOrderData);
         OrderData orderData = orderClient.assertThatIsCreatedAndGetData(orderResp);
 
         // Установка ПИН кода
-        String validPinCode = apiClientProvider.getValidPinCode();
+        String validPinCode = getValidPinCode();
         Response<JsonNode> response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
         if (response.getStatusCode() == StatusCodes.ST_409_CONFLICT) {
             response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
         }
         if (response.getStatusCode() == StatusCodes.ST_400_BAD_REQ) {
-            validPinCode = apiClientProvider.getValidPinCode();
+            validPinCode = getValidPinCode();
             response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
         }
         orderClient.assertThatPinCodeIsSet(response);
@@ -130,17 +122,18 @@ public class PAOHelper extends BaseHelper {
         orderData.increasePaymentVersion();
 
         // Подтверждение заказа
-        MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
+        SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
         OrderCustomerData orderCustomerData = new OrderCustomerData();
         orderCustomerData.setFirstName(ParserUtil.parseFirstName(customerData.getName()));
         orderCustomerData.setLastName(ParserUtil.parseLastName(customerData.getName()));
         orderCustomerData.setRoles(Collections.singletonList(CustomerConst.Role.RECEIVER.name()));
         orderCustomerData.setType(CustomerConst.Type.PERSON.name());
-        orderCustomerData.setPhone(new PhoneData(customerData.getPhone()));
+        orderCustomerData.setPhone(new PhoneData(customerData.getPhoneNumber()));
 
         OrderData confirmOrderData = new OrderData();
         confirmOrderData.setPriority(SalesDocumentsConst.Priorities.HIGH.getApiVal());
-        confirmOrderData.setShopId(getUserSessionData().getUserShopId());
+        confirmOrderData.setPinCode(orderData.getPinCode());
+        confirmOrderData.setShopId(ContextProvider.getContext().getUserSessionData().getUserShopId());
         confirmOrderData.setSolutionVersion(orderData.getSolutionVersion());
         confirmOrderData.setPaymentVersion(orderData.getPaymentVersion());
         confirmOrderData.setFulfillmentVersion(orderData.getFulfillmentVersion());
@@ -152,7 +145,7 @@ public class PAOHelper extends BaseHelper {
         GiveAwayData giveAwayData = new GiveAwayData();
         giveAwayData.setDate(LocalDateTime.now().plusDays(1));
         giveAwayData.setPoint(SalesDocumentsConst.GiveAwayPoints.PICKUP.getApiVal());
-        giveAwayData.setShopId(Integer.valueOf(getUserSessionData().getUserShopId()));
+        giveAwayData.setShopId(Integer.valueOf(ContextProvider.getContext().getUserSessionData().getUserShopId()));
         confirmOrderData.setGiveAway(giveAwayData);
 
         Response<OrderData> resp = orderClient.confirmOrder(orderData.getOrderId(), confirmOrderData);
@@ -162,7 +155,11 @@ public class PAOHelper extends BaseHelper {
         return orderData.getOrderId();
     }
 
-    protected void cancelOrder(String orderId, String expectedStatusBefore) throws Exception {
+    public String createConfirmedOrder(CartProductOrderData product) {
+        return createConfirmedOrder(Collections.singletonList(product));
+    }
+
+    /*protected void cancelOrder(String orderId, String expectedStatusBefore) throws Exception {
         OrderClient orderClient = apiClientProvider.getOrderClient();
         orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderId,
                 expectedStatusBefore);
