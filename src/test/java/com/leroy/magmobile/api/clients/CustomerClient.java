@@ -1,6 +1,7 @@
 package com.leroy.magmobile.api.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.leroy.constants.EnvConstants;
 import com.leroy.constants.api.StatusCodes;
 import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.customer.*;
@@ -14,6 +15,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class CustomerClient extends BaseMashupClient {
+
+    @Override
+    protected void init() {
+        gatewayUrl = EnvConstants.CLIENT_API_HOST;
+    }
 
     /**
      * ---------- Executable Requests -------------
