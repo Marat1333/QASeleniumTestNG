@@ -12,6 +12,9 @@ public class SalesDocumentsConst {
         CANCELLED("CANCELLED", "Отменен"),
         DRAFT("DRAFT", "Черновик"),
 
+        // Сборки
+        PARTIALLY_ASSEMBLED("", "ЧАСТ. СОБРАН"),
+
         // Transfer
         NEW("NEW", "");
 

@@ -184,7 +184,7 @@ public class OrderHeaderPage extends LeftDocumentListPage<ShortOrderDocumentCard
     }
 
     @Step("Проверить, что в списке документов слева присутствуют только имеющие тип доставки: {types}")
-    public void shouldDocumentListContainsOnlyWithDeliveryTypes(String... types) {
+    public void shouldDocumentListContainsOnlyWithDeliveryTypes(String... types) throws Exception {
         Set<String> actualTypes = new HashSet<>();
         for (ShortOrderDocWebData docData : documentCardList().getDataList()) {
             actualTypes.add(docData.getDeliveryType());
@@ -197,7 +197,7 @@ public class OrderHeaderPage extends LeftDocumentListPage<ShortOrderDocumentCard
 
     @Step("Проверить, что в списке документов слева присутствуют только документы созданные " +
             "с {fromDate} по {toDate}")
-    public void shouldDocumentListFilteredByDates(LocalDate fromDate, LocalDate toDate) {
+    public void shouldDocumentListFilteredByDates(LocalDate fromDate, LocalDate toDate) throws Exception {
         for (ShortOrderDocWebData docData : documentCardList().getDataList()) {
             LocalDate actualDate = docData.getCreationDate().toLocalDate();
             softAssert.isTrue((actualDate.equals(fromDate) || actualDate.isAfter(fromDate)) &&

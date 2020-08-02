@@ -28,6 +28,11 @@ public abstract class BasePAOTest extends WebBaseSteps {
 
     protected String customerPhone = "1111111111";
 
+    @Override
+    protected boolean isNeedAccessToken() {
+        return true;
+    }
+
     @BeforeGroups(groups = NEED_PRODUCTS_GROUP)
     protected void findProducts() {
         productList = apiClientProvider.getProducts(3);

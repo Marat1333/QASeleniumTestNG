@@ -53,12 +53,12 @@ public class OrderPuzWidget extends CardWebWidget<OrderWebData> {
         return products;
     }
 
-    public List<ProductOrderCardWebData> getProductDataList() {
+    public List<ProductOrderCardWebData> getProductDataList() throws Exception {
         return products.getDataList();
     }
 
     @Override
-    public OrderWebData collectDataFromPage() {
+    public OrderWebData collectDataFromPage() throws Exception {
         initFooterElements();
         OrderWebData orderWebData = new OrderWebData();
         orderWebData.setProductCardDataList(products.getDataList());

@@ -49,7 +49,7 @@ public class ApiClientProvider {
     @Inject
     private Provider<EstimateClient> estimateClientProvider;
     @Inject
-    private Provider<OrderClient> orderClientProvider;
+    private Provider<com.leroy.magportal.api.clients.OrderClient> orderClientProvider;
     @Inject
     private Provider<SalesDocProductClient> salesDocProductClientProvider;
     @Inject
@@ -63,7 +63,7 @@ public class ApiClientProvider {
     @Inject
     private Provider<CatalogProductClient> catalogProductClientProvider;
     @Inject
-    private Provider<PickingTaskClient> pickingTaskClientProvider;
+    private Provider<com.leroy.magportal.api.clients.PickingTaskClient> pickingTaskClientProvider;
     @Inject
     private Provider<ShopKladrClient> shopClientProvider;
     @Inject
@@ -74,7 +74,6 @@ public class ApiClientProvider {
     private Provider<SupportClient> supportClientProvider;
     @Inject
     private Provider<MagPortalCatalogProductClient> magPortalCatalogProductClientProvider;
-
 
     private UserSessionData userSessionData() {
         return ContextProvider.getContext().getUserSessionData();
@@ -102,7 +101,7 @@ public class ApiClientProvider {
         return getClient(estimateClientProvider);
     }
 
-    public OrderClient getOrderClient() {
+    public com.leroy.magportal.api.clients.OrderClient getOrderClient() {
         return getClient(orderClientProvider);
     }
 
@@ -130,7 +129,7 @@ public class ApiClientProvider {
         return getClient(catalogProductClientProvider);
     }
 
-    public PickingTaskClient getPickingTaskClient() {
+    public com.leroy.magportal.api.clients.PickingTaskClient getPickingTaskClient() {
         return getClient(pickingTaskClientProvider);
     }
 
