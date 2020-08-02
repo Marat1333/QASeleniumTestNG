@@ -5,8 +5,6 @@ import com.leroy.core.asserts.SoftAssertWrapper;
 import com.leroy.utils.ParserUtil;
 import lombok.Data;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -84,10 +82,12 @@ public class OrderWebData {
         if (expectedOrder.getTotalPrice() != null)
             softAssert.isEquals(this.getTotalPrice(), expectedOrder.getTotalPrice(),
                     "Заказ #" + (iOrder + 1) + " - неверная Итого стоимость");
-        if (expectedOrder.getTotalWeight() != null)
-            softAssert.isEquals(BigDecimal.valueOf(this.getTotalWeight()).setScale(1, RoundingMode.HALF_UP),
-                    BigDecimal.valueOf(expectedOrder.getTotalWeight()).setScale(1, RoundingMode.HALF_UP),
+        if (expectedOrder.getTotalWeight() != null) {
+            double productCount = expectedOrder.getProductCardDataList().stream().mapToDouble(
+                    ProductOrderCardWebData::getSelectedQuantity).sum();
+            softAssert.isTrue(Math.abs(this.getTotalWeight() - expectedOrder.getTotalWeight()) <= 0.05 * productCount,
                     "Заказ #" + (iOrder + 1) + " - ожидался другой вес");
+        }
 
         softAssert.isEquals(productCardDataList.size(), expectedOrder.getProductCardDataList().size(),
                 "Разное фактическое кол-во товаров в заказе");

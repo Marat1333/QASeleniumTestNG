@@ -57,6 +57,13 @@ public class SubmittedOrderModal extends MagPortalBasePage {
         return this;
     }
 
+    @Step("Проверить, что Номер заказа = {text}")
+    public SubmittedOrderModal shouldNumberIs(String text) {
+        anAssert.isEquals(ParserUtil.strWithOnlyDigits(orderNumber.getText()), text,
+                "Ожидался другой номер заказа");
+        return this;
+    }
+
     @Step("Проверить, что Пин-код = {text}")
     public SubmittedOrderModal shouldPinCodeIs(String text) {
         anAssert.isElementTextEqual(pinCode, text);

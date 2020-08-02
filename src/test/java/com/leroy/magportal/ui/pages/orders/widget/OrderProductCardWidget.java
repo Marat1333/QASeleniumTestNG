@@ -36,7 +36,7 @@ public class OrderProductCardWidget extends CardWebWidget<ProductOrderCardWebDat
     @WebFindBy(xpath = ".//div[contains(@class, 'ProductCardFooter__bigSide')]//p[2]", metaName = "Габариты")
     Element dimension;
 
-    @WebFindBy(xpath = ".//div[contains(@class, 'Dropdown--center lmui-Dropdown')]//span", metaName = "Кол-во 'Доступно'")
+    @WebFindBy(xpath = ".//div[contains(@class, 'ProductCard__quantities')]//span", metaName = "Кол-во 'Доступно'")
     Element availableQuantity;
 
     public String getAvailableQuantity() {
@@ -56,12 +56,13 @@ public class OrderProductCardWidget extends CardWebWidget<ProductOrderCardWebDat
     @Override
     public ProductOrderCardWebData collectDataFromPage() {
         ProductOrderCardWebData productOrderCardWebData = new ProductOrderCardWebData();
-        productOrderCardWebData.setBarCode(ParserUtil.strWithOnlyDigits(barCode.getText()));
+        productOrderCardWebData.setBarCode(ParserUtil.strWithOnlyDigits(barCode.getTextIfPresent()));
         productOrderCardWebData.setLmCode(lmCode.getText());
         //productOrderCardWebData.setDepartment(ParserUtil.strToInt(department.getText()));
         //productOrderCardWebData.setDimension(dimension.getText());
         productOrderCardWebData.setTitle(title.getText());
         productOrderCardWebData.setPrice(ParserUtil.strToDouble(price.getText()));
+        productOrderCardWebData.setAvailableTodayQuantity(ParserUtil.strToDouble(availableQuantity.getText()));
         productOrderCardWebData.setSelectedQuantity(ParserUtil.strToDouble(orderedQuantityFld.getText()));
         productOrderCardWebData.setWeight(ParserUtil.strToDouble(weight.getText(), ".") * productOrderCardWebData.getSelectedQuantity());
         productOrderCardWebData.setTotalPrice(productOrderCardWebData.getPrice() * productOrderCardWebData.getSelectedQuantity());

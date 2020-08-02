@@ -15,7 +15,7 @@ public class ParserUtil {
     /**
      * Convert String to Double and cut off non-digits if necessary
      *
-     * @param str - string value
+     * @param str       - string value
      * @param delimiter - '.' or ','
      * @return double
      */
@@ -24,7 +24,7 @@ public class ParserUtil {
             return null;
         try {
             return NumberFormat.getInstance(Locale.FRANCE)
-                    .parse(str.replaceAll("[^\\d+"+delimiter+"\\-]", "")
+                    .parse(str.replaceAll("[^\\d+" + delimiter + "\\-]", "")
                             .replaceAll("\\.", ",")).doubleValue();
         } catch (ParseException err) {
             Log.error(err.getMessage());
@@ -40,6 +40,20 @@ public class ParserUtil {
      */
     public static Double strToDouble(String str) {
         return strToDouble(str, ",");
+    }
+
+    /**
+     * Convert String to Double Weight and cut off non-digits if necessary
+     * if there is "Т" unit, so value will be * 1000
+     *
+     * @param str - string value
+     * @return weight in kg
+     */
+    public static Double strToWeight(String str) {
+        Double result = strToDouble(str, ",");
+        if (!str.contains("кг"))
+            result *= 1000;
+        return result;
     }
 
     /**
