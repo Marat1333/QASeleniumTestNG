@@ -66,7 +66,7 @@ public class ExtendedSearchModal extends MagPortalBasePage {
     // Verifications
 
     @Step("Проверить, что все товары в окне имеют в названии {value}")
-    public ExtendedSearchModal shouldProductsContainInTitle(String value, int limitCheck) {
+    public ExtendedSearchModal shouldProductsContainInTitle(String value, int limitCheck) throws Exception {
         List<ProductOrderCardWebData> products = productWidgetList.getDataList(limitCheck);
         for (ProductOrderCardWebData product : products) {
             anAssert.isContainsIgnoringCase(product.getTitle(), value,

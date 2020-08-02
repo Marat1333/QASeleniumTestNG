@@ -1,11 +1,14 @@
 package com.leroy.magportal.ui.pages.cart_estimate;
 
 import com.leroy.core.annotations.WebFindBy;
+import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magportal.ui.models.salesdoc.OrderWebData;
 import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.DiscountModal;
 import com.leroy.magportal.ui.pages.cart_estimate.widget.OrderPuzWidget;
+import com.leroy.magportal.ui.pages.orders.OrderDraftDeliveryWayPage;
+import com.leroy.magportal.ui.pages.orders.OrderDraftPage;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
@@ -34,6 +37,10 @@ public class CartPage extends CartEstimatePage {
     @WebFindBy(xpath = "//div[substring(@class, string-length(@class) - 21) = 'CartsView__cart__group']",
             clazz = OrderPuzWidget.class)
     CardWebWidgetList<OrderPuzWidget, OrderWebData> orders;
+
+    @WebFindBy(xpath = "//div[contains(@class, 'SalesDoc-ViewFooter__action')]//button[descendant::span[text()='Оформить заказ']]",
+            metaName = "Кнопка Оформить заказ")
+    Button confirmBtn;
 
     @Override
     protected CardWebWidgetList<OrderPuzWidget, OrderWebData> orders() {
@@ -89,6 +96,13 @@ public class CartPage extends CartEstimatePage {
         return new DiscountModal();
     }
 
+    @Step("Нажать кнопку 'Оформить заказ'")
+    public OrderDraftDeliveryWayPage clickConfirmButton() {
+        confirmBtn.click();
+        waitForSpinnerAppearAndDisappear();
+        return new OrderDraftDeliveryWayPage();
+    }
+
     // Verifications
 
     /**
@@ -97,7 +111,7 @@ public class CartPage extends CartEstimatePage {
      */
     @Step("Проверить, что страница Корзины отображается корректно после нажатия на кнопку 'Создать корзину'")
     public void verificationAfterClickCreateNewCartButton() {
-        softAssert.areElementsVisible(addCustomerBtnLbl, searchProductFld);
+        softAssert.areElementsVisible(searchProductFld);
         softAssert.isElementTextEqual(cartNumber, "№ —");
         softAssert.verifyAll();
     }
@@ -105,15 +119,14 @@ public class CartPage extends CartEstimatePage {
     @Step("Проверить, что страница 'Корзины' отображается корректно, когда она пустая")
     public CartPage verifyEmptyCartPage() {
         softAssert.isElementVisible(createCartBtn);
-        softAssert.areElementsNotVisible(addCustomerBtnLbl, searchProductFld, cartNumber, cartAuthor,
-                customerPhoneSearchFld);
+        softAssert.areElementsNotVisible(searchProductFld, cartNumber, cartAuthor);
         softAssert.isEquals(orders.getCount(), 0, "Отображаются заказы");
         softAssert.verifyAll();
         return this;
     }
 
     @Step("Проверить, что на странице корзины содержатся ожидаемые данные")
-    public CartPage shouldCartHasData(SalesDocWebData expectedEstimateData) {
+    public CartPage shouldCartHasData(SalesDocWebData expectedEstimateData) throws Exception {
         shouldDocumentHasData(expectedEstimateData);
         return this;
     }

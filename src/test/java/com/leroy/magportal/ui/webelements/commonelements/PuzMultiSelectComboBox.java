@@ -6,6 +6,9 @@ import org.openqa.selenium.WebDriver;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Выпадающий список с опциями (Check boxes) - множественный выбор
+ */
 public class PuzMultiSelectComboBox extends PuzComboBox {
 
     public PuzMultiSelectComboBox(WebDriver driver, CustomLocator customLocator) {
