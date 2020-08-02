@@ -87,7 +87,10 @@ public class ProductOrderCardPuzWidget extends CardWebWidget<ProductOrderCardWeb
     }
 
     public String getTotalPrice() {
-        return totalPrice.getText();
+        String result = totalPrice.getTextIfPresent();
+        if (result == null)
+            result = E(getXpath() + "//div[contains(@class, 'SalesDocProduct__content__price')]/*").getText();
+        return result;
     }
 
     public String getDiscountPercent() {
