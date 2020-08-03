@@ -8,9 +8,11 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.TextArea;
+import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
 import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
 import com.leroy.magportal.ui.pages.customers.form.CustomerSearchForm;
 import com.leroy.magportal.ui.pages.orders.modal.SubmittedOrderModal;
+import com.leroy.utils.ParserUtil;
 import com.leroy.utils.RandomUtil;
 import io.qameta.allure.Step;
 import lombok.Data;
@@ -116,6 +118,16 @@ public class OrderDraftDeliveryWayPage extends OrderDraftPage {
     @Step("Проверить, что поле с пин кодом = {text}")
     public OrderDraftDeliveryWayPage shouldPinCodeFieldIs(String text) {
         anAssert.isElementTextEqual(pinCodeFld, text);
+        return this;
+    }
+
+    @Step("Проверить, что поля 'Получатель' заполнены соответствующими данными")
+    public OrderDraftDeliveryWayPage shouldReceiverIs(SimpleCustomerData customerData) {
+        softAssert.isElementTextEqual(nameSurnameFld, customerData.getName());
+        softAssert.isEquals(ParserUtil.standardPhoneFmt(phoneFld.getText()), customerData.getPhoneNumber(),
+                "Неверный номер телефона у Получателя");
+        softAssert.isEquals(emailFld.getText(), customerData.getEmail(), "Неверный email у Получателя");
+        softAssert.verifyAll();
         return this;
     }
 

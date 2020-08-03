@@ -5,7 +5,9 @@ import com.google.inject.Inject;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
+import com.leroy.magmobile.api.data.customer.CustomerData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateProductOrderData;
 import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.magportal.ui.constants.TestDataConstants;
@@ -13,6 +15,7 @@ import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
 import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
 import com.leroy.magportal.ui.models.salesdoc.ShortOrderDocWebData;
 import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
+import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
 import com.leroy.magportal.ui.pages.customers.form.CustomerSearchForm;
 import com.leroy.magportal.ui.pages.orders.OrderCreatedContentPage;
 import com.leroy.magportal.ui.pages.orders.OrderDraftContentPage;
@@ -34,7 +37,8 @@ public class OrderTest extends BasePAOTest {
 
     @AfterClass(enabled = true)
     private void cancelConfirmedOrder() throws Exception {
-        if (orderData != null && orderData.getNumber() != null && orderData.getStatus() != null) {
+        if (orderData != null && orderData.getNumber() != null && orderData.getStatus() != null &&
+                !orderData.getStatus().equals(SalesDocumentsConst.States.DRAFT.getUiVal())) {
             OrderClient orderClient = apiClientProvider.getOrderClient();
             orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderData.getNumber(),
                     SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal());
@@ -66,7 +70,7 @@ public class OrderTest extends BasePAOTest {
 
         // Step 1
         step("Нажмите на кнопку 'Оформить заказ'");
-        stepClickConfirmOrderButton();
+        stepClickConfirmOrderButton(null);
 
         // Step 2
         step("Нажмите на кнопку 'Добавить клиента'");
@@ -109,7 +113,7 @@ public class OrderTest extends BasePAOTest {
 
         // Step 1
         step("Нажмите на кнопку 'Оформить заказ'");
-        stepClickConfirmOrderButton();
+        stepClickConfirmOrderButton(null);
 
         // Step 2
         step("Нажмите на кнопку 'Состав заказа'");
@@ -145,12 +149,80 @@ public class OrderTest extends BasePAOTest {
         stepRefreshDocumentListAndCheckDocument();
     }
 
+    @Test(description = "C23410900 Создание заказа из корзины, преобразованной из сметы", groups = NEED_PRODUCTS_GROUP)
+    public void testCreateOrderFromCartTransformedFromEstimate() throws Exception {
+        step("Pre-condition: Создаем смету и преобразовываем ее в корзину");
+        CustomerData customerData = helper.searchForCustomer(TestDataConstants.SIMPLE_CUSTOMER_DATA_1);
+        EstimateProductOrderData estimateProductOrderData = new EstimateProductOrderData(productList.get(0));
+        estimateProductOrderData.setQuantity(1.0);
+        String estimateId = helper.createConfirmedEstimateAndGetId(estimateProductOrderData, customerData);
+        EstimatePage estimatePage = loginAndGoTo(EstimatePage.class);
+        estimatePage.openPageWithEstimate(estimateId)
+                .clickTransformToCart();
+
+        // Step 1
+        step("Нажмите на кнопку 'Оформить заказ'");
+        stepClickConfirmOrderButton(TestDataConstants.SIMPLE_CUSTOMER_DATA_1);
+
+        // Step 2
+        step("Выберете поле PIN-код для оплаты, введите PIN-код для оплаты");
+        stepEnterPinCode();
+
+        // Step 3
+        step("Нажмите на кнопку Подтвердить заказ");
+        stepClickConfirmOrder();
+
+        // Step 4
+        step("Нажмите на 'Перейти в список заказов'");
+        stepGoToTheOrderList();
+
+        // Step 5
+        step("Обновите список документов слева");
+        stepRefreshDocumentListAndCheckDocument();
+    }
+
+    @Test(description = "C23410917 Создать заказ из корзины с клиентом", groups = NEED_PRODUCTS_GROUP)
+    public void testCreateOrderFromCartWithClient() throws Exception {
+        step("Pre-condition: Создаем корзину с клиентом");
+        // Prepare data
+        SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+        CartProductOrderData cartProductOrderData = new CartProductOrderData(productList.get(0));
+        cartProductOrderData.setQuantity(1.0);
+
+        String cartId = helper.createCart(cartProductOrderData).getFullDocId();
+
+        cartPage = loginAndGoTo(CartPage.class);
+        cartPage.clickDocumentInLeftMenu(cartId);
+        cartPage.clickAddCustomer()
+                .selectCustomerByPhone(customerData.getPhoneNumber());
+
+        // Step 1
+        step("Нажмите на кнопку 'Оформить заказ'");
+        stepClickConfirmOrderButton(customerData);
+
+        // Step 2
+        step("Выберете поле PIN-код для оплаты, введите PIN-код для оплаты");
+        stepEnterPinCode();
+
+        // Step 3
+        step("Нажмите на кнопку Подтвердить заказ");
+        stepClickConfirmOrder();
+
+        // Step 4
+        step("Нажмите на 'Перейти в список заказов'");
+        stepGoToTheOrderList();
+
+        // Step 5
+        step("Обновите список документов слева");
+        stepRefreshDocumentListAndCheckDocument();
+    }
+
     // ------------ Steps ------------------ //
 
     /**
      * Нажмите на кнопку "Оформить заказ"
      */
-    private void stepClickConfirmOrderButton() throws Exception {
+    private void stepClickConfirmOrderButton(SimpleCustomerData customerData) throws Exception {
         cartPage = new CartPage();
         orderData = cartPage.getSalesDocData();
         orderDraftDeliveryWayPage = cartPage.clickConfirmButton()
@@ -158,6 +230,13 @@ public class OrderTest extends BasePAOTest {
         orderDraftDeliveryWayPage.shouldOrderStatusIs(SalesDocumentsConst.States.DRAFT.getUiVal());
         orderData.setNumber(orderDraftDeliveryWayPage.getOrderNumber());
         anAssert().isFalse(orderData.getNumber().isEmpty(), "Номер заказа отсутствует");
+        if (customerData != null) {
+            orderDraftDeliveryWayPage.shouldReceiverIs(customerData)
+                    .getCustomerSearchForm().shouldSelectedCustomerIs(customerData);
+        } else {
+            anAssert().isFalse(orderDraftDeliveryWayPage.getCustomerSearchForm().isCustomerSelected(),
+                    "Клиент не должен быть выбран");
+        }
     }
 
     /**
