@@ -11,6 +11,8 @@ import io.qameta.allure.Step;
 
 import java.util.Collections;
 
+import static com.leroy.constants.DefectConst.PAO_931;
+
 public class OrderDraftContentPage extends OrderDraftPage {
 
     @WebFindBy(xpath = "//div[contains(@class, 'CreationProductCard')]",
@@ -44,6 +46,8 @@ public class OrderDraftContentPage extends OrderDraftPage {
         expectedOrderData.getOrders().get(0).getProductCardDataList().forEach(p -> p.setBarCode(null));
         // Не понятно как проверять вес, когда он в корзине отображается суммарный, а в заказе за штуку:
         expectedOrderData.getOrders().get(0).getProductCardDataList().forEach(p -> p.setWeight(null));
+        if (PAO_931 && expectedOrderData.getOrders().get(0).getProductCardDataList().get(0).getDiscountPercent() != null)
+            expectedOrderData.getOrders().forEach(p -> p.setTotalPrice(null));
         actualData.assertEqualsNotNullExpectedFields(expectedOrderData);
         return this;
     }

@@ -27,6 +27,9 @@ public class OrderProductCardWidget extends CardWebWidget<ProductOrderCardWebDat
     @WebFindBy(xpath = ".//p[contains(@class, 'ProductCard__body-title')]", metaName = "Название товара")
     Element title;
 
+    @WebFindBy(xpath = ".//div[contains(@class, 'Discount')]//span", metaName = "Скидка %")
+    Element discountPercent;
+
     @WebFindBy(xpath = ".//span[contains(@class, 'Price-container')]", metaName = "Цена")
     Element price;
 
@@ -51,20 +54,31 @@ public class OrderProductCardWidget extends CardWebWidget<ProductOrderCardWebDat
         return orderedQuantityFld.getText();
     }
 
+    public String getWeight() {
+        return weight.getText();
+    }
+
     // Actions
 
     @Override
     public ProductOrderCardWebData collectDataFromPage() {
         ProductOrderCardWebData productOrderCardWebData = new ProductOrderCardWebData();
-        productOrderCardWebData.setBarCode(ParserUtil.strWithOnlyDigits(barCode.getTextIfPresent()));
+        productOrderCardWebData.setBarCode(ParserUtil.strWithOnlyDigits(barCode.getText()));
         productOrderCardWebData.setLmCode(lmCode.getText());
         //productOrderCardWebData.setDepartment(ParserUtil.strToInt(department.getText()));
         //productOrderCardWebData.setDimension(dimension.getText());
         productOrderCardWebData.setTitle(title.getText());
-        productOrderCardWebData.setPrice(ParserUtil.strToDouble(price.getText()));
         productOrderCardWebData.setAvailableTodayQuantity(ParserUtil.strToDouble(availableQuantity.getText()));
         productOrderCardWebData.setSelectedQuantity(ParserUtil.strToDouble(orderedQuantityFld.getText()));
-        productOrderCardWebData.setWeight(ParserUtil.strToDouble(weight.getText(), ".") * productOrderCardWebData.getSelectedQuantity());
+        productOrderCardWebData.setWeight(ParserUtil.strToDouble(getWeight(), ".") * productOrderCardWebData.getSelectedQuantity());
+        if (!discountPercent.isVisible())
+            productOrderCardWebData.setPrice(ParserUtil.strToDouble(price.getText()));
+        else {
+            double priceWithDiscount = ParserUtil.strToDouble(price.getText());
+            productOrderCardWebData.setDiscountPercent(ParserUtil.strToDouble(discountPercent.getText()));
+            productOrderCardWebData.setTotalPriceWithDiscount(priceWithDiscount * productOrderCardWebData.getSelectedQuantity());
+            productOrderCardWebData.setPrice(priceWithDiscount / (1 - productOrderCardWebData.getDiscountPercent() / 100.0));
+        }
         productOrderCardWebData.setTotalPrice(productOrderCardWebData.getPrice() * productOrderCardWebData.getSelectedQuantity());
         return productOrderCardWebData;
     }

@@ -2,6 +2,7 @@ package com.leroy.magportal.ui.tests.pao.order;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
+import com.leroy.constants.sales.DiscountConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
@@ -217,6 +218,60 @@ public class OrderTest extends BasePAOTest {
         stepRefreshDocumentListAndCheckDocument();
     }
 
+    @Test(description = "C23410898 Создать заказ из корзины со скидкой", groups = NEED_PRODUCTS_GROUP)
+    public void testCreateOrderFromCartWithDiscount() throws Exception {
+        // Prepare data
+        SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+        CartProductOrderData cartProductOrderData = new CartProductOrderData(productList.get(0));
+        cartProductOrderData.setQuantity(1.0);
+
+        String cartId = helper.createCart(cartProductOrderData).getFullDocId();
+
+        cartPage = loginAndGoTo(CartPage.class);
+        cartPage.clickDocumentInLeftMenu(cartId);
+        cartPage.clickDiscountIcon(1, 1)
+                .selectReasonDiscount(DiscountConst.Reasons.PRODUCT_SAMPLE.getName())
+                .enterDiscountPercent(10.0)
+                .clickConfirmButton();
+
+        // Step 1
+        step("Нажмите на кнопку 'Оформить заказ'");
+        stepClickConfirmOrderButton(null);
+
+        // Step 2
+        step("Нажмите на кнопку 'Состав заказа'");
+        OrderDraftContentPage orderDraftContentPage = orderDraftDeliveryWayPage.goToContentOrderTab()
+                .shouldOrderContentDataIs(orderData);
+
+        // Step 3
+        step("Нажмите на кнопку 'Способ получения'");
+        orderDraftContentPage.goToDeliveryTypeTab();
+
+        // Step 4
+        step("Нажмите на кнопку 'Добавить клиента'");
+        stepClickAddCustomerButton();
+
+        // Step 5
+        step("Введите номер телефона, нажмите Enter, нажмите на мини-карточку нужного клиента");
+        stepSelectCustomerByPhoneNumber(customerData);
+
+        // Step 6
+        step("Выберете поле PIN-код для оплаты, введите PIN-код для оплаты");
+        stepEnterPinCode();
+
+        // Step 7
+        step("Нажмите на кнопку Подтвердить заказ");
+        stepClickConfirmOrder();
+
+        // Step 8
+        step("Нажмите на 'Перейти в список заказов'");
+        stepGoToTheOrderList();
+
+        // Step 9
+        step("Обновите список документов слева");
+        stepRefreshDocumentListAndCheckDocument();
+    }
+
     // ------------ Steps ------------------ //
 
     /**
@@ -229,6 +284,7 @@ public class OrderTest extends BasePAOTest {
                 .verifyRequiredElements(new OrderDraftDeliveryWayPage.PageState());
         orderDraftDeliveryWayPage.shouldOrderStatusIs(SalesDocumentsConst.States.DRAFT.getUiVal());
         orderData.setNumber(orderDraftDeliveryWayPage.getOrderNumber());
+        orderData.setStatus(SalesDocumentsConst.States.DRAFT.getUiVal());
         anAssert().isFalse(orderData.getNumber().isEmpty(), "Номер заказа отсутствует");
         if (customerData != null) {
             orderDraftDeliveryWayPage.shouldReceiverIs(customerData)

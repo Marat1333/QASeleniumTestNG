@@ -15,6 +15,8 @@ import io.qameta.allure.Step;
 
 import java.util.Collections;
 
+import static com.leroy.constants.DefectConst.PAO_931;
+
 public class OrderCreatedContentPage extends OrderCreatedPage {
 
     @WebFindBy(xpath = "//div[contains(@class, 'OrderViewHeader__orderId')]//span", metaName = "Номер заказа")
@@ -82,6 +84,8 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
         expectedOrderData.setPinCode(null);
         expectedOrderData.setCreationDate(null); // TODO Надо приводить к LocalDate и проверять
         actualData.getOrders().get(0).setProductCount(actualData.getOrders().get(0).getProductCardDataList().size());
+        if (PAO_931 && expectedOrderData.getOrders().get(0).getProductCardDataList().get(0).getDiscountPercent() != null)
+            expectedOrderData.getOrders().forEach(p -> p.setTotalPrice(null));
         actualData.assertEqualsNotNullExpectedFields(expectedOrderData);
         return this;
     }

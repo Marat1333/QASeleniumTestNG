@@ -20,6 +20,11 @@ public class OrderDraftProductCardWidget extends OrderProductCardWidget {
     }
 
     @Override
+    public String getWeight() {
+        return weight.getText();
+    }
+
+    @Override
     public ProductOrderCardWebData collectDataFromPage() {
         ProductOrderCardWebData productOrderCardWebData = new ProductOrderCardWebData();
         productOrderCardWebData.setBarCode(ParserUtil.strWithOnlyDigits(barCode.getTextIfPresent()));
@@ -29,8 +34,15 @@ public class OrderDraftProductCardWidget extends OrderProductCardWidget {
         productOrderCardWebData.setTitle(title.getText());
         productOrderCardWebData.setAvailableTodayQuantity(ParserUtil.strToDouble(availableQuantity.getText()));
         productOrderCardWebData.setSelectedQuantity(ParserUtil.strToDouble(orderedQuantityFld.getText()));
-        productOrderCardWebData.setWeight(ParserUtil.strToDouble(weight.getText(), "."));
-        productOrderCardWebData.setTotalPrice(ParserUtil.strToDouble(price.getText()));
+        productOrderCardWebData.setWeight(ParserUtil.strToDouble(getWeight(), "."));
+        if (!discountPercent.isVisible())
+            productOrderCardWebData.setTotalPrice(ParserUtil.strToDouble(price.getText()));
+        else {
+            productOrderCardWebData.setDiscountPercent(ParserUtil.strToDouble(discountPercent.getText()));
+            productOrderCardWebData.setTotalPriceWithDiscount(ParserUtil.strToDouble(price.getText()));
+            productOrderCardWebData.setTotalPrice(productOrderCardWebData.getTotalPriceWithDiscount() /
+                    (1 - productOrderCardWebData.getDiscountPercent() / 100.0));
+        }
         productOrderCardWebData.setPrice(productOrderCardWebData.getTotalPrice() / productOrderCardWebData.getSelectedQuantity());
         return productOrderCardWebData;
     }
