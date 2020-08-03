@@ -388,8 +388,8 @@ public class PrintTagsTest extends AppBaseSteps {
         productCardPage.clickActionWithProductButton();
         multiFunctionModal.printTag();
         editTagModalPage.deleteProductFromSession();
-        DeleteSessionModalPage deleteSessionModalPage = new DeleteSessionModalPage();
-        deleteSessionModalPage.confirmDelete();
+        DeleteSessionByDeletingProductModalPage deleteSessionByDeletingProductModalPage = new DeleteSessionByDeletingProductModalPage();
+        deleteSessionByDeletingProductModalPage.confirmDelete();
         sessionsListPage = new SessionsListPage();
         sessionsListPage.shouldViewTypeIsCorrect(true);
     }
@@ -568,6 +568,7 @@ public class PrintTagsTest extends AppBaseSteps {
 
     @Test(description = "C23389200 массовое редактирование формата ценников")
     public void testTagsGroupEdition() throws Exception {
+        //TODO переделать методы на взаимодействие с ProductTagData
         int productsCount = 5;
         List<ProductItemData> randomProducts = catalogSearchClient.getRandomUniqueProductsWithTitles(productsCount);
         List<String> lmCodesList = randomProducts.stream().map(ProductItemData::getLmCode).collect(Collectors.toList());
@@ -632,7 +633,7 @@ public class PrintTagsTest extends AppBaseSteps {
         editTagModalPage = tagsListPage.choseProductsAndOpenGroupEditModal(lmCodesList.get(1), lmCodesList.get(2));
         editTagModalPage.shouldCheckBoxesHasCorrectCondition(true, false, false);
         editTagModalPage.shouldSizeValuesAreCorrect(3, 0, 0);
-        ProductTagData tmpTagData = editTagModalPage.editSizesAndQuantity(3, 2,0);
+        ProductTagData tmpTagData = editTagModalPage.editSizesAndQuantity( 3, 2,0);
         editTagModalPage.confirm();
 
         tmpTagData.setLmCode(lmCodesList.get(0));
@@ -667,6 +668,71 @@ public class PrintTagsTest extends AppBaseSteps {
         }
         tagsListPage = new TagsListPage();
         tagsListPage.shouldProductTagsHasCorrectSizesAndQuantity(tagDataArray);
+    }
+
+    @Test(description = "C23389198 удаление сессии")
+    public void testDeleteSession() throws Exception {
+        String lmCode = catalogSearchClient.getRandomProduct().getLmCode();
+
+        TagsListPage tagsListPage = loginAndCreateSession(lmCode);
+
+        //Step 1
+        step("удалить все товары по одному");
+        EditTagModalPage editTagModalPage = tagsListPage.callEditModal(lmCode);
+        editTagModalPage.deleteProductFromSession();
+        DeleteSessionByDeletingProductModalPage deleteSessionByDeletingProductModalPage = new DeleteSessionByDeletingProductModalPage();
+        deleteSessionByDeletingProductModalPage.confirmDelete();
+        SessionsListPage sessionsListPage = new SessionsListPage();
+        sessionsListPage.shouldViewTypeIsCorrect(true);
+
+        //Step 2
+        step("удалить все товары через массовое редактирование");
+        tagsListPage = createSession(lmCode);
+        tagsListPage.switchToGroupEditorMode();
+        editTagModalPage = tagsListPage.choseProductsAndOpenGroupEditModal(lmCode);
+        editTagModalPage.deleteProductFromSession();
+        deleteSessionByDeletingProductModalPage = new DeleteSessionByDeletingProductModalPage();
+        deleteSessionByDeletingProductModalPage.confirmDelete();
+        sessionsListPage = new SessionsListPage();
+        sessionsListPage.shouldViewTypeIsCorrect(true);
+
+        //Step 3
+        step("удалить товары через добавление существующего товара (поиск)");
+        tagsListPage = createSession(lmCode);
+        PrintTagsScannerPage printTagsScannerPage = tagsListPage.addProductToSession();
+        SearchProductPage searchProductPage = printTagsScannerPage.navigateToSearchProductPage();
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
+        editTagModalPage = new EditTagModalPage();
+        editTagModalPage.deleteProductFromSession();
+        sessionsListPage = new SessionsListPage();
+        sessionsListPage.shouldViewTypeIsCorrect(true);
+
+        //Step 4
+        step("удалить товары через добавление существующего товара (карточка)");
+        tagsListPage = createSession(lmCode);
+        tagsListPage.goBack();
+        ConfirmSessionExitModalPage confirmSessionExitModalPage = new ConfirmSessionExitModalPage();
+        confirmSessionExitModalPage.exit();
+        sessionsListPage = new SessionsListPage();
+        sessionsListPage.goBack();
+        BottomMenuPage bottomMenuPage = new BottomMenuPage();
+        MainProductAndServicesPage mainProductAndServicesPage = bottomMenuPage.goToSales();
+        searchProductPage = mainProductAndServicesPage.clickSearchBar(false);
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
+        ProductCardPage productCardPage = new ProductCardPage();
+        productCardPage.clickActionWithProductButton();
+        ActionWithProductModalPage multiFunctionModal = new ActionWithProductModalPage();
+        editTagModalPage = multiFunctionModal.printTag();
+        editTagModalPage.deleteProductFromSession();
+        sessionsListPage = new SessionsListPage();
+        sessionsListPage.shouldViewTypeIsCorrect(true);
+
+        //Step 5
+        step("удаление сессии через специальную кнопку в списке товаров сессии");
+        tagsListPage = createSession(lmCode);
+        tagsListPage.deleteSession();
+        sessionsListPage = new SessionsListPage();
+        sessionsListPage.shouldViewTypeIsCorrect(true);
     }
 
 }

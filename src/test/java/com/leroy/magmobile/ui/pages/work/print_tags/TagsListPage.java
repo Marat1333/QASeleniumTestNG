@@ -54,9 +54,24 @@ public class TagsListPage extends CommonMagMobilePage {
     @AppFindBy(text = "ВЫБРАТЬ ВСЕ")
     Button choseAllProductsBtn;
 
+    @AppFindBy(text = "Принтер не найден")
+    Element printerNotFoundModalLbl;
+
+    @AppFindBy(text = "ПОВТОРИТЬ")
+    Button tryAgainPrinterNotFoundModal;
+
     @Override
     protected void waitForPageIsLoaded() {
-        //TODO обработать ошибку при неполучении принтеров
+        waitUntilProgressBarAppearsAndDisappear();
+        int printerNotFoundAttemptsCount=0;
+
+        while (printerNotFoundAttemptsCount<3) {
+            if (printerNotFoundModalLbl.isVisible()) {
+                tryAgainPrinterNotFoundModal.click();
+                waitUntilProgressBarAppearsAndDisappear();
+            }
+            printerNotFoundAttemptsCount++;
+        }
         header.waitForVisibility();
         deleteSessionBtn.waitForVisibility();
         waitUntilProgressBarIsInvisible(short_timeout);
@@ -68,6 +83,12 @@ public class TagsListPage extends CommonMagMobilePage {
 
     public String getCurrentPrinterName(){
         return printerNameBtn.getText();
+    }
+
+    @Step("Удалить сессию")
+    public void deleteSession(){
+        deleteSessionBtn.click();
+        deleteSessionBtn.waitForInvisibility();
     }
 
     @Step("Напечатать ценники")

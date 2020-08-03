@@ -5,10 +5,13 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import io.qameta.allure.Step;
+import lombok.Getter;
 
-public class DeleteSessionModalPage extends CommonMagMobilePage {
+public class DeleteSessionByDeletingProductModalPage extends CommonMagMobilePage {
+
+    @Getter
     @AppFindBy(text = "Удаление сессии")
-    Element header;
+    private Element header;
 
     @AppFindBy(text = "УДАЛИТЬ")
     Button deleteSessionBtn;
@@ -18,7 +21,7 @@ public class DeleteSessionModalPage extends CommonMagMobilePage {
 
     @Override
     protected void waitForPageIsLoaded() {
-        header.waitForVisibility();
+        getHeader().waitForVisibility();
         deleteSessionBtn.waitForVisibility();
         cancelBtn.waitForVisibility();
     }
