@@ -17,10 +17,12 @@ import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
 import com.leroy.magportal.ui.models.salesdoc.ShortOrderDocWebData;
 import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
 import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
+import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.pages.customers.form.CustomerSearchForm;
 import com.leroy.magportal.ui.pages.orders.OrderCreatedContentPage;
 import com.leroy.magportal.ui.pages.orders.OrderDraftContentPage;
 import com.leroy.magportal.ui.pages.orders.OrderDraftDeliveryWayPage;
+import com.leroy.magportal.ui.pages.orders.OrderHeaderPage;
 import com.leroy.magportal.ui.pages.orders.modal.SubmittedOrderModal;
 import com.leroy.magportal.ui.tests.BasePAOTest;
 import com.leroy.utils.RandomUtil;
@@ -28,6 +30,9 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
+import java.util.List;
+
+import static com.leroy.constants.DefectConst.PRODUCT_COUNT_WHEN_TWO_ORDERS_IN_CART;
 import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -272,6 +277,59 @@ public class OrderTest extends BasePAOTest {
         stepRefreshDocumentListAndCheckDocument();
     }
 
+    @Test(description = "C23410897 Создать последовательно заказы из корзины с двумя заказами")
+    public void testCreateOrdersFromCartWithTwoOrders() throws Exception {
+        // Prepare data
+        SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+        List<CartProductOrderData> products = helper.findProductsForSeveralOrdersInCart();
+        String cartId = helper.createCart(products).getFullDocId();
+
+        cartPage = loginAndGoTo(CartPage.class);
+        cartPage.clickDocumentInLeftMenu(cartId);
+
+        cartPage = new CartPage();
+        SalesDocWebData cartData = cartPage.getSalesDocData();
+
+        // Step 1
+        step("Нажмите на кнопку 'Оформить Заказ №1'");
+        stepClickConfirmOrderButton(null);
+
+        // Step 2
+        step("Нажмите на кнопку 'Добавить клиента'");
+        stepClickAddCustomerButton();
+
+        // Step 3
+        step("Введите номер телефона, нажмите Enter, нажмите на мини-карточку нужного клиента");
+        stepSelectCustomerByPhoneNumber(customerData);
+
+        // Step 4
+        step("Выберете поле PIN-код для оплаты, введите PIN-код для оплаты");
+        stepEnterPinCode();
+
+        // Step 5
+        step("Нажмите на кнопку Подтвердить заказ");
+        stepClickConfirmOrder();
+
+        // Step 6
+        step("Нажмите на 'Перейти в корзину'");
+        cartData.getOrders().remove(0);
+        if (PRODUCT_COUNT_WHEN_TWO_ORDERS_IN_CART)
+            cartData.getOrders().get(0).setProductCount(1);
+        orderData.getOrders().remove(1);
+        cartPage = submittedOrderModal.clickGoToCartButton()
+                .shouldCartHasData(cartData);
+
+        // Step 7
+        step("Вернитесь в раздел заказы и обновите список документов слева");
+        new MenuPage().goToPage(OrderHeaderPage.class);
+        stepRefreshDocumentListAndCheckDocument();
+
+        // Step 8
+        step("Найдите и откройте подтвержденный заказ");
+        orderCreatedPage.clickDocumentInLeftMenu(orderData.getNumber());
+        orderCreatedPage = new OrderCreatedContentPage().shouldOrderContentDataIs(orderData);
+    }
+
     // ------------ Steps ------------------ //
 
     /**
@@ -328,11 +386,11 @@ public class OrderTest extends BasePAOTest {
     private void stepClickConfirmOrder() {
         if (orderData.getDeliveryType() == null)
             orderData.setDeliveryType(SalesDocumentsConst.GiveAwayPoints.PICKUP);
-        orderData.setStatus(SalesDocumentsConst.States.IN_PROGRESS.getUiVal());
         submittedOrderModal = orderDraftDeliveryWayPage.clickConfirmOrderButton()
                 .verifyRequiredElements(orderData.getDeliveryType())
                 .shouldPinCodeIs(orderData.getPinCode())
                 .shouldNumberIs(orderData.getNumber());
+        orderData.setStatus(SalesDocumentsConst.States.IN_PROGRESS.getUiVal());
     }
 
     /**
@@ -347,6 +405,8 @@ public class OrderTest extends BasePAOTest {
      * Обновите список документов слева
      */
     private void stepRefreshDocumentListAndCheckDocument() throws Exception {
+        if (orderCreatedPage == null)
+            orderCreatedPage = new OrderCreatedContentPage();
         ShortOrderDocWebData shortOrderDocWebData = orderData.getShortOrderData();
         shortOrderDocWebData.setPayType(ShortOrderDocWebData.PayType.OFFLINE);
         orderCreatedPage.refreshDocumentList();

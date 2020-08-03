@@ -76,6 +76,23 @@ public class PAOHelper extends BaseHelper {
         return getProducts(necessaryCount, filter);
     }
 
+    @Step("API: Ищем подходящие товары для создания корзины с несколькими заказами")
+    public List<CartProductOrderData> findProductsForSeveralOrdersInCart() {
+        CatalogSearchFilter filtersData = new CatalogSearchFilter();
+        filtersData.setAvs(false);
+        filtersData.setTopEM(false);
+        filtersData.setHasAvailableStock(true);
+        List<ProductItemData> productItemDataList = getProducts(2, filtersData);
+        CartProductOrderData productWithNegativeBalance = new CartProductOrderData(
+                productItemDataList.get(0));
+        productWithNegativeBalance.setQuantity(productItemDataList.get(0).getAvailableStock() + 10.0);
+        CartProductOrderData productWithPositiveBalance = new CartProductOrderData(
+                productItemDataList.get(1));
+        productWithPositiveBalance.setQuantity(1.0);
+
+        return Arrays.asList(productWithNegativeBalance, productWithPositiveBalance);
+    }
+
     // Поиск Клиентов
 
     @Step("API: Ищем клиента")
