@@ -38,7 +38,6 @@ public class CartClient extends BaseMashupClient {
         CartData cartData = new CartData();
         cartData.setProducts(productOrderDataList);
         return execute(new CartPOST()
-                .bearerAuthHeader(userSessionData.getAccessToken())
                 .setShopId(userSessionData.getUserShopId())
                 .jsonBody(cartData), CartData.class);
     }

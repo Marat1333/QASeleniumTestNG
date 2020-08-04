@@ -118,7 +118,7 @@ public class PrintEstimatePage extends BaseWebPage {
     }
 
     @Step("Проверить, что текст для печати соответствуют данным, которые были в смете")
-    public PrintEstimatePage shouldEstimatePrintDataIs(SalesDocWebData estimateData) {
+    public PrintEstimatePage shouldEstimatePrintDataIs(SalesDocWebData estimateData) throws Exception {
         softAssert.isContainsIgnoringCase(header.getText(), estimateData.getClient().getName(),
                 "В загаловке должно присутствовать имя клиента");
         String descriptionText = description.getText();
@@ -145,7 +145,7 @@ public class PrintEstimatePage extends BaseWebPage {
 
             softAssert.isEquals(actualProduct.getLmCode(), expectedProduct.getLmCode(),
                     "Товар " + (i + 1) + " - неверный ЛМ код");
-            softAssert.isEquals(actualProduct.getTitle(), expectedProduct.getTitle().isEmpty()? "-" : expectedProduct.getTitle(),
+            softAssert.isEquals(actualProduct.getTitle(), expectedProduct.getTitle().isEmpty() ? "-" : expectedProduct.getTitle(),
                     "Товар " + (i + 1) + " - неверное название");
             softAssert.isEquals(actualProduct.getQuantity(), expectedProduct.getSelectedQuantity(),
                     "Товар " + (i + 1) + " - неверное кол-во");

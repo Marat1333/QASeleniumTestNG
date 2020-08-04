@@ -5,12 +5,11 @@ import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.pages.BaseWebPage;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magportal.ui.pages.NewFeaturesModalWindow;
 import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
 import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
-import com.leroy.magportal.ui.pages.common.modal.ShopSelectionModal;
 import com.leroy.magportal.ui.pages.customers.CustomerPage;
 import com.leroy.magportal.ui.pages.orders.OrderHeaderPage;
+import com.leroy.magportal.ui.pages.picking.PickingPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
@@ -55,6 +54,7 @@ public class MenuPage extends BaseWebPage {
         else if (SearchProductPage.class == pageClass) expectedMenuItem = "Товары";
         else if (CartPage.class == pageClass) expectedMenuItem = "Корзины";
         else if (EstimatePage.class == pageClass) expectedMenuItem = "Сметы";
+        else if (PickingPage.class == pageClass) expectedMenuItem = "Сборки";
         else
             throw new IllegalArgumentException("Переход на страницу " + pageClass.getName() + " еще не реализован через класс MenuPage");
         Element menuItem = new Element(driver, new CustomLocator(

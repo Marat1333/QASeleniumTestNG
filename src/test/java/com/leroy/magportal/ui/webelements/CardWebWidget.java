@@ -10,7 +10,7 @@ public abstract class CardWebWidget<T> extends BaseWidget {
         super(driver, locator);
     }
 
-    public abstract T collectDataFromPage();
+    public abstract T collectDataFromPage() throws Exception;
 
     public void click() {
         E(this.getXpath()).click();

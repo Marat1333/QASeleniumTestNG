@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Picking Suite" parallel="tests">
+
+    <listeners>
+        <listener class-name="com.leroy.core.listeners.TestRailListener"/>
+    </listeners>
+
+    <test name="C23408356 Сплит сборки (зона сборки Торговый зал)">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.PickingTest">
+                <methods>
+                    <include name="testSplitAssemblyShoppingRoom"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C23408338 Сплит сборки (зона сборки СС)">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.PickingTest">
+                <methods>
+                    <include name="testSplitAssemblySS"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C23408737 Сплит сборки с несколькими товарами">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.PickingTest">
+                <methods>
+                    <include name="testSplitAssemblyWithDifferentProducts"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="Частичная сборка заказа">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.PickingTest">
+                <methods>
+                    <include name="testPartialOrderAssembly"/>
+                    <include name="testSplitAssemblyWithChangingProductQuantity"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+</suite>
