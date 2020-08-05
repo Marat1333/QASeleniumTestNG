@@ -4,6 +4,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.ui.elements.MagMobCheckBox;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.work.print_tags.data.ProductTagData;
@@ -103,6 +104,11 @@ public class EditTagModalPage extends CommonMagMobilePage {
         return this;
     }
 
+    @Step("Установить размеры и кол-во")
+    public EditTagModalPage setSizesAndQuantity(ProductTagData productTagData) {
+        return setSizesAndQuantity(productTagData.getSmallSizeCount(), productTagData.getMiddleSizeCount(), productTagData.getBigSizeCount());
+    }
+
     @Step("Нажать на кнопку подтвердить")
     public void confirm() {
         addProductBtn.click();
@@ -115,19 +121,17 @@ public class EditTagModalPage extends CommonMagMobilePage {
 
     @Step("Добавить товар в сессию печати ценников")
     public ProductTagData addProductToPrintSession(int smallCount, int midCount, int bigCount) {
-        ProductTagData data = editSizesAndQuantity(smallCount, midCount, bigCount);
-        data.setLmCode(ParserUtil.strWithOnlyDigits(lmCode.getText()));
+        ProductTagData data = new ProductTagData(ParserUtil.strWithOnlyDigits(lmCode.getText()), smallCount, midCount, bigCount);
+        setSizesAndQuantity(smallCount, midCount, bigCount);
         confirm();
         return data;
     }
 
-    @Step("Отредактировать форматы и кол-во в групповом редактировании")
-    public ProductTagData editSizesAndQuantity(int smallCount, int midCount, int bigCount) {
-        ProductTagData data = new ProductTagData();
-        data.setSmallSizeCount(smallCount);
-        data.setMiddleSizeCount(midCount);
-        data.setBigSizeCount(bigCount);
-        setSizesAndQuantity(smallCount, midCount, bigCount);
+    @Step("Добавить товар в сессию печати ценников")
+    public ProductTagData addProductToPrintSession(ProductTagData data) {
+        data.setLmCode(ParserUtil.strWithOnlyDigits(lmCode.getText()));
+        setSizesAndQuantity(data.getSmallSizeCount(), data.getMiddleSizeCount(), data.getBigSizeCount());
+        confirm();
         return data;
     }
 
@@ -171,7 +175,15 @@ public class EditTagModalPage extends CommonMagMobilePage {
         return this;
     }
 
-    //TODO проверить данные товара в модалке
+    @Step("Проверить данные товара")
+    public EditTagModalPage shouldProductDataIsCorrect(ProductItemData data){
+        softAssert.isElementTextEqual(lmCode, "ЛМ "+data.getLmCode());
+        softAssert.isEquals(ParserUtil.strWithOnlyDigits(barCode.getText()), data.getBarCode(), "barCode");
+        softAssert.isElementTextEqual(title, data.getTitle());
+        softAssert.isElementTextContains(price, ParserUtil.doubleToStr(data.getPrice(), 2, false));
+        softAssert.verifyAll();
+        return this;
+    }
 
     @Step("Проверить, что для товары корректно предвыбраны значения")
     public EditTagModalPage shouldSizeValuesAreCorrect(int smallSize, int middleSize, int bigSize) {

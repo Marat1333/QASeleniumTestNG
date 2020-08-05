@@ -37,19 +37,19 @@ public class ProductWidget extends CardWidget<ProductTagData> {
     @Override
     public ProductTagData collectDataFromPage(String pageSource) {
         ProductTagData data = new ProductTagData();
-        data.setLmCode(ParserUtil.strWithOnlyDigits(lmCode.getText()));
-        if (smallCountLbl.isVisible()) {
-            data.setSmallSizeCount(Integer.parseInt(ParserUtil.strWithOnlyDigits(smallCountLbl.getText())));
+        data.setLmCode(ParserUtil.strWithOnlyDigits(lmCode.getText(pageSource)));
+        if (smallCountLbl.isVisible(pageSource)) {
+            data.setSmallSizeCount(Integer.parseInt(ParserUtil.strWithOnlyDigits(smallCountLbl.getText(pageSource))));
         } else {
             data.setSmallSizeCount(0);
         }
-        if (middleCountLbl.isVisible()) {
-            data.setMiddleSizeCount(Integer.parseInt(ParserUtil.strWithOnlyDigits(middleCountLbl.getText())));
+        if (middleCountLbl.isVisible(pageSource)) {
+            data.setMiddleSizeCount(Integer.parseInt(ParserUtil.strWithOnlyDigits(middleCountLbl.getText(pageSource))));
         } else {
             data.setMiddleSizeCount(0);
         }
-        if (bigCountLbl.isVisible()) {
-            data.setBigSizeCount(Integer.parseInt(ParserUtil.strWithOnlyDigits(bigCountLbl.getText())));
+        if (bigCountLbl.isVisible(pageSource)) {
+            data.setBigSizeCount(Integer.parseInt(ParserUtil.strWithOnlyDigits(bigCountLbl.getText(pageSource))));
         } else {
             data.setBigSizeCount(0);
         }

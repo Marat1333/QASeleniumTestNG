@@ -195,6 +195,9 @@ public class TagsListPage extends CommonMagMobilePage {
             softAssert.isEquals(productTagsList.get(i).getLmCode(), lmCodes[i], "lmCode");
         }
         softAssert.verifyAll();
+        if (!E("contains(ЛМ "+productTagsList.get(0).getLmCode()+")").isVisible()) {
+            productsScrollView.scrollToBeginning();
+        }
         return this;
     }
 
@@ -206,6 +209,9 @@ public class TagsListPage extends CommonMagMobilePage {
             softAssert.isEquals(uiProductTagsList.get(i), userTagData[i], "sizes or quantity mismatch");
         }
         softAssert.verifyAll();
+        if (!E("contains(ЛМ "+uiProductTagsList.get(0).getLmCode()+")").isVisible()) {
+            productsScrollView.scrollToBeginning();
+        }
         return this;
     }
 
@@ -214,6 +220,9 @@ public class TagsListPage extends CommonMagMobilePage {
         productsScrollView.setSwipeDeadZonePercentage(SWIPE_DEAD_ZONE_PERCENTAGE);
         List<ProductTagData> productTagsList = productsScrollView.getFullDataList();
         anAssert.isEquals(productTagsList.size(), count, "products count");
+        if (!E("contains(ЛМ "+productTagsList.get(0).getLmCode()+")").isVisible()) {
+            productsScrollView.scrollToBeginning();
+        }
         return this;
     }
 
@@ -223,6 +232,9 @@ public class TagsListPage extends CommonMagMobilePage {
         List<ProductTagData> productTagsList = productsScrollView.getFullDataList();
         List<String> uiLmCodes = productTagsList.stream().map(ProductTagData::getLmCode).collect(Collectors.toList());
         anAssert.isFalse(uiLmCodes.contains(lmCode), "в списке содержится товар " + lmCode);
+        if (!E("contains(ЛМ "+uiLmCodes.get(0)+")").isVisible()) {
+            productsScrollView.scrollToBeginning();
+        }
         return this;
     }
 

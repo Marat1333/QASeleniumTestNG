@@ -7,12 +7,28 @@ import java.util.Objects;
 
 @Data
 public class ProductTagData implements Serializable {
+    public ProductTagData(String lmCode, int smallSizeCount, int middleSizeCount, int bigSizeCount){
+        this.lmCode = lmCode;
+        this.smallSizeCount = smallSizeCount;
+        this.middleSizeCount = middleSizeCount;
+        this.bigSizeCount = bigSizeCount;
+    }
+
+    public ProductTagData(){
+    }
+
     private String lmCode;
     private String barCode;
     private String title;
     private int smallSizeCount;
     private int middleSizeCount;
     private int bigSizeCount;
+
+    public void setSizes(int smallSizeCount, int middleSizeCount, int bigSizeCount){
+        this.smallSizeCount = smallSizeCount;
+        this.middleSizeCount = middleSizeCount;
+        this.bigSizeCount = bigSizeCount;
+    }
 
     @Override
     public boolean equals(Object o) {

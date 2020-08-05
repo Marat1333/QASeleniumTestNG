@@ -18,7 +18,6 @@ import com.leroy.magmobile.ui.pages.work.print_tags.data.ProductTagData;
 import com.leroy.magmobile.ui.pages.work.print_tags.enums.Format;
 import com.leroy.magmobile.ui.pages.work.print_tags.modal.*;
 import io.qameta.allure.Step;
-import org.apache.commons.lang.SerializationUtils;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
@@ -107,6 +106,7 @@ public class PrintTagsTest extends AppBaseSteps {
         SearchProductPage searchProductPage = scannerPage.navigateToSearchProductPage();
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
         EditTagModalPage editTagModalPage = new EditTagModalPage();
+        editTagModalPage.shouldProductDataIsCorrect(randomProduct);
         editTagModalPage.addProductToPrintSession();
         TagsListPage tagsListPage = new TagsListPage();
         tagsListPage.verifyRequiredElements();
@@ -190,7 +190,6 @@ public class PrintTagsTest extends AppBaseSteps {
         SessionsListPage sessionsListPage = workPage.goToSessionsListPage();
 
         //Step 1
-        //TODO добавить проверку данных товара в модалке
         step("добавить товар через поиск");
         sessionsListPage.createNewSession();
         PrintTagsScannerPage scannerPage = new PrintTagsScannerPage();
@@ -441,10 +440,12 @@ public class PrintTagsTest extends AppBaseSteps {
         addUniqueProductsToSessionByManualSearch(lmCodesList.subList(1, lmCodesList.size()));
         tagsListPage = new TagsListPage();
         editTagModalPage = tagsListPage.callEditModalToProductByIndex(1);
-        editTagModalPage.addProductToPrintSession(0, 3, 0);
+        editTagModalPage.selectCheckBox(Format.MIDDLE);
+        editTagModalPage.confirm();
         tagsListPage = new TagsListPage();
         editTagModalPage = tagsListPage.callEditModalToProductByIndex(2);
-        editTagModalPage.addProductToPrintSession(0, 0, 2);
+        editTagModalPage.selectCheckBox(Format.BIG);
+        editTagModalPage.confirm();
         tagsListPage = new TagsListPage();
         tagsListPage.printTags();
         sessionFormatsModalPage.printFormat(Format.SMALL);
@@ -480,6 +481,7 @@ public class PrintTagsTest extends AppBaseSteps {
         String lmCode = catalogSearchClient.getRandomProduct().getLmCode();
         LocalDateTime sessionCreationTime;
         LocalDateTime sessionCreationTimeCheck;
+        ProductTagData tagData = new ProductTagData();
 
         //Step 1
         step("отредактировать дефолтные значения при добавлении в сессию");
@@ -490,7 +492,8 @@ public class PrintTagsTest extends AppBaseSteps {
         SearchProductPage searchProductPage = scannerPage.navigateToSearchProductPage();
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
         EditTagModalPage editTagModalPage = new EditTagModalPage();
-        ProductTagData tagData = editTagModalPage.addProductToPrintSession(4, 3, 2);
+        tagData.setSizes(4, 3, 2);
+        editTagModalPage.addProductToPrintSession(tagData);
         TagsListPage tagsListPage = new TagsListPage();
         sessionCreationTime = tagsListPage.getSessionCreationTimeStamp();
         tagsListPage.shouldProductTagsHasCorrectSizesAndQuantity(tagData);
@@ -499,7 +502,8 @@ public class PrintTagsTest extends AppBaseSteps {
         step("редактирование на странице со списком ценников");
         editTagModalPage = tagsListPage.callEditModal(lmCode);
         editTagModalPage.shouldSizeValuesAreCorrect(tagData);
-        tagData = editTagModalPage.addProductToPrintSession(3, 2, 1);
+        tagData.setSizes(3, 2, 1);
+        editTagModalPage.addProductToPrintSession(tagData);
         tagsListPage.shouldProductTagsHasCorrectSizesAndQuantity(tagData);
 
         //Step 3
@@ -534,14 +538,16 @@ public class PrintTagsTest extends AppBaseSteps {
 
         //Step 8
         step("редактирование через карточку уже добавленного товара");
-        tagData = editTagModalPage.addProductToPrintSession(3, 2, 2);
+        tagData.setSizes(3, 2, 2);
+        editTagModalPage.addProductToPrintSession(tagData);
         tagsListPage = new TagsListPage();
         tagsListPage.addProductToSession();
         scannerPage.navigateToSearchProductPage();
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
         editTagModalPage = new EditTagModalPage();
         editTagModalPage.shouldSizeValuesAreCorrect(tagData);
-        tagData = editTagModalPage.addProductToPrintSession(5, 5, 5);
+        tagData.setSizes(5, 5, 5);
+        editTagModalPage.addProductToPrintSession(tagData);
 
         //Step 9
         step("редактировать через поиск уже добавленного товара");
@@ -560,7 +566,8 @@ public class PrintTagsTest extends AppBaseSteps {
         ActionWithProductModalPage actionWithProductModalPage = new ActionWithProductModalPage();
         actionWithProductModalPage.printTag();
         editTagModalPage.shouldSizeValuesAreCorrect(tagData);
-        tagData = editTagModalPage.addProductToPrintSession(6, 6, 6);
+        tagData.setSizes(6, 6, 6);
+        editTagModalPage.addProductToPrintSession(tagData);
         tagsListPage = new TagsListPage();
         tagsListPage.shouldProductTagsHasCorrectSizesAndQuantity(tagData);
         sessionCreationTimeCheck = tagsListPage.getSessionCreationTimeStamp();
@@ -569,13 +576,15 @@ public class PrintTagsTest extends AppBaseSteps {
 
     @Test(description = "C23389200 массовое редактирование формата ценников")
     public void testTagsGroupEdition() throws Exception {
-        //TODO переделать методы на взаимодействие с ProductTagData
         int productsCount = 5;
         List<ProductItemData> randomProducts = catalogSearchClient.getRandomUniqueProductsWithTitles(productsCount);
         List<String> lmCodesList = randomProducts.stream().map(ProductItemData::getLmCode).collect(Collectors.toList());
-        List<ProductTagData> tagDataList = new ArrayList<>();
-        ProductTagData[] tagDataArray;
-        ProductTagData productTagData;
+
+        ProductTagData firstProductData = new ProductTagData(lmCodesList.get(0), 3, 0, 0);
+        ProductTagData secondProductData = new ProductTagData(lmCodesList.get(1), 3, 0, 0);
+        ProductTagData thirdProductData = new ProductTagData(lmCodesList.get(2), 1, 0, 0);
+        ProductTagData fourthProductData = new ProductTagData(lmCodesList.get(3), 0, 2, 0);
+        ProductTagData fifthProductData = new ProductTagData(lmCodesList.get(4), 3, 2, 2);
 
         //Pre-conditions
         WorkPage workPage = loginAndGoTo(WorkPage.class);
@@ -586,19 +595,18 @@ public class PrintTagsTest extends AppBaseSteps {
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCodesList.get(0));
         EditTagModalPage editTagModalPage = new EditTagModalPage();
 
-        tagDataList.add(editTagModalPage.addProductToPrintSession());
-        tagDataList.addAll(addUniqueProductsToSessionByManualSearch(lmCodesList.subList(1, lmCodesList.size())));
-        tagDataArray = new ProductTagData[tagDataList.size()];
+        editTagModalPage.addProductToPrintSession();
+        addUniqueProductsToSessionByManualSearch(lmCodesList.subList(1, lmCodesList.size()));
 
         TagsListPage tagsListPage = new TagsListPage();
         editTagModalPage = tagsListPage.callEditModal(lmCodesList.get(2));
-        tagDataList.set(2, editTagModalPage.addProductToPrintSession(1, 0, 0));
+        editTagModalPage.addProductToPrintSession(thirdProductData);
         tagsListPage = new TagsListPage();
         tagsListPage.callEditModal(lmCodesList.get(3));
-        tagDataList.set(3, editTagModalPage.addProductToPrintSession(0, 2, 0));
+        editTagModalPage.addProductToPrintSession(fourthProductData);
         tagsListPage = new TagsListPage();
         tagsListPage.callEditModal(lmCodesList.get(4));
-        tagDataList.set(4, editTagModalPage.addProductToPrintSession(3, 2, 2));
+        editTagModalPage.addProductToPrintSession(fifthProductData);
 
         //Step 1
         step("проверить вид модалки группового редактирования при выборе 1 товара");
@@ -633,19 +641,14 @@ public class PrintTagsTest extends AppBaseSteps {
                 "добавить им 1 формат с кол-вом, соответствующим одному из форматов последнего товара");
         editTagModalPage = tagsListPage.choseProductsAndOpenGroupEditModal(lmCodesList.get(1), lmCodesList.get(2));
         editTagModalPage.shouldCheckBoxesHasCorrectCondition(true, false, false);
-        editTagModalPage.shouldSizeValuesAreCorrect(3, 0, 0);
-        ProductTagData tmpTagData = editTagModalPage.editSizesAndQuantity(3, 2, 0);
+        editTagModalPage.shouldSizeValuesAreCorrect(firstProductData);
+        firstProductData.setSizes(3, 2, 0);
+        secondProductData.setSizes(3, 2, 0);
+        editTagModalPage.setSizesAndQuantity(firstProductData);
         editTagModalPage.confirm();
 
-        tmpTagData.setLmCode(lmCodesList.get(0));
-        tagDataList.set(0, tmpTagData);
-        productTagData = (ProductTagData) SerializationUtils.clone(tmpTagData);
-        productTagData.setLmCode(lmCodesList.get(1));
-        tagDataList.set(1, productTagData);
-
-        tagDataArray = tagDataList.toArray(tagDataArray);
         tagsListPage = new TagsListPage();
-        tagsListPage.shouldProductTagsHasCorrectSizesAndQuantity(tagDataArray);
+        tagsListPage.shouldProductTagsHasCorrectSizesAndQuantity(firstProductData, secondProductData, thirdProductData, fourthProductData, fifthProductData);
         tagsListPage.switchToGroupEditorMode();
 
         //Step 6
@@ -654,21 +657,22 @@ public class PrintTagsTest extends AppBaseSteps {
                 "2. товар с 1 форматом и тем же кол-вом конкретного формата, что и у первого товара");
         editTagModalPage = tagsListPage.choseProductsAndOpenGroupEditModal(lmCodesList.get(0), lmCodesList.get(1), lmCodesList.get(4));
         editTagModalPage.shouldCheckBoxesHasCorrectCondition(true, true, false);
-        editTagModalPage.shouldSizeValuesAreCorrect(3, 2, 0);
+        editTagModalPage.shouldSizeValuesAreCorrect(firstProductData);
         editTagModalPage.closeModal();
 
         //Step 7
         step("выбрать все товары в групповом редактировании и отредактировать их");
+        firstProductData.setSizes(5, 5, 5);
+        secondProductData.setSizes(5, 5, 5);
+        thirdProductData.setSizes(5, 5, 5);
+        fourthProductData.setSizes(5, 5, 5);
+        fifthProductData.setSizes(5, 5, 5);
+
         editTagModalPage = tagsListPage.choseAllProductsAndCallEditModal();
-        tmpTagData = editTagModalPage.editSizesAndQuantity(5, 5, 5);
+        editTagModalPage.setSizesAndQuantity(firstProductData);
         editTagModalPage.confirm();
-        for (int i = 0; i < tagDataArray.length; i++) {
-            ProductTagData data = (ProductTagData) SerializationUtils.clone(tmpTagData);
-            data.setLmCode(lmCodesList.get(i));
-            tagDataArray[i] = data;
-        }
         tagsListPage = new TagsListPage();
-        tagsListPage.shouldProductTagsHasCorrectSizesAndQuantity(tagDataArray);
+        tagsListPage.shouldProductTagsHasCorrectSizesAndQuantity(firstProductData, secondProductData, thirdProductData, fourthProductData, fifthProductData);
     }
 
     @Test(description = "C23389198 удаление сессии")
@@ -842,21 +846,24 @@ public class PrintTagsTest extends AppBaseSteps {
         SearchProductPage searchProductPage = scannerPage.navigateToSearchProductPage();
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCodesList.get(0));
         EditTagModalPage editTagModalPage = new EditTagModalPage();
-        editTagModalPage.addProductToPrintSession(0, 2,0);
+        editTagModalPage.selectCheckBoxes(Format.MIDDLE);
+        editTagModalPage.confirm();
         TagsListPage tagsListPage = new TagsListPage();
 
         tagsListPage.addProductToSession();
         scannerPage.navigateToSearchProductPage();
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCodesList.get(1));
         editTagModalPage = new EditTagModalPage();
-        editTagModalPage.addProductToPrintSession(0, 0,2);
+        editTagModalPage.selectCheckBoxes(Format.BIG);
+        editTagModalPage.confirm();
         tagsListPage = new TagsListPage();
 
         tagsListPage.addProductToSession();
         scannerPage.navigateToSearchProductPage();
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCodesList.get(2));
         editTagModalPage = new EditTagModalPage();
-        editTagModalPage.addProductToPrintSession(3, 0,0);
+        editTagModalPage.selectCheckBoxes(Format.SMALL);
+        editTagModalPage.confirm();
         tagsListPage = new TagsListPage();
 
         //Step 1
@@ -890,13 +897,15 @@ public class PrintTagsTest extends AppBaseSteps {
         searchProductPage = scannerPage.navigateToSearchProductPage();
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCodesList.get(0));
         editTagModalPage = new EditTagModalPage();
-        editTagModalPage.addProductToPrintSession(0, 2,2);
+        editTagModalPage.selectCheckBoxes(Format.BIG, Format.MIDDLE);
+        editTagModalPage.confirm();
         tagsListPage = new TagsListPage();
         tagsListPage.addProductToSession();
         scannerPage.navigateToSearchProductPage();
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCodesList.get(1));
         editTagModalPage = new EditTagModalPage();
-        editTagModalPage.addProductToPrintSession(3, 0, 0);
+        editTagModalPage.selectCheckBoxes(Format.SMALL);
+        editTagModalPage.confirm();
         tagsListPage = new TagsListPage();
         tagsListPage.printTags();
         sessionFormatsModalPage = new SessionFormatsModalPage();
@@ -953,14 +962,14 @@ public class PrintTagsTest extends AppBaseSteps {
         step("создать сессию через раздел работа, отправить ценник на печать и закрыть страницу-уведомление об успешной отправке");
         BottomMenuPage bottomMenuPage = new BottomMenuPage();
         WorkPage workPage = bottomMenuPage.goToWork();
-        SessionsListPage sessionsListPage = workPage.goToSessionsListPage();
+        workPage.goToSessionsListPage();
         tagsListPage = createSession(lmCode);
         tagsListPage.printTags();
         PagesQuantityModalPage pagesQuantityModalPage = new PagesQuantityModalPage();
         pagesQuantityModalPage.continuePrinting();
         SuccessPrintingPage successPrintingPage = new SuccessPrintingPage();
         successPrintingPage.closePage();
-        sessionsListPage = new SessionsListPage();
+        SessionsListPage sessionsListPage = new SessionsListPage();
         sessionsListPage.verifyRequiredElements();
 
         //Step 5
