@@ -10,6 +10,7 @@ import com.leroy.magmobile.ui.pages.common.BottomMenuPage;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductCardPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.ActionWithProductModalPage;
+import com.leroy.magmobile.ui.pages.search.NomenclatureSearchPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.work.WorkPage;
 import com.leroy.magmobile.ui.pages.work.print_tags.*;
@@ -137,7 +138,8 @@ public class PrintTagsTest extends AppBaseSteps {
         ProductCardPage productCardPage = new ProductCardPage();
         productCardPage.clickActionWithProductButton();
         ActionWithProductModalPage multiFunctionModal = new ActionWithProductModalPage();
-        EditTagModalPage editTagModalPage = multiFunctionModal.printTag();
+        multiFunctionModal.printTag();
+        EditTagModalPage editTagModalPage = new EditTagModalPage();
         editTagModalPage.addProductToPrintSession();
         TagsListPage tagsListPage = new TagsListPage();
         tagsListPage.verifyRequiredElements();
@@ -216,7 +218,8 @@ public class PrintTagsTest extends AppBaseSteps {
         ProductCardPage productCardPage = new ProductCardPage();
         productCardPage.clickActionWithProductButton();
         ActionWithProductModalPage multiFunctionModal = new ActionWithProductModalPage();
-        editTagModalPage = multiFunctionModal.printTag();
+        multiFunctionModal.printTag();
+        editTagModalPage = new EditTagModalPage();
         editTagModalPage.shouldDeleteBtnHasCorrectCondition(false);
         ProductTagData productTagData = editTagModalPage.addProductToPrintSession();
         tagsListPage = new TagsListPage();
@@ -326,7 +329,6 @@ public class PrintTagsTest extends AppBaseSteps {
 
         //Step 2
         step("удалить товар через массовое редактирование");
-
         //workaround for minor bug https://jira.lmru.tech/browse/LFRONT-3640
         tagsListPage.callEditModal(lmCodesList.get(0));
         editTagModalPage.closeModal();
@@ -507,7 +509,6 @@ public class PrintTagsTest extends AppBaseSteps {
         editTagModalPage.shouldWrongCountControlIsVisible(true, true, true);
         editTagModalPage.verifyRequiredElements();
 
-
         //Step 4
         step("ввести 0 в кол-ве");
         editTagModalPage.setSizesAndQuantity(0, 0, 0);
@@ -594,7 +595,7 @@ public class PrintTagsTest extends AppBaseSteps {
         tagDataList.set(2, editTagModalPage.addProductToPrintSession(1, 0, 0));
         tagsListPage = new TagsListPage();
         tagsListPage.callEditModal(lmCodesList.get(3));
-        tagDataList.set(3,editTagModalPage.addProductToPrintSession(0, 2, 0));
+        tagDataList.set(3, editTagModalPage.addProductToPrintSession(0, 2, 0));
         tagsListPage = new TagsListPage();
         tagsListPage.callEditModal(lmCodesList.get(4));
         tagDataList.set(4, editTagModalPage.addProductToPrintSession(3, 2, 2));
@@ -633,7 +634,7 @@ public class PrintTagsTest extends AppBaseSteps {
         editTagModalPage = tagsListPage.choseProductsAndOpenGroupEditModal(lmCodesList.get(1), lmCodesList.get(2));
         editTagModalPage.shouldCheckBoxesHasCorrectCondition(true, false, false);
         editTagModalPage.shouldSizeValuesAreCorrect(3, 0, 0);
-        ProductTagData tmpTagData = editTagModalPage.editSizesAndQuantity( 3, 2,0);
+        ProductTagData tmpTagData = editTagModalPage.editSizesAndQuantity(3, 2, 0);
         editTagModalPage.confirm();
 
         tmpTagData.setLmCode(lmCodesList.get(0));
@@ -651,7 +652,7 @@ public class PrintTagsTest extends AppBaseSteps {
         step("отредактировать 2 товара:\n" +
                 "1. товар со всеми форматами\n" +
                 "2. товар с 1 форматом и тем же кол-вом конкретного формата, что и у первого товара");
-        editTagModalPage = tagsListPage.choseProductsAndOpenGroupEditModal(lmCodesList.get(0),lmCodesList.get(1),lmCodesList.get(4));
+        editTagModalPage = tagsListPage.choseProductsAndOpenGroupEditModal(lmCodesList.get(0), lmCodesList.get(1), lmCodesList.get(4));
         editTagModalPage.shouldCheckBoxesHasCorrectCondition(true, true, false);
         editTagModalPage.shouldSizeValuesAreCorrect(3, 2, 0);
         editTagModalPage.closeModal();
@@ -659,9 +660,9 @@ public class PrintTagsTest extends AppBaseSteps {
         //Step 7
         step("выбрать все товары в групповом редактировании и отредактировать их");
         editTagModalPage = tagsListPage.choseAllProductsAndCallEditModal();
-        tmpTagData = editTagModalPage.editSizesAndQuantity(5,5,5);
+        tmpTagData = editTagModalPage.editSizesAndQuantity(5, 5, 5);
         editTagModalPage.confirm();
-        for (int i=0;i< tagDataArray.length;i++) {
+        for (int i = 0; i < tagDataArray.length; i++) {
             ProductTagData data = (ProductTagData) SerializationUtils.clone(tmpTagData);
             data.setLmCode(lmCodesList.get(i));
             tagDataArray[i] = data;
@@ -691,8 +692,8 @@ public class PrintTagsTest extends AppBaseSteps {
         tagsListPage.switchToGroupEditorMode();
         editTagModalPage = tagsListPage.choseProductsAndOpenGroupEditModal(lmCode);
         editTagModalPage.deleteProductFromSession();
-        deleteSessionByDeletingProductModalPage = new DeleteSessionByDeletingProductModalPage();
-        deleteSessionByDeletingProductModalPage.confirmDelete();
+        DeleteSessionByBtnModalPage deleteSessionByBtnModalPage = new DeleteSessionByBtnModalPage();
+        deleteSessionByBtnModalPage.confirmDelete();
         sessionsListPage = new SessionsListPage();
         sessionsListPage.shouldViewTypeIsCorrect(true);
 
@@ -704,6 +705,8 @@ public class PrintTagsTest extends AppBaseSteps {
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
         editTagModalPage = new EditTagModalPage();
         editTagModalPage.deleteProductFromSession();
+        deleteSessionByDeletingProductModalPage = new DeleteSessionByDeletingProductModalPage();
+        deleteSessionByDeletingProductModalPage.confirmDelete();
         sessionsListPage = new SessionsListPage();
         sessionsListPage.shouldViewTypeIsCorrect(true);
 
@@ -722,8 +725,11 @@ public class PrintTagsTest extends AppBaseSteps {
         ProductCardPage productCardPage = new ProductCardPage();
         productCardPage.clickActionWithProductButton();
         ActionWithProductModalPage multiFunctionModal = new ActionWithProductModalPage();
-        editTagModalPage = multiFunctionModal.printTag();
+        multiFunctionModal.printTag();
+        editTagModalPage = new EditTagModalPage();
         editTagModalPage.deleteProductFromSession();
+        deleteSessionByDeletingProductModalPage = new DeleteSessionByDeletingProductModalPage();
+        deleteSessionByDeletingProductModalPage.confirmDelete();
         sessionsListPage = new SessionsListPage();
         sessionsListPage.shouldViewTypeIsCorrect(true);
 
@@ -731,8 +737,237 @@ public class PrintTagsTest extends AppBaseSteps {
         step("удаление сессии через специальную кнопку в списке товаров сессии");
         tagsListPage = createSession(lmCode);
         tagsListPage.deleteSession();
+        deleteSessionByBtnModalPage = new DeleteSessionByBtnModalPage();
+        deleteSessionByBtnModalPage.confirmDelete();
         sessionsListPage = new SessionsListPage();
         sessionsListPage.shouldViewTypeIsCorrect(true);
+    }
+
+    @Test(description = "C23399939 проверить невозможность добавления товаров в сессию")
+    public void testAddProductError() throws Exception {
+        String productWithNoName = "12869061";
+        String productWithNoBarCode = "10025797";
+
+        //Step 1
+        step("Попробовать добавить товар без необходимых данных в сессию через поиск из сканера");
+        WorkPage workPage = loginAndGoTo(WorkPage.class);
+        SessionsListPage sessionsListPage = workPage.goToSessionsListPage();
+        sessionsListPage.createNewSession();
+        PrintTagsScannerPage scannerPage = new PrintTagsScannerPage();
+        SearchProductPage searchProductPage = scannerPage.navigateToSearchProductPage();
+        searchProductPage.enterTextInSearchFieldAndSubmit(productWithNoName);
+        AddProductToSessionErrorModalPage addProductToSessionErrorModalPage = new AddProductToSessionErrorModalPage();
+        addProductToSessionErrorModalPage.verifyRequiredElements();
+
+        //Step 2
+        step("Попробовать добавить товар без необходимых данных в сессию через карточку товара");
+        addProductToSessionErrorModalPage.confirm();
+        searchProductPage.returnBack();
+        scannerPage.closeScanner();
+        sessionsListPage.goBack();
+        BottomMenuPage bottomMenuPage = new BottomMenuPage();
+        MainProductAndServicesPage mainProductAndServicesPage = bottomMenuPage.goToSales();
+        searchProductPage = mainProductAndServicesPage.clickSearchBar(false);
+        searchProductPage.enterTextInSearchFieldAndSubmit(productWithNoBarCode);
+        ProductCardPage productCardPage = new ProductCardPage();
+        productCardPage.clickActionWithProductButton();
+        ActionWithProductModalPage actionWithProductModalPage = new ActionWithProductModalPage();
+        actionWithProductModalPage.printTag();
+        addProductToSessionErrorModalPage = new AddProductToSessionErrorModalPage();
+        addProductToSessionErrorModalPage.verifyRequiredElements();
+    }
+
+    @Test(description = "C23409311 отсутствие запроса на поиск услуг")
+    public void testNoServicesInSearchResult() throws Exception {
+
+        //Step 1
+        step("Через страницу сканер перейти в ручной поиск и выполнить поиск по всем отделам");
+        WorkPage workPage = loginAndGoTo(WorkPage.class);
+        SessionsListPage sessionsListPage = workPage.goToSessionsListPage();
+        sessionsListPage.createNewSession();
+        PrintTagsScannerPage scannerPage = new PrintTagsScannerPage();
+        SearchProductPage searchProductPage = scannerPage.navigateToSearchProductPage();
+        NomenclatureSearchPage nomenclatureSearchPage = searchProductPage.goToNomenclatureWindow();
+        nomenclatureSearchPage.returnBackNTimes(1);
+        searchProductPage = nomenclatureSearchPage.clickShowAllProductsBtn();
+        searchProductPage.shouldNotCardsBeOnPage(SearchProductPage.CardType.SERVICE);
+    }
+
+    @Test(description = "C23411538 Проверить подсчет кол-ва страниц")
+    public void testPagesAmount() throws Exception {
+        int productsCount = 2;
+        List<ProductItemData> randomProducts = catalogSearchClient.getRandomUniqueProductsWithTitles(productsCount);
+        List<String> lmCodesList = randomProducts.stream().map(ProductItemData::getLmCode).collect(Collectors.toList());
+
+        //Pre-conditions
+        TagsListPage tagsListPage = loginAndCreateSession(lmCodesList.get(0));
+        addUniqueProductsToSessionByManualSearch(lmCodesList.subList(1, lmCodesList.size()));
+        EditTagModalPage editTagModalPage = tagsListPage.callEditModal(lmCodesList.get(0));
+        editTagModalPage.addProductToPrintSession(26, 11, 4);
+        editTagModalPage = tagsListPage.callEditModal(lmCodesList.get(1));
+        editTagModalPage.addProductToPrintSession(23, 29, 11);
+
+        //Step 1
+        step("нажать распечатать все формарты");
+        tagsListPage.printTags();
+        SessionFormatsModalPage sessionFormatsModalPage = new SessionFormatsModalPage();
+        sessionFormatsModalPage.printFormat(Format.ALL);
+        PagesQuantityModalPage pagesQuantityModalPage = new PagesQuantityModalPage();
+        pagesQuantityModalPage.shouldPagesQuantityAndFormatAreCorrect(Format.SMALL, 3);
+
+        //Step 2
+        step("нажать продолжить печать");
+        pagesQuantityModalPage.continuePrinting();
+        pagesQuantityModalPage = new PagesQuantityModalPage();
+        pagesQuantityModalPage.shouldPagesQuantityAndFormatAreCorrect(Format.MIDDLE, 4);
+
+        //Step 2
+        step("нажать продолжить печать");
+        pagesQuantityModalPage.continuePrinting();
+        pagesQuantityModalPage = new PagesQuantityModalPage();
+        pagesQuantityModalPage.shouldPagesQuantityAndFormatAreCorrect(Format.BIG, 5);
+    }
+
+    @Test(description = "C23409752 Порядок отправки форматов ценников на печать")
+    public void testFormatPrintingOrder() throws Exception {
+        int productsCount = 3;
+        List<ProductItemData> randomProducts = catalogSearchClient.getRandomUniqueProductsWithTitles(productsCount);
+        List<String> lmCodesList = randomProducts.stream().map(ProductItemData::getLmCode).collect(Collectors.toList());
+
+        //Pre-conditions
+        WorkPage workPage = loginAndGoTo(WorkPage.class);
+        SessionsListPage sessionsListPage = workPage.goToSessionsListPage();
+        sessionsListPage.createNewSession();
+        PrintTagsScannerPage scannerPage = new PrintTagsScannerPage();
+        SearchProductPage searchProductPage = scannerPage.navigateToSearchProductPage();
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCodesList.get(0));
+        EditTagModalPage editTagModalPage = new EditTagModalPage();
+        editTagModalPage.addProductToPrintSession(0, 2,0);
+        TagsListPage tagsListPage = new TagsListPage();
+
+        tagsListPage.addProductToSession();
+        scannerPage.navigateToSearchProductPage();
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCodesList.get(1));
+        editTagModalPage = new EditTagModalPage();
+        editTagModalPage.addProductToPrintSession(0, 0,2);
+        tagsListPage = new TagsListPage();
+
+        tagsListPage.addProductToSession();
+        scannerPage.navigateToSearchProductPage();
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCodesList.get(2));
+        editTagModalPage = new EditTagModalPage();
+        editTagModalPage.addProductToPrintSession(3, 0,0);
+        tagsListPage = new TagsListPage();
+
+        //Step 1
+        step("распечатать все форматы");
+        tagsListPage.printTags();
+        SessionFormatsModalPage sessionFormatsModalPage = new SessionFormatsModalPage();
+        sessionFormatsModalPage.printFormat(Format.ALL);
+        PagesQuantityModalPage pagesQuantityModalPage = new PagesQuantityModalPage();
+        pagesQuantityModalPage.shouldPagesQuantityAndFormatAreCorrect(Format.SMALL, 1);
+
+        //Step 2
+        step("нажать продолжить печать");
+        pagesQuantityModalPage.continuePrinting();
+        pagesQuantityModalPage = new PagesQuantityModalPage();
+        pagesQuantityModalPage.shouldPagesQuantityAndFormatAreCorrect(Format.MIDDLE, 1);
+
+        //Step 3
+        step("нажать продолжить печать");
+        pagesQuantityModalPage.continuePrinting();
+        pagesQuantityModalPage = new PagesQuantityModalPage();
+        pagesQuantityModalPage.shouldPagesQuantityAndFormatAreCorrect(Format.BIG, 1);
+        pagesQuantityModalPage.continuePrinting();
+        SuccessPrintingPage successPrintingPage = new SuccessPrintingPage();
+        successPrintingPage.closePage();
+
+        //Step 4
+        step("Создать сессию с двумя товарами разных форматов и отправить их на печать");
+        sessionsListPage = new SessionsListPage();
+        sessionsListPage.createNewSession();
+        scannerPage = new PrintTagsScannerPage();
+        searchProductPage = scannerPage.navigateToSearchProductPage();
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCodesList.get(0));
+        editTagModalPage = new EditTagModalPage();
+        editTagModalPage.addProductToPrintSession(0, 2,2);
+        tagsListPage = new TagsListPage();
+        tagsListPage.addProductToSession();
+        scannerPage.navigateToSearchProductPage();
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCodesList.get(1));
+        editTagModalPage = new EditTagModalPage();
+        editTagModalPage.addProductToPrintSession(3, 0, 0);
+        tagsListPage = new TagsListPage();
+        tagsListPage.printTags();
+        sessionFormatsModalPage = new SessionFormatsModalPage();
+        sessionFormatsModalPage.printFormat(Format.ALL);
+        pagesQuantityModalPage = new PagesQuantityModalPage();
+        pagesQuantityModalPage.shouldPagesQuantityAndFormatAreCorrect(Format.SMALL, 1);
+
+        //Step 5
+        step("нажать продолжить печать");
+        pagesQuantityModalPage.continuePrinting();
+        pagesQuantityModalPage = new PagesQuantityModalPage();
+        pagesQuantityModalPage.shouldPagesQuantityAndFormatAreCorrect(Format.MIDDLE, 1);
+
+        //Step 6
+        step("нажать продолжить печать");
+        pagesQuantityModalPage.continuePrinting();
+        pagesQuantityModalPage = new PagesQuantityModalPage();
+        pagesQuantityModalPage.shouldPagesQuantityAndFormatAreCorrect(Format.BIG, 1);
+    }
+
+    @Test(description = "C23411003 навигация")
+    public void testNavigation() throws Exception {
+        String lmCode = catalogSearchClient.getRandomProduct().getLmCode();
+
+        //Step 1
+        step("Создать сессию печати через страницу карточки товара и удалить ее");
+        MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
+        SearchProductPage searchProductPage = mainProductAndServicesPage.clickSearchBar(false);
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
+        ProductCardPage productCardPage = new ProductCardPage();
+        productCardPage.clickActionWithProductButton();
+        ActionWithProductModalPage actionWithProductModalPage = new ActionWithProductModalPage();
+        actionWithProductModalPage.printTag();
+        EditTagModalPage editTagModalPage = new EditTagModalPage();
+        editTagModalPage.addProductToPrintSession();
+        TagsListPage tagsListPage = new TagsListPage();
+        tagsListPage.deleteSession();
+        DeleteSessionByBtnModalPage deleteSessionByBtnModalPage = new DeleteSessionByBtnModalPage();
+        deleteSessionByBtnModalPage.confirmDelete();
+        productCardPage = new ProductCardPage();
+        productCardPage.verifyRequiredElements(true);
+
+        //Step 2
+        step("перейти с карточки товара назад");
+        searchProductPage = productCardPage.returnBack();
+        searchProductPage.verifyRequiredElements();
+
+        //Step 3
+        step("нажимаем назад");
+        searchProductPage.returnBack();
+        mainProductAndServicesPage.verifyRequiredElements();
+
+        //Step 4
+        step("создать сессию через раздел работа, отправить ценник на печать и закрыть страницу-уведомление об успешной отправке");
+        BottomMenuPage bottomMenuPage = new BottomMenuPage();
+        WorkPage workPage = bottomMenuPage.goToWork();
+        SessionsListPage sessionsListPage = workPage.goToSessionsListPage();
+        tagsListPage = createSession(lmCode);
+        tagsListPage.printTags();
+        PagesQuantityModalPage pagesQuantityModalPage = new PagesQuantityModalPage();
+        pagesQuantityModalPage.continuePrinting();
+        SuccessPrintingPage successPrintingPage = new SuccessPrintingPage();
+        successPrintingPage.closePage();
+        sessionsListPage = new SessionsListPage();
+        sessionsListPage.verifyRequiredElements();
+
+        //Step 5
+        step("нажимаем назад");
+        sessionsListPage.goBack();
+        workPage = new WorkPage();
+        workPage.verifyRequiredElements();
     }
 
 }

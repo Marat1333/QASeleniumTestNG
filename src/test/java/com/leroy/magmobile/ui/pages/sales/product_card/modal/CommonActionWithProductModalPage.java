@@ -23,9 +23,8 @@ public abstract class CommonActionWithProductModalPage extends CommonMagMobilePa
     Button printTagBtn;
 
     @Step("Напечатать ценник")
-    public EditTagModalPage printTag(){
+    public void printTag(){
         printTagBtn.click();
-        return new EditTagModalPage();
     }
 
     @Override
