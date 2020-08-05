@@ -2,6 +2,7 @@ package com.leroy.magportal.ui.pages.orders.widget;
 
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
+import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardWebData;
@@ -20,6 +21,9 @@ public class OrderProductCardWidget extends CardWebWidget<ProductOrderCardWebDat
 
     @WebFindBy(xpath = ".//div[span[contains(@class, 'LmCode__accent')]]", metaName = "ЛМ код")
     Element lmCode;
+
+    @WebFindBy(xpath = ".//div[contains(@class, 'roductCard__header')]//button", metaName = "Корзина (кнопка для удаления)")
+    Button trashBtn;
 
     @WebFindBy(xpath = ".//div[contains(@class, 'Dropdown__title')]//button", metaName = "Бар код")
     Element barCode;
@@ -59,6 +63,16 @@ public class OrderProductCardWidget extends CardWebWidget<ProductOrderCardWebDat
     }
 
     // Actions
+
+    public void clickTrashBtn() {
+        trashBtn.click();
+    }
+
+    public void editQuantity(int value) {
+        orderedQuantityFld.clear(true);
+        orderedQuantityFld.fill(String.valueOf(value));
+        orderedQuantityFld.sendBlurEvent();
+    }
 
     @Override
     public ProductOrderCardWebData collectDataFromPage() {

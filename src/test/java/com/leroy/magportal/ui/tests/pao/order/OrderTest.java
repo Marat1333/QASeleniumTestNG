@@ -13,6 +13,7 @@ import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.magportal.ui.constants.TestDataConstants;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
+import com.leroy.magportal.ui.models.salesdoc.OrderWebData;
 import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
 import com.leroy.magportal.ui.models.salesdoc.ShortOrderDocWebData;
 import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
@@ -30,8 +31,12 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
+import static com.leroy.constants.DefectConst.INVISIBLE_AUTHOR_ORDER_DRAFT;
 import static com.leroy.constants.DefectConst.PRODUCT_COUNT_WHEN_TWO_ORDERS_IN_CART;
 import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -44,7 +49,8 @@ public class OrderTest extends BasePAOTest {
     @AfterClass(enabled = true)
     private void cancelConfirmedOrder() throws Exception {
         if (orderData != null && orderData.getNumber() != null && orderData.getStatus() != null &&
-                !orderData.getStatus().equals(SalesDocumentsConst.States.DRAFT.getUiVal())) {
+                !orderData.getStatus().equals(SalesDocumentsConst.States.DRAFT.getUiVal()) &&
+                !orderData.getStatus().equals(SalesDocumentsConst.States.CANCELLED.getUiVal())) {
             OrderClient orderClient = apiClientProvider.getOrderClient();
             orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderData.getNumber(),
                     SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal());
@@ -57,6 +63,7 @@ public class OrderTest extends BasePAOTest {
     CartPage cartPage;
     OrderDraftDeliveryWayPage orderDraftDeliveryWayPage;
     OrderCreatedContentPage orderCreatedPage;
+    OrderDraftContentPage orderDraftContentPage;
     CustomerSearchForm customerSearchForm;
     SubmittedOrderModal submittedOrderModal;
 
@@ -328,6 +335,144 @@ public class OrderTest extends BasePAOTest {
         step("Найдите и откройте подтвержденный заказ");
         orderCreatedPage.clickDocumentInLeftMenu(orderData.getNumber());
         orderCreatedPage = new OrderCreatedContentPage().shouldOrderContentDataIs(orderData);
+    }
+
+    // ================== EDIT ORDERS =========================//
+
+    private void preconditionForEditOrderDraftTests(List<ProductItemData> productItemDataList) throws Exception {
+        // Prepare data
+        List<CartProductOrderData> cardProducts = new ArrayList<>();
+        for (ProductItemData productItemData : productItemDataList) {
+            CartProductOrderData cartProductOrderData = new CartProductOrderData(productItemData);
+            cartProductOrderData.setQuantity(1.0);
+            cardProducts.add(cartProductOrderData);
+        }
+
+        String cartId = helper.createCart(cardProducts).getFullDocId();
+
+        cartPage = loginAndGoTo(CartPage.class);
+        cartPage.clickDocumentInLeftMenu(cartId);
+
+        stepClickConfirmOrderButton(null);
+
+        orderDraftContentPage = orderDraftDeliveryWayPage.goToContentOrderTab()
+                .shouldOrderContentDataIs(orderData);
+    }
+
+    private void preconditionForEditOrderDraftTests() throws Exception {
+        preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)));
+    }
+
+    @Test(description = "C23410901 Добавить товар в неподтвержденный заказ (количества товара достаточно)",
+            groups = NEED_PRODUCTS_GROUP)
+    public void testAddProductInDraftOrderWithSufficientProductQuantity() throws Exception {
+        ProductItemData newProduct = productList.get(1);
+        preconditionForEditOrderDraftTests();
+
+        // Step 1
+        step("Введите ЛМ товара в поле 'Добавление товара' и нажмите Enter");
+        orderDraftContentPage.enterTextInSearchProductField(newProduct.getLmCode());
+        orderDraftContentPage.shouldProductsHave(Arrays.asList(productList.get(0).getLmCode(),
+                newProduct.getLmCode()));
+    }
+
+    @Test(description = "C23410902 Добавить товар в неподтвержденный заказ (количества товара недостаточно)",
+            groups = NEED_PRODUCTS_GROUP)
+    public void testAddProductInDraftOrderWithInsufficientProductQuantity() throws Exception {
+        ProductItemData productItemData = productList.get(0);
+        preconditionForEditOrderDraftTests();
+
+        // Step 1
+        step("Измените кол-во товара таким образом, чтоб его было заказно, больше чем доступно");
+        int newQuantity = (int) Math.round(productItemData.getAvailableStock() + 1);
+        OrderWebData oneOrderData = orderData.getOrders().get(0);
+        oneOrderData.changeProductQuantity(0, newQuantity, true);
+        oneOrderData.setTotalWeight(null);
+        if (INVISIBLE_AUTHOR_ORDER_DRAFT)
+            orderData.setAuthorName(null);
+        orderDraftContentPage.editProductQuantity(1, newQuantity)
+                .shouldOrderContentDataIs(orderData)
+                .shouldProductIsDangerHighlighted(1);
+    }
+
+    @Test(description = "C23410904 Добавить Топ ЕМ или AVS товар в неподтвержденный заказ",
+            groups = NEED_PRODUCTS_GROUP)
+    public void testAddTopEmOrAvsInDraftOrder() throws Exception {
+        ProductItemData newProduct = helper.getProducts(1, new CatalogSearchFilter().setTopEM(true)).get(0);
+        preconditionForEditOrderDraftTests();
+
+        // Step 1
+        step("Введите ЛМ товара в поле 'Добавление товара' и нажмите Enter");
+        orderDraftContentPage.enterTextInSearchProductField(newProduct.getLmCode());
+        orderDraftContentPage.shouldProductsHave(Arrays.asList(productList.get(0).getLmCode(),
+                newProduct.getLmCode()));
+    }
+
+    @Test(description = "C23410903 Изменить количество товара в неподтвержденном заказе",
+            groups = NEED_PRODUCTS_GROUP)
+    public void testEditProductQuantityInDraftOrder() throws Exception {
+        preconditionForEditOrderDraftTests();
+
+        // Step 1
+        step("В мини-карточке товара в поле 'заказано' измените количество товара");
+        int newQuantity = (int) Math.round(
+                orderData.getOrders().get(0).getProductCardDataList().get(0).getSelectedQuantity()) + 2;
+        OrderWebData oneOrderData = orderData.getOrders().get(0);
+        oneOrderData.changeProductQuantity(0, newQuantity, true);
+        oneOrderData.setTotalWeight(oneOrderData.getTotalWeight() * newQuantity);
+        if (INVISIBLE_AUTHOR_ORDER_DRAFT)
+            orderData.setAuthorName(null);
+        orderDraftContentPage.editProductQuantity(1, newQuantity)
+                .shouldOrderContentDataIs(orderData);
+    }
+
+    @Test(description = "C23410905 Удалить товар из неподтвержденного заказа",
+            groups = NEED_PRODUCTS_GROUP)
+    public void testRemoveProductFromDraftOrder() throws Exception {
+        preconditionForEditOrderDraftTests(productList.subList(0, 2));
+
+        // Step 1 and 2
+        step("Нажмите на иконку корзины в правом верхнем углу мини-карточки товара и подтвердите удаление");
+        OrderWebData oneOrderData = orderData.getOrders().get(0);
+        oneOrderData.removeProduct(0, true);
+        if (INVISIBLE_AUTHOR_ORDER_DRAFT)
+            orderData.setAuthorName(null);
+        orderDraftContentPage.removeProduct(1)
+                .shouldOrderContentDataIs(orderData);
+    }
+
+    @Test(description = "C23410914 Удалить последний товар из неподтвержденного заказа", groups = NEED_PRODUCTS_GROUP)
+    public void testRemoveLastProductFromDraftOrder() throws Exception {
+        preconditionForEditOrderDraftTests();
+
+        // Step 1 and 2
+        step("Нажмите на иконку корзины в правом верхнем углу мини-карточки товара и подтвердите удаление");
+        orderData = orderDraftContentPage.getOrderData();
+        orderDraftContentPage.removeProduct(1)
+                .shouldNoOneDocumentIsSelected();
+
+        // Step 3
+        step("Обновите список заказов слева");
+        orderData.setStatus(SalesDocumentsConst.States.CANCELLED.getUiVal());
+        orderData.setDeliveryType(SalesDocumentsConst.GiveAwayPoints.PICKUP);
+        stepRefreshDocumentListAndCheckDocument();
+    }
+
+    @Test(description = "C23410912 Удалить неподтвержденный заказ", groups = NEED_PRODUCTS_GROUP)
+    public void testRemoveOrderDraft() throws Exception {
+        preconditionForEditOrderDraftTests();
+
+        // Step 1 and 2
+        step("Нажмите на иконку корзины в правом верхнем углу мини-карточки товара и подтвердите удаление");
+        orderData = orderDraftContentPage.getOrderData();
+        orderDraftContentPage.removeOrder()
+                .shouldNoOneDocumentIsSelected();
+
+        // Step 3
+        step("Обновите список заказов слева");
+        orderData.setStatus(SalesDocumentsConst.States.CANCELLED.getUiVal());
+        orderData.setDeliveryType(SalesDocumentsConst.GiveAwayPoints.PICKUP);
+        stepRefreshDocumentListAndCheckDocument();
     }
 
     // ------------ Steps ------------------ //

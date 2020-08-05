@@ -43,7 +43,10 @@ public class SalesDocWebData {
         shortOrderDocWebData.setDeliveryType(deliveryType.equals(SalesDocumentsConst.GiveAwayPoints.PICKUP) ?
                 OrderConst.DeliveryType.PICKUP : OrderConst.DeliveryType.DELIVERY_TK); // todo
         shortOrderDocWebData.setTotalPrice(orders.get(0).getTotalPrice());
-        shortOrderDocWebData.setCustomer(client.getName());
+        if (client != null)
+            shortOrderDocWebData.setCustomer(client.getName());
+        else
+            shortOrderDocWebData.setCustomer("");
         return shortOrderDocWebData;
     }
 

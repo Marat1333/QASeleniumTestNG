@@ -98,6 +98,7 @@ public class CartPage extends CartEstimatePage {
     @Step("Нажать кнопку 'Оформить заказ'")
     public OrderDraftDeliveryWayPage clickConfirmButton(int index) throws Exception {
         index--;
+        anAssert.isTrue(confirmButtons.getCount() > 0, "Кнопка 'Оформить заказ' не отображается");
         confirmButtons.get(index).click();
         waitForSpinnerAppearAndDisappear();
         return new OrderDraftDeliveryWayPage();

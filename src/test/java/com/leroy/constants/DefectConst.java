@@ -6,5 +6,7 @@ public class DefectConst {
     public static final boolean STOCK_ISSUE = true;
     public static final boolean PAO_931 = true;
     public static final boolean PRODUCT_COUNT_WHEN_TWO_ORDERS_IN_CART = true;
+    public static final boolean INVALID_ORDER_DRAFT_DATE = true;
+    public static final boolean INVISIBLE_AUTHOR_ORDER_DRAFT = true;
 
 }

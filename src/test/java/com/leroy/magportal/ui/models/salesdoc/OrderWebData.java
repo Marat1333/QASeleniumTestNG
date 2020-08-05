@@ -60,17 +60,19 @@ public class OrderWebData {
 
     public void changeProductQuantity(int productIdx, Number quantity, boolean recalculateOrder) {
         ProductOrderCardWebData productData = productCardDataList.get(productIdx);
-        double weightOneProduct = productData.getWeight() / productData.getSelectedQuantity();
         productData.setSelectedQuantity(quantity.doubleValue());
         if (recalculateOrder) {
             double newPrice = quantity.intValue() * productData.getPrice();
-            double newWeight = weightOneProduct * quantity.intValue();
+            if (productData.getWeight() != null) {
+                double weightOneProduct = productData.getWeight() / productData.getSelectedQuantity();
+                double newWeight = weightOneProduct * quantity.intValue();
+                double diffTotalWeight = ParserUtil.minus(newWeight, productData.getWeight(), 2);
+                productData.setWeight(newWeight);
+                totalWeight = ParserUtil.plus(totalWeight, diffTotalWeight, 2);
+            }
             double diffTotalPrice = newPrice - productData.getTotalPrice();
-            double diffTotalWeight = ParserUtil.minus(newWeight, productData.getWeight(), 2);
             productData.setTotalPrice(newPrice);
-            productData.setWeight(newWeight);
             totalPrice += diffTotalPrice;
-            totalWeight = ParserUtil.plus(totalWeight, diffTotalWeight, 2);
         }
     }
 

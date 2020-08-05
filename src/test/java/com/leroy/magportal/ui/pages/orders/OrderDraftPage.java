@@ -3,6 +3,7 @@ package com.leroy.magportal.ui.pages.orders;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magportal.ui.pages.cart_estimate.modal.ConfirmRemoveProductModal;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
@@ -15,6 +16,10 @@ public abstract class OrderDraftPage extends OrderHeaderPage {
     @WebFindBy(xpath = "//div[contains(@class, 'OrderCreate__header')]//span[contains(@class, 'Status-container')]",
             metaName = "Статус заказа")
     Element orderStatus;
+
+    @WebFindBy(xpath = "//div[contains(@class, 'OrderCreate__header')]//div[contains(@class, 'popover__opener')]//button",
+            metaName = "Кнопка удаления заказа (мусорка)")
+    Button trashBtn;
 
     @WebFindBy(xpath = "//div[contains(@class, 'OrderCreate__header')]/div/div[2]/div/span[1]", metaName = "Дата создания")
     Element creationDate;
@@ -66,6 +71,14 @@ public abstract class OrderDraftPage extends OrderHeaderPage {
 
     // Actions
 
+    @Step("Нажать кнопку удаления (мусорка) и подтвердить удаление заказа")
+    public OrderDraftPage removeOrder() {
+        trashBtn.click();
+        new ConfirmRemoveProductModal().clickYesButton();
+        trashBtn.waitForInvisibility();
+        return this;
+    }
+
     @Step("Нажать на кнопку 'Состав заказа'")
     public OrderDraftContentPage goToContentOrderTab() {
         contentOrderTab.click();
@@ -84,6 +97,12 @@ public abstract class OrderDraftPage extends OrderHeaderPage {
     public OrderDraftPage shouldOrderStatusIs(String value) {
         anAssert.isEquals(orderStatus.getText().toLowerCase(), value.toLowerCase(),
                 "Неверный статусс заказа");
+        return this;
+    }
+
+    @Step("Проверить, что не выбран никакой документ (заказ)")
+    public OrderDraftPage shouldNoOneDocumentIsSelected() {
+        anAssert.isFalse(orderNumber.isVisible(), "Номер документа отображается");
         return this;
     }
 

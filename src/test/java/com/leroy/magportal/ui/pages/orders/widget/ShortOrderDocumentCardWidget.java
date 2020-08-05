@@ -84,7 +84,7 @@ public class ShortOrderDocumentCardWidget extends CardWebWidget<ShortOrderDocWeb
         ShortOrderDocWebData salesDocData = new ShortOrderDocWebData();
         salesDocData.setNumber(getNumber());
         salesDocData.setStatus(getStatus());
-        salesDocData.setCustomer(customer.getTextIfPresent());
+        salesDocData.setCustomer(customer.isVisible()? customer.getText() : "");
         salesDocData.setPayType(getPaymentType());
         salesDocData.setTotalPrice(ParserUtil.strToDouble(totalPrice.getText()));
         salesDocData.setCreationDate(getCreationDate());
