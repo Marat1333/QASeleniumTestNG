@@ -16,7 +16,7 @@ public class ProductOrderCardWebData {
     private Double selectedQuantity;
     private Double totalPrice;
     private Double availableTodayQuantity;
-    private Double weight;
+    private Double weight; // Обший вес с учетом кол-ва
 
     // Discounts
     private Double totalPriceWithDiscount;
@@ -81,11 +81,11 @@ public class ProductOrderCardWebData {
         if (expectedProduct.getAvailableTodayQuantity() != null)
             softAssert.isEquals(this.getAvailableTodayQuantity(), expectedProduct.getAvailableTodayQuantity(),
                     "Заказ #" + (iOrder + 1) + " Товар #" + (iProduct + 1) + " - ожидалось другое доступное кол-во");
-        else
+        else if (this.getAvailableTodayQuantity() != null)
             softAssert.isTrue(this.getAvailableTodayQuantity() >= 0,
                     "Заказ #" + (iOrder + 1) + " Товар #" + (iProduct + 1) + " - ожидалось, что доступное кол-во >= 0");
         if (expectedProduct.getWeight() != null)
-            softAssert.isTrue(Math.abs(this.getWeight() - expectedProduct.getWeight()) <= expectedProduct.getSelectedQuantity() * 0.01,
+            softAssert.isTrue(Math.abs(this.getWeight() - expectedProduct.getWeight()) <= expectedProduct.getSelectedQuantity() * 0.011,
                     "Заказ #" + (iOrder + 1) + " Товар #" + (iProduct + 1) + " - ожидался другой вес");
         else
             softAssert.isTrue(this.getWeight() > 0,

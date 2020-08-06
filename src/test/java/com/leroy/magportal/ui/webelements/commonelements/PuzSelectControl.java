@@ -6,6 +6,9 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import org.openqa.selenium.WebDriver;
 
+/**
+ * Выпадающий список с разными опциями (опции НЕ радио кнопки или чек-боксы)
+ */
 public class PuzSelectControl extends PuzComboBox {
 
     public PuzSelectControl(WebDriver driver, CustomLocator customLocator) {
