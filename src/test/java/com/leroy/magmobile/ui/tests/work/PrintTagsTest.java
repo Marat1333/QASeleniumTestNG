@@ -17,6 +17,7 @@ import com.leroy.magmobile.ui.pages.work.print_tags.*;
 import com.leroy.magmobile.ui.pages.work.print_tags.data.ProductTagData;
 import com.leroy.magmobile.ui.pages.work.print_tags.enums.Format;
 import com.leroy.magmobile.ui.pages.work.print_tags.modal.*;
+import io.qameta.allure.Issue;
 import io.qameta.allure.Step;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Guice;
@@ -395,6 +396,7 @@ public class PrintTagsTest extends AppBaseSteps {
         sessionsListPage.shouldViewTypeIsCorrect(true);
     }
 
+    @Issue("LFRONT-3652")
     @Test(description = "C23389195 отправка на печать ценников")
     public void testSendingToPrint() throws Exception {
         int productsCount = 3;
@@ -415,6 +417,7 @@ public class PrintTagsTest extends AppBaseSteps {
 
         //Step 2
         step("отправка нескольких форматов одного продукта");
+        //navigations bug
         tagsListPage = createSession();
         EditTagModalPage editTagModalPage = tagsListPage.callEditModalToProductByIndex(0);
         editTagModalPage.addProductToPrintSession(2, 3, 4);
@@ -675,10 +678,10 @@ public class PrintTagsTest extends AppBaseSteps {
         tagsListPage.shouldProductTagsHasCorrectSizesAndQuantity(firstProductData, secondProductData, thirdProductData, fourthProductData, fifthProductData);
     }
 
+    @Issue("LFRONT-3653")
     @Test(description = "C23389198 удаление сессии")
     public void testDeleteSession() throws Exception {
         String lmCode = catalogSearchClient.getRandomProduct().getLmCode();
-
         TagsListPage tagsListPage = loginAndCreateSession(lmCode);
 
         //Step 1
@@ -719,6 +722,7 @@ public class PrintTagsTest extends AppBaseSteps {
         tagsListPage = createSession(lmCode);
         tagsListPage.goBack();
         ConfirmSessionExitModalPage confirmSessionExitModalPage = new ConfirmSessionExitModalPage();
+        //bug
         confirmSessionExitModalPage.exit();
         sessionsListPage = new SessionsListPage();
         sessionsListPage.goBack();
@@ -783,7 +787,6 @@ public class PrintTagsTest extends AppBaseSteps {
 
     @Test(description = "C23409311 отсутствие запроса на поиск услуг")
     public void testNoServicesInSearchResult() throws Exception {
-
         //Step 1
         step("Через страницу сканер перейти в ручной поиск и выполнить поиск по всем отделам");
         WorkPage workPage = loginAndGoTo(WorkPage.class);
@@ -832,6 +835,7 @@ public class PrintTagsTest extends AppBaseSteps {
         pagesQuantityModalPage.shouldPagesQuantityAndFormatAreCorrect(Format.BIG, 5);
     }
 
+    @Issue("LFRONT-3652")
     @Test(description = "C23409752 Порядок отправки форматов ценников на печать")
     public void testFormatPrintingOrder() throws Exception {
         int productsCount = 3;
@@ -862,7 +866,6 @@ public class PrintTagsTest extends AppBaseSteps {
         scannerPage.navigateToSearchProductPage();
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCodesList.get(2));
         editTagModalPage = new EditTagModalPage();
-        editTagModalPage.selectCheckBoxes(Format.SMALL);
         editTagModalPage.confirm();
         tagsListPage = new TagsListPage();
 
@@ -891,6 +894,7 @@ public class PrintTagsTest extends AppBaseSteps {
 
         //Step 4
         step("Создать сессию с двумя товарами разных форматов и отправить их на печать");
+        //navigations bug
         sessionsListPage = new SessionsListPage();
         sessionsListPage.createNewSession();
         scannerPage = new PrintTagsScannerPage();
@@ -926,6 +930,7 @@ public class PrintTagsTest extends AppBaseSteps {
         pagesQuantityModalPage.shouldPagesQuantityAndFormatAreCorrect(Format.BIG, 1);
     }
 
+    @Issue("LFRONT-3485")
     @Test(description = "C23411003 навигация")
     public void testNavigation() throws Exception {
         String lmCode = catalogSearchClient.getRandomProduct().getLmCode();
@@ -945,6 +950,7 @@ public class PrintTagsTest extends AppBaseSteps {
         tagsListPage.deleteSession();
         DeleteSessionByBtnModalPage deleteSessionByBtnModalPage = new DeleteSessionByBtnModalPage();
         deleteSessionByBtnModalPage.confirmDelete();
+        //bug
         productCardPage = new ProductCardPage();
         productCardPage.verifyRequiredElements(true);
 

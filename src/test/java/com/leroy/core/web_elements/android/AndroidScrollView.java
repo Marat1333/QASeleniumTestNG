@@ -37,10 +37,6 @@ public class AndroidScrollView<T> extends BaseWidget {
         this(driver, by, ".//android.widget.TextView", null);
     }
 
-    public AndroidScrollView(WebDriver driver, By by, boolean specificXpath) {
-        this(driver, by, "", null);
-    }
-
     public AndroidScrollView(WebDriver driver, By by, String eachRowXpath,
                              Class<? extends CardWidget<T>> clazz) {
         this(driver, new CustomLocator(by), eachRowXpath, clazz);
@@ -153,6 +149,13 @@ public class AndroidScrollView<T> extends BaseWidget {
         if (scrollUpBefore)
             scrollToBeginning();
         scrollAndGrabData(null, null, maxEntityCount, Direction.DOWN);
+        return new ArrayList<>(tmpCardDataList);
+    }
+
+    public List<T> getFullDataList(int maxEntityCount, int maxScrollCount, boolean scrollUpBefore) {
+        if (scrollUpBefore)
+            scrollToBeginning();
+        scrollAndGrabData(null, maxScrollCount, maxEntityCount, Direction.DOWN);
         return new ArrayList<>(tmpCardDataList);
     }
 

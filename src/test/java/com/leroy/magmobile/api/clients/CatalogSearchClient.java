@@ -72,7 +72,7 @@ public class CatalogSearchClient extends BaseMashupClient {
         ProductItemDataList productItemDataList = this.searchProductsBy(new GetCatalogSearch().setPageSize(MAX_PAGE_SIZE)
                 .setShopId(userSessionData.getUserShopId())).asJson();
         List<ProductItemData> productItemData = productItemDataList.getItems();
-        productItemData = productItemData.stream().filter(i->i.getTitle()!=null).filter(i->i.getPrice()!=null).collect(Collectors.toList());
+        productItemData = productItemData.stream().filter(i->i.getTitle()!=null).collect(Collectors.toList());
         return productItemData.get((int) (Math.random() * productItemData.size()));
     }
 
@@ -82,7 +82,7 @@ public class CatalogSearchClient extends BaseMashupClient {
         ProductItemDataList productItemDataList = this.searchProductsBy(new GetCatalogSearch().setPageSize(MAX_PAGE_SIZE)
                 .setShopId(userSessionData.getUserShopId())).asJson();
         List<ProductItemData> productItemData = productItemDataList.getItems();
-        productItemData = productItemData.stream().filter(i->i.getTitle()!=null).filter(i->i.getPrice()!=null).collect(Collectors.toList());
+        productItemData = productItemData.stream().filter(i->i.getTitle()!=null).collect(Collectors.toList());
         int randomIndex;
         for (int i = 0; i < countOfProducts; i++) {
             randomIndex = (int) (Math.random() * productItemData.size());

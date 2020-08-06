@@ -5,6 +5,8 @@ import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import com.leroy.magmobile.ui.pages.work.print_tags.data.PrinterData;
+import com.leroy.magmobile.ui.pages.work.print_tags.widgets.PrinterWidget;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 
@@ -23,8 +25,8 @@ public class PrinterSelectorPage extends CommonMagMobilePage {
     @AppFindBy(xpath = "//*[@text='ВЫБРАННЫЙ ПРИНТЕР']/following-sibling::android.widget.ScrollView[1]//android.widget.TextView[1]")
     Element chosenPrinterLbl;
 
-    AndroidScrollView<String> printerNamesView = new AndroidScrollView<>(driver, By.xpath(AndroidScrollView.TYPICAL_XPATH +
-            "//android.widget.ScrollView/*/*//android.widget.TextView[1]"), true);
+    AndroidScrollView<PrinterData> printerNamesView = new AndroidScrollView<>(driver, AndroidScrollView.TYPICAL_LOCATOR,
+            "./*/android.widget.ScrollView/*/*", PrinterWidget.class);
 
     @Override
     protected void waitForPageIsLoaded() {
@@ -44,13 +46,13 @@ public class PrinterSelectorPage extends CommonMagMobilePage {
 
     @Step("Проверить отображение всех принтеров")
     public PrinterSelectorPage shouldAllFiltersIsDisplayed(List<String> dataList) {
-        List<String> printerNames = printerNamesView.getFullDataList(dataList.size()+1);
-        if (printerNames.size() > 0) {
+        List<PrinterData> printerUiData = printerNamesView.getFullDataList(dataList.size()+1);
+        if (printerUiData.size() > 0) {
             //выбранный принтер
-            printerNames.remove(0);
+            printerUiData.remove(0);
         }
         for (int i = 0; i < dataList.size(); i++) {
-            softAssert.isEquals(printerNames.get(i), dataList.get(i), "printerName");
+            softAssert.isEquals(printerUiData.get(i).getPrinterName(), dataList.get(i), "printerName");
         }
         softAssert.verifyAll();
         if (!chosenPrinterLbl.isVisible()) {

@@ -17,6 +17,10 @@ public class ScannerPage extends CommonMagMobilePage{
     @Step("Закрыть сканер")
     public void closeScanner(){
         closeScannerBtn.click();
+        closeScannerBtn.waitForInvisibility(short_timeout);
+        if (closeScannerBtn.isVisible()){
+            closeScannerBtn.click();
+        }
     }
 
     @Override

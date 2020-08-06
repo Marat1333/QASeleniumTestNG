@@ -458,7 +458,7 @@ public class SearchProductPage extends CommonMagMobilePage {
                 cardData = allGammaProductCardsScrollView.getFullDataList();
                 break;
             case SERVICE:
-                cardData = serviceCardsScrollView.getFullDataList();
+                cardData = serviceCardsScrollView.getFullDataList(10, 5, false);
                 break;
             default:
                 throw new Exception("Incorrect CardType");

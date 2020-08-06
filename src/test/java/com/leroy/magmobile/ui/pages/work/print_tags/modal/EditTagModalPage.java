@@ -180,7 +180,8 @@ public class EditTagModalPage extends CommonMagMobilePage {
         softAssert.isElementTextEqual(lmCode, "ЛМ "+data.getLmCode());
         softAssert.isEquals(ParserUtil.strWithOnlyDigits(barCode.getText()), data.getBarCode(), "barCode");
         softAssert.isElementTextEqual(title, data.getTitle());
-        softAssert.isElementTextContains(price, ParserUtil.doubleToStr(data.getPrice(), 2, false));
+        softAssert.isEquals(ParserUtil.strWithOnlyDigits(price.getText()),
+                ParserUtil.doubleToStr(data.getPrice(), 2, false), "price");
         softAssert.verifyAll();
         return this;
     }
