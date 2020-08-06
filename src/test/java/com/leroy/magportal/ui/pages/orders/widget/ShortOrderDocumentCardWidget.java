@@ -28,8 +28,17 @@ public class ShortOrderDocumentCardWidget extends CardWebWidget<ShortOrderDocWeb
     @WebFindBy(xpath = ".//span[contains(@class, 'OrderListItem__firstLine-orderId')]")
     Element number;
 
+    @WebFindBy(xpath = ".//div[contains(@class, 'OrderListItem__firstLine-statuses')]/span")
+    Element totalPrice;
+
+    @WebFindBy(xpath = ".//span[contains(text(), 'Клиент')]/following-sibling::span", metaName = "Клиент")
+    Element customer;
+
     @WebFindBy(xpath = ".//span[contains(@class, 'OrderListItem__createdAt')]")
     Element creationDate;
+
+    @WebFindBy(xpath = ".//div[contains(@class, 'OrderListItem__date-statuses')]/span[2]")
+    Element paymentType;
 
     @WebFindBy(xpath = ".//span[contains(@class, 'Status-container')]")
     Element status;
@@ -43,6 +52,10 @@ public class ShortOrderDocumentCardWidget extends CardWebWidget<ShortOrderDocWeb
 
     public String getStatus() {
         return status.getText();
+    }
+
+    public ShortOrderDocWebData.PayType getPaymentType() {
+        return paymentType.getText().toLowerCase().equals("оффлайн")? ShortOrderDocWebData.PayType.OFFLINE : ShortOrderDocWebData.PayType.ONLINE;
     }
 
     public LocalDateTime getCreationDate() {
@@ -71,6 +84,9 @@ public class ShortOrderDocumentCardWidget extends CardWebWidget<ShortOrderDocWeb
         ShortOrderDocWebData salesDocData = new ShortOrderDocWebData();
         salesDocData.setNumber(getNumber());
         salesDocData.setStatus(getStatus());
+        salesDocData.setCustomer(customer.getTextIfPresent());
+        salesDocData.setPayType(getPaymentType());
+        salesDocData.setTotalPrice(ParserUtil.strToDouble(totalPrice.getText()));
         salesDocData.setCreationDate(getCreationDate());
         salesDocData.setDeliveryType(getDeliveryType());
         return salesDocData;

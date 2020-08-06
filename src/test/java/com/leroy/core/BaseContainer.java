@@ -210,7 +210,7 @@ public abstract class BaseContainer {
 
     protected CustomLocator buildLocator(String str, String metaName) {
         CustomLocator locator;
-        if (str.startsWith("/") || str.startsWith("(/")) {
+        if (str.startsWith("/") || str.startsWith("(")) {
             locator = new CustomLocator(By.xpath(str), metaName);
         } else if (str.startsWith("#")) {
             locator = new CustomLocator(By.cssSelector(str), metaName);

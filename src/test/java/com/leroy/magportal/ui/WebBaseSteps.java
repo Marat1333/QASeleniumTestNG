@@ -6,7 +6,9 @@ import com.leroy.magportal.ui.pages.LoginWebPage;
 import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
 import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
 import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
+import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.pages.customers.CustomerPage;
+import com.leroy.magportal.ui.pages.picking.PickingPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
 import io.qameta.allure.Step;
 
@@ -22,13 +24,15 @@ public class WebBaseSteps extends MagPortalBaseTest {
             path = "orders/carts";
         else if (pageClass == EstimatePage.class)
             path = "orders/estimates";
+        else if (pageClass == PickingPage.class)
+            path = "orders/pickingtask";
         else
             path = "orders/orders_v2";
         return EnvConstants.URL_MAG_PORTAL + "/" + path;
     }
 
     @Step("Авторизоваться на портале и зайти на страницу {pageClass}")
-    public <T extends MagPortalBasePage> T loginAndGoTo(String ldap, String password, Class<T> pageClass) throws Exception {
+    private <T extends MagPortalBasePage> T loginAndGoTo(String ldap, String password, String shop, Class<T> pageClass) throws Exception {
         getDriver().get(getPageUrl(pageClass));
         new LoginWebPage().logIn(ldap, password);
         T page = pageClass.getConstructor().newInstance();
@@ -40,13 +44,20 @@ public class WebBaseSteps extends MagPortalBaseTest {
         }
         page.waitUntilTitleIs(expectedTitle, 30);
         page.closeNewFeaturesModalWindowIfExist();
-        //До фикса
-        //page.selectShopInUserProfile(EnvConstants.BASIC_USER_SHOP_ID);
+        if (shop != null) {
+            new MenuPage().selectShopInUserProfile(shop);
+            page = pageClass.getConstructor().newInstance();
+        }
         return page;
     }
 
     public <T extends MagPortalBasePage> T loginAndGoTo(Class<T> pageClass) throws Exception {
-        return loginAndGoTo(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS, pageClass);
+        return loginAndGoTo(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS, null, pageClass);
+    }
+
+    public <T extends MagPortalBasePage> T loginSelectShopAndGoTo(Class<T> pageClass) throws Exception {
+        return loginAndGoTo(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS,
+                getUserSessionData().getUserShopId(), pageClass);
     }
 
     /**

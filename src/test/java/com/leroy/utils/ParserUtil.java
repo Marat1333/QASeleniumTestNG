@@ -16,18 +16,30 @@ public class ParserUtil {
      * Convert String to Double and cut off non-digits if necessary
      *
      * @param str - string value
+     * @param delimiter - '.' or ','
      * @return double
      */
-    public static Double strToDouble(String str) {
+    public static Double strToDouble(String str, String delimiter) {
         if (str == null)
             return null;
         try {
             return NumberFormat.getInstance(Locale.FRANCE)
-                    .parse(str.replaceAll("[^\\d+\\,\\-]", "")).doubleValue();
+                    .parse(str.replaceAll("[^\\d+"+delimiter+"\\-]", "")
+                            .replaceAll("\\.", ",")).doubleValue();
         } catch (ParseException err) {
             Log.error(err.getMessage());
             return null;
         }
+    }
+
+    /**
+     * Convert String to Double and cut off non-digits if necessary
+     *
+     * @param str - string value
+     * @return double
+     */
+    public static Double strToDouble(String str) {
+        return strToDouble(str, ",");
     }
 
     /**

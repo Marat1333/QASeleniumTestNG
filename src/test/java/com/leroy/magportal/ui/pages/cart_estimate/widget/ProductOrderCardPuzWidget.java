@@ -39,7 +39,7 @@ public class ProductOrderCardPuzWidget extends CardWebWidget<ProductOrderCardWeb
     @WebFindBy(xpath = ".//span[contains(@class, 'SalesDocProduct__content__discount-price')]")
     Element totalPriceWithoutDiscount;
 
-    @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__content__price')]/*")
+    @WebFindBy(xpath = ".//div[contains(@class, 'Estimate-price')]")
     Element totalPrice;
 
     @WebFindBy(xpath = ".//span[@id='inputCounterDecrementButton']/div")
@@ -87,7 +87,10 @@ public class ProductOrderCardPuzWidget extends CardWebWidget<ProductOrderCardWeb
     }
 
     public String getTotalPrice() {
-        return totalPrice.getText();
+        String result = totalPrice.getTextIfPresent();
+        if (result == null)
+            result = E(getXpath() + "//div[contains(@class, 'SalesDocProduct__content__price')]/*").getText();
+        return result;
     }
 
     public String getDiscountPercent() {

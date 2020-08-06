@@ -79,7 +79,7 @@ public class CartTest extends SalesBaseTest {
     @Test(description = "C22797090 Добавить новый товар в корзину", groups = {NEED_ACCESS_TOKEN_GROUP, NEED_PRODUCTS_GROUP})
     public void testAddNewProductIntoBasket() throws Exception {
         // Test data
-        String lmCode = productLmCodes.get(0);
+        String lmCode = productLmCodes.get(1);
 
         step("Pre-condition: Создание корзины");
         startFromScreenWithCreatedCart();

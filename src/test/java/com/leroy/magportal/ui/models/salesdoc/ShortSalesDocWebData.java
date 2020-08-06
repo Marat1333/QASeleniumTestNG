@@ -5,7 +5,7 @@ import com.leroy.core.asserts.SoftAssertWrapper;
 import lombok.Data;
 
 @Data
-public class ShortSalesDocWebData implements IDataWithNumberAndStatus {
+public class ShortSalesDocWebData implements IDataWithNumberAndStatus<ShortSalesDocWebData> {
 
     private String number;
     private String status;
@@ -37,5 +37,4 @@ public class ShortSalesDocWebData implements IDataWithNumberAndStatus {
         }
         softAssert.verifyAll();
     }
-
 }

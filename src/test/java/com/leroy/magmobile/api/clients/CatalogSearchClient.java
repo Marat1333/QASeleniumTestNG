@@ -34,6 +34,7 @@ public class CatalogSearchClient extends BaseMashupClient {
     public Response<ProductItemDataList> searchProductsBy(CatalogSearchFilter filters, Integer startFrom, Integer pageSize) {
         GetCatalogSearch req = new GetCatalogSearch();
         req.setLdap(userSessionData.getUserLdap());
+        req.setShopId(userSessionData.getUserShopId());
         if (filters.getHasAvailableStock() != null)
             req.setHasAvailableStock(filters.getHasAvailableStock());
         if (filters.getTopEM() != null)

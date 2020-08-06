@@ -1,14 +1,14 @@
 package com.leroy.magmobile.api.data.catalog;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
-@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@Accessors(chain = true)
 public class CatalogSearchFilter {
     private Boolean hasAvailableStock;
     private Boolean topEM;

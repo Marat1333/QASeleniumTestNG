@@ -20,7 +20,7 @@ public class CardWebWidgetList<E extends CardWebWidget<D>, D> extends ElementLis
         super(driver, locator, elementClass);
     }
 
-    public List<D> getDataList(int limit) {
+    public List<D> getDataList(int limit) throws Exception {
         List<D> dataList = new ArrayList<>();
         for (CardWebWidget<D> cardWidget : this) {
             if (limit <= 0)
@@ -31,7 +31,7 @@ public class CardWebWidgetList<E extends CardWebWidget<D>, D> extends ElementLis
         return dataList;
     }
 
-    public List<D> getDataList() {
+    public List<D> getDataList() throws Exception {
         return getDataList(Integer.MAX_VALUE);
     }
 

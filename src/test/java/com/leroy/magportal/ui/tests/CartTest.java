@@ -487,7 +487,7 @@ public class CartTest extends BasePAOTest {
      *
      * @param lmCode
      */
-    private void stepSearchForProduct(String lmCode) {
+    private void stepSearchForProduct(String lmCode) throws Exception {
         cartPage.enterTextInSearchProductField(lmCode);
         SalesDocWebData tmpDocumentData = cartPage.getSalesDocData();
         anAssert().isFalse(Strings.isNullOrEmpty(tmpDocumentData.getNumber()),
@@ -501,7 +501,7 @@ public class CartTest extends BasePAOTest {
     /**
      * Поиск товара с помощью ввода в поле 'Добавление товара' данных о товаре
      */
-    private void stepSearchForProduct(ProductItemData expectedProductData, ProductSearchType searchType) {
+    private void stepSearchForProduct(ProductItemData expectedProductData, ProductSearchType searchType) throws Exception {
         String searchText;
         switch (searchType) {
             case LM_CODE:

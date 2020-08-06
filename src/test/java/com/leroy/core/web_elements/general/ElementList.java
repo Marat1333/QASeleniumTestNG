@@ -7,6 +7,7 @@ import com.leroy.core.util.XpathUtil;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -110,7 +111,9 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
                     CustomLocator elementLocator = new CustomLocator(
                             By.xpath(XpathUtil.getXpathByIndex(stringXPath, i)));
                     elementLocator.setCacheLookup(true);
-                    E oneElem = (E) getElementClass().getConstructor(WebDriver.class, CustomLocator.class).
+                    Constructor<?> constructor = getElementClass().getConstructor(WebDriver.class, CustomLocator.class);
+                    constructor.setAccessible(true);
+                    E oneElem = (E) constructor.
                             newInstance(driver, elementLocator);
                     oneElem.setWebElement(weList.get(i));
                     elementList.add(oneElem);
@@ -357,7 +360,7 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
      * @param text
      */
     public E findElemByText(String text, boolean isContains) throws Exception {
-        String xpath = getXpath() + (isContains ? "[contains(text(), '" + text + "')]" : "[text()='" + text + "']");
+        String xpath = getXpath() + (isContains ? "[contains(., '" + text + "')]" : "[text()='" + text + "']");
         CustomLocator elementLocator = new CustomLocator(
                 By.xpath(xpath));
         elementLocator.setCacheLookup(true);

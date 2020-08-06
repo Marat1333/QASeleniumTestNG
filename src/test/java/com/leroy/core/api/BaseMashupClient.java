@@ -23,7 +23,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @Dependencies(bricks = Application.MAGMOBILE)
 public abstract class BaseMashupClient extends BaseClient {
 
-    private String gatewayUrl;
+    protected String gatewayUrl;
 
     @Setter
     protected UserSessionData userSessionData;
@@ -50,7 +50,7 @@ public abstract class BaseMashupClient extends BaseClient {
     }
 
     @PostConstruct
-    private void init() {
+    protected void init() {
         gatewayUrl = EnvConstants.MAIN_API_HOST;
     }
 

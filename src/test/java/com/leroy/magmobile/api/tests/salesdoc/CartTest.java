@@ -122,6 +122,7 @@ public class CartTest extends BaseProjectApiTest {
                 putCartProductOrderData);
         cartClient.assertThatDiscountAdded(resp, cartData);
         cartData.increaseDocumentVersion();
+        discountData.setActor(getUserSessionData().getUserLdap());
     }
 
     @Test(description = "C23194968 Lego_Cart_Consolidate_Products - happy path")

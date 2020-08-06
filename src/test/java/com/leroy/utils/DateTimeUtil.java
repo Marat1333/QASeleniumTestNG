@@ -60,10 +60,12 @@ public class DateTimeUtil {
 
     public static LocalDateTime strToLocalDateTime(String dateString, String dateFormat) {
         try {
-            if (dateString.toLowerCase().contains("сегодня")) {
+            boolean isToday = dateString.toLowerCase().contains("сегодня");
+            boolean isYesterday = dateString.toLowerCase().contains("вчера");
+            if (isToday || isYesterday) {
                 LocalTime time = LocalTime.parse(StringUtils.substringAfter(dateString, ",").trim(),
                         DateTimeFormatter.ofPattern(StringUtils.substringAfter(dateFormat, ",").trim()));
-                return LocalDateTime.of(LocalDate.now(), time);
+                return LocalDateTime.of(isToday ? LocalDate.now() : LocalDate.now().minusDays(1), time);
             }
             Date date = new SimpleDateFormat(dateFormat, new Locale("ru", "RU")).
                     parse(dateString);
@@ -76,7 +78,7 @@ public class DateTimeUtil {
         }
     }
 
-    public static long getDateDifferenceInDays(LocalDate before, LocalDate after){
+    public static long getDateDifferenceInDays(LocalDate before, LocalDate after) {
         return DAYS.between(before, after);
     }
 

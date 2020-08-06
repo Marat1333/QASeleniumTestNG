@@ -10,6 +10,9 @@ import org.openqa.selenium.WebDriver;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Выпадающий список с опциями (Radio buttons) - единичный выбор
+ */
 public class PuzComboBox extends Element {
 
     public PuzComboBox(WebDriver driver, CustomLocator customLocator) {
@@ -26,7 +29,7 @@ public class PuzComboBox extends Element {
     protected Element selectedStringValue;
 
     private final String CONTAINER_OPTION_XPATH = "//div[contains(@class, 'optionsContainer')]/div";
-    private final String SWITCH_BTN_LABEL_XPATH = CONTAINER_OPTION_XPATH + "//span[contains(@class, 'SwitchButton-label') and text()='%s']";
+    private final String SWITCH_BTN_LABEL_XPATH = CONTAINER_OPTION_XPATH + "//span[contains(@class, 'SwitchButton-label') and contains(text(), '%s')]";
 
     @WebFindBy(xpath = CONTAINER_OPTION_XPATH + "//span[contains(@class, 'label')]")
     protected ElementList<Element> dropDownElementsList;
