@@ -396,7 +396,6 @@ public class PrintTagsTest extends AppBaseSteps {
         sessionsListPage.shouldViewTypeIsCorrect(true);
     }
 
-    @Issue("LFRONT-3652")
     @Test(description = "C23389195 отправка на печать ценников")
     public void testSendingToPrint() throws Exception {
         int productsCount = 3;
@@ -417,7 +416,6 @@ public class PrintTagsTest extends AppBaseSteps {
 
         //Step 2
         step("отправка нескольких форматов одного продукта");
-        //navigations bug
         tagsListPage = createSession();
         EditTagModalPage editTagModalPage = tagsListPage.callEditModalToProductByIndex(0);
         editTagModalPage.addProductToPrintSession(2, 3, 4);
@@ -678,7 +676,6 @@ public class PrintTagsTest extends AppBaseSteps {
         tagsListPage.shouldProductTagsHasCorrectSizesAndQuantity(firstProductData, secondProductData, thirdProductData, fourthProductData, fifthProductData);
     }
 
-    @Issue("LFRONT-3653")
     @Test(description = "C23389198 удаление сессии")
     public void testDeleteSession() throws Exception {
         String lmCode = catalogSearchClient.getRandomProduct().getLmCode();
@@ -722,7 +719,6 @@ public class PrintTagsTest extends AppBaseSteps {
         tagsListPage = createSession(lmCode);
         tagsListPage.goBack();
         ConfirmSessionExitModalPage confirmSessionExitModalPage = new ConfirmSessionExitModalPage();
-        //bug
         confirmSessionExitModalPage.exit();
         sessionsListPage = new SessionsListPage();
         sessionsListPage.goBack();
@@ -835,7 +831,6 @@ public class PrintTagsTest extends AppBaseSteps {
         pagesQuantityModalPage.shouldPagesQuantityAndFormatAreCorrect(Format.BIG, 5);
     }
 
-    @Issue("LFRONT-3652")
     @Test(description = "C23409752 Порядок отправки форматов ценников на печать")
     public void testFormatPrintingOrder() throws Exception {
         int productsCount = 3;
@@ -894,7 +889,6 @@ public class PrintTagsTest extends AppBaseSteps {
 
         //Step 4
         step("Создать сессию с двумя товарами разных форматов и отправить их на печать");
-        //navigations bug
         sessionsListPage = new SessionsListPage();
         sessionsListPage.createNewSession();
         scannerPage = new PrintTagsScannerPage();
@@ -908,7 +902,6 @@ public class PrintTagsTest extends AppBaseSteps {
         scannerPage.navigateToSearchProductPage();
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCodesList.get(1));
         editTagModalPage = new EditTagModalPage();
-        editTagModalPage.selectCheckBoxes(Format.SMALL);
         editTagModalPage.confirm();
         tagsListPage = new TagsListPage();
         tagsListPage.printTags();
