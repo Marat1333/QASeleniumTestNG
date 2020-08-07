@@ -39,7 +39,11 @@ public class ShopsStocksPage extends ShopPricesPage {
             ShopCardData uiData = shopData.get(i);
             ShopData apiData = data.get(i);
             softAssert.isEquals(uiData.getId(), apiData.getId()+" "+apiData.getName(), "id and name");
-            softAssert.isEquals(uiData.getStock(), ParserUtil.prettyDoubleFmt(apiData.getPriceAndStock().getStock()), "stock");
+            try {
+                softAssert.isEquals(uiData.getStock(), ParserUtil.prettyDoubleFmt(apiData.getPriceAndStock().getStock()), "stock");
+            }catch (NullPointerException e){
+                softAssert.isEquals(uiData.getStock(), "0 шт.", "stock");
+            }
         }
         softAssert.verifyAll();
         return this;

@@ -254,11 +254,13 @@ public class ProductCardTest extends AppBaseSteps {
         SpecificationsPage specificationsPage = productCardPage.switchTab(ProductCardPage.Tabs.SPECIFICATION);
         SuppliesPage suppliesPage = specificationsPage.goToSupplyInfoPage();
         suppliesPage.verifyRequiredElements();
+        //TODO проверить поле срок поставки СС
         suppliesPage.shouldAllSupplyDataIsCorrect(data);
 
         //Step 2
         step("Перейти во вкладку \"Характеристики\", нажать на кнопку \"Цены\" и открыть раздел \"Поставки\"");
         suppliesPage.goBack();
+        productCardPage = new ProductCardPage();
         productCardPage.switchTab(ProductCardPage.Tabs.DESCRIPTION);
         ProductDescriptionPage productDescriptionPage = new ProductDescriptionPage();
         ProductPricesQuantitySupplyPage productPricesQuantitySupplyPage = productDescriptionPage.goToPricesAndQuantityPage();

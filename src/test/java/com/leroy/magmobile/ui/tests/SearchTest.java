@@ -104,8 +104,10 @@ public class SearchTest extends AppBaseSteps {
         GetCatalogSearch byShortBarCodeParams = buildDefaultCatalogSearchParams()
                 .setByBarCode(shortBarCode);
 
+        GetCatalogSearch byNameParam = buildDefaultCatalogSearchParams().setByNameLike(shortSearchPhrase);
+
         HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> apiThreads =
-                sendRequestsSearchProductsBy(byLmParams, byBarCodeParams, byShortLmCodeParams, byShortBarCodeParams);
+                sendRequestsSearchProductsBy(byLmParams, byBarCodeParams, byShortLmCodeParams, byShortBarCodeParams, byNameParam);
 
         // Pre-conditions
         MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
@@ -150,8 +152,9 @@ public class SearchTest extends AppBaseSteps {
         // Step 7
         step("Введите название товара для поиска");
         searchProductPage.enterTextInSearchFieldAndSubmit(shortSearchPhrase);
-        searchProductPage.shouldCardsContainText(
-                shortSearchPhrase, SearchProductPage.CardType.COMMON, 3);
+        ProductItemDataList d5 = apiThreads.get(4).getData();
+        searchProductPage.shouldCatalogResponseEqualsContent(
+                d5, SearchProductPage.CardType.COMMON, 3);
 
         // Step 8
         step("Ввести штрихкод вручную");
@@ -497,6 +500,7 @@ public class SearchTest extends AppBaseSteps {
         step("Вернуться на вкладку \"Описание\" и Нажать на строку \"Цены в магазинах\"");
         productDescriptionCardPage = similarProductsPage.switchTab(ProductCardPage.Tabs.DESCRIPTION);
         ProductPricesQuantitySupplyPage productPricesQuantitySupplyPage = productDescriptionCardPage.goToPricesAndQuantityPage();
+        //TODO добавить проверку на отсутствие кнопки "Поставщик" в характеристиках товара
         productPricesQuantitySupplyPage.shouldNotSupplyBtnBeDisplayed();
 
     }

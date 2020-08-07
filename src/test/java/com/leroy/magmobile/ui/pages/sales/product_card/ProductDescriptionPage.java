@@ -84,7 +84,7 @@ public class ProductDescriptionPage extends ProductCardPage {
 
     @Step("Перейти на страницу с детализацией цен и запасов")
     public ProductPricesQuantitySupplyPage goToPricesAndQuantityPage() {
-        mainScrollView.scrollToEnd();
+        mainScrollView.scrollDownToText("Доступно для продажи");
         if (!actionWithProductBtn.isVisible()) {
             productPriceGammaCardBtn.click();
         }else {
@@ -95,13 +95,18 @@ public class ProductDescriptionPage extends ProductCardPage {
 
     @Step("Перейти на страницу с информацией о стоках")
     public StocksPage goToStocksPage(){
+        if (!availableStockLbl.isVisible()) {
+            mainScrollView.scrollDownToElement(availableStockLbl);
+        }
         availableStockLbl.click();
         return new StocksPage();
     }
 
     @Step("Перейти на страницу с историей продаж")
     public SalesHistoryPage goToSalesHistoryPage(){
-        mainScrollView.scrollToEnd();
+        if (!salesHistoryBtn.isVisible()) {
+            mainScrollView.scrollDownToElement(salesHistoryBtn);
+        }
         salesHistoryBtn.click();
         return new SalesHistoryPage();
     }
