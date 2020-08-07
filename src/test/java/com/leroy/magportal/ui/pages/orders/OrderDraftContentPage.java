@@ -1,19 +1,20 @@
 package com.leroy.magportal.ui.pages.orders;
 
 import com.leroy.constants.sales.SalesDocumentsConst;
+import com.leroy.core.annotations.Form;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
-import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magportal.ui.models.salesdoc.OrderWebData;
 import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardWebData;
 import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.ConfirmRemoveProductModal;
-import com.leroy.magportal.ui.pages.cart_estimate.modal.ExtendedSearchModal;
 import com.leroy.magportal.ui.pages.orders.widget.OrderDraftProductCardWidget;
+import com.leroy.magportal.ui.pages.products.form.AddProductForm;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
+import lombok.Getter;
 import org.openqa.selenium.support.Color;
 import org.openqa.selenium.support.Colors;
 
@@ -27,10 +28,9 @@ import static com.leroy.constants.DefectConst.PAO_931;
 
 public class OrderDraftContentPage extends OrderDraftPage {
 
-    @WebFindBy(text = "Добавление товара")
-    Element addProductLbl;
-    @WebFindBy(xpath = "//input[@name='productSearchValue']", metaName = "Поле поиска товаров")
-    EditBox searchProductFld;
+    @Form
+    @Getter
+    AddProductForm addProductForm;
 
     @WebFindBy(xpath = "//div[contains(@class, 'CreationProductCard')]",
             clazz = OrderDraftProductCardWidget.class)
@@ -60,18 +60,6 @@ public class OrderDraftContentPage extends OrderDraftPage {
     }
 
     // Actions
-
-    @Step("Ввести {text} в поле для добавления товара и нажать Enter")
-    public void enterTextInSearchProductField(String text) {
-        searchProductFld.clear(true);
-        searchProductFld.clearFillAndSubmit(text);
-        waitForSpinnerAppearAndDisappear(short_timeout);
-        if (!ExtendedSearchModal.isModalVisible()) {
-            addProductLbl.click();
-        }
-        waitForSpinnerAppearAndDisappear(short_timeout);
-        waitForSpinnerAppearAndDisappear(short_timeout);
-    }
 
     @Step("Изменить кол-во {index}-ого товара")
     public OrderDraftContentPage editProductQuantity(int index, int value) throws Exception {
@@ -106,6 +94,7 @@ public class OrderDraftContentPage extends OrderDraftPage {
         return this;
     }
 
+    // OrderCreatedContentPage содержит подобный метод
     @Step("Проверить, что в заказе имеются товары с лм кодами: {lmCodes}")
     public OrderDraftContentPage shouldProductsHave(List<String> lmCodes) throws Exception {
         SalesDocWebData salesDocWebData = getOrderData();

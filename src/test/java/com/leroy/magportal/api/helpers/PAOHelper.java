@@ -128,7 +128,9 @@ public class PAOHelper extends BaseHelper {
     }
 
     @Step("API: Создать подвтержденный заказ")
-    public String createConfirmedOrder(List<CartProductOrderData> products) {
+    public OrderData createConfirmedOrder(
+            List<CartProductOrderData> products,
+            boolean isWaitForAllowedForPicking) throws Exception {
         // Создание корзины
         CartData cartData = createCart(products);
 
@@ -194,16 +196,18 @@ public class PAOHelper extends BaseHelper {
         giveAwayData.setPoint(SalesDocumentsConst.GiveAwayPoints.PICKUP.getApiVal());
         giveAwayData.setShopId(Integer.valueOf(ContextProvider.getContext().getUserSessionData().getUserShopId()));
         confirmOrderData.setGiveAway(giveAwayData);
-
+        Thread.sleep(3000); // TODO
         Response<OrderData> resp = orderClient.confirmOrder(orderData.getOrderId(), confirmOrderData);
-        //if (!resp.isSuccessful())
-        //    resp = orderClient.confirmOrder(orderData.getOrderId(), confirmOrderData);
         orderClient.assertThatIsConfirmed(resp, orderData);
-        return orderData.getOrderId();
+        if (isWaitForAllowedForPicking) {
+            orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderData.getOrderId(),
+                    SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal());
+        }
+        return orderData;
     }
 
-    public String createConfirmedOrder(CartProductOrderData product) {
-        return createConfirmedOrder(Collections.singletonList(product));
+    public OrderData createConfirmedOrder(CartProductOrderData product, boolean isWaitForAllowedForPicking) throws Exception {
+        return createConfirmedOrder(Collections.singletonList(product), isWaitForAllowedForPicking);
     }
 
     @Step("Создаем черновик Сметы через API")

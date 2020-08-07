@@ -25,6 +25,7 @@ import com.leroy.magportal.ui.pages.orders.OrderDraftContentPage;
 import com.leroy.magportal.ui.pages.orders.OrderDraftDeliveryWayPage;
 import com.leroy.magportal.ui.pages.orders.OrderHeaderPage;
 import com.leroy.magportal.ui.pages.orders.modal.SubmittedOrderModal;
+import com.leroy.magportal.ui.pages.products.form.AddProductForm;
 import com.leroy.magportal.ui.tests.BasePAOTest;
 import com.leroy.utils.RandomUtil;
 import org.testng.annotations.AfterClass;
@@ -53,7 +54,7 @@ public class OrderTest extends BasePAOTest {
                 !orderData.getStatus().equals(SalesDocumentsConst.States.CANCELLED.getUiVal())) {
             OrderClient orderClient = apiClientProvider.getOrderClient();
             orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderData.getNumber(),
-                    SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal());
+                    SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal(), false);
             Response<JsonNode> resp = orderClient.cancelOrder(orderData.getNumber());
             assertThat(resp, successful());
         }
@@ -62,7 +63,7 @@ public class OrderTest extends BasePAOTest {
     // Pages
     CartPage cartPage;
     OrderDraftDeliveryWayPage orderDraftDeliveryWayPage;
-    OrderCreatedContentPage orderCreatedPage;
+    OrderCreatedContentPage orderCreatedContentPage;
     OrderDraftContentPage orderDraftContentPage;
     CustomerSearchForm customerSearchForm;
     SubmittedOrderModal submittedOrderModal;
@@ -333,11 +334,37 @@ public class OrderTest extends BasePAOTest {
 
         // Step 8
         step("Найдите и откройте подтвержденный заказ");
-        orderCreatedPage.clickDocumentInLeftMenu(orderData.getNumber());
-        orderCreatedPage = new OrderCreatedContentPage().shouldOrderContentDataIs(orderData);
+        orderCreatedContentPage.clickDocumentInLeftMenu(orderData.getNumber());
+        orderCreatedContentPage = new OrderCreatedContentPage().shouldOrderContentDataIs(orderData);
     }
 
     // ================== EDIT ORDERS =========================//
+
+    private void preconditionForEditOrderConfirmedTests(List<ProductItemData> productItemDataList) throws Exception {
+        // Prepare data
+        List<CartProductOrderData> cardProducts = new ArrayList<>();
+        for (ProductItemData productItemData : productItemDataList) {
+            CartProductOrderData cartProductOrderData = new CartProductOrderData(productItemData);
+            cartProductOrderData.setQuantity(1.0);
+            cardProducts.add(cartProductOrderData);
+        }
+
+        String orderId = helper.createConfirmedOrder(cardProducts, false).getOrderId();
+
+        OrderHeaderPage orderHeaderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
+        helper.getOrderClient().waitUntilOrderHasStatusAndReturnOrderData(
+                orderId, SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal(), false);
+        orderHeaderPage.clickDocumentInLeftMenu(orderId);
+
+        orderCreatedContentPage = new OrderCreatedContentPage();
+        orderData = orderCreatedContentPage.getOrderData();
+    }
+
+    private void preconditionForEditOrderConfirmedTests() throws Exception {
+        if (productList == null)
+            throw new Exception("Добавь тесту groups = NEED_PRODUCTS_GROUP");
+        preconditionForEditOrderConfirmedTests(Collections.singletonList(productList.get(0)));
+    }
 
     private void preconditionForEditOrderDraftTests(List<ProductItemData> productItemDataList) throws Exception {
         // Prepare data
@@ -350,7 +377,7 @@ public class OrderTest extends BasePAOTest {
 
         String cartId = helper.createCart(cardProducts).getFullDocId();
 
-        cartPage = loginAndGoTo(CartPage.class);
+        cartPage = loginSelectShopAndGoTo(CartPage.class); // TODO ???
         cartPage.clickDocumentInLeftMenu(cartId);
 
         stepClickConfirmOrderButton(null);
@@ -363,6 +390,8 @@ public class OrderTest extends BasePAOTest {
         preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)));
     }
 
+    // ---------------- EDIT ORDER DRAFT -------------------//
+
     @Test(description = "C23410901 Добавить товар в неподтвержденный заказ (количества товара достаточно)",
             groups = NEED_PRODUCTS_GROUP)
     public void testAddProductInDraftOrderWithSufficientProductQuantity() throws Exception {
@@ -371,7 +400,7 @@ public class OrderTest extends BasePAOTest {
 
         // Step 1
         step("Введите ЛМ товара в поле 'Добавление товара' и нажмите Enter");
-        orderDraftContentPage.enterTextInSearchProductField(newProduct.getLmCode());
+        orderDraftContentPage.getAddProductForm().enterTextInSearchProductField(newProduct.getLmCode());
         orderDraftContentPage.shouldProductsHave(Arrays.asList(productList.get(0).getLmCode(),
                 newProduct.getLmCode()));
     }
@@ -403,7 +432,7 @@ public class OrderTest extends BasePAOTest {
 
         // Step 1
         step("Введите ЛМ товара в поле 'Добавление товара' и нажмите Enter");
-        orderDraftContentPage.enterTextInSearchProductField(newProduct.getLmCode());
+        orderDraftContentPage.getAddProductForm().enterTextInSearchProductField(newProduct.getLmCode());
         orderDraftContentPage.shouldProductsHave(Arrays.asList(productList.get(0).getLmCode(),
                 newProduct.getLmCode()));
     }
@@ -475,6 +504,33 @@ public class OrderTest extends BasePAOTest {
         stepRefreshDocumentListAndCheckDocument();
     }
 
+    /// -------- EDIT CONFIRMED ORDER TESTS --------------- ///
+
+    @Test(description = "C23410907 Добавить товар в подтвержденный закакз", groups = NEED_PRODUCTS_GROUP)
+    public void testAddProductInConfirmedOrder() throws Exception{
+        ProductItemData newProductItem = productList.get(1);
+        preconditionForEditOrderConfirmedTests();
+
+        // Step 1
+        step("Нажмите на иконку редактирования заказа в левом нижнем углу");
+        orderCreatedContentPage.clickEditOrderButton();
+        AddProductForm addProductForm = orderCreatedContentPage.getAddProductForm();
+        addProductForm.shouldSearchFieldIsVisible();
+
+        // Step 2
+        step("Введите ЛМ товара в поле 'Добавление товара' и нажмите Enter");
+        addProductForm.enterTextInSearchProductField(newProductItem.getLmCode());
+
+
+        // Step 3
+        step("Нажмите на кнопку 'Сохранить'");
+        //orderData = orderCreatedContentPage.getOrderData();
+        orderCreatedContentPage.clickSaveOrderButton();
+        orderCreatedContentPage.shouldProductsHave(Arrays.asList(productList.get(0).getLmCode(),
+                newProductItem.getLmCode()));
+        //orderCreatedContentPage.shouldOrderContentDataIs(orderData);
+    }
+
     // ------------ Steps ------------------ //
 
     /**
@@ -542,7 +598,7 @@ public class OrderTest extends BasePAOTest {
      * Нажмите на 'Перейти в список заказов'
      */
     private void stepGoToTheOrderList() throws Exception {
-        orderCreatedPage = submittedOrderModal.clickGoToOrderListButton()
+        orderCreatedContentPage = submittedOrderModal.clickGoToOrderListButton()
                 .shouldOrderContentDataIs(orderData);
     }
 
@@ -550,12 +606,12 @@ public class OrderTest extends BasePAOTest {
      * Обновите список документов слева
      */
     private void stepRefreshDocumentListAndCheckDocument() throws Exception {
-        if (orderCreatedPage == null)
-            orderCreatedPage = new OrderCreatedContentPage();
+        if (orderCreatedContentPage == null)
+            orderCreatedContentPage = new OrderCreatedContentPage();
         ShortOrderDocWebData shortOrderDocWebData = orderData.getShortOrderData();
         shortOrderDocWebData.setPayType(ShortOrderDocWebData.PayType.OFFLINE);
-        orderCreatedPage.refreshDocumentList();
-        orderCreatedPage.shouldDocumentListContainsThis(shortOrderDocWebData);
+        orderCreatedContentPage.refreshDocumentList();
+        orderCreatedContentPage.shouldDocumentListContainsThis(shortOrderDocWebData);
     }
 
 }
