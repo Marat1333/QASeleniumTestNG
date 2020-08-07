@@ -42,7 +42,7 @@ public class CalendarInputBox extends CommonCalendarInputBox {
         int differenceInMonth;
         Locale locale = new Locale("ru", "RU");
         Date needToSelectDate = new Date(date.getYear() - 1900,
-                date.getMonthValue() - 1, date.getDayOfMonth() + 1);
+                date.getMonthValue() - 1, date.getDayOfMonth());
         Date calendarDate = new SimpleDateFormat("MMMM yyyy", locale)
                 .parse(firstSelectedMonthLabel.getText() + " " + firstSelectedYearLabel.getText());
 
