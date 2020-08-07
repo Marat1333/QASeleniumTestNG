@@ -59,6 +59,7 @@ public class DriverFactory {
     public static String BUILD = "";
     public static String PLATFORM = "";
     public static String BROWSER_PROFILE = "";
+    public static boolean MOON_PROFILE;
 
     private static MutableCapabilities capabilities = null;
 
@@ -102,6 +103,8 @@ public class DriverFactory {
         BUILD = buildVersion;
         PLATFORM = platform;
         BROWSER_PROFILE = browser;
+        MOON_PROFILE = host.contains("moon");
+
 
         //3. get specifically properties according to the platform/browser
         Map<String, Object> capsFromFile = (Map<String, Object>) capas.get(platform);

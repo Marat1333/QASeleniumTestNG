@@ -21,6 +21,8 @@ import com.leroy.magportal.ui.webelements.searchelements.ProductPriceInfoWidget;
 import com.leroy.magportal.ui.webelements.searchelements.ProductQuantityInfoWidget;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -75,6 +77,13 @@ public class ExtendedProductCardPage extends ProductCardPage {
 
     @WebFindBy(xpath = "//span[contains(@class, 'Badge')][4]")
     Element categoryBadge;
+
+    @Override
+    public void waitForPageIsLoaded() {
+        super.waitForPageIsLoaded();
+        addProductToCart.waitForVisibility();
+        addProductToEstimate.waitForVisibility();
+    }
 
     @Step("Перейти в карточку аналогичного товара {lmCode}")
     public ExtendedProductCardPage goToAdditionalProduct(String lmCode, Tab tab) throws Exception {
@@ -240,7 +249,7 @@ public class ExtendedProductCardPage extends ProductCardPage {
         shouldUnitsIsCorrect(recommendedPriceContainerData.getUnits(), data.getRecommendedPrice().getPriceUnit());
         softAssert.isEquals(purchasePriceContainerData.getPrice(), purchasePrice, "PurchasePrice mismatch");
         shouldCurrencyIsCorrect(purchasePriceContainerData.getCurrency(), data.getPurchasePrice().getPriceCurrency());
-        shouldPriceChangeDateIsCorrect(data.getSalesPrice().getDateOfChange());
+        shouldPriceChangeDateIsCorrect(data.getSalesPrice().getDateOfChange(), data.getTimeZone());
         softAssert.isEquals(productPriceInfoWidget.isMismatchPriceThanRecommendedTooltipVisible(), !recommendedPrice.equals(salesPrice),
                 "SalePrice and RecommendedPrice mismatch lbl is invisible");
         softAssert.isEquals(productPriceInfoWidget.getReasonOfChange(), data.getSalesPrice().getReasonOfChange(),
@@ -274,14 +283,14 @@ public class ExtendedProductCardPage extends ProductCardPage {
         }
     }
 
-    private void shouldPriceChangeDateIsCorrect(String date) {
+    private void shouldPriceChangeDateIsCorrect(String date, int timeZone) {
         Locale locale = new Locale("ru");
         DateTimeFormatter shortFormatter = DateTimeFormatter.ofPattern("d MMM", locale);
         DateTimeFormatter longFormatter = DateTimeFormatter.ofPattern("d MMM yyyy", locale);
         DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
 
         LocalDateTime dataDate = LocalDateTime.parse(date, inputFormatter);
-        dataDate = dataDate.plusHours(3);
+        dataDate = dataDate.plusHours(timeZone);
 
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault());
         calendar.setTime(new Date());
