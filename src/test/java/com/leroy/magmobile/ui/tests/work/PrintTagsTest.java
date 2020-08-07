@@ -1,5 +1,6 @@
 package com.leroy.magmobile.ui.tests.work;
 
+import com.leroy.constants.DefectConst;
 import com.leroy.core.UserSessionData;
 import com.leroy.core.api.Module;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
@@ -257,12 +258,12 @@ public class PrintTagsTest extends AppBaseSteps {
         editTagModalPage = multiFunctionModal.printTag();
         productTagData = editTagModalPage.addProductToPrintSession();*/
 
-        //workaround
-        editTagModalPage = new EditTagModalPage();
-        editTagModalPage.shouldSizeValuesAreCorrect(productTagData);
-        editTagModalPage.shouldDeleteBtnHasCorrectCondition(true);
-        editTagModalPage.addProductToPrintSession();
-        //
+        if (DefectConst.PRINT_TAG_NAVIGATION_ISSUE) {
+            editTagModalPage = new EditTagModalPage();
+            editTagModalPage.shouldSizeValuesAreCorrect(productTagData);
+            editTagModalPage.shouldDeleteBtnHasCorrectCondition(true);
+            editTagModalPage.addProductToPrintSession();
+        }
 
         tagsListPage = new TagsListPage();
         tagsListPage.shouldProductCountIsCorrect(3);
@@ -329,10 +330,10 @@ public class PrintTagsTest extends AppBaseSteps {
 
         //Step 2
         step("удалить товар через массовое редактирование");
-        //workaround for minor bug https://jira.lmru.tech/browse/LFRONT-3640
-        tagsListPage.callEditModal(lmCodesList.get(0));
-        editTagModalPage.closeModal();
-        //
+        if (DefectConst.LFRONT_3640) {
+            tagsListPage.callEditModal(lmCodesList.get(0));
+            editTagModalPage.closeModal();
+        }
 
         tagsListPage.switchToGroupEditorMode();
         editTagModalPage = tagsListPage.choseProductsAndOpenGroupEditModal(lmCodesList.get(0));
