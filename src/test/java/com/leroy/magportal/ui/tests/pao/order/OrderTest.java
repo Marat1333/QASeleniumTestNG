@@ -37,8 +37,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.leroy.constants.DefectConst.INVISIBLE_AUTHOR_ORDER_DRAFT;
-import static com.leroy.constants.DefectConst.PRODUCT_COUNT_WHEN_TWO_ORDERS_IN_CART;
+import static com.leroy.constants.DefectConst.*;
 import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -53,8 +52,12 @@ public class OrderTest extends BasePAOTest {
                 !orderData.getStatus().equals(SalesDocumentsConst.States.DRAFT.getUiVal()) &&
                 !orderData.getStatus().equals(SalesDocumentsConst.States.CANCELLED.getUiVal())) {
             OrderClient orderClient = apiClientProvider.getOrderClient();
-            orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderData.getNumber(),
-                    SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal(), false);
+            if (CONFIRMED_BUT_NOT_ALLOWED_FOR_PICKING_ORDER)
+                orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderData.getNumber(),
+                        SalesDocumentsConst.States.CONFIRMED.getApiVal(), false);
+            else
+                orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderData.getNumber(),
+                        SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal(), false);
             Response<JsonNode> resp = orderClient.cancelOrder(orderData.getNumber());
             assertThat(resp, successful());
         }
@@ -352,8 +355,10 @@ public class OrderTest extends BasePAOTest {
         String orderId = helper.createConfirmedOrder(cardProducts, false).getOrderId();
 
         OrderHeaderPage orderHeaderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
-        helper.getOrderClient().waitUntilOrderHasStatusAndReturnOrderData(
-                orderId, SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal(), false);
+        helper.getOrderClient().waitUntilOrderHasStatusAndReturnOrderData(orderId,
+                CONFIRMED_BUT_NOT_ALLOWED_FOR_PICKING_ORDER?
+                        SalesDocumentsConst.States.CONFIRMED.getApiVal() :
+                SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal(), false);
         orderHeaderPage.clickDocumentInLeftMenu(orderId);
 
         orderCreatedContentPage = new OrderCreatedContentPage();
@@ -507,8 +512,10 @@ public class OrderTest extends BasePAOTest {
     /// -------- EDIT CONFIRMED ORDER TESTS --------------- ///
 
     @Test(description = "C23410907 Добавить товар в подтвержденный закакз", groups = NEED_PRODUCTS_GROUP)
-    public void testAddProductInConfirmedOrder() throws Exception{
+    public void testAddProductInConfirmedOrder() throws Exception {
         ProductItemData newProductItem = productList.get(1);
+        List<String> expectedProductLmCodes = Arrays.asList(productList.get(0).getLmCode(),
+                newProductItem.getLmCode());
         preconditionForEditOrderConfirmedTests();
 
         // Step 1
@@ -520,15 +527,12 @@ public class OrderTest extends BasePAOTest {
         // Step 2
         step("Введите ЛМ товара в поле 'Добавление товара' и нажмите Enter");
         addProductForm.enterTextInSearchProductField(newProductItem.getLmCode());
-
+        orderCreatedContentPage.shouldProductsHave(expectedProductLmCodes, false);
 
         // Step 3
         step("Нажмите на кнопку 'Сохранить'");
-        //orderData = orderCreatedContentPage.getOrderData();
         orderCreatedContentPage.clickSaveOrderButton();
-        orderCreatedContentPage.shouldProductsHave(Arrays.asList(productList.get(0).getLmCode(),
-                newProductItem.getLmCode()));
-        //orderCreatedContentPage.shouldOrderContentDataIs(orderData);
+        orderCreatedContentPage.shouldProductsHave(expectedProductLmCodes, true);
     }
 
     // ------------ Steps ------------------ //

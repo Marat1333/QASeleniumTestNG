@@ -77,7 +77,7 @@ public class OrderProductCardWidget extends CardWebWidget<ProductOrderCardWebDat
     @Override
     public ProductOrderCardWebData collectDataFromPage() {
         ProductOrderCardWebData productOrderCardWebData = new ProductOrderCardWebData();
-        productOrderCardWebData.setBarCode(ParserUtil.strWithOnlyDigits(barCode.getText()));
+        productOrderCardWebData.setBarCode(ParserUtil.strWithOnlyDigits(barCode.getTextIfPresent()));
         productOrderCardWebData.setLmCode(lmCode.getText());
         //productOrderCardWebData.setDepartment(ParserUtil.strToInt(department.getText()));
         //productOrderCardWebData.setDimension(dimension.getText());
