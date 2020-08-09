@@ -111,6 +111,7 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
     @Step("Нажать кнопку Сохранить")
     public OrderCreatedContentPage clickSaveOrderButton() {
         saveBtn.click();
+        saveBtn.waitForInvisibility();
         waitForSpinnerAppearAndDisappear();
         return this;
     }
