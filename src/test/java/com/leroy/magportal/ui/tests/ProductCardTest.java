@@ -8,7 +8,6 @@ import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
-import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magportal.api.clients.MagPortalCatalogProductClient;
 import com.leroy.magportal.api.data.catalog.products.CatalogProductData;
 import com.leroy.magportal.api.data.catalog.products.CatalogSimilarProductsData;
@@ -22,7 +21,6 @@ import com.leroy.magportal.ui.pages.products.ExtendedProductCardPage;
 import com.leroy.magportal.ui.pages.products.ProductCardPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage.FilterFrame;
-import io.qameta.allure.Issue;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -322,9 +320,9 @@ public class ProductCardTest extends WebBaseSteps {
     public void testCheckExtendedCardData() throws Exception {
         String lmCode = getRandomLmCode();
         CatalogProductData data = apiClientProvider.getMagPortalCatalogProductClientProvider().getProductData(lmCode).asJson();
-        if (DriverFactory.MOON_PROFILE){
+        if (DriverFactory.isGridProfile()) {
             data.setTimeZone(TimeZone.GREENWICH);
-        }else {
+        } else {
             data.setTimeZone(TimeZone.MSC);
         }
 
