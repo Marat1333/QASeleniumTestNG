@@ -343,12 +343,13 @@ public class OrderTest extends BasePAOTest {
 
     // ================== EDIT ORDERS =========================//
 
-    private void preconditionForEditOrderConfirmedTests(List<ProductItemData> productItemDataList) throws Exception {
+    private void preconditionForEditOrderConfirmedTests(
+            List<ProductItemData> productItemDataList, double selectedQuantity) throws Exception {
         // Prepare data
         List<CartProductOrderData> cardProducts = new ArrayList<>();
         for (ProductItemData productItemData : productItemDataList) {
             CartProductOrderData cartProductOrderData = new CartProductOrderData(productItemData);
-            cartProductOrderData.setQuantity(1.0);
+            cartProductOrderData.setQuantity(selectedQuantity);
             cardProducts.add(cartProductOrderData);
         }
 
@@ -356,9 +357,9 @@ public class OrderTest extends BasePAOTest {
 
         OrderHeaderPage orderHeaderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
         helper.getOrderClient().waitUntilOrderHasStatusAndReturnOrderData(orderId,
-                CONFIRMED_BUT_NOT_ALLOWED_FOR_PICKING_ORDER?
+                CONFIRMED_BUT_NOT_ALLOWED_FOR_PICKING_ORDER ?
                         SalesDocumentsConst.States.CONFIRMED.getApiVal() :
-                SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal(), false);
+                        SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal(), false);
         orderHeaderPage.clickDocumentInLeftMenu(orderId);
 
         orderCreatedContentPage = new OrderCreatedContentPage();
@@ -368,7 +369,7 @@ public class OrderTest extends BasePAOTest {
     private void preconditionForEditOrderConfirmedTests() throws Exception {
         if (productList == null)
             throw new Exception("Добавь тесту groups = NEED_PRODUCTS_GROUP");
-        preconditionForEditOrderConfirmedTests(Collections.singletonList(productList.get(0)));
+        preconditionForEditOrderConfirmedTests(Collections.singletonList(productList.get(0)), 1.0);
     }
 
     private void preconditionForEditOrderDraftTests(List<ProductItemData> productItemDataList) throws Exception {
@@ -533,6 +534,29 @@ public class OrderTest extends BasePAOTest {
         step("Нажмите на кнопку 'Сохранить'");
         orderCreatedContentPage.clickSaveOrderButton();
         orderCreatedContentPage.shouldProductsHave(expectedProductLmCodes, true);
+    }
+
+    @Test(description = "C23410908 Изменить количество товара в подтвержденном заказе", groups = NEED_PRODUCTS_GROUP)
+    public void testChangeProductQuantityInConfirmedOrder() throws Exception {
+        preconditionForEditOrderConfirmedTests(Collections.singletonList(productList.get(0)), 2.0);
+
+        // Step 1
+        step("Нажмите на иконку редактирования заказа в левом нижнем углу");
+        orderCreatedContentPage.clickEditOrderButton();
+        orderCreatedContentPage.shouldSelectedProductQuantityIs(1, 2);
+        AddProductForm addProductForm = orderCreatedContentPage.getAddProductForm();
+        addProductForm.shouldSearchFieldIsVisible();
+
+        // Step 2
+        step("Измените количество товара плашкой");
+        orderData.getOrders().get(0).changeProductQuantity(0, 1, true);
+        orderCreatedContentPage.editSelectedQuantity(1, 1)
+                .shouldSelectedProductQuantityIs(1, 1);
+
+        // Step 3
+        step("Нажмите на кнопку 'Сохранить'");
+        orderCreatedContentPage.clickSaveOrderButton();
+        orderCreatedContentPage.shouldOrderContentDataIs(orderData);
     }
 
     // ------------ Steps ------------------ //

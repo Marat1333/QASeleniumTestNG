@@ -60,7 +60,6 @@ public class OrderWebData {
 
     public void changeProductQuantity(int productIdx, Number quantity, boolean recalculateOrder) {
         ProductOrderCardWebData productData = productCardDataList.get(productIdx);
-        productData.setSelectedQuantity(quantity.doubleValue());
         if (recalculateOrder) {
             double newPrice = quantity.intValue() * productData.getPrice();
             if (productData.getWeight() != null) {
@@ -74,6 +73,7 @@ public class OrderWebData {
             productData.setTotalPrice(newPrice);
             totalPrice += diffTotalPrice;
         }
+        productData.setSelectedQuantity(quantity.doubleValue());
     }
 
     public void assertEqualsNotNullExpectedFields(OrderWebData expectedOrder, int iOrder) {

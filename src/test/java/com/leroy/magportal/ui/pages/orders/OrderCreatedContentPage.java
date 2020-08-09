@@ -116,6 +116,13 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
         return this;
     }
 
+    @Step("Изменить количество 'заказано' для {index}-ого товара")
+    public OrderCreatedContentPage editSelectedQuantity(int index, int value) throws Exception {
+        index--;
+        productCards.get(index).editQuantity(value);
+        return this;
+    }
+
     // Verifications
 
     @Step("Проверить, что данные заказа соответствуют ожидаемому")
@@ -169,6 +176,14 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
 
     public OrderCreatedContentPage shouldProductsHave(List<String> lmCodes) throws Exception {
         return shouldProductsHave(lmCodes, true);
+    }
+
+    @Step("Проверить количество 'заказано' для {index}-ого товара")
+    public OrderCreatedContentPage shouldSelectedProductQuantityIs(int index, int value) throws Exception {
+        index--;
+        anAssert.isEquals(productCards.get(index).getOrderedQuantity(), String.valueOf(value),
+                "Неверное количество 'заказано' у " + (index + 1) + " товара");
+        return this;
     }
 
 
