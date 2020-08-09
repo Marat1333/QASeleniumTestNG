@@ -53,7 +53,8 @@ public class OrderWebData {
             ProductOrderCardWebData removeProduct = productCardDataList.get(index);
             totalWeight = ParserUtil.plus(totalWeight, -removeProduct.getWeight(), 2);
             totalPrice -= removeProduct.getTotalPrice();
-            productCount--;
+            if (productCount != null)
+                productCount--;
         }
         productCardDataList.remove(index);
     }

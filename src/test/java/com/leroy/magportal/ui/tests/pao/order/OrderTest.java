@@ -559,6 +559,28 @@ public class OrderTest extends BasePAOTest {
         orderCreatedContentPage.shouldOrderContentDataIs(orderData);
     }
 
+    @Test(description = "C23410909 Удалить товар из подтвержденного заказа", groups = NEED_PRODUCTS_GROUP)
+    public void testRemoveProductFromConfirmedOrder() throws Exception {
+        preconditionForEditOrderConfirmedTests(productList.subList(0, 2), 1.0);
+
+        // Step 1
+        step("Нажмите на иконку редактирования заказа в левом нижнем углу");
+        orderCreatedContentPage.clickEditOrderButton();
+        AddProductForm addProductForm = orderCreatedContentPage.getAddProductForm();
+        addProductForm.shouldSearchFieldIsVisible();
+
+        // Step 2
+        step("Измените количество товара плашкой до значения 0");
+        orderData.getOrders().get(0).changeProductQuantity(0, 0, true);
+        orderCreatedContentPage.editSelectedQuantity(1, 0)
+                .shouldSelectedProductQuantityIs(1, 0);
+
+        // Step 3
+        step("Нажмите на кнопку 'Сохранить'");
+        orderCreatedContentPage.clickSaveOrderButton();
+        orderCreatedContentPage.shouldOrderContentDataIs(orderData);
+    }
+
     // ------------ Steps ------------------ //
 
     /**
