@@ -6,11 +6,16 @@ import org.json.simple.JSONObject;
 
 public class Run {
 
-    public static void main(String[] args) throws Exception {
+    /**
+     * Close test runs
+     * @param projectId - project id
+     * @throws Exception
+     */
+    private void closeTestRuns(long projectId) throws Exception {
         int i = 0;
         while (i < 100) {
             i++;
-            JSONArray runs = TestRailClient.getRuns(10L, false);
+            JSONArray runs = TestRailClient.getRuns(projectId, false);
             for (Object run : runs) {
                 long id = (long) ((JSONObject) run).get("id");
                 if (id < 45000) {
@@ -23,6 +28,14 @@ public class Run {
                 }
             }
         }
+    }
+
+    private static void buildCoverageMatrix() {
+
+    }
+
+    public static void main(String[] args) throws Exception {
+        buildCoverageMatrix();
     }
 
 }
