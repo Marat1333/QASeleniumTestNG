@@ -24,6 +24,7 @@ import com.leroy.magportal.ui.pages.orders.OrderCreatedContentPage;
 import com.leroy.magportal.ui.pages.orders.OrderDraftContentPage;
 import com.leroy.magportal.ui.pages.orders.OrderDraftDeliveryWayPage;
 import com.leroy.magportal.ui.pages.orders.OrderHeaderPage;
+import com.leroy.magportal.ui.pages.orders.modal.RemoveOrderModal;
 import com.leroy.magportal.ui.pages.orders.modal.SubmittedOrderModal;
 import com.leroy.magportal.ui.pages.products.form.AddProductForm;
 import com.leroy.magportal.ui.tests.BasePAOTest;
@@ -579,6 +580,64 @@ public class OrderTest extends BasePAOTest {
         step("Нажмите на кнопку 'Сохранить'");
         orderCreatedContentPage.clickSaveOrderButton();
         orderCreatedContentPage.shouldOrderContentDataIs(orderData);
+    }
+
+    @Test(description = "C23410915 Удалить последний товар из подтвержденного заказа", groups = NEED_PRODUCTS_GROUP)
+    public void testLastRemoveProductFromConfirmedOrder() throws Exception {
+        preconditionForEditOrderConfirmedTests();
+
+        // Step 1
+        step("Нажмите на иконку редактирования заказа в левом нижнем углу");
+        orderCreatedContentPage.clickEditOrderButton();
+        AddProductForm addProductForm = orderCreatedContentPage.getAddProductForm();
+        addProductForm.shouldSearchFieldIsVisible();
+
+        // Step 2
+        step("Измените количество товара плашкой до значения 0");
+        orderCreatedContentPage.editSelectedQuantity(1, 0)
+                .shouldSelectedProductQuantityIs(1, 0);
+
+        // Step 3
+        step("Нажмите на кнопку 'Сохранить'");
+        orderCreatedContentPage.clickSaveOrderButton();
+
+        // Step 4
+        step("Нажмите 'да' в модальном окне");
+        RemoveOrderModal removeOrderModal = new RemoveOrderModal();
+        removeOrderModal.clickYesButton();
+        orderData.setStatus(SalesDocumentsConst.States.CANCELLED.getUiVal());
+        orderCreatedContentPage.shouldOrderContentDataIs(orderData)
+                .checkEditButtonVisibility(false);
+
+        // Step 5
+        step("Обновите список заказов слева");
+        ShortOrderDocWebData shortOrderDocWebData = orderData.getShortOrderData();
+        shortOrderDocWebData.setTotalPrice(0.0);
+        orderCreatedContentPage.refreshDocumentList();
+        orderCreatedContentPage.shouldDocumentListContainsThis(shortOrderDocWebData);
+    }
+
+    @Test(description = "C23410913 Отменить подтвержденный заказ", groups = NEED_PRODUCTS_GROUP)
+    public void testCancelConfirmedOrder() throws Exception {
+        preconditionForEditOrderConfirmedTests();
+
+        // Step 1
+        step("В правом верхнем углу нажмите на кнопку удаления заказа");
+        RemoveOrderModal removeOrderModal = orderCreatedContentPage.clickRemoveOrderButton();
+
+        // Step 2
+        step("Нажмите 'да' в модальном окне");
+        removeOrderModal.clickYesButton();
+        orderData.setStatus(SalesDocumentsConst.States.CANCELLED.getUiVal());
+        orderCreatedContentPage.shouldOrderContentDataIs(orderData)
+                .checkEditButtonVisibility(false);
+
+        // Step 3
+        step("Обновите список заказов слева");
+        ShortOrderDocWebData shortOrderDocWebData = orderData.getShortOrderData();
+        shortOrderDocWebData.setTotalPrice(0.0);
+        orderCreatedContentPage.refreshDocumentList();
+        orderCreatedContentPage.shouldDocumentListContainsThis(shortOrderDocWebData);
     }
 
     // ------------ Steps ------------------ //

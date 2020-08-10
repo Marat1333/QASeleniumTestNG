@@ -10,6 +10,7 @@ import com.leroy.magportal.ui.models.salesdoc.OrderWebData;
 import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardWebData;
 import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
 import com.leroy.magportal.ui.pages.customers.form.CustomerSearchForm;
+import com.leroy.magportal.ui.pages.orders.modal.RemoveOrderModal;
 import com.leroy.magportal.ui.pages.orders.widget.OrderProductCardWidget;
 import com.leroy.magportal.ui.pages.products.form.AddProductForm;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
@@ -33,6 +34,9 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
     @WebFindBy(xpath = "//div[contains(@class, 'OrderViewHeader__mainInfo')]//div[contains(@class, 'Order-OrderStatus')]//span",
             metaName = "Статус заказа")
     Element orderStatus;
+
+    @WebFindBy(xpath = "//div[contains(@class, 'Order-CancelOrderBtn')]//button", metaName = "Кнопка удаления заказа")
+    Button trashBtn;
 
     private final static String ORDER_SUB_HEADER_XPATH = "//div[contains(@class, 'OrderViewHeader')][div[contains(@class, 'OrderViewHeader__mainInfo')]]/div[2]";
 
@@ -108,10 +112,15 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
         return this;
     }
 
+    @Step("Нажать кнопку удаления заказа")
+    public RemoveOrderModal clickRemoveOrderButton() {
+        trashBtn.click();
+        return new RemoveOrderModal();
+    }
+
     @Step("Нажать кнопку Сохранить")
     public OrderCreatedContentPage clickSaveOrderButton() {
         saveBtn.click();
-        saveBtn.waitForInvisibility();
         waitForSpinnerAppearAndDisappear();
         return this;
     }
@@ -183,6 +192,13 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
         index--;
         anAssert.isEquals(productCards.get(index).getOrderedQuantity(), String.valueOf(value),
                 "Неверное количество 'заказано' у " + (index + 1) + " товара");
+        return this;
+    }
+
+    @Step("Проверить видимость кнопки 'редактирование'")
+    public OrderCreatedContentPage checkEditButtonVisibility(boolean shouldBeVisible) {
+        anAssert.isEquals(editBtn.isVisible(), shouldBeVisible,
+                "Кнопка редактирования " + (shouldBeVisible ? "не" : "") + " видна");
         return this;
     }
 
