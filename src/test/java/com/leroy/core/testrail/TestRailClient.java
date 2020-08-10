@@ -143,6 +143,24 @@ public class TestRailClient {
         return ((JSONObject) obj);
     }
 
+    // ------------ Test Suites & Cases ---------------- //
+
+    public static JSONArray getSections(Long projectId, Long suiteId) throws IOException, APIException, InterruptedException {
+        Object obj = apiClient.sendGet("get_sections/" + projectId + queryParam("suite_id", suiteId));
+        return ((JSONArray) obj);
+    }
+
+    public static JSONArray getCases(Long projectId, Long suiteId, Long sectionId)
+            throws IOException, APIException, InterruptedException {
+        Object obj = apiClient.sendGet("get_cases/" + projectId +
+                queryParam("suite_id", suiteId) +
+                queryParam("section_id", sectionId));
+        return ((JSONArray) obj);
+    }
+
+    private static String queryParam(String key, Object value) {
+        return value != null? "&" + key + "=" + value.toString() : "";
+    }
     private static Long findIdFromJSONArrayByName(JSONArray jsonArray, String name) {
         for (Object obj : jsonArray) {
             JSONObject jsonObject = (JSONObject) obj;
