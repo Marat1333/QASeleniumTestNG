@@ -99,6 +99,11 @@ public class SearchProductPage extends CommonMagMobilePage {
 
     // ---------------- Action Steps -------------------------//
 
+    @Step("Перейти назад")
+    public void returnBack(){
+        backBtn.click();
+    }
+
     @Step("Перейти на главную страницу 'Документы продажи'")
     public MainProductAndServicesPage backToSalesPage() {
         backBtn.click();
@@ -453,7 +458,7 @@ public class SearchProductPage extends CommonMagMobilePage {
                 cardData = allGammaProductCardsScrollView.getFullDataList();
                 break;
             case SERVICE:
-                cardData = serviceCardsScrollView.getFullDataList();
+                cardData = serviceCardsScrollView.getFullDataList(10, 5, false);
                 break;
             default:
                 throw new Exception("Incorrect CardType");

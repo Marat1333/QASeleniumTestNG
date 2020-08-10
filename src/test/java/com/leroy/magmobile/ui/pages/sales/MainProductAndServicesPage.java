@@ -27,4 +27,8 @@ public class MainProductAndServicesPage extends TopMenuPage {
             hideKeyboard();
         return page;
     }
+
+    public void verifyRequiredElements(){
+        anAssert.isElementVisible(searchBar);
+    }
 }
