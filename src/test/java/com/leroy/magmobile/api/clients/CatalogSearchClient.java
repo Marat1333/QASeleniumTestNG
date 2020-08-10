@@ -81,7 +81,7 @@ public class CatalogSearchClient extends BaseMashupClient {
     public List<ProductItemData> getRandomUniqueProductsWithTitles(int countOfProducts) {
         List<ProductItemData> randomProductsList = new ArrayList<>();
         ProductItemDataList productItemDataList = this.searchProductsBy(new GetCatalogSearch().setPageSize(MAX_PAGE_SIZE)
-                .setShopId(userSessionData.getUserShopId())).asJson();
+                .setHasAvailableStock(true).setShopId(userSessionData.getUserShopId())).asJson();
         List<ProductItemData> productItemData = productItemDataList.getItems();
         productItemData = productItemData.stream().filter(i->i.getTitle()!=null).collect(Collectors.toList());
         int randomIndex;
