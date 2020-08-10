@@ -50,6 +50,12 @@ public class SpecificationsPage extends ProductCardPage {
         return this;
     }
 
+    @Step("Проверить отсутствие кнопки \"Поставщик\"")
+    public SpecificationsPage shouldSupplierBtnIsInvisible(){
+        anAssert.isElementNotVisible(supplyInfoNavigationBtn);
+        return this;
+    }
+
     private HashMap grabCharacteristicsFromPage() throws Exception {
         HashMap<String, String> characteristicsMap = new HashMap<>();
         int tmpSize = 0;

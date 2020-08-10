@@ -13,6 +13,7 @@ import com.leroy.magmobile.api.requests.catalog_search.GetCatalogServicesSearch;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.models.search.FiltersData;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.SpecificationsPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.ProductPricesQuantitySupplyPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductCardPage;
 import com.leroy.magmobile.ui.pages.sales.product_and_service.AddServicePage;
@@ -471,6 +472,7 @@ public class SearchTest extends AppBaseSteps {
                 .verifySearchHistoryContainsSearchPhrase(exampleText);
     }
 
+    @Issue("LFRONT-3662")
     @Test(description = "C22790468 Гамма ЛМ. Отсутствие: действий с товаром, истории продаж, поставки", priority = 2)
     public void testC22790468() throws Exception {
         // Pre-conditions
@@ -496,11 +498,16 @@ public class SearchTest extends AppBaseSteps {
         SimilarProductsPage similarProductsPage = productDescriptionCardPage.switchTab(ProductCardPage.Tabs.SIMILAR_PRODUCTS);
         similarProductsPage.verifyProductCardsHaveAllGammaView();
 
-        // Step 4
+        //Step 4
+        step("Перейти на вкладку \"Характеристики\" и проверить отсутствие кнопки \"Поставщик\"");
+        SpecificationsPage specificationsPage = productDescriptionCardPage.switchTab(ProductCardPage.Tabs.SPECIFICATION);
+        //bug
+        specificationsPage.shouldSupplierBtnIsInvisible();
+
+        // Step 5
         step("Вернуться на вкладку \"Описание\" и Нажать на строку \"Цены в магазинах\"");
         productDescriptionCardPage = similarProductsPage.switchTab(ProductCardPage.Tabs.DESCRIPTION);
         ProductPricesQuantitySupplyPage productPricesQuantitySupplyPage = productDescriptionCardPage.goToPricesAndQuantityPage();
-        //TODO добавить проверку на отсутствие кнопки "Поставщик" в характеристиках товара
         productPricesQuantitySupplyPage.shouldNotSupplyBtnBeDisplayed();
 
     }
