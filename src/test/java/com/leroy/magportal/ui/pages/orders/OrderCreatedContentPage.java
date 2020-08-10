@@ -119,9 +119,12 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
     }
 
     @Step("Нажать кнопку Сохранить")
-    public OrderCreatedContentPage clickSaveOrderButton() {
+    public OrderCreatedContentPage clickSaveOrderButton(boolean expectThatModalWindowAppear) {
         saveBtn.click();
-        waitForSpinnerAppearAndDisappear();
+        if (!expectThatModalWindowAppear) {
+            saveBtn.waitForInvisibility();
+            waitForSpinnerAppearAndDisappear();
+        }
         return this;
     }
 

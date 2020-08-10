@@ -83,7 +83,7 @@ public class OrderTest extends BasePAOTest {
 
         String cartId = helper.createCart(cartProductOrderData).getFullDocId();
 
-        cartPage = loginAndGoTo(CartPage.class);
+        cartPage = loginSelectShopAndGoTo(CartPage.class);
         cartPage.clickDocumentInLeftMenu(cartId);
 
         // Step 1
@@ -126,7 +126,7 @@ public class OrderTest extends BasePAOTest {
 
         String cartId = helper.createCart(cartProductOrderData).getFullDocId();
 
-        cartPage = loginAndGoTo(CartPage.class);
+        cartPage = loginSelectShopAndGoTo(CartPage.class);
         cartPage.clickDocumentInLeftMenu(cartId);
 
         // Step 1
@@ -174,7 +174,7 @@ public class OrderTest extends BasePAOTest {
         EstimateProductOrderData estimateProductOrderData = new EstimateProductOrderData(productList.get(0));
         estimateProductOrderData.setQuantity(1.0);
         String estimateId = helper.createConfirmedEstimateAndGetId(estimateProductOrderData, customerData);
-        EstimatePage estimatePage = loginAndGoTo(EstimatePage.class);
+        EstimatePage estimatePage = loginSelectShopAndGoTo(EstimatePage.class);
         estimatePage.openPageWithEstimate(estimateId)
                 .clickTransformToCart();
 
@@ -209,7 +209,7 @@ public class OrderTest extends BasePAOTest {
 
         String cartId = helper.createCart(cartProductOrderData).getFullDocId();
 
-        cartPage = loginAndGoTo(CartPage.class);
+        cartPage = loginSelectShopAndGoTo(CartPage.class);
         cartPage.clickDocumentInLeftMenu(cartId);
         cartPage.clickAddCustomer()
                 .selectCustomerByPhone(customerData.getPhoneNumber());
@@ -244,7 +244,7 @@ public class OrderTest extends BasePAOTest {
 
         String cartId = helper.createCart(cartProductOrderData).getFullDocId();
 
-        cartPage = loginAndGoTo(CartPage.class);
+        cartPage = loginSelectShopAndGoTo(CartPage.class);
         cartPage.clickDocumentInLeftMenu(cartId);
         cartPage.clickDiscountIcon(1, 1)
                 .selectReasonDiscount(DiscountConst.Reasons.PRODUCT_SAMPLE.getName())
@@ -296,7 +296,7 @@ public class OrderTest extends BasePAOTest {
         List<CartProductOrderData> products = helper.findProductsForSeveralOrdersInCart();
         String cartId = helper.createCart(products).getFullDocId();
 
-        cartPage = loginAndGoTo(CartPage.class);
+        cartPage = loginSelectShopAndGoTo(CartPage.class);
         cartPage.clickDocumentInLeftMenu(cartId);
 
         cartPage = new CartPage();
@@ -533,7 +533,7 @@ public class OrderTest extends BasePAOTest {
 
         // Step 3
         step("Нажмите на кнопку 'Сохранить'");
-        orderCreatedContentPage.clickSaveOrderButton();
+        orderCreatedContentPage.clickSaveOrderButton(false);
         orderCreatedContentPage.shouldProductsHave(expectedProductLmCodes, true);
     }
 
@@ -556,7 +556,7 @@ public class OrderTest extends BasePAOTest {
 
         // Step 3
         step("Нажмите на кнопку 'Сохранить'");
-        orderCreatedContentPage.clickSaveOrderButton();
+        orderCreatedContentPage.clickSaveOrderButton(false);
         orderCreatedContentPage.shouldOrderContentDataIs(orderData);
     }
 
@@ -578,7 +578,7 @@ public class OrderTest extends BasePAOTest {
 
         // Step 3
         step("Нажмите на кнопку 'Сохранить'");
-        orderCreatedContentPage.clickSaveOrderButton();
+        orderCreatedContentPage.clickSaveOrderButton(false);
         orderCreatedContentPage.shouldOrderContentDataIs(orderData);
     }
 
@@ -599,7 +599,7 @@ public class OrderTest extends BasePAOTest {
 
         // Step 3
         step("Нажмите на кнопку 'Сохранить'");
-        orderCreatedContentPage.clickSaveOrderButton();
+        orderCreatedContentPage.clickSaveOrderButton(true);
 
         // Step 4
         step("Нажмите 'да' в модальном окне");

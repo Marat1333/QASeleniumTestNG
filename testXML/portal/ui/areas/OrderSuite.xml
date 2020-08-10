@@ -12,4 +12,80 @@
         </classes>
     </test>
 
+    <test name="C23410896 Создать заказ из корзины с одним заказом">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
+                <methods>
+                    <include name="testCreateOrderWithOneOrder"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C23410899 Создать заказ из корзины с авторской сборкой">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
+                <methods>
+                    <include name="testCreateOrderWithAuthorAssembly"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C23410900 Создание заказа из корзины, преобразованной из сметы">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
+                <methods>
+                    <include name="testCreateOrderFromCartTransformedFromEstimate"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C23410917 Создать заказ из корзины с клиентом">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
+                <methods>
+                    <include name="testCreateOrderFromCartWithClient"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C23410898 Создать заказ из корзины со скидкой">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
+                <methods>
+                    <include name="testCreateOrderFromCartWithDiscount"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C23410897 Создать последовательно заказы из корзины с двумя заказами">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
+                <methods>
+                    <include name="testCreateOrdersFromCartWithTwoOrders"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="Редактирование неподтвержденного заказа">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
+                <methods>
+                    <include name="testAddProductInDraftOrderWithSufficientProductQuantity"/>
+                    <include name="testAddProductInDraftOrderWithInsufficientProductQuantity"/>
+                    <include name="testAddTopEmOrAvsInDraftOrder"/>
+                    <include name="testEditProductQuantityInDraftOrder"/>
+                    <include name="testRemoveProductFromDraftOrder"/>
+                    <include name="testRemoveLastProductFromDraftOrder"/>
+                    <include name="testRemoveOrderDraft"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
 </suite>
