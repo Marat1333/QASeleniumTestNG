@@ -1,5 +1,6 @@
 package com.leroy.magmobile.api.requests.catalog_search;
 
+import com.leroy.constants.api.OutputDocumentFormat;
 import com.leroy.magmobile.api.enums.CatalogSearchFields;
 import com.leroy.magmobile.api.enums.SortingOrder;
 import com.leroy.magmobile.api.requests.CommonSearchRequestBuilder;
@@ -101,6 +102,18 @@ public class GetCatalogSearch extends CommonSearchRequestBuilder<GetCatalogSearc
     //           lmCode|DESC
     public GetCatalogSearch setSortBy(CatalogSearchFields field, SortingOrder sortingOrder) {
         return queryParam("sortBy", field.getName() + "|" + sortingOrder);
+    }
+
+    public GetCatalogSearch setOutputFormat(OutputDocumentFormat format){
+        String paramName = "outputFormat";
+        switch (format){
+            case EXCEL:
+                return queryParam(paramName, "xls");
+            case CSV:
+                return queryParam(paramName, "csv");
+            default:
+                return null;
+        }
     }
 
 }

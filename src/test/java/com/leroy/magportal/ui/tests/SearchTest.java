@@ -1136,4 +1136,9 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.shouldFilterCounterHasCorrectCondition(0);
     }
 
+    @Test(description = "C23416164 check excel output")
+    public void testExcelOutput() throws Exception {
+
+    }
+
 }

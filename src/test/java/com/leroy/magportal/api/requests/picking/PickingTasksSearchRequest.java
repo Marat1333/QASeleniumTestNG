@@ -7,7 +7,7 @@ import ru.leroymerlin.qa.core.clients.base.Method;
 public class PickingTasksSearchRequest extends CommonSearchRequestBuilder<PickingTasksSearchRequest> {
 
     @Override
-    public PickingTasksSearchRequest setLdap(String val) {
+    public PickingTasksSearchRequest setLdapHeader(String val) {
         return queryParam("ldap", val);
     }
 

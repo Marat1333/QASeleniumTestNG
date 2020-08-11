@@ -5,7 +5,7 @@ import ru.leroymerlin.qa.core.clients.base.RequestBuilder;
 public class CommonLegoRequest<J extends CommonLegoRequest<J>> extends RequestBuilder<J> {
 
     // Header
-    public J setLdap(String val) {
+    public J setLdapHeader(String val) {
         return header("ldap", val);
     }
 
@@ -14,6 +14,10 @@ public class CommonLegoRequest<J extends CommonLegoRequest<J>> extends RequestBu
     }
 
     // Query params
+
+    public J setLdapQuery(String val){
+        return  queryParam("ldap", val);
+    }
 
     public J setShopId(Object val) {
         if (val == null)
