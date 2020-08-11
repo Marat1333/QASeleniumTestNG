@@ -155,6 +155,8 @@ public class CatalogTest extends BaseProjectApiTest {
                 apiClientProvider.getCatalogSearchClient().getRandomProduct().getLmCode(),
                 getUserSessionData().getUserShopId());
         isResponseOk(response);
+        CatalogComplementaryProducts complementaryProductsData = response.asJson();
+        assertThat(complementaryProductsData.getItems(), notNullValue());
+        assertThat(complementaryProductsData.getTotalCount(), notNullValue());
     }
-
 }
