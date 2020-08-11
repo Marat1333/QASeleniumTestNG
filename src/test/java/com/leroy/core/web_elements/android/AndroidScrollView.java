@@ -152,6 +152,13 @@ public class AndroidScrollView<T> extends BaseWidget {
         return new ArrayList<>(tmpCardDataList);
     }
 
+    public List<T> getFullDataList(int maxEntityCount, int maxScrollCount, boolean scrollUpBefore) {
+        if (scrollUpBefore)
+            scrollToBeginning();
+        scrollAndGrabData(null, maxScrollCount, maxEntityCount, Direction.DOWN);
+        return new ArrayList<>(tmpCardDataList);
+    }
+
     public List<T> getFullDataList(int maxEntityCount) {
         return getFullDataList(maxEntityCount, false);
     }

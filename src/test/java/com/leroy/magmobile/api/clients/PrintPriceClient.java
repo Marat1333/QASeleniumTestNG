@@ -9,9 +9,15 @@ import com.leroy.magmobile.api.requests.print.PrintDocumentsPrintersRequest;
 import com.leroy.magmobile.api.requests.print.PrintPriceTaskRequest;
 import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
+import com.leroy.core.configuration.Log;
+import com.leroy.magmobile.api.data.print.*;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyString;
@@ -27,6 +33,29 @@ public class PrintPriceClient extends BaseMashupClient {
         PrintDocumentsPrintersRequest req = new PrintDocumentsPrintersRequest();
         req.setShopId(shopId);
         return execute(req, PrintDepartmentList.class);
+    }
+
+    public String getRandomPrinterName() throws IllegalAccessException {
+        List<String> printersName = getPrinterNamesList();
+        int randomPrinterName = (int) (Math.random() * printersName.size());
+        return printersName.get(randomPrinterName);
+    }
+
+    public List<String> getPrinterNamesList() throws IllegalAccessException {
+        List<String> printersName = new ArrayList<>();
+        PrintDepartments departmentsList = getDepartmentPrinterList().asJson().getDepartments().get(0);
+        Field[] fields = departmentsList.getClass().getDeclaredFields();
+        for (Field eachField : fields) {
+            eachField.setAccessible(true);
+            try {
+                List<PrintPrinterData> eachDeptPrinters = (List<PrintPrinterData>) eachField.get(departmentsList);
+                List<String> tmpPrintersNames = eachDeptPrinters.stream().map(PrintPrinterData::getName).collect(Collectors.toList());
+                printersName.addAll(tmpPrintersNames);
+            } catch (NullPointerException e) {
+                Log.warn("There is no printers for department " + eachField.getName());
+            }
+        }
+        return printersName;
     }
 
     public Response<JsonNode> sendPrintTask(
