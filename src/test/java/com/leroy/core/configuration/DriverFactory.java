@@ -21,6 +21,7 @@ import org.openqa.selenium.safari.SafariOptions;
 import org.testng.util.Strings;
 import org.yaml.snakeyaml.Yaml;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.net.URL;
 import java.util.List;
@@ -59,6 +60,7 @@ public class DriverFactory {
     public static String BUILD = "";
     public static String PLATFORM = "";
     public static String BROWSER_PROFILE = "";
+    public static String DOWNLOAD_DEFAULT_DIRECTORY = "";
 
     private static MutableCapabilities capabilities = null;
 
@@ -102,10 +104,12 @@ public class DriverFactory {
         BUILD = buildVersion;
         PLATFORM = platform;
         BROWSER_PROFILE = browser;
+        DOWNLOAD_DEFAULT_DIRECTORY = System.getProperty("user.dir") + File.separator + "externalFiles" + File.separator + "downloadFiles";
 
         //3. get specifically properties according to the platform/browser
         Map<String, Object> capsFromFile = (Map<String, Object>) capas.get(platform);
         capsFromFile = (Map<String, Object>) capsFromFile.get(browser);
+        capsFromFile.put("download.default_directory", DOWNLOAD_DEFAULT_DIRECTORY);
 
         //4. Create capabilities based on input params
         MutableCapabilities capabilities =

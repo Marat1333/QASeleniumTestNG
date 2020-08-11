@@ -9,7 +9,8 @@ public class CatalogSearchClient extends com.leroy.magmobile.api.clients.Catalog
     public Response<JsonNode> getDefaultSearchExcelOutput(){
         GetCatalogSearch param = new GetCatalogSearch();
         param.setOutputFormat(OutputDocumentFormat.EXCEL)
-        .setPageSize();
+        .setPageSize(MAX_PAGE_SIZE)
+        .setShopId(userSessionData.getUserShopId());
         return execute(param, JsonNode.class);
     }
 }

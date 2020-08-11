@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 public class CatalogSearchClient extends BaseMashupClient {
     //back-end limit
-    final static int MAX_PAGE_SIZE = 90;
+    protected final static int MAX_PAGE_SIZE = 90;
 
     /**
      * ---------- Requests -------------
