@@ -1,8 +1,9 @@
 package com.leroy.magportal.ui.tests;
 
 import com.leroy.constants.EnvConstants;
-import com.leroy.core.UserSessionData;
+import com.leroy.constants.Units;
 import com.leroy.core.api.ThreadApiClient;
+import com.leroy.core.configuration.DriverFactory;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.enums.CatalogSearchFields;
@@ -15,10 +16,19 @@ import com.leroy.magportal.ui.models.search.FiltersData;
 import com.leroy.magportal.ui.pages.products.ExtendedProductCardPage;
 import com.leroy.magportal.ui.pages.products.ProductCardPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
+import com.leroy.utils.DateTimeUtil;
+import com.leroy.utils.ParserUtil;
+import com.leroy.utils.file_manager.FileManager;
+import com.leroy.utils.file_manager.excel.ExcelRow;
+import com.leroy.utils.file_manager.excel.ExcelSheet;
+import com.leroy.utils.file_manager.excel.ExcelWorkBook;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
+import java.io.File;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +42,11 @@ public class SearchTest extends WebBaseSteps {
     private final int defaultPageSize = 12;
     private final String allDepartments = "Каталог товаров";
 
+    @AfterTest
+    private void clearDownloadData() {
+        FileManager.clearDownloadDirectory();
+    }
+
     private HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> sendRequestsSearchProductsBy(
             GetCatalogSearch... paramsArray) {
         HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> resultMap = new HashMap<>();
@@ -44,6 +59,59 @@ public class SearchTest extends WebBaseSteps {
             i++;
         }
         return resultMap;
+    }
+
+    private void shouldExcelOutputIsCorrect(List<ProductItemData> dataList, ExcelWorkBook excelWorkBook) {
+        String yes = "да";
+        String no = "нет";
+        ExcelSheet excelSheet = new ExcelSheet(excelWorkBook.getExcelSheetByIndex(0));
+        List<ExcelRow> rowList = excelSheet.getRowList();
+        //названия столбцов
+        rowList.remove(0);
+        for (int i = 0; i < dataList.size(); i++) {
+            ProductItemData apiData = dataList.get(i);
+            ExcelRow row = rowList.get(i);
+            softAssert().isEquals(apiData.getLmCode(), ParserUtil.strWithOnlyDigits(row.getCellStringValueByIndex(0)), "lmCode");
+            softAssert().isEquals(apiData.getBarCode(), ParserUtil.strWithOnlyDigits(row.getCellStringValueByIndex(1)), "barCode");
+            softAssert().isEquals(apiData.getTitle(), row.getCellStringValueByIndex(2), "title");
+            String ctm = apiData.getCtm() ? yes : no;
+            softAssert().isEquals(ctm, row.getCellStringValueByIndex(3), "ctm");
+            softAssert().isEquals(apiData.getGamma(), row.getCellStringValueByIndex(4), "gamma");
+            String avsDate;
+            if (apiData.getAvsDate()!=null){
+                avsDate = DateTimeUtil.localDateToStr(apiData.getAvsDate().toLocalDate(), DateTimeUtil.DD_MM_YYYY);
+            }else {
+                avsDate = no;
+            }
+            softAssert().isEquals(avsDate, row.getCellStringValueByIndex(5), "avsDate");
+            softAssert().isEquals(apiData.getTop(), row.getCellStringValueByIndex(6), "top");
+            String topEM = apiData.getTopEM() ? yes : no;
+            softAssert().isEquals(topEM, row.getCellStringValueByIndex(7), "topEM");
+            softAssert().isEquals(apiData.getSupCode(), ParserUtil.prettyDoubleFmt(row.getCellDoubleValueByIndex(8)), "supplier");
+            softAssert().isEquals(apiData.getSupName(), row.getCellStringValueByIndex(9), "supplierName");
+            softAssert().isEquals(ParserUtil.prettyDoubleFmt(apiData.getAvailableStock()),
+                    ParserUtil.prettyDoubleFmt(row.getCellDoubleValueByIndex(10)), "available stock");
+            softAssert().isEquals(ParserUtil.prettyDoubleFmt(apiData.getPrice()),
+                    ParserUtil.prettyDoubleFmt(row.getCellDoubleValueByIndex(11)), "price");
+            softAssert().isEquals(apiData.getPriceCurrency(), row.getCellStringValueByIndex(12), "currency");
+            String priceUnit = apiData.getPriceUnit().equals(Units.EA.getEnName()) ? Units.EA.getRuName() : no;
+            softAssert().isEquals(priceUnit, row.getCellStringValueByIndex(13), "unit");
+            String altPrice;
+            if (apiData.getAltPrice() != null) {
+                altPrice = ParserUtil.prettyDoubleFmt(apiData.getAltPrice());
+            } else {
+                altPrice = no;
+            }
+            softAssert().isEquals(altPrice, row.getCellStringValueByIndex(14), "alt price");
+            String altPriceUnit;
+            if (apiData.getAltPriceUnit() != null) {
+                altPriceUnit = apiData.getAltPriceUnit().equals(Units.EA.getEnName()) ? Units.EA.getRuName() : no;
+            } else {
+                altPriceUnit = no;
+            }
+            softAssert().isEquals(altPriceUnit, row.getCellStringValueByIndex(15), "alt unit");
+        }
+        softAssert().verifyAll();
     }
 
     @Test(description = "C22782949 No results msg")
@@ -346,7 +414,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.choseSortType(SearchProductPage.SortType.DEFAULT);
         searchProductPage.shouldResponseEntityEqualsToViewEntity(response.asJson(), SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
-                //.shouldUrlNotContains(CatalogSearchParams.sortBy);
+        //.shouldUrlNotContains(CatalogSearchParams.sortBy);
         searchProductPage.shouldSortComboBoxContainsText(SearchProductPage.SortType.DEFAULT.getName());
     }
 
@@ -390,7 +458,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.choseSupplier(false, FIRST_SUPPLIER_CODE, SECOND_SUPPLIER_CODE)
                 .shouldSupplierComboBoxContainsCorrectText(false, FIRST_SUPPLIER_CODE, SECOND_SUPPLIER_CODE)
                 .applyFilters();
-                //.shouldUrlContains(CatalogSearchParams.supplierId + FIRST_SUPPLIER_CODE + "%2C" + SECOND_SUPPLIER_CODE);
+        //.shouldUrlContains(CatalogSearchParams.supplierId + FIRST_SUPPLIER_CODE + "%2C" + SECOND_SUPPLIER_CODE);
         ProductItemDataList fewSuppliersData = resultMap.get(0).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(fewSuppliersData, SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
@@ -468,7 +536,7 @@ public class SearchTest extends WebBaseSteps {
                 .applyFilters();
         ProductItemDataList avsDateResponse = resultsMap.get(1).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(avsDateResponse, SearchProductPage.FilterFrame.MY_SHOP,
-                        SearchProductPage.ViewMode.EXTENDED);
+                SearchProductPage.ViewMode.EXTENDED);
                 /*.shouldUrlContains(CatalogSearchParams.avsDate +
                         "between%7C" + avsDate.getYear() + "-0" + avsDate.getMonthValue() + "-0" + avsDate.getDayOfMonth() +
                         "T00%3A00%3A00.000Z%7C" + avsDate.getYear() + "-0" + avsDate.getMonthValue() + "-0" +
@@ -979,8 +1047,8 @@ public class SearchTest extends WebBaseSteps {
         List<ProductItemData> productItemByShopDataList = catalogSearchClient().searchProductsBy(lmCodeByShopParam).asJson().getItems();
         List<ProductItemData> productItemDataList = catalogSearchClient().searchProductsBy(lmCodeParam).asJson().getItems();
 
-        String lmCodeByShop = productItemByShopDataList.get((int)(Math.random()*productItemByShopDataList.size())).getLmCode();
-        String lmCode = productItemDataList.get((int)(Math.random()*productItemDataList.size())).getLmCode();
+        String lmCodeByShop = productItemByShopDataList.get((int) (Math.random() * productItemByShopDataList.size())).getLmCode();
+        String lmCode = productItemDataList.get((int) (Math.random() * productItemDataList.size())).getLmCode();
 
         //Pre-conditions
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
@@ -1138,7 +1206,27 @@ public class SearchTest extends WebBaseSteps {
 
     @Test(description = "C23416164 check excel output")
     public void testExcelOutput() throws Exception {
+        List<ProductItemData> dataList = catalogSearchClient().searchProductsBy(new GetCatalogSearch()
+                .setDepartmentId(getUserSessionData().getUserDepartmentId())
+                .setHasAvailableStock(true)
+                .setShopId(getUserSessionData().getUserShopId())
+                .setPageSize(90)).asJson().getItems();
 
+        //Pre-conditions
+        SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
+
+        //Step 1
+        step("Нажать на кнопку выгрузки excel");
+        searchProductPage.downloadExcelSearchResultOutput();
+        LocalDateTime downloadTime = LocalDateTime.now();
+        if (!DriverFactory.isGridProfile()) {
+            downloadTime = downloadTime.minusHours(3);
+        }
+        File file = FileManager.getFileFromDefaultDownloadDirectory(
+                String.format("LEGO_Item_Extraction_%s.xlsx", DateTimeUtil.localDateTimeToStr(downloadTime, DateTimeUtil.YYYY_MM_DD_HH_MM)));
+        FileManager.waitUntilFileAppears(file, FileManager.SHORT_TIMEOUT);
+        ExcelWorkBook excelWorkBook = new ExcelWorkBook(file);
+        shouldExcelOutputIsCorrect(dataList, excelWorkBook);
     }
 
 }

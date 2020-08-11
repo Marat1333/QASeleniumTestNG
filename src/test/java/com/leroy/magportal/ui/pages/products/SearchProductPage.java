@@ -208,6 +208,9 @@ public class SearchProductPage extends MagPortalBasePage {
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//form/div[2]", refreshEveryTime = true)
     Element additionalFiltersArea;
 
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(text(),'ПОКАЗАТЬ ТОВАРЫ')]/ancestor::button/preceding-sibling::div")
+    Button downloadExcelBtn;
+
     @Override
     public void waitForPageIsLoaded() {
         searchInput.waitForVisibility();
@@ -254,6 +257,12 @@ public class SearchProductPage extends MagPortalBasePage {
     @Step("Ввести в поисковую строку значение без инициализации поиска")
     public SearchProductPage enterStringInSearchInput(String value) {
         searchInput.fill(value);
+        return this;
+    }
+
+    @Step("Выгрузить поисковую выдачу в excel")
+    public SearchProductPage downloadExcelSearchResultOutput(){
+        downloadExcelBtn.click();
         return this;
     }
 

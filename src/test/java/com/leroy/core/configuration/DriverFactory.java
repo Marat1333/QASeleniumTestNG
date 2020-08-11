@@ -24,6 +24,7 @@ import org.yaml.snakeyaml.Yaml;
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -109,7 +110,6 @@ public class DriverFactory {
         //3. get specifically properties according to the platform/browser
         Map<String, Object> capsFromFile = (Map<String, Object>) capas.get(platform);
         capsFromFile = (Map<String, Object>) capsFromFile.get(browser);
-        capsFromFile.put("download.default_directory", DOWNLOAD_DEFAULT_DIRECTORY);
 
         //4. Create capabilities based on input params
         MutableCapabilities capabilities =
@@ -170,6 +170,9 @@ public class DriverFactory {
                             WebDriverManager.chromedriver().version(LOCAL_DRIVER_VERSION).setup();
                         }
                     }
+                    Map<String, Object> prefs = new HashMap<>();
+                    prefs.put("download.default_directory", DOWNLOAD_DEFAULT_DIRECTORY);
+                    ((ChromeOptions) options).setExperimentalOption("prefs", prefs);
                     driver = new ChromeDriver((ChromeOptions) options);
                     break;
                 case "ie":
