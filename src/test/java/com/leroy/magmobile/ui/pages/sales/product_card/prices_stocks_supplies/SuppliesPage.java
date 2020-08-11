@@ -46,6 +46,9 @@ public class SuppliesPage extends ProductPricesQuantitySupplyPage {
     @AppFindBy(xpath = "//*[@text='Тип поставки']/following-sibling::*")
     Element typeLbl;
 
+    @AppFindBy(xpath = "//*[@text='Срок поставки СС']/following-sibling::*")
+    Element supplyPeriodLbl;
+
     @AppFindBy(xpath = "//*[@text='Франко']/following-sibling::*")
     Element frankoLbl;
 
@@ -132,6 +135,7 @@ public class SuppliesPage extends ProductPricesQuantitySupplyPage {
         if (!frankoLbl.isVisible()) {
             mainScrollView.scrollDownToElement(frankoLbl);
         }
+        softAssert.isElementTextContains(supplyPeriodLbl, data.getContractDeliveryTime());
         if (!frankoLbl.getText().equals("")){
             softAssert.isElementTextEqual(frankoLbl, "от " + data.getFranko() + ",00  ₽");
         }
