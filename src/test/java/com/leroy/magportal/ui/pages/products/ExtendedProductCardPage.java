@@ -21,6 +21,8 @@ import com.leroy.magportal.ui.webelements.searchelements.ProductPriceInfoWidget;
 import com.leroy.magportal.ui.webelements.searchelements.ProductQuantityInfoWidget;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
