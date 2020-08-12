@@ -10,7 +10,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -42,86 +43,114 @@ public class Run {
     }
 
     private static void buildCoverageMatrix(long projectId, long suiteId) throws Exception {
+        List<String> fullReport = new ArrayList<>();
+        List<String> shortReport = new ArrayList<>();
         SectionTree tree = new SectionTree();
         JSONArray sections = TestRailClient.getSections(projectId, suiteId);
 
-        CasesCount totalCaseCountDepth_0 = null;
-        //new FileWriter("CoverageMatrix.txt", false)
-        try (Writer writer = new OutputStreamWriter(new FileOutputStream("CoverageMatrix.csv"), StandardCharsets.UTF_8)) {
-            writer.write(";Нужно обновить тест кейс;Готов для проверки;Готов для автоматизации;Нужно переавтоматизировать;Ручной;Автоматизирован;Устарел;Без статуса\n");
-            String text = null;
+        CasesCountData totalCaseCountDepth_0 = null;
+        CasesCountData TOTAL_CASE_COUNT = new CasesCountData();
 
-            int iCount = 0;
-            SectionData sectionData = null;
-            String sectionName_0 = null;
-            for (Object sectionObj : sections) {
-                iCount++;
-                JSONObject sectionJson = (JSONObject) sectionObj;
-                sectionData = new SectionData();
-                sectionData.setDepth((long) sectionJson.get("depth"));
-                sectionData.setId((long) sectionJson.get("id"));
-                sectionData.setName((String) sectionJson.get("name"));
-                sectionData.setParentId((Long) sectionJson.get("parent_id"));
-                if (sectionData.getDepth() == 0) {
-                    sectionName_0 = sectionData.getName();
-                    if (text != null)
-                        writer.write(text + "\n");
-                    totalCaseCountDepth_0 = new CasesCount();
-                    sectionData.setTotalCasesCount(totalCaseCountDepth_0);
+        fullReport.add(CasesCountData.fullVersionHeader);
+        shortReport.add(CasesCountData.shortVersionHeader);
+
+        String fullText = null;
+        String shortText = null;
+
+        SectionData sectionData;
+        String sectionToAddInFile = null;
+        for (Object sectionObj : sections) {
+            JSONObject sectionJson = (JSONObject) sectionObj;
+            sectionData = new SectionData();
+            sectionData.setDepth((long) sectionJson.get("depth"));
+            sectionData.setId((long) sectionJson.get("id"));
+            sectionData.setName((String) sectionJson.get("name"));
+            sectionData.setParentId((Long) sectionJson.get("parent_id"));
+            if (sectionData.getDepth() == 0) {
+                sectionToAddInFile = sectionData.getName();
+                if (fullText != null) {
+                    fullReport.add(fullText + "\n");
                 }
-                CasesCount casesCount = new CasesCount();
-                System.out.println("Section: " + sectionData.getName());
-                JSONArray casesJsonArray = TestRailClient.getCases(projectId, suiteId, sectionData.getId());
-                if (casesJsonArray.size() > 0) {
-                    for (Object caseObj : casesJsonArray) {
-                        casesCount.plusCase((Long) ((JSONObject) caseObj).get("custom_status"));
-                    }
+                if (shortText != null) {
+                    shortReport.add(shortText + "\n");
                 }
-                totalCaseCountDepth_0.plusCase(casesCount);
-                text = sectionName_0 + ";" + totalCaseCountDepth_0.toString();
-                sectionData.setSelfCasesCount(casesCount);
-                tree.addSection(sectionData);
-                //if (iCount > 60)
-                //    break;
+                TOTAL_CASE_COUNT.plusCase(totalCaseCountDepth_0);
+                totalCaseCountDepth_0 = new CasesCountData();
+                sectionData.setTotalCasesCount(totalCaseCountDepth_0);
             }
-            if (text != null)
-                writer.write(text + "\n");
+            CasesCountData casesCount = new CasesCountData();
+            System.out.println("Section: " + sectionData.getName());
+            JSONArray casesJsonArray = TestRailClient.getCases(projectId, suiteId, sectionData.getId());
+            if (casesJsonArray.size() > 0) {
+                for (Object caseObj : casesJsonArray) {
+                    casesCount.plusCase((Long) ((JSONObject) caseObj).get("custom_status"));
+                }
+            }
+            totalCaseCountDepth_0.plusCase(casesCount);
+            fullText = sectionToAddInFile + ";" + totalCaseCountDepth_0.getFullStatusesString();
+            shortText = sectionToAddInFile + ";" + totalCaseCountDepth_0.getShortStatusesString();
+            sectionData.setSelfCasesCount(casesCount);
+            tree.addSection(sectionData);
+        }
+        if (fullText != null) {
+            fullReport.add(fullText + "\n");
+        }
+        if (shortText != null) {
+            shortReport.add(shortText + "\n");
+        }
+        TOTAL_CASE_COUNT.plusCase(totalCaseCountDepth_0);
 
+        fullReport.add("ВСЕГО:;" + TOTAL_CASE_COUNT.getFullStatusesString());
+        shortReport.add("ВСЕГО:;" + TOTAL_CASE_COUNT.getShortStatusesString());
+
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(
+                "CoverageMatrix_full.csv"), Charset.forName("cp1251"))) {
+            for (String str : fullReport) {
+                writer.write(str);
+            }
             writer.flush();
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
 
-        String s = "";
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(
+                "CoverageMatrix_short.csv"), Charset.forName("cp1251"))) {
+            for (String str : shortReport) {
+                writer.write(str);
+            }
+            writer.flush();
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
     }
 
     public static void main(String[] args) throws Exception {
         buildCoverageMatrix(10L, 258L);
     }
 
-    public interface ICaseStatus {
+    private interface ICaseStatus {
         int EMPTY_STATUS = -1;
-        int NEED_TO_UPDATE_STEPS = 1; // +
+        int NEED_TO_UPDATE_STEPS = 1;
         int READY_FOR_REVIEW = 6;
-        int READY_FOR_AUTOMATION = 2; // +
+        int READY_FOR_AUTOMATION = 2;
         int NEED_TO_REAUTOMATE = 3;
-        int MANUAL = 4; // +
-        int AUTOMATED = 5; // +
+        int MANUAL = 4;
+        int AUTOMATED = 5;
         int OBSOLETE = 7;
     }
 
     @Data
-    public static class SectionData {
+    private static class SectionData {
         private Long id;
         private Long depth;
         private Long parentId;
         private String name;
-        private CasesCount selfCasesCount;
-        private CasesCount totalCasesCount;
+        private CasesCountData selfCasesCount;
+        private CasesCountData totalCasesCount;
     }
 
     @Data
-    public static class CasesCount {
+    private static class CasesCountData {
         private int emptyStatus;
         private int needToUpdateSteps;
         private int readyForReview;
@@ -131,13 +160,23 @@ public class Run {
         private int automated;
         private int obsolete;
 
-        @Override
-        public String toString() {
+        final static String shortVersionHeader = ";Отсутствует описание тест кейса (или нужно обновить);Готов для автоматизации;Автоматизирован;\n";
+        final static String fullVersionHeader = ";Need to update steps;Ready for review;Ready for automation;Need to re-automate;Manual;Automated;Obsolete;No Status\n";
+
+        public String getShortStatusesString() {
+            return (needToUpdateSteps + emptyStatus + obsolete) + ";" +
+                    (readyForReview + readyForAutomation + manual) +
+                    ";" + (needToReAutomate + automated);
+        }
+
+        public String getFullStatusesString() {
             return needToUpdateSteps + ";" + readyForReview + ";" + readyForAutomation + ";" + needToReAutomate + ";" +
                     manual + ";" + automated + ";" + obsolete + ";" + emptyStatus;
         }
 
-        public void plusCase(CasesCount casesCount) {
+        public void plusCase(CasesCountData casesCount) {
+            if (casesCount == null)
+                return;
             needToUpdateSteps += casesCount.getNeedToUpdateSteps();
             readyForReview += casesCount.getReadyForReview();
             readyForAutomation += casesCount.getReadyForAutomation();
@@ -188,7 +227,7 @@ public class Run {
         }
     }
 
-    public static class TreeNode {
+    private static class TreeNode {
 
         @Getter
         private SectionData data;
@@ -231,7 +270,7 @@ public class Run {
         }
     }
 
-    public static class SectionTree {
+    private static class SectionTree {
 
         private TreeNode root;
         private TreeNode currentNode;
@@ -240,17 +279,6 @@ public class Run {
             root = new TreeNode(new SectionData());
             currentNode = root;
         }
-
-//        public void reCalculateNodeCasesCount() {
-//            for (TreeNode childLevel_1 : root.children) {
-//                for (TreeNode childLevel_2 : childLevel_1.children) {
-//                    CasesCount chl_2 = new CasesCount();
-//                    for (TreeNode childLevel_3 : childLevel_2.children) {
-//                        chl_2.plusCase(childLevel_3.getData().getSelfCasesCount());
-//                    }
-//                }
-//            }
-//        }
 
         public void addSection(SectionData sectionData) throws Exception {
             if (sectionData.getDepth() == 0) {
