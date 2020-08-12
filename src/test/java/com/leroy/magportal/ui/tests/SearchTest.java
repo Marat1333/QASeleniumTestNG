@@ -73,7 +73,9 @@ public class SearchTest extends WebBaseSteps {
             ExcelRow row = rowList.get(i);
             softAssert().isEquals(apiData.getLmCode(), ParserUtil.strWithOnlyDigits(row.getCellStringValueByIndex(0)), "lmCode");
             softAssert().isEquals(apiData.getBarCode(), ParserUtil.strWithOnlyDigits(row.getCellStringValueByIndex(1)), "barCode");
-            softAssert().isEquals(apiData.getTitle(), row.getCellStringValueByIndex(2), "title");
+            if (apiData.getTitle() != null) {
+                softAssert().isEquals(apiData.getTitle(), row.getCellStringValueByIndex(2), "title");
+            }
             String ctm = apiData.getCtm() ? yes : no;
             softAssert().isEquals(ctm, row.getCellStringValueByIndex(3), "ctm");
             softAssert().isEquals(apiData.getGamma(), row.getCellStringValueByIndex(4), "gamma");

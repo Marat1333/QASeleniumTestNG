@@ -9,6 +9,7 @@ import com.leroy.core.api.BaseMashupClient;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.*;
 import com.leroy.magmobile.api.data.catalog.*;
+import com.leroy.magportal.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.data.customer.CustomerData;
 import com.leroy.magmobile.api.data.customer.CustomerListData;
 import com.leroy.magmobile.api.data.customer.CustomerResponseBodyData;
@@ -39,6 +40,8 @@ public class ApiClientProvider {
 
     @Inject
     private Provider<CatalogSearchClient> catalogSearchClientProvider;
+    @Inject
+    private Provider<com.leroy.magportal.api.clients.CatalogSearchClient> portalCatalogSearchClientProvider;
     @Inject
     private Provider<CartClient> cartClientProvider;
     @Inject
@@ -80,6 +83,10 @@ public class ApiClientProvider {
         J cl = provider.get();
         cl.setUserSessionData(userSessionData());
         return cl;
+    }
+
+    public CatalogSearchClient getPortalCatalogSearchClient(){
+        return getClient(portalCatalogSearchClientProvider);
     }
 
     public CatalogSearchClient getCatalogSearchClient() {

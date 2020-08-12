@@ -40,6 +40,7 @@ public class DriverFactory {
     public static final String DESKTOP_SAFARI_PROFILE = "safari";
     public static final String DESKTOP_EDGE_PROFILE = "edge";
     public static final String DESKTOP_IE_PROFILE = "ie";
+    public static final String DOWNLOAD_DEFAULT_DIRECTORY = System.getProperty("user.dir") + File.separator + "externalFiles" + File.separator + "downloadFiles";
     // - Mobile
     public static final String EMULATOR_MOBILE_CHROME_PROFILE = "mobilechrome";
     public static final String ANDROID_BROWSER_PROFILE = "android_browser";
@@ -61,7 +62,6 @@ public class DriverFactory {
     public static String BUILD = "";
     public static String PLATFORM = "";
     public static String BROWSER_PROFILE = "";
-    public static String DOWNLOAD_DEFAULT_DIRECTORY = "";
 
     private static MutableCapabilities capabilities = null;
 
@@ -105,7 +105,6 @@ public class DriverFactory {
         BUILD = buildVersion;
         PLATFORM = platform;
         BROWSER_PROFILE = browser;
-        DOWNLOAD_DEFAULT_DIRECTORY = System.getProperty("user.dir") + File.separator + "externalFiles" + File.separator + "downloadFiles";
 
         //3. get specifically properties according to the platform/browser
         Map<String, Object> capsFromFile = (Map<String, Object>) capas.get(platform);

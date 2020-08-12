@@ -104,16 +104,4 @@ public class GetCatalogSearch extends CommonSearchRequestBuilder<GetCatalogSearc
         return queryParam("sortBy", field.getName() + "|" + sortingOrder);
     }
 
-    public GetCatalogSearch setOutputFormat(OutputDocumentFormat format){
-        String paramName = "outputFormat";
-        switch (format){
-            case EXCEL:
-                return queryParam(paramName, "xls");
-            case CSV:
-                return queryParam(paramName, "csv");
-            default:
-                return null;
-        }
-    }
-
 }

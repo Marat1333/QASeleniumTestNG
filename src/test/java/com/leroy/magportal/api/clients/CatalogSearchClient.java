@@ -2,7 +2,7 @@ package com.leroy.magportal.api.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.api.OutputDocumentFormat;
-import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
+import com.leroy.magportal.api.requests.GetCatalogSearch;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class CatalogSearchClient extends com.leroy.magmobile.api.clients.CatalogSearchClient {
