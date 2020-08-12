@@ -1,9 +1,12 @@
 package com.leroy.magportal.api.tests.search;
 
+import com.leroy.constants.EnvConstants;
 import com.leroy.constants.Units;
+import com.leroy.core.UserSessionData;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import com.leroy.magportal.api.clients.CatalogSearchClient;
+import com.leroy.magportal.ui.constants.search.CatalogSearchParams;
 import com.leroy.utils.DateTimeUtil;
 import com.leroy.utils.ParserUtil;
 import com.leroy.utils.file_manager.FileManager;
@@ -13,8 +16,9 @@ import com.leroy.utils.file_manager.excel.ExcelWorkBook;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SearchTest extends BaseProjectApiTest {
     CatalogSearchClient client;
@@ -22,6 +26,16 @@ public class SearchTest extends BaseProjectApiTest {
     @BeforeClass
     private void setUp() {
         client = apiClientProvider.getPortalCatalogSearchClient();
+    }
+
+    private String buildUri(String resource, Map<String, String> queryParamsMap) {
+        String result = EnvConstants.URL_MAG_PORTAL_OLD + "/api" + resource + "?";
+        StringBuilder queryParamBuilder = new StringBuilder();
+        for (Map.Entry<String, String> entry : queryParamsMap.entrySet()) {
+            queryParamBuilder.append(entry.getKey()).append(entry.getValue()).append("&");
+        }
+        String queryParams = queryParamBuilder.toString();
+        return result + queryParams.substring(0, queryParams.length() - 1);
     }
 
     private void shouldExcelOutputIsCorrect(List<ProductItemData> dataList, ExcelWorkBook excelWorkBook) {
@@ -43,9 +57,9 @@ public class SearchTest extends BaseProjectApiTest {
             softAssert().isEquals(ctm, row.getCellStringValueByIndex(3), "ctm");
             softAssert().isEquals(apiData.getGamma(), row.getCellStringValueByIndex(4), "gamma");
             String avsDate;
-            if (apiData.getAvsDate()!=null){
+            if (apiData.getAvsDate() != null) {
                 avsDate = DateTimeUtil.localDateToStr(apiData.getAvsDate().toLocalDate(), DateTimeUtil.DD_MM_YYYY);
-            }else {
+            } else {
                 avsDate = no;
             }
             softAssert().isEquals(avsDate, row.getCellStringValueByIndex(5), "avsDate");
@@ -80,10 +94,19 @@ public class SearchTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23416271 Excel output")
-    public void testExcelDownload() throws IOException {
+    public void testExcelDownload() throws Exception {
+        String resource = "/v4/catalog/search";
+        UserSessionData userSessionData = getUserSessionData();
+        Map<String, String> queryParams = new HashMap<>();
+        queryParams.put(CatalogSearchParams.shopId, userSessionData.getUserShopId());
+        queryParams.put(CatalogSearchParams.pageSize, "90");
+        queryParams.put(CatalogSearchParams.ldap, userSessionData.getUserLdap());
+        queryParams.put(CatalogSearchParams.outputFormat, "xls");
+
+        String uri = buildUri(resource, queryParams);
         List<ProductItemData> dataList = client.getProductsList();
         ExcelWorkBook excelWorkBook = new ExcelWorkBook(FileManager.downloadFileFromNetworkToDefaultDownloadDirectory(
-                "https://dev-aao-magfront-stage.apps.lmru.tech/api/v4/catalog/search?shopId=35&pageSize=90&ldap=60069807&outputFormat=xls", "1.xlsx"));
+                uri, "1.xlsx"));
         shouldExcelOutputIsCorrect(dataList, excelWorkBook);
     }
 }

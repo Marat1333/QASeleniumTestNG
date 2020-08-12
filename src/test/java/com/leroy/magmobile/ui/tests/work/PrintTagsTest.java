@@ -393,8 +393,13 @@ public class PrintTagsTest extends AppBaseSteps {
         editTagModalPage.deleteProductFromSession();
         DeleteSessionByDeletingProductModalPage deleteSessionByDeletingProductModalPage = new DeleteSessionByDeletingProductModalPage();
         deleteSessionByDeletingProductModalPage.confirmDelete();
-        sessionsListPage = new SessionsListPage();
-        sessionsListPage.shouldViewTypeIsCorrect(true);
+        if (DefectConst.PRINT_TAG_NAVIGATION_ISSUE){
+            sessionsListPage = new SessionsListPage();
+            sessionsListPage.shouldViewTypeIsCorrect(true);
+        }else {
+            productCardPage = new ProductCardPage();
+            productCardPage.verifyRequiredElements(true);
+        }
     }
 
     @Test(description = "C23389195 отправка на печать ценников")
@@ -735,8 +740,18 @@ public class PrintTagsTest extends AppBaseSteps {
         editTagModalPage.deleteProductFromSession();
         deleteSessionByDeletingProductModalPage = new DeleteSessionByDeletingProductModalPage();
         deleteSessionByDeletingProductModalPage.confirmDelete();
-        sessionsListPage = new SessionsListPage();
-        sessionsListPage.shouldViewTypeIsCorrect(true);
+        if (DefectConst.PRINT_TAG_NAVIGATION_ISSUE){
+            sessionsListPage = new SessionsListPage();
+            sessionsListPage.shouldViewTypeIsCorrect(true);
+        }else {
+            productCardPage = new ProductCardPage();
+        productCardPage.verifyRequiredElements(true);
+        searchProductPage = productCardPage.returnBack();
+        searchProductPage.returnBack();
+        bottomMenuPage = new BottomMenuPage();
+        WorkPage workPage = bottomMenuPage.goToWork();
+        workPage.goToSessionsListPage();
+        }
 
         //Step 5
         step("удаление сессии через специальную кнопку в списке товаров сессии");
@@ -825,7 +840,7 @@ public class PrintTagsTest extends AppBaseSteps {
         pagesQuantityModalPage = new PagesQuantityModalPage();
         pagesQuantityModalPage.shouldPagesQuantityAndFormatAreCorrect(Format.MIDDLE, 4);
 
-        //Step 2
+        //Step 3
         step("нажать продолжить печать");
         pagesQuantityModalPage.continuePrinting();
         pagesQuantityModalPage = new PagesQuantityModalPage();
@@ -956,6 +971,7 @@ public class PrintTagsTest extends AppBaseSteps {
         //Step 3
         step("нажимаем назад");
         searchProductPage.returnBack();
+        mainProductAndServicesPage = new MainProductAndServicesPage();
         mainProductAndServicesPage.verifyRequiredElements();
 
         //Step 4

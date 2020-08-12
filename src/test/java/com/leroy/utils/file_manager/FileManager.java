@@ -4,6 +4,8 @@ import com.leroy.core.configuration.DriverFactory;
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -17,9 +19,9 @@ public class FileManager {
         return new File(DriverFactory.DOWNLOAD_DEFAULT_DIRECTORY + File.separator + fileName);
     }
 
-    public static File downloadFileFromNetworkToDefaultDownloadDirectory(String urlPath, String expectedFileName) throws IOException {
-        URL url = new URL(urlPath);
-        InputStream is = url.openStream();
+    public static File downloadFileFromNetworkToDefaultDownloadDirectory(String uri, String expectedFileName) throws Exception {
+        URI localUri = new URI(uri);
+        InputStream is = localUri.toURL().openStream();
         String pathToFile = DriverFactory.DOWNLOAD_DEFAULT_DIRECTORY + File.separator + expectedFileName;
         Files.copy(is, Paths.get(pathToFile), StandardCopyOption.REPLACE_EXISTING);
         return new File(pathToFile);
