@@ -99,6 +99,12 @@ public class OrderDraftDeliveryWayPage extends OrderDraftPage {
         return enterPinCode(orderData, true);
     }
 
+    public OrderDraftDeliveryWayPage enterPinCode(String pinCode) {
+        SalesDocWebData salesDocWebData = new SalesDocWebData();
+        salesDocWebData.setPinCode(pinCode);
+        return enterPinCode(salesDocWebData, false);
+    }
+
     @Step("Нажать на кнопку 'Подтвердить заказ'")
     public SubmittedOrderModal clickConfirmOrderButton() {
         confirmOrderBtn.click();
@@ -118,6 +124,12 @@ public class OrderDraftDeliveryWayPage extends OrderDraftPage {
     @Step("Проверить, что поле с пин кодом = {text}")
     public OrderDraftDeliveryWayPage shouldPinCodeFieldIs(String text) {
         anAssert.isElementTextEqual(pinCodeFld, text);
+        return this;
+    }
+
+    @Step("Проверить, что ошибка под полем пин код содержит текст = {text}")
+    public OrderDraftDeliveryWayPage shouldPinCodeErrorTooltipIs(String text) {
+        anAssert.isElementTextEqual(pinCodeErrorTooltip, text);
         return this;
     }
 

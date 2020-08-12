@@ -373,7 +373,7 @@ public class OrderTest extends BasePAOTest {
         preconditionForEditOrderConfirmedTests(Collections.singletonList(productList.get(0)), 1.0);
     }
 
-    private void preconditionForEditOrderDraftTests(List<ProductItemData> productItemDataList) throws Exception {
+    private void preconditionForEditOrderDraftTests(List<ProductItemData> productItemDataList, boolean isNeedToGoToContentTab) throws Exception {
         // Prepare data
         List<CartProductOrderData> cardProducts = new ArrayList<>();
         for (ProductItemData productItemData : productItemDataList) {
@@ -389,12 +389,15 @@ public class OrderTest extends BasePAOTest {
 
         stepClickConfirmOrderButton(null);
 
-        orderDraftContentPage = orderDraftDeliveryWayPage.goToContentOrderTab()
-                .shouldOrderContentDataIs(orderData);
+        if (isNeedToGoToContentTab) {
+            orderDraftContentPage = orderDraftDeliveryWayPage.goToContentOrderTab()
+                    .shouldOrderContentDataIs(orderData);
+        }
+
     }
 
     private void preconditionForEditOrderDraftTests() throws Exception {
-        preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)));
+        preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)),true);
     }
 
     // ---------------- EDIT ORDER DRAFT -------------------//
@@ -465,7 +468,7 @@ public class OrderTest extends BasePAOTest {
     @Test(description = "C23410905 Удалить товар из неподтвержденного заказа",
             groups = NEED_PRODUCTS_GROUP)
     public void testRemoveProductFromDraftOrder() throws Exception {
-        preconditionForEditOrderDraftTests(productList.subList(0, 2));
+        preconditionForEditOrderDraftTests(productList.subList(0, 2),true);
 
         // Step 1 and 2
         step("Нажмите на иконку корзины в правом верхнем углу мини-карточки товара и подтвердите удаление");
@@ -639,6 +642,16 @@ public class OrderTest extends BasePAOTest {
         orderCreatedContentPage.refreshDocumentList();
         orderCreatedContentPage.shouldDocumentListContainsThis(shortOrderDocWebData);
     }
+
+    @Test(description = "C23398450 Ввод существующего пин кода", groups = NEED_PRODUCTS_GROUP)
+    public void testEnterExistedPinCode() throws Exception {
+        preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)),false);
+        //Step 1
+        step("Введите существующий PIN-код, например 11111 для самовывоза или 99999 для доставки");
+        orderDraftDeliveryWayPage.enterPinCode("11111")
+                .shouldPinCodeErrorTooltipIs("Уже используется, придумай другой код");
+    }
+
 
     // ------------ Steps ------------------ //
 

@@ -88,6 +88,7 @@ public class OrderDraftContentPage extends OrderDraftPage {
         expectedOrderData.getOrders().get(0).getProductCardDataList().forEach(p -> p.setBarCode(null));
         // Не понятно как проверять вес, когда он в корзине отображается суммарный, а в заказе за штуку:
         //expectedOrderData.getOrders().get(0).getProductCardDataList().forEach(p -> p.setWeight(null));
+        expectedOrderData.getOrders().get(0).getProductCardDataList().forEach(p -> p.setAvailableTodayQuantity(null));
         if (PAO_931 && expectedOrderData.getOrders().get(0).getProductCardDataList().get(0).getDiscountPercent() != null)
             expectedOrderData.getOrders().forEach(p -> p.setTotalPrice(null));
         actualData.assertEqualsNotNullExpectedFields(expectedOrderData);
