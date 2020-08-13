@@ -41,8 +41,6 @@ public class ApiClientProvider {
     @Inject
     private Provider<CatalogSearchClient> catalogSearchClientProvider;
     @Inject
-    private Provider<com.leroy.magportal.api.clients.CatalogSearchClient> portalCatalogSearchClientProvider;
-    @Inject
     private Provider<CartClient> cartClientProvider;
     @Inject
     private Provider<CustomerClient> customerClientProvider;
@@ -83,10 +81,6 @@ public class ApiClientProvider {
         J cl = provider.get();
         cl.setUserSessionData(userSessionData());
         return cl;
-    }
-
-    public CatalogSearchClient getPortalCatalogSearchClient(){
-        return getClient(portalCatalogSearchClientProvider);
     }
 
     public CatalogSearchClient getCatalogSearchClient() {

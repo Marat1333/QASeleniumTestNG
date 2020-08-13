@@ -25,7 +25,7 @@ public class SearchTest extends BaseProjectApiTest {
 
     @BeforeClass
     private void setUp() {
-        client = apiClientProvider.getPortalCatalogSearchClient();
+        client = apiClientProvider.getCatalogSearchClient();
     }
 
     private String buildUri(String resource, Map<String, String> queryParamsMap) {
