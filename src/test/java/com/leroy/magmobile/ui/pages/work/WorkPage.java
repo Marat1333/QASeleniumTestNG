@@ -2,10 +2,13 @@ package com.leroy.magmobile.ui.pages.work;
 
 import com.leroy.core.ContextProvider;
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.constants.MagMobElementTypes;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.work.print_tags.SessionsListPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.RupturesScannerPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.SessionListPage;
 import com.leroy.magmobile.ui.pages.work.supply_plan.SuppliesListPage;
 import io.qameta.allure.Step;
 
@@ -29,6 +32,15 @@ public class WorkPage extends CommonMagMobilePage {
             metaName = "'Отзыв с RM' плюсик")
     private Element withdrawalFromRMPlusIcon;
 
+    @AppFindBy(text = "Управление перебоями")
+    private Element rupturesManageLbl;
+
+    @AppFindBy(xpath = "//*[@text='Управление перебоями']/following-sibling::*/android.widget.TextView")
+    private Element rupturesActiveSessionCounterLbl;
+
+    @AppFindBy(xpath = "//*[@text='Управление перебоями']/following-sibling::*[2]")
+    private Button createRuptureSessionBtn;
+
     @AppFindBy(text = "План поставок в отдел")
     private Element departmentSupplyPlanLbl;
 
@@ -47,7 +59,9 @@ public class WorkPage extends CommonMagMobilePage {
     @Override
     public void waitForPageIsLoaded() {
         titleObj.waitForVisibility();
-        departmentSupplyPlanLbl.waitForVisibility();
+        if (rupturesManageLbl.isVisible()){
+            rupturesActiveSessionCounterLbl.waitForVisibility();
+        }
     }
 
     /* ------------------------- ACTION STEPS -------------------------- */
@@ -56,6 +70,18 @@ public class WorkPage extends CommonMagMobilePage {
     public StockProductsPage clickWithdrawalFromRMPlusIcon() {
         withdrawalFromRMPlusIcon.click();
         return new StockProductsPage();
+    }
+
+    @Step("Перейти в Управление перебоями")
+    public SessionListPage goToRuptures(){
+        rupturesManageLbl.click();
+        return new SessionListPage();
+    }
+
+    @Step("Нажать на кнопку создания сессии перебоев")
+    public RupturesScannerPage createRupturesSession(){
+        createRuptureSessionBtn.click();
+        return new RupturesScannerPage();
     }
 
     @Step("Перейти в План поставок")
@@ -87,7 +113,24 @@ public class WorkPage extends CommonMagMobilePage {
         softAssert.isElementVisible(priceTagPrintingLbl);
         softAssert.isElementVisible(orderBalisageLbl);
         softAssert.isElementVisible(miniInventoryLbl);
+        softAssert.isElementVisible(rupturesManageLbl);
         softAssert.verifyAll();
+        return this;
+    }
+
+    @Step("Проверить, что отсутствует раздел \"Управление перебоями\"")
+    public WorkPage shouldRupturesNavigationBtnHasCorrectCondition(boolean isVisible){
+        if (isVisible) {
+            anAssert.isElementVisible(rupturesManageLbl);
+        }else {
+            anAssert.isElementNotVisible(rupturesManageLbl);
+        }
+        return this;
+    }
+
+    @Step("Проверить, что счетчик активных сессий руптюр отображает корректное значение")
+    public WorkPage shouldRupturesSessionCounterIsCorrect(int sessionCounter){
+        anAssert.isElementTextEqual(rupturesActiveSessionCounterLbl, String.valueOf(sessionCounter));
         return this;
     }
 
