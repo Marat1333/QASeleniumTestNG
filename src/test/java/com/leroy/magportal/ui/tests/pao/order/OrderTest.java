@@ -33,6 +33,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -373,7 +374,8 @@ public class OrderTest extends BasePAOTest {
         preconditionForEditOrderConfirmedTests(Collections.singletonList(productList.get(0)), 1.0);
     }
 
-    private void preconditionForEditOrderDraftTests(List<ProductItemData> productItemDataList) throws Exception {
+    private void preconditionForEditOrderDraftTests(
+            List<ProductItemData> productItemDataList, boolean isNeedToGoToContentTab) throws Exception {
         // Prepare data
         List<CartProductOrderData> cardProducts = new ArrayList<>();
         for (ProductItemData productItemData : productItemDataList) {
@@ -389,12 +391,15 @@ public class OrderTest extends BasePAOTest {
 
         stepClickConfirmOrderButton(null);
 
-        orderDraftContentPage = orderDraftDeliveryWayPage.goToContentOrderTab()
-                .shouldOrderContentDataIs(orderData);
+        if (isNeedToGoToContentTab) {
+            orderDraftContentPage = orderDraftDeliveryWayPage.goToContentOrderTab()
+                    .shouldOrderContentDataIs(orderData);
+        }
+
     }
 
     private void preconditionForEditOrderDraftTests() throws Exception {
-        preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)));
+        preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)), true);
     }
 
     // ---------------- EDIT ORDER DRAFT -------------------//
@@ -465,7 +470,7 @@ public class OrderTest extends BasePAOTest {
     @Test(description = "C23410905 Удалить товар из неподтвержденного заказа",
             groups = NEED_PRODUCTS_GROUP)
     public void testRemoveProductFromDraftOrder() throws Exception {
-        preconditionForEditOrderDraftTests(productList.subList(0, 2));
+        preconditionForEditOrderDraftTests(productList.subList(0, 2), true);
 
         // Step 1 and 2
         step("Нажмите на иконку корзины в правом верхнем углу мини-карточки товара и подтвердите удаление");
@@ -638,6 +643,44 @@ public class OrderTest extends BasePAOTest {
         shortOrderDocWebData.setTotalPrice(0.0);
         orderCreatedContentPage.refreshDocumentList();
         orderCreatedContentPage.shouldDocumentListContainsThis(shortOrderDocWebData);
+    }
+
+    // ======== Подтверждение заказа ============= //
+
+    @Test(description = "C23410892 Подтвердить заказ на самовывоз сегодня", groups = NEED_PRODUCTS_GROUP)
+    public void testConfirmOrderPickupToday() throws Exception {
+        SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+        preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)), false);
+
+        // Step 1
+        step("В поле Выбери способ получения нажмите на кнопу Самовывоз (по умолчанию)");
+        orderData.setDeliveryType(SalesDocumentsConst.GiveAwayPoints.PICKUP);
+        orderData.setDeliveryDate(LocalDate.now());
+        orderDraftDeliveryWayPage.shouldOrderDataIs(orderData);
+
+        // Step 2
+        step("Нажмите на кнопку 'Добавить клиента'");
+        stepClickAddCustomerButton();
+
+        // Step 3
+        step("Введите номер телефона, нажмите Enter, нажмите на мини-карточку нужного клиента");
+        stepSelectCustomerByPhoneNumber(customerData);
+
+        // Step 4
+        step("Выберете поле PIN-код для оплаты, введите PIN-код для оплаты");
+        stepEnterPinCode();
+
+        // Step 5
+        step("Нажмите на кнопку Подтвердить заказ");
+        stepClickConfirmOrder();
+
+        // Step 6
+        step("Нажмите на 'Перейти в список заказов'");
+        stepGoToTheOrderList();
+
+        // Step 7
+        step("Обновите список документов слева");
+        stepRefreshDocumentListAndCheckDocument();
     }
 
     // ------------ Steps ------------------ //

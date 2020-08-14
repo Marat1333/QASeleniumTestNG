@@ -35,6 +35,9 @@ public class ProductOrderCardWebData {
         productOrderCardWebData.setTotalPrice(totalPrice);
         productOrderCardWebData.setAvailableTodayQuantity(availableTodayQuantity);
         productOrderCardWebData.setWeight(weight);
+        productOrderCardWebData.setTotalPriceWithDiscount(totalPriceWithDiscount);
+        productOrderCardWebData.setDiscountPercent(discountPercent);
+        productOrderCardWebData.setService(isService);
         return productOrderCardWebData;
     }
 

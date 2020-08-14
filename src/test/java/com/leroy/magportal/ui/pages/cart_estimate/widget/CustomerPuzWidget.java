@@ -48,7 +48,7 @@ public class CustomerPuzWidget extends CardWebWidget<SimpleCustomerData> {
     @Override
     public SimpleCustomerData collectDataFromPage() {
         if (!this.isVisible())
-            return null;
+            return new SimpleCustomerData();
         SimpleCustomerData customerData = new SimpleCustomerData();
         if (email.isVisible())
             customerData.setEmail(email.getText());
