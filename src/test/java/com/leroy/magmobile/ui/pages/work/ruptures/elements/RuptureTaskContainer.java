@@ -5,8 +5,8 @@ import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.magmobile.ui.elements.MagMobCheckBox;
 import com.leroy.magmobile.ui.pages.work.ruptures.ActionsModalPage;
-import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 
 import java.util.ArrayList;
@@ -17,6 +17,8 @@ public class RuptureTaskContainer extends Element {
         super(driver, locator);
     }
 
+    private final static String TYPICAL_CHECKBOX_XPATH = "//*[@text='%s']/preceding-sibling::android.view.ViewGroup[@content-desc='Button-container'][1]";
+
     @AppFindBy(xpath = ".//*[@text='Назначить задачи']")
     Button appointTaskBtn;
 
@@ -26,29 +28,36 @@ public class RuptureTaskContainer extends Element {
     @AppFindBy(xpath = ".//*[@content-desc='Button-container']/following-sibling::android.widget.TextView[1]")
     ElementList<Element> tasksList;
 
-    public List<String> getTaskList(){
+    public List<String> getTaskList() {
         String ps = getPageSource();
         List<String> result = new ArrayList<>();
-        for (Element each: tasksList){
+        for (Element each : tasksList) {
             result.add(each.getText(ps));
         }
-        if (recallFromRmLbl.isVisible(ps)){
+        if (recallFromRmLbl.isVisible(ps)) {
             result.add(recallFromRmLbl.getText(ps));
         }
         return result;
     }
 
-    public boolean appointTaskBtnVisibility(){
-        return appointTaskBtn.isVisible();
+    public void setCheckBoxesToTasks(String taskName) {
+        E(String.format(TYPICAL_CHECKBOX_XPATH,
+                taskName)).click();
+
     }
 
-    public ActionsModalPage callActionsModalPage() throws Exception{
-        if (appointTaskBtn.isVisible()){
+    public ActionsModalPage callActionsModalPage() throws Exception {
+        if (appointTaskBtn.isVisible()) {
             appointTaskBtn.click();
-        }else {
+        } else {
             this.findChildElement(".//android.view.ViewGroup[@content-desc='Button-container'][2]").click();
         }
         return new ActionsModalPage();
+    }
+
+    public boolean getCheckBoxCondition(String taskName) throws Exception {
+        MagMobCheckBox taskCheckBox = E(String.format(TYPICAL_CHECKBOX_XPATH, taskName), MagMobCheckBox.class);
+        return taskCheckBox.isCheckedGrey();
     }
 
 }

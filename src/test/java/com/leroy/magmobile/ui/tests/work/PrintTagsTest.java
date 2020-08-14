@@ -330,11 +330,6 @@ public class PrintTagsTest extends AppBaseSteps {
 
         //Step 2
         step("удалить товар через массовое редактирование");
-        if (DefectConst.LFRONT_3640) {
-            tagsListPage.callEditModal(lmCodesList.get(0));
-            editTagModalPage.closeModal();
-        }
-
         tagsListPage.switchToGroupEditorMode();
         editTagModalPage = tagsListPage.choseProductsAndOpenGroupEditModal(lmCodesList.get(0));
         editTagModalPage.deleteProductFromSession();
@@ -393,8 +388,7 @@ public class PrintTagsTest extends AppBaseSteps {
         editTagModalPage.deleteProductFromSession();
         DeleteSessionByDeletingProductModalPage deleteSessionByDeletingProductModalPage = new DeleteSessionByDeletingProductModalPage();
         deleteSessionByDeletingProductModalPage.confirmDelete();
-        sessionsListPage = new SessionsListPage();
-        sessionsListPage.shouldViewTypeIsCorrect(true);
+        productCardPage.verifyRequiredElements(true);
     }
 
     @Test(description = "C23389195 отправка на печать ценников")

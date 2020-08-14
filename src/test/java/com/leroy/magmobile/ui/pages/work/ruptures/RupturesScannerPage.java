@@ -14,9 +14,9 @@ public class RupturesScannerPage extends ScannerWithSearchBtnPage {
     Element rupturesCounterLbl;
 
     @Step("Перейти в список перебоя")
-    public ProductsSessionListPage navigateToRuptureProductList() {
+    public SessionProductsListPage navigateToRuptureProductList() {
         rupturesListBtn.click();
-        return new ProductsSessionListPage();
+        return new SessionProductsListPage();
     }
 
     @Step("Проверить отображение кнопки перехода в список ценников")

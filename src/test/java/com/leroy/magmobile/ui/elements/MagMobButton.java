@@ -17,6 +17,7 @@ public class MagMobButton extends Button {
     }
 
     private String TEXT_VIEW_XPATH = "//android.widget.TextView";
+    private final static Color ACTIVE_GREEN_COLOR = new Color(216, 240, 199, 255);
 
     @Override
     public String getText() {
@@ -38,5 +39,9 @@ public class MagMobButton extends Button {
     @Override
     public Color getPointColor() throws IOException {
         return getPointColor(0, 5 - (getHeight() / 2));
+    }
+
+    public boolean isActive() throws Exception{
+        return getPointColor().equals(ACTIVE_GREEN_COLOR);
     }
 }
