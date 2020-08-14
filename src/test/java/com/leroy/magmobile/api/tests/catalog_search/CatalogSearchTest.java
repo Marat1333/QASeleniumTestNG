@@ -530,7 +530,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
             assertThat("topEM in product " + data.getLmCode() + " is " + data.getTopEM(), data.getTopEM(), equalTo(topEm));
             assertThat("avs in product " + data.getLmCode() + " is " + data.getAvsDate(), data.getAvsDate(), notNullValue());
             assertThat("gamma in product " + data.getLmCode() + " is " + data.getGamma(), data.getGamma(), equalTo(GAMMA));
-            assertThat("top in product " + data.getLmCode() + " is " + data.getTop(), data.getTop(), equalTo(Integer.valueOf(TOP)));
+            assertThat("top in product " + data.getLmCode() + " is " + data.getTop(), data.getTop(), equalTo(TOP));
             //можем найти по одному из поставщиков, а отдаст по главному // TODO
             //assertThat("supplier in product " + data.getLmCode() + " is " + data.getSupCode(), data.getSupCode(), equalTo(SUPPLIER_CODE));
         }
