@@ -106,6 +106,15 @@ public class OrderDraftDeliveryWayPage extends OrderDraftPage {
 
     // Actions
 
+    @Step("Выбрать тип получения заказа")
+    public OrderDraftDeliveryWayPage selectDeliveryWay(SalesDocumentsConst.GiveAwayPoints giveAwayPoints) {
+        if (giveAwayPoints.equals(SalesDocumentsConst.GiveAwayPoints.PICKUP))
+            pickupBtn.click();
+        if (giveAwayPoints.equals(SalesDocumentsConst.GiveAwayPoints.DELIVERY))
+            deliveryBtn.click();
+        return this;
+    }
+
     @Step("Ввести PIN код")
     public OrderDraftDeliveryWayPage enterPinCode(SalesDocWebData orderData, boolean tryToFindValidPin) {
         pinCodeFld.scrollTo();
@@ -168,6 +177,8 @@ public class OrderDraftDeliveryWayPage extends OrderDraftPage {
         SalesDocWebData expectedOrderData = orderData.clone();
         if (DefectConst.INVALID_ORDER_DRAFT_DATE)
             expectedOrderData.setCreationDate(null);
+        if (DefectConst.INVISIBLE_AUTHOR_ORDER_DRAFT)
+            expectedOrderData.setAuthorName(null);
         expectedOrderData.setOrders(null);
         SalesDocWebData actualData = getOrderData();
         actualData.assertEqualsNotNullExpectedFields(expectedOrderData);

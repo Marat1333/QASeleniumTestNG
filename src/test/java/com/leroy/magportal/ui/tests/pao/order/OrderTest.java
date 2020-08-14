@@ -683,6 +683,48 @@ public class OrderTest extends BasePAOTest {
         stepRefreshDocumentListAndCheckDocument();
     }
 
+    @Test(description = "C23410893 Подтвердить заказ на доставку завтра", groups = NEED_PRODUCTS_GROUP)
+    public void testConfirmOrderForDeliveryTomorrow() throws Exception {
+        SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+        SalesDocumentsConst.GiveAwayPoints deliveryWay = SalesDocumentsConst.GiveAwayPoints.DELIVERY;
+        preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)), false);
+
+        // Step 1
+        step("В поле Выбери способ получения нажмите на кнопу Доставка");
+        orderDraftDeliveryWayPage.selectDeliveryWay(deliveryWay);
+        orderData.setDeliveryType(deliveryWay);
+        orderData.setPinCode("");
+        orderData.setClient(new SimpleCustomerData());
+        orderData.setRecipient(new SimpleCustomerData());
+        orderData.setComment("");
+        orderData.setDeliveryDate(LocalDate.now().plusDays(1));
+        orderDraftDeliveryWayPage.shouldOrderDataIs(orderData);
+
+        // Step 2
+        step("Нажмите на кнопку 'Добавить клиента'");
+        stepClickAddCustomerButton();
+
+        // Step 3
+        step("Введите номер телефона, нажмите Enter, нажмите на мини-карточку нужного клиента");
+        stepSelectCustomerByPhoneNumber(customerData);
+
+        // Step 4
+        step("Выберете поле PIN-код для оплаты, введите PIN-код для оплаты");
+        stepEnterPinCode();
+
+        // Step 5
+        step("Нажмите на кнопку Подтвердить заказ");
+        stepClickConfirmOrder();
+
+        // Step 6
+        step("Нажмите на 'Перейти в список заказов'");
+        stepGoToTheOrderList();
+
+        // Step 7
+        step("Обновите список документов слева");
+        stepRefreshDocumentListAndCheckDocument();
+    }
+
     // ------------ Steps ------------------ //
 
     /**
