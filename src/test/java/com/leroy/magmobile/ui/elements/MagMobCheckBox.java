@@ -9,6 +9,7 @@ import org.openqa.selenium.support.Color;
 public class MagMobCheckBox extends Checkbox {
 
     private static final Color CHECKED_GREEN_COLOR = new Color(102, 192, 93, 255);
+    private static final Color CHECKED_GRAY_COLOR = new Color(166, 166, 143, 255);
     private static final Color UNCHECKED_GRAY_COLOR = new Color(202, 206, 210, 255);
     private static final Color UNCHECKED_WHITE_COLOR = new Color(255, 255, 255, 255);
 
@@ -24,6 +25,10 @@ public class MagMobCheckBox extends Checkbox {
     @Override
     public boolean isChecked() throws Exception {
         return getPointColor().equals(CHECKED_GREEN_COLOR);
+    }
+
+    public boolean isCheckedGrey() throws Exception{
+        return getPointColor().equals(CHECKED_GRAY_COLOR);
     }
 
 }
