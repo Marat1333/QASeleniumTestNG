@@ -6,7 +6,7 @@ import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
 
 public abstract class SplitPickingModal extends MagPortalBasePage {
 
-    protected final static String MODAL_DIV_XPATH = "//div[contains(@class, 'Modal-content-container lm-puz2-Picking-SplitModal')]";
+    protected final static String MODAL_DIV_XPATH = "//div[contains(@class, 'Modal-content-container')]";
 
     @WebFindBy(xpath = MODAL_DIV_XPATH + "//p")
     Element header;
