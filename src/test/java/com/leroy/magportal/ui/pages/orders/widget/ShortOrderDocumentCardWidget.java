@@ -37,7 +37,7 @@ public class ShortOrderDocumentCardWidget extends CardWebWidget<ShortOrderDocWeb
     @WebFindBy(xpath = ".//span[contains(@class, 'OrderListItem__createdAt')]")
     Element creationDate;
 
-    @WebFindBy(xpath = ".//div[contains(@class, 'OrderListItem__date-statuses')]/span[2]")
+    @WebFindBy(xpath = ".//div[contains(@class, 'OrderListItem__date-statuses')]/span[last()]")
     Element paymentType;
 
     @WebFindBy(xpath = ".//span[contains(@class, 'Status-container')]")
