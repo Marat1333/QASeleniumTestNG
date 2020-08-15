@@ -16,6 +16,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 
 public class DateTimeUtil {
     public static final String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
+    public static final String DD_MMMM_HH_MM = "dd MMMM, HH:mm";
 
     /**
      * Check if the date matches the format

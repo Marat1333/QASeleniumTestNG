@@ -99,6 +99,11 @@ public class SearchProductPage extends CommonMagMobilePage {
 
     // ---------------- Action Steps -------------------------//
 
+    @Step("Перейти назад")
+    public void returnBack(){
+        backBtn.click();
+    }
+
     @Step("Перейти на главную страницу 'Документы продажи'")
     public MainProductAndServicesPage backToSalesPage() {
         backBtn.click();
@@ -134,7 +139,7 @@ public class SearchProductPage extends CommonMagMobilePage {
     }
 
     @Step("Введите {text} в поле поиска товара")
-    public SearchProductPage enterTextInSearchField(String text) throws Exception {
+    public SearchProductPage enterTextInSearchField(String text) {
         searchField.clearAndFill(text);
         hideKeyboard();
         return this;
@@ -231,14 +236,14 @@ public class SearchProductPage extends CommonMagMobilePage {
     }
 
     @Step("Проверяем, что список последних поисковых запросов такой: {expectedList}")
-    public SearchProductPage shouldSearchHistoryListIs(List<String> expectedList) throws Exception {
+    public SearchProductPage shouldSearchHistoryListIs(List<String> expectedList) {
         List<String> actualStringList = searchHistoryScrollView.getFullDataAsStringList();
         anAssert.isEquals(actualStringList, expectedList, "Ожидается следующий список поисковых запросов: %s");
         return this;
     }
 
     @Step("Проверяем, что список последних поисковых запросов содержит {searchPhrase}")
-    public SearchProductPage verifySearchHistoryContainsSearchPhrase(String searchPhrase) throws Exception {
+    public SearchProductPage verifySearchHistoryContainsSearchPhrase(String searchPhrase) {
         List<String> containsVisibleSearchHistory = searchHistoryScrollView.getFullDataAsStringList();
         anAssert.isFalse(containsVisibleSearchHistory.size() == 0, "История поиска - пустая");
         for (String tmp : containsVisibleSearchHistory) {
@@ -453,7 +458,7 @@ public class SearchProductPage extends CommonMagMobilePage {
                 cardData = allGammaProductCardsScrollView.getFullDataList();
                 break;
             case SERVICE:
-                cardData = serviceCardsScrollView.getFullDataList();
+                cardData = serviceCardsScrollView.getFullDataList(10, 5, false);
                 break;
             default:
                 throw new Exception("Incorrect CardType");
