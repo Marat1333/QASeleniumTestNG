@@ -28,7 +28,7 @@ public class MainProductAndServicesPage extends TopMenuPage {
         return page;
     }
 
-    public void verifyRequiredElements(){
+    public void verifyRequiredElements() {
         anAssert.isElementVisible(searchBar);
     }
 }

@@ -90,7 +90,7 @@ public class SearchSupplierPage extends CommonMagMobilePage {
     }
 
     @Step("Перейти по элементу из истории поиска")
-    public SupplierWeekSuppliesPage goToSupplierWeekPageBySearchHistory(String id){
+    public SupplierWeekSuppliesPage goToSupplierWeekPageBySearchHistory(String id) {
         E(String.format("//android.widget.ScrollView//*[contains(@text,'Код: %s')]", id)).click();
         return new SupplierWeekSuppliesPage();
     }
@@ -186,13 +186,13 @@ public class SearchSupplierPage extends CommonMagMobilePage {
     public SearchSupplierPage shouldSearchHistoryIsCorrect(List<String> searchHistory) {
         List<SearchHistoryElementData> searchHistoryData = this.searchHistory.getFullDataList();
         for (int i = 0; i < searchHistory.size(); i++) {
-            softAssert.isEquals(searchHistory.get(i), searchHistoryData.get(searchHistoryData.size()-1-i).getCode(), "id");
+            softAssert.isEquals(searchHistory.get(i), searchHistoryData.get(searchHistoryData.size() - 1 - i).getCode(), "id");
         }
         softAssert.verifyAll();
         return this;
     }
 
-    public SearchSupplierPage verifyRequiredElements(){
+    public SearchSupplierPage verifyRequiredElements() {
         softAssert.areElementsVisible(backBtn, searchInput);
         softAssert.verifyAll();
         return this;

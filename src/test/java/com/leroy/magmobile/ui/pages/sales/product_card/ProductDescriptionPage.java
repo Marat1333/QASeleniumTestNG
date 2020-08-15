@@ -162,7 +162,7 @@ public class ProductDescriptionPage extends ProductCardPage {
     @Step("Проверить, что комплементарные товары корректно отображены")
     public ProductDescriptionPage shouldComplementaryProductsAreCorrect(List<CatalogProductData> apiDataList,
                                                                         SearchProductPage.CardType type) {
-        if (apiDataList.size()==0){
+        if (apiDataList.size() == 0) {
             mainScrollView.scrollToEnd();
             waitUntilProgressBarIsInvisible();
             anAssert.isElementVisible(complementaryProductsNotFoundLbl);
@@ -177,13 +177,13 @@ public class ProductDescriptionPage extends ProductCardPage {
         List<ProductCardData> productCardDataListFromPage = new ArrayList<>();
         if (type.equals(SearchProductPage.CardType.COMMON)) {
             productCardDataListFromPage = productCardsScrollView.getFullDataList();
-        }else if (type.equals(SearchProductPage.CardType.ALL_GAMMA)){
+        } else if (type.equals(SearchProductPage.CardType.ALL_GAMMA)) {
             productCardDataListFromPage = allGammaProductCardsScrollView.getFullDataList();
         }
         for (int i = 0; i < apiDataList.size(); i++) {
             ProductCardData uiData = productCardDataListFromPage.get(i);
             ProductCardData apiData = productCardDataListFromPage.get(i);
-            softAssert.isEquals(uiData.getLmCode(),apiData.getLmCode(),"lmCode");
+            softAssert.isEquals(uiData.getLmCode(), apiData.getLmCode(), "lmCode");
             if (type.equals(SearchProductPage.CardType.COMMON)) {
                 softAssert.isEquals(uiData.getAvailableQuantity(), apiData.getAvailableQuantity(), "available quantity");
             }

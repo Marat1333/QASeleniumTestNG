@@ -340,7 +340,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.choseSortType(SearchProductPage.SortType.DEFAULT);
         searchProductPage.shouldResponseEntityEqualsToViewEntity(response.asJson(), SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
-                //.shouldUrlNotContains(CatalogSearchParams.sortBy);
+        //.shouldUrlNotContains(CatalogSearchParams.sortBy);
         searchProductPage.shouldSortComboBoxContainsText(SearchProductPage.SortType.DEFAULT.getName());
     }
 
@@ -384,7 +384,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.choseSupplier(false, FIRST_SUPPLIER_CODE, SECOND_SUPPLIER_CODE)
                 .shouldSupplierComboBoxContainsCorrectText(false, FIRST_SUPPLIER_CODE, SECOND_SUPPLIER_CODE)
                 .applyFilters();
-                //.shouldUrlContains(CatalogSearchParams.supplierId + FIRST_SUPPLIER_CODE + "%2C" + SECOND_SUPPLIER_CODE);
+        //.shouldUrlContains(CatalogSearchParams.supplierId + FIRST_SUPPLIER_CODE + "%2C" + SECOND_SUPPLIER_CODE);
         ProductItemDataList fewSuppliersData = resultMap.get(0).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(fewSuppliersData, SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);

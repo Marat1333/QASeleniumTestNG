@@ -57,13 +57,13 @@ public class WorkPage extends CommonMagMobilePage {
     }
 
     @Step("Перейти в План поставок")
-    public SuppliesListPage goToShipmentListPage(){
+    public SuppliesListPage goToShipmentListPage() {
         departmentSupplyPlanLbl.click();
         return new SuppliesListPage();
     }
 
     @Step("Перейти в Печать ценников")
-    public SessionsListPage goToSessionsListPage(){
+    public SessionsListPage goToSessionsListPage() {
         priceTagPrintingLbl.click();
         return new SessionsListPage();
     }

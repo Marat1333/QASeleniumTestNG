@@ -23,11 +23,11 @@ public class ConfirmSessionExitModalPage extends CommonMagMobilePage {
     }
 
     @Step("Подтвердить выход из сессии")
-    public void exit(){
+    public void exit() {
         confirmExiting.click();
     }
 
-    public void verifyRequiredElements(){
+    public void verifyRequiredElements() {
         softAssert.areElementsVisible(header, cancelExitingBtn, confirmExiting);
         softAssert.verifyAll();
     }

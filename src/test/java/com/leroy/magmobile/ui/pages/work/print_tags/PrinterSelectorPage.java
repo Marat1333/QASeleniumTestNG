@@ -8,7 +8,6 @@ import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.work.print_tags.data.PrinterData;
 import com.leroy.magmobile.ui.pages.work.print_tags.widgets.PrinterWidget;
 import io.qameta.allure.Step;
-import org.openqa.selenium.By;
 
 import java.util.List;
 
@@ -46,7 +45,7 @@ public class PrinterSelectorPage extends CommonMagMobilePage {
 
     @Step("Проверить отображение всех принтеров")
     public PrinterSelectorPage shouldAllFiltersIsDisplayed(List<String> dataList) {
-        List<PrinterData> printerUiData = printerNamesView.getFullDataList(dataList.size()+1);
+        List<PrinterData> printerUiData = printerNamesView.getFullDataList(dataList.size() + 1);
         if (printerUiData.size() > 0) {
             //выбранный принтер
             printerUiData.remove(0);

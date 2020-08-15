@@ -31,35 +31,35 @@ public class SessionsListPage extends CommonMagMobilePage {
     }
 
     @Step("Перейти в активную сессию")
-    public TagsListPage navigateToActiveSession(){
+    public TagsListPage navigateToActiveSession() {
         activeSessionWidget.click();
         return new TagsListPage();
     }
 
     @Step("Создать новую сессию")
-    public void createNewSession(){
+    public void createNewSession() {
         createNewSessionBtn.click();
     }
 
     @Step("Перейти назад")
-    public WorkPage goBack(){
+    public WorkPage goBack() {
         backBtn.click();
         return new WorkPage();
     }
 
     @Step("Проверить вид отображения страницы")
-    public SessionsListPage shouldViewTypeIsCorrect(boolean noSession){
-        if (noSession){
+    public SessionsListPage shouldViewTypeIsCorrect(boolean noSession) {
+        if (noSession) {
             anAssert.isElementVisible(noCreatedSessionLbl);
             anAssert.isElementNotVisible(activeSessionWidget);
-        }else {
+        } else {
             anAssert.isElementVisible(activeSessionWidget);
             anAssert.isElementNotVisible(noCreatedSessionLbl);
         }
         return this;
     }
 
-    public void verifyRequiredElements(){
+    public void verifyRequiredElements() {
         softAssert.areElementsVisible(backBtn, header, createNewSessionBtn);
         softAssert.verifyAll();
     }

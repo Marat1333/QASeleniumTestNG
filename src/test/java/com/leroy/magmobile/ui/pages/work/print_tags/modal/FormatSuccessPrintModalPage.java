@@ -22,14 +22,14 @@ public class FormatSuccessPrintModalPage extends CommonMagMobilePage {
     }
 
     @Step("Подтвердить")
-    public TagsListPage confirm(){
+    public TagsListPage confirm() {
         confirmBtn.click();
         return new TagsListPage();
     }
 
     @Step("Проверить, что заголовок содержит нужный формат ценника")
-    public FormatSuccessPrintModalPage shouldHeaderContainsFormat(Format format){
-        switch (format){
+    public FormatSuccessPrintModalPage shouldHeaderContainsFormat(Format format) {
+        switch (format) {
             case SMALL:
                 anAssert.isElementTextContains(header, "4 × 6 см");
                 break;
