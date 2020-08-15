@@ -28,8 +28,7 @@ public class MagPortalBasePage extends BaseWebPage {
     @Step("Подождать появления окна с новыми фичами и закрыть его, если оно появится")
     public MagPortalBasePage closeNewFeaturesModalWindowIfExist() {
         NewFeaturesModalWindow modalWindow = new NewFeaturesModalWindow(driver);
-        modalWindow.waitForVisibility(short_timeout);
-        if (modalWindow.isVisible())
+        if (modalWindow.isVisible(short_timeout))
             modalWindow.clickSubmitButton();
         modalWindow.waitForInvisibility();
         return this;

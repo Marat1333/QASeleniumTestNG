@@ -15,7 +15,7 @@ import io.qameta.allure.Step;
 
 import java.util.List;
 
-public class PricesPage extends ProductPricesQuantitySupplyPage{
+public class PricesPage extends ProductPricesQuantitySupplyPage {
     @AppFindBy(xpath = "//*[@text='Цена']/following-sibling::*")
     Element priceLbl;
 
@@ -45,7 +45,7 @@ public class PricesPage extends ProductPricesQuantitySupplyPage{
             ".//*[contains(@text,'км')]/../*[1]", ShopPriceInfoWidget.class);
 
     @Step("Перейти на страницу со списком магазинов")
-    public ShopPricesPage goToShopListPage(){
+    public ShopPricesPage goToShopListPage() {
         mainScrollView.scrollUpToElement(shopListNavBtn);
         shopListNavBtn.click();
         return new ShopPricesPage();
@@ -58,7 +58,7 @@ public class PricesPage extends ProductPricesQuantitySupplyPage{
     }
 
     @Step("Проверить корректность данных")
-    public PricesPage shouldDataIsCorrect(CatalogProductData data){
+    public PricesPage shouldDataIsCorrect(CatalogProductData data) {
         String uiDateFormat = "d.MM.yy";
         String apiDateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
@@ -69,7 +69,7 @@ public class PricesPage extends ProductPricesQuantitySupplyPage{
         softAssert.isEquals(DateTimeUtil.strToLocalDateTime(priceChangeDateLbl.getText().replaceAll("c ", ""), uiDateFormat),
                 DateTimeUtil.strToLocalDateTime(priceInfo.getDateOfChange(), apiDateFormat).plusHours(3), "date of price change");
         softAssert.isElementTextEqual(reasonOfChangeLbl, priceInfo.getReasonOfChange());
-        if (priceInfo.getPrice()-priceInfo.getRecommendedPrice()!=0.0){
+        if (priceInfo.getPrice() - priceInfo.getRecommendedPrice() != 0.0) {
             softAssert.isElementVisible(recommendedPriceMismatchLbl);
         }
         softAssert.verifyAll();
@@ -77,14 +77,14 @@ public class PricesPage extends ProductPricesQuantitySupplyPage{
     }
 
     @Step("Проверить данные о ценах")
-    public PricesPage shouldShopPricesAreCorrect(List<ShopData> data){
+    public PricesPage shouldShopPricesAreCorrect(List<ShopData> data) {
         mainScrollView.scrollDownToElement(shopListNavBtn);
         List<ShopCardData> shopData = shopCardsScrollView.getFullDataList();
-        for (int i=0;i<shopData.size();i++){
+        for (int i = 0; i < shopData.size(); i++) {
             ShopCardData uiData = shopData.get(i);
             ShopData apiData = data.get(i);
-            softAssert.isEquals(uiData.getId(), apiData.getId()+" "+apiData.getName(), "id and name");
-            softAssert.isContainsIgnoringCase(uiData.getPrice().replaceAll(",","."), ParserUtil.prettyDoubleFmt(apiData.getPriceAndStock().getPrice()), "price");
+            softAssert.isEquals(uiData.getId(), apiData.getId() + " " + apiData.getName(), "id and name");
+            softAssert.isContainsIgnoringCase(uiData.getPrice().replaceAll(",", "."), ParserUtil.prettyDoubleFmt(apiData.getPriceAndStock().getPrice()), "price");
         }
         softAssert.verifyAll();
         return this;

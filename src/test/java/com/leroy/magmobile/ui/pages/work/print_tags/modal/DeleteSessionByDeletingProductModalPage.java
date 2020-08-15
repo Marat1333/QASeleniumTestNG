@@ -27,7 +27,7 @@ public class DeleteSessionByDeletingProductModalPage extends CommonMagMobilePage
     }
 
     @Step("Удалить сессию")
-    public void confirmDelete(){
+    public void confirmDelete() {
         deleteSessionBtn.click();
         deleteSessionBtn.waitForInvisibility();
     }

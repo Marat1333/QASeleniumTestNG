@@ -51,7 +51,7 @@ public class SpecificationsPage extends ProductCardPage {
     }
 
     @Step("Проверить отсутствие кнопки \"Поставщик\"")
-    public SpecificationsPage shouldSupplierBtnIsInvisible(){
+    public SpecificationsPage shouldSupplierBtnIsInvisible() {
         anAssert.isElementNotVisible(supplyInfoNavigationBtn);
         return this;
     }

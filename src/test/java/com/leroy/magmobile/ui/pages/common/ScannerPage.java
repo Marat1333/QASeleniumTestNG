@@ -4,7 +4,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Button;
 import io.qameta.allure.Step;
 
-public class ScannerPage extends CommonMagMobilePage{
+public class ScannerPage extends CommonMagMobilePage {
     @AppFindBy(text = "РАЗРЕШИТЬ")
     Button allowAccessToCameraBtn;
 
@@ -15,17 +15,17 @@ public class ScannerPage extends CommonMagMobilePage{
     Button flashLightBtn;
 
     @Step("Закрыть сканер")
-    public void closeScanner(){
+    public void closeScanner() {
         closeScannerBtn.click();
         closeScannerBtn.waitForInvisibility(short_timeout);
-        if (closeScannerBtn.isVisible()){
+        if (closeScannerBtn.isVisible()) {
             closeScannerBtn.click();
         }
     }
 
     @Override
     protected void waitForPageIsLoaded() {
-        if (allowAccessToCameraBtn.isVisible()){
+        if (allowAccessToCameraBtn.isVisible()) {
             allowAccessToCameraBtn.click();
             allowAccessToCameraBtn.waitForInvisibility();
         }
@@ -33,7 +33,7 @@ public class ScannerPage extends CommonMagMobilePage{
         flashLightBtn.waitForVisibility();
     }
 
-    protected void verifyRequiredElements(){
+    protected void verifyRequiredElements() {
         softAssert.areElementsVisible(closeScannerBtn, flashLightBtn);
         softAssert.verifyAll();
     }

@@ -4,7 +4,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import lombok.Getter;
 
-public class DeleteSessionByBtnModalPage extends DeleteSessionByDeletingProductModalPage{
+public class DeleteSessionByBtnModalPage extends DeleteSessionByDeletingProductModalPage {
     @Getter
     @AppFindBy(text = "Удалить сессию?")
     private Element header;

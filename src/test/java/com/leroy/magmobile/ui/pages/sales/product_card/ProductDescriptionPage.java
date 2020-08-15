@@ -2,7 +2,6 @@ package com.leroy.magmobile.ui.pages.sales.product_card;
 
 import com.leroy.core.ContextProvider;
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.configuration.Log;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;

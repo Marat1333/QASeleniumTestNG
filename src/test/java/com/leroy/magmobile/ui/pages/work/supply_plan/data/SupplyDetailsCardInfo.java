@@ -10,7 +10,7 @@ public class SupplyDetailsCardInfo {
     SupplyCardData cardInfo;
     String departmentId;
 
-    public SupplyDetailsCardInfo(ShipmentData details, SupplyCardData cardInfo, String departmentId){
+    public SupplyDetailsCardInfo(ShipmentData details, SupplyCardData cardInfo, String departmentId) {
         this.cardInfo = cardInfo;
         this.details = details;
         this.departmentId = departmentId;
