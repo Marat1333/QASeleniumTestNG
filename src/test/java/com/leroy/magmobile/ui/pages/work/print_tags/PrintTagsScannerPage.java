@@ -24,29 +24,29 @@ public class PrintTagsScannerPage extends ScannerPage {
     }
 
     @Step("Искать товар вручную")
-    public SearchProductPage navigateToSearchProductPage(){
+    public SearchProductPage navigateToSearchProductPage() {
         searchProductBtn.click();
         return new SearchProductPage();
     }
 
     @Step("Перейти в список ценников")
-    public TagsListPage navigateToTagsList(){
+    public TagsListPage navigateToTagsList() {
         tagsListBtn.click();
         return new TagsListPage();
     }
 
     @Step("Проверить отображение кнопки перехода в список ценников")
-    public PrintTagsScannerPage shouldTagsListNavBtnIsVisible(boolean isVisible){
-        if (isVisible){
+    public PrintTagsScannerPage shouldTagsListNavBtnIsVisible(boolean isVisible) {
+        if (isVisible) {
             anAssert.isElementVisible(tagsListBtn);
-        }else {
+        } else {
             anAssert.isElementNotVisible(tagsListBtn);
         }
         return this;
     }
 
     @Step("Проверить, что счетчик товаров в списке на печать отображает корректное значение")
-    public PrintTagsScannerPage shouldCounterIsCorrect(int productsCount){
+    public PrintTagsScannerPage shouldCounterIsCorrect(int productsCount) {
         anAssert.isElementTextEqual(tagsCounterLbl, String.valueOf(productsCount));
         return this;
     }

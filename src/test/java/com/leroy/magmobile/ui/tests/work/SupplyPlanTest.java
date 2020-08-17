@@ -66,7 +66,7 @@ public class SupplyPlanTest extends AppBaseSteps {
     }
 
     @Step("Выбрать период")
-    private SuppliesListPage choseNavigationPeriod(LocalDate date) throws Exception{
+    private SuppliesListPage choseNavigationPeriod(LocalDate date) throws Exception {
         long dateDiff = DateTimeUtil.getDateDifferenceInDays(LocalDate.now(), date);
         if (dateDiff > 0) {
             SuppliesListPage suppliesListPage = new SuppliesListPage();
@@ -78,7 +78,7 @@ public class SupplyPlanTest extends AppBaseSteps {
     }
 
     @Step("Выбрать отдел")
-    private SuppliesListPage choseDepartment(String departmentId) throws Exception{
+    private SuppliesListPage choseDepartment(String departmentId) throws Exception {
         SuppliesListPage suppliesListPage = new SuppliesListPage();
         DepartmentListPage departmentListPage = suppliesListPage.openDepartmentSelectorPage();
         departmentListPage.selectDepartmentById(departmentId);

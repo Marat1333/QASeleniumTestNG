@@ -9,7 +9,6 @@ import com.leroy.core.api.BaseMashupClient;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.*;
 import com.leroy.magmobile.api.data.catalog.*;
-import com.leroy.magportal.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.data.customer.CustomerData;
 import com.leroy.magmobile.api.data.customer.CustomerListData;
 import com.leroy.magmobile.api.data.customer.CustomerResponseBodyData;

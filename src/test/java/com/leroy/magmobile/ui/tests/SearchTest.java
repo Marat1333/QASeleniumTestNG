@@ -13,12 +13,12 @@ import com.leroy.magmobile.api.requests.catalog_search.GetCatalogServicesSearch;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.models.search.FiltersData;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.SpecificationsPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.ProductPricesQuantitySupplyPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.ProductCardPage;
 import com.leroy.magmobile.ui.pages.sales.product_and_service.AddServicePage;
+import com.leroy.magmobile.ui.pages.sales.product_card.ProductCardPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.SimilarProductsPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.SpecificationsPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.ProductPricesQuantitySupplyPage;
 import com.leroy.magmobile.ui.pages.search.FilterPage;
 import com.leroy.magmobile.ui.pages.search.NomenclatureSearchPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
@@ -129,7 +129,7 @@ public class SearchTest extends AppBaseSteps {
         step("Нажмите 'Показать все товары'");
         nomenclatureSearchPage.clickShowAllProductsBtn()
                 .verifyRequiredElements();
-                //.shouldCountOfProductsOnPageMoreThan(1);
+        //.shouldCountOfProductsOnPageMoreThan(1);
 
         // Step 5
         step("Введите полное значение для поиска по ЛМ коду| 10008698");

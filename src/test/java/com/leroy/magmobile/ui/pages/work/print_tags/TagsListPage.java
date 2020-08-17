@@ -63,9 +63,9 @@ public class TagsListPage extends CommonMagMobilePage {
     @Override
     protected void waitForPageIsLoaded() {
         waitUntilProgressBarAppearsAndDisappear();
-        int printerNotFoundAttemptsCount=0;
+        int printerNotFoundAttemptsCount = 0;
 
-        while (printerNotFoundAttemptsCount<3) {
+        while (printerNotFoundAttemptsCount < 3) {
             if (printerNotFoundModalLbl.isVisible()) {
                 tryAgainPrinterNotFoundModal.click();
                 waitUntilProgressBarAppearsAndDisappear();
@@ -77,16 +77,16 @@ public class TagsListPage extends CommonMagMobilePage {
         waitUntilProgressBarIsInvisible(short_timeout);
     }
 
-    public LocalDateTime getSessionCreationTimeStamp(){
-        return DateTimeUtil.strToLocalDateTime(header.getText(),DateTimeUtil.DD_MMMM_HH_MM);
+    public LocalDateTime getSessionCreationTimeStamp() {
+        return DateTimeUtil.strToLocalDateTime(header.getText(), DateTimeUtil.DD_MMMM_HH_MM);
     }
 
-    public String getCurrentPrinterName(){
+    public String getCurrentPrinterName() {
         return printerNameBtn.getText();
     }
 
     @Step("Удалить сессию")
-    public void deleteSession(){
+    public void deleteSession() {
         deleteSessionBtn.click();
         deleteSessionBtn.waitForInvisibility();
     }
@@ -116,7 +116,7 @@ public class TagsListPage extends CommonMagMobilePage {
     }
 
     @Step("Открыть модальное окно редактирования формата и кол-ва у первого товара")
-    public EditTagModalPage callEditModalToProductByIndex(int index) throws Exception{
+    public EditTagModalPage callEditModalToProductByIndex(int index) throws Exception {
         productsScrollView.clickElemByIndex(index);
         return new EditTagModalPage();
     }
@@ -140,7 +140,7 @@ public class TagsListPage extends CommonMagMobilePage {
     }
 
     @Step("Выбрать товар")
-    public void clickOnProduct(String...lmCodes){
+    public void clickOnProduct(String... lmCodes) {
         String chosenProductCount;
         Element product;
         for (String eachLm : lmCodes) {
@@ -175,7 +175,7 @@ public class TagsListPage extends CommonMagMobilePage {
     }
 
     @Step("Выбрать все товары в групповом редактировании и открыть модалку редактирования")
-    public EditTagModalPage choseAllProductsAndCallEditModal(){
+    public EditTagModalPage choseAllProductsAndCallEditModal() {
         choseAllProductsBtn.click();
         changeFormatBtn.click();
         return new EditTagModalPage();
@@ -195,21 +195,21 @@ public class TagsListPage extends CommonMagMobilePage {
             softAssert.isEquals(productTagsList.get(i).getLmCode(), lmCodes[i], "lmCode");
         }
         softAssert.verifyAll();
-        if (!E("contains(ЛМ "+productTagsList.get(0).getLmCode()+")").isVisible()) {
+        if (!E("contains(ЛМ " + productTagsList.get(0).getLmCode() + ")").isVisible()) {
             productsScrollView.scrollToBeginning();
         }
         return this;
     }
 
     @Step("Проверить, что список для всех товаров указано правильное кол-во ценников")
-    public TagsListPage shouldProductTagsHasCorrectSizesAndQuantity(ProductTagData...userTagData) {
+    public TagsListPage shouldProductTagsHasCorrectSizesAndQuantity(ProductTagData... userTagData) {
         productsScrollView.setSwipeDeadZonePercentage(SWIPE_DEAD_ZONE_PERCENTAGE);
         List<ProductTagData> uiProductTagsList = productsScrollView.getFullDataList();
         for (int i = 0; i < userTagData.length; i++) {
             softAssert.isEquals(uiProductTagsList.get(i), userTagData[i], "sizes or quantity mismatch");
         }
         softAssert.verifyAll();
-        if (!E("contains(ЛМ "+uiProductTagsList.get(0).getLmCode()+")").isVisible()) {
+        if (!E("contains(ЛМ " + uiProductTagsList.get(0).getLmCode() + ")").isVisible()) {
             productsScrollView.scrollToBeginning();
         }
         return this;
@@ -220,7 +220,7 @@ public class TagsListPage extends CommonMagMobilePage {
         productsScrollView.setSwipeDeadZonePercentage(SWIPE_DEAD_ZONE_PERCENTAGE);
         List<ProductTagData> productTagsList = productsScrollView.getFullDataList();
         anAssert.isEquals(productTagsList.size(), count, "products count");
-        if (!E("contains(ЛМ "+productTagsList.get(0).getLmCode()+")").isVisible()) {
+        if (!E("contains(ЛМ " + productTagsList.get(0).getLmCode() + ")").isVisible()) {
             productsScrollView.scrollToBeginning();
         }
         return this;
@@ -232,7 +232,7 @@ public class TagsListPage extends CommonMagMobilePage {
         List<ProductTagData> productTagsList = productsScrollView.getFullDataList();
         List<String> uiLmCodes = productTagsList.stream().map(ProductTagData::getLmCode).collect(Collectors.toList());
         anAssert.isFalse(uiLmCodes.contains(lmCode), "в списке содержится товар " + lmCode);
-        if (!E("contains(ЛМ "+uiLmCodes.get(0)+")").isVisible()) {
+        if (!E("contains(ЛМ " + uiLmCodes.get(0) + ")").isVisible()) {
             productsScrollView.scrollToBeginning();
         }
         return this;

@@ -12,8 +12,8 @@ public class PeriodOfUsageModalPage extends CommonMagMobilePage {
     Element modalTitleLbl;
 
     @Step("Выбрать срок использования")
-    public FirstLeaveReviewPage chosePeriodOfUsage(ReviewOptions option)throws Exception{
-        modalTitleLbl.findChildElement("./following-sibling::*//*[contains(@text,'"+option.getName()+"')]/following-sibling::*").click();
+    public FirstLeaveReviewPage chosePeriodOfUsage(ReviewOptions option) throws Exception {
+        modalTitleLbl.findChildElement("./following-sibling::*//*[contains(@text,'" + option.getName() + "')]/following-sibling::*").click();
         return new FirstLeaveReviewPage();
     }
 

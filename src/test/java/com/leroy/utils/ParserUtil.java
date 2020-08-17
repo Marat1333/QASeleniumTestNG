@@ -15,7 +15,7 @@ public class ParserUtil {
     /**
      * Convert String to Double and cut off non-digits if necessary
      *
-     * @param str - string value
+     * @param str       - string value
      * @param delimiter - '.' or ','
      * @return double
      */
@@ -24,7 +24,7 @@ public class ParserUtil {
             return null;
         try {
             return NumberFormat.getInstance(Locale.FRANCE)
-                    .parse(str.replaceAll("[^\\d+"+delimiter+"\\-]", "")
+                    .parse(str.replaceAll("[^\\d+" + delimiter + "\\-]", "")
                             .replaceAll("\\.", ",")).doubleValue();
         } catch (ParseException err) {
             Log.error(err.getMessage());

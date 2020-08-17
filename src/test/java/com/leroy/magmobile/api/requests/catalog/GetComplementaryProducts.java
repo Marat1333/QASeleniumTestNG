@@ -6,11 +6,11 @@ import ru.leroymerlin.qa.core.clients.base.Method;
 
 @Method(value = "GET", path = "/catalog/complementary-products")
 public class GetComplementaryProducts extends CommonLegoRequest<GetComplementaryProducts> {
-    public GetComplementaryProducts setLmCode(String lmCode){
+    public GetComplementaryProducts setLmCode(String lmCode) {
         return queryParam("lmCode", lmCode);
     }
 
-    public GetComplementaryProducts setExtend(CatalogProductClient.Extend extend){
+    public GetComplementaryProducts setExtend(CatalogProductClient.Extend extend) {
         return queryParam("extend", extend.toString());
     }
 }

@@ -21,12 +21,12 @@ public class UnsuccessfullSessionCreationModalPage extends CommonMagMobilePage {
     }
 
     @Step("Подтвердить")
-    public SessionsListPage confirm(){
+    public SessionsListPage confirm() {
         okBtn.click();
         return new SessionsListPage();
     }
 
-    public void verifyRequiredElements(){
+    public void verifyRequiredElements() {
         softAssert.areElementsVisible(header, okBtn);
         softAssert.verifyAll();
     }

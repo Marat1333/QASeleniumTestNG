@@ -46,7 +46,7 @@ public class SalesHistoryPage extends CommonMagMobilePage {
 
     @Step("Проверить, что история продаж отображена корректно")
     public SalesHistoryPage shouldSalesHistoryIsCorrect(List<SalesHistoryData> data, boolean byPrice) throws Exception {
-        if (data.size()!=0) {
+        if (data.size() != 0) {
             List<Double> salesResult = salesHistoryWidget.grabDataFromWidget();
             String pageSource = getPageSource();
             int dataCounter = 0;

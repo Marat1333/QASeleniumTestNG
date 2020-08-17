@@ -31,7 +31,7 @@ public class SuccessPrintingPage extends CommonMagMobilePage {
         return this;
     }
 
-    public void verifyRequiredElements(){
+    public void verifyRequiredElements() {
         softAssert.areElementsVisible(header, closeBtn);
         softAssert.verifyAll();
     }

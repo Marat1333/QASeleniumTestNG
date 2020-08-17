@@ -5,10 +5,6 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.ReviewsPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.SimilarProductsPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.SpecificationsPage;
 import io.qameta.allure.Step;
 
 public class ProductPricesQuantitySupplyPage extends CommonMagMobilePage {
@@ -19,15 +15,15 @@ public class ProductPricesQuantitySupplyPage extends CommonMagMobilePage {
     @AppFindBy(text = "ПОСТАВКИ")
     MagMobGreenSubmitButton supplyBtn;
 
-    public enum Tabs{
+    public enum Tabs {
         PRICES("ЦЕНЫ"),
         STOCKS("ЗАПАС"),
         SUPPLY("ПОСТАВКИ");
 
         private String name;
 
-        Tabs(String name){
-            this.name=name;
+        Tabs(String name) {
+            this.name = name;
         }
 
         public String getName() {
@@ -36,7 +32,7 @@ public class ProductPricesQuantitySupplyPage extends CommonMagMobilePage {
     }
 
     @Step("Перейти назад")
-    public void goBack(){
+    public void goBack() {
         backBtn.click();
     }
 

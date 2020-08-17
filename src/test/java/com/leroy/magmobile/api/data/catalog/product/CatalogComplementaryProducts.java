@@ -7,6 +7,6 @@ import lombok.ToString;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class CatalogComplementaryProducts extends CatalogSimilarProducts{
+public class CatalogComplementaryProducts extends CatalogSimilarProducts {
     private String parentLmCode;
 }

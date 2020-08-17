@@ -20,12 +20,12 @@ public class AddProductToSessionErrorModalPage extends CommonMagMobilePage {
     }
 
     @Step("Подтвердить")
-    public void confirm(){
+    public void confirm() {
         confirmBtn.click();
         confirmBtn.waitForInvisibility();
     }
 
-    public void verifyRequiredElements(){
+    public void verifyRequiredElements() {
         softAssert.areElementsVisible(header, confirmBtn);
         softAssert.verifyAll();
     }
