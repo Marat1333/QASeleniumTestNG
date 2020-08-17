@@ -144,6 +144,8 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
         expectedOrderData.setAuthorName(null);
         expectedOrderData.setPinCode(null);
         expectedOrderData.setDeliveryDate(null);
+        expectedOrderData.setComment(null);
+        expectedOrderData.setRecipient(null);
         if (INVALID_ORDER_DRAFT_DATE)
             expectedOrderData.setCreationDate(null); // TODO Надо приводить к LocalDate и проверять
         actualData.getOrders().get(0).setProductCount(actualData.getOrders().get(0).getProductCardDataList().size());

@@ -80,7 +80,8 @@ public class OrderDraftDeliveryWayPage extends OrderDraftPage {
     public SimpleCustomerData getRecipientData() {
         SimpleCustomerData customerData = new SimpleCustomerData();
         customerData.setEmail(emailFld.getText());
-        customerData.setPhoneNumber(ParserUtil.standardPhoneFmt(phoneFld.getText()));
+        String phoneNumber = phoneFld.getText();
+        customerData.setPhoneNumber(phoneNumber.isEmpty()? "" : ParserUtil.standardPhoneFmt(phoneNumber));
         customerData.setName(nameSurnameFld.getText());
         return customerData;
     }
@@ -112,6 +113,7 @@ public class OrderDraftDeliveryWayPage extends OrderDraftPage {
             pickupBtn.click();
         if (giveAwayPoints.equals(SalesDocumentsConst.GiveAwayPoints.DELIVERY))
             deliveryBtn.click();
+        waitForSpinnerAppearAndDisappear();
         return this;
     }
 
@@ -128,7 +130,9 @@ public class OrderDraftDeliveryWayPage extends OrderDraftPage {
             iTryCount--;
             orderData.setPinCode(RandomUtil.randomPinCode(
                     !SalesDocumentsConst.GiveAwayPoints.DELIVERY.equals(orderData.getDeliveryType())));
-            pinCodeFld.clearFillAndSubmit(orderData.getPinCode());
+            pinCodeFld.click();
+            pinCodeFld.clear(true);
+            pinCodeFld.fill(orderData.getPinCode());
         }
         if (tryToFindValidPin)
             anAssert.isFalse(pinCodeErrorTooltip.isVisible(),

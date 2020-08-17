@@ -770,7 +770,8 @@ public class OrderTest extends BasePAOTest {
      * Выберете поле PIN-код для оплаты, введите PIN-код для оплаты
      */
     private void stepEnterPinCode() {
-        orderData.setPinCode(RandomUtil.randomPinCode(true));
+        orderData.setPinCode(RandomUtil.randomPinCode(orderData.getDeliveryType()
+                .equals(SalesDocumentsConst.GiveAwayPoints.PICKUP)));
         orderDraftDeliveryWayPage.enterPinCode(orderData)
                 .shouldPinCodeFieldIs(orderData.getPinCode());
     }

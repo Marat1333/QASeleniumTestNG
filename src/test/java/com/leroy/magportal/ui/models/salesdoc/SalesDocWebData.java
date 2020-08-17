@@ -119,11 +119,11 @@ public class SalesDocWebData {
         }
         if (expectedData.getRecipient() != null) {
             if (expectedData.getRecipient().getName() == null) {
-                softAssert.isTrue(getRecipient().getName() == null,
+                softAssert.isTrue(getRecipient().getName().isEmpty(),
                         "Получатель должен быть не выбран (имя)");
-                softAssert.isTrue(getRecipient().getPhoneNumber() == null,
+                softAssert.isTrue(getRecipient().getPhoneNumber().isEmpty(),
                         "Получатель должен быть не выбран (телефон)");
-                softAssert.isTrue(getRecipient().getEmail() == null,
+                softAssert.isTrue(getRecipient().getEmail().isEmpty(),
                         "Получатель должен быть не выбран (email)");
                 softAssert.isTrue(getRecipient().getCardNumber() == null,
                         "Получатель должен быть не выбран (Номер карты)");

@@ -59,7 +59,7 @@ public class ShortOrderDocumentCardWidget extends CardWebWidget<ShortOrderDocWeb
     }
 
     public LocalDateTime getCreationDate() {
-        return DateTimeUtil.strToLocalDateTime(creationDate.getText(), "dd MMMM, hh:mm");
+        return DateTimeUtil.strToLocalDateTime(creationDate.getText(), "dd MMMM, HH:mm");
     }
 
     public String getDeliveryType() {
