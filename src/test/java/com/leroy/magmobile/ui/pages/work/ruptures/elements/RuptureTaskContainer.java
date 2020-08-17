@@ -43,7 +43,6 @@ public class RuptureTaskContainer extends Element {
     public void setCheckBoxesToTasks(String taskName) {
         E(String.format(TYPICAL_CHECKBOX_XPATH,
                 taskName)).click();
-
     }
 
     public ActionsModalPage callActionsModalPage() throws Exception {
@@ -56,8 +55,8 @@ public class RuptureTaskContainer extends Element {
     }
 
     public boolean getCheckBoxCondition(String taskName) throws Exception {
-        MagMobCheckBox taskCheckBox = E(String.format(TYPICAL_CHECKBOX_XPATH, taskName), MagMobCheckBox.class);
-        return taskCheckBox.isCheckedGrey();
+        RuptureTaskContainerCheckBox taskCheckBox = E(String.format(TYPICAL_CHECKBOX_XPATH, taskName), RuptureTaskContainerCheckBox.class);
+        return taskCheckBox.isChecked();
     }
 
 }

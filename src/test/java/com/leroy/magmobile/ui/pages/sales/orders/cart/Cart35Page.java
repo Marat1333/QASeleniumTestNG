@@ -153,7 +153,7 @@ public class Cart35Page extends CartOrderEstimatePage {
     }
 
     @Step("Получить информацию о документе")
-    public SalesDocumentData getSalesDocumentData() {
+    public SalesDocumentData getSalesDocumentData() throws Exception {
         List<OrderAppData> actualOrderDataList = new ArrayList<>();
         String ps = getPageSource();
         SalesDocumentData salesDocumentData = new SalesDocumentData();
@@ -197,18 +197,18 @@ public class Cart35Page extends CartOrderEstimatePage {
     }
 
     @Step("Получить из корзины информацию о {index} товаре/услуге")
-    public ProductOrderCardAppData getProductCardDataByIndex(int index) {
+    public ProductOrderCardAppData getProductCardDataByIndex(int index) throws Exception {
         index--;
         return productCardsScrollView.getDataObj(index);
     }
 
     @Step("Получить из корзины информацию о всех добавленных товарах/услугах")
-    public List<ProductOrderCardAppData> getProductCardDataList() {
+    public List<ProductOrderCardAppData> getProductCardDataList() throws Exception {
         return productCardsScrollView.getFullDataList();
     }
 
     @Step("Посчитать кол-во товаров/услуг в корзине")
-    public int getCountOfProductCards() {
+    public int getCountOfProductCards() throws Exception {
         return productCardsScrollView.getRowCount();
     }
 
@@ -228,7 +228,7 @@ public class Cart35Page extends CartOrderEstimatePage {
     }
 
     @Step("Нажмите 'Изменить' для товара с ЛМ код {lmCode}")
-    public ChangeProductModal clickChangeByProductLmCode(String lmCode) {
+    public ChangeProductModal clickChangeByProductLmCode(String lmCode) throws Exception {
         ProductOrderCardAppWidget widget = (ProductOrderCardAppWidget) productCardsScrollView.searchForWidgetByText(lmCode);
         widget.clickChange();
         return new ChangeProductModal();
@@ -291,14 +291,14 @@ public class Cart35Page extends CartOrderEstimatePage {
     }
 
     @Step("Проверить, что общее кол-во карточек товаров/услуг в корзине = {count}")
-    public Cart35Page shouldCountOfCardsIs(int count) {
+    public Cart35Page shouldCountOfCardsIs(int count) throws Exception {
         anAssert.isEquals(getCountOfProductCards(), count,
                 "Неверное кол-во товаров на странице");
         return this;
     }
 
     @Step("Проверить, что карточка продукта/услуги с текстом '{text}' содержит следующие данные: (expectedProductCardData)")
-    public Cart35Page shouldProductCardDataWithTextIs(String text, ProductOrderCardAppData expectedProductCardData) {
+    public Cart35Page shouldProductCardDataWithTextIs(String text, ProductOrderCardAppData expectedProductCardData) throws Exception {
         CardWidget<ProductOrderCardAppData> widget = productCardsScrollView.searchForWidgetByText(text);
         anAssert.isNotNull(widget, String.format("Не найдена карточка содержащая текст %s", text),
                 String.format("Карточка с текстом %s должна быть", text));
@@ -311,7 +311,7 @@ public class Cart35Page extends CartOrderEstimatePage {
     }
 
     @Step("Проверить, что у товара отсутствует скидка")
-    public Cart35Page shouldProductDoesNotHaveDiscount(ProductOrderCardAppData productCardData) {
+    public Cart35Page shouldProductDoesNotHaveDiscount(ProductOrderCardAppData productCardData) throws Exception {
         CardWidget<ProductOrderCardAppData> widget = productCardsScrollView.searchForWidgetByText(
                 productCardData.getLmCode());
         anAssert.isNotNull(widget, String.format("Не найдена карточка товара с ЛМ %s", productCardData.getLmCode()),
@@ -327,7 +327,7 @@ public class Cart35Page extends CartOrderEstimatePage {
     }
 
     @Step("Проверить, что информация о заказе (единственном) в корзине должна быть ожидаемой (expectedOrderData)")
-    public Cart35Page shouldOrderDataIs(OrderAppData expectedOrderData) {
+    public Cart35Page shouldOrderDataIs(OrderAppData expectedOrderData) throws Exception {
         SalesDocumentData salesDocumentData = getSalesDocumentData();
         anAssert.isEquals(salesDocumentData.getOrderAppDataList().size(), 1,
                 "Заказ должен быть только один");
@@ -337,14 +337,14 @@ public class Cart35Page extends CartOrderEstimatePage {
     }
 
     @Step("Проверить, что данные корзины, как ожидались (expectedDocumentData)")
-    public Cart35Page shouldSalesDocumentDataIs(SalesDocumentData expectedDocumentData) {
+    public Cart35Page shouldSalesDocumentDataIs(SalesDocumentData expectedDocumentData) throws Exception {
         SalesDocumentData salesDocumentData = getSalesDocumentData();
         salesDocumentData.assertEqualsNotNullExpectedFields(expectedDocumentData);
         return this;
     }
 
     @Step("Проверить, что в корзине нет товара с ЛМ кодом {expLmCode}")
-    public Cart35Page shouldProductBeNotPresentInCart(String expLmCode) {
+    public Cart35Page shouldProductBeNotPresentInCart(String expLmCode) throws Exception {
         List<ProductOrderCardAppData> productOrderCardAppDataList = productCardsScrollView.getFullDataList();
         for (ProductOrderCardAppData productCardData : productOrderCardAppDataList) {
             anAssert.isNotEquals(productCardData.getLmCode(), expLmCode,

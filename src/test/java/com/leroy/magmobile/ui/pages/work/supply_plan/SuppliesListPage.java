@@ -164,7 +164,7 @@ public class SuppliesListPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что данные корректно отображены")
-    public SuppliesListPage shouldDataIsCorrect(ShipmentDataList data) {
+    public SuppliesListPage shouldDataIsCorrect(ShipmentDataList data) throws Exception {
         List<ShipmentData> dataList = data.getItems();
         List<ShipmentCardData> shipmentsUiData = singleDateShipmentWidgetList.getFullDataList();
         Element anchor = E("//*[@content-desc='ScreenContent']/android.view.ViewGroup[1]//*[contains(@text,'Сегодня')]");

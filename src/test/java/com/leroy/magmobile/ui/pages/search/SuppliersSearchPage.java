@@ -92,7 +92,7 @@ public class SuppliersSearchPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что в овальной области отображено имя выбранного поставщика")
-    public SuppliersSearchPage shouldNameOfChosenIsDisplayedInOvalElement(String supplierName) {
+    public SuppliersSearchPage shouldNameOfChosenIsDisplayedInOvalElement(String supplierName) throws Exception {
         List<String> namesOfSuppliers = suppliersOvalElements.getFullDataList();
         anAssert.isFalse(namesOfSuppliers.isEmpty(), "Не найдено выбранных поставщиков");
         for (String text : namesOfSuppliers) {

@@ -10,11 +10,11 @@ public abstract class CardWidget<T> extends Element {
         super(driver, locator);
     }
 
-    public T collectDataFromPage() {
+    public T collectDataFromPage() throws Exception {
         return collectDataFromPage(getPageSource());
     }
 
-    public abstract T collectDataFromPage(String pageSource);
+    public abstract T collectDataFromPage(String pageSource) throws Exception;
 
     public boolean isFullyVisible() {
         return isFullyVisible(null);

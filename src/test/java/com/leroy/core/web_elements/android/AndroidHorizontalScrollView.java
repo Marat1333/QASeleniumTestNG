@@ -133,7 +133,7 @@ public class AndroidHorizontalScrollView<T> extends BaseWidget {
         return this;
     }
 
-    public List<T> getFullDataList() {
+    public List<T> getFullDataList() throws Exception {
         List<T> currentElementsDataList = new ArrayList<>();
         int prevSize;
         int currSize;

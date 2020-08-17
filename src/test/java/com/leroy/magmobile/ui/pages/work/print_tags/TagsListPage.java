@@ -122,7 +122,7 @@ public class TagsListPage extends CommonMagMobilePage {
     }
 
     @Step("Вызвать модалку редактирования для товара с кодом {lmCode}")
-    public EditTagModalPage callEditModal(String lmCode) {
+    public EditTagModalPage callEditModal(String lmCode) throws Exception {
         Element productCard = E("ЛМ " + lmCode);
         if (!productCard.isVisible()) {
             mainScrollView.scrollDownToElement(productCard);
@@ -140,7 +140,7 @@ public class TagsListPage extends CommonMagMobilePage {
     }
 
     @Step("Выбрать товар")
-    public void clickOnProduct(String... lmCodes) {
+    public void clickOnProduct(String... lmCodes) throws Exception {
         String chosenProductCount;
         Element product;
         for (String eachLm : lmCodes) {
@@ -157,7 +157,7 @@ public class TagsListPage extends CommonMagMobilePage {
     }
 
     @Step("Выбрать товары для редактирования и открыть модалку редактирования")
-    public EditTagModalPage choseProductsAndOpenGroupEditModal(String... lmCodes) {
+    public EditTagModalPage choseProductsAndOpenGroupEditModal(String... lmCodes) throws Exception {
         String chosenProductCount;
         Element product;
         for (String eachLm : lmCodes) {
@@ -188,7 +188,7 @@ public class TagsListPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что список содержит все переданные товары")
-    public TagsListPage shouldProductsAreCorrect(String... lmCodes) {
+    public TagsListPage shouldProductsAreCorrect(String... lmCodes) throws Exception {
         productsScrollView.setSwipeDeadZonePercentage(SWIPE_DEAD_ZONE_PERCENTAGE);
         List<ProductTagData> productTagsList = productsScrollView.getFullDataList();
         for (int i = 0; i < productTagsList.size(); i++) {
@@ -202,7 +202,7 @@ public class TagsListPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что список для всех товаров указано правильное кол-во ценников")
-    public TagsListPage shouldProductTagsHasCorrectSizesAndQuantity(ProductTagData... userTagData) {
+    public TagsListPage shouldProductTagsHasCorrectSizesAndQuantity(ProductTagData... userTagData) throws Exception {
         productsScrollView.setSwipeDeadZonePercentage(SWIPE_DEAD_ZONE_PERCENTAGE);
         List<ProductTagData> uiProductTagsList = productsScrollView.getFullDataList();
         for (int i = 0; i < userTagData.length; i++) {
@@ -216,7 +216,7 @@ public class TagsListPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что кол-во товаров равно {count}")
-    public TagsListPage shouldProductCountIsCorrect(int count) {
+    public TagsListPage shouldProductCountIsCorrect(int count) throws Exception {
         productsScrollView.setSwipeDeadZonePercentage(SWIPE_DEAD_ZONE_PERCENTAGE);
         List<ProductTagData> productTagsList = productsScrollView.getFullDataList();
         anAssert.isEquals(productTagsList.size(), count, "products count");
@@ -227,7 +227,7 @@ public class TagsListPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что список не содержит товара")
-    public TagsListPage shouldProductDeleted(String lmCode) {
+    public TagsListPage shouldProductDeleted(String lmCode) throws Exception {
         productsScrollView.setSwipeDeadZonePercentage(SWIPE_DEAD_ZONE_PERCENTAGE);
         List<ProductTagData> productTagsList = productsScrollView.getFullDataList();
         List<String> uiLmCodes = productTagsList.stream().map(ProductTagData::getLmCode).collect(Collectors.toList());

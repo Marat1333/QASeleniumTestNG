@@ -12,9 +12,11 @@ import com.leroy.magmobile.ui.pages.sales.product_card.ProductCardPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.work.WorkPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.ActionsModalPage;
-import com.leroy.magmobile.ui.pages.work.ruptures.SessionProductsListPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.RuptureCard;
 import com.leroy.magmobile.ui.pages.work.ruptures.RupturesScannerPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.SessionProductsListPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.data.RuptureData;
+import com.leroy.magmobile.ui.pages.work.ruptures.modal.ExitActiveSessionModalPage;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
@@ -64,7 +66,7 @@ public class RupturesTest extends AppBaseSteps {
     public void testCreateSessionFromWorkPage() throws Exception {
         List<ProductItemData> randomProducts = searchClient.getRandomUniqueProductsWithTitles(2);
         String firstProductLmCode = randomProducts.get(0).getLmCode();
-        String secondProductLmCode = randomProducts.get(1).getLmCode();;
+        String secondProductLmCode = randomProducts.get(1).getLmCode();
 
         //Pre-conditions
         WorkPage workPage = loginAndGoTo(WorkPage.class);
@@ -100,17 +102,17 @@ public class RupturesTest extends AppBaseSteps {
         step("Добавить пару экшенов (+)\n" +
                 "Убрать один из ранее рассчитанных экшенов (-)");
         List<String> possibleTasks = actionsModalPage.getPossibleTasks();
-        int randomTaskIndex = (int)(Math.random()* possibleTasks.size());
+        int randomTaskIndex = (int) (Math.random() * possibleTasks.size());
         String firstRandomTask = possibleTasks.get(randomTaskIndex);
         possibleTasks.remove(randomTaskIndex);
-        randomTaskIndex = (int)(Math.random()* possibleTasks.size());
+        randomTaskIndex = (int) (Math.random() * possibleTasks.size());
         String secondRandomTask = possibleTasks.get(randomTaskIndex);
 
         actionsModalPage.choseTasks(firstRandomTask, secondRandomTask);
         actionsModalPage.shouldToDoListContainsTaskAndPossibleListNotContainsTask(firstRandomTask, secondRandomTask);
 
         List<String> toDoTasks = actionsModalPage.getToDoTasks();
-        randomTaskIndex = (int)(Math.random()* toDoTasks.size());
+        randomTaskIndex = (int) (Math.random() * toDoTasks.size());
         firstRandomTask = toDoTasks.get(randomTaskIndex);
         actionsModalPage.choseTasks(firstRandomTask);
         actionsModalPage.shouldToDoListNotContainsTaskAndPossibleListContainsTask(firstRandomTask);
@@ -125,7 +127,7 @@ public class RupturesTest extends AppBaseSteps {
 
         //Step 7
         step("Чекнуть один из экшенов");
-        randomTaskIndex = (int)(Math.random()* toDoTasks.size());
+        randomTaskIndex = (int) (Math.random() * toDoTasks.size());
         firstRandomTask = toDoTasks.get(randomTaskIndex);
         ruptureCard.setTasksCheckBoxes(firstRandomTask);
         ruptureCard.shouldCheckBoxConditionIsCorrect(true, firstRandomTask);
@@ -154,6 +156,7 @@ public class RupturesTest extends AppBaseSteps {
 
         //Step 11
         step("Подтвердить добавление перебоя в сессию");
+        RuptureData firstAddedRupture = ruptureCard.getRuptureData();
         rupturesScannerPage = ruptureCard.acceptAdd();
         rupturesScannerPage.shouldCounterIsCorrect(1);
 
@@ -162,13 +165,25 @@ public class RupturesTest extends AppBaseSteps {
         searchProductPage = rupturesScannerPage.navigateToSearchProductPage();
         searchProductPage.enterTextInSearchFieldAndSubmit(secondProductLmCode);
         ruptureCard = new RuptureCard();
+        RuptureData secondAddedRupture = ruptureCard.getRuptureData();
         rupturesScannerPage = ruptureCard.acceptAdd();
         rupturesScannerPage.shouldCounterIsCorrect(2);
 
         //Step 13
         step("Тапнуть на кнопку \"список перебоев\"");
         SessionProductsListPage sessionProductsListPage = rupturesScannerPage.navigateToRuptureProductList();
+        sessionProductsListPage.verifyRequiredElements()
+                .shouldRupturesDataIsCorrect(secondAddedRupture, firstAddedRupture);
 
+        //Step 14
+        step("Выйти из сессии по железной кнопке");
+        ExitActiveSessionModalPage exitActiveSessionModalPage = sessionProductsListPage.exitActiveSession();
+        exitActiveSessionModalPage.verifyRequiredElements();
+
+        //Step 15
+        step("Подтвердить выход из сессии");
+        workPage = exitActiveSessionModalPage.confirmExit();
+        workPage.verifyRequiredElements();
     }
 
 }

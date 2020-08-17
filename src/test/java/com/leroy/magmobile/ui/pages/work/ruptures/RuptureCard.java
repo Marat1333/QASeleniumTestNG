@@ -9,10 +9,14 @@ import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.elements.MagMobRadioButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductCardPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.data.RuptureData;
 import com.leroy.magmobile.ui.pages.work.ruptures.elements.RuptureTaskContainer;
+import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RuptureCard extends CommonMagMobilePage {
     @AppFindBy(accessibilityId = "CloseModal")
@@ -90,7 +94,8 @@ public class RuptureCard extends CommonMagMobilePage {
 
     @Override
     protected void waitForPageIsLoaded() {
-        priceLbl.waitForVisibility();
+        //долгий запрос на бэк
+        priceLbl.waitForVisibility(40);
         zeroProductNeedToAddBtn.waitForVisibility();
     }
 
@@ -98,14 +103,32 @@ public class RuptureCard extends CommonMagMobilePage {
         return ruptureTaskContainer.getTaskList();
     }
 
+    public RuptureData getRuptureData() throws Exception {
+        RuptureData data = new RuptureData();
+        if (!lmCodeLbl.isVisible()) {
+            mainScrollView.scrollToBeginning();
+        }
+        String ps = getPageSource();
+        data.setLmCode(ParserUtil.strWithOnlyDigits(lmCodeLbl.getText(ps)));
+        data.setBarCode(ParserUtil.strWithOnlyDigits(barCodeLbl.getText(ps)));
+        data.setTitle(titleLbl.getText(ps));
+        Map<String, Boolean> actionsMap = new HashMap<>();
+        List<String> actions = getTasksList();
+        for (String each : actions) {
+            actionsMap.put(each, ruptureTaskContainer.getCheckBoxCondition(each));
+        }
+        data.setActions(actionsMap);
+        return data;
+    }
+
     @Step("Подтвердить добавление перебоя")
-    public RupturesScannerPage acceptAdd(){
+    public RupturesScannerPage acceptAdd() {
         acceptBtn.click();
         return new RupturesScannerPage();
     }
 
     @Step("Перейти на страницу карточки товара")
-    public ProductCardPage navigateToProductCard(){
+    public ProductCardPage navigateToProductCard() {
         productCardNavigationBtn.click();
         return new ProductCardPage();
     }
@@ -137,7 +160,7 @@ public class RuptureCard extends CommonMagMobilePage {
     }
 
     @Step("Выбрать кол-во товара на полке")
-    public RuptureCard choseProductQuantityOption(QuantityOption option) {
+    public RuptureCard choseProductQuantityOption(QuantityOption option) throws Exception {
         if (!supplyDateLbl.isVisible()) {
             mainScrollView.scrollDownToElement(supplyDateLbl);
         }
@@ -226,7 +249,7 @@ public class RuptureCard extends CommonMagMobilePage {
     public RuptureCard shouldTasksListContainsTasks(String... tasks) {
         List<String> uiTasksList = ruptureTaskContainer.getTaskList();
         for (String task : tasks) {
-            softAssert.isTrue(uiTasksList.contains(task), "список не содержит задачу");
+            softAssert.isTrue(uiTasksList.contains(task), "список не содержит задачу" + task);
         }
         softAssert.verifyAll();
         return this;

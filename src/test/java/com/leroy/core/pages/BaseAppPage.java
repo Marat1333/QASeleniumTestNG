@@ -3,6 +3,7 @@ package com.leroy.core.pages;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.core.web_elements.general.ElementList;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
@@ -68,6 +69,18 @@ public abstract class BaseAppPage extends BasePage {
 
     protected boolean waitUntilContentIsChanged(String pageSource) {
         return waitUntilContentIsChanged(pageSource, tiny_timeout);
+    }
+
+    protected boolean waitUntilElementListSizeHasChanged(ElementList<? extends Element> elementList) {
+        int size = elementList.getCount();
+        try {
+            new WebDriverWait(androidDriver, timeout)
+                    .until(driverObject -> elementList.getCount() != size);
+            return true;
+        } catch (TimeoutException e) {
+            Log.warn(String.format("waitUntilElementListSizeHasChanged failed (tried for %d second(s))", timeout));
+            return false;
+        }
     }
 
     protected void waitUntilProgressBarIsVisible() {
