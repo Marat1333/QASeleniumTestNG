@@ -18,8 +18,8 @@ public class ExcelWorkBook {
         this.workbook = WorkbookFactory.create(new File(fileName));
     }
 
-    public Sheet getExcelSheetByIndex(int index) {
-        return workbook.getSheetAt(index);
+    public ExcelSheet getExcelSheetByIndex(int index) {
+        return new ExcelSheet(workbook.getSheetAt(index));
     }
 
 }

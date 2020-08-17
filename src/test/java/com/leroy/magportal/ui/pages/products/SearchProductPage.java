@@ -856,9 +856,9 @@ public class SearchProductPage extends MagPortalBasePage {
                     showAllFilters();
                 }
                 if (isEnabled) {
-                    anAssert.isTrue(puzRadioButton.isEnabled(), "Чекбокс в состоянии disabled");
+                    anAssert.isTrue(puzRadioButton.isSelected(), "Чекбокс в состоянии disabled");
                 } else {
-                    anAssert.isTrue(!puzRadioButton.isEnabled(), "Чекбокс в состоянии enabled");
+                    anAssert.isTrue(!puzRadioButton.isSelected(), "Чекбокс в состоянии enabled");
                 }
             }
         }

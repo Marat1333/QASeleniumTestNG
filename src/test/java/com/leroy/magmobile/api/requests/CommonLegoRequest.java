@@ -15,10 +15,6 @@ public class CommonLegoRequest<J extends CommonLegoRequest<J>> extends RequestBu
 
     // Query params
 
-    public J setLdapQuery(String val) {
-        return queryParam("ldap", val);
-    }
-
     public J setShopId(Object val) {
         if (val == null)
             return (J) this;

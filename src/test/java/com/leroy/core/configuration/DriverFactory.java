@@ -21,10 +21,8 @@ import org.openqa.selenium.safari.SafariOptions;
 import org.testng.util.Strings;
 import org.yaml.snakeyaml.Yaml;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -40,7 +38,7 @@ public class DriverFactory {
     public static final String DESKTOP_SAFARI_PROFILE = "safari";
     public static final String DESKTOP_EDGE_PROFILE = "edge";
     public static final String DESKTOP_IE_PROFILE = "ie";
-    public static final String DOWNLOAD_DEFAULT_DIRECTORY = System.getProperty("user.dir") + File.separator + "externalFiles" + File.separator + "downloadFiles";
+    public static String DOWNLOAD_DEFAULT_DIRECTORY;
     // - Mobile
     public static final String EMULATOR_MOBILE_CHROME_PROFILE = "mobilechrome";
     public static final String ANDROID_BROWSER_PROFILE = "android_browser";
@@ -157,6 +155,7 @@ public class DriverFactory {
                     break;
                 case "chrome":
                     synchronized (DriverFactory.class) {
+                        DOWNLOAD_DEFAULT_DIRECTORY = getDefaultDownloadDirectory();
                         String proxyServer = System.getProperty("proxy");
                         String proxyUser = System.getProperty("proxyUser");
                         String proxyPass = System.getProperty("proxyPass");
@@ -169,9 +168,6 @@ public class DriverFactory {
                             WebDriverManager.chromedriver().version(LOCAL_DRIVER_VERSION).setup();
                         }
                     }
-                    Map<String, Object> prefs = new HashMap<>();
-                    prefs.put("download.default_directory", DOWNLOAD_DEFAULT_DIRECTORY);
-                    ((ChromeOptions) options).setExperimentalOption("prefs", prefs);
                     driver = new ChromeDriver((ChromeOptions) options);
                     break;
                 case "ie":

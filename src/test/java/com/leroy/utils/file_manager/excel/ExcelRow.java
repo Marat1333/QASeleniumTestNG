@@ -18,7 +18,7 @@ public class ExcelRow {
         return row.getCell(index).getNumericCellValue();
     }
 
-    public Cell getCellByIndex(int index){
-        return row.getCell(index);
+    public ExcelCell getCellByIndex(int index){
+        return new ExcelCell(row.getCell(index));
     }
 }

@@ -1,7 +1,6 @@
 package com.leroy.magportal.ui.tests;
 
 import com.leroy.constants.EnvConstants;
-import com.leroy.constants.Units;
 import com.leroy.core.api.ThreadApiClient;
 import com.leroy.core.configuration.DriverFactory;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
@@ -17,11 +16,7 @@ import com.leroy.magportal.ui.pages.products.ExtendedProductCardPage;
 import com.leroy.magportal.ui.pages.products.ProductCardPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
 import com.leroy.utils.DateTimeUtil;
-import com.leroy.utils.ParserUtil;
 import com.leroy.utils.file_manager.FileManager;
-import com.leroy.utils.file_manager.excel.ExcelRow;
-import com.leroy.utils.file_manager.excel.ExcelSheet;
-import com.leroy.utils.file_manager.excel.ExcelWorkBook;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -59,61 +54,6 @@ public class SearchTest extends WebBaseSteps {
             i++;
         }
         return resultMap;
-    }
-
-    private void shouldExcelOutputIsCorrect(List<ProductItemData> dataList, ExcelWorkBook excelWorkBook) {
-        String yes = "да";
-        String no = "нет";
-        ExcelSheet excelSheet = new ExcelSheet(excelWorkBook.getExcelSheetByIndex(0));
-        List<ExcelRow> rowList = excelSheet.getRowList();
-        //названия столбцов
-        rowList.remove(0);
-        for (int i = 0; i < dataList.size(); i++) {
-            ProductItemData apiData = dataList.get(i);
-            ExcelRow row = rowList.get(i);
-            softAssert().isEquals(apiData.getLmCode(), ParserUtil.strWithOnlyDigits(row.getCellStringValueByIndex(0)), "lmCode");
-            softAssert().isEquals(apiData.getBarCode(), ParserUtil.strWithOnlyDigits(row.getCellStringValueByIndex(1)), "barCode");
-            if (apiData.getTitle() != null) {
-                softAssert().isEquals(apiData.getTitle(), row.getCellStringValueByIndex(2), "title");
-            }
-            String ctm = apiData.getCtm() ? yes : no;
-            softAssert().isEquals(ctm, row.getCellStringValueByIndex(3), "ctm");
-            softAssert().isEquals(apiData.getGamma(), row.getCellStringValueByIndex(4), "gamma");
-            String avsDate;
-            if (apiData.getAvsDate()!=null){
-                avsDate = DateTimeUtil.localDateToStr(apiData.getAvsDate().toLocalDate(), DateTimeUtil.DD_MM_YYYY);
-            }else {
-                avsDate = no;
-            }
-            softAssert().isEquals(avsDate, row.getCellStringValueByIndex(5), "avsDate");
-            softAssert().isEquals(apiData.getTop(), row.getCellStringValueByIndex(6), "top");
-            String topEM = apiData.getTopEM() ? yes : no;
-            softAssert().isEquals(topEM, row.getCellStringValueByIndex(7), "topEM");
-            softAssert().isEquals(apiData.getSupCode(), ParserUtil.prettyDoubleFmt(row.getCellDoubleValueByIndex(8)), "supplier");
-            softAssert().isEquals(apiData.getSupName(), row.getCellStringValueByIndex(9), "supplierName");
-            softAssert().isEquals(ParserUtil.prettyDoubleFmt(apiData.getAvailableStock()),
-                    ParserUtil.prettyDoubleFmt(row.getCellDoubleValueByIndex(10)), "available stock");
-            softAssert().isEquals(ParserUtil.prettyDoubleFmt(apiData.getPrice()),
-                    ParserUtil.prettyDoubleFmt(row.getCellDoubleValueByIndex(11)), "price");
-            softAssert().isEquals(apiData.getPriceCurrency(), row.getCellStringValueByIndex(12), "currency");
-            String priceUnit = apiData.getPriceUnit().equals(Units.EA.getEnName()) ? Units.EA.getRuName() : no;
-            softAssert().isEquals(priceUnit, row.getCellStringValueByIndex(13), "unit");
-            String altPrice;
-            if (apiData.getAltPrice() != null) {
-                altPrice = ParserUtil.prettyDoubleFmt(apiData.getAltPrice());
-            } else {
-                altPrice = no;
-            }
-            softAssert().isEquals(altPrice, row.getCellStringValueByIndex(14), "alt price");
-            String altPriceUnit;
-            if (apiData.getAltPriceUnit() != null) {
-                altPriceUnit = apiData.getAltPriceUnit().equals(Units.EA.getEnName()) ? Units.EA.getRuName() : no;
-            } else {
-                altPriceUnit = no;
-            }
-            softAssert().isEquals(altPriceUnit, row.getCellStringValueByIndex(15), "alt unit");
-        }
-        softAssert().verifyAll();
     }
 
     @Test(description = "C22782949 No results msg")
@@ -1208,11 +1148,7 @@ public class SearchTest extends WebBaseSteps {
 
     @Test(description = "C23416164 check excel output")
     public void testExcelOutput() throws Exception {
-        List<ProductItemData> dataList = catalogSearchClient().searchProductsBy(new GetCatalogSearch()
-                .setDepartmentId(getUserSessionData().getUserDepartmentId())
-                .setHasAvailableStock(true)
-                .setShopId(getUserSessionData().getUserShopId())
-                .setPageSize(90)).asJson().getItems();
+        FileManager fileManager = new FileManager();
 
         //Pre-conditions
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
@@ -1224,11 +1160,10 @@ public class SearchTest extends WebBaseSteps {
         if (!DriverFactory.isGridProfile()) {
             downloadTime = downloadTime.minusHours(3);
         }
-        File file = FileManager.getFileFromDefaultDownloadDirectory(
+        File file = fileManager.getFileFromDefaultDownloadDirectory(
                 String.format("LEGO_Item_Extraction_%s.xlsx", DateTimeUtil.localDateTimeToStr(downloadTime, DateTimeUtil.YYYY_MM_DD_HH_MM)));
-        FileManager.waitUntilFileAppears(file, FileManager.SHORT_TIMEOUT);
-        ExcelWorkBook excelWorkBook = new ExcelWorkBook(file);
-        shouldExcelOutputIsCorrect(dataList, excelWorkBook);
+        fileManager.waitUntilFileAppears();
+        anAssert().isTrue(file.exists(), "file does not exist");
     }
 
 }

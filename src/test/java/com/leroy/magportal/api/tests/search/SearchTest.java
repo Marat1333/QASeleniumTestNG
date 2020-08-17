@@ -41,7 +41,7 @@ public class SearchTest extends BaseProjectApiTest {
     private void shouldExcelOutputIsCorrect(List<ProductItemData> dataList, ExcelWorkBook excelWorkBook) {
         String yes = "да";
         String no = "нет";
-        ExcelSheet excelSheet = new ExcelSheet(excelWorkBook.getExcelSheetByIndex(0));
+        ExcelSheet excelSheet = excelWorkBook.getExcelSheetByIndex(0);
         List<ExcelRow> rowList = excelSheet.getRowList();
         //названия столбцов
         rowList.remove(0);
@@ -95,6 +95,7 @@ public class SearchTest extends BaseProjectApiTest {
 
     @Test(description = "C23416271 Excel output")
     public void testExcelDownload() throws Exception {
+        FileManager fileManager = new FileManager();
         String resource = "/v4/catalog/search";
         UserSessionData userSessionData = getUserSessionData();
         Map<String, String> queryParams = new HashMap<>();
@@ -105,7 +106,7 @@ public class SearchTest extends BaseProjectApiTest {
 
         String uri = buildUri(resource, queryParams);
         List<ProductItemData> dataList = client.getProductsList();
-        ExcelWorkBook excelWorkBook = new ExcelWorkBook(FileManager.downloadFileFromNetworkToDefaultDownloadDirectory(
+        ExcelWorkBook excelWorkBook = new ExcelWorkBook(fileManager.downloadFileFromNetworkToDefaultDownloadDirectory(
                 uri, "1.xlsx"));
         shouldExcelOutputIsCorrect(dataList, excelWorkBook);
     }

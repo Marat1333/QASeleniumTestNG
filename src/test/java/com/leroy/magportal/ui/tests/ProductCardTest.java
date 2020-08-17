@@ -320,11 +320,6 @@ public class ProductCardTest extends WebBaseSteps {
     public void testCheckExtendedCardData() throws Exception {
         String lmCode = getRandomLmCode();
         CatalogProductData data = apiClientProvider.getMagPortalCatalogProductClientProvider().getProductData(lmCode).asJson();
-        if (DriverFactory.isGridProfile()) {
-            data.setTimeZone(TimeZone.GREENWICH);
-        } else {
-            data.setTimeZone(TimeZone.MSC);
-        }
 
         //Step 1
         step("Перейти в расширенную карточку товара");

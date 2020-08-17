@@ -1,6 +1,5 @@
 package com.leroy.magmobile.api.requests.catalog_search;
 
-import com.leroy.constants.api.OutputDocumentFormat;
 import com.leroy.magmobile.api.enums.CatalogSearchFields;
 import com.leroy.magmobile.api.enums.SortingOrder;
 import com.leroy.magmobile.api.requests.CommonSearchRequestBuilder;

@@ -2,36 +2,47 @@ package com.leroy.utils.file_manager;
 
 import com.leroy.core.configuration.DriverFactory;
 
-import java.io.*;
-import java.net.HttpURLConnection;
+import java.io.File;
+import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 public class FileManager {
+    private FileWaiter fw;
     public final static int SHORT_TIMEOUT = 5;
     public final static int LONG_TIMEOUT = 10;
+    public final static int MINUTE_TIMEOUT = 60;
 
-    public static File getFileFromDefaultDownloadDirectory(String fileName) {
-        return new File(DriverFactory.DOWNLOAD_DEFAULT_DIRECTORY + File.separator + fileName);
+    public File getFileFromDefaultDownloadDirectory(String fileName) {
+        return getFileFromDefaultDownloadDirectory(fileName, MINUTE_TIMEOUT);
     }
 
-    public static File downloadFileFromNetworkToDefaultDownloadDirectory(String uri, String expectedFileName) throws Exception {
+    public File getFileFromDefaultDownloadDirectory(String fileName, int timeOut) {
+        File file = new File(DriverFactory.DOWNLOAD_DEFAULT_DIRECTORY + File.separator + fileName);
+        fw = new FileWaiter(file, MINUTE_TIMEOUT);
+        fw.start();
+        return file;
+    }
+
+    public File downloadFileFromNetworkToDefaultDownloadDirectory(String uri, String expectedFileName) throws Exception {
+        return downloadFileFromNetworkToDefaultDownloadDirectory(uri, expectedFileName, MINUTE_TIMEOUT);
+    }
+
+    public File downloadFileFromNetworkToDefaultDownloadDirectory(String uri, String expectedFileName, int timeOut) throws Exception {
         URI localUri = new URI(uri);
         InputStream is = localUri.toURL().openStream();
         String pathToFile = DriverFactory.DOWNLOAD_DEFAULT_DIRECTORY + File.separator + expectedFileName;
         Files.copy(is, Paths.get(pathToFile), StandardCopyOption.REPLACE_EXISTING);
-        return new File(pathToFile);
+        File file = new File(pathToFile);
+        fw = new FileWaiter(file, MINUTE_TIMEOUT);
+        fw.start();
+        return file;
     }
 
-    public static void waitUntilFileAppears(File file, int secTimeOut) throws InterruptedException {
-        //на будущее можно добавить многопоточку, если вынести join
-        FileWaiter fileWaiter = new FileWaiter(file, secTimeOut);
-        fileWaiter.start();
-        fileWaiter.join();
+    public void waitUntilFileAppears() throws InterruptedException {
+        fw.join();
     }
 
     public static void clearDownloadDirectory() {

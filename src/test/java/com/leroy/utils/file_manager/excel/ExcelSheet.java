@@ -14,12 +14,12 @@ public class ExcelSheet {
         this.sheet = sheet;
     }
 
-    public Row getRowByIndex(int index) {
-        return sheet.getRow(index);
+    public ExcelRow getRowByIndex(int index) {
+        return new ExcelRow(sheet.getRow(index));
     }
 
     public String getStringValueFromCell(int rowIndex, int cellIndex) {
-        ExcelRow row = new ExcelRow(this.getRowByIndex(rowIndex));
+        ExcelRow row = getRowByIndex(rowIndex);
         return row.getCellStringValueByIndex(cellIndex);
     }
 

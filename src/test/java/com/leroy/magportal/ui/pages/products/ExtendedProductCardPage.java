@@ -3,6 +3,7 @@ package com.leroy.magportal.ui.pages.products;
 import com.leroy.constants.Currency;
 import com.leroy.constants.Units;
 import com.leroy.core.annotations.WebFindBy;
+import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
@@ -249,7 +250,7 @@ public class ExtendedProductCardPage extends ProductCardPage {
         shouldUnitsIsCorrect(recommendedPriceContainerData.getUnits(), data.getRecommendedPrice().getPriceUnit());
         softAssert.isEquals(purchasePriceContainerData.getPrice(), purchasePrice, "PurchasePrice mismatch");
         shouldCurrencyIsCorrect(purchasePriceContainerData.getCurrency(), data.getPurchasePrice().getPriceCurrency());
-        shouldPriceChangeDateIsCorrect(data.getSalesPrice().getDateOfChange(), data.getTimeZone());
+        shouldPriceChangeDateIsCorrect(data.getSalesPrice().getDateOfChange());
         softAssert.isEquals(productPriceInfoWidget.isMismatchPriceThanRecommendedTooltipVisible(), !recommendedPrice.equals(salesPrice),
                 "SalePrice and RecommendedPrice mismatch lbl is invisible");
         softAssert.isEquals(productPriceInfoWidget.getReasonOfChange(), data.getSalesPrice().getReasonOfChange(),
@@ -283,14 +284,18 @@ public class ExtendedProductCardPage extends ProductCardPage {
         }
     }
 
-    private void shouldPriceChangeDateIsCorrect(String date, int timeZone) {
+    private void shouldPriceChangeDateIsCorrect(String date) {
         Locale locale = new Locale("ru");
         DateTimeFormatter shortFormatter = DateTimeFormatter.ofPattern("d MMM", locale);
         DateTimeFormatter longFormatter = DateTimeFormatter.ofPattern("d MMM yyyy", locale);
         DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
 
         LocalDateTime dataDate = LocalDateTime.parse(date, inputFormatter);
-        dataDate = dataDate.plusHours(timeZone);
+        if (DriverFactory.isGridProfile()) {
+            dataDate = dataDate.plusHours(com.leroy.constants.TimeZone.UTC);
+        } else {
+            dataDate = dataDate.plusHours(com.leroy.constants.TimeZone.MSC);
+        }
 
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault());
         calendar.setTime(new Date());

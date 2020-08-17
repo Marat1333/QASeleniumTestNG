@@ -37,5 +37,4 @@ public class CatalogProductData extends ProductData {
     private PriceInfo salesPrice;
     private CatalogSupplierData supplier;
     private StockAreas stocks;
-    private int timeZone;
 }
