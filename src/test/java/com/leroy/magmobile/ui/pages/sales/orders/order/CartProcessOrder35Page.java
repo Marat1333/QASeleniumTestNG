@@ -45,7 +45,7 @@ public class CartProcessOrder35Page extends HeaderProcessOrder35Page {
     // Verifications
 
     @Step("Проверить, что данные корзины в заказе, как ожидались (expectedDocumentData)")
-    public CartProcessOrder35Page shouldSalesDocumentDataIs(SalesDocumentData expectedDocumentData) {
+    public CartProcessOrder35Page shouldSalesDocumentDataIs(SalesDocumentData expectedDocumentData) throws Exception {
         expectedDocumentData.setTitle(null);
         String orderNumber = getOrderNumber();
         SalesDocumentData salesDocumentData = productOrderForm.getSalesDocumentData();

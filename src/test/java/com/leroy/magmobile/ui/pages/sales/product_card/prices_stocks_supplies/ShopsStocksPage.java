@@ -1,12 +1,10 @@
 package com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies;
 
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.configuration.Log;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.api.data.shops.ShopData;
 import com.leroy.magmobile.ui.models.product_card.ShopCardData;
-import com.leroy.magmobile.ui.pages.sales.product_card.widgets.ShopPriceInfoWidget;
 import com.leroy.magmobile.ui.pages.sales.product_card.widgets.ShopStockInfoWidget;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
@@ -33,15 +31,15 @@ public class ShopsStocksPage extends ShopPricesPage {
     }
 
     @Step("Проверить доступный остаток в магазинах")
-    public ShopsStocksPage shouldShopStocksAreCorrect(List<ShopData> data){
+    public ShopsStocksPage shouldShopStocksAreCorrect(List<ShopData> data) throws Exception {
         List<ShopCardData> shopData = shopCardsScrollView.getFullDataList();
-        for (int i=0;i<shopData.size();i++){
+        for (int i = 0; i < shopData.size(); i++) {
             ShopCardData uiData = shopData.get(i);
             ShopData apiData = data.get(i);
-            softAssert.isEquals(uiData.getId(), apiData.getId()+" "+apiData.getName(), "id and name");
+            softAssert.isEquals(uiData.getId(), apiData.getId() + " " + apiData.getName(), "id and name");
             try {
                 softAssert.isEquals(uiData.getStock(), ParserUtil.prettyDoubleFmt(apiData.getPriceAndStock().getStock()), "stock");
-            }catch (NullPointerException e){
+            } catch (NullPointerException e) {
                 softAssert.isEquals(uiData.getStock(), "0 шт.", "stock");
             }
         }

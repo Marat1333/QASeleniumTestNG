@@ -55,7 +55,7 @@ public class ShopPricesPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить цены в магазинах")
-    public ShopPricesPage shouldShopPricesAreCorrect(List<ShopData> data) {
+    public ShopPricesPage shouldShopPricesAreCorrect(List<ShopData> data) throws Exception {
         List<ShopCardData> shopData = shopCardsScrollView.getFullDataList();
         for (int i = 0; i < shopData.size(); i++) {
             ShopCardData uiData = shopData.get(i);
@@ -68,7 +68,7 @@ public class ShopPricesPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что карточки магазинов содержат поисковой критерий")
-    public void shouldShopCardsContainsSearchCriterion(String criterion) {
+    public void shouldShopCardsContainsSearchCriterion(String criterion) throws Exception {
         List<ShopCardData> shopData = getShopCardsScrollView().getFullDataList();
         for (ShopCardData data : shopData) {
             anAssert.isContainsIgnoringCase(data.getId(), criterion, "id and name");

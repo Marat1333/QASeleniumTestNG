@@ -101,7 +101,7 @@ public class ProductDescriptionPage extends ProductCardPage {
     // Actions
 
     @Step("Перейти на страницу с детализацией цен и запасов")
-    public ProductPricesQuantitySupplyPage goToPricesAndQuantityPage() {
+    public ProductPricesQuantitySupplyPage goToPricesAndQuantityPage() throws Exception {
         mainScrollView.scrollDownToText("Доступно для продажи");
         if (!actionWithProductBtn.isVisible()) {
             productPriceGammaCardBtn.click();
@@ -112,7 +112,7 @@ public class ProductDescriptionPage extends ProductCardPage {
     }
 
     @Step("Перейти на страницу с информацией о стоках")
-    public StocksPage goToStocksPage() {
+    public StocksPage goToStocksPage() throws Exception {
         if (!availableStockLbl.isVisible()) {
             mainScrollView.scrollDownToElement(availableStockLbl);
         }
@@ -121,7 +121,7 @@ public class ProductDescriptionPage extends ProductCardPage {
     }
 
     @Step("Перейти на страницу с историей продаж")
-    public SalesHistoryPage goToSalesHistoryPage() {
+    public SalesHistoryPage goToSalesHistoryPage() throws Exception {
         if (!salesHistoryBtn.isVisible()) {
             mainScrollView.scrollDownToElement(salesHistoryBtn);
         }
@@ -161,8 +161,8 @@ public class ProductDescriptionPage extends ProductCardPage {
 
     @Step("Проверить, что комплементарные товары корректно отображены")
     public ProductDescriptionPage shouldComplementaryProductsAreCorrect(List<CatalogProductData> apiDataList,
-                                                                        SearchProductPage.CardType type) {
-        if (apiDataList.size()==0){
+                                                                        SearchProductPage.CardType type) throws Exception {
+        if (apiDataList.size() == 0) {
             mainScrollView.scrollToEnd();
             waitUntilProgressBarIsInvisible();
             anAssert.isElementVisible(complementaryProductsNotFoundLbl);
@@ -177,13 +177,13 @@ public class ProductDescriptionPage extends ProductCardPage {
         List<ProductCardData> productCardDataListFromPage = new ArrayList<>();
         if (type.equals(SearchProductPage.CardType.COMMON)) {
             productCardDataListFromPage = productCardsScrollView.getFullDataList();
-        }else if (type.equals(SearchProductPage.CardType.ALL_GAMMA)){
+        } else if (type.equals(SearchProductPage.CardType.ALL_GAMMA)) {
             productCardDataListFromPage = allGammaProductCardsScrollView.getFullDataList();
         }
         for (int i = 0; i < apiDataList.size(); i++) {
             ProductCardData uiData = productCardDataListFromPage.get(i);
             ProductCardData apiData = productCardDataListFromPage.get(i);
-            softAssert.isEquals(uiData.getLmCode(),apiData.getLmCode(),"lmCode");
+            softAssert.isEquals(uiData.getLmCode(), apiData.getLmCode(), "lmCode");
             if (type.equals(SearchProductPage.CardType.COMMON)) {
                 softAssert.isEquals(uiData.getAvailableQuantity(), apiData.getAvailableQuantity(), "available quantity");
             }

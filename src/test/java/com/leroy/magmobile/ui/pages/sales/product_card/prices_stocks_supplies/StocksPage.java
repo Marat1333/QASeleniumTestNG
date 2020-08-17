@@ -15,7 +15,7 @@ import io.qameta.allure.Step;
 
 import java.util.List;
 
-public class StocksPage extends ProductPricesQuantitySupplyPage{
+public class StocksPage extends ProductPricesQuantitySupplyPage {
     @AppFindBy(xpath = "//*[@text='Доступно для продажи']/following-sibling::*[1]")
     Element availableStockLbl;
 
@@ -72,7 +72,7 @@ public class StocksPage extends ProductPricesQuantitySupplyPage{
     Button shopListNavBtn;
 
     @Step("Перейти на страницу со списком магазинов")
-    public ShopsStocksPage goToShopListPage(){
+    public ShopsStocksPage goToShopListPage() throws Exception {
         mainScrollView.scrollUpToElement(shopListNavBtn);
         shopListNavBtn.click();
         return new ShopsStocksPage();
@@ -85,7 +85,7 @@ public class StocksPage extends ProductPricesQuantitySupplyPage{
     }
 
     @Step("Проверить что данные по остаткам товара отображены корректно")
-    public StocksPage shouldDataIsCorrect(CatalogProductData data){
+    public StocksPage shouldDataIsCorrect(CatalogProductData data) throws Exception {
         StockAreas stockAreas = data.getStockAreas();
         ExtStocks extStocks = data.getExtStocks();
         softAssert.isEquals(ParserUtil.strWithOnlyDigits(availableStockLbl.getText()), ParserUtil.prettyDoubleFmt(data.getAvailableStock()), "available 4 sale");
@@ -95,8 +95,8 @@ public class StocksPage extends ProductPricesQuantitySupplyPage{
         softAssert.isEquals(ParserUtil.strWithOnlyDigits(emWarehouse.getText()), String.valueOf(stockAreas.getEm()), "EM");
         //data has not contains street warehouse quantity
         softAssert.isEquals(ParserUtil.strWithOnlyDigits(remoteRdWarehouse.getText()), String.valueOf(stockAreas.getRd()), "RD");
-        Integer unavailable4Sale = extStocks.getWhb() + extStocks.getBufferEM() + extStocks.getClientsReserve()+
-                extStocks.getTransferReserve()+extStocks.getReturnReserve()+extStocks.getDefectEM()+
+        Integer unavailable4Sale = extStocks.getWhb() + extStocks.getBufferEM() + extStocks.getClientsReserve() +
+                extStocks.getTransferReserve() + extStocks.getReturnReserve() + extStocks.getDefectEM() +
                 extStocks.getCorrectionStockInWait() + extStocks.getExpo();
         softAssert.isEquals(ParserUtil.strWithOnlyDigits(unavailableStockLbl.getText()), String.valueOf(unavailable4Sale), "unavailable 4 sale");
         unavailableStockLbl.click();
@@ -114,13 +114,13 @@ public class StocksPage extends ProductPricesQuantitySupplyPage{
     }
 
     @Step("Проверить что данные по остаткам товара в ближайших магазинах отображены корректно")
-    public StocksPage shouldShopStocksAreCorrect(List<ShopData> data){
+    public StocksPage shouldShopStocksAreCorrect(List<ShopData> data) throws Exception {
         mainScrollView.scrollDownToElement(shopListNavBtn);
         List<ShopCardData> shopData = shopCardsScrollView.getFullDataList();
-        for (int i=0;i<shopData.size();i++){
+        for (int i = 0; i < shopData.size(); i++) {
             ShopCardData uiData = shopData.get(i);
             ShopData apiData = data.get(i);
-            softAssert.isEquals(uiData.getId(), apiData.getId()+" "+apiData.getName(), "id and name");
+            softAssert.isEquals(uiData.getId(), apiData.getId() + " " + apiData.getName(), "id and name");
             softAssert.isEquals(uiData.getStock(), apiData.getPriceAndStock().getStock(), "stock");
         }
         softAssert.verifyAll();
@@ -128,7 +128,7 @@ public class StocksPage extends ProductPricesQuantitySupplyPage{
     }
 
     @Step("Проверить наличие элементов")
-    public void verifyRequiredElements(){
+    public void verifyRequiredElements() {
         softAssert.areElementsVisible(availableStockLbl, unavailableStockLbl, salesHall);
         softAssert.verifyAll();
     }

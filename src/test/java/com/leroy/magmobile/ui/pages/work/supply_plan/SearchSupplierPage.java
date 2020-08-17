@@ -90,13 +90,13 @@ public class SearchSupplierPage extends CommonMagMobilePage {
     }
 
     @Step("Перейти по элементу из истории поиска")
-    public SupplierWeekSuppliesPage goToSupplierWeekPageBySearchHistory(String id){
+    public SupplierWeekSuppliesPage goToSupplierWeekPageBySearchHistory(String id) {
         E(String.format("//android.widget.ScrollView//*[contains(@text,'Код: %s')]", id)).click();
         return new SupplierWeekSuppliesPage();
     }
 
     @Step("проверить результат поиска")
-    public SearchSupplierPage shouldDataIsCorrect(List<SupplierData> dataList) {
+    public SearchSupplierPage shouldDataIsCorrect(List<SupplierData> dataList) throws Exception {
         int warehousesCount = 0;
         int shopsCount = 0;
         int suppliersCount = 0;
@@ -183,16 +183,16 @@ public class SearchSupplierPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить историю поиска")
-    public SearchSupplierPage shouldSearchHistoryIsCorrect(List<String> searchHistory) {
+    public SearchSupplierPage shouldSearchHistoryIsCorrect(List<String> searchHistory) throws Exception {
         List<SearchHistoryElementData> searchHistoryData = this.searchHistory.getFullDataList();
         for (int i = 0; i < searchHistory.size(); i++) {
-            softAssert.isEquals(searchHistory.get(i), searchHistoryData.get(searchHistoryData.size()-1-i).getCode(), "id");
+            softAssert.isEquals(searchHistory.get(i), searchHistoryData.get(searchHistoryData.size() - 1 - i).getCode(), "id");
         }
         softAssert.verifyAll();
         return this;
     }
 
-    public SearchSupplierPage verifyRequiredElements(){
+    public SearchSupplierPage verifyRequiredElements() {
         softAssert.areElementsVisible(backBtn, searchInput);
         softAssert.verifyAll();
         return this;

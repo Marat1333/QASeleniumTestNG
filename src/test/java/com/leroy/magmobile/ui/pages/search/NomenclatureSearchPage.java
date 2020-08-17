@@ -110,7 +110,7 @@ public class NomenclatureSearchPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что отображено 15 отделов")
-    public NomenclatureSearchPage shouldDepartmentsCountIs15() {
+    public NomenclatureSearchPage shouldDepartmentsCountIs15() throws Exception {
         List<String> uniqueElementsArray = nomenclatureElementsList.getFullDataList();
         List<String> result = new ArrayList<>();
         String tmp;

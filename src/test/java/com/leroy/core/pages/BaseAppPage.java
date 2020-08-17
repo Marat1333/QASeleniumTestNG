@@ -2,16 +2,14 @@ package com.leroy.core.pages;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.configuration.Log;
-import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.core.web_elements.general.ElementList;
 import io.appium.java_client.MobileElement;
-import io.appium.java_client.Setting;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.PointOption;
 import io.qameta.allure.Step;
-import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
@@ -44,7 +42,7 @@ public abstract class BaseAppPage extends BasePage {
         }
     }
 
-    protected boolean isProgressBarVisible(){
+    protected boolean isProgressBarVisible() {
         return progressBar.isVisible();
     }
 
@@ -71,6 +69,18 @@ public abstract class BaseAppPage extends BasePage {
 
     protected boolean waitUntilContentIsChanged(String pageSource) {
         return waitUntilContentIsChanged(pageSource, tiny_timeout);
+    }
+
+    protected boolean waitUntilElementListSizeHasChanged(ElementList<? extends Element> elementList) {
+        int size = elementList.getCount();
+        try {
+            new WebDriverWait(androidDriver, timeout)
+                    .until(driverObject -> elementList.getCount() != size);
+            return true;
+        } catch (TimeoutException e) {
+            Log.warn(String.format("waitUntilElementListSizeHasChanged failed (tried for %d second(s))", timeout));
+            return false;
+        }
     }
 
     protected void waitUntilProgressBarIsVisible() {
@@ -112,7 +122,7 @@ public abstract class BaseAppPage extends BasePage {
             breakCounter++;
         }
     }
-    
+
     public void swipeLeftTo(Element anchorElement, Element goalElement) {
         int anchorX = anchorElement.getLocation().getX();
         int anchorY = anchorElement.getLocation().getY();

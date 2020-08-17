@@ -1012,7 +1012,7 @@ public class OrderTest extends SalesBaseTest {
     /**
      * В поле Выбери способ получения
      */
-    private void stepSelectDeliveryType(SalesDocumentsConst.GiveAwayPoints type, LocalDate deliveryDate) {
+    private void stepSelectDeliveryType(SalesDocumentsConst.GiveAwayPoints type, LocalDate deliveryDate) throws Exception {
         if (salesDocumentData == null)
             salesDocumentData = new SalesDocumentData();
         OrderDetailsData orderDetailsData = salesDocumentData.getOrderDetailsData() == null ?
@@ -1091,7 +1091,7 @@ public class OrderTest extends SalesBaseTest {
     /**
      * Заполняем данные получателя
      */
-    private void stepEnterCustomerInfo(MagCustomerData magCustomerData, boolean checkFields) {
+    private void stepEnterCustomerInfo(MagCustomerData magCustomerData, boolean checkFields) throws Exception {
         if (magCustomerData == null) {
             magCustomerData = new MagCustomerData();
             magCustomerData.setName(RandomStringUtils.randomAlphabetic(5));
@@ -1105,14 +1105,14 @@ public class OrderTest extends SalesBaseTest {
             processOrder35Page.shouldFormFieldsAre(salesDocumentData.getOrderDetailsData());
     }
 
-    private void stepEnterCustomerInfo(boolean checkFields) {
+    private void stepEnterCustomerInfo(boolean checkFields) throws Exception {
         stepEnterCustomerInfo(null, checkFields);
     }
 
     /**
      * Введите PIN-код для оплаты
      */
-    private void stepEnterPinCode(SalesDocumentsConst.GiveAwayPoints deliveryType) {
+    private void stepEnterPinCode(SalesDocumentsConst.GiveAwayPoints deliveryType) throws Exception {
         if (salesDocumentData == null)
             salesDocumentData = new SalesDocumentData();
         if (salesDocumentData.getOrderDetailsData() == null)
@@ -1156,7 +1156,7 @@ public class OrderTest extends SalesBaseTest {
     /**
      * Нажать на иконку корзины в поле оформления заказа
      */
-    private void stepClickCartIconWhenProcessOrder(boolean verifyProducts) {
+    private void stepClickCartIconWhenProcessOrder(boolean verifyProducts) throws Exception {
         step("Нажать на иконку корзины в поле оформления заказа");
         if (processOrder35Page == null)
             processOrder35Page = new ProcessOrder35Page();
@@ -1249,7 +1249,7 @@ public class OrderTest extends SalesBaseTest {
     /**
      * Удалить заказ, нажав на иконку удаления (мусорка)
      */
-    private void stepRemoveOrder(boolean checkThatOrderIsDeleted) {
+    private void stepRemoveOrder(boolean checkThatOrderIsDeleted) throws Exception {
         if (confirmedOrderPage != null) {
             confirmedOrderPage.clickTrashIcon()
                     .clickConfirmButton();
@@ -1420,7 +1420,7 @@ public class OrderTest extends SalesBaseTest {
     /**
      * Нажмите на Перейти в список документов
      */
-    private void stepClickGoToSalesDocumentsList(boolean verifyDocumentDataMatches) {
+    private void stepClickGoToSalesDocumentsList(boolean verifyDocumentDataMatches) throws Exception {
         salesDocumentsPage = submittedSalesDocument35Page.clickGoToDocumentListButton();
         if (verifyDocumentDataMatches) {
             ShortSalesDocumentData expectedSalesDocument = new ShortSalesDocumentData();
@@ -1443,7 +1443,7 @@ public class OrderTest extends SalesBaseTest {
     /**
      * Нажмите на мини-карточку созданного документа.
      */
-    private void stepClickSalesDocumentCard(boolean verifyProducts) {
+    private void stepClickSalesDocumentCard(boolean verifyProducts) throws Exception {
         // workaround for minor bug - КОСТЫЛЬ!
         if (salesDocumentData.getOrderDetailsData().getOrgAccount() != null &&
                 salesDocumentData.getOrderDetailsData().getOrgAccount().getChargePerson() != null) {
