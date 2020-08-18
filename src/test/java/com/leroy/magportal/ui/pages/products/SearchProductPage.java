@@ -261,7 +261,7 @@ public class SearchProductPage extends MagPortalBasePage {
     }
 
     @Step("Выгрузить поисковую выдачу в excel")
-    public SearchProductPage downloadExcelSearchResultOutput(){
+    public SearchProductPage downloadExcelSearchResultOutput() {
         downloadExcelBtn.click();
         return this;
     }

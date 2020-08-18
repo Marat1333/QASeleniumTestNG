@@ -1,9 +1,7 @@
 package com.leroy.magportal.ui.tests;
 
 import com.leroy.constants.EnvConstants;
-import com.leroy.constants.TimeZone;
 import com.leroy.core.ContextProvider;
-import com.leroy.core.configuration.DriverFactory;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
