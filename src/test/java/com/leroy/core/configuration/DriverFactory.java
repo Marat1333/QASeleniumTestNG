@@ -412,11 +412,8 @@ public class DriverFactory {
                 return path;
             else
                 return System.getProperty("user.home") + "\\Downloads";
-            /*return ((Map<String, String>) ((ChromeOptions)capabilities).getExperimentalOption("prefs")).
-            get("download.default_directory");*/
         } else
-            throw new RuntimeException("Method DriverFactory.getDefaultDownloadDirectory() " +
-                    "should be used for Chrome only");
+            return null;
     }
 
     public static boolean isAppProfile() {
