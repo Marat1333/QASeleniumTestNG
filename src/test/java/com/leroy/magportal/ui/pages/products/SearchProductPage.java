@@ -14,10 +14,7 @@ import com.leroy.magportal.ui.pages.products.widget.ExtendedProductCardTableView
 import com.leroy.magportal.ui.pages.products.widget.ExtendedProductCardWidget;
 import com.leroy.magportal.ui.pages.products.widget.ProductCardTableViewWidget;
 import com.leroy.magportal.ui.pages.products.widget.ProductCardWidget;
-import com.leroy.magportal.ui.webelements.commonelements.CalendarInputBox;
-import com.leroy.magportal.ui.webelements.commonelements.PuzCheckBox;
-import com.leroy.magportal.ui.webelements.commonelements.PuzComboBox;
-import com.leroy.magportal.ui.webelements.commonelements.PuzMultiSelectComboBox;
+import com.leroy.magportal.ui.webelements.commonelements.*;
 import com.leroy.magportal.ui.webelements.searchelements.SupplierComboBox;
 import io.qameta.allure.Step;
 
@@ -37,7 +34,7 @@ public class SearchProductPage extends MagPortalBasePage {
         BEST_PRICE("Лучшая цена"),
         TOP_1000("Топ 1000"),
         LIMITED_OFFER("Предложение ограничено"),
-        CTM("Собственная торг. марка"),
+        CTM("СТМ"),
         ORDERED("Под заказ (код 48)"),
         AVS("AVS");
 
@@ -211,6 +208,9 @@ public class SearchProductPage extends MagPortalBasePage {
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//form/div[2]", refreshEveryTime = true)
     Element additionalFiltersArea;
 
+    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(text(),'ПОКАЗАТЬ ТОВАРЫ')]/ancestor::button/preceding-sibling::div")
+    Button downloadExcelBtn;
+
     @Override
     public void waitForPageIsLoaded() {
         searchInput.waitForVisibility();
@@ -257,6 +257,12 @@ public class SearchProductPage extends MagPortalBasePage {
     @Step("Ввести в поисковую строку значение без инициализации поиска")
     public SearchProductPage enterStringInSearchInput(String value) {
         searchInput.fill(value);
+        return this;
+    }
+
+    @Step("Выгрузить поисковую выдачу в excel")
+    public SearchProductPage downloadExcelSearchResultOutput(){
+        downloadExcelBtn.click();
         return this;
     }
 
@@ -475,7 +481,12 @@ public class SearchProductPage extends MagPortalBasePage {
                     filter.equals(Filters.TOP_EM)) && (!supplierComboBox.isVisible())) {
                 showAllFilters();
             }
-            Element checkbox = E("//div[contains(@class, 'active')]//*[contains(text(),'" + filter.getName() + "')]");
+            Element checkbox;
+            if (filter.equals(Filters.BEST_PRICE) || filter.equals(Filters.LIMITED_OFFER)) {
+                checkbox = E("//div[contains(@class, 'active')]//*[contains(text(),'" + filter.getName() + "')]/ancestor::button");
+            } else {
+                checkbox = E("//div[contains(@class, 'active')]//*[contains(text(),'" + filter.getName() + "')]");
+            }
             checkbox.click();
             if (applyFilters) {
                 applyFilters();
@@ -827,15 +838,28 @@ public class SearchProductPage extends MagPortalBasePage {
     @Step("Проверить, что чек-бокс переведен в корректное состояние")
     public SearchProductPage shouldCheckboxFilterHasCorrectCondition(boolean isEnabled, Filters... filters) throws Exception {
         for (Filters filter : filters) {
-            PuzCheckBox checkbox = E("//div[contains(@class, 'active')]//*[contains(text(),'" +
-                    filter.getName() + "')]/ancestor::button", PuzCheckBox.class);
-            if (!checkbox.isVisible()) {
-                showAllFilters();
-            }
-            if (isEnabled) {
-                anAssert.isTrue(checkbox.isChecked(), "Чекбокс в состоянии disabled");
+            String xpath = "//div[contains(@class, 'active')]//*[contains(text(),'" +
+                    filter.getName() + "')]/ancestor::button";
+            if (!(filter.equals(Filters.LIMITED_OFFER) || filter.equals(Filters.BEST_PRICE))) {
+                PuzCheckBox checkbox = E(xpath, PuzCheckBox.class);
+                if (!checkbox.isVisible()) {
+                    showAllFilters();
+                }
+                if (isEnabled) {
+                    anAssert.isTrue(checkbox.isChecked(), "Чекбокс в состоянии disabled");
+                } else {
+                    anAssert.isTrue(!checkbox.isChecked(), "Чекбокс в состоянии enabled");
+                }
             } else {
-                anAssert.isTrue(!checkbox.isChecked(), "Чекбокс в состоянии enabled");
+                PuzRadioButton puzRadioButton = E(xpath, PuzRadioButton.class);
+                if (!puzRadioButton.isVisible()) {
+                    showAllFilters();
+                }
+                if (isEnabled) {
+                    anAssert.isTrue(puzRadioButton.isSelected(), "Чекбокс в состоянии disabled");
+                } else {
+                    anAssert.isTrue(!puzRadioButton.isSelected(), "Чекбокс в состоянии enabled");
+                }
             }
         }
         return this;

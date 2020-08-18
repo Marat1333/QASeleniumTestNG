@@ -315,6 +315,7 @@ public class ProductCardTest extends AppBaseSteps {
         //Step 2
         step("Открыть вкладку с информацией о стоках");
         StocksPage stocksPage = productPricesQuantitySupplyPage.switchTab(ProductPricesQuantitySupplyPage.Tabs.STOCKS);
+        //TODO will be changed soon
         stocksPage.shouldDataIsCorrect(data);
 
         //Step 3

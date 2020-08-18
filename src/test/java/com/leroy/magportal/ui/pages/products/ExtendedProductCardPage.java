@@ -3,6 +3,7 @@ package com.leroy.magportal.ui.pages.products;
 import com.leroy.constants.Currency;
 import com.leroy.constants.Units;
 import com.leroy.core.annotations.WebFindBy;
+import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
@@ -21,6 +22,8 @@ import com.leroy.magportal.ui.webelements.searchelements.ProductPriceInfoWidget;
 import com.leroy.magportal.ui.webelements.searchelements.ProductQuantityInfoWidget;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -75,6 +78,13 @@ public class ExtendedProductCardPage extends ProductCardPage {
 
     @WebFindBy(xpath = "//span[contains(@class, 'Badge')][4]")
     Element categoryBadge;
+
+    @Override
+    public void waitForPageIsLoaded() {
+        super.waitForPageIsLoaded();
+        addProductToCart.waitForVisibility();
+        addProductToEstimate.waitForVisibility();
+    }
 
     @Step("Перейти в карточку аналогичного товара {lmCode}")
     public ExtendedProductCardPage goToAdditionalProduct(String lmCode, Tab tab) throws Exception {
@@ -266,7 +276,7 @@ public class ExtendedProductCardPage extends ProductCardPage {
         if (priceUnit != null) {
             switch (unit) {
                 case "EA":
-                    softAssert.isEquals(Units.EA.getName(), priceUnit, "Units mismatch");
+                    softAssert.isEquals(Units.EA.getRuName(), priceUnit, "Units mismatch");
                     break;
                 default:
                     throw new AssertionError("Undefined unit");
@@ -281,7 +291,11 @@ public class ExtendedProductCardPage extends ProductCardPage {
         DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
 
         LocalDateTime dataDate = LocalDateTime.parse(date, inputFormatter);
-        dataDate = dataDate.plusHours(3);
+        if (DriverFactory.isGridProfile()) {
+            dataDate = dataDate.plusHours(com.leroy.constants.TimeZone.UTC);
+        } else {
+            dataDate = dataDate.plusHours(com.leroy.constants.TimeZone.MSC);
+        }
 
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault());
         calendar.setTime(new Date());

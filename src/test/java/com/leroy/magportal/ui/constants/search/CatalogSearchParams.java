@@ -22,6 +22,7 @@ public class CatalogSearchParams {
     public final static String orderType = "orderType=";
     public final static String shopId = "shopId=";
     public final static String topEM = "topEM=";
-
-
+    public final static String pageSize = "pageSize=";
+    public final static String outputFormat = "outputFormat=";
+    public final static String ldap = "ldap=";
 }
