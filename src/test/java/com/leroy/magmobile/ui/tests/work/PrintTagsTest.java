@@ -393,10 +393,10 @@ public class PrintTagsTest extends AppBaseSteps {
         editTagModalPage.deleteProductFromSession();
         DeleteSessionByDeletingProductModalPage deleteSessionByDeletingProductModalPage = new DeleteSessionByDeletingProductModalPage();
         deleteSessionByDeletingProductModalPage.confirmDelete();
-        if (DefectConst.PRINT_TAG_NAVIGATION_ISSUE){
+        if (DefectConst.PRINT_TAG_NAVIGATION_ISSUE) {
             sessionsListPage = new SessionsListPage();
             sessionsListPage.shouldViewTypeIsCorrect(true);
-        }else {
+        } else {
             productCardPage = new ProductCardPage();
             productCardPage.verifyRequiredElements(true);
         }
@@ -740,17 +740,17 @@ public class PrintTagsTest extends AppBaseSteps {
         editTagModalPage.deleteProductFromSession();
         deleteSessionByDeletingProductModalPage = new DeleteSessionByDeletingProductModalPage();
         deleteSessionByDeletingProductModalPage.confirmDelete();
-        if (DefectConst.PRINT_TAG_NAVIGATION_ISSUE){
+        if (DefectConst.PRINT_TAG_NAVIGATION_ISSUE) {
             sessionsListPage = new SessionsListPage();
             sessionsListPage.shouldViewTypeIsCorrect(true);
-        }else {
+        } else {
             productCardPage = new ProductCardPage();
-        productCardPage.verifyRequiredElements(true);
-        searchProductPage = productCardPage.returnBack();
-        searchProductPage.returnBack();
-        bottomMenuPage = new BottomMenuPage();
-        WorkPage workPage = bottomMenuPage.goToWork();
-        workPage.goToSessionsListPage();
+            productCardPage.verifyRequiredElements(true);
+            searchProductPage = productCardPage.returnBack();
+            searchProductPage.returnBack();
+            bottomMenuPage = new BottomMenuPage();
+            WorkPage workPage = bottomMenuPage.goToWork();
+            workPage.goToSessionsListPage();
         }
 
         //Step 5

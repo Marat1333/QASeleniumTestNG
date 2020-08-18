@@ -2,7 +2,6 @@ package com.leroy.magportal.ui.tests;
 
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.api.ThreadApiClient;
-import com.leroy.core.configuration.DriverFactory;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.enums.CatalogSearchFields;
@@ -15,15 +14,12 @@ import com.leroy.magportal.ui.models.search.FiltersData;
 import com.leroy.magportal.ui.pages.products.ExtendedProductCardPage;
 import com.leroy.magportal.ui.pages.products.ProductCardPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
-import com.leroy.utils.DateTimeUtil;
 import com.leroy.utils.file_manager.FileManager;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import java.io.File;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1144,26 +1140,6 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.showAllFilters();
         searchProductPage.clearAllFilters();
         searchProductPage.shouldFilterCounterHasCorrectCondition(0);
-    }
-
-    @Test(description = "C23416164 check excel output")
-    public void testExcelOutput() throws Exception {
-        FileManager fileManager = new FileManager();
-
-        //Pre-conditions
-        SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
-
-        //Step 1
-        step("Нажать на кнопку выгрузки excel");
-        searchProductPage.downloadExcelSearchResultOutput();
-        LocalDateTime downloadTime = LocalDateTime.now();
-        if (!DriverFactory.isGridProfile()) {
-            downloadTime = downloadTime.minusHours(3);
-        }
-        File file = fileManager.getFileFromDefaultDownloadDirectory(
-                String.format("LEGO_Item_Extraction_%s.xlsx", DateTimeUtil.localDateTimeToStr(downloadTime, DateTimeUtil.YYYY_MM_DD_HH_MM)));
-        fileManager.waitUntilFileAppears();
-        anAssert().isTrue(file.exists(), "file does not exist");
     }
 
 }
