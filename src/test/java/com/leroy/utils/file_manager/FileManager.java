@@ -20,7 +20,7 @@ public class FileManager {
     }
 
     public File getFileFromDefaultDownloadDirectory(String fileName, int timeOut) {
-        File file = new File(DriverFactory.DOWNLOAD_DEFAULT_DIRECTORY + File.separator + fileName);
+        File file = new File(DriverFactory.getDefaultDownloadDirectory() + File.separator + fileName);
         fw = new FileWaiter(file, MINUTE_TIMEOUT);
         fw.start();
         return file;
@@ -33,7 +33,7 @@ public class FileManager {
     public File downloadFileFromNetworkToDefaultDownloadDirectory(String uri, String expectedFileName, int timeOut) throws Exception {
         URI localUri = new URI(uri);
         InputStream is = localUri.toURL().openStream();
-        String pathToFile = DriverFactory.DOWNLOAD_DEFAULT_DIRECTORY + File.separator + expectedFileName;
+        String pathToFile = DriverFactory.getDefaultDownloadDirectory()  + File.separator + expectedFileName;
         Files.copy(is, Paths.get(pathToFile), StandardCopyOption.REPLACE_EXISTING);
         File file = new File(pathToFile);
         fw = new FileWaiter(file, MINUTE_TIMEOUT);
@@ -46,7 +46,7 @@ public class FileManager {
     }
 
     public static void clearDownloadDirectory() {
-        File directory = new File(DriverFactory.DOWNLOAD_DEFAULT_DIRECTORY);
+        File directory = new File(DriverFactory.getDefaultDownloadDirectory());
         if (directory.isDirectory()) {
             for (File myFile : directory.listFiles())
                 if (myFile.isFile()) {

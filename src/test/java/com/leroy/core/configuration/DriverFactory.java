@@ -38,7 +38,6 @@ public class DriverFactory {
     public static final String DESKTOP_SAFARI_PROFILE = "safari";
     public static final String DESKTOP_EDGE_PROFILE = "edge";
     public static final String DESKTOP_IE_PROFILE = "ie";
-    public static String DOWNLOAD_DEFAULT_DIRECTORY;
     // - Mobile
     public static final String EMULATOR_MOBILE_CHROME_PROFILE = "mobilechrome";
     public static final String ANDROID_BROWSER_PROFILE = "android_browser";
@@ -155,7 +154,6 @@ public class DriverFactory {
                     break;
                 case "chrome":
                     synchronized (DriverFactory.class) {
-                        DOWNLOAD_DEFAULT_DIRECTORY = getDefaultDownloadDirectory();
                         String proxyServer = System.getProperty("proxy");
                         String proxyUser = System.getProperty("proxyUser");
                         String proxyPass = System.getProperty("proxyPass");
