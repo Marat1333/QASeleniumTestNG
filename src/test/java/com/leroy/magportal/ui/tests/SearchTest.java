@@ -14,8 +14,6 @@ import com.leroy.magportal.ui.models.search.FiltersData;
 import com.leroy.magportal.ui.pages.products.ExtendedProductCardPage;
 import com.leroy.magportal.ui.pages.products.ProductCardPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
-import com.leroy.utils.file_manager.FileManager;
-import org.testng.annotations.AfterTest;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -32,11 +30,6 @@ public class SearchTest extends WebBaseSteps {
 
     private final int defaultPageSize = 12;
     private final String allDepartments = "Каталог товаров";
-
-    @AfterTest
-    private void clearDownloadData() {
-        FileManager.clearDownloadDirectory();
-    }
 
     private HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> sendRequestsSearchProductsBy(
             GetCatalogSearch... paramsArray) {
