@@ -6,16 +6,17 @@ import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.RupturesClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.ruptures.ResRuptureSessionDataList;
+import com.leroy.magmobile.api.data.ruptures.RuptureProductData;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.common.BottomMenuPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductCardPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.work.WorkPage;
-import com.leroy.magmobile.ui.pages.work.ruptures.ActionsModalPage;
-import com.leroy.magmobile.ui.pages.work.ruptures.RuptureCard;
-import com.leroy.magmobile.ui.pages.work.ruptures.RupturesScannerPage;
-import com.leroy.magmobile.ui.pages.work.ruptures.SessionProductsListPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.*;
+import com.leroy.magmobile.ui.pages.work.ruptures.data.ActiveSessionData;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.RuptureData;
+import com.leroy.magmobile.ui.pages.work.ruptures.modal.DeleteRuptureModalPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.modal.DeleteSessionModalPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.modal.ExitActiveSessionModalPage;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Guice;
@@ -25,12 +26,12 @@ import java.util.List;
 
 @Guice(modules = {Module.class})
 public class RupturesTest extends AppBaseSteps {
-    RupturesClient client;
+    RupturesClient ruptureClient;
     CatalogSearchClient searchClient;
 
     @BeforeClass
     private void initClients() {
-        client = apiClientProvider.getRupturesClient();
+        ruptureClient = apiClientProvider.getRupturesClient();
         searchClient = apiClientProvider.getCatalogSearchClient();
     }
 
@@ -46,7 +47,7 @@ public class RupturesTest extends AppBaseSteps {
     @Test(description = "C3272519 Перебои на экране работы")
     public void testRupturesOnWorkScreen() throws Exception {
         String shopWithNoRuptures = "62";
-        ResRuptureSessionDataList activeSessionsData = client.getSessions("active", 1).asJson();
+        ResRuptureSessionDataList activeSessionsData = ruptureClient.getSessions("active", 1).asJson();
 
         //Step 1
         step("Перейти на экран \"работа\"");
@@ -81,21 +82,21 @@ public class RupturesTest extends AppBaseSteps {
         step("Перейти в ручной поиск и найти товар по лм-коду");
         SearchProductPage searchProductPage = rupturesScannerPage.navigateToSearchProductPage();
         searchProductPage.enterTextInSearchFieldAndSubmit(firstProductLmCode);
-        RuptureCard ruptureCard = new RuptureCard();
-        ruptureCard.verifyRequiredElements();
+        RuptureCardPage ruptureCardPage = new RuptureCardPage();
+        ruptureCardPage.verifyRequiredElementsWhenCreateRupture();
 
         //Step 3
         step("Сменить количество на 3+");
-        List<String> taskBeforeChange = ruptureCard.getTasksList();
-        ruptureCard.choseProductQuantityOption(RuptureCard.QuantityOption.THREE_OR_MORE);
-        ruptureCard.shouldTasksHasChanged(taskBeforeChange);
+        List<String> taskBeforeChange = ruptureCardPage.getTasksList();
+        ruptureCardPage.choseProductQuantityOption(RuptureCardPage.QuantityOption.THREE_OR_MORE);
+        ruptureCardPage.shouldTasksHasChanged(taskBeforeChange);
 
 
         //Step 4
         step("Открыть модалку добавления экшенов (карандашик в блоке экшенов или кнопка \"назначить задачи\")");
-        List<String> taskAfterChange = ruptureCard.getTasksList();
+        List<String> taskAfterChange = ruptureCardPage.getTasksList();
         String[] taskAfterChangeArray = new String[taskAfterChange.size()];
-        ActionsModalPage actionsModalPage = ruptureCard.callActionModalPage();
+        ActionsModalPage actionsModalPage = ruptureCardPage.callActionModalPage();
         actionsModalPage.shouldToDoListContainsTaskAndPossibleListNotContainsTask(taskAfterChange.toArray(taskAfterChangeArray));
 
         //Step 5
@@ -122,51 +123,51 @@ public class RupturesTest extends AppBaseSteps {
         toDoTasks = actionsModalPage.getToDoTasks();
         String[] toDoTasksArray = new String[toDoTasks.size()];
         toDoTasksArray = toDoTasks.toArray(toDoTasksArray);
-        ruptureCard = actionsModalPage.closeModal();
-        ruptureCard.shouldTasksListContainsTasks(toDoTasksArray);
+        ruptureCardPage = actionsModalPage.closeModal();
+        ruptureCardPage.shouldTasksListContainsTasks(toDoTasksArray);
 
         //Step 7
         step("Чекнуть один из экшенов");
         randomTaskIndex = (int) (Math.random() * toDoTasks.size());
         firstRandomTask = toDoTasks.get(randomTaskIndex);
-        ruptureCard.setTasksCheckBoxes(firstRandomTask);
-        ruptureCard.shouldCheckBoxConditionIsCorrect(true, firstRandomTask);
+        ruptureCardPage.setTasksCheckBoxes(firstRandomTask);
+        ruptureCardPage.shouldCheckBoxConditionIsCorrect(true, firstRandomTask);
 
         //Step 8
         step("Добавить любой текст в поле комментария");
         String comment = "asd123";
-        ruptureCard.setComment(comment);
-        ruptureCard.shouldSubmitCommentBtnIsActive();
+        ruptureCardPage.setComment(comment);
+        ruptureCardPage.shouldSubmitCommentBtnIsActive();
 
-        ruptureCard.submitComment();
-        ruptureCard.shouldCommentFieldHasText(comment);
+        ruptureCardPage.submitComment();
+        ruptureCardPage.shouldCommentFieldHasText(comment);
 
         //Step 9
         step("Перейти в основную карточку товара (пункт \"подробнее о товаре\")");
-        ProductCardPage productCardPage = ruptureCard.navigateToProductCard();
+        ProductCardPage productCardPage = ruptureCardPage.navigateToProductCard();
         productCardPage.verifyRequiredElements(false);
 
         //Step 10
         step("Вернуться назад на карточку перебоя");
-        ruptureCard = productCardPage.returnBack(RuptureCard.class);
-        ruptureCard.shouldTasksListContainsTasks(toDoTasksArray)
+        ruptureCardPage = productCardPage.returnBack(RuptureCardPage.class);
+        ruptureCardPage.shouldTasksListContainsTasks(toDoTasksArray)
                 .shouldCheckBoxConditionIsCorrect(true, firstRandomTask)
-                .shouldRadioBtnHasCorrectCondition(RuptureCard.QuantityOption.THREE_OR_MORE)
+                .shouldRadioBtnHasCorrectCondition(RuptureCardPage.QuantityOption.THREE_OR_MORE)
                 .shouldCommentFieldHasText(comment);
 
         //Step 11
         step("Подтвердить добавление перебоя в сессию");
-        RuptureData firstAddedRupture = ruptureCard.getRuptureData();
-        rupturesScannerPage = ruptureCard.acceptAdd();
+        RuptureData firstAddedRupture = ruptureCardPage.getRuptureData();
+        rupturesScannerPage = ruptureCardPage.acceptAdd();
         rupturesScannerPage.shouldCounterIsCorrect(1);
 
         //Step 12
         step("Добавить в сессию еще один перебой");
         searchProductPage = rupturesScannerPage.navigateToSearchProductPage();
         searchProductPage.enterTextInSearchFieldAndSubmit(secondProductLmCode);
-        ruptureCard = new RuptureCard();
-        RuptureData secondAddedRupture = ruptureCard.getRuptureData();
-        rupturesScannerPage = ruptureCard.acceptAdd();
+        ruptureCardPage = new RuptureCardPage();
+        RuptureData secondAddedRupture = ruptureCardPage.getRuptureData();
+        rupturesScannerPage = ruptureCardPage.acceptAdd();
         rupturesScannerPage.shouldCounterIsCorrect(2);
 
         //Step 13
@@ -182,8 +183,132 @@ public class RupturesTest extends AppBaseSteps {
 
         //Step 15
         step("Подтвердить выход из сессии");
-        workPage = exitActiveSessionModalPage.confirmExit();
+        exitActiveSessionModalPage.confirmExit();
+        workPage = new WorkPage();
         workPage.verifyRequiredElements();
+    }
+
+    @Test(description = "C3272521 Создание сессии со списка сессий")
+    public void testCreateSessionFromSessionList() throws Exception {
+        ProductItemData product = searchClient.getRandomProduct();
+
+        //Pre-conditions
+        WorkPage workPage = loginAndGoTo(WorkPage.class);
+        SessionListPage sessionListPage = workPage.goToRuptures();
+
+        //Step 1
+        step("Нажать на кнопку сканирования перебоев");
+        RupturesScannerPage rupturesScannerPage = sessionListPage.callScannerPage();
+        rupturesScannerPage.verifyRequiredElements();
+
+        //Step 2
+        step("Перейти в ручной поиск и найти любой товар.\n" +
+                "Клинкнуть на него.");
+        SearchProductPage searchProductPage = rupturesScannerPage.navigateToSearchProductPage();
+        searchProductPage.enterTextInSearchFieldAndSubmit(product.getLmCode());
+        RuptureCardPage ruptureCardPage = new RuptureCardPage();
+        ruptureCardPage.verifyRequiredElementsWhenCreateRupture();
+
+        //Step 3
+        step("Подтвердить добавление перебоя в сессию");
+        rupturesScannerPage = ruptureCardPage.acceptAdd();
+        rupturesScannerPage.shouldCounterIsCorrect(1)
+                .shouldRupturesListNavBtnIsVisible(true)
+                .verifyRequiredElements();
+
+        //Step 4
+        step("Закрыть сканер по кнопке \"х\"");
+        rupturesScannerPage.closeScanner();
+        SessionProductsListPage sessionProductsListPage = new SessionProductsListPage();
+        sessionProductsListPage.verifyRequiredElements();
+        ActiveSessionData activeSessionData = sessionProductsListPage.getActiveSessionData();
+
+        //Step 5
+        step("Выйти из сессии нажав стрелку назад");
+        ExitActiveSessionModalPage exitActiveSessionModalPage = sessionProductsListPage.exitActiveSession();
+        exitActiveSessionModalPage.verifyRequiredElements();
+
+        //Step 6
+        step("Подтвердить выход из сессии");
+        exitActiveSessionModalPage.confirmExit();
+        sessionListPage = new SessionListPage();
+        sessionListPage.verifyRequiredElements()
+                .shouldActiveSessionContainsSession(activeSessionData);
+    }
+
+    @Test(description = "C3272525 Удаление перебоя из сессии")
+    public void testDeleteRuptureFromSession() throws Exception {
+        int sessionId = ruptureClient.getActiveSessionWithProducts();
+        List<RuptureProductData> sessionProducts = ruptureClient.getProducts(sessionId).asJson().getItems();
+        String randomLmCode = sessionProducts.get((int)(Math.random()*sessionProducts.size())).getLmCode();
+
+        //Pre-conditions
+        WorkPage workPage = loginAndGoTo(WorkPage.class);
+        SessionListPage sessionListPage = workPage.goToRuptures();
+        SessionProductsListPage sessionProductsListPage = sessionListPage.goToSession(String.valueOf(sessionId));
+
+        //Step 1
+        step("Тапнуть на перебой");
+        RuptureCardPage ruptureCardPage = sessionProductsListPage.goToRuptureCard(randomLmCode);
+        ruptureCardPage.verifyRequiredElements();
+
+        //Step 2
+        step("Нажать на корзину");
+        DeleteRuptureModalPage deleteRuptureModalPage = ruptureCardPage.deleteRupture();
+        deleteRuptureModalPage.verifyRequiredElements();
+
+        //Step 3
+        step("Отменить удаление");
+        deleteRuptureModalPage.cancelDelete();
+        ruptureCardPage.verifyRequiredElements();
+
+        //Step 4
+        step("Нажать на корзину еще раз");
+        deleteRuptureModalPage = ruptureCardPage.deleteRupture();
+        deleteRuptureModalPage.verifyRequiredElements();
+
+        //Step 5
+        step("Подтвердить удаление");
+        deleteRuptureModalPage.confirmDelete();
+        sessionProductsListPage = new SessionProductsListPage();
+        sessionProductsListPage.shouldRuptureIsNotInList(randomLmCode);
+    }
+
+    @Test(description = "C3272526 Удаление сессии")
+    public void testDeleteSession() throws Exception {
+        int sessionId = ruptureClient.getActiveSessionWithProducts();
+
+        //Pre-conditions
+        WorkPage workPage = loginAndGoTo(WorkPage.class);
+        SessionListPage sessionListPage = workPage.goToRuptures();
+
+        //Step 1
+        step("Перейти в активную сессию");
+        SessionProductsListPage sessionProductsListPage = sessionListPage.goToSession(String.valueOf(sessionId));
+        sessionProductsListPage.verifyRequiredElements();
+        ActiveSessionData data = sessionProductsListPage.getActiveSessionData();
+
+        //Step 2
+        step("Нажать на корзину (справа сверху)");
+        DeleteSessionModalPage deleteSessionModalPage = sessionProductsListPage.deleteSession();
+        deleteSessionModalPage.verifyRequiredElements();
+
+        //Step 3
+        step("Отменить удаление сессии");
+        deleteSessionModalPage.cancelDelete();
+        sessionProductsListPage = new SessionProductsListPage();
+        sessionProductsListPage.verifyRequiredElements();
+
+        //Step 4
+        step("Нажать на корзину еще раз");
+        deleteSessionModalPage = sessionProductsListPage.deleteSession();
+        deleteSessionModalPage.verifyRequiredElements();
+
+        //Step 5
+        step("Подтвердить удаление");
+        deleteSessionModalPage.confirmDelete();
+        sessionListPage = new SessionListPage();
+        sessionListPage.shouldActiveSessionHasNotContainsSession(data);
     }
 
 }

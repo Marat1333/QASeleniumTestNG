@@ -62,17 +62,18 @@ public class ActionsModalPage extends CommonMagMobilePage {
     }
 
     @Step("Закрыть модалку")
-    public RuptureCard closeModal(){
+    public RuptureCardPage closeModal(){
         closeModalBtn.click();
-        return new RuptureCard();
+        return new RuptureCardPage();
     }
 
     @Step("Выбрать задачу")
     public ActionsModalPage choseTasks(String... taskNames) {
         for (String taskName : taskNames) {
+            int size = toDoTasksList.getCount();
             E(String.format("//*[@text='%s']/following-sibling::android.view.ViewGroup[@content-desc='Button-container'][1]",
                     taskName)).click();
-            waitUntilElementListSizeHasChanged(toDoTasksList);
+            toDoTasksList.waitUntilElementListSizeHasChanged(size);
         }
         return this;
     }

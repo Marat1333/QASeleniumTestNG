@@ -71,18 +71,6 @@ public abstract class BaseAppPage extends BasePage {
         return waitUntilContentIsChanged(pageSource, tiny_timeout);
     }
 
-    protected boolean waitUntilElementListSizeHasChanged(ElementList<? extends Element> elementList) {
-        int size = elementList.getCount();
-        try {
-            new WebDriverWait(androidDriver, timeout)
-                    .until(driverObject -> elementList.getCount() != size);
-            return true;
-        } catch (TimeoutException e) {
-            Log.warn(String.format("waitUntilElementListSizeHasChanged failed (tried for %d second(s))", timeout));
-            return false;
-        }
-    }
-
     protected void waitUntilProgressBarIsVisible() {
         // Уменьшил до 1 секунды (не всегда появляется progress bar, лишнее ожидание из-за этого)
         // Если будет не хватать 1 секунды, надо вернуть обратно на tiny_timeout)

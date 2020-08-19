@@ -25,9 +25,8 @@ public class ExitActiveSessionModalPage extends CommonMagMobilePage {
     }
 
     @Step("Подтвердить выход")
-    public WorkPage confirmExit() {
+    public void confirmExit() {
         closeBtn.click();
-        return new WorkPage();
     }
 
     public ExitActiveSessionModalPage verifyRequiredElements() {

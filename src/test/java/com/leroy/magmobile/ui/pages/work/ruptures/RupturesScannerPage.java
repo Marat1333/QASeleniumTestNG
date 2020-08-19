@@ -13,6 +13,12 @@ public class RupturesScannerPage extends ScannerWithSearchBtnPage {
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"Button\" and *[@text='СПИСОК ПЕРЕБОЕВ']]//android.view.ViewGroup/*")
     Element rupturesCounterLbl;
 
+    @Override
+    public void closeScanner() {
+        //этот сканер шустрее отрабатывает и с первого раза закрывается
+        closeScannerBtn.click();
+    }
+
     @Step("Перейти в список перебоя")
     public SessionProductsListPage navigateToRuptureProductList() {
         rupturesListBtn.click();

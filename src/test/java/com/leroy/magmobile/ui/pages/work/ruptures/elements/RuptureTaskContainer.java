@@ -5,7 +5,6 @@ import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magmobile.ui.elements.MagMobCheckBox;
 import com.leroy.magmobile.ui.pages.work.ruptures.ActionsModalPage;
 import org.openqa.selenium.WebDriver;
 
@@ -55,7 +54,7 @@ public class RuptureTaskContainer extends Element {
     }
 
     public boolean getCheckBoxCondition(String taskName) throws Exception {
-        RuptureTaskContainerCheckBox taskCheckBox = E(String.format(TYPICAL_CHECKBOX_XPATH, taskName), RuptureTaskContainerCheckBox.class);
+        RuptureTaskContainerGreenCheckBox taskCheckBox = E(String.format(TYPICAL_CHECKBOX_XPATH, taskName), RuptureTaskContainerGreenCheckBox.class);
         return taskCheckBox.isChecked();
     }
 
