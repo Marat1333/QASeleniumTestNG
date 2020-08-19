@@ -4,7 +4,6 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.work.print_tags.modal.EditTagModalPage;
 import io.qameta.allure.Step;
 
 public abstract class CommonActionWithProductModalPage extends CommonMagMobilePage {
@@ -23,7 +22,7 @@ public abstract class CommonActionWithProductModalPage extends CommonMagMobilePa
     Button printTagBtn;
 
     @Step("Напечатать ценник")
-    public void printTag(){
+    public void printTag() {
         printTagBtn.click();
     }
 

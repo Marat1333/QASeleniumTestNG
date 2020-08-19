@@ -28,7 +28,7 @@ public class SecondLeaveReviewPage extends CommonMagMobilePage {
     AndroidScrollView<String> mainScrollView;
 
     @Step("Заполнить поля: комментарий - {comment}, достоинства - {advantage}, недостатки - {disadvantage}")
-    public SecondLeaveReviewPage fillAllFields(String comment, String advantage, String disadvantage){
+    public SecondLeaveReviewPage fillAllFields(String comment, String advantage, String disadvantage) {
         leaveComment(comment);
         leaveAdvantage(advantage);
         leaveDisadvantage(disadvantage);
@@ -36,20 +36,20 @@ public class SecondLeaveReviewPage extends CommonMagMobilePage {
     }
 
     @Step("Оставить комментарией")
-    public SecondLeaveReviewPage leaveComment(String comment){
+    public SecondLeaveReviewPage leaveComment(String comment) {
         commentInput.clearAndFill(comment);
         return this;
     }
 
     @Step("Описать достоинства")
-    private SecondLeaveReviewPage leaveAdvantage(String advantage){
+    private SecondLeaveReviewPage leaveAdvantage(String advantage) {
         advantagesInput.click();
         advantagesInput.clearAndFill(advantage);
         return this;
     }
 
     @Step("Описать недостатки")
-    private SecondLeaveReviewPage leaveDisadvantage(String disadvantage){
+    private SecondLeaveReviewPage leaveDisadvantage(String disadvantage) {
         disadvantagesInput.click();
         mainScrollView.scrollToEnd();
         disadvantagesInput.clearAndFill(disadvantage);
@@ -57,17 +57,17 @@ public class SecondLeaveReviewPage extends CommonMagMobilePage {
     }
 
     @Step("Отправить отзыв")
-    public SuccessReviewSendingPage sendReview(){
+    public SuccessReviewSendingPage sendReview() {
         sendBtn.click();
         return new SuccessReviewSendingPage();
     }
 
     @Step("Проверить, что появился визуальный контроль на длинну комментария")
-    public SecondLeaveReviewPage shouldControlIsVisible(String comment){
+    public SecondLeaveReviewPage shouldControlIsVisible(String comment) {
         mainScrollView.scrollToBeginning();
-        if (comment.length()<40){
-            anAssert.isElementTextContains(commentLengthControlLbl, String.valueOf(40-comment.length()));
-        }else {
+        if (comment.length() < 40) {
+            anAssert.isElementTextContains(commentLengthControlLbl, String.valueOf(40 - comment.length()));
+        } else {
             anAssert.isElementNotVisible(commentLengthControlLbl);
         }
         return this;

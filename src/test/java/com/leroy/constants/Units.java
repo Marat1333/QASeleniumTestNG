@@ -1,15 +1,20 @@
 package com.leroy.constants;
 
 public enum Units {
-    EA("шт.");
+    EA("шт.", "EA");
 
-    Units(String name) {
-        this.name = name;
+    Units(String ruName, String enName) {
+        this.ruName = ruName;
+        this.enName = enName;
     }
 
-    private String name;
+    private String ruName, enName;
 
-    public String getName() {
-        return name;
+    public String getRuName() {
+        return ruName;
+    }
+
+    public String getEnName() {
+        return enName;
     }
 }

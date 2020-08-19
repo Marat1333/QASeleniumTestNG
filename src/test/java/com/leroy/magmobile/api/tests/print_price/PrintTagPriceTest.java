@@ -22,8 +22,6 @@ import java.util.List;
 import static com.leroy.core.matchers.Matchers.successful;
 import static com.leroy.core.matchers.Matchers.valid;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasSize;
 
 public class PrintTagPriceTest extends BaseProjectApiTest {
 

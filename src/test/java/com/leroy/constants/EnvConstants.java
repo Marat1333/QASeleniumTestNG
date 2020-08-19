@@ -37,6 +37,7 @@ public class EnvConstants {
     }
 
     public static final String URL_MAG_PORTAL = getUrlMagPortal();
+    public static final String URL_MAG_PORTAL_OLD = getProperty("url.ui.old");
 
     // Test data
     // Shops

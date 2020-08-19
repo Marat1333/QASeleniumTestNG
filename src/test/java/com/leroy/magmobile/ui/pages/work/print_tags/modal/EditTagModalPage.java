@@ -176,8 +176,8 @@ public class EditTagModalPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить данные товара")
-    public EditTagModalPage shouldProductDataIsCorrect(ProductItemData data){
-        softAssert.isElementTextEqual(lmCode, "ЛМ "+data.getLmCode());
+    public EditTagModalPage shouldProductDataIsCorrect(ProductItemData data) {
+        softAssert.isElementTextEqual(lmCode, "ЛМ " + data.getLmCode());
         softAssert.isEquals(ParserUtil.strWithOnlyDigits(barCode.getText()), data.getBarCode(), "barCode");
         softAssert.isElementTextEqual(title, data.getTitle());
         softAssert.isEquals(ParserUtil.strWithOnlyDigits(price.getText()),

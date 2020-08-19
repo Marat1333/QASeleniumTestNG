@@ -150,7 +150,7 @@ public class CatalogProductClient extends BaseMashupClient {
             lmCode = eachData.getLmCode();
             CatalogComplementaryProducts data = getComplementaryProducts(lmCode, userShopId).asJson();
             List<CatalogProductData> itemsList = data.getItems();
-            if (itemsList.size()>0){
+            if (itemsList.size() > 0) {
                 data.setParentLmCode(lmCode);
                 return data;
             }
@@ -166,7 +166,7 @@ public class CatalogProductClient extends BaseMashupClient {
             lmCode = eachData.getLmCode();
             CatalogComplementaryProducts data = getComplementaryProducts(lmCode, userShopId).asJson();
             List<CatalogProductData> itemsList = data.getItems();
-            if (itemsList.size()==0){
+            if (itemsList.size() == 0) {
                 data.setParentLmCode(lmCode);
                 return data;
             }

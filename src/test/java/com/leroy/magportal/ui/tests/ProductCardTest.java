@@ -19,7 +19,6 @@ import com.leroy.magportal.ui.pages.products.ExtendedProductCardPage;
 import com.leroy.magportal.ui.pages.products.ProductCardPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage.FilterFrame;
-import io.qameta.allure.Issue;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -200,7 +199,6 @@ public class ProductCardTest extends WebBaseSteps {
         extendedProductCardPage.shouldAllAdditionalProductsIsVisible(moreThan4ComplementsList);
     }
 
-    @Issue("PUZ2-2271")
     @Test(description = "C22789188 Check Breadcrumbs")
     public void testBreadCrumbsNavigation() throws Exception {
         String lmCode = getRandomLmCode();
@@ -218,8 +216,8 @@ public class ProductCardTest extends WebBaseSteps {
         //Step 1
         step("Перейти на уровень подтипа");
         SearchProductPage searchProductPage = extendedProductCardPage.navigateToSearchByNomenclatureAttribute(subClass);
-        searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId, CatalogSearchParams.subdepartmentId,
-                CatalogSearchParams.classId, CatalogSearchParams.subclassId);
+        /*searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId, CatalogSearchParams.subdepartmentId,
+                CatalogSearchParams.classId, CatalogSearchParams.subclassId);*/
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(subClass);
         searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, allDepartments, department, subDepartment,
                 classId);
@@ -228,8 +226,8 @@ public class ProductCardTest extends WebBaseSteps {
         //Step 2
         step("Перейти на уровень типа");
         searchProductPage = extendedProductCardPage.navigateToSearchByNomenclatureAttribute(classId);
-        searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId, CatalogSearchParams.subdepartmentId,
-                CatalogSearchParams.classId);
+        /*searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId, CatalogSearchParams.subdepartmentId,
+                CatalogSearchParams.classId);*/
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(classId);
         searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, allDepartments, department, subDepartment);
         extendedProductCardPage = navigateToProductCardByUrl(lmCode, false);
@@ -237,7 +235,7 @@ public class ProductCardTest extends WebBaseSteps {
         //Step 3
         step("Перейти на уровень подотдела");
         searchProductPage = extendedProductCardPage.navigateToSearchByNomenclatureAttribute(subDepartment);
-        searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId, CatalogSearchParams.subdepartmentId);
+        //searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId, CatalogSearchParams.subdepartmentId);
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(subDepartment);
         searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, allDepartments, department);
         extendedProductCardPage = navigateToProductCardByUrl(lmCode, false);
@@ -245,7 +243,7 @@ public class ProductCardTest extends WebBaseSteps {
         //Step 4
         step("Перейти на уровень отдела");
         searchProductPage = extendedProductCardPage.navigateToSearchByNomenclatureAttribute(department);
-        searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId);
+        //searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId);
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(department);
         searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, allDepartments);
         extendedProductCardPage = navigateToProductCardByUrl(lmCode, false);
@@ -253,18 +251,18 @@ public class ProductCardTest extends WebBaseSteps {
         //Step 5
         step("Перейти на уровень всех отделов");
         searchProductPage = extendedProductCardPage.navigateToSearchByNomenclatureAttribute(allDepartments);
-        searchProductPage.shouldUrlNotContains(CatalogSearchParams.departmentId);
+        //searchProductPage.shouldUrlNotContains(CatalogSearchParams.departmentId);
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(allDepartments);
         searchProductPage.navigateBack();
-        //bug
+        extendedProductCardPage = new ExtendedProductCardPage();
         extendedProductCardPage.verifyRequiredElements();
         ProductCardPage productCardPage = navigateToProductCardByUrl(lmCode, true);
 
         //Step 6
         step("Повторить шаг 1 для укороченной карточки товара");
         searchProductPage = productCardPage.navigateToSearchByNomenclatureAttribute(subClass);
-        searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId, CatalogSearchParams.subdepartmentId,
-                CatalogSearchParams.classId, CatalogSearchParams.subclassId);
+        /*searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId, CatalogSearchParams.subdepartmentId,
+                CatalogSearchParams.classId, CatalogSearchParams.subclassId);*/
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(subClass);
         searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, allDepartments, department, subDepartment,
                 classId);
@@ -273,8 +271,8 @@ public class ProductCardTest extends WebBaseSteps {
         //Step 7
         step("Повторить шаг 2 для укороченной карточки товара");
         searchProductPage = productCardPage.navigateToSearchByNomenclatureAttribute(classId);
-        searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId, CatalogSearchParams.subdepartmentId,
-                CatalogSearchParams.classId);
+        /*searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId, CatalogSearchParams.subdepartmentId,
+                CatalogSearchParams.classId);*/
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(classId);
         searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, allDepartments, department, subDepartment);
         productCardPage = navigateToProductCardByUrl(lmCode, true);
@@ -282,7 +280,7 @@ public class ProductCardTest extends WebBaseSteps {
         //Step 8
         step("Повторить шаг 3 для укороченной карточки товара");
         searchProductPage = productCardPage.navigateToSearchByNomenclatureAttribute(subDepartment);
-        searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId, CatalogSearchParams.subdepartmentId);
+        //searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId, CatalogSearchParams.subdepartmentId);
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(subDepartment);
         searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, allDepartments, department);
         productCardPage = navigateToProductCardByUrl(lmCode, true);
@@ -290,7 +288,7 @@ public class ProductCardTest extends WebBaseSteps {
         //Step 9
         step("Повторить шаг 4 для укороченной карточки товара");
         searchProductPage = productCardPage.navigateToSearchByNomenclatureAttribute(department);
-        searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId);
+        //searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId);
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(department);
         searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, allDepartments);
         productCardPage = navigateToProductCardByUrl(lmCode, true);
@@ -301,6 +299,7 @@ public class ProductCardTest extends WebBaseSteps {
         searchProductPage.shouldUrlNotContains(CatalogSearchParams.departmentId);
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(allDepartments);
         searchProductPage.navigateBack();
+        productCardPage = new ProductCardPage();
         productCardPage.verifyRequiredElements();
     }
 

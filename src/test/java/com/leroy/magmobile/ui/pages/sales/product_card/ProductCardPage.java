@@ -27,7 +27,7 @@ public class ProductCardPage extends CommonMagMobilePage {
         mainArea.waitForVisibility();
     }
 
-    public enum Tabs{
+    public enum Tabs {
         DESCRIPTION("ОПИСАНИЕ ТОВАРА"),
         SPECIFICATION("ХАРАКТЕРИСТИКИ"),
         REVIEWS("ОТЗЫВЫ"),
@@ -35,8 +35,8 @@ public class ProductCardPage extends CommonMagMobilePage {
 
         private String name;
 
-        Tabs(String name){
-            this.name=name;
+        Tabs(String name) {
+            this.name = name;
         }
 
         public String getName() {

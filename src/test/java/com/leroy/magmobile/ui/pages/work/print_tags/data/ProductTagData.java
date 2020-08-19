@@ -7,14 +7,14 @@ import java.util.Objects;
 
 @Data
 public class ProductTagData implements Serializable {
-    public ProductTagData(String lmCode, int smallSizeCount, int middleSizeCount, int bigSizeCount){
+    public ProductTagData(String lmCode, int smallSizeCount, int middleSizeCount, int bigSizeCount) {
         this.lmCode = lmCode;
         this.smallSizeCount = smallSizeCount;
         this.middleSizeCount = middleSizeCount;
         this.bigSizeCount = bigSizeCount;
     }
 
-    public ProductTagData(){
+    public ProductTagData() {
     }
 
     private String lmCode;
@@ -24,7 +24,7 @@ public class ProductTagData implements Serializable {
     private int middleSizeCount;
     private int bigSizeCount;
 
-    public void setSizes(int smallSizeCount, int middleSizeCount, int bigSizeCount){
+    public void setSizes(int smallSizeCount, int middleSizeCount, int bigSizeCount) {
         this.smallSizeCount = smallSizeCount;
         this.middleSizeCount = middleSizeCount;
         this.bigSizeCount = bigSizeCount;

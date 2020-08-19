@@ -9,7 +9,7 @@ import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountReasonData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
-import com.leroy.magmobile.api.tests.BaseProjectApiTest;
+import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
 import io.qameta.allure.Step;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
@@ -24,7 +24,7 @@ import java.util.Random;
 
 import static com.leroy.constants.sales.DiscountConst.TYPE_NEW_PRICE;
 
-public class CartTest extends BaseProjectApiTest {
+public class CartTest extends BaseMagPortalApiTest {
 
     private CartClient cartClient;
 
