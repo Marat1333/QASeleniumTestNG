@@ -37,7 +37,7 @@ public class RuptureProductData {
         return LocalDateTime.parse(planningDeliveryTime, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss[.SSS][.S]'Z'"));
     }
 
-    public void setPlanningDeliveryTime(LocalDateTime date) {
+    public void setPlanningDeliveryTimeAsLocalDateTime(LocalDateTime date) {
         this.planningDeliveryTime = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
     }
 
@@ -50,7 +50,7 @@ public class RuptureProductData {
         this.setGamma(RandomStringUtils.randomAlphabetic(1));
         this.setTop(RandomStringUtils.randomNumeric(1));
         this.setProvider(RandomStringUtils.randomAlphabetic(10));
-        this.setPlanningDeliveryTime(LocalDateTime.now());
+        this.setPlanningDeliveryTimeAsLocalDateTime(LocalDateTime.now());
         this.setShopStock(0);
         this.setShelfStock(0);
         this.setTheoreticalStock(0);

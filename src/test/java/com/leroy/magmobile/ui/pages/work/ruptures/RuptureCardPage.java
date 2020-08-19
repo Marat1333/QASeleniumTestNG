@@ -11,6 +11,7 @@ import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductCardPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.RuptureData;
 import com.leroy.magmobile.ui.pages.work.ruptures.elements.RuptureTaskContainer;
+import com.leroy.magmobile.ui.pages.work.ruptures.modal.DeleteRuptureModalPage;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
@@ -18,9 +19,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RuptureCard extends CommonMagMobilePage {
+public class RuptureCardPage extends CommonMagMobilePage {
     @AppFindBy(accessibilityId = "CloseModal")
     Button closeModalBtn;
+
+    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='DefaultScreenHeader']/*[2]")
+    Button deleteRuptureBtn;
 
     @AppFindBy(xpath = "//android.widget.TextView[@content-desc='lmCode']")
     Element lmCodeLbl;
@@ -79,6 +83,9 @@ public class RuptureCard extends CommonMagMobilePage {
     @AppFindBy(text = "ПОДТВЕРДИТЬ")
     Button acceptBtn;
 
+    @AppFindBy(text = "ДЕЙСТВИЯ С ПЕРЕБОЕМ")
+    Button ruptureActionsBtn;
+
     @AppFindBy(xpath = "//android.widget.TextView[@text='ПОДТВЕРДИТЬ']/ancestor::*[@content-desc='Button-container']/preceding-sibling::android.view.ViewGroup[1]")
     Button ruptureCallActionModalBtn;
 
@@ -95,7 +102,7 @@ public class RuptureCard extends CommonMagMobilePage {
     @Override
     protected void waitForPageIsLoaded() {
         //долгий запрос на бэк
-        priceLbl.waitForVisibility(40);
+        priceLbl.waitForVisibility(long_timeout);
         zeroProductNeedToAddBtn.waitForVisibility();
     }
 
@@ -134,20 +141,20 @@ public class RuptureCard extends CommonMagMobilePage {
     }
 
     @Step("Ввести комментарий")
-    public RuptureCard setComment(String comment) {
+    public RuptureCardPage setComment(String comment) {
         mainScrollView.scrollToEnd();
         commentField.clearAndFill(comment);
         return this;
     }
 
     @Step("Подтвердить ввод комментария")
-    public RuptureCard submitComment() {
+    public RuptureCardPage submitComment() {
         submitCommentBtn.click();
         return this;
     }
 
     @Step("Нажать на чек-боксы задач")
-    public RuptureCard setTasksCheckBoxes(String... tasksNames) {
+    public RuptureCardPage setTasksCheckBoxes(String... tasksNames) {
         for (String each : tasksNames) {
             ruptureTaskContainer.setCheckBoxesToTasks(each);
         }
@@ -160,7 +167,7 @@ public class RuptureCard extends CommonMagMobilePage {
     }
 
     @Step("Выбрать кол-во товара на полке")
-    public RuptureCard choseProductQuantityOption(QuantityOption option) throws Exception {
+    public RuptureCardPage choseProductQuantityOption(QuantityOption option) throws Exception {
         if (!supplyDateLbl.isVisible()) {
             mainScrollView.scrollDownToElement(supplyDateLbl);
         }
@@ -183,21 +190,27 @@ public class RuptureCard extends CommonMagMobilePage {
         return this;
     }
 
+    @Step("Удалить перебой")
+    public DeleteRuptureModalPage deleteRupture(){
+        deleteRuptureBtn.click();
+        return new DeleteRuptureModalPage();
+    }
+
     @Step("Проверить, что кнопка подтверждения ввода комментария активна")
-    public RuptureCard shouldSubmitCommentBtnIsActive() throws Exception {
+    public RuptureCardPage shouldSubmitCommentBtnIsActive() throws Exception {
         anAssert.isTrue(submitCommentBtn.isActive(), "inactive");
         return this;
     }
 
     @Step("Проверить, что комментарий заполнен")
-    public RuptureCard shouldCommentFieldHasText(String comment) {
+    public RuptureCardPage shouldCommentFieldHasText(String comment) {
         mainScrollView.scrollToEnd();
         anAssert.isElementTextEqual(commentField, comment);
         return this;
     }
 
     @Step("Проверить, что радио-баттон установлен в правильное положение")
-    public RuptureCard shouldRadioBtnHasCorrectCondition(QuantityOption option) throws Exception {
+    public RuptureCardPage shouldRadioBtnHasCorrectCondition(QuantityOption option) throws Exception {
         MagMobRadioButton magMobRadioButton = null;
         switch (option) {
             case ZERO:
@@ -222,7 +235,7 @@ public class RuptureCard extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что состояние чек-бокса корректное")
-    public RuptureCard shouldCheckBoxConditionIsCorrect(boolean isEnabled, String taskName) throws Exception {
+    public RuptureCardPage shouldCheckBoxConditionIsCorrect(boolean isEnabled, String taskName) throws Exception {
         boolean checkBoxCondition = ruptureTaskContainer.getCheckBoxCondition(taskName);
         if (isEnabled) {
             anAssert.isTrue(checkBoxCondition, "чекбокс в состоянии disabled");
@@ -233,7 +246,7 @@ public class RuptureCard extends CommonMagMobilePage {
     }
 
     @Step("Проверить что список задач изменился")
-    public RuptureCard shouldTasksHasChanged(List<String> tasksBefore) {
+    public RuptureCardPage shouldTasksHasChanged(List<String> tasksBefore) {
         mainScrollView.scrollToBeginning();
         List<String> taskAfter;
         if (tasksBefore.size() == 0) {
@@ -246,7 +259,7 @@ public class RuptureCard extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что список задач содержит переданные задачи")
-    public RuptureCard shouldTasksListContainsTasks(String... tasks) {
+    public RuptureCardPage shouldTasksListContainsTasks(String... tasks) {
         List<String> uiTasksList = ruptureTaskContainer.getTaskList();
         for (String task : tasks) {
             softAssert.isTrue(uiTasksList.contains(task), "список не содержит задачу" + task);
@@ -255,7 +268,7 @@ public class RuptureCard extends CommonMagMobilePage {
         return this;
     }
 
-    public RuptureCard verifyRequiredElements() {
+    public RuptureCardPage verifyRequiredElementsWhenCreateRupture() {
         softAssert.areElementsVisible(getPageSource(), closeModalBtn, lmCodeLbl, barCodeLbl, titleLbl, productPhoto,
                 ruptureTaskContainer, priceLbl);
         mainScrollView.scrollToEnd();
@@ -263,6 +276,13 @@ public class RuptureCard extends CommonMagMobilePage {
                 oneProductNeedToAddBtn, twoProductsNeedToAddBtn, threeOrMoreProductsNeedToAddBtn,
                 rmWarehouseProductQuantityLbl, supplyDateLbl, acceptBtn, ruptureCallActionModalBtn, commentField);
         mainScrollView.scrollToBeginning();
+        softAssert.verifyAll();
+        return this;
+    }
+
+    public RuptureCardPage verifyRequiredElements() {
+        softAssert.areElementsVisible(getPageSource(), closeModalBtn, lmCodeLbl, barCodeLbl, titleLbl, productPhoto,
+                ruptureTaskContainer, priceLbl, deleteRuptureBtn, ruptureActionsBtn);
         softAssert.verifyAll();
         return this;
     }

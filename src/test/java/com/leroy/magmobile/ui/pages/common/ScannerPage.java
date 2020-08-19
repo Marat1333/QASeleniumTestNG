@@ -9,7 +9,7 @@ public class ScannerPage extends CommonMagMobilePage{
     Button allowAccessToCameraBtn;
 
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"ScreenContent\"]/android.view.ViewGroup[2]")
-    Button closeScannerBtn;
+    protected Button closeScannerBtn;
 
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"ScreenContent\"]/android.view.ViewGroup[3]")
     Button flashLightBtn;

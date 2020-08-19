@@ -5,7 +5,7 @@ import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magmobile.ui.elements.MagMobCheckBox;
+import com.leroy.magmobile.ui.elements.MagMobGrayCheckBox;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.RuptureData;
 import com.leroy.utils.ParserUtil;
@@ -28,8 +28,8 @@ public class RuptureWidget extends CardWidget<RuptureData> {
     @AppFindBy(xpath = ".//android.view.ViewGroup[@content-desc='barCode']/following-sibling::android.widget.TextView")
     Element titleLbl;
 
-    @AppFindBy(xpath = ".//android.view.ViewGroup[@content-desc='Button-container']", clazz = MagMobCheckBox.class)
-    ElementList<MagMobCheckBox> taskCheckBoxes;
+    @AppFindBy(xpath = ".//android.view.ViewGroup[@content-desc='Button-container']", clazz = MagMobGrayCheckBox.class)
+    ElementList<MagMobGrayCheckBox> taskCheckBoxes;
 
     @AppFindBy(xpath = ".//android.view.ViewGroup[@content-desc='Button-container']/following-sibling::android.widget.TextView[1]")
     ElementList<Element> tasksLbl;
@@ -50,7 +50,7 @@ public class RuptureWidget extends CardWidget<RuptureData> {
         int sizeCounter = 0;
         while (true) {
             for (int i = 0; i < taskCheckBoxes.getCount(); i++) {
-                actionsMap.put(tasksLbl.get(i).getText(pageSource), taskCheckBoxes.get(i).isCheckedGrey());
+                actionsMap.put(tasksLbl.get(i).getText(pageSource), taskCheckBoxes.get(i).isChecked());
             }
             if (sizeCounter == actionsMap.size()) {
                 break;

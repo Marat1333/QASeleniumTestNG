@@ -5,7 +5,7 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.ui.elements.MagMobCheckBox;
+import com.leroy.magmobile.ui.elements.MagMobGreenCheckBox;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.work.print_tags.data.ProductTagData;
 import com.leroy.magmobile.ui.pages.work.print_tags.enums.Format;
@@ -44,13 +44,13 @@ public class EditTagModalPage extends CommonMagMobilePage {
     EditBox bigSizeEditBox;
 
     @AppFindBy(xpath = "//*[@text='4 × 6 см']/preceding-sibling::*[1]")
-    MagMobCheckBox smallSizeCheckBox;
+    MagMobGreenCheckBox smallSizeCheckBox;
 
     @AppFindBy(xpath = "//*[@text='6 × 10 см']/preceding-sibling::*[1]")
-    MagMobCheckBox middleSizeCheckBox;
+    MagMobGreenCheckBox middleSizeCheckBox;
 
     @AppFindBy(xpath = "//*[@text='10 × 18 см']/preceding-sibling::*[1]")
-    MagMobCheckBox bigSizeCheckBox;
+    MagMobGreenCheckBox bigSizeCheckBox;
 
     @AppFindBy(xpath = "//*[contains(@text,'6 см')]/../../following-sibling::*[1]//*[contains(@text,'Ценников может быть от 1 до 40.')]")
     Element smallSizeControlLbl;

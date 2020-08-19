@@ -98,6 +98,18 @@ public class RupturesClient extends BaseMashupClient {
         return getProducts(sessionId, null, null, null, startFrom, pageSize);
     }
 
+    public int getActiveSessionWithProducts(){
+        List<ResRuptureSessionData> activeSessionsData = getSessions("active", 10).asJson().getItems();
+        int result = 0;
+        for (ResRuptureSessionData each : activeSessionsData){
+            if (each.getTotalProductCount()>0) {
+                result = each.getSessionId();
+                break;
+            }
+        }
+        return result;
+    }
+
     // ---------- GET /ruptures/sessions ---------------- //
 
     private RupturesSessionsRequest getSessionsDefaultRequest() {
