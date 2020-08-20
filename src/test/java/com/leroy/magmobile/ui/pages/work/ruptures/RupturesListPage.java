@@ -15,7 +15,7 @@ import io.qameta.allure.Step;
 
 import java.util.List;
 
-public class SessionProductsListPage extends CommonMagMobilePage {
+public class RupturesListPage extends CommonMagMobilePage {
     @AppFindBy(accessibilityId = "Button")
     Button backBtn;
 
@@ -59,6 +59,12 @@ public class SessionProductsListPage extends CommonMagMobilePage {
         return data;
     }
 
+    @Step("Добавить перебой в сессию")
+    public RupturesScannerPage addRuptureToSession(){
+        addRuptureBtn.click();
+        return new RupturesScannerPage();
+    }
+
     @Step("Удалить сессию")
     public DeleteSessionModalPage deleteSession(){
         deleteBtn.click();
@@ -84,7 +90,7 @@ public class SessionProductsListPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что перебоя нет в списке")
-    public SessionProductsListPage shouldRuptureIsNotInList(String lmCode) throws Exception {
+    public RupturesListPage shouldRuptureIsNotInList(String lmCode) throws Exception {
         if (!ruptureCardScrollView.isVisible()) {
             return this;
         } else {
@@ -97,7 +103,7 @@ public class SessionProductsListPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что данные перебоев отображены корректно")
-    public SessionProductsListPage shouldRupturesDataIsCorrect(RuptureData... dataArray) throws Exception {
+    public RupturesListPage shouldRupturesDataIsCorrect(RuptureData... dataArray) throws Exception {
         List<RuptureData> uiRuptureDataList = ruptureCardScrollView.getFullDataList();
         for (int i = 0; i < dataArray.length; i++) {
             anAssert.isEquals(uiRuptureDataList.get(i), dataArray[i], "data mismatch");
@@ -105,7 +111,15 @@ public class SessionProductsListPage extends CommonMagMobilePage {
         return this;
     }
 
-    public SessionProductsListPage verifyRequiredElements() {
+    @Step("Проверить, что счетчик перебоев отображает корректное значение")
+    public RupturesListPage shouldRuptureCounterIsCorrect(int counter){
+        String[] tmpArray = creatorAndRuptureQuantityLbl.getText().split(" / ");
+        int uiCounter = Integer.parseInt(ParserUtil.strWithOnlyDigits(tmpArray[0]));
+        anAssert.isEquals(uiCounter, counter, "ruptures counter");
+        return this;
+    }
+
+    public RupturesListPage verifyRequiredElements() {
         softAssert.areElementsVisible(backBtn, deleteBtn, creationDateLbl, creatorAndRuptureQuantityLbl,
                 sessionNumberAndStatusLbl, addRuptureBtn, endSessionBtn);
         softAssert.verifyAll();
