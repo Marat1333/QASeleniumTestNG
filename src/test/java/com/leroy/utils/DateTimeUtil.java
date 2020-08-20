@@ -16,6 +16,9 @@ import static java.time.temporal.ChronoUnit.DAYS;
 
 public class DateTimeUtil {
     public static final String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
+    public static final String YYYY_MM_DD_HH_MM = "yyyy-MM-dd-HH-mm";
+    public static final String DD_MM_YYYY = "dd.MM.yyyy";
+    public static final String DD_MMMM_HH_MM = "dd MMMM, HH:mm";
 
     /**
      * Check if the date matches the format
@@ -50,6 +53,11 @@ public class DateTimeUtil {
             Log.error("strToLocalDate() method: " + err.getMessage());
             return null;
         }
+    }
+
+    public static String localDateTimeToStr(LocalDateTime date, String dateFormat) {
+        return date.format(DateTimeFormatter.ofPattern(
+                dateFormat, new Locale("ru")));
     }
 
     public static String localDateToStr(LocalDate date, String dateFormat) {

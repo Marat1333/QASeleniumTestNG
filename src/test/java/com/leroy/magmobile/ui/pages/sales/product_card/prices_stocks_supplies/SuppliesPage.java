@@ -5,7 +5,6 @@ import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.api.data.catalog.supply.CatalogSupplierData;
-import com.leroy.magmobile.ui.pages.sales.product_card.ProductCardPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.data.SupplyHistoryData;
 import com.leroy.magmobile.ui.pages.sales.product_card.widgets.SupplyHistoryWidget;
 import com.leroy.utils.DateTimeUtil;
@@ -45,6 +44,9 @@ public class SuppliesPage extends ProductPricesQuantitySupplyPage {
 
     @AppFindBy(xpath = "//*[@text='Тип поставки']/following-sibling::*")
     Element typeLbl;
+
+    @AppFindBy(xpath = "//*[@text='Срок поставки СС']/following-sibling::*")
+    Element supplyPeriodLbl;
 
     @AppFindBy(xpath = "//*[@text='Франко']/following-sibling::*")
     Element frankoLbl;
@@ -105,13 +107,13 @@ public class SuppliesPage extends ProductPricesQuantitySupplyPage {
             softAssert.isEquals(uiEntity.getId(), apiEntity.getOrderNo(), "order number");
             softAssert.isEquals(uiEntity.getOrderedAmount(), apiEntity.getOrderedItemQty(), "ordered quantity");
             softAssert.isEquals(uiEntity.getReceivedAmount(), apiEntity.getReceivedItemQty(), "received quantity");
-            if (apiEntity.getPlannedDeliveryDate()!=null){
+            if (apiEntity.getPlannedDeliveryDate() != null) {
                 softAssert.isEquals(uiEntity.getContractDate(), apiEntity.getPlannedDeliveryDate().plusHours(3).toLocalDate(), "contract date");
             }
-            if (apiEntity.getSupplierDate()!=null) {
+            if (apiEntity.getSupplierDate() != null) {
                 softAssert.isEquals(uiEntity.getNoteDate(), apiEntity.getSupplierDate().plusHours(3).toLocalDate(), "planned date");
             }
-            if (apiEntity.getActualDeliveryDate()!=null){
+            if (apiEntity.getActualDeliveryDate() != null) {
                 softAssert.isEquals(uiEntity.getReceiveDate(), apiEntity.getActualDeliveryDate().plusHours(3).toLocalDate(), "receiving date");
             }
         }
@@ -132,7 +134,8 @@ public class SuppliesPage extends ProductPricesQuantitySupplyPage {
         if (!frankoLbl.isVisible()) {
             mainScrollView.scrollDownToElement(frankoLbl);
         }
-        if (!frankoLbl.getText().equals("")){
+        softAssert.isElementTextContains(supplyPeriodLbl, data.getContractDeliveryTime());
+        if (!frankoLbl.getText().equals("")) {
             softAssert.isElementTextEqual(frankoLbl, "от " + data.getFranko() + ",00  ₽");
         }
         softAssert.isElementTextEqual(packSizeLbl, data.getPackSize());

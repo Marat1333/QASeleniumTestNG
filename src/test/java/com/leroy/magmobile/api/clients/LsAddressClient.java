@@ -123,7 +123,7 @@ public class LsAddressClient extends BaseMashupClient {
     public Response<CellProductDataList> createCellProducts(String cellId, ReqCellProductDataList postData) {
         LsAddressCellProductsPostRequest req = new LsAddressCellProductsPostRequest();
         req.setCellId(cellId);
-        req.setLdap(userSessionData.getUserLdap());
+        req.setLdapHeader(userSessionData.getUserLdap());
         req.setShopId(userSessionData.getUserShopId());
         req.jsonBody(postData);
         return execute(req, CellProductDataList.class);
@@ -140,7 +140,7 @@ public class LsAddressClient extends BaseMashupClient {
     @Step("Update cell products for cellId={cellId}, lmCode={lmCode}")
     public Response<CellProductData> updateCellProducts(String cellId, String lmCode, ReqCellProductData putData) {
         LsAddressCellProductsPut req = new LsAddressCellProductsPut();
-        req.setLdap(userSessionData.getUserLdap());
+        req.setLdapHeader(userSessionData.getUserLdap());
         req.setShopId(userSessionData.getUserShopId());
         req.setCellId(cellId);
         req.setLmCode(lmCode);
@@ -151,7 +151,7 @@ public class LsAddressClient extends BaseMashupClient {
     @Step("Move cell products for cellId={cellId}")
     public Response<JsonNode> moveCellProducts(String cellId, ReqCellProductData putData) {
         LsAddressCellProductsMove req = new LsAddressCellProductsMove();
-        req.setLdap(userSessionData.getUserLdap());
+        req.setLdapHeader(userSessionData.getUserLdap());
         req.setCellId(cellId);
         req.jsonBody(putData);
         return execute(req, JsonNode.class);
@@ -162,7 +162,7 @@ public class LsAddressClient extends BaseMashupClient {
         LsAddressCellProductsDelete req = new LsAddressCellProductsDelete();
         req.setCellId(cellId);
         req.setLmCode(lmCode);
-        req.setLdap(userSessionData.getUserLdap());
+        req.setLdapHeader(userSessionData.getUserLdap());
         req.setShopId(userSessionData.getUserShopId());
         return execute(req, JsonNode.class);
     }

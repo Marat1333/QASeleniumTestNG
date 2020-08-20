@@ -89,14 +89,12 @@ public class ProductCardPage extends MagPortalBasePage {
     @Override
     public boolean navigateBack() throws InterruptedException {
         boolean result = super.navigateBack();
-        waitForPageIsLoaded();
         return result;
     }
 
     @Override
     public boolean navigateForward() throws InterruptedException {
         boolean result = super.navigateForward();
-        waitForPageIsLoaded();
         return result;
     }
 
@@ -265,17 +263,15 @@ public class ProductCardPage extends MagPortalBasePage {
 
     @Step("Проверить, что страница 'Карта товара' отображается корректно")
     public ProductCardPage verifyRequiredElements() {
-        ExtendedProductCardPage extendedProductCardPage = new ExtendedProductCardPage();
         softAssert.areElementsVisible(gammaBadge, productTitle, lmCodeLbl, pricesAndStocksInOtherShops);
-        softAssert.areElementsNotVisible(extendedProductCardPage.topBadge, extendedProductCardPage.addProductToCart,
-                extendedProductCardPage.addProductToEstimate, extendedProductCardPage.productPriceInfoWidget,
-                extendedProductCardPage.productQuantityInfoWidget);
+        softAssert.areElementsNotVisible(E("//button[@id='ANALOG']", "аналогичные товары"),
+                E("//button[@id='COMPLEMENT']", "комплементарные товары"));
         shouldUrlContains("isAllGammaView=true");
         softAssert.verifyAll();
         return this;
     }
 
-    // TODO Добавить @Step
+    @Step("Проверить данные во вкладке \"Цены и запас в других магазинах\"")
     public void shouldNearestShopInfoIsCorrect(List<NearestShopsData> dataList) throws Exception {
         ShopCardData data;
         NearestShopsData nearestShopsData;
@@ -300,7 +296,7 @@ public class ProductCardPage extends MagPortalBasePage {
         }
     }
 
-    // TODO Добавить @Step
+    @Step("Проверить, что найденный магазин соответствует критерию поиска")
     public void shouldFoundShopsIsCorrect(String criterion) {
         ShopCardData data;
         for (ShopCardWidget tmp : shopsList) {
