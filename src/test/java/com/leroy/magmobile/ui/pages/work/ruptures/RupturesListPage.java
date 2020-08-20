@@ -60,13 +60,13 @@ public class RupturesListPage extends CommonMagMobilePage {
     }
 
     @Step("Добавить перебой в сессию")
-    public RupturesScannerPage addRuptureToSession(){
+    public RupturesScannerPage addRuptureToSession() {
         addRuptureBtn.click();
         return new RupturesScannerPage();
     }
 
     @Step("Удалить сессию")
-    public DeleteSessionModalPage deleteSession(){
+    public DeleteSessionModalPage deleteSession() {
         deleteBtn.click();
         return new DeleteSessionModalPage();
     }
@@ -111,8 +111,15 @@ public class RupturesListPage extends CommonMagMobilePage {
         return this;
     }
 
+    @Step("Проверить, что данные кол-во перебоев корректно")
+    public RupturesListPage shouldRuptureQuantityIsCorrect(int ruptureQuantity) throws Exception {
+        List<RuptureData> uiRuptureDataList = ruptureCardScrollView.getFullDataList();
+        anAssert.isEquals(uiRuptureDataList.size(), ruptureQuantity, "Wrong rupture quantity");
+        return this;
+    }
+
     @Step("Проверить, что счетчик перебоев отображает корректное значение")
-    public RupturesListPage shouldRuptureCounterIsCorrect(int counter){
+    public RupturesListPage shouldRuptureCounterIsCorrect(int counter) {
         String[] tmpArray = creatorAndRuptureQuantityLbl.getText().split(" / ");
         int uiCounter = Integer.parseInt(ParserUtil.strWithOnlyDigits(tmpArray[0]));
         anAssert.isEquals(uiCounter, counter, "ruptures counter");

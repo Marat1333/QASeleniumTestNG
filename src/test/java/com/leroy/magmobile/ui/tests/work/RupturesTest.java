@@ -15,6 +15,7 @@ import com.leroy.magmobile.ui.pages.work.WorkPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.*;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.ActiveSessionData;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.RuptureData;
+import com.leroy.magmobile.ui.pages.work.ruptures.modal.AddDuplicateModalPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.modal.DeleteRuptureModalPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.modal.DeleteSessionModalPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.modal.ExitActiveSessionModalPage;
@@ -240,7 +241,7 @@ public class RupturesTest extends AppBaseSteps {
     public void testDeleteRuptureFromSession() throws Exception {
         int sessionId = ruptureClient.getActiveSessionWithProducts();
         List<RuptureProductData> sessionProducts = ruptureClient.getProducts(sessionId).asJson().getItems();
-        String randomLmCode = sessionProducts.get((int)(Math.random()*sessionProducts.size())).getLmCode();
+        String randomLmCode = sessionProducts.get((int) (Math.random() * sessionProducts.size())).getLmCode();
 
         //Pre-conditions
         WorkPage workPage = loginAndGoTo(WorkPage.class);
@@ -356,6 +357,76 @@ public class RupturesTest extends AppBaseSteps {
                 .shouldRupturesDataIsCorrect(data);
     }
 
+    @Test(description = "C3272523 Добавление дубля в сессию при создании сессии")
+    public void testAddRuptureDuplicateToSession() throws Exception {
+        ProductItemData randomProduct = searchClient.getRandomProduct();
+        String lmCode = randomProduct.getLmCode();
 
+        //Pre-conditions
+        WorkPage workPage = loginAndGoTo(WorkPage.class);
+
+        //Step 1
+        step("Перейти к добавлению сессии");
+        RupturesScannerPage rupturesScannerPage = workPage.createRupturesSession();
+        rupturesScannerPage.shouldRupturesListNavBtnIsVisible(false)
+                .verifyRequiredElements();
+
+        //Step 2
+        step("Перейти к ручному поиску и найти любой товар");
+        SearchProductPage searchProductPage = rupturesScannerPage.navigateToSearchProductPage();
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
+        RuptureCardPage ruptureCardPage = new RuptureCardPage();
+        ruptureCardPage.verifyRequiredElementsWhenCreateRupture();
+
+        //Step 3
+        step("Подтвердить добавление перебоя");
+        rupturesScannerPage = ruptureCardPage.acceptAdd();
+        rupturesScannerPage.shouldRupturesListNavBtnIsVisible(true)
+                .verifyRequiredElements();
+
+        //Step 4
+        step("Перейти к ручному поиску и найти тот же товар");
+        searchProductPage = rupturesScannerPage.navigateToSearchProductPage();
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
+        AddDuplicateModalPage addDuplicateModalPage = new AddDuplicateModalPage();
+        addDuplicateModalPage.verifyRequiredElements();
+
+        //Step 5
+        step("Нажать на кнопку \"понятно\"");
+        ruptureCardPage = addDuplicateModalPage.confirm();
+        ruptureCardPage.verifyRequiredElements();
+
+        //Step 6
+        step("Выставить для перебоя количество \"на полке\" равное 3+");
+        List<String> tasksBefore = ruptureCardPage.getTasksList();
+        ruptureCardPage.choseProductQuantityOption(RuptureCardPage.QuantityOption.THREE_OR_MORE);
+        ruptureCardPage.shouldTasksHasChanged(tasksBefore);
+
+        //Step 7
+        step("Закрыть карточку перебоя (кнопка \"х\" в левом углу)");
+        RuptureData data = ruptureCardPage.getRuptureData();
+        ruptureCardPage.closeRuptureCardPage();
+        searchProductPage.verifyRequiredElements();
+
+        //Step 8
+        step("Закрыть страницу ручного поиска");
+        searchProductPage.returnBack();
+        rupturesScannerPage = new RupturesScannerPage();
+        rupturesScannerPage.shouldRupturesListNavBtnIsVisible(true)
+                .shouldCounterIsCorrect(1)
+                .verifyRequiredElements();
+
+        //Step 9
+        step("Нажать на кнопку \"список перебоев\"");
+        RupturesListPage rupturesListPage = rupturesScannerPage.navigateToRuptureProductList();
+        rupturesListPage.verifyRequiredElements()
+                .shouldRuptureQuantityIsCorrect(1);
+
+        //Step 10
+        step("Тапнуть на перебой");
+        ruptureCardPage = rupturesListPage.goToRuptureCard(lmCode);
+        ruptureCardPage.shouldRuptureDataIsCorrect(data)
+                .shouldRadioBtnHasCorrectCondition(RuptureCardPage.QuantityOption.THREE_OR_MORE);
+    }
 
 }
