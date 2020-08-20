@@ -5,6 +5,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
 import com.leroy.magmobile.api.data.catalog.product.reviews.CatalogReviewsOfProductList;
 import com.leroy.magmobile.ui.elements.MagMobButton;
@@ -182,10 +183,10 @@ public class ProductDescriptionPage extends ProductCardPage {
         }
         for (int i = 0; i < apiDataList.size(); i++) {
             ProductCardData uiData = productCardDataListFromPage.get(i);
-            ProductCardData apiData = productCardDataListFromPage.get(i);
+            ProductItemData apiData = apiDataList.get(i);
             softAssert.isEquals(uiData.getLmCode(), apiData.getLmCode(), "lmCode");
             if (type.equals(SearchProductPage.CardType.COMMON)) {
-                softAssert.isEquals(uiData.getAvailableQuantity(), apiData.getAvailableQuantity(), "available quantity");
+                softAssert.isEquals(uiData.getAvailableQuantity(), apiData.getAvailableStock(), "available quantity");
             }
         }
         softAssert.verifyAll();

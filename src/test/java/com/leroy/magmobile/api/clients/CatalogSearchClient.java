@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 public class CatalogSearchClient extends BaseMashupClient {
     //back-end limit
-    final static int MAX_PAGE_SIZE = 90;
+    protected final static int MAX_PAGE_SIZE = 90;
 
     /**
      * ---------- Requests -------------
@@ -26,14 +26,14 @@ public class CatalogSearchClient extends BaseMashupClient {
 
     @Step("Search for products")
     public Response<ProductItemDataList> searchProductsBy(GetCatalogSearch params) {
-        params.setLdap(userSessionData.getUserLdap());
+        params.setLdapHeader(userSessionData.getUserLdap());
         return execute(params, ProductItemDataList.class);
     }
 
     @Step("Search for products")
     public Response<ProductItemDataList> searchProductsBy(CatalogSearchFilter filters, Integer startFrom, Integer pageSize) {
         GetCatalogSearch req = new GetCatalogSearch();
-        req.setLdap(userSessionData.getUserLdap());
+        req.setLdapHeader(userSessionData.getUserLdap());
         req.setShopId(userSessionData.getUserShopId());
         if (filters.getHasAvailableStock() != null)
             req.setHasAvailableStock(filters.getHasAvailableStock());
@@ -56,7 +56,7 @@ public class CatalogSearchClient extends BaseMashupClient {
 
     @Step("Search for services")
     public Response<ServiceItemDataList> searchServicesBy(GetCatalogServicesSearch params) {
-        params.setLdap(userSessionData.getUserLdap());
+        params.setLdapHeader(userSessionData.getUserLdap());
         return execute(params, ServiceItemDataList.class);
     }
 

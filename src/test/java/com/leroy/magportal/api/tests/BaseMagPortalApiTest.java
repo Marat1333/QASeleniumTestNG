@@ -1,11 +1,11 @@
-package com.leroy.magportal.api.tests.cart;
+package com.leroy.magportal.api.tests;
 
 import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.UserSessionData;
 import com.leroy.core.api.Module;
 import com.leroy.core.configuration.BaseTest;
-import com.leroy.magmobile.api.ApiClientProvider;
+import com.leroy.magportal.api.ApiClientProvider;
 import com.leroy.umbrella_extension.authorization.AuthClient;
 import org.testng.annotations.Guice;
 import ru.leroymerlin.qa.core.clients.base.Response;
