@@ -38,7 +38,7 @@ public class ShipmentProductWidget extends CardWidget<ShipmentProductData> {
         data.setTitle(title.getText());
         try {
             data.setReceivedQuantity(Integer.valueOf(receivedQuantity.getText()));
-        }catch (NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             Log.warn("product wasn`t received");
         }
         data.setPlannedQuantity(Integer.valueOf(expectedQuantity.getText()));

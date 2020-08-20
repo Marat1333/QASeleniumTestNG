@@ -4,6 +4,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.constants.MagMobElementTypes;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import com.leroy.magmobile.ui.pages.work.print_tags.SessionsListPage;
 import com.leroy.magmobile.ui.pages.work.supply_plan.SuppliesListPage;
 import io.qameta.allure.Step;
 
@@ -56,9 +57,15 @@ public class WorkPage extends CommonMagMobilePage {
     }
 
     @Step("Перейти в План поставок")
-    public SuppliesListPage goToShipmentListPage(){
+    public SuppliesListPage goToShipmentListPage() {
         departmentSupplyPlanLbl.click();
         return new SuppliesListPage();
+    }
+
+    @Step("Перейти в Печать ценников")
+    public SessionsListPage goToSessionsListPage() {
+        priceTagPrintingLbl.click();
+        return new SessionsListPage();
     }
 
 

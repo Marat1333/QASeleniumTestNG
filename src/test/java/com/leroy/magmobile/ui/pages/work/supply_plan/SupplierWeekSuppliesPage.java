@@ -90,13 +90,13 @@ public class SupplierWeekSuppliesPage extends CommonMagMobilePage {
     }
 
     @Step("Перейти назад")
-    public SuppliesListPage goBack(){
+    public SuppliesListPage goBack() {
         backBtn.click();
         return new SuppliesListPage();
     }
 
     @Step("Очистить тайтл")
-    public SearchSupplierPage clearTitle(){
+    public SearchSupplierPage clearTitle() {
         clearTitleBtn.click();
         return new SearchSupplierPage();
     }
@@ -148,18 +148,18 @@ public class SupplierWeekSuppliesPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что отображается сообщение: \"Ничего не найдено\"")
-    public SupplierWeekSuppliesPage shouldNotFoundMsgIsDisplayed(){
+    public SupplierWeekSuppliesPage shouldNotFoundMsgIsDisplayed() {
         anAssert.isElementVisible(notFoundMsg);
         return this;
     }
 
     @Step("Проверить, что имя поставщика отображено")
-    public SupplierWeekSuppliesPage shouldSupplierNameIsCorrect(String supplierName){
-        anAssert.isElementTextEqual(this.supplierName, supplierName.replaceAll("\"",""));
+    public SupplierWeekSuppliesPage shouldSupplierNameIsCorrect(String supplierName) {
+        anAssert.isElementTextEqual(this.supplierName, supplierName.replaceAll("\"", ""));
         return this;
     }
 
-    public SupplierWeekSuppliesPage verifyRequiredElements(){
+    public SupplierWeekSuppliesPage verifyRequiredElements() {
         softAssert.areElementsVisible(supplierName, clearTitleBtn);
         softAssert.verifyAll();
         return this;

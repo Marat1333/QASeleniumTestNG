@@ -1,4 +1,4 @@
-package com.leroy.magportal.api.tests.cart;
+package com.leroy.magportal.api.tests;
 
 import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;

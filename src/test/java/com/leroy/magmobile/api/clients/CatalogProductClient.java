@@ -3,6 +3,8 @@ package com.leroy.magmobile.api.clients;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.api.BaseMashupClient;
+import com.leroy.magmobile.api.data.catalog.ProductItemData;
+import com.leroy.magmobile.api.data.catalog.product.CatalogComplementaryProducts;
 import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
 import com.leroy.magmobile.api.data.catalog.product.CatalogSimilarProducts;
 import com.leroy.magmobile.api.data.catalog.product.reviews.CatalogReviewsOfProductList;
@@ -12,6 +14,8 @@ import com.leroy.magmobile.api.requests.catalog.*;
 import io.qameta.allure.Step;
 import lombok.Builder;
 import ru.leroymerlin.qa.core.clients.base.Response;
+
+import java.util.List;
 
 public class CatalogProductClient extends BaseMashupClient {
 
@@ -58,7 +62,7 @@ public class CatalogProductClient extends BaseMashupClient {
 
     @Step("Get Catalog Product for lmCode={lmCode}, pointOfGiveAway={pointOfGiveAway}, extend={extend}")
     public Response<CatalogProductData> getProduct(String shopId,
-            String lmCode, SalesDocumentsConst.GiveAwayPoints pointOfGiveAway, Extend extend) {
+                                                   String lmCode, SalesDocumentsConst.GiveAwayPoints pointOfGiveAway, Extend extend) {
         GetCatalogProduct req = new GetCatalogProduct();
         req.setLmCode(lmCode);
         req.setShopId(shopId);
@@ -127,6 +131,47 @@ public class CatalogProductClient extends BaseMashupClient {
         PostCatalogProductReviewCreate params = new PostCatalogProductReviewCreate()
                 .jsonBody(data);
         return execute(params, JsonNode.class);
+    }
+
+    @Step("Get complementary products")
+    public Response<CatalogComplementaryProducts> getComplementaryProducts(String lmCode, String shopId) {
+        GetComplementaryProducts params = new GetComplementaryProducts()
+                .setShopId(shopId)
+                .setLmCode(lmCode)
+                .setExtend(Extend.builder().inventory(true).rating(true).logistic(true).build());
+        return execute(params, CatalogComplementaryProducts.class);
+    }
+
+    @Step("Get product with at least one complementary product")
+    public CatalogComplementaryProducts getNotEmptyComplementaryProductData(List<ProductItemData> productList) {
+        String userShopId = userSessionData.getUserShopId();
+        String lmCode;
+        for (ProductItemData eachData : productList) {
+            lmCode = eachData.getLmCode();
+            CatalogComplementaryProducts data = getComplementaryProducts(lmCode, userShopId).asJson();
+            List<CatalogProductData> itemsList = data.getItems();
+            if (itemsList.size() > 0) {
+                data.setParentLmCode(lmCode);
+                return data;
+            }
+        }
+        return null;
+    }
+
+    @Step("Get product without complementary product")
+    public CatalogComplementaryProducts getEmptyComplementaryProductData(List<ProductItemData> productList) {
+        String userShopId = userSessionData.getUserShopId();
+        String lmCode;
+        for (ProductItemData eachData : productList) {
+            lmCode = eachData.getLmCode();
+            CatalogComplementaryProducts data = getComplementaryProducts(lmCode, userShopId).asJson();
+            List<CatalogProductData> itemsList = data.getItems();
+            if (itemsList.size() == 0) {
+                data.setParentLmCode(lmCode);
+                return data;
+            }
+        }
+        return null;
     }
 
 }

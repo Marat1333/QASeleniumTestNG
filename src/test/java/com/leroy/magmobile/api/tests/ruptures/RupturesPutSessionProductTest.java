@@ -1,10 +1,7 @@
 package com.leroy.magmobile.api.tests.ruptures;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.leroy.constants.api.ErrorTextConst;
-import com.leroy.constants.api.StatusCodes;
 import com.leroy.magmobile.api.clients.RupturesClient;
-import com.leroy.magmobile.api.data.CommonErrorResponseData;
 import com.leroy.magmobile.api.data.ruptures.ActionData;
 import com.leroy.magmobile.api.data.ruptures.ReqRuptureSessionData;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductData;
@@ -15,9 +12,6 @@ import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.*;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 
 public class RupturesPutSessionProductTest extends BaseRuptureTest {
 
