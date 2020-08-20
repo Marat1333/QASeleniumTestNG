@@ -5,7 +5,7 @@ import com.leroy.constants.EnvConstants;
 import com.leroy.core.UserSessionData;
 import com.leroy.core.api.Module;
 import com.leroy.core.configuration.BaseTest;
-import com.leroy.magmobile.api.ApiClientProvider;
+import com.leroy.magportal.api.ApiClientProvider;
 import com.leroy.umbrella_extension.authorization.AuthClient;
 import org.testng.annotations.Guice;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -40,7 +40,7 @@ public abstract class BaseMagPortalApiTest extends BaseTest {
     }
 
     protected boolean isNeedAccessToken() {
-        return false;
+        return true;
     }
 
     protected void isResponseOk(Response<?> response) {
