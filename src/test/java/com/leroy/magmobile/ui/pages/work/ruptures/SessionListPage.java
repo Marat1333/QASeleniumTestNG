@@ -47,7 +47,7 @@ public class SessionListPage extends CommonMagMobilePage {
     }
 
     @Step("Перейти в сессию с номером {sessionId}")
-    public SessionProductsListPage goToSession(String sessionId) throws Exception{
+    public RupturesListPage goToSession(String sessionId) throws Exception{
         Element target = E(String.format("contains(%s)", sessionId));
         if (!target.isVisible()){
             mainScrollView.scrollDownToElement(target);
@@ -56,7 +56,7 @@ public class SessionListPage extends CommonMagMobilePage {
         mainScrollView.setSwipeDeadZonePercentage(80);
         mainScrollView.scrollDown();
         target.click();
-        return new SessionProductsListPage();
+        return new RupturesListPage();
     }
 
     @Step("Проверить, что в списке активных сессия отсутствует сессия")
