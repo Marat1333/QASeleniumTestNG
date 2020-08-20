@@ -128,6 +128,12 @@ public class RuptureCardPage extends CommonMagMobilePage {
         return data;
     }
 
+    @Step("Закрыть карточку перебоя")
+    public void closeRuptureCardPage(){
+        closeModalBtn.click();
+        closeModalBtn.waitForInvisibility();
+    }
+
     @Step("Подтвердить добавление перебоя")
     public RupturesScannerPage acceptAdd() {
         acceptBtn.click();
@@ -265,6 +271,13 @@ public class RuptureCardPage extends CommonMagMobilePage {
             softAssert.isTrue(uiTasksList.contains(task), "список не содержит задачу" + task);
         }
         softAssert.verifyAll();
+        return this;
+    }
+
+    @Step("Проверить, что данные отображены корректно")
+    public RuptureCardPage shouldRuptureDataIsCorrect(RuptureData data) throws Exception{
+        RuptureData currentData = getRuptureData();
+        anAssert.isEquals(currentData, data, "data mismatch");
         return this;
     }
 
