@@ -3,13 +3,17 @@ package com.leroy.magportal.api.tests;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
+import com.leroy.core.api.ThreadApiClient;
+import com.leroy.core.configuration.Log;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 import ru.leroymerlin.qa.core.clients.tunnel.TunnelClient;
 import ru.leroymerlin.qa.core.clients.tunnel.data.BitrixSolutionPayload;
 import ru.leroymerlin.qa.core.clients.tunnel.data.BitrixSolutionResponse;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 // Тестовый класс надо будет переименовать и дать соответствующее название
 public class SomeTest extends BasePaymentTest {
@@ -160,6 +164,25 @@ public class SomeTest extends BasePaymentTest {
         basket1.setLONGTAIL(0);
         basket1.setTAX(18);
         payload.setBASKET(Arrays.asList(basket1));
+
+        // Пример параллельного создания заказов. Возможно, слишком громоздко, но работает.
+        List<ThreadApiClient<BitrixSolutionResponse, TunnelClient>> threads = new ArrayList<>();
+
+        for (int i = 0; i < 3; i++) {
+            ThreadApiClient<BitrixSolutionResponse, TunnelClient> myThread = new ThreadApiClient<>(
+                    tunnelClient);
+            myThread.sendRequest(client -> client.createSolutionFromBitrix(payload));
+            threads.add(myThread);
+        }
+
+        threads.forEach(t -> {
+            try {
+                t.getData();
+            } catch (InterruptedException e) {
+                Log.error(e.getMessage());
+            }
+        });
+
         Response<BitrixSolutionResponse> r = tunnelClient.createSolutionFromBitrix(payload);
         return r.asJson().getSolutionId();
     }
