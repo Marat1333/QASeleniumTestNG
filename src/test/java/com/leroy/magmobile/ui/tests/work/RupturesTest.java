@@ -429,4 +429,88 @@ public class RupturesTest extends AppBaseSteps {
                 .shouldRadioBtnHasCorrectCondition(RuptureCardPage.QuantityOption.THREE_OR_MORE);
     }
 
+    @Test(description = "C23418142 Добавление дубля в сессию при работе с существующей сессией")
+    public void testAddRuptureDuplicateToExistedSession() throws Exception {
+        String comment = "asd123";
+        int sessionId = ruptureClient.getActiveSessionWithProducts();
+        List<RuptureProductData> sessionProducts = ruptureClient.getProducts(sessionId).asJson().getItems();
+        String randomLmCode = sessionProducts.get(0).getLmCode();
+
+        //Pre-conditions
+        WorkPage workPage = loginAndGoTo(WorkPage.class);
+        SessionListPage sessionListPage = workPage.goToRuptures();
+        RupturesListPage rupturesListPage = sessionListPage.goToSession(String.valueOf(sessionId));
+
+        //Step 1
+        step("Нажать на кнопку + перебой");
+        RupturesScannerPage rupturesScannerPage = rupturesListPage.addRuptureToSession();
+        rupturesScannerPage.shouldRupturesListNavBtnIsVisible(true)
+                .verifyRequiredElements();
+        int counterValue = rupturesScannerPage.getCounterValue();
+
+        //Step 2
+        step("Перейти к ручному поиску и найти товар, который уже есть в сессии");
+        SearchProductPage searchProductPage = rupturesScannerPage.navigateToSearchProductPage();
+        searchProductPage.enterTextInSearchFieldAndSubmit(randomLmCode);
+        AddDuplicateModalPage addDuplicateModalPage = new AddDuplicateModalPage();
+        addDuplicateModalPage.verifyRequiredElements();
+
+        //Step 3
+        step("Нажать на кнопку \"понятно\"");
+        addDuplicateModalPage.confirm();
+        RuptureCardPage ruptureCardPage = new RuptureCardPage();
+        ruptureCardPage.verifyRequiredElements();
+
+        //Step 4
+        step("Изменить количество на полке\n" +
+                "Добавить 2 любых экшена\n" +
+                "Чекнуть один из экшенов\n" +
+                "Добавить комментарий");
+        ruptureCardPage.choseProductQuantityOption(RuptureCardPage.QuantityOption.ONE);
+        ActionsModalPage actionsModalPage = ruptureCardPage.callActionModalPage();
+        List<String> possibleTasksList = actionsModalPage.getPossibleTasks();
+        actionsModalPage.choseTasks(possibleTasksList.get(0), possibleTasksList.get(1));
+        List<String> toDoTasks = actionsModalPage.getToDoTasks();
+        ruptureCardPage = actionsModalPage.closeModal();
+        String checkedTask = toDoTasks.get(0);
+        ruptureCardPage.setTasksCheckBoxes(checkedTask);
+        ruptureCardPage.setComment(comment);
+        ruptureCardPage.submitComment();
+        String[] tasksArray = new String[toDoTasks.size()];
+        RuptureData data = ruptureCardPage.getRuptureData();
+
+        ruptureCardPage.shouldRadioBtnHasCorrectCondition(RuptureCardPage.QuantityOption.ONE)
+                .shouldTasksListContainsTasks(toDoTasks.toArray(tasksArray))
+                .shouldCheckBoxConditionIsCorrect(true, checkedTask)
+                .shouldCommentFieldHasText(comment);
+
+        //Step 5
+        step("Выйти с карточки перебоя по железной кнопке");
+        ruptureCardPage.closeRuptureCardPage();
+        searchProductPage = new SearchProductPage();
+        searchProductPage.verifyRequiredElements();
+
+        //Step 6
+        step("Закрыть экран поиска по железной кнопке");
+        searchProductPage.returnBack();
+        rupturesScannerPage = new RupturesScannerPage();
+        rupturesScannerPage.shouldCounterIsCorrect(counterValue)
+                .shouldRupturesListNavBtnIsVisible(true);
+
+        //Step 7
+        step("Закрыть сканер по железной кнопке");
+        rupturesScannerPage.closeScanner();
+        rupturesListPage = new RupturesListPage();
+        rupturesListPage.verifyRequiredElements()
+                .shouldRupturesDataIsCorrect(data);
+
+        //Step 8
+        step("Открыть карточку перебоя");
+        ruptureCardPage = rupturesListPage.goToRuptureCard(randomLmCode);
+        ruptureCardPage.shouldRadioBtnHasCorrectCondition(RuptureCardPage.QuantityOption.ONE)
+                .shouldTasksListContainsTasks(toDoTasks.toArray(tasksArray))
+                .shouldCheckBoxConditionIsCorrect(true, checkedTask)
+                .shouldCommentFieldHasText(comment);
+    }
+
 }
