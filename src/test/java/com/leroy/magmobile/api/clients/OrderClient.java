@@ -341,5 +341,28 @@ public class OrderClient extends BaseMashupClient {
         return null;
     }
 
+    @Step("Wait until Order can be cancelled")
+    public OrderData waitUntilOrderCanBeCancelled(
+            String orderId) throws Exception {
+        int maxTimeoutInSeconds = 180;
+        long currentTimeMillis = System.currentTimeMillis();
+        Response<OrderData> r = null;
+        while (System.currentTimeMillis() - currentTimeMillis < maxTimeoutInSeconds * 1000) {
+            r = getOrder(orderId);
+            String status = r.asJson().getStatus();
+            if (r.isSuccessful() &&
+                    (status.equals(SalesDocumentsConst.States.CONFIRMED.getApiVal()) ||
+                            status.equals(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal()))) {
+                Log.info("waitUntilOrderIsConfirmed() has executed for " +
+                        (System.currentTimeMillis() - currentTimeMillis) / 1000 + " seconds");
+                return r.asJson();
+            }
+            Thread.sleep(3000);
+        }
+        assertThat("Could not wait for the order to be confirmed. Timeout=" + maxTimeoutInSeconds + ". " +
+                        "Response error:" + r.toString(),
+                r.isSuccessful());
+        return null;
+    }
 
 }
