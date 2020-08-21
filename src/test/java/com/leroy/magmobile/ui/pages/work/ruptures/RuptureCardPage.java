@@ -10,6 +10,7 @@ import com.leroy.magmobile.ui.elements.MagMobRadioButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductCardPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.RuptureData;
+import com.leroy.magmobile.ui.pages.work.ruptures.elements.RuptureRadioButton;
 import com.leroy.magmobile.ui.pages.work.ruptures.elements.RuptureTaskContainer;
 import com.leroy.magmobile.ui.pages.work.ruptures.modal.DeleteRuptureModalPage;
 import com.leroy.utils.ParserUtil;
@@ -217,26 +218,26 @@ public class RuptureCardPage extends CommonMagMobilePage {
 
     @Step("Проверить, что радио-баттон установлен в правильное положение")
     public RuptureCardPage shouldRadioBtnHasCorrectCondition(QuantityOption option) throws Exception {
-        MagMobRadioButton magMobRadioButton = null;
+        RuptureRadioButton radioButton = null;
         switch (option) {
             case ZERO:
-                magMobRadioButton = E(zeroProductNeedToAddBtn.getXpath() + "/ancestor::*[@content-desc='Button-container']",
-                        MagMobRadioButton.class);
+                radioButton = E(zeroProductNeedToAddBtn.getXpath() + "/ancestor::*[@content-desc='Button-container']",
+                        RuptureRadioButton.class);
                 break;
             case ONE:
-                magMobRadioButton = E(oneProductNeedToAddBtn.getXpath() + "/ancestor::*[@content-desc='Button-container']",
-                        MagMobRadioButton.class);
+                radioButton = E(oneProductNeedToAddBtn.getXpath() + "/ancestor::*[@content-desc='Button-container']",
+                        RuptureRadioButton.class);
                 break;
             case TWO:
-                magMobRadioButton = E(twoProductsNeedToAddBtn.getXpath() + "/ancestor::*[@content-desc='Button-container']",
-                        MagMobRadioButton.class);
+                radioButton = E(twoProductsNeedToAddBtn.getXpath() + "/ancestor::*[@content-desc='Button-container']",
+                        RuptureRadioButton.class);
                 break;
             case THREE_OR_MORE:
-                magMobRadioButton = E(threeOrMoreProductsNeedToAddBtn.getXpath() + "/ancestor::*[@content-desc='Button-container']",
-                        MagMobRadioButton.class);
+                radioButton = E(threeOrMoreProductsNeedToAddBtn.getXpath() + "/ancestor::*[@content-desc='Button-container']",
+                        RuptureRadioButton.class);
                 break;
         }
-        anAssert.isTrue(magMobRadioButton.isChecked(), "unchecked");
+        anAssert.isTrue(radioButton.isChecked(), "unchecked");
         return this;
     }
 

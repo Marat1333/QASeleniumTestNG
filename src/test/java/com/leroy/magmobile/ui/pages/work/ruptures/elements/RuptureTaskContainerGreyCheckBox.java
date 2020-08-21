@@ -5,10 +5,10 @@ import com.leroy.magmobile.ui.elements.MagMobGrayCheckBox;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.Color;
 
-public class RuptureTaskContainerGreenCheckBox extends MagMobGrayCheckBox {
+public class RuptureTaskContainerGreyCheckBox extends MagMobGrayCheckBox {
     private static final Color CHECKED_GRAY_COLOR = new Color(166, 166, 143, 255);
 
-    public RuptureTaskContainerGreenCheckBox(WebDriver driver, CustomLocator locator) {
+    public RuptureTaskContainerGreyCheckBox(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
     }
 
