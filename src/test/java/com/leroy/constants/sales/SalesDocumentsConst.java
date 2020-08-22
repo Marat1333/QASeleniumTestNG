@@ -83,6 +83,7 @@ public class SalesDocumentsConst {
     // Отзыв
     public enum GiveAwayPoints {
         SALES_FLOOR("SALESFLOOR", "Из торгового зала"),
+        FOR_CLIENT_TO_SHOP_ROOM("DEPARTMENT", "Для клиента в торг. зал"),
         PICKUP("PICKUP", "Самовывоз"),
         DELIVERY("", "Доставка");
 

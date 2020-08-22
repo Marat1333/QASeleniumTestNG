@@ -1386,9 +1386,9 @@ public class OrderTest extends SalesBaseTest {
         salesDocumentData.getOrderAppDataList().get(0).setTotalWeight(null);
 
         if (isConfirmedOrder) {
-            confirmedOrderPage = confirmedOrderAddProduct35Page.clickAddIntoOrderButton();
+            confirmedOrderPage = confirmedOrderAddProduct35Page.clickSubmitButton();
         } else {
-            cartProcessOrder35Page = draftOrderAddProduct35Page.clickAddIntoOrderButton();
+            cartProcessOrder35Page = draftOrderAddProduct35Page.clickSubmitButton();
         }
         if (verifyProducts)
             if (isConfirmedOrder)

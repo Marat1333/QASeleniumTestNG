@@ -6,13 +6,12 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.sales.orders.CartOrderEstimatePage;
 import com.leroy.magmobile.ui.pages.sales.orders.cart.Cart35Page;
 import com.leroy.magmobile.ui.pages.sales.orders.estimate.EstimatePage;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
-public class AddProduct35Page<T extends CartOrderEstimatePage> extends CommonMagMobilePage {
+public class AddProduct35Page<T> extends CommonMagMobilePage {
 
     private Class<T> parentPage;
 
@@ -25,7 +24,7 @@ public class AddProduct35Page<T extends CartOrderEstimatePage> extends CommonMag
         return "Добавление товара";
     }
 
-    protected T newCartOrEstimatePage() throws Exception {
+    protected T newParentPage() throws Exception {
         return parentPage.getConstructor().newInstance();
     }
 
@@ -64,6 +63,21 @@ public class AddProduct35Page<T extends CartOrderEstimatePage> extends CommonMag
 
     @AppFindBy(xpath = "//android.widget.TextView[@text='На складе']/following-sibling::android.widget.TextView[@content-desc='presenceValue']")
     private Element inStockAvailableQuantity;
+
+    @AppFindBy(xpath = "//android.widget.TextView[@text='Поштучно']/following-sibling::android.widget.TextView[@content-desc='presenceValue']")
+    private Element byPeaceQuantity;
+
+    @AppFindBy(xpath = "//android.widget.TextView[@text='На моно-палете']/following-sibling::android.widget.TextView[@content-desc='presenceValue']"
+            , metaName = "Количество моно палет")
+    private Element monoPalletQuantity;
+
+    @AppFindBy(xpath = "//android.widget.TextView[@text='На моно-палете']/following-sibling::android.widget.TextView[@content-desc='presenceValue']",
+            metaName = "Кол-во товаров на одном моно-палете")
+    private Element byOneMonoPalletQuantity;
+
+    @AppFindBy(xpath = "//android.widget.TextView[@text='На микс-палете']/following-sibling::android.widget.TextView[@content-desc='presenceValue']",
+            metaName = "Общее кол-во товаров на моно-палете")
+    private Element byMixPalletQuantity;
 
     // White Bottom Area
 
@@ -123,6 +137,11 @@ public class AddProduct35Page<T extends CartOrderEstimatePage> extends CommonMag
         return ParserUtil.strToInt(inStockAvailableQuantity.getText());
     }
 
+    @Step("Получить значение кол-ва одного моно-палета")
+    public int getByOneMonoPalletQuantity() {
+        return ParserUtil.strToInt(byOneMonoPalletQuantity.getText());
+    }
+
     @Step("Получить информацию со страницы о товаре/услуги/выбранном кол-ве и т.п.")
     public ProductOrderCardAppData getProductOrderDataFromPage() {
         String ps = getPageSource();
@@ -167,10 +186,10 @@ public class AddProduct35Page<T extends CartOrderEstimatePage> extends CommonMag
         return enterQuantityOfProduct(String.valueOf(value), actionVerification);
     }
 
-    @Step("Нажмите кнопку Добавить в заказ")
-    public T clickAddIntoOrderButton() throws Exception {
+    @Step("Нажмите кнопку для подтверждения изменений (Добавить / Сохранить)")
+    public T clickSubmitButton() throws Exception {
         submitBtn.click();
-        return newCartOrEstimatePage();
+        return newParentPage();
     }
 
     @Step("Нажмите кнопку Добавить в корзину")

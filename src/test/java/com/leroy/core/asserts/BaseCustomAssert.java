@@ -122,7 +122,11 @@ public abstract class BaseCustomAssert {
 
     protected boolean logIsElementVisible(BaseWidget element, String pageSource, boolean isSoft, int timeout) {
         if (timeout > 0)
-            element.waitForVisibility(timeout);
+            try {
+                element.waitForVisibility(timeout);
+            } catch (Exception err) {
+                Log.error(err.getMessage());
+            }
         Assert.assertNotNull(element.getMetaName(), "Element meta name is NULL!");
         boolean elementVisibility = pageSource == null || !DriverFactory.isAppProfile() ?
                 element.isVisible() : element.isVisible(pageSource);

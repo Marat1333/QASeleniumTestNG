@@ -16,6 +16,7 @@ import io.appium.java_client.android.AndroidDriver;
 import org.openqa.selenium.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -74,22 +75,22 @@ public class AndroidScrollView<T> extends BaseWidget {
     }
 
     private Class<? extends BaseWidget> rowWidgetClass;
-    private String eachRowXpath;
+    protected String eachRowXpath;
 
     // ----- Others -------
     private List<T> tmpCardDataList;
-    private CardWidget<T> tmpWidget;
+    protected CardWidget<T> tmpWidget;
 
     @AppFindBy(xpath = "//android.widget.ProgressBar", cacheLookup = false, metaName = "Progress bar")
     private Element progressBar;
 
-    private enum Direction {
+    protected enum Direction {
         UP, DOWN;
     }
 
     private static class SearchContext {
         Element findElement;
-        String findText;
+        String[] findText;
         String findTextShouldNotContainsIt;
     }
 
@@ -111,7 +112,7 @@ public class AndroidScrollView<T> extends BaseWidget {
     /**
      * Ищет виджет с текстом {value} и возвращает ссылку на сам widget (в общем виде - CardWidget)
      */
-    public CardWidget<T> searchForWidgetByText(String containsText, boolean scrollUpBefore) {
+    public CardWidget<T> searchForWidgetByText(boolean scrollUpBefore, String... containsText) {
         SearchContext searchContext = new SearchContext();
         searchContext.findText = containsText;
         if (scrollUpBefore)
@@ -120,8 +121,8 @@ public class AndroidScrollView<T> extends BaseWidget {
         return tmpWidget;
     }
 
-    public CardWidget<T> searchForWidgetByText(String containsText) {
-        return searchForWidgetByText(containsText, false);
+    public CardWidget<T> searchForWidgetByText(String... containsText) {
+        return searchForWidgetByText(false, containsText);
     }
 
     /**
@@ -245,7 +246,7 @@ public class AndroidScrollView<T> extends BaseWidget {
      * @param direction      - up or down
      * @return this
      */
-    private AndroidScrollView<T> scrollAndGrabData(
+    protected AndroidScrollView<T> scrollAndGrabData(
             SearchContext searchContext, Integer maxScrollCount,
             Integer maxEntityCount, Direction direction) {
         initialWebElementIfNeeded();
@@ -263,13 +264,13 @@ public class AndroidScrollView<T> extends BaseWidget {
             }
             for (CardWidget<T> widget : cardWidgetList) {
                 if (widget.isFullyVisible(pageSource)) {
+                    tmpWidget = widget;
                     T data = widget.collectDataFromPage(pageSource);
                     currentVisibleDataList.add(data);
                     if (searchContext != null && searchContext.findText != null &&
-                            data.toString().contains(searchContext.findText) &&
+                            Arrays.stream(searchContext.findText).allMatch(o -> data.toString().contains(o)) &&
                             (searchContext.findTextShouldNotContainsIt == null ||
                                     !data.toString().contains(searchContext.findTextShouldNotContainsIt))) {
-                        tmpWidget = widget;
                         textFound = true;
                         break;
                     }
@@ -305,15 +306,14 @@ public class AndroidScrollView<T> extends BaseWidget {
      */
     public AndroidScrollView<T> scrollDownToText(String findText, int maxScrollCount) {
         SearchContext searchContext = new SearchContext();
-        searchContext.findText = findText;
+        searchContext.findText = new String[]{findText};
         return scrollAndGrabData(searchContext, maxScrollCount, null, Direction.DOWN);
     }
 
     /**
      * Scroll up to the specific text
      *
-     * @param findText       - text which should be found
-     * @param maxScrollCount - limit of scroll count
+     * @param findText - text which should be found
      * @return this
      */
     public AndroidScrollView<T> scrollUpToText(String findText) {
@@ -322,7 +322,7 @@ public class AndroidScrollView<T> extends BaseWidget {
 
     public AndroidScrollView<T> scrollUpToText(String findText, int maxScrollCount) {
         SearchContext searchContext = new SearchContext();
-        searchContext.findText = findText;
+        searchContext.findText = new String[]{findText};
         return scrollAndGrabData(searchContext, maxScrollCount, null, Direction.UP);
     }
 
