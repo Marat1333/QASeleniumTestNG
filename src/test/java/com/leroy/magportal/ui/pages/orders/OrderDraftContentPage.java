@@ -66,6 +66,7 @@ public class OrderDraftContentPage extends OrderDraftPage {
         index--;
         productCards.get(index).editQuantity(value);
         waitForSpinnerAppearAndDisappear();
+        shouldModalThatChangesIsNotSavedIsNotVisible();
         return this;
     }
 
@@ -75,6 +76,7 @@ public class OrderDraftContentPage extends OrderDraftPage {
         productCards.get(index).clickTrashBtn();
         new ConfirmRemoveProductModal().clickYesButton();
         waitForSpinnerAppearAndDisappear();
+        shouldModalThatChangesIsNotSavedIsNotVisible();
         return this;
     }
 
@@ -85,6 +87,7 @@ public class OrderDraftContentPage extends OrderDraftPage {
         SalesDocWebData actualData = getOrderData();
         expectedOrderData.setPinCode(null);
         expectedOrderData.setClient(null);
+        expectedOrderData.setDeliveryType(null);
         if (INVALID_ORDER_DRAFT_DATE)
             expectedOrderData.setCreationDate(null);
         expectedOrderData.getOrders().get(0).getProductCardDataList().forEach(p -> p.setBarCode(null));

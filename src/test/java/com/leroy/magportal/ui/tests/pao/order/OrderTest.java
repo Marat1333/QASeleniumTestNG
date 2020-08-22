@@ -731,13 +731,18 @@ public class OrderTest extends BasePAOTest {
      * Нажмите на кнопку "Оформить заказ"
      */
     private void stepClickConfirmOrderButton(SimpleCustomerData customerData) throws Exception {
-        cartPage = new CartPage();
+        cartPage = new CartPage()
+                .waitForProductsAreLoaded();
         orderData = cartPage.getSalesDocData();
+        anAssert().isTrue(orderData.getOrders().size() > 0,
+                "Не удалось получить со страницы информацию о товарах в корзине");
         orderDraftDeliveryWayPage = cartPage.clickConfirmButton()
                 .verifyRequiredElements(new OrderDraftDeliveryWayPage.PageState());
         orderDraftDeliveryWayPage.shouldOrderStatusIs(SalesDocumentsConst.States.DRAFT.getUiVal());
         orderData.setNumber(orderDraftDeliveryWayPage.getOrderNumber());
         orderData.setStatus(SalesDocumentsConst.States.DRAFT.getUiVal());
+        if (orderData.getDeliveryType() == null)
+            orderData.setDeliveryType(SalesDocumentsConst.GiveAwayPoints.PICKUP);
         anAssert().isFalse(orderData.getNumber().isEmpty(), "Номер заказа отсутствует");
         if (customerData != null) {
             orderDraftDeliveryWayPage.shouldReceiverIs(customerData)

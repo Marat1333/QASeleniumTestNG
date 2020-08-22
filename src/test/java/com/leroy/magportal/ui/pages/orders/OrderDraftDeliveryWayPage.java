@@ -114,6 +114,7 @@ public class OrderDraftDeliveryWayPage extends OrderDraftPage {
         if (giveAwayPoints.equals(SalesDocumentsConst.GiveAwayPoints.DELIVERY))
             deliveryBtn.click();
         waitForSpinnerAppearAndDisappear();
+        shouldModalThatChangesIsNotSavedIsNotVisible();
         return this;
     }
 
@@ -133,10 +134,12 @@ public class OrderDraftDeliveryWayPage extends OrderDraftPage {
             pinCodeFld.click();
             pinCodeFld.clear(true);
             pinCodeFld.fill(orderData.getPinCode());
+            waitForSpinnerAppearAndDisappear();
         }
         if (tryToFindValidPin)
             anAssert.isFalse(pinCodeErrorTooltip.isVisible(),
                     "Не удалось подобрать валидный PIN, по-прежнему отображается ошибка");
+        shouldModalThatChangesIsNotSavedIsNotVisible();
         return this;
     }
 

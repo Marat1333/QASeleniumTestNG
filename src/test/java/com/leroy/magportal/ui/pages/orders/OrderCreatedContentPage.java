@@ -125,6 +125,7 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
             saveBtn.waitForInvisibility();
             waitForSpinnerAppearAndDisappear();
         }
+        shouldModalThatChangesIsNotSavedIsNotVisible();
         return this;
     }
 
@@ -132,6 +133,7 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
     public OrderCreatedContentPage editSelectedQuantity(int index, int value) throws Exception {
         index--;
         productCards.get(index).editQuantity(value);
+        shouldModalThatChangesIsNotSavedIsNotVisible();
         return this;
     }
 
@@ -146,6 +148,7 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
         expectedOrderData.setDeliveryDate(null);
         expectedOrderData.setComment(null);
         expectedOrderData.setRecipient(null);
+        expectedOrderData.setClient(null);
         if (INVALID_ORDER_DRAFT_DATE)
             expectedOrderData.setCreationDate(null); // TODO Надо приводить к LocalDate и проверять
         actualData.getOrders().get(0).setProductCount(actualData.getOrders().get(0).getProductCardDataList().size());
