@@ -425,7 +425,7 @@ public class OrderTest extends BasePAOTest {
 
         // Step 1
         step("Измените кол-во товара таким образом, чтоб его было заказно, больше чем доступно");
-        int newQuantity = (int) Math.round(productItemData.getAvailableStock() + 1);
+        int newQuantity = (int) Math.round(productItemData.getAvailableStock() + 100);
         OrderWebData oneOrderData = orderData.getOrders().get(0);
         oneOrderData.changeProductQuantity(0, newQuantity, true);
         oneOrderData.setTotalWeight(null);

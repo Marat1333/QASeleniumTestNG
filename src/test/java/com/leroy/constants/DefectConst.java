@@ -9,8 +9,5 @@ public class DefectConst {
     public static final boolean INVALID_ORDER_DRAFT_DATE = true;
     public static final boolean INVISIBLE_AUTHOR_ORDER_DRAFT = true;
     public static final boolean CONFIRMED_BUT_NOT_ALLOWED_FOR_PICKING_ORDER = false;
-    public static final boolean SOLUTION_VERSION_ISSUE = true;
-    public static final boolean PRINT_TAG_NAVIGATION_ISSUE = true;
-    public static final boolean LFRONT_3640 = true;
 
 }

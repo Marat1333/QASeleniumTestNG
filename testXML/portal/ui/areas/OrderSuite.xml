@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite name="Order Suite" parallel="tests">
+<suite name="Order Suite" parallel="methods">
 
     <listeners>
         <listener class-name="com.leroy.core.listeners.TestRailListener"/>
@@ -12,7 +12,13 @@
         </classes>
     </test>
 
-    <test name="C23410896 Создать заказ из корзины с одним заказом">
+    <test name="Заказы - создание, редактирование">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest"/>
+        </classes>
+    </test>
+
+    <!--<test name="C23410896 Создать заказ из корзины с одним заказом">
         <classes>
             <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
                 <methods>
@@ -86,6 +92,6 @@
                 </methods>
             </class>
         </classes>
-    </test>
+    </test>-->
 
 </suite>

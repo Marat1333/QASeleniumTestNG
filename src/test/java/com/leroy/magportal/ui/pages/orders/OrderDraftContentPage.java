@@ -80,14 +80,16 @@ public class OrderDraftContentPage extends OrderDraftPage {
 
     // Verifications
     @Step("Проверить, что данные заказа соответствуют ожидаемому")
-    public OrderDraftContentPage shouldOrderContentDataIs(SalesDocWebData expectedOrderData) throws Exception {
+    public OrderDraftContentPage shouldOrderContentDataIs(SalesDocWebData orderData) throws Exception {
+        SalesDocWebData expectedOrderData = orderData.clone();
         SalesDocWebData actualData = getOrderData();
         expectedOrderData.setPinCode(null);
+        expectedOrderData.setClient(null);
         if (INVALID_ORDER_DRAFT_DATE)
             expectedOrderData.setCreationDate(null);
         expectedOrderData.getOrders().get(0).getProductCardDataList().forEach(p -> p.setBarCode(null));
         // Не понятно как проверять вес, когда он в корзине отображается суммарный, а в заказе за штуку:
-        //expectedOrderData.getOrders().get(0).getProductCardDataList().forEach(p -> p.setWeight(null));
+        expectedOrderData.getOrders().get(0).getProductCardDataList().forEach(p -> p.setWeight(null));
         if (PAO_931 && expectedOrderData.getOrders().get(0).getProductCardDataList().get(0).getDiscountPercent() != null)
             expectedOrderData.getOrders().forEach(p -> p.setTotalPrice(null));
         actualData.assertEqualsNotNullExpectedFields(expectedOrderData);
