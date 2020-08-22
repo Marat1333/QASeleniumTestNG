@@ -2,6 +2,7 @@ package com.leroy.magmobile.api.clients;
 
 import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
+import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.data.catalog.ServiceItemDataList;
 import com.leroy.magmobile.api.data.supply_plan.suppliers.SupplierDataList;
@@ -11,7 +12,13 @@ import com.leroy.magmobile.api.requests.catalog_search.GetSupplierSearch;
 import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class CatalogSearchClient extends BaseMashupClient {
+    //back-end limit
+    protected final static int MAX_PAGE_SIZE = 90;
 
     /**
      * ---------- Requests -------------
@@ -19,14 +26,14 @@ public class CatalogSearchClient extends BaseMashupClient {
 
     @Step("Search for products")
     public Response<ProductItemDataList> searchProductsBy(GetCatalogSearch params) {
-        params.setLdap(userSessionData.getUserLdap());
+        params.setLdapHeader(userSessionData.getUserLdap());
         return execute(params, ProductItemDataList.class);
     }
 
     @Step("Search for products")
     public Response<ProductItemDataList> searchProductsBy(CatalogSearchFilter filters, Integer startFrom, Integer pageSize) {
         GetCatalogSearch req = new GetCatalogSearch();
-        req.setLdap(userSessionData.getUserLdap());
+        req.setLdapHeader(userSessionData.getUserLdap());
         req.setShopId(userSessionData.getUserShopId());
         if (filters.getHasAvailableStock() != null)
             req.setHasAvailableStock(filters.getHasAvailableStock());
@@ -49,7 +56,7 @@ public class CatalogSearchClient extends BaseMashupClient {
 
     @Step("Search for services")
     public Response<ServiceItemDataList> searchServicesBy(GetCatalogServicesSearch params) {
-        params.setLdap(userSessionData.getUserLdap());
+        params.setLdapHeader(userSessionData.getUserLdap());
         return execute(params, ServiceItemDataList.class);
     }
 
@@ -61,5 +68,36 @@ public class CatalogSearchClient extends BaseMashupClient {
         return execute(params, SupplierDataList.class);
     }
 
+    @Step("Return products list")
+    public List<ProductItemData> getProductsList() {
+        ProductItemDataList productItemDataList = this.searchProductsBy(new GetCatalogSearch().setPageSize(MAX_PAGE_SIZE)
+                .setShopId(userSessionData.getUserShopId())).asJson();
+        return productItemDataList.getItems();
+    }
+
+    @Step("Return random product")
+    public ProductItemData getRandomProduct() {
+        ProductItemDataList productItemDataList = this.searchProductsBy(new GetCatalogSearch().setPageSize(MAX_PAGE_SIZE)
+                .setHasAvailableStock(true).setShopId(userSessionData.getUserShopId())).asJson();
+        List<ProductItemData> productItemData = productItemDataList.getItems();
+        productItemData = productItemData.stream().filter(i -> i.getTitle() != null).collect(Collectors.toList());
+        return productItemData.get((int) (Math.random() * productItemData.size()));
+    }
+
+    @Step("Return random product")
+    public List<ProductItemData> getRandomUniqueProductsWithTitles(int countOfProducts) {
+        List<ProductItemData> randomProductsList = new ArrayList<>();
+        ProductItemDataList productItemDataList = this.searchProductsBy(new GetCatalogSearch().setPageSize(MAX_PAGE_SIZE)
+                .setHasAvailableStock(true).setShopId(userSessionData.getUserShopId())).asJson();
+        List<ProductItemData> productItemData = productItemDataList.getItems();
+        productItemData = productItemData.stream().filter(i -> i.getTitle() != null).collect(Collectors.toList());
+        int randomIndex;
+        for (int i = 0; i < countOfProducts; i++) {
+            randomIndex = (int) (Math.random() * productItemData.size());
+            randomProductsList.add(productItemData.get(randomIndex));
+            productItemData.remove(randomIndex);
+        }
+        return randomProductsList;
+    }
 
 }

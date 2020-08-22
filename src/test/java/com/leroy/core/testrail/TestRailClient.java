@@ -159,8 +159,9 @@ public class TestRailClient {
     }
 
     private static String queryParam(String key, Object value) {
-        return value != null? "&" + key + "=" + value.toString() : "";
+        return value != null ? "&" + key + "=" + value.toString() : "";
     }
+
     private static Long findIdFromJSONArrayByName(JSONArray jsonArray, String name) {
         for (Object obj : jsonArray) {
             JSONObject jsonObject = (JSONObject) obj;

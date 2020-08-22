@@ -1,9 +1,6 @@
 package com.leroy.magmobile.ui.pages.work.supply_plan.data;
 
 import com.leroy.magmobile.api.data.supply_plan.Details.ShipmentData;
-import com.leroy.magmobile.ui.pages.more.DepartmentListPage;
-import com.leroy.magmobile.ui.pages.work.supply_plan.PeriodSelectorPage;
-import com.leroy.magmobile.ui.pages.work.supply_plan.SuppliesListPage;
 import com.leroy.utils.DateTimeUtil;
 
 import java.time.LocalDate;
@@ -42,11 +39,11 @@ public class SupplyNavigationData {
         return shipmentDate;
     }
 
-    public String getDepartmentId(){
+    public String getDepartmentId() {
         return info.getDepartmentId();
     }
 
-    public LocalDate getDate(){
+    public LocalDate getDate() {
         return data.getDate();
     }
 

@@ -55,7 +55,7 @@ public class ShortOrderDocumentCardWidget extends CardWebWidget<ShortOrderDocWeb
     }
 
     public ShortOrderDocWebData.PayType getPaymentType() {
-        return paymentType.getText().toLowerCase().equals("оффлайн")? ShortOrderDocWebData.PayType.OFFLINE : ShortOrderDocWebData.PayType.ONLINE;
+        return paymentType.getText().toLowerCase().equals("оффлайн") ? ShortOrderDocWebData.PayType.OFFLINE : ShortOrderDocWebData.PayType.ONLINE;
     }
 
     public LocalDateTime getCreationDate() {

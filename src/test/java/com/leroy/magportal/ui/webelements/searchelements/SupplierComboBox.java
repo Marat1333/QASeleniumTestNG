@@ -51,7 +51,6 @@ public class SupplierComboBox extends PuzMultiSelectComboBox {
             clearTextInputBtn.click();
         }
         searchString.fill(value);
-        loadingSpinner.waitForVisibility(tiny_timeout);
         loadingSpinner.waitForInvisibility();
     }
 

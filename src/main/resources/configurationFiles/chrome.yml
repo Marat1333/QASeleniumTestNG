@@ -18,8 +18,14 @@ capabilities:
       acceptInsecureCerts: true
       args:
         - start-maximized
+      experimentalOptions:
+        prefs:
+          download.default_directory: C:\downloads
   linux:
     chrome:
       acceptInsecureCerts: true
       args:
         - start-maximized
+      experimentalOptions:
+        prefs:
+          download.default_directory: /home/ddimitrash/downloads

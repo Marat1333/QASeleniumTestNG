@@ -16,7 +16,7 @@ public class SalesHistoryUnitsModalPage extends CommonMagMobilePage {
     @AppFindBy(xpath = "//android.widget.TextView[contains(@text, 'В деньгах')]/following-sibling::*")
     Button priceBtn;
 
-    public enum Option{
+    public enum Option {
         PRICE,
         QUANTITY
     }
@@ -29,8 +29,8 @@ public class SalesHistoryUnitsModalPage extends CommonMagMobilePage {
     }
 
     @Step("Выбрать единицу измерения")
-    public SalesHistoryPage choseOption(Option option){
-        switch (option){
+    public SalesHistoryPage choseOption(Option option) {
+        switch (option) {
             case PRICE:
                 priceBtn.click();
                 break;

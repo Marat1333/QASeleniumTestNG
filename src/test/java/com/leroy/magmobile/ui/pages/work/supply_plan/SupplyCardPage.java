@@ -83,7 +83,7 @@ public class SupplyCardPage extends CommonMagMobilePage {
 
     @Override
     protected void waitForPageIsLoaded() {
-        if (sendReqOneMoreTime.isVisible()){
+        if (sendReqOneMoreTime.isVisible()) {
             Log.warn("hasn`t get data, trying again");
             sendReqOneMoreTime.click();
             waitUntilProgressBarIsInvisible();
@@ -248,7 +248,7 @@ public class SupplyCardPage extends CommonMagMobilePage {
         return this;
     }
 
-    public SupplyCardPage verifyRequiredElements(){
+    public SupplyCardPage verifyRequiredElements() {
         String pageSource = getPageSource();
         softAssert.areElementsVisible(pageSource, title, supplierType, supplierName, supplierCode, shipmentNumber);
         softAssert.verifyAll();

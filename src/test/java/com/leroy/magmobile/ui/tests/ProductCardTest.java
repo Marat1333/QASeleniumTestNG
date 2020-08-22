@@ -9,10 +9,7 @@ import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.ShopKladrClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
-import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
-import com.leroy.magmobile.api.data.catalog.product.CatalogShopsData;
-import com.leroy.magmobile.api.data.catalog.product.CatalogSimilarProducts;
-import com.leroy.magmobile.api.data.catalog.product.SalesHistoryData;
+import com.leroy.magmobile.api.data.catalog.product.*;
 import com.leroy.magmobile.api.data.catalog.product.reviews.CatalogReviewsOfProductList;
 import com.leroy.magmobile.api.data.catalog.supply.CatalogSupplierData;
 import com.leroy.magmobile.api.data.shops.PriceAndStockData;
@@ -35,6 +32,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,8 +44,9 @@ public class ProductCardTest extends AppBaseSteps {
     private CatalogProductClient catalogProductClient;
 
     @BeforeClass
-    private void initCatalogProductClient() {
+    private void initClients() {
         catalogProductClient = apiClientProvider.getCatalogProductClient();
+        catalogSearchClient = apiClientProvider.getCatalogSearchClient();
     }
 
     @Override
@@ -58,7 +57,7 @@ public class ProductCardTest extends AppBaseSteps {
     }
 
     private String getRandomLmCode() {
-        catalogSearchClient = apiClientProvider.getCatalogSearchClient();
+
         ProductItemDataList productItemDataList = catalogSearchClient.searchProductsBy(new GetCatalogSearch().setPageSize(24)).asJson();
         List<ProductItemData> productItemData = productItemDataList.getItems();
         anAssert().isTrue(productItemData.size() > 0, "size must be more than 0");
@@ -89,8 +88,14 @@ public class ProductCardTest extends AppBaseSteps {
         return shopData;
     }
 
+    private List<CatalogProductData> sortByAvailableStockDesc(List<CatalogProductData> dataList) {
+        dataList.sort(Comparator.comparingDouble(ProductItemData::getAvailableStock));
+        Collections.reverse(dataList);
+        return dataList;
+    }
+
     @Step("Перейти в карточку товара {lmCode}")
-    private void preconditions(String lmCode) throws Exception {
+    private void openProductCard(String lmCode) throws Exception {
         MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
         SearchProductPage searchProductPage = mainProductAndServicesPage.clickSearchBar(false);
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
@@ -106,7 +111,7 @@ public class ProductCardTest extends AppBaseSteps {
                 .getProductSales(lmCode, notUserShop).asJsonList(SalesHistoryData.class);
 
         //Pre-conditions
-        preconditions(lmCode);
+        openProductCard(lmCode);
 
         //Step 1
         step("Найти товар и перейти в историю его продаж");
@@ -134,7 +139,7 @@ public class ProductCardTest extends AppBaseSteps {
         CatalogProductData data = catalogProductClient.getProduct(lmCode).asJson();
 
         // Pre-conditions
-        preconditions(lmCode);
+        openProductCard(lmCode);
 
         //Step 1
         step("Перейти во вкладку \"Характеристики\"");
@@ -149,7 +154,7 @@ public class ProductCardTest extends AppBaseSteps {
         CatalogReviewsOfProductList reviewsList = catalogProductClient.getProductReviews(lmCode, 1, 100).asJson();
 
         // Pre-conditions
-        preconditions(lmCode);
+        openProductCard(lmCode);
 
         //Step 1
         step("Перейти во вкладку \"Отзывы\"");
@@ -174,7 +179,7 @@ public class ProductCardTest extends AppBaseSteps {
         CatalogSimilarProducts data = catalogProductClient.getSimilarProducts(lmCode, extendParam).asJson();
 
         // Pre-conditions
-        preconditions(lmCode);
+        openProductCard(lmCode);
 
         //Step 1
         step("Перейти на страницу аналогичных товаров");
@@ -200,7 +205,7 @@ public class ProductCardTest extends AppBaseSteps {
         String shortComment = "asdafsf";
 
         // Pre-conditions
-        preconditions(lmCode);
+        openProductCard(lmCode);
 
         //Step 1
         step("Перейти во вкладку \"Отзывы\" и нажать на кнопку \"Оставить отзыв\"");
@@ -246,7 +251,7 @@ public class ProductCardTest extends AppBaseSteps {
         CatalogSupplierData data = catalogProductClient.getSupplyInfo(lmCode).asJson();
 
         // Pre-conditions
-        preconditions(lmCode);
+        openProductCard(lmCode);
 
         //Step 1
         step("Перейти во вкладку \"Характеристики\" и нажать на кнопку \"Поставщик\"");
@@ -259,6 +264,7 @@ public class ProductCardTest extends AppBaseSteps {
         //Step 2
         step("Перейти во вкладку \"Характеристики\", нажать на кнопку \"Цены\" и открыть раздел \"Поставки\"");
         suppliesPage.goBack();
+        productCardPage = new ProductCardPage();
         productCardPage.switchTab(ProductCardPage.Tabs.DESCRIPTION);
         ProductDescriptionPage productDescriptionPage = new ProductDescriptionPage();
         ProductPricesQuantitySupplyPage productPricesQuantitySupplyPage = productDescriptionPage.goToPricesAndQuantityPage();
@@ -275,7 +281,7 @@ public class ProductCardTest extends AppBaseSteps {
                 extendOptions).asJson();
 
         // Pre-conditions
-        preconditions(lmCode);
+        openProductCard(lmCode);
 
         //Step 1
         step("Перейти во вкладку \"Описание товара\"");
@@ -309,6 +315,7 @@ public class ProductCardTest extends AppBaseSteps {
         //Step 2
         step("Открыть вкладку с информацией о стоках");
         StocksPage stocksPage = productPricesQuantitySupplyPage.switchTab(ProductPricesQuantitySupplyPage.Tabs.STOCKS);
+        //TODO will be changed soon
         stocksPage.shouldDataIsCorrect(data);
 
         //Step 3
@@ -338,7 +345,7 @@ public class ProductCardTest extends AppBaseSteps {
         sortedShopDataList = setPricesAndStockForEachShopData(catalogShopsList, sortedShopDataList);
 
         // Pre-conditions
-        preconditions(lmCode);
+        openProductCard(lmCode);
 
         //Step 1
         step("Перейти во вкладку \"Описание товара\" и открыть страницу с информацией о цене");
@@ -382,6 +389,43 @@ public class ProductCardTest extends AppBaseSteps {
         step("Искать магазин по имени");
         shopsStocksPage.searchShopBy(searchName);
         shopsStocksPage.shouldShopCardsContainsSearchCriterion(searchName);
+    }
+
+    @Test(description = "C23409226 Проверить комплементарные товары")
+    public void testComplementaryProducts() throws Exception {
+        List<ProductItemData> productList = catalogSearchClient.getProductsList();
+
+        CatalogComplementaryProducts lmWithComplementaryData = catalogProductClient.getNotEmptyComplementaryProductData(productList);
+        CatalogComplementaryProducts lmWithoutComplementaryData = catalogProductClient.getEmptyComplementaryProductData(productList);
+        String lmWithComplementary = lmWithComplementaryData.getParentLmCode();
+        String lmWithoutComplementary = lmWithoutComplementaryData.getParentLmCode();
+        List<CatalogProductData> sortedProductData = sortByAvailableStockDesc(lmWithComplementaryData.getItems());
+
+        //preconditions
+        openProductCard(lmWithComplementary);
+
+        //Step 1
+        step("Перейти в карточку товара с комплементарными товарами");
+        ProductDescriptionPage productDescriptionPage = new ProductDescriptionPage();
+        productDescriptionPage.shouldComplementaryProductsAreCorrect(sortedProductData, SearchProductPage.CardType.COMMON);
+
+        //Step 2
+        step("Перейти в укороченную карточку товара с комплементарными товарами");
+        SearchProductPage searchProductPage = productDescriptionPage.returnBack();
+        searchProductPage.clearSearchInput();
+        FilterPage filterPage = searchProductPage.goToFilterPage();
+        filterPage.switchFiltersFrame(FilterPage.ALL_GAMMA_FRAME_TYPE);
+        searchProductPage = filterPage.applyChosenFilters();
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmWithComplementary);
+        productDescriptionPage = new ProductDescriptionPage();
+        productDescriptionPage.shouldComplementaryProductsAreCorrect(sortedProductData, SearchProductPage.CardType.ALL_GAMMA);
+
+        //Step 3
+        step("Перейти в карточку товара без комплементарных товаров");
+        searchProductPage = productDescriptionPage.returnBack();
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmWithoutComplementary);
+        productDescriptionPage = new ProductDescriptionPage();
+        productDescriptionPage.shouldComplementaryProductsAreCorrect(lmWithoutComplementaryData.getItems(), SearchProductPage.CardType.ALL_GAMMA);
     }
 
 }
