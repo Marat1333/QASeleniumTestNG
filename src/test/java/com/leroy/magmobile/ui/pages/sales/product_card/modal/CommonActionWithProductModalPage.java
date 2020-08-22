@@ -8,7 +8,7 @@ import io.qameta.allure.Step;
 
 public abstract class CommonActionWithProductModalPage extends CommonMagMobilePage {
 
-    @AppFindBy(xpath = "(//android.view.ViewGroup[@content-desc=\"Button\"])[1]/android.view.ViewGroup",
+    @AppFindBy(accessibilityId = "Button-content",
             metaName = "Кнопка для закрытия модального окна")
     Element closeBtn;
 
