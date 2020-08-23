@@ -43,6 +43,20 @@ public class ParserUtil {
     }
 
     /**
+     * Convert String to Double Weight and cut off non-digits if necessary
+     * if there is "Т" unit, so value will be * 1000
+     *
+     * @param str - string value
+     * @return weight in kg
+     */
+    public static Double strToWeight(String str) {
+        Double result = strToDouble(str, ",");
+        if (!str.contains("кг"))
+            result *= 1000;
+        return result;
+    }
+
+    /**
      * Convert Double to String
      *
      * @param val - double value
@@ -116,7 +130,7 @@ public class ParserUtil {
     public static String standardPhoneFmt(String phoneNumber) {
         if (!phoneNumber.startsWith("+7"))
             phoneNumber = "+7" + phoneNumber;
-        return phoneNumber.replaceAll(" |-", "");
+        return phoneNumber.replaceAll(" |-|\\(|\\)", "");
     }
 
     public static String parseFirstName(String fullName) {

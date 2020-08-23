@@ -215,7 +215,7 @@ public class PickingContentPage extends PickingPage {
 
         @Step("Выбрать причину {reason}")
         public ReasonForLackOfProductModal selectReason(Reasons reason) {
-            E("//button[contains(@class, 'Common-ReasonsModal__switch')][descendant::span[text()='" + reason.getTitle() + "']]")
+            E("//button[contains(@class, 'ReasonsModal__switch')][descendant::span[text()='" + reason.getTitle() + "']]")
                     .click();
             return this;
         }
