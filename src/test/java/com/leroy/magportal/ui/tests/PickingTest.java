@@ -15,6 +15,8 @@ import com.leroy.magportal.ui.models.picking.PickingProductCardData;
 import com.leroy.magportal.ui.models.picking.PickingTaskData;
 import com.leroy.magportal.ui.models.picking.ShortPickingTaskData;
 import com.leroy.magportal.ui.pages.common.MenuPage;
+import com.leroy.magportal.ui.pages.orders.OrderCreatedContentPage;
+import com.leroy.magportal.ui.pages.orders.OrderHeaderPage;
 import com.leroy.magportal.ui.pages.picking.PickingContentPage;
 import com.leroy.magportal.ui.pages.picking.PickingPage;
 import com.leroy.magportal.ui.pages.picking.modal.SplitPickingModalStep1;
@@ -22,6 +24,7 @@ import com.leroy.magportal.ui.pages.picking.modal.SplitPickingModalStep2;
 import com.leroy.magportal.ui.pages.picking.modal.SuccessfullyCreatedAssemblyModal;
 import com.leroy.utils.ParserUtil;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.core.annotation.Order;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -578,5 +581,49 @@ public class PickingTest extends BasePAOTest {
         pickingContentPage.switchToCommentTab()
                 .shouldCommentIs(comment);
     }
+
+
+    @Test(description = "C23416311 Заказы. Переход из статуса Готов к сборке в статус Собран", groups = NEED_PRODUCTS_GROUP)
+    public void testMoveFromReadyPickingToPicked() throws Exception {
+
+        initCreateOrder(1);
+
+        // Step 1:
+        step("Открыть страницу с Заказами");
+        OrderHeaderPage orderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
+        initFindPickingTask();
+
+        // Step2:
+        step("Ввести номер заказа из корзины и нажать кнопку 'Показать заказы'");
+        orderPage.enterSearchTextAndSubmit(orderId);
+        orderPage.shouldDocumentIsPresent(orderId);
+        orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal());
+        orderPage.shouldDocumentCountIs(1);
+
+        // Step3:
+
+        step("Кликнуть на заказ");
+        orderPage.clickDocumentInLeftMenu(orderId);
+        OrderCreatedContentPage createdContentPage = new OrderCreatedContentPage();
+        createdContentPage.shouldOrderProductCountIs(1);
+
+        // Step4: перейти на Сборки
+
+        step("перейти на Сборки");
+        getDriver().get(getPageUrl(PickingPage.class));
+        PickingContentPage pickingContentPage = new PickingContentPage();
+        createdContentPage.clickGoToPickings();
+
+
+
+
+
+
+
+
+
+
+    }
+
 
 }

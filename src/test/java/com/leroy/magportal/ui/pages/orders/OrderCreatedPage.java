@@ -1,8 +1,22 @@
 package com.leroy.magportal.ui.pages.orders;
 
+import com.leroy.core.annotations.WebFindBy;
+import com.leroy.core.web_elements.general.Button;
 import io.qameta.allure.Step;
 
 public abstract class OrderCreatedPage extends OrderHeaderPage {
+
+    @WebFindBy(xpath = "//button[@id='pickings']",
+            metaName = "Вкладка Сборок")
+    Button goToPickings;
+
+    // Actions
+
+    @Step ("Перейти на вкладку 'Сборки'")
+    public void clickGoToPickings()  {
+        goToPickings.click();
+    }
+
 
     // Verifications
 

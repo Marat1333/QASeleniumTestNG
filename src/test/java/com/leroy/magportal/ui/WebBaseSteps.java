@@ -14,7 +14,7 @@ import io.qameta.allure.Step;
 
 public class WebBaseSteps extends MagPortalBaseTest {
 
-    private String getPageUrl(Class<?> pageClass) {
+    protected String getPageUrl(Class<?> pageClass) {
         String path;
         if (pageClass == CustomerPage.class)
             path = "orders/customers";
