@@ -1,9 +1,14 @@
 package com.leroy.magportal.api.helpers;
 
 import com.google.inject.Inject;
+import com.leroy.core.ContextProvider;
+import com.leroy.core.configuration.DriverFactory;
 import com.leroy.magmobile.api.data.sales.orders.OrderData;
 import com.leroy.magportal.api.clients.OrderClient;
+import com.leroy.magportal.api.constants.CardConst;
 import com.leroy.magportal.api.constants.PaymentStatusEnum;
+import com.leroy.magportal.api.helpers.ui.PaymentPage;
+import org.openqa.selenium.WebDriver;
 import ru.leroymerlin.qa.core.clients.base.Response;
 import ru.leroymerlin.qa.core.clients.payment.PaymentClient;
 import ru.leroymerlin.qa.core.clients.payment.data.task.ChangeStatus;
@@ -58,19 +63,19 @@ public class PaymentHelper extends BaseHelper {
         return resp.asJson().getLinks();
     }
 
-    // Public methods
-
-    public String getShortPaymentLink(String orderId) {
+    private String getShortPaymentLink(String orderId) {
         String paymentTaskId = getPaymentTaskId(orderId);
         List<Link> links = getLinks(paymentTaskId);
         return links.stream().filter(x -> x.getType().equals("SHORT_LINK")).findFirst().orElse(new Link()).getLink();
     }
 
-    public String getPaymentLink(String orderId) {
+    private String getPaymentLink(String orderId) {
         String paymentTaskId = getPaymentTaskId(orderId);
         List<Link> links = getLinks(paymentTaskId);
         return links.stream().filter(x -> x.getType().equals("LINK")).findFirst().orElse(new Link()).getLink();
     }
+
+    // Public methods
 
     public void makeHoldCost(String orderId) {
         updatePayment(orderId, PaymentStatusEnum.HOLD);
@@ -78,6 +83,21 @@ public class PaymentHelper extends BaseHelper {
 
     public void makePaid(String orderId) {
         updatePayment(orderId, PaymentStatusEnum.PAID);
+    }
+
+    public void makePaymentUi(String orderId) throws Exception {
+        WebDriver driver = DriverFactory.createDriver();
+        ContextProvider.setDriver(driver);
+        String link = getPaymentLink(orderId);
+        try {
+            driver.get(link);
+
+            PaymentPage paymentPage = new PaymentPage();
+            paymentPage.enterCreditCardDetails(CardConst.VISA_1111);
+            paymentPage.assertThatPaymentIsSuccessful();
+        } finally {
+            ContextProvider.quitDriver();
+        }
     }
 
 }
