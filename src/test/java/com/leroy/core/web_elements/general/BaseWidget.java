@@ -33,6 +33,13 @@ public abstract class BaseWidget extends BaseWrapper {
         initElements(locator);
     }
 
+    @Override
+    public String toString() {
+        if (locator.getMetaName() != null)
+            return locator.getMetaName();
+        return super.toString();
+    }
+
     /**
      * Is stale element reference?
      *

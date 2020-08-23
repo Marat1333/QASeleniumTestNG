@@ -3,6 +3,7 @@ package com.leroy.magportal.ui.pages.cart_estimate;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magportal.ui.models.salesdoc.OrderWebData;
 import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.DiscountModal;
@@ -37,9 +38,9 @@ public class CartPage extends CartEstimatePage {
             clazz = OrderPuzWidget.class)
     CardWebWidgetList<OrderPuzWidget, OrderWebData> orders;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'SalesDoc-ViewFooter__action')]//button[descendant::span[text()='Оформить заказ']]",
-            metaName = "Кнопка Оформить заказ")
-    Button confirmBtn;
+    @WebFindBy(xpath = "//div[contains(@class, 'SalesDoc-ViewFooter__action')]//button[descendant::span[contains(text(),'Оформить заказ')]]",
+            metaName = "Кнопки Оформить заказ", clazz = Button.class)
+    ElementList<Button> confirmButtons;
 
     @Override
     protected CardWebWidgetList<OrderPuzWidget, OrderWebData> orders() {
@@ -48,11 +49,15 @@ public class CartPage extends CartEstimatePage {
 
     @Override
     public void waitForPageIsLoaded() {
-        anAssert.isElementVisible(mainCartHeaderLbl, timeout);
         String expectedHeader = "Корзины";
         anAssert.isTrue(mainCartHeaderLbl.waitUntilTextIsEqualTo(expectedHeader),
                 "Страница 'Корзины' не загрузилась'");
         waitForSpinnerDisappear();
+    }
+
+    public CartPage waitForProductsAreLoaded() {
+        orders().waitUntilAtLeastOneElementIsPresent();
+        return this;
     }
 
     // Grab info
@@ -96,10 +101,16 @@ public class CartPage extends CartEstimatePage {
     }
 
     @Step("Нажать кнопку 'Оформить заказ'")
-    public OrderDraftDeliveryWayPage clickConfirmButton() {
-        confirmBtn.click();
+    public OrderDraftDeliveryWayPage clickConfirmButton(int index) throws Exception {
+        index--;
+        anAssert.isTrue(confirmButtons.getCount() > 0, "Кнопка 'Оформить заказ' не отображается");
+        confirmButtons.get(index).click();
         waitForSpinnerAppearAndDisappear();
         return new OrderDraftDeliveryWayPage();
+    }
+
+    public OrderDraftDeliveryWayPage clickConfirmButton() throws Exception {
+        return clickConfirmButton(1);
     }
 
     // Verifications

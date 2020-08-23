@@ -1,5 +1,6 @@
 package com.leroy.magportal.ui.models.salesdoc;
 
+import com.leroy.constants.DefectConst;
 import com.leroy.core.ContextProvider;
 import com.leroy.core.asserts.SoftAssertWrapper;
 import com.leroy.utils.ParserUtil;
@@ -35,6 +36,9 @@ public class ProductOrderCardWebData {
         productOrderCardWebData.setTotalPrice(totalPrice);
         productOrderCardWebData.setAvailableTodayQuantity(availableTodayQuantity);
         productOrderCardWebData.setWeight(weight);
+        productOrderCardWebData.setTotalPriceWithDiscount(totalPriceWithDiscount);
+        productOrderCardWebData.setDiscountPercent(discountPercent);
+        productOrderCardWebData.setService(isService);
         return productOrderCardWebData;
     }
 
@@ -78,7 +82,7 @@ public class ProductOrderCardWebData {
         if (expectedProduct.getDiscountPercent() != null)
             softAssert.isEquals(this.getDiscountPercent(), expectedProduct.getDiscountPercent(),
                     "Заказ #" + (iOrder + 1) + " Товар #" + (iProduct + 1) + " - ожидалась другая скидка %");
-        if (expectedProduct.getAvailableTodayQuantity() != null)
+        if (expectedProduct.getAvailableTodayQuantity() != null && !DefectConst.STOCK_ISSUE)
             softAssert.isEquals(this.getAvailableTodayQuantity(), expectedProduct.getAvailableTodayQuantity(),
                     "Заказ #" + (iOrder + 1) + " Товар #" + (iProduct + 1) + " - ожидалось другое доступное кол-во");
         else if (this.getAvailableTodayQuantity() != null)
@@ -86,7 +90,8 @@ public class ProductOrderCardWebData {
                     "Заказ #" + (iOrder + 1) + " Товар #" + (iProduct + 1) + " - ожидалось, что доступное кол-во >= 0");
         if (expectedProduct.getWeight() != null)
             softAssert.isTrue(Math.abs(this.getWeight() - expectedProduct.getWeight()) <= expectedProduct.getSelectedQuantity() * 0.011,
-                    "Заказ #" + (iOrder + 1) + " Товар #" + (iProduct + 1) + " - ожидался другой вес");
+                    "Заказ #" + (iOrder + 1) + " Товар #" + (iProduct + 1) + " - ожидался другой вес. " +
+                            "Актуальный:" + this.getWeight() + " Ожидался:" + expectedProduct.getWeight());
         else
             softAssert.isTrue(this.getWeight() > 0,
                     "Заказ #" + (iOrder + 1) + " Товар #" + (iProduct + 1) + " - ожидался вес > 0");

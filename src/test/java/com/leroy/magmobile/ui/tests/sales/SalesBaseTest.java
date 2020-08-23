@@ -242,7 +242,7 @@ public class SalesBaseTest extends AppBaseSteps {
         return cartData.getFullDocId();
     }
 
-    protected String createConfirmedOrder(List<String> lmCodes, List<CartProductOrderData> productDataList) {
+    protected String createConfirmedOrder(List<String> lmCodes, List<CartProductOrderData> productDataList) throws Exception {
         // Создание корзины
         List<CartProductOrderData> productOrderDataList = productDataList == null ? new ArrayList<>() : productDataList;
         if (productDataList == null) {
@@ -255,7 +255,7 @@ public class SalesBaseTest extends AppBaseSteps {
                 productOrderDataList.add(productOrderData);
             }
         }
-        return paoHelper.createConfirmedOrder(productOrderDataList);
+        return paoHelper.createConfirmedOrder(productOrderDataList, false).getOrderId();
     }
 
     protected void cancelOrder(String orderId, String expectedStatusBefore) throws Exception {
