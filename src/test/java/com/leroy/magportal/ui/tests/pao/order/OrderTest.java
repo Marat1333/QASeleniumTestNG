@@ -54,12 +54,7 @@ public class OrderTest extends BasePAOTest {
                 !orderData.getStatus().equals(SalesDocumentsConst.States.DRAFT.getUiVal()) &&
                 !orderData.getStatus().equals(SalesDocumentsConst.States.CANCELLED.getUiVal())) {
             OrderClient orderClient = apiClientProvider.getOrderClient();
-            if (CONFIRMED_BUT_NOT_ALLOWED_FOR_PICKING_ORDER)
-                orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderData.getNumber(),
-                        SalesDocumentsConst.States.CONFIRMED.getApiVal(), false);
-            else
-                orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderData.getNumber(),
-                        SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal(), false);
+            orderClient.waitUntilOrderCanBeCancelled(orderData.getNumber());
             Response<JsonNode> resp = orderClient.cancelOrder(orderData.getNumber());
             assertThat(resp, successful());
         }
