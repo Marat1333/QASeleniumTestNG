@@ -48,7 +48,6 @@ public class OrderTest extends BasePAOTest {
     @Inject
     PAOHelper helper;
 
-    @AfterClass(enabled = true)
     private void cancelConfirmedOrder() throws Exception {
         if (orderData != null && orderData.getNumber() != null && orderData.getStatus() != null &&
                 !orderData.getStatus().equals(SalesDocumentsConst.States.DRAFT.getUiVal()) &&
