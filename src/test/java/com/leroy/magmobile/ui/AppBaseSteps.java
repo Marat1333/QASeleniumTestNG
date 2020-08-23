@@ -183,7 +183,13 @@ public class AppBaseSteps extends MagMobileBaseTest {
      * Тест начинается со страницы авторизации, т.е. с нуля?
      */
     protected boolean isStartFromScratch() {
-        String ps = getDriver().getPageSource();
+        String ps;
+        try {
+            ps = getDriver().getPageSource();
+        } catch (WebDriverException err) {
+            Log.debug(err.getMessage());
+            ps = getDriver().getPageSource();
+        }
         Element authScreen = new Element(getDriver(), By.xpath("//*[@content-desc='AuthScreen__btn_getVersionNumber']"));
         Element anyViewGroup = new Element(getDriver(), By.xpath("//android.view.ViewGroup"));
         return authScreen.isVisible(ps) || !anyViewGroup.isVisible(ps);
