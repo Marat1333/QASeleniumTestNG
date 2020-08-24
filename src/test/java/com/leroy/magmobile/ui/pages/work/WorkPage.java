@@ -77,9 +77,9 @@ public class WorkPage extends CommonMagMobilePage {
     public WorkPage verifyRequiredElements() {
         softAssert.isElementTextEqual(titleObj, "Ежедневная работа");
         if (ContextProvider.getContext().isNewShopFunctionality())
-            softAssert.isElementTextEqual(withdrawalFromRMLabel, "Отзыв с RM");
-        else
             softAssert.isElementTextEqual(withdrawalFromRMLabel, "Отзыв товаров со склада");
+        else
+            softAssert.isElementTextEqual(withdrawalFromRMLabel, "Отзыв с RM");
         softAssert.isElementImageMatches(withdrawalFromRMPlusIcon,
                 MagMobElementTypes.CIRCLE_PLUS.getPictureName());
         softAssert.isElementVisible(departmentSupplyPlanLbl);

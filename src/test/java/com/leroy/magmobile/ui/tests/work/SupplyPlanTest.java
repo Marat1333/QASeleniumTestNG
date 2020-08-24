@@ -81,7 +81,7 @@ public class SupplyPlanTest extends AppBaseSteps {
     private SuppliesListPage choseDepartment(String departmentId) throws Exception {
         SuppliesListPage suppliesListPage = new SuppliesListPage();
         DepartmentListPage departmentListPage = suppliesListPage.openDepartmentSelectorPage();
-        departmentListPage.selectDepartmentByIdInModal(departmentId);
+        departmentListPage.selectDepartmentById(departmentId);
         return new SuppliesListPage();
     }
 
@@ -110,7 +110,7 @@ public class SupplyPlanTest extends AppBaseSteps {
         //Step 2
         step("Проверить данные по поставкам и бронированиям на поставку после смены отдела");
         DepartmentListPage departmentListPage = suppliesListPage.openDepartmentSelectorPage();
-        departmentListPage.selectDepartmentByIdInModal(nonUserDept);
+        departmentListPage.selectDepartmentById(nonUserDept);
         suppliesListPage = new SuppliesListPage();
         suppliesListPage.shouldDataIsCorrect(response2);
     }
@@ -225,7 +225,7 @@ public class SupplyPlanTest extends AppBaseSteps {
         step("Проверить отображения результатов поиска по имени");
         SuppliesListPage suppliesListPage = precondition();
         DepartmentListPage departmentListPage = suppliesListPage.openDepartmentSelectorPage();
-        departmentListPage.selectDepartmentByIdInModal("01");
+        departmentListPage.selectDepartmentById("01");
         SearchSupplierPage searchSupplierPage = suppliesListPage.goToSearchSupplierPage();
         searchSupplierPage = searchSupplierPage.searchForSupplier(supplierName);
         searchSupplierPage.shouldDataIsCorrect(byNameResponse);
@@ -262,7 +262,7 @@ public class SupplyPlanTest extends AppBaseSteps {
         step("Проверить отображения результатов поиска по имени");
         SuppliesListPage suppliesListPage = precondition();
         DepartmentListPage departmentListPage = suppliesListPage.openDepartmentSelectorPage();
-        departmentListPage.selectDepartmentByIdInModal("01");
+        departmentListPage.selectDepartmentById("01");
         SearchSupplierPage searchSupplierPage = suppliesListPage.goToSearchSupplierPage();
         searchSupplierPage = searchSupplierPage.searchForSupplier(firstSupplierCode);
         SupplierWeekSuppliesPage supplierWeekSuppliesPage = searchSupplierPage.goToSupplierWeekSuppliesPage(firstSupplierCode);
@@ -272,14 +272,14 @@ public class SupplyPlanTest extends AppBaseSteps {
         //Step 2
         step("Проверить сообщение об отсутствии поставок у поставщика в другом отделе");
         departmentListPage = supplierWeekSuppliesPage.openDepartmentSelectorPage();
-        departmentListPage.selectDepartmentByIdInModal("02");
+        departmentListPage.selectDepartmentById("02");
         supplierWeekSuppliesPage.shouldNotFoundMsgIsDisplayed();
 
         //Step 3
         step("Проверить сообщение об отсутствии поставок у поставщика при переходе на страницу со списком его поставок");
         suppliesListPage = supplierWeekSuppliesPage.goBack();
         departmentListPage = suppliesListPage.openDepartmentSelectorPage();
-        departmentListPage.selectDepartmentByIdInModal("01");
+        departmentListPage.selectDepartmentById("01");
         suppliesListPage.goToSearchSupplierPage();
         searchSupplierPage.searchForSupplier(secondSupplierCode);
         supplierWeekSuppliesPage = searchSupplierPage.goToSupplierWeekSuppliesPage(secondSupplierCode);

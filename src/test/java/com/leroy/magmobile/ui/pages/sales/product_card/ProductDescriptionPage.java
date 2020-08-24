@@ -192,7 +192,7 @@ public class ProductDescriptionPage extends ProductCardPage {
                     softAssert.isEquals(uiData.getAvailableQuantity(), apiData.getAvailableStock(), "available quantity");
                 }
             }
-        }else {
+        } else {
             //null available stock back-end issue
             List<String> uiLmCodes = productCardDataListFromPage.stream().map(ProductCardData::getLmCode).collect(Collectors.toList());
             List<String> apiLmCodes = apiDataList.stream().map(CatalogProductData::getLmCode).collect(Collectors.toList());
