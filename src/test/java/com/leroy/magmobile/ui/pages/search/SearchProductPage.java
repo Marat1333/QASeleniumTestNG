@@ -92,7 +92,7 @@ public class SearchProductPage extends CommonMagMobilePage {
 
     @Override
     public void waitForPageIsLoaded() {
-        searchField.waitForVisibility();
+        searchField.waitForVisibility(long_timeout);
         backBtn.waitForVisibility();
         waitUntilProgressBarIsInvisible();
     }

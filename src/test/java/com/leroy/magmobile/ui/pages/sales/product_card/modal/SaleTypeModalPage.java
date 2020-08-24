@@ -21,7 +21,7 @@ public class SaleTypeModalPage extends CommonMagMobilePage {
         headerLbl.waitForVisibility();
     }
 
-    @AppFindBy(xpath = "(//android.view.ViewGroup[@content-desc=\"Button\"])[1]/android.view.ViewGroup",
+    @AppFindBy(accessibilityId = "Button-content",
             metaName = "Кнопка для закрытия модального окна (вернуться назад)")
     Element backBtn;
 

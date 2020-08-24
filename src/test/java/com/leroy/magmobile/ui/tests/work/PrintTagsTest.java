@@ -1,6 +1,5 @@
 package com.leroy.magmobile.ui.tests.work;
 
-import com.leroy.constants.DefectConst;
 import com.leroy.core.UserSessionData;
 import com.leroy.core.api.Module;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
@@ -18,7 +17,6 @@ import com.leroy.magmobile.ui.pages.work.print_tags.*;
 import com.leroy.magmobile.ui.pages.work.print_tags.data.ProductTagData;
 import com.leroy.magmobile.ui.pages.work.print_tags.enums.Format;
 import com.leroy.magmobile.ui.pages.work.print_tags.modal.*;
-import io.qameta.allure.Issue;
 import io.qameta.allure.Step;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Guice;
@@ -250,20 +248,10 @@ public class PrintTagsTest extends AppBaseSteps {
         searchProductPage = productCardPage.returnBack();
         //вид поиска немного изменился
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCodesList.get(2));
-
-        //как должно быть
-        /*productCardPage = new ProductCardPage();
-        productCardPage.clickActionWithProductButton();
-        multiFunctionModal = new ActionWithProductModalPage();
-        editTagModalPage = multiFunctionModal.printTag();
-        productTagData = editTagModalPage.addProductToPrintSession();*/
-
-        if (DefectConst.PRINT_TAG_NAVIGATION_ISSUE) {
-            editTagModalPage = new EditTagModalPage();
-            editTagModalPage.shouldSizeValuesAreCorrect(productTagData);
-            editTagModalPage.shouldDeleteBtnHasCorrectCondition(true);
-            editTagModalPage.addProductToPrintSession();
-        }
+        editTagModalPage = new EditTagModalPage();
+        editTagModalPage.shouldSizeValuesAreCorrect(productTagData);
+        editTagModalPage.shouldDeleteBtnHasCorrectCondition(true);
+        editTagModalPage.addProductToPrintSession();
 
         tagsListPage = new TagsListPage();
         tagsListPage.shouldProductCountIsCorrect(3);
@@ -388,13 +376,8 @@ public class PrintTagsTest extends AppBaseSteps {
         editTagModalPage.deleteProductFromSession();
         DeleteSessionByDeletingProductModalPage deleteSessionByDeletingProductModalPage = new DeleteSessionByDeletingProductModalPage();
         deleteSessionByDeletingProductModalPage.confirmDelete();
-        if (DefectConst.PRINT_TAG_NAVIGATION_ISSUE) {
-            sessionsListPage = new SessionsListPage();
-            sessionsListPage.shouldViewTypeIsCorrect(true);
-        } else {
-            productCardPage = new ProductCardPage();
-            productCardPage.verifyRequiredElements(true);
-        }
+        productCardPage = new ProductCardPage();
+        productCardPage.verifyRequiredElements(true);
     }
 
     @Test(description = "C23389195 отправка на печать ценников")
@@ -735,18 +718,13 @@ public class PrintTagsTest extends AppBaseSteps {
         editTagModalPage.deleteProductFromSession();
         deleteSessionByDeletingProductModalPage = new DeleteSessionByDeletingProductModalPage();
         deleteSessionByDeletingProductModalPage.confirmDelete();
-        if (DefectConst.PRINT_TAG_NAVIGATION_ISSUE) {
-            sessionsListPage = new SessionsListPage();
-            sessionsListPage.shouldViewTypeIsCorrect(true);
-        } else {
-            productCardPage = new ProductCardPage();
-            productCardPage.verifyRequiredElements(true);
-            searchProductPage = productCardPage.returnBack();
-            searchProductPage.returnBack();
-            bottomMenuPage = new BottomMenuPage();
-            WorkPage workPage = bottomMenuPage.goToWork();
-            workPage.goToSessionsListPage();
-        }
+        productCardPage = new ProductCardPage();
+        productCardPage.verifyRequiredElements(true);
+        searchProductPage = productCardPage.returnBack();
+        searchProductPage.returnBack();
+        bottomMenuPage = new BottomMenuPage();
+        WorkPage workPage = bottomMenuPage.goToWork();
+        workPage.goToSessionsListPage();
 
         //Step 5
         step("удаление сессии через специальную кнопку в списке товаров сессии");
@@ -934,7 +912,6 @@ public class PrintTagsTest extends AppBaseSteps {
         pagesQuantityModalPage.shouldPagesQuantityAndFormatAreCorrect(Format.BIG, 1);
     }
 
-    @Issue("LFRONT-3485")
     @Test(description = "C23411003 навигация")
     public void testNavigation() throws Exception {
         String lmCode = catalogSearchClient.getRandomProduct().getLmCode();

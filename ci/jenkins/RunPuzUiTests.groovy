@@ -31,6 +31,7 @@ GString getMvnStrRun() {
             "-DrunWithIssues=${env.RUN_CASE_WITH_ISSUE} " +
             "-DmRun=${env.RUN} " +
             "-Denv=${env.ENVIROMENT} " +
+            "-DretryOnFailCount=${env.RETRY_COUNT} " +
             "-DmSuite=4378 -DmProject=16"
 }
 
@@ -68,7 +69,8 @@ timestamps {
         }
 
         stage('Send notification') {
-            telegramMessage("Puz UI тесты. Результаты тут -> https://jenkins.lmru.adeo.com/job/lego-front/job/PUZ2-UI-autotests/"+ env.BUILD_NUMBER +"/allure")
+            telegramMessage("Маг Портал UI Тесты завершены. Test run: ${env.RUN} \n " +
+                    "[Allure report](https://jenkins.lmru.adeo.com/job/lego-front/job/PUZ2-UI-autotests/"+ env.BUILD_NUMBER +"/allure)")
         }
     }
 }
