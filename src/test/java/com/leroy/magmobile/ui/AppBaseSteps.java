@@ -174,9 +174,10 @@ public class AppBaseSteps extends MagMobileBaseTest {
                 .goToUserProfile()
                 .goToEditShopForm()
                 .searchForShopAndSelectById(shop);
-        return new UserProfilePage()
+        new UserProfilePage()
                 .goToEditDepartmentForm()
                 .selectDepartmentById(department);
+        return new UserProfilePage();
     }
 
     /**

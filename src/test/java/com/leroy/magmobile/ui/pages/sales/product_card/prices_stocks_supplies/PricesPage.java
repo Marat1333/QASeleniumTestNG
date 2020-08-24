@@ -1,6 +1,8 @@
 package com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies;
 
+import com.leroy.constants.TimeZone;
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
@@ -67,7 +69,7 @@ public class PricesPage extends ProductPricesQuantitySupplyPage {
         softAssert.isElementTextContains(purchasePriceLbl, String.valueOf(data.getPurchasePrice()).replaceAll("\\.", ","));
         softAssert.isElementTextContains(recommendedPriceLbl, String.valueOf(priceInfo.getRecommendedPrice()).replaceAll("\\.", ","));
         softAssert.isEquals(DateTimeUtil.strToLocalDateTime(priceChangeDateLbl.getText().replaceAll("c ", ""), uiDateFormat),
-                DateTimeUtil.strToLocalDateTime(priceInfo.getDateOfChange(), apiDateFormat).plusHours(3), "date of price change");
+                DateTimeUtil.strToLocalDateTime(priceInfo.getDateOfChange(), apiDateFormat).plusHours(DriverFactory.isGridProfile() ? TimeZone.UTC : TimeZone.MSC), "date of price change");
         softAssert.isElementTextEqual(reasonOfChangeLbl, priceInfo.getReasonOfChange());
         if (priceInfo.getPrice() - priceInfo.getRecommendedPrice() != 0.0) {
             softAssert.isElementVisible(recommendedPriceMismatchLbl);

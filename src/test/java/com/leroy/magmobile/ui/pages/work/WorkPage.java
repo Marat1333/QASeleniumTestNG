@@ -1,5 +1,6 @@
 package com.leroy.magmobile.ui.pages.work;
 
+import com.leroy.core.ContextProvider;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
@@ -62,6 +63,7 @@ public class WorkPage extends CommonMagMobilePage {
         if (rupturesManageLbl.isVisible()){
             rupturesActiveSessionCounterLbl.waitForVisibility();
         }
+        departmentSupplyPlanLbl.waitForVisibility();
     }
 
     /* ------------------------- ACTION STEPS -------------------------- */
@@ -102,7 +104,10 @@ public class WorkPage extends CommonMagMobilePage {
     @Step("Проверить, что страница 'Ежедневная работа' отображается корректно")
     public WorkPage verifyRequiredElements() {
         softAssert.isElementTextEqual(titleObj, "Ежедневная работа");
-        softAssert.isElementTextEqual(withdrawalFromRMLabel, "Отзыв с RM");
+        if (ContextProvider.getContext().isNewShopFunctionality())
+            softAssert.isElementTextEqual(withdrawalFromRMLabel, "Отзыв товаров со склада");
+        else
+            softAssert.isElementTextEqual(withdrawalFromRMLabel, "Отзыв с RM");
         softAssert.isElementImageMatches(withdrawalFromRMPlusIcon,
                 MagMobElementTypes.CIRCLE_PLUS.getPictureName());
         softAssert.isElementVisible(departmentSupplyPlanLbl);
