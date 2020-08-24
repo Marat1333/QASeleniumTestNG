@@ -1,7 +1,9 @@
 package com.leroy.magmobile.ui.tests.work;
 
+import com.leroy.constants.TimeZone;
 import com.leroy.core.UserSessionData;
 import com.leroy.core.api.Module;
+import com.leroy.core.configuration.DriverFactory;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.PrintPriceClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
@@ -556,7 +558,8 @@ public class PrintTagsTest extends AppBaseSteps {
         tagsListPage = new TagsListPage();
         tagsListPage.shouldProductTagsHasCorrectSizesAndQuantity(tagData);
         sessionCreationTimeCheck = tagsListPage.getSessionCreationTimeStamp();
-        //bug on grid only
+        // workaround for bug (on grid only)
+        sessionCreationTime = sessionCreationTime.plusHours(DriverFactory.isGridProfile()? TimeZone.UTC : TimeZone.MSC);
         anAssert().isEquals(sessionCreationTime, sessionCreationTimeCheck, "creation time");
     }
 
