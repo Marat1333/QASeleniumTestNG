@@ -26,11 +26,10 @@ public class DepartmentListPage extends CommonMagMobilePage {
                         "[android.widget.TextView[contains(@text, '%s')]]", name)));
     }
 
-    public UserProfilePage selectDepartmentById(String id) throws Exception {
+    public void selectDepartmentById(String id) throws Exception {
         id = id.length() > 1 ? id : "0" + id;
         Element area = getSpecificShopAreaById(id);
         area.doubleClick();
         area.waitForInvisibility();
-        return new UserProfilePage();
     }
 }
