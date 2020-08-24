@@ -578,6 +578,7 @@ public class PrintTagsTest extends AppBaseSteps {
         tagsListPage = new TagsListPage();
         tagsListPage.shouldProductTagsHasCorrectSizesAndQuantity(tagData);
         sessionCreationTimeCheck = tagsListPage.getSessionCreationTimeStamp();
+        //bug on grid only
         anAssert().isEquals(sessionCreationTime, sessionCreationTimeCheck, "creation time");
     }
 
@@ -939,7 +940,6 @@ public class PrintTagsTest extends AppBaseSteps {
         pagesQuantityModalPage.shouldPagesQuantityAndFormatAreCorrect(Format.BIG, 1);
     }
 
-    @Issue("LFRONT-3485")
     @Test(description = "C23411003 навигация")
     public void testNavigation() throws Exception {
         String lmCode = catalogSearchClient.getRandomProduct().getLmCode();
@@ -959,7 +959,6 @@ public class PrintTagsTest extends AppBaseSteps {
         tagsListPage.deleteSession();
         DeleteSessionByBtnModalPage deleteSessionByBtnModalPage = new DeleteSessionByBtnModalPage();
         deleteSessionByBtnModalPage.confirmDelete();
-        //bug
         productCardPage = new ProductCardPage();
         productCardPage.verifyRequiredElements(true);
 
