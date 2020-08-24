@@ -3,6 +3,7 @@ package com.leroy.magportal.ui.pages.orders.modal;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
 import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
 import com.leroy.magportal.ui.pages.orders.OrderCreatedContentPage;
 import com.leroy.utils.ParserUtil;
@@ -24,6 +25,9 @@ public class SubmittedOrderModal extends MagPortalBasePage {
     @WebFindBy(xpath = MODAL_DIV_XPATH + "//button", metaName = "Кнопка 'Перейти в список документов'")
     Element goToOrderListBtn;
 
+    @WebFindBy(xpath = MODAL_DIV_XPATH + "//button", metaName = "Кнопка 'Перейти в корзину'")
+    Element goToCartBtn;
+
     @Override
     protected void waitForPageIsLoaded() {
         orderNumber.waitForVisibility();
@@ -44,16 +48,28 @@ public class SubmittedOrderModal extends MagPortalBasePage {
         return new OrderCreatedContentPage();
     }
 
+    @Step("Нажмите кнопку Перейти в корзину")
+    public CartPage clickGoToCartButton() {
+        goToCartBtn.click();
+        return new CartPage();
+    }
+
     @Step("Проверить, что модальное окно подтверждения заказа отображается корректно")
     public SubmittedOrderModal verifyRequiredElements(
             SalesDocumentsConst.GiveAwayPoints type) {
-        String ps = getPageSource();
         String expectedTitleEnd = true ? "оформлен" : "сохранен";
         String expectedTitle = (SalesDocumentsConst.GiveAwayPoints.PICKUP.equals(type) ?
                 "Заказ на самовывоз " : "Заказ на доставку ") + expectedTitleEnd;
         softAssert.isElementTextContains(header, expectedTitle);
         softAssert.areElementsVisible(header, orderNumber, pinCode, goToOrderListBtn);
         softAssert.verifyAll();
+        return this;
+    }
+
+    @Step("Проверить, что Номер заказа = {text}")
+    public SubmittedOrderModal shouldNumberIs(String text) {
+        anAssert.isEquals(ParserUtil.strWithOnlyDigits(orderNumber.getText()), text,
+                "Ожидался другой номер заказа");
         return this;
     }
 

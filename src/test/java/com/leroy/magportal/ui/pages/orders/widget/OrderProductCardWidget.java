@@ -2,6 +2,7 @@ package com.leroy.magportal.ui.pages.orders.widget;
 
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
+import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardWebData;
@@ -21,11 +22,17 @@ public class OrderProductCardWidget extends CardWebWidget<ProductOrderCardWebDat
     @WebFindBy(xpath = ".//div[span[contains(@class, 'LmCode__accent')]]", metaName = "ЛМ код")
     Element lmCode;
 
+    @WebFindBy(xpath = ".//div[contains(@class, 'roductCard__header')]//button", metaName = "Корзина (кнопка для удаления)")
+    Button trashBtn;
+
     @WebFindBy(xpath = ".//div[contains(@class, 'Dropdown__title')]//button", metaName = "Бар код")
     Element barCode;
 
     @WebFindBy(xpath = ".//p[contains(@class, 'ProductCard__body-title')]", metaName = "Название товара")
     Element title;
+
+    @WebFindBy(xpath = ".//div[contains(@class, 'Discount')]//span", metaName = "Скидка %")
+    Element discountPercent;
 
     @WebFindBy(xpath = ".//span[contains(@class, 'Price-container')]", metaName = "Цена")
     Element price;
@@ -36,7 +43,7 @@ public class OrderProductCardWidget extends CardWebWidget<ProductOrderCardWebDat
     @WebFindBy(xpath = ".//div[contains(@class, 'ProductCardFooter__bigSide')]//p[2]", metaName = "Габариты")
     Element dimension;
 
-    @WebFindBy(xpath = ".//div[contains(@class, 'Dropdown--center lmui-Dropdown')]//span", metaName = "Кол-во 'Доступно'")
+    @WebFindBy(xpath = ".//div[contains(@class, 'ProductCard__quantities')]//span", metaName = "Кол-во 'Доступно'")
     Element availableQuantity;
 
     public String getAvailableQuantity() {
@@ -51,19 +58,41 @@ public class OrderProductCardWidget extends CardWebWidget<ProductOrderCardWebDat
         return orderedQuantityFld.getText();
     }
 
+    public String getWeight() {
+        return weight.getText();
+    }
+
     // Actions
+
+    public void clickTrashBtn() {
+        trashBtn.click();
+    }
+
+    public void editQuantity(int value) {
+        orderedQuantityFld.clear(true);
+        orderedQuantityFld.fill(String.valueOf(value));
+        orderedQuantityFld.sendBlurEvent();
+    }
 
     @Override
     public ProductOrderCardWebData collectDataFromPage() {
         ProductOrderCardWebData productOrderCardWebData = new ProductOrderCardWebData();
-        productOrderCardWebData.setBarCode(ParserUtil.strWithOnlyDigits(barCode.getText()));
+        productOrderCardWebData.setBarCode(ParserUtil.strWithOnlyDigits(barCode.getTextIfPresent()));
         productOrderCardWebData.setLmCode(lmCode.getText());
         //productOrderCardWebData.setDepartment(ParserUtil.strToInt(department.getText()));
         //productOrderCardWebData.setDimension(dimension.getText());
         productOrderCardWebData.setTitle(title.getText());
-        productOrderCardWebData.setPrice(ParserUtil.strToDouble(price.getText()));
+        productOrderCardWebData.setAvailableTodayQuantity(ParserUtil.strToDouble(availableQuantity.getText()));
         productOrderCardWebData.setSelectedQuantity(ParserUtil.strToDouble(orderedQuantityFld.getText()));
-        productOrderCardWebData.setWeight(ParserUtil.strToDouble(weight.getText(), ".") * productOrderCardWebData.getSelectedQuantity());
+        productOrderCardWebData.setWeight(ParserUtil.strToDouble(getWeight(), ".") * productOrderCardWebData.getSelectedQuantity());
+        if (!discountPercent.isVisible())
+            productOrderCardWebData.setPrice(ParserUtil.strToDouble(price.getText()));
+        else {
+            double priceWithDiscount = ParserUtil.strToDouble(price.getText());
+            productOrderCardWebData.setDiscountPercent(ParserUtil.strToDouble(discountPercent.getText()));
+            productOrderCardWebData.setTotalPriceWithDiscount(priceWithDiscount * productOrderCardWebData.getSelectedQuantity());
+            productOrderCardWebData.setPrice(priceWithDiscount / (1 - productOrderCardWebData.getDiscountPercent() / 100.0));
+        }
         productOrderCardWebData.setTotalPrice(productOrderCardWebData.getPrice() * productOrderCardWebData.getSelectedQuantity());
         return productOrderCardWebData;
     }

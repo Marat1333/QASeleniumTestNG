@@ -248,13 +248,6 @@ public class PrintTagsTest extends AppBaseSteps {
         searchProductPage = productCardPage.returnBack();
         //вид поиска немного изменился
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCodesList.get(2));
-
-        //как должно быть
-        /*productCardPage = new ProductCardPage();
-        productCardPage.clickActionWithProductButton();
-        multiFunctionModal = new ActionWithProductModalPage();
-        editTagModalPage = multiFunctionModal.printTag();
-        productTagData = editTagModalPage.addProductToPrintSession();*/
         editTagModalPage = new EditTagModalPage();
         editTagModalPage.shouldSizeValuesAreCorrect(productTagData);
         editTagModalPage.shouldDeleteBtnHasCorrectCondition(true);
@@ -733,7 +726,6 @@ public class PrintTagsTest extends AppBaseSteps {
         bottomMenuPage = new BottomMenuPage();
         WorkPage workPage = bottomMenuPage.goToWork();
         workPage.goToSessionsListPage();
-
 
         //Step 5
         step("удаление сессии через специальную кнопку в списке товаров сессии");

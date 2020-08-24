@@ -204,10 +204,6 @@ public class AddProduct35Page<T extends CartOrderEstimatePage> extends CommonMag
 
     @Step("Убедиться, что поле для редактирования кол-ва = {text}")
     public AddProduct35Page<T> shouldEditQuantityFieldIs(String text) {
-        if (!text.contains(","))
-            text = text + ",00";
-        else if (text.length() - text.indexOf(",") == 2)
-            text = text + "0";
         anAssert.isElementTextEqual(editQuantityFld, text);
         return this;
     }

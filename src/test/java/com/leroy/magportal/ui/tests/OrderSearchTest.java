@@ -110,6 +110,7 @@ public class OrderSearchTest extends WebBaseSteps {
         orderRecipientData.setPhone(new PhoneData(orderDetailData.getRecipient().getPhoneNumber()));
 
         OrderData confirmOrderData = new OrderData();
+        confirmOrderData.setPinCode(validPinCode);
         confirmOrderData.setPriority(SalesDocumentsConst.Priorities.HIGH.getApiVal());
         confirmOrderData.setShopId(userSessionData.getUserShopId());
         confirmOrderData.setSolutionVersion(orderData.getSolutionVersion());
