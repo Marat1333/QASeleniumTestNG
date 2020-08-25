@@ -6,7 +6,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.Color;
 
 public class RuptureTaskContainerGreyCheckBox extends MagMobGrayCheckBox {
-    private static final Color CHECKED_GRAY_COLOR = new Color(166, 166, 143, 255);
+    private static final Color CHECKED_GRAY_COLOR = new Color(153, 153, 153, 255);
 
     public RuptureTaskContainerGreyCheckBox(WebDriver driver, CustomLocator locator) {
         super(driver, locator);

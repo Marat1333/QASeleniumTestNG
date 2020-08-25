@@ -28,10 +28,11 @@ public class RuptureWidget extends CardWidget<RuptureData> {
     @AppFindBy(xpath = ".//android.view.ViewGroup[@content-desc='barCode']/following-sibling::android.widget.TextView")
     Element titleLbl;
 
-    @AppFindBy(xpath = ".//android.view.ViewGroup[@content-desc='Button-container']", clazz = MagMobGrayCheckBox.class)
+    @AppFindBy(xpath = ".//android.view.ViewGroup[@content-desc='Button-container']//android.view.ViewGroup[@content-desc='lmui-Icon']",
+            clazz = MagMobGrayCheckBox.class)
     ElementList<MagMobGrayCheckBox> taskCheckBoxes;
 
-    @AppFindBy(xpath = ".//android.view.ViewGroup[@content-desc='Button-container']/following-sibling::android.widget.TextView[1]")
+    @AppFindBy(xpath = ".//android.view.ViewGroup[@content-desc='Button-container']//android.view.ViewGroup[@content-desc='lmui-Icon']/following-sibling::android.widget.TextView[1]")
     ElementList<Element> tasksLbl;
 
     public RuptureWidget(WebDriver driver, CustomLocator locator) {

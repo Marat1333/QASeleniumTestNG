@@ -4,12 +4,12 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
-import com.leroy.magmobile.ui.pages.work.ruptures.data.ActiveSessionData;
+import com.leroy.magmobile.ui.pages.work.ruptures.data.SessionData;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.FinishedSessionData;
 import com.leroy.utils.ParserUtil;
 import org.openqa.selenium.WebDriver;
 
-public class ActiveSessionWidget extends CardWidget<ActiveSessionData> {
+public class ActiveSessionWidget extends CardWidget<SessionData> {
 
     public ActiveSessionWidget(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
@@ -25,7 +25,7 @@ public class ActiveSessionWidget extends CardWidget<ActiveSessionData> {
     Element quantityAndCreatorLbl;
 
     @Override
-    public ActiveSessionData collectDataFromPage(String pageSource) throws Exception {
+    public SessionData collectDataFromPage(String pageSource) throws Exception {
         FinishedSessionData data = new FinishedSessionData();
         data.setSessionNumber(ParserUtil.strWithOnlyDigits(sessionNumberLbl.getText(pageSource)));
         data.setCreateDate(creationDateLbl.getText(pageSource));

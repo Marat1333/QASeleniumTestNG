@@ -24,9 +24,9 @@ public class RupturesScannerPage extends ScannerWithSearchBtnPage {
     }
 
     @Step("Перейти в список перебоя")
-    public RupturesListPage navigateToRuptureProductList() {
+    public ActiveSessionPage navigateToRuptureProductList() {
         rupturesListBtn.click();
-        return new RupturesListPage();
+        return new ActiveSessionPage();
     }
 
     @Step("Проверить отображение кнопки перехода в список ценников")
