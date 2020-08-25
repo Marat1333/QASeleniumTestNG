@@ -836,6 +836,7 @@ public class SearchTest extends WebBaseSteps {
     public void testSearchWithoutSubmit() throws Exception {
         String byNameLikeParam = "1";
         String deptId = EnvConstants.BASIC_USER_DEPARTMENT_ID;
+        String subDeptId = "510";
 
         GetCatalogSearch nomenclatureParam = new GetCatalogSearch()
                 .setByNameLike(byNameLikeParam)
@@ -873,7 +874,7 @@ public class SearchTest extends WebBaseSteps {
 
         //Step 3
         step("Выбрать подотдел в товарной иерархии и перейти на уровень отдела");
-        searchProductPage.choseNomenclature(0 + deptId, "1505", null, null);
+        searchProductPage.choseNomenclature(0 + deptId, subDeptId, null, null);
         searchProductPage.navigateToPreviousNomenclatureElement(deptId);
         searchProductPage.shouldResponseEntityEqualsToViewEntity(nomenclatureResponse, SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
