@@ -4,32 +4,18 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.work.ruptures.data.ActiveSessionData;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.RuptureData;
 import com.leroy.magmobile.ui.pages.work.ruptures.modal.DeleteSessionModalPage;
-import com.leroy.magmobile.ui.pages.work.ruptures.modal.ExitActiveSessionModalPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.modal.FinishSessionAcceptModalPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.widgets.RuptureWidget;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
 import java.util.List;
 
-public class RupturesListPage extends CommonMagMobilePage {
-    @AppFindBy(accessibilityId = "Button")
-    Button backBtn;
-
+public class ActiveSessionPage extends SessionPage {
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"Button\"]/../following-sibling::android.view.ViewGroup[1]")
     Button deleteBtn;
-
-    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"Button\"]/../following-sibling::android.widget.TextView[1]")
-    Element creationDateLbl;
-
-    @AppFindBy(containsText = " перебо")
-    Element creatorAndRuptureQuantityLbl;
-
-    @AppFindBy(containsText = "Сессия №")
-    Element sessionNumberAndStatusLbl;
 
     @AppFindBy(text = "ПЕРЕБОЙ")
     Button addRuptureBtn;
@@ -41,28 +27,32 @@ public class RupturesListPage extends CommonMagMobilePage {
             AndroidScrollView.TYPICAL_LOCATOR, "./*/android.view.ViewGroup[android.view.ViewGroup]/descendant::*[3]",
             RuptureWidget.class);
 
-    @Override
-    protected void waitForPageIsLoaded() {
-        creationDateLbl.waitForVisibility();
-        sessionNumberAndStatusLbl.waitForVisibility();
+    public List<RuptureData> getRupturesList() throws Exception {
+        List<RuptureData> ruptureDataList = ruptureCardScrollView.getFullDataList();
+        return ruptureDataList;
     }
 
-    public ActiveSessionData getActiveSessionData() {
-        String ps = getPageSource();
-        ActiveSessionData data = new ActiveSessionData();
-        data.setCreateDate(creationDateLbl.getText(ps));
-        String[] tmpArray = creatorAndRuptureQuantityLbl.getText(ps).split(" / ");
-        data.setRuptureQuantity(Integer.parseInt(ParserUtil.strWithOnlyDigits(tmpArray[0])));
-        data.setCreatorName(tmpArray[1]);
-        tmpArray = sessionNumberAndStatusLbl.getText(ps).split(" ");
-        data.setSessionNumber(ParserUtil.strWithOnlyDigits(tmpArray[1]));
-        return data;
+    @Step("Завершить сессию")
+    public FinishSessionAcceptModalPage finishSession(){
+        endSessionBtn.click();
+        return new FinishSessionAcceptModalPage();
     }
 
     @Step("Добавить перебой в сессию")
     public RupturesScannerPage addRuptureToSession() {
         addRuptureBtn.click();
         return new RupturesScannerPage();
+    }
+
+    @Step("Нажать по чекбоксу действия {action} у товара {lmCode}")
+    public ActiveSessionPage checkRuptureActionCheckBox(String lmCode, String action) throws Exception {
+        Element el = E(String.format("//android.widget.TextView[@content-desc='lmCode' and contains(@text,'%s')]/.." +
+                "/following-sibling::android.view.ViewGroup[@content-desc='Button-container' and " +
+                "descendant::android.widget.TextView[@text='%s']]//android.view.ViewGroup[@content-desc='lmui-Icon']", lmCode, action));
+        if (!el.isVisible())
+            ruptureCardScrollView.scrollDownToElement(el);
+        el.click();
+        return this;
     }
 
     @Step("Удалить сессию")
@@ -83,14 +73,8 @@ public class RupturesListPage extends CommonMagMobilePage {
         return new RuptureCardPage();
     }
 
-    @Step("Нажать на кнопку назад")
-    public ExitActiveSessionModalPage exitActiveSession() {
-        backBtn.click();
-        return new ExitActiveSessionModalPage();
-    }
-
     @Step("Проверить, что перебоя нет в списке")
-    public RupturesListPage shouldRuptureIsNotInList(String lmCode) throws Exception {
+    public ActiveSessionPage shouldRuptureIsNotInList(String lmCode) throws Exception {
         if (!ruptureCardScrollView.isVisible()) {
             return this;
         } else {
@@ -103,7 +87,7 @@ public class RupturesListPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что данные перебоев отображены корректно")
-    public RupturesListPage shouldRupturesDataIsCorrect(RuptureData... dataArray) throws Exception {
+    public ActiveSessionPage shouldRupturesDataIsCorrect(RuptureData... dataArray) throws Exception {
         List<RuptureData> uiRuptureDataList = ruptureCardScrollView.getFullDataList();
         for (int i = 0; i < dataArray.length; i++) {
             anAssert.isEquals(uiRuptureDataList.get(i), dataArray[i], "data mismatch");
@@ -111,25 +95,23 @@ public class RupturesListPage extends CommonMagMobilePage {
         return this;
     }
 
+    @Step("Проверить, что данные перебоев отображены корректно")
+    public ActiveSessionPage shouldRupturesDataIsCorrect(List<RuptureData> dataList) throws Exception {
+        RuptureData [] dataArray = new RuptureData[dataList.size()];
+        return shouldRupturesDataIsCorrect(dataList.toArray(dataArray));
+    }
+
     @Step("Проверить, что данные кол-во перебоев корректно")
-    public RupturesListPage shouldRuptureQuantityIsCorrect(int ruptureQuantity) throws Exception {
+    public ActiveSessionPage shouldRuptureQuantityIsCorrect(int ruptureQuantity) throws Exception {
         List<RuptureData> uiRuptureDataList = ruptureCardScrollView.getFullDataList();
         anAssert.isEquals(uiRuptureDataList.size(), ruptureQuantity, "Wrong rupture quantity");
         return this;
     }
 
-    @Step("Проверить, что счетчик перебоев отображает корректное значение")
-    public RupturesListPage shouldRuptureCounterIsCorrect(int counter) {
-        String[] tmpArray = creatorAndRuptureQuantityLbl.getText().split(" / ");
-        int uiCounter = Integer.parseInt(ParserUtil.strWithOnlyDigits(tmpArray[0]));
-        anAssert.isEquals(uiCounter, counter, "ruptures counter");
-        return this;
-    }
-
-    public RupturesListPage verifyRequiredElements() {
-        softAssert.areElementsVisible(backBtn, deleteBtn, creationDateLbl, creatorAndRuptureQuantityLbl,
-                sessionNumberAndStatusLbl, addRuptureBtn, endSessionBtn);
+    @Override
+    public void verifyRequiredElements() {
+        super.verifyRequiredElements();
+        softAssert.areElementsVisible(deleteBtn, addRuptureBtn, endSessionBtn);
         softAssert.verifyAll();
-        return this;
     }
 }

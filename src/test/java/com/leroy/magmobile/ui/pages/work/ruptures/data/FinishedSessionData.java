@@ -7,7 +7,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Data
-public class FinishedSessionData extends ActiveSessionData{
+public class FinishedSessionData extends SessionData {
     private int finishedTaskQuantity;
     private int createdTaskQuantity;
 }

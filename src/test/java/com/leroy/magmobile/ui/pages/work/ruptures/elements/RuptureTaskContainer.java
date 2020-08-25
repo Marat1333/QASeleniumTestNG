@@ -16,7 +16,7 @@ public class RuptureTaskContainer extends Element {
         super(driver, locator);
     }
 
-    private final static String TYPICAL_CHECKBOX_XPATH = "//*[@text='%s']/preceding-sibling::android.view.ViewGroup[@content-desc='Button-container'][1]";
+    private final static String TYPICAL_CHECKBOX_XPATH = "//*[@text='%s']/preceding-sibling::android.view.ViewGroup";
 
     @AppFindBy(xpath = ".//*[@text='Назначить задачи']")
     Button appointTaskBtn;
@@ -24,7 +24,7 @@ public class RuptureTaskContainer extends Element {
     @AppFindBy(xpath = ".//*[@text='Сделать отзыв с RM']")
     Element recallFromRmLbl;
 
-    @AppFindBy(xpath = ".//*[@content-desc='Button-container']/following-sibling::android.widget.TextView[1]")
+    @AppFindBy(xpath = ".//*[@content-desc='Button-container']//android.widget.TextView")
     ElementList<Element> tasksList;
 
     public List<String> getTaskList() {

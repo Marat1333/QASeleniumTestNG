@@ -6,7 +6,6 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobButton;
-import com.leroy.magmobile.ui.elements.MagMobRadioButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductCardPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.RuptureData;
@@ -130,7 +129,7 @@ public class RuptureCardPage extends CommonMagMobilePage {
     }
 
     @Step("Закрыть карточку перебоя")
-    public void closeRuptureCardPage(){
+    public void closeRuptureCardPage() {
         closeModalBtn.click();
         closeModalBtn.waitForInvisibility();
     }
@@ -198,7 +197,7 @@ public class RuptureCardPage extends CommonMagMobilePage {
     }
 
     @Step("Удалить перебой")
-    public DeleteRuptureModalPage deleteRupture(){
+    public DeleteRuptureModalPage deleteRupture() {
         deleteRuptureBtn.click();
         return new DeleteRuptureModalPage();
     }
@@ -242,12 +241,14 @@ public class RuptureCardPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что состояние чек-бокса корректное")
-    public RuptureCardPage shouldCheckBoxConditionIsCorrect(boolean isEnabled, String taskName) throws Exception {
-        boolean checkBoxCondition = ruptureTaskContainer.getCheckBoxCondition(taskName);
-        if (isEnabled) {
-            anAssert.isTrue(checkBoxCondition, "чекбокс в состоянии disabled");
-        } else {
-            anAssert.isFalse(checkBoxCondition, "чекбокс в состоянии enabled");
+    public RuptureCardPage shouldCheckBoxConditionIsCorrect(boolean isEnabled, String... taskNameArray) throws Exception {
+        for (String taskName : taskNameArray) {
+            boolean checkBoxCondition = ruptureTaskContainer.getCheckBoxCondition(taskName);
+            if (isEnabled) {
+                anAssert.isTrue(checkBoxCondition, "чекбокс в состоянии disabled");
+            } else {
+                anAssert.isFalse(checkBoxCondition, "чекбокс в состоянии enabled");
+            }
         }
         return this;
     }
@@ -275,8 +276,14 @@ public class RuptureCardPage extends CommonMagMobilePage {
         return this;
     }
 
+    @Step("Проверить, что список задач содержит переданные задачи")
+    public RuptureCardPage shouldTasksListContainsTasks(List<String> tasks) {
+        String[] tasksArray = new String[tasks.size()];
+        return shouldTasksListContainsTasks(tasks.toArray(tasksArray));
+    }
+
     @Step("Проверить, что данные отображены корректно")
-    public RuptureCardPage shouldRuptureDataIsCorrect(RuptureData data) throws Exception{
+    public RuptureCardPage shouldRuptureDataIsCorrect(RuptureData data) throws Exception {
         RuptureData currentData = getRuptureData();
         anAssert.isEquals(currentData, data, "data mismatch");
         return this;
