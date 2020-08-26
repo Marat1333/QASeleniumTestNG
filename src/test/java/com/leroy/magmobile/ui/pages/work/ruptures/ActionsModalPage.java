@@ -70,10 +70,10 @@ public class ActionsModalPage extends CommonMagMobilePage {
     @Step("Выбрать задачу")
     public ActionsModalPage choseTasks(String... taskNames) {
         for (String taskName : taskNames) {
-            int arrayLength = toDoTasksList.getCount();
+            int previousSize = toDoTasksList.getCount();
             E(String.format("//*[@text='%s']/following-sibling::android.view.ViewGroup[@content-desc='Button-container'][1]",
                     taskName)).click();
-            toDoTasksList.waitUntilSizeHasChanged(arrayLength);
+            toDoTasksList.waitUntilSizeHasChanged(previousSize);
         }
         return this;
     }
