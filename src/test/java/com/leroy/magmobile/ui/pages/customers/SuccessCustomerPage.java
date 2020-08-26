@@ -22,8 +22,8 @@ public class SuccessCustomerPage extends SuccessPage {
     // Action
 
     @Step("Нажать на 'Перейти к списку клиентов'")
-    public CustomerPage clickGoToCustomerListButton() {
+    public MainCustomerPage clickGoToCustomerListButton() {
         getSubmitBtn().click();
-        return new CustomerPage();
+        return new MainCustomerPage();
     }
 }

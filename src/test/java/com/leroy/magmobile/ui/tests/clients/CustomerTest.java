@@ -1,10 +1,12 @@
-package com.leroy.magmobile.ui.tests.sales;
+package com.leroy.magmobile.ui.tests.clients;
 
 import com.leroy.constants.Gender;
 import com.leroy.magmobile.ui.AppBaseSteps;
+import com.leroy.magmobile.ui.constants.TestDataConstants;
 import com.leroy.magmobile.ui.models.customer.MagCustomerData;
-import com.leroy.magmobile.ui.pages.customers.CustomerPage;
+import com.leroy.magmobile.ui.pages.customers.MainCustomerPage;
 import com.leroy.magmobile.ui.pages.customers.NewCustomerInfoPage;
+import com.leroy.magmobile.ui.pages.customers.SearchCustomerPage;
 import com.leroy.magmobile.ui.pages.customers.SuccessCustomerPage;
 import com.leroy.utils.RandomUtil;
 import org.testng.annotations.Test;
@@ -15,11 +17,11 @@ public class CustomerTest extends AppBaseSteps {
 
     @Test(description = "C3201018 Создание клиента (физ. лицо)")
     public void testCreateCustomer() throws Exception {
-        CustomerPage customerPage = loginAndGoTo(CustomerPage.class);
+        MainCustomerPage mainCustomerPage = loginAndGoTo(MainCustomerPage.class);
 
         // Step 1
         step("Нажмите на кнопку Создать нового клиента");
-        NewCustomerInfoPage newCustomerInfoPage = customerPage.clickCreateNewCustomer()
+        NewCustomerInfoPage newCustomerInfoPage = mainCustomerPage.clickCreateNewCustomer()
                 .verifyRequiredElements(false);
 
         // Steps 2-4
@@ -57,8 +59,25 @@ public class CustomerTest extends AppBaseSteps {
         MagCustomerData customerData = new MagCustomerData();
         customerData.setPhone(phone);
         customerData.setName(customerFirstName);
-        customerPage = successCustomerPage.clickGoToCustomerListButton();
-        customerPage.shouldRecentCustomerIs(1, customerData);
+        mainCustomerPage = successCustomerPage.clickGoToCustomerListButton();
+        mainCustomerPage.shouldRecentCustomerIs(1, customerData);
+    }
+
+    @Test(description = "C3201020 Поиск клиента по телефону (физ. лицо)")
+    public void testSearchForIndividualCustomerByPhone() throws Exception {
+        MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
+
+        MainCustomerPage mainCustomerPage = loginAndGoTo(MainCustomerPage.class);
+
+        // Step 1
+        step("Нажмите на поле Поиск клиента");
+        SearchCustomerPage searchCustomerPage = mainCustomerPage.clickSearchCustomerField()
+                .verifyRequiredElements();
+
+        // Step 2
+        step("Введите номер клиента");
+        searchCustomerPage.searchCustomerByPhone(customerData.getPhone(), false);
+        searchCustomerPage.shouldFirstCustomerIs(customerData);
     }
 
 }

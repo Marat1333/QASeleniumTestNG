@@ -13,7 +13,7 @@ import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 
 // Раздел "Продажа" -> Страница "Клиенты"
-public class CustomerPage extends TopMenuPage {
+public class MainCustomerPage extends TopMenuPage {
 
     AndroidScrollView<MagCustomerData> recentCustomerScrollView = new AndroidScrollView<>(
             driver, AndroidScrollView.TYPICAL_LOCATOR,
@@ -21,10 +21,19 @@ public class CustomerPage extends TopMenuPage {
             CustomerWidget.class
     );
 
+    @AppFindBy(accessibilityId = "MainScreenTitle", metaName = "Поле поиска клиента")
+    Element searchFld;
+
     @AppFindBy(text = "СОЗДАТЬ НОВОГО КЛИЕНТА")
     MagMobButton createNewCustomerBtn;
 
     // Actions
+
+    @Step("Нажать в поле поиска клиента")
+    public SearchCustomerPage clickSearchCustomerField() {
+        searchFld.click();
+        return new SearchCustomerPage();
+    }
 
     @Step("Нажать кнопку 'Создать нового клиента'")
     public NewCustomerInfoPage clickCreateNewCustomer() throws Exception {
@@ -35,7 +44,7 @@ public class CustomerPage extends TopMenuPage {
     // Verifications
 
     @Step("Проверить, что {index} клиент соответствуют ожидаемым данным")
-    public CustomerPage shouldRecentCustomerIs(int index, MagCustomerData expectedData) {
+    public MainCustomerPage shouldRecentCustomerIs(int index, MagCustomerData expectedData) {
         index--;
         recentCustomerScrollView.getDataObj(index).assertEqualsNotNullExpectedFields(expectedData);
         return this;
