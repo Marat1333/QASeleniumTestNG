@@ -240,12 +240,35 @@ public abstract class BaseContainer {
         }
     }
 
+    public <T extends BaseWidget> T E(By by, String metaName, Class<? extends BaseWidget> clazz) {
+        CustomLocator locator = new CustomLocator(by, metaName);
+        try {
+            return (T) clazz.getConstructor(WebDriver.class, CustomLocator.class)
+                    .newInstance(driver, locator);
+        } catch (Exception err) {
+            Log.error(err.getMessage());
+            return null;
+        }
+    }
+
+    public Element E(By by, String metaName) {
+        return E(by, metaName, Element.class);
+    }
+
     public Element E(String str, String metaName) {
         return E(str, metaName, Element.class);
     }
 
+    public <T extends BaseWidget> T E(By by, Class<? extends BaseWidget> clazz) {
+        return E(by, null, clazz);
+    }
+
     public <T extends BaseWidget> T E(String str, Class<? extends BaseWidget> clazz) {
         return E(str, null, clazz);
+    }
+
+    public Element E(By by) {
+        return E(by, null, Element.class);
     }
 
     public Element E(String str) {
