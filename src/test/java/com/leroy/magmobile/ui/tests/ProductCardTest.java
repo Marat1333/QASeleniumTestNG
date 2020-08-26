@@ -89,7 +89,7 @@ public class ProductCardTest extends AppBaseSteps {
     }
 
     private List<CatalogProductData> sortByAvailableStockDesc(List<CatalogProductData> dataList) {
-        dataList.sort(Comparator.comparingDouble(ProductItemData::getAvailableStock));
+        dataList.sort(Comparator.comparingDouble(CatalogProductData::getAvailableStock));
         Collections.reverse(dataList);
         return dataList;
     }
@@ -399,7 +399,7 @@ public class ProductCardTest extends AppBaseSteps {
         CatalogComplementaryProducts lmWithoutComplementaryData = catalogProductClient.getEmptyComplementaryProductData(productList);
         String lmWithComplementary = lmWithComplementaryData.getParentLmCode();
         String lmWithoutComplementary = lmWithoutComplementaryData.getParentLmCode();
-        List<CatalogProductData> sortedProductData = sortByAvailableStockDesc(lmWithComplementaryData.getItems());
+        List<CatalogProductData> sortedProductData = lmWithComplementaryData.getItems();
 
         //preconditions
         openProductCard(lmWithComplementary);

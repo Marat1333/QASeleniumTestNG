@@ -1,6 +1,7 @@
 package com.leroy.magportal.ui.models.customers;
 
 import com.leroy.constants.Gender;
+import com.leroy.utils.RandomUtil;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.Random;
@@ -35,7 +36,7 @@ public class CustomerWebData {
             setGender(Gender.MALE);
         else
             setGender(Gender.FEMALE);
-        setFirstName(getRandomCyrillicCharacters(8));
+        setFirstName(RandomUtil.randomCyrillicCharacters(8));
         boolean _phone = new Random().nextBoolean();
         if (_phone) {
             setPersonalPhone(true);
@@ -207,15 +208,4 @@ public class CustomerWebData {
         this.intercom = intercom;
     }
 
-    // Private methods
-    public String getRandomCyrillicCharacters(int count) {
-        String cyrillicCharacters = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя";
-        StringBuilder result = new StringBuilder();
-
-        for (int i = 0; i < count; i++) {
-            result.append(cyrillicCharacters.charAt(
-                    new Random().nextInt(cyrillicCharacters.length())));
-        }
-        return result.toString();
-    }
 }

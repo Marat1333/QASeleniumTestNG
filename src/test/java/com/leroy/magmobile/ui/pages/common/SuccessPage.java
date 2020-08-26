@@ -1,6 +1,7 @@
 package com.leroy.magmobile.ui.pages.common;
 
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.configuration.Log;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobButton;
 import io.qameta.allure.Step;
@@ -14,10 +15,10 @@ public abstract class SuccessPage extends CommonMagMobilePage {
     @AppFindBy(xpath = "//android.widget.TextView[1]", metaName = "Основной текст экрана")
     Element mainBodyMessage;
 
-    @AppFindBy(xpath = "//android.widget.TextView[1]", metaName = "Дополнительный текст")
+    @AppFindBy(xpath = "//android.widget.TextView[2]", metaName = "Дополнительный текст")
     Element subMessage;
 
-    @AppFindBy(accessibilityId = "Button-content", metaName = "Кнопка 'Перейти в ...'")
+    @AppFindBy(xpath = "//*[contains(@content-desc, 'Button')]", metaName = "Кнопка 'Перейти в ...'")
     private MagMobButton submitBtn;
 
     protected Element getMainBodyMessage() {
@@ -30,6 +31,15 @@ public abstract class SuccessPage extends CommonMagMobilePage {
 
     protected MagMobButton getSubmitBtn() {
         return submitBtn;
+    }
+
+    @Override
+    protected void waitForPageIsLoaded() {
+        try {
+            getSubmitBtn().waitUntilTextIsEqualTo(getExpectedSubmitText(), timeout);
+        } catch (Exception err) {
+            Log.error(err.getMessage());
+        }
     }
 
     // Verifications
@@ -46,3 +56,4 @@ public abstract class SuccessPage extends CommonMagMobilePage {
     }
 
 }
+

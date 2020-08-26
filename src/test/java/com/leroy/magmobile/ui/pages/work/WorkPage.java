@@ -49,6 +49,7 @@ public class WorkPage extends CommonMagMobilePage {
     @Override
     public void waitForPageIsLoaded() {
         titleObj.waitForVisibility();
+        departmentSupplyPlanLbl.waitForVisibility();
     }
 
     /* ------------------------- ACTION STEPS -------------------------- */
@@ -86,7 +87,10 @@ public class WorkPage extends CommonMagMobilePage {
     @Step("Проверить, что страница 'Ежедневная работа' отображается корректно")
     public WorkPage verifyRequiredElements() {
         softAssert.isElementTextEqual(titleObj, "Ежедневная работа");
-        softAssert.isElementTextEqual(withdrawalFromRMLabel, "Отзыв с RM");
+        if (ContextProvider.getContext().isNewShopFunctionality())
+            softAssert.isElementTextEqual(withdrawalFromRMLabel, "Отзыв товаров со склада");
+        else
+            softAssert.isElementTextEqual(withdrawalFromRMLabel, "Отзыв с RM");
         softAssert.isElementImageMatches(withdrawalFromRMPlusIcon,
                 MagMobElementTypes.CIRCLE_PLUS.getPictureName());
         softAssert.isElementVisible(departmentSupplyPlanLbl);
