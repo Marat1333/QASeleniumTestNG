@@ -19,6 +19,7 @@ import com.leroy.magmobile.ui.pages.work.ruptures.*;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.RuptureData;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.SessionData;
 import com.leroy.magmobile.ui.pages.work.ruptures.modal.*;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
@@ -30,6 +31,8 @@ import java.util.Random;
 
 @Guice(modules = {Module.class})
 public class RupturesTest extends AppBaseSteps {
+    private static final ThreadLocal<Integer> threadLocal = new ThreadLocal<>();
+
     RupturesClient ruptureClient;
     CatalogSearchClient searchClient;
 
@@ -39,8 +42,13 @@ public class RupturesTest extends AppBaseSteps {
         searchClient = apiClientProvider.getCatalogSearchClient();
     }
 
-    private void deleteSession(int id) {
-        ruptureClient.deleteSession(id);
+    /**
+     * подразумевается что на тест создается 1 сессия (вызывается один из методов создания сессии)
+     * даже если сессия не была создана, вернется 400
+     */
+    @AfterTest
+    private void deleteSession() {
+        ruptureClient.deleteSession(threadLocal.get());
     }
 
     private int createSessionWithProductWithoutActions() {
@@ -55,7 +63,9 @@ public class RupturesTest extends AppBaseSteps {
         rupturePostData.setDepartmentId(Integer.parseInt(getUserSessionData().getUserDepartmentId()));
 
         Response<JsonNode> resp = ruptureClient.createSession(rupturePostData);
-        return resp.asJson().get("sessionId").intValue();
+        int result = resp.asJson().get("sessionId").intValue();
+        threadLocal.set(result);
+        return result;
     }
 
     private int createSessionWithProductWithAllActions() {
@@ -84,7 +94,9 @@ public class RupturesTest extends AppBaseSteps {
         rupturePostData.setDepartmentId(Integer.parseInt(getUserSessionData().getUserDepartmentId()));
 
         Response<JsonNode> resp = ruptureClient.createSession(rupturePostData);
-        return resp.asJson().get("sessionId").intValue();
+        int result = resp.asJson().get("sessionId").intValue();
+        threadLocal.set(result);
+        return result;
     }
 
     @Override
@@ -147,9 +159,8 @@ public class RupturesTest extends AppBaseSteps {
         //Step 4
         step("Открыть модалку добавления экшенов (карандашик в блоке экшенов или кнопка \"назначить задачи\")");
         List<String> taskAfterChange = ruptureCardPage.getTasksList();
-        String[] taskAfterChangeArray = new String[taskAfterChange.size()];
         ActionsModalPage actionsModalPage = ruptureCardPage.callActionModalPage();
-        actionsModalPage.shouldToDoListContainsTaskAndPossibleListNotContainsTask(taskAfterChange.toArray(taskAfterChangeArray));
+        actionsModalPage.shouldToDoListContainsTaskAndPossibleListNotContainsTask(taskAfterChange);
 
         //Step 5
         step("Добавить пару экшенов (+)\n" +
@@ -173,10 +184,8 @@ public class RupturesTest extends AppBaseSteps {
         //Step 6
         step("Закрыть модалку редактирования экшенов");
         toDoTasks = actionsModalPage.getToDoTasks();
-        String[] toDoTasksArray = new String[toDoTasks.size()];
-        toDoTasksArray = toDoTasks.toArray(toDoTasksArray);
         ruptureCardPage = actionsModalPage.closeModal();
-        ruptureCardPage.shouldTasksListContainsTasks(toDoTasksArray);
+        ruptureCardPage.shouldTasksListContainsTasks(toDoTasks);
 
         //Step 7
         step("Чекнуть один из экшенов");
@@ -202,7 +211,7 @@ public class RupturesTest extends AppBaseSteps {
         //Step 10
         step("Вернуться назад на карточку перебоя");
         ruptureCardPage = productCardPage.returnBack(RuptureCardPage.class);
-        ruptureCardPage.shouldTasksListContainsTasks(toDoTasksArray)
+        ruptureCardPage.shouldTasksListContainsTasks(toDoTasks)
                 .shouldCheckBoxConditionIsCorrect(true, firstRandomTask)
                 .shouldRadioBtnHasCorrectCondition(RuptureCardPage.QuantityOption.THREE_OR_MORE)
                 .shouldCommentFieldHasText(comment);
@@ -290,7 +299,7 @@ public class RupturesTest extends AppBaseSteps {
 
     @Test(description = "C3272525 Удаление перебоя из сессии")
     public void testDeleteRuptureFromSession() throws Exception {
-        int sessionId = ruptureClient.getActiveSessionWithProducts();
+        int sessionId = ruptureClient.getActiveSessionWithProductsId();
         List<RuptureProductData> sessionProducts = ruptureClient.getProducts(sessionId).asJson().getItems();
         String randomLmCode = sessionProducts.get((int) (Math.random() * sessionProducts.size())).getLmCode();
 
@@ -328,7 +337,7 @@ public class RupturesTest extends AppBaseSteps {
 
     @Test(description = "C3272526 Удаление сессии")
     public void testDeleteSession() throws Exception {
-        int sessionId = ruptureClient.getActiveSessionWithProducts();
+        int sessionId = ruptureClient.getActiveSessionWithProductsId();
 
         //Pre-conditions
         WorkPage workPage = loginAndGoTo(WorkPage.class);
@@ -366,7 +375,7 @@ public class RupturesTest extends AppBaseSteps {
     @Test(description = "C3272522 Добавление перебоев в сессию")
     public void testAddRuptureToSession() throws Exception {
         ProductItemData product = searchClient.getRandomProduct();
-        int sessionId = ruptureClient.getActiveSessionWithProducts();
+        int sessionId = ruptureClient.getActiveSessionWithProductsId();
 
         //Pre-conditions
         WorkPage workPage = loginAndGoTo(WorkPage.class);
@@ -483,7 +492,7 @@ public class RupturesTest extends AppBaseSteps {
     @Test(description = "C23418142 Добавление дубля в сессию при работе с существующей сессией")
     public void testAddRuptureDuplicateToExistedSession() throws Exception {
         String comment = "asd123";
-        int sessionId = ruptureClient.getActiveSessionWithProducts();
+        int sessionId = ruptureClient.getActiveSessionWithProductsId();
         List<RuptureProductData> sessionProducts = ruptureClient.getProducts(sessionId).asJson().getItems();
         String randomLmCode = sessionProducts.get(0).getLmCode();
 
@@ -527,11 +536,10 @@ public class RupturesTest extends AppBaseSteps {
         ruptureCardPage.setTasksCheckBoxes(checkedTask);
         ruptureCardPage.setComment(comment);
         ruptureCardPage.submitComment();
-        String[] tasksArray = new String[toDoTasks.size()];
         RuptureData data = ruptureCardPage.getRuptureData();
 
         ruptureCardPage.shouldRadioBtnHasCorrectCondition(RuptureCardPage.QuantityOption.ONE)
-                .shouldTasksListContainsTasks(toDoTasks.toArray(tasksArray))
+                .shouldTasksListContainsTasks(toDoTasks)
                 .shouldCheckBoxConditionIsCorrect(true, checkedTask)
                 .shouldCommentFieldHasText(comment);
 
@@ -559,7 +567,7 @@ public class RupturesTest extends AppBaseSteps {
         step("Открыть карточку перебоя");
         ruptureCardPage = activeSessionPage.goToRuptureCard(randomLmCode);
         ruptureCardPage.shouldRadioBtnHasCorrectCondition(RuptureCardPage.QuantityOption.ONE)
-                .shouldTasksListContainsTasks(toDoTasks.toArray(tasksArray))
+                .shouldTasksListContainsTasks(toDoTasks)
                 .shouldCheckBoxConditionIsCorrect(true, checkedTask)
                 .shouldCommentFieldHasText(comment);
     }
@@ -629,8 +637,6 @@ public class RupturesTest extends AppBaseSteps {
                 .shouldCheckBoxConditionIsCorrect(true, firstCheckedTask, secondCheckTask)
                 .shouldRadioBtnHasCorrectCondition(RuptureCardPage.QuantityOption.THREE_OR_MORE)
                 .shouldCommentFieldHasText(comment);
-
-        deleteSession(sessionId);
     }
 
     @Test(description = "C3272527 Завершение сессии")
@@ -656,7 +662,14 @@ public class RupturesTest extends AppBaseSteps {
         step("Нажать кнопку завершить и подтвердить завершение сессии");
         finishSessionAcceptModalPage = activeSessionPage.finishSession();
         FinishedSessionPage finishedSessionPage = finishSessionAcceptModalPage.finish();
+        finishedSessionPage.shouldStatusIsFinished()
+                .shouldTasksCountIsCorrect(8)
+                .verifyRequiredElements();
 
+        //Step 4
+        step("Нажать назад");
+        sessionListPage = finishedSessionPage.exitFinishedSession();
+        sessionListPage.verifyRequiredElements();
     }
 
 }

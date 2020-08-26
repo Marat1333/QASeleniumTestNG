@@ -70,12 +70,16 @@ public class ActionsModalPage extends CommonMagMobilePage {
     @Step("Выбрать задачу")
     public ActionsModalPage choseTasks(String... taskNames) {
         for (String taskName : taskNames) {
-            int size = toDoTasksList.getCount();
             E(String.format("//*[@text='%s']/following-sibling::android.view.ViewGroup[@content-desc='Button-container'][1]",
                     taskName)).click();
-            toDoTasksList.waitUntilElementListSizeHasChanged(size);
+            toDoTasksList.waitUntilSizeHasChanged();
         }
         return this;
+    }
+
+    public ActionsModalPage shouldToDoListContainsTaskAndPossibleListNotContainsTask(List<String> tasks) {
+        String [] array = new String[tasks.size()];
+        return shouldToDoListContainsTaskAndPossibleListNotContainsTask(array);
     }
 
     @Step("Проверить, что лист \"Нужно сделать\" содержит указанные задачи, a лист \"Возможные задачи\" не содержит")
