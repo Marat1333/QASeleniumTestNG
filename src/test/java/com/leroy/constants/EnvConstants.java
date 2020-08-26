@@ -49,6 +49,7 @@ public class EnvConstants {
 
     // -------------- API HOSTS --------------- //
     public static final String MAIN_API_HOST = getProperty("url.api.main_host");
+    public static final String SEARCH_API_HOST = getProperty("url.api.search_host");
     public static final String CLIENT_API_HOST = getProperty("url.api.client_host");
 
     // Jaeger
