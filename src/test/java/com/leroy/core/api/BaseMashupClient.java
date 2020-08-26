@@ -54,10 +54,6 @@ public abstract class BaseMashupClient extends BaseClient {
         gatewayUrl = EnvConstants.MAIN_API_HOST;
     }
 
-    public void switchChanel(String channelOption){
-        gatewayUrl = channelOption;
-    }
-
     // ---------------- VERIFICATIONS --------------- //
 
     public enum ResponseType {
