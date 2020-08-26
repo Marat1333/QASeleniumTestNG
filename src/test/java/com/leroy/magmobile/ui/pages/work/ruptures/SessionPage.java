@@ -5,15 +5,14 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.SessionData;
-import com.leroy.magmobile.ui.pages.work.ruptures.modal.ExitActiveSessionModalPage;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
 public abstract class SessionPage extends CommonMagMobilePage {
-    @AppFindBy(accessibilityId = "Button")
+    @AppFindBy(xpath = "//android.view.ViewGroup[contains(@content-desc,\"Button\")]")
     protected Button backBtn;
 
-    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"Button\"]/../following-sibling::android.widget.TextView[1]")
+    @AppFindBy(xpath = "//android.view.ViewGroup[contains(@content-desc,\"Button\")]/../following-sibling::android.widget.TextView[1]")
     protected Element creationDateLbl;
 
     @AppFindBy(containsText = " перебо")
@@ -38,12 +37,6 @@ public abstract class SessionPage extends CommonMagMobilePage {
         tmpArray = sessionNumberAndStatusLbl.getText(ps).split(" ");
         data.setSessionNumber(ParserUtil.strWithOnlyDigits(tmpArray[1]));
         return data;
-    }
-
-    @Step("Нажать на кнопку назад")
-    public ExitActiveSessionModalPage exitActiveSession() {
-        backBtn.click();
-        return new ExitActiveSessionModalPage();
     }
 
     @Step("Проверить, что счетчик перебоев отображает корректное значение")

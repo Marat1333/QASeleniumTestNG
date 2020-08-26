@@ -6,6 +6,7 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.RuptureData;
 import com.leroy.magmobile.ui.pages.work.ruptures.modal.DeleteSessionModalPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.modal.ExitActiveSessionModalPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.modal.FinishSessionAcceptModalPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.widgets.RuptureWidget;
 import com.leroy.utils.ParserUtil;
@@ -36,6 +37,12 @@ public class ActiveSessionPage extends SessionPage {
     public FinishSessionAcceptModalPage finishSession(){
         endSessionBtn.click();
         return new FinishSessionAcceptModalPage();
+    }
+
+    @Step("Нажать на кнопку назад")
+    public ExitActiveSessionModalPage exitActiveSession() {
+        backBtn.click();
+        return new ExitActiveSessionModalPage();
     }
 
     @Step("Добавить перебой в сессию")

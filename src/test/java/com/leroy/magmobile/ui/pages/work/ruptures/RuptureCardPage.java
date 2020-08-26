@@ -14,6 +14,7 @@ import com.leroy.magmobile.ui.pages.work.ruptures.elements.RuptureTaskContainer;
 import com.leroy.magmobile.ui.pages.work.ruptures.modal.DeleteRuptureModalPage;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
+import org.openqa.selenium.support.Color;
 
 import java.util.HashMap;
 import java.util.List;
@@ -204,7 +205,7 @@ public class RuptureCardPage extends CommonMagMobilePage {
 
     @Step("Проверить, что кнопка подтверждения ввода комментария активна")
     public RuptureCardPage shouldSubmitCommentBtnIsActive() throws Exception {
-        anAssert.isTrue(submitCommentBtn.isActive(), "inactive");
+        anAssert.isTrue(submitCommentBtn.getPointColor().equals(new Color(216, 240, 199, 255)), "inactive");
         return this;
     }
 

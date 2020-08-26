@@ -98,8 +98,11 @@ public class RupturesClient extends BaseMashupClient {
         return getProducts(sessionId, null, null, null, startFrom, pageSize);
     }
 
-    public int getActiveSessionWithProducts(){
+    public int getActiveSessionWithProductsId(){
         List<ResRuptureSessionData> activeSessionsData = getSessions("active", 10).asJson().getItems();
+        if (activeSessionsData.size()==0){
+            throw new RuntimeException("There is no active sessions");
+        }
         int result = 0;
         for (ResRuptureSessionData each : activeSessionsData){
             if (each.getTotalProductCount()>0) {
