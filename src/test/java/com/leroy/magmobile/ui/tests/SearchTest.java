@@ -13,11 +13,12 @@ import com.leroy.magmobile.api.requests.catalog_search.GetCatalogServicesSearch;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.models.search.FiltersData;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.ProductPricesQuantitySupplyPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.ProductCardPage;
 import com.leroy.magmobile.ui.pages.sales.product_and_service.AddServicePage;
+import com.leroy.magmobile.ui.pages.sales.product_card.ProductCardPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.SimilarProductsPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.SpecificationsPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.ProductPricesQuantitySupplyPage;
 import com.leroy.magmobile.ui.pages.search.FilterPage;
 import com.leroy.magmobile.ui.pages.search.NomenclatureSearchPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
@@ -104,8 +105,10 @@ public class SearchTest extends AppBaseSteps {
         GetCatalogSearch byShortBarCodeParams = buildDefaultCatalogSearchParams()
                 .setByBarCode(shortBarCode);
 
+        GetCatalogSearch byNameParam = buildDefaultCatalogSearchParams().setByNameLike(shortSearchPhrase);
+
         HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> apiThreads =
-                sendRequestsSearchProductsBy(byLmParams, byBarCodeParams, byShortLmCodeParams, byShortBarCodeParams);
+                sendRequestsSearchProductsBy(byLmParams, byBarCodeParams, byShortLmCodeParams, byShortBarCodeParams, byNameParam);
 
         // Pre-conditions
         MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
@@ -126,7 +129,7 @@ public class SearchTest extends AppBaseSteps {
         step("Нажмите 'Показать все товары'");
         nomenclatureSearchPage.clickShowAllProductsBtn()
                 .verifyRequiredElements();
-                //.shouldCountOfProductsOnPageMoreThan(1);
+        //.shouldCountOfProductsOnPageMoreThan(1);
 
         // Step 5
         step("Введите полное значение для поиска по ЛМ коду| 10008698");
@@ -150,8 +153,9 @@ public class SearchTest extends AppBaseSteps {
         // Step 7
         step("Введите название товара для поиска");
         searchProductPage.enterTextInSearchFieldAndSubmit(shortSearchPhrase);
-        searchProductPage.shouldCardsContainText(
-                shortSearchPhrase, SearchProductPage.CardType.COMMON, 3);
+        ProductItemDataList d5 = apiThreads.get(4).getData();
+        searchProductPage.shouldCatalogResponseEqualsContent(
+                d5, SearchProductPage.CardType.COMMON, 3);
 
         // Step 8
         step("Ввести штрихкод вручную");
@@ -468,6 +472,7 @@ public class SearchTest extends AppBaseSteps {
                 .verifySearchHistoryContainsSearchPhrase(exampleText);
     }
 
+    @Issue("LFRONT-3662")
     @Test(description = "C22790468 Гамма ЛМ. Отсутствие: действий с товаром, истории продаж, поставки", priority = 2)
     public void testC22790468() throws Exception {
         // Pre-conditions
@@ -493,7 +498,13 @@ public class SearchTest extends AppBaseSteps {
         SimilarProductsPage similarProductsPage = productDescriptionCardPage.switchTab(ProductCardPage.Tabs.SIMILAR_PRODUCTS);
         similarProductsPage.verifyProductCardsHaveAllGammaView();
 
-        // Step 4
+        //Step 4
+        step("Перейти на вкладку \"Характеристики\" и проверить отсутствие кнопки \"Поставщик\"");
+        SpecificationsPage specificationsPage = productDescriptionCardPage.switchTab(ProductCardPage.Tabs.SPECIFICATION);
+        //bug
+        specificationsPage.shouldSupplierBtnIsInvisible();
+
+        // Step 5
         step("Вернуться на вкладку \"Описание\" и Нажать на строку \"Цены в магазинах\"");
         productDescriptionCardPage = similarProductsPage.switchTab(ProductCardPage.Tabs.DESCRIPTION);
         ProductPricesQuantitySupplyPage productPricesQuantitySupplyPage = productDescriptionCardPage.goToPricesAndQuantityPage();
@@ -670,7 +681,7 @@ public class SearchTest extends AppBaseSteps {
 
     @Test(description = "C3200999 Проверка пагинации", priority = 2)
     public void testSearchPagePagination() throws Exception {
-        String searchCriterion = "12";
+        String searchCriterion = "1";
         String dept = "005";
         final String GAMMA = "A";
         final int ENTITY_COUNT = 20;
@@ -877,8 +888,10 @@ public class SearchTest extends AppBaseSteps {
 
         // Step 5
         step("Выполнить поиск услуги по неполному наименованию");
+        nomenclatureSearchPage = searchProductPage.goToNomenclatureWindow();
+        nomenclatureSearchPage.returnBackNTimes(1);
+        searchProductPage = nomenclatureSearchPage.clickShowAllProductsBtn();
         searchProductPage.enterTextInSearchFieldAndSubmit(SERVICE_SHORT_NAME);
-        addServicePage.returnBack();
         ServiceItemDataList shortNameServicesResponce = apiThreads.get(4).getData();
         searchProductPage.shouldServicesResponceEqualsContent(shortNameServicesResponce, 1);
         searchProductPage.shouldCardsContainText(SERVICE_SHORT_NAME, SearchProductPage.CardType.SERVICE, 1);
@@ -886,9 +899,6 @@ public class SearchTest extends AppBaseSteps {
         // Step 6
         step("Выполнить поиск услуги по полному наименованию");
         searchProductPage.enterTextInSearchFieldAndSubmit(SERVICE_FULL_NAME);
-        addServicePage.verifyRequiredElements()
-                .shouldServiceNameAndLmCodeBeOnPage(SERVICE_FULL_NAME, SERVICE_FULL_LM_CODE);
-        addServicePage.returnBack();
         ServiceItemDataList fullNameServicesResponce = apiThreads.get(5).getData();
         searchProductPage.shouldServicesResponceEqualsContent(fullNameServicesResponce, 1);
         searchProductPage.shouldCardsContainText(SERVICE_FULL_NAME, SearchProductPage.CardType.SERVICE, 1);
@@ -896,8 +906,6 @@ public class SearchTest extends AppBaseSteps {
         // Step 7
         step("Выполнить поиск по короткому штрихкоду");
         searchProductPage.enterTextInSearchFieldAndSubmit(SHORT_BARCODE);
-        ProductCardPage productCardPage = new ProductCardPage();
-        productCardPage.returnBack();
         searchProductPage.shouldNotCardsBeOnPage(SearchProductPage.CardType.SERVICE);
     }
 

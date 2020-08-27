@@ -21,9 +21,12 @@ public class AddProductForm extends MagPortalBasePage {
         searchProductFld.clear(true);
         searchProductFld.clearFillAndSubmit(text);
         waitForSpinnerAppearAndDisappear(short_timeout);
+        waitForSpinnerAppearAndDisappear(1);
         if (!ExtendedSearchModal.isModalVisible()) {
             addProductLbl.click();
         }
+        anAssert.isFalse(E("//div[contains(@class, 'Modal')]//*[text()='Изменения не сохранены']").isVisible(),
+                "Появилось окно 'Изменения не сохранены'");
     }
 
     // Verifications

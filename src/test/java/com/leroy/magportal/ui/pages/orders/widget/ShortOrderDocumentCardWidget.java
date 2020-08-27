@@ -37,7 +37,7 @@ public class ShortOrderDocumentCardWidget extends CardWebWidget<ShortOrderDocWeb
     @WebFindBy(xpath = ".//span[contains(@class, 'OrderListItem__createdAt')]")
     Element creationDate;
 
-    @WebFindBy(xpath = ".//div[contains(@class, 'OrderListItem__date-statuses')]/span[2]")
+    @WebFindBy(xpath = ".//div[contains(@class, 'OrderListItem__date-statuses')]/span[last()]")
     Element paymentType;
 
     @WebFindBy(xpath = ".//span[contains(@class, 'Status-container')]")
@@ -55,11 +55,11 @@ public class ShortOrderDocumentCardWidget extends CardWebWidget<ShortOrderDocWeb
     }
 
     public ShortOrderDocWebData.PayType getPaymentType() {
-        return paymentType.getText().toLowerCase().equals("оффлайн")? ShortOrderDocWebData.PayType.OFFLINE : ShortOrderDocWebData.PayType.ONLINE;
+        return paymentType.getText().toLowerCase().equals("оффлайн") ? ShortOrderDocWebData.PayType.OFFLINE : ShortOrderDocWebData.PayType.ONLINE;
     }
 
     public LocalDateTime getCreationDate() {
-        return DateTimeUtil.strToLocalDateTime(creationDate.getText(), "dd MMMM, hh:mm");
+        return DateTimeUtil.strToLocalDateTime(creationDate.getText(), "dd MMMM, HH:mm");
     }
 
     public String getDeliveryType() {

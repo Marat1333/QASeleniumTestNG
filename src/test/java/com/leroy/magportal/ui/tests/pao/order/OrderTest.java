@@ -33,6 +33,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -47,18 +48,12 @@ public class OrderTest extends BasePAOTest {
     @Inject
     PAOHelper helper;
 
-    @AfterClass(enabled = true)
     private void cancelConfirmedOrder() throws Exception {
         if (orderData != null && orderData.getNumber() != null && orderData.getStatus() != null &&
                 !orderData.getStatus().equals(SalesDocumentsConst.States.DRAFT.getUiVal()) &&
                 !orderData.getStatus().equals(SalesDocumentsConst.States.CANCELLED.getUiVal())) {
             OrderClient orderClient = apiClientProvider.getOrderClient();
-            if (CONFIRMED_BUT_NOT_ALLOWED_FOR_PICKING_ORDER)
-                orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderData.getNumber(),
-                        SalesDocumentsConst.States.CONFIRMED.getApiVal(), false);
-            else
-                orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderData.getNumber(),
-                        SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal(), false);
+            orderClient.waitUntilOrderCanBeCancelled(orderData.getNumber());
             Response<JsonNode> resp = orderClient.cancelOrder(orderData.getNumber());
             assertThat(resp, successful());
         }
@@ -373,7 +368,8 @@ public class OrderTest extends BasePAOTest {
         preconditionForEditOrderConfirmedTests(Collections.singletonList(productList.get(0)), 1.0);
     }
 
-    private void preconditionForEditOrderDraftTests(List<ProductItemData> productItemDataList, boolean isNeedToGoToContentTab) throws Exception {
+    private void preconditionForEditOrderDraftTests(
+            List<ProductItemData> productItemDataList, boolean isNeedToGoToContentTab) throws Exception {
         // Prepare data
         List<CartProductOrderData> cardProducts = new ArrayList<>();
         for (ProductItemData productItemData : productItemDataList) {
@@ -397,7 +393,7 @@ public class OrderTest extends BasePAOTest {
     }
 
     private void preconditionForEditOrderDraftTests() throws Exception {
-        preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)),true);
+        preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)), true);
     }
 
     // ---------------- EDIT ORDER DRAFT -------------------//
@@ -423,7 +419,7 @@ public class OrderTest extends BasePAOTest {
 
         // Step 1
         step("Измените кол-во товара таким образом, чтоб его было заказно, больше чем доступно");
-        int newQuantity = (int) Math.round(productItemData.getAvailableStock() + 1);
+        int newQuantity = (int) Math.round(productItemData.getAvailableStock() + 100);
         OrderWebData oneOrderData = orderData.getOrders().get(0);
         oneOrderData.changeProductQuantity(0, newQuantity, true);
         oneOrderData.setTotalWeight(null);
@@ -468,7 +464,7 @@ public class OrderTest extends BasePAOTest {
     @Test(description = "C23410905 Удалить товар из неподтвержденного заказа",
             groups = NEED_PRODUCTS_GROUP)
     public void testRemoveProductFromDraftOrder() throws Exception {
-        preconditionForEditOrderDraftTests(productList.subList(0, 2),true);
+        preconditionForEditOrderDraftTests(productList.subList(0, 2), true);
 
         // Step 1 and 2
         step("Нажмите на иконку корзины в правом верхнем углу мини-карточки товара и подтвердите удаление");
@@ -684,19 +680,104 @@ public class OrderTest extends BasePAOTest {
 
         String s = "";
     }
+    // ======== Подтверждение заказа ============= //
+
+    @Test(description = "C23410892 Подтвердить заказ на самовывоз сегодня", groups = NEED_PRODUCTS_GROUP)
+    public void testConfirmOrderPickupToday() throws Exception {
+        SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+        preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)), false);
+
+        // Step 1
+        step("В поле Выбери способ получения нажмите на кнопу Самовывоз (по умолчанию)");
+        orderData.setDeliveryType(SalesDocumentsConst.GiveAwayPoints.PICKUP);
+        orderData.setDeliveryDate(LocalDate.now());
+        orderDraftDeliveryWayPage.shouldOrderDataIs(orderData);
+
+        // Step 2
+        step("Нажмите на кнопку 'Добавить клиента'");
+        stepClickAddCustomerButton();
+
+        // Step 3
+        step("Введите номер телефона, нажмите Enter, нажмите на мини-карточку нужного клиента");
+        stepSelectCustomerByPhoneNumber(customerData);
+
+        // Step 4
+        step("Выберете поле PIN-код для оплаты, введите PIN-код для оплаты");
+        stepEnterPinCode();
+
+        // Step 5
+        step("Нажмите на кнопку Подтвердить заказ");
+        stepClickConfirmOrder();
+
+        // Step 6
+        step("Нажмите на 'Перейти в список заказов'");
+        stepGoToTheOrderList();
+
+        // Step 7
+        step("Обновите список документов слева");
+        stepRefreshDocumentListAndCheckDocument();
+    }
+
+    @Test(description = "C23410893 Подтвердить заказ на доставку завтра", groups = NEED_PRODUCTS_GROUP)
+    public void testConfirmOrderForDeliveryTomorrow() throws Exception {
+        SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+        SalesDocumentsConst.GiveAwayPoints deliveryWay = SalesDocumentsConst.GiveAwayPoints.DELIVERY;
+        preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)), false);
+
+        // Step 1
+        step("В поле Выбери способ получения нажмите на кнопу Доставка");
+        orderDraftDeliveryWayPage.selectDeliveryWay(deliveryWay);
+        orderData.setDeliveryType(deliveryWay);
+        orderData.setPinCode("");
+        orderData.setClient(new SimpleCustomerData());
+        orderData.setRecipient(new SimpleCustomerData());
+        orderData.setComment("");
+        orderData.setDeliveryDate(LocalDate.now().plusDays(1));
+        orderDraftDeliveryWayPage.shouldOrderDataIs(orderData);
+
+        // Step 2
+        step("Нажмите на кнопку 'Добавить клиента'");
+        stepClickAddCustomerButton();
+
+        // Step 3
+        step("Введите номер телефона, нажмите Enter, нажмите на мини-карточку нужного клиента");
+        stepSelectCustomerByPhoneNumber(customerData);
+
+        // Step 4
+        step("Выберете поле PIN-код для оплаты, введите PIN-код для оплаты");
+        stepEnterPinCode();
+
+        // Step 5
+        step("Нажмите на кнопку Подтвердить заказ");
+        stepClickConfirmOrder();
+
+        // Step 6
+        step("Нажмите на 'Перейти в список заказов'");
+        stepGoToTheOrderList();
+
+        // Step 7
+        step("Обновите список документов слева");
+        stepRefreshDocumentListAndCheckDocument();
+    }
+
     // ------------ Steps ------------------ //
 
     /**
      * Нажмите на кнопку "Оформить заказ"
      */
     private void stepClickConfirmOrderButton(SimpleCustomerData customerData) throws Exception {
-        cartPage = new CartPage();
+        cartPage = new CartPage()
+                .waitForProductsAreLoaded();
         orderData = cartPage.getSalesDocData();
+        anAssert().isTrue(orderData.getOrders().size() > 0,
+                "Не удалось получить со страницы информацию о товарах в корзине");
         orderDraftDeliveryWayPage = cartPage.clickConfirmButton()
                 .verifyRequiredElements(new OrderDraftDeliveryWayPage.PageState());
         orderDraftDeliveryWayPage.shouldOrderStatusIs(SalesDocumentsConst.States.DRAFT.getUiVal());
         orderData.setNumber(orderDraftDeliveryWayPage.getOrderNumber());
         orderData.setStatus(SalesDocumentsConst.States.DRAFT.getUiVal());
+        if (orderData.getDeliveryType() == null)
+            orderData.setDeliveryType(SalesDocumentsConst.GiveAwayPoints.PICKUP);
         anAssert().isFalse(orderData.getNumber().isEmpty(), "Номер заказа отсутствует");
         if (customerData != null) {
             orderDraftDeliveryWayPage.shouldReceiverIs(customerData)
@@ -729,7 +810,8 @@ public class OrderTest extends BasePAOTest {
      * Выберете поле PIN-код для оплаты, введите PIN-код для оплаты
      */
     private void stepEnterPinCode() {
-        orderData.setPinCode(RandomUtil.randomPinCode(true));
+        orderData.setPinCode(RandomUtil.randomPinCode(orderData.getDeliveryType()
+                .equals(SalesDocumentsConst.GiveAwayPoints.PICKUP)));
         orderDraftDeliveryWayPage.enterPinCode(orderData)
                 .shouldPinCodeFieldIs(orderData.getPinCode());
     }

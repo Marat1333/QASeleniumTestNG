@@ -1,5 +1,6 @@
 package com.leroy.magportal.ui.pages.orders;
 
+import com.leroy.constants.DefectConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.annotations.Form;
 import com.leroy.core.annotations.WebFindBy;
@@ -12,6 +13,7 @@ import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
 import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
 import com.leroy.magportal.ui.pages.customers.form.CustomerSearchForm;
 import com.leroy.magportal.ui.pages.orders.modal.SubmittedOrderModal;
+import com.leroy.utils.DateTimeUtil;
 import com.leroy.utils.ParserUtil;
 import com.leroy.utils.RandomUtil;
 import io.qameta.allure.Step;
@@ -72,7 +74,49 @@ public class OrderDraftDeliveryWayPage extends OrderDraftPage {
         pickupBtn.waitForVisibility();
     }
 
+    // Grab data
+
+    @Step("Получить со страницы информацию о получателе")
+    public SimpleCustomerData getRecipientData() {
+        SimpleCustomerData customerData = new SimpleCustomerData();
+        customerData.setEmail(emailFld.getText());
+        String phoneNumber = phoneFld.getText();
+        customerData.setPhoneNumber(phoneNumber.isEmpty()? "" : ParserUtil.standardPhoneFmt(phoneNumber));
+        customerData.setName(nameSurnameFld.getText());
+        return customerData;
+    }
+
+    @Step("Получить информацию со страницы заказа (Способ получения)")
+    public SalesDocWebData getOrderData() {
+        SalesDocWebData salesDocWebData = new SalesDocWebData();
+        salesDocWebData.setNumber(getOrderNumber());
+        salesDocWebData.setStatus(orderStatus.getText());
+        salesDocWebData.setCreationDate(creationDate.getText());
+        salesDocWebData.setAuthorName(author.getText());
+        if (pickupBtn.getAttribute("class").contains("active"))
+            salesDocWebData.setDeliveryType(SalesDocumentsConst.GiveAwayPoints.PICKUP);
+        else if (deliveryBtn.getAttribute("class").contains("active"))
+            salesDocWebData.setDeliveryType(SalesDocumentsConst.GiveAwayPoints.DELIVERY);
+        salesDocWebData.setDeliveryDate(DateTimeUtil.strToLocalDate(deliveryDateFld.getText(), ""));
+        salesDocWebData.setClient(customerSearchForm.getCustomerData());
+        salesDocWebData.setRecipient(getRecipientData());
+        salesDocWebData.setPinCode(pinCodeFld.getText());
+        salesDocWebData.setComment(commentFld.getText());
+        return salesDocWebData;
+    }
+
     // Actions
+
+    @Step("Выбрать тип получения заказа")
+    public OrderDraftDeliveryWayPage selectDeliveryWay(SalesDocumentsConst.GiveAwayPoints giveAwayPoints) {
+        if (giveAwayPoints.equals(SalesDocumentsConst.GiveAwayPoints.PICKUP))
+            pickupBtn.click();
+        if (giveAwayPoints.equals(SalesDocumentsConst.GiveAwayPoints.DELIVERY))
+            deliveryBtn.click();
+        waitForSpinnerAppearAndDisappear();
+        shouldModalThatChangesIsNotSavedIsNotVisible();
+        return this;
+    }
 
     @Step("Ввести PIN код")
     public OrderDraftDeliveryWayPage enterPinCode(SalesDocWebData orderData, boolean tryToFindValidPin) {
@@ -87,11 +131,15 @@ public class OrderDraftDeliveryWayPage extends OrderDraftPage {
             iTryCount--;
             orderData.setPinCode(RandomUtil.randomPinCode(
                     !SalesDocumentsConst.GiveAwayPoints.DELIVERY.equals(orderData.getDeliveryType())));
-            pinCodeFld.clearFillAndSubmit(orderData.getPinCode());
+            pinCodeFld.click();
+            pinCodeFld.clear(true);
+            pinCodeFld.fill(orderData.getPinCode());
+            waitForSpinnerAppearAndDisappear();
         }
         if (tryToFindValidPin)
             anAssert.isFalse(pinCodeErrorTooltip.isVisible(),
                     "Не удалось подобрать валидный PIN, по-прежнему отображается ошибка");
+        shouldModalThatChangesIsNotSavedIsNotVisible();
         return this;
     }
 
@@ -147,6 +195,19 @@ public class OrderDraftDeliveryWayPage extends OrderDraftPage {
                 "Неверный номер телефона у Получателя");
         softAssert.isEquals(emailFld.getText(), customerData.getEmail(), "Неверный email у Получателя");
         softAssert.verifyAll();
+        return this;
+    }
+
+    @Step("Проверить, что данные о заказе (Способ получения) соответствуют ожиданию")
+    public OrderDraftDeliveryWayPage shouldOrderDataIs(SalesDocWebData orderData) {
+        SalesDocWebData expectedOrderData = orderData.clone();
+        if (DefectConst.INVALID_ORDER_DRAFT_DATE)
+            expectedOrderData.setCreationDate(null);
+        if (DefectConst.INVISIBLE_AUTHOR_ORDER_DRAFT)
+            expectedOrderData.setAuthorName(null);
+        expectedOrderData.setOrders(null);
+        SalesDocWebData actualData = getOrderData();
+        actualData.assertEqualsNotNullExpectedFields(expectedOrderData);
         return this;
     }
 

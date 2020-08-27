@@ -1,21 +1,31 @@
 package com.leroy.magmobile.ui.pages.sales.product_card;
 
+import com.leroy.constants.DefectConst;
 import com.leroy.core.ContextProvider;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
 import com.leroy.magmobile.api.data.catalog.product.reviews.CatalogReviewsOfProductList;
 import com.leroy.magmobile.ui.elements.MagMobButton;
+import com.leroy.magmobile.ui.models.search.ProductCardData;
 import com.leroy.magmobile.ui.pages.sales.orders.cart.Cart35Page;
 import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.ProductPricesQuantitySupplyPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.StocksPage;
+import com.leroy.magmobile.ui.pages.sales.widget.SearchProductAllGammaCardWidget;
+import com.leroy.magmobile.ui.pages.sales.widget.SearchProductCardWidget;
+import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.utils.DateTimeUtil;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ProductDescriptionPage extends ProductCardPage {
 
@@ -64,8 +74,19 @@ public class ProductDescriptionPage extends ProductCardPage {
     @AppFindBy(accessibilityId = "priceUnit")
     Element availableStockUnitLbl;
 
+    @AppFindBy(text = "Комплементарных товаров не найдено")
+    Element complementaryProductsNotFoundLbl;
+
     @AppFindBy(xpath = "//android.widget.ScrollView", metaName = "Основная прокручиваемая область страницы")
     AndroidScrollView<String> mainScrollView;
+
+    private AndroidScrollView<ProductCardData> productCardsScrollView = new AndroidScrollView<>(driver,
+            AndroidScrollView.TYPICAL_LOCATOR,
+            ".//android.widget.ScrollView//android.view.ViewGroup[@content-desc='lmCode']/..", SearchProductCardWidget.class);
+
+    private AndroidScrollView<ProductCardData> allGammaProductCardsScrollView = new AndroidScrollView<>(driver,
+            AndroidScrollView.TYPICAL_LOCATOR,
+            ".//android.widget.ScrollView//android.view.ViewGroup[@content-desc='lmCode']/..", SearchProductAllGammaCardWidget.class);
 
     @Override
     public void waitForPageIsLoaded() {
@@ -84,30 +105,35 @@ public class ProductDescriptionPage extends ProductCardPage {
 
     @Step("Перейти на страницу с детализацией цен и запасов")
     public ProductPricesQuantitySupplyPage goToPricesAndQuantityPage() {
-        mainScrollView.scrollToEnd();
+        mainScrollView.scrollDownToText("Доступно для продажи");
         if (!actionWithProductBtn.isVisible()) {
             productPriceGammaCardBtn.click();
-        }else {
+        } else {
             productPriceBtn.click();
         }
         return new ProductPricesQuantitySupplyPage();
     }
 
     @Step("Перейти на страницу с информацией о стоках")
-    public StocksPage goToStocksPage(){
+    public StocksPage goToStocksPage() {
+        if (!availableStockLbl.isVisible()) {
+            mainScrollView.scrollDownToElement(availableStockLbl);
+        }
         availableStockLbl.click();
         return new StocksPage();
     }
 
     @Step("Перейти на страницу с историей продаж")
-    public SalesHistoryPage goToSalesHistoryPage(){
-        mainScrollView.scrollToEnd();
+    public SalesHistoryPage goToSalesHistoryPage() {
+        if (!salesHistoryBtn.isVisible()) {
+            mainScrollView.scrollDownToElement(salesHistoryBtn);
+        }
         salesHistoryBtn.click();
         return new SalesHistoryPage();
     }
 
     @Step("Перейти на страницу отзывов")
-    public ReviewsPage goToReviewsPage(){
+    public ReviewsPage goToReviewsPage() {
         reviewNavigationBtn.click();
         return new ReviewsPage();
     }
@@ -136,6 +162,46 @@ public class ProductDescriptionPage extends ProductCardPage {
         return this;
     }
 
+    @Step("Проверить, что комплементарные товары корректно отображены")
+    public ProductDescriptionPage shouldComplementaryProductsAreCorrect(List<CatalogProductData> apiDataList,
+                                                                        SearchProductPage.CardType type) {
+        if (apiDataList.size() == 0) {
+            mainScrollView.scrollToEnd();
+            waitUntilProgressBarIsInvisible();
+            anAssert.isElementVisible(complementaryProductsNotFoundLbl);
+            return this;
+        }
+        Element anchor = E("//android.widget.ScrollView//android.widget.ScrollView");
+        if (!anchor.isVisible()) {
+            mainScrollView.scrollDownToElement(anchor);
+        }
+        waitUntilProgressBarIsInvisible();
+
+        List<ProductCardData> productCardDataListFromPage = new ArrayList<>();
+        if (type.equals(SearchProductPage.CardType.COMMON)) {
+            productCardDataListFromPage = productCardsScrollView.getFullDataList();
+        } else if (type.equals(SearchProductPage.CardType.ALL_GAMMA)) {
+            productCardDataListFromPage = allGammaProductCardsScrollView.getFullDataList();
+        }
+        if (!DefectConst.LFRONT_3675) {
+            for (int i = 0; i < apiDataList.size(); i++) {
+                ProductCardData uiData = productCardDataListFromPage.get(i);
+                ProductItemData apiData = apiDataList.get(i);
+                softAssert.isEquals(uiData.getLmCode(), apiData.getLmCode(), "lmCode");
+                if (type.equals(SearchProductPage.CardType.COMMON)) {
+                    softAssert.isEquals(uiData.getAvailableQuantity(), apiData.getAvailableStock(), "available quantity");
+                }
+            }
+        } else {
+            //null available stock back-end issue
+            List<String> uiLmCodes = productCardDataListFromPage.stream().map(ProductCardData::getLmCode).collect(Collectors.toList());
+            List<String> apiLmCodes = apiDataList.stream().map(CatalogProductData::getLmCode).collect(Collectors.toList());
+            softAssert.isTrue(apiLmCodes.containsAll(uiLmCodes), "products mismatch");
+        }
+        softAssert.verifyAll();
+        return this;
+    }
+
     @Step("Проверить, что ЛМ код товара = {text}")
     public ProductDescriptionPage shouldProductLMCodeIs(String text) {
         anAssert.isEquals(lmCode.getText().replaceAll("\\D", ""), text,
@@ -151,17 +217,17 @@ public class ProductDescriptionPage extends ProductCardPage {
     }
 
     @Step("Проверить, что кол-во отзывов соответствует данным")
-    public ProductDescriptionPage shouldReviewCountIsCorrect(CatalogReviewsOfProductList data){
-        if (data.getTotalCount()==0) {
+    public ProductDescriptionPage shouldReviewCountIsCorrect(CatalogReviewsOfProductList data) {
+        if (data.getTotalCount() == 0) {
             anAssert.isElementTextContains(reviewNavigationBtn, "Твой отзыв будет первым");
-        }else {
+        } else {
             anAssert.isElementTextContains(reviewNavigationBtn, String.valueOf(data.getTotalCount()));
         }
         return this;
     }
 
     @Step("Проверить отображенные данные")
-    public ProductDescriptionPage shouldDataIsCorrect(CatalogProductData data){
+    public ProductDescriptionPage shouldDataIsCorrect(CatalogProductData data) {
         String uiDateFormat = "d.MM.yy";
         String apiDateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
         String ps = getPageSource();
@@ -177,7 +243,7 @@ public class ProductDescriptionPage extends ProductCardPage {
         unitComparison(priceLbl, data.getPriceUnit());
         String priceChangeDate = dateOfPriceChangeLbl.getText(ps).replaceAll("c ", "");
         softAssert.isEquals(DateTimeUtil.strToLocalDate(priceChangeDate, uiDateFormat),
-                DateTimeUtil.strToLocalDate(data.getSalesPrice().getDateOfChange(),apiDateFormat), "date of price change");
+                DateTimeUtil.strToLocalDate(data.getSalesPrice().getDateOfChange(), apiDateFormat), "date of price change");
         softAssert.isElementTextContains(availableStockLbl, ParserUtil.prettyDoubleFmt(data.getAvailableStock()), ps);
         unitComparison(availableStockUnitLbl, data.getPriceUnit());
         softAssert.verifyAll();
@@ -188,13 +254,13 @@ public class ProductDescriptionPage extends ProductCardPage {
         softAssert.isFalse(actionWithProductBtn.isVisible(), "Кнопка \"Действия с товаром\" отсутствует в карточке товара ЛМ");
         softAssert.isFalse(salesHistoryBtn.isVisible(), "Кнопка \"История продаж\" отсутствует в карточке товара ЛМ");
         softAssert.isFalse(topLbl.isVisible(), "Лейбл ТОП не должен быть виден");
-        softAssert.isFalse(dateOfPriceChangeLbl.isVisible(),"Дата изменения цены не должна быть видна");
-        softAssert.isFalse(priceLbl.isVisible(),"Цена не должна быть видна");
+        softAssert.isFalse(dateOfPriceChangeLbl.isVisible(), "Дата изменения цены не должна быть видна");
+        softAssert.isFalse(priceLbl.isVisible(), "Цена не должна быть видна");
         softAssert.verifyAll();
     }
 
-    private void unitComparison(Element element, String unit){
-        switch (unit){
+    private void unitComparison(Element element, String unit) {
+        switch (unit) {
             case "NIU":
                 softAssert.isElementTextContains(element, "шт.");
         }

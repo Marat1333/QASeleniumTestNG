@@ -17,6 +17,21 @@ public class OrderWebData {
     private Double totalWeight; // кг
     private Double totalPrice; // Рубли
 
+    public OrderWebData clone() {
+        OrderWebData orderWebData = new OrderWebData();
+        orderWebData.setProductCount(productCount);
+        orderWebData.setTotalWeight(totalWeight);
+        orderWebData.setTotalPrice(totalPrice);
+        if (productCardDataList != null) {
+            List<ProductOrderCardWebData> cloneProducts = new ArrayList<>();
+            for (ProductOrderCardWebData productOrderCardWebData : productCardDataList) {
+                cloneProducts.add(productOrderCardWebData.clone());
+            }
+            orderWebData.setProductCardDataList(cloneProducts);
+        }
+        return orderWebData;
+    }
+
     public ProductOrderCardWebData getLastProduct() {
         return productCardDataList.get(productCardDataList.size() - 1);
     }

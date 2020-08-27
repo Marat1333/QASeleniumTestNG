@@ -20,10 +20,9 @@ public class EditPhoneModalPage extends CommonMagMobilePage {
     // Actions
 
     @Step("Изменить номер телефона в модальном окне")
-    public EditCustomerInfoPage editPhoneNumber(String value) {
+    public void editPhoneNumber(String value) {
         phoneFld.clearFillAndSubmit(value);
         confirmBtn.click();
-        return new EditCustomerInfoPage();
     }
 
     @Step("Проверить, что модальное окно для редактирования телефонного номера отображается корректно")

@@ -55,6 +55,11 @@ public class CartPage extends CartEstimatePage {
         waitForSpinnerDisappear();
     }
 
+    public CartPage waitForProductsAreLoaded() {
+        orders().waitUntilAtLeastOneElementIsPresent();
+        return this;
+    }
+
     // Grab info
 
     @Override

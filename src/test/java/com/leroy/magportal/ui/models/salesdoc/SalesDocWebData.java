@@ -1,6 +1,5 @@
 package com.leroy.magportal.ui.models.salesdoc;
 
-
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.ContextProvider;
 import com.leroy.core.asserts.SoftAssertWrapper;
@@ -9,6 +8,8 @@ import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
 import com.leroy.utils.DateTimeUtil;
 import lombok.Data;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -22,7 +23,34 @@ public class SalesDocWebData {
 
     // Order Details
     private String pinCode;
+    private LocalDate deliveryDate;
     private SalesDocumentsConst.GiveAwayPoints deliveryType;
+    private SimpleCustomerData recipient;
+    private String comment;
+
+    public SalesDocWebData clone() {
+        SalesDocWebData salesDocWebData = new SalesDocWebData();
+        salesDocWebData.setNumber(number);
+        salesDocWebData.setStatus(status);
+        salesDocWebData.setCreationDate(creationDate);
+        salesDocWebData.setAuthorName(authorName);
+        if (client != null)
+            salesDocWebData.setClient(client.clone());
+        if (orders != null) {
+            List<OrderWebData> cloneOrders = new ArrayList<>();
+            for (OrderWebData oneOrderData : orders) {
+                cloneOrders.add(oneOrderData.clone());
+            }
+            salesDocWebData.setOrders(cloneOrders);
+        }
+        salesDocWebData.setPinCode(pinCode);
+        salesDocWebData.setDeliveryDate(deliveryDate);
+        salesDocWebData.setDeliveryType(deliveryType);
+        if (recipient != null)
+            salesDocWebData.setRecipient(recipient.clone());
+        salesDocWebData.setComment(comment);
+        return salesDocWebData;
+    }
 
     public boolean isDocumentContainsProduct(String lmCode) {
         for (OrderWebData orderWebData : orders) {
@@ -67,11 +95,41 @@ public class SalesDocWebData {
         if (expectedData.getPinCode() != null)
             softAssert.isEquals(this.getPinCode(), expectedData.getPinCode(),
                     "Неверный PIN код документа");
+        if (expectedData.getDeliveryDate() != null)
+            softAssert.isEquals(this.getDeliveryDate(), expectedData.getDeliveryDate(),
+                    "Неверная дата получения заказа");
+        if (expectedData.getComment() != null)
+            softAssert.isEquals(this.getComment(), expectedData.getComment(),
+                    "Неверный комментарий заказа");
         if (expectedData.getDeliveryType() != null)
             softAssert.isEquals(this.getDeliveryType(), expectedData.getDeliveryType(),
                     "Неверный способ получения документа");
-        if (expectedData.getClient() != null)
+        if (expectedData.getClient() != null) {
+            if (expectedData.getClient().getName() == null) {
+                softAssert.isTrue(getClient().getName() == null,
+                        "Клиент должен быть не выбран (имя)");
+                softAssert.isTrue(getClient().getPhoneNumber() == null,
+                        "Клиент должен быть не выбран (телефон)");
+                softAssert.isTrue(getClient().getEmail() == null,
+                        "Клиент должен быть не выбран (email)");
+                softAssert.isTrue(getClient().getCardNumber() == null,
+                        "Клиент должен быть не выбран (Номер карты)");
+            }
             this.getClient().assertEqualsNotNullExpectedFields(expectedData.getClient());
+        }
+        if (expectedData.getRecipient() != null) {
+            if (expectedData.getRecipient().getName() == null) {
+                softAssert.isTrue(getRecipient().getName().isEmpty(),
+                        "Получатель должен быть не выбран (имя)");
+                softAssert.isTrue(getRecipient().getPhoneNumber().isEmpty(),
+                        "Получатель должен быть не выбран (телефон)");
+                softAssert.isTrue(getRecipient().getEmail().isEmpty(),
+                        "Получатель должен быть не выбран (email)");
+                softAssert.isTrue(getRecipient().getCardNumber() == null,
+                        "Получатель должен быть не выбран (Номер карты)");
+            }
+            this.getRecipient().assertEqualsNotNullExpectedFields(expectedData.getRecipient());
+        }
         if (expectedData.getOrders() != null) {
             softAssert.isEquals(this.getOrders().size(), expectedData.getOrders().size(),
                     "Неверное кол-во заказов в документе");

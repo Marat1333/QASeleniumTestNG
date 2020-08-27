@@ -22,6 +22,14 @@ public class BottomMenuPage extends CommonMagMobilePage {
     @AppFindBy(accessibilityId = "Route__btn_more")
     private Element moreBtn;
 
+    @Override
+    protected void waitForPageIsLoaded() {
+        salesBtn.waitForVisibility();
+        workBtn.waitForVisibility();
+        supportBtn.waitForVisibility();
+        moreBtn.waitForVisibility();
+    }
+
     /* ------------------------- ACTION STEPS -------------------------- */
 
     @Step("Перейдите в раздел 'Продажи'")

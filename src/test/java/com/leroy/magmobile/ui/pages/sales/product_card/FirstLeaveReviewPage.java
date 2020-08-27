@@ -64,8 +64,8 @@ public class FirstLeaveReviewPage extends CommonMagMobilePage {
 
         private String name;
 
-        PriceAndQuantityRate(String name){
-            this.name=name;
+        PriceAndQuantityRate(String name) {
+            this.name = name;
         }
 
         public String getName() {
@@ -73,7 +73,7 @@ public class FirstLeaveReviewPage extends CommonMagMobilePage {
         }
     }
 
-    public enum CommonRate{
+    public enum CommonRate {
         NOT_CHOSEN("Нажми, чтобы оценить"),
         TERRIBLE("Ужасный товар"),
         BAD("Плохой товар"),
@@ -83,8 +83,8 @@ public class FirstLeaveReviewPage extends CommonMagMobilePage {
 
         private String name;
 
-        CommonRate(String name){
-            this.name=name;
+        CommonRate(String name) {
+            this.name = name;
         }
 
         public String getName() {
@@ -99,7 +99,7 @@ public class FirstLeaveReviewPage extends CommonMagMobilePage {
     }
 
     @Step("Оценить продукт: цена - {price}, качество - {quality}, общая оценка - {rate}")
-    public FirstLeaveReviewPage makeRates(int price, int quality, int rate) throws Exception{
+    public FirstLeaveReviewPage makeRates(int price, int quality, int rate) throws Exception {
         rateProduct(rate);
         ratePrice(price);
         rateQuality(quality);
@@ -107,66 +107,66 @@ public class FirstLeaveReviewPage extends CommonMagMobilePage {
     }
 
     @Step("Поставить общую оценку продукту от 1 до 5")
-    private FirstLeaveReviewPage rateProduct(int rate)throws Exception{
+    private FirstLeaveReviewPage rateProduct(int rate) throws Exception {
         try {
-            overallRatingLbl.findChildElement("./following-sibling::android.view.ViewGroup["+rate+"]").click();
-        }catch (NoSuchElementException e){
+            overallRatingLbl.findChildElement("./following-sibling::android.view.ViewGroup[" + rate + "]").click();
+        } catch (NoSuchElementException e) {
             throw new IllegalArgumentException("rate should be in [1-5]");
         }
         return this;
     }
 
     @Step("Оценить цену продукта от 1 до 5")
-    private FirstLeaveReviewPage ratePrice(int rate) throws Exception{
+    private FirstLeaveReviewPage ratePrice(int rate) throws Exception {
         try {
-            priceLbl.findChildElement("./following-sibling::android.view.ViewGroup["+rate+"]").click();
-        }catch (NoSuchElementException e){
+            priceLbl.findChildElement("./following-sibling::android.view.ViewGroup[" + rate + "]").click();
+        } catch (NoSuchElementException e) {
             throw new IllegalArgumentException("rate should be in [1-5]");
         }
         return this;
     }
 
     @Step("Оценить качество продукта от 1 до 5")
-    private FirstLeaveReviewPage rateQuality(int rate) throws Exception{
+    private FirstLeaveReviewPage rateQuality(int rate) throws Exception {
         try {
-            qualityLbl.findChildElement("./following-sibling::android.view.ViewGroup["+rate+"]").click();
-        }catch (NoSuchElementException e){
+            qualityLbl.findChildElement("./following-sibling::android.view.ViewGroup[" + rate + "]").click();
+        } catch (NoSuchElementException e) {
             throw new IllegalArgumentException("rate should be in [1-5]");
         }
         return this;
     }
 
     @Step("Нажать на чек-бокс \"Я рекомендую этот товар\"")
-    public FirstLeaveReviewPage leaveRecommendation(){
+    public FirstLeaveReviewPage leaveRecommendation() {
         recommendedProductCheckBox.click();
         return this;
     }
 
     @Step("Открыть модальное окно времени использования")
-    public PeriodOfUsageModalPage callPeriodOfUsageModal(){
+    public PeriodOfUsageModalPage callPeriodOfUsageModal() {
         mainScrollView.scrollToEnd();
         callPeriodOfUsageModalBtn.click();
         return new PeriodOfUsageModalPage();
     }
 
     @Step("Перейти на следующую форму отзыва о продукте")
-    public SecondLeaveReviewPage goToNextReviewPage(){
+    public SecondLeaveReviewPage goToNextReviewPage() {
         moveToNextWindowBtn.click();
         return new SecondLeaveReviewPage();
     }
 
     @Step("Проверить, что лм код подтянулся корректно")
-    public FirstLeaveReviewPage shouldLmCodeIsCorrect(String lmCode){
+    public FirstLeaveReviewPage shouldLmCodeIsCorrect(String lmCode) {
         anAssert.isEquals(ParserUtil.strWithOnlyDigits(productLmCodeLbl.getText()), lmCode, "lmCode");
         return this;
     }
 
     @Step("Проверить, что оценки корректно проставлены")
-    public FirstLeaveReviewPage shouldRatesIsCorrect(CommonRate commonRate, PriceAndQuantityRate priceRate, PriceAndQuantityRate quantityRate) throws Exception{
+    public FirstLeaveReviewPage shouldRatesIsCorrect(CommonRate commonRate, PriceAndQuantityRate priceRate, PriceAndQuantityRate quantityRate) throws Exception {
         anAssert.isElementTextEqual(commonStringRate, commonRate.getName());
-        if (commonRate.equals(CommonRate.GOOD)||commonRate.equals(CommonRate.PERFECT)){
+        if (commonRate.equals(CommonRate.GOOD) || commonRate.equals(CommonRate.PERFECT)) {
             anAssert.isTrue(recommendedProductCheckBox.isChecked(), "Чек-бокс \"Я рекомендую этот товар\" не выбран");
-        }else {
+        } else {
             anAssert.isTrue(!recommendedProductCheckBox.isChecked(), "Чек-бокс \"Я рекомендую этот товар\" выбран");
         }
         anAssert.isElementTextEqual(currentPriceRateLbl, priceRate.getName());
@@ -175,8 +175,8 @@ public class FirstLeaveReviewPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что в поле \"Срок использования\" указано корректное значение")
-    public FirstLeaveReviewPage shouldPeriodOfUsageIsCorrect(ReviewOptions option){
-        if (option.equals(ReviewOptions.DEFAULT)){
+    public FirstLeaveReviewPage shouldPeriodOfUsageIsCorrect(ReviewOptions option) {
+        if (option.equals(ReviewOptions.DEFAULT)) {
             //
         }
         anAssert.isElementTextEqual(callPeriodOfUsageModalBtn, option.getName());
