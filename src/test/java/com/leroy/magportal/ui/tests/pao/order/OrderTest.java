@@ -652,7 +652,38 @@ public class OrderTest extends BasePAOTest {
                 .shouldPinCodeErrorTooltipIs("Уже используется, придумай другой код");
     }
 
+    @Test(description = "C23398451 Создание заказа с существующим пин кодом", groups = NEED_PRODUCTS_GROUP)
+    public void testCreateOrderWithExistedPinCode() throws Exception{
+        String toolTypeText = "Уже используется, придумай другой код";
+        SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+        preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)),false);
+        //Prepare data
+        step("Нажмите на кнопку Добавить клиента");
+        CustomerSearchForm customerSearchForm2 = orderDraftDeliveryWayPage.getCustomerSearchForm();
+        customerSearchForm2.clickAddCustomer();
+        step("Введите номер телефона, нажмите Enter, нажмите на мини-карточку нужного клиента");
+        customerSearchForm2.selectCustomerByPhone(customerData.getPhoneNumber());
+        step("Введите существующий PIN-код, например 11111 для самовывоза или 99999 для доставки");
+        orderDraftDeliveryWayPage.enterPinCode("11111")
+                .shouldPinCodeErrorTooltipIs(toolTypeText);
+        //Step 1
+        step("Нажмите на кнопку Подтвердить заказ");
+        orderDraftDeliveryWayPage.clickConfirmOrderButtonNegativePath()
+                .shouldPinCodeErrorTooltipIs(toolTypeText);
 
+    }
+
+
+    @Test(description = "C23398446 Валидация формата пин кода для разных типов получения товара", groups = NEED_PRODUCTS_GROUP)
+    public void testValidationForDifferentReceivingTypes() throws Exception{
+        preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)),false);
+        //Step1
+        step("Введите PIN-код для оплаты (код начинается с 9)");
+        stepEnterPinCode();
+        step("В поле Выбери способ получения нажмите на кнопу Доставка");
+
+        String s = "";
+    }
     // ------------ Steps ------------------ //
 
     /**

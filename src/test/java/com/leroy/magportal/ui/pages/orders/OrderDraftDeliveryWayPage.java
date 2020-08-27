@@ -111,6 +111,13 @@ public class OrderDraftDeliveryWayPage extends OrderDraftPage {
         return new SubmittedOrderModal();
     }
 
+    @Step("Нажать на кнопку 'Подтвердить заказ' - негативный сценарий")
+    public OrderDraftDeliveryWayPage clickConfirmOrderButtonNegativePath() {
+        confirmOrderBtn.click();
+        waitForSpinnerAppearAndDisappear();
+        return this;
+    }
+
     // Verifications
 
     @Step("Проверить, что страница 'Оформление заказа' отображается корректно")
