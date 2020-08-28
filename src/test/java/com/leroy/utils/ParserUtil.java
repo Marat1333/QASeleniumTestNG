@@ -22,10 +22,13 @@ public class ParserUtil {
     public static Double strToDouble(String str, String delimiter) {
         if (str == null)
             return null;
+        String sDouble = str.replaceAll("[^\\d+" + delimiter + "\\-]", "")
+                .replaceAll("\\.", ",");
+        if (sDouble.isEmpty())
+            return null;
         try {
             return NumberFormat.getInstance(Locale.FRANCE)
-                    .parse(str.replaceAll("[^\\d+" + delimiter + "\\-]", "")
-                            .replaceAll("\\.", ",")).doubleValue();
+                    .parse(sDouble).doubleValue();
         } catch (ParseException err) {
             Log.error(err.getMessage());
             return null;
@@ -79,7 +82,10 @@ public class ParserUtil {
     public static Integer strToInt(String str) {
         if (str == null)
             return null;
-        return Integer.parseInt(str.replaceAll("[^\\d+\\,\\-]", ""));
+        String sInt = str.replaceAll("[^\\d+\\,\\-]", "");
+        if (sInt.isEmpty())
+            return null;
+        return Integer.parseInt(sInt);
     }
 
     /**
@@ -128,6 +134,8 @@ public class ParserUtil {
      * @return String
      */
     public static String standardPhoneFmt(String phoneNumber) {
+        if (phoneNumber == null)
+            return null;
         if (!phoneNumber.startsWith("+7"))
             phoneNumber = "+7" + phoneNumber;
         return phoneNumber.replaceAll(" |-|\\(|\\)", "");

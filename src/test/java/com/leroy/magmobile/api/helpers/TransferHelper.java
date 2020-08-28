@@ -11,6 +11,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.time.ZonedDateTime;
 import java.util.Collections;
+import java.util.List;
 
 import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -19,11 +20,10 @@ public class TransferHelper extends ApiClientProvider {
 
     @Step("API: Создаем заявку на отзыв")
     public TransferSalesDocData createTransferTask(
-            TransferProductOrderData productData, SalesDocumentsConst.GiveAwayPoints giveAwayPoints) {
+            List<TransferProductOrderData> productDataList, SalesDocumentsConst.GiveAwayPoints giveAwayPoints) {
         TransferClient transferClient = getTransferClient();
-
         TransferSalesDocData postSalesDocData = new TransferSalesDocData();
-        postSalesDocData.setProducts(Collections.singletonList(productData));
+        postSalesDocData.setProducts(productDataList);
         postSalesDocData.setShopId(Integer.valueOf(userSessionData().getUserShopId()));
         postSalesDocData.setDepartmentId(userSessionData().getUserDepartmentId());
         postSalesDocData.setDateOfGiveAway(ZonedDateTime.now());
@@ -33,6 +33,11 @@ public class TransferHelper extends ApiClientProvider {
         Response<TransferSalesDocData> resp = transferClient.sendRequestCreate(postSalesDocData);
         assertThat(resp, successful());
         return resp.asJson();
+    }
+
+    public TransferSalesDocData createTransferTask(
+            TransferProductOrderData productData, SalesDocumentsConst.GiveAwayPoints giveAwayPoints) {
+        return createTransferTask(Collections.singletonList(productData), giveAwayPoints);
     }
 
 }

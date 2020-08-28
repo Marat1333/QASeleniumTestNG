@@ -88,22 +88,12 @@ public class TransferShopRoomStep2Page extends TransferOrderPage {
     @Step("Проверить, что экран 'Параметры заявки' отображается корректно")
     public TransferShopRoomStep2Page verifyRequiredElements() {
         softAssert.areElementsVisible(headerLbl, submitBtn, deliveryDateArea,
-                deliveryDateLbl, deliveryTimeArea, deliveryTimeLbl, commentFld);
+                deliveryDateLbl, deliveryTimeArea, commentFld);
         softAssert.isTrue(isOrderNumberVisibleAndValid(),
                 "Номер заявки должен быть валиден");
         softAssert.verifyAll();
         return this;
     }
-
-    /*@Step("Проверить, что основные поля предзаполнены, кроме поля Комментарий")
-    public TransferShopRoomStep2Page shouldFieldsAreNotEmptyExceptCommentField() {
-        String ps = getPageSource();
-        softAssert.isFalse(deliveryDateLbl.getText(ps).isEmpty(), "Дата доставки товара не заполнена");
-        softAssert.isFalse(deliveryTimeLbl.getText(ps).isEmpty(), "Время доставки товара не заполнено");
-        softAssert.isEquals(commentFld.getText(ps), "", "Комментарий содержит текст");
-        softAssert.verifyAll();
-        return this;
-    }*/
 
     @Step("Проверить, что поле дата должно быть {date}")
     public TransferShopRoomStep2Page shouldDateFieldIs(LocalDate date) {

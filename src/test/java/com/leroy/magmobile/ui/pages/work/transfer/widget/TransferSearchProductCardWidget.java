@@ -42,11 +42,11 @@ public class TransferSearchProductCardWidget extends CardWidget<TransferProductD
     @Override
     public TransferProductData collectDataFromPage(String pageSource) {
         TransferProductData transferProductData = new TransferProductData();
-        transferProductData.setLmCode(lmCode.getText(pageSource));
-        transferProductData.setBarCode(barCode.getText(pageSource));
+        transferProductData.setLmCode(ParserUtil.strWithOnlyDigits(lmCode.getText(pageSource)));
+        transferProductData.setBarCode(ParserUtil.strWithOnlyDigits(barCode.getText(pageSource)));
         transferProductData.setTitle(title.getText(pageSource));
-        transferProductData.setAvailableStock(ParserUtil.strToInt(availableStock.getText(pageSource)));
-        transferProductData.setSelectedQuantity(ParserUtil.strToInt(editQuantityFld.getText(pageSource)));
+        transferProductData.setTotalStock(ParserUtil.strToInt(availableStock.getText(pageSource)));
+        transferProductData.setOrderedQuantity(ParserUtil.strToInt(editQuantityFld.getText(pageSource)));
         return transferProductData;
     }
 

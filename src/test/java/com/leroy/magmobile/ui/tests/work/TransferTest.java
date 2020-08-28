@@ -15,15 +15,19 @@ import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.constants.TestDataConstants;
 import com.leroy.magmobile.ui.models.customer.MagCustomerData;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
+import com.leroy.magmobile.ui.pages.common.modal.ConfirmRemovingProductModal;
 import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
+import com.leroy.magmobile.ui.pages.sales.EditProduct35Page;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SaleTypeModalPage;
 import com.leroy.magmobile.ui.pages.work.WorkPage;
 import com.leroy.magmobile.ui.pages.work.transfer.*;
 import com.leroy.magmobile.ui.pages.work.transfer.data.TransferProductData;
-import com.leroy.magportal.api.helpers.PAOHelper;
+import com.leroy.magmobile.ui.pages.work.transfer.modal.SelectPickupPointModal;
+import com.leroy.magmobile.ui.pages.work.transfer.modal.TransferActionWithProductCardModal;
+import com.leroy.magmobile.ui.pages.work.transfer.modal.TransferExitWarningModal;
 import lombok.Data;
-import lombok.var;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -31,6 +35,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.leroy.core.matchers.Matchers.successful;
@@ -47,9 +52,6 @@ public class TransferTest extends AppBaseSteps {
 
     @Inject
     TransferHelper transferHelper;
-
-    @Inject
-    PAOHelper paoHelper;
 
     List<CustomTransferProduct> products = new ArrayList<>();
 
@@ -86,11 +88,13 @@ public class TransferTest extends AppBaseSteps {
 
         // Step 1
         step("Нажать кнопку Оформить продажу");
-        SaleTypeModalPage saleTypeModalPage = mainSalesDocumentsPage.clickCreateSalesDocumentButton();
+        SaleTypeModalPage saleTypeModalPage = mainSalesDocumentsPage.<SaleTypeModalPage>clickCreateSalesDocumentButton()
+                .verifyRequiredElementsWhenFromSalesDocuments();
 
         // Step 2
         step("Выбрать параметр Со склада клиенту");
-        TransferOrderStep1Page transferOrderStep1Page = saleTypeModalPage.clickFromStockToClient();
+        TransferOrderStep1Page transferOrderStep1Page = saleTypeModalPage.clickFromStockToClient()
+                .verifyElementsWhenEmpty();
 
         // Step 3
         step("Нажмите на кнопку +Товары со склада");
@@ -98,13 +102,15 @@ public class TransferTest extends AppBaseSteps {
 
         // Step 4
         step("Выбрать первый товар, который поштучно хранится на складе");
-        AddProduct35Page<TransferSearchPage> addProductPage = searchProductPage.clickProductCard(1);
+        AddProduct35Page<TransferSearchPage> addProductPage = searchProductPage.clickProductCard(1)
+                .verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_TASK);
 
         // Step 5, 6, 7
         step("Ввести количество товара для заявки со склада");
         int oneMonoPallet = addProductPage.getByOneMonoPalletQuantity();
         ProductOrderCardAppData productOrderCardAppData = addProductPage.getProductOrderDataFromPage();
         addProductPage.enterQuantityOfProduct(oneMonoPallet, true);
+        ProductOrderCardAppData productData = addProductPage.getProductOrderDataFromPage();
 
         // Step 8
         step("Нажмите на кнопку Добавить в заявку");
@@ -112,21 +118,27 @@ public class TransferTest extends AppBaseSteps {
 
         // Step 9
         step("Нажмите на Товары на отзыв");
-        transferOrderStep1Page = searchProductPage.clickTransferProductPanel();
+        TransferProductData transferProductData = new TransferProductData(productData);
+        transferOrderStep1Page = searchProductPage.clickTransferProductPanel()
+                .verifyElementsWhenProductsAdded()
+                .shouldTransferProductIs(1, transferProductData);
 
         // Step 10
         step("Нажмите на Далее");
         transferOrderStep1Page.clickNextButton();
-        TransferOrderStep2Page transferOrderStep2Page = new TransferOrderStep2Page();
+        TransferOrderToClientStep2Page transferOrderStep2Page = new TransferOrderToClientStep2Page()
+                .verifyRequiredElements();
 
         // Step 11 - 13
         step("Найдите клиента и выберите его");
         transferOrderStep2Page.clickClientField()
                 .searchCustomerByPhone(customerData.getPhone());
+        transferOrderStep2Page.shouldSelectedCustomerIs(customerData);
 
         // Step 14
         step("Нажмите на Оформить продажу");
         TransferSuccessPage successPage = transferOrderStep2Page.clickSubmitButton();
+        // TODO ДОДЕЛАТЬ!
 
         // Step 15
         step("Нажмите на кнопку Перейти в список заявок");
@@ -135,7 +147,6 @@ public class TransferTest extends AppBaseSteps {
         // Step 16
         step("Открыть заявку и проверить заполненные поля и товары");
         transferRequestsPage.searchForRequestAndOpenIt(productOrderCardAppData.getTitle(), "Отправлен");
-
 
     }
 
@@ -146,7 +157,8 @@ public class TransferTest extends AppBaseSteps {
 
         // Step 1
         step("Нажать на иконку + рядом с Отзыв товара со склада");
-        TransferOrderStep1Page transferOrderStep1Page = workPage.clickWithdrawalFromRMPlusIcon();
+        TransferOrderStep1Page transferOrderStep1Page = workPage.<TransferOrderStep1Page>clickWithdrawalFromRMPlusIcon()
+                .verifyElementsWhenEmpty();
 
         // Step 2
         step("Нажмите на кнопку +Товары со склада");
@@ -154,17 +166,22 @@ public class TransferTest extends AppBaseSteps {
 
         // Step 3 - 5
         step("Нажмите на + в правом нижнем углу мини-карточки выбранного товара и введите новое кол-во товара");
+        int newQuantity = 5;
         TransferProductData transferProductData = searchProductPage.getTransferProduct(1);
-        searchProductPage.editProductQuantityForFirstProduct(5);
+        transferProductData.setOrderedQuantity(newQuantity);
+        searchProductPage.editProductQuantityForFirstProduct(newQuantity);
 
         // Step 6
         step("Нажмите на Товары на отзыв");
-        transferOrderStep1Page = searchProductPage.clickTransferProductPanel();
+        transferOrderStep1Page = searchProductPage.clickTransferProductPanel()
+                .verifyElementsWhenProductsAdded()
+                .shouldTransferProductIs(1, transferProductData);
 
         // Step 7
         step("Нажмите на Далее");
         transferOrderStep1Page.clickNextButton();
-        TransferShopRoomStep2Page transferShopRoomStep2Page = new TransferShopRoomStep2Page();
+        TransferShopRoomStep2Page transferShopRoomStep2Page = new TransferShopRoomStep2Page()
+                .verifyRequiredElements();
 
         // Step 8
         step("Нажать на поле даты поставки и меняем дату и подтвердить изменение");
@@ -181,6 +198,7 @@ public class TransferTest extends AppBaseSteps {
         // Step 10
         step("Нажмите на кнопку Отправить заявку на отзыв");
         TransferSuccessPage successPage = transferShopRoomStep2Page.clickSubmitBtn();
+        // TODO доделать
 
         // Step 11
         step("Нажмите на кнопку Перейти в список заявок");
@@ -200,6 +218,7 @@ public class TransferTest extends AppBaseSteps {
 
     @Test(description = "C3268361 Редактирование заявки в статусе Черновик")
     public void testEditTransferInDraftStatus() throws Exception {
+        MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
         CustomTransferProduct product = products.get(0);
         TransferOrderStep1Page transferOrderStep1Page;
         if (isStartFromScratch()) {
@@ -218,38 +237,245 @@ public class TransferTest extends AppBaseSteps {
             transferOrderStep1Page = new TransferOrderStep1Page();
         }
 
-        // Step 2
-        step("Нажмите на мини-карточку товара");
-        var actionModal = transferOrderStep1Page.clickProductCard(1);
+        // TODO check Step 1 and 2
+
+        TransferProductData transferProductData = transferOrderStep1Page.getTransferProductData(1);
 
         // Step 3
-        step("Нажмите на Изменить количество");
-        var editQuantityPage = actionModal.clickChangeQuantityMenuItem();
+        step("Нажмите на мини-карточку товара");
+        TransferActionWithProductCardModal actionModal = transferOrderStep1Page.clickProductCard(1)
+                .verifyRequiredElements();
 
         // Step 4
-        step("Измените количество товара плашкой и нажмите Сохранить");
-        editQuantityPage.enterQuantityOfProduct(product.getMonoPalletCapacity(), true);
-        transferOrderStep1Page = editQuantityPage.clickSaveButton();
+        step("Нажмите на Изменить количество");
+        EditProduct35Page<TransferOrderStep1Page> editQuantityPage = actionModal.clickChangeQuantityMenuItem()
+                .verifyRequiredElements();
 
         // Step 5
-        step("Нажмите на кнопку Далее");
-        transferOrderStep1Page.clickNextButton();
-        TransferOrderStep2Page transferOrderStep2Page = new TransferOrderStep2Page();
+        step("Измените количество товара плашкой и нажмите Сохранить");
+        int newQuantity = product.getMonoPalletCapacity();
+        transferProductData.setOrderedQuantity(newQuantity, true);
+        editQuantityPage.enterQuantityOfProduct(newQuantity, true);
+        transferOrderStep1Page = editQuantityPage.clickSaveButton()
+                .shouldTransferProductIs(1, transferProductData)
+                .shouldTotalPriceIs(transferProductData.getTotalPrice());
 
         // Step 6
-        step("Нажмите на поле Место выдачи");
-
+        step("Нажмите на кнопку Далее");
+        transferOrderStep1Page.clickNextButton();
+        TransferOrderToClientStep2Page transferOrderStep2Page = new TransferOrderToClientStep2Page()
+                .verifyRequiredElements();
 
         // Step 7
-        step("Выберите параметр, отличный от указанного ранее");
+        step("Нажать кнопку назад на телефоне");
+        transferOrderStep1Page = transferOrderStep2Page.clickBackButton()
+                .verifyElementsWhenProductsAdded();
 
         // Step 8
-        step("Нажмите на поле клиента");
+        step("Нажать кнопку назад на телефоне или на экране");
+        TransferExitWarningModal modal = transferOrderStep1Page.clickBackButton()
+                .verifyRequiredElements();
 
         // Step 9
-        step("Выберите параметр Удалить клиента из документа");
+        step("Нажать 'Отмена'");
+        transferOrderStep1Page = modal.clickCancelButton()
+                .verifyElementsWhenProductsAdded();
+
+        // Step 10
+        step("Перейти на экран с параметрами заявки с помощью индикаторов шагов в шапке заявки");
+        transferOrderStep1Page.clickStep2Icon();
+        transferOrderStep2Page = new TransferOrderToClientStep2Page()
+                .verifyRequiredElements();
+
+        // Step 11
+        step("Нажмите на поле Место выдачи. Выберите параметр, отличный от указанного ранее");
+        SelectPickupPointModal.Options newPickupPoint = SelectPickupPointModal.Options.OVER_SIZED_CHECKOUT;
+        transferOrderStep2Page.selectPickupPoint(newPickupPoint)
+                .shouldPickupPointIs(newPickupPoint);
+
+        // Step 12
+        step("Добавить клиента в заявку");
+        transferOrderStep2Page.clickClientField()
+                .searchCustomerByPhone(customerData.getPhone());
+        transferOrderStep2Page.shouldSelectedCustomerIs(customerData);
+
+        // Step 13
+        step("Ввести комментарий");
+        String comment = RandomStringUtils.randomAlphanumeric(10);
+        transferOrderStep2Page.enterTextInCommentField(comment)
+                .shouldCommentFieldIs(comment);
+
+        // Step 14
+        step("Нажать кнопку Оформить заявку");
+        TransferSuccessPage successPage = transferOrderStep2Page.clickSubmitButton();
+        // TODO ДОДЕЛАТЬ!
+
+    }
+
+    @Test(description = "C3268363 Удаление товара из заявки")
+    public void testRemoveProductFromTransferTask() throws Exception {
+        TransferOrderStep1Page transferOrderStep1Page;
+        if (isStartFromScratch()) {
+            TransferProductOrderData transferProductData1 = new TransferProductOrderData();
+            transferProductData1.setLmCode(products.get(0).getLmCode());
+            transferProductData1.setOrderedQuantity(1);
+
+            TransferProductOrderData transferProductData2 = new TransferProductOrderData();
+            transferProductData2.setLmCode(products.get(1).getLmCode());
+            transferProductData2.setOrderedQuantity(1);
+
+            String taskId = transferHelper.createTransferTask(
+                    Arrays.asList(transferProductData1, transferProductData2),
+                    SalesDocumentsConst.GiveAwayPoints.FOR_CLIENT_TO_SHOP_ROOM).getTaskId();
+            WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
+            TransferRequestsPage transferRequestsPage = workPage.goToTransferProductFromStock();
+            transferRequestsPage.searchForRequestAndOpenIt(products.get(1).getTitle(),
+                    SalesDocumentsConst.States.DRAFT.getUiVal());
+            transferOrderStep1Page = new TransferOrderStep1Page();
+            transferOrderStep1Page.shouldTaskNumberIs(taskId);
+        } else {
+            transferOrderStep1Page = new TransferOrderStep1Page();
+        }
+
+        List<TransferProductData> transferProductDataList = transferOrderStep1Page.getTransferProductDataList();
+
+        // Step 1
+        step("Нажмите на мини-карточку товара");
+        TransferActionWithProductCardModal actionModal = transferOrderStep1Page.clickProductCard(1)
+                .verifyRequiredElements();
+
+        // Step 2
+        step("Выберите параметр Удалить товар");
+        actionModal.clickRemoveProductMenuItem();
+        ConfirmRemovingProductModal confirmModal = new ConfirmRemovingProductModal()
+                .verifyRequiredElements();
+
+        // Step 3
+        step("Нажмите на Удалить");
+        confirmModal.clickConfirmButton();
+
+    }
+
+    @Test(description = "C3268364 Удаления последнего товара из заявки")
+    public void testRemoveLastProductFromTransferTask() throws Exception {
+        TransferOrderStep1Page transferOrderStep1Page;
+        if (isStartFromScratch()) {
+            TransferProductOrderData transferProductData1 = new TransferProductOrderData();
+            transferProductData1.setLmCode(products.get(0).getLmCode());
+            transferProductData1.setOrderedQuantity(1);
+
+            String taskId = transferHelper.createTransferTask(
+                    transferProductData1,
+                    SalesDocumentsConst.GiveAwayPoints.FOR_CLIENT_TO_SHOP_ROOM).getTaskId();
+            WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
+            TransferRequestsPage transferRequestsPage = workPage.goToTransferProductFromStock();
+            transferRequestsPage.searchForRequestAndOpenIt(products.get(0).getTitle(),
+                    SalesDocumentsConst.States.DRAFT.getUiVal());
+            transferOrderStep1Page = new TransferOrderStep1Page();
+            transferOrderStep1Page.shouldTaskNumberIs(taskId);
+        } else {
+            transferOrderStep1Page = new TransferOrderStep1Page();
+        }
+
+        // Step 1
+        step("Нажмите на мини-карточку товара");
+        TransferActionWithProductCardModal actionModal = transferOrderStep1Page.clickProductCard(1);
+
+        // Step 2
+        step("Выберите параметр Удалить товар");
+        actionModal.clickRemoveProductMenuItem();
+        ConfirmRemovingProductModal confirmModal = new ConfirmRemovingProductModal()
+                .verifyRequiredElements();
+
+        // Step 3
+        step("Нажмите на Удалить");
+        confirmModal.clickConfirmButton();
+
+    }
+
+    @Test(description = "C3268365 Изменение количества товара")
+    public void testChangeProductQuantityInTransferTask() throws Exception {
+        TransferOrderStep1Page transferOrderStep1Page;
+        if (isStartFromScratch()) {
+            TransferProductOrderData transferProductData1 = new TransferProductOrderData();
+            transferProductData1.setLmCode(products.get(0).getLmCode());
+            transferProductData1.setOrderedQuantity(1);
+
+            String taskId = transferHelper.createTransferTask(
+                    transferProductData1,
+                    SalesDocumentsConst.GiveAwayPoints.FOR_CLIENT_TO_SHOP_ROOM).getTaskId();
+            WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
+            TransferRequestsPage transferRequestsPage = workPage.goToTransferProductFromStock();
+            transferRequestsPage.searchForRequestAndOpenIt(products.get(0).getTitle(),
+                    SalesDocumentsConst.States.DRAFT.getUiVal());
+            transferOrderStep1Page = new TransferOrderStep1Page();
+            transferOrderStep1Page.shouldTaskNumberIs(taskId);
+        } else {
+            transferOrderStep1Page = new TransferOrderStep1Page();
+        }
+
+        // Step 1
+        step("Нажмите на мини-карточку товара");
+        TransferActionWithProductCardModal actionModal = transferOrderStep1Page.clickProductCard(1);
+
+        // Step 2
+        step("Нажмите на Изменить количество");
+        EditProduct35Page<TransferOrderStep1Page> editProduct35Page = actionModal.clickChangeQuantityMenuItem()
+                .verifyRequiredElements();
+
+        // Step 3
+        step("Измените количество товара плашкой и нажмите Сохранить");
+        transferOrderStep1Page = editProduct35Page.enterQuantityOfProduct(2, true)
+                .clickSubmitButton();
+
+    }
+
+    @Test(description = "C3268366 Изменение количества товара в поиске товаров")
+    public void testChangeProductQuantityWhenSearchProductsOnStock() throws Exception {
+        // Pre-condition
+        step("Precondition: Авторизуемся и заходим на страницу поиска товаров на складе");
+        WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
+        TransferOrderStep1Page transferOrderStep1Page = workPage.clickWithdrawalFromRMPlusIcon();
+        TransferSearchPage searchProductPage = transferOrderStep1Page.clickAddProductFromStockButton();
+
+        // Step 1 - 3
+        step("Нажмите на + в правом нижнем углу мини-карточки выбранного товара и введите новое кол-во товара");
+        searchProductPage.editProductQuantityForFirstProduct(5);
+
+        // Step 4-5
+        step("Повторите предыдущие шаги, но введите другое кол-во");
+        searchProductPage.editProductQuantityForFirstProduct(10);
+
+    }
+
+    @Test(description = "C3268376 Удаление заявки в статусе Черновик")
+    public void testRemoveDraftTransferTask() throws Exception {
+        // Pre-condition
+        TransferOrderStep1Page transferOrderStep1Page;
+        if (isStartFromScratch()) {
+            TransferProductOrderData transferProductData1 = new TransferProductOrderData();
+            transferProductData1.setLmCode(products.get(0).getLmCode());
+            transferProductData1.setOrderedQuantity(1);
+
+            String taskId = transferHelper.createTransferTask(
+                    transferProductData1,
+                    SalesDocumentsConst.GiveAwayPoints.FOR_CLIENT_TO_SHOP_ROOM).getTaskId();
+            WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
+            TransferRequestsPage transferRequestsPage = workPage.goToTransferProductFromStock();
+            transferRequestsPage.searchForRequestAndOpenIt(products.get(0).getTitle(),
+                    SalesDocumentsConst.States.DRAFT.getUiVal());
+            transferOrderStep1Page = new TransferOrderStep1Page();
+            transferOrderStep1Page.shouldTaskNumberIs(taskId);
+        } else {
+            transferOrderStep1Page = new TransferOrderStep1Page();
+        }
+
+        // Step 1 - 2
+        step("Нажмите на кнопку удаления заявки в правом верхнем углу экрана и подтвердите удаление");
+        TransferRequestsPage transferRequestsPage = transferOrderStep1Page.removeTransferTask();
 
         String s = "";
+
     }
 
 

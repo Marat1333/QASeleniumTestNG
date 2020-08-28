@@ -12,6 +12,9 @@ import io.qameta.allure.Step;
 
 public class TransferSearchPage extends CommonMagMobilePage {
 
+    @AppFindBy(accessibilityId = "TransferProductsSearchMainScreen", metaName = "Область 'Поиск товаров на складе'")
+    Element transferProductSearchArea;
+
     private AndroidScrollViewV2<TransferSearchProductCardWidget, TransferProductData>
             productCardsScrollView = new AndroidScrollViewV2<>(driver,
             AndroidScrollView.TYPICAL_LOCATOR,
@@ -21,6 +24,11 @@ public class TransferSearchPage extends CommonMagMobilePage {
     @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.TextView[@text='Товары на отзыв']]",
             metaName = "Панелька 'Товары на отзыв'")
     Element transferProductPanel;
+
+    @Override
+    protected void waitForPageIsLoaded() {
+        anAssert.isElementVisible(transferProductSearchArea, timeout);
+    }
 
     // Grab data
 

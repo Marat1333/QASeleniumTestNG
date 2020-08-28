@@ -1,6 +1,8 @@
 package com.leroy.magmobile.ui.pages.work.transfer;
 
+import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
+import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
 import com.leroy.magmobile.ui.pages.work.transfer.data.TransferRequestData;
@@ -18,6 +20,15 @@ public class TransferRequestsPage extends CommonMagMobilePage {
             driver, AndroidScrollView.TYPICAL_LOCATOR,
             "//android.view.ViewGroup[android.widget.TextView[@index='4']]",
             TransferRequestWidget.class);
+
+    @AppFindBy(accessibilityId = "ScreenTitle", metaName = "Заголовок экрана")
+    Element screenTitle;
+
+    @Override
+    protected void waitForPageIsLoaded() {
+        screenTitle.waitForVisibility();
+        waitUntilProgressBarIsInvisible();
+    }
 
     // Actions
 

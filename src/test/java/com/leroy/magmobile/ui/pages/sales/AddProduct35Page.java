@@ -67,8 +67,8 @@ public class AddProduct35Page<T> extends CommonMagMobilePage {
     @AppFindBy(xpath = "//android.widget.TextView[@text='Поштучно']/following-sibling::android.widget.TextView[@content-desc='presenceValue']")
     private Element byPeaceQuantity;
 
-    @AppFindBy(xpath = "//android.widget.TextView[@text='На моно-палете']/following-sibling::android.widget.TextView[@content-desc='presenceValue']"
-            , metaName = "Количество моно палет")
+    @AppFindBy(xpath = "//android.widget.TextView[@text='На моно-палете']/following-sibling::android.widget.TextView[1][not(@content-desc='presenceValue')]",
+            metaName = "Количество моно палет")
     private Element monoPalletQuantity;
 
     @AppFindBy(xpath = "//android.widget.TextView[@text='На моно-палете']/following-sibling::android.widget.TextView[@content-desc='presenceValue']",
@@ -97,6 +97,7 @@ public class AddProduct35Page<T> extends CommonMagMobilePage {
         ADD_TO_BASKET("ДОБАВИТЬ В КОРЗИНУ"),
         ADD_TO_ESTIMATE("ДОБАВИТЬ В СМЕТУ"),
         ADD_TO_ORDER("ДОБАВИТЬ В ЗАКАЗ"),
+        ADD_TO_TASK("ДОБАВИТЬ В ЗАЯВКУ"),
         SAVE("СОХРАНИТЬ");
 
         String value;
@@ -148,19 +149,25 @@ public class AddProduct35Page<T> extends CommonMagMobilePage {
 
         // Карточка товара
         ProductOrderCardAppData productData = new ProductOrderCardAppData();
-        //productData.setAvailableTodayQuantity(
-        //        ParserUtil.strToInt(shoppingRoomAvailableQuantity.getText(ps)));
         productData.setPrice(ParserUtil.strToDouble(price.getText(ps)));
         productData.setTitle(title.getText(ps));
         productData.setLmCode(ParserUtil.strWithOnlyDigits(lmCode.getText(ps)));
         productData.setBarCode(ParserUtil.strWithOnlyDigits(barCode.getText(ps)));
         productData.setPriceUnit(shoppingRoomAvailablePriceUnit.getText(ps));
 
+        // Запасы
+        productData.setAvailableTodayQuantity(getAvailableQuantityInShoppingRoom() +
+                getAvailableQuantityInStock());
+        productData.setTotalStock(ParserUtil.strToInt(inStockAvailableQuantity.getText()));
+        productData.setPieceQuantityInStock(ParserUtil.strToInt(byPeaceQuantity.getText()));
+        int oneMonoPalletQuantity = ParserUtil.strToInt(byOneMonoPalletQuantity.getText());
+        productData.setMonoPalletQuantityInStock(oneMonoPalletQuantity == 0 ? 0 :
+                oneMonoPalletQuantity * ParserUtil.strToInt(monoPalletQuantity.getText()));
+        productData.setMixPalletQuantityInStock(ParserUtil.strToInt(byMixPalletQuantity.getText()));
+
         // Детали выбора товара (Строка заказа)
         productData.setSelectedQuantity(ParserUtil.strToDouble(editQuantityFld.getText(ps)));
         productData.setTotalPrice(ParserUtil.strToDouble(totalPrice.getText(ps)));
-        productData.setAvailableTodayQuantity(getAvailableQuantityInShoppingRoom() +
-                getAvailableQuantityInStock());
         return productData;
     }
 

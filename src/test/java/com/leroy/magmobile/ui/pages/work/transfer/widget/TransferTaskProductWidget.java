@@ -25,25 +25,48 @@ public class TransferTaskProductWidget extends CardWidget<TransferProductData> {
 
     // Заказано
     @AppFindBy(xpath = ".//android.widget.TextView[@content-desc='presenceValue'][last()]")
-    private Element selectedQuantity;
+    private Element orderedQuantity;
 
     // Рядом с количеством величина, например "шт."
     @AppFindBy(xpath = ".//android.widget.TextView[@content-desc='priceUnit']")
     private Element unit;
 
+    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc='priceUnit']/following-sibling::android.widget.TextView[1]",
+            metaName = "Цена за единицу товара")
+    private Element price;
+
+    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc='priceUnit']/following-sibling::android.widget.TextView[2]",
+            metaName = "Стоимость товара")
+    private Element totalPrice;
+
+    // Запасы
+
+    @AppFindBy(xpath = "//android.view.ViewGroup[ android.widget.TextView[@text='—']]/android.widget.TextView[1]")
+    Element pieceQuantity;
+
+    @AppFindBy(xpath = "//android.view.ViewGroup[ android.widget.TextView[@text='—']]/android.widget.TextView[2]")
+    Element monoPalletQuantity;
+
+    @AppFindBy(xpath = "//android.view.ViewGroup[ android.widget.TextView[@text='—']]/android.widget.TextView[3]")
+    Element mixPalletQuantity;
+
     @Override
     public TransferProductData collectDataFromPage(String pageSource) {
         TransferProductData transferProductData = new TransferProductData();
-        transferProductData.setLmCode(lmCode.getText(pageSource));
-        transferProductData.setBarCode(barCode.getText(pageSource));
+        transferProductData.setLmCode(ParserUtil.strWithOnlyDigits(lmCode.getText(pageSource)));
+        transferProductData.setBarCode(ParserUtil.strWithOnlyDigits(barCode.getText(pageSource)));
         transferProductData.setTitle(title.getText(pageSource));
-        //transferProductData.setAvailableStock(ParserUtil.strToInt(availableStock.getText(pageSource)));
-        transferProductData.setSelectedQuantity(ParserUtil.strToInt(selectedQuantity.getText(pageSource)));
+        transferProductData.setOrderedQuantity(ParserUtil.strToInt(orderedQuantity.getText(pageSource)));
+        transferProductData.setPrice(ParserUtil.strToDouble(price.getTextIfPresent()));
+        transferProductData.setTotalPrice(ParserUtil.strToDouble(totalPrice.getTextIfPresent()));
+        transferProductData.setSelectedPieceQuantity(ParserUtil.strToInt(pieceQuantity.getText()));
+        transferProductData.setSelectedMonoPalletQuantity(ParserUtil.strToInt(monoPalletQuantity.getText()));
+        transferProductData.setSelectedMixPalletQuantity(ParserUtil.strToInt(mixPalletQuantity.getText()));
         return transferProductData;
     }
 
     @Override
     public boolean isFullyVisible(String pageSource) {
-        return lmCode.isVisible(pageSource) && selectedQuantity.isVisible(pageSource);
+        return lmCode.isVisible(pageSource) && orderedQuantity.isVisible(pageSource);
     }
 }
