@@ -47,16 +47,15 @@ public class SessionListPage extends CommonMagMobilePage {
     }
 
     @Step("Перейти в сессию с номером {sessionId}")
-    public ActiveSessionPage goToSession(String sessionId) throws Exception{
+    public void goToSession(String sessionId) throws Exception{
         Element target = E(String.format("contains(%s)", sessionId));
         if (!target.isVisible()){
             mainScrollView.scrollDownToElement(target);
         }
         //из-за кнопки "сканировать перебои"
-        mainScrollView.setSwipeDeadZonePercentage(80);
+        mainScrollView.setSwipeDeadZonePercentage(50);
         mainScrollView.scrollDown();
         target.click();
-        return new ActiveSessionPage();
     }
 
     @Step("Проверить, что в списке активных сессия отсутствует сессия")
