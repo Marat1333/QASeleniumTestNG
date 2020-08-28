@@ -12,7 +12,7 @@ import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class PickingTaskTest extends BaseProjectApiTest {
+public class PickingActionTest extends BaseProjectApiTest {
 
     private PickingTaskClient pickingTaskClient() {
         return apiClientProvider.getPickingTaskClient();

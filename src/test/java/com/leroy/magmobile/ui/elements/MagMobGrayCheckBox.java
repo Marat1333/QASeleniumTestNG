@@ -6,7 +6,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.Color;
 
 public class MagMobGrayCheckBox extends Checkbox {
-    private static final Color CHECKED_GRAY_COLOR = new Color(166, 173, 180, 255);
+    private static final Color CHECKED_GRAY_COLOR = new Color(153, 153, 153, 255);
     private static final Color UNCHECKED_WHITE_COLOR = new Color(255, 255, 255, 255);
 
     public MagMobGrayCheckBox(WebDriver driver, CustomLocator locator) {

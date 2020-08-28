@@ -16,6 +16,9 @@ public class ActionsModalPage extends CommonMagMobilePage {
     @AppFindBy(xpath = "//*[contains(@text,'Задачи по перебою')]/preceding-sibling::*")
     Button closeModalBtn;
 
+    @AppFindBy(text = "Задачи по перебою")
+    Element header;
+
     @AppFindBy(xpath = "//*[@text='ВОЗМОЖНЫЕ ЗАДАЧИ']/preceding-sibling::android.widget.TextView[not(contains(@text,'НУЖНО СДЕЛАТЬ')) " +
             "and not(contains(@text,'Задачи по перебою'))]")
     ElementList<Element> toDoTasksList;
@@ -116,6 +119,12 @@ public class ActionsModalPage extends CommonMagMobilePage {
             anAssert.isTrue(!toDoTasksNames.contains(task), "список задач \"Нужно сделать\" содержит задачу " + task);
             anAssert.isTrue(possibleTasksNames.contains(task), "список задач \"Возможные задачи\" не содержит задачу " + task);
         }
+        return this;
+    }
+
+    public ActionsModalPage verifyRequiredElements(){
+        softAssert.areElementsVisible(getPageSource(), closeModalBtn, header);
+        softAssert.verifyAll();
         return this;
     }
 }

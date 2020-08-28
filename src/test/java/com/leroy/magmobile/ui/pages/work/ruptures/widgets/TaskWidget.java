@@ -12,10 +12,10 @@ public class TaskWidget extends CardWidget<TaskData> {
         super(driver, locator);
     }
 
-    @AppFindBy(xpath = "./*/android.widget.TextView[1]")
+    @AppFindBy(xpath = "./android.widget.TextView[1]")
     Element taskNameLbl;
 
-    @AppFindBy(xpath = "./*/*/android.widget.TextView")
+    @AppFindBy(xpath = "./*/android.widget.TextView")
     Element finishedAllTasksRatioLbl;
 
     @Override

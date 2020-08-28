@@ -51,6 +51,12 @@ public class RuptureCardPage extends CommonMagMobilePage {
     @AppFindBy(xpath = "//android.widget.TextView[@text='Торговый зал']/following-sibling::*[@content-desc='priceUnit']")
     Element salesHallProductUnitLbl;
 
+    @AppFindBy(xpath = "//android.widget.TextView[@text='На полке']/following-sibling::*[@content-desc='presenceValue']")
+    Element onShelfProductQuantityLbl;
+
+    @AppFindBy(xpath = "//android.widget.TextView[@text='На полке']/following-sibling::*[@content-desc='priceUnit']")
+    Element onShelfProductUnitLbl;
+
     @AppFindBy(xpath = "//android.widget.TextView[@text='Склад RM']/following-sibling::*[@content-desc='presenceValue']")
     Element rmWarehouseProductQuantityLbl;
 
@@ -104,7 +110,7 @@ public class RuptureCardPage extends CommonMagMobilePage {
     protected void waitForPageIsLoaded() {
         //долгий запрос на бэк
         priceLbl.waitForVisibility(long_timeout);
-        zeroProductNeedToAddBtn.waitForVisibility();
+        lmCodeLbl.waitForVisibility();
     }
 
     public List<String> getTasksList() {
@@ -298,6 +304,14 @@ public class RuptureCardPage extends CommonMagMobilePage {
                 oneProductNeedToAddBtn, twoProductsNeedToAddBtn, threeOrMoreProductsNeedToAddBtn,
                 rmWarehouseProductQuantityLbl, supplyDateLbl, acceptBtn, ruptureCallActionModalBtn, commentField);
         mainScrollView.scrollToBeginning();
+        softAssert.verifyAll();
+        return this;
+    }
+
+    public RuptureCardPage verifyRequiredElementsInFinishedSession() {
+        String ps = getPageSource();
+        softAssert.areElementsNotVisible(ps, oneProductNeedToAddBtn, twoProductsNeedToAddBtn, threeOrMoreProductsNeedToAddBtn);
+        softAssert.areElementsVisible(ps, onShelfProductQuantityLbl, onShelfProductUnitLbl);
         softAssert.verifyAll();
         return this;
     }
