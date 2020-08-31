@@ -28,6 +28,7 @@ public class TransferSearchPage extends CommonMagMobilePage {
     @Override
     protected void waitForPageIsLoaded() {
         anAssert.isElementVisible(transferProductSearchArea, timeout);
+        waitUntilProgressBarIsInvisible();
     }
 
     // Grab data

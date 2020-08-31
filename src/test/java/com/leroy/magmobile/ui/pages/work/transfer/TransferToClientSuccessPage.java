@@ -3,7 +3,7 @@ package com.leroy.magmobile.ui.pages.work.transfer;
 import com.leroy.magmobile.ui.pages.common.SuccessPage;
 import io.qameta.allure.Step;
 
-public class TransferSuccessPage extends SuccessPage {
+public class TransferToClientSuccessPage extends SuccessPage {
 
     @Override
     protected String getExpectedMainBodyMessage() {

@@ -7,14 +7,20 @@ import com.leroy.magmobile.ui.models.customer.MagCustomerData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.common.modal.ConfirmRemovingProductModal;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
+import com.leroy.utils.DateTimeUtil;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
+
+import java.time.LocalDateTime;
 
 public abstract class TransferOrderPage extends CommonMagMobilePage {
 
     @AppFindBy(accessibilityId = "BackCloseMaster", metaName = "Кнопка назад")
     protected Element backBtn;
+
+    @AppFindBy(xpath = "//android.widget.TextView[starts-with(@text, 'Заявка №')]/preceding-sibling::android.widget.TextView[1]")
+    private Element creationDateTime;
 
     @AppFindBy(xpath = "//android.widget.TextView[starts-with(@text, 'Заявка №')]")
     private Element orderNumberObj;
@@ -45,6 +51,10 @@ public abstract class TransferOrderPage extends CommonMagMobilePage {
     // Grab Data
     public String getOrderNumber() {
         return ParserUtil.strWithOnlyDigits(orderNumberObj.getText());
+    }
+
+    public LocalDateTime getCreationDateTime() {
+        return DateTimeUtil.strToLocalDateTime(creationDateTime.getText(), DateTimeUtil.DD_MMM_HH_MM);
     }
 
     // Action

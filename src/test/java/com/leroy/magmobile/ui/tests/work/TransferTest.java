@@ -34,6 +34,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -154,7 +155,7 @@ public class TransferTest extends AppBaseSteps {
 
         // Step 14
         step("Нажмите на Оформить продажу");
-        TransferSuccessPage successPage = transferOrderStep2Page.clickSubmitButton();
+        TransferToClientSuccessPage successPage = transferOrderStep2Page.clickSubmitButton();
         successPage.verifyRequiredElements();
 
         // Step 15
@@ -214,14 +215,14 @@ public class TransferTest extends AppBaseSteps {
 
         // Step 9
         step("Изменить ожидаемое время доставки и подтвердить его");
-        LocalTime timeForSelect = LocalTime.now().plusHours(1).plusMinutes(5);
-        transferShopRoomStep2Page.editDeliveryTime(timeForSelect)
+        LocalTime timeForSelect = LocalTime.now().plusHours(1).plusMinutes(5).truncatedTo(ChronoUnit.MINUTES);
+        transferShopRoomStep2Page.editDeliveryTime(timeForSelect, true)
                 .shouldTimeFieldIs(timeForSelect);
 
         // Step 10
         step("Нажмите на кнопку Отправить заявку на отзыв");
-        TransferSuccessPage successPage = transferShopRoomStep2Page.clickSubmitBtn();
-        // TODO доделать
+        TransferToShopRoomSuccessPage successPage = transferShopRoomStep2Page.clickSubmitBtn();
+        successPage.verifyRequiredElements();
 
         // Step 11
         step("Нажмите на кнопку Перейти в список заявок");
@@ -229,9 +230,13 @@ public class TransferTest extends AppBaseSteps {
 
         // Step 12
         step("Открыть заявку и проверить заполненные поля и товары");
-        transferRequestsPage.searchForRequestAndOpenIt(transferProductData.getTitle(), "Отправлен");
-
-
+        transferRequestsPage.searchForRequestAndOpenIt(transferProductData.getTitle(), SEND_STATUS);
+        TransferConfirmedTaskToShopRoomPage transferConfirmedTaskToShopRoomPage = new TransferConfirmedTaskToShopRoomPage();
+        DetailedTransferTaskData detailedTransferTaskData = new DetailedTransferTaskData();
+        detailedTransferTaskData.setDeliveryDate(testDate);
+        detailedTransferTaskData.setDeliveryTime(timeForSelect);
+        detailedTransferTaskData.setProducts(Collections.singletonList(transferProductData));
+        transferConfirmedTaskToShopRoomPage.shouldTransferTaskDataIs(detailedTransferTaskData);
     }
 
     @Test(description = "C3268360 Создание отзыва с RM из карточки товара (поиск товара по штрихкоду)", enabled = false)
@@ -330,7 +335,7 @@ public class TransferTest extends AppBaseSteps {
 
         // Step 14
         step("Нажать кнопку Оформить заявку");
-        TransferSuccessPage successPage = transferOrderStep2Page.clickSubmitButton();
+        TransferToClientSuccessPage successPage = transferOrderStep2Page.clickSubmitButton();
         // TODO ДОДЕЛАТЬ!
 
     }

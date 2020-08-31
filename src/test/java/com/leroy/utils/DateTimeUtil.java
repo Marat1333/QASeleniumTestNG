@@ -38,6 +38,12 @@ public class DateTimeUtil {
         }
     }
 
+    /**
+     * Преобразовать текст в LocalDate
+     * @param dateString - строка с датой
+     * @param dateFormat - ожидаемый формат
+     * @return дату как LocalDate
+     */
     public static LocalDate strToLocalDate(String dateString, String dateFormat) {
         if (dateString == null)
             return null;
@@ -54,6 +60,17 @@ public class DateTimeUtil {
             Log.error("strToLocalDate() method: " + err.getMessage());
             return null;
         }
+    }
+
+    /**
+     * Преобразовать строку в LocalTime
+     * @param timeString - строка со временем
+     * @return LocalTime
+     */
+    public static LocalTime strToLocalTime(String timeString) {
+        if (timeString == null)
+            return null;
+        return LocalTime.parse(timeString);
     }
 
     public static String localDateTimeToStr(LocalDateTime date, String dateFormat) {

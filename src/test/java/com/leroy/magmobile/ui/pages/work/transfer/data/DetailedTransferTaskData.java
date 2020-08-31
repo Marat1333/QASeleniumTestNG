@@ -7,6 +7,7 @@ import com.leroy.magmobile.ui.pages.work.transfer.modal.SelectPickupPointModal;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +17,7 @@ public class DetailedTransferTaskData {
     private SelectPickupPointModal.Options pickupPlace;
     private MagCustomerData client;
     private LocalDate deliveryDate;
+    private LocalTime deliveryTime;
     private List<TransferProductData> products;
 
     public DetailedTransferTaskData clone() {
@@ -23,6 +25,7 @@ public class DetailedTransferTaskData {
         detailedTransferTaskData.setPickupPlace(pickupPlace);
         detailedTransferTaskData.setClient(client);
         detailedTransferTaskData.setDeliveryDate(deliveryDate);
+        detailedTransferTaskData.setDeliveryTime(deliveryTime);
         List<TransferProductData> cloneProducts = new ArrayList<>();
         for (TransferProductData transferProductData : products) {
             cloneProducts.add(transferProductData.clone());
@@ -43,6 +46,10 @@ public class DetailedTransferTaskData {
         if (expectedData.getDeliveryDate() != null) {
             softAssert.isEquals(deliveryDate, expectedData.getDeliveryDate(),
                     "Неверное дата поставки товара");
+        }
+        if (expectedData.getDeliveryTime() != null) {
+            softAssert.isEquals(deliveryTime, expectedData.getDeliveryTime(),
+                    "Неверное ожидаемое время поставки товара");
         }
         if (expectedData.getProducts()!=null) {
             softAssert.isEquals(expectedData.getProducts().size(), products.size(),

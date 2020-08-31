@@ -59,12 +59,17 @@ public class TransferShopRoomStep2Page extends TransferOrderPage {
     }
 
     @Step("Изменить ожидаемое время доставки на {time} и подтвердить его")
-    public TransferShopRoomStep2Page editDeliveryTime(LocalTime time) throws Exception {
+    public TransferShopRoomStep2Page editDeliveryTime(LocalTime time, boolean useDocCreationTimeForSelectTime) throws Exception {
         String timeFromPage = deliveryTimeLbl.getTextIfPresent();
-        LocalTime currentTime = timeFromPage == null? LocalTime.now() :
-                LocalTime.parse(deliveryTimeLbl.getText());
-        if (ZonedDateTime.now().getOffset().equals(ZoneOffset.of("+03:00")))
-            currentTime = currentTime.minusHours(3);
+        LocalTime currentTime;
+        if (useDocCreationTimeForSelectTime)
+            currentTime = getCreationDateTime().toLocalTime();
+        else {
+            currentTime = timeFromPage == null ? LocalTime.now() :
+                    LocalTime.parse(deliveryTimeLbl.getText());
+            if (ZonedDateTime.now().getOffset().equals(ZoneOffset.of("+03:00")))
+                currentTime = currentTime.minusHours(3);
+        }
         deliveryTimeArea.click();
         new TimePickerWidget(driver).selectTime(time, currentTime);
         deliveryTimeLbl.waitForVisibility();
@@ -78,9 +83,9 @@ public class TransferShopRoomStep2Page extends TransferOrderPage {
     }
 
     @Step("Нажать кнопку ОТПРАВИТЬ ЗАЯВКУ")
-    public TransferSuccessPage clickSubmitBtn() {
+    public TransferToShopRoomSuccessPage clickSubmitBtn() {
         submitBtn.click();
-        return new TransferSuccessPage();
+        return new TransferToShopRoomSuccessPage();
     }
 
     /* ------------------------- Verifications -------------------------- */

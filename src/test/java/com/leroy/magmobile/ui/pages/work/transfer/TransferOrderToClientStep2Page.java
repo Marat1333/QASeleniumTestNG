@@ -1,18 +1,14 @@
 package com.leroy.magmobile.ui.pages.work.transfer;
 
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.models.customer.MagCustomerData;
-import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
 import com.leroy.magmobile.ui.pages.customers.SearchCustomerPage;
 import com.leroy.magmobile.ui.pages.work.transfer.modal.SelectPickupPointModal;
-import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
-import org.openqa.selenium.WebDriver;
 
 /**
  * Шаг 2 оформления заявки на отзыв товара клиенту в торговый зал
@@ -76,9 +72,9 @@ public class TransferOrderToClientStep2Page extends TransferOrderPage {
     }
 
     @Step("Нажать кнопку 'Оформить продажу'")
-    public TransferSuccessPage clickSubmitButton() {
+    public TransferToClientSuccessPage clickSubmitButton() {
         submitButton.click();
-        return new TransferSuccessPage();
+        return new TransferToClientSuccessPage();
     }
 
     // Verifications

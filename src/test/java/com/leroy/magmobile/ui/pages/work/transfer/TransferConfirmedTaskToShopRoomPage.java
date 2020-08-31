@@ -6,28 +6,22 @@ import com.leroy.core.web_elements.android.AndroidScrollViewV2;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.magmobile.ui.pages.work.transfer.data.DetailedTransferTaskData;
 import com.leroy.magmobile.ui.pages.work.transfer.data.TransferProductData;
-import com.leroy.magmobile.ui.pages.work.transfer.modal.SelectPickupPointModal;
 import com.leroy.magmobile.ui.pages.work.transfer.widget.TransferTaskProductWidget;
 import com.leroy.utils.DateTimeUtil;
 import io.qameta.allure.Step;
 
 /**
- * Экран с подтвержденной (статус отправлен) заявкой на отзыв товара для клиента в торговый зал
+ * Экран с подтвержденной (статус отправлен) заявкой на отзыв товара для пополнения торгового зала
  */
-public class TransferConfirmedTaskToClientPage extends TransferOrderPage {
-
-
-    @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.TextView[@text='Место выдачи']]/android.widget.EditText",
-            metaName = "Место выдачи")
-    EditBox pickupPlaceFld;
-
-    @AppFindBy(xpath = "(//android.view.ViewGroup[descendant::android.widget.TextView[@text='Место выдачи']]/following-sibling::android.view.ViewGroup)[1]",
-            metaName = "Карточка выбранного клиента")
-    TransferOrderToClientStep2Page.SelectedClientWidget selectedClientWidget;
+public class TransferConfirmedTaskToShopRoomPage extends TransferOrderPage {
 
     @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.TextView[@text='Дата поставки товара']]/android.widget.EditText",
             metaName = "Дата поставки товара")
     EditBox deliveryDateFld;
+
+    @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.TextView[@text='Ожидаемое время поставки товара']]/android.widget.EditText",
+            metaName = "Ожидаемое время поставки товара")
+    EditBox deliveryTimeFld;
 
     AndroidScrollViewV2<TransferTaskProductWidget, TransferProductData> productScrollView =
             new AndroidScrollViewV2<>(driver,
@@ -37,22 +31,12 @@ public class TransferConfirmedTaskToClientPage extends TransferOrderPage {
 
     // Grab data
 
-    private SelectPickupPointModal.Options getPickupPlace(String ps) {
-        String place = pickupPlaceFld.getText(ps);
-        if (place.toLowerCase().contains("клиенту в торговый зал"))
-            return SelectPickupPointModal.Options.CLIENT_IN_SHOP_ROOM;
-        if (place.toLowerCase().contains("крупногабаритная касса"))
-            return SelectPickupPointModal.Options.OVER_SIZED_CHECKOUT;
-        throw new RuntimeException("Получено неизвестное место выдачи:" + place);
-    }
-
     @Step("Получить информацию о деталях подтвержденной заявки на отзыв")
     public DetailedTransferTaskData getTransferTaskData() {
         String ps = getPageSource();
         DetailedTransferTaskData detailedTransferTaskData = new DetailedTransferTaskData();
-        detailedTransferTaskData.setPickupPlace(getPickupPlace(ps));
-        detailedTransferTaskData.setClient(selectedClientWidget.collectDataFromPage(ps));
         detailedTransferTaskData.setDeliveryDate(DateTimeUtil.strToLocalDate(deliveryDateFld.getText(ps), ""));
+        detailedTransferTaskData.setDeliveryTime(DateTimeUtil.strToLocalTime(deliveryTimeFld.getText(ps)));
         detailedTransferTaskData.setProducts(productScrollView.getFullDataList());
         return detailedTransferTaskData;
     }
@@ -60,16 +44,12 @@ public class TransferConfirmedTaskToClientPage extends TransferOrderPage {
     // Verifications
 
     @Step("Проверить, что данные заявки на отзыв соответствуют ожидаемым значениям")
-    public TransferConfirmedTaskToClientPage shouldTransferTaskDataIs(DetailedTransferTaskData transferTaskData) {
+    public TransferConfirmedTaskToShopRoomPage shouldTransferTaskDataIs(DetailedTransferTaskData transferTaskData) {
         DetailedTransferTaskData expectedTransferTaskData = transferTaskData.clone();
-        if (expectedTransferTaskData.getClient() != null) {
-            expectedTransferTaskData.getClient().setEmail(null);
-        }
         expectedTransferTaskData.getProducts().forEach(p -> p.setTotalStock(null));
         DetailedTransferTaskData actualData = getTransferTaskData();
         actualData.assertEqualsNotNullExpectedFields(expectedTransferTaskData);
         return this;
     }
-
 
 }
