@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class TransferRequestData {
+public class ShortTransferTaskData {
     private String title;
     private String productTitle1;
     private String productTitle2;

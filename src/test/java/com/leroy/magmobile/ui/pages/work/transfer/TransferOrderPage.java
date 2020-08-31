@@ -1,11 +1,15 @@
 package com.leroy.magmobile.ui.pages.work.transfer;
 
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.models.customer.MagCustomerData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.common.modal.ConfirmRemovingProductModal;
+import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
+import org.openqa.selenium.WebDriver;
 
 public abstract class TransferOrderPage extends CommonMagMobilePage {
 
@@ -66,6 +70,38 @@ public abstract class TransferOrderPage extends CommonMagMobilePage {
         if (expectedNumber.length() > 7)
             expectedNumber = expectedNumber.substring(expectedNumber.length() - 7);
         anAssert.isEquals(getOrderNumber(), expectedNumber, "Ожидался другой номер заявки");
+    }
+
+    // ---------- Widgets -------------------
+
+    protected static class SelectedClientWidget extends CardWidget<MagCustomerData> {
+
+        public SelectedClientWidget(WebDriver driver, CustomLocator locator) {
+            super(driver, locator);
+        }
+
+        @AppFindBy(xpath = ".//android.widget.TextView[1]", metaName = "Имя клиента")
+        Element name;
+
+        @AppFindBy(xpath = ".//android.widget.TextView[contains(@text, '+')]", metaName = "Номер телефона клиента")
+        Element phone;
+
+        @AppFindBy(xpath = ".//android.widget.TextView[contains(@text, '@')]", metaName = "Email клиента")
+        Element email;
+
+        @Override
+        public MagCustomerData collectDataFromPage(String pageSource) {
+            MagCustomerData customerData = new MagCustomerData();
+            customerData.setName(name.getText());
+            customerData.setPhone(ParserUtil.standardPhoneFmt(phone.getTextIfPresent()));
+            customerData.setEmail(email.getTextIfPresent());
+            return customerData;
+        }
+
+        @Override
+        public boolean isFullyVisible(String pageSource) {
+            return false;
+        }
     }
 
 }

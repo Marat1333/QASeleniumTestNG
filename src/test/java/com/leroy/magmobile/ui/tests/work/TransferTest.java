@@ -6,9 +6,7 @@ import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.TransferClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
-import com.leroy.magmobile.api.data.sales.transfer.TransferProductOrderData;
-import com.leroy.magmobile.api.data.sales.transfer.TransferSearchProductData;
-import com.leroy.magmobile.api.data.sales.transfer.TransferSearchProductDataList;
+import com.leroy.magmobile.api.data.sales.transfer.*;
 import com.leroy.magmobile.api.helpers.TransferHelper;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magmobile.ui.AppBaseSteps;
@@ -22,12 +20,14 @@ import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SaleTypeModalPage;
 import com.leroy.magmobile.ui.pages.work.WorkPage;
 import com.leroy.magmobile.ui.pages.work.transfer.*;
+import com.leroy.magmobile.ui.pages.work.transfer.data.DetailedTransferTaskData;
 import com.leroy.magmobile.ui.pages.work.transfer.data.TransferProductData;
 import com.leroy.magmobile.ui.pages.work.transfer.modal.SelectPickupPointModal;
 import com.leroy.magmobile.ui.pages.work.transfer.modal.TransferActionWithProductCardModal;
 import com.leroy.magmobile.ui.pages.work.transfer.modal.TransferExitWarningModal;
 import lombok.Data;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -36,6 +36,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static com.leroy.core.matchers.Matchers.successful;
@@ -54,6 +55,8 @@ public class TransferTest extends AppBaseSteps {
     TransferHelper transferHelper;
 
     List<CustomTransferProduct> products = new ArrayList<>();
+
+    private final String SEND_STATUS = "Отправлен";
 
     @BeforeClass
     private void findProducts() {
@@ -76,6 +79,20 @@ public class TransferTest extends AppBaseSteps {
             products.add(customProduct);
             if (i > 1)
                 break;
+        }
+    }
+
+    @AfterClass
+    public void cancelTransferTasks() {
+        TransferClient transferClient = apiClientProvider.getTransferClient();
+        TransferSearchFilters filters = new TransferSearchFilters();
+        filters.setStatus(SalesDocumentsConst.States.CONFIRMED.getApiVal());
+        filters.setCreatedBy(getUserSessionData().getUserLdap());
+        Response<TransferDataList> resp = transferClient.searchForTasks(filters);
+        assertThat("Cancel transfer task failed: couldn't find tasks", resp, successful());
+        List<TransferSalesDocData> transferDataList = resp.asJson().getItems();
+        for (TransferSalesDocData transferSalesDocData : transferDataList) {
+            transferHelper.cancelConfirmedTransferTask(transferSalesDocData.getTaskId());
         }
     }
 
@@ -138,7 +155,7 @@ public class TransferTest extends AppBaseSteps {
         // Step 14
         step("Нажмите на Оформить продажу");
         TransferSuccessPage successPage = transferOrderStep2Page.clickSubmitButton();
-        // TODO ДОДЕЛАТЬ!
+        successPage.verifyRequiredElements();
 
         // Step 15
         step("Нажмите на кнопку Перейти в список заявок");
@@ -146,8 +163,14 @@ public class TransferTest extends AppBaseSteps {
 
         // Step 16
         step("Открыть заявку и проверить заполненные поля и товары");
-        transferRequestsPage.searchForRequestAndOpenIt(productOrderCardAppData.getTitle(), "Отправлен");
-
+        transferRequestsPage.searchForRequestAndOpenIt(productOrderCardAppData.getTitle(), SEND_STATUS);
+        TransferConfirmedTaskToClientPage transferConfirmedTaskToClientPage = new TransferConfirmedTaskToClientPage();
+        DetailedTransferTaskData detailedTransferTaskData = new DetailedTransferTaskData();
+        detailedTransferTaskData.setPickupPlace(SelectPickupPointModal.Options.CLIENT_IN_SHOP_ROOM);
+        detailedTransferTaskData.setDeliveryDate(LocalDate.now());
+        detailedTransferTaskData.setClient(customerData);
+        detailedTransferTaskData.setProducts(Collections.singletonList(transferProductData));
+        transferConfirmedTaskToClientPage.shouldTransferTaskDataIs(detailedTransferTaskData);
     }
 
     @Test(description = "C3268358 Создание отзыва с RM для пополнения торгового зала")

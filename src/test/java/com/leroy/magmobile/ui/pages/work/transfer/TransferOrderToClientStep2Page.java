@@ -109,36 +109,4 @@ public class TransferOrderToClientStep2Page extends TransferOrderPage {
         return this;
     }
 
-    // ---------- Widgets -------------------
-
-    private static class SelectedClientWidget extends CardWidget<MagCustomerData> {
-
-        public SelectedClientWidget(WebDriver driver, CustomLocator locator) {
-            super(driver, locator);
-        }
-
-        @AppFindBy(xpath = ".//android.widget.TextView[1]", metaName = "Имя клиента")
-        Element name;
-
-        @AppFindBy(xpath = ".//android.widget.TextView[contains(@text, '+')]", metaName = "Номер телефона клиента")
-        Element phone;
-
-        @AppFindBy(xpath = ".//android.widget.TextView[contains(@text, '@')]", metaName = "Email клиента")
-        Element email;
-
-        @Override
-        public MagCustomerData collectDataFromPage(String pageSource) {
-            MagCustomerData customerData = new MagCustomerData();
-            customerData.setName(name.getText());
-            customerData.setPhone(ParserUtil.standardPhoneFmt(phone.getTextIfPresent()));
-            customerData.setEmail(email.getTextIfPresent());
-            return customerData;
-        }
-
-        @Override
-        public boolean isFullyVisible(String pageSource) {
-            return false;
-        }
-    }
-
 }

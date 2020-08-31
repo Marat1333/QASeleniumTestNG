@@ -84,6 +84,7 @@ public class TransferHelper extends ApiClientProvider {
             if (isHttps) {
                 httpsConnection.disconnect();
             }
+            Log.info("Заявка на отзыв №" + taskId + " отменена");
         } catch (Exception e) {
             Log.error(e.getMessage());
             Assert.fail("Не удалось отменить заявку на отзыв id=" + taskId);

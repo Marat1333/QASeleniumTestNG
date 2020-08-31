@@ -1,6 +1,7 @@
 package com.leroy.magmobile.ui.pages.work.transfer.widget;
 
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
@@ -57,16 +58,16 @@ public class TransferTaskProductWidget extends CardWidget<TransferProductData> {
         transferProductData.setBarCode(ParserUtil.strWithOnlyDigits(barCode.getText(pageSource)));
         transferProductData.setTitle(title.getText(pageSource));
         transferProductData.setOrderedQuantity(ParserUtil.strToInt(orderedQuantity.getText(pageSource)));
-        transferProductData.setPrice(ParserUtil.strToDouble(price.getTextIfPresent()));
-        transferProductData.setTotalPrice(ParserUtil.strToDouble(totalPrice.getTextIfPresent()));
-        transferProductData.setSelectedPieceQuantity(ParserUtil.strToInt(pieceQuantity.getText()));
-        transferProductData.setSelectedMonoPalletQuantity(ParserUtil.strToInt(monoPalletQuantity.getText()));
-        transferProductData.setSelectedMixPalletQuantity(ParserUtil.strToInt(mixPalletQuantity.getText()));
+        transferProductData.setPrice(ParserUtil.strToDouble(price.getTextIfPresent(pageSource)));
+        transferProductData.setTotalPrice(ParserUtil.strToDouble(totalPrice.getTextIfPresent(pageSource)));
+        transferProductData.setSelectedPieceQuantity(ParserUtil.strToInt(pieceQuantity.getText(pageSource)));
+        transferProductData.setSelectedMonoPalletQuantity(ParserUtil.strToInt(monoPalletQuantity.getText(pageSource)));
+        transferProductData.setSelectedMixPalletQuantity(ParserUtil.strToInt(mixPalletQuantity.getText(pageSource)));
         return transferProductData;
     }
 
     @Override
     public boolean isFullyVisible(String pageSource) {
-        return lmCode.isVisible(pageSource) && orderedQuantity.isVisible(pageSource);
+        return lmCode.isVisible(pageSource) && pieceQuantity.isVisible(pageSource);
     }
 }

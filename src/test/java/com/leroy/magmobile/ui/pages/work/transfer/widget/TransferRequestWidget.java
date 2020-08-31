@@ -4,11 +4,11 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
-import com.leroy.magmobile.ui.pages.work.transfer.data.TransferRequestData;
+import com.leroy.magmobile.ui.pages.work.transfer.data.ShortTransferTaskData;
 import com.leroy.utils.DateTimeUtil;
 import org.openqa.selenium.WebDriver;
 
-public class TransferRequestWidget extends CardWidget<TransferRequestData> {
+public class TransferRequestWidget extends CardWidget<ShortTransferTaskData> {
 
     public TransferRequestWidget(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
@@ -33,16 +33,16 @@ public class TransferRequestWidget extends CardWidget<TransferRequestData> {
     Element status;
 
     @Override
-    public TransferRequestData collectDataFromPage(String pageSource) {
-        TransferRequestData transferRequestData = new TransferRequestData();
-        transferRequestData.setTitle(title.getText(pageSource));
-        transferRequestData.setProductTitle1(productTitle1.getText(pageSource));
-        transferRequestData.setProductTitle2(productTitle2.getTextIfPresent(pageSource));
-        transferRequestData.setAdditionalProductCount(additionalProductCount.getTextIfPresent(pageSource));
-        transferRequestData.setCreationDate(DateTimeUtil.strToLocalDateTime(
+    public ShortTransferTaskData collectDataFromPage(String pageSource) {
+        ShortTransferTaskData shortTransferTaskData = new ShortTransferTaskData();
+        shortTransferTaskData.setTitle(title.getText(pageSource));
+        shortTransferTaskData.setProductTitle1(productTitle1.getText(pageSource));
+        shortTransferTaskData.setProductTitle2(productTitle2.getTextIfPresent(pageSource));
+        shortTransferTaskData.setAdditionalProductCount(additionalProductCount.getTextIfPresent(pageSource));
+        shortTransferTaskData.setCreationDate(DateTimeUtil.strToLocalDateTime(
                 creationDate.getText(pageSource), DateTimeUtil.DD_MMM_HH_MM));
-        transferRequestData.setStatus(status.getText(pageSource));
-        return transferRequestData;
+        shortTransferTaskData.setStatus(status.getText(pageSource));
+        return shortTransferTaskData;
     }
 
     @Override
