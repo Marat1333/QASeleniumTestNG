@@ -92,9 +92,6 @@ public class ProductOrderCardWebData {
             softAssert.isTrue(Math.abs(this.getWeight() - expectedProduct.getWeight()) <= expectedProduct.getSelectedQuantity() * 0.011,
                     "Заказ #" + (iOrder + 1) + " Товар #" + (iProduct + 1) + " - ожидался другой вес. " +
                             "Актуальный:" + this.getWeight() + " Ожидался:" + expectedProduct.getWeight());
-        else
-            softAssert.isTrue(this.getWeight() > 0,
-                    "Заказ #" + (iOrder + 1) + " Товар #" + (iProduct + 1) + " - ожидался вес > 0");
 
         softAssert.verifyAll();
     }
