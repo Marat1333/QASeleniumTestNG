@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Guice(modules = {Module.class})
 public class RupturesTest extends AppBaseSteps {
@@ -830,7 +831,8 @@ public class RupturesTest extends AppBaseSteps {
         SessionListPage sessionListPage = workPage.goToRuptures();
         sessionListPage = sessionListPage.changeDepartment(departmentId);
         sessionListPage.shouldAllActiveSessionAreVisible(activeSessionsIdList)
-                .shouldAllFinishedSessionAreVisible(finishedSessionsIdList);
+                .shouldAllFinishedSessionAreVisible(finishedSessionsIdList)
+                .verifyRequiredElements();
     }
 
     @Test(description = "C23423650 Пустой список сессий (2 отдел)")
@@ -865,6 +867,115 @@ public class RupturesTest extends AppBaseSteps {
         sessionListPage.shouldAllActiveSessionAreVisible(sessionsIdList)
                 .shouldFinishedSessionCardsIsNotVisible()
                 .verifyRequiredElements();
+    }
+
+    @Test(description = "C23423652 Пагинация списка завершенных сессий, пустой список активных сессий (4 отдел)")
+    public void testFinishedSessionPagination() throws Exception {
+        int departmentId = 4;
+
+        //Pre-conditions
+        ruptureClient.deleteAllSessionInDepartment(departmentId);
+        List<Integer> sessionsIdList = ruptureClient.createFewSessions(departmentId, 11);
+        ruptureClient.finishFewSessions(sessionsIdList);
+        WorkPage workPage = loginAndGoTo(WorkPage.class);
+
+        //Step 1
+        step("Перейти на экран списка сессий");
+        SessionListPage sessionListPage = workPage.goToRuptures();
+        sessionListPage = sessionListPage.changeDepartment(departmentId);
+        sessionListPage.verifyRequiredElements()
+                .shouldAllFinishedSessionAreVisible(sessionsIdList);
+    }
+
+    @Test(description = "C23423653 Пагинация обоих списков сессий (5 отдел)")
+    public void testBothSessionTypesPagination() throws Exception {
+        int departmentId = 5;
+
+        //Pre-conditions
+        ruptureClient.deleteAllSessionInDepartment(departmentId);
+        List<Integer> sessionsIdList = ruptureClient.createFewSessions(departmentId, 22);
+        List<Integer> activeSessionsIdList = sessionsIdList.subList(0, 11);
+        List<Integer> finishedSessionsIdList = sessionsIdList.subList(11, sessionsIdList.size());
+        ruptureClient.finishFewSessions(finishedSessionsIdList);
+        WorkPage workPage = loginAndGoTo(WorkPage.class);
+
+
+        //Step 1
+        step("Перейти на экран списка сессий");
+        SessionListPage sessionListPage = workPage.goToRuptures();
+        sessionListPage = sessionListPage.changeDepartment(departmentId);
+        sessionListPage.shouldAllActiveSessionAreVisible(activeSessionsIdList)
+                .shouldAllFinishedSessionAreVisible(finishedSessionsIdList)
+                .verifyRequiredElements();
+    }
+
+    @Test(description = "C23423655 Pull-to-refresh (6 отдел)")
+    public void testPullToRefreshSessionLists() throws Exception {
+        int departmentId = 6;
+
+        //Pre-conditions
+        ruptureClient.deleteAllSessionInDepartment(departmentId);
+        List<Integer> sessionsIdList = ruptureClient.createFewSessions(departmentId, 10);
+        List<Integer> activeSessionsIdList = sessionsIdList.stream().limit(5).collect(Collectors.toList());
+        List<Integer> finishedSessionsIdList = sessionsIdList.stream().skip(5).limit(5).collect(Collectors.toList());
+        ruptureClient.finishFewSessions(finishedSessionsIdList);
+        WorkPage workPage = loginAndGoTo(WorkPage.class);
+
+
+        //Step 1
+        step("Перейти на экран списка сессий");
+        SessionListPage sessionListPage = workPage.goToRuptures();
+        sessionListPage = sessionListPage.changeDepartment(departmentId);
+        sessionListPage.shouldAllActiveSessionAreVisible(activeSessionsIdList)
+                .shouldAllFinishedSessionAreVisible(finishedSessionsIdList);
+
+        //Step 2
+        step("Удалить 1 активную и 1 завершенную сессию (через АПИ ruptures/session?sessionId={id})\n" +
+                "Потянуть список сессий вниз (pull to refresh)");
+        int lastActiveSessionIdIndex = activeSessionsIdList.size() - 1;
+        int lastFinishedSessionIdIndex = finishedSessionsIdList.size() - 1;
+        int lastActiveSessionId = activeSessionsIdList.get(lastActiveSessionIdIndex);
+        int lastFinishedSessionId = finishedSessionsIdList.get(lastFinishedSessionIdIndex);
+        finishedSessionsIdList.remove(lastFinishedSessionIdIndex);
+        activeSessionsIdList.remove(lastActiveSessionIdIndex);
+        ruptureClient.deleteFewSessions(lastActiveSessionId, lastFinishedSessionId);
+        sessionListPage = sessionListPage.pullToRefresh();
+        sessionListPage.shouldAllActiveSessionAreVisible(activeSessionsIdList)
+                .shouldAllFinishedSessionAreVisible(finishedSessionsIdList);
+    }
+
+    @Test(description = "C23423654 Смена отдела (7 отдел)")
+    public void testChangeDepartment() throws Exception {
+        //Pre-conditions
+        int seventhDepartmentId = 7;
+        ruptureClient.deleteAllSessionInDepartment(seventhDepartmentId);
+        List<Integer> seventhSessionsIdList = ruptureClient.createFewSessions(seventhDepartmentId, 4);
+        List<Integer> seventhActiveSessionsIdList = seventhSessionsIdList.stream().limit(2).collect(Collectors.toList());
+        List<Integer> seventhFinishedSessionsIdList = seventhSessionsIdList.stream().skip(2).collect(Collectors.toList());
+        ruptureClient.finishFewSessions(seventhFinishedSessionsIdList);
+
+        int firstDepartmentId = 1;
+        ruptureClient.deleteAllSessionInDepartment(firstDepartmentId);
+        List<Integer> firstSessionsIdList = ruptureClient.createFewSessions(firstDepartmentId, 2);
+        List<Integer> firstActiveSessionsIdList = firstSessionsIdList.subList(0, 1);
+        List<Integer> firstFinishedSessionsIdList = firstSessionsIdList.subList(1, firstSessionsIdList.size());
+        ruptureClient.finishFewSessions(firstFinishedSessionsIdList);
+
+        WorkPage workPage = loginAndGoTo(WorkPage.class);
+
+
+        //Step 1
+        step("Перейти в список сессий");
+        SessionListPage sessionListPage = workPage.goToRuptures();
+        sessionListPage = sessionListPage.changeDepartment(seventhDepartmentId);
+        sessionListPage.shouldAllActiveSessionAreVisible(seventhActiveSessionsIdList)
+                .shouldAllFinishedSessionAreVisible(seventhFinishedSessionsIdList);
+
+        //Step 2
+        step("Выбрать 1 отдел");
+        sessionListPage = sessionListPage.changeDepartment(firstDepartmentId);
+        sessionListPage.shouldAllActiveSessionAreVisible(firstActiveSessionsIdList)
+                .shouldAllFinishedSessionAreVisible(firstFinishedSessionsIdList);
     }
 
 }
