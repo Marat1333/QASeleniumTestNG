@@ -11,6 +11,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static com.leroy.constants.api.ErrorTextConst.SESSION_NOT_FOUND_OR_FINISHED;
@@ -98,14 +99,14 @@ public class RupturesClient extends BaseMashupClient {
         return getProducts(sessionId, null, null, null, startFrom, pageSize);
     }
 
-    public int getActiveSessionWithProductsId(){
+    public int getActiveSessionWithProductsId() {
         List<ResRuptureSessionData> activeSessionsData = getSessions("active", 10).asJson().getItems();
-        if (activeSessionsData.size()==0){
+        if (activeSessionsData.size() == 0) {
             throw new RuntimeException("There is no active sessions");
         }
         int result = 0;
-        for (ResRuptureSessionData each : activeSessionsData){
-            if (each.getTotalProductCount()>0) {
+        for (ResRuptureSessionData each : activeSessionsData) {
+            if (each.getTotalProductCount() > 0) {
                 result = each.getSessionId();
                 break;
             }
@@ -179,6 +180,46 @@ public class RupturesClient extends BaseMashupClient {
             req.setSessionId(sessionId);
         req.setAppVersion(appVersion);
         return execute(req, JsonNode.class);
+    }
+
+    @Step("Create few sessions in department")
+    public List<Integer> createFewSessions(int departmentId, int sessionsCount) {
+        List<Integer> sessionIdList = new ArrayList<>();
+        RuptureProductData productData = new RuptureProductData();
+        productData.generateRandomData();
+        productData.setActions(null);
+
+        ReqRuptureSessionData rupturePostData = new ReqRuptureSessionData();
+        rupturePostData.setProduct(productData);
+        rupturePostData.setShopId(Integer.parseInt(userSessionData.getUserShopId()));
+        rupturePostData.setStoreId(Integer.parseInt(userSessionData.getUserShopId()));
+        rupturePostData.setDepartmentId(departmentId);
+        for (int i = 0; i < sessionsCount; i++) {
+            Response<JsonNode> resp = this.createSession(rupturePostData);
+            sessionIdList.add(resp.asJson().get("sessionId").intValue());
+        }
+        return sessionIdList;
+    }
+
+    @Step("Finish few sessions")
+    public void finishFewSessions(List<Integer> sessionsIdList){
+        for (Integer each: sessionsIdList){
+            finishSession(each);
+        }
+    }
+
+    @Step("Delete all session in department")
+    public void deleteAllSessionInDepartment(int departmentId) {
+        RupturesSessionsRequest req = new RupturesSessionsRequest();
+        req.setShopId(userSessionData.getUserShopId());
+        req.setDepartmentId(departmentId);
+        req.setAppVersion(appVersion);
+        req.setPageSize(1000);
+        List<ResRuptureSessionData> sessionsData = getSessions(req).asJson().getItems();
+        List<Integer> sessionIdList = sessionsData.stream().map(ResRuptureSessionData::getSessionId).collect(Collectors.toList());
+        for (Integer each : sessionIdList) {
+            deleteSession(each);
+        }
     }
 
     //Verifications
