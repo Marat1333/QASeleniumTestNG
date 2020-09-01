@@ -22,7 +22,7 @@ import com.leroy.magmobile.ui.pages.work.WorkPage;
 import com.leroy.magmobile.ui.pages.work.transfer.*;
 import com.leroy.magmobile.ui.pages.work.transfer.data.DetailedTransferTaskData;
 import com.leroy.magmobile.ui.pages.work.transfer.data.TransferProductData;
-import com.leroy.magmobile.ui.pages.work.transfer.modal.SelectPickupPointModal;
+import com.leroy.magmobile.ui.pages.work.transfer.enums.TransferTaskTypes;
 import com.leroy.magmobile.ui.pages.work.transfer.modal.TransferActionWithProductCardModal;
 import com.leroy.magmobile.ui.pages.work.transfer.modal.TransferExitWarningModal;
 import lombok.Data;
@@ -167,7 +167,7 @@ public class TransferTest extends AppBaseSteps {
         transferRequestsPage.searchForRequestAndOpenIt(productOrderCardAppData.getTitle(), SEND_STATUS);
         TransferConfirmedTaskToClientPage transferConfirmedTaskToClientPage = new TransferConfirmedTaskToClientPage();
         DetailedTransferTaskData detailedTransferTaskData = new DetailedTransferTaskData();
-        detailedTransferTaskData.setPickupPlace(SelectPickupPointModal.Options.CLIENT_IN_SHOP_ROOM);
+        detailedTransferTaskData.setPickupPlace(TransferTaskTypes.CLIENT_IN_SHOP_ROOM);
         detailedTransferTaskData.setDeliveryDate(LocalDate.now());
         detailedTransferTaskData.setClient(customerData);
         detailedTransferTaskData.setProducts(Collections.singletonList(transferProductData));
@@ -265,8 +265,6 @@ public class TransferTest extends AppBaseSteps {
             transferOrderStep1Page = new TransferOrderStep1Page();
         }
 
-        // TODO check Step 1 and 2
-
         TransferProductData transferProductData = transferOrderStep1Page.getTransferProductData(1);
 
         // Step 3
@@ -317,7 +315,7 @@ public class TransferTest extends AppBaseSteps {
 
         // Step 11
         step("Нажмите на поле Место выдачи. Выберите параметр, отличный от указанного ранее");
-        SelectPickupPointModal.Options newPickupPoint = SelectPickupPointModal.Options.OVER_SIZED_CHECKOUT;
+        TransferTaskTypes newPickupPoint = TransferTaskTypes.OVER_SIZED_CHECKOUT;
         transferOrderStep2Page.selectPickupPoint(newPickupPoint)
                 .shouldPickupPointIs(newPickupPoint);
 
@@ -336,8 +334,7 @@ public class TransferTest extends AppBaseSteps {
         // Step 14
         step("Нажать кнопку Оформить заявку");
         TransferToClientSuccessPage successPage = transferOrderStep2Page.clickSubmitButton();
-        // TODO ДОДЕЛАТЬ!
-
+        successPage.verifyRequiredElements();
     }
 
     @Test(description = "C3268363 Удаление товара из заявки")

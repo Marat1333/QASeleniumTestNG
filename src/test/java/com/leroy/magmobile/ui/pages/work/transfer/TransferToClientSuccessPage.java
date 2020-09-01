@@ -1,13 +1,24 @@
 package com.leroy.magmobile.ui.pages.work.transfer;
 
 import com.leroy.magmobile.ui.pages.common.SuccessPage;
+import com.leroy.magmobile.ui.pages.work.transfer.enums.TransferTaskTypes;
 import io.qameta.allure.Step;
 
 public class TransferToClientSuccessPage extends SuccessPage {
 
+    private TransferTaskTypes type;
+
+    public TransferToClientSuccessPage(TransferTaskTypes type) {
+        super();
+        this.type = type;
+    }
+
     @Override
     protected String getExpectedMainBodyMessage() {
-        return "Скоро привезем товары \n в отдел для клиента";
+        if (type.equals(TransferTaskTypes.CLIENT_IN_SHOP_ROOM))
+            return "Скоро привезем товары \n в отдел для клиента";
+        else
+            return "Скоро привезем товары \n на крупногабаритную кассу";
     }
 
     @Override

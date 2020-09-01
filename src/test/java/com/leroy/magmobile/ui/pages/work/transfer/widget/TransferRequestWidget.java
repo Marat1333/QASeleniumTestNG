@@ -7,6 +7,7 @@ import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
 import com.leroy.magmobile.ui.pages.work.transfer.data.ShortTransferTaskData;
 import com.leroy.utils.DateTimeUtil;
 import org.openqa.selenium.WebDriver;
+import org.testng.Assert;
 
 public class TransferRequestWidget extends CardWidget<ShortTransferTaskData> {
 
@@ -36,6 +37,8 @@ public class TransferRequestWidget extends CardWidget<ShortTransferTaskData> {
     public ShortTransferTaskData collectDataFromPage(String pageSource) {
         ShortTransferTaskData shortTransferTaskData = new ShortTransferTaskData();
         shortTransferTaskData.setTitle(title.getText(pageSource));
+        String productTitle1_value = productTitle1.getText(pageSource);
+        Assert.assertFalse(productTitle1_value.isEmpty(), "Названия у товаров отсутствуют");
         shortTransferTaskData.setProductTitle1(productTitle1.getText(pageSource));
         shortTransferTaskData.setProductTitle2(productTitle2.getTextIfPresent(pageSource));
         shortTransferTaskData.setAdditionalProductCount(additionalProductCount.getTextIfPresent(pageSource));

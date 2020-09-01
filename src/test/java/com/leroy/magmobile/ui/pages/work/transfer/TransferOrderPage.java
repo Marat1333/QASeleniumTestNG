@@ -75,7 +75,7 @@ public abstract class TransferOrderPage extends CommonMagMobilePage {
 
     // Verifications
 
-    @Step("Проверить, что номер заявки = {number}")
+    @Step("Проверить, что номер заявки = {expectedNumber}")
     public void shouldTaskNumberIs(String expectedNumber) {
         if (expectedNumber.length() > 7)
             expectedNumber = expectedNumber.substring(expectedNumber.length() - 7);

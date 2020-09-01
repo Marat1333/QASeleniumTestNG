@@ -107,7 +107,7 @@ public class TransferOrderStep1Page extends TransferOrderPage {
         return this;
     }
 
-    @Step("Проверить, что итого стоимость равна {value}")
+    @Step("Проверить, что итого стоимость равна {expectedTotalPrice}")
     public TransferOrderStep1Page shouldTotalPriceIs(double expectedTotalPrice) {
         anAssert.isEquals(ParserUtil.strToDouble(totalPrice.getText()), expectedTotalPrice,
                 "Неверная стоимость 'итого'");

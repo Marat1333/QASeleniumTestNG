@@ -6,7 +6,7 @@ import com.leroy.core.web_elements.android.AndroidScrollViewV2;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.magmobile.ui.pages.work.transfer.data.DetailedTransferTaskData;
 import com.leroy.magmobile.ui.pages.work.transfer.data.TransferProductData;
-import com.leroy.magmobile.ui.pages.work.transfer.modal.SelectPickupPointModal;
+import com.leroy.magmobile.ui.pages.work.transfer.enums.TransferTaskTypes;
 import com.leroy.magmobile.ui.pages.work.transfer.widget.TransferTaskProductWidget;
 import com.leroy.utils.DateTimeUtil;
 import io.qameta.allure.Step;
@@ -37,12 +37,12 @@ public class TransferConfirmedTaskToClientPage extends TransferOrderPage {
 
     // Grab data
 
-    private SelectPickupPointModal.Options getPickupPlace(String ps) {
+    private TransferTaskTypes getPickupPlace(String ps) {
         String place = pickupPlaceFld.getText(ps);
         if (place.toLowerCase().contains("клиенту в торговый зал"))
-            return SelectPickupPointModal.Options.CLIENT_IN_SHOP_ROOM;
+            return TransferTaskTypes.CLIENT_IN_SHOP_ROOM;
         if (place.toLowerCase().contains("крупногабаритная касса"))
-            return SelectPickupPointModal.Options.OVER_SIZED_CHECKOUT;
+            return TransferTaskTypes.OVER_SIZED_CHECKOUT;
         throw new RuntimeException("Получено неизвестное место выдачи:" + place);
     }
 

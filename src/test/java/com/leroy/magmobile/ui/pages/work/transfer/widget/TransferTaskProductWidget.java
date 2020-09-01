@@ -1,13 +1,13 @@
 package com.leroy.magmobile.ui.pages.work.transfer.widget;
 
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
 import com.leroy.magmobile.ui.pages.work.transfer.data.TransferProductData;
 import com.leroy.utils.ParserUtil;
 import org.openqa.selenium.WebDriver;
+import org.testng.Assert;
 
 public class TransferTaskProductWidget extends CardWidget<TransferProductData> {
 
@@ -55,7 +55,9 @@ public class TransferTaskProductWidget extends CardWidget<TransferProductData> {
     public TransferProductData collectDataFromPage(String pageSource) {
         TransferProductData transferProductData = new TransferProductData();
         transferProductData.setLmCode(ParserUtil.strWithOnlyDigits(lmCode.getText(pageSource)));
-        transferProductData.setBarCode(ParserUtil.strWithOnlyDigits(barCode.getText(pageSource)));
+        String barCodeValue = barCode.getTextIfPresent(pageSource);
+        Assert.assertNotNull(barCodeValue, "У товара отсутствует бар код");
+        transferProductData.setBarCode(ParserUtil.strWithOnlyDigits(barCodeValue));
         transferProductData.setTitle(title.getText(pageSource));
         transferProductData.setOrderedQuantity(ParserUtil.strToInt(orderedQuantity.getText(pageSource)));
         transferProductData.setPrice(ParserUtil.strToDouble(price.getTextIfPresent(pageSource)));

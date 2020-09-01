@@ -7,6 +7,7 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.models.customer.MagCustomerData;
 import com.leroy.magmobile.ui.pages.customers.SearchCustomerPage;
+import com.leroy.magmobile.ui.pages.work.transfer.enums.TransferTaskTypes;
 import com.leroy.magmobile.ui.pages.work.transfer.modal.SelectPickupPointModal;
 import io.qameta.allure.Step;
 
@@ -44,7 +45,7 @@ public class TransferOrderToClientStep2Page extends TransferOrderPage {
     }
 
     @Step("Выбрать место выдачи")
-    public TransferOrderToClientStep2Page selectPickupPoint(SelectPickupPointModal.Options option) {
+    public TransferOrderToClientStep2Page selectPickupPoint(TransferTaskTypes option) {
         pickupPointFld.click();
         SelectPickupPointModal modal = new SelectPickupPointModal();
         switch (option) {
@@ -73,8 +74,11 @@ public class TransferOrderToClientStep2Page extends TransferOrderPage {
 
     @Step("Нажать кнопку 'Оформить продажу'")
     public TransferToClientSuccessPage clickSubmitButton() {
+        TransferTaskTypes taskType = pickupPointFld.getText().toLowerCase()
+                .contains(TransferTaskTypes.CLIENT_IN_SHOP_ROOM.getValue().toLowerCase()) ?
+                TransferTaskTypes.CLIENT_IN_SHOP_ROOM : TransferTaskTypes.OVER_SIZED_CHECKOUT;
         submitButton.click();
-        return new TransferToClientSuccessPage();
+        return new TransferToClientSuccessPage(taskType);
     }
 
     // Verifications
@@ -87,7 +91,7 @@ public class TransferOrderToClientStep2Page extends TransferOrderPage {
     }
 
     @Step("Проверить, что место выдачи = {option}")
-    public TransferOrderToClientStep2Page shouldPickupPointIs(SelectPickupPointModal.Options option) {
+    public TransferOrderToClientStep2Page shouldPickupPointIs(TransferTaskTypes option) {
         anAssert.isEquals(pickupPointFld.getText(), option.getValue(), "Ожидалось другое место выдачи");
         return this;
     }

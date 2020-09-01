@@ -3,7 +3,7 @@ package com.leroy.magmobile.ui.pages.work.transfer.data;
 import com.leroy.core.ContextProvider;
 import com.leroy.core.asserts.SoftAssertWrapper;
 import com.leroy.magmobile.ui.models.customer.MagCustomerData;
-import com.leroy.magmobile.ui.pages.work.transfer.modal.SelectPickupPointModal;
+import com.leroy.magmobile.ui.pages.work.transfer.enums.TransferTaskTypes;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 public class DetailedTransferTaskData {
 
-    private SelectPickupPointModal.Options pickupPlace;
+    private TransferTaskTypes pickupPlace;
     private MagCustomerData client;
     private LocalDate deliveryDate;
     private LocalTime deliveryTime;
@@ -51,11 +51,11 @@ public class DetailedTransferTaskData {
             softAssert.isEquals(deliveryTime, expectedData.getDeliveryTime(),
                     "Неверное ожидаемое время поставки товара");
         }
-        if (expectedData.getProducts()!=null) {
+        if (expectedData.getProducts() != null) {
             softAssert.isEquals(expectedData.getProducts().size(), products.size(),
                     "Разное кол-во товаров в заявке");
             softAssert.verifyAll();
-            for (int i=0; i < expectedData.getProducts().size(); i++) {
+            for (int i = 0; i < expectedData.getProducts().size(); i++) {
                 products.get(i).assertEqualsNotNullExpectedFields(expectedData.getProducts().get(i));
             }
         }
