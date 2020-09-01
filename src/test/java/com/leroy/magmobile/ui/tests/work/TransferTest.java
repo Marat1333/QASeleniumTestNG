@@ -269,7 +269,7 @@ public class TransferTest extends AppBaseSteps {
 
         // Step 3
         step("Нажмите на мини-карточку товара");
-        TransferActionWithProductCardModal actionModal = transferOrderStep1Page.clickProductCard(1)
+        TransferActionWithProductCardModal actionModal = transferOrderStep1Page.clickProductCard(1, true)
                 .verifyRequiredElements();
 
         // Step 4
@@ -362,11 +362,11 @@ public class TransferTest extends AppBaseSteps {
             transferOrderStep1Page = new TransferOrderStep1Page();
         }
 
-        List<TransferProductData> transferProductDataList = transferOrderStep1Page.getTransferProductDataList();
+        DetailedTransferTaskData transferTaskData = transferOrderStep1Page.getTransferTaskData();
 
         // Step 1
         step("Нажмите на мини-карточку товара");
-        TransferActionWithProductCardModal actionModal = transferOrderStep1Page.clickProductCard(1)
+        TransferActionWithProductCardModal actionModal = transferOrderStep1Page.clickProductCard(1, true)
                 .verifyRequiredElements();
 
         // Step 2
@@ -378,6 +378,10 @@ public class TransferTest extends AppBaseSteps {
         // Step 3
         step("Нажмите на Удалить");
         confirmModal.clickConfirmButton();
+        transferOrderStep1Page = new TransferOrderStep1Page();
+
+        transferTaskData.removeProduct(0);
+        transferOrderStep1Page.shouldTransferTaskDataIs(transferTaskData);
 
     }
 
@@ -404,7 +408,7 @@ public class TransferTest extends AppBaseSteps {
 
         // Step 1
         step("Нажмите на мини-карточку товара");
-        TransferActionWithProductCardModal actionModal = transferOrderStep1Page.clickProductCard(1);
+        TransferActionWithProductCardModal actionModal = transferOrderStep1Page.clickProductCard(1, false);
 
         // Step 2
         step("Выберите параметр Удалить товар");
@@ -441,7 +445,7 @@ public class TransferTest extends AppBaseSteps {
 
         // Step 1
         step("Нажмите на мини-карточку товара");
-        TransferActionWithProductCardModal actionModal = transferOrderStep1Page.clickProductCard(1);
+        TransferActionWithProductCardModal actionModal = transferOrderStep1Page.clickProductCard(1, false);
 
         // Step 2
         step("Нажмите на Изменить количество");

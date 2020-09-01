@@ -50,6 +50,7 @@ public class TransferConfirmedTaskToClientPage extends TransferOrderPage {
     public DetailedTransferTaskData getTransferTaskData() {
         String ps = getPageSource();
         DetailedTransferTaskData detailedTransferTaskData = new DetailedTransferTaskData();
+        detailedTransferTaskData.setNumber(getTaskNumber(ps));
         detailedTransferTaskData.setPickupPlace(getPickupPlace(ps));
         detailedTransferTaskData.setClient(selectedClientWidget.collectDataFromPage(ps));
         detailedTransferTaskData.setDeliveryDate(DateTimeUtil.strToLocalDate(deliveryDateFld.getText(ps), ""));

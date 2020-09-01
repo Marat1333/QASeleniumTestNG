@@ -44,13 +44,17 @@ public abstract class TransferOrderPage extends CommonMagMobilePage {
     }
 
     protected boolean isOrderNumberVisibleAndValid() {
-        String number = getOrderNumber();
+        String number = getTaskNumber();
         return number.matches("\\d{7}");
     }
 
     // Grab Data
-    public String getOrderNumber() {
-        return ParserUtil.strWithOnlyDigits(orderNumberObj.getText());
+    public String getTaskNumber(String ps) {
+        return ParserUtil.strWithOnlyDigits(orderNumberObj.getText(ps));
+    }
+
+    public String getTaskNumber() {
+        return getTaskNumber(null);
     }
 
     public LocalDateTime getCreationDateTime() {
@@ -79,7 +83,7 @@ public abstract class TransferOrderPage extends CommonMagMobilePage {
     public void shouldTaskNumberIs(String expectedNumber) {
         if (expectedNumber.length() > 7)
             expectedNumber = expectedNumber.substring(expectedNumber.length() - 7);
-        anAssert.isEquals(getOrderNumber(), expectedNumber, "Ожидался другой номер заявки");
+        anAssert.isEquals(getTaskNumber(), expectedNumber, "Ожидался другой номер заявки");
     }
 
     // ---------- Widgets -------------------
