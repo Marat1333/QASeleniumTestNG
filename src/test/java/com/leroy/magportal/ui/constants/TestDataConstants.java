@@ -2,16 +2,19 @@ package com.leroy.magportal.ui.constants;
 
 import com.leroy.constants.EnvConstants;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
+import java.util.Arrays;
 
 public class TestDataConstants extends EnvConstants {
 
     public static final SimpleCustomerData SIMPLE_CUSTOMER_DATA_1 = new SimpleCustomerData().toBuilder()
+            .id(getProperty("data.customer.simple1.id"))
             .phoneNumber(getProperty("data.customer.simple1.phone"))
             .name(getProperty("data.customer.simple1.name"))
             .email(getProperty("data.customer.simple1.email"))
             .build();
 
     public static final SimpleCustomerData SIMPLE_CUSTOMER_DATA_2 = new SimpleCustomerData().toBuilder()
+            .id(getProperty("data.customer.simple2.id"))
             .phoneNumber(getProperty("data.customer.simple2.phone"))
             .name(getProperty("data.customer.simple2.name"))
             .email(getProperty("data.customer.simple2.email"))

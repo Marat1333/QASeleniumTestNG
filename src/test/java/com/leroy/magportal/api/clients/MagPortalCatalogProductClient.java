@@ -4,9 +4,9 @@ import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magportal.api.data.catalog.products.CatalogProductData;
 import com.leroy.magportal.api.data.catalog.products.CatalogSimilarProductsData;
 import com.leroy.magportal.api.data.catalog.shops.NearestShopsData;
-import com.leroy.magportal.api.requests.GetCatalogProduct;
-import com.leroy.magportal.api.requests.GetCatalogProductSimilars;
-import com.leroy.magportal.api.requests.GetNearestShops;
+import com.leroy.magportal.api.requests.product.GetCatalogProduct;
+import com.leroy.magportal.api.requests.product.GetCatalogProductSimilars;
+import com.leroy.magportal.api.requests.product.GetNearestShops;
 import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 

@@ -16,6 +16,7 @@ import ru.leroymerlin.qa.core.clients.payment.data.task.Link;
 import ru.leroymerlin.qa.core.clients.payment.data.task.PaymentTask;
 
 import java.util.List;
+import ru.leroymerlin.qa.core.clients.tunnel.data.BitrixSolutionResponse;
 
 import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -76,21 +77,42 @@ public class PaymentHelper extends BaseHelper {
     }
 
     // Public methods
+    ////BY OrderId only
 
-    public void makeHoldCost(String orderId) {
-        updatePayment(orderId, PaymentStatusEnum.HOLD);
-    }
+    public void makeHoldCost(String orderId) { updatePayment(orderId, PaymentStatusEnum.HOLD); }
 
     public void makePaid(String orderId) {
         updatePayment(orderId, PaymentStatusEnum.PAID);
     }
 
-    public void makePaymentUi(String orderId) throws Exception {
+    public void makePaymentCard(String orderId) throws Exception {
         WebDriver driver = DriverFactory.createDriver();
         ContextProvider.setDriver(driver);
         String link = getPaymentLink(orderId);
         try {
             driver.get(link);
+
+            PaymentPage paymentPage = new PaymentPage();
+            paymentPage.enterCreditCardDetails(CardConst.VISA_1111);
+            paymentPage.assertThatPaymentIsSuccessful();
+        } finally {
+            ContextProvider.quitDriver();
+        }
+    }
+
+    ////BY BitrixSolutionResponse
+    public void makeHoldCost(BitrixSolutionResponse solutionResponse) {
+        updatePayment(solutionResponse.getSolutionId(), PaymentStatusEnum.HOLD); }
+
+    public void makePaid(BitrixSolutionResponse solutionResponse) {
+        updatePayment(solutionResponse.getSolutionId(), PaymentStatusEnum.PAID);
+    }
+
+    public void makePaymentCard(BitrixSolutionResponse solutionResponse) throws Exception {
+        WebDriver driver = DriverFactory.createDriver();
+        ContextProvider.setDriver(driver);
+        try {
+            driver.get(solutionResponse.getLink());
 
             PaymentPage paymentPage = new PaymentPage();
             paymentPage.enterCreditCardDetails(CardConst.VISA_1111);

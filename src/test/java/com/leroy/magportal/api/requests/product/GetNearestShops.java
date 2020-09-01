@@ -1,4 +1,4 @@
-package com.leroy.magportal.api.requests;
+package com.leroy.magportal.api.requests.product;
 
 import com.leroy.magmobile.api.requests.CommonLegoRequest;
 import ru.leroymerlin.qa.core.clients.base.Method;
