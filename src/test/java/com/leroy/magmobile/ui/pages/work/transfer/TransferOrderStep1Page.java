@@ -81,6 +81,12 @@ public class TransferOrderStep1Page extends TransferOrderPage {
         return new TransferSearchPage();
     }
 
+    @Step("Нажать кнопку '+ Товар'")
+    public TransferSearchPage clickAddProduct() {
+        addProductBtn.click();
+        return new TransferSearchPage();
+    }
+
     @Step("Нажать кнопку 'Далее ->'")
     public void clickNextButton() {
         nextBtn.click();

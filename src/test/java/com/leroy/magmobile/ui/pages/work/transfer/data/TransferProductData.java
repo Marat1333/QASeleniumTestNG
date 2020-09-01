@@ -49,7 +49,8 @@ public class TransferProductData {
 
     public void setOrderedQuantity(Integer orderedQuantity, boolean recalculate) {
         this.orderedQuantity = orderedQuantity;
-        this.totalPrice = this.price * orderedQuantity;
+        if (totalPrice != null && recalculate)
+            this.totalPrice = this.price * orderedQuantity;
     }
 
     public void assertEqualsNotNullExpectedFields(TransferProductData expectedData) {

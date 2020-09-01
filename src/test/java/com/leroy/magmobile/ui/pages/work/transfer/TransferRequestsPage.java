@@ -3,6 +3,7 @@ package com.leroy.magmobile.ui.pages.work.transfer;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
 import com.leroy.magmobile.ui.pages.work.transfer.data.ShortTransferTaskData;
@@ -24,6 +25,9 @@ public class TransferRequestsPage extends CommonMagMobilePage {
     @AppFindBy(accessibilityId = "ScreenTitle", metaName = "Заголовок экрана")
     Element screenTitle;
 
+    @AppFindBy(text = "ПОПОЛНИТЬ ТОРГОВЫЙ ЗАЛ")
+    MagMobButton fillShoppingRoomBtn;
+
     @Override
     protected void waitForPageIsLoaded() {
         screenTitle.waitForVisibility();
@@ -31,6 +35,12 @@ public class TransferRequestsPage extends CommonMagMobilePage {
     }
 
     // Actions
+
+    @Step("Нажать кнопку 'Пополнить торговый зал'")
+    public TransferOrderStep1Page clickFillShoppingRoomButton() {
+        fillShoppingRoomBtn.click();
+        return new TransferOrderStep1Page();
+    }
 
     @Step("Найти заявку по наименованию товара в ней, и открыть эту заявку")
     public void searchForRequestAndOpenIt(String productTitle, String status) {

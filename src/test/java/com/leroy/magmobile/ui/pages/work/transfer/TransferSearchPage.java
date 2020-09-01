@@ -63,4 +63,15 @@ public class TransferSearchPage extends CommonMagMobilePage {
         transferProductPanel.click();
         return new TransferOrderStep1Page();
     }
+
+    // Verifications
+
+    @Step("Проверить, что у {index} товара выбрано количество {value}")
+    public TransferSearchPage shouldProductQuantityIs(int index, int value) {
+        index--;
+        TransferProductData transferProductData = productCardsScrollView.getDataObj(index);
+        anAssert.isEquals(transferProductData.getOrderedQuantity(), value,
+                String.format("У %s товара неверное выбранное количество", index + 1));
+        return this;
+    }
 }

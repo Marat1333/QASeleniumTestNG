@@ -8,6 +8,7 @@ import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
 import com.leroy.magmobile.ui.pages.work.transfer.data.TransferProductData;
 import com.leroy.utils.ParserUtil;
 import org.openqa.selenium.WebDriver;
+import org.testng.Assert;
 
 public class TransferSearchProductCardWidget extends CardWidget<TransferProductData> {
 
@@ -32,7 +33,7 @@ public class TransferSearchProductCardWidget extends CardWidget<TransferProductD
     @AppFindBy(xpath = ".//android.widget.TextView[@content-desc='priceUnit']")
     private Element unit;
 
-    @AppFindBy(xpath = "//android.widget.EditText", metaName = "Поле для редактирования количества")
+    @AppFindBy(xpath = ".//android.widget.EditText", metaName = "Поле для редактирования количества")
     EditBox editQuantityFld;
 
     public void editProductQuantity(int value) {
@@ -43,7 +44,9 @@ public class TransferSearchProductCardWidget extends CardWidget<TransferProductD
     public TransferProductData collectDataFromPage(String pageSource) {
         TransferProductData transferProductData = new TransferProductData();
         transferProductData.setLmCode(ParserUtil.strWithOnlyDigits(lmCode.getText(pageSource)));
-        transferProductData.setBarCode(ParserUtil.strWithOnlyDigits(barCode.getText(pageSource)));
+        String barCodeValue = barCode.getTextIfPresent(pageSource);
+        Assert.assertNotNull(barCodeValue, "У товара отсутствует бар код");
+        transferProductData.setBarCode(ParserUtil.strWithOnlyDigits(barCodeValue));
         transferProductData.setTitle(title.getText(pageSource));
         transferProductData.setTotalStock(ParserUtil.strToInt(availableStock.getText(pageSource)));
         transferProductData.setOrderedQuantity(ParserUtil.strToInt(editQuantityFld.getText(pageSource)));

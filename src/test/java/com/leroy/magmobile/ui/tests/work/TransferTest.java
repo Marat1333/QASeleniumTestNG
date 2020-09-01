@@ -193,7 +193,8 @@ public class TransferTest extends AppBaseSteps {
         int newQuantity = 5;
         TransferProductData transferProductData = searchProductPage.getTransferProduct(1);
         transferProductData.setOrderedQuantity(newQuantity);
-        searchProductPage.editProductQuantityForFirstProduct(newQuantity);
+        searchProductPage.editProductQuantityForFirstProduct(newQuantity)
+                .shouldProductQuantityIs(1, newQuantity);
 
         // Step 6
         step("Нажмите на Товары на отзыв");
@@ -467,18 +468,30 @@ public class TransferTest extends AppBaseSteps {
     @Test(description = "C3268366 Изменение количества товара в поиске товаров")
     public void testChangeProductQuantityWhenSearchProductsOnStock() throws Exception {
         // Pre-condition
-        step("Precondition: Авторизуемся и заходим на страницу поиска товаров на складе");
         WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
-        TransferOrderStep1Page transferOrderStep1Page = workPage.clickWithdrawalFromRMPlusIcon();
-        TransferSearchPage searchProductPage = transferOrderStep1Page.clickAddProductFromStockButton();
+        TransferSearchPage transferSearchPage = workPage.goToTransferProductFromStock()
+                .clickFillShoppingRoomButton().clickAddProductFromStockButton();
 
         // Step 1 - 3
-        step("Нажмите на + в правом нижнем углу мини-карточки выбранного товара и введите новое кол-во товара");
-        searchProductPage.editProductQuantityForFirstProduct(5);
+        step("Нажмите на + в правом нижнем углу мини-карточки товара и " +
+                "введите количество товара больше, чем доступно для отзыва");
+        TransferProductData transferProductData = transferSearchPage.getTransferProduct(1);
+        transferSearchPage.editProductQuantityForFirstProduct(transferProductData.getTotalStock() + 10)
+                .shouldProductQuantityIs(1, 0);
 
         // Step 4-5
-        step("Повторите предыдущие шаги, но введите другое кол-во");
-        searchProductPage.editProductQuantityForFirstProduct(10);
+        step("Нажмите на + в правом нижнем углу мини-карточки товара, добавленного в заявку\n" +
+                "Введите количество товара");
+        int newQuantity = 3;
+        transferSearchPage.editProductQuantityForFirstProduct(newQuantity)
+                .shouldProductQuantityIs(1, newQuantity);
+        transferProductData.setOrderedQuantity(newQuantity, false);
+
+        // Step 6
+        step("Нажмите на поле Товары на отзыв");
+        transferSearchPage.clickTransferProductPanel()
+                .verifyElementsWhenProductsAdded()
+                .shouldTransferProductIs(1, transferProductData);
 
     }
 
