@@ -393,8 +393,36 @@ public class OrderTest extends BasePAOTest {
 
     }
 
+    private void preconditionForEditOrderDraftTestsExceedsAvailableStock(
+            List<ProductItemData> productItemDataList, boolean isNeedToGoToContentTab) throws Exception {
+        // Prepare data
+        List<CartProductOrderData> cardProducts = new ArrayList<>();
+        for (ProductItemData productItemData : productItemDataList) {
+            CartProductOrderData cartProductOrderData = new CartProductOrderData(productItemData);
+            cartProductOrderData.setQuantity(productItemData.getAvailableStock() + 100);
+            cardProducts.add(cartProductOrderData);
+        }
+
+        String cartId = helper.createCart(cardProducts).getFullDocId();
+
+        cartPage = loginSelectShopAndGoTo(CartPage.class); // TODO ???
+        cartPage.clickDocumentInLeftMenu(cartId);
+
+        stepClickConfirmOrderButton(null);
+
+        if (isNeedToGoToContentTab) {
+            orderDraftContentPage = orderDraftDeliveryWayPage.goToContentOrderTab()
+                    .shouldOrderContentDataIs(orderData);
+        }
+
+    }
+
     private void preconditionForEditOrderDraftTests() throws Exception {
         preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)), true);
+    }
+
+    private void preconditionForEditOrderDraftTestsExceedsAvailableStock() throws Exception {
+        preconditionForEditOrderDraftTestsExceedsAvailableStock(Collections.singletonList(productList.get(0)), true);
     }
 
     // ---------------- EDIT ORDER DRAFT -------------------//
@@ -721,10 +749,83 @@ public class OrderTest extends BasePAOTest {
     }
 
     @Test(description = "C23410894 Подтвердить заказ на самовывоз через 14 дней", groups = NEED_PRODUCTS_GROUP)
-    public void testConfirmOrderPickupToday() throws Exception {
+    public void testConfirmOrderPickupIn14Days() throws Exception {
         SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
-        preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)), false);
+        preconditionForEditOrderDraftTestsExceedsAvailableStock(Collections.singletonList(productList.get(0)), false);
 
+        // Step 1
+        step("В поле Выбери способ получения нажмите на кнопу Самовывоз (по умолчанию)");
+        orderData.setDeliveryType(SalesDocumentsConst.GiveAwayPoints.PICKUP);
+        orderData.setDeliveryDate(LocalDate.now().plusDays(14));
+        orderDraftDeliveryWayPage.shouldOrderDataIs(orderData);
+
+        // Step 2
+        step("Нажмите на кнопку 'Добавить клиента'");
+        stepClickAddCustomerButton();
+
+        // Step 3
+        step("Введите номер телефона, нажмите Enter, нажмите на мини-карточку нужного клиента");
+        stepSelectCustomerByPhoneNumber(customerData);
+
+        // Step 4
+        step("Выберете поле PIN-код для оплаты, введите PIN-код для оплаты");
+        stepEnterPinCode();
+
+        // Step 5
+        step("Нажмите на кнопку Подтвердить заказ");
+        stepClickConfirmOrder();
+
+        // Step 6
+        step("Нажмите на 'Перейти в список заказов'");
+        stepGoToTheOrderList();
+
+        // Step 7
+        step("Обновите список документов слева");
+        stepRefreshDocumentListAndCheckDocument();
+
+    }
+
+    @Test(description = "C23410893 Подтвердить заказ на доставку завтра", groups = NEED_PRODUCTS_GROUP)
+    public void testConfirmOrderForDeliveryIn15days() throws Exception {
+        SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+        SalesDocumentsConst.GiveAwayPoints deliveryWay = SalesDocumentsConst.GiveAwayPoints.DELIVERY;
+        preconditionForEditOrderDraftTestsExceedsAvailableStock(Collections.singletonList(productList.get(0)), false);
+
+        // Step 1
+        step("В поле Выбери способ получения нажмите на кнопу Доставка");
+        orderDraftDeliveryWayPage.selectDeliveryWay(deliveryWay);
+        orderData.setDeliveryType(deliveryWay);
+        orderData.setPinCode("");
+        orderData.setClient(new SimpleCustomerData());
+        orderData.setRecipient(new SimpleCustomerData());
+        orderData.setComment("");
+        orderData.setDeliveryDate(LocalDate.now().plusDays(15));
+        orderDraftDeliveryWayPage.shouldOrderDataIs(orderData);
+
+        // Step 2
+        step("Нажмите на кнопку 'Добавить клиента'");
+        stepClickAddCustomerButton();
+
+        // Step 3
+        step("Введите номер телефона, нажмите Enter, нажмите на мини-карточку нужного клиента");
+        stepSelectCustomerByPhoneNumber(customerData);
+
+        // Step 4
+        step("Выберете поле PIN-код для оплаты, введите PIN-код для оплаты");
+        stepEnterPinCode();
+
+        // Step 5
+        step("Нажмите на кнопку Подтвердить заказ");
+        stepClickConfirmOrder();
+
+        // Step 6
+        step("Нажмите на 'Перейти в список заказов'");
+        stepGoToTheOrderList();
+
+        // Step 7
+        step("Обновите список документов слева");
+        stepRefreshDocumentListAndCheckDocument();
+    }
     // ------------ Steps ------------------ //
 
     /**
