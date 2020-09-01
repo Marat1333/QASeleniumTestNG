@@ -29,6 +29,7 @@ import com.leroy.magportal.ui.pages.orders.modal.SubmittedOrderModal;
 import com.leroy.magportal.ui.pages.products.form.AddProductForm;
 import com.leroy.magportal.ui.tests.BasePAOTest;
 import com.leroy.utils.RandomUtil;
+import org.jetbrains.annotations.NotNull;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -718,6 +719,11 @@ public class OrderTest extends BasePAOTest {
         step("Обновите список документов слева");
         stepRefreshDocumentListAndCheckDocument();
     }
+
+    @Test(description = "C23410894 Подтвердить заказ на самовывоз через 14 дней", groups = NEED_PRODUCTS_GROUP)
+    public void testConfirmOrderPickupToday() throws Exception {
+        SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+        preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)), false);
 
     // ------------ Steps ------------------ //
 
