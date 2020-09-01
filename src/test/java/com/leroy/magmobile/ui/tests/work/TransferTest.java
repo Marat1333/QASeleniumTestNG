@@ -444,9 +444,11 @@ public class TransferTest extends AppBaseSteps {
             transferOrderStep1Page = new TransferOrderStep1Page();
         }
 
+        DetailedTransferTaskData transferTaskData = transferOrderStep1Page.getTransferTaskData();
+
         // Step 1
         step("Нажмите на мини-карточку товара");
-        TransferActionWithProductCardModal actionModal = transferOrderStep1Page.clickProductCard(1, false);
+        TransferActionWithProductCardModal actionModal = transferOrderStep1Page.clickProductCard(1, true);
 
         // Step 2
         step("Нажмите на Изменить количество");
@@ -455,9 +457,11 @@ public class TransferTest extends AppBaseSteps {
 
         // Step 3
         step("Измените количество товара плашкой и нажмите Сохранить");
-        transferOrderStep1Page = editProduct35Page.enterQuantityOfProduct(2, true)
+        int newQuantity = 2;
+        transferTaskData.changeProductQuantity(0, newQuantity);
+        transferOrderStep1Page = editProduct35Page.enterQuantityOfProduct(newQuantity, true)
                 .clickSubmitButton();
-
+        transferOrderStep1Page.shouldTransferTaskDataIs(transferTaskData);
     }
 
     @Test(description = "C3268366 Изменение количества товара в поиске товаров")

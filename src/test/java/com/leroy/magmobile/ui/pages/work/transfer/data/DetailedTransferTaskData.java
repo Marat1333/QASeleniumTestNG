@@ -4,6 +4,7 @@ import com.leroy.core.ContextProvider;
 import com.leroy.core.asserts.SoftAssertWrapper;
 import com.leroy.magmobile.ui.models.customer.MagCustomerData;
 import com.leroy.magmobile.ui.pages.work.transfer.enums.TransferTaskTypes;
+import com.leroy.utils.ParserUtil;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -79,6 +80,14 @@ public class DetailedTransferTaskData {
         if (totalPrice != null)
             totalPrice -= products.get(index).getTotalPrice();
         products.remove(index);
+    }
+
+    public void changeProductQuantity(int index, int value) {
+        TransferProductData productData = products.get(index);
+        double price = productData.getPrice();
+        double quantityDiff = value - productData.getOrderedQuantity();
+        productData.setOrderedQuantity(value, true);
+        totalPrice += ParserUtil.multiply(price, quantityDiff, 2);
     }
 
 }
