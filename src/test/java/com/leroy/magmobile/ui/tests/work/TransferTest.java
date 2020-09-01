@@ -385,7 +385,7 @@ public class TransferTest extends AppBaseSteps {
 
     }
 
-    @Test(description = "C3268364 Удаления последнего товара из заявки")
+    @Test(description = "C3268364 Удаление последнего товара из заявки")
     public void testRemoveLastProductFromTransferTask() throws Exception {
         TransferOrderStep1Page transferOrderStep1Page;
         if (isStartFromScratch()) {
@@ -408,7 +408,8 @@ public class TransferTest extends AppBaseSteps {
 
         // Step 1
         step("Нажмите на мини-карточку товара");
-        TransferActionWithProductCardModal actionModal = transferOrderStep1Page.clickProductCard(1, false);
+        TransferActionWithProductCardModal actionModal = transferOrderStep1Page.clickProductCard(1, false)
+                .verifyRequiredElements();
 
         // Step 2
         step("Выберите параметр Удалить товар");
@@ -419,7 +420,7 @@ public class TransferTest extends AppBaseSteps {
         // Step 3
         step("Нажмите на Удалить");
         confirmModal.clickConfirmButton();
-
+        new TransferOrderStep1Page().verifyElementsWhenEmpty();
     }
 
     @Test(description = "C3268365 Изменение количества товара")
