@@ -109,10 +109,14 @@ public class OrderDraftDeliveryWayPage extends OrderDraftPage {
 
     @Step("Выбрать тип получения заказа")
     public OrderDraftDeliveryWayPage selectDeliveryWay(SalesDocumentsConst.GiveAwayPoints giveAwayPoints) {
-        if (giveAwayPoints.equals(SalesDocumentsConst.GiveAwayPoints.PICKUP))
+        if (giveAwayPoints.equals(SalesDocumentsConst.GiveAwayPoints.PICKUP)) {
+            pickupBtn.scrollTo();
             pickupBtn.click();
-        if (giveAwayPoints.equals(SalesDocumentsConst.GiveAwayPoints.DELIVERY))
+        }
+        if (giveAwayPoints.equals(SalesDocumentsConst.GiveAwayPoints.DELIVERY)) {
+            deliveryBtn.scrollTo();
             deliveryBtn.click();
+        }
         waitForSpinnerAppearAndDisappear();
         shouldModalThatChangesIsNotSavedIsNotVisible();
         return this;

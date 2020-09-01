@@ -29,6 +29,7 @@ import com.leroy.magportal.ui.pages.orders.modal.SubmittedOrderModal;
 import com.leroy.magportal.ui.pages.products.form.AddProductForm;
 import com.leroy.magportal.ui.tests.BasePAOTest;
 import com.leroy.utils.RandomUtil;
+import org.apache.kafka.common.protocol.types.Field;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -672,14 +673,51 @@ public class OrderTest extends BasePAOTest {
 
     @Test(description = "C23398446 Валидация формата пин кода для разных типов получения товара", groups = NEED_PRODUCTS_GROUP)
     public void testValidationForDifferentReceivingTypes() throws Exception{
-        preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)),false);
+        //preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)),false);
+        SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+        SalesDocumentsConst.GiveAwayPoints deliveryWay = SalesDocumentsConst.GiveAwayPoints.DELIVERY;
+        preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)), false);
         //Step1
         step("Введите PIN-код для оплаты (код начинается с 9)");
-        stepEnterPinCode();
+        //stepEnterPinCode();
+        orderDraftDeliveryWayPage.enterPinCode("98987");
+        //String s = "";
         step("В поле Выбери способ получения нажмите на кнопу Доставка");
-
+        orderDraftDeliveryWayPage.selectDeliveryWay(deliveryWay);
+        orderData.setDeliveryType(deliveryWay);
+        orderData.setPinCode("");
+        orderData.setClient(new SimpleCustomerData());
+        orderData.setRecipient(new SimpleCustomerData());
+        orderData.setComment("");
+        orderData.setDeliveryDate(LocalDate.now().plusDays(1));
+        orderDraftDeliveryWayPage.shouldOrderDataIs(orderData);
         String s = "";
     }
+
+
+    @Test(description = "C23398448 Смена типа получения товара при заполненном пинкоде в неподтвержденном заказе", groups = NEED_PRODUCTS_GROUP)
+    public void testChangeOfReceiptType() throws Exception{
+        SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+        SalesDocumentsConst.GiveAwayPoints deliveryWay = SalesDocumentsConst.GiveAwayPoints.DELIVERY;
+        SalesDocumentsConst.GiveAwayPoints deliveryWayPickup = SalesDocumentsConst.GiveAwayPoints.PICKUP;
+        preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)), false);
+        stepEnterPinCode();
+
+        // Step 1
+        step("В поле Выбери способ получения измените Самовывоз (по умолчанию) на Доставка или наоборот");
+        orderDraftDeliveryWayPage.selectDeliveryWay(deliveryWay);
+        orderData.setDeliveryType(deliveryWay);
+        //Step 2
+        step("Введите PIN-код для оплаты (код начинается не с 9 для типа получения Самовывоз, с 9 для типа получения Доставка)");
+        stepEnterPinCode();
+        //Step 3
+        step("В поле Выбери способ получения измените Доставка на Самовывоз (по умолчанию) или наоборот");
+        orderDraftDeliveryWayPage.selectDeliveryWay(deliveryWayPickup);
+        orderData.setDeliveryType(deliveryWayPickup);
+        orderDraftDeliveryWayPage.shouldPinCodeFieldIs("");
+    }
+
+
     // ======== Подтверждение заказа ============= //
 
     @Test(description = "C23410892 Подтвердить заказ на самовывоз сегодня", groups = NEED_PRODUCTS_GROUP)
