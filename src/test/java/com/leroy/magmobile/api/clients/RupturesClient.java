@@ -173,6 +173,13 @@ public class RupturesClient extends BaseMashupClient {
         return execute(req, JsonNode.class);
     }
 
+    @Step("Delete few sessions")
+    public void deleteFewSessions(int...sessions){
+        for (int each : sessions) {
+            deleteSession(each);
+        }
+    }
+
     @Step("Delete session with id = {sessionId}")
     public Response<JsonNode> deleteSession(Integer sessionId) {
         RupturesSessionDeleteRequest req = new RupturesSessionDeleteRequest();

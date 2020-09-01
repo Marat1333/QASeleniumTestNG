@@ -55,6 +55,15 @@ public class SessionListPage extends CommonMagMobilePage {
         backBtn.click();
     }
 
+    @Step("Обновить страницу выполнив pull to refresh")
+    public SessionListPage pullToRefresh(){
+        while (!isProgressBarVisible()) {
+            mainScrollView.scrollToBeginning(1);
+        }
+        waitUntilProgressBarIsInvisible();
+        return new SessionListPage();
+    }
+
     @Step("Сканировать перебои")
     public RupturesScannerPage callScannerPage() {
         scanRupturesBtn.click();
@@ -68,6 +77,12 @@ public class SessionListPage extends CommonMagMobilePage {
         departmentListPage.selectDepartmentById("" + departmentId);
         waitUntilProgressBarIsInvisible();
         return new SessionListPage();
+    }
+
+    @Step("Открыть модалку выбора отдела")
+    public DepartmentListPage callDepartmentModalPage(int departmentId) throws Exception {
+        choseDepartmentBtn.click();
+        return new DepartmentListPage();
     }
 
     @Step("Перейти в сессию с номером {sessionId}")
