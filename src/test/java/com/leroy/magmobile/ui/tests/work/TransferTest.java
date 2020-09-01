@@ -499,12 +499,13 @@ public class TransferTest extends AppBaseSteps {
     public void testRemoveDraftTransferTask() throws Exception {
         // Pre-condition
         TransferOrderStep1Page transferOrderStep1Page;
+        String taskId = null;
         if (isStartFromScratch()) {
             TransferProductOrderData transferProductData1 = new TransferProductOrderData();
             transferProductData1.setLmCode(products.get(0).getLmCode());
             transferProductData1.setOrderedQuantity(1);
 
-            String taskId = transferHelper.createTransferTask(
+            taskId = transferHelper.createTransferTask(
                     transferProductData1,
                     SalesDocumentsConst.GiveAwayPoints.FOR_CLIENT_TO_SHOP_ROOM).getTaskId();
             WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
@@ -519,10 +520,12 @@ public class TransferTest extends AppBaseSteps {
 
         // Step 1 - 2
         step("Нажмите на кнопку удаления заявки в правом верхнем углу экрана и подтвердите удаление");
-        TransferRequestsPage transferRequestsPage = transferOrderStep1Page.removeTransferTask();
+        transferOrderStep1Page.removeTransferTask()
+                .verifyRequiredElements();
 
-        String s = "";
-
+        TransferClient transferClient = apiClientProvider.getTransferClient();
+        Response<TransferSalesDocData> resp = transferClient.sendRequestGet(taskId);
+        transferClient.assertThatDocumentIsNotExist(resp);
     }
 
 

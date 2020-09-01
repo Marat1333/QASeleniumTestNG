@@ -30,7 +30,8 @@ public class TransferRequestsPage extends CommonMagMobilePage {
 
     @Override
     protected void waitForPageIsLoaded() {
-        screenTitle.waitForVisibility();
+        anAssert.isTrue(screenTitle.isVisible(timeout),
+                "Страница 'Отзыв товаров со склада' не загрузилась");
         waitUntilProgressBarIsInvisible();
     }
 
@@ -48,6 +49,15 @@ public class TransferRequestsPage extends CommonMagMobilePage {
         if (widget.getLocation().getY() / Toolkit.getDefaultToolkit().getScreenSize().getHeight() * 100 > 95)
             requestsScrollView.scrollDown();
         widget.click();
+    }
+
+    // Verifications
+
+    @Step("Проверить, что страница 'Отзыв товаров со склада' отображается корректно")
+    public TransferRequestsPage verifyRequiredElements() {
+        softAssert.areElementsVisible(screenTitle, fillShoppingRoomBtn);
+        softAssert.verifyAll();
+        return this;
     }
 
 }
