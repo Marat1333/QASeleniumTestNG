@@ -812,4 +812,59 @@ public class RupturesTest extends AppBaseSteps {
                 .shouldCommentFieldHasText(comment);
     }
 
+    @Test(description = "C3272529 Два списка сессий (1 отдел)")
+    public void testTwoSessionLists() throws Exception {
+        int departmentId = 1;
+
+        //Pre-conditions
+        ruptureClient.deleteAllSessionInDepartment(departmentId);
+        List<Integer> sessionsIdList = ruptureClient.createFewSessions(departmentId, 20);
+        List<Integer> activeSessionsIdList = sessionsIdList.subList(0, 10);
+        List<Integer> finishedSessionsIdList = sessionsIdList.subList(10, sessionsIdList.size());
+        ruptureClient.finishFewSessions(finishedSessionsIdList);
+        WorkPage workPage = loginAndGoTo(WorkPage.class);
+
+
+        //Step 1
+        step("Перейти на экран списка сессий");
+        SessionListPage sessionListPage = workPage.goToRuptures();
+        sessionListPage = sessionListPage.changeDepartment(departmentId);
+        sessionListPage.shouldAllActiveSessionAreVisible(activeSessionsIdList)
+                .shouldAllFinishedSessionAreVisible(finishedSessionsIdList);
+    }
+
+    @Test(description = "C23423650 Пустой список сессий (2 отдел)")
+    public void testEmptySessionList() throws Exception {
+        int departmentId = 2;
+
+        //Pre-conditions
+        ruptureClient.deleteAllSessionInDepartment(departmentId);
+        WorkPage workPage = loginAndGoTo(WorkPage.class);
+
+        //Step 1
+        step("Перейти на экран списка сессий");
+        SessionListPage sessionListPage = workPage.goToRuptures();
+        sessionListPage = sessionListPage.changeDepartment(departmentId);
+        sessionListPage.shouldNoSessionMsgLblIsVisible();
+    }
+
+    @Test(description = "C23423651 Пагинация списка активных сессий, пустой список завершенных сессий (3 отдел)")
+    public void testActiveSessionPagination() throws Exception {
+        int departmentId = 3;
+
+        //Pre-conditions
+        ruptureClient.deleteAllSessionInDepartment(departmentId);
+        List<Integer> sessionsIdList = ruptureClient.createFewSessions(departmentId, 11);
+        WorkPage workPage = loginAndGoTo(WorkPage.class);
+
+
+        //Step 1
+        step("Перейти на экран списка сессий");
+        SessionListPage sessionListPage = workPage.goToRuptures();
+        sessionListPage = sessionListPage.changeDepartment(departmentId);
+        sessionListPage.shouldAllActiveSessionAreVisible(sessionsIdList)
+                .shouldFinishedSessionCardsIsNotVisible()
+                .verifyRequiredElements();
+    }
+
 }
