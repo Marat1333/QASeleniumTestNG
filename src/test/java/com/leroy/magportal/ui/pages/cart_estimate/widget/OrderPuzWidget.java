@@ -68,7 +68,7 @@ public class OrderPuzWidget extends CardWebWidget<OrderWebData> {
                 "Что-то изменилось в метке содержащей информацию о кол-ве и весе товара");
 
         orderWebData.setTotalPrice(ParserUtil.strToDouble(totalPriceValue.getText()));
-        orderWebData.setTotalWeight(ParserUtil.strToDouble(productCountAndWeight[1]));
+        orderWebData.setTotalWeight(ParserUtil.strToWeight(productCountAndWeight[1]));
         orderWebData.setProductCount(ParserUtil.strToInt(productCountAndWeight[0]));
 
         return orderWebData;

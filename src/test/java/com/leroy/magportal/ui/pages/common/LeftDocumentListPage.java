@@ -1,7 +1,9 @@
 package com.leroy.magportal.ui.pages.common;
 
+import com.leroy.constants.DefectConst;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.magportal.ui.models.salesdoc.IDataWithNumberAndStatus;
+import com.leroy.magportal.ui.models.salesdoc.ShortOrderDocWebData;
 import com.leroy.magportal.ui.webelements.CardWebWidget;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import com.leroy.utils.ParserUtil;
@@ -118,6 +120,9 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
                 d -> d.getNumber().equals(expectedDocument.getNumber())).collect(Collectors.toList());
         anAssert.isEquals(actualDocuments.size(), 1,
                 "Документ с номером " + expectedDocument.getNumber() + " не найден");
+        if (DefectConst.CONFIRMED_BUT_NOT_ALLOWED_FOR_PICKING_ORDER)
+            if (expectedDocument instanceof ShortOrderDocWebData)
+                ((ShortOrderDocWebData)expectedDocument).setStatus(null);
         actualDocuments.get(0).assertEqualsNotNullExpectedFields(expectedDocument);
     }
 

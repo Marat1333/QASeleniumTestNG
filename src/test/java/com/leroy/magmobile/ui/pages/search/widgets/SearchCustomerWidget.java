@@ -5,6 +5,7 @@ import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.models.customer.MagCustomerData;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
+import com.leroy.utils.ParserUtil;
 import org.openqa.selenium.WebDriver;
 
 public class SearchCustomerWidget extends CardWidget<MagCustomerData> {
@@ -32,7 +33,7 @@ public class SearchCustomerWidget extends CardWidget<MagCustomerData> {
         customerData.setName(nameVal.getText(ps));
         //customerData.setCardNumber(cardNumberVal.getText(ps)); TODO
         //customerData.setCardType(cardTypeVal.getText(ps));
-        customerData.setPhone(phoneVal.getText(ps));
+        customerData.setPhone(ParserUtil.standardPhoneFmt(phoneVal.getText(ps)));
         return customerData;
     }
 

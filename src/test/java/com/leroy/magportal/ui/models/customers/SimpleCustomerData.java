@@ -19,6 +19,16 @@ public class SimpleCustomerData {
     private String phoneNumber;
     private String email;
 
+    public SimpleCustomerData clone() {
+        SimpleCustomerData clone = new SimpleCustomerData().toBuilder()
+                .name(name)
+                .cardNumber(cardNumber)
+                .phoneNumber(phoneNumber)
+                .email(email)
+                .build();
+        return clone;
+    }
+
     public void generateRandomData() {
         this.name = RandomStringUtils.randomAlphanumeric(5) + " " +
                 RandomStringUtils.randomAlphanumeric(5);

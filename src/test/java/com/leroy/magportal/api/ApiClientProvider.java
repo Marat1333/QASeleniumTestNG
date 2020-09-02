@@ -306,11 +306,6 @@ public class ApiClientProvider {
         return createDraftEstimateAndGetCartId(null, lmCodes, 1);
     }
 
-    public String createDraftEstimateAndGetCartId(
-            CustomerData newCustomerData, int productCount) {
-        return createDraftEstimateAndGetCartId(newCustomerData, null, productCount);
-    }
-
     public String createDraftEstimateAndGetCartId(int productCount) {
         return createDraftEstimateAndGetCartId(null, null, productCount);
     }

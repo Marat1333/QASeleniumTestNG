@@ -14,9 +14,9 @@ public class AddIntoSalesDocumentModalPage extends CommonMagMobilePage {
         createSalesDocumentBtn.waitForVisibility();
     }
 
-    @AppFindBy(accessibilityId = "Button",
+    @AppFindBy(accessibilityId = "Button-content",
             metaName = "Кнопка для закрытия модального окна")
-    Element closeBtn;
+    Element backBtn;
 
     @AppFindBy(text = "Добавить в документ продажи")
     Element headerLbl;
@@ -46,7 +46,7 @@ public class AddIntoSalesDocumentModalPage extends CommonMagMobilePage {
     @Step("Проверить, что модальное окно отображается корректно")
     public AddIntoSalesDocumentModalPage verifyRequiredElements() {
         softAssert.areElementsVisible(
-                closeBtn, headerLbl, createSalesDocumentBtn);
+                backBtn, headerLbl, createSalesDocumentBtn);
         softAssert.verifyAll();
         return this;
     }

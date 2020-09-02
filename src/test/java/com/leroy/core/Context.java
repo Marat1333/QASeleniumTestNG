@@ -5,6 +5,8 @@ import com.leroy.core.asserts.SoftAssertWrapper;
 import com.leroy.core.testrail.helpers.StepLog;
 import lombok.Data;
 
+import java.util.Arrays;
+
 @Data
 public class Context {
 
@@ -14,8 +16,9 @@ public class Context {
     private StepLog log;
     private UserSessionData userSessionData;
 
-    // TODO Remove
+    String[] oldShops = {"78"};
+
     public boolean isNewShopFunctionality() {
-        return userSessionData.getUserShopId().equals("35");
+        return !Arrays.asList(oldShops).contains(userSessionData.getUserShopId());
     }
 }
