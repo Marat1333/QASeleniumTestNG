@@ -149,7 +149,7 @@ public class AddProduct35Page<T> extends CommonMagMobilePage {
 
         // Карточка товара
         ProductOrderCardAppData productData = new ProductOrderCardAppData();
-        productData.setPrice(ParserUtil.strToDouble(price.getText(ps)));
+        productData.setPrice(ParserUtil.strToDouble(price.getTextIfPresent(ps)));
         productData.setTitle(title.getText(ps));
         productData.setLmCode(ParserUtil.strWithOnlyDigits(lmCode.getText(ps)));
         productData.setBarCode(ParserUtil.strWithOnlyDigits(barCode.getText(ps)));
@@ -167,7 +167,7 @@ public class AddProduct35Page<T> extends CommonMagMobilePage {
 
         // Детали выбора товара (Строка заказа)
         productData.setSelectedQuantity(ParserUtil.strToDouble(editQuantityFld.getText(ps)));
-        productData.setTotalPrice(ParserUtil.strToDouble(totalPrice.getText(ps)));
+        productData.setTotalPrice(ParserUtil.strToDouble(totalPrice.getTextIfPresent(ps)));
         return productData;
     }
 

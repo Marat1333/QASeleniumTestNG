@@ -36,7 +36,7 @@ public class TransferConfirmedTaskToShopRoomPage extends TransferOrderPage {
         String ps = getPageSource();
         DetailedTransferTaskData detailedTransferTaskData = new DetailedTransferTaskData();
         detailedTransferTaskData.setNumber(getTaskNumber(ps));
-        detailedTransferTaskData.setDeliveryDate(DateTimeUtil.strToLocalDate(deliveryDateFld.getText(ps), ""));
+        detailedTransferTaskData.setDeliveryDate(DateTimeUtil.strToLocalDate(deliveryDateFld.getText(ps), "dd MMMM yyyy"));
         detailedTransferTaskData.setDeliveryTime(DateTimeUtil.strToLocalTime(deliveryTimeFld.getText(ps)));
         detailedTransferTaskData.setProducts(productScrollView.getFullDataList());
         return detailedTransferTaskData;

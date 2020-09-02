@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 public class TransferShopRoomStep2Page extends TransferOrderPage {
 
@@ -102,7 +102,7 @@ public class TransferShopRoomStep2Page extends TransferOrderPage {
 
     @Step("Проверить, что поле дата должно быть {date}")
     public TransferShopRoomStep2Page shouldDateFieldIs(LocalDate date) {
-        String dateFormat = "dd-го MMM";
+        String dateFormat = "d MMMM yyyy";
         String _deliveryDate = deliveryDateLbl.getText();
         LocalDate dateFromPage = DateTimeUtil.strToLocalDate(_deliveryDate,
                 dateFormat);
@@ -116,10 +116,12 @@ public class TransferShopRoomStep2Page extends TransferOrderPage {
         return this;
     }
 
-    @Step("Проверить, что поле время должно быть {time}")
-    public TransferShopRoomStep2Page shouldTimeFieldIs(LocalTime time) {
-        anAssert.isElementTextEqual(deliveryTimeLbl,
-                time.format(DateTimeFormatter.ofPattern("HH:mm")));
+    @Step("Проверить, что поле время должно быть {expectedTime}")
+    public TransferShopRoomStep2Page shouldTimeFieldIs(LocalTime expectedTime) {
+        LocalTime actualTime = DateTimeUtil.strToLocalTime(deliveryTimeLbl.getText());
+        long diffTime = ChronoUnit.MINUTES.between(actualTime, expectedTime);
+        anAssert.isTrue(Math.abs(diffTime) <= 1,
+                "Неверное время поставки товара. Актуальное: " + actualTime + " Ожидалось: " + expectedTime);
         return this;
     }
 

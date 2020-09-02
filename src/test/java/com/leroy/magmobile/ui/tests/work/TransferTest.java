@@ -16,8 +16,12 @@ import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.pages.common.modal.ConfirmRemovingProductModal;
 import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
 import com.leroy.magmobile.ui.pages.sales.EditProduct35Page;
+import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.modal.ActionWithProduct35ModalPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SaleTypeModalPage;
+import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.work.WorkPage;
 import com.leroy.magmobile.ui.pages.work.transfer.*;
 import com.leroy.magmobile.ui.pages.work.transfer.data.DetailedTransferTaskData;
@@ -240,9 +244,72 @@ public class TransferTest extends AppBaseSteps {
         transferConfirmedTaskToShopRoomPage.shouldTransferTaskDataIs(detailedTransferTaskData);
     }
 
-    @Test(description = "C3268360 Создание отзыва с RM из карточки товара (поиск товара по штрихкоду)", enabled = false)
-    public void test111() {
-        // TODO
+    @Test(description = "C3268360 Создание отзыва с RM из карточки товара")
+    public void testCreateTransferTaskFromProductCard() throws Exception {
+        // Pre-condition
+        step("Выполнение предусловий теста");
+        TransferClient transferClient = apiClientProvider.getTransferClient();
+        Response<TransferSearchProductDataList> response = transferClient.searchForTransferProducts(
+                SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR);
+        assertThat(response, successful());
+        String lmCode = response.asJson().getItems().get(0).getLmCode();
+
+        MainProductAndServicesPage productAndServicesPage = loginSelectShopAndGoTo(MainProductAndServicesPage.class);
+        SearchProductPage searchProductPage = productAndServicesPage.clickSearchBar(true);
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
+
+        // Step 1
+        step("Нажмите на кнопку Действия с товаром");
+        ProductDescriptionPage productDescriptionPage = new ProductDescriptionPage();
+        productDescriptionPage.clickActionWithProductButton();
+        ActionWithProduct35ModalPage modalPage = new ActionWithProduct35ModalPage();
+
+        // Step 2
+        step("Выберите параметр Пополнить торговый зал");
+        AddProduct35Page<TransferOrderStep1Page> addProduct35Page = modalPage.clickFillShoppingRoomButton();
+        TransferProductData transferProductData = new TransferProductData(addProduct35Page.getProductOrderDataFromPage());
+
+        // Step 3
+        step("Нажмите на кнопку Добавить в заявку");
+        TransferOrderStep1Page transferOrderStep1Page = addProduct35Page.clickSubmitButton()
+                .verifyElementsWhenProductsAdded();
+
+        // Step 4
+        step("Нажмите на Далее");
+        transferOrderStep1Page.clickNextButton();
+        TransferShopRoomStep2Page transferShopRoomStep2Page = new TransferShopRoomStep2Page()
+                .verifyRequiredElements();
+
+        // Step 5
+        step("Нажать на поле даты поставки и меняем дату и подтвердить изменение");
+        LocalDate testDate = LocalDate.now().plusDays(2);
+        transferShopRoomStep2Page.editDeliveryDate(testDate)
+                .shouldDateFieldIs(testDate);
+
+        // Step 6
+        step("Изменить ожидаемое время доставки и подтвердить его");
+        LocalTime timeForSelect = LocalTime.now().plusHours(1).plusMinutes(5).truncatedTo(ChronoUnit.MINUTES);
+        transferShopRoomStep2Page.editDeliveryTime(timeForSelect, true)
+                .shouldTimeFieldIs(timeForSelect);
+
+        // Step 7
+        step("Нажмите на кнопку Отправить заявку на отзыв");
+        TransferToShopRoomSuccessPage successPage = transferShopRoomStep2Page.clickSubmitBtn();
+        successPage.verifyRequiredElements();
+
+        // Step 8
+        step("Нажмите на кнопку Перейти в список заявок");
+        TransferRequestsPage transferRequestsPage = successPage.clickSubmitButton();
+
+        // Step 12
+        step("Открыть заявку и проверить заполненные поля и товары");
+        transferRequestsPage.searchForRequestAndOpenIt(transferProductData.getTitle(), SEND_STATUS);
+        TransferConfirmedTaskToShopRoomPage transferConfirmedTaskToShopRoomPage = new TransferConfirmedTaskToShopRoomPage();
+        DetailedTransferTaskData detailedTransferTaskData = new DetailedTransferTaskData();
+        detailedTransferTaskData.setDeliveryDate(testDate);
+        detailedTransferTaskData.setDeliveryTime(timeForSelect);
+        detailedTransferTaskData.setProducts(Collections.singletonList(transferProductData));
+        transferConfirmedTaskToShopRoomPage.shouldTransferTaskDataIs(detailedTransferTaskData);
     }
 
     @Test(description = "C3268361 Редактирование заявки в статусе Черновик")
