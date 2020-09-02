@@ -29,8 +29,6 @@ import com.leroy.magportal.ui.pages.orders.modal.SubmittedOrderModal;
 import com.leroy.magportal.ui.pages.products.form.AddProductForm;
 import com.leroy.magportal.ui.tests.BasePAOTest;
 import com.leroy.utils.RandomUtil;
-import org.apache.kafka.common.protocol.types.Field;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -642,11 +640,11 @@ public class OrderTest extends BasePAOTest {
 
 
     @Test(description = "C23398451 Создание заказа с существующим пин кодом", groups = NEED_PRODUCTS_GROUP)
-    public void testCreateOrderWithExistedPinCode() throws Exception{
+    public void testCreateOrderWithExistedPinCode() throws Exception {
         String toolTypeText = "Уже используется, придумай другой код";
         SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
-        preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)),false);
-        //Prepare data
+        preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)), false);
+        // Prepare data
         step("Нажмите на кнопку Добавить клиента");
         CustomerSearchForm customerSearchForm2 = orderDraftDeliveryWayPage.getCustomerSearchForm();
         customerSearchForm2.clickAddCustomer();
@@ -663,7 +661,7 @@ public class OrderTest extends BasePAOTest {
     }
 
     @Test(description = "C23398448 Смена типа получения товара при заполненном пинкоде в неподтвержденном заказе", groups = NEED_PRODUCTS_GROUP)
-    public void testChangeOfReceiptType() throws Exception{
+    public void testChangeOfReceiptType() throws Exception {
         SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
         SalesDocumentsConst.GiveAwayPoints deliveryWay = SalesDocumentsConst.GiveAwayPoints.DELIVERY;
         SalesDocumentsConst.GiveAwayPoints deliveryWayPickup = SalesDocumentsConst.GiveAwayPoints.PICKUP;
