@@ -640,14 +640,6 @@ public class OrderTest extends BasePAOTest {
         orderCreatedContentPage.shouldDocumentListContainsThis(shortOrderDocWebData);
     }
 
-    @Test(description = "C23398450 Ввод существующего пин кода", groups = NEED_PRODUCTS_GROUP)
-    public void testEnterExistedPinCode() throws Exception {
-        preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)),false);
-        //Step 1
-        step("Введите существующий PIN-код, например 11111 для самовывоза или 99999 для доставки");
-        orderDraftDeliveryWayPage.enterPinCode("11111")
-                .shouldPinCodeErrorTooltipIs("Уже используется, придумай другой код");
-    }
 
     @Test(description = "C23398451 Создание заказа с существующим пин кодом", groups = NEED_PRODUCTS_GROUP)
     public void testCreateOrderWithExistedPinCode() throws Exception{
@@ -669,31 +661,6 @@ public class OrderTest extends BasePAOTest {
                 .shouldPinCodeErrorTooltipIs(toolTypeText);
 
     }
-
-
-    @Test(description = "C23398446 Валидация формата пин кода для разных типов получения товара", groups = NEED_PRODUCTS_GROUP)
-    public void testValidationForDifferentReceivingTypes() throws Exception{
-        //preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)),false);
-        SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
-        SalesDocumentsConst.GiveAwayPoints deliveryWay = SalesDocumentsConst.GiveAwayPoints.DELIVERY;
-        preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)), false);
-        //Step1
-        step("Введите PIN-код для оплаты (код начинается с 9)");
-        //stepEnterPinCode();
-        orderDraftDeliveryWayPage.enterPinCode("98987");
-        //String s = "";
-        step("В поле Выбери способ получения нажмите на кнопу Доставка");
-        orderDraftDeliveryWayPage.selectDeliveryWay(deliveryWay);
-        orderData.setDeliveryType(deliveryWay);
-        orderData.setPinCode("");
-        orderData.setClient(new SimpleCustomerData());
-        orderData.setRecipient(new SimpleCustomerData());
-        orderData.setComment("");
-        orderData.setDeliveryDate(LocalDate.now().plusDays(1));
-        orderDraftDeliveryWayPage.shouldOrderDataIs(orderData);
-        String s = "";
-    }
-
 
     @Test(description = "C23398448 Смена типа получения товара при заполненном пинкоде в неподтвержденном заказе", groups = NEED_PRODUCTS_GROUP)
     public void testChangeOfReceiptType() throws Exception{
