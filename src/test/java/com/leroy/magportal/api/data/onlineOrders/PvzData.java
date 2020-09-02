@@ -9,12 +9,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PvzData {
-    @JsonProperty("PVZ_CODE")
-    private String code;
-    @JsonProperty("PVZ_ADDRESS")
-    private String address;
-    @JsonProperty("PVZ_PHONE")
-    private String phone;
-    @JsonProperty("PVZ_WORKTIME")
-    private String workTime;
+
+  @JsonProperty("PVZ_CODE")
+  private String code;
+  @JsonProperty("PVZ_ADDRESS")
+  private String address;
+  @JsonProperty("PVZ_PHONE")
+  private String phone;
+  @JsonProperty("PVZ_WORKTIME")
+  private String workTime;
 }

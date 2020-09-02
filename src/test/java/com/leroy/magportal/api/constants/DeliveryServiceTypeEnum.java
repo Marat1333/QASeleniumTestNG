@@ -7,8 +7,8 @@ public enum DeliveryServiceTypeEnum {
   DELIVERY_PVZ("PVZ", "ПВЗ"),
   COURIER("COURIER", "Курьерская доставка");
 
-  private String service;
-  private String type;
+  private final String service;
+  private final String type;
 
   DeliveryServiceTypeEnum(String service, String type) {
     this.service = service;
@@ -20,5 +20,6 @@ public enum DeliveryServiceTypeEnum {
   }
 
   public String getType() {
-    return type; }
+    return type;
+  }
 }

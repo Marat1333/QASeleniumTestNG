@@ -4,7 +4,7 @@ public enum LmCodeTypeEnum {
   KK("11795347"),
   PVZ("80120442");
 
-  private String value;
+  private final String value;
 
   LmCodeTypeEnum(String value) {
     this.value = value;

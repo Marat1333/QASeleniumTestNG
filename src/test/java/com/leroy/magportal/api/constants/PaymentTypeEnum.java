@@ -5,7 +5,7 @@ public enum PaymentTypeEnum {
   SBERBANK("Sberbank"),
   BILL("Bill");
 
-  private String name;
+  private final String name;
 
   PaymentTypeEnum(String name) {
     this.name = name;

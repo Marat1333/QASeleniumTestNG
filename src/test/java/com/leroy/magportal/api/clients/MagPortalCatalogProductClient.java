@@ -12,30 +12,31 @@ import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class MagPortalCatalogProductClient extends BaseMashupClient {
-    @Override
-    protected void init() {
-        gatewayUrl = EnvConstants.SEARCH_API_HOST;
-    }
 
-    @Step("Get similar and complement products")
-    public Response<CatalogSimilarProductsData> getSimilarProducts(String lmCode) {
-        return execute(new GetCatalogProductSimilars()
-                        .setLmCode(lmCode)
-                        .setShopId(userSessionData.getUserShopId()),
-                CatalogSimilarProductsData.class);
-    }
+  @Override
+  protected void init() {
+    gatewayUrl = EnvConstants.SEARCH_API_HOST;
+  }
 
-    @Step("Get product data")
-    public Response<CatalogProductData> getProductData(String lmCode) {
-        return execute(new GetCatalogProduct()
-                .setLmCode(lmCode)
-                .setShopId(userSessionData.getUserShopId()), CatalogProductData.class);
-    }
+  @Step("Get similar and complement products")
+  public Response<CatalogSimilarProductsData> getSimilarProducts(String lmCode) {
+    return execute(new GetCatalogProductSimilars()
+            .setLmCode(lmCode)
+            .setShopId(userSessionData.getUserShopId()),
+        CatalogSimilarProductsData.class);
+  }
 
-    @Step("Get stocks and prices in nearest shops")
-    public Response<NearestShopsData> getNearestShopsInfo(String lmCode) {
-        return execute(new GetNearestShops()
-                .setLmCode(lmCode)
-                .setShopId(userSessionData.getUserShopId()), NearestShopsData.class);
-    }
+  @Step("Get product data")
+  public Response<CatalogProductData> getProductData(String lmCode) {
+    return execute(new GetCatalogProduct()
+        .setLmCode(lmCode)
+        .setShopId(userSessionData.getUserShopId()), CatalogProductData.class);
+  }
+
+  @Step("Get stocks and prices in nearest shops")
+  public Response<NearestShopsData> getNearestShopsInfo(String lmCode) {
+    return execute(new GetNearestShops()
+        .setLmCode(lmCode)
+        .setShopId(userSessionData.getUserShopId()), NearestShopsData.class);
+  }
 }

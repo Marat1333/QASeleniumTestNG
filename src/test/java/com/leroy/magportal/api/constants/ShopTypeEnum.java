@@ -6,7 +6,7 @@ public enum ShopTypeEnum {
   TK("139"),
   AK("141");//Адресное хранение
 
-  private String value;
+  private final String value;
 
   ShopTypeEnum(String value) {
     this.value = value;

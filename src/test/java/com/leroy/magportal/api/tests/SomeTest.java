@@ -30,28 +30,28 @@ import java.util.List;
 // Тестовый класс надо будет переименовать и дать соответствующее название
 public class SomeTest extends BaseMagPortalApiTest {
 
-    @Inject
-    CatalogSearchClient paymentHelper;
-    @Inject
-    private BitrixHelper bitrixHelper;
-    @Inject
-    private AuthClient authClient;
-    @Inject
-    private Is4AuthClient is4AuthClient;
+  @Inject
+  CatalogSearchClient paymentHelper;
+  @Inject
+  private BitrixHelper bitrixHelper;
+  @Inject
+  private AuthClient authClient;
+  @Inject
+  private Is4AuthClient is4AuthClient;
 
-    @Test(description = "C1 Название теста")
-    public void test() throws Exception {
-        //String code = authClient.authAndGetCode(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS);
-        //Response<Is4TokenData> response = is4AuthClient.sendPostCodeRequest(code);
-        bitrixHelper.createOnlineOrders(2, DELIVERY_TO_DOOR, 2);
+  @Test(description = "C1 Название теста")
+  public void test() throws Exception {
+    //String code = authClient.authAndGetCode(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS);
+    //Response<Is4TokenData> response = is4AuthClient.sendPostCodeRequest(code);
+    bitrixHelper.createOnlineOrders(2, DELIVERY_TO_DOOR, 2);
 //        String id = bitrixHelper.createOnlineOrder();
 //        paymentHelper.makePaymentCard(id);
-    }
+  }
 
-    /**
-     * Создает ONLINE ордер
-     *
-     * @return task id
-     */
+  /**
+   * Создает ONLINE ордер
+   *
+   * @return task id
+   */
 
-    }
+}

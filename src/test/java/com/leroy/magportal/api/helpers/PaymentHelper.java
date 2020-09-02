@@ -24,102 +24,108 @@ import static org.hamcrest.core.IsEqual.equalTo;
 
 public class PaymentHelper extends BaseHelper {
 
-    @Inject
-    private PaymentClient paymentClient;
+  @Inject
+  private PaymentClient paymentClient;
 
-    private String getPaymentTaskId(String orderId) {
-        OrderClient orderClient = getOrderClient();
-        Response<OrderData> resp = orderClient.getOrder(orderId);
-        if (!resp.isSuccessful()) {
-            int tryCount = 3;
-            for (int i = 0; i < tryCount; i++) {
-                resp = orderClient.getOrder(orderId);
-                if (resp.isSuccessful())
-                    break;
-            }
-        }
-        assertThat("API: Impossible to get Order", resp, successful());
-        return resp.asJson().getPaymentTaskId();
+  private String getPaymentTaskId(String orderId) {
+    OrderClient orderClient = getOrderClient();
+    Response<OrderData> resp = orderClient.getOrder(orderId);
+    if (!resp.isSuccessful()) {
+      int tryCount = 3;
+      for (int i = 0; i < tryCount; i++) {
+        resp = orderClient.getOrder(orderId);
+          if (resp.isSuccessful()) {
+              break;
+          }
+      }
     }
+    assertThat("API: Impossible to get Order", resp, successful());
+    return resp.asJson().getPaymentTaskId();
+  }
 
-    private PaymentTask updatePayment(String orderId, PaymentStatusEnum status) {
-        String paymentTaskId = getPaymentTaskId(orderId);
-        ChangeStatus changeStatus = new ChangeStatus();
+  private PaymentTask updatePayment(String orderId, PaymentStatusEnum status) {
+    String paymentTaskId = getPaymentTaskId(orderId);
+    ChangeStatus changeStatus = new ChangeStatus();
 
-        changeStatus.setUpdatedBy(userSessionData().getUserLdap());
-        changeStatus.setStatus(status.toString());
-        Response<PaymentTask> resp = paymentClient.updatePaymentTask(paymentTaskId, changeStatus);
+    changeStatus.setUpdatedBy(userSessionData().getUserLdap());
+    changeStatus.setStatus(status.toString());
+    Response<PaymentTask> resp = paymentClient.updatePaymentTask(paymentTaskId, changeStatus);
 
-        assertThat("Payment update failed", resp, successful());
-        PaymentTask body = resp.asJson();
-        assertThat("API: Payment update failed due to wrong STATUS: " + resp.toString(),
-                status.toString(), equalTo(body.getTaskStatus()));
+    assertThat("Payment update failed", resp, successful());
+    PaymentTask body = resp.asJson();
+    assertThat("API: Payment update failed due to wrong STATUS: " + resp.toString(),
+        status.toString(), equalTo(body.getTaskStatus()));
 
-        return body;
+    return body;
+  }
+
+  private List<Link> getLinks(String paymentTaskId) {
+    Response<PaymentTask> resp = paymentClient.getPaymentTask(paymentTaskId);
+    assertThat("GET Payment task failed ", resp, successful());
+    return resp.asJson().getLinks();
+  }
+
+  private String getShortPaymentLink(String orderId) {
+    String paymentTaskId = getPaymentTaskId(orderId);
+    List<Link> links = getLinks(paymentTaskId);
+    return links.stream().filter(x -> x.getType().equals("SHORT_LINK")).findFirst()
+        .orElse(new Link()).getLink();
+  }
+
+  private String getPaymentLink(String orderId) {
+    String paymentTaskId = getPaymentTaskId(orderId);
+    List<Link> links = getLinks(paymentTaskId);
+    return links.stream().filter(x -> x.getType().equals("LINK")).findFirst().orElse(new Link())
+        .getLink();
+  }
+
+  // Public methods
+  ////BY OrderId only
+
+  public void makeHoldCost(String orderId) {
+    updatePayment(orderId, PaymentStatusEnum.HOLD);
+  }
+
+  public void makePaid(String orderId) {
+    updatePayment(orderId, PaymentStatusEnum.PAID);
+  }
+
+  public void makePaymentCard(String orderId) throws Exception {
+    WebDriver driver = DriverFactory.createDriver();
+    ContextProvider.setDriver(driver);
+    String link = getPaymentLink(orderId);
+    try {
+      driver.get(link);
+
+      PaymentPage paymentPage = new PaymentPage();
+      paymentPage.enterCreditCardDetails(CardConst.VISA_1111);
+      paymentPage.assertThatPaymentIsSuccessful();
+    } finally {
+      ContextProvider.quitDriver();
     }
+  }
 
-    private List<Link> getLinks(String paymentTaskId) {
-        Response<PaymentTask> resp = paymentClient.getPaymentTask(paymentTaskId);
-        assertThat("GET Payment task failed ", resp, successful());
-        return resp.asJson().getLinks();
+  ////BY BitrixSolutionResponse
+  public void makeHoldCost(BitrixSolutionResponse solutionResponse) {
+    updatePayment(solutionResponse.getSolutionId(), PaymentStatusEnum.HOLD);
+  }
+
+  public void makePaid(BitrixSolutionResponse solutionResponse) {
+    updatePayment(solutionResponse.getSolutionId(), PaymentStatusEnum.PAID);
+  }
+
+  public void makePaymentCard(BitrixSolutionResponse solutionResponse) throws Exception {
+    WebDriver driver = DriverFactory.createDriver();
+    ContextProvider.setDriver(driver);
+    try {
+      driver.get(solutionResponse.getLink());
+
+      PaymentPage paymentPage = new PaymentPage();
+      paymentPage.enterCreditCardDetails(CardConst.VISA_1111);
+      paymentPage.assertThatPaymentIsSuccessful();
+    } finally {
+      ContextProvider.quitDriver();
     }
-
-    private String getShortPaymentLink(String orderId) {
-        String paymentTaskId = getPaymentTaskId(orderId);
-        List<Link> links = getLinks(paymentTaskId);
-        return links.stream().filter(x -> x.getType().equals("SHORT_LINK")).findFirst().orElse(new Link()).getLink();
-    }
-
-    private String getPaymentLink(String orderId) {
-        String paymentTaskId = getPaymentTaskId(orderId);
-        List<Link> links = getLinks(paymentTaskId);
-        return links.stream().filter(x -> x.getType().equals("LINK")).findFirst().orElse(new Link()).getLink();
-    }
-
-    // Public methods
-    ////BY OrderId only
-
-    public void makeHoldCost(String orderId) { updatePayment(orderId, PaymentStatusEnum.HOLD); }
-
-    public void makePaid(String orderId) {
-        updatePayment(orderId, PaymentStatusEnum.PAID);
-    }
-
-    public void makePaymentCard(String orderId) throws Exception {
-        WebDriver driver = DriverFactory.createDriver();
-        ContextProvider.setDriver(driver);
-        String link = getPaymentLink(orderId);
-        try {
-            driver.get(link);
-
-            PaymentPage paymentPage = new PaymentPage();
-            paymentPage.enterCreditCardDetails(CardConst.VISA_1111);
-            paymentPage.assertThatPaymentIsSuccessful();
-        } finally {
-            ContextProvider.quitDriver();
-        }
-    }
-
-    ////BY BitrixSolutionResponse
-    public void makeHoldCost(BitrixSolutionResponse solutionResponse) {
-        updatePayment(solutionResponse.getSolutionId(), PaymentStatusEnum.HOLD); }
-
-    public void makePaid(BitrixSolutionResponse solutionResponse) {
-        updatePayment(solutionResponse.getSolutionId(), PaymentStatusEnum.PAID);
-    }
-
-    public void makePaymentCard(BitrixSolutionResponse solutionResponse) throws Exception {
-        WebDriver driver = DriverFactory.createDriver();
-        ContextProvider.setDriver(driver);
-        try {
-            driver.get(solutionResponse.getLink());
-
-            PaymentPage paymentPage = new PaymentPage();
-            paymentPage.enterCreditCardDetails(CardConst.VISA_1111);
-            paymentPage.assertThatPaymentIsSuccessful();
-        } finally {
-            ContextProvider.quitDriver();
-        }
-    }
+  }
 
 }

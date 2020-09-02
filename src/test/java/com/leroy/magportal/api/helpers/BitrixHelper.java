@@ -1,7 +1,7 @@
 package com.leroy.magportal.api.helpers;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static com.leroy.magportal.ui.constants.TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+
 import com.google.inject.Inject;
 import com.leroy.core.api.ThreadApiClient;
 import com.leroy.core.configuration.Log;
@@ -11,7 +11,6 @@ import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.customer.CustomerSearchFilters;
 import com.leroy.magmobile.api.data.customer.CustomerSearchFilters.CustomerType;
 import com.leroy.magmobile.api.data.customer.CustomerSearchFilters.DiscriminantType;
-import com.leroy.magmobile.api.data.sales.orders.OrderData;
 import com.leroy.magportal.api.clients.CatalogSearchClient;
 import com.leroy.magportal.api.clients.ShopsClient;
 import com.leroy.magportal.api.constants.DeliveryServiceTypeEnum;
@@ -20,16 +19,13 @@ import com.leroy.magportal.api.constants.PaymentTypeEnum;
 import com.leroy.magportal.api.data.onlineOrders.PvzData;
 import com.leroy.magportal.api.data.shops.ShopData;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
-import ru.leroymerlin.qa.core.clients.tunnel.TunnelClient;
-import ru.leroymerlin.qa.core.clients.tunnel.data.BitrixSolutionPayload;
-import ru.leroymerlin.qa.core.clients.tunnel.data.BitrixSolutionResponse;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.leroy.magportal.ui.constants.TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+import ru.leroymerlin.qa.core.clients.tunnel.TunnelClient;
+import ru.leroymerlin.qa.core.clients.tunnel.data.BitrixSolutionPayload;
+import ru.leroymerlin.qa.core.clients.tunnel.data.BitrixSolutionResponse;
 
 public class BitrixHelper extends BaseHelper {
 
@@ -43,7 +39,7 @@ public class BitrixHelper extends BaseHelper {
   private final LocalDateTime dateTime = LocalDateTime.now();
 
   private BitrixSolutionPayload createBitrixPayload(OnlineOrderTypeData orderData,
-      Integer productCount, SimpleCustomerData customerData) throws Exception {
+      Integer productCount, SimpleCustomerData customerData) {
     if (orderData.getShopId() != null) {
       orderData.setShopId(userSessionData().getUserShopId());
     }
@@ -59,12 +55,13 @@ public class BitrixHelper extends BaseHelper {
   }
 
   public ArrayList<BitrixSolutionResponse> createOnlineOrders(Integer ordersCount,
-      OnlineOrderTypeData orderData, Integer productCount) throws Exception {
+      OnlineOrderTypeData orderData, Integer productCount) {
     SimpleCustomerData customerData = SIMPLE_CUSTOMER_DATA_1;
     customerData.setId(getCustomerId(customerData));
 
     ArrayList<BitrixSolutionResponse> result = new ArrayList<>();
-    BitrixSolutionPayload bitrixPayload = createBitrixPayload(orderData, productCount, customerData);
+    BitrixSolutionPayload bitrixPayload = createBitrixPayload(orderData, productCount,
+        customerData);
 
     // Пример параллельного создания заказов. Возможно, слишком громоздко, но работает.
     List<ThreadApiClient<BitrixSolutionResponse, TunnelClient>> threads = new ArrayList<>();
@@ -310,7 +307,7 @@ public class BitrixHelper extends BaseHelper {
     return (lat + "," + longitude);
   }
 
-  private String getCustomerId(SimpleCustomerData customerData) {//TODO: search does't work
+  private String getCustomerId(SimpleCustomerData customerData) {//TODO: search doesn't work
     CustomerClient customerClient = getCustomerClient();
     CustomerSearchFilters filter = new CustomerSearchFilters();
     filter.setCustomerType(CustomerType.NATURAL);
