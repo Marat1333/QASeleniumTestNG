@@ -41,8 +41,8 @@ public class SomeTest extends BaseMagPortalApiTest {
 
     @Test(description = "C1 Название теста")
     public void test() throws Exception {
-        String code = authClient.authAndGetCode(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS);
-        Response<Is4TokenData> response = is4AuthClient.sendPostCodeRequest(code);
+        //String code = authClient.authAndGetCode(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS);
+        //Response<Is4TokenData> response = is4AuthClient.sendPostCodeRequest(code);
         bitrixHelper.createOnlineOrders(2, DELIVERY_TO_DOOR, 4);
 //        String id = bitrixHelper.createOnlineOrder();
 //        paymentHelper.makePaymentCard(id);

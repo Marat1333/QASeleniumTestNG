@@ -1,7 +1,5 @@
 package com.leroy.magportal.api.helpers;
 
-import static com.leroy.magportal.ui.constants.TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
@@ -14,226 +12,227 @@ import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeDat
 import com.leroy.magportal.api.constants.PaymentTypeEnum;
 import com.leroy.magportal.api.data.shops.ShopData;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
+import com.leroy.umbrella_extension.data.BitrixSolutionPayload;
+import ru.leroymerlin.qa.core.clients.tunnel.TunnelClient;
+import ru.leroymerlin.qa.core.clients.tunnel.data.BitrixSolutionResponse;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import ru.leroymerlin.qa.core.clients.tunnel.TunnelClient;
-import ru.leroymerlin.qa.core.clients.tunnel.data.BitrixSolutionPayload;
-import ru.leroymerlin.qa.core.clients.tunnel.data.BitrixSolutionResponse;
+
+import static com.leroy.magportal.ui.constants.TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
 
 public class BitrixHelper extends BaseHelper {
 
-  @Inject
-  private TunnelClient tunnelClient;
-  @Inject
-  private PaymentHelper paymentHelper;
-  @Inject
-  private ShopsClient shopsClient;
+    @Inject
+    private TunnelClient tunnelClient;
+    @Inject
+    private PaymentHelper paymentHelper;
+    @Inject
+    private ShopsClient shopsClient;
 
-  private BitrixSolutionPayload createBitrixPayload(OnlineOrderTypeData orderData,
-      Integer productCount) throws Exception {
+    private BitrixSolutionPayload createBitrixPayload(OnlineOrderTypeData orderData,
+                                                      Integer productCount) throws Exception {
 
-    ShopData shop = getShopData(orderData);
-    String date = LocalDateTime.now().toLocalDate().toString();
-    String dateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-    SimpleCustomerData customerData = SIMPLE_CUSTOMER_DATA_1;
+        ShopData shop = getShopData(orderData);
+        String date = LocalDateTime.now().toLocalDate().toString();
+        String dateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        SimpleCustomerData customerData = SIMPLE_CUSTOMER_DATA_1;
 
-    BitrixSolutionPayload payload = new BitrixSolutionPayload();
-    payload.setLID("mn");
-    payload.setIDREGION(Integer.parseInt(shop.getRegionId()));
-    payload.setIDSHOP(convertShopId(Integer.parseInt(shop.getId())));
-    payload.setPERSONTYPEID("1");
-    payload.setPAYED("N");
-    payload.setCANCELED("N");
-    payload.setSTATUSID("N");
-    payload.setDATESTATUS(dateTime);
-    payload.setPRICEDELIVERY(orderData.priceDelivery);
-    payload.setALLOWDELIVERY("Y");
-    payload.setPRICE("156.00");
-    payload.setCURRENCY("RUB");
-    payload.setDISCOUNTVALUE("0.00");
-    payload.setUSERID("1865235");
-    payload.setPAYSYSTEMID("3");
-    payload.setPAYMENTHANDLER(orderData.getPaymentType());
-    payload.setDATEUPDATE(dateTime);
-    payload.setTAXVALUE("0.00");
-    payload.setSUMPAID("0.00");
-    payload.setRECOUNTFLAG("Y");
-    payload.setDEDUCTED("N");
-    payload.setMARKED("N");
-    payload.setRESERVED("Y");
-    payload.setACCOUNTNUMBER("1256834");
-    payload.setEXTERNALORDER("N");
-    payload.setDATESTATUSFORMAT(dateTime);
-    payload.setDATEINSERTFORMAT(date);
-    payload.setDATEUPDATEFORMAT(dateTime);
+        BitrixSolutionPayload payload = new BitrixSolutionPayload();
+        payload.setLId("mn");
+        payload.setIdRegion(Integer.parseInt(shop.getRegionId()));
+        payload.setIdShop(convertShopId(Integer.parseInt(shop.getId())));
+        payload.setPersonTypeId("1");
+        payload.setPayed("N");
+        payload.setCanceled("N");
+        payload.setStatusId("N");
+        payload.setDateStatus(dateTime);
+        payload.setPriceDelivery(orderData.priceDelivery);
+        payload.setAllowDelivery("Y");
+        payload.setPrice("156.00");
+        payload.setCurrency("RUB");
+        payload.setDiscountValue("0.00");
+        payload.setUserId("1865235");
+        payload.setPaySystemId("3");
+        payload.setPaymentHandler(orderData.getPaymentType());
+        payload.setDateUpdate(dateTime);
+        payload.setTaxValue("0.00");
+        payload.setSumPaid("0.00");
+        payload.setRecountFlag("Y");
+        payload.setDeducted("N");
+        payload.setMarked("N");
+        payload.setReserved("Y");
+        payload.setAccountNumber("1256834");
+        payload.setExternalOrder("N");
+        payload.setDateStatusFormat(dateTime);
+        payload.setDateInsertFormat(date);
+        payload.setDateUpdateFormat(dateTime);
 
-    BitrixSolutionPayload.Total total = new BitrixSolutionPayload.Total();
-    total.setWEIGHT(0.26);
-    total.setCNTPRODUCTS(1);
-    total.setCOST(156);
-    total.setCOSTDELIVERY(0);
-    total.setCOSTLIFT(0);
-    total.setVOLUME(0);
-    total.setLENGTHY(0);
-    total.setVOLUMEPRODUCT(0);
-    total.setEXTRABIG(0);
-    payload.setTOTAL(total);
+        BitrixSolutionPayload.Total total = new BitrixSolutionPayload.Total();
+        total.setWeigth(0.26);
+        total.setCntProducts(1);
+        total.setCost(156);
+        total.setCostDelivery(0);
+        total.setCostLift(0);
+        total.setVolume(0);
+        total.setLengthy(0);
+        total.setVolumeProduct(0);
+        total.setExtrabig(0);
+        payload.setTotal(total);
 
-    BitrixSolutionPayload.UserData userData = new BitrixSolutionPayload.UserData();
-    userData.setNAME(customerData.getName().split(" ")[0]);
-    userData.setSURNAME(customerData.getName().split(" ")[1]);
-    userData.setEMAIL(customerData.getEmail());
-    userData.setPHONE(convertPhone(customerData.getPhoneNumber()));
-    userData.setEXPRESSREGISTRATION(false);
-    userData.setMEDIA5MOVECUSTOMERNUMBER(customerData.getId());
-    payload.setUSERDATA(userData);
+        BitrixSolutionPayload.UserData userData = new BitrixSolutionPayload.UserData();
+        userData.setName(customerData.getName().split(" ")[0]);
+        userData.setSurname(customerData.getName().split(" ")[1]);
+        userData.setEmail(customerData.getEmail());
+        userData.setPhone(convertPhone(customerData.getPhoneNumber()));
+        userData.setExpressRegistration(false);
+        userData.setMediasMoveCustomerNumber(customerData.getId());
+        payload.setUserData(userData);
 
-    BitrixSolutionPayload.DeliveryData deliveryData = new BitrixSolutionPayload.DeliveryData();
-    deliveryData.setDATE(date);
-    deliveryData.setTIME("В течение дня");//TODO: recheck
-    deliveryData.setTYPE(orderData.getDeliveryType());
-    deliveryData.setSAMEDAY(orderData.sameDay);
-    //TODO: Add Address
+        BitrixSolutionPayload.DeliveryData deliveryData = new BitrixSolutionPayload.DeliveryData();
+        deliveryData.setDate(date);
+        deliveryData.setTime("В течение дня");//TODO: recheck
+        deliveryData.setType(orderData.getDeliveryType());
+        deliveryData.setSameDay(orderData.sameDay);
+        //TODO: Add Address
 
-    BitrixSolutionPayload.Address address = new BitrixSolutionPayload.Address();
-    deliveryData.setADDRESS(address);
-    deliveryData.setADDRESSNOTFOUND(false);
-    deliveryData.setCOORDINATES(convertCoordinates(shop));
-    deliveryData.setRISE(orderData.rise);
-    deliveryData.setLIFT(orderData.lift);
-    deliveryData.setEXTRABIG(0);
-    //deliveryData.setCOMMENT("");//TODO: ADD & PARAMS
-    deliveryData.setDELIVERYPRICE(orderData.deliveryPrice);
-    deliveryData.setLIFTPRICE(orderData.liftPrice);
-    deliveryData.setEXTRABIG2(0);
-    deliveryData.setDELIVERYSERVICES(orderData.deliveryServiceType);
-    deliveryData.setLONGTAIL(0);//TODO: ADD & PARAMS
-    deliveryData.setPVZDATA(orderData.pvzData);
-    String pickupShopJsonString = "\"PICKUP_SHOP\":{\n" +
-        "         \"ID\":\"3895480\",\n" +
-        "         \"IBLOCK_ID\":\"4\",\n" +
-        "         \"XML_ID\":\"035\",\n" +
-        "         \"NAME\":\"Леруа Мерлен Зеленоград\",\n" +
-        "         \"PROPERTY_ADDRESS_VALUE\":\"г. Москва, п. Московский, Киевское шоссе, 24-й км\",\n"
-        +
-        "         \"PROPERTY_ADDRESS_VALUE_ID\":\"3177131060\",\n" +
-        "         \"PROPERTY_NAME_VALUE\":\"Леруа Мерлен Киевское Шоссе\",\n" +
-        "         \"PROPERTY_NAME_VALUE_ID\":\"3177131063\",\n" +
-        "         \"PROPERTY_WORK_TIME_VALUE\":\"08:00 - 23:00\",\n" +
-        "         \"PROPERTY_WORK_TIME_VALUE_ID\":\"3177131062\",\n" +
-        "         \"PROPERTY_PHONE_VALUE\":\"8 (800) 700-00-99\",\n" +
-        "         \"PROPERTY_PHONE_VALUE_ID\":\"3177131061\",\n" +
-        "         \"PROPERTY_PICKUP_OPERATORS_VALUE\":\"rrlog01.mag051@leroymerlin.ru\",\n" +
-        "         \"PROPERTY_PICKUP_OPERATORS_VALUE_ID\":\"3187492118\",\n" +
-        "         \"PROPERTY_GPS_COORDS_VALUE\":\"55.621158, 37.389973\",\n" +
-        "         \"PROPERTY_GPS_COORDS_VALUE_ID\":\"3177137913\",\n" +
-        "         \"DISPLAY_NAME\":\"Леруа Мерлен Зеленоград\"\n" +
-        "      },";
-    JsonNode pickupShop = new ObjectMapper().readTree(pickupShopJsonString);
-    deliveryData.setPICKUPSHOP(pickupShop);
-    payload.setDELIVERYDATA(deliveryData);
-    payload.setDELIVERYDATA(deliveryData);
+        BitrixSolutionPayload.Address address = new BitrixSolutionPayload.Address();
+        deliveryData.setAddress(address);
+        deliveryData.setAddressNotFound(false);
+        deliveryData.setCoordinates(convertCoordinates(shop));
+        deliveryData.setRise(orderData.rise);
+        deliveryData.setLift(orderData.lift);
+        deliveryData.setExtraBig(0);
+        //deliveryData.setCOMMENT("");//TODO: ADD & PARAMS
+        deliveryData.setDeliveryPrice(orderData.deliveryPrice);
+        deliveryData.setLiftPrice(orderData.liftPrice);
+        deliveryData.setExtraBig2(0);
+        deliveryData.setDeliveryServices(orderData.deliveryServiceType);
+        deliveryData.setLongTail(0);//TODO: ADD & PARAMS
+        deliveryData.setPvzData(orderData.pvzData);
+        String pickupShopJsonString = "\"PICKUP_SHOP\":{\n" +
+                "         \"ID\":\"3895480\",\n" +
+                "         \"IBLOCK_ID\":\"4\",\n" +
+                "         \"XML_ID\":\"035\",\n" +
+                "         \"NAME\":\"Леруа Мерлен Зеленоград\",\n" +
+                "         \"PROPERTY_ADDRESS_VALUE\":\"г. Москва, п. Московский, Киевское шоссе, 24-й км\",\n"
+                +
+                "         \"PROPERTY_ADDRESS_VALUE_ID\":\"3177131060\",\n" +
+                "         \"PROPERTY_NAME_VALUE\":\"Леруа Мерлен Киевское Шоссе\",\n" +
+                "         \"PROPERTY_NAME_VALUE_ID\":\"3177131063\",\n" +
+                "         \"PROPERTY_WORK_TIME_VALUE\":\"08:00 - 23:00\",\n" +
+                "         \"PROPERTY_WORK_TIME_VALUE_ID\":\"3177131062\",\n" +
+                "         \"PROPERTY_PHONE_VALUE\":\"8 (800) 700-00-99\",\n" +
+                "         \"PROPERTY_PHONE_VALUE_ID\":\"3177131061\",\n" +
+                "         \"PROPERTY_PICKUP_OPERATORS_VALUE\":\"rrlog01.mag051@leroymerlin.ru\",\n" +
+                "         \"PROPERTY_PICKUP_OPERATORS_VALUE_ID\":\"3187492118\",\n" +
+                "         \"PROPERTY_GPS_COORDS_VALUE\":\"55.621158, 37.389973\",\n" +
+                "         \"PROPERTY_GPS_COORDS_VALUE_ID\":\"3177137913\",\n" +
+                "         \"DISPLAY_NAME\":\"Леруа Мерлен Зеленоград\"\n" +
+                "      },";
+        JsonNode pickupShop = new ObjectMapper().readTree(pickupShopJsonString);
+        deliveryData.setPickupShop(pickupShop);
+        payload.setDeliveryData(deliveryData);
 
-    payload.setIDDEVICE(0);
-    payload.setDELIVERYTAX(18);
-    payload.setCUSTOMERCOORDINATES("0,0");
-    payload.setDATEINSERT(dateTime);
-    payload.setIDORDER("1256834");
-    ArrayList<BitrixSolutionPayload.Basket> y1 = makeBasket(productCount, shop.getId());
+        payload.setIdDevice(0);
+        payload.setDeliveryTax(18);
+        payload.setCustomerCoordinates("0,0");
+        payload.setDateInsert(dateTime);
+        payload.setIdOrder("1256834");
+        ArrayList<BitrixSolutionPayload.Basket> y1 = makeBasket(productCount, shop.getId());
 
-    payload.setBASKET(y1);
+        payload.setBasket(y1);
 
-    return payload;
-  }
-
-  public ArrayList<BitrixSolutionResponse> createOnlineOrders(Integer ordersCount,
-      OnlineOrderTypeData orderData, Integer productCount) throws Exception {
-    ArrayList<BitrixSolutionResponse> result = new ArrayList<>();
-    BitrixSolutionPayload bitrixPayload = createBitrixPayload(orderData, productCount);
-
-    // Пример параллельного создания заказов. Возможно, слишком громоздко, но работает.
-    List<ThreadApiClient<BitrixSolutionResponse, TunnelClient>> threads = new ArrayList<>();
-
-    for (int i = 0; i < ordersCount; i++) {
-      ThreadApiClient<BitrixSolutionResponse, TunnelClient> myThread = new ThreadApiClient<>(
-          tunnelClient);
-      myThread.sendRequest(client -> client.createSolutionFromBitrix(bitrixPayload));
-      threads.add(myThread);
+        return payload;
     }
 
-    threads.forEach(t -> {
-      try {
-        BitrixSolutionResponse response = t.getData();
-        if (response.getSolutionId() != null) {
-          result.add(response);
-          if (orderData.getPaymentType().equals(PaymentTypeEnum.SBERBANK.getName())) {
-            paymentHelper.makeHoldCost(response.getSolutionId());
-          }
+    public ArrayList<BitrixSolutionResponse> createOnlineOrders(Integer ordersCount,
+                                                                OnlineOrderTypeData orderData, Integer productCount) throws Exception {
+        ArrayList<BitrixSolutionResponse> result = new ArrayList<>();
+        BitrixSolutionPayload bitrixPayload = createBitrixPayload(orderData, productCount);
+
+        // Пример параллельного создания заказов. Возможно, слишком громоздко, но работает.
+        List<ThreadApiClient<BitrixSolutionResponse, TunnelClient>> threads = new ArrayList<>();
+
+        for (int i = 0; i < ordersCount; i++) {
+            ThreadApiClient<BitrixSolutionResponse, TunnelClient> myThread = new ThreadApiClient<>(
+                    tunnelClient);
+            myThread.sendRequest(client -> client.createSolutionFromBitrix(bitrixPayload));
+            threads.add(myThread);
         }
-      } catch (InterruptedException e) {
-        Log.error(e.getMessage());
-      }
-    });
+
+        threads.forEach(t -> {
+            try {
+                BitrixSolutionResponse response = t.getData();
+                if (response.getSolutionId() != null) {
+                    result.add(response);
+                    if (orderData.getPaymentType().equals(PaymentTypeEnum.SBERBANK.getName())) {
+                        paymentHelper.makeHoldCost(response.getSolutionId());
+                    }
+                }
+            } catch (InterruptedException e) {
+                Log.error(e.getMessage());
+            }
+        });
 
 //    List<String> newList = result.stream()
 //        .filter(x -> x.getSolutionId() != null)
 //        .map(BitrixSolutionResponse::getSolutionId)
 //        .collect(Collectors.toList());
 
-    return result;
-  }
-
-  private ArrayList<BitrixSolutionPayload.Basket> makeBasket(Integer productsCount, String shopId) {
-    CatalogSearchClient catalogSearchClient = getCatalogSearchClient();
-    ArrayList<BitrixSolutionPayload.Basket> result = new ArrayList<>();
-    List<ProductItemData> products = catalogSearchClient
-        .getRandomUniqueProductsWithTitlesForShop(productsCount, shopId);
-    for (ProductItemData productData : products) {
-      result.add(productItemDataToPayload(productData));
+        return result;
     }
 
-    return result;
-  }
+    private ArrayList<BitrixSolutionPayload.Basket> makeBasket(Integer productsCount, String shopId) {
+        CatalogSearchClient catalogSearchClient = getCatalogSearchClient();
+        ArrayList<BitrixSolutionPayload.Basket> result = new ArrayList<>();
+        List<ProductItemData> products = catalogSearchClient
+                .getRandomUniqueProductsWithTitlesForShop(productsCount, shopId);
+        for (ProductItemData productData : products) {
+            result.add(productItemDataToPayload(productData));
+        }
 
-  private BitrixSolutionPayload.Basket productItemDataToPayload(ProductItemData product) {
-    BitrixSolutionPayload.Basket basket = new BitrixSolutionPayload.Basket();
-    basket.setID("128510514");
-    basket.setSKU(product.getLmCode());
-    basket.setNAME(product.getTitle());
-    basket.setPRICE(product.getPrice().toString());
-    basket.setTAX(18);
-    basket.setQUANTITY("10");//TODO: it's make sense to parametrise
+        return result;
+    }
+
+    private BitrixSolutionPayload.Basket productItemDataToPayload(ProductItemData product) {
+        BitrixSolutionPayload.Basket basket = new BitrixSolutionPayload.Basket();
+        basket.setId("128510514");
+        basket.setSku(product.getLmCode());
+        basket.setName(product.getTitle());
+        basket.setPrice(product.getPrice().toString());
+        basket.setTax(18);
+        basket.setQuantity("10");//TODO: it's make sense to parametrise
 //TODO: ADD LT Products
-    return basket;
-  }
-
-  private ShopData getShopData(OnlineOrderTypeData orderData) {
-    String shopId;
-    if (orderData.getShopId() != null) {
-      shopId = orderData.getShopId();
-    } else {
-      shopId = userSessionData().getUserShopId();
+        return basket;
     }
 
-    return shopsClient.getShopById(shopId);
-  }
+    private ShopData getShopData(OnlineOrderTypeData orderData) {
+        String shopId;
+        if (orderData.getShopId() != null) {
+            shopId = orderData.getShopId();
+        } else {
+            shopId = userSessionData().getUserShopId();
+        }
 
-  private String convertShopId(Integer shopId) {
-    return String.format("%03d", shopId);
-  }
+        return shopsClient.getShopById(shopId);
+    }
 
-  private String convertPhone(String phone) {
-    return phone.substring(0, 2) + " (" + phone.substring(2, 5) + ") " + phone.substring(5, 8) +
-            "-" + phone.substring(8, 10) + "-" + phone.substring(10, 12);
-  }
+    private String convertShopId(Integer shopId) {
+        return String.format("%03d", shopId);
+    }
 
-  private String convertCoordinates(ShopData shop) {
-    double lat = shop.getLat() + 0.5;
-    double longitude = shop.getLongitude() - 0.5;
+    private String convertPhone(String phone) {
+        return phone.substring(0, 2) + " (" + phone.substring(2, 5) + ") " + phone.substring(5, 8) +
+                "-" + phone.substring(8, 10) + "-" + phone.substring(10, 12);
+    }
 
-    return (lat + "," + longitude);
-  }
+    private String convertCoordinates(ShopData shop) {
+        double lat = shop.getLat() + 0.5;
+        double longitude = shop.getLongitude() - 0.5;
+
+        return (lat + "," + longitude);
+    }
 }
