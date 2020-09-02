@@ -785,7 +785,7 @@ public class OrderTest extends BasePAOTest {
 
     }
 
-    @Test(description = "C23410893 Подтвердить заказ на доставку через 15 дней", groups = NEED_PRODUCTS_GROUP)
+    @Test(description = "C23410895 Подтвердить заказ на доставку через 15 дней", groups = NEED_PRODUCTS_GROUP)
     public void testConfirmOrderForDeliveryIn15days() throws Exception {
         SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
         SalesDocumentsConst.GiveAwayPoints deliveryWay = SalesDocumentsConst.GiveAwayPoints.DELIVERY;
