@@ -7,6 +7,8 @@ import com.leroy.core.api.ThreadApiClient;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
+import com.leroy.magmobile.api.data.customer.CustomerSearchFilters;
+import com.leroy.magmobile.api.data.customer.CustomerSearchFilters.DiscriminantType;
 import com.leroy.magmobile.api.data.sales.orders.OrderData;
 import com.leroy.magportal.api.clients.CatalogSearchClient;
 import com.leroy.magportal.api.clients.ShopsClient;
@@ -37,7 +39,7 @@ public class BitrixHelper extends BaseHelper {
   private ShopsClient shopsClient;
 
   private final LocalDateTime dateTime = LocalDateTime.now();
-  private final SimpleCustomerData customerData = SIMPLE_CUSTOMER_DATA_1;
+  private SimpleCustomerData customerData = SIMPLE_CUSTOMER_DATA_1;
 
   private BitrixSolutionPayload createBitrixPayload(OnlineOrderTypeData orderData,
       Integer productCount) throws Exception {
@@ -57,6 +59,8 @@ public class BitrixHelper extends BaseHelper {
 
   public ArrayList<BitrixSolutionResponse> createOnlineOrders(Integer ordersCount,
       OnlineOrderTypeData orderData, Integer productCount) throws Exception {
+    customerData.setId(getCustomerId());
+
     ArrayList<BitrixSolutionResponse> result = new ArrayList<>();
     BitrixSolutionPayload bitrixPayload = createBitrixPayload(orderData, productCount);
 
@@ -302,5 +306,13 @@ public class BitrixHelper extends BaseHelper {
     double longitude = shop.getLongitude() - 0.5;
 
     return (lat + "," + longitude);
+  }
+
+  private String getCustomerId() {
+    CustomerSearchFilters filter = new CustomerSearchFilters();
+    filter.setDiscriminantType(DiscriminantType.PHONENUMBER);
+    filter.setDiscriminantValue(customerData.getPhoneNumber());
+
+    return getCustomerClient().searchForCustomers(filter).asJson(SimpleCustomerData.class).getId();
   }
 }

@@ -20,7 +20,7 @@ public class OnlineOrderTypeConst {
     public String deliveryServiceType;
     public String shopId;
     public String lmCode;
-    public Integer sameDay = 0;
+    public int sameDay;
     public Boolean pickupShop = false;
     public Boolean pvzData = false;
   }
