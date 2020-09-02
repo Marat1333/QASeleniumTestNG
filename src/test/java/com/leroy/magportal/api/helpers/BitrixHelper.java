@@ -69,18 +69,18 @@ public class BitrixHelper extends BaseHelper {
     payload.setDATESTATUSFORMAT(dateTime);
     payload.setDATEINSERTFORMAT(date);
     payload.setDATEUPDATEFORMAT(dateTime);
-//TODO: check is it necessary
-//    BitrixSolutionPayload.Total total = new BitrixSolutionPayload.Total();
-//    total.setWEIGHT(0.26);
-//    total.setCNTPRODUCTS(1);
-//    total.setCOST(156);
-//    total.setCOSTDELIVERY(0);
-//    total.setCOSTLIFT(0);
-//    total.setVOLUME(0);
-//    total.setLENGTHY(0);
-//    total.setVOLUMEPRODUCT(0);
-//    total.setEXTRABIG(0);
-//    payload.setTOTAL(total);
+
+    BitrixSolutionPayload.Total total = new BitrixSolutionPayload.Total();
+    total.setWEIGHT(0.26);
+    total.setCNTPRODUCTS(1);
+    total.setCOST(156);
+    total.setCOSTDELIVERY(0);
+    total.setCOSTLIFT(0);
+    total.setVOLUME(0);
+    total.setLENGTHY(0);
+    total.setVOLUMEPRODUCT(0);
+    total.setEXTRABIG(0);
+    payload.setTOTAL(total);
 
     BitrixSolutionPayload.UserData userData = new BitrixSolutionPayload.UserData();
     userData.setNAME(customerData.getName().split(" ")[0]);
