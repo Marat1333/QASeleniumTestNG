@@ -15,4 +15,5 @@ public class CatalogSearchFilter {
     private Boolean bestPrice;
     private Boolean top1000;
     private Boolean avs;
+    private String lmCode;
 }
