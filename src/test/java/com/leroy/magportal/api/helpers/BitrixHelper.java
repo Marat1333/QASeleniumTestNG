@@ -12,8 +12,8 @@ import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeDat
 import com.leroy.magportal.api.constants.PaymentTypeEnum;
 import com.leroy.magportal.api.data.shops.ShopData;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
-import com.leroy.umbrella_extension.data.BitrixSolutionPayload;
 import ru.leroymerlin.qa.core.clients.tunnel.TunnelClient;
+import ru.leroymerlin.qa.core.clients.tunnel.data.BitrixSolutionPayload;
 import ru.leroymerlin.qa.core.clients.tunnel.data.BitrixSolutionResponse;
 
 import java.time.LocalDateTime;
@@ -133,7 +133,7 @@ public class BitrixHelper extends BaseHelper {
                 "         \"DISPLAY_NAME\":\"Леруа Мерлен Зеленоград\"\n" +
                 "      },";
         JsonNode pickupShop = new ObjectMapper().readTree(pickupShopJsonString);
-        deliveryData.setPickupShop(pickupShop);
+        //deliveryData.setPickupShop(pickupShop); TODO - надо описать классом BitrixSolutionPayload.PickupShop
         payload.setDeliveryData(deliveryData);
 
         payload.setIdDevice(0);
