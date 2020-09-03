@@ -20,6 +20,8 @@ public class DateTimeUtil {
     public static final String DD_MM_YYYY = "dd.MM.yyyy";
     public static final String DD_MMMM_HH_MM = "dd MMMM, HH:mm";
     public static final String DD_MMM_HH_MM = "dd MMM, HH:mm"; // Пример: 25 мар, 17:22
+    public static final String DD_MMMM = "dd MMMM";
+
 
     /**
      * Check if the date matches the format

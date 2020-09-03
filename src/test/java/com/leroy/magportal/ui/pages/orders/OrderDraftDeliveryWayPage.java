@@ -97,7 +97,7 @@ public class OrderDraftDeliveryWayPage extends OrderDraftPage {
             salesDocWebData.setDeliveryType(SalesDocumentsConst.GiveAwayPoints.PICKUP);
         else if (deliveryBtn.getAttribute("class").contains("active"))
             salesDocWebData.setDeliveryType(SalesDocumentsConst.GiveAwayPoints.DELIVERY);
-        salesDocWebData.setDeliveryDate(DateTimeUtil.strToLocalDate(deliveryDateFld.getText(), ""));
+        salesDocWebData.setDeliveryDate(DateTimeUtil.strToLocalDate(deliveryDateFld.getText(), DateTimeUtil.DD_MMMM));
         salesDocWebData.setClient(customerSearchForm.getCustomerData());
         salesDocWebData.setRecipient(getRecipientData());
         salesDocWebData.setPinCode(pinCodeFld.getText());
