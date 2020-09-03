@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class ExtStocks {
+
     @JsonProperty("WHB")
     private Integer whb;
     @JsonProperty("WHBP")
