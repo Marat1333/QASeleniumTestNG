@@ -29,8 +29,6 @@ import com.leroy.magportal.ui.pages.orders.modal.SubmittedOrderModal;
 import com.leroy.magportal.ui.pages.products.form.AddProductForm;
 import com.leroy.magportal.ui.tests.BasePAOTest;
 import com.leroy.utils.RandomUtil;
-import org.jetbrains.annotations.NotNull;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -370,12 +368,12 @@ public class OrderTest extends BasePAOTest {
     }
 
     private void preconditionForEditOrderDraftTests(
-            List<ProductItemData> productItemDataList, boolean isNeedToGoToContentTab) throws Exception {
+            List<ProductItemData> productItemDataList, boolean isNeedToGoToContentTab, boolean isExceedsAvailableStock) throws Exception {
         // Prepare data
         List<CartProductOrderData> cardProducts = new ArrayList<>();
         for (ProductItemData productItemData : productItemDataList) {
             CartProductOrderData cartProductOrderData = new CartProductOrderData(productItemData);
-            cartProductOrderData.setQuantity(1.0);
+            cartProductOrderData.setQuantity(isExceedsAvailableStock ? productItemData.getAvailableStock() + 100 : 1.0);
             cardProducts.add(cartProductOrderData);
         }
 
@@ -391,38 +389,20 @@ public class OrderTest extends BasePAOTest {
                     .shouldOrderContentDataIs(orderData);
         }
 
+    }
+
+    private void preconditionForEditOrderDraftTests(
+            List<ProductItemData> productItemDataList, boolean isNeedToGoToContentTab) throws Exception {
+        preconditionForEditOrderDraftTests(productItemDataList, isNeedToGoToContentTab, false);
     }
 
     private void preconditionForEditOrderDraftTestsExceedsAvailableStock(
             List<ProductItemData> productItemDataList, boolean isNeedToGoToContentTab) throws Exception {
-        // Prepare data
-        List<CartProductOrderData> cardProducts = new ArrayList<>();
-        for (ProductItemData productItemData : productItemDataList) {
-            CartProductOrderData cartProductOrderData = new CartProductOrderData(productItemData);
-            cartProductOrderData.setQuantity(productItemData.getAvailableStock() + 100);
-            cardProducts.add(cartProductOrderData);
-        }
-
-        String cartId = helper.createCart(cardProducts).getFullDocId();
-
-        cartPage = loginSelectShopAndGoTo(CartPage.class); // TODO ???
-        cartPage.clickDocumentInLeftMenu(cartId);
-
-        stepClickConfirmOrderButton(null);
-
-        if (isNeedToGoToContentTab) {
-            orderDraftContentPage = orderDraftDeliveryWayPage.goToContentOrderTab()
-                    .shouldOrderContentDataIs(orderData);
-        }
-
+        preconditionForEditOrderDraftTests(productItemDataList, isNeedToGoToContentTab, true);
     }
 
     private void preconditionForEditOrderDraftTests() throws Exception {
-        preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)), true);
-    }
-
-    private void preconditionForEditOrderDraftTestsExceedsAvailableStock() throws Exception {
-        preconditionForEditOrderDraftTestsExceedsAvailableStock(Collections.singletonList(productList.get(0)), true);
+        preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)), true, false);
     }
 
     // ---------------- EDIT ORDER DRAFT -------------------//
@@ -826,6 +806,7 @@ public class OrderTest extends BasePAOTest {
         step("Обновите список документов слева");
         stepRefreshDocumentListAndCheckDocument();
     }
+
     // ------------ Steps ------------------ //
 
     /**
