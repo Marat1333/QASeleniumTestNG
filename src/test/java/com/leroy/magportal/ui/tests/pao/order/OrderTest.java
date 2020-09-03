@@ -638,33 +638,34 @@ public class OrderTest extends BasePAOTest {
         orderCreatedContentPage.shouldDocumentListContainsThis(shortOrderDocWebData);
     }
 
-
     @Test(description = "C23398451 Создание заказа с существующим пин кодом", groups = NEED_PRODUCTS_GROUP)
     public void testCreateOrderWithExistedPinCode() throws Exception {
         String toolTypeText = "Уже используется, придумай другой код";
+        String existedPinCode = "11111";
         SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+        step("Выполнение preconditions");
         preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)), false);
-        // Prepare data
-        step("Нажмите на кнопку Добавить клиента");
+
         CustomerSearchForm customerSearchForm2 = orderDraftDeliveryWayPage.getCustomerSearchForm();
         customerSearchForm2.clickAddCustomer();
-        step("Введите номер телефона, нажмите Enter, нажмите на мини-карточку нужного клиента");
         customerSearchForm2.selectCustomerByPhone(customerData.getPhoneNumber());
+
+        // Step 1
         step("Введите существующий PIN-код, например 11111 для самовывоза или 99999 для доставки");
-        orderDraftDeliveryWayPage.enterPinCode("11111")
+        orderDraftDeliveryWayPage.enterPinCode(existedPinCode)
                 .shouldPinCodeErrorTooltipIs(toolTypeText);
-        //Step 1
+
+        //Step 2
         step("Нажмите на кнопку Подтвердить заказ");
         orderDraftDeliveryWayPage.clickConfirmOrderButtonNegativePath()
                 .shouldPinCodeErrorTooltipIs(toolTypeText);
-
     }
 
-    @Test(description = "C23398448 Смена типа получения товара при заполненном пинкоде в неподтвержденном заказе", groups = NEED_PRODUCTS_GROUP)
+    @Test(description = "C23398448 Смена типа получения товара при заполненном пинкоде в неподтвержденном заказе",
+            groups = NEED_PRODUCTS_GROUP)
     public void testChangeOfReceiptType() throws Exception {
-        SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
         SalesDocumentsConst.GiveAwayPoints deliveryWay = SalesDocumentsConst.GiveAwayPoints.DELIVERY;
-        SalesDocumentsConst.GiveAwayPoints deliveryWayPickup = SalesDocumentsConst.GiveAwayPoints.PICKUP;
+        SalesDocumentsConst.GiveAwayPoints pickupWay = SalesDocumentsConst.GiveAwayPoints.PICKUP;
         preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)), false);
         stepEnterPinCode();
 
@@ -672,13 +673,15 @@ public class OrderTest extends BasePAOTest {
         step("В поле Выбери способ получения измените Самовывоз (по умолчанию) на Доставка или наоборот");
         orderDraftDeliveryWayPage.selectDeliveryWay(deliveryWay);
         orderData.setDeliveryType(deliveryWay);
-        //Step 2
-        step("Введите PIN-код для оплаты (код начинается не с 9 для типа получения Самовывоз, с 9 для типа получения Доставка)");
+
+        // Step 2
+        step("Введите PIN-код для оплаты");
         stepEnterPinCode();
-        //Step 3
+
+        // Step 3
         step("В поле Выбери способ получения измените Доставка на Самовывоз (по умолчанию) или наоборот");
-        orderDraftDeliveryWayPage.selectDeliveryWay(deliveryWayPickup);
-        orderData.setDeliveryType(deliveryWayPickup);
+        orderDraftDeliveryWayPage.selectDeliveryWay(pickupWay);
+        orderData.setDeliveryType(pickupWay);
         orderDraftDeliveryWayPage.shouldPinCodeFieldIs("");
     }
 
