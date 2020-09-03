@@ -1,8 +1,10 @@
 package com.leroy.magmobile.api.data.customer;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 @Data
+@Accessors(chain = true)
 public class CustomerSearchFilters {
 
     public enum CustomerType {
