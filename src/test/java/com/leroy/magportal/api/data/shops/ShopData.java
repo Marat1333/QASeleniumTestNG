@@ -22,17 +22,17 @@ public class ShopData {
     private ShopAvailableFeatureData availableFeatures;
     private Integer buCode;
     private String buName;
-}
 
-@Data
-class ShopAvailableFeatureData {
+    @Data
+    public static class ShopAvailableFeatureData {
 
-    private Boolean editDateOfDelivery;
-    private Boolean editDateOfGiveaway;
-    private Boolean em;
-    private Boolean isWave;
-    private Boolean lsrm;
-    private Boolean ordersV2;
-    private Boolean priceTagPrint;
-    //TODO: Extend
+        private Boolean editDateOfDelivery;
+        private Boolean editDateOfGiveaway;
+        private Boolean em;
+        private Boolean isWave;
+        private Boolean lsrm;
+        private Boolean ordersV2;
+        private Boolean priceTagPrint;
+        //TODO: Extend
+    }
 }

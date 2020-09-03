@@ -1,6 +1,7 @@
 package com.leroy.magportal.api.data.picking;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Data;
@@ -31,6 +32,8 @@ public class PickingTaskData {
     private List<LinkedObject> linkedObjects;
     private List<String> departmentId;
     private List<String> departments;
+    @JsonProperty("products")
+    private List<ProductData> productData;
     private Double totalWeight;
     private Double maxSize;
     private String employeeName;

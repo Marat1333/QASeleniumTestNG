@@ -42,22 +42,6 @@ public class BitrixHelper extends BaseHelper {
 
     private final LocalDateTime dateTime = LocalDateTime.now();
 
-    private BitrixSolutionPayload createBitrixPayload(OnlineOrderTypeData orderData,
-            Integer productCount, SimpleCustomerData customerData) {
-        if (orderData.getShopId() != null) {
-            orderData.setShopId(userSessionData().getUserShopId());
-        }
-
-        ShopData shop = getShopData(orderData);
-        BitrixSolutionPayload payload = makeGeneralPayload(orderData, shop);
-        payload.setTotal(makeTotalPayload());
-        payload.setUserData(makeUserDataPayload(customerData));
-        payload.setDeliveryData(makeDeliveryDataPayload(orderData, shop));
-        payload.setBasket(makeBasket(productCount, shop.getId(), orderData));
-
-        return payload;
-    }
-
     public ArrayList<BitrixSolutionResponse> createOnlineOrders(Integer ordersCount,
             OnlineOrderTypeData orderData, Integer productCount) {
         SimpleCustomerData customerData = SIMPLE_CUSTOMER_DATA_1;
@@ -97,6 +81,22 @@ public class BitrixHelper extends BaseHelper {
 //        .collect(Collectors.toList());
 
         return result;
+    }
+
+    private BitrixSolutionPayload createBitrixPayload(OnlineOrderTypeData orderData,
+            Integer productCount, SimpleCustomerData customerData) {
+        if (orderData.getShopId() != null) {
+            orderData.setShopId(userSessionData().getUserShopId());
+        }
+
+        ShopData shop = getShopData(orderData);
+        BitrixSolutionPayload payload = makeGeneralPayload(orderData, shop);
+        payload.setTotal(makeTotalPayload());
+        payload.setUserData(makeUserDataPayload(customerData));
+        payload.setDeliveryData(makeDeliveryDataPayload(orderData, shop));
+        payload.setBasket(makeBasket(productCount, shop.getId(), orderData));
+
+        return payload;
     }
 
     private ArrayList<BitrixSolutionPayload.Basket> makeBasket(Integer productsCount, String shopId,
