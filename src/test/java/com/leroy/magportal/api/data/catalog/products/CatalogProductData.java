@@ -5,16 +5,16 @@ import com.leroy.magportal.api.data.catalog.products.product_fields.Inventory;
 import com.leroy.magportal.api.data.catalog.products.product_fields.PriceInfo;
 import com.leroy.magportal.api.data.catalog.products.product_fields.StockAreas;
 import com.leroy.magportal.api.data.catalog.suppliers.CatalogSupplierData;
+import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-
-import java.util.List;
 
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class CatalogProductData extends ProductData {
+
     private Integer topEMQuantity;
     private ExtStocks extStocks;
     private PriceInfo priceInfo;

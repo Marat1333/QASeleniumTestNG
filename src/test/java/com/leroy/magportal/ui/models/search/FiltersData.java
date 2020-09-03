@@ -1,12 +1,12 @@
 package com.leroy.magportal.ui.models.search;
 
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
-import lombok.Data;
-
 import java.time.LocalDate;
+import lombok.Data;
 
 @Data
 public class FiltersData {
+
     private SearchProductPage.Filters[] checkBoxes = new SearchProductPage.Filters[]{};
     private String[] gammaFilters = new String[]{};
     private String[] topFilters = new String[]{};

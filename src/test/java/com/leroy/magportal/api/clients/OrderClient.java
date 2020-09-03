@@ -7,11 +7,11 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
 
-  @Step("Get order with id = {orderId}")
-  public Response<OrderData> getOrder(String orderId) {
-    OrderGet req = new OrderGet();
-    req.setOrderId(orderId);
-    return execute(req, OrderData.class);
-  }
+    @Step("Get order with id = {orderId}")
+    public Response<OrderData> getOrder(String orderId) {
+        OrderGet req = new OrderGet();
+        req.setOrderId(orderId);
+        return execute(req, OrderData.class);
+    }
 
 }

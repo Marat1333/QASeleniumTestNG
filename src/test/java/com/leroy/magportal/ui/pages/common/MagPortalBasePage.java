@@ -6,10 +6,9 @@ import com.leroy.core.pages.BaseWebPage;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magportal.ui.pages.NewFeaturesModalWindow;
 import io.qameta.allure.Step;
+import java.time.Duration;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
-
-import java.time.Duration;
 
 public class MagPortalBasePage extends BaseWebPage {
 
@@ -28,8 +27,9 @@ public class MagPortalBasePage extends BaseWebPage {
     @Step("Подождать появления окна с новыми фичами и закрыть его, если оно появится")
     public MagPortalBasePage closeNewFeaturesModalWindowIfExist() {
         NewFeaturesModalWindow modalWindow = new NewFeaturesModalWindow(driver);
-        if (modalWindow.isVisible(short_timeout))
+        if (modalWindow.isVisible(short_timeout)) {
             modalWindow.clickSubmitButton();
+        }
         modalWindow.waitForInvisibility();
         return this;
     }

@@ -17,10 +17,9 @@ import com.leroy.magportal.ui.pages.common.modal.ConfirmRemoveModal;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
+import java.util.Set;
 import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.support.Colors;
-
-import java.util.Set;
 
 public class EstimatePage extends CartEstimatePage {
 
@@ -147,10 +146,11 @@ public class EstimatePage extends CartEstimatePage {
     @Step("Нажимаем кнопку 'Создать'")
     public <T extends MagPortalBasePage> T clickCreateButton() {
         createBtn.click();
-        if (customerSearchForm.isCustomerSelected())
+        if (customerSearchForm.isCustomerSelected()) {
             return (T) new SubmittedEstimateModal();
-        else
+        } else {
             return (T) this;
+        }
     }
 
     @Step("Удалить смету")
@@ -219,25 +219,30 @@ public class EstimatePage extends CartEstimatePage {
     }
 
     @Step("Проверить, что у товара #{productIdx} из заказа #{orderIdx} доступное кол-во выделено красным")
-    public EstimatePage shouldProductAvailableStockLabelIsRed(int orderIdx, int productIdx) throws Exception {
+    public EstimatePage shouldProductAvailableStockLabelIsRed(int orderIdx, int productIdx)
+            throws Exception {
         productIdx--;
         orderIdx--;
-        anAssert.isEquals(orders.get(orderIdx).getProductWidget(productIdx).getColorOfAvailableStockLbl(),
-                Colors.RED.getColorValue(), "Цвет у товара #" + (productIdx + 1) + " должен быть красный");
+        anAssert.isEquals(
+                orders.get(orderIdx).getProductWidget(productIdx).getColorOfAvailableStockLbl(),
+                Colors.RED.getColorValue(),
+                "Цвет у товара #" + (productIdx + 1) + " должен быть красный");
         return this;
     }
 
     @Step("Убедиться, что смета имеет статус 'Преобразован', нет активных кнопок")
     public EstimatePage shouldEstimateHasTransformedStatus() {
         softAssert.areElementsNotVisible(createBtn, addDeliveryBtn, trashBtn, transformToCartBtn);
-        softAssert.isEquals(getDocumentStatus(), SalesDocumentsConst.States.TRANSFORMED.getUiVal().toUpperCase(),
+        softAssert.isEquals(getDocumentStatus(),
+                SalesDocumentsConst.States.TRANSFORMED.getUiVal().toUpperCase(),
                 "Неверный статус сметы");
         softAssert.verifyAll();
         return this;
     }
 
     @Step("Проверить, что на странице сметы содержатся ожидаемые данные")
-    public EstimatePage shouldEstimateHasData(SalesDocWebData expectedEstimateData) throws Exception {
+    public EstimatePage shouldEstimateHasData(SalesDocWebData expectedEstimateData)
+            throws Exception {
         shouldDocumentHasData(expectedEstimateData);
         return this;
     }

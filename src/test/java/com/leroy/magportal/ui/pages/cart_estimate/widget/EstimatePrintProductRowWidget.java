@@ -39,10 +39,12 @@ public class EstimatePrintProductRowWidget extends CardWebWidget<EstimatePrintPr
         EstimatePrintProductData estimatePrintProductData = new EstimatePrintProductData();
         estimatePrintProductData.setTitle(title.getText());
         estimatePrintProductData.setLmCode(ParserUtil.strWithOnlyDigits(lmCode.getText()));
-        estimatePrintProductData.setQuantity(ParserUtil.strToDouble(StringUtils.substringAfter(quantity.getText(), "):")));
+        estimatePrintProductData.setQuantity(
+                ParserUtil.strToDouble(StringUtils.substringAfter(quantity.getText(), "):")));
         estimatePrintProductData.setPercentNDS(ParserUtil.strToDouble(nds.getText()));
         estimatePrintProductData.setPrice(ParserUtil.strToDouble(price.getText()));
-        estimatePrintProductData.setTotalPriceWithNDS(ParserUtil.strToDouble(totalPriceWithNDS.getText()));
+        estimatePrintProductData
+                .setTotalPriceWithNDS(ParserUtil.strToDouble(totalPriceWithNDS.getText()));
         return estimatePrintProductData;
     }
 }

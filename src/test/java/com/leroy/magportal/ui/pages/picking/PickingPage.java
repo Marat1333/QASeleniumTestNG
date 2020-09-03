@@ -14,7 +14,8 @@ import com.leroy.magportal.ui.webelements.commonelements.PuzCheckBox;
 import com.leroy.magportal.ui.webelements.commonelements.PuzComboBox;
 import io.qameta.allure.Step;
 
-public class PickingPage extends LeftDocumentListPage<ShortPickingTaskCardWidget, ShortPickingTaskData> {
+public class PickingPage extends
+        LeftDocumentListPage<ShortPickingTaskCardWidget, ShortPickingTaskData> {
 
     @WebFindBy(xpath = "//div[contains(@class, 'Picking-PickingHeader')]//*[text()='Сборки']", metaName = "Загаловок")
     Element headerLbl;

@@ -39,7 +39,8 @@ public class AddProductsFromSearchWidget extends CardWebWidget<ProductOrderCardW
             metaName = "Кнопка Добавить")
     Button addBtn;
 
-    @WebFindBy(xpath = FOOTER_XPATH + "//div[input[@id='inputCounterTextInput']]/preceding-sibling::div",
+    @WebFindBy(xpath = FOOTER_XPATH
+            + "//div[input[@id='inputCounterTextInput']]/preceding-sibling::div",
             metaName = "Кнопка '-'")
     Element minusBtn;
 
@@ -47,7 +48,8 @@ public class AddProductsFromSearchWidget extends CardWebWidget<ProductOrderCardW
             metaName = "Поле кол-ва")
     EditBox quantityFld;
 
-    @WebFindBy(xpath = FOOTER_XPATH + "//div[input[@id='inputCounterTextInput']]/following-sibling::div",
+    @WebFindBy(xpath = FOOTER_XPATH
+            + "//div[input[@id='inputCounterTextInput']]/following-sibling::div",
             metaName = "Кнопка '+'")
     Element plusBtn;
 
@@ -63,8 +65,9 @@ public class AddProductsFromSearchWidget extends CardWebWidget<ProductOrderCardW
         productData.setAvailableTodayQuantity(ParserUtil.strToDouble(availableQuantity.getText()));
         productData.setLmCode(lmCode.getText());
         productData.setBarCode(ParserUtil.strWithOnlyDigits(barCode.getText()));
-        if (quantityFld.isVisible())
+        if (quantityFld.isVisible()) {
             productData.setSelectedQuantity(ParserUtil.strToDouble(quantityFld.getText()));
+        }
         return productData;
     }
 
@@ -80,7 +83,8 @@ public class AddProductsFromSearchWidget extends CardWebWidget<ProductOrderCardW
     }
 
     public boolean isAllRequiredElementsVisibleAfterClickAddBtn() {
-        return !addBtn.isVisible() && minusBtn.isVisible() && quantityFld.isVisible() && plusBtn.isVisible() && trashBtn.isVisible();
+        return !addBtn.isVisible() && minusBtn.isVisible() && quantityFld.isVisible() && plusBtn
+                .isVisible() && trashBtn.isVisible();
     }
 
 }

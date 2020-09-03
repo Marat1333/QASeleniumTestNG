@@ -70,8 +70,9 @@ public class CustomerPage extends MagPortalBasePage {
     @Step("Введите {text} в поле поиска и нажмите иконку поиска")
     public CustomerPage searchClient(String text) {
         EditBox searchFld = searchPhoneFld.isVisible() ? searchPhoneFld : searchEmailFld;
-        if (text.startsWith("+7"))
+        if (text.startsWith("+7")) {
             text = text.substring(2);
+        }
         searchFld.clear();
         searchFld.click();
         searchFld.fill(text);

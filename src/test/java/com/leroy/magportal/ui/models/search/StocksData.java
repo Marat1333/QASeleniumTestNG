@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class StocksData {
+
     private Double availableForSale;
     private Integer unavailableForSale;
     private Integer saleHall;

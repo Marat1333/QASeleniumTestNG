@@ -6,7 +6,6 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -19,7 +18,8 @@ public class SubmittedSendEstimateModal extends MagPortalBasePage {
     @WebFindBy(xpath = "//span[contains(text(), 'Смета отправлена')]", metaName = "Основной текст окна")
     Element mainText;
 
-    @WebFindBy(xpath = MODAL_WINDOW_XPATH + "//button[contains(@class, 'Common-ConfirmModal__modal__okButton')]",
+    @WebFindBy(xpath = MODAL_WINDOW_XPATH
+            + "//button[contains(@class, 'Common-ConfirmModal__modal__okButton')]",
             metaName = "Кнопка 'Понятно'")
     Button confirmBtn;
 

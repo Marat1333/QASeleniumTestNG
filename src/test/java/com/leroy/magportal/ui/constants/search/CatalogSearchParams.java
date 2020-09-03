@@ -2,6 +2,7 @@ package com.leroy.magportal.ui.constants.search;
 
 
 public class CatalogSearchParams {
+
     public final static String bylmCodeParamName = "byLmCode=";
     public final static String byBarCodeParamName = "byBarCode=";
     public final static String byNameLikeParamName = "byNameLike=";

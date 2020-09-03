@@ -1,10 +1,9 @@
 package com.leroy.magportal.ui.webelements.commonelements;
 
 import com.leroy.core.fieldfactory.CustomLocator;
-import org.openqa.selenium.WebDriver;
-
 import java.util.Arrays;
 import java.util.List;
+import org.openqa.selenium.WebDriver;
 
 /**
  * Выпадающий список с опциями (Check boxes) - множественный выбор
@@ -29,7 +28,8 @@ public class PuzMultiSelectComboBox extends PuzComboBox {
     }
 
     /**
-     * Деактивирует (отключает) опции в выпадающем списке (если опция уже отключена, то ничего не делает)
+     * Деактивирует (отключает) опции в выпадающем списке (если опция уже отключена, то ничего не
+     * делает)
      *
      * @param options список опций, которые должны быть отключены
      */

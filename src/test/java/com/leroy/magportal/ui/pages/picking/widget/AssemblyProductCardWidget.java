@@ -68,7 +68,6 @@ public class AssemblyProductCardWidget extends CardWebWidget<PickingProductCardD
             , metaName = "Причина отсутствия")
     Element productCardReason;
 
-
     // Actions
 
     public void editCollectQuantity(String val) {
@@ -111,8 +110,10 @@ public class AssemblyProductCardWidget extends CardWebWidget<PickingProductCardD
         pickingProductCardData.setWeight(ParserUtil.strToDouble(weight.getText(), "."));
         pickingProductCardData.setReasonOfLack(productCardReason.getTextIfPresent());
         pickingProductCardData.setStockQuantity(ParserUtil.strToInt(stockQuantity.getText()));
-        pickingProductCardData.setCollectedQuantity(ParserUtil.strToInt(collectedQuantityFld.getText()));
-        pickingProductCardData.setOrderedQuantity(ParserUtil.strToInt(orderedQuantityFld.getText()));
+        pickingProductCardData
+                .setCollectedQuantity(ParserUtil.strToInt(collectedQuantityFld.getText()));
+        pickingProductCardData
+                .setOrderedQuantity(ParserUtil.strToInt(orderedQuantityFld.getText()));
         return pickingProductCardData;
     }
 }

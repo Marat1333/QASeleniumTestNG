@@ -1,5 +1,8 @@
 package com.leroy.magportal.ui.pages.orders;
 
+import static com.leroy.constants.DefectConst.INVALID_ORDER_DRAFT_DATE;
+import static com.leroy.constants.DefectConst.PAO_931;
+
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.annotations.Form;
 import com.leroy.core.annotations.WebFindBy;
@@ -14,17 +17,13 @@ import com.leroy.magportal.ui.pages.products.form.AddProductForm;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
-import lombok.Getter;
-import org.openqa.selenium.support.Color;
-import org.openqa.selenium.support.Colors;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import static com.leroy.constants.DefectConst.INVALID_ORDER_DRAFT_DATE;
-import static com.leroy.constants.DefectConst.PAO_931;
+import lombok.Getter;
+import org.openqa.selenium.support.Color;
+import org.openqa.selenium.support.Colors;
 
 public class OrderDraftContentPage extends OrderDraftPage {
 
@@ -82,19 +81,25 @@ public class OrderDraftContentPage extends OrderDraftPage {
 
     // Verifications
     @Step("Проверить, что данные заказа соответствуют ожидаемому")
-    public OrderDraftContentPage shouldOrderContentDataIs(SalesDocWebData orderData) throws Exception {
+    public OrderDraftContentPage shouldOrderContentDataIs(SalesDocWebData orderData)
+            throws Exception {
         SalesDocWebData expectedOrderData = orderData.clone();
         SalesDocWebData actualData = getOrderData();
         expectedOrderData.setPinCode(null);
         expectedOrderData.setClient(null);
         expectedOrderData.setDeliveryType(null);
-        if (INVALID_ORDER_DRAFT_DATE)
+        if (INVALID_ORDER_DRAFT_DATE) {
             expectedOrderData.setCreationDate(null);
-        expectedOrderData.getOrders().get(0).getProductCardDataList().forEach(p -> p.setBarCode(null));
+        }
+        expectedOrderData.getOrders().get(0).getProductCardDataList()
+                .forEach(p -> p.setBarCode(null));
         // Не понятно как проверять вес, когда он в корзине отображается суммарный, а в заказе за штуку:
-        expectedOrderData.getOrders().get(0).getProductCardDataList().forEach(p -> p.setWeight(null));
-        if (PAO_931 && expectedOrderData.getOrders().get(0).getProductCardDataList().get(0).getDiscountPercent() != null)
+        expectedOrderData.getOrders().get(0).getProductCardDataList()
+                .forEach(p -> p.setWeight(null));
+        if (PAO_931 && expectedOrderData.getOrders().get(0).getProductCardDataList().get(0)
+                .getDiscountPercent() != null) {
             expectedOrderData.getOrders().forEach(p -> p.setTotalPrice(null));
+        }
         actualData.assertEqualsNotNullExpectedFields(expectedOrderData);
         return this;
     }
@@ -103,16 +108,20 @@ public class OrderDraftContentPage extends OrderDraftPage {
     @Step("Проверить, что в заказе имеются товары с лм кодами: {lmCodes}")
     public OrderDraftContentPage shouldProductsHave(List<String> lmCodes) throws Exception {
         SalesDocWebData salesDocWebData = getOrderData();
-        if (!INVALID_ORDER_DRAFT_DATE)
+        if (!INVALID_ORDER_DRAFT_DATE) {
             softAssert.isNotEquals(salesDocWebData.getCreationDate(), "Invalid date",
                     "Неверная дата создания");
+        }
         softAssert.isFalse(salesDocWebData.getNumber().isEmpty(), "Заказ не имеет номера");
         softAssert.isEquals(salesDocWebData.getStatus().toLowerCase(),
-                SalesDocumentsConst.States.DRAFT.getUiVal().toLowerCase(), "Неверный статус заказа");
-        anAssert.isTrue(salesDocWebData.getOrders() != null && salesDocWebData.getOrders().size() == 1,
+                SalesDocumentsConst.States.DRAFT.getUiVal().toLowerCase(),
+                "Неверный статус заказа");
+        anAssert.isTrue(
+                salesDocWebData.getOrders() != null && salesDocWebData.getOrders().size() == 1,
                 "Информация о заказе недоступна");
         OrderWebData orderWebData = salesDocWebData.getOrders().get(0);
-        softAssert.isEquals(orderWebData.getProductCount(), orderWebData.getProductCardDataList().size(),
+        softAssert.isEquals(orderWebData.getProductCount(),
+                orderWebData.getProductCardDataList().size(),
                 "Неверная информация о кол-ве товаров в заказе");
         double expectedTotalWeight = 0.0;
         double expectedTotalPrice = 0.0;
@@ -122,11 +131,13 @@ public class OrderDraftContentPage extends OrderDraftPage {
             expectedTotalPrice += productData.getTotalPrice();
             actualLmCodes.add(productData.getLmCode());
         }
-        softAssert.isEquals(actualLmCodes, new HashSet<>(lmCodes), "Ожидались другие товары в заказе");
+        softAssert.isEquals(actualLmCodes, new HashSet<>(lmCodes),
+                "Ожидались другие товары в заказе");
         softAssert.isTrue(Math.abs(orderWebData.getTotalWeight() - expectedTotalWeight) <= 0.011,
                 String.format("Неверный общий вес заказа. Actual: %s Expected: %s",
                         orderWebData.getTotalWeight(), expectedTotalWeight));
-        softAssert.isEquals(orderWebData.getTotalPrice(), expectedTotalPrice, "Неверная общая стоимость заказа");
+        softAssert.isEquals(orderWebData.getTotalPrice(), expectedTotalPrice,
+                "Неверная общая стоимость заказа");
         softAssert.verifyAll();
         return this;
     }
@@ -136,10 +147,12 @@ public class OrderDraftContentPage extends OrderDraftPage {
         index--;
         Element productCard = E(productCards.get(index).getXpath());
         softAssert.isEquals(Color.fromString(productCard.getCssValue("border-color")),
-                Colors.RED.getColorValue(), "Ожидался border-color = RED у карточки товара " + (index + 1));
+                Colors.RED.getColorValue(),
+                "Ожидался border-color = RED у карточки товара " + (index + 1));
         softAssert.isTrue(productCard.getAttribute("class").contains("danger"),
                 "Карточка товара " + (index + 1) + " должна содержать в названии класса 'danger'");
-        softAssert.isFalse(deliveryTypeBtn.isEnabled(), "Кнопка 'Способ получения' должна быть неактивна");
+        softAssert.isFalse(deliveryTypeBtn.isEnabled(),
+                "Кнопка 'Способ получения' должна быть неактивна");
         softAssert.verifyAll();
         return this;
     }

@@ -19,10 +19,10 @@ public class AddDeliveryModal extends MagPortalBasePage {
             metaName = "Кнопка 'Не добавлять'")
     Button cancelBtn;
 
-    @WebFindBy(xpath = MODAL_DIV_XPATH + "//button[contains(@class, 'Common-ConfirmModal__modal__okButton')]",
+    @WebFindBy(xpath = MODAL_DIV_XPATH
+            + "//button[contains(@class, 'Common-ConfirmModal__modal__okButton')]",
             metaName = "Кнопка Применить (Сохранить)")
     Button confirmBtn;
-
 
     // Actions
 

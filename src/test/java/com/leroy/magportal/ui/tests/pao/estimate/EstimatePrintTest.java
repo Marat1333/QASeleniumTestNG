@@ -1,5 +1,8 @@
 package com.leroy.magportal.ui.tests.pao.estimate;
 
+import static com.leroy.core.matchers.Matchers.successful;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.EstimateClient;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
@@ -15,16 +18,12 @@ import com.leroy.magportal.ui.pages.cart_estimate.PrintEstimatePage;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SubmittedEstimateModal;
 import com.leroy.magportal.ui.pages.customers.CreateCustomerForm;
 import com.leroy.magportal.ui.tests.BasePAOTest;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.testng.annotations.Test;
-import ru.leroymerlin.qa.core.clients.base.Response;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import static com.leroy.core.matchers.Matchers.successful;
-import static org.hamcrest.MatcherAssert.assertThat;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.testng.annotations.Test;
+import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class EstimatePrintTest extends BasePAOTest {
 
@@ -47,7 +46,8 @@ public class EstimatePrintTest extends BasePAOTest {
 
         List<EstimateProductOrderData> estimateProducts = new ArrayList<>();
         for (ProductItemData productItemData : productItems) {
-            EstimateProductOrderData productOrderData = new EstimateProductOrderData(productItemData);
+            EstimateProductOrderData productOrderData = new EstimateProductOrderData(
+                    productItemData);
             productOrderData.setQuantity((double) new Random().nextInt(6) + 1);
             estimateProducts.add(productOrderData);
         }
@@ -174,7 +174,8 @@ public class EstimatePrintTest extends BasePAOTest {
         printEstimatePage.closeCurrentWindowAndSwitchToSpecified(estimatePage);
     }
 
-    @Test(description = "C23398086 Печать сметы физ. лицо", groups = {NEED_PRODUCTS_GROUP, NEED_ACCESS_TOKEN_GROUP})
+    @Test(description = "C23398086 Печать сметы физ. лицо", groups = {NEED_PRODUCTS_GROUP,
+            NEED_ACCESS_TOKEN_GROUP})
     public void testPrintEstimateWithIndividualPerson() throws Exception {
         // Test Data
         ProductItemData testProduct1 = productList.get(0);

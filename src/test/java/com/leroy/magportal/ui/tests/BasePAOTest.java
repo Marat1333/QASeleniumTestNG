@@ -9,14 +9,13 @@ import com.leroy.magmobile.api.data.customer.CustomerResponseBodyData;
 import com.leroy.magportal.ui.WebBaseSteps;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
 import io.qameta.allure.Step;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
 import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
-
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.List;
 
 public abstract class BasePAOTest extends WebBaseSteps {
 

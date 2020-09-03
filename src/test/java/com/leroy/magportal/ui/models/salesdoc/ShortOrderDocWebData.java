@@ -2,13 +2,13 @@ package com.leroy.magportal.ui.models.salesdoc;
 
 import com.leroy.core.ContextProvider;
 import com.leroy.core.asserts.SoftAssertWrapper;
-import lombok.Data;
-
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import lombok.Data;
 
 @Data
 public class ShortOrderDocWebData implements IDataWithNumberAndStatus<ShortOrderDocWebData> {
+
     private String number;
     private String status;
     private String customer;
@@ -47,9 +47,12 @@ public class ShortOrderDocWebData implements IDataWithNumberAndStatus<ShortOrder
                     "Неверный клиент у документа");
         }
         if (expectedData.getCreationDate() != null) {
-            softAssert.isTrue(ChronoUnit.MINUTES.between(creationDate, expectedData.getCreationDate()) < 4,
-                    String.format("Неверная дата создания документа. Актуальная: %s; Ожидалось: %s",
-                            creationDate, expectedData.getCreationDate()));
+            softAssert
+                    .isTrue(ChronoUnit.MINUTES.between(creationDate, expectedData.getCreationDate())
+                                    < 4,
+                            String.format(
+                                    "Неверная дата создания документа. Актуальная: %s; Ожидалось: %s",
+                                    creationDate, expectedData.getCreationDate()));
         }
         if (expectedData.getTotalPrice() != null) {
             softAssert.isEquals(totalPrice, expectedData.getTotalPrice(),

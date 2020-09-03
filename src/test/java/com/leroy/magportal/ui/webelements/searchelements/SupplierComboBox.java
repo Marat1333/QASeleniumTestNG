@@ -65,7 +65,8 @@ public class SupplierComboBox extends PuzMultiSelectComboBox {
 
     public Boolean isSupplierSelected(String supplier) throws Exception {
         for (SupplierCardWidget widget : supplierCards) {
-            if (widget.getSupplierCode().contains(supplier) || widget.getSupplierName().contains(supplier)) {
+            if (widget.getSupplierCode().contains(supplier) || widget.getSupplierName()
+                    .contains(supplier)) {
                 return widget.isSelected();
             }
         }
@@ -99,8 +100,9 @@ public class SupplierComboBox extends PuzMultiSelectComboBox {
     }
 
     public void close() {
-        if (container.isVisible())
+        if (container.isVisible()) {
             click();
+        }
     }
 
 }

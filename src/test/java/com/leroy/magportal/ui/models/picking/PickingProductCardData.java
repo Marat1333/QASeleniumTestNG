@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 public class PickingProductCardData {
+
     private String lmCode;
     private String barCode;
     private String title;
@@ -45,12 +46,14 @@ public class PickingProductCardData {
     }
 
     private static class Dimension3D {
+
         private Double length;
         private Double width;
         private Double height;
     }
 
-    public void assertEqualsNotNullExpectedFields(int i, PickingProductCardData expectedProductData) {
+    public void assertEqualsNotNullExpectedFields(int i,
+            PickingProductCardData expectedProductData) {
         SoftAssertWrapper softAssert = ContextProvider.getContext().getSoftAssert();
         softAssert.isEquals(lmCode, expectedProductData.getLmCode(),
                 "Товар #" + (i + 1) + " - неверный ЛМ код");

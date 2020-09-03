@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class EstimatePrintProductData {
+
     private String lmCode;
     private String title;
     private Double quantity;

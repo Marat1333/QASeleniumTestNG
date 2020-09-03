@@ -8,14 +8,12 @@ import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardWebData;
 import com.leroy.magportal.ui.webelements.CardWebWidget;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import com.leroy.utils.ParserUtil;
+import java.util.List;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 
-import java.util.List;
-
 /**
- * Карточки с заказами в смете и корзине.
- * (В смете может быть только 1 заказ, в корзине несколько)
+ * Карточки с заказами в смете и корзине. (В смете может быть только 1 заказ, в корзине несколько)
  * Каждый заказ может включать в себя несколько карточек с продуктами @products
  */
 public class OrderPuzWidget extends CardWebWidget<OrderWebData> {
@@ -49,7 +47,8 @@ public class OrderPuzWidget extends CardWebWidget<OrderWebData> {
         return products.get(index);
     }
 
-    public CardWebWidgetList<ProductOrderCardPuzWidget, ProductOrderCardWebData> getProductWidgets() throws Exception {
+    public CardWebWidgetList<ProductOrderCardPuzWidget, ProductOrderCardWebData> getProductWidgets()
+            throws Exception {
         return products;
     }
 

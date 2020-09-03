@@ -10,10 +10,9 @@ import com.leroy.magportal.ui.pages.picking.widget.AssemblyProductCardWidget;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import com.leroy.magportal.ui.webelements.commonelements.PuzCheckBox;
 import io.qameta.allure.Step;
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
 public class PickingContentPage extends PickingPage {
 
@@ -54,13 +53,14 @@ public class PickingContentPage extends PickingPage {
         pickingTaskData.setStatus(getStatus());
         pickingTaskData.setCreationDate(getCreationDate());
         boolean onlySelectedProducts = false;
-        if (!onlySelectedProducts)
+        if (!onlySelectedProducts) {
             pickingTaskData.setProducts(productCards.getDataList());
-        else {
+        } else {
             List<PickingProductCardData> productCardDataList = new ArrayList<>();
             for (AssemblyProductCardWidget widget : productCards) {
-                if (widget.isSplitChecked())
+                if (widget.isSplitChecked()) {
                     productCardDataList.add(widget.collectDataFromPage());
+                }
             }
             pickingTaskData.setProducts(productCardDataList);
         }
@@ -133,21 +133,24 @@ public class PickingContentPage extends PickingPage {
     // Verifications
 
     @Step("Проверить выбрана ли опция 'Выбрать все'")
-    public PickingContentPage checkSelectAllOptionIsSelected(boolean shouldBeSelected) throws Exception {
+    public PickingContentPage checkSelectAllOptionIsSelected(boolean shouldBeSelected)
+            throws Exception {
         anAssert.isFalse(selectAllChkBox.isChecked() ^ shouldBeSelected,
                 "Опция 'Выбрать все' " + (shouldBeSelected ? "" : "не") + " должна быть выбрана");
         return this;
     }
 
     @Step("Проверить, что данные сборки отображаются корректно")
-    public PickingContentPage shouldPickingTaskDataIs(PickingTaskData expectedPickingTaskData) throws Exception {
+    public PickingContentPage shouldPickingTaskDataIs(PickingTaskData expectedPickingTaskData)
+            throws Exception {
         PickingTaskData actualData = getPickingTaskData();
         actualData.assertEqualsNotNullExpectedFields(expectedPickingTaskData);
         return this;
     }
 
     @Step("Проверить, что кол-во 'Собрано' у {index}-ого товара равно {value}")
-    public PickingContentPage shouldProductCollectedQuantityIs(int index, int value) throws Exception {
+    public PickingContentPage shouldProductCollectedQuantityIs(int index, int value)
+            throws Exception {
         index--;
         anAssert.isEquals(productCards.get(index).getCollectedQuantity(), String.valueOf(value),
                 "Неверное кол-во 'собрано' у " + (index + 1) + "-ого товара");
@@ -170,8 +173,10 @@ public class PickingContentPage extends PickingPage {
         String[] actualCount = StringUtils.substringBetween(text, "(", ")").split("/");
         anAssert.isEquals(actualCount.length, 2,
                 "На кнопке Завершить не отображается счетчик (или отображается некорректно)");
-        softAssert.isEquals(actualCount[0], String.valueOf(one), "Счетчик на кнопке Завершить - собранное кол-во неверен");
-        softAssert.isEquals(actualCount[1], String.valueOf(all), "Счетчик на кнопке Завершить - общее кол-ва товара неверен");
+        softAssert.isEquals(actualCount[0], String.valueOf(one),
+                "Счетчик на кнопке Завершить - собранное кол-во неверен");
+        softAssert.isEquals(actualCount[1], String.valueOf(all),
+                "Счетчик на кнопке Завершить - общее кол-ва товара неверен");
         softAssert.verifyAll();
         return this;
     }
@@ -179,7 +184,8 @@ public class PickingContentPage extends PickingPage {
     @Step("Проверить, активна ли кнопка завершить")
     public PickingContentPage checkIfFinishButtonIsEnabled(boolean shouldBeEnabled) {
         anAssert.isFalse(finishAssemblyBtn.isEnabled() ^ shouldBeEnabled,
-                "Неверное состояние кнопки Завершить. Актуальное значение: isEnabled = " + !shouldBeEnabled);
+                "Неверное состояние кнопки Завершить. Актуальное значение: isEnabled = "
+                        + !shouldBeEnabled);
         return this;
     }
 
@@ -205,17 +211,20 @@ public class PickingContentPage extends PickingPage {
 
         private static final String MODAL_WINDOW_XPATH = "//div[contains(@class, 'Common-ConfirmModal__modal')]";
 
-        @WebFindBy(xpath = MODAL_WINDOW_XPATH + "//div[contains(@class, 'ModalFooter__container')]//button[descendant::span[text()='ОТМЕНА']]",
+        @WebFindBy(xpath = MODAL_WINDOW_XPATH
+                + "//div[contains(@class, 'ModalFooter__container')]//button[descendant::span[text()='ОТМЕНА']]",
                 metaName = "Кнопка Отмена")
         Button cancelBtn;
 
-        @WebFindBy(xpath = MODAL_WINDOW_XPATH + "//div[contains(@class, 'ModalFooter__container')]//button[descendant::span[text()='СОХРАНИТЬ']]",
+        @WebFindBy(xpath = MODAL_WINDOW_XPATH
+                + "//div[contains(@class, 'ModalFooter__container')]//button[descendant::span[text()='СОХРАНИТЬ']]",
                 metaName = "Кнопка Сохранить")
         Button saveBtn;
 
         @Step("Выбрать причину {reason}")
         public ReasonForLackOfProductModal selectReason(Reasons reason) {
-            E("//button[contains(@class, 'ReasonsModal__switch')][descendant::span[text()='" + reason.getTitle() + "']]")
+            E("//button[contains(@class, 'ReasonsModal__switch')][descendant::span[text()='"
+                    + reason.getTitle() + "']]")
                     .click();
             return this;
         }

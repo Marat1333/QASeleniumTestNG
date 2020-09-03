@@ -16,13 +16,16 @@ public class SubmittedOrderModal extends MagPortalBasePage {
     @WebFindBy(xpath = MODAL_DIV_XPATH + "//p", metaName = "Основное сообщение")
     Element header;
 
-    @WebFindBy(xpath = MODAL_DIV_XPATH + "//div[contains(@class, 'OrderCreate__barCodeBlock')]//p[2]", metaName = "Номер заказа")
+    @WebFindBy(xpath = MODAL_DIV_XPATH
+            + "//div[contains(@class, 'OrderCreate__barCodeBlock')]//p[2]", metaName = "Номер заказа")
     Element orderNumber;
 
-    @WebFindBy(xpath = MODAL_DIV_XPATH + "//div[contains(@class, 'OrderCreate__barCodeBlock')]//p[4]", metaName = "Пин код")
+    @WebFindBy(xpath = MODAL_DIV_XPATH
+            + "//div[contains(@class, 'OrderCreate__barCodeBlock')]//p[4]", metaName = "Пин код")
     Element pinCode;
 
-    @WebFindBy(xpath = MODAL_DIV_XPATH + "//button", metaName = "Кнопка 'Перейти в список документов'")
+    @WebFindBy(xpath = MODAL_DIV_XPATH
+            + "//button", metaName = "Кнопка 'Перейти в список документов'")
     Element goToOrderListBtn;
 
     @WebFindBy(xpath = MODAL_DIV_XPATH + "//button", metaName = "Кнопка 'Перейти в корзину'")

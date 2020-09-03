@@ -83,13 +83,17 @@ public class ProductOrderCardPuzWidget extends CardWebWidget<ProductOrderCardWeb
     }
 
     public String getPrice() {
-        return price.isVisible() ? price.getText() : totalPriceWithoutDiscount.isVisible() ? getTotalPriceWithoutDiscount() : getTotalPrice();
+        return price.isVisible() ? price.getText()
+                : totalPriceWithoutDiscount.isVisible() ? getTotalPriceWithoutDiscount()
+                        : getTotalPrice();
     }
 
     public String getTotalPrice() {
         String result = totalPrice.getTextIfPresent();
-        if (result == null)
-            result = E(getXpath() + "//div[contains(@class, 'SalesDocProduct__content__price')]/*").getText();
+        if (result == null) {
+            result = E(getXpath() + "//div[contains(@class, 'SalesDocProduct__content__price')]/*")
+                    .getText();
+        }
         return result;
     }
 
@@ -117,18 +121,23 @@ public class ProductOrderCardPuzWidget extends CardWebWidget<ProductOrderCardWeb
         productOrderCardWebData.setTitle(getTitle());
         if (productOrderCardWebData.getTitle().toLowerCase().equals("доставка")) {
             productOrderCardWebData.setService(true);
-            productOrderCardWebData.setSelectedQuantity(ParserUtil.strToDouble(quantityDeliveryLbl.getText()));
+            productOrderCardWebData
+                    .setSelectedQuantity(ParserUtil.strToDouble(quantityDeliveryLbl.getText()));
         } else {
             productOrderCardWebData.setWeight(ParserUtil.strToDouble(getWeight()));
             productOrderCardWebData.setSelectedQuantity(ParserUtil.strToDouble(getQuantity()));
-            productOrderCardWebData.setAvailableTodayQuantity(ParserUtil.strToDouble(getAvailableStock()));
+            productOrderCardWebData
+                    .setAvailableTodayQuantity(ParserUtil.strToDouble(getAvailableStock()));
         }
         productOrderCardWebData.setPrice(ParserUtil.strToDouble(getPrice()));
         if (totalPriceWithoutDiscount.isVisible()) {
-            productOrderCardWebData.setTotalPrice(ParserUtil.strToDouble(getTotalPriceWithoutDiscount()));
-            productOrderCardWebData.setTotalPriceWithDiscount(ParserUtil.strToDouble(getTotalPrice()));
-        } else
+            productOrderCardWebData
+                    .setTotalPrice(ParserUtil.strToDouble(getTotalPriceWithoutDiscount()));
+            productOrderCardWebData
+                    .setTotalPriceWithDiscount(ParserUtil.strToDouble(getTotalPrice()));
+        } else {
             productOrderCardWebData.setTotalPrice(ParserUtil.strToDouble(getTotalPrice()));
+        }
         productOrderCardWebData.setDiscountPercent(ParserUtil.strToDouble(getDiscountPercent()));
         return productOrderCardWebData;
     }

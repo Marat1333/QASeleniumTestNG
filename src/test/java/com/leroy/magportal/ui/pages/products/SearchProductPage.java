@@ -14,12 +14,20 @@ import com.leroy.magportal.ui.pages.products.widget.ExtendedProductCardTableView
 import com.leroy.magportal.ui.pages.products.widget.ExtendedProductCardWidget;
 import com.leroy.magportal.ui.pages.products.widget.ProductCardTableViewWidget;
 import com.leroy.magportal.ui.pages.products.widget.ProductCardWidget;
-import com.leroy.magportal.ui.webelements.commonelements.*;
+import com.leroy.magportal.ui.webelements.commonelements.CalendarInputBox;
+import com.leroy.magportal.ui.webelements.commonelements.PuzCheckBox;
+import com.leroy.magportal.ui.webelements.commonelements.PuzComboBox;
+import com.leroy.magportal.ui.webelements.commonelements.PuzMultiSelectComboBox;
+import com.leroy.magportal.ui.webelements.commonelements.PuzRadioButton;
 import com.leroy.magportal.ui.webelements.searchelements.SupplierComboBox;
 import io.qameta.allure.Step;
-
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 public class SearchProductPage extends MagPortalBasePage {
 
@@ -106,15 +114,18 @@ public class SearchProductPage extends MagPortalBasePage {
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[text()=\"Каталог товаров\"]/ancestor::div[1]")
     Element allDepartmentsBtn;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'lmui-View-row lmui-View-middle')]" +
-            "//span[contains(@class, 'color-mainText') and not(contains(text(), 'Показаны'))]", refreshEveryTime = true)
+    @WebFindBy(xpath =
+            "//div[contains(@class, 'active')]//div[contains(@class, 'lmui-View-row lmui-View-middle')]"
+                    +
+                    "//span[contains(@class, 'color-mainText') and not(contains(text(), 'Показаны'))]", refreshEveryTime = true)
     Element currentNomenclatureLbl;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(text(),'результаты поиска по')]")
     Element searchByAllDepartmentsFilterBtn;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(text(),'результаты поиска по')]" +
-            "/ancestor::span/preceding-sibling::span")
+    @WebFindBy(xpath =
+            "//div[contains(@class, 'active')]//span[contains(text(),'результаты поиска по')]" +
+                    "/ancestor::span/preceding-sibling::span")
     Element currentSearchByPhraseInNomenclatureLbl;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[contains(@class, 'Nomenclatures__link-text')]")
@@ -124,8 +135,10 @@ public class SearchProductPage extends MagPortalBasePage {
             refreshEveryTime = true)
     Button showAllFilters;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[text()='еще']/ancestor::button[1]/following-sibling::" +
-            "div[contains(@class, 'counter')]/span", refreshEveryTime = true)
+    @WebFindBy(xpath =
+            "//div[contains(@class, 'active')]//span[text()='еще']/ancestor::button[1]/following-sibling::"
+                    +
+                    "div[contains(@class, 'counter')]/span", refreshEveryTime = true)
     Element filtersCounter;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[text()='ПОКАЗАТЬ ТОВАРЫ']" +
@@ -166,8 +179,10 @@ public class SearchProductPage extends MagPortalBasePage {
             "'BarViewProductCard__container')]", clazz = ProductCardWidget.class, refreshEveryTime = true)
     ElementList<ProductCardWidget> productCardsList;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'BarViewProductCard__container')]" +
-            "//p/following-sibling::div/ancestor::div[1]", clazz = ExtendedProductCardWidget.class, refreshEveryTime = true)
+    @WebFindBy(xpath =
+            "//div[contains(@class, 'active')]//div[contains(@class, 'BarViewProductCard__container')]"
+                    +
+                    "//p/following-sibling::div/ancestor::div[1]", clazz = ExtendedProductCardWidget.class, refreshEveryTime = true)
     ElementList<ExtendedProductCardWidget> extendedProductCardList;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'TableView__row')]", clazz = ProductCardTableViewWidget.class,
@@ -276,7 +291,8 @@ public class SearchProductPage extends MagPortalBasePage {
     }
 
     @Step("Перейти в карточку продукта {lmCode}")
-    public <T> T navigateToProductCart(String lmCode, FilterFrame frame, ViewMode viewMode) throws Exception {
+    public <T> T navigateToProductCart(String lmCode, FilterFrame frame, ViewMode viewMode)
+            throws Exception {
         Set<String> windows = driver.getWindowHandles();
         switch (frame) {
             case MY_SHOP:
@@ -317,7 +333,8 @@ public class SearchProductPage extends MagPortalBasePage {
                 break;
         }
         this.switchToNewWindow(windows);
-        return frame.equals(FilterFrame.MY_SHOP) ? (T) new ExtendedProductCardPage() : (T) new ProductCardPage();
+        return frame.equals(FilterFrame.MY_SHOP) ? (T) new ExtendedProductCardPage()
+                : (T) new ProductCardPage();
     }
 
     @Step("Перейти по адресу, содержащему фильтры")
@@ -407,7 +424,8 @@ public class SearchProductPage extends MagPortalBasePage {
     }
 
     @Step("Выбрать номенклатуру {dept} {subDept} {classId} {subClass}")
-    public SearchProductPage choseNomenclature(String dept, String subDept, String classId, String subClass) {
+    public SearchProductPage choseNomenclature(String dept, String subDept, String classId,
+            String subClass) {
         allDepartmentsBtn.click();
         if (dept != null) {
             for (Element deptEl : nomenclatureElementsList) {
@@ -483,9 +501,13 @@ public class SearchProductPage extends MagPortalBasePage {
             }
             Element checkbox;
             if (filter.equals(Filters.BEST_PRICE) || filter.equals(Filters.LIMITED_OFFER)) {
-                checkbox = E("//div[contains(@class, 'active')]//*[contains(text(),'" + filter.getName() + "')]/ancestor::button");
+                checkbox = E(
+                        "//div[contains(@class, 'active')]//*[contains(text(),'" + filter.getName()
+                                + "')]/ancestor::button");
             } else {
-                checkbox = E("//div[contains(@class, 'active')]//*[contains(text(),'" + filter.getName() + "')]");
+                checkbox = E(
+                        "//div[contains(@class, 'active')]//*[contains(text(),'" + filter.getName()
+                                + "')]");
             }
             checkbox.click();
             if (applyFilters) {
@@ -538,7 +560,8 @@ public class SearchProductPage extends MagPortalBasePage {
     }
 
     @Step("Выбрать несколько фильтров")
-    public SearchProductPage choseSeveralFilters(FiltersData data, boolean applyFilters) throws Exception {
+    public SearchProductPage choseSeveralFilters(FiltersData data, boolean applyFilters)
+            throws Exception {
         if (data.getSuppliers().length > 0) {
             choseSupplier(true, data.getSuppliers());
         }
@@ -624,7 +647,8 @@ public class SearchProductPage extends MagPortalBasePage {
 
     @Step("Проверить, что отобразилось сообщение \"Ничего не найдено\" " +
             "с кнопкой \"Сбросить фильтры\" - {isClearFiltersVisible} и содержит поисковой запрос {value}")
-    public SearchProductPage shouldNotFoundMsgIsDisplayed(boolean isClearFiltersVisible, String value) {
+    public SearchProductPage shouldNotFoundMsgIsDisplayed(boolean isClearFiltersVisible,
+            String value) {
         if (isClearFiltersVisible) {
             softAssert.isElementVisible(clearAllFiltersInProductFrame);
         } else {
@@ -641,38 +665,51 @@ public class SearchProductPage extends MagPortalBasePage {
         List<ProductItemData> dataList = responseData.getItems();
         if (frame.equals(FilterFrame.MY_SHOP) && mode.equals(ViewMode.EXTENDED)) {
             anAssert.isTrue(dataList.size() == extendedProductCardList.getCount(),
-                    "Кол-во артикулов отличается: отображено - " + extendedProductCardList.getCount() + ", получено - "
+                    "Кол-во артикулов отличается: отображено - " + extendedProductCardList
+                            .getCount() + ", получено - "
                             + dataList.size());
             for (int i = 0; i < dataList.size(); i++) {
-                anAssert.isTrue(dataList.get(i).getLmCode().equals(extendedProductCardList.get(i).getLmCode()),
-                        "У артикулов не совпадают лм или баркод: ответ мэшапера - " + dataList.get(i).getLmCode() +
+                anAssert.isTrue(dataList.get(i).getLmCode()
+                                .equals(extendedProductCardList.get(i).getLmCode()),
+                        "У артикулов не совпадают лм или баркод: ответ мэшапера - " + dataList
+                                .get(i).getLmCode() +
                                 " отображено - " + extendedProductCardList.get(i).getLmCode());
             }
         } else if (frame.equals(FilterFrame.MY_SHOP) && mode.equals(ViewMode.LIST)) {
             anAssert.isTrue(dataList.size() == extendedProductCardListTableView.getCount(),
-                    "Кол-во артикулов отличается: отображено - " + extendedProductCardListTableView.getCount() + ", получено - "
+                    "Кол-во артикулов отличается: отображено - " + extendedProductCardListTableView
+                            .getCount() + ", получено - "
                             + dataList.size());
             for (int i = 0; i < dataList.size(); i++) {
-                anAssert.isTrue(dataList.get(i).getLmCode().equals(extendedProductCardListTableView.get(i).getLmCode()),
-                        "У артикулов не совпадают лм или баркод: ответ мэшапера - " + dataList.get(i).getLmCode() +
-                                " отображено - " + extendedProductCardListTableView.get(i).getLmCode());
+                anAssert.isTrue(dataList.get(i).getLmCode()
+                                .equals(extendedProductCardListTableView.get(i).getLmCode()),
+                        "У артикулов не совпадают лм или баркод: ответ мэшапера - " + dataList
+                                .get(i).getLmCode() +
+                                " отображено - " + extendedProductCardListTableView.get(i)
+                                .getLmCode());
             }
         } else if (frame.equals(FilterFrame.ALL_GAMMA_LM) && mode.equals(ViewMode.EXTENDED)) {
             anAssert.isTrue(dataList.size() == productCardsList.getCount(),
-                    "Кол-во артикулов отличается: отображено - " + productCardsList.getCount() + ", получено - "
+                    "Кол-во артикулов отличается: отображено - " + productCardsList.getCount()
+                            + ", получено - "
                             + dataList.size());
             for (int i = 0; i < dataList.size(); i++) {
-                anAssert.isTrue(dataList.get(i).getLmCode().equals(productCardsList.get(i).getLmCode()),
-                        "У артикулов не совпадают лм или баркод: ответ мэшапера - " + dataList.get(i).getLmCode() +
+                anAssert.isTrue(
+                        dataList.get(i).getLmCode().equals(productCardsList.get(i).getLmCode()),
+                        "У артикулов не совпадают лм или баркод: ответ мэшапера - " + dataList
+                                .get(i).getLmCode() +
                                 " отображено - " + productCardsList.get(i).getLmCode());
             }
         } else {
             anAssert.isTrue(dataList.size() == productCardListTableView.getCount(),
-                    "Кол-во артикулов отличается: отображено - " + productCardListTableView.getCount() + ", получено - "
+                    "Кол-во артикулов отличается: отображено - " + productCardListTableView
+                            .getCount() + ", получено - "
                             + dataList.size());
             for (int i = 0; i < dataList.size(); i++) {
-                anAssert.isTrue(dataList.get(i).getLmCode().equals(productCardListTableView.get(i).getLmCode()),
-                        "У артикулов не совпадают лм или баркод: ответ мэшапера - " + dataList.get(i).getLmCode() +
+                anAssert.isTrue(dataList.get(i).getLmCode()
+                                .equals(productCardListTableView.get(i).getLmCode()),
+                        "У артикулов не совпадают лм или баркод: ответ мэшапера - " + dataList
+                                .get(i).getLmCode() +
                                 " отображено - " + productCardListTableView.get(i).getLmCode());
             }
         }
@@ -696,18 +733,24 @@ public class SearchProductPage extends MagPortalBasePage {
     }
 
     @Step("Проверяем наличие поискового критерия {searchCriterion} в карточке товара")
-    public SearchProductPage shouldProductCardContainsText(String searchCriterion) throws Exception {
+    public SearchProductPage shouldProductCardContainsText(String searchCriterion)
+            throws Exception {
         anAssert.isElementNotVisible(notFoundMsgLbl);
         if (searchCriterion.matches("\\D+") || searchCriterion.length() < 4) {
             for (int i = 0; i < extendedProductCardList.getCount(); i++) {
-                anAssert.isContainsIgnoringCase(extendedProductCardList.get(i).getTitle(), searchCriterion,
-                        extendedProductCardList.get(i).getTitle() + " не содержит " + searchCriterion);
+                anAssert.isContainsIgnoringCase(extendedProductCardList.get(i).getTitle(),
+                        searchCriterion,
+                        extendedProductCardList.get(i).getTitle() + " не содержит "
+                                + searchCriterion);
             }
         } else {
             for (int i = 0; i < extendedProductCardList.getCount(); i++) {
-                anAssert.isTrue((extendedProductCardList.get(i).getLmCode().contains(searchCriterion) ||
-                                extendedProductCardList.get(i).getBarCode().contains(searchCriterion)),
-                        extendedProductCardList.get(i).toString() + " не содержит " + searchCriterion);
+                anAssert.isTrue(
+                        (extendedProductCardList.get(i).getLmCode().contains(searchCriterion) ||
+                                extendedProductCardList.get(i).getBarCode()
+                                        .contains(searchCriterion)),
+                        extendedProductCardList.get(i).toString() + " не содержит "
+                                + searchCriterion);
             }
         }
         return this;
@@ -720,13 +763,15 @@ public class SearchProductPage extends MagPortalBasePage {
     }
 
     @Step("Проверить, что текущий элемент номенклатуры отобразился")
-    public SearchProductPage shouldCurrentNomenclatureElementNameIsDisplayed(String nomenclatureName) {
+    public SearchProductPage shouldCurrentNomenclatureElementNameIsDisplayed(
+            String nomenclatureName) {
         anAssert.isElementTextContains(currentNomenclatureLbl, nomenclatureName);
         return this;
     }
 
     @Step("Проверить, что хлебные крошки содержат предыдущий роидтельскую номенклатуру")
-    public SearchProductPage shouldBreadCrumbsContainsNomenclatureName(boolean contains, String... nomenclatureElementName) {
+    public SearchProductPage shouldBreadCrumbsContainsNomenclatureName(boolean contains,
+            String... nomenclatureElementName) {
         int condition = 0;
         for (Element tmp : nomenclaturePathButtons) {
             for (String nomenclatureAttribute : nomenclatureElementName) {
@@ -737,7 +782,8 @@ public class SearchProductPage extends MagPortalBasePage {
             }
         }
         if (contains) {
-            anAssert.isTrue(condition == nomenclatureElementName.length, "не соответсвует кол-ву переданных элементов");
+            anAssert.isTrue(condition == nomenclatureElementName.length,
+                    "не соответсвует кол-ву переданных элементов");
         } else {
             anAssert.isTrue(condition == 0, "Уровень товарной иерархии содержится в элементе UI");
         }
@@ -756,25 +802,31 @@ public class SearchProductPage extends MagPortalBasePage {
             case LM_CODE_DESC:
                 Collections.sort(sortedLmCodesList, Collections.reverseOrder());
                 for (int i = 0; i < extendedProductCardList.getCount(); i++) {
-                    anAssert.isEquals(extendedProductCardList.get(i).getLmCode(), String.valueOf(sortedLmCodesList.get(i)), "Wrong sorting order for visible content");
+                    anAssert.isEquals(extendedProductCardList.get(i).getLmCode(),
+                            String.valueOf(sortedLmCodesList.get(i)),
+                            "Wrong sorting order for visible content");
                 }
                 return this;
             case LM_CODE_ASC:
                 Collections.sort(sortedLmCodesList);
                 for (int i = 0; i < extendedProductCardList.getCount(); i++) {
-                    anAssert.isEquals(extendedProductCardList.get(i).getLmCode(), String.valueOf(sortedLmCodesList.get(i)), "Wrong sorting order for visible content");
+                    anAssert.isEquals(extendedProductCardList.get(i).getLmCode(),
+                            String.valueOf(sortedLmCodesList.get(i)),
+                            "Wrong sorting order for visible content");
                 }
                 return this;
             case NAME_DESC:
                 Collections.sort(sortedNameList, Collections.reverseOrder());
                 for (int i = 0; i < extendedProductCardList.getCount(); i++) {
-                    anAssert.isEquals(extendedProductCardList.get(i).getTitle(), sortedNameList.get(i), "Wrong sorting order for visible content");
+                    anAssert.isEquals(extendedProductCardList.get(i).getTitle(),
+                            sortedNameList.get(i), "Wrong sorting order for visible content");
                 }
                 return this;
             case NAME_ASC:
                 Collections.sort(sortedNameList);
                 for (int i = 0; i < extendedProductCardList.getCount(); i++) {
-                    anAssert.isEquals(extendedProductCardList.get(i).getTitle(), sortedNameList.get(i), "Wrong sorting order for visible content");
+                    anAssert.isEquals(extendedProductCardList.get(i).getTitle(),
+                            sortedNameList.get(i), "Wrong sorting order for visible content");
                 }
                 return this;
             default:
@@ -783,28 +835,33 @@ public class SearchProductPage extends MagPortalBasePage {
     }
 
     @Step("Проверить, что история поиска содержит элементы массива")
-    public SearchProductPage shouldSearchHistoryContainsEachElement(List<String> searchRequests) throws Exception {
+    public SearchProductPage shouldSearchHistoryContainsEachElement(List<String> searchRequests)
+            throws Exception {
         anAssert.isTrue(searchHistoryElements.getCount() > 0, "История поиска не содержит записей");
         String elemText;
         for (int i = 0; i < searchHistoryElements.getCount(); i++) {
             elemText = searchHistoryElements.get(i).getText();
-            anAssert.isEquals(elemText, searchRequests.get(i), "Элементы истории поиска отличаются: отображенный - " +
-                    elemText + " ожидаемый - " + searchRequests.get(i));
+            anAssert.isEquals(elemText, searchRequests.get(i),
+                    "Элементы истории поиска отличаются: отображенный - " +
+                            elemText + " ожидаемый - " + searchRequests.get(i));
         }
         return this;
     }
 
     @Step("Проверить, что история поиска содержит элементы, совпадающая с введенным критерием поиска")
     public SearchProductPage shouldSearchHistoryElementsContainsSearchCriterion(String criterion) {
-        anAssert.isTrue(searchHistoryMatchesElements.getCount() > 0, "История поиска не содержит записей");
+        anAssert.isTrue(searchHistoryMatchesElements.getCount() > 0,
+                "История поиска не содержит записей");
         for (Element tmp : searchHistoryMatchesElements) {
-            anAssert.isEquals(tmp.getText(), criterion, "Элемент истории поиска не содержит введенную фразу");
+            anAssert.isEquals(tmp.getText(), criterion,
+                    "Элемент истории поиска не содержит введенную фразу");
         }
         return this;
     }
 
     @Step("Проверить, что поле с выбором поставщика содержит корректный текст")
-    public SearchProductPage shouldSupplierComboBoxContainsCorrectText(boolean isEmpty, String... name) {
+    public SearchProductPage shouldSupplierComboBoxContainsCorrectText(boolean isEmpty,
+            String... name) {
         String elemText;
         if (isEmpty) {
             anAssert.isTrue(supplierComboBox.getSelectedOptionText().isEmpty(),
@@ -822,7 +879,8 @@ public class SearchProductPage extends MagPortalBasePage {
     }
 
     @Step("Проверить состояние чек-бокса выбранного поставщика")
-    public SearchProductPage shouldChosenSupplierCheckboxHasCorrectCondition(boolean isChecked, String supplier) throws Exception {
+    public SearchProductPage shouldChosenSupplierCheckboxHasCorrectCondition(boolean isChecked,
+            String supplier) throws Exception {
         supplierComboBox.searchSupplier(supplier);
         Boolean val = supplierComboBox.isSupplierSelected(supplier);
         anAssert.isNotNull(val, "Чек-бокс для поставщика " + supplier + " не найден",
@@ -836,7 +894,8 @@ public class SearchProductPage extends MagPortalBasePage {
     }
 
     @Step("Проверить, что чек-бокс переведен в корректное состояние")
-    public SearchProductPage shouldCheckboxFilterHasCorrectCondition(boolean isEnabled, Filters... filters) throws Exception {
+    public SearchProductPage shouldCheckboxFilterHasCorrectCondition(boolean isEnabled,
+            Filters... filters) throws Exception {
         for (Filters filter : filters) {
             String xpath = "//div[contains(@class, 'active')]//*[contains(text(),'" +
                     filter.getName() + "')]/ancestor::button";
@@ -885,44 +944,54 @@ public class SearchProductPage extends MagPortalBasePage {
     }
 
     @Step("Проверить, что комбо-бокс фильтра гамма содержит корректный текст")
-    public SearchProductPage shouldGammaDropBoxContainsCorrectText(boolean isEmpty, String... gammaFilters) throws Exception {
+    public SearchProductPage shouldGammaDropBoxContainsCorrectText(boolean isEmpty,
+            String... gammaFilters) throws Exception {
         if (gammaFilters.length > 0 && !isEmpty) {
             String visibleText = "";
             try {
-                visibleText = gammaComboBox.findChildElement(".//span[contains(@class, 'sing')]").getText();
+                visibleText = gammaComboBox.findChildElement(".//span[contains(@class, 'sing')]")
+                        .getText();
             } catch (NoSuchElementException e) {
                 throw new AssertionError("Комбо-бокс не содержит текста");
             }
             if (gammaFilters.length == 1) {
-                anAssert.isEquals(visibleText, gammaFilters[0], "Текст не соответствует паттерну \"Гамма Х\"");
+                anAssert.isEquals(visibleText, gammaFilters[0],
+                        "Текст не соответствует паттерну \"Гамма Х\"");
             } else {
-                anAssert.isEquals(visibleText, "Гамма (" + gammaFilters.length + ")", "Текст не соответсвует " +
-                        "паттерну \"Гамма (i)\"");
+                anAssert.isEquals(visibleText, "Гамма (" + gammaFilters.length + ")",
+                        "Текст не соответсвует " +
+                                "паттерну \"Гамма (i)\"");
             }
         } else {
-            String emptyText = gammaComboBox.findChildElement(".//input").getAttribute("defaultValue");
+            String emptyText = gammaComboBox.findChildElement(".//input")
+                    .getAttribute("defaultValue");
             anAssert.isEquals(emptyText, "", "Комбо-бокс содержит текст");
         }
         return this;
     }
 
     @Step("Проверить, что комбо-бокс фильтра гамма содержит корректный текст")
-    public SearchProductPage shouldTopDropBoxContainsCorrectText(boolean isEmpty, String... topFilters) throws Exception {
+    public SearchProductPage shouldTopDropBoxContainsCorrectText(boolean isEmpty,
+            String... topFilters) throws Exception {
         if (topFilters.length > 0 && !isEmpty) {
             String visibleText = "";
             try {
-                visibleText = topComboBox.findChildElement(".//span[contains(@class, 'sing')]").getText();
+                visibleText = topComboBox.findChildElement(".//span[contains(@class, 'sing')]")
+                        .getText();
             } catch (NoSuchElementException e) {
                 throw new AssertionError("Комбо-бокс не содержит текста");
             }
             if (topFilters.length == 1) {
-                anAssert.isEquals(visibleText, topFilters[0], "Текст не соответствует паттерну \"Топ Х\"");
+                anAssert.isEquals(visibleText, topFilters[0],
+                        "Текст не соответствует паттерну \"Топ Х\"");
             } else {
-                anAssert.isEquals(visibleText, "Топ (" + topFilters.length + ")", "Текст не соответсвует " +
-                        "паттерну \"Топ (i)\"");
+                anAssert.isEquals(visibleText, "Топ (" + topFilters.length + ")",
+                        "Текст не соответсвует " +
+                                "паттерну \"Топ (i)\"");
             }
         } else {
-            String emptyText = topComboBox.findChildElement(".//input").getAttribute("defaultValue");
+            String emptyText = topComboBox.findChildElement(".//input")
+                    .getAttribute("defaultValue");
             anAssert.isEquals(emptyText, "", "Комбо-бокс содержит текст");
         }
         return this;
@@ -974,10 +1043,12 @@ public class SearchProductPage extends MagPortalBasePage {
     @Step("Проверить, что отображается текст с текущим поисковым критерием {searchCriterion}")
     public SearchProductPage shouldSearchCriterionIs(boolean isVisible, String searchCriterion) {
         if (isVisible) {
-            anAssert.isEquals(getCurrentNomenclatureName(), "Результаты поиска «" + searchCriterion + "»",
+            anAssert.isEquals(getCurrentNomenclatureName(),
+                    "Результаты поиска «" + searchCriterion + "»",
                     "Поисковой критерий не отрисован на странице");
         } else {
-            anAssert.isNotEquals(getCurrentNomenclatureName(), "Результаты поиска «" + searchCriterion + "»",
+            anAssert.isNotEquals(getCurrentNomenclatureName(),
+                    "Результаты поиска «" + searchCriterion + "»",
                     "Поисковой критерий отрисован на странице");
         }
         return this;
@@ -1023,7 +1094,8 @@ public class SearchProductPage extends MagPortalBasePage {
             anAssert.isContainsIgnoringCase(myShopContainer.getAttribute(attributeName), condition,
                     "группа фильтров \"Мой магазин\" не выбрана");
         } else {
-            anAssert.isContainsIgnoringCase(allGammaContainer.getAttribute(attributeName), condition,
+            anAssert.isContainsIgnoringCase(allGammaContainer.getAttribute(attributeName),
+                    condition,
                     "группа фильтров \"Вся гамма ЛМ\" не выбрана");
         }
         return this;
@@ -1067,9 +1139,11 @@ public class SearchProductPage extends MagPortalBasePage {
     @Step("Проверить, что кнопка очистки фильтров имеет корректное состояние")
     public SearchProductPage shouldCleatAllFiltersButtonHasCorrectCondition(boolean isEnabled) {
         if (isEnabled) {
-            anAssert.isTrue(clearAllFiltersInFilterFrameBtn.isEnabled(), "clear all filters btn is disabled");
+            anAssert.isTrue(clearAllFiltersInFilterFrameBtn.isEnabled(),
+                    "clear all filters btn is disabled");
         } else {
-            anAssert.isFalse(clearAllFiltersInFilterFrameBtn.isEnabled(), "clear all filters btn is enabled");
+            anAssert.isFalse(clearAllFiltersInFilterFrameBtn.isEnabled(),
+                    "clear all filters btn is enabled");
         }
         return this;
     }

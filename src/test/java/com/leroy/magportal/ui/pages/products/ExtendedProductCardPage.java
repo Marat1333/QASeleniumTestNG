@@ -22,10 +22,13 @@ import com.leroy.magportal.ui.webelements.searchelements.ProductPriceInfoWidget;
 import com.leroy.magportal.ui.webelements.searchelements.ProductQuantityInfoWidget;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class ExtendedProductCardPage extends ProductCardPage {
 
@@ -124,7 +127,8 @@ public class ExtendedProductCardPage extends ProductCardPage {
         String condition = "active";
         switch (tab) {
             case SIMILAR_PRODUCTS:
-                if (similarProducts.isVisible() && tabContainerList.get(0).getAttribute(attribute).contains(condition)) {
+                if (similarProducts.isVisible() && tabContainerList.get(0).getAttribute(attribute)
+                        .contains(condition)) {
                     return this;
                 }
                 similarProducts.scrollTo();
@@ -175,7 +179,8 @@ public class ExtendedProductCardPage extends ProductCardPage {
 
     @Override
     public ExtendedProductCardPage verifyRequiredElements() {
-        softAssert.areElementsVisible(topBadge, addProductToCart, addProductToEstimate, productPriceInfoWidget,
+        softAssert.areElementsVisible(topBadge, addProductToCart, addProductToEstimate,
+                productPriceInfoWidget,
                 productQuantityInfoWidget, pricesAndStocksInOtherShops);
         softAssert.verifyAll();
         shouldUrlContains("isAllGammaView=false");
@@ -183,7 +188,8 @@ public class ExtendedProductCardPage extends ProductCardPage {
     }
 
     @Step("Проверить, что все дополнительные товары отображен")
-    public ExtendedProductCardPage shouldAllAdditionalProductsIsVisible(List<ProductItemData> data) throws Exception {
+    public ExtendedProductCardPage shouldAllAdditionalProductsIsVisible(List<ProductItemData> data)
+            throws Exception {
         if (data.size() > 4) {
             shouldNavigationBtnHasCorrectCondition(Direction.FORWARD, true);
         } else {
@@ -206,7 +212,8 @@ public class ExtendedProductCardPage extends ProductCardPage {
         return this;
     }
 
-    private ExtendedProductCardPage shouldNavigationBtnHasCorrectCondition(Direction direction, boolean isVisible) {
+    private ExtendedProductCardPage shouldNavigationBtnHasCorrectCondition(Direction direction,
+            boolean isVisible) {
         if (direction.equals(Direction.FORWARD)) {
             if (isVisible) {
                 anAssert.isElementVisible(productCardsListRightPaginationBtn);
@@ -233,25 +240,39 @@ public class ExtendedProductCardPage extends ProductCardPage {
         Double purchasePrice = data.getPurchasePrice().getPrice();
         //get price containers from front-end
         PriceContainerData salesPriceContainerData = productPriceInfoWidget.getPriceContainerData();
-        PriceContainerData pricePerUnitContainerData = productPriceInfoWidget.getPricePerUnitContainerData();
-        PriceContainerData recommendedPriceContainerData = productPriceInfoWidget.getHiddenRecommendedPriceContainerData();
-        PriceContainerData purchasePriceContainerData = productPriceInfoWidget.getHiddenPurchasePriceContainerData();
+        PriceContainerData pricePerUnitContainerData = productPriceInfoWidget
+                .getPricePerUnitContainerData();
+        PriceContainerData recommendedPriceContainerData = productPriceInfoWidget
+                .getHiddenRecommendedPriceContainerData();
+        PriceContainerData purchasePriceContainerData = productPriceInfoWidget
+                .getHiddenPurchasePriceContainerData();
 
         softAssert.isElementTextContains(topBadge, data.getTop());
         softAssert.isEquals(salesPriceContainerData.getPrice(), salesPrice, "SalePrice mismatch");
-        shouldCurrencyIsCorrect(salesPriceContainerData.getCurrency(), data.getSalesPrice().getPriceCurrency());
-        shouldUnitsIsCorrect(salesPriceContainerData.getUnits(), data.getSalesPrice().getPriceUnit());
-        softAssert.isEquals(pricePerUnitContainerData.getPrice(), pricePerUnit, "AltPrice mismatch");
-        shouldCurrencyIsCorrect(pricePerUnitContainerData.getCurrency(), data.getAltPrice().getPriceCurrency());
-        softAssert.isEquals(recommendedPriceContainerData.getPrice(), recommendedPrice, "RecommendedPrice mismatch");
-        shouldCurrencyIsCorrect(recommendedPriceContainerData.getCurrency(), data.getRecommendedPrice().getPriceCurrency());
-        shouldUnitsIsCorrect(recommendedPriceContainerData.getUnits(), data.getRecommendedPrice().getPriceUnit());
-        softAssert.isEquals(purchasePriceContainerData.getPrice(), purchasePrice, "PurchasePrice mismatch");
-        shouldCurrencyIsCorrect(purchasePriceContainerData.getCurrency(), data.getPurchasePrice().getPriceCurrency());
+        shouldCurrencyIsCorrect(salesPriceContainerData.getCurrency(),
+                data.getSalesPrice().getPriceCurrency());
+        shouldUnitsIsCorrect(salesPriceContainerData.getUnits(),
+                data.getSalesPrice().getPriceUnit());
+        softAssert
+                .isEquals(pricePerUnitContainerData.getPrice(), pricePerUnit, "AltPrice mismatch");
+        shouldCurrencyIsCorrect(pricePerUnitContainerData.getCurrency(),
+                data.getAltPrice().getPriceCurrency());
+        softAssert.isEquals(recommendedPriceContainerData.getPrice(), recommendedPrice,
+                "RecommendedPrice mismatch");
+        shouldCurrencyIsCorrect(recommendedPriceContainerData.getCurrency(),
+                data.getRecommendedPrice().getPriceCurrency());
+        shouldUnitsIsCorrect(recommendedPriceContainerData.getUnits(),
+                data.getRecommendedPrice().getPriceUnit());
+        softAssert.isEquals(purchasePriceContainerData.getPrice(), purchasePrice,
+                "PurchasePrice mismatch");
+        shouldCurrencyIsCorrect(purchasePriceContainerData.getCurrency(),
+                data.getPurchasePrice().getPriceCurrency());
         shouldPriceChangeDateIsCorrect(data.getSalesPrice().getDateOfChange());
-        softAssert.isEquals(productPriceInfoWidget.isMismatchPriceThanRecommendedTooltipVisible(), !recommendedPrice.equals(salesPrice),
+        softAssert.isEquals(productPriceInfoWidget.isMismatchPriceThanRecommendedTooltipVisible(),
+                !recommendedPrice.equals(salesPrice),
                 "SalePrice and RecommendedPrice mismatch lbl is invisible");
-        softAssert.isEquals(productPriceInfoWidget.getReasonOfChange(), data.getSalesPrice().getReasonOfChange(),
+        softAssert.isEquals(productPriceInfoWidget.getReasonOfChange(),
+                data.getSalesPrice().getReasonOfChange(),
                 "Price reason of change mismatch");
         shouldStocksIsCorrect(data);
         shouldSupplierDataIsCorrect(data.getSupplier());
@@ -286,7 +307,8 @@ public class ExtendedProductCardPage extends ProductCardPage {
         Locale locale = new Locale("ru");
         DateTimeFormatter shortFormatter = DateTimeFormatter.ofPattern("d MMM", locale);
         DateTimeFormatter longFormatter = DateTimeFormatter.ofPattern("d MMM yyyy", locale);
-        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
+        DateTimeFormatter inputFormatter = DateTimeFormatter
+                .ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
 
         LocalDateTime dataDate = LocalDateTime.parse(date, inputFormatter);
         if (DriverFactory.isGridProfile()) {
@@ -306,29 +328,40 @@ public class ExtendedProductCardPage extends ProductCardPage {
             formattedDataDate = longFormatter.format(dataDate);
         }
         String viewDate = productPriceInfoWidget.getLastPriceChangeDateLbl();
-        softAssert.isContainsIgnoringCase(viewDate, formattedDataDate, "Даты не совпадают: отображается " + viewDate + " ожидаемая дата: " + formattedDataDate);
+        softAssert.isContainsIgnoringCase(viewDate, formattedDataDate,
+                "Даты не совпадают: отображается " + viewDate + " ожидаемая дата: "
+                        + formattedDataDate);
     }
 
     private void shouldStocksIsCorrect(CatalogProductData data) {
         StocksData stockData = productQuantityInfoWidget.getDataFromWidget();
         StockAreas stockAreas = data.getStocks();
         stockAreas.replaceNull();
-        softAssert.isEquals(stockData.getAvailableForSale(), data.getAvailableStock(), "Доступный остаток");
+        softAssert.isEquals(stockData.getAvailableForSale(), data.getAvailableStock(),
+                "Доступный остаток");
         softAssert.isEquals(stockData.getSaleHall(), stockAreas.getLs(), "Торговый зал");
         softAssert.isEquals(stockData.getRm(), stockAreas.getRm(), "Склад RM");
         softAssert.isEquals(stockData.getEm(), stockAreas.getEm(), "Склад EM");
         softAssert.isEquals(stockData.getRd(), stockAreas.getRd(), "Склад RD");
         ExtStocks extStocks = data.getExtStocks();
-        int unavailableStockSum = extStocks.getWhb() + extStocks.getWhbp() + extStocks.getCor() + extStocks.getTsfOutbound()
-                + extStocks.getRtv() + extStocks.getUtsp() + extStocks.getTbc() + extStocks.getExpo();
-        softAssert.isEquals(stockData.getUnavailableForSale(), unavailableStockSum, "Недоступный остаток");
+        int unavailableStockSum =
+                extStocks.getWhb() + extStocks.getWhbp() + extStocks.getCor() + extStocks
+                        .getTsfOutbound()
+                        + extStocks.getRtv() + extStocks.getUtsp() + extStocks.getTbc() + extStocks
+                        .getExpo();
+        softAssert.isEquals(stockData.getUnavailableForSale(), unavailableStockSum,
+                "Недоступный остаток");
     }
 
     private void shouldSupplierDataIsCorrect(CatalogSupplierData data) throws Exception {
-        softAssert.isEquals(data.getSupName(), supplierInfo.get(0).getText(), "Название поставщика");
-        softAssert.isEquals("Код поставщика: " + data.getSupCode(), supplierInfo.get(1).getText(), "Код поставщика");
-        softAssert.isEquals(ParserUtil.replaceSpecialSymbols(data.getSupPhone()), supplierInfo.get(2).getText(), "Телефон");
-        softAssert.isEquals(data.getSupContactName(), supplierInfo.get(3).getText(), "Имя представителя");
+        softAssert
+                .isEquals(data.getSupName(), supplierInfo.get(0).getText(), "Название поставщика");
+        softAssert.isEquals("Код поставщика: " + data.getSupCode(), supplierInfo.get(1).getText(),
+                "Код поставщика");
+        softAssert.isEquals(ParserUtil.replaceSpecialSymbols(data.getSupPhone()),
+                supplierInfo.get(2).getText(), "Телефон");
+        softAssert.isEquals(data.getSupContactName(), supplierInfo.get(3).getText(),
+                "Имя представителя");
         softAssert.isEquals(data.getSupEmail(), supplierInfo.get(4).getText(), "Email");
     }
 }

@@ -1,5 +1,11 @@
 package com.leroy.magportal.ui.tests.pao.order;
 
+import static com.leroy.constants.DefectConst.CONFIRMED_BUT_NOT_ALLOWED_FOR_PICKING_ORDER;
+import static com.leroy.constants.DefectConst.INVISIBLE_AUTHOR_ORDER_DRAFT;
+import static com.leroy.constants.DefectConst.PRODUCT_COUNT_WHEN_TWO_ORDERS_IN_CART;
+import static com.leroy.core.matchers.Matchers.successful;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.constants.sales.DiscountConst;
@@ -29,19 +35,13 @@ import com.leroy.magportal.ui.pages.orders.modal.SubmittedOrderModal;
 import com.leroy.magportal.ui.pages.products.form.AddProductForm;
 import com.leroy.magportal.ui.tests.BasePAOTest;
 import com.leroy.utils.RandomUtil;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.Test;
-import ru.leroymerlin.qa.core.clients.base.Response;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import static com.leroy.constants.DefectConst.*;
-import static com.leroy.core.matchers.Matchers.successful;
-import static org.hamcrest.MatcherAssert.assertThat;
+import org.testng.annotations.Test;
+import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class OrderTest extends BasePAOTest {
 
@@ -130,7 +130,8 @@ public class OrderTest extends BasePAOTest {
 
         // Step 2
         step("Нажмите на кнопку 'Состав заказа'");
-        OrderDraftContentPage orderDraftContentPage = orderDraftDeliveryWayPage.goToContentOrderTab()
+        OrderDraftContentPage orderDraftContentPage = orderDraftDeliveryWayPage
+                .goToContentOrderTab()
                 .shouldOrderContentDataIs(orderData);
 
         // Step 3
@@ -165,10 +166,13 @@ public class OrderTest extends BasePAOTest {
     @Test(description = "C23410900 Создание заказа из корзины, преобразованной из сметы", groups = NEED_PRODUCTS_GROUP)
     public void testCreateOrderFromCartTransformedFromEstimate() throws Exception {
         step("Pre-condition: Создаем смету и преобразовываем ее в корзину");
-        CustomerData customerData = helper.searchForCustomer(TestDataConstants.SIMPLE_CUSTOMER_DATA_1);
-        EstimateProductOrderData estimateProductOrderData = new EstimateProductOrderData(productList.get(0));
+        CustomerData customerData = helper
+                .searchForCustomer(TestDataConstants.SIMPLE_CUSTOMER_DATA_1);
+        EstimateProductOrderData estimateProductOrderData = new EstimateProductOrderData(
+                productList.get(0));
         estimateProductOrderData.setQuantity(1.0);
-        String estimateId = helper.createConfirmedEstimateAndGetId(estimateProductOrderData, customerData);
+        String estimateId = helper
+                .createConfirmedEstimateAndGetId(estimateProductOrderData, customerData);
         EstimatePage estimatePage = loginSelectShopAndGoTo(EstimatePage.class);
         estimatePage.openPageWithEstimate(estimateId)
                 .clickTransformToCart();
@@ -252,7 +256,8 @@ public class OrderTest extends BasePAOTest {
 
         // Step 2
         step("Нажмите на кнопку 'Состав заказа'");
-        OrderDraftContentPage orderDraftContentPage = orderDraftDeliveryWayPage.goToContentOrderTab()
+        OrderDraftContentPage orderDraftContentPage = orderDraftDeliveryWayPage
+                .goToContentOrderTab()
                 .shouldOrderContentDataIs(orderData);
 
         // Step 3
@@ -320,8 +325,9 @@ public class OrderTest extends BasePAOTest {
         // Step 6
         step("Нажмите на 'Перейти в корзину'");
         cartData.getOrders().remove(0);
-        if (PRODUCT_COUNT_WHEN_TWO_ORDERS_IN_CART)
+        if (PRODUCT_COUNT_WHEN_TWO_ORDERS_IN_CART) {
             cartData.getOrders().get(0).setProductCount(1);
+        }
         orderData.getOrders().remove(1);
         cartPage = submittedOrderModal.clickGoToCartButton()
                 .shouldCartHasData(cartData);
@@ -363,13 +369,15 @@ public class OrderTest extends BasePAOTest {
     }
 
     private void preconditionForEditOrderConfirmedTests() throws Exception {
-        if (productList == null)
+        if (productList == null) {
             throw new Exception("Добавь тесту groups = NEED_PRODUCTS_GROUP");
+        }
         preconditionForEditOrderConfirmedTests(Collections.singletonList(productList.get(0)), 1.0);
     }
 
     private void preconditionForEditOrderDraftTests(
-            List<ProductItemData> productItemDataList, boolean isNeedToGoToContentTab) throws Exception {
+            List<ProductItemData> productItemDataList, boolean isNeedToGoToContentTab)
+            throws Exception {
         // Prepare data
         List<CartProductOrderData> cardProducts = new ArrayList<>();
         for (ProductItemData productItemData : productItemDataList) {
@@ -406,7 +414,8 @@ public class OrderTest extends BasePAOTest {
 
         // Step 1
         step("Введите ЛМ товара в поле 'Добавление товара' и нажмите Enter");
-        orderDraftContentPage.getAddProductForm().enterTextInSearchProductField(newProduct.getLmCode());
+        orderDraftContentPage.getAddProductForm()
+                .enterTextInSearchProductField(newProduct.getLmCode());
         orderDraftContentPage.shouldProductsHave(Arrays.asList(productList.get(0).getLmCode(),
                 newProduct.getLmCode()));
     }
@@ -423,8 +432,9 @@ public class OrderTest extends BasePAOTest {
         OrderWebData oneOrderData = orderData.getOrders().get(0);
         oneOrderData.changeProductQuantity(0, newQuantity, true);
         oneOrderData.setTotalWeight(null);
-        if (INVISIBLE_AUTHOR_ORDER_DRAFT)
+        if (INVISIBLE_AUTHOR_ORDER_DRAFT) {
             orderData.setAuthorName(null);
+        }
         orderDraftContentPage.editProductQuantity(1, newQuantity)
                 .shouldOrderContentDataIs(orderData)
                 .shouldProductIsDangerHighlighted(1);
@@ -433,12 +443,14 @@ public class OrderTest extends BasePAOTest {
     @Test(description = "C23410904 Добавить Топ ЕМ или AVS товар в неподтвержденный заказ",
             groups = NEED_PRODUCTS_GROUP)
     public void testAddTopEmOrAvsInDraftOrder() throws Exception {
-        ProductItemData newProduct = helper.getProducts(1, new CatalogSearchFilter().setTopEM(true)).get(0);
+        ProductItemData newProduct = helper.getProducts(1, new CatalogSearchFilter().setTopEM(true))
+                .get(0);
         preconditionForEditOrderDraftTests();
 
         // Step 1
         step("Введите ЛМ товара в поле 'Добавление товара' и нажмите Enter");
-        orderDraftContentPage.getAddProductForm().enterTextInSearchProductField(newProduct.getLmCode());
+        orderDraftContentPage.getAddProductForm()
+                .enterTextInSearchProductField(newProduct.getLmCode());
         orderDraftContentPage.shouldProductsHave(Arrays.asList(productList.get(0).getLmCode(),
                 newProduct.getLmCode()));
     }
@@ -451,12 +463,14 @@ public class OrderTest extends BasePAOTest {
         // Step 1
         step("В мини-карточке товара в поле 'заказано' измените количество товара");
         int newQuantity = (int) Math.round(
-                orderData.getOrders().get(0).getProductCardDataList().get(0).getSelectedQuantity()) + 2;
+                orderData.getOrders().get(0).getProductCardDataList().get(0).getSelectedQuantity())
+                + 2;
         OrderWebData oneOrderData = orderData.getOrders().get(0);
         oneOrderData.changeProductQuantity(0, newQuantity, true);
         oneOrderData.setTotalWeight(oneOrderData.getTotalWeight() * newQuantity);
-        if (INVISIBLE_AUTHOR_ORDER_DRAFT)
+        if (INVISIBLE_AUTHOR_ORDER_DRAFT) {
             orderData.setAuthorName(null);
+        }
         orderDraftContentPage.editProductQuantity(1, newQuantity)
                 .shouldOrderContentDataIs(orderData);
     }
@@ -470,8 +484,9 @@ public class OrderTest extends BasePAOTest {
         step("Нажмите на иконку корзины в правом верхнем углу мини-карточки товара и подтвердите удаление");
         OrderWebData oneOrderData = orderData.getOrders().get(0);
         oneOrderData.removeProduct(0, true);
-        if (INVISIBLE_AUTHOR_ORDER_DRAFT)
+        if (INVISIBLE_AUTHOR_ORDER_DRAFT) {
             orderData.setAuthorName(null);
+        }
         orderDraftContentPage.removeProduct(1)
                 .shouldOrderContentDataIs(orderData);
     }
@@ -735,15 +750,17 @@ public class OrderTest extends BasePAOTest {
         orderDraftDeliveryWayPage.shouldOrderStatusIs(SalesDocumentsConst.States.DRAFT.getUiVal());
         orderData.setNumber(orderDraftDeliveryWayPage.getOrderNumber());
         orderData.setStatus(SalesDocumentsConst.States.DRAFT.getUiVal());
-        if (orderData.getDeliveryType() == null)
+        if (orderData.getDeliveryType() == null) {
             orderData.setDeliveryType(SalesDocumentsConst.GiveAwayPoints.PICKUP);
+        }
         anAssert().isFalse(orderData.getNumber().isEmpty(), "Номер заказа отсутствует");
         if (customerData != null) {
             orderDraftDeliveryWayPage.shouldReceiverIs(customerData)
                     .getCustomerSearchForm().shouldSelectedCustomerIs(customerData);
         } else {
-            anAssert().isFalse(orderDraftDeliveryWayPage.getCustomerSearchForm().isCustomerSelected(),
-                    "Клиент не должен быть выбран");
+            anAssert()
+                    .isFalse(orderDraftDeliveryWayPage.getCustomerSearchForm().isCustomerSelected(),
+                            "Клиент не должен быть выбран");
         }
     }
 
@@ -779,8 +796,9 @@ public class OrderTest extends BasePAOTest {
      * Нажмите на кнопку Подтвердить заказ
      */
     private void stepClickConfirmOrder() {
-        if (orderData.getDeliveryType() == null)
+        if (orderData.getDeliveryType() == null) {
             orderData.setDeliveryType(SalesDocumentsConst.GiveAwayPoints.PICKUP);
+        }
         submittedOrderModal = orderDraftDeliveryWayPage.clickConfirmOrderButton()
                 .verifyRequiredElements(orderData.getDeliveryType())
                 .shouldPinCodeIs(orderData.getPinCode())
@@ -800,8 +818,9 @@ public class OrderTest extends BasePAOTest {
      * Обновите список документов слева
      */
     private void stepRefreshDocumentListAndCheckDocument() throws Exception {
-        if (orderCreatedContentPage == null)
+        if (orderCreatedContentPage == null) {
             orderCreatedContentPage = new OrderCreatedContentPage();
+        }
         ShortOrderDocWebData shortOrderDocWebData = orderData.getShortOrderData();
         shortOrderDocWebData.setPayType(ShortOrderDocWebData.PayType.OFFLINE);
         orderCreatedContentPage.refreshDocumentList();

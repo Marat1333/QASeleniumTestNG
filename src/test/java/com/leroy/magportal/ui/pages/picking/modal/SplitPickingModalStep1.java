@@ -12,54 +12,62 @@ import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import com.leroy.magportal.ui.webelements.commonelements.PuzCheckBox;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
+import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.openqa.selenium.WebDriver;
 
-import java.util.List;
-
 public class SplitPickingModalStep1 extends SplitPickingModal {
 
-    @WebFindBy(xpath = MODAL_DIV_XPATH + "//div[contains(@class, 'Picking-SplitModal__zones')]//button[1]",
+    @WebFindBy(xpath = MODAL_DIV_XPATH
+            + "//div[contains(@class, 'Picking-SplitModal__zones')]//button[1]",
             metaName = "Опция 'Торговый зал'")
     PuzCheckBox shoppingRoomRadioBtn;
 
-    @WebFindBy(xpath = MODAL_DIV_XPATH + "//div[contains(@class, 'Picking-SplitModal__zones')]//button[2]",
+    @WebFindBy(xpath = MODAL_DIV_XPATH
+            + "//div[contains(@class, 'Picking-SplitModal__zones')]//button[2]",
             metaName = "Опция 'Склад'")
     PuzCheckBox stockRadioBtn;
 
-    @WebFindBy(xpath = MODAL_DIV_XPATH + "//div[contains(@class, 'Picking-SplitModal__zones')]//button[3]",
+    @WebFindBy(xpath = MODAL_DIV_XPATH
+            + "//div[contains(@class, 'Picking-SplitModal__zones')]//button[3]",
             metaName = "Опция 'СС'")
     PuzCheckBox ssRadioBtn;
 
     // Собрать из торгового зала (LS)
     // Нужно вручную создать Заказ в RMS под заказ Клиента
-    @WebFindBy(xpath = MODAL_DIV_XPATH + "//div[contains(@class, 'Picking-SplitModal__WHZones')]//button",
+    @WebFindBy(xpath = MODAL_DIV_XPATH
+            + "//div[contains(@class, 'Picking-SplitModal__WHZones')]//button",
             metaName = "Чек-бокс для подтверждения разделения сборки")
     PuzCheckBox confirmCheckBox;
 
-    @WebFindBy(xpath = MODAL_DIV_XPATH + "//div[contains(@class, 'Picking-SplitModal__footer')]//button[contains(@class, 'iconButton')]",
+    @WebFindBy(xpath = MODAL_DIV_XPATH
+            + "//div[contains(@class, 'Picking-SplitModal__footer')]//button[contains(@class, 'iconButton')]",
             metaName = "Кнопка редактирования (карандаш)")
     Button editBtn;
 
-    @WebFindBy(xpath = MODAL_DIV_XPATH + "//div[contains(@class, 'Picking-SplitModal__footer')]//button[descendant::span[text()='Продолжить']]",
+    @WebFindBy(xpath = MODAL_DIV_XPATH
+            + "//div[contains(@class, 'Picking-SplitModal__footer')]//button[descendant::span[text()='Продолжить']]",
             metaName = "Кнопка Продолжить")
     Button continueBtn;
 
-    @WebFindBy(xpath = MODAL_DIV_XPATH + "//div[contains(@class, 'Picking-SplitModal__footer')]//button[descendant::span[text()='Сохранить']]",
+    @WebFindBy(xpath = MODAL_DIV_XPATH
+            + "//div[contains(@class, 'Picking-SplitModal__footer')]//button[descendant::span[text()='Сохранить']]",
             metaName = "Кнопка Сохранить")
     Button saveBtn;
 
     // Таблица с товарами:
 
-    @WebFindBy(xpath = MODAL_DIV_XPATH + "//div[substring(@class, string-length(@class) - string-length('Picking-SplitModal__product') +1) = 'Picking-SplitModal__product']",
+    @WebFindBy(xpath = MODAL_DIV_XPATH
+            + "//div[substring(@class, string-length(@class) - string-length('Picking-SplitModal__product') +1) = 'Picking-SplitModal__product']",
             clazz = PickingSplitModalProductWidget.class)
     CardWebWidgetList<PickingSplitModalProductWidget, SplitProductCardData> productWidgets;
 
     // Actions
 
     @Step("Выбераем зону откуда будет совершаться сборка")
-    public SplitPickingModalStep1 selectAssemblyType(PickingConst.AssemblyType type) throws Exception {
+    public SplitPickingModalStep1 selectAssemblyType(PickingConst.AssemblyType type)
+            throws Exception {
         switch (type) {
             case SHOPPING_ROOM:
                 shoppingRoomRadioBtn.setValue(true);
@@ -112,20 +120,27 @@ public class SplitPickingModalStep1 extends SplitPickingModal {
     // Verifications
     @Step("Проверить, что модальное окно 'Разделить сборку (Шаг 1)' отображается корректно")
     public SplitPickingModalStep1 verifyRequiredElements() {
-        softAssert.areElementsVisible(shoppingRoomRadioBtn, stockRadioBtn, ssRadioBtn, header, editBtn, continueBtn);
+        softAssert.areElementsVisible(shoppingRoomRadioBtn, stockRadioBtn, ssRadioBtn, header,
+                editBtn, continueBtn);
         softAssert.verifyAll();
         return this;
     }
 
     @Step("Проверить информацию о товарах, которая отображается в окне")
-    public SplitPickingModalStep1 shouldContainsProducts(List<SplitProductCardData> expectedProducts) throws Exception {
+    public SplitPickingModalStep1 shouldContainsProducts(
+            List<SplitProductCardData> expectedProducts) throws Exception {
         List<SplitProductCardData> splitProductCardDataList = productWidgets.getDataList();
-        anAssert.isEquals(splitProductCardDataList.size(), expectedProducts.size(), "Обнаружено другое кол-во товаров");
-        boolean somethingSelected = shoppingRoomRadioBtn.isChecked() || ssRadioBtn.isChecked() || stockRadioBtn.isChecked();
+        anAssert.isEquals(splitProductCardDataList.size(), expectedProducts.size(),
+                "Обнаружено другое кол-во товаров");
+        boolean somethingSelected =
+                shoppingRoomRadioBtn.isChecked() || ssRadioBtn.isChecked() || stockRadioBtn
+                        .isChecked();
         for (int i = 0; i < expectedProducts.size(); i++) {
-            softAssert.isEquals(splitProductCardDataList.get(i).getTitle(), expectedProducts.get(i).getTitle(),
+            softAssert.isEquals(splitProductCardDataList.get(i).getTitle(),
+                    expectedProducts.get(i).getTitle(),
                     "Товар #" + (i + 1) + " - неверное название");
-            softAssert.isEquals(splitProductCardDataList.get(i).getLmCode(), expectedProducts.get(i).getLmCode(),
+            softAssert.isEquals(splitProductCardDataList.get(i).getLmCode(),
+                    expectedProducts.get(i).getLmCode(),
                     "Товар #" + (i + 1) + " - неверный ЛМ код");
             softAssert.isEquals(splitProductCardDataList.get(i).getOriginalAssemblyQuantity(),
                     expectedProducts.get(i).getOriginalAssemblyQuantity(),
@@ -145,7 +160,8 @@ public class SplitPickingModalStep1 extends SplitPickingModal {
                         "'хочу перенести' - отображается");
                 softAssert.isTrue(splitProductCardDataList.get(i).getMoveToNewQuantity() == null,
                         "'перейдет в новую' - отображается");
-                softAssert.isTrue(splitProductCardDataList.get(i).getRemainInOriginalQuantity() == null,
+                softAssert.isTrue(splitProductCardDataList.get(i).getRemainInOriginalQuantity()
+                                == null,
                         "'останется в исходной' - отображается");
             }
 
@@ -171,6 +187,7 @@ public class SplitPickingModalStep1 extends SplitPickingModal {
     @Data
     @NoArgsConstructor
     public static class SplitProductCardData {
+
         private String lmCode;
         private String title;
         private Integer originalAssemblyQuantity;
@@ -188,7 +205,8 @@ public class SplitPickingModalStep1 extends SplitPickingModal {
         }
     }
 
-    private static class PickingSplitModalProductWidget extends CardWebWidget<SplitProductCardData> {
+    private static class PickingSplitModalProductWidget extends
+            CardWebWidget<SplitProductCardData> {
 
         public PickingSplitModalProductWidget(WebDriver driver, CustomLocator locator) {
             super(driver, locator);
@@ -229,10 +247,14 @@ public class SplitPickingModalStep1 extends SplitPickingModal {
             SplitProductCardData splitProductCardData = new SplitProductCardData();
             splitProductCardData.setLmCode(lmCode.getText());
             splitProductCardData.setTitle(title.getText());
-            splitProductCardData.setOriginalAssemblyQuantity(ParserUtil.strToInt(originalAssemblyQuantity.getText()));
-            splitProductCardData.setWantToMoveQuantity(ParserUtil.strToInt(wantToMoveQuantity.getTextIfPresent()));
-            splitProductCardData.setMoveToNewQuantity(ParserUtil.strToInt(moveToNewQuantity.getTextIfPresent()));
-            splitProductCardData.setRemainInOriginalQuantity(ParserUtil.strToInt(remainInOriginalQuantity.getTextIfPresent()));
+            splitProductCardData.setOriginalAssemblyQuantity(
+                    ParserUtil.strToInt(originalAssemblyQuantity.getText()));
+            splitProductCardData.setWantToMoveQuantity(
+                    ParserUtil.strToInt(wantToMoveQuantity.getTextIfPresent()));
+            splitProductCardData.setMoveToNewQuantity(
+                    ParserUtil.strToInt(moveToNewQuantity.getTextIfPresent()));
+            splitProductCardData.setRemainInOriginalQuantity(
+                    ParserUtil.strToInt(remainInOriginalQuantity.getTextIfPresent()));
             return splitProductCardData;
         }
     }

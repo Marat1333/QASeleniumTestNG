@@ -1,5 +1,8 @@
 package com.leroy.magportal.ui.tests;
 
+import static com.leroy.core.matchers.Matchers.successful;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.constants.sales.SalesDocumentsConst;
@@ -21,17 +24,13 @@ import com.leroy.magportal.ui.pages.picking.modal.SplitPickingModalStep1;
 import com.leroy.magportal.ui.pages.picking.modal.SplitPickingModalStep2;
 import com.leroy.magportal.ui.pages.picking.modal.SuccessfullyCreatedAssemblyModal;
 import com.leroy.utils.ParserUtil;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static com.leroy.core.matchers.Matchers.successful;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 public class PickingTest extends BasePAOTest {
 
@@ -63,7 +62,8 @@ public class PickingTest extends BasePAOTest {
         orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderId,
                 SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal());
         PickingTaskClient pickingTaskClient = apiClientProvider.getPickingTaskClient();
-        Response<PickingTaskDataList> respPickingTasks = pickingTaskClient.searchForPickingTasks(orderId);
+        Response<PickingTaskDataList> respPickingTasks = pickingTaskClient
+                .searchForPickingTasks(orderId);
         assertThat(respPickingTasks, successful());
         pickingTaskId = respPickingTasks.asJson().getItems().get(0).getTaskId();
     }
@@ -104,7 +104,8 @@ public class PickingTest extends BasePAOTest {
 
         // Step 3
         step("Нажать на кнопку Разделить");
-        SplitPickingModalStep1 splitPickingModalStep1 = pickingContentPage.clickSplitAssemblyButton()
+        SplitPickingModalStep1 splitPickingModalStep1 = pickingContentPage
+                .clickSplitAssemblyButton()
                 .verifyRequiredElements()
                 .shouldContainsProducts(pickingTaskData.getSplitPickingProductDataList())
                 .shouldContinueButtonIsDisabled();
@@ -183,7 +184,8 @@ public class PickingTest extends BasePAOTest {
 
         // Step 3
         step("Нажать на кнопку Разделить");
-        SplitPickingModalStep1 splitPickingModalStep1 = pickingContentPage.clickSplitAssemblyButton()
+        SplitPickingModalStep1 splitPickingModalStep1 = pickingContentPage
+                .clickSplitAssemblyButton()
                 .verifyRequiredElements()
                 .shouldContainsProducts(newPickingTaskData.getSplitPickingProductDataList())
                 .shouldContinueButtonIsDisabled();
@@ -235,7 +237,8 @@ public class PickingTest extends BasePAOTest {
         ShortPickingTaskData shortPickingTaskData = newPickingTaskData
                 .getShortData();
         String customerName = TestDataConstants.SIMPLE_CUSTOMER_DATA_1.getName();
-        shortPickingTaskData.setClient(ParserUtil.parseLastName(customerName) + " " + ParserUtil.parseFirstName(customerName));
+        shortPickingTaskData.setClient(ParserUtil.parseLastName(customerName) + " " + ParserUtil
+                .parseFirstName(customerName));
         pickingContentPage.shouldDocumentListContainsThis(shortPickingTaskData);
 
         pickingContentPage.switchToCommentTab()
@@ -272,7 +275,8 @@ public class PickingTest extends BasePAOTest {
 
         // Step 3
         step("Нажать на кнопку Разделить");
-        SplitPickingModalStep1 splitPickingModalStep1 = pickingContentPage.clickSplitAssemblyButton()
+        SplitPickingModalStep1 splitPickingModalStep1 = pickingContentPage
+                .clickSplitAssemblyButton()
                 .verifyRequiredElements()
                 .shouldContainsProducts(newPickingTaskData.getSplitPickingProductDataList())
                 .shouldContinueButtonIsDisabled();
@@ -315,7 +319,8 @@ public class PickingTest extends BasePAOTest {
 
         // Step 3
         step("Нажать на кнопку Разделить");
-        SplitPickingModalStep1 splitPickingModalStep1 = pickingContentPage.clickSplitAssemblyButton()
+        SplitPickingModalStep1 splitPickingModalStep1 = pickingContentPage
+                .clickSplitAssemblyButton()
                 .verifyRequiredElements()
                 .shouldContainsProducts(pickingTaskDataBefore.getSplitPickingProductDataList())
                 .shouldContinueButtonIsDisabled();
@@ -328,11 +333,13 @@ public class PickingTest extends BasePAOTest {
 
         // Step 5
         step("Изменить количество для одного из товаров");
-        List<SplitPickingModalStep1.SplitProductCardData> splitProductDataList = newPickingTaskData.getSplitPickingProductDataList();
+        List<SplitPickingModalStep1.SplitProductCardData> splitProductDataList = newPickingTaskData
+                .getSplitPickingProductDataList();
         SplitPickingModalStep1.SplitProductCardData editProduct = splitProductDataList.get(0);
         editProduct.setWantToMoveQuantity(editQuantity);
         editProduct.setMoveToNewQuantity(editQuantity);
-        editProduct.setRemainInOriginalQuantity(editProduct.getOriginalAssemblyQuantity() - editQuantity);
+        editProduct.setRemainInOriginalQuantity(
+                editProduct.getOriginalAssemblyQuantity() - editQuantity);
         splitPickingModalStep1.clickEditButton()
                 .editWantToMoveQuantity(1, editQuantity)
                 .clickSaveButton()
@@ -408,7 +415,8 @@ public class PickingTest extends BasePAOTest {
 
         // Step 2
         step("Товар 1: Ввести в инпут Собрано количество больше, чем указано в Заказано");
-        int collectedQuantityProduct1 = pickingTaskDataBefore.getProducts().get(0).getOrderedQuantity();
+        int collectedQuantityProduct1 = pickingTaskDataBefore.getProducts().get(0)
+                .getOrderedQuantity();
         pickingContentPage.shouldProductCollectedQuantityIs(1, 0)
                 .editCollectQuantity(1, collectedQuantityProduct1 + 1)
                 .shouldProductCollectedQuantityIs(1, collectedQuantityProduct1);
@@ -431,7 +439,8 @@ public class PickingTest extends BasePAOTest {
 
         // Step 5
         step("Товар 3: Ввести в инпут Собрано количество равное указанному в Заказано");
-        int collectedQuantityProduct3 = pickingTaskDataBefore.getProducts().get(2).getOrderedQuantity();
+        int collectedQuantityProduct3 = pickingTaskDataBefore.getProducts().get(2)
+                .getOrderedQuantity();
         pickingContentPage
                 .editCollectQuantity(3, collectedQuantityProduct3)
                 .shouldProductCollectedQuantityIs(3, collectedQuantityProduct3);
@@ -455,7 +464,8 @@ public class PickingTest extends BasePAOTest {
 
         // Step 9
         step("Нажать на кнопку Завершить");
-        pickingTaskDataBefore.setStatus(SalesDocumentsConst.States.PARTIALLY_ASSEMBLED.getUiVal() + " 1/3");
+        pickingTaskDataBefore
+                .setStatus(SalesDocumentsConst.States.PARTIALLY_ASSEMBLED.getUiVal() + " 1/3");
         List<PickingProductCardData> pickingProducts = pickingTaskDataBefore.getProducts();
         pickingProducts.get(0).setCollectedQuantity(collectedQuantityProduct1);
         pickingProducts.get(0).setReasonOfLack(reason1.getTitle());
@@ -472,8 +482,9 @@ public class PickingTest extends BasePAOTest {
 
     @Test(description = "C23408358 Сплит сборки с изменением количества товара", groups = NEED_PRODUCTS_GROUP)
     public void testSplitAssemblyWithChangingProductQuantity() throws Exception {
-        if (isStartFromScratch())
+        if (isStartFromScratch()) {
             testPartialOrderAssembly();
+        }
 
         // Test data
         PickingConst.AssemblyType assemblyType = PickingConst.AssemblyType.SHOPPING_ROOM;
@@ -504,9 +515,11 @@ public class PickingTest extends BasePAOTest {
         // Step 3
         step("Нажать на кнопку Разделить");
         PickingProductCardData movePickingProduct = newPickingTaskData.getProducts().get(1);
-        SplitPickingModalStep1.SplitProductCardData splitProductData = new SplitPickingModalStep1.SplitProductCardData(movePickingProduct);
+        SplitPickingModalStep1.SplitProductCardData splitProductData = new SplitPickingModalStep1.SplitProductCardData(
+                movePickingProduct);
 
-        SplitPickingModalStep1 splitPickingModalStep1 = pickingContentPage.clickSplitAssemblyButton()
+        SplitPickingModalStep1 splitPickingModalStep1 = pickingContentPage
+                .clickSplitAssemblyButton()
                 .verifyRequiredElements()
                 .shouldContainsProducts(Collections.singletonList(splitProductData))
                 .shouldContinueButtonIsDisabled();
@@ -526,7 +539,8 @@ public class PickingTest extends BasePAOTest {
         int editQuantity = 1;
         splitProductData.setWantToMoveQuantity(editQuantity);
         splitProductData.setMoveToNewQuantity(editQuantity);
-        splitProductData.setRemainInOriginalQuantity(splitProductData.getOriginalAssemblyQuantity() - editQuantity);
+        splitProductData.setRemainInOriginalQuantity(
+                splitProductData.getOriginalAssemblyQuantity() - editQuantity);
         splitPickingModalStep1.editWantToMoveQuantity(1, editQuantity)
                 .clickSaveButton()
                 .shouldContainsProducts(Collections.singletonList(splitProductData));

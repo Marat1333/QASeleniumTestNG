@@ -23,15 +23,14 @@ import com.leroy.magportal.ui.pages.cart_estimate.modal.SubmittedSendEstimateMod
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.pages.customers.CreateCustomerForm;
 import com.leroy.utils.RandomUtil;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.testng.annotations.Test;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.testng.annotations.Test;
 
 public class EstimateTest extends BasePAOTest {
 
@@ -167,8 +166,9 @@ public class EstimateTest extends BasePAOTest {
         if (isStartFromScratch()) {
             estimatePage = loginAndGoTo(EstimatePage.class).clickCreateEstimateButton();
             estimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
-        } else
+        } else {
             estimatePage = new EstimatePage();
+        }
 
         SalesDocWebData estimateData = estimatePage.getSalesDocData();
 
@@ -204,8 +204,9 @@ public class EstimateTest extends BasePAOTest {
             estimatePage = loginAndGoTo(EstimatePage.class).clickCreateEstimateButton();
             estimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
             estimatePage.enterTextInSearchProductField(testProduct2.getLmCode());
-        } else
+        } else {
             estimatePage = new EstimatePage();
+        }
 
         SalesDocWebData estimateData = estimatePage.getSalesDocData();
         OrderWebData orderWebData = estimateData.getOrders().get(0);
@@ -230,8 +231,9 @@ public class EstimateTest extends BasePAOTest {
             estimatePage = loginAndGoTo(EstimatePage.class).clickCreateEstimateButton();
             estimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
             estimatePage.enterTextInSearchProductField(testProduct2.getLmCode());
-        } else
+        } else {
             estimatePage = new EstimatePage();
+        }
 
         SalesDocWebData estimateData = estimatePage.getSalesDocData();
         estimateData.getOrders().get(0).changeProductQuantity(0, newQuantity, true);
@@ -274,8 +276,9 @@ public class EstimateTest extends BasePAOTest {
         step("Выполнение предусловий:");
         if (isStartFromScratch()) {
             estimatePage = loginAndGoTo(EstimatePage.class);
-        } else
+        } else {
             estimatePage = new EstimatePage();
+        }
 
         estimatePage.clickCreateEstimateButton();
         estimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
@@ -302,8 +305,9 @@ public class EstimateTest extends BasePAOTest {
             estimatePage = loginAndGoTo(EstimatePage.class).clickCreateEstimateButton();
             estimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
             estimatePage.enterTextInSearchProductField(testProduct2.getLmCode());
-        } else
+        } else {
             estimatePage = new EstimatePage();
+        }
 
         SalesDocWebData estimateData = estimatePage.getSalesDocData();
 
@@ -323,8 +327,9 @@ public class EstimateTest extends BasePAOTest {
         if (isStartFromScratch()) {
             estimatePage = loginAndGoTo(EstimatePage.class).clickCreateEstimateButton();
             estimatePage.enterTextInSearchProductField(testProduct1.getLmCode());
-        } else
+        } else {
             estimatePage = new EstimatePage();
+        }
 
         String docNumber = estimatePage.getDocumentNumber();
 
@@ -348,10 +353,10 @@ public class EstimateTest extends BasePAOTest {
         SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
 
         EstimatePage estimatePage;
-        if (isStartFromScratch())
+        if (isStartFromScratch()) {
             estimatePage = loginAndGoTo(EstimatePage.class)
                     .clickCreateEstimateButton();
-        else {
+        } else {
             estimatePage = new EstimatePage();
             estimatePage.removeSelectedCustomer();
         }
@@ -372,10 +377,10 @@ public class EstimateTest extends BasePAOTest {
         SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
 
         EstimatePage estimatePage;
-        if (isStartFromScratch())
+        if (isStartFromScratch()) {
             estimatePage = loginAndGoTo(EstimatePage.class)
                     .clickCreateEstimateButton();
-        else {
+        } else {
             estimatePage = new EstimatePage();
             estimatePage.removeSelectedCustomer();
         }
@@ -402,10 +407,10 @@ public class EstimateTest extends BasePAOTest {
         SimpleCustomerData customerData = TestDataConstants.CUSTOMER_WITH_SERVICE_CARD;
 
         EstimatePage estimatePage;
-        if (isStartFromScratch())
+        if (isStartFromScratch()) {
             estimatePage = loginAndGoTo(EstimatePage.class)
                     .clickCreateEstimateButton();
-        else {
+        } else {
             estimatePage = new EstimatePage();
             estimatePage.removeSelectedCustomer();
         }
@@ -422,7 +427,8 @@ public class EstimateTest extends BasePAOTest {
         // Step 3
         step("Выберите параметр Карта клиента");
         estimatePage.selectSearchType(CartEstimatePage.SearchType.CARD);
-        estimatePage.clickCardSearchFieldAndCheckThatDefaultValueIs(customerData.getFirstPartCardNumber());
+        estimatePage.clickCardSearchFieldAndCheckThatDefaultValueIs(
+                customerData.getFirstPartCardNumber());
 
         // Step 4
         step("Введите нужный номер сервисной карты (1 2083 5271 8), нажмите Enter");
@@ -600,15 +606,19 @@ public class EstimateTest extends BasePAOTest {
         testRemoveEstimate(estimateId);
     }
 
-    @Test(description = "C22797239 Convert estimate to cart", groups = {NEED_ACCESS_TOKEN_GROUP, NEED_PRODUCTS_GROUP})
+    @Test(description = "C22797239 Convert estimate to cart", groups = {NEED_ACCESS_TOKEN_GROUP,
+            NEED_PRODUCTS_GROUP})
     public void testConvertEstimateToCart() throws Exception {
         String estimateId;
         EstimatePage estimatePage;
         if (isStartFromScratch()) {
-            CustomerData customerData = helper.searchForCustomer(TestDataConstants.SIMPLE_CUSTOMER_DATA_1);
-            EstimateProductOrderData estimateProductOrderData = new EstimateProductOrderData(productList.get(0));
+            CustomerData customerData = helper
+                    .searchForCustomer(TestDataConstants.SIMPLE_CUSTOMER_DATA_1);
+            EstimateProductOrderData estimateProductOrderData = new EstimateProductOrderData(
+                    productList.get(0));
             estimateProductOrderData.setQuantity(1.0);
-            estimateId = helper.createConfirmedEstimateAndGetId(estimateProductOrderData, customerData);
+            estimateId = helper
+                    .createConfirmedEstimateAndGetId(estimateProductOrderData, customerData);
             estimatePage = loginAndGoTo(EstimatePage.class);
             estimatePage.openPageWithEstimate(estimateId);
         } else {
@@ -619,7 +629,8 @@ public class EstimateTest extends BasePAOTest {
         SalesDocWebData documentData = estimatePage.getSalesDocData();
         ShortSalesDocWebData shortSalesDocWebData = new ShortSalesDocWebData();
         shortSalesDocWebData.setNumber(documentData.getNumber());
-        shortSalesDocWebData.setStatus(SalesDocumentsConst.States.TRANSFORMED.getUiVal().toUpperCase());
+        shortSalesDocWebData
+                .setStatus(SalesDocumentsConst.States.TRANSFORMED.getUiVal().toUpperCase());
         shortSalesDocWebData.setAuthor(documentData.getAuthorName());
         shortSalesDocWebData.setCreationDate(documentData.getCreationDate());
         shortSalesDocWebData.setTotalPrice(documentData.getOrders().get(0).getTotalPrice());
@@ -627,8 +638,10 @@ public class EstimateTest extends BasePAOTest {
         documentData.setNumber(null);
         documentData.setStatus(null);
         documentData.setCreationDate(null);
-        anAssert().isTrue(documentData.getOrders().size() > 0, "В смете должны присутствовать заказы");
-        documentData.getOrders().get(0).getProductCardDataList().get(0).setAvailableTodayQuantity(null);
+        anAssert().isTrue(documentData.getOrders().size() > 0,
+                "В смете должны присутствовать заказы");
+        documentData.getOrders().get(0).getProductCardDataList().get(0)
+                .setAvailableTodayQuantity(null);
 
         // Step 1
         step("Нажмите на кнопку В корзину");
@@ -708,7 +721,8 @@ public class EstimateTest extends BasePAOTest {
 
         // Step 2
         step("Нажмите на кнопку 'Отправить на email'");
-        SendEstimateToEmailModal sendEstimateToEmailModal = submittedEstimateModal.clickSendByEmail()
+        SendEstimateToEmailModal sendEstimateToEmailModal = submittedEstimateModal
+                .clickSendByEmail()
                 .verifyRequiredElements()
                 .shouldEmailFieldIs(1, customer1.getEmail());
 
@@ -906,7 +920,8 @@ public class EstimateTest extends BasePAOTest {
 
         // Step 2
         step("Нажмите на кнопку 'Отправить на email'");
-        SendEstimateToEmailModal sendEstimateToEmailModal = submittedEstimateModal.clickSendByEmail()
+        SendEstimateToEmailModal sendEstimateToEmailModal = submittedEstimateModal
+                .clickSendByEmail()
                 .verifyRequiredElements();
 
         // Step 3

@@ -2,9 +2,8 @@ package com.leroy.magportal.ui.models.customers;
 
 import com.leroy.constants.Gender;
 import com.leroy.utils.RandomUtil;
-import org.apache.commons.lang3.RandomStringUtils;
-
 import java.util.Random;
+import org.apache.commons.lang3.RandomStringUtils;
 
 public class CustomerWebData {
 
@@ -32,10 +31,11 @@ public class CustomerWebData {
 
     public CustomerWebData setRandomRequiredData() {
         boolean _gender = new Random().nextBoolean();
-        if (_gender)
+        if (_gender) {
             setGender(Gender.MALE);
-        else
+        } else {
             setGender(Gender.FEMALE);
+        }
         setFirstName(RandomUtil.randomCyrillicCharacters(8));
         boolean _phone = new Random().nextBoolean();
         if (_phone) {

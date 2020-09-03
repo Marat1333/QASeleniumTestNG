@@ -25,7 +25,8 @@ public class AddProductForm extends MagPortalBasePage {
         if (!ExtendedSearchModal.isModalVisible()) {
             addProductLbl.click();
         }
-        anAssert.isFalse(E("//div[contains(@class, 'Modal')]//*[text()='Изменения не сохранены']").isVisible(),
+        anAssert.isFalse(E("//div[contains(@class, 'Modal')]//*[text()='Изменения не сохранены']")
+                        .isVisible(),
                 "Появилось окно 'Изменения не сохранены'");
     }
 
