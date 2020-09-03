@@ -16,7 +16,8 @@ public class SalesDocumentsConst {
         PARTIALLY_ASSEMBLED("", "ЧАСТ. СОБРАН"),
 
         // Transfer
-        NEW("NEW", "");
+        TRANSFER_NEW("NEW", ""),
+        TRANSFER_CONFIRMED("CONFIRMED", "Отправлен");
 
         private String uiVal;
         private String apiVal;

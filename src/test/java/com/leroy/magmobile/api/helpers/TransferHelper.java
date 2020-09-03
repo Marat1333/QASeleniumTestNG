@@ -7,6 +7,7 @@ import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.ApiClientProvider;
 import com.leroy.magmobile.api.clients.TransferClient;
 import com.leroy.magmobile.api.data.sales.transfer.TransferProductOrderData;
+import com.leroy.magmobile.api.data.sales.transfer.TransferRunRespData;
 import com.leroy.magmobile.api.data.sales.transfer.TransferSalesDocData;
 import io.qameta.allure.Step;
 import org.testng.Assert;
@@ -155,7 +156,7 @@ public class TransferHelper extends ApiClientProvider {
     // ------ Public methods ---------- //
 
     @Step("API: Создаем заявку на отзыв")
-    public TransferSalesDocData createTransferTask(
+    public TransferSalesDocData createDraftTransferTask(
             List<TransferProductOrderData> productDataList, SalesDocumentsConst.GiveAwayPoints giveAwayPoints) {
         TransferClient transferClient = getTransferClient();
         TransferSalesDocData postSalesDocData = new TransferSalesDocData();
@@ -171,9 +172,24 @@ public class TransferHelper extends ApiClientProvider {
         return resp.asJson();
     }
 
-    public TransferSalesDocData createTransferTask(
+    public TransferSalesDocData createDraftTransferTask(
             TransferProductOrderData productData, SalesDocumentsConst.GiveAwayPoints giveAwayPoints) {
-        return createTransferTask(Collections.singletonList(productData), giveAwayPoints);
+        return createDraftTransferTask(Collections.singletonList(productData), giveAwayPoints);
+    }
+
+    @Step("API: Создаем подтвержденную заявку на отзыв")
+    public TransferRunRespData createConfirmedTransferTask(
+            List<TransferProductOrderData> productDataList, SalesDocumentsConst.GiveAwayPoints giveAwayPoints) {
+        TransferSalesDocData transferSalesDocData = createDraftTransferTask(productDataList, giveAwayPoints);
+        TransferClient transferClient = getTransferClient();
+        Response<TransferRunRespData> resp = transferClient.run(transferSalesDocData);
+        assertThat(resp, successful());
+        return resp.asJson();
+    }
+
+    public TransferRunRespData createConfirmedTransferTask(
+            TransferProductOrderData productData, SalesDocumentsConst.GiveAwayPoints giveAwayPoints) {
+        return createConfirmedTransferTask(Collections.singletonList(productData), giveAwayPoints);
     }
 
     @Step("API: Отменяем подтвержденную заявку на отзыв товаров")

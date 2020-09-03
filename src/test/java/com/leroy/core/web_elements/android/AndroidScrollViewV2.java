@@ -1,6 +1,7 @@
 package com.leroy.core.web_elements.android;
 
 import com.leroy.core.fieldfactory.CustomLocator;
+import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -30,14 +31,16 @@ public class AndroidScrollViewV2<W extends CardWidget<D>, D> extends AndroidScro
     /**
      * Получить первый widget
      */
-    public W getFirstWidget(boolean scrollUpBefore) throws Exception {
+    public W getWidget(int index, boolean scrollUpBefore) throws Exception {
         if (scrollUpBefore)
             scrollToBeginning();
-        return this.findChildElement(eachRowXpath, rowWidgetClass);
+        String xpath = eachRowXpath.startsWith(".")? eachRowXpath.replaceFirst("\\.", "") : eachRowXpath;
+        ElementList<W> widgets = EL(xpath, null, rowWidgetClass);
+        return widgets.get(index);
     }
 
-    public W getFirstWidget() throws Exception {
-        return getFirstWidget(false);
+    public W getWidget(int index) throws Exception {
+        return getWidget(index, false);
     }
 
 

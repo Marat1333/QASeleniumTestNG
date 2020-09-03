@@ -48,9 +48,10 @@ public class TransferSearchPage extends CommonMagMobilePage {
         return new AddProduct35Page<>(TransferSearchPage.class);
     }
 
-    @Step("Изменить кол-во у 1-ого товара на значение {value}")
-    public TransferSearchPage editProductQuantityForFirstProduct(int value) throws Exception {
-        TransferSearchProductCardWidget widget = productCardsScrollView.getFirstWidget();
+    @Step("Изменить кол-во у {index}-ого товара на значение {value}")
+    public TransferSearchPage editProductQuantityForProduct(int index, int value) throws Exception {
+        index--;
+        TransferSearchProductCardWidget widget = productCardsScrollView.getWidget(index);
         widget.editProductQuantity(value);
         waitUntilProgressBarAppearsAndDisappear();
         shouldNotAnyErrorVisible();
