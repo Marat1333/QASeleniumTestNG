@@ -7,7 +7,6 @@ import com.leroy.magportal.ui.webelements.commonelements.PuzCheckBox;
 import org.openqa.selenium.WebDriver;
 
 public class SupplierCardWidget extends Element {
-
     public SupplierCardWidget(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
     }

@@ -6,7 +6,6 @@ import com.leroy.core.web_elements.general.Element;
 import org.openqa.selenium.WebDriver;
 
 public class ExtendedProductCardTableViewWidget extends ProductCardTableViewWidget {
-
     public ExtendedProductCardTableViewWidget(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
     }

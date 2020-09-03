@@ -55,27 +55,21 @@ public class CustomerPersonalInfoPage extends MagPortalBasePage {
     // Verifications
     @Step("Проверить, что на странице отображается следующая информация о клиенте: {data}")
     public CustomerPersonalInfoPage shouldCustomerDataOnPageIs(CustomerWebData data) {
-        if (data.getFirstName() != null) {
-            softAssert.isEquals(headerClientNameLbl.getText(),
-                    StringUtils.capitalize(data.getFirstName()),
+        if (data.getFirstName() != null)
+            softAssert.isEquals(headerClientNameLbl.getText(), StringUtils.capitalize(data.getFirstName()),
                     "Неверное Имя клиента");
-        }
-        if (data.getGender() != null) {
-            softAssert.isEquals(genderObj.getText(),
-                    (data.getGender().equals(Gender.MALE) ? "Мужской" : "Женский"),
+        if (data.getGender() != null)
+            softAssert.isEquals(genderObj.getText(), (data.getGender().equals(Gender.MALE) ? "Мужской" : "Женский"),
                     "Неверный Пол");
-        }
-        if (data.getPhoneNumber() != null) {
+        if (data.getPhoneNumber() != null)
             softAssert.isEquals(phoneObj.getText(), data.getPhoneNumber(),
                     "Неверный Основной телефон");
-        }
-        if (data.getEmail() != null) {
+        if (data.getEmail() != null)
             softAssert.isEquals(emailObj.getText(), data.getEmail(),
                     "Неверный Email");
-        } else {
+        else
             softAssert.isEquals(emailObj.getText(), "Не указано",
                     "Неверный Email");
-        }
         softAssert.isEquals(officeObj.getText(), "Не указано",
                 "Неверный Офис");
         softAssert.verifyAll();
@@ -87,15 +81,12 @@ public class CustomerPersonalInfoPage extends MagPortalBasePage {
             throws Exception {
         anAssert.isTrue(myRecentlyCustomers.getCount() > 0, "Не отображаются 'Недавние клиенты'");
         Element customerElem = myRecentlyCustomers.get(index);
-        softAssert.isEquals(customerElem.findChildElement("./div/span").getText(),
-                StringUtils.capitalize(name),
+        softAssert.isEquals(customerElem.findChildElement("./div/span").getText(), StringUtils.capitalize(name),
                 "Имя " + index + "-ого клиента неверно из списка 'Мои недавние клиенты'");
         String expectedPhone = phone.length() != 10 ? phone : String.format("+7 %s %s-%s-%s",
-                phone.substring(0, 3), phone.substring(3, 6), phone.substring(6, 8),
-                phone.substring(8, 10));
+                phone.substring(0, 3), phone.substring(3, 6), phone.substring(6, 8), phone.substring(8, 10));
         softAssert.isEquals(customerElem.findChildElement("./div[3]/span").getText(), expectedPhone,
-                "Телефон " + index
-                        + "-ого клиента должно быть %s из списка 'Мои недавние клиенты'");
+                "Телефон " + index + "-ого клиента должно быть %s из списка 'Мои недавние клиенты'");
         softAssert.verifyAll();
         return this;
     }

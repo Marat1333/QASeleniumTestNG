@@ -9,9 +9,7 @@ public abstract class OrderCreatedPage extends OrderHeaderPage {
 
     @Step("Проверить, что статус заказа - {value}")
     public void shouldOrderStatusIs(String value) {
-        anAssert.isEquals(
-                E("//div[contains(@class, 'OrderViewHeader')]//span[contains(@class, 'Status-container')]")
-                        .getText(),
+        anAssert.isEquals(E("//div[contains(@class, 'OrderViewHeader')]//span[contains(@class, 'Status-container')]").getText(),
                 value, "Неверный статус заказа");
     }
 }

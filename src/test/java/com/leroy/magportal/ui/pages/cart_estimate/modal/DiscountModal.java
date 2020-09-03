@@ -10,6 +10,7 @@ import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
 import com.leroy.magportal.ui.webelements.commonelements.PuzComboBox;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -21,17 +22,15 @@ public class DiscountModal extends MagPortalBasePage {
 
     @Override
     protected void waitForPageIsLoaded() {
-        anAssert.isTrue(
-                waitForAnyOneOfElementsIsVisible(discountReasonCmbBox, percentageDiscountFld,
-                        discountAmountFld, discountNewPriceFld, cancelBtn, confirmBtn),
+        anAssert.isTrue(waitForAnyOneOfElementsIsVisible(discountReasonCmbBox, percentageDiscountFld,
+                discountAmountFld, discountNewPriceFld, cancelBtn, confirmBtn),
                 "Модальное окно создания скидки не загрузилось");
     }
 
     @WebFindBy(xpath = MODAL_DIV_XPATH + "//div[contains(@class, 'Estimate-price')]")
     Element totalPriceWithoutDiscount;
 
-    @WebFindBy(xpath = MODAL_DIV_XPATH
-            + "//div[contains(@class, 'Select__container-overflowMode-ellipsis')]",
+    @WebFindBy(xpath = MODAL_DIV_XPATH + "//div[contains(@class, 'Select__container-overflowMode-ellipsis')]",
             metaName = "Выпадающий список 'Причина скидки'")
     PuzComboBox discountReasonCmbBox;
 
@@ -44,16 +43,13 @@ public class DiscountModal extends MagPortalBasePage {
     @WebFindBy(id = "priceAfterDiscountInput", metaName = "Поле новая цена")
     EditBox discountNewPriceFld;
 
-    @WebFindBy(xpath = MODAL_DIV_XPATH
-            + "//button[descendant::*[text()='Удалить скидку']]", metaName = "Кнопка Удалить скидку")
+    @WebFindBy(xpath = MODAL_DIV_XPATH + "//button[descendant::*[text()='Удалить скидку']]", metaName = "Кнопка Удалить скидку")
     Button removeDiscountBtn;
 
-    @WebFindBy(xpath = MODAL_DIV_XPATH
-            + "//button[descendant::*[text()='Отмена']]", metaName = "Кнопка Отмена")
+    @WebFindBy(xpath = MODAL_DIV_XPATH + "//button[descendant::*[text()='Отмена']]", metaName = "Кнопка Отмена")
     Button cancelBtn;
 
-    @WebFindBy(xpath = MODAL_DIV_XPATH
-            + "//button[contains(@class, 'Common-ConfirmModal__modal__okButton')]",
+    @WebFindBy(xpath = MODAL_DIV_XPATH + "//button[contains(@class, 'Common-ConfirmModal__modal__okButton')]",
             metaName = "Кнопка Применить (Сохранить)")
     Button confirmBtn;
 
@@ -95,13 +91,10 @@ public class DiscountModal extends MagPortalBasePage {
     @Step("Проверить, что доступны все необходимые опции в выпадающем списке 'Причина скидки'")
     public DiscountModal verifyAvailableDiscountReasonOptions() throws Exception {
         List<String> expectedOptions = Arrays.asList(DiscountConst.Reasons.AFTER_REPAIR.getName(),
-                DiscountConst.Reasons.PRODUCT_SAMPLE.getName(),
-                DiscountConst.Reasons.BALANCE_MEASURED_PRODUCT.getName(),
-                DiscountConst.Reasons.INCOMPLETE_KIT.getName(),
-                DiscountConst.Reasons.DEFECT.getName(),
+                DiscountConst.Reasons.PRODUCT_SAMPLE.getName(), DiscountConst.Reasons.BALANCE_MEASURED_PRODUCT.getName(),
+                DiscountConst.Reasons.INCOMPLETE_KIT.getName(), DiscountConst.Reasons.DEFECT.getName(),
                 DiscountConst.Reasons.B2B_PRICE_ADJUSTMENT.getName());
-        anAssert.isEquals(new HashSet<>(discountReasonCmbBox.getOptionList()),
-                new HashSet<>(expectedOptions),
+        anAssert.isEquals(new HashSet<>(discountReasonCmbBox.getOptionList()), new HashSet<>(expectedOptions),
                 "Ожидались другие причины скидки");
         return this;
     }
@@ -131,8 +124,7 @@ public class DiscountModal extends MagPortalBasePage {
     public DiscountModal shouldDiscountAmountIs(double value) {
         double actualDiscountAmount = ParserUtil.strToDouble(discountAmountFld.getText());
         anAssert.isTrue(Math.abs(value - actualDiscountAmount) < 0.011,
-                "Неверная разовая скидка. Actual: " + actualDiscountAmount + " \n Expected:"
-                        + value);
+                "Неверная разовая скидка. Actual: " + actualDiscountAmount + " \n Expected:" + value);
         return this;
     }
 

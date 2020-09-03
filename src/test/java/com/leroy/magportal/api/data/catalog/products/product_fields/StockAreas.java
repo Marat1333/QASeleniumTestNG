@@ -5,7 +5,6 @@ import lombok.Data;
 
 @Data
 public class StockAreas {
-
     @JsonProperty("EM")
     private Integer em;
     @JsonProperty("RD")
@@ -17,17 +16,9 @@ public class StockAreas {
     private Integer buffer;
 
     public void replaceNull() {
-        if (ls == null) {
-            ls = 0;
-        }
-        if (rm == null) {
-            rm = 0;
-        }
-        if (rd == null) {
-            rd = 0;
-        }
-        if (em == null) {
-            em = 0;
-        }
+        if (ls == null) ls = 0;
+        if (rm == null) rm = 0;
+        if (rd == null) rd = 0;
+        if (em == null) em = 0;
     }
 }

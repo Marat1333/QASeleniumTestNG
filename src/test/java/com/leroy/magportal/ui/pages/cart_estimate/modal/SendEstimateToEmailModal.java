@@ -13,8 +13,7 @@ public class SendEstimateToEmailModal extends MagPortalBasePage {
     private static final String MODAL_WINDOW_XPATH = "//div[contains(@class, 'Common-ConfirmModal__modal__container')]";
     private static final String MODAL_BACKDROP_XPATH = "//div[contains(@class, 'Modal-backdrop')]";
 
-    @WebFindBy(xpath = MODAL_WINDOW_XPATH
-            + "//button[contains(@class, 'exitBtn')]", metaName = "Кнопка крестик (закрыть)")
+    @WebFindBy(xpath = MODAL_WINDOW_XPATH + "//button[contains(@class, 'exitBtn')]", metaName = "Кнопка крестик (закрыть)")
     Button closeBtn;
 
     @WebFindBy(xpath = MODAL_WINDOW_XPATH + "//input[@id='emails[0]']", metaName = "Поле 'email' 1")
@@ -26,22 +25,18 @@ public class SendEstimateToEmailModal extends MagPortalBasePage {
     @WebFindBy(xpath = MODAL_WINDOW_XPATH + "//input[@id='emails[2]']", metaName = "Поле 'email' 3")
     EditBox email3Fld;
 
-    @WebFindBy(xpath = MODAL_WINDOW_XPATH
-            + "//div[contains(@class, 'Bordered__tooltipContainer')]//span",
+    @WebFindBy(xpath = MODAL_WINDOW_XPATH + "//div[contains(@class, 'Bordered__tooltipContainer')]//span",
             metaName = "Подсказки ошибки рядом с полем email")
     Element errorTooltip;
 
-    @WebFindBy(xpath = MODAL_WINDOW_XPATH
-            + "//button[descendant::span[contains(text(), 'Добавить еще')]]",
+    @WebFindBy(xpath = MODAL_WINDOW_XPATH + "//button[descendant::span[contains(text(), 'Добавить еще')]]",
             metaName = "Кнопка 'Добавить еще email'")
     Button addOneMoreEmailBtn;
 
-    @WebFindBy(xpath = MODAL_WINDOW_XPATH
-            + "//textarea[@id='textAreaId']", metaName = "Поле комментарий")
+    @WebFindBy(xpath = MODAL_WINDOW_XPATH + "//textarea[@id='textAreaId']", metaName = "Поле комментарий")
     TextArea commentFld;
 
-    @WebFindBy(xpath = MODAL_WINDOW_XPATH
-            + "//button[contains(@class, 'Common-ConfirmModal__modal__okButton')]",
+    @WebFindBy(xpath = MODAL_WINDOW_XPATH + "//button[contains(@class, 'Common-ConfirmModal__modal__okButton')]",
             metaName = "Кнопка Применить (Сохранить)")
     Button sendBtn;
 

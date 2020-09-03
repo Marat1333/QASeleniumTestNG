@@ -26,6 +26,7 @@ public class MenuPage extends BaseWebPage {
     @WebFindBy(xpath = "//div[contains(@class, 'UserCaption')]//p", metaName = "Имя пользователя")
     Element userNameLbl;
 
+
     // Left menu
 
     @WebFindBy(xpath = "//button[contains(@class, 'burger-btn')]", metaName = "Бургер меню кнопка")
@@ -41,30 +42,21 @@ public class MenuPage extends BaseWebPage {
             "//div[contains(@class, 'side-menu-buttons-container')]//button[descendant::span[text()='%s']]";
 
     private void openMenu() {
-        if (!supportButton.isVisible()) {
+        if (!supportButton.isVisible())
             burgerMenuBtn.click();
-        }
     }
 
     public <T extends BaseWebPage> T goToPage(Class<T> pageClass) throws Exception {
         openMenu();
         String expectedMenuItem;
-        if (OrderHeaderPage.class == pageClass) {
-            expectedMenuItem = "Заказы";
-        } else if (CustomerPage.class == pageClass) {
-            expectedMenuItem = "Клиенты";
-        } else if (SearchProductPage.class == pageClass) {
-            expectedMenuItem = "Товары";
-        } else if (CartPage.class == pageClass) {
-            expectedMenuItem = "Корзины";
-        } else if (EstimatePage.class == pageClass) {
-            expectedMenuItem = "Сметы";
-        } else if (PickingPage.class == pageClass) {
-            expectedMenuItem = "Сборки";
-        } else {
-            throw new IllegalArgumentException("Переход на страницу " + pageClass.getName()
-                    + " еще не реализован через класс MenuPage");
-        }
+        if (OrderHeaderPage.class == pageClass) expectedMenuItem = "Заказы";
+        else if (CustomerPage.class == pageClass) expectedMenuItem = "Клиенты";
+        else if (SearchProductPage.class == pageClass) expectedMenuItem = "Товары";
+        else if (CartPage.class == pageClass) expectedMenuItem = "Корзины";
+        else if (EstimatePage.class == pageClass) expectedMenuItem = "Сметы";
+        else if (PickingPage.class == pageClass) expectedMenuItem = "Сборки";
+        else
+            throw new IllegalArgumentException("Переход на страницу " + pageClass.getName() + " еще не реализован через класс MenuPage");
         Element menuItem = new Element(driver, new CustomLocator(
                 By.xpath(String.format(LEFT_MENU_SPECIFIC_ITEM_XPATH, expectedMenuItem)),
                 "Пункт меню " + expectedMenuItem));

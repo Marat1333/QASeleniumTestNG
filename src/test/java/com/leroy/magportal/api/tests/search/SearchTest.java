@@ -13,11 +13,12 @@ import com.leroy.utils.file_manager.FileManager;
 import com.leroy.utils.file_manager.excel.ExcelRow;
 import com.leroy.utils.file_manager.excel.ExcelSheet;
 import com.leroy.utils.file_manager.excel.ExcelWorkBook;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 public class SearchTest extends BaseMagPortalApiTest {
 
@@ -38,8 +39,7 @@ public class SearchTest extends BaseMagPortalApiTest {
         return result + queryParams.substring(0, queryParams.length() - 1);
     }
 
-    private void shouldExcelOutputIsCorrect(List<ProductItemData> dataList,
-            ExcelWorkBook excelWorkBook) {
+    private void shouldExcelOutputIsCorrect(List<ProductItemData> dataList, ExcelWorkBook excelWorkBook) {
         String yes = "да";
         String no = "нет";
         ExcelSheet excelSheet = excelWorkBook.getExcelSheetByIndex(0);
@@ -49,21 +49,17 @@ public class SearchTest extends BaseMagPortalApiTest {
         for (int i = 0; i < dataList.size(); i++) {
             ProductItemData apiData = dataList.get(i);
             ExcelRow row = rowList.get(i);
-            softAssert().isEquals(apiData.getLmCode(),
-                    ParserUtil.strWithOnlyDigits(row.getCellStringValueByIndex(0)), "lmCode");
-            softAssert().isEquals(apiData.getBarCode(),
-                    ParserUtil.strWithOnlyDigits(row.getCellStringValueByIndex(1)), "barCode");
+            softAssert().isEquals(apiData.getLmCode(), ParserUtil.strWithOnlyDigits(row.getCellStringValueByIndex(0)), "lmCode");
+            softAssert().isEquals(apiData.getBarCode(), ParserUtil.strWithOnlyDigits(row.getCellStringValueByIndex(1)), "barCode");
             if (apiData.getTitle() != null) {
-                softAssert()
-                        .isEquals(apiData.getTitle(), row.getCellStringValueByIndex(2), "title");
+                softAssert().isEquals(apiData.getTitle(), row.getCellStringValueByIndex(2), "title");
             }
             String ctm = apiData.getCtm() ? yes : no;
             softAssert().isEquals(ctm, row.getCellStringValueByIndex(3), "ctm");
             softAssert().isEquals(apiData.getGamma(), row.getCellStringValueByIndex(4), "gamma");
             String avsDate;
             if (apiData.getAvsDate() != null) {
-                avsDate = DateTimeUtil.localDateToStr(apiData.getAvsDate().toLocalDate(),
-                        DateTimeUtil.DD_MM_YYYY);
+                avsDate = DateTimeUtil.localDateToStr(apiData.getAvsDate().toLocalDate(), DateTimeUtil.DD_MM_YYYY);
             } else {
                 avsDate = no;
             }
@@ -71,19 +67,14 @@ public class SearchTest extends BaseMagPortalApiTest {
             softAssert().isEquals(apiData.getTop(), row.getCellStringValueByIndex(6), "top");
             String topEM = apiData.getTopEM() ? yes : no;
             softAssert().isEquals(topEM, row.getCellStringValueByIndex(7), "topEM");
-            softAssert().isEquals(apiData.getSupCode(),
-                    ParserUtil.prettyDoubleFmt(row.getCellDoubleValueByIndex(8)), "supplier");
-            softAssert().isEquals(apiData.getSupName(), row.getCellStringValueByIndex(9),
-                    "supplierName");
+            softAssert().isEquals(apiData.getSupCode(), ParserUtil.prettyDoubleFmt(row.getCellDoubleValueByIndex(8)), "supplier");
+            softAssert().isEquals(apiData.getSupName(), row.getCellStringValueByIndex(9), "supplierName");
             softAssert().isEquals(ParserUtil.prettyDoubleFmt(apiData.getAvailableStock()),
-                    ParserUtil.prettyDoubleFmt(row.getCellDoubleValueByIndex(10)),
-                    "available stock");
+                    ParserUtil.prettyDoubleFmt(row.getCellDoubleValueByIndex(10)), "available stock");
             softAssert().isEquals(ParserUtil.prettyDoubleFmt(apiData.getPrice()),
                     ParserUtil.prettyDoubleFmt(row.getCellDoubleValueByIndex(11)), "price");
-            softAssert().isEquals(apiData.getPriceCurrency(), row.getCellStringValueByIndex(12),
-                    "currency");
-            String priceUnit =
-                    apiData.getPriceUnit().equals(Units.EA.getEnName()) ? Units.EA.getRuName() : no;
+            softAssert().isEquals(apiData.getPriceCurrency(), row.getCellStringValueByIndex(12), "currency");
+            String priceUnit = apiData.getPriceUnit().equals(Units.EA.getEnName()) ? Units.EA.getRuName() : no;
             softAssert().isEquals(priceUnit, row.getCellStringValueByIndex(13), "unit");
             String altPrice;
             if (apiData.getAltPrice() != null) {
@@ -94,8 +85,7 @@ public class SearchTest extends BaseMagPortalApiTest {
             softAssert().isEquals(altPrice, row.getCellStringValueByIndex(14), "alt price");
             String altPriceUnit;
             if (apiData.getAltPriceUnit() != null) {
-                altPriceUnit = apiData.getAltPriceUnit().equals(Units.EA.getEnName()) ? Units.EA
-                        .getRuName() : no;
+                altPriceUnit = apiData.getAltPriceUnit().equals(Units.EA.getEnName()) ? Units.EA.getRuName() : no;
             } else {
                 altPriceUnit = no;
             }
@@ -117,9 +107,8 @@ public class SearchTest extends BaseMagPortalApiTest {
 
         String uri = buildUri(resource, queryParams);
         List<ProductItemData> dataList = client.getProductsList();
-        ExcelWorkBook excelWorkBook = new ExcelWorkBook(
-                fileManager.downloadFileFromNetworkToDefaultDownloadDirectory(
-                        uri, "1.xlsx"));
+        ExcelWorkBook excelWorkBook = new ExcelWorkBook(fileManager.downloadFileFromNetworkToDefaultDownloadDirectory(
+                uri, "1.xlsx"));
         shouldExcelOutputIsCorrect(dataList, excelWorkBook);
     }
 }

@@ -1,16 +1,5 @@
 package com.leroy.magportal.ui.tests;
 
-import static com.leroy.magportal.ui.constants.OrderConst.DeliveryType.DELIVERY_TK;
-import static com.leroy.magportal.ui.constants.OrderConst.DeliveryType.PICKUP;
-import static com.leroy.magportal.ui.constants.OrderConst.Status.ASSEMBLY;
-import static com.leroy.magportal.ui.constants.OrderConst.Status.ASSEMBLY_PAUSE;
-import static com.leroy.magportal.ui.constants.OrderConst.Status.CANCELLED;
-import static com.leroy.magportal.ui.constants.OrderConst.Status.CREATED;
-import static com.leroy.magportal.ui.constants.OrderConst.Status.ISSUED;
-import static com.leroy.magportal.ui.constants.OrderConst.Status.ISSUED_PARTIALLY;
-import static com.leroy.magportal.ui.constants.OrderConst.Status.PICKED;
-import static com.leroy.magportal.ui.constants.OrderConst.Status.PICKED_PARTIALLY;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.api.StatusCodes;
 import com.leroy.constants.customer.CustomerConst;
@@ -22,11 +11,7 @@ import com.leroy.magmobile.api.data.customer.PhoneData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
-import com.leroy.magmobile.api.data.sales.orders.GiveAwayData;
-import com.leroy.magmobile.api.data.sales.orders.OrderCustomerData;
-import com.leroy.magmobile.api.data.sales.orders.OrderData;
-import com.leroy.magmobile.api.data.sales.orders.ReqOrderData;
-import com.leroy.magmobile.api.data.sales.orders.ReqOrderProductData;
+import com.leroy.magmobile.api.data.sales.orders.*;
 import com.leroy.magportal.ui.WebBaseSteps;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
 import com.leroy.magportal.ui.models.salesdoc.OrderDetailData;
@@ -35,14 +20,19 @@ import com.leroy.magportal.ui.pages.orders.OrderHeaderPage;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Issue;
 import io.qameta.allure.Step;
+import org.testng.annotations.Test;
+import ru.leroymerlin.qa.core.clients.base.Response;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.testng.annotations.Test;
-import ru.leroymerlin.qa.core.clients.base.Response;
+
+import static com.leroy.magportal.ui.constants.OrderConst.DeliveryType.DELIVERY_TK;
+import static com.leroy.magportal.ui.constants.OrderConst.DeliveryType.PICKUP;
+import static com.leroy.magportal.ui.constants.OrderConst.Status.*;
 
 public class OrderSearchTest extends WebBaseSteps {
 
@@ -53,7 +43,7 @@ public class OrderSearchTest extends WebBaseSteps {
 
     @Step("Pre-condition: Создание заказа через API")
     private String createOrderByApi(OrderDetailData orderDetailData,
-            boolean waitUntilIsConfirmed) throws Exception {
+                                    boolean waitUntilIsConfirmed) throws Exception {
         UserSessionData userSessionData = getUserSessionData();
         CartClient cartClient = apiClientProvider.getCartClient();
         OrderClient orderClient = apiClientProvider.getOrderClient();
@@ -93,8 +83,7 @@ public class OrderSearchTest extends WebBaseSteps {
 
         // Set pin-code
         String validPinCode = apiClientProvider.getValidPinCode();
-        Response<JsonNode> responseSetPinCode = orderClient
-                .setPinCode(orderData.getOrderId(), validPinCode);
+        Response<JsonNode> responseSetPinCode = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
         if (responseSetPinCode.getStatusCode() == StatusCodes.ST_400_BAD_REQ) {
             validPinCode = apiClientProvider.getValidPinCode();
             responseSetPinCode = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
@@ -102,8 +91,7 @@ public class OrderSearchTest extends WebBaseSteps {
         orderClient.assertThatPinCodeIsSet(responseSetPinCode);
 
         // Confirm order
-        String customerFirstName = ParserUtil
-                .parseFirstName(orderDetailData.getCustomer().getName());
+        String customerFirstName = ParserUtil.parseFirstName(orderDetailData.getCustomer().getName());
         String customerLastName = ParserUtil.parseLastName(orderDetailData.getCustomer().getName());
         OrderCustomerData orderCustomerData = new OrderCustomerData();
         orderCustomerData.setFirstName(customerFirstName);
@@ -112,10 +100,8 @@ public class OrderSearchTest extends WebBaseSteps {
         orderCustomerData.setType(CustomerConst.Type.PERSON.name());
         orderCustomerData.setPhone(new PhoneData(orderDetailData.getCustomer().getPhoneNumber()));
 
-        String recipientFirstName = ParserUtil
-                .parseFirstName(orderDetailData.getRecipient().getName());
-        String recipientLastName = ParserUtil
-                .parseLastName(orderDetailData.getRecipient().getName());
+        String recipientFirstName = ParserUtil.parseFirstName(orderDetailData.getRecipient().getName());
+        String recipientLastName = ParserUtil.parseLastName(orderDetailData.getRecipient().getName());
         OrderCustomerData orderRecipientData = new OrderCustomerData();
         orderRecipientData.setFirstName(recipientFirstName);
         orderRecipientData.setLastName(recipientLastName);
@@ -141,8 +127,7 @@ public class OrderSearchTest extends WebBaseSteps {
         giveAwayData.setShopId(Integer.valueOf(userSessionData.getUserShopId()));
         confirmOrderData.setGiveAway(giveAwayData);
 
-        Response<OrderData> respConfirm = orderClient
-                .confirmOrder(orderData.getOrderId(), confirmOrderData);
+        Response<OrderData> respConfirm = orderClient.confirmOrder(orderData.getOrderId(), confirmOrderData);
         orderClient.assertThatIsConfirmed(respConfirm, orderData);
         if (waitUntilIsConfirmed) {
             orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderData.getOrderId(),
@@ -173,8 +158,7 @@ public class OrderSearchTest extends WebBaseSteps {
 
         // Step 4
         step("Повторить шаг 2 для статусов Сборка, Сборка(пауза), Собран, Частично собран, Выдан, Отменен");
-        String[] step4Filters = {ASSEMBLY, ASSEMBLY_PAUSE, PICKED, PICKED_PARTIALLY, ISSUED,
-                CANCELLED};
+        String[] step4Filters = {ASSEMBLY, ASSEMBLY_PAUSE, PICKED, PICKED_PARTIALLY, ISSUED, CANCELLED};
         ordersPage.selectStatusFilters(step4Filters)
                 .clickApplyFilters()
                 .shouldDocumentListContainsOnlyWithStatuses(step4Filters);
@@ -260,8 +244,7 @@ public class OrderSearchTest extends WebBaseSteps {
             ordersPage.shouldDocumentCountIs(ordersCountBefore);
 
             // Step 4
-            step("В фильтре поиска выставить последние 4 цифры заказа из предусловия, нажать кнопку"
-                    +
+            step("В фильтре поиска выставить последние 4 цифры заказа из предусловия, нажать кнопку" +
                     " 'Показать заказы'");
             String partOrder = orderId_1.substring(orderId_1.length() - 4);
             ordersPage.enterSearchTextAndSubmit(partOrder);

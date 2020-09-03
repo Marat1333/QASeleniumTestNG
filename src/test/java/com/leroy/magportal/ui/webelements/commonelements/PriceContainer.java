@@ -7,7 +7,6 @@ import com.leroy.utils.ParserUtil;
 import org.openqa.selenium.WebDriver;
 
 public class PriceContainer extends Element {
-
     public PriceContainer(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
     }
@@ -43,9 +42,8 @@ public class PriceContainer extends Element {
 
     public String getUnit() {
         String val = pricePerUnit.getTextIfPresent();
-        if (val == null) {
+        if (val == null)
             return null;
-        }
         return val.replaceAll("/", "");
     }
 

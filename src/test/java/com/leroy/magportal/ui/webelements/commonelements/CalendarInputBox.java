@@ -1,11 +1,12 @@
 package com.leroy.magportal.ui.webelements.commonelements;
 
 import com.leroy.core.fieldfactory.CustomLocator;
+import org.openqa.selenium.WebDriver;
+
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.Locale;
-import org.openqa.selenium.WebDriver;
 
 public class CalendarInputBox extends CommonCalendarInputBox {
 
@@ -58,9 +59,8 @@ public class CalendarInputBox extends CommonCalendarInputBox {
                 previousMonthBtn.click();
             } else if (needToSelectDate.after(calendarDate)) {
                 nextMonthBtn.click();
-            } else {
+            } else
                 break;
-            }
         }
         selectDayByLabel(1, String.valueOf(date.getDayOfMonth()));
     }

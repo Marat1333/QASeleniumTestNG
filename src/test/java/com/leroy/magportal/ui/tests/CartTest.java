@@ -14,11 +14,12 @@ import com.leroy.magportal.ui.pages.cart_estimate.modal.DiscountModal;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.ExtendedSearchModal;
 import com.leroy.magportal.ui.pages.customers.CreateCustomerForm;
 import io.qameta.allure.Step;
-import java.time.LocalDate;
-import java.util.Random;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
 import org.testng.util.Strings;
+
+import java.time.LocalDate;
+import java.util.Random;
 
 public class CartTest extends BasePAOTest {
 
@@ -107,8 +108,7 @@ public class CartTest extends BasePAOTest {
 
         // Step 1
         step("Введите ЛМ товара в поле 'Добавление товара' и нажмите Enter");
-        stepSearchForProduct(
-                documentData.getOrders().get(0).getProductCardDataList().get(0).getLmCode());
+        stepSearchForProduct(documentData.getOrders().get(0).getProductCardDataList().get(0).getLmCode());
         documentData.getOrders().get(0).changeProductQuantity(0, 2, true);
         cartPage.shouldCartHasData(documentData);
     }
@@ -313,8 +313,7 @@ public class CartTest extends BasePAOTest {
     public void testAddAVSOrTopEMItemsSufficientStock() throws Exception {
         // Test data
         boolean oddDay = LocalDate.now().getDayOfMonth() % 2 == 1;
-        String lmCode =
-                oddDay ? getAnyLmCodeProductWithTopEM(true) : getAnyLmCodeProductWithAvs(true);
+        String lmCode = oddDay ? getAnyLmCodeProductWithTopEM(true) : getAnyLmCodeProductWithAvs(true);
 
         step("Выполнение предусловий: авторизуемся, заходим на страницу корзины");
         if (isStartFromScratch()) {
@@ -331,8 +330,7 @@ public class CartTest extends BasePAOTest {
     public void testAddAVSOrTopEMItemsInsufficientStock() throws Exception {
         // Test data
         boolean oddDay = false;//LocalDate.now().getDayOfMonth() % 2 == 1;
-        String lmCode =
-                oddDay ? getAnyLmCodeProductWithTopEM(false) : getAnyLmCodeProductWithAvs(false);
+        String lmCode = oddDay ? getAnyLmCodeProductWithTopEM(false) : getAnyLmCodeProductWithAvs(false);
 
         step("Выполнение предусловий: авторизуемся, заходим на страницу корзины");
         if (isStartFromScratch()) {
@@ -411,8 +409,7 @@ public class CartTest extends BasePAOTest {
         }
 
         SalesDocWebData cartData = cartPage.getSalesDocData();
-        double totalPriceWithoutDiscount = cartData.getOrders().get(0).getProductCardDataList()
-                .get(0).getTotalPrice();
+        double totalPriceWithoutDiscount = cartData.getOrders().get(0).getProductCardDataList().get(0).getTotalPrice();
 
         // Step 1
         step("Выберите параметр Изменить скидку в мини-карточке выбранного товара");
@@ -466,6 +463,7 @@ public class CartTest extends BasePAOTest {
                 .shouldCartHasData(cartData);
     }
 
+
     // ======================================= STEPS ============================================ //
 
     /**
@@ -503,8 +501,7 @@ public class CartTest extends BasePAOTest {
     /**
      * Поиск товара с помощью ввода в поле 'Добавление товара' данных о товаре
      */
-    private void stepSearchForProduct(ProductItemData expectedProductData,
-            ProductSearchType searchType) throws Exception {
+    private void stepSearchForProduct(ProductItemData expectedProductData, ProductSearchType searchType) throws Exception {
         String searchText;
         switch (searchType) {
             case LM_CODE:
@@ -546,8 +543,7 @@ public class CartTest extends BasePAOTest {
      * @param searchType   - тип поиска (по телефону, карточке и т.д.)
      * @param customerData - данные клиента
      */
-    private void stepSearchForCustomer(String searchType, SimpleCustomerData customerData)
-            throws Exception {
+    private void stepSearchForCustomer(String searchType, SimpleCustomerData customerData) throws Exception {
         cartPage.selectCustomerByPhone(customerData.getPhoneNumber());
         cartPage.shouldSelectedCustomerIs(customerData);
     }

@@ -1,12 +1,12 @@
 package com.leroy.magportal.ui.models.salesdoc;
 
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
-import java.util.List;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class OrderDetailData {
-
     // Общая информаия
     private String number;
     private String status;

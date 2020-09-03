@@ -16,25 +16,23 @@ public class WebBaseSteps extends MagPortalBaseTest {
 
     private String getPageUrl(Class<?> pageClass) {
         String path;
-        if (pageClass == CustomerPage.class) {
+        if (pageClass == CustomerPage.class)
             path = "orders/customers";
-        } else if (pageClass == SearchProductPage.class) {
+        else if (pageClass == SearchProductPage.class)
             path = "orders/catalogproducts";
-        } else if (pageClass == CartPage.class) {
+        else if (pageClass == CartPage.class)
             path = "orders/carts";
-        } else if (pageClass == EstimatePage.class) {
+        else if (pageClass == EstimatePage.class)
             path = "orders/estimates";
-        } else if (pageClass == PickingPage.class) {
+        else if (pageClass == PickingPage.class)
             path = "orders/pickingtask";
-        } else {
+        else
             path = "orders/orders_v2";
-        }
         return EnvConstants.URL_MAG_PORTAL + "/" + path;
     }
 
     @Step("Авторизоваться на портале и зайти на страницу {pageClass}")
-    private <T extends MagPortalBasePage> T loginAndGoTo(String ldap, String password, String shop,
-            Class<T> pageClass) throws Exception {
+    private <T extends MagPortalBasePage> T loginAndGoTo(String ldap, String password, String shop, Class<T> pageClass) throws Exception {
         getDriver().get(getPageUrl(pageClass));
         new LoginWebPage().logIn(ldap, password);
         T page = pageClass.getConstructor().newInstance();
@@ -54,12 +52,10 @@ public class WebBaseSteps extends MagPortalBaseTest {
     }
 
     public <T extends MagPortalBasePage> T loginAndGoTo(Class<T> pageClass) throws Exception {
-        return loginAndGoTo(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS, null,
-                pageClass);
+        return loginAndGoTo(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS, null, pageClass);
     }
 
-    public <T extends MagPortalBasePage> T loginSelectShopAndGoTo(Class<T> pageClass)
-            throws Exception {
+    public <T extends MagPortalBasePage> T loginSelectShopAndGoTo(Class<T> pageClass) throws Exception {
         return loginAndGoTo(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS,
                 getUserSessionData().getUserShopId(), pageClass);
     }

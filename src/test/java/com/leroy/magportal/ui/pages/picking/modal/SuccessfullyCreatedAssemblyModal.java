@@ -12,8 +12,7 @@ public class SuccessfullyCreatedAssemblyModal extends MagPortalBasePage {
 
     protected final static String MODAL_DIV_XPATH = "//div[contains(@class, 'Common-ConfirmModal__modal__container')]";
 
-    @WebFindBy(xpath = MODAL_DIV_XPATH
-            + "//div[contains(@class, 'ConfirmModal__modal__body')]//span",
+    @WebFindBy(xpath = MODAL_DIV_XPATH + "//div[contains(@class, 'ConfirmModal__modal__body')]//span",
             metaName = "Основной текст")
     Element mainBodyMsg;
 
@@ -36,8 +35,7 @@ public class SuccessfullyCreatedAssemblyModal extends MagPortalBasePage {
     public String getAssemblyNumber() {
         String bodyText = mainBodyMsg.getText();
         String orderNumber = StringUtils.substringBetween(bodyText, "заказа", "создана").trim();
-        String assemblyShortNumber = StringUtils.substringBetween(bodyText, "сборка", "заказа ")
-                .trim();
+        String assemblyShortNumber = StringUtils.substringBetween(bodyText, "сборка", "заказа ").trim();
         return assemblyShortNumber.replaceAll("\\*", "") + " " + orderNumber;
     }
 
@@ -68,11 +66,9 @@ public class SuccessfullyCreatedAssemblyModal extends MagPortalBasePage {
 
     @Step("Проверить, что номер заказа должен быть {value}")
     public SuccessfullyCreatedAssemblyModal shouldOrderNumberIs(String value) {
-        if (!value.startsWith("*")) {
+        if (!value.startsWith("*"))
             value = "*" + value;
-        }
-        anAssert.isEquals(
-                StringUtils.substringBetween(mainBodyMsg.getText(), "заказа", "создана").trim(),
+        anAssert.isEquals(StringUtils.substringBetween(mainBodyMsg.getText(), "заказа", "создана").trim(),
                 value, "Ожидался другой (короткий) номер заказа");
         return this;
     }

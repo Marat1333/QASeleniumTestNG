@@ -8,8 +8,9 @@ import com.leroy.magportal.ui.constants.picking.PickingConst;
 import com.leroy.magportal.ui.models.picking.ShortPickingTaskData;
 import com.leroy.magportal.ui.webelements.CardWebWidget;
 import com.leroy.utils.ParserUtil;
-import java.util.stream.Collectors;
 import org.openqa.selenium.WebDriver;
+
+import java.util.stream.Collectors;
 
 public class ShortPickingTaskCardWidget extends CardWebWidget<ShortPickingTaskData> {
 
@@ -65,11 +66,10 @@ public class ShortPickingTaskCardWidget extends CardWebWidget<ShortPickingTaskDa
                 .map(Integer::valueOf).collect(Collectors.toList()));
         pickingTaskData.setCreationDate(creationDate.getTextIfPresent());
         String collectorOrClient = collectorOrClientLbl.getText();
-        if (collectorOrClient.contains("Сборщик:")) {
+        if (collectorOrClient.contains("Сборщик:"))
             pickingTaskData.setCollector(collectorOrClient.replaceAll("Сборщик:", "").trim());
-        } else {
+        else
             pickingTaskData.setClient(collectorOrClient.replaceAll("Клиент:", "").trim());
-        }
         return pickingTaskData;
     }
 }

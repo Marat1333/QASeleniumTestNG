@@ -9,7 +9,6 @@ import com.leroy.utils.ParserUtil;
 import org.openqa.selenium.WebDriver;
 
 public class ProductQuantityInfoWidget extends BaseWidget {
-
     public ProductQuantityInfoWidget(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
     }

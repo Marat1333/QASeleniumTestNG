@@ -3,9 +3,10 @@ package com.leroy.magportal.ui.webelements;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.BaseWidget;
 import com.leroy.core.web_elements.general.ElementList;
+import org.openqa.selenium.WebDriver;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.openqa.selenium.WebDriver;
 
 public class CardWebWidgetList<E extends CardWebWidget<D>, D> extends ElementList<E> {
 
@@ -15,17 +16,15 @@ public class CardWebWidgetList<E extends CardWebWidget<D>, D> extends ElementLis
         super(driver, locator);
     }
 
-    public CardWebWidgetList(WebDriver driver, CustomLocator locator,
-            Class<? extends BaseWidget> elementClass) {
+    public CardWebWidgetList(WebDriver driver, CustomLocator locator, Class<? extends BaseWidget> elementClass) {
         super(driver, locator, elementClass);
     }
 
     public List<D> getDataList(int limit) throws Exception {
         List<D> dataList = new ArrayList<>();
         for (CardWebWidget<D> cardWidget : this) {
-            if (limit <= 0) {
+            if (limit <= 0)
                 break;
-            }
             dataList.add(cardWidget.collectDataFromPage());
             limit--;
         }

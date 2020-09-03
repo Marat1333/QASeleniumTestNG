@@ -4,7 +4,6 @@ import lombok.Data;
 
 @Data
 public class ShopCardData {
-
     Integer id;
     String name;
     String address;

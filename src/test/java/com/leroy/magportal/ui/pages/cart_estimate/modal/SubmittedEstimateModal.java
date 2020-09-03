@@ -6,6 +6,7 @@ import com.leroy.magportal.ui.pages.cart_estimate.EstimatePage;
 import com.leroy.magportal.ui.pages.cart_estimate.PrintEstimatePage;
 import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
 import io.qameta.allure.Step;
+
 import java.util.Set;
 
 public class SubmittedEstimateModal extends MagPortalBasePage {

@@ -11,16 +11,15 @@ import com.leroy.magportal.ui.webelements.commonelements.DualCalendarInputBox;
 import com.leroy.magportal.ui.webelements.commonelements.PuzComboBox;
 import com.leroy.magportal.ui.webelements.commonelements.PuzMultiSelectComboBox;
 import io.qameta.allure.Step;
+
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class OrderHeaderPage extends
-        LeftDocumentListPage<ShortOrderDocumentCardWidget, ShortOrderDocWebData> {
+public class OrderHeaderPage extends LeftDocumentListPage<ShortOrderDocumentCardWidget, ShortOrderDocWebData> {
 
     public static class SearchTypes {
-
         public static final String ORDER_NUMBER = "Номер заказа";
         public static final String PHONE_NUMBER = "Номер телефона";
         public static final String CUSTOMER_FIRST_NAME = "Имя покупателя";
@@ -87,12 +86,11 @@ public class OrderHeaderPage extends
 
     @Step("Ввести в поле поиска '{value}' и нажать 'Показать товары'")
     public void enterSearchTextAndSubmit(String value) {
-        if (value.startsWith("+7")) {
+        if (value.startsWith("+7"))
             value = value.substring(2);
-        }
-        if (searchByOrderNumberFld.isPresent()) {
+        if (searchByOrderNumberFld.isPresent())
             searchByOrderNumberFld.clearAndFill(value);
-        } else if (searchByPhoneFld.isPresent()) {
+        else if (searchByPhoneFld.isPresent()) {
             searchByPhoneFld.click();
             searchByPhoneFld.clear(true);
             searchByPhoneFld.fill(value);
@@ -114,8 +112,7 @@ public class OrderHeaderPage extends
     }
 
     @Step("Выбрать в фильтре дата создания с {fromDate} по {toDate}")
-    public OrderHeaderPage selectDateCreationsFilters(LocalDate fromDate, LocalDate toDate)
-            throws Exception {
+    public OrderHeaderPage selectDateCreationsFilters(LocalDate fromDate, LocalDate toDate) throws Exception {
         dateCreationFilter.selectDate(fromDate, toDate);
         return this;
     }
@@ -170,8 +167,7 @@ public class OrderHeaderPage extends
 
     @Step("Проверить, что не появилось окно о том, что 'Изменения не сохранены' не появилось")
     protected OrderHeaderPage shouldModalThatChangesIsNotSavedIsNotVisible() {
-        anAssert.isFalse(E("//div[contains(@class, 'Modal')]//*[text()='Изменения не сохранены']")
-                        .isVisible(),
+        anAssert.isFalse(E("//div[contains(@class, 'Modal')]//*[text()='Изменения не сохранены']").isVisible(),
                 "Появилось окно 'Изменения не сохранены'");
         return this;
     }
@@ -179,12 +175,10 @@ public class OrderHeaderPage extends
     @Step("Проверить, что в фильтре даты создания следующие даты: с {fromDate} по {toDate}")
     public OrderHeaderPage shouldCreationDateFilterIs(LocalDate fromDate, LocalDate toDate) {
         if (fromDate == null && toDate == null) {
-            softAssert.isNull(dateCreationFilter.getSelectedFromDate(),
-                    "В поле 'С' присутствует дата",
+            softAssert.isNull(dateCreationFilter.getSelectedFromDate(), "В поле 'С' присутствует дата",
                     "Поле 'С' пустое");
-            softAssert
-                    .isNull(dateCreationFilter.getSelectedToDate(), "В поле 'По' присутствует дата",
-                            "Поле 'По' пустое");
+            softAssert.isNull(dateCreationFilter.getSelectedToDate(), "В поле 'По' присутствует дата",
+                    "Поле 'По' пустое");
 
         } else {
             softAssert.isEquals(dateCreationFilter.getSelectedFromDate(), fromDate,
@@ -210,8 +204,7 @@ public class OrderHeaderPage extends
 
     @Step("Проверить, что в списке документов слева присутствуют только документы созданные " +
             "с {fromDate} по {toDate}")
-    public void shouldDocumentListFilteredByDates(LocalDate fromDate, LocalDate toDate)
-            throws Exception {
+    public void shouldDocumentListFilteredByDates(LocalDate fromDate, LocalDate toDate) throws Exception {
         for (ShortOrderDocWebData docData : documentCardList().getDataList()) {
             LocalDate actualDate = docData.getCreationDate().toLocalDate();
             softAssert.isTrue((actualDate.equals(fromDate) || actualDate.isAfter(fromDate)) &&

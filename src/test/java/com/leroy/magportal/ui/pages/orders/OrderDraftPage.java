@@ -68,6 +68,7 @@ public abstract class OrderDraftPage extends OrderHeaderPage {
         return actualCountProductAndWeight[1].endsWith("кг") ? weight : weight * 1000;
     }
 
+
     // Actions
 
     @Step("Нажать кнопку удаления (мусорка) и подтвердить удаление заказа")

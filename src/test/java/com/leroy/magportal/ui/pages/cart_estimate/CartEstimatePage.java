@@ -22,16 +22,16 @@ import com.leroy.magportal.ui.pages.customers.form.CustomerSearchForm;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
+import org.testng.util.Strings;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.testng.util.Strings;
 
 public abstract class CartEstimatePage extends
         LeftDocumentListPage<ShortCartEstimateDocumentCardWidget, ShortSalesDocWebData> {
 
     public static class SearchType {
-
         public static final String PHONE = "Телефон";
         public static final String CARD = "Карта клиента";
         public static final String EMAIL = "Email";
@@ -129,9 +129,8 @@ public abstract class CartEstimatePage extends
         searchProductFld.clearFillAndSubmit(text);
         waitForSpinnerAppearAndDisappear(short_timeout);
         if (!ExtendedSearchModal.isModalVisible()) {
-            if (this instanceof CartPage) {
+            if (this instanceof CartPage)
                 waitForSpinnerAppearAndDisappear();
-            }
             addProductLbl.click();
         }
         waitForSpinnerDisappear();
@@ -155,31 +154,26 @@ public abstract class CartEstimatePage extends
     }
 
     @Step("Установить кол-во {quantity} для товара #{productIdx} из заказа #{orderIdx}")
-    public CartEstimatePage changeQuantityProductByIndex(Number quantity, int orderIdx,
-            int productIdx) throws Exception {
+    public CartEstimatePage changeQuantityProductByIndex(Number quantity, int orderIdx, int productIdx) throws Exception {
         productIdx--;
         orderIdx--;
         orders().get(orderIdx).getProductWidget(productIdx).editQuantity(quantity);
-        if (this instanceof CartPage) {
+        if (this instanceof CartPage)
             waitForSpinnerAppearAndDisappear();
-        }
         return this;
     }
 
-    public CartEstimatePage changeQuantityProductByIndex(Number quantity, int productIdx)
-            throws Exception {
+    public CartEstimatePage changeQuantityProductByIndex(Number quantity, int productIdx) throws Exception {
         return changeQuantityProductByIndex(quantity, 1, productIdx);
     }
 
     @Step("Нажать '+' для увеличения кол-ва товара #{productIdx} из заказа #{orderIdx}")
-    public CartEstimatePage increaseQuantityProductByIndex(int orderIdx, int productIdx)
-            throws Exception {
+    public CartEstimatePage increaseQuantityProductByIndex(int orderIdx, int productIdx) throws Exception {
         productIdx--;
         orderIdx--;
         orders().get(orderIdx).getProductWidget(productIdx).clickPlusQuantity();
-        if (this instanceof CartPage) {
+        if (this instanceof CartPage)
             waitForSpinnerAppearAndDisappear();
-        }
         return this;
     }
 
@@ -188,14 +182,12 @@ public abstract class CartEstimatePage extends
     }
 
     @Step("Нажать '-' для уменьшения кол-ва товара #{productIdx} из заказа #{orderIdx}")
-    public CartEstimatePage decreaseQuantityProductByIndex(int orderIdx, int productIdx)
-            throws Exception {
+    public CartEstimatePage decreaseQuantityProductByIndex(int orderIdx, int productIdx) throws Exception {
         productIdx--;
         orderIdx--;
         orders().get(orderIdx).getProductWidget(productIdx).clickMinusQuantity();
-        if (this instanceof CartPage) {
+        if (this instanceof CartPage)
             waitForSpinnerAppearAndDisappear();
-        }
         return this;
     }
 
@@ -214,11 +206,10 @@ public abstract class CartEstimatePage extends
                 .verifyRequiredElements()
                 .clickYesButton();
         waitForSpinnerAppearAndDisappear();
-        if (productCountBefore > 1) {
+        if (productCountBefore > 1)
             orderWidget.getProductWidgets().waitUntilElementCountEquals(productCountBefore - 1);
-        } else {
+        else
             searchProductFld.waitForInvisibility();
-        }
         waitForSpinnerDisappear();
         return this;
     }
@@ -341,21 +332,17 @@ public abstract class CartEstimatePage extends
     }
 
     @Step("Проверить, что в документе {index}-ый товар имеет определенные характеристики (expectedProductData)")
-    public CartEstimatePage shouldDocumentHasProduct(int index,
-            ProductOrderCardWebData expectedProductData) throws Exception {
+    public CartEstimatePage shouldDocumentHasProduct(int index, ProductOrderCardWebData expectedProductData) throws Exception {
         index--;
         List<ProductOrderCardWebData> actualProductData = getProductDataList();
-        if (DefectConst.STOCK_ISSUE) {
+        if (DefectConst.STOCK_ISSUE)
             expectedProductData.setAvailableTodayQuantity(null);
-        }
-        actualProductData.get(index)
-                .assertEqualsNotNullExpectedFields(expectedProductData, 0, index);
+        actualProductData.get(index).assertEqualsNotNullExpectedFields(expectedProductData, 0, index);
         return this;
     }
 
     @Step("Проверить, что документ (Смета / Корзина) в списке слева отображается")
-    public void shouldDocumentIsPresent(ShortSalesDocWebData expectedDocumentData)
-            throws Exception {
+    public void shouldDocumentIsPresent(ShortSalesDocWebData expectedDocumentData) throws Exception {
         List<ShortSalesDocWebData> documentList = documentCardList().getDataList()
                 .stream().filter(d -> d.getNumber().equals(expectedDocumentData.getNumber()))
                 .collect(Collectors.toList());
@@ -369,25 +356,21 @@ public abstract class CartEstimatePage extends
      */
     protected void shouldDocumentHasData(SalesDocWebData expectedDocumentData) throws Exception {
         SalesDocWebData actualEstimateData = getSalesDocData();
-        if (expectedDocumentData.getNumber() == null) {
+        if (expectedDocumentData.getNumber() == null)
             anAssert.isFalse(getDocumentNumber().isEmpty(), "Отсутствует номер документа");
-        } else {
+        else
             softAssert.isEquals(actualEstimateData.getNumber(), expectedDocumentData.getNumber(),
                     "Ожидался другой номер документа");
-        }
         if (expectedDocumentData.getAuthorName() != null) {
-            softAssert.isEquals(actualEstimateData.getAuthorName(),
-                    expectedDocumentData.getAuthorName(),
+            softAssert.isEquals(actualEstimateData.getAuthorName(), expectedDocumentData.getAuthorName(),
                     "Ожидался другой автор документа");
         }
         if (expectedDocumentData.getStatus() != null) {
-            softAssert.isEquals(actualEstimateData.getStatus(),
-                    expectedDocumentData.getStatus().toUpperCase(),
+            softAssert.isEquals(actualEstimateData.getStatus(), expectedDocumentData.getStatus().toUpperCase(),
                     "Ожидался другой статус документа");
         }
         if (expectedDocumentData.getCreationDate() != null) {
-            softAssert.isEquals(actualEstimateData.getCreationDate(),
-                    expectedDocumentData.getCreationDate(),
+            softAssert.isEquals(actualEstimateData.getCreationDate(), expectedDocumentData.getCreationDate(),
                     "Ожидался другая дата создания документа");
         } else {
             softAssert.isFalse(Strings.isNullOrEmpty(actualEstimateData.getCreationDate()),
@@ -412,19 +395,15 @@ public abstract class CartEstimatePage extends
                     "Ожидалось другое кол-во товаров в документе (Заказ #" + (i + 1) + ")");
             for (int j = 0; j < actualOrder.getProductCardDataList().size(); j++) {
                 ProductOrderCardWebData actualProduct = actualOrder.getProductCardDataList().get(j);
-                ProductOrderCardWebData expectedProduct = expectedOrder.getProductCardDataList()
-                        .get(j);
+                ProductOrderCardWebData expectedProduct = expectedOrder.getProductCardDataList().get(j);
                 actualProduct.assertEqualsNotNullExpectedFields(expectedProduct, i, j);
             }
 
             softAssert.isEquals(actualOrder.getTotalPrice(), expectedOrder.getTotalPrice(),
                     "Заказ #" + (i + 1) + " Неверное сумма итого");
             if (expectedOrder.getTotalWeight() != null) {
-                double totalSelectedQuantity = expectedOrder.getProductCardDataList().stream()
-                        .mapToDouble(ProductOrderCardWebData::getSelectedQuantity).sum();
-                softAssert.isTrue(Math
-                                .abs(actualOrder.getTotalWeight() - expectedOrder.getTotalWeight())
-                                <= totalSelectedQuantity * 0.011,
+                double totalSelectedQuantity = expectedOrder.getProductCardDataList().stream().mapToDouble(ProductOrderCardWebData::getSelectedQuantity).sum();
+                softAssert.isTrue(Math.abs(actualOrder.getTotalWeight() - expectedOrder.getTotalWeight()) <= totalSelectedQuantity * 0.011,
                         "Заказ #" + (i + 1) + " Неверный итого вес");
             } else {
                 softAssert.isTrue(actualOrder.getTotalWeight() > 0,
@@ -433,12 +412,9 @@ public abstract class CartEstimatePage extends
                 for (ProductOrderCardWebData pr : actualOrder.getProductCardDataList()) {
                     expectedTotalWeight = ParserUtil.plus(pr.getWeight(), expectedTotalWeight, 2);
                 }
-                softAssert.isTrue(Math.abs(actualOrder.getTotalWeight() - expectedTotalWeight)
-                                <= 0.03,
-                        "Заказ #" + (i + 1)
-                                + " Итого вес должен быть равен сумме весов всех продуктов;\n" +
-                                "Actual: " + actualOrder.getTotalWeight() + "; Expected: "
-                                + expectedTotalWeight + ";");
+                softAssert.isTrue(Math.abs(actualOrder.getTotalWeight() - expectedTotalWeight) <= 0.03,
+                        "Заказ #" + (i + 1) + " Итого вес должен быть равен сумме весов всех продуктов;\n" +
+                                "Actual: " + actualOrder.getTotalWeight() + "; Expected: " + expectedTotalWeight + ";");
             }
             softAssert.isEquals(actualOrder.getProductCount(), expectedOrder.getProductCount(),
                     "Заказ #" + (i + 1) + " Неверное кол-во продуктов в заказе");

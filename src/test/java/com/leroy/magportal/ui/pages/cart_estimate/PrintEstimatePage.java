@@ -12,14 +12,15 @@ import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import com.leroy.utils.DateTimeUtil;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.List;
 
 public class PrintEstimatePage extends BaseWebPage {
 
@@ -117,17 +118,15 @@ public class PrintEstimatePage extends BaseWebPage {
     }
 
     @Step("Проверить, что текст для печати соответствуют данным, которые были в смете")
-    public PrintEstimatePage shouldEstimatePrintDataIs(SalesDocWebData estimateData)
-            throws Exception {
+    public PrintEstimatePage shouldEstimatePrintDataIs(SalesDocWebData estimateData) throws Exception {
         softAssert.isContainsIgnoringCase(header.getText(), estimateData.getClient().getName(),
                 "В загаловке должно присутствовать имя клиента");
         String descriptionText = description.getText();
         softAssert.isContainsIgnoringCase(descriptionText, estimateData.getNumber(),
                 "В описании сметы должен быть номер сметы");
-        softAssert
-                .isContainsIgnoringCase(descriptionText.replaceAll(" ", ""), ParserUtil.doubleToStr(
-                        estimateData.getOrders().get(0).getTotalPrice(), 2, true),
-                        "В описании сметы должна быть итоговая сумма");
+        softAssert.isContainsIgnoringCase(descriptionText.replaceAll(" ", ""), ParserUtil.doubleToStr(
+                estimateData.getOrders().get(0).getTotalPrice(), 2, true),
+                "В описании сметы должна быть итоговая сумма");
         softAssert.isContainsIgnoringCase(estimateExpiredDate.getText(),
                 DateTimeUtil.localDateToStr(LocalDate.now().plusDays(14), "dd.MM.yy"),
                 "Неверная дата, до которой действительна смета");
@@ -135,11 +134,9 @@ public class PrintEstimatePage extends BaseWebPage {
                 "Неверное имя в поле 'Бланк оформил'");
         softAssert.isElementVisible(shopAddress);
         // Состав сметы
-        softAssert.isEquals(estimateNumber.getText(), estimateData.getNumber(),
-                "Неверный номер сметы");
+        softAssert.isEquals(estimateNumber.getText(), estimateData.getNumber(), "Неверный номер сметы");
         List<EstimatePrintProductData> actualProductDataList = products.getDataList();
-        List<ProductOrderCardWebData> expectedProductList = estimateData.getOrders().get(0)
-                .getProductCardDataList();
+        List<ProductOrderCardWebData> expectedProductList = estimateData.getOrders().get(0).getProductCardDataList();
         anAssert.isEquals(actualProductDataList.size(), expectedProductList.size(),
                 "Ожидалось другое кол-во товаров");
         for (int i = 0; i < actualProductDataList.size(); i++) {
@@ -148,8 +145,7 @@ public class PrintEstimatePage extends BaseWebPage {
 
             softAssert.isEquals(actualProduct.getLmCode(), expectedProduct.getLmCode(),
                     "Товар " + (i + 1) + " - неверный ЛМ код");
-            softAssert.isEquals(actualProduct.getTitle(),
-                    expectedProduct.getTitle().isEmpty() ? "-" : expectedProduct.getTitle(),
+            softAssert.isEquals(actualProduct.getTitle(), expectedProduct.getTitle().isEmpty() ? "-" : expectedProduct.getTitle(),
                     "Товар " + (i + 1) + " - неверное название");
             softAssert.isEquals(actualProduct.getQuantity(), expectedProduct.getSelectedQuantity(),
                     "Товар " + (i + 1) + " - неверное кол-во");
@@ -166,15 +162,12 @@ public class PrintEstimatePage extends BaseWebPage {
         double expectedTotalPriceWithNDS = estimateData.getOrders().get(0).getTotalPrice();
         double expectedTotalPriceWithoutNDS = new BigDecimal(expectedTotalPriceWithNDS / 1.2)
                 .setScale(2, RoundingMode.HALF_UP).doubleValue();
-        softAssert.isEquals(ParserUtil.strToDouble(totalPriceWithoutNDS.getText()),
-                expectedTotalPriceWithoutNDS,
+        softAssert.isEquals(ParserUtil.strToDouble(totalPriceWithoutNDS.getText()), expectedTotalPriceWithoutNDS,
                 "Неверная итого без НДС");
-        softAssert.isEquals(
-                ParserUtil.strToDouble(StringUtils.substringAfter(amountNDS.getText(), "):")),
+        softAssert.isEquals(ParserUtil.strToDouble(StringUtils.substringAfter(amountNDS.getText(), "):")),
                 ParserUtil.minus(expectedTotalPriceWithNDS, expectedTotalPriceWithoutNDS, 2),
                 "Неверная сумма НДС");
-        softAssert.isEquals(ParserUtil.strToDouble(totalPriceWithNDS.getText()),
-                expectedTotalPriceWithNDS,
+        softAssert.isEquals(ParserUtil.strToDouble(totalPriceWithNDS.getText()), expectedTotalPriceWithNDS,
                 "Неверная стоимость с НДС");
 
         // Нижняя часть - получатель

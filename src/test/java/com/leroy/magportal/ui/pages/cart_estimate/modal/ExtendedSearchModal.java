@@ -8,8 +8,9 @@ import com.leroy.magportal.ui.pages.cart_estimate.widget.AddProductsFromSearchWi
 import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import io.qameta.allure.Step;
-import java.util.List;
 import org.openqa.selenium.By;
+
+import java.util.List;
 
 public class ExtendedSearchModal extends MagPortalBasePage {
 
@@ -65,13 +66,11 @@ public class ExtendedSearchModal extends MagPortalBasePage {
     // Verifications
 
     @Step("Проверить, что все товары в окне имеют в названии {value}")
-    public ExtendedSearchModal shouldProductsContainInTitle(String value, int limitCheck)
-            throws Exception {
+    public ExtendedSearchModal shouldProductsContainInTitle(String value, int limitCheck) throws Exception {
         List<ProductOrderCardWebData> products = productWidgetList.getDataList(limitCheck);
         for (ProductOrderCardWebData product : products) {
             anAssert.isContainsIgnoringCase(product.getTitle(), value,
-                    String.format("Товар с ЛМ код %s не содержит в названии '%s'",
-                            product.getLmCode(), value));
+                    String.format("Товар с ЛМ код %s не содержит в названии '%s'", product.getLmCode(), value));
         }
         anAssert.isTrue(products.size() > 0,
                 "Не найден ни один товар, содержащий в названии '" + value + "'");

@@ -10,7 +10,6 @@ import com.leroy.utils.ParserUtil;
 import org.openqa.selenium.WebDriver;
 
 public class ProductPriceInfoWidget extends BaseWidget {
-
     public ProductPriceInfoWidget(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
     }
@@ -52,15 +51,13 @@ public class ProductPriceInfoWidget extends BaseWidget {
 
     public PriceContainerData getHiddenRecommendedPriceContainerData() throws Exception {
         hiddenRecommendedPrice.findChildElement("./..").click();
-        return new PriceContainerData(
-                ParserUtil.strToDouble(hiddenRecommendedPrice.getDecimalPrice()),
+        return new PriceContainerData(ParserUtil.strToDouble(hiddenRecommendedPrice.getDecimalPrice()),
                 hiddenRecommendedPrice.getPriceCurrency(), hiddenRecommendedPrice.getUnit());
     }
 
     public PriceContainerData getHiddenPurchasePriceContainerData() throws Exception {
         hiddenPurchasingPrice.findChildElement("./..").click();
-        return new PriceContainerData(
-                ParserUtil.strToDouble(hiddenPurchasingPrice.getDecimalPrice()),
+        return new PriceContainerData(ParserUtil.strToDouble(hiddenPurchasingPrice.getDecimalPrice()),
                 hiddenPurchasingPrice.getPriceCurrency(), hiddenPurchasingPrice.getUnit());
     }
 

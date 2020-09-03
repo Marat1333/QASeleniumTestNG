@@ -1,8 +1,5 @@
 package com.leroy.magportal.ui.pages.orders;
 
-import static com.leroy.constants.DefectConst.INVALID_ORDER_DRAFT_DATE;
-import static com.leroy.constants.DefectConst.PAO_931;
-
 import com.leroy.constants.DefectConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.annotations.Form;
@@ -19,11 +16,15 @@ import com.leroy.magportal.ui.pages.products.form.AddProductForm;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
+import lombok.Getter;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import lombok.Getter;
+
+import static com.leroy.constants.DefectConst.INVALID_ORDER_DRAFT_DATE;
+import static com.leroy.constants.DefectConst.PAO_931;
 
 public class OrderCreatedContentPage extends OrderCreatedPage {
 
@@ -93,8 +94,7 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
         salesDocWebData.setStatus(orderStatus.getText());
         salesDocWebData.setClient(customerSearchForm.getCustomerData());
         salesDocWebData.setDeliveryType(deliveryType.getText().toLowerCase().equals("самовывоз") ?
-                SalesDocumentsConst.GiveAwayPoints.PICKUP
-                : SalesDocumentsConst.GiveAwayPoints.DELIVERY);
+                SalesDocumentsConst.GiveAwayPoints.PICKUP : SalesDocumentsConst.GiveAwayPoints.DELIVERY);
         OrderWebData orderWebData = new OrderWebData();
         orderWebData.setTotalPrice(ParserUtil.strToDouble(totalPrice.getText()));
         orderWebData.setTotalWeight(ParserUtil.strToDouble(weight.getText()));
@@ -140,8 +140,7 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
     // Verifications
 
     @Step("Проверить, что данные заказа соответствуют ожидаемому")
-    public OrderCreatedContentPage shouldOrderContentDataIs(SalesDocWebData orderData)
-            throws Exception {
+    public OrderCreatedContentPage shouldOrderContentDataIs(SalesDocWebData orderData) throws Exception {
         SalesDocWebData expectedOrderData = orderData.clone();
         SalesDocWebData actualData = getOrderData();
         expectedOrderData.setAuthorName(null);
@@ -150,37 +149,30 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
         expectedOrderData.setComment(null);
         expectedOrderData.setRecipient(null);
         expectedOrderData.setClient(null);
-        if (INVALID_ORDER_DRAFT_DATE) {
+        if (INVALID_ORDER_DRAFT_DATE)
             expectedOrderData.setCreationDate(null); // TODO Надо приводить к LocalDate и проверять
-        }
-        actualData.getOrders().get(0)
-                .setProductCount(actualData.getOrders().get(0).getProductCardDataList().size());
-        if (PAO_931 && expectedOrderData.getOrders().get(0).getProductCardDataList().get(0)
-                .getDiscountPercent() != null) {
+        actualData.getOrders().get(0).setProductCount(actualData.getOrders().get(0).getProductCardDataList().size());
+        if (PAO_931 && expectedOrderData.getOrders().get(0).getProductCardDataList().get(0).getDiscountPercent() != null)
             expectedOrderData.getOrders().forEach(p -> p.setTotalPrice(null));
-        }
         actualData.assertEqualsNotNullExpectedFields(expectedOrderData);
         return this;
     }
 
     // OrderDraftContentPage содержит подобный метод
     @Step("Проверить, что в заказе имеются товары с лм кодами: {lmCodes}")
-    public OrderCreatedContentPage shouldProductsHave(List<String> lmCodes,
-            boolean shouldBeRecalculatedTotalInfo)
+    public OrderCreatedContentPage shouldProductsHave(List<String> lmCodes, boolean shouldBeRecalculatedTotalInfo)
             throws Exception {
         SalesDocWebData salesDocWebData = getOrderData();
-        if (!INVALID_ORDER_DRAFT_DATE) {
+        if (!INVALID_ORDER_DRAFT_DATE)
             softAssert.isNotEquals(salesDocWebData.getCreationDate(), "Invalid date",
                     "Неверная дата создания");
-        }
         softAssert.isFalse(salesDocWebData.getNumber().isEmpty(), "Заказ не имеет номера");
         softAssert.isEquals(salesDocWebData.getStatus().toLowerCase(),
                 DefectConst.CONFIRMED_BUT_NOT_ALLOWED_FOR_PICKING_ORDER ?
                         SalesDocumentsConst.States.CONFIRMED.getUiVal().toLowerCase() :
                         SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal().toLowerCase(),
                 "Неверный статус заказа");
-        anAssert.isTrue(
-                salesDocWebData.getOrders() != null && salesDocWebData.getOrders().size() == 1,
+        anAssert.isTrue(salesDocWebData.getOrders() != null && salesDocWebData.getOrders().size() == 1,
                 "Информация о заказе недоступна");
         OrderWebData orderWebData = salesDocWebData.getOrders().get(0);
         double expectedTotalWeight = 0.0;
@@ -191,15 +183,12 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
             expectedTotalPrice += productData.getTotalPrice();
             actualLmCodes.add(productData.getLmCode());
         }
-        softAssert.isEquals(actualLmCodes, new HashSet<>(lmCodes),
-                "Ожидались другие товары в заказе");
+        softAssert.isEquals(actualLmCodes, new HashSet<>(lmCodes), "Ожидались другие товары в заказе");
         if (shouldBeRecalculatedTotalInfo) {
-            softAssert
-                    .isTrue(Math.abs(orderWebData.getTotalWeight() - expectedTotalWeight) <= 0.011,
-                            String.format("Неверный общий вес заказа. Actual: %s Expected: %s",
-                                    orderWebData.getTotalWeight(), expectedTotalWeight));
-            softAssert.isEquals(orderWebData.getTotalPrice(), expectedTotalPrice,
-                    "Неверная общая стоимость заказа");
+            softAssert.isTrue(Math.abs(orderWebData.getTotalWeight() - expectedTotalWeight) <= 0.011,
+                    String.format("Неверный общий вес заказа. Actual: %s Expected: %s",
+                            orderWebData.getTotalWeight(), expectedTotalWeight));
+            softAssert.isEquals(orderWebData.getTotalPrice(), expectedTotalPrice, "Неверная общая стоимость заказа");
         }
         softAssert.verifyAll();
         return this;
@@ -210,8 +199,7 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
     }
 
     @Step("Проверить количество 'заказано' для {index}-ого товара")
-    public OrderCreatedContentPage shouldSelectedProductQuantityIs(int index, int value)
-            throws Exception {
+    public OrderCreatedContentPage shouldSelectedProductQuantityIs(int index, int value) throws Exception {
         index--;
         anAssert.isEquals(productCards.get(index).getOrderedQuantity(), String.valueOf(value),
                 "Неверное количество 'заказано' у " + (index + 1) + " товара");

@@ -1,7 +1,5 @@
 package com.leroy.magportal.api.helpers.ui;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.pages.BaseWebPage;
 import com.leroy.core.web_elements.general.Button;
@@ -13,6 +11,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class PaymentPage extends BaseWebPage {
 

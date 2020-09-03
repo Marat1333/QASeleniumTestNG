@@ -19,11 +19,12 @@ import com.leroy.magportal.ui.pages.products.ExtendedProductCardPage;
 import com.leroy.magportal.ui.pages.products.ProductCardPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage.FilterFrame;
-import java.util.Collections;
-import java.util.List;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.Collections;
+import java.util.List;
 
 public class ProductCardTest extends WebBaseSteps {
 
@@ -40,33 +41,27 @@ public class ProductCardTest extends WebBaseSteps {
     private <T> T navigateToProductCardByUrl(String lmCode, boolean isAllGammaView) {
         WebDriver driver = ContextProvider.getDriver();
         String isAllGammaViewParam = "?isAllGammaView=";
-        driver.get(EnvConstants.URL_MAG_PORTAL + "/orders/catalogproducts/product/" + lmCode
-                + isAllGammaViewParam + isAllGammaView);
+        driver.get(EnvConstants.URL_MAG_PORTAL + "/orders/catalogproducts/product/" + lmCode + isAllGammaViewParam + isAllGammaView);
         return isAllGammaView ? (T) new ProductCardPage() : (T) new ExtendedProductCardPage();
     }
 
     private String getRandomLmCode() {
         CatalogSearchClient catalogSearchClient = apiClientProvider.getCatalogSearchClient();
-        ProductItemDataList productItemDataList = catalogSearchClient
-                .searchProductsBy(new GetCatalogSearch().setPageSize(24)).asJson();
+        ProductItemDataList productItemDataList = catalogSearchClient.searchProductsBy(new GetCatalogSearch().setPageSize(24)).asJson();
         List<ProductItemData> productItemData = productItemDataList.getItems();
         anAssert().isTrue(productItemData.size() > 0, "size must be more than 0");
         return productItemData.get((int) (Math.random() * productItemData.size())).getLmCode();
     }
 
     private String getRandomSimilarProductLmCode(String sourceLmCode) {
-        CatalogSimilarProductsData data = apiClientProvider
-                .getMagPortalCatalogProductClientProvider().getSimilarProducts(sourceLmCode)
-                .asJson();
+        CatalogSimilarProductsData data = apiClientProvider.getMagPortalCatalogProductClientProvider().getSimilarProducts(sourceLmCode).asJson();
         List<ProductItemData> resultList = data.getSubstitutes();
         String result = resultList.get((int) (Math.random() * resultList.size())).getLmCode();
         return result;
     }
 
     private String getRandomComplementProductLmCode(String sourceLmCode) {
-        CatalogSimilarProductsData data = apiClientProvider
-                .getMagPortalCatalogProductClientProvider().getSimilarProducts(sourceLmCode)
-                .asJson();
+        CatalogSimilarProductsData data = apiClientProvider.getMagPortalCatalogProductClientProvider().getSimilarProducts(sourceLmCode).asJson();
         List<ProductItemData> resultList = data.getComplements();
         String result = resultList.get((int) (Math.random() * resultList.size())).getLmCode();
         return result;
@@ -77,8 +72,7 @@ public class ProductCardTest extends WebBaseSteps {
         String lmCode = getRandomLmCode();
 
         //Pre-condition
-        ExtendedProductCardPage extendedProductCardPage = navigateToNeededCard(lmCode,
-                FilterFrame.MY_SHOP);
+        ExtendedProductCardPage extendedProductCardPage = navigateToNeededCard(lmCode, FilterFrame.MY_SHOP);
 
         //Step 1
         step("Добавить товар в корзину");
@@ -91,8 +85,7 @@ public class ProductCardTest extends WebBaseSteps {
         String lmCode = getRandomLmCode();
 
         //Pre-condition
-        ExtendedProductCardPage extendedProductCardPage = navigateToNeededCard(lmCode,
-                FilterFrame.MY_SHOP);
+        ExtendedProductCardPage extendedProductCardPage = navigateToNeededCard(lmCode, FilterFrame.MY_SHOP);
 
         //Step 1
         step("Добавить товар в смету");
@@ -122,13 +115,11 @@ public class ProductCardTest extends WebBaseSteps {
         String complementProductLmCode = getRandomComplementProductLmCode(sourceLmCode);
 
         //Pre-conditions
-        ExtendedProductCardPage extendedProductCardPage = navigateToProductCardByUrl(sourceLmCode,
-                false);
+        ExtendedProductCardPage extendedProductCardPage = navigateToProductCardByUrl(sourceLmCode, false);
 
         //Step 1
         step("Перейти в любую карточку аналогичного товара");
-        extendedProductCardPage.goToAdditionalProduct(similarProductLmCode,
-                ExtendedProductCardPage.Tab.SIMILAR_PRODUCTS);
+        extendedProductCardPage.goToAdditionalProduct(similarProductLmCode, ExtendedProductCardPage.Tab.SIMILAR_PRODUCTS);
         extendedProductCardPage.shouldProductCardContainsLmOrBarCode(similarProductLmCode);
 
         //Step 2
@@ -147,8 +138,7 @@ public class ProductCardTest extends WebBaseSteps {
         step("Перейти назад в исходную карточку товара и затем перейти в любую карточку комплементарных товаров");
         extendedProductCardPage.navigateBack();
         extendedProductCardPage = new ExtendedProductCardPage();
-        extendedProductCardPage.goToAdditionalProduct(complementProductLmCode,
-                ExtendedProductCardPage.Tab.COMPLEMENT_PRODUCTS);
+        extendedProductCardPage.goToAdditionalProduct(complementProductLmCode, ExtendedProductCardPage.Tab.COMPLEMENT_PRODUCTS);
         extendedProductCardPage.shouldProductCardContainsLmOrBarCode(complementProductLmCode);
 
         //Step 5
@@ -171,8 +161,7 @@ public class ProductCardTest extends WebBaseSteps {
         String lessThan4Complements = "10813144";
         String moreThan4Complements = "15057456";
 
-        MagPortalCatalogProductClient client = apiClientProvider
-                .getMagPortalCatalogProductClientProvider();
+        MagPortalCatalogProductClient client = apiClientProvider.getMagPortalCatalogProductClientProvider();
 
         CatalogSimilarProductsData data = client.getSimilarProducts(lessThan4Similar).asJson();
         List<ProductItemData> lessThan4SimilarList = data.getSubstitutes();
@@ -186,10 +175,10 @@ public class ProductCardTest extends WebBaseSteps {
         data = client.getSimilarProducts(moreThan4Complements).asJson();
         List<ProductItemData> moreThan4ComplementsList = data.getComplements();
 
+
         //Step 1
         step("открыть карточку товара, у которого не более 4х аналогичных товаров");
-        ExtendedProductCardPage extendedProductCardPage = navigateToProductCardByUrl(
-                lessThan4Similar, false);
+        ExtendedProductCardPage extendedProductCardPage = navigateToProductCardByUrl(lessThan4Similar, false);
         extendedProductCardPage.shouldAllAdditionalProductsIsVisible(lessThan4SimilarList);
 
         //Step 2
@@ -200,15 +189,13 @@ public class ProductCardTest extends WebBaseSteps {
         //Step 3
         step("открыть карточку товара, у которого не более 4х комплементарных товаров");
         extendedProductCardPage = navigateToProductCardByUrl(lessThan4Complements, false);
-        extendedProductCardPage
-                .switchExtraInfoTabs(ExtendedProductCardPage.Tab.COMPLEMENT_PRODUCTS);
+        extendedProductCardPage.switchExtraInfoTabs(ExtendedProductCardPage.Tab.COMPLEMENT_PRODUCTS);
         extendedProductCardPage.shouldAllAdditionalProductsIsVisible(lessThan4ComplementsList);
 
         //Step 4
         step("открыть карточку товара, у которого более 4х комплементарных товаров");
         extendedProductCardPage = navigateToProductCardByUrl(moreThan4Complements, false);
-        extendedProductCardPage
-                .switchExtraInfoTabs(ExtendedProductCardPage.Tab.COMPLEMENT_PRODUCTS);
+        extendedProductCardPage.switchExtraInfoTabs(ExtendedProductCardPage.Tab.COMPLEMENT_PRODUCTS);
         extendedProductCardPage.shouldAllAdditionalProductsIsVisible(moreThan4ComplementsList);
     }
 
@@ -228,43 +215,34 @@ public class ProductCardTest extends WebBaseSteps {
 
         //Step 1
         step("Перейти на уровень подтипа");
-        SearchProductPage searchProductPage = extendedProductCardPage
-                .navigateToSearchByNomenclatureAttribute(subClass);
+        SearchProductPage searchProductPage = extendedProductCardPage.navigateToSearchByNomenclatureAttribute(subClass);
         /*searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId, CatalogSearchParams.subdepartmentId,
                 CatalogSearchParams.classId, CatalogSearchParams.subclassId);*/
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(subClass);
-        searchProductPage
-                .shouldBreadCrumbsContainsNomenclatureName(true, allDepartments, department,
-                        subDepartment,
-                        classId);
+        searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, allDepartments, department, subDepartment,
+                classId);
         extendedProductCardPage = navigateToProductCardByUrl(lmCode, false);
 
         //Step 2
         step("Перейти на уровень типа");
-        searchProductPage = extendedProductCardPage
-                .navigateToSearchByNomenclatureAttribute(classId);
+        searchProductPage = extendedProductCardPage.navigateToSearchByNomenclatureAttribute(classId);
         /*searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId, CatalogSearchParams.subdepartmentId,
                 CatalogSearchParams.classId);*/
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(classId);
-        searchProductPage
-                .shouldBreadCrumbsContainsNomenclatureName(true, allDepartments, department,
-                        subDepartment);
+        searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, allDepartments, department, subDepartment);
         extendedProductCardPage = navigateToProductCardByUrl(lmCode, false);
 
         //Step 3
         step("Перейти на уровень подотдела");
-        searchProductPage = extendedProductCardPage
-                .navigateToSearchByNomenclatureAttribute(subDepartment);
+        searchProductPage = extendedProductCardPage.navigateToSearchByNomenclatureAttribute(subDepartment);
         //searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId, CatalogSearchParams.subdepartmentId);
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(subDepartment);
-        searchProductPage
-                .shouldBreadCrumbsContainsNomenclatureName(true, allDepartments, department);
+        searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, allDepartments, department);
         extendedProductCardPage = navigateToProductCardByUrl(lmCode, false);
 
         //Step 4
         step("Перейти на уровень отдела");
-        searchProductPage = extendedProductCardPage
-                .navigateToSearchByNomenclatureAttribute(department);
+        searchProductPage = extendedProductCardPage.navigateToSearchByNomenclatureAttribute(department);
         //searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId);
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(department);
         searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, allDepartments);
@@ -272,8 +250,7 @@ public class ProductCardTest extends WebBaseSteps {
 
         //Step 5
         step("Перейти на уровень всех отделов");
-        searchProductPage = extendedProductCardPage
-                .navigateToSearchByNomenclatureAttribute(allDepartments);
+        searchProductPage = extendedProductCardPage.navigateToSearchByNomenclatureAttribute(allDepartments);
         //searchProductPage.shouldUrlNotContains(CatalogSearchParams.departmentId);
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(allDepartments);
         searchProductPage.navigateBack();
@@ -287,10 +264,8 @@ public class ProductCardTest extends WebBaseSteps {
         /*searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId, CatalogSearchParams.subdepartmentId,
                 CatalogSearchParams.classId, CatalogSearchParams.subclassId);*/
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(subClass);
-        searchProductPage
-                .shouldBreadCrumbsContainsNomenclatureName(true, allDepartments, department,
-                        subDepartment,
-                        classId);
+        searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, allDepartments, department, subDepartment,
+                classId);
         productCardPage = navigateToProductCardByUrl(lmCode, true);
 
         //Step 7
@@ -299,9 +274,7 @@ public class ProductCardTest extends WebBaseSteps {
         /*searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId, CatalogSearchParams.subdepartmentId,
                 CatalogSearchParams.classId);*/
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(classId);
-        searchProductPage
-                .shouldBreadCrumbsContainsNomenclatureName(true, allDepartments, department,
-                        subDepartment);
+        searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, allDepartments, department, subDepartment);
         productCardPage = navigateToProductCardByUrl(lmCode, true);
 
         //Step 8
@@ -309,8 +282,7 @@ public class ProductCardTest extends WebBaseSteps {
         searchProductPage = productCardPage.navigateToSearchByNomenclatureAttribute(subDepartment);
         //searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId, CatalogSearchParams.subdepartmentId);
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(subDepartment);
-        searchProductPage
-                .shouldBreadCrumbsContainsNomenclatureName(true, allDepartments, department);
+        searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, allDepartments, department);
         productCardPage = navigateToProductCardByUrl(lmCode, true);
 
         //Step 9
@@ -334,8 +306,7 @@ public class ProductCardTest extends WebBaseSteps {
     @Test(description = "C23389190 Check short card data")
     public void testCheckShortCardData() throws Exception {
         String lmCode = getRandomLmCode();
-        CatalogProductData data = apiClientProvider.getMagPortalCatalogProductClientProvider()
-                .getProductData(lmCode).asJson();
+        CatalogProductData data = apiClientProvider.getMagPortalCatalogProductClientProvider().getProductData(lmCode).asJson();
 
         //Step 1
         step("Перейти в укороченную карточку товара");
@@ -346,8 +317,7 @@ public class ProductCardTest extends WebBaseSteps {
     @Test(description = "C22782997 Check extended card data")
     public void testCheckExtendedCardData() throws Exception {
         String lmCode = getRandomLmCode();
-        CatalogProductData data = apiClientProvider.getMagPortalCatalogProductClientProvider()
-                .getProductData(lmCode).asJson();
+        CatalogProductData data = apiClientProvider.getMagPortalCatalogProductClientProvider().getProductData(lmCode).asJson();
 
         //Step 1
         step("Перейти в расширенную карточку товара");
@@ -360,17 +330,14 @@ public class ProductCardTest extends WebBaseSteps {
         String shopId = "3";
         String shopName = "Химки";
         String lmCode = getRandomLmCode();
-        List<NearestShopsData> nearestShopsList = apiClientProvider
-                .getMagPortalCatalogProductClientProvider().getNearestShopsInfo(lmCode)
-                .asJsonList(NearestShopsData.class);
+        List<NearestShopsData> nearestShopsList = apiClientProvider.getMagPortalCatalogProductClientProvider().getNearestShopsInfo(lmCode).asJsonList(NearestShopsData.class);
 
         //Pre-condition
         ExtendedProductCardPage extendedProductCardPage = navigateToProductCardByUrl(lmCode, false);
 
         //Step 1
         step("Перейти на вкладку \"Цены и стоки в ближайших магазинах\"");
-        extendedProductCardPage
-                .switchExtraInfoTabs(ExtendedProductCardPage.Tab.PRICES_AND_STOCKS_IN_OTHER_SHOPS);
+        extendedProductCardPage.switchExtraInfoTabs(ExtendedProductCardPage.Tab.PRICES_AND_STOCKS_IN_OTHER_SHOPS);
         extendedProductCardPage.shouldNearestShopInfoIsCorrect(nearestShopsList);
 
         //Step 2

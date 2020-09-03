@@ -3,7 +3,6 @@ package com.leroy.magportal.ui.constants;
 public class OrderConst {
 
     public static final class Status {
-
         public static final String CREATED = "Создан";
         public static final String TECH_PROCESSING = "Тех. Обработка";
         public static final String ASSEMBLY = "Сборка";
@@ -16,7 +15,6 @@ public class OrderConst {
     }
 
     public static final class DeliveryType {
-
         public static final String PICKUP = "Самовывоз";
         public static final String DELIVERY_TK = "Доставка ТК";
         public static final String DELIVERY_KK = "Доставка КК";

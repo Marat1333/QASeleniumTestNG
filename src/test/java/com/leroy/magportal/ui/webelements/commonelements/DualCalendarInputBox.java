@@ -1,11 +1,12 @@
 package com.leroy.magportal.ui.webelements.commonelements;
 
 import com.leroy.core.fieldfactory.CustomLocator;
+import org.openqa.selenium.WebDriver;
+
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.Locale;
-import org.openqa.selenium.WebDriver;
 
 public class DualCalendarInputBox extends CommonCalendarInputBox {
 
@@ -36,13 +37,11 @@ public class DualCalendarInputBox extends CommonCalendarInputBox {
                 previousMonthBtn.click();
             } else if ((i + 1) < differenceInMonth && needToSelectDate.after(leftCalendarDate)) {
                 nextMonthBtn.click();
-            } else {
+            } else
                 break;
-            }
         }
 
-        int calendarNumber = frmt.parse(
-                firstSelectedMonthLabel.getText() + " " + firstSelectedYearLabel.getText())
+        int calendarNumber = frmt.parse(firstSelectedMonthLabel.getText() + " " + firstSelectedYearLabel.getText())
                 .getMonth() == needToSelectDate.getMonth() ? 1 : 2;
         selectDayByLabel(calendarNumber, String.valueOf(date.getDayOfMonth()));
     }

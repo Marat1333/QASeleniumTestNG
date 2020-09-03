@@ -17,11 +17,10 @@ public class LoginWebPage extends BaseWebPage {
     public void logIn(String ldap, String password) {
         usernameFld.clearAndFill(ldap);
         passwordFld.clearAndFill(password);
-        if (DriverFactory.isAppProfile()) {
+        if (DriverFactory.isAppProfile())
             loginBtn.clickJS();
-        } else {
+        else
             loginBtn.click();
-        }
     }
 
     public boolean isLoginFormVisible() {

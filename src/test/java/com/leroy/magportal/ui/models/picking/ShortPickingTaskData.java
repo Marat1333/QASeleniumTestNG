@@ -4,8 +4,9 @@ import com.leroy.core.ContextProvider;
 import com.leroy.core.asserts.SoftAssertWrapper;
 import com.leroy.magportal.ui.constants.picking.PickingConst;
 import com.leroy.magportal.ui.models.salesdoc.IDataWithNumberAndStatus;
-import java.util.List;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class ShortPickingTaskData implements IDataWithNumberAndStatus<ShortPickingTaskData> {

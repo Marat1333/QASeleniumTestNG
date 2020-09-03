@@ -10,7 +10,6 @@ import com.leroy.utils.ParserUtil;
 import org.openqa.selenium.WebDriver;
 
 public class ShopCardWidget extends BaseWidget {
-
     public ShopCardWidget(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
     }

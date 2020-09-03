@@ -4,9 +4,10 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.leroy.magmobile.api.data.catalog.Characteristic;
 import com.leroy.magportal.api.data.catalog.products.product_fields.PriceInfo;
+import lombok.Data;
+
 import java.util.Date;
 import java.util.List;
-import lombok.Data;
 
 @Data
 public class ProductData {

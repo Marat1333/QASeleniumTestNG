@@ -11,6 +11,7 @@ import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
 import com.leroy.magportal.ui.pages.customers.CreateCustomerForm;
 import com.leroy.magportal.ui.webelements.commonelements.PuzComboBox;
 import io.qameta.allure.Step;
+
 import java.util.Arrays;
 
 public class CustomerSearchForm extends MagPortalBasePage {
@@ -104,9 +105,8 @@ public class CustomerSearchForm extends MagPortalBasePage {
     }
 
     private void enterTextInSearchCustomerField(EditBox inputBox, String value) {
-        if (value.startsWith("+7")) {
+        if (value.startsWith("+7"))
             value = value.substring(2);
-        }
         inputBox.scrollTo();
         inputBox.clear();
         inputBox.click();
@@ -132,14 +132,12 @@ public class CustomerSearchForm extends MagPortalBasePage {
 
     @Step("Выбираем клиента по номеру телефона {phone}")
     public CustomerSearchForm selectCustomerByPhone(String phone) throws Exception {
-        if (phone.startsWith("+7")) {
+        if (phone.startsWith("+7"))
             phone = phone.substring(2);
-        }
         enterPhoneInSearchCustomerField(phone);
         int foundCustomerAccount = customerSearchItems.getCount();
-        if (foundCustomerAccount == 0) {
+        if (foundCustomerAccount == 0)
             customerPhoneSearchFld.waitForInvisibility(short_timeout);
-        }
         anAssert.isTrue(foundCustomerAccount > 0 || !customerPhoneSearchFld.isVisible(),
                 "Клиент с номером +7" + phone + " не удалось выбрать");
         if (foundCustomerAccount > 0) {
@@ -179,17 +177,15 @@ public class CustomerSearchForm extends MagPortalBasePage {
     @Step("Проверить, что в выпдающем списке корректные опции")
     public CustomerSearchForm shouldSearchTypeOptionsAreCorrected() throws Exception {
         anAssert.isEquals(searchTypeComboBox.getOptionList(),
-                Arrays.asList(CartEstimatePage.SearchType.PHONE, CartEstimatePage.SearchType.CARD,
-                        CartEstimatePage.SearchType.EMAIL),
+                Arrays.asList(CartEstimatePage.SearchType.PHONE, CartEstimatePage.SearchType.CARD, CartEstimatePage.SearchType.EMAIL),
                 "Ожидались другие опции выбора типа поиска");
         return this;
     }
 
     @Step("Проверить, что выбранный клиент имеет телефон {val}")
     public CustomerSearchForm shouldSelectedCustomerHasPhone(String val) {
-        if (!val.startsWith("+7")) {
+        if (!val.startsWith("+7"))
             val = "+7" + val;
-        }
         softAssert.isEquals(selectedCustomerCard.getPhone(),
                 val, "Ожидался другой номер телефона у выбранного клиента");
         softAssert.verifyAll();
@@ -226,9 +222,8 @@ public class CustomerSearchForm extends MagPortalBasePage {
         softAssert.isElementNotVisible(legalPersonBtn);
         softAssert.isElementNotVisible(customerPhoneSearchFld);
         shouldSelectedCustomerHasPhone(expectedCustomerData.getPhoneNumber());
-        if (expectedCustomerData.getEmail() != null) {
+        if (expectedCustomerData.getEmail() != null)
             shouldSelectedCustomerHasEmail(expectedCustomerData.getEmail());
-        }
         shouldSelectedCustomerHasName(expectedCustomerData.getName());
         softAssert.verifyAll();
         return this;

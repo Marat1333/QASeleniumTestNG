@@ -10,8 +10,9 @@ import com.leroy.magportal.ui.models.salesdoc.ShortOrderDocWebData;
 import com.leroy.magportal.ui.webelements.CardWebWidget;
 import com.leroy.utils.DateTimeUtil;
 import com.leroy.utils.ParserUtil;
-import java.time.LocalDateTime;
 import org.openqa.selenium.WebDriver;
+
+import java.time.LocalDateTime;
 
 public class ShortOrderDocumentCardWidget extends CardWebWidget<ShortOrderDocWebData> {
 
@@ -54,8 +55,7 @@ public class ShortOrderDocumentCardWidget extends CardWebWidget<ShortOrderDocWeb
     }
 
     public ShortOrderDocWebData.PayType getPaymentType() {
-        return paymentType.getText().toLowerCase().equals("оффлайн")
-                ? ShortOrderDocWebData.PayType.OFFLINE : ShortOrderDocWebData.PayType.ONLINE;
+        return paymentType.getText().toLowerCase().equals("оффлайн") ? ShortOrderDocWebData.PayType.OFFLINE : ShortOrderDocWebData.PayType.ONLINE;
     }
 
     public LocalDateTime getCreationDate() {
@@ -84,7 +84,7 @@ public class ShortOrderDocumentCardWidget extends CardWebWidget<ShortOrderDocWeb
         ShortOrderDocWebData salesDocData = new ShortOrderDocWebData();
         salesDocData.setNumber(getNumber());
         salesDocData.setStatus(getStatus());
-        salesDocData.setCustomer(customer.isVisible() ? customer.getText() : "");
+        salesDocData.setCustomer(customer.isVisible()? customer.getText() : "");
         salesDocData.setPayType(getPaymentType());
         salesDocData.setTotalPrice(ParserUtil.strToDouble(totalPrice.getText()));
         salesDocData.setCreationDate(getCreationDate());

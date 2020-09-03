@@ -6,9 +6,10 @@ import com.leroy.core.web_elements.general.BaseWidget;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
+import org.openqa.selenium.WebDriver;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import org.openqa.selenium.WebDriver;
 
 public abstract class CommonCalendarInputBox extends BaseWidget {
 
@@ -29,20 +30,16 @@ public abstract class CommonCalendarInputBox extends BaseWidget {
     @WebFindBy(id = "DatePicker--clearIcon", metaName = "Иконка 'крестик' для очистки")
     Element cleatBtn;
 
-    @WebFindBy(xpath = calendarContainerXpath
-            + "//span[contains(@class,'DatePicker__captionMonth')]")
+    @WebFindBy(xpath = calendarContainerXpath + "//span[contains(@class,'DatePicker__captionMonth')]")
     Element firstSelectedMonthLabel;
 
-    @WebFindBy(xpath = calendarContainerXpath
-            + "//span[contains(@class,'DatePicker__captionYear')]")
+    @WebFindBy(xpath = calendarContainerXpath + "//span[contains(@class,'DatePicker__captionYear')]")
     Element firstSelectedYearLabel;
 
-    @WebFindBy(xpath = calendarContainerXpath
-            + "//div[contains(@class, 'DayPicker-Month')][2]//span[contains(@class,'DatePicker__captionMonth')]")
+    @WebFindBy(xpath = calendarContainerXpath + "//div[contains(@class, 'DayPicker-Month')][2]//span[contains(@class,'DatePicker__captionMonth')]")
     Element secondSelectedMonthLabel;
 
-    @WebFindBy(xpath = calendarContainerXpath
-            + "//div[contains(@class, 'DayPicker-Month')][2]//span[contains(@class,'DatePicker__captionYear')]")
+    @WebFindBy(xpath = calendarContainerXpath + "//div[contains(@class, 'DayPicker-Month')][2]//span[contains(@class,'DatePicker__captionYear')]")
     Element secondSelectedYearLabel;
 
     @WebFindBy(xpath = calendarContainerXpath + "//button[contains(@class,'NavButton--prev')]")
@@ -53,8 +50,7 @@ public abstract class CommonCalendarInputBox extends BaseWidget {
 
     protected void selectDayByLabel(int pickerNumber, String value) throws Exception {
         Element dayLbl = findChildElement(
-                "//div[contains(@class, 'DayPicker-Month')][" + pickerNumber + "]//*[text()='"
-                        + value + "']");
+                "//div[contains(@class, 'DayPicker-Month')][" + pickerNumber + "]//*[text()='" + value + "']");
         dayLbl.click();
     }
 
@@ -76,20 +72,17 @@ public abstract class CommonCalendarInputBox extends BaseWidget {
      */
     protected LocalDate getSelectedDate(int pickerIndex) {
         EditBox inputBox = pickerIndex == 1 ? firstInputFld : secondInputFld;
-        if (!inputBox.isVisible()) {
+        if (!inputBox.isVisible())
             return null;
-        }
         String text = inputBox.getText();
-        if (text.isEmpty()) {
+        if (text.isEmpty())
             return null;
-        }
         return LocalDate.parse(text, defaultDateFormat);
     }
 
     protected void open() {
-        if (!firstSelectedMonthLabel.isVisible()) {
+        if (!firstSelectedMonthLabel.isVisible())
             firstInputFld.click(tiny_timeout);
-        }
     }
 
     /**

@@ -11,12 +11,13 @@ import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
 import com.leroy.magportal.ui.pages.customers.modal.CustomersFoundWithThisPhoneModalWindow;
 import com.leroy.magportal.ui.webelements.commonelements.PuzCheckBox;
 import io.qameta.allure.Step;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.support.Color;
 import org.testng.util.Strings;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class CreateCustomerForm extends MagPortalBasePage {
 
@@ -176,9 +177,8 @@ public class CreateCustomerForm extends MagPortalBasePage {
     @Step("Введите {text} в поле 'Телефон' #{index}")
     public CreateCustomerForm enterTextInPhoneInputField(int index, String text) throws Exception {
         index--;
-        if (text.startsWith("+7")) {
+        if (text.startsWith("+7"))
             text = text.substring(2);
-        }
         phoneFields.get(index).clear();
         phoneFields.get(index).click();
         phoneFields.get(index).fill(text);
@@ -206,11 +206,10 @@ public class CreateCustomerForm extends MagPortalBasePage {
     @Step("Обозначить телефон #{index} как {type}")
     public CreateCustomerForm clickTypePhone(int index, CommunicationType type) throws Exception {
         index--;
-        if (type.equals(CommunicationType.PERSONAL)) {
+        if (type.equals(CommunicationType.PERSONAL))
             phonePersonalOptionButtons.get(index).click();
-        } else {
+        else
             phoneWorkOptionButtons.get(index).click();
-        }
         return this;
     }
 
@@ -227,11 +226,10 @@ public class CreateCustomerForm extends MagPortalBasePage {
     @Step("Обозначить email #{index} как {type}")
     public CreateCustomerForm clickTypeEmail(int index, CommunicationType type) throws Exception {
         index--;
-        if (type.equals(CommunicationType.PERSONAL)) {
+        if (type.equals(CommunicationType.PERSONAL))
             emailPersonalOptionButtons.get(index).click();
-        } else {
+        else
             emailWorkOptionButtons.get(index).click();
-        }
         return this;
     }
 
@@ -305,9 +303,8 @@ public class CreateCustomerForm extends MagPortalBasePage {
         if (customerData.isWorkPhone()) {
             phoneWorkOptionButtons.get(0).click();
         }
-        if (Strings.isNotNullAndNotEmpty(customerData.getPhoneNumber())) {
+        if (Strings.isNotNullAndNotEmpty(customerData.getPhoneNumber()))
             enterTextInPhoneInputField(customerData.getPhoneNumber());
-        }
         // Email
         if (customerData.isPersonalEmail()) {
             emailPersonalOptionButtons.get(0).click();
@@ -325,8 +322,7 @@ public class CreateCustomerForm extends MagPortalBasePage {
 
     // VERIFICATIONS
 
-    public CreateCustomerForm verifyRequiredElements(boolean emailShouldBeVisible)
-            throws Exception {
+    public CreateCustomerForm verifyRequiredElements(boolean emailShouldBeVisible) throws Exception {
         softAssert.isElementTextEqual(subHeaderLbl, HEADER);
         softAssert.isElementVisible(helpInfoLbl);
         softAssert.isElementVisible(maleOptionBtn);
@@ -334,25 +330,19 @@ public class CreateCustomerForm extends MagPortalBasePage {
         softAssert.isElementVisible(firstNameFld);
         softAssert.isElementVisible(contactsLbl);
         softAssert.isTrue(phoneFields.get(0).isVisible(), "Поле 'Телефон' не отображается");
-        softAssert.isTrue(phonePersonalOptionButtons.get(0).isVisible(),
-                "Кнопка 'Личный' телефон не видна");
-        softAssert.isTrue(phoneWorkOptionButtons.get(0).isVisible(),
-                "Кнопка 'Рабочий' телефон не видна");
+        softAssert.isTrue(phonePersonalOptionButtons.get(0).isVisible(), "Кнопка 'Личный' телефон не видна");
+        softAssert.isTrue(phoneWorkOptionButtons.get(0).isVisible(), "Кнопка 'Рабочий' телефон не видна");
         // Дополнительные поля должны быть не видны по-умолчанию
         softAssert.isElementNotVisible(middleNameFld);
         softAssert.isElementNotVisible(lastNameFld);
         if (emailShouldBeVisible) {
             softAssert.isTrue(emailFields.get(0).isVisible(), "Поле email не отображается");
-            softAssert.isTrue(emailPersonalOptionButtons.get(0).isVisible(),
-                    "Кнопка 'Личный' email не видна");
-            softAssert.isTrue(emailWorkOptionButtons.get(0).isVisible(),
-                    "Кнопка 'Рабочий' email не видна");
+            softAssert.isTrue(emailPersonalOptionButtons.get(0).isVisible(), "Кнопка 'Личный' email не видна");
+            softAssert.isTrue(emailWorkOptionButtons.get(0).isVisible(), "Кнопка 'Рабочий' email не видна");
         } else {
             softAssert.isTrue(emailFields.getCount() == 0, "Поле email отображается");
-            softAssert.isTrue(emailPersonalOptionButtons.getCount() == 0,
-                    "Кнопка 'Личный' email видна");
-            softAssert
-                    .isTrue(emailWorkOptionButtons.getCount() == 0, "Кнопка 'Рабочий' email видна");
+            softAssert.isTrue(emailPersonalOptionButtons.getCount() == 0, "Кнопка 'Личный' email видна");
+            softAssert.isTrue(emailWorkOptionButtons.getCount() == 0, "Кнопка 'Рабочий' email видна");
         }
         softAssert.isElementNotVisible(addressLbl);
         softAssert.isElementNotVisible(addressFld);
@@ -380,10 +370,8 @@ public class CreateCustomerForm extends MagPortalBasePage {
         softAssert.isElementVisible(middleNameFld);
         softAssert.isElementVisible(lastNameFld);
         softAssert.isTrue(emailFields.get(0).isVisible(), "Поле email не отображается");
-        softAssert.isTrue(emailPersonalOptionButtons.get(0).isVisible(),
-                "Кнопка 'Личный' email не видна");
-        softAssert.isTrue(emailWorkOptionButtons.get(0).isVisible(),
-                "Кнопка 'Рабочий' email не видна");
+        softAssert.isTrue(emailPersonalOptionButtons.get(0).isVisible(), "Кнопка 'Личный' email не видна");
+        softAssert.isTrue(emailWorkOptionButtons.get(0).isVisible(), "Кнопка 'Рабочий' email не видна");
         softAssert.isElementVisible(addressLbl);
         softAssert.isElementVisible(addressFld);
         softAssert.isElementVisible(regionFld);
@@ -434,20 +422,17 @@ public class CreateCustomerForm extends MagPortalBasePage {
                                     .getFillColor(), dangerColor,
                             "Цвет кнопки 'Мужской' должен быть подсвечен красным");
                     softAssert.isEquals(
-                            maleOptionBtn
-                                    .findChildElement("//span[contains(@class, 'Button-Text')]")
+                            maleOptionBtn.findChildElement("//span[contains(@class, 'Button-Text')]")
                                     .getColor(), dangerColor,
                             "Цвет кнопки 'Мужской' должен быть подсвечен красным");
                     break;
                 case FemaleBtn:
                     softAssert.isEquals(
-                            femaleOptionBtn
-                                    .findChildElement("//span[contains(@class, 'lmui-Icon')]")
+                            femaleOptionBtn.findChildElement("//span[contains(@class, 'lmui-Icon')]")
                                     .getFillColor(), dangerColor,
                             "Цвет кнопки 'Женский' должен быть подсвечен красным");
                     softAssert.isEquals(
-                            femaleOptionBtn
-                                    .findChildElement("//span[contains(@class, 'Button-Text')]")
+                            femaleOptionBtn.findChildElement("//span[contains(@class, 'Button-Text')]")
                                     .getColor(), dangerColor,
                             "Цвет кнопки 'Женский' должен быть подсвечен красным");
                     break;
@@ -465,53 +450,42 @@ public class CreateCustomerForm extends MagPortalBasePage {
                     break;
                 case PersonalPhoneBtn:
                     softAssert.isEquals(
-                            phonePersonalOptionButtons.get(0)
-                                    .findChildElement("//span[contains(@class, 'Button-Text')]")
+                            phonePersonalOptionButtons.get(0).findChildElement("//span[contains(@class, 'Button-Text')]")
                                     .getColor(), dangerColor,
                             "Цвет кнопки 'Личный' должен быть подсвечен красным");
                     break;
                 case WorkPhoneBtn:
                     softAssert.isEquals(
-                            phoneWorkOptionButtons.get(0)
-                                    .findChildElement("//span[contains(@class, 'Button-Text')]")
+                            phoneWorkOptionButtons.get(0).findChildElement("//span[contains(@class, 'Button-Text')]")
                                     .getColor(), dangerColor,
                             "Цвет кнопки 'Рабочий' должен быть подсвечен красным");
                     break;
                 default:
-                    throw new RuntimeException(
-                            "Method shouldControlsHighlightedInRed is not implemented for "
-                                    + control);
+                    throw new RuntimeException("Method shouldControlsHighlightedInRed is not implemented for " + control);
             }
         }
         softAssert.verifyAll();
         return this;
     }
 
-    public CreateCustomerForm shouldBeEnteredDataMatchThis(CustomerWebData customerData)
-            throws Exception {
-        if (customerData.getGender() != null) {
-            if (customerData.getGender().equals(Gender.MALE)) {
+    public CreateCustomerForm shouldBeEnteredDataMatchThis(CustomerWebData customerData) throws Exception {
+        if (customerData.getGender() != null)
+            if (customerData.getGender().equals(Gender.MALE))
                 softAssert.isTrue(isButtonActive(maleOptionBtn),
                         "Мужской пол должен быть выбран");
-            } else {
+            else
                 softAssert.isTrue(isButtonActive(femaleOptionBtn),
                         "Женский пол должен быть выбран");
-            }
-        }
-        if (customerData.getFirstName() != null) {
-            softAssert.isElementTextEqual(firstNameFld,
-                    StringUtils.capitalize(customerData.getFirstName()));
-        }
+        if (customerData.getFirstName() != null)
+            softAssert.isElementTextEqual(firstNameFld, StringUtils.capitalize(customerData.getFirstName()));
         String expectedPhoneNumber = customerData.getPhoneNumber();
         if (expectedPhoneNumber != null) {
-            if (expectedPhoneNumber.startsWith("+7")) {
+            if (expectedPhoneNumber.startsWith("+7"))
                 expectedPhoneNumber = expectedPhoneNumber.substring(2);
-            }
-            if (expectedPhoneNumber.length() == 10) {
+            if (expectedPhoneNumber.length() == 10)
                 expectedPhoneNumber = String.format("+7 (%s) %s-%s-%s",
                         expectedPhoneNumber.substring(0, 3), expectedPhoneNumber.substring(3, 6),
                         expectedPhoneNumber.substring(6, 8), expectedPhoneNumber.substring(8, 10));
-            }
             softAssert.isEquals(phoneFields.get(0).getText(), expectedPhoneNumber,
                     "Ожидалось другое значение в поле телефона");
         }

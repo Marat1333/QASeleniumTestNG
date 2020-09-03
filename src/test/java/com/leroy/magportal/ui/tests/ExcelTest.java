@@ -5,10 +5,11 @@ import com.leroy.magportal.ui.WebBaseSteps;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
 import com.leroy.utils.DateTimeUtil;
 import com.leroy.utils.file_manager.FileManager;
-import java.io.File;
-import java.time.LocalDateTime;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.Test;
+
+import java.io.File;
+import java.time.LocalDateTime;
 
 public class ExcelTest extends WebBaseSteps {
 
@@ -32,8 +33,7 @@ public class ExcelTest extends WebBaseSteps {
             downloadTime = downloadTime.minusHours(3);
         }
         File file = fileManager.getFileFromDefaultDownloadDirectory(
-                String.format("LEGO_Item_Extraction_%s.xlsx", DateTimeUtil
-                        .localDateTimeToStr(downloadTime, DateTimeUtil.YYYY_MM_DD_HH_MM)));
+                String.format("LEGO_Item_Extraction_%s.xlsx", DateTimeUtil.localDateTimeToStr(downloadTime, DateTimeUtil.YYYY_MM_DD_HH_MM)));
         fileManager.waitUntilFileAppears();
         anAssert().isTrue(file.exists(), "file does not exist");
     }

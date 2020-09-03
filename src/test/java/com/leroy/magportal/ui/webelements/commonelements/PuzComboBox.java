@@ -5,9 +5,10 @@ import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import org.openqa.selenium.WebDriver;
+
 import java.util.Collections;
 import java.util.List;
-import org.openqa.selenium.WebDriver;
 
 /**
  * Выпадающий список с опциями (Radio buttons) - единичный выбор
@@ -28,8 +29,7 @@ public class PuzComboBox extends Element {
     protected Element selectedStringValue;
 
     private final String CONTAINER_OPTION_XPATH = "//div[contains(@class, 'optionsContainer')]/div";
-    private final String SWITCH_BTN_LABEL_XPATH = CONTAINER_OPTION_XPATH
-            + "//span[contains(@class, 'SwitchButton-label') and contains(text(), '%s')]";
+    private final String SWITCH_BTN_LABEL_XPATH = CONTAINER_OPTION_XPATH + "//span[contains(@class, 'SwitchButton-label') and contains(text(), '%s')]";
 
     @WebFindBy(xpath = CONTAINER_OPTION_XPATH + "//span[contains(@class, 'label')]")
     protected ElementList<Element> dropDownElementsList;
@@ -38,37 +38,32 @@ public class PuzComboBox extends Element {
         return input.isEnabled();
     }
 
-    protected void clickOptions(List<String> options, boolean isActivate, boolean closeAfter)
-            throws Exception {
+    protected void clickOptions(List<String> options, boolean isActivate, boolean closeAfter) throws Exception {
         open();
         dropDownElementsList.waitUntilAtLeastOneElementIsPresent(short_timeout);
         for (String option : options) {
             Element optionElem = E(String.format(
                     SWITCH_BTN_LABEL_XPATH, option));
-            if (!optionElem.isVisible()) {
+            if (!optionElem.isVisible())
                 throw new IllegalArgumentException(String.format(
-                        "Element: %s, selectOptions() - Not found option %s", getMetaName(),
-                        option));
-            } else if (isActivate ^ optionElem.findChildElement(
+                        "Element: %s, selectOptions() - Not found option %s", getMetaName(), option));
+            else if (isActivate ^ optionElem.findChildElement(
                     "/../span[contains(@class, 'SwitchButton-icon')]").isPresent()) {
                 optionElem.click();
             }
         }
-        if (closeAfter) {
+        if (closeAfter)
             close();
-        }
     }
 
     protected void open() {
-        if (!E(CONTAINER_OPTION_XPATH).isVisible()) {
+        if (!E(CONTAINER_OPTION_XPATH).isVisible())
             dropBtn.click();
-        }
     }
 
     protected void close() {
-        if (E(CONTAINER_OPTION_XPATH).isVisible()) {
+        if (E(CONTAINER_OPTION_XPATH).isVisible())
             dropBtn.click();
-        }
     }
 
     /**

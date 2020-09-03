@@ -1,11 +1,7 @@
 package com.leroy.magportal.ui.pages.products;
 
 import com.leroy.core.annotations.WebFindBy;
-import com.leroy.core.web_elements.general.Button;
-import com.leroy.core.web_elements.general.EditBox;
-import com.leroy.core.web_elements.general.Element;
-import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.core.web_elements.general.Image;
+import com.leroy.core.web_elements.general.*;
 import com.leroy.magmobile.api.data.catalog.Characteristic;
 import com.leroy.magportal.api.data.catalog.products.CatalogProductData;
 import com.leroy.magportal.api.data.catalog.shops.NearestShopsData;
@@ -15,6 +11,7 @@ import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
 import com.leroy.magportal.ui.pages.products.widget.ShopCardWidget;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -52,9 +49,8 @@ public class ProductCardPage extends MagPortalBasePage {
     @WebFindBy(xpath = "//span[contains(text(),'Гамма')]")
     Element gammaBadge;
 
-    @WebFindBy(xpath =
-            "//div[contains(@id,'barCodeButton')]/ancestor::div[3]/preceding-sibling::div" +
-                    "//span[contains(@class, 'LmCode')]/following-sibling::span")
+    @WebFindBy(xpath = "//div[contains(@id,'barCodeButton')]/ancestor::div[3]/preceding-sibling::div" +
+            "//span[contains(@class, 'LmCode')]/following-sibling::span")
     Element lmCodeLbl;
 
     @WebFindBy(xpath = "//div[@id='barCodeButton']/div[1]/span")
@@ -117,8 +113,7 @@ public class ProductCardPage extends MagPortalBasePage {
     }
 
     @Step("Перейти на страницу поиска с примененным фильтром по номенклатуре {attribute}")
-    public SearchProductPage navigateToSearchByNomenclatureAttribute(String attribute)
-            throws Exception {
+    public SearchProductPage navigateToSearchByNomenclatureAttribute(String attribute) throws Exception {
         for (Button nomenclatureLvl : nomenclaturePath) {
             if (nomenclatureLvl.findChildElement("./span/span").getText().equals(attribute)) {
                 nomenclatureLvl.click();
@@ -185,32 +180,26 @@ public class ProductCardPage extends MagPortalBasePage {
             img = productImagesGallery.get(i);
             attributeValue = img.findChildElement("/ancestor::div[3]").getAttribute("aria-hidden");
             if (i == 0) {
-                anAssert.isContainsIgnoringCase(attributeValue, "false",
-                        "Изображение не отображено");
+                anAssert.isContainsIgnoringCase(attributeValue, "false", "Изображение не отображено");
             } else {
-                anAssert.isContainsIgnoringCase(attributeValue, "true",
-                        "Изображение не отображено");
+                anAssert.isContainsIgnoringCase(attributeValue, "true", "Изображение не отображено");
             }
             imageLink = images.get(i);
             anAssert.isEquals(imageLink, img.getLink(), "Ссылки на изображения не совпадают");
-            anAssert.isEquals(imageLink, productPreviewImagesGallery.get(i).getLink(),
-                    "Ссылки на изображения не совпадают");
+            anAssert.isEquals(imageLink, productPreviewImagesGallery.get(i).getLink(), "Ссылки на изображения не совпадают");
         }
     }
 
     @Step("Проверить, что признаки товара отображены")
     private void shouldProductSpecificationsIsDisplayed(CatalogProductData data) throws Exception {
         softAssert.isElementTextContains(gammaBadge, data.getGamma());
-        softAssert.isEquals(productTitle.getText(), data.getTitle(),
-                "Название отображено некорректно");
+        softAssert.isEquals(productTitle.getText(), data.getTitle(), "Название отображено некорректно");
         softAssert.isEquals(lmCodeLbl.getText(), data.getLmCode(), "LmCode отображен некорректно");
-        softAssert.isEquals(ParserUtil.strWithOnlyDigits(barCodeLbl.getText()), data.getBarCode(),
-                "BarCode отображен некорректно");
+        softAssert.isEquals(ParserUtil.strWithOnlyDigits(barCodeLbl.getText()), data.getBarCode(), "BarCode отображен некорректно");
         barCodeListOpenerBtn.click();
         List<String> barCodes = data.getBarCodes();
         for (int i = 0; i < productBarCodes.getCount(); i++) {
-            anAssert.isEquals(ParserUtil.strWithOnlyDigits(productBarCodes.get(i).getText()),
-                    barCodes.get(i), "BarCode отображен некорректно");
+            anAssert.isEquals(ParserUtil.strWithOnlyDigits(productBarCodes.get(i).getText()), barCodes.get(i), "BarCode отображен некорректно");
         }
         barCodeListOpenerBtn.click();
         softAssert.verifyAll();
@@ -237,29 +226,24 @@ public class ProductCardPage extends MagPortalBasePage {
         }
         softAssert.isElementTextContains(nomenclatureBadge, departmentId);
         softAssert.isContainsIgnoringCase(departmentId, data.getGroupId(), "Отделы не равны");
-        softAssert.isContainsIgnoringCase(subDepartmentId, data.getDepartmentId(),
-                "Подотделы не равны");
+        softAssert.isContainsIgnoringCase(subDepartmentId, data.getDepartmentId(), "Подотделы не равны");
         softAssert.isContainsIgnoringCase(classId, data.getClassId(), "Типы не равны");
         softAssert.isContainsIgnoringCase(subClassId, data.getSubclassId(), "Подтипы не равны");
         softAssert.verifyAll();
     }
 
     @Step("Проверить, что характеристики товара отображены")
-    private void shouldCharacteristicsIsVisible(List<Characteristic> characteristics)
-            throws Exception {
+    private void shouldCharacteristicsIsVisible(List<Characteristic> characteristics) throws Exception {
         if (showAllSpecifications.isVisible()) {
             showAllSpecifications();
         }
-        anAssert.isEquals(this.characteristics.getCount(), characteristics.size(),
-                "data and viewData size mismatch");
+        anAssert.isEquals(this.characteristics.getCount(), characteristics.size(), "data and viewData size mismatch");
         Element key, value;
         for (int i = 0; i < this.characteristics.getCount(); i++) {
             key = this.characteristics.get(i).findChildElement("./div[1]/p");
             value = this.characteristics.get(i).findChildElement("./div[2]/p");
-            anAssert.isEquals(key.getText(), characteristics.get(i).getName() + ":",
-                    "Характеристика отличается");
-            anAssert.isEquals(value.getText(), characteristics.get(i).getValue(),
-                    "Значение характеристики");
+            anAssert.isEquals(key.getText(), characteristics.get(i).getName() + ":", "Характеристика отличается");
+            anAssert.isEquals(value.getText(), characteristics.get(i).getValue(), "Значение характеристики");
         }
     }
 
@@ -279,8 +263,7 @@ public class ProductCardPage extends MagPortalBasePage {
 
     @Step("Проверить, что страница 'Карта товара' отображается корректно")
     public ProductCardPage verifyRequiredElements() {
-        softAssert.areElementsVisible(gammaBadge, productTitle, lmCodeLbl,
-                pricesAndStocksInOtherShops);
+        softAssert.areElementsVisible(gammaBadge, productTitle, lmCodeLbl, pricesAndStocksInOtherShops);
         softAssert.areElementsNotVisible(E("//button[@id='ANALOG']", "аналогичные товары"),
                 E("//button[@id='COMPLEMENT']", "комплементарные товары"));
         shouldUrlContains("isAllGammaView=true");
@@ -308,8 +291,7 @@ public class ProductCardPage extends MagPortalBasePage {
             anAssert.isEquals(data.getPrice(), nearestShopsData.getPrice(), "Price");
             anAssert.isEquals(data.getQuantity(), nearestShopsData.getAvailableStock(), "Stocks");
             anAssert.isEquals(data.getDistance(),
-                    BigDecimal.valueOf(nearestShopsData.getDistance())
-                            .setScale(1, RoundingMode.HALF_UP).doubleValue(),
+                    BigDecimal.valueOf(nearestShopsData.getDistance()).setScale(1, RoundingMode.HALF_UP).doubleValue(),
                     "Distance");
         }
     }
@@ -320,12 +302,10 @@ public class ProductCardPage extends MagPortalBasePage {
         for (ShopCardWidget tmp : shopsList) {
             data = tmp.grabDataFromWidget();
             if (criterion.matches("\\^.?+D+.?+")) {
-                anAssert.isContainsIgnoringCase(data.getName(), criterion,
-                        "Name expected: " + criterion
-                                + "actual" + data.getName());
+                anAssert.isContainsIgnoringCase(data.getName(), criterion, "Name expected: " + criterion
+                        + "actual" + data.getName());
             } else {
-                anAssert.isTrue(String.valueOf(data.getId()).contains(criterion) || data.getName()
-                        .contains(criterion), "ID expected: "
+                anAssert.isTrue(String.valueOf(data.getId()).contains(criterion) || data.getName().contains(criterion), "ID expected: "
                         + criterion + " actual" + data.getId());
             }
         }

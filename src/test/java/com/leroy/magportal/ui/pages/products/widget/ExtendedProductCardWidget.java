@@ -7,7 +7,6 @@ import com.leroy.magportal.ui.webelements.commonelements.PriceContainer;
 import org.openqa.selenium.WebDriver;
 
 public class ExtendedProductCardWidget extends ProductCardWidget {
-
     public ExtendedProductCardWidget(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
     }

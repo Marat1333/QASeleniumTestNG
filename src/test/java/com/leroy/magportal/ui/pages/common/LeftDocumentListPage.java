@@ -8,6 +8,7 @@ import com.leroy.magportal.ui.webelements.CardWebWidget;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -98,8 +99,7 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
     }
 
     @Step("Проверить, что в списке документов слева присутствуют только содержащие номер: {value}")
-    public LeftDocumentListPage<W, D> shouldDocumentListHaveNumberContains(String value)
-            throws Exception {
+    public LeftDocumentListPage<W, D> shouldDocumentListHaveNumberContains(String value) throws Exception {
         for (D docData : documentCardList().getDataList()) {
             softAssert.isTrue(docData.getNumber().contains(value),
                     docData.getNumber() + " документ не содержит " + value);
@@ -117,15 +117,12 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
     @Step("Проверить, что в списке документов слева присутствуют нужные документы (expectedDocuments)")
     public void shouldDocumentListContainsThis(D expectedDocument) throws Exception {
         List<D> actualDocuments = documentCardList().getDataList().stream().filter(
-                d -> d.getNumber().equals(expectedDocument.getNumber()))
-                .collect(Collectors.toList());
+                d -> d.getNumber().equals(expectedDocument.getNumber())).collect(Collectors.toList());
         anAssert.isEquals(actualDocuments.size(), 1,
                 "Документ с номером " + expectedDocument.getNumber() + " не найден");
-        if (DefectConst.CONFIRMED_BUT_NOT_ALLOWED_FOR_PICKING_ORDER) {
-            if (expectedDocument instanceof ShortOrderDocWebData) {
-                ((ShortOrderDocWebData) expectedDocument).setStatus(null);
-            }
-        }
+        if (DefectConst.CONFIRMED_BUT_NOT_ALLOWED_FOR_PICKING_ORDER)
+            if (expectedDocument instanceof ShortOrderDocWebData)
+                ((ShortOrderDocWebData)expectedDocument).setStatus(null);
         actualDocuments.get(0).assertEqualsNotNullExpectedFields(expectedDocument);
     }
 
@@ -155,8 +152,7 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
 
     @Step("Проверить, что в списке документов слева присутствуют документы, содержащие номер: {expectedNumber}")
     public void shouldDocumentListFilteredByNumber(String expectedNumber) throws Exception {
-        List<String> actualDocumentNumbers = documentCardList().getDataList().stream()
-                .map(D::getNumber)
+        List<String> actualDocumentNumbers = documentCardList().getDataList().stream().map(D::getNumber)
                 .collect(Collectors.toList());
         anAssert.isTrue(actualDocumentNumbers.size() > 0,
                 "Не найден ни один документ");
