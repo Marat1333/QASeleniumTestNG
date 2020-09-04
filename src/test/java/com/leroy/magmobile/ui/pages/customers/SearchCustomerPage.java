@@ -28,7 +28,7 @@ public class SearchCustomerPage extends CommonMagMobilePage {
             ".//android.view.ViewGroup[android.widget.TextView[@index='1']]",
             SearchCustomerWidget.class);
 
-    @AppFindBy(accessibilityId = "BackCloseModal")
+    @AppFindBy(xpath = "//*[contains(@content-desc, 'Back')]")
     Element backCloseBtn;
 
     private static final String searchOptionsXpath = "(//android.widget.HorizontalScrollView//android.widget.TextView)";
@@ -137,12 +137,17 @@ public class SearchCustomerPage extends CommonMagMobilePage {
     }
 
     @Step("Найдите клиента по номеру телефона: {value}")
-    public void searchCustomerByPhone(String value) throws Exception {
+    public void searchCustomerByPhone(String value, boolean selectFirst) throws Exception {
         phoneOptionLbl.click();
         if (value.startsWith("+7"))
             value = value.substring(2);
         enterTextInSearchField(value);
-        mainScrollView.clickElemByIndex(0);
+        if (selectFirst)
+            mainScrollView.clickElemByIndex(0);
+    }
+
+    public void searchCustomerByPhone(String value) throws Exception {
+        searchCustomerByPhone(value, true);
     }
 
     @Step("Найдите клиента по номеру карты: {value}")
@@ -195,6 +200,14 @@ public class SearchCustomerPage extends CommonMagMobilePage {
         softAssert.isElementTextEqual(customerCardOptionLbl, "№ карты клиента");
         softAssert.isElementTextEqual(emailOptionLbl, "Эл. почта");
         softAssert.verifyAll();
+        return this;
+    }
+
+    @Step("Проверить, что первый отобразившийся клиент имеет данные, которые мы ожидаем")
+    public SearchCustomerPage shouldFirstCustomerIs(MagCustomerData customerData) {
+        MagCustomerData expectedData = customerData.clone();
+        expectedData.setEmail(null);
+        mainScrollView.getDataObj(0).assertEqualsNotNullExpectedFields(expectedData);
         return this;
     }
 

@@ -369,7 +369,7 @@ public class EstimateTest extends BasePAOTest {
 
     @Test(description = "C3302190 Search client by email")
     public void testSearchClientByEmailInEstimate() throws Exception {
-        SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+        SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_2;
 
         EstimatePage estimatePage;
         if (isStartFromScratch())
@@ -485,7 +485,7 @@ public class EstimateTest extends BasePAOTest {
         CustomerWebData customerWebData = new CustomerWebData();
         customerWebData.setRandomRequiredData();
         customerWebData.setPhoneNumber(null);
-        customerWebData.setLastName(customerWebData.getRandomCyrillicCharacters(5));
+        customerWebData.setLastName(RandomUtil.randomCyrillicCharacters(5));
         createCustomerForm.enterCustomerData(customerWebData);
 
         // Step 7
@@ -676,7 +676,7 @@ public class EstimateTest extends BasePAOTest {
         step("Нажмите на кнопку профиля пользователя в правом верхнем углу и выберите другой магазин");
         List<String> docNumberList = estimatePage.getDocumentDataList()
                 .stream().map(ShortSalesDocWebData::getNumber).collect(Collectors.toList());
-        new MenuPage().selectShopInUserProfile("35");
+        new MenuPage().selectShopInUserProfile("32");
         estimatePage = new EstimatePage();
         estimatePage.shouldDocumentListHaveNumberContains(partEstimateId)
                 .shouldDocumentListNumbersNotEqual(docNumberList);
