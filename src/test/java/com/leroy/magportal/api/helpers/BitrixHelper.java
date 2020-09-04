@@ -19,7 +19,6 @@ import com.leroy.magportal.api.clients.ShopsClient;
 import com.leroy.magportal.api.constants.DeliveryServiceTypeEnum;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
 import com.leroy.magportal.api.constants.PaymentTypeEnum;
-import com.leroy.magportal.api.data.onlineOrders.PvzData;
 import com.leroy.magportal.api.data.shops.ShopData;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
 import java.time.LocalDateTime;
@@ -230,14 +229,14 @@ public class BitrixHelper extends BaseHelper {
         payload.setLongTail(0);
         payload.setCarryPrice("");
         payload.setCarryLength("");
-        payload.setPvzData(orderData.pvzData);
+//        payload.setPvzData(orderData.pvzData);
 
         payload.setAddress(makeAddressPayload());
         if (orderData.getDeliveryType().equals(DeliveryServiceTypeEnum.PICKUP.getType())) {
             payload.setPickupShop(makePickupShopPayload(shop));
         }
         if (orderData.getDeliveryType().equals(DeliveryServiceTypeEnum.DELIVERY_PVZ.getType())) {
-//            payload.setPvzData(makePvzPayload());//TODO: no PVZ payload
+            payload.setPvzData(makePvzPayload());//TODO: no PVZ payload
         }
 
         return payload;
@@ -279,12 +278,12 @@ public class BitrixHelper extends BaseHelper {
         return payload;
     }
 
-    private PvzData makePvzPayload() {
-        PvzData payload = new PvzData();
-        payload.setCode("Sdek");
-        payload.setAddress("Россия, Москва, Митино, пер. Ангелов, 8");
-        payload.setPhone("+79264777115, +74997555271");
-        payload.setWorkTime("Вс 10:00-16:00, Сб 10:00-16:00, Пн-Пт 10:00-20:00");
+    private BitrixSolutionPayload.PvzData makePvzPayload() {
+        BitrixSolutionPayload.PvzData payload = new BitrixSolutionPayload.PvzData();
+        payload.setPvzCode("Sdek");
+        payload.setPvzAddress("Россия, Москва, Митино, пер. Ангелов, 8");
+        payload.setPvzPhone("+79264777115, +74997555271");
+        payload.setPvzWorkTime("Вс 10:00-16:00, Сб 10:00-16:00, Пн-Пт 10:00-20:00");
 
         return payload;
     }

@@ -60,7 +60,7 @@ public class PickingTaskClient extends BaseMashupClient {
         return makeAction(taskId, PickingTaskWorkflowEnum.COMPLETE.getValue(), workflowPayload);
     }
 
-    @Step("Complete Picking of task = {taskId}")//TODO: probably, it should be moved out
+    @Step("Complete Picking of task = {taskId}")
     public Response<PickingTaskData> completePicking(String taskId, Boolean isFull) {
         return makeAction(taskId, PickingTaskWorkflowEnum.COMPLETE.getValue(),
                 makeWorkflowPayload(taskId, isFull));

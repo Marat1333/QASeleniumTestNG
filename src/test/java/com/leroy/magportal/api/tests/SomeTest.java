@@ -1,5 +1,7 @@
 package com.leroy.magportal.api.tests;
 
+import static com.leroy.magportal.api.constants.OnlineOrderTypeConst.DELIVERY_TO_DOOR;
+
 import com.google.inject.Inject;
 import com.leroy.magmobile.api.clients.Is4AuthClient;
 import com.leroy.magportal.api.clients.CatalogSearchClient;
@@ -23,7 +25,7 @@ public class SomeTest extends BaseMagPortalApiTest {
     public void test() throws Exception {
         //String code = authClient.authAndGetCode(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS);
         //Response<Is4TokenData> response = is4AuthClient.sendPostCodeRequest(code);
-//        bitrixHelper.createOnlineOrders(2, DELIVERY_TO_DOOR, 2);
+//        bitrixHelper.createOnlineOrders(1, DELIVERY_TO_DOOR, 2);
 //        String id = bitrixHelper.createOnlineOrder();
 //        paymentHelper.makePaymentCard(id);
 //        PickingTaskClient client = apiClientProvider.getPickingTaskClient();
