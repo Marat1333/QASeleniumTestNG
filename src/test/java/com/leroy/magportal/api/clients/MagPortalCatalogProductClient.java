@@ -1,5 +1,6 @@
 package com.leroy.magportal.api.clients;
 
+import com.leroy.constants.EnvConstants;
 import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magportal.api.data.catalog.products.CatalogProductData;
 import com.leroy.magportal.api.data.catalog.products.CatalogSimilarProductsData;
@@ -11,6 +12,10 @@ import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class MagPortalCatalogProductClient extends BaseMashupClient {
+    @Override
+    protected void init() {
+        gatewayUrl = EnvConstants.SEARCH_API_HOST;
+    }
 
     @Step("Get similar and complement products")
     public Response<CatalogSimilarProductsData> getSimilarProducts(String lmCode) {

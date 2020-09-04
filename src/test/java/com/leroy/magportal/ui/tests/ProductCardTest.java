@@ -330,8 +330,7 @@ public class ProductCardTest extends WebBaseSteps {
         String shopId = "3";
         String shopName = "Химки";
         String lmCode = getRandomLmCode();
-        List<NearestShopsData> nearestShopsList = apiClientProvider.getMagPortalCatalogProductClientProvider()
-                .getNearestShopsInfo(lmCode).asJsonList(NearestShopsData.class);
+        List<NearestShopsData> nearestShopsList = apiClientProvider.getMagPortalCatalogProductClientProvider().getNearestShopsInfo(lmCode).asJsonList(NearestShopsData.class);
 
         //Pre-condition
         ExtendedProductCardPage extendedProductCardPage = navigateToProductCardByUrl(lmCode, false);

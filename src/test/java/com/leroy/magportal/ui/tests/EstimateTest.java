@@ -485,7 +485,7 @@ public class EstimateTest extends BasePAOTest {
         CustomerWebData customerWebData = new CustomerWebData();
         customerWebData.setRandomRequiredData();
         customerWebData.setPhoneNumber(null);
-        customerWebData.setLastName(customerWebData.getRandomCyrillicCharacters(5));
+        customerWebData.setLastName(RandomUtil.randomCyrillicCharacters(5));
         createCustomerForm.enterCustomerData(customerWebData);
 
         // Step 7

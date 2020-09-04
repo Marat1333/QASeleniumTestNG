@@ -18,6 +18,17 @@ public class MagCustomerData {
     private String cardType;
     private String email;
 
+    public MagCustomerData clone() {
+        MagCustomerData clone = new MagCustomerData().toBuilder()
+                .name(name)
+                .cardNumber(cardNumber)
+                .cardType(cardType)
+                .phone(phone)
+                .email(email)
+                .build();
+        return clone;
+    }
+
     private boolean existedClient; // Ранее существующий в системе клиент, который может быть найден через поиск (а не ново созданный через оформление заказа)
 
     public void assertEqualsNotNullExpectedFields(MagCustomerData expectedCustomerData) {
