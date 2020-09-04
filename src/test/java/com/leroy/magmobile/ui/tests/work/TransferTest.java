@@ -591,11 +591,28 @@ public class TransferTest extends AppBaseSteps {
 
         // Step 2 - 3
         step("Введите количество товара больше, чем доступно на отзыва для товара не добавленного в заявку");
-        TransferProductData transferProductData = transferSearchPage.getTransferProduct(2);
-        transferSearchPage.editProductQuantityForProduct(1, transferProductData.getTotalStock() + 10);
+        TransferProductData transferProductData1 = transferSearchPage.getTransferProduct(1);
+        TransferProductData transferProductData2 = transferSearchPage.getTransferProduct(2);
+        transferSearchPage.editProductQuantityForProduct(1, transferProductData2.getTotalStock() + 10); // TODO index = 1
+        transferSearchPage.shouldProductQuantityIs(1, 0);
 
-        // TODO ДОДЕЛАТЬ!!!
+        // Step 4 - 5
+        step("Введите количество товара меньше или равно, чем доступно для отзыва");
+        int newQuantity = 1;
+        transferSearchPage.editProductQuantityForProduct(1, newQuantity);
+        transferSearchPage.shouldProductQuantityIs(1, newQuantity);
+        transferSearchPage.shouldProductCountOnPanelIs(2);
+        transferProductData2.setOrderedQuantity(newQuantity);
 
+        // Step 6
+        step("Нажмите поле Товары на отзыв");
+        DetailedTransferTaskData detailedTransferTaskData = new DetailedTransferTaskData();
+        detailedTransferTaskData.setProducts(Arrays.asList(transferProductData1, transferProductData2));
+        transferOrderStep1Page = transferSearchPage.clickTransferProductPanel();
+        transferOrderStep1Page.shouldTransferTaskDataIs(detailedTransferTaskData);
+        transferOrderStep1Page.shouldTotalPriceCalculatedCorrectly();
+
+        // TODO check
     }
 
     @Test(description = "C3268376 Удаление заявки в статусе Черновик")

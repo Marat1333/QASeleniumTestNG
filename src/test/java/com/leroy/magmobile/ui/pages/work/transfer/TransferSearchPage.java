@@ -25,6 +25,10 @@ public class TransferSearchPage extends CommonMagMobilePage {
             metaName = "Панелька 'Товары на отзыв'")
     Element transferProductPanel;
 
+    @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.TextView[@text='Товары на отзыв']]//android.view.ViewGroup/android.widget.TextView",
+            metaName = "Счетчик товаров на панели 'Товары на отзыв'")
+    Element transferProductCount;
+
     @Override
     protected void waitForPageIsLoaded() {
         anAssert.isElementVisible(transferProductSearchArea, timeout);
@@ -75,4 +79,12 @@ public class TransferSearchPage extends CommonMagMobilePage {
                 String.format("У %s товара неверное выбранное количество", index + 1));
         return this;
     }
+
+    @Step("Проверить, что счетчик товаров на панели 'Товары на отзыв' = {value}")
+    public TransferSearchPage shouldProductCountOnPanelIs(int value) {
+        anAssert.isEquals(transferProductCount.getText(), String.valueOf(value),
+                "Неверное количество товаров на панели 'Товары на отзыв'");
+        return this;
+    }
+
 }

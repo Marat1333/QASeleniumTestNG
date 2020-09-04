@@ -141,4 +141,17 @@ public class TransferOrderStep1Page extends TransferOrderPage {
         return this;
     }
 
+    @Step("Проверить, что общая сумма равна стоимости каждого из товаров в заявке")
+    public TransferOrderStep1Page shouldTotalPriceCalculatedCorrectly() {
+        List<TransferProductData> productDataList = productScrollView.getFullDataList();
+        String strTotalPrice = totalPrice.getText();
+        Double totalPriceFromPanel = ParserUtil.strToDouble(strTotalPrice);
+        anAssert.isNotNull(totalPriceFromPanel, "Итого стоимость: " + strTotalPrice,
+                "Итого должно содержать цифровое значение");
+        Double totalPriceFromProducts = productDataList.stream().mapToDouble(TransferProductData::getTotalPrice).sum();
+        anAssert.isEquals(totalPriceFromProducts,
+                totalPriceFromPanel, "Неверная общая стоимость");
+        return this;
+    }
+
 }
