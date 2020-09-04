@@ -376,8 +376,8 @@ public abstract class CartEstimatePage extends
             softAssert.isFalse(Strings.isNullOrEmpty(actualEstimateData.getCreationDate()),
                     "Дата создания документа не отображается");
         }
-        if (actualEstimateData.getClient() == null) {
-            softAssert.isTrue(expectedDocumentData.getClient() == null,
+        if (actualEstimateData.getClient() == null || actualEstimateData.getClient().getName() == null) {
+            softAssert.isTrue(expectedDocumentData.getClient() == null || expectedDocumentData.getClient().getName() == null,
                     "Информация о клиенте отсутствует");
         } else {
             softAssert.isEquals(actualEstimateData.getClient(), expectedDocumentData.getClient(),
@@ -406,8 +406,6 @@ public abstract class CartEstimatePage extends
                 softAssert.isTrue(Math.abs(actualOrder.getTotalWeight() - expectedOrder.getTotalWeight()) <= totalSelectedQuantity * 0.011,
                         "Заказ #" + (i + 1) + " Неверный итого вес");
             } else {
-                softAssert.isTrue(actualOrder.getTotalWeight() > 0,
-                        "Заказ #" + (i + 1) + " Ожидался итого вес > 0");
                 double expectedTotalWeight = 0.0;
                 for (ProductOrderCardWebData pr : actualOrder.getProductCardDataList()) {
                     expectedTotalWeight = ParserUtil.plus(pr.getWeight(), expectedTotalWeight, 2);
