@@ -31,15 +31,15 @@ public class CustomerClient extends BaseMashupClient {
         req.setCustomerType(filters.getCustomerType());
         req.setDiscriminantType(filters.getDiscriminantType());
         req.setDiscriminantValue(filters.getDiscriminantValue());
-        req.setShopId(userSessionData.getUserShopId());
+        req.setShopId(getUserSessionData().getUserShopId());
         return execute(req, CustomerListData.class);
     }
 
     @Step("Create customer")
     public Response<CustomerResponseBodyData> createCustomer(CustomerData customerData) {
         CustomerAccountCreateRequest req = new CustomerAccountCreateRequest();
-        req.setShopId(userSessionData.getUserShopId());
-        req.setLdap(userSessionData.getUserLdap());
+        req.setShopId(getUserSessionData().getUserShopId());
+        req.setLdap(getUserSessionData().getUserLdap());
         req.jsonBody(customerData);
         return execute(req, CustomerResponseBodyData.class);
     }
@@ -47,8 +47,8 @@ public class CustomerClient extends BaseMashupClient {
     @Step("Update customer")
     public Response<CustomerResponseBodyData> updateCustomer(CustomerData customerData) {
         CustomerAccountUpdateRequest req = new CustomerAccountUpdateRequest();
-        req.setShopId(userSessionData.getUserShopId());
-        req.setLdap(userSessionData.getUserLdap());
+        req.setShopId(getUserSessionData().getUserShopId());
+        req.setLdap(getUserSessionData().getUserLdap());
         req.jsonBody(customerData);
         return execute(req, CustomerResponseBodyData.class);
     }

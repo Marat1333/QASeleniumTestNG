@@ -1,8 +1,10 @@
 package com.leroy.magmobile.ui.tests;
 
+import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.api.Module;
 import com.leroy.core.api.ThreadApiClient;
+import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.data.catalog.ServiceItemDataList;
@@ -37,12 +39,8 @@ import java.util.List;
 @Guice(modules = {Module.class})
 public class SearchTest extends AppBaseSteps {
 
+    @Inject
     private CatalogSearchClient searchClient;
-
-    @BeforeClass
-    public void setUp() {
-        searchClient = apiClientProvider.getCatalogSearchClient();
-    }
 
     private static final String ALL_DEPARTMENTS_TEXT = "Все отделы";
 
@@ -84,6 +82,8 @@ public class SearchTest extends AppBaseSteps {
 
     @Test(description = "C3200996 Поиск товара по критериям", priority = 1)
     public void testC3200996() throws Exception {
+        Log.warn("C3200996 " + Thread.currentThread().getName());
+        Log.warn("C3200996 " + Thread.currentThread().getThreadGroup().getName());
         String lmCode = "10008698";
         String searchContext = "дрель";
         String shortSearchPhrase = "12";
