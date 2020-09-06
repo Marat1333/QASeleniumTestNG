@@ -1,8 +1,10 @@
 package com.leroy.magmobile.ui.tests;
 
+import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.api.Module;
 import com.leroy.core.api.ThreadApiClient;
+import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.data.catalog.ServiceItemDataList;
@@ -37,12 +39,8 @@ import java.util.List;
 @Guice(modules = {Module.class})
 public class SearchTest extends AppBaseSteps {
 
+    @Inject
     private CatalogSearchClient searchClient;
-
-    @BeforeClass
-    public void setUp() {
-        searchClient = apiClientProvider.getCatalogSearchClient();
-    }
 
     private static final String ALL_DEPARTMENTS_TEXT = "Все отделы";
 
