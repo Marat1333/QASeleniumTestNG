@@ -29,7 +29,7 @@ public abstract class BaseMashupClient extends BaseClient {
     @Setter
     private UserSessionData userSessionData;
 
-    public UserSessionData getUserSessionData() {
+    protected UserSessionData getUserSessionData() {
         if (userSessionData != null)
             return userSessionData;
         else
