@@ -51,7 +51,7 @@ public class ReviewsPage extends ProductCardPage {
     }
 
     @Step("Проверить корректное отображение отзывов")
-    public ReviewsPage shouldReviewsAreCorrect(CatalogReviewsOfProductList data) {
+    public ReviewsPage shouldReviewsAreCorrect(CatalogReviewsOfProductList data) throws Exception {
         if (data.getItems().size() == 0) {
             anAssert.isElementVisible(noReviewsLbl);
         } else {

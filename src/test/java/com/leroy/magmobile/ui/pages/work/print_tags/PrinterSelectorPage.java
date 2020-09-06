@@ -44,7 +44,7 @@ public class PrinterSelectorPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить отображение всех принтеров")
-    public PrinterSelectorPage shouldAllFiltersIsDisplayed(List<String> dataList) {
+    public PrinterSelectorPage shouldAllFiltersIsDisplayed(List<String> dataList) throws Exception {
         List<PrinterData> printerUiData = printerNamesView.getFullDataList(dataList.size() + 1);
         if (printerUiData.size() > 0) {
             //выбранный принтер
