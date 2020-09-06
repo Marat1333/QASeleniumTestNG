@@ -96,7 +96,8 @@ public class SearchSupplierPage extends CommonMagMobilePage {
     }
 
     @Step("проверить результат поиска")
-    public SearchSupplierPage shouldDataIsCorrect(List<SupplierData> dataList) throws Exception {
+    public SearchSupplierPage shouldDataIsCorrect(List<SupplierData> dataList)
+            throws Exception {
         int warehousesCount = 0;
         int shopsCount = 0;
         int suppliersCount = 0;

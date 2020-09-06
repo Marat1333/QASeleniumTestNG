@@ -312,8 +312,7 @@ public class AndroidScrollView<T> extends BaseWidget {
     /**
      * Scroll up to the specific text
      *
-     * @param findText       - text which should be found
-     * @param maxScrollCount - limit of scroll count
+     * @param findText - text which should be found
      * @return this
      */
     public AndroidScrollView<T> scrollUpToText(String findText) throws Exception {
