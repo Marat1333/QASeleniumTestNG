@@ -82,8 +82,6 @@ public class SearchTest extends AppBaseSteps {
 
     @Test(description = "C3200996 Поиск товара по критериям", priority = 1)
     public void testC3200996() throws Exception {
-        Log.warn("C3200996 " + Thread.currentThread().getName());
-        Log.warn("C3200996 " + Thread.currentThread().getThreadGroup().getName());
         String lmCode = "10008698";
         String searchContext = "дрель";
         String shortSearchPhrase = "12";
