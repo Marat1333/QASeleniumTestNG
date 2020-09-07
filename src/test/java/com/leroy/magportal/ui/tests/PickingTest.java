@@ -621,7 +621,7 @@ public class PickingTest extends BasePAOTest {
         pickingContentPage.clickStartAssemblyButton();
 
         // Step7:
-        step("Товар 1: Ввести в инпут Собрано количество больше, чем указано в Заказано");
+        step("Товар 1: Ввести в инпут Собрано количество равное,  указанному в Заказано");
         //int collectedQuantityProduct1 = pickingTaskDataBefore.getProducts().get(0).getOrderedQuantity();
         pickingContentPage.editCollectQuantity(1, 2)
                 .shouldProductCollectedQuantityIs(1, 2);
