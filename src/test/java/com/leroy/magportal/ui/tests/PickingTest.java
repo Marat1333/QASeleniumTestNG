@@ -25,7 +25,6 @@ import com.leroy.magportal.ui.pages.picking.modal.SplitPickingModalStep2;
 import com.leroy.magportal.ui.pages.picking.modal.SuccessfullyCreatedAssemblyModal;
 import com.leroy.utils.ParserUtil;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.core.annotation.Order;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
