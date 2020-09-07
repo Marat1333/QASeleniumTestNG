@@ -13,8 +13,10 @@ public abstract class OrderCreatedPage extends OrderHeaderPage {
     // Actions
 
     @Step ("Перейти на вкладку 'Сборки'")
-    public void clickGoToPickings()  {
+    public AssemblyOrderPage clickGoToPickings()  {
         goToPickings.click();
+        return new AssemblyOrderPage();
+
     }
 
 

@@ -15,6 +15,7 @@ import com.leroy.magportal.ui.models.picking.PickingProductCardData;
 import com.leroy.magportal.ui.models.picking.PickingTaskData;
 import com.leroy.magportal.ui.models.picking.ShortPickingTaskData;
 import com.leroy.magportal.ui.pages.common.MenuPage;
+import com.leroy.magportal.ui.pages.orders.AssemblyOrderPage;
 import com.leroy.magportal.ui.pages.orders.OrderCreatedContentPage;
 import com.leroy.magportal.ui.pages.orders.OrderHeaderPage;
 import com.leroy.magportal.ui.pages.picking.PickingContentPage;
@@ -593,37 +594,53 @@ public class PickingTest extends BasePAOTest {
         OrderHeaderPage orderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
         initFindPickingTask();
 
-        // Step2:
+        // Step 2:
         step("Ввести номер заказа из корзины и нажать кнопку 'Показать заказы'");
         orderPage.enterSearchTextAndSubmit(orderId);
         orderPage.shouldDocumentIsPresent(orderId);
         orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal());
         orderPage.shouldDocumentCountIs(1);
 
-        // Step3:
+        // Step 3:
 
         step("Кликнуть на заказ");
         orderPage.clickDocumentInLeftMenu(orderId);
         OrderCreatedContentPage createdContentPage = new OrderCreatedContentPage();
         createdContentPage.shouldOrderProductCountIs(1);
 
-        // Step4: перейти на Сборки
+        // Step 4:
 
-        step("перейти на Сборки");
-        getDriver().get(getPageUrl(PickingPage.class));
-        PickingContentPage pickingContentPage = new PickingContentPage();
-        createdContentPage.clickGoToPickings();
+        step("Перейти на Сборки");
+        AssemblyOrderPage pickingTab = createdContentPage.clickGoToPickings();
+
+        // Step5: нажать на Сборку
+        step("нажать на Сборку");
+        PickingContentPage pickingContentPage = pickingTab.clickToPickingTask(1);
+
+        // Step6: Начать сборку
+        step("Нажать на кнопку Начать сборку");
+        pickingContentPage.clickStartAssemblyButton();
+
+        // Step7:
+        step("Товар 1: Ввести в инпут Собрано количество больше, чем указано в Заказано");
+        //int collectedQuantityProduct1 = pickingTaskDataBefore.getProducts().get(0).getOrderedQuantity();
+        pickingContentPage.editCollectQuantity(1, 2)
+                .shouldProductCollectedQuantityIs(1, 2);
+
+        // Step 8:
+        step("Завершить сборку");
+        pickingContentPage.clickFinishAssemblyButton();
+
+        // Step 9:
+        step("Вернуться на страницу заказов ");
+        PickingPage pickingPage = new PickingPage();
+        pickingPage.clickOrderLinkAndGoToOrderPage();
 
 
-
-
-
-
-
-
-
-
+        // Step 10:
+        step("Проверить статус собранного заказа");
+        orderPage.shouldDocumentIsPresent(orderId);
+        orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.PICKED.getUiVal());
+        orderPage.shouldDocumentCountIs(1);
     }
-
-
 }

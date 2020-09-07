@@ -5,19 +5,18 @@ import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardWebData;
+import com.leroy.magportal.ui.pages.picking.data.PickingData;
 import com.leroy.magportal.ui.webelements.CardWebWidget;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 
-public class PickingWidget extends CardWebWidget<ProductOrderCardWebData> {
+public class PickingWidget extends CardWebWidget<PickingData> {
 
     public PickingWidget(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
     }
 
-   @WebFindBy(xpath = ".//div[contains(@class, 'lm-puz2-Order-OrderPickingTaskListItem')]", metaName = "Карточка сборки")
-   Element orderPickingTaskListItem;
 
    @WebFindBy(xpath = ".//div[contains(@class, 'shared-order-StyledLabel')]", metaName = "Номер отдела")
    Element department;
@@ -25,14 +24,11 @@ public class PickingWidget extends CardWebWidget<ProductOrderCardWebData> {
 
     // Actions
 
-    @Step("Перейти на вкладку 'Сборки'")
-    public void clickOrderPickingTaskListItem()  {
-        orderPickingTaskListItem.click();
-    }
+
 
     @Override
-    public ProductOrderCardWebData collectDataFromPage() {
-        ProductOrderCardWebData productOrderCardWebData = new ProductOrderCardWebData();
+    public PickingData collectDataFromPage() {
+        /*ProductOrderCardWebData productOrderCardWebData = new ProductOrderCardWebData();
         productOrderCardWebData.setBarCode(ParserUtil.strWithOnlyDigits(barCode.getText()));
         productOrderCardWebData.setLmCode(lmCode.getText());
         //productOrderCardWebData.setDepartment(ParserUtil.strToInt(department.getText()));
@@ -41,8 +37,8 @@ public class PickingWidget extends CardWebWidget<ProductOrderCardWebData> {
         productOrderCardWebData.setPrice(ParserUtil.strToDouble(price.getText()));
         productOrderCardWebData.setSelectedQuantity(ParserUtil.strToDouble(orderedQuantityFld.getText()));
         productOrderCardWebData.setWeight(ParserUtil.strToDouble(weight.getText(), ".") * productOrderCardWebData.getSelectedQuantity());
-        productOrderCardWebData.setTotalPrice(productOrderCardWebData.getPrice() * productOrderCardWebData.getSelectedQuantity());
-        return productOrderCardWebData;
+        productOrderCardWebData.setTotalPrice(productOrderCardWebData.getPrice() * productOrderCardWebData.getSelectedQuantity());*/
+        return null;
     }
 
 

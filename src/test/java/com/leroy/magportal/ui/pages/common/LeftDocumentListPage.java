@@ -7,10 +7,7 @@ import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends IDataWithNumberAndStatus<D>>
@@ -88,9 +85,11 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
     public void shouldDocumentListContainsOnlyWithStatuses(String... statuses) throws Exception {
         Set<String> actualStatuses = new HashSet<>();
         for (D docData : documentCardList().getDataList()) {
-            actualStatuses.add(docData.getStatus());
+            actualStatuses.add(docData.getStatus().toLowerCase());
         }
-        actualStatuses.removeAll(Arrays.asList(statuses));
+        List<String> expectedStatuses = new ArrayList<>(Arrays.asList(statuses));
+        expectedStatuses =  expectedStatuses.stream().map(String::toLowerCase).collect(Collectors.toList());
+        actualStatuses.removeAll(expectedStatuses);
         anAssert.isTrue(actualStatuses.isEmpty(),
                 "В списке слева обнаружены документы, которых быть не должно, со статусами:" +
                         actualStatuses.toString());

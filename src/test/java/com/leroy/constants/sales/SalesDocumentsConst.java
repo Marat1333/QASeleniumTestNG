@@ -14,6 +14,7 @@ public class SalesDocumentsConst {
 
         // Сборки
         PARTIALLY_ASSEMBLED("", "ЧАСТ. СОБРАН"),
+        PICKED ("", "СОБРАН"),
 
         // Transfer
         NEW("NEW", "");
