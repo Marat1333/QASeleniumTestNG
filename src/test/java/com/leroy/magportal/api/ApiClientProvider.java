@@ -38,6 +38,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasSize;
 
+@Deprecated
 public class ApiClientProvider {
 
     @Inject
@@ -304,11 +305,6 @@ public class ApiClientProvider {
 
     public String createDraftEstimateAndGetCartId(List<String> lmCodes) {
         return createDraftEstimateAndGetCartId(null, lmCodes, 1);
-    }
-
-    public String createDraftEstimateAndGetCartId(
-            CustomerData newCustomerData, int productCount) {
-        return createDraftEstimateAndGetCartId(newCustomerData, null, productCount);
     }
 
     public String createDraftEstimateAndGetCartId(int productCount) {

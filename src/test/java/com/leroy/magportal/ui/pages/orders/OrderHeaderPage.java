@@ -165,6 +165,13 @@ public class OrderHeaderPage extends LeftDocumentListPage<ShortOrderDocumentCard
 
     // Verifications
 
+    @Step("Проверить, что не появилось окно о том, что 'Изменения не сохранены' не появилось")
+    protected OrderHeaderPage shouldModalThatChangesIsNotSavedIsNotVisible() {
+        anAssert.isFalse(E("//div[contains(@class, 'Modal')]//*[text()='Изменения не сохранены']").isVisible(),
+                "Появилось окно 'Изменения не сохранены'");
+        return this;
+    }
+
     @Step("Проверить, что в фильтре даты создания следующие даты: с {fromDate} по {toDate}")
     public OrderHeaderPage shouldCreationDateFilterIs(LocalDate fromDate, LocalDate toDate) {
         if (fromDate == null && toDate == null) {

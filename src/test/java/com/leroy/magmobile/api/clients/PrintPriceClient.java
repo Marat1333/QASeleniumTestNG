@@ -17,11 +17,12 @@ import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyString;
+import static org.hamcrest.Matchers.notNullValue;
 
 public class PrintPriceClient extends BaseMashupClient {
 
     public Response<PrintDepartmentList> getDepartmentPrinterList() {
-        return getDepartmentPrinterList(userSessionData.getUserShopId());
+        return getDepartmentPrinterList(getUserSessionData().getUserShopId());
     }
 
     @Step("Get department printers info")
@@ -54,29 +55,29 @@ public class PrintPriceClient extends BaseMashupClient {
         return printersName;
     }
 
-    public Response<JsonNode> sendPrintTask(
+    public Response<PrintTaskResponseData> sendPrintTask(
             String printerName, PrintTaskProductData printProductData) {
         return sendPrintTask(printerName, Collections.singletonList(printProductData));
     }
 
     @Step("Send printer task on the printer = {printerName}")
-    public Response<JsonNode> sendPrintTask(
+    public Response<PrintTaskResponseData> sendPrintTask(
             String printerName, List<PrintTaskProductData> printProductDataList) {
         PrintTaskProductsList printTaskProductsList = new PrintTaskProductsList();
         printTaskProductsList.setData(printProductDataList);
         PrintPriceTaskRequest printTaskReq = new PrintPriceTaskRequest()
                 .setPrinterName(printerName)
-                .setShopId(userSessionData.getUserShopId())
+                .setShopId(getUserSessionData().getUserShopId())
                 .jsonBody(printTaskProductsList);
 
-        return execute(printTaskReq, JsonNode.class);
+        return execute(printTaskReq, PrintTaskResponseData.class);
     }
 
     // Verifications
 
     @Step("Check that print task is sent successfully")
-    public void assertThatSendPrintTaskIsSuccessful(Response<JsonNode> response) {
+    public void assertThatSendPrintTaskIsSuccessful(Response<PrintTaskResponseData> response) {
         assertThatResponseIsOk(response);
-        assertThat("Response body", response.asString(), emptyString());
+        assertThat("Response body", response.asJson().getTemplateVersion(), notNullValue());
     }
 }

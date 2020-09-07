@@ -1,8 +1,10 @@
 package com.leroy.magmobile.ui.tests;
 
+import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.api.Module;
 import com.leroy.core.api.ThreadApiClient;
+import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.data.catalog.ServiceItemDataList;
@@ -37,12 +39,8 @@ import java.util.List;
 @Guice(modules = {Module.class})
 public class SearchTest extends AppBaseSteps {
 
+    @Inject
     private CatalogSearchClient searchClient;
-
-    @BeforeClass
-    public void setUp() {
-        searchClient = apiClientProvider.getCatalogSearchClient();
-    }
 
     private static final String ALL_DEPARTMENTS_TEXT = "Все отделы";
 
@@ -681,7 +679,7 @@ public class SearchTest extends AppBaseSteps {
 
     @Test(description = "C3200999 Проверка пагинации", priority = 2)
     public void testSearchPagePagination() throws Exception {
-        String searchCriterion = "12";
+        String searchCriterion = "1";
         String dept = "005";
         final String GAMMA = "A";
         final int ENTITY_COUNT = 20;
@@ -888,8 +886,10 @@ public class SearchTest extends AppBaseSteps {
 
         // Step 5
         step("Выполнить поиск услуги по неполному наименованию");
+        nomenclatureSearchPage = searchProductPage.goToNomenclatureWindow();
+        nomenclatureSearchPage.returnBackNTimes(1);
+        searchProductPage = nomenclatureSearchPage.clickShowAllProductsBtn();
         searchProductPage.enterTextInSearchFieldAndSubmit(SERVICE_SHORT_NAME);
-        addServicePage.returnBack();
         ServiceItemDataList shortNameServicesResponce = apiThreads.get(4).getData();
         searchProductPage.shouldServicesResponceEqualsContent(shortNameServicesResponce, 1);
         searchProductPage.shouldCardsContainText(SERVICE_SHORT_NAME, SearchProductPage.CardType.SERVICE, 1);
@@ -897,9 +897,6 @@ public class SearchTest extends AppBaseSteps {
         // Step 6
         step("Выполнить поиск услуги по полному наименованию");
         searchProductPage.enterTextInSearchFieldAndSubmit(SERVICE_FULL_NAME);
-        addServicePage.verifyRequiredElements()
-                .shouldServiceNameAndLmCodeBeOnPage(SERVICE_FULL_NAME, SERVICE_FULL_LM_CODE);
-        addServicePage.returnBack();
         ServiceItemDataList fullNameServicesResponce = apiThreads.get(5).getData();
         searchProductPage.shouldServicesResponceEqualsContent(fullNameServicesResponce, 1);
         searchProductPage.shouldCardsContainText(SERVICE_FULL_NAME, SearchProductPage.CardType.SERVICE, 1);
@@ -907,8 +904,6 @@ public class SearchTest extends AppBaseSteps {
         // Step 7
         step("Выполнить поиск по короткому штрихкоду");
         searchProductPage.enterTextInSearchFieldAndSubmit(SHORT_BARCODE);
-        ProductCardPage productCardPage = new ProductCardPage();
-        productCardPage.returnBack();
         searchProductPage.shouldNotCardsBeOnPage(SearchProductPage.CardType.SERVICE);
     }
 

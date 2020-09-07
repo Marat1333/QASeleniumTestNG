@@ -36,18 +36,18 @@ public class OrderClient extends BaseMashupClient {
     @Step("Create order")
     public Response<OrderData> createOrder(ReqOrderData reqOrderData) {
         OrderPost orderPost = new OrderPost();
-        orderPost.bearerAuthHeader(userSessionData.getAccessToken());
+        orderPost.bearerAuthHeader(getUserSessionData().getAccessToken());
         orderPost.jsonBody(reqOrderData);
-        orderPost.setShopId(userSessionData.getUserShopId());
-        orderPost.setUserLdap(userSessionData.getUserLdap());
+        orderPost.setShopId(getUserSessionData().getUserShopId());
+        orderPost.setUserLdap(getUserSessionData().getUserLdap());
         return execute(orderPost, OrderData.class);
     }
 
     @Step("Confirm order with id = {orderId}")
     public Response<OrderData> confirmOrder(String orderId, OrderData putOrderData) {
         OrderConfirmRequest req = new OrderConfirmRequest();
-        req.setShopId(userSessionData.getUserShopId());
-        req.setUserLdap(userSessionData.getUserLdap());
+        req.setShopId(getUserSessionData().getUserShopId());
+        req.setUserLdap(getUserSessionData().getUserLdap());
         req.setOrderId(orderId);
         req.jsonBody(putOrderData);
         return execute(req, OrderData.class);
@@ -56,7 +56,7 @@ public class OrderClient extends BaseMashupClient {
     @Step("Check quantity")
     public Response<ResOrderCheckQuantityData> checkQuantity(ReqOrderData data) {
         OrderCheckQuantityRequest req = new OrderCheckQuantityRequest();
-        req.setShopId(userSessionData.getUserShopId());
+        req.setShopId(getUserSessionData().getUserShopId());
         req.jsonBody(data);
         return execute(req, ResOrderCheckQuantityData.class);
     }
@@ -74,8 +74,8 @@ public class OrderClient extends BaseMashupClient {
     @Step("Update Order")
     public Response<OrderData> updateDraftOrder(OrderData orderData) {
         OrderPutRequest req = new OrderPutRequest();
-        req.setShopId(userSessionData.getUserShopId());
-        req.setUserLdap(userSessionData.getUserLdap());
+        req.setShopId(getUserSessionData().getUserShopId());
+        req.setUserLdap(getUserSessionData().getUserLdap());
         req.jsonBody(orderData);
         return execute(req, OrderData.class);
     }
@@ -85,8 +85,8 @@ public class OrderClient extends BaseMashupClient {
                                         BaseProductOrderData productData) {
         OrderRearrangeRequest req = new OrderRearrangeRequest();
         req.setOrderId(orderData.getOrderId());
-        req.setShopId(userSessionData.getUserShopId());
-        req.setUserLdap(userSessionData.getUserLdap());
+        req.setShopId(getUserSessionData().getUserShopId());
+        req.setUserLdap(getUserSessionData().getUserLdap());
         OrderData putOrderData = new OrderData();
         putOrderData.setSolutionVersion(orderData.getSolutionVersion());
         putOrderData.setPaymentVersion(orderData.getPaymentVersion());
@@ -110,7 +110,7 @@ public class OrderClient extends BaseMashupClient {
     public Response<JsonNode> deleteDraftOrder(String orderId) {
         OrderChangeStatusRequest req = new OrderChangeStatusRequest();
         req.setOrderId(orderId);
-        req.setUserLdap(userSessionData.getUserLdap());
+        req.setUserLdap(getUserSessionData().getUserLdap());
         Map<String, String> body = new HashMap<>();
         body.put("status", SalesDocumentsConst.States.DELETED.getApiVal());
         req.jsonBody(body);
@@ -123,7 +123,7 @@ public class OrderClient extends BaseMashupClient {
         jsonObject.put("action", "cancel-order");
         return execute(new OrderWorkflowPut()
                 .setOrderId(orderId)
-                .setUserLdap(userSessionData.getUserLdap())
+                .setUserLdap(getUserSessionData().getUserLdap())
                 .jsonBody(jsonObject), JsonNode.class);
     }
 
@@ -139,7 +139,7 @@ public class OrderClient extends BaseMashupClient {
         assertThat("docType", data.getDocType(), is(SalesDocumentsConst.Types.ORDER.getApiVal()));
         assertThat("salesDocStatus", data.getSalesDocStatus(), is(SalesDocumentsConst.States.DRAFT.getApiVal()));
         assertThat("status", data.getStatus(), is(SalesDocumentsConst.States.DRAFT.getApiVal()));
-        assertThat("shopId", data.getShopId(), is(userSessionData.getUserShopId()));
+        assertThat("shopId", data.getShopId(), is(getUserSessionData().getUserShopId()));
         assertThat("fulfillmentTaskId", data.getFulfillmentTaskId(), not(emptyOrNullString()));
         assertThat("paymentTaskId", data.getPaymentTaskId(), not(emptyOrNullString()));
 
@@ -187,7 +187,7 @@ public class OrderClient extends BaseMashupClient {
         assertThat("orderId", actualData.getOrderId(), is(expectedData.getOrderId()));
         assertThat("shopId", actualData.getShopId(), is(expectedData.getShopId()));
         if (!ResponseType.PUT.equals(responseType)) {
-            assertThat("createdBy", actualData.getCreatedBy(), is(userSessionData.getUserLdap()));
+            assertThat("createdBy", actualData.getCreatedBy(), is(getUserSessionData().getUserLdap()));
         }
         assertThat("fulfillmentTaskId", actualData.getFulfillmentTaskId(),
                 is(expectedData.getFulfillmentTaskId()));
@@ -318,7 +318,7 @@ public class OrderClient extends BaseMashupClient {
      */
     @Step("Wait until order is confirmed")
     public OrderData waitUntilOrderHasStatusAndReturnOrderData(
-            String orderId, String expectedStatus) throws Exception {
+            String orderId, String expectedStatus, boolean isVerify) throws Exception {
         int maxTimeoutInSeconds = 180;
         long currentTimeMillis = System.currentTimeMillis();
         Response<OrderData> r = null;
@@ -332,14 +332,44 @@ public class OrderClient extends BaseMashupClient {
             }
             Thread.sleep(3000);
         }
-        assertThat("Could not wait for the order to be confirmed. Timeout=" + maxTimeoutInSeconds + ". " +
-                        "Response error:" + r.toString(),
-                r.isSuccessful());
-        assertThat("Could not wait for the order to be confirmed. Timeout=" + maxTimeoutInSeconds + ". " +
-                        "Status:", r.asJson().getStatus(),
-                is(expectedStatus));
+        if (isVerify) {
+            assertThat("Could not wait for the order to be confirmed. Timeout=" + maxTimeoutInSeconds + ". " +
+                            "Response error:" + r.toString(),
+                    r.isSuccessful());
+            assertThat("Could not wait for the order to be confirmed. Timeout=" + maxTimeoutInSeconds + ". " +
+                            "Status:", r.asJson().getStatus(),
+                    is(expectedStatus));
+        }
         return null;
     }
 
+    public OrderData waitUntilOrderHasStatusAndReturnOrderData(
+            String orderId, String expectedStatus) throws Exception {
+        return waitUntilOrderHasStatusAndReturnOrderData(orderId, expectedStatus, true);
+    }
+
+    @Step("Wait until Order can be cancelled")
+    public OrderData waitUntilOrderCanBeCancelled(
+            String orderId) throws Exception {
+        int maxTimeoutInSeconds = 180;
+        long currentTimeMillis = System.currentTimeMillis();
+        Response<OrderData> r = null;
+        while (System.currentTimeMillis() - currentTimeMillis < maxTimeoutInSeconds * 1000) {
+            r = getOrder(orderId);
+            String status = r.asJson().getStatus();
+            if (r.isSuccessful() &&
+                    (status.equals(SalesDocumentsConst.States.CONFIRMED.getApiVal()) ||
+                            status.equals(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal()))) {
+                Log.info("waitUntilOrderIsConfirmed() has executed for " +
+                        (System.currentTimeMillis() - currentTimeMillis) / 1000 + " seconds");
+                return r.asJson();
+            }
+            Thread.sleep(3000);
+        }
+        assertThat("Could not wait for the order to be confirmed. Timeout=" + maxTimeoutInSeconds + ". " +
+                        "Response error:" + r.toString(),
+                r.isSuccessful());
+        return null;
+    }
 
 }

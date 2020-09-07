@@ -8,6 +8,7 @@ import com.leroy.core.web_elements.general.ElementList;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 
@@ -102,9 +103,12 @@ public class FieldInitializer {
             if (ElementList.class.isAssignableFrom(clazz))
                 return clazz.getConstructor(WebDriver.class, CustomLocator.class, listType.getClass())
                         .newInstance(driver, fieldLocator.getLocator(), listType);
-            else
-                return clazz.getConstructor(WebDriver.class, CustomLocator.class)
+            else {
+                Constructor<T> constructor = clazz.getConstructor(WebDriver.class, CustomLocator.class);
+                constructor.setAccessible(true);
+                return constructor
                         .newInstance(driver, fieldLocator.getLocator());
+            }
         } catch (Exception e) {
             throw new AssertionError(
                     "WebElement can't be represented as " + clazz

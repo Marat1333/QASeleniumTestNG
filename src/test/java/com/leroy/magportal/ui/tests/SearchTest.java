@@ -2,6 +2,7 @@ package com.leroy.magportal.ui.tests;
 
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.api.ThreadApiClient;
+import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.enums.CatalogSearchFields;
 import com.leroy.magmobile.api.enums.SortingOrder;
@@ -18,6 +19,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SearchTest extends WebBaseSteps {
@@ -53,12 +55,13 @@ public class SearchTest extends WebBaseSteps {
         //Step 1
         step("ввести в поисковую строку нерелевантный поисковой запрос");
         searchProductPage.searchByPhrase(SEARCH_PHRASE);
-        searchProductPage.shouldNotFoundMsgIsDisplayed(false, SEARCH_PHRASE);
+        searchProductPage.shouldCheckboxFilterHasCorrectCondition(true, SearchProductPage.Filters.HAS_AVAILABLE_STOCK);
+        searchProductPage.shouldNotFoundMsgIsDisplayed(true, SEARCH_PHRASE);
 
         //Step 2
-        step("выбрать любой фильтр и применить его");
-        searchProductPage.choseCheckboxFilter(true, SearchProductPage.Filters.HAS_AVAILABLE_STOCK);
-        searchProductPage.shouldNotFoundMsgIsDisplayed(true, SEARCH_PHRASE);
+        step("сбросить фильтры");
+        searchProductPage.clearAllFiltersInProductFrame();
+        searchProductPage.shouldNotFoundMsgIsDisplayed(false, SEARCH_PHRASE);
     }
 
     @Test(description = "C22782951 Pagination")
@@ -120,7 +123,8 @@ public class SearchTest extends WebBaseSteps {
         String shortBarCode = "590212011";
 
         ProductItemDataList productItemDataList = apiClientProvider.getCatalogSearchClient().searchProductsBy(
-                new GetCatalogSearch().setByNameLike(shortSearchPhrase).setPageSize(defaultPageSize)).asJson();
+                new GetCatalogSearch().setByNameLike(shortSearchPhrase).setPageSize(defaultPageSize)
+                        .setShopId(getUserSessionData().getUserShopId())).asJson();
 
         //Pre-conditions
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
@@ -175,7 +179,8 @@ public class SearchTest extends WebBaseSteps {
         GetCatalogSearch params = new GetCatalogSearch()
                 .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
-                .setPageSize(defaultPageSize);
+                .setPageSize(defaultPageSize)
+                .setHasAvailableStock(true);
 
         HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> results = sendRequestsSearchProductsBy(params);
 
@@ -405,12 +410,21 @@ public class SearchTest extends WebBaseSteps {
 
     @Test(description = "C22782965 AVS")
     public void testAvsFilter() throws Exception {
-        LocalDate avsDate = LocalDate.of(2020, 3, 3);
+        LocalDate avsDate = LocalDate.of(2021, 4, 30);
+
+        GetCatalogSearch avsParamHasAvailableStock = new GetCatalogSearch()
+                .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
+                .setPageSize(defaultPageSize)
+                .setAvsDate(String.format("between%%7C%s-0%s-%sT00:00:00.000Z%%7C%s-0%s-%sT00:00:00.000Z",
+                        avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth(),
+                        avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth() + 1))
+                .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
+                .setHasAvailableStock(true);
 
         GetCatalogSearch avsParam = new GetCatalogSearch()
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setPageSize(defaultPageSize)
-                .setAvsDate(String.format("between%%7C%s-0%s-0%sT00:00:00.000Z%%7C%s-0%s-0%sT00:00:00.000Z",
+                .setAvsDate(String.format("between%%7C%s-0%s-%sT00:00:00.000Z%%7C%s-0%s-%sT00:00:00.000Z",
                         avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth(),
                         avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth() + 1))
                 .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);
@@ -422,7 +436,7 @@ public class SearchTest extends WebBaseSteps {
                 .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);
 
         HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> resultsMap =
-                sendRequestsSearchProductsBy(avsParam, avsNeqNullParam);
+                sendRequestsSearchProductsBy(avsParamHasAvailableStock, avsParam, avsNeqNullParam);
 
         //Pre-conditions
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
@@ -434,8 +448,8 @@ public class SearchTest extends WebBaseSteps {
                 .choseAvsDate(avsDate)
                 .shouldAvsContainerContainsCorrectText(false, avsDate)
                 .applyFilters();
-        ProductItemDataList avsDateResponse = resultsMap.get(0).getData();
-        searchProductPage.shouldResponseEntityEqualsToViewEntity(avsDateResponse, SearchProductPage.FilterFrame.MY_SHOP,
+        ProductItemDataList avsDateHasAvailableStockResponse = resultsMap.get(0).getData();
+        searchProductPage.shouldResponseEntityEqualsToViewEntity(avsDateHasAvailableStockResponse, SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED)
                 .clearAllFilters();
 
@@ -443,16 +457,17 @@ public class SearchTest extends WebBaseSteps {
         step("Выбрать фильтр \"Дата AVS\", не выбирая даты");
         searchProductPage.choseCheckboxFilter(true, SearchProductPage.Filters.AVS)
                 .shouldAvsContainerContainsCorrectText(true, null);
-        ProductItemDataList avsNeqNullResponse = resultsMap.get(1).getData();
+        ProductItemDataList avsNeqNullResponse = resultsMap.get(2).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(avsNeqNullResponse, SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
 
         //Step 3
         step("Выбрать фильтр \"Дата AVS\", ввести дату вручную и выполнить поиск");
         searchProductPage.enterAvsDateManually(avsDate)
-                .applyFilters()
-                .shouldResponseEntityEqualsToViewEntity(avsDateResponse, SearchProductPage.FilterFrame.MY_SHOP,
-                        SearchProductPage.ViewMode.EXTENDED);
+                .applyFilters();
+        ProductItemDataList avsDateResponse = resultsMap.get(1).getData();
+        searchProductPage.shouldResponseEntityEqualsToViewEntity(avsDateResponse, SearchProductPage.FilterFrame.MY_SHOP,
+                SearchProductPage.ViewMode.EXTENDED);
                 /*.shouldUrlContains(CatalogSearchParams.avsDate +
                         "between%7C" + avsDate.getYear() + "-0" + avsDate.getMonthValue() + "-0" + avsDate.getDayOfMonth() +
                         "T00%3A00%3A00.000Z%7C" + avsDate.getYear() + "-0" + avsDate.getMonthValue() + "-0" +
@@ -739,10 +754,10 @@ public class SearchTest extends WebBaseSteps {
         //Step 1
         step("Выбрать несколько фильтров из группы фильтров \"Мой магазин\", выполнить поиск по ним и очистить " +
                 "фильтры по нажатию на кнопку в виде метлы");
-        searchProductPage.shouldCleatAllFiltersButtonHasCorrectCondition(false);
         searchProductPage.choseSeveralFilters(myShopFilterData, true);
         searchProductPage.shouldCleatAllFiltersButtonHasCorrectCondition(true);
         searchProductPage.clearAllFilters();
+        searchProductPage.shouldCleatAllFiltersButtonHasCorrectCondition(false);
         searchProductPage.checkFiltersNotChosen(myShopFilterData);
         ProductItemDataList myShopDefaultResponse = resultMap.get(0).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(myShopDefaultResponse, SearchProductPage.FilterFrame.MY_SHOP,
@@ -819,17 +834,18 @@ public class SearchTest extends WebBaseSteps {
 
     @Test(description = "C23385397 search without submit")
     public void testSearchWithoutSubmit() throws Exception {
-        String byLmCodeParamValue = "1234";
+        String byNameLikeParam = "1";
         String deptId = EnvConstants.BASIC_USER_DEPARTMENT_ID;
+        String subDeptId = "510";
 
         GetCatalogSearch nomenclatureParam = new GetCatalogSearch()
-                .setByLmCode(byLmCodeParamValue)
+                .setByNameLike(byNameLikeParam)
                 .setDepartmentId(deptId)
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setPageSize(defaultPageSize);
 
         GetCatalogSearch filterParam = new GetCatalogSearch()
-                .setByLmCode(byLmCodeParamValue)
+                .setByNameLike(byNameLikeParam)
                 .setGamma("A")
                 .setDepartmentId(deptId)
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
@@ -844,36 +860,36 @@ public class SearchTest extends WebBaseSteps {
 
         //Step 1
         step("Заполнить поисковую строку и выбрать элемент товарной иерархии");
-        searchProductPage.fillSearchInput(byLmCodeParamValue);
+        searchProductPage.fillSearchInput(byNameLikeParam);
         searchProductPage.choseNomenclature(0 + deptId, null, null, null);
         ProductItemDataList nomenclatureResponse = resultMap.get(0).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(nomenclatureResponse, SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
-        //searchProductPage.shouldUrlContains(CatalogSearchParams.bylmCodeParamName + byLmCodeParamValue);
+        //searchProductPage.shouldUrlContains(CatalogSearchParams.bylmCodeParamName + byNameLikeParam);
 
         //Step 2
         step("ввести поисковую фразу в поисковую строку");
         searchProductPage.clearSearchInputByClearBtn();
-        searchProductPage.fillSearchInput(byLmCodeParamValue);
+        searchProductPage.fillSearchInput(byNameLikeParam);
 
         //Step 3
         step("Выбрать подотдел в товарной иерархии и перейти на уровень отдела");
-        searchProductPage.choseNomenclature(0 + deptId, "1505", null, null);
+        searchProductPage.choseNomenclature(0 + deptId, subDeptId, null, null);
         searchProductPage.navigateToPreviousNomenclatureElement(deptId);
         searchProductPage.shouldResponseEntityEqualsToViewEntity(nomenclatureResponse, SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
-        //searchProductPage.shouldUrlContains(CatalogSearchParams.bylmCodeParamName + byLmCodeParamValue);
+        //searchProductPage.shouldUrlContains(CatalogSearchParams.bylmCodeParamName + byNameLikeParam);
 
         //Step 4
         step("ввести поисковую фразу в поисковую строку, выбрать фильтр и осуществить поиск");
         searchProductPage.clearSearchInputByClearBtn();
-        searchProductPage.fillSearchInput(byLmCodeParamValue);
+        searchProductPage.fillSearchInput(byNameLikeParam);
         searchProductPage.choseGammaFilter("Гамма А");
         searchProductPage.applyFilters();
         ProductItemDataList filterResponse = resultMap.get(1).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(filterResponse, SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
-        //searchProductPage.shouldUrlContains(CatalogSearchParams.bylmCodeParamName + byLmCodeParamValue);
+        //searchProductPage.shouldUrlContains(CatalogSearchParams.bylmCodeParamName + byNameLikeParam);
     }
 
     @Test(description = "C23385398 search without changes")
@@ -883,7 +899,7 @@ public class SearchTest extends WebBaseSteps {
 
         //Step 1
         step("Ввести в поисковую строку фразу и несколько раз выполнить поиск по ней");
-        searchProductPage.fillSearchInput("1234").
+        searchProductPage.fillSearchInput("123asd").
                 shouldRequestHasBeenInitializedNTimes(3, true);
 
         //Step 2
@@ -952,14 +968,26 @@ public class SearchTest extends WebBaseSteps {
 
     @Test(description = "C23388851 navigate to product card")
     public void testNavigateToProductCard() throws Exception {
-        String lmCode = "10813371";
+        GetCatalogSearch lmCodeByShopParam = new GetCatalogSearch()
+                .setDepartmentId(getUserSessionData().getUserDepartmentId())
+                .setShopId(getUserSessionData().getUserShopId())
+                .setHasAvailableStock(true)
+                .setPageSize(defaultPageSize);
+        GetCatalogSearch lmCodeParam = new GetCatalogSearch()
+                .setDepartmentId(getUserSessionData().getUserDepartmentId())
+                .setPageSize(defaultPageSize);
+        List<ProductItemData> productItemByShopDataList = catalogSearchClient().searchProductsBy(lmCodeByShopParam).asJson().getItems();
+        List<ProductItemData> productItemDataList = catalogSearchClient().searchProductsBy(lmCodeParam).asJson().getItems();
+
+        String lmCodeByShop = productItemByShopDataList.get((int) (Math.random() * productItemByShopDataList.size())).getLmCode();
+        String lmCode = productItemDataList.get((int) (Math.random() * productItemDataList.size())).getLmCode();
 
         //Pre-conditions
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
 
         //Step 1
         step("Перейти в карточку товара при примененном расширенном режиме отображения и фильтре \"Мой магазин\"");
-        ExtendedProductCardPage extendedProductCardPage = searchProductPage.navigateToProductCart(lmCode,
+        ExtendedProductCardPage extendedProductCardPage = searchProductPage.navigateToProductCart(lmCodeByShop,
                 SearchProductPage.FilterFrame.MY_SHOP, SearchProductPage.ViewMode.EXTENDED);
         extendedProductCardPage.verifyRequiredElements();
 
@@ -967,7 +995,7 @@ public class SearchTest extends WebBaseSteps {
         step("Перейти в карточку товара при примененном табличном режиме отображения и фильтре \"Мой магазин\"");
         searchProductPage.switchToWindow();
         searchProductPage.switchViewMode(SearchProductPage.ViewMode.LIST);
-        extendedProductCardPage = searchProductPage.navigateToProductCart(lmCode,
+        extendedProductCardPage = searchProductPage.navigateToProductCart(lmCodeByShop,
                 SearchProductPage.FilterFrame.MY_SHOP, SearchProductPage.ViewMode.LIST);
         extendedProductCardPage.verifyRequiredElements();
 

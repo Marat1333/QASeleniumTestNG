@@ -92,7 +92,7 @@ public class SearchProductPage extends CommonMagMobilePage {
 
     @Override
     public void waitForPageIsLoaded() {
-        searchField.waitForVisibility();
+        searchField.waitForVisibility(long_timeout);
         backBtn.waitForVisibility();
         waitUntilProgressBarIsInvisible();
     }
@@ -236,14 +236,14 @@ public class SearchProductPage extends CommonMagMobilePage {
     }
 
     @Step("Проверяем, что список последних поисковых запросов такой: {expectedList}")
-    public SearchProductPage shouldSearchHistoryListIs(List<String> expectedList) {
+    public SearchProductPage shouldSearchHistoryListIs(List<String> expectedList) throws Exception {
         List<String> actualStringList = searchHistoryScrollView.getFullDataAsStringList();
         anAssert.isEquals(actualStringList, expectedList, "Ожидается следующий список поисковых запросов: %s");
         return this;
     }
 
     @Step("Проверяем, что список последних поисковых запросов содержит {searchPhrase}")
-    public SearchProductPage verifySearchHistoryContainsSearchPhrase(String searchPhrase) {
+    public SearchProductPage verifySearchHistoryContainsSearchPhrase(String searchPhrase) throws Exception {
         List<String> containsVisibleSearchHistory = searchHistoryScrollView.getFullDataAsStringList();
         anAssert.isFalse(containsVisibleSearchHistory.size() == 0, "История поиска - пустая");
         for (String tmp : containsVisibleSearchHistory) {
@@ -470,7 +470,7 @@ public class SearchProductPage extends CommonMagMobilePage {
     // API verifications
 
     @Step("Проверить, что фронт корректно отобразил ответ от сервера по запросу на catalog product")
-    public SearchProductPage shouldCatalogResponseEqualsContent(ProductItemDataList responseData, CardType type, Integer entityCount) {
+    public SearchProductPage shouldCatalogResponseEqualsContent(ProductItemDataList responseData, CardType type, Integer entityCount) throws Exception {
         List<ProductItemData> productDataListFromResponse = responseData.getItems();
         List<ProductCardData> productCardDataListFromPage;
         switch (type) {
@@ -496,7 +496,7 @@ public class SearchProductPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что фронт корректно отобразил ответ от сервера по запросу на catalog services")
-    public SearchProductPage shouldServicesResponceEqualsContent(ServiceItemDataList responseData, Integer entityCount) {
+    public SearchProductPage shouldServicesResponceEqualsContent(ServiceItemDataList responseData, Integer entityCount) throws Exception {
         List<ServiceItemData> serviceData = responseData.getItems();
         List<ServiceCardData> serviceCardDataList = serviceCardsScrollView.getFullDataList(entityCount);
         if (serviceCardDataList.size() != serviceData.size()) {

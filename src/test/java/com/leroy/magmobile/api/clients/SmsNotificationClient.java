@@ -19,7 +19,7 @@ public class SmsNotificationClient extends BaseMashupClient {
     @Step("Create Notification")
     public Response<JsonNode> createNotification(SmsNotificationData data) {
         SmsNotificationCreateRequest req = new SmsNotificationCreateRequest();
-        req.setLdap(userSessionData.getUserLdap());
+        req.setLdap(getUserSessionData().getUserLdap());
         req.jsonBody(data);
         return execute(req, JsonNode.class);
     }
@@ -27,7 +27,7 @@ public class SmsNotificationClient extends BaseMashupClient {
     @Step("Get notification with lmCode={lmCode}")
     public Response<SmsNotificationData> getNotification(String lmCode) {
         SmsNotificationGetRequest req = new SmsNotificationGetRequest();
-        req.setShopId(userSessionData.getUserShopId());
+        req.setShopId(getUserSessionData().getUserShopId());
         req.setLmCode(lmCode);
         return execute(req, SmsNotificationData.class);
     }

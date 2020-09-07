@@ -45,10 +45,10 @@ public class SalesDocProductClient extends BaseMashupClient {
     @Step("Create Sales Document Product")
     private SalesDocProductClient sendRequestCreate(SalesDocumentResponseData data) {
         SalesDocProductsPost params = new SalesDocProductsPost();
-        params.setShopId(userSessionData.getUserShopId())
-                .setAccessToken(userSessionData.getAccessToken());
-        if (userSessionData.getRegionId() != null)
-            params.setRegionId(userSessionData.getRegionId());
+        params.setShopId(getUserSessionData().getUserShopId())
+                .setAccessToken(getUserSessionData().getAccessToken());
+        if (getUserSessionData().getRegionId() != null)
+            params.setRegionId(getUserSessionData().getRegionId());
         params.setSalesDocumentData(data);
         response = execute(params, SalesDocumentResponseData.class);
         return this;
@@ -83,10 +83,10 @@ public class SalesDocProductClient extends BaseMashupClient {
         SalesDocProductsPut params = new SalesDocProductsPut();
         params.setFullDocId(fullDocId);
         params.setSalesDocumentData(putSalesDocData);
-        params.setShopId(userSessionData.getUserShopId())
-                .setAccessToken(userSessionData.getAccessToken());
-        if (userSessionData.getRegionId() != null)
-            params.setRegionId(userSessionData.getRegionId());
+        params.setShopId(getUserSessionData().getUserShopId())
+                .setAccessToken(getUserSessionData().getAccessToken());
+        if (getUserSessionData().getRegionId() != null)
+            params.setRegionId(getUserSessionData().getRegionId());
         response = execute(params, SalesDocumentResponseData.class);
 
         return this;
@@ -118,9 +118,9 @@ public class SalesDocProductClient extends BaseMashupClient {
     @Step("Make status CANCEL for Sales Document Product with fullDocId={fullDocId}")
     public SalesDocProductClient cancelSalesDoc(String fullDocId) {
         SalesDocParametersUpdatePut params = new SalesDocParametersUpdatePut();
-        params.setAccessToken(userSessionData.getAccessToken())
-                .setLdap(userSessionData.getUserLdap())
-                .setShopId(userSessionData.getUserShopId())
+        params.setAccessToken(getUserSessionData().getAccessToken())
+                .setLdap(getUserSessionData().getUserLdap())
+                .setShopId(getUserSessionData().getUserShopId())
                 .setFullDocId(fullDocId)
                 .setStatus(SalesDocumentsConst.States.CANCELLED.getApiVal());
         response = execute(params, SalesDocumentResponseData.class);
@@ -133,7 +133,7 @@ public class SalesDocProductClient extends BaseMashupClient {
     public Response<SalesDocDiscountData> getSalesDocDiscountByLmCode(String lmCode) {
         GetSalesDocDiscount req = new GetSalesDocDiscount();
         req.setLmCode(lmCode);
-        req.setShopId(userSessionData.getUserShopId());
+        req.setShopId(getUserSessionData().getUserShopId());
         return execute(req, SalesDocDiscountData.class);
     }
 

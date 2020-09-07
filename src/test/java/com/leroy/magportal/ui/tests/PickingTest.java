@@ -58,7 +58,7 @@ public class PickingTest extends BasePAOTest {
             productOrderData.setQuantity(2.0);
             productOrderDataList.add(productOrderData);
         }
-        orderId = helper.createConfirmedOrder(productOrderDataList);
+        orderId = helper.createConfirmedOrder(productOrderDataList, false).getOrderId();
     }
 
     private void initFindPickingTask() throws Exception {

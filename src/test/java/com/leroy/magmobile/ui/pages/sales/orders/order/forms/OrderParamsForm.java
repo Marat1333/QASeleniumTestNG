@@ -137,8 +137,8 @@ public class OrderParamsForm extends BaseAppPage {
     }
 
     public void enterPhone(String value) {
-        if (value.startsWith("7"))
-            value = "7" + value;
+        if (value.startsWith("+"))
+            value = value.substring(2);
         phoneFld.clearFillAndSubmit(value);
     }
 

@@ -29,7 +29,7 @@ public class RupturesClient extends BaseMashupClient {
     public Response<JsonNode> createSession(ReqRuptureSessionData postData) {
         RupturesSessionProductPostRequest req = new RupturesSessionProductPostRequest();
         req.setAppVersion(appVersion);
-        req.bearerAuthHeader(userSessionData.getAccessToken());
+        req.bearerAuthHeader(getUserSessionData().getAccessToken());
         req.jsonBody(postData);
         return execute(req, JsonNode.class);
     }
@@ -39,7 +39,7 @@ public class RupturesClient extends BaseMashupClient {
         RupturesSessionProductRequest req = new RupturesSessionProductRequest();
         req.setAppVersion(appVersion);
         req.jsonBody(putData);
-        req.bearerAuthHeader(userSessionData.getAccessToken());
+        req.bearerAuthHeader(getUserSessionData().getAccessToken());
         return execute(req, JsonNode.class);
     }
 
@@ -102,8 +102,8 @@ public class RupturesClient extends BaseMashupClient {
 
     private RupturesSessionsRequest getSessionsDefaultRequest() {
         RupturesSessionsRequest req = new RupturesSessionsRequest();
-        req.setShopId(userSessionData.getUserShopId());
-        req.setDepartmentId(userSessionData.getUserDepartmentId());
+        req.setShopId(getUserSessionData().getUserShopId());
+        req.setDepartmentId(getUserSessionData().getUserDepartmentId());
         req.setAppVersion(appVersion);
         return req;
     }

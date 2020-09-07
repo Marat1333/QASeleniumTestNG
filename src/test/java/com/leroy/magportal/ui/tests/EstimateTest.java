@@ -1,8 +1,12 @@
 package com.leroy.magportal.ui.tests;
 
+import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
+import com.leroy.magmobile.api.data.customer.CustomerData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateProductOrderData;
+import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.magportal.ui.constants.TestDataConstants;
 import com.leroy.magportal.ui.models.customers.CustomerWebData;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
@@ -30,6 +34,9 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 public class EstimateTest extends BasePAOTest {
+
+    @Inject
+    PAOHelper helper;
 
     private String VALIDATION_EMAIL_ERROR_TEXT = "Введи email в формате username@example.ru";
 
@@ -362,7 +369,7 @@ public class EstimateTest extends BasePAOTest {
 
     @Test(description = "C3302190 Search client by email")
     public void testSearchClientByEmailInEstimate() throws Exception {
-        SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+        SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_2;
 
         EstimatePage estimatePage;
         if (isStartFromScratch())
@@ -478,7 +485,7 @@ public class EstimateTest extends BasePAOTest {
         CustomerWebData customerWebData = new CustomerWebData();
         customerWebData.setRandomRequiredData();
         customerWebData.setPhoneNumber(null);
-        customerWebData.setLastName(customerWebData.getRandomCyrillicCharacters(5));
+        customerWebData.setLastName(RandomUtil.randomCyrillicCharacters(5));
         createCustomerForm.enterCustomerData(customerWebData);
 
         // Step 7
@@ -593,12 +600,15 @@ public class EstimateTest extends BasePAOTest {
         testRemoveEstimate(estimateId);
     }
 
-    @Test(description = "C22797239 Convert estimate to cart", groups = NEED_ACCESS_TOKEN_GROUP)
+    @Test(description = "C22797239 Convert estimate to cart", groups = {NEED_ACCESS_TOKEN_GROUP, NEED_PRODUCTS_GROUP})
     public void testConvertEstimateToCart() throws Exception {
         String estimateId;
         EstimatePage estimatePage;
         if (isStartFromScratch()) {
-            estimateId = apiClientProvider.createConfirmedEstimateAndGetCartId();
+            CustomerData customerData = helper.searchForCustomer(TestDataConstants.SIMPLE_CUSTOMER_DATA_1);
+            EstimateProductOrderData estimateProductOrderData = new EstimateProductOrderData(productList.get(0));
+            estimateProductOrderData.setQuantity(1.0);
+            estimateId = helper.createConfirmedEstimateAndGetId(estimateProductOrderData, customerData);
             estimatePage = loginAndGoTo(EstimatePage.class);
             estimatePage.openPageWithEstimate(estimateId);
         } else {
@@ -666,7 +676,7 @@ public class EstimateTest extends BasePAOTest {
         step("Нажмите на кнопку профиля пользователя в правом верхнем углу и выберите другой магазин");
         List<String> docNumberList = estimatePage.getDocumentDataList()
                 .stream().map(ShortSalesDocWebData::getNumber).collect(Collectors.toList());
-        new MenuPage().selectShopInUserProfile("35");
+        new MenuPage().selectShopInUserProfile("32");
         estimatePage = new EstimatePage();
         estimatePage.shouldDocumentListHaveNumberContains(partEstimateId)
                 .shouldDocumentListNumbersNotEqual(docNumberList);

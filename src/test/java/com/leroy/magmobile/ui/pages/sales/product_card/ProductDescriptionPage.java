@@ -1,10 +1,12 @@
 package com.leroy.magmobile.ui.pages.sales.product_card;
 
+import com.leroy.constants.DefectConst;
 import com.leroy.core.ContextProvider;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
 import com.leroy.magmobile.api.data.catalog.product.reviews.CatalogReviewsOfProductList;
 import com.leroy.magmobile.ui.elements.MagMobButton;
@@ -23,6 +25,7 @@ import org.openqa.selenium.WebDriver;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ProductDescriptionPage extends ProductCardPage {
 
@@ -161,7 +164,7 @@ public class ProductDescriptionPage extends ProductCardPage {
 
     @Step("Проверить, что комплементарные товары корректно отображены")
     public ProductDescriptionPage shouldComplementaryProductsAreCorrect(List<CatalogProductData> apiDataList,
-                                                                        SearchProductPage.CardType type) {
+                                                                        SearchProductPage.CardType type) throws Exception {
         if (apiDataList.size() == 0) {
             mainScrollView.scrollToEnd();
             waitUntilProgressBarIsInvisible();
@@ -180,13 +183,20 @@ public class ProductDescriptionPage extends ProductCardPage {
         } else if (type.equals(SearchProductPage.CardType.ALL_GAMMA)) {
             productCardDataListFromPage = allGammaProductCardsScrollView.getFullDataList();
         }
-        for (int i = 0; i < apiDataList.size(); i++) {
-            ProductCardData uiData = productCardDataListFromPage.get(i);
-            ProductCardData apiData = productCardDataListFromPage.get(i);
-            softAssert.isEquals(uiData.getLmCode(), apiData.getLmCode(), "lmCode");
-            if (type.equals(SearchProductPage.CardType.COMMON)) {
-                softAssert.isEquals(uiData.getAvailableQuantity(), apiData.getAvailableQuantity(), "available quantity");
+        if (!DefectConst.LFRONT_3675) {
+            for (int i = 0; i < apiDataList.size(); i++) {
+                ProductCardData uiData = productCardDataListFromPage.get(i);
+                ProductItemData apiData = apiDataList.get(i);
+                softAssert.isEquals(uiData.getLmCode(), apiData.getLmCode(), "lmCode");
+                if (type.equals(SearchProductPage.CardType.COMMON)) {
+                    softAssert.isEquals(uiData.getAvailableQuantity(), apiData.getAvailableStock(), "available quantity");
+                }
             }
+        } else {
+            //null available stock back-end issue
+            List<String> uiLmCodes = productCardDataListFromPage.stream().map(ProductCardData::getLmCode).collect(Collectors.toList());
+            List<String> apiLmCodes = apiDataList.stream().map(CatalogProductData::getLmCode).collect(Collectors.toList());
+            softAssert.isTrue(apiLmCodes.containsAll(uiLmCodes), "products mismatch");
         }
         softAssert.verifyAll();
         return this;

@@ -5,8 +5,6 @@ import com.leroy.core.asserts.SoftAssertWrapper;
 import com.leroy.utils.ParserUtil;
 import lombok.Data;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +16,21 @@ public class OrderWebData {
     private Integer productCount;
     private Double totalWeight; // кг
     private Double totalPrice; // Рубли
+
+    public OrderWebData clone() {
+        OrderWebData orderWebData = new OrderWebData();
+        orderWebData.setProductCount(productCount);
+        orderWebData.setTotalWeight(totalWeight);
+        orderWebData.setTotalPrice(totalPrice);
+        if (productCardDataList != null) {
+            List<ProductOrderCardWebData> cloneProducts = new ArrayList<>();
+            for (ProductOrderCardWebData productOrderCardWebData : productCardDataList) {
+                cloneProducts.add(productOrderCardWebData.clone());
+            }
+            orderWebData.setProductCardDataList(cloneProducts);
+        }
+        return orderWebData;
+    }
 
     public ProductOrderCardWebData getLastProduct() {
         return productCardDataList.get(productCardDataList.size() - 1);
@@ -55,25 +68,28 @@ public class OrderWebData {
             ProductOrderCardWebData removeProduct = productCardDataList.get(index);
             totalWeight = ParserUtil.plus(totalWeight, -removeProduct.getWeight(), 2);
             totalPrice -= removeProduct.getTotalPrice();
-            productCount--;
+            if (productCount != null)
+                productCount--;
         }
         productCardDataList.remove(index);
     }
 
     public void changeProductQuantity(int productIdx, Number quantity, boolean recalculateOrder) {
         ProductOrderCardWebData productData = productCardDataList.get(productIdx);
-        double weightOneProduct = productData.getWeight() / productData.getSelectedQuantity();
-        productData.setSelectedQuantity(quantity.doubleValue());
         if (recalculateOrder) {
             double newPrice = quantity.intValue() * productData.getPrice();
-            double newWeight = weightOneProduct * quantity.intValue();
+            if (productData.getWeight() != null) {
+                double weightOneProduct = productData.getWeight() / productData.getSelectedQuantity();
+                double newWeight = weightOneProduct * quantity.intValue();
+                double diffTotalWeight = ParserUtil.minus(newWeight, productData.getWeight(), 2);
+                productData.setWeight(newWeight);
+                totalWeight = ParserUtil.plus(totalWeight, diffTotalWeight, 2);
+            }
             double diffTotalPrice = newPrice - productData.getTotalPrice();
-            double diffTotalWeight = ParserUtil.minus(newWeight, productData.getWeight(), 2);
             productData.setTotalPrice(newPrice);
-            productData.setWeight(newWeight);
             totalPrice += diffTotalPrice;
-            totalWeight = ParserUtil.plus(totalWeight, diffTotalWeight, 2);
         }
+        productData.setSelectedQuantity(quantity.doubleValue());
     }
 
     public void assertEqualsNotNullExpectedFields(OrderWebData expectedOrder, int iOrder) {
@@ -84,10 +100,12 @@ public class OrderWebData {
         if (expectedOrder.getTotalPrice() != null)
             softAssert.isEquals(this.getTotalPrice(), expectedOrder.getTotalPrice(),
                     "Заказ #" + (iOrder + 1) + " - неверная Итого стоимость");
-        if (expectedOrder.getTotalWeight() != null)
-            softAssert.isEquals(BigDecimal.valueOf(this.getTotalWeight()).setScale(1, RoundingMode.HALF_UP),
-                    BigDecimal.valueOf(expectedOrder.getTotalWeight()).setScale(1, RoundingMode.HALF_UP),
+        if (expectedOrder.getTotalWeight() != null) {
+            double productCount = expectedOrder.getProductCardDataList().stream().mapToDouble(
+                    ProductOrderCardWebData::getSelectedQuantity).sum();
+            softAssert.isTrue(Math.abs(this.getTotalWeight() - expectedOrder.getTotalWeight()) <= 0.05 * productCount,
                     "Заказ #" + (iOrder + 1) + " - ожидался другой вес");
+        }
 
         softAssert.isEquals(productCardDataList.size(), expectedOrder.getProductCardDataList().size(),
                 "Разное фактическое кол-во товаров в заказе");

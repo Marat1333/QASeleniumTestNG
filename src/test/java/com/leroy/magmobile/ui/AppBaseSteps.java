@@ -8,7 +8,7 @@ import com.leroy.core.pages.ChromeCertificateErrorPage;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.LoginAppPage;
 import com.leroy.magmobile.ui.pages.common.BottomMenuPage;
-import com.leroy.magmobile.ui.pages.customers.CustomerPage;
+import com.leroy.magmobile.ui.pages.customers.MainCustomerPage;
 import com.leroy.magmobile.ui.pages.more.MorePage;
 import com.leroy.magmobile.ui.pages.more.UserProfilePage;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
@@ -112,7 +112,7 @@ public class AppBaseSteps extends MagMobileBaseTest {
                 if (userProfilePage != null)
                     return (T) userProfilePage.goToSales().goToSalesDocumentsSection();
                 return (T) mainProductAndServicesPage.goToSalesDocumentsSection();
-            } else if (pageClass.equals(CustomerPage.class)) {
+            } else if (pageClass.equals(MainCustomerPage.class)) {
                 return (T) mainProductAndServicesPage.goToClientsSection();
             } else if (pageClass.equals(WorkPage.class)) {
                 return (T) mainProductAndServicesPage.goToWork();
@@ -174,9 +174,10 @@ public class AppBaseSteps extends MagMobileBaseTest {
                 .goToUserProfile()
                 .goToEditShopForm()
                 .searchForShopAndSelectById(shop);
-        return new UserProfilePage()
+        new UserProfilePage()
                 .goToEditDepartmentForm()
                 .selectDepartmentById(department);
+        return new UserProfilePage();
     }
 
     /**
