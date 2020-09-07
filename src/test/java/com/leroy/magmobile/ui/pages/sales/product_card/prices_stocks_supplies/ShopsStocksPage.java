@@ -31,7 +31,7 @@ public class ShopsStocksPage extends ShopPricesPage {
     }
 
     @Step("Проверить доступный остаток в магазинах")
-    public ShopsStocksPage shouldShopStocksAreCorrect(List<ShopData> data) {
+    public ShopsStocksPage shouldShopStocksAreCorrect(List<ShopData> data) throws Exception {
         List<ShopCardData> shopData = shopCardsScrollView.getFullDataList();
         for (int i = 0; i < shopData.size(); i++) {
             ShopCardData uiData = shopData.get(i);

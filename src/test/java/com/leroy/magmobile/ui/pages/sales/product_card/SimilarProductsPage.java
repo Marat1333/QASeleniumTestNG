@@ -34,7 +34,7 @@ public class SimilarProductsPage extends ProductCardPage {
     }
 
     @Step("Проверить, что фронт корректно отобразил ответ от сервера по запросу на catalog product")
-    public SimilarProductsPage shouldCatalogResponseEqualsContent(CatalogSimilarProducts responseData, SearchProductPage.CardType type, Integer entityCount) {
+    public SimilarProductsPage shouldCatalogResponseEqualsContent(CatalogSimilarProducts responseData, SearchProductPage.CardType type, Integer entityCount) throws Exception {
         List<CatalogProductData> productDataListFromResponse = responseData.getItems();
         List<ProductCardData> productCardDataListFromPage;
         switch (type) {

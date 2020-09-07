@@ -49,6 +49,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.testng.Assert;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
+@Deprecated
 public class ApiClientProvider {
 
     @Inject

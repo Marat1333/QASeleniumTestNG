@@ -97,7 +97,7 @@ public class ProductOrderForm extends BaseAppPage {
         return ParserUtil.strToDouble(totalPriceVal.getText(ps));
     }
 
-    public SalesDocumentData getSalesDocumentData() {
+    public SalesDocumentData getSalesDocumentData() throws Exception {
         List<OrderAppData> actualOrderDataList = new ArrayList<>();
         SalesDocumentData salesDocumentData = new SalesDocumentData();
         String ps = getPageSource();
