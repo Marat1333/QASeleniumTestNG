@@ -74,7 +74,7 @@ public class SearchCustomerPage extends CommonMagMobilePage {
     // Grab data from page
 
     @Step("Получаем данные о {index}-ом клиенте")
-    public MagCustomerData getCustomerDataFromSearchListByIndex(int index) {
+    public MagCustomerData getCustomerDataFromSearchListByIndex(int index) throws Exception {
         List<MagCustomerData> customerDataList = mainScrollView.getFullDataList(index);
         MagCustomerData customerData = customerDataList.get(customerDataList.size() - 1);
         anAssert.isFalse(customerData.getName().isEmpty(), "Клиент не содержит имени");
@@ -204,7 +204,7 @@ public class SearchCustomerPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что первый отобразившийся клиент имеет данные, которые мы ожидаем")
-    public SearchCustomerPage shouldFirstCustomerIs(MagCustomerData customerData) {
+    public SearchCustomerPage shouldFirstCustomerIs(MagCustomerData customerData) throws Exception {
         MagCustomerData expectedData = customerData.clone();
         expectedData.setEmail(null);
         mainScrollView.getDataObj(0).assertEqualsNotNullExpectedFields(expectedData);

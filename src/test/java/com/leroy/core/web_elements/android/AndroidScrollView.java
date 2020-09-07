@@ -128,7 +128,7 @@ public class AndroidScrollView<T> extends BaseWidget {
     /**
      * Get data object by index. If necessary, it scroll to this object
      */
-    public T getDataObj(int index, boolean scrollUpBefore) {
+    public T getDataObj(int index, boolean scrollUpBefore) throws Exception {
         if (scrollUpBefore)
             scrollToBeginning();
         scrollAndGrabData(null, null, index + 1, Direction.DOWN);
@@ -139,14 +139,14 @@ public class AndroidScrollView<T> extends BaseWidget {
         return tmpCardDataList.get(index);
     }
 
-    public T getDataObj(int index) {
+    public T getDataObj(int index) throws Exception {
         return getDataObj(index, false);
     }
 
     /**
      * Scroll down to the end and get all data as ArrayList
      */
-    public List<T> getFullDataList(int maxEntityCount, boolean scrollUpBefore) {
+    public List<T> getFullDataList(int maxEntityCount, boolean scrollUpBefore) throws Exception {
         if (scrollUpBefore)
             scrollToBeginning();
         scrollAndGrabData(null, null, maxEntityCount, Direction.DOWN);
@@ -160,28 +160,28 @@ public class AndroidScrollView<T> extends BaseWidget {
         return new ArrayList<>(tmpCardDataList);
     }
 
-    public List<T> getFullDataList(int maxEntityCount) {
+    public List<T> getFullDataList(int maxEntityCount) throws Exception {
         return getFullDataList(maxEntityCount, false);
     }
 
-    public List<T> getFullDataList() {
+    public List<T> getFullDataList() throws Exception {
         return getFullDataList(30);
     }
 
-    public List<String> getFullDataAsStringList() {
+    public List<String> getFullDataAsStringList() throws Exception {
         return getFullDataList().stream().map(T::toString).collect(Collectors.toList());
     }
 
     /**
      * Return count of the rows inside the ScrollView
      */
-    public int getRowCount(boolean scrollUpBefore) {
+    public int getRowCount(boolean scrollUpBefore) throws Exception {
         if (scrollUpBefore)
             scrollToBeginning();
         return getFullDataList(100).size();
     }
 
-    public int getRowCount() {
+    public int getRowCount() throws Exception {
         return getRowCount(false);
     }
 

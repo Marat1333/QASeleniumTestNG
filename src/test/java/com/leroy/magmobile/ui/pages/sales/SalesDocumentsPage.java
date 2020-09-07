@@ -160,7 +160,7 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что среди последних 5 документов, документа с номером {expDocNumber} на странице нет")
-    public SalesDocumentsPage shouldSalesDocumentIsNotPresent(String expDocNumber) {
+    public SalesDocumentsPage shouldSalesDocumentIsNotPresent(String expDocNumber) throws Exception {
         List<ShortSalesDocumentData> shortSalesDocumentDataList = salesDocumentScrollList
                 .getFullDataList(5, true);
         anAssert.isTrue(shortSalesDocumentDataList.size() > 0,

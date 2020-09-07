@@ -156,7 +156,7 @@ public class ProductDescriptionPage extends ProductCardPage {
 
     @Step("Проверить, что комплементарные товары корректно отображены")
     public ProductDescriptionPage shouldComplementaryProductsAreCorrect(List<CatalogProductData> apiDataList,
-                                                                        SearchProductPage.CardType type) {
+                                                                        SearchProductPage.CardType type) throws Exception {
         if (apiDataList.size() == 0) {
             mainScrollView.scrollToEnd();
             waitUntilProgressBarIsInvisible();

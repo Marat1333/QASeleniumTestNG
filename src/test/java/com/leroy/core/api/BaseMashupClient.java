@@ -1,6 +1,7 @@
 package com.leroy.core.api;
 
 import com.leroy.constants.EnvConstants;
+import com.leroy.core.ContextProvider;
 import com.leroy.core.UserSessionData;
 import com.leroy.core.configuration.Log;
 import io.qameta.allure.Allure;
@@ -26,7 +27,14 @@ public abstract class BaseMashupClient extends BaseClient {
     protected String gatewayUrl;
 
     @Setter
-    protected UserSessionData userSessionData;
+    private UserSessionData userSessionData;
+
+    protected UserSessionData getUserSessionData() {
+        if (userSessionData != null)
+            return userSessionData;
+        else
+            return ContextProvider.getContext().getUserSessionData();
+    }
 
     protected <J> Response<J> execute(RequestBuilder<?> request, final Class<J> type) {
         if (userSessionData != null && userSessionData.getAccessToken() != null)
