@@ -7,6 +7,8 @@ import java.util.List;
 @Data
 public class TransferSearchProductData {
     private String lmCode;
+    private String barCode;
+    private String title;
     private Integer totalQuantity;
     private List<Source> source;
     private String altPrice;
@@ -14,7 +16,7 @@ public class TransferSearchProductData {
     private String altPriceUnit;
     private Integer recommendedPrice;
     private String priceCurrency;
-    private Integer price;
+    private Double price;
 
     @Data
     public static class Source {

@@ -6,9 +6,7 @@ import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.ApiClientProvider;
 import com.leroy.magmobile.api.clients.TransferClient;
-import com.leroy.magmobile.api.data.sales.transfer.TransferProductOrderData;
-import com.leroy.magmobile.api.data.sales.transfer.TransferRunRespData;
-import com.leroy.magmobile.api.data.sales.transfer.TransferSalesDocData;
+import com.leroy.magmobile.api.data.sales.transfer.*;
 import io.qameta.allure.Step;
 import org.testng.Assert;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -26,6 +24,8 @@ import java.util.List;
 
 import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
 
 public class TransferHelper extends ApiClientProvider {
 
@@ -190,6 +190,17 @@ public class TransferHelper extends ApiClientProvider {
     public TransferRunRespData createConfirmedTransferTask(
             TransferProductOrderData productData, SalesDocumentsConst.GiveAwayPoints giveAwayPoints) {
         return createConfirmedTransferTask(Collections.singletonList(productData), giveAwayPoints);
+    }
+
+    @Step("Поиск товаров доступных для отзыва со склада")
+    public List<TransferSearchProductData> searchForProductsForTransfer() {
+        TransferClient transferClient = getTransferClient();
+        Response<TransferSearchProductDataList> resp = transferClient.searchForTransferProducts(
+                SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR);
+        assertThat(resp, successful());
+        List<TransferSearchProductData> result = resp.asJson().getItems();
+        assertThat("Не найден ни один товар", result, hasSize(greaterThan(0)));
+        return result;
     }
 
     @Step("API: Отменяем подтвержденную заявку на отзыв товаров")

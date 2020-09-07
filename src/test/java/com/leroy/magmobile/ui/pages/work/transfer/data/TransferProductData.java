@@ -2,6 +2,7 @@ package com.leroy.magmobile.ui.pages.work.transfer.data;
 
 import com.leroy.core.ContextProvider;
 import com.leroy.core.asserts.SoftAssertWrapper;
+import com.leroy.magmobile.api.data.sales.transfer.TransferSearchProductData;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,6 +31,15 @@ public class TransferProductData {
         this.totalStock = productOrderCardAppData.getTotalStock();
         this.price = productOrderCardAppData.getPrice();
         this.totalPrice = productOrderCardAppData.getTotalPrice();
+    }
+
+    public TransferProductData(TransferSearchProductData productData) {
+        this.lmCode = productData.getLmCode();
+        this.title = productData.getTitle();
+        this.barCode = productData.getBarCode();
+        this.orderedQuantity = 0;
+        this.totalStock = productData.getTotalQuantity();
+        this.price = productData.getPrice();
     }
 
     public TransferProductData clone() {

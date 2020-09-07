@@ -3,6 +3,7 @@ package com.leroy.magmobile.ui.pages.work.transfer;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.android.AndroidScrollViewV2;
+import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
@@ -10,10 +11,15 @@ import com.leroy.magmobile.ui.pages.work.transfer.data.TransferProductData;
 import com.leroy.magmobile.ui.pages.work.transfer.widget.TransferSearchProductCardWidget;
 import io.qameta.allure.Step;
 
+import java.util.List;
+
 public class TransferSearchPage extends CommonMagMobilePage {
 
     @AppFindBy(accessibilityId = "TransferProductsSearchMainScreen", metaName = "Область 'Поиск товаров на складе'")
     Element transferProductSearchArea;
+
+    @AppFindBy(accessibilityId = "ScreenTitle-TransferProductsSearch", metaName = "Редактируемая строка поиска")
+    EditBox editSearchFld;
 
     private AndroidScrollViewV2<TransferSearchProductCardWidget, TransferProductData>
             productCardsScrollView = new AndroidScrollViewV2<>(driver,
@@ -44,6 +50,13 @@ public class TransferSearchPage extends CommonMagMobilePage {
     }
 
     // Actions
+
+    @Step("Найти товар с ЛМ код = {lmCode}")
+    public TransferSearchPage searchForProductByLmCode(String lmCode) {
+        transferProductSearchArea.click();
+        editSearchFld.clearFillAndSubmit(lmCode);
+        return this;
+    }
 
     @Step("Нажать на {index}-ую карточку товара")
     public AddProduct35Page<TransferSearchPage> clickProductCard(int index) throws Exception {
@@ -84,6 +97,17 @@ public class TransferSearchPage extends CommonMagMobilePage {
     public TransferSearchPage shouldProductCountOnPanelIs(int value) {
         anAssert.isEquals(transferProductCount.getText(), String.valueOf(value),
                 "Неверное количество товаров на панели 'Товары на отзыв'");
+        return this;
+    }
+
+    @Step("Проверить, что в списке отображаются только необходимы товары")
+    public TransferSearchPage shouldTransferProductsAre(List<TransferProductData> expectedProductList) throws Exception {
+        expectedProductList.forEach(p -> p.setPrice(null));
+        List<TransferProductData> actualProducts = productCardsScrollView.getFullDataList(5);
+        anAssert.isEquals(actualProducts.size(), expectedProductList.size(), "Ожидалось другое количество товаров");
+        for (int i = 0; i < expectedProductList.size(); i++) {
+            actualProducts.get(i).assertEqualsNotNullExpectedFields(expectedProductList.get(i));
+        }
         return this;
     }
 

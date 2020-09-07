@@ -29,6 +29,7 @@ import com.leroy.magmobile.ui.pages.work.transfer.data.TransferProductData;
 import com.leroy.magmobile.ui.pages.work.transfer.enums.TransferTaskTypes;
 import com.leroy.magmobile.ui.pages.work.transfer.modal.TransferActionWithProductCardModal;
 import com.leroy.magmobile.ui.pages.work.transfer.modal.TransferExitWarningModal;
+import com.leroy.magportal.api.helpers.PAOHelper;
 import lombok.Data;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.AfterClass;
@@ -58,6 +59,8 @@ public class TransferTest extends AppBaseSteps {
 
     @Inject
     TransferHelper transferHelper;
+    @Inject
+    PAOHelper paoHelper;
 
     List<CustomTransferProduct> products = new ArrayList<>();
 
@@ -677,6 +680,20 @@ public class TransferTest extends AppBaseSteps {
         // TODO NEED_to_update_steps
 
 
+    }
+
+    @Test(description = "C3268369 Поиск товара (по ЛМ коду и штрих коду)")
+    public void testSearchForProductsForTransferTask() throws Exception {
+        TransferSearchProductData productData = transferHelper.searchForProductsForTransfer().get(0);
+        WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
+        TransferRequestsPage transferRequestsPage = workPage.goToTransferProductFromStock();
+        TransferSearchPage transferSearchPage = transferRequestsPage.clickFillShoppingRoomButton()
+                .clickAddProductFromStockButton();
+
+        // Step 1 - 2
+        step("Нажмите на поле поиска товара по ЛМ или штрих коду и введите ЛМ код товара");
+        transferSearchPage.searchForProductByLmCode(productData.getLmCode());
+        transferSearchPage.shouldTransferProductsAre(Collections.singletonList(new TransferProductData(productData)));
     }
 
     @Test(description = "C3268376 Удаление заявки в статусе Черновик")
