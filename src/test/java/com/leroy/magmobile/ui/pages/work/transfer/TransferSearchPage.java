@@ -38,7 +38,7 @@ public class TransferSearchPage extends CommonMagMobilePage {
     // Grab data
 
     @Step("Получить информацию о {index} товаре")
-    public TransferProductData getTransferProduct(int index) {
+    public TransferProductData getTransferProduct(int index) throws Exception {
         index--;
         return productCardsScrollView.getDataObj(index);
     }
@@ -72,7 +72,7 @@ public class TransferSearchPage extends CommonMagMobilePage {
     // Verifications
 
     @Step("Проверить, что у {index} товара выбрано количество {value}")
-    public TransferSearchPage shouldProductQuantityIs(int index, int value) {
+    public TransferSearchPage shouldProductQuantityIs(int index, int value) throws Exception {
         index--;
         TransferProductData transferProductData = productCardsScrollView.getDataObj(index);
         anAssert.isEquals(transferProductData.getOrderedQuantity(), value,

@@ -615,6 +615,70 @@ public class TransferTest extends AppBaseSteps {
         // TODO check
     }
 
+    @Test(description = "C3268368 Редактирование параметров заявки", enabled = false)
+    public void testEditParametersTransferTask() throws Exception {
+        TransferOrderStep1Page transferOrderStep1Page;
+        if (isStartFromScratch()) {
+            TransferProductOrderData transferProductData1 = new TransferProductOrderData();
+            transferProductData1.setLmCode(products.get(0).getLmCode());
+            transferProductData1.setOrderedQuantity(1);
+
+            String taskId = transferHelper.createDraftTransferTask(
+                    transferProductData1,
+                    SalesDocumentsConst.GiveAwayPoints.FOR_CLIENT_TO_SHOP_ROOM).getTaskId();
+            WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
+            TransferRequestsPage transferRequestsPage = workPage.goToTransferProductFromStock();
+            transferRequestsPage.searchForRequestAndOpenIt(products.get(0).getTitle(),
+                    SalesDocumentsConst.States.DRAFT.getUiVal());
+            transferOrderStep1Page = new TransferOrderStep1Page();
+            transferOrderStep1Page.shouldTaskNumberIs(taskId);
+        } else {
+            transferOrderStep1Page = new TransferOrderStep1Page();
+        }
+
+        DetailedTransferTaskData detailedTransferTaskData = transferOrderStep1Page.getTransferTaskData();
+
+        // Step 1
+        step("Нажмите на мини-карточку товара");
+        TransferActionWithProductCardModal actionWithProductModal = transferOrderStep1Page
+                .clickProductCard(1)
+                .verifyRequiredElements();
+
+        // Step 2
+        EditProduct35Page<TransferOrderStep1Page> editProduct35Page = actionWithProductModal
+                .clickChangeQuantityMenuItem()
+                .verifyRequiredElements();
+
+        int oneMonoPalletQuantity = editProduct35Page.getByOneMonoPalletQuantity();
+
+        // Step 3
+        detailedTransferTaskData.changeProductQuantity(0, oneMonoPalletQuantity);
+        editProduct35Page.enterQuantityOfProduct(oneMonoPalletQuantity, true);
+        transferOrderStep1Page = editProduct35Page.clickSaveButton();
+        transferOrderStep1Page.shouldTransferTaskDataIs(detailedTransferTaskData);
+
+        // Step 4
+        step("Нажмите на кнопку Далее");
+        transferOrderStep1Page.clickNextButton();
+        TransferOrderToClientStep2Page transferOrderToClientStep2Page = new TransferOrderToClientStep2Page()
+                .verifyRequiredElements();
+
+        // Steps 5 - 6
+        step("Нажмите на поле Место выдачи и Выберите параметр, отличный от указанного ранее");
+        TransferTaskTypes newPickupPoint = TransferTaskTypes.OVER_SIZED_CHECKOUT;
+        transferOrderToClientStep2Page.selectPickupPoint(newPickupPoint)
+                .shouldPickupPointIs(newPickupPoint);
+
+        // Step 7
+        step("Нажмите на поле клиента");
+
+        // Step 8
+        step("Выберите параметр Удалить клиента из документа");
+        // TODO NEED_to_update_steps
+
+
+    }
+
     @Test(description = "C3268376 Удаление заявки в статусе Черновик")
     public void testRemoveDraftTransferTask() throws Exception {
         // Pre-condition

@@ -47,7 +47,7 @@ public class TransferConfirmedTaskToClientPage extends TransferOrderPage {
     }
 
     @Step("Получить информацию о деталях подтвержденной заявки на отзыв")
-    public DetailedTransferTaskData getTransferTaskData() {
+    public DetailedTransferTaskData getTransferTaskData() throws Exception {
         String ps = getPageSource();
         DetailedTransferTaskData detailedTransferTaskData = new DetailedTransferTaskData();
         detailedTransferTaskData.setNumber(getTaskNumber(ps));
@@ -61,7 +61,8 @@ public class TransferConfirmedTaskToClientPage extends TransferOrderPage {
     // Verifications
 
     @Step("Проверить, что данные заявки на отзыв соответствуют ожидаемым значениям")
-    public TransferConfirmedTaskToClientPage shouldTransferTaskDataIs(DetailedTransferTaskData transferTaskData) {
+    public TransferConfirmedTaskToClientPage shouldTransferTaskDataIs(
+            DetailedTransferTaskData transferTaskData) throws Exception {
         DetailedTransferTaskData expectedTransferTaskData = transferTaskData.clone();
         if (expectedTransferTaskData.getClient() != null) {
             expectedTransferTaskData.getClient().setEmail(null);

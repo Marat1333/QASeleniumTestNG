@@ -39,18 +39,18 @@ public class TransferOrderStep1Page extends TransferOrderPage {
     // Grab data
 
     @Step("Получить информацию о {index} товаре")
-    public TransferProductData getTransferProductData(int index) {
+    public TransferProductData getTransferProductData(int index) throws Exception {
         index--;
         return productScrollView.getDataObj(index);
     }
 
     @Step("Получить информацию о товарах в заявке")
-    public List<TransferProductData> getTransferProductDataList() {
+    public List<TransferProductData> getTransferProductDataList() throws Exception {
         return productScrollView.getFullDataList();
     }
 
     @Step("Получить информацию о заявке на отзыв (Черновик - шаг 1)")
-    public DetailedTransferTaskData getTransferTaskData() {
+    public DetailedTransferTaskData getTransferTaskData() throws Exception {
         DetailedTransferTaskData detailedTransferTaskData = new DetailedTransferTaskData();
         detailedTransferTaskData.setNumber(getTaskNumber());
         detailedTransferTaskData.setProducts(productScrollView.getFullDataList());
@@ -73,6 +73,10 @@ public class TransferOrderStep1Page extends TransferOrderPage {
             productScrollView.scrollToBeginning();
         productScrollView.clickElemByIndex(index);
         return new TransferActionWithProductCardModal();
+    }
+
+    public TransferActionWithProductCardModal clickProductCard(int index) throws Exception {
+        return clickProductCard(index, false);
     }
 
     @Step("Нажать кнопку '+ Товары со склада'")
@@ -117,7 +121,8 @@ public class TransferOrderStep1Page extends TransferOrderPage {
     }
 
     @Step("Проверить, что {index}-ый добавленный товар соответствует ожидаемому")
-    public TransferOrderStep1Page shouldTransferProductIs(int index, TransferProductData transferProductData) {
+    public TransferOrderStep1Page shouldTransferProductIs(
+            int index, TransferProductData transferProductData) throws Exception {
         index--;
         TransferProductData expectedTransferProductData = transferProductData.clone();
         expectedTransferProductData.setTotalStock(null);
@@ -133,7 +138,7 @@ public class TransferOrderStep1Page extends TransferOrderPage {
     }
 
     @Step("Проверить, что данные заявки на отзыв соответствуют ожидаемым значениям (Черновик - шаг 1)")
-    public TransferOrderStep1Page shouldTransferTaskDataIs(DetailedTransferTaskData transferTaskData) {
+    public TransferOrderStep1Page shouldTransferTaskDataIs(DetailedTransferTaskData transferTaskData) throws Exception {
         DetailedTransferTaskData expectedTransferTaskData = transferTaskData.clone();
         expectedTransferTaskData.getProducts().forEach(p -> p.setTotalStock(null));
         DetailedTransferTaskData actualData = getTransferTaskData();
@@ -142,7 +147,7 @@ public class TransferOrderStep1Page extends TransferOrderPage {
     }
 
     @Step("Проверить, что общая сумма равна стоимости каждого из товаров в заявке")
-    public TransferOrderStep1Page shouldTotalPriceCalculatedCorrectly() {
+    public TransferOrderStep1Page shouldTotalPriceCalculatedCorrectly() throws Exception {
         List<TransferProductData> productDataList = productScrollView.getFullDataList();
         String strTotalPrice = totalPrice.getText();
         Double totalPriceFromPanel = ParserUtil.strToDouble(strTotalPrice);

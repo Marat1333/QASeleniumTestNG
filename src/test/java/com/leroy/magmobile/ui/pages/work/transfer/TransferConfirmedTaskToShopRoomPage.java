@@ -32,7 +32,7 @@ public class TransferConfirmedTaskToShopRoomPage extends TransferOrderPage {
     // Grab data
 
     @Step("Получить информацию о деталях подтвержденной заявки на отзыв")
-    public DetailedTransferTaskData getTransferTaskData() {
+    public DetailedTransferTaskData getTransferTaskData() throws Exception {
         String ps = getPageSource();
         DetailedTransferTaskData detailedTransferTaskData = new DetailedTransferTaskData();
         detailedTransferTaskData.setNumber(getTaskNumber(ps));
@@ -45,7 +45,8 @@ public class TransferConfirmedTaskToShopRoomPage extends TransferOrderPage {
     // Verifications
 
     @Step("Проверить, что данные заявки на отзыв соответствуют ожидаемым значениям")
-    public TransferConfirmedTaskToShopRoomPage shouldTransferTaskDataIs(DetailedTransferTaskData transferTaskData) {
+    public TransferConfirmedTaskToShopRoomPage shouldTransferTaskDataIs(
+            DetailedTransferTaskData transferTaskData) throws Exception {
         DetailedTransferTaskData expectedTransferTaskData = transferTaskData.clone();
         expectedTransferTaskData.getProducts().forEach(p -> p.setTotalStock(null));
         DetailedTransferTaskData actualData = getTransferTaskData();
