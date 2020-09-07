@@ -3,11 +3,11 @@ package com.leroy.magportal.api.clients;
 import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magportal.api.constants.PickingReasonEnum;
 import com.leroy.magportal.api.constants.PickingTaskWorkflowEnum;
+import com.leroy.magportal.api.data.onlineOrders.OrderProductDataPayload;
 import com.leroy.magportal.api.data.picking.PickingTaskData;
 import com.leroy.magportal.api.data.picking.PickingTaskData.ProductData;
 import com.leroy.magportal.api.data.picking.PickingTaskDataList;
 import com.leroy.magportal.api.data.picking.PickingTaskWorkflowPayload;
-import com.leroy.magportal.api.data.picking.PickingTaskWorkflowPayload.ProductDataPayload;
 import com.leroy.magportal.api.data.picking.PickingTaskWorkflowPayload.StoragePayload;
 import com.leroy.magportal.api.data.picking.PickingTaskWorkflowPayload.WorkflowPayload;
 import com.leroy.magportal.api.requests.picking.PickingTaskGetRequest;
@@ -78,7 +78,7 @@ public class PickingTaskClient extends BaseMashupClient {
         payload.setAction(action);
         return execute(new PickingWorkflowRequest()
                 .setPickingTaskId(taskId)
-                .setUserLdap(userSessionData.getUserLdap())
+                .setLdapHeader(getUserSessionData().getUserLdap())
                 .jsonBody(payload), PickingTaskData.class);
     }
 
@@ -88,14 +88,14 @@ public class PickingTaskClient extends BaseMashupClient {
 
         PickingTaskWorkflowPayload payload = new PickingTaskWorkflowPayload();
         WorkflowPayload workflowPayload = new WorkflowPayload();
-        List<ProductDataPayload> products = new ArrayList<>();
+        List<OrderProductDataPayload> products = new ArrayList<>();
         PickingTaskData pickingTaskData = this.getPickingTask(taskId).asJson();
         for (ProductData productData : pickingTaskData.getProductData()) {
             if (isFull) {
                 count = productData.getConfirmedQuantity();
                 reason = "";
             }
-            ProductDataPayload productDataPayload = new ProductDataPayload();
+            OrderProductDataPayload productDataPayload = new OrderProductDataPayload();
             productDataPayload.setLineId(productData.getLineId());
             productDataPayload.setLmCode(productData.getLmCode());
             productDataPayload.setQuantity(count);

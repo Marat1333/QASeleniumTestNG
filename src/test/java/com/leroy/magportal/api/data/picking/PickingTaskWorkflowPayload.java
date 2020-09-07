@@ -1,6 +1,7 @@
 package com.leroy.magportal.api.data.picking;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.leroy.magportal.api.data.onlineOrders.OrderProductDataPayload;
 import java.util.List;
 import lombok.Data;
 
@@ -16,21 +17,12 @@ public class PickingTaskWorkflowPayload {
     @Data
     public static class WorkflowPayload {
 
-        private List<ProductDataPayload> products;
+        private List<OrderProductDataPayload> products;
     }
 
     @Data
     public static class StoragePayload {
 
         private List<String> locations;
-    }
-
-    @Data
-    public static class ProductDataPayload {
-
-        private String lineId;
-        private String lmCode;
-        private Double quantity;
-        private String reason;
     }
 }

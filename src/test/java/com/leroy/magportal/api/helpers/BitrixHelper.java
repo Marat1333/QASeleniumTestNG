@@ -38,6 +38,8 @@ public class BitrixHelper extends BaseHelper {
     private PaymentHelper paymentHelper;
     @Inject
     private ShopsClient shopsClient;
+    @Inject
+    private CatalogSearchClient catalogSearchClient;
 
     private final LocalDateTime dateTime = LocalDateTime.now();
 
@@ -74,11 +76,6 @@ public class BitrixHelper extends BaseHelper {
             }
         });
 
-//    List<String> newList = result.stream()
-//        .filter(x -> x.getSolutionId() != null)
-//        .map(BitrixSolutionResponse::getSolutionId)
-//        .collect(Collectors.toList());
-
         return result;
     }
 
@@ -100,7 +97,6 @@ public class BitrixHelper extends BaseHelper {
 
     private ArrayList<BitrixSolutionPayload.Basket> makeBasket(Integer productsCount, String shopId,
             OnlineOrderTypeData orderData) {
-        CatalogSearchClient catalogSearchClient = getCatalogSearchClient();
         ArrayList<BitrixSolutionPayload.Basket> result = new ArrayList<>();
 
         if (orderData.getLmCode() != null) {
@@ -236,7 +232,7 @@ public class BitrixHelper extends BaseHelper {
             payload.setPickupShop(makePickupShopPayload(shop));
         }
         if (orderData.getDeliveryType().equals(DeliveryServiceTypeEnum.DELIVERY_PVZ.getType())) {
-            payload.setPvzData(makePvzPayload());//TODO: no PVZ payload
+            payload.setPvzData(makePvzPayload());
         }
 
         return payload;

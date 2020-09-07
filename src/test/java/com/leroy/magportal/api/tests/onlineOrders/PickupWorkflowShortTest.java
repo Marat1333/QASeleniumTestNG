@@ -27,16 +27,16 @@ public class PickupWorkflowShortTest extends BaseMagPortalApiTest {
     private BitrixHelper bitrixHelper;
     @Inject
     private PaymentHelper paymentHelper;
-
+    @Inject
     private OrderClient orderClient;
+    @Inject
     private PickingTaskClient pickingTaskClient;
+
     private String currentOrderId;
 
 
     @BeforeClass
     private void setUp() throws Exception {
-        orderClient = apiClientProvider.getOrderClient();
-        pickingTaskClient = apiClientProvider.getPickingTaskClient();
         List<BitrixSolutionResponse> bitrixSolutionResponses = bitrixHelper
                 .createOnlineOrders(1, OnlineOrderTypeConst.PICKUP_POSTPAYMENT, 3);
         currentOrderId = bitrixSolutionResponses.stream().findAny().get().getSolutionId();
@@ -46,11 +46,7 @@ public class PickupWorkflowShortTest extends BaseMagPortalApiTest {
         orderClient.waitUntilOrderHasStatusAndReturnOrderData(currentOrderId,
                 SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal());
     }
-
-    //    assertThat("Payment update failed", resp, successful());
-//    PaymentTask body = resp.asJson();
-//    assertThat("API: Payment update failed due to wrong STATUS: " + resp.toString(),
-//                status.toString(), equalTo(body.getTaskStatus()));
+    
     @Test(description = "C3225834 PICKUP_POSTPAYMENT: Start Picking the Order", priority = 1)
     public void testStartPicking() {
         Response<PickingTaskData> response = pickingTaskClient

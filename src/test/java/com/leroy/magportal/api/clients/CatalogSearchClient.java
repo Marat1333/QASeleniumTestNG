@@ -11,13 +11,6 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class CatalogSearchClient extends com.leroy.magmobile.api.clients.CatalogSearchClient {
 
-    @Override
-    @Step("Search for products")
-    public Response<ProductItemDataList> searchProductsBy(GetCatalogSearch params) {
-        params.setLdapHeader(userSessionData.getUserLdap());//TODO: DELETE
-        return execute(params, ProductItemDataList.class);
-    }
-
     @Step("Return random product for specified ShopId")
     public List<ProductItemData> getRandomUniqueProductsWithTitlesForShop(int countOfProducts,
             String shopId) {

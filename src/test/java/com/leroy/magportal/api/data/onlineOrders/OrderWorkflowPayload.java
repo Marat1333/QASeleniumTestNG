@@ -14,14 +14,6 @@ public class OrderWorkflowPayload {
     @Data
     public static class WorkflowPayload {
 
-        private List<ProductDataPayload> products;
-    }
-
-    @Data
-    public static class ProductDataPayload {
-
-        private String lineId;
-        private Double quantity;
-        private String reason;
+        private List<OrderProductDataPayload> products;
     }
 }
