@@ -8,6 +8,8 @@ import com.leroy.magmobile.api.ApiClientProvider;
 import com.leroy.magmobile.api.clients.TransferClient;
 import com.leroy.magmobile.api.data.sales.transfer.*;
 import io.qameta.allure.Step;
+import lombok.Data;
+import lombok.experimental.Accessors;
 import org.testng.Assert;
 import ru.leroymerlin.qa.core.clients.base.Response;
 import ru.leroymerlin.qa.core.clients.fulfillment.data.internaltransfer.FulfillmentInternalTransferClient;
@@ -21,6 +23,7 @@ import java.time.ZonedDateTime;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -192,22 +195,40 @@ public class TransferHelper extends ApiClientProvider {
         return createConfirmedTransferTask(Collections.singletonList(productData), giveAwayPoints);
     }
 
-    @Step("Поиск товаров доступных для отзыва со склада")
-    public List<TransferSearchProductData> searchForProductsForTransfer() {
-        TransferClient transferClient = getTransferClient();
-        Response<TransferSearchProductDataList> resp = transferClient.searchForTransferProducts(
-                SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR);
-        assertThat(resp, successful());
-        List<TransferSearchProductData> result = resp.asJson().getItems();
-        assertThat("Не найден ни один товар", result, hasSize(greaterThan(0)));
-        return result;
-    }
-
     @Step("API: Отменяем подтвержденную заявку на отзыв товаров")
     public void cancelConfirmedTransferTask(String taskId) {
         String soapEndpointUrl = "https://navsvr.hq.ru.corp.leroymerlin.com:30957/LAIR_SRM_API/WS/%D0%97%D0%B5%D0%BB%D0%B5%D0%BD%D0%BE%D0%B3%D1%80%D0%B0%D0%B4/Codeunit/API3";
         String extTask = getExtTaskByTaskId(taskId);
         callSoapWebService(soapEndpointUrl, taskId, extTask);
+    }
+
+    // -------------- Search Products ------------- //
+
+    @Step("Поиск товаров доступных для отзыва со склада")
+    public List<TransferSearchProductData> searchForProductsForTransfer(SearchFilters filters) {
+        TransferClient transferClient = getTransferClient();
+        Response<TransferSearchProductDataList> resp = transferClient.searchForTransferProducts(
+                SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR);
+        assertThat(resp, successful());
+        List<TransferSearchProductData> result = resp.asJson().getItems();
+        if (filters.getStockType().equals(StockType.MONO_PALLET))
+            result = result.stream().filter(p -> p.getSource().get(0).getMonoPallets() != null).collect(Collectors.toList());
+        assertThat("Не найден ни один товар", result, hasSize(greaterThan(0)));
+        return result;
+    }
+
+    public List<TransferSearchProductData> searchForProductsForTransfer() {
+        return searchForProductsForTransfer(new SearchFilters());
+    }
+
+    public enum StockType {
+        MONO_PALLET, MIX_PALLET
+    }
+
+    @Data
+    @Accessors(chain = true)
+    public static class SearchFilters {
+        private StockType stockType;
     }
 
 }

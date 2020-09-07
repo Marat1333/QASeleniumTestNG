@@ -4,6 +4,7 @@ public class DefectConst {
 
     // Активные дефекты
     public static final boolean STOCK_ISSUE = true;
+    public static final boolean TRANSFER_WRONG_QUANTITY_TOOLTIP = true;
     public static final boolean LFRONT_3675 = true;
     public static final boolean PAO_931 = true;
     public static final boolean PRODUCT_COUNT_WHEN_TWO_ORDERS_IN_CART = true; // PAO-1019

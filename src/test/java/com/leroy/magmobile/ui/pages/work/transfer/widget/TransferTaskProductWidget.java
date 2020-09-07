@@ -62,9 +62,12 @@ public class TransferTaskProductWidget extends CardWidget<TransferProductData> {
         transferProductData.setOrderedQuantity(ParserUtil.strToInt(orderedQuantity.getText(pageSource)));
         transferProductData.setPrice(ParserUtil.strToDouble(price.getTextIfPresent(pageSource)));
         transferProductData.setTotalPrice(ParserUtil.strToDouble(totalPrice.getTextIfPresent(pageSource)));
-        transferProductData.setSelectedPieceQuantity(ParserUtil.strToInt(pieceQuantity.getText(pageSource)));
-        transferProductData.setSelectedMonoPalletQuantity(ParserUtil.strToInt(monoPalletQuantity.getText(pageSource)));
-        transferProductData.setSelectedMixPalletQuantity(ParserUtil.strToInt(mixPalletQuantity.getText(pageSource)));
+        String singleQuantity = pieceQuantity.getText();
+        String monoQuantity = monoPalletQuantity.getText();
+        String mixQuantity = mixPalletQuantity.getText();
+        transferProductData.setSelectedPieceQuantity(singleQuantity.equals("—") ? 0 : ParserUtil.strToInt(singleQuantity));
+        transferProductData.setSelectedMonoPalletQuantity(monoQuantity.equals("—") ? 0 : ParserUtil.strToInt(monoQuantity));
+        transferProductData.setSelectedMixPalletQuantity(mixQuantity.equals("—") ? 0 : ParserUtil.strToInt(mixQuantity));
         return transferProductData;
     }
 

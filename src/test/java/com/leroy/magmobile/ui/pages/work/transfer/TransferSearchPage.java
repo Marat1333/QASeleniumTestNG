@@ -37,7 +37,7 @@ public class TransferSearchPage extends CommonMagMobilePage {
 
     @Override
     protected void waitForPageIsLoaded() {
-        anAssert.isElementVisible(transferProductSearchArea, timeout);
+        waitForAnyOneOfElementsIsVisible(transferProductSearchArea, editSearchFld);
         waitUntilProgressBarIsInvisible();
     }
 
@@ -90,6 +90,32 @@ public class TransferSearchPage extends CommonMagMobilePage {
         TransferProductData transferProductData = productCardsScrollView.getDataObj(index);
         anAssert.isEquals(transferProductData.getOrderedQuantity(), value,
                 String.format("У %s товара неверное выбранное количество", index + 1));
+        return this;
+    }
+
+    @Step("Проверить, что у {index} товара отображается предупреждение о том, что выбрано неверное количество")
+    public TransferSearchPage shouldProductHasWrongQuantityTooltip(int index) throws Exception {
+        index--;
+        TransferSearchProductCardWidget widget = productCardsScrollView.getWidget(index);
+        anAssert.isTrue(widget.isWrongQuantityErrorTooltipVisible(),
+                "Предупреждение о необходимости изменить количество не отображается");
+        return this;
+    }
+
+    @Step("Убедиться, что состав отзыва у {index} товара: Штучный {single}; Моно-Паллет {monoPallet}; Микс-Паллет {mixPallet}; Выбрано {ordered}")
+    public TransferSearchPage shouldReviewCompositionIs(
+            int index, int single, int monoPallet, int mixPallet, int ordered) throws Exception {
+        index--;
+        TransferProductData transferProductData = productCardsScrollView.getDataObj(index);
+        softAssert.isEquals(transferProductData.getSelectedPieceQuantity(), single,
+                "Неверный состав отзыва для штучного товара");
+        softAssert.isEquals(transferProductData.getSelectedMonoPalletQuantity(), monoPallet,
+                "Неверный состав отзыва для моно-паллета");
+        softAssert.isEquals(transferProductData.getSelectedMixPalletQuantity(), mixPallet,
+                "Неверный состав отзыва для микс-паллета");
+        softAssert.isEquals(transferProductData.getOrderedQuantity(), ordered,
+                "Неверное заказанное (выбранное) количество");
+        softAssert.verifyAll();
         return this;
     }
 
