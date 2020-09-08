@@ -63,6 +63,12 @@ public class TransferProductData {
             this.totalPrice = this.price * orderedQuantity;
     }
 
+    public void setReviewCompositionAsNull() {
+        this.setSelectedMonoPalletQuantity(null);
+        this.setSelectedMixPalletQuantity(null);
+        this.setSelectedPieceQuantity(null);
+    }
+
     public void assertEqualsNotNullExpectedFields(TransferProductData expectedData) {
         SoftAssertWrapper softAssert = ContextProvider.getContext().getSoftAssert();
         softAssert.isEquals(lmCode, expectedData.getLmCode(),

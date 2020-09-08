@@ -211,7 +211,7 @@ public class TransferHelper extends ApiClientProvider {
                 SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR);
         assertThat(resp, successful());
         List<TransferSearchProductData> result = resp.asJson().getItems();
-        if (filters.getStockType().equals(StockType.MONO_PALLET))
+        if (StockType.MONO_PALLET.equals(filters.getStockType()))
             result = result.stream().filter(p -> p.getSource().get(0).getMonoPallets() != null).collect(Collectors.toList());
         assertThat("Не найден ни один товар", result, hasSize(greaterThan(0)));
         return result;

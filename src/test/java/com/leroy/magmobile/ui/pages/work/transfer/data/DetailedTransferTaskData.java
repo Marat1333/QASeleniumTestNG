@@ -9,6 +9,7 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,8 +58,9 @@ public class DetailedTransferTaskData {
                     "Неверное дата поставки товара");
         }
         if (expectedData.getDeliveryTime() != null) {
-            softAssert.isEquals(deliveryTime, expectedData.getDeliveryTime(),
-                    "Неверное ожидаемое время поставки товара");
+            long diffTime = ChronoUnit.MINUTES.between(deliveryTime, expectedData.getDeliveryTime());
+            softAssert.isTrue(Math.abs(diffTime) <= 1,
+                    "Неверное время поставки товара. Актуальное: " + deliveryTime + " Ожидалось: " + expectedData.getDeliveryTime());
         }
         if (expectedData.getProducts() != null) {
             softAssert.isEquals(expectedData.getProducts().size(), products.size(),

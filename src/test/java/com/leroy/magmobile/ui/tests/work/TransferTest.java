@@ -200,6 +200,7 @@ public class TransferTest extends AppBaseSteps {
         int newQuantity = 5;
         TransferProductData transferProductData = searchProductPage.getTransferProduct(1);
         transferProductData.setOrderedQuantity(newQuantity);
+        transferProductData.setReviewCompositionAsNull(); // С данного экрана мы не знаем какое количество на одном моно-паллете
         searchProductPage.editProductQuantityForProduct(1, newQuantity)
                 .shouldProductQuantityIs(1, newQuantity);
 
@@ -354,6 +355,7 @@ public class TransferTest extends AppBaseSteps {
         step("Измените количество товара плашкой и нажмите Сохранить");
         int newQuantity = product.getMonoPalletCapacity();
         transferProductData.setOrderedQuantity(newQuantity, true);
+        transferProductData.setSelectedMonoPalletQuantity(newQuantity);
         editQuantityPage.enterQuantityOfProduct(newQuantity, true);
         transferOrderStep1Page = editQuantityPage.clickSaveButton()
                 .shouldTransferProductIs(1, transferProductData)
@@ -558,13 +560,13 @@ public class TransferTest extends AppBaseSteps {
         transferSearchPage.editProductQuantityForProduct(1, newQuantity)
                 .shouldProductQuantityIs(1, newQuantity);
         transferProductData.setOrderedQuantity(newQuantity, false);
+        transferProductData.setReviewCompositionAsNull(); // С данного экрана мы не знаем какое количество на одном моно-паллете
 
         // Step 6
         step("Нажмите на поле Товары на отзыв");
         transferSearchPage.clickTransferProductPanel()
                 .verifyElementsWhenProductsAdded()
                 .shouldTransferProductIs(1, transferProductData);
-
     }
 
     @Test(description = "C3268367 Добавление товара в заявку из поиска")
