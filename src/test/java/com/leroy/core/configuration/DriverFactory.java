@@ -142,6 +142,14 @@ public class DriverFactory {
         return createDriver(capabilities, host, browser);
     }
 
+    public static RemoteWebDriver createDriver() throws Exception {
+        String propsFile = System.getProperty("mpropsFile");
+        if (propsFile == null || propsFile.isEmpty()) {
+            throw new Exception("Property file should be specified");
+        }
+        return createDriver(propsFile, "", "", "", "", "");
+    }
+
     private static RemoteWebDriver createDriver(MutableCapabilities options, String host, String browser) throws Exception {
         RemoteWebDriver driver;
         if (host.equals(DEFAULT_HOST_VALUE)) {
