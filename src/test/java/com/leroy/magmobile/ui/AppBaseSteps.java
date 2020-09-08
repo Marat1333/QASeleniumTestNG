@@ -97,7 +97,15 @@ public class AppBaseSteps extends MagMobileBaseTest {
                 }
             }
 
-            MainProductAndServicesPage mainProductAndServicesPage = new MainProductAndServicesPage();
+            MainProductAndServicesPage mainProductAndServicesPage;
+            try {
+                mainProductAndServicesPage = new MainProductAndServicesPage();
+            } catch (Exception err) {
+                Log.error(err.getMessage());
+                Log.debug("Пробуем повторно нажать кнопку 'Войти'");
+                new LoginAppPage().clickLoginButton();
+                mainProductAndServicesPage = new MainProductAndServicesPage();
+            }
             UserProfilePage userProfilePage = null;
             if (selectShopAndDepartment) {
                 userProfilePage = setShopAndDepartmentForUser(mainProductAndServicesPage,
