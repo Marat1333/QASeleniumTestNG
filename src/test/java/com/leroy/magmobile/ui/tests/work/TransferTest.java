@@ -697,6 +697,34 @@ public class TransferTest extends AppBaseSteps {
         transferSearchPage.shouldTransferProductsAre(Collections.singletonList(new TransferProductData(productData)));
     }
 
+    @Test(description = "C3268371 Фильтрация списка заявок")
+    public void testFilterTransferTasks() throws Exception {
+        WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
+        TransferRequestsPage transferRequestsPage = workPage.goToTransferProductFromStock();
+
+        // Step 1
+        step("Нажмите на кнопку Фильтр");
+        FilterTransferTaskPage filterTransferTaskPage = transferRequestsPage.clickFilterBtn()
+                .verifyRequiredElements();
+
+        // Step 2 - 3
+        step("Выберите статус Черновик и нажмите на кнопку галочки внизу окна Статус заявки");
+        filterTransferTaskPage.selectTaskStatus(FilterTransferTaskPage.TaskStatusModal.Options.DRAFT)
+                .shouldTaskStatusFilterCountIs(1);
+
+        // Step 4 - 5
+        step("Нажмите на поле Дата создания заявки, Выберите нужную дату создания заявки и нажмите Ок");
+        LocalDate filteredDate = LocalDate.now().minusDays(2);
+        filterTransferTaskPage.selectCreationTaskDate(filteredDate)
+                .shouldCreationTaskDateFilterIs(filteredDate);
+
+        // Step 6
+        step("Нажмите на активную кнопку Показать заявки");
+        transferRequestsPage = filterTransferTaskPage.applyFilters();
+        transferRequestsPage.shouldFilterCountIs(2)
+                .verifyTransferTaskFilters(filteredDate, SalesDocumentsConst.States.DRAFT.getUiVal());
+    }
+
     @Test(description = "C3268374 Отзыв товара на моно-палете")
     public void testTransferProductOnMonoPallet() throws Exception {
         step("Выполнение предусловий:");
