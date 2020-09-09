@@ -1,6 +1,7 @@
 package com.leroy.magmobile.ui.pages.work.transfer;
 
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobButton;
@@ -70,7 +71,7 @@ public class TransferRequestsPage extends CommonMagMobilePage {
     @Step("Найти заявку по наименованию товара в ней, и открыть эту заявку")
     public void searchForRequestAndOpenIt(String productTitle, String status) {
         CardWidget<ShortTransferTaskData> widget = requestsScrollView.searchForWidgetByText(productTitle, status);
-        if (widget.getLocation().getY() / Toolkit.getDefaultToolkit().getScreenSize().getHeight() * 100 > 95)
+        if (!DriverFactory.isGridProfile() && widget.getLocation().getY() / Toolkit.getDefaultToolkit().getScreenSize().getHeight() * 100 > 95)
             requestsScrollView.scrollDown();
         widget.click();
     }
