@@ -2,7 +2,6 @@ package com.leroy.magmobile.ui.tests.work;
 
 import com.leroy.constants.TimeZone;
 import com.leroy.core.UserSessionData;
-import com.leroy.core.api.Module;
 import com.leroy.core.configuration.DriverFactory;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.PrintPriceClient;
@@ -21,7 +20,6 @@ import com.leroy.magmobile.ui.pages.work.print_tags.enums.Format;
 import com.leroy.magmobile.ui.pages.work.print_tags.modal.*;
 import io.qameta.allure.Step;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 
 import java.time.LocalDateTime;
@@ -31,7 +29,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Guice(modules = {Module.class})
 public class PrintTagsTest extends AppBaseSteps {
 
     private CatalogSearchClient catalogSearchClient;
@@ -559,7 +556,7 @@ public class PrintTagsTest extends AppBaseSteps {
         tagsListPage.shouldProductTagsHasCorrectSizesAndQuantity(tagData);
         sessionCreationTimeCheck = tagsListPage.getSessionCreationTimeStamp();
         // workaround for bug (on grid only)
-        sessionCreationTime = sessionCreationTime.plusHours(DriverFactory.isGridProfile()? TimeZone.UTC : TimeZone.MSC);
+        sessionCreationTime = sessionCreationTime.plusHours(DriverFactory.isGridProfile() ? TimeZone.UTC : TimeZone.MSC);
         anAssert().isEquals(sessionCreationTime, sessionCreationTimeCheck, "creation time");
     }
 
