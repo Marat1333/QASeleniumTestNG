@@ -257,6 +257,7 @@ public class TransferTest extends AppBaseSteps {
         DetailedTransferTaskData detailedTransferTaskData = new DetailedTransferTaskData();
         detailedTransferTaskData.setPickupPlace(TransferTaskTypes.CLIENT_IN_SHOP_ROOM);
         detailedTransferTaskData.setDeliveryDate(LocalDate.now());
+        detailedTransferTaskData.setLegalClient(legalCustomerData);
         detailedTransferTaskData.setProducts(Collections.singletonList(transferProductData));
         transferConfirmedTaskToClientPage.shouldTransferTaskDataIs(detailedTransferTaskData);
     }

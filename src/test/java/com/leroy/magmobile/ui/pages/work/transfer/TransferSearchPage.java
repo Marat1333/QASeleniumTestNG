@@ -15,7 +15,7 @@ import java.util.List;
 
 public class TransferSearchPage extends CommonMagMobilePage {
 
-    @AppFindBy(accessibilityId = "TransferProductsSearchMainScreen", metaName = "Область 'Поиск товаров на складе'")
+    @AppFindBy(text = "Поиск товаров на складе", metaName = "Область 'Поиск товаров на складе'")
     Element transferProductSearchArea;
 
     @AppFindBy(accessibilityId = "ScreenTitle-TransferProductsSearch", metaName = "Редактируемая строка поиска")

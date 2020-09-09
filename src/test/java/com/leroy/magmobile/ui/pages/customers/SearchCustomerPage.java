@@ -1,6 +1,7 @@
 package com.leroy.magmobile.ui.pages.customers;
 
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.configuration.Log;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
@@ -142,8 +143,15 @@ public class SearchCustomerPage extends CommonMagMobilePage {
         if (value.startsWith("+7"))
             value = value.substring(2);
         enterTextInSearchField(value);
-        if (selectFirst)
+        if (selectFirst) {
             mainScrollView.clickElemByIndex(0);
+            try {
+                searchFld.waitForInvisibility(short_timeout);
+            } catch (Exception err) {
+                Log.error(err.getMessage());
+                mainScrollView.clickElemByIndex(0);
+            }
+        }
     }
 
     public void searchCustomerByPhone(String value) throws Exception {
