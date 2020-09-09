@@ -108,7 +108,7 @@ public class SupplierWeekSuppliesPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что данные корректно отображены")
-    public SupplierWeekSuppliesPage shouldDataIsCorrect(List<ShipmentData> dataList) {
+    public SupplierWeekSuppliesPage shouldDataIsCorrect(List<ShipmentData> dataList) throws Exception {
         softAssert.isElementTextContains(suppliesCount, String.valueOf(dataList.size()));
         List<AppointmentCardData> appointmentUiData = singleDateReserveWidgetList.getFullDataList();
         mainScrollView.scrollToBeginning();

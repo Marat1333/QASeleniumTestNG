@@ -26,6 +26,7 @@ public class ConfirmRemovingProductModal extends CommonMagMobilePage {
     public void clickConfirmButton() {
         yesBtn.click();
         yesBtn.waitForInvisibility();
+        waitUntilProgressBarIsInvisible();
     }
 
     // Verifications

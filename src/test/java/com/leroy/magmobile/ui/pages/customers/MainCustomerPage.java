@@ -44,7 +44,7 @@ public class MainCustomerPage extends TopMenuPage {
     // Verifications
 
     @Step("Проверить, что {index} клиент соответствуют ожидаемым данным")
-    public MainCustomerPage shouldRecentCustomerIs(int index, MagCustomerData expectedData) {
+    public MainCustomerPage shouldRecentCustomerIs(int index, MagCustomerData expectedData) throws Exception {
         index--;
         recentCustomerScrollView.getDataObj(index).assertEqualsNotNullExpectedFields(expectedData);
         return this;

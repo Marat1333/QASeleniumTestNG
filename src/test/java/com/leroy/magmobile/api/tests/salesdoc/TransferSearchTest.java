@@ -40,7 +40,7 @@ public class TransferSearchTest extends BaseProjectApiTest {
         TransferClient transferClient = client();
 
         TransferSearchFilters filters = new TransferSearchFilters();
-        filters.setStatus(SalesDocumentsConst.States.NEW.getApiVal());
+        filters.setStatus(SalesDocumentsConst.States.TRANSFER_NEW.getApiVal());
         Response<TransferDataList> resp = transferClient.searchForTasks(filters);
         verifyTypicalResponse(resp, filters);
     }

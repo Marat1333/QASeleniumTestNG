@@ -35,6 +35,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasSize;
 
+@Deprecated
 public class ApiClientProvider {
 
     @Inject
@@ -72,7 +73,7 @@ public class ApiClientProvider {
     @Inject
     private Provider<SupplyPlanClient> supplyPlanClientProvider;
 
-    private UserSessionData userSessionData() {
+    protected UserSessionData userSessionData() {
         return ContextProvider.getContext().getUserSessionData();
     }
 

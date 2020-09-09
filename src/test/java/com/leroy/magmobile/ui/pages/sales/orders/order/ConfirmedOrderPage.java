@@ -68,7 +68,7 @@ public class ConfirmedOrderPage extends CartOrderEstimatePage {
     }
 
     @Step("Получить информацию о документе со страницы")
-    public SalesDocumentData getSalesDocumentData() {
+    public SalesDocumentData getSalesDocumentData() throws Exception {
         OrderDetailsData orderDetailsData = orderParamsForm.getOrderDetailData();
         SalesDocumentData salesDocumentData = productOrderForm.getSalesDocumentData();
         salesDocumentData.setOrderDetailsData(orderDetailsData);
@@ -131,7 +131,7 @@ public class ConfirmedOrderPage extends CartOrderEstimatePage {
     // Verifications
 
     @Step("Проверить, что данные о товарах в заказе верны (expectedDocumentData)")
-    public ConfirmedOrderPage shouldSalesDocumentDataIs(SalesDocumentData expectedDocumentData) {
+    public ConfirmedOrderPage shouldSalesDocumentDataIs(SalesDocumentData expectedDocumentData) throws Exception {
         for (ProductOrderCardAppData productCardData : expectedDocumentData.getOrderAppDataList().get(0).getProductCardDataList()) {
             productCardData.setAvailableTodayQuantity(null);
         } // TODO Из-за рассинхрона данных на тесте идет отличие в доступном количестве

@@ -1,0 +1,25 @@
+#---------------------------------
+#       Chrome settings
+#---------------------------------
+settings:
+  platform: windows
+  browser: chrome
+  #proxy: localhost:8080
+  timeout: 30 # default wait timeout in seconds
+
+#---------------------------------
+#              desktop
+#---------------------------------
+
+capabilities:
+  windows:
+    chrome:
+      platformVersion: Windows 10
+      acceptInsecureCerts: true
+      args:
+        - headless
+  linux:
+    chrome:
+      acceptInsecureCerts: true
+      args:
+        - headless

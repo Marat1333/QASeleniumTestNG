@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class PriceInfo {
+
     private Double price;
     private String priceUnit;
     private String priceCurrency;

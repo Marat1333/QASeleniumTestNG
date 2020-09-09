@@ -93,14 +93,6 @@ public class ProductDescriptionPage extends ProductCardPage {
         lmCode.waitForVisibility();
     }
 
-    public static boolean isThisPage() {
-        WebDriver driver = ContextProvider.getDriver();
-        String ps = getPageSource(driver);
-        Element el = new Element(driver,
-                By.xpath("//*[contains(@content-desc, 'Screen')]//android.widget.TextView"));
-        return el.isVisible(ps) && el.getText(ps).equals(Cart35Page.SCREEN_TITLE);
-    }
-
     // Actions
 
     @Step("Перейти на страницу с детализацией цен и запасов")
@@ -164,7 +156,7 @@ public class ProductDescriptionPage extends ProductCardPage {
 
     @Step("Проверить, что комплементарные товары корректно отображены")
     public ProductDescriptionPage shouldComplementaryProductsAreCorrect(List<CatalogProductData> apiDataList,
-                                                                        SearchProductPage.CardType type) {
+                                                                        SearchProductPage.CardType type) throws Exception {
         if (apiDataList.size() == 0) {
             mainScrollView.scrollToEnd();
             waitUntilProgressBarIsInvisible();
