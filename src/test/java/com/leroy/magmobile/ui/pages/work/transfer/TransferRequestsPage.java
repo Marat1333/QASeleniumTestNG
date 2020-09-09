@@ -12,7 +12,6 @@ import com.leroy.magmobile.ui.pages.work.transfer.widget.TransferRequestWidget;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
-import java.awt.*;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -71,7 +70,8 @@ public class TransferRequestsPage extends CommonMagMobilePage {
     @Step("Найти заявку по наименованию товара в ней, и открыть эту заявку")
     public void searchForRequestAndOpenIt(String productTitle, String status) {
         CardWidget<ShortTransferTaskData> widget = requestsScrollView.searchForWidgetByText(productTitle, status);
-        if (!DriverFactory.isGridProfile() && widget.getLocation().getY() / Toolkit.getDefaultToolkit().getScreenSize().getHeight() * 100 > 95)
+        //if (!DriverFactory.isGridProfile() && widget.getLocation().getY() / Toolkit.getDefaultToolkit().getScreenSize().getHeight() * 100 > 95)
+        if (!DriverFactory.isGridProfile() && widget.getLocation().getY() / driver.manage().window().getSize().getHeight() * 100 > 95)
             requestsScrollView.scrollDown();
         widget.click();
     }
