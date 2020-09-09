@@ -75,19 +75,17 @@ public class TransferTest extends AppBaseSteps {
                 .searchForTransferProducts(SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR);
         assertThat(resp, successful());
         List<TransferSearchProductData> transferProducts = resp.asJson().getItems();
-        for (int i = 0; i < transferProducts.size(); i++) {
+        for (TransferSearchProductData transferProduct : transferProducts) {
             Response<ProductItemDataList> respProduct = catalogSearchClient
-                    .searchProductsBy(new GetCatalogSearch().setByLmCode(transferProducts.get(i).getLmCode()));
+                    .searchProductsBy(new GetCatalogSearch().setByLmCode(transferProduct.getLmCode()));
             assertThat(resp, successful());
             ProductItemData productItemData = respProduct.asJson().getItems().get(0);
             CustomTransferProduct customProduct = new CustomTransferProduct();
             customProduct.setLmCode(productItemData.getLmCode());
             customProduct.setTitle(productItemData.getTitle());
-            customProduct.setMonoPalletCapacity(transferProducts.get(i).getSource().get(0)
+            customProduct.setMonoPalletCapacity(transferProduct.getSource().get(0)
                     .getMonoPallets().get(0).getCapacity());
             products.add(customProduct);
-            if (i > 1)
-                break;
         }
     }
 
@@ -402,7 +400,7 @@ public class TransferTest extends AppBaseSteps {
     @Test(description = "C3268361 Редактирование заявки в статусе Черновик")
     public void testEditTransferInDraftStatus() throws Exception {
         MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
-        CustomTransferProduct product = products.get(0);
+        CustomTransferProduct product = products.get(5);
         TransferOrderStep1Page transferOrderStep1Page;
         if (isStartFromScratch()) {
             TransferProductOrderData transferProductData = new TransferProductOrderData();
@@ -496,13 +494,15 @@ public class TransferTest extends AppBaseSteps {
     @Test(description = "C3268363 Удаление товара из заявки")
     public void testRemoveProductFromTransferTask() throws Exception {
         TransferOrderStep1Page transferOrderStep1Page;
+        CustomTransferProduct product1 = products.get(6);
+        CustomTransferProduct product2 = products.get(7);
         if (isStartFromScratch()) {
             TransferProductOrderData transferProductData1 = new TransferProductOrderData();
-            transferProductData1.setLmCode(products.get(0).getLmCode());
+            transferProductData1.setLmCode(product1.getLmCode());
             transferProductData1.setOrderedQuantity(1);
 
             TransferProductOrderData transferProductData2 = new TransferProductOrderData();
-            transferProductData2.setLmCode(products.get(1).getLmCode());
+            transferProductData2.setLmCode(product2.getLmCode());
             transferProductData2.setOrderedQuantity(1);
 
             String taskId = transferHelper.createDraftTransferTask(
@@ -510,7 +510,7 @@ public class TransferTest extends AppBaseSteps {
                     SalesDocumentsConst.GiveAwayPoints.FOR_CLIENT_TO_SHOP_ROOM).getTaskId();
             WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
             TransferRequestsPage transferRequestsPage = workPage.goToTransferProductFromStock();
-            transferRequestsPage.searchForRequestAndOpenIt(products.get(1).getTitle(),
+            transferRequestsPage.searchForRequestAndOpenIt(product2.getTitle(),
                     SalesDocumentsConst.States.DRAFT.getUiVal());
             transferOrderStep1Page = new TransferOrderStep1Page();
             transferOrderStep1Page.shouldTaskNumberIs(taskId);
@@ -544,9 +544,10 @@ public class TransferTest extends AppBaseSteps {
     @Test(description = "C3268364 Удаление последнего товара из заявки")
     public void testRemoveLastProductFromTransferTask() throws Exception {
         TransferOrderStep1Page transferOrderStep1Page;
+        CustomTransferProduct product1 = products.get(8);
         if (isStartFromScratch()) {
             TransferProductOrderData transferProductData1 = new TransferProductOrderData();
-            transferProductData1.setLmCode(products.get(0).getLmCode());
+            transferProductData1.setLmCode(product1.getLmCode());
             transferProductData1.setOrderedQuantity(1);
 
             String taskId = transferHelper.createDraftTransferTask(
@@ -554,7 +555,7 @@ public class TransferTest extends AppBaseSteps {
                     SalesDocumentsConst.GiveAwayPoints.FOR_CLIENT_TO_SHOP_ROOM).getTaskId();
             WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
             TransferRequestsPage transferRequestsPage = workPage.goToTransferProductFromStock();
-            transferRequestsPage.searchForRequestAndOpenIt(products.get(0).getTitle(),
+            transferRequestsPage.searchForRequestAndOpenIt(product1.getTitle(),
                     SalesDocumentsConst.States.DRAFT.getUiVal());
             transferOrderStep1Page = new TransferOrderStep1Page();
             transferOrderStep1Page.shouldTaskNumberIs(taskId);
@@ -582,9 +583,10 @@ public class TransferTest extends AppBaseSteps {
     @Test(description = "C3268365 Изменение количества товара")
     public void testChangeProductQuantityInTransferTask() throws Exception {
         TransferOrderStep1Page transferOrderStep1Page;
+        CustomTransferProduct product1 = products.get(9);
         if (isStartFromScratch()) {
             TransferProductOrderData transferProductData1 = new TransferProductOrderData();
-            transferProductData1.setLmCode(products.get(0).getLmCode());
+            transferProductData1.setLmCode(product1.getLmCode());
             transferProductData1.setOrderedQuantity(1);
 
             String taskId = transferHelper.createDraftTransferTask(
@@ -592,7 +594,7 @@ public class TransferTest extends AppBaseSteps {
                     SalesDocumentsConst.GiveAwayPoints.FOR_CLIENT_TO_SHOP_ROOM).getTaskId();
             WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
             TransferRequestsPage transferRequestsPage = workPage.goToTransferProductFromStock();
-            transferRequestsPage.searchForRequestAndOpenIt(products.get(0).getTitle(),
+            transferRequestsPage.searchForRequestAndOpenIt(product1.getTitle(),
                     SalesDocumentsConst.States.DRAFT.getUiVal());
             transferOrderStep1Page = new TransferOrderStep1Page();
             transferOrderStep1Page.shouldTaskNumberIs(taskId);
@@ -653,9 +655,10 @@ public class TransferTest extends AppBaseSteps {
     @Test(description = "C3268367 Добавление товара в заявку из поиска")
     public void testAddProductFromSearch() throws Exception {
         TransferOrderStep1Page transferOrderStep1Page;
+        CustomTransferProduct product1 = products.get(10);
         if (isStartFromScratch()) {
             TransferProductOrderData transferProductData1 = new TransferProductOrderData();
-            transferProductData1.setLmCode(products.get(0).getLmCode());
+            transferProductData1.setLmCode(product1.getLmCode());
             transferProductData1.setOrderedQuantity(1);
 
             String taskId = transferHelper.createDraftTransferTask(
@@ -663,7 +666,7 @@ public class TransferTest extends AppBaseSteps {
                     SalesDocumentsConst.GiveAwayPoints.FOR_CLIENT_TO_SHOP_ROOM).getTaskId();
             WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
             TransferRequestsPage transferRequestsPage = workPage.goToTransferProductFromStock();
-            transferRequestsPage.searchForRequestAndOpenIt(products.get(0).getTitle(),
+            transferRequestsPage.searchForRequestAndOpenIt(product1.getTitle(),
                     SalesDocumentsConst.States.DRAFT.getUiVal());
             transferOrderStep1Page = new TransferOrderStep1Page();
             transferOrderStep1Page.shouldTaskNumberIs(taskId);
@@ -703,9 +706,10 @@ public class TransferTest extends AppBaseSteps {
     @Test(description = "C3268368 Редактирование параметров заявки", enabled = false)
     public void testEditParametersTransferTask() throws Exception {
         TransferOrderStep1Page transferOrderStep1Page;
+        CustomTransferProduct product1 = products.get(11);
         if (isStartFromScratch()) {
             TransferProductOrderData transferProductData1 = new TransferProductOrderData();
-            transferProductData1.setLmCode(products.get(0).getLmCode());
+            transferProductData1.setLmCode(product1.getLmCode());
             transferProductData1.setOrderedQuantity(1);
 
             String taskId = transferHelper.createDraftTransferTask(
@@ -713,7 +717,7 @@ public class TransferTest extends AppBaseSteps {
                     SalesDocumentsConst.GiveAwayPoints.FOR_CLIENT_TO_SHOP_ROOM).getTaskId();
             WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
             TransferRequestsPage transferRequestsPage = workPage.goToTransferProductFromStock();
-            transferRequestsPage.searchForRequestAndOpenIt(products.get(0).getTitle(),
+            transferRequestsPage.searchForRequestAndOpenIt(product1.getTitle(),
                     SalesDocumentsConst.States.DRAFT.getUiVal());
             transferOrderStep1Page = new TransferOrderStep1Page();
             transferOrderStep1Page.shouldTaskNumberIs(taskId);
@@ -876,9 +880,10 @@ public class TransferTest extends AppBaseSteps {
         // Pre-condition
         TransferOrderStep1Page transferOrderStep1Page;
         String taskId = null;
+        CustomTransferProduct product1 = products.get(12);
         if (isStartFromScratch()) {
             TransferProductOrderData transferProductData1 = new TransferProductOrderData();
-            transferProductData1.setLmCode(products.get(0).getLmCode());
+            transferProductData1.setLmCode(product1.getLmCode());
             transferProductData1.setOrderedQuantity(1);
 
             taskId = transferHelper.createDraftTransferTask(
@@ -886,7 +891,7 @@ public class TransferTest extends AppBaseSteps {
                     SalesDocumentsConst.GiveAwayPoints.FOR_CLIENT_TO_SHOP_ROOM).getTaskId();
             WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
             TransferRequestsPage transferRequestsPage = workPage.goToTransferProductFromStock();
-            transferRequestsPage.searchForRequestAndOpenIt(products.get(0).getTitle(),
+            transferRequestsPage.searchForRequestAndOpenIt(product1.getTitle(),
                     SalesDocumentsConst.States.DRAFT.getUiVal());
             transferOrderStep1Page = new TransferOrderStep1Page();
             transferOrderStep1Page.shouldTaskNumberIs(taskId);
@@ -907,13 +912,14 @@ public class TransferTest extends AppBaseSteps {
     @Test(description = "C3268373 Обновление списка заявок (pull to refresh)")
     public void testPullRefresh() throws Exception {
         // Pre-condition
+        CustomTransferProduct product1 = products.get(13);
         step("Заходим на экран  Отзыв товаров со склада");
         WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
         TransferRequestsPage transferRequestsPage = workPage.goToTransferProductFromStock();
 
         step("API: Создаем новую заявку");
         TransferProductOrderData transferProductData1 = new TransferProductOrderData();
-        transferProductData1.setLmCode(products.get(0).getLmCode());
+        transferProductData1.setLmCode(product1.getLmCode());
         transferProductData1.setOrderedQuantity(1);
         transferHelper.createDraftTransferTask(
                 transferProductData1,
