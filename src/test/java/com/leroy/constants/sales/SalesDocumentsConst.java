@@ -20,7 +20,8 @@ public class SalesDocumentsConst {
         PARTIALLY_ASSEMBLED("", "ЧАСТ. СОБРАН"),
 
         // Transfer
-        NEW("NEW", "");
+        TRANSFER_NEW("NEW", ""),
+        TRANSFER_CONFIRMED("CONFIRMED", "Отправлен");
 
         private String uiVal;
         private String apiVal;
@@ -87,6 +88,7 @@ public class SalesDocumentsConst {
     // Отзыв
     public enum GiveAwayPoints {
         SALES_FLOOR("SALESFLOOR", "Из торгового зала"),
+        FOR_CLIENT_TO_SHOP_ROOM("DEPARTMENT", "Для клиента в торг. зал"),
         PICKUP("PICKUP", "Самовывоз"),
         DELIVERY("", "Доставка");
 

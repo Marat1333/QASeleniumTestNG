@@ -6,13 +6,13 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.sales.orders.CartOrderEstimatePage;
+import com.leroy.magmobile.ui.pages.common.widget.CalculatorWidget;
 import com.leroy.magmobile.ui.pages.sales.orders.cart.Cart35Page;
 import com.leroy.magmobile.ui.pages.sales.orders.estimate.EstimatePage;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
-public class AddProduct35Page<T extends CartOrderEstimatePage> extends CommonMagMobilePage {
+public class AddProduct35Page<T> extends CommonMagMobilePage {
 
     private Class<T> parentPage;
 
@@ -25,7 +25,7 @@ public class AddProduct35Page<T extends CartOrderEstimatePage> extends CommonMag
         return "Добавление товара";
     }
 
-    protected T newCartOrEstimatePage() throws Exception {
+    protected T newParentPage() throws Exception {
         return parentPage.getConstructor().newInstance();
     }
 
@@ -65,6 +65,21 @@ public class AddProduct35Page<T extends CartOrderEstimatePage> extends CommonMag
     @AppFindBy(xpath = "//android.widget.TextView[@text='На складе']/following-sibling::android.widget.TextView[@content-desc='presenceValue']")
     private Element inStockAvailableQuantity;
 
+    @AppFindBy(xpath = "//android.widget.TextView[@text='Поштучно']/following-sibling::android.widget.TextView[@content-desc='presenceValue']")
+    private Element byPeaceQuantity;
+
+    @AppFindBy(xpath = "//android.widget.TextView[@text='На моно-палете']/following-sibling::android.widget.TextView[1][not(@content-desc='presenceValue')]",
+            metaName = "Количество моно палет")
+    private Element monoPalletQuantity;
+
+    @AppFindBy(xpath = "//android.widget.TextView[@text='На моно-палете']/following-sibling::android.widget.TextView[@content-desc='presenceValue']",
+            metaName = "Кол-во товаров на одном моно-палете")
+    private Element byOneMonoPalletQuantity;
+
+    @AppFindBy(xpath = "//android.widget.TextView[@text='На микс-палете']/following-sibling::android.widget.TextView[@content-desc='presenceValue']",
+            metaName = "Общее кол-во товаров на моно-палете")
+    private Element byMixPalletQuantity;
+
     // White Bottom Area
 
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='ScreenContent']//android.widget.EditText",
@@ -83,6 +98,7 @@ public class AddProduct35Page<T extends CartOrderEstimatePage> extends CommonMag
         ADD_TO_BASKET("ДОБАВИТЬ В КОРЗИНУ"),
         ADD_TO_ESTIMATE("ДОБАВИТЬ В СМЕТУ"),
         ADD_TO_ORDER("ДОБАВИТЬ В ЗАКАЗ"),
+        ADD_TO_TASK("ДОБАВИТЬ В ЗАЯВКУ"),
         SAVE("СОХРАНИТЬ");
 
         String value;
@@ -123,25 +139,36 @@ public class AddProduct35Page<T extends CartOrderEstimatePage> extends CommonMag
         return ParserUtil.strToInt(inStockAvailableQuantity.getText());
     }
 
+    @Step("Получить значение кол-ва одного моно-палета")
+    public int getByOneMonoPalletQuantity() {
+        return ParserUtil.strToInt(byOneMonoPalletQuantity.getText());
+    }
+
     @Step("Получить информацию со страницы о товаре/услуги/выбранном кол-ве и т.п.")
     public ProductOrderCardAppData getProductOrderDataFromPage() {
         String ps = getPageSource();
 
         // Карточка товара
         ProductOrderCardAppData productData = new ProductOrderCardAppData();
-        //productData.setAvailableTodayQuantity(
-        //        ParserUtil.strToInt(shoppingRoomAvailableQuantity.getText(ps)));
-        productData.setPrice(ParserUtil.strToDouble(price.getText(ps)));
+        productData.setPrice(ParserUtil.strToDouble(price.getTextIfPresent(ps)));
         productData.setTitle(title.getText(ps));
         productData.setLmCode(ParserUtil.strWithOnlyDigits(lmCode.getText(ps)));
         productData.setBarCode(ParserUtil.strWithOnlyDigits(barCode.getText(ps)));
         productData.setPriceUnit(shoppingRoomAvailablePriceUnit.getText(ps));
 
-        // Детали выбора товара (Строка заказа)
-        productData.setSelectedQuantity(ParserUtil.strToDouble(editQuantityFld.getText(ps)));
-        productData.setTotalPrice(ParserUtil.strToDouble(totalPrice.getText(ps)));
+        // Запасы
         productData.setAvailableTodayQuantity(getAvailableQuantityInShoppingRoom() +
                 getAvailableQuantityInStock());
+        productData.setTotalStock(ParserUtil.strToInt(inStockAvailableQuantity.getText()));
+        productData.setPieceQuantityInStock(ParserUtil.strToInt(byPeaceQuantity.getText()));
+        int oneMonoPalletQuantity = ParserUtil.strToInt(byOneMonoPalletQuantity.getText());
+        productData.setMonoPalletQuantityInStock(oneMonoPalletQuantity == 0 ? 0 :
+                oneMonoPalletQuantity * ParserUtil.strToInt(monoPalletQuantity.getText()));
+        productData.setMixPalletQuantityInStock(ParserUtil.strToInt(byMixPalletQuantity.getText()));
+
+        // Детали выбора товара (Строка заказа)
+        productData.setSelectedQuantity(ParserUtil.strToDouble(editQuantityFld.getText(ps)));
+        productData.setTotalPrice(ParserUtil.strToDouble(totalPrice.getTextIfPresent(ps)));
         return productData;
     }
 
@@ -167,10 +194,10 @@ public class AddProduct35Page<T extends CartOrderEstimatePage> extends CommonMag
         return enterQuantityOfProduct(String.valueOf(value), actionVerification);
     }
 
-    @Step("Нажмите кнопку Добавить в заказ")
-    public T clickAddIntoOrderButton() throws Exception {
+    @Step("Нажмите кнопку для подтверждения изменений (Добавить / Сохранить)")
+    public T clickSubmitButton() throws Exception {
         submitBtn.click();
-        return newCartOrEstimatePage();
+        return newParentPage();
     }
 
     @Step("Нажмите кнопку Добавить в корзину")
@@ -227,6 +254,59 @@ public class AddProduct35Page<T extends CartOrderEstimatePage> extends CommonMag
     @Step("Проерить, что предупреждающее сообщение о доступном кол-ве товара НЕ отображается")
     public AddProduct35Page<T> shouldAvailableStockAlertMessageIsNotVisible() {
         anAssert.isElementNotVisible(availableStockAlertMsgLbl);
+        return this;
+    }
+
+    private int calculate(int operand1, int operand2, String operation) {
+        switch (operation) {
+            case "+":
+                return operand1 + operand2;
+            case "-":
+                return operand1 - operand2;
+            case "*":
+                return operand1 * operand2;
+            case "/":
+                return operand1 / operand2;
+            default:
+                throw new IllegalArgumentException("Недопустимая операция:" + operation + " Допустимые значения: +, -, *, /");
+        }
+    }
+
+    /**
+     * Вводим выражение в калькулятор и проверяем правильность расчета
+     *
+     * @param expression - выражение. Возможные операции:
+     *                   + - сложение
+     *                   - - вычитаение
+     *                   * - умножение
+     *                   / - деление
+     */
+    @Step("Проверить корректность расчета калькулятора")
+    public AddProduct35Page<T> verifyCalculator(String expression) {
+        String[] digits = expression.replaceAll("\\D+", " ").trim().split(" ");
+        String[] operations = expression.replaceAll("\\d+", " ").trim().split(" ");
+        int expectedResult = 0;
+        if (digits.length != operations.length + 1)
+            throw new IllegalArgumentException("Некорректное выражение:" + expression);
+        editQuantityFld.click();
+        editQuantityFld.clear();
+        CalculatorWidget calculatorWidget = new CalculatorWidget();
+        for (int i = 0; i < digits.length; i++) {
+            expectedResult = i == 0 ? ParserUtil.strToInt(digits[i]) :
+                    calculate(expectedResult, ParserUtil.strToInt(digits[i]), operations[i - 1]);
+            editQuantityFld.fill(digits[i]);
+            if (i < digits.length - 1)
+                calculatorWidget.clickOperation(operations[i]);
+        }
+        String fieldValueBefore = editQuantityFld.getText();
+        calculatorWidget.clickOperation("=");
+        editQuantityFld.waitUntilTextIsChanged(fieldValueBefore);
+        anAssert.isEquals(editQuantityFld.getText(), String.valueOf(expectedResult),
+                "Выражение '" + expression + "' неверно посчитано (до нажатия 'ok')");
+        editQuantityFld.submit();
+        anAssert.isFalse(isKeyboardVisible(), "Клавиатура для ввода должна быть не видна");
+        anAssert.isEquals(editQuantityFld.getText(), String.valueOf(expectedResult),
+                "Выражение '" + expression + "' неверно посчитано (после нажатия 'ok')");
         return this;
     }
 

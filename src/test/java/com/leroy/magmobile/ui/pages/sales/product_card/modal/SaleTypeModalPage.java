@@ -6,6 +6,7 @@ import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
 import com.leroy.magmobile.ui.pages.sales.orders.cart.Cart35Page;
 import com.leroy.magmobile.ui.pages.sales.orders.estimate.EstimatePage;
+import com.leroy.magmobile.ui.pages.work.transfer.TransferOrderStep1Page;
 import io.qameta.allure.Step;
 
 import java.util.ArrayList;
@@ -59,6 +60,12 @@ public class SaleTypeModalPage extends CommonMagMobilePage {
         else
             return (T) new AddProduct35Page(Cart35Page.class);
 
+    }
+
+    @Step("Нажмите пункт меню 'Со склада клиенту'")
+    public TransferOrderStep1Page clickFromStockToClient() {
+        fromStockToCustomerLbl.click();
+        return new TransferOrderStep1Page();
     }
 
     @Step("Нажмите пункт меню 'Смета'")

@@ -2,6 +2,8 @@ package com.leroy.magmobile.ui.pages.sales.product_card.modal;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
+import com.leroy.magmobile.ui.pages.work.transfer.TransferOrderStep1Page;
 import io.qameta.allure.Step;
 
 public class ActionWithProduct35ModalPage extends CommonActionWithProductModalPage {
@@ -23,6 +25,12 @@ public class ActionWithProduct35ModalPage extends CommonActionWithProductModalPa
     public SaleTypeModalPage clickMakeSaleButton() {
         makeSaleBtn.click();
         return new SaleTypeModalPage();
+    }
+
+    @Step("Нажмите кнопку 'Пополнить торговый зал'")
+    public AddProduct35Page<TransferOrderStep1Page> clickFillShoppingRoomButton() {
+        replenishTradingRoomBtn.click();
+        return new AddProduct35Page<>(TransferOrderStep1Page.class);
     }
 
     // Verifications

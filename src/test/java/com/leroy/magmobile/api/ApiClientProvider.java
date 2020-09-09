@@ -73,7 +73,7 @@ public class ApiClientProvider {
     @Inject
     private Provider<SupplyPlanClient> supplyPlanClientProvider;
 
-    private UserSessionData userSessionData() {
+    protected UserSessionData userSessionData() {
         return ContextProvider.getContext().getUserSessionData();
     }
 
