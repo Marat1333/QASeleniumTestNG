@@ -27,6 +27,7 @@ import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.work.WorkPage;
 import com.leroy.magmobile.ui.pages.work.transfer.*;
 import com.leroy.magmobile.ui.pages.work.transfer.data.DetailedTransferTaskData;
+import com.leroy.magmobile.ui.pages.work.transfer.data.ShortTransferTaskData;
 import com.leroy.magmobile.ui.pages.work.transfer.data.TransferProductData;
 import com.leroy.magmobile.ui.pages.work.transfer.enums.TransferTaskTypes;
 import com.leroy.magmobile.ui.pages.work.transfer.modal.TransferActionWithProductCardModal;
@@ -900,6 +901,28 @@ public class TransferTest extends AppBaseSteps {
         TransferClient transferClient = apiClientProvider.getTransferClient();
         Response<TransferSalesDocData> resp = transferClient.sendRequestGet(taskId);
         transferClient.assertThatDocumentIsNotExist(resp);
+    }
+
+    @Test(description = "C3268373 Обновление списка заявок (pull to refresh)")
+    public void testPullRefresh() throws Exception {
+        // Pre-condition
+        step("Заходим на экран  Отзыв товаров со склада");
+        WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
+        TransferRequestsPage transferRequestsPage = workPage.goToTransferProductFromStock();
+
+        step("API: Создаем новую заявку");
+        TransferProductOrderData transferProductData1 = new TransferProductOrderData();
+        transferProductData1.setLmCode(products.get(0).getLmCode());
+        transferProductData1.setOrderedQuantity(1);
+        transferHelper.createDraftTransferTask(
+                transferProductData1,
+                SalesDocumentsConst.GiveAwayPoints.FOR_CLIENT_TO_SHOP_ROOM);
+
+        step("Обновляем экран и проверяем, что данные изменились");
+        List<ShortTransferTaskData> tasksBefore = transferRequestsPage.getTransferTaskDataList(5);
+        List<ShortTransferTaskData> tasksAfter = transferRequestsPage.makePullToRefresh()
+                .getTransferTaskDataList(5);
+        anAssert().isNotEquals(tasksBefore.get(0), tasksAfter.get(0), "Данные не были обновлены");
     }
 
 

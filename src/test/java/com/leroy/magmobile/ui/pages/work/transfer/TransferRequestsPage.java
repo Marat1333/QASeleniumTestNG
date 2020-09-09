@@ -45,7 +45,21 @@ public class TransferRequestsPage extends CommonMagMobilePage {
         waitUntilProgressBarIsInvisible();
     }
 
+    // Grab data
+
+    @Step("Получить информацию о последних заявках")
+    public List<ShortTransferTaskData> getTransferTaskDataList(int maxCount) throws Exception {
+        return requestsScrollView.getFullDataList(maxCount);
+    }
+
     // Actions
+
+    @Step("Обновить данные, потянув экран сверху вниз")
+    public TransferRequestsPage makePullToRefresh() {
+        requestsScrollView.scrollToBeginning();
+        requestsScrollView.scrollToBeginning();
+        return this;
+    }
 
     @Step("Нажать кнопку 'Пополнить торговый зал'")
     public TransferOrderStep1Page clickFillShoppingRoomButton() {
