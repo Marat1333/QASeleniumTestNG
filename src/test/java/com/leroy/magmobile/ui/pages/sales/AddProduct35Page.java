@@ -6,6 +6,7 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import com.leroy.magmobile.ui.pages.common.widget.CalculatorWidget;
 import com.leroy.magmobile.ui.pages.sales.orders.cart.Cart35Page;
 import com.leroy.magmobile.ui.pages.sales.orders.estimate.EstimatePage;
 import com.leroy.utils.ParserUtil;
@@ -253,6 +254,59 @@ public class AddProduct35Page<T> extends CommonMagMobilePage {
     @Step("Проерить, что предупреждающее сообщение о доступном кол-ве товара НЕ отображается")
     public AddProduct35Page<T> shouldAvailableStockAlertMessageIsNotVisible() {
         anAssert.isElementNotVisible(availableStockAlertMsgLbl);
+        return this;
+    }
+
+    private int calculate(int operand1, int operand2, String operation) {
+        switch (operation) {
+            case "+":
+                return operand1 + operand2;
+            case "-":
+                return operand1 - operand2;
+            case "*":
+                return operand1 * operand2;
+            case "/":
+                return operand1 / operand2;
+            default:
+                throw new IllegalArgumentException("Недопустимая операция:" + operation + " Допустимые значения: +, -, *, /");
+        }
+    }
+
+    /**
+     * Вводим выражение в калькулятор и проверяем правильность расчета
+     *
+     * @param expression - выражение. Возможные операции:
+     *                   + - сложение
+     *                   - - вычитаение
+     *                   * - умножение
+     *                   / - деление
+     */
+    @Step("Проверить корректность расчета калькулятора")
+    public AddProduct35Page<T> verifyCalculator(String expression) {
+        String[] digits = expression.replaceAll("\\D+", " ").trim().split(" ");
+        String[] operations = expression.replaceAll("\\d+", " ").trim().split(" ");
+        int expectedResult = 0;
+        if (digits.length != operations.length + 1)
+            throw new IllegalArgumentException("Некорректное выражение:" + expression);
+        editQuantityFld.click();
+        editQuantityFld.clear();
+        CalculatorWidget calculatorWidget = new CalculatorWidget();
+        for (int i = 0; i < digits.length; i++) {
+            expectedResult = i == 0 ? ParserUtil.strToInt(digits[i]) :
+                    calculate(expectedResult, ParserUtil.strToInt(digits[i]), operations[i - 1]);
+            editQuantityFld.fill(digits[i]);
+            if (i < digits.length - 1)
+                calculatorWidget.clickOperation(operations[i]);
+        }
+        String fieldValueBefore = editQuantityFld.getText();
+        calculatorWidget.clickOperation("=");
+        editQuantityFld.waitUntilTextIsChanged(fieldValueBefore);
+        anAssert.isEquals(editQuantityFld.getText(), String.valueOf(expectedResult),
+                "Выражение '" + expression + "' неверно посчитано (до нажатия 'ok')");
+        editQuantityFld.submit();
+        anAssert.isFalse(isKeyboardVisible(), "Клавиатура для ввода должна быть не видна");
+        anAssert.isEquals(editQuantityFld.getText(), String.valueOf(expectedResult),
+                "Выражение '" + expression + "' неверно посчитано (после нажатия 'ok')");
         return this;
     }
 

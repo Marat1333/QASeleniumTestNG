@@ -725,6 +725,16 @@ public class TransferTest extends AppBaseSteps {
                 .verifyTransferTaskFilters(filteredDate, SalesDocumentsConst.States.DRAFT.getUiVal());
     }
 
+    @Test(description = "C3268372 Расчет количества товара на простом калькуляторе")
+    public void testCalculateProductCountOnCalculator() throws Exception {
+        WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
+        AddProduct35Page<TransferSearchPage> addProduct35Page = workPage.goToTransferProductFromStock()
+                .clickFillShoppingRoomButton()
+                .clickAddProductFromStockButton().clickProductCard(1);
+        step("Проверить правильность расчета на калькуляторе выражения 5+2");
+        addProduct35Page.verifyCalculator("5+2");
+    }
+
     @Test(description = "C3268374 Отзыв товара на моно-палете")
     public void testTransferProductOnMonoPallet() throws Exception {
         step("Выполнение предусловий:");
