@@ -56,8 +56,10 @@ public class TransferTest extends AppBaseSteps {
     @Data
     private static class CustomTransferProduct {
         private String lmCode;
+        private String barCode;
         private String title;
         private Integer monoPalletCapacity;
+        private Integer totalStock;
     }
 
     @Inject
@@ -82,9 +84,11 @@ public class TransferTest extends AppBaseSteps {
             ProductItemData productItemData = respProduct.asJson().getItems().get(0);
             CustomTransferProduct customProduct = new CustomTransferProduct();
             customProduct.setLmCode(productItemData.getLmCode());
+            customProduct.setBarCode(productItemData.getBarCode());
             customProduct.setTitle(productItemData.getTitle());
             customProduct.setMonoPalletCapacity(transferProduct.getSource().get(0)
                     .getMonoPallets().get(0).getCapacity());
+            customProduct.setTotalStock(transferProduct.getTotalQuantity());
             products.add(customProduct);
         }
     }
@@ -656,13 +660,21 @@ public class TransferTest extends AppBaseSteps {
     public void testAddProductFromSearch() throws Exception {
         TransferOrderStep1Page transferOrderStep1Page;
         CustomTransferProduct product1 = products.get(10);
+
+        // UI класс 1-ого товара, который должен быть в заявке:
+        TransferProductData transferProductData1 = new TransferProductData();
+        transferProductData1.setOrderedQuantity(1);
+        transferProductData1.setLmCode(product1.getLmCode());
+        transferProductData1.setBarCode(product1.getBarCode());
+        transferProductData1.setTitle(product1.getTitle());
+        transferProductData1.setTotalStock(product1.getTotalStock());
         if (isStartFromScratch()) {
-            TransferProductOrderData transferProductData1 = new TransferProductOrderData();
-            transferProductData1.setLmCode(product1.getLmCode());
-            transferProductData1.setOrderedQuantity(1);
+            TransferProductOrderData trProduct = new TransferProductOrderData();
+            trProduct.setLmCode(product1.getLmCode());
+            trProduct.setOrderedQuantity(1);
 
             String taskId = transferHelper.createDraftTransferTask(
-                    transferProductData1,
+                    trProduct,
                     SalesDocumentsConst.GiveAwayPoints.FOR_CLIENT_TO_SHOP_ROOM).getTaskId();
             WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
             TransferRequestsPage transferRequestsPage = workPage.goToTransferProductFromStock();
@@ -681,7 +693,6 @@ public class TransferTest extends AppBaseSteps {
 
         // Step 2 - 3
         step("Введите количество товара больше, чем доступно на отзыва для товара не добавленного в заявку");
-        TransferProductData transferProductData1 = transferSearchPage.getTransferProduct(1);
         TransferProductData transferProductData2 = transferSearchPage.getTransferProduct(2);
         transferSearchPage.editProductQuantityForProduct(2, transferProductData2.getTotalStock() + 10);
         transferSearchPage.shouldProductQuantityIs(2, 0);
