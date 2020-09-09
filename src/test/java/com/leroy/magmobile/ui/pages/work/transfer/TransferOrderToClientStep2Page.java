@@ -6,6 +6,7 @@ import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.models.customer.MagCustomerData;
+import com.leroy.magmobile.ui.models.customer.MagLegalCustomerData;
 import com.leroy.magmobile.ui.pages.customers.SearchCustomerPage;
 import com.leroy.magmobile.ui.pages.work.transfer.enums.TransferTaskTypes;
 import com.leroy.magmobile.ui.pages.work.transfer.modal.SelectPickupPointModal;
@@ -31,7 +32,11 @@ public class TransferOrderToClientStep2Page extends TransferOrderPage {
 
     @AppFindBy(xpath = "//android.view.ViewGroup[android.view.ViewGroup[android.widget.TextView[@text='Место выдачи']]]/following-sibling::android.view.ViewGroup",
             metaName = "Карточка выбранного клиента")
-    SelectedClientWidget selectedClientWidget;
+    SelectedIndividualClientWidget selectedIndividualClientWidget;
+
+    @AppFindBy(xpath = "//android.view.ViewGroup[android.view.ViewGroup[android.widget.TextView[@text='Место выдачи']]]/following-sibling::android.view.ViewGroup",
+            metaName = "Карточка выбранного Юр.Лица")
+    SelectedLegalClientWidget selectedLegalClientWidget;
 
     @AppFindBy(text = "ОФОРМИТЬ ПРОДАЖУ")
     MagMobGreenSubmitButton submitButton;
@@ -99,7 +104,25 @@ public class TransferOrderToClientStep2Page extends TransferOrderPage {
     @Step("Проверить, что выбранный клиент соответствует ожидаемому")
     public TransferOrderToClientStep2Page shouldSelectedCustomerIs(MagCustomerData customerData) {
         MagCustomerData expectedData = customerData.clone();
-        selectedClientWidget.collectDataFromPage().assertEqualsNotNullExpectedFields(expectedData);
+        selectedIndividualClientWidget.collectDataFromPage().assertEqualsNotNullExpectedFields(expectedData);
+        return this;
+    }
+
+    @Step("Проверить, что выбранное Юр. лицо соответствует ожидаемому")
+    public TransferOrderToClientStep2Page shouldSelectedCustomerIs(MagLegalCustomerData expectedCustomerData) {
+        selectedLegalClientWidget.waitForVisibility();
+        MagLegalCustomerData actualData = selectedLegalClientWidget.collectDataFromPage();
+        softAssert.isEquals(actualData.getOrgName(), expectedCustomerData.getOrgName(),
+                "Неверное название выбранной организации");
+        if (expectedCustomerData.getOrgPhone() != null) {
+            softAssert.isEquals(actualData.getOrgPhone(), expectedCustomerData.getOrgPhone(),
+                    "Неверный номер телефона организации");
+        }
+        if (expectedCustomerData.getOrgCard() != null) {
+            softAssert.isTrue(expectedCustomerData.getOrgCard().endsWith(
+                    actualData.getOrgCard().replaceAll("\\*| ", "")), "Неверный номер карты");
+        }
+        softAssert.verifyAll();
         return this;
     }
 

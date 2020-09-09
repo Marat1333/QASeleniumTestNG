@@ -3,6 +3,7 @@ package com.leroy.magmobile.ui.pages.work.transfer.data;
 import com.leroy.core.ContextProvider;
 import com.leroy.core.asserts.SoftAssertWrapper;
 import com.leroy.magmobile.ui.models.customer.MagCustomerData;
+import com.leroy.magmobile.ui.models.customer.MagLegalCustomerData;
 import com.leroy.magmobile.ui.pages.work.transfer.enums.TransferTaskTypes;
 import com.leroy.utils.ParserUtil;
 import lombok.Data;
@@ -19,6 +20,7 @@ public class DetailedTransferTaskData {
     private String number;
     private TransferTaskTypes pickupPlace;
     private MagCustomerData client;
+    private MagLegalCustomerData legalClient;
     private LocalDate deliveryDate;
     private LocalTime deliveryTime;
     private List<TransferProductData> products;

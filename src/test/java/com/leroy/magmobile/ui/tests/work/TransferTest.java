@@ -13,6 +13,7 @@ import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.constants.TestDataConstants;
 import com.leroy.magmobile.ui.models.customer.MagCustomerData;
+import com.leroy.magmobile.ui.models.customer.MagLegalCustomerData;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
 import com.leroy.magmobile.ui.pages.common.modal.ConfirmRemovingProductModal;
 import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
@@ -177,6 +178,84 @@ public class TransferTest extends AppBaseSteps {
         detailedTransferTaskData.setPickupPlace(TransferTaskTypes.CLIENT_IN_SHOP_ROOM);
         detailedTransferTaskData.setDeliveryDate(LocalDate.now());
         detailedTransferTaskData.setClient(customerData);
+        detailedTransferTaskData.setProducts(Collections.singletonList(transferProductData));
+        transferConfirmedTaskToClientPage.shouldTransferTaskDataIs(detailedTransferTaskData);
+    }
+
+    @Test(description = "C22782861 Создание отзыва с RM клиенту (юр.лицо)")
+    public void testCreateTransferFromRMToLegalClient() throws Exception {
+        MagLegalCustomerData legalCustomerData = TestDataConstants.LEGAL_ENTITY_2;
+
+        // Pre-condition
+        MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
+                MainSalesDocumentsPage.class);
+
+        // Step 1
+        step("Нажать кнопку Оформить продажу");
+        SaleTypeModalPage saleTypeModalPage = mainSalesDocumentsPage.<SaleTypeModalPage>clickCreateSalesDocumentButton()
+                .verifyRequiredElementsWhenFromSalesDocuments();
+
+        // Step 2
+        step("Выбрать параметр Со склада клиенту");
+        TransferOrderStep1Page transferOrderStep1Page = saleTypeModalPage.clickFromStockToClient()
+                .verifyElementsWhenEmpty();
+
+        // Step 3
+        step("Нажмите на кнопку +Товары со склада");
+        TransferSearchPage searchProductPage = transferOrderStep1Page.clickAddProductFromStockButton();
+
+        // Step 4
+        step("Выбрать первый товар, который поштучно хранится на складе");
+        AddProduct35Page<TransferSearchPage> addProductPage = searchProductPage.clickProductCard(1)
+                .verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_TASK);
+
+        // Step 5, 6, 7
+        step("Ввести количество товара для заявки со склада");
+        int oneMonoPallet = addProductPage.getByOneMonoPalletQuantity();
+        ProductOrderCardAppData productOrderCardAppData = addProductPage.getProductOrderDataFromPage();
+        addProductPage.enterQuantityOfProduct(oneMonoPallet, true);
+        ProductOrderCardAppData productData = addProductPage.getProductOrderDataFromPage();
+
+        // Step 8
+        step("Нажмите на кнопку Добавить в заявку");
+        searchProductPage = addProductPage.clickSubmitButton();
+
+        // Step 9
+        step("Нажмите на Товары на отзыв");
+        TransferProductData transferProductData = new TransferProductData(productData);
+        transferOrderStep1Page = searchProductPage.clickTransferProductPanel()
+                .verifyElementsWhenProductsAdded()
+                .shouldTransferProductIs(1, transferProductData);
+
+        // Step 10
+        step("Нажмите на Далее");
+        transferOrderStep1Page.clickNextButton();
+        TransferOrderToClientStep2Page transferOrderStep2Page = new TransferOrderToClientStep2Page()
+                .verifyRequiredElements();
+
+        // Step 11 - 14
+        step("Найдите клиента (Юр. лицо) и выберите его");
+        transferOrderStep2Page.clickClientField()
+                .searchLegalCustomerByCardNumber(legalCustomerData.getOrgCard());
+        transferOrderStep2Page.shouldSelectedCustomerIs(legalCustomerData);
+
+        // Step 15
+        step("Нажмите на Оформить продажу");
+        TransferToClientSuccessPage successPage = transferOrderStep2Page.clickSubmitButton();
+        successPage.verifyRequiredElements();
+
+        // Step 16
+        step("Нажмите на кнопку Перейти в список заявок");
+        TransferRequestsPage transferRequestsPage = successPage.clickSubmitButton();
+
+        // Step 17
+        step("Открыть заявку и проверить заполненные поля и товары");
+        transferRequestsPage.searchForRequestAndOpenIt(productOrderCardAppData.getTitle(),
+                SalesDocumentsConst.States.TRANSFER_CONFIRMED.getUiVal());
+        TransferConfirmedTaskToClientPage transferConfirmedTaskToClientPage = new TransferConfirmedTaskToClientPage();
+        DetailedTransferTaskData detailedTransferTaskData = new DetailedTransferTaskData();
+        detailedTransferTaskData.setPickupPlace(TransferTaskTypes.CLIENT_IN_SHOP_ROOM);
+        detailedTransferTaskData.setDeliveryDate(LocalDate.now());
         detailedTransferTaskData.setProducts(Collections.singletonList(transferProductData));
         transferConfirmedTaskToClientPage.shouldTransferTaskDataIs(detailedTransferTaskData);
     }
@@ -773,7 +852,7 @@ public class TransferTest extends AppBaseSteps {
         searchProductPage = addProductPage.enterQuantityOfProduct(newQuantity, true)
                 .clickSubmitButton();
         searchProductPage.shouldReviewCompositionIs(1, 0, 0, 0, newQuantity);
-        if (!DefectConst.TRANSFER_WRONG_QUANTITY_TOOLTIP)
+        if (!DefectConst.LFRONT_3695)
             searchProductPage.shouldProductHasWrongQuantityTooltip(1);
 
         // Step 6 - 7

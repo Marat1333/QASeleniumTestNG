@@ -1,5 +1,6 @@
 package com.leroy.magmobile.ui.pages.work.transfer;
 
+import com.leroy.constants.DefectConst;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.android.AndroidScrollViewV2;
@@ -23,7 +24,7 @@ public class TransferConfirmedTaskToClientPage extends TransferOrderPage {
 
     @AppFindBy(xpath = "(//android.view.ViewGroup[descendant::android.widget.TextView[@text='Место выдачи']]/following-sibling::android.view.ViewGroup)[1]",
             metaName = "Карточка выбранного клиента")
-    TransferOrderToClientStep2Page.SelectedClientWidget selectedClientWidget;
+    SelectedIndividualClientWidget selectedClientWidget;
 
     @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.TextView[@text='Дата поставки товара']]/android.widget.EditText",
             metaName = "Дата поставки товара")
@@ -47,12 +48,15 @@ public class TransferConfirmedTaskToClientPage extends TransferOrderPage {
     }
 
     @Step("Получить информацию о деталях подтвержденной заявки на отзыв")
-    public DetailedTransferTaskData getTransferTaskData() throws Exception {
+    public DetailedTransferTaskData getTransferTaskData(boolean isIndividualClient) throws Exception {
         String ps = getPageSource();
         DetailedTransferTaskData detailedTransferTaskData = new DetailedTransferTaskData();
         detailedTransferTaskData.setNumber(getTaskNumber(ps));
         detailedTransferTaskData.setPickupPlace(getPickupPlace(ps));
-        detailedTransferTaskData.setClient(selectedClientWidget.collectDataFromPage(ps));
+        if (isIndividualClient)
+            detailedTransferTaskData.setClient(selectedClientWidget.collectDataFromPage(ps));
+        else if (!DefectConst.LEGAL_PERSON_IS_NOT_DISPLAYED_IN_SENT_TRANSFER_TASK)
+            throw new Exception("TODO - сбор информации о юр лице");
         detailedTransferTaskData.setDeliveryDate(DateTimeUtil.strToLocalDate(deliveryDateFld.getText(ps), ""));
         detailedTransferTaskData.setProducts(productScrollView.getFullDataList());
         return detailedTransferTaskData;
@@ -68,7 +72,7 @@ public class TransferConfirmedTaskToClientPage extends TransferOrderPage {
             expectedTransferTaskData.getClient().setEmail(null);
         }
         expectedTransferTaskData.getProducts().forEach(p -> p.setTotalStock(null));
-        DetailedTransferTaskData actualData = getTransferTaskData();
+        DetailedTransferTaskData actualData = getTransferTaskData(transferTaskData.getLegalClient() == null);
         actualData.assertEqualsNotNullExpectedFields(expectedTransferTaskData);
         return this;
     }

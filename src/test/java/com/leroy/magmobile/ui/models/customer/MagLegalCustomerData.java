@@ -33,6 +33,10 @@ public class MagLegalCustomerData {
             softAssert.isEquals(orgPhone, expectedCustomerData.getOrgPhone(),
                     "Неверный номер телефона организации");
         }
+        if (expectedCustomerData.getOrgCard() != null) {
+            softAssert.isEquals(orgCard, expectedCustomerData.getOrgCard(),
+                    "Неверный номер карты организации");
+        }
         if (expectedCustomerData.getChargePerson() != null)
             chargePerson.assertEqualsNotNullExpectedFields(expectedCustomerData.getChargePerson());
         softAssert.verifyAll();

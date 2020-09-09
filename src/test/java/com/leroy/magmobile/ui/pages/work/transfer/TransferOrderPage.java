@@ -4,6 +4,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.models.customer.MagCustomerData;
+import com.leroy.magmobile.ui.models.customer.MagLegalCustomerData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.common.modal.ConfirmRemovingProductModal;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
@@ -88,9 +89,9 @@ public abstract class TransferOrderPage extends CommonMagMobilePage {
 
     // ---------- Widgets -------------------
 
-    protected static class SelectedClientWidget extends CardWidget<MagCustomerData> {
+    protected static class SelectedIndividualClientWidget extends CardWidget<MagCustomerData> {
 
-        public SelectedClientWidget(WebDriver driver, CustomLocator locator) {
+        public SelectedIndividualClientWidget(WebDriver driver, CustomLocator locator) {
             super(driver, locator);
         }
 
@@ -106,9 +107,40 @@ public abstract class TransferOrderPage extends CommonMagMobilePage {
         @Override
         public MagCustomerData collectDataFromPage(String pageSource) {
             MagCustomerData customerData = new MagCustomerData();
-            customerData.setName(name.getText());
-            customerData.setPhone(ParserUtil.standardPhoneFmt(phone.getTextIfPresent()));
-            customerData.setEmail(email.getTextIfPresent());
+            customerData.setName(name.getText(pageSource));
+            customerData.setPhone(ParserUtil.standardPhoneFmt(phone.getTextIfPresent(pageSource)));
+            customerData.setEmail(email.getTextIfPresent(pageSource));
+            return customerData;
+        }
+
+        @Override
+        public boolean isFullyVisible(String pageSource) {
+            return false;
+        }
+    }
+
+    protected static class SelectedLegalClientWidget extends CardWidget<MagLegalCustomerData> {
+
+        public SelectedLegalClientWidget(WebDriver driver, CustomLocator locator) {
+            super(driver, locator);
+        }
+
+        @AppFindBy(xpath = ".//android.widget.TextView[1]", metaName = "Название организации")
+        Element name;
+
+        @AppFindBy(xpath = ".//android.widget.TextView[contains(@text, '+')]", metaName = "Номер телефона организации")
+        Element phone;
+
+        @AppFindBy(xpath = ".//android.widget.TextView[contains(@text, 'КАРТА')]/preceding-sibling::android.widget.TextView[1]",
+                metaName = "Номер карты организации")
+        Element cardNumber;
+
+        @Override
+        public MagLegalCustomerData collectDataFromPage(String pageSource) {
+            MagLegalCustomerData customerData = new MagLegalCustomerData();
+            customerData.setOrgName(name.getText(pageSource));
+            customerData.setOrgCard(cardNumber.getTextIfPresent(pageSource));
+            customerData.setOrgPhone(ParserUtil.standardPhoneFmt(phone.getTextIfPresent(pageSource)));
             return customerData;
         }
 
