@@ -1,6 +1,7 @@
 package com.leroy.magmobile.ui.tests.sales;
 
 import com.leroy.constants.sales.SalesDocumentsConst;
+import com.leroy.core.annotations.Smoke;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
@@ -148,6 +149,7 @@ public class OrderTest extends SalesBaseTest {
         startFromScreenWithConfirmedOrder(null, null, true);
     }
 
+    @Smoke
     @Test(description = "C22797112 Создать заказ из корзины с одним заказом")
     public void testCreateOrderFromCartWithOneOrder() throws Exception {
         startFromScreenWithCreatedCart();

@@ -3,6 +3,7 @@ package com.leroy.magmobile.ui.tests.work;
 import com.google.inject.Inject;
 import com.leroy.constants.DefectConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
+import com.leroy.core.annotations.Smoke;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.TransferClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
@@ -107,6 +108,7 @@ public class TransferTest extends AppBaseSteps {
         }
     }
 
+    @Smoke
     @Test(description = "C3268357 Создание отзыва с RM клиенту")
     public void testCreateTransferFromRMToClient() throws Exception {
         MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
@@ -264,6 +266,7 @@ public class TransferTest extends AppBaseSteps {
         transferConfirmedTaskToClientPage.shouldTransferTaskDataIs(detailedTransferTaskData);
     }
 
+    @Smoke
     @Test(description = "C3268358 Создание отзыва с RM для пополнения торгового зала")
     public void testCreateTransferFromRMToShopRoom() throws Exception {
         // Pre-condition
@@ -584,6 +587,7 @@ public class TransferTest extends AppBaseSteps {
         new TransferOrderStep1Page().verifyElementsWhenEmpty();
     }
 
+    @Smoke
     @Test(description = "C3268365 Изменение количества товара")
     public void testChangeProductQuantityInTransferTask() throws Exception {
         TransferOrderStep1Page transferOrderStep1Page;
@@ -656,6 +660,7 @@ public class TransferTest extends AppBaseSteps {
                 .shouldTransferProductIs(1, transferProductData);
     }
 
+    @Smoke
     @Test(description = "C3268367 Добавление товара в заявку из поиска")
     public void testAddProductFromSearch() throws Exception {
         TransferOrderStep1Page transferOrderStep1Page;
