@@ -610,7 +610,7 @@ public class TransferTest extends AppBaseSteps {
 
         // Step 1
         step("Нажмите на мини-карточку товара");
-        TransferActionWithProductCardModal actionModal = transferOrderStep1Page.clickProductCard(1, true);
+        TransferActionWithProductCardModal actionModal = transferOrderStep1Page.clickProductCard(1, false);
 
         // Step 2
         step("Нажмите на Изменить количество");
