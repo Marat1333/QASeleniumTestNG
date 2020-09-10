@@ -673,6 +673,10 @@ public class OrderTest extends BasePAOTest {
         step("В поле Выбери способ получения измените Самовывоз (по умолчанию) на Доставка или наоборот");
         orderDraftDeliveryWayPage.selectDeliveryWay(deliveryWay);
         orderData.setDeliveryType(deliveryWay);
+        orderData.setPinCode("");
+        orderDraftDeliveryWayPage.shouldOrderDataIs(orderData);
+        orderDraftDeliveryWayPage.shouldPinCodeFieldIs("");
+
 
         // Step 2
         step("Введите PIN-код для оплаты");
@@ -682,6 +686,8 @@ public class OrderTest extends BasePAOTest {
         step("В поле Выбери способ получения измените Доставка на Самовывоз (по умолчанию) или наоборот");
         orderDraftDeliveryWayPage.selectDeliveryWay(pickupWay);
         orderData.setDeliveryType(pickupWay);
+        orderData.setPinCode("");
+        orderDraftDeliveryWayPage.shouldOrderDataIs(orderData);
         orderDraftDeliveryWayPage.shouldPinCodeFieldIs("");
     }
 
