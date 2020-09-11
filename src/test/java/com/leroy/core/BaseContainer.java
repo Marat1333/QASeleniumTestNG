@@ -229,7 +229,7 @@ public abstract class BaseContainer {
         return locator;
     }
 
-    public <T extends BaseWidget> T E(String str, String metaName, Class<? extends BaseWidget> clazz) {
+    protected  <T extends BaseWidget> T E(String str, String metaName, Class<? extends BaseWidget> clazz) {
         CustomLocator locator = buildLocator(str, metaName);
         try {
             return (T) clazz.getConstructor(WebDriver.class, CustomLocator.class)
@@ -240,7 +240,7 @@ public abstract class BaseContainer {
         }
     }
 
-    public <T extends BaseWidget> T E(By by, String metaName, Class<? extends BaseWidget> clazz) {
+    protected <T extends BaseWidget> T E(By by, String metaName, Class<? extends BaseWidget> clazz) {
         CustomLocator locator = new CustomLocator(by, metaName);
         try {
             return (T) clazz.getConstructor(WebDriver.class, CustomLocator.class)
@@ -251,31 +251,31 @@ public abstract class BaseContainer {
         }
     }
 
-    public Element E(By by, String metaName) {
+    protected Element E(By by, String metaName) {
         return E(by, metaName, Element.class);
     }
 
-    public Element E(String str, String metaName) {
+    protected Element E(String str, String metaName) {
         return E(str, metaName, Element.class);
     }
 
-    public <T extends BaseWidget> T E(By by, Class<? extends BaseWidget> clazz) {
+    protected <T extends BaseWidget> T E(By by, Class<? extends BaseWidget> clazz) {
         return E(by, null, clazz);
     }
 
-    public <T extends BaseWidget> T E(String str, Class<? extends BaseWidget> clazz) {
+    protected <T extends BaseWidget> T E(String str, Class<? extends BaseWidget> clazz) {
         return E(str, null, clazz);
     }
 
-    public Element E(By by) {
+    protected Element E(By by) {
         return E(by, null, Element.class);
     }
 
-    public Element E(String str) {
+    protected Element E(String str) {
         return E(str, null, Element.class);
     }
 
-    public <E extends BaseWidget> ElementList<E> EL(String str, String metaName, Class<? extends BaseWidget> clazz) {
+    protected <E extends BaseWidget> ElementList<E> EL(String str, String metaName, Class<? extends BaseWidget> clazz) {
         CustomLocator locator = buildLocator(str, metaName);
         try {
             return new ElementList<>(driver, locator, clazz);
@@ -285,7 +285,7 @@ public abstract class BaseContainer {
         }
     }
 
-    public ElementList<Element> EL(String str, String metaName) {
+    protected ElementList<Element> EL(String str, String metaName) {
         return EL(str, metaName, Element.class);
     }
 

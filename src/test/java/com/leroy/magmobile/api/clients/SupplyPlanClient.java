@@ -31,7 +31,7 @@ public class SupplyPlanClient extends BaseMashupClient {
     @Step("Get shipments")
     public Response<ShipmentDataList> getShipments(LocalDate date, int i) {
         return getShipments((new GetSupplyPlanDetails().setDate(date)
-                .setShopId(userSessionData.getUserShopId())
+                .setShopId(getUserSessionData().getUserShopId())
                 .setDepartmentId(i)));
     }
 

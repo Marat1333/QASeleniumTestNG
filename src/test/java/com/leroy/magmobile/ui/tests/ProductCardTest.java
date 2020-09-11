@@ -3,7 +3,6 @@ package com.leroy.magmobile.ui.tests;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.UserSessionData;
-import com.leroy.core.api.Module;
 import com.leroy.magmobile.api.clients.CatalogProductClient;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.ShopKladrClient;
@@ -29,7 +28,6 @@ import io.qameta.allure.Step;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.util.LatLongUtils;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
@@ -37,7 +35,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Guice(modules = {Module.class})
 public class ProductCardTest extends AppBaseSteps {
 
     private CatalogSearchClient catalogSearchClient;

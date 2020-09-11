@@ -19,6 +19,7 @@ public class DateTimeUtil {
     public static final String YYYY_MM_DD_HH_MM = "yyyy-MM-dd-HH-mm";
     public static final String DD_MM_YYYY = "dd.MM.yyyy";
     public static final String DD_MMMM_HH_MM = "dd MMMM, HH:mm";
+    public static final String DD_MMM_HH_MM = "dd MMM, HH:mm"; // Пример: 25 мар, 17:22
     public static final String DD_MMMM = "dd MMMM";
 
 
@@ -39,6 +40,12 @@ public class DateTimeUtil {
         }
     }
 
+    /**
+     * Преобразовать текст в LocalDate
+     * @param dateString - строка с датой
+     * @param dateFormat - ожидаемый формат
+     * @return дату как LocalDate
+     */
     public static LocalDate strToLocalDate(String dateString, String dateFormat) {
         if (dateString == null)
             return null;
@@ -55,6 +62,17 @@ public class DateTimeUtil {
             Log.error("strToLocalDate() method: " + err.getMessage());
             return null;
         }
+    }
+
+    /**
+     * Преобразовать строку в LocalTime
+     * @param timeString - строка со временем
+     * @return LocalTime
+     */
+    public static LocalTime strToLocalTime(String timeString) {
+        if (timeString == null)
+            return null;
+        return LocalTime.parse(timeString);
     }
 
     public static String localDateTimeToStr(LocalDateTime date, String dateFormat) {

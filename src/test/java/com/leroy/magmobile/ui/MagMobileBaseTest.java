@@ -3,16 +3,19 @@ package com.leroy.magmobile.ui;
 import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.UserSessionData;
+import com.leroy.core.api.Module;
 import com.leroy.core.configuration.BaseUiTest;
 import com.leroy.magmobile.api.ApiClientProvider;
 import com.leroy.umbrella_extension.authorization.AuthClient;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
+@Guice(modules = {Module.class})
 public class MagMobileBaseTest extends BaseUiTest {
 
     @Inject
@@ -28,9 +31,6 @@ public class MagMobileBaseTest extends BaseUiTest {
         userSessionData.setUserLdap(EnvConstants.BASIC_USER_LDAP);
         userSessionData.setUserShopId(EnvConstants.SHOP_WITH_NEW_INTERFACE);
         userSessionData.setUserDepartmentId("1");
-//        if (isNeedAccessToken()) {
-//            userSessionData.setAccessToken(getAccessToken());
-//        }
         return userSessionData;
     }
 
@@ -48,18 +48,11 @@ public class MagMobileBaseTest extends BaseUiTest {
     protected final String OLD_SHOP_GROUP = "old_shop";
     protected final String NEED_ACCESS_TOKEN_GROUP = "need_access_token";
 
-    /*@BeforeGroups(NEED_ACCESS_TOKEN_GROUP)
-    protected void setAccessTokenForSessionData() {
-        if (!isNeedAccessToken())
-            accessToken = getAccessToken();
-    }*/
-
     @BeforeMethod
     protected void setUserSessionDataByGroup(Method method) {
         List<String> groups = Arrays.asList(method.getAnnotation(Test.class).groups());
         UserSessionData userSessionData = getUserSessionData();
         if (groups.contains(NEED_ACCESS_TOKEN_GROUP) || isNeedAccessToken()) {
-            //userSessionData.setAccessToken(accessToken);
             userSessionData.setAccessToken(getAccessToken());
         }
         if (groups.contains(OLD_SHOP_GROUP)) {

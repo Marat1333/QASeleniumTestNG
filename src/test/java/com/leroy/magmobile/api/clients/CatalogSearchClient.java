@@ -26,15 +26,15 @@ public class CatalogSearchClient extends BaseMashupClient {
 
     @Step("Search for products")
     public Response<ProductItemDataList> searchProductsBy(GetCatalogSearch params) {
-        params.setLdapHeader(userSessionData.getUserLdap());
+        params.setLdapHeader(getUserSessionData().getUserLdap());
         return execute(params, ProductItemDataList.class);
     }
 
     @Step("Search for products")
     public Response<ProductItemDataList> searchProductsBy(CatalogSearchFilter filters, Integer startFrom, Integer pageSize) {
         GetCatalogSearch req = new GetCatalogSearch();
-        req.setLdapHeader(userSessionData.getUserLdap());
-        req.setShopId(userSessionData.getUserShopId());
+        req.setLdapHeader(getUserSessionData().getUserLdap());
+        req.setShopId(getUserSessionData().getUserShopId());
         if (filters.getHasAvailableStock() != null)
             req.setHasAvailableStock(filters.getHasAvailableStock());
         if (filters.getTopEM() != null)
@@ -43,6 +43,8 @@ public class CatalogSearchClient extends BaseMashupClient {
             req.setBestPrice(filters.getBestPrice());
         if (filters.getTop1000() != null)
             req.setTop1000(filters.getTop1000());
+        if (filters.getLmCode() != null)
+            req.setByLmCode(filters.getLmCode());
         if (startFrom != null)
             req.setStartFrom(startFrom);
         if (pageSize != null)
@@ -56,7 +58,7 @@ public class CatalogSearchClient extends BaseMashupClient {
 
     @Step("Search for services")
     public Response<ServiceItemDataList> searchServicesBy(GetCatalogServicesSearch params) {
-        params.setLdapHeader(userSessionData.getUserLdap());
+        params.setLdapHeader(getUserSessionData().getUserLdap());
         return execute(params, ServiceItemDataList.class);
     }
 
@@ -71,14 +73,14 @@ public class CatalogSearchClient extends BaseMashupClient {
     @Step("Return products list")
     public List<ProductItemData> getProductsList() {
         ProductItemDataList productItemDataList = this.searchProductsBy(new GetCatalogSearch().setPageSize(MAX_PAGE_SIZE)
-                .setShopId(userSessionData.getUserShopId())).asJson();
+                .setShopId(getUserSessionData().getUserShopId())).asJson();
         return productItemDataList.getItems();
     }
 
     @Step("Return random product")
     public ProductItemData getRandomProduct() {
         ProductItemDataList productItemDataList = this.searchProductsBy(new GetCatalogSearch().setPageSize(MAX_PAGE_SIZE)
-                .setHasAvailableStock(true).setShopId(userSessionData.getUserShopId())).asJson();
+                .setHasAvailableStock(true).setShopId(getUserSessionData().getUserShopId())).asJson();
         List<ProductItemData> productItemData = productItemDataList.getItems();
         productItemData = productItemData.stream().filter(i -> i.getTitle() != null).collect(Collectors.toList());
         return productItemData.get((int) (Math.random() * productItemData.size()));
@@ -88,7 +90,7 @@ public class CatalogSearchClient extends BaseMashupClient {
     public List<ProductItemData> getRandomUniqueProductsWithTitles(int countOfProducts) {
         List<ProductItemData> randomProductsList = new ArrayList<>();
         ProductItemDataList productItemDataList = this.searchProductsBy(new GetCatalogSearch().setPageSize(MAX_PAGE_SIZE)
-                .setHasAvailableStock(true).setShopId(userSessionData.getUserShopId())).asJson();
+                .setHasAvailableStock(true).setShopId(getUserSessionData().getUserShopId())).asJson();
         List<ProductItemData> productItemData = productItemDataList.getItems();
         productItemData = productItemData.stream().filter(i -> i.getTitle() != null).collect(Collectors.toList());
         int randomIndex;

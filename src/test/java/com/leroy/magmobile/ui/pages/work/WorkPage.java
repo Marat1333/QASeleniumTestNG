@@ -10,6 +10,8 @@ import com.leroy.magmobile.ui.pages.work.print_tags.SessionsListPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.RupturesScannerPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.SessionListPage;
 import com.leroy.magmobile.ui.pages.work.supply_plan.SuppliesListPage;
+import com.leroy.magmobile.ui.pages.work.transfer.TransferOrderStep1Page;
+import com.leroy.magmobile.ui.pages.work.transfer.TransferRequestsPage;
 import io.qameta.allure.Step;
 
 public class WorkPage extends CommonMagMobilePage {
@@ -67,9 +69,18 @@ public class WorkPage extends CommonMagMobilePage {
     /* ------------------------- ACTION STEPS -------------------------- */
 
     @Step("Нажать на иконку + рядом с Отзыв с RM")
-    public StockProductsPage clickWithdrawalFromRMPlusIcon() {
+    public <T> T clickWithdrawalFromRMPlusIcon() {
         withdrawalFromRMPlusIcon.click();
-        return new StockProductsPage();
+        if (ContextProvider.getContext().isNewShopFunctionality())
+            return (T) new TransferOrderStep1Page();
+        else
+            return (T) new StockProductsPage();
+    }
+
+    @Step("Перейти в 'Отзыв товаров со склада'")
+    public TransferRequestsPage goToTransferProductFromStock() {
+        withdrawalFromRMArea.click();
+        return new TransferRequestsPage();
     }
 
     @Step("Перейти в Управление перебоями")

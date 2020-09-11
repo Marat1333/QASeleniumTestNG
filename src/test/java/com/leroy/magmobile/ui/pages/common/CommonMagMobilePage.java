@@ -4,7 +4,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.pages.BaseAppPage;
 import com.leroy.core.web_elements.general.Element;
 
-public class CommonMagMobilePage extends BaseAppPage {
+public abstract class CommonMagMobilePage extends BaseAppPage {
 
     public CommonMagMobilePage() {
         super(false);

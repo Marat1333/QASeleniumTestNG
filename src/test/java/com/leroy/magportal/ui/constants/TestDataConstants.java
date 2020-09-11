@@ -2,6 +2,7 @@ package com.leroy.magportal.ui.constants;
 
 import com.leroy.constants.EnvConstants;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
+import java.util.Arrays;
 
 public class TestDataConstants extends EnvConstants {
 
