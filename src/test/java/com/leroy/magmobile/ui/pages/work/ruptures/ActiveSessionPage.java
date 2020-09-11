@@ -70,6 +70,7 @@ public class ActiveSessionPage extends SessionPage {
 
     @Step("Открыть перебой {ruptureLm}")
     public RuptureCardPage goToRuptureCard(String ruptureLm) throws Exception {
+        ruptureCardScrollView.scrollToBeginning();
         Element target = E(String.format("contains(%s)", ruptureLm));
         if (!target.isVisible()) {
             ruptureCardScrollView.scrollDownToElement(target);

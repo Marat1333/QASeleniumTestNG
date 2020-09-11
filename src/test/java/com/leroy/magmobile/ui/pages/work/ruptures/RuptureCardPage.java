@@ -110,7 +110,6 @@ public class RuptureCardPage extends CommonMagMobilePage {
     protected void waitForPageIsLoaded() {
         //долгий запрос на бэк
         priceLbl.waitForVisibility(long_timeout);
-        lmCodeLbl.waitForVisibility();
     }
 
     public List<String> getTasksList() {

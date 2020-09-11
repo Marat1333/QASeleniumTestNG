@@ -1,6 +1,7 @@
 package com.leroy.magmobile.ui.pages.work.ruptures.widgets;
 
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.configuration.Log;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
@@ -40,23 +41,27 @@ public class RuptureWidget extends CardWidget<RuptureData> {
     }
 
     @Override
-    public RuptureData collectDataFromPage(String pageSource) throws Exception {
+    public RuptureData collectDataFromPage(String pageSource) {
         Map<String, Boolean> actionsMap = new HashMap<>();
         RuptureData data = new RuptureData();
         data.setLmCode(ParserUtil.strWithOnlyDigits(lmCodeLbl.getText(pageSource)));
         data.setBarCode(ParserUtil.strWithOnlyDigits(barCodeLbl.getText(pageSource)));
         data.setTitle(titleLbl.getText(pageSource));
         AndroidScrollView<String> actionsScrollView = new AndroidScrollView<>(driver, By.xpath(this.getXpath()));
-        actionsScrollView.setSwipeDeadZonePercentage(70);
+        actionsScrollView.setSwipeDeadZonePercentage(50);
         int sizeCounter = 0;
         while (true) {
             for (int i = 0; i < taskCheckBoxes.getCount(); i++) {
-                actionsMap.put(tasksLbl.get(i).getText(pageSource), taskCheckBoxes.get(i).isChecked());
+                try {
+                    actionsMap.put(tasksLbl.get(i).getText(pageSource), taskCheckBoxes.get(i).isChecked());
+                }catch (Exception e){
+                    Log.warn(e.getMessage());
+                }
+
             }
             if (sizeCounter == actionsMap.size()) {
                 break;
             }
-            actionsScrollView.scrollDown();
             sizeCounter = actionsMap.size();
         }
         data.setActions(actionsMap);

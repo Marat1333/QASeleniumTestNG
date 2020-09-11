@@ -29,9 +29,9 @@ public class FinishedSessionPage extends SessionPage {
     }
 
     @Step("Перейти на страницу действия с руптюрами в сессии")
-    public ActionWithSessionRupturesPage goToActionPage(Action action) {
+    public FinishedSessionRupturesActionsPage goToActionPage(Action action) {
         E(String.format("contains(%s)", action.getActionName())).click();
-        return new ActionWithSessionRupturesPage();
+        return new FinishedSessionRupturesActionsPage();
     }
 
     @Step("Проверить, что отображается корректное кол-во действий и у них есть счетчики")
@@ -65,7 +65,7 @@ public class FinishedSessionPage extends SessionPage {
     }
 
     @Step("Проверить, что счетчик по всем задачам отображает корректные значения")
-    public FinishedSessionPage shouldAllTasksCounterIsCorrect(TaskData allTasksCounterData) throws Exception{
+    public FinishedSessionPage shouldAllTasksCounterIsCorrect(TaskData allTasksCounterData) {
         anAssert.isEquals(allTasksWidget.collectDataFromPage(), allTasksCounterData, "wrong counter value");
         return this;
     }

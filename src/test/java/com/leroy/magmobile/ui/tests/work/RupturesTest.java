@@ -1,6 +1,7 @@
 package com.leroy.magmobile.ui.tests.work;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.leroy.constants.DefectConst;
 import com.leroy.core.UserSessionData;
 import com.leroy.core.api.Module;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
@@ -21,16 +22,14 @@ import com.leroy.magmobile.ui.pages.work.ruptures.data.SessionData;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.TaskData;
 import com.leroy.magmobile.ui.pages.work.ruptures.enums.Action;
 import com.leroy.magmobile.ui.pages.work.ruptures.modal.*;
+import io.qameta.allure.Issue;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Guice(modules = {Module.class})
@@ -134,6 +133,36 @@ public class RupturesTest extends AppBaseSteps {
         Response<JsonNode> resp = ruptureClient.createSession(rupturePostData);
         int result = resp.asJson().get("sessionId").intValue();
         threadLocal.set(result);
+        return result;
+    }
+
+    private int createSessionWithNeededProductAmountWithSpecificActions(int productAmount, ActionData... actions) {
+        List<ActionData> actionsList = Arrays.asList(actions);
+        RuptureProductData productData = new RuptureProductData();
+        Set<String> generatedLmCodes = new HashSet<>();
+        productData.generateRandomData();
+        generatedLmCodes.add(productData.getLmCode());
+        productData.setActions(actionsList);
+
+        ReqRuptureSessionData rupturePostData = new ReqRuptureSessionData();
+        rupturePostData.setProduct(productData);
+        rupturePostData.setShopId(Integer.parseInt(getUserSessionData().getUserShopId()));
+        rupturePostData.setStoreId(Integer.parseInt(getUserSessionData().getUserShopId()));
+        rupturePostData.setDepartmentId(Integer.parseInt(getUserSessionData().getUserDepartmentId()));
+
+        Response<JsonNode> resp = ruptureClient.createSession(rupturePostData);
+        int result = resp.asJson().get("sessionId").intValue();
+        threadLocal.set(result);
+        rupturePostData.setSessionId(result);
+        for (int i = 0; i < productAmount - 1; i++) {
+            while (generatedLmCodes.contains(productData.getLmCode())) {
+                productData.generateRandomData();
+            }
+            generatedLmCodes.add(productData.getLmCode());
+            productData.setActions(actionsList);
+            rupturePostData.setProduct(productData);
+            ruptureClient.updateSession(rupturePostData);
+        }
         return result;
     }
 
@@ -351,6 +380,7 @@ public class RupturesTest extends AppBaseSteps {
         //Step 3
         step("Отменить удаление");
         deleteRuptureModalPage.cancelDelete();
+        ruptureCardPage = new RuptureCardPage();
         ruptureCardPage.verifyRequiredElements();
 
         //Step 4
@@ -521,6 +551,7 @@ public class RupturesTest extends AppBaseSteps {
                 .shouldRadioBtnHasCorrectCondition(RuptureCardPage.QuantityOption.THREE_OR_MORE);
     }
 
+    @Issue("RUP-118")
     @Test(description = "C23418142 Добавление дубля в сессию при работе с существующей сессией")
     public void testAddRuptureDuplicateToExistedSession() throws Exception {
         String comment = "asd123";
@@ -737,13 +768,13 @@ public class RupturesTest extends AppBaseSteps {
 
         //Step 1
         step("Перейти в раздел \"Найти товар и выложить\"");
-        ActionWithSessionRupturesPage actionWithSessionRupturesPage = finishedSessionPage.goToActionPage(Action.FIND_PRODUCT_AND_LAY_IT_OUT);
-        actionWithSessionRupturesPage.shouldHeaderContainsActionName(Action.FIND_PRODUCT_AND_LAY_IT_OUT.getActionName())
+        FinishedSessionRupturesActionsPage finishedSessionRupturesActionsPage = finishedSessionPage.goToActionPage(Action.FIND_PRODUCT_AND_LAY_IT_OUT);
+        finishedSessionRupturesActionsPage.shouldHeaderContainsActionName(Action.FIND_PRODUCT_AND_LAY_IT_OUT.getActionName())
                 .verifyRequiredElements();
 
         //Step 2
         step("Перейти в карточку перебоя");
-        RuptureCardPage ruptureCardPage = actionWithSessionRupturesPage.goToRuptureCard(firstRuptureLmCode)
+        RuptureCardPage ruptureCardPage = finishedSessionRupturesActionsPage.goToRuptureCard(firstRuptureLmCode)
                 .verifyRequiredElementsInFinishedSession();
 
         //Step 3
@@ -773,20 +804,21 @@ public class RupturesTest extends AppBaseSteps {
         //Step 7
         step("Закрыть карточку перебоя");
         ruptureCardPage.closeRuptureCardPage();
-        actionWithSessionRupturesPage = new ActionWithSessionRupturesPage();
-        actionWithSessionRupturesPage.shouldHeaderContainsActionName(Action.FIND_PRODUCT_AND_LAY_IT_OUT.getActionName())
+        finishedSessionRupturesActionsPage = new FinishedSessionRupturesActionsPage();
+        finishedSessionRupturesActionsPage.shouldHeaderContainsActionName(Action.FIND_PRODUCT_AND_LAY_IT_OUT.getActionName())
                 .shouldAllRuptureTaskHaveDone();
 
         //Step 8
         step("Закрыть карточку перебоя");
-        finishedSessionPage = actionWithSessionRupturesPage.goBack();
+        finishedSessionRupturesActionsPage.goBack();
+        finishedSessionPage = new FinishedSessionPage();
         finishedSessionPage.shouldTasksAreCorrect(firstTaskData, secondTaskData)
                 .shouldAllTasksCounterIsCorrect(allTasks);
 
         //Step 9
         step("Перейти в раздел \"Убрать ценник\"");
-        actionWithSessionRupturesPage = finishedSessionPage.goToActionPage(Action.REMOVE_PRICE_TAG);
-        actionWithSessionRupturesPage.shouldDoneTasksCounterIsCorrect(1)
+        finishedSessionRupturesActionsPage = finishedSessionPage.goToActionPage(Action.REMOVE_PRICE_TAG);
+        finishedSessionRupturesActionsPage.shouldDoneTasksCounterIsCorrect(1)
                 .shouldTasksRatioCounterIsCorrect(1, 1)
                 .shouldNoActiveRuptureTasksAreAvailable();
 
@@ -798,15 +830,15 @@ public class RupturesTest extends AppBaseSteps {
         doneRuptureData.setTitle(ruptureData.getTitle());
         doneRuptureData.setActions(Collections.singletonMap(Action.REMOVE_PRICE_TAG.getActionName(), true));
 
-        actionWithSessionRupturesPage = actionWithSessionRupturesPage.goToDoneTasks();
-        actionWithSessionRupturesPage.shouldDoneTasksViewIsPresented()
+        finishedSessionRupturesActionsPage = finishedSessionRupturesActionsPage.goToDoneTasks();
+        finishedSessionRupturesActionsPage.shouldDoneTasksViewIsPresented()
                 .shouldTasksRatioCounterIsCorrect(1)
                 .verifyRequiredElements()
                 .shouldRuptureDataIsCorrect(doneRuptureData);
 
         //Step 11
         step("Тапнуть на перебой");
-        ruptureCardPage = actionWithSessionRupturesPage.goToRuptureCard(firstRuptureLmCode);
+        ruptureCardPage = finishedSessionRupturesActionsPage.goToRuptureCard(firstRuptureLmCode);
         ruptureCardPage.verifyRequiredElementsInFinishedSession()
                 .shouldCheckBoxConditionIsCorrect(false, Action.GIVE_APOLOGISE.getActionName())
                 .shouldCheckBoxConditionIsCorrect(true, Action.REMOVE_PRICE_TAG.getActionName())
@@ -954,15 +986,14 @@ public class RupturesTest extends AppBaseSteps {
         List<Integer> seventhFinishedSessionsIdList = seventhSessionsIdList.stream().skip(2).collect(Collectors.toList());
         ruptureClient.finishFewSessions(seventhFinishedSessionsIdList);
 
-        int firstDepartmentId = 1;
-        ruptureClient.deleteAllSessionInDepartment(firstDepartmentId);
-        List<Integer> firstSessionsIdList = ruptureClient.createFewSessions(firstDepartmentId, 2);
-        List<Integer> firstActiveSessionsIdList = firstSessionsIdList.subList(0, 1);
-        List<Integer> firstFinishedSessionsIdList = firstSessionsIdList.subList(1, firstSessionsIdList.size());
-        ruptureClient.finishFewSessions(firstFinishedSessionsIdList);
+        int eightDepartmentId = 8;
+        ruptureClient.deleteAllSessionInDepartment(eightDepartmentId);
+        List<Integer> eightSessionsIdList = ruptureClient.createFewSessions(eightDepartmentId, 2);
+        List<Integer> eightActiveSessionsIdList = eightSessionsIdList.subList(0, 1);
+        List<Integer> eightFinishedSessionsIdList = eightSessionsIdList.subList(1, eightSessionsIdList.size());
+        ruptureClient.finishFewSessions(eightFinishedSessionsIdList);
 
         WorkPage workPage = loginAndGoTo(WorkPage.class);
-
 
         //Step 1
         step("Перейти в список сессий");
@@ -973,9 +1004,306 @@ public class RupturesTest extends AppBaseSteps {
 
         //Step 2
         step("Выбрать 1 отдел");
-        sessionListPage = sessionListPage.changeDepartment(firstDepartmentId);
-        sessionListPage.shouldAllActiveSessionAreVisible(firstActiveSessionsIdList)
-                .shouldAllFinishedSessionAreVisible(firstFinishedSessionsIdList);
+        sessionListPage = sessionListPage.changeDepartment(eightDepartmentId);
+        sessionListPage.shouldAllActiveSessionAreVisible(eightActiveSessionsIdList)
+                .shouldAllFinishedSessionAreVisible(eightFinishedSessionsIdList);
     }
 
+    @Test(description = "C3272530 Список продуктов (пагинация)")
+    public void testProductListPagination() throws Exception {
+        int rupturesCount = 21;
+
+        ActionData giveApologize = new ActionData();
+        giveApologize.setState(false);
+        giveApologize.setUserPosition(0);
+        giveApologize.setAction(Action.GIVE_APOLOGISE.getActionNumber());
+
+        ActionData removePriceTag = new ActionData();
+        removePriceTag.setState(true);
+        removePriceTag.setUserPosition(0);
+        removePriceTag.setAction(Action.REMOVE_PRICE_TAG.getActionNumber());
+
+        ActionData findProductAndLayItOut = new ActionData();
+        findProductAndLayItOut.setState(false);
+        findProductAndLayItOut.setUserPosition(0);
+        findProductAndLayItOut.setAction(Action.FIND_PRODUCT_AND_LAY_IT_OUT.getActionNumber());
+
+        int sessionId = createSessionWithNeededProductAmountWithSpecificActions(rupturesCount, giveApologize, removePriceTag, findProductAndLayItOut);
+        WorkPage workPage = loginAndGoTo(WorkPage.class);
+        SessionListPage sessionListPage = workPage.goToRuptures();
+
+        //Step 1
+        step("Перейти в сессию");
+        sessionListPage.goToSession(String.valueOf(sessionId));
+        ActiveSessionPage activeSessionPage = new ActiveSessionPage();
+        activeSessionPage.shouldRuptureQuantityIsCorrect(rupturesCount)
+                .verifyRequiredElements();
+
+        //Step 2
+        step("Завершить сессию");
+        FinishSessionAcceptModalPage finishSessionAcceptModalPage = activeSessionPage.finishSession();
+        FinishedSessionPage finishedSessionPage = finishSessionAcceptModalPage.finish();
+        finishedSessionPage.verifyRequiredElements();
+
+        //Step 3
+        step("Перейти во все задачи дважды проскроллить ждо конца экрана");
+        FinishedSessionRupturesActionsPage finishedSessionRupturesActionsPage = finishedSessionPage.goToActionPage(Action.ALL_ACTIONS);
+        finishedSessionRupturesActionsPage.shouldRuptureCountIsCorrect(rupturesCount);
+
+        //Step 4
+        step("Перейти в выполненные задачи дважды проскроллить ждо конца экрана");
+        finishedSessionRupturesActionsPage = finishedSessionRupturesActionsPage.goToDoneTasks();
+        finishedSessionRupturesActionsPage.shouldRuptureCountIsCorrect(rupturesCount);
+
+        //Step 5
+        step("Вернуться на экран завершенной сессии\n" +
+                "Перейти в \"поставить извиняшку\"\n" +
+                "дважды проскроллить ждо конца экрана");
+        finishedSessionRupturesActionsPage.goBack();
+        finishedSessionRupturesActionsPage = new FinishedSessionRupturesActionsPage();
+        finishedSessionRupturesActionsPage.goBack();
+        finishedSessionPage = new FinishedSessionPage();
+        finishedSessionRupturesActionsPage = finishedSessionPage.goToActionPage(Action.GIVE_APOLOGISE);
+        finishedSessionRupturesActionsPage.shouldRuptureCountIsCorrect(rupturesCount);
+
+        //Step 6
+        step("Вернуться на экран завершенной сессии\n" +
+                "Перейти в \"Убрать ценник\"\n" +
+                "Перейти в выполненные задачи\n" +
+                "дважды проскроллить ждо конца экрана");
+        finishedSessionRupturesActionsPage.goBack();
+        finishedSessionPage = new FinishedSessionPage();
+        finishedSessionRupturesActionsPage = finishedSessionPage.goToActionPage(Action.REMOVE_PRICE_TAG);
+        finishedSessionRupturesActionsPage = finishedSessionRupturesActionsPage.goToDoneTasks();
+        finishedSessionRupturesActionsPage.shouldRuptureCountIsCorrect(rupturesCount);
+    }
+
+    @Test(description = "C3272531 Страница завершенной сессии (каунтеры, экшены)")
+    public void testFinishedSessionPage() throws Exception {
+        int rupturesCount = 3;
+
+        ActionData giveApologize = new ActionData();
+        giveApologize.setState(false);
+        giveApologize.setUserPosition(0);
+        giveApologize.setAction(Action.GIVE_APOLOGISE.getActionNumber());
+
+        ActionData stickRedSticker = new ActionData();
+        stickRedSticker.setState(false);
+        stickRedSticker.setUserPosition(0);
+        stickRedSticker.setAction(Action.STICK_RED_STICKER.getActionNumber());
+
+        ActionData findProductAndLayItOut = new ActionData();
+        findProductAndLayItOut.setState(false);
+        findProductAndLayItOut.setUserPosition(0);
+        findProductAndLayItOut.setAction(Action.FIND_PRODUCT_AND_LAY_IT_OUT.getActionNumber());
+
+        TaskData giveApologizeTaskData = new TaskData();
+        giveApologizeTaskData.setAllTasksCount(3);
+        giveApologizeTaskData.setDoneTasksCount(0);
+        giveApologizeTaskData.setTaskName(Action.GIVE_APOLOGISE.getActionName());
+
+        TaskData stickRedStickerTaskData = new TaskData();
+        stickRedStickerTaskData.setAllTasksCount(3);
+        stickRedStickerTaskData.setDoneTasksCount(0);
+        stickRedStickerTaskData.setTaskName(Action.STICK_RED_STICKER.getActionName());
+
+        TaskData findProductAndLayItOutTaskData = new TaskData();
+        findProductAndLayItOutTaskData.setAllTasksCount(3);
+        findProductAndLayItOutTaskData.setDoneTasksCount(0);
+        findProductAndLayItOutTaskData.setTaskName(Action.FIND_PRODUCT_AND_LAY_IT_OUT.getActionName());
+
+        TaskData allTaskData = new TaskData();
+        allTaskData.setAllTasksCount(9);
+        allTaskData.setDoneTasksCount(0);
+        allTaskData.setTaskName(Action.ALL_ACTIONS.getActionName());
+
+        int sessionId = createSessionWithNeededProductAmountWithSpecificActions(rupturesCount, giveApologize, stickRedSticker, findProductAndLayItOut);
+        List<RuptureProductData> ruptures = ruptureClient.getProducts(sessionId).asJson().getItems();
+        List<String> lmCodes = ruptures.stream().map(RuptureProductData::getLmCode).collect(Collectors.toList());
+        ruptureClient.finishSession(sessionId);
+        WorkPage workPage = loginAndGoTo(WorkPage.class);
+        SessionListPage sessionListPage = workPage.goToRuptures();
+
+        //Step 1
+        step("Перейти на экране завершенной сессии");
+        sessionListPage.goToSession(String.valueOf(sessionId));
+        FinishedSessionPage finishedSessionPage = new FinishedSessionPage();
+        finishedSessionPage.shouldAllTasksCounterIsCorrect(allTaskData)
+                .shouldTasksAreCorrect(giveApologizeTaskData, stickRedStickerTaskData, findProductAndLayItOutTaskData);
+
+        //Step 2
+        step("Перейти во \"Все задачи\"");
+        int doneTasksCounter = 0;
+        int allTasksAmount = 9;
+        FinishedSessionRupturesActionsPage finishedSessionRupturesActionsPage = finishedSessionPage.goToActionPage(Action.ALL_ACTIONS);
+        finishedSessionRupturesActionsPage.shouldTasksRatioCounterIsCorrect(doneTasksCounter, allTasksAmount)
+                .shouldRuptureCountIsCorrect(rupturesCount);
+
+        //Step 3
+        step("Чекнуть у всех товаров экшен \"Поставить извиняшку\"\n" +
+                "После каждого чека нужно дожидаться изменения списка");
+        finishedSessionRupturesActionsPage.scrollToBeginning();
+        String ruptureLmCode = lmCodes.get(2);
+        finishedSessionRupturesActionsPage.choseTaskCheckBoxForProduct(Action.GIVE_APOLOGISE, ruptureLmCode)
+                .shouldDoneTasksCounterIsCorrect(++doneTasksCounter)
+                .shouldRuptureCardHasNotContainsTask(ruptureLmCode, Action.GIVE_APOLOGISE)
+                .shouldTasksRatioCounterIsCorrect(doneTasksCounter, allTasksAmount);
+
+        ruptureLmCode = lmCodes.get(1);
+        finishedSessionRupturesActionsPage.choseTaskCheckBoxForProduct(Action.GIVE_APOLOGISE, ruptureLmCode)
+                .shouldDoneTasksCounterIsCorrect(++doneTasksCounter)
+                .shouldRuptureCardHasNotContainsTask(ruptureLmCode, Action.GIVE_APOLOGISE)
+                .shouldTasksRatioCounterIsCorrect(doneTasksCounter, allTasksAmount);
+
+        ruptureLmCode = lmCodes.get(0);
+        finishedSessionRupturesActionsPage.choseTaskCheckBoxForProduct(Action.GIVE_APOLOGISE, ruptureLmCode)
+                .shouldDoneTasksCounterIsCorrect(++doneTasksCounter)
+                .shouldRuptureCardHasNotContainsTask(ruptureLmCode, Action.GIVE_APOLOGISE)
+                .shouldTasksRatioCounterIsCorrect(doneTasksCounter, allTasksAmount)
+                .scrollToBeginning()
+                .shouldRuptureCountIsCorrect(rupturesCount);
+
+        //Step 4
+        step("Чекнуть для одного из товаров все экшены\n" +
+                "После каждого чека нужно дожидаться изменения списка");
+        finishedSessionRupturesActionsPage.choseTaskCheckBoxForProduct(Action.FIND_PRODUCT_AND_LAY_IT_OUT, ruptureLmCode)
+                .shouldDoneTasksCounterIsCorrect(++doneTasksCounter)
+                .shouldRuptureCardHasNotContainsTask(ruptureLmCode, Action.FIND_PRODUCT_AND_LAY_IT_OUT)
+                .shouldTasksRatioCounterIsCorrect(doneTasksCounter, allTasksAmount)
+                .choseTaskCheckBoxForProduct(Action.STICK_RED_STICKER, ruptureLmCode)
+                .shouldDoneTasksCounterIsCorrect(++doneTasksCounter)
+                .shouldRuptureCardHasNotContainsTask(ruptureLmCode, Action.STICK_RED_STICKER)
+                .shouldTasksRatioCounterIsCorrect(doneTasksCounter, allTasksAmount)
+                .scrollToBeginning()
+                .shouldRuptureCountIsCorrect(2);
+
+        //Step 5
+        step("Перейти в карточку одного из оставшихся товаров\n" +
+                "Чекнуть для него все экшены\n" +
+                "Вернуться назад");
+        ruptureLmCode = lmCodes.get(1);
+        RuptureCardPage ruptureCardPage = finishedSessionRupturesActionsPage.goToRuptureCard(ruptureLmCode);
+        ruptureCardPage.setTasksCheckBoxes(Action.STICK_RED_STICKER.getActionName(), Action.FIND_PRODUCT_AND_LAY_IT_OUT.getActionName());
+        doneTasksCounter += 2;
+        ruptureCardPage.closeRuptureCardPage();
+        //BUG "undefined is not an object"
+        finishedSessionRupturesActionsPage = new FinishedSessionRupturesActionsPage();
+        //BUG there are 2 ruptures
+        finishedSessionRupturesActionsPage.shouldRuptureCountIsCorrect(1)
+                .shouldTasksRatioCounterIsCorrect(doneTasksCounter, allTasksAmount)
+                .shouldDoneTasksCounterIsCorrect(doneTasksCounter);
+
+        //Step 6
+        step("Перейти в выполненные задачи");
+        finishedSessionRupturesActionsPage = finishedSessionRupturesActionsPage.goToDoneTasks();
+        finishedSessionRupturesActionsPage.shouldTasksRatioCounterIsCorrect(doneTasksCounter)
+                .shouldRuptureCountIsCorrect(rupturesCount);
+
+        //Step 7
+        step("Снять с одного из товаров экшен \"Наклеить красный стикер\"");
+        finishedSessionRupturesActionsPage.choseTaskCheckBoxForProduct(Action.STICK_RED_STICKER, ruptureLmCode)
+                .shouldRuptureCardHasNotContainsTask(ruptureLmCode, Action.STICK_RED_STICKER)
+                .shouldTasksRatioCounterIsCorrect(--doneTasksCounter);
+
+        //Step 8
+        step("Вернуться назад по железной кнопке");
+        finishedSessionRupturesActionsPage.goBack();
+        finishedSessionRupturesActionsPage = new FinishedSessionRupturesActionsPage();
+        if (DefectConst.RUPTURES_DONE_TASKS_LIST_ISSUE)
+            finishedSessionRupturesActionsPage.shouldRuptureCountIsCorrect(1);
+        else
+            finishedSessionRupturesActionsPage.shouldRuptureCountIsCorrect(2);
+        finishedSessionRupturesActionsPage.shouldTasksRatioCounterIsCorrect(doneTasksCounter, allTasksAmount)
+                .shouldDoneTasksCounterIsCorrect(doneTasksCounter);
+
+        //Step 9
+        step("Вернуться по железной кнопке на экран завершенной сессии");
+        allTaskData.setDoneTasksCount(doneTasksCounter);
+        giveApologizeTaskData.setDoneTasksCount(3);
+        findProductAndLayItOutTaskData.setDoneTasksCount(2);
+        stickRedStickerTaskData.setDoneTasksCount(1);
+
+        finishedSessionRupturesActionsPage.goBack();
+        finishedSessionPage = new FinishedSessionPage();
+        finishedSessionPage.shouldTasksAreCorrect(giveApologizeTaskData, findProductAndLayItOutTaskData, stickRedStickerTaskData)
+                .shouldAllTasksCounterIsCorrect(allTaskData);
+
+        //Step 10
+        step("Перейти в раздел \"Наклеить красный стикер\"");
+        RuptureProductData firstRuptureProductData = ruptures.get(0);
+        ruptureLmCode = firstRuptureProductData.getLmCode();
+        RuptureData firstRupture = new RuptureData();
+        firstRupture.setLmCode(firstRuptureProductData.getLmCode());
+        firstRupture.setBarCode(firstRuptureProductData.getBarCode());
+        firstRupture.setTitle(firstRuptureProductData.getTitle());
+        Map<String, Boolean> action = Collections.singletonMap(Action.STICK_RED_STICKER.getActionName(), true);
+        firstRupture.setActions(action);
+
+        RuptureProductData secondRuptureProductData = ruptures.get(2);
+        RuptureData secondRupture = new RuptureData();
+        secondRupture.setLmCode(secondRuptureProductData.getLmCode());
+        secondRupture.setBarCode(secondRuptureProductData.getBarCode());
+        secondRupture.setTitle(secondRuptureProductData.getTitle());
+        secondRupture.setActions(action);
+
+        finishedSessionRupturesActionsPage = finishedSessionPage.goToActionPage(Action.STICK_RED_STICKER);
+        finishedSessionRupturesActionsPage.shouldRuptureDataIsCorrect(firstRupture, secondRupture)
+                .shouldDoneTasksCounterIsCorrect(1)
+                .shouldTasksRatioCounterIsCorrect(1, 3);
+
+        //Step 11
+        step("Чекнуть экшены у обоих товаров");
+        finishedSessionRupturesActionsPage.choseTaskCheckBoxForProduct(Action.STICK_RED_STICKER, ruptureLmCode);
+        ruptureLmCode = secondRuptureProductData.getLmCode();
+        finishedSessionRupturesActionsPage.choseTaskCheckBoxForProduct(Action.STICK_RED_STICKER, ruptureLmCode)
+                .shouldNoActiveRuptureTasksAreAvailable()
+                .shouldTasksRatioCounterIsCorrect(3, 3)
+                .shouldDoneTasksCounterIsCorrect(3);
+
+        //Step 12
+        step("Вернуться назад нажав стрелочку назад");
+        finishedSessionRupturesActionsPage.goBack();
+        finishedSessionPage = new FinishedSessionPage();
+        allTaskData.setDoneTasksCount(8);
+        stickRedStickerTaskData.setDoneTasksCount(3);
+        finishedSessionPage.shouldAllTasksCounterIsCorrect(allTaskData)
+                .shouldTasksAreCorrect(stickRedStickerTaskData, giveApologizeTaskData, findProductAndLayItOutTaskData);
+
+        //Step 13
+        step("Перейти в \"Наклеить красный стикер\"");
+        finishedSessionRupturesActionsPage = finishedSessionPage.goToActionPage(Action.STICK_RED_STICKER);
+        finishedSessionRupturesActionsPage.shouldNoActiveRuptureTasksAreAvailable()
+                .shouldTasksRatioCounterIsCorrect(3, 3)
+                .shouldDoneTasksCounterIsCorrect(3)
+                .shouldRuptureCountIsCorrect(0);
+
+        //Step 14
+        step("Перейти в выполненные задачи");
+        finishedSessionRupturesActionsPage = finishedSessionRupturesActionsPage.goToDoneTasks();
+        finishedSessionRupturesActionsPage.shouldTasksRatioCounterIsCorrect(3)
+                .shouldRuptureCountIsCorrect(3);
+
+        //Step 15
+        step("Перейти в выполненные задачи");
+        finishedSessionRupturesActionsPage.choseTaskCheckBoxForProduct(Action.STICK_RED_STICKER, ruptureLmCode)
+                .shouldTasksRatioCounterIsCorrect(2)
+                .shouldRuptureCountIsCorrect(2);
+
+        //Step 16
+        step("Выйти назад");
+        finishedSessionRupturesActionsPage.goBack();
+        finishedSessionRupturesActionsPage = new FinishedSessionRupturesActionsPage();
+        finishedSessionRupturesActionsPage.shouldTasksRatioCounterIsCorrect(2, 3)
+                .shouldRuptureCountIsCorrect(1)
+                .shouldDoneTasksCounterIsCorrect(2);
+
+        //Step 17
+        step("Выйти назад на экран завершенной сессии");
+        finishedSessionRupturesActionsPage.goBack();
+        finishedSessionPage = new FinishedSessionPage();
+        allTaskData.setDoneTasksCount(7);
+        stickRedStickerTaskData.setDoneTasksCount(2);
+        finishedSessionPage.shouldAllTasksCounterIsCorrect(allTaskData)
+                .shouldTasksAreCorrect(stickRedStickerTaskData, giveApologizeTaskData, findProductAndLayItOutTaskData);
+    }
 }

@@ -8,7 +8,9 @@ public enum Action {
     MAKE_C3_CORRECTION(4, "Сделать коррекцию C3"),
     RECALL_FROM_RM(5, "Отозвать с RM"),
     FIND_PRODUCT_AND_LAY_IT_OUT(6, "Найти товар и выложить"),
-    STICK_RED_STICKER(7, "Наклеить красный стикер");
+    STICK_RED_STICKER(7, "Наклеить красный стикер"),
+    ALL_ACTIONS(8, "Все задачи");
+
 
     private int actionNumber;
     private String actionName;

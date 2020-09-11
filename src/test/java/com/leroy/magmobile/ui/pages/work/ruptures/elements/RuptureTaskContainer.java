@@ -24,7 +24,7 @@ public class RuptureTaskContainer extends Element {
     @AppFindBy(xpath = ".//*[@text='Сделать отзыв с RM']")
     Element recallFromRmLbl;
 
-    @AppFindBy(xpath = ".//*[@content-desc='Button-container']//android.widget.TextView")
+    @AppFindBy(xpath = ".//*[@content-desc='Button-container']//android.widget.TextView[not(contains(@text,'Назначить задачи'))]")
     ElementList<Element> tasksList;
 
     public List<String> getTaskList() {

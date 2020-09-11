@@ -127,7 +127,7 @@ public class AndroidScrollView<T> extends BaseWidget {
     /**
      * Get data object by index. If necessary, it scroll to this object
      */
-    public T getDataObj(int index, boolean scrollUpBefore) throws Exception {
+    public T getDataObj(int index, boolean scrollUpBefore){
         if (scrollUpBefore)
             scrollToBeginning();
         scrollAndGrabData(null, null, index + 1, Direction.DOWN);
@@ -138,7 +138,7 @@ public class AndroidScrollView<T> extends BaseWidget {
         return tmpCardDataList.get(index);
     }
 
-    public T getDataObj(int index) throws Exception {
+    public T getDataObj(int index) {
         return getDataObj(index, false);
     }
 
@@ -247,7 +247,7 @@ public class AndroidScrollView<T> extends BaseWidget {
      */
     private AndroidScrollView<T> scrollAndGrabData(
             SearchContext searchContext, Integer maxScrollCount,
-            Integer maxEntityCount, Direction direction) throws Exception {
+            Integer maxEntityCount, Direction direction) {
         initialWebElementIfNeeded();
         tmpCardDataList = new ArrayList<>();
         String prevPageSource = null;

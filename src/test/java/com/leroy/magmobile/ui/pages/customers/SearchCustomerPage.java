@@ -204,7 +204,7 @@ public class SearchCustomerPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что первый отобразившийся клиент имеет данные, которые мы ожидаем")
-    public SearchCustomerPage shouldFirstCustomerIs(MagCustomerData customerData) {
+    public SearchCustomerPage shouldFirstCustomerIs(MagCustomerData customerData) throws Exception {
         MagCustomerData expectedData = customerData.clone();
         expectedData.setEmail(null);
         mainScrollView.getDataObj(0).assertEqualsNotNullExpectedFields(expectedData);

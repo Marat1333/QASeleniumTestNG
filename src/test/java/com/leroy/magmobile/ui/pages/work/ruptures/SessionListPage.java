@@ -92,8 +92,11 @@ public class SessionListPage extends CommonMagMobilePage {
             mainScrollView.scrollDownToElement(target);
         }
         //из-за кнопки "сканировать перебои"
-        mainScrollView.setSwipeDeadZonePercentage(50);
+        mainScrollView.setSwipeDeadZonePercentage(30);
         mainScrollView.scrollDown();
+        if (!target.isVisible()){
+            mainScrollView.scrollUpToElement(target);
+        }
         target.click();
     }
 

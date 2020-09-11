@@ -25,7 +25,7 @@ public class ActiveSessionWidget extends CardWidget<SessionData> {
     Element quantityAndCreatorLbl;
 
     @Override
-    public SessionData collectDataFromPage(String pageSource) throws Exception {
+    public SessionData collectDataFromPage(String pageSource) {
         FinishedSessionData data = new FinishedSessionData();
         data.setSessionNumber(ParserUtil.strWithOnlyDigits(sessionNumberLbl.getText(pageSource)));
         data.setCreateDate(creationDateLbl.getText(pageSource));
