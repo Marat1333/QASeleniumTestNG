@@ -303,7 +303,7 @@ public class AndroidScrollView<T> extends BaseWidget {
      * @param maxScrollCount - limit of scroll count
      * @return this
      */
-    public AndroidScrollView<T> scrollDownToText(String findText, int maxScrollCount) throws Exception {
+    public AndroidScrollView<T> scrollDownToText(String findText, int maxScrollCount) {
         SearchContext searchContext = new SearchContext();
         searchContext.findText = findText;
         return scrollAndGrabData(searchContext, maxScrollCount, null, Direction.DOWN);
@@ -316,27 +316,27 @@ public class AndroidScrollView<T> extends BaseWidget {
      * @param maxScrollCount - limit of scroll count
      * @return this
      */
-    public AndroidScrollView<T> scrollUpToText(String findText) throws Exception {
+    public AndroidScrollView<T> scrollUpToText(String findText) {
         return scrollUpToText(findText, MAX_SCROLL_COUNT);
     }
 
-    public AndroidScrollView<T> scrollUpToText(String findText, int maxScrollCount) throws Exception {
+    public AndroidScrollView<T> scrollUpToText(String findText, int maxScrollCount) {
         SearchContext searchContext = new SearchContext();
         searchContext.findText = findText;
         return scrollAndGrabData(searchContext, maxScrollCount, null, Direction.UP);
     }
 
-    public AndroidScrollView<T> scrollDownToText(String findText) throws Exception {
+    public AndroidScrollView<T> scrollDownToText(String findText) {
         return scrollDownToText(findText, MAX_SCROLL_COUNT);
     }
 
-    public AndroidScrollView<T> scrollDownToElement(Element element) throws Exception {
+    public AndroidScrollView<T> scrollDownToElement(Element element) {
         SearchContext searchContext = new SearchContext();
         searchContext.findElement = element;
         return scrollAndGrabData(searchContext, MAX_SCROLL_COUNT, null, Direction.DOWN);
     }
 
-    public AndroidScrollView<T> scrollUpToElement(Element element) throws Exception {
+    public AndroidScrollView<T> scrollUpToElement(Element element) {
         SearchContext searchContext = new SearchContext();
         searchContext.findElement = element;
         return scrollAndGrabData(searchContext, MAX_SCROLL_COUNT, null, Direction.UP);

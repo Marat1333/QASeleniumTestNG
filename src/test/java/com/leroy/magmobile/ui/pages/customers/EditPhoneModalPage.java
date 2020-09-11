@@ -21,6 +21,8 @@ public class EditPhoneModalPage extends CommonMagMobilePage {
 
     @Step("Изменить номер телефона в модальном окне")
     public void editPhoneNumber(String value) {
+        if (value.startsWith("+7"))
+            value = value.substring(2);
         phoneFld.clearFillAndSubmit(value);
         confirmBtn.click();
     }
