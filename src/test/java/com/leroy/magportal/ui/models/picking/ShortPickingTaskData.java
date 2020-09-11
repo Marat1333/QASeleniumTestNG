@@ -1,5 +1,6 @@
 package com.leroy.magportal.ui.models.picking;
 
+import com.leroy.constants.DefectConst;
 import com.leroy.core.ContextProvider;
 import com.leroy.core.asserts.SoftAssertWrapper;
 import com.leroy.magportal.ui.constants.picking.PickingConst;
@@ -57,9 +58,11 @@ public class ShortPickingTaskData implements IDataWithNumberAndStatus<ShortPicki
             softAssert.isTrue(Math.abs(this.getWeight() - expectedData.getWeight()) <= 0.011,
                     "Неверный вес товаров в документе");
         }
-        if (expectedData.getMaxSize() != null) {
-            softAssert.isEquals(maxSize, expectedData.getMaxSize(),
-                    "Неверный максимальный размер в документе");
+        if (!DefectConst.PUZ2_MAX_SIZE_INCORRECT) {
+            if (expectedData.getMaxSize() != null) {
+                softAssert.isEquals(maxSize, expectedData.getMaxSize(),
+                        "Неверный максимальный размер в документе");
+            }
         }
         softAssert.verifyAll();
     }
