@@ -57,7 +57,7 @@ public class SendEmailPage extends CommonMagMobilePage {
 
     @Step("Ввести {text} в поле 'Комментарий'")
     public SendEmailPage enterTextInCommentField(String text) {
-        emailFld.clearFillAndSubmit(text);
+        commentFld.clearFillAndSubmit(text);
         return this;
     }
 

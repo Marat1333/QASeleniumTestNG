@@ -1,5 +1,10 @@
 package com.leroy.magportal.api;
 
+import static com.leroy.core.matchers.Matchers.successful;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -7,7 +12,19 @@ import com.leroy.core.ContextProvider;
 import com.leroy.core.UserSessionData;
 import com.leroy.core.api.BaseMashupClient;
 import com.leroy.core.configuration.Log;
-import com.leroy.magmobile.api.clients.*;
+import com.leroy.magmobile.api.clients.CartClient;
+import com.leroy.magmobile.api.clients.CatalogProductClient;
+import com.leroy.magmobile.api.clients.CustomerClient;
+import com.leroy.magmobile.api.clients.EstimateClient;
+import com.leroy.magmobile.api.clients.LsAddressClient;
+import com.leroy.magmobile.api.clients.PrintPriceClient;
+import com.leroy.magmobile.api.clients.RupturesClient;
+import com.leroy.magmobile.api.clients.SalesDocProductClient;
+import com.leroy.magmobile.api.clients.SalesDocSearchClient;
+import com.leroy.magmobile.api.clients.ShopKladrClient;
+import com.leroy.magmobile.api.clients.SmsNotificationClient;
+import com.leroy.magmobile.api.clients.SupportClient;
+import com.leroy.magmobile.api.clients.TransferClient;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
@@ -23,21 +40,16 @@ import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateProduct
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magportal.api.clients.MagPortalCatalogProductClient;
 import io.qameta.allure.Step;
-import org.apache.commons.lang.RandomStringUtils;
-import org.testng.Assert;
-import ru.leroymerlin.qa.core.clients.base.Response;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.commons.lang.RandomStringUtils;
+import org.testng.Assert;
+import ru.leroymerlin.qa.core.clients.base.Response;
 
-import static com.leroy.core.matchers.Matchers.successful;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasSize;
-
+@Deprecated
 public class ApiClientProvider {
 
     @Inject
@@ -75,7 +87,7 @@ public class ApiClientProvider {
     @Inject
     private Provider<MagPortalCatalogProductClient> magPortalCatalogProductClientProvider;
 
-    private UserSessionData userSessionData() {
+    protected UserSessionData userSessionData() {
         return ContextProvider.getContext().getUserSessionData();
     }
 
@@ -161,7 +173,8 @@ public class ApiClientProvider {
             filtersData = new CatalogSearchFilter();
             filtersData.setAvs(false);
         }
-        String[] badLmCodes = {"10008698", "10008751"}; // Из-за отсутствия синхронизации бэков на тесте, мы можем получить некорректные данные
+        String[] badLmCodes = {"10008698",
+                "10008751"}; // Из-за отсутствия синхронизации бэков на тесте, мы можем получить некорректные данные
         GetCatalogSearch params = new GetCatalogSearch()
                 .setShopId(userSessionData().getUserShopId())
                 .setDepartmentId(userSessionData().getUserDepartmentId())
@@ -174,18 +187,22 @@ public class ApiClientProvider {
         List<ProductItemData> resultList = new ArrayList<>();
         int i = 0;
         for (ProductItemData item : items) {
-            if (!Arrays.asList(badLmCodes).contains(item.getLmCode()))
-                if (filtersData.getAvs() == null || !filtersData.getAvs() && item.getAvsDate() == null ||
+            if (!Arrays.asList(badLmCodes).contains(item.getLmCode())) {
+                if (filtersData.getAvs() == null
+                        || !filtersData.getAvs() && item.getAvsDate() == null ||
                         filtersData.getAvs() && item.getAvsDate() != null) {
                     if (filtersData.getHasAvailableStock() == null ||
                             (filtersData.getHasAvailableStock() && item.getAvailableStock() > 0 ||
-                                    !filtersData.getHasAvailableStock() && item.getAvailableStock() <= 0)) {
+                                    !filtersData.getHasAvailableStock()
+                                            && item.getAvailableStock() <= 0)) {
                         resultList.add(item);
                         i++;
                     }
                 }
-            if (necessaryCount == i)
+            }
+            if (necessaryCount == i) {
                 break;
+            }
         }
         assertThat("Catalog search request:", resultList, hasSize(greaterThan(0)));
         return resultList;
@@ -199,7 +216,8 @@ public class ApiClientProvider {
 
     public List<String> getProductLmCodes(int necessaryCount) {
         List<ProductItemData> productItemResponseList = getProducts(necessaryCount);
-        return productItemResponseList.stream().map(ProductItemData::getLmCode).collect(Collectors.toList());
+        return productItemResponseList.stream().map(ProductItemData::getLmCode)
+                .collect(Collectors.toList());
     }
 
     @Step("Try to get nonexistent Pin Code")
@@ -231,10 +249,12 @@ public class ApiClientProvider {
     public CustomerData getAnyCustomer() {
         CustomerSearchFilters customerSearchFilters = new CustomerSearchFilters();
         customerSearchFilters.setCustomerType(CustomerSearchFilters.CustomerType.NATURAL);
-        customerSearchFilters.setDiscriminantType(CustomerSearchFilters.DiscriminantType.PHONENUMBER);
+        customerSearchFilters
+                .setDiscriminantType(CustomerSearchFilters.DiscriminantType.PHONENUMBER);
         customerSearchFilters.setCustomerType(CustomerSearchFilters.CustomerType.NATURAL);
         customerSearchFilters.setDiscriminantValue("+71111111111");
-        Response<CustomerListData> resp = getCustomerClient().searchForCustomers(customerSearchFilters);
+        Response<CustomerListData> resp = getCustomerClient()
+                .searchForCustomers(customerSearchFilters);
         assertThat("GetAnyCustomer Method. Response: " + resp.toString(), resp.isSuccessful());
         List<CustomerData> customers = resp.asJson().getItems();
         assertThat("GetAnyCustomer Method. Count of customers", customers,
@@ -248,16 +268,19 @@ public class ApiClientProvider {
 
         CustomerClient customerClient = getCustomerClient();
         CustomerSearchFilters customerSearchFilters = new CustomerSearchFilters();
-        customerSearchFilters.setDiscriminantType(CustomerSearchFilters.DiscriminantType.PHONENUMBER);
+        customerSearchFilters
+                .setDiscriminantType(CustomerSearchFilters.DiscriminantType.PHONENUMBER);
         customerSearchFilters.setCustomerType(CustomerSearchFilters.CustomerType.NATURAL);
 
         for (int i = 0; i < attemptsCount; i++) {
             String phoneNumber = "+7" + RandomStringUtils.randomNumeric(10);
             customerSearchFilters.setDiscriminantValue(phoneNumber);
-            Response<CustomerListData> resp = customerClient.searchForCustomers(customerSearchFilters);
+            Response<CustomerListData> resp = customerClient
+                    .searchForCustomers(customerSearchFilters);
             if (resp.isSuccessful()) {
-                if (resp.asJson().getItems().size() == 0)
+                if (resp.asJson().getItems().size() == 0) {
                     return phoneNumber;
+                }
             } else {
                 Log.error(resp.toString());
                 return phoneNumber;
@@ -272,8 +295,9 @@ public class ApiClientProvider {
     @Step("Создаем черновик Сметы через API")
     private String createDraftEstimateAndGetCartId(
             CustomerData newCustomerData, List<String> lmCodes, int productCount) {
-        if (lmCodes == null)
+        if (lmCodes == null) {
             lmCodes = getProductLmCodes(productCount);
+        }
         CustomerData customerData;
         if (newCustomerData == null) {
             customerData = getAnyCustomer();

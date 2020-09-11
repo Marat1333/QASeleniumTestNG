@@ -6,7 +6,7 @@ import com.leroy.magmobile.ui.pages.customers.MainCustomerPage;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
 import io.qameta.allure.Step;
 
-public class TopMenuPage extends BottomMenuPage {
+public abstract class TopMenuPage extends BottomMenuPage {
 
     private static final String TYPICAL_BUTTON_XPATH = "(//android.view.ViewGroup[@content-desc='Button'])";
 

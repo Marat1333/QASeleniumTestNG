@@ -27,8 +27,8 @@ public class EstimateClient extends BaseMashupClient {
     @Step("Get Estimate info for estimateId={estimateId}")
     public Response<EstimateData> sendRequestGet(String estimateId) {
         return execute(new EstimateGet().setEstimateId(estimateId)
-                .bearerAuthHeader(userSessionData.getAccessToken())
-                .setShopId(userSessionData.getUserShopId()), EstimateData.class);
+                .bearerAuthHeader(getUserSessionData().getAccessToken())
+                .setShopId(getUserSessionData().getUserShopId()), EstimateData.class);
     }
 
     @Step("Create Estimate")
@@ -45,8 +45,8 @@ public class EstimateClient extends BaseMashupClient {
         estimateData.setProducts(filteredProducts);
         estimateData.setCustomers(customerDataList);
         return execute(new EstimatePost()
-                .bearerAuthHeader(userSessionData.getAccessToken())
-                .setShopId(userSessionData.getUserShopId())
+                .bearerAuthHeader(getUserSessionData().getAccessToken())
+                .setShopId(getUserSessionData().getUserShopId())
                 .jsonBody(estimateData), EstimateData.class);
     }
 
@@ -68,8 +68,8 @@ public class EstimateClient extends BaseMashupClient {
         estimateData.setProducts(productOrderDataList);
         return execute(new EstimatePut()
                 .setEstimateId(estimateId)
-                .bearerAuthHeader(userSessionData.getAccessToken())
-                .setShopId(userSessionData.getUserShopId())
+                .bearerAuthHeader(getUserSessionData().getAccessToken())
+                .setShopId(getUserSessionData().getUserShopId())
                 .jsonBody(estimateData), EstimateData.class);
     }
 
@@ -83,7 +83,7 @@ public class EstimateClient extends BaseMashupClient {
         Map<String, String> body = new HashMap<>();
         body.put("status", SalesDocumentsConst.States.DELETED.getApiVal());
         return execute(new EstimateChangeStatusPut()
-                .bearerAuthHeader(userSessionData.getAccessToken())
+                .bearerAuthHeader(getUserSessionData().getAccessToken())
                 .setEstimateId(estimateId)
                 .formBody(body), JsonNode.class);
     }
@@ -93,7 +93,7 @@ public class EstimateClient extends BaseMashupClient {
         Map<String, String> body = new HashMap<>();
         body.put("status", SalesDocumentsConst.States.CONFIRMED.getApiVal());
         return execute(new EstimateChangeStatusPut()
-                .bearerAuthHeader(userSessionData.getAccessToken())
+                .bearerAuthHeader(getUserSessionData().getAccessToken())
                 .setEstimateId(estimateId)
                 .formBody(body), JsonNode.class);
     }
@@ -120,7 +120,7 @@ public class EstimateClient extends BaseMashupClient {
         assertThat("salesDocStatus", data.getSalesDocStatus(), is(SalesDocumentsConst.States.DRAFT.getApiVal()));
         assertThat("documentType", data.getDocumentType(), is(SalesDocumentsConst.Types.ESTIMATE.getApiVal()));
         assertThat("status", data.getStatus(), is(SalesDocumentsConst.States.DRAFT.getApiVal()));
-        assertThat("shopId", data.getShopId(), is(userSessionData.getUserShopId()));
+        assertThat("shopId", data.getShopId(), is(getUserSessionData().getUserShopId()));
         assertThat("documentVersion", data.getDocumentVersion(), is(1));
 
         assertThat("products", data.getProducts(), hasSize(greaterThan(0)));

@@ -112,7 +112,7 @@ public class AddProductPage extends CommonMagMobilePage {
         return this;
     }
 
-    @Step("Проверить, что итогова сумма равна {number}")
+    @Step("Проверить, что итогова сумма равна {expectedTotalPrice}")
     public AddProductPage shouldTotalPriceIs(Double expectedTotalPrice) {
         Double actualTotalPrice = ParserUtil.strToDouble(totalPrice.getText());
         anAssert.isEquals(actualTotalPrice, expectedTotalPrice, "Неверная итого стоимость");

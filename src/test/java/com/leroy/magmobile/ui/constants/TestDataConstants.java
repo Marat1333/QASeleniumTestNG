@@ -30,7 +30,6 @@ public class TestDataConstants extends EnvConstants {
 
     public static final MagLegalCustomerData LEGAL_ENTITY_2 = new MagLegalCustomerData().toBuilder()
             .orgName("Общество с ограниченной ответственностью \"Энерго-Комплект\"")
-            .orgPhone("+7")
             .orgCard(getProperty("data.customer.cardNumber.corporate"))
             .build();
 

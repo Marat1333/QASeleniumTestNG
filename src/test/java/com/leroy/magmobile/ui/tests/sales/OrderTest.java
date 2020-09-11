@@ -1156,7 +1156,7 @@ public class OrderTest extends SalesBaseTest {
     /**
      * Нажать на иконку корзины в поле оформления заказа
      */
-    private void stepClickCartIconWhenProcessOrder(boolean verifyProducts) {
+    private void stepClickCartIconWhenProcessOrder(boolean verifyProducts) throws Exception {
         step("Нажать на иконку корзины в поле оформления заказа");
         if (processOrder35Page == null)
             processOrder35Page = new ProcessOrder35Page();
@@ -1249,7 +1249,7 @@ public class OrderTest extends SalesBaseTest {
     /**
      * Удалить заказ, нажав на иконку удаления (мусорка)
      */
-    private void stepRemoveOrder(boolean checkThatOrderIsDeleted) {
+    private void stepRemoveOrder(boolean checkThatOrderIsDeleted) throws Exception {
         if (confirmedOrderPage != null) {
             confirmedOrderPage.clickTrashIcon()
                     .clickConfirmButton();
@@ -1386,9 +1386,9 @@ public class OrderTest extends SalesBaseTest {
         salesDocumentData.getOrderAppDataList().get(0).setTotalWeight(null);
 
         if (isConfirmedOrder) {
-            confirmedOrderPage = confirmedOrderAddProduct35Page.clickAddIntoOrderButton();
+            confirmedOrderPage = confirmedOrderAddProduct35Page.clickSubmitButton();
         } else {
-            cartProcessOrder35Page = draftOrderAddProduct35Page.clickAddIntoOrderButton();
+            cartProcessOrder35Page = draftOrderAddProduct35Page.clickSubmitButton();
         }
         if (verifyProducts)
             if (isConfirmedOrder)
@@ -1443,7 +1443,7 @@ public class OrderTest extends SalesBaseTest {
     /**
      * Нажмите на мини-карточку созданного документа.
      */
-    private void stepClickSalesDocumentCard(boolean verifyProducts) {
+    private void stepClickSalesDocumentCard(boolean verifyProducts) throws Exception {
         // workaround for minor bug - КОСТЫЛЬ!
         if (salesDocumentData.getOrderDetailsData().getOrgAccount() != null &&
                 salesDocumentData.getOrderDetailsData().getOrgAccount().getChargePerson() != null) {
