@@ -4,6 +4,7 @@
 /.idea/
 /_idea/
 /_idea/workspace.xml
+/src/test/java/com/leroy/magportal/api/tests/DebugTest.java
 
 # Generated sources - ignored
 TestXML/Generated

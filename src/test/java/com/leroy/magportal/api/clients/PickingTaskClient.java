@@ -7,8 +7,9 @@ import com.leroy.magportal.api.data.onlineOrders.OrderProductDataPayload;
 import com.leroy.magportal.api.data.picking.PickingTaskData;
 import com.leroy.magportal.api.data.picking.PickingTaskData.ProductData;
 import com.leroy.magportal.api.data.picking.PickingTaskDataList;
+import com.leroy.magportal.api.data.picking.PickingTaskStoragePayload;
+import com.leroy.magportal.api.data.picking.PickingTaskStoragePayload.StoragePayload;
 import com.leroy.magportal.api.data.picking.PickingTaskWorkflowPayload;
-import com.leroy.magportal.api.data.picking.PickingTaskWorkflowPayload.StoragePayload;
 import com.leroy.magportal.api.data.picking.PickingTaskWorkflowPayload.WorkflowPayload;
 import com.leroy.magportal.api.requests.picking.PickingTaskGetRequest;
 import com.leroy.magportal.api.requests.picking.PickingTasksSearchRequest;
@@ -34,6 +35,14 @@ public class PickingTaskClient extends BaseMashupClient {
         PickingTaskGetRequest req = new PickingTaskGetRequest();
         req.setTaskId(taskId);
         return execute(req, PickingTaskData.class);
+    }
+
+    @Step("Start Picking of task for OrderId= {OrderId}")
+    public Response<PickingTaskData> startPicking(String orderId, Integer taskNumber) {
+        String taskId = this.searchForPickingTasks(orderId).asJson().getItems().get(taskNumber)
+                .getTaskId();
+        return makeAction(taskId, PickingTaskWorkflowEnum.START.getValue(),
+                new PickingTaskWorkflowPayload());
     }
 
     @Step("Start Picking of task = {taskId}")
@@ -107,8 +116,8 @@ public class PickingTaskClient extends BaseMashupClient {
         return payload;
     }
 
-    private PickingTaskWorkflowPayload makeStoragePayload(Integer count) {
-        PickingTaskWorkflowPayload payload = new PickingTaskWorkflowPayload();
+    private PickingTaskStoragePayload makeStoragePayload(Integer count) {
+        PickingTaskStoragePayload payload = new PickingTaskStoragePayload();
         StoragePayload storagePayload = new StoragePayload();
         List<String> locations = new ArrayList<>();
         for (int i = 0; i < count; i++) {

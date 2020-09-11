@@ -11,18 +11,10 @@ public class PickingTaskWorkflowPayload {
     private String action;
     @JsonProperty("payload")
     private WorkflowPayload workflowPayload;
-    @JsonProperty("payload")
-    private StoragePayload storagePayload;
 
     @Data
     public static class WorkflowPayload {
 
         private List<OrderProductDataPayload> products;
-    }
-
-    @Data
-    public static class StoragePayload {
-
-        private List<String> locations;
     }
 }

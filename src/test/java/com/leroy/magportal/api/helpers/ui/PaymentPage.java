@@ -5,7 +5,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.pages.BaseWebPage;
 import com.leroy.core.web_elements.general.Button;
-import com.leroy.core.web_elements.general.ComboBox;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magportal.api.constants.CardConst;
@@ -16,14 +15,17 @@ import org.openqa.selenium.WebElement;
 
 public class PaymentPage extends BaseWebPage {
 
-    @WebFindBy(id = "iPAN")
+    @WebFindBy(id = "cardNumber")
     EditBox pan;
 
-    @WebFindBy(id = "month")
-    ComboBox month;
+    @WebFindBy(xpath = "//*[@name='date']")
+    EditBox date;
 
-    @WebFindBy(id = "year")
-    ComboBox year;
+//    @WebFindBy(id = "month")
+//    ComboBox month;
+//
+//    @WebFindBy(id = "year")
+//    ComboBox year;
 
     @WebFindBy(id = "iTEXT")
     EditBox text;
@@ -56,8 +58,9 @@ public class PaymentPage extends BaseWebPage {
 
     public void enterCreditCardDetails(CardConst.CardData cardData) {
         pan.clearAndFill(cardData.getPan());
-        month.selectOptionByText(cardData.getMonth());
-        year.selectOptionByText(cardData.getYear());
+        date.clearAndFill(cardData.getMonth() + cardData.getYear());
+//        month.selectOptionByText(cardData.getMonth());
+//        year.selectOptionByText(cardData.getYear());
         text.clearAndFill(cardData.getText());
         cvc.clearAndFill(cardData.getCvc());
         buttonPayment.click();

@@ -68,7 +68,9 @@ public class BitrixHelper extends BaseHelper {
                 if (response.getSolutionId() != null) {
                     result.add(response);
                     if (orderData.getPaymentType().equals(PaymentTypeEnum.SBERBANK.getName())) {
-                        paymentHelper.makeHoldCost(response.getSolutionId());
+                        paymentHelper
+//                                .makePaymentCard(response.getSolutionId());
+                                .makeHoldCost(response.getSolutionId());
                     }
                 }
             } catch (InterruptedException e) {
@@ -103,11 +105,11 @@ public class BitrixHelper extends BaseHelper {
             CatalogSearchFilter filter = new CatalogSearchFilter();
             filter.setLmCode(orderData.getLmCode());
             ProductItemData product = catalogSearchClient.searchProductsBy(filter)
-                    .asJson(ProductItemData.class);
+                    .asJson().getItems().stream().findFirst().get();
             result.add(productItemDataToPayload(product));
         } else {
             List<ProductItemData> products = catalogSearchClient
-                    .getRandomUniqueProductsWithTitlesForShop(productsCount, shopId);
+                    .getProductsForShop(productsCount, shopId);
             for (ProductItemData productData : products) {
                 result.add(productItemDataToPayload(productData));
             }
@@ -117,10 +119,15 @@ public class BitrixHelper extends BaseHelper {
 
     private BitrixSolutionPayload.Basket productItemDataToPayload(ProductItemData product) {
         BitrixSolutionPayload.Basket basket = new BitrixSolutionPayload.Basket();
+        String price = "99.99";
+        if (product.getPrice() != null) {
+            price = product.getPrice().toString();
+        }
+
         basket.setId("128510514");
         basket.setSku(product.getLmCode());
         basket.setName(product.getTitle());
-        basket.setPrice(product.getPrice().toString());
+        basket.setPrice(price);
         basket.setTax(18);
         basket.setQuantity("10");//TODO: it's make sense to parametrise
         //TODO: ADD LT Products

@@ -11,6 +11,8 @@ public class SalesDocumentsConst {
         PICKED("PICKED", "Собран"),
         ALLOWED_FOR_GIVEAWAY("ALLOWED_FOR_GIVEAWAY", "Собран"),
         GIVEN_AWAY("GIVEN_AWAY", "Выдан"),
+        SHIPPED("SHIPPED", "Отгружен"),
+        DELIVERED("DELIVERED", "Доставлен"),
         TRANSFORMED("", "Преобразован"),
         DELETED("DELETED", ""),
         CANCELLED("CANCELLED", "Отменен"),

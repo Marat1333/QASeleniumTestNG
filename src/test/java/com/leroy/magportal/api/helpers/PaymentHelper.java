@@ -13,6 +13,7 @@ import com.leroy.magportal.api.constants.CardConst;
 import com.leroy.magportal.api.constants.PaymentStatusEnum;
 import com.leroy.magportal.api.helpers.ui.PaymentPage;
 import java.util.List;
+import lombok.SneakyThrows;
 import org.openqa.selenium.WebDriver;
 import ru.leroymerlin.qa.core.clients.base.Response;
 import ru.leroymerlin.qa.core.clients.payment.PaymentClient;
@@ -89,8 +90,13 @@ public class PaymentHelper extends BaseHelper {
         updatePayment(orderId, PaymentStatusEnum.PAID);
     }
 
-    public void makePaymentCard(String orderId) throws Exception {
-        WebDriver driver = DriverFactory.createDriver();
+    public void makePaymentCard(String orderId) {
+        WebDriver driver = null;
+        try {
+            driver = DriverFactory.createDriver();
+        } catch (Exception ignored) {
+        }
+
         ContextProvider.setDriver(driver);
         String link = getPaymentLink(orderId);
         try {
@@ -113,7 +119,8 @@ public class PaymentHelper extends BaseHelper {
         updatePayment(solutionResponse.getSolutionId(), PaymentStatusEnum.PAID);
     }
 
-    public void makePaymentCard(BitrixSolutionResponse solutionResponse) throws Exception {
+    @SneakyThrows
+    public void makePaymentCard(BitrixSolutionResponse solutionResponse) {
         WebDriver driver = DriverFactory.createDriver();
         ContextProvider.setDriver(driver);
         try {

@@ -1,24 +1,43 @@
 package com.leroy.magmobile.api.clients;
 
+import static com.leroy.core.matchers.Matchers.isNumber;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyOrNullString;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.oneOf;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.api.BaseMashupClient;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.data.sales.BaseProductOrderData;
-import com.leroy.magmobile.api.data.sales.orders.*;
-import com.leroy.magmobile.api.requests.order.*;
+import com.leroy.magmobile.api.data.sales.orders.OrderCustomerData;
+import com.leroy.magmobile.api.data.sales.orders.OrderData;
+import com.leroy.magmobile.api.data.sales.orders.OrderProductData;
+import com.leroy.magmobile.api.data.sales.orders.ReqOrderData;
+import com.leroy.magmobile.api.data.sales.orders.ReqOrderProductData;
+import com.leroy.magmobile.api.data.sales.orders.ResOrderCheckQuantityData;
+import com.leroy.magmobile.api.data.sales.orders.ResOrderProductCheckQuantityData;
+import com.leroy.magmobile.api.requests.order.OrderChangeStatusRequest;
+import com.leroy.magmobile.api.requests.order.OrderCheckQuantityRequest;
+import com.leroy.magmobile.api.requests.order.OrderConfirmRequest;
+import com.leroy.magmobile.api.requests.order.OrderGet;
+import com.leroy.magmobile.api.requests.order.OrderPost;
+import com.leroy.magmobile.api.requests.order.OrderPutRequest;
+import com.leroy.magmobile.api.requests.order.OrderRearrangeRequest;
+import com.leroy.magmobile.api.requests.order.OrderSetPinCodeRequest;
+import com.leroy.magmobile.api.requests.order.OrderWorkflowPut;
 import io.qameta.allure.Step;
-import org.json.simple.JSONObject;
-import ru.leroymerlin.qa.core.clients.base.Response;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static com.leroy.core.matchers.Matchers.isNumber;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import org.json.simple.JSONObject;
+import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class OrderClient extends BaseMashupClient {
 
@@ -82,7 +101,7 @@ public class OrderClient extends BaseMashupClient {
 
     @Step("Rearrange order")
     public Response<JsonNode> rearrange(OrderData orderData,
-                                        BaseProductOrderData productData) {
+            BaseProductOrderData productData) {
         OrderRearrangeRequest req = new OrderRearrangeRequest();
         req.setOrderId(orderData.getOrderId());
         req.setShopId(getUserSessionData().getUserShopId());
@@ -137,7 +156,8 @@ public class OrderClient extends BaseMashupClient {
         assertThat("fullDocId", data.getFullDocId(), isNumber());
         assertThat("orderId", data.getOrderId(), is(data.getFullDocId()));
         assertThat("docType", data.getDocType(), is(SalesDocumentsConst.Types.ORDER.getApiVal()));
-        assertThat("salesDocStatus", data.getSalesDocStatus(), is(SalesDocumentsConst.States.DRAFT.getApiVal()));
+        assertThat("salesDocStatus", data.getSalesDocStatus(),
+                is(SalesDocumentsConst.States.DRAFT.getApiVal()));
         assertThat("status", data.getStatus(), is(SalesDocumentsConst.States.DRAFT.getApiVal()));
         assertThat("shopId", data.getShopId(), is(getUserSessionData().getUserShopId()));
         assertThat("fulfillmentTaskId", data.getFulfillmentTaskId(), not(emptyOrNullString()));
@@ -175,19 +195,22 @@ public class OrderClient extends BaseMashupClient {
         assertThatResponseMatches(resp, expectedData, ResponseType.GET, true);
     }
 
-    public void assertThatResponseMatches(Response<OrderData> resp, OrderData expectedData, ResponseType responseType) {
+    public void assertThatResponseMatches(Response<OrderData> resp, OrderData expectedData,
+            ResponseType responseType) {
         assertThatResponseMatches(resp, expectedData, responseType, true);
     }
 
     @Step("Check that Response body matches expectedData")
-    public void assertThatResponseMatches(Response<OrderData> resp, OrderData expectedData, ResponseType responseType,
-                                          boolean checkProductLineId) {
+    public void assertThatResponseMatches(Response<OrderData> resp, OrderData expectedData,
+            ResponseType responseType,
+            boolean checkProductLineId) {
         assertThatResponseIsOk(resp);
         OrderData actualData = resp.asJson();
         assertThat("orderId", actualData.getOrderId(), is(expectedData.getOrderId()));
         assertThat("shopId", actualData.getShopId(), is(expectedData.getShopId()));
         if (!ResponseType.PUT.equals(responseType)) {
-            assertThat("createdBy", actualData.getCreatedBy(), is(getUserSessionData().getUserLdap()));
+            assertThat("createdBy", actualData.getCreatedBy(),
+                    is(getUserSessionData().getUserLdap()));
         }
         assertThat("fulfillmentTaskId", actualData.getFulfillmentTaskId(),
                 is(expectedData.getFulfillmentTaskId()));
@@ -205,7 +228,8 @@ public class OrderClient extends BaseMashupClient {
                     is(expectedData.getStatus()));
         }
 
-        assertThat("Customers count", actualData.getCustomers(), hasSize(expectedData.getCustomers().size()));
+        assertThat("Customers count", actualData.getCustomers(),
+                hasSize(expectedData.getCustomers().size()));
         for (int i = 0; i < actualData.getCustomers().size(); i++) {
             OrderCustomerData actualCustomer = actualData.getCustomers().get(i);
             OrderCustomerData expectedCustomer = expectedData.getCustomers().get(i);
@@ -227,7 +251,8 @@ public class OrderClient extends BaseMashupClient {
                     actualCustomer.getType(), is(expectedCustomer.getType()));
         }
 
-        assertThat("products", actualData.getProducts(), hasSize(expectedData.getProducts().size()));
+        assertThat("products", actualData.getProducts(),
+                hasSize(expectedData.getProducts().size()));
 
         for (int i = 0; i < actualData.getProducts().size(); i++) {
             OrderProductData actualProduct = actualData.getProducts().get(i);
@@ -268,28 +293,34 @@ public class OrderClient extends BaseMashupClient {
         OrderData actualData = resp.asJson();
         assertThat("orderId", actualData.getOrderId(), is(expectedData.getOrderId()));
         assertThat("fullDocId", actualData.getFullDocId(), is(expectedData.getFullDocId()));
-        assertThat("status", actualData.getStatus(), is(SalesDocumentsConst.States.IN_PROGRESS.getApiVal()));
+        assertThat("status", actualData.getStatus(),
+                is(SalesDocumentsConst.States.IN_PROGRESS.getApiVal()));
         assertThat("salesDocStatus", actualData.getSalesDocStatus(),
                 is(SalesDocumentsConst.States.IN_PROGRESS.getApiVal()));
     }
 
     @Step("Check that check Quantity response is OK. Response body matches expected data")
     public void assertThatCheckQuantityIsOk(Response<ResOrderCheckQuantityData> resp,
-                                            List<ReqOrderProductData> expectedProductDataList) {
+            List<ReqOrderProductData> expectedProductDataList) {
         assertThatResponseIsOk(resp);
         ResOrderCheckQuantityData actualData = resp.asJson();
         assertThat("result", actualData.getResult(), is("OK"));
         assertThat("groupingId", actualData.getGroupingId(), is("ON_ORDER"));
-        assertThat("product size", actualData.getProducts(), hasSize(expectedProductDataList.size()));
+        assertThat("product size", actualData.getProducts(),
+                hasSize(expectedProductDataList.size()));
         for (int i = 0; i < actualData.getProducts().size(); i++) {
             ResOrderProductCheckQuantityData actualProduct = actualData.getProducts().get(i);
             ReqOrderProductData expectedProduct = expectedProductDataList.get(i);
-            assertThat("Product " + (i + 1) + " lmCode", actualProduct.getLmCode(), is(expectedProduct.getLmCode()));
+            assertThat("Product " + (i + 1) + " lmCode", actualProduct.getLmCode(),
+                    is(expectedProduct.getLmCode()));
             assertThat("Product " + (i + 1) + " quantity", actualProduct.getQuantity(),
                     is(expectedProduct.getQuantity()));
-            assertThat("Product " + (i + 1) + " lineId", actualProduct.getLineId(), not(emptyOrNullString()));
-            assertThat("Product " + (i + 1) + " title", actualProduct.getTitle(), not(emptyOrNullString()));
-            assertThat("Product " + (i + 1) + " barCode", actualProduct.getBarCode(), not(emptyOrNullString()));
+            assertThat("Product " + (i + 1) + " lineId", actualProduct.getLineId(),
+                    not(emptyOrNullString()));
+            assertThat("Product " + (i + 1) + " title", actualProduct.getTitle(),
+                    not(emptyOrNullString()));
+            assertThat("Product " + (i + 1) + " barCode", actualProduct.getBarCode(),
+                    not(emptyOrNullString()));
         }
     }
 
@@ -307,7 +338,6 @@ public class OrderClient extends BaseMashupClient {
         assertThatResponseIsOk(resp);
         assertThat("result", resp.asJson().get("result").asText(), is("OK"));
     }
-
 
     // ------- Help Method ---------- //
 
@@ -333,11 +363,14 @@ public class OrderClient extends BaseMashupClient {
             Thread.sleep(3000);
         }
         if (isVerify) {
-            assertThat("Could not wait for the order to be confirmed. Timeout=" + maxTimeoutInSeconds + ". " +
+            assertThat(
+                    "Could not wait for the order to be confirmed. Timeout=" + maxTimeoutInSeconds
+                            + ". " +
                             "Response error:" + r.toString(),
                     r.isSuccessful());
-            assertThat("Could not wait for the order to be confirmed. Timeout=" + maxTimeoutInSeconds + ". " +
-                            "Status:", r.asJson().getStatus(),
+            assertThat("Could not wait for the order: " + orderId + " to be confirmed. Timeout="
+                            + maxTimeoutInSeconds + ". " +
+                            "Status:" + r.asJson().getStatus(), r.asJson().getStatus(),
                     is(expectedStatus));
         }
         return null;
@@ -359,14 +392,16 @@ public class OrderClient extends BaseMashupClient {
             String status = r.asJson().getStatus();
             if (r.isSuccessful() &&
                     (status.equals(SalesDocumentsConst.States.CONFIRMED.getApiVal()) ||
-                            status.equals(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal()))) {
+                            status.equals(
+                                    SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal()))) {
                 Log.info("waitUntilOrderIsConfirmed() has executed for " +
                         (System.currentTimeMillis() - currentTimeMillis) / 1000 + " seconds");
                 return r.asJson();
             }
             Thread.sleep(3000);
         }
-        assertThat("Could not wait for the order to be confirmed. Timeout=" + maxTimeoutInSeconds + ". " +
+        assertThat("Could not wait for the order to be confirmed. Timeout=" + maxTimeoutInSeconds
+                        + ". " +
                         "Response error:" + r.toString(),
                 r.isSuccessful());
         return null;
