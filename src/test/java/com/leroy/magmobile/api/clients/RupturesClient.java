@@ -198,8 +198,8 @@ public class RupturesClient extends BaseMashupClient {
 
         ReqRuptureSessionData rupturePostData = new ReqRuptureSessionData();
         rupturePostData.setProduct(productData);
-        rupturePostData.setShopId(Integer.parseInt(userSessionData.getUserShopId()));
-        rupturePostData.setStoreId(Integer.parseInt(userSessionData.getUserShopId()));
+        rupturePostData.setShopId(Integer.parseInt(getUserSessionData().getUserShopId()));
+        rupturePostData.setStoreId(Integer.parseInt(getUserSessionData().getUserShopId()));
         rupturePostData.setDepartmentId(departmentId);
         for (int i = 0; i < sessionsCount; i++) {
             Response<JsonNode> resp = this.createSession(rupturePostData);
@@ -218,7 +218,7 @@ public class RupturesClient extends BaseMashupClient {
     @Step("Delete all session in department")
     public void deleteAllSessionInDepartment(int departmentId) {
         RupturesSessionsRequest req = new RupturesSessionsRequest();
-        req.setShopId(userSessionData.getUserShopId());
+        req.setShopId(getUserSessionData().getUserShopId());
         req.setDepartmentId(departmentId);
         req.setAppVersion(appVersion);
         req.setPageSize(1000);

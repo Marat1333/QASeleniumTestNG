@@ -2,7 +2,7 @@ package com.leroy.magmobile.ui.pages.work.transfer;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.elements.MagMobCheckBox;
+import com.leroy.magmobile.ui.elements.MagMobGreenCheckBox;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.common.widget.CalendarWidget;
@@ -36,7 +36,7 @@ public class FilterTransferTaskPage extends CommonMagMobilePage {
 
     @AppFindBy(xpath = "//*[android.widget.TextView[@text='Показать только мои заявки']]//*[@content-desc='Button']",
             metaName = "Чек бокс - Показать только мои заявки")
-    MagMobCheckBox showOnlyMyTasksChkBox;
+    MagMobGreenCheckBox showOnlyMyTasksChkBox;
 
     @AppFindBy(containsText = "ПОКАЗАТЬ ЗАЯВКИ", metaName = "Кнопка 'Показать заявки'")
     MagMobGreenSubmitButton applyFiltersBtn;
@@ -109,12 +109,12 @@ public class FilterTransferTaskPage extends CommonMagMobilePage {
 
         private String CHK_BOX_XPATH = "//android.view.ViewGroup[*[@text='%s']]/android.view.ViewGroup";
 
-        private MagMobCheckBox draftChkBox = E(By.xpath(String.format(CHK_BOX_XPATH, "Черновик")), MagMobCheckBox.class);
-        private MagMobCheckBox sendChkBox = E(By.xpath(String.format(CHK_BOX_XPATH, "Отправлен")), MagMobCheckBox.class);
-        private MagMobCheckBox inSelectionChkBox = E(By.xpath(String.format(CHK_BOX_XPATH, "В подборе")), MagMobCheckBox.class);
-        private MagMobCheckBox partiallySelectionChkBox = E(By.xpath(String.format(CHK_BOX_XPATH, "Подобр. частично")), MagMobCheckBox.class);
-        private MagMobCheckBox finishedChkBox = E(By.xpath(String.format(CHK_BOX_XPATH, "Завершен")), MagMobCheckBox.class);
-        private MagMobCheckBox cancelledChkBox = E(By.xpath(String.format(CHK_BOX_XPATH, "Отменен")), MagMobCheckBox.class);
+        private MagMobGreenCheckBox draftChkBox = E(By.xpath(String.format(CHK_BOX_XPATH, "Черновик")), MagMobGreenCheckBox.class);
+        private MagMobGreenCheckBox sendChkBox = E(By.xpath(String.format(CHK_BOX_XPATH, "Отправлен")), MagMobGreenCheckBox.class);
+        private MagMobGreenCheckBox inSelectionChkBox = E(By.xpath(String.format(CHK_BOX_XPATH, "В подборе")), MagMobGreenCheckBox.class);
+        private MagMobGreenCheckBox partiallySelectionChkBox = E(By.xpath(String.format(CHK_BOX_XPATH, "Подобр. частично")), MagMobGreenCheckBox.class);
+        private MagMobGreenCheckBox finishedChkBox = E(By.xpath(String.format(CHK_BOX_XPATH, "Завершен")), MagMobGreenCheckBox.class);
+        private MagMobGreenCheckBox cancelledChkBox = E(By.xpath(String.format(CHK_BOX_XPATH, "Отменен")), MagMobGreenCheckBox.class);
 
         @AppFindBy(accessibilityId = "Button", metaName = "Кнопка подтверждения")
         Element confirmBtn;

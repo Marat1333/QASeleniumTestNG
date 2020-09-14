@@ -112,7 +112,7 @@ public class AndroidScrollView<T> extends BaseWidget {
     /**
      * Ищет виджет с текстом {value} и возвращает ссылку на сам widget (в общем виде - CardWidget)
      */
-    public CardWidget<T> searchForWidgetByText(String containsText, boolean scrollUpBefore) throws Exception {
+    public CardWidget<T> searchForWidgetByText(boolean scrollUpBefore, String... containsText) throws Exception {
         SearchContext searchContext = new SearchContext();
         searchContext.findText = containsText;
         if (scrollUpBefore)
@@ -121,14 +121,14 @@ public class AndroidScrollView<T> extends BaseWidget {
         return tmpWidget;
     }
 
-    public CardWidget<T> searchForWidgetByText(String containsText) throws Exception {
-        return searchForWidgetByText(containsText, false);
+    public CardWidget<T> searchForWidgetByText(String... containsText) throws Exception {
+        return searchForWidgetByText(false, containsText);
     }
 
     /**
      * Get data object by index. If necessary, it scroll to this object
      */
-    public T getDataObj(int index, boolean scrollUpBefore){
+    public T getDataObj(int index, boolean scrollUpBefore) {
         if (scrollUpBefore)
             scrollToBeginning();
         scrollAndGrabData(null, null, index + 1, Direction.DOWN);
@@ -313,8 +313,7 @@ public class AndroidScrollView<T> extends BaseWidget {
     /**
      * Scroll up to the specific text
      *
-     * @param findText       - text which should be found
-     * @param maxScrollCount - limit of scroll count
+     * @param findText - text which should be found
      * @return this
      */
     public AndroidScrollView<T> scrollUpToText(String findText) {
