@@ -90,13 +90,9 @@ public class PaymentHelper extends BaseHelper {
         updatePayment(orderId, PaymentStatusEnum.PAID);
     }
 
-    public void makePaymentCard(String orderId) {
-        WebDriver driver = null;
-        try {
-            driver = DriverFactory.createDriver();
-        } catch (Exception ignored) {
-        }
+    public void makePaymentCard(String orderId) throws Exception{
 
+        WebDriver driver = DriverFactory.createDriver();
         ContextProvider.setDriver(driver);
         String link = getPaymentLink(orderId);
         try {
@@ -119,8 +115,7 @@ public class PaymentHelper extends BaseHelper {
         updatePayment(solutionResponse.getSolutionId(), PaymentStatusEnum.PAID);
     }
 
-    @SneakyThrows
-    public void makePaymentCard(BitrixSolutionResponse solutionResponse) {
+    public void makePaymentCard(BitrixSolutionResponse solutionResponse) throws Exception {
         WebDriver driver = DriverFactory.createDriver();
         ContextProvider.setDriver(driver);
         try {

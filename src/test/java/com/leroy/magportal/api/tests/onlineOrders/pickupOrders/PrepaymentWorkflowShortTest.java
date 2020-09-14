@@ -17,7 +17,6 @@ import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 import ru.leroymerlin.qa.core.clients.tunnel.data.BitrixSolutionResponse;
 
-@SuppressWarnings("ALL")
 public class PrepaymentWorkflowShortTest extends BaseMagPortalApiTest {
 
     @Inject
@@ -34,7 +33,7 @@ public class PrepaymentWorkflowShortTest extends BaseMagPortalApiTest {
 
 
     @BeforeClass
-    private void setUp() throws Exception {
+    private void setUp() {
         List<BitrixSolutionResponse> bitrixSolutionResponses = bitrixHelper
                 .createOnlineOrders(1, OnlineOrderTypeConst.PICKUP_PREPAYMENT, 3);
         currentOrderId = bitrixSolutionResponses.stream().findAny().get().getSolutionId();
@@ -42,7 +41,7 @@ public class PrepaymentWorkflowShortTest extends BaseMagPortalApiTest {
                 .filter(x -> x.getSolutionId().equals(currentOrderId)).findFirst().get());
 
         orderClient.waitUntilOrderGetStatus(currentOrderId,
-                States.ALLOWED_FOR_PICKING.getApiVal(), PaymentStatusEnum.HOLD.toString());
+                States.ALLOWED_FOR_PICKING, PaymentStatusEnum.HOLD);
 
         currentTaskId = pickingTaskClient.searchForPickingTasks(currentOrderId).asJson().getItems()
                 .stream().findFirst().get().getTaskId();
@@ -55,18 +54,18 @@ public class PrepaymentWorkflowShortTest extends BaseMagPortalApiTest {
         orderClient.assertWorkflowResult(response, currentOrderId, States.PICKING_IN_PROGRESS);
     }
 
-    @Test(description = "C3225834 PICKUP_PREPAYMENT: Complete Picking the Order", priority = 2)
+    @Test(description = "C3225834 PICKUP_PREPAYMENT: Complete Picking the Order", priority = 2, dependsOnMethods={"testStartPicking"})
     public void testCompletePicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .completePicking(currentTaskId, true);
         orderClient.assertWorkflowResult(response, currentOrderId, States.PICKED);
     }
 
-    @Test(description = "C3225834 PICKUP_PREPAYMENT: Give away the Order", priority = 3)
-    public void testGiveAway() throws Exception {
+    @Test(description = "C3225834 PICKUP_PREPAYMENT: Give away the Order", priority = 3, dependsOnMethods={"testCompletePicking"})
+    public void testGiveAway() {
         paymentHelper.makePaid(currentOrderId);
         orderClient.waitUntilOrderGetStatus(currentOrderId,
-                States.PICKED.getApiVal(), PaymentStatusEnum.PAID.toString());
+                States.PICKED, PaymentStatusEnum.PAID);
         Response<JsonNode> response = orderClient.giveAway(currentOrderId, true);
         orderClient.assertWorkflowResult(response, currentOrderId, States.GIVEN_AWAY);
     }

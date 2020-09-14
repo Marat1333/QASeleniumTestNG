@@ -17,7 +17,7 @@ import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 import ru.leroymerlin.qa.core.clients.tunnel.data.BitrixSolutionResponse;
 
-public class DoorWorkflowShortTest extends BaseMagPortalApiTest {
+public class EntranceWorkflowShortTest extends BaseMagPortalApiTest {
 
     @Inject
     private BitrixHelper bitrixHelper;
@@ -35,7 +35,7 @@ public class DoorWorkflowShortTest extends BaseMagPortalApiTest {
     @BeforeClass
     private void setUp() {
         List<BitrixSolutionResponse> bitrixSolutionResponses = bitrixHelper
-                .createOnlineOrders(1, OnlineOrderTypeConst.DELIVERY_TO_DOOR, 3);
+                .createOnlineOrders(1, OnlineOrderTypeConst.DELIVERY_TO_ENTRANCE, 3);
         currentOrderId = bitrixSolutionResponses.stream().findAny().get().getSolutionId();
         bitrixSolutionResponses.remove(bitrixSolutionResponses.stream()
                 .filter(x -> x.getSolutionId().equals(currentOrderId)).findFirst().get());
@@ -47,21 +47,21 @@ public class DoorWorkflowShortTest extends BaseMagPortalApiTest {
                 .stream().findFirst().get().getTaskId();
     }
 
-    @Test(description = "C3310199 Door Delivery: ALLOWED_FOR_PICKING -> PICKING_IN_PROGRESS", priority = 1)
+    @Test(description = "C3310199 Entrance Delivery: ALLOWED_FOR_PICKING -> PICKING_IN_PROGRESS", priority = 1)
     public void testStartPicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .startPicking(currentTaskId);
         orderClient.assertWorkflowResult(response, currentOrderId, States.PICKING_IN_PROGRESS);
     }
 
-    @Test(description = "C3310199 Door Delivery: PICKING_IN_PROGRESS -> PICKED", priority = 2, dependsOnMethods={"testStartPicking"})
+    @Test(description = "C3310199 Entrance Delivery: PICKING_IN_PROGRESS -> PICKED", priority = 2, dependsOnMethods={"testStartPicking"})
     public void testCompletePicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .completePicking(currentTaskId, true);
         orderClient.assertWorkflowResult(response, currentOrderId, States.PICKED_WAIT);
     }
 
-    @Test(description = "C3310199 Door Delivery: ALLOWED_FOR_GIVEAWAY -> ON_SHIPMENT", priority = 3, dependsOnMethods={"testCompletePicking"})
+    @Test(description = "C3310199 Entrance Delivery: ALLOWED_FOR_GIVEAWAY -> ON_SHIPMENT", priority = 3, dependsOnMethods={"testCompletePicking"})
     public void testShipped() {
         paymentHelper.makePaid(currentOrderId);
         orderClient.waitUntilOrderGetStatus(currentOrderId,
@@ -70,7 +70,7 @@ public class DoorWorkflowShortTest extends BaseMagPortalApiTest {
         orderClient.assertWorkflowResult(response, currentOrderId, States.GIVEN_AWAY);
     }
 
-    @Test(description = "C3310199 Door Delivery: ON_SHIPMENT -> DELIVERED", priority = 4, dependsOnMethods={"testShipped"})
+    @Test(description = "C3310199 Entrance Delivery: ON_SHIPMENT -> DELIVERED", priority = 4, dependsOnMethods={"testShipped"})
     public void testDeliver() {
         orderClient.waitUntilOrderGetStatus(currentOrderId,
                 States.SHIPPED, PaymentStatusEnum.PAID);

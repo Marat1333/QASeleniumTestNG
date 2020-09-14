@@ -5,6 +5,7 @@ import static com.leroy.magportal.ui.constants.TestDataConstants.SIMPLE_CUSTOMER
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.google.inject.Inject;
+import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.core.api.ThreadApiClient;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.CustomerClient;
@@ -15,13 +16,16 @@ import com.leroy.magmobile.api.data.customer.CustomerSearchFilters;
 import com.leroy.magmobile.api.data.customer.CustomerSearchFilters.CustomerType;
 import com.leroy.magmobile.api.data.customer.CustomerSearchFilters.DiscriminantType;
 import com.leroy.magportal.api.clients.CatalogSearchClient;
+import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.clients.ShopsClient;
 import com.leroy.magportal.api.constants.DeliveryServiceTypeEnum;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
+import com.leroy.magportal.api.constants.PaymentStatusEnum;
 import com.leroy.magportal.api.constants.PaymentTypeEnum;
 import com.leroy.magportal.api.data.shops.ShopData;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +44,8 @@ public class BitrixHelper extends BaseHelper {
     private ShopsClient shopsClient;
     @Inject
     private CatalogSearchClient catalogSearchClient;
+    @Inject
+    private OrderClient orderClient;
 
     private final LocalDateTime dateTime = LocalDateTime.now();
 
@@ -68,6 +74,8 @@ public class BitrixHelper extends BaseHelper {
                 if (response.getSolutionId() != null) {
                     result.add(response);
                     if (orderData.getPaymentType().equals(PaymentTypeEnum.SBERBANK.getName())) {
+                        orderClient.waitUntilOrderGetStatus(response.getSolutionId(), States.WAITING_FOR_PAYMENT,
+                                PaymentStatusEnum.CONFIRMED);
                         paymentHelper
 //                                .makePaymentCard(response.getSolutionId());
                                 .makeHoldCost(response.getSolutionId());
@@ -75,6 +83,8 @@ public class BitrixHelper extends BaseHelper {
                 }
             } catch (InterruptedException e) {
                 Log.error(e.getMessage());
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
 
@@ -173,7 +183,8 @@ public class BitrixHelper extends BaseHelper {
         payload.setIdDevice(0);
         payload.setDeliveryTax(18);
         payload.setCustomerCoordinates("0,0");
-        payload.setDateInsert(dateTime.toString());
+        payload.setDateInsert(ZonedDateTime.now()
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX")));
         payload.setIdOrder("1256834");
 
         return payload;

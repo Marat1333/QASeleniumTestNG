@@ -27,6 +27,7 @@ import com.leroy.magportal.api.requests.order.OrderWorkflowRequest;
 import io.qameta.allure.Step;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.SneakyThrows;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
@@ -88,23 +89,23 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
                 makeWorkflowPayload(orderId, isFull, true));
     }
 
+    @SneakyThrows
     @Step("Wait until order comes to statuses. USE null for payment ignore")
     public void waitUntilOrderGetStatus(
-            String orderId, String expectedOrderStatus, String expectedPaymentStatus)
-            throws Exception {
-        int maxTimeoutInSeconds = 300;
+            String orderId, States expectedOrderStatus, PaymentStatusEnum expectedPaymentStatus) {
+        int maxTimeoutInSeconds = 180;
         long currentTimeMillis = System.currentTimeMillis();
         Response<OrderData> r = null;
         while (System.currentTimeMillis() - currentTimeMillis < maxTimeoutInSeconds * 1000) {
-            r = getOrder(orderId);
+            r = this.getOrder(orderId);
             if (r.isSuccessful() && r.asJson().getStatus()
-                    .equals(expectedOrderStatus)) {
+                    .equals(expectedOrderStatus.getApiVal())) {
                 String paymentStatus = r.asJson().getPaymentStatus();
                 if (expectedPaymentStatus == null) {
                     Log.info("waitUntilOrderGetStatus() has executed for " +
                             (System.currentTimeMillis() - currentTimeMillis) / 1000 + " seconds");
                     break;
-                } else if (paymentStatus.equalsIgnoreCase(expectedPaymentStatus)) {
+                } else if (paymentStatus.equalsIgnoreCase(expectedPaymentStatus.toString())) {
                     Log.info("waitUntilOrderGetStatus() has executed for " +
                             (System.currentTimeMillis() - currentTimeMillis) / 1000 + " seconds");
                     break;
@@ -114,20 +115,43 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         }
 
         assertThat("Could not wait for the order. Timeout=" + maxTimeoutInSeconds + ". " +
-                        "Response error:" + r.toString(),
+                        "Response error:" + r.asJson().toString(),
                 r.isSuccessful());
-        assertThat("Could not wait for the order: " + orderId + ". Timeout=" + maxTimeoutInSeconds
-                        + ". " +
-                        "Status:" + r.asJson().getStatus(), r.asJson().getStatus(),
-                is(expectedOrderStatus));
+        assertThat("Could not wait for the order: " + orderId + ". Timeout="
+                        + maxTimeoutInSeconds + ". " + "Status:" + r.asJson().getStatus(),
+                r.asJson().getStatus(),
+                is(expectedOrderStatus.getApiVal()));
         if (expectedPaymentStatus != null) {
             assertThat(
                     "Could not wait for the order: " + orderId + ". Timeout=" + maxTimeoutInSeconds
                             + ". " +
                             "Payment Status:" + r.asJson().getPaymentStatus(),
                     r.asJson().getPaymentStatus(),
-                    is(expectedPaymentStatus));
+                    is(expectedPaymentStatus.toString()));
         }
+    }
+
+    @SneakyThrows
+    @Step("Wait and return products are ready to TO_GIVEAWAY")
+    public List<OrderProductData> waitAndReturnProductsReadyToGiveaway(String orderId) {
+        int maxTimeoutInSeconds = 180;
+        long currentTimeMillis = System.currentTimeMillis();
+        Response<OrderFulfilmentToGivenAwayPayload> response;
+        List<OrderProductData> products = null;
+        while (System.currentTimeMillis() - currentTimeMillis < maxTimeoutInSeconds * 1000) {
+            response = this.productsToGivenAway(orderId);
+            if (response.isSuccessful()) {
+                products = response.asJson().getGroups().stream()
+                        .filter(x -> x.getGroupName().equals("TO_GIVEAWAY")).findFirst().get()
+                        .getProducts();;
+                if (products.size() > 0) {
+                    return products;
+                }
+
+            }
+            Thread.sleep(3000);
+        }
+        return products;
     }
 
     private Response<OrderFulfilmentToGivenAwayPayload> productsToGivenAway(String orderId) {
@@ -160,9 +184,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         if (isDeliver) {
             orderData = this.getOrder(orderId).asJson().getProducts();
         } else {
-            orderData = this.productsToGivenAway(orderId).asJson().getGroups()
-                    .stream().filter(x -> x.getGroupName().equals("TO_GIVEAWAY")).findFirst().get()
-                    .getProducts();
+            orderData = waitAndReturnProductsReadyToGiveaway(orderId);
         }
 
         for (OrderProductData productData : orderData) {
@@ -240,7 +262,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
     }
 
     ////VERIFICATION
-
+    @Step("Order Status verification")
     public void assertWorkflowResult(Response<?> response, String orderId, States expectedStatus) {
         assertThat("Request to change Order Status has Failed.", response, successful());
         Response<OrderData> order = this.getOrder(orderId);
