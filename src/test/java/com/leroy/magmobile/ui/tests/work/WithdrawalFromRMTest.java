@@ -1,5 +1,6 @@
 package com.leroy.magmobile.ui.tests.work;
 
+import com.leroy.core.annotations.Smoke;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.models.work.WithdrawalProductCardData;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
@@ -14,6 +15,7 @@ import java.util.Random;
 
 public class WithdrawalFromRMTest extends AppBaseSteps {
 
+    @Smoke
     @Test(description = "C3132493 Создание заявки на Отзыв RM из раздела Работа", groups = OLD_SHOP_GROUP)
     public void testC3132493() throws Exception {
         // Pre-condition

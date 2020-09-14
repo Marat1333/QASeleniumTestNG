@@ -8,6 +8,8 @@ public class TransferProductOrderData {
     private String lineId;
     @JsonProperty(required = true)
     private String lmCode;
+    @JsonProperty(required = true)
+    private String title;
     private String status;
     private String price;
     @JsonProperty(required = true)

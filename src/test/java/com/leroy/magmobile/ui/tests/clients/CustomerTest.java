@@ -3,6 +3,7 @@ package com.leroy.magmobile.ui.tests.clients;
 import com.google.inject.Inject;
 import com.leroy.constants.Gender;
 import com.leroy.constants.sales.SalesDocumentsConst;
+import com.leroy.core.annotations.Smoke;
 import com.leroy.magmobile.api.clients.SalesDocSearchClient;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
@@ -28,6 +29,7 @@ public class CustomerTest extends AppBaseSteps {
     @Inject
     CustomerHelper customerHelper;
 
+    @Smoke
     @Test(description = "C3201018 Создание клиента (физ. лицо)")
     public void testCreateCustomer() throws Exception {
         MainCustomerPage mainCustomerPage = loginAndGoTo(MainCustomerPage.class);
@@ -76,6 +78,7 @@ public class CustomerTest extends AppBaseSteps {
         mainCustomerPage.shouldRecentCustomerIs(1, customerData);
     }
 
+    @Smoke
     @Test(description = "C3201020 Поиск клиента по телефону (физ. лицо)")
     public void testSearchForIndividualCustomerByPhone() throws Exception {
         MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
@@ -186,7 +189,7 @@ public class CustomerTest extends AppBaseSteps {
                 shortSalesDocumentData.setTitle(SalesDocumentsConst.Types.ESTIMATE.getUiVal());
             else if (salesDocumentResponseData.getDocType().equals(SalesDocumentsConst.Types.ORDER.getApiVal()))
                 shortSalesDocumentData.setTitle(salesDocumentResponseData.getGiveAway().getPoint()
-                        .equals(SalesDocumentsConst.GiveAwayPoints.PICKUP.getApiVal())?
+                        .equals(SalesDocumentsConst.GiveAwayPoints.PICKUP.getApiVal()) ?
                         SalesDocumentsConst.GiveAwayPoints.PICKUP.getUiVal() : SalesDocumentsConst.GiveAwayPoints.DELIVERY.getUiVal());
             else
                 shortSalesDocumentData.setTitle("UNKNOWN");

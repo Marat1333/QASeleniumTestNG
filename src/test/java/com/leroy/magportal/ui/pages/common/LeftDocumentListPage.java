@@ -145,7 +145,6 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
         List<String> actualNumbers = documentCardList().getDataList().stream().map(
                 d -> ParserUtil.strWithOnlyDigits(d.getNumber()))
                 .collect(Collectors.toList());
-        anAssert.isTrue(actualNumbers.size() > 0, "Не найдено ни одного номера документа");
         anAssert.isNotEquals(actualNumbers, expectedNumbers,
                 "Номера документов в списке остались прежними (не изменились)");
     }
