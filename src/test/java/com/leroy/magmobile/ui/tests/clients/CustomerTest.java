@@ -96,6 +96,7 @@ public class CustomerTest extends AppBaseSteps {
         searchCustomerPage.shouldFirstCustomerIs(customerData);
     }
 
+    @Smoke
     @Test(description = "C22782859 Просмотр документов клиента (физ.лицо)")
     public void testViewIndividualClientInformation() throws Exception {
         step("Выполнение preconditions");

@@ -40,7 +40,7 @@ public abstract class SalesDocSearchPage extends CommonMagMobilePage {
     // Verifications
 
     @Step("Проверить, что в списке отображаются документы, которые ожидались")
-    public SalesDocSearchPage shouldFirstDocumentsAre(List<ShortSalesDocumentData> expectedCarts) {
+    public SalesDocSearchPage shouldFirstDocumentsAre(List<ShortSalesDocumentData> expectedCarts) throws Exception {
         List<ShortSalesDocumentData> actualData = documentScrollList.getFullDataList(expectedCarts.size());
         anAssert.isEquals(actualData.size(), expectedCarts.size(), "Должно отображаться больше документов на экране");
         for (int i = 0; i < actualData.size(); i++) {
