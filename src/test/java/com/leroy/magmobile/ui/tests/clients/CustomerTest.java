@@ -93,7 +93,24 @@ public class CustomerTest extends AppBaseSteps {
         // Step 2
         step("Введите номер клиента");
         searchCustomerPage.searchCustomerByPhone(customerData.getPhone(), false);
-        searchCustomerPage.shouldFirstCustomerIs(customerData);
+        searchCustomerPage.shouldFirstCustomerIs(customerData, SearchCustomerPage.SearchType.BY_PHONE);
+    }
+
+    @Test(description = "C3201021 Поиск клиента по email (физ. лицо)")
+    public void testSearchForClientByEmail() throws Exception {
+        MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
+
+        MainCustomerPage mainCustomerPage = loginAndGoTo(MainCustomerPage.class);
+
+        // Step 1
+        step("Нажмите на поле Поиск клиента");
+        SearchCustomerPage searchCustomerPage = mainCustomerPage.clickSearchCustomerField()
+                .verifyRequiredElements();
+
+        // Step 2
+        step("Введите электронную почту клиента");
+        searchCustomerPage.searchCustomerByEmail(customerData.getEmail(), false);
+        searchCustomerPage.shouldFirstCustomerIs(customerData, SearchCustomerPage.SearchType.BY_EMAIL);
     }
 
     @Smoke

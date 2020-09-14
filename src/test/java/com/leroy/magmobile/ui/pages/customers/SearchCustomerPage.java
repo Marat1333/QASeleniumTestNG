@@ -192,9 +192,18 @@ public class SearchCustomerPage extends CommonMagMobilePage {
     }
 
     @Step("Найдите клиента по почте: {value}")
-    public SearchCustomerPage searchCustomerByEmail(String value) {
+    public SearchCustomerPage searchCustomerByEmail(String value, boolean selectFirst) throws Exception {
         emailOptionLbl.click();
         enterTextInSearchField(value);
+        if (selectFirst) {
+            mainScrollView.clickElemByIndex(0);
+            try {
+                searchFld.waitForInvisibility(short_timeout);
+            } catch (Exception err) {
+                Log.error(err.getMessage());
+                mainScrollView.clickElemByIndex(0);
+            }
+        }
         return this;
     }
 
@@ -212,9 +221,12 @@ public class SearchCustomerPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что первый отобразившийся клиент имеет данные, которые мы ожидаем")
-    public SearchCustomerPage shouldFirstCustomerIs(MagCustomerData customerData) throws Exception {
+    public SearchCustomerPage shouldFirstCustomerIs(MagCustomerData customerData, SearchType searchType) throws Exception {
         MagCustomerData expectedData = customerData.clone();
-        expectedData.setEmail(null);
+        if (searchType.equals(SearchType.BY_PHONE))
+            expectedData.setEmail(null);
+        else if (searchType.equals(SearchType.BY_EMAIL))
+            expectedData.setPhone(null);
         mainScrollView.getDataObj(0).assertEqualsNotNullExpectedFields(expectedData);
         return this;
     }

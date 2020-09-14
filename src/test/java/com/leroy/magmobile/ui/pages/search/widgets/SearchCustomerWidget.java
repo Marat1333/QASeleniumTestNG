@@ -33,12 +33,13 @@ public class SearchCustomerWidget extends CardWidget<MagCustomerData> {
         customerData.setName(nameVal.getText(ps));
         //customerData.setCardNumber(cardNumberVal.getText(ps)); TODO
         //customerData.setCardType(cardTypeVal.getText(ps));
-        customerData.setPhone(ParserUtil.standardPhoneFmt(phoneVal.getText(ps)));
+        customerData.setEmail(emailVal.getTextIfPresent(ps));
+        customerData.setPhone(ParserUtil.standardPhoneFmt(phoneVal.getTextIfPresent(ps)));
         return customerData;
     }
 
     @Override
     public boolean isFullyVisible(String ps) {
-        return nameVal.isVisible(ps) && phoneVal.isVisible(ps);
+        return nameVal.isVisible(ps);
     }
 }
