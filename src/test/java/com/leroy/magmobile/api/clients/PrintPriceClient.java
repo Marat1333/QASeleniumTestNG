@@ -22,7 +22,7 @@ import static org.hamcrest.Matchers.notNullValue;
 public class PrintPriceClient extends BaseMashupClient {
 
     public Response<PrintDepartmentList> getDepartmentPrinterList() {
-        return getDepartmentPrinterList(userSessionData.getUserShopId());
+        return getDepartmentPrinterList(getUserSessionData().getUserShopId());
     }
 
     @Step("Get department printers info")
@@ -67,7 +67,7 @@ public class PrintPriceClient extends BaseMashupClient {
         printTaskProductsList.setData(printProductDataList);
         PrintPriceTaskRequest printTaskReq = new PrintPriceTaskRequest()
                 .setPrinterName(printerName)
-                .setShopId(userSessionData.getUserShopId())
+                .setShopId(getUserSessionData().getUserShopId())
                 .jsonBody(printTaskProductsList);
 
         return execute(printTaskReq, PrintTaskResponseData.class);

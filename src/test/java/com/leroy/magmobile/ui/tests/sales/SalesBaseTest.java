@@ -5,7 +5,6 @@ import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.DiscountConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
-import com.leroy.core.api.Module;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.CartClient;
 import com.leroy.magmobile.api.clients.OrderClient;
@@ -29,7 +28,6 @@ import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.utils.RandomUtil;
 import io.qameta.allure.Step;
-import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -42,7 +40,6 @@ import static com.leroy.constants.sales.DiscountConst.TYPE_NEW_PRICE;
 import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@Guice(modules = {Module.class})
 public class SalesBaseTest extends AppBaseSteps {
 
     @Inject

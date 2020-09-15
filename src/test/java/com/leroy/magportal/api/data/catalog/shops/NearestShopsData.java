@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class NearestShopsData {
+
     Integer id;
     String name;
     String address;

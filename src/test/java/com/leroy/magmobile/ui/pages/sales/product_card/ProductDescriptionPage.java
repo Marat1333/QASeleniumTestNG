@@ -93,14 +93,6 @@ public class ProductDescriptionPage extends ProductCardPage {
         lmCode.waitForVisibility();
     }
 
-    public static boolean isThisPage() {
-        WebDriver driver = ContextProvider.getDriver();
-        String ps = getPageSource(driver);
-        Element el = new Element(driver,
-                By.xpath("//*[contains(@content-desc, 'Screen')]//android.widget.TextView"));
-        return el.isVisible(ps) && el.getText(ps).equals(Cart35Page.SCREEN_TITLE);
-    }
-
     // Actions
 
     @Step("Перейти на страницу с детализацией цен и запасов")

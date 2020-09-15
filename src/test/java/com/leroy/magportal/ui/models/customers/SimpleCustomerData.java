@@ -13,6 +13,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SimpleCustomerData {
+    private String id;
     private String name;
     private String cardNumber;
     private String phoneNumber;
@@ -20,6 +21,7 @@ public class SimpleCustomerData {
 
     public SimpleCustomerData clone() {
         SimpleCustomerData clone = new SimpleCustomerData().toBuilder()
+                .id(id)
                 .name(name)
                 .cardNumber(cardNumber)
                 .phoneNumber(phoneNumber)

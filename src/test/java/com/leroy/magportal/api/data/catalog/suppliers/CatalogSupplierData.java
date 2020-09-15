@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class CatalogSupplierData {
+
     String supCode;
     String supName;
     Integer supDept;

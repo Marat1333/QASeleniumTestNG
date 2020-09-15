@@ -4,7 +4,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Button;
 import io.qameta.allure.Step;
 
-public class ScannerPage extends CommonMagMobilePage {
+public abstract class ScannerPage extends CommonMagMobilePage {
     @AppFindBy(text = "РАЗРЕШИТЬ")
     Button allowAccessToCameraBtn;
 
