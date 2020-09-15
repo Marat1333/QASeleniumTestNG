@@ -140,6 +140,12 @@ public class RuptureCardPage extends CommonMagMobilePage {
         closeModalBtn.waitForInvisibility();
     }
 
+    @Step("Вызвать модалку с доступными для перебоя действиями")
+    public ActionsModalPage callActionModal(){
+        ruptureCallActionModalBtn.click();
+        return new ActionsModalPage();
+    }
+
     @Step("Подтвердить добавление перебоя")
     public RupturesScannerPage acceptAdd() {
         acceptBtn.click();

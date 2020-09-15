@@ -39,6 +39,7 @@ public class FinishedSessionRupturesActionsPage extends CommonMagMobilePage {
     protected void waitForPageIsLoaded() {
         headerLbl.waitForVisibility();
         completedAllActionsRatioLbl.waitForVisibility();
+        backBtn.waitForVisibility();
     }
 
     @Step("Перейти на страницу выполненных задач")

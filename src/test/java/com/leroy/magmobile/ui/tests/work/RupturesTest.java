@@ -2,17 +2,23 @@ package com.leroy.magmobile.ui.tests.work;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.DefectConst;
+import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.UserSessionData;
 import com.leroy.core.api.Module;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.RupturesClient;
+import com.leroy.magmobile.api.clients.TransferClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.ruptures.ActionData;
 import com.leroy.magmobile.api.data.ruptures.ReqRuptureSessionData;
 import com.leroy.magmobile.api.data.ruptures.ResRuptureSessionDataList;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductData;
+import com.leroy.magmobile.api.data.sales.transfer.TransferSearchProductData;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.common.BottomMenuPage;
+import com.leroy.magmobile.ui.pages.more.MorePage;
+import com.leroy.magmobile.ui.pages.more.SearchShopPage;
+import com.leroy.magmobile.ui.pages.more.UserProfilePage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductCardPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.work.WorkPage;
@@ -34,13 +40,15 @@ import java.util.stream.Collectors;
 
 @Guice(modules = {Module.class})
 public class RupturesTest extends AppBaseSteps {
-    private static final ThreadLocal<Integer> threadLocal = new ThreadLocal<>();
+    private static final ThreadLocal<Integer> sessionsNumbers = new ThreadLocal<>();
 
     RupturesClient ruptureClient;
     CatalogSearchClient searchClient;
+    TransferClient transferClient;
 
     @BeforeClass
     private void initClients() {
+        transferClient = apiClientProvider.getTransferClient();
         ruptureClient = apiClientProvider.getRupturesClient();
         searchClient = apiClientProvider.getCatalogSearchClient();
     }
@@ -60,7 +68,7 @@ public class RupturesTest extends AppBaseSteps {
      */
     @AfterTest
     private void deleteSession() {
-        ruptureClient.deleteSession(threadLocal.get());
+        ruptureClient.deleteSession(sessionsNumbers.get());
     }
 
     private int createSessionWithProductWithoutActions() {
@@ -76,7 +84,7 @@ public class RupturesTest extends AppBaseSteps {
 
         Response<JsonNode> resp = ruptureClient.createSession(rupturePostData);
         int result = resp.asJson().get("sessionId").intValue();
-        threadLocal.set(result);
+        sessionsNumbers.set(result);
         return result;
     }
 
@@ -107,7 +115,7 @@ public class RupturesTest extends AppBaseSteps {
 
         Response<JsonNode> resp = ruptureClient.createSession(rupturePostData);
         int result = resp.asJson().get("sessionId").intValue();
-        threadLocal.set(result);
+        sessionsNumbers.set(result);
         return result;
     }
 
@@ -132,7 +140,7 @@ public class RupturesTest extends AppBaseSteps {
 
         Response<JsonNode> resp = ruptureClient.createSession(rupturePostData);
         int result = resp.asJson().get("sessionId").intValue();
-        threadLocal.set(result);
+        sessionsNumbers.set(result);
         return result;
     }
 
@@ -152,7 +160,7 @@ public class RupturesTest extends AppBaseSteps {
 
         Response<JsonNode> resp = ruptureClient.createSession(rupturePostData);
         int result = resp.asJson().get("sessionId").intValue();
-        threadLocal.set(result);
+        sessionsNumbers.set(result);
         rupturePostData.setSessionId(result);
         for (int i = 0; i < productAmount - 1; i++) {
             while (generatedLmCodes.contains(productData.getLmCode())) {
@@ -1247,7 +1255,7 @@ public class RupturesTest extends AppBaseSteps {
         secondRupture.setActions(action);
 
         finishedSessionRupturesActionsPage = finishedSessionPage.goToActionPage(Action.STICK_RED_STICKER);
-        finishedSessionRupturesActionsPage.shouldRuptureDataIsCorrect(firstRupture, secondRupture)
+        finishedSessionRupturesActionsPage.shouldRuptureDataIsCorrect(secondRupture, firstRupture)
                 .shouldDoneTasksCounterIsCorrect(1)
                 .shouldTasksRatioCounterIsCorrect(1, 3);
 
@@ -1305,5 +1313,35 @@ public class RupturesTest extends AppBaseSteps {
         stickRedStickerTaskData.setDoneTasksCount(2);
         finishedSessionPage.shouldAllTasksCounterIsCorrect(allTaskData)
                 .shouldTasksAreCorrect(stickRedStickerTaskData, giveApologizeTaskData, findProductAndLayItOutTaskData);
+    }
+
+    @Test(description = "C23389122 Создание отзыва с РМ с экрана добавляемого товара")
+    public void testCreateRecallFromRmFromAddedProductPage() throws Exception {
+        String shopWithLsRm = "35";
+        getUserSessionData().setUserShopId(shopWithLsRm);
+        List<TransferSearchProductData> products = transferClient.searchForTransferProducts(SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR).asJson().getItems();
+        String randomLmCode = products.get((int) (Math.random() * products.size())).getLmCode();
+        MorePage morePage = loginAndGoTo(MorePage.class);
+        UserProfilePage userProfilePage = morePage.goToUserProfile();
+        SearchShopPage searchShopPage = userProfilePage.goToEditShopForm();
+        searchShopPage.searchForShopAndSelectById(shopWithLsRm);
+        BottomMenuPage bottomMenuPage = new BottomMenuPage();
+        WorkPage workPage = bottomMenuPage.goToWork();
+        SessionListPage sessionListPage = workPage.goToRuptures();
+
+        //Step 1
+        step("Нажать \"+ сканировать перебой\" и перейти в ручной поиск\n" +
+                "Найти товар из списка пригодных для отзыва с РМ (есть сток на РМ)");
+        RupturesScannerPage rupturesScannerPage = sessionListPage.callScannerPage();
+        SearchProductPage searchProductPage = rupturesScannerPage.navigateToSearchProductPage();
+        searchProductPage.enterTextInSearchFieldAndSubmit(randomLmCode);
+        RuptureCardPage ruptureCardPage = new RuptureCardPage();
+        ruptureCardPage.verifyRequiredElementsWhenCreateRupture();
+
+        //Step 2
+        step("Тапнуть на круглую кнопку в нижней части экрана\n" +
+                "Выбрать пункт \"Сделать отзыв с РМ\"");
+        ActionsModalPage actionsModalPage = ruptureCardPage.callActionModal();
+
     }
 }

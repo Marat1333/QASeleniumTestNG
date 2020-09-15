@@ -8,9 +8,9 @@ public class CommonMagMobilePage extends BaseAppPage {
 
     public CommonMagMobilePage() {
         super(false);
-        //shouldNotAnyErrorVisible();
+        shouldNotAnyErrorVisible();
         waitForPageIsLoaded();
-        //shouldNotAnyErrorVisible();
+        shouldNotAnyErrorVisible();
     }
 
     @AppFindBy(accessibilityId = "ErrorNotification")
