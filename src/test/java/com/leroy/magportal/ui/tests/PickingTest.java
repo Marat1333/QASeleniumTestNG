@@ -71,7 +71,7 @@ public class PickingTest extends BasePAOTest {
         pickingTaskId = respPickingTasks.asJson().getItems().get(0).getTaskId();
     }
 
-    @AfterClass(enabled = true)
+    @AfterClass(enabled = false)
     private void cancelConfirmedOrder() throws Exception {
         if (orderId != null) {
             OrderClient orderClient = apiClientProvider.getOrderClient();
@@ -594,7 +594,7 @@ public class PickingTest extends BasePAOTest {
         initFindPickingTask();
 
         // Step 2:
-        step("Ввести номер заказа из корзины и нажать кнопку 'Показать заказы'");
+        step("Ввести номер заказа из корзины и нажать кнопку 'Показать заказы'"+"Заказ"+" "+orderId);
         orderPage.enterSearchTextAndSubmit(orderId);
         orderPage.shouldDocumentIsPresent(orderId);
         orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal());
@@ -602,7 +602,7 @@ public class PickingTest extends BasePAOTest {
 
         // Step 3:
 
-        step("Кликнуть на заказ");
+        step("Кликнуть на заказ"+" "+orderId);
         orderPage.clickDocumentInLeftMenu(orderId);
         OrderCreatedContentPage createdContentPage = new OrderCreatedContentPage();
         createdContentPage.shouldOrderProductCountIs(1);
@@ -625,6 +625,56 @@ public class PickingTest extends BasePAOTest {
         //int collectedQuantityProduct1 = pickingTaskDataBefore.getProducts().get(0).getOrderedQuantity();
         pickingContentPage.editCollectQuantity(1, 2)
                 .shouldProductCollectedQuantityIs(1, 2);
+
+        // Step 8:
+        step("Завершить сборку");
+        pickingContentPage.clickFinishAssemblyButton();
+
+        // Step 9:
+        step("Вернуться на страницу заказов ");
+        PickingPage pickingPage = new PickingPage();
+        pickingPage.clickOrderLinkAndGoToOrderPage();
+
+
+        // Step 10:
+        step("Проверить статус собранного заказа");
+        orderPage.shouldDocumentIsPresent(orderId);
+        orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.PICKED.getUiVal());
+        orderPage.shouldDocumentCountIs(1);
+    }
+
+    @Test(description = "***** Заказы. Переход из статуса Собран в статус Выдан", groups = NEED_PRODUCTS_GROUP)
+    public void testMoveFromPickedToGivenAway() throws Exception {
+
+        initCreateOrder(1);
+        //Заменить хелпером
+        OrderHeaderPage orderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
+        initFindPickingTask();
+        orderPage.enterSearchTextAndSubmit(orderId);
+        orderPage.shouldDocumentIsPresent(orderId);
+        orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal());
+        orderPage.shouldDocumentCountIs(1);
+        orderPage.clickDocumentInLeftMenu(orderId);
+        OrderCreatedContentPage createdContentPage = new OrderCreatedContentPage();
+        createdContentPage.shouldOrderProductCountIs(1);
+        AssemblyOrderPage pickingTab = createdContentPage.clickGoToPickings();
+        PickingContentPage pickingContentPage = pickingTab.clickToPickingTask(1);
+        pickingContentPage.clickStartAssemblyButton();
+        pickingContentPage.editCollectQuantity(1, 2)
+                .shouldProductCollectedQuantityIs(1, 2);
+        pickingContentPage.clickFinishAssemblyButton();
+
+
+
+
+
+
+
+
+
+
+
+
 
         // Step 8:
         step("Завершить сборку");
