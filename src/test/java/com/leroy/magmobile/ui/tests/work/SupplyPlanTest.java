@@ -2,7 +2,6 @@ package com.leroy.magmobile.ui.tests.work;
 
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.UserSessionData;
-import com.leroy.core.api.Module;
 import com.leroy.magmobile.api.clients.SupplyPlanClient;
 import com.leroy.magmobile.api.data.supply_plan.Card.SupplyCardData;
 import com.leroy.magmobile.api.data.supply_plan.Details.ShipmentData;
@@ -26,14 +25,12 @@ import com.leroy.magmobile.ui.pages.work.supply_plan.modal.ReserveModalPage;
 import com.leroy.utils.DateTimeUtil;
 import io.qameta.allure.Step;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Guice(modules = {Module.class})
 public class SupplyPlanTest extends AppBaseSteps {
 
     private SupplyPlanClient client;

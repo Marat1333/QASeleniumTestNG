@@ -162,7 +162,7 @@ public class TransferClient extends BaseMashupClient {
         assertThatResponseIsOk(response);
         TransferSalesDocData data = response.asJson();
         assertThat("taskId", data.getTaskId(), not(emptyOrNullString()));
-        assertThat("status", data.getStatus(), is(SalesDocumentsConst.States.NEW.getApiVal()));
+        assertThat("status", data.getStatus(), is(SalesDocumentsConst.States.TRANSFER_NEW.getApiVal()));
         assertThat("createdBy", data.getCreatedBy(), is(getUserSessionData().getUserLdap()));
         assertThat("createdDate", data.getCreatedDate(),
                 approximatelyEqual(ZonedDateTime.now()));
@@ -181,7 +181,7 @@ public class TransferClient extends BaseMashupClient {
             assertThat("Product lmCode", actualProductData.getLmCode(),
                     is(postSalesDocData.getProducts().get(i).getLmCode()));
             assertThat("Product status", actualProductData.getStatus(),
-                    is(SalesDocumentsConst.States.NEW.getApiVal()));
+                    is(SalesDocumentsConst.States.TRANSFER_NEW.getApiVal()));
             assertThat("Product orderedQuantity", actualProductData.getOrderedQuantity(),
                     is(postSalesDocData.getProducts().get(i).getOrderedQuantity()));
             // TODO Need to check assignedQuantity? and how?
@@ -197,7 +197,7 @@ public class TransferClient extends BaseMashupClient {
         assertThatResponseIsOk(response);
         TransferSalesDocData data = response.asJson();
         assertThat("taskId", data.getTaskId(), not(emptyOrNullString()));
-        assertThat("status", data.getStatus(), is(SalesDocumentsConst.States.NEW.getApiVal()));
+        assertThat("status", data.getStatus(), is(SalesDocumentsConst.States.TRANSFER_NEW.getApiVal()));
 
         assertThat("products size", data.getProducts(), hasSize(putSalesDocData.getProducts().size()));
 
@@ -209,7 +209,7 @@ public class TransferClient extends BaseMashupClient {
             assertThat("Product lmCode", actualProductData.getLmCode(),
                     is(putSalesDocData.getProducts().get(i).getLmCode()));
             assertThat("Product status", actualProductData.getStatus(),
-                    is(SalesDocumentsConst.States.NEW.getApiVal()));
+                    is(SalesDocumentsConst.States.TRANSFER_NEW.getApiVal()));
             assertThat("Product orderedQuantity", actualProductData.getOrderedQuantity(),
                     is(putSalesDocData.getProducts().get(i).getOrderedQuantity()));
             // TODO Need to check assignedQuantity? and how?
@@ -257,7 +257,7 @@ public class TransferClient extends BaseMashupClient {
             assertThat("lmCode of Product #" + i, actualProductOrderDataList.get(i).getLmCode(),
                     equalTo(expectedProductOrderDataList.get(i).getLmCode()));
             String expectedProductStatus = expectedProductOrderDataList.get(i).getStatus() == null ?
-                    SalesDocumentsConst.States.NEW.getApiVal() : expectedProductOrderDataList.get(i).getStatus();
+                    SalesDocumentsConst.States.TRANSFER_NEW.getApiVal() : expectedProductOrderDataList.get(i).getStatus();
             assertThat("status of Product #" + i, actualProductOrderDataList.get(i).getStatus(),
                     equalTo(expectedProductStatus));
             assertThat("orderedQuantity of Product #" + i, actualProductOrderDataList.get(i).getOrderedQuantity(),

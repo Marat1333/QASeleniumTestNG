@@ -27,8 +27,8 @@ public class WithdrawalFromRMTest extends AppBaseSteps {
 
         // Step #2
         step("Нажать на иконку + рядом с Отзыв с RM");
-        StockProductsPage stockProductsPage = workPage.clickWithdrawalFromRMPlusIcon()
-                .shouldAnyProductAvailableOnPage();
+        StockProductsPage stockProductsPage = workPage.clickWithdrawalFromRMPlusIcon();
+        stockProductsPage.shouldAnyProductAvailableOnPage();
 
         // Step #3
         step("Выбрать первый товар, который поштучно хранится на складе");
