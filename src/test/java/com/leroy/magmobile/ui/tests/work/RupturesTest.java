@@ -2,6 +2,7 @@ package com.leroy.magmobile.ui.tests.work;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.DefectConst;
+import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.UserSessionData;
 import com.leroy.core.api.Module;
@@ -22,6 +23,7 @@ import com.leroy.magmobile.ui.pages.more.UserProfilePage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductCardPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.work.WorkPage;
+import com.leroy.magmobile.ui.pages.work.recall_from_rm.*;
 import com.leroy.magmobile.ui.pages.work.ruptures.*;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.RuptureData;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.SessionData;
@@ -29,12 +31,15 @@ import com.leroy.magmobile.ui.pages.work.ruptures.data.TaskData;
 import com.leroy.magmobile.ui.pages.work.ruptures.enums.Action;
 import com.leroy.magmobile.ui.pages.work.ruptures.modal.*;
 import io.qameta.allure.Issue;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -119,7 +124,7 @@ public class RupturesTest extends AppBaseSteps {
         return result;
     }
 
-    private int createSessionWithProductWithSpecificIncompleteAction(Action action) {
+    private int createSessionWithProductWithSpecificIncompleteAction(String lmCode, Action action, UserSessionData sessionData) {
         List<ActionData> actions = new ArrayList<>();
         ActionData data = new ActionData();
         data.setState(false);
@@ -130,18 +135,27 @@ public class RupturesTest extends AppBaseSteps {
 
         RuptureProductData productData = new RuptureProductData();
         productData.generateRandomData();
+        productData.setLmCode(lmCode);
         productData.setActions(actions);
 
         ReqRuptureSessionData rupturePostData = new ReqRuptureSessionData();
         rupturePostData.setProduct(productData);
-        rupturePostData.setShopId(Integer.parseInt(getUserSessionData().getUserShopId()));
-        rupturePostData.setStoreId(Integer.parseInt(getUserSessionData().getUserShopId()));
-        rupturePostData.setDepartmentId(Integer.parseInt(getUserSessionData().getUserDepartmentId()));
+        rupturePostData.setShopId(Integer.parseInt(sessionData.getUserShopId()));
+        rupturePostData.setStoreId(Integer.parseInt(sessionData.getUserShopId()));
+        rupturePostData.setDepartmentId(Integer.parseInt(sessionData.getUserDepartmentId()));
 
         Response<JsonNode> resp = ruptureClient.createSession(rupturePostData);
         int result = resp.asJson().get("sessionId").intValue();
         sessionsNumbers.set(result);
         return result;
+    }
+
+    private int createSessionWithProductWithSpecificIncompleteAction(String lmCode, Action action) {
+        return createSessionWithProductWithSpecificIncompleteAction(lmCode, action, getUserSessionData());
+    }
+
+    private int createSessionWithProductWithSpecificIncompleteAction(Action action) {
+        return createSessionWithProductWithSpecificIncompleteAction(RandomStringUtils.randomNumeric(8), action);
     }
 
     private int createSessionWithNeededProductAmountWithSpecificActions(int productAmount, ActionData... actions) {
@@ -225,32 +239,32 @@ public class RupturesTest extends AppBaseSteps {
         //Step 4
         step("Открыть модалку добавления экшенов (карандашик в блоке экшенов или кнопка \"назначить задачи\")");
         List<String> taskAfterChange = ruptureCardPage.getTasksList();
-        ActionsModalPage actionsModalPage = ruptureCardPage.callActionModalPage();
-        actionsModalPage.shouldToDoListContainsTaskAndPossibleListNotContainsTask(taskAfterChange);
+        TasksListsModalPage tasksListsModalPage = ruptureCardPage.callActionModalPage();
+        tasksListsModalPage.shouldToDoListContainsTaskAndPossibleListNotContainsTask(taskAfterChange);
 
         //Step 5
         step("Добавить пару экшенов (+)\n" +
                 "Убрать один из ранее рассчитанных экшенов (-)");
-        List<String> possibleTasks = actionsModalPage.getPossibleTasks();
+        List<String> possibleTasks = tasksListsModalPage.getPossibleTasks();
         int randomTaskIndex = (int) (Math.random() * possibleTasks.size());
         String firstRandomTask = possibleTasks.get(randomTaskIndex);
         possibleTasks.remove(randomTaskIndex);
         randomTaskIndex = (int) (Math.random() * possibleTasks.size());
         String secondRandomTask = possibleTasks.get(randomTaskIndex);
 
-        actionsModalPage.choseTasks(firstRandomTask, secondRandomTask);
-        actionsModalPage.shouldToDoListContainsTaskAndPossibleListNotContainsTask(firstRandomTask, secondRandomTask);
+        tasksListsModalPage.choseTasks(firstRandomTask, secondRandomTask);
+        tasksListsModalPage.shouldToDoListContainsTaskAndPossibleListNotContainsTask(firstRandomTask, secondRandomTask);
 
-        List<String> toDoTasks = actionsModalPage.getToDoTasks();
+        List<String> toDoTasks = tasksListsModalPage.getToDoTasks();
         randomTaskIndex = (int) (Math.random() * toDoTasks.size());
         firstRandomTask = toDoTasks.get(randomTaskIndex);
-        actionsModalPage.choseTasks(firstRandomTask);
-        actionsModalPage.shouldToDoListNotContainsTaskAndPossibleListContainsTask(firstRandomTask);
+        tasksListsModalPage.choseTasks(firstRandomTask);
+        tasksListsModalPage.shouldToDoListNotContainsTaskAndPossibleListContainsTask(firstRandomTask);
 
         //Step 6
         step("Закрыть модалку редактирования экшенов");
-        toDoTasks = actionsModalPage.getToDoTasks();
-        ruptureCardPage = actionsModalPage.closeModal();
+        toDoTasks = tasksListsModalPage.getToDoTasks();
+        ruptureCardPage = tasksListsModalPage.closeModal();
         ruptureCardPage.shouldTasksListContainsTasks(toDoTasks);
 
         //Step 7
@@ -599,11 +613,11 @@ public class RupturesTest extends AppBaseSteps {
                 "Чекнуть один из экшенов\n" +
                 "Добавить комментарий");
         ruptureCardPage.choseProductQuantityOption(RuptureCardPage.QuantityOption.ONE);
-        ActionsModalPage actionsModalPage = ruptureCardPage.callActionModalPage();
-        List<String> possibleTasksList = actionsModalPage.getPossibleTasks();
-        actionsModalPage.choseTasks(possibleTasksList.get(0), possibleTasksList.get(1));
-        List<String> toDoTasks = actionsModalPage.getToDoTasks();
-        ruptureCardPage = actionsModalPage.closeModal();
+        TasksListsModalPage tasksListsModalPage = ruptureCardPage.callActionModalPage();
+        List<String> possibleTasksList = tasksListsModalPage.getPossibleTasks();
+        tasksListsModalPage.choseTasks(possibleTasksList.get(0), possibleTasksList.get(1));
+        List<String> toDoTasks = tasksListsModalPage.getToDoTasks();
+        ruptureCardPage = tasksListsModalPage.closeModal();
         String checkedTask = toDoTasks.get(0);
         ruptureCardPage.setTasksCheckBoxes(checkedTask);
         ruptureCardPage.setComment(comment);
@@ -668,11 +682,11 @@ public class RupturesTest extends AppBaseSteps {
                 "Чекнуть один из экшенов\n" +
                 "Добавить комментарий");
         ruptureCardPage.choseProductQuantityOption(RuptureCardPage.QuantityOption.THREE_OR_MORE);
-        ActionsModalPage actionsModalPage = ruptureCardPage.callActionModalPage();
-        List<String> possibleTasksList = actionsModalPage.getPossibleTasks();
-        actionsModalPage.choseTasks(possibleTasksList.get(0), possibleTasksList.get(1), possibleTasksList.get(2));
-        List<String> toDoTasks = actionsModalPage.getToDoTasks();
-        ruptureCardPage = actionsModalPage.closeModal();
+        TasksListsModalPage tasksListsModalPage = ruptureCardPage.callActionModalPage();
+        List<String> possibleTasksList = tasksListsModalPage.getPossibleTasks();
+        tasksListsModalPage.choseTasks(possibleTasksList.get(0), possibleTasksList.get(1), possibleTasksList.get(2));
+        List<String> toDoTasks = tasksListsModalPage.getToDoTasks();
+        ruptureCardPage = tasksListsModalPage.closeModal();
         String firstCheckedTask = toDoTasks.get(0);
         ruptureCardPage.setTasksCheckBoxes(firstCheckedTask);
         ruptureCardPage.setComment(comment);
@@ -787,14 +801,14 @@ public class RupturesTest extends AppBaseSteps {
 
         //Step 3
         step("Перейти к редактированию списка рекомендаций (карандашик в блоке рекомендаций)");
-        ActionsModalPage actionsModalPage = ruptureCardPage.callActionModalPage()
+        TasksListsModalPage tasksListsModalPage = ruptureCardPage.callActionModalPage()
                 .verifyRequiredElements();
 
         //Step 4
         step("Убрать экшен \"найти товар и выложить\"\n" +
                 "Добавить экшены \"Поставить извиняшку\" и \"Убрать ценник\"\n" +
                 "Закрыть модалку реактирования экшенов");
-        actionsModalPage.choseTasks(Action.FIND_PRODUCT_AND_LAY_IT_OUT.getActionName(),
+        tasksListsModalPage.choseTasks(Action.FIND_PRODUCT_AND_LAY_IT_OUT.getActionName(),
                 Action.GIVE_APOLOGISE.getActionName(), Action.REMOVE_PRICE_TAG.getActionName())
                 .shouldToDoListContainsTaskAndPossibleListNotContainsTask(
                         Action.GIVE_APOLOGISE.getActionName(), Action.REMOVE_PRICE_TAG.getActionName())
@@ -1317,11 +1331,11 @@ public class RupturesTest extends AppBaseSteps {
 
     @Test(description = "C23389122 Создание отзыва с РМ с экрана добавляемого товара")
     public void testCreateRecallFromRmFromAddedProductPage() throws Exception {
-        String shopWithLsRm = "35";
-        getUserSessionData().setUserShopId(shopWithLsRm);
-        List<TransferSearchProductData> products = transferClient.searchForTransferProducts(SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR).asJson().getItems();
-        String randomLmCode = products.get((int) (Math.random() * products.size())).getLmCode();
+        String shopWithLsRm = EnvConstants.SHOP_WITH_NEW_INTERFACE;
+        List<TransferSearchProductData> products = transferClient.searchForTransferProducts(SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR, shopWithLsRm).asJson().getItems();
+        String ruptureLmCode = products.get((int) (Math.random() * products.size())).getLmCode();
         MorePage morePage = loginAndGoTo(MorePage.class);
+
         UserProfilePage userProfilePage = morePage.goToUserProfile();
         SearchShopPage searchShopPage = userProfilePage.goToEditShopForm();
         searchShopPage.searchForShopAndSelectById(shopWithLsRm);
@@ -1334,14 +1348,221 @@ public class RupturesTest extends AppBaseSteps {
                 "Найти товар из списка пригодных для отзыва с РМ (есть сток на РМ)");
         RupturesScannerPage rupturesScannerPage = sessionListPage.callScannerPage();
         SearchProductPage searchProductPage = rupturesScannerPage.navigateToSearchProductPage();
-        searchProductPage.enterTextInSearchFieldAndSubmit(randomLmCode);
+        searchProductPage.enterTextInSearchFieldAndSubmit(ruptureLmCode);
         RuptureCardPage ruptureCardPage = new RuptureCardPage();
         ruptureCardPage.verifyRequiredElementsWhenCreateRupture();
 
         //Step 2
         step("Тапнуть на круглую кнопку в нижней части экрана\n" +
                 "Выбрать пункт \"Сделать отзыв с РМ\"");
-        ActionsModalPage actionsModalPage = ruptureCardPage.callActionModal();
+        ActionModalPage actionModalPage = ruptureCardPage.callActionModal();
+        actionModalPage.recallFromRm();
+        AcceptRecallFromRmModalPage acceptRecallFromRmModalPage = new AcceptRecallFromRmModalPage();
+        acceptRecallFromRmModalPage.verifyRequiredElements();
 
+        //Step 3
+        step("Выбрать \"продолжить\"");
+        AddProductToRecallFromRmRequestPage addProductToRecallFromRmRequestPage = acceptRecallFromRmModalPage.acceptRequest();
+        addProductToRecallFromRmRequestPage.verifyRequiredElements();
+
+        //Step 4
+        step("Нажать кнопку \"Добавить в заявку\"");
+        DraftRecallFromRmRequestPage draftRecallFromRmRequestPage = addProductToRecallFromRmRequestPage.createDraftRecallFromRmRequest();
+        draftRecallFromRmRequestPage.verifyRequiredElements();
+
+        //Step 5
+        step("Нажать \"далее\"");
+        OrderPage orderPage = draftRecallFromRmRequestPage.continueFillingRecallRequest();
+        orderPage.verifyRequiredElements();
+
+        //Step 6
+        step("Выбрать ожидаемое время поставки и отправить заявку на отзыв");
+        LocalDate testDate = LocalDate.now().plusDays(1);
+        orderPage.editDeliveryDate(testDate);
+        LocalTime timeForSelect = LocalTime.now().plusHours(1).plusMinutes(5);
+        orderPage.editDeliveryTime(timeForSelect);
+        SuccessfullyCreatedReplenishmentRequestFromRupturesPage successfullyCreatedReplenishmentRequestFromRupturesPage = orderPage.clickSubmitBtn();
+        successfullyCreatedReplenishmentRequestFromRupturesPage.verifyRequiredElements();
+
+        //Step 7
+        step("Нажать \"Вернуться в сессию перебоев\"");
+        successfullyCreatedReplenishmentRequestFromRupturesPage.returnToRuptureSession();
+        ruptureCardPage = new RuptureCardPage();
+        ruptureCardPage.verifyRequiredElements()
+                .shouldRecallRequestHasBeenCreatedMsgIsVisible();
+
+        //Step 8
+        step("Нажать кнопку \"действия с перебоем\"");
+        actionModalPage = ruptureCardPage.callActionModalByPressingActionsWithRupturesBtn();
+        actionModalPage.recallFromRm();
+        actionModalPage.verifyRequiredElements();
+
+        //Step 9
+        step("Закрыть модалку\n" +
+                "Перейти к редактированию экшенов перебоя (карандашик)");
+        ruptureCardPage = actionModalPage.closeModal();
+        TasksListsModalPage tasksListsModalPage = ruptureCardPage.callActionModalPage();
+        String pressedTaskName = Action.RECALL_FROM_RM.getActionName();
+        tasksListsModalPage.choseTasks(pressedTaskName)
+                .shouldToDoListContainsTaskAndPossibleListNotContainsTask(pressedTaskName);
+
+        //Step 10
+        step("Закрыть модалку \"задачи по перебою\"\n" +
+                "Закрыть карточку перебоя");
+        ruptureCardPage = tasksListsModalPage.closeModal();
+        ruptureCardPage.closeRuptureCardPage();
+        ActiveSessionPage activeSessionPage = new ActiveSessionPage();
+        activeSessionPage.shouldRuptureInTheList(ruptureLmCode)
+                .shouldRecallRequestHasBeenCreatedMsgIsVisible()
+                .verifyRequiredElements();
+
+        //Step 11
+        step("Нажать железную кнопку назад и подтвердить выход из сессии");
+        String sessionNumber = activeSessionPage.getSessionNumber();
+        ExitActiveSessionModalPage exitActiveSessionModalPage = activeSessionPage.exitActiveSession();
+        exitActiveSessionModalPage.confirmExit();
+        sessionListPage = new SessionListPage();
+        sessionListPage.shouldActiveSessionContainsSession(sessionNumber);
+    }
+    @Test(description = "C23389123 Создание отзыва с РМ из активной сессии (карточка, список перебоев)")
+    public void testCreateRecallFromRmFromActiveSession() throws Exception {
+        String shopWithLsRm = EnvConstants.SHOP_WITH_NEW_INTERFACE;
+        List<TransferSearchProductData> products = transferClient.searchForTransferProducts(SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR, shopWithLsRm).asJson().getItems();
+        String ruptureLmCode = products.get((int) (Math.random() * products.size())).getLmCode();
+        UserSessionData sessionData = new UserSessionData();
+        sessionData.setUserShopId(shopWithLsRm);
+        sessionData.setUserDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);
+        int sessionId = createSessionWithProductWithSpecificIncompleteAction(ruptureLmCode, Action.RECALL_FROM_RM, sessionData);
+        MorePage morePage = loginAndGoTo(MorePage.class);
+
+        UserProfilePage userProfilePage = morePage.goToUserProfile();
+        SearchShopPage searchShopPage = userProfilePage.goToEditShopForm();
+        searchShopPage.searchForShopAndSelectById(shopWithLsRm);
+        BottomMenuPage bottomMenuPage = new BottomMenuPage();
+        WorkPage workPage = bottomMenuPage.goToWork();
+        SessionListPage sessionListPage = workPage.goToRuptures();
+        sessionListPage.goToSession(String.valueOf(sessionId));
+        ActiveSessionPage activeSessionPage = new ActiveSessionPage();
+
+        //Step 1
+        step("Тапнуть на перебой");
+        RuptureCardPage ruptureCardPage = activeSessionPage.goToRuptureCard(ruptureLmCode);
+        ruptureCardPage.verifyRequiredElements();
+
+        //Step 2
+        step("Тапнуть на \"Сделать отзыв с RM\"");
+        AcceptRecallFromRmModalPage acceptRecallFromRmModalPage = ruptureCardPage.recallProductFromRm();
+        acceptRecallFromRmModalPage.verifyRequiredElements();
+
+        //Step 3
+        step("Выбрать \"продолжить\"");
+        AddProductToRecallFromRmRequestPage addProductToRecallFromRmRequestPage = acceptRecallFromRmModalPage.acceptRequest();
+        addProductToRecallFromRmRequestPage.verifyRequiredElements();
+
+        //Step 4
+        step("Нажать кнопку \"Добавить в заявку\"");
+        DraftRecallFromRmRequestPage draftRecallFromRmRequestPage = addProductToRecallFromRmRequestPage.createDraftRecallFromRmRequest();
+        draftRecallFromRmRequestPage.verifyRequiredElements();
+
+        //Step 5
+        step("Нажать \"далее\"");
+        OrderPage orderPage = draftRecallFromRmRequestPage.continueFillingRecallRequest();
+        orderPage.verifyRequiredElements();
+
+        //Step 6
+        step("Выбрать ожидаемое время поставки и отправить заявку на отзыв");
+        LocalDate testDate = LocalDate.now().plusDays(1);
+        orderPage.editDeliveryDate(testDate);
+        LocalTime timeForSelect = LocalTime.now().plusHours(1).plusMinutes(5);
+        orderPage.editDeliveryTime(timeForSelect);
+        SuccessfullyCreatedReplenishmentRequestFromRupturesPage successfullyCreatedReplenishmentRequestFromRupturesPage = orderPage.clickSubmitBtn();
+        successfullyCreatedReplenishmentRequestFromRupturesPage.verifyRequiredElements();
+
+        //Step 7
+        step("Нажать \"Вернуться в сессию перебоев\"");
+        successfullyCreatedReplenishmentRequestFromRupturesPage.returnToRuptureSession();
+        ruptureCardPage = new RuptureCardPage();
+        ruptureCardPage.verifyRequiredElements()
+                .shouldRecallRequestHasBeenCreatedMsgIsVisible();
+
+        //Step 8
+        step("Закрыть карточку перебоя");
+        ruptureCardPage.closeRuptureCardPage();
+        activeSessionPage = new ActiveSessionPage();
+        activeSessionPage.shouldRuptureInTheList(ruptureLmCode)
+                .shouldRecallRequestHasBeenCreatedMsgIsVisible()
+                .verifyRequiredElements();
+    }
+
+    @Test(description = "C23389124 Создание отзыва с РМ из завершенной сессии")
+    public void testCreateRecallFromRmFromFinishedSession() throws Exception {
+        String shopWithLsRm = EnvConstants.SHOP_WITH_NEW_INTERFACE;
+        List<TransferSearchProductData> products = transferClient.searchForTransferProducts(SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR, shopWithLsRm).asJson().getItems();
+        String ruptureLmCode = products.get((int) (Math.random() * products.size())).getLmCode();
+        UserSessionData sessionData = new UserSessionData();
+        sessionData.setUserShopId(shopWithLsRm);
+        sessionData.setUserDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);
+        int sessionId = createSessionWithProductWithSpecificIncompleteAction(ruptureLmCode, Action.RECALL_FROM_RM, sessionData);
+        ruptureClient.finishSession(sessionId);
+        MorePage morePage = loginAndGoTo(MorePage.class);
+
+        UserProfilePage userProfilePage = morePage.goToUserProfile();
+        SearchShopPage searchShopPage = userProfilePage.goToEditShopForm();
+        searchShopPage.searchForShopAndSelectById(shopWithLsRm);
+        BottomMenuPage bottomMenuPage = new BottomMenuPage();
+        WorkPage workPage = bottomMenuPage.goToWork();
+        SessionListPage sessionListPage = workPage.goToRuptures();
+        sessionListPage.goToSession(String.valueOf(sessionId));
+        FinishedSessionPage finishedSessionPage = new FinishedSessionPage();
+
+        //Step 1
+        step("Нажать \"все задачи\"");
+        FinishedSessionRupturesActionsPage finishedSessionRupturesActionsPage = finishedSessionPage.goToActionPage(Action.ALL_ACTIONS);
+        finishedSessionRupturesActionsPage.verifyRequiredElements()
+                .shouldRuptureCountIsCorrect(1)
+                .shouldRecallFromRmTaskIsVisible();
+
+        //Step 2
+        step("Тапнуть на \"Сделать отзыв с RM\"");
+        AcceptRecallFromRmModalPage acceptRecallFromRmModalPage = finishedSessionRupturesActionsPage.recallProductFromRm();
+        acceptRecallFromRmModalPage.verifyRequiredElements();
+
+        //Step 3
+        step("Выбрать \"продолжить\"");
+        AddProductToRecallFromRmRequestPage addProductToRecallFromRmRequestPage = acceptRecallFromRmModalPage.acceptRequest();
+        addProductToRecallFromRmRequestPage.verifyRequiredElements();
+
+        //Step 4
+        step("Нажать кнопку \"Добавить в заявку\"");
+        DraftRecallFromRmRequestPage draftRecallFromRmRequestPage = addProductToRecallFromRmRequestPage.createDraftRecallFromRmRequest();
+        draftRecallFromRmRequestPage.verifyRequiredElements();
+
+        //Step 5
+        step("Нажать \"далее\"");
+        OrderPage orderPage = draftRecallFromRmRequestPage.continueFillingRecallRequest();
+        orderPage.verifyRequiredElements();
+
+        //Step 6
+        step("Выбрать ожидаемое время поставки и отправить заявку на отзыв");
+        LocalDate testDate = LocalDate.now().plusDays(1);
+        orderPage.editDeliveryDate(testDate);
+        LocalTime timeForSelect = LocalTime.now().plusHours(1).plusMinutes(5);
+        orderPage.editDeliveryTime(timeForSelect);
+        SuccessfullyCreatedReplenishmentRequestFromRupturesPage successfullyCreatedReplenishmentRequestFromRupturesPage = orderPage.clickSubmitBtn();
+        successfullyCreatedReplenishmentRequestFromRupturesPage.verifyRequiredElements();
+
+        //Step 7
+        step("Нажать \"Вернуться в сессию перебоев\"");
+        successfullyCreatedReplenishmentRequestFromRupturesPage.returnToRuptureSession();
+        finishedSessionRupturesActionsPage = new FinishedSessionRupturesActionsPage();
+        finishedSessionRupturesActionsPage.verifyRequiredElements()
+                .shouldNoActiveRuptureTasksAreAvailable();
+
+        //Step 8
+        step("Закрыть карточку перебоя");
+        finishedSessionRupturesActionsPage = finishedSessionRupturesActionsPage.goToDoneTasks();
+        finishedSessionRupturesActionsPage.verifyRequiredElements()
+                .shouldRuptureCountIsCorrect(1)
+                .shouldRecallRequestHasBeenCreatedMsgIsVisible();
     }
 }

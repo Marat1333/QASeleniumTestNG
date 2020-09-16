@@ -1,4 +1,4 @@
-package com.leroy.magmobile.ui.pages.work;
+package com.leroy.magmobile.ui.pages.work.recall_from_rm;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
@@ -15,6 +15,9 @@ import java.time.format.DateTimeFormatter;
 
 public class OrderPage extends CommonMagMobilePage {
 
+    @AppFindBy(text = "Пополнение торг. зала")
+    Element title;
+
     @AppFindBy(text = "ПАРАМЕТРЫ ЗАЯВКИ", metaName = "Заголовок 'ПАРАМЕТРЫ ЗАЯВКИ'")
     private Element headerObj;
 
@@ -30,7 +33,7 @@ public class OrderPage extends CommonMagMobilePage {
             metaName = replenishmentMethodText)
     private Element replenishmentMethodLbl;
 
-    private static final String deliveryDateText = "Дата доставки товара";
+    private static final String deliveryDateText = "Дата поставки товара";
     @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.TextView[@text='" + deliveryDateText + "']]",
             metaName = "Область '" + deliveryDateText + "'")
     private Element deliveryDateArea;
@@ -39,11 +42,11 @@ public class OrderPage extends CommonMagMobilePage {
             metaName = deliveryDateText)
     private Element deliveryDateLbl;
 
-    private static final String deliveryTimeText = "Ожидаемое время доставки товара";
+    private static final String deliveryTimeText = "Ожидаемое время поставки товара";
     @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.TextView[@text='" + deliveryTimeText + "']]",
             metaName = "Область '" + deliveryTimeText + "'")
     private Element deliveryTimeArea;
-    @AppFindBy(xpath = "//android.widget.TextView[@text='" + deliveryTimeText + "']/following-sibling::android.widget.TextView[1]",
+    @AppFindBy(xpath = "//android.widget.TextView[@text='" + deliveryTimeText + "']/following-sibling::*[1]",
             metaName = deliveryTimeText)
     private Element deliveryTimeLbl;
 
@@ -79,7 +82,12 @@ public class OrderPage extends CommonMagMobilePage {
 
     @Step("Изменить ожидаемое время доставки на {time} и подтвердить его")
     public OrderPage editDeliveryTime(LocalTime time) throws Exception {
-        LocalTime currentTime = LocalTime.parse(deliveryTimeLbl.getText());
+        LocalTime currentTime;
+        if (deliveryTimeLbl.isVisible()) {
+            currentTime = LocalTime.parse(deliveryTimeLbl.getText());
+        }else {
+            currentTime = LocalTime.now();
+        }
         deliveryTimeArea.click();
         new TimePickerWidget(driver).selectTime(time, currentTime);
         deliveryTimeLbl.waitForVisibility();
@@ -93,9 +101,9 @@ public class OrderPage extends CommonMagMobilePage {
     }
 
     @Step("Нажать кнопку ОТПРАВИТЬ ЗАЯВКУ")
-    public SubmittedWithdrawalOrderPage clickSubmitBtn() {
+    public SuccessfullyCreatedReplenishmentRequestFromRupturesPage clickSubmitBtn() {
         submitBtn.click();
-        return new SubmittedWithdrawalOrderPage();
+        return new SuccessfullyCreatedReplenishmentRequestFromRupturesPage();
     }
 
     /* ------------------------- Verifications -------------------------- */
@@ -103,9 +111,14 @@ public class OrderPage extends CommonMagMobilePage {
     @Step("Проверить, что экран 'Параметры заявки' отображается корректно")
     public OrderPage verifyRequiredElements() {
         softAssert.areElementsVisible(headerObj, submitBtn);
-        softAssert.isTrue(isOrderNumberVisibleAndValid(),
-                "Номер заявки должен быть валиден");
         softAssert.verifyAll();
+        return this;
+    }
+
+    @Step("Проверить, что номер заявки корректен")
+    public OrderPage shouldOrderNumberIsCorrect(){
+        anAssert.isTrue(isOrderNumberVisibleAndValid(),
+                "Номер заявки должен быть валиден");
         return this;
     }
 

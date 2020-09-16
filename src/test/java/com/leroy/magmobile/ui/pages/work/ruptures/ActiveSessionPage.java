@@ -24,6 +24,9 @@ public class ActiveSessionPage extends SessionPage {
     @AppFindBy(text = "ЗАВЕРШИТЬ")
     Button endSessionBtn;
 
+    @AppFindBy(text = "Создана заявка на отзыв")
+    Element recallRequestHasBeenCreatedMsgLbl;
+
     AndroidScrollView<RuptureData> ruptureCardScrollView = new AndroidScrollView<>(driver,
             AndroidScrollView.TYPICAL_LOCATOR, "./*/android.view.ViewGroup[android.view.ViewGroup]/descendant::*[3]",
             RuptureWidget.class);
@@ -81,6 +84,12 @@ public class ActiveSessionPage extends SessionPage {
         return new RuptureCardPage();
     }
 
+    @Step("Проверить, что отображается сообщение о созданной заявке на отзыв с RM")
+    public ActiveSessionPage shouldRecallRequestHasBeenCreatedMsgIsVisible(){
+        anAssert.isElementVisible(recallRequestHasBeenCreatedMsgLbl);
+        return this;
+    }
+
     @Step("Проверить, что перебоя нет в списке")
     public ActiveSessionPage shouldRuptureIsNotInList(String lmCode) throws Exception {
         if (!ruptureCardScrollView.isVisible()) {
@@ -89,6 +98,19 @@ public class ActiveSessionPage extends SessionPage {
             List<RuptureData> uiRuptureDataList = ruptureCardScrollView.getFullDataList();
             for (int i = 0; i < uiRuptureDataList.size(); i++) {
                 anAssert.isFalse(uiRuptureDataList.get(i).getLmCode().contains(lmCode), "rupture " + lmCode + " is in the list");
+            }
+        }
+        return this;
+    }
+
+    @Step("Проверить, что перебой есть в списке")
+    public ActiveSessionPage shouldRuptureInTheList(String lmCode) throws Exception {
+        if (!ruptureCardScrollView.isVisible()) {
+            return this;
+        } else {
+            List<RuptureData> uiRuptureDataList = ruptureCardScrollView.getFullDataList();
+            for (int i = 0; i < uiRuptureDataList.size(); i++) {
+                anAssert.isTrue(uiRuptureDataList.get(i).getLmCode().contains(lmCode), "rupture " + lmCode + " is in the list");
             }
         }
         return this;

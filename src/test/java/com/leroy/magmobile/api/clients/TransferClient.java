@@ -144,6 +144,16 @@ public class TransferClient extends BaseMashupClient {
 
     @Step("Search for transfer products")
     public Response<TransferSearchProductDataList> searchForTransferProducts(
+            SalesDocumentsConst.GiveAwayPoints pointOfGiveAway, String shopId) {
+        TransferProductSearchRequest req = new TransferProductSearchRequest();
+        req.setShopId(shopId);
+        req.setDepartmentId(getUserSessionData().getUserDepartmentId());
+        req.setPointOfGiveAway(pointOfGiveAway.getApiVal());
+        return execute(req, TransferSearchProductDataList.class);
+    }
+
+    @Step("Search for transfer products")
+    public Response<TransferSearchProductDataList> searchForTransferProducts(
             SalesDocumentsConst.GiveAwayPoints pointOfGiveAway) {
         TransferProductSearchRequest req = new TransferProductSearchRequest();
         req.setShopId(getUserSessionData().getUserShopId());

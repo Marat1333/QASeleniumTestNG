@@ -5,6 +5,10 @@ import com.leroy.magmobile.ui.models.work.WithdrawalProductCardData;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
 import com.leroy.magmobile.ui.pages.work.*;
 import com.leroy.magmobile.ui.pages.work.modal.QuantityProductsForWithdrawalModalPage;
+import com.leroy.magmobile.ui.pages.work.recall_from_rm.OrderDetailsPage;
+import com.leroy.magmobile.ui.pages.work.recall_from_rm.OrderPage;
+import com.leroy.magmobile.ui.pages.work.recall_from_rm.OrdersListPage;
+import com.leroy.magmobile.ui.pages.work.recall_from_rm.SubmittedWithdrawalOrderPage;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
 
@@ -60,7 +64,8 @@ public class WithdrawalFromRMTest extends AppBaseSteps {
         // Step #7
         step("Нажать кнопку ДАЛЕЕ К ПАРАМЕТРАМ ЗАЯВКИ");
         OrderPage orderPage = stockProductsPage.clickSubmitBtn()
-                .verifyRequiredElements();
+                .verifyRequiredElements()
+                .shouldOrderNumberIsCorrect();
         String orderNumber = orderPage.getOrderNumber();
 
         // Step #8

@@ -5,7 +5,7 @@ import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magmobile.ui.pages.work.ruptures.ActionsModalPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.modal.TasksListsModalPage;
 import org.openqa.selenium.WebDriver;
 
 import java.util.ArrayList;
@@ -44,13 +44,13 @@ public class RuptureTaskContainer extends Element {
                 taskName)).click();
     }
 
-    public ActionsModalPage callActionsModalPage() throws Exception {
+    public TasksListsModalPage callActionsModalPage() throws Exception {
         if (appointTaskBtn.isVisible()) {
             appointTaskBtn.click();
         } else {
             this.findChildElement(".//android.view.ViewGroup[@content-desc='Button-container'][2]").click();
         }
-        return new ActionsModalPage();
+        return new TasksListsModalPage();
     }
 
     public boolean getCheckBoxCondition(String taskName) throws Exception {

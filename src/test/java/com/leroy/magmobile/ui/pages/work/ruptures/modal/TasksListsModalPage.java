@@ -1,10 +1,11 @@
-package com.leroy.magmobile.ui.pages.work.ruptures;
+package com.leroy.magmobile.ui.pages.work.ruptures.modal;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import com.leroy.magmobile.ui.pages.work.ruptures.RuptureCardPage;
 import io.qameta.allure.Step;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ActionsModalPage extends CommonMagMobilePage {
+public class TasksListsModalPage extends CommonMagMobilePage {
     @AppFindBy(xpath = "//*[contains(@text,'Задачи по перебою')]/preceding-sibling::*")
     Button closeModalBtn;
 
@@ -71,7 +72,7 @@ public class ActionsModalPage extends CommonMagMobilePage {
     }
 
     @Step("Выбрать задачу")
-    public ActionsModalPage choseTasks(String... taskNames) {
+    public TasksListsModalPage choseTasks(String... taskNames) {
         for (String taskName : taskNames) {
             int previousSize = toDoTasksList.getCount();
             E(String.format("//*[@text='%s']/following-sibling::android.view.ViewGroup[@content-desc='Button-container'][1]",
@@ -81,13 +82,13 @@ public class ActionsModalPage extends CommonMagMobilePage {
         return this;
     }
 
-    public ActionsModalPage shouldToDoListContainsTaskAndPossibleListNotContainsTask(List<String> tasks) {
+    public TasksListsModalPage shouldToDoListContainsTaskAndPossibleListNotContainsTask(List<String> tasks) {
         String [] array = new String[tasks.size()];
         return shouldToDoListContainsTaskAndPossibleListNotContainsTask(array);
     }
 
     @Step("Проверить, что лист \"Нужно сделать\" содержит указанные задачи, a лист \"Возможные задачи\" не содержит")
-    public ActionsModalPage shouldToDoListContainsTaskAndPossibleListNotContainsTask(String...tasks) {
+    public TasksListsModalPage shouldToDoListContainsTaskAndPossibleListNotContainsTask(String...tasks) {
         Map<List<String>, List<String>> tasksMap = getTasksList();
         List<String> toDoTasksNames = null;
         List<String> possibleTasksNames = null;
@@ -107,7 +108,7 @@ public class ActionsModalPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что лист \"Нужно сделать\" не содержит указанные задачи, a лист \"Возможные задачи\" содержит")
-    public ActionsModalPage shouldToDoListNotContainsTaskAndPossibleListContainsTask(String...tasks) {
+    public TasksListsModalPage shouldToDoListNotContainsTaskAndPossibleListContainsTask(String...tasks) {
         Map<List<String>, List<String>> tasksMap = getTasksList();
         List<String> toDoTasksNames = null;
         List<String> possibleTasksNames = null;
@@ -122,7 +123,7 @@ public class ActionsModalPage extends CommonMagMobilePage {
         return this;
     }
 
-    public ActionsModalPage verifyRequiredElements(){
+    public TasksListsModalPage verifyRequiredElements(){
         softAssert.areElementsVisible(getPageSource(), closeModalBtn, header);
         softAssert.verifyAll();
         return this;

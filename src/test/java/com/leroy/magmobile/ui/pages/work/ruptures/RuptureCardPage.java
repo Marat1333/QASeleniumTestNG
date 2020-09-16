@@ -11,6 +11,9 @@ import com.leroy.magmobile.ui.pages.sales.product_card.ProductCardPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.RuptureData;
 import com.leroy.magmobile.ui.pages.work.ruptures.elements.RuptureRadioButton;
 import com.leroy.magmobile.ui.pages.work.ruptures.elements.RuptureTaskContainer;
+import com.leroy.magmobile.ui.pages.work.ruptures.modal.AcceptRecallFromRmModalPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.modal.ActionModalPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.modal.TasksListsModalPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.modal.DeleteRuptureModalPage;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
@@ -96,6 +99,12 @@ public class RuptureCardPage extends CommonMagMobilePage {
     @AppFindBy(xpath = "//android.widget.TextView[@text='ПОДТВЕРДИТЬ']/ancestor::*[@content-desc='Button-container']/preceding-sibling::android.view.ViewGroup[1]")
     Button ruptureCallActionModalBtn;
 
+    @AppFindBy(text = "Сделать отзыв с RM")
+    Button recallFromRm;
+
+    @AppFindBy(text = "Создана заявка на отзыв")
+    Element recallRequestHasBeenCreatedMsgLbl;
+
     @AppFindBy(xpath = "//android.widget.ScrollView")
     AndroidScrollView<String> mainScrollView;
 
@@ -140,10 +149,22 @@ public class RuptureCardPage extends CommonMagMobilePage {
         closeModalBtn.waitForInvisibility();
     }
 
+    @Step("Нажать на кнопку \"действия с перебоем\"")
+    public ActionModalPage callActionModalByPressingActionsWithRupturesBtn(){
+        ruptureActionsBtn.click();
+        return new ActionModalPage();
+    }
+
+    @Step("Нажать на кнопку \"Сделать отзыв с RM\"")
+    public AcceptRecallFromRmModalPage recallProductFromRm(){
+        recallFromRm.click();
+        return new AcceptRecallFromRmModalPage();
+    }
+
     @Step("Вызвать модалку с доступными для перебоя действиями")
-    public ActionsModalPage callActionModal(){
+    public ActionModalPage callActionModal(){
         ruptureCallActionModalBtn.click();
-        return new ActionsModalPage();
+        return new ActionModalPage();
     }
 
     @Step("Подтвердить добавление перебоя")
@@ -180,7 +201,7 @@ public class RuptureCardPage extends CommonMagMobilePage {
     }
 
     @Step("Вызвать модальное окно со списком задач перебоя")
-    public ActionsModalPage callActionModalPage() throws Exception {
+    public TasksListsModalPage callActionModalPage() throws Exception {
         return ruptureTaskContainer.callActionsModalPage();
     }
 
@@ -212,6 +233,12 @@ public class RuptureCardPage extends CommonMagMobilePage {
     public DeleteRuptureModalPage deleteRupture() {
         deleteRuptureBtn.click();
         return new DeleteRuptureModalPage();
+    }
+
+    @Step("Проверить, что отображается сообщение о созданной заявке на отзыв с RM")
+    public RuptureCardPage shouldRecallRequestHasBeenCreatedMsgIsVisible(){
+        anAssert.isElementVisible(recallRequestHasBeenCreatedMsgLbl);
+        return this;
     }
 
     @Step("Проверить, что кнопка подтверждения ввода комментария активна")

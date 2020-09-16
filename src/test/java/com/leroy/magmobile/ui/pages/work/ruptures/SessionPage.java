@@ -34,9 +34,13 @@ public abstract class SessionPage extends CommonMagMobilePage {
         String[] tmpArray = creatorAndRuptureQuantityLbl.getText(ps).split(" / ");
         data.setRuptureQuantity(Integer.parseInt(ParserUtil.strWithOnlyDigits(tmpArray[0])));
         data.setCreatorName(tmpArray[1]);
-        tmpArray = sessionNumberAndStatusLbl.getText(ps).split(" ");
-        data.setSessionNumber(ParserUtil.strWithOnlyDigits(tmpArray[1]));
+        data.setSessionNumber(getSessionNumber());
         return data;
+    }
+
+    public String getSessionNumber() {
+        String[] tmpArray = sessionNumberAndStatusLbl.getText().split(" ");
+        return ParserUtil.strWithOnlyDigits(tmpArray[1]);
     }
 
     @Step("Проверить, что счетчик перебоев отображает корректное значение")

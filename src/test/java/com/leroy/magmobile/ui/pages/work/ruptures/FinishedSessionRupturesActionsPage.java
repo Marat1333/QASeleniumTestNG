@@ -7,6 +7,7 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.RuptureData;
 import com.leroy.magmobile.ui.pages.work.ruptures.enums.Action;
+import com.leroy.magmobile.ui.pages.work.ruptures.modal.AcceptRecallFromRmModalPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.widgets.RuptureWidget;
 import io.qameta.allure.Step;
 
@@ -31,6 +32,12 @@ public class FinishedSessionRupturesActionsPage extends CommonMagMobilePage {
     @AppFindBy(xpath = "//*[contains(@text,'Выполненные задачи')]/following-sibling::*[1]/*")
     Button doneTasksBtn;
 
+    @AppFindBy(text = "Сделать отзыв с RM")
+    Button recallFromRm;
+
+    @AppFindBy(text = "Создана заявка на отзыв")
+    Element recallRequestHasBeenCreatedMsgLbl;
+
     AndroidScrollView<RuptureData> ruptureCardScrollView = new AndroidScrollView<>(driver,
             AndroidScrollView.TYPICAL_LOCATOR, "./*/android.view.ViewGroup[android.view.ViewGroup]/descendant::*[3]",
             RuptureWidget.class);
@@ -40,6 +47,12 @@ public class FinishedSessionRupturesActionsPage extends CommonMagMobilePage {
         headerLbl.waitForVisibility();
         completedAllActionsRatioLbl.waitForVisibility();
         backBtn.waitForVisibility();
+    }
+
+    @Step("Нажать на кнопку \"Сделать отзыв с RM\"")
+    public AcceptRecallFromRmModalPage recallProductFromRm(){
+        recallFromRm.click();
+        return new AcceptRecallFromRmModalPage();
     }
 
     @Step("Перейти на страницу выполненных задач")
@@ -87,6 +100,12 @@ public class FinishedSessionRupturesActionsPage extends CommonMagMobilePage {
     @Step("Проверить, что заголовок содержит действие {actionName}")
     public FinishedSessionRupturesActionsPage shouldHeaderContainsActionName(String actionName) {
         anAssert.isElementTextContains(headerLbl, actionName);
+        return this;
+    }
+
+    @Step("Проверить, что отображается сообщение о созданной заявке на отзыв с RM")
+    public FinishedSessionRupturesActionsPage shouldRecallRequestHasBeenCreatedMsgIsVisible(){
+        anAssert.isElementVisible(recallRequestHasBeenCreatedMsgLbl);
         return this;
     }
 
@@ -155,6 +174,12 @@ public class FinishedSessionRupturesActionsPage extends CommonMagMobilePage {
     public FinishedSessionRupturesActionsPage shouldRuptureCardHasNotContainsTask(String lmCode, Action action) {
         anAssert.isFalse(E(String.format(TYPICAL_RUPTURE_TASK_CONTAINER_XPATH, lmCode, action.getActionName())).isVisible(),
                 "Element is visible");
+        return this;
+    }
+
+    @Step("Проверить, что отображается задача \"сделать отзыв с RM\"")
+    public FinishedSessionRupturesActionsPage shouldRecallFromRmTaskIsVisible(){
+        anAssert.isElementVisible(recallFromRm);
         return this;
     }
 

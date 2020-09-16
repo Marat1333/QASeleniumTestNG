@@ -4,8 +4,13 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import com.leroy.magmobile.ui.pages.work.ruptures.RuptureCardPage;
+import io.qameta.allure.Step;
 
 public class ActionModalPage extends CommonMagMobilePage {
+    @AppFindBy(xpath = "//*[contains(@text,'Действия с')]/preceding-sibling::*[@content-desc='Button-container']")
+    Button closeModal;
+
     @AppFindBy(containsText = "Действия")
     Element header;
 
@@ -21,9 +26,15 @@ public class ActionModalPage extends CommonMagMobilePage {
         recallFromRm.waitForVisibility();
     }
 
-    public AcceptRecallFromRmModalPage recallFromRm(){
+    @Step("Закрыть модалку")
+    public RuptureCardPage closeModal(){
+        closeModal.click();
+        return new RuptureCardPage();
+    }
+
+    @Step("Сделать отзыв с RM")
+    public void recallFromRm(){
         recallFromRm.click();
-        return new AcceptRecallFromRmModalPage();
     }
 
     public ActionModalPage verifyRequiredElements(){

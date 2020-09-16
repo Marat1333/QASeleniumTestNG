@@ -14,6 +14,7 @@ import io.qameta.allure.Step;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SessionListPage extends CommonMagMobilePage {
     @AppFindBy(accessibilityId = "BackButton")
@@ -111,6 +112,14 @@ public class SessionListPage extends CommonMagMobilePage {
     public SessionListPage shouldActiveSessionContainsSession(SessionData data) throws Exception {
         List<SessionData> uiSessionData = activeSessionScrollView.getFullDataList();
         anAssert.isTrue(uiSessionData.contains(data), "лист не содержит данные");
+        return this;
+    }
+
+    @Step("Проверить, что в списке активных сессия отсутствует сессия")
+    public SessionListPage shouldActiveSessionContainsSession(String sessionId) throws Exception {
+        List<SessionData> uiSessionData = activeSessionScrollView.getFullDataList();
+        List<String> sessionIds = uiSessionData.stream().map(SessionData::getSessionNumber).collect(Collectors.toList());
+        anAssert.isTrue(sessionIds.contains(sessionId), "лист не содержит данные");
         return this;
     }
 
