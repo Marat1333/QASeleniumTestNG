@@ -5,7 +5,6 @@ import com.leroy.constants.DefectConst;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.UserSessionData;
-import com.leroy.core.api.Module;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.RupturesClient;
 import com.leroy.magmobile.api.clients.TransferClient;
@@ -23,7 +22,10 @@ import com.leroy.magmobile.ui.pages.more.UserProfilePage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductCardPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.work.WorkPage;
-import com.leroy.magmobile.ui.pages.work.recall_from_rm.*;
+import com.leroy.magmobile.ui.pages.work.recall_from_rm.AddProductToRecallFromRmRequestPage;
+import com.leroy.magmobile.ui.pages.work.recall_from_rm.DraftRecallFromRmRequestPage;
+import com.leroy.magmobile.ui.pages.work.recall_from_rm.OrderPage;
+import com.leroy.magmobile.ui.pages.work.recall_from_rm.SuccessfullyCreatedReplenishmentRequestFromRupturesPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.*;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.RuptureData;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.SessionData;
@@ -32,9 +34,8 @@ import com.leroy.magmobile.ui.pages.work.ruptures.enums.Action;
 import com.leroy.magmobile.ui.pages.work.ruptures.modal.*;
 import io.qameta.allure.Issue;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.testng.annotations.AfterTest;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -43,7 +44,6 @@ import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Guice(modules = {Module.class})
 public class RupturesTest extends AppBaseSteps {
     private static final ThreadLocal<Integer> sessionsNumbers = new ThreadLocal<>();
 
@@ -71,7 +71,7 @@ public class RupturesTest extends AppBaseSteps {
      * подразумевается что на тест создается 1 сессия (вызывается один из методов создания сессии)
      * даже если сессия не была создана, вернется 400
      */
-    @AfterTest
+    @AfterMethod
     private void deleteSession() {
         ruptureClient.deleteSession(sessionsNumbers.get());
     }
@@ -88,7 +88,7 @@ public class RupturesTest extends AppBaseSteps {
         rupturePostData.setDepartmentId(Integer.parseInt(getUserSessionData().getUserDepartmentId()));
 
         Response<JsonNode> resp = ruptureClient.createSession(rupturePostData);
-        int result = resp.asJson().get("sessionId").intValue();
+        int result = ruptureClient.assertThatSessionIsCreatedAndGetId(resp);
         sessionsNumbers.set(result);
         return result;
     }
@@ -119,7 +119,7 @@ public class RupturesTest extends AppBaseSteps {
         rupturePostData.setDepartmentId(Integer.parseInt(getUserSessionData().getUserDepartmentId()));
 
         Response<JsonNode> resp = ruptureClient.createSession(rupturePostData);
-        int result = resp.asJson().get("sessionId").intValue();
+        int result = ruptureClient.assertThatSessionIsCreatedAndGetId(resp);
         sessionsNumbers.set(result);
         return result;
     }
@@ -145,7 +145,7 @@ public class RupturesTest extends AppBaseSteps {
         rupturePostData.setDepartmentId(Integer.parseInt(sessionData.getUserDepartmentId()));
 
         Response<JsonNode> resp = ruptureClient.createSession(rupturePostData);
-        int result = resp.asJson().get("sessionId").intValue();
+        int result = ruptureClient.assertThatSessionIsCreatedAndGetId(resp);
         sessionsNumbers.set(result);
         return result;
     }
@@ -173,7 +173,7 @@ public class RupturesTest extends AppBaseSteps {
         rupturePostData.setDepartmentId(Integer.parseInt(getUserSessionData().getUserDepartmentId()));
 
         Response<JsonNode> resp = ruptureClient.createSession(rupturePostData);
-        int result = resp.asJson().get("sessionId").intValue();
+        int result = ruptureClient.assertThatSessionIsCreatedAndGetId(resp);
         sessionsNumbers.set(result);
         rupturePostData.setSessionId(result);
         for (int i = 0; i < productAmount - 1; i++) {
@@ -1424,6 +1424,7 @@ public class RupturesTest extends AppBaseSteps {
         sessionListPage = new SessionListPage();
         sessionListPage.shouldActiveSessionContainsSession(sessionNumber);
     }
+
     @Test(description = "C23389123 Создание отзыва с РМ из активной сессии (карточка, список перебоев)")
     public void testCreateRecallFromRmFromActiveSession() throws Exception {
         String shopWithLsRm = EnvConstants.SHOP_WITH_NEW_INTERFACE;
