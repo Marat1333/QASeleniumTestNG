@@ -142,6 +142,7 @@ public class SalesBaseTest extends AppBaseSteps {
         filtersData.setTopEM(true);
         filtersData.setAvs(false);
         filtersData.setHasAvailableStock(hasAvailableStock);
+        getUserSessionData().setUserShopId("78");
         getUserSessionData().setUserDepartmentId("15");
         return apiClientProvider.getProducts(1, filtersData).get(0).getLmCode();
     }
