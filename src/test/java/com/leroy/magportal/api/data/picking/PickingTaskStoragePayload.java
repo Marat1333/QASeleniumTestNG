@@ -9,7 +9,6 @@ import lombok.EqualsAndHashCode;
 @Data
 public class PickingTaskStoragePayload extends PickingTaskWorkflowPayload {
 
-    private String action;
     @JsonProperty("payload")
     private StoragePayload storagePayload;
 

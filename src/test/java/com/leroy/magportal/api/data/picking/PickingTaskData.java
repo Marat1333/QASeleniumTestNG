@@ -47,9 +47,9 @@ public class PickingTaskData {
         private String lmCode;
         private String lineId;
         private String lineStatus;
-        private Integer orderedQuantity;
-        private Integer confirmedQuantity;
-        private Integer assignedQuantity;
+        private Double orderedQuantity;
+        private Double confirmedQuantity;
+        private Double assignedQuantity;
         private List<SourceData> source;
 
         @Data

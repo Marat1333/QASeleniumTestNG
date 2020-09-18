@@ -10,14 +10,17 @@ public class SalesDocumentsConst {
         IN_PROGRESS("CONFIRMATION_IN_PROGRESS", "Автообработка"),
         PICKING_IN_PROGRESS("PICKING_IN_PROGRESS", "Сборка"),
         PICKED("PICKED", "Собран"),
+        PARTIALLY_PICKED("PARTIALLY_PICKED", "Част. собран"),
         PICKED_WAIT("PICKED_WAIT", "Собран: Ожидает списания"),
         ALLOWED_FOR_GIVEAWAY("ALLOWED_FOR_GIVEAWAY", "Собран"),
+        PARTIALLY_GIVEN_AWAY("PARTIALLY_GIVEN_AWAY", "Част. выдан"),
         GIVEN_AWAY("GIVEN_AWAY", "Выдан"),
         SHIPPED("SHIPPED", "Отгружен"),
         DELIVERED("DELIVERED", "Доставлен"),
         TRANSFORMED("", "Преобразован"),
         DELETED("DELETED", ""),
         CANCELLED("CANCELLED", "Отменен"),
+        CANCELLATION_IN_PROGRESS("CANCELLATION_IN_PROGRESS", "Отменен"),
         DRAFT("DRAFT", "Черновик"),
 
         // Сборки

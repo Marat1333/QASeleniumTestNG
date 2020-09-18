@@ -9,7 +9,6 @@ import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.core.api.ThreadApiClient;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.CustomerClient;
-import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.customer.CustomerListData;
 import com.leroy.magmobile.api.data.customer.CustomerSearchFilters;
@@ -24,6 +23,7 @@ import com.leroy.magportal.api.constants.PaymentStatusEnum;
 import com.leroy.magportal.api.constants.PaymentTypeEnum;
 import com.leroy.magportal.api.data.shops.ShopData;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
+import io.qameta.allure.Step;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -49,6 +49,13 @@ public class BitrixHelper extends BaseHelper {
 
     private final LocalDateTime dateTime = LocalDateTime.now();
 
+    @Step("Creates Online order with specified LmCode")
+    public BitrixSolutionResponse createOnlineOrder(OnlineOrderTypeData orderData, String lmCode) {
+        orderData.setLmCode(lmCode);
+        return this.createOnlineOrders(1, orderData, 1).stream().findFirst().get();
+    }
+
+    @Step("Creates Online orders of different types")
     public ArrayList<BitrixSolutionResponse> createOnlineOrders(Integer ordersCount,
             OnlineOrderTypeData orderData, Integer productCount) {
         SimpleCustomerData customerData = SIMPLE_CUSTOMER_DATA_1;
@@ -74,12 +81,15 @@ public class BitrixHelper extends BaseHelper {
                 if (response.getSolutionId() != null) {
                     result.add(response);
                     if (orderData.getPaymentType().equals(PaymentTypeEnum.SBERBANK.getName())) {
-                        orderClient.waitUntilOrderGetStatus(response.getSolutionId(), States.WAITING_FOR_PAYMENT,
+                        orderClient.waitUntilOrderGetStatus(response.getSolutionId(),
+                                States.WAITING_FOR_PAYMENT,
                                 PaymentStatusEnum.CONFIRMED);
                         paymentHelper
 //                                .makePaymentCard(response.getSolutionId());
                                 .makeHoldCost(response.getSolutionId());
                     }
+                    orderClient.waitUntilOrderGetStatus(response.getSolutionId(),
+                            States.ALLOWED_FOR_PICKING, null);
                 }
             } catch (InterruptedException e) {
                 Log.error(e.getMessage());
@@ -112,10 +122,7 @@ public class BitrixHelper extends BaseHelper {
         ArrayList<BitrixSolutionPayload.Basket> result = new ArrayList<>();
 
         if (orderData.getLmCode() != null) {
-            CatalogSearchFilter filter = new CatalogSearchFilter();
-            filter.setLmCode(orderData.getLmCode());
-            ProductItemData product = catalogSearchClient.searchProductsBy(filter)
-                    .asJson().getItems().stream().findFirst().get();
+            ProductItemData product = catalogSearchClient.getProductByLmCode(orderData.getLmCode());
             result.add(productItemDataToPayload(product));
         } else {
             List<ProductItemData> products = catalogSearchClient

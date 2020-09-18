@@ -6,23 +6,34 @@
         <listener class-name="com.leroy.core.listeners.TestRailListener"/>
     </listeners>
 
-    <test name="Pickup Online Orders: Workflow tests">
+    <test name="Pickup Postpayment Online Orders: Workflow tests">
         <classes>
             <class
                 name="com.leroy.magportal.api.tests.onlineOrders.pickupOrders.PostpaymentWorkflowShortTest">
-                <methods>
-                    <include name="testStartPicking"/>
-                    <include name="testCompletePicking"/>
-                    <include name="testGiveAway"/>
-                </methods>
             </class>
+        </classes>
+    </test>
+
+    <test name="Pickup Prepayment Online Orders: Workflow tests">
+        <classes>
             <class
                 name="com.leroy.magportal.api.tests.onlineOrders.pickupOrders.PrepaymentWorkflowShortTest">
-                <methods>
-                    <include name="testStartPicking"/>
-                    <include name="testCompletePicking"/>
-                    <include name="testGiveAway"/>
-                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="Pickup Postpayment Online Orders: Edit tests">
+        <classes>
+            <class
+                name="com.leroy.magportal.api.tests.onlineOrders.pickupOrders.PostpaymentEditTest">
+            </class>
+        </classes>
+    </test>
+
+    <test name="Pickup Prepayment Online Orders: Edit tests">
+        <classes>
+            <class
+                name="com.leroy.magportal.api.tests.onlineOrders.pickupOrders.PrepaymentEditTest">
             </class>
         </classes>
     </test>

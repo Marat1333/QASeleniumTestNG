@@ -47,21 +47,21 @@ public class EntranceWorkflowShortTest extends BaseMagPortalApiTest {
                 .stream().findFirst().get().getTaskId();
     }
 
-    @Test(description = "C3310199 Entrance Delivery: ALLOWED_FOR_PICKING -> PICKING_IN_PROGRESS", priority = 1)
+    @Test(description = "C3310199 Entrance Delivery: ALLOWED_FOR_PICKING -> PICKING_IN_PROGRESS")
     public void testStartPicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .startPicking(currentTaskId);
         orderClient.assertWorkflowResult(response, currentOrderId, States.PICKING_IN_PROGRESS);
     }
 
-    @Test(description = "C3310199 Entrance Delivery: PICKING_IN_PROGRESS -> PICKED", priority = 2, dependsOnMethods={"testStartPicking"})
+    @Test(description = "C3310199 Entrance Delivery: PICKING_IN_PROGRESS -> PICKED", dependsOnMethods={"testStartPicking"})
     public void testCompletePicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .completePicking(currentTaskId, true);
         orderClient.assertWorkflowResult(response, currentOrderId, States.PICKED_WAIT);
     }
 
-    @Test(description = "C3310199 Entrance Delivery: ALLOWED_FOR_GIVEAWAY -> ON_SHIPMENT", priority = 3, dependsOnMethods={"testCompletePicking"})
+    @Test(description = "C3310199 Entrance Delivery: ALLOWED_FOR_GIVEAWAY -> ON_SHIPMENT", dependsOnMethods={"testCompletePicking"})
     public void testShipped() {
         paymentHelper.makePaid(currentOrderId);
         orderClient.waitUntilOrderGetStatus(currentOrderId,
@@ -70,7 +70,7 @@ public class EntranceWorkflowShortTest extends BaseMagPortalApiTest {
         orderClient.assertWorkflowResult(response, currentOrderId, States.GIVEN_AWAY);
     }
 
-    @Test(description = "C3310199 Entrance Delivery: ON_SHIPMENT -> DELIVERED", priority = 4, dependsOnMethods={"testShipped"})
+    @Test(description = "C3310199 Entrance Delivery: ON_SHIPMENT -> DELIVERED", dependsOnMethods={"testShipped"})
     public void testDeliver() {
         orderClient.waitUntilOrderGetStatus(currentOrderId,
                 States.SHIPPED, PaymentStatusEnum.PAID);

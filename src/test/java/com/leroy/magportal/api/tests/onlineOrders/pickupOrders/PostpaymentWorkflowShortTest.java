@@ -34,36 +34,33 @@ public class PostpaymentWorkflowShortTest extends BaseMagPortalApiTest {
 
 
     @BeforeClass
-    private void setUp() throws Exception {
+    private void setUp() {
         List<BitrixSolutionResponse> bitrixSolutionResponses = bitrixHelper
                 .createOnlineOrders(1, OnlineOrderTypeConst.PICKUP_POSTPAYMENT, 3);
         currentOrderId = bitrixSolutionResponses.stream().findAny().get().getSolutionId();
         bitrixSolutionResponses.remove(bitrixSolutionResponses.stream()
                 .filter(x -> x.getSolutionId().equals(currentOrderId)).findFirst().get());
 
-        orderClient.waitUntilOrderGetStatus(currentOrderId,
-                SalesDocumentsConst.States.ALLOWED_FOR_PICKING, null);
-
         currentTaskId = pickingTaskClient.searchForPickingTasks(currentOrderId).asJson().getItems()
                 .stream().findFirst().get().getTaskId();
     }
 
-    @Test(description = "C3225834 PICKUP_POSTPAYMENT: Start Picking the Order", priority = 1)
+    @Test(description = "C3225834 PICKUP_POSTPAYMENT: Start Picking the Order")
     public void testStartPicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .startPicking(currentTaskId);
         orderClient.assertWorkflowResult(response, currentOrderId, States.PICKING_IN_PROGRESS);
     }
 
-    @Test(description = "C3225834 PICKUP_POSTPAYMENT: Complete Picking the Order", priority = 2, dependsOnMethods={"testStartPicking"})
+    @Test(description = "C3225834 PICKUP_POSTPAYMENT: Complete Picking the Order", dependsOnMethods={"testStartPicking"})
     public void testCompletePicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .completePicking(currentTaskId, true);
         orderClient.assertWorkflowResult(response, currentOrderId, States.PICKED);
     }
 
-    @Test(description = "C3225834 PICKUP_POSTPAYMENT: Give away the Order", priority = 3, dependsOnMethods={"testCompletePicking"})
-    public void testGiveAway() throws Exception {
+    @Test(description = "C3225834 PICKUP_POSTPAYMENT: Give away the Order", dependsOnMethods={"testCompletePicking"})
+    public void testGiveAway() {
         paymentHelper.makePaid(currentOrderId);
         orderClient.waitUntilOrderGetStatus(currentOrderId,
                 States.PICKED, PaymentStatusEnum.PAID);

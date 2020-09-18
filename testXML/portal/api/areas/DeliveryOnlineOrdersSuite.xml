@@ -8,39 +8,40 @@
 
     <test name="Delivery Online Orders: Workflow tests - DoorWorkflowShortTest">
         <classes>
-            <class name="com.leroy.magportal.api.tests.onlineOrders.deliveryOrders.DoorWorkflowShortTest">
-                <methods>
-                    <include name="testStartPicking"/>
-                    <include name="testCompletePicking"/>
-                    <include name="testShipped"/>
-                    <include name="testDeliver"/>
-                </methods>
+            <class
+                name="com.leroy.magportal.api.tests.onlineOrders.deliveryOrders.DoorWorkflowShortTest">
             </class>
         </classes>
     </test>
 
     <test name="Delivery Online Orders: Workflow tests - EntranceWorkflowShortTest">
         <classes>
-            <class name="com.leroy.magportal.api.tests.onlineOrders.deliveryOrders.EntranceWorkflowShortTest">
-                <methods>
-                    <include name="testStartPicking"/>
-                    <include name="testCompletePicking"/>
-                    <include name="testShipped"/>
-                    <include name="testDeliver"/>
-                </methods>
+            <class
+                name="com.leroy.magportal.api.tests.onlineOrders.deliveryOrders.EntranceWorkflowShortTest">
             </class>
         </classes>
     </test>
 
     <test name="Delivery Online Orders: Workflow tests - ExpressWorkflowShortTest">
         <classes>
-            <class name="com.leroy.magportal.api.tests.onlineOrders.deliveryOrders.ExpressWorkflowShortTest">
-                <methods>
-                    <include name="testStartPicking"/>
-                    <include name="testCompletePicking"/>
-                    <include name="testShipped"/>
-                    <include name="testDeliver"/>
-                </methods>
+            <class
+                name="com.leroy.magportal.api.tests.onlineOrders.deliveryOrders.ExpressWorkflowShortTest">
+            </class>
+        </classes>
+    </test>
+
+    <test name="Delivery Online Orders: Edit tests - DoorEditTest">
+        <classes>
+            <class
+                name="com.leroy.magportal.api.tests.onlineOrders.deliveryOrders.DoorEditTest">
+            </class>
+        </classes>
+    </test>
+
+    <test name="Delivery Online Orders: Edit tests - EntranceEditTest">
+        <classes>
+            <class
+                name="com.leroy.magportal.api.tests.onlineOrders.deliveryOrders.EntranceEditTest">
             </class>
         </classes>
     </test>

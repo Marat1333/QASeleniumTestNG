@@ -1,5 +1,6 @@
 package com.leroy.magportal.api.clients;
 
+import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magportal.api.constants.PickingReasonEnum;
 import com.leroy.magportal.api.constants.PickingTaskWorkflowEnum;
@@ -17,6 +18,7 @@ import com.leroy.magportal.api.requests.picking.PickingWorkflowRequest;
 import io.qameta.allure.Step;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class PickingTaskClient extends BaseMashupClient {
@@ -45,6 +47,18 @@ public class PickingTaskClient extends BaseMashupClient {
                 new PickingTaskWorkflowPayload());
     }
 
+    @Step("Start Pickings of all available tasks for Order = {orderId}")
+    public void startAllPickings(String orderId) {
+        Response<?> resp;
+        List<PickingTaskData> tasks = this.searchForPickingTasks(orderId).asJson().getItems()
+                .stream().filter(x -> x.getTaskStatus().equalsIgnoreCase(States.ALLOWED_FOR_PICKING
+                        .getApiVal())).collect(Collectors.toList());
+        for (PickingTaskData task : tasks) {
+            resp = startPicking(task.getTaskId());
+            assertThatResponseIsOk(resp);
+        }
+    }
+
     @Step("Start Picking of task = {taskId}")
     public Response<PickingTaskData> startPicking(String taskId) {
         return makeAction(taskId, PickingTaskWorkflowEnum.START.getValue(),
@@ -63,10 +77,16 @@ public class PickingTaskClient extends BaseMashupClient {
                 new PickingTaskWorkflowPayload());
     }
 
-    @Step("Complete Picking of task = {taskId}")
-    public Response<PickingTaskData> completePicking(String taskId,
-            PickingTaskWorkflowPayload workflowPayload) {
-        return makeAction(taskId, PickingTaskWorkflowEnum.COMPLETE.getValue(), workflowPayload);
+    @Step("Complete Picking of all available tasks for {orderId}")
+    public void completeAllPickings(String orderId, Boolean isFull) {
+        Response<?> resp;
+        List<PickingTaskData> tasks = this.searchForPickingTasks(orderId).asJson().getItems()
+                .stream().filter(x -> x.getTaskStatus().equalsIgnoreCase(States.PICKING_IN_PROGRESS
+                        .getApiVal())).collect(Collectors.toList());
+        for (PickingTaskData task : tasks) {
+            resp = completePicking(task.getTaskId(), isFull);
+            assertThatResponseIsOk(resp);
+        }
     }
 
     @Step("Complete Picking of task = {taskId}")
