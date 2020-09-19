@@ -69,7 +69,7 @@ timestamps {
 
         stage('Send notification') {
             telegramMessage("Маг Портал API Тесты завершены. Test run: ${env.RUN} \n " +
-                    "[Allure report](https://jenkins.lmru.adeo.com/job/lego-front/job/PUZ2-UI-autotests/"+ env.BUILD_NUMBER +"/allure)")
+                    "[Allure report](https://jenkins.lmru.adeo.com/job/lego-front/job/Puz2-API-autotests/"+ env.BUILD_NUMBER +"/allure)")
         }
     }
 }
