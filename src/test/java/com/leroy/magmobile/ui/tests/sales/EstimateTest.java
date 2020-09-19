@@ -37,7 +37,7 @@ public class EstimateTest extends SalesBaseTest {
 
     @BeforeClass
     private void findProducts() {
-        productLmCodes = apiClientProvider.getProductLmCodes(2);
+        productLmCodes = searchProductHelper.getProductLmCodes(2);
     }
 
     @Step("Pre-condition: Создание сметы")

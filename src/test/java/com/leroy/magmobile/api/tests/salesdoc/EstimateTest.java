@@ -1,6 +1,8 @@
 package com.leroy.magmobile.api.tests.salesdoc;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.inject.Inject;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.clients.EstimateClient;
@@ -18,6 +20,9 @@ import java.util.Random;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class EstimateTest extends BaseProjectApiTest {
+
+    @Inject
+    SearchProductHelper searchProductHelper;
 
     private EstimateClient estimateClient;
 
@@ -37,7 +42,7 @@ public class EstimateTest extends BaseProjectApiTest {
     public void testCreateEstimate() {
         // Prepare request data
         EstimateProductOrderData productOrderData = new EstimateProductOrderData(
-                apiClientProvider.getProducts(1).get(0));
+                searchProductHelper.getProducts(1).get(0));
         productOrderData.setQuantity((double) new Random().nextInt(6) + 1);
 
         // Create

@@ -1,6 +1,8 @@
 package com.leroy.magmobile.api.tests.salesdoc;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.inject.Inject;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.api.StatusCodes;
 import com.leroy.constants.customer.CustomerConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
@@ -18,6 +20,7 @@ import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magmobile.api.data.sales.orders.*;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
+import com.leroy.magportal.api.helpers.PAOHelper;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -32,6 +35,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 
 public class OrderTest extends BaseProjectApiTest {
+
+    @Inject
+    PAOHelper paoHelper;
+    @Inject
+    SearchProductHelper searchProductHelper;
 
     private SalesDocSearchClient salesDocSearchClient;
     private CartClient cartClient;
@@ -54,7 +62,7 @@ public class OrderTest extends BaseProjectApiTest {
 
     @BeforeClass
     private void setUp() {
-        productItemDataList = apiClientProvider.getProducts(2);
+        productItemDataList = searchProductHelper.getProducts(2);
     }
 
     private void sendGetOrderRequestAndCheckData() {
@@ -122,10 +130,10 @@ public class OrderTest extends BaseProjectApiTest {
     public void testSetPinCode() {
         if (orderData == null)
             throw new IllegalArgumentException("order data hasn't been created");
-        String validPinCode = apiClientProvider.getValidPinCode();
+        String validPinCode = paoHelper.getValidPinCode();
         Response<JsonNode> response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
         if (response.getStatusCode() == StatusCodes.ST_400_BAD_REQ) {
-            validPinCode = apiClientProvider.getValidPinCode();
+            validPinCode = paoHelper.getValidPinCode();
             response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
         }
         orderClient.assertThatPinCodeIsSet(response);

@@ -31,7 +31,7 @@ public class CartTest extends SalesBaseTest {
 
     @BeforeGroups(groups = NEED_PRODUCTS_GROUP)
     private void findProducts() {
-        productLmCodes = apiClientProvider.getProductLmCodes(2, false, false);
+        productLmCodes = searchProductHelper.getProductLmCodes(2, false, false);
     }
 
     @Smoke
