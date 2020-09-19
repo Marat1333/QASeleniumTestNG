@@ -85,6 +85,28 @@ public class PAOHelper extends BaseHelper {
         return getProducts(necessaryCount, filter);
     }
 
+    @Step("Создает Список CartProductOrderData для СОЗДАНИЯ коозины")
+    public List<CartProductOrderData> makeCartProducts(int necessaryCount) {
+        List<CartProductOrderData> cartsProducts = new ArrayList<>();
+        for (ProductItemData productData : this.getProducts(necessaryCount)) {
+            CartProductOrderData productCard = new CartProductOrderData(productData);
+            cartsProducts.add(convertItemToCartProduct(productCard.getLmCode()));
+        }
+        return cartsProducts;
+    }
+
+    @Step("Создает CartProductOrderData для СОЗДАНИЯ коозины из ЛМкода")
+    public CartProductOrderData makeCartProductByLmCode(String lmCode) {
+        return convertItemToCartProduct(lmCode);
+    }
+
+    private CartProductOrderData convertItemToCartProduct(String lmCode) {
+        CartProductOrderData productCard = new CartProductOrderData();
+        productCard.setQuantity(10.0);
+        productCard.setLmCode(lmCode);
+        return productCard;
+    }
+
     @Step("API: Ищем подходящие товары для создания корзины с несколькими заказами")
     public List<CartProductOrderData> findProductsForSeveralOrdersInCart() {
         CatalogSearchFilter filtersData = new CatalogSearchFilter();
@@ -142,7 +164,7 @@ public class PAOHelper extends BaseHelper {
     @Step("API: Создать подвтержденный заказ")
     public OrderData createConfirmedOrder(
             List<CartProductOrderData> products,
-            boolean isWaitForAllowedForPicking) throws Exception {
+            boolean isWaitForAllowedForPicking) {
         // Создание корзины
         CartData cartData = createCart(products);
 
@@ -214,8 +236,8 @@ public class PAOHelper extends BaseHelper {
                 .confirmOrder(orderData.getOrderId(), confirmOrderData);
         orderClient.assertThatIsConfirmed(resp, orderData);
         if (isWaitForAllowedForPicking) {
-            orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderData.getOrderId(),
-                    SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal());
+            orderClient.waitUntilOrderGetStatus(orderData.getOrderId(),
+                    SalesDocumentsConst.States.ALLOWED_FOR_PICKING, null);
         }
         return orderData;
     }

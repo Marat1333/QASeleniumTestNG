@@ -90,6 +90,7 @@ public class PaymentHelper extends BaseHelper {
     }
 
     public void makePaymentCard(String orderId) throws Exception {
+
         WebDriver driver = DriverFactory.createDriver();
         ContextProvider.setDriver(driver);
         String link = getPaymentLink(orderId);

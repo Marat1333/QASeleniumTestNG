@@ -17,7 +17,7 @@ public class OrderProductData extends BaseProductOrderData {
     private String longTail;
     private String stock;
     private String vat;
-    private Integer confirmedQuantity;
+    private Double confirmedQuantity;
     private String pointOfSale;
     private String pointOfOrigin;
 

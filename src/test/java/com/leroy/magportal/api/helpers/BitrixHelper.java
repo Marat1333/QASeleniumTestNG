@@ -5,23 +5,27 @@ import static com.leroy.magportal.ui.constants.TestDataConstants.SIMPLE_CUSTOMER
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.google.inject.Inject;
+import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.core.api.ThreadApiClient;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.CustomerClient;
-import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.customer.CustomerListData;
 import com.leroy.magmobile.api.data.customer.CustomerSearchFilters;
 import com.leroy.magmobile.api.data.customer.CustomerSearchFilters.CustomerType;
 import com.leroy.magmobile.api.data.customer.CustomerSearchFilters.DiscriminantType;
 import com.leroy.magportal.api.clients.CatalogSearchClient;
+import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.clients.ShopsClient;
 import com.leroy.magportal.api.constants.DeliveryServiceTypeEnum;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
+import com.leroy.magportal.api.constants.PaymentStatusEnum;
 import com.leroy.magportal.api.constants.PaymentTypeEnum;
 import com.leroy.magportal.api.data.shops.ShopData;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
+import io.qameta.allure.Step;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,9 +44,18 @@ public class BitrixHelper extends BaseHelper {
     private ShopsClient shopsClient;
     @Inject
     private CatalogSearchClient catalogSearchClient;
+    @Inject
+    private OrderClient orderClient;
 
     private final LocalDateTime dateTime = LocalDateTime.now();
 
+    @Step("Creates Online order with specified LmCode")
+    public BitrixSolutionResponse createOnlineOrder(OnlineOrderTypeData orderData, String lmCode) {
+        orderData.setLmCode(lmCode);
+        return this.createOnlineOrders(1, orderData, 1).stream().findFirst().get();
+    }
+
+    @Step("Creates Online orders of different types")
     public ArrayList<BitrixSolutionResponse> createOnlineOrders(Integer ordersCount,
             OnlineOrderTypeData orderData, Integer productCount) {
         SimpleCustomerData customerData = SIMPLE_CUSTOMER_DATA_1;
@@ -68,10 +81,17 @@ public class BitrixHelper extends BaseHelper {
                 if (response.getSolutionId() != null) {
                     result.add(response);
                     if (orderData.getPaymentType().equals(PaymentTypeEnum.SBERBANK.getName())) {
-                        paymentHelper.makeHoldCost(response.getSolutionId());
+                        orderClient.waitUntilOrderGetStatus(response.getSolutionId(),
+                                States.WAITING_FOR_PAYMENT,
+                                PaymentStatusEnum.CONFIRMED);
+                        paymentHelper
+//                                .makePaymentCard(response.getSolutionId());
+                                .makeHoldCost(response.getSolutionId());
                     }
+                    orderClient.waitUntilOrderGetStatus(response.getSolutionId(),
+                            States.ALLOWED_FOR_PICKING, null);
                 }
-            } catch (InterruptedException e) {
+            } catch (Exception e) {
                 Log.error(e.getMessage());
             }
         });
@@ -100,14 +120,11 @@ public class BitrixHelper extends BaseHelper {
         ArrayList<BitrixSolutionPayload.Basket> result = new ArrayList<>();
 
         if (orderData.getLmCode() != null) {
-            CatalogSearchFilter filter = new CatalogSearchFilter();
-            filter.setLmCode(orderData.getLmCode());
-            ProductItemData product = catalogSearchClient.searchProductsBy(filter)
-                    .asJson(ProductItemData.class);
+            ProductItemData product = catalogSearchClient.getProductByLmCode(orderData.getLmCode());
             result.add(productItemDataToPayload(product));
         } else {
             List<ProductItemData> products = catalogSearchClient
-                    .getRandomUniqueProductsWithTitlesForShop(productsCount, shopId);
+                    .getProductsForShop(productsCount, shopId);
             for (ProductItemData productData : products) {
                 result.add(productItemDataToPayload(productData));
             }
@@ -117,10 +134,15 @@ public class BitrixHelper extends BaseHelper {
 
     private BitrixSolutionPayload.Basket productItemDataToPayload(ProductItemData product) {
         BitrixSolutionPayload.Basket basket = new BitrixSolutionPayload.Basket();
+        String price = "99.99";
+        if (product.getPrice() != null) {
+            price = product.getPrice().toString();
+        }
+
         basket.setId("128510514");
         basket.setSku(product.getLmCode());
         basket.setName(product.getTitle());
-        basket.setPrice(product.getPrice().toString());
+        basket.setPrice(price);
         basket.setTax(18);
         basket.setQuantity("10");//TODO: it's make sense to parametrise
         //TODO: ADD LT Products
@@ -166,7 +188,8 @@ public class BitrixHelper extends BaseHelper {
         payload.setIdDevice(0);
         payload.setDeliveryTax(18);
         payload.setCustomerCoordinates("0,0");
-        payload.setDateInsert(dateTime.toString());
+        payload.setDateInsert(ZonedDateTime.now()
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX")));
         payload.setIdOrder("1256834");
 
         return payload;

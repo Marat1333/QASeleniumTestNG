@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="API Pickup Online Orders Suite" parallel="classes">
+
+    <listeners>
+        <listener class-name="com.leroy.core.listeners.TestRailListener"/>
+    </listeners>
+
+    <test name="Pickup Postpayment Online Orders: Workflow tests">
+        <classes>
+            <class
+                name="com.leroy.magportal.api.tests.onlineOrders.pickupOrders.PostpaymentWorkflowShortTest">
+            </class>
+        </classes>
+    </test>
+
+    <test name="Pickup Prepayment Online Orders: Workflow tests">
+        <classes>
+            <class
+                name="com.leroy.magportal.api.tests.onlineOrders.pickupOrders.PrepaymentWorkflowShortTest">
+            </class>
+        </classes>
+    </test>
+
+    <test name="Pickup Postpayment Online Orders: Edit tests">
+        <classes>
+            <class
+                name="com.leroy.magportal.api.tests.onlineOrders.pickupOrders.PostpaymentEditTest">
+            </class>
+        </classes>
+    </test>
+
+    <test name="Pickup Prepayment Online Orders: Edit tests">
+        <classes>
+            <class
+                name="com.leroy.magportal.api.tests.onlineOrders.pickupOrders.PrepaymentEditTest">
+            </class>
+        </classes>
+    </test>
+
+</suite>
