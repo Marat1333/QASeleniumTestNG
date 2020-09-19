@@ -91,10 +91,8 @@ public class BitrixHelper extends BaseHelper {
                     orderClient.waitUntilOrderGetStatus(response.getSolutionId(),
                             States.ALLOWED_FOR_PICKING, null);
                 }
-            } catch (InterruptedException e) {
-                Log.error(e.getMessage());
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.error(e.getMessage());
             }
         });
 

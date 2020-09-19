@@ -23,9 +23,6 @@ public class SalesDocumentsConst {
         CANCELLATION_IN_PROGRESS("CANCELLATION_IN_PROGRESS", "Отменен"),
         DRAFT("DRAFT", "Черновик"),
 
-        // Сборки
-        PARTIALLY_ASSEMBLED("", "ЧАСТ. СОБРАН"),
-
         // Transfer
         TRANSFER_NEW("NEW", ""),
         TRANSFER_CONFIRMED("CONFIRMED", "Отправлен");

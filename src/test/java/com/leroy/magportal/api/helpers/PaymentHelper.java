@@ -13,7 +13,6 @@ import com.leroy.magportal.api.constants.CardConst;
 import com.leroy.magportal.api.constants.PaymentStatusEnum;
 import com.leroy.magportal.api.helpers.ui.PaymentPage;
 import java.util.List;
-import lombok.SneakyThrows;
 import org.openqa.selenium.WebDriver;
 import ru.leroymerlin.qa.core.clients.base.Response;
 import ru.leroymerlin.qa.core.clients.payment.PaymentClient;
@@ -90,7 +89,7 @@ public class PaymentHelper extends BaseHelper {
         updatePayment(orderId, PaymentStatusEnum.PAID);
     }
 
-    public void makePaymentCard(String orderId) throws Exception{
+    public void makePaymentCard(String orderId) throws Exception {
 
         WebDriver driver = DriverFactory.createDriver();
         ContextProvider.setDriver(driver);
