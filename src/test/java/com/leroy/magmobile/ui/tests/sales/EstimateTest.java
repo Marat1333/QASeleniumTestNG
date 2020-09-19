@@ -1,5 +1,6 @@
 package com.leroy.magmobile.ui.tests.sales;
 
+import com.leroy.common_mashups.data.customer.CustomerData;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.annotations.Smoke;
 import com.leroy.magmobile.ui.models.customer.MagCustomerData;
@@ -388,8 +389,7 @@ public class EstimateTest extends SalesBaseTest {
     @Test(description = "C22797076 Изменить контактные данные клиента", groups = NEED_ACCESS_TOKEN_GROUP)
     public void testChangeCustomerContactDetailsInEstimate() throws Exception {
         step("Pre-condition: Создаем смету");
-        com.leroy.magmobile.api.data.customer.CustomerData customerData =
-                new com.leroy.magmobile.api.data.customer.CustomerData();
+        CustomerData customerData = new CustomerData();
         customerData.generateRandomValidRequiredData(true);
         String estimateId = apiClientProvider.createDraftEstimateAndGetCartId(customerData, 1);
         MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
@@ -573,8 +573,7 @@ public class EstimateTest extends SalesBaseTest {
             groups = NEED_ACCESS_TOKEN_GROUP)
     public void testChangeCustomerContactsInConfirmedEstimate() throws Exception {
         step("Pre-condition: Создаем смету в статусе создан");
-        com.leroy.magmobile.api.data.customer.CustomerData customerData =
-                new com.leroy.magmobile.api.data.customer.CustomerData();
+        CustomerData customerData = new CustomerData();
         customerData.generateRandomValidRequiredData(true);
         String estimateId = apiClientProvider.createConfirmedEstimateAndGetCartId(customerData,
                 productLmCodes.subList(0, 1));

@@ -3,7 +3,7 @@ package com.leroy.magmobile.api.tests.catalog_search;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.magmobile.api.clients.SmsNotificationClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.api.data.customer.CustomerData;
+import com.leroy.common_mashups.data.customer.CustomerData;
 import com.leroy.magmobile.api.data.notification.NotificationCustomerData;
 import com.leroy.magmobile.api.data.notification.SmsNotificationData;
 import com.leroy.magmobile.api.data.sales.BaseProductOrderData;
