@@ -157,6 +157,7 @@ public class OrderTest extends BaseProjectApiTest {
         confirmOrderData.setPaymentTaskId(orderData.getPaymentTaskId());
         confirmOrderData.setProducts(orderData.getProducts());
         confirmOrderData.setCustomers(Collections.singletonList(orderCustomerData));
+        confirmOrderData.setPinCode(orderData.getPinCode());
 
         GiveAwayData giveAwayData = new GiveAwayData();
         giveAwayData.setDate(LocalDateTime.now().plusDays(1));

@@ -1,6 +1,7 @@
 package com.leroy.magmobile.ui.tests.clients;
 
 import com.leroy.constants.Gender;
+import com.leroy.core.annotations.Smoke;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.constants.TestDataConstants;
 import com.leroy.magmobile.ui.models.customer.MagCustomerData;
@@ -15,6 +16,7 @@ import java.util.Random;
 
 public class CustomerTest extends AppBaseSteps {
 
+    @Smoke
     @Test(description = "C3201018 Создание клиента (физ. лицо)")
     public void testCreateCustomer() throws Exception {
         MainCustomerPage mainCustomerPage = loginAndGoTo(MainCustomerPage.class);
@@ -63,6 +65,7 @@ public class CustomerTest extends AppBaseSteps {
         mainCustomerPage.shouldRecentCustomerIs(1, customerData);
     }
 
+    @Smoke
     @Test(description = "C3201020 Поиск клиента по телефону (физ. лицо)")
     public void testSearchForIndividualCustomerByPhone() throws Exception {
         MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;

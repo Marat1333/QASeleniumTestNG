@@ -1,6 +1,7 @@
 package com.leroy.magmobile.ui.tests.sales;
 
 import com.leroy.constants.sales.SalesDocumentsConst;
+import com.leroy.core.annotations.Smoke;
 import com.leroy.magmobile.ui.models.customer.MagCustomerData;
 import com.leroy.magmobile.ui.models.sales.OrderAppData;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
@@ -68,6 +69,7 @@ public class EstimateTest extends SalesBaseTest {
         }
     }
 
+    @Smoke
     @Test(description = "C22797068 Создать смету с экрана Документы продажи")
     public void testCreatingEstimateFromSalesDocumentsScreen() throws Exception {
         // Test data

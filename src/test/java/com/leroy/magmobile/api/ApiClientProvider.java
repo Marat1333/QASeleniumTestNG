@@ -178,6 +178,8 @@ public class ApiClientProvider {
                 .setTopEM(filtersData.getTopEM())
                 .setPageSize(50)
                 .setHasAvailableStock(filtersData.getHasAvailableStock());
+        if (filtersData.getAvs() != null && filtersData.getAvs())
+            params.setAvsDate("neq|null");
         CatalogSearchClient catalogSearchClient = getCatalogSearchClient();
         Response<ProductItemDataList> resp = catalogSearchClient.searchProductsBy(params);
         if (!resp.isSuccessful())

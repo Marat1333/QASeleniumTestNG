@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.DiscountConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
+import com.leroy.core.annotations.Smoke;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.CartClient;
 import com.leroy.magmobile.api.clients.OrderClient;
@@ -141,6 +142,7 @@ public class SalesBaseTest extends AppBaseSteps {
         filtersData.setTopEM(true);
         filtersData.setAvs(false);
         filtersData.setHasAvailableStock(hasAvailableStock);
+        getUserSessionData().setUserShopId("78");
         getUserSessionData().setUserDepartmentId("15");
         return apiClientProvider.getProducts(1, filtersData).get(0).getLmCode();
     }
@@ -276,6 +278,7 @@ public class SalesBaseTest extends AppBaseSteps {
 
     // TESTS
 
+    @Smoke
     @Test(description = "C3201029 Создание документа продажи", groups = OLD_SHOP_GROUP)
     public void testCreateDocumentSales() throws Exception {
         // Step #1

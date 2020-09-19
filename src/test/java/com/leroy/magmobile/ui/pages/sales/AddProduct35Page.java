@@ -159,12 +159,14 @@ public class AddProduct35Page<T> extends CommonMagMobilePage {
         // Запасы
         productData.setAvailableTodayQuantity(getAvailableQuantityInShoppingRoom() +
                 getAvailableQuantityInStock());
-        productData.setTotalStock(ParserUtil.strToInt(inStockAvailableQuantity.getText()));
-        productData.setPieceQuantityInStock(ParserUtil.strToInt(byPeaceQuantity.getText()));
-        int oneMonoPalletQuantity = ParserUtil.strToInt(byOneMonoPalletQuantity.getText());
-        productData.setMonoPalletQuantityInStock(oneMonoPalletQuantity == 0 ? 0 :
-                oneMonoPalletQuantity * ParserUtil.strToInt(monoPalletQuantity.getText()));
-        productData.setMixPalletQuantityInStock(ParserUtil.strToInt(byMixPalletQuantity.getText()));
+        productData.setTotalStock(ParserUtil.strToInt(inStockAvailableQuantity.getText(ps)));
+        productData.setPieceQuantityInStock(ParserUtil.strToInt(byPeaceQuantity.getTextIfPresent(ps)));
+        Integer oneMonoPalletQuantity = ParserUtil.strToInt(byOneMonoPalletQuantity.getTextIfPresent(ps));
+        if (oneMonoPalletQuantity != null) {
+            productData.setMonoPalletQuantityInStock(oneMonoPalletQuantity == 0 ? 0 :
+                    oneMonoPalletQuantity * ParserUtil.strToInt(monoPalletQuantity.getTextIfPresent(ps)));
+        }
+        productData.setMixPalletQuantityInStock(ParserUtil.strToInt(byMixPalletQuantity.getTextIfPresent(ps)));
 
         // Детали выбора товара (Строка заказа)
         productData.setSelectedQuantity(ParserUtil.strToDouble(editQuantityFld.getText(ps)));

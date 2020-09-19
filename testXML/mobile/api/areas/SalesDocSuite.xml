@@ -6,6 +6,7 @@
         <listener class-name="com.leroy.core.listeners.TestRailListener"/>
     </listeners>
 
+    <!-- DEPRECATED TODO - Нужно написать тесты под новые Документы продажи
     <test name="SalesDoc with Product">
         <classes>
             <class name="com.leroy.magmobile.api.tests.salesdoc.SalesDocApiTest">
@@ -30,7 +31,7 @@
                 </methods>
             </class>
         </classes>
-    </test>
+    </test> -->
 
     <test name="SalesDoc Transfer: Create/Update - Delete">
         <classes>

@@ -85,7 +85,11 @@ public class AppBaseSteps extends MagMobileBaseTest {
                         //Log.error("CONSOLE ERRORS:" + consoleErrors);
                         loginWebPage.reloadPage();
                         androidDriver.context("NATIVE_APP");
-                        redirectBtn.click();
+                        try {
+                            redirectBtn.click();
+                        } catch (Exception err2) {
+                            Log.error(err2.getMessage());
+                        }
                     }
                 } else {
                     if (new Element(driver, By.xpath("//*[@resource-id='Username']")).isVisible(1)) {
