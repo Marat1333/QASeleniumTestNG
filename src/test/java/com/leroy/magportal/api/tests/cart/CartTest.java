@@ -4,6 +4,7 @@ import static com.leroy.constants.sales.DiscountConst.TYPE_NEW_PRICE;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.DiscountConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.clients.CartClient;
@@ -34,6 +35,8 @@ public class CartTest extends BaseMagPortalApiTest {
     private CartClient cartClient;
     @Inject
     private PAOHelper paoHelper;
+    @Inject
+    SearchProductHelper searchProductHelper;
 
     @Override
     protected boolean isNeedAccessToken() {
@@ -42,7 +45,7 @@ public class CartTest extends BaseMagPortalApiTest {
 
     @BeforeClass
     private void setUp() {
-        products = paoHelper.getProducts(3);
+        products = searchProductHelper.getProducts(3);
     }
 
     @AfterMethod

@@ -1,10 +1,10 @@
 package com.leroy.magmobile.api.tests.cusomers;
 
-import com.leroy.magmobile.api.clients.CustomerClient;
-import com.leroy.magmobile.api.data.customer.Communication;
-import com.leroy.magmobile.api.data.customer.CustomerData;
-import com.leroy.magmobile.api.data.customer.CustomerListData;
-import com.leroy.magmobile.api.data.customer.CustomerSearchFilters;
+import com.leroy.common_mashups.clients.CustomerClient;
+import com.leroy.common_mashups.data.customer.Communication;
+import com.leroy.common_mashups.data.customer.CustomerData;
+import com.leroy.common_mashups.data.customer.CustomerListData;
+import com.leroy.common_mashups.data.customer.CustomerSearchFilters;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;

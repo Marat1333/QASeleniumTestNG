@@ -1,5 +1,7 @@
 package com.leroy.magmobile.api.tests.print_price;
 
+import com.google.inject.Inject;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.UserSessionData;
 import com.leroy.magmobile.api.clients.CatalogProductClient;
@@ -21,6 +23,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class PrintTagPriceTest extends BaseProjectApiTest {
 
+    @Inject
+    SearchProductHelper searchProductHelper;
+
     private PrintPriceClient printPriceClient;
 
     private CatalogProductClient catalogProductClient;
@@ -33,7 +38,7 @@ public class PrintTagPriceTest extends BaseProjectApiTest {
     private void beforeSetUp() {
         printPriceClient = apiClientProvider.getPrintPriceClient();
         catalogProductClient = apiClientProvider.getCatalogProductClient();
-        String[] lmCodes = apiClientProvider.getProducts(2).stream()
+        String[] lmCodes = searchProductHelper.getProducts(2).stream()
                 .map(ProductItemData::getLmCode).toArray(String[]::new);
         initCatalogProductDataList(lmCodes);
     }
