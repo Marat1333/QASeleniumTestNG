@@ -693,7 +693,6 @@ public class OrderTest extends BasePAOTest {
         orderDraftDeliveryWayPage.shouldOrderDataIs(orderData);
         orderDraftDeliveryWayPage.shouldPinCodeFieldIs("");
 
-
         // Step 2
         step("Введите PIN-код для оплаты");
         stepEnterPinCode();
