@@ -643,11 +643,11 @@ public class PickingTest extends BasePAOTest {
         orderPage.shouldDocumentCountIs(1);
     }
 
-    @Test(description = "***** Заказы. Переход из статуса Собран в статус Выдан", groups = NEED_PRODUCTS_GROUP)
+    @Test(description = "<ID кейса> Заказы. Переход из статуса Собран в статус Выдан", groups = NEED_PRODUCTS_GROUP)
     public void testMoveFromPickedToGivenAway() throws Exception {
 
-        initCreateOrder(1);
-        //Заменить хелпером
+        // Создать заказ и перевести его в статус "Собран" (Заменить хелпером!)
+        /*initCreateOrder(1);
         OrderHeaderPage orderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
         initFindPickingTask();
         orderPage.enterSearchTextAndSubmit(orderId);
@@ -663,31 +663,27 @@ public class PickingTest extends BasePAOTest {
         pickingContentPage.editCollectQuantity(1, 2)
                 .shouldProductCollectedQuantityIs(1, 2);
         pickingContentPage.clickFinishAssemblyButton();
-
-
-
-
-
-
-
-
-
-
-
-
-
-        // Step 8:
-        step("Завершить сборку");
         pickingContentPage.clickFinishAssemblyButton();
-
-        // Step 9:
-        step("Вернуться на страницу заказов ");
         PickingPage pickingPage = new PickingPage();
         pickingPage.clickOrderLinkAndGoToOrderPage();
+        orderPage.shouldDocumentIsPresent(orderId);
+        orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.PICKED.getUiVal());
+        orderPage.shouldDocumentCountIs(1);*/
+
+        //Вбить номер собранного заказа 200901121200
+
+        orderId="200901127992";
+
+        // Step 1:
+        step("Открыть страницу с Заказами");
+        OrderHeaderPage orderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
+        //initFindPickingTask();
 
 
-        // Step 10:
-        step("Проверить статус собранного заказа");
+        // Step 1:
+        step("Найти заказ с стусе Собран с номером"+" "+orderId);
+
+        orderPage.enterSearchTextAndSubmit(orderId);
         orderPage.shouldDocumentIsPresent(orderId);
         orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.PICKED.getUiVal());
         orderPage.shouldDocumentCountIs(1);
