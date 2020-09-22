@@ -4,6 +4,8 @@ public class DefectConst {
 
     // Активные дефекты
     public static final boolean STOCK_ISSUE = true;
+    public static final boolean PUZ2_2551 = true; // Отсутствует поле комментарий в сборках
+    public static final boolean PUZ2_MAX_SIZE_INCORRECT = true;
     public static final boolean LFRONT_3695 = true; // Сообщение о кратности паллет появляется не сразу
     public static final boolean LEGAL_PERSON_IS_NOT_DISPLAYED_IN_SENT_TRANSFER_TASK = true;
     public static final boolean LFRONT_3675 = true;

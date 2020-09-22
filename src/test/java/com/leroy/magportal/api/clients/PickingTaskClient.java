@@ -1,5 +1,6 @@
 package com.leroy.magportal.api.clients;
 
+import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magportal.api.constants.PickingReasonEnum;
 import com.leroy.magportal.api.constants.PickingTaskWorkflowEnum;
@@ -7,8 +8,9 @@ import com.leroy.magportal.api.data.onlineOrders.OrderProductDataPayload;
 import com.leroy.magportal.api.data.picking.PickingTaskData;
 import com.leroy.magportal.api.data.picking.PickingTaskData.ProductData;
 import com.leroy.magportal.api.data.picking.PickingTaskDataList;
+import com.leroy.magportal.api.data.picking.PickingTaskStoragePayload;
+import com.leroy.magportal.api.data.picking.PickingTaskStoragePayload.StoragePayload;
 import com.leroy.magportal.api.data.picking.PickingTaskWorkflowPayload;
-import com.leroy.magportal.api.data.picking.PickingTaskWorkflowPayload.StoragePayload;
 import com.leroy.magportal.api.data.picking.PickingTaskWorkflowPayload.WorkflowPayload;
 import com.leroy.magportal.api.requests.picking.PickingTaskGetRequest;
 import com.leroy.magportal.api.requests.picking.PickingTasksSearchRequest;
@@ -16,6 +18,7 @@ import com.leroy.magportal.api.requests.picking.PickingWorkflowRequest;
 import io.qameta.allure.Step;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class PickingTaskClient extends BaseMashupClient {
@@ -36,6 +39,26 @@ public class PickingTaskClient extends BaseMashupClient {
         return execute(req, PickingTaskData.class);
     }
 
+    @Step("Start Picking of task for OrderId= {OrderId}")
+    public Response<PickingTaskData> startPicking(String orderId, Integer taskNumber) {
+        String taskId = this.searchForPickingTasks(orderId).asJson().getItems().get(taskNumber)
+                .getTaskId();
+        return makeAction(taskId, PickingTaskWorkflowEnum.START.getValue(),
+                new PickingTaskWorkflowPayload());
+    }
+
+    @Step("Start Pickings of all available tasks for Order = {orderId}")
+    public void startAllPickings(String orderId) {
+        Response<?> resp;
+        List<PickingTaskData> tasks = this.searchForPickingTasks(orderId).asJson().getItems()
+                .stream().filter(x -> x.getTaskStatus().equalsIgnoreCase(States.ALLOWED_FOR_PICKING
+                        .getApiVal())).collect(Collectors.toList());
+        for (PickingTaskData task : tasks) {
+            resp = startPicking(task.getTaskId());
+            assertThatResponseIsOk(resp);
+        }
+    }
+
     @Step("Start Picking of task = {taskId}")
     public Response<PickingTaskData> startPicking(String taskId) {
         return makeAction(taskId, PickingTaskWorkflowEnum.START.getValue(),
@@ -54,10 +77,16 @@ public class PickingTaskClient extends BaseMashupClient {
                 new PickingTaskWorkflowPayload());
     }
 
-    @Step("Complete Picking of task = {taskId}")
-    public Response<PickingTaskData> completePicking(String taskId,
-            PickingTaskWorkflowPayload workflowPayload) {
-        return makeAction(taskId, PickingTaskWorkflowEnum.COMPLETE.getValue(), workflowPayload);
+    @Step("Complete Picking of all available tasks for {orderId}")
+    public void completeAllPickings(String orderId, Boolean isFull) {
+        Response<?> resp;
+        List<PickingTaskData> tasks = this.searchForPickingTasks(orderId).asJson().getItems()
+                .stream().filter(x -> x.getTaskStatus().equalsIgnoreCase(States.PICKING_IN_PROGRESS
+                        .getApiVal())).collect(Collectors.toList());
+        for (PickingTaskData task : tasks) {
+            resp = completePicking(task.getTaskId(), isFull);
+            assertThatResponseIsOk(resp);
+        }
     }
 
     @Step("Complete Picking of task = {taskId}")
@@ -107,8 +136,8 @@ public class PickingTaskClient extends BaseMashupClient {
         return payload;
     }
 
-    private PickingTaskWorkflowPayload makeStoragePayload(Integer count) {
-        PickingTaskWorkflowPayload payload = new PickingTaskWorkflowPayload();
+    private PickingTaskStoragePayload makeStoragePayload(Integer count) {
+        PickingTaskStoragePayload payload = new PickingTaskStoragePayload();
         StoragePayload storagePayload = new StoragePayload();
         List<String> locations = new ArrayList<>();
         for (int i = 0; i < count; i++) {

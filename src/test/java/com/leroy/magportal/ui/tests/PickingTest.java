@@ -458,7 +458,7 @@ public class PickingTest extends BasePAOTest {
 
         // Step 9
         step("Нажать на кнопку Завершить");
-        pickingTaskDataBefore.setStatus(SalesDocumentsConst.States.PARTIALLY_ASSEMBLED.getUiVal() + " 1/3");
+        pickingTaskDataBefore.setStatus(SalesDocumentsConst.States.PARTIALLY_PICKED.getUiVal() + " 1/3");
         List<PickingProductCardData> pickingProducts = pickingTaskDataBefore.getProducts();
         pickingProducts.get(0).setCollectedQuantity(collectedQuantityProduct1);
         pickingProducts.get(0).setReasonOfLack(reason1.getTitle());

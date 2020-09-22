@@ -5,20 +5,23 @@ public class SalesDocumentsConst {
     // Состояния документа
     public enum States {
         CONFIRMED("CONFIRMED", "Создан"),
+        WAITING_FOR_PAYMENT("WAITING_FOR_PAYMENT", "Ожидает оплату"),
         ALLOWED_FOR_PICKING("ALLOWED_FOR_PICKING", "Готов к сборке"),
         IN_PROGRESS("CONFIRMATION_IN_PROGRESS", "Автообработка"),
         PICKING_IN_PROGRESS("PICKING_IN_PROGRESS", "Сборка"),
         PICKED("PICKED", "Собран"),
+        PARTIALLY_PICKED("PARTIALLY_PICKED", "Част. собран"),
+        PICKED_WAIT("PICKED_WAIT", "Собран: Ожидает списания"),
         ALLOWED_FOR_GIVEAWAY("ALLOWED_FOR_GIVEAWAY", "Собран"),
+        PARTIALLY_GIVEN_AWAY("PARTIALLY_GIVEN_AWAY", "Част. выдан"),
         GIVEN_AWAY("GIVEN_AWAY", "Выдан"),
+        SHIPPED("SHIPPED", "Отгружен"),
+        DELIVERED("DELIVERED", "Доставлен"),
         TRANSFORMED("", "Преобразован"),
         DELETED("DELETED", ""),
         CANCELLED("CANCELLED", "Отменен"),
+        CANCELLATION_IN_PROGRESS("CANCELLATION_IN_PROGRESS", "Отменен"),
         DRAFT("DRAFT", "Черновик"),
-
-        // Сборки
-        PARTIALLY_ASSEMBLED("", "ЧАСТ. СОБРАН"),
-        PICKED ("", "СОБРАН"),
 
         // Transfer
         TRANSFER_NEW("NEW", ""),

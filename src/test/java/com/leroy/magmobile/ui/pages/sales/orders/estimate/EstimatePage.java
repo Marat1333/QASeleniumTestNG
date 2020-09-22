@@ -304,6 +304,7 @@ public class EstimatePage extends CartOrderEstimatePage {
     @Step("Проверить, что смета содержит ожидаемые данные (expectedData)")
     public EstimatePage shouldOrderDataIs(OrderAppData expectedData) throws Exception {
         OrderAppData actualData = getOrderDataFromPage();
+        expectedData.getProductCardDataList().forEach(p -> p.setTotalStock(null));
         actualData.assertEqualsNotNullExpectedFields(expectedData);
         return this;
     }

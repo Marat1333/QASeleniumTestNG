@@ -3,6 +3,8 @@ package com.leroy.magportal.api.tests.cart;
 import static com.leroy.constants.sales.DiscountConst.TYPE_NEW_PRICE;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.inject.Inject;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.DiscountConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.clients.CartClient;
@@ -11,6 +13,7 @@ import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountReasonData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
+import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
 import io.qameta.allure.Step;
 import java.util.ArrayList;
@@ -25,10 +28,15 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class CartTest extends BaseMagPortalApiTest {
 
-    private CartClient cartClient;
-
     private CartData cartData;
     private List<ProductItemData> products;
+
+    @Inject
+    private CartClient cartClient;
+    @Inject
+    private PAOHelper paoHelper;
+    @Inject
+    SearchProductHelper searchProductHelper;
 
     @Override
     protected boolean isNeedAccessToken() {
@@ -37,8 +45,7 @@ public class CartTest extends BaseMagPortalApiTest {
 
     @BeforeClass
     private void setUp() {
-        cartClient = apiClientProvider.getCartClient();
-        products = apiClientProvider.getProducts(3);
+        products = searchProductHelper.getProducts(3);
     }
 
     @AfterMethod

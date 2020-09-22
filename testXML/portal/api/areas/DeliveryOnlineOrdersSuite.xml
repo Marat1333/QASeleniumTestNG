@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="API Delivery Online Orders Suite" parallel="tests">
+
+    <listeners>
+        <listener class-name="com.leroy.core.listeners.TestRailListener"/>
+    </listeners>
+
+    <test name="Delivery Online Orders: Workflow tests - DoorWorkflowShortTest">
+        <classes>
+            <class
+                name="com.leroy.magportal.api.tests.onlineOrders.deliveryOrders.DoorWorkflowShortTest">
+            </class>
+        </classes>
+    </test>
+
+    <test name="Delivery Online Orders: Workflow tests - EntranceWorkflowShortTest">
+        <classes>
+            <class
+                name="com.leroy.magportal.api.tests.onlineOrders.deliveryOrders.EntranceWorkflowShortTest">
+            </class>
+        </classes>
+    </test>
+
+    <test name="Delivery Online Orders: Workflow tests - ExpressWorkflowShortTest">
+        <classes>
+            <class
+                name="com.leroy.magportal.api.tests.onlineOrders.deliveryOrders.ExpressWorkflowShortTest">
+            </class>
+        </classes>
+    </test>
+
+    <test name="Delivery Online Orders: Edit tests - DoorEditTest">
+        <classes>
+            <class
+                name="com.leroy.magportal.api.tests.onlineOrders.deliveryOrders.DoorEditTest">
+            </class>
+        </classes>
+    </test>
+
+    <test name="Delivery Online Orders: Edit tests - EntranceEditTest">
+        <classes>
+            <class
+                name="com.leroy.magportal.api.tests.onlineOrders.deliveryOrders.EntranceEditTest">
+            </class>
+        </classes>
+    </test>
+
+</suite>

@@ -32,7 +32,7 @@ public class OrderHeaderPage extends LeftDocumentListPage<ShortOrderDocumentCard
             metaName = "Кнопка Обновить список документов")
     private Button refreshDocumentListBtn;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'Order-OrderListItem') and contains(@class, 'container')]",
+    @WebFindBy(xpath = "//div[contains(@class, 'Order-OrderListItem') and contains(@class, 'container') and not(contains(@class, 'urgent'))]",
             clazz = ShortOrderDocumentCardWidget.class)
     private CardWebWidgetList<ShortOrderDocumentCardWidget, ShortOrderDocWebData> documentCardList;
 
