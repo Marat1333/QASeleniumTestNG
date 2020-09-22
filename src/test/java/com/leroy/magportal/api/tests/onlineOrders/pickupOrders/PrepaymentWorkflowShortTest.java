@@ -47,21 +47,21 @@ public class PrepaymentWorkflowShortTest extends BaseMagPortalApiTest {
                 .stream().findFirst().get().getTaskId();
     }
 
-    @Test(description = "C3225834 PICKUP_PREPAYMENT: Start Picking the Order")
+    @Test(description = "C23425615 PICKUP PREPAYMENT: Start Picking the Order")
     public void testStartPicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .startPicking(currentTaskId);
         orderClient.assertWorkflowResult(response, currentOrderId, States.PICKING_IN_PROGRESS);
     }
 
-    @Test(description = "C3225834 PICKUP_PREPAYMENT: Complete Picking the Order", dependsOnMethods={"testStartPicking"})
+    @Test(description = "C23425615 PICKUP PREPAYMENT: Complete Picking the Order", dependsOnMethods={"testStartPicking"})
     public void testCompletePicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .completePicking(currentTaskId, true);
         orderClient.assertWorkflowResult(response, currentOrderId, States.PICKED);
     }
 
-    @Test(description = "C3225834 PICKUP_PREPAYMENT: Give away the Order", dependsOnMethods={"testCompletePicking"})
+    @Test(description = "C23425615 PICKUP PREPAYMENT: Give away the Order", dependsOnMethods={"testCompletePicking"})
     public void testGiveAway() {
         paymentHelper.makePaid(currentOrderId);
         orderClient.waitUntilOrderGetStatus(currentOrderId,

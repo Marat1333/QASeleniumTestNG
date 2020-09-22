@@ -39,14 +39,14 @@ public class WorkflowShortTest extends BaseMagPortalApiTest {
                 .stream().findFirst().get().getTaskId();
     }
 
-    @Test(description = "C0 OFFLINE: Start Picking the Order")
+    @Test(description = "C23425604 OFFLINE: Start Picking the Order")
     public void testStartPicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .startPicking(currentTaskId);
         orderClient.assertWorkflowResult(response, currentOrderId, States.PICKING_IN_PROGRESS);
     }
 
-    @Test(description = "C1 OFFLINE: Complete Picking the Order", dependsOnMethods = {
+    @Test(description = "C23425604 OFFLINE: Complete Picking the Order", dependsOnMethods = {
             "testStartPicking"})
     public void testCompletePicking() {
         Response<PickingTaskData> response = pickingTaskClient
@@ -54,7 +54,7 @@ public class WorkflowShortTest extends BaseMagPortalApiTest {
         orderClient.assertWorkflowResult(response, currentOrderId, States.PICKED);
     }
 
-    @Test(description = "C2 OFFLINE: Give away the Order", dependsOnMethods = {
+    @Test(description = "C23425604 OFFLINE: Give away the Order", dependsOnMethods = {
             "testCompletePicking"})
     public void testGiveAway() throws Exception {
         paymentHelper.makePaid(currentOrderId);

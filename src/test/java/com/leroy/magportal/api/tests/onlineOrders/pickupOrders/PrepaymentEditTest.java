@@ -63,20 +63,20 @@ public class PrepaymentEditTest extends BaseMagPortalApiTest {
     }
 
     @AfterMethod
-    private void cartAfterMethod(ITestResult result) {
+    private void orderAfterMethod(ITestResult result) {
         if (result.getStatus() != TestResult.SUCCESS) {
             currentOrderId = null;
         }
     }
 
-    @Test(description = "C0", priority = 1)
+    @Test(description = "C23425616 PrePayment: Edit Allowed For Picking Order", priority = 1)
     public void testEditAllowedForPicking() {
         currentCount = 9.0;
         Response<?> response = orderClient.editOrder(currentOrderId, 0, currentCount);
         orderClient.assertEditResult(response, currentOrderId, currentCount);
     }
 
-    @Test(description = "C1", priority = 2)
+    @Test(description = "C23425617 PrePayment: Add Product to Allowed For Picking Order (Negative)", priority = 2)
     public void testAddProductAllowedForPicking() {
         Response<?> response = orderClient.rearrange(currentOrderId, 2, null);
         assertThat("It's possible to ADD product into payed Order", !response.isSuccessful());
@@ -85,7 +85,7 @@ public class PrepaymentEditTest extends BaseMagPortalApiTest {
                 currentProductsCount);
     }
 
-    @Test(description = "C2", priority = 3)
+    @Test(description = "C23425618 PrePayment: Edit And Add Product to Allowed For Picking Order (Negative)", priority = 3)
     public void testEditAndAddProductAllowedForPicking() {
         Response<?> response = orderClient.rearrange(currentOrderId, 2, 1.0);
         assertThat("It's possible to ADD product into payed Order", !response.isSuccessful());
@@ -95,7 +95,7 @@ public class PrepaymentEditTest extends BaseMagPortalApiTest {
                         currentProductsCount);
     }
 
-    @Test(description = "C3", priority = 4)
+    @Test(description = "C23425619 PrePayment: Edit Picked Paid Order", priority = 4)
     public void testAddProductPickedPaid() {
         currentStatus = States.PICKED;
         orderClient.moveNewOrderToStatus(currentOrderId, States.PICKED);
@@ -106,14 +106,14 @@ public class PrepaymentEditTest extends BaseMagPortalApiTest {
                 currentProductsCount);
     }
 
-    @Test(description = "C4", priority = 5)
+    @Test(description = "C23425620 PrePayment: Add Product to Paid Order (Negative)", priority = 5)
     public void testEditPickedPaid() {
         currentCount = 7.0;
         Response<?> response = orderClient.editOrder(currentOrderId, 0, currentCount);
         orderClient.assertEditResult(response, currentOrderId, currentCount);
     }
 
-    @Test(description = "C5", priority = 6)
+    @Test(description = "C23425621 PrePayment: Edit Add Product to Paid Order (Negative)", priority = 6)
     public void testEditAndAddProductPickedPaid() {
         Response<?> response = orderClient.rearrange(currentOrderId, 2, 1.0);
         assertThat("It's possible to ADD product into payed Order", !response.isSuccessful());
@@ -122,7 +122,7 @@ public class PrepaymentEditTest extends BaseMagPortalApiTest {
                 currentProductsCount);
     }
 
-    @Test(description = "C6", priority = 7)
+    @Test(description = "C23425622 PrePayment: Edit Dimensional Product Allowed For Picking Order", priority = 7)
     public void testEditDimensionalProduct() {
         makeDimensionalOrder();
         currentCount = 6.66;
@@ -130,7 +130,7 @@ public class PrepaymentEditTest extends BaseMagPortalApiTest {
         orderClient.assertEditResult(response, currentOrderId, currentCount);
     }
 
-    @Test(description = "C7", priority = 8)
+    @Test(description = "C23425623 PrePayment: Edit Dimensional Product: Paid Order", priority = 8)
     public void testEditDimensionalProductPaid() {
         currentStatus = States.PICKED;
         orderClient.moveNewOrderToStatus(currentOrderId, States.PICKED);
@@ -139,14 +139,14 @@ public class PrepaymentEditTest extends BaseMagPortalApiTest {
         orderClient.assertEditResult(response, currentOrderId, currentCount);
     }
 
-    @Test(description = "C8", priority = 9)
+    @Test(description = "C23425624 PrePayment: Cancel order by Edit Dimensional Product: Paid Order", priority = 9)
     public void testCancelByEditDimensionalProductPaid() {
         currentCount = 10.0;
         Response<?> response = orderClient.editOrder(currentOrderId, 0, 0.0);
         orderClient.assertWorkflowResult(response, currentOrderId, States.CANCELLED);
     }
 
-    @Test(description = "C9", priority = 10)
+    @Test(description = "C23425625 PrePayment: Cancel order by Edit with New Product Added", priority = 10)
     public void testCancelByEditWithNewProduct() {
         makeDimensionalOrder();
         orderClient.editOrder(currentOrderId, 1, null);
