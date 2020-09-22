@@ -17,18 +17,22 @@ import com.leroy.magportal.api.constants.OrderReasonEnum;
 import com.leroy.magportal.api.constants.OrderWorkflowEnum;
 import com.leroy.magportal.api.constants.PaymentStatusEnum;
 import com.leroy.magportal.api.constants.PaymentTypeEnum;
+import com.leroy.magportal.api.data.onlineOrders.OrderDeliveryRecalculatePayload;
+import com.leroy.magportal.api.data.onlineOrders.OrderDeliveryRecalculateResponseData;
 import com.leroy.magportal.api.data.onlineOrders.OrderFulfilmentToGivenAwayPayload;
 import com.leroy.magportal.api.data.onlineOrders.OrderProductDataPayload;
 import com.leroy.magportal.api.data.onlineOrders.OrderRearrangePayload;
 import com.leroy.magportal.api.data.onlineOrders.OrderWorkflowPayload;
 import com.leroy.magportal.api.data.onlineOrders.OrderWorkflowPayload.WorkflowPayload;
 import com.leroy.magportal.api.helpers.PaymentHelper;
+import com.leroy.magportal.api.requests.order.OrderDeliveryRecalculateRequest;
 import com.leroy.magportal.api.requests.order.OrderFulfilmentGivenAwayRequest;
 import com.leroy.magportal.api.requests.order.OrderGetRequest;
 import com.leroy.magportal.api.requests.order.OrderWorkflowRequest;
 import io.qameta.allure.Step;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.criteria.CriteriaBuilder.In;
 import lombok.SneakyThrows;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -114,6 +118,15 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
     public Response<JsonNode> deliver(String orderId, Boolean isFull) {
         return makeAction(orderId, OrderWorkflowEnum.DELIVER.getValue(),
                 makeWorkflowPayload(orderId, isFull, true));
+    }
+
+    @Step("Recalculate Delivery price for order with id = {orderId}")
+    public Response<OrderDeliveryRecalculateResponseData> deliveryRecalculate(String orderId, Integer productCount, Double newCount) {
+        OrderDeliveryRecalculateRequest req = new OrderDeliveryRecalculateRequest();
+        req.setOrderId(orderId);
+        req.jsonBody(makeDeliveryRecalculationPayload(orderId, productCount, newCount));
+
+        return execute(req, OrderDeliveryRecalculateResponseData.class);
     }
 
     @Step("Moves NEW order to specified status")
@@ -350,6 +363,26 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         orderProducts.add(orderProductDataPayload);
 
         payload.setProducts(orderProducts);
+        return payload;
+    }
+
+    private OrderDeliveryRecalculatePayload makeDeliveryRecalculationPayload(String orderId, Integer productCount, Double newCount) {
+        OrderDeliveryRecalculatePayload payload = new OrderDeliveryRecalculatePayload();
+        List<OrderProductDataPayload> products = new ArrayList<>();
+        OrderData orderData = this.getOrder(orderId).asJson();
+        int i = 0;
+
+        for (OrderProductData product : orderData.getProducts()) {
+            OrderProductDataPayload productData = new OrderProductDataPayload();
+            productData.setLmCode(product.getLmCode());
+            productData.setQuantity(newCount);
+            if (i < productCount) {
+                products.add(productData);
+            }
+            i++;
+        }
+        payload.setProducts(products);
+
         return payload;
     }
 

@@ -46,4 +46,12 @@
         </classes>
     </test>
 
+    <test name="Delivery Online Orders: Door: Delivery ReCalculations - EntranceEditTest">
+        <classes>
+            <class
+                name="com.leroy.magportal.api.tests.onlineOrders.deliveryOrders.DoorDeliveryRecalculateTest">
+            </class>
+        </classes>
+    </test>
+
 </suite>

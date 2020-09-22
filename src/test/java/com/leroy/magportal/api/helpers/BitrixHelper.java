@@ -14,6 +14,7 @@ import com.leroy.magportal.api.clients.CatalogSearchClient;
 import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.clients.ShopsClient;
 import com.leroy.magportal.api.constants.DeliveryServiceTypeEnum;
+import com.leroy.magportal.api.constants.LmCodeTypeEnum;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
 import com.leroy.magportal.api.constants.PaymentStatusEnum;
 import com.leroy.magportal.api.constants.PaymentTypeEnum;
@@ -55,6 +56,12 @@ public class BitrixHelper extends BaseHelper {
     @Step("Creates Online order with specified LmCode")
     public BitrixSolutionResponse createOnlineOrder(OnlineOrderTypeData orderData, String lmCode) {
         orderData.setLmCode(lmCode);
+        return this.createOnlineOrders(1, orderData, 1).stream().findFirst().get();
+    }
+
+    @Step("Creates Online order with Dimensional LmCode")
+    public BitrixSolutionResponse createDimensionalOnlineOrder(OnlineOrderTypeData orderData) {
+        orderData.setLmCode(LmCodeTypeEnum.DIMENSIONAL.getValue());
         return this.createOnlineOrders(1, orderData, 1).stream().findFirst().get();
     }
 

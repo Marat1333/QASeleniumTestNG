@@ -158,7 +158,7 @@ public class DoorEditTest extends BaseMagPortalApiTest {
         currentProductsCount = 1;
 
         BitrixSolutionResponse bitrixSolutionResponses = bitrixHelper
-                .createOnlineOrder(currentOrderType, LmCodeTypeEnum.DIMENSIONAL.getValue());
+                .createDimensionalOnlineOrder(currentOrderType);
         currentOrderId = bitrixSolutionResponses.getSolutionId();
     }
 }
