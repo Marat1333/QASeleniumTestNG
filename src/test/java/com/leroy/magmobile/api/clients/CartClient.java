@@ -29,8 +29,8 @@ public class CartClient extends BaseMashupClient {
     @Step("Get Cart info by cartId={cartId}")
     public Response<CartData> sendRequestGet(String cartId) {
         return execute(new CartGet().setCartId(cartId)
-                .bearerAuthHeader(userSessionData.getAccessToken())
-                .setShopId(userSessionData.getUserShopId()), CartData.class);
+                .bearerAuthHeader(getUserSessionData().getAccessToken())
+                .setShopId(getUserSessionData().getUserShopId()), CartData.class);
     }
 
     @Step("Create Cart")
@@ -38,7 +38,7 @@ public class CartClient extends BaseMashupClient {
         CartData cartData = new CartData();
         cartData.setProducts(productOrderDataList);
         return execute(new CartPOST()
-                .setShopId(userSessionData.getUserShopId())
+                .setShopId(getUserSessionData().getUserShopId())
                 .jsonBody(cartData), CartData.class);
     }
 
@@ -52,7 +52,7 @@ public class CartClient extends BaseMashupClient {
                                          CartProductOrderData productData) {
         CartUpdateRequest req = new CartUpdateRequest();
         req.setCartId(cartId);
-        req.setShopId(userSessionData.getUserShopId());
+        req.setShopId(getUserSessionData().getUserShopId());
         CartData putDat = new CartData();
         putDat.setDocumentVersion(documentVersion);
         putDat.setProducts(Collections.singletonList(productData));
@@ -64,8 +64,8 @@ public class CartClient extends BaseMashupClient {
     public Response<CartData> confirmQuantity(String cartId, int documentVersion, CartProductOrderData productData) {
         CartConfirmQuantityRequest req = new CartConfirmQuantityRequest();
         req.setCartId(cartId);
-        req.setShopId(userSessionData.getUserShopId());
-        req.setLdap(userSessionData.getUserLdap());
+        req.setShopId(getUserSessionData().getUserShopId());
+        req.setLdap(getUserSessionData().getUserLdap());
 
         CartData putData = new CartData();
         putData.setDocumentVersion(documentVersion);
@@ -92,8 +92,8 @@ public class CartClient extends BaseMashupClient {
         }
 
         CartDiscountRequest req = new CartDiscountRequest();
-        req.setShopId(userSessionData.getUserShopId());
-        req.setLdap(userSessionData.getUserLdap());
+        req.setShopId(getUserSessionData().getUserShopId());
+        req.setLdap(getUserSessionData().getUserLdap());
         req.setCartId(cartId);
         CartData putData = new CartData();
         putData.setDocumentVersion(documentVersion);
@@ -112,15 +112,15 @@ public class CartClient extends BaseMashupClient {
         req.setCartId(cartId);
         req.setDocumentVersion(documentVersion);
         req.setLineId(lineId);
-        req.setShopId(userSessionData.getUserShopId());
+        req.setShopId(getUserSessionData().getUserShopId());
         return execute(req, CartData.class);
     }
 
     @Step("Consolidate products for cartId={cartId}")
     public Response<JsonNode> consolidateProducts(String cartId, Integer documentVersion, String lineId) {
         CartConsolidateProductsRequest req = new CartConsolidateProductsRequest();
-        req.setLdap(userSessionData.getUserLdap());
-        req.setShopId(userSessionData.getUserShopId());
+        req.setLdap(getUserSessionData().getUserLdap());
+        req.setShopId(getUserSessionData().getUserShopId());
         req.setCartId(cartId);
         CartData putData = new CartData();
         putData.setDocumentVersion(documentVersion);
@@ -137,7 +137,7 @@ public class CartClient extends BaseMashupClient {
         body.put("status", SalesDocumentsConst.States.DELETED.getApiVal());
         body.put("documentVersion", String.valueOf(documentVersion));
         return execute(new CartChangeStatusRequest()
-                .bearerAuthHeader(userSessionData.getAccessToken())
+                .bearerAuthHeader(getUserSessionData().getAccessToken())
                 .setCartId(cartId)
                 .formBody(body), JsonNode.class);
     }
@@ -155,7 +155,7 @@ public class CartClient extends BaseMashupClient {
             assertThat("salesDocStatus", data.getSalesDocStatus(), is(SalesDocumentsConst.States.DRAFT.getApiVal()));
             assertThat("documentType", data.getDocumentType(), is(SalesDocumentsConst.Types.CART.getApiVal()));
             assertThat("status", data.getStatus(), is(SalesDocumentsConst.States.DRAFT.getApiVal()));
-            assertThat("shopId", data.getShopId(), is(userSessionData.getUserShopId()));
+            assertThat("shopId", data.getShopId(), is(getUserSessionData().getUserShopId()));
             assertThat("cartId", data.getCartId(), is(data.getFullDocId()));
             assertThat("documentVersion", data.getDocumentVersion(), is(1));
             assertThat("groupingId", data.getGroupingId(), not(emptyOrNullString()));
@@ -314,7 +314,7 @@ public class CartClient extends BaseMashupClient {
                         is(expectedProductData.getDiscount().getTypeValue()));
                 assertThat("Product #" + (i + 1) + " Discount.actor",
                         actualProductData.getDiscount().getActor(),
-                        is(userSessionData.getUserLdap()));
+                        is(getUserSessionData().getUserLdap()));
                 //assertThat("Product #" + (i + 1) + " Discount.updated",
                 //        actualProductData.getDiscount().getUpdated(),
                 //        approximatelyEqual(LocalDateTime.now())); // #bug ?

@@ -16,7 +16,7 @@ public class Context {
     private StepLog log;
     private UserSessionData userSessionData;
 
-    String[] oldShops = {"78"};
+    String[] oldShops = {"78", "6"};
 
     public boolean isNewShopFunctionality() {
         return !Arrays.asList(oldShops).contains(userSessionData.getUserShopId());

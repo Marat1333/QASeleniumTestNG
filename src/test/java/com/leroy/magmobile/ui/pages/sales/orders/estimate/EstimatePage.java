@@ -149,7 +149,7 @@ public class EstimatePage extends CartOrderEstimatePage {
     }
 
     @Step("Забираем со страницы информацию о смете")
-    public OrderAppData getOrderDataFromPage() {
+    public OrderAppData getOrderDataFromPage() throws Exception {
         List<ProductOrderCardAppData> cardDataList = productCardDataScrollView.getFullDataList();
         OrderAppData orderData = new OrderAppData();
         orderData.setProductCardDataList(cardDataList);
@@ -161,7 +161,7 @@ public class EstimatePage extends CartOrderEstimatePage {
     }
 
     @Step("Получить список добавленных в смету карточек товаров/услуг с информацией о них")
-    public List<ProductOrderCardAppData> getCardDataListFromPage() {
+    public List<ProductOrderCardAppData> getCardDataListFromPage() throws Exception {
         return productCardDataScrollView.getFullDataList();
     }
 
@@ -302,8 +302,9 @@ public class EstimatePage extends CartOrderEstimatePage {
     }
 
     @Step("Проверить, что смета содержит ожидаемые данные (expectedData)")
-    public EstimatePage shouldOrderDataIs(OrderAppData expectedData) {
+    public EstimatePage shouldOrderDataIs(OrderAppData expectedData) throws Exception {
         OrderAppData actualData = getOrderDataFromPage();
+        expectedData.getProductCardDataList().forEach(p -> p.setTotalStock(null));
         actualData.assertEqualsNotNullExpectedFields(expectedData);
         return this;
     }

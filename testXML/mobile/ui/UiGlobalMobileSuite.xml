@@ -9,6 +9,8 @@
         <suite-file path="areas/WithdrawalFromRMSuite.xml"/>
         <suite-file path="areas/SupplyPlan.xml"/>
         <suite-file path="areas/PrintTags.xml"/>
+        <suite-file path="areas/TransferSuite.xml"/>
+        <suite-file path="clients/ClientsSuite.xml"/>
     </suite-files>
 
 </suite>

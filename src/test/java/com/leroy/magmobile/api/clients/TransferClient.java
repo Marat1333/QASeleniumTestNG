@@ -30,7 +30,7 @@ public class TransferClient extends BaseMashupClient {
     public Response<TransferSalesDocData> sendRequestCreate(
             TransferSalesDocData transferSalesDocData) {
         PostSalesDocTransfer params = new PostSalesDocTransfer();
-        params.setLdap(userSessionData.getUserLdap());
+        params.setLdap(getUserSessionData().getUserLdap());
         params.jsonBody(transferSalesDocData);
         return execute(params, TransferSalesDocData.class);
     }
@@ -39,9 +39,9 @@ public class TransferClient extends BaseMashupClient {
     public Response<TransferSalesDocData> sendRequestAddProducts(
             String taskId, List<TransferProductOrderData> productDataList) {
         PutSalesDocTransferAdd params = new PutSalesDocTransferAdd();
-        params.setLdap(userSessionData.getUserLdap());
+        params.setLdap(getUserSessionData().getUserLdap());
         params.setTaskId(taskId);
-        params.setShopId(userSessionData.getUserShopId());
+        params.setShopId(getUserSessionData().getUserShopId());
 
         TransferSalesDocData transferSalesDocData = new TransferSalesDocData();
         transferSalesDocData.setProducts(productDataList);
@@ -58,7 +58,7 @@ public class TransferClient extends BaseMashupClient {
     public Response<TransferSalesDocData> sendRequestGet(String taskId) {
         GetSalesDocTransfer request = new GetSalesDocTransfer();
         request.setTaskId(taskId);
-        request.setLdap(userSessionData.getUserLdap());
+        request.setLdap(getUserSessionData().getUserLdap());
         return execute(request, TransferSalesDocData.class);
     }
 
@@ -82,7 +82,7 @@ public class TransferClient extends BaseMashupClient {
     public Response<TransferSalesDocData> update(String taskId, TransferProductOrderData productData) {
         TransferUpdateRequest req = new TransferUpdateRequest();
         req.setTaskId(taskId);
-        req.setLdap(userSessionData.getUserLdap());
+        req.setLdap(getUserSessionData().getUserLdap());
         TransferSalesDocData putData = new TransferSalesDocData();
         putData.setProducts(Collections.singletonList(productData));
         req.jsonBody(putData);
@@ -134,7 +134,7 @@ public class TransferClient extends BaseMashupClient {
     @Step("Search for transfer tasks")
     public Response<TransferDataList> searchForTasks(TransferSearchFilters filters) {
         TransferSearchRequest req = new TransferSearchRequest();
-        req.setShopId(userSessionData.getUserShopId());
+        req.setShopId(getUserSessionData().getUserShopId());
         if (filters.getStatus() != null)
             req.setStatus(filters.getStatus());
         if (filters.getCreatedBy() != null)
@@ -146,8 +146,8 @@ public class TransferClient extends BaseMashupClient {
     public Response<TransferSearchProductDataList> searchForTransferProducts(
             SalesDocumentsConst.GiveAwayPoints pointOfGiveAway) {
         TransferProductSearchRequest req = new TransferProductSearchRequest();
-        req.setShopId(userSessionData.getUserShopId());
-        req.setDepartmentId(userSessionData.getUserDepartmentId());
+        req.setShopId(getUserSessionData().getUserShopId());
+        req.setDepartmentId(getUserSessionData().getUserDepartmentId());
         req.setPointOfGiveAway(pointOfGiveAway.getApiVal());
         return execute(req, TransferSearchProductDataList.class);
     }
@@ -162,8 +162,8 @@ public class TransferClient extends BaseMashupClient {
         assertThatResponseIsOk(response);
         TransferSalesDocData data = response.asJson();
         assertThat("taskId", data.getTaskId(), not(emptyOrNullString()));
-        assertThat("status", data.getStatus(), is(SalesDocumentsConst.States.NEW.getApiVal()));
-        assertThat("createdBy", data.getCreatedBy(), is(userSessionData.getUserLdap()));
+        assertThat("status", data.getStatus(), is(SalesDocumentsConst.States.TRANSFER_NEW.getApiVal()));
+        assertThat("createdBy", data.getCreatedBy(), is(getUserSessionData().getUserLdap()));
         assertThat("createdDate", data.getCreatedDate(),
                 approximatelyEqual(ZonedDateTime.now()));
         assertThat("pointOfGiveAway", data.getPointOfGiveAway(),
@@ -181,7 +181,7 @@ public class TransferClient extends BaseMashupClient {
             assertThat("Product lmCode", actualProductData.getLmCode(),
                     is(postSalesDocData.getProducts().get(i).getLmCode()));
             assertThat("Product status", actualProductData.getStatus(),
-                    is(SalesDocumentsConst.States.NEW.getApiVal()));
+                    is(SalesDocumentsConst.States.TRANSFER_NEW.getApiVal()));
             assertThat("Product orderedQuantity", actualProductData.getOrderedQuantity(),
                     is(postSalesDocData.getProducts().get(i).getOrderedQuantity()));
             // TODO Need to check assignedQuantity? and how?
@@ -197,7 +197,7 @@ public class TransferClient extends BaseMashupClient {
         assertThatResponseIsOk(response);
         TransferSalesDocData data = response.asJson();
         assertThat("taskId", data.getTaskId(), not(emptyOrNullString()));
-        assertThat("status", data.getStatus(), is(SalesDocumentsConst.States.NEW.getApiVal()));
+        assertThat("status", data.getStatus(), is(SalesDocumentsConst.States.TRANSFER_NEW.getApiVal()));
 
         assertThat("products size", data.getProducts(), hasSize(putSalesDocData.getProducts().size()));
 
@@ -209,7 +209,7 @@ public class TransferClient extends BaseMashupClient {
             assertThat("Product lmCode", actualProductData.getLmCode(),
                     is(putSalesDocData.getProducts().get(i).getLmCode()));
             assertThat("Product status", actualProductData.getStatus(),
-                    is(SalesDocumentsConst.States.NEW.getApiVal()));
+                    is(SalesDocumentsConst.States.TRANSFER_NEW.getApiVal()));
             assertThat("Product orderedQuantity", actualProductData.getOrderedQuantity(),
                     is(putSalesDocData.getProducts().get(i).getOrderedQuantity()));
             // TODO Need to check assignedQuantity? and how?
@@ -257,7 +257,7 @@ public class TransferClient extends BaseMashupClient {
             assertThat("lmCode of Product #" + i, actualProductOrderDataList.get(i).getLmCode(),
                     equalTo(expectedProductOrderDataList.get(i).getLmCode()));
             String expectedProductStatus = expectedProductOrderDataList.get(i).getStatus() == null ?
-                    SalesDocumentsConst.States.NEW.getApiVal() : expectedProductOrderDataList.get(i).getStatus();
+                    SalesDocumentsConst.States.TRANSFER_NEW.getApiVal() : expectedProductOrderDataList.get(i).getStatus();
             assertThat("status of Product #" + i, actualProductOrderDataList.get(i).getStatus(),
                     equalTo(expectedProductStatus));
             assertThat("orderedQuantity of Product #" + i, actualProductOrderDataList.get(i).getOrderedQuantity(),

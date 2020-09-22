@@ -1,26 +1,22 @@
 package com.leroy.magportal.api.tests;
 
+import static com.leroy.core.matchers.Matchers.successful;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.UserSessionData;
 import com.leroy.core.api.Module;
 import com.leroy.core.configuration.BaseTest;
-import com.leroy.magportal.api.ApiClientProvider;
 import com.leroy.umbrella_extension.authorization.AuthClient;
 import org.testng.annotations.Guice;
 import ru.leroymerlin.qa.core.clients.base.Response;
-
-import static com.leroy.core.matchers.Matchers.successful;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 @Guice(modules = {Module.class})
 public abstract class BaseMagPortalApiTest extends BaseTest {
 
     @Inject
     private AuthClient authClient;
-
-    @Inject
-    protected ApiClientProvider apiClientProvider;
 
     @Override
     protected UserSessionData initTestClassUserSessionDataTemplate() {
@@ -40,7 +36,7 @@ public abstract class BaseMagPortalApiTest extends BaseTest {
     }
 
     protected boolean isNeedAccessToken() {
-        return false;
+        return true;
     }
 
     protected void isResponseOk(Response<?> response) {

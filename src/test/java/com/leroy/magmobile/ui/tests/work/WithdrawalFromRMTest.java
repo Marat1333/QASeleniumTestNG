@@ -1,5 +1,6 @@
 package com.leroy.magmobile.ui.tests.work;
 
+import com.leroy.core.annotations.Smoke;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.models.work.WithdrawalProductCardData;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
@@ -14,6 +15,7 @@ import java.util.Random;
 
 public class WithdrawalFromRMTest extends AppBaseSteps {
 
+    @Smoke
     @Test(description = "C3132493 Создание заявки на Отзыв RM из раздела Работа", groups = OLD_SHOP_GROUP)
     public void testC3132493() throws Exception {
         // Pre-condition
@@ -27,8 +29,8 @@ public class WithdrawalFromRMTest extends AppBaseSteps {
 
         // Step #2
         step("Нажать на иконку + рядом с Отзыв с RM");
-        StockProductsPage stockProductsPage = workPage.clickWithdrawalFromRMPlusIcon()
-                .shouldAnyProductAvailableOnPage();
+        StockProductsPage stockProductsPage = workPage.clickWithdrawalFromRMPlusIcon();
+        stockProductsPage.shouldAnyProductAvailableOnPage();
 
         // Step #3
         step("Выбрать первый товар, который поштучно хранится на складе");

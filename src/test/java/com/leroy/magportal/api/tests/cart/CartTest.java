@@ -1,6 +1,10 @@
 package com.leroy.magportal.api.tests.cart;
 
+import static com.leroy.constants.sales.DiscountConst.TYPE_NEW_PRICE;
+
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.inject.Inject;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.DiscountConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.clients.CartClient;
@@ -9,8 +13,12 @@ import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountReasonData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
+import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
 import io.qameta.allure.Step;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -18,18 +26,17 @@ import org.testng.annotations.Test;
 import org.testng.internal.TestResult;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import static com.leroy.constants.sales.DiscountConst.TYPE_NEW_PRICE;
-
 public class CartTest extends BaseMagPortalApiTest {
-
-    private CartClient cartClient;
 
     private CartData cartData;
     private List<ProductItemData> products;
+
+    @Inject
+    private CartClient cartClient;
+    @Inject
+    private PAOHelper paoHelper;
+    @Inject
+    SearchProductHelper searchProductHelper;
 
     @Override
     protected boolean isNeedAccessToken() {
@@ -38,14 +45,14 @@ public class CartTest extends BaseMagPortalApiTest {
 
     @BeforeClass
     private void setUp() {
-        cartClient = apiClientProvider.getCartClient();
-        products = apiClientProvider.getProducts(3);
+        products = searchProductHelper.getProducts(3);
     }
 
     @AfterMethod
     private void cartAfterMethod(ITestResult result) {
-        if (result.getStatus() != TestResult.SUCCESS)
+        if (result.getStatus() != TestResult.SUCCESS) {
             cartData = null;
+        }
     }
 
     private List<CartProductOrderData> getTestProductData(int productCount) {
@@ -89,8 +96,9 @@ public class CartTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23194966 Cart - Add Discount")
     public void testCartDiscount() {
-        if (cartData == null)
+        if (cartData == null) {
             initPreConditionCartData(1);
+        }
         CartProductOrderData putCartProductOrderData = cartData.getProducts().get(0);
 
         // Step 1
@@ -98,10 +106,12 @@ public class CartTest extends BaseMagPortalApiTest {
         CartDiscountData discountData = new CartDiscountData();
         discountData.setType(TYPE_NEW_PRICE);
         discountData.setTypeValue(putCartProductOrderData.getPrice() - 1);
-        discountData.setReason(new CartDiscountReasonData(DiscountConst.Reasons.PRODUCT_SAMPLE.getId()));
+        discountData.setReason(
+                new CartDiscountReasonData(DiscountConst.Reasons.PRODUCT_SAMPLE.getId()));
         putCartProductOrderData.setDiscount(discountData);
-        Response<CartData> resp = cartClient.addDiscount(cartData.getCartId(), cartData.getDocumentVersion(),
-                putCartProductOrderData);
+        Response<CartData> resp = cartClient
+                .addDiscount(cartData.getCartId(), cartData.getDocumentVersion(),
+                        putCartProductOrderData);
         cartClient.assertThatDiscountAdded(resp, cartData);
         cartData.increaseDocumentVersion();
         discountData.setActor(getUserSessionData().getUserLdap());
@@ -114,8 +124,9 @@ public class CartTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23411546 Update Cart - Add product")
     public void testUpdateCartAddProduct() {
-        if (cartData == null)
+        if (cartData == null) {
             initPreConditionCartData(1);
+        }
 
         // Step 1
         step("PUT Cart - Обновляем корзину");
@@ -125,7 +136,8 @@ public class CartTest extends BaseMagPortalApiTest {
                 cartData.getCartId(), cartData.getDocumentVersion(), newProductData);
         cartData.increaseDocumentVersion();
         cartData.addProduct(newProductData);
-        cartData = cartClient.assertThatResponseMatches(resp, CartClient.RequestType.UPDATE, cartData);
+        cartData = cartClient
+                .assertThatResponseMatches(resp, CartClient.RequestType.UPDATE, cartData);
 
         // Step 2
         step("GET Cart");
@@ -135,8 +147,9 @@ public class CartTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23411548 Update Cart - Add Customer")
     public void testUpdateCartAddCustomer() {
-        if (cartData == null)
+        if (cartData == null) {
             initPreConditionCartData(1);
+        }
 
         // Step 1
         step("PUT Cart - Обновляем корзину");
@@ -155,8 +168,9 @@ public class CartTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23411547 Remove 1 product from 2 from the Cart")
     public void testCartItems() {
-        if (cartData == null)
+        if (cartData == null) {
             initPreConditionCartData(2);
+        }
         int removeProductIndex = 1;
         String removeLineId = cartData.getProducts().get(removeProductIndex).getLineId();
 
@@ -176,8 +190,9 @@ public class CartTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23411549 Change status to DELETED")
     public void testDeleteCart() {
-        if (cartData == null)
+        if (cartData == null) {
             initPreConditionCartData(1);
+        }
 
         // Step 1
         step("Изменяем статус на DELETED");

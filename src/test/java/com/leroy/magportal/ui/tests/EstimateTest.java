@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.api.data.customer.CustomerData;
+import com.leroy.common_mashups.data.customer.CustomerData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateProductOrderData;
 import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.magportal.ui.constants.TestDataConstants;
@@ -369,7 +369,7 @@ public class EstimateTest extends BasePAOTest {
 
     @Test(description = "C3302190 Search client by email")
     public void testSearchClientByEmailInEstimate() throws Exception {
-        SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+        SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_2;
 
         EstimatePage estimatePage;
         if (isStartFromScratch())
@@ -676,7 +676,7 @@ public class EstimateTest extends BasePAOTest {
         step("Нажмите на кнопку профиля пользователя в правом верхнем углу и выберите другой магазин");
         List<String> docNumberList = estimatePage.getDocumentDataList()
                 .stream().map(ShortSalesDocWebData::getNumber).collect(Collectors.toList());
-        new MenuPage().selectShopInUserProfile("35");
+        new MenuPage().selectShopInUserProfile("32");
         estimatePage = new EstimatePage();
         estimatePage.shouldDocumentListHaveNumberContains(partEstimateId)
                 .shouldDocumentListNumbersNotEqual(docNumberList);

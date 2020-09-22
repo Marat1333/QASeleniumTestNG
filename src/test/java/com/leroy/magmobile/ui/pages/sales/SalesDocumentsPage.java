@@ -59,7 +59,7 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
     @Step("Найти и выбрать документ, содержащий текст: {containsText}")
     public void searchForDocumentByTextAndSelectIt(String containsText, boolean updateDocumentListBefore) {
         CardWidget<ShortSalesDocumentData> cardWidget =
-                salesDocumentScrollList.searchForWidgetByText(containsText, updateDocumentListBefore);
+                salesDocumentScrollList.searchForWidgetByText(updateDocumentListBefore, containsText);
         anAssert.isNotNull(cardWidget, "Не нашли нужный документ",
                 String.format("Документ содержащий текст %s должен быть найден",
                         containsText));
@@ -80,7 +80,7 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
                 waitUntilProgressBarAppearsAndDisappear();
             }
             CardWidget<ShortSalesDocumentData> cardWidget =
-                    salesDocumentScrollList.searchForWidgetByText(docNumber, true);
+                    salesDocumentScrollList.searchForWidgetByText(true, docNumber);
             anAssert.isNotNull(cardWidget, "Не нашли документ " + docNumber,
                     String.format("Документ №%s должен быть найден",
                             docNumber));
@@ -116,7 +116,7 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
     public SalesDocumentsPage shouldSalesDocumentIsPresentAndDataMatches(
             ShortSalesDocumentData expectedDocument, boolean updateScreen) {
         CardWidget<ShortSalesDocumentData> widget = salesDocumentScrollList.searchForWidgetByText(
-                expectedDocument.getNumber(), updateScreen);
+                updateScreen, expectedDocument.getNumber());
         anAssert.isNotNull(widget,
                 "Документ " + expectedDocument.getNumber() + " не найден",
                 "Документ " + expectedDocument.getNumber() + " должен присутствовать на странице");
@@ -160,7 +160,7 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что среди последних 5 документов, документа с номером {expDocNumber} на странице нет")
-    public SalesDocumentsPage shouldSalesDocumentIsNotPresent(String expDocNumber) {
+    public SalesDocumentsPage shouldSalesDocumentIsNotPresent(String expDocNumber) throws Exception {
         List<ShortSalesDocumentData> shortSalesDocumentDataList = salesDocumentScrollList
                 .getFullDataList(5, true);
         anAssert.isTrue(shortSalesDocumentDataList.size() > 0,

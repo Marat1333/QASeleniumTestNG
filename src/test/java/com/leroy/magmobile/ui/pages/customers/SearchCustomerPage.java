@@ -1,6 +1,7 @@
 package com.leroy.magmobile.ui.pages.customers;
 
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.configuration.Log;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
@@ -74,7 +75,7 @@ public class SearchCustomerPage extends CommonMagMobilePage {
     // Grab data from page
 
     @Step("Получаем данные о {index}-ом клиенте")
-    public MagCustomerData getCustomerDataFromSearchListByIndex(int index) {
+    public MagCustomerData getCustomerDataFromSearchListByIndex(int index) throws Exception {
         List<MagCustomerData> customerDataList = mainScrollView.getFullDataList(index);
         MagCustomerData customerData = customerDataList.get(customerDataList.size() - 1);
         anAssert.isFalse(customerData.getName().isEmpty(), "Клиент не содержит имени");
@@ -142,8 +143,15 @@ public class SearchCustomerPage extends CommonMagMobilePage {
         if (value.startsWith("+7"))
             value = value.substring(2);
         enterTextInSearchField(value);
-        if (selectFirst)
+        if (selectFirst) {
             mainScrollView.clickElemByIndex(0);
+            try {
+                searchFld.waitForInvisibility(short_timeout);
+            } catch (Exception err) {
+                Log.error(err.getMessage());
+                mainScrollView.clickElemByIndex(0);
+            }
+        }
     }
 
     public void searchCustomerByPhone(String value) throws Exception {
@@ -204,7 +212,7 @@ public class SearchCustomerPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что первый отобразившийся клиент имеет данные, которые мы ожидаем")
-    public SearchCustomerPage shouldFirstCustomerIs(MagCustomerData customerData) {
+    public SearchCustomerPage shouldFirstCustomerIs(MagCustomerData customerData) throws Exception {
         MagCustomerData expectedData = customerData.clone();
         expectedData.setEmail(null);
         mainScrollView.getDataObj(0).assertEqualsNotNullExpectedFields(expectedData);

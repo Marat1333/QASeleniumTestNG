@@ -1,5 +1,6 @@
 package com.leroy.magmobile.ui.tests.sales;
 
+import com.leroy.core.annotations.Smoke;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magmobile.ui.models.sales.OrderAppData;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
@@ -30,9 +31,10 @@ public class CartTest extends SalesBaseTest {
 
     @BeforeGroups(groups = NEED_PRODUCTS_GROUP)
     private void findProducts() {
-        productLmCodes = apiClientProvider.getProductLmCodes(2, false, false);
+        productLmCodes = searchProductHelper.getProductLmCodes(2, false, false);
     }
 
+    @Smoke
     @Test(description = "C22797089 Создать корзину с экрана Документы продажи", groups = NEED_PRODUCTS_GROUP)
     public void testCreateBasketFromSalesDocumentsScreen() throws Exception {
         // Test data
@@ -277,13 +279,11 @@ public class CartTest extends SalesBaseTest {
         cart35Page.shouldSalesDocumentDataIs(salesDocumentData);
     }
 
-    @Test(description = "C22797096 Добавить товар AVS или Топ ЕМ (количество товара меньше необходимого)",
+    @Test(description = "C22797096 Добавить товар AVS (количество товара меньше необходимого)",
             groups = NEED_ACCESS_TOKEN_GROUP)
-    public void testAddAvsOrTopEmProductIntoBasketLessThanAvailable() throws Exception {
+    public void testAddAvsProductIntoBasketLessThanAvailable() throws Exception {
         // Test data
-        boolean oddDay = LocalDate.now().getDayOfMonth() % 2 == 1;
-        String lmCode = oddDay ? getAnyLmCodeProductWithTopEM(false) :
-                getAnyLmCodeProductWithAvs(false);
+        String lmCode = getAnyLmCodeProductWithAvs(false);
 
         startFromScreenWithCreatedCart();
 
@@ -296,7 +296,7 @@ public class CartTest extends SalesBaseTest {
                 .verifyRequiredElements();
 
         // Step 2
-        step("Введите ЛМ код " + (oddDay ? "TOP EM" : "AVS") + " товара c количеством товара меньше необходимого)");
+        step("Введите ЛМ код AVS товара c количеством товара меньше необходимого)");
         searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
         AddProduct35Page<Cart35Page> addProduct35Page = new AddProduct35Page<>(Cart35Page.class)
                 .verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_BASKET);
@@ -306,10 +306,7 @@ public class CartTest extends SalesBaseTest {
 
         // Step 3
         step("Нажмите на Добавить в корзину");
-        if (oddDay)
-            expectedProductCardData.setTopEm(true);
-        else
-            expectedProductCardData.setAvs(true);
+        expectedProductCardData.setAvs(true);
         salesDocumentData.getOrderAppDataList().get(0).addFirstProduct(expectedProductCardData);
         cart35Page = addProduct35Page.clickAddIntoBasketButton()
                 .shouldCartCanNotBeConfirmed()

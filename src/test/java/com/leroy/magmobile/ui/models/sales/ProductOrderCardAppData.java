@@ -28,6 +28,12 @@ public class ProductOrderCardAppData {
     private Boolean topEm;
     private Boolean hasAvailableQuantity;
 
+    // Stock
+    private Integer totalStock;
+    private Integer pieceQuantityInStock;
+    private Integer monoPalletQuantityInStock;
+    private Integer mixPalletQuantityInStock;
+
     public void setDiscountPercent(Double discountPercent) {
         setDiscountPercent(discountPercent, false);
     }
@@ -85,6 +91,22 @@ public class ProductOrderCardAppData {
             softAssert.isEquals(discountPercent, expectedProductCardData.getDiscountPercent(),
                     "Товар " + (index + 1) + " - неверная скидка % товара");
         }
+        if (expectedProductCardData.getTotalStock() != null) {
+            softAssert.isEquals(totalStock, expectedProductCardData.getTotalStock(),
+                    "Товар " + (index + 1) + " - неверный запас на складе");
+        }
+        if (expectedProductCardData.getPieceQuantityInStock() != null) {
+            softAssert.isEquals(pieceQuantityInStock, expectedProductCardData.getPieceQuantityInStock(),
+                    "Товар " + (index + 1) + " - неверный штучный запас на складе");
+        }
+        if (expectedProductCardData.getMonoPalletQuantityInStock() != null) {
+            softAssert.isEquals(monoPalletQuantityInStock, expectedProductCardData.getMonoPalletQuantityInStock(),
+                    "Товар " + (index + 1) + " - неверный моно-паллет запас на складе");
+        }
+        if (expectedProductCardData.getMixPalletQuantityInStock() != null) {
+            softAssert.isEquals(mixPalletQuantityInStock, expectedProductCardData.getMixPalletQuantityInStock(),
+                    "Товар " + (index + 1) + " - неверный микс-паллет запас на складе");
+        }
         softAssert.verifyAll();
     }
 
@@ -107,6 +129,10 @@ public class ProductOrderCardAppData {
         productData.setAvs(avs);
         productData.setTopEm(topEm);
         productData.setHasAvailableQuantity(hasAvailableQuantity);
+        productData.setTotalStock(totalStock);
+        productData.setPieceQuantityInStock(pieceQuantityInStock);
+        productData.setMonoPalletQuantityInStock(monoPalletQuantityInStock);
+        productData.setMixPalletQuantityInStock(mixPalletQuantityInStock);
         return productData;
     }
 

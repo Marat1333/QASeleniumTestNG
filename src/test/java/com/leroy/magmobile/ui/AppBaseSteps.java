@@ -85,7 +85,11 @@ public class AppBaseSteps extends MagMobileBaseTest {
                         //Log.error("CONSOLE ERRORS:" + consoleErrors);
                         loginWebPage.reloadPage();
                         androidDriver.context("NATIVE_APP");
-                        redirectBtn.click();
+                        try {
+                            redirectBtn.click();
+                        } catch (Exception err2) {
+                            Log.error(err2.getMessage());
+                        }
                     }
                 } else {
                     if (new Element(driver, By.xpath("//*[@resource-id='Username']")).isVisible(1)) {
@@ -97,7 +101,15 @@ public class AppBaseSteps extends MagMobileBaseTest {
                 }
             }
 
-            MainProductAndServicesPage mainProductAndServicesPage = new MainProductAndServicesPage();
+            MainProductAndServicesPage mainProductAndServicesPage;
+            try {
+                mainProductAndServicesPage = new MainProductAndServicesPage();
+            } catch (Exception err) {
+                Log.error(err.getMessage());
+                Log.debug("Пробуем повторно нажать кнопку 'Войти'");
+                new LoginAppPage().clickLoginButton();
+                mainProductAndServicesPage = new MainProductAndServicesPage();
+            }
             UserProfilePage userProfilePage = null;
             if (selectShopAndDepartment) {
                 userProfilePage = setShopAndDepartmentForUser(mainProductAndServicesPage,
@@ -184,7 +196,13 @@ public class AppBaseSteps extends MagMobileBaseTest {
      * Тест начинается со страницы авторизации, т.е. с нуля?
      */
     protected boolean isStartFromScratch() {
-        String ps = getDriver().getPageSource();
+        String ps;
+        try {
+            ps = getDriver().getPageSource();
+        } catch (WebDriverException err) {
+            Log.debug(err.getMessage());
+            ps = getDriver().getPageSource();
+        }
         Element authScreen = new Element(getDriver(), By.xpath("//*[@content-desc='AuthScreen__btn_getVersionNumber']"));
         Element anyViewGroup = new Element(getDriver(), By.xpath("//android.view.ViewGroup"));
         return authScreen.isVisible(ps) || !anyViewGroup.isVisible(ps);

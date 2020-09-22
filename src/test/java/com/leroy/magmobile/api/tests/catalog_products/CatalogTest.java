@@ -1,6 +1,8 @@
 package com.leroy.magmobile.api.tests.catalog_products;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.inject.Inject;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.UserSessionData;
 import com.leroy.magmobile.api.clients.CatalogProductClient;
@@ -25,6 +27,9 @@ import static org.hamcrest.Matchers.*;
 
 public class CatalogTest extends BaseProjectApiTest {
 
+    @Inject
+    SearchProductHelper searchProductHelper;
+
     private String lmCode;
     private String lmProductWithReviews = "10073940";
     private String lmProductWithSalesHistory = "10073940";
@@ -38,7 +43,7 @@ public class CatalogTest extends BaseProjectApiTest {
 
     @BeforeClass
     private void setUp() {
-        lmCode = apiClientProvider.getProductLmCodes(1).get(0);
+        lmCode = searchProductHelper.getProductLmCodes(1).get(0);
     }
 
     private CatalogProductClient client() {

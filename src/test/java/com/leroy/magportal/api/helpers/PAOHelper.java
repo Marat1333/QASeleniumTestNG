@@ -1,31 +1,36 @@
 package com.leroy.magportal.api.helpers;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.inject.Inject;
+import com.leroy.common_mashups.clients.CustomerClient;
+import com.leroy.common_mashups.data.customer.CustomerData;
+import com.leroy.common_mashups.data.customer.CustomerListData;
+import com.leroy.common_mashups.data.customer.CustomerSearchFilters;
+import com.leroy.common_mashups.data.customer.PhoneData;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.api.StatusCodes;
 import com.leroy.constants.customer.CustomerConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.ContextProvider;
+import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.CartClient;
-import com.leroy.magmobile.api.clients.CustomerClient;
 import com.leroy.magmobile.api.clients.EstimateClient;
+import com.leroy.magmobile.api.clients.SalesDocSearchClient;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
-import com.leroy.magmobile.api.data.customer.CustomerData;
-import com.leroy.magmobile.api.data.customer.CustomerListData;
-import com.leroy.magmobile.api.data.customer.CustomerSearchFilters;
-import com.leroy.magmobile.api.data.customer.PhoneData;
+import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
+import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateCustomerData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateProductOrderData;
 import com.leroy.magmobile.api.data.sales.orders.*;
-import com.leroy.magportal.api.clients.CatalogSearchClient;
 import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.ui.constants.TestDataConstants;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
 import com.leroy.utils.ParserUtil;
+import com.leroy.utils.RandomUtil;
 import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -42,38 +47,39 @@ import static org.hamcrest.Matchers.hasSize;
 
 public class PAOHelper extends BaseHelper {
 
-    // Поиск товаров (Вынести в отдельный Helper или нет?)
+    @Inject
+    SearchProductHelper searchProductHelper;
+    @Inject
+    CustomerClient customerClient;
+    @Inject
+    CartClient cartClient;
+    @Inject
+    EstimateClient estimateClient;
+    @Inject
+    OrderClient orderClient;
+    @Inject
+    SalesDocSearchClient salesDocSearchClient;
 
-    public List<ProductItemData> getProducts(int necessaryCount, CatalogSearchFilter filtersData) {
-        CatalogSearchClient catalogSearchClient = getCatalogSearchClient();
-        String[] badLmCodes = {"10008698", "10008751"}; // Из-за отсутствия синхронизации бэков на тесте, мы можем получить некорректные данные
-        Response<ProductItemDataList> resp = catalogSearchClient.searchProductsBy(filtersData);
-        assertThat("Catalog search request:", resp, successful());
-        List<ProductItemData> items = resp.asJson().getItems();
-        List<ProductItemData> resultList = new ArrayList<>();
-        int i = 0;
-        for (ProductItemData item : items) {
-            if (!Arrays.asList(badLmCodes).contains(item.getLmCode()))
-                if (filtersData.getAvs() == null || !filtersData.getAvs() && item.getAvsDate() == null ||
-                        filtersData.getAvs() && item.getAvsDate() != null) {
-                    if (filtersData.getHasAvailableStock() == null ||
-                            (filtersData.getHasAvailableStock() && item.getAvailableStock() > 0 ||
-                                    !filtersData.getHasAvailableStock() && item.getAvailableStock() <= 0)) {
-                        resultList.add(item);
-                        i++;
-                    }
-                }
-            if (necessaryCount == i)
-                break;
+    @Step("Создает Список CartProductOrderData для СОЗДАНИЯ коозины")
+    public List<CartProductOrderData> makeCartProducts(int necessaryCount) {
+        List<CartProductOrderData> cartsProducts = new ArrayList<>();
+        for (ProductItemData productData : searchProductHelper.getProducts(necessaryCount)) {
+            CartProductOrderData productCard = new CartProductOrderData(productData);
+            cartsProducts.add(convertItemToCartProduct(productCard.getLmCode()));
         }
-        assertThat("Catalog search request:", resultList, hasSize(greaterThan(0)));
-        return resultList;
+        return cartsProducts;
     }
 
-    public List<ProductItemData> getProducts(int necessaryCount) {
-        CatalogSearchFilter filter = new CatalogSearchFilter();
-        filter.setHasAvailableStock(true);
-        return getProducts(necessaryCount, filter);
+    @Step("Создает CartProductOrderData для СОЗДАНИЯ корзины из ЛМкода")
+    public CartProductOrderData makeCartProductByLmCode(String lmCode) {
+        return convertItemToCartProduct(lmCode);
+    }
+
+    private CartProductOrderData convertItemToCartProduct(String lmCode) {
+        CartProductOrderData productCard = new CartProductOrderData();
+        productCard.setQuantity(10.0);
+        productCard.setLmCode(lmCode);
+        return productCard;
     }
 
     @Step("API: Ищем подходящие товары для создания корзины с несколькими заказами")
@@ -82,10 +88,11 @@ public class PAOHelper extends BaseHelper {
         filtersData.setAvs(false);
         filtersData.setTopEM(false);
         filtersData.setHasAvailableStock(true);
-        List<ProductItemData> productItemDataList = getProducts(2, filtersData);
+        List<ProductItemData> productItemDataList = searchProductHelper.getProducts(2, filtersData);
         CartProductOrderData productWithNegativeBalance = new CartProductOrderData(
                 productItemDataList.get(0));
-        productWithNegativeBalance.setQuantity(productItemDataList.get(0).getAvailableStock() + 10.0);
+        productWithNegativeBalance
+                .setQuantity(productItemDataList.get(0).getAvailableStock() + 10.0);
         CartProductOrderData productWithPositiveBalance = new CartProductOrderData(
                 productItemDataList.get(1));
         productWithPositiveBalance.setQuantity(1.0);
@@ -97,13 +104,14 @@ public class PAOHelper extends BaseHelper {
 
     @Step("API: Ищем клиента")
     public CustomerData searchForCustomer(SimpleCustomerData simpleCustomerData) {
-        CustomerClient customerClient = getCustomerClient();
         if (simpleCustomerData.getPhoneNumber() != null) {
             CustomerSearchFilters customerSearchFilters = new CustomerSearchFilters();
             customerSearchFilters.setCustomerType(CustomerSearchFilters.CustomerType.NATURAL);
-            customerSearchFilters.setDiscriminantType(CustomerSearchFilters.DiscriminantType.PHONENUMBER);
+            customerSearchFilters
+                    .setDiscriminantType(CustomerSearchFilters.DiscriminantType.PHONENUMBER);
             customerSearchFilters.setDiscriminantValue(simpleCustomerData.getPhoneNumber());
-            Response<CustomerListData> resp = customerClient.searchForCustomers(customerSearchFilters);
+            Response<CustomerListData> resp = customerClient
+                    .searchForCustomers(customerSearchFilters);
             assertThat(resp, successful());
             CustomerListData data = resp.asJson();
             assertThat("Не был найден клиент: " + simpleCustomerData.toString(),
@@ -117,7 +125,6 @@ public class PAOHelper extends BaseHelper {
 
     @Step("API: Создаем корзину")
     public CartData createCart(List<CartProductOrderData> products) {
-        CartClient cartClient = getCartClient();
         Response<CartData> cartDataResponse = cartClient.sendRequestCreate(products);
         assertThat(cartDataResponse, successful());
         return cartDataResponse.asJson();
@@ -130,7 +137,7 @@ public class PAOHelper extends BaseHelper {
     @Step("API: Создать подвтержденный заказ")
     public OrderData createConfirmedOrder(
             List<CartProductOrderData> products,
-            boolean isWaitForAllowedForPicking) throws Exception {
+            boolean isWaitForAllowedForPicking) {
         // Создание корзины
         CartData cartData = createCart(products);
 
@@ -152,7 +159,6 @@ public class PAOHelper extends BaseHelper {
 
         reqOrderData.setProducts(orderProducts);
 
-        OrderClient orderClient = getOrderClient();
         Response<OrderData> orderResp = orderClient.createOrder(reqOrderData);
         OrderData orderData = orderClient.assertThatIsCreatedAndGetData(orderResp);
 
@@ -182,7 +188,8 @@ public class PAOHelper extends BaseHelper {
         OrderData confirmOrderData = new OrderData();
         confirmOrderData.setPriority(SalesDocumentsConst.Priorities.HIGH.getApiVal());
         confirmOrderData.setPinCode(orderData.getPinCode());
-        confirmOrderData.setShopId(ContextProvider.getContext().getUserSessionData().getUserShopId());
+        confirmOrderData
+                .setShopId(ContextProvider.getContext().getUserSessionData().getUserShopId());
         confirmOrderData.setSolutionVersion(orderData.getSolutionVersion());
         confirmOrderData.setPaymentVersion(orderData.getPaymentVersion());
         confirmOrderData.setFulfillmentVersion(orderData.getFulfillmentVersion());
@@ -194,18 +201,21 @@ public class PAOHelper extends BaseHelper {
         GiveAwayData giveAwayData = new GiveAwayData();
         giveAwayData.setDate(LocalDateTime.now().plusDays(1));
         giveAwayData.setPoint(SalesDocumentsConst.GiveAwayPoints.PICKUP.getApiVal());
-        giveAwayData.setShopId(Integer.valueOf(ContextProvider.getContext().getUserSessionData().getUserShopId()));
+        giveAwayData.setShopId(
+                Integer.valueOf(ContextProvider.getContext().getUserSessionData().getUserShopId()));
         confirmOrderData.setGiveAway(giveAwayData);
-        Response<OrderData> resp = orderClient.confirmOrder(orderData.getOrderId(), confirmOrderData);
+        Response<OrderData> resp = orderClient
+                .confirmOrder(orderData.getOrderId(), confirmOrderData);
         orderClient.assertThatIsConfirmed(resp, orderData);
         if (isWaitForAllowedForPicking) {
-            orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderData.getOrderId(),
-                    SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal());
+            orderClient.waitUntilOrderGetStatus(orderData.getOrderId(),
+                    SalesDocumentsConst.States.ALLOWED_FOR_PICKING, null);
         }
         return orderData;
     }
 
-    public OrderData createConfirmedOrder(CartProductOrderData product, boolean isWaitForAllowedForPicking) throws Exception {
+    public OrderData createConfirmedOrder(CartProductOrderData product,
+                                          boolean isWaitForAllowedForPicking) throws Exception {
         return createConfirmedOrder(Collections.singletonList(product), isWaitForAllowedForPicking);
     }
 
@@ -220,22 +230,23 @@ public class PAOHelper extends BaseHelper {
         estimateCustomerData.setEmail(customerData.getMainEmailFromCommunication());
         estimateCustomerData.setType("PERSON");
         estimateCustomerData.setRoles(Collections.singletonList("PAYER"));
-        Response<EstimateData> estimateDataResponse = getEstimateClient().sendRequestCreate(
+        Response<EstimateData> estimateDataResponse = estimateClient.sendRequestCreate(
                 Collections.singletonList(estimateCustomerData), products);
         assertThat(estimateDataResponse, successful());
         return estimateDataResponse.asJson().getEstimateId();
     }
 
     @Step("API: Создаем подтвержденную Смету через")
-    public String createConfirmedEstimateAndGetId(List<EstimateProductOrderData> products, CustomerData customerData) {
-        EstimateClient client = getEstimateClient();
+    public String createConfirmedEstimateAndGetId(List<EstimateProductOrderData> products,
+                                                  CustomerData customerData) {
         String estimateId = createDraftEstimateAndGetId(products, customerData);
-        Response<JsonNode> resp = client.confirm(estimateId);
-        client.assertThatResponseChangeStatusIsOk(resp);
+        Response<JsonNode> resp = estimateClient.confirm(estimateId);
+        estimateClient.assertThatResponseChangeStatusIsOk(resp);
         return estimateId;
     }
 
-    public String createConfirmedEstimateAndGetId(EstimateProductOrderData product, CustomerData customerData) {
+    public String createConfirmedEstimateAndGetId(EstimateProductOrderData product,
+                                                  CustomerData customerData) {
         return createConfirmedEstimateAndGetId(Collections.singletonList(product), customerData);
     }
 
@@ -255,5 +266,24 @@ public class PAOHelper extends BaseHelper {
     }
 
      */
+
+    public String getValidPinCode() {
+        int tryCount = 10;
+        for (int i = 0; i < tryCount; i++) {
+            String generatedPinCode = RandomUtil.randomPinCode(true);
+            SalesDocumentListResponse salesDocumentsResponse = salesDocSearchClient
+                    .getSalesDocumentsByPinCodeOrDocId(generatedPinCode)
+                    .asJson();
+            if (salesDocumentsResponse.getTotalCount() == 0) {
+                Log.info("API: None documents found with PIN: " + generatedPinCode);
+                return generatedPinCode;
+            }
+            List<SalesDocumentResponseData> salesDocs = salesDocumentsResponse.getSalesDocuments();
+            if (!generatedPinCode.equals(salesDocs.get(0).getPinCode())) {
+                return generatedPinCode;
+            }
+        }
+        throw new RuntimeException("Couldn't find valid pin code for " + tryCount + " trying");
+    }
 
 }

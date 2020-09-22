@@ -2,6 +2,7 @@ package com.leroy.magmobile.api.tests.address;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.core.UserSessionData;
 import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.clients.LsAddressClient;
@@ -28,6 +29,9 @@ public class LsAddressTest extends BaseProjectApiTest {
 
     @Inject
     private LsAddressBackClient lsAddressBackClient;
+
+    @Inject
+    SearchProductHelper searchProductHelper;
 
     private AlleyData alleyData;
 
@@ -184,7 +188,7 @@ public class LsAddressTest extends BaseProjectApiTest {
         // Test data
         CellData cellData = cellDataList.getItems().get(0);
         String cellId = cellData.getId();
-        String lmCode = apiClientProvider.getProducts(1).get(0).getLmCode();
+        String lmCode = searchProductHelper.getProducts(1).get(0).getLmCode();
         int quantity = 2;
 
         ReqCellProductData reqCellProductData = new ReqCellProductData();

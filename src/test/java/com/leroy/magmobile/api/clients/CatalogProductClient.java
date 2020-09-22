@@ -45,7 +45,7 @@ public class CatalogProductClient extends BaseMashupClient {
     public Response<CatalogProductData> getProduct(String lmCode) {
         GetCatalogProduct req = new GetCatalogProduct();
         req.setLmCode(lmCode);
-        req.setShopId(userSessionData.getUserShopId());
+        req.setShopId(getUserSessionData().getUserShopId());
         return execute(req, CatalogProductData.class);
     }
 
@@ -54,7 +54,7 @@ public class CatalogProductClient extends BaseMashupClient {
             String lmCode, SalesDocumentsConst.GiveAwayPoints pointOfGiveAway, Extend extend) {
         GetCatalogProduct req = new GetCatalogProduct();
         req.setLmCode(lmCode);
-        req.setShopId(userSessionData.getUserShopId());
+        req.setShopId(getUserSessionData().getUserShopId());
         req.setPointOfGiveAway(pointOfGiveAway.getApiVal());
         req.setExtend(extend.toString());
         return execute(req, CatalogProductData.class);
@@ -75,7 +75,7 @@ public class CatalogProductClient extends BaseMashupClient {
     public Response<CatalogReviewsOfProductList> getProductReviews(String lmCode, int pageNumber, int pageSize) {
         GetCatalogProductReviews params = new GetCatalogProductReviews()
                 .setLmCode(lmCode)
-                .setShopId(userSessionData.getUserShopId())
+                .setShopId(getUserSessionData().getUserShopId())
                 .setPageNumber(pageNumber)
                 .setPageSize(pageSize);
         return execute(params, CatalogReviewsOfProductList.class);
@@ -91,7 +91,7 @@ public class CatalogProductClient extends BaseMashupClient {
     public Response<CatalogSupplierData> getSupplyInfo(String lmCode) {
         GetCatalogSupplier params = new GetCatalogSupplier()
                 .setLmCode(lmCode)
-                .setShopId(userSessionData.getUserShopId());
+                .setShopId(getUserSessionData().getUserShopId());
         return execute(params, CatalogSupplierData.class);
     }
 
@@ -105,7 +105,7 @@ public class CatalogProductClient extends BaseMashupClient {
 
     @Step("Get Product Sales for lmCode={lmCode}")
     public Response<Object> getProductSales(String lmCode) {
-        return getProductSales(lmCode, userSessionData.getUserShopId());
+        return getProductSales(lmCode, getUserSessionData().getUserShopId());
     }
 
     @Step("Get price and quantity of products by shops for lmCode={lmCode} and shops: {shops}")
@@ -121,7 +121,7 @@ public class CatalogProductClient extends BaseMashupClient {
     public Response<CatalogSimilarProducts> getSimilarProducts(String lmCode, Extend extend) {
         GetCatalogSimilarProductsReq params = new GetCatalogSimilarProductsReq()
                 .setLmCode(lmCode)
-                .setShopId(userSessionData.getUserShopId())
+                .setShopId(getUserSessionData().getUserShopId())
                 .setExtend(extend.toString());
         return execute(params, CatalogSimilarProducts.class);
     }
@@ -144,7 +144,7 @@ public class CatalogProductClient extends BaseMashupClient {
 
     @Step("Get product with at least one complementary product")
     public CatalogComplementaryProducts getNotEmptyComplementaryProductData(List<ProductItemData> productList) {
-        String userShopId = userSessionData.getUserShopId();
+        String userShopId = getUserSessionData().getUserShopId();
         String lmCode;
         for (ProductItemData eachData : productList) {
             lmCode = eachData.getLmCode();
@@ -160,7 +160,7 @@ public class CatalogProductClient extends BaseMashupClient {
 
     @Step("Get product without complementary product")
     public CatalogComplementaryProducts getEmptyComplementaryProductData(List<ProductItemData> productList) {
-        String userShopId = userSessionData.getUserShopId();
+        String userShopId = getUserSessionData().getUserShopId();
         String lmCode;
         for (ProductItemData eachData : productList) {
             lmCode = eachData.getLmCode();
