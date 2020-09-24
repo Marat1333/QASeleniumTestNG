@@ -1,5 +1,6 @@
 package com.leroy.magmobile.ui.tests.sales;
 
+import com.leroy.core.annotations.Smoke;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magmobile.ui.models.sales.OrderAppData;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
@@ -30,9 +31,10 @@ public class CartTest extends SalesBaseTest {
 
     @BeforeGroups(groups = NEED_PRODUCTS_GROUP)
     private void findProducts() {
-        productLmCodes = apiClientProvider.getProductLmCodes(2, false, false);
+        productLmCodes = searchProductHelper.getProductLmCodes(2, false, false);
     }
 
+    @Smoke
     @Test(description = "C22797089 Создать корзину с экрана Документы продажи", groups = NEED_PRODUCTS_GROUP)
     public void testCreateBasketFromSalesDocumentsScreen() throws Exception {
         // Test data

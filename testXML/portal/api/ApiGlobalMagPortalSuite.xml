@@ -4,6 +4,9 @@
 
     <suite-files>
         <suite-file path="areas/CartSuite.xml"/>
+        <suite-file path="areas/DeliveryOnlineOrdersSuite.xml"/>
+        <suite-file path="areas/OfflineOrdersSuite.xml"/>
+        <suite-file path="areas/PickupOnlineOrdersSuite.xml"/>
     </suite-files>
 
 </suite>

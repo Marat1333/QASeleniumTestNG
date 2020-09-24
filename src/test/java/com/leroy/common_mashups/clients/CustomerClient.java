@@ -1,11 +1,11 @@
-package com.leroy.magmobile.api.clients;
+package com.leroy.common_mashups.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.api.StatusCodes;
 import com.leroy.core.api.BaseMashupClient;
-import com.leroy.magmobile.api.data.customer.*;
-import com.leroy.magmobile.api.requests.customer.*;
+import com.leroy.common_mashups.data.customer.*;
+import com.leroy.common_mashups.requests.customer.*;
 import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 

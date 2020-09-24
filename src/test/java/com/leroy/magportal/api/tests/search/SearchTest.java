@@ -1,5 +1,6 @@
 package com.leroy.magportal.api.tests.search;
 
+import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.Units;
 import com.leroy.core.UserSessionData;
@@ -21,12 +22,8 @@ import org.testng.annotations.Test;
 
 public class SearchTest extends BaseMagPortalApiTest {
 
-    CatalogSearchClient client;
-
-    @BeforeClass
-    private void setUp() {
-        client = apiClientProvider.getCatalogSearchClient();
-    }
+    @Inject
+    private CatalogSearchClient client;
 
     private String buildUri(String resource, Map<String, String> queryParamsMap) {
         String result = EnvConstants.URL_MAG_PORTAL_OLD + "/api" + resource + "?";

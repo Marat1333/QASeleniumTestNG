@@ -88,6 +88,17 @@ public class OnlineOrderTypeConst {
             .setDeliveryServiceType(DeliveryServiceTypeEnum.DELIVERY_DOOR.getService())
             .setShopId(ShopTypeEnum.CIZ.getValue());
 
+    public static final OnlineOrderTypeData DELIVERY_CDS = new OnlineOrderTypeData()
+            .setPriceDelivery("2000.45")
+            .setPaymentType(PaymentTypeEnum.SBERBANK.getName())
+            .setDeliveryType(DeliveryServiceTypeEnum.DELIVERY_DOOR.getType())
+            .setRise(1)
+            .setLift(1)
+            .setDeliveryPrice("3000.89")
+            .setLiftPrice("1000.44")
+            .setDeliveryServiceType(DeliveryServiceTypeEnum.DELIVERY_DOOR.getService())
+            .setShopId(ShopTypeEnum.CDS.getValue());
+
     public static final OnlineOrderTypeData DELIVERY_KK = new OnlineOrderTypeData()
             .setPriceDelivery("2000.45")
             .setPaymentType(PaymentTypeEnum.SBERBANK.getName())

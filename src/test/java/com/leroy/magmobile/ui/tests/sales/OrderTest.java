@@ -1,6 +1,7 @@
 package com.leroy.magmobile.ui.tests.sales;
 
 import com.leroy.constants.sales.SalesDocumentsConst;
+import com.leroy.core.annotations.Smoke;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
@@ -62,7 +63,7 @@ public class OrderTest extends SalesBaseTest {
 
     @BeforeGroups(groups = NEED_PRODUCTS_GROUP)
     private void findProducts() {
-        lmCodes = apiClientProvider.getProductLmCodes(3, false, false);
+        lmCodes = searchProductHelper.getProductLmCodes(3, false, false);
     }
 
     @AfterMethod
@@ -148,6 +149,7 @@ public class OrderTest extends SalesBaseTest {
         startFromScreenWithConfirmedOrder(null, null, true);
     }
 
+    @Smoke
     @Test(description = "C22797112 Создать заказ из корзины с одним заказом")
     public void testCreateOrderFromCartWithOneOrder() throws Exception {
         startFromScreenWithCreatedCart();
@@ -403,7 +405,7 @@ public class OrderTest extends SalesBaseTest {
         // Test Data
         MagLegalCustomerData legalCustomerData = TestDataConstants.LEGAL_ENTITY_1;
 
-        List<ProductItemData> productItemDataList = apiClientProvider.getProducts(1);
+        List<ProductItemData> productItemDataList = searchProductHelper.getProducts(1);
         CartProductOrderData productWithNegativeBalance = new CartProductOrderData(
                 productItemDataList.get(0));
         productWithNegativeBalance.setQuantity(productItemDataList.get(0).getAvailableStock() + 10.0);
@@ -443,7 +445,7 @@ public class OrderTest extends SalesBaseTest {
         // Test Data
         MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
 
-        List<ProductItemData> productItemDataList = apiClientProvider.getProducts(1);
+        List<ProductItemData> productItemDataList = searchProductHelper.getProducts(1);
         CartProductOrderData productWithNegativeBalance = new CartProductOrderData(
                 productItemDataList.get(0));
         productWithNegativeBalance.setQuantity(productItemDataList.get(0).getAvailableStock() + 10.0);
@@ -685,9 +687,9 @@ public class OrderTest extends SalesBaseTest {
         // Pre-conditions
         CatalogSearchFilter filter = new CatalogSearchFilter();
         filter.setHasAvailableStock(true);
-        ProductItemData product1 = apiClientProvider.getProducts(1, filter).get(0);
+        ProductItemData product1 = searchProductHelper.getProducts(1, filter).get(0);
         filter.setHasAvailableStock(false);
-        ProductItemData product2 = apiClientProvider.getProducts(1, filter).get(0);
+        ProductItemData product2 = searchProductHelper.getProducts(1, filter).get(0);
 
         CartProductOrderData cartProductOrderData = new CartProductOrderData(product1);
         cartProductOrderData.setQuantity(1.0);

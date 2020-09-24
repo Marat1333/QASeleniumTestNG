@@ -1,6 +1,7 @@
 package com.leroy.magmobile.ui.pages.search;
 
 import com.leroy.core.annotations.AppFindBy;
+import com.leroy.core.configuration.Log;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
@@ -92,9 +93,14 @@ public class SearchProductPage extends CommonMagMobilePage {
 
     @Override
     public void waitForPageIsLoaded() {
-        searchField.waitForVisibility(long_timeout);
-        backBtn.waitForVisibility();
+        try {
+            searchField.waitForVisibility(long_timeout);
+            backBtn.waitForVisibility();
+        } catch (Exception err) {
+            Log.error(err.getMessage());
+        }
         waitUntilProgressBarIsInvisible();
+        anAssert.isElementVisible(searchField);
     }
 
     // ---------------- Action Steps -------------------------//

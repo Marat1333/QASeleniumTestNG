@@ -85,7 +85,11 @@ public class AppBaseSteps extends MagMobileBaseTest {
                         //Log.error("CONSOLE ERRORS:" + consoleErrors);
                         loginWebPage.reloadPage();
                         androidDriver.context("NATIVE_APP");
-                        redirectBtn.click();
+                        try {
+                            redirectBtn.click();
+                        } catch (Exception err2) {
+                            Log.error(err2.getMessage());
+                        }
                     }
                 } else {
                     if (new Element(driver, By.xpath("//*[@resource-id='Username']")).isVisible(1)) {
@@ -199,9 +203,8 @@ public class AppBaseSteps extends MagMobileBaseTest {
             Log.debug(err.getMessage());
             ps = getDriver().getPageSource();
         }
-        Element authScreen = new Element(getDriver(), By.xpath("//*[@content-desc='AuthScreen__btn_getVersionNumber']"));
-        Element anyViewGroup = new Element(getDriver(), By.xpath("//android.view.ViewGroup"));
-        return authScreen.isVisible(ps) || !anyViewGroup.isVisible(ps);
+        Element authScreen = new Element(getDriver(), By.xpath("//*[contains(@resource-id, 'auth_constrain_layout')]"));
+        return authScreen.isVisible(ps);
     }
 
 }

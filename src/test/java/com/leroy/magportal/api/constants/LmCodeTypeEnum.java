@@ -2,6 +2,7 @@ package com.leroy.magportal.api.constants;
 
 public enum LmCodeTypeEnum {
     KK("11795347"),
+    DIMENSIONAL("18642984"),
     PVZ("80120442");
 
     private final String value;
