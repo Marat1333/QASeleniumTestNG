@@ -61,27 +61,27 @@ public class EntranceEditTest extends BaseMagPortalApiTest {
     }
 
     @AfterMethod
-    private void cartAfterMethod(ITestResult result) {
+    private void orderAfterMethod(ITestResult result) {
         if (result.getStatus() != TestResult.SUCCESS) {
             currentOrderId = null;
         }
     }
 
-    @Test(description = "C0", priority = 1)
+    @Test(description = "C23425639 Entrance: Edit Allowed For Picking Order", priority = 1)
     public void testEditAllowedForPicking() {
         currentCount = 9.0;
         Response<?> response = orderClient.editOrder(currentOrderId, 0, currentCount);
         orderClient.assertEditResult(response, currentOrderId, currentCount);
     }
 
-    @Test(description = "C1", priority = 2)
+    @Test(description = "C23425642 Entrance: Edit Picked Paid Order", priority = 2)
     public void testEditPickedPaid() {
         currentCount = 7.0;
         Response<?> response = orderClient.editOrder(currentOrderId, 0, currentCount);
         orderClient.assertEditResult(response, currentOrderId, currentCount);
     }
 
-    @Test(description = "C2", priority = 3)
+    @Test(description = "C23425645 Entrance: Edit Dimensional Product Allowed For Picking Order", priority = 3)
     public void testEditDimensionalProduct() {
         makeDimensionalOrder();
         currentCount = 6.66;
@@ -90,7 +90,7 @@ public class EntranceEditTest extends BaseMagPortalApiTest {
                 .assertEditResult(response, currentOrderId, currentCount);
     }
 
-    @Test(description = "C3", priority = 4)
+    @Test(description = "C23425646 Entrance: Edit Dimensional Product: Paid Order", priority = 4)
     public void testEditDimensionalProductPaid() {
         currentStatus = States.PICKED;
         orderClient.moveNewOrderToStatus(currentOrderId, States.PICKED);
@@ -100,14 +100,14 @@ public class EntranceEditTest extends BaseMagPortalApiTest {
                 .assertEditResult(response, currentOrderId, currentCount);
     }
 
-    @Test(description = "C4", priority = 5)
+    @Test(description = "C23425647 Entrance: Cancel order by Edit Dimensional Product: Paid Order", priority = 5)
     public void testCancelByEditDimensionalProductPaid() {
         currentCount = 10.0;
         Response<?> response = orderClient.editOrder(currentOrderId, 0, 0.0);
         orderClient.assertWorkflowResult(response, currentOrderId, States.CANCELLED);
     }
 
-    @Test(description = "C5", priority = 6)
+    @Test(description = "C23425648 Entrance: Cancel order by Edit with New Product Added", priority = 6)
     public void testCancelByEditWithNewProduct() {
         makeDimensionalOrder();
         orderClient.editOrder(currentOrderId, 1, null);

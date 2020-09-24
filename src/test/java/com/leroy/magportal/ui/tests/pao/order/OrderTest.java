@@ -2,11 +2,12 @@ package com.leroy.magportal.ui.tests.pao.order;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.DiscountConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.api.data.customer.CustomerData;
+import com.leroy.common_mashups.data.customer.CustomerData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateProductOrderData;
 import com.leroy.magportal.api.clients.OrderClient;
@@ -45,7 +46,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class OrderTest extends BasePAOTest {
 
     @Inject
-    PAOHelper helper;
+    PAOHelper paoHelper;
+    @Inject
+    SearchProductHelper searchProductHelper;
+    @Inject
+    OrderClient orderClient;
 
     private void cancelConfirmedOrder() throws Exception {
         if (orderData != null && orderData.getNumber() != null && orderData.getStatus() != null &&
@@ -75,7 +80,7 @@ public class OrderTest extends BasePAOTest {
         CartProductOrderData cartProductOrderData = new CartProductOrderData(productList.get(0));
         cartProductOrderData.setQuantity(1.0);
 
-        String cartId = helper.createCart(cartProductOrderData).getFullDocId();
+        String cartId = paoHelper.createCart(cartProductOrderData).getFullDocId();
 
         cartPage = loginSelectShopAndGoTo(CartPage.class);
         cartPage.clickDocumentInLeftMenu(cartId);
@@ -113,12 +118,12 @@ public class OrderTest extends BasePAOTest {
     public void testCreateOrderWithAuthorAssembly() throws Exception {
         // Prepare data
         SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
-        ProductItemData topEmProduct = helper.getProducts(
+        ProductItemData topEmProduct = searchProductHelper.getProducts(
                 1, new CatalogSearchFilter().setTopEM(true)).get(0);
         CartProductOrderData cartProductOrderData = new CartProductOrderData(topEmProduct);
         cartProductOrderData.setQuantity(topEmProduct.getAvailableStock() + 1);
 
-        String cartId = helper.createCart(cartProductOrderData).getFullDocId();
+        String cartId = paoHelper.createCart(cartProductOrderData).getFullDocId();
 
         cartPage = loginSelectShopAndGoTo(CartPage.class);
         cartPage.clickDocumentInLeftMenu(cartId);
@@ -164,10 +169,10 @@ public class OrderTest extends BasePAOTest {
     @Test(description = "C23410900 Создание заказа из корзины, преобразованной из сметы", groups = NEED_PRODUCTS_GROUP)
     public void testCreateOrderFromCartTransformedFromEstimate() throws Exception {
         step("Pre-condition: Создаем смету и преобразовываем ее в корзину");
-        CustomerData customerData = helper.searchForCustomer(TestDataConstants.SIMPLE_CUSTOMER_DATA_1);
+        CustomerData customerData = paoHelper.searchForCustomer(TestDataConstants.SIMPLE_CUSTOMER_DATA_1);
         EstimateProductOrderData estimateProductOrderData = new EstimateProductOrderData(productList.get(0));
         estimateProductOrderData.setQuantity(1.0);
-        String estimateId = helper.createConfirmedEstimateAndGetId(estimateProductOrderData, customerData);
+        String estimateId = paoHelper.createConfirmedEstimateAndGetId(estimateProductOrderData, customerData);
         EstimatePage estimatePage = loginSelectShopAndGoTo(EstimatePage.class);
         estimatePage.openPageWithEstimate(estimateId)
                 .clickTransformToCart();
@@ -201,7 +206,7 @@ public class OrderTest extends BasePAOTest {
         CartProductOrderData cartProductOrderData = new CartProductOrderData(productList.get(0));
         cartProductOrderData.setQuantity(1.0);
 
-        String cartId = helper.createCart(cartProductOrderData).getFullDocId();
+        String cartId = paoHelper.createCart(cartProductOrderData).getFullDocId();
 
         cartPage = loginSelectShopAndGoTo(CartPage.class);
         cartPage.clickDocumentInLeftMenu(cartId);
@@ -236,7 +241,7 @@ public class OrderTest extends BasePAOTest {
         CartProductOrderData cartProductOrderData = new CartProductOrderData(productList.get(0));
         cartProductOrderData.setQuantity(1.0);
 
-        String cartId = helper.createCart(cartProductOrderData).getFullDocId();
+        String cartId = paoHelper.createCart(cartProductOrderData).getFullDocId();
 
         cartPage = loginSelectShopAndGoTo(CartPage.class);
         cartPage.clickDocumentInLeftMenu(cartId);
@@ -287,8 +292,8 @@ public class OrderTest extends BasePAOTest {
     public void testCreateOrdersFromCartWithTwoOrders() throws Exception {
         // Prepare data
         SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
-        List<CartProductOrderData> products = helper.findProductsForSeveralOrdersInCart();
-        String cartId = helper.createCart(products).getFullDocId();
+        List<CartProductOrderData> products = paoHelper.findProductsForSeveralOrdersInCart();
+        String cartId = paoHelper.createCart(products).getFullDocId();
 
         cartPage = loginSelectShopAndGoTo(CartPage.class);
         cartPage.clickDocumentInLeftMenu(cartId);
@@ -348,10 +353,10 @@ public class OrderTest extends BasePAOTest {
             cardProducts.add(cartProductOrderData);
         }
 
-        String orderId = helper.createConfirmedOrder(cardProducts, false).getOrderId();
+        String orderId = paoHelper.createConfirmedOrder(cardProducts, false).getOrderId();
 
         OrderHeaderPage orderHeaderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
-        helper.getOrderClient().waitUntilOrderHasStatusAndReturnOrderData(orderId,
+        orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderId,
                 CONFIRMED_BUT_NOT_ALLOWED_FOR_PICKING_ORDER ?
                         SalesDocumentsConst.States.CONFIRMED.getApiVal() :
                         SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal(), false);
@@ -377,7 +382,7 @@ public class OrderTest extends BasePAOTest {
             cardProducts.add(cartProductOrderData);
         }
 
-        String cartId = helper.createCart(cardProducts).getFullDocId();
+        String cartId = paoHelper.createCart(cardProducts).getFullDocId();
 
         cartPage = loginSelectShopAndGoTo(CartPage.class); // TODO ???
         cartPage.clickDocumentInLeftMenu(cartId);
@@ -442,7 +447,8 @@ public class OrderTest extends BasePAOTest {
     @Test(description = "C23410904 Добавить Топ ЕМ или AVS товар в неподтвержденный заказ",
             groups = NEED_PRODUCTS_GROUP)
     public void testAddTopEmOrAvsInDraftOrder() throws Exception {
-        ProductItemData newProduct = helper.getProducts(1, new CatalogSearchFilter().setTopEM(true)).get(0);
+        ProductItemData newProduct = searchProductHelper.getProducts(
+                1, new CatalogSearchFilter().setTopEM(true)).get(0);
         preconditionForEditOrderDraftTests();
 
         // Step 1
@@ -646,6 +652,59 @@ public class OrderTest extends BasePAOTest {
         orderCreatedContentPage.refreshDocumentList();
         orderCreatedContentPage.shouldDocumentListContainsThis(shortOrderDocWebData);
     }
+
+    @Test(description = "C23398451 Создание заказа с существующим пин кодом", groups = NEED_PRODUCTS_GROUP)
+    public void testCreateOrderWithExistedPinCode() throws Exception {
+        String toolTypeText = "Уже используется, придумай другой код";
+        String existedPinCode = "11111";
+        SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+        step("Выполнение preconditions");
+        preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)), false);
+
+        CustomerSearchForm customerSearchForm2 = orderDraftDeliveryWayPage.getCustomerSearchForm();
+        customerSearchForm2.clickAddCustomer();
+        customerSearchForm2.selectCustomerByPhone(customerData.getPhoneNumber());
+
+        // Step 1
+        step("Введите существующий PIN-код, например 11111 для самовывоза или 99999 для доставки");
+        orderDraftDeliveryWayPage.enterPinCode(existedPinCode)
+                .shouldPinCodeErrorTooltipIs(toolTypeText);
+
+        //Step 2
+        step("Нажмите на кнопку Подтвердить заказ");
+        orderDraftDeliveryWayPage.clickConfirmOrderButtonNegativePath()
+                .shouldPinCodeErrorTooltipIs(toolTypeText);
+    }
+
+    @Test(description = "C23398448 Смена типа получения товара при заполненном пинкоде в неподтвержденном заказе",
+            groups = NEED_PRODUCTS_GROUP)
+    public void testChangeOfReceiptType() throws Exception {
+        SalesDocumentsConst.GiveAwayPoints deliveryWay = SalesDocumentsConst.GiveAwayPoints.DELIVERY;
+        SalesDocumentsConst.GiveAwayPoints pickupWay = SalesDocumentsConst.GiveAwayPoints.PICKUP;
+        preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)), false);
+        stepEnterPinCode();
+
+        // Step 1
+        step("В поле Выбери способ получения измените Самовывоз (по умолчанию) на Доставка или наоборот");
+        orderDraftDeliveryWayPage.selectDeliveryWay(deliveryWay);
+        orderData.setDeliveryType(deliveryWay);
+        orderData.setPinCode("");
+        orderDraftDeliveryWayPage.shouldOrderDataIs(orderData);
+        orderDraftDeliveryWayPage.shouldPinCodeFieldIs("");
+
+        // Step 2
+        step("Введите PIN-код для оплаты");
+        stepEnterPinCode();
+
+        // Step 3
+        step("В поле Выбери способ получения измените Доставка на Самовывоз (по умолчанию) или наоборот");
+        orderDraftDeliveryWayPage.selectDeliveryWay(pickupWay);
+        orderData.setDeliveryType(pickupWay);
+        orderData.setPinCode("");
+        orderDraftDeliveryWayPage.shouldOrderDataIs(orderData);
+        orderDraftDeliveryWayPage.shouldPinCodeFieldIs("");
+    }
+
 
     // ======== Подтверждение заказа ============= //
 

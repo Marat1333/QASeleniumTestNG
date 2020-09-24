@@ -1,5 +1,7 @@
 package com.leroy.magmobile.api.tests.salesdoc;
 
+import com.google.inject.Inject;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.SalesDocProductClient;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
@@ -13,6 +15,9 @@ import java.util.Collections;
 import java.util.Random;
 
 public class SalesDocApiTest extends BaseProjectApiTest {
+
+    @Inject
+    SearchProductHelper searchProductHelper;
 
     private SalesDocProductClient salesDocProductClient;
     private CatalogSearchClient searchClient;
@@ -34,7 +39,7 @@ public class SalesDocApiTest extends BaseProjectApiTest {
     public void testSalesDocAddProduct() {
         // Prepare request data
         CartEstimateProductOrderData productOrderData = new CartEstimateProductOrderData(
-                apiClientProvider.getProducts(1).get(0));
+                searchProductHelper.getProducts(1).get(0));
         productOrderData.setQuantity((double) new Random().nextInt(6) + 1);
 
         // Create and check
@@ -50,7 +55,7 @@ public class SalesDocApiTest extends BaseProjectApiTest {
     public void testSalesDocAddService() {
         // Prepare request data
         ServiceOrderData serviceOrderData = new ServiceOrderData(
-                apiClientProvider.getServices(1).get(0));
+                searchProductHelper.getServices(1).get(0));
         serviceOrderData.setPrice(10.0);
 
         // Send requests and verification

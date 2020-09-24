@@ -1,7 +1,12 @@
 package com.leroy.magportal.api.helpers;
 
-import com.leroy.magportal.api.ApiClientProvider;
+import com.leroy.core.ContextProvider;
+import com.leroy.core.UserSessionData;
 
-public class BaseHelper extends ApiClientProvider {
+public class BaseHelper {
+
+    protected UserSessionData userSessionData() {
+        return ContextProvider.getContext().getUserSessionData();
+    }
 
 }

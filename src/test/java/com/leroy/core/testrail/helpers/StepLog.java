@@ -34,7 +34,7 @@ public class StepLog {
         currentStepResult = new StepResultModel();
         currentStepResult.setUuid(uuid);
         currentStepResult.setStatus_id(ResultModel.ST_UNTESTED);
-        currentStepResult.setContent(message);
+        currentStepResult.setContent(message.replaceAll("\n", ""));
         stepResults.add(currentStepResult);
         Log.step(stepCounter + ". " + message);
     }

@@ -47,21 +47,21 @@ public class ExpressWorkflowShortTest extends BaseMagPortalApiTest {
                 .stream().findFirst().get().getTaskId();
     }
 
-    @Test(description = "C3310199 Express Delivery: ALLOWED_FOR_PICKING -> PICKING_IN_PROGRESS")
+    @Test(description = "C23425628 Express Delivery: ALLOWED_FOR_PICKING -> PICKING_IN_PROGRESS")
     public void testStartPicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .startPicking(currentTaskId);
         orderClient.assertWorkflowResult(response, currentOrderId, States.PICKING_IN_PROGRESS);
     }
 
-    @Test(description = "C3310199 Express Delivery: PICKING_IN_PROGRESS -> PICKED", dependsOnMethods={"testStartPicking"})
+    @Test(description = "C23425628 Express Delivery: PICKING_IN_PROGRESS -> PICKED", dependsOnMethods={"testStartPicking"})
     public void testCompletePicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .completePicking(currentTaskId, true);
         orderClient.assertWorkflowResult(response, currentOrderId, States.PICKED_WAIT);
     }
 
-    @Test(description = "C3310199 Express Delivery: ALLOWED_FOR_GIVEAWAY -> ON_SHIPMENT", dependsOnMethods={"testCompletePicking"})
+    @Test(description = "C23425628 Express Delivery: ALLOWED_FOR_GIVEAWAY -> ON_SHIPMENT", dependsOnMethods={"testCompletePicking"})
     public void testShipped() {
         paymentHelper.makePaid(currentOrderId);
         orderClient.waitUntilOrderGetStatus(currentOrderId,
@@ -70,7 +70,7 @@ public class ExpressWorkflowShortTest extends BaseMagPortalApiTest {
         orderClient.assertWorkflowResult(response, currentOrderId, States.GIVEN_AWAY);
     }
 
-    @Test(description = "C3310199 Express Delivery: ON_SHIPMENT -> DELIVERED", dependsOnMethods={"testShipped"})
+    @Test(description = "C23425628 Express Delivery: ON_SHIPMENT -> DELIVERED", dependsOnMethods={"testShipped"})
     public void testDeliver() {
         orderClient.waitUntilOrderGetStatus(currentOrderId,
                 States.SHIPPED, PaymentStatusEnum.PAID);
