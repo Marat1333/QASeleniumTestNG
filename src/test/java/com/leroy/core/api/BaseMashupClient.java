@@ -37,8 +37,9 @@ public abstract class BaseMashupClient extends BaseClient {
     }
 
     protected <J> Response<J> execute(RequestBuilder<?> request, final Class<J> type) {
-        if (userSessionData != null && userSessionData.getAccessToken() != null)
-            request.bearerAuthHeader(userSessionData.getAccessToken());
+        UserSessionData thisUserSessionData = getUserSessionData();
+        if (thisUserSessionData != null && thisUserSessionData.getAccessToken() != null)
+            request.bearerAuthHeader(thisUserSessionData.getAccessToken());
         try {
             return executeRequest(request.build(gatewayUrl), type);
         } catch (ProcessingException err) {

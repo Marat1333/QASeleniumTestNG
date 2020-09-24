@@ -7,7 +7,7 @@ import io.qameta.allure.Step;
 
 public class LoginAppPage extends CommonMagMobilePage {
 
-    @AppFindBy(accessibilityId = "Button")
+    @AppFindBy(xpath = "//*[contains(@resource-id, 'authButton')]")
     public Button loginBtn;
 
 
