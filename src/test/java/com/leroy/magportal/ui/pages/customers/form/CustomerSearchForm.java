@@ -75,6 +75,7 @@ public class CustomerSearchForm extends MagPortalBasePage {
 
     @Step("Нажать на кнопку 'Добавить клиента'")
     public CustomerSearchForm clickAddCustomer() {
+        addCustomerBtnLbl.scrollTo();
         addCustomerBtnLbl.click();
         legalPersonBtn.waitForVisibility();
         return this;

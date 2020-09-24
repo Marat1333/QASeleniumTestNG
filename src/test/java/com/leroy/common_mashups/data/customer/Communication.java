@@ -1,4 +1,4 @@
-package com.leroy.magmobile.api.data.customer;
+package com.leroy.common_mashups.data.customer;
 
 import lombok.Data;
 import org.apache.commons.lang3.RandomStringUtils;

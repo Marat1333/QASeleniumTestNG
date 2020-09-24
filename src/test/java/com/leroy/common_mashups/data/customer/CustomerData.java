@@ -1,4 +1,4 @@
-package com.leroy.magmobile.api.data.customer;
+package com.leroy.common_mashups.data.customer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;

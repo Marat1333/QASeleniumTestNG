@@ -57,20 +57,20 @@ public class EditTest extends BaseMagPortalApiTest {
     }
 
     @AfterMethod
-    private void cartAfterMethod(ITestResult result) {
+    private void orderAfterMethod(ITestResult result) {
         if (result.getStatus() != TestResult.SUCCESS) {
             currentOrderId = null;
         }
     }
 
-    @Test(description = "C0", priority = 1)
+    @Test(description = "C23425605 Offline: Edit Allowed For Picking Order", priority = 1)
     public void testEditAllowedForPicking() {
         currentCount = 9.0;
         Response<?> response = orderClient.editOrder(currentOrderId, 0, currentCount);
         orderClient.assertEditResult(response, currentOrderId, currentCount);
     }
 
-    @Test(description = "C1", priority = 2)
+    @Test(description = "C23425606 Offline: Add Product to Allowed For Picking Order", priority = 2)
     public void testAddProductAllowedForPicking() {
         currentProductsCount = 5;
         Response<?> response = orderClient.rearrange(currentOrderId, 2, null);
@@ -78,7 +78,7 @@ public class EditTest extends BaseMagPortalApiTest {
                 currentProductsCount);
     }
 
-    @Test(description = "C2", priority = 3)
+    @Test(description = "C23425607 Offline: Edit And Add Product to Allowed For Picking Order", priority = 3)
     public void testEditAndAddProductAllowedForPicking() {
         currentProductsCount = 7;
         currentCount = 8.0;
@@ -87,7 +87,14 @@ public class EditTest extends BaseMagPortalApiTest {
                 currentProductsCount);
     }
 
-    @Test(description = "C3", priority = 4)
+    @Test(description = "C23425608 Offline: Edit Picked Paid Order", priority = 5)
+    public void testEditPickedPaid() {
+        currentCount = 7.0;
+        Response<?> response = orderClient.editOrder(currentOrderId, 0, currentCount);
+        orderClient.assertEditResult(response, currentOrderId, currentCount);
+    }
+
+    @Test(description = "C23425609 Offline: Add Product to Paid Order (Negative)", priority = 4)
     public void testAddProductPickedPaid() {
         currentStatus = States.PICKED;
         orderClient.moveNewOrderToStatus(currentOrderId, States.PICKED);
@@ -98,14 +105,7 @@ public class EditTest extends BaseMagPortalApiTest {
                 currentProductsCount);
     }
 
-    @Test(description = "C4", priority = 5)
-    public void testEditPickedPaid() {
-        currentCount = 7.0;
-        Response<?> response = orderClient.editOrder(currentOrderId, 0, currentCount);
-        orderClient.assertEditResult(response, currentOrderId, currentCount);
-    }
-
-    @Test(description = "C5", priority = 6)
+    @Test(description = "C23425610 Offline: Edit Add Product to Paid Order (Negative)", priority = 6)
     public void testEditAndAddProductPickedPaid() {
         Response<?> response = orderClient.rearrange(currentOrderId, 2, 1.0);
         assertThat("It's possible to ADD product into payed Order", !response.isSuccessful());
@@ -114,7 +114,7 @@ public class EditTest extends BaseMagPortalApiTest {
                 currentProductsCount);
     }
 
-    @Test(description = "C6", priority = 7)
+    @Test(description = "C23425611 Offline: Edit Dimensional Product Allowed For Picking Order", priority = 7)
     public void testEditDimensionalProduct() throws Exception {
         makeDimensionalOrder();
         currentCount = 6.66;
@@ -122,7 +122,7 @@ public class EditTest extends BaseMagPortalApiTest {
         orderClient.assertEditResult(response, currentOrderId, currentCount);
     }
 
-    @Test(description = "C7", priority = 8)
+    @Test(description = "C23425612 Offline: Edit Dimensional Product: Paid Order", priority = 8)
     public void testEditDimensionalProductPaid() {
         currentStatus = States.PICKED;
         orderClient.moveNewOrderToStatus(currentOrderId, States.PICKED);
@@ -131,14 +131,14 @@ public class EditTest extends BaseMagPortalApiTest {
         orderClient.assertEditResult(response, currentOrderId, currentCount);
     }
 
-    @Test(description = "C8", priority = 9)
+    @Test(description = "C23425613 Offline: Cancel order by Edit Dimensional Product: Paid Order", priority = 9)
     public void testCancelByEditDimensionalProductPaid() {
         currentCount = 10.0;
         Response<?> response = orderClient.editOrder(currentOrderId, 0, 0.0);
         orderClient.assertWorkflowResult(response, currentOrderId, States.CANCELLED);
     }
 
-    @Test(description = "C9", priority = 10)
+    @Test(description = "C23425614 Offline: Cancel order by Edit with New Product Added", priority = 10)
     public void testCancelByEditWithNewProduct() throws Exception {
         makeDimensionalOrder();
         orderClient.editOrder(currentOrderId, 1, null);

@@ -25,9 +25,10 @@ public class PaymentHelper extends BaseHelper {
 
     @Inject
     private PaymentClient paymentClient;
+    @Inject
+    OrderClient orderClient;
 
     private String getPaymentTaskId(String orderId) {
-        OrderClient orderClient = getOrderClient();
         Response<OrderData> resp = orderClient.getOrder(orderId);
         if (!resp.isSuccessful()) {
             int tryCount = 3;

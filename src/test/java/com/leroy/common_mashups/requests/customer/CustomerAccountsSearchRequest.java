@@ -1,4 +1,4 @@
-package com.leroy.magmobile.api.requests.customer;
+package com.leroy.common_mashups.requests.customer;
 
 import com.leroy.magmobile.api.requests.CommonSearchRequestBuilder;
 import ru.leroymerlin.qa.core.clients.base.Method;
