@@ -144,6 +144,7 @@ public class CustomerSearchForm extends MagPortalBasePage {
             customerSearchItems.get(0).click();
             customerSearchItems.waitUntilElementCountEquals(0);
         }
+        waitForSpinnerAppearAndDisappear();
         return this;
     }
 

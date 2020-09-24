@@ -50,7 +50,7 @@ public class OrderProductCardWidget extends CardWebWidget<ProductOrderCardWebDat
         return availableQuantity.getText();
     }
 
-    @WebFindBy(xpath = ".//div[contains(@class, 'ProductCard__quantities')]//input",
+    @WebFindBy(xpath = ".//div[contains(@class, 'ProductCard__quantities')]//div[descendant::label[contains(text(), 'Заказано')]]//input",
             metaName = "Поле 'Заказано'")
     EditBox orderedQuantityFld;
 

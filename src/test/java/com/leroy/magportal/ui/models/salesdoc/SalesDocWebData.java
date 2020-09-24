@@ -7,6 +7,7 @@ import com.leroy.magportal.ui.constants.OrderConst;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
 import com.leroy.utils.DateTimeUtil;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -66,8 +67,11 @@ public class SalesDocWebData {
         ShortOrderDocWebData shortOrderDocWebData = new ShortOrderDocWebData();
         shortOrderDocWebData.setNumber(number);
         shortOrderDocWebData.setStatus(status);
-        if (creationDate != null)
-            shortOrderDocWebData.setCreationDate(DateTimeUtil.strToLocalDateTime(creationDate, "dd MMM, HH:mm"));
+        if (creationDate != null) {
+            String dateFormat = StringUtils.substringBetween(creationDate, ",", ":").trim().length() == 1?
+                    "dd MMM, H:mm": "dd MMM, HH:mm";
+            shortOrderDocWebData.setCreationDate(DateTimeUtil.strToLocalDateTime(creationDate, dateFormat));
+        }
         shortOrderDocWebData.setDeliveryType(deliveryType.equals(SalesDocumentsConst.GiveAwayPoints.PICKUP) ?
                 OrderConst.DeliveryType.PICKUP : OrderConst.DeliveryType.DELIVERY_TK); // todo
         shortOrderDocWebData.setTotalPrice(orders.get(0).getTotalPrice());

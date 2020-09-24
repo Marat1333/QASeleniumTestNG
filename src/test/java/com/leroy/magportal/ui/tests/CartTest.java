@@ -91,7 +91,8 @@ public class CartTest extends BasePAOTest {
         ProductOrderCardWebData productData = extendedSearchModal.getProductData(1);
         extendedSearchModal.closeModalWindow();
         cartPage = new CartPage();
-        cartPage.shouldDocumentHasProduct(3, productData);
+        int indexNewProduct = productData.getSelectedQuantity() > productData.getAvailableTodayQuantity()? 1 : 3;
+        cartPage.shouldDocumentHasProduct(indexNewProduct, productData);
     }
 
     @Test(description = "C22797243 Add current item to cart", groups = NEED_PRODUCTS_GROUP)

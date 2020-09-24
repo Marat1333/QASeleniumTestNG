@@ -66,7 +66,7 @@ public class PickingPage extends LeftDocumentListPage<ShortPickingTaskCardWidget
             metaName = "Кнопка Обновить список документов")
     private Button refreshDocumentListBtn;
 
-    @WebFindBy(xpath = "//div[substring(@class, string-length(@class) - string-length('Picking-PickingListItem') +1) = 'Picking-PickingListItem' or contains(@class, 'Picking-PickingListItem__active')]",
+    @WebFindBy(xpath = "//div[substring(@class, string-length(@class) - string-length('Picking-PickingListItem') +1) = 'Picking-PickingListItem' or contains(@class, 'Picking-PickingListItem__active')  or contains(@class, 'Picking-PickingListItem highPriority')]",
             clazz = ShortPickingTaskCardWidget.class)
     private CardWebWidgetList<ShortPickingTaskCardWidget, ShortPickingTaskData> documentCardList;
 
