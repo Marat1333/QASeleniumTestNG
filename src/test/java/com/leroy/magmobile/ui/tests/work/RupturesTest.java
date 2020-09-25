@@ -1,6 +1,7 @@
 package com.leroy.magmobile.ui.tests.work;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.inject.Inject;
 import com.leroy.constants.DefectConst;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.SalesDocumentsConst;
@@ -15,7 +16,6 @@ import com.leroy.magmobile.api.data.ruptures.ResRuptureSessionDataList;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductData;
 import com.leroy.magmobile.api.data.sales.transfer.TransferSearchProductData;
 import com.leroy.magmobile.ui.AppBaseSteps;
-import com.leroy.magmobile.ui.pages.common.BottomMenuPage;
 import com.leroy.magmobile.ui.pages.more.MorePage;
 import com.leroy.magmobile.ui.pages.more.SearchShopPage;
 import com.leroy.magmobile.ui.pages.more.UserProfilePage;
@@ -35,7 +35,6 @@ import com.leroy.magmobile.ui.pages.work.ruptures.modal.*;
 import io.qameta.allure.Issue;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -45,18 +44,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class RupturesTest extends AppBaseSteps {
+
     private static final ThreadLocal<Integer> sessionsNumbers = new ThreadLocal<>();
 
+    @Inject
     RupturesClient ruptureClient;
+    @Inject
     CatalogSearchClient searchClient;
+    @Inject
     TransferClient transferClient;
-
-    @BeforeClass
-    private void initClients() {
-        transferClient = apiClientProvider.getTransferClient();
-        ruptureClient = apiClientProvider.getRupturesClient();
-        searchClient = apiClientProvider.getCatalogSearchClient();
-    }
 
     @Override
     public UserSessionData initTestClassUserSessionDataTemplate() {
@@ -193,18 +189,17 @@ public class RupturesTest extends AppBaseSteps {
         String shopWithNoRuptures = "62";
         ResRuptureSessionDataList activeSessionsData = ruptureClient.getSessions("active", 1).asJson();
 
-        //Step 1
-        step("Перейти на экран \"работа\"");
-        WorkPage workPage = loginAndGoTo(WorkPage.class);
-        workPage.shouldRupturesNavigationBtnHasCorrectCondition(true)
+        // Step 1
+        step("Перейти на экран 'работа'");
+        WorkPage workPage = loginAndGoTo(WorkPage.class)
+                .shouldRupturesNavigationBtnHasCorrectCondition(true)
                 .shouldRupturesSessionCounterIsCorrect(activeSessionsData.getTotalCount());
-        //Step 2
-        step("Перейти в \"еще\" и сменить магазин на 62\n" +
-                "Перейти на экран \"работа\"");
-        BottomMenuPage bottomMenuPage = new BottomMenuPage();
-        setShopAndDepartmentForUser(bottomMenuPage, shopWithNoRuptures, getUserSessionData().getUserDepartmentId());
-        workPage = bottomMenuPage.goToWork();
-        workPage.shouldRupturesNavigationBtnHasCorrectCondition(false);
+
+        // Step 2
+        step("Сменить магазин на 62 и вернуться на экран 'работа'");
+        setShopAndDepartmentForUser(workPage, shopWithNoRuptures, getUserSessionData().getUserDepartmentId())
+                .goToWork()
+                .shouldRupturesNavigationBtnHasCorrectCondition(false);
     }
 
     @Test(description = "C3272520 Создание сессии с экрана работы")
@@ -213,36 +208,35 @@ public class RupturesTest extends AppBaseSteps {
         String firstProductLmCode = randomProducts.get(0).getLmCode();
         String secondProductLmCode = randomProducts.get(1).getLmCode();
 
-        //Pre-conditions
+        // Pre-conditions
         WorkPage workPage = loginAndGoTo(WorkPage.class);
 
-        //Step 1
-        step("Тапнуть на иконку \"+\"");
+        // Step 1
+        step("Тапнуть на иконку '+'");
         RupturesScannerPage rupturesScannerPage = workPage.createRupturesSession();
         rupturesScannerPage.shouldRupturesListNavBtnIsVisible(false)
                 .verifyRequiredElements();
 
-        //Step 2
+        // Step 2
         step("Перейти в ручной поиск и найти товар по лм-коду");
         SearchProductPage searchProductPage = rupturesScannerPage.navigateToSearchProductPage();
         searchProductPage.enterTextInSearchFieldAndSubmit(firstProductLmCode);
         RuptureCardPage ruptureCardPage = new RuptureCardPage();
         ruptureCardPage.verifyRequiredElementsWhenCreateRupture();
 
-        //Step 3
+        // Step 3
         step("Сменить количество на 3+");
         List<String> taskBeforeChange = ruptureCardPage.getTasksList();
-        ruptureCardPage.choseProductQuantityOption(RuptureCardPage.QuantityOption.THREE_OR_MORE);
+        ruptureCardPage.selectProductQuantityOption(RuptureCardPage.QuantityOption.THREE_OR_MORE);
         ruptureCardPage.shouldTasksHasChanged(taskBeforeChange);
 
-
-        //Step 4
-        step("Открыть модалку добавления экшенов (карандашик в блоке экшенов или кнопка \"назначить задачи\")");
+        // Step 4
+        step("Открыть модалку добавления экшенов (карандашик в блоке экшенов или кнопка 'назначить задачи')");
         List<String> taskAfterChange = ruptureCardPage.getTasksList();
         TasksListsModalPage tasksListsModalPage = ruptureCardPage.callActionModalPage();
         tasksListsModalPage.shouldToDoListContainsTaskAndPossibleListNotContainsTask(taskAfterChange);
 
-        //Step 5
+        // Step 5
         step("Добавить пару экшенов (+)\n" +
                 "Убрать один из ранее рассчитанных экшенов (-)");
         List<String> possibleTasks = tasksListsModalPage.getPossibleTasks();
@@ -253,7 +247,7 @@ public class RupturesTest extends AppBaseSteps {
         String secondRandomTask = possibleTasks.get(randomTaskIndex);
 
         tasksListsModalPage.choseTasks(firstRandomTask, secondRandomTask);
-        tasksListsModalPage.shouldToDoListContainsTaskAndPossibleListNotContainsTask(firstRandomTask, secondRandomTask);
+        tasksListsModalPage.shouldToDoListContainsTaskAndPossibleListNotContainsTask(Arrays.asList(firstRandomTask, secondRandomTask));
 
         List<String> toDoTasks = tasksListsModalPage.getToDoTasks();
         randomTaskIndex = (int) (Math.random() * toDoTasks.size());
@@ -261,20 +255,20 @@ public class RupturesTest extends AppBaseSteps {
         tasksListsModalPage.choseTasks(firstRandomTask);
         tasksListsModalPage.shouldToDoListNotContainsTaskAndPossibleListContainsTask(firstRandomTask);
 
-        //Step 6
+        // Step 6
         step("Закрыть модалку редактирования экшенов");
         toDoTasks = tasksListsModalPage.getToDoTasks();
         ruptureCardPage = tasksListsModalPage.closeModal();
         ruptureCardPage.shouldTasksListContainsTasks(toDoTasks);
 
-        //Step 7
+        // Step 7
         step("Чекнуть один из экшенов");
         randomTaskIndex = (int) (Math.random() * toDoTasks.size());
         firstRandomTask = toDoTasks.get(randomTaskIndex);
         ruptureCardPage.setTasksCheckBoxes(firstRandomTask);
         ruptureCardPage.shouldCheckBoxConditionIsCorrect(true, firstRandomTask);
 
-        //Step 8
+        // Step 8
         step("Добавить любой текст в поле комментария");
         String comment = "asd123";
         ruptureCardPage.setComment(comment);
@@ -283,12 +277,12 @@ public class RupturesTest extends AppBaseSteps {
         ruptureCardPage.submitComment();
         ruptureCardPage.shouldCommentFieldHasText(comment);
 
-        //Step 9
-        step("Перейти в основную карточку товара (пункт \"подробнее о товаре\")");
+        // Step 9
+        step("Перейти в основную карточку товара (пункт 'подробнее о товаре')");
         ProductCardPage productCardPage = ruptureCardPage.navigateToProductCard();
         productCardPage.verifyRequiredElements(false);
 
-        //Step 10
+        // Step 10
         step("Вернуться назад на карточку перебоя");
         ruptureCardPage = productCardPage.returnBack(RuptureCardPage.class);
         ruptureCardPage.shouldTasksListContainsTasks(toDoTasks)
@@ -296,13 +290,13 @@ public class RupturesTest extends AppBaseSteps {
                 .shouldRadioBtnHasCorrectCondition(RuptureCardPage.QuantityOption.THREE_OR_MORE)
                 .shouldCommentFieldHasText(comment);
 
-        //Step 11
+        // Step 11
         step("Подтвердить добавление перебоя в сессию");
         RuptureData firstAddedRupture = ruptureCardPage.getRuptureData();
         rupturesScannerPage = ruptureCardPage.acceptAdd();
         rupturesScannerPage.shouldCounterIsCorrect(1);
 
-        //Step 12
+        // Step 12
         step("Добавить в сессию еще один перебой");
         searchProductPage = rupturesScannerPage.navigateToSearchProductPage();
         searchProductPage.enterTextInSearchFieldAndSubmit(secondProductLmCode);
@@ -311,18 +305,18 @@ public class RupturesTest extends AppBaseSteps {
         rupturesScannerPage = ruptureCardPage.acceptAdd();
         rupturesScannerPage.shouldCounterIsCorrect(2);
 
-        //Step 13
+        // Step 13
         step("Тапнуть на кнопку \"список перебоев\"");
         ActiveSessionPage activeSessionPage = rupturesScannerPage.navigateToRuptureProductList();
         activeSessionPage.shouldRupturesDataIsCorrect(secondAddedRupture, firstAddedRupture)
                 .verifyRequiredElements();
 
-        //Step 14
+        // Step 14
         step("Выйти из сессии по железной кнопке");
         ExitActiveSessionModalPage exitActiveSessionModalPage = activeSessionPage.exitActiveSession();
         exitActiveSessionModalPage.verifyRequiredElements();
 
-        //Step 15
+        // Step 15
         step("Подтвердить выход из сессии");
         exitActiveSessionModalPage.confirmExit();
         workPage = new WorkPage();
@@ -543,7 +537,7 @@ public class RupturesTest extends AppBaseSteps {
         //Step 6
         step("Выставить для перебоя количество \"на полке\" равное 3+");
         List<String> tasksBefore = ruptureCardPage.getTasksList();
-        ruptureCardPage.choseProductQuantityOption(RuptureCardPage.QuantityOption.THREE_OR_MORE);
+        ruptureCardPage.selectProductQuantityOption(RuptureCardPage.QuantityOption.THREE_OR_MORE);
         ruptureCardPage.shouldTasksHasChanged(tasksBefore);
 
         //Step 7
@@ -612,7 +606,7 @@ public class RupturesTest extends AppBaseSteps {
                 "Добавить 2 любых экшена\n" +
                 "Чекнуть один из экшенов\n" +
                 "Добавить комментарий");
-        ruptureCardPage.choseProductQuantityOption(RuptureCardPage.QuantityOption.ONE);
+        ruptureCardPage.selectProductQuantityOption(RuptureCardPage.QuantityOption.ONE);
         TasksListsModalPage tasksListsModalPage = ruptureCardPage.callActionModalPage();
         List<String> possibleTasksList = tasksListsModalPage.getPossibleTasks();
         tasksListsModalPage.choseTasks(possibleTasksList.get(0), possibleTasksList.get(1));
@@ -681,7 +675,7 @@ public class RupturesTest extends AppBaseSteps {
                 "Добавить экшенов до 3 штук\n" +
                 "Чекнуть один из экшенов\n" +
                 "Добавить комментарий");
-        ruptureCardPage.choseProductQuantityOption(RuptureCardPage.QuantityOption.THREE_OR_MORE);
+        ruptureCardPage.selectProductQuantityOption(RuptureCardPage.QuantityOption.THREE_OR_MORE);
         TasksListsModalPage tasksListsModalPage = ruptureCardPage.callActionModalPage();
         List<String> possibleTasksList = tasksListsModalPage.getPossibleTasks();
         tasksListsModalPage.choseTasks(possibleTasksList.get(0), possibleTasksList.get(1), possibleTasksList.get(2));
@@ -810,8 +804,8 @@ public class RupturesTest extends AppBaseSteps {
                 "Закрыть модалку реактирования экшенов");
         tasksListsModalPage.choseTasks(Action.FIND_PRODUCT_AND_LAY_IT_OUT.getActionName(),
                 Action.GIVE_APOLOGISE.getActionName(), Action.REMOVE_PRICE_TAG.getActionName())
-                .shouldToDoListContainsTaskAndPossibleListNotContainsTask(
-                        Action.GIVE_APOLOGISE.getActionName(), Action.REMOVE_PRICE_TAG.getActionName())
+                .shouldToDoListContainsTaskAndPossibleListNotContainsTask(Arrays.asList(
+                        Action.GIVE_APOLOGISE.getActionName(), Action.REMOVE_PRICE_TAG.getActionName()))
                 .closeModal();
 
         //Step 5
@@ -1339,8 +1333,8 @@ public class RupturesTest extends AppBaseSteps {
         UserProfilePage userProfilePage = morePage.goToUserProfile();
         SearchShopPage searchShopPage = userProfilePage.goToEditShopForm();
         searchShopPage.searchForShopAndSelectById(shopWithLsRm);
-        BottomMenuPage bottomMenuPage = new BottomMenuPage();
-        WorkPage workPage = bottomMenuPage.goToWork();
+        //BottomMenuPage bottomMenuPage = new BottomMenuPage();
+        WorkPage workPage = userProfilePage.goToWork();
         SessionListPage sessionListPage = workPage.goToRuptures();
 
         //Step 1
@@ -1397,14 +1391,14 @@ public class RupturesTest extends AppBaseSteps {
         actionModalPage.recallFromRm();
         actionModalPage.verifyRequiredElements();
 
-        //Step 9
+        // Step 9
         step("Закрыть модалку\n" +
                 "Перейти к редактированию экшенов перебоя (карандашик)");
         ruptureCardPage = actionModalPage.closeModal();
         TasksListsModalPage tasksListsModalPage = ruptureCardPage.callActionModalPage();
         String pressedTaskName = Action.RECALL_FROM_RM.getActionName();
         tasksListsModalPage.choseTasks(pressedTaskName)
-                .shouldToDoListContainsTaskAndPossibleListNotContainsTask(pressedTaskName);
+                .shouldToDoListContainsTaskAndPossibleListNotContainsTask(Collections.singletonList(pressedTaskName));
 
         //Step 10
         step("Закрыть модалку \"задачи по перебою\"\n" +
@@ -1439,8 +1433,8 @@ public class RupturesTest extends AppBaseSteps {
         UserProfilePage userProfilePage = morePage.goToUserProfile();
         SearchShopPage searchShopPage = userProfilePage.goToEditShopForm();
         searchShopPage.searchForShopAndSelectById(shopWithLsRm);
-        BottomMenuPage bottomMenuPage = new BottomMenuPage();
-        WorkPage workPage = bottomMenuPage.goToWork();
+        //BottomMenuPage bottomMenuPage = new BottomMenuPage();
+        WorkPage workPage = userProfilePage.goToWork();
         SessionListPage sessionListPage = workPage.goToRuptures();
         sessionListPage.goToSession(String.valueOf(sessionId));
         ActiveSessionPage activeSessionPage = new ActiveSessionPage();
@@ -1510,8 +1504,8 @@ public class RupturesTest extends AppBaseSteps {
         UserProfilePage userProfilePage = morePage.goToUserProfile();
         SearchShopPage searchShopPage = userProfilePage.goToEditShopForm();
         searchShopPage.searchForShopAndSelectById(shopWithLsRm);
-        BottomMenuPage bottomMenuPage = new BottomMenuPage();
-        WorkPage workPage = bottomMenuPage.goToWork();
+        //BottomMenuPage bottomMenuPage = new BottomMenuPage();
+        WorkPage workPage = userProfilePage.goToWork();
         SessionListPage sessionListPage = workPage.goToRuptures();
         sessionListPage.goToSession(String.valueOf(sessionId));
         FinishedSessionPage finishedSessionPage = new FinishedSessionPage();

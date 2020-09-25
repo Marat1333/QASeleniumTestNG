@@ -13,8 +13,8 @@ import com.leroy.magmobile.ui.pages.work.ruptures.elements.RuptureRadioButton;
 import com.leroy.magmobile.ui.pages.work.ruptures.elements.RuptureTaskContainer;
 import com.leroy.magmobile.ui.pages.work.ruptures.modal.AcceptRecallFromRmModalPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.modal.ActionModalPage;
-import com.leroy.magmobile.ui.pages.work.ruptures.modal.TasksListsModalPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.modal.DeleteRuptureModalPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.modal.TasksListsModalPage;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 import org.openqa.selenium.support.Color;
@@ -121,6 +121,7 @@ public class RuptureCardPage extends CommonMagMobilePage {
         priceLbl.waitForVisibility(long_timeout);
     }
 
+    @Step("Получить список экшенов с экрана")
     public List<String> getTasksList() {
         return ruptureTaskContainer.getTaskList();
     }
@@ -150,19 +151,19 @@ public class RuptureCardPage extends CommonMagMobilePage {
     }
 
     @Step("Нажать на кнопку \"действия с перебоем\"")
-    public ActionModalPage callActionModalByPressingActionsWithRupturesBtn(){
+    public ActionModalPage callActionModalByPressingActionsWithRupturesBtn() {
         ruptureActionsBtn.click();
         return new ActionModalPage();
     }
 
     @Step("Нажать на кнопку \"Сделать отзыв с RM\"")
-    public AcceptRecallFromRmModalPage recallProductFromRm(){
+    public AcceptRecallFromRmModalPage recallProductFromRm() {
         recallFromRm.click();
         return new AcceptRecallFromRmModalPage();
     }
 
     @Step("Вызвать модалку с доступными для перебоя действиями")
-    public ActionModalPage callActionModal(){
+    public ActionModalPage callActionModal() {
         ruptureCallActionModalBtn.click();
         return new ActionModalPage();
     }
@@ -206,7 +207,7 @@ public class RuptureCardPage extends CommonMagMobilePage {
     }
 
     @Step("Выбрать кол-во товара на полке")
-    public RuptureCardPage choseProductQuantityOption(QuantityOption option) throws Exception {
+    public RuptureCardPage selectProductQuantityOption(QuantityOption option) {
         if (!supplyDateLbl.isVisible()) {
             mainScrollView.scrollDownToElement(supplyDateLbl);
         }
@@ -236,7 +237,7 @@ public class RuptureCardPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что отображается сообщение о созданной заявке на отзыв с RM")
-    public RuptureCardPage shouldRecallRequestHasBeenCreatedMsgIsVisible(){
+    public RuptureCardPage shouldRecallRequestHasBeenCreatedMsgIsVisible() {
         anAssert.isElementVisible(recallRequestHasBeenCreatedMsgLbl);
         return this;
     }
@@ -294,14 +295,14 @@ public class RuptureCardPage extends CommonMagMobilePage {
 
     @Step("Проверить что список задач изменился")
     public RuptureCardPage shouldTasksHasChanged(List<String> tasksBefore) {
-        mainScrollView.scrollToBeginning();
+        //mainScrollView.scrollToBeginning();
         List<String> taskAfter;
-        if (tasksBefore.size() == 0) {
-            return this;
-        } else {
-            taskAfter = ruptureTaskContainer.getTaskList();
-            anAssert.isFalse(tasksBefore.equals(taskAfter), "nothing has changed");
-        }
+        //if (tasksBefore.size() == 0) {
+        //    return this;
+        //} else {
+        taskAfter = ruptureTaskContainer.getTaskList();
+        anAssert.isFalse(tasksBefore.equals(taskAfter), "Список задач не изменился");
+        //}
         return this;
     }
 
@@ -328,14 +329,16 @@ public class RuptureCardPage extends CommonMagMobilePage {
         return this;
     }
 
+    @Step("Проверить, что Руптюр карточка товара отображается корректно")
     public RuptureCardPage verifyRequiredElementsWhenCreateRupture() {
-        softAssert.areElementsVisible(getPageSource(), closeModalBtn, lmCodeLbl, barCodeLbl, titleLbl, productPhoto,
+        String ps = getPageSource();
+        softAssert.areElementsVisible(ps, closeModalBtn, lmCodeLbl, barCodeLbl, titleLbl, productPhoto,
                 ruptureTaskContainer, priceLbl);
-        mainScrollView.scrollToEnd();
-        softAssert.areElementsVisible(getPageSource(), productCardNavigationBtn, salesHallProductQuantityLbl, zeroProductNeedToAddBtn,
+        //mainScrollView.scrollToEnd();
+        softAssert.areElementsVisible(ps, productCardNavigationBtn, salesHallProductQuantityLbl, zeroProductNeedToAddBtn,
                 oneProductNeedToAddBtn, twoProductsNeedToAddBtn, threeOrMoreProductsNeedToAddBtn,
                 rmWarehouseProductQuantityLbl, supplyDateLbl, acceptBtn, ruptureCallActionModalBtn, commentField);
-        mainScrollView.scrollToBeginning();
+        //mainScrollView.scrollToBeginning();
         softAssert.verifyAll();
         return this;
     }

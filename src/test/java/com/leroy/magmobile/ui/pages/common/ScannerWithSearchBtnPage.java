@@ -5,7 +5,7 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import io.qameta.allure.Step;
 
-public class ScannerWithSearchBtnPage extends ScannerPage{
+public class ScannerWithSearchBtnPage extends ScannerPage {
     @AppFindBy(containsText = "ВВЕСТИ ШТРИХ-КОД / ЛМ ВРУЧНУЮ")
     protected Button searchProductBtn;
 
@@ -15,7 +15,7 @@ public class ScannerWithSearchBtnPage extends ScannerPage{
         searchProductBtn.waitForVisibility();
     }
 
-    @Step("Искать товар вручную")
+    @Step("Перейти в режим ручного поиска товара")
     public SearchProductPage navigateToSearchProductPage() {
         searchProductBtn.click();
         return new SearchProductPage();

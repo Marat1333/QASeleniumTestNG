@@ -5,7 +5,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.constants.MagMobElementTypes;
-import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import com.leroy.magmobile.ui.pages.common.BottomMenuPage;
 import com.leroy.magmobile.ui.pages.work.print_tags.SessionsListPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.RupturesScannerPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.SessionListPage;
@@ -14,7 +14,7 @@ import com.leroy.magmobile.ui.pages.work.transfer.TransferOrderStep1Page;
 import com.leroy.magmobile.ui.pages.work.transfer.TransferRequestsPage;
 import io.qameta.allure.Step;
 
-public class WorkPage extends CommonMagMobilePage {
+public class WorkPage extends BottomMenuPage {
 
     private static final String XPATH_WITHDRAWAL_FROM_RM_AREA =
             "//android.widget.ScrollView//android.view.ViewGroup[android.widget.TextView[contains(@text, 'Отзыв')]]";
@@ -61,7 +61,7 @@ public class WorkPage extends CommonMagMobilePage {
     @Override
     public void waitForPageIsLoaded() {
         titleObj.waitForVisibility();
-        if (rupturesManageLbl.isVisible()){
+        if (rupturesManageLbl.isVisible()) {
             rupturesActiveSessionCounterLbl.waitForVisibility();
         }
     }
@@ -84,13 +84,13 @@ public class WorkPage extends CommonMagMobilePage {
     }
 
     @Step("Перейти в Управление перебоями")
-    public SessionListPage goToRuptures(){
+    public SessionListPage goToRuptures() {
         rupturesManageLbl.click();
         return new SessionListPage();
     }
 
     @Step("Нажать на кнопку создания сессии перебоев")
-    public RupturesScannerPage createRupturesSession(){
+    public RupturesScannerPage createRupturesSession() {
         createRuptureSessionBtn.click();
         return new RupturesScannerPage();
     }
@@ -129,18 +129,18 @@ public class WorkPage extends CommonMagMobilePage {
         return this;
     }
 
-    @Step("Проверить, что отсутствует раздел \"Управление перебоями\"")
-    public WorkPage shouldRupturesNavigationBtnHasCorrectCondition(boolean isVisible){
+    @Step("Проверить наличие раздела 'Управление перебоями'")
+    public WorkPage shouldRupturesNavigationBtnHasCorrectCondition(boolean isVisible) {
         if (isVisible) {
             anAssert.isElementVisible(rupturesManageLbl);
-        }else {
+        } else {
             anAssert.isElementNotVisible(rupturesManageLbl);
         }
         return this;
     }
 
     @Step("Проверить, что счетчик активных сессий руптюр отображает корректное значение")
-    public WorkPage shouldRupturesSessionCounterIsCorrect(int sessionCounter){
+    public WorkPage shouldRupturesSessionCounterIsCorrect(int sessionCounter) {
         anAssert.isElementTextEqual(rupturesActiveSessionCounterLbl, String.valueOf(sessionCounter));
         return this;
     }

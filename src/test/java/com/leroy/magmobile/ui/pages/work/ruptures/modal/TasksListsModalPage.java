@@ -32,21 +32,7 @@ public class TasksListsModalPage extends CommonMagMobilePage {
         closeModalBtn.waitForVisibility();
     }
 
-    private Map<List<String>, List<String>> getTasksList() {
-        String ps = getPageSource();
-        Map<List<String>, List<String>> result = new HashMap<>();
-        List<String> toDoTasksNames = new ArrayList<>();
-        List<String> possibleTasksNames = new ArrayList<>();
-        for (Element eachTask : toDoTasksList) {
-            toDoTasksNames.add(eachTask.getText(ps));
-        }
-        for (Element eachTask : possibleTasksList) {
-            possibleTasksNames.add(eachTask.getText(ps));
-        }
-        result.put(toDoTasksNames, possibleTasksNames);
-        return result;
-    }
-
+    @Step("Получить список задач 'Нужно сделать'")
     public List<String> getToDoTasks() {
         List<String> result = new ArrayList<>();
         String ps = getPageSource();
@@ -56,6 +42,7 @@ public class TasksListsModalPage extends CommonMagMobilePage {
         return result;
     }
 
+    @Step("Получить список задач 'Возможные задачи'")
     public List<String> getPossibleTasks() {
         List<String> result = new ArrayList<>();
         String ps = getPageSource();
@@ -66,7 +53,7 @@ public class TasksListsModalPage extends CommonMagMobilePage {
     }
 
     @Step("Закрыть модалку")
-    public RuptureCardPage closeModal(){
+    public RuptureCardPage closeModal() {
         closeModalBtn.click();
         return new RuptureCardPage();
     }
@@ -82,40 +69,25 @@ public class TasksListsModalPage extends CommonMagMobilePage {
         return this;
     }
 
+    @Step("Проверить, что лист 'Нужно сделать' содержит указанные задачи, a лист 'Возможные задачи' не содержит")
     public TasksListsModalPage shouldToDoListContainsTaskAndPossibleListNotContainsTask(List<String> tasks) {
-        String [] array = new String[tasks.size()];
-        return shouldToDoListContainsTaskAndPossibleListNotContainsTask(array);
-    }
-
-    @Step("Проверить, что лист \"Нужно сделать\" содержит указанные задачи, a лист \"Возможные задачи\" не содержит")
-    public TasksListsModalPage shouldToDoListContainsTaskAndPossibleListNotContainsTask(String...tasks) {
-        Map<List<String>, List<String>> tasksMap = getTasksList();
-        List<String> toDoTasksNames = null;
-        List<String> possibleTasksNames = null;
-        for (Map.Entry<List<String>, List<String>> entry : tasksMap.entrySet()) {
-            toDoTasksNames = entry.getKey();
-            possibleTasksNames = entry.getValue();
-        }
-        if (tasks.length>0) {
+        List<String> toDoTasksNames = getToDoTasks();
+        List<String> possibleTasksNames = getPossibleTasks();
+        if (tasks.size() > 0) {
             for (String task : tasks) {
                 anAssert.isTrue(toDoTasksNames.contains(task), "список задач \"Нужно сделать\" не содержит задачу " + task);
                 anAssert.isTrue(!possibleTasksNames.contains(task), "список задач \"Возможные задачи\" содержит задачу " + task);
             }
-        }else {
-            anAssert.isEquals(toDoTasksNames.size(), 0,"Задача в списке \"Нужно сделать\" присутствуют");
+        } else {
+            anAssert.isEquals(toDoTasksNames.size(), 0, "Задача в списке \"Нужно сделать\" присутствуют");
         }
         return this;
     }
 
     @Step("Проверить, что лист \"Нужно сделать\" не содержит указанные задачи, a лист \"Возможные задачи\" содержит")
-    public TasksListsModalPage shouldToDoListNotContainsTaskAndPossibleListContainsTask(String...tasks) {
-        Map<List<String>, List<String>> tasksMap = getTasksList();
-        List<String> toDoTasksNames = null;
-        List<String> possibleTasksNames = null;
-        for (Map.Entry<List<String>, List<String>> entry : tasksMap.entrySet()) {
-            toDoTasksNames = entry.getKey();
-            possibleTasksNames = entry.getValue();
-        }
+    public TasksListsModalPage shouldToDoListNotContainsTaskAndPossibleListContainsTask(String... tasks) {
+        List<String> toDoTasksNames = getToDoTasks();
+        List<String> possibleTasksNames = getPossibleTasks();
         for (String task : tasks) {
             anAssert.isTrue(!toDoTasksNames.contains(task), "список задач \"Нужно сделать\" содержит задачу " + task);
             anAssert.isTrue(possibleTasksNames.contains(task), "список задач \"Возможные задачи\" не содержит задачу " + task);
@@ -123,7 +95,8 @@ public class TasksListsModalPage extends CommonMagMobilePage {
         return this;
     }
 
-    public TasksListsModalPage verifyRequiredElements(){
+    @Step("Проверить, что модальное окно с экшенами отображается корректно")
+    public TasksListsModalPage verifyRequiredElements() {
         softAssert.areElementsVisible(getPageSource(), closeModalBtn, header);
         softAssert.verifyAll();
         return this;
