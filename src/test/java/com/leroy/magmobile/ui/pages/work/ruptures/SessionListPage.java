@@ -106,7 +106,7 @@ public class SessionListPage extends CommonMagMobilePage {
         anAssert.isTrue(cardWidget.collectDataFromPage().contains(sessionId),
                 "Не нашли сессию №" + sessionId);
         //из-за кнопки "сканировать перебои"
-        if (cardWidget.getLocation().getY() / driver.manage().window().getSize().getHeight() * 100 > 95) {
+        if (cardWidget.getLocation().getY() / (double) driver.manage().window().getSize().getHeight() * 100 > 90) {
             mainScrollView.setSwipeDeadZonePercentage(30);
             mainScrollView.scrollDown();
         }

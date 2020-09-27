@@ -245,7 +245,8 @@ public class RuptureCardPage extends CommonMagMobilePage {
     @Step("Проверить, что кнопка подтверждения ввода комментария активна")
     public RuptureCardPage shouldSubmitCommentBtnIsActive() throws Exception {
         anAssert.isTrue(submitCommentBtn.getPointColor()
-                .equals(new Color(216, 240, 199, 255)), "inactive");
+                .equals(new Color(216, 240, 199, 255)),
+                "Кнопка подтвердить комментарий неактивна");
         return this;
     }
 
