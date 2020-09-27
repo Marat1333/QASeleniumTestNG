@@ -54,7 +54,8 @@ public class RuptureTaskContainer extends Element {
     }
 
     public boolean getCheckBoxCondition(String taskName) throws Exception {
-        RuptureTaskContainerGreyCheckBox taskCheckBox = E(String.format(TYPICAL_CHECKBOX_XPATH, taskName), RuptureTaskContainerGreyCheckBox.class);
+        RuptureTaskContainerGreyCheckBox taskCheckBox = E(String.format(TYPICAL_CHECKBOX_XPATH, taskName),
+                RuptureTaskContainerGreyCheckBox.class);
         return taskCheckBox.isChecked();
     }
 

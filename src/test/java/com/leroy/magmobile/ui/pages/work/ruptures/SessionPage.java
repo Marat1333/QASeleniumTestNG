@@ -27,6 +27,7 @@ public abstract class SessionPage extends CommonMagMobilePage {
         sessionNumberAndStatusLbl.waitForVisibility();
     }
 
+    @Step("Получить информацию о сессии с экрана")
     public SessionData getSessionData() {
         String ps = getPageSource();
         SessionData data = new SessionData();

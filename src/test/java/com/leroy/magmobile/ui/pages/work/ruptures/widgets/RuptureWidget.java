@@ -54,7 +54,7 @@ public class RuptureWidget extends CardWidget<RuptureData> {
             for (int i = 0; i < taskCheckBoxes.getCount(); i++) {
                 try {
                     actionsMap.put(tasksLbl.get(i).getText(pageSource), taskCheckBoxes.get(i).isChecked());
-                }catch (Exception e){
+                } catch (Exception e) {
                     Log.warn(e.getMessage());
                 }
 

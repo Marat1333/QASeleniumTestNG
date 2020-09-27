@@ -58,8 +58,8 @@ public class TasksListsModalPage extends CommonMagMobilePage {
         return new RuptureCardPage();
     }
 
-    @Step("Выбрать задачу")
-    public TasksListsModalPage choseTasks(String... taskNames) {
+    @Step("Выбрать задачи")
+    public TasksListsModalPage selectTasks(String... taskNames) {
         for (String taskName : taskNames) {
             int previousSize = toDoTasksList.getCount();
             E(String.format("//*[@text='%s']/following-sibling::android.view.ViewGroup[@content-desc='Button-container'][1]",
@@ -75,8 +75,9 @@ public class TasksListsModalPage extends CommonMagMobilePage {
         List<String> possibleTasksNames = getPossibleTasks();
         if (tasks.size() > 0) {
             for (String task : tasks) {
-                anAssert.isTrue(toDoTasksNames.contains(task), "список задач \"Нужно сделать\" не содержит задачу " + task);
-                anAssert.isTrue(!possibleTasksNames.contains(task), "список задач \"Возможные задачи\" содержит задачу " + task);
+                softAssert.isTrue(toDoTasksNames.contains(task), "список задач \"Нужно сделать\" не содержит задачу " + task);
+                softAssert.isTrue(!possibleTasksNames.contains(task), "список задач \"Возможные задачи\" содержит задачу " + task);
+                softAssert.verifyAll();
             }
         } else {
             anAssert.isEquals(toDoTasksNames.size(), 0, "Задача в списке \"Нужно сделать\" присутствуют");

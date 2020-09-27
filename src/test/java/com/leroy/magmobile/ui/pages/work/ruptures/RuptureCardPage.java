@@ -91,7 +91,7 @@ public class RuptureCardPage extends CommonMagMobilePage {
     Button productCardNavigationBtn;
 
     @AppFindBy(text = "ПОДТВЕРДИТЬ")
-    Button acceptBtn;
+    Button submitBtn;
 
     @AppFindBy(text = "ДЕЙСТВИЯ С ПЕРЕБОЕМ")
     Button ruptureActionsBtn;
@@ -169,8 +169,8 @@ public class RuptureCardPage extends CommonMagMobilePage {
     }
 
     @Step("Подтвердить добавление перебоя")
-    public RupturesScannerPage acceptAdd() {
-        acceptBtn.click();
+    public RupturesScannerPage clickSubmitButton() {
+        submitBtn.click();
         return new RupturesScannerPage();
     }
 
@@ -244,7 +244,8 @@ public class RuptureCardPage extends CommonMagMobilePage {
 
     @Step("Проверить, что кнопка подтверждения ввода комментария активна")
     public RuptureCardPage shouldSubmitCommentBtnIsActive() throws Exception {
-        anAssert.isTrue(submitCommentBtn.getPointColor().equals(new Color(216, 240, 199, 255)), "inactive");
+        anAssert.isTrue(submitCommentBtn.getPointColor()
+                .equals(new Color(216, 240, 199, 255)), "inactive");
         return this;
     }
 
@@ -285,9 +286,9 @@ public class RuptureCardPage extends CommonMagMobilePage {
         for (String taskName : taskNameArray) {
             boolean checkBoxCondition = ruptureTaskContainer.getCheckBoxCondition(taskName);
             if (isEnabled) {
-                anAssert.isTrue(checkBoxCondition, "чекбокс в состоянии disabled");
+                anAssert.isTrue(checkBoxCondition, taskName + " чекбокс в состоянии disabled");
             } else {
-                anAssert.isFalse(checkBoxCondition, "чекбокс в состоянии enabled");
+                anAssert.isFalse(checkBoxCondition, taskName + " чекбокс в состоянии enabled");
             }
         }
         return this;
@@ -310,7 +311,7 @@ public class RuptureCardPage extends CommonMagMobilePage {
     public RuptureCardPage shouldTasksListContainsTasks(String... tasks) {
         List<String> uiTasksList = ruptureTaskContainer.getTaskList();
         for (String task : tasks) {
-            softAssert.isTrue(uiTasksList.contains(task), "список не содержит задачу" + task);
+            softAssert.isTrue(uiTasksList.contains(task), "список не содержит задачу " + task);
         }
         softAssert.verifyAll();
         return this;
@@ -337,7 +338,7 @@ public class RuptureCardPage extends CommonMagMobilePage {
         //mainScrollView.scrollToEnd();
         softAssert.areElementsVisible(ps, productCardNavigationBtn, salesHallProductQuantityLbl, zeroProductNeedToAddBtn,
                 oneProductNeedToAddBtn, twoProductsNeedToAddBtn, threeOrMoreProductsNeedToAddBtn,
-                rmWarehouseProductQuantityLbl, supplyDateLbl, acceptBtn, ruptureCallActionModalBtn, commentField);
+                rmWarehouseProductQuantityLbl, supplyDateLbl, submitBtn, ruptureCallActionModalBtn, commentField);
         //mainScrollView.scrollToBeginning();
         softAssert.verifyAll();
         return this;

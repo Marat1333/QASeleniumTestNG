@@ -9,7 +9,6 @@ import com.leroy.magmobile.ui.pages.work.ruptures.modal.DeleteSessionModalPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.modal.ExitActiveSessionModalPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.modal.FinishSessionAcceptModalPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.widgets.RuptureWidget;
-import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 
 import java.util.List;
@@ -31,13 +30,13 @@ public class ActiveSessionPage extends SessionPage {
             AndroidScrollView.TYPICAL_LOCATOR, "./*/android.view.ViewGroup[android.view.ViewGroup]/descendant::*[3]",
             RuptureWidget.class);
 
+    @Step("Получить список товаровв")
     public List<RuptureData> getRupturesList() throws Exception {
-        List<RuptureData> ruptureDataList = ruptureCardScrollView.getFullDataList();
-        return ruptureDataList;
+        return ruptureCardScrollView.getFullDataList();
     }
 
     @Step("Завершить сессию")
-    public FinishSessionAcceptModalPage finishSession(){
+    public FinishSessionAcceptModalPage finishSession() {
         endSessionBtn.click();
         return new FinishSessionAcceptModalPage();
     }
@@ -48,8 +47,8 @@ public class ActiveSessionPage extends SessionPage {
         return new ExitActiveSessionModalPage();
     }
 
-    @Step("Добавить перебой в сессию")
-    public RupturesScannerPage addRuptureToSession() {
+    @Step("Нажать на '+ Перебои'")
+    public RupturesScannerPage clickAddRuptureButton() {
         addRuptureBtn.click();
         return new RupturesScannerPage();
     }
@@ -79,13 +78,13 @@ public class ActiveSessionPage extends SessionPage {
             ruptureCardScrollView.scrollDownToElement(target);
         }
         //из-за кнопок "+перебой и завершить"
-        ruptureCardScrollView.scrollDown();
+        //ruptureCardScrollView.scrollDown();
         target.click();
         return new RuptureCardPage();
     }
 
     @Step("Проверить, что отображается сообщение о созданной заявке на отзыв с RM")
-    public ActiveSessionPage shouldRecallRequestHasBeenCreatedMsgIsVisible(){
+    public ActiveSessionPage shouldRecallRequestHasBeenCreatedMsgIsVisible() {
         anAssert.isElementVisible(recallRequestHasBeenCreatedMsgLbl);
         return this;
     }
@@ -119,15 +118,16 @@ public class ActiveSessionPage extends SessionPage {
     @Step("Проверить, что данные перебоев отображены корректно")
     public ActiveSessionPage shouldRupturesDataIsCorrect(RuptureData... dataArray) throws Exception {
         List<RuptureData> uiRuptureDataList = ruptureCardScrollView.getFullDataList();
+        anAssert.isEquals(uiRuptureDataList.size(), dataArray.length, "Разное кол-во данных о перебоях");
         for (int i = 0; i < dataArray.length; i++) {
-            anAssert.isEquals(uiRuptureDataList.get(i), dataArray[i], "data mismatch");
+            anAssert.isEquals(uiRuptureDataList.get(i), dataArray[i], (i + 1) + " данные отличаются");
         }
         return this;
     }
 
     @Step("Проверить, что данные перебоев отображены корректно")
     public ActiveSessionPage shouldRupturesDataIsCorrect(List<RuptureData> dataList) throws Exception {
-        RuptureData [] dataArray = new RuptureData[dataList.size()];
+        RuptureData[] dataArray = new RuptureData[dataList.size()];
         return shouldRupturesDataIsCorrect(dataList.toArray(dataArray));
     }
 

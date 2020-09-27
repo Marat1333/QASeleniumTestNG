@@ -5,6 +5,7 @@ import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
 import com.leroy.magmobile.ui.pages.more.DepartmentListPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.FinishedSessionData;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.SessionData;
@@ -49,6 +50,7 @@ public class SessionListPage extends CommonMagMobilePage {
     protected void waitForPageIsLoaded() {
         backBtn.waitForVisibility();
         scanRupturesBtn.waitForVisibility();
+        waitUntilProgressBarIsInvisible();
     }
 
     @Step("Выйти из сессии")
@@ -57,7 +59,7 @@ public class SessionListPage extends CommonMagMobilePage {
     }
 
     @Step("Обновить страницу выполнив pull to refresh")
-    public SessionListPage pullToRefresh(){
+    public SessionListPage pullToRefresh() {
         while (!isProgressBarVisible()) {
             mainScrollView.scrollToBeginning(1);
         }
@@ -66,7 +68,7 @@ public class SessionListPage extends CommonMagMobilePage {
     }
 
     @Step("Сканировать перебои")
-    public RupturesScannerPage callScannerPage() {
+    public RupturesScannerPage clickScanRupturesButton() {
         scanRupturesBtn.click();
         return new RupturesScannerPage();
     }
@@ -88,17 +90,27 @@ public class SessionListPage extends CommonMagMobilePage {
 
     @Step("Перейти в сессию с номером {sessionId}")
     public void goToSession(String sessionId) throws Exception {
-        Element target = E(String.format("contains(%s)", sessionId));
+        /*Element target = E(String.format("contains(%s)", sessionId));
         if (!target.isVisible()) {
             mainScrollView.scrollDownToElement(target);
         }
         //из-за кнопки "сканировать перебои"
         mainScrollView.setSwipeDeadZonePercentage(30);
         mainScrollView.scrollDown();
-        if (!target.isVisible()){
+        if (!target.isVisible()) {
             mainScrollView.scrollUpToElement(target);
         }
-        target.click();
+        target.click();*/
+        CardWidget<String> cardWidget =
+                mainScrollView.searchForWidgetByText(sessionId);
+        anAssert.isTrue(cardWidget.collectDataFromPage().contains(sessionId),
+                "Не нашли сессию №" + sessionId);
+        //из-за кнопки "сканировать перебои"
+        if (cardWidget.getLocation().getY() / driver.manage().window().getSize().getHeight() * 100 > 95) {
+            mainScrollView.setSwipeDeadZonePercentage(30);
+            mainScrollView.scrollDown();
+        }
+        cardWidget.click();
     }
 
     @Step("Проверить, что в списке активных сессия отсутствует сессия")
