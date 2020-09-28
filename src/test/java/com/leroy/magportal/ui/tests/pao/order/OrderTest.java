@@ -932,6 +932,7 @@ public class OrderTest extends BasePAOTest {
                 .shouldPinCodeIs(orderData.getPinCode())
                 .shouldNumberIs(orderData.getNumber());
         orderData.setStatus(SalesDocumentsConst.States.IN_PROGRESS.getUiVal());
+        orderData.setAlternativeStatus(SalesDocumentsConst.States.CONFIRMED.getUiVal());
     }
 
     /**

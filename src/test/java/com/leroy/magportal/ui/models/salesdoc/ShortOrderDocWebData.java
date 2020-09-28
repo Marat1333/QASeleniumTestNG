@@ -11,6 +11,7 @@ import java.time.temporal.ChronoUnit;
 public class ShortOrderDocWebData implements IDataWithNumberAndStatus<ShortOrderDocWebData> {
     private String number;
     private String status;
+    private String alternativeStatus; // Вспомогательный параметр (использовать, когда у заказа могут быть разные варианты статуса)
     private String customer;
     private LocalDateTime creationDate;
     private Double totalPrice;
@@ -39,8 +40,15 @@ public class ShortOrderDocWebData implements IDataWithNumberAndStatus<ShortOrder
                     "Неверный номер документа");
         }
         if (expectedData.getStatus() != null) {
-            softAssert.isEquals(status.toLowerCase(), expectedData.getStatus().toLowerCase(),
-                    "Неверный статус документа");
+            if (expectedData.getAlternativeStatus() != null) {
+                softAssert.isTrue(this.getStatus().equalsIgnoreCase(expectedData.getStatus()) ||
+                                this.getStatus().equalsIgnoreCase(expectedData.getAlternativeStatus()),
+                        "Неверный статус документа. Актуальный: " + this.getStatus() +
+                                " Ожидался: " + expectedData.getStatus() + " или " + expectedData.getAlternativeStatus());
+            } else {
+                softAssert.isEquals(status.toLowerCase(), expectedData.getStatus().toLowerCase(),
+                        "Неверный статус документа");
+            }
         }
         if (expectedData.getCustomer() != null) {
             softAssert.isEquals(customer, expectedData.getCustomer(),

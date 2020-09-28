@@ -384,14 +384,14 @@ public class SearchProductPage extends MagPortalBasePage {
                 return this;
             }
             myShopFilterBtn.click();
-            myShopContainer.waitUntilAttributeIsEqual(attributeName, attributeValue);
+            myShopContainer.waitUntilAttributeIsChanged(attributeName, attributeValue);
         } else {
             attributeValue = allGammaContainer.getAttribute(attributeName);
             if (attributeValue.contains(condition)) {
                 return this;
             }
             allGammaFilterBtn.click();
-            allGammaContainer.waitUntilAttributeIsEqual(attributeName, attributeValue);
+            allGammaContainer.waitUntilAttributeIsChanged(attributeName, attributeValue);
         }
         return this;
     }

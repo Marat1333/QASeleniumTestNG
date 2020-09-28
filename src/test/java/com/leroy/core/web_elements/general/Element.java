@@ -879,14 +879,29 @@ public class Element extends BaseWidget {
      * Wait until attribute is equal to specific value
      *
      * @param attributeName  - what is attribute
-     * @param attributeValue - what value should be
+     * @param previousAttributeValue - what value should NOT be
      */
-    public void waitUntilAttributeIsEqual(String attributeName, String attributeValue) {
+    public void waitUntilAttributeIsChanged(String attributeName, String previousAttributeValue) {
         WebDriverWait wait = new WebDriverWait(this.driver, timeout);
         try {
-            wait.until((ExpectedCondition<Boolean>) driverObject -> !this.getAttribute(attributeName).equals(attributeValue));
+            wait.until((ExpectedCondition<Boolean>) driverObject -> !this.getAttribute(attributeName).equals(previousAttributeValue));
         } catch (TimeoutException e) {
             Log.warn(String.format("waitUntilAttributeIsEqual failed (tried for %d second(s))", timeout));
+        }
+    }
+
+    /**
+     * Wait until the attribute contains a specific value
+     *
+     * @param attributeName  - what is attribute
+     * @param attributeValue - what value should be
+     */
+    public void waitUntilAttributeContains(String attributeName, String attributeValue) {
+        WebDriverWait wait = new WebDriverWait(this.driver, timeout);
+        try {
+            wait.until((ExpectedCondition<Boolean>) driverObject -> this.getAttribute(attributeName).contains(attributeValue));
+        } catch (TimeoutException e) {
+            Log.warn(String.format("waitUntilAttributeContains failed (tried for %d second(s))", timeout));
         }
     }
 }
