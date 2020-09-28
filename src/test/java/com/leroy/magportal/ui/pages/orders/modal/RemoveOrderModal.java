@@ -8,5 +8,6 @@ public class RemoveOrderModal extends CommonYesNoModal {
     public void clickYesButton() {
         super.clickYesButton();
         waitForSpinnerAppearAndDisappear();
+        waitForSpinnerAppearAndDisappear(1);
     }
 }

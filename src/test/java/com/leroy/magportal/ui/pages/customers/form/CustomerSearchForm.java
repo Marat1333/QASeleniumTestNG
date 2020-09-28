@@ -145,7 +145,8 @@ public class CustomerSearchForm extends MagPortalBasePage {
             customerSearchItems.get(0).click();
             customerSearchItems.waitUntilElementCountEquals(0);
         }
-        waitForSpinnerAppearAndDisappear();
+        customerPhoneSearchFld.waitForInvisibility();
+        waitForSpinnerDisappear();
         return this;
     }
 
@@ -223,6 +224,7 @@ public class CustomerSearchForm extends MagPortalBasePage {
         softAssert.isElementNotVisible(naturalPersonBtn);
         softAssert.isElementNotVisible(legalPersonBtn);
         softAssert.isElementNotVisible(customerPhoneSearchFld);
+        softAssert.verifyAll();
         shouldSelectedCustomerHasPhone(expectedCustomerData.getPhoneNumber());
         if (expectedCustomerData.getEmail() != null)
             shouldSelectedCustomerHasEmail(expectedCustomerData.getEmail());
