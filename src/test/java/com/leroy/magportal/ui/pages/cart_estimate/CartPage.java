@@ -137,6 +137,7 @@ public class CartPage extends CartEstimatePage {
 
     @Step("Проверить, что на странице корзины содержатся ожидаемые данные")
     public CartPage shouldCartHasData(SalesDocWebData expectedEstimateData) throws Exception {
+        waitForProductsAreLoaded();
         shouldDocumentHasData(expectedEstimateData);
         return this;
     }

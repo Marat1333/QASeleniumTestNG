@@ -39,7 +39,7 @@ public class MenuPage extends BaseWebPage {
     Button supportButton;
 
     private static final String LEFT_MENU_SPECIFIC_ITEM_XPATH =
-            "//div[contains(@class, 'side-menu-buttons-container')]//button[descendant::span[text()='%s']]";
+            "//div[contains(@class, 'side-menu-buttons-container')]//a[descendant::span[text()='%s']]";
 
     private void openMenu() {
         if (!supportButton.isVisible())

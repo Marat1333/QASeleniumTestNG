@@ -469,7 +469,6 @@ public class OrderTest extends BasePAOTest {
                 orderData.getOrders().get(0).getProductCardDataList().get(0).getSelectedQuantity()) + 2;
         OrderWebData oneOrderData = orderData.getOrders().get(0);
         oneOrderData.changeProductQuantity(0, newQuantity, true);
-        oneOrderData.setTotalWeight(oneOrderData.getTotalWeight() * newQuantity);
         if (INVISIBLE_AUTHOR_ORDER_DRAFT)
             orderData.setAuthorName(null);
         orderDraftContentPage.editProductQuantity(1, newQuantity)
@@ -653,6 +652,59 @@ public class OrderTest extends BasePAOTest {
         orderCreatedContentPage.refreshDocumentList();
         orderCreatedContentPage.shouldDocumentListContainsThis(shortOrderDocWebData);
     }
+
+    @Test(description = "C23398451 Создание заказа с существующим пин кодом", groups = NEED_PRODUCTS_GROUP)
+    public void testCreateOrderWithExistedPinCode() throws Exception {
+        String toolTypeText = "Уже используется, придумай другой код";
+        String existedPinCode = "11111";
+        SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+        step("Выполнение preconditions");
+        preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)), false);
+
+        CustomerSearchForm customerSearchForm2 = orderDraftDeliveryWayPage.getCustomerSearchForm();
+        customerSearchForm2.clickAddCustomer();
+        customerSearchForm2.selectCustomerByPhone(customerData.getPhoneNumber());
+
+        // Step 1
+        step("Введите существующий PIN-код, например 11111 для самовывоза или 99999 для доставки");
+        orderDraftDeliveryWayPage.enterPinCode(existedPinCode)
+                .shouldPinCodeErrorTooltipIs(toolTypeText);
+
+        //Step 2
+        step("Нажмите на кнопку Подтвердить заказ");
+        orderDraftDeliveryWayPage.clickConfirmOrderButtonNegativePath()
+                .shouldPinCodeErrorTooltipIs(toolTypeText);
+    }
+
+    @Test(description = "C23398448 Смена типа получения товара при заполненном пинкоде в неподтвержденном заказе",
+            groups = NEED_PRODUCTS_GROUP)
+    public void testChangeOfReceiptType() throws Exception {
+        SalesDocumentsConst.GiveAwayPoints deliveryWay = SalesDocumentsConst.GiveAwayPoints.DELIVERY;
+        SalesDocumentsConst.GiveAwayPoints pickupWay = SalesDocumentsConst.GiveAwayPoints.PICKUP;
+        preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)), false);
+        stepEnterPinCode();
+
+        // Step 1
+        step("В поле Выбери способ получения измените Самовывоз (по умолчанию) на Доставка или наоборот");
+        orderDraftDeliveryWayPage.selectDeliveryWay(deliveryWay);
+        orderData.setDeliveryType(deliveryWay);
+        orderData.setPinCode("");
+        orderDraftDeliveryWayPage.shouldOrderDataIs(orderData);
+        orderDraftDeliveryWayPage.shouldPinCodeFieldIs("");
+
+        // Step 2
+        step("Введите PIN-код для оплаты");
+        stepEnterPinCode();
+
+        // Step 3
+        step("В поле Выбери способ получения измените Доставка на Самовывоз (по умолчанию) или наоборот");
+        orderDraftDeliveryWayPage.selectDeliveryWay(pickupWay);
+        orderData.setDeliveryType(pickupWay);
+        orderData.setPinCode("");
+        orderDraftDeliveryWayPage.shouldOrderDataIs(orderData);
+        orderDraftDeliveryWayPage.shouldPinCodeFieldIs("");
+    }
+
 
     // ======== Подтверждение заказа ============= //
 
