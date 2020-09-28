@@ -6,6 +6,7 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.ui.pages.work.ruptures.modal.TasksListsModalPage;
+import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 
 import java.util.ArrayList;
@@ -27,11 +28,14 @@ public class RuptureTaskContainer extends Element {
     @AppFindBy(xpath = ".//*[@content-desc='Button-container']//android.widget.TextView[not(contains(@text,'Назначить задачи'))]")
     ElementList<Element> tasksList;
 
+    @Step("Получить с экрана список экшенов")
     public List<String> getTaskList() {
         String ps = getPageSource();
         List<String> result = new ArrayList<>();
-        for (Element each : tasksList) {
-            result.add(each.getText(ps));
+        if (tasksList.getCount() > 0) {
+            for (Element each : tasksList) {
+                result.add(each.getText(ps));
+            }
         }
         if (recallFromRmLbl.isVisible(ps)) {
             result.add(recallFromRmLbl.getText(ps));

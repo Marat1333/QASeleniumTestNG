@@ -3,7 +3,6 @@ package com.leroy.core.pages;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.core.web_elements.general.ElementList;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;

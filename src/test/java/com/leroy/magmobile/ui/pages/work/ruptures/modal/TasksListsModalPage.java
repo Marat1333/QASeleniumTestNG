@@ -9,9 +9,7 @@ import com.leroy.magmobile.ui.pages.work.ruptures.RuptureCardPage;
 import io.qameta.allure.Step;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class TasksListsModalPage extends CommonMagMobilePage {
     @AppFindBy(xpath = "//*[contains(@text,'Задачи по перебою')]/preceding-sibling::*")
@@ -64,7 +62,7 @@ public class TasksListsModalPage extends CommonMagMobilePage {
             int previousSize = toDoTasksList.getCount();
             E(String.format("//*[@text='%s']/following-sibling::android.view.ViewGroup[@content-desc='Button-container'][1]",
                     taskName)).click();
-            toDoTasksList.waitUntilSizeHasChanged(previousSize);
+            toDoTasksList.waitUntilSizeIsChanged(previousSize);
         }
         return this;
     }
