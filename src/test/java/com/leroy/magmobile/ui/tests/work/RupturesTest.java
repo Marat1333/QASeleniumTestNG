@@ -1379,11 +1379,12 @@ public class RupturesTest extends AppBaseSteps {
         List<TransferSearchProductData> products = transferHelper.searchForProductsForTransfer();
         String ruptureLmCode = products.get(1).getLmCode();
 
+        int sessionId = createSessionWithProductWithSpecificIncompleteAction(
+                ruptureLmCode, Action.RECALL_FROM_RM);
+
         WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
         SessionListPage sessionListPage = workPage.goToRuptures();
 
-        int sessionId = createSessionWithProductWithSpecificIncompleteAction(
-                ruptureLmCode, Action.RECALL_FROM_RM);
         sessionListPage.goToSession(String.valueOf(sessionId));
         ActiveSessionPage activeSessionPage = new ActiveSessionPage();
 
@@ -1446,13 +1447,12 @@ public class RupturesTest extends AppBaseSteps {
         List<TransferSearchProductData> products = transferHelper.searchForProductsForTransfer();
         String ruptureLmCode = products.get(2).getLmCode();
 
-        WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
-        SessionListPage sessionListPage = workPage.goToRuptures();
-
         int sessionId = createSessionWithProductWithSpecificIncompleteAction(
                 ruptureLmCode, Action.RECALL_FROM_RM);
         rupturesHelper.finishSession(sessionId);
 
+        WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
+        SessionListPage sessionListPage = workPage.goToRuptures();
         sessionListPage.goToSession(String.valueOf(sessionId));
         FinishedSessionPage finishedSessionPage = new FinishedSessionPage();
 
