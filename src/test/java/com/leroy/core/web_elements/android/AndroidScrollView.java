@@ -143,14 +143,19 @@ public class AndroidScrollView<T> extends BaseWidget {
         return getDataObj(index, false);
     }
 
+    private List<T> getFullDataList(SearchContext searchContext, Integer maxScrollCount,
+                                    Integer maxEntityCount, boolean scrollUpBefore, boolean grabFullData) throws Exception {
+        if (scrollUpBefore)
+            scrollToBeginning();
+        scrollAndGrabData(searchContext, maxScrollCount, maxEntityCount, Direction.DOWN, grabFullData);
+        return new ArrayList<>(tmpCardDataList);
+    }
+
     /**
      * Scroll down to the end and get all data as ArrayList
      */
     public List<T> getFullDataList(int maxEntityCount, boolean scrollUpBefore) throws Exception {
-        if (scrollUpBefore)
-            scrollToBeginning();
-        scrollAndGrabData(null, null, maxEntityCount, Direction.DOWN);
-        return new ArrayList<>(tmpCardDataList);
+        return getFullDataList(null, null, maxEntityCount, scrollUpBefore, true);
     }
 
     public List<T> getFullDataList(int maxEntityCount, int maxScrollCount, boolean scrollUpBefore) throws Exception {
@@ -176,9 +181,9 @@ public class AndroidScrollView<T> extends BaseWidget {
      * Return count of the rows inside the ScrollView
      */
     public int getRowCount(boolean scrollUpBefore) throws Exception {
-        if (scrollUpBefore)
-            scrollToBeginning();
-        return getFullDataList(100).size();
+        return getFullDataList(
+                null, null,
+                100, scrollUpBefore, false).size();
     }
 
     public int getRowCount() throws Exception {
@@ -248,7 +253,7 @@ public class AndroidScrollView<T> extends BaseWidget {
      */
     protected AndroidScrollView<T> scrollAndGrabData(
             SearchContext searchContext, Integer maxScrollCount,
-            Integer maxEntityCount, Direction direction) {
+            Integer maxEntityCount, Direction direction, boolean grabFullData) {
         initialWebElementIfNeeded();
         tmpCardDataList = new ArrayList<>();
         String prevPageSource = null;
@@ -265,7 +270,11 @@ public class AndroidScrollView<T> extends BaseWidget {
             for (CardWidget<T> widget : cardWidgetList) {
                 if (widget.isFullyVisible(pageSource)) {
                     tmpWidget = widget;
-                    T data = widget.collectDataFromPage(pageSource);
+                    T data;
+                    if (grabFullData)
+                        data = widget.collectDataFromPage(pageSource);
+                    else
+                        data = widget.collectShortDataFromPage(pageSource);
                     currentVisibleDataList.add(data);
                     if (searchContext != null && searchContext.findText != null &&
                             Arrays.stream(searchContext.findText).allMatch(o -> data.toString().contains(o)) &&
@@ -294,6 +303,12 @@ public class AndroidScrollView<T> extends BaseWidget {
             i++;
         }
         return this;
+    }
+
+    protected AndroidScrollView<T> scrollAndGrabData(
+            SearchContext searchContext, Integer maxScrollCount,
+            Integer maxEntityCount, Direction direction) {
+        return scrollAndGrabData(searchContext, maxScrollCount, maxEntityCount, direction, true);
     }
 
 

@@ -50,7 +50,7 @@ public class FinishedSessionRupturesActionsPage extends CommonMagMobilePage {
     }
 
     @Step("Нажать на кнопку \"Сделать отзыв с RM\"")
-    public AcceptRecallFromRmModalPage recallProductFromRm(){
+    public AcceptRecallFromRmModalPage recallProductFromRm() {
         recallFromRm.click();
         return new AcceptRecallFromRmModalPage();
     }
@@ -62,7 +62,7 @@ public class FinishedSessionRupturesActionsPage extends CommonMagMobilePage {
     }
 
     @Step("Проскроллиться к началу прокручиваемой области")
-    public FinishedSessionRupturesActionsPage scrollToBeginning(){
+    public FinishedSessionRupturesActionsPage scrollToBeginning() {
         ruptureCardScrollView.scrollToBeginning();
         return this;
     }
@@ -83,13 +83,13 @@ public class FinishedSessionRupturesActionsPage extends CommonMagMobilePage {
     }
 
     @Step("Нажать на чек-бокс задачи для перебоя с лм кодом {lmCode}")
-    public FinishedSessionRupturesActionsPage choseTaskCheckBoxForProduct(Action action, String lmCode) throws Exception {
+    public FinishedSessionRupturesActionsPage selectTaskCheckBoxForProduct(Action action, String lmCode) throws Exception {
         Element el = E(String.format(TYPICAL_RUPTURE_TASK_CONTAINER_XPATH, lmCode, action.getActionName()));
-        if (!el.isVisible()){
+        if (!el.isVisible()) {
             ruptureCardScrollView.scrollDownToElement(el);
         }
         ruptureCardScrollView.scrollDown();
-        if (!el.isVisible()){
+        if (!el.isVisible()) {
             ruptureCardScrollView.scrollUpToElement(el);
         }
         el.click();
@@ -104,7 +104,7 @@ public class FinishedSessionRupturesActionsPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что отображается сообщение о созданной заявке на отзыв с RM")
-    public FinishedSessionRupturesActionsPage shouldRecallRequestHasBeenCreatedMsgIsVisible(){
+    public FinishedSessionRupturesActionsPage shouldRecallRequestHasBeenCreatedMsgIsVisible() {
         anAssert.isElementVisible(recallRequestHasBeenCreatedMsgLbl);
         return this;
     }
@@ -161,11 +161,11 @@ public class FinishedSessionRupturesActionsPage extends CommonMagMobilePage {
 
     @Step("Проверить, что отображается указанное кол-во перебоев")
     public FinishedSessionRupturesActionsPage shouldRuptureCountIsCorrect(int ruptureCount) throws Exception {
-        if (ruptureCount==0){
+        if (ruptureCount == 0) {
             shouldNoActiveRuptureTasksAreAvailable();
-        }else {
-            List<RuptureData> uiRuptureData = ruptureCardScrollView.getFullDataList();
-            anAssert.isEquals(uiRuptureData.size(), ruptureCount, "wrong ruptures quantity");
+        } else {
+            int rowCount = ruptureCardScrollView.getRowCount();
+            anAssert.isEquals(rowCount, ruptureCount, "wrong ruptures quantity");
         }
         return this;
     }
@@ -178,7 +178,7 @@ public class FinishedSessionRupturesActionsPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что отображается задача \"сделать отзыв с RM\"")
-    public FinishedSessionRupturesActionsPage shouldRecallFromRmTaskIsVisible(){
+    public FinishedSessionRupturesActionsPage shouldRecallFromRmTaskIsVisible() {
         anAssert.isElementVisible(recallFromRm);
         return this;
     }

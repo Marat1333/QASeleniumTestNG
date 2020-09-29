@@ -60,9 +60,8 @@ public class SessionListPage extends CommonMagMobilePage {
 
     @Step("Обновить страницу выполнив pull to refresh")
     public SessionListPage pullToRefresh() {
-        while (!isProgressBarVisible()) {
-            mainScrollView.scrollToBeginning(1);
-        }
+        mainScrollView.scrollToBeginning();
+        mainScrollView.scrollToBeginning();
         waitUntilProgressBarIsInvisible();
         return new SessionListPage();
     }
@@ -120,14 +119,14 @@ public class SessionListPage extends CommonMagMobilePage {
         return this;
     }
 
-    @Step("Проверить, что в списке активных сессия отсутствует сессия")
+    @Step("Проверить, что в списке активных сессий присутствует сессия")
     public SessionListPage shouldActiveSessionContainsSession(SessionData data) throws Exception {
         List<SessionData> uiSessionData = activeSessionScrollView.getFullDataList();
         anAssert.isTrue(uiSessionData.contains(data), "лист не содержит данные");
         return this;
     }
 
-    @Step("Проверить, что в списке активных сессия отсутствует сессия")
+    @Step("Проверить, что в списке активных сессия присутствует сессия")
     public SessionListPage shouldActiveSessionContainsSession(String sessionId) throws Exception {
         List<SessionData> uiSessionData = activeSessionScrollView.getFullDataList();
         List<String> sessionIds = uiSessionData.stream().map(SessionData::getSessionNumber).collect(Collectors.toList());
@@ -136,19 +135,19 @@ public class SessionListPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что все активные сессии отображены")
-    public SessionListPage shouldAllActiveSessionAreVisible(List<Integer> activeSessionsIdList) throws Exception {
+    public SessionListPage shouldTheseActiveSessionsArePresent(List<Integer> sessionsIdList) throws Exception {
         List<SessionData> uiActiveSessionData = activeSessionScrollView.getFullDataList();
-        anAssert.isEquals(uiActiveSessionData.size(), activeSessionsIdList.size(), "wrong session count");
+        anAssert.isEquals(uiActiveSessionData.size(), sessionsIdList.size(), "Неверное кол-во сессий");
         List<Integer> uiActiveSessionIdList = new ArrayList<>();
         for (SessionData each : uiActiveSessionData) {
             uiActiveSessionIdList.add(Integer.parseInt(each.getSessionNumber()));
         }
-        anAssert.isTrue(uiActiveSessionIdList.containsAll(activeSessionsIdList), "there is no needed session");
+        anAssert.isEquals(uiActiveSessionIdList, sessionsIdList, "Ожидались другие номера сессий");
         return this;
     }
 
     @Step("Проверить, что все активные сессии отображены")
-    public SessionListPage shouldAllFinishedSessionAreVisible(List<Integer> finishedSessionsIdList) throws Exception {
+    public SessionListPage shouldTheseFinishedSessionArePresent(List<Integer> finishedSessionsIdList) throws Exception {
         Element anchor = E("contains(ЗАВЕРШЕННЫЕ СЕССИИ)");
         if (!anchor.isVisible()) {
             //из-за холостых скроллов shouldAllActiveSessionAreVisible() приходиться подниматься
@@ -160,13 +159,13 @@ public class SessionListPage extends CommonMagMobilePage {
         for (SessionData each : uiFinishedSessionData) {
             uiFinishedSessionIdList.add(Integer.parseInt(each.getSessionNumber()));
         }
-        anAssert.isTrue(uiFinishedSessionIdList.containsAll(finishedSessionsIdList), "there is no needed session");
+        anAssert.isEquals(uiFinishedSessionIdList, finishedSessionsIdList, "Ожидались другие номера сессий");
         return this;
     }
 
     @Step("Проверить, что карточки заверешнных сессий не отображаются")
     public SessionListPage shouldFinishedSessionCardsIsNotVisible() throws Exception {
-        mainScrollView.scrollToEnd();
+        mainScrollView.scrollToBeginning();
         List<FinishedSessionData> uiFinishedSessionData = finishedSessionScrollView.getFullDataList();
         anAssert.isEquals(uiFinishedSessionData.size(), 0, "there are some finished sessions");
         return this;
@@ -174,8 +173,9 @@ public class SessionListPage extends CommonMagMobilePage {
 
     @Step("Проверить, что карточки активных сессий не отображаются")
     public SessionListPage shouldActiveSessionCardsIsNotVisible() throws Exception {
+        activeSessionScrollView.scrollToBeginning();
         List<SessionData> uiActiveSessionData = activeSessionScrollView.getFullDataList();
-        anAssert.isEquals(uiActiveSessionData.size(), 0, "there are some finished sessions");
+        anAssert.isEquals(uiActiveSessionData.size(), 0, "there are some active sessions");
         return this;
     }
 

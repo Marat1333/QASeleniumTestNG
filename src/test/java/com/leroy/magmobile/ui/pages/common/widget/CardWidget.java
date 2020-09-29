@@ -16,6 +16,13 @@ public abstract class CardWidget<T> extends Element {
 
     public abstract T collectDataFromPage(String pageSource);
 
+    /**
+     * Собирает только короткий набор данных
+     */
+    public T collectShortDataFromPage(String pageSource) {
+        return collectDataFromPage(pageSource);
+    }
+
     public boolean isFullyVisible() {
         return isFullyVisible(null);
     }

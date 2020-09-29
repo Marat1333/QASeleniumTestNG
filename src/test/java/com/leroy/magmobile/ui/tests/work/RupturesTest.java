@@ -1,24 +1,18 @@
 package com.leroy.magmobile.ui.tests.work;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.DefectConst;
 import com.leroy.constants.EnvConstants;
-import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.UserSessionData;
-import com.leroy.magmobile.api.clients.RupturesClient;
-import com.leroy.magmobile.api.clients.TransferClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.ruptures.ActionData;
-import com.leroy.magmobile.api.data.ruptures.ReqRuptureSessionData;
 import com.leroy.magmobile.api.data.ruptures.ResRuptureSessionDataList;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductData;
 import com.leroy.magmobile.api.data.sales.transfer.TransferSearchProductData;
+import com.leroy.magmobile.api.helpers.RuptureHelper;
+import com.leroy.magmobile.api.helpers.TransferHelper;
 import com.leroy.magmobile.ui.AppBaseSteps;
-import com.leroy.magmobile.ui.pages.more.MorePage;
-import com.leroy.magmobile.ui.pages.more.SearchShopPage;
-import com.leroy.magmobile.ui.pages.more.UserProfilePage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductCardPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.work.WorkPage;
@@ -36,7 +30,6 @@ import io.qameta.allure.Issue;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
-import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -48,11 +41,11 @@ public class RupturesTest extends AppBaseSteps {
     private static final ThreadLocal<Integer> sessionsNumbers = new ThreadLocal<>();
 
     @Inject
-    RupturesClient ruptureClient;
+    RuptureHelper rupturesHelper;
     @Inject
     SearchProductHelper searchProductHelper;
     @Inject
-    TransferClient transferClient;
+    TransferHelper transferHelper;
 
     @Override
     public UserSessionData initTestClassUserSessionDataTemplate() {
@@ -66,7 +59,7 @@ public class RupturesTest extends AppBaseSteps {
     @AfterMethod
     private void deleteSession() {
         if (sessionsNumbers.get() != null)
-            ruptureClient.deleteSession(sessionsNumbers.get());
+            rupturesHelper.deleteSessions(sessionsNumbers.get());
     }
 
     private int createSessionWithProductWithoutActions() {
@@ -74,16 +67,9 @@ public class RupturesTest extends AppBaseSteps {
         productData.generateRandomData();
         productData.setActions(null);
 
-        ReqRuptureSessionData rupturePostData = new ReqRuptureSessionData();
-        rupturePostData.setProduct(productData);
-        rupturePostData.setShopId(Integer.parseInt(getUserSessionData().getUserShopId()));
-        rupturePostData.setStoreId(Integer.parseInt(getUserSessionData().getUserShopId()));
-        rupturePostData.setDepartmentId(Integer.parseInt(getUserSessionData().getUserDepartmentId()));
-
-        Response<JsonNode> resp = ruptureClient.createSession(rupturePostData);
-        int result = ruptureClient.assertThatSessionIsCreatedAndGetId(resp);
-        sessionsNumbers.set(result);
-        return result;
+        int sessionId = rupturesHelper.createSession(Collections.singletonList(productData));
+        sessionsNumbers.set(sessionId);
+        return sessionId;
     }
 
     private int createSessionWithProductWithAllActions() {
@@ -105,19 +91,12 @@ public class RupturesTest extends AppBaseSteps {
         productData.generateRandomData();
         productData.setActions(actions);
 
-        ReqRuptureSessionData rupturePostData = new ReqRuptureSessionData();
-        rupturePostData.setProduct(productData);
-        rupturePostData.setShopId(Integer.parseInt(getUserSessionData().getUserShopId()));
-        rupturePostData.setStoreId(Integer.parseInt(getUserSessionData().getUserShopId()));
-        rupturePostData.setDepartmentId(Integer.parseInt(getUserSessionData().getUserDepartmentId()));
-
-        Response<JsonNode> resp = ruptureClient.createSession(rupturePostData);
-        int result = ruptureClient.assertThatSessionIsCreatedAndGetId(resp);
-        sessionsNumbers.set(result);
-        return result;
+        int sessionId = rupturesHelper.createSession(Collections.singletonList(productData));
+        sessionsNumbers.set(sessionId);
+        return sessionId;
     }
 
-    private int createSessionWithProductWithSpecificIncompleteAction(String lmCode, Action action, UserSessionData sessionData) {
+    private int createSessionWithProductWithSpecificIncompleteAction(String lmCode, Action action) {
         List<ActionData> actions = new ArrayList<>();
         ActionData data = new ActionData();
         data.setState(false);
@@ -131,60 +110,37 @@ public class RupturesTest extends AppBaseSteps {
         productData.setLmCode(lmCode);
         productData.setActions(actions);
 
-        ReqRuptureSessionData rupturePostData = new ReqRuptureSessionData();
-        rupturePostData.setProduct(productData);
-        rupturePostData.setShopId(Integer.parseInt(sessionData.getUserShopId()));
-        rupturePostData.setStoreId(Integer.parseInt(sessionData.getUserShopId()));
-        rupturePostData.setDepartmentId(Integer.parseInt(sessionData.getUserDepartmentId()));
-
-        Response<JsonNode> resp = ruptureClient.createSession(rupturePostData);
-        int result = ruptureClient.assertThatSessionIsCreatedAndGetId(resp);
-        sessionsNumbers.set(result);
-        return result;
-    }
-
-    private int createSessionWithProductWithSpecificIncompleteAction(String lmCode, Action action) {
-        return createSessionWithProductWithSpecificIncompleteAction(lmCode, action, getUserSessionData());
-    }
-
-    private int createSessionWithProductWithSpecificIncompleteAction(Action action) {
-        return createSessionWithProductWithSpecificIncompleteAction(RandomStringUtils.randomNumeric(8), action);
+        int sessionId = rupturesHelper.createSession(Collections.singletonList(productData));
+        sessionsNumbers.set(sessionId);
+        return sessionId;
     }
 
     private int createSessionWithNeededProductAmountWithSpecificActions(int productAmount, ActionData... actions) {
+        List<RuptureProductData> ruptureProductDataList = new ArrayList<>();
+
         List<ActionData> actionsList = Arrays.asList(actions);
-        RuptureProductData productData = new RuptureProductData();
         Set<String> generatedLmCodes = new HashSet<>();
-        productData.generateRandomData();
-        generatedLmCodes.add(productData.getLmCode());
-        productData.setActions(actionsList);
 
-        ReqRuptureSessionData rupturePostData = new ReqRuptureSessionData();
-        rupturePostData.setProduct(productData);
-        rupturePostData.setShopId(Integer.parseInt(getUserSessionData().getUserShopId()));
-        rupturePostData.setStoreId(Integer.parseInt(getUserSessionData().getUserShopId()));
-        rupturePostData.setDepartmentId(Integer.parseInt(getUserSessionData().getUserDepartmentId()));
-
-        Response<JsonNode> resp = ruptureClient.createSession(rupturePostData);
-        int result = ruptureClient.assertThatSessionIsCreatedAndGetId(resp);
-        sessionsNumbers.set(result);
-        rupturePostData.setSessionId(result);
-        for (int i = 0; i < productAmount - 1; i++) {
+        for (int i = 0; i < productAmount; i++) {
+            RuptureProductData productData = new RuptureProductData();
+            productData.generateRandomData();
             while (generatedLmCodes.contains(productData.getLmCode())) {
                 productData.generateRandomData();
             }
             generatedLmCodes.add(productData.getLmCode());
             productData.setActions(actionsList);
-            rupturePostData.setProduct(productData);
-            ruptureClient.updateSession(rupturePostData);
+            ruptureProductDataList.add(productData);
         }
-        return result;
+
+        int sessionId = rupturesHelper.createSession(ruptureProductDataList);
+        sessionsNumbers.set(sessionId);
+        return sessionId;
     }
 
     @Test(description = "C3272519 Перебои на экране работы")
     public void testRupturesOnWorkScreen() throws Exception {
         String shopWithNoRuptures = "62";
-        ResRuptureSessionDataList activeSessionsData = ruptureClient.getSessions("active", 1).asJson();
+        ResRuptureSessionDataList activeSessionsData = rupturesHelper.getActiveSessions();
 
         // Step 1
         step("Перейти на экран 'работа'");
@@ -363,9 +319,9 @@ public class RupturesTest extends AppBaseSteps {
 
     @Test(description = "C3272525 Удаление перебоя из сессии")
     public void testDeleteRuptureFromSession() throws Exception {
-        int sessionId = ruptureClient.getActiveSessionWithProductsId();
-        List<RuptureProductData> sessionProducts = ruptureClient.getProducts(sessionId).asJson().getItems();
-        String randomLmCode = sessionProducts.get((int) (Math.random() * sessionProducts.size())).getLmCode();
+        int sessionId = rupturesHelper.getActiveSessionIdWithProducts();
+        List<RuptureProductData> sessionProducts = rupturesHelper.getProducts(sessionId).getItems();
+        String randomLmCode = sessionProducts.get(0).getLmCode();
 
         //Pre-conditions
         WorkPage workPage = loginAndGoTo(WorkPage.class);
@@ -403,7 +359,7 @@ public class RupturesTest extends AppBaseSteps {
 
     @Test(description = "C3272526 Удаление сессии")
     public void testDeleteSession() throws Exception {
-        int sessionId = ruptureClient.getActiveSessionWithProductsId();
+        int sessionId = rupturesHelper.getActiveSessionIdWithProducts();
 
         //Pre-conditions
         WorkPage workPage = loginAndGoTo(WorkPage.class);
@@ -562,8 +518,8 @@ public class RupturesTest extends AppBaseSteps {
     @Test(description = "C23418142 Добавление дубля в сессию при работе с существующей сессией")
     public void testAddRuptureDuplicateToExistedSession() throws Exception {
         String comment = "asd123";
-        int sessionId = ruptureClient.getActiveSessionWithProductsId();
-        List<RuptureProductData> sessionProducts = ruptureClient.getProducts(sessionId).asJson().getItems();
+        int sessionId = rupturesHelper.getActiveSessionIdWithProducts();
+        List<RuptureProductData> sessionProducts = rupturesHelper.getProducts(sessionId).getItems();
         String randomLmCode = sessionProducts.get(0).getLmCode();
 
         // Pre-conditions
@@ -646,7 +602,7 @@ public class RupturesTest extends AppBaseSteps {
     public void testChangeRuptureInActiveSession() throws Exception {
         String comment = "123asd";
         int sessionId = createSessionWithProductWithoutActions();
-        List<RuptureProductData> sessionProducts = ruptureClient.getProducts(sessionId).asJson().getItems();
+        List<RuptureProductData> sessionProducts = rupturesHelper.getProducts(sessionId).getItems();
         String firstRuptureLmCode = sessionProducts.get(0).getLmCode();
 
         // Pre-conditions
@@ -758,9 +714,10 @@ public class RupturesTest extends AppBaseSteps {
         allTasks.setTaskName("Все задачи");
 
         String comment = "123asd";
-        int sessionId = createSessionWithProductWithSpecificIncompleteAction(Action.FIND_PRODUCT_AND_LAY_IT_OUT);
-        ruptureClient.finishSession(sessionId);
-        List<RuptureProductData> sessionProducts = ruptureClient.getProducts(sessionId).asJson().getItems();
+        int sessionId = createSessionWithProductWithSpecificIncompleteAction(RandomStringUtils.randomNumeric(8),
+                Action.FIND_PRODUCT_AND_LAY_IT_OUT);
+        rupturesHelper.finishSession(sessionId);
+        List<RuptureProductData> sessionProducts = rupturesHelper.getProducts(sessionId).getItems();
         RuptureProductData ruptureData = sessionProducts.get(0);
         String firstRuptureLmCode = ruptureData.getLmCode();
 
@@ -852,30 +809,32 @@ public class RupturesTest extends AppBaseSteps {
     @Test(description = "C3272529 Два списка сессий (1 отдел)")
     public void testTwoSessionLists() throws Exception {
         int departmentId = 1;
+        getUserSessionData().setUserDepartmentId(String.valueOf(departmentId));
 
         // Pre-conditions
-        ruptureClient.deleteAllSessionInDepartment(departmentId);
-        List<Integer> sessionsIdList = ruptureClient.createFewSessions(departmentId, 20);
+        rupturesHelper.deleteAllSessionInCurrentDepartment();
+        List<Integer> sessionsIdList = rupturesHelper.createFewSessions(20);
         List<Integer> activeSessionsIdList = sessionsIdList.subList(0, 10);
         List<Integer> finishedSessionsIdList = sessionsIdList.subList(10, sessionsIdList.size());
-        ruptureClient.finishFewSessions(finishedSessionsIdList);
+        rupturesHelper.finishFewSessions(finishedSessionsIdList);
         WorkPage workPage = loginAndGoTo(WorkPage.class);
 
         // Step 1
         step("Перейти на экран списка сессий");
         SessionListPage sessionListPage = workPage.goToRuptures();
         sessionListPage = sessionListPage.changeDepartment(departmentId);
-        sessionListPage.shouldAllActiveSessionAreVisible(activeSessionsIdList)
-                .shouldAllFinishedSessionAreVisible(finishedSessionsIdList)
+        sessionListPage.shouldTheseActiveSessionsArePresent(activeSessionsIdList)
+                .shouldTheseFinishedSessionArePresent(finishedSessionsIdList)
                 .verifyRequiredElements();
     }
 
     @Test(description = "C23423650 Пустой список сессий (2 отдел)")
     public void testEmptySessionList() throws Exception {
         int departmentId = 2;
+        getUserSessionData().setUserDepartmentId(String.valueOf(departmentId));
 
         // Pre-conditions
-        ruptureClient.deleteAllSessionInDepartment(departmentId);
+        rupturesHelper.deleteAllSessionInCurrentDepartment();
         WorkPage workPage = loginAndGoTo(WorkPage.class);
 
         // Step 1
@@ -888,18 +847,19 @@ public class RupturesTest extends AppBaseSteps {
     @Test(description = "C23423651 Пагинация списка активных сессий, пустой список завершенных сессий (3 отдел)")
     public void testActiveSessionPagination() throws Exception {
         int departmentId = 3;
+        getUserSessionData().setUserDepartmentId(String.valueOf(departmentId));
 
         // Pre-conditions
-        ruptureClient.deleteAllSessionInDepartment(departmentId);
-        List<Integer> sessionsIdList = ruptureClient.createFewSessions(departmentId, 11);
+        rupturesHelper.deleteAllSessionInCurrentDepartment();
+        List<Integer> sessionsIdList = rupturesHelper.createFewSessions(11);
+        Collections.reverse(sessionsIdList);
         WorkPage workPage = loginAndGoTo(WorkPage.class);
-
 
         // Step 1
         step("Перейти на экран списка сессий");
         SessionListPage sessionListPage = workPage.goToRuptures();
         sessionListPage = sessionListPage.changeDepartment(departmentId);
-        sessionListPage.shouldAllActiveSessionAreVisible(sessionsIdList)
+        sessionListPage.shouldTheseActiveSessionsArePresent(sessionsIdList)
                 .shouldFinishedSessionCardsIsNotVisible()
                 .verifyRequiredElements();
     }
@@ -907,11 +867,13 @@ public class RupturesTest extends AppBaseSteps {
     @Test(description = "C23423652 Пагинация списка завершенных сессий, пустой список активных сессий (4 отдел)")
     public void testFinishedSessionPagination() throws Exception {
         int departmentId = 4;
+        getUserSessionData().setUserDepartmentId(String.valueOf(departmentId));
 
         // Pre-conditions
-        ruptureClient.deleteAllSessionInDepartment(departmentId);
-        List<Integer> sessionsIdList = ruptureClient.createFewSessions(departmentId, 11);
-        ruptureClient.finishFewSessions(sessionsIdList);
+        rupturesHelper.deleteAllSessionInCurrentDepartment();
+        List<Integer> sessionsIdList = rupturesHelper.createFewSessions(11);
+        rupturesHelper.finishFewSessions(sessionsIdList);
+        Collections.reverse(sessionsIdList);
         WorkPage workPage = loginAndGoTo(WorkPage.class);
 
         // Step 1
@@ -919,51 +881,56 @@ public class RupturesTest extends AppBaseSteps {
         SessionListPage sessionListPage = workPage.goToRuptures();
         sessionListPage = sessionListPage.changeDepartment(departmentId);
         sessionListPage.verifyRequiredElements()
-                .shouldAllFinishedSessionAreVisible(sessionsIdList);
+                .shouldTheseFinishedSessionArePresent(sessionsIdList)
+                .shouldActiveSessionCardsIsNotVisible();
     }
 
     @Test(description = "C23423653 Пагинация обоих списков сессий (5 отдел)")
     public void testBothSessionTypesPagination() throws Exception {
         int departmentId = 5;
+        getUserSessionData().setUserDepartmentId(String.valueOf(departmentId));
 
         // Pre-conditions
-        ruptureClient.deleteAllSessionInDepartment(departmentId);
-        List<Integer> sessionsIdList = ruptureClient.createFewSessions(departmentId, 22);
+        rupturesHelper.deleteAllSessionInCurrentDepartment();
+        List<Integer> sessionsIdList = rupturesHelper.createFewSessions(22);
+        Collections.reverse(sessionsIdList);
         List<Integer> activeSessionsIdList = sessionsIdList.subList(0, 11);
         List<Integer> finishedSessionsIdList = sessionsIdList.subList(11, sessionsIdList.size());
-        ruptureClient.finishFewSessions(finishedSessionsIdList);
+        rupturesHelper.finishFewSessions(finishedSessionsIdList);
         WorkPage workPage = loginAndGoTo(WorkPage.class);
 
         // Step 1
         step("Перейти на экран списка сессий");
         SessionListPage sessionListPage = workPage.goToRuptures();
         sessionListPage = sessionListPage.changeDepartment(departmentId);
-        sessionListPage.shouldAllActiveSessionAreVisible(activeSessionsIdList)
-                .shouldAllFinishedSessionAreVisible(finishedSessionsIdList)
+        sessionListPage.shouldTheseActiveSessionsArePresent(activeSessionsIdList)
+                .shouldTheseFinishedSessionArePresent(finishedSessionsIdList)
                 .verifyRequiredElements();
     }
 
     @Test(description = "C23423655 Pull-to-refresh (6 отдел)")
     public void testPullToRefreshSessionLists() throws Exception {
         int departmentId = 6;
+        getUserSessionData().setUserDepartmentId(String.valueOf(departmentId));
 
         // Pre-conditions
-        ruptureClient.deleteAllSessionInDepartment(departmentId);
-        List<Integer> sessionsIdList = ruptureClient.createFewSessions(departmentId, 10);
+        rupturesHelper.deleteAllSessionInCurrentDepartment();
+        List<Integer> sessionsIdList = rupturesHelper.createFewSessions(10);
+        Collections.reverse(sessionsIdList);
         List<Integer> activeSessionsIdList = sessionsIdList.stream().limit(5).collect(Collectors.toList());
         List<Integer> finishedSessionsIdList = sessionsIdList.stream().skip(5).limit(5).collect(Collectors.toList());
-        ruptureClient.finishFewSessions(finishedSessionsIdList);
+        rupturesHelper.finishFewSessions(finishedSessionsIdList);
         WorkPage workPage = loginAndGoTo(WorkPage.class);
 
         // Step 1
         step("Перейти на экран списка сессий");
         SessionListPage sessionListPage = workPage.goToRuptures();
         sessionListPage = sessionListPage.changeDepartment(departmentId);
-        sessionListPage.shouldAllActiveSessionAreVisible(activeSessionsIdList)
-                .shouldAllFinishedSessionAreVisible(finishedSessionsIdList);
+        sessionListPage.shouldTheseActiveSessionsArePresent(activeSessionsIdList)
+                .shouldTheseFinishedSessionArePresent(finishedSessionsIdList);
 
         // Step 2
-        step("Удалить 1 активную и 1 завершенную сессию (через АПИ ruptures/session?sessionId={id})" +
+        step("Удалить 1 активную и 1 завершенную сессию, " +
                 "Потянуть список сессий вниз (pull to refresh)");
         int lastActiveSessionIdIndex = activeSessionsIdList.size() - 1;
         int lastFinishedSessionIdIndex = finishedSessionsIdList.size() - 1;
@@ -971,28 +938,32 @@ public class RupturesTest extends AppBaseSteps {
         int lastFinishedSessionId = finishedSessionsIdList.get(lastFinishedSessionIdIndex);
         finishedSessionsIdList.remove(lastFinishedSessionIdIndex);
         activeSessionsIdList.remove(lastActiveSessionIdIndex);
-        ruptureClient.deleteFewSessions(lastActiveSessionId, lastFinishedSessionId);
+        rupturesHelper.deleteSessions(lastActiveSessionId, lastFinishedSessionId);
         sessionListPage = sessionListPage.pullToRefresh();
-        sessionListPage.shouldAllActiveSessionAreVisible(activeSessionsIdList)
-                .shouldAllFinishedSessionAreVisible(finishedSessionsIdList);
+        sessionListPage.shouldTheseActiveSessionsArePresent(activeSessionsIdList)
+                .shouldTheseFinishedSessionArePresent(finishedSessionsIdList);
     }
 
     @Test(description = "C23423654 Смена отдела (7 отдел)")
     public void testChangeDepartment() throws Exception {
         // Pre-conditions
         int seventhDepartmentId = 7;
-        ruptureClient.deleteAllSessionInDepartment(seventhDepartmentId);
-        List<Integer> seventhSessionsIdList = ruptureClient.createFewSessions(seventhDepartmentId, 4);
+        getUserSessionData().setUserDepartmentId(String.valueOf(seventhDepartmentId));
+        rupturesHelper.deleteAllSessionInCurrentDepartment();
+        List<Integer> seventhSessionsIdList = rupturesHelper.createFewSessions(4);
+        Collections.reverse(seventhSessionsIdList);
         List<Integer> seventhActiveSessionsIdList = seventhSessionsIdList.stream().limit(2).collect(Collectors.toList());
         List<Integer> seventhFinishedSessionsIdList = seventhSessionsIdList.stream().skip(2).collect(Collectors.toList());
-        ruptureClient.finishFewSessions(seventhFinishedSessionsIdList);
+        rupturesHelper.finishFewSessions(seventhFinishedSessionsIdList);
 
         int eightDepartmentId = 8;
-        ruptureClient.deleteAllSessionInDepartment(eightDepartmentId);
-        List<Integer> eightSessionsIdList = ruptureClient.createFewSessions(eightDepartmentId, 2);
+        getUserSessionData().setUserDepartmentId(String.valueOf(eightDepartmentId));
+        rupturesHelper.deleteAllSessionInCurrentDepartment();
+        List<Integer> eightSessionsIdList = rupturesHelper.createFewSessions(2);
+        Collections.reverse(eightSessionsIdList);
         List<Integer> eightActiveSessionsIdList = eightSessionsIdList.subList(0, 1);
         List<Integer> eightFinishedSessionsIdList = eightSessionsIdList.subList(1, eightSessionsIdList.size());
-        ruptureClient.finishFewSessions(eightFinishedSessionsIdList);
+        rupturesHelper.finishFewSessions(eightFinishedSessionsIdList);
 
         WorkPage workPage = loginAndGoTo(WorkPage.class);
 
@@ -1000,19 +971,18 @@ public class RupturesTest extends AppBaseSteps {
         step("Перейти в список сессий");
         SessionListPage sessionListPage = workPage.goToRuptures();
         sessionListPage = sessionListPage.changeDepartment(seventhDepartmentId);
-        sessionListPage.shouldAllActiveSessionAreVisible(seventhActiveSessionsIdList)
-                .shouldAllFinishedSessionAreVisible(seventhFinishedSessionsIdList);
+        sessionListPage.shouldTheseActiveSessionsArePresent(seventhActiveSessionsIdList)
+                .shouldTheseFinishedSessionArePresent(seventhFinishedSessionsIdList);
 
         // Step 2
-        step("Выбрать 1 отдел");
+        step("Сменить отдел");
         sessionListPage = sessionListPage.changeDepartment(eightDepartmentId);
-        sessionListPage.shouldAllActiveSessionAreVisible(eightActiveSessionsIdList)
-                .shouldAllFinishedSessionAreVisible(eightFinishedSessionsIdList);
+        sessionListPage.shouldTheseActiveSessionsArePresent(eightActiveSessionsIdList)
+                .shouldTheseFinishedSessionArePresent(eightFinishedSessionsIdList);
     }
 
     @Test(description = "C3272530 Список продуктов (пагинация)")
     public void testProductListPagination() throws Exception {
-        // TODO выполняется 21 минуту
         int rupturesCount = 21;
 
         ActionData giveApologize = new ActionData();
@@ -1034,30 +1004,30 @@ public class RupturesTest extends AppBaseSteps {
         WorkPage workPage = loginAndGoTo(WorkPage.class);
         SessionListPage sessionListPage = workPage.goToRuptures();
 
-        // Step 1
+        // Step 1 - 3
         step("Перейти в сессию");
         sessionListPage.goToSession(String.valueOf(sessionId));
         ActiveSessionPage activeSessionPage = new ActiveSessionPage();
         activeSessionPage.shouldRuptureQuantityIsCorrect(rupturesCount)
                 .verifyRequiredElements();
 
-        // Step 2
+        // Step 4
         step("Завершить сессию");
         FinishSessionAcceptModalPage finishSessionAcceptModalPage = activeSessionPage.finishSession();
         FinishedSessionPage finishedSessionPage = finishSessionAcceptModalPage.finish();
         finishedSessionPage.verifyRequiredElements();
 
-        // Step 3
+        // Step 5
         step("Перейти во все задачи дважды проскроллить ждо конца экрана");
         FinishedSessionRupturesActionsPage finishedSessionRupturesActionsPage = finishedSessionPage.goToActionPage(Action.ALL_ACTIONS);
         finishedSessionRupturesActionsPage.shouldRuptureCountIsCorrect(rupturesCount);
 
-        // Step 4
+        // Step 6
         step("Перейти в выполненные задачи дважды проскроллить ждо конца экрана");
         finishedSessionRupturesActionsPage = finishedSessionRupturesActionsPage.goToDoneTasks();
         finishedSessionRupturesActionsPage.shouldRuptureCountIsCorrect(rupturesCount);
 
-        // Step 5
+        // Step 7
         step("Вернуться на экран завершенной сессии, Перейти в 'поставить извиняшку'" +
                 " дважды проскроллить ждо конца экрана");
         finishedSessionRupturesActionsPage.goBack();
@@ -1067,7 +1037,7 @@ public class RupturesTest extends AppBaseSteps {
         finishedSessionRupturesActionsPage = finishedSessionPage.goToActionPage(Action.GIVE_APOLOGISE);
         finishedSessionRupturesActionsPage.shouldRuptureCountIsCorrect(rupturesCount);
 
-        // Step 6
+        // Step 8
         step("Вернуться на экран завершенной сессии, Перейти в 'Убрать ценник'," +
                 " Перейти в выполненные задачи," +
                 " дважды проскроллить ждо конца экрана");
@@ -1080,7 +1050,6 @@ public class RupturesTest extends AppBaseSteps {
 
     @Test(description = "C3272531 Страница завершенной сессии (каунтеры, экшены)")
     public void testFinishedSessionPage() throws Exception {
-        // TODO Надо проверить кейс
         int rupturesCount = 3;
 
         ActionData giveApologize = new ActionData();
@@ -1119,9 +1088,9 @@ public class RupturesTest extends AppBaseSteps {
         allTaskData.setTaskName(Action.ALL_ACTIONS.getActionName());
 
         int sessionId = createSessionWithNeededProductAmountWithSpecificActions(rupturesCount, giveApologize, stickRedSticker, findProductAndLayItOut);
-        List<RuptureProductData> ruptures = ruptureClient.getProducts(sessionId).asJson().getItems();
+        List<RuptureProductData> ruptures = rupturesHelper.getProducts(sessionId).getItems();
         List<String> lmCodes = ruptures.stream().map(RuptureProductData::getLmCode).collect(Collectors.toList());
-        ruptureClient.finishSession(sessionId);
+        rupturesHelper.finishSession(sessionId);
         WorkPage workPage = loginAndGoTo(WorkPage.class);
         SessionListPage sessionListPage = workPage.goToRuptures();
 
@@ -1145,19 +1114,19 @@ public class RupturesTest extends AppBaseSteps {
                 " После каждого чека нужно дожидаться изменения списка");
         finishedSessionRupturesActionsPage.scrollToBeginning();
         String ruptureLmCode = lmCodes.get(2);
-        finishedSessionRupturesActionsPage.choseTaskCheckBoxForProduct(Action.GIVE_APOLOGISE, ruptureLmCode)
+        finishedSessionRupturesActionsPage.selectTaskCheckBoxForProduct(Action.GIVE_APOLOGISE, ruptureLmCode)
                 .shouldDoneTasksCounterIsCorrect(++doneTasksCounter)
                 .shouldRuptureCardHasNotContainsTask(ruptureLmCode, Action.GIVE_APOLOGISE)
                 .shouldTasksRatioCounterIsCorrect(doneTasksCounter, allTasksAmount);
 
         ruptureLmCode = lmCodes.get(1);
-        finishedSessionRupturesActionsPage.choseTaskCheckBoxForProduct(Action.GIVE_APOLOGISE, ruptureLmCode)
+        finishedSessionRupturesActionsPage.selectTaskCheckBoxForProduct(Action.GIVE_APOLOGISE, ruptureLmCode)
                 .shouldDoneTasksCounterIsCorrect(++doneTasksCounter)
                 .shouldRuptureCardHasNotContainsTask(ruptureLmCode, Action.GIVE_APOLOGISE)
                 .shouldTasksRatioCounterIsCorrect(doneTasksCounter, allTasksAmount);
 
         ruptureLmCode = lmCodes.get(0);
-        finishedSessionRupturesActionsPage.choseTaskCheckBoxForProduct(Action.GIVE_APOLOGISE, ruptureLmCode)
+        finishedSessionRupturesActionsPage.selectTaskCheckBoxForProduct(Action.GIVE_APOLOGISE, ruptureLmCode)
                 .shouldDoneTasksCounterIsCorrect(++doneTasksCounter)
                 .shouldRuptureCardHasNotContainsTask(ruptureLmCode, Action.GIVE_APOLOGISE)
                 .shouldTasksRatioCounterIsCorrect(doneTasksCounter, allTasksAmount)
@@ -1167,11 +1136,11 @@ public class RupturesTest extends AppBaseSteps {
         // Step 4
         step("Чекнуть для одного из товаров все экшены, " +
                 " После каждого чека нужно дожидаться изменения списка");
-        finishedSessionRupturesActionsPage.choseTaskCheckBoxForProduct(Action.FIND_PRODUCT_AND_LAY_IT_OUT, ruptureLmCode)
+        finishedSessionRupturesActionsPage.selectTaskCheckBoxForProduct(Action.FIND_PRODUCT_AND_LAY_IT_OUT, ruptureLmCode)
                 .shouldDoneTasksCounterIsCorrect(++doneTasksCounter)
                 .shouldRuptureCardHasNotContainsTask(ruptureLmCode, Action.FIND_PRODUCT_AND_LAY_IT_OUT)
                 .shouldTasksRatioCounterIsCorrect(doneTasksCounter, allTasksAmount)
-                .choseTaskCheckBoxForProduct(Action.STICK_RED_STICKER, ruptureLmCode)
+                .selectTaskCheckBoxForProduct(Action.STICK_RED_STICKER, ruptureLmCode)
                 .shouldDoneTasksCounterIsCorrect(++doneTasksCounter)
                 .shouldRuptureCardHasNotContainsTask(ruptureLmCode, Action.STICK_RED_STICKER)
                 .shouldTasksRatioCounterIsCorrect(doneTasksCounter, allTasksAmount)
@@ -1202,7 +1171,7 @@ public class RupturesTest extends AppBaseSteps {
 
         //Step 7
         step("Снять с одного из товаров экшен \"Наклеить красный стикер\"");
-        finishedSessionRupturesActionsPage.choseTaskCheckBoxForProduct(Action.STICK_RED_STICKER, ruptureLmCode)
+        finishedSessionRupturesActionsPage.selectTaskCheckBoxForProduct(Action.STICK_RED_STICKER, ruptureLmCode)
                 .shouldRuptureCardHasNotContainsTask(ruptureLmCode, Action.STICK_RED_STICKER)
                 .shouldTasksRatioCounterIsCorrect(--doneTasksCounter);
 
@@ -1255,9 +1224,9 @@ public class RupturesTest extends AppBaseSteps {
 
         //Step 11
         step("Чекнуть экшены у обоих товаров");
-        finishedSessionRupturesActionsPage.choseTaskCheckBoxForProduct(Action.STICK_RED_STICKER, ruptureLmCode);
+        finishedSessionRupturesActionsPage.selectTaskCheckBoxForProduct(Action.STICK_RED_STICKER, ruptureLmCode);
         ruptureLmCode = secondRuptureProductData.getLmCode();
-        finishedSessionRupturesActionsPage.choseTaskCheckBoxForProduct(Action.STICK_RED_STICKER, ruptureLmCode)
+        finishedSessionRupturesActionsPage.selectTaskCheckBoxForProduct(Action.STICK_RED_STICKER, ruptureLmCode)
                 .shouldNoActiveRuptureTasksAreAvailable()
                 .shouldTasksRatioCounterIsCorrect(3, 3)
                 .shouldDoneTasksCounterIsCorrect(3);
@@ -1282,12 +1251,12 @@ public class RupturesTest extends AppBaseSteps {
         //Step 14
         step("Перейти в выполненные задачи");
         finishedSessionRupturesActionsPage = finishedSessionRupturesActionsPage.goToDoneTasks();
-        finishedSessionRupturesActionsPage.shouldTasksRatioCounterIsCorrect(3)
+        finishedSessionRupturesActionsPage.shouldTasksRatioCounterIsCorrect(3) // TODO Что за баг? Номер таски?
                 .shouldRuptureCountIsCorrect(3);
 
         //Step 15
         step("Перейти в выполненные задачи");
-        finishedSessionRupturesActionsPage.choseTaskCheckBoxForProduct(Action.STICK_RED_STICKER, ruptureLmCode)
+        finishedSessionRupturesActionsPage.selectTaskCheckBoxForProduct(Action.STICK_RED_STICKER, ruptureLmCode)
                 .shouldTasksRatioCounterIsCorrect(2)
                 .shouldRuptureCountIsCorrect(2);
 
@@ -1311,21 +1280,15 @@ public class RupturesTest extends AppBaseSteps {
 
     @Test(description = "C23389122 Создание отзыва с РМ с экрана добавляемого товара")
     public void testCreateRecallFromRmFromAddedProductPage() throws Exception {
-        String shopWithLsRm = EnvConstants.SHOP_WITH_NEW_INTERFACE;
-        List<TransferSearchProductData> products = transferClient.searchForTransferProducts(
-                SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR, shopWithLsRm).asJson().getItems();
-        String ruptureLmCode = products.get((int) (Math.random() * products.size())).getLmCode();
-        MorePage morePage = loginAndGoTo(MorePage.class);
+        getUserSessionData().setUserShopId(EnvConstants.SHOP_WITH_NEW_INTERFACE);
+        List<TransferSearchProductData> products = transferHelper.searchForProductsForTransfer();
+        String ruptureLmCode = products.get(0).getLmCode();
 
-        UserProfilePage userProfilePage = morePage.goToUserProfile();
-        SearchShopPage searchShopPage = userProfilePage.goToEditShopForm();
-        searchShopPage.searchForShopAndSelectById(shopWithLsRm);
-        //BottomMenuPage bottomMenuPage = new BottomMenuPage();
-        WorkPage workPage = userProfilePage.goToWork();
+        WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
         SessionListPage sessionListPage = workPage.goToRuptures();
 
-        //Step 1
-        step("Нажать \"+ сканировать перебой\" и перейти в ручной поиск\n" +
+        // Step 1
+        step("Нажать '+ сканировать перебой' и перейти в ручной поиск, " +
                 "Найти товар из списка пригодных для отзыва с РМ (есть сток на РМ)");
         RupturesScannerPage rupturesScannerPage = sessionListPage.clickScanRupturesButton();
         SearchProductPage searchProductPage = rupturesScannerPage.navigateToSearchProductPage();
@@ -1408,21 +1371,16 @@ public class RupturesTest extends AppBaseSteps {
 
     @Test(description = "C23389123 Создание отзыва с РМ из активной сессии (карточка, список перебоев)")
     public void testCreateRecallFromRmFromActiveSession() throws Exception {
-        String shopWithLsRm = EnvConstants.SHOP_WITH_NEW_INTERFACE;
-        List<TransferSearchProductData> products = transferClient.searchForTransferProducts(SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR, shopWithLsRm).asJson().getItems();
-        String ruptureLmCode = products.get((int) (Math.random() * products.size())).getLmCode();
-        UserSessionData sessionData = new UserSessionData();
-        sessionData.setUserShopId(shopWithLsRm);
-        sessionData.setUserDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);
-        int sessionId = createSessionWithProductWithSpecificIncompleteAction(ruptureLmCode, Action.RECALL_FROM_RM, sessionData);
-        MorePage morePage = loginAndGoTo(MorePage.class);
+        getUserSessionData().setUserShopId(EnvConstants.SHOP_WITH_NEW_INTERFACE);
+        getUserSessionData().setUserDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);
+        List<TransferSearchProductData> products = transferHelper.searchForProductsForTransfer();
+        String ruptureLmCode = products.get(1).getLmCode();
 
-        UserProfilePage userProfilePage = morePage.goToUserProfile();
-        SearchShopPage searchShopPage = userProfilePage.goToEditShopForm();
-        searchShopPage.searchForShopAndSelectById(shopWithLsRm);
-        //BottomMenuPage bottomMenuPage = new BottomMenuPage();
-        WorkPage workPage = userProfilePage.goToWork();
+        WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
         SessionListPage sessionListPage = workPage.goToRuptures();
+
+        int sessionId = createSessionWithProductWithSpecificIncompleteAction(
+                ruptureLmCode, Action.RECALL_FROM_RM);
         sessionListPage.goToSession(String.valueOf(sessionId));
         ActiveSessionPage activeSessionPage = new ActiveSessionPage();
 
@@ -1478,22 +1436,18 @@ public class RupturesTest extends AppBaseSteps {
 
     @Test(description = "C23389124 Создание отзыва с РМ из завершенной сессии")
     public void testCreateRecallFromRmFromFinishedSession() throws Exception {
-        String shopWithLsRm = EnvConstants.SHOP_WITH_NEW_INTERFACE;
-        List<TransferSearchProductData> products = transferClient.searchForTransferProducts(SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR, shopWithLsRm).asJson().getItems();
-        String ruptureLmCode = products.get((int) (Math.random() * products.size())).getLmCode();
-        UserSessionData sessionData = new UserSessionData();
-        sessionData.setUserShopId(shopWithLsRm);
-        sessionData.setUserDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);
-        int sessionId = createSessionWithProductWithSpecificIncompleteAction(ruptureLmCode, Action.RECALL_FROM_RM, sessionData);
-        ruptureClient.finishSession(sessionId);
-        MorePage morePage = loginAndGoTo(MorePage.class);
+        getUserSessionData().setUserShopId(EnvConstants.SHOP_WITH_NEW_INTERFACE);
+        getUserSessionData().setUserDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);
+        List<TransferSearchProductData> products = transferHelper.searchForProductsForTransfer();
+        String ruptureLmCode = products.get(2).getLmCode();
 
-        UserProfilePage userProfilePage = morePage.goToUserProfile();
-        SearchShopPage searchShopPage = userProfilePage.goToEditShopForm();
-        searchShopPage.searchForShopAndSelectById(shopWithLsRm);
-        //BottomMenuPage bottomMenuPage = new BottomMenuPage();
-        WorkPage workPage = userProfilePage.goToWork();
+        WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
         SessionListPage sessionListPage = workPage.goToRuptures();
+
+        int sessionId = createSessionWithProductWithSpecificIncompleteAction(
+                ruptureLmCode, Action.RECALL_FROM_RM);
+        rupturesHelper.finishSession(sessionId);
+
         sessionListPage.goToSession(String.valueOf(sessionId));
         FinishedSessionPage finishedSessionPage = new FinishedSessionPage();
 

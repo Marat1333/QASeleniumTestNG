@@ -69,6 +69,15 @@ public class RuptureWidget extends CardWidget<RuptureData> {
     }
 
     @Override
+    public RuptureData collectShortDataFromPage(String pageSource) {
+        RuptureData data = new RuptureData();
+        data.setLmCode(ParserUtil.strWithOnlyDigits(lmCodeLbl.getText(pageSource)));
+        data.setBarCode(ParserUtil.strWithOnlyDigits(barCodeLbl.getText(pageSource)));
+        data.setTitle(titleLbl.getText(pageSource));
+        return data;
+    }
+
+    @Override
     public boolean isFullyVisible(String pageSource) {
         return lmCodeLbl.isVisible(pageSource) && titleLbl.isVisible(pageSource);
     }

@@ -131,10 +131,10 @@ public class ActiveSessionPage extends SessionPage {
         return shouldRupturesDataIsCorrect(dataList.toArray(dataArray));
     }
 
-    @Step("Проверить, что данные кол-во перебоев корректно")
+    @Step("Проверить, что кол-во перебоев в сессии = {ruptureQuantity}")
     public ActiveSessionPage shouldRuptureQuantityIsCorrect(int ruptureQuantity) throws Exception {
-        List<RuptureData> uiRuptureDataList = ruptureCardScrollView.getFullDataList();
-        anAssert.isEquals(uiRuptureDataList.size(), ruptureQuantity, "Wrong rupture quantity");
+        int actualCount = ruptureCardScrollView.getRowCount();
+        anAssert.isEquals(actualCount, ruptureQuantity, "Неверное кол-во перебоев");
         return this;
     }
 

@@ -7,6 +7,7 @@ import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.ApiClientProvider;
 import com.leroy.magmobile.api.clients.TransferClient;
 import com.leroy.magmobile.api.data.sales.transfer.*;
+import com.leroy.magportal.api.helpers.BaseHelper;
 import io.qameta.allure.Step;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -30,10 +31,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasSize;
 
-public class TransferHelper extends ApiClientProvider {
+public class TransferHelper extends BaseHelper {
 
     @Inject
     FulfillmentInternalTransferClient fulfillmentClient;
+
+    @Inject
+    TransferClient transferClient;
 
     // ----------- SOAP --------------- //
 
@@ -161,7 +165,6 @@ public class TransferHelper extends ApiClientProvider {
     @Step("API: Создаем заявку на отзыв")
     public TransferSalesDocData createDraftTransferTask(
             List<TransferProductOrderData> productDataList, SalesDocumentsConst.GiveAwayPoints giveAwayPoints) {
-        TransferClient transferClient = getTransferClient();
         TransferSalesDocData postSalesDocData = new TransferSalesDocData();
         postSalesDocData.setProducts(productDataList);
         postSalesDocData.setShopId(Integer.valueOf(userSessionData().getUserShopId()));
@@ -184,7 +187,6 @@ public class TransferHelper extends ApiClientProvider {
     public TransferRunRespData createConfirmedTransferTask(
             List<TransferProductOrderData> productDataList, SalesDocumentsConst.GiveAwayPoints giveAwayPoints) {
         TransferSalesDocData transferSalesDocData = createDraftTransferTask(productDataList, giveAwayPoints);
-        TransferClient transferClient = getTransferClient();
         Response<TransferRunRespData> resp = transferClient.run(transferSalesDocData);
         assertThat(resp, successful());
         return resp.asJson();
@@ -206,7 +208,6 @@ public class TransferHelper extends ApiClientProvider {
 
     @Step("Поиск товаров доступных для отзыва со склада")
     public List<TransferSearchProductData> searchForProductsForTransfer(SearchFilters filters) {
-        TransferClient transferClient = getTransferClient();
         Response<TransferSearchProductDataList> resp = transferClient.searchForTransferProducts(
                 SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR);
         assertThat(resp, successful());
