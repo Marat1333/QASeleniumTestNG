@@ -3,7 +3,6 @@ package com.leroy.magportal.api.tests.onlineOrders.deliveryOrders;
 import com.google.inject.Inject;
 import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.magportal.api.clients.OrderClient;
-import com.leroy.magportal.api.constants.LmCodeTypeEnum;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
 import com.leroy.magportal.api.helpers.BitrixHelper;
@@ -28,31 +27,26 @@ public class EntranceEditTest extends BaseMagPortalApiTest {
     private String currentOrderId;
     private OnlineOrderTypeData currentOrderType;
     private States currentStatus;
-    private Integer currentProductsCount;
     private Double currentCount;
+    private Boolean isDimensional;
 
 
     @BeforeClass
     private void setUp() {
-        currentProductsCount = 3;
         currentCount = 10.0;
         currentStatus = States.ALLOWED_FOR_PICKING;
         currentOrderType = OnlineOrderTypeConst.DELIVERY_TO_ENTRANCE;
-
-        List<BitrixSolutionResponse> bitrixSolutionResponses = bitrixHelper
-                .createOnlineOrders(1, currentOrderType, currentProductsCount);
-
-        currentOrderId = bitrixSolutionResponses.stream().findAny().get().getSolutionId();
-        bitrixSolutionResponses.remove(bitrixSolutionResponses.stream()
-                .filter(x -> x.getSolutionId().equals(currentOrderId)).findFirst().get());
+        makeNewOrder();
     }
 
     @BeforeMethod
     private void prepareTest() {
         if (currentOrderId == null) {
-            List<BitrixSolutionResponse> bitrixSolutionResponses = bitrixHelper
-                    .createOnlineOrders(1, currentOrderType, currentProductsCount);
-            currentOrderId = bitrixSolutionResponses.stream().findAny().get().getSolutionId();
+            if (isDimensional) {
+                makeDimensionalOrder();
+            } else {
+                makeNewOrder();
+            }
 
             orderClient.editOrder(currentOrderId, 0, currentCount);
             orderClient.moveNewOrderToStatus(currentOrderId, currentStatus);
@@ -117,10 +111,15 @@ public class EntranceEditTest extends BaseMagPortalApiTest {
 
     private void makeDimensionalOrder() {
         currentCount = 10.0;
-        currentProductsCount = 1;
+        isDimensional = true;
 
-        BitrixSolutionResponse bitrixSolutionResponses = bitrixHelper
-                .createDimensionalOnlineOrder(currentOrderType);
-        currentOrderId = bitrixSolutionResponses.getSolutionId();
+        currentOrderId = bitrixHelper.createDimensionalOnlineOrder(currentOrderType)
+                .getSolutionId();
+    }
+
+    private void makeNewOrder() {
+        isDimensional = false;
+
+        currentOrderId = bitrixHelper.createOnlineOrder(currentOrderType).getSolutionId();
     }
 }

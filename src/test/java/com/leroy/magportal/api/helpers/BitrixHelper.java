@@ -53,16 +53,15 @@ public class BitrixHelper extends BaseHelper {
 
     private final LocalDateTime dateTime = LocalDateTime.now();
 
-    @Step("Creates Online order with specified LmCode")
-    public BitrixSolutionResponse createOnlineOrder(OnlineOrderTypeData orderData, String lmCode) {
-        orderData.setLmCode(lmCode);
-        return this.createOnlineOrders(1, orderData, 1).stream().findFirst().get();
-    }
-
     @Step("Creates Online order with Dimensional LmCode")
     public BitrixSolutionResponse createDimensionalOnlineOrder(OnlineOrderTypeData orderData) {
         orderData.setLmCode(LmCodeTypeEnum.DIMENSIONAL.getValue());
         return this.createOnlineOrders(1, orderData, 1).stream().findFirst().get();
+    }
+
+    @Step("Creates Online order with 3 LmCodes")
+    public BitrixSolutionResponse createOnlineOrder(OnlineOrderTypeData orderData) {
+        return this.createOnlineOrders(1, orderData, 3).stream().findFirst().get();
     }
 
     @Step("Creates Online orders of different types")

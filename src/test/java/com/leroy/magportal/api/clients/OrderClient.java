@@ -2,8 +2,10 @@ package com.leroy.magportal.api.clients;
 
 import static com.leroy.core.matchers.IsSuccessful.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
@@ -11,28 +13,34 @@ import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.sales.orders.OrderData;
+import com.leroy.magmobile.api.data.sales.orders.OrderData.DeliveryData;
 import com.leroy.magmobile.api.data.sales.orders.OrderProductData;
 import com.leroy.magmobile.api.requests.order.OrderRearrangeRequest;
 import com.leroy.magportal.api.constants.OrderReasonEnum;
 import com.leroy.magportal.api.constants.OrderWorkflowEnum;
 import com.leroy.magportal.api.constants.PaymentStatusEnum;
 import com.leroy.magportal.api.constants.PaymentTypeEnum;
-import com.leroy.magportal.api.data.onlineOrders.OrderDeliveryRecalculatePayload;
 import com.leroy.magportal.api.data.onlineOrders.OrderDeliveryRecalculateResponseData;
 import com.leroy.magportal.api.data.onlineOrders.OrderFulfilmentToGivenAwayPayload;
 import com.leroy.magportal.api.data.onlineOrders.OrderProductDataPayload;
 import com.leroy.magportal.api.data.onlineOrders.OrderRearrangePayload;
 import com.leroy.magportal.api.data.onlineOrders.OrderWorkflowPayload;
 import com.leroy.magportal.api.data.onlineOrders.OrderWorkflowPayload.WorkflowPayload;
+import com.leroy.magportal.api.data.timeslot.AppointmentPayload;
+import com.leroy.magportal.api.data.timeslot.AppointmentResponseData;
+import com.leroy.magportal.api.data.timeslot.TimeslotPayload;
+import com.leroy.magportal.api.data.timeslot.TimeslotResponseData;
 import com.leroy.magportal.api.helpers.PaymentHelper;
 import com.leroy.magportal.api.requests.order.OrderDeliveryRecalculateRequest;
 import com.leroy.magportal.api.requests.order.OrderFulfilmentGivenAwayRequest;
 import com.leroy.magportal.api.requests.order.OrderGetRequest;
 import com.leroy.magportal.api.requests.order.OrderWorkflowRequest;
+import com.leroy.magportal.api.requests.timeslot.AppointmentsRequest;
+import com.leroy.magportal.api.requests.timeslot.TimeslotRequest;
 import io.qameta.allure.Step;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.criteria.CriteriaBuilder.In;
 import lombok.SneakyThrows;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -45,12 +53,14 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
     @Inject
     private PaymentHelper paymentHelper;
 
-    @Override
+    //    @Override
     @Step("Get order with id = {orderId}")
     public Response<OrderData> getOrder(String orderId) {
         OrderGetRequest req = new OrderGetRequest();
         req.setOrderId(orderId);
-        return execute(req, OrderData.class);
+        Response<OrderData> response = execute(req, OrderData.class);
+        assertThat("Get Order FAILED", response.isSuccessful());
+        return response;
     }
 
     @Override
@@ -85,12 +95,6 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         return execute(req, JsonNode.class);
     }
 
-    @Step("Edit for prepayment order with id = {orderId}")
-    public Response<JsonNode> editPrePayment(String orderId, Double newCount) {
-        return makeAction(orderId, OrderWorkflowEnum.EDIT.getValue(),
-                makeEditPayload(orderId, newCount));
-    }
-
     @Step("Edit order with id = {orderId}: Decreases ALL positions on 1 item if possible + adds Products for rearrange")
     public Response<JsonNode> editOrder(String orderId, Integer newProductsCount) {
         return this.editOrder(orderId, newProductsCount, null);
@@ -104,8 +108,33 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
                 .getPaymentStatus().equals(PaymentStatusEnum.PAID.toString())) {
             return rearrange(orderId, newProductsCount, newCount);
         } else {
-            return editPrePayment(orderId, newCount);
+            return editPrePaymentOrder(orderId, newCount);
         }
+    }
+
+    @Step("Edit for prepayment order with id = {orderId}")
+    public Response<JsonNode> editPrePaymentOrder(String orderId, Double newCount) {
+        return makeAction(orderId, OrderWorkflowEnum.EDIT.getValue(),
+                makeEditPayload(orderId, newCount));
+    }
+
+    @Step("Edit order with id = {orderId}: Decreases ALL positions on 1 item if possible + adds Products for rearrange")
+    public Response<JsonNode> editDeliveryOrder(String orderId, Double deliveryTotalPrice,
+            Double liftPrice) {
+        OrderWorkflowPayload payload = makeEditPayload(orderId, null);
+        payload.getWorkflowPayload().setDeliveryLiftPrice(liftPrice);
+        payload.getWorkflowPayload().setDeliveryTotalPrice(deliveryTotalPrice);
+        return makeAction(orderId, OrderWorkflowEnum.EDIT.getValue(), payload);
+    }
+
+    @Step("Recalculate Delivery price for order with id = {orderId}")
+    public Response<OrderDeliveryRecalculateResponseData> deliveryRecalculate(String orderId,
+            Integer productCount, Double newCount) {
+        OrderDeliveryRecalculateRequest req = new OrderDeliveryRecalculateRequest();
+        req.setOrderId(orderId);
+        req.jsonBody(makeDeliveryRecalculationPayload(orderId, productCount, newCount));
+
+        return execute(req, OrderDeliveryRecalculateResponseData.class);
     }
 
     @Step("GiveAway products for order with id = {orderId}")
@@ -120,13 +149,19 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
                 makeWorkflowPayload(orderId, isFull, true));
     }
 
-    @Step("Recalculate Delivery price for order with id = {orderId}")
-    public Response<OrderDeliveryRecalculateResponseData> deliveryRecalculate(String orderId, Integer productCount, Double newCount) {
-        OrderDeliveryRecalculateRequest req = new OrderDeliveryRecalculateRequest();
-        req.setOrderId(orderId);
-        req.jsonBody(makeDeliveryRecalculationPayload(orderId, productCount, newCount));
-
-        return execute(req, OrderDeliveryRecalculateResponseData.class);
+    @Step("Returns available Timeslots for order with id = {orderId}")
+    public Response<?> getTimeslot(String orderId) {
+        OrderData orderData = this.getOrder(orderId).asJson();
+        TimeslotPayload payload = makeTimeslotPayload(orderData);
+        if (orderData.getDeliveryData() != null) {
+            AppointmentsRequest req = new AppointmentsRequest();
+            req.jsonBody(payload);
+            return execute(req, AppointmentResponseData.class);
+        } else {
+            TimeslotRequest req = new TimeslotRequest();
+            req.jsonBody(payload);
+            return execute(req, TimeslotResponseData.class);
+        }
     }
 
     @Step("Moves NEW order to specified status")
@@ -273,8 +308,11 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
 
         for (OrderProductData productData : orderData) {
             if (isFull) {
-                count = productData.getConfirmedQuantity();
                 reason = "";
+                count = productData.getConfirmedQuantity();
+                if (count == 0.0) {
+                    count = productData.getCreatedQuantity();
+                }
             }
             OrderProductDataPayload productDataPayload = new OrderProductDataPayload();
             productDataPayload.setLineId(productData.getLineId());
@@ -311,7 +349,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         OrderData orderData = this.getOrder(orderId).asJson();
         Double count = orderData.getProducts().stream().findAny().get().getConfirmedQuantity();
         if (count == null || count == 0) {
-            count = orderData.getProducts().stream().findAny().get().getQuantity();
+            count = orderData.getProducts().stream().findAny().get().getCreatedQuantity();
         }
         payload.setFulfillmentTaskId(orderData.getFulfillmentTaskId());
         payload.setFulfillmentVersion(orderData.getFulfillmentVersion());
@@ -366,23 +404,48 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         return payload;
     }
 
-    private OrderDeliveryRecalculatePayload makeDeliveryRecalculationPayload(String orderId, Integer productCount, Double newCount) {
-        OrderDeliveryRecalculatePayload payload = new OrderDeliveryRecalculatePayload();
-        List<OrderProductDataPayload> products = new ArrayList<>();
+    private WorkflowPayload makeDeliveryRecalculationPayload(String orderId,
+            Integer productCount, Double newCount) {
         OrderData orderData = this.getOrder(orderId).asJson();
+        WorkflowPayload productsPayload = new WorkflowPayload();
+        List<OrderProductDataPayload> products = new ArrayList<>();
         int i = 0;
 
         for (OrderProductData product : orderData.getProducts()) {
-            OrderProductDataPayload productData = new OrderProductDataPayload();
-            productData.setLmCode(product.getLmCode());
-            productData.setQuantity(newCount);
+            OrderProductDataPayload productPayload = new OrderProductDataPayload();
+            productPayload.setLmCode(product.getLmCode());
+            productPayload.setQuantity(newCount);
             if (i < productCount) {
-                products.add(productData);
+                products.add(productPayload);
             }
             i++;
         }
-        payload.setProducts(products);
+        productsPayload.setProducts(products);
+        return productsPayload;
+    }
 
+    private AppointmentPayload makeTimeslotPayload(OrderData orderData) {
+        List<String> lmCodes = new ArrayList<>();
+        List<String> stores = new ArrayList<>();
+        AppointmentPayload payload = new AppointmentPayload();
+
+        if (orderData.getDeliveryData() != null) {
+            DeliveryData deliveryData = orderData.getDeliveryData();
+            payload.setDeliveryId(deliveryData.getId());
+            payload.setReferenceStoreId(deliveryData.getReferenceStoreId());
+            stores.add(deliveryData.getShipFromShopId());
+        } else {
+            stores.add(orderData.getShopId());
+        }
+
+        for (OrderProductData product : orderData.getProducts()) {
+            lmCodes.add(product.getLmCode());
+        }
+
+        payload.setLmCodes(lmCodes);
+        payload.setDate(LocalDateTime.now());
+
+        payload.setStores(stores);
         return payload;
     }
 
@@ -404,7 +467,6 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
     public void assertWorkflowResult(Response<?> response, String orderId, States expectedStatus) {
         assertThat("Request to change Order Status has Failed.", response, successful());
         Response<OrderData> order = this.getOrder(orderId);
-        assertThat("Get Order request failed.", order, successful());
         String status = order.asJson().getStatus();
         if (expectedStatus.equals(States.CANCELLED) && status
                 .equalsIgnoreCase(States.CANCELLATION_IN_PROGRESS.getApiVal())) {
@@ -419,9 +481,8 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
     @Step("Order Rearrange results verification")
     public void assertRearrangeResult(Response<?> response, String orderId, Double expectedCount,
             Integer productsCount) {
-        assertThat("Request to change Order Status has Failed.", response, successful());
+        assertThat("Request to Update Order has Failed.", response, successful());
         Response<OrderData> order = this.getOrder(orderId);
-        assertThat("Get Order request failed.", order, successful());
         List<OrderProductData> products = order.asJson().getProducts();
         assertThat("INVALID Products count in Order. \nActual: " + products.size() + "\nExpected: "
                         + productsCount,
@@ -436,9 +497,8 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
 
     @Step("Order Edit results verification")
     public void assertEditResult(Response<?> response, String orderId, Double expectedCount) {
-        assertThat("Request to change Order Status has Failed.", response, successful());
+        assertThat("Request to Update Order has Failed.", response, successful());
         Response<OrderData> order = this.getOrder(orderId);
-        assertThat("Get Order request failed.", order, successful());
         List<OrderProductData> products = order.asJson().getProducts();
         for (OrderProductData product : products) {
             assertThat(
@@ -446,5 +506,48 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
                             + "\nExpected: " + expectedCount + "\nLmCode: " + product.getLmCode(),
                     product.getConfirmedQuantity().equals(expectedCount));
         }
+    }
+
+    @Step("Order Delivery Recalculate results verification")
+    public void assertDeliveryRecalculateResult(
+            Response<OrderDeliveryRecalculateResponseData> response, String orderId) {
+        assertThat("Request to Recalculate Delivery Cost has Failed.", response, successful());
+        OrderDeliveryRecalculateResponseData newDeliveryData = response.asJson();
+        Response<OrderData> orderResp = this.getOrder(orderId);
+        DeliveryData orderDeliveryData = orderResp.asJson().getDeliveryData();
+        assertThat("Delivery Lift Price INVALID.", newDeliveryData.getDeliveryLiftPrice(),
+                lessThanOrEqualTo(orderDeliveryData.getLiftupServicePrice()));
+        assertThat("Delivery Price INVALID.", newDeliveryData.getDeliveryTotalPrice(),
+                lessThanOrEqualTo(orderDeliveryData.getTotalServicePrice()));
+    }
+
+    @Step("Order Delivery Edit results verification")
+    public void assertDeliveryUpdateResult(Response<?> response, String orderId,
+            Double expectedTotalDeliveryPrice, Double expectedLiftPrice) {
+        assertThat("Request to Edit with Delivery recalculate has Failed.", response, successful());
+        Response<OrderData> orderResp = this.getOrder(orderId);
+        DeliveryData orderDeliveryData = orderResp.asJson().getDeliveryData();
+        assertThat("Delivery Lift Price was NOT updated.", orderDeliveryData.getLiftupServicePrice(),
+                equalTo(expectedLiftPrice));
+        assertThat("Delivery Price was NOT updated.", orderDeliveryData.getTotalServicePrice(),
+                equalTo(expectedTotalDeliveryPrice));
+    }
+
+    @Step("GET Timeslot results verification")
+    public void assertTimeslotResult(Response<?> response) {
+        assertThat("Request to Timeslot has Failed.", response, successful());
+        //TODO: add data response verification
+    }
+
+    @Step("Order Delivery Data Update results verification")
+    public void assertDeliveryDataUpdateResult(Response<?> response, String orderId,
+            Double expectedTotalDeliveryPrice, Double expectedLiftPrice) {
+        assertThat("Request to Edit with Delivery recalculate has Failed.", response, successful());
+        Response<OrderData> orderResp = this.getOrder(orderId);
+        DeliveryData orderDeliveryData = orderResp.asJson().getDeliveryData();
+        assertThat("Delivery Lift Price was NOT updated.", orderDeliveryData.getLiftupServicePrice(),
+                equalTo(expectedLiftPrice));
+        assertThat("Delivery Price was NOT updated.", orderDeliveryData.getTotalServicePrice(),
+                equalTo(expectedTotalDeliveryPrice));
     }
 }
