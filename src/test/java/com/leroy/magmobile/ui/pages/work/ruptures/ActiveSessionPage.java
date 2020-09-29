@@ -77,8 +77,6 @@ public class ActiveSessionPage extends SessionPage {
         if (!target.isVisible()) {
             ruptureCardScrollView.scrollDownToElement(target);
         }
-        //из-за кнопок "+перебой и завершить"
-        //ruptureCardScrollView.scrollDown();
         target.click();
         return new RuptureCardPage();
     }

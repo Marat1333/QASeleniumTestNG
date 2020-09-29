@@ -245,7 +245,7 @@ public class RuptureCardPage extends CommonMagMobilePage {
     @Step("Проверить, что кнопка подтверждения ввода комментария активна")
     public RuptureCardPage shouldSubmitCommentBtnIsActive() throws Exception {
         anAssert.isTrue(submitCommentBtn.getPointColor()
-                .equals(new Color(216, 240, 199, 255)),
+                        .equals(new Color(216, 240, 199, 255)),
                 "Кнопка подтвердить комментарий неактивна");
         return this;
     }
@@ -297,14 +297,8 @@ public class RuptureCardPage extends CommonMagMobilePage {
 
     @Step("Проверить что список задач изменился")
     public RuptureCardPage shouldTasksHasChanged(List<String> tasksBefore) {
-        //mainScrollView.scrollToBeginning();
-        List<String> taskAfter;
-        //if (tasksBefore.size() == 0) {
-        //    return this;
-        //} else {
-        taskAfter = ruptureTaskContainer.getTaskList();
+        List<String> taskAfter = ruptureTaskContainer.getTaskList();
         anAssert.isFalse(tasksBefore.equals(taskAfter), "Список задач не изменился");
-        //}
         return this;
     }
 
@@ -336,11 +330,9 @@ public class RuptureCardPage extends CommonMagMobilePage {
         String ps = getPageSource();
         softAssert.areElementsVisible(ps, closeModalBtn, lmCodeLbl, barCodeLbl, titleLbl, productPhoto,
                 ruptureTaskContainer, priceLbl);
-        //mainScrollView.scrollToEnd();
         softAssert.areElementsVisible(ps, productCardNavigationBtn, salesHallProductQuantityLbl, zeroProductNeedToAddBtn,
                 oneProductNeedToAddBtn, twoProductsNeedToAddBtn, threeOrMoreProductsNeedToAddBtn,
                 rmWarehouseProductQuantityLbl, supplyDateLbl, submitBtn, ruptureCallActionModalBtn, commentField);
-        //mainScrollView.scrollToBeginning();
         softAssert.verifyAll();
         return this;
     }

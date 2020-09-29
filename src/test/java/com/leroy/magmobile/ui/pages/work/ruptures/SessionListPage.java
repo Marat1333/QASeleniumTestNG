@@ -89,17 +89,6 @@ public class SessionListPage extends CommonMagMobilePage {
 
     @Step("Перейти в сессию с номером {sessionId}")
     public void goToSession(String sessionId) throws Exception {
-        /*Element target = E(String.format("contains(%s)", sessionId));
-        if (!target.isVisible()) {
-            mainScrollView.scrollDownToElement(target);
-        }
-        //из-за кнопки "сканировать перебои"
-        mainScrollView.setSwipeDeadZonePercentage(30);
-        mainScrollView.scrollDown();
-        if (!target.isVisible()) {
-            mainScrollView.scrollUpToElement(target);
-        }
-        target.click();*/
         CardWidget<String> cardWidget =
                 mainScrollView.searchForWidgetByText(sessionId);
         anAssert.isTrue(cardWidget.collectDataFromPage().contains(sessionId),
