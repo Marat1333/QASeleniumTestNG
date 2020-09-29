@@ -1,4 +1,4 @@
-package com.leroy.magmobile.ui.pages.work.recall_from_rm;
+package com.leroy.magmobile.ui.pages.work.withdrawal_from_rm;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;

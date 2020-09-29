@@ -62,7 +62,7 @@ public class TasksListsModalPage extends CommonMagMobilePage {
             int previousSize = toDoTasksList.getCount();
             E(String.format("//*[@text='%s']/following-sibling::android.view.ViewGroup[@content-desc='Button-container'][1]",
                     taskName)).click();
-            toDoTasksList.waitUntilSizeIsChanged(previousSize);
+            toDoTasksList.waitUntilSizeIsChanged(previousSize, tiny_timeout);
         }
         return this;
     }

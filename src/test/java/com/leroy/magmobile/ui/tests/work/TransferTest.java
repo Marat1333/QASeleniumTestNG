@@ -316,7 +316,8 @@ public class TransferTest extends AppBaseSteps {
 
         // Step 10
         step("Нажмите на кнопку Отправить заявку на отзыв");
-        TransferToShopRoomSuccessPage successPage = transferShopRoomStep2Page.clickSubmitBtn();
+        transferShopRoomStep2Page.clickSubmitBtn();
+        TransferToShopRoomSuccessPage successPage = new TransferToShopRoomSuccessPage();
         successPage.verifyRequiredElements();
 
         // Step 11
@@ -385,7 +386,8 @@ public class TransferTest extends AppBaseSteps {
 
         // Step 7
         step("Нажмите на кнопку Отправить заявку на отзыв");
-        TransferToShopRoomSuccessPage successPage = transferShopRoomStep2Page.clickSubmitBtn();
+        transferShopRoomStep2Page.clickSubmitBtn();
+        TransferToShopRoomSuccessPage successPage = new TransferToShopRoomSuccessPage();
         successPage.verifyRequiredElements();
 
         // Step 8

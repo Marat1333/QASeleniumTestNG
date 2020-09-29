@@ -10,7 +10,7 @@ public abstract class CardWidget<T> extends Element {
         super(driver, locator);
     }
 
-    public T collectDataFromPage(){
+    public T collectDataFromPage() {
         return collectDataFromPage(getPageSource());
     }
 

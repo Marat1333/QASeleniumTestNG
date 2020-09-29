@@ -1,4 +1,4 @@
-package com.leroy.magmobile.ui.pages.work.recall_from_rm;
+package com.leroy.magmobile.ui.pages.work.withdrawal_from_rm;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
@@ -15,9 +15,6 @@ import java.time.format.DateTimeFormatter;
 
 public class OrderPage extends CommonMagMobilePage {
 
-    @AppFindBy(text = "Пополнение торг. зала")
-    Element title;
-
     @AppFindBy(text = "ПАРАМЕТРЫ ЗАЯВКИ", metaName = "Заголовок 'ПАРАМЕТРЫ ЗАЯВКИ'")
     private Element headerObj;
 
@@ -33,7 +30,7 @@ public class OrderPage extends CommonMagMobilePage {
             metaName = replenishmentMethodText)
     private Element replenishmentMethodLbl;
 
-    private static final String deliveryDateText = "Дата поставки товара";
+    private static final String deliveryDateText = "Дата доставки товара";
     @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.TextView[@text='" + deliveryDateText + "']]",
             metaName = "Область '" + deliveryDateText + "'")
     private Element deliveryDateArea;
@@ -42,11 +39,11 @@ public class OrderPage extends CommonMagMobilePage {
             metaName = deliveryDateText)
     private Element deliveryDateLbl;
 
-    private static final String deliveryTimeText = "Ожидаемое время поставки товара";
+    private static final String deliveryTimeText = "Ожидаемое время доставки товара";
     @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.TextView[@text='" + deliveryTimeText + "']]",
             metaName = "Область '" + deliveryTimeText + "'")
     private Element deliveryTimeArea;
-    @AppFindBy(xpath = "//android.widget.TextView[@text='" + deliveryTimeText + "']/following-sibling::*[1]",
+    @AppFindBy(xpath = "//android.widget.TextView[@text='" + deliveryTimeText + "']/following-sibling::android.widget.TextView[1]",
             metaName = deliveryTimeText)
     private Element deliveryTimeLbl;
 
@@ -101,9 +98,9 @@ public class OrderPage extends CommonMagMobilePage {
     }
 
     @Step("Нажать кнопку ОТПРАВИТЬ ЗАЯВКУ")
-    public SuccessfullyCreatedReplenishmentRequestFromRupturesPage clickSubmitBtn() {
+    public SubmittedWithdrawalOrderPage clickSubmitBtn() {
         submitBtn.click();
-        return new SuccessfullyCreatedReplenishmentRequestFromRupturesPage();
+        return new SubmittedWithdrawalOrderPage();
     }
 
     /* ------------------------- Verifications -------------------------- */
@@ -111,14 +108,9 @@ public class OrderPage extends CommonMagMobilePage {
     @Step("Проверить, что экран 'Параметры заявки' отображается корректно")
     public OrderPage verifyRequiredElements() {
         softAssert.areElementsVisible(headerObj, submitBtn);
-        softAssert.verifyAll();
-        return this;
-    }
-
-    @Step("Проверить, что номер заявки корректен")
-    public OrderPage shouldOrderNumberIsCorrect(){
-        anAssert.isTrue(isOrderNumberVisibleAndValid(),
+        softAssert.isTrue(isOrderNumberVisibleAndValid(),
                 "Номер заявки должен быть валиден");
+        softAssert.verifyAll();
         return this;
     }
 

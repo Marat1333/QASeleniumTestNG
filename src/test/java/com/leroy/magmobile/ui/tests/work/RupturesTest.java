@@ -13,19 +13,19 @@ import com.leroy.magmobile.api.data.sales.transfer.TransferSearchProductData;
 import com.leroy.magmobile.api.helpers.RuptureHelper;
 import com.leroy.magmobile.api.helpers.TransferHelper;
 import com.leroy.magmobile.ui.AppBaseSteps;
+import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductCardPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.work.WorkPage;
-import com.leroy.magmobile.ui.pages.work.recall_from_rm.AddProductToRecallFromRmRequestPage;
-import com.leroy.magmobile.ui.pages.work.recall_from_rm.DraftRecallFromRmRequestPage;
-import com.leroy.magmobile.ui.pages.work.recall_from_rm.OrderPage;
-import com.leroy.magmobile.ui.pages.work.recall_from_rm.SuccessfullyCreatedReplenishmentRequestFromRupturesPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.*;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.RuptureData;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.SessionData;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.TaskData;
 import com.leroy.magmobile.ui.pages.work.ruptures.enums.Action;
 import com.leroy.magmobile.ui.pages.work.ruptures.modal.*;
+import com.leroy.magmobile.ui.pages.work.transfer.RuptureTransferToShopRoomSuccessPage;
+import com.leroy.magmobile.ui.pages.work.transfer.TransferOrderStep1Page;
+import com.leroy.magmobile.ui.pages.work.transfer.TransferShopRoomStep2Page;
 import io.qameta.allure.Issue;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.AfterMethod;
@@ -814,6 +814,7 @@ public class RupturesTest extends AppBaseSteps {
         // Pre-conditions
         rupturesHelper.deleteAllSessionInCurrentDepartment();
         List<Integer> sessionsIdList = rupturesHelper.createFewSessions(20);
+        Collections.reverse(sessionsIdList);
         List<Integer> activeSessionsIdList = sessionsIdList.subList(0, 10);
         List<Integer> finishedSessionsIdList = sessionsIdList.subList(10, sessionsIdList.size());
         rupturesHelper.finishFewSessions(finishedSessionsIdList);
@@ -1306,31 +1307,33 @@ public class RupturesTest extends AppBaseSteps {
 
         //Step 3
         step("Выбрать \"продолжить\"");
-        AddProductToRecallFromRmRequestPage addProductToRecallFromRmRequestPage = acceptRecallFromRmModalPage.acceptRequest();
-        addProductToRecallFromRmRequestPage.verifyRequiredElements();
+        AddProduct35Page<TransferOrderStep1Page> addProductPage = acceptRecallFromRmModalPage.clickContinueButton();
+        addProductPage.verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_TASK, false);
 
         //Step 4
         step("Нажать кнопку \"Добавить в заявку\"");
-        DraftRecallFromRmRequestPage draftRecallFromRmRequestPage = addProductToRecallFromRmRequestPage.createDraftRecallFromRmRequest();
-        draftRecallFromRmRequestPage.verifyRequiredElements();
+        TransferOrderStep1Page transferOrderStep1Page = addProductPage.clickSubmitButton();
+        transferOrderStep1Page.verifyElementsWhenProductsAdded();
 
         //Step 5
         step("Нажать \"далее\"");
-        OrderPage orderPage = draftRecallFromRmRequestPage.continueFillingRecallRequest();
-        orderPage.verifyRequiredElements();
+        transferOrderStep1Page.clickNextButton();
+        TransferShopRoomStep2Page transferShopRoomStep2Page = new TransferShopRoomStep2Page()
+                .verifyRequiredElements();
 
         //Step 6
         step("Выбрать ожидаемое время поставки и отправить заявку на отзыв");
         LocalDate testDate = LocalDate.now().plusDays(1);
-        orderPage.editDeliveryDate(testDate);
+        transferShopRoomStep2Page.editDeliveryDate(testDate);
         LocalTime timeForSelect = LocalTime.now().plusHours(1).plusMinutes(5);
-        orderPage.editDeliveryTime(timeForSelect);
-        SuccessfullyCreatedReplenishmentRequestFromRupturesPage successfullyCreatedReplenishmentRequestFromRupturesPage = orderPage.clickSubmitBtn();
-        successfullyCreatedReplenishmentRequestFromRupturesPage.verifyRequiredElements();
+        transferShopRoomStep2Page.editDeliveryTime(timeForSelect, true);
+        transferShopRoomStep2Page.clickSubmitBtn();
+        RuptureTransferToShopRoomSuccessPage successPage = new RuptureTransferToShopRoomSuccessPage();
+        successPage.verifyRequiredElements();
 
         //Step 7
         step("Нажать \"Вернуться в сессию перебоев\"");
-        successfullyCreatedReplenishmentRequestFromRupturesPage.returnToRuptureSession();
+        successPage.clickSubmitButton();
         ruptureCardPage = new RuptureCardPage();
         ruptureCardPage.verifyRequiredElements()
                 .shouldRecallRequestHasBeenCreatedMsgIsVisible();
@@ -1342,7 +1345,7 @@ public class RupturesTest extends AppBaseSteps {
         actionModalPage.verifyRequiredElements();
 
         // Step 9
-        step("Закрыть модалку\n" +
+        step("Закрыть модалку, " +
                 "Перейти к редактированию экшенов перебоя (карандашик)");
         ruptureCardPage = actionModalPage.closeModal();
         TasksListsModalPage tasksListsModalPage = ruptureCardPage.callActionModalPage();
@@ -1396,31 +1399,33 @@ public class RupturesTest extends AppBaseSteps {
 
         //Step 3
         step("Выбрать \"продолжить\"");
-        AddProductToRecallFromRmRequestPage addProductToRecallFromRmRequestPage = acceptRecallFromRmModalPage.acceptRequest();
-        addProductToRecallFromRmRequestPage.verifyRequiredElements();
+        AddProduct35Page<TransferOrderStep1Page> addProductPage = acceptRecallFromRmModalPage.clickContinueButton();
+        addProductPage.verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_TASK, false);
 
         //Step 4
         step("Нажать кнопку \"Добавить в заявку\"");
-        DraftRecallFromRmRequestPage draftRecallFromRmRequestPage = addProductToRecallFromRmRequestPage.createDraftRecallFromRmRequest();
-        draftRecallFromRmRequestPage.verifyRequiredElements();
+        TransferOrderStep1Page transferOrderStep1Page = addProductPage.clickSubmitButton();
+        transferOrderStep1Page.verifyElementsWhenProductsAdded();
 
         //Step 5
         step("Нажать \"далее\"");
-        OrderPage orderPage = draftRecallFromRmRequestPage.continueFillingRecallRequest();
-        orderPage.verifyRequiredElements();
+        transferOrderStep1Page.clickNextButton();
+        TransferShopRoomStep2Page transferShopRoomStep2Page = new TransferShopRoomStep2Page();
+        transferShopRoomStep2Page.verifyRequiredElements();
 
         //Step 6
         step("Выбрать ожидаемое время поставки и отправить заявку на отзыв");
         LocalDate testDate = LocalDate.now().plusDays(1);
-        orderPage.editDeliveryDate(testDate);
+        transferShopRoomStep2Page.editDeliveryDate(testDate);
         LocalTime timeForSelect = LocalTime.now().plusHours(1).plusMinutes(5);
-        orderPage.editDeliveryTime(timeForSelect);
-        SuccessfullyCreatedReplenishmentRequestFromRupturesPage successfullyCreatedReplenishmentRequestFromRupturesPage = orderPage.clickSubmitBtn();
-        successfullyCreatedReplenishmentRequestFromRupturesPage.verifyRequiredElements();
+        transferShopRoomStep2Page.editDeliveryTime(timeForSelect, true);
+        transferShopRoomStep2Page.clickSubmitBtn();
+        RuptureTransferToShopRoomSuccessPage successPage = new RuptureTransferToShopRoomSuccessPage();
+        successPage.verifyRequiredElements();
 
         //Step 7
         step("Нажать \"Вернуться в сессию перебоев\"");
-        successfullyCreatedReplenishmentRequestFromRupturesPage.returnToRuptureSession();
+        successPage.clickSubmitButton();
         ruptureCardPage = new RuptureCardPage();
         ruptureCardPage.verifyRequiredElements()
                 .shouldRecallRequestHasBeenCreatedMsgIsVisible();
@@ -1465,31 +1470,33 @@ public class RupturesTest extends AppBaseSteps {
 
         //Step 3
         step("Выбрать \"продолжить\"");
-        AddProductToRecallFromRmRequestPage addProductToRecallFromRmRequestPage = acceptRecallFromRmModalPage.acceptRequest();
-        addProductToRecallFromRmRequestPage.verifyRequiredElements();
+        AddProduct35Page<TransferOrderStep1Page> addProductPage = acceptRecallFromRmModalPage.clickContinueButton();
+        addProductPage.verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_TASK, false);
 
         //Step 4
         step("Нажать кнопку \"Добавить в заявку\"");
-        DraftRecallFromRmRequestPage draftRecallFromRmRequestPage = addProductToRecallFromRmRequestPage.createDraftRecallFromRmRequest();
-        draftRecallFromRmRequestPage.verifyRequiredElements();
+        TransferOrderStep1Page transferOrderStep1Page = addProductPage.clickSubmitButton();
+        transferOrderStep1Page.verifyElementsWhenProductsAdded();
 
         //Step 5
         step("Нажать \"далее\"");
-        OrderPage orderPage = draftRecallFromRmRequestPage.continueFillingRecallRequest();
-        orderPage.verifyRequiredElements();
+        transferOrderStep1Page.clickNextButton();
+        TransferShopRoomStep2Page transferShopRoomStep2Page = new TransferShopRoomStep2Page();
+        transferShopRoomStep2Page.verifyRequiredElements();
 
         //Step 6
         step("Выбрать ожидаемое время поставки и отправить заявку на отзыв");
         LocalDate testDate = LocalDate.now().plusDays(1);
-        orderPage.editDeliveryDate(testDate);
+        transferShopRoomStep2Page.editDeliveryDate(testDate);
         LocalTime timeForSelect = LocalTime.now().plusHours(1).plusMinutes(5);
-        orderPage.editDeliveryTime(timeForSelect);
-        SuccessfullyCreatedReplenishmentRequestFromRupturesPage successfullyCreatedReplenishmentRequestFromRupturesPage = orderPage.clickSubmitBtn();
-        successfullyCreatedReplenishmentRequestFromRupturesPage.verifyRequiredElements();
+        transferShopRoomStep2Page.editDeliveryTime(timeForSelect, true);
+        transferShopRoomStep2Page.clickSubmitBtn();
+        RuptureTransferToShopRoomSuccessPage successPage = new RuptureTransferToShopRoomSuccessPage();
+        successPage.verifyRequiredElements();
 
         //Step 7
         step("Нажать \"Вернуться в сессию перебоев\"");
-        successfullyCreatedReplenishmentRequestFromRupturesPage.returnToRuptureSession();
+        successPage.clickSubmitButton();
         finishedSessionRupturesActionsPage = new FinishedSessionRupturesActionsPage();
         finishedSessionRupturesActionsPage.verifyRequiredElements()
                 .shouldNoActiveRuptureTasksAreAvailable();

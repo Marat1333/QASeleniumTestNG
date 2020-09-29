@@ -11,7 +11,7 @@ import com.leroy.magmobile.ui.pages.sales.product_and_service.AddServicePage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.*;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
-import com.leroy.magmobile.ui.pages.work.recall_from_rm.OrderPage;
+import com.leroy.magmobile.ui.pages.work.withdrawal_from_rm.OrderPage;
 import com.leroy.magmobile.ui.pages.work.StockProductCardPage;
 import com.leroy.magmobile.ui.pages.work.StockProductsPage;
 import com.leroy.magmobile.ui.pages.work.modal.QuantityProductsForWithdrawalModalPage;
@@ -173,7 +173,6 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
         step("Нажмите Далее к параметрам заявки");
         OrderPage orderPage = stockProductsPage.clickSubmitBtn()
                 .verifyRequiredElements()
-                .shouldOrderNumberIsCorrect()
                 .shouldFieldsAreNotEmptyExceptCommentField();
         String orderNumber = orderPage.getOrderNumber();
 
