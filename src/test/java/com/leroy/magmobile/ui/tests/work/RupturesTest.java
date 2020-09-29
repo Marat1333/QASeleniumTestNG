@@ -140,13 +140,13 @@ public class RupturesTest extends AppBaseSteps {
     @Test(description = "C3272519 Перебои на экране работы")
     public void testRupturesOnWorkScreen() throws Exception {
         String shopWithNoRuptures = "62";
-        ResRuptureSessionDataList activeSessionsData = rupturesHelper.getActiveSessions();
 
         // Step 1
         step("Перейти на экран 'работа'");
         WorkPage workPage = loginAndGoTo(WorkPage.class)
-                .shouldRupturesNavigationBtnHasCorrectCondition(true)
-                .shouldRupturesSessionCounterIsCorrect(activeSessionsData.getTotalCount());
+                .shouldRupturesNavigationBtnHasCorrectCondition(true);
+        ResRuptureSessionDataList activeSessionsData = rupturesHelper.getActiveSessions();
+        workPage.shouldRupturesSessionCounterIsCorrect(activeSessionsData.getTotalCount());
 
         // Step 2
         step("Сменить магазин на 62 и вернуться на экран 'работа'");
