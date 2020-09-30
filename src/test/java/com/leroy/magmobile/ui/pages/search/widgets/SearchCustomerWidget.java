@@ -16,9 +16,9 @@ public class SearchCustomerWidget extends CardWidget<MagCustomerData> {
 
     @AppFindBy(xpath = "./android.widget.TextView[1]")
     private Element nameVal;
-    @AppFindBy(xpath = "./android.widget.TextView[2]")
+    @AppFindBy(xpath = "./android.widget.TextView[contains(@text, '*')]")
     private Element cardNumberVal;
-    @AppFindBy(xpath = "./android.widget.TextView[3]")
+    @AppFindBy(xpath = "./android.widget.TextView[contains(@text, 'КАРТА')]")
     private Element cardTypeVal;
     @AppFindBy(xpath = "./android.widget.TextView[contains(@text, '+7')]")
     private Element phoneVal;
@@ -31,8 +31,8 @@ public class SearchCustomerWidget extends CardWidget<MagCustomerData> {
             ps = getPageSource();
         MagCustomerData customerData = new MagCustomerData();
         customerData.setName(nameVal.getText(ps));
-        //customerData.setCardNumber(cardNumberVal.getText(ps)); TODO
-        //customerData.setCardType(cardTypeVal.getText(ps));
+        customerData.setCardNumber(cardNumberVal.getTextIfPresent(ps));
+        customerData.setCardType(cardTypeVal.getTextIfPresent(ps));
         customerData.setEmail(emailVal.getTextIfPresent(ps));
         customerData.setPhone(ParserUtil.standardPhoneFmt(phoneVal.getTextIfPresent(ps)));
         return customerData;

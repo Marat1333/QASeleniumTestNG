@@ -1,10 +1,11 @@
-package com.leroy.magmobile.api.helpers;
+package com.leroy.common_mashups.helpers;
 
-import com.leroy.magmobile.api.ApiClientProvider;
-import com.leroy.magmobile.api.clients.CustomerClient;
-import com.leroy.magmobile.api.data.customer.CustomerData;
-import com.leroy.magmobile.api.data.customer.CustomerListData;
-import com.leroy.magmobile.api.data.customer.CustomerSearchFilters;
+import com.google.inject.Inject;
+import com.leroy.common_mashups.clients.CustomerClient;
+import com.leroy.common_mashups.data.customer.CustomerData;
+import com.leroy.common_mashups.data.customer.CustomerListData;
+import com.leroy.common_mashups.data.customer.CustomerSearchFilters;
+import com.leroy.magportal.api.helpers.BaseHelper;
 import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -13,11 +14,13 @@ import java.util.Optional;
 import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class CustomerHelper extends ApiClientProvider {
+public class CustomerHelper extends BaseHelper {
+
+    @Inject
+    CustomerClient customerClient;
 
     @Step("Search for customer id by phone = {phone}")
     public String getFirstCustomerIdByPhone(String phone) {
-        CustomerClient customerClient = getCustomerClient();
         CustomerSearchFilters customerSearchFilters = new CustomerSearchFilters();
         customerSearchFilters.setCustomerType(CustomerSearchFilters.CustomerType.NATURAL);
         customerSearchFilters.setDiscriminantType(CustomerSearchFilters.DiscriminantType.PHONENUMBER);

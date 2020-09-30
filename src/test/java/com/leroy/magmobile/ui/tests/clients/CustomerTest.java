@@ -7,10 +7,11 @@ import com.leroy.core.annotations.Smoke;
 import com.leroy.magmobile.api.clients.SalesDocSearchClient;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
-import com.leroy.magmobile.api.helpers.CustomerHelper;
+import com.leroy.common_mashups.helpers.CustomerHelper;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.constants.TestDataConstants;
 import com.leroy.magmobile.ui.models.customer.MagCustomerData;
+import com.leroy.magmobile.ui.models.customer.MagLegalCustomerData;
 import com.leroy.magmobile.ui.models.sales.ShortSalesDocumentData;
 import com.leroy.magmobile.ui.pages.customers.*;
 import com.leroy.magmobile.ui.pages.sales.orders.cart.CartSearchPage;
@@ -111,6 +112,23 @@ public class CustomerTest extends AppBaseSteps {
         step("Введите электронную почту клиента");
         searchCustomerPage.searchCustomerByEmail(customerData.getEmail(), false);
         searchCustomerPage.shouldFirstCustomerIs(customerData, SearchCustomerPage.SearchType.BY_EMAIL);
+    }
+
+    @Test(description = "C22907529 Поиск клиента (юр. лицо) по номеру договора")
+    public void testSearchForLegalClientByContractNumber() throws Exception {
+        MagLegalCustomerData customerData = TestDataConstants.LEGAL_ENTITY_1;
+
+        MainCustomerPage mainCustomerPage = loginAndGoTo(MainCustomerPage.class);
+
+        // Step 1
+        step("Нажмите на поле Поиск клиента");
+        SearchCustomerPage searchCustomerPage = mainCustomerPage.clickSearchCustomerField()
+                .verifyRequiredElements();
+
+        // Step 2
+        step("Введите электронную почту клиента");
+        searchCustomerPage.searchLegalCustomerByContractNumber(customerData.getContractNumber(), false);
+        searchCustomerPage.shouldFirstCustomerIs(customerData);
     }
 
     @Smoke

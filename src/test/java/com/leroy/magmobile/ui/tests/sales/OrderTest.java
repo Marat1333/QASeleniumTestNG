@@ -1054,7 +1054,7 @@ public class OrderTest extends SalesBaseTest {
 
         switch (searchType) {
             case BY_CONTRACT:
-                searchCustomerPage.searchLegalCustomerByContractNumber(searchOrgCustomer.getContractNumber());
+                searchCustomerPage.searchLegalCustomerByContractNumber(searchOrgCustomer.getContractNumber(), true);
                 salesDocumentData.getOrderDetailsData().setOrgAccount(searchOrgCustomer);
                 break;
             case BY_ORG_CARD:
