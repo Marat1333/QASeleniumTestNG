@@ -1,5 +1,7 @@
 package com.leroy.magmobile.api.tests.salesdoc;
 
+import com.google.inject.Inject;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.magmobile.api.clients.SalesDocProductClient;
 import com.leroy.magmobile.api.data.sales.DiscountReasonData;
 import com.leroy.magmobile.api.data.sales.SalesDocDiscountData;
@@ -17,6 +19,9 @@ import static org.hamcrest.Matchers.*;
 
 public class SalesDocDiscountTest extends BaseProjectApiTest {
 
+    @Inject
+    SearchProductHelper searchProductHelper;
+
     private String productLmCode;
 
     private SalesDocProductClient client() {
@@ -30,7 +35,7 @@ public class SalesDocDiscountTest extends BaseProjectApiTest {
 
     @BeforeClass
     private void setUp() {
-        productLmCode = apiClientProvider.getProductLmCodes(1).get(0);
+        productLmCode = searchProductHelper.getProductLmCodes(1).get(0);
     }
 
     @Test(description = "C3254680 SalesDoc GET discounts")

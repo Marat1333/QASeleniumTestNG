@@ -57,7 +57,8 @@ public class ActionWithProductModalPage extends CommonActionWithProductModalPage
         softAssert.isElementVisible(addIntoSalesDocumentBtn, ps);
         softAssert.isElementVisible(addIntoOrderForWithdrawalFromRMBtn, ps);
         if (isAvsProduct)
-            softAssert.isElementNotVisible(notifyClientBtn, ps);
+            softAssert.isFalse(notifyClientBtn.isVisible(ps),
+                    "'Уведомить клиента о наличии' отображается, хотя товар AVS");
         else
             softAssert.isElementVisible(notifyClientBtn, ps);
         softAssert.verifyAll();

@@ -2,9 +2,9 @@ package com.leroy.magmobile.api.tests.cusomers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.api.StatusCodes;
-import com.leroy.magmobile.api.clients.CustomerClient;
-import com.leroy.magmobile.api.data.customer.CustomerData;
-import com.leroy.magmobile.api.data.customer.CustomerResponseBodyData;
+import com.leroy.common_mashups.clients.CustomerClient;
+import com.leroy.common_mashups.data.customer.CustomerData;
+import com.leroy.common_mashups.data.customer.CustomerResponseBodyData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;

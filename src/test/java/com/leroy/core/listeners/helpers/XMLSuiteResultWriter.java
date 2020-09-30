@@ -1,6 +1,5 @@
 package com.leroy.core.listeners.helpers;
 
-import com.leroy.core.configuration.DeprecatedCommonUtil;
 import org.testng.*;
 import org.testng.annotations.Test;
 import org.testng.collections.Lists;
@@ -279,19 +278,19 @@ public class XMLSuiteResultWriter {
 
             if (!Utils.isStringEmpty(exception.getMessage())) {
                 xmlBuffer.push(XMLReporterConfig.TAG_MESSAGE);
-                xmlBuffer.addCDATA(DeprecatedCommonUtil.filterInvalidChars(exception.getMessage()));
+                xmlBuffer.addCDATA(filterInvalidChars(exception.getMessage()));
                 xmlBuffer.pop();
             }
 
             String[] stackTraces = Utils.stackTrace(exception, false);
             if ((config.getStackTraceOutputMethod() & STACKTRACE_SHORT) == STACKTRACE_SHORT) {
                 xmlBuffer.push(XMLReporterConfig.TAG_SHORT_STACKTRACE);
-                xmlBuffer.addCDATA(DeprecatedCommonUtil.filterInvalidChars(stackTraces[0]));
+                xmlBuffer.addCDATA(filterInvalidChars(stackTraces[0]));
                 xmlBuffer.pop();
             }
             if ((config.getStackTraceOutputMethod() & STACKTRACE_FULL) == STACKTRACE_FULL) {
                 xmlBuffer.push(XMLReporterConfig.TAG_FULL_STACKTRACE);
-                xmlBuffer.addCDATA(DeprecatedCommonUtil.filterInvalidChars(stackTraces[1]));
+                xmlBuffer.addCDATA(filterInvalidChars(stackTraces[1]));
                 xmlBuffer.pop();
             }
 
@@ -305,7 +304,7 @@ public class XMLSuiteResultWriter {
         for (String line : output) {
             if (line != null) {
                 xmlBuffer.push(XMLReporterConfig.TAG_LINE);
-                xmlBuffer.addCDATA(DeprecatedCommonUtil.filterInvalidChars(line));
+                xmlBuffer.addCDATA(filterInvalidChars(line));
                 xmlBuffer.pop();
             }
         }
@@ -334,6 +333,14 @@ public class XMLSuiteResultWriter {
             }
             xmlBuffer.pop();
         }
+    }
+
+    public static String filterInvalidChars(String msg) {
+        if (msg != null && msg.trim().length() > 0) {
+            msg = msg.replaceAll("[^\\n\\x20-\\x7e]", "");
+        }
+
+        return msg;
     }
 
 }

@@ -154,7 +154,7 @@ public class PrintEstimatePage extends BaseWebPage {
             softAssert.isEquals(actualProduct.getPrice(), expectedProduct.getPrice(),
                     "Товар " + (i + 1) + " - неверная цена");
             softAssert.isEquals(actualProduct.getTotalPriceWithNDS(),
-                    actualProduct.getQuantity() * actualProduct.getPrice(),
+                    ParserUtil.multiply(actualProduct.getQuantity(), actualProduct.getPrice(), 2),
                     "Товар " + (i + 1) + " - неверная сумма с учетом НДС");
         }
 

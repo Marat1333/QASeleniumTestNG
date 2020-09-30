@@ -20,7 +20,7 @@ public class CardConst {
     public static final CardData VISA_1111 = new CardData()
             .setPan("4111111111111111")
             .setMonth("12")
-            .setYear("2024")
+            .setYear("24")
             .setCvc("123")
             .setText("MOSKAL")
             .setPassword("12345678");

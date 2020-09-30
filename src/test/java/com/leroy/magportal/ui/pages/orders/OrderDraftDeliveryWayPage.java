@@ -109,11 +109,17 @@ public class OrderDraftDeliveryWayPage extends OrderDraftPage {
 
     @Step("Выбрать тип получения заказа")
     public OrderDraftDeliveryWayPage selectDeliveryWay(SalesDocumentsConst.GiveAwayPoints giveAwayPoints) {
-        if (giveAwayPoints.equals(SalesDocumentsConst.GiveAwayPoints.PICKUP))
+        if (giveAwayPoints.equals(SalesDocumentsConst.GiveAwayPoints.PICKUP)) {
+            pickupBtn.scrollTo();
             pickupBtn.click();
-        if (giveAwayPoints.equals(SalesDocumentsConst.GiveAwayPoints.DELIVERY))
+            pickupBtn.waitUntilAttributeContains("class", "active");
+        }
+        if (giveAwayPoints.equals(SalesDocumentsConst.GiveAwayPoints.DELIVERY)) {
+            deliveryBtn.scrollTo();
             deliveryBtn.click();
-        waitForSpinnerAppearAndDisappear();
+            deliveryBtn.waitUntilAttributeContains("class", "active");
+        }
+        waitForSpinnerDisappear();
         shouldModalThatChangesIsNotSavedIsNotVisible();
         return this;
     }
@@ -147,10 +153,23 @@ public class OrderDraftDeliveryWayPage extends OrderDraftPage {
         return enterPinCode(orderData, true);
     }
 
+    public OrderDraftDeliveryWayPage enterPinCode(String pinCode) {
+        SalesDocWebData salesDocWebData = new SalesDocWebData();
+        salesDocWebData.setPinCode(pinCode);
+        return enterPinCode(salesDocWebData, false);
+    }
+
     @Step("Нажать на кнопку 'Подтвердить заказ'")
     public SubmittedOrderModal clickConfirmOrderButton() {
         confirmOrderBtn.click();
         return new SubmittedOrderModal();
+    }
+
+    @Step("Нажать на кнопку 'Подтвердить заказ' - негативный сценарий")
+    public OrderDraftDeliveryWayPage clickConfirmOrderButtonNegativePath() {
+        confirmOrderBtn.click();
+        waitForSpinnerAppearAndDisappear();
+        return this;
     }
 
     // Verifications
@@ -166,6 +185,12 @@ public class OrderDraftDeliveryWayPage extends OrderDraftPage {
     @Step("Проверить, что поле с пин кодом = {text}")
     public OrderDraftDeliveryWayPage shouldPinCodeFieldIs(String text) {
         anAssert.isElementTextEqual(pinCodeFld, text);
+        return this;
+    }
+
+    @Step("Проверить, что ошибка под полем пин код содержит текст = {text}")
+    public OrderDraftDeliveryWayPage shouldPinCodeErrorTooltipIs(String text) {
+        anAssert.isElementTextEqual(pinCodeErrorTooltip, text);
         return this;
     }
 

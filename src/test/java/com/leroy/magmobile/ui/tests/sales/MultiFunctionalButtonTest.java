@@ -11,10 +11,10 @@ import com.leroy.magmobile.ui.pages.sales.product_and_service.AddServicePage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.*;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
-import com.leroy.magmobile.ui.pages.work.OrderPage;
 import com.leroy.magmobile.ui.pages.work.StockProductCardPage;
 import com.leroy.magmobile.ui.pages.work.StockProductsPage;
 import com.leroy.magmobile.ui.pages.work.modal.QuantityProductsForWithdrawalModalPage;
+import com.leroy.magmobile.ui.pages.work.withdrawal_from_rm.OrderPage;
 import org.apache.commons.lang.RandomStringUtils;
 import org.testng.annotations.Test;
 
@@ -274,7 +274,10 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
             ProductTypes productType, boolean is35Shop) throws Exception {
         // Pre-condition
         if (mainProductAndServicesPage == null) {
-            mainProductAndServicesPage = loginSelectShopAndGoTo(MainProductAndServicesPage.class);
+            if (isStartFromScratch())
+                mainProductAndServicesPage = loginSelectShopAndGoTo(MainProductAndServicesPage.class);
+            else
+                mainProductAndServicesPage = new MainProductAndServicesPage();
         }
 
         // Step #1

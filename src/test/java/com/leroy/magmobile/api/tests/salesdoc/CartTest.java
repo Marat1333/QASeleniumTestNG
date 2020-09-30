@@ -1,6 +1,8 @@
 package com.leroy.magmobile.api.tests.salesdoc;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.inject.Inject;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.DiscountConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.clients.CartClient;
@@ -37,6 +39,9 @@ public class CartTest extends BaseProjectApiTest {
 
     private List<ProductItemData> products;
 
+    @Inject
+    SearchProductHelper searchProductHelper;
+
     @Override
     protected boolean isNeedAccessToken() {
         return true;
@@ -46,7 +51,7 @@ public class CartTest extends BaseProjectApiTest {
     private void setUp() {
         cartClient = apiClientProvider.getCartClient();
         searchClient = apiClientProvider.getCatalogSearchClient();
-        products = apiClientProvider.getProducts(3);
+        products = searchProductHelper.getProducts(3);
     }
 
     @AfterMethod
@@ -89,7 +94,7 @@ public class CartTest extends BaseProjectApiTest {
     public void testCartConfirmQuantity() {
         CatalogSearchFilter filter = new CatalogSearchFilter();
         filter.setHasAvailableStock(false);
-        ProductItemData product = apiClientProvider.getProducts(1, filter).get(0);
+        ProductItemData product = searchProductHelper.getProducts(1, filter).get(0);
         CartProductOrderData cartProductOrderData = new CartProductOrderData(product);
         cartProductOrderData.setQuantity(product.getAvailableStock() + 1.0);
         step("Create Cart with product quantity greater than Available stock");
@@ -132,7 +137,7 @@ public class CartTest extends BaseProjectApiTest {
         filtersData.setAvs(false);
         filtersData.setTopEM(false);
         filtersData.setHasAvailableStock(true);
-        List<ProductItemData> productItemDataList = apiClientProvider.getProducts(2, filtersData);
+        List<ProductItemData> productItemDataList = searchProductHelper.getProducts(2, filtersData);
         CartProductOrderData productWithNegativeBalance = new CartProductOrderData(
                 productItemDataList.get(0));
         productWithNegativeBalance.setQuantity(productItemDataList.get(0).getAvailableStock() + 10.0);

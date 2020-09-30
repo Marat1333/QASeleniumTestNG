@@ -7,7 +7,7 @@ import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magmobile.ui.elements.MagMobCheckBox;
+import com.leroy.magmobile.ui.elements.MagMobGreenCheckBox;
 import com.leroy.magmobile.ui.models.SupplierCardData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.search.widgets.SupplierCardWidget;
@@ -92,7 +92,7 @@ public class SuppliersSearchPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что в овальной области отображено имя выбранного поставщика")
-    public SuppliersSearchPage shouldNameOfChosenIsDisplayedInOvalElement(String supplierName) {
+    public SuppliersSearchPage shouldNameOfChosenIsDisplayedInOvalElement(String supplierName) throws Exception {
         List<String> namesOfSuppliers = suppliersOvalElements.getFullDataList();
         anAssert.isFalse(namesOfSuppliers.isEmpty(), "Не найдено выбранных поставщиков");
         for (String text : namesOfSuppliers) {
@@ -104,7 +104,7 @@ public class SuppliersSearchPage extends CommonMagMobilePage {
 
     @Step("Поставщик с кодом/именем {value} выбран")
     public SuppliersSearchPage shouldSupplierCheckboxIsSelected(String value, boolean isSelected) throws Exception {
-        MagMobCheckBox anchorElement = new MagMobCheckBox(driver, new CustomLocator(By.xpath(String.format(SCREEN_CONTENT_XPATH + SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH, value))));
+        MagMobGreenCheckBox anchorElement = new MagMobGreenCheckBox(driver, new CustomLocator(By.xpath(String.format(SCREEN_CONTENT_XPATH + SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH, value))));
         if (isSelected) {
             anAssert.isTrue(anchorElement.isChecked(), "Фильтр '" + value + "' должен быть выбран");
         } else {

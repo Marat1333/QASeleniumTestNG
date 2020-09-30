@@ -2,6 +2,7 @@ package com.leroy.magmobile.ui.tests.sales;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.DiscountConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
@@ -45,6 +46,9 @@ public class SalesBaseTest extends AppBaseSteps {
 
     @Inject
     PAOHelper paoHelper;
+
+    @Inject
+    protected SearchProductHelper searchProductHelper;
 
     // СТАРТ ТЕСТА С ЭКРАНА КОРЗИНЫ:
     @Step("Pre-condition: Начать тест с экрана пустой корзины")
@@ -116,7 +120,7 @@ public class SalesBaseTest extends AppBaseSteps {
     // Получить ЛМ код для обычного продукта без специфичных опций
     protected List<String> getAnyLmCodesProductWithoutSpecificOptions(
             int necessaryCount) {
-        return apiClientProvider.getProducts(necessaryCount, false, false)
+        return searchProductHelper.getProducts(necessaryCount, false, false)
                 .stream().map(ProductItemData::getLmCode).collect(Collectors.toList());
     }
 
@@ -129,7 +133,7 @@ public class SalesBaseTest extends AppBaseSteps {
         CatalogSearchFilter filtersData = new CatalogSearchFilter();
         filtersData.setAvs(true);
         filtersData.setHasAvailableStock(hasAvailableStock);
-        return apiClientProvider.getProducts(1, filtersData).get(0).getLmCode();
+        return searchProductHelper.getProducts(1, filtersData).get(0).getLmCode();
     }
 
     protected String getAnyLmCodeProductWithAvs() {
@@ -142,8 +146,9 @@ public class SalesBaseTest extends AppBaseSteps {
         filtersData.setTopEM(true);
         filtersData.setAvs(false);
         filtersData.setHasAvailableStock(hasAvailableStock);
+        getUserSessionData().setUserShopId("78");
         getUserSessionData().setUserDepartmentId("15");
-        return apiClientProvider.getProducts(1, filtersData).get(0).getLmCode();
+        return searchProductHelper.getProducts(1, filtersData).get(0).getLmCode();
     }
 
     protected String getAnyLmCodeProductWithTopEM() {
@@ -162,7 +167,7 @@ public class SalesBaseTest extends AppBaseSteps {
         filtersData.setAvs(false);
         filtersData.setTopEM(false);
         filtersData.setHasAvailableStock(true);
-        List<ProductItemData> productItemDataList = apiClientProvider.getProducts(2, filtersData);
+        List<ProductItemData> productItemDataList = searchProductHelper.getProducts(2, filtersData);
         CartProductOrderData productWithNegativeBalance = new CartProductOrderData(
                 productItemDataList.get(0));
         productWithNegativeBalance.setQuantity(productItemDataList.get(0).getAvailableStock() + 10.0);
@@ -245,7 +250,7 @@ public class SalesBaseTest extends AppBaseSteps {
         List<CartProductOrderData> productOrderDataList = productDataList == null ? new ArrayList<>() : productDataList;
         if (productDataList == null) {
             if (lmCodes == null)
-                lmCodes = apiClientProvider.getProductLmCodes(1);
+                lmCodes = searchProductHelper.getProductLmCodes(1);
             for (String lmCode : lmCodes) {
                 CartProductOrderData productOrderData = new CartProductOrderData();
                 productOrderData.setLmCode(lmCode);

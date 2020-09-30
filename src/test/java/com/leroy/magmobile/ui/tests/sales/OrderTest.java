@@ -63,7 +63,7 @@ public class OrderTest extends SalesBaseTest {
 
     @BeforeGroups(groups = NEED_PRODUCTS_GROUP)
     private void findProducts() {
-        lmCodes = apiClientProvider.getProductLmCodes(3, false, false);
+        lmCodes = searchProductHelper.getProductLmCodes(3, false, false);
     }
 
     @AfterMethod
@@ -405,7 +405,7 @@ public class OrderTest extends SalesBaseTest {
         // Test Data
         MagLegalCustomerData legalCustomerData = TestDataConstants.LEGAL_ENTITY_1;
 
-        List<ProductItemData> productItemDataList = apiClientProvider.getProducts(1);
+        List<ProductItemData> productItemDataList = searchProductHelper.getProducts(1);
         CartProductOrderData productWithNegativeBalance = new CartProductOrderData(
                 productItemDataList.get(0));
         productWithNegativeBalance.setQuantity(productItemDataList.get(0).getAvailableStock() + 10.0);
@@ -445,7 +445,7 @@ public class OrderTest extends SalesBaseTest {
         // Test Data
         MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
 
-        List<ProductItemData> productItemDataList = apiClientProvider.getProducts(1);
+        List<ProductItemData> productItemDataList = searchProductHelper.getProducts(1);
         CartProductOrderData productWithNegativeBalance = new CartProductOrderData(
                 productItemDataList.get(0));
         productWithNegativeBalance.setQuantity(productItemDataList.get(0).getAvailableStock() + 10.0);
@@ -687,9 +687,9 @@ public class OrderTest extends SalesBaseTest {
         // Pre-conditions
         CatalogSearchFilter filter = new CatalogSearchFilter();
         filter.setHasAvailableStock(true);
-        ProductItemData product1 = apiClientProvider.getProducts(1, filter).get(0);
+        ProductItemData product1 = searchProductHelper.getProducts(1, filter).get(0);
         filter.setHasAvailableStock(false);
-        ProductItemData product2 = apiClientProvider.getProducts(1, filter).get(0);
+        ProductItemData product2 = searchProductHelper.getProducts(1, filter).get(0);
 
         CartProductOrderData cartProductOrderData = new CartProductOrderData(product1);
         cartProductOrderData.setQuantity(1.0);
@@ -1014,7 +1014,7 @@ public class OrderTest extends SalesBaseTest {
     /**
      * В поле Выбери способ получения
      */
-    private void stepSelectDeliveryType(SalesDocumentsConst.GiveAwayPoints type, LocalDate deliveryDate) {
+    private void stepSelectDeliveryType(SalesDocumentsConst.GiveAwayPoints type, LocalDate deliveryDate) throws Exception {
         if (salesDocumentData == null)
             salesDocumentData = new SalesDocumentData();
         OrderDetailsData orderDetailsData = salesDocumentData.getOrderDetailsData() == null ?
@@ -1093,7 +1093,7 @@ public class OrderTest extends SalesBaseTest {
     /**
      * Заполняем данные получателя
      */
-    private void stepEnterCustomerInfo(MagCustomerData magCustomerData, boolean checkFields) {
+    private void stepEnterCustomerInfo(MagCustomerData magCustomerData, boolean checkFields) throws Exception {
         if (magCustomerData == null) {
             magCustomerData = new MagCustomerData();
             magCustomerData.setName(RandomStringUtils.randomAlphabetic(5));
@@ -1107,14 +1107,14 @@ public class OrderTest extends SalesBaseTest {
             processOrder35Page.shouldFormFieldsAre(salesDocumentData.getOrderDetailsData());
     }
 
-    private void stepEnterCustomerInfo(boolean checkFields) {
+    private void stepEnterCustomerInfo(boolean checkFields) throws Exception {
         stepEnterCustomerInfo(null, checkFields);
     }
 
     /**
      * Введите PIN-код для оплаты
      */
-    private void stepEnterPinCode(SalesDocumentsConst.GiveAwayPoints deliveryType) {
+    private void stepEnterPinCode(SalesDocumentsConst.GiveAwayPoints deliveryType) throws Exception {
         if (salesDocumentData == null)
             salesDocumentData = new SalesDocumentData();
         if (salesDocumentData.getOrderDetailsData() == null)
@@ -1422,7 +1422,7 @@ public class OrderTest extends SalesBaseTest {
     /**
      * Нажмите на Перейти в список документов
      */
-    private void stepClickGoToSalesDocumentsList(boolean verifyDocumentDataMatches) {
+    private void stepClickGoToSalesDocumentsList(boolean verifyDocumentDataMatches) throws Exception {
         salesDocumentsPage = submittedSalesDocument35Page.clickGoToDocumentListButton();
         if (verifyDocumentDataMatches) {
             ShortSalesDocumentData expectedSalesDocument = new ShortSalesDocumentData();

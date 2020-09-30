@@ -14,4 +14,5 @@ public class DefectConst {
     public static final boolean INVALID_ORDER_DRAFT_DATE = true; // PAO-1105
     public static final boolean INVISIBLE_AUTHOR_ORDER_DRAFT = true;
     public static final boolean CONFIRMED_BUT_NOT_ALLOWED_FOR_PICKING_ORDER = false;
+    public static final boolean RUPTURES_DONE_TASKS_LIST_ISSUE = true;
 }

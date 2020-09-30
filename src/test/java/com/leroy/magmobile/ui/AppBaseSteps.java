@@ -48,7 +48,14 @@ public class AppBaseSteps extends MagMobileBaseTest {
                 if (termsAcceptBtn.isVisible())
                     termsAcceptBtn.click();
                 moon = true;
-                driver.findElement(By.id("com.android.chrome:id/next_button")).click();
+                Element nextBtn = new Element(driver, By.id("com.android.chrome:id/next_button"));
+                nextBtn.click();
+                try {
+                    nextBtn.waitForInvisibility();
+                } catch (Exception err) {
+                    Log.error(err.getMessage());
+                    nextBtn.click();
+                }
                 //driver.findElement(By.id("com.android.chrome:id/negative_button")).click();
             }
             new WebDriverWait(driver, 30).until(
@@ -203,9 +210,8 @@ public class AppBaseSteps extends MagMobileBaseTest {
             Log.debug(err.getMessage());
             ps = getDriver().getPageSource();
         }
-        Element authScreen = new Element(getDriver(), By.xpath("//*[@content-desc='AuthScreen__btn_getVersionNumber']"));
-        Element anyViewGroup = new Element(getDriver(), By.xpath("//android.view.ViewGroup"));
-        return authScreen.isVisible(ps) || !anyViewGroup.isVisible(ps);
+        Element authScreen = new Element(getDriver(), By.xpath("//*[contains(@resource-id, 'auth_constrain_layout')]"));
+        return authScreen.isVisible(ps);
     }
 
 }

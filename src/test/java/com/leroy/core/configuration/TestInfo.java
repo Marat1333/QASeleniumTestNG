@@ -1,6 +1,5 @@
 package com.leroy.core.configuration;
 
-@Deprecated
 public class TestInfo {
     private String className;
     private String methodName;

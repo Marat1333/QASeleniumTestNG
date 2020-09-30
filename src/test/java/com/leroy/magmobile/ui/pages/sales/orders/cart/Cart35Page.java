@@ -228,7 +228,7 @@ public class Cart35Page extends CartOrderEstimatePage {
     }
 
     @Step("Нажмите 'Изменить' для товара с ЛМ код {lmCode}")
-    public ChangeProductModal clickChangeByProductLmCode(String lmCode) {
+    public ChangeProductModal clickChangeByProductLmCode(String lmCode) throws Exception {
         ProductOrderCardAppWidget widget = (ProductOrderCardAppWidget) productCardsScrollView.searchForWidgetByText(lmCode);
         widget.clickChange();
         return new ChangeProductModal();
@@ -298,7 +298,8 @@ public class Cart35Page extends CartOrderEstimatePage {
     }
 
     @Step("Проверить, что карточка продукта/услуги с текстом '{text}' содержит следующие данные: (expectedProductCardData)")
-    public Cart35Page shouldProductCardDataWithTextIs(String text, ProductOrderCardAppData expectedProductCardData) {
+    public Cart35Page shouldProductCardDataWithTextIs(String text, ProductOrderCardAppData productCardData) throws Exception {
+        ProductOrderCardAppData expectedProductCardData = productCardData.copy();
         CardWidget<ProductOrderCardAppData> widget = productCardsScrollView.searchForWidgetByText(text);
         anAssert.isNotNull(widget, String.format("Не найдена карточка содержащая текст %s", text),
                 String.format("Карточка с текстом %s должна быть", text));
@@ -306,12 +307,13 @@ public class Cart35Page extends CartOrderEstimatePage {
         if (expectedProductCardData.getAvailableTodayQuantity() != null &&
                 expectedProductCardData.getAvailableTodayQuantity() > expectedProductCardData.getSelectedQuantity())
             expectedProductCardData.setAvailableTodayQuantity(null);
+        expectedProductCardData.setTotalStock(null);
         actualProductCardData.assertEqualsNotNullExpectedFields(expectedProductCardData);
         return this;
     }
 
     @Step("Проверить, что у товара отсутствует скидка")
-    public Cart35Page shouldProductDoesNotHaveDiscount(ProductOrderCardAppData productCardData) {
+    public Cart35Page shouldProductDoesNotHaveDiscount(ProductOrderCardAppData productCardData) throws Exception {
         CardWidget<ProductOrderCardAppData> widget = productCardsScrollView.searchForWidgetByText(
                 productCardData.getLmCode());
         anAssert.isNotNull(widget, String.format("Не найдена карточка товара с ЛМ %s", productCardData.getLmCode()),
@@ -338,6 +340,7 @@ public class Cart35Page extends CartOrderEstimatePage {
 
     @Step("Проверить, что данные корзины, как ожидались (expectedDocumentData)")
     public Cart35Page shouldSalesDocumentDataIs(SalesDocumentData expectedDocumentData) throws Exception {
+        expectedDocumentData.getOrderAppDataList().get(0).getProductCardDataList().forEach(p -> p.setTotalStock(null));
         SalesDocumentData salesDocumentData = getSalesDocumentData();
         salesDocumentData.assertEqualsNotNullExpectedFields(expectedDocumentData);
         return this;

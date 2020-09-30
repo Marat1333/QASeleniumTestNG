@@ -1,6 +1,8 @@
 package com.leroy.magmobile.api.tests.salesdoc;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.inject.Inject;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.clients.TransferClient;
@@ -17,6 +19,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class SalesDocTransferTest extends BaseProjectApiTest {
+
+    @Inject
+    SearchProductHelper searchProductHelper;
 
     private TransferClient transferClient;
 
@@ -36,7 +41,7 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
 
     @BeforeClass
     private void findProducts() {
-        productLmCodes = apiClientProvider.getProductLmCodes(2);
+        productLmCodes = searchProductHelper.getProductLmCodes(2);
     }
 
     @Test(description = "C3248457 SalesDoc transfer create POST")

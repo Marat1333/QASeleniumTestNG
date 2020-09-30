@@ -25,9 +25,10 @@ public class PaymentHelper extends BaseHelper {
 
     @Inject
     private PaymentClient paymentClient;
+    @Inject
+    OrderClient orderClient;
 
     private String getPaymentTaskId(String orderId) {
-        OrderClient orderClient = getOrderClient();
         Response<OrderData> resp = orderClient.getOrder(orderId);
         if (!resp.isSuccessful()) {
             int tryCount = 3;
@@ -90,6 +91,7 @@ public class PaymentHelper extends BaseHelper {
     }
 
     public void makePaymentCard(String orderId) throws Exception {
+
         WebDriver driver = DriverFactory.createDriver();
         ContextProvider.setDriver(driver);
         String link = getPaymentLink(orderId);

@@ -48,7 +48,7 @@ public class Run {
         SectionTree tree = new SectionTree();
         JSONArray sections = TestRailClient.getSections(projectId, suiteId);
 
-        CasesCountData totalCaseCountDepth_0 = null;
+        CasesCountData totalCaseCountDepth_0 = new CasesCountData();
         CasesCountData TOTAL_CASE_COUNT = new CasesCountData();
 
         fullReport.add(CasesCountData.fullVersionHeader);
@@ -59,6 +59,7 @@ public class Run {
 
         SectionData sectionData;
         String sectionToAddInFile = null;
+        boolean flag = false;
         for (Object sectionObj : sections) {
             JSONObject sectionJson = (JSONObject) sectionObj;
             sectionData = new SectionData();
@@ -66,7 +67,13 @@ public class Run {
             sectionData.setId((long) sectionJson.get("id"));
             sectionData.setName((String) sectionJson.get("name"));
             sectionData.setParentId((Long) sectionJson.get("parent_id"));
-            if (sectionData.getDepth() == 0) {
+            if (flag && sectionData.getDepth() == 0)
+                break;
+            if (sectionData.getName().equals("Regression Tests"))
+                flag = true;
+            if (!flag)
+                continue;
+            if (sectionData.getDepth() == 1) {
                 sectionToAddInFile = sectionData.getName();
                 if (fullText != null) {
                     fullReport.add(fullText + "\n");
@@ -160,13 +167,13 @@ public class Run {
         private int automated;
         private int obsolete;
 
-        final static String shortVersionHeader = ";Отсутствует описание тест кейса (или нужно обновить);Готов для автоматизации;Автоматизирован;\n";
+        final static String shortVersionHeader = ";Ручной;Автоматизирован;Остальное;\n";
         final static String fullVersionHeader = ";Need to update steps;Ready for review;Ready for automation;Need to re-automate;Manual;Automated;Obsolete;No Status\n";
 
         public String getShortStatusesString() {
-            return (needToUpdateSteps + emptyStatus + obsolete) + ";" +
-                    (readyForReview + readyForAutomation + manual) +
-                    ";" + (needToReAutomate + automated);
+            return manual + ";" +
+                    (needToReAutomate + automated) + ";" +
+                    (emptyStatus + needToUpdateSteps + readyForReview + readyForAutomation + obsolete);
         }
 
         public String getFullStatusesString() {
@@ -281,7 +288,9 @@ public class Run {
         }
 
         public void addSection(SectionData sectionData) throws Exception {
-            if (sectionData.getDepth() == 0) {
+            if (sectionData.getDepth() == 0 /*&& !sectionData.getName().equals("Regression Tests")*/)
+                return;
+            if (sectionData.getDepth() == 1 ) {
                 currentNode = root.addChild(sectionData);
             } else if (sectionData.getDepth().equals(currentNode.getData().getDepth())) {
                 TreeNode parent = currentNode.getParent();
