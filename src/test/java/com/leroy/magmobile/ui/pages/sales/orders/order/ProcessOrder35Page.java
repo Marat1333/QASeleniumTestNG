@@ -41,7 +41,7 @@ public class ProcessOrder35Page extends HeaderProcessOrder35Page {
     }
 
     @Step("Нажмите на иконку клиента (для перехода к экрану поиска клиента)")
-    public SearchCustomerPage clickCustomerIconToSearch() {
+    public SearchCustomerPage clickCustomerIconToSearch() throws Exception {
         return orderParamsForm.clickCustomerIconToSearch();
     }
 
@@ -53,7 +53,7 @@ public class ProcessOrder35Page extends HeaderProcessOrder35Page {
     }
 
     @Step("Ввести PIN код")
-    public ProcessOrder35Page enterPinCode(OrderDetailsData data, boolean tryToFindValidPin) {
+    public ProcessOrder35Page enterPinCode(OrderDetailsData data, boolean tryToFindValidPin) throws Exception {
         orderParamsForm.enterPinCode(data, tryToFindValidPin);
         return this;
     }
@@ -64,7 +64,7 @@ public class ProcessOrder35Page extends HeaderProcessOrder35Page {
     }
 
     @Step("Заполнить поля 'Получатель'")
-    public ProcessOrder35Page enterCustomerInfo(MagCustomerData data) {
+    public ProcessOrder35Page enterCustomerInfo(MagCustomerData data) throws Exception {
         orderParamsForm.enterCustomer(data);
         return this;
     }
@@ -78,7 +78,7 @@ public class ProcessOrder35Page extends HeaderProcessOrder35Page {
     // VERIFICATIONS
 
     @Step("Проверить, что поля формы заполнены соответствующим образом")
-    public ProcessOrder35Page shouldFormFieldsAre(OrderDetailsData data) {
+    public ProcessOrder35Page shouldFormFieldsAre(OrderDetailsData data) throws Exception {
         orderParamsForm.shouldFormFieldsAre(data);
         return this;
     }

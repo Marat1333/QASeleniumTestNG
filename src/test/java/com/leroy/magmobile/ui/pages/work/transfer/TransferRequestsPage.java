@@ -68,7 +68,7 @@ public class TransferRequestsPage extends CommonMagMobilePage {
     }
 
     @Step("Найти заявку по наименованию товара в ней, и открыть эту заявку")
-    public void searchForRequestAndOpenIt(String productTitle, String status) {
+    public void searchForRequestAndOpenIt(String productTitle, String status) throws Exception {
         CardWidget<ShortTransferTaskData> widget = requestsScrollView.searchForWidgetByText(productTitle, status);
         //if (!DriverFactory.isGridProfile() && widget.getLocation().getY() / Toolkit.getDefaultToolkit().getScreenSize().getHeight() * 100 > 95)
         if (!DriverFactory.isGridProfile() && widget.getLocation().getY() / driver.manage().window().getSize().getHeight() * 100 > 95)

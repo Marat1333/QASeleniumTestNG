@@ -40,7 +40,7 @@ public abstract class BaseProjectApiTest extends BaseTest {
     }
 
     protected boolean isNeedAccessToken() {
-        return false;
+        return true;
     }
 
     protected void isResponseOk(Response<?> response) {

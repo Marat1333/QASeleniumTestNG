@@ -3,31 +3,15 @@ package com.leroy.magmobile.ui.pages.work.print_tags;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.ui.pages.common.ScannerPage;
-import com.leroy.magmobile.ui.pages.search.SearchProductPage;
+import com.leroy.magmobile.ui.pages.common.ScannerWithSearchBtnPage;
 import io.qameta.allure.Step;
 
-public class PrintTagsScannerPage extends ScannerPage {
-    @AppFindBy(containsText = "ВВЕСТИ ШТРИХ-КОД / ЛМ ВРУЧНУЮ")
-    Button searchProductBtn;
-
+public class PrintTagsScannerPage extends ScannerWithSearchBtnPage {
     @AppFindBy(text = "СПИСОК ЦЕННИКОВ")
     Button tagsListBtn;
 
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"Button\" and *[@text='СПИСОК ЦЕННИКОВ']]//android.view.ViewGroup/*")
     Element tagsCounterLbl;
-
-    @Override
-    protected void waitForPageIsLoaded() {
-        super.waitForPageIsLoaded();
-        searchProductBtn.waitForVisibility();
-    }
-
-    @Step("Искать товар вручную")
-    public SearchProductPage navigateToSearchProductPage() {
-        searchProductBtn.click();
-        return new SearchProductPage();
-    }
 
     @Step("Перейти в список ценников")
     public TagsListPage navigateToTagsList() {
@@ -49,12 +33,5 @@ public class PrintTagsScannerPage extends ScannerPage {
     public PrintTagsScannerPage shouldCounterIsCorrect(int productsCount) {
         anAssert.isElementTextEqual(tagsCounterLbl, String.valueOf(productsCount));
         return this;
-    }
-
-    @Override
-    public void verifyRequiredElements() {
-        super.verifyRequiredElements();
-        softAssert.isElementVisible(searchProductBtn);
-        softAssert.verifyAll();
     }
 }

@@ -47,7 +47,7 @@ public class PricesPage extends ProductPricesQuantitySupplyPage {
             ".//*[contains(@text,'км')]/../*[1]", ShopPriceInfoWidget.class);
 
     @Step("Перейти на страницу со списком магазинов")
-    public ShopPricesPage goToShopListPage() {
+    public ShopPricesPage goToShopListPage() throws Exception {
         mainScrollView.scrollUpToElement(shopListNavBtn);
         shopListNavBtn.click();
         return new ShopPricesPage();

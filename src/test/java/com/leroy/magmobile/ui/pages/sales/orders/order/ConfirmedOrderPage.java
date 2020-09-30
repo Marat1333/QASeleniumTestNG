@@ -95,7 +95,7 @@ public class ConfirmedOrderPage extends CartOrderEstimatePage {
     }
 
     @Step("Нажмите на иконку клиента (для перехода к экрану поиска клиента)")
-    public SearchCustomerPage clickCustomerIconToSearch() {
+    public SearchCustomerPage clickCustomerIconToSearch() throws Exception {
         return orderParamsForm.clickCustomerIconToSearch();
     }
 
@@ -117,13 +117,13 @@ public class ConfirmedOrderPage extends CartOrderEstimatePage {
     }
 
     @Step("Введите комментариай в соответстующее поле")
-    public ConfirmedOrderPage enterComment(String text) {
+    public ConfirmedOrderPage enterComment(String text) throws Exception {
         orderParamsForm.enterComment(text);
         return this;
     }
 
     @Step("Заполнить поля 'Получатель'")
-    public ConfirmedOrderPage enterCustomerInfo(MagCustomerData data) {
+    public ConfirmedOrderPage enterCustomerInfo(MagCustomerData data) throws Exception {
         orderParamsForm.enterCustomer(data);
         return this;
     }
@@ -147,7 +147,7 @@ public class ConfirmedOrderPage extends CartOrderEstimatePage {
     }
 
     @Step("Проверить, что поля формы заполнены соответствующим образом")
-    public ConfirmedOrderPage shouldFormFieldsAre(OrderDetailsData data) {
+    public ConfirmedOrderPage shouldFormFieldsAre(OrderDetailsData data) throws Exception {
         orderParamsForm.shouldFormFieldsAre(data);
         return this;
     }

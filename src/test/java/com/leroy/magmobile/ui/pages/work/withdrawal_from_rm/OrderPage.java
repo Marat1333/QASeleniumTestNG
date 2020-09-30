@@ -1,4 +1,4 @@
-package com.leroy.magmobile.ui.pages.work;
+package com.leroy.magmobile.ui.pages.work.withdrawal_from_rm;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.EditBox;
@@ -79,7 +79,12 @@ public class OrderPage extends CommonMagMobilePage {
 
     @Step("Изменить ожидаемое время доставки на {time} и подтвердить его")
     public OrderPage editDeliveryTime(LocalTime time) throws Exception {
-        LocalTime currentTime = LocalTime.parse(deliveryTimeLbl.getText());
+        LocalTime currentTime;
+        if (deliveryTimeLbl.isVisible()) {
+            currentTime = LocalTime.parse(deliveryTimeLbl.getText());
+        }else {
+            currentTime = LocalTime.now();
+        }
         deliveryTimeArea.click();
         new TimePickerWidget(driver).selectTime(time, currentTime);
         deliveryTimeLbl.waitForVisibility();
