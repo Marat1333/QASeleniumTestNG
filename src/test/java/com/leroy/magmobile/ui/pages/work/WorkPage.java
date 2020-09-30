@@ -61,9 +61,6 @@ public class WorkPage extends BottomMenuPage {
     @Override
     public void waitForPageIsLoaded() {
         titleObj.waitForVisibility();
-        if (rupturesManageLbl.isVisible()) {
-            rupturesActiveSessionCounterLbl.waitForVisibility();
-        }
     }
 
     /* ------------------------- ACTION STEPS -------------------------- */
