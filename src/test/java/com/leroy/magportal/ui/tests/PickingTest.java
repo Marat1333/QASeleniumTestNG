@@ -56,14 +56,30 @@ public class PickingTest extends BasePAOTest {
     private String orderId;
     private String pickingTaskId;
 
-    private void initCreateOrder(int productCount) throws Exception {
+    private void initCreateOrder(int productCount, SalesDocumentsConst.States orderStatus) throws Exception {
         List<CartProductOrderData> productOrderDataList = new ArrayList<>();
         for (int i = 0; i < productCount; i++) {
             CartProductOrderData productOrderData = new CartProductOrderData(productList.get(i));
             productOrderData.setQuantity(2.0);
             productOrderDataList.add(productOrderData);
         }
-        orderId = helper.createConfirmedOrder(productOrderDataList, false).getOrderId();
+        switch (orderStatus) {
+            case ALLOWED_FOR_PICKING:
+                orderId = helper.createConfirmedOrder(productOrderDataList, true).getOrderId();
+                break;
+            case PICKED:
+                orderId = helper.createConfirmedOrder(productOrderDataList, true).getOrderId();
+                orderHelper.moveNewOrderToStatus(orderId, orderStatus);
+                break;
+            default:
+                orderId = helper.createConfirmedOrder(productOrderDataList, false).getOrderId();
+                break;
+        }
+
+    }
+
+    private void initCreateOrder(int productCount) throws Exception {
+        initCreateOrder(productCount, SalesDocumentsConst.States.CONFIRMED);
     }
 
     private void initFindPickingTask() throws Exception {
@@ -599,7 +615,7 @@ public class PickingTest extends BasePAOTest {
         initFindPickingTask();
 
         // Step 2:
-        step("Ввести номер заказа из корзины и нажать кнопку 'Показать заказы'"+"Заказ"+" "+orderId);
+        step("Ввести номер заказа из корзины и нажать кнопку 'Показать заказы'" + "Заказ" + " " + orderId);
         orderPage.enterSearchTextAndSubmit(orderId);
         orderPage.shouldDocumentIsPresent(orderId);
         orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal());
@@ -607,7 +623,7 @@ public class PickingTest extends BasePAOTest {
 
         // Step 3:
 
-        step("Кликнуть на заказ"+" "+orderId);
+        step("Кликнуть на заказ" + " " + orderId);
         orderPage.clickDocumentInLeftMenu(orderId);
         OrderCreatedContentPage createdContentPage = new OrderCreatedContentPage();
         createdContentPage.shouldOrderProductCountIs(1);
@@ -653,8 +669,8 @@ public class PickingTest extends BasePAOTest {
 
         // Создать заказ и перевести его в статус "Собран"
 
-        initCreateOrder(1);
-        orderHelper.moveNewOrderToStatus(orderId, SalesDocumentsConst.States.PICKED);
+        initCreateOrder(1, SalesDocumentsConst.States.PICKED);
+
 
         //Вбить номер собранного заказа 200901121200
 
@@ -665,14 +681,14 @@ public class PickingTest extends BasePAOTest {
         OrderHeaderPage orderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
 
         // Step 2:
-        step("Найти заказ с стусе Собран с номером"+" "+orderId);
+        step("Найти заказ с стусе Собран с номером" + " " + orderId);
         orderPage.enterSearchTextAndSubmit(orderId);
         orderPage.shouldDocumentIsPresent(orderId);
         orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.PICKED.getUiVal());
         orderPage.shouldDocumentCountIs(1);
 
         // Step 3:
-        step("Кликнуть на заказ"+" "+orderId);
+        step("Кликнуть на заказ" + " " + orderId);
         orderPage.clickDocumentInLeftMenu(orderId);
         OrderCreatedContentPage createdContentPage = new OrderCreatedContentPage();
         createdContentPage.shouldOrderProductCountIs(1);
