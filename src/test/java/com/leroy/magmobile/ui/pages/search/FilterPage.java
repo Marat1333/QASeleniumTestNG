@@ -7,7 +7,7 @@ import com.leroy.core.web_elements.android.AndroidHorizontalScrollView;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.constants.MagMobElementTypes;
-import com.leroy.magmobile.ui.elements.MagMobCheckBox;
+import com.leroy.magmobile.ui.elements.MagMobGreenCheckBox;
 import com.leroy.magmobile.ui.models.search.FiltersData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.common.widget.CalendarWidget;
@@ -59,7 +59,7 @@ public class FilterPage extends CommonMagMobilePage {
             By.xpath("//android.widget.ScrollView//android.view.ViewGroup[3]/android.widget.HorizontalScrollView"));
 
     @AppFindBy(text = "МОЙ МАГАЗИН")
-    MagMobCheckBox myShopBtn;
+    MagMobGreenCheckBox myShopBtn;
 
     @AppFindBy(text = "ВСЯ ГАММА ЛМ")
     Element gammaLmBtn;
@@ -478,28 +478,28 @@ public class FilterPage extends CommonMagMobilePage {
 
     @Step("Проверить, что выбран чек-бокс {value}")
     public FilterPage shouldElementHasBeenSelected(String value) throws Exception {
-        MagMobCheckBox anchorElement = new MagMobCheckBox(driver, new CustomLocator(By.xpath(String.format(SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH, value))));
+        MagMobGreenCheckBox anchorElement = new MagMobGreenCheckBox(driver, new CustomLocator(By.xpath(String.format(SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH, value))));
         anAssert.isTrue(anchorElement.isChecked(), "Фильтр '" + value + "' должен быть выбран");
         return this;
     }
 
     @Step("Проверить, что чек-бокс {value} не выбран")
     public FilterPage shouldElementHasNotBeenSelected(String value) throws Exception {
-        MagMobCheckBox anchorElement = new MagMobCheckBox(driver, new CustomLocator(By.xpath(String.format(SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH, value))));
+        MagMobGreenCheckBox anchorElement = new MagMobGreenCheckBox(driver, new CustomLocator(By.xpath(String.format(SupplierCardWidget.SPECIFIC_CHECKBOX_XPATH, value))));
         anAssert.isTrue(!anchorElement.isChecked(), "Фильтр '" + value + "' не должен быть выбран");
         return this;
     }
 
     @Step("Проверить, что выбрана Радиогруппа {value}")
     public FilterPage shouldFilterHasBeenChosen(String value) throws Exception {
-        MagMobCheckBox element = new MagMobCheckBox(driver, new CustomLocator(By.xpath("//*[contains(@text, '" + value + "')]")));
+        MagMobGreenCheckBox element = new MagMobGreenCheckBox(driver, new CustomLocator(By.xpath("//*[contains(@text, '" + value + "')]")));
         anAssert.isTrue(element.isChecked(), "Фильтр '" + value + "' должен быть выбран");
         return this;
     }
 
     @Step("Проверить, что Радиогруппа {value} НЕ выбрана")
     public FilterPage shouldFilterHasNotBeenChosen(String value) throws Exception {
-        MagMobCheckBox element = new MagMobCheckBox(driver, new CustomLocator(By.xpath("//*[contains(@text, '" + value + "')]")));
+        MagMobGreenCheckBox element = new MagMobGreenCheckBox(driver, new CustomLocator(By.xpath("//*[contains(@text, '" + value + "')]")));
         anAssert.isFalse(element.isChecked(), "Фильтр '" + value + "' не должен быть выбран");
         return this;
     }

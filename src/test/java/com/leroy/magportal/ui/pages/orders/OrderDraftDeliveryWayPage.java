@@ -112,12 +112,14 @@ public class OrderDraftDeliveryWayPage extends OrderDraftPage {
         if (giveAwayPoints.equals(SalesDocumentsConst.GiveAwayPoints.PICKUP)) {
             pickupBtn.scrollTo();
             pickupBtn.click();
+            pickupBtn.waitUntilAttributeContains("class", "active");
         }
         if (giveAwayPoints.equals(SalesDocumentsConst.GiveAwayPoints.DELIVERY)) {
             deliveryBtn.scrollTo();
             deliveryBtn.click();
+            deliveryBtn.waitUntilAttributeContains("class", "active");
         }
-        waitForSpinnerAppearAndDisappear();
+        waitForSpinnerDisappear();
         shouldModalThatChangesIsNotSavedIsNotVisible();
         return this;
     }

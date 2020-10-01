@@ -86,7 +86,7 @@ public class OrderParamsForm extends BaseAppPage {
         return DateTimeUtil.strToLocalDate(strDeliveryDate, "dd MMM");
     }
 
-    public OrderDetailsData getOrderDetailData() {
+    public OrderDetailsData getOrderDetailData() throws Exception {
         mainScrollView.scrollToBeginning();
         String ps = getPageSource();
         OrderDetailsData orderDetailsData = new OrderDetailsData();
@@ -127,7 +127,7 @@ public class OrderParamsForm extends BaseAppPage {
         return this;
     }
 
-    public SearchCustomerPage clickCustomerIconToSearch() {
+    public SearchCustomerPage clickCustomerIconToSearch() throws Exception {
         if (!customerIconForSearchBtn.isVisible()) {
             mainScrollView.scrollToBeginning();
             mainScrollView.scrollDownToElement(customerIconForSearchBtn);
@@ -142,7 +142,7 @@ public class OrderParamsForm extends BaseAppPage {
         phoneFld.clearFillAndSubmit(value);
     }
 
-    public OrderParamsForm enterPinCode(OrderDetailsData data, boolean tryToFindValidPin) {
+    public OrderParamsForm enterPinCode(OrderDetailsData data, boolean tryToFindValidPin) throws Exception {
         if (!pinCodeFld.isVisible())
             mainScrollView.scrollDownToElement(pinCodeFld);
         pinCodeFld.clearFillAndSubmit(data.getPinCode());
@@ -160,13 +160,13 @@ public class OrderParamsForm extends BaseAppPage {
         return this;
     }
 
-    public void enterComment(String value) {
+    public void enterComment(String value) throws Exception {
         mainScrollView.scrollDownToElement(commentFld);
         commentFld.clearFillAndSubmit(value);
         commentIconBtn.click();
     }
 
-    public void enterCustomer(MagCustomerData customerData) {
+    public void enterCustomer(MagCustomerData customerData) throws Exception {
         if (!fullNameFld.isVisible()) {
             mainScrollView.scrollToBeginning();
             mainScrollView.scrollDownToElement(fullNameFld);
@@ -190,7 +190,7 @@ public class OrderParamsForm extends BaseAppPage {
 
     // Verifications
 
-    public OrderParamsForm shouldFormFieldsAre(OrderDetailsData data) {
+    public OrderParamsForm shouldFormFieldsAre(OrderDetailsData data) throws Exception {
         // Способ получения
         if (!deliveryDateFld.isVisible())
             mainScrollView.scrollToBeginning();

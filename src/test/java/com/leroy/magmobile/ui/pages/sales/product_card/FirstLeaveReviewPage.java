@@ -6,7 +6,7 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.api.enums.ReviewOptions;
-import com.leroy.magmobile.ui.elements.MagMobCheckBox;
+import com.leroy.magmobile.ui.elements.MagMobGreenCheckBox;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.PeriodOfUsageModalPage;
 import com.leroy.utils.ParserUtil;
@@ -43,7 +43,7 @@ public class FirstLeaveReviewPage extends CommonMagMobilePage {
     Element commonStringRate;
 
     @AppFindBy(xpath = "//android.widget.TextView[contains(@text, 'Я рекомендую этот товар')]/following-sibling::*//*[@content-desc='Button']")
-    MagMobCheckBox recommendedProductCheckBox;
+    MagMobGreenCheckBox recommendedProductCheckBox;
 
     @AppFindBy(accessibilityId = "timeUsage")
     Button callPeriodOfUsageModalBtn;

@@ -1,4 +1,4 @@
-package com.leroy.magmobile.ui.pages.work;
+package com.leroy.magmobile.ui.pages.work.withdrawal_from_rm;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
@@ -9,10 +9,10 @@ import io.qameta.allure.Step;
 public class SubmittedWithdrawalOrderPage extends CommonMagMobilePage {
 
     @AppFindBy(xpath = "//android.widget.TextView[1]")
-    private Element headerLbl;
+    protected Element headerLbl;
 
     @AppFindBy(xpath = "//android.widget.TextView[2]")
-    private Element messageLbl;
+    protected Element messageLbl;
 
     @AppFindBy(accessibilityId = "Button")
     private MagMobGreenSubmitButton submitBtn;
