@@ -9,6 +9,7 @@ import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.clients.PickingTaskClient;
 import com.leroy.magportal.api.data.picking.PickingTaskDataList;
 import com.leroy.magportal.api.helpers.PAOHelper;
+import com.leroy.magportal.api.helpers.PaymentHelper;
 import com.leroy.magportal.ui.constants.TestDataConstants;
 import com.leroy.magportal.ui.constants.picking.PickingConst;
 import com.leroy.magportal.ui.models.picking.PickingProductCardData;
@@ -40,6 +41,10 @@ public class PickingTest extends BasePAOTest {
 
     @Inject
     PAOHelper helper;
+    @Inject
+    PaymentHelper payHelper;
+    @Inject
+    OrderClient orderHelper;
 
     @Override
     protected UserSessionData initTestClassUserSessionDataTemplate() {
@@ -646,46 +651,33 @@ public class PickingTest extends BasePAOTest {
     @Test(description = "<ID кейса> Заказы. Переход из статуса Собран в статус Выдан", groups = NEED_PRODUCTS_GROUP)
     public void testMoveFromPickedToGivenAway() throws Exception {
 
-        // Создать заказ и перевести его в статус "Собран" (Заменить хелпером!)
-        /*initCreateOrder(1);
-        OrderHeaderPage orderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
-        initFindPickingTask();
-        orderPage.enterSearchTextAndSubmit(orderId);
-        orderPage.shouldDocumentIsPresent(orderId);
-        orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal());
-        orderPage.shouldDocumentCountIs(1);
-        orderPage.clickDocumentInLeftMenu(orderId);
-        OrderCreatedContentPage createdContentPage = new OrderCreatedContentPage();
-        createdContentPage.shouldOrderProductCountIs(1);
-        AssemblyOrderPage pickingTab = createdContentPage.clickGoToPickings();
-        PickingContentPage pickingContentPage = pickingTab.clickToPickingTask(1);
-        pickingContentPage.clickStartAssemblyButton();
-        pickingContentPage.editCollectQuantity(1, 2)
-                .shouldProductCollectedQuantityIs(1, 2);
-        pickingContentPage.clickFinishAssemblyButton();
-        pickingContentPage.clickFinishAssemblyButton();
-        PickingPage pickingPage = new PickingPage();
-        pickingPage.clickOrderLinkAndGoToOrderPage();
-        orderPage.shouldDocumentIsPresent(orderId);
-        orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.PICKED.getUiVal());
-        orderPage.shouldDocumentCountIs(1);*/
+        // Создать заказ и перевести его в статус "Собран"
+
+        initCreateOrder(1);
+        orderHelper.moveNewOrderToStatus(orderId, SalesDocumentsConst.States.PICKED);
 
         //Вбить номер собранного заказа 200901121200
 
-        orderId="200901127992";
+        //orderId="200903114048";
 
         // Step 1:
         step("Открыть страницу с Заказами");
         OrderHeaderPage orderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
-        //initFindPickingTask();
 
-
-        // Step 1:
+        // Step 2:
         step("Найти заказ с стусе Собран с номером"+" "+orderId);
-
         orderPage.enterSearchTextAndSubmit(orderId);
         orderPage.shouldDocumentIsPresent(orderId);
         orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.PICKED.getUiVal());
         orderPage.shouldDocumentCountIs(1);
+
+        // Step 3:
+        step("Кликнуть на заказ"+" "+orderId);
+        orderPage.clickDocumentInLeftMenu(orderId);
+        OrderCreatedContentPage createdContentPage = new OrderCreatedContentPage();
+        createdContentPage.shouldOrderProductCountIs(1);
+        // добавить проверку на оплату?
+
+
     }
 }
