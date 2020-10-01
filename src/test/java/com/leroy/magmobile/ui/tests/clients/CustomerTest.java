@@ -1,6 +1,7 @@
 package com.leroy.magmobile.ui.tests.clients;
 
 import com.google.inject.Inject;
+import com.leroy.common_mashups.data.customer.CustomerData;
 import com.leroy.constants.Gender;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.annotations.Smoke;
@@ -77,6 +78,21 @@ public class CustomerTest extends AppBaseSteps {
         customerData.setName(customerFirstName);
         mainCustomerPage = successCustomerPage.clickGoToCustomerListButton();
         mainCustomerPage.shouldRecentCustomerIs(1, customerData);
+    }
+
+    @Test(description = "C3201019 Редактирование данных клиента (физ. лицо)")
+    public void testEditCustomer() throws Exception {
+        CustomerData customerData = customerHelper.createCustomer();
+
+        MainCustomerPage mainCustomerPage = loginAndGoTo(MainCustomerPage.class);
+        SearchCustomerPage searchCustomerPage = mainCustomerPage.clickSearchCustomerField();
+        searchCustomerPage.searchCustomerByPhone(customerData.getMainPhoneFromCommunication(), true);
+        ViewCustomerPage viewCustomerPage = new ViewCustomerPage()
+                .verifyRequiredElements();
+
+        // Step 1
+        step("Нажмите на личные данные");
+
     }
 
     @Smoke
