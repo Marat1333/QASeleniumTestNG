@@ -45,22 +45,16 @@ public class Mountebank {
                 "    \"protocol\": \"http\",\n" +
                 "    \"stubs\": [\n" +
                 "        {\n" +
-                "            \"predicates\": [\n" +
-                "                {\n" +
-                "                    \"and\" : [\n" +
-                "                        {\n" +
-                "                            \"equals\": {\n" +
-                "                                \"path\" : \"/test\",\n" +
-                "                                \"method\": \"GET\"\n" +
-                "                            }\n" +
+                "            \"responses\": [{\n" +
+                "                \"proxy\": {\n" +
+                "                    \"to\": \"https://orchestrator-lego-develop-apim-stage.apps.lmru.tech\",\n" +
+                "                    \"predicateGenerators\": [{\n" +
+                "                        \"matches\": {\n" +
+                "                             \"path\": true \n" +
                 "                        }\n" +
-                "                    ]\n" +
+                "                    }]\n" +
                 "                }\n" +
-                "            ],\n" +
-                "\n" +
-                "            \"responses\": [\n" +
-                "                {\"is\" : {\"body\":{\"message\":\"pong2\"} } }\n" +
-                "            ]\n" +
+                "            }]\n" +
                 "        },\n" +
                 "\n" +
                 "        {\n" +
