@@ -13,8 +13,8 @@ public class RupturesScannerPage extends ScannerWithSearchBtnPage {
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"Button\" and *[@text='СПИСОК ПЕРЕБОЕВ']]//android.view.ViewGroup/*")
     Element rupturesCounterLbl;
 
-    public int getCounterValue(){
-        return Integer.parseInt(rupturesCounterLbl.getText());
+    public int getCounterValue() {
+        return Integer.parseInt(rupturesCounterLbl.getTextIfPresent());
     }
 
     @Override

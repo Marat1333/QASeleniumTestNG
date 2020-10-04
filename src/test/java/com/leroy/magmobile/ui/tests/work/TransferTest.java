@@ -60,6 +60,7 @@ public class TransferTest extends AppBaseSteps {
         private String barCode;
         private String title;
         private Integer monoPalletCapacity;
+        private Integer mixPalletCapacity;
         private Integer totalStock;
     }
 
@@ -87,8 +88,14 @@ public class TransferTest extends AppBaseSteps {
             customProduct.setLmCode(productItemData.getLmCode());
             customProduct.setBarCode(productItemData.getBarCode());
             customProduct.setTitle(productItemData.getTitle());
-            customProduct.setMonoPalletCapacity(transferProduct.getSource().get(0)
-                    .getMonoPallets().get(0).getCapacity());
+            TransferSearchProductData.Source source = transferProduct.getSource().get(0);
+            if (source.getMonoPallets() != null) {
+                customProduct.setMonoPalletCapacity(transferProduct.getSource().get(0)
+                        .getMonoPallets().get(0).getCapacity());
+            } else if (source.getMixPallets() != null) {
+                customProduct.setMixPalletCapacity(transferProduct.getSource().get(0)
+                        .getMixPallets().get(0).getCapacity());
+            }
             customProduct.setTotalStock(transferProduct.getTotalQuantity());
             products.add(customProduct);
         }
@@ -441,7 +448,8 @@ public class TransferTest extends AppBaseSteps {
 
         // Step 5
         step("Измените количество товара плашкой и нажмите Сохранить");
-        int newQuantity = product.getMonoPalletCapacity();
+        int newQuantity = product.getMonoPalletCapacity() == null ?
+                product.getMixPalletCapacity() : product.getMonoPalletCapacity();
         transferProductData.setOrderedQuantity(newQuantity, true);
         transferProductData.setSelectedMonoPalletQuantity(newQuantity);
         editQuantityPage.enterQuantityOfProduct(newQuantity, true);
