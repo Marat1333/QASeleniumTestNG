@@ -15,11 +15,11 @@ public class FinishedSessionWidget extends CardWidget<FinishedSessionData> {
     @AppFindBy(xpath = "./android.widget.TextView[1]")
     Element creationDateLbl;
 
-    @AppFindBy(containsText = " перебо")
-    Element quantityAndCreatorLbl;
+    @AppFindBy(xpath = ".//android.view.ViewGroup[android.widget.TextView[contains(@text, '№')]]/following-sibling::android.view.ViewGroup/android.widget.TextView")
+    Element quantityLbl;
 
-    @AppFindBy(xpath = "./*[contains(@text,' перебо')]/following-sibling::*[1]/*")
-    Element finishedCreatedTasksRatioLbl;
+    @AppFindBy(xpath = ".//android.view.ViewGroup[android.widget.TextView[contains(@text, '№')]]/following-sibling::android.widget.TextView[2]")
+    Element creatorLbl;
 
     public FinishedSessionWidget(WebDriver driver, CustomLocator locator) {
         super(driver, locator);
@@ -30,17 +30,16 @@ public class FinishedSessionWidget extends CardWidget<FinishedSessionData> {
         FinishedSessionData data = new FinishedSessionData();
         data.setSessionNumber(ParserUtil.strWithOnlyDigits(sessionNumberLbl.getText(pageSource)));
         data.setCreateDate(creationDateLbl.getText(pageSource));
-        String[] tmpArray = quantityAndCreatorLbl.getText(pageSource).split(" / ");
-        data.setRuptureQuantity(Integer.parseInt(ParserUtil.strWithOnlyDigits(tmpArray[0])));
-        data.setCreatorName(tmpArray[1]);
-        tmpArray = finishedCreatedTasksRatioLbl.getText(pageSource).split("/");
-        data.setFinishedTaskQuantity(Integer.parseInt(tmpArray[0]));
-        data.setCreatedTaskQuantity(Integer.parseInt(tmpArray[1]));
+        String[] quantity = quantityLbl.getText(pageSource).split("/");
+        //data.setRuptureQuantity(ParserUtil.strToInt(quantity[0]));
+        data.setCreatorName(creatorLbl.getText(pageSource));
+        data.setCreatedTaskQuantity(ParserUtil.strToInt(quantity[0]));
+        data.setFinishedTaskQuantity(ParserUtil.strToInt(quantity[1]));
         return data;
     }
 
     @Override
     public boolean isFullyVisible(String pageSource) {
-        return sessionNumberLbl.isVisible(pageSource) && quantityAndCreatorLbl.isVisible(pageSource);
+        return sessionNumberLbl.isVisible(pageSource) && creatorLbl.isVisible(pageSource);
     }
 }

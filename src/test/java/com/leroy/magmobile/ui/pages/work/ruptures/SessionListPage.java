@@ -21,10 +21,10 @@ public class SessionListPage extends CommonMagMobilePage {
     @AppFindBy(accessibilityId = "BackButton")
     Button backBtn;
 
-    @AppFindBy(text = "СКАНИРОВАТЬ ПЕРЕБОИ")
+    @AppFindBy(text = "ПО ОДНОМУ")
     Button scanRupturesBtn;
 
-    @AppFindBy(xpath = "//*[@text='СКАНИРОВАТЬ ПЕРЕБОИ']/ancestor::*[5]/preceding-sibling::*[1]//\tandroid.widget.TextView")
+    @AppFindBy(xpath = "//*[@text='ПО ОДНОМУ']/ancestor::*[5]/preceding-sibling::*[1]//android.widget.TextView")
     Button choseDepartmentBtn;
 
     @AppFindBy(text = "Сессий перебоев пока нет")
@@ -38,12 +38,12 @@ public class SessionListPage extends CommonMagMobilePage {
 
     AndroidScrollView<SessionData> activeSessionScrollView = new AndroidScrollView<>(driver,
             AndroidScrollView.TYPICAL_LOCATOR,
-            ".//*[contains(@text, ' / ')]/following-sibling::android.view.ViewGroup[1][not(android.widget.TextView)]/..",
+            ".//android.view.ViewGroup[android.view.ViewGroup[android.widget.TextView[contains(@text, '№')]] and not(android.view.ViewGroup[android.widget.TextView[contains(@text, '/')]])]",
             ActiveSessionWidget.class);
 
     AndroidScrollView<FinishedSessionData> finishedSessionScrollView = new AndroidScrollView<>(driver,
             AndroidScrollView.TYPICAL_LOCATOR,
-            ".//*[contains(@text,'/') and not(contains(@text,' / '))]/../..",
+            ".//android.view.ViewGroup[android.view.ViewGroup[android.widget.TextView[contains(@text, '№')]] and not(android.widget.TextView[contains(@text, 'Открыта')])]",
             FinishedSessionWidget.class);
 
     @Override
@@ -155,16 +155,16 @@ public class SessionListPage extends CommonMagMobilePage {
     @Step("Проверить, что карточки заверешнных сессий не отображаются")
     public SessionListPage shouldFinishedSessionCardsIsNotVisible() throws Exception {
         mainScrollView.scrollToBeginning();
-        List<FinishedSessionData> uiFinishedSessionData = finishedSessionScrollView.getFullDataList();
-        anAssert.isEquals(uiFinishedSessionData.size(), 0, "there are some finished sessions");
+        int actualSize = finishedSessionScrollView.getRowCount();
+        anAssert.isEquals(actualSize, 0, "there are some finished sessions");
         return this;
     }
 
     @Step("Проверить, что карточки активных сессий не отображаются")
     public SessionListPage shouldActiveSessionCardsIsNotVisible() throws Exception {
         activeSessionScrollView.scrollToBeginning();
-        List<SessionData> uiActiveSessionData = activeSessionScrollView.getFullDataList();
-        anAssert.isEquals(uiActiveSessionData.size(), 0, "there are some active sessions");
+        int actualSize = activeSessionScrollView.getRowCount();
+        anAssert.isEquals(actualSize, 0, "there are some active sessions");
         return this;
     }
 
