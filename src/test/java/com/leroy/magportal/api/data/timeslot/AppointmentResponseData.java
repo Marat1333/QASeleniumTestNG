@@ -1,9 +1,7 @@
 package com.leroy.magportal.api.data.timeslot;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import lombok.Data;
-import org.joda.time.DateTime;
 
 @Data
 public class AppointmentResponseData {
@@ -11,18 +9,8 @@ public class AppointmentResponseData {
     private Appointments data;
 
     @Data
-    private class Appointments {
+    public class Appointments {
 
-        private List<Appointment> appointments;
+        private List<AppointmentData> appointments;
     }
-
-    @Data
-    private class Appointment {
-
-        @JsonProperty("DEFAULT")
-        private Boolean defaults;
-        private DateTime end;
-        private DateTime start;
-    }
-
 }

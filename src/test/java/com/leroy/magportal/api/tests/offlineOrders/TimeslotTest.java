@@ -1,21 +1,19 @@
-package com.leroy.magportal.api.tests.onlineOrders.pickupOrders;
+package com.leroy.magportal.api.tests.offlineOrders;
 
 import static com.leroy.core.matchers.IsSuccessful.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
 
 import com.google.inject.Inject;
 import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.magmobile.api.data.sales.orders.OrderData;
 import com.leroy.magportal.api.clients.OrderClient;
-import com.leroy.magportal.api.constants.OnlineOrderTypeConst;
-import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
+import com.leroy.magportal.api.constants.LmCodeTypeEnum;
 import com.leroy.magportal.api.data.timeslot.TimeslotData;
 import com.leroy.magportal.api.data.timeslot.TimeslotResponseData;
-import com.leroy.magportal.api.helpers.BitrixHelper;
+import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
 import io.qameta.allure.Step;
 import java.util.List;
@@ -23,73 +21,57 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-public class PickupTimeslotTest extends BaseMagPortalApiTest {
+public class TimeslotTest extends BaseMagPortalApiTest {
 
-    @Inject
-    private BitrixHelper bitrixHelper;
     @Inject
     private OrderClient orderClient;
+    @Inject
+    private PAOHelper paoHelper;
 
     private String currentOrderId;
-    private OnlineOrderTypeData currentOrderType;
     private TimeslotData timeslotData;
 
 
     @BeforeClass
     private void setUp() {
-        currentOrderType = OnlineOrderTypeConst.PICKUP_POSTPAYMENT;
-        currentOrderId = bitrixHelper.createOnlineOrder(currentOrderType).getSolutionId();
+        OrderData orderData = paoHelper.createConfirmedOrder(paoHelper.makeCartProducts(3), true);
+        currentOrderId = orderData.getOrderId();
     }
 
-    @Test(description = "C23425906 Get Timeslot for Several Products", priority = 1)
+    @Test(description = "C23426854 Get Timeslot for Several Products", priority = 1)
     public void testGetTimeslotSeveralProducts() {
         Response<TimeslotResponseData> response = orderClient.getTimeslots(currentOrderId);
         assertTimeslotResult(response);
         timeslotData = response.asJson().getData().get(0);
     }
 
-    @Test(description = "C23426763 Postpayment: Update Timeslot", dependsOnMethods = {
+    @Test(description = "C23426856 Update Timeslot", dependsOnMethods = {
             "testGetTimeslotSeveralProducts"}, priority = 2)
-    public void testUpdateTimeslotPostpayment() {
+    public void testUpdateTimeslot() {
         Response<?> response = orderClient.updateTimeslot(currentOrderId, timeslotData);
         assertTimeslotUpdateResult(response);
     }
 
-    @Test(description = "C23426797 Postpayment: Update Timeslot for PAID", dependsOnMethods = {
+    @Test(description = "C23426857 Update Timeslot for PAID", dependsOnMethods = {
             "testGetTimeslotSeveralProducts"}, priority = 3)
-    public void testUpdateTimeslotPostpaymentPaid() {
+    public void testUpdateTimeslotPaid() {
         orderClient.moveNewOrderToStatus(currentOrderId, States.PICKED);
         Response<?> response = orderClient.updateTimeslot(currentOrderId, timeslotData);
         assertTimeslotUpdateResult(response);
     }
 
-    @Test(description = "C23425907 Get Timeslot for One Product", priority = 4)
-    public void testGetTimeslotOneProduct() {
+    @Test(description = "C23426855 Get Timeslot for One Product", priority = 4)
+    public void testGetTimeslotOneProduct() throws Exception {
         makeDimensionalOrder();
         Response<TimeslotResponseData> response = orderClient.getTimeslots(currentOrderId);
         assertTimeslotResult(response);
         timeslotData = response.asJson().getData().get(0);
     }
 
-    @Test(description = "C23426764 PrePayment: Update Timeslot", dependsOnMethods = {
-            "testGetTimeslotOneProduct"}, priority = 6)
-    public void testUpdateTimeslotPrepayment() {
-        Response<?> response = orderClient.updateTimeslot(currentOrderId, timeslotData);
-        assertTimeslotUpdateResult(response);
-    }
-
-    @Test(description = "C23426798 PrePayment: Update Timeslot for PAID", dependsOnMethods = {
-            "testGetTimeslotOneProduct"}, priority = 7)
-    public void testUpdateTimeslotPrepaymentPaid() {
-        orderClient.moveNewOrderToStatus(currentOrderId, States.PICKED);
-        Response<?> response = orderClient.updateTimeslot(currentOrderId, timeslotData);
-        assertTimeslotUpdateResult(response);
-    }
-
-    private void makeDimensionalOrder() {
-        currentOrderType = OnlineOrderTypeConst.PICKUP_PREPAYMENT;
-        currentOrderId = bitrixHelper.createDimensionalOnlineOrder(currentOrderType)
-                .getSolutionId();
+    private void makeDimensionalOrder() throws Exception {
+        OrderData orderData = paoHelper.createConfirmedOrder(
+                paoHelper.makeCartProductByLmCode(LmCodeTypeEnum.DIMENSIONAL.getValue()), true);
+        currentOrderId = orderData.getOrderId();
     }
 
     //Verification

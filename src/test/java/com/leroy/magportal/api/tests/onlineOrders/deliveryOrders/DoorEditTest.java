@@ -9,7 +9,6 @@ import com.leroy.magportal.api.constants.OnlineOrderTypeConst;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
 import com.leroy.magportal.api.helpers.BitrixHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
-import java.util.List;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -17,7 +16,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.testng.internal.TestResult;
 import ru.leroymerlin.qa.core.clients.base.Response;
-import ru.leroymerlin.qa.core.clients.tunnel.data.BitrixSolutionResponse;
 
 public class DoorEditTest extends BaseMagPortalApiTest {
 
@@ -76,7 +74,7 @@ public class DoorEditTest extends BaseMagPortalApiTest {
     public void testAddProductAllowedForPicking() {
         Response<?> response = orderClient.rearrange(currentOrderId, 2, null);
         assertThat("It's possible to ADD product into payed Order", !response.isSuccessful());
-        response = orderClient.getOrder(currentOrderId);//just make it successful
+        response = orderClient.getOnlineOrder(currentOrderId);//just make it successful
         orderClient.assertRearrangeResult(response, currentOrderId, currentCount,
                 currentProductsCount);
     }
@@ -85,7 +83,7 @@ public class DoorEditTest extends BaseMagPortalApiTest {
     public void testEditAndAddProductAllowedForPicking() {
         Response<?> response = orderClient.rearrange(currentOrderId, 2, 1.0);
         assertThat("It's possible to ADD product into payed Order", !response.isSuccessful());
-        response = orderClient.getOrder(currentOrderId);//just make it successful
+        response = orderClient.getOnlineOrder(currentOrderId);//just make it successful
         orderClient.assertRearrangeResult(response, currentOrderId, currentCount,
                 currentProductsCount);
     }
@@ -103,7 +101,7 @@ public class DoorEditTest extends BaseMagPortalApiTest {
         orderClient.moveNewOrderToStatus(currentOrderId, States.PICKED);
         Response<?> response = orderClient.rearrange(currentOrderId, 2, null);
         assertThat("It's possible to ADD product into payed Order", !response.isSuccessful());
-        response = orderClient.getOrder(currentOrderId);//just make it successful
+        response = orderClient.getOnlineOrder(currentOrderId);//just make it successful
         orderClient.assertRearrangeResult(response, currentOrderId, currentCount,
                 currentProductsCount);
     }
@@ -112,7 +110,7 @@ public class DoorEditTest extends BaseMagPortalApiTest {
     public void testEditAndAddProductPickedPaid() {
         Response<?> response = orderClient.rearrange(currentOrderId, 2, 1.0);
         assertThat("It's possible to ADD product into payed Order", !response.isSuccessful());
-        response = orderClient.getOrder(currentOrderId);//just make it successful
+        response = orderClient.getOnlineOrder(currentOrderId);//just make it successful
         orderClient.assertRearrangeResult(response, currentOrderId, currentCount,
                 currentProductsCount);
     }

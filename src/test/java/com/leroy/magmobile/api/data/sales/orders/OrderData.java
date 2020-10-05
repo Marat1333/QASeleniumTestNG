@@ -1,5 +1,6 @@
 package com.leroy.magmobile.api.data.sales.orders;
 
+import com.leroy.magportal.api.data.onlineOrders.ShipToData;
 import java.util.List;
 import lombok.Data;
 
@@ -34,7 +35,6 @@ public class OrderData {
     private Integer fulfillmentVersion;
     private String creatorName;
     private String creatorSurname;
-    private DeliveryData deliveryData;
 
 
     // For Update, Confirm requests
@@ -51,24 +51,4 @@ public class OrderData {
     public void increaseFulfillmentVersion(int val) {
         fulfillmentVersion += val;
     }
-
-    @Data
-    public static class DeliveryData {
-
-        private String id;
-        private Double deliveryServicePrice;
-        private Double liftupServicePrice;
-        private Double totalServicePrice;
-        private Double totalAmount;
-        private String liftType;
-        private Boolean manualProcessing;
-        private String payerType;
-        private String planDate;
-        private String referenceStoreId;
-        private String shipFromShopId;
-        private String status;//TODO: add delivery status enum
-        private String tariff;//TODO: add delivery tariff enum
-        //TODO: add other objects
-    }
-
 }

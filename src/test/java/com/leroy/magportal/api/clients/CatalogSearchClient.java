@@ -22,4 +22,11 @@ public class CatalogSearchClient extends com.leroy.magmobile.api.clients.Catalog
         filter.setLmCode(lmCode);
         return this.searchProductsBy(filter).asJson().getItems().stream().findFirst().get();
     }
+
+    public List<ProductItemData> getProducts(int necessaryCount) {
+        return this
+                .searchProductsBy(new GetCatalogSearch().setPageSize(necessaryCount)
+                        .setHasAvailableStock(true).setShopId(getUserSessionData().getUserShopId()))
+                        .asJson().getItems();
+    }
 }

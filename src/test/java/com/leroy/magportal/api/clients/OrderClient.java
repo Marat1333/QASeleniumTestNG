@@ -12,33 +12,42 @@ import com.google.inject.Inject;
 import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.api.data.sales.orders.OrderData;
-import com.leroy.magmobile.api.data.sales.orders.OrderData.DeliveryData;
 import com.leroy.magmobile.api.data.sales.orders.OrderProductData;
 import com.leroy.magmobile.api.requests.order.OrderRearrangeRequest;
 import com.leroy.magportal.api.constants.OrderReasonEnum;
 import com.leroy.magportal.api.constants.OrderWorkflowEnum;
 import com.leroy.magportal.api.constants.PaymentStatusEnum;
 import com.leroy.magportal.api.constants.PaymentTypeEnum;
+import com.leroy.magportal.api.data.onlineOrders.DeliveryCustomerData;
+import com.leroy.magportal.api.data.onlineOrders.DeliveryData;
+import com.leroy.magportal.api.data.onlineOrders.DeliveryUpdatePayload;
+import com.leroy.magportal.api.data.onlineOrders.OnlineOrderData;
 import com.leroy.magportal.api.data.onlineOrders.OrderDeliveryRecalculateResponseData;
 import com.leroy.magportal.api.data.onlineOrders.OrderFulfilmentToGivenAwayPayload;
 import com.leroy.magportal.api.data.onlineOrders.OrderProductDataPayload;
 import com.leroy.magportal.api.data.onlineOrders.OrderRearrangePayload;
 import com.leroy.magportal.api.data.onlineOrders.OrderWorkflowPayload;
 import com.leroy.magportal.api.data.onlineOrders.OrderWorkflowPayload.WorkflowPayload;
+import com.leroy.magportal.api.data.onlineOrders.ShipToData;
+import com.leroy.magportal.api.data.timeslot.AppointmentData;
 import com.leroy.magportal.api.data.timeslot.AppointmentPayload;
 import com.leroy.magportal.api.data.timeslot.AppointmentResponseData;
+import com.leroy.magportal.api.data.timeslot.TimeslotData;
 import com.leroy.magportal.api.data.timeslot.TimeslotPayload;
 import com.leroy.magportal.api.data.timeslot.TimeslotResponseData;
+import com.leroy.magportal.api.data.timeslot.TimeslotUpdatePayload;
 import com.leroy.magportal.api.helpers.PaymentHelper;
+import com.leroy.magportal.api.requests.order.DeliveryUpdateRequest;
 import com.leroy.magportal.api.requests.order.OrderDeliveryRecalculateRequest;
 import com.leroy.magportal.api.requests.order.OrderFulfilmentGivenAwayRequest;
 import com.leroy.magportal.api.requests.order.OrderGetRequest;
 import com.leroy.magportal.api.requests.order.OrderWorkflowRequest;
 import com.leroy.magportal.api.requests.timeslot.AppointmentsRequest;
+import com.leroy.magportal.api.requests.timeslot.ChangeDateRequest;
 import com.leroy.magportal.api.requests.timeslot.TimeslotRequest;
 import io.qameta.allure.Step;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.SneakyThrows;
@@ -53,13 +62,20 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
     @Inject
     private PaymentHelper paymentHelper;
 
-    //    @Override
+    @Step("Get order with id = {orderId} with response verification")
+    public Response<OnlineOrderData> getOnlineOrder(String orderId) {
+        return this.getOnlineOrder(orderId, true);
+    }
+
     @Step("Get order with id = {orderId}")
-    public Response<OrderData> getOrder(String orderId) {
+    public Response<OnlineOrderData> getOnlineOrder(String orderId, boolean isVerify) {
         OrderGetRequest req = new OrderGetRequest();
         req.setOrderId(orderId);
-        Response<OrderData> response = execute(req, OrderData.class);
-        assertThat("Get Order FAILED", response.isSuccessful());
+        Response<OnlineOrderData> response = execute(req, OnlineOrderData.class);
+        if (isVerify) {
+            assertThat("Get Order FAILED", response.isSuccessful());
+        }
+
         return response;
     }
 
@@ -102,7 +118,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
 
     @Step("Edit order with id = {orderId}: Decreases ALL positions on 1 item if possible + adds Products for rearrange")
     public Response<JsonNode> editOrder(String orderId, Integer newProductsCount, Double newCount) {
-        OrderData orderData = this.getOrder(orderId).asJson();
+        OnlineOrderData orderData = this.getOnlineOrder(orderId).asJson();
         if ((orderData.getPaymentType().equals(PaymentTypeEnum.CASH.getMashName()) || orderData
                 .getPaymentType().equals(PaymentTypeEnum.CASH_OFFLINE.getMashName())) && !orderData
                 .getPaymentStatus().equals(PaymentStatusEnum.PAID.toString())) {
@@ -150,23 +166,65 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
     }
 
     @Step("Returns available Timeslots for order with id = {orderId}")
-    public Response<?> getTimeslot(String orderId) {
-        OrderData orderData = this.getOrder(orderId).asJson();
+    public Response<TimeslotResponseData> getTimeslots(String orderId) {
+        OnlineOrderData orderData = this.getOnlineOrder(orderId).asJson();
         TimeslotPayload payload = makeTimeslotPayload(orderData);
-        if (orderData.getDeliveryData() != null) {
-            AppointmentsRequest req = new AppointmentsRequest();
-            req.jsonBody(payload);
-            return execute(req, AppointmentResponseData.class);
-        } else {
-            TimeslotRequest req = new TimeslotRequest();
-            req.jsonBody(payload);
-            return execute(req, TimeslotResponseData.class);
-        }
+        TimeslotRequest req = new TimeslotRequest();
+        req.jsonBody(payload);
+        return execute(req, TimeslotResponseData.class);
+    }
+
+    @Step("Updates Timeslots for order with id = {orderId}")
+    public Response<JsonNode> updateTimeslot(String orderId, TimeslotData timeslotData) {
+        OnlineOrderData orderData = this.getOnlineOrder(orderId).asJson();
+        TimeslotPayload timeslotPayload = makeTimeslotPayload(orderData);
+        TimeslotUpdatePayload payload = new TimeslotUpdatePayload();
+        payload.setFulfillmentTaskId(orderData.getFulfillmentTaskId());
+        payload.setLmCodes(timeslotPayload.getLmCodes());
+        payload.setStores(timeslotPayload.getStores());
+        payload.setAvailableDate(timeslotData.getAvailableDate());
+
+        ChangeDateRequest req = new ChangeDateRequest();
+        req.jsonBody(payload);
+        return execute(req, JsonNode.class);
+    }
+
+    @Step("Returns available Timeslots for DELIVERY order with id = {orderId}")
+    public Response<AppointmentResponseData> getAppointments(String orderId) {
+        OnlineOrderData orderData = this.getOnlineOrder(orderId).asJson();
+        TimeslotPayload payload = makeTimeslotPayload(orderData);
+        AppointmentsRequest req = new AppointmentsRequest();
+        req.jsonBody(payload);
+        return execute(req, AppointmentResponseData.class);
+    }
+
+    @Step("Updates Appointment data for order with id = {orderId}")
+    public Response<JsonNode> updateAppointment(String orderId, AppointmentData appointmentData) {
+        return updateDeliveryDataAndAppointment(orderId, null, appointmentData);
+    }
+
+    @Step("Updates Delivery data for order with id = {orderId}")
+    public Response<JsonNode> updateDeliveryData(String orderId, DeliveryData newDeliveryData) {
+        return updateDeliveryDataAndAppointment(orderId, newDeliveryData, null);
+    }
+
+    @Step("Updates Delivery data and Appointment for order with id = {orderId}")
+    public Response<JsonNode> updateDeliveryDataAndAppointment(String orderId,
+            DeliveryData newDeliveryData, AppointmentData appointmentData) {
+        OnlineOrderData orderData = this.getOnlineOrder(orderId).asJson();
+        DeliveryUpdatePayload payload = makeDeliveryUpdatePayload(orderData, appointmentData,
+                newDeliveryData);
+
+        DeliveryUpdateRequest req = new DeliveryUpdateRequest();
+        req.setUserLdap(getUserSessionData().getUserLdap());
+        req.setTaskId(orderData.getDeliveryData().getId());
+        req.jsonBody(payload);
+        return execute(req, JsonNode.class);
     }
 
     @Step("Moves NEW order to specified status")
     public void moveNewOrderToStatus(String orderId, States status) {
-        OrderData orderData = this.getOrder(orderId).asJson();
+        OnlineOrderData orderData = this.getOnlineOrder(orderId).asJson();
         if (status.equals(States.ALLOWED_FOR_PICKING)) {
             this.waitUntilOrderGetStatus(orderId, States.ALLOWED_FOR_PICKING, null);
             return;
@@ -213,9 +271,9 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
             String orderId, States expectedOrderStatus, PaymentStatusEnum expectedPaymentStatus) {
         int maxTimeoutInSeconds = 180;
         long currentTimeMillis = System.currentTimeMillis();
-        Response<OrderData> r = null;
+        Response<OnlineOrderData> r = null;
         while (System.currentTimeMillis() - currentTimeMillis < maxTimeoutInSeconds * 1000) {
-            r = this.getOrder(orderId);
+            r = this.getOnlineOrder(orderId, false);
             if (r.isSuccessful() && r.asJson().getStatus()
                     .equals(expectedOrderStatus.getApiVal())) {
                 String paymentStatus = r.asJson().getPaymentStatus();
@@ -274,7 +332,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
     }
 
     private Response<OrderFulfilmentToGivenAwayPayload> productsToGivenAway(String orderId) {
-        OrderData orderData = this.getOrder(orderId).asJson();
+        OnlineOrderData orderData = this.getOnlineOrder(orderId).asJson();
         return execute(new OrderFulfilmentGivenAwayRequest()
                         .setFulfillmentTaskId(orderData.getFulfillmentTaskId())
                         .setUserLdap(getUserSessionData().getUserLdap()),
@@ -301,7 +359,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         List<OrderProductDataPayload> products = new ArrayList<>();
 
         if (isDeliver) {
-            orderData = this.getOrder(orderId).asJson().getProducts();
+            orderData = this.getOnlineOrder(orderId).asJson().getProducts();
         } else {
             orderData = waitAndReturnProductsReadyToGiveaway(orderId);
         }
@@ -346,7 +404,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
             Double newCount) {
         List<OrderProductDataPayload> orderProducts = new ArrayList<>();
         OrderRearrangePayload payload = new OrderRearrangePayload();
-        OrderData orderData = this.getOrder(orderId).asJson();
+        OnlineOrderData orderData = this.getOnlineOrder(orderId).asJson();
         Double count = orderData.getProducts().stream().findAny().get().getConfirmedQuantity();
         if (count == null || count == 0) {
             count = orderData.getProducts().stream().findAny().get().getCreatedQuantity();
@@ -406,7 +464,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
 
     private WorkflowPayload makeDeliveryRecalculationPayload(String orderId,
             Integer productCount, Double newCount) {
-        OrderData orderData = this.getOrder(orderId).asJson();
+        OnlineOrderData orderData = this.getOnlineOrder(orderId).asJson();
         WorkflowPayload productsPayload = new WorkflowPayload();
         List<OrderProductDataPayload> products = new ArrayList<>();
         int i = 0;
@@ -424,7 +482,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         return productsPayload;
     }
 
-    private AppointmentPayload makeTimeslotPayload(OrderData orderData) {
+    private AppointmentPayload makeTimeslotPayload(OnlineOrderData orderData) {
         List<String> lmCodes = new ArrayList<>();
         List<String> stores = new ArrayList<>();
         AppointmentPayload payload = new AppointmentPayload();
@@ -443,9 +501,50 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         }
 
         payload.setLmCodes(lmCodes);
-        payload.setDate(LocalDateTime.now());
+        payload.setDate(ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT));
 
         payload.setStores(stores);
+        return payload;
+    }
+
+    private DeliveryUpdatePayload makeDeliveryUpdatePayload(OnlineOrderData orderData,
+            AppointmentData appointmentData, DeliveryData newDeliveryData) {
+        AppointmentPayload appointmentPayload = makeTimeslotPayload(orderData);
+        appointmentPayload.setDeliveryId(null);
+        DeliveryUpdatePayload payload = new DeliveryUpdatePayload();
+
+        payload.setOrderId(orderData.getOrderId());
+        payload.setFulfillmentTaskId(orderData.getFulfillmentTaskId());
+        payload.setLmCodes(appointmentPayload.getLmCodes());
+        payload.setStores(appointmentPayload.getStores());
+        payload.setDate(appointmentPayload.getDate());
+        payload.setReferenceStoreId(appointmentPayload.getReferenceStoreId());
+        payload.setLongitude(orderData.getDeliveryData().getShipTo().getGpsX());
+        payload.setLatitude(orderData.getDeliveryData().getShipTo().getGpsY());
+
+        if (newDeliveryData != null) {
+            if (newDeliveryData.getReceiver() != null) {
+                DeliveryCustomerData customerData = new DeliveryCustomerData();
+                customerData.setFullName(newDeliveryData.getReceiver().getFullName());
+                customerData.setPhone(newDeliveryData.getReceiver().getPhone());
+
+                payload.setReceiver(customerData);
+            }
+
+            if (newDeliveryData.getShipTo() != null) {
+                ShipToData shipToData = new ShipToData();
+                shipToData.setIntercom(newDeliveryData.getShipTo().getIntercom());
+                shipToData.setEntrance(newDeliveryData.getShipTo().getEntrance());
+
+                payload.setShipTo(shipToData);
+            }
+        }
+
+        if (appointmentData != null) {
+            payload.setAppointmentStart(appointmentData.getStart());
+            payload.setAppointmentEnd(appointmentData.getEnd());
+        }
+
         return payload;
     }
 
@@ -466,7 +565,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
     @Step("Order Status verification")
     public void assertWorkflowResult(Response<?> response, String orderId, States expectedStatus) {
         assertThat("Request to change Order Status has Failed.", response, successful());
-        Response<OrderData> order = this.getOrder(orderId);
+        Response<OnlineOrderData> order = this.getOnlineOrder(orderId);
         String status = order.asJson().getStatus();
         if (expectedStatus.equals(States.CANCELLED) && status
                 .equalsIgnoreCase(States.CANCELLATION_IN_PROGRESS.getApiVal())) {
@@ -482,7 +581,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
     public void assertRearrangeResult(Response<?> response, String orderId, Double expectedCount,
             Integer productsCount) {
         assertThat("Request to Update Order has Failed.", response, successful());
-        Response<OrderData> order = this.getOrder(orderId);
+        Response<OnlineOrderData> order = this.getOnlineOrder(orderId);
         List<OrderProductData> products = order.asJson().getProducts();
         assertThat("INVALID Products count in Order. \nActual: " + products.size() + "\nExpected: "
                         + productsCount,
@@ -498,7 +597,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
     @Step("Order Edit results verification")
     public void assertEditResult(Response<?> response, String orderId, Double expectedCount) {
         assertThat("Request to Update Order has Failed.", response, successful());
-        Response<OrderData> order = this.getOrder(orderId);
+        Response<OnlineOrderData> order = this.getOnlineOrder(orderId);
         List<OrderProductData> products = order.asJson().getProducts();
         for (OrderProductData product : products) {
             assertThat(
@@ -513,7 +612,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
             Response<OrderDeliveryRecalculateResponseData> response, String orderId) {
         assertThat("Request to Recalculate Delivery Cost has Failed.", response, successful());
         OrderDeliveryRecalculateResponseData newDeliveryData = response.asJson();
-        Response<OrderData> orderResp = this.getOrder(orderId);
+        Response<OnlineOrderData> orderResp = this.getOnlineOrder(orderId);
         DeliveryData orderDeliveryData = orderResp.asJson().getDeliveryData();
         assertThat("Delivery Lift Price INVALID.", newDeliveryData.getDeliveryLiftPrice(),
                 lessThanOrEqualTo(orderDeliveryData.getLiftupServicePrice()));
@@ -525,27 +624,23 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
     public void assertDeliveryUpdateResult(Response<?> response, String orderId,
             Double expectedTotalDeliveryPrice, Double expectedLiftPrice) {
         assertThat("Request to Edit with Delivery recalculate has Failed.", response, successful());
-        Response<OrderData> orderResp = this.getOrder(orderId);
+        Response<OnlineOrderData> orderResp = this.getOnlineOrder(orderId);
         DeliveryData orderDeliveryData = orderResp.asJson().getDeliveryData();
-        assertThat("Delivery Lift Price was NOT updated.", orderDeliveryData.getLiftupServicePrice(),
+        assertThat("Delivery Lift Price was NOT updated.",
+                orderDeliveryData.getLiftupServicePrice(),
                 equalTo(expectedLiftPrice));
         assertThat("Delivery Price was NOT updated.", orderDeliveryData.getTotalServicePrice(),
                 equalTo(expectedTotalDeliveryPrice));
-    }
-
-    @Step("GET Timeslot results verification")
-    public void assertTimeslotResult(Response<?> response) {
-        assertThat("Request to Timeslot has Failed.", response, successful());
-        //TODO: add data response verification
     }
 
     @Step("Order Delivery Data Update results verification")
     public void assertDeliveryDataUpdateResult(Response<?> response, String orderId,
             Double expectedTotalDeliveryPrice, Double expectedLiftPrice) {
         assertThat("Request to Edit with Delivery recalculate has Failed.", response, successful());
-        Response<OrderData> orderResp = this.getOrder(orderId);
+        Response<OnlineOrderData> orderResp = this.getOnlineOrder(orderId);
         DeliveryData orderDeliveryData = orderResp.asJson().getDeliveryData();
-        assertThat("Delivery Lift Price was NOT updated.", orderDeliveryData.getLiftupServicePrice(),
+        assertThat("Delivery Lift Price was NOT updated.",
+                orderDeliveryData.getLiftupServicePrice(),
                 equalTo(expectedLiftPrice));
         assertThat("Delivery Price was NOT updated.", orderDeliveryData.getTotalServicePrice(),
                 equalTo(expectedTotalDeliveryPrice));
