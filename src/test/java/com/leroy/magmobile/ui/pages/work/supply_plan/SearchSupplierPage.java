@@ -96,7 +96,7 @@ public class SearchSupplierPage extends CommonMagMobilePage {
     }
 
     @Step("проверить результат поиска")
-    public SearchSupplierPage shouldDataIsCorrect(List<SupplierData> dataList) throws Exception{
+    public SearchSupplierPage shouldDataIsCorrect(List<SupplierData> dataList) throws Exception {
         int warehousesCount = 0;
         int shopsCount = 0;
         int suppliersCount = 0;
@@ -183,7 +183,7 @@ public class SearchSupplierPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить историю поиска")
-    public SearchSupplierPage shouldSearchHistoryIsCorrect(List<String> searchHistory) throws Exception{
+    public SearchSupplierPage shouldSearchHistoryIsCorrect(List<String> searchHistory) throws Exception {
         List<SearchHistoryElementData> searchHistoryData = this.searchHistory.getFullDataList();
         for (int i = 0; i < searchHistory.size(); i++) {
             softAssert.isEquals(searchHistory.get(i), searchHistoryData.get(searchHistoryData.size() - 1 - i).getCode(), "id");

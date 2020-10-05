@@ -515,4 +515,20 @@ public class ElementList<E extends BaseWidget> extends BaseWrapper implements It
         initWebElementListIfNeeded();
         return getElementList();
     }
+
+    /**
+     * Wait until count of elements is changed
+     *
+     * @param previousSize - previous size
+     */
+    public boolean waitUntilSizeIsChanged(int previousSize, int timeout) {
+        try {
+            new WebDriverWait(driver, timeout)
+                    .until(driverObject -> this.getCount() != previousSize);
+            return true;
+        } catch (TimeoutException e) {
+            Log.warn(String.format("waitUntilElementListSizeHasChanged failed (tried for %d second(s))", timeout));
+            return false;
+        }
+    }
 }

@@ -1014,7 +1014,7 @@ public class OrderTest extends SalesBaseTest {
     /**
      * В поле Выбери способ получения
      */
-    private void stepSelectDeliveryType(SalesDocumentsConst.GiveAwayPoints type, LocalDate deliveryDate) {
+    private void stepSelectDeliveryType(SalesDocumentsConst.GiveAwayPoints type, LocalDate deliveryDate) throws Exception {
         if (salesDocumentData == null)
             salesDocumentData = new SalesDocumentData();
         OrderDetailsData orderDetailsData = salesDocumentData.getOrderDetailsData() == null ?
@@ -1093,7 +1093,7 @@ public class OrderTest extends SalesBaseTest {
     /**
      * Заполняем данные получателя
      */
-    private void stepEnterCustomerInfo(MagCustomerData magCustomerData, boolean checkFields) {
+    private void stepEnterCustomerInfo(MagCustomerData magCustomerData, boolean checkFields) throws Exception {
         if (magCustomerData == null) {
             magCustomerData = new MagCustomerData();
             magCustomerData.setName(RandomStringUtils.randomAlphabetic(5));
@@ -1107,14 +1107,14 @@ public class OrderTest extends SalesBaseTest {
             processOrder35Page.shouldFormFieldsAre(salesDocumentData.getOrderDetailsData());
     }
 
-    private void stepEnterCustomerInfo(boolean checkFields) {
+    private void stepEnterCustomerInfo(boolean checkFields) throws Exception {
         stepEnterCustomerInfo(null, checkFields);
     }
 
     /**
      * Введите PIN-код для оплаты
      */
-    private void stepEnterPinCode(SalesDocumentsConst.GiveAwayPoints deliveryType) {
+    private void stepEnterPinCode(SalesDocumentsConst.GiveAwayPoints deliveryType) throws Exception {
         if (salesDocumentData == null)
             salesDocumentData = new SalesDocumentData();
         if (salesDocumentData.getOrderDetailsData() == null)
@@ -1386,6 +1386,7 @@ public class OrderTest extends SalesBaseTest {
 
         salesDocumentData.getOrderAppDataList().get(0).addFirstProduct(productData);
         salesDocumentData.getOrderAppDataList().get(0).setTotalWeight(null);
+        salesDocumentData.getOrderAppDataList().get(0).getProductCardDataList().forEach(p -> p.setTotalStock(null));
 
         if (isConfirmedOrder) {
             confirmedOrderPage = confirmedOrderAddProduct35Page.clickSubmitButton();
@@ -1422,7 +1423,7 @@ public class OrderTest extends SalesBaseTest {
     /**
      * Нажмите на Перейти в список документов
      */
-    private void stepClickGoToSalesDocumentsList(boolean verifyDocumentDataMatches) {
+    private void stepClickGoToSalesDocumentsList(boolean verifyDocumentDataMatches) throws Exception {
         salesDocumentsPage = submittedSalesDocument35Page.clickGoToDocumentListButton();
         if (verifyDocumentDataMatches) {
             ShortSalesDocumentData expectedSalesDocument = new ShortSalesDocumentData();

@@ -83,9 +83,8 @@ public class TransferShopRoomStep2Page extends TransferOrderPage {
     }
 
     @Step("Нажать кнопку ОТПРАВИТЬ ЗАЯВКУ")
-    public TransferToShopRoomSuccessPage clickSubmitBtn() {
+    public void clickSubmitBtn() {
         submitBtn.click();
-        return new TransferToShopRoomSuccessPage();
     }
 
     /* ------------------------- Verifications -------------------------- */

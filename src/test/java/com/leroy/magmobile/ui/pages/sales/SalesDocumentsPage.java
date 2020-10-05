@@ -57,7 +57,7 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
     }
 
     @Step("Найти и выбрать документ, содержащий текст: {containsText}")
-    public void searchForDocumentByTextAndSelectIt(String containsText, boolean updateDocumentListBefore) {
+    public void searchForDocumentByTextAndSelectIt(String containsText, boolean updateDocumentListBefore) throws Exception {
         CardWidget<ShortSalesDocumentData> cardWidget =
                 salesDocumentScrollList.searchForWidgetByText(updateDocumentListBefore, containsText);
         anAssert.isNotNull(cardWidget, "Не нашли нужный документ",
@@ -66,12 +66,12 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
         cardWidget.click();
     }
 
-    public void searchForDocumentByTextAndSelectIt(String containsText) {
+    public void searchForDocumentByTextAndSelectIt(String containsText) throws Exception {
         searchForDocumentByTextAndSelectIt(containsText, false);
     }
 
     @Step("Ждем, пока документ №{docNumber} не будет в состоянии {expectedStatus}")
-    public SalesDocumentsPage waitUntilDocumentIsInCorrectStatus(String docNumber, String expectedStatus) {
+    public SalesDocumentsPage waitUntilDocumentIsInCorrectStatus(String docNumber, String expectedStatus) throws Exception {
         String actualStatus;
         int iCount = 0;
         do {
@@ -114,7 +114,7 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
 
     @Step("Проверить, что документ на странице имеется документ с данными: {expectedDocument}")
     public SalesDocumentsPage shouldSalesDocumentIsPresentAndDataMatches(
-            ShortSalesDocumentData expectedDocument, boolean updateScreen) {
+            ShortSalesDocumentData expectedDocument, boolean updateScreen) throws Exception {
         CardWidget<ShortSalesDocumentData> widget = salesDocumentScrollList.searchForWidgetByText(
                 updateScreen, expectedDocument.getNumber());
         anAssert.isNotNull(widget,
@@ -155,7 +155,7 @@ public class SalesDocumentsPage extends CommonMagMobilePage {
         return this;
     }
 
-    public SalesDocumentsPage shouldSalesDocumentIsPresentAndDataMatches(ShortSalesDocumentData expectedDocument) {
+    public SalesDocumentsPage shouldSalesDocumentIsPresentAndDataMatches(ShortSalesDocumentData expectedDocument) throws Exception {
         return shouldSalesDocumentIsPresentAndDataMatches(expectedDocument, false);
     }
 
