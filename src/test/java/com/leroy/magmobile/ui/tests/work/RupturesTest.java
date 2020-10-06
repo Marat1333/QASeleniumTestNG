@@ -459,7 +459,7 @@ public class RupturesTest extends AppBaseSteps {
         // Step 2
         step("Перейти к ручному поиску и найти любой товар");
         SearchProductPage searchProductPage = rupturesScannerPage.navigateToSearchProductPage();
-        searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCode); //TODO раньше сразу карточка выбиралась
         RuptureCardPage ruptureCardPage = new RuptureCardPage();
         ruptureCardPage.verifyRequiredElementsWhenCreateRupture();
 
