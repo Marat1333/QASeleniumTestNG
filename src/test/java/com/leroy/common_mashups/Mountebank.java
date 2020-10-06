@@ -4,68 +4,50 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.mbtest.javabank.Client;
-import org.mbtest.javabank.http.core.Stub;
 import org.mbtest.javabank.http.imposters.Imposter;
-import org.mbtest.javabank.http.predicates.Predicate;
-import org.mbtest.javabank.http.predicates.PredicateType;
-import org.mbtest.javabank.http.responses.Is;
-import org.mbtest.javabank.http.responses.Response;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class Mountebank {
 
-    public static void main(String[] args) throws ParseException {
+    private static String readFile(String path, Charset encoding)
+            throws IOException {
+        byte[] encoded = Files.readAllBytes(Paths.get(path));
+        return new String(encoded, encoding);
+    }
+
+    public static void main(String[] args) throws Exception {
         Client mountebankClient = new Client("https://mountebank-dev-magfront-stage.apps.lmru.tech");
         int count = mountebankClient.getImposterCount();
         int deleteSt = mountebankClient.deleteAllImposters();
 
-/*        Is defaultResp = new Is();
+        /*Is defaultResp = new Is();
         defaultResp.withStatusCode(400);
         defaultResp.withBody("eRrOr");
 
         Stub defaultStub = new Stub();
         defaultStub.addResponse(defaultResp);
 
-//        Stub mainStub = new Stub();
-//        Is mainResp = new Is();
-//        mainResp.withBody("{\"message\":\"pong2\"}");
-//        mainStub.addResponse(mainResp);
+        Stub mainStub = new Stub();
+        Is mainResp = new Is();
+        mainResp.withBody("{\"message\":\"pong2\"}");
+        mainStub.addResponse(mainResp);
 
-//        Predicate predicate = new Predicate(PredicateType.AND);
-//        predicate.
-//        mainStub.addPredicates();
+        Predicate predicate = new Predicate(PredicateType.AND);
+        predicate.
+        mainStub.addPredicates();
 
         Imposter imposter = new Imposter();
         imposter.onPort(4545);
 //        imposter.addStub(mainStub);
         imposter.addStub(defaultStub);*/
 
-        JSONParser parser = new JSONParser();
-        JSONObject json = (JSONObject) parser.parse("{\n" +
-                "    \"port\" : 4547,\n" +
-                "    \"protocol\": \"http\",\n" +
-                "    \"stubs\": [\n" +
-                "        {\n" +
-                "            \"responses\": [{\n" +
-                "                \"proxy\": {\n" +
-                "                    \"to\": \"https://orchestrator-lego-develop-apim-stage.apps.lmru.tech\",\n" +
-                "                    \"predicateGenerators\": [{\n" +
-                "                        \"matches\": {\n" +
-                "                             \"path\": true \n" +
-                "                        }\n" +
-                "                    }]\n" +
-                "                }\n" +
-                "            }]\n" +
-                "        },\n" +
-                "\n" +
-                "        {\n" +
-                "            \"responses\": [\n" +
-                "                { \"is\" : {\"statusCode\": 400 } }\n" +
-                "            ]\n" +
-                "        }\n" +
-                "    ]\n" +
-                "}");
-
-        Imposter imposter = Imposter.fromJSON(json);
+        String content = readFile("src/main/resources/mock/magmobile_default_imposter.json", StandardCharsets.UTF_8);
+        Imposter imposter = Imposter.fromJSON((JSONObject) new JSONParser().parse(content));
 
         int st = mountebankClient.createImposter(imposter);
         String s = "";
