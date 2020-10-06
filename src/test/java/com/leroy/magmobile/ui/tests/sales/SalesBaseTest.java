@@ -162,7 +162,7 @@ public class SalesBaseTest extends AppBaseSteps {
 
     // Получить ЛМ код для продукта, доступного для отзыва с RM
     protected String getAnyLmCodeProductIsAvailableForWithdrawalFromRM() {
-        return "18845896";
+        return "15163427";
     }
 
     // Поиск продуктов для создания корзины с несколькими заказами:
