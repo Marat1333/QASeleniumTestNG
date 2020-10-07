@@ -3,6 +3,7 @@ package com.leroy.magportal.api.tests.offlineOrders;
 import static com.leroy.core.matchers.IsSuccessful.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyOrNullString;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.not;
 
@@ -92,9 +93,8 @@ public class TimeslotTest extends BaseMagPortalApiTest {
         assertThat("Request to Timeslot Update has Failed.", response, successful());
         OrderData orderData = orderClient.getOnlineOrder(currentOrderId).asJson();
         assertThat("Pickup Date was NOT updated",
-                orderData.getGiveAway().getDate().equals(timeslotData.getAvailableDate()));
-        assertThat("Pickup Shop was NOT updated", orderData.getGiveAway().getShopId()
-                .equals(timeslotData
-                        .getStoreId()));//TODO: add case for it, now it's not possible to change it
+                orderData.getGiveAway().getDate(), equalTo(timeslotData.getAvailableDate()));
+        assertThat("Pickup Shop was NOT updated", orderData.getGiveAway().getShopId().toString(),
+                equalTo(timeslotData.getStoreId()));
     }
 }

@@ -2,10 +2,10 @@ package com.leroy.magportal.api.tests.onlineOrders.pickupOrders;
 
 import static com.leroy.core.matchers.IsSuccessful.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.emptyOrNullString;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
+//import static org.hamcrest.Matchers.emptyOrNullString;
+//import static org.hamcrest.Matchers.equalTo;
+//import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.*;
 
 import com.google.inject.Inject;
 import com.leroy.constants.sales.SalesDocumentsConst.States;
@@ -111,8 +111,7 @@ public class PickupTimeslotTest extends BaseMagPortalApiTest {
         OrderData orderData = orderClient.getOnlineOrder(currentOrderId).asJson();
         assertThat("Pickup Date was NOT updated",
                 orderData.getGiveAway().getDate().equals(timeslotData.getAvailableDate()));
-        assertThat("Pickup Shop was NOT updated", orderData.getGiveAway().getShopId()
-                .equals(timeslotData
-                        .getStoreId()));//TODO: add case for it, now it's not possible to change it
+        assertThat("Pickup Shop was NOT updated", orderData.getGiveAway().getShopId().toString(),
+                equalTo(timeslotData.getStoreId()));
     }
 }

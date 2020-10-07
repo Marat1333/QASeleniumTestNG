@@ -3,12 +3,14 @@ package com.leroy.magportal.api.clients;
 import static com.leroy.core.matchers.IsSuccessful.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
@@ -56,7 +58,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
 
     @Inject
-    private CatalogSearchClient catalogSearchClient;
+    private SearchProductHelper searchProductHelper;
     @Inject
     private PickingTaskClient pickingTaskClient;
     @Inject
@@ -269,7 +271,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
     @Step("Wait until order comes to statuses. USE null for payment ignore")
     public void waitUntilOrderGetStatus(
             String orderId, States expectedOrderStatus, PaymentStatusEnum expectedPaymentStatus) {
-        int maxTimeoutInSeconds = 180;
+        int maxTimeoutInSeconds = 600;//TODO: BACK TO 180s
         long currentTimeMillis = System.currentTimeMillis();
         Response<OnlineOrderData> r = null;
         while (System.currentTimeMillis() - currentTimeMillis < maxTimeoutInSeconds * 1000) {
@@ -415,7 +417,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         payload.setPaymentVersion(orderData.getPaymentVersion());
         payload.setSolutionVersion(orderData.getSolutionVersion());
 
-        List<ProductItemData> newProducts = catalogSearchClient
+        List<ProductItemData> newProducts = searchProductHelper
                 .getProductsForShop(newProductsCount, orderData.getShopId());
         for (ProductItemData productData : newProducts) {
             OrderProductDataPayload orderProductDataPayload = new OrderProductDataPayload();
@@ -448,7 +450,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         List<OrderProductDataPayload> orderProducts = new ArrayList<>();
         OrderRearrangePayload payload = this.makeRearrangePayload(orderId, 0, null);
 
-        ProductItemData product = catalogSearchClient.getProductByLmCode(lmCode);
+        ProductItemData product = searchProductHelper.getProductByLmCode(lmCode);
 
         OrderProductDataPayload orderProductDataPayload = new OrderProductDataPayload();
         orderProductDataPayload.setLmCode(product.getLmCode());
@@ -574,7 +576,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         assertThat(
                 "Order Status match FAILED. \nActual: " + status + "\nExpected: " + expectedStatus
                         .getApiVal(),
-                status.equalsIgnoreCase(expectedStatus.getApiVal()));
+                status, equalToIgnoringCase(expectedStatus.getApiVal()));
     }
 
     @Step("Order Rearrange results verification")
@@ -590,7 +592,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
             assertThat(
                     "INVALID count of product in Order. \nActual: " + product.getConfirmedQuantity()
                             + "\nExpected: " + expectedCount + "\nLmCode: " + product.getLmCode(),
-                    product.getConfirmedQuantity().equals(expectedCount));
+                    product.getConfirmedQuantity(), equalTo(expectedCount));
         }
     }
 
@@ -603,7 +605,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
             assertThat(
                     "INVALID count of product in Order. \nActual: " + product.getConfirmedQuantity()
                             + "\nExpected: " + expectedCount + "\nLmCode: " + product.getLmCode(),
-                    product.getConfirmedQuantity().equals(expectedCount));
+                    product.getConfirmedQuantity(), equalTo(expectedCount));
         }
     }
 

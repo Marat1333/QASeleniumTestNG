@@ -10,11 +10,11 @@ import com.leroy.common_mashups.data.customer.CustomerListData;
 import com.leroy.common_mashups.data.customer.CustomerSearchFilters;
 import com.leroy.common_mashups.data.customer.CustomerSearchFilters.CustomerType;
 import com.leroy.common_mashups.data.customer.CustomerSearchFilters.DiscriminantType;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.core.api.ThreadApiClient;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magportal.api.clients.CatalogSearchClient;
 import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.clients.ShopsClient;
 import com.leroy.magportal.api.constants.DeliveryServiceTypeEnum;
@@ -44,7 +44,7 @@ public class BitrixHelper extends BaseHelper {
     @Inject
     private ShopsClient shopsClient;
     @Inject
-    private CatalogSearchClient catalogSearchClient;
+    private SearchProductHelper searchProductHelper;
     @Inject
     private OrderClient orderClient;
     @Inject
@@ -128,10 +128,10 @@ public class BitrixHelper extends BaseHelper {
         ArrayList<BitrixSolutionPayload.Basket> result = new ArrayList<>();
 
         if (orderData.getLmCode() != null) {
-            ProductItemData product = catalogSearchClient.getProductByLmCode(orderData.getLmCode());
+            ProductItemData product = searchProductHelper.getProductByLmCode(orderData.getLmCode());
             result.add(productItemDataToPayload(product));
         } else {
-            List<ProductItemData> products = catalogSearchClient
+            List<ProductItemData> products = searchProductHelper
                     .getProductsForShop(productsCount, shopId);
             for (ProductItemData productData : products) {
                 result.add(productItemDataToPayload(productData));

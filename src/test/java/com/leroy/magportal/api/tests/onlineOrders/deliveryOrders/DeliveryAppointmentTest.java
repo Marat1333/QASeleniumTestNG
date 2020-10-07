@@ -3,6 +3,7 @@ package com.leroy.magportal.api.tests.onlineOrders.deliveryOrders;
 import static com.leroy.core.matchers.IsSuccessful.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyOrNullString;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -170,7 +171,7 @@ public class DeliveryAppointmentTest extends BaseMagPortalApiTest {
         assertThat("Request to Appointment Update has Failed.", response, successful());
         OnlineOrderData orderData = orderClient.getOnlineOrder(currentOrderId).asJson();
         assertThat("Delivery Date was NOT updated",
-                orderData.getDeliveryData().getPlanDate().equals(appointmentData.getEnd()));
+                orderData.getDeliveryData().getPlanDate(), equalTo(appointmentData.getEnd()));
         //TODO: Add interval verification
     }
 
@@ -181,8 +182,8 @@ public class DeliveryAppointmentTest extends BaseMagPortalApiTest {
                 .getDeliveryData();
         if (deliveryData.getReceiver().getFullName() != null) {
             assertThat("Receiver Name was NOT updated",
-                    updatedDeliveryData.getReceiver().getFullName()
-                            .equals(deliveryData.getReceiver().getFullName()));
+                    updatedDeliveryData.getReceiver().getFullName(),
+                            equalTo(deliveryData.getReceiver().getFullName()));
         } else {
             assertThat("Receiver Name was updated to NULL",
                     updatedDeliveryData.getReceiver().getFullName(), not(emptyOrNullString()));
@@ -198,8 +199,8 @@ public class DeliveryAppointmentTest extends BaseMagPortalApiTest {
         }
 
         if (deliveryData.getShipTo().getIntercom() != null) {
-            assertThat("Intercom was NOT updated", updatedDeliveryData.getShipTo().getIntercom()
-                    .equals(deliveryData.getShipTo().getIntercom()));
+            assertThat("Intercom was NOT updated", updatedDeliveryData.getShipTo().getIntercom(),
+                    equalTo(deliveryData.getShipTo().getIntercom()));
         } else {
             assertThat("Intercom was updated to NULL",
                     updatedDeliveryData.getShipTo().getIntercom(),
@@ -207,8 +208,8 @@ public class DeliveryAppointmentTest extends BaseMagPortalApiTest {
         }
 
         if (deliveryData.getShipTo().getEntrance() != null) {
-            assertThat("Entrance was NOT updated", updatedDeliveryData.getShipTo().getEntrance()
-                    .equals(deliveryData.getShipTo().getEntrance()));
+            assertThat("Entrance was NOT updated", updatedDeliveryData.getShipTo().getEntrance(),
+                     equalTo(deliveryData.getShipTo().getEntrance()));
         } else {
             assertThat("Entrance was updated to NULL",
                     updatedDeliveryData.getShipTo().getEntrance(),
