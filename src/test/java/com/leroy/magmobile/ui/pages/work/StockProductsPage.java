@@ -8,6 +8,7 @@ import com.leroy.magmobile.ui.models.work.WithdrawalProductCardData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.widgets.ProductCardWidget;
 import com.leroy.magmobile.ui.pages.widgets.SelectedCardWidget;
+import com.leroy.magmobile.ui.pages.work.withdrawal_from_rm.OrderPage;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 

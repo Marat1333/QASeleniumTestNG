@@ -885,6 +885,10 @@ public class SearchTest extends AppBaseSteps {
         nomenclatureSearchPage.returnBackNTimes(1);
         searchProductPage = nomenclatureSearchPage.clickShowAllProductsBtn();
         searchProductPage.enterTextInSearchFieldAndSubmit(SERVICE_SHORT_NAME);
+        addServicePage = new AddServicePage();
+        addServicePage.verifyRequiredElements()
+                .shouldServiceNameAndLmCodeBeOnPage(SERVICE_FULL_NAME, SERVICE_FULL_LM_CODE);
+        addServicePage.returnBack();
         ServiceItemDataList shortNameServicesResponce = apiThreads.get(4).getData();
         searchProductPage.shouldServicesResponceEqualsContent(shortNameServicesResponce, 1);
         searchProductPage.shouldCardsContainText(SERVICE_SHORT_NAME, SearchProductPage.CardType.SERVICE, 1);

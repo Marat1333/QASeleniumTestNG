@@ -7,7 +7,10 @@ import com.leroy.core.ContextProvider;
 import com.leroy.core.annotations.DisableTestWhen;
 import com.leroy.core.annotations.Smoke;
 import com.leroy.core.annotations.Team;
-import com.leroy.core.configuration.*;
+import com.leroy.core.configuration.BaseUiTest;
+import com.leroy.core.configuration.DriverFactory;
+import com.leroy.core.configuration.Log;
+import com.leroy.core.configuration.TestInfo;
 import com.leroy.core.listeners.helpers.RetryAnalyzer;
 import com.leroy.core.listeners.helpers.XMLSuiteResultWriter;
 import com.leroy.core.pages.AnyPage;
@@ -144,7 +147,7 @@ public class Listener implements ITestListener, ISuiteListener,
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }*/
-        System.setProperty("current.date", DateUtil.formatCurrectDayYYYYMMDDHHMMSSTimeZone());
+        System.setProperty("current.date", new SimpleDateFormat("E_yyyy.MM.dd_HH.mm.ss_z").format(new Date()));
         arg0.getXmlSuite().setName(arg0.getName());
 
         // Continue with the rest of the initialization of the system properties
@@ -168,7 +171,7 @@ public class Listener implements ITestListener, ISuiteListener,
                     System.getProperty("output.path"));
             this.outputConfig.put("ExecutionStatus", "started");
             this.outputConfig.put("Started_Time",
-                    DateUtil.formatCurrectDayYYYYMMDDHHMMSSTimeZone());
+                    new SimpleDateFormat("E_yyyy.MM.dd_HH.mm.ss_z").format(new Date()));
             generateRunConfig();
 
             outputDirExist = true;
@@ -403,7 +406,7 @@ public class Listener implements ITestListener, ISuiteListener,
         for (String line : output) {
             if (line != null) {
                 xmlBuffer.push(XMLReporterConfig.TAG_LINE);
-                xmlBuffer.addCDATA(DeprecatedCommonUtil.filterInvalidChars(line));
+                xmlBuffer.addCDATA(XMLSuiteResultWriter.filterInvalidChars(line));
                 xmlBuffer.pop();
             }
         }

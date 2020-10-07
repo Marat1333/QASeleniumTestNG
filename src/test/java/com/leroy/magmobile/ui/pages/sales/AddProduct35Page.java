@@ -217,11 +217,14 @@ public class AddProduct35Page<T> extends CommonMagMobilePage {
     // ---------------- Verifications ----------------------- //
 
     @Step("Проверить, что страница 'Добавление товара' отображается корректно")
-    public AddProduct35Page<T> verifyRequiredElements(SubmitBtnCaptions caption) {
+    public AddProduct35Page<T> verifyRequiredElements(SubmitBtnCaptions caption, boolean priceShouldBePresent) {
         String ps = getPageSource();
         softAssert.isElementTextEqual(screenTitle, SCREEN_TITLE_VALUE(), ps);
         softAssert.isElementVisible(backBtn, ps);
-        softAssert.isElementVisible(priceLbl, ps);
+        if (priceShouldBePresent)
+            softAssert.isElementVisible(priceLbl, ps);
+        else
+            softAssert.isElementNotVisible(priceLbl, ps);
         softAssert.isElementVisible(shoppingRoomLbl, ps);
         softAssert.isElementVisible(editQuantityFld, ps);
         anAssert.isElementTextEqual(submitBtn, caption.value(), ps);
@@ -229,6 +232,10 @@ public class AddProduct35Page<T> extends CommonMagMobilePage {
                 "Кнопка 'Добавить' должна быть активна");
         softAssert.verifyAll();
         return this;
+    }
+
+    public AddProduct35Page<T> verifyRequiredElements(SubmitBtnCaptions caption) {
+        return verifyRequiredElements(caption, true);
     }
 
     @Step("Убедиться, что поле для редактирования кол-ва = {text}")

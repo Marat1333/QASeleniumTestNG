@@ -122,7 +122,7 @@ public class TagsListPage extends CommonMagMobilePage {
     }
 
     @Step("Вызвать модалку редактирования для товара с кодом {lmCode}")
-    public EditTagModalPage callEditModal(String lmCode) {
+    public EditTagModalPage callEditModal(String lmCode) throws Exception {
         Element productCard = E("ЛМ " + lmCode);
         if (!productCard.isVisible()) {
             mainScrollView.scrollDownToElement(productCard);
@@ -140,7 +140,7 @@ public class TagsListPage extends CommonMagMobilePage {
     }
 
     @Step("Выбрать товар")
-    public void clickOnProduct(String... lmCodes) {
+    public void clickOnProduct(String... lmCodes) throws Exception {
         String chosenProductCount;
         Element product;
         for (String eachLm : lmCodes) {
@@ -157,7 +157,7 @@ public class TagsListPage extends CommonMagMobilePage {
     }
 
     @Step("Выбрать товары для редактирования и открыть модалку редактирования")
-    public EditTagModalPage choseProductsAndOpenGroupEditModal(String... lmCodes) {
+    public EditTagModalPage choseProductsAndOpenGroupEditModal(String... lmCodes) throws Exception {
         String chosenProductCount;
         Element product;
         for (String eachLm : lmCodes) {

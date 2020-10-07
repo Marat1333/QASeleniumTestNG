@@ -131,7 +131,7 @@ public abstract class CommonCustomerInfoPage<T extends CommonCustomerInfoPage<T>
     }
 
     @Step("Нажать на 'Скрыть все поля")
-    public T clickHideAdditionalFieldsButton() {
+    public T clickHideAdditionalFieldsButton() throws Exception{
         mainScrollView.scrollDownToElement(hideAdditionalFieldsBtn);
         hideAdditionalFieldsBtn.click();
         middleNameFld.waitForInvisibility();

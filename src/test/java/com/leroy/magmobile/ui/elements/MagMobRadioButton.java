@@ -6,7 +6,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.Color;
 
 public class MagMobRadioButton extends RadioButton {
-    private static final Color CHECKED_GREEN_COLOR = new Color(102, 192, 93, 255);
+    protected static final Color CHECKED_GREEN_COLOR = new Color(102, 192, 93, 255);
 
     public MagMobRadioButton(WebDriver driver, CustomLocator locator) {
         super(driver, locator);

@@ -7,6 +7,7 @@ import com.leroy.magportal.ui.constants.OrderConst;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
 import com.leroy.utils.DateTimeUtil;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.List;
 public class SalesDocWebData {
     private String number;
     private String status;
+    private String alternativeStatus; // Вспомогательный параметр (использовать, когда у заказа могут быть разные варианты статуса)
     private String creationDate;
     private String authorName;
     private SimpleCustomerData client;
@@ -66,8 +68,12 @@ public class SalesDocWebData {
         ShortOrderDocWebData shortOrderDocWebData = new ShortOrderDocWebData();
         shortOrderDocWebData.setNumber(number);
         shortOrderDocWebData.setStatus(status);
-        if (creationDate != null)
-            shortOrderDocWebData.setCreationDate(DateTimeUtil.strToLocalDateTime(creationDate, "dd MMM, HH:mm"));
+        shortOrderDocWebData.setAlternativeStatus(alternativeStatus);
+        if (creationDate != null) {
+            String dateFormat = StringUtils.substringBetween(creationDate, ",", ":").trim().length() == 1 ?
+                    "dd MMM, H:mm" : "dd MMM, HH:mm";
+            shortOrderDocWebData.setCreationDate(DateTimeUtil.strToLocalDateTime(creationDate, dateFormat));
+        }
         shortOrderDocWebData.setDeliveryType(deliveryType.equals(SalesDocumentsConst.GiveAwayPoints.PICKUP) ?
                 OrderConst.DeliveryType.PICKUP : OrderConst.DeliveryType.DELIVERY_TK); // todo
         shortOrderDocWebData.setTotalPrice(orders.get(0).getTotalPrice());
@@ -87,8 +93,15 @@ public class SalesDocWebData {
             softAssert.isEquals(this.getAuthorName(), expectedData.getAuthorName(),
                     "Неверный автора документа");
         if (expectedData.getStatus() != null)
-            softAssert.isEquals(this.getStatus().toLowerCase(), expectedData.getStatus().toLowerCase(),
-                    "Неверный статус документа");
+            if (expectedData.getAlternativeStatus() != null) {
+                softAssert.isTrue(this.getStatus().equalsIgnoreCase(expectedData.getStatus()) ||
+                                this.getStatus().equalsIgnoreCase(expectedData.getAlternativeStatus()),
+                        "Неверный статус документа. Актуальный: " + this.getStatus() +
+                                " Ожидался: " + expectedData.getStatus() + " или " + expectedData.getAlternativeStatus());
+            } else {
+                softAssert.isEquals(this.getStatus().toLowerCase(), expectedData.getStatus().toLowerCase(),
+                        "Неверный статус документа");
+            }
         if (expectedData.getCreationDate() != null)
             softAssert.isEquals(this.getCreationDate(), expectedData.getCreationDate(),
                     "Неверная дата создания документа");

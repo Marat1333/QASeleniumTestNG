@@ -429,6 +429,7 @@ public class DriverFactory {
     }
 
     public static boolean isGridProfile() {
-        return BROWSER_PROFILE.contains("grid");
+        String host = System.getProperty(HOST_ENV_VAR);
+        return Strings.isNotNullAndNotEmpty(host) && !host.contains("0.0.0.0") && !host.contains("localhost");
     }
 }

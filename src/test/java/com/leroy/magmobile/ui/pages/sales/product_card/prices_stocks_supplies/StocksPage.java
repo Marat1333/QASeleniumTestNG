@@ -72,7 +72,7 @@ public class StocksPage extends ProductPricesQuantitySupplyPage {
     Button shopListNavBtn;
 
     @Step("Перейти на страницу со списком магазинов")
-    public ShopsStocksPage goToShopListPage() {
+    public ShopsStocksPage goToShopListPage() throws Exception {
         mainScrollView.scrollUpToElement(shopListNavBtn);
         shopListNavBtn.click();
         return new ShopsStocksPage();
@@ -85,8 +85,7 @@ public class StocksPage extends ProductPricesQuantitySupplyPage {
     }
 
     @Step("Проверить что данные по остаткам товара отображены корректно")
-    public StocksPage shouldDataIsCorrect(CatalogProductData data) {
-        //TODO will be changed soon
+    public StocksPage shouldDataIsCorrect(CatalogProductData data) throws Exception {
         StockAreas stockAreas = data.getStockAreas();
         ExtStocks extStocks = data.getExtStocks();
         softAssert.isEquals(ParserUtil.strWithOnlyDigits(availableStockLbl.getText()), ParserUtil.prettyDoubleFmt(data.getAvailableStock()), "available 4 sale");
@@ -96,20 +95,34 @@ public class StocksPage extends ProductPricesQuantitySupplyPage {
         softAssert.isEquals(ParserUtil.strWithOnlyDigits(emWarehouse.getText()), String.valueOf(stockAreas.getEm()), "EM");
         //data has not contains street warehouse quantity
         softAssert.isEquals(ParserUtil.strWithOnlyDigits(remoteRdWarehouse.getText()), String.valueOf(stockAreas.getRd()), "RD");
-        Integer unavailable4Sale = extStocks.getWhb() + extStocks.getBufferEM() + extStocks.getClientsReserve() +
-                extStocks.getTransferReserve() + extStocks.getReturnReserve() + extStocks.getDefectEM() +
-                extStocks.getCorrectionStockInWait() + extStocks.getExpo();
+        Integer unavailable4Sale = (extStocks.getWhb() == null ? 0 : extStocks.getWhb()) +
+                (extStocks.getBufferEM() == null ? 0 : extStocks.getBufferEM()) +
+                (extStocks.getClientsReserve() == null ? 0 : extStocks.getClientsReserve()) +
+                (extStocks.getTransferReserve() == null ? 0 : extStocks.getTransferReserve()) +
+                (extStocks.getReturnReserve() == null ? 0 : extStocks.getReturnReserve()) +
+                (extStocks.getDefectEM() == null ? 0 : extStocks.getDefectEM()) +
+                (extStocks.getCorrectionStockInWait() == null ? 0 : extStocks.getCorrectionStockInWait()) +
+                (extStocks.getExpo() == null ? 0 : extStocks.getExpo());
         softAssert.isEquals(ParserUtil.strWithOnlyDigits(unavailableStockLbl.getText()), String.valueOf(unavailable4Sale), "unavailable 4 sale");
         unavailableStockLbl.click();
         mainScrollView.scrollDownToElement(expo);
-        softAssert.isEquals(ParserUtil.strWithOnlyDigits(buffer.getText()), String.valueOf(extStocks.getWhb()), "WHB");
-        softAssert.isEquals(ParserUtil.strWithOnlyDigits(bufferEm.getText()), String.valueOf(extStocks.getBufferEM()), "buffer EM");
-        softAssert.isEquals(ParserUtil.strWithOnlyDigits(reserve4Clients.getText()), String.valueOf(extStocks.getClientsReserve()), "clients reserve");
-        softAssert.isEquals(ParserUtil.strWithOnlyDigits(reserve4Transfer.getText()), String.valueOf(extStocks.getTransferReserve()), "transfer reserve");
-        softAssert.isEquals(ParserUtil.strWithOnlyDigits(reserve4Return.getText()), String.valueOf(extStocks.getReturnReserve()), "return reserve");
-        softAssert.isEquals(ParserUtil.strWithOnlyDigits(defectEm.getText()), String.valueOf(extStocks.getDefectEM()), "defect EM");
-        softAssert.isEquals(ParserUtil.strWithOnlyDigits(correctionStockInWait.getText()), String.valueOf(extStocks.getCorrectionStockInWait()), "correction stock in wait");
-        softAssert.isEquals(ParserUtil.strWithOnlyDigits(expo.getText()), String.valueOf(extStocks.getExpo()), "expo");
+        softAssert.isEquals(ParserUtil.strWithOnlyDigits(buffer.getText()),
+                String.valueOf(extStocks.getWhb() == null ? 0 : extStocks.getWhb()), "WHB");
+        softAssert.isEquals(ParserUtil.strWithOnlyDigits(bufferEm.getText()),
+                String.valueOf(extStocks.getBufferEM() == null ? 0 : extStocks.getBufferEM()), "buffer EM");
+        softAssert.isEquals(ParserUtil.strWithOnlyDigits(reserve4Clients.getText()),
+                String.valueOf(extStocks.getClientsReserve() == null ? 0 : extStocks.getClientsReserve()), "clients reserve");
+        softAssert.isEquals(ParserUtil.strWithOnlyDigits(reserve4Transfer.getText()),
+                String.valueOf(extStocks.getTransferReserve() == null ? 0 : extStocks.getTransferReserve()), "transfer reserve");
+        softAssert.isEquals(ParserUtil.strWithOnlyDigits(reserve4Return.getText()),
+                String.valueOf(extStocks.getReturnReserve() == null ? 0 : extStocks.getReturnReserve()), "return reserve");
+        softAssert.isEquals(ParserUtil.strWithOnlyDigits(defectEm.getText()),
+                String.valueOf(extStocks.getDefectEM() == null ? 0 : extStocks.getDefectEM()), "defect EM");
+        softAssert.isEquals(ParserUtil.strWithOnlyDigits(correctionStockInWait.getText()),
+                String.valueOf(extStocks.getCorrectionStockInWait() == null ? 0 : extStocks.getCorrectionStockInWait()),
+                "correction stock in wait");
+        softAssert.isEquals(ParserUtil.strWithOnlyDigits(expo.getText()),
+                String.valueOf(extStocks.getExpo() == null ? 0 : extStocks.getExpo()), "expo");
         softAssert.verifyAll();
         return this;
     }

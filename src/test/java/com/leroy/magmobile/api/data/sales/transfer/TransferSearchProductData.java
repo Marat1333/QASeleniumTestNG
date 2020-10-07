@@ -22,10 +22,17 @@ public class TransferSearchProductData {
     public static class Source {
         private String type;
         private List<MonoPallet> monoPallets;
+        private List<MixPallet> mixPallets;
 
         @Data
         public static class MonoPallet {
             private Integer quantity;
+            private Integer capacity;
+        }
+
+        @Data
+        public static class MixPallet {
+            private String id;
             private Integer capacity;
         }
     }

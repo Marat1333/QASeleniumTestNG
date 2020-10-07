@@ -75,6 +75,7 @@ public class CustomerSearchForm extends MagPortalBasePage {
 
     @Step("Нажать на кнопку 'Добавить клиента'")
     public CustomerSearchForm clickAddCustomer() {
+        addCustomerBtnLbl.scrollTo();
         addCustomerBtnLbl.click();
         legalPersonBtn.waitForVisibility();
         return this;
@@ -144,6 +145,8 @@ public class CustomerSearchForm extends MagPortalBasePage {
             customerSearchItems.get(0).click();
             customerSearchItems.waitUntilElementCountEquals(0);
         }
+        customerPhoneSearchFld.waitForInvisibility();
+        waitForSpinnerDisappear();
         return this;
     }
 
@@ -221,6 +224,7 @@ public class CustomerSearchForm extends MagPortalBasePage {
         softAssert.isElementNotVisible(naturalPersonBtn);
         softAssert.isElementNotVisible(legalPersonBtn);
         softAssert.isElementNotVisible(customerPhoneSearchFld);
+        softAssert.verifyAll();
         shouldSelectedCustomerHasPhone(expectedCustomerData.getPhoneNumber());
         if (expectedCustomerData.getEmail() != null)
             shouldSelectedCustomerHasEmail(expectedCustomerData.getEmail());
