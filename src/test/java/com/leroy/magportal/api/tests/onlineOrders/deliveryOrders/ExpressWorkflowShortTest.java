@@ -63,7 +63,7 @@ public class ExpressWorkflowShortTest extends BaseMagPortalApiTest {
         orderClient.waitUntilOrderGetStatus(currentOrderId,
                 States.PICKED, PaymentStatusEnum.PAID);
         Response<JsonNode> response = orderClient.giveAway(currentOrderId, true);
-        orderClient.assertWorkflowResult(response, currentOrderId, States.GIVEN_AWAY);
+        orderClient.assertWorkflowResult(response, currentOrderId, States.SHIPPED);
     }
 
     @Test(description = "C23425628 Express Delivery: ON_SHIPMENT -> DELIVERED", dependsOnMethods={"testShipped"})

@@ -62,7 +62,7 @@ public class EntranceDeliveryEditTest extends BaseMagPortalApiTest {
     @Test(description = "C23425873 Entrance: Delivery and Lift Update", priority = 1)
     public void testEditDeliveryAndLift() {
         deliveryTotalPrice = 99.99;
-        liftPrice = 55.55;
+        liftPrice = 0.0;
         Response<?> response = orderClient
                 .editDeliveryOrder(currentOrderId, deliveryTotalPrice, liftPrice);
         orderClient.assertDeliveryUpdateResult(response, currentOrderId, deliveryTotalPrice,
@@ -72,18 +72,6 @@ public class EntranceDeliveryEditTest extends BaseMagPortalApiTest {
     @Test(description = "C23425874 Entrance: Delivery Update", priority = 2)
     public void testEditDelivery() {
         deliveryTotalPrice = 88.88;
-        Response<?> response = orderClient
-                .editDeliveryOrder(currentOrderId, deliveryTotalPrice, liftPrice);
-        orderClient.assertDeliveryUpdateResult(response, currentOrderId, deliveryTotalPrice,
-                liftPrice);
-    }
-
-    @Test(description = "C23425875 Entrance: Paid: Lift Delivery Update to zero", priority = 3)
-    public void testEditDeliveryLiftToZeroPaid() {
-        currentStatus = States.PICKED;
-        orderClient.moveNewOrderToStatus(currentOrderId, States.PICKED);
-        deliveryTotalPrice -= liftPrice;
-        liftPrice = 0.0;
         Response<?> response = orderClient
                 .editDeliveryOrder(currentOrderId, deliveryTotalPrice, liftPrice);
         orderClient.assertDeliveryUpdateResult(response, currentOrderId, deliveryTotalPrice,
@@ -104,7 +92,7 @@ public class EntranceDeliveryEditTest extends BaseMagPortalApiTest {
         currentStatus = States.ALLOWED_FOR_PICKING;
         makeDimensionalOrder();
         deliveryTotalPrice = 99.99;
-        liftPrice = 55.55;
+        liftPrice = 0.0;
         Response<?> response = orderClient
                 .editDeliveryOrder(currentOrderId, deliveryTotalPrice, liftPrice);
         orderClient.assertDeliveryUpdateResult(response, currentOrderId, deliveryTotalPrice,
@@ -114,7 +102,6 @@ public class EntranceDeliveryEditTest extends BaseMagPortalApiTest {
     @Test(description = "C23425878 Entrance: Delivery Update to zero for Dimensional products", priority = 6)
     public void testEditDeliveryToZeroDimensional() {
         deliveryTotalPrice = 0.0;
-        liftPrice = 0.0;
         Response<?> response = orderClient
                 .editDeliveryOrder(currentOrderId, deliveryTotalPrice, liftPrice);
         orderClient.assertDeliveryUpdateResult(response, currentOrderId, deliveryTotalPrice,

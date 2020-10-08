@@ -29,7 +29,6 @@ public class CartClient extends BaseMashupClient {
     @Step("Get Cart info by cartId={cartId}")
     public Response<CartData> sendRequestGet(String cartId) {
         return execute(new CartGet().setCartId(cartId)
-                .bearerAuthHeader(getUserSessionData().getAccessToken())
                 .setShopId(getUserSessionData().getUserShopId()), CartData.class);
     }
 
@@ -39,7 +38,6 @@ public class CartClient extends BaseMashupClient {
         cartData.setProducts(productOrderDataList);
         return execute(new CartPOST()
                 .setShopId(getUserSessionData().getUserShopId())
-                .bearerAuthHeader(getUserSessionData().getAccessToken())
                 .jsonBody(cartData), CartData.class);
     }
 
@@ -53,7 +51,6 @@ public class CartClient extends BaseMashupClient {
                                          CartProductOrderData productData) {
         CartUpdateRequest req = new CartUpdateRequest();
         req.setCartId(cartId);
-        req.bearerAuthHeader(getUserSessionData().getAccessToken());
         req.setShopId(getUserSessionData().getUserShopId());
         CartData putDat = new CartData();
         putDat.setDocumentVersion(documentVersion);
@@ -96,7 +93,6 @@ public class CartClient extends BaseMashupClient {
         CartDiscountRequest req = new CartDiscountRequest();
         req.setShopId(getUserSessionData().getUserShopId());
         req.setLdap(getUserSessionData().getUserLdap());
-        req.bearerAuthHeader(getUserSessionData().getAccessToken());
         req.setCartId(cartId);
         CartData putData = new CartData();
         putData.setDocumentVersion(documentVersion);
@@ -115,7 +111,6 @@ public class CartClient extends BaseMashupClient {
         req.setCartId(cartId);
         req.setDocumentVersion(documentVersion);
         req.setLineId(lineId);
-        req.bearerAuthHeader(getUserSessionData().getAccessToken());
         req.setShopId(getUserSessionData().getUserShopId());
         return execute(req, CartData.class);
     }
@@ -124,7 +119,6 @@ public class CartClient extends BaseMashupClient {
     public Response<JsonNode> consolidateProducts(String cartId, Integer documentVersion, String lineId) {
         CartConsolidateProductsRequest req = new CartConsolidateProductsRequest();
         req.setLdap(getUserSessionData().getUserLdap());
-        req.bearerAuthHeader(getUserSessionData().getAccessToken());
         req.setShopId(getUserSessionData().getUserShopId());
         req.setCartId(cartId);
         CartData putData = new CartData();
@@ -142,7 +136,6 @@ public class CartClient extends BaseMashupClient {
         body.put("status", SalesDocumentsConst.States.DELETED.getApiVal());
         body.put("documentVersion", String.valueOf(documentVersion));
         return execute(new CartChangeStatusRequest()
-                .bearerAuthHeader(getUserSessionData().getAccessToken())
                 .setCartId(cartId)
                 .formBody(body), JsonNode.class);
     }

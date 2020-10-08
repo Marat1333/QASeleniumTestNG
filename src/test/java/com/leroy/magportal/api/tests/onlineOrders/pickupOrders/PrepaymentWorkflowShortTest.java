@@ -12,11 +12,9 @@ import com.leroy.magportal.api.data.picking.PickingTaskData;
 import com.leroy.magportal.api.helpers.BitrixHelper;
 import com.leroy.magportal.api.helpers.PaymentHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
-import java.util.List;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
-import ru.leroymerlin.qa.core.clients.tunnel.data.BitrixSolutionResponse;
 
 public class PrepaymentWorkflowShortTest extends BaseMagPortalApiTest {
 
@@ -31,12 +29,11 @@ public class PrepaymentWorkflowShortTest extends BaseMagPortalApiTest {
 
     private String currentOrderId;
     private String currentTaskId;
-    private OnlineOrderTypeData currentOrderType;
 
 
     @BeforeClass
     private void setUp() {
-        currentOrderType = OnlineOrderTypeConst.PICKUP_PREPAYMENT;
+        OnlineOrderTypeData currentOrderType = OnlineOrderTypeConst.PICKUP_PREPAYMENT;
         currentOrderId = bitrixHelper.createOnlineOrder(currentOrderType).getSolutionId();
 
         currentTaskId = pickingTaskClient.searchForPickingTasks(currentOrderId).asJson().getItems()
@@ -50,14 +47,16 @@ public class PrepaymentWorkflowShortTest extends BaseMagPortalApiTest {
         orderClient.assertWorkflowResult(response, currentOrderId, States.PICKING_IN_PROGRESS);
     }
 
-    @Test(description = "C23425615 PICKUP PREPAYMENT: Complete Picking the Order", dependsOnMethods={"testStartPicking"})
+    @Test(description = "C23425615 PICKUP PREPAYMENT: Complete Picking the Order", dependsOnMethods = {
+            "testStartPicking"})
     public void testCompletePicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .completePicking(currentTaskId, true);
-        orderClient.assertWorkflowResult(response, currentOrderId, States.PICKED);
+        orderClient.assertWorkflowResult(response, currentOrderId, States.PICKED_WAIT);
     }
 
-    @Test(description = "C23425615 PICKUP PREPAYMENT: Give away the Order", dependsOnMethods={"testCompletePicking"})
+    @Test(description = "C23425615 PICKUP PREPAYMENT: Give away the Order", dependsOnMethods = {
+            "testCompletePicking"})
     public void testGiveAway() {
         paymentHelper.makePaid(currentOrderId);
         orderClient.waitUntilOrderGetStatus(currentOrderId,

@@ -64,6 +64,8 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
     @Inject
     private PaymentHelper paymentHelper;
 
+    private final int waitTimeoutInSeconds = 180;
+
     @Step("Get order with id = {orderId} with response verification")
     public Response<OnlineOrderData> getOnlineOrder(String orderId) {
         return this.getOnlineOrder(orderId, true);
@@ -157,6 +159,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
 
     @Step("GiveAway products for order with id = {orderId}")
     public Response<JsonNode> giveAway(String orderId, Boolean isFull) {
+        this.waitAndReturnProductsReadyToGiveaway(orderId);
         return makeAction(orderId, OrderWorkflowEnum.GIVEAWAY.getValue(),
                 makeWorkflowPayload(orderId, isFull, false));
     }
@@ -187,6 +190,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         payload.setAvailableDate(timeslotData.getAvailableDate());
 
         ChangeDateRequest req = new ChangeDateRequest();
+        req.setUserLdap(getUserSessionData().getUserLdap());
         req.jsonBody(payload);
         return execute(req, JsonNode.class);
     }
@@ -271,10 +275,9 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
     @Step("Wait until order comes to statuses. USE null for payment ignore")
     public void waitUntilOrderGetStatus(
             String orderId, States expectedOrderStatus, PaymentStatusEnum expectedPaymentStatus) {
-        int maxTimeoutInSeconds = 600;//TODO: BACK TO 180s
         long currentTimeMillis = System.currentTimeMillis();
         Response<OnlineOrderData> r = null;
-        while (System.currentTimeMillis() - currentTimeMillis < maxTimeoutInSeconds * 1000) {
+        while (System.currentTimeMillis() - currentTimeMillis < waitTimeoutInSeconds * 1000) {
             r = this.getOnlineOrder(orderId, false);
             if (r.isSuccessful() && r.asJson().getStatus()
                     .equals(expectedOrderStatus.getApiVal())) {
@@ -292,16 +295,16 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
             Thread.sleep(3000);
         }
 
-        assertThat("Could not wait for the order. Timeout=" + maxTimeoutInSeconds + ". " +
+        assertThat("Could not wait for the order. Timeout=" + waitTimeoutInSeconds + ". " +
                         "Response error:" + r.asJson().toString(),
                 r.isSuccessful());
         assertThat("Could not wait for the order: " + orderId + ". Timeout="
-                        + maxTimeoutInSeconds + ". " + "Status:" + r.asJson().getStatus(),
+                        + waitTimeoutInSeconds + ". " + "Status:" + r.asJson().getStatus(),
                 r.asJson().getStatus(),
                 is(expectedOrderStatus.getApiVal()));
         if (expectedPaymentStatus != null) {
             assertThat(
-                    "Could not wait for the order: " + orderId + ". Timeout=" + maxTimeoutInSeconds
+                    "Could not wait for the order: " + orderId + ". Timeout=" + waitTimeoutInSeconds
                             + ". " +
                             "Payment Status:" + r.asJson().getPaymentStatus(),
                     r.asJson().getPaymentStatus(),
@@ -312,11 +315,10 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
     @SneakyThrows
     @Step("Wait and return products are ready to TO_GIVEAWAY")
     public List<OrderProductData> waitAndReturnProductsReadyToGiveaway(String orderId) {
-        int maxTimeoutInSeconds = 180;
         long currentTimeMillis = System.currentTimeMillis();
         Response<OrderFulfilmentToGivenAwayPayload> response;
         List<OrderProductData> products = null;
-        while (System.currentTimeMillis() - currentTimeMillis < maxTimeoutInSeconds * 1000) {
+        while (System.currentTimeMillis() - currentTimeMillis < waitTimeoutInSeconds * 1000) {
             response = this.productsToGivenAway(orderId);
             if (response.isSuccessful()) {
                 products = response.asJson().getGroups().stream()

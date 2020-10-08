@@ -63,7 +63,7 @@ public class EntranceWorkflowShortTest extends BaseMagPortalApiTest {
         orderClient.waitUntilOrderGetStatus(currentOrderId,
                 States.PICKED, PaymentStatusEnum.PAID);
         Response<JsonNode> response = orderClient.giveAway(currentOrderId, true);
-        orderClient.assertWorkflowResult(response, currentOrderId, States.GIVEN_AWAY);
+        orderClient.assertWorkflowResult(response, currentOrderId, States.SHIPPED);
     }
 
     @Test(description = "C23425627 Entrance Delivery: ON_SHIPMENT -> DELIVERED", dependsOnMethods = {
