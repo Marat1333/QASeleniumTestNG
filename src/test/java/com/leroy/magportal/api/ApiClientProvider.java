@@ -15,6 +15,7 @@ import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.CartClient;
 import com.leroy.magmobile.api.clients.CatalogProductClient;
 import com.leroy.common_mashups.clients.CustomerClient;
+import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.EstimateClient;
 import com.leroy.magmobile.api.clients.LsAddressClient;
 import com.leroy.magmobile.api.clients.PrintPriceClient;
@@ -53,7 +54,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 public class ApiClientProvider {
 
     @Inject
-    private Provider<com.leroy.magportal.api.clients.CatalogSearchClient> catalogSearchClientProvider;
+    private Provider<CatalogSearchClient> catalogSearchClientProvider;
     @Inject
     private Provider<CartClient> cartClientProvider;
     @Inject
@@ -97,7 +98,7 @@ public class ApiClientProvider {
         return cl;
     }
 
-    public com.leroy.magportal.api.clients.CatalogSearchClient getCatalogSearchClient() {
+    public CatalogSearchClient getCatalogSearchClient() {
         return getClient(catalogSearchClientProvider);
     }
 

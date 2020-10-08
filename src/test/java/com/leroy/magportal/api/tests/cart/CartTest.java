@@ -73,7 +73,7 @@ public class CartTest extends BaseMagPortalApiTest {
         cartData = resp.asJson();
     }
 
-    @Test(description = "C23411545 Create with One Product")
+    @Test(description = "C23411545 Create with One Product", priority = 1)
     public void testCreateCart() {
         // Prepare request data
         List<CartProductOrderData> cartProductDataList = getTestProductData(1);
@@ -94,7 +94,7 @@ public class CartTest extends BaseMagPortalApiTest {
         cartClient.assertThatResponseMatches(respGet, cartData);
     }
 
-    @Test(description = "C23194966 Cart - Add Discount")
+    @Test(description = "C23194966 Cart - Add Discount", priority = 2)
     public void testCartDiscount() {
         if (cartData == null) {
             initPreConditionCartData(1);
@@ -122,7 +122,7 @@ public class CartTest extends BaseMagPortalApiTest {
         cartClient.assertThatResponseMatches(respGet, cartData);
     }
 
-    @Test(description = "C23411546 Update Cart - Add product")
+    @Test(description = "C23411546 Update Cart - Add product", priority = 3)
     public void testUpdateCartAddProduct() {
         if (cartData == null) {
             initPreConditionCartData(1);
@@ -145,7 +145,7 @@ public class CartTest extends BaseMagPortalApiTest {
         cartClient.assertThatResponseMatches(respGet, cartData);
     }
 
-    @Test(description = "C23411548 Update Cart - Add Customer")
+    @Test(description = "C23411548 Update Cart - Add Customer", priority = 4)
     public void testUpdateCartAddCustomer() {
         if (cartData == null) {
             initPreConditionCartData(1);
@@ -166,12 +166,12 @@ public class CartTest extends BaseMagPortalApiTest {
         cartClient.assertThatResponseMatches(respGet, cartData);*/
     }
 
-    @Test(description = "C23411547 Remove 1 product from 2 from the Cart")
+    @Test(description = "C23411547 Remove 1 product from 2 from the Cart", priority = 5)
     public void testCartItems() {
         if (cartData == null) {
             initPreConditionCartData(2);
         }
-        int removeProductIndex = 1;
+        int removeProductIndex = 0;
         String removeLineId = cartData.getProducts().get(removeProductIndex).getLineId();
 
         // Step 1
@@ -188,7 +188,7 @@ public class CartTest extends BaseMagPortalApiTest {
         cartClient.assertThatResponseMatches(respGet, cartData);
     }
 
-    @Test(description = "C23411549 Change status to DELETED")
+    @Test(description = "C23411549 Change status to DELETED", priority = 6)
     public void testDeleteCart() {
         if (cartData == null) {
             initPreConditionCartData(1);
