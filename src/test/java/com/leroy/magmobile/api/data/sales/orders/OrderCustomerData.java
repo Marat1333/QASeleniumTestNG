@@ -17,4 +17,5 @@ public class OrderCustomerData {
     private String role;
     private List<String> roles;
     private String type;
+    private String serviceCard;
 }

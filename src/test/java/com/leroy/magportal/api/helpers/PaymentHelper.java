@@ -7,11 +7,12 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import com.google.inject.Inject;
 import com.leroy.core.ContextProvider;
 import com.leroy.core.configuration.DriverFactory;
-import com.leroy.magmobile.api.data.sales.orders.OrderData;
 import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.constants.CardConst;
 import com.leroy.magportal.api.constants.PaymentStatusEnum;
+import com.leroy.magportal.api.data.onlineOrders.OnlineOrderData;
 import com.leroy.magportal.api.helpers.ui.PaymentPage;
+import io.qameta.allure.Step;
 import java.util.List;
 import org.openqa.selenium.WebDriver;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -29,11 +30,11 @@ public class PaymentHelper extends BaseHelper {
     OrderClient orderClient;
 
     private String getPaymentTaskId(String orderId) {
-        Response<OrderData> resp = orderClient.getOrder(orderId);
+        Response<OnlineOrderData> resp = orderClient.getOnlineOrder(orderId);
         if (!resp.isSuccessful()) {
             int tryCount = 3;
             for (int i = 0; i < tryCount; i++) {
-                resp = orderClient.getOrder(orderId);
+                resp = orderClient.getOnlineOrder(orderId);
                 if (resp.isSuccessful()) {
                     break;
                 }
@@ -82,14 +83,17 @@ public class PaymentHelper extends BaseHelper {
     // Public methods
     ////BY OrderId only
 
+    @Step("Hold costs via API for Order with {orderId}")
     public void makeHoldCost(String orderId) {
         updatePayment(orderId, PaymentStatusEnum.HOLD);
     }
 
+    @Step("PAID via API for Order with {orderId}")
     public void makePaid(String orderId) {
         updatePayment(orderId, PaymentStatusEnum.PAID);
     }
 
+    @Step("Make card payment for Order with {orderId}")
     public void makePaymentCard(String orderId) throws Exception {
 
         WebDriver driver = DriverFactory.createDriver();
@@ -107,14 +111,17 @@ public class PaymentHelper extends BaseHelper {
     }
 
     ////BY BitrixSolutionResponse
+    @Step("Hold costs via API for BitrixSolutionResponse")
     public void makeHoldCost(BitrixSolutionResponse solutionResponse) {
         updatePayment(solutionResponse.getSolutionId(), PaymentStatusEnum.HOLD);
     }
 
+    @Step("PAID via API for BitrixSolutionResponse")
     public void makePaid(BitrixSolutionResponse solutionResponse) {
         updatePayment(solutionResponse.getSolutionId(), PaymentStatusEnum.PAID);
     }
 
+    @Step("Make card payment for BitrixSolutionResponse")
     public void makePaymentCard(BitrixSolutionResponse solutionResponse) throws Exception {
         WebDriver driver = DriverFactory.createDriver();
         ContextProvider.setDriver(driver);

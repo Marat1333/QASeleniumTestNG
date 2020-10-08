@@ -2,12 +2,12 @@ package com.leroy.magportal.ui.tests;
 
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.api.ThreadApiClient;
+import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.enums.CatalogSearchFields;
 import com.leroy.magmobile.api.enums.SortingOrder;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
-import com.leroy.magportal.api.clients.CatalogSearchClient;
 import com.leroy.magportal.ui.WebBaseSteps;
 import com.leroy.magportal.ui.constants.search.CatalogSearchParams;
 import com.leroy.magportal.ui.models.search.FiltersData;
