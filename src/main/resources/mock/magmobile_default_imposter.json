@@ -1,0 +1,57 @@
+{
+  "port" : 4547,
+  "protocol": "http",
+  "stubs": [
+    {
+      "predicates": [
+        {
+          "or" : [
+            {
+              "equals": {
+                "path" : "/oauthlmru/refresh"
+              }
+            },
+            {
+              "equals": {
+                "path" : "/oauthlmru/code"
+              }
+            },
+            {
+              "equals": {
+                "path" : "/shops"
+              }
+            },
+            {
+              "equals": {
+                "path" : "/pickingTasks/search"
+              }
+            },
+            {
+              "equals": {
+                "path" : "/catalog/nomenclature"
+              }
+            }
+          ]
+        }
+      ],
+
+      "responses": [{
+        "proxy": {
+          "to": "https://orchestrator-lego-develop-apim-stage.apps.lmru.tech",
+          "mode": "proxyOnce",
+          "predicateGenerators": [{
+            "matches": {
+              "path": true
+            }
+          }]
+        }
+      }]
+    },
+
+    {
+      "responses": [
+        { "is" : {"statusCode": 400, "body": "Mock Error" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1182 @@
+{
+  "stubs": [
+    {
+      "predicates": [
+        {
+          "equals": {
+            "method": "GET",
+            "path": "/catalog/services/search"
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [],
+              "totalCount": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/v4/catalog/search",
+            "query": {
+              "shopId": "32",
+              "hasAvailableStock": "true",
+              "startFrom": "1",
+              "lastItemId": "",
+              "pageSize": "10",
+              "page": "1"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [
+                {
+                  "lmCode": "13109902",
+                  "barCode": "4680006280161",
+                  "title": "Шкаф напольный под мойку \"Бьянка\" 50х82х50 см, ЛДСП, цвет белый",
+                  "gamma": "Bc",
+                  "avsDate": null,
+                  "priceCategory": "STD",
+                  "ctm": false,
+                  "top1000": false,
+                  "images": [
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/13109902.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/13109902_01.jpg"
+                  ],
+                  "availableStock": 69,
+                  "top": "0",
+                  "topEM": false,
+                  "supCode": 1001440015,
+                  "price": 998,
+                  "altPrice": null,
+                  "priceUnit": "EA",
+                  "altPriceUnit": null,
+                  "priceCurrency": "RUR",
+                  "supName": "ОООХДМ-ОПТОВИК"
+                },
+                {
+                  "lmCode": "13050509",
+                  "barCode": "3276000180180",
+                  "title": "Ножка для барного стула 38.5х68.5 см, цвет металл",
+                  "gamma": "A",
+                  "avsDate": null,
+                  "priceCategory": "STD",
+                  "ctm": true,
+                  "top1000": false,
+                  "images": [
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/13050509.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/13050509_01.jpg"
+                  ],
+                  "availableStock": 21,
+                  "top": "1",
+                  "topEM": false,
+                  "supCode": 1990066015,
+                  "price": 1803,
+                  "altPrice": null,
+                  "priceUnit": "EA",
+                  "altPriceUnit": null,
+                  "priceCurrency": "RUR",
+                  "supName": "ZHEJIANG QIANGSHENG FURNITURE CO.,"
+                },
+                {
+                  "lmCode": "12182040",
+                  "barCode": "4630008907689",
+                  "title": "Держатель бокалов 25 см, цвет хром",
+                  "gamma": "A",
+                  "avsDate": null,
+                  "priceCategory": "STD",
+                  "ctm": false,
+                  "top1000": false,
+                  "images": [
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/12182040.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/12182040_01.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/12182040_02.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/12182040_03.jpg"
+                  ],
+                  "availableStock": 8,
+                  "top": "1",
+                  "topEM": false,
+                  "supCode": 1000338015,
+                  "price": 140,
+                  "altPrice": null,
+                  "priceUnit": "EA",
+                  "altPriceUnit": null,
+                  "priceCurrency": "RUR",
+                  "supName": "АО ТПК МАГАМАКС"
+                },
+                {
+                  "lmCode": "17871558",
+                  "barCode": "4640020210261",
+                  "title": "Заглушки к плинтусу цвет алюминий, 6 шт.",
+                  "gamma": "A",
+                  "avsDate": null,
+                  "priceCategory": "STD",
+                  "ctm": false,
+                  "top1000": false,
+                  "images": [
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17871558.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17871558_01.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17871558_02.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17871558_03.jpg"
+                  ],
+                  "availableStock": 308,
+                  "top": "1",
+                  "topEM": false,
+                  "supCode": 1002477015,
+                  "price": 63,
+                  "altPrice": null,
+                  "priceUnit": "EA",
+                  "altPriceUnit": null,
+                  "priceCurrency": "RUR",
+                  "supName": "ООО МФ-Комплект"
+                },
+                {
+                  "lmCode": "17154292",
+                  "barCode": "4640028111003",
+                  "title": "Вытяжка ELIKOR Бьянко 50 см, цвет белый",
+                  "gamma": "A",
+                  "avsDate": null,
+                  "priceCategory": "STD",
+                  "ctm": false,
+                  "top1000": false,
+                  "images": [
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17154292.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17154292_01.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17154292_02.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17154292_03.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17154292_04.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17154292_05.jpg"
+                  ],
+                  "availableStock": 7,
+                  "top": "1",
+                  "topEM": false,
+                  "supCode": 1002855015,
+                  "price": 2888,
+                  "altPrice": null,
+                  "priceUnit": "EA",
+                  "altPriceUnit": null,
+                  "priceCurrency": "RUR",
+                  "supName": "ООО ЭЛИКОР"
+                },
+                {
+                  "lmCode": "17166314",
+                  "barCode": "5201217126049",
+                  "title": "Мойка врезная Maidsink Kiba 49 см, нержавеющая сталь, цвет серебристый",
+                  "gamma": "A",
+                  "avsDate": null,
+                  "priceCategory": "STD",
+                  "ctm": false,
+                  "top1000": false,
+                  "images": [
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17166314.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17166314_01.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17166314_02.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17166314_03.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17166314_04.jpg"
+                  ],
+                  "availableStock": 49,
+                  "top": "1",
+                  "topEM": false,
+                  "supCode": 1001844015,
+                  "price": 507,
+                  "altPrice": null,
+                  "priceUnit": "EA",
+                  "altPriceUnit": null,
+                  "priceCurrency": "RUR",
+                  "supName": "ООО ПИРАМИС"
+                },
+                {
+                  "lmCode": "17832575",
+                  "barCode": "4640020210148",
+                  "title": "Плинтус  для столешницы 3.05 м цвет алюминий",
+                  "gamma": "A",
+                  "avsDate": null,
+                  "priceCategory": "STD",
+                  "ctm": false,
+                  "top1000": false,
+                  "images": [
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17832575.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17832575_01.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17832575_02.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17832575_03.jpg"
+                  ],
+                  "availableStock": 259,
+                  "top": "1",
+                  "topEM": false,
+                  "supCode": 1002477015,
+                  "price": 712,
+                  "altPrice": null,
+                  "priceUnit": "EA",
+                  "altPriceUnit": null,
+                  "priceCurrency": "RUR",
+                  "supName": "ООО МФ-Комплект"
+                },
+                {
+                  "lmCode": "17423472",
+                  "barCode": "5906006546281",
+                  "title": "Духовой шкаф HANSA BOEW68120090, 59.5x59.5x57.5 см, цвет бежевый",
+                  "gamma": "A",
+                  "avsDate": null,
+                  "priceCategory": "STD",
+                  "ctm": false,
+                  "top1000": false,
+                  "images": [
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17423472.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17423472_02.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17423472_03.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17423472_04.jpg"
+                  ],
+                  "availableStock": 11,
+                  "top": "1",
+                  "topEM": true,
+                  "supCode": 1002955015,
+                  "price": 22471,
+                  "altPrice": null,
+                  "priceUnit": "EA",
+                  "altPriceUnit": null,
+                  "priceCurrency": "RUR",
+                  "supName": "ООО Ханса"
+                },
+                {
+                  "lmCode": "17200359",
+                  "barCode": "7079988608037",
+                  "title": "Духовой шкаф ORE VA60  59.5x59.5x51.5 см, нержавеющая сталь",
+                  "gamma": "A",
+                  "avsDate": null,
+                  "priceCategory": "STD",
+                  "ctm": false,
+                  "top1000": false,
+                  "images": [
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17200359.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17200359_01.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17200359_02.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17200359_03.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17200359_04.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17200359_05.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17200359_06.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17200359_07.jpg"
+                  ],
+                  "availableStock": 10,
+                  "top": "1",
+                  "topEM": true,
+                  "supCode": 1001070015,
+                  "price": 11106,
+                  "altPrice": null,
+                  "priceUnit": "EA",
+                  "altPriceUnit": null,
+                  "priceCurrency": "RUR",
+                  "supName": "ООО Интерстройвент"
+                },
+                {
+                  "lmCode": "17911564",
+                  "barCode": "4631145106539",
+                  "title": "Каркас напольный угловой 100x70x56 см, ЛДСП, цвет белый",
+                  "gamma": "A",
+                  "avsDate": null,
+                  "priceCategory": "STD",
+                  "ctm": true,
+                  "top1000": false,
+                  "images": [
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17911564.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17911564_tmp.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17911564_01.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17911564_tmp_01.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17911564_02.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17911564_03.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17911564_04.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/17911564_05.jpg"
+                  ],
+                  "availableStock": 60,
+                  "top": "1",
+                  "topEM": true,
+                  "supCode": 1002674015,
+                  "price": 2947,
+                  "altPrice": null,
+                  "priceUnit": "EA",
+                  "altPriceUnit": null,
+                  "priceCurrency": "RUR",
+                  "supName": "ООО БизнесИндустрия"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/v4/catalog/search",
+            "query": {
+              "byNameLike": "дрель",
+              "shopId": "32",
+              "hasAvailableStock": "true",
+              "startFrom": "1",
+              "lastItemId": "",
+              "pageSize": "10",
+              "page": "1"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [
+                {
+                  "lmCode": "82245610",
+                  "barCode": "4603333072001",
+                  "title": "Дрель-шуруповерт аккумуляторная Спец БДА-18-ЛИ, 18 В Li-ion 2x2 Ач",
+                  "gamma": "A",
+                  "avsDate": null,
+                  "priceCategory": "STD",
+                  "ctm": false,
+                  "top1000": false,
+                  "images": [
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/82245610.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/82245610_01.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/82245610_02.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/82245610_03.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/82245610_04.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/82245610_05.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/82245610_06.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/82245610_07.jpg"
+                  ],
+                  "availableStock": 48,
+                  "top": "1",
+                  "topEM": false,
+                  "supCode": 1003810704,
+                  "price": 4237,
+                  "altPrice": null,
+                  "priceUnit": "EA",
+                  "altPriceUnit": null,
+                  "priceCurrency": "RUR",
+                  "supName": "АО Интеринструмент-комплектсервис"
+                },
+                {
+                  "lmCode": "14738321",
+                  "barCode": "4061792002173",
+                  "title": "Дрель-шуруповерт аккумуляторная Metabo PowerMaxx BS, 10.8 В Li-ion 2х2 Ач",
+                  "gamma": "A",
+                  "avsDate": null,
+                  "priceCategory": "STD",
+                  "ctm": false,
+                  "top1000": false,
+                  "images": [
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/14738321.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/14738321_01.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/14738321_02.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/14738321_03.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/14738321_04.jpg"
+                  ],
+                  "availableStock": 111,
+                  "top": "1",
+                  "topEM": false,
+                  "supCode": 1001016004,
+                  "price": 5298,
+                  "altPrice": null,
+                  "priceUnit": "EA",
+                  "altPriceUnit": null,
+                  "priceCurrency": "RUR",
+                  "supName": "ООО МЕТАБО ЕВРАЗИЯ"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/v4/catalog/search",
+            "query": {
+              "byBarCode": "5902120110575",
+              "shopId": "32"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [
+                {
+                  "lmCode": "18458829",
+                  "barCode": "5902120110575",
+                  "title": "Клей для кладки Tytan Professional 870 мл",
+                  "gamma": "B",
+                  "avsDate": null,
+                  "priceCategory": "STD",
+                  "ctm": false,
+                  "top1000": false,
+                  "images": [
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/18458829.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/18458829_01.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/18458829_02.jpg"
+                  ],
+                  "availableStock": 73,
+                  "top": "1",
+                  "topEM": false,
+                  "supCode": 1001361001,
+                  "price": 393,
+                  "altPrice": 451.724137931034,
+                  "priceUnit": "EA",
+                  "altPriceUnit": "L",
+                  "priceCurrency": "RUR",
+                  "supName": "ООО Селена Восток"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/v4/catalog/search",
+            "query": {
+              "byBarCode": "590212011",
+              "shopId": "32",
+              "hasAvailableStock": "true",
+              "startFrom": "1",
+              "lastItemId": "",
+              "pageSize": "10",
+              "page": "1"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [
+                {
+                  "lmCode": "18458829",
+                  "barCode": "5902120110575",
+                  "title": "Клей для кладки Tytan Professional 870 мл",
+                  "gamma": "B",
+                  "avsDate": null,
+                  "priceCategory": "STD",
+                  "ctm": false,
+                  "top1000": false,
+                  "images": [
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/18458829.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/18458829_01.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/18458829_02.jpg"
+                  ],
+                  "availableStock": 73,
+                  "top": "1",
+                  "topEM": false,
+                  "supCode": 1001361001,
+                  "price": 393,
+                  "altPrice": 451.724137931034,
+                  "priceUnit": "EA",
+                  "altPriceUnit": "L",
+                  "priceCurrency": "RUR",
+                  "supName": "ООО Селена Восток"
+                },
+                {
+                  "lmCode": "81945347",
+                  "barCode": "5902120119905",
+                  "title": "Клей-пена Tytan 60 секунд 300 мл",
+                  "gamma": "A",
+                  "avsDate": null,
+                  "priceCategory": "STD",
+                  "ctm": false,
+                  "top1000": false,
+                  "images": [
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/81945347.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/81945347_01.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/81945347_02.jpg"
+                  ],
+                  "availableStock": 45,
+                  "top": "1",
+                  "topEM": false,
+                  "supCode": 1001361011,
+                  "price": 293,
+                  "altPrice": null,
+                  "priceUnit": "EA",
+                  "altPriceUnit": null,
+                  "priceCurrency": "RUR",
+                  "supName": "ООО Селена Восток"
+                },
+                {
+                  "lmCode": "18506659",
+                  "barCode": "5902120112333",
+                  "title": "Герметик жидкая пробка TN 0.5 л",
+                  "gamma": "A",
+                  "avsDate": null,
+                  "priceCategory": "STD",
+                  "ctm": false,
+                  "top1000": false,
+                  "images": [
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/18506659.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/18506659_01.jpg"
+                  ],
+                  "availableStock": 90,
+                  "top": "1",
+                  "topEM": false,
+                  "supCode": 1001361005,
+                  "price": 332,
+                  "altPrice": null,
+                  "priceUnit": "EA",
+                  "altPriceUnit": null,
+                  "priceCurrency": "RUR",
+                  "supName": "ООО Селена Восток"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/v4/catalog/search",
+            "query": {
+              "byLmCode": "10008698",
+              "shopId": "32"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [
+                {
+                  "lmCode": "10008698",
+                  "barCode": "4607176794298",
+                  "title": "Металлочерепица 0.4 мм 2250х1180 мм коричневый RAL 8017",
+                  "gamma": "A",
+                  "avsDate": null,
+                  "priceCategory": "STD",
+                  "ctm": false,
+                  "top1000": false,
+                  "images": [
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/10008698.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/10008698_01.jpg"
+                  ],
+                  "availableStock": 54,
+                  "top": "1",
+                  "topEM": false,
+                  "supCode": 10,
+                  "price": 807,
+                  "altPrice": null,
+                  "priceUnit": "EA",
+                  "altPriceUnit": null,
+                  "priceCurrency": "RUR",
+                  "supName": "ОАОМОСКОВСКИЙ КРЕДИТНЫЙ БАНКООО СКАНДИНАВСКИЕ КРОВЕЛЬНЫЕ СИСТЕМЫ"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/v4/catalog/search",
+            "query": {
+              "byLmCode": "1506",
+              "shopId": "32",
+              "hasAvailableStock": "true",
+              "startFrom": "1",
+              "lastItemId": "",
+              "pageSize": "10",
+              "page": "1"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [
+                {
+                  "lmCode": "10966298",
+                  "barCode": "4607033115068",
+                  "title": "Шайба кузовная DIN 9021 8 мм, 8 шт.",
+                  "gamma": "A",
+                  "avsDate": null,
+                  "priceCategory": "STD",
+                  "ctm": false,
+                  "top1000": false,
+                  "images": [
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/10966298.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/10966298_01.jpg"
+                  ],
+                  "availableStock": 384,
+                  "top": "1",
+                  "topEM": false,
+                  "supCode": 1510,
+                  "price": 11,
+                  "altPrice": null,
+                  "priceUnit": "EA",
+                  "altPriceUnit": null,
+                  "priceCurrency": "RUR",
+                  "supName": "ООО  Торговый дом Эдельвейс"
+                },
+                {
+                  "lmCode": "81875942",
+                  "barCode": "3276000315063",
+                  "title": "Триммер электрический 280 Вт",
+                  "gamma": "A",
+                  "avsDate": null,
+                  "priceCategory": "BPR",
+                  "ctm": false,
+                  "top1000": true,
+                  "images": [
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/81875942.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/81875942_01.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/81875942_02.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/81875942_03.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/81875942_04.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/81875942_05.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/81875942_06.jpg"
+                  ],
+                  "availableStock": 24,
+                  "top": "1",
+                  "topEM": false,
+                  "supCode": 1990166109,
+                  "price": 615,
+                  "altPrice": null,
+                  "priceUnit": "EA",
+                  "altPriceUnit": null,
+                  "priceCurrency": "RUR",
+                  "supName": "ZHEJIANG YAT ELECTRICAL APPLIANCE"
+                },
+                {
+                  "lmCode": "15062298",
+                  "barCode": "4607116313282",
+                  "title": "Клемма соединительная 222-413, 3 разъёма под провода, 20 шт.",
+                  "gamma": "A",
+                  "avsDate": null,
+                  "priceCategory": "STD",
+                  "ctm": false,
+                  "top1000": false,
+                  "images": [
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/15062298.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/15062298_01.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/15062298_02.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/15062298_03.jpg"
+                  ],
+                  "availableStock": 204,
+                  "top": "1",
+                  "topEM": false,
+                  "supCode": 1002270003,
+                  "price": 326,
+                  "altPrice": null,
+                  "priceUnit": "EA",
+                  "altPriceUnit": null,
+                  "priceCurrency": "RUR",
+                  "supName": "ООО Торговый Дом Партнер-Электро"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/v3/catalog/product",
+            "query": {
+              "shopId": "32",
+              "lmCode": "10008698",
+              "extend": "rating,logistic,inventory",
+              "pointOfGiveAway": "SALESFLOOR"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "lmCode": "10008698",
+              "barCode": "4607176794298",
+              "images": [
+                "https://res.cloudinary.com/lmru/image/upload/LMCode/10008698.jpg",
+                "https://res.cloudinary.com/lmru/image/upload/LMCode/10008698_01.jpg"
+              ],
+              "departmentId": "1",
+              "availableStock": 54,
+              "price": 807,
+              "priceUnit": "NIU",
+              "altPrice": null,
+              "altPriceUnit": null,
+              "priceCategory": "STD",
+              "title": "Металлочерепица 0.4 мм 2250х1180 мм коричневый RAL 8017",
+              "description": "Листовая металлочерепица - прочный и долговечный кровельный материал. Характеризуется привлекательным внешним видом, простотой укладки и низкой ценой",
+              "top": "1",
+              "gamma": "A",
+              "avsDate": null,
+              "brand": null,
+              "shops": [],
+              "characteristics": [
+                {
+                  "name": "Цветовая палитра",
+                  "value": "Коричневый"
+                },
+                {
+                  "name": "Основной материал",
+                  "value": "Оцинкованная сталь"
+                },
+                {
+                  "name": "Страна производства",
+                  "value": "Россия"
+                },
+                {
+                  "name": "Цветовая палитра по RAL",
+                  "value": "8017"
+                },
+                {
+                  "name": "Тип продукта",
+                  "value": "Металлочерепица"
+                },
+                {
+                  "name": "Площадь покрытия продуктом (м²)",
+                  "value": "2.7"
+                },
+                {
+                  "name": "Вес на м² (кг)",
+                  "value": "3,65"
+                },
+                {
+                  "name": "Длина (см)",
+                  "value": "225.0"
+                },
+                {
+                  "name": "Ширина (см)",
+                  "value": "120.0"
+                },
+                {
+                  "name": "Толщина (мм)",
+                  "value": "0.4"
+                },
+                {
+                  "name": "Вес, кг",
+                  "value": "7.3"
+                }
+              ],
+              "barCodes": [
+                "4607176794298"
+              ],
+              "isAvs": false,
+              "subDepartmentId": "125",
+              "categoryId": "40",
+              "subCategoryId": "30",
+              "logistic": {
+                "width": 117.5,
+                "height": 3.2,
+                "depth": 223.2,
+                "weight": 7.3
+              },
+              "shortTitle": null,
+              "topEM": false,
+              "extStocks": {
+                "WHB_SUMM": 0,
+                "WHBP": 0,
+                "COR": 0,
+                "TSF_OUTBOUND": 0,
+                "RTV": 0,
+                "UTSP": 0,
+                "TBC": 0,
+                "EXPO": 0
+              },
+              "LS": 54,
+              "stockAreas": {
+                "RM": 0,
+                "EM": 0,
+                "UM": 0,
+                "RD": 0
+              },
+              "unavailableStockTotal": 0,
+              "_otherStocks": {
+                "em": 0,
+                "rm": 0,
+                "reception": 0,
+                "magOut": 0,
+                "uts": 0,
+                "c3": 124,
+                "soh": 178,
+                "tsfInboundDelivered": 0,
+                "tsfInboundConfirmed": 0,
+                "rtvOnDc": 0,
+                "guaranteedCount": 0,
+                "theoretical": 54
+              },
+              "rating": 2.4,
+              "reviewsCount": 34,
+              "salesPrice": {
+                "price": 807,
+                "altPrice": null,
+                "altPriceUnit": null,
+                "dateOfChange": "2020-09-25T21:00:00.000Z",
+                "reasonOfChange": "Техническое изменение РЦ в связи изменением стандартной розничной цены",
+                "recommendedPrice": 807,
+                "recommendedUnitSale": "EA",
+                "recommendedDateOfChange": "2019-06-17T21:00:00.000Z"
+              },
+              "purchasePrice": 668.07,
+              "purchasePriceCurrency": "RUR",
+              "primeCost": 668.07,
+              "primeCostCurrency": "RU",
+              "futurePrice": null,
+              "futurePriceFromDate": null,
+              "priceReasonOfChange": null,
+              "inventory": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/v3/catalog/product",
+            "query": {
+              "shopId": "32",
+              "lmCode": "18458829",
+              "extend": "rating,logistic,inventory",
+              "pointOfGiveAway": "SALESFLOOR"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "lmCode": "18458829",
+              "barCode": "5902120110575",
+              "images": [
+                "https://res.cloudinary.com/lmru/image/upload/LMCode/18458829.jpg",
+                "https://res.cloudinary.com/lmru/image/upload/LMCode/18458829_01.jpg",
+                "https://res.cloudinary.com/lmru/image/upload/LMCode/18458829_02.jpg"
+              ],
+              "departmentId": "1",
+              "availableStock": 73,
+              "price": 393,
+              "priceUnit": "NIU",
+              "altPrice": 451.724137931034,
+              "altPriceUnit": null,
+              "priceCategory": "STD",
+              "title": "Клей для кладки Tytan Professional 870 мл",
+              "description": "**Клей для кладки Tytan Professional**",
+              "top": "1",
+              "gamma": "B",
+              "avsDate": null,
+              "brand": "TYTAN",
+              "shops": [],
+              "characteristics": [
+                {
+                  "name": "Цветовая палитра",
+                  "value": "Серый / Серебристый"
+                },
+                {
+                  "name": "Основной материал",
+                  "value": "Полиуретан"
+                },
+                {
+                  "name": "Страна производства",
+                  "value": "Польша"
+                },
+                {
+                  "name": "Тип упаковки",
+                  "value": "Аэрозоль"
+                },
+                {
+                  "name": "Вес, кг",
+                  "value": "1.026"
+                },
+                {
+                  "name": "Цвет",
+                  "value": "Белый"
+                },
+                {
+                  "name": "Марка",
+                  "value": "TYTAN"
+                },
+                {
+                  "name": "Гарантия (лет)",
+                  "value": "1"
+                }
+              ],
+              "barCodes": [
+                "5902120110575"
+              ],
+              "isAvs": false,
+              "subDepartmentId": "115",
+              "categoryId": "40",
+              "subCategoryId": "60",
+              "logistic": {
+                "width": 6.6,
+                "height": 32.7,
+                "depth": 6.6,
+                "weight": 1.026
+              },
+              "shortTitle": null,
+              "topEM": false,
+              "extStocks": {
+                "WHB_SUMM": 0,
+                "WHBP": 0,
+                "COR": 0,
+                "TSF_OUTBOUND": 0,
+                "RTV": 0,
+                "UTSP": 0,
+                "TBC": 0,
+                "EXPO": 0
+              },
+              "LS": 73,
+              "stockAreas": {
+                "RM": 0,
+                "EM": 0,
+                "UM": 0,
+                "RD": 0
+              },
+              "unavailableStockTotal": 0,
+              "_otherStocks": {
+                "em": 0,
+                "rm": 0,
+                "reception": 0,
+                "magOut": 0,
+                "uts": 0,
+                "c3": -17,
+                "soh": 56,
+                "tsfInboundDelivered": 0,
+                "tsfInboundConfirmed": 0,
+                "rtvOnDc": 0,
+                "guaranteedCount": 0,
+                "theoretical": 73
+              },
+              "rating": 5,
+              "reviewsCount": 10,
+              "inventory": null,
+              "salesPrice": {
+                "price": 393,
+                "altPrice": 451.724137931034,
+                "altPriceUnit": "L",
+                "dateOfChange": "2019-01-02T21:00:00.000Z",
+                "reasonOfChange": "Техническое изменение розничной цены (РЦ) в связи изменением рек.розничной цены (РРЦ)",
+                "recommendedPrice": 393,
+                "recommendedUnitSale": "EA",
+                "recommendedDateOfChange": "2019-01-02T21:00:00.000Z"
+              },
+              "purchasePrice": 289.28,
+              "purchasePriceCurrency": "RUR",
+              "primeCost": 289.28000000000003,
+              "primeCostCurrency": "RU",
+              "futurePrice": null,
+              "futurePriceFromDate": null,
+              "priceReasonOfChange": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "or": [
+            {
+              "deepEquals": {
+                "method": "GET",
+                "path": "/catalog/complementary-products",
+                "query": {
+                  "shopId": "32",
+                  "lmCode": "18458829",
+                  "extend": "rating,logistic,inventory"
+                }
+              }
+            },
+            {
+              "deepEquals": {
+                "method": "GET",
+                "path": "/catalog/complementary-products",
+                "query": {
+                  "shopId": "32",
+                  "lmCode": "10008698",
+                  "extend": "rating,logistic,inventory"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "totalCount": 25,
+              "items": [
+                {
+                  "lmCode": "923570",
+                  "barCode": "3276006224260",
+                  "images": [
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/923570.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/923570_01.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/923570_02.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/923570_03.jpg"
+                  ],
+                  "departmentId": "1",
+                  "availableStock": 92,
+                  "price": 372,
+                  "priceUnit": "NIU",
+                  "altPrice": 37.2,
+                  "altPriceUnit": null,
+                  "priceCategory": "STD",
+                  "title": "Грунтовка для влажных помещений Axton 10 л",
+                  "description": "**Грунт для отделки строительными смесями для влажных помещений** помогает укрепить минеральное основание",
+                  "top": null,
+                  "gamma": "A",
+                  "avsDate": null,
+                  "brand": "AXTON",
+                  "shops": [],
+                  "characteristics": [
+                    {
+                      "name": "Цветовая палитра",
+                      "value": "Бесцветный / прозрачный"
+                    },
+                    {
+                      "name": "Страна производства",
+                      "value": "Россия"
+                    },
+                    {
+                      "name": "Для влажных помещений",
+                      "value": "Да"
+                    },
+                    {
+                      "name": "Место использования",
+                      "value": "Внутренний"
+                    },
+                    {
+                      "name": "Площадь покрытия (м²)",
+                      "value": "100.0"
+                    },
+                    {
+                      "name": "Материал поверхности применения",
+                      "value": "Гипс"
+                    },
+                    {
+                      "name": "Время полного высыхания (ч)",
+                      "value": "2.0"
+                    },
+                    {
+                      "name": "Минимальная температура применения (°C)",
+                      "value": "12.0"
+                    },
+                    {
+                      "name": "Максимальная температура применения (°C)",
+                      "value": "35.0"
+                    },
+                    {
+                      "name": "Тип упаковки",
+                      "value": "Бутылка"
+                    },
+                    {
+                      "name": "Срок годности (в месяцах)",
+                      "value": "24"
+                    },
+                    {
+                      "name": "Тип продукта",
+                      "value": "Грунтовка"
+                    },
+                    {
+                      "name": "Вес, кг",
+                      "value": "10.425"
+                    },
+                    {
+                      "name": "Объем (л)",
+                      "value": "10.0"
+                    },
+                    {
+                      "name": "Расход (в м² / л)",
+                      "value": "10"
+                    },
+                    {
+                      "name": "Запах",
+                      "value": "Без запаха"
+                    },
+                    {
+                      "name": "Готов к использованию",
+                      "value": "Да"
+                    },
+                    {
+                      "name": "Марка",
+                      "value": "AXTON"
+                    },
+                    {
+                      "name": "Количество слоев",
+                      "value": "1"
+                    },
+                    {
+                      "name": "Время высыхания \"на отлип\" (в ч)",
+                      "value": "0.5"
+                    },
+                    {
+                      "name": "Назначение",
+                      "value": "Для любых помещений"
+                    }
+                  ],
+                  "barCodes": [
+                    "3276006224260"
+                  ],
+                  "isAvs": false,
+                  "subDepartmentId": "110",
+                  "categoryId": "80",
+                  "subCategoryId": "10",
+                  "logistic": {
+                    "weight": null,
+                    "width": null,
+                    "height": null,
+                    "depth": null
+                  },
+                  "shortTitle": null,
+                  "rating": 4.2
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
