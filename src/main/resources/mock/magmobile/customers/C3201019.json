@@ -1,0 +1,221 @@
+{
+  "stubs": [
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/v2/customerAccount/search",
+            "query": {
+              "customerType": "NATURAL",
+              "discriminantType": "PHONENUMBER",
+              "discriminantValue": "+73201019000",
+              "shopId": "32",
+              "ldap": "60069803"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "totalCount": 1,
+              "items": [
+                {
+                  "customerType": "natural",
+                  "customerNumber": "1288687",
+                  "gender": "male",
+                  "firstName": "Autovpiad",
+                  "lastName": "AutoqjGOFF",
+                  "card": { },
+                  "addresses": [ ],
+                  "communications": [
+                    {
+                      "id": 1336244,
+                      "type": "EMAIL",
+                      "value": "xvzWM@autotest.com",
+                      "isMain": "true",
+                      "communicationOrder": "0",
+                      "goneAway": false,
+                      "emailType": "1"
+                    },
+                    {
+                      "id": 1336243,
+                      "type": "PHONENUMBER",
+                      "value": "+73201019000",
+                      "isMain": "true",
+                      "communicationOrder": "0",
+                      "phoneType": "1",
+                      "goneAway": false
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/customerAccount",
+            "query": {
+              "customerNumber": "1288687",
+              "ldap": "60069803"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "entity": {
+                "customerType": "natural",
+                "customerNumber": "1288687",
+                "gender": "male",
+                "firstName": "Autovpiad",
+                "lastName": "AutoqjGOFF",
+                "card": { },
+                "updatedAt": "2020-10-09T02:29:39+02",
+                "customerCreationStore": "35",
+                "addresses": [ ],
+                "communications": [
+                  {
+                    "id": 1336243,
+                    "type": "PHONENUMBER",
+                    "value": "+73201019000",
+                    "isMain": "true",
+                    "communicationOrder": "0",
+                    "phoneType": "1",
+                    "optins": [ ],
+                    "goneAway": false
+                  },
+                  {
+                    "id": 1336244,
+                    "type": "EMAIL",
+                    "value": "xvzWM@autotest.com",
+                    "isMain": "true",
+                    "communicationOrder": "0",
+                    "optins": [ ],
+                    "goneAway": false,
+                    "emailType": "1"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "PUT",
+            "path": "/customerAccount",
+            "query": {
+              "shopId": "32",
+              "ldap": "60069803"
+            },
+            "body": {
+              "customerNumber": "1288687",
+              "firstName": "Autovpiad",
+              "lastName": "AutoqjGOFF",
+              "gender": "male",
+              "communications": [
+                {
+                  "id": 1336243,
+                  "type": "PHONENUMBER",
+                  "value": "+73201019000",
+                  "isMain": "true",
+                  "communicationOrder": "0",
+                  "phoneType": "1",
+                  "optins": [ ],
+                  "goneAway": false,
+                  "isSearchedValue": true
+                },
+                {
+                  "id": 1336244,
+                  "type": "EMAIL",
+                  "value": "xvzWM@autotest.com",
+                  "isMain": "true",
+                  "communicationOrder": "0",
+                  "optins": [ ],
+                  "goneAway": false,
+                  "emailType": "1"
+                },
+                {
+                  "type": "PHONENUMBER",
+                  "isPhone": true,
+                  "communicationScope": "2",
+                  "phoneType": "2",
+                  "value": "+73201019001",
+                  "isMain": false,
+                  "isNewCommunication": true
+                }
+              ],
+              "card": { },
+              "addresses": [ ]
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "entity": {
+                "customerType": "natural",
+                "customerNumber": "1288687",
+                "gender": "male",
+                "firstName": "Autovpiad",
+                "lastName": "AutoqjGOFF",
+                "card": { },
+                "updatedAt": "2020-10-09T03:45:27+02",
+                "customerCreationStore": "32",
+                "addresses": [ ],
+                "communications": [
+                  {
+                    "id": 1336243,
+                    "type": "PHONENUMBER",
+                    "value": "+73201019000",
+                    "isMain": "true",
+                    "communicationOrder": "0",
+                    "phoneType": "1",
+                    "optins": [ ],
+                    "goneAway": false
+                  },
+                  {
+                    "id": 1336250,
+                    "type": "PHONENUMBER",
+                    "value": "+73201019001",
+                    "isMain": "false",
+                    "communicationOrder": "1",
+                    "phoneType": "1",
+                    "optins": [ ],
+                    "goneAway": false
+                  },
+                  {
+                    "id": 1336244,
+                    "type": "EMAIL",
+                    "value": "xvzWM@autotest.com",
+                    "isMain": "true",
+                    "communicationOrder": "0",
+                    "optins": [ ],
+                    "goneAway": false,
+                    "emailType": "1"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

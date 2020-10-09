@@ -79,14 +79,16 @@ public class CustomerTest extends AppBaseSteps {
         mainCustomerPage = successCustomerPage.clickGoToCustomerListButton();
         mainCustomerPage.shouldRecentCustomerIs(1, customerData);
     }
-
+    // With Mock
     @Test(description = "C3201019 Редактирование данных клиента (физ. лицо)")
     public void testEditCustomer() throws Exception {
-        CustomerData customerData = customerHelper.createCustomer();
+        //String clientPhone = "+73201019000";
+        String clientPhone = "+70687936512";
+        //CustomerData customerData = customerHelper.createCustomer();
 
         MainCustomerPage mainCustomerPage = loginAndGoTo(MainCustomerPage.class);
         SearchCustomerPage searchCustomerPage = mainCustomerPage.clickSearchCustomerField();
-        searchCustomerPage.searchCustomerByPhone(customerData.getMainPhoneFromCommunication(), true);
+        searchCustomerPage.searchCustomerByPhone(clientPhone, true);
         ViewCustomerPage viewCustomerPage = new ViewCustomerPage()
                 .verifyRequiredElements();
 
