@@ -18,7 +18,7 @@ public class CommonSearchRequestBuilder<J extends CommonSearchRequestBuilder<J>>
         return queryParam("startFrom", val);
     }
 
-    public J setLastItemId(Integer val) {
+    public J setLastItemId(String val) {
         return queryParam("lastItemId", val);
     }
 

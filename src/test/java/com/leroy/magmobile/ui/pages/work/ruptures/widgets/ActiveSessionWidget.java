@@ -21,22 +21,24 @@ public class ActiveSessionWidget extends CardWidget<SessionData> {
     @AppFindBy(xpath = "./android.widget.TextView[1]")
     Element creationDateLbl;
 
-    @AppFindBy(containsText = " перебо")
-    Element quantityAndCreatorLbl;
+    @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.TextView[contains(@text, '№')]]/following-sibling::android.view.ViewGroup/android.widget.TextView")
+    Element quantityLbl;
+
+    @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.TextView[contains(@text, '№')]]/following-sibling::android.widget.TextView[2]")
+    Element creatorLbl;
 
     @Override
     public SessionData collectDataFromPage(String pageSource) {
-        FinishedSessionData data = new FinishedSessionData();
+        SessionData data = new SessionData();
         data.setSessionNumber(ParserUtil.strWithOnlyDigits(sessionNumberLbl.getText(pageSource)));
         data.setCreateDate(creationDateLbl.getText(pageSource));
-        String[] tmpArray = quantityAndCreatorLbl.getText(pageSource).split(" / ");
-        data.setRuptureQuantity(Integer.parseInt(ParserUtil.strWithOnlyDigits(tmpArray[0])));
-        data.setCreatorName(tmpArray[1]);
+        data.setRuptureQuantity(ParserUtil.strToInt(quantityLbl.getText(pageSource)));
+        data.setCreatorName(creatorLbl.getText(pageSource));
         return data;
     }
 
     @Override
     public boolean isFullyVisible(String pageSource) {
-        return sessionNumberLbl.isVisible(pageSource) && quantityAndCreatorLbl.isVisible(pageSource);
+        return sessionNumberLbl.isVisible(pageSource) && quantityLbl.isVisible(pageSource);
     }
 }

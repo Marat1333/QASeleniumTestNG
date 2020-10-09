@@ -45,6 +45,8 @@ public class CatalogSearchClient extends BaseMashupClient {
             req.setTop1000(filters.getTop1000());
         if (filters.getLmCode() != null)
             req.setByLmCode(filters.getLmCode());
+        if (filters.getAvs() != null && filters.getAvs())
+            req.setAvsDate("neq|null");
         if (startFrom != null)
             req.setStartFrom(startFrom);
         if (pageSize != null)

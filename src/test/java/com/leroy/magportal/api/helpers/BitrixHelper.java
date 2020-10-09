@@ -1,39 +1,39 @@
 package com.leroy.magportal.api.helpers;
 
+import static com.leroy.core.matchers.IsSuccessful.successful;
+import static com.leroy.magportal.ui.constants.TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import com.google.inject.Inject;
 import com.leroy.common_mashups.clients.CustomerClient;
 import com.leroy.common_mashups.data.customer.CustomerListData;
 import com.leroy.common_mashups.data.customer.CustomerSearchFilters;
 import com.leroy.common_mashups.data.customer.CustomerSearchFilters.CustomerType;
 import com.leroy.common_mashups.data.customer.CustomerSearchFilters.DiscriminantType;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.core.api.ThreadApiClient;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magportal.api.clients.CatalogSearchClient;
 import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.clients.ShopsClient;
 import com.leroy.magportal.api.constants.DeliveryServiceTypeEnum;
+import com.leroy.magportal.api.constants.LmCodeTypeEnum;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
 import com.leroy.magportal.api.constants.PaymentStatusEnum;
 import com.leroy.magportal.api.constants.PaymentTypeEnum;
 import com.leroy.magportal.api.data.shops.ShopData;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
 import io.qameta.allure.Step;
-import ru.leroymerlin.qa.core.clients.base.Response;
-import ru.leroymerlin.qa.core.clients.tunnel.TunnelClient;
-import ru.leroymerlin.qa.core.clients.tunnel.data.BitrixSolutionPayload;
-import ru.leroymerlin.qa.core.clients.tunnel.data.BitrixSolutionResponse;
-
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.leroy.core.matchers.IsSuccessful.successful;
-import static com.leroy.magportal.ui.constants.TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
-import static org.hamcrest.MatcherAssert.assertThat;
+import ru.leroymerlin.qa.core.clients.base.Response;
+import ru.leroymerlin.qa.core.clients.tunnel.TunnelClient;
+import ru.leroymerlin.qa.core.clients.tunnel.data.BitrixSolutionPayload;
+import ru.leroymerlin.qa.core.clients.tunnel.data.BitrixSolutionResponse;
 
 public class BitrixHelper extends BaseHelper {
 
@@ -44,7 +44,7 @@ public class BitrixHelper extends BaseHelper {
     @Inject
     private ShopsClient shopsClient;
     @Inject
-    private CatalogSearchClient catalogSearchClient;
+    private SearchProductHelper searchProductHelper;
     @Inject
     private OrderClient orderClient;
     @Inject
@@ -52,15 +52,20 @@ public class BitrixHelper extends BaseHelper {
 
     private final LocalDateTime dateTime = LocalDateTime.now();
 
-    @Step("Creates Online order with specified LmCode")
-    public BitrixSolutionResponse createOnlineOrder(OnlineOrderTypeData orderData, String lmCode) {
-        orderData.setLmCode(lmCode);
+    @Step("Creates Online order with Dimensional LmCode")
+    public BitrixSolutionResponse createDimensionalOnlineOrder(OnlineOrderTypeData orderData) {
+        orderData.setLmCode(LmCodeTypeEnum.DIMENSIONAL.getValue());
         return this.createOnlineOrders(1, orderData, 1).stream().findFirst().get();
+    }
+
+    @Step("Creates Online order with 3 LmCodes")
+    public BitrixSolutionResponse createOnlineOrder(OnlineOrderTypeData orderData) {
+        return this.createOnlineOrders(1, orderData, 3).stream().findFirst().get();
     }
 
     @Step("Creates Online orders of different types")
     public ArrayList<BitrixSolutionResponse> createOnlineOrders(Integer ordersCount,
-                                                                OnlineOrderTypeData orderData, Integer productCount) {
+            OnlineOrderTypeData orderData, Integer productCount) {
         SimpleCustomerData customerData = SIMPLE_CUSTOMER_DATA_1;
         customerData.setId(getCustomerId(customerData));
 
@@ -103,7 +108,7 @@ public class BitrixHelper extends BaseHelper {
     }
 
     private BitrixSolutionPayload createBitrixPayload(OnlineOrderTypeData orderData,
-                                                      Integer productCount, SimpleCustomerData customerData) {
+            Integer productCount, SimpleCustomerData customerData) {
         if (orderData.getShopId() != null) {
             orderData.setShopId(userSessionData().getUserShopId());
         }
@@ -119,14 +124,14 @@ public class BitrixHelper extends BaseHelper {
     }
 
     private ArrayList<BitrixSolutionPayload.Basket> makeBasket(Integer productsCount, String shopId,
-                                                               OnlineOrderTypeData orderData) {
+            OnlineOrderTypeData orderData) {
         ArrayList<BitrixSolutionPayload.Basket> result = new ArrayList<>();
 
         if (orderData.getLmCode() != null) {
-            ProductItemData product = catalogSearchClient.getProductByLmCode(orderData.getLmCode());
+            ProductItemData product = searchProductHelper.getProductByLmCode(orderData.getLmCode());
             result.add(productItemDataToPayload(product));
         } else {
-            List<ProductItemData> products = catalogSearchClient
+            List<ProductItemData> products = searchProductHelper
                     .getProductsForShop(productsCount, shopId);
             for (ProductItemData productData : products) {
                 result.add(productItemDataToPayload(productData));
@@ -338,14 +343,14 @@ public class BitrixHelper extends BaseHelper {
     }
 
     private String getCustomerId(SimpleCustomerData customerData) {
-        CustomerSearchFilters filter = new CustomerSearchFilters();
-        filter.setCustomerType(CustomerType.NATURAL);
-        filter.setDiscriminantType(DiscriminantType.PHONENUMBER);
-        filter.setDiscriminantValue(customerData.getPhoneNumber());
-        Response<CustomerListData> response = customerClient.searchForCustomers(filter);
-        assertThat("GET Customer failed", response, successful());
-
         try {
+            CustomerSearchFilters filter = new CustomerSearchFilters();
+            filter.setCustomerType(CustomerType.NATURAL);
+            filter.setDiscriminantType(DiscriminantType.PHONENUMBER);
+            filter.setDiscriminantValue(customerData.getPhoneNumber());
+            Response<CustomerListData> response = customerClient.searchForCustomers(filter);
+            assertThat("GET Customer failed", response, successful());
+
             return response.asJson().getItems().get(0).getCustomerNumber();
         } catch (Exception ignored) {
         }

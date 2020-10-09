@@ -40,6 +40,7 @@ public class WorkPage extends BottomMenuPage {
     @AppFindBy(xpath = "//*[@text='Управление перебоями']/following-sibling::*/android.widget.TextView")
     private Element rupturesActiveSessionCounterLbl;
 
+    // TODO Больше нет?
     @AppFindBy(xpath = "//*[@text='Управление перебоями']/following-sibling::*[2]")
     private Button createRuptureSessionBtn;
 
@@ -88,8 +89,7 @@ public class WorkPage extends BottomMenuPage {
 
     @Step("Нажать на кнопку создания сессии перебоев")
     public RupturesScannerPage createRupturesSession() {
-        createRuptureSessionBtn.click();
-        return new RupturesScannerPage();
+        return goToRuptures().clickScanRupturesButton(); // TODO нужен ли теперь этот метод?
     }
 
     @Step("Перейти в План поставок")

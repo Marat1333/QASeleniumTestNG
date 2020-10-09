@@ -29,7 +29,6 @@ public class CartClient extends BaseMashupClient {
     @Step("Get Cart info by cartId={cartId}")
     public Response<CartData> sendRequestGet(String cartId) {
         return execute(new CartGet().setCartId(cartId)
-                .bearerAuthHeader(getUserSessionData().getAccessToken())
                 .setShopId(getUserSessionData().getUserShopId()), CartData.class);
     }
 
@@ -137,7 +136,6 @@ public class CartClient extends BaseMashupClient {
         body.put("status", SalesDocumentsConst.States.DELETED.getApiVal());
         body.put("documentVersion", String.valueOf(documentVersion));
         return execute(new CartChangeStatusRequest()
-                .bearerAuthHeader(getUserSessionData().getAccessToken())
                 .setCartId(cartId)
                 .formBody(body), JsonNode.class);
     }

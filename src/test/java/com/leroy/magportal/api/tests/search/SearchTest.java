@@ -4,8 +4,8 @@ import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.Units;
 import com.leroy.core.UserSessionData;
+import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magportal.api.clients.CatalogSearchClient;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
 import com.leroy.magportal.ui.constants.search.CatalogSearchParams;
 import com.leroy.utils.DateTimeUtil;
@@ -17,7 +17,6 @@ import com.leroy.utils.file_manager.excel.ExcelWorkBook;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 public class SearchTest extends BaseMagPortalApiTest {

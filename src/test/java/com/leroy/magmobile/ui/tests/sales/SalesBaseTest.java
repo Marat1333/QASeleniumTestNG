@@ -146,9 +146,14 @@ public class SalesBaseTest extends AppBaseSteps {
         filtersData.setTopEM(true);
         filtersData.setAvs(false);
         filtersData.setHasAvailableStock(hasAvailableStock);
+        String prevShop = getUserSessionData().getUserShopId();
+        String prevDepartment = getUserSessionData().getUserDepartmentId();
         getUserSessionData().setUserShopId("78");
         getUserSessionData().setUserDepartmentId("15");
-        return searchProductHelper.getProducts(1, filtersData).get(0).getLmCode();
+        String lmCode = searchProductHelper.getProducts(1, filtersData).get(0).getLmCode();
+        getUserSessionData().setUserShopId(prevShop);
+        getUserSessionData().setUserDepartmentId(prevDepartment);
+        return lmCode;
     }
 
     protected String getAnyLmCodeProductWithTopEM() {
@@ -157,7 +162,7 @@ public class SalesBaseTest extends AppBaseSteps {
 
     // Получить ЛМ код для продукта, доступного для отзыва с RM
     protected String getAnyLmCodeProductIsAvailableForWithdrawalFromRM() {
-        return "18845896";
+        return "15163427";
     }
 
     // Поиск продуктов для создания корзины с несколькими заказами:

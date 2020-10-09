@@ -1386,6 +1386,7 @@ public class OrderTest extends SalesBaseTest {
 
         salesDocumentData.getOrderAppDataList().get(0).addFirstProduct(productData);
         salesDocumentData.getOrderAppDataList().get(0).setTotalWeight(null);
+        salesDocumentData.getOrderAppDataList().get(0).getProductCardDataList().forEach(p -> p.setTotalStock(null));
 
         if (isConfirmedOrder) {
             confirmedOrderPage = confirmedOrderAddProduct35Page.clickSubmitButton();

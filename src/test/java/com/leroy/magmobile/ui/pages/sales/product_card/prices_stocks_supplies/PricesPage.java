@@ -65,11 +65,15 @@ public class PricesPage extends ProductPricesQuantitySupplyPage {
         String apiDateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
         PriceInfo priceInfo = data.getSalesPrice();
-        softAssert.isElementTextContains(priceLbl, String.valueOf(priceInfo.getPrice()).replaceAll("\\.", ","));
-        softAssert.isElementTextContains(purchasePriceLbl, String.valueOf(data.getPurchasePrice()).replaceAll("\\.", ","));
-        softAssert.isElementTextContains(recommendedPriceLbl, String.valueOf(priceInfo.getRecommendedPrice()).replaceAll("\\.", ","));
-        softAssert.isEquals(DateTimeUtil.strToLocalDateTime(priceChangeDateLbl.getText().replaceAll("c ", ""), uiDateFormat),
-                DateTimeUtil.strToLocalDateTime(priceInfo.getDateOfChange(), apiDateFormat).plusHours(DriverFactory.isGridProfile() ? TimeZone.UTC : TimeZone.MSC), "date of price change");
+        softAssert.isElementTextContains(priceLbl,
+                String.valueOf(priceInfo.getPrice()).replaceAll("\\.", ","));
+        softAssert.isElementTextContains(purchasePriceLbl,
+                String.valueOf(data.getPurchasePrice()).replaceAll("\\.", ","));
+        softAssert.isElementTextContains(recommendedPriceLbl,
+                String.valueOf(priceInfo.getRecommendedPrice()).replaceAll("\\.", ","));
+        softAssert.isEquals(DateTimeUtil.strToLocalDate(priceChangeDateLbl.getText()
+                        .replaceAll("c ", ""), uiDateFormat),
+                DateTimeUtil.strToLocalDate(priceInfo.getDateOfChange(), apiDateFormat), "date of price change");
         softAssert.isElementTextEqual(reasonOfChangeLbl, priceInfo.getReasonOfChange());
         if (priceInfo.getPrice() - priceInfo.getRecommendedPrice() != 0.0) {
             softAssert.isElementVisible(recommendedPriceMismatchLbl);
