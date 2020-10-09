@@ -8,9 +8,7 @@ public class BaseCartRequest<J extends BaseCartRequest<J>> extends RequestBuilde
         return header("shopid", val);
     }
 
-    public J setLdap(String val) {
-        return header("ldap", val);
-    }
+    public J setLdap(String val) { return header("ldap", val); }
 
     public J setCartId(String val) {
         return queryParam("cartId", val);

@@ -7,6 +7,7 @@ import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.clients.PickingTaskClient;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst;
+import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
 import com.leroy.magportal.api.constants.PaymentStatusEnum;
 import com.leroy.magportal.api.data.picking.PickingTaskData;
 import com.leroy.magportal.api.helpers.BitrixHelper;
@@ -31,15 +32,12 @@ public class PostpaymentWorkflowShortTest extends BaseMagPortalApiTest {
 
     private String currentOrderId;
     private String currentTaskId;
-
+    private OnlineOrderTypeData currentOrderType;
 
     @BeforeClass
     private void setUp() {
-        List<BitrixSolutionResponse> bitrixSolutionResponses = bitrixHelper
-                .createOnlineOrders(1, OnlineOrderTypeConst.PICKUP_POSTPAYMENT, 3);
-        currentOrderId = bitrixSolutionResponses.stream().findAny().get().getSolutionId();
-        bitrixSolutionResponses.remove(bitrixSolutionResponses.stream()
-                .filter(x -> x.getSolutionId().equals(currentOrderId)).findFirst().get());
+        currentOrderType = OnlineOrderTypeConst.PICKUP_POSTPAYMENT;
+        currentOrderId = bitrixHelper.createOnlineOrder(currentOrderType).getSolutionId();
 
         currentTaskId = pickingTaskClient.searchForPickingTasks(currentOrderId).asJson().getItems()
                 .stream().findFirst().get().getTaskId();
