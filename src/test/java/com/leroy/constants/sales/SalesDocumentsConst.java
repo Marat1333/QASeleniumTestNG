@@ -94,7 +94,7 @@ public class SalesDocumentsConst {
         SALES_FLOOR("SALESFLOOR", "Из торгового зала"),
         FOR_CLIENT_TO_SHOP_ROOM("DEPARTMENT", "Для клиента в торг. зал"),
         PICKUP("PICKUP", "Самовывоз"),
-        DELIVERY("", "Доставка");
+        DELIVERY("HOME_DELIVERY", "Доставка");
 
         private String uiVal;
         private String apiVal;
