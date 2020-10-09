@@ -674,7 +674,7 @@ public class PickingTest extends BasePAOTest {
 
         //Вбить номер собранного заказа 200901121200
 
-        //orderId="200903114048";
+        //orderId="201001148360";
 
         // Step 1:
         step("Открыть страницу с Заказами");
@@ -692,7 +692,8 @@ public class PickingTest extends BasePAOTest {
         orderPage.clickDocumentInLeftMenu(orderId);
         OrderCreatedContentPage createdContentPage = new OrderCreatedContentPage();
         createdContentPage.shouldOrderProductCountIs(1);
-        // добавить проверку на оплату?
+
+        // Step 4:
 
 
     }

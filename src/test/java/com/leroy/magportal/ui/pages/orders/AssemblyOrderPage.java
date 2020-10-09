@@ -14,9 +14,12 @@ import io.qameta.allure.Step;
  * Описывает вкладку "Сборки"
  */
 public class AssemblyOrderPage extends OrderCreatedPage{
+
     @WebFindBy(xpath = "//div[contains(@class, 'lm-puz2-Order-OrderPickingTaskListItem')]", metaName = "Карточка сборки",
     clazz = PickingWidget.class)
     CardWebWidgetList<PickingWidget, PickingData> orderPickingTaskListItem;
+
+    // Actions
 
     @Step ("Кликнуть на Сборку")
 public PickingContentPage clickToPickingTask(int index) throws Exception {
