@@ -16,7 +16,7 @@ public class ExtendedSearchModal extends MagPortalBasePage {
 
     private static final String MODAL_DIV_XPATH = "//div[contains(@class, 'ExtendedSearchViewModal')]";
 
-    @WebFindBy(xpath = "//div[contains(@class, 'ExtendedSearchViewModal__align-end')]//button",
+    @WebFindBy(xpath = "//div[contains(@class, 'CatalogSearchView__main-container')]/div/div/div[2]//button",
             metaName = "Кнопка крестик (закрыть)")
     Element closeBtn;
 
@@ -58,6 +58,7 @@ public class ExtendedSearchModal extends MagPortalBasePage {
 
     @Step("Закрыть модальное окно")
     public void closeModalWindow() {
+        closeBtn.scrollTo();
         closeBtn.click();
         closeBtn.waitForInvisibility();
         waitForSpinnerDisappear();
