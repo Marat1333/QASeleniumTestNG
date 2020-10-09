@@ -3,8 +3,10 @@ package com.leroy.magportal.ui.tests;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.constants.sales.SalesDocumentsConst;
+import com.leroy.core.ContextProvider;
 import com.leroy.core.UserSessionData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
+import com.leroy.magmobile.api.data.sales.orders.GiveAwayData;
 import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.clients.PickingTaskClient;
 import com.leroy.magportal.api.data.picking.PickingTaskDataList;
@@ -26,6 +28,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -48,14 +51,27 @@ public class PickingTest extends BasePAOTest {
     private String orderId;
     private String pickingTaskId;
 
-    private void initCreateOrder(int productCount) throws Exception {
+    private void initCreateOrder(int productCount, SalesDocumentsConst.GiveAwayPoints giveAwayPoint) throws Exception {
         List<CartProductOrderData> productOrderDataList = new ArrayList<>();
         for (int i = 0; i < productCount; i++) {
             CartProductOrderData productOrderData = new CartProductOrderData(productList.get(i));
             productOrderData.setQuantity(2.0);
             productOrderDataList.add(productOrderData);
         }
-        orderId = helper.createConfirmedOrder(productOrderDataList, false).getOrderId();
+        GiveAwayData giveAwayData = new GiveAwayData();
+        giveAwayData.setDate(LocalDateTime.now().plusDays(1));
+        giveAwayData.setShopId(
+                Integer.valueOf(ContextProvider.getContext().getUserSessionData().getUserShopId()));
+        if (giveAwayPoint != null) {
+            giveAwayData.setPoint(giveAwayPoint.getApiVal());
+        } else {
+            giveAwayData.setPoint(SalesDocumentsConst.GiveAwayPoints.PICKUP.getApiVal());
+        }
+        orderId = helper.createConfirmedOrder(productOrderDataList, giveAwayData, false).getOrderId();
+    }
+
+    private void initCreateOrder(int productCount) throws Exception {
+        initCreateOrder(productCount, null);
     }
 
     private void initFindPickingTask() throws Exception {
