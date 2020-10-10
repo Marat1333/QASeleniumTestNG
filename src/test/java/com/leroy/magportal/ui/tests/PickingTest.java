@@ -695,6 +695,8 @@ public class PickingTest extends BasePAOTest {
 
         // Step 4:
 
+        step("Перейти на Сборки");
+        AssemblyOrderPage pickingTab = createdContentPage.clickGoToPickings();
 
     }
 }
