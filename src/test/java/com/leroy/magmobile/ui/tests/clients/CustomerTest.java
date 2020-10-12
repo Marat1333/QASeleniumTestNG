@@ -132,6 +132,39 @@ public class CustomerTest extends AppBaseSteps {
         searchCustomerPage.shouldFirstCustomerIs(customerData);
     }
 
+    @Test(description = "C3201063 Проверка списка недавно просмотренных клиентов")
+    public void testListOfRecentlyViewedClients() throws Exception {
+        MagCustomerData customerData1 = TestDataConstants.CUSTOMER_DATA_1;
+        MagCustomerData customerData2 = TestDataConstants.CUSTOMER_DATA_2;
+
+        MainCustomerPage mainCustomerPage = loginAndGoTo(MainCustomerPage.class);
+        SearchCustomerPage searchCustomerPage = mainCustomerPage.clickSearchCustomerField();
+        searchCustomerPage.searchCustomerByPhone(customerData1.getPhone(), true);
+        ViewCustomerPage viewCustomerPage = new ViewCustomerPage();
+        viewCustomerPage.clickBackButton();
+        searchCustomerPage = new SearchCustomerPage();
+        searchCustomerPage.searchCustomerByPhone(customerData2.getPhone(), true);
+        viewCustomerPage = new ViewCustomerPage();
+        viewCustomerPage.clickBackButton();
+        searchCustomerPage = new SearchCustomerPage();
+        searchCustomerPage.clickBackButton();
+
+        // Step 1
+        step("Нажмите на мини-карточку последнего клиента из списка Недавние клиенты");
+        mainCustomerPage = new MainCustomerPage();
+        mainCustomerPage.shouldRecentCustomerIs(1, customerData2)
+                .shouldRecentCustomerIs(2, customerData1);
+        viewCustomerPage = mainCustomerPage.clickRecentClient(2).
+                shouldCurrentClientIs(customerData1);
+
+        // Step 2
+        step("Нажмите на стрелку назад");
+        viewCustomerPage.clickBackButton();
+        mainCustomerPage = new MainCustomerPage();
+        mainCustomerPage.shouldRecentCustomerIs(1, customerData1)
+                .shouldRecentCustomerIs(2, customerData2);
+    }
+
     @Smoke
     @Test(description = "C22782859 Просмотр документов клиента (физ.лицо)")
     public void testViewIndividualClientInformation() throws Exception {

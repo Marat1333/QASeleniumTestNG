@@ -209,6 +209,11 @@ public class SearchCustomerPage extends CommonMagMobilePage {
         return this;
     }
 
+    @Step("Нажать кнопку назад")
+    public void clickBackButton() {
+        backCloseBtn.click();
+    }
+
     // VERIFICATIONS
 
     @Step("Проверить, что страница 'Поиска клиентов' отображается корректно")
