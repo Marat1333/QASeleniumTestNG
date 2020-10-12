@@ -1,20 +1,20 @@
 package com.leroy.magmobile.ui.tests.clients;
 
 import com.google.inject.Inject;
-import com.leroy.common_mashups.data.customer.CustomerData;
+import com.leroy.common_mashups.helpers.CustomerHelper;
 import com.leroy.constants.Gender;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.annotations.Smoke;
 import com.leroy.magmobile.api.clients.SalesDocSearchClient;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
-import com.leroy.common_mashups.helpers.CustomerHelper;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.constants.TestDataConstants;
 import com.leroy.magmobile.ui.models.customer.MagCustomerData;
 import com.leroy.magmobile.ui.models.customer.MagLegalCustomerData;
 import com.leroy.magmobile.ui.models.sales.ShortSalesDocumentData;
 import com.leroy.magmobile.ui.pages.customers.*;
+import com.leroy.magmobile.ui.pages.customers.data.PhoneUiData;
 import com.leroy.magmobile.ui.pages.sales.orders.cart.CartSearchPage;
 import com.leroy.magmobile.ui.pages.sales.orders.estimate.EstimateSearchPage;
 import com.leroy.magmobile.ui.pages.sales.orders.order.OrderSearchPage;
@@ -54,7 +54,7 @@ public class CustomerTest extends AppBaseSteps {
         // Steps 6-9
         step("Ведите новый номер телефона");
         String phone = RandomUtil.randomPhoneNumber();
-        newCustomerInfoPage.editPhoneNumber(phone, true);
+        newCustomerInfoPage.editPhoneNumber(1, new PhoneUiData(phone), true);
 
         // Step 10
         step("Нажмите на Показать все поля");
@@ -78,23 +78,6 @@ public class CustomerTest extends AppBaseSteps {
         customerData.setName(customerFirstName);
         mainCustomerPage = successCustomerPage.clickGoToCustomerListButton();
         mainCustomerPage.shouldRecentCustomerIs(1, customerData);
-    }
-    // With Mock
-    @Test(description = "C3201019 Редактирование данных клиента (физ. лицо)")
-    public void testEditCustomer() throws Exception {
-        //String clientPhone = "+73201019000";
-        String clientPhone = "+70687936512";
-        //CustomerData customerData = customerHelper.createCustomer();
-
-        MainCustomerPage mainCustomerPage = loginAndGoTo(MainCustomerPage.class);
-        SearchCustomerPage searchCustomerPage = mainCustomerPage.clickSearchCustomerField();
-        searchCustomerPage.searchCustomerByPhone(clientPhone, true);
-        ViewCustomerPage viewCustomerPage = new ViewCustomerPage()
-                .verifyRequiredElements();
-
-        // Step 1
-        step("Нажмите на личные данные");
-
     }
 
     @Smoke

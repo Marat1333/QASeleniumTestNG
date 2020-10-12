@@ -51,8 +51,9 @@ public class ViewCustomerPage extends CommonMagMobilePage {
     // Actions
 
     @Step("Перейти в 'Личные данные'")
-    public void goToPersonalData() {
+    public PersonalInfoPage goToPersonalData() {
         personalDataArea.click();
+        return new PersonalInfoPage();
     }
 
     @Step("Перейти в 'Корзины'")

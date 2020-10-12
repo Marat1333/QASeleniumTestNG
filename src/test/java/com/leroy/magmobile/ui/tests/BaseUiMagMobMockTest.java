@@ -2,19 +2,25 @@ package com.leroy.magmobile.ui.tests;
 
 import com.leroy.core.ContextProvider;
 import com.leroy.core.util.MountebankClient;
+import com.leroy.magmobile.api.requests.CommonLegoRequest;
 import com.leroy.magmobile.ui.AppBaseSteps;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.mbtest.javabank.http.core.Stub;
 import org.mbtest.javabank.http.imposters.Imposter;
+import org.mbtest.javabank.http.predicates.Predicate;
+import org.mbtest.javabank.http.predicates.PredicateType;
+import org.mbtest.javabank.http.responses.Is;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collections;
 
 public abstract class BaseUiMagMobMockTest extends AppBaseSteps {
 
@@ -38,11 +44,42 @@ public abstract class BaseUiMagMobMockTest extends AppBaseSteps {
         Assert.assertEquals(stCreate, 201, "Не удалось создать default'ый Imposter");
     }
 
-    @BeforeMethod
+    //@BeforeMethod
+
+    /**
+     * Создание stub'ов на основе json файла из массива stubs, где полностью они описаны (и predicates, и responses)
+     */
     public void setUpMockForTest() throws Exception {
         String tcId = ContextProvider.getContext().getTcId();
-        String content = readFile("src/main/resources/mock/magmobile/catalog_search/" + tcId + ".json", StandardCharsets.UTF_8);
-        int updSt = mountebankClient.addStubs((JSONObject) new JSONParser().parse(content), DEFAULT_IMPOSTER_PORT);
+        String content = readFile("src/main/resources/mock/magmobile/customers/" + tcId + ".json", StandardCharsets.UTF_8);
+        int updSt = mountebankClient.addStubsFromArray((JSONObject) new JSONParser().parse(content), DEFAULT_IMPOSTER_PORT);
+        Assert.assertEquals(updSt, 200, "Не удалось добавить stubs для " + tcId);
+    }
+
+    protected void createStub(PredicateType predicateType, CommonLegoRequest<?> request, int responseIndex) throws Exception {
+        String tcId = ContextProvider.getContext().getTcId();
+        String content = readFile("src/main/resources/mock/magmobile/" + tcId + ".json", StandardCharsets.UTF_8);
+        JSONArray jsonArrayContent = (JSONArray) new JSONParser().parse(content);
+        JSONObject jsonBody = null;
+        for (Object obj : jsonArrayContent) {
+            JSONObject jsonObj = (JSONObject) obj;
+            if (jsonObj.get("index").equals((long) responseIndex))
+                jsonBody = (JSONObject) jsonObj.get("body");
+        }
+        if (jsonBody == null)
+            throw new IllegalArgumentException("Incorrect responseIndex");
+
+        Stub stub = new Stub();
+
+        Predicate predicate = new Predicate(predicateType);
+        predicate.withMethod(request.getMethod())
+                .withPath(request.getPath())
+                .withQueryParameters(request.getQueryParams());
+
+        stub.addPredicates(Collections.singletonList(predicate));
+        stub.addResponse(new Is().withBody(jsonBody.toJSONString()));
+
+        int updSt = mountebankClient.addStub(stub, DEFAULT_IMPOSTER_PORT);
         Assert.assertEquals(updSt, 200, "Не удалось добавить stubs для " + tcId);
     }
 
