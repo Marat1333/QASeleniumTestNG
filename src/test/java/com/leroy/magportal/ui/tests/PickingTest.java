@@ -17,6 +17,7 @@ import com.leroy.magportal.ui.models.picking.PickingTaskData;
 import com.leroy.magportal.ui.models.picking.ShortPickingTaskData;
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.pages.orders.AssemblyOrderPage;
+import com.leroy.magportal.ui.pages.orders.GiveAwayShipOrderPage;
 import com.leroy.magportal.ui.pages.orders.OrderCreatedContentPage;
 import com.leroy.magportal.ui.pages.orders.OrderHeaderPage;
 import com.leroy.magportal.ui.pages.picking.PickingContentPage;
@@ -672,9 +673,9 @@ public class PickingTest extends BasePAOTest {
         initCreateOrder(1, SalesDocumentsConst.States.PICKED);
 
 
-        //Вбить номер собранного заказа 200901121200
+        //Вбить номер собранного заказа
 
-        //orderId="201001148360";
+        //orderId="201001153419";
 
         // Step 1:
         step("Открыть страницу с Заказами");
@@ -694,9 +695,24 @@ public class PickingTest extends BasePAOTest {
         createdContentPage.shouldOrderProductCountIs(1);
 
         // Step 4:
+        step("Перейти на вкладку 'К выдаче и возврату'");
+        GiveAwayShipOrderPage giveAwayShipOrderPage = createdContentPage.clickGoToShipRefund();
 
-        step("Перейти на Сборки");
-        AssemblyOrderPage pickingTab = createdContentPage.clickGoToPickings();
+        // Step 5
+        step("Товар 1: Ввести в инпут 'К выдаче' количество равное,  указанному в Заказано");
+        //убрать хардкод. Заменить на получение заказанного к-ва по примеру ниже
+        //int collectedQuantityProduct1 = pickingTaskDataBefore.getProducts().get(0).getOrderedQuantity();
+        giveAwayShipOrderPage.editToShipQuantity(1, 2)
+                .shouldProductToShipQuantityIs(1, 2);
 
+        // Step 6
+        step("Нажать на кнопку 'Выдать'");
+        giveAwayShipOrderPage.clickGiveAwayButton();
+
+        // Step 7:
+        step("Проверить статус собранного заказа");
+        orderPage.shouldDocumentIsPresent(orderId);
+        orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.GIVEN_AWAY.getUiVal());
+        orderPage.shouldDocumentCountIs(1);
     }
 }

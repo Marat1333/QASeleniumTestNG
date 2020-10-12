@@ -10,11 +10,6 @@ public class ToGiveAwayProductCardData {
     private String barCode;
     private String title;
 
-    //private Dimension3D dimension;
-    private String dimension;
-    private Double price;
-    private Double weight;
-
 
     private String reasonForNonGiveaway;
     private Integer createdQuantity;
@@ -22,38 +17,30 @@ public class ToGiveAwayProductCardData {
     private Integer collectedQuantity;
     private Integer givenAwayQuantity;
     private Integer refundToClient;
+    private Integer toGiveAwayQuantity;
 
 
-    public void increaseOrderedQuantity(int val) {
-        this.orderedQuantity += val;
+    public void increaseToGiveAwayQuantity(int val) { this.toGiveAwayQuantity += val;
     }
 
-    public void decreaseOrderedQuantity(int val) {
-        this.orderedQuantity -= val;
+    public void decreaseToGiveAwayQuantity(int val) {
+        this.toGiveAwayQuantity -= val;
     }
 
-    private static class Dimension3D {
-        private Double length;
-        private Double width;
-        private Double height;
-    }
+
 
     public void assertEqualsNotNullExpectedFields(int i, ToGiveAwayProductCardData expectedProductData) {
         SoftAssertWrapper softAssert = ContextProvider.getContext().getSoftAssert();
         softAssert.isEquals(title, expectedProductData.getTitle(),
                 "Товар #" + (i + 1) + " - неверное название");
-        softAssert.isEquals(dimension, expectedProductData.getDimension(),
-                "Товар #" + (i + 1) + " - неверные габариты");
-        softAssert.isEquals(price, expectedProductData.getPrice(),
-                "Товар #" + (i + 1) + " - неверная цена");
-        softAssert.isEquals(weight, expectedProductData.getWeight(),
-                "Товар #" + (i + 1) + " - неверный вес");
-        softAssert.isEquals(reasonForNonGiveaway, expectedProductData.reasonForNonGiveaway(),
-                "Товар #" + (i + 1) + " - неверная причина отсутствия товара");
+        softAssert.isEquals(reasonForNonGiveaway, expectedProductData.getReasonForNonGiveaway(),
+                "Товар #" + (i + 1) + " - неверная причина невыдачи товара");
         softAssert.isEquals(orderedQuantity, expectedProductData.getOrderedQuantity(),
                 "Товар #" + (i + 1) + " - неверное кол-во заказано");
         softAssert.isEquals(collectedQuantity, expectedProductData.getCollectedQuantity(),
                 "Товар #" + (i + 1) + " - неверное кол-во собрано");
+        softAssert.isEquals(givenAwayQuantity, expectedProductData.getGivenAwayQuantity(),
+                "Товар #" + (i + 1) + " - неверное кол-во выдано");
         softAssert.verifyAll();
     }
 
