@@ -80,4 +80,31 @@ public class CustomerMockTest extends BaseUiMagMobMockTest {
                 .shouldPhoneTypesAre(Arrays.asList(PhoneUiData.Type.MAIN, PhoneUiData.Type.WORK));
     }
 
+    @Test(description = "C22762927 Просмотр данных клиента (юр. лицо)")
+    public void testViewLegalClientData() throws Exception {
+        // Test data
+        String orgName = "Рога и копыта";
+        String orgCard = "93010092991969072";
+        String orgAddress = "город Мытищи, Московская область 141006";
+        // Prepare Mock
+        createStub(PredicateType.DEEP_EQUALS, new CustomerAccountsSearchRequest()
+                .setCustomerType(CustomerSearchFilters.CustomerType.LEGAL)
+                .setDiscriminantValue(orgCard)
+                .setDiscriminantType(CustomerSearchFilters.DiscriminantType.LOYALTY_CARD_NUMBER)
+                .setShopId(getUserSessionData().getUserShopId())
+                .setLdap(getUserSessionData().getUserLdap()), 0);
+
+        // Pre-condition
+        MainCustomerPage mainCustomerPage = loginAndGoTo(MainCustomerPage.class);
+        SearchCustomerPage searchCustomerPage = mainCustomerPage.clickSearchCustomerField();
+        searchCustomerPage.searchLegalCustomerByCardNumber(orgCard);
+
+        // Step 1
+        step("Нажмите на Данные организации");
+        OrganizationInfoPage organizationInfoPage = new ViewCustomerPage().goToOrganizationData();
+        organizationInfoPage.shouldOrgNameIs(orgName)
+                .shouldOrgCardIs(orgCard)
+                .shouldOrgAddressIs(orgAddress);
+    }
+
 }

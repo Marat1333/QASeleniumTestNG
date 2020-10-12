@@ -31,6 +31,10 @@ public class ViewCustomerPage extends CommonMagMobilePage {
             metaName = "Личные данные")
     Element personalDataArea;
 
+    @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.TextView[@text='Данные организации']]",
+            metaName = "Данные организации")
+    Element organizationDataArea;
+
     @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.TextView[@text='Корзины']]",
             metaName = "Корзины")
     Element cartsArea;
@@ -57,7 +61,6 @@ public class ViewCustomerPage extends CommonMagMobilePage {
 
     @Override
     protected void waitForPageIsLoaded() {
-        anAssert.isElementVisible(personalDataArea, timeout);
         anAssert.isElementVisible(salesDocArea, timeout);
     }
 
@@ -67,6 +70,12 @@ public class ViewCustomerPage extends CommonMagMobilePage {
     public PersonalInfoPage goToPersonalData() {
         personalDataArea.click();
         return new PersonalInfoPage();
+    }
+
+    @Step("Перейти в 'Данные организации'")
+    public OrganizationInfoPage goToOrganizationData() {
+        organizationDataArea.click();
+        return new OrganizationInfoPage();
     }
 
     @Step("Перейти в 'Корзины'")

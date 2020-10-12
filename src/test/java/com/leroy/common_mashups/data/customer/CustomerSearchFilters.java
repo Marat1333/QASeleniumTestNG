@@ -8,11 +8,11 @@ import lombok.experimental.Accessors;
 public class CustomerSearchFilters {
 
     public enum CustomerType {
-        NATURAL;
+        NATURAL, LEGAL
     }
 
     public enum DiscriminantType {
-        PHONENUMBER;
+        PHONENUMBER, LOYALTY_CARD_NUMBER
     }
 
     private CustomerType customerType;
