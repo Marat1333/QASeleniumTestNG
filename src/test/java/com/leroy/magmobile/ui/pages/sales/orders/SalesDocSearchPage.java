@@ -31,6 +31,11 @@ public abstract class SalesDocSearchPage extends CommonMagMobilePage {
 
     // Actions
 
+    @Step("Выбрать первый документ")
+    public void clickFirstSalesDoc() throws Exception{
+        documentScrollList.clickElemByIndex(0);
+    }
+
     @Step("Нажать кнопку назад")
     public ViewCustomerPage clickBackButton() {
         backBtn.click();

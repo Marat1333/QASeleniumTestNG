@@ -13,6 +13,14 @@ public class CartSearchPage extends SalesDocSearchPage {
     @AppFindBy(text = "СОЗДАТЬ КОРЗИНУ")
     MagMobButton createCartBtn;
 
+    // Action
+
+    @Step("Нажать на кнопку 'Создать корзину'")
+    public Cart35Page clickCreateCartButton() {
+        createCartBtn.click();
+        return new Cart35Page();
+    }
+
     // Verifications
 
     @Step("Проверить, что страница 'Корзины' отображается корректно")

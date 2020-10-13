@@ -1,10 +1,14 @@
 package com.leroy.magmobile.ui.tests.clients;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.common_mashups.helpers.CustomerHelper;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.Gender;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.annotations.Smoke;
+import com.leroy.core.configuration.Log;
+import com.leroy.magmobile.api.clients.OrderClient;
 import com.leroy.magmobile.api.clients.SalesDocSearchClient;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
@@ -12,12 +16,21 @@ import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.constants.TestDataConstants;
 import com.leroy.magmobile.ui.models.customer.MagCustomerData;
 import com.leroy.magmobile.ui.models.customer.MagLegalCustomerData;
+import com.leroy.magmobile.ui.models.sales.OrderDetailsData;
 import com.leroy.magmobile.ui.models.sales.ShortSalesDocumentData;
 import com.leroy.magmobile.ui.pages.customers.*;
 import com.leroy.magmobile.ui.pages.customers.data.PhoneUiData;
+import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
+import com.leroy.magmobile.ui.pages.sales.SalesDocumentsPage;
+import com.leroy.magmobile.ui.pages.sales.SubmittedSalesDocument35Page;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.Cart35Page;
 import com.leroy.magmobile.ui.pages.sales.orders.cart.CartSearchPage;
+import com.leroy.magmobile.ui.pages.sales.orders.estimate.EstimatePage;
 import com.leroy.magmobile.ui.pages.sales.orders.estimate.EstimateSearchPage;
+import com.leroy.magmobile.ui.pages.sales.orders.estimate.EstimateSubmittedPage;
 import com.leroy.magmobile.ui.pages.sales.orders.order.OrderSearchPage;
+import com.leroy.magmobile.ui.pages.sales.orders.order.ProcessOrder35Page;
+import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.utils.RandomUtil;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -30,6 +43,19 @@ public class CustomerTest extends AppBaseSteps {
 
     @Inject
     CustomerHelper customerHelper;
+
+    @Inject
+    SearchProductHelper searchProductHelper;
+
+    private void cancelOrder(String orderId) throws Exception {
+        OrderClient orderClient = apiClientProvider.getOrderClient();
+        orderClient.waitUntilOrderCanBeCancelled(orderId);
+        Response<JsonNode> r = orderClient.cancelOrder(orderId);
+        anAssert().isTrue(r.isSuccessful(),
+                "Не смогли удалить заказ №" + orderId + ". Ошибка: " + r.toString());
+        orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderId,
+                SalesDocumentsConst.States.CANCELLED.getApiVal());
+    }
 
     @Smoke
     @Test(description = "C3201018 Создание клиента (физ. лицо)")
@@ -79,6 +105,81 @@ public class CustomerTest extends AppBaseSteps {
         mainCustomerPage = successCustomerPage.clickGoToCustomerListButton();
         mainCustomerPage.shouldRecentCustomerIs(1, customerData);
     }
+
+    /*@Test(description = "C22782860 Просмотр документов клиента (юр.лицо)")
+    public void testViewLegalClientInformation() throws Exception {
+        step("Выполнение preconditions");
+        MagLegalCustomerData customerData = TestDataConstants.LEGAL_ENTITY_1;
+        String customerNumber = customerHelper.getFirstCustomerIdByPhone(customerData.getPhone());
+        SalesDocSearchClient salesDocSearchClient = apiClientProvider.getSalesDocSearchClient();
+
+        // Корзины
+        Response<SalesDocumentListResponse> respCart = salesDocSearchClient.searchForDocuments(
+                new SalesDocSearchClient.Filters().setCustomerNumber(customerNumber)
+                        .setDocType(SalesDocumentsConst.Types.CART.getApiVal()));
+        anAssert().isTrue(respCart.isSuccessful(), respCart.toString());
+        SalesDocumentListResponse responseCartBody = respCart.asJson();
+        List<ShortSalesDocumentData> expectedCarts = convertToShortSalesDocumentData(responseCartBody.getSalesDocuments());
+
+        // Документы продажи
+        Response<SalesDocumentListResponse> respSalesDoc = salesDocSearchClient.searchForDocuments(
+                new SalesDocSearchClient.Filters().setCustomerNumber(customerNumber)
+                        .setDocType(SalesDocumentsConst.Types.ORDER.getApiVal()));
+        anAssert().isTrue(respCart.isSuccessful(), respCart.toString());
+        SalesDocumentListResponse responseSalesDocBody = respSalesDoc.asJson();
+        List<ShortSalesDocumentData> expectedSalesDoc = convertToShortSalesDocumentData(
+                responseSalesDocBody.getSalesDocuments());
+
+        // Сметы
+        Response<SalesDocumentListResponse> respEstimate = salesDocSearchClient.searchForDocuments(
+                new SalesDocSearchClient.Filters().setCustomerNumber(customerNumber)
+                        .setDocType(SalesDocumentsConst.Types.ESTIMATE.getApiVal()));
+        anAssert().isTrue(respCart.isSuccessful(), respCart.toString());
+        SalesDocumentListResponse responseEstimatesBody = respEstimate.asJson();
+        List<ShortSalesDocumentData> expectedEstimatesDoc = convertToShortSalesDocumentData(
+                responseEstimatesBody.getSalesDocuments());
+
+        MainCustomerPage mainCustomerPage = loginAndGoTo(MainCustomerPage.class);
+        SearchCustomerPage searchCustomerPage = mainCustomerPage.clickSearchCustomerField()
+                .verifyRequiredElements();
+        searchCustomerPage.searchCustomerByPhone(customerData.getPhone());
+
+        ViewCustomerPage viewCustomerPage = new ViewCustomerPage()
+                .verifyRequiredElements();
+
+        // Step 1
+        step("Нажмите на Корзины");
+        CartSearchPage cartSearchPage = viewCustomerPage.goToCarts();
+        cartSearchPage.verifyRequiredElements();
+        cartSearchPage.shouldFirstDocumentsAre(expectedCarts);
+
+        // Step 2
+        step("Нажмите на стрелку назад");
+        viewCustomerPage = cartSearchPage.clickBackButton();
+        viewCustomerPage.shouldCartsCountIs(responseCartBody.getTotalCount());
+
+        // Step 3
+        step("Нажмите на Документы продажи");
+        OrderSearchPage orderSearchPage = viewCustomerPage.goToSalesDocuments();
+        orderSearchPage.verifyRequiredElements();
+        orderSearchPage.shouldFirstDocumentsAre(expectedSalesDoc);
+
+        // Step 4
+        step("Нажмите на стрелку назад");
+        viewCustomerPage = orderSearchPage.clickBackButton();
+        viewCustomerPage.shouldSalesDocCountIs(responseSalesDocBody.getTotalCount());
+
+        // Step 5
+        step("Нажмите на Сметы");
+        EstimateSearchPage estimateSearchPage = viewCustomerPage.goToEstimates();
+        estimateSearchPage.verifyRequiredElements();
+        estimateSearchPage.shouldFirstDocumentsAre(expectedEstimatesDoc);
+
+        // Step 6
+        step("Нажмите на стрелку назад");
+        viewCustomerPage = estimateSearchPage.clickBackButton();
+        viewCustomerPage.shouldEstimatesCountIs(responseEstimatesBody.getTotalCount());
+    }*/
 
     @Smoke
     @Test(description = "C3201020 Поиск клиента по телефону (физ. лицо)")
@@ -239,6 +340,159 @@ public class CustomerTest extends AppBaseSteps {
         step("Нажмите на стрелку назад");
         viewCustomerPage = estimateSearchPage.clickBackButton();
         viewCustomerPage.shouldEstimatesCountIs(responseEstimatesBody.getTotalCount());
+    }
+
+    @Test(description = "C22797105 Создание сметы с карточки клиента")
+    public void testCreateEstimateFromClientPage() throws Exception {
+        MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
+        String lmCode = searchProductHelper.getProducts(1, false, false).get(0).getLmCode();
+
+        // Pre-condition
+        MainCustomerPage mainCustomerPage = loginSelectShopAndGoTo(MainCustomerPage.class);
+        SearchCustomerPage searchCustomerPage = mainCustomerPage.clickSearchCustomerField();
+        searchCustomerPage.searchCustomerByPhone(customerData.getPhone(), true);
+
+        // Step 1
+        step("Нажмите на Сметы");
+        EstimateSearchPage estimateSearchPage = new ViewCustomerPage().goToEstimates();
+
+        // Step 2
+        step("Нажмите на Создать смету");
+        EstimatePage estimatePage = estimateSearchPage.clickCreateEstimateButton();
+
+        // Step 3
+        step("Нажмите на кнопку +Товары и услуги");
+        SearchProductPage searchProductPage = estimatePage.clickProductAndServiceButton();
+        searchProductPage.verifyRequiredElements();
+
+        // Step 4
+        step("Введите ЛМ код товара или название товара или отсканируйте товар");
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
+        AddProduct35Page<EstimatePage> addProduct35Page = new AddProduct35Page<>(EstimatePage.class);
+        addProduct35Page.verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_ESTIMATE);
+
+        // Step 5
+        step("Нажмите на Добавить в смету");
+        estimatePage = addProduct35Page.clickAddIntoEstimateButton();
+        EstimatePage.PageState pageState = EstimatePage.PageState.builder()
+                .customerIsSelected(true).productIsAdded(true).build();
+        estimatePage.verifyRequiredElements(pageState);
+
+        // Step 6
+        step("Нажмите на Создать");
+        Double expectedTotalPrice = estimatePage.getTotalPrice();
+        String documentNumber = estimatePage.getDocumentNumber(true);
+        EstimateSubmittedPage estimateSubmittedPage = estimatePage.clickCreateButton()
+                .verifyRequiredElements();
+
+        // Step 7
+        step("Нажать на Перейти в список документов");
+        ShortSalesDocumentData expectedSalesDocument = new ShortSalesDocumentData();
+        expectedSalesDocument.setDocumentTotalPrice(expectedTotalPrice);
+        expectedSalesDocument.setDocumentState(SalesDocumentsConst.States.CONFIRMED.getUiVal());
+        expectedSalesDocument.setTitle(SalesDocumentsConst.Types.ESTIMATE.getUiVal());
+        expectedSalesDocument.setNumber(documentNumber);
+        SalesDocumentsPage salesDocumentsPage = estimateSubmittedPage.clickSubmitButton();
+        salesDocumentsPage.verifyRequiredElements()
+                .shouldSalesDocumentIsPresentAndDataMatches(expectedSalesDocument);
+    }
+
+    @Test(description = "C22797106 Создание корзины с карточки клиента")
+    public void testCreateCartFromClientPage() throws Exception {
+        MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
+        String lmCode = searchProductHelper.getProducts(1, false, false).get(0).getLmCode();
+
+        // Pre-condition
+        MainCustomerPage mainCustomerPage = loginSelectShopAndGoTo(MainCustomerPage.class);
+        SearchCustomerPage searchCustomerPage = mainCustomerPage.clickSearchCustomerField();
+        searchCustomerPage.searchCustomerByPhone(customerData.getPhone(), true);
+
+        // Step 1
+        step("Нажмите на Корзины");
+        CartSearchPage cartSearchPage = new ViewCustomerPage().goToCarts();
+
+        // Step 2
+        step("Нажмите на Создать корзину");
+        Cart35Page cart35Page = cartSearchPage.clickCreateCartButton();
+
+        // Step 3
+        step("Нажмите на кнопку +Товары и услуги");
+        SearchProductPage searchProductPage = cart35Page.clickAddProductButton()
+                .verifyRequiredElements();
+
+        // Step 4
+        step("Введите ЛМ код товара");
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
+        AddProduct35Page<Cart35Page> addProduct35Page = new AddProduct35Page<>(Cart35Page.class);
+        addProduct35Page.verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_BASKET);
+
+        // Step 5
+        step("Нажмите на Добавить в корзину");
+        cart35Page = addProduct35Page.clickAddIntoBasketButton();
+        cart35Page.verifyRequiredElements(Cart35Page.PageState.builder()
+                .productIsAdded(true)
+                .build());
+
+        // TODO
+        // Шаги 6 и 7 пропущены пока что, так как номер корзины на странице корзины не отображается, а
+        // по каким другим критериям можно найти именно созданную корзину в списке - не понятно.
+
+    }
+
+    @Test(description = "C22797108 Создание заказа из корзины, созданной из карточки клиента")
+    public void testCreateOrderFromClientPage() throws Exception {
+        MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
+
+        // Pre-condition
+        MainCustomerPage mainCustomerPage = loginSelectShopAndGoTo(MainCustomerPage.class);
+        SearchCustomerPage searchCustomerPage = mainCustomerPage.clickSearchCustomerField();
+        searchCustomerPage.searchCustomerByPhone(customerData.getPhone(), true);
+
+        // Step 1
+        step("Нажмите на Корзины");
+        CartSearchPage cartSearchPage = new ViewCustomerPage().goToCarts();
+
+        // Step 2
+        step("Нажмите на мини-карточку нужной корзины");
+        cartSearchPage.clickFirstSalesDoc();
+        Cart35Page cart35Page = new Cart35Page();
+        double totalPrice = cart35Page.getTotalPrice();
+
+        // Step 3
+        step("Нажмите на кнопку Оформить");
+        ProcessOrder35Page processOrder35Page = cart35Page.clickMakeSalesButton();
+
+        // Step 4-6
+        step("Введите имя и фамилию нового пользователя, Введите PIN-код для оплаты");
+        OrderDetailsData orderDetailsData = new OrderDetailsData().setRequiredRandomData();
+        orderDetailsData.setDeliveryType(SalesDocumentsConst.GiveAwayPoints.PICKUP);
+        processOrder35Page.fillInFormFields(orderDetailsData)
+                .shouldFormFieldsAre(orderDetailsData);
+
+        // Step 7
+        step("Нажмите на кнопку Подтвердить заказ");
+        SubmittedSalesDocument35Page submittedDocument35Page = processOrder35Page.clickSubmitButton()
+                .verifyRequiredElements(SalesDocumentsConst.GiveAwayPoints.PICKUP)
+                .shouldPinCodeIs(orderDetailsData.getPinCode());
+        String documentNumber = submittedDocument35Page.getDocumentNumber();
+
+        // Step 9
+        step("Нажмите на Перейти в список документов");
+        ShortSalesDocumentData expectedSalesDocument = new ShortSalesDocumentData();
+        expectedSalesDocument.setDocumentTotalPrice(totalPrice);
+        expectedSalesDocument.setDocumentState(SalesDocumentsConst.States.IN_PROGRESS.getUiVal());
+        expectedSalesDocument.setTitle(orderDetailsData.getDeliveryType().getUiVal());
+        expectedSalesDocument.setNumber(documentNumber);
+        SalesDocumentsPage salesDocumentsPage = submittedDocument35Page.clickGoToDocumentListButton();
+        salesDocumentsPage.shouldSalesDocumentIsPresentAndDataMatches(expectedSalesDocument);
+
+        // Clean up
+        step("(Доп шаг) Отменяем заказ через API запрос");
+        try {
+            cancelOrder(documentNumber);
+        } catch (AssertionError | Exception err) {
+            Log.error(err.getMessage());
+        }
     }
 
     // ----------- Private methods ------------ //
