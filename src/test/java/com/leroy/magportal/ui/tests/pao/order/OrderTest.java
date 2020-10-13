@@ -356,10 +356,10 @@ public class OrderTest extends BasePAOTest {
         String orderId = paoHelper.createConfirmedOrder(cardProducts, false).getOrderId();
 
         OrderHeaderPage orderHeaderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
-        orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderId,
+        orderClient.waitUntilOrderGetStatus(orderId,
                 CONFIRMED_BUT_NOT_ALLOWED_FOR_PICKING_ORDER ?
-                        SalesDocumentsConst.States.CONFIRMED.getApiVal() :
-                        SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal(), false);
+                        SalesDocumentsConst.States.CONFIRMED :
+                        SalesDocumentsConst.States.ALLOWED_FOR_PICKING, null);
         orderHeaderPage.clickDocumentInLeftMenu(orderId);
 
         orderCreatedContentPage = new OrderCreatedContentPage();
