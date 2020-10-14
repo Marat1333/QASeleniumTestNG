@@ -40,10 +40,10 @@ public class OrderDraftProductCardWidget extends OrderProductCardWidget {
         else {
             productOrderCardWebData.setDiscountPercent(ParserUtil.strToDouble(discountPercent.getText()));
             productOrderCardWebData.setTotalPriceWithDiscount(ParserUtil.strToDouble(price.getText()));
-            productOrderCardWebData.setTotalPrice(productOrderCardWebData.getTotalPriceWithDiscount() /
-                    (1 - productOrderCardWebData.getDiscountPercent() / 100.0));
+            productOrderCardWebData.setTotalPrice(ParserUtil.plus(productOrderCardWebData.getTotalPriceWithDiscount() /
+                    (1 - productOrderCardWebData.getDiscountPercent() / 100.0), 0, 2));
         }
-        productOrderCardWebData.setPrice(productOrderCardWebData.getTotalPrice() / productOrderCardWebData.getSelectedQuantity());
+        productOrderCardWebData.setPrice(ParserUtil.plus(productOrderCardWebData.getTotalPrice() / productOrderCardWebData.getSelectedQuantity(), 0, 2));
         return productOrderCardWebData;
     }
 }
