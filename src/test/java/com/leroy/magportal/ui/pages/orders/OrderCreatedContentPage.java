@@ -149,6 +149,7 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
         expectedOrderData.setComment(null);
         expectedOrderData.setRecipient(null);
         expectedOrderData.setClient(null);
+        expectedOrderData.setStatus(null); // Сложно предугадать какой будет статус в определенный момент на "живой" системе
         if (INVALID_ORDER_DRAFT_DATE)
             expectedOrderData.setCreationDate(null); // TODO Надо приводить к LocalDate и проверять
         actualData.getOrders().get(0).setProductCount(actualData.getOrders().get(0).getProductCardDataList().size());
@@ -167,11 +168,11 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
             softAssert.isNotEquals(salesDocWebData.getCreationDate(), "Invalid date",
                     "Неверная дата создания");
         softAssert.isFalse(salesDocWebData.getNumber().isEmpty(), "Заказ не имеет номера");
-        softAssert.isEquals(salesDocWebData.getStatus().toLowerCase(),
-                DefectConst.CONFIRMED_BUT_NOT_ALLOWED_FOR_PICKING_ORDER ?
-                        SalesDocumentsConst.States.CONFIRMED.getUiVal().toLowerCase() :
-                        SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal().toLowerCase(),
-                "Неверный статус заказа");
+        if (!DefectConst.ISSUE_WITH_ORDER_STATUS) {
+            softAssert.isEquals(salesDocWebData.getStatus().toLowerCase(),
+                    SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal().toLowerCase(),
+                    "Неверный статус заказа");
+        }
         anAssert.isTrue(salesDocWebData.getOrders() != null && salesDocWebData.getOrders().size() == 1,
                 "Информация о заказе недоступна");
         OrderWebData orderWebData = salesDocWebData.getOrders().get(0);
