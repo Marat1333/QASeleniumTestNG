@@ -88,8 +88,8 @@ public class WorkPage extends BottomMenuPage {
     }
 
     @Step("Нажать на кнопку создания сессии перебоев")
-    public RupturesScannerPage createRupturesSession() {
-        return goToRuptures().clickScanRupturesButton(); // TODO нужен ли теперь этот метод?
+    public RupturesScannerPage createRupturesSessionDeprecated() {
+        return goToRuptures().clickScanRupturesByOneButton(); // TODO нужен ли теперь этот метод?
     }
 
     @Step("Перейти в План поставок")

@@ -155,7 +155,7 @@ public class RupturesTest extends AppBaseSteps {
                 .shouldRupturesNavigationBtnHasCorrectCondition(false);
     }
 
-    @Test(description = "C3272520 Создание сессии с экрана работы")
+    @Test(description = "C3272520 Создание сессии с экрана списка сессий")
     public void testCreateSessionFromWorkPage() throws Exception {
         List<ProductItemData> randomProducts = searchProductHelper.getProducts(2);
         String firstProductLmCode = randomProducts.get(0).getLmCode();
@@ -163,10 +163,13 @@ public class RupturesTest extends AppBaseSteps {
 
         // Pre-conditions
         WorkPage workPage = loginAndGoTo(WorkPage.class);
+        SessionListPage sessionListPage = workPage.goToRuptures();
 
         // Step 1
-        step("Тапнуть на иконку '+'");
-        RupturesScannerPage rupturesScannerPage = workPage.createRupturesSession();
+        step("Нажать на кнопку 'по одному'");
+        RupturesScannerPage rupturesScannerPage = sessionListPage.clickScanRupturesByOneButton();
+        rupturesScannerPage.shouldCounterIsCorrect(0);
+        rupturesScannerPage.shouldRupturesByOneLblIsVisible();
         rupturesScannerPage.shouldRupturesListNavBtnIsVisible(false)
                 .verifyRequiredElements();
 
@@ -241,6 +244,7 @@ public class RupturesTest extends AppBaseSteps {
         step("Подтвердить добавление перебоя в сессию");
         RuptureData firstAddedRupture = ruptureCardPage.getRuptureData();
         rupturesScannerPage = ruptureCardPage.clickSubmitButton();
+        rupturesScannerPage.shouldRupturesListNavBtnIsVisible(true);
         rupturesScannerPage.shouldCounterIsCorrect(1);
 
         // Step 12
@@ -257,17 +261,29 @@ public class RupturesTest extends AppBaseSteps {
         ActiveSessionPage activeSessionPage = rupturesScannerPage.navigateToRuptureProductList();
         activeSessionPage.shouldRupturesDataIsCorrect(secondAddedRupture, firstAddedRupture)
                 .verifyRequiredElements();
+        SessionData sessionData = activeSessionPage.getSessionData(); //TO-DO уточнить что тут происходит
 
         // Step 14
-        step("Выйти из сессии по железной кнопке");
-        ExitActiveSessionModalPage exitActiveSessionModalPage = activeSessionPage.exitActiveSession();
+        step("Нажать железную кнопку назад");
+        ExitActiveSessionModalPage exitActiveSessionModalPage = activeSessionPage.exitActiveSessionByDeviceBackBtn();
         exitActiveSessionModalPage.verifyRequiredElements();
 
         // Step 15
+        step("Нажать отмена");
+        activeSessionPage = exitActiveSessionModalPage.declineExit();
+        activeSessionPage.verifyRequiredElements();
+
+        // Step 16
+        step("Выйти из сессии нажав стрелку назад");
+        exitActiveSessionModalPage = activeSessionPage.exitActiveSession();
+        exitActiveSessionModalPage.verifyRequiredElements(); //TO-DO убедиться, что это работает, добавил перед коммитом
+
+        // Step 17
         step("Подтвердить выход из сессии");
         exitActiveSessionModalPage.confirmExit();
-        workPage = new WorkPage();
-        workPage.verifyRequiredElements();
+        sessionListPage = new SessionListPage();
+        sessionListPage.verifyRequiredElements()
+                .shouldActiveSessionContainsSession(sessionData);
     }
 
     @Test(description = "C3272521 Создание сессии со списка сессий")
@@ -280,7 +296,7 @@ public class RupturesTest extends AppBaseSteps {
 
         // Step 1
         step("Нажать на кнопку сканирования перебоев");
-        RupturesScannerPage rupturesScannerPage = sessionListPage.clickScanRupturesButton();
+        RupturesScannerPage rupturesScannerPage = sessionListPage.clickScanRupturesByOneButton();
         rupturesScannerPage.verifyRequiredElements();
 
         // Step 2
@@ -452,7 +468,7 @@ public class RupturesTest extends AppBaseSteps {
 
         // Step 1
         step("Перейти к добавлению сессии");
-        RupturesScannerPage rupturesScannerPage = workPage.createRupturesSession();
+        RupturesScannerPage rupturesScannerPage = workPage.createRupturesSessionDeprecated(); // TO-DO перепилить чтобы избавиться от этого метода
         rupturesScannerPage.shouldRupturesListNavBtnIsVisible(false)
                 .verifyRequiredElements();
 
@@ -1291,7 +1307,7 @@ public class RupturesTest extends AppBaseSteps {
         // Step 1
         step("Нажать '+ сканировать перебой' и перейти в ручной поиск, " +
                 "Найти товар из списка пригодных для отзыва с РМ (есть сток на РМ)");
-        RupturesScannerPage rupturesScannerPage = sessionListPage.clickScanRupturesButton();
+        RupturesScannerPage rupturesScannerPage = sessionListPage.clickScanRupturesByOneButton();
         SearchProductPage searchProductPage = rupturesScannerPage.navigateToSearchProductPage();
         searchProductPage.enterTextInSearchFieldAndSubmit(ruptureLmCode);
         RuptureCardPage ruptureCardPage = new RuptureCardPage();
