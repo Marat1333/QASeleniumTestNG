@@ -93,8 +93,8 @@ public class BitrixHelper extends BaseHelper {
                                 States.WAITING_FOR_PAYMENT,
                                 PaymentStatusEnum.CONFIRMED);
                         paymentHelper
-//                                .makePaymentCard(response.getSolutionId());
-                                .makeHoldCost(response.getSolutionId());
+                                .makePaymentCard(response.getSolutionId());
+//                                .makeHoldCost(response.getSolutionId());
                     }
                     orderClient.waitUntilOrderGetStatus(response.getSolutionId(),
                             States.ALLOWED_FOR_PICKING, null);

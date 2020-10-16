@@ -16,6 +16,7 @@ public class SalesDocumentsConst {
         PARTIALLY_GIVEN_AWAY("PARTIALLY_GIVEN_AWAY", "Част. выдан"),
         GIVEN_AWAY("GIVEN_AWAY", "Выдан"),
         SHIPPED("SHIPPED", "Отгружен"),
+        ON_DELIVERY("ON_DELIVERY", "В доставке"),
         DELIVERED("DELIVERED", "Доставлен"),
         TRANSFORMED("", "Преобразован"),
         DELETED("DELETED", ""),

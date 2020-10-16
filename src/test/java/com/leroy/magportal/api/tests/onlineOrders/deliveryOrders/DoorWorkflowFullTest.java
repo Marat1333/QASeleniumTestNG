@@ -16,7 +16,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-public class EntranceWorkflowShortTest extends BaseMagPortalApiTest {
+public class DoorWorkflowFullTest extends BaseMagPortalApiTest {
 
     @Inject
     private BitrixHelper bitrixHelper;
@@ -29,25 +29,26 @@ public class EntranceWorkflowShortTest extends BaseMagPortalApiTest {
 
     private String currentOrderId;
     private String currentTaskId;
+    private OnlineOrderTypeData currentOrderType;
 
 
     @BeforeClass
     private void setUp() {
-        OnlineOrderTypeData currentOrderType = OnlineOrderTypeConst.DELIVERY_TO_ENTRANCE;
+        currentOrderType = OnlineOrderTypeConst.DELIVERY_TO_DOOR;
         currentOrderId = bitrixHelper.createOnlineOrder(currentOrderType).getSolutionId();
 
         currentTaskId = pickingTaskClient.searchForPickingTasks(currentOrderId).asJson().getItems()
                 .stream().findFirst().get().getTaskId();
     }
 
-    @Test(description = "C23425627 Entrance Delivery: ALLOWED_FOR_PICKING -> PICKING_IN_PROGRESS")
+    @Test(description = "C0")
     public void testStartPicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .startPicking(currentTaskId);
         orderClient.assertWorkflowResult(response, currentOrderId, States.PICKING_IN_PROGRESS);
     }
 
-    @Test(description = "C23425627 Entrance Delivery: PICKING_IN_PROGRESS -> PICKED", dependsOnMethods = {
+    @Test(description = "C0", dependsOnMethods = {
             "testStartPicking"})
     public void testCompletePicking() {
         Response<PickingTaskData> response = pickingTaskClient
@@ -55,7 +56,7 @@ public class EntranceWorkflowShortTest extends BaseMagPortalApiTest {
         orderClient.assertWorkflowResult(response, currentOrderId, States.PICKED_WAIT);
     }
 
-    @Test(description = "C23425627 Entrance Delivery: ALLOWED_FOR_GIVEAWAY -> ON_SHIPMENT", dependsOnMethods = {
+    @Test(description = "C0", dependsOnMethods = {
             "testCompletePicking"})
     public void testShipped() {
         paymentHelper.makePaid(currentOrderId);
@@ -65,11 +66,11 @@ public class EntranceWorkflowShortTest extends BaseMagPortalApiTest {
         orderClient.assertWorkflowResult(response, currentOrderId, States.SHIPPED);
     }
 
-    @Test(description = "C23425627 Entrance Delivery: ON_SHIPMENT -> DELIVERED", dependsOnMethods = {
+    @Test(description = "C0", dependsOnMethods = {
             "testShipped"})
     public void testDeliver() {
         orderClient.waitUntilOrderGetStatus(currentOrderId,
-                States.ON_DELIVERY, null);
+                States.ON_DELIVERY, PaymentStatusEnum.PAID);
         Response<JsonNode> response = orderClient.deliver(currentOrderId, true);
         orderClient.assertWorkflowResult(response, currentOrderId, States.DELIVERED);
     }
