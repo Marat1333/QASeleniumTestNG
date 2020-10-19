@@ -82,6 +82,25 @@ public class PickingTest extends BasePAOTest {
 
     }
 
+    private void initCreateOrder(int productCount, SalesDocumentsConst.GiveAwayPoints giveAwayPoint) throws Exception {
+        List<CartProductOrderData> productOrderDataList = new ArrayList<>();
+        for (int i = 0; i < productCount; i++) {
+            CartProductOrderData productOrderData = new CartProductOrderData(productList.get(i));
+            productOrderData.setQuantity(2.0);
+            productOrderDataList.add(productOrderData);
+        }
+        GiveAwayData giveAwayData = new GiveAwayData();
+        giveAwayData.setDate(LocalDateTime.now().plusDays(1));
+        giveAwayData.setShopId(
+                Integer.valueOf(ContextProvider.getContext().getUserSessionData().getUserShopId()));
+        if (giveAwayPoint != null) {
+            giveAwayData.setPoint(giveAwayPoint.getApiVal());
+        } else {
+            giveAwayData.setPoint(SalesDocumentsConst.GiveAwayPoints.PICKUP.getApiVal());
+        }
+        orderId = helper.createConfirmedOrder(productOrderDataList, giveAwayData, false).getOrderId();
+    }
+
     private void initCreateOrder(int productCount) throws Exception {
         initCreateOrder(productCount, SalesDocumentsConst.States.CONFIRMED);
     }
