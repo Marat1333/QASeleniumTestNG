@@ -1,0 +1,2099 @@
+[
+  {
+    "index": 0,
+    "body": {
+      "totalCount": 1,
+      "salesDocuments": [
+        {
+          "docId": "69820000",
+          "fullDocId": "234269820000",
+          "docType": "ORDER",
+          "shopId": "139",
+          "pinCode": null,
+          "salesDocStatus": "WAITING_FOR_PAYMENT",
+          "isUrgent": false,
+          "delivery": true,
+          "creatorName": null,
+          "creatorSurname": null,
+          "createdBy": "Bitrix",
+          "createdDate": "2020-10-16T09:55:59.732+00:00",
+          "customerName": "Авто",
+          "customerSurname": "Тестик",
+          "customerPhone": "79211339990",
+          "customerType": "PERSON",
+          "customerNumber": "1265522",
+          "comment": "BITRIX: В КОМНАТУ, Sberbank",
+          "taskControlStatus": "NOT_CONTROLLED",
+          "docPriceSum": 7951.33,
+          "servicesCount": 0,
+          "productsCount": 3,
+          "giveAway": {
+            "point": "HOME_DELIVERY"
+          },
+          "channel": "ONLINE",
+          "paymentStatus": "CONFIRMED",
+          "paymentType": "PREPAYMENT",
+          "userTasks": [],
+          "products": [
+            {
+              "lmCode": "10052955",
+              "title": "Канал плоский  Equation, 55х110х1500 мм"
+            },
+            {
+              "lmCode": "10061536",
+              "title": "Суппорт для розетки Экопласт PM-45, 45 мм, цвет белый"
+            },
+            {
+              "lmCode": "49626307",
+              "title": null
+            },
+            {
+              "lmCode": "10052920",
+              "title": "Канал плоский Equation, 55х110х1000 мм"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "index": 1,
+    "body": {
+      "callRequired": 0,
+      "completeDelivery": false,
+      "orderId": "234269820000",
+      "shopId": 139,
+      "createdAt": "2020-10-16T09:55:59.732+00:00",
+      "createdBy": "Bitrix",
+      "paymentStatus": "CONFIRMED",
+      "comment": "BITRIX: В КОМНАТУ, Sberbank",
+      "customers": [
+        {
+          "customerNumber": "1265522",
+          "firstName": "Авто",
+          "lastName": "Тестик",
+          "fullName": "Авто Тестик",
+          "primaryPhone": "79211339990",
+          "phone": {
+            "primary": "79211339990",
+            "secondary": null
+          },
+          "email": "autotest@mail.com",
+          "role": "PAYER",
+          "roles": [
+            "PAYER"
+          ],
+          "type": "PERSON"
+        }
+      ],
+      "products": [
+        {
+          "lmCode": "10061536",
+          "lineId": "62302b4e-acc9-4b42-9a98-b9ff76a94743",
+          "type": "PRODUCT",
+          "price": 105,
+          "quantity": 10,
+          "createdQuantity": 10,
+          "pickedQuantity": 0,
+          "givenAwayQuantity": 0,
+          "controlledQuantity": 0,
+          "confirmedQuantity": 10,
+          "returnedQuantity": 0,
+          "discount": null,
+          "reasons": {
+            "lastPicked": null,
+            "lastGivenAway": null,
+            "lastAdjustment": null
+          },
+          "stocks": {
+            "RD": null,
+            "EM": null,
+            "LS": null
+          },
+          "sellingScheme": "GENERAL",
+          "refundQuantity": 0,
+          "deliveredQuantity": null,
+          "logistic": {
+            "width": "6.9",
+            "height": "2.8",
+            "weight": "0.022",
+            "depth": "7.7"
+          },
+          "barCodes": [
+            "4607058423902",
+            "2",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "6",
+            "1",
+            "5",
+            "3",
+            "6",
+            "2"
+          ],
+          "departmentId": "3",
+          "priceUnit": "NIU",
+          "title": "Суппорт для розетки Экопласт PM-45, 45 мм, цвет белый",
+          "priceCategory": "STD",
+          "isAvs": false,
+          "images": [
+            "https://res.cloudinary.com/lmru/image/upload/LMCode/10061536.jpg"
+          ],
+          "availableStock": 11,
+          "isAVS": false
+        },
+        {
+          "lmCode": "10052955",
+          "lineId": "07d476af-0a48-4fdb-81db-514e56d493b5",
+          "type": "PRODUCT",
+          "price": 184,
+          "quantity": 10,
+          "createdQuantity": 10,
+          "pickedQuantity": 0,
+          "givenAwayQuantity": 0,
+          "controlledQuantity": 0,
+          "confirmedQuantity": 10,
+          "returnedQuantity": 0,
+          "discount": null,
+          "reasons": {
+            "lastPicked": null,
+            "lastGivenAway": null,
+            "lastAdjustment": null
+          },
+          "stocks": {
+            "RD": null,
+            "EM": null,
+            "LS": null
+          },
+          "sellingScheme": "GENERAL",
+          "refundQuantity": 0,
+          "deliveredQuantity": null,
+          "logistic": {
+            "width": "11.1",
+            "height": "5.5",
+            "weight": "0.852",
+            "depth": "150.5"
+          },
+          "barCodes": [
+            "4630017370122",
+            "2",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "5",
+            "2",
+            "9",
+            "5",
+            "5",
+            "3"
+          ],
+          "departmentId": "3",
+          "priceUnit": "NIU",
+          "title": "Канал плоский  Equation, 55х110х1500 мм",
+          "priceCategory": "STD",
+          "isAvs": false,
+          "images": [
+            "https://res.cloudinary.com/lmru/image/upload/LMCode/10052955.jpg"
+          ],
+          "availableStock": 15,
+          "isAVS": false
+        },
+        {
+          "lmCode": "10052920",
+          "lineId": "e84e75bc-41e2-4b77-aa0c-e0673cb30071",
+          "type": "PRODUCT",
+          "price": 106,
+          "quantity": 10,
+          "createdQuantity": 10,
+          "pickedQuantity": 0,
+          "givenAwayQuantity": 0,
+          "controlledQuantity": 0,
+          "confirmedQuantity": 10,
+          "returnedQuantity": 0,
+          "discount": null,
+          "reasons": {
+            "lastPicked": null,
+            "lastGivenAway": null,
+            "lastAdjustment": null
+          },
+          "stocks": {
+            "RD": null,
+            "EM": null,
+            "LS": null
+          },
+          "sellingScheme": "GENERAL",
+          "refundQuantity": 0,
+          "deliveredQuantity": null,
+          "logistic": {
+            "width": "11.1",
+            "height": "5.5",
+            "weight": "0.607",
+            "depth": "100.5"
+          },
+          "barCodes": [
+            "4630017370108",
+            "2",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "5",
+            "2",
+            "9",
+            "2",
+            "0",
+            "1"
+          ],
+          "departmentId": "3",
+          "priceUnit": "NIU",
+          "title": "Канал плоский Equation, 55х110х1000 мм",
+          "priceCategory": "STD",
+          "isAvs": false,
+          "images": [
+            "https://res.cloudinary.com/lmru/image/upload/LMCode/10052920.jpg"
+          ],
+          "availableStock": 14,
+          "isAVS": false
+        }
+      ],
+      "userComments": [],
+      "solutionVersion": 8,
+      "channel": "ONLINE",
+      "giveAway": {
+        "date": "2020-10-17T00:00:00Z",
+        "shopId": 139,
+        "point": "HOME_DELIVERY",
+        "storageLocation": null
+      },
+      "customerId": "1265522",
+      "taskControlStatus": "NOT_CONTROLLED",
+      "fulfillmentTaskId": "1013920100299356",
+      "fulfillmentVersion": 3,
+      "fulfillmentPickingTasksQty": 0,
+      "pickers": [
+        {}
+      ],
+      "longtail": false,
+      "pickingStatus": null,
+      "delivery": true,
+      "paymentType": "PREPAYMENT",
+      "paymentTaskId": "75f6a609-a2ff-47e3-922e-468e9d01181a",
+      "paymentVersion": 4,
+      "pinCode": null,
+      "actualDeliveryPrice": 4001.33,
+      "payments": [],
+      "refunds": [],
+      "registerStatus": {
+        "atolId": null,
+        "uuid": null,
+        "ecrRegistrationNumber": null,
+        "fiscalDocumentNumber": null,
+        "fiscalStorageNumber": null,
+        "status": null,
+        "lines": null
+      },
+      "deliveryData": {
+        "id": "1315022",
+        "status": "draft",
+        "manualProcessing": false,
+        "planDate": "2020-10-17T13:00:00+03:00",
+        "timeInterval": "08:00:00+03:00/13:00:00+03:00",
+        "transportCompany": null,
+        "shipFromShopId": "139",
+        "shipTo": {
+          "city": "Moscow",
+          "street": "Dubki",
+          "house": "13",
+          "housing": null,
+          "building": null,
+          "flat": "52",
+          "entrance": "7",
+          "intercom": "12345",
+          "floor": 10,
+          "gpsX": 29.847462,
+          "gpsY": 60.566702
+        },
+        "referenceStoreId": "139",
+        "deliveryServicePrice": 3000.89,
+        "liftupServicePrice": 1000.44,
+        "tariff": "TO_DOOR",
+        "totalAmount": 7951.33,
+        "totalServicePrice": 4001.33,
+        "payerType": "client",
+        "customer": {
+          "fullName": "Авто Тестик",
+          "phone": "79211339990",
+          "email": "autotest@mail.com",
+          "serviceCard": null
+        },
+        "receiver": {
+          "fullName": "Авто Тестик",
+          "phone": "79211339990"
+        },
+        "liftType": "byLift",
+        "items": [
+          {
+            "id": "62302b4e-acc9-4b42-9a98-b9ff76a94743",
+            "status": "NEW",
+            "product": {
+              "id": "10061536",
+              "name": "Суппорт для розетки Экопласт PM-45, 45 мм, цвет белый",
+              "price": 105,
+              "taxRate": [
+                {
+                  "type": "vat",
+                  "value": "18"
+                }
+              ]
+            },
+            "quantity": {
+              "value": 10,
+              "measure": "th"
+            }
+          },
+          {
+            "id": "07d476af-0a48-4fdb-81db-514e56d493b5",
+            "status": "NEW",
+            "product": {
+              "id": "10052955",
+              "name": "Канал плоский  Equation, 55х110х1500 мм",
+              "price": 184,
+              "taxRate": [
+                {
+                  "type": "vat",
+                  "value": "18"
+                }
+              ]
+            },
+            "quantity": {
+              "value": 10,
+              "measure": "th"
+            }
+          },
+          {
+            "id": "e84e75bc-41e2-4b77-aa0c-e0673cb30071",
+            "status": "NEW",
+            "product": {
+              "id": "10052920",
+              "name": "Канал плоский Equation, 55х110х1000 мм",
+              "price": 106,
+              "taxRate": [
+                {
+                  "type": "vat",
+                  "value": "18"
+                }
+              ]
+            },
+            "quantity": {
+              "value": 10,
+              "measure": "th"
+            }
+          }
+        ]
+      },
+      "status": "WAITING_FOR_PAYMENT",
+      "totalWeight": "14.810",
+      "maxSize": "150.5",
+      "refundAvailable": true,
+      "creatorName": null,
+      "creatorSurname": null
+    }
+  },
+  {
+    "index": 2,
+    "body": {
+      "totalCount": 1,
+      "salesDocuments": [
+        {
+          "docId": "69820001",
+          "fullDocId": "234269820001",
+          "docType": "ORDER",
+          "shopId": "139",
+          "pinCode": null,
+          "salesDocStatus": "ALLOWED_FOR_PICKING",
+          "isUrgent": false,
+          "delivery": true,
+          "creatorName": null,
+          "creatorSurname": null,
+          "createdBy": "Bitrix",
+          "createdDate": "2020-10-16T09:55:59.732+00:00",
+          "customerName": "Авто",
+          "customerSurname": "Тестик",
+          "customerPhone": "79211339990",
+          "customerType": "PERSON",
+          "customerNumber": "1265522",
+          "comment": "BITRIX: В КОМНАТУ, Sberbank",
+          "taskControlStatus": "NOT_CONTROLLED",
+          "docPriceSum": 7951.33,
+          "servicesCount": 0,
+          "productsCount": 3,
+          "giveAway": {
+            "point": "HOME_DELIVERY"
+          },
+          "channel": "ONLINE",
+          "paymentStatus": "HOLD",
+          "paymentType": "PREPAYMENT",
+          "userTasks": [],
+          "products": [
+            {
+              "lmCode": "10052955",
+              "title": "Канал плоский  Equation, 55х110х1500 мм"
+            },
+            {
+              "lmCode": "10061536",
+              "title": "Суппорт для розетки Экопласт PM-45, 45 мм, цвет белый"
+            },
+            {
+              "lmCode": "49626307",
+              "title": null
+            },
+            {
+              "lmCode": "10052920",
+              "title": "Канал плоский Equation, 55х110х1000 мм"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "index": 3,
+    "body": {
+      "callRequired": 0,
+      "completeDelivery": false,
+      "orderId": "234269820001",
+      "shopId": 139,
+      "createdAt": "2020-10-16T09:55:59.732+00:00",
+      "createdBy": "Bitrix",
+      "paymentStatus": "HOLD",
+      "comment": "BITRIX: В КОМНАТУ, Sberbank",
+      "customers": [
+        {
+          "customerNumber": "1265522",
+          "firstName": "Авто",
+          "lastName": "Тестик",
+          "fullName": "Авто Тестик",
+          "primaryPhone": "79211339990",
+          "phone": {
+            "primary": "79211339990",
+            "secondary": null
+          },
+          "email": "autotest@mail.com",
+          "role": "PAYER",
+          "roles": [
+            "PAYER"
+          ],
+          "type": "PERSON"
+        }
+      ],
+      "products": [
+        {
+          "lmCode": "10061536",
+          "lineId": "62302b4e-acc9-4b42-9a98-b9ff76a94743",
+          "type": "PRODUCT",
+          "price": 105,
+          "quantity": 10,
+          "createdQuantity": 10,
+          "pickedQuantity": 0,
+          "givenAwayQuantity": 0,
+          "controlledQuantity": 0,
+          "confirmedQuantity": 10,
+          "returnedQuantity": 0,
+          "discount": null,
+          "reasons": {
+            "lastPicked": null,
+            "lastGivenAway": null,
+            "lastAdjustment": null
+          },
+          "stocks": {
+            "RD": null,
+            "EM": null,
+            "LS": null
+          },
+          "sellingScheme": "GENERAL",
+          "refundQuantity": 0,
+          "deliveredQuantity": null,
+          "logistic": {
+            "width": "6.9",
+            "height": "2.8",
+            "weight": "0.022",
+            "depth": "7.7"
+          },
+          "barCodes": [
+            "4607058423902",
+            "2",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "6",
+            "1",
+            "5",
+            "3",
+            "6",
+            "2"
+          ],
+          "departmentId": "3",
+          "priceUnit": "NIU",
+          "title": "Суппорт для розетки Экопласт PM-45, 45 мм, цвет белый",
+          "priceCategory": "STD",
+          "isAvs": false,
+          "images": [
+            "https://res.cloudinary.com/lmru/image/upload/LMCode/10061536.jpg"
+          ],
+          "availableStock": 11,
+          "isAVS": false
+        },
+        {
+          "lmCode": "10052955",
+          "lineId": "07d476af-0a48-4fdb-81db-514e56d493b5",
+          "type": "PRODUCT",
+          "price": 184,
+          "quantity": 10,
+          "createdQuantity": 10,
+          "pickedQuantity": 0,
+          "givenAwayQuantity": 0,
+          "controlledQuantity": 0,
+          "confirmedQuantity": 10,
+          "returnedQuantity": 0,
+          "discount": null,
+          "reasons": {
+            "lastPicked": null,
+            "lastGivenAway": null,
+            "lastAdjustment": null
+          },
+          "stocks": {
+            "RD": null,
+            "EM": null,
+            "LS": null
+          },
+          "sellingScheme": "GENERAL",
+          "refundQuantity": 0,
+          "deliveredQuantity": null,
+          "logistic": {
+            "width": "11.1",
+            "height": "5.5",
+            "weight": "0.852",
+            "depth": "150.5"
+          },
+          "barCodes": [
+            "4630017370122",
+            "2",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "5",
+            "2",
+            "9",
+            "5",
+            "5",
+            "3"
+          ],
+          "departmentId": "3",
+          "priceUnit": "NIU",
+          "title": "Канал плоский  Equation, 55х110х1500 мм",
+          "priceCategory": "STD",
+          "isAvs": false,
+          "images": [
+            "https://res.cloudinary.com/lmru/image/upload/LMCode/10052955.jpg"
+          ],
+          "availableStock": 15,
+          "isAVS": false
+        },
+        {
+          "lmCode": "10052920",
+          "lineId": "e84e75bc-41e2-4b77-aa0c-e0673cb30071",
+          "type": "PRODUCT",
+          "price": 106,
+          "quantity": 10,
+          "createdQuantity": 10,
+          "pickedQuantity": 0,
+          "givenAwayQuantity": 0,
+          "controlledQuantity": 0,
+          "confirmedQuantity": 10,
+          "returnedQuantity": 0,
+          "discount": null,
+          "reasons": {
+            "lastPicked": null,
+            "lastGivenAway": null,
+            "lastAdjustment": null
+          },
+          "stocks": {
+            "RD": null,
+            "EM": null,
+            "LS": null
+          },
+          "sellingScheme": "GENERAL",
+          "refundQuantity": 0,
+          "deliveredQuantity": null,
+          "logistic": {
+            "width": "11.1",
+            "height": "5.5",
+            "weight": "0.607",
+            "depth": "100.5"
+          },
+          "barCodes": [
+            "4630017370108",
+            "2",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "5",
+            "2",
+            "9",
+            "2",
+            "0",
+            "1"
+          ],
+          "departmentId": "3",
+          "priceUnit": "NIU",
+          "title": "Канал плоский Equation, 55х110х1000 мм",
+          "priceCategory": "STD",
+          "isAvs": false,
+          "images": [
+            "https://res.cloudinary.com/lmru/image/upload/LMCode/10052920.jpg"
+          ],
+          "availableStock": 14,
+          "isAVS": false
+        }
+      ],
+      "userComments": [],
+      "solutionVersion": 11,
+      "channel": "ONLINE",
+      "giveAway": {
+        "date": "2020-10-17T00:00:00Z",
+        "shopId": 139,
+        "point": "HOME_DELIVERY",
+        "storageLocation": null
+      },
+      "customerId": "1265522",
+      "taskControlStatus": "NOT_CONTROLLED",
+      "fulfillmentTaskId": "1013920100299356",
+      "fulfillmentVersion": 4,
+      "fulfillmentPickingTasksQty": 1,
+      "pickers": [
+        {}
+      ],
+      "longtail": false,
+      "pickingStatus": null,
+      "delivery": true,
+      "paymentType": "PREPAYMENT",
+      "paymentTaskId": "75f6a609-a2ff-47e3-922e-468e9d01181a",
+      "paymentVersion": 5,
+      "pinCode": null,
+      "actualDeliveryPrice": 4001.33,
+      "payments": [
+        {
+          "date": "2020-10-16T10:05:54.870+00:00",
+          "amount": 7951.33,
+          "paymentType": "PREPAYMENT",
+          "status": "HOLD"
+        }
+      ],
+      "refunds": [],
+      "registerStatus": {
+        "atolId": null,
+        "uuid": null,
+        "ecrRegistrationNumber": null,
+        "fiscalDocumentNumber": null,
+        "fiscalStorageNumber": null,
+        "status": null,
+        "lines": null
+      },
+      "deliveryData": {
+        "id": "1315022",
+        "status": "approvedByCreator",
+        "manualProcessing": false,
+        "planDate": "2020-10-17T13:00:00+03:00",
+        "timeInterval": "08:00:00+03:00/13:00:00+03:00",
+        "transportCompany": null,
+        "shipFromShopId": "139",
+        "shipTo": {
+          "city": "Moscow",
+          "street": "Dubki",
+          "house": "13",
+          "housing": null,
+          "building": null,
+          "flat": "52",
+          "entrance": "7",
+          "intercom": "12345",
+          "floor": 10,
+          "gpsX": 29.847462,
+          "gpsY": 60.566702
+        },
+        "referenceStoreId": "139",
+        "deliveryServicePrice": 3000.89,
+        "liftupServicePrice": 1000.44,
+        "tariff": "TO_DOOR",
+        "totalAmount": 7951.33,
+        "totalServicePrice": 4001.33,
+        "payerType": "client",
+        "customer": {
+          "fullName": "Авто Тестик",
+          "phone": "79211339990",
+          "email": "autotest@mail.com",
+          "serviceCard": null
+        },
+        "receiver": {
+          "fullName": "Авто Тестик",
+          "phone": "79211339990"
+        },
+        "liftType": "byLift",
+        "items": [
+          {
+            "id": "62302b4e-acc9-4b42-9a98-b9ff76a94743",
+            "status": "NEW",
+            "product": {
+              "id": "10061536",
+              "name": "Суппорт для розетки Экопласт PM-45, 45 мм, цвет белый",
+              "price": 105,
+              "taxRate": [
+                {
+                  "type": "vat",
+                  "value": "18"
+                }
+              ]
+            },
+            "quantity": {
+              "value": 10,
+              "measure": "th"
+            }
+          },
+          {
+            "id": "07d476af-0a48-4fdb-81db-514e56d493b5",
+            "status": "NEW",
+            "product": {
+              "id": "10052955",
+              "name": "Канал плоский  Equation, 55х110х1500 мм",
+              "price": 184,
+              "taxRate": [
+                {
+                  "type": "vat",
+                  "value": "18"
+                }
+              ]
+            },
+            "quantity": {
+              "value": 10,
+              "measure": "th"
+            }
+          },
+          {
+            "id": "e84e75bc-41e2-4b77-aa0c-e0673cb30071",
+            "status": "NEW",
+            "product": {
+              "id": "10052920",
+              "name": "Канал плоский Equation, 55х110х1000 мм",
+              "price": 106,
+              "taxRate": [
+                {
+                  "type": "vat",
+                  "value": "18"
+                }
+              ]
+            },
+            "quantity": {
+              "value": 10,
+              "measure": "th"
+            }
+          }
+        ]
+      },
+      "status": "ALLOWED_FOR_PICKING",
+      "totalWeight": "14.810",
+      "maxSize": "150.5",
+      "refundAvailable": true,
+      "creatorName": null,
+      "creatorSurname": null
+    }
+  },
+  {
+    "index": 4,
+    "body": {
+      "totalCount": 1,
+      "salesDocuments": [
+        {
+          "docId": "69820002",
+          "fullDocId": "234269820002",
+          "docType": "ORDER",
+          "shopId": "139",
+          "pinCode": null,
+          "salesDocStatus": "SHIPPED",
+          "isUrgent": false,
+          "delivery": true,
+          "creatorName": null,
+          "creatorSurname": null,
+          "createdBy": "Bitrix",
+          "createdDate": "2020-10-16T09:55:59.732+00:00",
+          "customerName": "Авто",
+          "customerSurname": "Тестик",
+          "customerPhone": "79211339990",
+          "customerType": "PERSON",
+          "customerNumber": "1265522",
+          "comment": "BITRIX: В КОМНАТУ, Sberbank",
+          "taskControlStatus": "NOT_CONTROLLED",
+          "docPriceSum": 7951.33,
+          "servicesCount": 0,
+          "productsCount": 3,
+          "giveAway": {
+            "point": "HOME_DELIVERY"
+          },
+          "channel": "ONLINE",
+          "paymentStatus": "HOLD",
+          "paymentType": "PREPAYMENT",
+          "userTasks": [],
+          "products": [
+            {
+              "lmCode": "10052955",
+              "title": "Канал плоский  Equation, 55х110х1500 мм"
+            },
+            {
+              "lmCode": "10061536",
+              "title": "Суппорт для розетки Экопласт PM-45, 45 мм, цвет белый"
+            },
+            {
+              "lmCode": "49626307",
+              "title": null
+            },
+            {
+              "lmCode": "10052920",
+              "title": "Канал плоский Equation, 55х110х1000 мм"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "index": 5,
+    "body": {
+      "callRequired": 0,
+      "completeDelivery": false,
+      "orderId": "234269820002",
+      "shopId": 139,
+      "createdAt": "2020-10-16T09:55:59.732+00:00",
+      "createdBy": "Bitrix",
+      "paymentStatus": "HOLD",
+      "comment": "BITRIX: В КОМНАТУ, Sberbank",
+      "customers": [
+        {
+          "customerNumber": "1265522",
+          "firstName": "Авто",
+          "lastName": "Тестик",
+          "fullName": "Авто Тестик",
+          "primaryPhone": "79211339990",
+          "phone": {
+            "primary": "79211339990",
+            "secondary": null
+          },
+          "email": "autotest@mail.com",
+          "role": "PAYER",
+          "roles": [
+            "PAYER"
+          ],
+          "type": "PERSON"
+        }
+      ],
+      "products": [
+        {
+          "lmCode": "10061536",
+          "lineId": "62302b4e-acc9-4b42-9a98-b9ff76a94743",
+          "type": "PRODUCT",
+          "price": 105,
+          "quantity": 10,
+          "createdQuantity": 10,
+          "pickedQuantity": 10,
+          "givenAwayQuantity": 10,
+          "controlledQuantity": 0,
+          "confirmedQuantity": 10,
+          "returnedQuantity": 0,
+          "discount": null,
+          "reasons": {
+            "lastPicked": null,
+            "lastGivenAway": null,
+            "lastAdjustment": null
+          },
+          "stocks": {
+            "RD": null,
+            "EM": null,
+            "LS": null
+          },
+          "sellingScheme": "GENERAL",
+          "refundQuantity": 0,
+          "deliveredQuantity": null,
+          "logistic": {
+            "width": "6.9",
+            "height": "2.8",
+            "weight": "0.022",
+            "depth": "7.7"
+          },
+          "barCodes": [
+            "4607058423902",
+            "2",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "6",
+            "1",
+            "5",
+            "3",
+            "6",
+            "2"
+          ],
+          "departmentId": "3",
+          "priceUnit": "NIU",
+          "title": "Суппорт для розетки Экопласт PM-45, 45 мм, цвет белый",
+          "priceCategory": "STD",
+          "isAvs": false,
+          "images": [
+            "https://res.cloudinary.com/lmru/image/upload/LMCode/10061536.jpg"
+          ],
+          "availableStock": 11,
+          "isAVS": false
+        },
+        {
+          "lmCode": "10052955",
+          "lineId": "07d476af-0a48-4fdb-81db-514e56d493b5",
+          "type": "PRODUCT",
+          "price": 184,
+          "quantity": 10,
+          "createdQuantity": 10,
+          "pickedQuantity": 10,
+          "givenAwayQuantity": 10,
+          "controlledQuantity": 0,
+          "confirmedQuantity": 10,
+          "returnedQuantity": 0,
+          "discount": null,
+          "reasons": {
+            "lastPicked": null,
+            "lastGivenAway": null,
+            "lastAdjustment": null
+          },
+          "stocks": {
+            "RD": null,
+            "EM": null,
+            "LS": null
+          },
+          "sellingScheme": "GENERAL",
+          "refundQuantity": 0,
+          "deliveredQuantity": null,
+          "logistic": {
+            "width": "11.1",
+            "height": "5.5",
+            "weight": "0.852",
+            "depth": "150.5"
+          },
+          "barCodes": [
+            "4630017370122",
+            "2",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "5",
+            "2",
+            "9",
+            "5",
+            "5",
+            "3"
+          ],
+          "departmentId": "3",
+          "priceUnit": "NIU",
+          "title": "Канал плоский  Equation, 55х110х1500 мм",
+          "priceCategory": "STD",
+          "isAvs": false,
+          "images": [
+            "https://res.cloudinary.com/lmru/image/upload/LMCode/10052955.jpg"
+          ],
+          "availableStock": 15,
+          "isAVS": false
+        },
+        {
+          "lmCode": "10052920",
+          "lineId": "e84e75bc-41e2-4b77-aa0c-e0673cb30071",
+          "type": "PRODUCT",
+          "price": 106,
+          "quantity": 10,
+          "createdQuantity": 10,
+          "pickedQuantity": 10,
+          "givenAwayQuantity": 10,
+          "controlledQuantity": 0,
+          "confirmedQuantity": 10,
+          "returnedQuantity": 0,
+          "discount": null,
+          "reasons": {
+            "lastPicked": null,
+            "lastGivenAway": null,
+            "lastAdjustment": null
+          },
+          "stocks": {
+            "RD": null,
+            "EM": null,
+            "LS": null
+          },
+          "sellingScheme": "GENERAL",
+          "refundQuantity": 0,
+          "deliveredQuantity": null,
+          "logistic": {
+            "width": "11.1",
+            "height": "5.5",
+            "weight": "0.607",
+            "depth": "100.5"
+          },
+          "barCodes": [
+            "4630017370108",
+            "2",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "5",
+            "2",
+            "9",
+            "2",
+            "0",
+            "1"
+          ],
+          "departmentId": "3",
+          "priceUnit": "NIU",
+          "title": "Канал плоский Equation, 55х110х1000 мм",
+          "priceCategory": "STD",
+          "isAvs": false,
+          "images": [
+            "https://res.cloudinary.com/lmru/image/upload/LMCode/10052920.jpg"
+          ],
+          "availableStock": 14,
+          "isAVS": false
+        }
+      ],
+      "userComments": [],
+      "solutionVersion": 13,
+      "channel": "ONLINE",
+      "giveAway": {
+        "date": "2020-10-17T00:00:00Z",
+        "shopId": 139,
+        "point": "HOME_DELIVERY",
+        "storageLocation": null
+      },
+      "customerId": "1265522",
+      "taskControlStatus": "NOT_CONTROLLED",
+      "fulfillmentTaskId": "1013920100299356",
+      "fulfillmentVersion": 5,
+      "fulfillmentPickingTasksQty": 1,
+      "pickers": [
+        {
+          "employeeId": "UNKNOWN",
+          "employeeName": null,
+          "employeeSurname": null
+        }
+      ],
+      "longtail": false,
+      "pickingStatus": null,
+      "delivery": true,
+      "paymentType": "PREPAYMENT",
+      "paymentTaskId": "75f6a609-a2ff-47e3-922e-468e9d01181a",
+      "paymentVersion": 5,
+      "pinCode": null,
+      "actualDeliveryPrice": 4001.33,
+      "payments": [
+        {
+          "date": "2020-10-16T10:05:54.870+00:00",
+          "amount": 7951.33,
+          "paymentType": "PREPAYMENT",
+          "status": "HOLD"
+        }
+      ],
+      "refunds": [],
+      "registerStatus": {
+        "atolId": null,
+        "uuid": null,
+        "ecrRegistrationNumber": null,
+        "fiscalDocumentNumber": null,
+        "fiscalStorageNumber": null,
+        "status": null,
+        "lines": null
+      },
+      "deliveryData": {
+        "id": "1315022",
+        "status": "givenAwayBySender",
+        "manualProcessing": false,
+        "planDate": "2020-10-17T13:00:00+03:00",
+        "timeInterval": "08:00:00+03:00/13:00:00+03:00",
+        "transportCompany": null,
+        "shipFromShopId": "139",
+        "shipTo": {
+          "city": "Moscow",
+          "street": "Dubki",
+          "house": "13",
+          "housing": null,
+          "building": null,
+          "flat": "52",
+          "entrance": "7",
+          "intercom": "12345",
+          "floor": 10,
+          "gpsX": 29.847462,
+          "gpsY": 60.566702
+        },
+        "referenceStoreId": "139",
+        "deliveryServicePrice": 3000.89,
+        "liftupServicePrice": 1000.44,
+        "tariff": "TO_DOOR",
+        "totalAmount": 7951.33,
+        "totalServicePrice": 4001.33,
+        "payerType": "client",
+        "customer": {
+          "fullName": "Авто Тестик",
+          "phone": "79211339990",
+          "email": "autotest@mail.com",
+          "serviceCard": null
+        },
+        "receiver": {
+          "fullName": "Авто Тестик",
+          "phone": "79211339990"
+        },
+        "liftType": "byLift",
+        "items": [
+          {
+            "id": "62302b4e-acc9-4b42-9a98-b9ff76a94743",
+            "status": "NEW",
+            "product": {
+              "id": "10061536",
+              "name": "Суппорт для розетки Экопласт PM-45, 45 мм, цвет белый",
+              "price": 105,
+              "taxRate": [
+                {
+                  "type": "vat",
+                  "value": "18"
+                }
+              ]
+            },
+            "quantity": {
+              "value": 10,
+              "measure": "th"
+            }
+          },
+          {
+            "id": "07d476af-0a48-4fdb-81db-514e56d493b5",
+            "status": "NEW",
+            "product": {
+              "id": "10052955",
+              "name": "Канал плоский  Equation, 55х110х1500 мм",
+              "price": 184,
+              "taxRate": [
+                {
+                  "type": "vat",
+                  "value": "18"
+                }
+              ]
+            },
+            "quantity": {
+              "value": 10,
+              "measure": "th"
+            }
+          },
+          {
+            "id": "e84e75bc-41e2-4b77-aa0c-e0673cb30071",
+            "status": "NEW",
+            "product": {
+              "id": "10052920",
+              "name": "Канал плоский Equation, 55х110х1000 мм",
+              "price": 106,
+              "taxRate": [
+                {
+                  "type": "vat",
+                  "value": "18"
+                }
+              ]
+            },
+            "quantity": {
+              "value": 10,
+              "measure": "th"
+            }
+          }
+        ]
+      },
+      "status": "SHIPPED",
+      "totalWeight": "14.810",
+      "maxSize": "150.5",
+      "refundAvailable": true,
+      "creatorName": null,
+      "creatorSurname": null
+    }
+  },
+  {
+    "index": 6,
+    "body": {
+      "totalCount": 1,
+      "salesDocuments": [
+        {
+          "docId": "69820003",
+          "fullDocId": "234269820003",
+          "docType": "ORDER",
+          "shopId": "139",
+          "pinCode": null,
+          "salesDocStatus": "SHIPPED",
+          "isUrgent": false,
+          "delivery": true,
+          "creatorName": null,
+          "creatorSurname": null,
+          "createdBy": "Bitrix",
+          "createdDate": "2020-10-16T09:55:59.732+00:00",
+          "customerName": "Авто",
+          "customerSurname": "Тестик",
+          "customerPhone": "79211339990",
+          "customerType": "PERSON",
+          "customerNumber": "1265522",
+          "comment": "BITRIX: В КОМНАТУ, Sberbank",
+          "taskControlStatus": "NOT_CONTROLLED",
+          "docPriceSum": 7951.33,
+          "servicesCount": 0,
+          "productsCount": 3,
+          "giveAway": {
+            "point": "HOME_DELIVERY"
+          },
+          "channel": "ONLINE",
+          "paymentStatus": "PAID",
+          "paymentType": "PREPAYMENT",
+          "userTasks": [],
+          "products": [
+            {
+              "lmCode": "10052955",
+              "title": "Канал плоский  Equation, 55х110х1500 мм"
+            },
+            {
+              "lmCode": "10061536",
+              "title": "Суппорт для розетки Экопласт PM-45, 45 мм, цвет белый"
+            },
+            {
+              "lmCode": "49626307",
+              "title": null
+            },
+            {
+              "lmCode": "10052920",
+              "title": "Канал плоский Equation, 55х110х1000 мм"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "index": 7,
+    "body": {
+      "callRequired": 0,
+      "completeDelivery": false,
+      "orderId": "234269820003",
+      "shopId": 139,
+      "createdAt": "2020-10-16T09:55:59.732+00:00",
+      "createdBy": "Bitrix",
+      "paymentStatus": "PAID",
+      "comment": "BITRIX: В КОМНАТУ, Sberbank",
+      "customers": [
+        {
+          "customerNumber": "1265522",
+          "firstName": "Авто",
+          "lastName": "Тестик",
+          "fullName": "Авто Тестик",
+          "primaryPhone": "79211339990",
+          "phone": {
+            "primary": "79211339990",
+            "secondary": null
+          },
+          "email": "autotest@mail.com",
+          "role": "PAYER",
+          "roles": [
+            "PAYER"
+          ],
+          "type": "PERSON"
+        }
+      ],
+      "products": [
+        {
+          "lmCode": "10061536",
+          "lineId": "62302b4e-acc9-4b42-9a98-b9ff76a94743",
+          "type": "PRODUCT",
+          "price": 105,
+          "quantity": 10,
+          "createdQuantity": 10,
+          "pickedQuantity": 10,
+          "givenAwayQuantity": 10,
+          "controlledQuantity": 0,
+          "confirmedQuantity": 10,
+          "returnedQuantity": 0,
+          "discount": null,
+          "reasons": {
+            "lastPicked": null,
+            "lastGivenAway": null,
+            "lastAdjustment": null
+          },
+          "stocks": {
+            "RD": null,
+            "EM": null,
+            "LS": null
+          },
+          "sellingScheme": "GENERAL",
+          "refundQuantity": 0,
+          "deliveredQuantity": null,
+          "logistic": {
+            "width": "6.9",
+            "height": "2.8",
+            "weight": "0.022",
+            "depth": "7.7"
+          },
+          "barCodes": [
+            "4607058423902",
+            "2",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "6",
+            "1",
+            "5",
+            "3",
+            "6",
+            "2"
+          ],
+          "departmentId": "3",
+          "priceUnit": "NIU",
+          "title": "Суппорт для розетки Экопласт PM-45, 45 мм, цвет белый",
+          "priceCategory": "STD",
+          "isAvs": false,
+          "images": [
+            "https://res.cloudinary.com/lmru/image/upload/LMCode/10061536.jpg"
+          ],
+          "availableStock": 11,
+          "isAVS": false
+        },
+        {
+          "lmCode": "10052955",
+          "lineId": "07d476af-0a48-4fdb-81db-514e56d493b5",
+          "type": "PRODUCT",
+          "price": 184,
+          "quantity": 10,
+          "createdQuantity": 10,
+          "pickedQuantity": 10,
+          "givenAwayQuantity": 10,
+          "controlledQuantity": 0,
+          "confirmedQuantity": 10,
+          "returnedQuantity": 0,
+          "discount": null,
+          "reasons": {
+            "lastPicked": null,
+            "lastGivenAway": null,
+            "lastAdjustment": null
+          },
+          "stocks": {
+            "RD": null,
+            "EM": null,
+            "LS": null
+          },
+          "sellingScheme": "GENERAL",
+          "refundQuantity": 0,
+          "deliveredQuantity": null,
+          "logistic": {
+            "width": "11.1",
+            "height": "5.5",
+            "weight": "0.852",
+            "depth": "150.5"
+          },
+          "barCodes": [
+            "4630017370122",
+            "2",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "5",
+            "2",
+            "9",
+            "5",
+            "5",
+            "3"
+          ],
+          "departmentId": "3",
+          "priceUnit": "NIU",
+          "title": "Канал плоский  Equation, 55х110х1500 мм",
+          "priceCategory": "STD",
+          "isAvs": false,
+          "images": [
+            "https://res.cloudinary.com/lmru/image/upload/LMCode/10052955.jpg"
+          ],
+          "availableStock": 15,
+          "isAVS": false
+        },
+        {
+          "lmCode": "10052920",
+          "lineId": "e84e75bc-41e2-4b77-aa0c-e0673cb30071",
+          "type": "PRODUCT",
+          "price": 106,
+          "quantity": 10,
+          "createdQuantity": 10,
+          "pickedQuantity": 10,
+          "givenAwayQuantity": 10,
+          "controlledQuantity": 0,
+          "confirmedQuantity": 10,
+          "returnedQuantity": 0,
+          "discount": null,
+          "reasons": {
+            "lastPicked": null,
+            "lastGivenAway": null,
+            "lastAdjustment": null
+          },
+          "stocks": {
+            "RD": null,
+            "EM": null,
+            "LS": null
+          },
+          "sellingScheme": "GENERAL",
+          "refundQuantity": 0,
+          "deliveredQuantity": null,
+          "logistic": {
+            "width": "11.1",
+            "height": "5.5",
+            "weight": "0.607",
+            "depth": "100.5"
+          },
+          "barCodes": [
+            "4630017370108",
+            "2",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "5",
+            "2",
+            "9",
+            "2",
+            "0",
+            "1"
+          ],
+          "departmentId": "3",
+          "priceUnit": "NIU",
+          "title": "Канал плоский Equation, 55х110х1000 мм",
+          "priceCategory": "STD",
+          "isAvs": false,
+          "images": [
+            "https://res.cloudinary.com/lmru/image/upload/LMCode/10052920.jpg"
+          ],
+          "availableStock": 14,
+          "isAVS": false
+        }
+      ],
+      "userComments": [],
+      "solutionVersion": 14,
+      "channel": "ONLINE",
+      "giveAway": {
+        "date": "2020-10-17T00:00:00Z",
+        "shopId": 139,
+        "point": "HOME_DELIVERY",
+        "storageLocation": null
+      },
+      "customerId": "1265522",
+      "taskControlStatus": "NOT_CONTROLLED",
+      "fulfillmentTaskId": "1013920100299356",
+      "fulfillmentVersion": 5,
+      "fulfillmentPickingTasksQty": 1,
+      "pickers": [
+        {
+          "employeeId": "UNKNOWN",
+          "employeeName": null,
+          "employeeSurname": null
+        }
+      ],
+      "longtail": false,
+      "pickingStatus": null,
+      "delivery": true,
+      "paymentType": "PREPAYMENT",
+      "paymentTaskId": "75f6a609-a2ff-47e3-922e-468e9d01181a",
+      "paymentVersion": 6,
+      "pinCode": null,
+      "actualDeliveryPrice": 4001.33,
+      "payments": [
+        {
+          "date": "2020-10-16T10:29:55.928+00:00",
+          "amount": 0,
+          "paymentType": "PREPAYMENT",
+          "status": "PAID"
+        },
+        {
+          "date": "2020-10-16T10:05:54.870+00:00",
+          "amount": 7951.33,
+          "paymentType": "PREPAYMENT",
+          "status": "HOLD"
+        }
+      ],
+      "refunds": [],
+      "registerStatus": {
+        "atolId": null,
+        "uuid": null,
+        "ecrRegistrationNumber": null,
+        "fiscalDocumentNumber": null,
+        "fiscalStorageNumber": null,
+        "status": null,
+        "lines": null
+      },
+      "deliveryData": {
+        "id": "1315022",
+        "status": "givenAwayBySender",
+        "manualProcessing": false,
+        "planDate": "2020-10-17T13:00:00+03:00",
+        "timeInterval": "08:00:00+03:00/13:00:00+03:00",
+        "transportCompany": null,
+        "shipFromShopId": "139",
+        "shipTo": {
+          "city": "Moscow",
+          "street": "Dubki",
+          "house": "13",
+          "housing": null,
+          "building": null,
+          "flat": "52",
+          "entrance": "7",
+          "intercom": "12345",
+          "floor": 10,
+          "gpsX": 29.847462,
+          "gpsY": 60.566702
+        },
+        "referenceStoreId": "139",
+        "deliveryServicePrice": 3000.89,
+        "liftupServicePrice": 1000.44,
+        "tariff": "TO_DOOR",
+        "totalAmount": 7951.33,
+        "totalServicePrice": 4001.33,
+        "payerType": "client",
+        "customer": {
+          "fullName": "Авто Тестик",
+          "phone": "79211339990",
+          "email": "autotest@mail.com",
+          "serviceCard": null
+        },
+        "receiver": {
+          "fullName": "Авто Тестик",
+          "phone": "79211339990"
+        },
+        "liftType": "byLift",
+        "items": [
+          {
+            "id": "62302b4e-acc9-4b42-9a98-b9ff76a94743",
+            "status": "NEW",
+            "product": {
+              "id": "10061536",
+              "name": "Суппорт для розетки Экопласт PM-45, 45 мм, цвет белый",
+              "price": 105,
+              "taxRate": [
+                {
+                  "type": "vat",
+                  "value": "18"
+                }
+              ]
+            },
+            "quantity": {
+              "value": 10,
+              "measure": "th"
+            }
+          },
+          {
+            "id": "07d476af-0a48-4fdb-81db-514e56d493b5",
+            "status": "NEW",
+            "product": {
+              "id": "10052955",
+              "name": "Канал плоский  Equation, 55х110х1500 мм",
+              "price": 184,
+              "taxRate": [
+                {
+                  "type": "vat",
+                  "value": "18"
+                }
+              ]
+            },
+            "quantity": {
+              "value": 10,
+              "measure": "th"
+            }
+          },
+          {
+            "id": "e84e75bc-41e2-4b77-aa0c-e0673cb30071",
+            "status": "NEW",
+            "product": {
+              "id": "10052920",
+              "name": "Канал плоский Equation, 55х110х1000 мм",
+              "price": 106,
+              "taxRate": [
+                {
+                  "type": "vat",
+                  "value": "18"
+                }
+              ]
+            },
+            "quantity": {
+              "value": 10,
+              "measure": "th"
+            }
+          }
+        ]
+      },
+      "status": "SHIPPED",
+      "totalWeight": "14.810",
+      "maxSize": "150.5",
+      "refundAvailable": true,
+      "creatorName": null,
+      "creatorSurname": null
+    }
+  },
+  {
+    "index": 8,
+    "body": {
+      "totalCount": 1,
+      "salesDocuments": [
+        {
+          "docId": "69820004",
+          "fullDocId": "234269820004",
+          "docType": "ORDER",
+          "shopId": "139",
+          "pinCode": null,
+          "salesDocStatus": "ON_DELIVERY",
+          "isUrgent": false,
+          "delivery": true,
+          "creatorName": null,
+          "creatorSurname": null,
+          "createdBy": "Bitrix",
+          "createdDate": "2020-10-16T09:55:59.732+00:00",
+          "customerName": "Авто",
+          "customerSurname": "Тестик",
+          "customerPhone": "79211339990",
+          "customerType": "PERSON",
+          "customerNumber": "1265522",
+          "comment": "BITRIX: В КОМНАТУ, Sberbank",
+          "taskControlStatus": "NOT_CONTROLLED",
+          "docPriceSum": 7951.33,
+          "servicesCount": 0,
+          "productsCount": 3,
+          "giveAway": {
+            "point": "HOME_DELIVERY"
+          },
+          "channel": "ONLINE",
+          "paymentStatus": "PAID",
+          "paymentType": "PREPAYMENT",
+          "userTasks": [],
+          "products": [
+            {
+              "lmCode": "10052955",
+              "title": "Канал плоский  Equation, 55х110х1500 мм"
+            },
+            {
+              "lmCode": "10061536",
+              "title": "Суппорт для розетки Экопласт PM-45, 45 мм, цвет белый"
+            },
+            {
+              "lmCode": "49626307",
+              "title": null
+            },
+            {
+              "lmCode": "10052920",
+              "title": "Канал плоский Equation, 55х110х1000 мм"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "index": 9,
+    "body": {
+      "callRequired": 0,
+      "completeDelivery": false,
+      "orderId": "234269820004",
+      "shopId": 139,
+      "createdAt": "2020-10-16T09:55:59.732+00:00",
+      "createdBy": "Bitrix",
+      "paymentStatus": "PAID",
+      "comment": "BITRIX: В КОМНАТУ, Sberbank",
+      "customers": [
+        {
+          "customerNumber": "1265522",
+          "firstName": "Авто",
+          "lastName": "Тестик",
+          "fullName": "Авто Тестик",
+          "primaryPhone": "79211339990",
+          "phone": {
+            "primary": "79211339990",
+            "secondary": null
+          },
+          "email": "autotest@mail.com",
+          "role": "PAYER",
+          "roles": [
+            "PAYER"
+          ],
+          "type": "PERSON"
+        }
+      ],
+      "products": [
+        {
+          "lmCode": "10061536",
+          "lineId": "62302b4e-acc9-4b42-9a98-b9ff76a94743",
+          "type": "PRODUCT",
+          "price": 105,
+          "quantity": 10,
+          "createdQuantity": 10,
+          "pickedQuantity": 10,
+          "givenAwayQuantity": 10,
+          "controlledQuantity": 0,
+          "confirmedQuantity": 10,
+          "returnedQuantity": 0,
+          "discount": null,
+          "reasons": {
+            "lastPicked": null,
+            "lastGivenAway": null,
+            "lastAdjustment": null
+          },
+          "stocks": {
+            "RD": null,
+            "EM": null,
+            "LS": null
+          },
+          "sellingScheme": "GENERAL",
+          "refundQuantity": 0,
+          "deliveredQuantity": null,
+          "logistic": {
+            "width": "6.9",
+            "height": "2.8",
+            "weight": "0.022",
+            "depth": "7.7"
+          },
+          "barCodes": [
+            "4607058423902",
+            "2",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "6",
+            "1",
+            "5",
+            "3",
+            "6",
+            "2"
+          ],
+          "departmentId": "3",
+          "priceUnit": "NIU",
+          "title": "Суппорт для розетки Экопласт PM-45, 45 мм, цвет белый",
+          "priceCategory": "STD",
+          "isAvs": false,
+          "images": [
+            "https://res.cloudinary.com/lmru/image/upload/LMCode/10061536.jpg"
+          ],
+          "availableStock": 11,
+          "isAVS": false
+        },
+        {
+          "lmCode": "10052955",
+          "lineId": "07d476af-0a48-4fdb-81db-514e56d493b5",
+          "type": "PRODUCT",
+          "price": 184,
+          "quantity": 10,
+          "createdQuantity": 10,
+          "pickedQuantity": 10,
+          "givenAwayQuantity": 10,
+          "controlledQuantity": 0,
+          "confirmedQuantity": 10,
+          "returnedQuantity": 0,
+          "discount": null,
+          "reasons": {
+            "lastPicked": null,
+            "lastGivenAway": null,
+            "lastAdjustment": null
+          },
+          "stocks": {
+            "RD": null,
+            "EM": null,
+            "LS": null
+          },
+          "sellingScheme": "GENERAL",
+          "refundQuantity": 0,
+          "deliveredQuantity": null,
+          "logistic": {
+            "width": "11.1",
+            "height": "5.5",
+            "weight": "0.852",
+            "depth": "150.5"
+          },
+          "barCodes": [
+            "4630017370122",
+            "2",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "5",
+            "2",
+            "9",
+            "5",
+            "5",
+            "3"
+          ],
+          "departmentId": "3",
+          "priceUnit": "NIU",
+          "title": "Канал плоский  Equation, 55х110х1500 мм",
+          "priceCategory": "STD",
+          "isAvs": false,
+          "images": [
+            "https://res.cloudinary.com/lmru/image/upload/LMCode/10052955.jpg"
+          ],
+          "availableStock": 15,
+          "isAVS": false
+        },
+        {
+          "lmCode": "10052920",
+          "lineId": "e84e75bc-41e2-4b77-aa0c-e0673cb30071",
+          "type": "PRODUCT",
+          "price": 106,
+          "quantity": 10,
+          "createdQuantity": 10,
+          "pickedQuantity": 10,
+          "givenAwayQuantity": 10,
+          "controlledQuantity": 0,
+          "confirmedQuantity": 10,
+          "returnedQuantity": 0,
+          "discount": null,
+          "reasons": {
+            "lastPicked": null,
+            "lastGivenAway": null,
+            "lastAdjustment": null
+          },
+          "stocks": {
+            "RD": null,
+            "EM": null,
+            "LS": null
+          },
+          "sellingScheme": "GENERAL",
+          "refundQuantity": 0,
+          "deliveredQuantity": null,
+          "logistic": {
+            "width": "11.1",
+            "height": "5.5",
+            "weight": "0.607",
+            "depth": "100.5"
+          },
+          "barCodes": [
+            "4630017370108",
+            "2",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "5",
+            "2",
+            "9",
+            "2",
+            "0",
+            "1"
+          ],
+          "departmentId": "3",
+          "priceUnit": "NIU",
+          "title": "Канал плоский Equation, 55х110х1000 мм",
+          "priceCategory": "STD",
+          "isAvs": false,
+          "images": [
+            "https://res.cloudinary.com/lmru/image/upload/LMCode/10052920.jpg"
+          ],
+          "availableStock": 14,
+          "isAVS": false
+        }
+      ],
+      "userComments": [],
+      "solutionVersion": 15,
+      "channel": "ONLINE",
+      "giveAway": {
+        "date": "2020-10-17T00:00:00Z",
+        "shopId": 139,
+        "point": "HOME_DELIVERY",
+        "storageLocation": null
+      },
+      "customerId": "1265522",
+      "taskControlStatus": "NOT_CONTROLLED",
+      "fulfillmentTaskId": "1013920100299356",
+      "fulfillmentVersion": 5,
+      "fulfillmentPickingTasksQty": 1,
+      "pickers": [
+        {
+          "employeeId": "UNKNOWN",
+          "employeeName": null,
+          "employeeSurname": null
+        }
+      ],
+      "longtail": false,
+      "pickingStatus": null,
+      "delivery": true,
+      "paymentType": "PREPAYMENT",
+      "paymentTaskId": "75f6a609-a2ff-47e3-922e-468e9d01181a",
+      "paymentVersion": 6,
+      "pinCode": null,
+      "actualDeliveryPrice": 4001.33,
+      "payments": [
+        {
+          "date": "2020-10-16T10:29:55.928+00:00",
+          "amount": 0,
+          "paymentType": "PREPAYMENT",
+          "status": "PAID"
+        },
+        {
+          "date": "2020-10-16T10:05:54.870+00:00",
+          "amount": 7951.33,
+          "paymentType": "PREPAYMENT",
+          "status": "HOLD"
+        }
+      ],
+      "refunds": [],
+      "registerStatus": {
+        "atolId": null,
+        "uuid": null,
+        "ecrRegistrationNumber": null,
+        "fiscalDocumentNumber": null,
+        "fiscalStorageNumber": null,
+        "status": null,
+        "lines": null
+      },
+      "deliveryData": {
+        "id": "1315022",
+        "status": "tookByExecutor",
+        "manualProcessing": false,
+        "planDate": "2020-10-17T13:00:00+03:00",
+        "timeInterval": "08:00:00+03:00/13:00:00+03:00",
+        "transportCompany": null,
+        "shipFromShopId": "139",
+        "shipTo": {
+          "city": "Moscow",
+          "street": "Dubki",
+          "house": "13",
+          "housing": null,
+          "building": null,
+          "flat": "52",
+          "entrance": "7",
+          "intercom": "12345",
+          "floor": 10,
+          "gpsX": 29.847462,
+          "gpsY": 60.566702
+        },
+        "referenceStoreId": "139",
+        "deliveryServicePrice": 3000.89,
+        "liftupServicePrice": 1000.44,
+        "tariff": "TO_DOOR",
+        "totalAmount": 7951.33,
+        "totalServicePrice": 4001.33,
+        "payerType": "client",
+        "customer": {
+          "fullName": "Авто Тестик",
+          "phone": "79211339990",
+          "email": "autotest@mail.com",
+          "serviceCard": null
+        },
+        "receiver": {
+          "fullName": "Авто Тестик",
+          "phone": "79211339990"
+        },
+        "liftType": "byLift",
+        "items": [
+          {
+            "id": "62302b4e-acc9-4b42-9a98-b9ff76a94743",
+            "status": "NEW",
+            "product": {
+              "id": "10061536",
+              "name": "Суппорт для розетки Экопласт PM-45, 45 мм, цвет белый",
+              "price": 105,
+              "taxRate": [
+                {
+                  "type": "vat",
+                  "value": "18"
+                }
+              ]
+            },
+            "quantity": {
+              "value": 10,
+              "measure": "th"
+            }
+          },
+          {
+            "id": "07d476af-0a48-4fdb-81db-514e56d493b5",
+            "status": "NEW",
+            "product": {
+              "id": "10052955",
+              "name": "Канал плоский  Equation, 55х110х1500 мм",
+              "price": 184,
+              "taxRate": [
+                {
+                  "type": "vat",
+                  "value": "18"
+                }
+              ]
+            },
+            "quantity": {
+              "value": 10,
+              "measure": "th"
+            }
+          },
+          {
+            "id": "e84e75bc-41e2-4b77-aa0c-e0673cb30071",
+            "status": "NEW",
+            "product": {
+              "id": "10052920",
+              "name": "Канал плоский Equation, 55х110х1000 мм",
+              "price": 106,
+              "taxRate": [
+                {
+                  "type": "vat",
+                  "value": "18"
+                }
+              ]
+            },
+            "quantity": {
+              "value": 10,
+              "measure": "th"
+            }
+          }
+        ]
+      },
+      "status": "ON_DELIVERY",
+      "totalWeight": "14.810",
+      "maxSize": "150.5",
+      "refundAvailable": true,
+      "creatorName": null,
+      "creatorSurname": null
+    }
+  }
+]
