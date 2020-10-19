@@ -89,10 +89,11 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
     @Step("Проверить, что в списке документов слева присутствуют только имеющие статусы: {statuses}")
     public void shouldDocumentListContainsOnlyWithStatuses(String... statuses) throws Exception {
         Set<String> actualStatuses = new HashSet<>();
+        List<String> expectedStatuses = Arrays.stream(statuses).map(String::toLowerCase).collect(Collectors.toList());
         for (D docData : documentCardList().getDataList()) {
-            actualStatuses.add(docData.getStatus());
+            actualStatuses.add(docData.getStatus().toLowerCase());
         }
-        actualStatuses.removeAll(Arrays.asList(statuses));
+        actualStatuses.removeAll(expectedStatuses);
         anAssert.isTrue(actualStatuses.isEmpty(),
                 "В списке слева обнаружены документы, которых быть не должно, со статусами:" +
                         actualStatuses.toString());
@@ -122,12 +123,13 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
                 "Документ с номером " + expectedDocument.getNumber() + " не найден");
         if (DefectConst.ISSUE_WITH_ORDER_STATUS)
             if (expectedDocument instanceof ShortOrderDocWebData)
-                ((ShortOrderDocWebData)expectedDocument).setStatus(null);
+                ((ShortOrderDocWebData) expectedDocument).setStatus(null);
         actualDocuments.get(0).assertEqualsNotNullExpectedFields(expectedDocument);
     }
 
     @Step("Проверить, что в списке документов слева на текущей странице отображается {value} документов")
     public void shouldDocumentCountIs(int value) throws Exception {
+        waitForSpinnerDisappear();
         anAssert.isEquals(documentCardList().getCount(), value,
                 "Ожидалось другое кол-во документов");
     }

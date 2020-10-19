@@ -1,6 +1,7 @@
 package com.leroy.magportal.ui.tests;
 
 import com.leroy.core.ContextProvider;
+import com.leroy.core.configuration.Log;
 import com.leroy.core.util.MountebankClient;
 import com.leroy.magmobile.api.requests.CommonLegoRequest;
 import com.leroy.magportal.ui.WebBaseSteps;
@@ -14,7 +15,6 @@ import org.mbtest.javabank.http.predicates.PredicateType;
 import org.mbtest.javabank.http.responses.Is;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -42,12 +42,17 @@ public class BaseMockUiTest extends WebBaseSteps {
         String defaultContent = readFile("src/main/resources/mock/magportal_default_imposter.json", StandardCharsets.UTF_8);
         Imposter imposter = Imposter.fromJSON((JSONObject) new JSONParser().parse(defaultContent));
         int stCreate = mountebankClient.createImposter(imposter);
+        if (stCreate != 201)
+            stCreate = mountebankClient.createImposter(imposter);
         Assert.assertEquals(stCreate, 201, "Не удалось создать default'ый Imposter");
     }
 
     protected void createStub(PredicateType predicateType, CommonLegoRequest<?> request, int responseIndex) throws Exception {
         String tcId = ContextProvider.getContext().getTcId();
-        String content = readFile("src/main/resources/mock/magportal/" + tcId + ".json", StandardCharsets.UTF_8);
+        String className = this.getClass().getSimpleName().toLowerCase();
+        String filePath = "src/main/resources/mock/magportal/" + className + (tcId != null ? "/" + tcId : "/default") + ".json";
+        String content = readFile(filePath,
+                StandardCharsets.UTF_8);
         JSONArray jsonArrayContent = (JSONArray) new JSONParser().parse(content);
         JSONObject jsonBody = null;
         for (Object obj : jsonArrayContent) {
@@ -69,7 +74,14 @@ public class BaseMockUiTest extends WebBaseSteps {
         stub.addResponse(new Is().withBody(jsonBody.toJSONString()));
 
         int updSt = mountebankClient.addStub(stub, DEFAULT_IMPOSTER_PORT);
+        for (int i = 0; i < 8; i++) {
+            if (updSt != 200)
+                updSt = mountebankClient.addStub(stub, DEFAULT_IMPOSTER_PORT);
+            else
+                break;
+        }
         Assert.assertEquals(updSt, 200, "Не удалось добавить stubs для " + tcId);
+        Log.info("Stub is created: " + request.build(""));
     }
 
 

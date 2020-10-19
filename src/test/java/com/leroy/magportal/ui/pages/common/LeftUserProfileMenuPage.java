@@ -13,6 +13,7 @@ public class LeftUserProfileMenuPage extends BaseWebPage {
     void selectShop(String value) throws Exception {
         shopMenuItem.click();
         new ShopSelectionModal()
+                .selectRegion("Все регионы")
                 .selectShop(value)
                 .clickSaveButton();
     }
