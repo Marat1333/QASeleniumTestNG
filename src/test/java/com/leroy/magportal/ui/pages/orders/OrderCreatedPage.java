@@ -9,26 +9,34 @@ public abstract class OrderCreatedPage extends OrderHeaderPage {
 
     @WebFindBy(xpath = "//button[@id='pickings']",
             metaName = "Вкладка Сборок")
-    Button goToPickings;
+    Button pickingsTab;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'lmui-View lmui-Tabs-Title-ActiveBar')]",
+    @WebFindBy(id = "giveaway",
             metaName = "Вкладка Выдачи и возврата")
-    Element goToShipRefund;
+    Element shipRefundTab;
 
+    @WebFindBy(id = "main", metaName = "Вкладка Содержания")
+    Element mainTab;
 
+    @Override
+    public void waitForPageIsLoaded() {
+        mainTab.waitForVisibility();
+        waitForSpinnerDisappear();
+
+    }
 
     // Actions
 
     @Step ("Перейти на вкладку 'Сборки'")
     public AssemblyOrderPage clickGoToPickings()  {
-        goToPickings.click();
+        pickingsTab.click();
         return new AssemblyOrderPage();
 
     }
 
     @Step ("Перейти на вкладку 'К ВЫдаче и Возврату'")
     public GiveAwayShipOrderPage clickGoToShipRefund()  {
-        goToShipRefund.click();
+        shipRefundTab.click();
         return new GiveAwayShipOrderPage();
 
     }

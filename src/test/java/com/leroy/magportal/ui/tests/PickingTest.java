@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.UserSessionData;
+import com.leroy.core.web_elements.general.Button;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.clients.PickingTaskClient;
@@ -15,6 +16,7 @@ import com.leroy.magportal.ui.constants.picking.PickingConst;
 import com.leroy.magportal.ui.models.picking.PickingProductCardData;
 import com.leroy.magportal.ui.models.picking.PickingTaskData;
 import com.leroy.magportal.ui.models.picking.ShortPickingTaskData;
+import com.leroy.magportal.ui.pages.common.LeftDocumentListPage;
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.pages.orders.AssemblyOrderPage;
 import com.leroy.magportal.ui.pages.orders.GiveAwayShipOrderPage;
@@ -25,6 +27,7 @@ import com.leroy.magportal.ui.pages.picking.PickingPage;
 import com.leroy.magportal.ui.pages.picking.modal.SplitPickingModalStep1;
 import com.leroy.magportal.ui.pages.picking.modal.SplitPickingModalStep2;
 import com.leroy.magportal.ui.pages.picking.modal.SuccessfullyCreatedAssemblyModal;
+import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import com.leroy.utils.ParserUtil;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.AfterClass;
@@ -710,7 +713,8 @@ public class PickingTest extends BasePAOTest {
         giveAwayShipOrderPage.clickGiveAwayButton();
 
         // Step 7:
-        step("Проверить статус собранного заказа");
+        step("Обновить список документов и проверить статус выданного заказа");
+        orderPage.refreshDocumentList();
         orderPage.shouldDocumentIsPresent(orderId);
         orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.GIVEN_AWAY.getUiVal());
         orderPage.shouldDocumentCountIs(1);
