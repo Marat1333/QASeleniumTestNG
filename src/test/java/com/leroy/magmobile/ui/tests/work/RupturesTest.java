@@ -465,23 +465,28 @@ public class RupturesTest extends AppBaseSteps {
 
         // Pre-conditions
         WorkPage workPage = loginAndGoTo(WorkPage.class);
+        SessionListPage sessionListPage = workPage.goToRuptures();
 
         // Step 1
-        step("Перейти к добавлению сессии");
-        RupturesScannerPage rupturesScannerPage = workPage.createRupturesSessionDeprecated(); // TO-DO перепилить чтобы избавиться от этого метода
+        step("Нажать на кнопку 'по одному'");
+        RupturesScannerPage rupturesScannerPage = sessionListPage.clickScanRupturesByOneButton();
+        rupturesScannerPage.shouldCounterIsCorrect(0);
+        rupturesScannerPage.shouldRupturesByOneLblIsVisible();
         rupturesScannerPage.shouldRupturesListNavBtnIsVisible(false)
                 .verifyRequiredElements();
 
         // Step 2
         step("Перейти к ручному поиску и найти любой товар");
         SearchProductPage searchProductPage = rupturesScannerPage.navigateToSearchProductPage();
-        searchProductPage.enterTextInSearchFieldAndSubmit(lmCode); //TODO раньше сразу карточка выбиралась
+        searchProductPage.enterTextInSearchFieldAndSubmit(lmCode);
         RuptureCardPage ruptureCardPage = new RuptureCardPage();
         ruptureCardPage.verifyRequiredElementsWhenCreateRupture();
 
         // Step 3
         step("Подтвердить добавление перебоя");
         rupturesScannerPage = ruptureCardPage.clickSubmitButton();
+        rupturesScannerPage.shouldCounterIsCorrect(1);
+        rupturesScannerPage.shouldRupturesByOneLblIsVisible();
         rupturesScannerPage.shouldRupturesListNavBtnIsVisible(true)
                 .verifyRequiredElements();
 
@@ -513,12 +518,13 @@ public class RupturesTest extends AppBaseSteps {
         step("Закрыть страницу ручного поиска");
         searchProductPage.returnBack();
         rupturesScannerPage = new RupturesScannerPage();
+        rupturesScannerPage.shouldCounterIsCorrect(1);
+        rupturesScannerPage.shouldRupturesByOneLblIsVisible();
         rupturesScannerPage.shouldRupturesListNavBtnIsVisible(true)
-                .shouldCounterIsCorrect(1)
                 .verifyRequiredElements();
 
         // Step 9
-        step("Нажать на кнопку 'список перебоев'");
+        step("Нажать на кнопку Закрыть сканер по кнопке 'х'");
         ActiveSessionPage activeSessionPage = rupturesScannerPage.navigateToRuptureProductList();
         activeSessionPage.shouldRuptureQuantityIsCorrect(1)
                 .verifyRequiredElements();
