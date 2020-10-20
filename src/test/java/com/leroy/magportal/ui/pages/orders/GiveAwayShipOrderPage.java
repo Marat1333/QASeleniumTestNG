@@ -3,13 +3,7 @@ package com.leroy.magportal.ui.pages.orders;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.magportal.ui.models.orders.ToGiveAwayProductCardData;
-import com.leroy.magportal.ui.models.picking.PickingProductCardData;
-import com.leroy.magportal.ui.pages.orders.OrderCreatedPage;
 import com.leroy.magportal.ui.pages.orders.widget.OrderProductToGiveAwayCardWidget;
-import com.leroy.magportal.ui.pages.orders.widget.PickingWidget;
-import com.leroy.magportal.ui.pages.picking.PickingContentPage;
-import com.leroy.magportal.ui.pages.picking.data.PickingData;
-import com.leroy.magportal.ui.pages.picking.widget.AssemblyProductCardWidget;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import io.qameta.allure.Step;
 
