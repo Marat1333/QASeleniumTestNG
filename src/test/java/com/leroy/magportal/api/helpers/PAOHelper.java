@@ -136,7 +136,7 @@ public class PAOHelper extends BaseHelper {
 
     @Step("API: Создать подвтержденный заказ")
     public OrderData createConfirmedOrder(
-            List<CartProductOrderData> products,
+            List<CartProductOrderData> products, GiveAwayData giveAwayData,
             boolean isWaitForAllowedForPicking) {
         // Создание корзины
         CartData cartData = createCart(products);
@@ -198,11 +198,6 @@ public class PAOHelper extends BaseHelper {
         confirmOrderData.setProducts(orderData.getProducts());
         confirmOrderData.setCustomers(Collections.singletonList(orderCustomerData));
 
-        GiveAwayData giveAwayData = new GiveAwayData();
-        giveAwayData.setDate(LocalDateTime.now().plusDays(1));
-        giveAwayData.setPoint(SalesDocumentsConst.GiveAwayPoints.PICKUP.getApiVal());
-        giveAwayData.setShopId(
-                Integer.valueOf(ContextProvider.getContext().getUserSessionData().getUserShopId()));
         confirmOrderData.setGiveAway(giveAwayData);
         Response<OrderData> resp = orderClient
                 .confirmOrder(orderData.getOrderId(), confirmOrderData);
@@ -212,6 +207,16 @@ public class PAOHelper extends BaseHelper {
                     SalesDocumentsConst.States.ALLOWED_FOR_PICKING, null);
         }
         return orderData;
+    }
+
+    public OrderData createConfirmedOrder(
+            List<CartProductOrderData> products, boolean isWaitForAllowedForPicking) {
+        GiveAwayData giveAwayData = new GiveAwayData();
+        giveAwayData.setDate(LocalDateTime.now().plusDays(1));
+        giveAwayData.setPoint(SalesDocumentsConst.GiveAwayPoints.PICKUP.getApiVal());
+        giveAwayData.setShopId(
+                Integer.valueOf(ContextProvider.getContext().getUserSessionData().getUserShopId()));
+        return createConfirmedOrder(products, giveAwayData, isWaitForAllowedForPicking);
     }
 
     public OrderData createConfirmedOrder(CartProductOrderData product,

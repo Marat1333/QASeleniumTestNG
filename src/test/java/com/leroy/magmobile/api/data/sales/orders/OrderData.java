@@ -1,8 +1,8 @@
 package com.leroy.magmobile.api.data.sales.orders;
 
-import lombok.Data;
-
+import com.leroy.magportal.api.data.onlineOrders.ShipToData;
 import java.util.List;
+import lombok.Data;
 
 @Data
 public class OrderData {
@@ -36,6 +36,7 @@ public class OrderData {
     private String creatorName;
     private String creatorSurname;
 
+
     // For Update, Confirm requests
     private String priority;
 
@@ -50,5 +51,4 @@ public class OrderData {
     public void increaseFulfillmentVersion(int val) {
         fulfillmentVersion += val;
     }
-
 }

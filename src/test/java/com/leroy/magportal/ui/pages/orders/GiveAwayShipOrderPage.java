@@ -26,17 +26,12 @@ public class GiveAwayShipOrderPage extends OrderCreatedPage {
     CardWebWidgetList<OrderProductToGiveAwayCardWidget, ToGiveAwayProductCardData> productCards;
 
 
-    //div[contains(@class, 'lm-shared-order-ProductCard__body-title')]
-
-
     // Actions
 
     @Step("Нажать кнопку 'Выдать'")
     public GiveAwayShipOrderPage clickGiveAwayButton() {
         GiveAwayBtn.click();
         waitForSpinnerAppearAndDisappear();
-        //anAssert.isTrue(finishAssemblyBtn.isVisible(), "Кнопка Завершить не отображается");
-        //anAssert.isFalse(finishAssemblyBtn.isEnabled(), "Кнопка Завершить активна");
         return this;
     }
 

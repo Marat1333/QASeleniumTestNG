@@ -22,4 +22,12 @@
         </classes>
     </test>
 
+    <test name="Offline Orders: Timeslot Update tests">
+        <classes>
+            <class
+                name="com.leroy.magportal.api.tests.offlineOrders.TimeslotTest">
+            </class>
+        </classes>
+    </test>
+
 </suite>

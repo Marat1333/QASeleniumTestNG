@@ -38,4 +38,12 @@
         </classes>
     </test>
 
+    <test name="Pickup Online Orders: Timeslot Update tests">
+        <classes>
+            <class
+                name="com.leroy.magportal.api.tests.onlineOrders.pickupOrders.PickupTimeslotTest">
+            </class>
+        </classes>
+    </test>
+
 </suite>

@@ -6,6 +6,7 @@ import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.clients.PickingTaskClient;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst;
+import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
 import com.leroy.magportal.api.constants.PaymentStatusEnum;
 import com.leroy.magportal.api.data.picking.PickingTaskData;
 import com.leroy.magportal.api.helpers.BitrixHelper;
@@ -30,18 +31,13 @@ public class ExpressWorkflowShortTest extends BaseMagPortalApiTest {
 
     private String currentOrderId;
     private String currentTaskId;
+    private OnlineOrderTypeData currentOrderType;
 
 
     @BeforeClass
     private void setUp() {
-        List<BitrixSolutionResponse> bitrixSolutionResponses = bitrixHelper
-                .createOnlineOrders(1, OnlineOrderTypeConst.DELIVERY_EXPRESS, 3);
-        currentOrderId = bitrixSolutionResponses.stream().findAny().get().getSolutionId();
-        bitrixSolutionResponses.remove(bitrixSolutionResponses.stream()
-                .filter(x -> x.getSolutionId().equals(currentOrderId)).findFirst().get());
-
-        orderClient.waitUntilOrderGetStatus(currentOrderId,
-                States.ALLOWED_FOR_PICKING, PaymentStatusEnum.HOLD);
+        currentOrderType = OnlineOrderTypeConst.DELIVERY_EXPRESS;
+        currentOrderId = bitrixHelper.createOnlineOrder(currentOrderType).getSolutionId();
 
         currentTaskId = pickingTaskClient.searchForPickingTasks(currentOrderId).asJson().getItems()
                 .stream().findFirst().get().getTaskId();
@@ -67,7 +63,7 @@ public class ExpressWorkflowShortTest extends BaseMagPortalApiTest {
         orderClient.waitUntilOrderGetStatus(currentOrderId,
                 States.PICKED, PaymentStatusEnum.PAID);
         Response<JsonNode> response = orderClient.giveAway(currentOrderId, true);
-        orderClient.assertWorkflowResult(response, currentOrderId, States.GIVEN_AWAY);
+        orderClient.assertWorkflowResult(response, currentOrderId, States.SHIPPED);
     }
 
     @Test(description = "C23425628 Express Delivery: ON_SHIPMENT -> DELIVERED", dependsOnMethods={"testShipped"})
