@@ -458,7 +458,7 @@ public class RupturesTest extends AppBaseSteps {
         activeSessionPage.shouldRuptureCounterIsCorrect(ruptureCounter);
     }
 
-    @Test(description = "C3272523 Добавление дубля в сессию при создании сессии")
+    @Test(description = "C3272523 Добавление дубля в сессию при создании сессии по одному")
     public void testAddRuptureDuplicateToSession() throws Exception {
         ProductItemData randomProduct = searchProductHelper.getProducts(0).get(0);
         String lmCode = randomProduct.getLmCode();
