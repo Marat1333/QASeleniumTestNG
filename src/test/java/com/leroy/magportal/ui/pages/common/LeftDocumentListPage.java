@@ -120,7 +120,7 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
                 d -> d.getNumber().equals(expectedDocument.getNumber())).collect(Collectors.toList());
         anAssert.isEquals(actualDocuments.size(), 1,
                 "Документ с номером " + expectedDocument.getNumber() + " не найден");
-        if (DefectConst.CONFIRMED_BUT_NOT_ALLOWED_FOR_PICKING_ORDER)
+        if (DefectConst.ISSUE_WITH_ORDER_STATUS)
             if (expectedDocument instanceof ShortOrderDocWebData)
                 ((ShortOrderDocWebData)expectedDocument).setStatus(null);
         actualDocuments.get(0).assertEqualsNotNullExpectedFields(expectedDocument);
