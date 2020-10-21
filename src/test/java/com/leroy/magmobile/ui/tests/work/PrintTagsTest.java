@@ -117,10 +117,8 @@ public class PrintTagsTest extends AppBaseSteps {
         exitModalPage.exit();
         sessionsListPage = new SessionsListPage();
         sessionsListPage.createNewSession();
-        UnsuccessfullSessionCreationModalPage errorModal = new UnsuccessfullSessionCreationModalPage();
-        errorModal.verifyRequiredElements();
-        errorModal.confirm();
-        sessionsListPage.verifyRequiredElements();
+        scannerPage = new PrintTagsScannerPage();
+        scannerPage.verifyRequiredElements();
     }
 
     @Test(description = "C23389192 Создание сессии через карточку товара")
@@ -556,7 +554,7 @@ public class PrintTagsTest extends AppBaseSteps {
         tagsListPage.shouldProductTagsHasCorrectSizesAndQuantity(tagData);
         sessionCreationTimeCheck = tagsListPage.getSessionCreationTimeStamp();
         // workaround for bug (on grid only)
-        sessionCreationTime = sessionCreationTime.plusHours(DriverFactory.isGridProfile() ? TimeZone.UTC : TimeZone.MSC);
+        sessionCreationTime = sessionCreationTime.plusHours(TimeZone.MSC);
         anAssert().isEquals(sessionCreationTime, sessionCreationTimeCheck, "creation time");
     }
 
