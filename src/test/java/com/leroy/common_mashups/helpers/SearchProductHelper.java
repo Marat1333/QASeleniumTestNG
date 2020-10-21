@@ -1,22 +1,26 @@
 package com.leroy.common_mashups.helpers;
 
-import com.google.inject.Inject;
-import com.leroy.magmobile.api.clients.CatalogSearchClient;
-import com.leroy.magmobile.api.data.catalog.*;
-import com.leroy.magmobile.api.requests.catalog_search.GetCatalogServicesSearch;
-import com.leroy.magportal.api.helpers.BaseHelper;
-import io.qameta.allure.Step;
-import ru.leroymerlin.qa.core.clients.base.Response;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasSize;
+
+import com.google.inject.Inject;
+import com.leroy.magmobile.api.clients.CatalogSearchClient;
+import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
+import com.leroy.magmobile.api.data.catalog.ProductItemData;
+import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
+import com.leroy.magmobile.api.data.catalog.ServiceItemData;
+import com.leroy.magmobile.api.data.catalog.ServiceItemDataList;
+import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
+import com.leroy.magmobile.api.requests.catalog_search.GetCatalogServicesSearch;
+import com.leroy.magportal.api.helpers.BaseHelper;
+import io.qameta.allure.Step;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class SearchProductHelper extends BaseHelper {
 
@@ -31,7 +35,8 @@ public class SearchProductHelper extends BaseHelper {
                 .setPageSize(necessaryCount); // TODO не работает. Почему?
         Response<ServiceItemDataList> resp = catalogSearchClient.searchServicesBy(params);
         List<ServiceItemData> services =
-                resp.asJson().getItems().stream().limit(necessaryCount).collect(Collectors.toList());
+                resp.asJson().getItems().stream().limit(necessaryCount)
+                        .collect(Collectors.toList());
         return services;
     }
 
@@ -39,8 +44,9 @@ public class SearchProductHelper extends BaseHelper {
     public List<ProductItemData> getProducts(int necessaryCount, CatalogSearchFilter filtersData) {
         String[] badLmCodes = {"10008698",
                 "10008751"}; // Из-за отсутствия синхронизации бэков на тесте, мы можем получить некорректные данные
-        if (filtersData == null)
+        if (filtersData == null) {
             filtersData = new CatalogSearchFilter();
+        }
         Response<ProductItemDataList> resp = catalogSearchClient.searchProductsBy(filtersData);
         assertThat("Catalog search request:", resp, successful());
         List<ProductItemData> items = resp.asJson().getItems();
@@ -84,12 +90,30 @@ public class SearchProductHelper extends BaseHelper {
 
     public List<String> getProductLmCodes(int necessaryCount) {
         List<ProductItemData> productItemResponseList = getProducts(necessaryCount, null);
-        return productItemResponseList.stream().map(ProductItemData::getLmCode).collect(Collectors.toList());
+        return productItemResponseList.stream().map(ProductItemData::getLmCode)
+                .collect(Collectors.toList());
     }
 
     public List<String> getProductLmCodes(int necessaryCount, boolean isAvs, boolean isTopEm) {
         List<ProductItemData> productItemResponseList = getProducts(necessaryCount, isAvs, isTopEm);
-        return productItemResponseList.stream().map(ProductItemData::getLmCode).collect(Collectors.toList());
+        return productItemResponseList.stream().map(ProductItemData::getLmCode)
+                .collect(Collectors.toList());
+    }
+
+    @Step("Return list of products for specified ShopId")
+    public List<ProductItemData> getProductsForShop(int countOfProducts,
+            String shopId) {
+        return catalogSearchClient
+                .searchProductsBy(new GetCatalogSearch().setPageSize(countOfProducts)
+                        .setHasAvailableStock(true).setShopId(shopId)).asJson().getItems();
+    }
+
+    @Step("Return list of products for specified ShopId")
+    public ProductItemData getProductByLmCode(String lmCode) {
+        CatalogSearchFilter filter = new CatalogSearchFilter();
+        filter.setLmCode(lmCode);
+        return catalogSearchClient.searchProductsBy(filter).asJson().getItems().stream().findFirst()
+                .get();
     }
 
 }

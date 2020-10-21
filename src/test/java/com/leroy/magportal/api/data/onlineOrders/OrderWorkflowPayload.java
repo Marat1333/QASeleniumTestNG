@@ -15,5 +15,7 @@ public class OrderWorkflowPayload {
     public static class WorkflowPayload {
 
         private List<OrderProductDataPayload> products;
+        private Double deliveryLiftPrice;
+        private Double deliveryTotalPrice;
     }
 }
