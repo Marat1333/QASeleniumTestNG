@@ -76,8 +76,8 @@ public class PickingTest extends BasePAOTest {
 
     private void initFindPickingTask() throws Exception {
         OrderClient orderClient = apiClientProvider.getOrderClient();
-        orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderId,
-                SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal());
+        orderClient.waitUntilOrderGetStatus(orderId,
+                SalesDocumentsConst.States.ALLOWED_FOR_PICKING, null);
         PickingTaskClient pickingTaskClient = apiClientProvider.getPickingTaskClient();
         Response<PickingTaskDataList> respPickingTasks = pickingTaskClient.searchForPickingTasks(orderId);
         assertThat(respPickingTasks, successful());
