@@ -83,7 +83,7 @@ public class EstimateTest extends BasePAOTest {
         estimatePage = submittedEstimateModal.closeWindow();
         estimateData.setStatus(SalesDocumentsConst.States.CONFIRMED.getUiVal());
         estimatePage.shouldEstimateHasData(estimateData)
-                .shouldDocumentIsPresent(estimateData.getNumber());
+                .shouldDocumentIsPresent(estimateData.getNumber(), 6);
         softAssert().verifyAll();
     }
 
