@@ -76,7 +76,7 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
 
     @Step("Проверить, что документ №{number} в списке слева отображается")
     public void shouldDocumentIsPresent(String number) throws Exception {
-        anAssert.isTrue(isDocumentPresentInList(number),
+        softAssert.isTrue(isDocumentPresentInList(number),
                 "Документ №" + number + " не найден в списке слева");
     }
 
@@ -163,13 +163,13 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
 
     @Step("Проверить, что в список документов слева пуст")
     public void shouldDocumentListIsEmpty() throws Exception {
-        anAssert.isTrue(documentCardList().getDataList().size() == 0,
+        softAssert.isTrue(documentCardList().getDataList().size() == 0,
                 "Список документов не пустой (содержит документы)");
     }
 
     @Step("Проверить, что список документов слева содержит хотя бы один документ")
     public void shouldDocumentListIsNotEmpty() throws Exception {
-        anAssert.isTrue(documentCardList().getDataList().size() > 0,
+        softAssert.isTrue(documentCardList().getDataList().size() > 0,
                 "Список документов пустой");
     }
 }

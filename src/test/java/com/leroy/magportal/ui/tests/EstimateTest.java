@@ -84,6 +84,7 @@ public class EstimateTest extends BasePAOTest {
         estimateData.setStatus(SalesDocumentsConst.States.CONFIRMED.getUiVal());
         estimatePage.shouldEstimateHasData(estimateData)
                 .shouldDocumentIsPresent(estimateData.getNumber());
+        softAssert().verifyAll();
     }
 
     @Test(description = "C3302208 Search product by lm code", groups = NEED_PRODUCTS_GROUP)
@@ -680,6 +681,7 @@ public class EstimateTest extends BasePAOTest {
         estimatePage = new EstimatePage();
         estimatePage.shouldDocumentListHaveNumberContains(partEstimateId)
                 .shouldDocumentListNumbersNotEqual(docNumberList);
+        softAssert().verifyAll();
     }
 
     // Estimate sending

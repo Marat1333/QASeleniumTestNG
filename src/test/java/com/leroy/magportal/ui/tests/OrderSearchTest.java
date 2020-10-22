@@ -345,7 +345,7 @@ public class OrderSearchTest extends WebBaseSteps {
             ordersPage.selectSearchType(SearchTypes.CUSTOMER_EMAIL);
             ordersPage.enterSearchTextAndSubmit(customerData.getEmail());
             ordersPage.shouldDocumentIsPresent(orderId_1);
-//            softAssert().verifyAll(); TODO: move to it all verification
+            softAssert().verifyAll();
         } finally {
             OrderClient orderClient = apiClientProvider.getOrderClient();
             orderClient.cancelOrder(orderId_1);
@@ -409,6 +409,7 @@ public class OrderSearchTest extends WebBaseSteps {
         step("Нажать на кнопку 'Очистить фильтры'(изображена метла), нажать 'Показать заказы'");
         ordersPage.clearFiltersAndSubmit();
         ordersPage.shouldDocumentCountIs(ordersCountBefore);
+        softAssert().verifyAll();
     }
 
 }
