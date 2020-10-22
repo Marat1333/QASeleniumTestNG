@@ -34,8 +34,7 @@ public class PrintPriceClient extends BaseMashupClient {
 
     public String getRandomPrinterName() throws IllegalAccessException {
         List<String> printersName = getPrinterNamesList();
-        int randomPrinterName = (int) (Math.random() * printersName.size());
-        return printersName.get(randomPrinterName);
+        return printersName.get(0);
     }
 
     public List<String> getPrinterNamesList() throws IllegalAccessException {
