@@ -12,9 +12,11 @@ import com.leroy.magportal.api.data.picking.PickingTaskData;
 import com.leroy.magportal.api.helpers.BitrixHelper;
 import com.leroy.magportal.api.helpers.PaymentHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
+import java.util.List;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
+import ru.leroymerlin.qa.core.clients.tunnel.data.BitrixSolutionResponse;
 
 public class ExpressWorkflowShortTest extends BaseMagPortalApiTest {
 
@@ -29,11 +31,12 @@ public class ExpressWorkflowShortTest extends BaseMagPortalApiTest {
 
     private String currentOrderId;
     private String currentTaskId;
+    private OnlineOrderTypeData currentOrderType;
 
 
     @BeforeClass
     private void setUp() {
-        OnlineOrderTypeData currentOrderType = OnlineOrderTypeConst.DELIVERY_EXPRESS;
+        currentOrderType = OnlineOrderTypeConst.DELIVERY_EXPRESS;
         currentOrderId = bitrixHelper.createOnlineOrder(currentOrderType).getSolutionId();
 
         currentTaskId = pickingTaskClient.searchForPickingTasks(currentOrderId).asJson().getItems()
@@ -47,16 +50,14 @@ public class ExpressWorkflowShortTest extends BaseMagPortalApiTest {
         orderClient.assertWorkflowResult(response, currentOrderId, States.PICKING_IN_PROGRESS);
     }
 
-    @Test(description = "C23425628 Express Delivery: PICKING_IN_PROGRESS -> PICKED", dependsOnMethods = {
-            "testStartPicking"})
+    @Test(description = "C23425628 Express Delivery: PICKING_IN_PROGRESS -> PICKED", dependsOnMethods={"testStartPicking"})
     public void testCompletePicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .completePicking(currentTaskId, true);
         orderClient.assertWorkflowResult(response, currentOrderId, States.PICKED_WAIT);
     }
 
-    @Test(description = "C23425628 Express Delivery: ALLOWED_FOR_GIVEAWAY -> ON_SHIPMENT", dependsOnMethods = {
-            "testCompletePicking"})
+    @Test(description = "C23425628 Express Delivery: ALLOWED_FOR_GIVEAWAY -> ON_SHIPMENT", dependsOnMethods={"testCompletePicking"})
     public void testShipped() {
         paymentHelper.makePaid(currentOrderId);
         orderClient.waitUntilOrderGetStatus(currentOrderId,
@@ -65,11 +66,10 @@ public class ExpressWorkflowShortTest extends BaseMagPortalApiTest {
         orderClient.assertWorkflowResult(response, currentOrderId, States.SHIPPED);
     }
 
-    @Test(description = "C23425628 Express Delivery: ON_SHIPMENT -> DELIVERED", dependsOnMethods = {
-            "testShipped"})
+    @Test(description = "C23425628 Express Delivery: ON_SHIPMENT -> DELIVERED", dependsOnMethods={"testShipped"})
     public void testDeliver() {
         orderClient.waitUntilOrderGetStatus(currentOrderId,
-                States.ON_DELIVERY, null);
+                States.SHIPPED, PaymentStatusEnum.PAID);
         Response<JsonNode> response = orderClient.deliver(currentOrderId, true);
         orderClient.assertWorkflowResult(response, currentOrderId, States.DELIVERED);
     }
