@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Order Suite" parallel="methods">
+
+    <listeners>
+        <listener class-name="com.leroy.core.listeners.TestRailListener"/>
+    </listeners>
+
+    <test name="ЦИЗ">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.pao.order.SizOrderTest"/>
+        </classes>
+    </test>
+
+</suite>

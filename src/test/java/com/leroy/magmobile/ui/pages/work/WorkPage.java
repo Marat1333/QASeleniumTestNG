@@ -120,7 +120,6 @@ public class WorkPage extends BottomMenuPage {
         softAssert.isElementVisible(withdrawalAndDisposalLbl);
         softAssert.isElementVisible(priceTagPrintingLbl);
         softAssert.isElementVisible(orderBalisageLbl);
-        softAssert.isElementVisible(miniInventoryLbl);
         softAssert.isElementVisible(rupturesManageLbl);
         softAssert.verifyAll();
         return this;

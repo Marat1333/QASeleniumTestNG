@@ -12,8 +12,8 @@ public class CommonLegoRequest<J extends CommonLegoRequest<J>> extends RequestBu
         String[] queryParamArr = build("").getUri().getQuery().split("&");
         HashMap<String, String> queryParams = new HashMap<>();
         for (String one : queryParamArr) {
-           String[] param = one.split("=");
-           queryParams.put(param[0],param[1]);
+            String[] param = one.split("=");
+            queryParams.put(param[0], param[1]);
         }
         return queryParams;
     }

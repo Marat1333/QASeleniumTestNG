@@ -1,5 +1,6 @@
 package com.leroy.core.util;
 
+import com.leroy.core.configuration.Log;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
@@ -48,7 +49,8 @@ public class MountebankClient extends Client {
             if (status != 200)
                 return status;
             return status;
-        } catch (UnirestException var3) {
+        } catch (UnirestException e) {
+            Log.error(e.getMessage());
             return 500;
         }
     }
