@@ -1,0 +1,1099 @@
+[
+  {
+    "index": 0,
+    "body": {
+      "totalCount": 630036,
+      "salesDocuments": [
+        {
+          "docId": "03130728",
+          "fullDocId": "201003130728",
+          "docType": "ORDER",
+          "shopId": "035",
+          "pinCode": null,
+          "salesDocStatus": "ALLOWED_FOR_PICKING",
+          "isUrgent": false,
+          "delivery": true,
+          "creatorName": null,
+          "creatorSurname": null,
+          "createdBy": "Bitrix",
+          "createdDate": "2020-10-15T11:16:15.723+00:00",
+          "customerName": "Авто",
+          "customerSurname": "Тестик",
+          "customerPhone": "79211339990",
+          "customerType": "PERSON",
+          "customerNumber": "7666712",
+          "comment": "BITRIX: ПВЗ, Sberbank",
+          "taskControlStatus": "NOT_CONTROLLED",
+          "docPriceSum": 4880.45,
+          "servicesCount": 0,
+          "productsCount": 1,
+          "giveAway": {
+            "point": "PICKUP_POINT"
+          },
+          "channel": "ONLINE",
+          "paymentStatus": "HOLD",
+          "paymentType": "PREPAYMENT",
+          "userTasks": [],
+          "products": [
+            {
+              "lmCode": "80120442",
+              "title": "Лента монтажная для внутренних работ Scotch 19 мм x 1.5 м цвет белый"
+            },
+            {
+              "lmCode": "49200000",
+              "title": null
+            }
+          ]
+        },
+        {
+          "docId": "03130726",
+          "fullDocId": "201003130726",
+          "docType": "ORDER",
+          "shopId": "035",
+          "pinCode": null,
+          "salesDocStatus": "ALLOWED_FOR_PICKING",
+          "isUrgent": false,
+          "delivery": true,
+          "creatorName": null,
+          "creatorSurname": null,
+          "createdBy": "Bitrix",
+          "createdDate": "2020-10-15T11:15:35.320+00:00",
+          "customerName": "Авто",
+          "customerSurname": "Тестик",
+          "customerPhone": "79211339990",
+          "customerType": "PERSON",
+          "customerNumber": "7666712",
+          "comment": "BITRIX: Курьерская доставка, Sberbank",
+          "taskControlStatus": "NOT_CONTROLLED",
+          "docPriceSum": 5070.889999999999,
+          "servicesCount": 0,
+          "productsCount": 1,
+          "giveAway": {
+            "point": "COURIER"
+          },
+          "channel": "ONLINE",
+          "paymentStatus": "HOLD",
+          "paymentType": "PREPAYMENT",
+          "userTasks": [],
+          "products": [
+            {
+              "lmCode": "11795347",
+              "title": "Супер-тряпка Unicum нетканное полотно 140 шт."
+            },
+            {
+              "lmCode": "49300000",
+              "title": null
+            }
+          ]
+        },
+        {
+          "docId": "03130724",
+          "fullDocId": "201003130724",
+          "docType": "ORDER",
+          "shopId": "035",
+          "pinCode": null,
+          "salesDocStatus": "ALLOWED_FOR_PICKING",
+          "isUrgent": false,
+          "delivery": true,
+          "creatorName": null,
+          "creatorSurname": null,
+          "createdBy": "Bitrix",
+          "createdDate": "2020-10-15T11:14:51.299+00:00",
+          "customerName": "Авто",
+          "customerSurname": "Тестик",
+          "customerPhone": "79211339990",
+          "customerType": "PERSON",
+          "customerNumber": "7666712",
+          "comment": "BITRIX: В КОМНАТУ, Sberbank",
+          "taskControlStatus": "NOT_CONTROLLED",
+          "docPriceSum": 9431.33,
+          "servicesCount": 0,
+          "productsCount": 3,
+          "giveAway": {
+            "point": "HOME_DELIVERY"
+          },
+          "channel": "ONLINE",
+          "paymentStatus": "HOLD",
+          "paymentType": "PREPAYMENT",
+          "userTasks": [],
+          "products": [
+            {
+              "lmCode": "10061536",
+              "title": "Суппорт для розетки Экопласт PM-45, 45 мм, цвет белый"
+            },
+            {
+              "lmCode": "49626307",
+              "title": null
+            },
+            {
+              "lmCode": "10052920",
+              "title": "Канал плоский Equation, 55х110х1000 мм"
+            },
+            {
+              "lmCode": "10052955",
+              "title": "Канал плоский  Equation, 55х110х1500 мм"
+            }
+          ]
+        },
+        {
+          "docId": "03130678",
+          "fullDocId": "201003130678",
+          "docType": "ORDER",
+          "shopId": "035",
+          "pinCode": null,
+          "salesDocStatus": "ALLOWED_FOR_PICKING",
+          "isUrgent": false,
+          "delivery": true,
+          "creatorName": null,
+          "creatorSurname": null,
+          "createdBy": "Bitrix",
+          "createdDate": "2020-10-15T10:35:20.345+00:00",
+          "customerName": "Тест",
+          "customerSurname": "ЦИЗ",
+          "customerPhone": "79856253444",
+          "customerType": "PERSON",
+          "customerNumber": null,
+          "comment": null,
+          "taskControlStatus": "NOT_CONTROLLED",
+          "docPriceSum": 1106,
+          "servicesCount": 0,
+          "productsCount": 3,
+          "giveAway": {
+            "point": "HOME_DELIVERY"
+          },
+          "channel": "ONLINE",
+          "paymentStatus": "HOLD",
+          "paymentType": "PREPAYMENT",
+          "userTasks": [],
+          "products": [
+            {
+              "lmCode": "18642984",
+              "title": "Линолеум «Дуб Португальский» 23 класс 3.5 м"
+            },
+            {
+              "lmCode": "49626307",
+              "title": null
+            },
+            {
+              "lmCode": "18769926",
+              "title": "Дрель-шуруповерт аккумуляторная Makita DF457DWE, 18 В Li-ion 2x1.5 Ач"
+            },
+            {
+              "lmCode": "18126411",
+              "title": "Патрон с ключом и адаптером Спец 1.5-13 мм"
+            }
+          ]
+        },
+        {
+          "docId": "03130639",
+          "fullDocId": "201003130639",
+          "docType": "ORDER",
+          "shopId": "35",
+          "pinCode": null,
+          "salesDocStatus": "DRAFT",
+          "isUrgent": false,
+          "delivery": false,
+          "creatorName": "Вадим",
+          "creatorSurname": "Печерский",
+          "createdBy": "60056010",
+          "createdDate": "2020-10-15T09:48:39.649+00:00",
+          "customerName": null,
+          "customerSurname": null,
+          "customerPhone": null,
+          "customerType": null,
+          "customerNumber": null,
+          "comment": null,
+          "taskControlStatus": "NOT_CONTROLLED",
+          "docPriceSum": 525000,
+          "servicesCount": 0,
+          "productsCount": 1,
+          "giveAway": {
+            "point": "PICKUP"
+          },
+          "channel": "OFFLINE",
+          "paymentStatus": "NEW",
+          "paymentType": "CASHLINE_DEPOSIT",
+          "userTasks": [],
+          "products": [
+            {
+              "lmCode": "18693669",
+              "title": "Плита OSB-3 ULTRALAM 8 мм 2500x1250 мм 3.125 м²"
+            }
+          ]
+        },
+        {
+          "docId": "03130638",
+          "fullDocId": "201003130638",
+          "docType": "ORDER",
+          "shopId": "35",
+          "pinCode": null,
+          "salesDocStatus": "DRAFT",
+          "isUrgent": false,
+          "delivery": false,
+          "creatorName": "Вадим",
+          "creatorSurname": "Печерский",
+          "createdBy": "60056010",
+          "createdDate": "2020-10-15T09:47:04.786+00:00",
+          "customerName": null,
+          "customerSurname": null,
+          "customerPhone": null,
+          "customerType": null,
+          "customerNumber": null,
+          "comment": null,
+          "taskControlStatus": "NOT_CONTROLLED",
+          "docPriceSum": 119485,
+          "servicesCount": 0,
+          "productsCount": 1,
+          "giveAway": {
+            "point": "PICKUP"
+          },
+          "channel": "OFFLINE",
+          "paymentStatus": "NEW",
+          "paymentType": "CASHLINE_DEPOSIT",
+          "userTasks": [],
+          "products": [
+            {
+              "lmCode": "82114227",
+              "title": "Дверь входная металлическая Сенатор 12 см, 860 мм, левая, цвет зеркало дуб сонома"
+            }
+          ]
+        },
+        {
+          "docId": "03130637",
+          "fullDocId": "201003130637",
+          "docType": "ORDER",
+          "shopId": "35",
+          "pinCode": null,
+          "salesDocStatus": "DRAFT",
+          "isUrgent": false,
+          "delivery": false,
+          "creatorName": "Вадим",
+          "creatorSurname": "Печерский",
+          "createdBy": "60056010",
+          "createdDate": "2020-10-15T09:45:47.196+00:00",
+          "customerName": null,
+          "customerSurname": null,
+          "customerPhone": null,
+          "customerType": null,
+          "customerNumber": null,
+          "comment": null,
+          "taskControlStatus": "NOT_CONTROLLED",
+          "docPriceSum": 25472,
+          "servicesCount": 0,
+          "productsCount": 2,
+          "giveAway": {
+            "point": "PICKUP"
+          },
+          "channel": "OFFLINE",
+          "paymentStatus": "NEW",
+          "paymentType": "CASHLINE_DEPOSIT",
+          "userTasks": [],
+          "products": [
+            {
+              "lmCode": "82114227",
+              "title": "Дверь входная металлическая Сенатор 12 см, 860 мм, левая, цвет зеркало дуб сонома"
+            },
+            {
+              "lmCode": "18693669",
+              "title": "Плита OSB-3 ULTRALAM 8 мм 2500x1250 мм 3.125 м²"
+            }
+          ]
+        },
+        {
+          "docId": "03130636",
+          "fullDocId": "201003130636",
+          "docType": "ORDER",
+          "shopId": "35",
+          "pinCode": null,
+          "salesDocStatus": "CANCELLED",
+          "isUrgent": false,
+          "delivery": false,
+          "creatorName": "Вадим",
+          "creatorSurname": "Печерский",
+          "createdBy": "60056010",
+          "createdDate": "2020-10-15T09:41:24.460+00:00",
+          "customerName": "Александр",
+          "customerSurname": "Букавшин",
+          "customerPhone": "79036523898",
+          "customerType": "PERSON",
+          "customerNumber": "1874583",
+          "comment": null,
+          "taskControlStatus": "NOT_CONTROLLED",
+          "docPriceSum": 95588,
+          "servicesCount": 0,
+          "productsCount": 1,
+          "giveAway": {
+            "point": "PICKUP"
+          },
+          "channel": "OFFLINE",
+          "paymentStatus": "NEW",
+          "paymentType": "CASHLINE_DEPOSIT",
+          "userTasks": [],
+          "products": [
+            {
+              "lmCode": "82114227",
+              "title": "Дверь входная металлическая Сенатор 12 см, 860 мм, левая, цвет зеркало дуб сонома"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "index": 1,
+    "body": {
+      "callRequired": 0,
+      "completeDelivery": false,
+      "orderId": "201003130724",
+      "shopId": 35,
+      "createdAt": "2020-10-15T11:14:51.299+00:00",
+      "createdBy": "Bitrix",
+      "paymentStatus": "HOLD",
+      "comment": "BITRIX: В КОМНАТУ, Sberbank",
+      "customers": [
+        {
+          "customerNumber": "7666712",
+          "firstName": "Авто",
+          "lastName": "Тестик",
+          "fullName": "Авто Тестик",
+          "primaryPhone": "79211339990",
+          "phone": {
+            "primary": "79211339990",
+            "secondary": null
+          },
+          "email": "autotest@mail.com",
+          "role": "PAYER",
+          "roles": [
+            "PAYER"
+          ],
+          "type": "PERSON"
+        }
+      ],
+      "products": [
+        {
+          "lmCode": "10052920",
+          "lineId": "9053c172-24b3-4ea0-a46b-82c241b9a7a9",
+          "type": "PRODUCT",
+          "price": 183,
+          "quantity": 10,
+          "createdQuantity": 10,
+          "pickedQuantity": 0,
+          "givenAwayQuantity": 0,
+          "controlledQuantity": 0,
+          "confirmedQuantity": 0,
+          "returnedQuantity": 0,
+          "discount": null,
+          "reasons": {
+            "lastPicked": null,
+            "lastGivenAway": null,
+            "lastAdjustment": null
+          },
+          "stocks": {
+            "RD": 0,
+            "RM": 0,
+            "EM": 0,
+            "LS": 117
+          },
+          "sellingScheme": "GENERAL",
+          "refundQuantity": 0,
+          "deliveredQuantity": null,
+          "logistic": {
+            "width": "11.1",
+            "height": "5.5",
+            "weight": "0.607",
+            "depth": "100.5"
+          },
+          "barCodes": [
+            "4630017370108",
+            "2",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "5",
+            "2",
+            "9",
+            "2",
+            "0",
+            "1"
+          ],
+          "departmentId": "3",
+          "priceUnit": "NIU",
+          "title": "Канал плоский Equation, 55х110х1000 мм",
+          "priceCategory": "STD",
+          "isAvs": false,
+          "images": [
+            "https://res.cloudinary.com/lmru/image/upload/LMCode/10052920.jpg"
+          ],
+          "availableStock": 117,
+          "isAVS": false
+        },
+        {
+          "lmCode": "10061536",
+          "lineId": "52b07d01-6a88-42f6-bb92-3cefecbdd1cb",
+          "type": "PRODUCT",
+          "price": 105,
+          "quantity": 10,
+          "createdQuantity": 10,
+          "pickedQuantity": 0,
+          "givenAwayQuantity": 0,
+          "controlledQuantity": 0,
+          "confirmedQuantity": 0,
+          "returnedQuantity": 0,
+          "discount": null,
+          "reasons": {
+            "lastPicked": null,
+            "lastGivenAway": null,
+            "lastAdjustment": null
+          },
+          "stocks": {
+            "RD": 0,
+            "RM": 0,
+            "EM": 0,
+            "LS": 91
+          },
+          "sellingScheme": "GENERAL",
+          "refundQuantity": 0,
+          "deliveredQuantity": null,
+          "logistic": {
+            "width": "6.9",
+            "height": "2.8",
+            "weight": "0.022",
+            "depth": "7.7"
+          },
+          "barCodes": [
+            "4607058423902",
+            "2",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "6",
+            "1",
+            "5",
+            "3",
+            "6",
+            "2"
+          ],
+          "departmentId": "3",
+          "priceUnit": "NIU",
+          "title": "Суппорт для розетки Экопласт PM-45, 45 мм, цвет белый",
+          "priceCategory": "STD",
+          "isAvs": false,
+          "images": [
+            "https://res.cloudinary.com/lmru/image/upload/LMCode/10061536.jpg"
+          ],
+          "availableStock": 91,
+          "isAVS": false
+        },
+        {
+          "lmCode": "10052955",
+          "lineId": "b3515e65-970a-486a-bacd-b40816dacc46",
+          "type": "PRODUCT",
+          "price": 255,
+          "quantity": 10,
+          "createdQuantity": 10,
+          "pickedQuantity": 0,
+          "givenAwayQuantity": 0,
+          "controlledQuantity": 0,
+          "confirmedQuantity": 0,
+          "returnedQuantity": 0,
+          "discount": null,
+          "reasons": {
+            "lastPicked": null,
+            "lastGivenAway": null,
+            "lastAdjustment": null
+          },
+          "stocks": {
+            "RD": 0,
+            "RM": 0,
+            "EM": 0,
+            "LS": 91
+          },
+          "sellingScheme": "GENERAL",
+          "refundQuantity": 0,
+          "deliveredQuantity": null,
+          "logistic": {
+            "width": "11.1",
+            "height": "5.5",
+            "weight": "0.852",
+            "depth": "150.5"
+          },
+          "barCodes": [
+            "4630017370122",
+            "2",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "5",
+            "2",
+            "9",
+            "5",
+            "5",
+            "3"
+          ],
+          "departmentId": "3",
+          "priceUnit": "NIU",
+          "title": "Канал плоский  Equation, 55х110х1500 мм",
+          "priceCategory": "STD",
+          "isAvs": false,
+          "images": [
+            "https://res.cloudinary.com/lmru/image/upload/LMCode/10052955.jpg"
+          ],
+          "availableStock": 91,
+          "isAVS": false
+        }
+      ],
+      "userComments": [],
+      "solutionVersion": 10,
+      "channel": "ONLINE",
+      "giveAway": {
+        "date": "2020-10-16T00:00:00Z",
+        "shopId": 35,
+        "point": "HOME_DELIVERY",
+        "storageLocation": null
+      },
+      "customerId": "7666712",
+      "taskControlStatus": "NOT_CONTROLLED",
+      "fulfillmentTaskId": "1003520100387138",
+      "fulfillmentVersion": 4,
+      "fulfillmentPickingTasksQty": 1,
+      "pickers": [
+        {}
+      ],
+      "longtail": false,
+      "pickingStatus": null,
+      "delivery": true,
+      "paymentType": "PREPAYMENT",
+      "paymentTaskId": "3e968246-492c-48f7-ab55-69fda5e15dae",
+      "paymentVersion": 5,
+      "pinCode": null,
+      "actualDeliveryPrice": 4001.33,
+      "payments": [
+        {
+          "date": "2020-10-15T11:15:18.439+00:00",
+          "amount": 9431.33,
+          "paymentType": "PREPAYMENT",
+          "status": "HOLD"
+        }
+      ],
+      "refunds": [],
+      "registerStatus": {
+        "atolId": null,
+        "uuid": null,
+        "ecrRegistrationNumber": null,
+        "fiscalDocumentNumber": null,
+        "fiscalStorageNumber": null,
+        "status": null,
+        "lines": null
+      },
+      "deliveryData": {
+        "id": "1296406",
+        "status": "approvedByCreator",
+        "manualProcessing": true,
+        "planDate": "2020-10-16T13:00:00+03:00",
+        "timeInterval": "08:00:00+03:00/13:00:00+03:00",
+        "transportCompany": null,
+        "shipFromShopId": "35",
+        "shipTo": {
+          "city": "Moscow",
+          "street": "Dubki",
+          "house": "13",
+          "housing": null,
+          "building": null,
+          "flat": "52",
+          "entrance": "7",
+          "intercom": "12345",
+          "floor": 10,
+          "gpsX": 36.753122465,
+          "gpsY": 56.500801637
+        },
+        "referenceStoreId": "62",
+        "deliveryServicePrice": 3000.89,
+        "liftupServicePrice": 1000.44,
+        "tariff": "TO_DOOR",
+        "totalAmount": 9431.33,
+        "totalServicePrice": 4001.33,
+        "payerType": "client",
+        "customer": {
+          "fullName": "Авто Тестик",
+          "phone": "79211339990",
+          "email": "autotest@mail.com",
+          "serviceCard": null
+        },
+        "receiver": {
+          "fullName": "Авто Тестик",
+          "phone": "79211339990"
+        },
+        "liftType": "byLift",
+        "items": [
+          {
+            "id": "9053c172-24b3-4ea0-a46b-82c241b9a7a9",
+            "status": "NEW",
+            "product": {
+              "id": "10052920",
+              "name": "Канал плоский Equation, 55х110х1000 мм",
+              "price": 183,
+              "taxRate": [
+                {
+                  "type": "vat",
+                  "value": "18"
+                }
+              ]
+            },
+            "quantity": {
+              "value": 10,
+              "measure": "th"
+            }
+          },
+          {
+            "id": "52b07d01-6a88-42f6-bb92-3cefecbdd1cb",
+            "status": "NEW",
+            "product": {
+              "id": "10061536",
+              "name": "Суппорт для розетки Экопласт PM-45, 45 мм, цвет белый",
+              "price": 105,
+              "taxRate": [
+                {
+                  "type": "vat",
+                  "value": "18"
+                }
+              ]
+            },
+            "quantity": {
+              "value": 10,
+              "measure": "th"
+            }
+          },
+          {
+            "id": "b3515e65-970a-486a-bacd-b40816dacc46",
+            "status": "NEW",
+            "product": {
+              "id": "10052955",
+              "name": "Канал плоский  Equation, 55х110х1500 мм",
+              "price": 255,
+              "taxRate": [
+                {
+                  "type": "vat",
+                  "value": "18"
+                }
+              ]
+            },
+            "quantity": {
+              "value": 10,
+              "measure": "th"
+            }
+          }
+        ]
+      },
+      "status": "ALLOWED_FOR_PICKING",
+      "totalWeight": "14.810",
+      "maxSize": "150.5",
+      "refundAvailable": true,
+      "creatorName": null,
+      "creatorSurname": null
+    }
+  },
+  {
+    "index": 4,
+    "body": {
+      "callRequired": 0,
+      "completeDelivery": false,
+      "orderId": "201003130726",
+      "shopId": 35,
+      "createdAt": "2020-10-15T11:15:35.320+00:00",
+      "createdBy": "Bitrix",
+      "paymentStatus": "HOLD",
+      "comment": "BITRIX: Курьерская доставка, Sberbank",
+      "customers": [
+        {
+          "customerNumber": "7666712",
+          "firstName": "Авто",
+          "lastName": "Тестик",
+          "fullName": "Авто Тестик",
+          "primaryPhone": "79211339990",
+          "phone": {
+            "primary": "79211339990",
+            "secondary": null
+          },
+          "email": "autotest@mail.com",
+          "role": "PAYER",
+          "roles": [
+            "PAYER"
+          ],
+          "type": "PERSON"
+        }
+      ],
+      "products": [
+        {
+          "lmCode": "11795347",
+          "lineId": "b95aa3ba-2ee9-4da0-bf16-54eb3e24c82a",
+          "type": "PRODUCT",
+          "price": 207,
+          "quantity": 10,
+          "createdQuantity": 10,
+          "pickedQuantity": 0,
+          "givenAwayQuantity": 0,
+          "controlledQuantity": 0,
+          "confirmedQuantity": 0,
+          "returnedQuantity": 0,
+          "discount": null,
+          "reasons": {
+            "lastPicked": null,
+            "lastGivenAway": null,
+            "lastAdjustment": null
+          },
+          "stocks": {
+            "RD": 0,
+            "RM": 0,
+            "EM": 0,
+            "LS": 999
+          },
+          "sellingScheme": "GENERAL",
+          "refundQuantity": 0,
+          "deliveredQuantity": null,
+          "logistic": {
+            "width": "13",
+            "height": "25",
+            "weight": "0.294",
+            "depth": "13"
+          },
+          "barCodes": [
+            "4650058302821",
+            "2",
+            "0",
+            "0",
+            "0",
+            "1",
+            "1",
+            "7",
+            "9",
+            "5",
+            "3",
+            "4",
+            "7",
+            "1"
+          ],
+          "departmentId": "11",
+          "priceUnit": "NIU",
+          "title": "Супер-тряпка Unicum нетканное полотно 140 шт.",
+          "priceCategory": "STD",
+          "isAvs": false,
+          "images": [
+            "https://res.cloudinary.com/lmru/image/upload/LMCode/11795347.jpg"
+          ],
+          "availableStock": 999,
+          "isAVS": false
+        }
+      ],
+      "userComments": [],
+      "solutionVersion": 10,
+      "channel": "ONLINE",
+      "giveAway": {
+        "date": "2020-10-16T00:00:00Z",
+        "shopId": 35,
+        "point": "COURIER",
+        "storageLocation": null
+      },
+      "customerId": "7666712",
+      "taskControlStatus": "NOT_CONTROLLED",
+      "fulfillmentTaskId": "1003520100387140",
+      "fulfillmentVersion": 4,
+      "fulfillmentPickingTasksQty": 1,
+      "pickers": [
+        {}
+      ],
+      "longtail": false,
+      "pickingStatus": null,
+      "delivery": true,
+      "paymentType": "PREPAYMENT",
+      "paymentTaskId": "850246d9-cc7b-41a7-8ac3-133b9f7b16c8",
+      "paymentVersion": 5,
+      "pinCode": null,
+      "actualDeliveryPrice": 4001.33,
+      "payments": [
+        {
+          "date": "2020-10-15T11:15:58.887+00:00",
+          "amount": 6071.33,
+          "paymentType": "PREPAYMENT",
+          "status": "HOLD"
+        }
+      ],
+      "refunds": [],
+      "registerStatus": {
+        "atolId": null,
+        "uuid": null,
+        "ecrRegistrationNumber": null,
+        "fiscalDocumentNumber": null,
+        "fiscalStorageNumber": null,
+        "status": null,
+        "lines": null
+      },
+      "deliveryData": {
+        "id": "1296407",
+        "status": "approvedByCreator",
+        "manualProcessing": true,
+        "planDate": "2020-10-16T13:00:00+03:00",
+        "timeInterval": "08:00:00+03:00/13:00:00+03:00",
+        "transportCompany": null,
+        "shipFromShopId": "35",
+        "shipTo": {
+          "city": "Moscow",
+          "street": "Dubki",
+          "house": "13",
+          "housing": null,
+          "building": null,
+          "flat": "52",
+          "entrance": "7",
+          "intercom": "12345",
+          "floor": 10,
+          "gpsX": 36.753122465,
+          "gpsY": 56.500801637
+        },
+        "referenceStoreId": "62",
+        "deliveryServicePrice": 3000.89,
+        "liftupServicePrice": 0,
+        "tariff": "TO_DOOR",
+        "totalAmount": 6071.33,
+        "totalServicePrice": 4001.33,
+        "payerType": "client",
+        "customer": {
+          "fullName": "Авто Тестик",
+          "phone": "79211339990",
+          "email": "autotest@mail.com",
+          "serviceCard": null
+        },
+        "receiver": {
+          "fullName": "Авто Тестик",
+          "phone": "79211339990"
+        },
+        "liftType": null,
+        "items": [
+          {
+            "id": "b95aa3ba-2ee9-4da0-bf16-54eb3e24c82a",
+            "status": "NEW",
+            "product": {
+              "id": "11795347",
+              "name": "Супер-тряпка Unicum нетканное полотно 140 шт.",
+              "price": 207,
+              "taxRate": [
+                {
+                  "type": "vat",
+                  "value": "18"
+                }
+              ]
+            },
+            "quantity": {
+              "value": 10,
+              "measure": "th"
+            }
+          }
+        ]
+      },
+      "status": "ALLOWED_FOR_PICKING",
+      "totalWeight": "2.940",
+      "maxSize": "25.0",
+      "refundAvailable": true,
+      "creatorName": null,
+      "creatorSurname": null
+    }
+  },
+  {
+    "index": 5,
+    "body": {
+      "callRequired": 0,
+      "completeDelivery": false,
+      "orderId": "201003130728",
+      "shopId": 35,
+      "createdAt": "2020-10-15T11:16:15.723+00:00",
+      "createdBy": "Bitrix",
+      "paymentStatus": "HOLD",
+      "comment": "BITRIX: ПВЗ, Sberbank",
+      "customers": [
+        {
+          "customerNumber": "7666712",
+          "firstName": "Авто",
+          "lastName": "Тестик",
+          "fullName": "Авто Тестик",
+          "primaryPhone": "79211339990",
+          "phone": {
+            "primary": "79211339990",
+            "secondary": null
+          },
+          "email": "autotest@mail.com",
+          "role": "PAYER",
+          "roles": [
+            "PAYER"
+          ],
+          "type": "PERSON"
+        }
+      ],
+      "products": [
+        {
+          "lmCode": "80120442",
+          "lineId": "71758e47-c35d-4473-9524-a6e0612717cc",
+          "type": "PRODUCT",
+          "price": 288,
+          "quantity": 10,
+          "createdQuantity": 10,
+          "pickedQuantity": 0,
+          "givenAwayQuantity": 0,
+          "controlledQuantity": 0,
+          "confirmedQuantity": 0,
+          "returnedQuantity": 0,
+          "discount": null,
+          "reasons": {
+            "lastPicked": null,
+            "lastGivenAway": null,
+            "lastAdjustment": null
+          },
+          "stocks": {
+            "RD": 0,
+            "RM": 0,
+            "EM": 0,
+            "LS": 0
+          },
+          "sellingScheme": "GENERAL",
+          "refundQuantity": 0,
+          "deliveredQuantity": null,
+          "logistic": {
+            "width": "9.8",
+            "height": "17",
+            "weight": "0.02",
+            "depth": "2.3"
+          },
+          "departmentId": "10",
+          "priceUnit": "NIU",
+          "title": "Лента монтажная для внутренних работ Scotch 19 мм x 1.5 м цвет белый",
+          "priceCategory": "STD",
+          "isAvs": false,
+          "images": [
+            "https://res.cloudinary.com/lmru/image/upload/LMCode/80120442.jpg"
+          ],
+          "barCodes": [
+            "5902658108525"
+          ],
+          "availableStock": 0,
+          "isAVS": false
+        }
+      ],
+      "userComments": [],
+      "solutionVersion": 11,
+      "channel": "ONLINE",
+      "giveAway": {
+        "date": "2020-10-16T00:00:00Z",
+        "shopId": 35,
+        "point": "PICKUP_POINT",
+        "storageLocation": null
+      },
+      "customerId": "7666712",
+      "taskControlStatus": "NOT_CONTROLLED",
+      "fulfillmentTaskId": "1003520100387142",
+      "fulfillmentVersion": 4,
+      "fulfillmentPickingTasksQty": 1,
+      "pickers": [
+        {}
+      ],
+      "longtail": false,
+      "pickingStatus": null,
+      "delivery": true,
+      "paymentType": "PREPAYMENT",
+      "paymentTaskId": "48f349d6-2b32-4e57-90da-8d567e4f15bd",
+      "paymentVersion": 5,
+      "pinCode": null,
+      "actualDeliveryPrice": 2000.45,
+      "payments": [
+        {
+          "date": "2020-10-15T11:16:39.659+00:00",
+          "amount": 4880.45,
+          "paymentType": "PREPAYMENT",
+          "status": "HOLD"
+        }
+      ],
+      "refunds": [],
+      "registerStatus": {
+        "atolId": null,
+        "uuid": null,
+        "ecrRegistrationNumber": null,
+        "fiscalDocumentNumber": null,
+        "fiscalStorageNumber": null,
+        "status": null,
+        "lines": null
+      },
+      "deliveryData": {
+        "id": "1296408",
+        "status": "approvedByCreator",
+        "manualProcessing": true,
+        "planDate": "2020-10-16T23:59:59+03:00",
+        "timeInterval": "00:00:00+03:00/23:59:59+03:00",
+        "transportCompany": null,
+        "shipFromShopId": "35",
+        "shipTo": {
+          "city": "Россия, Москва, Митино, пер. Ангелов, 8",
+          "street": null,
+          "house": null,
+          "housing": null,
+          "building": null,
+          "flat": null,
+          "entrance": null,
+          "intercom": null,
+          "floor": null,
+          "gpsX": 36.753122465,
+          "gpsY": 56.500801637
+        },
+        "referenceStoreId": "62",
+        "deliveryServicePrice": 2000.45,
+        "liftupServicePrice": 0,
+        "tariff": "WITHOUT_LANDING",
+        "totalAmount": 4880.45,
+        "totalServicePrice": 2000.45,
+        "payerType": "client",
+        "customer": {
+          "fullName": "Авто Тестик",
+          "phone": "79211339990",
+          "email": "autotest@mail.com",
+          "serviceCard": null
+        },
+        "receiver": {
+          "fullName": "Авто Тестик",
+          "phone": "79211339990"
+        },
+        "liftType": null,
+        "items": [
+          {
+            "id": "71758e47-c35d-4473-9524-a6e0612717cc",
+            "status": "NEW",
+            "product": {
+              "id": "80120442",
+              "name": "Лента монтажная для внутренних работ Scotch 19 мм x 1.5 м цвет белый",
+              "price": 288,
+              "taxRate": [
+                {
+                  "type": "vat",
+                  "value": "18"
+                }
+              ]
+            },
+            "quantity": {
+              "value": 10,
+              "measure": "th"
+            }
+          }
+        ]
+      },
+      "status": "ALLOWED_FOR_PICKING",
+      "totalWeight": "0.200",
+      "maxSize": "17.0",
+      "refundAvailable": true,
+      "creatorName": null,
+      "creatorSurname": null
+    }
+  }
+]
