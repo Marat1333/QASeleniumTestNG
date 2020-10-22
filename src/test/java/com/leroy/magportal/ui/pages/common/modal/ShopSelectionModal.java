@@ -8,6 +8,9 @@ import io.qameta.allure.Step;
 
 public class ShopSelectionModal extends MagPortalBasePage {
 
+    @WebFindBy(id = "regions")
+    PuzSelectControl regionsComboBox;
+
     @WebFindBy(id = "shops")
     PuzSelectControl shopComboBox;
 
@@ -17,6 +20,12 @@ public class ShopSelectionModal extends MagPortalBasePage {
     @Step("Выбираем магазин {value} в выпадающем списке")
     public ShopSelectionModal selectShop(String value) throws Exception {
         shopComboBox.selectOption(value);
+        return this;
+    }
+
+    @Step("Выбираем регион {value} в выпадающем списке")
+    public ShopSelectionModal selectRegion(String value) throws Exception {
+        regionsComboBox.selectOption(value);
         return this;
     }
 

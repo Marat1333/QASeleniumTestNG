@@ -1,0 +1,360 @@
+[
+  {
+    "index": 0,
+    "body": {
+      "totalCount": 1,
+      "salesDocuments": [
+        {
+          "docId": "99620000",
+          "fullDocId": "233999620000",
+          "docType": "ORDER",
+          "shopId": "139",
+          "pinCode": null,
+          "salesDocStatus": "CANCELLED_BY_CUSTOMER_ON_DELIVERY",
+          "isUrgent": false,
+          "delivery": true,
+          "creatorName": null,
+          "creatorSurname": null,
+          "createdBy": "Bitrix",
+          "createdDate": "2020-09-28T09:57:22.307+00:00",
+          "customerName": "Тест",
+          "customerSurname": "КК",
+          "customerPhone": "79373057069",
+          "customerType": "PERSON",
+          "customerNumber": null,
+          "comment": "трулялял",
+          "taskControlStatus": "NOT_CONTROLLED",
+          "docPriceSum": 860,
+          "servicesCount": 0,
+          "productsCount": 2,
+          "giveAway": {
+            "point": "HOME_DELIVERY"
+          },
+          "channel": "ONLINE",
+          "userTasks": [],
+          "products": [
+            {
+              "lmCode": "12281532",
+              "title": "Чаша унитаза напольного Универсал Катунь"
+            },
+            {
+              "lmCode": "49626307",
+              "title": null
+            },
+            {
+              "lmCode": "10008989",
+              "title": "Угол желоба на 90° внутренний цвет красный"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "index": 1,
+    "body": {
+      "callRequired": 0,
+      "completeDelivery": false,
+      "orderId": "233999620000",
+      "shopId": 139,
+      "createdAt": "2020-09-28T09:57:22.307+00:00",
+      "createdBy": "Bitrix",
+      "paymentStatus": "PAID",
+      "comment": "трулялял",
+      "customers": [
+        {
+          "customerNumber": "",
+          "firstName": "Тест",
+          "lastName": "КК",
+          "fullName": "Тест КК",
+          "primaryPhone": "79373057069",
+          "phone": {
+            "primary": "79373057069",
+            "secondary": null
+          },
+          "email": "andreik@oymerlin.ru",
+          "role": "PAYER",
+          "roles": [
+            "PAYER"
+          ],
+          "type": "PERSON"
+        },
+        {
+          "customerNumber": null,
+          "firstName": "Тест",
+          "lastName": "тест",
+          "fullName": "Тест тест",
+          "primaryPhone": "",
+          "phone": {
+            "primary": "",
+            "secondary": null
+          },
+          "email": null,
+          "role": "RECEIVER",
+          "roles": [
+            "RECEIVER"
+          ],
+          "type": "PERSON"
+        }
+      ],
+      "products": [
+        {
+          "lmCode": "12281532",
+          "lineId": "064e7e6f-221b-4c43-9b89-dba23dec8b5e",
+          "type": "PRODUCT",
+          "price": 18,
+          "quantity": 0,
+          "createdQuantity": 10,
+          "pickedQuantity": 10,
+          "givenAwayQuantity": 10,
+          "controlledQuantity": 0,
+          "confirmedQuantity": 0,
+          "returnedQuantity": 0,
+          "discount": null,
+          "reasons": {
+            "lastPicked": null,
+            "lastGivenAway": null,
+            "lastAdjustment": null
+          },
+          "stocks": {
+            "RD": null,
+            "EM": 0,
+            "LS": null
+          },
+          "sellingScheme": "GENERAL",
+          "refundQuantity": 0,
+          "deliveredQuantity": 0,
+          "logistic": {
+            "width": "63",
+            "height": "42",
+            "weight": "16.1",
+            "depth": "36"
+          },
+          "barCodes": [
+            "4607152360516",
+            "2",
+            "0",
+            "0",
+            "0",
+            "1",
+            "2",
+            "2",
+            "8",
+            "1",
+            "5",
+            "3",
+            "2",
+            "0"
+          ],
+          "departmentId": "7",
+          "priceUnit": "NIU",
+          "title": "Чаша унитаза напольного Универсал Катунь",
+          "priceCategory": "BPR",
+          "isAvs": false,
+          "images": [
+            "https://res.cloudinary.com/lmru/image/upload/LMCode/12281532.jpg"
+          ],
+          "availableStock": 17,
+          "isAVS": false
+        },
+        {
+          "lmCode": "10008989",
+          "lineId": "a4989028-f79b-4214-bdb5-9537ccb5074c",
+          "type": "PRODUCT",
+          "price": 18,
+          "quantity": 0,
+          "createdQuantity": 10,
+          "pickedQuantity": 10,
+          "givenAwayQuantity": 10,
+          "controlledQuantity": 0,
+          "confirmedQuantity": 0,
+          "returnedQuantity": 0,
+          "discount": null,
+          "reasons": {
+            "lastPicked": null,
+            "lastGivenAway": null,
+            "lastAdjustment": null
+          },
+          "stocks": {
+            "RD": null,
+            "EM": 0,
+            "LS": null
+          },
+          "sellingScheme": "GENERAL",
+          "refundQuantity": 0,
+          "deliveredQuantity": 0,
+          "logistic": {
+            "width": "32",
+            "height": "6.1",
+            "weight": "0.502",
+            "depth": "32"
+          },
+          "barCodes": [
+            "4650001110299",
+            "2",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "8",
+            "9",
+            "8",
+            "9",
+            "7"
+          ],
+          "departmentId": "1",
+          "priceUnit": "NIU",
+          "title": "Угол желоба на 90° внутренний цвет красный",
+          "priceCategory": "STD",
+          "isAvs": false,
+          "images": [
+            "https://res.cloudinary.com/lmru/image/upload/LMCode/10008989.jpg"
+          ],
+          "availableStock": 0,
+          "isAVS": false
+        }
+      ],
+      "userComments": [],
+      "solutionVersion": 24,
+      "channel": "ONLINE",
+      "giveAway": {
+        "date": "2020-09-15T00:00:00Z",
+        "shopId": 139,
+        "point": "HOME_DELIVERY",
+        "storageLocation": null
+      },
+      "customerId": "",
+      "taskControlStatus": "NOT_CONTROLLED",
+      "fulfillmentTaskId": "1013920090385320",
+      "fulfillmentVersion": 5,
+      "fulfillmentPickingTasksQty": 1,
+      "pickers": [
+        {
+          "employeeId": "UNKNOWN",
+          "employeeName": null,
+          "employeeSurname": null
+        }
+      ],
+      "longtail": false,
+      "pickingStatus": null,
+      "delivery": true,
+      "paymentType": null,
+      "actualDeliveryPrice": 0,
+      "payments": [
+        {
+          "date": null,
+          "amount": 0,
+          "paymentType": null,
+          "status": "PAID"
+        }
+      ],
+      "refunds": [],
+      "registerStatus": null,
+      "deliveryData": {
+        "id": "1254671",
+        "status": "finished",
+        "manualProcessing": false,
+        "planDate": "2020-09-15T14:00:00+05:00",
+        "timeInterval": "09:00:00+05:00/14:00:00+05:00",
+        "transportCompany": "Везу",
+        "shipFromShopId": "139",
+        "shipTo": {
+          "city": "Санкт-Петербург",
+          "street": "Ленина",
+          "house": "19",
+          "housing": null,
+          "building": null,
+          "flat": null,
+          "entrance": null,
+          "intercom": null,
+          "floor": null,
+          "gpsX": 29.9239,
+          "gpsY": 59.8139
+        },
+        "referenceStoreId": "139",
+        "deliveryServicePrice": 500,
+        "liftupServicePrice": 0,
+        "tariff": "TO_DOOR",
+        "totalAmount": 500,
+        "totalServicePrice": 500,
+        "payerType": "client",
+        "customer": {
+          "fullName": "Тест КК",
+          "phone": "79373057069",
+          "email": "andreik@oymerlin.ru",
+          "serviceCard": null
+        },
+        "receiver": {
+          "fullName": "Тест КК",
+          "phone": "79373057069"
+        },
+        "liftType": null,
+        "items": [
+          {
+            "id": "064e7e6f-221b-4c43-9b89-dba23dec8b5e",
+            "status": "NEW",
+            "product": {
+              "id": "12281532",
+              "name": "Хомуток нерж. W2 16-25 мм (2 шт)",
+              "price": 18,
+              "taxRate": [
+                {
+                  "type": "vat",
+                  "value": "18"
+                }
+              ]
+            },
+            "quantity": {
+              "value": 10,
+              "measure": "th"
+            },
+            "loadedQuantity": {
+              "value": 10,
+              "measure": "th"
+            },
+            "approvedQuantity": {
+              "value": 0,
+              "measure": "th"
+            }
+          },
+          {
+            "id": "a4989028-f79b-4214-bdb5-9537ccb5074c",
+            "status": "NEW",
+            "product": {
+              "id": "10008989",
+              "name": "Хомуток нерж. W2 16-25 мм (2 шт)",
+              "price": 18,
+              "taxRate": [
+                {
+                  "type": "vat",
+                  "value": "18"
+                }
+              ]
+            },
+            "quantity": {
+              "value": 10,
+              "measure": "th"
+            },
+            "loadedQuantity": {
+              "value": 10,
+              "measure": "th"
+            },
+            "approvedQuantity": {
+              "value": 0,
+              "measure": "th"
+            }
+          }
+        ]
+      },
+      "status": "CANCELLED_BY_CUSTOMER_ON_DELIVERY",
+      "totalWeight": "0.000",
+      "maxSize": "63.0",
+      "refundAvailable": true,
+      "creatorName": null,
+      "creatorSurname": null
+    }
+  }
+]

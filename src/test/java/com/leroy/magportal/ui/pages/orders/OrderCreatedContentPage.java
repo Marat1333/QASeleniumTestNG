@@ -31,10 +31,6 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
     @WebFindBy(xpath = "//div[contains(@class, 'OrderViewHeader__orderId')]//span", metaName = "Номер заказа")
     Element orderNumber;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'OrderViewHeader__mainInfo')]//div[contains(@class, 'Order-OrderStatus')]//span",
-            metaName = "Статус заказа")
-    Element orderStatus;
-
     @WebFindBy(xpath = "//div[contains(@class, 'Order-CancelOrderBtn')]//button", metaName = "Кнопка удаления заказа")
     Button trashBtn;
 
