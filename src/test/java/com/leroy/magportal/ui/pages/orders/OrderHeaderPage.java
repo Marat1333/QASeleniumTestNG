@@ -58,6 +58,15 @@ public class OrderHeaderPage extends LeftDocumentListPage<ShortOrderDocumentCard
     @WebFindBy(xpath = "//input[@name='customerPhone']", metaName = "Поле поиска по номеру телефона")
     EditBox searchByPhoneFld;
 
+    @WebFindBy(xpath = "//input[@name='customerName']", metaName = "Поле поиска по Имени Клиента")
+    EditBox searchByFirstNameFld;
+
+    @WebFindBy(xpath = "//input[@name='customerSurname']", metaName = "Поле поиска по Фамилии Клиента")
+    EditBox searchByLastNameFld;
+
+    @WebFindBy(xpath = "//input[@name='customerEmail']", metaName = "Поле поиска по Email Клиента")
+    EditBox searchByEmailFld;
+
     @WebFindBy(xpath = "//div[contains(@class, 'Select__container')][descendant::label[text()='Статус заказа']]",
             metaName = "Фильтр статус заказа")
     PuzMultiSelectComboBox statusFilter;
@@ -90,6 +99,12 @@ public class OrderHeaderPage extends LeftDocumentListPage<ShortOrderDocumentCard
             value = value.substring(2);
         if (searchByOrderNumberFld.isPresent())
             searchByOrderNumberFld.clearAndFill(value);
+        else if (searchByFirstNameFld.isPresent())
+            searchByFirstNameFld.clearAndFill(value);
+        else if (searchByLastNameFld.isPresent())
+            searchByLastNameFld.clearAndFill(value);
+        else if (searchByEmailFld.isPresent())
+            searchByEmailFld.clearAndFill(value);
         else if (searchByPhoneFld.isPresent()) {
             searchByPhoneFld.click();
             searchByPhoneFld.clear(true);

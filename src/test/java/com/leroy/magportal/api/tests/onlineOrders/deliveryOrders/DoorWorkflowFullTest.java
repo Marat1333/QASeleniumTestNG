@@ -70,7 +70,7 @@ public class DoorWorkflowFullTest extends BaseMagPortalApiTest {
             "testShipped"})
     public void testDeliver() {
         orderClient.waitUntilOrderGetStatus(currentOrderId,
-                States.ON_DELIVERY, PaymentStatusEnum.PAID);
+                States.ON_DELIVERY,null);
         Response<JsonNode> response = orderClient.deliver(currentOrderId, true);
         orderClient.assertWorkflowResult(response, currentOrderId, States.DELIVERED);
     }
