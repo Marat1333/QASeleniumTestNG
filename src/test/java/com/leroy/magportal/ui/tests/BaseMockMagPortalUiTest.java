@@ -23,7 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
 
-public class BaseMockUiTest extends WebBaseSteps {
+public class BaseMockMagPortalUiTest extends WebBaseSteps {
 
     private MountebankClient mountebankClient = new MountebankClient("https://mountebank-dev-magfront-stage.apps.lmru.tech");
     private final int DEFAULT_IMPOSTER_PORT = 4547;
