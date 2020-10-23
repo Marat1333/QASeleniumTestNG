@@ -40,7 +40,7 @@ public class ShortPickingTaskCardWidget extends CardWebWidget<ShortPickingTaskDa
     @WebFindBy(xpath = ".//div[contains(@class, 'PickingListItem__time')]/div/div/span[3]")
     Element creationDate;
 
-    @WebFindBy(xpath = ".//div[contains(@class, 'PickingListItem__departments-item')]")
+    @WebFindBy(xpath = ".//div[contains(@class, 'picking-DepartmentLabel__department')]")
     ElementList<Element> departments;
 
     private PickingConst.AssemblyType getAssemblyType() {

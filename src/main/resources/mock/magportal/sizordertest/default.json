@@ -1,0 +1,48 @@
+[
+  {
+    "index": 2,
+    "body": {
+      "entity": {
+        "customerType": "natural",
+        "customerNumber": "7666712",
+        "gender": "male",
+        "firstName": "Авто Тестик",
+        "lastName": "NULL",
+        "card": {},
+        "updatedAt": "2020-06-25T02:55:50+03",
+        "customerCreationStore": "32",
+        "addresses": [],
+        "communications": [
+          {
+            "id": 9968948,
+            "type": "PHONENUMBER",
+            "value": "+79211339990",
+            "isMain": "true",
+            "communicationOrder": "0",
+            "phoneType": "2",
+            "optins": [],
+            "goneAway": false
+          },
+          {
+            "id": 9968949,
+            "type": "EMAIL",
+            "value": "autotest@mail.com",
+            "isMain": "true",
+            "communicationOrder": "0",
+            "optins": [],
+            "goneAway": false,
+            "emailType": "1"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "index": 3,
+    "body": {
+      "userTasks": [],
+      "newTasksCount": 0,
+      "completedTasksCount": null
+    }
+  }
+]

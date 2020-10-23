@@ -21,7 +21,7 @@ public class SessionsListPage extends CommonMagMobilePage {
     @AppFindBy(xpath = "//*[@text='АКТИВНАЯ СЕССИЯ']/following-sibling::*")
     SessionWidget activeSessionWidget;
 
-    @AppFindBy(containsText = "Чтобы напечатать ценники")
+    @AppFindBy(containsText = "Чтобы начать активную сессию")
     Element noCreatedSessionLbl;
 
     @Override

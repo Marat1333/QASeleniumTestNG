@@ -16,7 +16,11 @@ public class SalesDocumentsConst {
         PARTIALLY_GIVEN_AWAY("PARTIALLY_GIVEN_AWAY", "Част. выдан"),
         GIVEN_AWAY("GIVEN_AWAY", "Выдан"),
         SHIPPED("SHIPPED", "Отгружен"),
+        ON_DELIVERY("ON_DELIVERY", "В доставке"),
         DELIVERED("DELIVERED", "Доставлен"),
+        PARTIALLY_DELIVERED("PARTIALLY_DELIVERED", "Част. доставлен"),
+        DELIVERED_WITHOUT_ASSEMBLY("DELIVERED_WITHOUT_ASSEMBLY", "Доставлен без сборки"),
+        CANCELLED_BY_CUSTOMER_ON_DELIVERY("CANCELLED_BY_CUSTOMER_ON_DELIVERY", "Отказ при доставке"),
         TRANSFORMED("", "Преобразован"),
         DELETED("DELETED", ""),
         CANCELLED("CANCELLED", "Отменен"),
@@ -94,7 +98,7 @@ public class SalesDocumentsConst {
         SALES_FLOOR("SALESFLOOR", "Из торгового зала"),
         FOR_CLIENT_TO_SHOP_ROOM("DEPARTMENT", "Для клиента в торг. зал"),
         PICKUP("PICKUP", "Самовывоз"),
-        DELIVERY("", "Доставка");
+        DELIVERY("HOME_DELIVERY", "Доставка");
 
         private String uiVal;
         private String apiVal;

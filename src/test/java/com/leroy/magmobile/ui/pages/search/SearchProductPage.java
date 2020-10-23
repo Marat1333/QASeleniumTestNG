@@ -295,7 +295,7 @@ public class SearchProductPage extends CommonMagMobilePage {
         anAssert.isFalse(discardAllFiltersBtn.isVisible(), "Кнопка \"Сбросить фильтры\" не отображена");
     }
 
-    @Step("Проверить, что картчоек товара больше {count}")
+    @Step("Проверить, что карточек товара больше {count}")
     public SearchProductPage shouldCountOfProductsOnPageMoreThan(int count) {
         anAssert.isTrue(productCards.getCount() > count,
                 "Кол-во товаров на экране должно быть больше " + count);
@@ -477,6 +477,8 @@ public class SearchProductPage extends CommonMagMobilePage {
 
     @Step("Проверить, что фронт корректно отобразил ответ от сервера по запросу на catalog product")
     public SearchProductPage shouldCatalogResponseEqualsContent(ProductItemDataList responseData, CardType type, Integer entityCount) throws Exception {
+        if (entityCount == null)
+            entityCount = 30;
         List<ProductItemData> productDataListFromResponse = responseData.getItems();
         List<ProductCardData> productCardDataListFromPage;
         switch (type) {
@@ -499,6 +501,11 @@ public class SearchProductPage extends CommonMagMobilePage {
         }
         softAssert.verifyAll();
         return this;
+    }
+
+    public SearchProductPage shouldCatalogResponseEqualsContent(
+            ProductItemDataList responseData, CardType type) throws Exception {
+        return shouldCatalogResponseEqualsContent(responseData, type, null);
     }
 
     @Step("Проверить, что фронт корректно отобразил ответ от сервера по запросу на catalog services")

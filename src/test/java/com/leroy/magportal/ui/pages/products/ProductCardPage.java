@@ -59,7 +59,7 @@ public class ProductCardPage extends MagPortalBasePage {
     @WebFindBy(xpath = "//span[contains(@class, 'Badge')][3]")
     Element categoryBadge;
 
-    @WebFindBy(xpath = "//p[contains(text(), 'Характеристики')]/ancestor::div[3]/preceding-sibling::span")
+    @WebFindBy(xpath = "//div[@class='lmui-View lmui-View-col']/span")
     Element productTitle;
 
     @WebFindBy(xpath = "//p[contains(text(), 'Характеристики')]/following-sibling::div")

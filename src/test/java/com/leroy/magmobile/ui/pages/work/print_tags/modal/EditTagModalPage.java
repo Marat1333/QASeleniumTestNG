@@ -67,6 +67,17 @@ public class EditTagModalPage extends CommonMagMobilePage {
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"Button-container\"][last()]")
     Button addProductBtn;
 
+    // Модальное окно подсказка
+    @AppFindBy(text = "ПОНЯТНО")
+    Element understandBtn;
+
+    private void clickUnderstandBtn() {
+        if (understandBtn.isVisible(tiny_timeout)) {
+            understandBtn.click();
+            understandBtn.waitForInvisibility();
+        }
+    }
+
     @Override
     protected void waitForPageIsLoaded() {
         header.waitForVisibility();
@@ -112,6 +123,7 @@ public class EditTagModalPage extends CommonMagMobilePage {
     @Step("Нажать на кнопку подтвердить")
     public void confirm() {
         addProductBtn.click();
+        clickUnderstandBtn();
     }
 
     @Step("Добавить товар в сессию печати ценников")
@@ -124,6 +136,7 @@ public class EditTagModalPage extends CommonMagMobilePage {
         ProductTagData data = new ProductTagData(ParserUtil.strWithOnlyDigits(lmCode.getText()), smallCount, midCount, bigCount);
         setSizesAndQuantity(smallCount, midCount, bigCount);
         confirm();
+        clickUnderstandBtn();
         return data;
     }
 
@@ -139,6 +152,7 @@ public class EditTagModalPage extends CommonMagMobilePage {
     public void deleteProductFromSession() {
         deleteProductBtn.click();
         deleteProductBtn.waitForInvisibility();
+        clickUnderstandBtn();
     }
 
     @Step("Закрыть модалку")
