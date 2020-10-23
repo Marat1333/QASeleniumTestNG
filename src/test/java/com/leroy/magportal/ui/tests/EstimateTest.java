@@ -83,8 +83,7 @@ public class EstimateTest extends BasePAOTest {
         estimatePage = submittedEstimateModal.closeWindow();
         estimateData.setStatus(SalesDocumentsConst.States.CONFIRMED.getUiVal());
         estimatePage.shouldEstimateHasData(estimateData)
-                .shouldDocumentIsPresent(estimateData.getNumber(), 6);
-        softAssert().verifyAll();
+                .shouldDocumentIsPresent(estimateData.getNumber());
     }
 
     @Test(description = "C3302208 Search product by lm code", groups = NEED_PRODUCTS_GROUP)

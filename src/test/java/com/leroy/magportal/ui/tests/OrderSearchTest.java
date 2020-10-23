@@ -265,7 +265,7 @@ public class OrderSearchTest extends WebBaseSteps {
             // Step 3
             step("Нажать на кнопку 'Очистить фильтры'(изображена метла), нажать 'Показать заказы'");
             ordersPage.clearFiltersAndSubmit();
-            ordersPage.shouldDocumentCountIs(ordersCountBefore);
+            ordersPage.softAssertDocumentCountIs(ordersCountBefore, 3);
 
             // Step 4
             step("В фильтре поиска выставить последние 4 цифры заказа из предусловия, нажать кнопку"
@@ -278,75 +278,75 @@ public class OrderSearchTest extends WebBaseSteps {
             // Step 5
             step("В фильтре поиска вбить несуществующий номер заказа, напр. 9999 9999 9999");
             ordersPage.enterSearchTextAndSubmit("999999999999");
-            ordersPage.shouldDocumentListIsEmpty(5);
+            ordersPage.softAssertDocumentListIsEmpty(5);
 
             // Step 6
             step("В фильтре поиска выставить 'Номер телефона' , вбить в маске только 3 цифры, " +
                     "например '937', нажать кнопку 'Показать заказы'");
             ordersPage.selectSearchType(OrderHeaderPage.SearchTypes.PHONE_NUMBER);
             ordersPage.enterSearchTextAndSubmit("937");
-            ordersPage.shouldDocumentListIsEmpty(6);
+            ordersPage.softAssertDocumentListIsEmpty(6);
             // TODO - ошибка не появляется. Это баг?
 
             // Step 7
             step("Вбить номер телефона клиента из предусловия п.1");
             ordersPage.enterSearchTextAndSubmit(customerData.getPhoneNumber());
-            ordersPage.shouldDocumentIsPresent(orderId_1, 7);
+            ordersPage.softAssertDocumentIsPresent(orderId_1, 7);
 
             // Step 8
             step("Нажать на кнопку 'Очистить фильтры'(изображена метла), нажать 'Показать заказы'");
             ordersPage.clearFiltersAndSubmit();
-            ordersPage.shouldDocumentCountIs(ordersCountBefore);
+            ordersPage.softAssertDocumentCountIs(ordersCountBefore, 8);
 
             // Step 9
             step("Вбить номер телефона получателя из предусловия п.1");
             ordersPage.selectSearchType(OrderHeaderPage.SearchTypes.PHONE_NUMBER);
             ordersPage.enterSearchTextAndSubmit(recipientData.getPhoneNumber());
-            ordersPage.shouldDocumentIsPresent(orderId_1, 9);
+            ordersPage.softAssertDocumentIsPresent(orderId_1, 9);
 
             // Step 10
             step("Вбить номер телефона клиента или получателя " +
                     "(должны совпадать) из предусловия п.2, нажать 'Показать заказы'");
             ordersPage.enterSearchTextAndSubmit(customerRecipientData.getPhoneNumber());
-            ordersPage.shouldDocumentIsPresent(orderId_2, 10);
+            ordersPage.softAssertDocumentIsPresent(orderId_2, 10);
 
             // Step 11
             step("Вбить несуществующее Имя клиента");
             ordersPage.selectSearchType(SearchTypes.CUSTOMER_FIRST_NAME);
             ordersPage.enterSearchTextAndSubmit(RandomStringUtils.randomAlphabetic(10));
-            ordersPage.shouldDocumentListIsEmpty(11);
+            ordersPage.softAssertDocumentListIsEmpty(11);
 
             // Step 12
             step("Вбить Имя клиента");
             ordersPage.selectSearchType(SearchTypes.CUSTOMER_FIRST_NAME);
             ordersPage.enterSearchTextAndSubmit(customerData.getFirstName());
-            ordersPage.shouldDocumentIsPresent(orderId_1, 12);
+            ordersPage.softAssertDocumentIsPresent(orderId_1, 12);
 
             // Step 13
             step("Вбить Фамилию клиента");
             ordersPage.selectSearchType(SearchTypes.CUSTOMER_LAST_NAME);
             ordersPage.enterSearchTextAndSubmit(customerRecipientData.getLastName());
-            ordersPage.shouldDocumentIsPresent(orderId_2, 13);
+            ordersPage.softAssertDocumentIsPresent(orderId_2, 13);
 
             // Step 14
             step("Вбить Имя Получателя в нижнем регистре");
             ordersPage.selectSearchType(SearchTypes.CUSTOMER_FIRST_NAME);
             ordersPage.enterSearchTextAndSubmit(recipientData.getFirstName().toLowerCase());
-            ordersPage.shouldDocumentIsPresent(orderId_1, 14);
+            ordersPage.softAssertDocumentIsPresent(orderId_1, 14);
 
             // Step 15
             step("Вбить Имя Получателя и Клиента в верхнем регистре");
             ordersPage.selectSearchType(SearchTypes.CUSTOMER_FIRST_NAME);
             ordersPage.enterSearchTextAndSubmit(customerRecipientData.getFirstName().toUpperCase());
-            ordersPage.shouldDocumentIsPresent(orderId_2, 15);
+            ordersPage.softAssertDocumentIsPresent(orderId_2, 15);
 
             // Step 16
             step("Вбить эмэйл клиента");
             ordersPage.selectSearchType(SearchTypes.CUSTOMER_EMAIL);
             ordersPage.enterSearchTextAndSubmit(customerData.getEmail());
-            ordersPage.shouldDocumentIsPresent(orderId_1, 16);
-            softAssert().verifyAll();
+            ordersPage.softAssertDocumentIsPresent(orderId_1, 16);
         } finally {
+            softAssert().verifyAll();
             OrderClient orderClient = apiClientProvider.getOrderClient();
             orderClient.cancelOrder(orderId_1);
             orderClient.cancelOrder(orderId_2);
@@ -381,7 +381,7 @@ public class OrderSearchTest extends WebBaseSteps {
         toDate = LocalDate.now().plusDays(1);
         ordersPage.selectDateCreationsFilters(fromDate, toDate)
                 .clickApplyFilters();
-        ordersPage.shouldDocumentListIsEmpty(4);
+        ordersPage.shouldDocumentListIsEmpty();
 
         // Step 5
         step("Нажать крестик в фильтре");
@@ -409,7 +409,6 @@ public class OrderSearchTest extends WebBaseSteps {
         step("Нажать на кнопку 'Очистить фильтры'(изображена метла), нажать 'Показать заказы'");
         ordersPage.clearFiltersAndSubmit();
         ordersPage.shouldDocumentCountIs(ordersCountBefore);
-        softAssert().verifyAll();
     }
 
 }

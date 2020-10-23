@@ -97,8 +97,7 @@ public class OrderHeaderPage extends LeftDocumentListPage<ShortOrderDocumentCard
     public void enterSearchTextAndSubmit(String value) {
         if (value.startsWith("+7"))
             value = value.substring(2);
-        if (searchByOrderNumberFld.isPresent()) {
-            searchByOrderNumberFld.clear(true);
+        if (searchByOrderNumberFld.isPresent())
             searchByOrderNumberFld.clearAndFill(value);
         else if (searchByFirstNameFld.isPresent())
             searchByFirstNameFld.clearAndFill(value);
