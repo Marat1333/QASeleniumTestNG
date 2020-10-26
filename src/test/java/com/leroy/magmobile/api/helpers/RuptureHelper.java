@@ -105,7 +105,7 @@ public class RuptureHelper extends BaseHelper {
         return resp.asJson();
     }
 
-    @Step("Get Active session id with products")
+    @Step("Get standard Active session id with products")
     public int getActiveSessionIdWithProducts() {
         List<ResRuptureSessionData> activeSessionsData = getActiveSessions().getItems();
         assertThat("There is no active sessions", activeSessionsData, hasSize(greaterThan(0)));

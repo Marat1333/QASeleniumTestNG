@@ -13,6 +13,10 @@ public abstract class CommonMagMobilePage extends BaseAppPage {
         shouldNotAnyErrorVisible();
     }
 
+    public void navigateGoBack() {
+        driver.navigate().back();
+    }
+
     @AppFindBy(accessibilityId = "ErrorNotification")
     Element errorAlertMessage;
 

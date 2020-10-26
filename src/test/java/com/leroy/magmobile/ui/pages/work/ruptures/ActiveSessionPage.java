@@ -41,12 +41,6 @@ public class ActiveSessionPage extends SessionPage {
         return new FinishSessionAcceptModalPage();
     }
 
-    @Step("Нажать железную кнопку назад")
-    public ExitActiveSessionModalPage exitActiveSessionByDeviceBackBtn() {
-        driver.navigate().back();
-        return new ExitActiveSessionModalPage();
-    }
-
     @Step("Нажать на кнопку назад")
     public ExitActiveSessionModalPage exitActiveSession() {
         backBtn.click();
