@@ -1,8 +1,8 @@
 package com.leroy.magmobile.api.requests.salesdoc.transfer;
 
-import ru.leroymerlin.qa.core.clients.base.RequestBuilder;
+import com.leroy.magmobile.api.requests.CommonLegoRequest;
 
-public class BaseSalesDocTransferRequest<T extends BaseSalesDocTransferRequest<T>> extends RequestBuilder<T> {
+public class BaseSalesDocTransferRequest<T extends BaseSalesDocTransferRequest<T>> extends CommonLegoRequest<T> {
 
     public T setTaskId(String val) {
         return queryParam("taskId", val);

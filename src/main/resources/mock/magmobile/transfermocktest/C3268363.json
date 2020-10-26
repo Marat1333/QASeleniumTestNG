@@ -1,0 +1,279 @@
+{
+  "stubs": [
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/salesdoc/transfer",
+            "query": {
+              "taskId": "2003520100067918"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "taskId": "2003520100067918",
+              "status": "NEW",
+              "shopId": 35,
+              "createdBy": "60069803",
+              "createdDate": "2020-10-26T01:42:12.494+03:00",
+              "pointOfGiveAway": "DEPARTMENT",
+              "dateOfGiveAway": "2020-10-26T01:42:13.629+03:00",
+              "comment": "",
+              "products": [
+                {
+                  "lineId": "1",
+                  "lmCode": "11490674",
+                  "status": "NEW",
+                  "orderedQuantity": 1,
+                  "assignedQuantity": 1,
+                  "reserved": [
+                    {
+                      "type": "EM",
+                      "items": {
+                        "assignedQuantity": 1
+                      }
+                    }
+                  ],
+                  "barCode": "4607135862709",
+                  "images": [
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/11490674.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/11490674_01.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/11490674_02.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/11490674_03.jpg"
+                  ],
+                  "departmentId": "1",
+                  "availableStock": null,
+                  "price": 1088,
+                  "priceUnit": "EA",
+                  "altPrice": null,
+                  "altPriceUnit": null,
+                  "priceCategory": "STD",
+                  "title": "Плитка декоративная Лондон Брик, цвет красный, 1.16 м2",
+                  "description": "Кирпич декоративно-облицовочный Лондон Брик",
+                  "top": "1",
+                  "gamma": "A",
+                  "avsDate": null,
+                  "brand": "WHITE HILLS",
+                  "shops": [ ],
+                  "characteristics": [
+                    {
+                      "name": "Цветовая палитра",
+                      "value": "Красный"
+                    },
+                    {
+                      "name": "Основной материал",
+                      "value": "Бетон"
+                    },
+                    {
+                      "name": "Страна производства",
+                      "value": "Россия"
+                    },
+                    {
+                      "name": "Количество плиток в упаковке",
+                      "value": "60"
+                    },
+                    {
+                      "name": "Наружная совместимость (морозоустойчивые)",
+                      "value": "Да"
+                    },
+                    {
+                      "name": "Вес, кг",
+                      "value": "24.585"
+                    },
+                    {
+                      "name": "Длина (см)",
+                      "value": "520.0"
+                    },
+                    {
+                      "name": "Вес на м² (кг)",
+                      "value": "21,1"
+                    },
+                    {
+                      "name": "Упаковка (м²)",
+                      "value": "1.16"
+                    },
+                    {
+                      "name": "Марка",
+                      "value": "WHITE HILLS"
+                    }
+                  ],
+                  "barCodes": [
+                    "4607135862709",
+                    "2000114906746",
+                    "4607135860200"
+                  ],
+                  "isAvs": false,
+                  "subDepartmentId": "150",
+                  "categoryId": "10",
+                  "subCategoryId": "30",
+                  "logistic": {
+                    "weight": null,
+                    "width": null,
+                    "height": null,
+                    "depth": null
+                  },
+                  "shortTitle": null,
+                  "salesPrice": 1088,
+                  "purchasePrice": null,
+                  "primeCost": null,
+                  "futurePrice": null,
+                  "futurePriceFromDate": "2019-12-19T21:00:00.000Z",
+                  "priceReasonOfChange": "Техническое изменение розничной цены (РЦ) в связи изменением рек.розничной цены (РРЦ)",
+                  "recommendedPrice": 1090,
+                  "priceCurrency": "RUR",
+                  "topEM": false,
+                  "supCode": 1000692001
+                },
+                {
+                  "lineId": "2",
+                  "lmCode": "12531431",
+                  "status": "NEW",
+                  "orderedQuantity": 1,
+                  "assignedQuantity": 0,
+                  "warnings": [
+                    {
+                      "code": 305,
+                      "message": "Нет штучного подбора. Резервируйте кратно моно паллете."
+                    }
+                  ],
+                  "barCode": "2000125314318",
+                  "images": [
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431_01.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431_02.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431_03.jpg"
+                  ],
+                  "departmentId": "1",
+                  "availableStock": null,
+                  "price": 78,
+                  "priceUnit": "EA",
+                  "altPrice": null,
+                  "altPriceUnit": null,
+                  "priceCategory": "STD",
+                  "title": "Блок газобетонный Ytong D500 625х250х100 мм",
+                  "description": "Газобетонный блок – это популярный материал,",
+                  "top": "1",
+                  "gamma": "A",
+                  "avsDate": null,
+                  "brand": "YTONG",
+                  "shops": [ ],
+                  "characteristics": [
+                    {
+                      "name": "Страна производства",
+                      "value": "Россия"
+                    },
+                    {
+                      "name": "Количество на м² (указанной согласно использованию и работе)",
+                      "value": "6.4"
+                    },
+                    {
+                      "name": "Класс прочности",
+                      "value": "В3.5"
+                    },
+                    {
+                      "name": "Класс морозостойкости",
+                      "value": "F100"
+                    },
+                    {
+                      "name": "Количество на м³",
+                      "value": "64.0"
+                    },
+                    {
+                      "name": "Марка",
+                      "value": "YTONG"
+                    },
+                    {
+                      "name": "Длина (мм)",
+                      "value": "625.0"
+                    },
+                    {
+                      "name": "Высота (мм)",
+                      "value": "250.0"
+                    },
+                    {
+                      "name": "Ширина (мм)",
+                      "value": "100.0"
+                    },
+                    {
+                      "name": "Вес, кг",
+                      "value": "10.5"
+                    },
+                    {
+                      "name": "Плотность (кг/м³)",
+                      "value": "500.0"
+                    },
+                    {
+                      "name": "Количество товара в паллете",
+                      "value": "90"
+                    }
+                  ],
+                  "barCodes": [
+                    "2000125314318"
+                  ],
+                  "isAvs": false,
+                  "subDepartmentId": "115",
+                  "categoryId": "40",
+                  "subCategoryId": "60",
+                  "logistic": {
+                    "weight": null,
+                    "width": null,
+                    "height": null,
+                    "depth": null
+                  },
+                  "shortTitle": null,
+                  "salesPrice": 78,
+                  "purchasePrice": null,
+                  "primeCost": null,
+                  "futurePrice": null,
+                  "futurePriceFromDate": "2020-02-21T21:00:00.000Z",
+                  "priceReasonOfChange": "Техническое изменение РЦ в связи изменением стандартной розничной цены",
+                  "recommendedPrice": 84,
+                  "priceCurrency": "RUR",
+                  "topEM": false,
+                  "supCode": 1000724001
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "PUT",
+            "path": "/salesdoc/transfer/update",
+            "query": {
+              "taskId": "2003520100067918"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "taskId": "2003520100067918",
+              "status": "NEW",
+              "products": [
+                {
+                  "lineId": "1",
+                  "lmCode": "11490674",
+                  "status": "DELETED",
+                  "orderedQuantity": 0,
+                  "assignedQuantity": 0
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

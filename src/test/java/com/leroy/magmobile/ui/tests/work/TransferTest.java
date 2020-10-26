@@ -194,7 +194,7 @@ public class TransferTest extends AppBaseSteps {
         transferConfirmedTaskToClientPage.shouldTransferTaskDataIs(detailedTransferTaskData);
     }
 
-    @Test(description = "C22782861 Создание отзыва с RM клиенту (юр.лицо)")
+    @Test(description = "C22782861 Создание отзыва с RM клиенту (юр.лицо)", enabled = false)
     public void testCreateTransferFromRMToLegalClient() throws Exception {
         MagLegalCustomerData legalCustomerData = TestDataConstants.LEGAL_ENTITY_2;
 
@@ -343,7 +343,7 @@ public class TransferTest extends AppBaseSteps {
         transferConfirmedTaskToShopRoomPage.shouldTransferTaskDataIs(detailedTransferTaskData);
     }
 
-    @Test(description = "C3268360 Создание отзыва с RM из карточки товара")
+    @Test(description = "C3268360 Создание отзыва с RM из карточки товара", enabled = false)
     public void testCreateTransferTaskFromProductCard() throws Exception {
         // Pre-condition
         step("Выполнение предусловий теста");

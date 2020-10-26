@@ -1,0 +1,462 @@
+{
+  "stubs": [
+    {
+      "predicates": [
+        {
+          "equals": {
+            "method": "GET",
+            "path": "/catalog/services/search"
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [],
+              "totalCount": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/ruptures/v2/sessions",
+            "query": {
+              "shopId": "35",
+              "departmentId": "1",
+              "status": "active",
+              "pageSize": "1"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [
+                {
+                  "storeId": 35,
+                  "finishedOn": null,
+                  "createdOn": "2020-10-20T13:10:22.680347Z",
+                  "createdByLdap": "60069807",
+                  "type": "Standard",
+                  "completedProductCount": 0,
+                  "totalProductCount": 1,
+                  "userFullName": "Константин",
+                  "sessionId": 32115,
+                  "status": "active"
+                }
+              ],
+              "totalCount": 14
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/salesdoc/transfers",
+            "query": {
+              "status": "NEW",
+              "createdBy": "60069803",
+              "departmentId": "1",
+              "shopId": "35",
+              "sortField": "creationDate",
+              "sortOrder": "desc",
+              "pageSize": "10",
+              "startFrom": "1",
+              "lastItemId": "",
+              "page": "1"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [
+                {
+                  "taskId": "2003520100067906",
+                  "departmentId": "1",
+                  "createdAt": "2020-10-25T18:50:49.081+03:00",
+                  "createdBy": "60069803",
+                  "pointOfGiveAway": "SALESFLOOR",
+                  "status": "CONFIRMED",
+                  "products": [
+                    {
+                      "lmCode": "10009033",
+                      "barCode": "4650001110312",
+                      "images": [
+                        "https://res.cloudinary.com/lmru/image/upload/LMCode/10009033.jpg",
+                        "https://res.cloudinary.com/lmru/image/upload/LMCode/10009033_01.jpg",
+                        "https://res.cloudinary.com/lmru/image/upload/LMCode/10009033_02.jpg"
+                      ],
+                      "departmentId": "1",
+                      "availableStock": null,
+                      "price": null,
+                      "priceUnit": "NIU",
+                      "altPrice": null,
+                      "altPriceUnit": null,
+                      "priceCategory": "STD",
+                      "title": "Заглушка желоба левая/правая цвет красный",
+                      "description": "Левая и правая заглушки жёлоба красного цвета – чрезвычайно важные",
+                      "top": null,
+                      "gamma": "A",
+                      "avsDate": null,
+                      "brand": "ИНТЕРПРОФИЛЬ",
+                      "shops": [],
+                      "characteristics": [
+                        {
+                          "name": "Основной материал",
+                          "value": "Оцинкованная сталь"
+                        },
+                        {
+                          "name": "Страна производства",
+                          "value": "Россия"
+                        },
+                        {
+                          "name": "Диаметр желоба и водостока (мм)",
+                          "value": "125 x 90"
+                        },
+                        {
+                          "name": "Тип продукта",
+                          "value": "Заглушка желоба"
+                        },
+                        {
+                          "name": "Цвет",
+                          "value": "Красный"
+                        },
+                        {
+                          "name": "Вес, кг",
+                          "value": "0.054"
+                        },
+                        {
+                          "name": "Марка",
+                          "value": "ИНТЕРПРОФИЛЬ"
+                        }
+                      ],
+                      "barCodes": [
+                        "4650001110312",
+                        "2000100090336",
+                        "4607086800379"
+                      ],
+                      "isAvs": false,
+                      "subDepartmentId": "120",
+                      "categoryId": "30",
+                      "subCategoryId": "90",
+                      "logistic": {
+                        "weight": null,
+                        "width": null,
+                        "height": null,
+                        "depth": null
+                      },
+                      "shortTitle": null
+                    }
+                  ]
+                },
+                {
+                  "taskId": "2003520100067905",
+                  "departmentId": "1",
+                  "createdAt": "2020-10-25T16:50:53.647+03:00",
+                  "createdBy": "60069803",
+                  "pointOfGiveAway": "SALESFLOOR",
+                  "status": "CONFIRMED",
+                  "products": [
+                    {
+                      "lmCode": "10008938",
+                      "barCode": "4650001110275",
+                      "images": [
+                        "https://res.cloudinary.com/lmru/image/upload/LMCode/10008938.jpg",
+                        "https://res.cloudinary.com/lmru/image/upload/LMCode/10008938_01.jpg"
+                      ],
+                      "departmentId": "1",
+                      "availableStock": null,
+                      "price": null,
+                      "priceUnit": "NIU",
+                      "altPrice": null,
+                      "altPriceUnit": null,
+                      "priceCategory": "STD",
+                      "title": "Угол желоба на 90° внешний цвет красный",
+                      "description": "**Угол желоба внешний** позволяет изменить направление водного потока на 90° — сделать так, чтобы вода обогнула внешний угол дома, не переливаясь вниз. Применяется в случаях, когда желоба замкнуты в единый контур по периметру здания или если водосточная труба закреплена на соседней стене. Цвет изделия красный.",
+                      "top": null,
+                      "gamma": "A",
+                      "avsDate": null,
+                      "brand": "ИНТЕРПРОФИЛЬ",
+                      "shops": [],
+                      "characteristics": [
+                        {
+                          "name": "Основной материал",
+                          "value": "Оцинкованная сталь"
+                        },
+                        {
+                          "name": "Страна производства",
+                          "value": "Россия"
+                        },
+                        {
+                          "name": "Диаметр желоба и водостока (мм)",
+                          "value": "125 x 90"
+                        },
+                        {
+                          "name": "Тип продукта",
+                          "value": "Угол желоба"
+                        },
+                        {
+                          "name": "Цвет",
+                          "value": "Красный"
+                        },
+                        {
+                          "name": "Вес, кг",
+                          "value": "0.533"
+                        },
+                        {
+                          "name": "Марка",
+                          "value": "ИНТЕРПРОФИЛЬ"
+                        }
+                      ],
+                      "barCodes": [
+                        "4650001110275",
+                        "2000100089385",
+                        "4607086800331",
+                        "7321870002004"
+                      ],
+                      "isAvs": false,
+                      "subDepartmentId": "120",
+                      "categoryId": "30",
+                      "subCategoryId": "90",
+                      "logistic": {
+                        "weight": null,
+                        "width": null,
+                        "height": null,
+                        "depth": null
+                      },
+                      "shortTitle": null
+                    }
+                  ]
+                },
+                {
+                  "taskId": "2003520100067918",
+                  "departmentId": "1",
+                  "createdAt": "2020-10-26T01:42:12.494+03:00",
+                  "createdBy": "60069803",
+                  "pointOfGiveAway": "DEPARTMENT",
+                  "status": "NEW",
+                  "products": [
+                    {
+                      "lmCode": "11490674",
+                      "barCode": "4607135862709",
+                      "images": [
+                        "https://res.cloudinary.com/lmru/image/upload/LMCode/11490674.jpg",
+                        "https://res.cloudinary.com/lmru/image/upload/LMCode/11490674_01.jpg",
+                        "https://res.cloudinary.com/lmru/image/upload/LMCode/11490674_02.jpg",
+                        "https://res.cloudinary.com/lmru/image/upload/LMCode/11490674_03.jpg"
+                      ],
+                      "departmentId": "1",
+                      "availableStock": null,
+                      "price": null,
+                      "priceUnit": "NIU",
+                      "altPrice": null,
+                      "altPriceUnit": null,
+                      "priceCategory": "STD",
+                      "title": "Плитка декоративная Лондон Брик, цвет красный, 1.16 м2",
+                      "description": "Кирпич декоративно-облицовочный Лондон Брик, красный предназначен для отделки фасадов, интерьеров и элементов ландшафтной архитектуры. Фактура материала воссоздает «состаренную» кирпичную кладку. Подобный по внешнему виду кирпич использовался",
+                      "top": null,
+                      "gamma": "A",
+                      "avsDate": null,
+                      "brand": "WHITE HILLS",
+                      "shops": [],
+                      "characteristics": [
+                        {
+                          "name": "Цветовая палитра",
+                          "value": "Красный"
+                        },
+                        {
+                          "name": "Основной материал",
+                          "value": "Бетон"
+                        },
+                        {
+                          "name": "Страна производства",
+                          "value": "Россия"
+                        },
+                        {
+                          "name": "Количество плиток в упаковке",
+                          "value": "60"
+                        },
+                        {
+                          "name": "Наружная совместимость (морозоустойчивые)",
+                          "value": "Да"
+                        },
+                        {
+                          "name": "Вес, кг",
+                          "value": "24.585"
+                        },
+                        {
+                          "name": "Длина (см)",
+                          "value": "520.0"
+                        },
+                        {
+                          "name": "Вес на м² (кг)",
+                          "value": "21,1"
+                        },
+                        {
+                          "name": "Упаковка (м²)",
+                          "value": "1.16"
+                        },
+                        {
+                          "name": "Марка",
+                          "value": "WHITE HILLS"
+                        }
+                      ],
+                      "barCodes": [
+                        "4607135862709",
+                        "2000114906746",
+                        "4607135860200"
+                      ],
+                      "isAvs": false,
+                      "subDepartmentId": "150",
+                      "categoryId": "10",
+                      "subCategoryId": "30",
+                      "logistic": {
+                        "weight": null,
+                        "width": null,
+                        "height": null,
+                        "depth": null
+                      },
+                      "shortTitle": null
+                    },
+                    {
+                      "lmCode": "12531431",
+                      "barCode": "2000125314318",
+                      "images": [
+                        "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431.jpg",
+                        "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431_01.jpg",
+                        "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431_02.jpg",
+                        "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431_03.jpg"
+                      ],
+                      "departmentId": "1",
+                      "availableStock": null,
+                      "price": null,
+                      "priceUnit": "NIU",
+                      "altPrice": null,
+                      "altPriceUnit": null,
+                      "priceCategory": "STD",
+                      "title": "Блок газобетонный Ytong D500 625х250х100 мм",
+                      "description": "Газобетонный блок – это популярный материал",
+                      "top": null,
+                      "gamma": "A",
+                      "avsDate": null,
+                      "brand": "YTONG",
+                      "shops": [],
+                      "characteristics": [
+                        {
+                          "name": "Страна производства",
+                          "value": "Россия"
+                        },
+                        {
+                          "name": "Количество на м² (указанной согласно использованию и работе)",
+                          "value": "6.4"
+                        },
+                        {
+                          "name": "Класс прочности",
+                          "value": "В3.5"
+                        },
+                        {
+                          "name": "Класс морозостойкости",
+                          "value": "F100"
+                        },
+                        {
+                          "name": "Количество на м³",
+                          "value": "64.0"
+                        },
+                        {
+                          "name": "Марка",
+                          "value": "YTONG"
+                        },
+                        {
+                          "name": "Длина (мм)",
+                          "value": "625.0"
+                        },
+                        {
+                          "name": "Высота (мм)",
+                          "value": "250.0"
+                        },
+                        {
+                          "name": "Ширина (мм)",
+                          "value": "100.0"
+                        },
+                        {
+                          "name": "Вес, кг",
+                          "value": "10.5"
+                        },
+                        {
+                          "name": "Плотность (кг/м³)",
+                          "value": "500.0"
+                        },
+                        {
+                          "name": "Количество товара в паллете",
+                          "value": "90"
+                        }
+                      ],
+                      "barCodes": [
+                        "2000125314318"
+                      ],
+                      "isAvs": false,
+                      "subDepartmentId": "115",
+                      "categoryId": "40",
+                      "subCategoryId": "60",
+                      "logistic": {
+                        "weight": null,
+                        "width": null,
+                        "height": null,
+                        "depth": null
+                      },
+                      "shortTitle": null
+                    }
+                  ]
+                }
+              ],
+              "totalCount": 795
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/salesdoc/transfers",
+            "query": {
+              "status": "NEW",
+              "createdBy": "60069803",
+              "startFrom": "1",
+              "lastItemId": "",
+              "pageSize": "10",
+              "page": "1",
+              "departmentId": "1",
+              "shopId": "35"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-package com.leroy.core.util;
+package com.leroy.core.util.mountebank;
 
 import com.leroy.core.configuration.Log;
 import com.mashape.unirest.http.HttpResponse;

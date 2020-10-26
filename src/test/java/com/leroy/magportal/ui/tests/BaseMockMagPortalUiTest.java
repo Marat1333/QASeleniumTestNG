@@ -2,7 +2,7 @@ package com.leroy.magportal.ui.tests;
 
 import com.leroy.core.ContextProvider;
 import com.leroy.core.configuration.Log;
-import com.leroy.core.util.MountebankClient;
+import com.leroy.core.util.mountebank.MountebankClient;
 import com.leroy.magmobile.api.requests.CommonLegoRequest;
 import com.leroy.magportal.ui.WebBaseSteps;
 import org.json.simple.JSONArray;

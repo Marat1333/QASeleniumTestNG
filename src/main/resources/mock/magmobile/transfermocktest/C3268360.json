@@ -1,0 +1,707 @@
+{
+  "stubs": [
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/v4/catalog/search",
+            "query": {
+              "byLmCode": "10008938",
+              "shopId": 35
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [
+                {
+                  "lmCode": "10008938",
+                  "barCode": "4650001110275",
+                  "title": "Угол желоба на 90° внешний цвет красный",
+                  "gamma": "A",
+                  "avsDate": null,
+                  "priceCategory": "STD",
+                  "ctm": false,
+                  "top1000": false,
+                  "images": [
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/10008938.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/10008938_01.jpg"
+                  ],
+                  "availableStock": 30,
+                  "top": "1",
+                  "topEM": false,
+                  "supCode": 10,
+                  "price": 678,
+                  "altPrice": null,
+                  "priceUnit": "EA",
+                  "altPriceUnit": null,
+                  "priceCurrency": "RUR",
+                  "supName": "ОАОМОСКОВСКИЙ КРЕДИТНЫЙ БАНКООО СКАНДИНАВСКИЕ КРОВЕЛЬНЫЕ СИСТЕМЫ"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/v3/catalog/product",
+            "query": {
+              "shopId": "35",
+              "lmCode": "10008938",
+              "extend": "rating,logistic,inventory",
+              "pointOfGiveAway": "SALESFLOOR"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "lmCode": "10008938",
+              "barCode": "4650001110275",
+              "images": [
+                "https://res.cloudinary.com/lmru/image/upload/LMCode/10008938.jpg",
+                "https://res.cloudinary.com/lmru/image/upload/LMCode/10008938_01.jpg"
+              ],
+              "departmentId": "1",
+              "availableStock": 30,
+              "price": 678,
+              "priceUnit": "NIU",
+              "altPrice": null,
+              "altPriceUnit": null,
+              "priceCategory": "STD",
+              "title": "Угол желоба на 90° внешний цвет красный",
+              "description": "**Угол желоба внешний** позволяет изменить направление водного потока на 90° — сделать так, чтобы вода обогнула внешний угол дома, не переливаясь вниз. Применяется в случаях, когда желоба замкнуты в единый контур по периметру здания или если водосточная труба закреплена на соседней стене. Цвет изделия красный.",
+              "top": "1",
+              "gamma": "A",
+              "avsDate": null,
+              "brand": "ИНТЕРПРОФИЛЬ",
+              "shops": [],
+              "characteristics": [
+                {
+                  "name": "Основной материал",
+                  "value": "Оцинкованная сталь"
+                },
+                {
+                  "name": "Страна производства",
+                  "value": "Россия"
+                },
+                {
+                  "name": "Диаметр желоба и водостока (мм)",
+                  "value": "125 x 90"
+                },
+                {
+                  "name": "Тип продукта",
+                  "value": "Угол желоба"
+                },
+                {
+                  "name": "Цвет",
+                  "value": "Красный"
+                },
+                {
+                  "name": "Вес, кг",
+                  "value": "0.533"
+                },
+                {
+                  "name": "Марка",
+                  "value": "ИНТЕРПРОФИЛЬ"
+                }
+              ],
+              "barCodes": [
+                "4650001110275"
+              ],
+              "isAvs": false,
+              "subDepartmentId": "120",
+              "categoryId": "30",
+              "subCategoryId": "90",
+              "logistic": {
+                "width": 33.6,
+                "height": 6,
+                "depth": 33.6,
+                "weight": 0.533
+              },
+              "shortTitle": null,
+              "topEM": false,
+              "extStocks": {
+                "WHB_SUMM": 0,
+                "WHBP": 0,
+                "COR": 0,
+                "TSF_OUTBOUND": 0,
+                "RTV": 0,
+                "UTSP": 0,
+                "TBC": 0,
+                "EXPO": 0
+              },
+              "LS": 30,
+              "stockAreas": {
+                "RM": 0,
+                "EM": 0,
+                "UM": 0,
+                "RD": 0
+              },
+              "unavailableStockTotal": 0,
+              "_otherStocks": {
+                "em": 0,
+                "rm": 0,
+                "reception": 0,
+                "magOut": 0,
+                "uts": 0,
+                "c3": 4,
+                "soh": 34,
+                "tsfInboundDelivered": 0,
+                "tsfInboundConfirmed": 0,
+                "rtvOnDc": 0,
+                "guaranteedCount": 0,
+                "theoretical": 30
+              },
+              "rating": 0,
+              "reviewsCount": 0,
+              "salesPrice": {
+                "price": 678,
+                "altPrice": null,
+                "altPriceUnit": null,
+                "dateOfChange": "2019-01-03T21:00:00.000Z",
+                "reasonOfChange": "Техническое изменение розничной цены (РЦ) в связи изменением рек.розничной цены (РРЦ)",
+                "recommendedPrice": 678,
+                "recommendedUnitSale": "EA",
+                "recommendedDateOfChange": "2019-01-03T21:00:00.000Z"
+              },
+              "purchasePrice": 190.96,
+              "purchasePriceCurrency": "RUR",
+              "primeCost": 190.96,
+              "primeCostCurrency": "RU",
+              "futurePrice": null,
+              "futurePriceFromDate": null,
+              "priceReasonOfChange": null,
+              "inventory": {
+                "totalQuantity": 1,
+                "source": [
+                  {
+                    "type": "RM",
+                    "mixPallets": [
+                      {
+                        "id": "00946070258800897614",
+                        "capacity": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/catalog/complementary-products",
+            "query": {
+              "shopId": "35",
+              "lmCode": "10008938",
+              "extend": "rating,logistic,inventory"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "totalCount": 0,
+              "items": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/sms/notifications",
+            "query": {
+              "shopId": 35,
+              "lmCode": "10008938"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": []
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "and": [
+            {
+              "deepEquals": {
+                "method": "POST",
+                "path": "/salesdoc/transfer"
+              }
+            },
+            {
+              "equals": {
+                "body": {
+                  "pointOfGiveAway": "SALESFLOOR",
+                  "departmentId": "1",
+                  "shopId": 35,
+                  "products": [
+                    {
+                      "lmCode": "10008938",
+                      "chosenDepartmentId": "1",
+                      "orderedQuantity": 1
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "taskId": "2003520100067905",
+              "status": "NEW",
+              "shopId": 35,
+              "createdBy": "60069803",
+              "createdDate": "2020-10-25T16:50:53.647+03:00",
+              "pointOfGiveAway": "SALESFLOOR",
+              "dateOfGiveAway": "2020-10-25T14:49:55+03:00",
+              "departmentId": "1",
+              "products": [
+                {
+                  "lineId": "1",
+                  "lmCode": "10008938",
+                  "status": "NEW",
+                  "orderedQuantity": 1,
+                  "assignedQuantity": 1,
+                  "reserved": [
+                    {
+                      "type": "RM",
+                      "mixPallets": {
+                        "assigned": [
+                          {
+                            "id": "00946070258800897614",
+                            "capacity": 1
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/transfer/mixpallet",
+            "query": {
+              "shopId": "35",
+              "palletId": "00946070258800897614"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": [
+              {
+                "palletId": "00946070258800897614",
+                "products": [
+                  {
+                    "lmCode": "17043306",
+                    "quantity": 48,
+                    "barCode": "4607025885993",
+                    "images": [
+                      "https://res.cloudinary.com/lmru/image/upload/LMCode/17043306.jpg",
+                      "https://res.cloudinary.com/lmru/image/upload/LMCode/17043306_01.jpg"
+                    ],
+                    "departmentId": "1",
+                    "availableStock": null,
+                    "price": null,
+                    "priceUnit": "NIU",
+                    "altPrice": null,
+                    "altPriceUnit": null,
+                    "priceCategory": "STD",
+                    "title": "Штукатурка цементная Боларс Унипласт для блоков, кирпича и бетона 20 кг",
+                    "description": "Штукатурка для блоков БОЛАРС (20 кг) – материал, который нашел широкое применение в современном строительстве. Пригодится при проведении",
+                    "top": "1",
+                    "gamma": "A",
+                    "avsDate": null,
+                    "brand": "БОЛАРС",
+                    "shops": [],
+                    "characteristics": [
+                      {
+                        "name": "Основной материал",
+                        "value": "Цемент"
+                      },
+                      {
+                        "name": "Страна производства",
+                        "value": "Россия"
+                      },
+                      {
+                        "name": "Место использования",
+                        "value": "Внутренний / наружный"
+                      },
+                      {
+                        "name": "Материал поверхности применения",
+                        "value": "Газобетонный блок"
+                      },
+                      {
+                        "name": "Минимальная температура применения (°C)",
+                        "value": "5.0"
+                      },
+                      {
+                        "name": "Максимальная температура применения (°C)",
+                        "value": "30.0"
+                      },
+                      {
+                        "name": "Минимальная толщина слоя (мм)",
+                        "value": "3.0"
+                      },
+                      {
+                        "name": "Максимальная толщина слоя (мм)",
+                        "value": "20.0"
+                      },
+                      {
+                        "name": "Адгезия (МПа)",
+                        "value": "0,4"
+                      },
+                      {
+                        "name": "Размер фракции (мм)",
+                        "value": "3.0"
+                      },
+                      {
+                        "name": "Количество воды (л/кг)",
+                        "value": "0.26"
+                      },
+                      {
+                        "name": "Расход кг/м² при толщине слоя 10 мм",
+                        "value": "12.0"
+                      },
+                      {
+                        "name": "Вес нетто (кг)",
+                        "value": "20"
+                      },
+                      {
+                        "name": "Жизнеспособность раствора (ч)",
+                        "value": "3.0"
+                      },
+                      {
+                        "name": "Марка",
+                        "value": "БОЛАРС"
+                      }
+                    ],
+                    "barCodes": [
+                      "4607025885993",
+                      "2000170433064"
+                    ],
+                    "isAvs": false,
+                    "subDepartmentId": "110",
+                    "categoryId": "65",
+                    "subCategoryId": "10",
+                    "logistic": {
+                      "weight": null,
+                      "width": null,
+                      "height": null,
+                      "depth": null
+                    },
+                    "shortTitle": null,
+                    "topEM": false,
+                    "supCode": 1001507001
+                  },
+                  {
+                    "lmCode": "10008938",
+                    "quantity": 1,
+                    "barCode": "4650001110275",
+                    "images": [
+                      "https://res.cloudinary.com/lmru/image/upload/LMCode/10008938.jpg",
+                      "https://res.cloudinary.com/lmru/image/upload/LMCode/10008938_01.jpg"
+                    ],
+                    "departmentId": "1",
+                    "availableStock": null,
+                    "price": null,
+                    "priceUnit": "NIU",
+                    "altPrice": null,
+                    "altPriceUnit": null,
+                    "priceCategory": "STD",
+                    "title": "Угол желоба на 90° внешний цвет красный",
+                    "description": "**Угол желоба внешний** позволяет изменить направление водного потока на 90° — сделать так, чтобы вода обогнула внешний угол дома, не переливаясь вниз. Применяется в случаях, когда желоба замкнуты в единый контур по периметру здания или если водосточная труба закреплена на соседней стене. Цвет изделия красный.",
+                    "top": "1",
+                    "gamma": "A",
+                    "avsDate": null,
+                    "brand": "ИНТЕРПРОФИЛЬ",
+                    "shops": [],
+                    "characteristics": [
+                      {
+                        "name": "Основной материал",
+                        "value": "Оцинкованная сталь"
+                      },
+                      {
+                        "name": "Страна производства",
+                        "value": "Россия"
+                      },
+                      {
+                        "name": "Диаметр желоба и водостока (мм)",
+                        "value": "125 x 90"
+                      },
+                      {
+                        "name": "Тип продукта",
+                        "value": "Угол желоба"
+                      },
+                      {
+                        "name": "Цвет",
+                        "value": "Красный"
+                      },
+                      {
+                        "name": "Вес, кг",
+                        "value": "0.533"
+                      },
+                      {
+                        "name": "Марка",
+                        "value": "ИНТЕРПРОФИЛЬ"
+                      }
+                    ],
+                    "barCodes": [
+                      "4650001110275",
+                      "2000100089385",
+                      "4607086800331",
+                      "7321870002004"
+                    ],
+                    "isAvs": false,
+                    "subDepartmentId": "120",
+                    "categoryId": "30",
+                    "subCategoryId": "90",
+                    "logistic": {
+                      "weight": null,
+                      "width": null,
+                      "height": null,
+                      "depth": null
+                    },
+                    "shortTitle": null,
+                    "topEM": false,
+                    "supCode": 10
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "and": [
+            {
+              "deepEquals": {
+                "method": "PUT",
+                "path": "/salesdoc/transfer/run",
+                "query": {
+                  "taskId": "2003520100067905"
+                }
+              }
+            },
+            {
+              "equals": {
+                "body": {
+                  "pointOfGiveAway": "SALESFLOOR"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "taskId": "2003520100067905",
+              "status": "IN_PROGRESS",
+              "code": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/salesdoc/transfer/status",
+            "query": {
+              "taskId": "2003520100067905"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "status": "SUCCESS",
+              "message": "Task successfully finalized.",
+              "code": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/salesdoc/transfer",
+            "query": {
+              "taskId": "2003520100067905"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "taskId": "2003520100067905",
+              "status": "CONFIRMED",
+              "shopId": 35,
+              "createdBy": "60069803",
+              "createdDate": "2020-10-25T16:50:53.647+03:00",
+              "pointOfGiveAway": "SALESFLOOR",
+              "dateOfGiveAway": "2020-10-27T17:57:00+03:00",
+              "comment": "",
+              "products": [
+                {
+                  "lineId": "1",
+                  "lmCode": "10008938",
+                  "status": "CONFIRMED",
+                  "orderedQuantity": 1,
+                  "assignedQuantity": 1,
+                  "reserved": [
+                    {
+                      "type": "RM",
+                      "mixPallets": {
+                        "assigned": [
+                          {
+                            "id": "00946070258800897614",
+                            "capacity": 1
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "barCode": "4650001110275",
+                  "images": [
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/10008938.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/10008938_01.jpg"
+                  ],
+                  "departmentId": "1",
+                  "availableStock": null,
+                  "price": 678,
+                  "priceUnit": "EA",
+                  "altPrice": null,
+                  "altPriceUnit": null,
+                  "priceCategory": "STD",
+                  "title": "Угол желоба на 90° внешний цвет красный",
+                  "description": "**Угол желоба внешний** позволяет изменить направление водного потока на 90° — сделать так, чтобы вода обогнула внешний угол дома, не переливаясь вниз. Применяется в случаях, когда желоба замкнуты в единый контур по периметру здания или если водосточная труба закреплена на соседней стене. Цвет изделия красный.",
+                  "top": "1",
+                  "gamma": "A",
+                  "avsDate": null,
+                  "brand": "ИНТЕРПРОФИЛЬ",
+                  "shops": [ ],
+                  "characteristics": [
+                    {
+                      "name": "Основной материал",
+                      "value": "Оцинкованная сталь"
+                    },
+                    {
+                      "name": "Страна производства",
+                      "value": "Россия"
+                    },
+                    {
+                      "name": "Диаметр желоба и водостока (мм)",
+                      "value": "125 x 90"
+                    },
+                    {
+                      "name": "Тип продукта",
+                      "value": "Угол желоба"
+                    },
+                    {
+                      "name": "Цвет",
+                      "value": "Красный"
+                    },
+                    {
+                      "name": "Вес, кг",
+                      "value": "0.533"
+                    },
+                    {
+                      "name": "Марка",
+                      "value": "ИНТЕРПРОФИЛЬ"
+                    }
+                  ],
+                  "barCodes": [
+                    "4650001110275",
+                    "2000100089385",
+                    "4607086800331",
+                    "7321870002004"
+                  ],
+                  "isAvs": false,
+                  "subDepartmentId": "120",
+                  "categoryId": "30",
+                  "subCategoryId": "90",
+                  "logistic": {
+                    "weight": null,
+                    "width": null,
+                    "height": null,
+                    "depth": null
+                  },
+                  "shortTitle": null,
+                  "salesPrice": 678,
+                  "purchasePrice": null,
+                  "primeCost": null,
+                  "futurePrice": null,
+                  "futurePriceFromDate": "2019-01-03T21:00:00.000Z",
+                  "priceReasonOfChange": "Техническое изменение розничной цены (РЦ) в связи изменением рек.розничной цены (РРЦ)",
+                  "recommendedPrice": 678,
+                  "priceCurrency": "RUR",
+                  "topEM": false,
+                  "supCode": 10
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

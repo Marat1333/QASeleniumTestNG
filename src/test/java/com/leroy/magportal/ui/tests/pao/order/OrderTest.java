@@ -945,8 +945,7 @@ public class OrderTest extends BasePAOTest {
      * Обновите список документов слева
      */
     private void stepRefreshDocumentListAndCheckDocument() throws Exception {
-        if (orderCreatedContentPage == null)
-            orderCreatedContentPage = new OrderCreatedContentPage();
+        orderCreatedContentPage = new OrderCreatedContentPage();
         ShortOrderDocWebData shortOrderDocWebData = orderData.getShortOrderData();
         shortOrderDocWebData.setPayType(ShortOrderDocWebData.PayType.OFFLINE);
         orderCreatedContentPage.refreshDocumentList();
