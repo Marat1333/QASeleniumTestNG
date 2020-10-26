@@ -80,9 +80,9 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
     }
 
     @Step("Проверить, что документ №{number} в списке слева отображается")
-    public void softAssertDocumentIsPresent(String number, int caseNumber) throws Exception {
+    public void softAssertDocumentIsPresent(String number, int stepNumber) throws Exception {
         softAssert.isTrue(isDocumentPresentInList(number),
-                "№ шага: " + caseNumber + "\nДокумент №" + number + " не найден в списке слева");
+                "№ шага: " + stepNumber + "\nДокумент №" + number + " не найден в списке слева");
     }
 
     @Step("Проверить, что документ №{number} в списке слева не отображается")
@@ -147,7 +147,7 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
     @Step("Проверить, что в списке документов слева на текущей странице отображается {value} документов")
     public void softAssertDocumentCountIs(int value, int caseNumber) throws Exception {
         waitForSpinnerDisappear();
-        anAssert.isEquals(documentCardList().getCount(), value,
+        softAssert.isEquals(documentCardList().getCount(), value,
                 "№ шага: " + caseNumber + "\nОжидалось другое кол-во документов");
     }
 
@@ -194,8 +194,8 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
     }
 
     @Step("Проверить, что в список документов слева пуст")
-    public void softAssertDocumentListIsEmpty(int caseNumber) throws Exception {
+    public void softAssertDocumentListIsEmpty(int stepNumber) throws Exception {
         softAssert.isTrue(documentCardList().getDataList().size() == 0,
-                "№ шага: " + caseNumber + "\nСписок документов не пустой (содержит документы)");
+                "№ шага: " + stepNumber + "\nСписок документов не пустой (содержит документы)");
     }
 }
