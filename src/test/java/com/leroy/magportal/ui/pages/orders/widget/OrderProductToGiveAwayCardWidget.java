@@ -14,10 +14,10 @@ public class OrderProductToGiveAwayCardWidget extends CardWebWidget<ToGiveAwayPr
         super(driver, locator);
     }
 
-    @WebFindBy(xpath = "//p[contains(@class, 'ProductCard__body-title')]", metaName = "Название товара")
+    @WebFindBy(xpath = ".//p[contains(@class, 'ProductCard__body-title')]", metaName = "Название товара")
     Element title;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'ProductCard__quantities')]//div[contains(@class, 'inputCounter') and descendant::label[contains(text(), 'К выдаче')]]//input",
+    @WebFindBy(xpath = ".//div[contains(@class, 'ProductCard__quantities')]//div[contains(@class, 'inputCounter') and descendant::label[contains(text(), 'К выдаче')]]//input",
             metaName = "Поле 'К выдаче'")
     EditBox toGiveAwayQuantity;
 

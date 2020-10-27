@@ -112,7 +112,7 @@ public class PickingTest extends BasePAOTest {
         pickingTaskId = respPickingTasks.asJson().getItems().get(0).getTaskId();
     }
 
-    @AfterClass(enabled = false)
+    @AfterClass(enabled = true)
     private void cancelConfirmedOrder() throws Exception {
         if (orderId != null) {
             OrderClient orderClient = apiClientProvider.getOrderClient();
@@ -497,9 +497,8 @@ public class PickingTest extends BasePAOTest {
         pickingContentPage.shouldFinishButtonCountIs(1, 3)
                 .checkIfFinishButtonIsEnabled(true);
 
-        // Step 9
+        // Step 9        pickingTaskDataBefore.setStatus(SalesDocumentsConst.States.PARTIALLY_PICKED.getUiVal() + " 1/3");
         step("Нажать на кнопку Завершить");
-        pickingTaskDataBefore.setStatus(SalesDocumentsConst.States.PARTIALLY_PICKED.getUiVal() + " 1/3");
         List<PickingProductCardData> pickingProducts = pickingTaskDataBefore.getProducts();
         pickingProducts.get(0).setCollectedQuantity(collectedQuantityProduct1);
         pickingProducts.get(0).setReasonOfLack(reason1.getTitle());
@@ -663,7 +662,6 @@ public class PickingTest extends BasePAOTest {
 
         // Step7:
         step("Товар 1: Ввести в инпут Собрано количество равное,  указанному в Заказано");
-        //int collectedQuantityProduct1 = pickingTaskDataBefore.getProducts().get(0).getOrderedQuantity();
         pickingContentPage.editCollectQuantity(1, 2)
                 .shouldProductCollectedQuantityIs(1, 2);
 
@@ -684,24 +682,19 @@ public class PickingTest extends BasePAOTest {
         orderPage.shouldDocumentCountIs(1);
     }
 
-    @Test(description = "<ID кейса> Заказы. Переход из статуса Собран в статус Выдан", groups = NEED_PRODUCTS_GROUP)
+    @Test(description = "T30797692 Заказы. Переход из статуса Собран в статус Выдан", groups = NEED_PRODUCTS_GROUP)
     public void testMoveFromPickedToGivenAway() throws Exception {
 
         // Создать заказ и перевести его в статус "Собран"
 
         initCreateOrder(1, SalesDocumentsConst.States.PICKED);
 
-
-        //Вбить номер собранного заказа
-
-        //orderId="201001153419";
-
         // Step 1:
         step("Открыть страницу с Заказами");
         OrderHeaderPage orderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
 
         // Step 2:
-        step("Найти заказ с стусе Собран с номером" + " " + orderId);
+        step("Найти созданный заказ с статусе Собран с номером" + " " + orderId);
         orderPage.enterSearchTextAndSubmit(orderId);
         orderPage.shouldDocumentIsPresent(orderId);
         orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.PICKED.getUiVal());
@@ -719,8 +712,6 @@ public class PickingTest extends BasePAOTest {
 
         // Step 5
         step("Товар 1: Ввести в инпут 'К выдаче' количество равное,  указанному в Заказано");
-        //убрать хардкод. Заменить на получение заказанного к-ва по примеру ниже
-        //int collectedQuantityProduct1 = pickingTaskDataBefore.getProducts().get(0).getOrderedQuantity();
         giveAwayShipOrderPage.editToShipQuantity(1, 2)
                 .shouldProductToShipQuantityIs(1, 2);
 

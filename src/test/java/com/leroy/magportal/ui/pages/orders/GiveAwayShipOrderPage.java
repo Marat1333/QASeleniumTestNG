@@ -13,7 +13,7 @@ import io.qameta.allure.Step;
 public class GiveAwayShipOrderPage extends OrderCreatedPage {
 
     @WebFindBy(xpath = "//div[contains(@class, 'lm-puz2-Order-OrderViewFooter__buttonsWrapper')]//button", metaName = "Кнопка 'Выдать'")
-    Button GiveAwayBtn;
+    Button giveAwayBtn;
 
     @WebFindBy(xpath = "//div[contains(@class, 'Order-GiveAway-Card')]",
             clazz = OrderProductToGiveAwayCardWidget.class)
@@ -24,7 +24,7 @@ public class GiveAwayShipOrderPage extends OrderCreatedPage {
 
     @Step("Нажать кнопку 'Выдать'")
     public GiveAwayShipOrderPage clickGiveAwayButton() {
-        GiveAwayBtn.click();
+        giveAwayBtn.click();
         waitForSpinnerAppearAndDisappear();
         return this;
     }
