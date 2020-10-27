@@ -113,6 +113,7 @@ public class OrderSearchTest extends WebBaseSteps {
         orderCustomerData.setRoles(Collections.singletonList(CustomerConst.Role.PAYER.name()));
         orderCustomerData.setType(CustomerConst.Type.PERSON.name());
         orderCustomerData.setPhone(new PhoneData(orderDetailData.getCustomer().getPhoneNumber()));
+        orderCustomerData.setEmail(orderDetailData.getCustomer().getEmail());
 
         String recipientFirstName = ParserUtil
                 .parseFirstName(orderDetailData.getRecipient().getName());
@@ -124,6 +125,7 @@ public class OrderSearchTest extends WebBaseSteps {
         orderRecipientData.setRoles(Collections.singletonList(CustomerConst.Role.RECEIVER.name()));
         orderRecipientData.setType(CustomerConst.Type.PERSON.name());
         orderRecipientData.setPhone(new PhoneData(orderDetailData.getRecipient().getPhoneNumber()));
+        orderRecipientData.setEmail(orderDetailData.getRecipient().getEmail());
 
         OrderData confirmOrderData = new OrderData();
         confirmOrderData.setPinCode(validPinCode);
