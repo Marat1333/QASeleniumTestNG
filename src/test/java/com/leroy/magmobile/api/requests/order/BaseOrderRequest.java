@@ -1,8 +1,8 @@
 package com.leroy.magmobile.api.requests.order;
 
-import ru.leroymerlin.qa.core.clients.base.RequestBuilder;
+import com.leroy.magmobile.api.requests.CommonLegoRequest;
 
-public class BaseOrderRequest<J extends BaseOrderRequest<J>> extends RequestBuilder<J> {
+public class BaseOrderRequest<J extends BaseOrderRequest<J>> extends CommonLegoRequest<J> {
 
     public J setOrderId(String val) {
         return queryParam("orderId", val);

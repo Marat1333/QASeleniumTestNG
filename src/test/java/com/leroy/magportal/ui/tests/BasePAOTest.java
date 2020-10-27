@@ -1,5 +1,7 @@
 package com.leroy.magportal.ui.tests;
 
+import com.google.inject.Inject;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.core.UserSessionData;
 import com.leroy.common_mashups.clients.CustomerClient;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
@@ -23,6 +25,9 @@ public abstract class BasePAOTest extends WebBaseSteps {
     // Test groups
     protected final static String NEED_ACCESS_TOKEN_GROUP = "need_access_token";
     protected final static String NEED_PRODUCTS_GROUP = "need_products";
+
+    @Inject
+    SearchProductHelper searchProductHelper;
 
     protected List<ProductItemData> productList;
 
@@ -68,7 +73,7 @@ public abstract class BasePAOTest extends WebBaseSteps {
         CatalogSearchFilter filtersData = new CatalogSearchFilter();
         filtersData.setAvs(true);
         filtersData.setHasAvailableStock(hasAvailableStock);
-        return apiClientProvider.getProducts(1, filtersData).get(0).getLmCode();
+        return searchProductHelper.getProducts(1, filtersData).get(0).getLmCode();
     }
 
     protected String getAnyLmCodeProductWithAvs() {

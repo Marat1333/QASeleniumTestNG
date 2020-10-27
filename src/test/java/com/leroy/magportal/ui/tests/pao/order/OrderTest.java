@@ -169,7 +169,7 @@ public class OrderTest extends BasePAOTest {
     @Test(description = "C23410900 Создание заказа из корзины, преобразованной из сметы", groups = NEED_PRODUCTS_GROUP)
     public void testCreateOrderFromCartTransformedFromEstimate() throws Exception {
         step("Pre-condition: Создаем смету и преобразовываем ее в корзину");
-        CustomerData customerData = paoHelper.searchForCustomer(TestDataConstants.SIMPLE_CUSTOMER_DATA_1);
+        CustomerData customerData = paoHelper.searchForCustomer(TestDataConstants.SIMPLE_CUSTOMER_DATA_2);
         EstimateProductOrderData estimateProductOrderData = new EstimateProductOrderData(productList.get(0));
         estimateProductOrderData.setQuantity(1.0);
         String estimateId = paoHelper.createConfirmedEstimateAndGetId(estimateProductOrderData, customerData);
@@ -179,7 +179,7 @@ public class OrderTest extends BasePAOTest {
 
         // Step 1
         step("Нажмите на кнопку 'Оформить заказ'");
-        stepClickConfirmOrderButton(TestDataConstants.SIMPLE_CUSTOMER_DATA_1);
+        stepClickConfirmOrderButton(TestDataConstants.SIMPLE_CUSTOMER_DATA_2);
 
         // Step 2
         step("Выберете поле PIN-код для оплаты, введите PIN-код для оплаты");
@@ -356,10 +356,8 @@ public class OrderTest extends BasePAOTest {
         String orderId = paoHelper.createConfirmedOrder(cardProducts, false).getOrderId();
 
         OrderHeaderPage orderHeaderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
-        orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderId,
-                CONFIRMED_BUT_NOT_ALLOWED_FOR_PICKING_ORDER ?
-                        SalesDocumentsConst.States.CONFIRMED.getApiVal() :
-                        SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal(), false);
+        orderClient.waitUntilOrderGetStatus(orderId,
+                        SalesDocumentsConst.States.ALLOWED_FOR_PICKING, null);
         orderHeaderPage.clickDocumentInLeftMenu(orderId);
 
         orderCreatedContentPage = new OrderCreatedContentPage();

@@ -380,5 +380,18 @@
             <version>4.1.2</version>
         </dependency>
 
+        <!-- Javabank for working with mountebank -->
+        <dependency>
+            <groupId>org.mbtest.javabank</groupId>
+            <artifactId>javabank-core</artifactId>
+            <version>0.4.10</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mbtest.javabank</groupId>
+            <artifactId>javabank-client</artifactId>
+            <version>0.4.10</version>
+        </dependency>
+
     </dependencies>
 </project>
