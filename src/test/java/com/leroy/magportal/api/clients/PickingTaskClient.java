@@ -18,9 +18,6 @@ import com.leroy.magportal.api.data.picking.PickingTaskStoragePayload;
 import com.leroy.magportal.api.data.picking.PickingTaskStoragePayload.StoragePayload;
 import com.leroy.magportal.api.data.picking.PickingTaskWorkflowPayload;
 import com.leroy.magportal.api.data.picking.PickingTaskWorkflowPayload.WorkflowPayload;
-import com.leroy.magportal.api.data.picking.StorageLocationData;
-import com.leroy.magportal.api.data.picking.StorageLocationData.ZoneLocation;
-import com.leroy.magportal.api.requests.picking.PickingLocationGetRequest;
 import com.leroy.magportal.api.requests.picking.PickingTaskGetRequest;
 import com.leroy.magportal.api.requests.picking.PickingTasksSearchRequest;
 import com.leroy.magportal.api.requests.picking.PickingWorkflowRequest;
@@ -32,28 +29,20 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class PickingTaskClient extends BaseMashupClient {
 
-    private String secondUrl;
-
-    @Override
-    protected void init() {
-        gatewayUrl = EnvConstants.MAIN_API_HOST;
-        secondUrl = EnvConstants.PICK_API_HOST;
-    }
-
     @Step("Search for picking tasks")
     public Response<PickingTaskDataList> searchForPickingTasks(String orderId) {
         PickingTasksSearchRequest req = new PickingTasksSearchRequest();
         req.setOrderId(orderId);
         req.setPageNumber(1);
         req.setPageSize(5);
-        return execute(req, PickingTaskDataList.class, secondUrl);
+        return execute(req, PickingTaskDataList.class);
     }
 
     @Step("Get picking task")
     public Response<PickingTaskData> getPickingTask(String taskId) {
         PickingTaskGetRequest req = new PickingTaskGetRequest();
         req.setTaskId(taskId);
-        return execute(req, PickingTaskData.class, secondUrl);
+        return execute(req, PickingTaskData.class);
     }
 
     @Step("Start Picking of task for OrderId= {OrderId}")
@@ -110,12 +99,6 @@ public class PickingTaskClient extends BaseMashupClient {
     public Response<PickingTaskData> completePicking(String taskId, Boolean isFull) {
         return makeAction(taskId, PickingTaskWorkflowEnum.COMPLETE.getValue(),
                 makeWorkflowPayload(taskId, isFull));
-    }
-
-    @Step("Get Pickings locations' for shop ={shopId}")
-    public Response<StorageLocationData> getStorageLocation(String shopId) {
-        return execute(new PickingLocationGetRequest().setShopId(shopId),
-                StorageLocationData.class, secondUrl);
     }
 
     @Step("Complete Picking of task = {taskId}")
@@ -182,7 +165,9 @@ public class PickingTaskClient extends BaseMashupClient {
         for (int i = 0; i < count; i++) {
             locations.add("V000" + i + ":Выдача Товара");
         }
-        return locations;
+        storagePayload.setLocations(locations);
+        payload.setStoragePayload(storagePayload);
+        return payload;
     }
 
     ////VERIFICATION

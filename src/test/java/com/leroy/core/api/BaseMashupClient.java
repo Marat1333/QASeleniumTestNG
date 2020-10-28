@@ -37,17 +37,13 @@ public abstract class BaseMashupClient extends BaseClient {
     }
 
     protected <J> Response<J> execute(RequestBuilder<?> request, final Class<J> type) {
-        return execute(request, type, gatewayUrl);
-    }
-
-    protected <J> Response<J> execute(RequestBuilder<?> request, final Class<J> type, String url) {
         UserSessionData thisUserSessionData = getUserSessionData();
         if (thisUserSessionData != null && thisUserSessionData.getAccessToken() != null)
             request.bearerAuthHeader(thisUserSessionData.getAccessToken());
         try {
-            return executeRequest(request.build(url), type);
+            return executeRequest(request.build(gatewayUrl), type);
         } catch (ProcessingException err) {
-            Log.error("Failed execute request: " + request.build(url).toString());
+            Log.error("Failed execute request: " + request.build(gatewayUrl).toString());
             throw err;
         }
     }
