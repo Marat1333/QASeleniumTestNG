@@ -682,7 +682,7 @@ public class PickingTest extends BasePAOTest {
         orderPage.shouldDocumentCountIs(1);
     }
 
-    @Test(description = "T30797692 Заказы. Переход из статуса Собран в статус Выдан", groups = NEED_PRODUCTS_GROUP)
+    @Test(description = "C23428132 Заказы. Переход из статуса Собран в статус Выдан", groups = NEED_PRODUCTS_GROUP)
     public void testMoveFromPickedToGivenAway() throws Exception {
 
         // Создать заказ и перевести его в статус "Собран"
