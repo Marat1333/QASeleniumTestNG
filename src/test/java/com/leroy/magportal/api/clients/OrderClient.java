@@ -43,6 +43,7 @@ import com.leroy.magportal.api.requests.order.DeliveryUpdateRequest;
 import com.leroy.magportal.api.requests.order.OrderDeliveryRecalculateRequest;
 import com.leroy.magportal.api.requests.order.OrderFulfilmentGivenAwayRequest;
 import com.leroy.magportal.api.requests.order.OrderGetRequest;
+import com.leroy.magportal.api.requests.order.OrderGetRequest.Extend;
 import com.leroy.magportal.api.requests.order.OrderWorkflowRequest;
 import com.leroy.magportal.api.requests.timeslot.AppointmentsRequest;
 import com.leroy.magportal.api.requests.timeslot.ChangeDateRequest;
@@ -64,7 +65,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
     @Inject
     private PaymentHelper paymentHelper;
 
-    private final int waitTimeoutInSeconds = 180;
+    private final int waitTimeoutInSeconds = 300;
 
     @Step("Get order with id = {orderId} with response verification")
     public Response<OnlineOrderData> getOnlineOrder(String orderId) {
@@ -75,6 +76,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
     public Response<OnlineOrderData> getOnlineOrder(String orderId, boolean isVerify) {
         OrderGetRequest req = new OrderGetRequest();
         req.setOrderId(orderId);
+//        req.setExtend(Extend.PRODUCT_DETAILS);
         Response<OnlineOrderData> response = execute(req, OnlineOrderData.class);
         if (isVerify) {
             assertThat("Get Order FAILED", response.isSuccessful());

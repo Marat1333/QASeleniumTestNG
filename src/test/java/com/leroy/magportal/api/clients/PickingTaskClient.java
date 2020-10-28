@@ -1,6 +1,11 @@
 package com.leroy.magportal.api.clients;
 
+import static com.leroy.core.matchers.IsSuccessful.successful;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalToIgnoringCase;
+
 import com.leroy.constants.EnvConstants;
+import com.leroy.constants.sales.SalesDocumentsConst.PickingStatus;
 import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magportal.api.constants.PickingReasonEnum;
@@ -163,9 +168,9 @@ public class PickingTaskClient extends BaseMashupClient {
             List<ZoneLocation> zones = resp.asJson().getZones();
             List<String> locations = zones.stream().filter(y -> (y.getZoneCells().size() > count))
                     .findFirst().get().getZoneCells();
-            storagePayload.setLocations(locations.subList(1, count));
+            storagePayload.setStorageLocations(locations.subList(0, count));
         } catch (Exception ignoreThis) {
-            storagePayload.setLocations(this.makeFakeLocations(count));
+            storagePayload.setStorageLocations(this.makeFakeLocations(count));
         }
 
         payload.setStoragePayload(storagePayload);
@@ -178,6 +183,20 @@ public class PickingTaskClient extends BaseMashupClient {
             locations.add("V000" + i + ":Выдача Товара");
         }
         return locations;
+    }
+
+    ////VERIFICATION
+    @Step("Picking task Status verification")
+    public void assertWorkflowResult(Response<?> response, String taskId, PickingStatus expectedStatus) {
+        assertThat("Request to change Picking task Status has Failed.", response, successful());
+        Response<PickingTaskData> task = this.getPickingTask(taskId);
+        String status = task.asJson().getTaskStatus();
+
+        assertThat(
+                "Picking task Status match FAILED. \nActual: " + status + "\nExpected: "
+                        + expectedStatus
+                        .getApiVal(),
+                status, equalToIgnoringCase(expectedStatus.getApiVal()));
     }
 
 }
