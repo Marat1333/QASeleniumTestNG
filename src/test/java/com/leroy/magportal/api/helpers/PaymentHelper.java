@@ -10,6 +10,7 @@ import com.leroy.core.configuration.DriverFactory;
 import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.constants.CardConst;
 import com.leroy.magportal.api.constants.PaymentStatusEnum;
+import com.leroy.magportal.api.constants.PaymentTypeEnum;
 import com.leroy.magportal.api.data.onlineOrders.OnlineOrderData;
 import com.leroy.magportal.api.helpers.ui.PaymentPage;
 import io.qameta.allure.Step;
@@ -44,7 +45,7 @@ public class PaymentHelper extends BaseHelper {
         return resp.asJson().getPaymentTaskId();
     }
 
-    private PaymentTask updatePayment(String orderId, PaymentStatusEnum status) {
+    private void updatePayment(String orderId, PaymentStatusEnum status) {
         String paymentTaskId = getPaymentTaskId(orderId);
         /* TODO: Uses for Card Payment
         Response<PaymentTask> paymentTaskResponse = paymentClient.getPaymentTask(paymentTaskId);
@@ -64,8 +65,6 @@ public class PaymentHelper extends BaseHelper {
         PaymentTask body = resp.asJson();
         assertThat("API: Payment update failed due to wrong STATUS: " + resp.toString(),
                 status.toString(), equalTo(body.getTaskStatus()));
-
-        return body;
     }
 
     private List<Link> getLinks(String paymentTaskId) {
