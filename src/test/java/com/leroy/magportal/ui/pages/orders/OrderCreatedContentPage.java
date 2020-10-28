@@ -211,4 +211,12 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
     }
 
 
+
+    @Step("Проверить, что заказ содержит {productCount} продуктов")
+    public OrderCreatedContentPage shouldOrderProductCountIs (int productCount) {
+        anAssert.isEquals(productCards.getCount(), productCount,"Неверное количество товаров");
+        return this;
+
+    }
+
 }
