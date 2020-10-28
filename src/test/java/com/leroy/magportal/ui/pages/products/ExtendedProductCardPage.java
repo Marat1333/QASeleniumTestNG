@@ -319,8 +319,14 @@ public class ExtendedProductCardPage extends ProductCardPage {
         softAssert.isEquals(stockData.getEm(), stockAreas.getEm(), "Склад EM");
         softAssert.isEquals(stockData.getRd(), stockAreas.getRd(), "Склад RD");
         ExtStocks extStocks = data.getExtStocks();
-        int unavailableStockSum = extStocks.getWhb() + extStocks.getWhbp() + extStocks.getCor() + extStocks.getTsfOutbound()
-                + extStocks.getRtv() + extStocks.getUtsp() + extStocks.getTbc() + extStocks.getExpo();
+        Integer unavailableStockSum = (extStocks.getWhb() == null ? 0 : extStocks.getWhb()) +
+                (extStocks.getWhbp() == null ? 0 : extStocks.getWhbp()) +
+                (extStocks.getCor() == null ? 0 : extStocks.getCor()) +
+                (extStocks.getTsfOutbound() == null ? 0 : extStocks.getTsfOutbound()) +
+                (extStocks.getRtv() == null ? 0 : extStocks.getRtv()) +
+                (extStocks.getUtsp() == null ? 0 : extStocks.getUtsp()) +
+                (extStocks.getTbc() == null ? 0 : extStocks.getTbc()) +
+                (extStocks.getExpo() == null ? 0 : extStocks.getExpo());
         softAssert.isEquals(stockData.getUnavailableForSale(), unavailableStockSum, "Недоступный остаток");
     }
 

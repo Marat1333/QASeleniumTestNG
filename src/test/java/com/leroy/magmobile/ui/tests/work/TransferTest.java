@@ -290,7 +290,7 @@ public class TransferTest extends AppBaseSteps {
 
         // Step 3 - 5
         step("Нажмите на + в правом нижнем углу мини-карточки выбранного товара и введите новое кол-во товара");
-        int newQuantity = 5;
+        int newQuantity = 1;
         TransferProductData transferProductData = searchProductPage.getTransferProduct(1);
         transferProductData.setOrderedQuantity(newQuantity);
         transferProductData.setReviewCompositionAsNull(); // С данного экрана мы не знаем какое количество на одном моно-паллете

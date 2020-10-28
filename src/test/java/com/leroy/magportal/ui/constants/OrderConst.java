@@ -18,7 +18,7 @@ public class OrderConst {
         public static final String PICKUP = "Самовывоз";
         public static final String DELIVERY_TK = "Доставка ТК";
         public static final String DELIVERY_KK = "Доставка КК";
-        public static final String PVZ = "ПВЗ";
+        public static final String DELIVERY_PVZ = "Доставка ПВЗ";
     }
 
 }

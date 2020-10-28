@@ -7,6 +7,26 @@ import io.qameta.allure.Step;
 
 public abstract class OrderCreatedPage extends OrderHeaderPage {
 
+    @WebFindBy(xpath = "//div[contains(@class, 'OrderViewHeader__mainInfo')]//div[contains(@class, 'Order-OrderStatus')]//span",
+            metaName = "Статус заказа")
+    protected Element orderStatus;
+
+    @WebFindBy(xpath = "//div[contains(@class, 'OrderViewHeader__mainInfo')]/following-sibling::div/span[3]",
+            metaName = "Статус оплаты заказа")
+    protected Element paymentStatus;
+
+    @WebFindBy(id = "info", metaName = "Вкладка 'Информация'")
+    Button infoTab;
+
+    // Actions
+
+    @Step("Перейти на вкладку 'Информация'")
+    public OrderCreatedInfoPage clickInfoTab() {
+        infoTab.click();
+        return new OrderCreatedInfoPage();
+    }
+
+
     @WebFindBy(xpath = "//button[@id='pickings']",
             metaName = "Вкладка Сборок")
     Button pickingsTab;
@@ -44,10 +64,14 @@ public abstract class OrderCreatedPage extends OrderHeaderPage {
 
     // Verifications
 
-
     @Step("Проверить, что статус заказа - {value}")
     public void shouldOrderStatusIs(String value) {
-        anAssert.isEquals(E("//div[contains(@class, 'OrderViewHeader')]//span[contains(@class, 'Status-container')]").getText(),
-                value, "Неверный статус заказа");
+        anAssert.isEquals(orderStatus.getText().toLowerCase(), value.toLowerCase(), "Неверный статус заказа");
+    }
+
+    @Step("Проверить, что статус оплаты заказа - {value}")
+    public void shouldOrderPaymentStatusIs(String value) {
+        anAssert.isEquals(paymentStatus.getText().toLowerCase(), value.toLowerCase(),
+                "Неверный статус оплаты заказа");
     }
 }
