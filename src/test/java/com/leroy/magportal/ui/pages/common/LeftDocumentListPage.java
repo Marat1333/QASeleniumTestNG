@@ -12,6 +12,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends IDataWithNumberAndStatus<D>>
@@ -170,8 +172,7 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
 
     @Step("Проверить, что в списке документов слева присутствуют документы, содержащие номер: {expectedNumber}")
     public void shouldDocumentListFilteredByNumber(String expectedNumber) throws Exception {
-        List<String> actualDocumentNumbers = documentCardList().getDataList().stream()
-                .map(D::getNumber)
+        List<String> actualDocumentNumbers = documentCardList().getDataList().stream().map(D::getNumber)
                 .collect(Collectors.toList());
         anAssert.isTrue(actualDocumentNumbers.size() > 0,
                 "Не найден ни один документ");

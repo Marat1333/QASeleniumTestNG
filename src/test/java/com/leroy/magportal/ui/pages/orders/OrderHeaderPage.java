@@ -93,7 +93,7 @@ public class OrderHeaderPage extends LeftDocumentListPage<ShortOrderDocumentCard
         return this;
     }
 
-    @Step("Ввести в поле поиска '{value}' и нажать 'Показать товары'")
+    @Step("Ввести в поле поиска '{value}' и нажать 'Показать заказы'")
     public void enterSearchTextAndSubmit(String value) {
         if (value.startsWith("+7"))
             value = value.substring(2);
