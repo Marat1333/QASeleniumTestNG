@@ -76,8 +76,11 @@ public class TransferMockTest extends BaseUiMagMobMockTest {
         for (TransferSearchProductData transferProduct : transferProducts) {
             Response<ProductItemDataList> respProduct = catalogSearchClient
                     .searchProductsBy(new GetCatalogSearch().setByLmCode(transferProduct.getLmCode()));
-            assertThat(resp, successful());
-            ProductItemData productItemData = respProduct.asJson().getItems().get(0);
+            assertThat(respProduct, successful());
+            List<ProductItemData> items = respProduct.asJson().getItems();
+            if (items.size() == 0)
+                continue;
+            ProductItemData productItemData = items.get(0);
             CustomTransferProduct customProduct = new CustomTransferProduct();
             customProduct.setLmCode(productItemData.getLmCode());
             customProduct.setBarCode(productItemData.getBarCode());
@@ -259,6 +262,33 @@ public class TransferMockTest extends BaseUiMagMobMockTest {
         transferTaskData.removeProduct(0);
         transferOrderStep1Page.shouldTransferTaskDataIs(transferTaskData);
 
+    }
+
+    @Test(description = "C3268364 Удаление последнего товара из заявки")
+    public void testRemoveLastProductFromTransferTask() throws Exception {
+        String productTitle = "Смесь универсальная Каменный цветок М150, 25 кг";
+
+        WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
+        TransferRequestsPage transferRequestsPage = workPage.goToTransferProductFromStock();
+        transferRequestsPage.searchForRequestAndOpenIt(productTitle,
+                SalesDocumentsConst.States.DRAFT.getUiVal());
+        TransferOrderStep1Page transferOrderStep1Page = new TransferOrderStep1Page();
+
+        // Step 1
+        step("Нажмите на мини-карточку товара");
+        TransferActionWithProductCardModal actionModal = transferOrderStep1Page.clickProductCard(1, false)
+                .verifyRequiredElements();
+
+        // Step 2
+        step("Выберите параметр Удалить товар");
+        actionModal.clickRemoveProductMenuItem();
+        ConfirmRemovingProductModal confirmModal = new ConfirmRemovingProductModal()
+                .verifyRequiredElements();
+
+        // Step 3
+        step("Нажмите на Удалить");
+        confirmModal.clickConfirmButton();
+        new TransferOrderStep1Page().verifyElementsWhenEmpty();
     }
 
 }

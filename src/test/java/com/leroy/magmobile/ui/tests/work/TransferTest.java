@@ -82,7 +82,7 @@ public class TransferTest extends AppBaseSteps {
         for (TransferSearchProductData transferProduct : transferProducts) {
             Response<ProductItemDataList> respProduct = catalogSearchClient
                     .searchProductsBy(new GetCatalogSearch().setByLmCode(transferProduct.getLmCode()));
-            assertThat(resp, successful());
+            assertThat(respProduct, successful());
             ProductItemData productItemData = respProduct.asJson().getItems().get(0);
             CustomTransferProduct customProduct = new CustomTransferProduct();
             customProduct.setLmCode(productItemData.getLmCode());
@@ -508,7 +508,7 @@ public class TransferTest extends AppBaseSteps {
         successPage.verifyRequiredElements();
     }
 
-    @Test(description = "C3268363 Удаление товара из заявки")
+    @Test(description = "C3268363 Удаление товара из заявки", enabled = false)
     public void testRemoveProductFromTransferTask() throws Exception {
         TransferOrderStep1Page transferOrderStep1Page;
         CustomTransferProduct product1 = products.get(6);
@@ -558,7 +558,7 @@ public class TransferTest extends AppBaseSteps {
 
     }
 
-    @Test(description = "C3268364 Удаление последнего товара из заявки")
+    @Test(description = "C3268364 Удаление последнего товара из заявки", enabled = false)
     public void testRemoveLastProductFromTransferTask() throws Exception {
         TransferOrderStep1Page transferOrderStep1Page;
         CustomTransferProduct product1 = products.get(8);
