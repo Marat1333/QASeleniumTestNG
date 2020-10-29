@@ -7,10 +7,16 @@ import com.leroy.magmobile.ui.pages.common.ScannerWithSearchBtnPage;
 import io.qameta.allure.Step;
 
 public class RupturesScannerPage extends ScannerWithSearchBtnPage {
+    @AppFindBy(text = "Сканирование по одному")
+    Element rupturesByOneLbl;
+
+    @AppFindBy(text = "Массовое сканирование")
+    Element rupturesBulkLbl;
+
     @AppFindBy(text = "СПИСОК ПЕРЕБОЕВ")
     Button rupturesListBtn;
 
-    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc=\"Button\" and *[@text='СПИСОК ПЕРЕБОЕВ']]//android.view.ViewGroup/*")
+    @AppFindBy(xpath = "//android.view.ViewGroup/android.widget.TextView[contains(lower-case(@text), 'сканирование')]/following-sibling::android.view.ViewGroup/android.widget.TextView")
     Element rupturesCounterLbl;
 
     public int getCounterValue() {
@@ -23,7 +29,7 @@ public class RupturesScannerPage extends ScannerWithSearchBtnPage {
         closeScannerBtn.click();
     }
 
-    @Step("Перейти в список перебоя")
+    @Step("Перейти в список перебоев")
     public ActiveSessionPage navigateToRuptureProductList() {
         rupturesListBtn.click();
         return new ActiveSessionPage();
@@ -44,4 +50,17 @@ public class RupturesScannerPage extends ScannerWithSearchBtnPage {
         anAssert.isElementTextEqual(rupturesCounterLbl, String.valueOf(productsCount));
         return this;
     }
+
+    @Step("Проверить отображение лейбла 'Сканирование по одному'")
+    public RupturesScannerPage shouldRupturesByOneLblIsVisible() {
+        anAssert.isElementVisible(rupturesByOneLbl);
+        return this;
+    }
+
+    @Step("Проверить отображение лейбла 'Массовое сканирование'")
+    public RupturesScannerPage shouldRupturesBulkLblIsVisible() {
+        anAssert.isElementVisible(rupturesBulkLbl);
+        return this;
+    }
+
 }
