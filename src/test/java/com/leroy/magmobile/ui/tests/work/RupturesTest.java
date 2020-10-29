@@ -265,7 +265,7 @@ public class RupturesTest extends AppBaseSteps {
 
         // Step 14
         step("Нажать железную кнопку назад");
-        activeSessionPage.navigateGoBack();
+        activeSessionPage.navigateBack();
         ExitActiveSessionModalPage exitActiveSessionModalPage = new ExitActiveSessionModalPage();
         exitActiveSessionModalPage.verifyRequiredElements();
 
@@ -396,7 +396,7 @@ public class RupturesTest extends AppBaseSteps {
 
         //Step 3
         step("Закрыть модалку железной кнопкой 'назад'");
-        deleteSessionModalPage.navigateGoBack();
+        deleteSessionModalPage.navigateBack();
         activeSessionPage = new ActiveSessionPage();
         activeSessionPage.verifyRequiredElements();
 
@@ -453,7 +453,7 @@ public class RupturesTest extends AppBaseSteps {
 
         // Step 5
         step("Закрыть сканер по железной кнопке");
-        rupturesScannerPage.navigateGoBack();
+        rupturesScannerPage.navigateBack();
         activeSessionPage = new ActiveSessionPage();
         activeSessionPage.shouldRupturesDataIsCorrect(newRuptureData, ruptureDataList.get(0))
                 .verifyRequiredElements();
