@@ -15,6 +15,8 @@ import org.apache.commons.lang3.RandomStringUtils;
 public class SimpleCustomerData {
     private String id;
     private String name;
+    private String firstName;
+    private String lastName;
     private String cardNumber;
     private String phoneNumber;
     private String email;
@@ -22,6 +24,8 @@ public class SimpleCustomerData {
     public SimpleCustomerData clone() {
         SimpleCustomerData clone = new SimpleCustomerData().toBuilder()
                 .id(id)
+                .firstName(firstName)
+                .lastName(lastName)
                 .name(name)
                 .cardNumber(cardNumber)
                 .phoneNumber(phoneNumber)
@@ -31,8 +35,9 @@ public class SimpleCustomerData {
     }
 
     public void generateRandomData() {
-        this.name = RandomStringUtils.randomAlphanumeric(5) + " " +
-                RandomStringUtils.randomAlphanumeric(5);
+        this.firstName = RandomStringUtils.randomAlphanumeric(5);
+        this.lastName = RandomStringUtils.randomAlphanumeric(5);
+        this.name = this.firstName + " " + this.lastName;
         this.phoneNumber = "+7" + RandomStringUtils.randomNumeric(10);
         this.email = RandomStringUtils.randomAlphanumeric(5) + "@autotest.com";
     }
@@ -42,6 +47,8 @@ public class SimpleCustomerData {
     }
 
     public void setName(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.name = firstName + " " + lastName;
     }
 
