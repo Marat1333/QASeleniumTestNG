@@ -1,0 +1,26 @@
+{
+  "stubs": [
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/salesdoc/transfers",
+            "query": {
+
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

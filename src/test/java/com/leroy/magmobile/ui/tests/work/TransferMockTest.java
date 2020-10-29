@@ -62,7 +62,7 @@ public class TransferMockTest extends BaseUiMagMobMockTest {
 
     @BeforeMethod
     private void setUpMock() throws Exception {
-        setUpMockForTestCase();
+        //setUpMockForTestCase();
     }
 
     @BeforeClass
@@ -289,6 +289,38 @@ public class TransferMockTest extends BaseUiMagMobMockTest {
         step("Нажмите на Удалить");
         confirmModal.clickConfirmButton();
         new TransferOrderStep1Page().verifyElementsWhenEmpty();
+    }
+
+    @Test(description = "C3268366 Изменение количества товара в поиске товаров")
+    public void testChangeProductQuantityWhenSearchProductsOnStock() throws Exception {
+        String productTitle = "Плитка декоративная Лондон Брик, цвет красный, 1.16 м2";
+
+        // Pre-condition
+        WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
+        TransferSearchPage transferSearchPage = workPage.goToTransferProductFromStock()
+                .clickFillShoppingRoomButton().clickAddProductFromStockButton();
+
+        // Step 1 - 3
+        step("Нажмите на + в правом нижнем углу мини-карточки товара и " +
+                "введите количество товара больше, чем доступно для отзыва");
+        TransferProductData transferProductData = transferSearchPage.getTransferProduct(1);
+        transferSearchPage.editProductQuantityForProduct(1, transferProductData.getTotalStock() + 10)
+                .shouldProductQuantityIs(1, 0);
+
+        // Step 4-5
+        step("Нажмите на + в правом нижнем углу мини-карточки товара, добавленного в заявку\n" +
+                "Введите количество товара");
+        int newQuantity = 3;
+        transferSearchPage.editProductQuantityForProduct(1, newQuantity)
+                .shouldProductQuantityIs(1, newQuantity);
+        transferProductData.setOrderedQuantity(newQuantity, false);
+        transferProductData.setReviewCompositionAsNull(); // С данного экрана мы не знаем какое количество на одном моно-паллете
+
+        // Step 6
+        step("Нажмите на поле Товары на отзыв");
+        transferSearchPage.clickTransferProductPanel()
+                .verifyElementsWhenProductsAdded()
+                .shouldTransferProductIs(1, transferProductData);
     }
 
 }
