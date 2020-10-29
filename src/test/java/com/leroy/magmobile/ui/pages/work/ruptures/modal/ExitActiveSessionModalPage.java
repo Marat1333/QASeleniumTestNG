@@ -4,7 +4,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.work.WorkPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.ActiveSessionPage;
 import io.qameta.allure.Step;
 
 public class ExitActiveSessionModalPage extends CommonMagMobilePage {
@@ -15,22 +15,28 @@ public class ExitActiveSessionModalPage extends CommonMagMobilePage {
     Button cancelBtn;
 
     @AppFindBy(text = "ВЫЙТИ")
-    Button closeBtn;
+    Button exitButton;
 
     @Override
     protected void waitForPageIsLoaded() {
         header.waitForVisibility();
         cancelBtn.waitForVisibility();
-        closeBtn.waitForVisibility();
+        exitButton.waitForVisibility();
     }
 
     @Step("Подтвердить выход")
     public void confirmExit() {
-        closeBtn.click();
+        exitButton.click();
+    }
+
+    @Step("Отменить выход")
+    public ActiveSessionPage declineExit() {
+        cancelBtn.click();
+        return new ActiveSessionPage();
     }
 
     public ExitActiveSessionModalPage verifyRequiredElements() {
-        softAssert.areElementsVisible(header, cancelBtn, closeBtn);
+        softAssert.areElementsVisible(header, cancelBtn, exitButton);
         softAssert.verifyAll();
         return this;
     }

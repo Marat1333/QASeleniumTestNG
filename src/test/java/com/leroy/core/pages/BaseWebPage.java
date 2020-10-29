@@ -156,32 +156,6 @@ public abstract class BaseWebPage extends BasePage {
         }
     }
 
-    @Step("Перейти назад")
-    public boolean navigateBack() throws InterruptedException {
-        try {
-            this.driver.navigate().back();
-            return true;
-        } catch (Exception var2) {
-            Log.error("Method: navigateBack");
-            Log.error("Error: There was a problem navigating back on the browser history");
-            Log.error("Exception: " + var2.getMessage());
-            throw var2;
-        }
-    }
-
-    @Step("Перейти вперед")
-    public boolean navigateForward() throws InterruptedException {
-        try {
-            this.driver.navigate().forward();
-            return true;
-        } catch (Exception var2) {
-            Log.error("Method: navigateForward");
-            Log.error("Error: There was a problem navigating forward on the browser history");
-            Log.error("Exception: " + var2.getMessage());
-            throw var2;
-        }
-    }
-
     public boolean navigateTo(String url) throws InterruptedException {
         try {
             this.driver.get(url);

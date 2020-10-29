@@ -8,11 +8,10 @@ import com.leroy.magportal.ui.webelements.CardWebWidget;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends IDataWithNumberAndStatus<D>>
@@ -80,6 +79,12 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
                 "Документ №" + number + " не найден в списке слева");
     }
 
+    @Step("Проверить, что документ №{number} в списке слева отображается")
+    public void softAssertDocumentIsPresent(String number, int stepNumber) throws Exception {
+        softAssert.isTrue(isDocumentPresentInList(number),
+                "№ шага: " + stepNumber + "\nДокумент №" + number + " не найден в списке слева");
+    }
+
     @Step("Проверить, что документ №{number} в списке слева не отображается")
     public void shouldDocumentIsNotPresent(String number) throws Exception {
         anAssert.isFalse(isDocumentPresentInList(number),
@@ -89,7 +94,8 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
     @Step("Проверить, что в списке документов слева присутствуют только имеющие статусы: {statuses}")
     public void shouldDocumentListContainsOnlyWithStatuses(String... statuses) throws Exception {
         Set<String> actualStatuses = new HashSet<>();
-        List<String> expectedStatuses = Arrays.stream(statuses).map(String::toLowerCase).collect(Collectors.toList());
+        List<String> expectedStatuses = Arrays.stream(statuses).map(String::toLowerCase)
+                .collect(Collectors.toList());
         for (D docData : documentCardList().getDataList()) {
             actualStatuses.add(docData.getStatus().toLowerCase());
         }
@@ -100,7 +106,8 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
     }
 
     @Step("Проверить, что в списке документов слева присутствуют только содержащие номер: {value}")
-    public LeftDocumentListPage<W, D> shouldDocumentListHaveNumberContains(String value) throws Exception {
+    public LeftDocumentListPage<W, D> shouldDocumentListHaveNumberContains(String value)
+            throws Exception {
         for (D docData : documentCardList().getDataList()) {
             softAssert.isTrue(docData.getNumber().contains(value),
                     docData.getNumber() + " документ не содержит " + value);
@@ -118,12 +125,15 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
     @Step("Проверить, что в списке документов слева присутствуют нужные документы (expectedDocuments)")
     public void shouldDocumentListContainsThis(D expectedDocument) throws Exception {
         List<D> actualDocuments = documentCardList().getDataList().stream().filter(
-                d -> d.getNumber().equals(expectedDocument.getNumber())).collect(Collectors.toList());
+                d -> d.getNumber().equals(expectedDocument.getNumber()))
+                .collect(Collectors.toList());
         anAssert.isEquals(actualDocuments.size(), 1,
                 "Документ с номером " + expectedDocument.getNumber() + " не найден");
-        if (DefectConst.ISSUE_WITH_ORDER_STATUS)
-            if (expectedDocument instanceof ShortOrderDocWebData)
+        if (DefectConst.ISSUE_WITH_ORDER_STATUS) {
+            if (expectedDocument instanceof ShortOrderDocWebData) {
                 ((ShortOrderDocWebData) expectedDocument).setStatus(null);
+            }
+        }
         actualDocuments.get(0).assertEqualsNotNullExpectedFields(expectedDocument);
     }
 
@@ -132,6 +142,13 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
         waitForSpinnerDisappear();
         anAssert.isEquals(documentCardList().getCount(), value,
                 "Ожидалось другое кол-во документов");
+    }
+
+    @Step("Проверить, что в списке документов слева на текущей странице отображается {value} документов")
+    public void softAssertDocumentCountIs(int value, int caseNumber) throws Exception {
+        waitForSpinnerDisappear();
+        softAssert.isEquals(documentCardList().getCount(), value,
+                "№ шага: " + caseNumber + "\nОжидалось другое кол-во документов");
     }
 
     @Step("Проверить, что в списке документов слева присутствуют документы с номерами: {expectedNumbers}")
@@ -173,5 +190,11 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
     public void shouldDocumentListIsNotEmpty() throws Exception {
         anAssert.isTrue(documentCardList().getDataList().size() > 0,
                 "Список документов пустой");
+    }
+
+    @Step("Проверить, что в список документов слева пуст")
+    public void softAssertDocumentListIsEmpty(int stepNumber) throws Exception {
+        softAssert.isTrue(documentCardList().getDataList().size() == 0,
+                "№ шага: " + stepNumber + "\nСписок документов не пустой (содержит документы)");
     }
 }

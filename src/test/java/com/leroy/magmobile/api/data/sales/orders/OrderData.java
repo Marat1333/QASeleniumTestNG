@@ -1,6 +1,5 @@
 package com.leroy.magmobile.api.data.sales.orders;
 
-import com.leroy.magportal.api.data.onlineOrders.ShipToData;
 import java.util.List;
 import lombok.Data;
 

@@ -7,7 +7,6 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.constants.MagMobElementTypes;
 import com.leroy.magmobile.ui.pages.common.BottomMenuPage;
 import com.leroy.magmobile.ui.pages.work.print_tags.SessionsListPage;
-import com.leroy.magmobile.ui.pages.work.ruptures.RupturesScannerPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.SessionListPage;
 import com.leroy.magmobile.ui.pages.work.supply_plan.SuppliesListPage;
 import com.leroy.magmobile.ui.pages.work.transfer.TransferOrderStep1Page;
@@ -85,11 +84,6 @@ public class WorkPage extends BottomMenuPage {
     public SessionListPage goToRuptures() {
         rupturesManageLbl.click();
         return new SessionListPage();
-    }
-
-    @Step("Нажать на кнопку создания сессии перебоев")
-    public RupturesScannerPage createRupturesSession() {
-        return goToRuptures().clickScanRupturesButton(); // TODO нужен ли теперь этот метод?
     }
 
     @Step("Перейти в План поставок")
