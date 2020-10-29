@@ -24,9 +24,9 @@ public class SimpleCustomerData {
     public SimpleCustomerData clone() {
         SimpleCustomerData clone = new SimpleCustomerData().toBuilder()
                 .id(id)
+                .name(name)
                 .firstName(firstName)
                 .lastName(lastName)
-                .name(name)
                 .cardNumber(cardNumber)
                 .phoneNumber(phoneNumber)
                 .email(email)

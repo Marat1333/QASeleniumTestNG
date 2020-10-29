@@ -100,13 +100,13 @@ public class OrderHeaderPage extends LeftDocumentListPage<ShortOrderDocumentCard
         if (searchByOrderNumberFld.isPresent()) {
             searchByOrderNumberFld.clear(true);
             searchByOrderNumberFld.clearAndFill(value);
-        } else if (searchByFirstNameFld.isPresent())
+        }
+        else if (searchByFirstNameFld.isPresent())
             searchByFirstNameFld.clearAndFill(value);
         else if (searchByLastNameFld.isPresent())
             searchByLastNameFld.clearAndFill(value);
         else if (searchByEmailFld.isPresent())
             searchByEmailFld.clearAndFill(value);
-
         else if (searchByPhoneFld.isPresent()) {
             searchByPhoneFld.click();
             searchByPhoneFld.clear(true);
