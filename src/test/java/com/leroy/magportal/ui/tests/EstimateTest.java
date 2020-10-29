@@ -680,7 +680,6 @@ public class EstimateTest extends BasePAOTest {
         estimatePage = new EstimatePage();
         estimatePage.shouldDocumentListHaveNumberContains(partEstimateId)
                 .shouldDocumentListNumbersNotEqual(docNumberList);
-        softAssert().verifyAll();
     }
 
     // Estimate sending

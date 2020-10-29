@@ -39,6 +39,7 @@ public class PickingTaskData {
     private String employeeName;
     private String paymentStatus;
     private String paymentType;
+    private List<String> storageLocations;
 
     @Data
     public static class ProductData {
