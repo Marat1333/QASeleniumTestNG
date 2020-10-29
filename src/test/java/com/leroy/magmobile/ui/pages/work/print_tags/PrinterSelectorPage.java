@@ -36,7 +36,7 @@ public class PrinterSelectorPage extends CommonMagMobilePage {
     @Step("Выбрать принтер")
     public TagsListPage chosePrinter(String printerName) throws Exception {
         Element printerElement = E(printerName);
-        printerNamesView.scrollDownToElement(printerElement);
+        printerNamesView.scrollDownToText(printerName);
         printerElement.click();
         acceptBtn.waitForVisibility();
         acceptBtn.click();

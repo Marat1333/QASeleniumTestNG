@@ -16,10 +16,15 @@ import com.leroy.magportal.api.requests.picking.PickingTaskGetRequest;
 import com.leroy.magportal.api.requests.picking.PickingTasksSearchRequest;
 import com.leroy.magportal.api.requests.picking.PickingWorkflowRequest;
 import io.qameta.allure.Step;
+import ru.leroymerlin.qa.core.clients.base.Response;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import ru.leroymerlin.qa.core.clients.base.Response;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
 
 public class PickingTaskClient extends BaseMashupClient {
 
@@ -49,12 +54,14 @@ public class PickingTaskClient extends BaseMashupClient {
 
     @Step("Start Pickings of all available tasks for Order = {orderId}")
     public void startAllPickings(String orderId) {
-        Response<?> resp;
-        List<PickingTaskData> tasks = this.searchForPickingTasks(orderId).asJson().getItems()
+        Response<PickingTaskDataList> tasksResp = this.searchForPickingTasks(orderId);
+        assertThatResponseIsOk(tasksResp);
+        List<PickingTaskData> tasks = tasksResp.asJson().getItems()
                 .stream().filter(x -> x.getTaskStatus().equalsIgnoreCase(States.ALLOWED_FOR_PICKING
                         .getApiVal())).collect(Collectors.toList());
+        assertThat("No one task was found for the order", tasks, hasSize(greaterThan(0)));
         for (PickingTaskData task : tasks) {
-            resp = startPicking(task.getTaskId());
+            Response<PickingTaskData> resp = startPicking(task.getTaskId());
             assertThatResponseIsOk(resp);
         }
     }

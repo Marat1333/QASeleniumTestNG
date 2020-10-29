@@ -64,7 +64,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
     @Inject
     private PaymentHelper paymentHelper;
 
-    private final int waitTimeoutInSeconds = 180;
+    private final int waitTimeoutInSeconds = 300;
 
     @Step("Get order with id = {orderId} with response verification")
     public Response<OnlineOrderData> getOnlineOrder(String orderId) {
