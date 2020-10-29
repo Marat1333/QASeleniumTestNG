@@ -623,7 +623,7 @@ public class PickingTest extends BasePAOTest {
     }
 
 
-    @Test(description = "C23416311 Заказы. Переход из статуса Готов к сборке в статус Собран", groups = NEED_PRODUCTS_GROUP)
+    @Test(description = "C23416311 Заказы.Самовывоз.Переход из статуса Готов к сборке в статус Собран", groups = NEED_PRODUCTS_GROUP)
     public void testMoveFromReadyPickingToPicked() throws Exception {
 
         initCreateOrder(1);
@@ -682,7 +682,7 @@ public class PickingTest extends BasePAOTest {
         orderPage.shouldDocumentCountIs(1);
     }
 
-    @Test(description = "C23428132 Заказы. Переход из статуса Собран в статус Выдан", groups = NEED_PRODUCTS_GROUP)
+    @Test(description = "C23428132 Заказы.Самовывоз.Переход из статуса Собран в статус Выдан", groups = NEED_PRODUCTS_GROUP)
     public void testMoveFromPickedToGivenAway() throws Exception {
 
         // Создать заказ и перевести его в статус "Собран"
