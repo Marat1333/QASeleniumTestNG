@@ -371,7 +371,9 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         }
 
         for (OrderProductData productData : orderData) {
-            if (isFull) {
+            if (isFull == null) {
+                count = 0.0;
+            } else if (isFull) {
                 reason = "";
                 count = productData.getConfirmedQuantity();
                 if (count == 0.0) {

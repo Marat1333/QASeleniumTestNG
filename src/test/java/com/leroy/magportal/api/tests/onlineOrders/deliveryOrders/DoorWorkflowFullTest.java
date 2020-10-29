@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.constants.sales.SalesDocumentsConst.PickingStatus;
 import com.leroy.constants.sales.SalesDocumentsConst.States;
-import com.leroy.magmobile.api.data.sales.orders.OrderData;
 import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.clients.PickingTaskClient;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst;
@@ -147,7 +146,23 @@ public class DoorWorkflowFullTest extends BaseMagPortalApiTest {
         Response<JsonNode> response = orderClient.deliver(currentOrderId, false);
         orderClient.assertWorkflowResult(response, currentOrderId, States.PARTIALLY_DELIVERED);
     }
-    //TODO: Add tests on nothing was delivered and negative cases
+
+    @Test(description = "C23437681 SHIPPED -> NO DELIVERED", priority = 13)
+    public void testNothingDelivered() {
+        setUp();
+        orderClient.moveNewOrderToStatus(currentOrderId, States.GIVEN_AWAY);
+        Response<JsonNode> response = orderClient.deliver(currentOrderId, null);
+        orderClient.assertWorkflowResult(response, currentOrderId,
+                States.CANCELLED_BY_CUSTOMER_ON_DELIVERY);
+    }
+
+    @Test(description = "C23426946 SHIPPED -> DELIVERED", priority = 14)
+    public void testDelivered() {
+        setUp();
+        orderClient.moveNewOrderToStatus(currentOrderId, States.GIVEN_AWAY);
+        Response<JsonNode> response = orderClient.deliver(currentOrderId, true);
+        orderClient.assertWorkflowResult(response, currentOrderId, States.DELIVERED);
+    }
 
     ////VERIFICATION
     public void assertResult(Response<?> response, States expectedOrderStatus,
