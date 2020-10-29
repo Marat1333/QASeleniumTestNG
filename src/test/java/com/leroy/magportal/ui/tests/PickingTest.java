@@ -17,6 +17,10 @@ import com.leroy.magportal.ui.models.picking.PickingProductCardData;
 import com.leroy.magportal.ui.models.picking.PickingTaskData;
 import com.leroy.magportal.ui.models.picking.ShortPickingTaskData;
 import com.leroy.magportal.ui.pages.common.MenuPage;
+import com.leroy.magportal.ui.pages.orders.AssemblyOrderPage;
+import com.leroy.magportal.ui.pages.orders.GiveAwayShipOrderPage;
+import com.leroy.magportal.ui.pages.orders.OrderCreatedContentPage;
+import com.leroy.magportal.ui.pages.orders.OrderHeaderPage;
 import com.leroy.magportal.ui.pages.picking.PickingContentPage;
 import com.leroy.magportal.ui.pages.picking.PickingPage;
 import com.leroy.magportal.ui.pages.picking.modal.SplitPickingModalStep1;
@@ -40,6 +44,8 @@ public class PickingTest extends BasePAOTest {
 
     @Inject
     PAOHelper helper;
+    @Inject
+    OrderClient orderHelper;
 
     @Override
     protected UserSessionData initTestClassUserSessionDataTemplate() {
@@ -50,6 +56,28 @@ public class PickingTest extends BasePAOTest {
 
     private String orderId;
     private String pickingTaskId;
+
+    private void initCreateOrder(int productCount, SalesDocumentsConst.States orderStatus) throws Exception {
+        List<CartProductOrderData> productOrderDataList = new ArrayList<>();
+        for (int i = 0; i < productCount; i++) {
+            CartProductOrderData productOrderData = new CartProductOrderData(productList.get(i));
+            productOrderData.setQuantity(2.0);
+            productOrderDataList.add(productOrderData);
+        }
+        switch (orderStatus) {
+            case ALLOWED_FOR_PICKING:
+                orderId = helper.createConfirmedOrder(productOrderDataList, true).getOrderId();
+                break;
+            case PICKED:
+                orderId = helper.createConfirmedOrder(productOrderDataList, true).getOrderId();
+                orderHelper.moveNewOrderToStatus(orderId, orderStatus);
+                break;
+            default:
+                orderId = helper.createConfirmedOrder(productOrderDataList, false).getOrderId();
+                break;
+        }
+
+    }
 
     private void initCreateOrder(int productCount, SalesDocumentsConst.GiveAwayPoints giveAwayPoint) throws Exception {
         List<CartProductOrderData> productOrderDataList = new ArrayList<>();
@@ -71,7 +99,7 @@ public class PickingTest extends BasePAOTest {
     }
 
     private void initCreateOrder(int productCount) throws Exception {
-        initCreateOrder(productCount, null);
+        initCreateOrder(productCount, SalesDocumentsConst.States.CONFIRMED);
     }
 
     private void initFindPickingTask() throws Exception {
@@ -469,9 +497,8 @@ public class PickingTest extends BasePAOTest {
         pickingContentPage.shouldFinishButtonCountIs(1, 3)
                 .checkIfFinishButtonIsEnabled(true);
 
-        // Step 9
+        // Step 9        pickingTaskDataBefore.setStatus(SalesDocumentsConst.States.PARTIALLY_PICKED.getUiVal() + " 1/3");
         step("Нажать на кнопку Завершить");
-        pickingTaskDataBefore.setStatus(SalesDocumentsConst.States.PARTIALLY_PICKED.getUiVal() + " 1/3");
         List<PickingProductCardData> pickingProducts = pickingTaskDataBefore.getProducts();
         pickingProducts.get(0).setCollectedQuantity(collectedQuantityProduct1);
         pickingProducts.get(0).setReasonOfLack(reason1.getTitle());
@@ -595,4 +622,108 @@ public class PickingTest extends BasePAOTest {
                 .shouldCommentIs(comment);
     }
 
+
+    @Test(description = "C23416311 Заказы. Переход из статуса Готов к сборке в статус Собран", groups = NEED_PRODUCTS_GROUP)
+    public void testMoveFromReadyPickingToPicked() throws Exception {
+
+        initCreateOrder(1);
+
+        // Step 1:
+        step("Открыть страницу с Заказами");
+        OrderHeaderPage orderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
+        initFindPickingTask();
+
+        // Step 2:
+        step("Ввести номер заказа из корзины и нажать кнопку 'Показать заказы'" + "Заказ" + " " + orderId);
+        orderPage.enterSearchTextAndSubmit(orderId);
+        orderPage.shouldDocumentIsPresent(orderId);
+        orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal());
+        orderPage.shouldDocumentCountIs(1);
+
+        // Step 3:
+
+        step("Кликнуть на заказ" + " " + orderId);
+        orderPage.clickDocumentInLeftMenu(orderId);
+        OrderCreatedContentPage createdContentPage = new OrderCreatedContentPage();
+        createdContentPage.shouldOrderProductCountIs(1);
+
+        // Step 4:
+
+        step("Перейти на Сборки");
+        AssemblyOrderPage pickingTab = createdContentPage.clickGoToPickings();
+
+        // Step5: нажать на Сборку
+        step("нажать на Сборку");
+        PickingContentPage pickingContentPage = pickingTab.clickToPickingTask(1);
+
+        // Step6: Начать сборку
+        step("Нажать на кнопку Начать сборку");
+        pickingContentPage.clickStartAssemblyButton();
+
+        // Step7:
+        step("Товар 1: Ввести в инпут Собрано количество равное,  указанному в Заказано");
+        pickingContentPage.editCollectQuantity(1, 2)
+                .shouldProductCollectedQuantityIs(1, 2);
+
+        // Step 8:
+        step("Завершить сборку");
+        pickingContentPage.clickFinishAssemblyButton();
+
+        // Step 9:
+        step("Вернуться на страницу заказов ");
+        PickingPage pickingPage = new PickingPage();
+        pickingPage.clickOrderLinkAndGoToOrderPage();
+
+
+        // Step 10:
+        step("Проверить статус собранного заказа");
+        orderPage.shouldDocumentIsPresent(orderId);
+        orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.PICKED.getUiVal());
+        orderPage.shouldDocumentCountIs(1);
+    }
+
+    @Test(description = "C23428132 Заказы. Переход из статуса Собран в статус Выдан", groups = NEED_PRODUCTS_GROUP)
+    public void testMoveFromPickedToGivenAway() throws Exception {
+
+        // Создать заказ и перевести его в статус "Собран"
+
+        initCreateOrder(1, SalesDocumentsConst.States.PICKED);
+
+        // Step 1:
+        step("Открыть страницу с Заказами");
+        OrderHeaderPage orderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
+
+        // Step 2:
+        step("Найти созданный заказ с статусе Собран с номером" + " " + orderId);
+        orderPage.enterSearchTextAndSubmit(orderId);
+        orderPage.shouldDocumentIsPresent(orderId);
+        orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.PICKED.getUiVal());
+        orderPage.shouldDocumentCountIs(1);
+
+        // Step 3:
+        step("Кликнуть на заказ" + " " + orderId);
+        orderPage.clickDocumentInLeftMenu(orderId);
+        OrderCreatedContentPage createdContentPage = new OrderCreatedContentPage();
+        createdContentPage.shouldOrderProductCountIs(1);
+
+        // Step 4:
+        step("Перейти на вкладку 'К выдаче и возврату'");
+        GiveAwayShipOrderPage giveAwayShipOrderPage = createdContentPage.clickGoToShipRefund();
+
+        // Step 5
+        step("Товар 1: Ввести в инпут 'К выдаче' количество равное,  указанному в Заказано");
+        giveAwayShipOrderPage.editToShipQuantity(1, 2)
+                .shouldProductToShipQuantityIs(1, 2);
+
+        // Step 6
+        step("Нажать на кнопку 'Выдать'");
+        giveAwayShipOrderPage.clickGiveAwayButton();
+
+        // Step 7:
+        step("Обновить список документов и проверить статус выданного заказа");
+        orderPage.refreshDocumentList();
+        orderPage.shouldDocumentIsPresent(orderId);
+        orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.GIVEN_AWAY.getUiVal());
+        orderPage.shouldDocumentCountIs(1);
+    }
 }

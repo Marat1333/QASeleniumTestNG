@@ -27,6 +27,41 @@ public abstract class OrderCreatedPage extends OrderHeaderPage {
     }
 
 
+    @WebFindBy(xpath = "//button[@id='pickings']",
+            metaName = "Вкладка Сборок")
+    Button pickingsTab;
+
+    @WebFindBy(id = "giveaway",
+            metaName = "Вкладка Выдачи и возврата")
+    Element shipRefundTab;
+
+    @WebFindBy(id = "main", metaName = "Вкладка Содержания")
+    Element mainTab;
+
+    @Override
+    public void waitForPageIsLoaded() {
+        mainTab.waitForVisibility();
+        waitForSpinnerDisappear();
+
+    }
+
+    // Actions
+
+    @Step ("Перейти на вкладку 'Сборки'")
+    public AssemblyOrderPage clickGoToPickings()  {
+        pickingsTab.click();
+        return new AssemblyOrderPage();
+
+    }
+
+    @Step ("Перейти на вкладку 'К ВЫдаче и Возврату'")
+    public GiveAwayShipOrderPage clickGoToShipRefund()  {
+        shipRefundTab.click();
+        return new GiveAwayShipOrderPage();
+
+    }
+
+
     // Verifications
 
     @Step("Проверить, что статус заказа - {value}")
