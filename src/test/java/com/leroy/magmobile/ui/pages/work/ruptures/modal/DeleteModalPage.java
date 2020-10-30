@@ -23,7 +23,7 @@ public class DeleteModalPage extends CommonMagMobilePage {
         deleteBtn.click();
     }
 
-    @Step("Отменить удаление")
+    @Step("Тапнуть на кнопку 'нет, оставить'")
     public void cancelDelete() {
         cancelBtn.click();
     }

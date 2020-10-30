@@ -22,7 +22,7 @@ public class SessionListPage extends CommonMagMobilePage {
     Button backBtn;
 
     @AppFindBy(text = "ПО ОДНОМУ")
-    Button scanRupturesBtn;
+    Button scanRupturesByOneBtn;
 
     @AppFindBy(xpath = "//*[@text='ПО ОДНОМУ']/ancestor::*[5]/preceding-sibling::*[1]//android.widget.TextView")
     Button choseDepartmentBtn;
@@ -49,7 +49,7 @@ public class SessionListPage extends CommonMagMobilePage {
     @Override
     protected void waitForPageIsLoaded() {
         backBtn.waitForVisibility();
-        scanRupturesBtn.waitForVisibility();
+        scanRupturesByOneBtn.waitForVisibility();
         waitUntilProgressBarIsInvisible();
     }
 
@@ -66,9 +66,9 @@ public class SessionListPage extends CommonMagMobilePage {
         return new SessionListPage();
     }
 
-    @Step("Сканировать перебои")
-    public RupturesScannerPage clickScanRupturesButton() {
-        scanRupturesBtn.click();
+    @Step("Сканировать перебои 'по одному'")
+    public RupturesScannerPage clickScanRupturesByOneButton() {
+        scanRupturesByOneBtn.click();
         return new RupturesScannerPage();
     }
 
@@ -176,7 +176,7 @@ public class SessionListPage extends CommonMagMobilePage {
     }
 
     public SessionListPage verifyRequiredElements() {
-        softAssert.areElementsVisible(getPageSource(), backBtn, scanRupturesBtn, choseDepartmentBtn);
+        softAssert.areElementsVisible(getPageSource(), backBtn, scanRupturesByOneBtn, choseDepartmentBtn);
         softAssert.verifyAll();
         return this;
     }

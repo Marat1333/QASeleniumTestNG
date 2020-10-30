@@ -29,12 +29,11 @@ public class EntranceWorkflowShortTest extends BaseMagPortalApiTest {
 
     private String currentOrderId;
     private String currentTaskId;
-    private OnlineOrderTypeData currentOrderType;
 
 
     @BeforeClass
     private void setUp() {
-        currentOrderType = OnlineOrderTypeConst.DELIVERY_TO_ENTRANCE;
+        OnlineOrderTypeData currentOrderType = OnlineOrderTypeConst.DELIVERY_TO_ENTRANCE;
         currentOrderId = bitrixHelper.createOnlineOrder(currentOrderType).getSolutionId();
 
         currentTaskId = pickingTaskClient.searchForPickingTasks(currentOrderId).asJson().getItems()
@@ -70,7 +69,7 @@ public class EntranceWorkflowShortTest extends BaseMagPortalApiTest {
             "testShipped"})
     public void testDeliver() {
         orderClient.waitUntilOrderGetStatus(currentOrderId,
-                States.SHIPPED, PaymentStatusEnum.PAID);
+                States.ON_DELIVERY, null);
         Response<JsonNode> response = orderClient.deliver(currentOrderId, true);
         orderClient.assertWorkflowResult(response, currentOrderId, States.DELIVERED);
     }

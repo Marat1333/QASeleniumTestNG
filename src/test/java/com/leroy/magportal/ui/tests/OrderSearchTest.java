@@ -231,10 +231,12 @@ public class OrderSearchTest extends WebBaseSteps {
         customerData.generateRandomData();
         customerData.setName(RandomStringUtils.randomAlphabetic(6),
                 RandomStringUtils.randomAlphabetic(6));
+
         SimpleCustomerData recipientData = new SimpleCustomerData();
         recipientData.generateRandomData();
         recipientData.setName(RandomStringUtils.randomAlphabetic(6),
                 RandomStringUtils.randomAlphabetic(6));
+
         SimpleCustomerData customerRecipientData = new SimpleCustomerData();
         customerRecipientData.generateRandomData();
         customerRecipientData.setName(RandomStringUtils.randomAlphabetic(6),

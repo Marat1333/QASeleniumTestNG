@@ -15,6 +15,6 @@ public class PickingTaskStoragePayload extends PickingTaskWorkflowPayload {
     @Data
     public static class StoragePayload {
 
-        private List<String> locations;
+        private List<String> storageLocations;
     }
 }
