@@ -62,7 +62,7 @@ public class TransferMockTest extends BaseUiMagMobMockTest {
 
     @BeforeMethod
     private void setUpMock() throws Exception {
-        //setUpMockForTestCase();
+        setUpMockForTestCase();
     }
 
     @BeforeClass
@@ -232,7 +232,6 @@ public class TransferMockTest extends BaseUiMagMobMockTest {
 
     @Test(description = "C3268363 Удаление товара из заявки")
     public void testRemoveProductFromTransferTask() throws Exception {
-        String productTitle1 = "Плитка декоративная Лондон Брик, цвет красный, 1.16 м2";
         String productTitle2 = "Блок газобетонный Ytong D500 625х250х100 мм";
 
         WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
@@ -293,8 +292,6 @@ public class TransferMockTest extends BaseUiMagMobMockTest {
 
     @Test(description = "C3268366 Изменение количества товара в поиске товаров")
     public void testChangeProductQuantityWhenSearchProductsOnStock() throws Exception {
-        String productTitle = "Плитка декоративная Лондон Брик, цвет красный, 1.16 м2";
-
         // Pre-condition
         WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
         TransferSearchPage transferSearchPage = workPage.goToTransferProductFromStock()

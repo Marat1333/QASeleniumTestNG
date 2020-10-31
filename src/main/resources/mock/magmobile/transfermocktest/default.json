@@ -602,6 +602,141 @@
           }
         }
       ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/transfer/products/search",
+            "query": {
+              "departmentId": "1",
+              "shopId": "35",
+              "pointOfGiveAway": "SALESFLOOR",
+              "requiredOutOfStockProducts": "",
+              "startFrom": "1",
+              "lastItemId": "",
+              "pageSize": "7",
+              "page": "1"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "totalCount": 66,
+              "isLastPage": true,
+              "filteredCount": 42,
+              "items": [
+                {
+                  "lmCode": "12531431",
+                  "totalQuantity": 180,
+                  "source": [
+                    {
+                      "type": "RM",
+                      "monoPallets": [
+                        {
+                          "quantity": 2,
+                          "capacity": 90
+                        }
+                      ]
+                    }
+                  ],
+                  "barCode": "2000125314318",
+                  "images": [
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431_01.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431_02.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431_03.jpg"
+                  ],
+                  "departmentId": "1",
+                  "availableStock": null,
+                  "priceUnit": "EA",
+                  "altPrice": null,
+                  "altPriceUnit": null,
+                  "priceCategory": "STD",
+                  "title": "Блок газобетонный Ytong D500 625х250х100 мм",
+                  "description": "Газобетонный блок – это популярный материал, обладающий",
+                  "top": null,
+                  "gamma": "A",
+                  "avsDate": null,
+                  "brand": "YTONG",
+                  "shops": [ ],
+                  "characteristics": [
+                    {
+                      "name": "Страна производства",
+                      "value": "Россия"
+                    },
+                    {
+                      "name": "Количество на м² (указанной согласно использованию и работе)",
+                      "value": "6.4"
+                    },
+                    {
+                      "name": "Класс прочности",
+                      "value": "В3.5"
+                    },
+                    {
+                      "name": "Класс морозостойкости",
+                      "value": "F100"
+                    },
+                    {
+                      "name": "Количество на м³",
+                      "value": "64.0"
+                    },
+                    {
+                      "name": "Марка",
+                      "value": "YTONG"
+                    },
+                    {
+                      "name": "Длина (мм)",
+                      "value": "625.0"
+                    },
+                    {
+                      "name": "Высота (мм)",
+                      "value": "250.0"
+                    },
+                    {
+                      "name": "Ширина (мм)",
+                      "value": "100.0"
+                    },
+                    {
+                      "name": "Вес, кг",
+                      "value": "10.5"
+                    },
+                    {
+                      "name": "Плотность (кг/м³)",
+                      "value": "500.0"
+                    },
+                    {
+                      "name": "Количество товара в паллете",
+                      "value": "90"
+                    }
+                  ],
+                  "barCodes": [
+                    "2000125314318"
+                  ],
+                  "isAvs": false,
+                  "subDepartmentId": "115",
+                  "categoryId": "40",
+                  "subCategoryId": "60",
+                  "logistic": {
+                    "weight": null,
+                    "width": null,
+                    "height": null,
+                    "depth": null
+                  },
+                  "shortTitle": null,
+                  "recommendedPrice": 84,
+                  "priceCurrency": "RUR",
+                  "price": 78
+                }
+              ]
+            }
+          }
+        }
+      ]
     }
   ]
 }

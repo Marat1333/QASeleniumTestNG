@@ -640,7 +640,7 @@ public class TransferTest extends AppBaseSteps {
         transferOrderStep1Page.shouldTransferTaskDataIs(transferTaskData);
     }
 
-    @Test(description = "C3268366 Изменение количества товара в поиске товаров")
+    @Test(description = "C3268366 Изменение количества товара в поиске товаров", enabled = false)
     public void testChangeProductQuantityWhenSearchProductsOnStock() throws Exception {
         // Pre-condition
         WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
