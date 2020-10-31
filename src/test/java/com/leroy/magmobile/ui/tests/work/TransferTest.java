@@ -794,7 +794,7 @@ public class TransferTest extends AppBaseSteps {
 
     }
 
-    @Test(description = "C3268369 Поиск товара (по ЛМ коду и штрих коду)")
+    @Test(description = "C3268369 Поиск товара (по ЛМ коду и штрих коду)", enabled = false)
     public void testSearchForProductsForTransferTask() throws Exception {
         TransferSearchProductData productData = transferHelper.searchForProductsForTransfer().get(0);
         WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);

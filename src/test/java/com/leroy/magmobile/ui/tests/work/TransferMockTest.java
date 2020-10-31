@@ -320,4 +320,24 @@ public class TransferMockTest extends BaseUiMagMobMockTest {
                 .shouldTransferProductIs(1, transferProductData);
     }
 
+    @Test(description = "C3268369 Поиск товара (по ЛМ коду и штрих коду)")
+    public void testSearchForProductsForTransferTask() throws Exception {
+        String lmCode = "32683690";
+        TransferProductData transferProductData = new TransferProductData();
+        transferProductData.setLmCode("32683690");
+        transferProductData.setTitle("Пескобетон М300, 40 кг");
+        transferProductData.setBarCode("4607122390963");
+        transferProductData.setTotalStock(540);
+
+        WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
+        TransferRequestsPage transferRequestsPage = workPage.goToTransferProductFromStock();
+        TransferSearchPage transferSearchPage = transferRequestsPage.clickFillShoppingRoomButton()
+                .clickAddProductFromStockButton();
+
+        // Step 1 - 2
+        step("Нажмите на поле поиска товара по ЛМ или штрих коду и введите ЛМ код товара");
+        transferSearchPage.searchForProductByLmCode(lmCode);
+        transferSearchPage.shouldTransferProductsAre(Collections.singletonList(transferProductData));
+    }
+
 }
