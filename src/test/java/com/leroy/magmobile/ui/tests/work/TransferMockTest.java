@@ -1,16 +1,7 @@
 package com.leroy.magmobile.ui.tests.work;
 
-import com.google.inject.Inject;
 import com.leroy.constants.DefectConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
-import com.leroy.magmobile.api.clients.CatalogSearchClient;
-import com.leroy.magmobile.api.clients.TransferClient;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
-import com.leroy.magmobile.api.data.sales.transfer.TransferSearchProductData;
-import com.leroy.magmobile.api.data.sales.transfer.TransferSearchProductDataList;
-import com.leroy.magmobile.api.helpers.TransferHelper;
-import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magmobile.ui.constants.TestDataConstants;
 import com.leroy.magmobile.ui.models.customer.MagLegalCustomerData;
 import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
@@ -28,75 +19,19 @@ import com.leroy.magmobile.ui.pages.work.transfer.data.DetailedTransferTaskData;
 import com.leroy.magmobile.ui.pages.work.transfer.data.TransferProductData;
 import com.leroy.magmobile.ui.pages.work.transfer.modal.TransferActionWithProductCardModal;
 import com.leroy.magmobile.ui.tests.BaseUiMagMobMockTest;
-import lombok.Data;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
-
-import static com.leroy.core.matchers.Matchers.successful;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 public class TransferMockTest extends BaseUiMagMobMockTest {
-
-    @Data
-    private static class CustomTransferProduct {
-        private String lmCode;
-        private String barCode;
-        private String title;
-        private Integer monoPalletCapacity;
-        private Integer mixPalletCapacity;
-        private Integer totalStock;
-    }
-
-    @Inject
-    TransferHelper transferHelper;
-
-    List<CustomTransferProduct> products = new ArrayList<>();
 
     @BeforeMethod
     private void setUpMock() throws Exception {
         setUpMockForTestCase();
-    }
-
-    @BeforeClass
-    private void findProducts() {
-        TransferClient transferClient = apiClientProvider.getTransferClient();
-        CatalogSearchClient catalogSearchClient = apiClientProvider.getCatalogSearchClient();
-        Response<TransferSearchProductDataList> resp = transferClient
-                .searchForTransferProducts(SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR);
-        assertThat(resp, successful());
-        List<TransferSearchProductData> transferProducts = resp.asJson().getItems();
-        for (TransferSearchProductData transferProduct : transferProducts) {
-            Response<ProductItemDataList> respProduct = catalogSearchClient
-                    .searchProductsBy(new GetCatalogSearch().setByLmCode(transferProduct.getLmCode()));
-            assertThat(respProduct, successful());
-            List<ProductItemData> items = respProduct.asJson().getItems();
-            if (items.size() == 0)
-                continue;
-            ProductItemData productItemData = items.get(0);
-            CustomTransferProduct customProduct = new CustomTransferProduct();
-            customProduct.setLmCode(productItemData.getLmCode());
-            customProduct.setBarCode(productItemData.getBarCode());
-            customProduct.setTitle(productItemData.getTitle());
-            TransferSearchProductData.Source source = transferProduct.getSource().get(0);
-            if (source.getMonoPallets() != null) {
-                customProduct.setMonoPalletCapacity(transferProduct.getSource().get(0)
-                        .getMonoPallets().get(0).getCapacity());
-            } else if (source.getMixPallets() != null) {
-                customProduct.setMixPalletCapacity(transferProduct.getSource().get(0)
-                        .getMixPallets().get(0).getCapacity());
-            }
-            customProduct.setTotalStock(transferProduct.getTotalQuantity());
-            products.add(customProduct);
-        }
     }
 
     @Test(description = "C22782861 Создание отзыва с RM клиенту (юр.лицо)")
@@ -392,6 +327,22 @@ public class TransferMockTest extends BaseUiMagMobMockTest {
         searchProductPage.clickTransferProductPanel()
                 .verifyElementsWhenProductsAdded()
                 .shouldTransferProductIs(1, transferProductData);
+    }
+
+    @Test(description = "C3268376 Удаление заявки в статусе Черновик")
+    public void testRemoveDraftTransferTask() throws Exception {
+        String productTitle = "Воронка 125x90 мм цвет красный";
+
+        WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
+        TransferRequestsPage transferRequestsPage = workPage.goToTransferProductFromStock();
+        transferRequestsPage.searchForRequestAndOpenIt(productTitle,
+                SalesDocumentsConst.States.DRAFT.getUiVal());
+        TransferOrderStep1Page transferOrderStep1Page = new TransferOrderStep1Page();
+
+        // Step 1 - 2
+        step("Нажмите на кнопку удаления заявки в правом верхнем углу экрана и подтвердите удаление");
+        transferOrderStep1Page.removeTransferTask()
+                .verifyRequiredElements();
     }
 
 }
