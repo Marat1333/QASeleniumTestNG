@@ -737,6 +737,38 @@
           }
         }
       ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/transfer/products/search",
+            "query": {
+              "departmentId": "1",
+              "shopId": "35",
+              "pointOfGiveAway": "DEPARTMENT",
+              "requiredOutOfStockProducts": "",
+              "startFrom": "1",
+              "lastItemId": "",
+              "pageSize": "7",
+              "page": "1"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "totalCount": 0,
+              "isLastPage": true,
+              "filteredCount": 0,
+              "items": []
+            }
+          }
+        }
+      ]
     }
   ]
 }

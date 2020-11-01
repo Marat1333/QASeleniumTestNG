@@ -846,7 +846,7 @@ public class TransferTest extends AppBaseSteps {
         addProduct35Page.verifyCalculator("5+2");
     }
 
-    @Test(description = "C3268374 Отзыв товара на моно-палете")
+    @Test(description = "C3268374 Отзыв товара на моно-палете", enabled = false)
     public void testTransferProductOnMonoPallet() throws Exception {
         step("Выполнение предусловий:");
         TransferSearchProductData productData = transferHelper.searchForProductsForTransfer(

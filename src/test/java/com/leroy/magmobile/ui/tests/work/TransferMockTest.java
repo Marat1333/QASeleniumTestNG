@@ -1,6 +1,7 @@
 package com.leroy.magmobile.ui.tests.work;
 
 import com.google.inject.Inject;
+import com.leroy.constants.DefectConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.TransferClient;
@@ -338,6 +339,59 @@ public class TransferMockTest extends BaseUiMagMobMockTest {
         step("Нажмите на поле поиска товара по ЛМ или штрих коду и введите ЛМ код товара");
         transferSearchPage.searchForProductByLmCode(lmCode);
         transferSearchPage.shouldTransferProductsAre(Collections.singletonList(transferProductData));
+    }
+
+    @Test(description = "C3268374 Отзыв товара на моно-палете")
+    public void testTransferProductOnMonoPallet() throws Exception {
+        String lmCode = "32683740";
+
+        MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
+                MainSalesDocumentsPage.class);
+
+        // Step 1
+        step("Нажать кнопку Оформить продажу");
+        SaleTypeModalPage saleTypeModalPage = mainSalesDocumentsPage.<SaleTypeModalPage>clickCreateSalesDocumentButton()
+                .verifyRequiredElementsWhenFromSalesDocuments();
+
+        // Step 2
+        step("Выбрать параметр Со склада клиенту");
+        TransferOrderStep1Page transferOrderStep1Page = saleTypeModalPage.clickFromStockToClient()
+                .verifyElementsWhenEmpty();
+
+        // Step 3
+        step("Нажмите на кнопку +Товары со склада");
+        TransferSearchPage searchProductPage = transferOrderStep1Page.clickAddProductFromStockButton();
+
+        // Step 4
+        step("Выбрать первый товар, который хранится на складе на моно-палете и нажать на карточку");
+        searchProductPage.searchForProductByLmCode(lmCode);
+        TransferProductData transferProductData = searchProductPage.getTransferProduct(1);
+        AddProduct35Page<TransferSearchPage> addProductPage = searchProductPage.clickProductCard(1)
+                .verifyRequiredElements(AddProduct35Page.SubmitBtnCaptions.ADD_TO_TASK);
+
+        // Step 5
+        step("Ввести количество товара для заявки со склада, НЕ кратное количеству на моно-палете\n" +
+                "Нажмите Добавить в заявку");
+        int oneMonoPallet = addProductPage.getByOneMonoPalletQuantity();
+        int newQuantity = oneMonoPallet - 1;
+        searchProductPage = addProductPage.enterQuantityOfProduct(newQuantity, true)
+                .clickSubmitButton();
+        searchProductPage.shouldReviewCompositionIs(1, 0, 0, 0, newQuantity);
+        if (!DefectConst.LFRONT_3695)
+            searchProductPage.shouldProductHasWrongQuantityTooltip(1);
+
+        // Step 6 - 7
+        step("Ввести количество товара для заявки со склада, кратное количеству на моно-палете");
+        searchProductPage.editProductQuantityForProduct(1, oneMonoPallet);
+        searchProductPage.shouldReviewCompositionIs(1, 0, oneMonoPallet, 0, oneMonoPallet);
+
+        // Step 8
+        step("Нажмите на Товары на отзыв");
+        transferProductData.setOrderedQuantity(oneMonoPallet);
+        transferProductData.setSelectedMonoPalletQuantity(oneMonoPallet);
+        searchProductPage.clickTransferProductPanel()
+                .verifyElementsWhenProductsAdded()
+                .shouldTransferProductIs(1, transferProductData);
     }
 
 }
