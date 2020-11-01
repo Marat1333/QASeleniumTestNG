@@ -2,7 +2,7 @@ package com.leroy.magportal.ui.tests;
 
 import com.leroy.core.ContextProvider;
 import com.leroy.core.configuration.Log;
-import com.leroy.core.util.MountebankClient;
+import com.leroy.core.util.mountebank.MountebankClient;
 import com.leroy.magmobile.api.requests.CommonLegoRequest;
 import com.leroy.magportal.ui.WebBaseSteps;
 import org.json.simple.JSONArray;
@@ -23,7 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
 
-public class BaseMockUiTest extends WebBaseSteps {
+public class BaseMockMagPortalUiTest extends WebBaseSteps {
 
     private MountebankClient mountebankClient = new MountebankClient("https://mountebank-dev-magfront-stage.apps.lmru.tech");
     private final int DEFAULT_IMPOSTER_PORT = 4547;

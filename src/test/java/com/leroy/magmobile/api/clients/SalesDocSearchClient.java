@@ -4,9 +4,20 @@ import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.requests.salesdoc.search.SalesDocSearchV3Get;
 import io.qameta.allure.Step;
+import lombok.Data;
+import lombok.experimental.Accessors;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class SalesDocSearchClient extends BaseMashupClient {
+
+    @Data
+    @Accessors(chain = true)
+    public static class Filters {
+        private String docType;
+        private String docId;
+        private String shopId;
+        private String customerNumber;
+    }
 
     /**
      * ---------- Requests -------------
@@ -21,6 +32,22 @@ public class SalesDocSearchClient extends BaseMashupClient {
         req.setStartFrom(startFrom);
         req.setPageSize(pageSize);
         return execute(req, SalesDocumentListResponse.class);
+    }
+
+    @Step("Search for documents with filters")
+    public Response<SalesDocumentListResponse> searchForDocuments(Filters filters, Integer startFrom, Integer pageSize) {
+        SalesDocSearchV3Get req = new SalesDocSearchV3Get();
+        req.setDocId(filters.getDocId());
+        req.setShopId(filters.getShopId());
+        req.setDocType(filters.getDocType());
+        req.setCustomerNumber(filters.getCustomerNumber());
+        req.setStartFrom(startFrom);
+        req.setPageSize(pageSize);
+        return execute(req, SalesDocumentListResponse.class);
+    }
+
+    public Response<SalesDocumentListResponse> searchForDocuments(Filters filters) {
+        return searchForDocuments(filters, null, null);
     }
 
     @Step("Get sales documents by Pin code or DocId = {pinCodeOrDocId}")

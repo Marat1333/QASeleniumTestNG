@@ -82,7 +82,7 @@ public class TransferTest extends AppBaseSteps {
         for (TransferSearchProductData transferProduct : transferProducts) {
             Response<ProductItemDataList> respProduct = catalogSearchClient
                     .searchProductsBy(new GetCatalogSearch().setByLmCode(transferProduct.getLmCode()));
-            assertThat(resp, successful());
+            assertThat(respProduct, successful());
             ProductItemData productItemData = respProduct.asJson().getItems().get(0);
             CustomTransferProduct customProduct = new CustomTransferProduct();
             customProduct.setLmCode(productItemData.getLmCode());
@@ -194,7 +194,7 @@ public class TransferTest extends AppBaseSteps {
         transferConfirmedTaskToClientPage.shouldTransferTaskDataIs(detailedTransferTaskData);
     }
 
-    @Test(description = "C22782861 Создание отзыва с RM клиенту (юр.лицо)")
+    @Test(description = "C22782861 Создание отзыва с RM клиенту (юр.лицо)", enabled = false)
     public void testCreateTransferFromRMToLegalClient() throws Exception {
         MagLegalCustomerData legalCustomerData = TestDataConstants.LEGAL_ENTITY_2;
 
@@ -343,7 +343,7 @@ public class TransferTest extends AppBaseSteps {
         transferConfirmedTaskToShopRoomPage.shouldTransferTaskDataIs(detailedTransferTaskData);
     }
 
-    @Test(description = "C3268360 Создание отзыва с RM из карточки товара")
+    @Test(description = "C3268360 Создание отзыва с RM из карточки товара", enabled = false)
     public void testCreateTransferTaskFromProductCard() throws Exception {
         // Pre-condition
         step("Выполнение предусловий теста");
@@ -508,7 +508,7 @@ public class TransferTest extends AppBaseSteps {
         successPage.verifyRequiredElements();
     }
 
-    @Test(description = "C3268363 Удаление товара из заявки")
+    @Test(description = "C3268363 Удаление товара из заявки", enabled = false)
     public void testRemoveProductFromTransferTask() throws Exception {
         TransferOrderStep1Page transferOrderStep1Page;
         CustomTransferProduct product1 = products.get(6);
@@ -558,7 +558,7 @@ public class TransferTest extends AppBaseSteps {
 
     }
 
-    @Test(description = "C3268364 Удаление последнего товара из заявки")
+    @Test(description = "C3268364 Удаление последнего товара из заявки", enabled = false)
     public void testRemoveLastProductFromTransferTask() throws Exception {
         TransferOrderStep1Page transferOrderStep1Page;
         CustomTransferProduct product1 = products.get(8);
@@ -640,7 +640,7 @@ public class TransferTest extends AppBaseSteps {
         transferOrderStep1Page.shouldTransferTaskDataIs(transferTaskData);
     }
 
-    @Test(description = "C3268366 Изменение количества товара в поиске товаров")
+    @Test(description = "C3268366 Изменение количества товара в поиске товаров", enabled = false)
     public void testChangeProductQuantityWhenSearchProductsOnStock() throws Exception {
         // Pre-condition
         WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
@@ -794,7 +794,7 @@ public class TransferTest extends AppBaseSteps {
 
     }
 
-    @Test(description = "C3268369 Поиск товара (по ЛМ коду и штрих коду)")
+    @Test(description = "C3268369 Поиск товара (по ЛМ коду и штрих коду)", enabled = false)
     public void testSearchForProductsForTransferTask() throws Exception {
         TransferSearchProductData productData = transferHelper.searchForProductsForTransfer().get(0);
         WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
@@ -846,7 +846,7 @@ public class TransferTest extends AppBaseSteps {
         addProduct35Page.verifyCalculator("5+2");
     }
 
-    @Test(description = "C3268374 Отзыв товара на моно-палете")
+    @Test(description = "C3268374 Отзыв товара на моно-палете", enabled = false)
     public void testTransferProductOnMonoPallet() throws Exception {
         step("Выполнение предусловий:");
         TransferSearchProductData productData = transferHelper.searchForProductsForTransfer(

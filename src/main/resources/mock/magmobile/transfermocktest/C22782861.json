@@ -1,0 +1,425 @@
+{
+  "stubs": [
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/transfer/products/search",
+            "query": {
+              "departmentId": "1",
+              "shopId": "35",
+              "pointOfGiveAway": "DEPARTMENT",
+              "requiredOutOfStockProducts": "",
+              "startFrom": "1",
+              "lastItemId": "",
+              "pageSize": "7",
+              "page": "1"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "totalCount": 66,
+              "isLastPage": true,
+              "filteredCount": 1,
+              "items": [
+                {
+                  "lmCode": "11490674",
+                  "totalQuantity": 87,
+                  "source": [
+                    {
+                      "type": "EM",
+                      "items": {
+                        "quantity": 41
+                      }
+                    }
+                  ],
+                  "barCode": "4607135862709",
+                  "images": [
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/11490674.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/11490674_01.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/11490674_02.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/11490674_03.jpg"
+                  ],
+                  "departmentId": "1",
+                  "availableStock": null,
+                  "priceUnit": "EA",
+                  "altPrice": null,
+                  "altPriceUnit": null,
+                  "priceCategory": "STD",
+                  "title": "Плитка декоративная Лондон Брик, цвет красный, 1.16 м2",
+                  "description": "Кирпич декоративно-облицовочный Лондон Брик, красный предназначен для отде",
+                  "top": null,
+                  "gamma": "A",
+                  "avsDate": null,
+                  "brand": "WHITE HILLS",
+                  "shops": [],
+                  "characteristics": [
+                    {
+                      "name": "Цветовая палитра",
+                      "value": "Красный"
+                    },
+                    {
+                      "name": "Основной материал",
+                      "value": "Бетон"
+                    },
+                    {
+                      "name": "Страна производства",
+                      "value": "Россия"
+                    },
+                    {
+                      "name": "Вес, кг",
+                      "value": "24.585"
+                    },
+                    {
+                      "name": "Упаковка (м²)",
+                      "value": "1.16"
+                    },
+                    {
+                      "name": "Марка",
+                      "value": "WHITE HILLS"
+                    }
+                  ],
+                  "barCodes": [
+                    "4607135862709",
+                    "2000114906746",
+                    "4607135860200"
+                  ],
+                  "isAvs": false,
+                  "subDepartmentId": "150",
+                  "categoryId": "10",
+                  "subCategoryId": "30",
+                  "logistic": {
+                    "weight": null,
+                    "width": null,
+                    "height": null,
+                    "depth": null
+                  },
+                  "shortTitle": null,
+                  "recommendedPrice": 1090,
+                  "priceCurrency": "RUR",
+                  "price": 1088
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "equals": {
+            "method": "GET",
+            "path": "/v3/catalog/product",
+            "query": {
+              "shopId": "35",
+              "lmCode": "11490674",
+              "extend": "rating,logistic,inventory"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "lmCode": "11490674",
+              "barCode": "4607135862709",
+              "images": [
+                "https://res.cloudinary.com/lmru/image/upload/LMCode/11490674.jpg",
+                "https://res.cloudinary.com/lmru/image/upload/LMCode/11490674_01.jpg",
+                "https://res.cloudinary.com/lmru/image/upload/LMCode/11490674_02.jpg",
+                "https://res.cloudinary.com/lmru/image/upload/LMCode/11490674_03.jpg"
+              ],
+              "departmentId": "1",
+              "availableStock": 53,
+              "price": 1088,
+              "priceUnit": "NIU",
+              "altPrice": null,
+              "altPriceUnit": null,
+              "priceCategory": "STD",
+              "title": "Плитка декоративная Лондон Брик, цвет красный, 1.16 м2",
+              "description": "Кирпич декоративно-облицовочный Лондон Брик",
+              "top": "1",
+              "gamma": "A",
+              "avsDate": null,
+              "brand": "WHITE HILLS",
+              "shops": [],
+              "characteristics": [
+                {
+                  "name": "Цветовая палитра",
+                  "value": "Красный"
+                },
+                {
+                  "name": "Основной материал",
+                  "value": "Бетон"
+                },
+                {
+                  "name": "Страна производства",
+                  "value": "Россия"
+                },
+                {
+                  "name": "Вес, кг",
+                  "value": "24.585"
+                },
+                {
+                  "name": "Упаковка (м²)",
+                  "value": "1.16"
+                },
+                {
+                  "name": "Марка",
+                  "value": "WHITE HILLS"
+                }
+              ],
+              "barCodes": [
+                "4607135862709"
+              ],
+              "isAvs": false,
+              "subDepartmentId": "150",
+              "categoryId": "10",
+              "subCategoryId": "30",
+              "logistic": {
+                "width": 51,
+                "height": 15.1,
+                "depth": 26.3,
+                "weight": 24.585
+              },
+              "shortTitle": null,
+              "topEM": true,
+              "extStocks": {
+                "WHB_SUMM": 0,
+                "WHBP": 0,
+                "COR": 0,
+                "TSF_OUTBOUND": 0,
+                "RTV": 0,
+                "UTSP": 0,
+                "TBC": 0,
+                "EXPO": 0
+              },
+              "LS": 53,
+              "stockAreas": {
+                "RM": 0,
+                "EM": 0,
+                "UM": 0,
+                "RD": 0
+              },
+              "unavailableStockTotal": 0,
+              "_otherStocks": {
+                "em": 0,
+                "rm": 0,
+                "reception": 0,
+                "magOut": 0,
+                "uts": 0,
+                "c3": -27,
+                "soh": 26,
+                "tsfInboundDelivered": 0,
+                "tsfInboundConfirmed": 0,
+                "rtvOnDc": 0,
+                "guaranteedCount": 0,
+                "theoretical": 53
+              },
+              "rating": 4.5,
+              "reviewsCount": 14,
+              "salesPrice": {
+                "price": 1088,
+                "altPrice": null,
+                "altPriceUnit": null,
+                "dateOfChange": "2019-12-19T21:00:00.000Z",
+                "reasonOfChange": "Техническое изменение розничной цены (РЦ) в связи изменением рек.розничной цены (РРЦ)",
+                "recommendedPrice": 1090,
+                "recommendedUnitSale": "EA",
+                "recommendedDateOfChange": "2019-12-19T21:00:00.000Z"
+              },
+              "purchasePrice": 695.36,
+              "purchasePriceCurrency": "RUR",
+              "primeCost": 695.36,
+              "primeCostCurrency": "RU",
+              "futurePrice": null,
+              "futurePriceFromDate": null,
+              "priceReasonOfChange": null,
+              "inventory": {
+                "totalQuantity": 87,
+                "source": [
+                  {
+                    "type": "EM",
+                    "items": {
+                      "quantity": 41
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "and": [
+            {
+              "deepEquals": {
+                "method": "POST",
+                "path": "/salesdoc/transfer"
+              }
+            },
+            {
+              "equals": {
+                "body": {
+                  "pointOfGiveAway": "DEPARTMENT",
+                  "departmentId": "1",
+                  "shopId": 35,
+                  "products": [
+                    {
+                      "lmCode": "11490674",
+                      "chosenDepartmentId": "1",
+                      "price": 1088,
+                      "orderedQuantity": 3
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "taskId": "2003520100067904",
+              "status": "NEW",
+              "shopId": 35,
+              "createdBy": "60069803",
+              "createdDate": "2020-10-25T15:05:09.599+03:00",
+              "pointOfGiveAway": "DEPARTMENT",
+              "dateOfGiveAway": "2020-10-25T13:04:02+03:00",
+              "departmentId": "1",
+              "products": [
+                {
+                  "lineId": "1",
+                  "lmCode": "11490674",
+                  "status": "NEW",
+                  "price": 1088,
+                  "orderedQuantity": 3,
+                  "assignedQuantity": 3,
+                  "reserved": [
+                    {
+                      "type": "EM",
+                      "items": {
+                        "assignedQuantity": 3
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/v2/customerAccount/search",
+            "query": {
+              "customerType": "LEGAL",
+              "discriminantType": "LOYALTY_CARD_NUMBER",
+              "discriminantValue": "93010092991969072",
+              "shopId": "35",
+              "ldap": "60069803"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "totalCount": 1,
+              "items": [
+                {
+                  "customerType": "legal",
+                  "customerNumber": "000-002006",
+                  "updatedAt": "2020-03-12T10:54:45Z",
+                  "name": "Общество с ограниченной ответственностью \"Энерго-Комплект\"",
+                  "legalParameters": {
+                    "ITN": "5029161680",
+                    "companyType": "company"
+                  },
+                  "addresses": [
+                    {
+                      "address": "улица Индустриальная, дом 3,  1,  15 город Мытищи, Московская область 141006",
+                      "type": "legal"
+                    }
+                  ],
+                  "communications": [],
+                  "contactPersons": [],
+                  "card": {
+                    "cardNumber": "93010092991969072",
+                    "category": "2"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/salesdoc/transfer/status",
+            "query": {
+              "taskId": "2003520100067904"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "status": "SUCCESS",
+              "message": "Task successfully finalized.",
+              "code": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "PUT",
+            "path": "/salesdoc/transfer/run",
+            "query": {
+              "taskId": "2003520100067904"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "taskId": "2003520100067904",
+              "status": "IN_PROGRESS",
+              "code": 1
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

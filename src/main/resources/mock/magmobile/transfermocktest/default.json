@@ -1,0 +1,773 @@
+{
+  "stubs": [
+    {
+      "predicates": [
+        {
+          "equals": {
+            "method": "GET",
+            "path": "/catalog/services/search"
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [],
+              "totalCount": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/ruptures/v2/sessions",
+            "query": {
+              "shopId": "35",
+              "departmentId": "1",
+              "status": "active",
+              "pageSize": "1"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [
+                {
+                  "storeId": 35,
+                  "finishedOn": null,
+                  "createdOn": "2020-10-20T13:10:22.680347Z",
+                  "createdByLdap": "60069807",
+                  "type": "Standard",
+                  "completedProductCount": 0,
+                  "totalProductCount": 1,
+                  "userFullName": "Константин",
+                  "sessionId": 32115,
+                  "status": "active"
+                }
+              ],
+              "totalCount": 14
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/salesdoc/transfers",
+            "query": {
+              "status": "NEW",
+              "createdBy": "60069803",
+              "departmentId": "1",
+              "shopId": "35",
+              "sortField": "creationDate",
+              "sortOrder": "desc",
+              "pageSize": "10",
+              "startFrom": "1",
+              "lastItemId": "",
+              "page": "1"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [
+                {
+                  "taskId": "2003520110068275",
+                  "departmentId": "1",
+                  "createdAt": "2025-11-01T20:45:38.781+03:00",
+                  "createdBy": "60069803",
+                  "pointOfGiveAway": "DEPARTMENT",
+                  "status": "NEW",
+                  "products": [
+                    {
+                      "lmCode": "10009180",
+                      "barCode": "4650001110374",
+                      "images": [
+                        "https://res.cloudinary.com/lmru/image/upload/LMCode/10009180.jpg",
+                        "https://res.cloudinary.com/lmru/image/upload/LMCode/10009180_02.jpg"
+                      ],
+                      "departmentId": "1",
+                      "availableStock": null,
+                      "price": null,
+                      "priceUnit": "NIU",
+                      "altPrice": null,
+                      "altPriceUnit": null,
+                      "priceCategory": "STD",
+                      "title": "Воронка 125x90 мм цвет красный",
+                      "description": "Красная воронка (125х90 мм) являе",
+                      "top": null,
+                      "gamma": "A",
+                      "avsDate": null,
+                      "brand": "ИНТЕРПРОФИЛЬ",
+                      "shops": [ ],
+                      "characteristics": [
+                        {
+                          "name": "Основной материал",
+                          "value": "Оцинкованная сталь"
+                        },
+                        {
+                          "name": "Страна производства",
+                          "value": "Россия"
+                        },
+                        {
+                          "name": "Диаметр желоба и водостока (мм)",
+                          "value": "125 x 90"
+                        },
+                        {
+                          "name": "Тип продукта",
+                          "value": "Воронка"
+                        },
+                        {
+                          "name": "Цвет",
+                          "value": "Красный"
+                        },
+                        {
+                          "name": "Вес, кг",
+                          "value": "0.257"
+                        },
+                        {
+                          "name": "Марка",
+                          "value": "ИНТЕРПРОФИЛЬ"
+                        }
+                      ],
+                      "barCodes": [
+                        "4650001110374",
+                        "2000100091807",
+                        "4607086800430"
+                      ],
+                      "isAvs": false,
+                      "subDepartmentId": "120",
+                      "categoryId": "30",
+                      "subCategoryId": "90",
+                      "logistic": {
+                        "weight": null,
+                        "width": null,
+                        "height": null,
+                        "depth": null
+                      },
+                      "shortTitle": null
+                    }
+                  ]
+                },
+                {
+                  "taskId": "2003520100067905",
+                  "departmentId": "1",
+                  "createdAt": "2025-10-25T16:50:53.647+03:00",
+                  "createdBy": "60069803",
+                  "pointOfGiveAway": "SALESFLOOR",
+                  "status": "CONFIRMED",
+                  "products": [
+                    {
+                      "lmCode": "10008938",
+                      "barCode": "4650001110275",
+                      "images": [
+                        "https://res.cloudinary.com/lmru/image/upload/LMCode/10008938.jpg",
+                        "https://res.cloudinary.com/lmru/image/upload/LMCode/10008938_01.jpg"
+                      ],
+                      "departmentId": "1",
+                      "availableStock": null,
+                      "price": null,
+                      "priceUnit": "NIU",
+                      "altPrice": null,
+                      "altPriceUnit": null,
+                      "priceCategory": "STD",
+                      "title": "Угол желоба на 90° внешний цвет красный",
+                      "description": "**Угол желоба внешний** позволяет изменить направление водного потока на 90° — сделать так, чтобы вода обогнула внешний угол дома, не переливаясь вниз. Применяется в случаях, когда желоба замкнуты в единый контур по периметру здания или если водосточная труба закреплена на соседней стене. Цвет изделия красный.",
+                      "top": null,
+                      "gamma": "A",
+                      "avsDate": null,
+                      "brand": "ИНТЕРПРОФИЛЬ",
+                      "shops": [],
+                      "characteristics": [
+                        {
+                          "name": "Основной материал",
+                          "value": "Оцинкованная сталь"
+                        },
+                        {
+                          "name": "Страна производства",
+                          "value": "Россия"
+                        },
+                        {
+                          "name": "Диаметр желоба и водостока (мм)",
+                          "value": "125 x 90"
+                        },
+                        {
+                          "name": "Тип продукта",
+                          "value": "Угол желоба"
+                        },
+                        {
+                          "name": "Цвет",
+                          "value": "Красный"
+                        },
+                        {
+                          "name": "Вес, кг",
+                          "value": "0.533"
+                        },
+                        {
+                          "name": "Марка",
+                          "value": "ИНТЕРПРОФИЛЬ"
+                        }
+                      ],
+                      "barCodes": [
+                        "4650001110275",
+                        "2000100089385",
+                        "4607086800331",
+                        "7321870002004"
+                      ],
+                      "isAvs": false,
+                      "subDepartmentId": "120",
+                      "categoryId": "30",
+                      "subCategoryId": "90",
+                      "logistic": {
+                        "weight": null,
+                        "width": null,
+                        "height": null,
+                        "depth": null
+                      },
+                      "shortTitle": null
+                    }
+                  ]
+                },
+                {
+                  "taskId": "2003520100067918",
+                  "departmentId": "1",
+                  "createdAt": "2025-10-27T01:42:12.494+03:00",
+                  "createdBy": "60069803",
+                  "pointOfGiveAway": "DEPARTMENT",
+                  "status": "NEW",
+                  "products": [
+                    {
+                      "lmCode": "11490674",
+                      "barCode": "4607135862709",
+                      "images": [
+                        "https://res.cloudinary.com/lmru/image/upload/LMCode/11490674.jpg",
+                        "https://res.cloudinary.com/lmru/image/upload/LMCode/11490674_01.jpg",
+                        "https://res.cloudinary.com/lmru/image/upload/LMCode/11490674_02.jpg",
+                        "https://res.cloudinary.com/lmru/image/upload/LMCode/11490674_03.jpg"
+                      ],
+                      "departmentId": "1",
+                      "availableStock": null,
+                      "price": null,
+                      "priceUnit": "NIU",
+                      "altPrice": null,
+                      "altPriceUnit": null,
+                      "priceCategory": "STD",
+                      "title": "Плитка декоративная Лондон Брик, цвет красный, 1.16 м2",
+                      "description": "Кирпич декоративно-облицовочный Лондон Брик, красный предназначен для отделки фасадов, интерьеров и элементов ландшафтной архитектуры. Фактура материала воссоздает «состаренную» кирпичную кладку. Подобный по внешнему виду кирпич использовался",
+                      "top": null,
+                      "gamma": "A",
+                      "avsDate": null,
+                      "brand": "WHITE HILLS",
+                      "shops": [],
+                      "characteristics": [
+                        {
+                          "name": "Цветовая палитра",
+                          "value": "Красный"
+                        },
+                        {
+                          "name": "Основной материал",
+                          "value": "Бетон"
+                        },
+                        {
+                          "name": "Страна производства",
+                          "value": "Россия"
+                        },
+                        {
+                          "name": "Количество плиток в упаковке",
+                          "value": "60"
+                        },
+                        {
+                          "name": "Наружная совместимость (морозоустойчивые)",
+                          "value": "Да"
+                        },
+                        {
+                          "name": "Вес, кг",
+                          "value": "24.585"
+                        },
+                        {
+                          "name": "Длина (см)",
+                          "value": "520.0"
+                        },
+                        {
+                          "name": "Вес на м² (кг)",
+                          "value": "21,1"
+                        },
+                        {
+                          "name": "Упаковка (м²)",
+                          "value": "1.16"
+                        },
+                        {
+                          "name": "Марка",
+                          "value": "WHITE HILLS"
+                        }
+                      ],
+                      "barCodes": [
+                        "4607135862709",
+                        "2000114906746",
+                        "4607135860200"
+                      ],
+                      "isAvs": false,
+                      "subDepartmentId": "150",
+                      "categoryId": "10",
+                      "subCategoryId": "30",
+                      "logistic": {
+                        "weight": null,
+                        "width": null,
+                        "height": null,
+                        "depth": null
+                      },
+                      "shortTitle": null
+                    },
+                    {
+                      "lmCode": "12531431",
+                      "barCode": "2000125314318",
+                      "images": [
+                        "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431.jpg",
+                        "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431_01.jpg",
+                        "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431_02.jpg",
+                        "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431_03.jpg"
+                      ],
+                      "departmentId": "1",
+                      "availableStock": null,
+                      "price": null,
+                      "priceUnit": "NIU",
+                      "altPrice": null,
+                      "altPriceUnit": null,
+                      "priceCategory": "STD",
+                      "title": "Блок газобетонный Ytong D500 625х250х100 мм",
+                      "description": "Газобетонный блок – это популярный материал",
+                      "top": null,
+                      "gamma": "A",
+                      "avsDate": null,
+                      "brand": "YTONG",
+                      "shops": [],
+                      "characteristics": [
+                        {
+                          "name": "Страна производства",
+                          "value": "Россия"
+                        },
+                        {
+                          "name": "Количество на м² (указанной согласно использованию и работе)",
+                          "value": "6.4"
+                        },
+                        {
+                          "name": "Класс прочности",
+                          "value": "В3.5"
+                        },
+                        {
+                          "name": "Класс морозостойкости",
+                          "value": "F100"
+                        },
+                        {
+                          "name": "Количество на м³",
+                          "value": "64.0"
+                        },
+                        {
+                          "name": "Марка",
+                          "value": "YTONG"
+                        },
+                        {
+                          "name": "Длина (мм)",
+                          "value": "625.0"
+                        },
+                        {
+                          "name": "Высота (мм)",
+                          "value": "250.0"
+                        },
+                        {
+                          "name": "Ширина (мм)",
+                          "value": "100.0"
+                        },
+                        {
+                          "name": "Вес, кг",
+                          "value": "10.5"
+                        },
+                        {
+                          "name": "Плотность (кг/м³)",
+                          "value": "500.0"
+                        },
+                        {
+                          "name": "Количество товара в паллете",
+                          "value": "90"
+                        }
+                      ],
+                      "barCodes": [
+                        "2000125314318"
+                      ],
+                      "isAvs": false,
+                      "subDepartmentId": "115",
+                      "categoryId": "40",
+                      "subCategoryId": "60",
+                      "logistic": {
+                        "weight": null,
+                        "width": null,
+                        "height": null,
+                        "depth": null
+                      },
+                      "shortTitle": null
+                    }
+                  ]
+                },
+                {
+                  "taskId": "2003520100068094",
+                  "departmentId": "1",
+                  "createdAt": "2025-10-29T00:30:22.057+03:00",
+                  "createdBy": "60069803",
+                  "pointOfGiveAway": "DEPARTMENT",
+                  "status": "NEW",
+                  "products": [
+                    {
+                      "lmCode": "12627951",
+                      "barCode": "4607122390055",
+                      "images": [
+                        "https://res.cloudinary.com/lmru/image/upload/LMCode/12627951.jpg",
+                        "https://res.cloudinary.com/lmru/image/upload/LMCode/12627951_01.jpg",
+                        "https://res.cloudinary.com/lmru/image/upload/LMCode/12627951_02.jpg"
+                      ],
+                      "departmentId": "1",
+                      "availableStock": null,
+                      "price": null,
+                      "priceUnit": "NIU",
+                      "altPrice": null,
+                      "altPriceUnit": null,
+                      "priceCategory": "STD",
+                      "title": "Смесь универсальная Каменный цветок М150, 25 кг",
+                      "description": "Универсальная сухая смесь используется для отделки поверхностей (кроме финишных операций), кладки плитки, стяжек и других работ внутри и снаружи помещений. Мы предлагаем купить состав марки 150, упакованный в крафт-мешки по 25 кг",
+                      "top": null,
+                      "gamma": "A",
+                      "avsDate": null,
+                      "brand": "КАМЕННЫЙ ЦВЕТОК",
+                      "shops": [ ],
+                      "characteristics": [
+                        {
+                          "name": "Быстросхватывающийся",
+                          "value": "Нет"
+                        },
+                        {
+                          "name": "Основной материал",
+                          "value": "Цемент"
+                        },
+                        {
+                          "name": "Страна производства",
+                          "value": "Россия"
+                        },
+                        {
+                          "name": "Расход кг / м2",
+                          "value": "Примерный расход смеси на 1м кв при толщине слоя 10 мм - 17 -19 кг"
+                        },
+                        {
+                          "name": "Место использования",
+                          "value": "Внутренний / наружный"
+                        },
+                        {
+                          "name": "Материал поверхности применения",
+                          "value": "Бетонный раствор"
+                        },
+                        {
+                          "name": "Минимальная температура применения (°C)",
+                          "value": "5.0"
+                        },
+                        {
+                          "name": "Максимальная температура применения (°C)",
+                          "value": "30.0"
+                        },
+                        {
+                          "name": "Минимальная толщина слоя (мм)",
+                          "value": "7.5"
+                        },
+                        {
+                          "name": "Максимальная толщина слоя (мм)",
+                          "value": "50.0"
+                        },
+                        {
+                          "name": "Марка прочности (российский стандарт)",
+                          "value": "M150"
+                        },
+                        {
+                          "name": "Класс морозостойкости",
+                          "value": "F35"
+                        },
+                        {
+                          "name": "Размер фракции (мм)",
+                          "value": "2.5"
+                        },
+                        {
+                          "name": "Количество воды (л/кг)",
+                          "value": "0.15"
+                        },
+                        {
+                          "name": "Прочность на сжатие (МПа)",
+                          "value": "15.0"
+                        },
+                        {
+                          "name": "Вес нетто (кг)",
+                          "value": "25.0"
+                        },
+                        {
+                          "name": "Жизнеспособность раствора (ч)",
+                          "value": "2.0"
+                        },
+                        {
+                          "name": "Назначение",
+                          "value": "Стена"
+                        },
+                        {
+                          "name": "Цвет",
+                          "value": "Серый"
+                        },
+                        {
+                          "name": "Количество товара в паллете",
+                          "value": "56"
+                        },
+                        {
+                          "name": "Марка",
+                          "value": "КАМЕННЫЙ ЦВЕТОК"
+                        }
+                      ],
+                      "barCodes": [
+                        "4607122390055",
+                        "2000126279517",
+                        "4620753470590",
+                        "4630017760046",
+                        "4607092031224",
+                        "4620753470873",
+                        "4607092031217",
+                        "4607092030012"
+                      ],
+                      "isAvs": false,
+                      "subDepartmentId": "110",
+                      "categoryId": "40",
+                      "subCategoryId": "10",
+                      "logistic": {
+                        "weight": null,
+                        "width": null,
+                        "height": null,
+                        "depth": null
+                      },
+                      "shortTitle": null
+                    }
+                  ]
+                }
+              ],
+              "totalCount": 795
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/salesdoc/transfers",
+            "query": {
+              "status": "NEW",
+              "createdBy": "60069803",
+              "startFrom": "1",
+              "lastItemId": "",
+              "pageSize": "10",
+              "page": "1",
+              "departmentId": "1",
+              "shopId": "35"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [
+                {
+                }
+              ],
+              "totalCount": 14
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/transfer/products/search",
+            "query": {
+              "departmentId": "1",
+              "shopId": "35",
+              "pointOfGiveAway": "SALESFLOOR",
+              "requiredOutOfStockProducts": "",
+              "startFrom": "1",
+              "lastItemId": "",
+              "pageSize": "7",
+              "page": "1"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "totalCount": 66,
+              "isLastPage": true,
+              "filteredCount": 42,
+              "items": [
+                {
+                  "lmCode": "12531431",
+                  "totalQuantity": 180,
+                  "source": [
+                    {
+                      "type": "RM",
+                      "monoPallets": [
+                        {
+                          "quantity": 2,
+                          "capacity": 90
+                        }
+                      ]
+                    }
+                  ],
+                  "barCode": "2000125314318",
+                  "images": [
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431_01.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431_02.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431_03.jpg"
+                  ],
+                  "departmentId": "1",
+                  "availableStock": null,
+                  "priceUnit": "EA",
+                  "altPrice": null,
+                  "altPriceUnit": null,
+                  "priceCategory": "STD",
+                  "title": "Блок газобетонный Ytong D500 625х250х100 мм",
+                  "description": "Газобетонный блок – это популярный материал, обладающий",
+                  "top": null,
+                  "gamma": "A",
+                  "avsDate": null,
+                  "brand": "YTONG",
+                  "shops": [ ],
+                  "characteristics": [
+                    {
+                      "name": "Страна производства",
+                      "value": "Россия"
+                    },
+                    {
+                      "name": "Количество на м² (указанной согласно использованию и работе)",
+                      "value": "6.4"
+                    },
+                    {
+                      "name": "Класс прочности",
+                      "value": "В3.5"
+                    },
+                    {
+                      "name": "Класс морозостойкости",
+                      "value": "F100"
+                    },
+                    {
+                      "name": "Количество на м³",
+                      "value": "64.0"
+                    },
+                    {
+                      "name": "Марка",
+                      "value": "YTONG"
+                    },
+                    {
+                      "name": "Длина (мм)",
+                      "value": "625.0"
+                    },
+                    {
+                      "name": "Высота (мм)",
+                      "value": "250.0"
+                    },
+                    {
+                      "name": "Ширина (мм)",
+                      "value": "100.0"
+                    },
+                    {
+                      "name": "Вес, кг",
+                      "value": "10.5"
+                    },
+                    {
+                      "name": "Плотность (кг/м³)",
+                      "value": "500.0"
+                    },
+                    {
+                      "name": "Количество товара в паллете",
+                      "value": "90"
+                    }
+                  ],
+                  "barCodes": [
+                    "2000125314318"
+                  ],
+                  "isAvs": false,
+                  "subDepartmentId": "115",
+                  "categoryId": "40",
+                  "subCategoryId": "60",
+                  "logistic": {
+                    "weight": null,
+                    "width": null,
+                    "height": null,
+                    "depth": null
+                  },
+                  "shortTitle": null,
+                  "recommendedPrice": 84,
+                  "priceCurrency": "RUR",
+                  "price": 78
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/transfer/products/search",
+            "query": {
+              "departmentId": "1",
+              "shopId": "35",
+              "pointOfGiveAway": "DEPARTMENT",
+              "requiredOutOfStockProducts": "",
+              "startFrom": "1",
+              "lastItemId": "",
+              "pageSize": "7",
+              "page": "1"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "totalCount": 0,
+              "isLastPage": true,
+              "filteredCount": 0,
+              "items": []
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -18,5 +18,11 @@ public class SalesDocSearchV3Get extends CommonSearchRequestBuilder<SalesDocSear
         return queryParam("docId", val);
     }
 
+    public SalesDocSearchV3Get setCustomerNumber(String val) {
+        if (val == null)
+            return this;
+        return queryParam("customerNumber", val);
+    }
+
 
 }

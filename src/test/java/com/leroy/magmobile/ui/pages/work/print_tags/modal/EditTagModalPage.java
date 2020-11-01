@@ -136,7 +136,6 @@ public class EditTagModalPage extends CommonMagMobilePage {
         ProductTagData data = new ProductTagData(ParserUtil.strWithOnlyDigits(lmCode.getText()), smallCount, midCount, bigCount);
         setSizesAndQuantity(smallCount, midCount, bigCount);
         confirm();
-        clickUnderstandBtn();
         return data;
     }
 

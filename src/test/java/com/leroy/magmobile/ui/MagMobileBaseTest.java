@@ -35,7 +35,7 @@ public class MagMobileBaseTest extends BaseUiTest {
     }
 
     protected boolean isNeedAccessToken() {
-        return false;
+        return true;
     }
 
     protected String getAccessToken() {

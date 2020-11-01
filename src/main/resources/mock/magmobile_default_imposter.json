@@ -23,6 +23,11 @@
             },
             {
               "equals": {
+                "path" : "/kladr"
+              }
+            },
+            {
+              "equals": {
                 "path" : "/pickingTasks/search"
               }
             },
