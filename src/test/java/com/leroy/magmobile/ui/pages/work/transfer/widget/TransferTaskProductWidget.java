@@ -42,13 +42,13 @@ public class TransferTaskProductWidget extends CardWidget<TransferProductData> {
 
     // Запасы
 
-    @AppFindBy(xpath = "//android.view.ViewGroup[ android.widget.TextView[@text='—']]/android.widget.TextView[1]")
+    @AppFindBy(xpath = ".//android.view.ViewGroup[ android.widget.TextView[@text='—']]/android.widget.TextView[1]")
     Element pieceQuantity;
 
-    @AppFindBy(xpath = "//android.view.ViewGroup[ android.widget.TextView[@text='—']]/android.widget.TextView[2]")
+    @AppFindBy(xpath = ".//android.view.ViewGroup[ android.widget.TextView[@text='—']]/android.widget.TextView[2]")
     Element monoPalletQuantity;
 
-    @AppFindBy(xpath = "//android.view.ViewGroup[ android.widget.TextView[@text='—']]/android.widget.TextView[3]")
+    @AppFindBy(xpath = ".//android.view.ViewGroup[ android.widget.TextView[@text='—']]/android.widget.TextView[3]")
     Element mixPalletQuantity;
 
     @Override
@@ -73,6 +73,6 @@ public class TransferTaskProductWidget extends CardWidget<TransferProductData> {
 
     @Override
     public boolean isFullyVisible(String pageSource) {
-        return lmCode.isVisible(pageSource) && pieceQuantity.isVisible(pageSource);
+        return lmCode.isVisible(pageSource) && barCode.isVisible(pageSource) && pieceQuantity.isVisible(pageSource);
     }
 }

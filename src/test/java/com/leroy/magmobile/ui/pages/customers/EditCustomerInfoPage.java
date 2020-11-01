@@ -10,15 +10,15 @@ public class EditCustomerInfoPage extends CommonCustomerInfoPage<EditCustomerInf
         super(EditCustomerInfoPage.class);
     }
 
-    @AppFindBy(text = "СОХРАНИТЬ И ДОБАВИТЬ")
-    Element saveAndAddBtn;
+    @AppFindBy(text = "СОХРАНИТЬ")
+    Element saveBtn;
 
     // Actions
 
-    @Step("Нажмите кнопку 'СОХРАНИТЬ И ДОБАВИТЬ'")
-    public EditCustomerInfoPage clickSaveButton() {
-        saveAndAddBtn.click();
-        return this;
+    @Step("Нажмите кнопку 'СОХРАНИТЬ'")
+    public PersonalInfoPage clickSaveButton() {
+        saveBtn.click();
+        return new PersonalInfoPage();
     }
 
     // Verifications

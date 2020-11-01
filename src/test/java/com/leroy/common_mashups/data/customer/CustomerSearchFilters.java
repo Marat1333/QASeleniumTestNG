@@ -1,16 +1,18 @@
 package com.leroy.common_mashups.data.customer;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 @Data
+@Accessors(chain = true)
 public class CustomerSearchFilters {
 
     public enum CustomerType {
-        NATURAL;
+        NATURAL, LEGAL
     }
 
     public enum DiscriminantType {
-        PHONENUMBER;
+        PHONENUMBER, LOYALTY_CARD_NUMBER
     }
 
     private CustomerType customerType;

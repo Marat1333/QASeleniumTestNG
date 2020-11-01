@@ -35,6 +35,13 @@ public class MainCustomerPage extends TopMenuPage {
         return new SearchCustomerPage();
     }
 
+    @Step("Нажать на {index}-ого недавнего клиента")
+    public ViewCustomerPage clickRecentClient(int index) throws Exception {
+        index--;
+        recentCustomerScrollView.clickElemByIndex(index);
+        return new ViewCustomerPage();
+    }
+
     @Step("Нажать кнопку 'Создать нового клиента'")
     public NewCustomerInfoPage clickCreateNewCustomer() throws Exception {
         createNewCustomerBtn.click();
@@ -44,8 +51,12 @@ public class MainCustomerPage extends TopMenuPage {
     // Verifications
 
     @Step("Проверить, что {index} клиент соответствуют ожидаемым данным")
-    public MainCustomerPage shouldRecentCustomerIs(int index, MagCustomerData expectedData) throws Exception {
+    public MainCustomerPage shouldRecentCustomerIs(int index, MagCustomerData customerData) throws Exception {
         index--;
+        MagCustomerData expectedData = customerData.clone();
+        expectedData.setEmail(null);
+        expectedData.setCardNumber(null);
+        expectedData.setCardType(null);
         recentCustomerScrollView.getDataObj(index).assertEqualsNotNullExpectedFields(expectedData);
         return this;
     }

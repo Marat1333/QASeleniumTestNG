@@ -9,11 +9,14 @@ import java.util.Map;
 public class CommonLegoRequest<J extends CommonLegoRequest<J>> extends RequestBuilder<J> {
 
     public Map<String, String> getQueryParams() {
-        String[] queryParamArr = build("").getUri().getQuery().split("&");
         HashMap<String, String> queryParams = new HashMap<>();
-        for (String one : queryParamArr) {
-            String[] param = one.split("=");
-            queryParams.put(param[0], param[1]);
+        String query = build("").getUri().getQuery();
+        if (query != null) {
+            String[] queryParamArr = build("").getUri().getQuery().split("&");
+            for (String one : queryParamArr) {
+                String[] param = one.split("=");
+                queryParams.put(param[0], param[1]);
+            }
         }
         return queryParams;
     }

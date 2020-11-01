@@ -10,4 +10,10 @@ public class CustomerAccountGetRequest extends CommonLegoRequest<CustomerAccount
         return queryParam("customerNumber", val);
     }
 
+    public CustomerAccountGetRequest setLdap(String value) {
+        if (value != null)
+            return queryParam("ldap", value);
+        else return this;
+    }
+
 }

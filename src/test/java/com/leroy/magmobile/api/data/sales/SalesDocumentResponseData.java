@@ -30,5 +30,12 @@ public class SalesDocumentResponseData {
     private List<CartEstimateProductOrderData> products = new ArrayList<>();
     private List<ServiceOrderData> services = new ArrayList<>();
     private Double docPriceSum;
+    private GiveAway giveAway;
     private String newServiceId;
+
+    @Data
+    public static class GiveAway {
+        private String point;
+    }
+
 }

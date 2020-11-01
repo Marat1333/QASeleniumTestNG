@@ -12,6 +12,12 @@ public class CustomerAccountsSearchRequest extends CommonSearchRequestBuilder<Cu
         else return this;
     }
 
+    public CustomerAccountsSearchRequest setLdap(String value) {
+        if (value != null)
+            return queryParam("ldap", value);
+        else return this;
+    }
+
     public CustomerAccountsSearchRequest setDiscriminantType(Object value) {
         if (value != null)
             return queryParam("discriminantType", value);

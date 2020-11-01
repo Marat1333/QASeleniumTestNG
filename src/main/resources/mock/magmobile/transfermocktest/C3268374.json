@@ -1,0 +1,591 @@
+{
+  "stubs": [
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/transfer/products/search",
+            "query": {
+              "startFrom": "1",
+              "lastItemId": "",
+              "pageSize": "20",
+              "page": "1",
+              "shopId": "35",
+              "departmentId": "1",
+              "pointOfGiveAway": "DEPARTMENT",
+              "lmCode": "32683740",
+              "requiredOutOfStockProducts": ""
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "totalCount": 1,
+              "isLastPage": true,
+              "filteredCount": 1,
+              "items": [
+                {
+                  "lmCode": "32683740",
+                  "totalQuantity": 180,
+                  "source": [
+                    {
+                      "type": "RM",
+                      "monoPallets": [
+                        {
+                          "quantity": 2,
+                          "capacity": 90
+                        }
+                      ]
+                    }
+                  ],
+                  "barCode": "2000125314318",
+                  "images": [
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431_01.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431_02.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431_03.jpg"
+                  ],
+                  "departmentId": "1",
+                  "availableStock": null,
+                  "priceUnit": "EA",
+                  "altPrice": null,
+                  "altPriceUnit": null,
+                  "priceCategory": "STD",
+                  "title": "Блок газобетонный Ytong D500 625х250х100 мм",
+                  "description": "Газобетонный блок – это популярный материал",
+                  "top": null,
+                  "gamma": "A",
+                  "avsDate": null,
+                  "brand": "YTONG",
+                  "shops": [ ],
+                  "characteristics": [
+                    {
+                      "name": "Страна производства",
+                      "value": "Россия"
+                    },
+                    {
+                      "name": "Количество на м² (указанной согласно использованию и работе)",
+                      "value": "6.4"
+                    },
+                    {
+                      "name": "Класс прочности",
+                      "value": "В3.5"
+                    },
+                    {
+                      "name": "Класс морозостойкости",
+                      "value": "F100"
+                    },
+                    {
+                      "name": "Количество на м³",
+                      "value": "64.0"
+                    },
+                    {
+                      "name": "Марка",
+                      "value": "YTONG"
+                    },
+                    {
+                      "name": "Длина (мм)",
+                      "value": "625.0"
+                    },
+                    {
+                      "name": "Высота (мм)",
+                      "value": "250.0"
+                    },
+                    {
+                      "name": "Ширина (мм)",
+                      "value": "100.0"
+                    },
+                    {
+                      "name": "Вес, кг",
+                      "value": "10.5"
+                    },
+                    {
+                      "name": "Плотность (кг/м³)",
+                      "value": "500.0"
+                    },
+                    {
+                      "name": "Количество товара в паллете",
+                      "value": "90"
+                    }
+                  ],
+                  "barCodes": [
+                    "2000125314318"
+                  ],
+                  "isAvs": false,
+                  "subDepartmentId": "115",
+                  "categoryId": "40",
+                  "subCategoryId": "60",
+                  "logistic": {
+                    "weight": null,
+                    "width": null,
+                    "height": null,
+                    "depth": null
+                  },
+                  "shortTitle": null,
+                  "recommendedPrice": 84,
+                  "priceCurrency": "RUR",
+                  "price": 78
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "equals": {
+            "method": "GET",
+            "path": "/v3/catalog/product",
+            "query": {
+              "shopId": "35",
+              "lmCode": "32683740",
+              "extend": "rating,logistic,inventory"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "lmCode": "32683740",
+              "barCode": "2000125314318",
+              "images": [
+                "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431.jpg",
+                "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431_01.jpg",
+                "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431_02.jpg",
+                "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431_03.jpg"
+              ],
+              "departmentId": "1",
+              "availableStock": 1892,
+              "price": 78,
+              "priceUnit": "NIU",
+              "altPrice": null,
+              "altPriceUnit": null,
+              "priceCategory": "STD",
+              "title": "Блок газобетонный Ytong D500 625х250х100 мм",
+              "description": "Газобетонный блок – это популярный материал",
+              "top": "1",
+              "gamma": "A",
+              "avsDate": null,
+              "brand": "YTONG",
+              "shops": [ ],
+              "characteristics": [
+                {
+                  "name": "Страна производства",
+                  "value": "Россия"
+                },
+                {
+                  "name": "Количество на м² (указанной согласно использованию и работе)",
+                  "value": "6.4"
+                },
+                {
+                  "name": "Класс прочности",
+                  "value": "В3.5"
+                },
+                {
+                  "name": "Класс морозостойкости",
+                  "value": "F100"
+                },
+                {
+                  "name": "Количество на м³",
+                  "value": "64.0"
+                },
+                {
+                  "name": "Марка",
+                  "value": "YTONG"
+                },
+                {
+                  "name": "Длина (мм)",
+                  "value": "625.0"
+                },
+                {
+                  "name": "Высота (мм)",
+                  "value": "250.0"
+                },
+                {
+                  "name": "Ширина (мм)",
+                  "value": "100.0"
+                },
+                {
+                  "name": "Вес, кг",
+                  "value": "10.5"
+                },
+                {
+                  "name": "Плотность (кг/м³)",
+                  "value": "500.0"
+                },
+                {
+                  "name": "Количество товара в паллете",
+                  "value": "90"
+                }
+              ],
+              "barCodes": [
+                "2000125314318"
+              ],
+              "isAvs": false,
+              "subDepartmentId": "115",
+              "categoryId": "40",
+              "subCategoryId": "60",
+              "logistic": {
+                "width": 10,
+                "height": 25,
+                "depth": 62.5,
+                "weight": 10.5
+              },
+              "shortTitle": null,
+              "topEM": false,
+              "extStocks": {
+                "WHB_SUMM": 0,
+                "WHBP": 0,
+                "COR": 0,
+                "TSF_OUTBOUND": 0,
+                "RTV": 0,
+                "UTSP": 0,
+                "TBC": 0,
+                "EXPO": 0
+              },
+              "LS": 1442,
+              "stockAreas": {
+                "RM": 0,
+                "EM": 0,
+                "UM": 450,
+                "RD": 0
+              },
+              "unavailableStockTotal": 0,
+              "_otherStocks": {
+                "em": 0,
+                "rm": 450,
+                "reception": 0,
+                "magOut": 0,
+                "uts": 0,
+                "c3": -1378,
+                "soh": 514,
+                "tsfInboundDelivered": 0,
+                "tsfInboundConfirmed": 0,
+                "rtvOnDc": 0,
+                "guaranteedCount": 0,
+                "theoretical": 1892
+              },
+              "rating": 4.4,
+              "reviewsCount": 23,
+              "salesPrice": {
+                "price": 78,
+                "altPrice": null,
+                "altPriceUnit": null,
+                "dateOfChange": "2020-02-21T21:00:00.000Z",
+                "reasonOfChange": "Техническое изменение РЦ в связи изменением стандартной розничной цены",
+                "recommendedPrice": 84,
+                "recommendedUnitSale": "EA",
+                "recommendedDateOfChange": "2019-08-18T21:00:00.000Z"
+              },
+              "purchasePrice": 57.07,
+              "purchasePriceCurrency": "RUR",
+              "primeCost": 57.07,
+              "primeCostCurrency": "RU",
+              "futurePrice": null,
+              "futurePriceFromDate": null,
+              "priceReasonOfChange": null,
+              "inventory": {
+                "totalQuantity": 180,
+                "source": [
+                  {
+                    "type": "RM",
+                    "monoPallets": [
+                      {
+                        "quantity": 2,
+                        "capacity": 90
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "and": [
+            {
+              "deepEquals": {
+                "method": "POST",
+                "path": "/salesdoc/transfer"
+              }
+            },
+            {
+              "equals": {
+                "body": {
+                  "pointOfGiveAway": "DEPARTMENT",
+                  "departmentId": "1",
+                  "shopId": 35,
+                  "products": [
+                    {
+                      "lmCode": "32683740",
+                      "chosenDepartmentId": "1",
+                      "price": 78,
+                      "orderedQuantity": 89
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "taskId": "2003520110068269",
+              "status": "NEW",
+              "shopId": 35,
+              "createdBy": "60069803",
+              "createdDate": "2020-11-01T16:26:51.017+03:00",
+              "pointOfGiveAway": "DEPARTMENT",
+              "dateOfGiveAway": "2020-11-01T12:46:19+03:00",
+              "departmentId": "1",
+              "products": [
+                {
+                  "lineId": "1",
+                  "lmCode": "32683740",
+                  "status": "NEW",
+                  "price": 1088,
+                  "orderedQuantity": 18,
+                  "assignedQuantity": 18,
+                  "reserved": [
+                    {
+                      "type": "EM",
+                      "items": {
+                        "assignedQuantity": 18
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "and": [
+            {
+              "deepEquals": {
+                "method": "PUT",
+                "path": "/salesdoc/transfer/update",
+                "query": {
+                  "taskId": "2003520110068269"
+                }
+              }
+            },
+            {
+              "equals": {
+                "body": {
+                  "products": [
+                    {
+                      "lmCode": "32683740",
+                      "lineId": "1",
+                      "chosenDepartmentId": "1",
+                      "price": 78,
+                      "orderedQuantity": "90"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "taskId": "2003520110068269",
+              "status": "NEW",
+              "products": [
+                {
+                  "lineId": "1",
+                  "lmCode": "32683740",
+                  "status": "NEW",
+                  "price": 78,
+                  "orderedQuantity": 90,
+                  "assignedQuantity": 90,
+                  "reserved": [
+                    {
+                      "type": "RM",
+                      "monoPallets": {
+                        "assigned": [
+                          {
+                            "quantity": 1,
+                            "capacity": 90
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/salesdoc/transfer",
+            "query": {
+              "taskId": "2003520110068269"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "taskId": "2003520110068269",
+              "status": "NEW",
+              "shopId": 35,
+              "createdBy": "60069803",
+              "createdDate": "2020-11-01T18:22:23.177+03:00",
+              "pointOfGiveAway": "DEPARTMENT",
+              "dateOfGiveAway": "2020-11-01T16:21:07+03:00",
+              "comment": "",
+              "products": [
+                {
+                  "lineId": "1",
+                  "lmCode": "32683740",
+                  "status": "NEW",
+                  "orderedQuantity": 90,
+                  "assignedQuantity": 90,
+                  "reserved": [
+                    {
+                      "type": "RM",
+                      "monoPallets": {
+                        "assigned": [
+                          {
+                            "quantity": 1,
+                            "capacity": 90
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "barCode": "2000125314318",
+                  "images": [
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431_01.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431_02.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/12531431_03.jpg"
+                  ],
+                  "departmentId": "1",
+                  "availableStock": null,
+                  "price": 78,
+                  "priceUnit": "EA",
+                  "altPrice": null,
+                  "altPriceUnit": null,
+                  "priceCategory": "STD",
+                  "title": "Блок газобетонный Ytong D500 625х250х100 мм",
+                  "description": "Газобетонный блок – это популярный материал",
+                  "top": "1",
+                  "gamma": "A",
+                  "avsDate": null,
+                  "brand": "YTONG",
+                  "shops": [ ],
+                  "characteristics": [
+                    {
+                      "name": "Страна производства",
+                      "value": "Россия"
+                    },
+                    {
+                      "name": "Количество на м² (указанной согласно использованию и работе)",
+                      "value": "6.4"
+                    },
+                    {
+                      "name": "Класс прочности",
+                      "value": "В3.5"
+                    },
+                    {
+                      "name": "Класс морозостойкости",
+                      "value": "F100"
+                    },
+                    {
+                      "name": "Количество на м³",
+                      "value": "64.0"
+                    },
+                    {
+                      "name": "Марка",
+                      "value": "YTONG"
+                    },
+                    {
+                      "name": "Длина (мм)",
+                      "value": "625.0"
+                    },
+                    {
+                      "name": "Высота (мм)",
+                      "value": "250.0"
+                    },
+                    {
+                      "name": "Ширина (мм)",
+                      "value": "100.0"
+                    },
+                    {
+                      "name": "Вес, кг",
+                      "value": "10.5"
+                    },
+                    {
+                      "name": "Плотность (кг/м³)",
+                      "value": "500.0"
+                    },
+                    {
+                      "name": "Количество товара в паллете",
+                      "value": "90"
+                    }
+                  ],
+                  "barCodes": [
+                    "2000125314318"
+                  ],
+                  "isAvs": false,
+                  "subDepartmentId": "115",
+                  "categoryId": "40",
+                  "subCategoryId": "60",
+                  "logistic": {
+                    "weight": null,
+                    "width": null,
+                    "height": null,
+                    "depth": null
+                  },
+                  "shortTitle": null,
+                  "salesPrice": 78,
+                  "purchasePrice": null,
+                  "primeCost": null,
+                  "futurePrice": null,
+                  "futurePriceFromDate": "2020-02-21T21:00:00.000Z",
+                  "priceReasonOfChange": "Техническое изменение РЦ в связи изменением стандартной розничной цены",
+                  "recommendedPrice": 84,
+                  "priceCurrency": "RUR",
+                  "topEM": false,
+                  "supCode": 1000724001
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
