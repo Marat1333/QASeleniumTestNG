@@ -271,7 +271,7 @@ public class ProductCardPage extends MagPortalBasePage {
         return this;
     }
 
-    @Step("Проверить данные во вкладке \"Цены и запас в других магазинах\"")
+    @Step("Проверить данные во вкладке 'Цены и запас в других магазинах'")
     public void shouldNearestShopInfoIsCorrect(List<NearestShopsData> dataList) throws Exception {
         ShopCardData data;
         NearestShopsData nearestShopsData;
@@ -288,7 +288,8 @@ public class ProductCardPage extends MagPortalBasePage {
             anAssert.isEquals(data.getName(), nearestShopsData.getName(), "City name");
             anAssert.isEquals(data.getAddress(), nearestShopsData.getCityName() + ", " +
                     ParserUtil.replaceSpecialSymbols(nearestShopsData.getAddress()), "Address");
-            anAssert.isEquals(data.getPrice(), nearestShopsData.getPrice(), "Price");
+            anAssert.isEquals(ParserUtil.strToDouble(data.getPrice()), ParserUtil.strToDouble(nearestShopsData.getPrice()),
+                    "Price");
             anAssert.isEquals(data.getQuantity(), nearestShopsData.getAvailableStock(), "Stocks");
             anAssert.isEquals(data.getDistance(),
                     BigDecimal.valueOf(nearestShopsData.getDistance()).setScale(1, RoundingMode.HALF_UP).doubleValue(),

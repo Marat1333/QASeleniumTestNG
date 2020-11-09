@@ -26,10 +26,10 @@ public class ShopCardWidget extends BaseWidget {
     @WebFindBy(xpath = "./div[2]/p[2]")
     Element distance;
 
-    @WebFindBy(xpath = "./div[3]")
+    @WebFindBy(xpath = "./div[3]/div[1]")
     PriceContainer price;
 
-    @WebFindBy(xpath = "./div[3]/p")
+    @WebFindBy(xpath = "./div[3]/div[2]")
     Element availableStock;
 
     public ShopCardData grabDataFromWidget() {
