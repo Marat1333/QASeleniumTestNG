@@ -16,6 +16,7 @@ import org.mbtest.javabank.http.responses.Is;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -27,6 +28,8 @@ public class BaseMockMagPortalUiTest extends WebBaseSteps {
 
     private MountebankClient mountebankClient = new MountebankClient("https://mountebank-dev-magfront-stage.apps.lmru.tech");
     private final int DEFAULT_IMPOSTER_PORT = 4547;
+    private final String PATH_MOCK_DIRECTORY = "src" + File.separator + "main" + File.separator +
+            "resources" + File.separator + "mock" + File.separator + "magportal";
 
     private static String readFile(String path, Charset encoding)
             throws IOException {
@@ -45,6 +48,24 @@ public class BaseMockMagPortalUiTest extends WebBaseSteps {
         if (stCreate != 201)
             stCreate = mountebankClient.createImposter(imposter);
         Assert.assertEquals(stCreate, 201, "Не удалось создать default'ый Imposter");
+    }
+
+    /**
+     * Создание stub'ов на основе json файла из массива stubs, где полностью они описаны (и predicates, и responses)
+     */
+    public void setUpMockForTestCase() throws Exception {
+        String tcId = ContextProvider.getContext().getTcId();
+        String className = this.getClass().getSimpleName().toLowerCase();
+        String defaultMockPath = PATH_MOCK_DIRECTORY + File.separator + className + File.separator + "default.json";
+        if (new File(defaultMockPath).exists()) {
+            String defaultContent = readFile(defaultMockPath, StandardCharsets.UTF_8);
+            int updSt = mountebankClient.addStubsFromArray((JSONObject) new JSONParser().parse(defaultContent), DEFAULT_IMPOSTER_PORT);
+            Assert.assertEquals(updSt, 200, "Не удалось добавить default stubs для " + tcId);
+        }
+        String content = readFile(PATH_MOCK_DIRECTORY + File.separator + className + File.separator + tcId + ".json",
+                StandardCharsets.UTF_8);
+        int updSt = mountebankClient.addStubsFromArray((JSONObject) new JSONParser().parse(content), DEFAULT_IMPOSTER_PORT);
+        Assert.assertEquals(updSt, 200, "Не удалось добавить stubs для " + tcId);
     }
 
     protected void createStub(PredicateType predicateType, CommonLegoRequest<?> request, int responseIndex) throws Exception {

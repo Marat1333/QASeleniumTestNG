@@ -3,7 +3,7 @@
 #---------------------------------
 settings:
   platform: windows
-  browser: chrome
+  browser: mobilechrome
   #proxy: localhost:8080
   timeout: 30 # default wait timeout in seconds
 
@@ -21,6 +21,14 @@ capabilities:
       experimentalOptions:
         prefs:
           download.default_directory: C:\downloads
+
+    mobilechrome:
+      platformVersion: Windows 10
+      acceptInsecureCerts: true
+      experimentalOptions:
+        mobileEmulation:
+          deviceName: Nexus 5
+
   linux:
     chrome:
       acceptInsecureCerts: true

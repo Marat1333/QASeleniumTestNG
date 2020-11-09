@@ -11,6 +11,7 @@ import com.leroy.magmobile.api.data.ruptures.ResRuptureSessionDataList;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductData;
 import com.leroy.magmobile.api.requests.ruptures.RupturesSessionsRequest;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
+import org.assertj.core.util.Arrays;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
