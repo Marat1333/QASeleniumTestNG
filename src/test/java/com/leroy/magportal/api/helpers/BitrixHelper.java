@@ -109,9 +109,6 @@ public class BitrixHelper extends BaseHelper {
 
     private BitrixSolutionPayload createBitrixPayload(OnlineOrderTypeData orderData,
             Integer productCount, SimpleCustomerData customerData) {
-        if (orderData.getShopId() != null) {
-            orderData.setShopId(userSessionData().getUserShopId());
-        }
 
         ShopData shop = getShopData(orderData);
         BitrixSolutionPayload payload = makeGeneralPayload(orderData, shop);

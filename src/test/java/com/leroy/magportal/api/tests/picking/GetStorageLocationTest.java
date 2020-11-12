@@ -1,8 +1,7 @@
-package com.leroy.magportal.api.tests.onlineOrders;
+package com.leroy.magportal.api.tests.picking;
 
 import static com.leroy.core.matchers.IsSuccessful.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.not;
 
@@ -21,7 +20,7 @@ public class GetStorageLocationTest extends BaseMagPortalApiTest {
     private PickingTaskClient pickingTaskClient;
 
     private StorageLocationData storageLocationData;
-    private final String shopId = "141";
+    private final String shopId = "13";
 
     @Test(description = "C23427263 Get Storage Location")
     public void testGetStorageLocation() {
@@ -31,7 +30,7 @@ public class GetStorageLocationTest extends BaseMagPortalApiTest {
         storageLocationData = response.asJson();
     }
 
-    @Test(description = "C23427264 GetStorageLocation for non-default ShopId", dependsOnMethods = {
+    @Test(description = "C23427264 Get Storage Location for non-default ShopId", dependsOnMethods = {
             "testGetStorageLocation"})
     public void testGetStorageLocationDiffShop() {
         Response<StorageLocationData> response = pickingTaskClient.getStorageLocation(shopId);
