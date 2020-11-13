@@ -1,17 +1,15 @@
-package com.leroy.magportal.api.tests.onlineOrders.deliveryOrders;
+package com.leroy.magportal.api.tests.offlineOrders;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.constants.sales.SalesDocumentsConst.PickingStatus;
 import com.leroy.constants.sales.SalesDocumentsConst.States;
+import com.leroy.magmobile.api.data.sales.orders.OrderData;
 import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.clients.PickingTaskClient;
-import com.leroy.magportal.api.constants.OnlineOrderTypeConst;
-import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
-import com.leroy.magportal.api.constants.PaymentStatusEnum;
 import com.leroy.magportal.api.data.onlineOrders.OnlineOrderData;
 import com.leroy.magportal.api.data.picking.PickingTaskData;
-import com.leroy.magportal.api.helpers.BitrixHelper;
+import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.magportal.api.helpers.PaymentHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
 import io.qameta.allure.Step;
@@ -19,10 +17,10 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-public class DoorWorkflowFullTest extends BaseMagPortalApiTest {
+public class WorkflowFullTest extends BaseMagPortalApiTest {
 
     @Inject
-    private BitrixHelper bitrixHelper;
+    private PAOHelper paoHelper;
     @Inject
     private PaymentHelper paymentHelper;
     @Inject
@@ -33,26 +31,25 @@ public class DoorWorkflowFullTest extends BaseMagPortalApiTest {
     private String currentOrderId;
     private String currentTaskId;
     private int currentLocationsCount;
-    private OnlineOrderTypeData currentOrderType;
 
 
     @BeforeClass
     private void setUp() {
-        currentOrderType = OnlineOrderTypeConst.DELIVERY_TO_DOOR;
-        currentOrderId = bitrixHelper.createOnlineOrder(currentOrderType).getSolutionId();
+        OrderData orderData = paoHelper.createConfirmedOrder(paoHelper.makeCartProducts(3), true);
+        currentOrderId = orderData.getOrderId();
 
         currentTaskId = pickingTaskClient.searchForPickingTasks(currentOrderId).asJson().getItems()
                 .stream().findFirst().get().getTaskId();
     }
 
-    @Test(description = "C22732658 ALLOWED_FOR_PICKING -> PICKING_IN_PROCESS", priority = 1)
+    @Test(description = "C23438388 ALLOWED_FOR_PICKING -> PICKING_IN_PROCESS", priority = 1)
     public void testStartPicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .startPicking(currentTaskId);
         assertResult(response, States.PICKING_IN_PROGRESS, PickingStatus.PICKING_IN_PROGRESS);
     }
 
-    @Test(description = "C3221520 PICKING_IN_PROGRESS -> PAUSE_PICKING (pause-picking)", dependsOnMethods = {
+    @Test(description = "C23438389 PICKING_IN_PROGRESS -> PAUSE_PICKING (pause-picking)", dependsOnMethods = {
             "testStartPicking"}, priority = 2)
     public void testPausePicking() {
         Response<PickingTaskData> response = pickingTaskClient
@@ -60,7 +57,7 @@ public class DoorWorkflowFullTest extends BaseMagPortalApiTest {
         assertResult(response, States.PICKING_IN_PROGRESS, PickingStatus.PAUSE_PICKING);
     }
 
-    @Test(description = "C3221521 PAUSE_PICKING -> PICKING_IN_PROCESS (unpause-picking)", dependsOnMethods = {
+    @Test(description = "C23438390 PAUSE_PICKING -> PICKING_IN_PROCESS (unpause-picking)", dependsOnMethods = {
             "testPausePicking"}, priority = 3)
     public void testResumePicking() {
         Response<PickingTaskData> response = pickingTaskClient
@@ -68,7 +65,7 @@ public class DoorWorkflowFullTest extends BaseMagPortalApiTest {
         assertResult(response, States.PICKING_IN_PROGRESS, PickingStatus.PICKING_IN_PROGRESS);
     }
 
-    @Test(description = "C3233605 PICKING_IN_PROGRESS -> PARTIALLY_PICKED", dependsOnMethods = {
+    @Test(description = "C23438391 PICKING_IN_PROGRESS -> PARTIALLY_PICKED", dependsOnMethods = {
             "testStartPicking"}, priority = 4)
     public void testPartiallyCompletePicking() {
         Response<PickingTaskData> response = pickingTaskClient
@@ -76,7 +73,7 @@ public class DoorWorkflowFullTest extends BaseMagPortalApiTest {
         assertResult(response, States.PARTIALLY_PICKED, PickingStatus.PARTIALLY_PICKED);
     }
 
-    @Test(description = "C3233607 PARTIALLY_PICKED: NEW Storage Location", priority = 5)
+    @Test(description = "C23438392 PARTIALLY_PICKED: NEW Storage Location", priority = 5)
     public void testNewStorageLocation() {
         currentLocationsCount = 3;
         Response<PickingTaskData> response = pickingTaskClient
@@ -85,7 +82,7 @@ public class DoorWorkflowFullTest extends BaseMagPortalApiTest {
         assertLocationChanged();
     }
 
-    @Test(description = "C3233608 PARTIALLY_PICKED: Updated Storage Location", priority = 6)
+    @Test(description = "C23438393 PARTIALLY_PICKED: Updated Storage Location", priority = 6)
     public void testUpdateStorageLocation() {
         currentLocationsCount = 1;
         Response<PickingTaskData> response = pickingTaskClient
@@ -94,24 +91,14 @@ public class DoorWorkflowFullTest extends BaseMagPortalApiTest {
         assertLocationChanged();
     }
 
-    @Test(description = "C3233609 PARTIALLY_PICKED -> PICKED_WAIT", dependsOnMethods = {
-            "testStartPicking"}, priority = 7)
-    public void testCompletePicking() {
+    @Test(description = "C23438394 PARTIALLY_PICKED -> PICKED", priority = 7)
+    public void testPicked() {
         Response<PickingTaskData> response = pickingTaskClient
                 .completePicking(currentTaskId, true);
-        assertResult(response, States.PICKED_WAIT, PickingStatus.PICKED);
-    }
-
-    @Test(description = "C23426941 PICKED_WAIT -> PICKED", dependsOnMethods = {
-            "testCompletePicking"}, priority = 8)
-    public void testPicked() {
-        paymentHelper.makePaid(currentOrderId);
-        orderClient.waitUntilOrderGetStatus(currentOrderId, States.PICKED, PaymentStatusEnum.PAID);
-        Response<?> response = pickingTaskClient.getPickingTask(currentTaskId);//just for assert
         assertResult(response, States.PICKED, PickingStatus.PICKED);
     }
 
-    @Test(description = "C3233611 PICKED: UPDATE Storage Location", priority = 9)
+    @Test(description = "C23438395 PICKED: UPDATE Storage Location", priority = 8)
     public void testUpdateStorageLocationPicked() {
         currentLocationsCount = 5;
         Response<PickingTaskData> response = pickingTaskClient
@@ -120,50 +107,25 @@ public class DoorWorkflowFullTest extends BaseMagPortalApiTest {
         assertLocationChanged();
     }
 
-    @Test(description = "C3233617 PICKED -> PARTIALLY_SHIPPED", dependsOnMethods = {
-            "testPicked"}, priority = 10)
-    public void testPartiallyShipped() {
+    @Test(description = "C23438396 PICKED -> PARTIALLY_GIVEN_AWAY", dependsOnMethods = {
+            "testPicked"}, priority = 9)
+    public void testPartiallyGivenAway() {
+        paymentHelper.makePaid(currentOrderId);
         Response<JsonNode> response = orderClient.giveAway(currentOrderId, false);
-        orderClient.assertWorkflowResult(response, currentOrderId, States.PARTIALLY_SHIPPED);
+        orderClient.assertWorkflowResult(response, currentOrderId, States.PARTIALLY_GIVEN_AWAY);
     }
 
-    @Test(description = "C3233619 PARTIALLY_SHIPPED -> SHIPPED", dependsOnMethods = {
-            "testPicked"}, priority = 11)
-    public void testShipped() {
+    @Test(description = "C23438397 PARTIALLY_GIVEN_AWAY -> GIVEN_AWAY", dependsOnMethods = {
+            "testPicked"}, priority = 10)
+    public void testGivenAway() {
         Response<JsonNode> response = orderClient.giveAway(currentOrderId, true);
-        orderClient.assertWorkflowResult(response, currentOrderId, States.SHIPPED);
+        orderClient.assertWorkflowResult(response, currentOrderId, States.GIVEN_AWAY);
     }
 
-    @Test(description = "C23426942 SHIPPED -> PARTIALLY_DELIVERED", dependsOnMethods = {
-            "testShipped"}, priority = 12)
-    public void testPartiallyDeliver() {
-        orderClient.waitUntilOrderGetStatus(currentOrderId,
-                States.ON_DELIVERY, PaymentStatusEnum.PAID);
-        Response<JsonNode> response = orderClient.deliver(currentOrderId, false);
-        orderClient.assertWorkflowResult(response, currentOrderId, States.PARTIALLY_DELIVERED);
-    }
-
-    @Test(description = "C23437681 SHIPPED -> NO DELIVERED", priority = 13)
-    public void testNothingDelivered() {
-        setUp();
-        orderClient.moveNewOrderToStatus(currentOrderId, States.GIVEN_AWAY);
-        Response<JsonNode> response = orderClient.deliver(currentOrderId, null);
-        orderClient.assertWorkflowResult(response, currentOrderId,
-                States.CANCELLED_BY_CUSTOMER_ON_DELIVERY);
-    }
-
-    @Test(description = "C23426946 SHIPPED -> DELIVERED", priority = 14)
-    public void testDelivered() {
-        setUp();
-        orderClient.moveNewOrderToStatus(currentOrderId, States.GIVEN_AWAY);
-        Response<JsonNode> response = orderClient.deliver(currentOrderId, true);
-        orderClient.assertWorkflowResult(response, currentOrderId, States.DELIVERED);
-    }
-
-    @Test(description = "C23438398 GET Order", priority = 15)
+    @Test(description = "C23438403 GET Order", priority = 15)
     public void testGetOrder() {
         Response<OnlineOrderData> response = orderClient.getOnlineOrder(currentOrderId);
-        orderClient.assertGetOrderResult(response, currentOrderType);
+        orderClient.assertGetOrderResult(response, null);
     }
 
     ////VERIFICATION

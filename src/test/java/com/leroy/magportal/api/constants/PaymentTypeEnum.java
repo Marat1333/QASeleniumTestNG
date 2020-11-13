@@ -15,6 +15,14 @@ public enum PaymentTypeEnum {
         this.mashName = mashName;
     }
 
+    public static String getMashNameByName(String val) {
+        for (PaymentTypeEnum paymentType : values()) {
+            if (paymentType.getName().equals(val))
+                return paymentType.getMashName();
+        }
+        return null;
+    }
+
     public String getName() {
         return name;
     }

@@ -109,9 +109,6 @@ public class BitrixHelper extends BaseHelper {
 
     private BitrixSolutionPayload createBitrixPayload(OnlineOrderTypeData orderData,
             Integer productCount, SimpleCustomerData customerData) {
-        if (orderData.getShopId() != null) {
-            orderData.setShopId(userSessionData().getUserShopId());
-        }
 
         ShopData shop = getShopData(orderData);
         BitrixSolutionPayload payload = makeGeneralPayload(orderData, shop);
@@ -143,6 +140,7 @@ public class BitrixHelper extends BaseHelper {
     private BitrixSolutionPayload.Basket productItemDataToPayload(ProductItemData product) {
         BitrixSolutionPayload.Basket basket = new BitrixSolutionPayload.Basket();
         String price = "99.99";
+        double weight = 0.01;
         if (product.getPrice() != null) {
             price = product.getPrice().toString();
         }
@@ -153,6 +151,7 @@ public class BitrixHelper extends BaseHelper {
         basket.setPrice(price);
         basket.setTax(18);
         basket.setQuantity("10");//TODO: it's make sense to parametrise
+        basket.setWeight(weight);
         //TODO: ADD LT Products
         return basket;
     }
