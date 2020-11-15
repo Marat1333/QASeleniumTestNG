@@ -5,7 +5,7 @@
         {
           "deepEquals": {
             "method": "GET",
-            "path": "/picking/v1/pickingTasks/search",
+            "path": "/v1/pickingTasks/search",
             "query": {
               "page": "1",
               "pageSize": "10",
@@ -146,7 +146,7 @@
         {
           "deepEquals": {
             "method": "GET",
-            "path": "/picking/v1/pickingTasks/search",
+            "path": "/v1/pickingTasks/search",
             "query": {
               "page": "1",
               "pageSize": "10",
@@ -416,7 +416,7 @@
         {
           "deepEquals": {
             "method": "GET",
-            "path": "/picking/v1/pickingTasks/search",
+            "path": "/v1/pickingTasks/search",
             "query": {
               "page": "1",
               "pageSize": "10",

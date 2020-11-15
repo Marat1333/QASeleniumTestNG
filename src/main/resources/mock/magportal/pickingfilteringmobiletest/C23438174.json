@@ -1,0 +1,113 @@
+{
+  "stubs": [
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/v1/pickingTasks/search",
+            "query": {
+              "page": "1",
+              "pageSize": "10",
+              "departmentId": "5",
+              "existCurrentStorageLocation": "false",
+              "orderId": "000023438174",
+              "shopId": "35",
+              "taskStatus": "ALLOWED_FOR_PICKING,PICKING_IN_PROGRESS,PAUSE_PICKING,PARTIALLY_PICKED,PICKED"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [
+                {
+                  "taskId": "3000000000000001",
+                  "shopId": 35,
+                  "delivery": false,
+                  "taskStatus": "PARTIALLY_PICKED",
+                  "extOrderId": "200701029274",
+                  "pointOfGiveAway": "HOME_DELIVERY",
+                  "dateOfGiveAway": "2018-11-28T00:00:00Z",
+                  "documentVersion": 6,
+                  "pickingZone": "LS",
+                  "pickingDeadline": "2018-11-27T22:00:00Z",
+                  "buId": 9,
+                  "priority": "MEDIUM",
+                  "customerId": "6107624",
+                  "employeeId": "60069806",
+                  "customerType": "PERSON",
+                  "offline": false,
+                  "linkedObjects": [
+                    {
+                      "objectType": "FF_CUSTOMER_ORDER",
+                      "objectId": "1003520070260647",
+                      "objectStatus": "PARTIALLY_PICKED",
+                      "objectLines": [
+                        {
+                          "objectLineId": "1",
+                          "taskLineId": "1"
+                        }
+                      ]
+                    }
+                  ],
+                  "creationInformation": {
+                    "createdBy": "Bitrix",
+                    "created": "2020-07-17T02:44:09.845Z"
+                  },
+                  "lastUpdateInformation": {
+                    "updatedBy": "60069806",
+                    "updated": "2020-08-26T05:36:45.211Z"
+                  },
+                  "departmentId": [
+                    "56"
+                  ],
+                  "departments": [
+                    "4",
+                    "11",
+                    "15",
+                    "10",
+                    "5",
+                    "7",
+                    "3",
+                    "9",
+                    "6"
+                  ],
+                  "totalWeight": 845.217,
+                  "maxSize": 4,
+                  "products": [
+                    {
+                      "title": "Рулетка 5 м х 19 мм",
+                      "lmCode": "15490516",
+                      "lineId": "1",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    }
+                  ],
+                  "employeeName": "Иван",
+                  "orderId": "000023438174",
+                  "channel": "ONLINE",
+                  "customerName": "Егор",
+                  "customerSurname": "Васин",
+                  "paymentStatus": null,
+                  "paymentType": null
+                }
+              ],
+              "totalCount": 423
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

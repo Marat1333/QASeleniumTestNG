@@ -1,0 +1,923 @@
+{
+  "stubs": [
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/v1/pickingTasks/search",
+            "query": {
+              "page": "1",
+              "pageSize": "10",
+              "departmentId": "1",
+              "shopId": "35",
+              "taskStatus": "ALLOWED_FOR_PICKING,PICKING_IN_PROGRESS,PAUSE_PICKING,PARTIALLY_PICKED,PICKED"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [
+                {
+                  "taskId": "3003520060244837",
+                  "shopId": 35,
+                  "delivery": false,
+                  "taskStatus": "PICKING_IN_PROGRESS",
+                  "extOrderId": "757866195192",
+                  "pointOfGiveAway": "PICKUP",
+                  "dateOfGiveAway": "2019-10-20T12:00:00Z",
+                  "documentVersion": 3,
+                  "pickingZone": "LS",
+                  "pickingDeadline": "2019-10-20T10:00:00Z",
+                  "buId": 9,
+                  "priority": "URGENT",
+                  "customerId": "BITRIX",
+                  "employeeId": "60069808",
+                  "comment": "nk_test",
+                  "customerType": null,
+                  "offline": false,
+                  "linkedObjects": [
+                    {
+                      "objectType": "FF_CUSTOMER_ORDER",
+                      "objectId": "1003520060244836",
+                      "objectStatus": "PICKING_IN_PROGRESS",
+                      "objectLines": [
+                        {
+                          "objectLineId": "1",
+                          "taskLineId": "1"
+                        }
+                      ]
+                    }
+                  ],
+                  "creationInformation": {
+                    "createdBy": "60040000",
+                    "created": "2020-06-09T16:48:12.946Z"
+                  },
+                  "lastUpdateInformation": {
+                    "updatedBy": "UNKNOWN",
+                    "updated": "2020-07-13T08:20:35.56Z"
+                  },
+                  "departmentId": [
+                    "1"
+                  ],
+                  "departments": [
+                    "1"
+                  ],
+                  "totalWeight": 30,
+                  "maxSize": 0.61,
+                  "products": [
+                    {
+                      "title": "Штукатурка гипсовая Knauf Айсберг 30 кг",
+                      "lmCode": "18385375",
+                      "lineId": "1",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    }
+                  ],
+                  "employeeName": "Сергей",
+                  "orderId": "757866195192",
+                  "channel": "ONLINE",
+                  "customerName": null,
+                  "customerSurname": null,
+                  "paymentStatus": null,
+                  "paymentType": null
+                },
+                {
+                  "taskId": "3003520080267379",
+                  "shopId": 35,
+                  "delivery": false,
+                  "taskStatus": "PICKED",
+                  "extOrderId": "773200496455",
+                  "pointOfGiveAway": "PICKUP",
+                  "dateOfGiveAway": "2020-04-22T12:00:00Z",
+                  "documentVersion": 5,
+                  "pickingZone": "FUTURE_STOCK",
+                  "pickingDeadline": "2020-04-22T10:00:00Z",
+                  "buId": 9,
+                  "priority": "URGENT",
+                  "customerId": "BITRIX",
+                  "employeeId": "60069805",
+                  "comment": "andrey_k_test",
+                  "customerType": null,
+                  "offline": true,
+                  "linkedObjects": [
+                    {
+                      "objectType": "FF_CUSTOMER_ORDER",
+                      "objectId": "1003520080267377",
+                      "objectStatus": "PICKING_IN_PROGRESS",
+                      "objectLines": [
+                        {
+                          "objectLineId": "3",
+                          "taskLineId": "3"
+                        }
+                      ]
+                    }
+                  ],
+                  "creationInformation": {
+                    "createdBy": "60049994",
+                    "created": "2020-08-03T10:49:38.487Z"
+                  },
+                  "lastUpdateInformation": {
+                    "updatedBy": "60069805",
+                    "updated": "2020-10-02T10:10:01.448Z"
+                  },
+                  "departmentId": [
+                    "1"
+                  ],
+                  "departments": [
+                    "1"
+                  ],
+                  "totalWeight": 1.599,
+                  "maxSize": 0.336,
+                  "products": [
+                    {
+                      "title": "Угол желоба на 90° внешний цвет красный",
+                      "lmCode": "10008938",
+                      "lineId": "3",
+                      "lineStatus": "PICKED",
+                      "orderedQuantity": 3,
+                      "confirmedQuantity": 3,
+                      "assignedQuantity": 3,
+                      "pickedQuantity": 3,
+                      "operations": [
+                        {
+                          "operationId": "52ad688d-e2dc-43c4-899b-79d3fbe5e6e5",
+                          "type": "PICK",
+                          "quantity": 3,
+                          "timeStamp": "2020-10-02T10:10:01.448Z",
+                          "updatedBy": "60069805"
+                        }
+                      ],
+                      "source": [
+                        {
+                          "assignedItems": 3,
+                          "type": "FUTURE_STOCK"
+                        }
+                      ]
+                    }
+                  ],
+                  "employeeName": "Семён",
+                  "orderId": "773200496455",
+                  "channel": "OFFLINE",
+                  "customerName": null,
+                  "customerSurname": null,
+                  "paymentStatus": null,
+                  "paymentType": null
+                }
+              ],
+              "totalCount": 2
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/v1/pickingTasks/search",
+            "query": {
+              "page": "1",
+              "pageSize": "10",
+              "departmentId": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15",
+              "shopId": "35",
+              "taskStatus": "ALLOWED_FOR_PICKING,PICKING_IN_PROGRESS,PAUSE_PICKING,PARTIALLY_PICKED,PICKED"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [
+                {
+                  "taskId": "3003520060246483",
+                  "shopId": 35,
+                  "delivery": false,
+                  "taskStatus": "PICKED",
+                  "extOrderId": "200600751807",
+                  "pointOfGiveAway": "HOME_DELIVERY",
+                  "dateOfGiveAway": "2019-08-21T00:00:00Z",
+                  "documentVersion": 4,
+                  "pickingZone": "LS",
+                  "pickingDeadline": "2019-08-20T22:00:00Z",
+                  "buId": 9,
+                  "priority": "MEDIUM",
+                  "employeeId": "60069806",
+                  "customerType": "PERSON",
+                  "offline": false,
+                  "linkedObjects": [
+                    {
+                      "objectType": "FF_CUSTOMER_ORDER",
+                      "objectId": "1003520060246482",
+                      "objectStatus": "GIVEN_AWAY",
+                      "objectLines": [
+                        {
+                          "objectLineId": "1",
+                          "taskLineId": "1"
+                        },
+                        {
+                          "objectLineId": "2",
+                          "taskLineId": "2"
+                        }
+                      ]
+                    }
+                  ],
+                  "creationInformation": {
+                    "createdBy": "Bitrix",
+                    "created": "2020-06-15T09:57:42.775Z"
+                  },
+                  "lastUpdateInformation": {
+                    "updatedBy": "60069806",
+                    "updated": "2020-06-15T09:59:30.476Z"
+                  },
+                  "departmentId": [
+                    "9"
+                  ],
+                  "departments": [
+                    "9"
+                  ],
+                  "totalWeight": 0.037,
+                  "maxSize": 0.113,
+                  "products": [
+                    {
+                      "title": "Семена Горох «Динга»",
+                      "lmCode": "17250997",
+                      "lineId": "1",
+                      "lineStatus": "PICKED",
+                      "orderedQuantity": 5,
+                      "confirmedQuantity": 5,
+                      "assignedQuantity": 5,
+                      "pickedQuantity": 5,
+                      "operations": [
+                        {
+                          "operationId": "dd5fd08a-c6cf-499a-9dc8-79a681d6e97d",
+                          "type": "PICK",
+                          "quantity": 5,
+                          "timeStamp": "2020-06-15T09:59:30.476Z",
+                          "updatedBy": "60069806"
+                        }
+                      ],
+                      "source": [
+                        {
+                          "assignedItems": 5,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Флокс «Гобелен» смесь окрасок БП",
+                      "lmCode": "18580656",
+                      "lineId": "2",
+                      "lineStatus": "PICKED",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "pickedQuantity": 2,
+                      "operations": [
+                        {
+                          "operationId": "dd5fd08a-c6cf-499a-9dc8-79a681d6e97d",
+                          "type": "PICK",
+                          "quantity": 2,
+                          "timeStamp": "2020-06-15T09:59:30.476Z",
+                          "updatedBy": "60069806"
+                        }
+                      ],
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    }
+                  ],
+                  "employeeName": "Иван",
+                  "orderId": "200600751807",
+                  "channel": "ONLINE",
+                  "customerName": "Тест",
+                  "customerSurname": "Тест",
+                  "paymentStatus": null,
+                  "paymentType": null
+                }
+              ],
+              "totalCount": 2632
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/v1/pickingTasks/search",
+            "query": {
+              "page": "1",
+              "pageSize": "10",
+              "departmentId": "1,5",
+              "pickingZone":"LS",
+              "shopId": "35",
+              "taskStatus": "ALLOWED_FOR_PICKING"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [
+                {
+                  "taskId": "3003520070264916",
+                  "shopId": 35,
+                  "delivery": false,
+                  "taskStatus": "ALLOWED_FOR_PICKING",
+                  "extOrderId": "200701044169",
+                  "pointOfGiveAway": "PICKUP",
+                  "dateOfGiveAway": "2020-07-28T12:01:06.64Z",
+                  "documentVersion": 2,
+                  "pickingZone": "LS",
+                  "pickingDeadline": "2020-07-27T11:16:17.074Z",
+                  "buId": 9,
+                  "priority": "HIGH",
+                  "customerType": "PERSON",
+                  "offline": true,
+                  "linkedObjects": [
+                    {
+                      "objectType": "FF_CUSTOMER_ORDER",
+                      "objectId": "1003520070264896",
+                      "objectStatus": "CONFIRMED",
+                      "objectLines": [
+                        {
+                          "objectLineId": "1",
+                          "taskLineId": "1"
+                        },
+                        {
+                          "objectLineId": "2",
+                          "taskLineId": "2"
+                        }
+                      ]
+                    }
+                  ],
+                  "creationInformation": {
+                    "createdBy": "60069803",
+                    "created": "2020-07-27T10:46:16.867Z"
+                  },
+                  "lastUpdateInformation": {
+                    "updatedBy": "UNKNOWN",
+                    "updated": "2020-07-27T10:46:17.57Z"
+                  },
+                  "departmentId": [
+                    "1"
+                  ],
+                  "departments": [
+                    "1"
+                  ],
+                  "totalWeight": 7.736,
+                  "maxSize": 2,
+                  "products": [
+                    {
+                      "title": "Профнастил С8 0.35 мм 1200х2000 мм коричневый RAL 8017",
+                      "lmCode": "11756217",
+                      "lineId": "1",
+                      "lineStatus": "ALLOWED_FOR_PICKING",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Стеклохолст 1х50 м",
+                      "lmCode": "11434955",
+                      "lineId": "2",
+                      "lineStatus": "ALLOWED_FOR_PICKING",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    }
+                  ],
+                  "employeeName": null,
+                  "orderId": "200701044169",
+                  "channel": "OFFLINE",
+                  "customerName": "РомаРома",
+                  "customerSurname": null,
+                  "paymentStatus": null,
+                  "paymentType": null
+                },
+                {
+                  "taskId": "3003520070265270",
+                  "shopId": 35,
+                  "delivery": false,
+                  "taskStatus": "ALLOWED_FOR_PICKING",
+                  "extOrderId": "200701045581",
+                  "pointOfGiveAway": "PICKUP",
+                  "dateOfGiveAway": "2020-07-28T06:59:38.547Z",
+                  "documentVersion": 2,
+                  "pickingZone": "LS",
+                  "pickingDeadline": "2020-07-28T07:32:38.157Z",
+                  "buId": 9,
+                  "priority": "HIGH",
+                  "customerType": "PERSON",
+                  "offline": true,
+                  "linkedObjects": [
+                    {
+                      "objectType": "FF_CUSTOMER_ORDER",
+                      "objectId": "1003520070265267",
+                      "objectStatus": "CONFIRMED",
+                      "objectLines": [
+                        {
+                          "objectLineId": "1",
+                          "taskLineId": "1"
+                        }
+                      ]
+                    }
+                  ],
+                  "creationInformation": {
+                    "createdBy": "60069804",
+                    "created": "2020-07-28T07:02:37.971Z"
+                  },
+                  "lastUpdateInformation": {
+                    "updatedBy": "UNKNOWN",
+                    "updated": "2020-07-28T07:02:38.628Z"
+                  },
+                  "departmentId": [
+                    "1"
+                  ],
+                  "departments": [
+                    "1"
+                  ],
+                  "totalWeight": 6.3,
+                  "maxSize": 2,
+                  "products": [
+                    {
+                      "title": "Профнастил С8 0.35 мм 1200х2000 мм коричневый RAL 8017",
+                      "lmCode": "11756217",
+                      "lineId": "1",
+                      "lineStatus": "ALLOWED_FOR_PICKING",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    }
+                  ],
+                  "employeeName": null,
+                  "orderId": "200701045581",
+                  "channel": "OFFLINE",
+                  "customerName": "Ирина",
+                  "customerSurname": null,
+                  "paymentStatus": null,
+                  "paymentType": null
+                },
+                {
+                  "taskId": "3003520070265285",
+                  "shopId": 35,
+                  "delivery": false,
+                  "taskStatus": "ALLOWED_FOR_PICKING",
+                  "extOrderId": "200701045630",
+                  "pointOfGiveAway": "PICKUP",
+                  "dateOfGiveAway": "2020-07-28T07:44:35.751Z",
+                  "documentVersion": 2,
+                  "pickingZone": "LS",
+                  "pickingDeadline": "2020-07-28T08:21:04.483Z",
+                  "buId": 9,
+                  "priority": "URGENT",
+                  "customerType": "PERSON",
+                  "offline": true,
+                  "linkedObjects": [
+                    {
+                      "objectType": "FF_CUSTOMER_ORDER",
+                      "objectId": "1003520070265283",
+                      "objectStatus": "CONFIRMED",
+                      "objectLines": [
+                        {
+                          "objectLineId": "1",
+                          "taskLineId": "1"
+                        }
+                      ]
+                    }
+                  ],
+                  "creationInformation": {
+                    "createdBy": "60069806",
+                    "created": "2020-07-28T07:51:04.286Z"
+                  },
+                  "lastUpdateInformation": {
+                    "updatedBy": "UNKNOWN",
+                    "updated": "2020-07-28T07:51:05.545Z"
+                  },
+                  "departmentId": [
+                    "1"
+                  ],
+                  "departments": [
+                    "1"
+                  ],
+                  "totalWeight": 6.3,
+                  "maxSize": 2,
+                  "products": [
+                    {
+                      "title": "Профнастил С8 0.35 мм 1200х2000 мм коричневый RAL 8017",
+                      "lmCode": "11756217",
+                      "lineId": "1",
+                      "lineStatus": "ALLOWED_FOR_PICKING",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    }
+                  ],
+                  "employeeName": null,
+                  "orderId": "200701045630",
+                  "channel": "OFFLINE",
+                  "customerName": "23e32e23e",
+                  "customerSurname": null,
+                  "paymentStatus": null,
+                  "paymentType": null
+                },
+                {
+                  "taskId": "3003520070265286",
+                  "shopId": 35,
+                  "delivery": false,
+                  "taskStatus": "ALLOWED_FOR_PICKING",
+                  "extOrderId": "200701045636",
+                  "pointOfGiveAway": "PICKUP",
+                  "dateOfGiveAway": "2020-07-28T07:50:39.251Z",
+                  "documentVersion": 2,
+                  "pickingZone": "LS",
+                  "pickingDeadline": "2020-07-28T08:23:12.824Z",
+                  "buId": 9,
+                  "priority": "URGENT",
+                  "customerType": "PERSON",
+                  "offline": true,
+                  "linkedObjects": [
+                    {
+                      "objectType": "FF_CUSTOMER_ORDER",
+                      "objectId": "1003520070265284",
+                      "objectStatus": "CONFIRMED",
+                      "objectLines": [
+                        {
+                          "objectLineId": "1",
+                          "taskLineId": "1"
+                        }
+                      ]
+                    }
+                  ],
+                  "creationInformation": {
+                    "createdBy": "60069806",
+                    "created": "2020-07-28T07:53:12.612Z"
+                  },
+                  "lastUpdateInformation": {
+                    "updatedBy": "UNKNOWN",
+                    "updated": "2020-07-28T07:53:23.259Z"
+                  },
+                  "departmentId": [
+                    "1"
+                  ],
+                  "departments": [
+                    "1"
+                  ],
+                  "totalWeight": 22.8,
+                  "maxSize": 2.5,
+                  "products": [
+                    {
+                      "title": "Гипсокартон 2500x1200x9.5 мм",
+                      "lmCode": "12599030",
+                      "lineId": "1",
+                      "lineStatus": "ALLOWED_FOR_PICKING",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    }
+                  ],
+                  "employeeName": null,
+                  "orderId": "200701045636",
+                  "channel": "OFFLINE",
+                  "customerName": "Юлия",
+                  "customerSurname": "Сваткова",
+                  "paymentStatus": null,
+                  "paymentType": null
+                },
+                {
+                  "taskId": "3003520070265290",
+                  "shopId": 35,
+                  "delivery": false,
+                  "taskStatus": "ALLOWED_FOR_PICKING",
+                  "extOrderId": "200701045648",
+                  "pointOfGiveAway": "PICKUP",
+                  "dateOfGiveAway": "2020-07-28T08:01:38.2Z",
+                  "documentVersion": 2,
+                  "pickingZone": "LS",
+                  "pickingDeadline": "2020-07-28T08:32:46.549Z",
+                  "buId": 9,
+                  "priority": "URGENT",
+                  "customerType": "PERSON",
+                  "offline": true,
+                  "linkedObjects": [
+                    {
+                      "objectType": "FF_CUSTOMER_ORDER",
+                      "objectId": "1003520070265289",
+                      "objectStatus": "CONFIRMED",
+                      "objectLines": [
+                        {
+                          "objectLineId": "1",
+                          "taskLineId": "1"
+                        }
+                      ]
+                    }
+                  ],
+                  "creationInformation": {
+                    "createdBy": "60069806",
+                    "created": "2020-07-28T08:02:46.352Z"
+                  },
+                  "lastUpdateInformation": {
+                    "updatedBy": "UNKNOWN",
+                    "updated": "2020-07-28T08:02:57.017Z"
+                  },
+                  "departmentId": [
+                    "1"
+                  ],
+                  "departments": [
+                    "1"
+                  ],
+                  "totalWeight": 22.8,
+                  "maxSize": 2.5,
+                  "products": [
+                    {
+                      "title": "Гипсокартон 2500x1200x9.5 мм",
+                      "lmCode": "12599030",
+                      "lineId": "1",
+                      "lineStatus": "ALLOWED_FOR_PICKING",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    }
+                  ],
+                  "employeeName": null,
+                  "orderId": "200701045648",
+                  "channel": "OFFLINE",
+                  "customerName": "Юлия",
+                  "customerSurname": "Сваткова",
+                  "paymentStatus": null,
+                  "paymentType": null
+                },
+                {
+                  "taskId": "3003520080268302",
+                  "shopId": 35,
+                  "delivery": false,
+                  "taskStatus": "ALLOWED_FOR_PICKING",
+                  "extOrderId": "200801057593",
+                  "pointOfGiveAway": "PICKUP",
+                  "dateOfGiveAway": "2020-08-05T08:27:06.149Z",
+                  "documentVersion": 2,
+                  "pickingZone": "LS",
+                  "pickingDeadline": "2020-08-05T08:58:46.097Z",
+                  "buId": 9,
+                  "priority": "HIGH",
+                  "customerType": "PERSON",
+                  "offline": true,
+                  "linkedObjects": [
+                    {
+                      "objectType": "FF_CUSTOMER_ORDER",
+                      "objectId": "1003520080268301",
+                      "objectStatus": "CONFIRMED",
+                      "objectLines": [
+                        {
+                          "objectLineId": "1",
+                          "taskLineId": "1"
+                        }
+                      ]
+                    }
+                  ],
+                  "creationInformation": {
+                    "createdBy": "60052191",
+                    "created": "2020-08-05T08:28:45.884Z"
+                  },
+                  "lastUpdateInformation": {
+                    "updatedBy": "UNKNOWN",
+                    "updated": "2020-08-05T08:28:46.678Z"
+                  },
+                  "departmentId": [
+                    "1"
+                  ],
+                  "departments": [
+                    "1"
+                  ],
+                  "totalWeight": 90,
+                  "maxSize": 0.625,
+                  "products": [
+                    {
+                      "title": "Штукатурка гипсовая Knauf Ротбанд 30 кг",
+                      "lmCode": "10073940",
+                      "lineId": "1",
+                      "lineStatus": "ALLOWED_FOR_PICKING",
+                      "orderedQuantity": 3,
+                      "confirmedQuantity": 3,
+                      "assignedQuantity": 3,
+                      "source": [
+                        {
+                          "assignedItems": 3,
+                          "type": "LS"
+                        }
+                      ]
+                    }
+                  ],
+                  "employeeName": null,
+                  "orderId": "200801057593",
+                  "channel": "OFFLINE",
+                  "customerName": "Бондарь",
+                  "customerSurname": "Юрий",
+                  "paymentStatus": null,
+                  "paymentType": null
+                },
+                {
+                  "taskId": "3003520080278011",
+                  "shopId": 35,
+                  "delivery": false,
+                  "taskStatus": "ALLOWED_FOR_PICKING",
+                  "extOrderId": "200801093109",
+                  "pointOfGiveAway": "PICKUP",
+                  "dateOfGiveAway": "2020-08-28T15:48:22.843Z",
+                  "documentVersion": 2,
+                  "pickingZone": "LS",
+                  "pickingDeadline": "2020-08-28T13:48:22.843Z",
+                  "buId": 9,
+                  "priority": "URGENT",
+                  "customerType": "PERSON",
+                  "offline": true,
+                  "linkedObjects": [
+                    {
+                      "objectType": "FF_CUSTOMER_ORDER",
+                      "objectId": "1003520080278010",
+                      "objectStatus": "CONFIRMED",
+                      "objectLines": [
+                        {
+                          "objectLineId": "1",
+                          "taskLineId": "1"
+                        }
+                      ]
+                    }
+                  ],
+                  "creationInformation": {
+                    "createdBy": "60069806",
+                    "created": "2020-08-28T15:49:17.616Z"
+                  },
+                  "lastUpdateInformation": {
+                    "updatedBy": "UNKNOWN",
+                    "updated": "2020-08-28T15:49:19.553Z"
+                  },
+                  "departmentId": [
+                    "1"
+                  ],
+                  "departments": [
+                    "1"
+                  ],
+                  "totalWeight": 5.2,
+                  "maxSize": 0.21,
+                  "products": [
+                    {
+                      "title": "Шпаклёвка финишная Knauf Ротбанд Паста Профи, 5 кг",
+                      "lmCode": "15057456",
+                      "lineId": "1",
+                      "lineStatus": "ALLOWED_FOR_PICKING",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    }
+                  ],
+                  "employeeName": null,
+                  "orderId": "200801093109",
+                  "channel": "OFFLINE",
+                  "customerName": "Flora",
+                  "customerSurname": "Fleury",
+                  "paymentStatus": null,
+                  "paymentType": null
+                },
+                {
+                  "taskId": "3003520090285098",
+                  "shopId": 35,
+                  "delivery": false,
+                  "taskStatus": "ALLOWED_FOR_PICKING",
+                  "extOrderId": "200901120686",
+                  "pointOfGiveAway": "PICKUP",
+                  "dateOfGiveAway": "2020-09-16T21:53:04.335Z",
+                  "documentVersion": 2,
+                  "pickingZone": "LS",
+                  "pickingDeadline": "2020-09-16T19:53:04.335Z",
+                  "buId": 9,
+                  "priority": "HIGH",
+                  "customerType": "PERSON",
+                  "offline": true,
+                  "linkedObjects": [
+                    {
+                      "objectType": "FF_CUSTOMER_ORDER",
+                      "objectId": "1003520090285097",
+                      "objectStatus": "CONFIRMED",
+                      "objectLines": [
+                        {
+                          "objectLineId": "1",
+                          "taskLineId": "1"
+                        }
+                      ]
+                    }
+                  ],
+                  "creationInformation": {
+                    "createdBy": "60069803",
+                    "created": "2020-09-16T22:44:56.242Z"
+                  },
+                  "lastUpdateInformation": {
+                    "updatedBy": "UNKNOWN",
+                    "updated": "2020-09-16T22:45:08.334Z"
+                  },
+                  "departmentId": [
+                    "1"
+                  ],
+                  "departments": [
+                    "1"
+                  ],
+                  "totalWeight": 1.436,
+                  "maxSize": 1.011,
+                  "products": [
+                    {
+                      "title": "Стеклохолст 1х50 м",
+                      "lmCode": "11434955",
+                      "lineId": "1",
+                      "lineStatus": "ALLOWED_FOR_PICKING",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    }
+                  ],
+                  "employeeName": null,
+                  "orderId": "200901120686",
+                  "channel": "OFFLINE",
+                  "customerName": "FZ2V70",
+                  "customerSurname": "UlRJge",
+                  "paymentStatus": null,
+                  "paymentType": null
+                }
+              ],
+              "totalCount": 720
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

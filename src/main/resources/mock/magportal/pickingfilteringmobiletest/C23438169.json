@@ -1,0 +1,928 @@
+{
+  "stubs": [
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/v1/pickingTasks/search",
+            "query": {
+              "page": "1",
+              "pageSize": "10",
+              "departmentId": "5",
+              "existCurrentStorageLocation": "false",
+              "shopId": "35",
+              "taskStatus": "ALLOWED_FOR_PICKING"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [
+                {
+                  "taskId": "3003520080268106",
+                  "shopId": 35,
+                  "delivery": false,
+                  "taskStatus": "ALLOWED_FOR_PICKING",
+                  "extOrderId": "200701044038",
+                  "pointOfGiveAway": "PICKUP",
+                  "dateOfGiveAway": "2020-07-27T07:42:19.178Z",
+                  "documentVersion": 3,
+                  "pickingZone": "WH",
+                  "pickingDeadline": "2020-07-27T11:44:28.721Z",
+                  "buId": 9,
+                  "priority": "HIGH",
+                  "employeeId": "60069805",
+                  "comment": "123",
+                  "customerType": "PERSON",
+                  "offline": true,
+                  "linkedObjects": [
+                    {
+                      "objectType": "FF_CUSTOMER_ORDER",
+                      "objectId": "1003520070264808",
+                      "objectStatus": "CONFIRMED",
+                      "objectLines": [
+                        {
+                          "objectLineId": "1",
+                          "taskLineId": "1"
+                        }
+                      ]
+                    },
+                    {
+                      "objectType": "NAVISION_TASK",
+                      "objectId": "200804.173511.763",
+                      "objectStatus": "UNKNOWN",
+                      "objectLines": [
+                        {
+                          "objectLineId": "1",
+                          "taskLineId": "1"
+                        }
+                      ]
+                    }
+                  ],
+                  "creationInformation": {
+                    "createdBy": "60069805",
+                    "created": "2020-08-04T14:35:11.904Z"
+                  },
+                  "lastUpdateInformation": {
+                    "updatedBy": "UNKNOWN",
+                    "updated": "2020-08-04T14:35:12.368Z"
+                  },
+                  "departmentId": [
+                    "5"
+                  ],
+                  "departments": [
+                    "15"
+                  ],
+                  "totalWeight": 5.056,
+                  "maxSize": 0.752,
+                  "products": [
+                    {
+                      "title": "Фальшпанель для напольного шкафа «Сосна Лофт» 58х70 см, ЛДСП, цвет тёмное дерево",
+                      "lmCode": "82156451",
+                      "lineId": "1",
+                      "lineStatus": "ALLOWED_FOR_PICKING",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "EM"
+                        }
+                      ]
+                    }
+                  ],
+                  "employeeName": "Семён",
+                  "orderId": "200701044038",
+                  "channel": "OFFLINE",
+                  "customerName": "Apelsina",
+                  "customerSurname": "Lena",
+                  "paymentStatus": null,
+                  "paymentType": null
+                },
+                {
+                  "taskId": "3003520090290598",
+                  "shopId": 35,
+                  "delivery": false,
+                  "taskStatus": "ALLOWED_FOR_PICKING",
+                  "extOrderId": "200901138303",
+                  "pointOfGiveAway": "PICKUP",
+                  "dateOfGiveAway": "2020-09-29T10:14:49.162Z",
+                  "documentVersion": 2,
+                  "pickingZone": "LS",
+                  "pickingDeadline": "2020-09-29T08:14:49.162Z",
+                  "buId": 9,
+                  "priority": "HIGH",
+                  "customerType": "PERSON",
+                  "offline": true,
+                  "linkedObjects": [
+                    {
+                      "objectType": "FF_CUSTOMER_ORDER",
+                      "objectId": "1003520090290597",
+                      "objectStatus": "CONFIRMED",
+                      "objectLines": [
+                        {
+                          "objectLineId": "1",
+                          "taskLineId": "1"
+                        },
+                        {
+                          "objectLineId": "2",
+                          "taskLineId": "2"
+                        }
+                      ]
+                    }
+                  ],
+                  "creationInformation": {
+                    "createdBy": "60069806",
+                    "created": "2020-09-29T11:09:56.921Z"
+                  },
+                  "lastUpdateInformation": {
+                    "updatedBy": "UNKNOWN",
+                    "updated": "2020-09-29T11:10:07.924Z"
+                  },
+                  "departmentId": [
+                    "5"
+                  ],
+                  "departments": [
+                    "5"
+                  ],
+                  "totalWeight": 6.068,
+                  "maxSize": 0.805,
+                  "products": [
+                    {
+                      "title": "Пленка влагозащитная для пола",
+                      "lmCode": "82505157",
+                      "lineId": "1",
+                      "lineStatus": "ALLOWED_FOR_PICKING",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Подложка под тёплый пол 2 мм 6 м²",
+                      "lmCode": "18475750",
+                      "lineId": "2",
+                      "lineStatus": "ALLOWED_FOR_PICKING",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    }
+                  ],
+                  "employeeName": null,
+                  "orderId": "200901138303",
+                  "channel": "OFFLINE",
+                  "customerName": "РомаТест",
+                  "customerSurname": null,
+                  "paymentStatus": null,
+                  "paymentType": null
+                }
+              ],
+              "totalCount": 2
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/v1/pickingTasks/search",
+            "query": {
+              "page": "1",
+              "pageSize": "10",
+              "departmentId": "5",
+              "existCurrentStorageLocation": "false",
+              "shopId": "35",
+              "taskStatus": "PICKING_IN_PROGRESS"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [
+                {
+                  "taskId": "3003520080268112",
+                  "shopId": 35,
+                  "delivery": false,
+                  "taskStatus": "PICKING_IN_PROGRESS",
+                  "extOrderId": "6466719452",
+                  "pointOfGiveAway": "PICKUP",
+                  "dateOfGiveAway": "2020-06-04T08:53:10.365Z",
+                  "documentVersion": 5,
+                  "pickingZone": "FUTURE_STOCK",
+                  "pickingDeadline": "2020-06-04T06:53:10.365Z",
+                  "buId": 9,
+                  "priority": "HIGH",
+                  "employeeId": "60069806",
+                  "customerType": null,
+                  "offline": false,
+                  "linkedObjects": [
+                    {
+                      "objectType": "FF_CUSTOMER_ORDER",
+                      "objectId": "1003520060243289",
+                      "objectStatus": "PICKING_IN_PROGRESS",
+                      "objectLines": [
+                        {
+                          "objectLineId": "3",
+                          "taskLineId": "3"
+                        }
+                      ]
+                    }
+                  ],
+                  "creationInformation": {
+                    "createdBy": "60069805",
+                    "created": "2020-08-04T14:41:06.511Z"
+                  },
+                  "lastUpdateInformation": {
+                    "updatedBy": "60069806",
+                    "updated": "2020-09-15T12:46:23.592Z"
+                  },
+                  "departmentId": [
+                    "5"
+                  ],
+                  "departments": [
+                    "15"
+                  ],
+                  "totalWeight": 1.246,
+                  "maxSize": 0.272,
+                  "products": [
+                    {
+                      "title": "Демпфер дверной Glissando TL2 и 2 петли Easyfix 6х10х2.5 см",
+                      "lmCode": "82153867",
+                      "lineId": "3",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 7,
+                      "confirmedQuantity": 7,
+                      "assignedQuantity": 7,
+                      "source": [
+                        {
+                          "assignedItems": 7,
+                          "type": "FUTURE_STOCK"
+                        }
+                      ]
+                    }
+                  ],
+                  "employeeName": "Иван",
+                  "orderId": "6466719452",
+                  "channel": "ONLINE",
+                  "customerName": null,
+                  "customerSurname": null,
+                  "paymentStatus": null,
+                  "paymentType": null
+                },
+                {
+                  "taskId": "3003520080268104",
+                  "shopId": 35,
+                  "delivery": false,
+                  "taskStatus": "PICKING_IN_PROGRESS",
+                  "extOrderId": "525021075850",
+                  "pointOfGiveAway": "PICKUP",
+                  "dateOfGiveAway": "2019-10-06T12:00:00Z",
+                  "documentVersion": 4,
+                  "pickingZone": "FUTURE_STOCK",
+                  "pickingDeadline": "2020-06-10T15:36:12.354Z",
+                  "buId": 9,
+                  "priority": "URGENT",
+                  "customerId": "BITRIX",
+                  "employeeId": "60069806",
+                  "customerType": null,
+                  "offline": true,
+                  "linkedObjects": [
+                    {
+                      "objectType": "FF_CUSTOMER_ORDER",
+                      "objectId": "1003520060245292",
+                      "objectStatus": "PICKING_IN_PROGRESS",
+                      "objectLines": [
+                        {
+                          "objectLineId": "1",
+                          "taskLineId": "1"
+                        }
+                      ]
+                    }
+                  ],
+                  "creationInformation": {
+                    "createdBy": "60069805",
+                    "created": "2020-08-04T14:34:25.45Z"
+                  },
+                  "lastUpdateInformation": {
+                    "updatedBy": "UNKNOWN",
+                    "updated": "2020-08-19T12:12:17.405Z"
+                  },
+                  "departmentId": [
+                    "5"
+                  ],
+                  "departments": [
+                    "15"
+                  ],
+                  "totalWeight": 4.7,
+                  "maxSize": 0.51,
+                  "products": [
+                    {
+                      "title": "Ящик Delinia высокий с доводчиком 34.2х16х48 см, металл, цвет белый",
+                      "lmCode": "16486316",
+                      "lineId": "1",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "FUTURE_STOCK"
+                        }
+                      ]
+                    }
+                  ],
+                  "employeeName": "Иван",
+                  "orderId": "525021075850",
+                  "channel": "OFFLINE",
+                  "customerName": null,
+                  "customerSurname": null,
+                  "paymentStatus": null,
+                  "paymentType": null
+                }
+              ],
+              "totalCount": 35
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/v1/pickingTasks/search",
+            "query": {
+              "page": "1",
+              "pageSize": "10",
+              "departmentId": "5",
+              "existCurrentStorageLocation": "false",
+              "shopId": "35",
+              "taskStatus": "PAUSE_PICKING"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [
+                {
+                  "taskId": "3003520020201930",
+                  "shopId": 35,
+                  "delivery": false,
+                  "taskStatus": "PAUSE_PICKING",
+                  "extOrderId": "200200576868",
+                  "pointOfGiveAway": "HOME_DELIVERY",
+                  "dateOfGiveAway": "2020-02-27T11:52:02.959Z",
+                  "documentVersion": 4,
+                  "pickingZone": "FUTURE_STOCK",
+                  "buId": 9,
+                  "priority": "HIGH",
+                  "employeeId": "60069806",
+                  "customerType": "PERSON",
+                  "offline": true,
+                  "linkedObjects": [
+                    {
+                      "objectType": "FF_CUSTOMER_ORDER",
+                      "objectId": "1003520020201921",
+                      "objectStatus": "PICKING_IN_PROGRESS",
+                      "objectLines": [
+                        {
+                          "objectLineId": "3",
+                          "taskLineId": "3"
+                        }
+                      ]
+                    }
+                  ],
+                  "creationInformation": {
+                    "createdBy": "60014731",
+                    "created": "2020-02-12T11:53:38.861Z"
+                  },
+                  "lastUpdateInformation": {
+                    "updatedBy": "60069806",
+                    "updated": "2020-03-19T11:14:56.21Z"
+                  },
+                  "departmentId": [
+                    "5"
+                  ],
+                  "departments": [
+                    "5"
+                  ],
+                  "totalWeight": 9.6,
+                  "maxSize": 3,
+                  "products": [
+                    {
+                      "title": "Ковр/п петл Трек 078 син-сер 3м",
+                      "lmCode": "18742184",
+                      "lineId": "3",
+                      "lineStatus": "PARTIALLY_PICKED",
+                      "orderedQuantity": 6,
+                      "confirmedQuantity": 6,
+                      "assignedQuantity": 6,
+                      "pickedQuantity": 0,
+                      "operations": [
+                        {
+                          "operationId": "5c0961ad-0de1-47e3-bbc7-5b8c3e32bbc5",
+                          "type": "PICK",
+                          "quantity": 0,
+                          "timeStamp": "2020-03-19T11:14:56.21Z",
+                          "updatedBy": "60069806"
+                        }
+                      ],
+                      "source": [
+                        {
+                          "assignedItems": 6,
+                          "type": "FUTURE_STOCK"
+                        }
+                      ]
+                    }
+                  ],
+                  "employeeName": "Иван",
+                  "orderId": "200200576868",
+                  "channel": "OFFLINE",
+                  "customerName": "наталья",
+                  "customerSurname": "апина",
+                  "paymentStatus": null,
+                  "paymentType": null
+                }
+              ],
+              "totalCount": 2
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/v1/pickingTasks/search",
+            "query": {
+              "page": "1",
+              "pageSize": "10",
+              "departmentId": "5",
+              "existCurrentStorageLocation": "false",
+              "shopId": "35",
+              "taskStatus": "PICKED"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [
+                {
+                  "taskId": "3003520100304714",
+                  "shopId": 35,
+                  "delivery": false,
+                  "taskStatus": "PICKED",
+                  "extOrderId": "201001232760",
+                  "pointOfGiveAway": "HOME_DELIVERY",
+                  "dateOfGiveAway": "2019-08-21T00:00:00Z",
+                  "documentVersion": 6,
+                  "pickingZone": "LS",
+                  "pickingDeadline": "2019-08-20T22:00:00Z",
+                  "buId": 9,
+                  "priority": "MEDIUM",
+                  "employeeId": "60069806",
+                  "customerType": "PERSON",
+                  "offline": false,
+                  "linkedObjects": [
+                    {
+                      "objectType": "FF_CUSTOMER_ORDER",
+                      "objectId": "1003520100300965",
+                      "objectStatus": "PICKED",
+                      "objectLines": [
+                        {
+                          "objectLineId": "1",
+                          "taskLineId": "1"
+                        },
+                        {
+                          "objectLineId": "2",
+                          "taskLineId": "2"
+                        }
+                      ]
+                    }
+                  ],
+                  "creationInformation": {
+                    "createdBy": "60069806",
+                    "created": "2020-10-29T11:21:23.096Z"
+                  },
+                  "lastUpdateInformation": {
+                    "updatedBy": "60069806",
+                    "updated": "2020-10-30T13:51:49.534Z"
+                  },
+                  "departmentId": [
+                    "5"
+                  ],
+                  "departments": [
+                    "9"
+                  ],
+                  "totalWeight": 0.008,
+                  "maxSize": 0.113,
+                  "products": [
+                    {
+                      "title": "Флокс «Гобелен» смесь окрасок БП",
+                      "lmCode": "18580656",
+                      "lineId": "1",
+                      "lineStatus": "PICKED",
+                      "orderedQuantity": 4,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "pickedQuantity": 1,
+                      "operations": [
+                        {
+                          "operationId": "bc4f5ad7-f87a-409c-8b51-c36aac2cbdfb",
+                          "type": "PICK",
+                          "reason": "Недоступность товара",
+                          "quantity": 1,
+                          "timeStamp": "2020-10-30T13:51:49.534Z",
+                          "updatedBy": "60069806"
+                        }
+                      ],
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Семена Горох «Динга»",
+                      "lmCode": "17250997",
+                      "lineId": "2",
+                      "lineStatus": "PICKED",
+                      "orderedQuantity": 3,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "pickedQuantity": 1,
+                      "operations": [
+                        {
+                          "operationId": "bc4f5ad7-f87a-409c-8b51-c36aac2cbdfb",
+                          "type": "PICK",
+                          "reason": "Недоступность товара",
+                          "quantity": 1,
+                          "timeStamp": "2020-10-30T13:51:49.534Z",
+                          "updatedBy": "60069806"
+                        }
+                      ],
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    }
+                  ],
+                  "employeeName": "Иван",
+                  "orderId": "201001232760",
+                  "channel": "ONLINE",
+                  "customerName": "Тест",
+                  "customerSurname": "Тест",
+                  "paymentStatus": "DEPOSIT_IN_PROGRESS",
+                  "paymentType": "SBERLINK_WITH_TPNET_DEPOSIT"
+                }
+              ],
+              "totalCount": 119
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/v1/pickingTasks/search",
+            "query": {
+              "page": "1",
+              "pageSize": "10",
+              "departmentId": "5",
+              "existCurrentStorageLocation": "false",
+              "shopId": "35",
+              "taskStatus": "PARTIALLY_PICKED"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [
+                {
+                  "taskId": "3003520060246854",
+                  "shopId": 35,
+                  "delivery": false,
+                  "taskStatus": "PARTIALLY_PICKED",
+                  "extOrderId": "200600753120",
+                  "pointOfGiveAway": "HOME_DELIVERY",
+                  "dateOfGiveAway": "2020-06-17T00:00:00Z",
+                  "documentVersion": 14,
+                  "pickingZone": "LS",
+                  "pickingDeadline": "2020-06-16T22:00:00Z",
+                  "buId": 9,
+                  "priority": "HIGH",
+                  "customerId": "1244153",
+                  "employeeId": "60069806",
+                  "comment": "API's ТЕСТОВЫЙ COMMENT!!!11\n NEW SECOND STRING (Bitrix)\nDelivery Data: TO_DOOR, STAIRS",
+                  "customerType": "PERSON",
+                  "offline": false,
+                  "linkedObjects": [
+                    {
+                      "objectType": "FF_CUSTOMER_ORDER",
+                      "objectId": "1003520060246847",
+                      "objectStatus": "PARTIALLY_PICKED",
+                      "objectLines": [
+                        {
+                          "objectLineId": "2",
+                          "taskLineId": "2"
+                        }
+                      ]
+                    }
+                  ],
+                  "creationInformation": {
+                    "createdBy": "Bitrix",
+                    "created": "2020-06-16T06:56:51.397Z"
+                  },
+                  "lastUpdateInformation": {
+                    "updatedBy": "60069806",
+                    "updated": "2020-10-16T10:36:16.605Z"
+                  },
+                  "departmentId": [
+                    "5"
+                  ],
+                  "departments": [
+                    "5"
+                  ],
+                  "totalWeight": 17,
+                  "maxSize": 3.5,
+                  "products": [
+                    {
+                      "title": "Линолеум «Дуб Португальский» 23 класс 3.5 м",
+                      "lmCode": "18642984",
+                      "lineId": "2",
+                      "lineStatus": "PARTIALLY_PICKED",
+                      "orderedQuantity": 10,
+                      "confirmedQuantity": 10,
+                      "assignedQuantity": 10,
+                      "pickedQuantity": 4,
+                      "operations": [
+                        {
+                          "operationId": "dacb4294-cbd4-46ed-b6c0-1ebb3407e771",
+                          "type": "PICK",
+                          "quantity": 0,
+                          "timeStamp": "2020-07-21T13:04:20.034Z",
+                          "updatedBy": "60069806"
+                        },
+                        {
+                          "operationId": "4caa5767-9e23-4114-90e5-dc233530544d",
+                          "type": "PICK",
+                          "quantity": 1,
+                          "timeStamp": "2020-08-26T05:37:40.532Z",
+                          "updatedBy": "60069806"
+                        },
+                        {
+                          "operationId": "59cca4f5-617e-4d17-a8a5-6df140682daa",
+                          "type": "PICK",
+                          "quantity": 1,
+                          "timeStamp": "2020-09-25T11:04:51.603Z",
+                          "updatedBy": "60069806"
+                        },
+                        {
+                          "operationId": "016e9686-ba66-4f8d-a41e-6387bbdb88d7",
+                          "type": "PICK",
+                          "quantity": 8,
+                          "timeStamp": "2020-09-25T11:05:18.668Z",
+                          "updatedBy": "60069806"
+                        },
+                        {
+                          "operationId": "c01de880-43fe-49d8-a60b-3ba2409cc383",
+                          "type": "PICK",
+                          "quantity": -3,
+                          "timeStamp": "2020-09-25T11:06:00.595Z",
+                          "updatedBy": "60069806"
+                        },
+                        {
+                          "operationId": "5232abc7-0fd5-442f-89c8-9636de448906",
+                          "type": "PICK",
+                          "quantity": -7,
+                          "timeStamp": "2020-09-25T11:06:35.559Z",
+                          "updatedBy": "60069806"
+                        },
+                        {
+                          "operationId": "131ec26e-eac8-423f-9179-9c9dfed4c543",
+                          "type": "PICK",
+                          "quantity": 2,
+                          "timeStamp": "2020-09-25T11:44:04.318Z",
+                          "updatedBy": "60069806"
+                        },
+                        {
+                          "operationId": "982f19ec-1b2f-4432-a657-eb02022310ca",
+                          "type": "PICK",
+                          "quantity": 1,
+                          "timeStamp": "2020-09-25T11:44:33.184Z",
+                          "updatedBy": "60069806"
+                        },
+                        {
+                          "operationId": "0097dbca-b7f2-44c7-baa8-022322da8beb",
+                          "type": "PICK",
+                          "quantity": 1,
+                          "timeStamp": "2020-09-25T11:46:21.745Z",
+                          "updatedBy": "60069806"
+                        }
+                      ],
+                      "source": [
+                        {
+                          "assignedItems": 10,
+                          "type": "LS"
+                        }
+                      ]
+                    }
+                  ],
+                  "employeeName": "Иван",
+                  "orderId": "200600753120",
+                  "channel": "ONLINE",
+                  "customerName": "ПУЗ",
+                  "customerSurname": "Автотесты",
+                  "paymentStatus": null,
+                  "paymentType": null
+                }
+              ],
+              "totalCount": 25
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/v1/pickingTasks/search",
+            "query": {
+              "page": "1",
+              "pageSize": "10",
+              "departmentId": "5",
+              "existCurrentStorageLocation": "false",
+              "shopId": "35",
+              "taskStatus": "ALLOWED_FOR_PICKING,PICKING_IN_PROGRESS,PAUSE_PICKING,PICKED,PARTIALLY_PICKED"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [
+                {
+                  "taskId": "0000000000008169",
+                  "shopId": 35,
+                  "delivery": false,
+                  "taskStatus": "PICKED",
+                  "extOrderId": "201001232760",
+                  "pointOfGiveAway": "HOME_DELIVERY",
+                  "dateOfGiveAway": "2019-08-21T00:00:00Z",
+                  "documentVersion": 6,
+                  "pickingZone": "LS",
+                  "pickingDeadline": "2019-08-20T22:00:00Z",
+                  "buId": 9,
+                  "priority": "MEDIUM",
+                  "employeeId": "60069806",
+                  "customerType": "PERSON",
+                  "offline": false,
+                  "linkedObjects": [
+                    {
+                      "objectType": "FF_CUSTOMER_ORDER",
+                      "objectId": "1003520100300965",
+                      "objectStatus": "PICKED",
+                      "objectLines": [
+                        {
+                          "objectLineId": "1",
+                          "taskLineId": "1"
+                        },
+                        {
+                          "objectLineId": "2",
+                          "taskLineId": "2"
+                        }
+                      ]
+                    }
+                  ],
+                  "creationInformation": {
+                    "createdBy": "60069806",
+                    "created": "2020-10-29T11:21:23.096Z"
+                  },
+                  "lastUpdateInformation": {
+                    "updatedBy": "60069806",
+                    "updated": "2020-10-30T13:51:49.534Z"
+                  },
+                  "departmentId": [
+                    "5"
+                  ],
+                  "departments": [
+                    "9"
+                  ],
+                  "totalWeight": 0.008,
+                  "maxSize": 0.113,
+                  "products": [
+                    {
+                      "title": "Флокс «Гобелен» смесь окрасок БП",
+                      "lmCode": "18580656",
+                      "lineId": "1",
+                      "lineStatus": "PICKED",
+                      "orderedQuantity": 4,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "pickedQuantity": 1,
+                      "operations": [
+                        {
+                          "operationId": "bc4f5ad7-f87a-409c-8b51-c36aac2cbdfb",
+                          "type": "PICK",
+                          "reason": "Недоступность товара",
+                          "quantity": 1,
+                          "timeStamp": "2020-10-30T13:51:49.534Z",
+                          "updatedBy": "60069806"
+                        }
+                      ],
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Семена Горох «Динга»",
+                      "lmCode": "17250997",
+                      "lineId": "2",
+                      "lineStatus": "PICKED",
+                      "orderedQuantity": 3,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "pickedQuantity": 1,
+                      "operations": [
+                        {
+                          "operationId": "bc4f5ad7-f87a-409c-8b51-c36aac2cbdfb",
+                          "type": "PICK",
+                          "reason": "Недоступность товара",
+                          "quantity": 1,
+                          "timeStamp": "2020-10-30T13:51:49.534Z",
+                          "updatedBy": "60069806"
+                        }
+                      ],
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    }
+                  ],
+                  "employeeName": "Иван",
+                  "orderId": "000000008169",
+                  "channel": "ONLINE",
+                  "customerName": "Тест",
+                  "customerSurname": "Тест",
+                  "paymentStatus": "DEPOSIT_IN_PROGRESS",
+                  "paymentType": "SBERLINK_WITH_TPNET_DEPOSIT"
+                }
+              ],
+              "totalCount": 1
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
