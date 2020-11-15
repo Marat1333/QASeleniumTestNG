@@ -12,6 +12,7 @@ import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import io.qameta.allure.Step;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PickingDocListMobilePage extends MagPortalBasePage {
 
@@ -19,7 +20,7 @@ public class PickingDocListMobilePage extends MagPortalBasePage {
             clazz = ShortPickingTaskCardWidget.class)
     private CardWebWidgetList<ShortPickingTaskCardWidget, ShortPickingTaskData> documentCardList;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'PickingQuickFilterBlock__quickFilter')]/div[3]//button",
+    @WebFindBy(xpath = "//div[contains(@class, 'PickingQuickFilterBlock__quickFilter')]/div[3]/button",
             metaName = "Иконка поиска")
     Element magnifierBtn;
 
@@ -146,10 +147,12 @@ public class PickingDocListMobilePage extends MagPortalBasePage {
         return this;
     }
 
-    @Step("Проверить, что в списке документов присутствуют нужные документы")
-    public void shouldDocumentListIs(List<ShortPickingTaskData> expectedDocuments) throws Exception {
-        anAssert.isEquals(getDocumentDataList(), expectedDocuments,
+    @Step("Проверить, что в списке документов присутствуют нужные номера документов")
+    public PickingDocListMobilePage shouldDocumentListIs(List<String> expectedDocNumbers) throws Exception {
+        anAssert.isEquals(getDocumentDataList().stream().map(ShortPickingTaskData::getNumber)
+                        .collect(Collectors.toList()), expectedDocNumbers,
                 "Ожидались другие документы");
+        return this;
     }
 
 }

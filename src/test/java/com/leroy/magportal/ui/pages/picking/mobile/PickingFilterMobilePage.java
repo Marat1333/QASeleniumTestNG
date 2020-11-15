@@ -14,6 +14,7 @@ public class PickingFilterMobilePage extends MagPortalBasePage {
     Element title;
 
     private final static String FILTER_BTN_XPATH = "//div[contains(@class, 'PickingFiltersFields__mobile-field-block') and not(ancestor::div[contains(@class,'hidden')])]//button[descendant::span[contains(text(), '%s')]]";
+    private final static String FILTER_SALES_SCHEME_BTN_XPATH = "//div[contains(@class, 'PickingFiltersFields__mobile-field-block')]/following-sibling::div[not(contains(@class, 'PickingFiltersFields__mobile-field-block')) and not(ancestor::div[contains(@class,'hidden')])]//button[descendant::span[text()= '%s']]";
 
     // Фильтры по типу сборки
     Element shoppingRoomOptionBtn = E(String.format(FILTER_BTN_XPATH, "торг.зал"), "Опция 'Торг зал'");
@@ -123,7 +124,9 @@ public class PickingFilterMobilePage extends MagPortalBasePage {
     @Step("Выбрать схему продажи")
     public PickingFilterMobilePage selectSalesScheme(String... schemes) {
         for (String scheme : schemes) {
-            selectFilter(scheme);
+            Element filterBtn = E(String.format(FILTER_SALES_SCHEME_BTN_XPATH, scheme));
+            if (!isButtonActive(filterBtn))
+                filterBtn.clickJS();
         }
         return this;
     }
