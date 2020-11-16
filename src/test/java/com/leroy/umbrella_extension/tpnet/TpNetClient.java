@@ -13,6 +13,7 @@ import io.qameta.allure.Step;
 import java.io.StringWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import javax.annotation.PostConstruct;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -30,7 +31,7 @@ public class TpNetClient extends BaseClient {
     @Inject
     private OrderClient orderClient;
 
-    private final String gatewayUrl = EnvConstants.RABBIT_API_HOST;
+    protected String gatewayUrl;
     private final String login = EnvConstants.RABBIT_USER_NAME;
     private final String password = EnvConstants.RABBIT_USER_PASS;
     private Document document;
@@ -139,5 +140,10 @@ public class TpNetClient extends BaseClient {
         } catch (Exception ex) {
             throw new RuntimeException("Error converting to String", ex);
         }
+    }
+
+    @PostConstruct
+    private void init() {
+        gatewayUrl  = EnvConstants.RABBIT_API_HOST;
     }
 }
