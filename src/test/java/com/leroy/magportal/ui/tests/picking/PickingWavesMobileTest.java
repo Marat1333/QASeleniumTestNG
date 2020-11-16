@@ -1,21 +1,41 @@
 package com.leroy.magportal.ui.tests.picking;
 
-import com.leroy.magportal.ui.tests.BaseMockMagPortalUiTest;
-import org.testng.annotations.BeforeMethod;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.inject.Inject;
+import com.leroy.constants.sales.SalesDocumentsConst;
+import com.leroy.core.ContextProvider;
+import com.leroy.core.UserSessionData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
+import com.leroy.magmobile.api.data.sales.orders.GiveAwayData;
+import com.leroy.magportal.api.clients.OrderClient;
+import com.leroy.magportal.api.clients.PickingTaskClient;
+import com.leroy.magportal.api.data.picking.PickingTaskDataList;
+import com.leroy.magportal.api.helpers.PAOHelper;
+import com.leroy.magportal.ui.pages.picking.mobile.PickingDocListMobilePage;
+import com.leroy.magportal.ui.tests.BasePAOTest;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.Test;
+import ru.leroymerlin.qa.core.clients.base.Response;
 
-public class PickingMobileTest extends BaseMockMagPortalUiTest {
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-    /*@Inject
+import static com.leroy.constants.sales.SalesDocumentsConst.States.PICKED;
+import static com.leroy.core.matchers.Matchers.successful;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+public class PickingWavesMobileTest extends BasePAOTest {
+
+    @Inject
     PAOHelper helper;
     @Inject
     OrderClient orderHelper;
-    @Inject
-            PickingTaskClient pickingTaskClient;
 
     @Override
     protected UserSessionData initTestClassUserSessionDataTemplate() {
         UserSessionData sessionData = super.initTestClassUserSessionDataTemplate();
-        //sessionData.setUserShopId("35");
+        sessionData.setUserShopId("49");
         return sessionData;
     }
 
@@ -77,78 +97,36 @@ public class PickingMobileTest extends BaseMockMagPortalUiTest {
         pickingTaskId = respPickingTasks.asJson().getItems().get(0).getTaskId();
     }
 
-    @AfterClass(enabled = true)
+    @AfterClass(enabled = false)
     private void cancelConfirmedOrder() throws Exception {
         if (orderId != null) {
             OrderClient orderClient = apiClientProvider.getOrderClient();
             Response<JsonNode> resp = orderClient.cancelOrder(orderId);
             assertThat(resp, successful());
         }
-    }*/
-
-    @BeforeMethod
-    public void setUpMock() throws Exception {
-        setUpMockForTestCase();
     }
 
-    // TODO НАПОСЛЕДОК
-    /*@Test(description = "C23438204 Размещение заказа", groups = NEED_PRODUCTS_GROUP)
-    public void testPlacingAnOrder() throws Exception {
-        initCreateOrder(1, SalesDocumentsConst.States.PICKED);
-
-        Response<PickingTaskDataList> respPickingTasks = pickingTaskClient.searchForPickingTasks(orderId);
-        assertThat(respPickingTasks, successful());
-        pickingTaskId = respPickingTasks.asJson().getItems().get(0).getTaskId();
-
+    @Test(description = "C23415580 Добавление сборок в волну", groups = NEED_PRODUCTS_GROUP)
+    public void testAddPickingIntoWave() throws Exception {
+        initCreateOrder(1);
+        String order1 = orderId;
+        initFindPickingTask();
         String assemblyNumber = pickingTaskId.substring(pickingTaskId.length() - 4);
         String orderNumber = orderId.substring(orderId.length() - 4);
-        String fullNumber = assemblyNumber + " *" + orderNumber;
+        String fullNumber1 = assemblyNumber + " *" + orderNumber;
+        initCreateOrder(1);
+        initFindPickingTask();
+        assemblyNumber = pickingTaskId.substring(pickingTaskId.length() - 4);
+        orderNumber = orderId.substring(orderId.length() - 4);
+        String fullNumber2 = assemblyNumber + " *" + orderNumber;
+        String order2 = orderId;
 
         // Step 1
         step("Открыть страницу со Сборкой");
         PickingDocListMobilePage pickingPage = loginAndGoTo(PickingDocListMobilePage.class);
 
         // Step 2
-        step("Найти сборку из предусловия, зайти в карточку сборки");
-        pickingPage.clickDocumentInLeftMenu(fullNumber);
-
-        // Step 3
-        step("Нажать на кнопку 'Разместить'");
-        PickingContentMobilePage pickingContentMobilePage = new PickingContentMobilePage();
-        PickingPlaceOrderMobileModal placeOrderMobileModal = pickingContentMobilePage.clickPlaceButton();
-
-        // Step 4
-        step("В выпадающем списке с зоной размешения выбрать Передачи в логистику");
-        placeOrderMobileModal.selectZone(PickingPlaceOrderMobileModal.Zone.TRANSFER_TO_LOGISTIC)
-                .shouldPlaceOptionIs("BU001:Лифт");
-
-        // Step 5
-        step("Нажать кнопку 'Разместить'");
-        pickingContentMobilePage = placeOrderMobileModal.clickPlaceButton();
-
-        // Step 6
-        step("Нажать кнопку 'Изменить размещение'");
-        placeOrderMobileModal = pickingContentMobilePage.clickPlaceButton();
-
-        // Step 7
-        step("В выпадающем списке зоны выбрать 'Клиентских заказов'");
-        placeOrderMobileModal.selectZone(PickingPlaceOrderMobileModal.Zone.CUSTOMER_ORDERS)
-                .shouldPlaceOptionIsClear();
-
-        // Step 8 - 9
-        step("Проставить чекбокс в нескольких позиций и нажать на крестик");
-        placeOrderMobileModal.selectPlace(1, false)
-                .selectPlace(2, true);
-        List<String> selectedPlaces = placeOrderMobileModal.getSelectedPlaces();
-
-        // Step 10
-        step("Нажать кнопку 'Разместить'");
-        pickingContentMobilePage = placeOrderMobileModal.clickPlaceButton();
-
-        // Step 11
-        step("Через кнопку в хедере 'Назад' вернуться в список сборок и доскроллить до собранной сборки");
-
-        String sk = "";
-    }*/
+        step("Нажать на иконку волны сборок");
+    }
 
 }
