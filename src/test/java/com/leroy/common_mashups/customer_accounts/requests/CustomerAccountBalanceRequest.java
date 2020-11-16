@@ -1,4 +1,4 @@
-package com.leroy.common_mashups.requests.customer;
+package com.leroy.common_mashups.customer_accounts.requests;
 
 import ru.leroymerlin.qa.core.clients.base.Method;
 import ru.leroymerlin.qa.core.clients.base.RequestBuilder;

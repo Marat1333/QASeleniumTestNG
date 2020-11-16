@@ -1,11 +1,11 @@
-package com.leroy.common_mashups.clients;
+package com.leroy.common_mashups.customer_accounts.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.api.StatusCodes;
 import com.leroy.core.api.BaseMashupClient;
-import com.leroy.common_mashups.data.customer.*;
-import com.leroy.common_mashups.requests.customer.*;
+import com.leroy.common_mashups.customer_accounts.data.*;
+import com.leroy.common_mashups.customer_accounts.requests.*;
 import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
