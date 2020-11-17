@@ -133,7 +133,7 @@ public abstract class CartEstimatePage extends
                 waitForSpinnerAppearAndDisappear();
             addProductLbl.click();
         }
-        waitForSpinnerDisappear();
+        waitForSpinnerAppearAndDisappear();
     }
 
     @Step("Скопировать товар #{productIdx} из заказа #{orderIdx}")
