@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.common_mashups.data.customer.CustomerData;
+import com.leroy.common_mashups.customer_accounts.data.CustomerData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateProductOrderData;
 import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.magportal.ui.constants.TestDataConstants;

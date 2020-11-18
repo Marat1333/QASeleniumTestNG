@@ -2,11 +2,11 @@ package com.leroy.magportal.api.helpers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
-import com.leroy.common_mashups.clients.CustomerClient;
-import com.leroy.common_mashups.data.customer.CustomerData;
-import com.leroy.common_mashups.data.customer.CustomerListData;
-import com.leroy.common_mashups.data.customer.CustomerSearchFilters;
-import com.leroy.common_mashups.data.customer.PhoneData;
+import com.leroy.common_mashups.customer_accounts.clients.CustomerClient;
+import com.leroy.common_mashups.customer_accounts.data.CustomerData;
+import com.leroy.common_mashups.customer_accounts.data.CustomerListData;
+import com.leroy.common_mashups.customer_accounts.data.CustomerSearchFilters;
+import com.leroy.common_mashups.customer_accounts.data.PhoneData;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.api.StatusCodes;
 import com.leroy.constants.customer.CustomerConst;

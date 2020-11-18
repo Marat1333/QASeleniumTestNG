@@ -5,7 +5,7 @@ import com.google.inject.Inject;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.magmobile.api.clients.SmsNotificationClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.common_mashups.data.customer.CustomerData;
+import com.leroy.common_mashups.customer_accounts.data.CustomerData;
 import com.leroy.magmobile.api.data.notification.NotificationCustomerData;
 import com.leroy.magmobile.api.data.notification.SmsNotificationData;
 import com.leroy.magmobile.api.data.sales.BaseProductOrderData;

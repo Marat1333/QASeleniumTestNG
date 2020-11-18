@@ -6,11 +6,11 @@ import static com.leroy.magportal.api.constants.PaymentMethodEnum.TPNET;
 import static com.leroy.magportal.ui.constants.TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
 
 import com.google.inject.Inject;
-import com.leroy.common_mashups.clients.CustomerClient;
-import com.leroy.common_mashups.data.customer.CustomerListData;
-import com.leroy.common_mashups.data.customer.CustomerSearchFilters;
-import com.leroy.common_mashups.data.customer.CustomerSearchFilters.CustomerType;
-import com.leroy.common_mashups.data.customer.CustomerSearchFilters.DiscriminantType;
+import com.leroy.common_mashups.customer_accounts.clients.CustomerClient;
+import com.leroy.common_mashups.customer_accounts.data.CustomerListData;
+import com.leroy.common_mashups.customer_accounts.data.CustomerSearchFilters;
+import com.leroy.common_mashups.customer_accounts.data.CustomerSearchFilters.CustomerType;
+import com.leroy.common_mashups.customer_accounts.data.CustomerSearchFilters.DiscriminantType;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.core.api.ThreadApiClient;

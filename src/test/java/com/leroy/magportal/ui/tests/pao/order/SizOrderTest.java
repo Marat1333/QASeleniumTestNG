@@ -1,6 +1,6 @@
 package com.leroy.magportal.ui.tests.pao.order;
 
-import com.leroy.common_mashups.requests.customer.CustomerAccountGetRequest;
+import com.leroy.common_mashups.customer_accounts.requests.CustomerAccountGetRequest;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.UserSessionData;
 import com.leroy.magportal.api.requests.order.OrderGetRequest;
