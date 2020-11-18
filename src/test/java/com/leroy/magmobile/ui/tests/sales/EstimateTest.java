@@ -1,6 +1,6 @@
 package com.leroy.magmobile.ui.tests.sales;
 
-import com.leroy.common_mashups.data.customer.CustomerData;
+import com.leroy.common_mashups.customer_accounts.data.CustomerData;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.annotations.Smoke;
 import com.leroy.magmobile.ui.models.customer.MagCustomerData;

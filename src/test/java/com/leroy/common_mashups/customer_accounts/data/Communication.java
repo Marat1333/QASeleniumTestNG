@@ -1,4 +1,4 @@
-package com.leroy.common_mashups.data.customer;
+package com.leroy.common_mashups.customer_accounts.data;
 
 import lombok.Data;
 import org.apache.commons.lang3.RandomStringUtils;

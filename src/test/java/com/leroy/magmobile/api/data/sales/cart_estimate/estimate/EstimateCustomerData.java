@@ -1,6 +1,6 @@
 package com.leroy.magmobile.api.data.sales.cart_estimate.estimate;
 
-import com.leroy.common_mashups.data.customer.PhoneData;
+import com.leroy.common_mashups.customer_accounts.data.PhoneData;
 import lombok.Data;
 
 import java.util.List;

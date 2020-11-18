@@ -1,9 +1,9 @@
 package com.leroy.magmobile.ui.tests.clients;
 
-import com.leroy.common_mashups.data.customer.CustomerSearchFilters;
-import com.leroy.common_mashups.requests.customer.CustomerAccountGetRequest;
-import com.leroy.common_mashups.requests.customer.CustomerAccountUpdateRequest;
-import com.leroy.common_mashups.requests.customer.CustomerAccountsSearchRequest;
+import com.leroy.common_mashups.customer_accounts.data.CustomerSearchFilters;
+import com.leroy.common_mashups.customer_accounts.requests.CustomerAccountGetRequest;
+import com.leroy.common_mashups.customer_accounts.requests.CustomerAccountUpdateRequest;
+import com.leroy.common_mashups.customer_accounts.requests.CustomerAccountsSearchRequest;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.UserSessionData;

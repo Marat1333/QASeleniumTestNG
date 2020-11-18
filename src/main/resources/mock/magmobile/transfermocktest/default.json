@@ -25,9 +25,8 @@
         {
           "deepEquals": {
             "method": "GET",
-            "path": "/ruptures/v2/sessions",
+            "path": "/v1/ruptures/sessions",
             "query": {
-              "shopId": "35",
               "departmentId": "1",
               "status": "active",
               "pageSize": "1"

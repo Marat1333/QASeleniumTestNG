@@ -38,6 +38,14 @@
         </classes>
     </test>
 
+    <test name="Delivery to DOOR Online Orders: Full Workflow tests - DoorWorkflowFullTest">
+        <classes>
+            <class
+                name="com.leroy.magportal.api.tests.onlineOrders.deliveryOrders.DoorWorkflowFullTest">
+            </class>
+        </classes>
+    </test>
+
     <test name="Delivery to Entrance Online Orders: Workflow tests - EntranceWorkflowShortTest">
         <classes>
             <class
@@ -70,6 +78,14 @@
         </classes>
     </test>
 
+    <test name="Delivery to Entrance Online Orders: Full Workflow tests - EntranceWorkflowFullTest">
+        <classes>
+            <class
+                name="com.leroy.magportal.api.tests.onlineOrders.deliveryOrders.EntranceWorkflowFullTest">
+            </class>
+        </classes>
+    </test>
+
     <test name="Delivery Express Online Orders: Workflow tests - ExpressWorkflowShortTest">
         <classes>
             <class
@@ -90,6 +106,14 @@
         <classes>
             <class
                 name="com.leroy.magportal.api.tests.onlineOrders.deliveryOrders.ExpressDeliveryEditTest">
+            </class>
+        </classes>
+    </test>
+
+    <test name="Delivery Express Online Orders: Full Workflow tests - ExpressWorkflowFullTest">
+        <classes>
+            <class
+                name="com.leroy.magportal.api.tests.onlineOrders.deliveryOrders.ExpressWorkflowFullTest">
             </class>
         </classes>
     </test>

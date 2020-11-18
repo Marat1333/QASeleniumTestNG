@@ -1,15 +1,16 @@
 package com.leroy.magportal.api.helpers;
 
-import static com.leroy.core.matchers.IsSuccessful.successful;
+import static com.leroy.magportal.api.constants.PaymentMethodEnum.API;
+import static com.leroy.magportal.api.constants.PaymentMethodEnum.CARD;
+import static com.leroy.magportal.api.constants.PaymentMethodEnum.TPNET;
 import static com.leroy.magportal.ui.constants.TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.google.inject.Inject;
-import com.leroy.common_mashups.clients.CustomerClient;
-import com.leroy.common_mashups.data.customer.CustomerListData;
-import com.leroy.common_mashups.data.customer.CustomerSearchFilters;
-import com.leroy.common_mashups.data.customer.CustomerSearchFilters.CustomerType;
-import com.leroy.common_mashups.data.customer.CustomerSearchFilters.DiscriminantType;
+import com.leroy.common_mashups.customer_accounts.clients.CustomerClient;
+import com.leroy.common_mashups.customer_accounts.data.CustomerListData;
+import com.leroy.common_mashups.customer_accounts.data.CustomerSearchFilters;
+import com.leroy.common_mashups.customer_accounts.data.CustomerSearchFilters.CustomerType;
+import com.leroy.common_mashups.customer_accounts.data.CustomerSearchFilters.DiscriminantType;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.core.api.ThreadApiClient;
@@ -20,6 +21,7 @@ import com.leroy.magportal.api.clients.ShopsClient;
 import com.leroy.magportal.api.constants.DeliveryServiceTypeEnum;
 import com.leroy.magportal.api.constants.LmCodeTypeEnum;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
+import com.leroy.magportal.api.constants.PaymentMethodEnum;
 import com.leroy.magportal.api.constants.PaymentStatusEnum;
 import com.leroy.magportal.api.constants.PaymentTypeEnum;
 import com.leroy.magportal.api.data.shops.ShopData;
@@ -55,17 +57,27 @@ public class BitrixHelper extends BaseHelper {
     @Step("Creates Online order with Dimensional LmCode")
     public BitrixSolutionResponse createDimensionalOnlineOrder(OnlineOrderTypeData orderData) {
         orderData.setLmCode(LmCodeTypeEnum.DIMENSIONAL.getValue());
-        return this.createOnlineOrders(1, orderData, 1).stream().findFirst().get();
+        return this.createOnlineOrders(1, orderData, 1, API).stream().findFirst().get();
     }
 
     @Step("Creates Online order with 3 LmCodes")
     public BitrixSolutionResponse createOnlineOrder(OnlineOrderTypeData orderData) {
-        return this.createOnlineOrders(1, orderData, 3).stream().findFirst().get();
+        return this.createOnlineOrders(1, orderData, 3, API).stream().findFirst().get();
+    }
+
+    @Step("Creates Online order with 3 LmCodes with TpNet payment method")
+    public BitrixSolutionResponse createOnlineOrderTpNetPayment(OnlineOrderTypeData orderData) {
+        return this.createOnlineOrders(1, orderData, 3, TPNET).stream().findFirst().get();
+    }
+
+    @Step("Creates Online order with 3 LmCodes with TpNet payment method")
+    public BitrixSolutionResponse createOnlineOrderCardPayment(OnlineOrderTypeData orderData) {
+        return this.createOnlineOrders(1, orderData, 3, CARD).stream().findFirst().get();
     }
 
     @Step("Creates Online orders of different types")
     public ArrayList<BitrixSolutionResponse> createOnlineOrders(Integer ordersCount,
-            OnlineOrderTypeData orderData, Integer productCount) {
+            OnlineOrderTypeData orderData, Integer productCount, PaymentMethodEnum paymentMethod) {
         SimpleCustomerData customerData = SIMPLE_CUSTOMER_DATA_1;
         customerData.setId(getCustomerId(customerData));
 
@@ -92,9 +104,7 @@ public class BitrixHelper extends BaseHelper {
                         orderClient.waitUntilOrderGetStatus(response.getSolutionId(),
                                 States.WAITING_FOR_PAYMENT,
                                 PaymentStatusEnum.CONFIRMED);
-                        paymentHelper
-//                                .makePaymentCard(response.getSolutionId());
-                                .makeHoldCost(response.getSolutionId());
+                        paymentHelper.makePayment(response.getSolutionId(), paymentMethod);
                     }
                     orderClient.waitUntilOrderGetStatus(response.getSolutionId(),
                             States.ALLOWED_FOR_PICKING, null);
@@ -109,9 +119,6 @@ public class BitrixHelper extends BaseHelper {
 
     private BitrixSolutionPayload createBitrixPayload(OnlineOrderTypeData orderData,
             Integer productCount, SimpleCustomerData customerData) {
-        if (orderData.getShopId() != null) {
-            orderData.setShopId(userSessionData().getUserShopId());
-        }
 
         ShopData shop = getShopData(orderData);
         BitrixSolutionPayload payload = makeGeneralPayload(orderData, shop);
@@ -143,6 +150,7 @@ public class BitrixHelper extends BaseHelper {
     private BitrixSolutionPayload.Basket productItemDataToPayload(ProductItemData product) {
         BitrixSolutionPayload.Basket basket = new BitrixSolutionPayload.Basket();
         String price = "99.99";
+        double weight = 0.01;
         if (product.getPrice() != null) {
             price = product.getPrice().toString();
         }
@@ -153,6 +161,7 @@ public class BitrixHelper extends BaseHelper {
         basket.setPrice(price);
         basket.setTax(18);
         basket.setQuantity("10");//TODO: it's make sense to parametrise
+        basket.setWeight(weight);
         //TODO: ADD LT Products
         return basket;
     }
@@ -349,7 +358,6 @@ public class BitrixHelper extends BaseHelper {
             filter.setDiscriminantType(DiscriminantType.PHONENUMBER);
             filter.setDiscriminantValue(customerData.getPhoneNumber());
             Response<CustomerListData> response = customerClient.searchForCustomers(filter);
-            assertThat("GET Customer failed", response, successful());
 
             return response.asJson().getItems().get(0).getCustomerNumber();
         } catch (Exception ignored) {

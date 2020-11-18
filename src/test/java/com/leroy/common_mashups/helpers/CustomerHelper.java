@@ -1,11 +1,11 @@
 package com.leroy.common_mashups.helpers;
 
 import com.google.inject.Inject;
-import com.leroy.common_mashups.clients.CustomerClient;
-import com.leroy.common_mashups.data.customer.CustomerData;
-import com.leroy.common_mashups.data.customer.CustomerListData;
-import com.leroy.common_mashups.data.customer.CustomerResponseBodyData;
-import com.leroy.common_mashups.data.customer.CustomerSearchFilters;
+import com.leroy.common_mashups.customer_accounts.clients.CustomerClient;
+import com.leroy.common_mashups.customer_accounts.data.CustomerData;
+import com.leroy.common_mashups.customer_accounts.data.CustomerListData;
+import com.leroy.common_mashups.customer_accounts.data.CustomerResponseBodyData;
+import com.leroy.common_mashups.customer_accounts.data.CustomerSearchFilters;
 import com.leroy.magportal.api.helpers.BaseHelper;
 import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;

@@ -12,7 +12,7 @@ import static com.leroy.magportal.ui.constants.OrderConst.Status.PICKED;
 import static com.leroy.magportal.ui.constants.OrderConst.Status.PICKED_PARTIALLY;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.leroy.common_mashups.data.customer.PhoneData;
+import com.leroy.common_mashups.customer_accounts.data.PhoneData;
 import com.leroy.constants.api.StatusCodes;
 import com.leroy.constants.customer.CustomerConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
