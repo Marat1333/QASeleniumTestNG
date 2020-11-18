@@ -11,4 +11,5 @@ public class OnlineOrderData extends OrderData {
 
     private DeliveryData deliveryData;
     private List<String> storageLocations;
+    private String pickingStatus;
 }

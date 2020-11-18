@@ -1,9 +1,5 @@
 package com.leroy.magportal.api.tests.onlineOrders.deliveryOrders;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.lessThanOrEqualTo;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.constants.sales.SalesDocumentsConst.PickingStatus;
@@ -164,6 +160,12 @@ public class DoorWorkflowFullTest extends BaseMagPortalApiTest {
         orderClient.assertWorkflowResult(response, currentOrderId, States.DELIVERED);
     }
 
+    @Test(description = "C23438398 GET Order", priority = 15)
+    public void testGetOrder() {
+        Response<OnlineOrderData> response = orderClient.getOnlineOrder(currentOrderId);
+        orderClient.assertGetOrderResult(response, currentOrderType);
+    }
+
     ////VERIFICATION
     public void assertResult(Response<?> response, States expectedOrderStatus,
             PickingStatus expectedPickingStatus) {
@@ -173,12 +175,7 @@ public class DoorWorkflowFullTest extends BaseMagPortalApiTest {
 
     @Step("Storage Location Verification")
     public void assertLocationChanged() {
-        OnlineOrderData orderData = orderClient.getOnlineOrder(currentOrderId).asJson();
-        assertThat("Storage locations count in Order is invalid.",
-                orderData.getStorageLocations().size(), lessThanOrEqualTo(currentLocationsCount));
-
-        PickingTaskData pickingTaskData = pickingTaskClient.getPickingTask(currentTaskId).asJson();
-        assertThat("Storage locations count in Picking Task is invalid.",
-                pickingTaskData.getStorageLocations().size(), equalTo(currentLocationsCount));
+        orderClient.assertLocationChanged(currentOrderId, currentLocationsCount);
+        pickingTaskClient.assertLocationChanged(currentTaskId, currentLocationsCount);
     }
 }

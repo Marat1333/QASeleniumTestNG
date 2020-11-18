@@ -1,7 +1,7 @@
 package com.leroy.magmobile.api.data.sales.orders;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.leroy.common_mashups.data.customer.CustomerData;
+import com.leroy.common_mashups.customer_accounts.data.CustomerData;
 import lombok.Data;
 
 import java.time.LocalDateTime;

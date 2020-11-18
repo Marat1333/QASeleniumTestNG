@@ -9,10 +9,11 @@ import com.leroy.core.ContextProvider;
 import com.leroy.core.configuration.DriverFactory;
 import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.constants.CardConst;
+import com.leroy.magportal.api.constants.PaymentMethodEnum;
 import com.leroy.magportal.api.constants.PaymentStatusEnum;
-import com.leroy.magportal.api.constants.PaymentTypeEnum;
 import com.leroy.magportal.api.data.onlineOrders.OnlineOrderData;
 import com.leroy.magportal.api.helpers.ui.PaymentPage;
+import com.leroy.umbrella_extension.tpnet.TpNetClient;
 import io.qameta.allure.Step;
 import java.util.List;
 import org.openqa.selenium.WebDriver;
@@ -21,7 +22,6 @@ import ru.leroymerlin.qa.core.clients.payment.PaymentClient;
 import ru.leroymerlin.qa.core.clients.payment.data.task.ChangeStatus;
 import ru.leroymerlin.qa.core.clients.payment.data.task.Link;
 import ru.leroymerlin.qa.core.clients.payment.data.task.PaymentTask;
-import ru.leroymerlin.qa.core.clients.tunnel.data.BitrixSolutionResponse;
 
 public class PaymentHelper extends BaseHelper {
 
@@ -29,6 +29,8 @@ public class PaymentHelper extends BaseHelper {
     private PaymentClient paymentClient;
     @Inject
     OrderClient orderClient;
+    @Inject
+    TpNetClient tpNetClient;
 
     private String getPaymentTaskId(String orderId) {
         Response<OnlineOrderData> resp = orderClient.getOnlineOrder(orderId);
@@ -87,60 +89,52 @@ public class PaymentHelper extends BaseHelper {
                 .getLink();
     }
 
-    // Public methods
-    ////BY OrderId only
+    private void holdCostByTpNet(String orderId) {
+        tpNetClient.postTpNetPayment(orderId);
+    }
 
-    @Step("Hold costs via API for Order with {orderId}")
-    public void makeHoldCost(String orderId) {
+    private void makeHoldCost(String orderId) {
         updatePayment(orderId, PaymentStatusEnum.HOLD);
+    }
+
+    private void makePaymentCard(String orderId) {
+
+        try {
+            WebDriver driver = DriverFactory.createDriver();
+            ContextProvider.setDriver(driver);
+            String link = getPaymentLink(orderId);
+            driver.get(link);
+
+            PaymentPage paymentPage = new PaymentPage();
+            paymentPage.enterCreditCardDetails(CardConst.VISA_1111);
+            paymentPage.assertThatPaymentIsSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            ContextProvider.quitDriver();
+        }
+    }
+
+    // Public methods
+    @Step("Hold costs or Pay via selected payment type {orderId}")
+    public void makePayment(String orderId, PaymentMethodEnum paymentType) {
+        switch (paymentType) {
+            case API:
+                makeHoldCost(orderId);
+                break;
+            case CARD:
+                makePaymentCard(orderId);
+                break;
+            case TPNET:
+                holdCostByTpNet(orderId);
+                break;
+            default:
+                break;
+        }
     }
 
     @Step("PAID via API for Order with {orderId}")
     public void makePaid(String orderId) {
         updatePayment(orderId, PaymentStatusEnum.PAID);
     }
-
-    @Step("Make card payment for Order with {orderId}")
-    public void makePaymentCard(String orderId) throws Exception {
-
-        WebDriver driver = DriverFactory.createDriver();
-        ContextProvider.setDriver(driver);
-        String link = getPaymentLink(orderId);
-        try {
-            driver.get(link);
-
-            PaymentPage paymentPage = new PaymentPage();
-            paymentPage.enterCreditCardDetails(CardConst.VISA_1111);
-            paymentPage.assertThatPaymentIsSuccessful();
-        } finally {
-            ContextProvider.quitDriver();
-        }
-    }
-
-    ////BY BitrixSolutionResponse
-    @Step("Hold costs via API for BitrixSolutionResponse")
-    public void makeHoldCost(BitrixSolutionResponse solutionResponse) {
-        updatePayment(solutionResponse.getSolutionId(), PaymentStatusEnum.HOLD);
-    }
-
-    @Step("PAID via API for BitrixSolutionResponse")
-    public void makePaid(BitrixSolutionResponse solutionResponse) {
-        updatePayment(solutionResponse.getSolutionId(), PaymentStatusEnum.PAID);
-    }
-
-    @Step("Make card payment for BitrixSolutionResponse")
-    public void makePaymentCard(BitrixSolutionResponse solutionResponse) throws Exception {
-        WebDriver driver = DriverFactory.createDriver();
-        ContextProvider.setDriver(driver);
-        try {
-            driver.get(solutionResponse.getLink());
-
-            PaymentPage paymentPage = new PaymentPage();
-            paymentPage.enterCreditCardDetails(CardConst.VISA_1111);
-            paymentPage.assertThatPaymentIsSuccessful();
-        } finally {
-            ContextProvider.quitDriver();
-        }
-    }
-
 }

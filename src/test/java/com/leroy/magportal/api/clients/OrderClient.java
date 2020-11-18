@@ -16,6 +16,9 @@ import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.sales.orders.OrderProductData;
 import com.leroy.magmobile.api.requests.order.OrderRearrangeRequest;
+import com.leroy.magportal.api.constants.DeliveryServiceTypeEnum;
+import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
+import com.leroy.magportal.api.constants.OrderChannelEnum;
 import com.leroy.magportal.api.constants.OrderReasonEnum;
 import com.leroy.magportal.api.constants.OrderWorkflowEnum;
 import com.leroy.magportal.api.constants.PaymentStatusEnum;
@@ -43,7 +46,6 @@ import com.leroy.magportal.api.requests.order.DeliveryUpdateRequest;
 import com.leroy.magportal.api.requests.order.OrderDeliveryRecalculateRequest;
 import com.leroy.magportal.api.requests.order.OrderFulfilmentGivenAwayRequest;
 import com.leroy.magportal.api.requests.order.OrderGetRequest;
-import com.leroy.magportal.api.requests.order.OrderGetRequest.Extend;
 import com.leroy.magportal.api.requests.order.OrderWorkflowRequest;
 import com.leroy.magportal.api.requests.timeslot.AppointmentsRequest;
 import com.leroy.magportal.api.requests.timeslot.ChangeDateRequest;
@@ -54,6 +56,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.SneakyThrows;
+import org.testng.asserts.SoftAssert;
+import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
@@ -641,16 +645,54 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
                 equalTo(expectedTotalDeliveryPrice));
     }
 
-    @Step("Order Delivery Data Update results verification")
-    public void assertDeliveryDataUpdateResult(Response<?> response, String orderId,
-            Double expectedTotalDeliveryPrice, Double expectedLiftPrice) {
-        assertThat("Request to Edit with Delivery recalculate has Failed.", response, successful());
-        Response<OnlineOrderData> orderResp = this.getOnlineOrder(orderId);
-        DeliveryData orderDeliveryData = orderResp.asJson().getDeliveryData();
-        assertThat("Delivery Lift Price was NOT updated.",
-                orderDeliveryData.getLiftupServicePrice(),
-                equalTo(expectedLiftPrice));
-        assertThat("Delivery Price was NOT updated.", orderDeliveryData.getTotalServicePrice(),
-                equalTo(expectedTotalDeliveryPrice));
+    @Step("Storage Location Verification")
+    public void assertLocationChanged(String orderId, int locationsCount) {
+        OnlineOrderData orderData = this.getOnlineOrder(orderId).asJson();
+        assertThat("Storage locations count in Order is invalid.",
+                orderData.getStorageLocations().size(), lessThanOrEqualTo(locationsCount));
+    }
+
+    @Step("GET Order Verification")
+    public void assertGetOrderResult(Response<OnlineOrderData> response,
+            OnlineOrderTypeData currentOrderType) {
+        assertThat("Request to GET Order has Failed.", response, successful());
+        OnlineOrderData orderData = response.asJson();
+        SoftAssert softAssert = new SoftAssert();
+//        PaymentTypeEnum.values().
+        if (currentOrderType == null) {
+            softAssert.assertEquals(orderData.getChannel(), OrderChannelEnum.OFFLINE.getValue(),
+                    "Channel is invalid.");
+            softAssert.assertEquals(orderData.getPaymentType(),
+                    PaymentTypeEnum.CASH_OFFLINE.getMashName(), "Payment Type is invalid.");
+        } else {
+            softAssert.assertEquals(orderData.getChannel(), OrderChannelEnum.ONLINE.getValue(),
+                    "Channel is invalid.");
+            softAssert.assertEquals(orderData.getPaymentType(),
+                    PaymentTypeEnum.getMashNameByName(currentOrderType.paymentType),
+                    "Payment Type is invalid.");
+            if (!currentOrderType.getDeliveryServiceType()
+                    .equals(DeliveryServiceTypeEnum.PICKUP.getService())) {
+                softAssert.assertTrue(orderData.getDelivery(), "Delivery is invalid.");
+                softAssert.assertNotNull(orderData.getDeliveryData(), "Delivery Data is empty.");
+            } else {
+                softAssert.assertFalse(orderData.getDelivery(), "Delivery is invalid.");
+            }
+        }
+        softAssert
+                .assertTrue(orderData.getProducts().size() > 0, "There are No Products in order.");
+        softAssert.assertTrue(Strings.isNotNullAndNotEmpty(orderData.getFulfillmentTaskId()),
+                "FulfillmentTaskId is empty.");
+        softAssert
+                .assertTrue(orderData.getFulfillmentVersion() > 0, "FulfillmentVersion is empty.");
+        softAssert.assertTrue(Strings.isNotNullAndNotEmpty(orderData.getOrderId()),
+                "OrderId is empty.");
+        softAssert.assertTrue(Strings.isNotNullAndNotEmpty(orderData.getPaymentTaskId()),
+                "PaymentTaskId is empty.");
+        softAssert.assertTrue(Strings.isNotNullAndNotEmpty(orderData.getPaymentStatus()),
+                "PaymentStatus is empty.");
+        softAssert.assertTrue(orderData.getPaymentVersion() > 0, "PaymentVersion is empty.");
+        softAssert.assertTrue(orderData.getSolutionVersion() > 0, "SolutionVersion is empty.");
+
+        softAssert.assertAll();
     }
 }

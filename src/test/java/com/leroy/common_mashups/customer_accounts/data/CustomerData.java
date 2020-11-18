@@ -1,4 +1,4 @@
-package com.leroy.common_mashups.data.customer;
+package com.leroy.common_mashups.customer_accounts.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
