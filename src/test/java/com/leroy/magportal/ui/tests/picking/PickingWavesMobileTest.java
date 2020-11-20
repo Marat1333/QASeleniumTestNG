@@ -12,6 +12,7 @@ import com.leroy.magportal.api.clients.PickingTaskClient;
 import com.leroy.magportal.api.data.picking.PickingTaskDataList;
 import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.magportal.ui.pages.picking.mobile.PickingDocListMobilePage;
+import com.leroy.magportal.ui.tests.BaseMockMagPortalUiTest;
 import com.leroy.magportal.ui.tests.BasePAOTest;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
@@ -25,9 +26,9 @@ import static com.leroy.constants.sales.SalesDocumentsConst.States.PICKED;
 import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class PickingWavesMobileTest extends BasePAOTest {
+public class PickingWavesMobileTest extends BaseMockMagPortalUiTest {
 
-    @Inject
+    /*@Inject
     PAOHelper helper;
     @Inject
     OrderClient orderHelper;
@@ -104,11 +105,12 @@ public class PickingWavesMobileTest extends BasePAOTest {
             Response<JsonNode> resp = orderClient.cancelOrder(orderId);
             assertThat(resp, successful());
         }
-    }
+    }*/
 
-    @Test(description = "C23415580 Добавление сборок в волну", groups = NEED_PRODUCTS_GROUP)
+    @Test(description = "C23415580 Добавление сборок в волну"/*, groups = NEED_PRODUCTS_GROUP*/)
     public void testAddPickingIntoWave() throws Exception {
-        initCreateOrder(1);
+        setUpMockForTestCase();
+        /*initCreateOrder(1);
         String order1 = orderId;
         initFindPickingTask();
         String assemblyNumber = pickingTaskId.substring(pickingTaskId.length() - 4);
@@ -119,11 +121,12 @@ public class PickingWavesMobileTest extends BasePAOTest {
         assemblyNumber = pickingTaskId.substring(pickingTaskId.length() - 4);
         orderNumber = orderId.substring(orderId.length() - 4);
         String fullNumber2 = assemblyNumber + " *" + orderNumber;
-        String order2 = orderId;
+        String order2 = orderId;*/
 
         // Step 1
         step("Открыть страницу со Сборкой");
         PickingDocListMobilePage pickingPage = loginAndGoTo(PickingDocListMobilePage.class);
+        pickingPage.reloadPage();
 
         // Step 2
         step("Нажать на иконку волны сборок");
