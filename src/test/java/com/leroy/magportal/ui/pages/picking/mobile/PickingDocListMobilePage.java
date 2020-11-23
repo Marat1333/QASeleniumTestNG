@@ -4,6 +4,7 @@ import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magportal.ui.constants.picking.PickingConst;
 import com.leroy.magportal.ui.models.picking.ShortPickingTaskData;
 import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
@@ -20,6 +21,17 @@ public class PickingDocListMobilePage extends MagPortalBasePage {
             clazz = ShortPickingTaskCardWidget.class)
     private CardWebWidgetList<ShortPickingTaskCardWidget, ShortPickingTaskData> documentCardList;
 
+    @WebFindBy(xpath = "//button[contains(.,'Показать')]", metaName = "Кнопка 'Показать'")
+    Element showBtn;
+
+    @WebFindBy(xpath = "//button[contains(@class, 'Picking-PickingListItem__pickingCheckbox')]",
+            metaName = "Чек-боксы 'Выбрать для сборки'")
+    ElementList<Element> selectForPickingChkBoxes;
+
+    @WebFindBy(xpath = "//div[contains(@class, 'PickingQuickFilterBlock__quickFilter')]/div[3]/div[1]",
+            metaName = "Иконка волны сборок")
+    Element pickingWaveBtn;
+
     @WebFindBy(xpath = "//div[contains(@class, 'PickingQuickFilterBlock__quickFilter')]/div[3]/button",
             metaName = "Иконка поиска")
     Element magnifierBtn;
@@ -30,6 +42,14 @@ public class PickingDocListMobilePage extends MagPortalBasePage {
 
     @WebFindBy(xpath = "//div[contains(@class, 'PickingHeader__filterButton')]//button", metaName = "Кнопка 'Фильтр'")
     Element filterBtn;
+
+    @WebFindBy(xpath = "//button[contains(@class, 'PickingList__action-button') and contains(., 'Отмена')]",
+            metaName = "Кнопка 'Отмена'")
+    Element cancelBtn;
+
+    @WebFindBy(xpath = "//button[contains(@class, 'PickingList__action-button') and contains(., 'Начать сборку')]",
+            metaName = "Кнопка 'Начать сборку'")
+    Element startPickingBtn;
 
     @Override
     protected void waitForPageIsLoaded() {
@@ -46,6 +66,25 @@ public class PickingDocListMobilePage extends MagPortalBasePage {
 
     // Actions
 
+    @Step("Нажать кнопку отмена")
+    public PickingDocListMobilePage clickCancelButton() {
+        cancelBtn.click();
+        return this;
+    }
+
+    @Step("Нажать кнопку 'Начать сборку'")
+    public PickingDocListMobilePage clickStartPicking() {
+        startPickingBtn.click();
+        return new PickingDocListMobilePage();
+    }
+
+    @Step("Нажать кнопку 'Показать'")
+    public PickingDocListMobilePage clickShowButton() {
+        showBtn.click();
+        waitForSpinnerAppearAndDisappear();
+        return this;
+    }
+
     @Step("Выберите документ в списке слева")
     public void clickDocumentInLeftMenu(String number) throws Exception {
         boolean result = false;
@@ -61,10 +100,25 @@ public class PickingDocListMobilePage extends MagPortalBasePage {
         waitForSpinnerDisappear();
     }
 
+    @Step("Отметить все сборки 'Для сборки'")
+    public PickingDocListMobilePage selectAllPickingChkBoxes() {
+        selectForPickingChkBoxes.waitUntilAtLeastOneElementIsPresent();
+        for (Element chkBox : selectForPickingChkBoxes) {
+            chkBox.click();
+        }
+        return this;
+    }
+
     @Step("Нажать кнопку Фильтры")
     public PickingFilterMobilePage clickFilterButton() {
         filterBtn.click();
         return new PickingFilterMobilePage();
+    }
+
+    @Step("Нажать иконку волны сборок")
+    public PickingWaveMobilePage clickPickingWageButton() {
+        pickingWaveBtn.click();
+        return new PickingWaveMobilePage();
     }
 
     @Step("Поиск сборки по номеру заказа")
@@ -152,6 +206,17 @@ public class PickingDocListMobilePage extends MagPortalBasePage {
         anAssert.isEquals(getDocumentDataList().stream().map(ShortPickingTaskData::getNumber)
                         .collect(Collectors.toList()), expectedDocNumbers,
                 "Ожидались другие документы");
+        return this;
+    }
+
+    @Step("Проверить видимость активных кнопок (начать сборку и отмена)")
+    public PickingDocListMobilePage checkActiveButtonsVisibility(boolean shouldBeVisible) {
+        if (shouldBeVisible)
+            anAssert.isTrue(cancelBtn.isVisible() && startPickingBtn.isVisible(),
+                    "Кнопки 'Начать сборку' и 'Отмена' не отображаются");
+        else
+            anAssert.isTrue(!cancelBtn.isVisible() && !startPickingBtn.isVisible(),
+                    "Кнопки 'Начать сборку' и 'Отмена' отображаются");
         return this;
     }
 
