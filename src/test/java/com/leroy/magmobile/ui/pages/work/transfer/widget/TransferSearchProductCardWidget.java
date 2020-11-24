@@ -67,9 +67,9 @@ public class TransferSearchProductCardWidget extends CardWidget<TransferProductD
         transferProductData.setBarCode(ParserUtil.strWithOnlyDigits(barCodeValue));
         transferProductData.setTitle(title.getText(pageSource));
         transferProductData.setTotalStock(ParserUtil.strToInt(availableStock.getText(pageSource)));
-        String singleQuantity = pieceQuantity.getText();
-        String monoQuantity = monoPalletQuantity.getText();
-        String mixQuantity = mixPalletQuantity.getText();
+        String singleQuantity = pieceQuantity.getText(pageSource);
+        String monoQuantity = monoPalletQuantity.getText(pageSource);
+        String mixQuantity = mixPalletQuantity.getText(pageSource);
         transferProductData.setSelectedPieceQuantity(singleQuantity.equals("—") ? 0 : ParserUtil.strToInt(singleQuantity));
         transferProductData.setSelectedMonoPalletQuantity(monoQuantity.equals("—") ? 0 : ParserUtil.strToInt(monoQuantity));
         transferProductData.setSelectedMixPalletQuantity(mixQuantity.equals("—") ? 0 : ParserUtil.strToInt(mixQuantity));

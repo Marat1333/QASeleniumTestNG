@@ -6,9 +6,11 @@ import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.core.web_elements.general.ElementList;
 import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.elements.MagMobRadioButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
+import com.leroy.magmobile.ui.pages.customers.data.PhoneUiData;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
@@ -62,11 +64,8 @@ public abstract class CommonCustomerInfoPage<T extends CommonCustomerInfoPage<T>
     @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='Button'][android.widget.TextView[@text='Женский']]")
     GenderRadioButton femaleOptionBtn;
 
-    @AppFindBy(accessibilityId = "Телефон", metaName = "Поле телефон (пустое)")
-    EditBox emptyPhoneFld;
-
-    @AppFindBy(accessibilityId = "phoneLabelMain_0", metaName = "Поле телефон (заполнено)")
-    EditBox mainPhoneEditFld;
+    @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.TextView[contains(@text, 'Телефон')]]//android.widget.EditText")
+    ElementList<Element> phoneFields;
 
     @AppFindBy(text = "Показать все поля")
     MagMobButton showAllFieldsBtn;
@@ -109,17 +108,16 @@ public abstract class CommonCustomerInfoPage<T extends CommonCustomerInfoPage<T>
     }
 
     @Step("Заполнить / Изменить поле с номером телефона")
-    public T editPhoneNumber(String value, boolean isVerify) throws Exception {
-        if (emptyPhoneFld.isVisible())
-            emptyPhoneFld.click();
-        else
-            mainPhoneEditFld.click();
+    public T editPhoneNumber(int index, PhoneUiData phoneData, boolean isVerify) throws Exception {
+        index--;
+        Element phoneFld = phoneFields.get(index);
+        phoneFld.click();
         new EditPhoneModalPage()
                 .verifyRequiredElements()
-                .editPhoneNumber(value);
+                .editPhoneNumber(phoneData);
         T page = newThisPage();
         if (isVerify)
-            page.shouldPhoneFieldIs(value);
+            page.shouldPhoneFieldIs(index + 1, phoneData.getPhoneNumber());
         return page;
     }
 
@@ -131,7 +129,7 @@ public abstract class CommonCustomerInfoPage<T extends CommonCustomerInfoPage<T>
     }
 
     @Step("Нажать на 'Скрыть все поля")
-    public T clickHideAdditionalFieldsButton() throws Exception{
+    public T clickHideAdditionalFieldsButton() throws Exception {
         mainScrollView.scrollDownToElement(hideAdditionalFieldsBtn);
         hideAdditionalFieldsBtn.click();
         middleNameFld.waitForInvisibility();
@@ -156,8 +154,10 @@ public abstract class CommonCustomerInfoPage<T extends CommonCustomerInfoPage<T>
     }
 
     @Step("Поле с номером телефона должно содержать значение {value}")
-    public T shouldPhoneFieldIs(String value) {
-        anAssert.isEquals(ParserUtil.standardPhoneFmt(mainPhoneEditFld.getText()), value,
+    public T shouldPhoneFieldIs(int index, String value) throws Exception {
+        index--;
+        Element phoneFld = phoneFields.get(index);
+        anAssert.isEquals(ParserUtil.standardPhoneFmt(phoneFld.getText()), value,
                 "Ожидался другой номер телефона");
         return (T) this;
     }

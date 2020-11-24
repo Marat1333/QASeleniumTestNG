@@ -8,6 +8,7 @@ import com.leroy.core.asserts.SoftAssertWrapper;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.testrail.helpers.StepLog;
 import io.qameta.allure.Attachment;
+import io.qameta.allure.Step;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
@@ -51,6 +52,32 @@ public abstract class BasePage extends BaseContainer {
     }
 
     protected void waitForPageIsLoaded() {
+    }
+
+    @Step("Перейти назад")
+    public boolean navigateBack() throws InterruptedException {
+        try {
+            this.driver.navigate().back();
+            return true;
+        } catch (Exception var2) {
+            Log.error("Method: navigateBack");
+            Log.error("Error: There was a problem navigating back on the browser history");
+            Log.error("Exception: " + var2.getMessage());
+            throw var2;
+        }
+    }
+
+    @Step("Перейти вперед")
+    public boolean navigateForward() throws InterruptedException {
+        try {
+            this.driver.navigate().forward();
+            return true;
+        } catch (Exception var2) {
+            Log.error("Method: navigateForward");
+            Log.error("Error: There was a problem navigating forward on the browser history");
+            Log.error("Exception: " + var2.getMessage());
+            throw var2;
+        }
     }
 
     @Attachment(value = "Page screenshot", type = "image/png")

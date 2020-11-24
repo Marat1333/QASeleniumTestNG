@@ -22,6 +22,9 @@ public class RuptureTaskContainer extends Element {
     @AppFindBy(xpath = ".//*[@text='Назначить задачи']")
     Button appointTaskBtn;
 
+    @AppFindBy(xpath = ".//android.view.ViewGroup[@content-desc='Button-container'][2]")
+    Button editTasksBtn;
+
     @AppFindBy(xpath = ".//*[@text='Сделать отзыв с RM']")
     Element recallFromRmLbl;
 
@@ -52,7 +55,7 @@ public class RuptureTaskContainer extends Element {
         if (appointTaskBtn.isVisible()) {
             appointTaskBtn.click();
         } else {
-            this.findChildElement(".//android.view.ViewGroup[@content-desc='Button-container'][2]").click();
+            editTasksBtn.click();
         }
         return new TasksListsModalPage();
     }

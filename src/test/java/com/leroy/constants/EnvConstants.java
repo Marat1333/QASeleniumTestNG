@@ -24,6 +24,8 @@ public class EnvConstants {
     public static final String BASIC_USER_FIRST_NAME = getProperty("basic.user.name");
     public static final String BASIC_USER_SHOP_ID = getProperty("basic.user.shopId");
     public static final String BASIC_USER_DEPARTMENT_ID = getProperty("basic.user.departmentId");
+    public static final String RABBIT_USER_NAME = getProperty("rabbit.user.name");
+    public static final String RABBIT_USER_PASS = getProperty("rabbit.user.password");
 
     // Backend environment
     public static final String BACKEND_CLIENT_ENV = getProperty("backend.environment");
@@ -51,6 +53,8 @@ public class EnvConstants {
     public static final String MAIN_API_HOST = getProperty("url.api.main_host");
     public static final String SEARCH_API_HOST = getProperty("url.api.search_host");
     public static final String CLIENT_API_HOST = getProperty("url.api.client_host");
+    public static final String PICK_API_HOST = getProperty("url.api.pick_host");
+    public static final String RABBIT_API_HOST = getProperty("url.api.rabbit.host");
 
     // Jaeger
     public static final String JAEGER_HOST = getProperty("url.jaeger.host");

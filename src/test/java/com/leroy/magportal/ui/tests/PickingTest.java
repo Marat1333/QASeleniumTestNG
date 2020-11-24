@@ -497,7 +497,8 @@ public class PickingTest extends BasePAOTest {
         pickingContentPage.shouldFinishButtonCountIs(1, 3)
                 .checkIfFinishButtonIsEnabled(true);
 
-        // Step 9        pickingTaskDataBefore.setStatus(SalesDocumentsConst.States.PARTIALLY_PICKED.getUiVal() + " 1/3");
+        // Step 9
+        pickingTaskDataBefore.setStatus(SalesDocumentsConst.States.PARTIALLY_PICKED.getUiVal() + " 1/3");
         step("Нажать на кнопку Завершить");
         List<PickingProductCardData> pickingProducts = pickingTaskDataBefore.getProducts();
         pickingProducts.get(0).setCollectedQuantity(collectedQuantityProduct1);

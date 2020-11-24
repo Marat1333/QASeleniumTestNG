@@ -1,6 +1,6 @@
 package com.leroy.magportal.ui.tests.pao.order;
 
-import com.leroy.common_mashups.requests.customer.CustomerAccountGetRequest;
+import com.leroy.common_mashups.customer_accounts.requests.CustomerAccountGetRequest;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.UserSessionData;
 import com.leroy.magportal.api.requests.order.OrderGetRequest;
@@ -10,12 +10,12 @@ import com.leroy.magportal.ui.constants.OrderConst;
 import com.leroy.magportal.ui.pages.orders.OrderCreatedContentPage;
 import com.leroy.magportal.ui.pages.orders.OrderCreatedInfoPage;
 import com.leroy.magportal.ui.pages.orders.OrderHeaderPage;
-import com.leroy.magportal.ui.tests.BaseMockUiTest;
+import com.leroy.magportal.ui.tests.BaseMockMagPortalUiTest;
 import org.mbtest.javabank.http.predicates.PredicateType;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-public class SizOrderTest extends BaseMockUiTest {
+public class SizOrderTest extends BaseMockMagPortalUiTest {
 
     @Override
     protected UserSessionData initTestClassUserSessionDataTemplate() {

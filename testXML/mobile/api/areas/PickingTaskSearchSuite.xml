@@ -8,7 +8,7 @@
 
     <test name="Picking Task SEARCH">
         <classes>
-            <class name="com.leroy.magmobile.api.tests.salesdoc.PickingTaskTest"/>
+            <class name="com.leroy.magmobile.api.tests.salesdoc.PickingActionTest"/>
         </classes>
     </test>
 

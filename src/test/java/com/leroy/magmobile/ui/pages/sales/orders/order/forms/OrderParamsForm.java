@@ -184,7 +184,8 @@ public class OrderParamsForm extends BaseAppPage {
             enterCustomer(customerData);
         }
         enterPinCode(data, true);
-        enterComment(data.getComment());
+        if (data.getComment() != null)
+            enterComment(data.getComment());
         return this;
     }
 
