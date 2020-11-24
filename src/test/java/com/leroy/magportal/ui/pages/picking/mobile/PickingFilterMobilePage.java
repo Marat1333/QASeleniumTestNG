@@ -9,12 +9,12 @@ import io.qameta.allure.Step;
 
 public class PickingFilterMobilePage extends MagPortalBasePage {
 
-    @WebFindBy(xpath = "//span[contains(@class, 'PickingFiltersFields__textRelative') and not(ancestor::div[contains(@class,'hidden')])]",
+    @WebFindBy(xpath = "//span[contains(@class, 'PickingFiltersFields__textRelative')]",
             metaName = "Загаловок 'Фильтры'")
     Element title;
 
-    private final static String FILTER_BTN_XPATH = "//div[contains(@class, 'PickingFiltersFields__mobile-field-block') and not(ancestor::div[contains(@class,'hidden')])]//button[descendant::span[contains(text(), '%s')]]";
-    private final static String FILTER_SALES_SCHEME_BTN_XPATH = "//div[contains(@class, 'PickingFiltersFields__mobile-field-block')]/following-sibling::div[not(contains(@class, 'PickingFiltersFields__mobile-field-block')) and not(ancestor::div[contains(@class,'hidden')])]//button[descendant::span[text()= '%s']]";
+    private final static String FILTER_BTN_XPATH = "//div[contains(@class, 'PickingFiltersFields__mobile-field-block')]//button[descendant::span[contains(text(), '%s')]]";
+    private final static String FILTER_SALES_SCHEME_BTN_XPATH = "//div[contains(@class, 'PickingFiltersFields__mobile-field-block')]/following-sibling::div[not(contains(@class, 'PickingFiltersFields__mobile-field-block'))]//button[descendant::span[text()= '%s']]";
 
     // Фильтры по типу сборки
     Element shoppingRoomOptionBtn = E(String.format(FILTER_BTN_XPATH, "торг.зал"), "Опция 'Торг зал'");
@@ -28,11 +28,11 @@ public class PickingFilterMobilePage extends MagPortalBasePage {
     Element partiallyPickingOptionBtn = E(String.format(FILTER_BTN_XPATH, "Част. собран"), "Опция 'Част. собран'");
     Element pickedOptionBtn = E(String.format(FILTER_BTN_XPATH, "Собран"), "Опция 'Собран'");
 
-    @WebFindBy(xpath = "//div[contains(@class, 'PickingFiltersFields__mobile-footer') and not(ancestor::div[contains(@class,'hidden')])]//button[1]",
+    @WebFindBy(xpath = "//div[contains(@class, 'PickingFiltersFields__mobile-footer')]//button[1]",
             metaName = "Кнопка очистить фильтры (метла)")
     Element clearBtn;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'mobile') and not(ancestor::div[contains(@class,'hidden')])]//button[contains(@class, 'PickingFiltersFields__submit-btn')]",
+    @WebFindBy(xpath = "//div[contains(@class, 'mobile')]//button[contains(@class, 'PickingFiltersFields__submit-btn')]",
             metaName = "Кнопка 'Применить'")
     Element confirmBtn;
 
