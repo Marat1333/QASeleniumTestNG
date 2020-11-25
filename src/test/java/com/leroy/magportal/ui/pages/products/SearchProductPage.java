@@ -190,7 +190,7 @@ public class SearchProductPage extends MagPortalBasePage {
     @WebFindBy(xpath = "//p[contains(text(),'не дал результатов')]")
     Element notFoundMsgDescriptionLbl;
 
-    @WebFindBy(text = "Больше ничего не найдено.")
+    @WebFindBy(containsText = "ичего не найдено")
     Element noMoreResultsLbl;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//div[contains(@class, 'DatePicker__container')][descendant::input[@placeholder='Дата AVS']]",
