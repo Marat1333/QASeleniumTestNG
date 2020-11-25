@@ -16,6 +16,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 //@Dependencies(bricks = Application.IS4AUTH)
 public class AuthClient extends BaseClient {
@@ -41,7 +42,7 @@ public class AuthClient extends BaseClient {
                 if (resp.isSuccessful())
                     break;
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(new Random().nextInt(2000) + 1000);
                 } catch (Exception err) {
                     Log.error(err.getMessage());
                 }
