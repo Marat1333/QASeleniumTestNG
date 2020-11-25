@@ -16,6 +16,8 @@ import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
+import java.util.Iterator;
+
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS;
 
 public class IsValid extends TypeSafeMatcher<Response<?>> {
@@ -50,7 +52,7 @@ public class IsValid extends TypeSafeMatcher<Response<?>> {
 
     @Override
     public void describeTo(Description description) {
-        description.appendText("Data should match Json Schema");
+        description.appendText("Response should match Json Schema");
     }
 
     @Override
@@ -59,6 +61,14 @@ public class IsValid extends TypeSafeMatcher<Response<?>> {
             String pointer = processingMessage.asJson().get("instance").get("pointer").asText();
             mismatchDescription.appendText(pointer + " : " + processingMessage.getMessage());
             mismatchDescription.appendText("\n          ");
+            JsonNode jsonReports = processingMessage.asJson().get("reports");
+            if (jsonReports != null) {
+                for (Iterator<JsonNode> it = jsonReports.elements(); it.hasNext(); ) {
+                    JsonNode r = it.next();
+                    mismatchDescription.appendText(r.get(0).get("message").toString());
+                    mismatchDescription.appendText("\n          ");
+                }
+            }
         }
         mismatchDescription.appendText("\nResponse ");
         super.describeMismatchSafely(item, mismatchDescription);
