@@ -177,17 +177,32 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
         }
     }
 
-    @Test(description = "C3285386 GET ruptures sessions without params (check definition validation)")
+    @Test(description = "C3285386 GET ruptures sessions without shopid header (check definition validation)")
+    public void testGetRupturesSessionsWithoutShopidHeaderCheckValidation() {
+        RupturesClient rupturesClient = rupturesClient();
+        Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(
+                new RupturesSessionsRequest()
+                        .setAppVersion("1.6.4")
+                        .setDepartmentId(getUserSessionData().getUserDepartmentId()));
+        assertThat("Response Code", resp.getStatusCode(), equalTo(StatusCodes.ST_400_BAD_REQ));
+        CommonErrorResponseData errorResp = resp.asJson(CommonErrorResponseData.class);
+        assertThat("error text", errorResp.getError(),
+                equalTo(ErrorTextConst.WRONG_HEADERS));
+        assertThat("validation shopId", errorResp.getValidation().getShopid(),
+                equalTo(ErrorTextConst.REQUIRED));
+    }
+
+    @Test(description = "C23440582 GET ruptures sessions without departmentId param (check definition validation)")
     public void testGetRupturesSessionsWithoutParamsCheckValidation() {
         RupturesClient rupturesClient = rupturesClient();
         Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(
-                new RupturesSessionsRequest().setAppVersion("1.6.4"));
+                new RupturesSessionsRequest()
+                        .setAppVersion("1.6.4")
+                        .setShopIdHeader(getUserSessionData().getUserShopId()));
         assertThat("Response Code", resp.getStatusCode(), equalTo(StatusCodes.ST_400_BAD_REQ));
         CommonErrorResponseData errorResp = resp.asJson(CommonErrorResponseData.class);
         assertThat("error text", errorResp.getError(),
                 equalTo(ErrorTextConst.WRONG_QUERY_DATA));
-        assertThat("validation shopId", errorResp.getValidation().getShopId(),
-                equalTo(ErrorTextConst.REQUIRED));
         assertThat("validation departmentId", errorResp.getValidation().getDepartmentId(),
                 equalTo(ErrorTextConst.REQUIRED));
     }
@@ -199,7 +214,7 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
                 new RupturesSessionsRequest()
                         .setAppVersion("1.6.4")
                         .setDepartmentId(50)
-                        .setShopId(500));
+                        .setShopIdHeader(500));
         isResponseOk(resp);
         ResRuptureSessionDataList body = resp.asJson();
         assertThat("items count", body.getItems(), hasSize(0));

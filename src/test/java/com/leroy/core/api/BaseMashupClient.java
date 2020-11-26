@@ -38,6 +38,7 @@ public abstract class BaseMashupClient extends BaseClient {
 
     protected <J> Response<J> execute(RequestBuilder<?> request, final Class<J> type) {
         UserSessionData thisUserSessionData = getUserSessionData();
+        request.header("appversion", "autotests");
         if (thisUserSessionData != null && thisUserSessionData.getAccessToken() != null)
             request.bearerAuthHeader(thisUserSessionData.getAccessToken());
         try {

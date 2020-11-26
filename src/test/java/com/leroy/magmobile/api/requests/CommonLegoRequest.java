@@ -13,6 +13,12 @@ public class CommonLegoRequest<J extends CommonLegoRequest<J>> extends RequestBu
         return header("appversion", val);
     }
 
+    public J setShopIdHeader(Object val) {
+        if (val == null)
+            return (J) this;
+        return header("shopid", val.toString());
+    }
+
     // Query params
 
     public J setShopId(Object val) {

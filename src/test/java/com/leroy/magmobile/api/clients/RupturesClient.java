@@ -1,6 +1,7 @@
 package com.leroy.magmobile.api.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.leroy.constants.EnvConstants;
 import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.ruptures.*;
 import com.leroy.magmobile.api.requests.ruptures.*;
@@ -13,60 +14,95 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.leroy.constants.api.ErrorTextConst.SESSION_NOT_FOUND_OR_FINISHED;
+import static com.leroy.constants.api.ErrorTextConst.SESSION_NOT_FOUND;
+import static com.leroy.constants.api.ErrorTextConst.SESSION_NOT_FOUND_OR_ALREADY_FINISHED;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class RupturesClient extends BaseMashupClient {
 
-    private String appVersion = "1.6.4-autotest";
+    @Override
+    protected void init() {
+        gatewayUrl = EnvConstants.RUPTURES_API_HOST;
+    }
+
 
     /**
      * ---------- Executable Requests -------------
      **/
 
-    @Step("Create Rupture session product")
+    @Step("Check C3 access")
+    public Response<JsonNode> checkC3Access(int shopId, String ldap) {
+        RupturesCorrectionAccessCheckRequest req = new RupturesCorrectionAccessCheckRequest();
+        req.setLdapHeader(ldap);
+        req.setShopIdHeader(shopId);
+        req.bearerAuthHeader(getUserSessionData().getAccessToken());
+        return execute(req, JsonNode.class);
+    }
+
+    @Step("Create standard rupture session")
     public Response<JsonNode> createSession(ReqRuptureSessionData postData) {
-        RupturesSessionProductPostRequest req = new RupturesSessionProductPostRequest();
-        req.setAppVersion(appVersion);
+        RupturesSessionCreateRequest req = new RupturesSessionCreateRequest();
+        req.setShopIdHeader(postData.getShopId());
         req.bearerAuthHeader(getUserSessionData().getAccessToken());
         req.jsonBody(postData);
         return execute(req, JsonNode.class);
     }
 
-    @Step("Update rupture session product")
-    public Response<JsonNode> updateSession(ReqRuptureSessionData putData) {
-        RupturesSessionProductRequest req = new RupturesSessionProductRequest();
-        req.setAppVersion(appVersion);
+    @Step("Add product to standard rupture session")
+    public Response<JsonNode> addProductToSession(ReqRuptureSessionData putData) {
+        RupturesSessionProductAddRequest req = new RupturesSessionProductAddRequest();
+        req.setSessionId(putData.getSessionId());
+        req.setShopIdHeader(putData.getShopId());
         req.jsonBody(putData);
         req.bearerAuthHeader(getUserSessionData().getAccessToken());
         return execute(req, JsonNode.class);
     }
 
+    @Step("Create bulk rupture session")
+    public Response<JsonNode> createBulkSession(ReqRuptureBulkSessionData postData) {
+        RupturesBulkSessionCreateRequest req = new RupturesBulkSessionCreateRequest();
+        req.setShopIdHeader(getUserSessionData().getUserShopId());
+        req.bearerAuthHeader(getUserSessionData().getAccessToken());
+        req.jsonBody(postData);
+        return execute(req, JsonNode.class);
+    }
+
+    @Step("Add product to bulk rupture session")
+    public Response<JsonNode> addProductToBulkSession(ReqRuptureBulkSessionData postData, int sessionId) {
+        RupturesBulkSessionProductAddRequest req = new RupturesBulkSessionProductAddRequest();
+        req.setShopIdHeader(getUserSessionData().getUserShopId());
+        req.setSessionId(sessionId);
+        req.bearerAuthHeader(getUserSessionData().getAccessToken());
+        req.jsonBody(postData);
+        return execute(req, JsonNode.class);
+    }
+
     @Step("Delete rupture session product for lmCode={lmCode}")
-    public Response<JsonNode> deleteProductInSession(String lmCode, Integer sessionId) {
+    public Response<JsonNode> deleteProductInSession(String lmCode, Object sessionId) {
         RupturesSessionProductDeleteRequest req = new RupturesSessionProductDeleteRequest();
         if (lmCode != null)
             req.setLmCode(lmCode);
         if (sessionId != null)
             req.setSessionId(sessionId);
-        req.setAppVersion(appVersion);
         return execute(req, JsonNode.class);
     }
 
     @Step("Change actions for rupture session products")
     public Response<ResActionDataList> actionProduct(ReqRuptureSessionWithActionsData putData) {
         RupturesSessionProductActionRequest req = new RupturesSessionProductActionRequest();
-        req.setAppVersion(appVersion);
+        req.setSessionId(putData.getSessionId());
+        req.setLmCode(putData.getLmCode());
+        putData.setLmCode(null);
+        putData.setSessionId(null);
         req.jsonBody(putData);
         return execute(req, ResActionDataList.class);
     }
 
     @Step("Get products for sessionId={sessionId}")
     public Response<RuptureProductDataList> getProducts(
-            Integer sessionId, Boolean actionState, Integer action, Integer[] productState, Integer startFrom, Integer pageSize) {
+            Object sessionId, Boolean actionState, Integer action, Integer[] productState, Integer startFrom, Integer pageSize) {
         RupturesSessionProductsRequest req = new RupturesSessionProductsRequest();
-        req.setAppVersion(appVersion);
         if (sessionId != null)
             req.setSessionId(sessionId);
         if (actionState != null)
@@ -82,7 +118,7 @@ public class RupturesClient extends BaseMashupClient {
         return execute(req, RuptureProductDataList.class);
     }
 
-    public Response<RuptureProductDataList> getProducts(Integer sessionId) {
+    public Response<RuptureProductDataList> getProducts(Object sessionId) {
         return getProducts(sessionId, null, null, null, null, null);
     }
 
@@ -102,9 +138,8 @@ public class RupturesClient extends BaseMashupClient {
 
     private RupturesSessionsRequest getSessionsDefaultRequest() {
         RupturesSessionsRequest req = new RupturesSessionsRequest();
-        req.setShopId(getUserSessionData().getUserShopId());
+        req.setShopIdHeader(getUserSessionData().getUserShopId());
         req.setDepartmentId(getUserSessionData().getUserDepartmentId());
-        req.setAppVersion(appVersion);
         return req;
     }
 
@@ -143,26 +178,23 @@ public class RupturesClient extends BaseMashupClient {
     @Step("Get groups for sessionId={sessionId}")
     public Response<RuptureSessionGroupData> getGroups(int sessionId) {
         RupturesSessionGroupsRequest req = new RupturesSessionGroupsRequest();
-        req.setAppVersion(appVersion);
         req.setSessionId(sessionId);
         return execute(req, RuptureSessionGroupData.class);
     }
 
     @Step("Finish session with id = {sessionId}")
-    public Response<JsonNode> finishSession(Integer sessionId) {
+    public Response<JsonNode> finishSession(Object sessionId) {
         RupturesSessionFinishRequest req = new RupturesSessionFinishRequest();
-        req.setAppVersion(appVersion);
         if (sessionId != null)
             req.setSessionId(sessionId);
         return execute(req, JsonNode.class);
     }
 
     @Step("Delete session with id = {sessionId}")
-    public Response<JsonNode> deleteSession(Integer sessionId) {
+    public Response<JsonNode> deleteSession(Object sessionId) {
         RupturesSessionDeleteRequest req = new RupturesSessionDeleteRequest();
         if (sessionId != null)
             req.setSessionId(sessionId);
-        req.setAppVersion(appVersion);
         return execute(req, JsonNode.class);
     }
 
@@ -225,8 +257,8 @@ public class RupturesClient extends BaseMashupClient {
                     equalTo(expectedProduct.getTwentyEighty()));
             assertThat("#" + (i + 1) + " provider", actualProduct.getProvider(),
                     equalTo(expectedProduct.getProvider()));
-            assertThat("#" + (i + 1) + " planningDeliveryTime", actualProduct.getPlanningDeliveryTime(),
-                    equalTo(expectedProduct.getPlanningDeliveryTime()));
+            assertThat("#" + (i + 1) + " planningDeliveryTime", actualProduct.getPlanningDeliveryTimeAsLocalDateTime(),
+                    equalTo(expectedProduct.getPlanningDeliveryTimeAsLocalDateTime()));
             assertThat("#" + (i + 1) + " shopStock", actualProduct.getShopStock(),
                     equalTo(expectedProduct.getShopStock()));
             assertThat("#" + (i + 1) + " shelfStock", actualProduct.getShelfStock(),
@@ -266,11 +298,18 @@ public class RupturesClient extends BaseMashupClient {
         }
     }
 
-    @Step("Check that action is unavailable")
-    public void assertThatActionIsNotAllowed(Response<JsonNode> resp, Integer sessionId) {
+    @Step("Check that session not found or finished")
+    public void assertThatSessionNotFoundOrFinished(Response<JsonNode> resp, Integer sessionId) {
         assertThat("Response code", resp.getStatusCode(), equalTo(400));
         assertThat("Error", resp.asJson().get("error").asText(),
-                equalTo(String.format(SESSION_NOT_FOUND_OR_FINISHED, sessionId)));
+                equalTo(String.format(SESSION_NOT_FOUND_OR_ALREADY_FINISHED, sessionId)));
+    }
+
+    @Step("Check that session not found")
+    public void assertThatSessionNotFound(Response<JsonNode> resp, Integer sessionId) {
+        assertThat("Response code", resp.getStatusCode(), equalTo(400));
+        assertThat("Error", resp.asJson().get("error").asText(),
+                equalTo(String.format(SESSION_NOT_FOUND, sessionId)));
     }
 
 }
