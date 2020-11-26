@@ -46,4 +46,20 @@
         </classes>
     </test>
 
+    <test name="Pickup Online Orders: Postpayment Full Workflow tests">
+        <classes>
+            <class
+                name="com.leroy.magportal.api.tests.onlineOrders.pickupOrders.PostpaymentWorkflowFullTest">
+            </class>
+        </classes>
+    </test>
+
+    <test name="Pickup Online Orders: Prepayment Full Workflow tests">
+        <classes>
+            <class
+                name="com.leroy.magportal.api.tests.onlineOrders.pickupOrders.PrepaymentWorkflowFullTest">
+            </class>
+        </classes>
+    </test>
+
 </suite>

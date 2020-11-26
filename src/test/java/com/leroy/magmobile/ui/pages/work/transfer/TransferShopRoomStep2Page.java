@@ -67,8 +67,8 @@ public class TransferShopRoomStep2Page extends TransferOrderPage {
         else {
             currentTime = timeFromPage == null ? LocalTime.now() :
                     LocalTime.parse(deliveryTimeLbl.getText());
-            if (ZonedDateTime.now().getOffset().equals(ZoneOffset.of("+03:00")))
-                currentTime = currentTime.minusHours(3);
+//            if (ZonedDateTime.now().getOffset().equals(ZoneOffset.of("+03:00")))
+//                currentTime = currentTime.minusHours(3);
         }
         deliveryTimeArea.click();
         new TimePickerWidget(driver).selectTime(time, currentTime);

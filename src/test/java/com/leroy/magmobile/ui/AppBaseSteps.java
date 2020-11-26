@@ -132,7 +132,8 @@ public class AppBaseSteps extends MagMobileBaseTest {
                     return (T) userProfilePage.goToSales().goToSalesDocumentsSection();
                 return (T) mainProductAndServicesPage.goToSalesDocumentsSection();
             } else if (pageClass.equals(MainCustomerPage.class)) {
-                return (T) mainProductAndServicesPage.goToClientsSection();
+                return (T) mainProductAndServicesPage.goToSales()
+                        .goToClientsSection();
             } else if (pageClass.equals(WorkPage.class)) {
                 return (T) mainProductAndServicesPage.goToWork();
             } else if (pageClass.equals(SupportPage.class)) {

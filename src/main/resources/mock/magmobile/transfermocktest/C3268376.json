@@ -1,0 +1,145 @@
+{
+  "stubs": [
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/salesdoc/transfer",
+            "query": {
+              "taskId": "2003520110068275"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "taskId": "2003520110068275",
+              "status": "NEW",
+              "shopId": 35,
+              "createdBy": "60069803",
+              "createdDate": "2020-11-01T20:45:38.781+03:00",
+              "pointOfGiveAway": "DEPARTMENT",
+              "dateOfGiveAway": "2020-11-01T20:45:38.243+03:00",
+              "comment": "",
+              "products": [
+                {
+                  "lineId": "1",
+                  "lmCode": "10009180",
+                  "status": "NEW",
+                  "orderedQuantity": 1,
+                  "assignedQuantity": 0,
+                  "warnings": [
+                    {
+                      "code": 305,
+                      "message": "Не хватает остатков"
+                    }
+                  ],
+                  "barCode": "4650001110374",
+                  "images": [
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/10009180.jpg",
+                    "https://res.cloudinary.com/lmru/image/upload/LMCode/10009180_02.jpg"
+                  ],
+                  "departmentId": "1",
+                  "availableStock": null,
+                  "price": 325,
+                  "priceUnit": "EA",
+                  "altPrice": null,
+                  "altPriceUnit": null,
+                  "priceCategory": "STD",
+                  "title": "Воронка 125x90 мм цвет красный",
+                  "description": "Красная воронка (125х90 мм)",
+                  "top": "1",
+                  "gamma": "A",
+                  "avsDate": null,
+                  "brand": "ИНТЕРПРОФИЛЬ",
+                  "shops": [ ],
+                  "characteristics": [
+                    {
+                      "name": "Основной материал",
+                      "value": "Оцинкованная сталь"
+                    },
+                    {
+                      "name": "Страна производства",
+                      "value": "Россия"
+                    },
+                    {
+                      "name": "Диаметр желоба и водостока (мм)",
+                      "value": "125 x 90"
+                    },
+                    {
+                      "name": "Тип продукта",
+                      "value": "Воронка"
+                    },
+                    {
+                      "name": "Цвет",
+                      "value": "Красный"
+                    },
+                    {
+                      "name": "Вес, кг",
+                      "value": "0.257"
+                    },
+                    {
+                      "name": "Марка",
+                      "value": "ИНТЕРПРОФИЛЬ"
+                    }
+                  ],
+                  "barCodes": [
+                    "4650001110374",
+                    "2000100091807",
+                    "4607086800430"
+                  ],
+                  "isAvs": false,
+                  "subDepartmentId": "120",
+                  "categoryId": "30",
+                  "subCategoryId": "90",
+                  "logistic": {
+                    "weight": null,
+                    "width": null,
+                    "height": null,
+                    "depth": null
+                  },
+                  "shortTitle": null,
+                  "salesPrice": 325,
+                  "purchasePrice": null,
+                  "primeCost": null,
+                  "futurePrice": null,
+                  "futurePriceFromDate": "2019-04-10T21:00:00.000Z",
+                  "priceReasonOfChange": "Изменение РЦ магазином",
+                  "recommendedPrice": 325,
+                  "priceCurrency": "RUR",
+                  "topEM": false,
+                  "supCode": 10
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "DELETE",
+            "path": "/salesdoc/transfer",
+            "query": {
+              "taskId": "2003520110068275"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "success": true
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

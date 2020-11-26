@@ -1,0 +1,349 @@
+[
+  {
+    "index": 0,
+    "body": {
+      "totalCount": 1,
+      "salesDocuments": [
+        {
+          "docId": "99600000",
+          "fullDocId": "233999600000",
+          "docType": "ORDER",
+          "shopId": "139",
+          "pinCode": null,
+          "salesDocStatus": "DELIVERED",
+          "isUrgent": false,
+          "delivery": true,
+          "creatorName": null,
+          "creatorSurname": null,
+          "createdBy": "Bitrix",
+          "createdDate": "2020-09-13T12:41:11.842+00:00",
+          "customerName": "Авто",
+          "customerSurname": "Тестик",
+          "customerPhone": "79211339990",
+          "customerType": "PERSON",
+          "customerNumber": 1265522,
+          "comment": "BITRIX: В КОМНАТУ, Sberbank",
+          "taskControlStatus": "NOT_CONTROLLED",
+          "docPriceSum": 7951.33,
+          "servicesCount": 0,
+          "productsCount": 3,
+          "giveAway": {
+            "point": "HOME_DELIVERY"
+          },
+          "channel": "ONLINE",
+          "paymentStatus": "PAID",
+          "paymentType": "PREPAYMENT",
+          "userTasks": [],
+          "products": [
+            {
+              "lmCode": "10052955",
+              "title": "Канал плоский  Equation, 55х110х1500 мм"
+            },
+            {
+              "lmCode": "10061536",
+              "title": "Суппорт для розетки Экопласт PM-45, 45 мм, цвет белый"
+            },
+            {
+              "lmCode": "49626307",
+              "title": null
+            },
+            {
+              "lmCode": "10052920",
+              "title": "Канал плоский Equation, 55х110х1000 мм"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "index": 1,
+    "body": {
+      "callRequired": 0,
+      "completeDelivery": false,
+      "orderId": "233999600000",
+      "shopId": 139,
+      "createdAt": "2020-09-13T12:41:11.842+00:00",
+      "createdBy": "Bitrix",
+      "paymentStatus": "PAID",
+      "comment": "BITRIX: В КОМНАТУ, Sberbank",
+      "customers": [
+        {
+          "customerNumber": "1265522",
+          "firstName": "Авто",
+          "lastName": "Тестик",
+          "fullName": "Авто Тестик",
+          "primaryPhone": "79211339990",
+          "phone": {
+            "primary": "79211339990",
+            "secondary": null
+          },
+          "email": "autotest@mail.com",
+          "role": "PAYER",
+          "roles": [
+            "PAYER"
+          ],
+          "type": "PERSON"
+        }
+      ],
+      "products": [
+        {
+          "lmCode": "12281532",
+          "lineId": "c2666101-f29b-49ef-8b33-4d570026f261",
+          "type": "PRODUCT",
+          "price": 18,
+          "quantity": 0,
+          "createdQuantity": 10,
+          "pickedQuantity": 0,
+          "givenAwayQuantity": 0,
+          "controlledQuantity": 0,
+          "confirmedQuantity": 0,
+          "returnedQuantity": 0,
+          "discount": null,
+          "reasons": {
+            "lastPicked": null,
+            "lastGivenAway": null,
+            "lastAdjustment": null
+          },
+          "stocks": {
+            "RD": null,
+            "EM": 0,
+            "LS": null
+          },
+          "sellingScheme": "GENERAL",
+          "refundQuantity": 0,
+          "deliveredQuantity": 0,
+          "logistic": {
+            "width": "63",
+            "height": "42",
+            "weight": "16.1",
+            "depth": "36"
+          },
+          "barCodes": [
+            "4607152360516",
+            "2",
+            "0",
+            "0",
+            "0",
+            "1",
+            "2",
+            "2",
+            "8",
+            "1",
+            "5",
+            "3",
+            "2",
+            "0"
+          ],
+          "departmentId": "7",
+          "priceUnit": "NIU",
+          "title": "Чаша унитаза напольного Универсал Катунь",
+          "priceCategory": "BPR",
+          "isAvs": false,
+          "images": [
+            "https://res.cloudinary.com/lmru/image/upload/LMCode/12281532.jpg"
+          ],
+          "availableStock": 18,
+          "isAVS": false
+        },
+        {
+          "lmCode": "10008989",
+          "lineId": "827c3f07-ea31-4ecb-ab3d-69919f9cce49",
+          "type": "PRODUCT",
+          "price": 18,
+          "quantity": 10,
+          "createdQuantity": 10,
+          "pickedQuantity": 10,
+          "givenAwayQuantity": 10,
+          "controlledQuantity": 0,
+          "confirmedQuantity": 10,
+          "returnedQuantity": 0,
+          "discount": null,
+          "reasons": {
+            "lastPicked": null,
+            "lastGivenAway": null,
+            "lastAdjustment": null
+          },
+          "stocks": {
+            "RD": null,
+            "EM": 0,
+            "LS": null
+          },
+          "sellingScheme": "GENERAL",
+          "refundQuantity": 0,
+          "deliveredQuantity": 10,
+          "logistic": {
+            "width": "32",
+            "height": "6.1",
+            "weight": "0.502",
+            "depth": "32"
+          },
+          "barCodes": [
+            "4650001110299",
+            "2",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "8",
+            "9",
+            "8",
+            "9",
+            "7"
+          ],
+          "departmentId": "1",
+          "priceUnit": "NIU",
+          "title": "Угол желоба на 90° внутренний цвет красный",
+          "priceCategory": "STD",
+          "isAvs": false,
+          "images": [
+            "https://res.cloudinary.com/lmru/image/upload/LMCode/10008989.jpg"
+          ],
+          "availableStock": 0,
+          "isAVS": false
+        }
+      ],
+      "userComments": [],
+      "solutionVersion": 23,
+      "channel": "ONLINE",
+      "giveAway": {
+        "date": "2019-07-06T00:00:00Z",
+        "shopId": 139,
+        "point": "PICKUP_POINT",
+        "storageLocation": null
+      },
+      "customerId": "",
+      "taskControlStatus": "NOT_CONTROLLED",
+      "fulfillmentTaskId": "1013920090383787",
+      "fulfillmentVersion": 6,
+      "fulfillmentPickingTasksQty": 1,
+      "pickers": [
+        {
+          "employeeId": "UNKNOWN",
+          "employeeName": null,
+          "employeeSurname": null
+        }
+      ],
+      "longtail": false,
+      "pickingStatus": null,
+      "delivery": true,
+      "paymentType": null,
+      "actualDeliveryPrice": 0,
+      "payments": [
+        {
+          "date": null,
+          "amount": 0,
+          "paymentType": null,
+          "status": "PAID"
+        }
+      ],
+      "refunds": [],
+      "registerStatus": null,
+      "deliveryData": {
+        "id": "1216077",
+        "status": "finished",
+        "manualProcessing": false,
+        "planDate": "2019-07-06T23:59:59+05:00",
+        "timeInterval": "00:00:00+05:00/23:59:59+05:00",
+        "transportCompany": "СДЭК",
+        "shipFromShopId": "139",
+        "shipTo": {
+          "city": "Россия, Москва, Митино, пер. Ангелов, 8",
+          "street": null,
+          "house": null,
+          "housing": null,
+          "building": null,
+          "flat": null,
+          "entrance": null,
+          "intercom": null,
+          "floor": null,
+          "gpsX": 29.9239,
+          "gpsY": 59.8139
+        },
+        "referenceStoreId": "139",
+        "deliveryServicePrice": 150,
+        "liftupServicePrice": 0,
+        "tariff": "WITHOUT_LANDING",
+        "totalAmount": 330,
+        "totalServicePrice": 150,
+        "payerType": "client",
+        "customer": {
+          "fullName": "Тест ПВЗ",
+          "phone": "79036654689",
+          "email": "natalia@leroymerlin.ru",
+          "serviceCard": null
+        },
+        "receiver": {
+          "fullName": "Тест ПВЗ",
+          "phone": "79036654689"
+        },
+        "liftType": null,
+        "items": [
+          {
+            "id": "c2666101-f29b-49ef-8b33-4d570026f261",
+            "status": "CANCELLED",
+            "product": {
+              "id": "12281532",
+              "name": "Хомуток нерж. W2 16-25 мм (2 шт)",
+              "price": 18,
+              "taxRate": [
+                {
+                  "type": "vat",
+                  "value": "18"
+                }
+              ]
+            },
+            "quantity": {
+              "value": 10,
+              "measure": "th"
+            },
+            "loadedQuantity": {
+              "value": 0,
+              "measure": "th"
+            },
+            "approvedQuantity": {
+              "value": 0,
+              "measure": "th"
+            }
+          },
+          {
+            "id": "827c3f07-ea31-4ecb-ab3d-69919f9cce49",
+            "status": "NEW",
+            "product": {
+              "id": "10008989",
+              "name": "Хомуток нерж. W2 16-25 мм (2 шт)",
+              "price": 18,
+              "taxRate": [
+                {
+                  "type": "vat",
+                  "value": "18"
+                }
+              ]
+            },
+            "quantity": {
+              "value": 10,
+              "measure": "th"
+            },
+            "loadedQuantity": {
+              "value": 10,
+              "measure": "th"
+            },
+            "approvedQuantity": {
+              "value": 10,
+              "measure": "th"
+            }
+          }
+        ]
+      },
+      "status": "DELIVERED",
+      "totalWeight": "5.020",
+      "maxSize": "63.0",
+      "refundAvailable": true,
+      "creatorName": null,
+      "creatorSurname": null
+    }
+  }
+]

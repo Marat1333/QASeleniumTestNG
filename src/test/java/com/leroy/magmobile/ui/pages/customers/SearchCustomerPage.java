@@ -7,6 +7,7 @@ import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.models.customer.MagCustomerData;
+import com.leroy.magmobile.ui.models.customer.MagLegalCustomerData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.sales.orders.estimate.EstimatePage;
 import com.leroy.magmobile.ui.pages.search.widgets.SearchCustomerWidget;
@@ -169,13 +170,14 @@ public class SearchCustomerPage extends CommonMagMobilePage {
     }
 
     @Step("Найдите Юридическое лицо по номеру договора: {value}")
-    public SearchCustomerPage searchLegalCustomerByContractNumber(String value) throws Exception {
+    public SearchCustomerPage searchLegalCustomerByContractNumber(String value, boolean selectFirst) throws Exception {
         if (!contractNumberOption.isVisible())
             selectCustomerType(CustomerType.LEGAL);
         if (value.length() == 9)
             value = value.substring(3);
         enterTextInSearchField(value);
-        mainScrollView.clickElemByIndex(0);
+        if (selectFirst)
+            mainScrollView.clickElemByIndex(0);
         return this;
     }
 
@@ -192,10 +194,24 @@ public class SearchCustomerPage extends CommonMagMobilePage {
     }
 
     @Step("Найдите клиента по почте: {value}")
-    public SearchCustomerPage searchCustomerByEmail(String value) {
+    public SearchCustomerPage searchCustomerByEmail(String value, boolean selectFirst) throws Exception {
         emailOptionLbl.click();
         enterTextInSearchField(value);
+        if (selectFirst) {
+            mainScrollView.clickElemByIndex(0);
+            try {
+                searchFld.waitForInvisibility(short_timeout);
+            } catch (Exception err) {
+                Log.error(err.getMessage());
+                mainScrollView.clickElemByIndex(0);
+            }
+        }
         return this;
+    }
+
+    @Step("Нажать кнопку назад")
+    public void clickBackButton() {
+        backCloseBtn.click();
     }
 
     // VERIFICATIONS
@@ -212,10 +228,24 @@ public class SearchCustomerPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что первый отобразившийся клиент имеет данные, которые мы ожидаем")
-    public SearchCustomerPage shouldFirstCustomerIs(MagCustomerData customerData) throws Exception {
+    public SearchCustomerPage shouldFirstCustomerIs(MagCustomerData customerData, SearchType searchType) throws Exception {
         MagCustomerData expectedData = customerData.clone();
-        expectedData.setEmail(null);
+        if (searchType.equals(SearchType.BY_PHONE))
+            expectedData.setEmail(null);
+        else if (searchType.equals(SearchType.BY_EMAIL))
+            expectedData.setPhone(null);
         mainScrollView.getDataObj(0).assertEqualsNotNullExpectedFields(expectedData);
+        return this;
+    }
+
+    @Step("Проверить, что первый отобразившийся клиент имеет данные, которые мы ожидаем")
+    public SearchCustomerPage shouldFirstCustomerIs(MagLegalCustomerData customerData) throws Exception {
+        MagCustomerData actualData = mainScrollView.getDataObj(0);
+        softAssert.isContainsIgnoringCase(actualData.getName(), customerData.getOrgName(), "Неверное название организации");
+        softAssert.isEquals(actualData.getPhone(), customerData.getOrgPhone(), "Неверный номер телефона");
+        if (customerData.getOrgCard() != null)
+            softAssert.isEquals(actualData.getCardNumber(), customerData.getOrgCard(), "Неверный номер карты");
+        softAssert.verifyAll();
         return this;
     }
 

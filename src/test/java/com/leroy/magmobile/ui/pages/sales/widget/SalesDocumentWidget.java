@@ -18,13 +18,13 @@ public class SalesDocumentWidget extends CardWidget<ShortSalesDocumentData> {
     @AppFindBy(xpath = ".//android.view.ViewGroup[@content-desc='lmui-Icon']")
     private Element image;
 
-    @AppFindBy(xpath = ".//android.widget.TextView[1]")
+    @AppFindBy(xpath = ".//android.view.ViewGroup[android.widget.TextView[contains(@text, '№')]]/android.widget.TextView[1]")
     private Element title;
 
-    @AppFindBy(xpath = ".//android.widget.TextView[2]")
+    @AppFindBy(xpath = ".//android.view.ViewGroup[android.widget.TextView[contains(@text, '№')]]/android.widget.TextView[2]")
     private Element price;
 
-    @AppFindBy(xpath = ".//android.widget.TextView[3]")
+    @AppFindBy(xpath = ".//android.view.ViewGroup[android.widget.TextView[contains(@text, '№')]]/android.widget.TextView[3]")
     private Element number;
 
     @AppFindBy(xpath = ".//android.view.ViewGroup/android.widget.TextView[@index='4' or @index='5']") // TODO
@@ -36,7 +36,7 @@ public class SalesDocumentWidget extends CardWidget<ShortSalesDocumentData> {
     @AppFindBy(xpath = ".//android.widget.TextView[contains(@text, 'Клиент:') or contains(@text, 'Юр. лицо:')]")
     private Element customerName;
 
-    @AppFindBy(xpath = ".//android.view.ViewGroup[count(android.widget.TextView) > 1][2]/android.widget.TextView[1]")
+    @AppFindBy(xpath = ".//android.view.ViewGroup[count(android.widget.TextView) > 1][android.widget.TextView[contains(@text, ':')]]/android.widget.TextView[1]")
     private Element date;
 
     @AppFindBy(xpath = ".//android.view.ViewGroup[1]/android.widget.TextView")

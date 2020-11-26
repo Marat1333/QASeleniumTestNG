@@ -1,8 +1,33 @@
 package com.leroy.magmobile.api.requests;
 
+import ru.leroymerlin.qa.core.clients.base.Method;
 import ru.leroymerlin.qa.core.clients.base.RequestBuilder;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class CommonLegoRequest<J extends CommonLegoRequest<J>> extends RequestBuilder<J> {
+
+    public Map<String, String> getQueryParams() {
+        HashMap<String, String> queryParams = new HashMap<>();
+        String query = build("").getUri().getQuery();
+        if (query != null) {
+            String[] queryParamArr = build("").getUri().getQuery().split("&");
+            for (String one : queryParamArr) {
+                String[] param = one.split("=");
+                queryParams.put(param[0], param[1]);
+            }
+        }
+        return queryParams;
+    }
+
+    public String getPath() {
+        return this.getClass().getAnnotation(Method.class).path();
+    }
+
+    public String getMethod() {
+        return this.getClass().getAnnotation(Method.class).value();
+    }
 
     // Header
     public J setLdapHeader(String val) {

@@ -37,7 +37,7 @@ public class OrderProductCardWidget extends CardWebWidget<ProductOrderCardWebDat
     @WebFindBy(xpath = ".//span[contains(@class, 'Price-container')]", metaName = "Цена")
     Element price;
 
-    @WebFindBy(xpath = ".//div[contains(@class, 'ProductCardFooter__smallSide')]//p[2]", metaName = "Вес")
+    @WebFindBy(xpath = ".//div//p[contains(text(), 'Вес')]/following-sibling::p", metaName = "Вес")
     Element weight;
 
     @WebFindBy(xpath = ".//div[contains(@class, 'ProductCardFooter__bigSide')]//p[2]", metaName = "Габариты")
@@ -91,9 +91,9 @@ public class OrderProductCardWidget extends CardWebWidget<ProductOrderCardWebDat
             double priceWithDiscount = ParserUtil.strToDouble(price.getText());
             productOrderCardWebData.setDiscountPercent(ParserUtil.strToDouble(discountPercent.getText()));
             productOrderCardWebData.setTotalPriceWithDiscount(priceWithDiscount * productOrderCardWebData.getSelectedQuantity());
-            productOrderCardWebData.setPrice(priceWithDiscount / (1 - productOrderCardWebData.getDiscountPercent() / 100.0));
+            productOrderCardWebData.setPrice(ParserUtil.plus(priceWithDiscount / (1 - productOrderCardWebData.getDiscountPercent() / 100.0), 0, 2));
         }
-        productOrderCardWebData.setTotalPrice(productOrderCardWebData.getPrice() * productOrderCardWebData.getSelectedQuantity());
+        productOrderCardWebData.setTotalPrice(ParserUtil.plus(productOrderCardWebData.getPrice() * productOrderCardWebData.getSelectedQuantity(), 0, 2));
         return productOrderCardWebData;
     }
 }

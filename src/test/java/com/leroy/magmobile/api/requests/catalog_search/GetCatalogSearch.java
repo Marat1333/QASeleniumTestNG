@@ -5,7 +5,7 @@ import com.leroy.magmobile.api.enums.SortingOrder;
 import com.leroy.magmobile.api.requests.CommonSearchRequestBuilder;
 import ru.leroymerlin.qa.core.clients.base.Method;
 
-@Method(value = "GET", path = "/v4/catalog/search")
+@Method(value = "GET", path = "/v1/products")
 public class GetCatalogSearch extends CommonSearchRequestBuilder<GetCatalogSearch> {
 
     public GetCatalogSearch setByLmCode(String val) {

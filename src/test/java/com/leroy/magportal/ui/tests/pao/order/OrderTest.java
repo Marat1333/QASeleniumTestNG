@@ -7,7 +7,7 @@ import com.leroy.constants.sales.DiscountConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.common_mashups.data.customer.CustomerData;
+import com.leroy.common_mashups.customer_accounts.data.CustomerData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateProductOrderData;
 import com.leroy.magportal.api.clients.OrderClient;
@@ -117,7 +117,7 @@ public class OrderTest extends BasePAOTest {
     @Test(description = "C23410899 Создать заказ из корзины с авторской сборкой")
     public void testCreateOrderWithAuthorAssembly() throws Exception {
         // Prepare data
-        SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+        SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_2;
         ProductItemData topEmProduct = searchProductHelper.getProducts(
                 1, new CatalogSearchFilter().setTopEM(true)).get(0);
         CartProductOrderData cartProductOrderData = new CartProductOrderData(topEmProduct);
@@ -169,7 +169,7 @@ public class OrderTest extends BasePAOTest {
     @Test(description = "C23410900 Создание заказа из корзины, преобразованной из сметы", groups = NEED_PRODUCTS_GROUP)
     public void testCreateOrderFromCartTransformedFromEstimate() throws Exception {
         step("Pre-condition: Создаем смету и преобразовываем ее в корзину");
-        CustomerData customerData = paoHelper.searchForCustomer(TestDataConstants.SIMPLE_CUSTOMER_DATA_1);
+        CustomerData customerData = paoHelper.searchForCustomer(TestDataConstants.SIMPLE_CUSTOMER_DATA_2);
         EstimateProductOrderData estimateProductOrderData = new EstimateProductOrderData(productList.get(0));
         estimateProductOrderData.setQuantity(1.0);
         String estimateId = paoHelper.createConfirmedEstimateAndGetId(estimateProductOrderData, customerData);
@@ -179,7 +179,7 @@ public class OrderTest extends BasePAOTest {
 
         // Step 1
         step("Нажмите на кнопку 'Оформить заказ'");
-        stepClickConfirmOrderButton(TestDataConstants.SIMPLE_CUSTOMER_DATA_1);
+        stepClickConfirmOrderButton(TestDataConstants.SIMPLE_CUSTOMER_DATA_2);
 
         // Step 2
         step("Выберете поле PIN-код для оплаты, введите PIN-код для оплаты");
@@ -337,7 +337,7 @@ public class OrderTest extends BasePAOTest {
 
         // Step 8
         step("Найдите и откройте подтвержденный заказ");
-        orderCreatedContentPage.clickDocumentInLeftMenu(orderData.getNumber());
+        new OrderHeaderPage().clickDocumentInLeftMenu(orderData.getNumber());
         orderCreatedContentPage = new OrderCreatedContentPage().shouldOrderContentDataIs(orderData);
     }
 
@@ -356,10 +356,8 @@ public class OrderTest extends BasePAOTest {
         String orderId = paoHelper.createConfirmedOrder(cardProducts, false).getOrderId();
 
         OrderHeaderPage orderHeaderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
-        orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderId,
-                CONFIRMED_BUT_NOT_ALLOWED_FOR_PICKING_ORDER ?
-                        SalesDocumentsConst.States.CONFIRMED.getApiVal() :
-                        SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal(), false);
+        orderClient.waitUntilOrderGetStatus(orderId,
+                        SalesDocumentsConst.States.ALLOWED_FOR_PICKING, null);
         orderHeaderPage.clickDocumentInLeftMenu(orderId);
 
         orderCreatedContentPage = new OrderCreatedContentPage();
@@ -947,12 +945,11 @@ public class OrderTest extends BasePAOTest {
      * Обновите список документов слева
      */
     private void stepRefreshDocumentListAndCheckDocument() throws Exception {
-        if (orderCreatedContentPage == null)
-            orderCreatedContentPage = new OrderCreatedContentPage();
+        OrderHeaderPage orderHeaderPage = new OrderHeaderPage();
         ShortOrderDocWebData shortOrderDocWebData = orderData.getShortOrderData();
         shortOrderDocWebData.setPayType(ShortOrderDocWebData.PayType.OFFLINE);
-        orderCreatedContentPage.refreshDocumentList();
-        orderCreatedContentPage.shouldDocumentListContainsThis(shortOrderDocWebData);
+        orderHeaderPage.refreshDocumentList();
+        orderHeaderPage.shouldDocumentListContainsThis(shortOrderDocWebData);
     }
 
 }

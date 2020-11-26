@@ -197,7 +197,7 @@ public abstract class BaseWidget extends BaseWrapper {
             return false;
         } catch (TimeoutException e) {
             Log.error(String.format("waitForVisibility() for " + getMetaName() + " failed (tried for %d second(s))", timeout));
-            throw e;
+            return false;
         }
     }
 

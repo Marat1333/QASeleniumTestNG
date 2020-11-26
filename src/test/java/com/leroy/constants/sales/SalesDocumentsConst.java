@@ -16,7 +16,12 @@ public class SalesDocumentsConst {
         PARTIALLY_GIVEN_AWAY("PARTIALLY_GIVEN_AWAY", "Част. выдан"),
         GIVEN_AWAY("GIVEN_AWAY", "Выдан"),
         SHIPPED("SHIPPED", "Отгружен"),
+        PARTIALLY_SHIPPED("PARTIALLY_SHIPPED", "Част. Отгружен"),
+        ON_DELIVERY("ON_DELIVERY", "В доставке"),
         DELIVERED("DELIVERED", "Доставлен"),
+        PARTIALLY_DELIVERED("PARTIALLY_DELIVERED", "Част. доставлен"),
+        DELIVERED_WITHOUT_ASSEMBLY("DELIVERED_WITHOUT_ASSEMBLY", "Доставлен без сборки"),
+        CANCELLED_BY_CUSTOMER_ON_DELIVERY("CANCELLED_BY_CUSTOMER_ON_DELIVERY", "Отказ при доставке"),
         TRANSFORMED("", "Преобразован"),
         DELETED("DELETED", ""),
         CANCELLED("CANCELLED", "Отменен"),
@@ -55,6 +60,31 @@ public class SalesDocumentsConst {
         private String apiVal;
 
         Types(String apiVal, String uiVal) {
+            this.apiVal = apiVal;
+            this.uiVal = uiVal;
+        }
+
+        public String getUiVal() {
+            return uiVal;
+        }
+
+        public String getApiVal() {
+            return apiVal;
+        }
+    }
+
+    // Состояния Сборок
+    public enum PickingStatus {
+        ALLOWED_FOR_PICKING("ALLOWED_FOR_PICKING", "ГОТОВ К СБОРКЕ"),
+        PICKING_IN_PROGRESS("PICKING_IN_PROGRESS", "СБОРКА"),
+        PAUSE_PICKING("PAUSE_PICKING", "СБОРКА (ПАУЗА)"),
+        PICKED("PICKED", "СОБРАН"),
+        PARTIALLY_PICKED("PARTIALLY_PICKED", "ЧАСТ. СОБРАН");
+
+        private String uiVal;
+        private String apiVal;
+
+        PickingStatus(String apiVal, String uiVal) {
             this.apiVal = apiVal;
             this.uiVal = uiVal;
         }
