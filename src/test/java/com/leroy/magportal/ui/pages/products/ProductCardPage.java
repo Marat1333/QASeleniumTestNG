@@ -17,6 +17,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 public class ProductCardPage extends MagPortalBasePage {
 
@@ -197,10 +198,9 @@ public class ProductCardPage extends MagPortalBasePage {
         softAssert.isEquals(lmCodeLbl.getText(), data.getLmCode(), "LmCode отображен некорректно");
         softAssert.isEquals(ParserUtil.strWithOnlyDigits(barCodeLbl.getText()), data.getBarCode(), "BarCode отображен некорректно");
         barCodeListOpenerBtn.click();
-        List<String> barCodes = data.getBarCodes();
-        for (int i = 0; i < productBarCodes.getCount(); i++) {
-            anAssert.isEquals(ParserUtil.strWithOnlyDigits(productBarCodes.get(i).getText()), barCodes.get(i), "BarCode отображен некорректно");
-        }
+        List<String> expectedBarCodes = data.getBarCodes();
+        List<String> actualBarCodes = productBarCodes.getTextList().stream().map(ParserUtil::strWithOnlyDigits).collect(Collectors.toList());
+        anAssert.isEquals(actualBarCodes, expectedBarCodes, "BarCodes отображен некорректно");
         barCodeListOpenerBtn.click();
         softAssert.verifyAll();
     }
@@ -256,7 +256,8 @@ public class ProductCardPage extends MagPortalBasePage {
         String eachDescriptionElementText;
         for (Element each : this.description) {
             eachDescriptionElementText = each.getText();
-            anAssert.isContainsIgnoringCase(description, eachDescriptionElementText,
+            anAssert.isContainsIgnoringCase(description.replaceAll("\n| ", ""),
+                    eachDescriptionElementText.replaceAll("\n| ", ""),
                     description + " hasn`t contains " + eachDescriptionElementText);
         }
     }
