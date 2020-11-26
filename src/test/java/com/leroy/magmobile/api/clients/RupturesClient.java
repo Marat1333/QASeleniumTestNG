@@ -24,6 +24,8 @@ public class RupturesClient extends BaseMashupClient {
     @Override
     protected void init() {
         gatewayUrl = EnvConstants.RUPTURES_API_HOST;
+        jaegerHost = EnvConstants.RUPTURES_JAEGER_HOST;
+        jaegerService = EnvConstants.RUPTURES_JAEGER_SERVICE;
     }
 
 

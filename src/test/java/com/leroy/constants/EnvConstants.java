@@ -60,6 +60,8 @@ public class EnvConstants {
     // Jaeger
     public static final String JAEGER_HOST = getProperty("url.jaeger.host");
     public static final String JAEGER_SERVICE = getProperty("url.jaeger.service");
+    public static final String RUPTURES_JAEGER_HOST = getProperty("url.jaeger.ruptures_host");
+    public static final String RUPTURES_JAEGER_SERVICE = getProperty("url.jaeger.ruptures_service");
 
     /**
      * Get the value of a property key
