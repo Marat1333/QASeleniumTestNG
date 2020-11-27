@@ -63,28 +63,28 @@ public class RupturesSessionGroupsTest extends BaseRuptureTest {
         rupturePostData.setSessionId(sessionId);
         rupturePostData.setProduct(productData2);
 
-        resp = rupturesClient.updateSession(rupturePostData);
+        resp = rupturesClient.addProductToSession(rupturePostData);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
         ruptureProductDataListBody.addItem(productData2);
 
         // Товар 3
         rupturePostData.setProduct(productData3);
 
-        resp = rupturesClient.updateSession(rupturePostData);
+        resp = rupturesClient.addProductToSession(rupturePostData);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
         ruptureProductDataListBody.addItem(productData3);
 
         // Товар 4
         rupturePostData.setProduct(productData4);
 
-        resp = rupturesClient.updateSession(rupturePostData);
+        resp = rupturesClient.addProductToSession(rupturePostData);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
         ruptureProductDataListBody.addItem(productData4);
 
         // Товар 5
         rupturePostData.setProduct(productData5);
 
-        resp = rupturesClient.updateSession(rupturePostData);
+        resp = rupturesClient.addProductToSession(rupturePostData);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
         ruptureProductDataListBody.addItem(productData5);
     }
@@ -148,28 +148,28 @@ public class RupturesSessionGroupsTest extends BaseRuptureTest {
         rupturePostData.setSessionId(sessionId);
         rupturePostData.setProduct(productData2);
 
-        resp = rupturesClient.updateSession(rupturePostData);
+        resp = rupturesClient.addProductToSession(rupturePostData);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
         ruptureProductDataListBody.addItem(productData2);
 
         // Товар 3
         rupturePostData.setProduct(productData3);
 
-        resp = rupturesClient.updateSession(rupturePostData);
+        resp = rupturesClient.addProductToSession(rupturePostData);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
         ruptureProductDataListBody.addItem(productData3);
 
         // Товар 4
         rupturePostData.setProduct(productData4);
 
-        resp = rupturesClient.updateSession(rupturePostData);
+        resp = rupturesClient.addProductToSession(rupturePostData);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
         ruptureProductDataListBody.addItem(productData4);
 
         // Товар 5
         rupturePostData.setProduct(productData5);
 
-        resp = rupturesClient.updateSession(rupturePostData);
+        resp = rupturesClient.addProductToSession(rupturePostData);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
         ruptureProductDataListBody.addItem(productData5);
     }

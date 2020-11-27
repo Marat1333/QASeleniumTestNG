@@ -108,11 +108,11 @@ public class RupturesDeleteSessionTest extends BaseRuptureTest {
     public void testDeleteSessionMashupValidation() {
         RupturesClient rupturesClient = rupturesClient();
 
-        Response<JsonNode> resp = rupturesClient.deleteSession(null);
+        Response<JsonNode> resp = rupturesClient.deleteSession("");
         assertThat("Response code", resp.getStatusCode(), equalTo(StatusCodes.ST_400_BAD_REQ));
         CommonErrorResponseData errorResp = resp.asJson(CommonErrorResponseData.class);
         assertThat("error text", errorResp.getError(),
-                equalTo(ErrorTextConst.WRONG_QUERY_DATA));
+                equalTo(ErrorTextConst.WRONG_PATH));
         assertThat("validation sessionId", errorResp.getValidation().getSessionId(),
                 equalTo(ErrorTextConst.REQUIRED));
 

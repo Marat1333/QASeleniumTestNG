@@ -33,10 +33,12 @@ public class RuptureProductData {
     private Integer shelfCount;
     private String comment;
 
+    @JsonIgnore
     public LocalDateTime getPlanningDeliveryTimeAsLocalDateTime() {
-        return LocalDateTime.parse(planningDeliveryTime, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss[.SSS][.S]'Z'"));
+        return LocalDateTime.parse(planningDeliveryTime, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss[.SSS][.SS][.S]'Z'"));
     }
 
+    @JsonIgnore
     public void setPlanningDeliveryTimeAsLocalDateTime(LocalDateTime date) {
         this.planningDeliveryTime = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
     }
