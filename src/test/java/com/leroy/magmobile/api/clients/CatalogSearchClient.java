@@ -1,5 +1,6 @@
 package com.leroy.magmobile.api.clients;
 
+import com.leroy.constants.EnvConstants;
 import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
@@ -19,6 +20,11 @@ import java.util.stream.Collectors;
 public class CatalogSearchClient extends BaseMashupClient {
     //back-end limit
     protected final static int MAX_PAGE_SIZE = 90;
+
+    @Override
+    protected void init() {
+        gatewayUrl = EnvConstants.SEARCH_API_HOST;
+    }
 
     /**
      * ---------- Requests -------------

@@ -11,6 +11,7 @@ import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.clients.PickingTaskClient;
 import com.leroy.magportal.api.data.picking.PickingTaskDataList;
 import com.leroy.magportal.api.helpers.PAOHelper;
+import com.leroy.magportal.api.helpers.PaymentHelper;
 import com.leroy.magportal.ui.constants.TestDataConstants;
 import com.leroy.magportal.ui.constants.picking.PickingConst;
 import com.leroy.magportal.ui.models.picking.PickingProductCardData;
@@ -46,6 +47,8 @@ public class OrdersFlowTest extends BasePAOTest {
     PAOHelper helper;
     @Inject
     OrderClient orderHelper;
+    @Inject
+    private PaymentHelper paymentHelper;
 
     @Override
     protected UserSessionData initTestClassUserSessionDataTemplate() {
@@ -98,6 +101,35 @@ public class OrdersFlowTest extends BasePAOTest {
         orderId = helper.createConfirmedOrder(productOrderDataList, giveAwayData, false).getOrderId();
     }
 
+    private void initCreateOrder(int productCount, SalesDocumentsConst.GiveAwayPoints giveAwayPoint, SalesDocumentsConst.States orderStatus) throws Exception {
+        List<CartProductOrderData> productOrderDataList = new ArrayList<>();
+        for (int i = 0; i < productCount; i++) {
+            CartProductOrderData productOrderData = new CartProductOrderData(productList.get(i));
+            productOrderData.setQuantity(2.0);
+            productOrderDataList.add(productOrderData);
+        }
+        GiveAwayData giveAwayData = new GiveAwayData();
+        giveAwayData.setDate(LocalDateTime.now().plusDays(1));
+        giveAwayData.setShopId(
+                Integer.valueOf(ContextProvider.getContext().getUserSessionData().getUserShopId()));
+        if (giveAwayPoint != null) {
+            giveAwayData.setPoint(giveAwayPoint.getApiVal());
+        } else {
+            giveAwayData.setPoint(SalesDocumentsConst.GiveAwayPoints.PICKUP.getApiVal());
+        }
+        switch (orderStatus) {
+            case ALLOWED_FOR_PICKING:
+            case PICKED:
+                orderId = helper.createConfirmedOrder(productOrderDataList, giveAwayData, true).getOrderId();
+                orderHelper.moveNewOrderToStatus(orderId, orderStatus);
+                break;
+            default:
+                orderId = helper.createConfirmedOrder(productOrderDataList, giveAwayData, false).getOrderId();
+                break;
+        }
+    }
+
+
     private void initCreateOrder(int productCount) throws Exception {
         initCreateOrder(productCount, SalesDocumentsConst.States.CONFIRMED);
     }
@@ -112,7 +144,7 @@ public class OrdersFlowTest extends BasePAOTest {
         pickingTaskId = respPickingTasks.asJson().getItems().get(0).getTaskId();
     }
 
-    @AfterClass(enabled = true)
+    @AfterClass(enabled = false)
     private void cancelConfirmedOrder() throws Exception {
         if (orderId != null) {
             OrderClient orderClient = apiClientProvider.getOrderClient();
@@ -226,11 +258,174 @@ public class OrdersFlowTest extends BasePAOTest {
         orderPage.shouldDocumentCountIs(1);
     }
 
-    @Test(description = "C23428132 Заказы.Оффлайн", groups = NEED_PRODUCTS_GROUP)
+    @Test(description = "C23437677 Заказы. Oффлайн. Доставка.", groups = NEED_PRODUCTS_GROUP)
     public void testOfflineDelivery() throws Exception {
+        // Создать заказ и перевести его в статус "Собран"
+
+        initCreateOrder(1,SalesDocumentsConst.GiveAwayPoints.DELIVERY, SalesDocumentsConst.States.ALLOWED_FOR_PICKING);
+
+        // Step 1:
+        step("Открыть страницу с Заказами");
+        OrderHeaderPage orderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
+
+        // Step 2:
+        step("Найти созданный заказ с статусе Собран с номером" + " " + orderId);
+        orderPage.enterSearchTextAndSubmit(orderId);
+        orderPage.shouldDocumentIsPresent(orderId);
+        orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal());
+        orderPage.shouldDocumentCountIs(1);
+
+        // Step 3:
+        step("Кликнуть на заказ" + " " + orderId);
+        orderPage.clickDocumentInLeftMenu(orderId);
+        OrderCreatedContentPage createdContentPage = new OrderCreatedContentPage();
+        createdContentPage.shouldOrderProductCountIs(1);
+
+        // Step 4:
+        step("Перейти на Сборки");
+        AssemblyOrderPage pickingTab = createdContentPage.clickGoToPickings();
+
+        // Step5: нажать на Сборку
+        step("нажать на Сборку");
+        PickingContentPage pickingContentPage = pickingTab.clickToPickingTask(1);
+
+        // Step6: Начать сборку
+        step("Нажать на кнопку Начать сборку");
+        pickingContentPage.clickStartAssemblyButton();
+
+        // Step7:
+        step("Товар 1: Ввести в инпут Собрано количество равное,  указанному в Заказано");
+        pickingContentPage.editCollectQuantity(1, 2)
+                .shouldProductCollectedQuantityIs(1, 2);
+
+        // Step 8:
+        step("Завершить сборку");
+        pickingContentPage.clickFinishAssemblyButton();
+        paymentHelper.makePaid(orderId);
+
+        // Step 9:
+        step("Вернуться на страницу заказов ");
+        PickingPage pickingPage = new PickingPage();
+        pickingPage.clickOrderLinkAndGoToOrderPage();
 
 
+        // Step 10:
+        step("Проверить статус собранного заказа");
+        orderPage.refreshDocumentList();
+        orderPage.shouldDocumentIsPresent(orderId);
+        orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.PICKED.getUiVal());
+        orderPage.shouldDocumentCountIs(1);
+
+        // Step 11:
+        step("Перейти на вкладку 'К выдаче и возврату'");
+        GiveAwayShipOrderPage giveAwayShipOrderPage = createdContentPage.clickGoToShipRefund();
+
+        // Step 12:
+        step("Товар 1: Ввести в инпут 'К выдаче' количество равное,  указанному в Заказано");
+        giveAwayShipOrderPage.editToShipQuantity(1, 2)
+                .shouldProductToShipQuantityIs(1, 2);
+
+        // Step 13
+        step("Нажать на кнопку 'Выдать'");
+        giveAwayShipOrderPage.clickGiveAwayButton();
+
+        // Step 14:
+        step("Обновить список документов и проверить статус выданного заказа");
+        orderPage.refreshDocumentList();
+        orderPage.shouldDocumentIsPresent(orderId);
+        orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.GIVEN_AWAY.getUiVal());
+        orderPage.shouldDocumentCountIs(1);
 
     };
+
+    @Test
+    public void test1() throws Exception {
+        testOrderOffline(SalesDocumentsConst.GiveAwayPoints.PICKUP);
+    }
+
+    @Test
+    public void test2() throws Exception {
+        testOrderOffline(SalesDocumentsConst.GiveAwayPoints.DELIVERY);
+    }
+
+    private void testOrderOffline(SalesDocumentsConst.GiveAwayPoints giveAwayPoint) throws Exception{
+        // Создать заказ в статусе "Готов к сборке"
+
+
+        initCreateOrder(1,giveAwayPoint, SalesDocumentsConst.States.ALLOWED_FOR_PICKING);
+
+        // Step 1:
+        step("Открыть страницу с Заказами");
+        OrderHeaderPage orderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
+
+        // Step 2:
+        step("Найти созданный заказ с статусе 'Готов к Сборке' с номером" + " " + orderId);
+        orderPage.enterSearchTextAndSubmit(orderId);
+        orderPage.shouldDocumentIsPresent(orderId);
+        orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal());
+        orderPage.shouldDocumentCountIs(1);
+
+        // Step 3:
+        step("Кликнуть на заказ" + " " + orderId);
+        orderPage.clickDocumentInLeftMenu(orderId);
+        OrderCreatedContentPage createdContentPage = new OrderCreatedContentPage();
+        createdContentPage.shouldOrderProductCountIs(1);
+
+        // Step 4:
+        step("Перейти на Сборки");
+        AssemblyOrderPage pickingTab = createdContentPage.clickGoToPickings();
+
+        // Step5: нажать на Сборку
+        step("нажать на Сборку");
+        PickingContentPage pickingContentPage = pickingTab.clickToPickingTask(1);
+
+        // Step6: Начать сборку
+        step("Нажать на кнопку Начать сборку");
+        pickingContentPage.clickStartAssemblyButton();
+
+        // Step7:
+        step("Товар 1: Ввести в инпут Собрано количество равное,  указанному в Заказано");
+        pickingContentPage.editCollectQuantity(1, 2)
+                .shouldProductCollectedQuantityIs(1, 2);
+
+        // Step 8:
+        step("Завершить сборку");
+        pickingContentPage.clickFinishAssemblyButton();
+        paymentHelper.makePaid(orderId);
+
+        // Step 9:
+        step("Вернуться на страницу заказов ");
+        PickingPage pickingPage = new PickingPage();
+        pickingPage.clickOrderLinkAndGoToOrderPage();
+
+
+        // Step 10:
+        step("Проверить статус собранного заказа");
+        orderPage.refreshDocumentList();
+        orderPage.shouldDocumentIsPresent(orderId);
+        orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.PICKED.getUiVal());
+        orderPage.shouldDocumentCountIs(1);
+
+        // Step 11:
+        step("Перейти на вкладку 'К выдаче и возврату'");
+        GiveAwayShipOrderPage giveAwayShipOrderPage = createdContentPage.clickGoToShipRefund();
+
+        // Step 12:
+        step("Товар 1: Ввести в инпут 'К выдаче' количество равное,  указанному в Заказано");
+        giveAwayShipOrderPage.editToShipQuantity(1, 2)
+                .shouldProductToShipQuantityIs(1, 2);
+
+        // Step 13
+        step("Нажать на кнопку 'Выдать'");
+        giveAwayShipOrderPage.clickGiveAwayButton();
+
+        // Step 14:
+        step("Обновить список документов и проверить статус выданного заказа");
+        orderPage.refreshDocumentList();
+        orderPage.shouldDocumentIsPresent(orderId);
+        orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.GIVEN_AWAY.getUiVal());
+        orderPage.shouldDocumentCountIs(1);
+    }
+
 
 }
