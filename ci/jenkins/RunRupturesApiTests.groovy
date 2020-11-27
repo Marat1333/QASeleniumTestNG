@@ -1,5 +1,7 @@
 TELEGRAM_BOT_URL = 'https://api.telegram.org/bot596012234:AAGAaYCfc2nDS3BAr2J7l0PRTgzOoBqGqy4'
 
+env.TELEGRAM_CHAT = env.TELEGRAM_CHAT.replaceFirst(/^(.*?)\(.*\)/, '$1')
+
 def telegramMessage(message) {
     if (env.TELEGRAM_CHAT) {
         sh """
@@ -56,13 +58,9 @@ timestamps {
             }
         }
 
-//        stage('Send notification') {
-//            telegramMessage("Ruptures API Тесты завершены. Test run: ${env.RUN} \n " +
-//                    "[Allure report](https://jenkins.lmru.adeo.com/job/stock-availability/job/Autotests/job/API/"+ env.BUILD_NUMBER +"/allure)")
-//        }
-//
         stage('Send notification') {
-            telegramMessage("Ruptures API Тесты завершены")
+            telegramMessage("Ruptures API Тесты завершены. Test run: ${env.RUN} \n " +
+                    "[Allure report](https://jenkins.lmru.adeo.com/job/stock-availability/job/Autotests/job/API/"+ env.BUILD_NUMBER +"/allure)")
         }
     }
 }
