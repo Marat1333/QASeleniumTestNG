@@ -29,7 +29,7 @@ timestamps {
 
             checkout(
                     [$class                           : 'GitSCM',
-                     branches                         : [[name: $env.TESTS_BRANCH]],
+                     branches                         : [[name: env.TESTS_BRANCH]],
                      doGenerateSubmoduleConfigurations: false,
                      extensions                       : [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'auto-tests']],
                      submoduleCfg                     : [],
