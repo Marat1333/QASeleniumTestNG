@@ -53,7 +53,7 @@ public class RupturesDeleteProductTest extends BaseRuptureTest {
         rupturePostData.setSessionId(sessionId);
         for (int i = 1; i < ruptureItems.size(); i++) {
             rupturePostData.setProduct(ruptureItems.get(i));
-            resp = rupturesClient.updateSession(rupturePostData);
+            resp = rupturesClient.addProductToSession(rupturePostData);
             rupturesClient.assertThatIsUpdatedOrDeleted(resp);
         }
 
@@ -116,11 +116,11 @@ public class RupturesDeleteProductTest extends BaseRuptureTest {
         RupturesClient rupturesClient = rupturesClient();
 
         step("Отправляем запрос на удаление без параметров");
-        Response<JsonNode> resp = rupturesClient.deleteProductInSession(null, null);
+        Response<JsonNode> resp = rupturesClient.deleteProductInSession("", "");
         assertThat("Response code", resp.getStatusCode(), equalTo(StatusCodes.ST_400_BAD_REQ));
         CommonErrorResponseData errorResp = resp.asJson(CommonErrorResponseData.class);
         assertThat("error text", errorResp.getError(),
-                equalTo(ErrorTextConst.WRONG_QUERY_DATA));
+                equalTo(ErrorTextConst.WRONG_PATH));
         assertThat("validation sessionId", errorResp.getValidation().getSessionId(),
                 equalTo(ErrorTextConst.REQUIRED));
         assertThat("validation lmCode", errorResp.getValidation().getLmCode(),

@@ -86,7 +86,7 @@ public class RupturesGetSessionProductTest extends BaseRuptureTest {
         rupturePostData.setSessionId(sessionId);
         for (int i = 1; i < ruptureItems.size(); i++) {
             rupturePostData.setProduct(ruptureItems.get(i));
-            resp = rupturesClient.updateSession(rupturePostData);
+            resp = rupturesClient.addProductToSession(rupturePostData);
             rupturesClient.assertThatIsUpdatedOrDeleted(resp);
         }
 
@@ -222,11 +222,11 @@ public class RupturesGetSessionProductTest extends BaseRuptureTest {
     @Test(description = "C23409756 GET ruptures products mashup validation")
     public void testGetRupturesProductsMashupValidation() {
         RupturesClient rupturesClient = rupturesClient();
-        Response<?> resp = rupturesClient.getProducts(null);
+        Response<?> resp = rupturesClient.getProducts("");
         assertThat("Response Code", resp.getStatusCode(), equalTo(StatusCodes.ST_400_BAD_REQ));
         CommonErrorResponseData errorResp = resp.asJson(CommonErrorResponseData.class);
         assertThat("error text", errorResp.getError(),
-                equalTo(ErrorTextConst.WRONG_QUERY_DATA));
+                equalTo(ErrorTextConst.WRONG_PATH));
         assertThat("validation sessionId", errorResp.getValidation().getSessionId(),
                 equalTo(ErrorTextConst.REQUIRED));
     }

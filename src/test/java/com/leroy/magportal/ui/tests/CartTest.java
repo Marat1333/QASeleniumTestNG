@@ -78,7 +78,7 @@ public class CartTest extends BasePAOTest {
         step("Введите название товара в поле 'Добавление товара' и нажмите Enter");
         cartPage.enterTextInSearchProductField(titleSearch);
         ExtendedSearchModal extendedSearchModal = new ExtendedSearchModal();
-        extendedSearchModal.shouldProductsContainInTitle(titleSearch, 3);
+        extendedSearchModal.shouldProductsContainInTitle(titleSearch.substring(0, 6), 3);
 
         // Step 5
         step("Выберите нужный товар и нажмите на кнопку '+Добавить'");
