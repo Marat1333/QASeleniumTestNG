@@ -9,7 +9,7 @@ public class ResOrderProductCheckQuantityData {
     private String lineId;
     private String lmCode;
     private Double quantity;
-    private Integer availableStock;
+    private Double availableStock;
     private String title;
     private String barCode;
     private String departmentId;

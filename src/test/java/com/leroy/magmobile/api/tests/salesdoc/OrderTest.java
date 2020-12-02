@@ -168,7 +168,7 @@ public class OrderTest extends BaseProjectApiTest {
         confirmOrderData.setPinCode(orderData.getPinCode());
 
         GiveAwayData giveAwayData = new GiveAwayData();
-        giveAwayData.setDate(LocalDateTime.now().plusDays(1));
+        giveAwayData.setDateAsLocalDateTime(LocalDateTime.now().plusDays(1));
         giveAwayData.setPoint(SalesDocumentsConst.GiveAwayPoints.PICKUP.getApiVal());
         giveAwayData.setShopId(Integer.valueOf(getUserSessionData().getUserShopId()));
         confirmOrderData.setGiveAway(giveAwayData);
