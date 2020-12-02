@@ -3,14 +3,7 @@
 <suite name="Mag Portal (Mobile version) Suite">
 
     <suite-files>
-        <suite-file path="areas/EstimateSuite.xml"/>
-        <suite-file path="areas/CartSuite.xml"/>
-        <suite-file path="areas/OrderSuite.xml"/>
-        <suite-file path="areas/OrderFiltersSuite.xml"/>
-        <suite-file path="areas/ClientSuite.xml"/>
-        <suite-file path="areas/PickingSuite.xml"/>
-        <suite-file path="areas/ProductCardSuite.xml"/>
-        <suite-file path="areas/SearchSuite.xml"/>
+        <suite-file path="mock/MobilePickingSuite.xml"/>
     </suite-files>
 
 </suite>
