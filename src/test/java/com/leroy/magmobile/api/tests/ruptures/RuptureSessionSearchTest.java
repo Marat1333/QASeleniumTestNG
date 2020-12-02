@@ -182,7 +182,6 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
         RupturesClient rupturesClient = rupturesClient();
         Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(
                 new RupturesSessionsRequest()
-                        .setAppVersion("1.6.4")
                         .setDepartmentId(getUserSessionData().getUserDepartmentId()));
         assertThat("Response Code", resp.getStatusCode(), equalTo(StatusCodes.ST_400_BAD_REQ));
         CommonErrorResponseData errorResp = resp.asJson(CommonErrorResponseData.class);
@@ -197,7 +196,6 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
         RupturesClient rupturesClient = rupturesClient();
         Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(
                 new RupturesSessionsRequest()
-                        .setAppVersion("1.6.4")
                         .setShopIdHeader(getUserSessionData().getUserShopId()));
         assertThat("Response Code", resp.getStatusCode(), equalTo(StatusCodes.ST_400_BAD_REQ));
         CommonErrorResponseData errorResp = resp.asJson(CommonErrorResponseData.class);
@@ -212,7 +210,6 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
         RupturesClient rupturesClient = rupturesClient();
         Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(
                 new RupturesSessionsRequest()
-                        .setAppVersion("1.6.4")
                         .setDepartmentId(50)
                         .setShopIdHeader(500));
         isResponseOk(resp);
