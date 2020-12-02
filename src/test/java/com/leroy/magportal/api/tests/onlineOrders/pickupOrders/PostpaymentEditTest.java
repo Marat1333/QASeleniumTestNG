@@ -161,6 +161,6 @@ public class PostpaymentEditTest extends BaseMagPortalApiTest {
     private void makeNewOrder() {
         isDimensional = false;
 
-        currentOrderId = bitrixHelper.createOnlineOrderCardPayment(currentOrderType).getSolutionId();
+        currentOrderId = bitrixHelper.createOnlineOrder(currentOrderType).getSolutionId();
     }
 }

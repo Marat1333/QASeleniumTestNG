@@ -38,7 +38,7 @@ public class PickupTimeslotTest extends BaseMagPortalApiTest {
     @BeforeClass
     private void setUp() {
         currentOrderType = OnlineOrderTypeConst.PICKUP_POSTPAYMENT;
-        currentOrderId = bitrixHelper.createOnlineOrderCardPayment(currentOrderType).getSolutionId();
+        currentOrderId = bitrixHelper.createOnlineOrder(currentOrderType).getSolutionId();
     }
 
     @Test(description = "C23425906 Get Timeslot for Several Products", priority = 1)

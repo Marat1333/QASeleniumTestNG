@@ -38,7 +38,7 @@ public class PostpaymentWorkflowFullTest extends BaseMagPortalApiTest {
     @BeforeClass
     private void setUp() {
         currentOrderType = OnlineOrderTypeConst.PICKUP_POSTPAYMENT;
-        currentOrderId = bitrixHelper.createOnlineOrderCardPayment(currentOrderType).getSolutionId();
+        currentOrderId = bitrixHelper.createOnlineOrder(currentOrderType).getSolutionId();
 
         currentTaskId = pickingTaskClient.searchForPickingTasks(currentOrderId).asJson().getItems()
                 .stream().findFirst().get().getTaskId();
