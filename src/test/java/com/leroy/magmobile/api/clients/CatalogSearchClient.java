@@ -1,5 +1,6 @@
 package com.leroy.magmobile.api.clients;
 
+import com.leroy.constants.EnvConstants;
 import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
@@ -19,6 +20,14 @@ import java.util.stream.Collectors;
 public class CatalogSearchClient extends BaseMashupClient {
     //back-end limit
     protected final static int MAX_PAGE_SIZE = 90;
+
+    private String oldGatewayUrl;
+
+    @Override
+    protected void init() {
+        gatewayUrl = EnvConstants.SEARCH_API_HOST;
+        oldGatewayUrl = EnvConstants.MAIN_API_HOST;
+    }
 
     /**
      * ---------- Requests -------------
@@ -61,7 +70,7 @@ public class CatalogSearchClient extends BaseMashupClient {
     @Step("Search for services")
     public Response<ServiceItemDataList> searchServicesBy(GetCatalogServicesSearch params) {
         params.setLdapHeader(getUserSessionData().getUserLdap());
-        return execute(params, ServiceItemDataList.class);
+        return execute(params, ServiceItemDataList.class, oldGatewayUrl);
     }
 
     @Step("Search for suppliers by query={query}, pageSize={pageSize}")

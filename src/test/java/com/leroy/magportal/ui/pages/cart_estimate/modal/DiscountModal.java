@@ -93,7 +93,7 @@ public class DiscountModal extends MagPortalBasePage {
         List<String> expectedOptions = Arrays.asList(DiscountConst.Reasons.AFTER_REPAIR.getName(),
                 DiscountConst.Reasons.PRODUCT_SAMPLE.getName(), DiscountConst.Reasons.BALANCE_MEASURED_PRODUCT.getName(),
                 DiscountConst.Reasons.INCOMPLETE_KIT.getName(), DiscountConst.Reasons.DEFECT.getName(),
-                DiscountConst.Reasons.B2B_PRICE_ADJUSTMENT.getName());
+                DiscountConst.Reasons.B2B_PRICE_ADJUSTMENT.getName(), DiscountConst.Reasons.B2B_EXTRA_CHARGE.getName());
         anAssert.isEquals(new HashSet<>(discountReasonCmbBox.getOptionList()), new HashSet<>(expectedOptions),
                 "Ожидались другие причины скидки");
         return this;

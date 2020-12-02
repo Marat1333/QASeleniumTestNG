@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.leroy.core.ContextProvider;
 import com.leroy.core.configuration.Log;
+import com.leroy.core.util.mountebank.MockDataPreparer;
 import com.leroy.core.util.mountebank.MountebankClient;
 import com.leroy.core.util.mountebank.PredicateExtend;
 import com.leroy.magmobile.api.requests.CommonLegoRequest;
@@ -31,8 +32,10 @@ import java.util.List;
 
 public abstract class BaseUiMagMobMockTest extends AppBaseSteps {
 
+    private MockDataPreparer mockDataPreparer = new MockDataPreparer(4548, "magmobile");
+
     private MountebankClient mountebankClient = new MountebankClient("https://mountebank-dev-magfront-stage.apps.lmru.tech");
-    private final int DEFAULT_IMPOSTER_PORT = 4547;
+    private final int DEFAULT_IMPOSTER_PORT = 4548;
     private final String PATH_MOCK_DIRECTORY = "src" + File.separator + "main" + File.separator +
             "resources" + File.separator + "mock" + File.separator + "magmobile";
 
@@ -44,33 +47,14 @@ public abstract class BaseUiMagMobMockTest extends AppBaseSteps {
 
     @BeforeClass
     protected void restartDefaultImposter() throws Exception {
-        int deleteSt = mountebankClient.deleteAllImposters();
-        Assert.assertEquals(deleteSt, 200, "Не удалось удалить Imposter");
-
-        String defaultContent = readFile("src/main/resources/mock/magmobile_default_imposter.json", StandardCharsets.UTF_8);
-        Imposter imposter = Imposter.fromJSON((JSONObject) new JSONParser().parse(defaultContent));
-        int stCreate = mountebankClient.createImposter(imposter);
-        if (stCreate != 201)
-            stCreate = mountebankClient.createImposter(imposter);
-        Assert.assertEquals(stCreate, 201, "Не удалось создать default'ый Imposter");
+        mockDataPreparer.restartDefaultImposter();
     }
 
     /**
      * Создание stub'ов на основе json файла из массива stubs, где полностью они описаны (и predicates, и responses)
      */
     public void setUpMockForTestCase() throws Exception {
-        String tcId = ContextProvider.getContext().getTcId();
-        String className = this.getClass().getSimpleName().toLowerCase();
-        String defaultMockPath = PATH_MOCK_DIRECTORY + File.separator + className + File.separator + "default.json";
-        if (new File(defaultMockPath).exists()) {
-            String defaultContent = readFile(defaultMockPath, StandardCharsets.UTF_8);
-            int updSt = mountebankClient.addStubsFromArray((JSONObject) new JSONParser().parse(defaultContent), DEFAULT_IMPOSTER_PORT);
-            Assert.assertEquals(updSt, 200, "Не удалось добавить default stubs для " + tcId);
-        }
-        String content = readFile(PATH_MOCK_DIRECTORY + File.separator + className +File.separator + tcId + ".json",
-                StandardCharsets.UTF_8);
-        int updSt = mountebankClient.addStubsFromArray((JSONObject) new JSONParser().parse(content), DEFAULT_IMPOSTER_PORT);
-        Assert.assertEquals(updSt, 200, "Не удалось добавить stubs для " + tcId);
+        mockDataPreparer.setUpMockForTestCase(this.getClass().getSimpleName().toLowerCase());
     }
 
     protected void createStub(PredicateType requestPredicateType, CommonLegoRequest<?> request,

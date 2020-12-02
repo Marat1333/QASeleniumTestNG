@@ -106,16 +106,7 @@
 
     <test name="Print Estimate tests">
         <classes>
-            <class name="com.leroy.magportal.ui.tests.pao.estimate.EstimatePrintTest">
-                <methods>
-                    <include name="testPrintEstimateWithOneProduct"/>
-                    <include name="testPrintEstimateWhenConfirmed"/>
-                    <include name="testPrintEstimateWith50Products"/>
-                    <include name="testPrintEstimateWithIndividualPerson"/>
-                    <include name="testPrintEstimateWithDifferentCategories"/>
-                    <include name="testPrintEstimateWithDelivery"/>
-                </methods>
-            </class>
+            <class name="com.leroy.magportal.ui.tests.pao.estimate.EstimatePrintTest"/>
         </classes>
     </test>
 

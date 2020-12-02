@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite name="API Ruptures Sessions Suite" parallel="tests">
+<suite name="API Ruptures Suite" parallel="tests">
 
     <listeners>
         <listener class-name="com.leroy.core.listeners.TestRailListener"/>
@@ -95,6 +95,12 @@
                     <include name="testDeleteSessionMashupValidation"/>
                 </methods>
             </class>
+        </classes>
+    </test>
+
+    <test name="Rupture sessions search tests">
+        <classes>
+            <class name="com.leroy.magmobile.api.tests.ruptures.RuptureSessionSearchTest"/>
         </classes>
     </test>
 

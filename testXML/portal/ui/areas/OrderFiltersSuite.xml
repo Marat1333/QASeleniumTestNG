@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Order Filters Suite" parallel="methods">
+
+    <listeners>
+        <listener class-name="com.leroy.core.listeners.TestRailListener"/>
+    </listeners>
+
+    <test name="Ордерс - Фильтры">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.OrderSearchTest"/>
+        </classes>
+    </test>
+
+</suite>
