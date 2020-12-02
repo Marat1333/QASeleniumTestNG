@@ -9,7 +9,7 @@ timestamps {
                         [$class: 'StringParameterValue', name: 'TEST_THREAD_COUNT', value: env.TEST_THREAD_COUNT],
                         [$class: 'StringParameterValue', name: 'TEST_XML', value: 'UiGlobalMobileSuite.xml'],
                         [$class: 'StringParameterValue', name: 'RUN_NAME', value: env.RUN_NAME],
-                        [$class: 'StringParameterValue', name: 'RETRY_COUNT', value: '1'],
+                        [$class: 'StringParameterValue', name: 'RETRY_COUNT', value: '0'],
                         [$class: 'StringParameterValue', name: 'ONLY_SMOKE', value: 'false'],
                         [$class: 'StringParameterValue', name: 'BUILD_TYPE', value: 'TEST'],
                         [$class: 'StringParameterValue', name: 'CHECK_CHANGES', value: 'true'],
