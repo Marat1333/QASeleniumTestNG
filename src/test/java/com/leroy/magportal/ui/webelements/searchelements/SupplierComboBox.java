@@ -51,14 +51,18 @@ public class SupplierComboBox extends PuzMultiSelectComboBox {
             clearTextInputBtn.click();
         }
         searchString.fill(value);
+        loadingSpinner.waitForVisibility(tiny_timeout);
         loadingSpinner.waitForInvisibility();
     }
 
     public void searchSupplierAndSelect(String value) {
         searchSupplier(value);
+        supplierCards.waitUntilAtLeastOneElementIsPresent();
         for (SupplierCardWidget widget : supplierCards) {
             if (widget.getSupplierCode().equals(value) || widget.getSupplierName().equals(value)) {
                 widget.click();
+                loadingSpinner.waitForVisibility(tiny_timeout);
+                loadingSpinner.waitForInvisibility();
             }
         }
     }

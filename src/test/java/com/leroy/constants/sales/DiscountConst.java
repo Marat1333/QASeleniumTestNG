@@ -11,7 +11,8 @@ public class DiscountConst {
         INCOMPLETE_KIT(4, "Не полный комплект"),
         PRODUCT_SAMPLE(5, "Образец товара"),
         CUSTOMER_EQUIVALENT_REASON(6, "Аналог для клиента ИМ"),
-        B2B_PRICE_ADJUSTMENT(0, "Корректировка цены B2B");
+        B2B_PRICE_ADJUSTMENT(11, "Корректировка цены B2B"),
+        B2B_EXTRA_CHARGE(12, "Наценка B2B");
 
         private int id;
         private String name;

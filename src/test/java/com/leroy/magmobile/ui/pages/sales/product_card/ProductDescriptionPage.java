@@ -62,7 +62,7 @@ public class ProductDescriptionPage extends ProductCardPage {
     @AppFindBy(text = "Цены в магазинах")
     MagMobButton productPriceGammaCardBtn;
 
-    @AppFindBy(containsText = "₽/")
+    @AppFindBy(xpath = "//android.widget.TextView[@text='Цена']/following-sibling::android.widget.TextView[contains(@text, '/')]")
     Element priceLbl;
 
     @AppFindBy(xpath = "//android.widget.TextView[@text='Цена']/following-sibling::android.widget.TextView[2]")

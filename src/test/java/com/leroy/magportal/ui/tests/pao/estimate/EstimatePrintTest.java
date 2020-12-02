@@ -1,5 +1,7 @@
 package com.leroy.magportal.ui.tests.pao.estimate;
 
+import com.leroy.core.ContextProvider;
+import com.leroy.core.configuration.DriverFactory;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.EstimateClient;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
@@ -16,6 +18,7 @@ import com.leroy.magportal.ui.pages.cart_estimate.modal.SubmittedEstimateModal;
 import com.leroy.magportal.ui.pages.customers.CreateCustomerForm;
 import com.leroy.magportal.ui.tests.BasePAOTest;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -27,6 +30,11 @@ import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class EstimatePrintTest extends BasePAOTest {
+
+    @AfterMethod
+    public void quiteDriver() {
+        ContextProvider.quitDriver();
+    }
 
     private String createEstimateWith50Products() {
         EstimateClient estimateClient = apiClientProvider.getEstimateClient();
@@ -88,12 +96,13 @@ public class EstimatePrintTest extends BasePAOTest {
         PrintEstimatePage printEstimatePage = submittedEstimateModal.clickPrint();
         printEstimatePage.shouldPrintPreviewAreVisible();
 
-        // Step 3
-        step("Нажмите на кнопку 'Отмена'");
-        printEstimatePage.clickCancelButton();
-        printEstimatePage.shouldEstimatePrintDataIs(estimateData);
-
-        printEstimatePage.closeCurrentWindowAndSwitchToSpecified(submittedEstimateModal);
+        if (!DriverFactory.isGridProfile()) { // В муне обращение к shadowElement не работает
+            // Step 3
+            step("Нажмите на кнопку 'Отмена'");
+            printEstimatePage.clickCancelButton();
+            printEstimatePage.shouldEstimatePrintDataIs(estimateData);
+        }
+        printEstimatePage.closeCurrentWindowAndSwitchToSpecified(submittedEstimateModal, true);
         submittedEstimateModal = new SubmittedEstimateModal();
         submittedEstimateModal.closeWindow();
     }
@@ -129,13 +138,13 @@ public class EstimatePrintTest extends BasePAOTest {
         step("Нажмите на кнопку 'Распечатать'");
         PrintEstimatePage printEstimatePage = submittedEstimateModal.clickPrint();
         printEstimatePage.shouldPrintPreviewAreVisible();
-
-        // Step 3
-        step("Нажмите на кнопку 'Отмена'");
-        printEstimatePage.clickCancelButton();
-        printEstimatePage.shouldEstimatePrintDataIs(estimateData);
-
-        printEstimatePage.closeCurrentWindowAndSwitchToSpecified(submittedEstimateModal);
+        if (!DriverFactory.isGridProfile()) { // В муне обращение к shadowElement не работает
+            // Step 3
+            step("Нажмите на кнопку 'Отмена'");
+            printEstimatePage.clickCancelButton();
+            printEstimatePage.shouldEstimatePrintDataIs(estimateData);
+        }
+        printEstimatePage.closeCurrentWindowAndSwitchToSpecified(submittedEstimateModal, true);
         submittedEstimateModal = new SubmittedEstimateModal();
         submittedEstimateModal.closeWindow();
     }
@@ -166,12 +175,13 @@ public class EstimatePrintTest extends BasePAOTest {
         PrintEstimatePage printEstimatePage = estimatePage.clickPrintButton();
         printEstimatePage.shouldPrintPreviewAreVisible();
 
-        // Step 2
-        step("Нажмите на кнопку 'Отмена'");
-        printEstimatePage.clickCancelButton();
-        printEstimatePage.shouldEstimatePrintDataIs(estimateData);
-
-        printEstimatePage.closeCurrentWindowAndSwitchToSpecified(estimatePage);
+        if (!DriverFactory.isGridProfile()) { // В муне обращение к shadowElement не работает
+            // Step 2
+            step("Нажмите на кнопку 'Отмена'");
+            printEstimatePage.clickCancelButton();
+            printEstimatePage.shouldEstimatePrintDataIs(estimateData);
+        }
+        printEstimatePage.closeCurrentWindowAndSwitchToSpecified(estimatePage, true);
     }
 
     @Test(description = "C23398086 Печать сметы физ. лицо", groups = {NEED_PRODUCTS_GROUP, NEED_ACCESS_TOKEN_GROUP})
@@ -199,19 +209,21 @@ public class EstimatePrintTest extends BasePAOTest {
         SubmittedEstimateModal submittedEstimateModal = estimatePage.clickCreateButton();
         submittedEstimateModal.verifyRequiredElements();
 
-        // Step 2
-        step("Нажмите на кнопку 'Распечатать'");
-        PrintEstimatePage printEstimatePage = submittedEstimateModal.clickPrint();
-        printEstimatePage.shouldPrintPreviewAreVisible();
+        if (!DriverFactory.isGridProfile()) { // В муне обращение к shadowElement не работает
+            // Step 2
+            step("Нажмите на кнопку 'Распечатать'");
+            PrintEstimatePage printEstimatePage = submittedEstimateModal.clickPrint();
+            printEstimatePage.shouldPrintPreviewAreVisible();
 
-        // Step 3
-        step("Нажмите на кнопку 'Отмена'");
-        printEstimatePage.clickCancelButton();
-        printEstimatePage.shouldEstimatePrintDataIs(estimateData);
+            // Step 3
+            step("Нажмите на кнопку 'Отмена'");
+            printEstimatePage.clickCancelButton();
+            printEstimatePage.shouldEstimatePrintDataIs(estimateData);
 
-        // Step 4
-        step("Закройте вкладку печати сметы");
-        printEstimatePage.closeCurrentWindowAndSwitchToSpecified(submittedEstimateModal);
+            // Step 4
+            step("Закройте вкладку печати сметы");
+            printEstimatePage.closeCurrentWindowAndSwitchToSpecified(submittedEstimateModal);
+        }
 
         // Step 5
         step("Кликнете правой кнопкой мышки по экрану");
@@ -243,15 +255,16 @@ public class EstimatePrintTest extends BasePAOTest {
 
         // Step 11
         step("Нажмите на кнопку печати сметы (принтер)");
-        printEstimatePage = estimatePage.clickPrintButton();
+        PrintEstimatePage printEstimatePage = estimatePage.clickPrintButton();
         printEstimatePage.shouldPrintPreviewAreVisible();
 
-        // Step 12
-        step("Нажмите на кнопку 'Отмена'");
-        printEstimatePage.clickCancelButton();
-        printEstimatePage.shouldEstimatePrintDataIs(estimateData);
-
-        printEstimatePage.closeCurrentWindowAndSwitchToSpecified(estimatePage);
+        if (!DriverFactory.isGridProfile()) { // В муне обращение к shadowElement не работает
+            // Step 12
+            step("Нажмите на кнопку 'Отмена'");
+            printEstimatePage.clickCancelButton();
+            printEstimatePage.shouldEstimatePrintDataIs(estimateData);
+        }
+        printEstimatePage.closeCurrentWindowAndSwitchToSpecified(estimatePage, true);
     }
 
     @Test(description = "C23393379 Печать сметы 50 товаров")
@@ -286,12 +299,13 @@ public class EstimatePrintTest extends BasePAOTest {
         PrintEstimatePage printEstimatePage = submittedEstimateModal.clickPrint();
         printEstimatePage.shouldPrintPreviewAreVisible();
 
-        // Step 3
-        step("Нажмите на кнопку 'Отмена'");
-        printEstimatePage.clickCancelButton();
-        printEstimatePage.shouldEstimatePrintDataIs(estimateData);
-
-        printEstimatePage.closeCurrentWindowAndSwitchToSpecified(submittedEstimateModal);
+        if (!DriverFactory.isGridProfile()) { // В муне обращение к shadowElement не работает
+            // Step 3
+            step("Нажмите на кнопку 'Отмена'");
+            printEstimatePage.clickCancelButton();
+            printEstimatePage.shouldEstimatePrintDataIs(estimateData);
+        }
+        printEstimatePage.closeCurrentWindowAndSwitchToSpecified(submittedEstimateModal, true);
         submittedEstimateModal = new SubmittedEstimateModal();
         submittedEstimateModal.closeWindow();
     }
@@ -330,12 +344,13 @@ public class EstimatePrintTest extends BasePAOTest {
         PrintEstimatePage printEstimatePage = submittedEstimateModal.clickPrint();
         printEstimatePage.shouldPrintPreviewAreVisible();
 
-        // Step 3
-        step("Нажмите на кнопку 'Отмена'");
-        printEstimatePage.clickCancelButton();
-        printEstimatePage.shouldEstimatePrintDataIs(estimateData);
-
-        printEstimatePage.closeCurrentWindowAndSwitchToSpecified(submittedEstimateModal);
+        if (!DriverFactory.isGridProfile()) { // В муне обращение к shadowElement не работает
+            // Step 3
+            step("Нажмите на кнопку 'Отмена'");
+            printEstimatePage.clickCancelButton();
+            printEstimatePage.shouldEstimatePrintDataIs(estimateData);
+        }
+        printEstimatePage.closeCurrentWindowAndSwitchToSpecified(submittedEstimateModal, true);
         submittedEstimateModal = new SubmittedEstimateModal();
         submittedEstimateModal.closeWindow();
     }

@@ -2,6 +2,7 @@ package com.leroy.umbrella_extension.authorization;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.EnvConstants;
+import com.leroy.core.configuration.Log;
 import com.leroy.umbrella_extension.authorization.data.TokenData;
 import com.leroy.umbrella_extension.authorization.requests.AccountLoginGetRequest;
 import com.leroy.umbrella_extension.authorization.requests.AccountLoginPostRequest;
@@ -15,6 +16,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 //@Dependencies(bricks = Application.IS4AUTH)
 public class AuthClient extends BaseClient {
@@ -39,6 +41,11 @@ public class AuthClient extends BaseClient {
                 resp = getResponseToken(username, password);
                 if (resp.isSuccessful())
                     break;
+                try {
+                    Thread.sleep(new Random().nextInt(2000) + 1000);
+                } catch (Exception err) {
+                    Log.error(err.getMessage());
+                }
             }
         }
         Assert.assertTrue(resp.isSuccessful(),
