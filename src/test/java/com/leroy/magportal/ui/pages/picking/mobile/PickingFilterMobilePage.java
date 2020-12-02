@@ -14,7 +14,7 @@ public class PickingFilterMobilePage extends MagPortalBasePage {
     Element title;
 
     private final static String FILTER_BTN_XPATH = "//div[contains(@class, 'PickingFiltersFields__mobile-field-block')]//button[descendant::span[contains(text(), '%s')]]";
-    private final static String FILTER_SALES_SCHEME_BTN_XPATH = "//div[contains(@class, 'PickingFiltersFields__mobile-field-block')]/following-sibling::div[not(contains(@class, 'PickingFiltersFields__mobile-field-block'))]//button[descendant::span[text()= '%s']]";
+    private final static String FILTER_SALES_SCHEME_BTN_XPATH = "//div[contains(@class, 'PickingFiltersFields__mobile-field-block')]//button[descendant::span[text()= '%s']]";
 
     // Фильтры по типу сборки
     Element shoppingRoomOptionBtn = E(String.format(FILTER_BTN_XPATH, "торг.зал"), "Опция 'Торг зал'");

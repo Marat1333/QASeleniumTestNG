@@ -3,14 +3,12 @@
     {
       "predicates": [
         {
-          "deepEquals": {
+          "equals": {
             "method": "GET",
             "path": "/v1/pickingTasks/search",
             "query": {
               "page": "1",
               "pageSize": "10",
-              "departmentId": "5",
-              "existCurrentStorageLocation": "false",
               "shopId": "35",
               "taskStatus": "ALLOWED_FOR_PICKING"
             }
@@ -202,14 +200,12 @@
     {
       "predicates": [
         {
-          "deepEquals": {
+          "equals": {
             "method": "GET",
             "path": "/v1/pickingTasks/search",
             "query": {
               "page": "1",
               "pageSize": "10",
-              "departmentId": "5",
-              "existCurrentStorageLocation": "false",
               "shopId": "35",
               "taskStatus": "PICKING_IN_PROGRESS"
             }
@@ -372,14 +368,12 @@
     {
       "predicates": [
         {
-          "deepEquals": {
+          "equals": {
             "method": "GET",
             "path": "/v1/pickingTasks/search",
             "query": {
               "page": "1",
               "pageSize": "10",
-              "departmentId": "5",
-              "existCurrentStorageLocation": "false",
               "shopId": "35",
               "taskStatus": "PAUSE_PICKING"
             }
@@ -480,14 +474,12 @@
     {
       "predicates": [
         {
-          "deepEquals": {
+          "equals": {
             "method": "GET",
             "path": "/v1/pickingTasks/search",
             "query": {
               "page": "1",
               "pageSize": "10",
-              "departmentId": "5",
-              "existCurrentStorageLocation": "false",
               "shopId": "35",
               "taskStatus": "PICKED"
             }
@@ -620,14 +612,12 @@
     {
       "predicates": [
         {
-          "deepEquals": {
+          "equals": {
             "method": "GET",
             "path": "/v1/pickingTasks/search",
             "query": {
               "page": "1",
               "pageSize": "10",
-              "departmentId": "5",
-              "existCurrentStorageLocation": "false",
               "shopId": "35",
               "taskStatus": "PARTIALLY_PICKED"
             }
@@ -787,14 +777,12 @@
     {
       "predicates": [
         {
-          "deepEquals": {
+          "equals": {
             "method": "GET",
             "path": "/v1/pickingTasks/search",
             "query": {
               "page": "1",
               "pageSize": "10",
-              "departmentId": "5",
-              "existCurrentStorageLocation": "false",
               "shopId": "35",
               "taskStatus": "ALLOWED_FOR_PICKING,PICKING_IN_PROGRESS,PAUSE_PICKING,PICKED,PARTIALLY_PICKED"
             }

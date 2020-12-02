@@ -23,6 +23,9 @@ capabilities:
       version: "mobile-75.0"
       enableVNC: true
       enableVideo: false
+      env:
+        - TZ=Europe/Moscow
+        - SKIN=WVGA854
 
 # Skin	      Screen Resolution 	DPI
 # QVGA        240x320               120

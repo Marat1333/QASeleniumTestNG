@@ -3,7 +3,7 @@
     {
       "predicates": [
         {
-          "deepEquals": {
+          "equals": {
             "method": "GET",
             "path": "/v1/pickingTasks/search",
             "query": {
@@ -185,7 +185,7 @@
     {
       "predicates": [
         {
-          "deepEquals": {
+          "equals": {
             "method": "GET",
             "path": "/v1/pickingTasks/search",
             "query": {
@@ -322,7 +322,7 @@
     {
       "predicates": [
         {
-          "deepEquals": {
+          "equals": {
             "method": "GET",
             "path": "/v1/pickingTasks/search",
             "query": {

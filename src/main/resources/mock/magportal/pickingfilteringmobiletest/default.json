@@ -149,8 +149,11 @@
             "query": {
               "page": "1",
               "pageSize": "10",
+              "needUserTaskProcessing": "false",
+              "pickingPriority": "false",
+              "taskStatus": "ALLOWED_FOR_PICKING,PICKING_IN_PROGRESS,PAUSE_PICKING,PARTIALLY_PICKED,PICKED",
               "shopId": "35",
-              "taskStatus": "ALLOWED_FOR_PICKING,PICKING_IN_PROGRESS,PAUSE_PICKING,PARTIALLY_PICKED,PICKED"
+              "regionId": "35"
             }
           }
         }

@@ -12,14 +12,12 @@
               }
             },
             {
-              "deepEquals": {
+              "equals": {
                 "method": "GET",
                 "path": "/v1/pickingTasks/search",
                 "query": {
                   "page": "1",
                   "pageSize": "10",
-                  "departmentId": "5",
-                  "existCurrentStorageLocation": "false",
                   "shopId": "35",
                   "taskStatus": "ALLOWED_FOR_PICKING,PICKING_IN_PROGRESS,PAUSE_PICKING,PARTIALLY_PICKED,PICKED"
                 }
