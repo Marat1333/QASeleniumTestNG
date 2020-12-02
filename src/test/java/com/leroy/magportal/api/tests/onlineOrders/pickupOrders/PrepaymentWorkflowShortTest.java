@@ -34,7 +34,7 @@ public class PrepaymentWorkflowShortTest extends BaseMagPortalApiTest {
     @BeforeClass
     private void setUp() {
         OnlineOrderTypeData currentOrderType = OnlineOrderTypeConst.PICKUP_PREPAYMENT;
-        currentOrderId = bitrixHelper.createOnlineOrder(currentOrderType).getSolutionId();
+        currentOrderId = bitrixHelper.createOnlineOrderCardPayment(currentOrderType).getSolutionId();
 
         currentTaskId = pickingTaskClient.searchForPickingTasks(currentOrderId).asJson().getItems()
                 .stream().findFirst().get().getTaskId();

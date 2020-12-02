@@ -49,14 +49,14 @@ public class PaymentHelper extends BaseHelper {
 
     private void updatePayment(String orderId, PaymentStatusEnum status) {
         String paymentTaskId = getPaymentTaskId(orderId);
-        /* TODO: Uses for Card Payment
+
         Response<PaymentTask> paymentTaskResponse = paymentClient.getPaymentTask(paymentTaskId);
         if (paymentTaskResponse.isSuccessful()
                 && status.equals(PaymentStatusEnum.PAID)
                 && paymentTaskResponse.asJson().getTaskType().equals("SBERLINK_WITH_TPNET_DEPOSIT")) {
             return;
         }
-        */
+
         ChangeStatus changeStatus = new ChangeStatus();
 
         changeStatus.setUpdatedBy(userSessionData().getUserLdap());

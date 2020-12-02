@@ -140,7 +140,7 @@ public class OrderSearchTest extends WebBaseSteps {
         confirmOrderData.setCustomers(Arrays.asList(orderCustomerData, orderRecipientData));
 
         GiveAwayData giveAwayData = new GiveAwayData();
-        giveAwayData.setDate(LocalDateTime.now());
+        giveAwayData.setDateAsLocalDateTime(LocalDateTime.now());
         giveAwayData.setPoint(SalesDocumentsConst.GiveAwayPoints.PICKUP.getApiVal());
         giveAwayData.setShopId(Integer.valueOf(userSessionData.getUserShopId()));
         confirmOrderData.setGiveAway(giveAwayData);

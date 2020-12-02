@@ -34,7 +34,7 @@ public class EntranceWorkflowShortTest extends BaseMagPortalApiTest {
     @BeforeClass
     private void setUp() {
         OnlineOrderTypeData currentOrderType = OnlineOrderTypeConst.DELIVERY_TO_ENTRANCE;
-        currentOrderId = bitrixHelper.createOnlineOrder(currentOrderType).getSolutionId();
+        currentOrderId = bitrixHelper.createOnlineOrderCardPayment(currentOrderType).getSolutionId();
 
         currentTaskId = pickingTaskClient.searchForPickingTasks(currentOrderId).asJson().getItems()
                 .stream().findFirst().get().getTaskId();

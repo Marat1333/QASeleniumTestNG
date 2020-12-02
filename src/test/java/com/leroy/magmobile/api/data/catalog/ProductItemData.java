@@ -1,7 +1,10 @@
 package com.leroy.magmobile.api.data.catalog;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import lombok.Data;
 
 import java.time.ZonedDateTime;
@@ -18,8 +21,7 @@ public class ProductItemData {
     private String title;
     private String description;
     private String gamma;
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss[.SSS][.S]['Z'][XXX]")
-    private ZonedDateTime avsDate;
+    private String avsDate;
     private String brand;
     private String priceCategory;
     private Boolean ctm;
@@ -41,4 +43,8 @@ public class ProductItemData {
     private List<Characteristic> characteristics;
     private List<String> shops; // Вместо String должен быть класс
 
+    @JsonIgnore
+    public ZonedDateTime getAvsDateAsZonedDateTime() {
+        return ZonedDateTime.parse(avsDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss[.SSS][.S]['Z'][XXX]"));
+    }
 }

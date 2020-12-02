@@ -14,7 +14,10 @@ import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
+import com.leroy.magmobile.api.data.sales.BaseProductOrderData;
 import com.leroy.magmobile.api.data.sales.orders.OrderProductData;
+import com.leroy.magmobile.api.data.sales.orders.ResOrderCheckQuantityData;
+import com.leroy.magmobile.api.requests.order.OrderCheckQuantityRequest;
 import com.leroy.magmobile.api.requests.order.OrderRearrangeRequest;
 import com.leroy.magportal.api.constants.DeliveryServiceTypeEnum;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
@@ -23,6 +26,7 @@ import com.leroy.magportal.api.constants.OrderReasonEnum;
 import com.leroy.magportal.api.constants.OrderWorkflowEnum;
 import com.leroy.magportal.api.constants.PaymentStatusEnum;
 import com.leroy.magportal.api.constants.PaymentTypeEnum;
+import com.leroy.magportal.api.data.onlineOrders.CheckQuantityData;
 import com.leroy.magportal.api.data.onlineOrders.DeliveryCustomerData;
 import com.leroy.magportal.api.data.onlineOrders.DeliveryData;
 import com.leroy.magportal.api.data.onlineOrders.DeliveryUpdatePayload;
@@ -42,15 +46,19 @@ import com.leroy.magportal.api.data.timeslot.TimeslotPayload;
 import com.leroy.magportal.api.data.timeslot.TimeslotResponseData;
 import com.leroy.magportal.api.data.timeslot.TimeslotUpdatePayload;
 import com.leroy.magportal.api.helpers.PaymentHelper;
+import com.leroy.magportal.api.requests.order.CheckQuantityRequest;
 import com.leroy.magportal.api.requests.order.DeliveryUpdateRequest;
 import com.leroy.magportal.api.requests.order.OrderDeliveryRecalculateRequest;
 import com.leroy.magportal.api.requests.order.OrderFulfilmentGivenAwayRequest;
+import com.leroy.magportal.api.requests.order.OrderGetAdditionalProductsInfo;
 import com.leroy.magportal.api.requests.order.OrderGetRequest;
 import com.leroy.magportal.api.requests.order.OrderWorkflowRequest;
+import com.leroy.magportal.api.requests.picking.PickingTaskGetAdditionalProductsInfo;
 import com.leroy.magportal.api.requests.timeslot.AppointmentsRequest;
 import com.leroy.magportal.api.requests.timeslot.ChangeDateRequest;
 import com.leroy.magportal.api.requests.timeslot.TimeslotRequest;
 import io.qameta.allure.Step;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -59,6 +67,7 @@ import lombok.SneakyThrows;
 import org.testng.asserts.SoftAssert;
 import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
+import ru.leroymerlin.qa.core.clients.tunnel.TunnelClient;
 
 public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
 
@@ -142,6 +151,24 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
     public Response<JsonNode> editPrePaymentOrder(String orderId, Double newCount) {
         return makeAction(orderId, OrderWorkflowEnum.EDIT.getValue(),
                 makeEditPayload(orderId, newCount));
+    }
+
+    @Step("GetAvailable stock for List<lmCodes>")
+    public Response<ResOrderCheckQuantityData> checkQuantity(List<String> lmCodes, Double newCount, LocalDateTime gateAwayDate) {
+        CheckQuantityRequest req = new CheckQuantityRequest();
+        CheckQuantityData quantityData = new CheckQuantityData();
+        List<BaseProductOrderData> orderDataList = new ArrayList<>();
+        for (String lmCode : lmCodes) {
+            BaseProductOrderData productOrderData = new OrderProductData();
+            productOrderData.setQuantity(newCount);
+            productOrderData.setLmCode(lmCode);
+            orderDataList.add(productOrderData);
+        }
+        quantityData.setProducts(orderDataList);
+        quantityData.setDateOfGiveAway(gateAwayDate);
+        req.setShopId(getUserSessionData().getUserShopId());
+        req.jsonBody(quantityData);
+        return execute(req, ResOrderCheckQuantityData.class);
     }
 
     @Step("Edit order with id = {orderId}: Decreases ALL positions on 1 item if possible + adds Products for rearrange")
@@ -232,6 +259,21 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         req.setTaskId(orderData.getDeliveryData().getId());
         req.jsonBody(payload);
         return execute(req, JsonNode.class);
+    }
+
+    @Step("Get Products Additional Info for {lmCodes} for user's shopId")
+    public Response<?> getProductsAdditionalInfo(
+            List<String> lmCodes) {
+        return getProductsAdditionalInfo(lmCodes, getUserSessionData().getUserShopId());
+    }
+
+    @Step("Get Products Additional Info for {lmCodes} for {shopId}")
+    public Response<?> getProductsAdditionalInfo(List<String> lmCodes,
+            String shopId) {
+        OrderGetAdditionalProductsInfo req = new OrderGetAdditionalProductsInfo();
+        req.setLmCodes(String.join(",", lmCodes));
+        req.setShopId(shopId);
+        return execute(req, Object.class);
     }
 
     @Step("Moves NEW order to specified status")
