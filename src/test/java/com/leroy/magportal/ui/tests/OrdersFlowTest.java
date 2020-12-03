@@ -213,6 +213,7 @@ public class OrdersFlowTest extends BasePAOTest {
         orderPage.shouldDocumentCountIs(1);
     }
 
+    // Deprecated
     @Test(description = "C23428132 Заказы.Оффлайн.Самовывоз. Переход из статуса Собран в статус Выдан", groups = NEED_PRODUCTS_GROUP)
     public void testMoveFromPickedToGivenAway() throws Exception {
 
@@ -258,6 +259,7 @@ public class OrdersFlowTest extends BasePAOTest {
         orderPage.shouldDocumentCountIs(1);
     }
 
+    // Deprecated
     @Test(description = "C23437677 Заказы. Oффлайн. Доставка.", groups = NEED_PRODUCTS_GROUP)
     public void testOfflineDelivery() throws Exception {
         // Создать заказ и перевести его в статус "Собран"
@@ -338,12 +340,12 @@ public class OrdersFlowTest extends BasePAOTest {
 
     };
 
-    @Test
+    @Test(description = "C23428132 Заказы.Оффлайн.Самовывоз.", groups = NEED_PRODUCTS_GROUP)
     public void test1() throws Exception {
         testOrderOffline(SalesDocumentsConst.GiveAwayPoints.PICKUP);
     }
 
-    @Test
+    @Test(description = "C23437677 Заказы. Oффлайн. Доставка.", groups = NEED_PRODUCTS_GROUP)
     public void test2() throws Exception {
         testOrderOffline(SalesDocumentsConst.GiveAwayPoints.DELIVERY);
     }
