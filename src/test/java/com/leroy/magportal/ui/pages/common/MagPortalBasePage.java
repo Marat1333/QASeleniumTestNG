@@ -25,12 +25,21 @@ public class MagPortalBasePage extends BaseWebPage {
     @WebFindBy(xpath = "//div[@role='alert' and contains(@class, 'Toastify')]")
     private Element alertErrorMessage;
 
+    @WebFindBy(xpath = "//div[contains(@class, 'SnackBar__content')]")
+    private Element requestErrorMessage;
+
     @Step("Подождать появления окна с новыми фичами и закрыть его, если оно появится")
     public MagPortalBasePage closeNewFeaturesModalWindowIfExist() {
         NewFeaturesModalWindow modalWindow = new NewFeaturesModalWindow(driver);
         if (modalWindow.isVisible(short_timeout))
             modalWindow.clickSubmitButton();
         modalWindow.waitForInvisibility();
+        return this;
+    }
+
+    @Step("Проверить, что нет никаких всплывающих ошибок уведомлений")
+    public MagPortalBasePage shouldNotAnyAlertErrorMessagesPresent() {
+        anAssert.isFalse(isAlertErrorMessageVisible(), "Появилась непредвиденная ошибка");
         return this;
     }
 
@@ -55,7 +64,7 @@ public class MagPortalBasePage extends BaseWebPage {
      * Is alert message with something error visible?
      */
     protected boolean isAlertErrorMessageVisible() {
-        return alertErrorMessage.isVisible();
+        return alertErrorMessage.isVisible() || requestErrorMessage.isVisible();
     }
 
 }

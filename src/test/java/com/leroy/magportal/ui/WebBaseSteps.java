@@ -1,6 +1,7 @@
 package com.leroy.magportal.ui;
 
 import com.leroy.constants.EnvConstants;
+import com.leroy.core.ContextProvider;
 import com.leroy.core.configuration.Log;
 import com.leroy.magportal.ui.pages.LoginWebPage;
 import com.leroy.magportal.ui.pages.cart_estimate.CartPage;
@@ -9,8 +10,10 @@ import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.pages.customers.CustomerPage;
 import com.leroy.magportal.ui.pages.picking.PickingPage;
+import com.leroy.magportal.ui.pages.picking.mobile.PickingDocListMobilePage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
 import io.qameta.allure.Step;
+import org.openqa.selenium.Cookie;
 
 public class WebBaseSteps extends MagPortalBaseTest {
 
@@ -24,7 +27,7 @@ public class WebBaseSteps extends MagPortalBaseTest {
             path = "orders/carts";
         else if (pageClass == EstimatePage.class)
             path = "orders/estimates";
-        else if (pageClass == PickingPage.class)
+        else if (pageClass == PickingPage.class || pageClass == PickingDocListMobilePage.class)
             path = "orders/pickingtask";
         else
             path = "orders/orders_v2";
@@ -50,6 +53,7 @@ public class WebBaseSteps extends MagPortalBaseTest {
         }
         page.waitUntilTitleIs(expectedTitle, 30);
         page.closeNewFeaturesModalWindowIfExist();
+        ContextProvider.getDriver().manage().addCookie(new Cookie("tcId", ContextProvider.getContext().getTcId()));
         if (shop != null) {
             new MenuPage().selectShopInUserProfile(shop);
             page = pageClass.getConstructor().newInstance();

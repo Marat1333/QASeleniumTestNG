@@ -21,6 +21,14 @@ capabilities:
       experimentalOptions:
         prefs:
           download.default_directory: C:\downloads
+
+    mobilechrome:
+      platformVersion: Windows 10
+      acceptInsecureCerts: true
+      experimentalOptions:
+        mobileEmulation:
+          deviceName: Nexus 5
+
   linux:
     chrome:
       acceptInsecureCerts: true
