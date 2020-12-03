@@ -45,5 +45,4 @@ public class ProductItemData {
     public ZonedDateTime getAvsDateAsZonedDateTime() {
         return ZonedDateTime.parse(avsDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss[.SSS][.S]['Z'][XXX]"));
     }
-
 }

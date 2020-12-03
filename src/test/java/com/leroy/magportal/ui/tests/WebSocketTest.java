@@ -9,6 +9,8 @@ import org.testng.annotations.Test;
 
 public class WebSocketTest extends WebBaseSteps {
 
+    // TODO Удалить этот класс
+
     @AfterMethod
     void quite() {
         ContextProvider.quitDriver();

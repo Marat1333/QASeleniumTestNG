@@ -3,7 +3,10 @@
 <suite name="Global Mag Portal Suite">
 
     <suite-files>
-        <suite-file path="PlaceAnOrderSuite.xml"/>
+        <suite-file path="areas/EstimateSuite.xml"/>
+        <suite-file path="areas/CartSuite.xml"/>
+        <suite-file path="areas/OrderSuite.xml"/>
+        <suite-file path="areas/OrderFiltersSuite.xml"/>
         <suite-file path="areas/ClientSuite.xml"/>
         <suite-file path="areas/PickingSuite.xml"/>
         <suite-file path="areas/ProductCardSuite.xml"/>

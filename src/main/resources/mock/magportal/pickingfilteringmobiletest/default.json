@@ -1,0 +1,285 @@
+{
+  "stubs": [
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/v1/pickingTasks/search",
+            "query": {
+              "page": "1",
+              "pageSize": "10",
+              "departmentId": "5",
+              "existCurrentStorageLocation": "false",
+              "shopId": "35",
+              "taskStatus": "ALLOWED_FOR_PICKING,PICKING_IN_PROGRESS,PAUSE_PICKING,PARTIALLY_PICKED,PICKED"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [
+                {
+                  "taskId": "3003520100304714",
+                  "shopId": 35,
+                  "delivery": false,
+                  "taskStatus": "PICKED",
+                  "extOrderId": "201001232760",
+                  "pointOfGiveAway": "HOME_DELIVERY",
+                  "dateOfGiveAway": "2019-08-21T00:00:00Z",
+                  "documentVersion": 6,
+                  "pickingZone": "LS",
+                  "pickingDeadline": "2019-08-20T22:00:00Z",
+                  "buId": 9,
+                  "priority": "MEDIUM",
+                  "employeeId": "60069806",
+                  "customerType": "PERSON",
+                  "offline": false,
+                  "linkedObjects": [
+                    {
+                      "objectType": "FF_CUSTOMER_ORDER",
+                      "objectId": "1003520100300965",
+                      "objectStatus": "PARTIALLY_PICKED",
+                      "objectLines": [
+                        {
+                          "objectLineId": "1",
+                          "taskLineId": "1"
+                        },
+                        {
+                          "objectLineId": "2",
+                          "taskLineId": "2"
+                        }
+                      ]
+                    }
+                  ],
+                  "creationInformation": {
+                    "createdBy": "60069806",
+                    "created": "2020-10-29T11:21:23.096Z"
+                  },
+                  "lastUpdateInformation": {
+                    "updatedBy": "60069806",
+                    "updated": "2020-10-30T13:51:49.534Z"
+                  },
+                  "departmentId": [
+                    "5"
+                  ],
+                  "departments": [
+                    "9"
+                  ],
+                  "totalWeight": 0.008,
+                  "maxSize": 0.113,
+                  "products": [
+                    {
+                      "title": "Флокс «Гобелен» смесь окрасок БП",
+                      "lmCode": "18580656",
+                      "lineId": "1",
+                      "lineStatus": "PICKED",
+                      "orderedQuantity": 4,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "pickedQuantity": 1,
+                      "operations": [
+                        {
+                          "operationId": "bc4f5ad7-f87a-409c-8b51-c36aac2cbdfb",
+                          "type": "PICK",
+                          "reason": "Недоступность товара",
+                          "quantity": 1,
+                          "timeStamp": "2020-10-30T13:51:49.534Z",
+                          "updatedBy": "60069806"
+                        }
+                      ],
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Семена Горох «Динга»",
+                      "lmCode": "17250997",
+                      "lineId": "2",
+                      "lineStatus": "PICKED",
+                      "orderedQuantity": 3,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "pickedQuantity": 1,
+                      "operations": [
+                        {
+                          "operationId": "bc4f5ad7-f87a-409c-8b51-c36aac2cbdfb",
+                          "type": "PICK",
+                          "reason": "Недоступность товара",
+                          "quantity": 1,
+                          "timeStamp": "2020-10-30T13:51:49.534Z",
+                          "updatedBy": "60069806"
+                        }
+                      ],
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    }
+                  ],
+                  "employeeName": "Иван",
+                  "orderId": "201001232760",
+                  "channel": "ONLINE",
+                  "customerName": "Тест",
+                  "customerSurname": "Тест",
+                  "paymentStatus": "DEPOSIT_IN_PROGRESS",
+                  "paymentType": "SBERLINK_WITH_TPNET_DEPOSIT"
+                }
+              ],
+              "totalCount": 579
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/v1/pickingTasks/search",
+            "query": {
+              "page": "1",
+              "pageSize": "10",
+              "needUserTaskProcessing": "false",
+              "pickingPriority": "false",
+              "taskStatus": "ALLOWED_FOR_PICKING,PICKING_IN_PROGRESS,PAUSE_PICKING,PARTIALLY_PICKED,PICKED",
+              "shopId": "35",
+              "regionId": "35"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [
+                {
+                  "taskId": "3003520090280000",
+                  "shopId": 35,
+                  "delivery": false,
+                  "taskStatus": "PICKED",
+                  "extOrderId": "257245100000",
+                  "pointOfGiveAway": "HOME_DELIVERY",
+                  "dateOfGiveAway": "2020-03-13T11:13:46.897Z",
+                  "documentVersion": 5,
+                  "pickingZone": "FUTURE_STOCK",
+                  "pickingDeadline": "2020-03-13T09:13:46.897Z",
+                  "buId": 9,
+                  "priority": "URGENT",
+                  "customerId": "BITRIX",
+                  "employeeId": "60069805",
+                  "customerType": null,
+                  "offline": true,
+                  "linkedObjects": [
+                    {
+                      "objectType": "FF_CUSTOMER_ORDER",
+                      "objectId": "1003520090280641",
+                      "objectStatus": "PICKED",
+                      "objectLines": [
+                        {
+                          "objectLineId": "1",
+                          "taskLineId": "1"
+                        },
+                        {
+                          "objectLineId": "2",
+                          "taskLineId": "2"
+                        }
+                      ]
+                    }
+                  ],
+                  "creationInformation": {
+                    "createdBy": "60069805",
+                    "created": "2020-09-07T16:19:17.303Z"
+                  },
+                  "lastUpdateInformation": {
+                    "updatedBy": "60069805",
+                    "updated": "2020-09-07T16:19:31.496Z"
+                  },
+                  "departmentId": [
+                    "5"
+                  ],
+                  "departments": [
+                    "14",
+                    "6"
+                  ],
+                  "totalWeight": 138,
+                  "maxSize": 2.46,
+                  "products": [
+                    {
+                      "title": "Дверь-купе Spaceo 2555х904 мм, ЛДСП, цвет акация светлая",
+                      "lmCode": "82041932",
+                      "lineId": "1",
+                      "lineStatus": "PICKED",
+                      "orderedQuantity": 4,
+                      "confirmedQuantity": 4,
+                      "assignedQuantity": 4,
+                      "pickedQuantity": 4,
+                      "operations": [
+                        {
+                          "operationId": "e892c9c3-cee0-4b64-a0ea-0c61703cf182",
+                          "type": "PICK",
+                          "quantity": 4,
+                          "timeStamp": "2020-09-07T16:19:31.496Z",
+                          "updatedBy": "60069805"
+                        }
+                      ],
+                      "source": [
+                        {
+                          "assignedItems": 4,
+                          "type": "FUTURE_STOCK"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Плитка напольная Alfa 32.6x32.6 см 1.17 м2 цвет серый",
+                      "lmCode": "17955701",
+                      "lineId": "2",
+                      "lineStatus": "PICKED",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "pickedQuantity": 2,
+                      "operations": [
+                        {
+                          "operationId": "e892c9c3-cee0-4b64-a0ea-0c61703cf182",
+                          "type": "PICK",
+                          "quantity": 2,
+                          "timeStamp": "2020-09-07T16:19:31.496Z",
+                          "updatedBy": "60069805"
+                        }
+                      ],
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "FUTURE_STOCK"
+                        }
+                      ]
+                    }
+                  ],
+                  "employeeName": "Семён",
+                  "orderId": "257245103598",
+                  "channel": "OFFLINE",
+                  "customerName": null,
+                  "customerSurname": null,
+                  "paymentStatus": null,
+                  "paymentType": null
+                }
+              ],
+              "totalCount": 1
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

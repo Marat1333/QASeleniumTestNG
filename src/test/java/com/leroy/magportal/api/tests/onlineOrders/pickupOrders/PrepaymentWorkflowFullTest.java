@@ -7,6 +7,7 @@ import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.clients.PickingTaskClient;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst;
+import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
 import com.leroy.magportal.api.constants.PaymentStatusEnum;
 import com.leroy.magportal.api.data.onlineOrders.OnlineOrderData;
 import com.leroy.magportal.api.data.picking.PickingTaskData;
@@ -32,12 +33,13 @@ public class PrepaymentWorkflowFullTest extends BaseMagPortalApiTest {
     private String currentOrderId;
     private String currentTaskId;
     private int currentLocationsCount;
+    private OnlineOrderTypeData currentOrderType;
 
 
     @BeforeClass
     private void setUp() {
-        currentOrderId = bitrixHelper.createOnlineOrder(OnlineOrderTypeConst.PICKUP_PREPAYMENT)
-                .getSolutionId();
+        currentOrderType = OnlineOrderTypeConst.PICKUP_PREPAYMENT;
+        currentOrderId = bitrixHelper.createOnlineOrderCardPayment(currentOrderType).getSolutionId();
 
         currentTaskId = pickingTaskClient.searchForPickingTasks(currentOrderId).asJson().getItems()
                 .stream().findFirst().get().getTaskId();

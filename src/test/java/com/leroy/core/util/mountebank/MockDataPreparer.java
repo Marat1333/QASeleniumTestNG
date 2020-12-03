@@ -43,6 +43,8 @@ public class MockDataPreparer {
         int stCreate = mountebankClient.createImposter(imposter);
         if (stCreate != 201)
             stCreate = mountebankClient.createImposter(imposter);
+        if (stCreate != 201)
+            stCreate = mountebankClient.createImposter(imposter);
         Assert.assertEquals(stCreate, 201, "Не удалось создать default'ый Imposter");
     }
 

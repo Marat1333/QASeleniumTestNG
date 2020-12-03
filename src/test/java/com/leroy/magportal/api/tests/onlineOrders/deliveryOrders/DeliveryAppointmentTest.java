@@ -45,7 +45,7 @@ public class DeliveryAppointmentTest extends BaseMagPortalApiTest {
     @BeforeClass
     private void setUp() {
         currentOrderType = OnlineOrderTypeConst.DELIVERY_TO_DOOR;
-        currentOrderId = bitrixHelper.createOnlineOrder(currentOrderType).getSolutionId();
+        currentOrderId = bitrixHelper.createOnlineOrderCardPayment(currentOrderType).getSolutionId();
     }
 
     @Test(description = "C23425904 Get Appointment for Several Products", priority = 1)
