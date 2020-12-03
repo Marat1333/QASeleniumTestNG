@@ -29,7 +29,7 @@ public class ExpressDeliveryRecalculateTest extends BaseMagPortalApiTest {
     private void setUp() {
         currentProductsCount = 3;
         currentOrderType = OnlineOrderTypeConst.DELIVERY_EXPRESS;
-        currentOrderId = bitrixHelper.createOnlineOrder(currentOrderType).getSolutionId();
+        currentOrderId = bitrixHelper.createOnlineOrderCardPayment(currentOrderType).getSolutionId();
     }
 
     @Test(description = "C23425655 Express: Delivery ReCalc: One product", priority = 1)

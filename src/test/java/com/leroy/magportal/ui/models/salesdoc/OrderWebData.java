@@ -103,7 +103,7 @@ public class OrderWebData {
         if (expectedOrder.getTotalWeight() != null) {
             double productCount = expectedOrder.getProductCardDataList().stream().mapToDouble(
                     ProductOrderCardWebData::getSelectedQuantity).sum();
-            softAssert.isTrue(Math.abs(this.getTotalWeight() - expectedOrder.getTotalWeight()) <= 0.05 * productCount,
+            softAssert.isTrue(Math.abs(this.getTotalWeight() - expectedOrder.getTotalWeight()) <= 0.2 * productCount,
                     "Заказ #" + (iOrder + 1) + " - ожидался другой вес");
         }
 

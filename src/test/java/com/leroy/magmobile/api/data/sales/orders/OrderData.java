@@ -1,5 +1,6 @@
 package com.leroy.magmobile.api.data.sales.orders;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 import lombok.Data;
 

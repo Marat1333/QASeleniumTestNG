@@ -29,7 +29,7 @@ public class EntranceDeliveryRecalculateTest extends BaseMagPortalApiTest {
     private void setUp() {
         currentProductsCount = 3;
         currentOrderType = OnlineOrderTypeConst.DELIVERY_TO_ENTRANCE;
-        currentOrderId = bitrixHelper.createOnlineOrder(currentOrderType).getSolutionId();
+        currentOrderId = bitrixHelper.createOnlineOrderCardPayment(currentOrderType).getSolutionId();
     }
 
     @Test(description = "C23425652 Entrance: Delivery ReCalc: One product", priority = 1)

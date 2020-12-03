@@ -1,20 +1,248 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite name="Order Suite" parallel="methods">
+<suite name="Order Suite" parallel="tests">
 
     <listeners>
         <listener class-name="com.leroy.core.listeners.TestRailListener"/>
     </listeners>
 
-    <test name="Ордерс - Фильтры">
+    <test name="C23410896 Создать заказ из корзины с одним заказом">
         <classes>
-            <class name="com.leroy.magportal.ui.tests.OrderSearchTest"/>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
+                <methods>
+                    <include name="testCreateOrderWithOneOrder"/>
+                </methods>
+            </class>
         </classes>
     </test>
 
-    <test name="Заказы - создание, редактирование">
+    <test name="C23410899 Создать заказ из корзины с авторской сборкой">
         <classes>
-            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest"/>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
+                <methods>
+                    <include name="testCreateOrderWithAuthorAssembly"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C23410900 Создание заказа из корзины, преобразованной из сметы">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
+                <methods>
+                    <include name="testCreateOrderFromCartTransformedFromEstimate"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C23410917 Создать заказ из корзины с клиентом">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
+                <methods>
+                    <include name="testCreateOrderFromCartWithClient"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C23410898 Создать заказ из корзины со скидкой">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
+                <methods>
+                    <include name="testCreateOrderFromCartWithDiscount"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C23410897 Создать последовательно заказы из корзины с двумя заказами">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
+                <methods>
+                    <include name="testCreateOrdersFromCartWithTwoOrders"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C23410901 Добавить товар в неподтвержденный заказ (количества товара достаточно)">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
+                <methods>
+                    <include name="testAddProductInDraftOrderWithSufficientProductQuantity"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C23410902 Добавить товар в неподтвержденный заказ (количества товара недостаточно)">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
+                <methods>
+                    <include name="testAddProductInDraftOrderWithInsufficientProductQuantity"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C23410904 Добавить Топ ЕМ или AVS товар в неподтвержденный заказ">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
+                <methods>
+                    <include name="testAddTopEmOrAvsInDraftOrder"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C23410903 Изменить количество товара в неподтвержденном заказе">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
+                <methods>
+                    <include name="testEditProductQuantityInDraftOrder"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C23410905 Удалить товар из неподтвержденного заказа">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
+                <methods>
+                    <include name="testRemoveProductFromDraftOrder"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C23410914 Удалить последний товар из неподтвержденного заказа">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
+                <methods>
+                    <include name="testRemoveLastProductFromDraftOrder"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C23410912 Удалить неподтвержденный заказ">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
+                <methods>
+                    <include name="testRemoveOrderDraft"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C23410907 Добавить товар в подтвержденный закакз">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
+                <methods>
+                    <include name="testAddProductInConfirmedOrder"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C23410908 Изменить количество товара в подтвержденном заказе">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
+                <methods>
+                    <include name="testChangeProductQuantityInConfirmedOrder"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C23410909 Удалить товар из подтвержденного заказа">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
+                <methods>
+                    <include name="testRemoveProductFromConfirmedOrder"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C23410915 Удалить последний товар из подтвержденного заказа">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
+                <methods>
+                    <include name="testLastRemoveProductFromConfirmedOrder"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C23410913 Отменить подтвержденный заказ">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
+                <methods>
+                    <include name="testCancelConfirmedOrder"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C23398451 Создание заказа с существующим пин кодом">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
+                <methods>
+                    <include name="testCreateOrderWithExistedPinCode"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C23398448 Смена типа получения товара при заполненном пинкоде в неподтвержденном заказе">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
+                <methods>
+                    <include name="testChangeOfReceiptType"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C23410892 Подтвердить заказ на самовывоз сегодня">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
+                <methods>
+                    <include name="testConfirmOrderPickupToday"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C23410893 Подтвердить заказ на доставку завтра">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
+                <methods>
+                    <include name="testConfirmOrderForDeliveryTomorrow"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C23410894 Подтвердить заказ на самовывоз через 14 дней">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
+                <methods>
+                    <include name="testConfirmOrderPickupIn14Days"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="C23410895 Подтвердить заказ на доставку через 15 дней">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.pao.order.OrderTest">
+                <methods>
+                    <include name="testConfirmOrderForDeliveryIn15days"/>
+                </methods>
+            </class>
         </classes>
     </test>
 

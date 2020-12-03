@@ -37,7 +37,7 @@ public class OrderProductCardWidget extends CardWebWidget<ProductOrderCardWebDat
     @WebFindBy(xpath = ".//span[contains(@class, 'Price-container')]", metaName = "Цена")
     Element price;
 
-    @WebFindBy(xpath = ".//div[contains(@class, 'ProductCardFooter__smallSide')]//p[2]", metaName = "Вес")
+    @WebFindBy(xpath = ".//div//p[contains(text(), 'Вес')]/following-sibling::p", metaName = "Вес")
     Element weight;
 
     @WebFindBy(xpath = ".//div[contains(@class, 'ProductCardFooter__bigSide')]//p[2]", metaName = "Габариты")

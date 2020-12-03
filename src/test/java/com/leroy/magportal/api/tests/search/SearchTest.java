@@ -58,7 +58,7 @@ public class SearchTest extends BaseMagPortalApiTest {
             softAssert().isEquals(apiData.getGamma(), row.getCellStringValueByIndex(4), "gamma");
             String avsDate;
             if (apiData.getAvsDate() != null) {
-                avsDate = DateTimeUtil.localDateToStr(apiData.getAvsDate().toLocalDate(),
+                avsDate = DateTimeUtil.localDateToStr(apiData.getAvsDateAsZonedDateTime().toLocalDate(),
                         DateTimeUtil.DD_MM_YYYY);
             } else {
                 avsDate = no;

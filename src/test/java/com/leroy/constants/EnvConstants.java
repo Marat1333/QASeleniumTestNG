@@ -53,12 +53,15 @@ public class EnvConstants {
     public static final String MAIN_API_HOST = getProperty("url.api.main_host");
     public static final String SEARCH_API_HOST = getProperty("url.api.search_host");
     public static final String CLIENT_API_HOST = getProperty("url.api.client_host");
+    public static final String RUPTURES_API_HOST = getProperty("url.api.ruptures_host");
     public static final String PICK_API_HOST = getProperty("url.api.pick_host");
     public static final String RABBIT_API_HOST = getProperty("url.api.rabbit.host");
 
     // Jaeger
     public static final String JAEGER_HOST = getProperty("url.jaeger.host");
     public static final String JAEGER_SERVICE = getProperty("url.jaeger.service");
+    public static final String RUPTURES_JAEGER_HOST = getProperty("url.jaeger.ruptures_host");
+    public static final String RUPTURES_JAEGER_SERVICE = getProperty("url.jaeger.ruptures_service");
 
     /**
      * Get the value of a property key

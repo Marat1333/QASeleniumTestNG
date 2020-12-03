@@ -87,7 +87,7 @@ public class PickingTest extends BasePAOTest {
             productOrderDataList.add(productOrderData);
         }
         GiveAwayData giveAwayData = new GiveAwayData();
-        giveAwayData.setDate(LocalDateTime.now().plusDays(1));
+        giveAwayData.setDateAsLocalDateTime(LocalDateTime.now().plusDays(1));
         giveAwayData.setShopId(
                 Integer.valueOf(ContextProvider.getContext().getUserSessionData().getUserShopId()));
         if (giveAwayPoint != null) {

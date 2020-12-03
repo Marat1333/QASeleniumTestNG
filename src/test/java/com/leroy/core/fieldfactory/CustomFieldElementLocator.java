@@ -127,7 +127,7 @@ public class CustomFieldElementLocator {
     }
 
     private boolean isNeedToCacheLookupField() {
-        return DriverFactory.isAppProfile() ?
+        return field.getAnnotation(AppFindBy.class) != null ?
                 field.getAnnotation(AppFindBy.class).cacheLookup() :
                 field.getAnnotation(WebFindBy.class).cacheLookup();
     }

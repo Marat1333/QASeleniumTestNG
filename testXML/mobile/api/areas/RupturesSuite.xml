@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="API Ruptures Suite" parallel="tests">
+
+    <listeners>
+        <listener class-name="com.leroy.core.listeners.TestRailListener"/>
+    </listeners>
+
+    <test name="POST Rupture session">
+        <classes>
+            <class name="com.leroy.magmobile.api.tests.ruptures.RupturesPostSessionTest">
+                <methods>
+                    <include name="testCreateRuptureSessionProduct"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="PUT ruptures session product action">
+        <classes>
+            <class name="com.leroy.magmobile.api.tests.ruptures.RuptureSessionProductActionTest">
+                <methods>
+                    <include name="testPutRuptureActionTrue"/>
+                    <include name="testPutRuptureActionFalse"/>
+                    <include name="testPutRuptureActionForNotExistedProduct"/>
+                    <include name="testPutRuptureActionAddNotIncludeActions"/>
+                    <include name="testPutRuptureActionRemoveActions"/>
+                    <include name="testPutRuptureActionForFinishedSession"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="GET ruptures session products">
+        <classes>
+            <class name="com.leroy.magmobile.api.tests.ruptures.RupturesGetSessionProductTest"/>
+        </classes>
+    </test>
+
+    <test name="Get Rupture Groups">
+        <classes>
+            <class name="com.leroy.magmobile.api.tests.ruptures.RupturesSessionGroupsTest"/>
+        </classes>
+    </test>
+
+    <test name="PUT ruptures session product">
+        <classes>
+            <class name="com.leroy.magmobile.api.tests.ruptures.RupturesPutSessionProductTest">
+                <methods>
+                    <include name="testUpdateRuptureSessionProduct"/>
+                    <include name="testPutRupturesProductChangeExistingProduct"/>
+                    <include name="testPutRupturesProductToDeletedSession"/>
+                    <include name="testPutRupturesProductToFinishedSession"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="POST ruptures session finish">
+        <classes>
+            <class name="com.leroy.magmobile.api.tests.ruptures.RupturesPostSessionFinishTest">
+                <methods>
+                    <include name="testFinishRuptureSession"/>
+                    <include name="testFinishFinishedRuptureSession"/>
+                    <include name="testFinishDeletedRuptureSession"/>
+                    <include name="testPutRupturesSessionFinishForNotExistingSession"/>
+                    <include name="testPutRupturesSessionFinishMashupValidation"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="DELETE ruptures product">
+        <classes>
+            <class name="com.leroy.magmobile.api.tests.ruptures.RupturesDeleteProductTest">
+                <methods>
+                    <include name="testDeleteRupturesProduct"/>
+                    <include name="testDeleteRupturesProductForDeletedProduct"/>
+                    <include name="testDeleteRupturesProductFromFinishedSession"/>
+                    <include name="testDeleteRupturesProductMashupValidation"/>
+                    <include name="testDeleteRupturesProductForNotExistingSession"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="DELETE ruptures session">
+        <classes>
+            <class name="com.leroy.magmobile.api.tests.ruptures.RupturesDeleteSessionTest">
+                <methods>
+                    <include name="testDeleteActiveRuptureSession"/>
+                    <include name="testDeletePreviouslyDeletedRuptureSession"/>
+                    <include name="testDeleteFinishedRuptureSession"/>
+                    <include name="testDeleteNotExistingSession"/>
+                    <include name="testDeleteSessionMashupValidation"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="Rupture sessions search tests">
+        <classes>
+            <class name="com.leroy.magmobile.api.tests.ruptures.RuptureSessionSearchTest"/>
+        </classes>
+    </test>
+
+
+</suite>

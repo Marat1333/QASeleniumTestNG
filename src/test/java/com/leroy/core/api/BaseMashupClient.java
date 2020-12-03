@@ -25,6 +25,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public abstract class BaseMashupClient extends BaseClient {
 
     protected String gatewayUrl;
+    protected String jaegerHost;
+    protected String jaegerService;
 
     @Setter
     private UserSessionData userSessionData;
@@ -42,6 +44,7 @@ public abstract class BaseMashupClient extends BaseClient {
 
     protected <J> Response<J> execute(RequestBuilder<?> request, final Class<J> type, String url) {
         UserSessionData thisUserSessionData = getUserSessionData();
+        request.header("appversion", "autotests");
         if (thisUserSessionData != null && thisUserSessionData.getAccessToken() != null)
             request.bearerAuthHeader(thisUserSessionData.getAccessToken());
         try {
@@ -57,7 +60,7 @@ public abstract class BaseMashupClient extends BaseClient {
         Response<J> response = super.execute(request, type);
         Optional<String> requestId = response.getHeader("x-request-id");
         requestId.ifPresent(s -> Allure.addAttachment("Jaeger Link", "text/uri-list",
-                EnvConstants.JAEGER_HOST + "/search?service=" + EnvConstants.JAEGER_SERVICE +
+                jaegerHost + "/search?service=" + jaegerService +
                         "&tags=%7B\"x-request-id\"%3A\"" + s + "\"%7D"));
         return response;
     }
@@ -65,6 +68,8 @@ public abstract class BaseMashupClient extends BaseClient {
     @PostConstruct
     protected void init() {
         gatewayUrl = EnvConstants.MAIN_API_HOST;
+        jaegerHost = EnvConstants.JAEGER_HOST;
+        jaegerService = EnvConstants.JAEGER_SERVICE;
     }
 
     // ---------------- VERIFICATIONS --------------- //

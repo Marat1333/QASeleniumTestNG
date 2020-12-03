@@ -44,6 +44,10 @@ public class SoftAssertWrapper extends BaseCustomAssert {
         super.logIsNotNull(object, actualResult, expectedResult, true);
     }
 
+    public void isNotNull(Object object, String actualResult) {
+        super.logIsNotNull(object, actualResult, "", true);
+    }
+
     public void isElementTextEqual(Element element, String expectedText, String pageSource) {
         super.logIsElementTextEqual(element, expectedText, pageSource, true);
     }

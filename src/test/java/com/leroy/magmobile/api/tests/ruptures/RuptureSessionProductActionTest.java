@@ -22,17 +22,17 @@ public class RuptureSessionProductActionTest extends BaseRuptureTest {
         RupturesClient rupturesClient = rupturesClient();
 
         // Generate test data
-        ActionData actionFalse0 = ActionData.returnRandomData();
-        actionFalse0.setAction(0);
-        actionFalse0.setState(actionState0);
+        ActionData action0 = ActionData.returnRandomData();
+        action0.setAction(0);
+        action0.setState(actionState0);
 
-        ActionData actionFalse1 = ActionData.returnRandomData();
-        actionFalse1.setAction(1);
-        actionFalse1.setState(actionState1);
+        ActionData action1 = ActionData.returnRandomData();
+        action1.setAction(1);
+        action1.setState(actionState1);
 
         RuptureProductData productData = new RuptureProductData();
         productData.generateRandomData();
-        productData.setActions(new ArrayList<>(Arrays.asList(actionFalse0, actionFalse1)));
+        productData.setActions(new ArrayList<>(Arrays.asList(action0, action1)));
 
         ReqRuptureSessionData rupturePostData = new ReqRuptureSessionData();
         rupturePostData.setProduct(productData);
@@ -150,7 +150,7 @@ public class RuptureSessionProductActionTest extends BaseRuptureTest {
         rupturesClient.assertThatDataMatches(respGet, ruptureProductDataListBody);
     }
 
-    @Test(description = "C23409763 PUT rupture action true remove actions", enabled = false) // TODO check!
+    @Test(description = "C23409763 PUT rupture action remove one action")
     public void testPutRuptureActionRemoveActions() {
         setUp(true, false);
 
@@ -159,15 +159,17 @@ public class RuptureSessionProductActionTest extends BaseRuptureTest {
         ReqRuptureSessionWithActionsData ruptureData = new ReqRuptureSessionWithActionsData();
         ruptureData.setSessionId(sessionId);
         ruptureData.setLmCode(getCurrentRuptureProduct().getLmCode());
-        ruptureData.setActions(new ArrayList<>());
+        ruptureData.setActions(getCurrentRuptureProduct().getActions().subList(0, 1));
 
-        step("Удаляем Action'ы в товаре");
+        step("Удаляем один Action в товаре");
         Response<ResActionDataList> resp = rupturesClient.actionProduct(ruptureData);
         rupturesClient.assertThatSessionIsActivated(resp, ruptureData.getActions());
+        ruptureProductDataListBody.getItems().get(0).getActions().remove(1);
 
-        //step("Отправляем GET запрос и проверяем, что изменения применились");
-        //Response<RuptureProductDataList> respGet = rupturesClient.getProducts(sessionId);
-        //rupturesClient.assertThatDataMatches(respGet, ruptureProductDataListBody);
+
+        step("Отправляем GET запрос и проверяем, что изменения применились");
+        Response<RuptureProductDataList> respGet = rupturesClient.getProducts(sessionId);
+        rupturesClient.assertThatDataMatches(respGet, ruptureProductDataListBody);
     }
 
     @Test(description = "C23409765 PUT rupture action for finished session")

@@ -2,6 +2,7 @@ package com.leroy.magportal.ui.pages.cart_estimate;
 
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.annotations.WebFindBy;
+import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.pages.BaseWebPage;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magportal.ui.models.salesdoc.EstimatePrintProductData;
@@ -109,10 +110,18 @@ public class PrintEstimatePage extends BaseWebPage {
 
     @Step("Проверить, что модальное окно предварительного просмотра печати отображается корректно")
     public PrintEstimatePage shouldPrintPreviewAreVisible() {
-        anAssert.isTrue(printPreviewButtons().isDisplayed(),
-                "Окно предварительного просмотра печати не отображается");
-        softAssert.isTrue(printPreviewCancelBtn().isDisplayed(), "Кнопка 'Cancel' не отображается");
-        softAssert.isTrue(printPreviewPrintBtn().isDisplayed(), "Кнопка 'Print' не отображается");
+        if (DriverFactory.isGridProfile()) {
+            String pageSource = getPageSource();
+            softAssert.isTrue(pageSource.contains("Save as PDF"), "'Save as PDF' отсутствует");
+            softAssert.isTrue(pageSource.contains("id=\"print-preview-app\""), "Отсутствует форма предварительного просмотра");
+            softAssert.isTrue(pageSource.contains("class=\"cancel-button\""), "Кнопка 'Cancel' отсутствует");
+            softAssert.isTrue(pageSource.contains("Apply"), "Кнопка 'Apply' отсутствует");
+        } else {
+            anAssert.isTrue(printPreviewButtons().isDisplayed(),
+                    "Окно предварительного просмотра печати не отображается");
+            softAssert.isTrue(printPreviewCancelBtn().isDisplayed(), "Кнопка 'Cancel' не отображается");
+            softAssert.isTrue(printPreviewPrintBtn().isDisplayed(), "Кнопка 'Print' не отображается");
+        }
         softAssert.verifyAll();
         return this;
     }

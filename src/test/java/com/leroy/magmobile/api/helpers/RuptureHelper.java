@@ -39,7 +39,7 @@ public class RuptureHelper extends BaseHelper {
             rupturePostData.setSessionId(sessionId);
             for (int i = 1; i < productDataList.size(); i++) {
                 rupturePostData.setProduct(productDataList.get(i));
-                Response<JsonNode> respUpdate = rupturesClient.updateSession(rupturePostData);
+                Response<JsonNode> respUpdate = rupturesClient.addProductToSession(rupturePostData);
                 rupturesClient.assertThatIsUpdatedOrDeleted(respUpdate);
             }
         }
