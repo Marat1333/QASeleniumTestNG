@@ -3,7 +3,7 @@
 #---------------------------------
 settings:
   platform: windows
-  browser: mobilechrome
+  browser: chrome
   #proxy: localhost:8080
   timeout: 30 # default wait timeout in seconds
 

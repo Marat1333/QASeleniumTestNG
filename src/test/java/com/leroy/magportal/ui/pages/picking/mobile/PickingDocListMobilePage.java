@@ -80,7 +80,7 @@ public class PickingDocListMobilePage extends MagPortalBasePage {
 
     @Step("Нажать кнопку 'Показать'")
     public PickingDocListMobilePage clickShowButton() {
-        showBtn.click();
+        showBtn.clickJS();
         waitForSpinnerAppearAndDisappear();
         return this;
     }
