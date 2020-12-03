@@ -21,6 +21,6 @@ public class StockCorrectionSuccessWebPage extends BaseWebPage {
 
     @Step("Нажать \"закрыть\"")
     public void clickCloseBtn() {
-        closeBtn.click();
+        closeBtn.clickJS();
     }
 }
