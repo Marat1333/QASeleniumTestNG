@@ -44,6 +44,8 @@ public class CatalogSearchClient extends BaseMashupClient {
         GetCatalogSearch req = new GetCatalogSearch();
         req.setLdapHeader(getUserSessionData().getUserLdap());
         req.setShopId(getUserSessionData().getUserShopId());
+        if (filters.getDepartmentId() != null)
+            req.setDepartmentId(filters.getDepartmentId());
         if (filters.getHasAvailableStock() != null)
             req.setHasAvailableStock(filters.getHasAvailableStock());
         if (filters.getTopEM() != null)

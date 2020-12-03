@@ -44,7 +44,7 @@ public class FieldInitializer {
             Class<?> decoratableClass = decoratableClass(field);
             if (decoratableClass != null) {
                 CustomFieldElementLocator fieldLocator = new CustomFieldElementLocator(field, parentBy);
-                Class<?> useClass = isApp || field.getAnnotation(AppFindBy.class) != null ?
+                Class<?> useClass = field.getAnnotation(AppFindBy.class) != null ?
                         field.getAnnotation(AppFindBy.class).clazz() :
                         field.getAnnotation(WebFindBy.class).clazz();
                 return createInstance(decoratableClass, fieldLocator, useClass);

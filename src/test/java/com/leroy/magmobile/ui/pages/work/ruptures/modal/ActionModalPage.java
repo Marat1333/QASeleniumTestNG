@@ -37,6 +37,11 @@ public class ActionModalPage extends CommonMagMobilePage {
         recallFromRm.click();
     }
 
+    @Step("Сделать коррекцию стока")
+    public void stockCorrection() {
+        stockCorrection.click();
+    }
+
     public ActionModalPage verifyRequiredElements(){
         softAssert.areElementsVisible(header, recallFromRm, stockCorrection);
         softAssert.verifyAll();

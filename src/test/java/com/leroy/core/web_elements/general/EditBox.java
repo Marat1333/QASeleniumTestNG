@@ -65,11 +65,11 @@ public class EditBox extends Element {
             return webElement.getAttribute("value");
     }
 
-    public EditBox fill(String text) {
+    public EditBox fill(Object text) {
         initialWebElementIfNeeded();
         if (DriverFactory.isAppProfile())
             waitForClickability(short_timeout, 1);
-        webElement.sendKeys(text);
+        webElement.sendKeys(text.toString());
         return this;
     }
 
