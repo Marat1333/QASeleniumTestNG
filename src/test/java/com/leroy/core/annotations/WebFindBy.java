@@ -19,10 +19,6 @@ public @interface WebFindBy {
 
     String text() default "";
 
-    String className() default "";
-
-    String cssSelector() default "";
-
     Class<? extends BaseWidget> clazz() default Element.class;
 
     String metaName() default "";

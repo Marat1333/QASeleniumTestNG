@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.leroy.core.ContextProvider;
 import com.leroy.core.annotations.DisableTestWhen;
 import com.leroy.core.annotations.Smoke;
-import com.leroy.core.annotations.Team;
 import com.leroy.core.configuration.BaseUiTest;
 import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.configuration.Log;
@@ -298,40 +297,6 @@ public class Listener implements ITestListener, ISuiteListener,
                 updateResultWithScreenshot(arg1);
         }
         try {
-            String teamName = null;
-            Class<?> testClass = arg1.getTestClass().getRealClass();
-            if (testClass.isAnnotationPresent(Team.class)) {
-                teamName = testClass.getAnnotation(Team.class).name();
-            }
-
-            //Method mthd = arg0.getTestMethod().getConstructorOrMethod().getMethod();
-            //Log.info("@@@MetadataBegin");
-            //Log.info("@@@Package: " + testClass.getPackage().getName());
-            /*if (mthd.isAnnotationPresent(API.class)) {
-                Log.info("@@@API-ID: " + mthd.getAnnotation(API.class).id());
-                Log.info("@@@Tester: " + mthd.getAnnotation(API.class).tester());
-            }
-            if (mthd.isAnnotationPresent(UI.class)) {
-                Log.info("@@@UI-Tester: " + mthd.getAnnotation(UI.class).tester());
-            }*/
-            /*if (mthd.isAnnotationPresent(Team.class)) {
-                // Test-level team name rules!
-                teamName = mthd.getAnnotation(Team.class).name();
-            }
-
-            if (TextUtil.hasValue(System.getProperty("build"))) {
-                Log.info("@@@Build: " + System.getProperty("build"));
-            }
-
-            if (TextUtil.hasValue(teamName)) {
-                Log.info("@@@Team: " + teamName);
-            }
-            Log.info("@@@MetadataEnd");
-            String textMsg = "Completed executing following method : "
-                    + returnMethodName(arg0.getTestMethod());
-
-            Log.info(textMsg);*/
-
             ITestNGMethod testMethod = arg0.getTestMethod();
 
             if (resultGenerationMode == Listener.ResultGenerationMode.AFTER_CLASS
