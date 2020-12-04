@@ -10,6 +10,7 @@ import com.leroy.magportal.ui.webelements.CardWebWidget;
 import com.leroy.utils.ParserUtil;
 import org.openqa.selenium.WebDriver;
 
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class ShortPickingTaskCardWidget extends CardWebWidget<ShortPickingTaskData> {
@@ -48,6 +49,8 @@ public class ShortPickingTaskCardWidget extends CardWebWidget<ShortPickingTaskDa
         switch (assemblyTypeText) {
             case "торг.зал":
                 return PickingConst.AssemblyType.SHOPPING_ROOM;
+            case "склад":
+                return PickingConst.AssemblyType.STOCK;
             case ">":
                 return PickingConst.AssemblyType.SS;
         }
@@ -62,14 +65,20 @@ public class ShortPickingTaskCardWidget extends CardWebWidget<ShortPickingTaskDa
         pickingTaskData.setMaxSize(ParserUtil.strToDouble(maxSize.getText(), "."));
         pickingTaskData.setWeight(ParserUtil.strToDouble(weight.getText(), "."));
         pickingTaskData.setStatus(status.getText());
-        pickingTaskData.setDepartments(departments.getTextList().stream()
-                .map(Integer::valueOf).collect(Collectors.toList()));
+        if (departments.getCount() > 0) {
+            pickingTaskData.setDepartments(departments.getTextList().stream()
+                    .map(Integer::valueOf).collect(Collectors.toList()));
+        } else {
+            pickingTaskData.setDepartments(new ArrayList<>());
+        }
         pickingTaskData.setCreationDate(creationDate.getTextIfPresent());
-        String collectorOrClient = collectorOrClientLbl.getText();
-        if (collectorOrClient.contains("Сборщик:"))
-            pickingTaskData.setCollector(collectorOrClient.replaceAll("Сборщик:", "").trim());
-        else
-            pickingTaskData.setClient(collectorOrClient.replaceAll("Клиент:", "").trim());
+        String collectorOrClient = collectorOrClientLbl.getTextIfPresent();
+        if (collectorOrClient != null) {
+            if (collectorOrClient.contains("Сборщик:"))
+                pickingTaskData.setCollector(collectorOrClient.replaceAll("Сборщик:", "").trim());
+            else
+                pickingTaskData.setClient(collectorOrClient.replaceAll("Клиент:", "").trim());
+        }
         return pickingTaskData;
     }
 }

@@ -1,0 +1,40 @@
+#---------------------------------
+#       Android app settings (Moon Grid)
+#---------------------------------
+settings:
+  platform: linux
+  browser: android_browser
+  host: https://moon-e2e.apps.lmru.tech
+  #build: 1.0.0 # Build version for NativeApps or run id for browser tests
+  timeout: 30 # default wait timeout in seconds
+
+  # /Users/xhqautomation/node_modules/appium/node_modules/appium-chromedriver/chromedriver/mac/chromedriver
+
+  # Application Activate: ru.leroymerlin.magasin.uat
+
+  #---------------------------------
+  #              mobile
+  #---------------------------------
+
+capabilities:
+  linux:
+    android_browser:
+      deviceName: "chrome"
+      version: "mobile-75.0"
+      enableVNC: true
+      enableVideo: false
+      env:
+        - TZ=Europe/Moscow
+        - SKIN=WVGA854
+
+# Skin	      Screen Resolution 	DPI
+# QVGA        240x320               120
+# WQVGA400    240x400               120
+# WQVGA432    240x432               120
+# HVGA        320x480               160
+# WVGA800     480x800               240
+# WVGA854     480x854               240
+# WSVGA       1024x600              160
+# WXGA720     720x1280              320
+# WXGA800     1280x800              160
+# WXGA800-7in 800x1280              213

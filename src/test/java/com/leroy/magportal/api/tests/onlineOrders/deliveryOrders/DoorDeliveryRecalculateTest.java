@@ -34,7 +34,7 @@ public class DoorDeliveryRecalculateTest extends BaseMagPortalApiTest {
         currentProductsCount = 3;
         currentOrderType = OnlineOrderTypeConst.DELIVERY_TO_DOOR;
 
-        currentOrderId = bitrixHelper.createOnlineOrder(currentOrderType).getSolutionId();
+        currentOrderId = bitrixHelper.createOnlineOrderCardPayment(currentOrderType).getSolutionId();
     }
 
     @Test(description = "C23425649 Door: Delivery ReCalc: One product", priority = 1)

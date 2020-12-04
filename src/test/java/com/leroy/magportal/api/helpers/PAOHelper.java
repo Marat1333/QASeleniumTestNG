@@ -212,7 +212,7 @@ public class PAOHelper extends BaseHelper {
     public OrderData createConfirmedOrder(
             List<CartProductOrderData> products, boolean isWaitForAllowedForPicking) {
         GiveAwayData giveAwayData = new GiveAwayData();
-        giveAwayData.setDate(LocalDateTime.now().plusDays(1));
+        giveAwayData.setDateAsLocalDateTime(LocalDateTime.now().plusDays(1));
         giveAwayData.setPoint(SalesDocumentsConst.GiveAwayPoints.PICKUP.getApiVal());
         giveAwayData.setShopId(
                 Integer.valueOf(ContextProvider.getContext().getUserSessionData().getUserShopId()));

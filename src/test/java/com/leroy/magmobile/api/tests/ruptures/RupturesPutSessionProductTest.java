@@ -73,7 +73,7 @@ public class RupturesPutSessionProductTest extends BaseRuptureTest {
         ReqRuptureSessionData rupturePostData = getTypicalReqRuptureSessionData(productData);
 
         step("Добавляем новый продукт");
-        Response<JsonNode> resp = rupturesClient.updateSession(rupturePostData);
+        Response<JsonNode> resp = rupturesClient.addProductToSession(rupturePostData);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
         ruptureProductDataListBody.addItem(productData);
 
@@ -98,8 +98,8 @@ public class RupturesPutSessionProductTest extends BaseRuptureTest {
 
         ReqRuptureSessionData rupturePostData = getTypicalReqRuptureSessionData(productData);
 
-        Response<JsonNode> resp = rupturesClient.updateSession(rupturePostData);
-        rupturesClient.assertThatActionIsNotAllowed(resp, sessionId);
+        Response<JsonNode> resp = rupturesClient.addProductToSession(rupturePostData);
+        rupturesClient.assertThatSessionNotFoundOrFinished(resp, sessionId);
 
         step("Отправляем GET запрос и проверяем, что данные действительно не изменились");
         Response<RuptureProductDataList> getResp = rupturesClient.getProducts(sessionId);
@@ -119,8 +119,8 @@ public class RupturesPutSessionProductTest extends BaseRuptureTest {
         int deletedSessionId = Integer.MAX_VALUE;
         ReqRuptureSessionData rupturePostData = getTypicalReqRuptureSessionData(deletedSessionId, productData);
 
-        Response<JsonNode> resp = rupturesClient.updateSession(rupturePostData);
-        rupturesClient.assertThatActionIsNotAllowed(resp, deletedSessionId);
+        Response<JsonNode> resp = rupturesClient.addProductToSession(rupturePostData);
+        rupturesClient.assertThatSessionNotFoundOrFinished(resp, deletedSessionId);
     }
 
     @Test(description = "C23409188 PUT ruptures product - Change existing product")
@@ -143,7 +143,7 @@ public class RupturesPutSessionProductTest extends BaseRuptureTest {
         step("Изменяем товар в сессии");
         ReqRuptureSessionData rupturePostData = getTypicalReqRuptureSessionData(productData);
 
-        Response<JsonNode> resp = rupturesClient.updateSession(rupturePostData);
+        Response<JsonNode> resp = rupturesClient.addProductToSession(rupturePostData);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
 
         step("Отправляем GET запрос и проверяем, что товар был изменен");

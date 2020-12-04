@@ -20,7 +20,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 
-public class RupturesPutSessionFinishTest extends BaseRuptureTest {
+public class RupturesPostSessionFinishTest extends BaseRuptureTest {
 
     // Test constants
     private static final String ACTIVE_STATUS = "active";
@@ -79,7 +79,7 @@ public class RupturesPutSessionFinishTest extends BaseRuptureTest {
 
         step("Завершаем сессию повторно");
         Response<JsonNode> resp = rupturesClient.finishSession(sessionId);
-        rupturesClient.assertThatActionIsNotAllowed(resp, sessionId);
+        rupturesClient.assertThatIsUpdatedOrDeleted(resp);
     }
 
     @Test(description = "C3285353 PUT ruptures session finish for deleted session")
@@ -94,7 +94,7 @@ public class RupturesPutSessionFinishTest extends BaseRuptureTest {
 
         step("Пытаемся завершить удаленную сессию");
         Response<JsonNode> resp = rupturesClient.finishSession(sessionId);
-        rupturesClient.assertThatActionIsNotAllowed(resp, sessionId);
+        rupturesClient.assertThatSessionNotFound(resp, sessionId);
     }
 
     @Test(description = "C3285354 PUT ruptures session finish for a not existing session")
@@ -104,18 +104,18 @@ public class RupturesPutSessionFinishTest extends BaseRuptureTest {
 
         step("Пытаемся завершить несуществующую сессию");
         Response<JsonNode> resp = rupturesClient.finishSession(notExistingSession);
-        rupturesClient.assertThatActionIsNotAllowed(resp, notExistingSession);
+        rupturesClient.assertThatSessionNotFound(resp, notExistingSession);
     }
 
     @Test(description = "C23409768 PUT ruptures session finish mashup validation")
     public void testPutRupturesSessionFinishMashupValidation() {
         RupturesClient rupturesClient = rupturesClient();
 
-        Response<JsonNode> resp = rupturesClient.finishSession(null);
+        Response<JsonNode> resp = rupturesClient.finishSession("");
         assertThat("Response code", resp.getStatusCode(), equalTo(StatusCodes.ST_400_BAD_REQ));
         CommonErrorResponseData errorResp = resp.asJson(CommonErrorResponseData.class);
         assertThat("error text", errorResp.getError(),
-                equalTo(ErrorTextConst.WRONG_QUERY_DATA));
+                equalTo(ErrorTextConst.WRONG_PATH));
         assertThat("validation sessionId", errorResp.getValidation().getSessionId(),
                 equalTo(ErrorTextConst.REQUIRED));
     }

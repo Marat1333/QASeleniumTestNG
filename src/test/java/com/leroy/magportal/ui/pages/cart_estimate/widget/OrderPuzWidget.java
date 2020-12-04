@@ -63,9 +63,10 @@ public class OrderPuzWidget extends CardWebWidget<OrderWebData> {
         OrderWebData orderWebData = new OrderWebData();
         orderWebData.setProductCardDataList(products.getDataList());
 
-        String[] productCountAndWeight = countAndWeightProductLbl.getText().split("•");
+        String text = countAndWeightProductLbl.getText();
+        String[] productCountAndWeight = text.split("•");
         Assert.assertEquals(productCountAndWeight.length, 2,
-                "Что-то изменилось в метке содержащей информацию о кол-ве и весе товара");
+                "Что-то изменилось в метке содержащей информацию о кол-ве и весе товара = " + text);
 
         orderWebData.setTotalPrice(ParserUtil.strToDouble(totalPriceValue.getText()));
         orderWebData.setTotalWeight(ParserUtil.strToWeight(productCountAndWeight[1]));

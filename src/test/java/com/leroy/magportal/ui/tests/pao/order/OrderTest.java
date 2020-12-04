@@ -117,7 +117,7 @@ public class OrderTest extends BasePAOTest {
     @Test(description = "C23410899 Создать заказ из корзины с авторской сборкой")
     public void testCreateOrderWithAuthorAssembly() throws Exception {
         // Prepare data
-        SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+        SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_2;
         ProductItemData topEmProduct = searchProductHelper.getProducts(
                 1, new CatalogSearchFilter().setTopEM(true)).get(0);
         CartProductOrderData cartProductOrderData = new CartProductOrderData(topEmProduct);

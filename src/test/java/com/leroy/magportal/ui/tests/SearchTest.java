@@ -892,7 +892,7 @@ public class SearchTest extends WebBaseSteps {
         //searchProductPage.shouldUrlContains(CatalogSearchParams.bylmCodeParamName + byNameLikeParam);
     }
 
-    @Test(description = "C23385398 search without changes")
+    @Test(description = "C23385398 search without changes", enabled = false)
     public void testSearchWithoutChanges() throws Exception {
         //Pre-conditions
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
