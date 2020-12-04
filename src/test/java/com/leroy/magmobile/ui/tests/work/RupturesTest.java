@@ -1609,13 +1609,13 @@ public class RupturesTest extends AppBaseSteps {
         ruptureCardPage.verifyRequiredElements()
                 .shouldStockCorrectionHasBeenCreatedMsgIsVisible();
 
-        //Step 8
+        //Step 10
         step("Нажать кнопку \"действия с перебоем\"");
         actionModalPage = ruptureCardPage.callActionModalByPressingActionsWithRupturesBtn();
         actionModalPage.stockCorrection();
         actionModalPage.verifyRequiredElements();
 
-        // Step 9
+        // Step 11
         step("Закрыть модалку, " +
                 "Перейти к редактированию экшенов перебоя (карандашик)");
         ruptureCardPage = actionModalPage.closeModal();
@@ -1624,7 +1624,7 @@ public class RupturesTest extends AppBaseSteps {
         tasksListsModalPage.selectTasks(pressedTaskName)
                 .shouldToDoListContainsTaskAndPossibleListNotContainsTask(Collections.singletonList(pressedTaskName));
 
-        //Step 10
+        //Step 12
         step("Закрыть модалку \"задачи по перебою\"\n" +
                 "Закрыть карточку перебоя");
         ruptureCardPage = tasksListsModalPage.closeModal();
@@ -1634,7 +1634,7 @@ public class RupturesTest extends AppBaseSteps {
                 .shouldStockCorrectionHasBeenCreatedMsgIsVisible()
                 .verifyRequiredElements();
 
-        //Step 11
+        //Step 13
         step("Нажать железную кнопку назад и подтвердить выход из сессии");
         String sessionNumber = activeSessionPage.getSessionNumber();
         sessionsNumbers.set(ParserUtil.strToInt(sessionNumber));
