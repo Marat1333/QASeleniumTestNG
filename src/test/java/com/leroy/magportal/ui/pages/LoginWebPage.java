@@ -1,7 +1,6 @@
 package com.leroy.magportal.ui.pages;
 
 import com.leroy.constants.EnvConstants;
-import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.pages.BaseWebPage;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
@@ -17,10 +16,7 @@ public class LoginWebPage extends BaseWebPage {
     public void logIn(String ldap, String password) {
         usernameFld.clearAndFill(ldap);
         passwordFld.clearAndFill(password);
-        if (DriverFactory.isAppProfile())
-            loginBtn.clickJS();
-        else
-            loginBtn.click();
+        loginBtn.clickJS();
     }
 
     public boolean isLoginFormVisible() {

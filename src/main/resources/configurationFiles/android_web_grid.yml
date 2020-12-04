@@ -3,7 +3,7 @@
 #---------------------------------
 settings:
   platform: linux
-  browser: android_app
+  browser: android_browser
   host: https://moon-e2e.apps.lmru.tech
   #build: 1.0.0 # Build version for NativeApps or run id for browser tests
   timeout: 30 # default wait timeout in seconds
@@ -18,33 +18,14 @@ settings:
 
 capabilities:
   linux:
-    android_app:
-      deviceName: "chrome"
-      #browserName: "chrome"
-      version: "mobile-75.0"
-      acceptInsecureCerts: true
-      autoDismissAlerts: true
-      autoGrantPermissions: true
-      newCommandTimeout: 60000
-      androidInstallTimeout: 60000
-      uiautomator2ServerInstallTimeout: 60000
-      adbExecTimeout: 60000
-      #deviceOrientation: portrait
-      autoAcceptAlerts: true
-      automationName: uiautomator2
-      app: https://art.lmru.tech/generic-local-lego-front/apk/LMLF-1.18.3-TEST-b216-WITHOUT_GAP.apk
-      enableVNC: true
-      enableVideo: false
-      env:
-        - TZ=Europe/Moscow
-        - SKIN=WXGA800-7in
-        #- ADB_VENDOR_KEYS=/root/.android/adbkey
-
     android_browser:
       deviceName: "chrome"
       version: "mobile-75.0"
       enableVNC: true
       enableVideo: false
+      env:
+        - TZ=Europe/Moscow
+        - SKIN=WVGA854
 
 # Skin	      Screen Resolution 	DPI
 # QVGA        240x320               120

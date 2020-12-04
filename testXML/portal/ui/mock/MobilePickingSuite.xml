@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Mobile Picking Suite" parallel="tests">
+
+    <listeners>
+        <listener class-name="com.leroy.core.listeners.TestRailListener"/>
+    </listeners>
+
+    <test name="Mobile Picking tests">
+        <classes>
+            <class name="com.leroy.magportal.ui.tests.picking.PickingFilteringMobileTest"/>
+            <class name="com.leroy.magportal.ui.tests.picking.PickingWavesMobileTest"/>
+        </classes>
+    </test>
+
+</suite>

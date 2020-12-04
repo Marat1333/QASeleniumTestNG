@@ -1,13 +1,13 @@
 package com.leroy.magportal.ui.tests;
 
 import com.google.inject.Inject;
-import com.leroy.common_mashups.helpers.SearchProductHelper;
-import com.leroy.core.UserSessionData;
 import com.leroy.common_mashups.customer_accounts.clients.CustomerClient;
-import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.common_mashups.customer_accounts.data.CustomerData;
 import com.leroy.common_mashups.customer_accounts.data.CustomerResponseBodyData;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
+import com.leroy.core.UserSessionData;
+import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
+import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magportal.ui.WebBaseSteps;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
 import io.qameta.allure.Step;
