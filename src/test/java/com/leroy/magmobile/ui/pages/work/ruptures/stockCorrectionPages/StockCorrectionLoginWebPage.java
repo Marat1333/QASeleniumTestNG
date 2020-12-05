@@ -17,7 +17,7 @@ public class StockCorrectionLoginWebPage extends BaseWebPage {
 
     @Step("Нажмите кнопку 'ВОЙТИ'")
     public StockCorrectionAddProductWebPage clickLogIdBtn() {
-        logIdBtn.click();
+        logIdBtn.clickJS();
         return new StockCorrectionAddProductWebPage();
     }
 }

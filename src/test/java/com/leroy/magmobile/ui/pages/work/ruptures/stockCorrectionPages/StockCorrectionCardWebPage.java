@@ -42,12 +42,12 @@ public class StockCorrectionCardWebPage extends BaseWebPage {
 
     @Step("Нажать \"отправить\"")
     public void clickSendBtn() {
-        sendBtn.click();
+        sendBtn.clickJS();
     }
 
     @Step("Нажать кнопку \"отправить\" в модалке")
     public StockCorrectionSuccessWebPage clickConfirmSendBtn() {
-        confirmSendBtn.click();
+        confirmSendBtn.clickJS();
         return new StockCorrectionSuccessWebPage();
     }
 }

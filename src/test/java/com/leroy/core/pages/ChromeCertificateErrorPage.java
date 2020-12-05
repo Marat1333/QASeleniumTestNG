@@ -17,5 +17,10 @@ public class ChromeCertificateErrorPage extends BaseAppPage {
         }
     }
 
+    public ChromeCertificateErrorPage waitForButtonsAreVisible() {
+        advancedBtn.waitForVisibility(short_timeout);
+        return this;
+    }
+
 }
 

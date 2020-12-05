@@ -6,6 +6,7 @@ import com.leroy.constants.DefectConst;
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.ContextProvider;
 import com.leroy.core.UserSessionData;
+import com.leroy.core.pages.ChromeCertificateErrorPage;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.ruptures.ActionData;
@@ -1572,8 +1573,13 @@ public class RupturesTest extends AppBaseSteps {
 
         //Step 3
         step("Выбрать \"продолжить\"");
-        acceptStockCorrectionModalPage.clickContinueButton();
         AndroidDriver<MobileElement> androidDriver = (AndroidDriver<MobileElement>) ContextProvider.getDriver();
+        androidDriver.context("WEBVIEW_chrome");
+        androidDriver.close();
+        androidDriver.context("NATIVE_APP");
+        acceptStockCorrectionModalPage.clickContinueButton();
+        new ChromeCertificateErrorPage().waitForButtonsAreVisible()
+                .skipSiteSecureError();
         androidDriver.context("WEBVIEW_chrome");
         StockCorrectionLoginWebPage stockCorrectionWebPage = new StockCorrectionLoginWebPage();
 
@@ -1604,7 +1610,6 @@ public class RupturesTest extends AppBaseSteps {
         //Step 9
         step("Нажать кнопку \"ЗАКРЫТЬ\"");
         stockCorrectionSuccessWebPage.clickCloseBtn();
-        androidDriver.context("NATIVE_APP");
         ruptureCardPage = new RuptureCardPage();
         ruptureCardPage.verifyRequiredElements()
                 .shouldStockCorrectionHasBeenCreatedMsgIsVisible();
