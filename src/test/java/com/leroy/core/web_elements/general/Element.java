@@ -413,28 +413,6 @@ public class Element extends BaseWidget {
                 .replaceAll("\"", "").replaceAll(",\\s", ",");
     }
 
-    public Fonts getFontWeight() {
-        String cssVal = getCssValue("font-weight");
-//        if (isIos() || isSafari()) {
-//            switch (cssVal) {
-//                case "bold":
-//                    return FontsKt.WEIGHT_BOLD;
-//                case "normal":
-//                    return FontsKt.WEIGHT_NORMAL;
-//            }
-//        } else {
-        switch (cssVal) {
-            case "700":
-                return Fonts.WEIGHT_BOLD;
-            case "400":
-                return Fonts.WEIGHT_NORMAL;
-        }
-        // }
-        if (Strings.isNullOrEmpty(cssVal))
-            return Fonts.WEIGHT_NORMAL;
-        return null;
-    }
-
     public String getFontStyle() {
         return getCssValue("font-style");
     }
