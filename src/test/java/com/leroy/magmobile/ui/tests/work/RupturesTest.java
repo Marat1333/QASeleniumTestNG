@@ -147,6 +147,51 @@ public class RupturesTest extends AppBaseSteps {
         return sessionId;
     }
 
+    // Test case C23440885
+    private RuptureCardPage makeStockCorrection(String ruptureLmCode, AcceptStockCorrectionModalPage acceptStockCorrectionModalPage) {
+
+        //Step 1
+        subStep("Выбрать \"продолжить\"", "1");
+        AndroidDriver<MobileElement> androidDriver = (AndroidDriver<MobileElement>) ContextProvider.getDriver();
+        androidDriver.context("WEBVIEW_chrome");
+        androidDriver.close();
+        androidDriver.context("NATIVE_APP");
+        acceptStockCorrectionModalPage.clickContinueButton();
+        new ChromeCertificateErrorPage().waitForButtonsAreVisible()
+                .skipSiteSecureError();
+        androidDriver.context("WEBVIEW_chrome");
+        StockCorrectionLoginWebPage stockCorrectionWebPage = new StockCorrectionLoginWebPage();
+
+        //Step 2
+        subStep("Жмем \"Войти\"", "2");
+        StockCorrectionAddProductWebPage stockCorrectionAddProductWebPage = stockCorrectionWebPage.clickLogIdBtn();
+        stockCorrectionAddProductWebPage.checkLmCode(ruptureLmCode);
+
+        //Step 3
+        subStep("Ввести в поле \"я посчитал\" значение \"числится в зале\"+1 или 1 если \"числится в зале\" меньше нуля", "3");
+        stockCorrectionAddProductWebPage.enterNewCount();
+
+        //Step 4
+        subStep("Нажать \"+ в карточку\"", "4");
+        StockCorrectionCardWebPage stockCorrectionCardWebPage = stockCorrectionAddProductWebPage.clickInCardBtn();
+        stockCorrectionCardWebPage.checkShopAndDepartment();
+        stockCorrectionCardWebPage.checkReason();
+        stockCorrectionCardWebPage.checkLmCode(ruptureLmCode);
+
+        //Step 5
+        subStep("Нажать кнопку \"отправить\"", "5");
+        stockCorrectionCardWebPage.clickSendBtn();
+
+        //Step 6
+        subStep("Нажать кнопку \"отправить\" в модалке", "6");
+        StockCorrectionSuccessWebPage stockCorrectionSuccessWebPage = stockCorrectionCardWebPage.clickConfirmSendBtn();
+
+        //Step 7
+        subStep("Нажать кнопку \"ЗАКРЫТЬ\"", "7");
+        stockCorrectionSuccessWebPage.clickCloseBtn();
+        return new RuptureCardPage();
+    }
+
     @Test(description = "C3272519 Перебои на экране работы")
     public void testRupturesOnWorkScreen() throws Exception {
         String shopWithNoRuptures = "62";
@@ -1572,55 +1617,18 @@ public class RupturesTest extends AppBaseSteps {
         acceptStockCorrectionModalPage.verifyRequiredElements();
 
         //Step 3
-        step("Выбрать \"продолжить\"");
-        AndroidDriver<MobileElement> androidDriver = (AndroidDriver<MobileElement>) ContextProvider.getDriver();
-        androidDriver.context("WEBVIEW_chrome");
-        androidDriver.close();
-        androidDriver.context("NATIVE_APP");
-        acceptStockCorrectionModalPage.clickContinueButton();
-        new ChromeCertificateErrorPage().waitForButtonsAreVisible()
-                .skipSiteSecureError();
-        androidDriver.context("WEBVIEW_chrome");
-        StockCorrectionLoginWebPage stockCorrectionWebPage = new StockCorrectionLoginWebPage();
-
-        //Step 4
-        step("Жмем \"Войти\"");
-        StockCorrectionAddProductWebPage stockCorrectionAddProductWebPage = stockCorrectionWebPage.clickLogIdBtn();
-        stockCorrectionAddProductWebPage.checkLmCode(ruptureLmCode);
-
-        //Step 5
-        step("Ввести в поле \"я посчитал\" значение \"числится в зале\"+1 или 1 если \"числится в зале\" меньше нуля");
-        stockCorrectionAddProductWebPage.enterNewCount();
-
-        //Step 6
-        step("Нажать \"+ в карточку\"");
-        StockCorrectionCardWebPage stockCorrectionCardWebPage = stockCorrectionAddProductWebPage.clickInCardBtn();
-        stockCorrectionCardWebPage.checkShopAndDepartment();
-        stockCorrectionCardWebPage.checkReason();
-        stockCorrectionCardWebPage.checkLmCode(ruptureLmCode);
-
-        //Step 7
-        step("Нажать кнопку \"отправить\"");
-        stockCorrectionCardWebPage.clickSendBtn();
-
-        //Step 8
-        step("Нажать кнопку \"отправить\" в модалке");
-        StockCorrectionSuccessWebPage stockCorrectionSuccessWebPage = stockCorrectionCardWebPage.clickConfirmSendBtn();
-
-        //Step 9
-        step("Нажать кнопку \"ЗАКРЫТЬ\"");
-        stockCorrectionSuccessWebPage.clickCloseBtn();
-        ruptureCardPage = new RuptureCardPage();
+        step("Выполнить коррекцию стока (шаги из тк C23389124)");
+        ruptureCardPage = makeStockCorrection(ruptureLmCode, acceptStockCorrectionModalPage);
         ruptureCardPage.verifyRequiredElements()
                 .shouldStockCorrectionHasBeenCreatedMsgIsVisible();
 
-        //Step 10
+        //Step 4
         step("Нажать кнопку \"действия с перебоем\"");
         actionModalPage = ruptureCardPage.callActionModalByPressingActionsWithRupturesBtn();
         actionModalPage.stockCorrection();
         actionModalPage.verifyRequiredElements();
 
-        // Step 11
+        // Step 5
         step("Закрыть модалку, " +
                 "Перейти к редактированию экшенов перебоя (карандашик)");
         ruptureCardPage = actionModalPage.closeModal();
@@ -1629,7 +1637,7 @@ public class RupturesTest extends AppBaseSteps {
         tasksListsModalPage.selectTasks(pressedTaskName)
                 .shouldToDoListContainsTaskAndPossibleListNotContainsTask(Collections.singletonList(pressedTaskName));
 
-        //Step 12
+        //Step 6
         step("Закрыть модалку \"задачи по перебою\"\n" +
                 "Закрыть карточку перебоя");
         ruptureCardPage = tasksListsModalPage.closeModal();
@@ -1639,7 +1647,7 @@ public class RupturesTest extends AppBaseSteps {
                 .shouldStockCorrectionHasBeenCreatedMsgIsVisible()
                 .verifyRequiredElements();
 
-        //Step 13
+        //Step 7
         step("Нажать железную кнопку назад и подтвердить выход из сессии");
         String sessionNumber = activeSessionPage.getSessionNumber();
         sessionsNumbers.set(ParserUtil.strToInt(sessionNumber));

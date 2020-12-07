@@ -73,6 +73,10 @@ public abstract class BaseTest {
         ContextProvider.getContext().getLog().step(msg);
     }
 
+    protected void subStep(String msg, String subStep) {
+        ContextProvider.getContext().getLog().subStep(msg, subStep);
+    }
+
 
     protected AssertWrapper anAssert() {
         return ContextProvider.getContext().getAnAssert();

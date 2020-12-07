@@ -39,6 +39,19 @@ public class StepLog {
         Log.step(stepCounter + ". " + message);
     }
 
+    public void subStep(String message, String subStepNumber) {
+        final String uuid = UUID.randomUUID().toString();
+        final StepResult allureResult = new StepResult()
+                .setName(stepCounter + "." + subStepNumber + ". " + message);
+        getLifecycle().startStep(uuid, allureResult);
+        currentStepResult = new StepResultModel();
+        currentStepResult.setUuid(uuid);
+        currentStepResult.setStatus_id(ResultModel.ST_UNTESTED);
+        currentStepResult.setContent(message.replaceAll("\n", ""));
+        stepResults.add(currentStepResult);
+        Log.step(stepCounter + "." + subStepNumber + ". " + message);
+    }
+
     public void assertFail(String message) {
         if (currentStepResult != null)
             currentStepResult.setStatus_id(ResultModel.ST_FAILED);
