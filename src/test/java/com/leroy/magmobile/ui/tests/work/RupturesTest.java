@@ -1555,7 +1555,7 @@ public class RupturesTest extends AppBaseSteps {
         SessionListPage sessionListPage = workPage.goToRuptures();
 
         // Step 1
-        step("Нажать '+ сканировать перебой' и перейти в ручной поиск, " +
+        step("Нажать 'по одному' и перейти в ручной поиск, " +
                 "Найти товар из 5 отдела");
         RupturesScannerPage rupturesScannerPage = sessionListPage.clickScanRupturesByOneButton();
         SearchProductPage searchProductPage = rupturesScannerPage.navigateToSearchProductPage();
