@@ -23,10 +23,6 @@ public @interface AppFindBy {
 
     String followingTextAfter() default "";
 
-    String className() default "";
-
-    String cssSelector() default "";
-
     Class<? extends BaseWidget> clazz() default Element.class;
 
     String metaName() default "";

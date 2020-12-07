@@ -33,24 +33,6 @@ public class ImageUtil {
     }
 
     /**
-     * Get rectangle for the screen area
-     */
-    private static Rectangle getScreenRectangle(Element element1, Element element2, Delta delta) {
-        if (element2 != null) {
-            Point pointElem1 = element1.getLocation();
-            Point pointElem2 = element2.getLocation();
-            Dimension sizeElem1 = element1.getSize();
-            Dimension sizeElem2 = element2.getSize();
-            return new Rectangle(pointElem1.getX() - delta.getLeft(), pointElem1.getY() - delta.getTop(),
-                    (pointElem2.getY() + sizeElem2.getHeight()) - pointElem1.getY() +
-                            delta.getBottom() + delta.getTop(),
-                    (pointElem2.getX() + sizeElem1.getWidth()) - pointElem1.getX() +
-                            delta.getRight() + delta.getLeft());
-        } else
-            return element1.getRectangle();
-    }
-
-    /**
      * Take screenshot
      *
      * @param driver - webdriver
