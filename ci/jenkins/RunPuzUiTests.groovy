@@ -26,7 +26,7 @@ GString getMvnStrRun() {
     return "mvn clean test -B " +
             "-Dmaven.test.failure.ignore=true " +
             "-DxmlPath=testXML/portal/ui/${env.SUITE_XML} " +
-            "-DmpropsFile=src/main/resources/configurationFiles/chrome_grid.yml " +
+            "-DmpropsFile=src/main/resources/configurationFiles/${env.TEST_CONFIG}.yml " +
             "-DthreadCount=${env.THREAD_COUNT} " +
             "-DrunWithIssues=${env.RUN_CASE_WITH_ISSUE} " +
             "-DmRun=${env.RUN} " +

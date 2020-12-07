@@ -1,0 +1,655 @@
+{
+  "stubs": [
+    {
+      "predicates": [
+        {
+          "and": [
+            {
+              "contains": {
+                "headers": {
+                  "Cookie": "tcId=C23423641"
+                }
+              }
+            },
+            {
+              "equals": {
+                "method": "GET",
+                "path": "/v1/pickingTasks/search",
+                "query": {
+                  "page": "1",
+                  "pageSize": "10",
+                  "departmentId": "5",
+                  "existCurrentStorageLocation": "false",
+                  "shopId": "35",
+                  "taskStatus": "ALLOWED_FOR_PICKING,PICKING_IN_PROGRESS,PAUSE_PICKING,PARTIALLY_PICKED,PICKED"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [
+                {
+                  "taskId": "3004920110390598",
+                  "orderId": "201103212579",
+                  "channel": "OFFLINE",
+                  "customerType": "PERSON",
+                  "customerName": "Авто",
+                  "customerSurname": "Тестик",
+                  "shopId": 35,
+                  "delivery": false,
+                  "taskStatus": "ALLOWED_FOR_PICKING",
+                  "extOrderId": "201103212579",
+                  "pointOfGiveAway": "PICKUP",
+                  "dateOfGiveAway": "2020-11-19T15:06:30.374Z",
+                  "documentVersion": 2,
+                  "pickingZone": "LS",
+                  "pickingDeadline": "2020-11-18T12:36:41.605Z",
+                  "buId": 9,
+                  "priority": "HIGH",
+                  "offline": true,
+                  "linkedObjects": [
+                    {
+                      "objectType": "FF_CUSTOMER_ORDER",
+                      "objectId": "1004920110390597",
+                      "objectStatus": "CONFIRMED",
+                      "objectLines": [
+                        {
+                          "objectLineId": "1",
+                          "taskLineId": "1"
+                        }
+                      ]
+                    }
+                  ],
+                  "creationInformation": {
+                    "createdBy": "60069806",
+                    "created": "2020-11-18T12:06:41.322Z"
+                  },
+                  "lastUpdateInformation": {
+                    "updatedBy": "UNKNOWN",
+                    "updated": "2020-11-18T12:06:42.393Z"
+                  },
+                  "departmentId": [
+                    "54"
+                  ],
+                  "departments": [
+                    "5"
+                  ],
+                  "totalWeight": 1.172,
+                  "maxSize": 0.6,
+                  "products": [
+                    {
+                      "title": "Коврик придверный «Abstraction» полипропилен 40x60 см",
+                      "lmCode": "15354311",
+                      "lineId": "1",
+                      "lineStatus": "ALLOWED_FOR_PICKING",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    }
+                  ],
+                  "employeeName": null,
+                  "paymentStatus": "CONFIRMED",
+                  "paymentType": "CASHLINE_DEPOSIT"
+                },
+                {
+                  "taskId": "3004920110390599",
+                  "orderId": "201103212580",
+                  "channel": "OFFLINE",
+                  "customerType": "PERSON",
+                  "customerName": "Авто",
+                  "customerSurname": "Тестик",
+                  "shopId": 35,
+                  "delivery": false,
+                  "taskStatus": "ALLOWED_FOR_PICKING",
+                  "extOrderId": "201103212580",
+                  "pointOfGiveAway": "PICKUP",
+                  "dateOfGiveAway": "2020-11-19T15:06:30.374Z",
+                  "documentVersion": 2,
+                  "pickingZone": "LS",
+                  "pickingDeadline": "2020-11-18T12:36:41.605Z",
+                  "buId": 9,
+                  "priority": "HIGH",
+                  "offline": true,
+                  "linkedObjects": [
+                    {
+                      "objectType": "FF_CUSTOMER_ORDER",
+                      "objectId": "1004920110390597",
+                      "objectStatus": "CONFIRMED",
+                      "objectLines": [
+                        {
+                          "objectLineId": "1",
+                          "taskLineId": "1"
+                        }
+                      ]
+                    }
+                  ],
+                  "creationInformation": {
+                    "createdBy": "60069806",
+                    "created": "2020-11-18T12:06:41.322Z"
+                  },
+                  "lastUpdateInformation": {
+                    "updatedBy": "UNKNOWN",
+                    "updated": "2020-11-18T12:06:42.393Z"
+                  },
+                  "departmentId": [
+                    "54"
+                  ],
+                  "departments": [
+                    "5"
+                  ],
+                  "totalWeight": 1.172,
+                  "maxSize": 0.6,
+                  "products": [
+                    {
+                      "title": "Коврик придверный «Abstraction» полипропилен 40x60 см",
+                      "lmCode": "15354311",
+                      "lineId": "1",
+                      "lineStatus": "ALLOWED_FOR_PICKING",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    }
+                  ],
+                  "employeeName": null,
+                  "paymentStatus": "CONFIRMED",
+                  "paymentType": "CASHLINE_DEPOSIT"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "and": [
+            {
+              "contains": {
+                "headers": {
+                  "Cookie": "tcId=C23423641"
+                }
+              }
+            },
+            {
+              "equals": {
+                "method": "GET",
+                "path": "/v1/pickingTasks/search",
+                "query": {
+                  "page": "1",
+                  "pageSize": "10",
+                  "existCurrentStorageLocation": "false",
+                  "shopId": "35",
+                  "ldap": "60069806",
+                  "taskStatus": "ALLOWED_FOR_PICKING,PICKING_IN_PROGRESS,PAUSE_PICKING,PARTIALLY_PICKED,PICKED"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [
+                {
+                  "taskId": "3004920110392222",
+                  "orderId": "201103213333",
+                  "channel": "OFFLINE",
+                  "customerType": "PERSON",
+                  "customerName": "Авто",
+                  "customerSurname": "Тестик",
+                  "shopId": 35,
+                  "delivery": false,
+                  "taskStatus": "ALLOWED_FOR_PICKING",
+                  "extOrderId": "201103212579",
+                  "pointOfGiveAway": "PICKUP",
+                  "dateOfGiveAway": "2020-11-19T15:06:30.374Z",
+                  "documentVersion": 2,
+                  "pickingZone": "LS",
+                  "pickingDeadline": "2020-11-18T12:36:41.605Z",
+                  "buId": 9,
+                  "priority": "HIGH",
+                  "offline": true,
+                  "linkedObjects": [
+                    {
+                      "objectType": "FF_CUSTOMER_ORDER",
+                      "objectId": "1004920110390597",
+                      "objectStatus": "CONFIRMED",
+                      "objectLines": [
+                        {
+                          "objectLineId": "1",
+                          "taskLineId": "1"
+                        }
+                      ]
+                    }
+                  ],
+                  "creationInformation": {
+                    "createdBy": "60069806",
+                    "created": "2020-11-18T12:06:41.322Z"
+                  },
+                  "lastUpdateInformation": {
+                    "updatedBy": "UNKNOWN",
+                    "updated": "2020-11-18T12:06:42.393Z"
+                  },
+                  "departmentId": [
+                    "54"
+                  ],
+                  "departments": [
+                    "5"
+                  ],
+                  "totalWeight": 1.172,
+                  "maxSize": 0.6,
+                  "products": [
+                    {
+                      "title": "Коврик придверный «Abstraction» полипропилен 40x60 см",
+                      "lmCode": "15354311",
+                      "lineId": "1",
+                      "lineStatus": "ALLOWED_FOR_PICKING",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    }
+                  ],
+                  "employeeName": null,
+                  "paymentStatus": "CONFIRMED",
+                  "paymentType": "CASHLINE_DEPOSIT"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "and": [
+            {
+              "contains": {
+                "headers": {
+                  "Cookie": "tcId=C23423641"
+                }
+              }
+            },
+            {
+              "deepEquals": {
+                "method": "GET",
+                "path": "/v2/pickingTasks/productsWave",
+                "query": {
+                  "taskStatus": "PICKING_IN_PROGRESS",
+                  "pickingZone": "LS",
+                  "ldap": "60069806",
+                  "shopId": "35",
+                  "pageSize": "10",
+                  "page": "1"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [
+                {
+                  "taskId": "3004920110390596",
+                  "shopId": 35,
+                  "delivery": false,
+                  "taskStatus": "PICKING_IN_PROGRESS",
+                  "extOrderId": "201103212578",
+                  "pointOfGiveAway": "PICKUP",
+                  "dateOfGiveAway": "2020-11-19T14:30:16.852Z",
+                  "documentVersion": 3,
+                  "pickingZone": "LS",
+                  "pickingDeadline": "2020-11-18T12:00:28.138Z",
+                  "buId": 9,
+                  "priority": "HIGH",
+                  "employeeId": "60069806",
+                  "customerType": "PERSON",
+                  "offline": true,
+                  "linkedObjects": [
+                    {
+                      "objectType": "FF_CUSTOMER_ORDER",
+                      "objectId": "1004920110390595",
+                      "objectStatus": "PICKING_IN_PROGRESS",
+                      "objectLines": [
+                        {
+                          "objectLineId": "1",
+                          "taskLineId": "1"
+                        }
+                      ]
+                    }
+                  ],
+                  "creationInformation": {
+                    "createdBy": "60069806",
+                    "created": "2020-11-18T11:30:27.37Z"
+                  },
+                  "lastUpdateInformation": {
+                    "updatedBy": "UNKNOWN",
+                    "updated": "2020-11-18T11:51:06.636Z"
+                  },
+                  "departmentId": [
+                    "54"
+                  ],
+                  "departments": [
+                    "5"
+                  ],
+                  "totalWeight": 1.172,
+                  "maxSize": 0.6,
+                  "products": [
+                    {
+                      "title": "Коврик придверный «Abstraction» полипропилен 40x60 см",
+                      "lmCode": "15354311",
+                      "lineId": "1",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ],
+                      "departmentId": 5,
+                      "barCodes": [
+                        "3276005238831"
+                      ],
+                      "images": [
+                        "https://res.cloudinary.com/lmru/image/upload/LMCode/15354311.jpg"
+                      ],
+                      "logistic": {
+                        "width": 39.6,
+                        "height": 60,
+                        "depth": 1.2,
+                        "weight": 0.586
+                      },
+                      "priceUnit": "NIU",
+                      "comment": null,
+                      "customers": [
+                        {
+                          "customerNumber": null,
+                          "name": "Авто",
+                          "surname": "Тестик",
+                          "phone": {
+                            "primary": "+79211339990",
+                            "secondary": null
+                          },
+                          "email": null,
+                          "type": "PERSON",
+                          "roles": [
+                            "PAYER",
+                            "RECEIVER"
+                          ],
+                          "customerCoordinates": null
+                        }
+                      ],
+                      "price": 147
+                    }
+                  ],
+                  "employeeName": "Иван",
+                  "orderId": "201103212578",
+                  "channel": "OFFLINE",
+                  "customerName": "Авто",
+                  "customerSurname": "Тестик",
+                  "paymentStatus": "CONFIRMED",
+                  "paymentType": "CASHLINE_DEPOSIT"
+                },
+                {
+                  "taskId": "3004920020158443",
+                  "shopId": 35,
+                  "delivery": false,
+                  "taskStatus": "PICKING_IN_PROGRESS",
+                  "extOrderId": "200201012714",
+                  "pointOfGiveAway": "PICKUP",
+                  "dateOfGiveAway": "2020-02-21T00:00:00Z",
+                  "documentVersion": 3,
+                  "pickingZone": "LS",
+                  "buId": 9,
+                  "priority": "HIGH",
+                  "customerId": "7651455",
+                  "employeeId": "60069806",
+                  "comment": "API's ТЕСТОВЫЙ COMMENT!!!11\n NEW SECOND STRING (Bitrix)",
+                  "customerType": "PERSON",
+                  "offline": false,
+                  "linkedObjects": [
+                    {
+                      "objectType": "FF_CUSTOMER_ORDER",
+                      "objectId": "1004920020158432",
+                      "objectStatus": "PARTIALLY_PICKED",
+                      "objectLines": [
+                        {
+                          "objectLineId": "1",
+                          "taskLineId": "1"
+                        },
+                        {
+                          "objectLineId": "2",
+                          "taskLineId": "2"
+                        }
+                      ]
+                    }
+                  ],
+                  "creationInformation": {
+                    "createdBy": "Bitrix",
+                    "created": "2020-02-20T15:25:00.583Z"
+                  },
+                  "lastUpdateInformation": {
+                    "updatedBy": "UNKNOWN",
+                    "updated": "2020-02-20T15:25:27.872Z"
+                  },
+                  "departmentId": [
+                    "54"
+                  ],
+                  "departments": [
+                    "5",
+                    "10"
+                  ],
+                  "totalWeight": 12.36,
+                  "maxSize": 4,
+                  "products": [
+                    {
+                      "title": "Ковровое покрытие «Noventis Nantes 7058» иглопробивное 4 м цвет коричневый",
+                      "lmCode": "15418338",
+                      "lineId": "1",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 10,
+                      "confirmedQuantity": 10,
+                      "assignedQuantity": 10,
+                      "source": [
+                        {
+                          "assignedItems": 10,
+                          "type": "LS"
+                        }
+                      ],
+                      "departmentId": 5,
+                      "barCodes": [
+                        "5414701142207",
+                        "2000154183381"
+                      ],
+                      "images": [
+                        "https://res.cloudinary.com/lmru/image/upload/LMCode/15418338.jpg"
+                      ],
+                      "logistic": {
+                        "width": 25,
+                        "height": 5,
+                        "depth": 400,
+                        "weight": 1.2
+                      },
+                      "priceUnit": "MTK",
+                      "comment": "API's ТЕСТОВЫЙ COMMENT!!!11\n NEW SECOND STRING (Bitrix)",
+                      "customers": [
+                        {
+                          "customerNumber": "7651455",
+                          "name": "ПУЗ",
+                          "surname": "Автотесты",
+                          "phone": {
+                            "primary": "70001234567",
+                            "secondary": null
+                          },
+                          "email": "russian@pochta.ru",
+                          "type": "PERSON",
+                          "roles": [
+                            "PAYER"
+                          ],
+                          "customerCoordinates": "0,0"
+                        },
+                        {
+                          "customerNumber": null,
+                          "name": "军团",
+                          "surname": "персов",
+                          "phone": {
+                            "primary": "70018443759",
+                            "secondary": null
+                          },
+                          "email": null,
+                          "type": "PERSON",
+                          "roles": [
+                            "RECEIVER"
+                          ],
+                          "customerCoordinates": null
+                        }
+                      ],
+                      "price": 550.33
+                    }
+                  ],
+                  "employeeName": "Иван",
+                  "orderId": "200201012714",
+                  "channel": "ONLINE",
+                  "customerName": "ПУЗ",
+                  "customerSurname": "Автотесты",
+                  "paymentStatus": null,
+                  "paymentType": null
+                }
+              ],
+              "totalCount": 2
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "GET",
+            "path": "/v1/additionalProductsInfo",
+            "query": {
+              "lmCodes": "15354311,15418338",
+              "shopId": "35"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": [
+              {
+                "lmCode": "15354311",
+                "stocks": {
+                  "EM": 0,
+                  "RM": 0,
+                  "RD": 0
+                },
+                "warehouseStock": 0,
+                "top": 1,
+                "topEm": false,
+                "supCode": 1990120005
+              },
+              {
+                "lmCode": "15418338",
+                "stocks": {
+                  "EM": 0,
+                  "RM": 0,
+                  "RD": 0
+                },
+                "warehouseStock": 0,
+                "top": 0,
+                "topEm": false,
+                "supCode": 1000688005
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "deepEquals": {
+            "method": "PUT",
+            "path": "/v1/picking/change-status",
+            "query": {
+              "action": "picked-quantity"
+            },
+            "body": [
+              {
+                "taskId": "3004920110390596",
+                "products": [
+                  {
+                    "lineId": "1",
+                    "quantity": 2,
+                    "reason": ""
+                  }
+                ]
+              },
+              {
+                "taskId": "3004920020158443",
+                "products": [
+                  {
+                    "lineId": "1",
+                    "quantity": 10,
+                    "reason": ""
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "3004920110390596": {
+                "success": true,
+                "error": null
+              },
+              "3004920020158443": {
+                "success": true,
+                "error": null
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

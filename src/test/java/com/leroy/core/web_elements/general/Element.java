@@ -878,7 +878,7 @@ public class Element extends BaseWidget {
     /**
      * Wait until attribute is equal to specific value
      *
-     * @param attributeName  - what is attribute
+     * @param attributeName          - what is attribute
      * @param previousAttributeValue - what value should NOT be
      */
     public void waitUntilAttributeIsChanged(String attributeName, String previousAttributeValue) {

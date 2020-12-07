@@ -19,6 +19,9 @@ public class PuzComboBox extends Element {
         super(driver, customLocator);
     }
 
+    @WebFindBy(xpath = "//button[contains(@class, 'Select__menuHeaderCloseButton')]")
+    Element closeModalBtn;
+
     @WebFindBy(xpath = ".//input")
     EditBox input;
 
@@ -49,7 +52,7 @@ public class PuzComboBox extends Element {
                         "Element: %s, selectOptions() - Not found option %s", getMetaName(), option));
             else if (isActivate ^ optionElem.findChildElement(
                     "/../span[contains(@class, 'SwitchButton-icon')]").isPresent()) {
-                optionElem.click();
+                optionElem.click(short_timeout);
             }
         }
         if (closeAfter)
@@ -90,6 +93,24 @@ public class PuzComboBox extends Element {
      */
     public void selectOption(String option) throws Exception {
         clickOptions(Collections.singletonList(option), true, false);
+    }
+
+    /**
+     * Активирует опцию в выпадающем списке по порядковому номеру
+     */
+    public void selectOptionByIndex(int index) throws Exception {
+        open();
+        dropDownElementsList.waitUntilAtLeastOneElementIsPresent(short_timeout);
+        ElementList<Element> options = EL(String.format(SWITCH_BTN_LABEL_XPATH, ""), "опции");
+        options.get(index).click();
+    }
+
+    /**
+     * Закрыть модальное окно
+     */
+    public void closeModalWindow() {
+        if (closeModalBtn.isVisible())
+            closeModalBtn.clickJS();
     }
 
 }

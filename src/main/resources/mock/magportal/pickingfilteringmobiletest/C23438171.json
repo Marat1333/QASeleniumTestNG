@@ -1,0 +1,3965 @@
+{
+  "stubs": [
+    {
+      "predicates": [
+        {
+          "equals": {
+            "method": "GET",
+            "path": "/v1/pickingTasks/search",
+            "query": {
+              "page": "1",
+              "pageSize": "10",
+              "existCurrentStorageLocation": "false",
+              "shopId": "35",
+              "taskStatus": "PICKING_IN_PROGRESS,PAUSE_PICKING,PARTIALLY_PICKED",
+              "ldap": "60069806"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [
+                {
+                  "taskId": "3000000023438171",
+                  "shopId": 35,
+                  "delivery": false,
+                  "taskStatus": "PARTIALLY_PICKED",
+                  "extOrderId": "200701029274",
+                  "pointOfGiveAway": "HOME_DELIVERY",
+                  "dateOfGiveAway": "2018-11-28T00:00:00Z",
+                  "documentVersion": 6,
+                  "pickingZone": "LS",
+                  "pickingDeadline": "2018-11-27T22:00:00Z",
+                  "buId": 9,
+                  "priority": "MEDIUM",
+                  "customerId": "6107624",
+                  "employeeId": "60069806",
+                  "customerType": "PERSON",
+                  "offline": false,
+                  "linkedObjects": [
+                    {
+                      "objectType": "FF_CUSTOMER_ORDER",
+                      "objectId": "1003520070260647",
+                      "objectStatus": "PARTIALLY_PICKED",
+                      "objectLines": [
+                        {
+                          "objectLineId": "1",
+                          "taskLineId": "1"
+                        }
+
+                      ]
+                    }
+                  ],
+                  "creationInformation": {
+                    "createdBy": "Bitrix",
+                    "created": "2020-07-17T02:44:09.845Z"
+                  },
+                  "lastUpdateInformation": {
+                    "updatedBy": "60069806",
+                    "updated": "2020-08-26T05:36:45.211Z"
+                  },
+                  "departmentId": [
+                    "56"
+                  ],
+                  "departments": [
+                    "4",
+                    "11",
+                    "15",
+                    "10",
+                    "5",
+                    "7",
+                    "3",
+                    "9",
+                    "6"
+                  ],
+                  "totalWeight": 845.217,
+                  "maxSize": 4,
+                  "products": [
+                    {
+                      "title": "Рулетка 5 м х 19 мм",
+                      "lmCode": "15490516",
+                      "lineId": "1",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Круг зачистной по металлу Metabo, 125х6 мм",
+                      "lmCode": "18114268",
+                      "lineId": "2",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Биты Dexell, PH2, 50 мм, 2 шт.",
+                      "lmCode": "15174581",
+                      "lineId": "3",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Нож 18 мм двухкомпонентная ручка 1 лезвие",
+                      "lmCode": "13738901",
+                      "lineId": "4",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Пена монтажная MasterTex 65 750 мл",
+                      "lmCode": "82603126",
+                      "lineId": "5",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 55,
+                      "confirmedQuantity": 55,
+                      "assignedQuantity": 55,
+                      "source": [
+                        {
+                          "assignedItems": 55,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Ложка для снятия пены Fissman  3764",
+                      "lmCode": "90136780",
+                      "lineId": "6",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 29,
+                      "confirmedQuantity": 29,
+                      "assignedQuantity": 29,
+                      "source": [
+                        {
+                          "assignedItems": 29,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Швабра отжимная 120 см с насадкой PVA",
+                      "lmCode": "17055331",
+                      "lineId": "7",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 34,
+                      "confirmedQuantity": 34,
+                      "assignedQuantity": 34,
+                      "source": [
+                        {
+                          "assignedItems": 34,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Саморезы для тонких пластин Standers оцинкованные с буром 4.2х13 мм 1500 шт.",
+                      "lmCode": "15414581",
+                      "lineId": "8",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 31,
+                      "confirmedQuantity": 31,
+                      "assignedQuantity": 31,
+                      "source": [
+                        {
+                          "assignedItems": 31,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Набор бит Dexell, 25 мм, 33 шт.",
+                      "lmCode": "15177861",
+                      "lineId": "9",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 11,
+                      "confirmedQuantity": 11,
+                      "assignedQuantity": 11,
+                      "source": [
+                        {
+                          "assignedItems": 11,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Очки защитные Archimedes, цвет жёлтый",
+                      "lmCode": "13829088",
+                      "lineId": "10",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Пена монтажная пистолетная Mastertex B1 огнеупорная 750 мл",
+                      "lmCode": "82603130",
+                      "lineId": "11",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Дрель-шуруповерт аккумуляторная Dexter Power ML-CD33-120, 12 В Ni-Cd 2х1.3 Ач",
+                      "lmCode": "18374431",
+                      "lineId": "12",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Ковровое покрытие «Noventis Nantes 7058» иглопробивное 4 м цвет коричневый",
+                      "lmCode": "15418338",
+                      "lineId": "13",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 199.48,
+                      "confirmedQuantity": 199.48,
+                      "assignedQuantity": 199.48,
+                      "source": [
+                        {
+                          "assignedItems": 199.48,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Адаптер Matrix SDS-plus - 1/2\"",
+                      "lmCode": "17241388",
+                      "lineId": "14",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Рулетка 5 м х 19 мм",
+                      "lmCode": "15490516",
+                      "lineId": "15",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Комплект роликов для раздвижных дверей Armadillo Diy Comfort",
+                      "lmCode": "16457291",
+                      "lineId": "16",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 12,
+                      "confirmedQuantity": 12,
+                      "assignedQuantity": 12,
+                      "source": [
+                        {
+                          "assignedItems": 12,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Полка угловая малая Delinia 20.5x20.5x25 см, хром",
+                      "lmCode": "18254607",
+                      "lineId": "17",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 5,
+                      "confirmedQuantity": 5,
+                      "assignedQuantity": 5,
+                      "source": [
+                        {
+                          "assignedItems": 5,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Сверло по керамике 8x120 мм Dexter 133-00173",
+                      "lmCode": "18122559",
+                      "lineId": "18",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 55,
+                      "confirmedQuantity": 55,
+                      "assignedQuantity": 55,
+                      "source": [
+                        {
+                          "assignedItems": 55,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Комплект роликов для раздвижных дверей Armadillo Diy Comfort",
+                      "lmCode": "16457291",
+                      "lineId": "19",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 8,
+                      "confirmedQuantity": 8,
+                      "assignedQuantity": 8,
+                      "source": [
+                        {
+                          "assignedItems": 8,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Дрель-шуруповерт аккумуляторная Makita DF457DWE, 18 В Li-ion 2x1.5 Ач",
+                      "lmCode": "18769926",
+                      "lineId": "20",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Сверло по керамике 10x120 мм Dexter 133-00176",
+                      "lmCode": "18122524",
+                      "lineId": "21",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 34,
+                      "confirmedQuantity": 34,
+                      "assignedQuantity": 34,
+                      "source": [
+                        {
+                          "assignedItems": 34,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Сверло по керамике 8х120 мм Dexter 138-00042",
+                      "lmCode": "16705427",
+                      "lineId": "22",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 14,
+                      "confirmedQuantity": 14,
+                      "assignedQuantity": 14,
+                      "source": [
+                        {
+                          "assignedItems": 14,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Набор несъемных крючков Delinia 2.4х5.7 см, хром, 5 шт",
+                      "lmCode": "18254877",
+                      "lineId": "23",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Сверло по керамике 12x120 мм Dexter 139-00087",
+                      "lmCode": "18122575",
+                      "lineId": "24",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 32,
+                      "confirmedQuantity": 32,
+                      "assignedQuantity": 32,
+                      "source": [
+                        {
+                          "assignedItems": 32,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Пилки для лобзика по дереву Dexell T101BR Т, 2 шт.",
+                      "lmCode": "15177731",
+                      "lineId": "25",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 10,
+                      "confirmedQuantity": 10,
+                      "assignedQuantity": 10,
+                      "source": [
+                        {
+                          "assignedItems": 10,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Макловица с искусственной щетиной 150х70 мм",
+                      "lmCode": "17567484",
+                      "lineId": "26",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 134,
+                      "confirmedQuantity": 134,
+                      "assignedQuantity": 134,
+                      "source": [
+                        {
+                          "assignedItems": 134,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Лобзик DeWalt DW349-KS, 500 Вт",
+                      "lmCode": "17315594",
+                      "lineId": "27",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Стакан универсальный Delinia 12x12x29.5 см, хром",
+                      "lmCode": "18254906",
+                      "lineId": "28",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Ящик для инструмента Dexter 455х330х152 мм, алюминий, цвет серебро",
+                      "lmCode": "17844509",
+                      "lineId": "29",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Маска техническая",
+                      "lmCode": "18121450",
+                      "lineId": "30",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Пена монтажная пистолетная Mastertex 50 715 мл",
+                      "lmCode": "82603127",
+                      "lineId": "31",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 19,
+                      "confirmedQuantity": 19,
+                      "assignedQuantity": 19,
+                      "source": [
+                        {
+                          "assignedItems": 19,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Фильтр сменный для Archimedes РПГ-67",
+                      "lmCode": "13829168",
+                      "lineId": "32",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Набор стамесок по дереву 6-24 мм 4 шт.",
+                      "lmCode": "13811056",
+                      "lineId": "33",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 5,
+                      "confirmedQuantity": 5,
+                      "assignedQuantity": 5,
+                      "source": [
+                        {
+                          "assignedItems": 5,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Кисть для лака 200 мм",
+                      "lmCode": "15220313",
+                      "lineId": "34",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Саморезы Omax гипсокартон-металл 3.5х25 мм, 3 кг",
+                      "lmCode": "13789856",
+                      "lineId": "35",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Набор бит Metabo, 56 предметов",
+                      "lmCode": "14382636",
+                      "lineId": "36",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Отвёртка-тестер SL3x140 мм",
+                      "lmCode": "18149364",
+                      "lineId": "37",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Верстак-тиски портативный Sparta, 640х520х790 мм",
+                      "lmCode": "12817202",
+                      "lineId": "38",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 3,
+                      "confirmedQuantity": 3,
+                      "assignedQuantity": 3,
+                      "source": [
+                        {
+                          "assignedItems": 3,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Беруши с ремешком",
+                      "lmCode": "13340506",
+                      "lineId": "39",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 21,
+                      "confirmedQuantity": 21,
+                      "assignedQuantity": 21,
+                      "source": [
+                        {
+                          "assignedItems": 21,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Длинногубцы Sparta прямые шлифованные с пластиковой рукояткой 160 мм",
+                      "lmCode": "13257120",
+                      "lineId": "40",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Набор отверток SL/PH 4 шт.",
+                      "lmCode": "18149111",
+                      "lineId": "41",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Биты Dexell, PH2, 50 мм, 2 шт.",
+                      "lmCode": "15174581",
+                      "lineId": "42",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Адаптер Matrix SDS-plus - М12 х 1,25 мм",
+                      "lmCode": "17241396",
+                      "lineId": "43",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Круг отрезной по металлу Metabo, 125х2.5 мм",
+                      "lmCode": "18114284",
+                      "lineId": "44",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Патрон Matrix 1/2, 1.5-13 мм",
+                      "lmCode": "17240369",
+                      "lineId": "45",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Уровень лазерный Bosch PLL360 c дальностью до 20 м",
+                      "lmCode": "15166450",
+                      "lineId": "46",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Хомут червячный W2 16x25 мм, 2 шт.",
+                      "lmCode": "10113754",
+                      "lineId": "47",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 8,
+                      "confirmedQuantity": 8,
+                      "assignedQuantity": 8,
+                      "source": [
+                        {
+                          "assignedItems": 8,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Сверло по керамике 12х120 мм Dexter 138-00044",
+                      "lmCode": "16705401",
+                      "lineId": "48",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 12,
+                      "confirmedQuantity": 12,
+                      "assignedQuantity": 12,
+                      "source": [
+                        {
+                          "assignedItems": 12,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "УШМ (болгарка) Bosch PWS 850-125, 850 Вт, 125 мм",
+                      "lmCode": "15185298",
+                      "lineId": "49",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Фреза Dremel, 4.8 мм",
+                      "lmCode": "13753917",
+                      "lineId": "50",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Набор бит Dexell, 25 мм, 33 шт.",
+                      "lmCode": "15177861",
+                      "lineId": "51",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 11,
+                      "confirmedQuantity": 11,
+                      "assignedQuantity": 11,
+                      "source": [
+                        {
+                          "assignedItems": 11,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Плиткорез ручной Dexter 430 мм, толщина реза 12 мм",
+                      "lmCode": "17548523",
+                      "lineId": "52",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Очки защитные",
+                      "lmCode": "18378394",
+                      "lineId": "53",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Полка двухъярусная универсальная Delinia 30x14.5x34 см, хром",
+                      "lmCode": "18254957",
+                      "lineId": "54",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 4,
+                      "confirmedQuantity": 4,
+                      "assignedQuantity": 4,
+                      "source": [
+                        {
+                          "assignedItems": 4,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Набор свёрл по дереву Dexter SM487, 3-10 мм, 8 шт.",
+                      "lmCode": "16708450",
+                      "lineId": "55",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 19,
+                      "confirmedQuantity": 19,
+                      "assignedQuantity": 19,
+                      "source": [
+                        {
+                          "assignedItems": 19,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Ложка для снятия пены Крамет   13С271929",
+                      "lmCode": "90145349",
+                      "lineId": "56",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Набор свёрл по дереву перьевых 6 шт., 10-25 мм",
+                      "lmCode": "13769003",
+                      "lineId": "57",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 6,
+                      "confirmedQuantity": 6,
+                      "assignedQuantity": 6,
+                      "source": [
+                        {
+                          "assignedItems": 6,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Набор свёрл универсальный 16 шт., 2-10 мм",
+                      "lmCode": "13008052",
+                      "lineId": "58",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Набор отверток Dexter Basic SL/PH/PZ 5 шт.",
+                      "lmCode": "18149188",
+                      "lineId": "59",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Реcпиратор противоаэрозольный Archimedes РУ-60М",
+                      "lmCode": "13829176",
+                      "lineId": "60",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 55,
+                      "confirmedQuantity": 55,
+                      "assignedQuantity": 55,
+                      "source": [
+                        {
+                          "assignedItems": 55,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Линолеум «Дуб Португальский» 23 класс 1.5 м",
+                      "lmCode": "18642950",
+                      "lineId": "61",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Фильтр противоаэрозольный для ArchimedesРУ-60М",
+                      "lmCode": "13830855",
+                      "lineId": "62",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Патрон быстрозажимной Спец 1/2-20 UNF, 2.0-13 мм",
+                      "lmCode": "18126550",
+                      "lineId": "63",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Адаптер Matrix SDS-plus - 1/2\"",
+                      "lmCode": "17241388",
+                      "lineId": "64",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Ящик для инструментов Dexter на колёсах, 45х28х62 см",
+                      "lmCode": "16518349",
+                      "lineId": "65",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Наушники защитные Sparta, пластмассовые дужки",
+                      "lmCode": "12958216",
+                      "lineId": "66",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Держатель бокалов с полкой Delinia 39x17.5x26.5 см, хром",
+                      "lmCode": "18254851",
+                      "lineId": "67",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 91,
+                      "confirmedQuantity": 91,
+                      "assignedQuantity": 91,
+                      "source": [
+                        {
+                          "assignedItems": 91,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Плиткорез ручной Dexter 430 мм, толщина реза 12 мм",
+                      "lmCode": "17548523",
+                      "lineId": "68",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Раковина Cersanit Colour, керамика, 50 см, цвет белый",
+                      "lmCode": "15132364",
+                      "lineId": "69",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Перфоратор SDS-plus Makita HR2470, 780 Вт, 2.7 Дж",
+                      "lmCode": "18769951",
+                      "lineId": "70",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Дрель-шуруповерт аккумуляторная Metabo PowerMaxx BS, 10.8 В Li-ion 2х2 Ач",
+                      "lmCode": "14738321",
+                      "lineId": "71",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Полка узкая Delinia 35x10.5x25 см, хром",
+                      "lmCode": "18255124",
+                      "lineId": "72",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Биты для гипсокартона Dexell, PH2, 50 мм, 2 шт.",
+                      "lmCode": "15174610",
+                      "lineId": "73",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 12,
+                      "confirmedQuantity": 12,
+                      "assignedQuantity": 12,
+                      "source": [
+                        {
+                          "assignedItems": 12,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Пассатижи Archimedes из полированной стали (CS) комбинированные 180 мм",
+                      "lmCode": "12021298",
+                      "lineId": "74",
+                      "lineStatus": "PARTIALLY_PICKED",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "pickedQuantity": 1,
+                      "operations": [
+                        {
+                          "operationId": "3462e87d-1ceb-4904-8b6e-fd80134c68eb",
+                          "type": "PICK",
+                          "quantity": 1,
+                          "timeStamp": "2020-08-26T05:36:45.211Z",
+                          "updatedBy": "60069806"
+                        }
+                      ],
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Ковровое покрытие «Noventis Nantes 7058» иглопробивное 4 м цвет коричневый",
+                      "lmCode": "15418338",
+                      "lineId": "75",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 8.48,
+                      "confirmedQuantity": 8.48,
+                      "assignedQuantity": 8.48,
+                      "source": [
+                        {
+                          "assignedItems": 8.48,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Верстак-тиски портативный Sparta, 640х520х790 мм",
+                      "lmCode": "12817202",
+                      "lineId": "76",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 3,
+                      "confirmedQuantity": 3,
+                      "assignedQuantity": 3,
+                      "source": [
+                        {
+                          "assignedItems": 3,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Перфоратор SDS-plus Bosch PBH 2900 RE, 730 Вт, 2.7 Дж",
+                      "lmCode": "13786874",
+                      "lineId": "77",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Сверло по металлу HSS-G 6х93 мм Dexter SM262",
+                      "lmCode": "16660767",
+                      "lineId": "78",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Ведро пластиковое 20 л",
+                      "lmCode": "15674358",
+                      "lineId": "79",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Нож 18 мм двухкомпонентная ручка 1 лезвие",
+                      "lmCode": "13738901",
+                      "lineId": "80",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Очиститель монтажной пены Axton, 0.5 л",
+                      "lmCode": "864315",
+                      "lineId": "81",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Дрель-шуруповерт аккумуляторная Makita DF457DWE, 18 В Li-ion 2x1.5 Ач",
+                      "lmCode": "18769926",
+                      "lineId": "82",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Патрон с ключом и адаптером Спец 1.5-13 мм",
+                      "lmCode": "18126411",
+                      "lineId": "83",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Уровень лазерный плиточный Condtrol TL",
+                      "lmCode": "15166361",
+                      "lineId": "84",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Отвёртка-тестер Dexter 12 В-24 В-220 В",
+                      "lmCode": "18147625",
+                      "lineId": "85",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Защитный комбинезон",
+                      "lmCode": "18127309",
+                      "lineId": "86",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 16,
+                      "confirmedQuantity": 16,
+                      "assignedQuantity": 16,
+                      "source": [
+                        {
+                          "assignedItems": 16,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Набор несъемных крючков Delinia 2.4х5.7 см, хром, 5 шт",
+                      "lmCode": "18254877",
+                      "lineId": "87",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Маска техническая",
+                      "lmCode": "18121450",
+                      "lineId": "88",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Изолента IEK 19 мм 20 м цвет синий",
+                      "lmCode": "12463037",
+                      "lineId": "89",
+                      "lineStatus": "PARTIALLY_PICKED",
+                      "orderedQuantity": 234,
+                      "confirmedQuantity": 234,
+                      "assignedQuantity": 234,
+                      "pickedQuantity": 1,
+                      "operations": [
+                        {
+                          "operationId": "fa0b09d8-1828-45d2-98e8-484eacb0f8d4",
+                          "type": "PICK",
+                          "quantity": 1,
+                          "timeStamp": "2020-08-26T05:35:02.487Z",
+                          "updatedBy": "60069806"
+                        }
+                      ],
+                      "source": [
+                        {
+                          "assignedItems": 234,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Реcпиратор Archimedes РПГ-67",
+                      "lmCode": "13829141",
+                      "lineId": "90",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Шторка для ванной Снежная пена 180х200 см",
+                      "lmCode": "93789625",
+                      "lineId": "91",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 14,
+                      "confirmedQuantity": 14,
+                      "assignedQuantity": 14,
+                      "source": [
+                        {
+                          "assignedItems": 14,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Перфоратор SDS-plus Metabo KHE2660 Quick, 850 Вт, 3 Дж",
+                      "lmCode": "18338755",
+                      "lineId": "92",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Пена активная для стеклокерамики Prosept 400 мл",
+                      "lmCode": "82561031",
+                      "lineId": "93",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Смазка для буров Спец, 100 гр",
+                      "lmCode": "18126832",
+                      "lineId": "94",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Пена монтажная Axton ручная, 750 мл",
+                      "lmCode": "864311",
+                      "lineId": "95",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 12,
+                      "confirmedQuantity": 12,
+                      "assignedQuantity": 12,
+                      "source": [
+                        {
+                          "assignedItems": 12,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Кусачки диагональные Archimedes из полированной стали (CS) 150 мм",
+                      "lmCode": "12021319",
+                      "lineId": "96",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Шторка для ванной Уточка в пене 180х200 см",
+                      "lmCode": "93789600",
+                      "lineId": "97",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 10,
+                      "confirmedQuantity": 10,
+                      "assignedQuantity": 10,
+                      "source": [
+                        {
+                          "assignedItems": 10,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Хомут червячный W2 16x25 мм, 2 шт.",
+                      "lmCode": "10113754",
+                      "lineId": "98",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 999,
+                      "confirmedQuantity": 999,
+                      "assignedQuantity": 999,
+                      "source": [
+                        {
+                          "assignedItems": 999,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Круг отрезной по металлу Metabo, 125х2.5 мм",
+                      "lmCode": "18114284",
+                      "lineId": "99",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Полка для 6-ти бокалов Delinia 24x10x34 см, хром",
+                      "lmCode": "18255116",
+                      "lineId": "100",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 45,
+                      "confirmedQuantity": 45,
+                      "assignedQuantity": 45,
+                      "source": [
+                        {
+                          "assignedItems": 45,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Краска для обоев Luxens, база А, 1 л",
+                      "lmCode": "82001127",
+                      "lineId": "101",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 5,
+                      "confirmedQuantity": 5,
+                      "assignedQuantity": 5,
+                      "source": [
+                        {
+                          "assignedItems": 5,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Патрон быстрозажимной Matrix, 1/2, 2-13 мм",
+                      "lmCode": "16551317",
+                      "lineId": "102",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Патрон Matrix 1/2, 1.5-13 мм",
+                      "lmCode": "17240369",
+                      "lineId": "103",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Фильтр сменный для Archimedes РПГ-67",
+                      "lmCode": "13829168",
+                      "lineId": "104",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Пена монтажная Axton профессиональная, 750 мл",
+                      "lmCode": "864313",
+                      "lineId": "105",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 32,
+                      "confirmedQuantity": 32,
+                      "assignedQuantity": 32,
+                      "source": [
+                        {
+                          "assignedItems": 32,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Пена монтажная пистолетная Mastertex 65 830 мл",
+                      "lmCode": "82603129",
+                      "lineId": "106",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Набор перчаток х/б с ПВХ, 6 пар в упаковке",
+                      "lmCode": "11874002",
+                      "lineId": "107",
+                      "lineStatus": "PARTIALLY_PICKED",
+                      "orderedQuantity": 234,
+                      "confirmedQuantity": 234,
+                      "assignedQuantity": 234,
+                      "pickedQuantity": 1,
+                      "operations": [
+                        {
+                          "operationId": "e64528c7-ff16-4b07-83ca-a32cd190177b",
+                          "type": "PICK",
+                          "quantity": 1,
+                          "timeStamp": "2020-08-26T05:36:16.838Z",
+                          "updatedBy": "60069806"
+                        }
+                      ],
+                      "source": [
+                        {
+                          "assignedItems": 234,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Ложка для снятия пены GIPFEL  5457",
+                      "lmCode": "90125529",
+                      "lineId": "108",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Астра кустарниковая «Питер Пен» 17x20 см",
+                      "lmCode": "82585328",
+                      "lineId": "109",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Пена монтажная MasterTex 50 670 мл",
+                      "lmCode": "82603124",
+                      "lineId": "110",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Круг отрезной по металлу, А24, 355х3,5х25,4 мм",
+                      "lmCode": "14267451",
+                      "lineId": "111",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Декор Jungle 25x35 см рисунок бамбук",
+                      "lmCode": "14200011",
+                      "lineId": "112",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Биты Dexell, PH3, 50 мм, 2 шт.",
+                      "lmCode": "15174601",
+                      "lineId": "113",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Приставка для фрезерования Dremel",
+                      "lmCode": "13751196",
+                      "lineId": "114",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 3,
+                      "confirmedQuantity": 3,
+                      "assignedQuantity": 3,
+                      "source": [
+                        {
+                          "assignedItems": 3,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Сверло алмазное по керамике 10 мм Dexter 155-00100",
+                      "lmCode": "16705355",
+                      "lineId": "115",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 29,
+                      "confirmedQuantity": 29,
+                      "assignedQuantity": 29,
+                      "source": [
+                        {
+                          "assignedItems": 29,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Набор крючков для полотенец 1.5х5 см, 5 шт.",
+                      "lmCode": "18581202",
+                      "lineId": "116",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 84,
+                      "confirmedQuantity": 84,
+                      "assignedQuantity": 84,
+                      "source": [
+                        {
+                          "assignedItems": 84,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Ручка телескопическая, 1500х3000 мм",
+                      "lmCode": "15441773",
+                      "lineId": "117",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Очки защитные закрытые Archimedes",
+                      "lmCode": "13829109",
+                      "lineId": "118",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Набор диэлектрических отверток Dexter 6 шт.",
+                      "lmCode": "18147617",
+                      "lineId": "119",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Набор пилок для лобзика Dexell T, 6 шт.",
+                      "lmCode": "15177491",
+                      "lineId": "120",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 6,
+                      "confirmedQuantity": 6,
+                      "assignedQuantity": 6,
+                      "source": [
+                        {
+                          "assignedItems": 6,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Дрель-шуруповерт аккумуляторная Metabo PowerMaxx BS, 10.8 В Li-ion 2х2 Ач",
+                      "lmCode": "14738321",
+                      "lineId": "121",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Круг отрезной по металлу, А24, 355х3,5х25,4 мм",
+                      "lmCode": "14267451",
+                      "lineId": "122",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Лобзик Makita 4328, 450 Вт",
+                      "lmCode": "18770003",
+                      "lineId": "123",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Насадка электромиксера Сибртех 450х100 мм, оцинкованная сталь",
+                      "lmCode": "13327782",
+                      "lineId": "124",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 11,
+                      "confirmedQuantity": 11,
+                      "assignedQuantity": 11,
+                      "source": [
+                        {
+                          "assignedItems": 11,
+                          "type": "LS"
+                        }
+                      ]
+                    }
+                  ],
+                  "employeeName": "Иван",
+                  "orderId": "200701029274",
+                  "channel": "ONLINE",
+                  "customerName": "Егор",
+                  "customerSurname": "Васин",
+                  "paymentStatus": null,
+                  "paymentType": null
+                }
+              ],
+              "totalCount": 423
+            }
+          }
+        }
+      ]
+    },
+    {
+      "predicates": [
+        {
+          "equals": {
+            "method": "GET",
+            "path": "/v1/pickingTasks/search",
+            "query": {
+              "page": "1",
+              "pageSize": "10",
+              "departmentId": "1,2",
+              "existCurrentStorageLocation": "false",
+              "shopId": "35",
+              "taskStatus": "PICKING_IN_PROGRESS,PAUSE_PICKING,PARTIALLY_PICKED",
+              "ldap": "60069806"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "body": {
+              "items": [
+                {
+                  "taskId": "4000000023438171",
+                  "shopId": 35,
+                  "delivery": false,
+                  "taskStatus": "PARTIALLY_PICKED",
+                  "extOrderId": "200701029274",
+                  "pointOfGiveAway": "HOME_DELIVERY",
+                  "dateOfGiveAway": "2018-11-28T00:00:00Z",
+                  "documentVersion": 6,
+                  "pickingZone": "LS",
+                  "pickingDeadline": "2018-11-27T22:00:00Z",
+                  "buId": 9,
+                  "priority": "MEDIUM",
+                  "customerId": "6107624",
+                  "employeeId": "60069806",
+                  "customerType": "PERSON",
+                  "offline": false,
+                  "linkedObjects": [
+                    {
+                      "objectType": "FF_CUSTOMER_ORDER",
+                      "objectId": "1003520070260647",
+                      "objectStatus": "PARTIALLY_PICKED",
+                      "objectLines": [
+                        {
+                          "objectLineId": "1",
+                          "taskLineId": "1"
+                        }
+
+                      ]
+                    }
+                  ],
+                  "creationInformation": {
+                    "createdBy": "Bitrix",
+                    "created": "2020-07-17T02:44:09.845Z"
+                  },
+                  "lastUpdateInformation": {
+                    "updatedBy": "60069806",
+                    "updated": "2020-08-26T05:36:45.211Z"
+                  },
+                  "departmentId": [
+                    "1"
+                  ],
+                  "departments": [
+                    "1"
+                  ],
+                  "totalWeight": 845.217,
+                  "maxSize": 4,
+                  "products": [
+                    {
+                      "title": "Рулетка 5 м х 19 мм",
+                      "lmCode": "15490516",
+                      "lineId": "1",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Круг зачистной по металлу Metabo, 125х6 мм",
+                      "lmCode": "18114268",
+                      "lineId": "2",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Биты Dexell, PH2, 50 мм, 2 шт.",
+                      "lmCode": "15174581",
+                      "lineId": "3",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Нож 18 мм двухкомпонентная ручка 1 лезвие",
+                      "lmCode": "13738901",
+                      "lineId": "4",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Пена монтажная MasterTex 65 750 мл",
+                      "lmCode": "82603126",
+                      "lineId": "5",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 55,
+                      "confirmedQuantity": 55,
+                      "assignedQuantity": 55,
+                      "source": [
+                        {
+                          "assignedItems": 55,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Ложка для снятия пены Fissman  3764",
+                      "lmCode": "90136780",
+                      "lineId": "6",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 29,
+                      "confirmedQuantity": 29,
+                      "assignedQuantity": 29,
+                      "source": [
+                        {
+                          "assignedItems": 29,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Швабра отжимная 120 см с насадкой PVA",
+                      "lmCode": "17055331",
+                      "lineId": "7",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 34,
+                      "confirmedQuantity": 34,
+                      "assignedQuantity": 34,
+                      "source": [
+                        {
+                          "assignedItems": 34,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Саморезы для тонких пластин Standers оцинкованные с буром 4.2х13 мм 1500 шт.",
+                      "lmCode": "15414581",
+                      "lineId": "8",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 31,
+                      "confirmedQuantity": 31,
+                      "assignedQuantity": 31,
+                      "source": [
+                        {
+                          "assignedItems": 31,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Набор бит Dexell, 25 мм, 33 шт.",
+                      "lmCode": "15177861",
+                      "lineId": "9",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 11,
+                      "confirmedQuantity": 11,
+                      "assignedQuantity": 11,
+                      "source": [
+                        {
+                          "assignedItems": 11,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Очки защитные Archimedes, цвет жёлтый",
+                      "lmCode": "13829088",
+                      "lineId": "10",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Пена монтажная пистолетная Mastertex B1 огнеупорная 750 мл",
+                      "lmCode": "82603130",
+                      "lineId": "11",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Дрель-шуруповерт аккумуляторная Dexter Power ML-CD33-120, 12 В Ni-Cd 2х1.3 Ач",
+                      "lmCode": "18374431",
+                      "lineId": "12",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Ковровое покрытие «Noventis Nantes 7058» иглопробивное 4 м цвет коричневый",
+                      "lmCode": "15418338",
+                      "lineId": "13",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 199.48,
+                      "confirmedQuantity": 199.48,
+                      "assignedQuantity": 199.48,
+                      "source": [
+                        {
+                          "assignedItems": 199.48,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Адаптер Matrix SDS-plus - 1/2\"",
+                      "lmCode": "17241388",
+                      "lineId": "14",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Рулетка 5 м х 19 мм",
+                      "lmCode": "15490516",
+                      "lineId": "15",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Комплект роликов для раздвижных дверей Armadillo Diy Comfort",
+                      "lmCode": "16457291",
+                      "lineId": "16",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 12,
+                      "confirmedQuantity": 12,
+                      "assignedQuantity": 12,
+                      "source": [
+                        {
+                          "assignedItems": 12,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Полка угловая малая Delinia 20.5x20.5x25 см, хром",
+                      "lmCode": "18254607",
+                      "lineId": "17",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 5,
+                      "confirmedQuantity": 5,
+                      "assignedQuantity": 5,
+                      "source": [
+                        {
+                          "assignedItems": 5,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Сверло по керамике 8x120 мм Dexter 133-00173",
+                      "lmCode": "18122559",
+                      "lineId": "18",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 55,
+                      "confirmedQuantity": 55,
+                      "assignedQuantity": 55,
+                      "source": [
+                        {
+                          "assignedItems": 55,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Комплект роликов для раздвижных дверей Armadillo Diy Comfort",
+                      "lmCode": "16457291",
+                      "lineId": "19",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 8,
+                      "confirmedQuantity": 8,
+                      "assignedQuantity": 8,
+                      "source": [
+                        {
+                          "assignedItems": 8,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Дрель-шуруповерт аккумуляторная Makita DF457DWE, 18 В Li-ion 2x1.5 Ач",
+                      "lmCode": "18769926",
+                      "lineId": "20",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Сверло по керамике 10x120 мм Dexter 133-00176",
+                      "lmCode": "18122524",
+                      "lineId": "21",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 34,
+                      "confirmedQuantity": 34,
+                      "assignedQuantity": 34,
+                      "source": [
+                        {
+                          "assignedItems": 34,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Сверло по керамике 8х120 мм Dexter 138-00042",
+                      "lmCode": "16705427",
+                      "lineId": "22",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 14,
+                      "confirmedQuantity": 14,
+                      "assignedQuantity": 14,
+                      "source": [
+                        {
+                          "assignedItems": 14,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Набор несъемных крючков Delinia 2.4х5.7 см, хром, 5 шт",
+                      "lmCode": "18254877",
+                      "lineId": "23",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Сверло по керамике 12x120 мм Dexter 139-00087",
+                      "lmCode": "18122575",
+                      "lineId": "24",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 32,
+                      "confirmedQuantity": 32,
+                      "assignedQuantity": 32,
+                      "source": [
+                        {
+                          "assignedItems": 32,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Пилки для лобзика по дереву Dexell T101BR Т, 2 шт.",
+                      "lmCode": "15177731",
+                      "lineId": "25",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 10,
+                      "confirmedQuantity": 10,
+                      "assignedQuantity": 10,
+                      "source": [
+                        {
+                          "assignedItems": 10,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Макловица с искусственной щетиной 150х70 мм",
+                      "lmCode": "17567484",
+                      "lineId": "26",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 134,
+                      "confirmedQuantity": 134,
+                      "assignedQuantity": 134,
+                      "source": [
+                        {
+                          "assignedItems": 134,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Лобзик DeWalt DW349-KS, 500 Вт",
+                      "lmCode": "17315594",
+                      "lineId": "27",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Стакан универсальный Delinia 12x12x29.5 см, хром",
+                      "lmCode": "18254906",
+                      "lineId": "28",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Ящик для инструмента Dexter 455х330х152 мм, алюминий, цвет серебро",
+                      "lmCode": "17844509",
+                      "lineId": "29",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Маска техническая",
+                      "lmCode": "18121450",
+                      "lineId": "30",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Пена монтажная пистолетная Mastertex 50 715 мл",
+                      "lmCode": "82603127",
+                      "lineId": "31",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 19,
+                      "confirmedQuantity": 19,
+                      "assignedQuantity": 19,
+                      "source": [
+                        {
+                          "assignedItems": 19,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Фильтр сменный для Archimedes РПГ-67",
+                      "lmCode": "13829168",
+                      "lineId": "32",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Набор стамесок по дереву 6-24 мм 4 шт.",
+                      "lmCode": "13811056",
+                      "lineId": "33",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 5,
+                      "confirmedQuantity": 5,
+                      "assignedQuantity": 5,
+                      "source": [
+                        {
+                          "assignedItems": 5,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Кисть для лака 200 мм",
+                      "lmCode": "15220313",
+                      "lineId": "34",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Саморезы Omax гипсокартон-металл 3.5х25 мм, 3 кг",
+                      "lmCode": "13789856",
+                      "lineId": "35",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Набор бит Metabo, 56 предметов",
+                      "lmCode": "14382636",
+                      "lineId": "36",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Отвёртка-тестер SL3x140 мм",
+                      "lmCode": "18149364",
+                      "lineId": "37",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Верстак-тиски портативный Sparta, 640х520х790 мм",
+                      "lmCode": "12817202",
+                      "lineId": "38",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 3,
+                      "confirmedQuantity": 3,
+                      "assignedQuantity": 3,
+                      "source": [
+                        {
+                          "assignedItems": 3,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Беруши с ремешком",
+                      "lmCode": "13340506",
+                      "lineId": "39",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 21,
+                      "confirmedQuantity": 21,
+                      "assignedQuantity": 21,
+                      "source": [
+                        {
+                          "assignedItems": 21,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Длинногубцы Sparta прямые шлифованные с пластиковой рукояткой 160 мм",
+                      "lmCode": "13257120",
+                      "lineId": "40",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Набор отверток SL/PH 4 шт.",
+                      "lmCode": "18149111",
+                      "lineId": "41",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Биты Dexell, PH2, 50 мм, 2 шт.",
+                      "lmCode": "15174581",
+                      "lineId": "42",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Адаптер Matrix SDS-plus - М12 х 1,25 мм",
+                      "lmCode": "17241396",
+                      "lineId": "43",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Круг отрезной по металлу Metabo, 125х2.5 мм",
+                      "lmCode": "18114284",
+                      "lineId": "44",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Патрон Matrix 1/2, 1.5-13 мм",
+                      "lmCode": "17240369",
+                      "lineId": "45",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Уровень лазерный Bosch PLL360 c дальностью до 20 м",
+                      "lmCode": "15166450",
+                      "lineId": "46",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Хомут червячный W2 16x25 мм, 2 шт.",
+                      "lmCode": "10113754",
+                      "lineId": "47",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 8,
+                      "confirmedQuantity": 8,
+                      "assignedQuantity": 8,
+                      "source": [
+                        {
+                          "assignedItems": 8,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Сверло по керамике 12х120 мм Dexter 138-00044",
+                      "lmCode": "16705401",
+                      "lineId": "48",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 12,
+                      "confirmedQuantity": 12,
+                      "assignedQuantity": 12,
+                      "source": [
+                        {
+                          "assignedItems": 12,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "УШМ (болгарка) Bosch PWS 850-125, 850 Вт, 125 мм",
+                      "lmCode": "15185298",
+                      "lineId": "49",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Фреза Dremel, 4.8 мм",
+                      "lmCode": "13753917",
+                      "lineId": "50",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Набор бит Dexell, 25 мм, 33 шт.",
+                      "lmCode": "15177861",
+                      "lineId": "51",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 11,
+                      "confirmedQuantity": 11,
+                      "assignedQuantity": 11,
+                      "source": [
+                        {
+                          "assignedItems": 11,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Плиткорез ручной Dexter 430 мм, толщина реза 12 мм",
+                      "lmCode": "17548523",
+                      "lineId": "52",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Очки защитные",
+                      "lmCode": "18378394",
+                      "lineId": "53",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Полка двухъярусная универсальная Delinia 30x14.5x34 см, хром",
+                      "lmCode": "18254957",
+                      "lineId": "54",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 4,
+                      "confirmedQuantity": 4,
+                      "assignedQuantity": 4,
+                      "source": [
+                        {
+                          "assignedItems": 4,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Набор свёрл по дереву Dexter SM487, 3-10 мм, 8 шт.",
+                      "lmCode": "16708450",
+                      "lineId": "55",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 19,
+                      "confirmedQuantity": 19,
+                      "assignedQuantity": 19,
+                      "source": [
+                        {
+                          "assignedItems": 19,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Ложка для снятия пены Крамет   13С271929",
+                      "lmCode": "90145349",
+                      "lineId": "56",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Набор свёрл по дереву перьевых 6 шт., 10-25 мм",
+                      "lmCode": "13769003",
+                      "lineId": "57",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 6,
+                      "confirmedQuantity": 6,
+                      "assignedQuantity": 6,
+                      "source": [
+                        {
+                          "assignedItems": 6,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Набор свёрл универсальный 16 шт., 2-10 мм",
+                      "lmCode": "13008052",
+                      "lineId": "58",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Набор отверток Dexter Basic SL/PH/PZ 5 шт.",
+                      "lmCode": "18149188",
+                      "lineId": "59",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Реcпиратор противоаэрозольный Archimedes РУ-60М",
+                      "lmCode": "13829176",
+                      "lineId": "60",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 55,
+                      "confirmedQuantity": 55,
+                      "assignedQuantity": 55,
+                      "source": [
+                        {
+                          "assignedItems": 55,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Линолеум «Дуб Португальский» 23 класс 1.5 м",
+                      "lmCode": "18642950",
+                      "lineId": "61",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Фильтр противоаэрозольный для ArchimedesРУ-60М",
+                      "lmCode": "13830855",
+                      "lineId": "62",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Патрон быстрозажимной Спец 1/2-20 UNF, 2.0-13 мм",
+                      "lmCode": "18126550",
+                      "lineId": "63",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Адаптер Matrix SDS-plus - 1/2\"",
+                      "lmCode": "17241388",
+                      "lineId": "64",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Ящик для инструментов Dexter на колёсах, 45х28х62 см",
+                      "lmCode": "16518349",
+                      "lineId": "65",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Наушники защитные Sparta, пластмассовые дужки",
+                      "lmCode": "12958216",
+                      "lineId": "66",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Держатель бокалов с полкой Delinia 39x17.5x26.5 см, хром",
+                      "lmCode": "18254851",
+                      "lineId": "67",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 91,
+                      "confirmedQuantity": 91,
+                      "assignedQuantity": 91,
+                      "source": [
+                        {
+                          "assignedItems": 91,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Плиткорез ручной Dexter 430 мм, толщина реза 12 мм",
+                      "lmCode": "17548523",
+                      "lineId": "68",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Раковина Cersanit Colour, керамика, 50 см, цвет белый",
+                      "lmCode": "15132364",
+                      "lineId": "69",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Перфоратор SDS-plus Makita HR2470, 780 Вт, 2.7 Дж",
+                      "lmCode": "18769951",
+                      "lineId": "70",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Дрель-шуруповерт аккумуляторная Metabo PowerMaxx BS, 10.8 В Li-ion 2х2 Ач",
+                      "lmCode": "14738321",
+                      "lineId": "71",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Полка узкая Delinia 35x10.5x25 см, хром",
+                      "lmCode": "18255124",
+                      "lineId": "72",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Биты для гипсокартона Dexell, PH2, 50 мм, 2 шт.",
+                      "lmCode": "15174610",
+                      "lineId": "73",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 12,
+                      "confirmedQuantity": 12,
+                      "assignedQuantity": 12,
+                      "source": [
+                        {
+                          "assignedItems": 12,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Пассатижи Archimedes из полированной стали (CS) комбинированные 180 мм",
+                      "lmCode": "12021298",
+                      "lineId": "74",
+                      "lineStatus": "PARTIALLY_PICKED",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "pickedQuantity": 1,
+                      "operations": [
+                        {
+                          "operationId": "3462e87d-1ceb-4904-8b6e-fd80134c68eb",
+                          "type": "PICK",
+                          "quantity": 1,
+                          "timeStamp": "2020-08-26T05:36:45.211Z",
+                          "updatedBy": "60069806"
+                        }
+                      ],
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Ковровое покрытие «Noventis Nantes 7058» иглопробивное 4 м цвет коричневый",
+                      "lmCode": "15418338",
+                      "lineId": "75",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 8.48,
+                      "confirmedQuantity": 8.48,
+                      "assignedQuantity": 8.48,
+                      "source": [
+                        {
+                          "assignedItems": 8.48,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Верстак-тиски портативный Sparta, 640х520х790 мм",
+                      "lmCode": "12817202",
+                      "lineId": "76",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 3,
+                      "confirmedQuantity": 3,
+                      "assignedQuantity": 3,
+                      "source": [
+                        {
+                          "assignedItems": 3,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Перфоратор SDS-plus Bosch PBH 2900 RE, 730 Вт, 2.7 Дж",
+                      "lmCode": "13786874",
+                      "lineId": "77",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Сверло по металлу HSS-G 6х93 мм Dexter SM262",
+                      "lmCode": "16660767",
+                      "lineId": "78",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Ведро пластиковое 20 л",
+                      "lmCode": "15674358",
+                      "lineId": "79",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Нож 18 мм двухкомпонентная ручка 1 лезвие",
+                      "lmCode": "13738901",
+                      "lineId": "80",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Очиститель монтажной пены Axton, 0.5 л",
+                      "lmCode": "864315",
+                      "lineId": "81",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Дрель-шуруповерт аккумуляторная Makita DF457DWE, 18 В Li-ion 2x1.5 Ач",
+                      "lmCode": "18769926",
+                      "lineId": "82",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Патрон с ключом и адаптером Спец 1.5-13 мм",
+                      "lmCode": "18126411",
+                      "lineId": "83",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Уровень лазерный плиточный Condtrol TL",
+                      "lmCode": "15166361",
+                      "lineId": "84",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Отвёртка-тестер Dexter 12 В-24 В-220 В",
+                      "lmCode": "18147625",
+                      "lineId": "85",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Защитный комбинезон",
+                      "lmCode": "18127309",
+                      "lineId": "86",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 16,
+                      "confirmedQuantity": 16,
+                      "assignedQuantity": 16,
+                      "source": [
+                        {
+                          "assignedItems": 16,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Набор несъемных крючков Delinia 2.4х5.7 см, хром, 5 шт",
+                      "lmCode": "18254877",
+                      "lineId": "87",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Маска техническая",
+                      "lmCode": "18121450",
+                      "lineId": "88",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Изолента IEK 19 мм 20 м цвет синий",
+                      "lmCode": "12463037",
+                      "lineId": "89",
+                      "lineStatus": "PARTIALLY_PICKED",
+                      "orderedQuantity": 234,
+                      "confirmedQuantity": 234,
+                      "assignedQuantity": 234,
+                      "pickedQuantity": 1,
+                      "operations": [
+                        {
+                          "operationId": "fa0b09d8-1828-45d2-98e8-484eacb0f8d4",
+                          "type": "PICK",
+                          "quantity": 1,
+                          "timeStamp": "2020-08-26T05:35:02.487Z",
+                          "updatedBy": "60069806"
+                        }
+                      ],
+                      "source": [
+                        {
+                          "assignedItems": 234,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Реcпиратор Archimedes РПГ-67",
+                      "lmCode": "13829141",
+                      "lineId": "90",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Шторка для ванной Снежная пена 180х200 см",
+                      "lmCode": "93789625",
+                      "lineId": "91",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 14,
+                      "confirmedQuantity": 14,
+                      "assignedQuantity": 14,
+                      "source": [
+                        {
+                          "assignedItems": 14,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Перфоратор SDS-plus Metabo KHE2660 Quick, 850 Вт, 3 Дж",
+                      "lmCode": "18338755",
+                      "lineId": "92",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Пена активная для стеклокерамики Prosept 400 мл",
+                      "lmCode": "82561031",
+                      "lineId": "93",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Смазка для буров Спец, 100 гр",
+                      "lmCode": "18126832",
+                      "lineId": "94",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Пена монтажная Axton ручная, 750 мл",
+                      "lmCode": "864311",
+                      "lineId": "95",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 12,
+                      "confirmedQuantity": 12,
+                      "assignedQuantity": 12,
+                      "source": [
+                        {
+                          "assignedItems": 12,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Кусачки диагональные Archimedes из полированной стали (CS) 150 мм",
+                      "lmCode": "12021319",
+                      "lineId": "96",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Шторка для ванной Уточка в пене 180х200 см",
+                      "lmCode": "93789600",
+                      "lineId": "97",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 10,
+                      "confirmedQuantity": 10,
+                      "assignedQuantity": 10,
+                      "source": [
+                        {
+                          "assignedItems": 10,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Хомут червячный W2 16x25 мм, 2 шт.",
+                      "lmCode": "10113754",
+                      "lineId": "98",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 999,
+                      "confirmedQuantity": 999,
+                      "assignedQuantity": 999,
+                      "source": [
+                        {
+                          "assignedItems": 999,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Круг отрезной по металлу Metabo, 125х2.5 мм",
+                      "lmCode": "18114284",
+                      "lineId": "99",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Полка для 6-ти бокалов Delinia 24x10x34 см, хром",
+                      "lmCode": "18255116",
+                      "lineId": "100",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 45,
+                      "confirmedQuantity": 45,
+                      "assignedQuantity": 45,
+                      "source": [
+                        {
+                          "assignedItems": 45,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Краска для обоев Luxens, база А, 1 л",
+                      "lmCode": "82001127",
+                      "lineId": "101",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 5,
+                      "confirmedQuantity": 5,
+                      "assignedQuantity": 5,
+                      "source": [
+                        {
+                          "assignedItems": 5,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Патрон быстрозажимной Matrix, 1/2, 2-13 мм",
+                      "lmCode": "16551317",
+                      "lineId": "102",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Патрон Matrix 1/2, 1.5-13 мм",
+                      "lmCode": "17240369",
+                      "lineId": "103",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Фильтр сменный для Archimedes РПГ-67",
+                      "lmCode": "13829168",
+                      "lineId": "104",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Пена монтажная Axton профессиональная, 750 мл",
+                      "lmCode": "864313",
+                      "lineId": "105",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 32,
+                      "confirmedQuantity": 32,
+                      "assignedQuantity": 32,
+                      "source": [
+                        {
+                          "assignedItems": 32,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Пена монтажная пистолетная Mastertex 65 830 мл",
+                      "lmCode": "82603129",
+                      "lineId": "106",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Набор перчаток х/б с ПВХ, 6 пар в упаковке",
+                      "lmCode": "11874002",
+                      "lineId": "107",
+                      "lineStatus": "PARTIALLY_PICKED",
+                      "orderedQuantity": 234,
+                      "confirmedQuantity": 234,
+                      "assignedQuantity": 234,
+                      "pickedQuantity": 1,
+                      "operations": [
+                        {
+                          "operationId": "e64528c7-ff16-4b07-83ca-a32cd190177b",
+                          "type": "PICK",
+                          "quantity": 1,
+                          "timeStamp": "2020-08-26T05:36:16.838Z",
+                          "updatedBy": "60069806"
+                        }
+                      ],
+                      "source": [
+                        {
+                          "assignedItems": 234,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Ложка для снятия пены GIPFEL  5457",
+                      "lmCode": "90125529",
+                      "lineId": "108",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Астра кустарниковая «Питер Пен» 17x20 см",
+                      "lmCode": "82585328",
+                      "lineId": "109",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Пена монтажная MasterTex 50 670 мл",
+                      "lmCode": "82603124",
+                      "lineId": "110",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Круг отрезной по металлу, А24, 355х3,5х25,4 мм",
+                      "lmCode": "14267451",
+                      "lineId": "111",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Декор Jungle 25x35 см рисунок бамбук",
+                      "lmCode": "14200011",
+                      "lineId": "112",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 2,
+                      "confirmedQuantity": 2,
+                      "assignedQuantity": 2,
+                      "source": [
+                        {
+                          "assignedItems": 2,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Биты Dexell, PH3, 50 мм, 2 шт.",
+                      "lmCode": "15174601",
+                      "lineId": "113",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Приставка для фрезерования Dremel",
+                      "lmCode": "13751196",
+                      "lineId": "114",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 3,
+                      "confirmedQuantity": 3,
+                      "assignedQuantity": 3,
+                      "source": [
+                        {
+                          "assignedItems": 3,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Сверло алмазное по керамике 10 мм Dexter 155-00100",
+                      "lmCode": "16705355",
+                      "lineId": "115",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 29,
+                      "confirmedQuantity": 29,
+                      "assignedQuantity": 29,
+                      "source": [
+                        {
+                          "assignedItems": 29,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Набор крючков для полотенец 1.5х5 см, 5 шт.",
+                      "lmCode": "18581202",
+                      "lineId": "116",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 84,
+                      "confirmedQuantity": 84,
+                      "assignedQuantity": 84,
+                      "source": [
+                        {
+                          "assignedItems": 84,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Ручка телескопическая, 1500х3000 мм",
+                      "lmCode": "15441773",
+                      "lineId": "117",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Очки защитные закрытые Archimedes",
+                      "lmCode": "13829109",
+                      "lineId": "118",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Набор диэлектрических отверток Dexter 6 шт.",
+                      "lmCode": "18147617",
+                      "lineId": "119",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Набор пилок для лобзика Dexell T, 6 шт.",
+                      "lmCode": "15177491",
+                      "lineId": "120",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 6,
+                      "confirmedQuantity": 6,
+                      "assignedQuantity": 6,
+                      "source": [
+                        {
+                          "assignedItems": 6,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Дрель-шуруповерт аккумуляторная Metabo PowerMaxx BS, 10.8 В Li-ion 2х2 Ач",
+                      "lmCode": "14738321",
+                      "lineId": "121",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Круг отрезной по металлу, А24, 355х3,5х25,4 мм",
+                      "lmCode": "14267451",
+                      "lineId": "122",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Лобзик Makita 4328, 450 Вт",
+                      "lmCode": "18770003",
+                      "lineId": "123",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 1,
+                      "confirmedQuantity": 1,
+                      "assignedQuantity": 1,
+                      "source": [
+                        {
+                          "assignedItems": 1,
+                          "type": "LS"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Насадка электромиксера Сибртех 450х100 мм, оцинкованная сталь",
+                      "lmCode": "13327782",
+                      "lineId": "124",
+                      "lineStatus": "PICKING_IN_PROGRESS",
+                      "orderedQuantity": 11,
+                      "confirmedQuantity": 11,
+                      "assignedQuantity": 11,
+                      "source": [
+                        {
+                          "assignedItems": 11,
+                          "type": "LS"
+                        }
+                      ]
+                    }
+                  ],
+                  "employeeName": "Иван",
+                  "orderId": "200701020002",
+                  "channel": "ONLINE",
+                  "customerName": "Егор",
+                  "customerSurname": "Васин",
+                  "paymentStatus": null,
+                  "paymentType": null
+                }
+              ],
+              "totalCount": 423
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
