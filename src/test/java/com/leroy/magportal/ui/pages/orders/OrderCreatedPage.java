@@ -38,6 +38,10 @@ public abstract class OrderCreatedPage extends OrderHeaderPage {
     @WebFindBy(id = "main", metaName = "Вкладка Содержания")
     Element mainTab;
 
+    @WebFindBy(xpath = "//div[contains(@class, 'lmui-View lmui-Tabs-Title-ActiveBar lmui-Tabs-Title-ActiveBar-md')]",
+            metaName = "Вкладка Контроля")
+    Element ControlTab;
+
     @Override
     public void waitForPageIsLoaded() {
         mainTab.waitForVisibility();
@@ -55,12 +59,18 @@ public abstract class OrderCreatedPage extends OrderHeaderPage {
     }
 
     @Step ("Перейти на вкладку 'К ВЫдаче и Возврату'")
+    public ControlOrderPage clickGoToControlTab()  {
+        ControlTab.click();
+        return new ControlOrderPage();
+
+    }
+
+    @Step ("Перейти на вкладку 'Контроль'")
     public GiveAwayShipOrderPage clickGoToShipRefund()  {
         shipRefundTab.click();
         return new GiveAwayShipOrderPage();
 
     }
-
 
     // Verifications
 
