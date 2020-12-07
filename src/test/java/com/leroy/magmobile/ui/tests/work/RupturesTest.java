@@ -151,7 +151,6 @@ public class RupturesTest extends AppBaseSteps {
     private RuptureCardPage makeStockCorrection(String ruptureLmCode, AcceptStockCorrectionModalPage acceptStockCorrectionModalPage) {
 
         //Step 1
-        subStep("Выбрать \"продолжить\"", "1");
         AndroidDriver<MobileElement> androidDriver = (AndroidDriver<MobileElement>) ContextProvider.getDriver();
         androidDriver.context("WEBVIEW_chrome");
         androidDriver.close();
@@ -163,31 +162,25 @@ public class RupturesTest extends AppBaseSteps {
         StockCorrectionLoginWebPage stockCorrectionWebPage = new StockCorrectionLoginWebPage();
 
         //Step 2
-        subStep("Жмем \"Войти\"", "2");
         StockCorrectionAddProductWebPage stockCorrectionAddProductWebPage = stockCorrectionWebPage.clickLogIdBtn();
         stockCorrectionAddProductWebPage.checkLmCode(ruptureLmCode);
 
         //Step 3
-        subStep("Ввести в поле \"я посчитал\" значение \"числится в зале\"+1 или 1 если \"числится в зале\" меньше нуля", "3");
         stockCorrectionAddProductWebPage.enterNewCount();
 
         //Step 4
-        subStep("Нажать \"+ в карточку\"", "4");
         StockCorrectionCardWebPage stockCorrectionCardWebPage = stockCorrectionAddProductWebPage.clickInCardBtn();
         stockCorrectionCardWebPage.checkShopAndDepartment();
         stockCorrectionCardWebPage.checkReason();
         stockCorrectionCardWebPage.checkLmCode(ruptureLmCode);
 
         //Step 5
-        subStep("Нажать кнопку \"отправить\"", "5");
         stockCorrectionCardWebPage.clickSendBtn();
 
         //Step 6
-        subStep("Нажать кнопку \"отправить\" в модалке", "6");
         StockCorrectionSuccessWebPage stockCorrectionSuccessWebPage = stockCorrectionCardWebPage.clickConfirmSendBtn();
 
         //Step 7
-        subStep("Нажать кнопку \"ЗАКРЫТЬ\"", "7");
         stockCorrectionSuccessWebPage.clickCloseBtn();
         return new RuptureCardPage();
     }
