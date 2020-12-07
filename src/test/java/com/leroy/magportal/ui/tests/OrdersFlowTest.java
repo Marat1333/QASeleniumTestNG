@@ -213,142 +213,18 @@ public class OrdersFlowTest extends BasePAOTest {
         orderPage.shouldDocumentCountIs(1);
     }
 
-    // Deprecated
-    @Test(description = "C23428132 Заказы.Оффлайн.Самовывоз. Переход из статуса Собран в статус Выдан", groups = NEED_PRODUCTS_GROUP)
-    public void testMoveFromPickedToGivenAway() throws Exception {
-
-        // Создать заказ и перевести его в статус "Собран"
-
-        initCreateOrder(1, SalesDocumentsConst.States.PICKED);
-
-        // Step 1:
-        step("Открыть страницу с Заказами");
-        OrderHeaderPage orderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
-
-        // Step 2:
-        step("Найти созданный заказ с статусе Собран с номером" + " " + orderId);
-        orderPage.enterSearchTextAndSubmit(orderId);
-        orderPage.shouldDocumentIsPresent(orderId);
-        orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.PICKED.getUiVal());
-        orderPage.shouldDocumentCountIs(1);
-
-        // Step 3:
-        step("Кликнуть на заказ" + " " + orderId);
-        orderPage.clickDocumentInLeftMenu(orderId);
-        OrderCreatedContentPage createdContentPage = new OrderCreatedContentPage();
-        createdContentPage.shouldOrderProductCountIs(1);
-
-        // Step 4:
-        step("Перейти на вкладку 'К выдаче и возврату'");
-        GiveAwayShipOrderPage giveAwayShipOrderPage = createdContentPage.clickGoToShipRefund();
-
-        // Step 5
-        step("Товар 1: Ввести в инпут 'К выдаче' количество равное,  указанному в Заказано");
-        giveAwayShipOrderPage.editToShipQuantity(1, 2)
-                .shouldProductToShipQuantityIs(1, 2);
-
-        // Step 6
-        step("Нажать на кнопку 'Выдать'");
-        giveAwayShipOrderPage.clickGiveAwayButton();
-
-        // Step 7:
-        step("Обновить список документов и проверить статус выданного заказа");
-        orderPage.refreshDocumentList();
-        orderPage.shouldDocumentIsPresent(orderId);
-        orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.GIVEN_AWAY.getUiVal());
-        orderPage.shouldDocumentCountIs(1);
-    }
-
-    // Deprecated
-    @Test(description = "C23437677 Заказы. Oффлайн. Доставка.", groups = NEED_PRODUCTS_GROUP)
-    public void testOfflineDelivery() throws Exception {
-        // Создать заказ и перевести его в статус "Собран"
-
-        initCreateOrder(1,SalesDocumentsConst.GiveAwayPoints.DELIVERY, SalesDocumentsConst.States.ALLOWED_FOR_PICKING);
-
-        // Step 1:
-        step("Открыть страницу с Заказами");
-        OrderHeaderPage orderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
-
-        // Step 2:
-        step("Найти созданный заказ с статусе Собран с номером" + " " + orderId);
-        orderPage.enterSearchTextAndSubmit(orderId);
-        orderPage.shouldDocumentIsPresent(orderId);
-        orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal());
-        orderPage.shouldDocumentCountIs(1);
-
-        // Step 3:
-        step("Кликнуть на заказ" + " " + orderId);
-        orderPage.clickDocumentInLeftMenu(orderId);
-        OrderCreatedContentPage createdContentPage = new OrderCreatedContentPage();
-        createdContentPage.shouldOrderProductCountIs(1);
-
-        // Step 4:
-        step("Перейти на Сборки");
-        AssemblyOrderPage pickingTab = createdContentPage.clickGoToPickings();
-
-        // Step5: нажать на Сборку
-        step("нажать на Сборку");
-        PickingContentPage pickingContentPage = pickingTab.clickToPickingTask(1);
-
-        // Step6: Начать сборку
-        step("Нажать на кнопку Начать сборку");
-        pickingContentPage.clickStartAssemblyButton();
-
-        // Step7:
-        step("Товар 1: Ввести в инпут Собрано количество равное,  указанному в Заказано");
-        pickingContentPage.editCollectQuantity(1, 2)
-                .shouldProductCollectedQuantityIs(1, 2);
-
-        // Step 8:
-        step("Завершить сборку");
-        pickingContentPage.clickFinishAssemblyButton();
-        paymentHelper.makePaid(orderId);
-
-        // Step 9:
-        step("Вернуться на страницу заказов ");
-        PickingPage pickingPage = new PickingPage();
-        pickingPage.clickOrderLinkAndGoToOrderPage();
-
-
-        // Step 10:
-        step("Проверить статус собранного заказа");
-        orderPage.refreshDocumentList();
-        orderPage.shouldDocumentIsPresent(orderId);
-        orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.PICKED.getUiVal());
-        orderPage.shouldDocumentCountIs(1);
-
-        // Step 11:
-        step("Перейти на вкладку 'К выдаче и возврату'");
-        GiveAwayShipOrderPage giveAwayShipOrderPage = createdContentPage.clickGoToShipRefund();
-
-        // Step 12:
-        step("Товар 1: Ввести в инпут 'К выдаче' количество равное,  указанному в Заказано");
-        giveAwayShipOrderPage.editToShipQuantity(1, 2)
-                .shouldProductToShipQuantityIs(1, 2);
-
-        // Step 13
-        step("Нажать на кнопку 'Выдать'");
-        giveAwayShipOrderPage.clickGiveAwayButton();
-
-        // Step 14:
-        step("Обновить список документов и проверить статус выданного заказа");
-        orderPage.refreshDocumentList();
-        orderPage.shouldDocumentIsPresent(orderId);
-        orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.GIVEN_AWAY.getUiVal());
-        orderPage.shouldDocumentCountIs(1);
-
-    };
 
     @Test(description = "C23428132 Заказы.Оффлайн.Самовывоз.", groups = NEED_PRODUCTS_GROUP)
-    public void test1() throws Exception {
+    public void testOrderOfflinePickup() throws Exception {
         testOrderOffline(SalesDocumentsConst.GiveAwayPoints.PICKUP);
     }
 
+
     @Test(description = "C23437677 Заказы. Oффлайн. Доставка.", groups = NEED_PRODUCTS_GROUP)
-    public void test2() throws Exception {
+    public void testOrderOfflineDelivery() throws Exception {
         testOrderOffline(SalesDocumentsConst.GiveAwayPoints.DELIVERY);
     }
+
 
     private void testOrderOffline(SalesDocumentsConst.GiveAwayPoints giveAwayPoint) throws Exception{
         // Создать заказ в статусе "Готов к сборке"
