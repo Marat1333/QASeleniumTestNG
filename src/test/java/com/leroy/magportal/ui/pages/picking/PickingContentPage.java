@@ -26,17 +26,17 @@ public class PickingContentPage extends PickingPage {
 
     // Bottom area
 
-    @WebFindBy(xpath = "//div[contains(@class, 'Picking-InfoCard')]//button", metaName = "Кнопка 'Начать сборку'")
+    @WebFindBy(xpath = "//div[contains(@class, 'Picking-InfoCard') and not(ancestor::div[contains(@class, 'hidden')])]//button", metaName = "Кнопка 'Начать сборку'")
     Button startAssemblyBtn;
 
-    @WebFindBy(xpath = "//button[descendant::span[contains(text(), 'Завершить')]]", metaName = "Кнопка 'Завершить'")
+    @WebFindBy(xpath = "//button[descendant::span[contains(text(), 'Завершить')] and not(ancestor::div[contains(@class, 'hidden')])]", metaName = "Кнопка 'Завершить'")
     Button finishAssemblyBtn;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'Picking-InfoCard')]//div[contains(@class, 'popover')]//button",
+    @WebFindBy(xpath = "//div[contains(@class, 'Picking-InfoCard') and not(ancestor::div[contains(@class, 'hidden')])]//div[contains(@class, 'popover')]//button",
             metaName = "Кнопка 'Редактировать сборку'")
     Button editAssemblyBtn;
 
-    @WebFindBy(xpath = "//button[descendant::span[text()='РАЗДЕЛИТЬ']]", metaName = "Кнопка 'Разделить' в нижней области")
+    @WebFindBy(xpath = "//button[descendant::span[text()='РАЗДЕЛИТЬ'] and not(ancestor::div[contains(@class, 'hidden')])]", metaName = "Кнопка 'Разделить' в нижней области")
     Button splitAssemblyBtn;
 
     @Override

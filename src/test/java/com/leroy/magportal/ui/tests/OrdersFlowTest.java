@@ -144,7 +144,7 @@ public class OrdersFlowTest extends BasePAOTest {
         pickingTaskId = respPickingTasks.asJson().getItems().get(0).getTaskId();
     }
 
-    @AfterClass(enabled = false)
+    @AfterClass(enabled = true)
     private void cancelConfirmedOrder() throws Exception {
         if (orderId != null) {
             OrderClient orderClient = apiClientProvider.getOrderClient();
