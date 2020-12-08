@@ -105,6 +105,12 @@ public class RuptureCardPage extends CommonMagMobilePage {
     @AppFindBy(text = "Создана заявка на отзыв")
     Element recallRequestHasBeenCreatedMsgLbl;
 
+    @AppFindBy(text = "Сделать коррекцию С3")
+    Element stockCorrection;
+
+    @AppFindBy(text = "Коррекция С3 отправлена")
+    Element stockCorrectionHasBeenCreatedMsgLbl;
+
     @AppFindBy(xpath = "//android.widget.ScrollView")
     AndroidScrollView<String> mainScrollView;
 
@@ -239,6 +245,12 @@ public class RuptureCardPage extends CommonMagMobilePage {
     @Step("Проверить, что отображается сообщение о созданной заявке на отзыв с RM")
     public RuptureCardPage shouldRecallRequestHasBeenCreatedMsgIsVisible() {
         anAssert.isElementVisible(recallRequestHasBeenCreatedMsgLbl);
+        return this;
+    }
+
+    @Step("Проверить, что отображается сообщение о сделанной коррекции стока")
+    public RuptureCardPage shouldStockCorrectionHasBeenCreatedMsgIsVisible() {
+        anAssert.isElementVisible(stockCorrectionHasBeenCreatedMsgLbl);
         return this;
     }
 
