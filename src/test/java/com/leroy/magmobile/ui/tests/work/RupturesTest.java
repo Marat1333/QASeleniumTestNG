@@ -1721,4 +1721,65 @@ public class RupturesTest extends AppBaseSteps {
         activeSessionPage.checkStockCorrectionStatus(firstProductLm, true);
         activeSessionPage.checkStockCorrectionStatus(secondProductLm, false);
     }
+
+    @Test(description = "C23440886 Коррекция C3 из активной сессии из карточка перебоя (через список экшенов)")
+    public void testCreateStockCorrectionFromActiveSessionRuptureCardActionsList() throws Exception {
+        getUserSessionData().setUserShopId("35");
+        getUserSessionData().setUserDepartmentId("5");
+
+        CatalogSearchFilter filter = new CatalogSearchFilter().setDepartmentId("5");
+        List<ProductItemData> products = searchProductHelper.getProducts(2, filter);
+        String firstProductLm = products.get(0).getLmCode();
+        String secondProductLm = products.get(1).getLmCode();
+
+        int sessionId = createSessionWithProductsWithSpecificIncompleteAction(Action.MAKE_C3_CORRECTION, firstProductLm, secondProductLm);
+
+        WorkPage workPage = loginAndGoTo("60069805", "Passwd12345", false, WorkPage.class);
+        SessionListPage sessionListPage = workPage.goToRuptures();
+
+        // Step 1
+        step("Перейти в сессию");
+        sessionListPage.goToSession(String.valueOf(sessionId));
+        ActiveSessionPage activeSessionPage = new ActiveSessionPage();
+
+        //Step2
+        step("Перейти в карточку перебоя первого товара");
+        RuptureCardPage ruptureCardPage = activeSessionPage.goToRuptureCard(firstProductLm);
+        ruptureCardPage.verifyRequiredElements();
+
+        //Step 3
+        step("Выбрать \"Сделать коррекцию С3\"");
+        AcceptStockCorrectionModalPage acceptStockCorrectionModalPage = ruptureCardPage.makeStockCorrection();
+        acceptStockCorrectionModalPage.verifyRequiredElements();
+
+        //Step 4
+        step("Выполнить коррекцию стока (шаги из тк C23389124)");
+        makeStockCorrection(firstProductLm, acceptStockCorrectionModalPage);
+        ruptureCardPage = new RuptureCardPage();
+        ruptureCardPage.verifyRequiredElements();
+        ruptureCardPage.shouldStockCorrectionHasBeenCreatedMsgIsVisible();
+
+        //Step 5
+        step("Выйти на экран активной сессии по железной кнопке");
+        ruptureCardPage.navigateBack();
+        activeSessionPage = new ActiveSessionPage();
+        activeSessionPage.verifyRequiredElements();
+        activeSessionPage.checkStockCorrectionStatus(firstProductLm, true);
+        activeSessionPage.checkStockCorrectionStatus(secondProductLm, false);
+
+        //Step 6
+        step("Нажать железную кнопку назад и подтвердить выход из сессии");
+        activeSessionPage.navigateBack();
+        ExitActiveSessionModalPage exitActiveSessionModalPage = new ExitActiveSessionModalPage();
+        exitActiveSessionModalPage.confirmExit();
+        sessionListPage = new SessionListPage();
+
+        //Step 7
+        step("Перейти в обратно в сессию");
+        sessionListPage.goToSession(String.valueOf(sessionId));
+        activeSessionPage = new ActiveSessionPage();
+        activeSessionPage.verifyRequiredElements();
+        activeSessionPage.checkStockCorrectionStatus(firstProductLm, true);
+        activeSessionPage.checkStockCorrectionStatus(secondProductLm, false);
+    }
 }
