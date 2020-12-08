@@ -17,7 +17,6 @@ import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.sales.BaseProductOrderData;
 import com.leroy.magmobile.api.data.sales.orders.OrderProductData;
 import com.leroy.magmobile.api.data.sales.orders.ResOrderCheckQuantityData;
-import com.leroy.magmobile.api.requests.order.OrderCheckQuantityRequest;
 import com.leroy.magmobile.api.requests.order.OrderRearrangeRequest;
 import com.leroy.magportal.api.constants.DeliveryServiceTypeEnum;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
@@ -53,7 +52,6 @@ import com.leroy.magportal.api.requests.order.OrderFulfilmentGivenAwayRequest;
 import com.leroy.magportal.api.requests.order.OrderGetAdditionalProductsInfo;
 import com.leroy.magportal.api.requests.order.OrderGetRequest;
 import com.leroy.magportal.api.requests.order.OrderWorkflowRequest;
-import com.leroy.magportal.api.requests.picking.PickingTaskGetAdditionalProductsInfo;
 import com.leroy.magportal.api.requests.timeslot.AppointmentsRequest;
 import com.leroy.magportal.api.requests.timeslot.ChangeDateRequest;
 import com.leroy.magportal.api.requests.timeslot.TimeslotRequest;
@@ -67,7 +65,6 @@ import lombok.SneakyThrows;
 import org.testng.asserts.SoftAssert;
 import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
-import ru.leroymerlin.qa.core.clients.tunnel.TunnelClient;
 
 public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
 
@@ -154,7 +151,8 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
     }
 
     @Step("GetAvailable stock for List<lmCodes>")
-    public Response<ResOrderCheckQuantityData> checkQuantity(List<String> lmCodes, Double newCount, LocalDateTime gateAwayDate) {
+    public Response<ResOrderCheckQuantityData> checkQuantity(List<String> lmCodes, Double newCount,
+            LocalDateTime gateAwayDate) {
         CheckQuantityRequest req = new CheckQuantityRequest();
         CheckQuantityData quantityData = new CheckQuantityData();
         List<BaseProductOrderData> orderDataList = new ArrayList<>();
@@ -192,9 +190,12 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
 
     @Step("GiveAway products for order with id = {orderId}")
     public Response<JsonNode> giveAway(String orderId, Boolean isFull) {
-        this.waitAndReturnProductsReadyToGiveaway(orderId);
-        return makeAction(orderId, OrderWorkflowEnum.GIVEAWAY.getValue(),
-                makeWorkflowPayload(orderId, isFull, false));
+        if(this.waitAndReturnProductsReadyToGiveaway(orderId) != null) {
+            return makeAction(orderId, OrderWorkflowEnum.GIVEAWAY.getValue(),
+                    makeWorkflowPayload(orderId, isFull, false));
+        } else {
+            return null;
+        }
     }
 
     @Step("Deliver products for order with id = {orderId}")
@@ -364,23 +365,20 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
     @Step("Wait and return products are ready to TO_GIVEAWAY")
     public List<OrderProductData> waitAndReturnProductsReadyToGiveaway(String orderId) {
         long currentTimeMillis = System.currentTimeMillis();
-        Response<OrderFulfilmentToGivenAwayPayload> response;
-        List<OrderProductData> products = null;
         while (System.currentTimeMillis() - currentTimeMillis < waitTimeoutInSeconds * 1000) {
-            response = this.productsToGivenAway(orderId);
+            Response<OrderFulfilmentToGivenAwayPayload> response = this
+                    .productsToGivenAway(orderId);
             if (response.isSuccessful()) {
-                products = response.asJson().getGroups().stream()
+                List<OrderProductData> products = response.asJson().getGroups().stream()
                         .filter(x -> x.getGroupName().equals("TO_GIVEAWAY")).findFirst().get()
                         .getProducts();
-
                 if (products.size() > 0) {
                     return products;
                 }
-
             }
             Thread.sleep(3000);
         }
-        return products;
+        return null;
     }
 
     private Response<OrderFulfilmentToGivenAwayPayload> productsToGivenAway(String orderId) {

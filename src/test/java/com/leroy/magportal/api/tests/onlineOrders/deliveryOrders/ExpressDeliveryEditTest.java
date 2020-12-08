@@ -34,7 +34,7 @@ public class ExpressDeliveryEditTest extends BaseMagPortalApiTest {
     @BeforeClass
     private void setUp() {
         currentStatus = States.ALLOWED_FOR_PICKING;
-        currentOrderType = OnlineOrderTypeConst.DELIVERY_TO_ENTRANCE;
+        currentOrderType = OnlineOrderTypeConst.DELIVERY_EXPRESS;
         makeNewOrder();
     }
 
