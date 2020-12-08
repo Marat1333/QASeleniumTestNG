@@ -94,6 +94,9 @@ public class RuptureCardPage extends CommonMagMobilePage {
     Button ruptureActionsBtn;
 
     @AppFindBy(xpath = "//android.widget.TextView[@text='ПОДТВЕРДИТЬ']/ancestor::*[@content-desc='Button-container']/preceding-sibling::android.view.ViewGroup[1]")
+    Button ruptureCallActionModalRoundBtn;
+
+    @AppFindBy(text = "ДЕЙСТВИЯ С ПЕРЕБОЕМ")
     Button ruptureCallActionModalBtn;
 
     @AppFindBy(text = "Сделать отзыв с RM")
@@ -169,6 +172,12 @@ public class RuptureCardPage extends CommonMagMobilePage {
     public AcceptStockCorrectionModalPage makeStockCorrection() {
         stockCorrection.click();
         return new AcceptStockCorrectionModalPage();
+    }
+
+    @Step("Вызвать модалку с доступными для перебоя действиями")
+    public ActionModalPage callActionModalByRoundBtn() {
+        ruptureCallActionModalRoundBtn.click();
+        return new ActionModalPage();
     }
 
     @Step("Вызвать модалку с доступными для перебоя действиями")
@@ -347,7 +356,7 @@ public class RuptureCardPage extends CommonMagMobilePage {
                 ruptureTaskContainer, priceLbl);
         softAssert.areElementsVisible(ps, productCardNavigationBtn, salesHallProductQuantityLbl, zeroProductNeedToAddBtn,
                 oneProductNeedToAddBtn, twoProductsNeedToAddBtn, threeOrMoreProductsNeedToAddBtn,
-                rmWarehouseProductQuantityLbl, supplyDateLbl, submitBtn, ruptureCallActionModalBtn, commentField);
+                rmWarehouseProductQuantityLbl, supplyDateLbl, submitBtn, ruptureCallActionModalRoundBtn, commentField);
         softAssert.verifyAll();
         return this;
     }
