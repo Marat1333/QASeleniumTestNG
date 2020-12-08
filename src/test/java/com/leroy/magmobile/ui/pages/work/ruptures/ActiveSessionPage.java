@@ -145,6 +145,14 @@ public class ActiveSessionPage extends SessionPage {
         return this;
     }
 
+    @Step("Проверить, что коррекция стока отправлена")
+    public void checkStockCorrectionStatus (String lmCode, boolean correctionStatus) {
+        Element el = E(String.format("//android.widget.TextView[@content-desc='lmCode' and contains(@text,'%s')]/.." +
+                "/following-sibling::android.view.ViewGroup[descendant::android.widget.TextView[@text='Коррекция С3 отправлена']]"
+                , lmCode));
+        anAssert.isEquals(el.isVisible(), correctionStatus, "Статус коррекции для " + lmCode + " не совпадает с ожидаемым");
+    }
+
     @Override
     public void verifyRequiredElements() {
         super.verifyRequiredElements();
