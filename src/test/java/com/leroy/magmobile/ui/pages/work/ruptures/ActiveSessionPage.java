@@ -26,6 +26,9 @@ public class ActiveSessionPage extends SessionPage {
     @AppFindBy(text = "Создана заявка на отзыв")
     Element recallRequestHasBeenCreatedMsgLbl;
 
+    @AppFindBy(text = "Коррекция С3 отправлена")
+    Element stockCorrectionHasBeenCreatedMsgLbl;
+
     AndroidScrollView<RuptureData> ruptureCardScrollView = new AndroidScrollView<>(driver,
             AndroidScrollView.TYPICAL_LOCATOR, "./*/android.view.ViewGroup[android.view.ViewGroup]/descendant::*[3]",
             RuptureWidget.class);
@@ -84,6 +87,12 @@ public class ActiveSessionPage extends SessionPage {
     @Step("Проверить, что отображается сообщение о созданной заявке на отзыв с RM")
     public ActiveSessionPage shouldRecallRequestHasBeenCreatedMsgIsVisible() {
         anAssert.isElementVisible(recallRequestHasBeenCreatedMsgLbl);
+        return this;
+    }
+
+    @Step("Проверить, что отображается сообщение о сделанной коррекции стока")
+    public ActiveSessionPage shouldStockCorrectionHasBeenCreatedMsgIsVisible() {
+        anAssert.isElementVisible(stockCorrectionHasBeenCreatedMsgLbl);
         return this;
     }
 

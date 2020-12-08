@@ -16,4 +16,5 @@ public class CatalogSearchFilter {
     private Boolean top1000;
     private Boolean avs;
     private String lmCode;
+    private String departmentId;
 }
