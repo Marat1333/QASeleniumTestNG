@@ -56,7 +56,7 @@ public class WorkflowShortTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23425604 OFFLINE: Give away the Order", dependsOnMethods = {
             "testCompletePicking"})
-    public void testGiveAway() throws Exception {
+    public void testGiveAway() {
         paymentHelper.makePaid(currentOrderId);
         orderClient.waitUntilOrderGetStatus(currentOrderId,
                 States.PICKED, PaymentStatusEnum.PAID);
