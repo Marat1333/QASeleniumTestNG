@@ -11,10 +11,7 @@ import com.leroy.magmobile.ui.pages.sales.product_card.ProductCardPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.RuptureData;
 import com.leroy.magmobile.ui.pages.work.ruptures.elements.RuptureRadioButton;
 import com.leroy.magmobile.ui.pages.work.ruptures.elements.RuptureTaskContainer;
-import com.leroy.magmobile.ui.pages.work.ruptures.modal.AcceptRecallFromRmModalPage;
-import com.leroy.magmobile.ui.pages.work.ruptures.modal.ActionModalPage;
-import com.leroy.magmobile.ui.pages.work.ruptures.modal.DeleteRuptureModalPage;
-import com.leroy.magmobile.ui.pages.work.ruptures.modal.TasksListsModalPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.modal.*;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 import org.openqa.selenium.support.Color;
@@ -97,6 +94,9 @@ public class RuptureCardPage extends CommonMagMobilePage {
     Button ruptureActionsBtn;
 
     @AppFindBy(xpath = "//android.widget.TextView[@text='ПОДТВЕРДИТЬ']/ancestor::*[@content-desc='Button-container']/preceding-sibling::android.view.ViewGroup[1]")
+    Button ruptureCallActionModalRoundBtn;
+
+    @AppFindBy(text = "ДЕЙСТВИЯ С ПЕРЕБОЕМ")
     Button ruptureCallActionModalBtn;
 
     @AppFindBy(text = "Сделать отзыв с RM")
@@ -105,7 +105,7 @@ public class RuptureCardPage extends CommonMagMobilePage {
     @AppFindBy(text = "Создана заявка на отзыв")
     Element recallRequestHasBeenCreatedMsgLbl;
 
-    @AppFindBy(text = "Сделать коррекцию С3")
+    @AppFindBy(text = "Сделать коррекцию C3")
     Element stockCorrection;
 
     @AppFindBy(text = "Коррекция С3 отправлена")
@@ -166,6 +166,18 @@ public class RuptureCardPage extends CommonMagMobilePage {
     public AcceptRecallFromRmModalPage recallProductFromRm() {
         recallFromRm.click();
         return new AcceptRecallFromRmModalPage();
+    }
+
+    @Step("Нажать на кнопку \"Сделать коррекцию C3\"")
+    public AcceptStockCorrectionModalPage makeStockCorrection() {
+        stockCorrection.click();
+        return new AcceptStockCorrectionModalPage();
+    }
+
+    @Step("Вызвать модалку с доступными для перебоя действиями")
+    public ActionModalPage callActionModalByRoundBtn() {
+        ruptureCallActionModalRoundBtn.click();
+        return new ActionModalPage();
     }
 
     @Step("Вызвать модалку с доступными для перебоя действиями")
@@ -344,7 +356,7 @@ public class RuptureCardPage extends CommonMagMobilePage {
                 ruptureTaskContainer, priceLbl);
         softAssert.areElementsVisible(ps, productCardNavigationBtn, salesHallProductQuantityLbl, zeroProductNeedToAddBtn,
                 oneProductNeedToAddBtn, twoProductsNeedToAddBtn, threeOrMoreProductsNeedToAddBtn,
-                rmWarehouseProductQuantityLbl, supplyDateLbl, submitBtn, ruptureCallActionModalBtn, commentField);
+                rmWarehouseProductQuantityLbl, supplyDateLbl, submitBtn, ruptureCallActionModalRoundBtn, commentField);
         softAssert.verifyAll();
         return this;
     }
