@@ -29,7 +29,7 @@ public class GiveAwayShipOrderPage extends OrderCreatedPage {
         return this;
     }
 
-    @Step("Изменить кол-во сборка для {index}-ого товара")
+    @Step("Изменить кол-во 'К выдаче' для {index}-ого товара")
     public GiveAwayShipOrderPage editToShipQuantity(int index, int val) throws Exception {
         index--;
         productCards.get(index).editQuantity(val);
@@ -38,7 +38,7 @@ public class GiveAwayShipOrderPage extends OrderCreatedPage {
 
     // Verifications
 
-    @Step("Проверить, что кол-во 'Собрано' у {index}-ого товара равно {value}")
+    @Step("Проверить, что кол-во 'К выдаче' у {index}-ого товара равно {value}")
     public GiveAwayShipOrderPage shouldProductToShipQuantityIs(int index, int value) throws Exception {
         index--;
         anAssert.isEquals(productCards.get(index).getToGiveAwayQuantity(), String.valueOf(value),

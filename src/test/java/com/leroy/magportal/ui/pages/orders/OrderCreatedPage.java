@@ -58,14 +58,14 @@ public abstract class OrderCreatedPage extends OrderHeaderPage {
 
     }
 
-    @Step ("Перейти на вкладку 'К ВЫдаче и Возврату'")
+    @Step ("Перейти на вкладку 'Контроль'")
     public ControlOrderPage clickGoToControlTab()  {
         ControlTab.click();
         return new ControlOrderPage();
 
     }
 
-    @Step ("Перейти на вкладку 'Контроль'")
+    @Step ("Перейти на вкладку 'К ВЫдаче и Возврату'")
     public GiveAwayShipOrderPage clickGoToShipRefund()  {
         shipRefundTab.click();
         return new GiveAwayShipOrderPage();

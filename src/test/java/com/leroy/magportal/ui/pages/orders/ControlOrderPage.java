@@ -12,8 +12,6 @@ import io.qameta.allure.Step;
  */
 public class ControlOrderPage extends OrderCreatedPage {
 
-    @WebFindBy(xpath = "//div[contains(@class, 'lm-puz2-Order-OrderViewFooter__buttonsWrapper')]//button", metaName = "Кнопка 'Выдать'")
-    Button giveAwayBtn;
 
     @WebFindBy(xpath = "//div[contains(@class, 'Order-GiveAway-Card')]",
             clazz = OrderProductToGiveAwayCardWidget.class)
@@ -22,12 +20,7 @@ public class ControlOrderPage extends OrderCreatedPage {
 
     // Actions
 
-    @Step("Нажать кнопку 'Выдать'")
-    public ControlOrderPage clickGiveAwayButton() {
-        giveAwayBtn.click();
-        waitForSpinnerAppearAndDisappear();
-        return this;
-    }
+
 
     @Step("Изменить кол-во сборка для {index}-ого товара")
     public ControlOrderPage editToShipQuantity(int index, int val) throws Exception {

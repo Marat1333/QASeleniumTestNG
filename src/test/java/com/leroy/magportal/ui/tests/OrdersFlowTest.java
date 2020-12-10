@@ -18,10 +18,7 @@ import com.leroy.magportal.ui.models.picking.PickingProductCardData;
 import com.leroy.magportal.ui.models.picking.PickingTaskData;
 import com.leroy.magportal.ui.models.picking.ShortPickingTaskData;
 import com.leroy.magportal.ui.pages.common.MenuPage;
-import com.leroy.magportal.ui.pages.orders.AssemblyOrderPage;
-import com.leroy.magportal.ui.pages.orders.GiveAwayShipOrderPage;
-import com.leroy.magportal.ui.pages.orders.OrderCreatedContentPage;
-import com.leroy.magportal.ui.pages.orders.OrderHeaderPage;
+import com.leroy.magportal.ui.pages.orders.*;
 import com.leroy.magportal.ui.pages.picking.PickingContentPage;
 import com.leroy.magportal.ui.pages.picking.PickingPage;
 import com.leroy.magportal.ui.pages.picking.modal.SplitPickingModalStep1;
@@ -144,7 +141,7 @@ public class OrdersFlowTest extends BasePAOTest {
         pickingTaskId = respPickingTasks.asJson().getItems().get(0).getTaskId();
     }
 
-    @AfterClass(enabled = true)
+    @AfterClass(enabled = false)
     private void cancelConfirmedOrder() throws Exception {
         if (orderId != null) {
             OrderClient orderClient = apiClientProvider.getOrderClient();
@@ -304,6 +301,35 @@ public class OrdersFlowTest extends BasePAOTest {
         orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.GIVEN_AWAY.getUiVal());
         orderPage.shouldDocumentCountIs(1);
     }
+
+
+    @Test(description = "C23438407 Заказы. статус \"Собран\". Отображение полей на вкладке \"Контроль\". Контроль не пройден", groups = NEED_PRODUCTS_GROUP)
+    public void testControlTabPickedNonControlled() throws Exception {
+        initCreateOrder(1,SalesDocumentsConst.GiveAwayPoints.PICKUP, SalesDocumentsConst.States.PICKED);
+
+        // Step 1:
+        step("Открыть страницу с Заказами");
+        OrderHeaderPage orderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
+
+        // Step 2:
+        step("Найти созданный заказ с статусе 'Готов к Сборке' с номером" + " " + orderId);
+        orderPage.enterSearchTextAndSubmit(orderId);
+        orderPage.shouldDocumentIsPresent(orderId);
+        orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.PICKED.getUiVal());
+        orderPage.shouldDocumentCountIs(1);
+
+        // Step 3:
+        step("Кликнуть на заказ" + " " + orderId);
+        orderPage.clickDocumentInLeftMenu(orderId);
+        OrderCreatedContentPage createdContentPage = new OrderCreatedContentPage();
+        createdContentPage.shouldOrderProductCountIs(1);
+
+        // Step 4:
+        step("Перейти на вкладку Контроль в свернутом виде");
+        ControlOrderPage controlPage = createdContentPage.clickGoToControlTab();
+
+    }
+
 
 
 }
