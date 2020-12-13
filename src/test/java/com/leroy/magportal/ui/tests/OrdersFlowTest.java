@@ -131,8 +131,7 @@ public class OrdersFlowTest extends BasePAOTest {
         initFindPickingTask();
 
         // Step 2:
-        step("Ввести номер заказа из корзины и нажать кнопку 'Показать заказы'" + "Заказ" + " "
-                + orderId);
+        step("Ввести номер заказа из корзины и нажать кнопку 'Показать заказы'. Заказ: " + orderId);
         orderPage.enterSearchTextAndSubmit(orderId);
         orderPage.shouldDocumentIsPresent(orderId);
         orderPage.shouldDocumentListContainsOnlyWithStatuses(
@@ -141,7 +140,7 @@ public class OrdersFlowTest extends BasePAOTest {
 
         // Step 3:
 
-        step("Кликнуть на заказ" + " " + orderId);
+        step("Кликнуть на заказ: " + orderId);
         orderPage.clickDocumentInLeftMenu(orderId);
         OrderCreatedContentPage createdContentPage = new OrderCreatedContentPage();
         createdContentPage.shouldOrderProductCountIs(1);
@@ -205,7 +204,7 @@ public class OrdersFlowTest extends BasePAOTest {
         OrderHeaderPage orderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
 
         // Step 2:
-        step("Найти созданный заказ с статусе 'Готов к Сборке' с номером" + " " + orderId);
+        step("Найти созданный заказ с статусе 'Готов к Сборке' с номером: " + orderId);
         orderPage.enterSearchTextAndSubmit(orderId);
         orderPage.shouldDocumentIsPresent(orderId);
         orderPage.shouldDocumentListContainsOnlyWithStatuses(
@@ -213,7 +212,7 @@ public class OrdersFlowTest extends BasePAOTest {
         orderPage.shouldDocumentCountIs(1);
 
         // Step 3:
-        step("Кликнуть на заказ" + " " + orderId);
+        step("Кликнуть на заказ: " + orderId);
         orderPage.clickDocumentInLeftMenu(orderId);
         OrderCreatedContentPage createdContentPage = new OrderCreatedContentPage();
         createdContentPage.shouldOrderProductCountIs(1);
