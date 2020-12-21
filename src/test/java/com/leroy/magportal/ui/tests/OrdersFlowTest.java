@@ -19,6 +19,7 @@ import com.leroy.magportal.ui.models.picking.PickingTaskData;
 import com.leroy.magportal.ui.models.picking.ShortPickingTaskData;
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.pages.orders.*;
+import com.leroy.magportal.ui.pages.orders.widget.OrderProductControlCardWidget;
 import com.leroy.magportal.ui.pages.picking.PickingContentPage;
 import com.leroy.magportal.ui.pages.picking.PickingPage;
 import com.leroy.magportal.ui.pages.picking.modal.SplitPickingModalStep1;
@@ -327,6 +328,11 @@ public class OrdersFlowTest extends BasePAOTest {
         // Step 4:
         step("Перейти на вкладку Контроль в свернутом виде");
         ControlOrderPage controlPage = createdContentPage.clickGoToControlTab();
+
+        // Step 5:
+        step("Развернуть поля карточки заказа");
+        controlPage.expandProductCardFields(1);
+
 
     }
 
