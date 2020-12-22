@@ -106,24 +106,6 @@ public class RupturesTest extends AppBaseSteps {
         return sessionId;
     }
 
-    private int createSessionWithProductWithSpecificIncompleteAction(String lmCode, Action action) {
-        List<ActionData> actions = new ArrayList<>();
-        ActionData data = new ActionData();
-        data.setState(false);
-        data.setAction(action.getActionNumber());
-        data.setUserPosition(0);
-        actions.add(data);
-
-        RuptureProductData productData = new RuptureProductData();
-        productData.generateRandomData();
-        productData.setLmCode(lmCode);
-        productData.setActions(actions);
-
-        int sessionId = rupturesHelper.createSession(Collections.singletonList(productData));
-        sessionsNumbers.set(sessionId);
-        return sessionId;
-    }
-
     private int createSessionWithProductsWithSpecificIncompleteAction(Action action, String... lmCodes) {
         List<ActionData> actions = new ArrayList<>();
         ActionData data = new ActionData();
@@ -817,8 +799,8 @@ public class RupturesTest extends AppBaseSteps {
         allTasks.setTaskName("Все задачи");
 
         String comment = "123asd";
-        int sessionId = createSessionWithProductWithSpecificIncompleteAction(RandomStringUtils.randomNumeric(8),
-                Action.FIND_PRODUCT_AND_LAY_IT_OUT);
+        int sessionId = createSessionWithProductsWithSpecificIncompleteAction(Action.FIND_PRODUCT_AND_LAY_IT_OUT, RandomStringUtils.randomNumeric(8)
+        );
         rupturesHelper.finishSession(sessionId);
         List<RuptureProductData> sessionProducts = rupturesHelper.getProducts(sessionId).getItems();
         RuptureProductData ruptureData = sessionProducts.get(0);
@@ -1482,8 +1464,8 @@ public class RupturesTest extends AppBaseSteps {
         List<TransferSearchProductData> products = transferHelper.searchForProductsForTransfer();
         String ruptureLmCode = products.get(1).getLmCode();
 
-        int sessionId = createSessionWithProductWithSpecificIncompleteAction(
-                ruptureLmCode, Action.RECALL_FROM_RM);
+        int sessionId = createSessionWithProductsWithSpecificIncompleteAction(
+                Action.RECALL_FROM_RM, ruptureLmCode);
 
         WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
         SessionListPage sessionListPage = workPage.goToRuptures();
@@ -1550,8 +1532,8 @@ public class RupturesTest extends AppBaseSteps {
         List<TransferSearchProductData> products = transferHelper.searchForProductsForTransfer();
         String ruptureLmCode = products.get(2).getLmCode();
 
-        int sessionId = createSessionWithProductWithSpecificIncompleteAction(
-                ruptureLmCode, Action.RECALL_FROM_RM);
+        int sessionId = createSessionWithProductsWithSpecificIncompleteAction(
+                Action.RECALL_FROM_RM, ruptureLmCode);
         rupturesHelper.finishSession(sessionId);
 
         WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
