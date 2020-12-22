@@ -734,7 +734,7 @@ public class RupturesTest extends AppBaseSteps {
 
         // Step 3
         step("Выйти из карточки товара по железной кнопке");
-        ruptureCardPage.closeRuptureCardPage();
+        ruptureCardPage.navigateBack();
         activeSessionPage = new ActiveSessionPage();
         activeSessionPage.verifyRequiredElements();
 
