@@ -610,10 +610,15 @@ public class RupturesTest extends AppBaseSteps {
     @Issue("RUP-118")
     @Test(description = "C23418142 Добавление дубля в сессию при работе с существующей сессией")
     public void testAddRuptureDuplicateToExistedSession() throws Exception {
+        ProductItemData someProduct = searchProductHelper.getProducts(1).get(0);
+        String someLmCode = someProduct.getLmCode();
+        RuptureProductData ruptureData = new RuptureProductData();
+        ruptureData.generateRandomData();
+        ruptureData.setLmCode(someLmCode);
+        ruptureData.setBarCode(someProduct.getBarCode());
+        int sessionId = rupturesHelper.createSession(Collections.singletonList(ruptureData));
+        sessionsNumbers.set(sessionId);
         String comment = "asd123";
-        int sessionId = rupturesHelper.getActiveSessionIdWithProducts();
-        List<RuptureProductData> sessionProducts = rupturesHelper.getProducts(sessionId).getItems();
-        String randomLmCode = sessionProducts.get(0).getLmCode();
 
         // Pre-conditions
         WorkPage workPage = loginAndGoTo(WorkPage.class);
@@ -631,7 +636,7 @@ public class RupturesTest extends AppBaseSteps {
         // Step 2
         step("Перейти к ручному поиску и найти товар, который уже есть в сессии");
         SearchProductPage searchProductPage = rupturesScannerPage.navigateToSearchProductPage();
-        searchProductPage.enterTextInSearchFieldAndSubmit(randomLmCode);
+        searchProductPage.enterTextInSearchFieldAndSubmit(someLmCode);
         AddDuplicateModalPage addDuplicateModalPage = new AddDuplicateModalPage();
         addDuplicateModalPage.verifyRequiredElements();
 
@@ -664,27 +669,31 @@ public class RupturesTest extends AppBaseSteps {
 
         // Step 5
         step("Выйти с карточки перебоя по железной кнопке");
-        ruptureCardPage.closeRuptureCardPage();
+        ruptureCardPage.navigateBack();
         searchProductPage = new SearchProductPage();
         searchProductPage.verifyRequiredElements();
 
         // Step 6
         step("Закрыть экран поиска по железной кнопке");
-        searchProductPage.returnBack();
+        searchProductPage.navigateBack();
         rupturesScannerPage = new RupturesScannerPage();
         rupturesScannerPage.shouldCounterIsCorrect(counterValue)
                 .shouldRupturesListNavBtnIsVisible(true);
 
         // Step 7
         step("Закрыть сканер по железной кнопке");
-        rupturesScannerPage.closeScanner();
+        rupturesScannerPage.navigateBack();
         activeSessionPage = new ActiveSessionPage();
         activeSessionPage.shouldRupturesDataIsCorrect(data)
                 .verifyRequiredElements();
 
         // Step 8
         step("Открыть карточку перебоя");
-        ruptureCardPage = activeSessionPage.goToRuptureCard(randomLmCode);
+        activeSessionPage.goToRuptureCard(someLmCode);
+        addDuplicateModalPage = new AddDuplicateModalPage(); // TODO убрать этот костыль когда поправят баг
+        addDuplicateModalPage.verifyRequiredElements().confirm();
+
+        ruptureCardPage = new RuptureCardPage();
         ruptureCardPage.shouldRadioBtnHasCorrectCondition(RuptureCardPage.QuantityOption.ONE)
                 .shouldTasksListContainsTasks(toDoTasks)
                 .shouldCheckBoxConditionIsCorrect(true, checkedTask)
