@@ -118,4 +118,15 @@ public class RuptureHelper extends BaseHelper {
         return 0;
     }
 
+    @Step("Check that session is finished")
+    public void checkSessionIsFinished(int sessionId) {
+        Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions("finished", 100);
+        List<ResRuptureSessionData> finishedSessions = resp.asJson().getItems();
+        for (ResRuptureSessionData session:finishedSessions) {
+            if (session.getSessionId() == sessionId)
+                return;
+        }
+        Assert.fail("Session " + sessionId + " is not finished");
+    }
+
 }

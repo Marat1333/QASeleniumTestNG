@@ -793,6 +793,7 @@ public class RupturesTest extends AppBaseSteps {
         finishedSessionPage.shouldStatusIsFinished()
                 .shouldTasksCountIsCorrect(8)
                 .verifyRequiredElements();
+        rupturesHelper.checkSessionIsFinished(sessionId);
 
         // Step 4
         step("Нажать назад");
