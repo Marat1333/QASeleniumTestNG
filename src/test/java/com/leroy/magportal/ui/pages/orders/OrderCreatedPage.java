@@ -38,9 +38,9 @@ public abstract class OrderCreatedPage extends OrderHeaderPage {
     @WebFindBy(id = "main", metaName = "Вкладка Содержания")
     Element mainTab;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'lmui-View lmui-Tabs-Title-ActiveBar lmui-Tabs-Title-ActiveBar-md')]",
+    @WebFindBy(xpath = "//button[@id='control']",
             metaName = "Вкладка Контроля")
-    Element ControlTab;
+    Button ControlTab;
 
     @Override
     public void waitForPageIsLoaded() {

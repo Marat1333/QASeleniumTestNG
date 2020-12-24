@@ -60,7 +60,7 @@ public class OrderProductControlCardWidget extends CardWebWidget<ControlProductC
     }
 
     // Get data
-    public String getToGiveAwayQuantity() {return orderedQuantity.getText(); }
+    public String getOrderedQuantity() {return orderedQuantity.getText(); }
 
     public String collectedQuantity() {
         return collectedQuantity.getText();

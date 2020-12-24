@@ -31,11 +31,11 @@ public class ControlOrderPage extends OrderCreatedPage {
 
     // Verifications
 
-    @Step("Проверить, что кол-во 'К выдаче' у {index}-ого товара равно {value}")
-    public ControlOrderPage shouldProductToShipQuantityIs(int index, int value) throws Exception {
+    @Step("Проверить, что кол-во 'Заказано' у {index}-ого товара равно {value}")
+    public ControlOrderPage shouldOrderedQuantityIs(int index, int value) throws Exception {
         index--;
-        anAssert.isEquals(productCards.get(index).getToGiveAwayQuantity(), String.valueOf(value),
-                "Неверное кол-во 'К выдаче' у " + (index + 1) + "-ого товара");
+        anAssert.isEquals(productCards.get(index).getOrderedQuantity(), String.valueOf(value),
+                "Неверное кол-во 'Заказано' у " + (index + 1) + "-ого товара");
         return this;
     }
 }
