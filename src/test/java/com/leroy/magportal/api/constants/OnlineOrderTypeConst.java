@@ -9,128 +9,127 @@ public class OnlineOrderTypeConst {
     @Accessors(chain = true)
     public static class OnlineOrderTypeData {
 
-        public String priceDelivery;
+        public String deliveryPrice;
         public String paymentType;
-        public String deliveryType;
+        public DeliveryServiceTypeEnum deliveryType;
         public Integer rise;
         public Integer lift;
-        public String deliveryPrice;
+        public String deliveryFullPrice;
         public String liftPrice;
-        public String deliveryServiceType;
         public String shopId;
         public String lmCode;
         public int sameDay;
         public Boolean pickupShop = false;
         public Boolean pvzData = false;
+        public DeliveryLiftTypeEnum liftType = DeliveryLiftTypeEnum.SERVICE_LIFT;
     }
 
     public static final OnlineOrderTypeData PICKUP_POSTPAYMENT = new OnlineOrderTypeData()
-            .setPriceDelivery("0.00")
+            .setDeliveryPrice("0.00")
             .setPaymentType(PaymentTypeEnum.CASH.getName())
-            .setDeliveryType(DeliveryServiceTypeEnum.PICKUP.getType())
+            .setDeliveryType(DeliveryServiceTypeEnum.PICKUP)
             .setPickupShop(true)
             .setRise(0)
             .setLift(0)
-            .setDeliveryPrice("0.00")
-            .setLiftPrice("0.00")
-            .setDeliveryServiceType(DeliveryServiceTypeEnum.PICKUP.getService());
+            .setDeliveryFullPrice("0.00")
+            .setLiftPrice("0.00");
 
     public static final OnlineOrderTypeData PICKUP_PREPAYMENT = new OnlineOrderTypeData()
-            .setPriceDelivery("0.00")
+            .setDeliveryPrice("0.00")
             .setPaymentType(PaymentTypeEnum.SBERBANK.getName())
-            .setDeliveryType(DeliveryServiceTypeEnum.PICKUP.getType())
+            .setDeliveryType(DeliveryServiceTypeEnum.PICKUP)
             .setPickupShop(true)
             .setRise(0)
             .setLift(0)
-            .setDeliveryPrice("0.00")
-            .setLiftPrice("0.00")
-            .setDeliveryServiceType(DeliveryServiceTypeEnum.PICKUP.getService());
+            .setDeliveryFullPrice("0.00")
+            .setLiftPrice("0.00");
 
     public static final OnlineOrderTypeData DELIVERY_TO_ENTRANCE = new OnlineOrderTypeData()
-            .setPriceDelivery("2000.45")
+            .setDeliveryPrice("2000.45")
             .setPaymentType(PaymentTypeEnum.SBERBANK.getName())
-            .setDeliveryType(DeliveryServiceTypeEnum.DELIVERY_ENTRANCE.getType())
+            .setDeliveryType(DeliveryServiceTypeEnum.DELIVERY_ENTRANCE)
             .setRise(0)
             .setLift(0)
-            .setDeliveryPrice("2000.45")
-            .setLiftPrice("0.00")
-            .setDeliveryServiceType(DeliveryServiceTypeEnum.DELIVERY_ENTRANCE.getService());
+            .setDeliveryFullPrice("2000.45")
+            .setLiftPrice("0.00");
 
     public static final OnlineOrderTypeData DELIVERY_TO_DOOR = new OnlineOrderTypeData()
-            .setPriceDelivery("2000.45")
+            .setDeliveryPrice("2000.45")
             .setPaymentType(PaymentTypeEnum.SBERBANK.getName())
-            .setDeliveryType(DeliveryServiceTypeEnum.DELIVERY_DOOR.getType())
+            .setDeliveryType(DeliveryServiceTypeEnum.DELIVERY_DOOR)
             .setRise(1)
             .setLift(1)
-            .setDeliveryPrice("3000.89")
-            .setLiftPrice("1000.44")
-            .setDeliveryServiceType(DeliveryServiceTypeEnum.DELIVERY_DOOR.getService());
+            .setDeliveryFullPrice("3000.89")
+            .setLiftPrice("1000.44");
 
     public static final OnlineOrderTypeData DELIVERY_EXPRESS = new OnlineOrderTypeData()
-            .setPriceDelivery("2000.45")
+            .setDeliveryPrice("2000.45")
             .setPaymentType(PaymentTypeEnum.SBERBANK.getName())
-            .setDeliveryType(DeliveryServiceTypeEnum.DELIVERY_DOOR.getType())
+            .setDeliveryType(DeliveryServiceTypeEnum.DELIVERY_DOOR)
             .setRise(1)
             .setLift(1)
-            .setDeliveryPrice("3000.89")
+            .setDeliveryFullPrice("3000.89")
             .setLiftPrice("1000.44")
-            .setDeliveryServiceType(DeliveryServiceTypeEnum.DELIVERY_DOOR.getService())
             .setSameDay(1);
 
     public static final OnlineOrderTypeData DELIVERY_CIZ = new OnlineOrderTypeData()
-            .setPriceDelivery("2000.45")
+            .setDeliveryPrice("2000.45")
             .setPaymentType(PaymentTypeEnum.BILL.getName())
-            .setDeliveryType(DeliveryServiceTypeEnum.DELIVERY_DOOR.getType())
+            .setDeliveryType(DeliveryServiceTypeEnum.DELIVERY_DOOR)
             .setRise(1)
             .setLift(1)
-            .setDeliveryPrice("3000.89")
+            .setDeliveryFullPrice("3000.89")
             .setLiftPrice("1000.44")
-            .setDeliveryServiceType(DeliveryServiceTypeEnum.DELIVERY_DOOR.getService())
             .setShopId(ShopTypeEnum.CIZ.getValue());
 
     public static final OnlineOrderTypeData DELIVERY_CDS = new OnlineOrderTypeData()
-            .setPriceDelivery("2000.45")
+            .setDeliveryPrice("2000.45")
             .setPaymentType(PaymentTypeEnum.SBERBANK.getName())
-            .setDeliveryType(DeliveryServiceTypeEnum.DELIVERY_DOOR.getType())
+            .setDeliveryType(DeliveryServiceTypeEnum.DELIVERY_DOOR)
             .setRise(1)
             .setLift(1)
-            .setDeliveryPrice("3000.89")
+            .setDeliveryFullPrice("3000.89")
             .setLiftPrice("1000.44")
-            .setDeliveryServiceType(DeliveryServiceTypeEnum.DELIVERY_DOOR.getService())
             .setShopId(ShopTypeEnum.CDS.getValue());
 
     public static final OnlineOrderTypeData DELIVERY_KK = new OnlineOrderTypeData()
-            .setPriceDelivery("2000.45")
+            .setDeliveryPrice("2000.45")
             .setPaymentType(PaymentTypeEnum.SBERBANK.getName())
-            .setDeliveryType(DeliveryServiceTypeEnum.COURIER.getType())
+            .setDeliveryType(DeliveryServiceTypeEnum.COURIER)
             .setRise(1)
             .setLift(1)
-            .setDeliveryPrice("3000.89")
+            .setDeliveryFullPrice("3000.89")
             .setLiftPrice("1000.44")
-            .setDeliveryServiceType(DeliveryServiceTypeEnum.COURIER.getService())
             .setShopId(ShopTypeEnum.KK.getValue())
             .setLmCode(LmCodeTypeEnum.KK.getValue());
 
     public static final OnlineOrderTypeData DELIVERY_TK = new OnlineOrderTypeData()
-            .setPriceDelivery("2000.45")
+            .setDeliveryPrice("2000.45")
             .setPaymentType(PaymentTypeEnum.SBERBANK.getName())
-            .setDeliveryType(DeliveryServiceTypeEnum.DELIVERY_DOOR.getType())
+            .setDeliveryType(DeliveryServiceTypeEnum.DELIVERY_DOOR)
             .setRise(1)
             .setLift(1)
-            .setDeliveryPrice("3000.89")
+            .setDeliveryFullPrice("3000.89")
             .setLiftPrice("1000.44")
-            .setDeliveryServiceType(DeliveryServiceTypeEnum.DELIVERY_DOOR.getService())
             .setShopId(ShopTypeEnum.TK.getValue());
 
     public static final OnlineOrderTypeData DELIVERY_PVZ = new OnlineOrderTypeData()
-            .setPriceDelivery("2000.45")
+            .setDeliveryPrice("2000.45")
             .setPaymentType(PaymentTypeEnum.SBERBANK.getName())
-            .setDeliveryType(DeliveryServiceTypeEnum.DELIVERY_PVZ.getType())
+            .setDeliveryType(DeliveryServiceTypeEnum.DELIVERY_PVZ)
             .setRise(0)
             .setLift(0)
-            .setDeliveryPrice("2000.45")
+            .setDeliveryFullPrice("2000.45")
             .setLiftPrice("0.00")
-            .setDeliveryServiceType(DeliveryServiceTypeEnum.DELIVERY_PVZ.getService())
             .setPvzData(true)
             .setLmCode(LmCodeTypeEnum.PVZ.getValue());
+
+    public static final OnlineOrderTypeData COURIER = new OnlineOrderTypeData()
+            .setDeliveryPrice("2000.45")
+            .setPaymentType(PaymentTypeEnum.SBERBANK.getName())
+            .setDeliveryType(DeliveryServiceTypeEnum.COURIER)
+            .setRise(0)
+            .setLift(0)
+            .setDeliveryFullPrice("2000.45")
+            .setLiftPrice("0.00");
 }

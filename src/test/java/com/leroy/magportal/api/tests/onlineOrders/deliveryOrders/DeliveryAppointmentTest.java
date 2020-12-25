@@ -20,7 +20,7 @@ import com.leroy.magportal.api.data.onlineOrders.OnlineOrderData;
 import com.leroy.magportal.api.data.onlineOrders.ShipToData;
 import com.leroy.magportal.api.data.timeslot.AppointmentData;
 import com.leroy.magportal.api.data.timeslot.AppointmentResponseData;
-import com.leroy.magportal.api.helpers.BitrixHelper;
+import com.leroy.magportal.api.helpers.OnlineOrderHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
 import io.qameta.allure.Step;
 import java.util.List;
@@ -31,7 +31,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 public class DeliveryAppointmentTest extends BaseMagPortalApiTest {
 
     @Inject
-    private BitrixHelper bitrixHelper;
+    private OnlineOrderHelper onlineOrderHelper;
     @Inject
     private OrderClient orderClient;
 
@@ -45,7 +45,8 @@ public class DeliveryAppointmentTest extends BaseMagPortalApiTest {
     @BeforeClass
     private void setUp() {
         currentOrderType = OnlineOrderTypeConst.DELIVERY_TO_DOOR;
-        currentOrderId = bitrixHelper.createOnlineOrderCardPayment(currentOrderType).getSolutionId();
+        currentOrderId = onlineOrderHelper.createOnlineOrderCardPayment(currentOrderType)
+                .getSolutionId();
     }
 
     @Test(description = "C23425904 Get Appointment for Several Products", priority = 1)
@@ -118,9 +119,10 @@ public class DeliveryAppointmentTest extends BaseMagPortalApiTest {
         assertAppointmentUpdateResult(response);
         assertDeliveryDataUpdateResult(response);
     }
-//TODO: Add cases with empty values
+
+    //TODO: Add cases with empty values
     private void makeDimensionalOrder() {
-        currentOrderId = bitrixHelper.createDimensionalOnlineOrder(currentOrderType)
+        currentOrderId = onlineOrderHelper.createDimensionalOnlineOrder(currentOrderType)
                 .getSolutionId();
     }
 
@@ -183,7 +185,7 @@ public class DeliveryAppointmentTest extends BaseMagPortalApiTest {
         if (deliveryData.getReceiver().getFullName() != null) {
             assertThat("Receiver Name was NOT updated",
                     updatedDeliveryData.getReceiver().getFullName(),
-                            equalTo(deliveryData.getReceiver().getFullName()));
+                    equalTo(deliveryData.getReceiver().getFullName()));
         } else {
             assertThat("Receiver Name was updated to NULL",
                     updatedDeliveryData.getReceiver().getFullName(), not(emptyOrNullString()));
@@ -209,7 +211,7 @@ public class DeliveryAppointmentTest extends BaseMagPortalApiTest {
 
         if (deliveryData.getShipTo().getEntrance() != null) {
             assertThat("Entrance was NOT updated", updatedDeliveryData.getShipTo().getEntrance(),
-                     equalTo(deliveryData.getShipTo().getEntrance()));
+                    equalTo(deliveryData.getShipTo().getEntrance()));
         } else {
             assertThat("Entrance was updated to NULL",
                     updatedDeliveryData.getShipTo().getEntrance(),

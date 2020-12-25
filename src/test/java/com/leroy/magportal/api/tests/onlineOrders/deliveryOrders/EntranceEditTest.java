@@ -5,9 +5,8 @@ import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
-import com.leroy.magportal.api.helpers.BitrixHelper;
+import com.leroy.magportal.api.helpers.OnlineOrderHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
-import java.util.List;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -15,12 +14,11 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.testng.internal.TestResult;
 import ru.leroymerlin.qa.core.clients.base.Response;
-import ru.leroymerlin.qa.core.clients.tunnel.data.BitrixSolutionResponse;
 
 public class EntranceEditTest extends BaseMagPortalApiTest {
 
     @Inject
-    private BitrixHelper bitrixHelper;
+    private OnlineOrderHelper onlineOrderHelper;
     @Inject
     private OrderClient orderClient;
 
@@ -113,13 +111,14 @@ public class EntranceEditTest extends BaseMagPortalApiTest {
         currentCount = 10.0;
         isDimensional = true;
 
-        currentOrderId = bitrixHelper.createDimensionalOnlineOrder(currentOrderType)
+        currentOrderId = onlineOrderHelper.createDimensionalOnlineOrder(currentOrderType)
                 .getSolutionId();
     }
 
     private void makeNewOrder() {
         isDimensional = false;
 
-        currentOrderId = bitrixHelper.createOnlineOrderCardPayment(currentOrderType).getSolutionId();
+        currentOrderId = onlineOrderHelper.createOnlineOrderCardPayment(currentOrderType)
+                .getSolutionId();
     }
 }

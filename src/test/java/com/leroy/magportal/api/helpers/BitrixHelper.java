@@ -150,9 +150,14 @@ public class BitrixHelper extends BaseHelper {
     private BitrixSolutionPayload.Basket productItemDataToPayload(ProductItemData product) {
         BitrixSolutionPayload.Basket basket = new BitrixSolutionPayload.Basket();
         String price = "99.99";
+        double quantity = 10.00;
         double weight = 0.01;
         if (product.getPrice() != null) {
             price = product.getPrice().toString();
+        }
+
+        if (product.getLmCode().equals(LmCodeTypeEnum.DIMENSIONAL.getValue())) {
+            quantity = 9.99;
         }
 
         basket.setId("128510514");
@@ -160,7 +165,7 @@ public class BitrixHelper extends BaseHelper {
         basket.setName(product.getTitle());
         basket.setPrice(price);
         basket.setTax(18);
-        basket.setQuantity("10");//TODO: it's make sense to parametrise
+        basket.setQuantity(Double.toString(quantity));//TODO: it's make sense to parametrise
         basket.setWeight(weight);
         //TODO: ADD LT Products
         return basket;
@@ -176,7 +181,7 @@ public class BitrixHelper extends BaseHelper {
         payload.setCanceled("N");
         payload.setStatusId("N");
         payload.setDateStatus(dateTime.toString());
-        payload.setPriceDelivery(orderData.priceDelivery);
+        payload.setPriceDelivery(orderData.deliveryPrice);
         payload.setAllowDelivery("Y");
         payload.setPrice("10156.00");
         payload.setCurrency("RUB");
@@ -250,7 +255,7 @@ public class BitrixHelper extends BaseHelper {
                 dateTime.plusDays(1).toLocalDate()
                         .format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
         payload.setTime("08:00 - 13:00");
-        payload.setType(orderData.getDeliveryType());
+        payload.setType(orderData.getDeliveryType().getType());
         payload.setSameDay(orderData.sameDay);
         payload.setAddressNotFound(false);
         payload.setCoordinates(convertCoordinates(shop));
@@ -258,20 +263,20 @@ public class BitrixHelper extends BaseHelper {
         payload.setLift(orderData.lift);
         payload.setExtraBig(0);
         payload.setComment(comment);
-        payload.setDeliveryPrice(orderData.deliveryPrice);
+        payload.setDeliveryPrice(orderData.deliveryFullPrice);
         payload.setLiftPrice(orderData.liftPrice);
         payload.setExtraBig2(0);
-        payload.setDeliveryServices(orderData.deliveryServiceType);
+        payload.setDeliveryServices(orderData.getDeliveryType().getService());
         payload.setLongTail(0);
         payload.setCarryPrice("");
         payload.setCarryLength("");
 //        payload.setPvzData(orderData.pvzData);
 
         payload.setAddress(makeAddressPayload());
-        if (orderData.getDeliveryType().equals(DeliveryServiceTypeEnum.PICKUP.getType())) {
+        if (orderData.getDeliveryType().getType().equals(DeliveryServiceTypeEnum.PICKUP.getType())) {
             payload.setPickupShop(makePickupShopPayload(shop));
         }
-        if (orderData.getDeliveryType().equals(DeliveryServiceTypeEnum.DELIVERY_PVZ.getType())) {
+        if (orderData.getDeliveryType().getType().equals(DeliveryServiceTypeEnum.DELIVERY_PVZ.getType())) {
             payload.setPvzData(makePvzPayload());
         }
 
