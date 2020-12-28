@@ -8,9 +8,11 @@ import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.core.UserSessionData;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
+import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magportal.ui.WebBaseSteps;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
 import io.qameta.allure.Step;
+import java.util.ArrayList;
 import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -92,6 +94,16 @@ public abstract class BasePAOTest extends WebBaseSteps {
 
     protected String getAnyLmCodeProductWithTopEM() {
         return getAnyLmCodeProductWithTopEM(null);
+    }
+
+    protected List<CartProductOrderData> makeCartProductsList(int productCount, Double quantity) {
+        List<CartProductOrderData> productOrderDataList = new ArrayList<>();
+        for (int i = 0; i < productCount; i++) {
+            CartProductOrderData productOrderData = new CartProductOrderData(productList.get(i));
+            productOrderData.setQuantity(quantity);
+            productOrderDataList.add(productOrderData);
+        }
+        return productOrderDataList;
     }
 
 }

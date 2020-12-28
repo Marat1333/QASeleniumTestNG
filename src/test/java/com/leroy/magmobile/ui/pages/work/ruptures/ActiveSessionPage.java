@@ -26,6 +26,9 @@ public class ActiveSessionPage extends SessionPage {
     @AppFindBy(text = "Создана заявка на отзыв")
     Element recallRequestHasBeenCreatedMsgLbl;
 
+    @AppFindBy(text = "Коррекция С3 отправлена")
+    Element stockCorrectionHasBeenCreatedMsgLbl;
+
     AndroidScrollView<RuptureData> ruptureCardScrollView = new AndroidScrollView<>(driver,
             AndroidScrollView.TYPICAL_LOCATOR, "./*/android.view.ViewGroup[android.view.ViewGroup]/descendant::*[3]",
             RuptureWidget.class);
@@ -87,6 +90,12 @@ public class ActiveSessionPage extends SessionPage {
         return this;
     }
 
+    @Step("Проверить, что отображается сообщение о сделанной коррекции стока")
+    public ActiveSessionPage shouldStockCorrectionHasBeenCreatedMsgIsVisible() {
+        anAssert.isElementVisible(stockCorrectionHasBeenCreatedMsgLbl);
+        return this;
+    }
+
     @Step("Проверить, что перебоя нет в списке")
     public ActiveSessionPage shouldRuptureIsNotInList(String lmCode) throws Exception {
         if (!ruptureCardScrollView.isVisible()) {
@@ -134,6 +143,14 @@ public class ActiveSessionPage extends SessionPage {
         int actualCount = ruptureCardScrollView.getRowCount();
         anAssert.isEquals(actualCount, ruptureQuantity, "Неверное кол-во перебоев");
         return this;
+    }
+
+    @Step("Проверить, что коррекция стока отправлена")
+    public void checkStockCorrectionStatus (String lmCode, boolean correctionStatus) {
+        Element el = E(String.format("//android.widget.TextView[@content-desc='lmCode' and contains(@text,'%s')]/.." +
+                "/following-sibling::android.view.ViewGroup[descendant::android.widget.TextView[@text='Коррекция С3 отправлена']]"
+                , lmCode));
+        anAssert.isEquals(el.isVisible(), correctionStatus, "Статус коррекции для " + lmCode + " не совпадает с ожидаемым");
     }
 
     @Override

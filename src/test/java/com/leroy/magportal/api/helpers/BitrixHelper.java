@@ -70,7 +70,7 @@ public class BitrixHelper extends BaseHelper {
         return this.createOnlineOrders(1, orderData, 3, TPNET).stream().findFirst().get();
     }
 
-    @Step("Creates Online order with 3 LmCodes with TpNet payment method")
+    @Step("Creates Online order with 3 LmCodes with Card payment method")
     public BitrixSolutionResponse createOnlineOrderCardPayment(OnlineOrderTypeData orderData) {
         return this.createOnlineOrders(1, orderData, 3, CARD).stream().findFirst().get();
     }

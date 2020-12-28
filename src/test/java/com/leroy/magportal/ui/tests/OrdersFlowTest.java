@@ -1,17 +1,23 @@
 package com.leroy.magportal.ui.tests;
 
+import static com.leroy.core.matchers.Matchers.successful;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.constants.sales.SalesDocumentsConst;
-import com.leroy.core.ContextProvider;
+import com.leroy.constants.sales.SalesDocumentsConst.GiveAwayPoints;
 import com.leroy.core.UserSessionData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
-import com.leroy.magmobile.api.data.sales.orders.GiveAwayData;
 import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.clients.PickingTaskClient;
 import com.leroy.magportal.api.data.picking.PickingTaskDataList;
 import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.magportal.api.helpers.PaymentHelper;
+import com.leroy.magportal.ui.pages.orders.AssemblyOrderPage;
+import com.leroy.magportal.ui.pages.orders.GiveAwayShipOrderPage;
+import com.leroy.magportal.ui.pages.orders.OrderCreatedContentPage;
+import com.leroy.magportal.ui.pages.orders.OrderHeaderPage;
 import com.leroy.magportal.ui.constants.TestDataConstants;
 import com.leroy.magportal.ui.constants.picking.PickingConst;
 import com.leroy.magportal.ui.models.picking.PickingProductCardData;
@@ -22,31 +28,21 @@ import com.leroy.magportal.ui.pages.orders.*;
 import com.leroy.magportal.ui.pages.orders.widget.OrderProductControlCardWidget;
 import com.leroy.magportal.ui.pages.picking.PickingContentPage;
 import com.leroy.magportal.ui.pages.picking.PickingPage;
-import com.leroy.magportal.ui.pages.picking.modal.SplitPickingModalStep1;
-import com.leroy.magportal.ui.pages.picking.modal.SplitPickingModalStep2;
-import com.leroy.magportal.ui.pages.picking.modal.SuccessfullyCreatedAssemblyModal;
-import com.leroy.utils.ParserUtil;
-import org.apache.commons.lang3.RandomStringUtils;
+import java.util.List;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static com.leroy.core.matchers.Matchers.successful;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 public class OrdersFlowTest extends BasePAOTest {
 
     @Inject
-    PAOHelper helper;
+    private PAOHelper helper;
     @Inject
-    OrderClient orderHelper;
+    private OrderClient orderClient;
     @Inject
     private PaymentHelper paymentHelper;
+    @Inject
+    private PickingTaskClient pickingTaskClient;
 
     @Override
     protected UserSessionData initTestClassUserSessionDataTemplate() {
@@ -58,20 +54,15 @@ public class OrdersFlowTest extends BasePAOTest {
     private String orderId;
     private String pickingTaskId;
 
-    private void initCreateOrder(int productCount, SalesDocumentsConst.States orderStatus) throws Exception {
-        List<CartProductOrderData> productOrderDataList = new ArrayList<>();
-        for (int i = 0; i < productCount; i++) {
-            CartProductOrderData productOrderData = new CartProductOrderData(productList.get(i));
-            productOrderData.setQuantity(2.0);
-            productOrderDataList.add(productOrderData);
-        }
+    private void initCreateOrder(int productCount, SalesDocumentsConst.States orderStatus) {
+        List<CartProductOrderData> productOrderDataList = makeCartProductsList(productCount, 2.0);
         switch (orderStatus) {
             case ALLOWED_FOR_PICKING:
                 orderId = helper.createConfirmedOrder(productOrderDataList, true).getOrderId();
                 break;
             case PICKED:
                 orderId = helper.createConfirmedOrder(productOrderDataList, true).getOrderId();
-                orderHelper.moveNewOrderToStatus(orderId, orderStatus);
+                orderClient.moveNewOrderToStatus(orderId, orderStatus);
                 break;
             default:
                 orderId = helper.createConfirmedOrder(productOrderDataList, false).getOrderId();
@@ -80,72 +71,57 @@ public class OrdersFlowTest extends BasePAOTest {
 
     }
 
-    private void initCreateOrder(int productCount, SalesDocumentsConst.GiveAwayPoints giveAwayPoint) throws Exception {
-        List<CartProductOrderData> productOrderDataList = new ArrayList<>();
-        for (int i = 0; i < productCount; i++) {
-            CartProductOrderData productOrderData = new CartProductOrderData(productList.get(i));
-            productOrderData.setQuantity(2.0);
-            productOrderDataList.add(productOrderData);
+    private void initCreateOrder(int productCount,
+            SalesDocumentsConst.GiveAwayPoints giveAwayPoint) {
+
+        if (giveAwayPoint == null) {
+            giveAwayPoint = GiveAwayPoints.PICKUP;
         }
-        GiveAwayData giveAwayData = new GiveAwayData();
-        giveAwayData.setDateAsLocalDateTime(LocalDateTime.now().plusDays(1));
-        giveAwayData.setShopId(
-                Integer.valueOf(ContextProvider.getContext().getUserSessionData().getUserShopId()));
-        if (giveAwayPoint != null) {
-            giveAwayData.setPoint(giveAwayPoint.getApiVal());
-        } else {
-            giveAwayData.setPoint(SalesDocumentsConst.GiveAwayPoints.PICKUP.getApiVal());
-        }
-        orderId = helper.createConfirmedOrder(productOrderDataList, giveAwayData, false).getOrderId();
+
+        orderId = helper
+                .createConfirmedOrder(makeCartProductsList(productCount, 2.0), giveAwayPoint, false)
+                .getOrderId();
     }
 
-    private void initCreateOrder(int productCount, SalesDocumentsConst.GiveAwayPoints giveAwayPoint, SalesDocumentsConst.States orderStatus) throws Exception {
-        List<CartProductOrderData> productOrderDataList = new ArrayList<>();
-        for (int i = 0; i < productCount; i++) {
-            CartProductOrderData productOrderData = new CartProductOrderData(productList.get(i));
-            productOrderData.setQuantity(2.0);
-            productOrderDataList.add(productOrderData);
+    private void initCreateOrder(int productCount, SalesDocumentsConst.GiveAwayPoints giveAwayPoint,
+            SalesDocumentsConst.States orderStatus) {
+        List<CartProductOrderData> productOrderDataList = makeCartProductsList(productCount, 2.0);
+
+        if (giveAwayPoint == null) {
+            giveAwayPoint = GiveAwayPoints.PICKUP;
         }
-        GiveAwayData giveAwayData = new GiveAwayData();
-        giveAwayData.setDateAsLocalDateTime(LocalDateTime.now().plusDays(1));
-        giveAwayData.setShopId(
-                Integer.valueOf(ContextProvider.getContext().getUserSessionData().getUserShopId()));
-        if (giveAwayPoint != null) {
-            giveAwayData.setPoint(giveAwayPoint.getApiVal());
-        } else {
-            giveAwayData.setPoint(SalesDocumentsConst.GiveAwayPoints.PICKUP.getApiVal());
-        }
+
         switch (orderStatus) {
             case ALLOWED_FOR_PICKING:
             case PICKED:
-                orderId = helper.createConfirmedOrder(productOrderDataList, giveAwayData, true).getOrderId();
-                orderHelper.moveNewOrderToStatus(orderId, orderStatus);
+                orderId = helper.createConfirmedOrder(productOrderDataList, giveAwayPoint, true)
+                        .getOrderId();
+                orderClient.moveNewOrderToStatus(orderId, orderStatus);
                 break;
             default:
-                orderId = helper.createConfirmedOrder(productOrderDataList, giveAwayData, false).getOrderId();
+                orderId = helper.createConfirmedOrder(productOrderDataList, giveAwayPoint, false)
+                        .getOrderId();
                 break;
         }
     }
 
 
-    private void initCreateOrder(int productCount) throws Exception {
+    private void initCreateOrder(int productCount) {
         initCreateOrder(productCount, SalesDocumentsConst.States.CONFIRMED);
     }
 
-    private void initFindPickingTask() throws Exception {
-        OrderClient orderClient = apiClientProvider.getOrderClient();
+    private void initFindPickingTask() {
         orderClient.waitUntilOrderGetStatus(orderId,
                 SalesDocumentsConst.States.ALLOWED_FOR_PICKING, null);
-        PickingTaskClient pickingTaskClient = apiClientProvider.getPickingTaskClient();
-        Response<PickingTaskDataList> respPickingTasks = pickingTaskClient.searchForPickingTasks(orderId);
+        Response<PickingTaskDataList> respPickingTasks = pickingTaskClient
+                .searchForPickingTasks(orderId);
         assertThat(respPickingTasks, successful());
         pickingTaskId = respPickingTasks.asJson().getItems().get(0).getTaskId();
     }
 
-    @AfterClass(enabled = false)
-    private void cancelConfirmedOrder() throws Exception {
+    @AfterClass(enabled = true)
+    private void cancelConfirmedOrder() {
         if (orderId != null) {
-            OrderClient orderClient = apiClientProvider.getOrderClient();
             Response<JsonNode> resp = orderClient.cancelOrder(orderId);
             assertThat(resp, successful());
         }
@@ -163,15 +139,16 @@ public class OrdersFlowTest extends BasePAOTest {
         initFindPickingTask();
 
         // Step 2:
-        step("Ввести номер заказа из корзины и нажать кнопку 'Показать заказы'" + "Заказ" + " " + orderId);
+        step("Ввести номер заказа из корзины и нажать кнопку 'Показать заказы'. Заказ: " + orderId);
         orderPage.enterSearchTextAndSubmit(orderId);
         orderPage.shouldDocumentIsPresent(orderId);
-        orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal());
+        orderPage.shouldDocumentListContainsOnlyWithStatuses(
+                SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal());
         orderPage.shouldDocumentCountIs(1);
 
         // Step 3:
 
-        step("Кликнуть на заказ" + " " + orderId);
+        step("Кликнуть на заказ: " + orderId);
         orderPage.clickDocumentInLeftMenu(orderId);
         OrderCreatedContentPage createdContentPage = new OrderCreatedContentPage();
         createdContentPage.shouldOrderProductCountIs(1);
@@ -203,11 +180,11 @@ public class OrdersFlowTest extends BasePAOTest {
         PickingPage pickingPage = new PickingPage();
         pickingPage.clickOrderLinkAndGoToOrderPage();
 
-
         // Step 10:
         step("Проверить статус собранного заказа");
         orderPage.shouldDocumentIsPresent(orderId);
-        orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.PICKED.getUiVal());
+        orderPage.shouldDocumentListContainsOnlyWithStatuses(
+                SalesDocumentsConst.States.PICKED.getUiVal());
         orderPage.shouldDocumentCountIs(1);
     }
 
@@ -224,25 +201,26 @@ public class OrdersFlowTest extends BasePAOTest {
     }
 
 
-    private void testOrderOffline(SalesDocumentsConst.GiveAwayPoints giveAwayPoint) throws Exception{
+    private void testOrderOffline(SalesDocumentsConst.GiveAwayPoints giveAwayPoint)
+            throws Exception {
         // Создать заказ в статусе "Готов к сборке"
 
-
-        initCreateOrder(1,giveAwayPoint, SalesDocumentsConst.States.ALLOWED_FOR_PICKING);
+        initCreateOrder(1, giveAwayPoint, SalesDocumentsConst.States.ALLOWED_FOR_PICKING);
 
         // Step 1:
         step("Открыть страницу с Заказами");
         OrderHeaderPage orderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
 
         // Step 2:
-        step("Найти созданный заказ с статусе 'Готов к Сборке' с номером" + " " + orderId);
+        step("Найти созданный заказ с статусе 'Готов к Сборке' с номером: " + orderId);
         orderPage.enterSearchTextAndSubmit(orderId);
         orderPage.shouldDocumentIsPresent(orderId);
-        orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal());
+        orderPage.shouldDocumentListContainsOnlyWithStatuses(
+                SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal());
         orderPage.shouldDocumentCountIs(1);
 
         // Step 3:
-        step("Кликнуть на заказ" + " " + orderId);
+        step("Кликнуть на заказ: " + orderId);
         orderPage.clickDocumentInLeftMenu(orderId);
         OrderCreatedContentPage createdContentPage = new OrderCreatedContentPage();
         createdContentPage.shouldOrderProductCountIs(1);
@@ -274,12 +252,12 @@ public class OrdersFlowTest extends BasePAOTest {
         PickingPage pickingPage = new PickingPage();
         pickingPage.clickOrderLinkAndGoToOrderPage();
 
-
         // Step 10:
         step("Проверить статус собранного заказа");
         orderPage.refreshDocumentList();
         orderPage.shouldDocumentIsPresent(orderId);
-        orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.PICKED.getUiVal());
+        orderPage.shouldDocumentListContainsOnlyWithStatuses(
+                SalesDocumentsConst.States.PICKED.getUiVal());
         orderPage.shouldDocumentCountIs(1);
 
         // Step 11:
@@ -299,7 +277,8 @@ public class OrdersFlowTest extends BasePAOTest {
         step("Обновить список документов и проверить статус выданного заказа");
         orderPage.refreshDocumentList();
         orderPage.shouldDocumentIsPresent(orderId);
-        orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.GIVEN_AWAY.getUiVal());
+        orderPage.shouldDocumentListContainsOnlyWithStatuses(
+                SalesDocumentsConst.States.GIVEN_AWAY.getUiVal());
         orderPage.shouldDocumentCountIs(1);
     }
 
