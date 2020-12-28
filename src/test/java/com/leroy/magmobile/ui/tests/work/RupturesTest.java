@@ -1094,18 +1094,18 @@ public class RupturesTest extends AppBaseSteps {
         finishedSessionPage.verifyRequiredElements();
 
         // Step 5
-        step("Перейти во все задачи дважды проскроллить ждо конца экрана");
+        step("Перейти во все задачи дважды проскроллить до конца экрана");
         FinishedSessionRupturesActionsPage finishedSessionRupturesActionsPage = finishedSessionPage.goToActionPage(Action.ALL_ACTIONS);
         finishedSessionRupturesActionsPage.shouldRuptureCountIsCorrect(rupturesCount);
 
         // Step 6
-        step("Перейти в выполненные задачи дважды проскроллить ждо конца экрана");
+        step("Перейти в выполненные задачи дважды проскроллить до конца экрана");
         finishedSessionRupturesActionsPage = finishedSessionRupturesActionsPage.goToDoneTasks();
         finishedSessionRupturesActionsPage.shouldRuptureCountIsCorrect(rupturesCount);
 
         // Step 7
         step("Вернуться на экран завершенной сессии, Перейти в 'поставить извиняшку'" +
-                " дважды проскроллить ждо конца экрана");
+                " дважды проскроллить до конца экрана");
         finishedSessionRupturesActionsPage.goBack();
         finishedSessionRupturesActionsPage = new FinishedSessionRupturesActionsPage();
         finishedSessionRupturesActionsPage.goBack();
@@ -1116,7 +1116,7 @@ public class RupturesTest extends AppBaseSteps {
         // Step 8
         step("Вернуться на экран завершенной сессии, Перейти в 'Убрать ценник'," +
                 " Перейти в выполненные задачи," +
-                " дважды проскроллить ждо конца экрана");
+                " дважды проскроллить до конца экрана");
         finishedSessionRupturesActionsPage.goBack();
         finishedSessionPage = new FinishedSessionPage();
         finishedSessionRupturesActionsPage = finishedSessionPage.goToActionPage(Action.REMOVE_PRICE_TAG);
