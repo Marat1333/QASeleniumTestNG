@@ -38,6 +38,22 @@ public class ControlOrderPage extends OrderCreatedPage {
                 "Неверное кол-во 'Заказано' у " + (index + 1) + "-ого товара");
         return this;
     }
+
+    @Step("Проверить, что кол-во 'Собрано' у {index}-ого товара равно {value}")
+    public ControlOrderPage shouldPickedQuantityIs(int index, int value) throws Exception {
+        index--;
+        anAssert.isEquals(productCards.get(index).getCollectedQuantity(),String.valueOf(value),
+                "Неверное кол-во 'Собрано' у " + (index + 1) + "-ого товара");
+        return this;
+    }
+
+    @Step("Проверить, что кол-во 'Контроль' у {index}-ого товара равно {value}")
+    public ControlOrderPage shouldControledQuantityIs(int index, int value) throws Exception {
+        index--;
+        anAssert.isEquals(productCards.get(index).getControlledQuantity(), String.valueOf(value),
+                "Неверное кол-во 'Контроль' у " + (index + 1) + "-ого товара");
+        return this;
+    }
 }
     
 

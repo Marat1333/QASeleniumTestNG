@@ -18,11 +18,11 @@ public class ControlProductCardData {
     private Integer toGiveAwayQuantity;
 
 
-    public void increaseToGiveAwayQuantity(int val) { this.toGiveAwayQuantity += val;
+    /*public void increaseToGiveAwayQuantity(int val) { this.toGiveAwayQuantity += val;
     }
 
     public void decreaseToGiveAwayQuantity(int val) {
         this.toGiveAwayQuantity -= val;
-    }
+    }*/
 
 }

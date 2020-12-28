@@ -328,7 +328,18 @@ public class OrdersFlowTest extends BasePAOTest {
         // Step 4:
         step("Перейти на вкладку Контроль в свернутом виде");
         ControlOrderPage controlPage = createdContentPage.clickGoToControlTab();
+
+        // Step 5:
+        step("Сравнить Заказанное количество");
         controlPage.shouldOrderedQuantityIs(1,2);
+
+        // Step 6:
+        step("Сравнить Собранное количество");
+        controlPage.shouldPickedQuantityIs(1,2);
+
+        // Step 7:
+        step("Сравнить количество на Контроль");
+        controlPage.shouldControledQuantityIs(1,0);
 
         // Step X:
         //step("Развернуть поля карточки заказа");
