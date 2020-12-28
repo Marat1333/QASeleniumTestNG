@@ -1,16 +1,12 @@
 package com.leroy.magmobile.ui.pages.work.ruptures.data;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class TaskData {
     private String taskName;
     private int doneTasksCount;
     private int allTasksCount;
-
-    public TaskData(String taskName, int doneTasksCount, int allTasksCount) {
-        this.taskName = taskName;
-        this.doneTasksCount = doneTasksCount;
-        this.allTasksCount = allTasksCount;
-    }
 }

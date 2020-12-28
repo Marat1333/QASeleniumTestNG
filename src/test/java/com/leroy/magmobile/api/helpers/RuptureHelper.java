@@ -23,7 +23,7 @@ public class RuptureHelper extends BaseHelper {
     @Inject
     RupturesClient rupturesClient;
 
-    @Step("Create session with products")
+    @Step("Создать сессию с продуктами")
     public int createSession(List<RuptureProductData> productDataList) {
 
         ReqRuptureSessionData rupturePostData = new ReqRuptureSessionData();
@@ -46,7 +46,7 @@ public class RuptureHelper extends BaseHelper {
         return sessionId;
     }
 
-    @Step("Create few sessions in department")
+    @Step("Создать несколько сессий")
     public List<Integer> createFewSessions(int sessionsCount) {
         List<Integer> sessionIdList = new ArrayList<>();
         RuptureProductData productData = new RuptureProductData();
@@ -59,12 +59,12 @@ public class RuptureHelper extends BaseHelper {
         return sessionIdList;
     }
 
-    @Step("Finish session with id = {sessionId}")
+    @Step("Завершить сессию по id {sessionId}")
     public void finishSession(int sessionId) {
         finishFewSessions(Collections.singletonList(sessionId));
     }
 
-    @Step("Finish few sessions")
+    @Step("Завершить несколько сессий")
     public void finishFewSessions(List<Integer> sessionsIdList) {
         for (Integer each : sessionsIdList) {
             Response<JsonNode> resp = rupturesClient.finishSession(each);
@@ -72,7 +72,7 @@ public class RuptureHelper extends BaseHelper {
         }
     }
 
-    @Step("Delete all session in the current department")
+    @Step("Удалить все сессии в отделе")
     public void deleteAllSessionInCurrentDepartment() {
         Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(100);
         assertThat("getSession", resp, successful());
@@ -83,7 +83,7 @@ public class RuptureHelper extends BaseHelper {
         }
     }
 
-    @Step("Delete few sessions")
+    @Step("Удалить несколько сессий")
     public void deleteSessions(int... sessions) {
         for (int each : sessions) {
             Response<JsonNode> respDelete = rupturesClient.deleteSession(each);
@@ -91,21 +91,21 @@ public class RuptureHelper extends BaseHelper {
         }
     }
 
-    @Step("Get rupture products from session {sessionId}")
+    @Step("Получить список продуктов сессии {sessionId}")
     public RuptureProductDataList getProducts(int sessionId) {
         Response<RuptureProductDataList> resp = rupturesClient.getProductsWithPagination(sessionId, 1, 100);
         assertThat(resp, successful());
         return resp.asJson();
     }
 
-    @Step("Get active sessions")
+    @Step("Получить активные сессии")
     public ResRuptureSessionDataList getActiveSessions() {
         Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions("active", 10);
         assertThat(resp, successful());
         return resp.asJson();
     }
 
-    @Step("Get standard Active session id with products")
+    @Step("Получить стандартные Активные сессии в которых есть продукты")
     public int getActiveSessionIdWithProducts() {
         List<ResRuptureSessionData> activeSessionsData = getActiveSessions().getItems();
         assertThat("There is no active sessions", activeSessionsData, hasSize(greaterThan(0)));
@@ -118,9 +118,10 @@ public class RuptureHelper extends BaseHelper {
         return 0;
     }
 
-    @Step("Check that session is finished")
+    @Step("Убедиться, что сессия завершена")
     public void checkSessionIsFinished(int sessionId) {
         Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions("finished", 100);
+        assertThat(resp, successful());
         List<ResRuptureSessionData> finishedSessions = resp.asJson().getItems();
         for (ResRuptureSessionData session:finishedSessions) {
             if (session.getSessionId() == sessionId)
