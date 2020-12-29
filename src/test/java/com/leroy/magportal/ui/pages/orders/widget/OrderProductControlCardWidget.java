@@ -6,8 +6,6 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magportal.ui.models.orders.ControlProductCardData;
-import com.leroy.magportal.ui.models.orders.ToGiveAwayProductCardData;
-import com.leroy.magportal.ui.pages.orders.GiveAwayShipOrderPage;
 import com.leroy.magportal.ui.webelements.CardWebWidget;
 import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
