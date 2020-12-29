@@ -69,16 +69,6 @@ public class PickingTest extends BasePAOTest {
 
     }
 
-    /*private void initCreateOrder(int productCount, GiveAwayPoints giveAwayPoint) {
-        List<CartProductOrderData> productOrderDataList = makeCartProductsList(productCount, 2.0);
-
-        if (giveAwayPoint == null) {
-            giveAwayPoint = GiveAwayPoints.PICKUP;
-        }
-        orderId = helper.createConfirmedOrder(productOrderDataList, giveAwayPoint, false)
-                .getOrderId();
-    }*/
-
     private void initCreateOrder(int productCount) {
         initCreateOrder(productCount, States.CONFIRMED);
     }
