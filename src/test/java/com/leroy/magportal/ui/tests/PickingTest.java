@@ -6,7 +6,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.constants.sales.SalesDocumentsConst;
-import com.leroy.constants.sales.SalesDocumentsConst.GiveAwayPoints;
 import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.core.UserSessionData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
@@ -70,7 +69,7 @@ public class PickingTest extends BasePAOTest {
 
     }
 
-    private void initCreateOrder(int productCount, GiveAwayPoints giveAwayPoint) {
+    /*private void initCreateOrder(int productCount, GiveAwayPoints giveAwayPoint) {
         List<CartProductOrderData> productOrderDataList = makeCartProductsList(productCount, 2.0);
 
         if (giveAwayPoint == null) {
@@ -78,7 +77,7 @@ public class PickingTest extends BasePAOTest {
         }
         orderId = helper.createConfirmedOrder(productOrderDataList, giveAwayPoint, false)
                 .getOrderId();
-    }
+    }*/
 
     private void initCreateOrder(int productCount) {
         initCreateOrder(productCount, States.CONFIRMED);

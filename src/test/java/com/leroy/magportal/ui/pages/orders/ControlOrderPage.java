@@ -1,11 +1,8 @@
 package com.leroy.magportal.ui.pages.orders;
 
 import com.leroy.core.annotations.WebFindBy;
-import com.leroy.core.web_elements.general.Button;
 import com.leroy.magportal.ui.models.orders.ControlProductCardData;
-import com.leroy.magportal.ui.models.orders.ToGiveAwayProductCardData;
 import com.leroy.magportal.ui.pages.orders.widget.OrderProductControlCardWidget;
-import com.leroy.magportal.ui.pages.orders.widget.OrderProductToGiveAwayCardWidget;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import io.qameta.allure.Step;
 
@@ -48,7 +45,7 @@ public class ControlOrderPage extends OrderCreatedPage {
     }
 
     @Step("Проверить, что кол-во 'Контроль' у {index}-ого товара равно {value}")
-    public ControlOrderPage shouldControledQuantityIs(int index, int value) throws Exception {
+    public ControlOrderPage shouldControlledQuantityIs(int index, int value) throws Exception {
         index--;
         anAssert.isEquals(productCards.get(index).getControlledQuantity(), String.valueOf(value),
                 "Неверное кол-во 'Контроль' у " + (index + 1) + "-ого товара");

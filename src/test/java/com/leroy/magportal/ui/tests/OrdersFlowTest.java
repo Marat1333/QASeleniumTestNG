@@ -18,14 +18,7 @@ import com.leroy.magportal.ui.pages.orders.AssemblyOrderPage;
 import com.leroy.magportal.ui.pages.orders.GiveAwayShipOrderPage;
 import com.leroy.magportal.ui.pages.orders.OrderCreatedContentPage;
 import com.leroy.magportal.ui.pages.orders.OrderHeaderPage;
-import com.leroy.magportal.ui.constants.TestDataConstants;
-import com.leroy.magportal.ui.constants.picking.PickingConst;
-import com.leroy.magportal.ui.models.picking.PickingProductCardData;
-import com.leroy.magportal.ui.models.picking.PickingTaskData;
-import com.leroy.magportal.ui.models.picking.ShortPickingTaskData;
-import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.pages.orders.*;
-import com.leroy.magportal.ui.pages.orders.widget.OrderProductControlCardWidget;
 import com.leroy.magportal.ui.pages.picking.PickingContentPage;
 import com.leroy.magportal.ui.pages.picking.PickingPage;
 import java.util.List;
@@ -69,18 +62,6 @@ public class OrdersFlowTest extends BasePAOTest {
                 break;
         }
 
-    }
-
-    private void initCreateOrder(int productCount,
-            SalesDocumentsConst.GiveAwayPoints giveAwayPoint) {
-
-        if (giveAwayPoint == null) {
-            giveAwayPoint = GiveAwayPoints.PICKUP;
-        }
-
-        orderId = helper
-                .createConfirmedOrder(makeCartProductsList(productCount, 2.0), giveAwayPoint, false)
-                .getOrderId();
     }
 
     private void initCreateOrder(int productCount, SalesDocumentsConst.GiveAwayPoints giveAwayPoint,
@@ -318,12 +299,7 @@ public class OrdersFlowTest extends BasePAOTest {
 
         // Step 7:
         step("Сравнить количество на Контроль");
-        controlPage.shouldControledQuantityIs(1,0);
-
-        // Step X:
-        //step("Развернуть поля карточки заказа");
-        //controlPage.expandProductCardFields(1);
-
+        controlPage.shouldControlledQuantityIs(1,0);
 
     }
 
