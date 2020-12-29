@@ -20,11 +20,8 @@ public class TaskWidget extends CardWidget<TaskData> {
 
     @Override
     public TaskData collectDataFromPage(String pageSource) {
-        TaskData data = new TaskData();
-        data.setTaskName(taskNameLbl.getText(pageSource));
         String[] tmp = finishedAllTasksRatioLbl.getText(pageSource).split("/");
-        data.setDoneTasksCount(Integer.parseInt(tmp[0]));
-        data.setAllTasksCount(Integer.parseInt(tmp[1]));
+        TaskData data = new TaskData(taskNameLbl.getText(pageSource), Integer.parseInt(tmp[0]), Integer.parseInt(tmp[1]));
         return data;
     }
 
