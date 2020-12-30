@@ -11,7 +11,9 @@ import com.leroy.core.UserSessionData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.clients.PickingTaskClient;
+import com.leroy.magportal.api.constants.OnlineOrderTypeConst;
 import com.leroy.magportal.api.data.picking.PickingTaskDataList;
+import com.leroy.magportal.api.helpers.BitrixHelper;
 import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.magportal.api.helpers.PaymentHelper;
 import com.leroy.magportal.ui.pages.orders.AssemblyOrderPage;
@@ -36,6 +38,8 @@ public class OrdersFlowTest extends BasePAOTest {
     private PaymentHelper paymentHelper;
     @Inject
     private PickingTaskClient pickingTaskClient;
+    @Inject
+    private BitrixHelper bitrixHelper;
 
     @Override
     protected UserSessionData initTestClassUserSessionDataTemplate() {
@@ -91,6 +95,9 @@ public class OrdersFlowTest extends BasePAOTest {
         initCreateOrder(productCount, SalesDocumentsConst.States.CONFIRMED);
     }
 
+
+
+
     private void initFindPickingTask() {
         orderClient.waitUntilOrderGetStatus(orderId,
                 SalesDocumentsConst.States.ALLOWED_FOR_PICKING, null);
@@ -100,7 +107,7 @@ public class OrdersFlowTest extends BasePAOTest {
         pickingTaskId = respPickingTasks.asJson().getItems().get(0).getTaskId();
     }
 
-    @AfterClass(enabled = true)
+    @AfterClass(enabled = false)
     private void cancelConfirmedOrder() {
         if (orderId != null) {
             Response<JsonNode> resp = orderClient.cancelOrder(orderId);
@@ -301,6 +308,24 @@ public class OrdersFlowTest extends BasePAOTest {
         step("Сравнить количество на Контроль");
         controlPage.shouldControlledQuantityIs(1,0);
 
+    }
+
+    @Test(description = "C22829616 Заказы. Процесс обработки заказа. Онлайн. Самовывоз. Предоплата", groups = NEED_PRODUCTS_GROUP)
+    public void testOrderFlowOnlinePrepaymentDelivery() throws Exception {
+        //orderId = bitrixHelper.createOnlineOrderCardPayment(OnlineOrderTypeConst.DELIVERY_TO_DOOR).getSolutionId();
+        //initCreateOrder(1,SalesDocumentsConst.GiveAwayPoints.PICKUP, SalesDocumentsConst.States.ALLOWED_FOR_PICKING);
+
+        // Step 1:
+        step("Открыть страницу с Заказами");
+        OrderHeaderPage orderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
+        orderId = bitrixHelper.createOnlineOrderCardPayment(OnlineOrderTypeConst.DELIVERY_TO_DOOR).getSolutionId();
+
+        // Step 2:
+        step("Найти созданный заказ в статусе 'Готов к Сборке' с номером" + " " + orderId);
+        orderPage.enterSearchTextAndSubmit(orderId);
+        orderPage.shouldDocumentIsPresent(orderId);
+        orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal());
+        orderPage.shouldDocumentCountIs(1);
     }
 
 
