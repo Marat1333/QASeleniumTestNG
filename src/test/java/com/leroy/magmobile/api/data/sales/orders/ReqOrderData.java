@@ -16,4 +16,5 @@ public class ReqOrderData {
     private LocalDateTime dateOfGiveAway;
     private List<CustomerData> customers = new ArrayList<>();
     private List<ReqOrderProductData> products = new ArrayList<>();
+    private boolean withDelivery;
 }

@@ -130,10 +130,10 @@ public class OrderTest extends BaseProjectApiTest {
     public void testSetPinCode() {
         if (orderData == null)
             throw new IllegalArgumentException("order data hasn't been created");
-        String validPinCode = paoHelper.getValidPinCode();
+        String validPinCode = paoHelper.getValidPinCode(orderData.getDelivery());
         Response<JsonNode> response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
         if (response.getStatusCode() == StatusCodes.ST_400_BAD_REQ) {
-            validPinCode = paoHelper.getValidPinCode();
+            validPinCode = paoHelper.getValidPinCode(orderData.getDelivery());
             response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
         }
         orderClient.assertThatPinCodeIsSet(response);

@@ -110,9 +110,9 @@ public class FinishedSessionRupturesActionsPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что по задаче не осталось перебоев")
-    public FinishedSessionRupturesActionsPage shouldAllRuptureTaskHaveDone() {
+    public FinishedSessionRupturesActionsPage shouldAllRuptureTaskHaveDone(int doneTasksCounter, int allTasks) {
         shouldNoActiveRuptureTasksAreAvailable();
-        shouldTasksRatioCounterIsCorrect(0);
+        shouldTasksRatioCounterIsCorrect(doneTasksCounter, allTasks);
         return this;
     }
 
