@@ -105,6 +105,7 @@ public class RupturesClient extends BaseMashupClient {
     public Response<RuptureProductDataList> getProducts(
             Object sessionId, Boolean actionState, Integer action, Integer[] productState, Integer startFrom, Integer pageSize) {
         RupturesSessionProductsRequest req = new RupturesSessionProductsRequest();
+        req.setShopIdHeader(getUserSessionData().getUserShopId());
         if (sessionId != null)
             req.setSessionId(sessionId);
         if (actionState != null)
