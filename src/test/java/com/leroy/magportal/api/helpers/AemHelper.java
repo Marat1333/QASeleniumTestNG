@@ -4,13 +4,10 @@ import static com.leroy.magportal.api.constants.PaymentMethodEnum.API;
 import static com.leroy.magportal.api.constants.PaymentMethodEnum.CARD;
 import static com.leroy.magportal.api.constants.PaymentMethodEnum.TPNET;
 import static com.leroy.magportal.ui.constants.TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+import static com.leroy.magportal.ui.constants.TestDataConstants.SIMPLE_CUSTOMER_DATA_2;
 
 import com.google.inject.Inject;
 import com.leroy.common_mashups.customer_accounts.clients.CustomerClient;
-import com.leroy.common_mashups.customer_accounts.data.CustomerListData;
-import com.leroy.common_mashups.customer_accounts.data.CustomerSearchFilters;
-import com.leroy.common_mashups.customer_accounts.data.CustomerSearchFilters.CustomerType;
-import com.leroy.common_mashups.customer_accounts.data.CustomerSearchFilters.DiscriminantType;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.core.api.ThreadApiClient;
@@ -24,16 +21,17 @@ import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeDat
 import com.leroy.magportal.api.constants.PaymentMethodEnum;
 import com.leroy.magportal.api.constants.PaymentStatusEnum;
 import com.leroy.magportal.api.constants.PaymentTypeEnum;
-import com.leroy.magportal.api.data.onlineOrders.OnlineOrderData;
 import com.leroy.magportal.api.data.shops.ShopData;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
+import com.leroy.umbrella_extension.aemtunnel.data.AemPaymentResponseData;
 import io.qameta.allure.Step;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.Assert;
+import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
 import ru.leroymerlin.qa.core.clients.tunnel.TunnelClient;
-import ru.leroymerlin.qa.core.clients.tunnel.data.BitrixSolutionPayload;
 import ru.leroymerlin.qa.core.clients.tunnel.data.CommunicationPayload;
 import ru.leroymerlin.qa.core.clients.tunnel.data.NextStepResponse;
 import ru.leroymerlin.qa.core.clients.tunnel.data.PutPaymentPayload;
@@ -41,12 +39,18 @@ import ru.leroymerlin.qa.core.clients.tunnel.data.PutPaymentResponse;
 import ru.leroymerlin.qa.core.clients.tunnel.data.StepStartPayload;
 import ru.leroymerlin.qa.core.clients.tunnel.data.StepStartPayload.Product;
 import ru.leroymerlin.qa.core.clients.tunnel.data.StepStartResponse;
+import ru.leroymerlin.qa.core.clients.tunnel.data.TunnelPayer;
+import ru.leroymerlin.qa.core.clients.tunnel.data.TunnelRecepient;
 import ru.leroymerlin.qa.core.clients.tunnel.data.deliverystep.Address;
 import ru.leroymerlin.qa.core.clients.tunnel.data.deliverystep.DeliveryResponse;
+import ru.leroymerlin.qa.core.clients.tunnel.data.deliverystep.Period;
+import ru.leroymerlin.qa.core.clients.tunnel.data.deliverystep.Point;
+import ru.leroymerlin.qa.core.clients.tunnel.data.deliverystep.PointAddress;
 import ru.leroymerlin.qa.core.clients.tunnel.data.deliverystep.PostCalculateResponse;
 import ru.leroymerlin.qa.core.clients.tunnel.data.deliverystep.PutHomeDeliveryPayload;
 import ru.leroymerlin.qa.core.clients.tunnel.data.deliverystep.PutHomeDeliveryPayload.Appointment;
 import ru.leroymerlin.qa.core.clients.tunnel.data.deliverystep.PutPickupPayload;
+import ru.leroymerlin.qa.core.clients.tunnel.data.deliverystep.PutPickupPointPayload;
 import ru.leroymerlin.qa.core.clients.tunnel.enums.PaymentInstruments;
 import ru.leroymerlin.qa.core.clients.tunnel.enums.PaymentTypes;
 
@@ -68,33 +72,32 @@ public class AemHelper extends BaseHelper {
     private final LocalDateTime dateTime = LocalDateTime.now();
 
     @Step("Creates Online order with Dimensional LmCode")
-    public PutPaymentResponse createDimensionalOnlineOrder(OnlineOrderTypeData orderData) {
+    public AemPaymentResponseData createDimensionalOnlineOrder(OnlineOrderTypeData orderData) {
         orderData.setLmCode(LmCodeTypeEnum.DIMENSIONAL.getValue());
-        return this.createOnlineOrders(1, orderData, 1, API).stream().findFirst().get();
+        return this.createOnlineOrders(1, orderData, 1, API).stream().findFirst().orElse(null);
     }
 
     @Step("Creates Online order with 3 LmCodes")
-    public PutPaymentResponse createOnlineOrder(OnlineOrderTypeData orderData) {
-        return this.createOnlineOrders(1, orderData, 3, API).stream().findFirst().get();
+    public AemPaymentResponseData createOnlineOrder(OnlineOrderTypeData orderData) {
+        return this.createOnlineOrders(1, orderData, 3, API).stream().findFirst().orElse(null);
     }
 
     @Step("Creates Online order with 3 LmCodes with TpNet payment method")
-    public PutPaymentResponse createOnlineOrderTpNetPayment(OnlineOrderTypeData orderData) {
-        return this.createOnlineOrders(1, orderData, 3, TPNET).stream().findFirst().get();
+    public AemPaymentResponseData createOnlineOrderTpNetPayment(OnlineOrderTypeData orderData) {
+        return this.createOnlineOrders(1, orderData, 3, TPNET).stream().findFirst().orElse(null);
     }
 
     @Step("Creates Online order with 3 LmCodes with Card payment method")
-    public PutPaymentResponse createOnlineOrderCardPayment(OnlineOrderTypeData orderData) {
-        return this.createOnlineOrders(1, orderData, 3, CARD).stream().findFirst().get();
+    public AemPaymentResponseData createOnlineOrderCardPayment(OnlineOrderTypeData orderData) {
+        return this.createOnlineOrders(1, orderData, 3, CARD).stream().findFirst().orElse(null);
     }
 
     @Step("Creates Online orders of different types")
-    public ArrayList<PutPaymentResponse> createOnlineOrders(Integer ordersCount,
+    public ArrayList<AemPaymentResponseData> createOnlineOrders(Integer ordersCount,
             OnlineOrderTypeData orderData, Integer productCount, PaymentMethodEnum paymentMethod) {
-        SimpleCustomerData customerData = SIMPLE_CUSTOMER_DATA_1;
-        customerData.setId(getCustomerId(customerData));
         ShopData shopData = getShopData(orderData);
-        ArrayList<PutPaymentResponse> result = new ArrayList<>();
+        ArrayList<AemPaymentResponseData> result = new ArrayList<>();
+        String token = userSessionData().getAccessToken();
 
         List<ThreadApiClient<PutPaymentResponse, TunnelClient>> threads = new ArrayList<>();
 
@@ -105,51 +108,68 @@ public class AemHelper extends BaseHelper {
             try {
                 Response<StepStartResponse> startResp = tunnelClient.createCheckoutProcess(
                         makeStartPayload(orderData, productCount, shopData.getId()), "AEM");
+                Assert.assertTrue("Start Order creation process has FAILED.",
+                        startResp.isSuccessful());
                 String transactionId = startResp.asJson().getTransactionId();
+                Response<NextStepResponse> response;
 
-                if (orderData.getDeliveryType().getType()
-                        .equals(DeliveryServiceTypeEnum.PICKUP.getType())) {
-                    Response<?> deliveryGetResp = tunnelClient.getPickup(transactionId, "");
-                    Response<?> deliveryPutResp = tunnelClient.updatePickup(transactionId, "",
-                            makePutPickupPayload(shopData.getId()));
+                if (orderData.getDeliveryType().getAemCode().equals("")) {
+                    if (orderData.getDeliveryType().getType()
+                            .equals(DeliveryServiceTypeEnum.PICKUP.getType())) {
+                        tunnelClient.getPickup(transactionId, token);
+                        response = tunnelClient.updatePickup(transactionId, token,
+                                makePutPickupPayload(shopData.getId()));
+                    } else {
+                        Response<DeliveryResponse> deliveryGetResp = tunnelClient
+                                .getPickupPoint(transactionId, token);
+                        response = tunnelClient.updatePickupPoint(transactionId, token,
+                                makePutPickupPointPayload(deliveryGetResp));
+                    }
+
                 } else {
-                    Response<DeliveryResponse> deliveryGetResp = tunnelClient
-                            .getHomeDelivery(transactionId);
+                    tunnelClient.getHomeDelivery(transactionId);
                     Response<PostCalculateResponse> calculateResp = tunnelClient
                             .postCalculate(transactionId,
                                     makeCalculatePayload(orderData, shopData));
-                    Response<NextStepResponse> deliveryPutResp = tunnelClient
+                    response = tunnelClient
                             .updateHomeDelivery(transactionId,
-                                    makePutDeliveryPayload(calculateResp.asJson(), orderData,
+                                    makePutDeliveryPayload(calculateResp, orderData,
                                             shopData));
                 }
-                Response<?> commResp = tunnelClient
-                        .updateCommunication(makePutCommPayload(customerData), transactionId);
+                Assert.assertTrue("Delivery data was NOT set.", response.isSuccessful());
+
+                Response<NextStepResponse> commResp = tunnelClient
+                        .updateCommunication(makePutCommPayload(orderData.getDeliveryType()),
+                                transactionId);
+                Assert.assertTrue("Communication data was NOT set.", commResp.isSuccessful());
 
                 myThread.sendRequest(
                         client -> client
                                 .putPaymentType(transactionId, makePaymentPayload(orderData)));
+                myThread.setName(startResp.asJson().getSolutionId());
                 threads.add(myThread);
 
             } catch (Exception e) {
                 Log.error(e.getMessage());
             }
-
-
         }
 
         threads.forEach(t -> {
             try {
                 PutPaymentResponse response = t.getData();
-                if (response.getMdOrder() != null) {
-                    result.add(response);
+                if (response.getLink() != null) {
+                    AemPaymentResponseData responseData = new AemPaymentResponseData();//TODO: Until Aem issue is not fixed
+                    responseData.setSolutionId(t.getName());
+                    responseData.setLink(response.getLink());
+                    responseData.setTransactionId(response.getTransactionId());
+                    result.add(responseData);
                     if (orderData.getPaymentType().equals(PaymentTypeEnum.SBERBANK.getName())) {
-                        orderClient.waitUntilOrderGetStatus(response.getMdOrder(),
+                        orderClient.waitUntilOrderGetStatus(responseData.getSolutionId(),
                                 States.WAITING_FOR_PAYMENT,
                                 PaymentStatusEnum.CONFIRMED);
-                        paymentHelper.makePayment(response.getMdOrder(), paymentMethod);
+                        paymentHelper.makePayment(responseData.getSolutionId(), paymentMethod);
                     }
-                    orderClient.waitUntilOrderGetStatus(response.getMdOrder(),
+                    orderClient.waitUntilOrderGetStatus(responseData.getSolutionId(),
                             States.ALLOWED_FOR_PICKING, null);
                 }
             } catch (Exception e) {
@@ -178,8 +198,8 @@ public class AemHelper extends BaseHelper {
 
         PutHomeDeliveryPayload payload = new PutHomeDeliveryPayload();
         Address address = new Address();
-        address.setLatitude(String.valueOf(shop.getLat() + 0.1));
-        address.setLongitude(String.valueOf(shop.getLongitude() - 0.1));
+        address.setLatitude(String.valueOf((double) (shop.getLat() + 0.1)));
+        address.setLongitude(String.valueOf((double) (shop.getLongitude() - 0.1)));
         address.setFloor("5");
         payload.setAddress(address);
 
@@ -198,8 +218,24 @@ public class AemHelper extends BaseHelper {
         return payload;
     }
 
-    private PutHomeDeliveryPayload makePutDeliveryPayload(PostCalculateResponse calculateResponse, OnlineOrderTypeData orderData, ShopData shopData) {
+    private PutPickupPointPayload makePutPickupPointPayload(Response<DeliveryResponse> response) {
+        Assert.assertTrue("GET PickupPoint request has Failed", response.isSuccessful());
+        DeliveryResponse deliveryResponse = response.asJson();
 
+        Point point = deliveryResponse.getPoints().stream().filter(x -> Strings
+                .isNotNullAndNotEmpty(x.getAvailableDate())).findAny().orElse(new Point());
+        PointAddress address = point.getPointAddress();
+        PutPickupPointPayload payload = new PutPickupPointPayload();
+        payload.setPointId(address.getPointId());
+        payload.setAdditionalProperty("partner", address.getPartner());
+
+        return payload;
+    }
+
+    private PutHomeDeliveryPayload makePutDeliveryPayload(
+            Response<PostCalculateResponse> calculateResponse, OnlineOrderTypeData orderData,
+            ShopData shopData) {
+        Assert.assertTrue("Delivery Calculation has FAILED", calculateResponse.isSuccessful());
         PutHomeDeliveryPayload payload = makeCalculatePayload(orderData, shopData);
         Address address = payload.getAddress();
         address.setId(10051983);
@@ -211,24 +247,49 @@ public class AemHelper extends BaseHelper {
         address.setIntercom("k12345");
 
         payload.setAddress(address);
-        Appointment appointment = makeAppointmentPayload(calculateResponse);
+        Appointment appointment = makeAppointmentPayload(
+                calculateResponse.asJson().getAppointments());
         payload.setAppointment(appointment);
 
         return payload;
     }
 
-    private Appointment makeAppointmentPayload(PostCalculateResponse calculateResponse) {
+    private Appointment makeAppointmentPayload(
+            List<PostCalculateResponse.Appointment> appointments) {
 
         Appointment payload = new Appointment();
-        List<PostCalculateResponse.Appointment> appointments = calculateResponse.getAppointments();
+        PostCalculateResponse.Appointment appointment = appointments.stream()
+                .filter(x -> Strings.isNotNullAndNotEmpty(x.getDate())).findAny()
+                .orElse(new PostCalculateResponse.Appointment());
+        payload.setDate(appointment.getDate());
+        Period period = appointment.getPeriods().stream()
+                .filter(x -> Strings.isNotNullAndNotEmpty(x.getStart())).findAny()
+                .orElse(new Period());
+        payload.setPeriod(new Period(period.getStart(), period.getEnd()));
 
         return payload;
     }
 
-    private CommunicationPayload makePutCommPayload(SimpleCustomerData customerData) {
-
+    private CommunicationPayload makePutCommPayload(
+            DeliveryServiceTypeEnum deliveryServiceTypeEnum) {
+        SimpleCustomerData payerData = SIMPLE_CUSTOMER_DATA_1;
+        payerData.fillFirstLastNames();
+        SimpleCustomerData recepientData = SIMPLE_CUSTOMER_DATA_2;
+        recepientData.fillFirstLastNames();
         CommunicationPayload payload = new CommunicationPayload();
-        payload.setComment("АвтоТест Аем");
+        TunnelPayer payer = new TunnelPayer();
+        payer.setName(payerData.getFirstName());
+        payer.setSurname(payerData.getLastName());
+        payer.setEmail(payerData.getEmail());
+        payer.setPhone(payerData.getPhoneNumber());
+        TunnelRecepient recepient = new TunnelRecepient();
+        recepient.setName(recepientData.getFirstName());
+        recepient.setSurname(recepientData.getLastName());
+        recepient.setPhone(recepientData.getPhoneNumber());
+
+        payload.setPayer(payer);
+        payload.setRecepient(recepient);
+        payload.setComment("АвтоТест Аем. Тип Ордера: " + deliveryServiceTypeEnum.getType());
 
         return payload;
     }
@@ -281,52 +342,6 @@ public class AemHelper extends BaseHelper {
         return tunnelProduct;
     }
 
-    private BitrixSolutionPayload.Address makeAddressPayload() {
-        BitrixSolutionPayload.Address payload = new BitrixSolutionPayload.Address();
-        payload.setHouse(13);
-        payload.setCity("Moscow");
-        payload.setStreet("Dubki");
-        payload.setPorch(7);
-        payload.setFloor(10);
-        payload.setApartment(52);
-        payload.setIntercom(12345);
-
-        return payload;
-    }
-
-    private BitrixSolutionPayload.PickupShop makePickupShopPayload(ShopData shop) {
-        BitrixSolutionPayload.PickupShop payload = new BitrixSolutionPayload.PickupShop();
-        payload.setId("3895480");
-        payload.setIblockId("4");
-        payload.setXmlId(convertShopId(Integer.parseInt(shop.getId())));
-        payload.setName(shop.getName());
-        payload.setPropertyAddressValue(shop.getAddress());
-        payload.setPropertyAddressValuerId("3177131060");
-        payload.setPropertyNameValue(shop.getName());
-        payload.setPropertyNameValueId("3177131063");
-        payload.setPropertyWorkTimeValue("08:00 - 23:00");
-        payload.setPropertyWorkTimeValueId("3177131062");
-        payload.setPropertyPhoneValue(shop.getPhone());
-        payload.setPropertyPhoneValueId("3177131061");
-        payload.setPropertyPickupOperatorsValue("rrlog01.mag051@leroymerlin.ru");
-        payload.setPropertyPickupOperatorsValueId("3187492118");
-        payload.setPropertyGpsCoordsValue(shop.getLat() + ", " + shop.getLongitude());
-        payload.setPropertyGpsCoordsValueId("3177137913");
-        payload.setDisplayName(shop.getName());
-
-        return payload;
-    }
-
-    private BitrixSolutionPayload.PvzData makePvzPayload() {
-        BitrixSolutionPayload.PvzData payload = new BitrixSolutionPayload.PvzData();
-        payload.setPvzCode("Sdek");
-        payload.setPvzAddress("Россия, Москва, Митино, пер. Ангелов, 8");
-        payload.setPvzPhone("+79264777115, +74997555271");
-        payload.setPvzWorkTime("Вс 10:00-16:00, Сб 10:00-16:00, Пн-Пт 10:00-20:00");
-
-        return payload;
-    }
-
     private ShopData getShopData(OnlineOrderTypeData orderData) {
         String shopId;
         if (orderData.getShopId() != null) {
@@ -336,30 +351,5 @@ public class AemHelper extends BaseHelper {
         }
 
         return shopsClient.getShopById(shopId);
-    }
-
-    private String convertShopId(Integer shopId) {
-        return String.format("%03d", shopId);
-    }
-
-    private String convertCoordinates(ShopData shop) {
-        double lat = shop.getLat() + 0.5;
-        double longitude = shop.getLongitude() - 0.5;
-
-        return (lat + "," + longitude);
-    }
-
-    private String getCustomerId(SimpleCustomerData customerData) {
-        try {
-            CustomerSearchFilters filter = new CustomerSearchFilters();
-            filter.setCustomerType(CustomerType.NATURAL);
-            filter.setDiscriminantType(DiscriminantType.PHONENUMBER);
-            filter.setDiscriminantValue(customerData.getPhoneNumber());
-            Response<CustomerListData> response = customerClient.searchForCustomers(filter);
-
-            return response.asJson().getItems().get(0).getCustomerNumber();
-        } catch (Exception ignored) {
-        }
-        return null;
     }
 }

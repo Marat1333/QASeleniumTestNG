@@ -83,7 +83,8 @@ public class DeliveryAppointmentTest extends BaseMagPortalApiTest {
         appointmentDataList = response.asJson().getData().getAppointments();
     }
 
-    @Test(description = "C23426804 Update Delivery Data", priority = 5)
+    @Test(description = "C23426804 Update Delivery Data", dependsOnMethods = {
+            "testGetAppointmentOneProduct"}, priority = 5)
     public void testUpdateDeliveryData() {
         makeDeliveryData("intercom", "entrance", "FullName", "89152537253");
         Response<?> response = orderClient.updateDeliveryData(currentOrderId, deliveryData);
@@ -101,7 +102,8 @@ public class DeliveryAppointmentTest extends BaseMagPortalApiTest {
         assertDeliveryDataUpdateResult(response);
     }
 
-    @Test(description = "C23426805 Update Delivery Data for PAID order", priority = 7)
+    @Test(description = "C23426805 Update Delivery Data for PAID order", dependsOnMethods = {
+            "testGetAppointmentOneProduct"}, priority = 7)
     public void testUpdateDeliveryDataPaid() {
         makeDeliveryData(null, "1234", null, null);
         orderClient.moveNewOrderToStatus(currentOrderId, States.PICKED);

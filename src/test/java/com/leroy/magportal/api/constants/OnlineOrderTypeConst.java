@@ -122,7 +122,8 @@ public class OnlineOrderTypeConst {
             .setDeliveryFullPrice("2000.45")
             .setLiftPrice("0.00")
             .setPvzData(true)
-            .setLmCode(LmCodeTypeEnum.PVZ.getValue());
+            .setLmCode(LmCodeTypeEnum.PVZ.getValue())
+            .setShopId(ShopTypeEnum.PVZ.getValue());
 
     public static final OnlineOrderTypeData COURIER = new OnlineOrderTypeData()
             .setDeliveryPrice("2000.45")

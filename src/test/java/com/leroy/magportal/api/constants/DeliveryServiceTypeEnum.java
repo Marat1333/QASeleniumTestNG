@@ -5,7 +5,7 @@ public enum DeliveryServiceTypeEnum {
     DELIVERY_ENTRANCE("MTK2", "ДО ПОДЪЕЗДА", "TO_ENTRANCE"),
     DELIVERY_DOOR("MTK2", "В КОМНАТУ", "TO_DOOR"),
     DELIVERY_PVZ("PVZ", "ПВЗ", ""),
-    COURIER("COURIER", "Курьерская доставка", "");
+    COURIER("COURIER", "Курьерская доставка", "TO_DOOR");
 
     private final String service;
     private final String type;

@@ -5,8 +5,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.google.inject.Inject;
 import com.leroy.core.api.BaseMashupClient;
+import com.leroy.core.configuration.Log;
 import com.leroy.magportal.api.data.shops.ShopData;
 import com.leroy.magportal.api.requests.shop.GetShopsRequest;
+import com.leroy.umbrella_extension.aemtunnel.data.GagarinStoreInfo;
 import io.qameta.allure.Step;
 import java.util.List;
 import java.util.Optional;
@@ -45,13 +47,15 @@ public class ShopsClient extends BaseMashupClient {
     public int getRefStoreIdByShopId(String shopId) {
         int regionId = getRegionIdByShopId(shopId);
         Response<List<StoreInfo>> response = gagarinClient.getStoreByRegion(regionId);
-        assertThatResponseIsOk(response);
-        StoreInfo storeInfo = response.asJsonList(StoreInfo.class).stream().filter(StoreInfo::isRef)
-                .findFirst().get();
+        assertThatResponseIsOk(
+                response);
+        GagarinStoreInfo storeInfo = response.asJsonList(GagarinStoreInfo.class).stream()
+                .filter(GagarinStoreInfo::getIsRef)
+                .findFirst().orElse(new GagarinStoreInfo());//TODO: Convert Response<List<StoreInfo>> to List<StoreInfo> ignores isRef. Mb lombok
         try {
             return storeInfo.getStoreId();
         } catch (Exception e) {
-            assertThat("RefStoreId was NOT found for Shop: " + shopId, false);
+            Log.warn("RefStoreId was NOT found for Shop: " + shopId);
             return Integer.parseInt(shopId);
         }
     }
