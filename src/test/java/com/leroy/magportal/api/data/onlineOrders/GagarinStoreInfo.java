@@ -1,4 +1,4 @@
-package com.leroy.umbrella_extension.aemtunnel.data;
+package com.leroy.magportal.api.data.onlineOrders;
 
 import lombok.Data;
 

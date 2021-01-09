@@ -23,7 +23,7 @@ import com.leroy.magportal.api.constants.PaymentStatusEnum;
 import com.leroy.magportal.api.constants.PaymentTypeEnum;
 import com.leroy.magportal.api.data.shops.ShopData;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
-import com.leroy.umbrella_extension.aemtunnel.data.AemPaymentResponseData;
+import com.leroy.magportal.api.data.onlineOrders.AemPaymentResponseData;
 import io.qameta.allure.Step;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

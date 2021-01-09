@@ -8,7 +8,7 @@ import com.leroy.core.api.BaseMashupClient;
 import com.leroy.core.configuration.Log;
 import com.leroy.magportal.api.data.shops.ShopData;
 import com.leroy.magportal.api.requests.shop.GetShopsRequest;
-import com.leroy.umbrella_extension.aemtunnel.data.GagarinStoreInfo;
+import com.leroy.magportal.api.data.onlineOrders.GagarinStoreInfo;
 import io.qameta.allure.Step;
 import java.util.List;
 import java.util.Optional;
