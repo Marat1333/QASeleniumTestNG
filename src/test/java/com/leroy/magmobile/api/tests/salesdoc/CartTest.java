@@ -1,12 +1,15 @@
 package com.leroy.magmobile.api.tests.salesdoc;
 
+import static com.leroy.constants.sales.DiscountConst.TYPE_NEW_PRICE;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.DiscountConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.clients.CartClient;
-import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
@@ -14,6 +17,9 @@ import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountReasonData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -21,26 +27,16 @@ import org.testng.annotations.Test;
 import org.testng.internal.TestResult;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
-import static com.leroy.constants.sales.DiscountConst.TYPE_NEW_PRICE;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-
 public class CartTest extends BaseProjectApiTest {
 
+    @Inject
     private CartClient cartClient;
-
-    private CatalogSearchClient searchClient;
+    @Inject
+    private SearchProductHelper searchProductHelper;
 
     private CartData cartData;
 
     private List<ProductItemData> products;
-
-    @Inject
-    SearchProductHelper searchProductHelper;
 
     @Override
     protected boolean isNeedAccessToken() {
@@ -49,8 +45,6 @@ public class CartTest extends BaseProjectApiTest {
 
     @BeforeClass
     private void setUp() {
-        cartClient = apiClientProvider.getCartClient();
-        searchClient = apiClientProvider.getCatalogSearchClient();
         products = searchProductHelper.getProducts(3);
     }
 

@@ -42,13 +42,15 @@ import java.util.Random;
 public class CustomerTest extends AppBaseSteps {
 
     @Inject
-    CustomerHelper customerHelper;
-
+    private CustomerHelper customerHelper;
     @Inject
-    SearchProductHelper searchProductHelper;
+    private SearchProductHelper searchProductHelper;
+    @Inject
+    private OrderClient orderClient;
+    @Inject
+    private SalesDocSearchClient salesDocSearchClient;
 
     private void cancelOrder(String orderId) throws Exception {
-        OrderClient orderClient = apiClientProvider.getOrderClient();
         orderClient.waitUntilOrderCanBeCancelled(orderId);
         Response<JsonNode> r = orderClient.cancelOrder(orderId);
         anAssert().isTrue(r.isSuccessful(),
@@ -272,7 +274,6 @@ public class CustomerTest extends AppBaseSteps {
         step("Выполнение preconditions");
         MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
         String customerNumber = customerHelper.getFirstCustomerIdByPhone(customerData.getPhone());
-        SalesDocSearchClient salesDocSearchClient = apiClientProvider.getSalesDocSearchClient();
 
         // Корзины
         Response<SalesDocumentListResponse> respCart = salesDocSearchClient.searchForDocuments(

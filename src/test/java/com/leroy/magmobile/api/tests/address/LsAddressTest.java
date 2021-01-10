@@ -1,37 +1,54 @@
 package com.leroy.magmobile.api.tests.address;
 
+import static com.leroy.core.matchers.Matchers.successful;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyOrNullString;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.core.UserSessionData;
 import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.clients.LsAddressClient;
-import com.leroy.magmobile.api.data.address.*;
-import com.leroy.magmobile.api.data.address.cellproducts.*;
+import com.leroy.magmobile.api.data.address.AlleyData;
+import com.leroy.magmobile.api.data.address.AlleyDataItems;
+import com.leroy.magmobile.api.data.address.CellData;
+import com.leroy.magmobile.api.data.address.CellDataList;
+import com.leroy.magmobile.api.data.address.SchemeData;
+import com.leroy.magmobile.api.data.address.StandData;
+import com.leroy.magmobile.api.data.address.StandDataList;
+import com.leroy.magmobile.api.data.address.cellproducts.CellProductData;
+import com.leroy.magmobile.api.data.address.cellproducts.CellProductDataList;
+import com.leroy.magmobile.api.data.address.cellproducts.ProductCellData;
+import com.leroy.magmobile.api.data.address.cellproducts.ProductCellDataList;
+import com.leroy.magmobile.api.data.address.cellproducts.ReqCellProductData;
+import com.leroy.magmobile.api.data.address.cellproducts.ReqCellProductDataList;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import com.leroy.umbrella_extension.lsaddress.LsAddressBackClient;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import java.util.*;
-
-import static com.leroy.core.matchers.Matchers.successful;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-
 
 public class LsAddressTest extends BaseProjectApiTest {
 
-    private LsAddressClient lsAddressClient() {
-        return apiClientProvider.getLsAddressClient();
-    }
-
+    @Inject
+    private LsAddressClient lsAddressClient;
     @Inject
     private LsAddressBackClient lsAddressBackClient;
 
     @Inject
-    SearchProductHelper searchProductHelper;
+    private SearchProductHelper searchProductHelper;
 
     private AlleyData alleyData;
 
@@ -52,7 +69,6 @@ public class LsAddressTest extends BaseProjectApiTest {
 
     @Test(description = "C3316285 lsAddress POST alleys")
     public void testCreateAlley() {
-        LsAddressClient lsAddressClient = lsAddressClient();
         step("Create Alley");
         AlleyData postAlleyData = new AlleyData();
         postAlleyData.setType(0);
@@ -67,7 +83,6 @@ public class LsAddressTest extends BaseProjectApiTest {
 
     @Test(description = "C3316284 lsAddress GET alleys")
     public void testGetAlleys() {
-        LsAddressClient lsAddressClient = lsAddressClient();
         Response<AlleyDataItems> resp = lsAddressClient.searchForAlleys();
         assertThat(resp, successful());
         List<AlleyData> items = resp.asJson().getItems();
@@ -86,7 +101,6 @@ public class LsAddressTest extends BaseProjectApiTest {
 
     @Test(description = "C3316291 lsAddress POST stands")
     public void testCreateStand() {
-        LsAddressClient lsAddressClient = lsAddressClient();
         step("Search for alley id");
         Response<AlleyDataItems> searchResp = lsAddressClient.searchForAlleys();
         assertThat(searchResp, successful());
@@ -108,7 +122,6 @@ public class LsAddressTest extends BaseProjectApiTest {
 
     @Test(description = "C3316290 lsAddress GET stand")
     public void testGetStand() {
-        LsAddressClient lsAddressClient = lsAddressClient();
         step("Search for alley id");
         Response<AlleyDataItems> searchResp = lsAddressClient.searchForAlleys();
         assertThat(searchResp, successful());
@@ -123,7 +136,6 @@ public class LsAddressTest extends BaseProjectApiTest {
 
     @Test(description = "C3316322 lsAddress POST cells")
     public void testCreateCell() {
-        LsAddressClient lsAddressClient = lsAddressClient();
         int standId = standDataList.getItems().get(0).getId();
         CellDataList cellDataList = new CellDataList();
         CellData itemData1 = new CellData(1, 2, "A");
@@ -135,7 +147,6 @@ public class LsAddressTest extends BaseProjectApiTest {
 
     @Test(description = "C3316323 lsAddress GET cells")
     public void testGetCells() {
-        LsAddressClient lsAddressClient = lsAddressClient();
         int standId = cellDataList.getItems().get(0).getStandId();
         Response<CellDataList> resp = lsAddressClient.getCells(standId);
         lsAddressClient.assertThatDataMatches(resp, cellDataList);
@@ -143,7 +154,6 @@ public class LsAddressTest extends BaseProjectApiTest {
 
     @Test(description = "C23194975 lsAddress PUT cells - Add item")
     public void testUpdateCells() {
-        LsAddressClient lsAddressClient = lsAddressClient();
         int standId = cellDataList.getItems().get(0).getStandId();
 
         CellData newCellData = new CellData();
@@ -167,7 +177,6 @@ public class LsAddressTest extends BaseProjectApiTest {
 
     @Test(description = "C23194977 lsAddress DELETE cells")
     public void testDeleteCell() {
-        LsAddressClient lsAddressClient = lsAddressClient();
         int itemIndexToRemove = 0;
         int standId = cellDataList.getItems().get(0).getStandId();
         String cellIdToRemove = cellDataList.getItems().get(itemIndexToRemove).getId();
@@ -184,7 +193,6 @@ public class LsAddressTest extends BaseProjectApiTest {
     // Cell products
     @Test(description = "C23194989 lsAddress POST Cell products")
     public void testCreateCellProducts() {
-        LsAddressClient lsAddressClient = lsAddressClient();
         // Test data
         CellData cellData = cellDataList.getItems().get(0);
         String cellId = cellData.getId();
@@ -205,7 +213,6 @@ public class LsAddressTest extends BaseProjectApiTest {
 
     @Test(description = "C23194985 lsAddress GET Cell products")
     public void testGetCellProducts() {
-        LsAddressClient lsAddressClient = lsAddressClient();
         // Test data
         CellData cellData = cellDataList.getItems().get(0);
         String cellId = cellData.getId();
@@ -216,7 +223,6 @@ public class LsAddressTest extends BaseProjectApiTest {
 
     @Test(description = "C23194986 lsAddress PUT Cell products - Change quantity")
     public void testUpdateCellProducts() {
-        LsAddressClient lsAddressClient = lsAddressClient();
         // Test data
         CellData cellData = cellDataList.getItems().get(0);
         String cellId = cellData.getId();
@@ -237,7 +243,6 @@ public class LsAddressTest extends BaseProjectApiTest {
 
     @Test(description = "C23194987 Move Cell Products - 1 Product")
     public void testMoveCellProducts() {
-        LsAddressClient lsAddressClient = lsAddressClient();
         // Test data
         CellData cellData = cellDataList.getItems().get(0);
         String cellId = cellData.getId();
@@ -269,7 +274,6 @@ public class LsAddressTest extends BaseProjectApiTest {
 
     @Test(description = "C23194988 lsAddress DELETE Cell products")
     public void testDeleteCellProducts() {
-        LsAddressClient lsAddressClient = lsAddressClient();
         // Test data
         CellData cellData = cellDataList.getItems().get(1);
         String cellId = cellData.getId();
@@ -288,7 +292,6 @@ public class LsAddressTest extends BaseProjectApiTest {
 
     @Test(description = "C6638969 lsAddress GET cells search")
     public void testSearchCells() {
-        LsAddressClient lsAddressClient = lsAddressClient();
         CellProductData cellProductData = cellProductDataList.getItems().get(0);
         String lmCode = cellProductData.getLmCode();
 
@@ -303,7 +306,6 @@ public class LsAddressTest extends BaseProjectApiTest {
 
     @Test(description = "C3316286 lsAddress GET scheme")
     public void testGetScheme() {
-        LsAddressClient lsAddressClient = lsAddressClient();
         Response<SchemeData> resp = lsAddressClient.getScheme();
         assertThat(resp, successful());
         SchemeData schemeData = resp.asJson();
@@ -317,7 +319,6 @@ public class LsAddressTest extends BaseProjectApiTest {
 
     @Test(description = "C3316287 lsAddress PUT scheme")
     public void testPutScheme() {
-        LsAddressClient lsAddressClient = lsAddressClient();
         schemeType = new Random().nextInt(10);
         Response<JsonNode> resp = lsAddressClient.putScheme(schemeType);
         lsAddressClient.assertThatSchemeIsUpdated(resp);

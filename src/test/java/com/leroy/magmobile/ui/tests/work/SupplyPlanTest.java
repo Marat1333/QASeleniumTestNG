@@ -1,5 +1,6 @@
 package com.leroy.magmobile.ui.tests.work;
 
+import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.UserSessionData;
 import com.leroy.magmobile.api.clients.SupplyPlanClient;
@@ -15,7 +16,11 @@ import com.leroy.magmobile.api.requests.supply_plan.GetSupplyPlanTotal;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.more.DepartmentListPage;
 import com.leroy.magmobile.ui.pages.work.WorkPage;
-import com.leroy.magmobile.ui.pages.work.supply_plan.*;
+import com.leroy.magmobile.ui.pages.work.supply_plan.PeriodSelectorPage;
+import com.leroy.magmobile.ui.pages.work.supply_plan.SearchSupplierPage;
+import com.leroy.magmobile.ui.pages.work.supply_plan.SupplierWeekSuppliesPage;
+import com.leroy.magmobile.ui.pages.work.supply_plan.SuppliesListPage;
+import com.leroy.magmobile.ui.pages.work.supply_plan.SupplyCardPage;
 import com.leroy.magmobile.ui.pages.work.supply_plan.data.SupplyDailyShipmentInfo;
 import com.leroy.magmobile.ui.pages.work.supply_plan.data.SupplyDetailsCardInfo;
 import com.leroy.magmobile.ui.pages.work.supply_plan.data.SupplyNavigationData;
@@ -24,21 +29,15 @@ import com.leroy.magmobile.ui.pages.work.supply_plan.modal.OtherProductsModal;
 import com.leroy.magmobile.ui.pages.work.supply_plan.modal.ReserveModalPage;
 import com.leroy.utils.DateTimeUtil;
 import io.qameta.allure.Step;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.testng.annotations.Test;
 
 public class SupplyPlanTest extends AppBaseSteps {
 
-    private SupplyPlanClient client;
-
-    @BeforeClass
-    private void setUpClient() {
-        client = apiClientProvider.getSupplyPlanClient();
-    }
+    @Inject
+    private SupplyPlanClient supplyPlanClient;
 
 
     private SuppliesListPage precondition() throws Exception {
@@ -96,8 +95,8 @@ public class SupplyPlanTest extends AppBaseSteps {
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setDate(date);
 
-        ShipmentDataList response1 = client.getShipments(params).asJson();
-        ShipmentDataList response2 = client.getShipments(params1).asJson();
+        ShipmentDataList response1 = supplyPlanClient.getShipments(params).asJson();
+        ShipmentDataList response2 = supplyPlanClient.getShipments(params1).asJson();
 
         //Step 1
         step("Проверить данные по поставкам и бронированиям на поставку");
@@ -171,18 +170,18 @@ public class SupplyPlanTest extends AppBaseSteps {
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setDate(date.plusDays(6));
 
-        List<TotalPalletData> yesterdayTotalPalletResponse = client.getTotalPallets(yesterdayTotalPalletsParams).asJson().getItems();
-        List<TotalPalletData> todayTotalPalletResponse = client.getTotalPallets(todayTotalPalletsParams).asJson().getItems();
-        List<TotalPalletData> weekTotalPalletResponse = client.getTotalPallets(weekTotalPalletsParam).asJson().getItems();
+        List<TotalPalletData> yesterdayTotalPalletResponse = supplyPlanClient.getTotalPallets(yesterdayTotalPalletsParams).asJson().getItems();
+        List<TotalPalletData> todayTotalPalletResponse = supplyPlanClient.getTotalPallets(todayTotalPalletsParams).asJson().getItems();
+        List<TotalPalletData> weekTotalPalletResponse = supplyPlanClient.getTotalPallets(weekTotalPalletsParam).asJson().getItems();
 
-        ShipmentDataList yesterdayResponse = client.getShipments(yesterdayParams).asJson();
-        ShipmentDataList todayResponse = client.getShipments(todayParams).asJson();
-        ShipmentDataList tomorrowResponse = client.getShipments(tomorrowParams).asJson();
-        ShipmentDataList todayPlus2Response = client.getShipments(todayPlus2Params).asJson();
-        ShipmentDataList todayPlus3Response = client.getShipments(todayPlus3Params).asJson();
-        ShipmentDataList todayPlus4Response = client.getShipments(todayPlus4Params).asJson();
-        ShipmentDataList todayPlus5Response = client.getShipments(todayPlus5Params).asJson();
-        ShipmentDataList todayPlus6Response = client.getShipments(todayPlus6Params).asJson();
+        ShipmentDataList yesterdayResponse = supplyPlanClient.getShipments(yesterdayParams).asJson();
+        ShipmentDataList todayResponse = supplyPlanClient.getShipments(todayParams).asJson();
+        ShipmentDataList tomorrowResponse = supplyPlanClient.getShipments(tomorrowParams).asJson();
+        ShipmentDataList todayPlus2Response = supplyPlanClient.getShipments(todayPlus2Params).asJson();
+        ShipmentDataList todayPlus3Response = supplyPlanClient.getShipments(todayPlus3Params).asJson();
+        ShipmentDataList todayPlus4Response = supplyPlanClient.getShipments(todayPlus4Params).asJson();
+        ShipmentDataList todayPlus5Response = supplyPlanClient.getShipments(todayPlus5Params).asJson();
+        ShipmentDataList todayPlus6Response = supplyPlanClient.getShipments(todayPlus6Params).asJson();
 
         //Step 1
         step("Проверить данные по поставкам и бронированиям на поставку за сегодня");
@@ -215,8 +214,8 @@ public class SupplyPlanTest extends AppBaseSteps {
         GetSupplyPlanSuppliers nameParam = new GetSupplyPlanSuppliers().setQuery(supplierName).setDepartmentId(department);
         GetSupplyPlanSuppliers idParam = new GetSupplyPlanSuppliers().setQuery(supplierCode).setDepartmentId(department);
 
-        List<SupplierData> byNameResponse = client.getSuppliers(nameParam).asJson().getItems();
-        List<SupplierData> byIdResponse = client.getSuppliers(idParam).asJson().getItems();
+        List<SupplierData> byNameResponse = supplyPlanClient.getSuppliers(nameParam).asJson().getItems();
+        List<SupplierData> byIdResponse = supplyPlanClient.getSuppliers(idParam).asJson().getItems();
 
         //Step 1
         step("Проверить отображения результатов поиска по имени");
@@ -241,7 +240,7 @@ public class SupplyPlanTest extends AppBaseSteps {
     @Test(description = "C3293184 Поиск поставок по поставщику")
     public void testSearchForSuppliesBySupplier() throws Exception {
         String department = "1";
-        ShipmentData supplierDataSource = client.getRandomShipment(department);
+        ShipmentData supplierDataSource = supplyPlanClient.getRandomShipment(department);
         String firstSupplierCode = supplierDataSource.getSendingLocation();
         String firstSupplierName = supplierDataSource.getSendingLocationName();
         String secondSupplierCode = "12301";
@@ -253,7 +252,7 @@ public class SupplyPlanTest extends AppBaseSteps {
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setSendingLocations(firstSupplierCode)
                 .setDate(getCurrentCalendarWeek());
-        List<ShipmentData> byIdResponse = client.getShipments(param).asJson().getItems();
+        List<ShipmentData> byIdResponse = supplyPlanClient.getShipments(param).asJson().getItems();
 
         //Step 1
         step("Проверить отображения результатов поиска по имени");
@@ -287,7 +286,7 @@ public class SupplyPlanTest extends AppBaseSteps {
     @Test(description = "C23409944 история поиска поставщиков")
     public void testSearchHistory() throws Exception {
         GetSupplyPlanSuppliers suppliersParam = new GetSupplyPlanSuppliers().setQuery("14").setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);
-        List<SupplierData> suppliersResponse = client.getSuppliers(suppliersParam).asJson().getItems();
+        List<SupplierData> suppliersResponse = supplyPlanClient.getSuppliers(suppliersParam).asJson().getItems();
         List<String> supplierIdList = suppliersResponse.stream().map(SupplierData::getSupplierId).limit(11).collect(Collectors.toList());
 
         //Step 1
@@ -303,7 +302,7 @@ public class SupplyPlanTest extends AppBaseSteps {
     @Test(description = "C23409945 навигация по поиску поставщиков")
     public void testNavigation() throws Exception {
         GetSupplyPlanSuppliers suppliersParam = new GetSupplyPlanSuppliers().setQuery("1").setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);
-        List<SupplierData> suppliersResponse = client.getSuppliers(suppliersParam).asJson().getItems();
+        List<SupplierData> suppliersResponse = supplyPlanClient.getSuppliers(suppliersParam).asJson().getItems();
         String supplierId = suppliersResponse.stream().map(SupplierData::getSupplierId).limit(1).collect(Collectors.toList()).get(0);
 
         //Step 1
@@ -341,14 +340,14 @@ public class SupplyPlanTest extends AppBaseSteps {
 
     @Test(description = "C3293186 проверить детали поставки")
     public void testSupplyCard() throws Exception {
-        ShipmentData randomSupply = client.getRandomShipment(EnvConstants.BASIC_USER_DEPARTMENT_ID);
+        ShipmentData randomSupply = supplyPlanClient.getRandomShipment(EnvConstants.BASIC_USER_DEPARTMENT_ID);
         String supplierId = randomSupply.getSendingLocation();
 
         GetSupplyPlanCard param = new GetSupplyPlanCard().setDocumentNo(randomSupply.getDocumentNo().asText())
                 .setDocumentType(randomSupply.getDocumentType().asText())
                 .setSendingLocation(supplierId)
                 .setSendingLocationType(randomSupply.getSendingLocationType());
-        SupplyCardData data = client.getSupplyCard(param).asJson();
+        SupplyCardData data = supplyPlanClient.getSupplyCard(param).asJson();
 
         //Step 1
         step("Проверить, что все данные в карточке поставки отображены корректно");
@@ -363,8 +362,8 @@ public class SupplyPlanTest extends AppBaseSteps {
     @Test(description = "C3293187 Переключение между табами в карточке заказа/трансфера")
     public void testSupplyCardTabSwitch() throws Exception {
         //Pre-conditions
-        SupplyDetailsCardInfo multiShipment = client.getMultiShipmentSupply();
-        SupplyDetailsCardInfo otherProductsSupply = client.getSupplyWithExtraProducts();
+        SupplyDetailsCardInfo multiShipment = supplyPlanClient.getMultiShipmentSupply();
+        SupplyDetailsCardInfo otherProductsSupply = supplyPlanClient.getSupplyWithExtraProducts();
 
         SuppliesListPage suppliesListPage = precondition();
         SupplyCardPage supplyCardPage;
@@ -400,8 +399,8 @@ public class SupplyPlanTest extends AppBaseSteps {
 
     @Test(description = "C3293191 Модальные окна справки")
     public void testHintsModal() throws Exception {
-        SupplyDailyShipmentInfo todayReserve = client.getTodayReserve();
-        SupplyDailyShipmentInfo notTodayReserve = client.getNotTodayReserve();
+        SupplyDailyShipmentInfo todayReserve = supplyPlanClient.getTodayReserve();
+        SupplyDailyShipmentInfo notTodayReserve = supplyPlanClient.getNotTodayReserve();
         ReserveModalPage reserveModalPage;
 
         SuppliesListPage suppliesListPage = precondition();
@@ -440,7 +439,7 @@ public class SupplyPlanTest extends AppBaseSteps {
             reserveModalPage.closeModal();
             supplierWeekSuppliesPage.goBack();
         }
-        SupplyDetailsCardInfo otherProductsSupply = client.getSupplyWithExtraProducts();
+        SupplyDetailsCardInfo otherProductsSupply = supplyPlanClient.getSupplyWithExtraProducts();
         if (otherProductsSupply != null) {
             String supplierId = otherProductsSupply.getDetails().getSendingLocation();
             SupplyNavigationData supplyNavigationData = new SupplyNavigationData(new SupplyDailyShipmentInfo(otherProductsSupply.getDetails(), otherProductsSupply.getDepartmentId()));
@@ -471,8 +470,8 @@ public class SupplyPlanTest extends AppBaseSteps {
     @Test(description = "C3293192 Навигация в/из карточки заказа/трансфера")
     public void testNavigationToSupplyCard() throws Exception {
         SupplyCardPage supplyCardPage;
-        SupplyDailyShipmentInfo todayShipment = client.getTodayShipment();
-        SupplyDailyShipmentInfo notTodayShipment = client.getNotTodayShipment();
+        SupplyDailyShipmentInfo todayShipment = supplyPlanClient.getTodayShipment();
+        SupplyDailyShipmentInfo notTodayShipment = supplyPlanClient.getNotTodayShipment();
 
         SuppliesListPage suppliesListPage = precondition();
         if (todayShipment != null) {

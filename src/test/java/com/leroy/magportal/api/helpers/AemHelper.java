@@ -176,7 +176,7 @@ public class AemHelper extends BaseHelper {
                 Log.error(e.getMessage());
             }
         });
-
+        Assert.assertTrue("No orders were created!", result.size() > 0);
         return result;
     }
 

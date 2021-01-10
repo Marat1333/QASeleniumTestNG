@@ -32,6 +32,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.Assert;
 import ru.leroymerlin.qa.core.clients.base.Response;
 import ru.leroymerlin.qa.core.clients.tunnel.TunnelClient;
 import ru.leroymerlin.qa.core.clients.tunnel.data.BitrixSolutionPayload;
@@ -114,6 +115,7 @@ public class BitrixHelper extends BaseHelper {
             }
         });
 
+        Assert.assertTrue("No orders were created!", result.size() > 0);
         return result;
     }
 

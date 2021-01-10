@@ -2,33 +2,23 @@ package com.leroy.magmobile.api.tests.salesdoc;
 
 import com.google.inject.Inject;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
-import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.SalesDocProductClient;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.ServiceOrderData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-
 import java.util.Collections;
 import java.util.Random;
+import org.testng.annotations.Test;
 
 public class SalesDocApiTest extends BaseProjectApiTest {
 
     @Inject
-    SearchProductHelper searchProductHelper;
-
+    private SearchProductHelper searchProductHelper;
+    @Inject
     private SalesDocProductClient salesDocProductClient;
-    private CatalogSearchClient searchClient;
 
     private SalesDocumentResponseData salesDocument;
-
-    @BeforeClass
-    private void initClients() {
-        salesDocProductClient = apiClientProvider.getSalesDocProductClient();
-        searchClient = apiClientProvider.getCatalogSearchClient();
-    }
 
     @Override
     protected boolean isNeedAccessToken() {

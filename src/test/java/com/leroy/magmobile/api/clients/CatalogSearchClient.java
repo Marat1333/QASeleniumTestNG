@@ -10,12 +10,17 @@ import com.leroy.magmobile.api.data.supply_plan.suppliers.SupplierDataList;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogServicesSearch;
 import com.leroy.magmobile.api.requests.catalog_search.GetSupplierSearch;
+import com.leroy.magportal.api.data.catalog.products.CatalogProductData;
+import com.leroy.magportal.api.data.catalog.products.CatalogSimilarProductsData;
+import com.leroy.magportal.api.data.catalog.shops.NearestShopsData;
+import com.leroy.magportal.api.requests.product.GetCatalogProduct;
+import com.leroy.magportal.api.requests.product.GetCatalogProductSimilars;
+import com.leroy.magportal.api.requests.product.GetNearestShops;
 import io.qameta.allure.Step;
-import ru.leroymerlin.qa.core.clients.base.Response;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class CatalogSearchClient extends BaseMashupClient {
     //back-end limit
@@ -113,6 +118,28 @@ public class CatalogSearchClient extends BaseMashupClient {
             productItemData.remove(randomIndex);
         }
         return randomProductsList;
+    }
+
+    @Step("Get similar and complement products")
+    public Response<CatalogSimilarProductsData> getSimilarProducts(String lmCode) {
+        return execute(new GetCatalogProductSimilars()
+                        .setLmCode(lmCode)
+                        .setShopId(getUserSessionData().getUserShopId()),
+                CatalogSimilarProductsData.class);
+    }
+
+    @Step("Get product data")
+    public Response<CatalogProductData> getProductData(String lmCode) {
+        return execute(new GetCatalogProduct()
+                .setLmCode(lmCode)
+                .setShopId(getUserSessionData().getUserShopId()), CatalogProductData.class);
+    }
+
+    @Step("Get stocks and prices in nearest shops")
+    public Response<NearestShopsData> getNearestShopsInfo(String lmCode) {
+        return execute(new GetNearestShops()
+                .setLmCode(lmCode)
+                .setShopId(getUserSessionData().getUserShopId()), NearestShopsData.class);
     }
 
 }

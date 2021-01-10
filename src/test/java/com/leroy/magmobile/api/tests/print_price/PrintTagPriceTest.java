@@ -1,5 +1,9 @@
 package com.leroy.magmobile.api.tests.print_price;
 
+import static com.leroy.core.matchers.Matchers.successful;
+import static com.leroy.core.matchers.Matchers.valid;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import com.google.inject.Inject;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.SalesDocumentsConst;
@@ -8,26 +12,25 @@ import com.leroy.magmobile.api.clients.CatalogProductClient;
 import com.leroy.magmobile.api.clients.PrintPriceClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
-import com.leroy.magmobile.api.data.print.*;
+import com.leroy.magmobile.api.data.print.PrintDepartmentList;
+import com.leroy.magmobile.api.data.print.PrintDepartments;
+import com.leroy.magmobile.api.data.print.PrintPrinterData;
+import com.leroy.magmobile.api.data.print.PrintTaskProductData;
+import com.leroy.magmobile.api.data.print.PrintTaskResponseData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
+import java.util.ArrayList;
+import java.util.List;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.leroy.core.matchers.Matchers.successful;
-import static com.leroy.core.matchers.Matchers.valid;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 public class PrintTagPriceTest extends BaseProjectApiTest {
 
     @Inject
-    SearchProductHelper searchProductHelper;
-
+    private SearchProductHelper searchProductHelper;
+    @Inject
     private PrintPriceClient printPriceClient;
-
+    @Inject
     private CatalogProductClient catalogProductClient;
 
     private PrintDepartments printDepartmentsList;
@@ -36,8 +39,6 @@ public class PrintTagPriceTest extends BaseProjectApiTest {
 
     @BeforeClass
     private void beforeSetUp() {
-        printPriceClient = apiClientProvider.getPrintPriceClient();
-        catalogProductClient = apiClientProvider.getCatalogProductClient();
         String[] lmCodes = searchProductHelper.getProducts(2).stream()
                 .map(ProductItemData::getLmCode).toArray(String[]::new);
         initCatalogProductDataList(lmCodes);
