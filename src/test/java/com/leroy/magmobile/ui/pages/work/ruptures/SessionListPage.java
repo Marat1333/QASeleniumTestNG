@@ -24,6 +24,9 @@ public class SessionListPage extends CommonMagMobilePage {
     @AppFindBy(text = "ПО ОДНОМУ")
     Button scanRupturesByOneBtn;
 
+    @AppFindBy(text = "МАССОВО")
+    Button scanRupturesBulkBtn;
+
     @AppFindBy(xpath = "//*[@text='ПО ОДНОМУ']/ancestor::*[5]/preceding-sibling::*[1]//android.widget.TextView")
     Button choseDepartmentBtn;
 
@@ -50,6 +53,7 @@ public class SessionListPage extends CommonMagMobilePage {
     protected void waitForPageIsLoaded() {
         backBtn.waitForVisibility();
         scanRupturesByOneBtn.waitForVisibility();
+        scanRupturesBulkBtn.waitForInvisibility();
         waitUntilProgressBarIsInvisible();
     }
 
@@ -69,6 +73,12 @@ public class SessionListPage extends CommonMagMobilePage {
     @Step("Сканировать перебои 'по одному'")
     public RupturesScannerPage clickScanRupturesByOneButton() {
         scanRupturesByOneBtn.click();
+        return new RupturesScannerPage();
+    }
+
+    @Step("Сканировать перебои 'массово'")
+    public RupturesScannerPage clickScanRupturesBulkButton() {
+        scanRupturesBulkBtn.click();
         return new RupturesScannerPage();
     }
 
@@ -179,5 +189,12 @@ public class SessionListPage extends CommonMagMobilePage {
         softAssert.areElementsVisible(getPageSource(), backBtn, scanRupturesByOneBtn, choseDepartmentBtn);
         softAssert.verifyAll();
         return this;
+    }
+
+    public void verifyLastSessionData(Boolean isBulk, int productsCount) throws Exception {
+        List<SessionData> uiSessionData = activeSessionScrollView.getFullDataList(1);
+        SessionData sessionData = uiSessionData.get(0);
+        //TODO проверить, что сессия помечена как массовая
+        //TODO проверить, что на каунтере 2 продукта
     }
 }

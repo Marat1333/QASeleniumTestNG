@@ -1816,4 +1816,57 @@ public class RupturesTest extends AppBaseSteps {
         activeSessionPage.checkStockCorrectionStatus(firstProductLm, true);
         activeSessionPage.checkStockCorrectionStatus(secondProductLm, false);
     }
+
+    @Test(description = "C23717536 Создание массовой сессии")
+    public void testCreateBulkSession()  throws Exception {
+        List<ProductItemData> randomProducts = searchProductHelper.getProducts(2);
+        String firstProductLmCode = randomProducts.get(0).getLmCode();
+        String secondProductLmCode = randomProducts.get(1).getLmCode();
+
+        // Pre-conditions
+        WorkPage workPage = loginAndGoTo(WorkPage.class);
+        SessionListPage sessionListPage = workPage.goToRuptures();
+
+        //Step 1
+        step("Нажать на кнопку 'Массово'");
+        RupturesScannerPage rupturesScannerPage = sessionListPage.clickScanRupturesBulkButton();
+        rupturesScannerPage.shouldRupturesBulkLblIsVisible()
+                .shouldCounterIsCorrect(0)
+                .shouldDeleteButtonIsVisible(false)
+                .shouldFinishButtonIsVisible(false)
+                .shouldRupturesListNavBtnIsVisible(false)
+                .verifyRequiredElements();
+
+        //Step 2
+        step("Добавить первый товар через ручной поиск по ЛМ");
+        SearchProductPage searchProductPage = rupturesScannerPage.navigateToSearchProductPage();
+        searchProductPage.searchProductAndSelect(firstProductLmCode);
+        rupturesScannerPage = new RupturesScannerPage();
+        rupturesScannerPage.shouldRupturesBulkLblIsVisible()
+                //.checkSuccessToast() TODO доделать проверку тоста
+                .shouldCounterIsCorrect(1)
+                .shouldDeleteButtonIsVisible(true)
+                .shouldFinishButtonIsVisible(true)
+                .shouldRupturesListNavBtnIsVisible(false)
+                .verifyRequiredElements();
+
+        //Step 3
+        step("Добавить второй товар через ручной поиск по ЛМ");
+        searchProductPage = rupturesScannerPage.navigateToSearchProductPage();
+        searchProductPage.searchProductAndSelect(secondProductLmCode);
+        rupturesScannerPage = new RupturesScannerPage();
+        rupturesScannerPage.shouldRupturesBulkLblIsVisible()
+                //.checkSuccessToast()
+                .shouldCounterIsCorrect(2)
+                .shouldDeleteButtonIsVisible(true)
+                .shouldFinishButtonIsVisible(true)
+                .shouldRupturesListNavBtnIsVisible(false)
+                .verifyRequiredElements();
+
+        //Step 4
+        step("Выйти из сессии по железной кнопке");
+        rupturesScannerPage.navigateBack();
+        sessionListPage = new SessionListPage();
+        sessionListPage.verifyLastSessionData(true, 2);
+    }
 }
