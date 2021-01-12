@@ -7,7 +7,6 @@ import static com.leroy.magportal.ui.constants.TestDataConstants.SIMPLE_CUSTOMER
 import static com.leroy.magportal.ui.constants.TestDataConstants.SIMPLE_CUSTOMER_DATA_2;
 
 import com.google.inject.Inject;
-import com.leroy.common_mashups.customer_accounts.clients.CustomerClient;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.core.api.ThreadApiClient;
@@ -21,11 +20,10 @@ import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeDat
 import com.leroy.magportal.api.constants.PaymentMethodEnum;
 import com.leroy.magportal.api.constants.PaymentStatusEnum;
 import com.leroy.magportal.api.constants.PaymentTypeEnum;
+import com.leroy.magportal.api.data.onlineOrders.AemPaymentResponseData;
 import com.leroy.magportal.api.data.shops.ShopData;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
-import com.leroy.magportal.api.data.onlineOrders.AemPaymentResponseData;
 import io.qameta.allure.Step;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Assert;
@@ -66,10 +64,6 @@ public class AemHelper extends BaseHelper {
     private SearchProductHelper searchProductHelper;
     @Inject
     private OrderClient orderClient;
-    @Inject
-    private CustomerClient customerClient;
-
-    private final LocalDateTime dateTime = LocalDateTime.now();
 
     @Step("Creates Online order with Dimensional LmCode")
     public AemPaymentResponseData createDimensionalOnlineOrder(OnlineOrderTypeData orderData) {
@@ -177,6 +171,7 @@ public class AemHelper extends BaseHelper {
             }
         });
 
+        Assert.assertTrue("No orders were created!", result.size() > 0);
         return result;
     }
 
@@ -198,8 +193,8 @@ public class AemHelper extends BaseHelper {
 
         PutHomeDeliveryPayload payload = new PutHomeDeliveryPayload();
         Address address = new Address();
-        address.setLatitude(String.valueOf((double) (shop.getLat() + 0.1)));
-        address.setLongitude(String.valueOf((double) (shop.getLongitude() - 0.1)));
+        address.setLatitude(String.valueOf(shop.getLat() + 0.1));
+        address.setLongitude(String.valueOf(shop.getLongitude() - 0.1));
         address.setFloor("5");
         payload.setAddress(address);
 
@@ -274,21 +269,21 @@ public class AemHelper extends BaseHelper {
             DeliveryServiceTypeEnum deliveryServiceTypeEnum) {
         SimpleCustomerData payerData = SIMPLE_CUSTOMER_DATA_1;
         payerData.fillFirstLastNames();
-        SimpleCustomerData recepientData = SIMPLE_CUSTOMER_DATA_2;
-        recepientData.fillFirstLastNames();
+        SimpleCustomerData recipientData = SIMPLE_CUSTOMER_DATA_2;
+        recipientData.fillFirstLastNames();
         CommunicationPayload payload = new CommunicationPayload();
         TunnelPayer payer = new TunnelPayer();
         payer.setName(payerData.getFirstName());
         payer.setSurname(payerData.getLastName());
         payer.setEmail(payerData.getEmail());
         payer.setPhone(payerData.getPhoneNumber());
-        TunnelRecepient recepient = new TunnelRecepient();
-        recepient.setName(recepientData.getFirstName());
-        recepient.setSurname(recepientData.getLastName());
-        recepient.setPhone(recepientData.getPhoneNumber());
+        TunnelRecepient recipient = new TunnelRecepient();
+        recipient.setName(recipientData.getFirstName());
+        recipient.setSurname(recipientData.getLastName());
+        recipient.setPhone(recipientData.getPhoneNumber());
 
         payload.setPayer(payer);
-        payload.setRecepient(recepient);
+        payload.setRecepient(recipient);
         payload.setComment("АвтоТест Аем. Тип Ордера: " + deliveryServiceTypeEnum.getType());
 
         return payload;
