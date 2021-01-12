@@ -47,16 +47,11 @@ public class SimpleCustomerData {
     }
 
     public void setName(String val) {
-
         this.name = val;
-        List<String> names = Arrays.stream(val.split(" ")).collect(Collectors.toList());
-        this.firstName = names.get(0);
-        this.lastName = names.stream().filter(x -> !x.equals(this.firstName)).findFirst()
-                .orElse(null);
+        fillFirstLastNames();
     }
 
     public void fillFirstLastNames() {
-
         List<String> names = Arrays.stream(this.name.split(" ")).collect(Collectors.toList());
         this.firstName = names.get(0);
         this.lastName = names.stream().filter(x -> !x.equals(this.firstName)).findFirst()

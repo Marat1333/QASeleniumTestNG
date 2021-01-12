@@ -51,7 +51,6 @@ import com.leroy.magportal.api.requests.order.OrderDeliveryRecalculateRequest;
 import com.leroy.magportal.api.requests.order.OrderFulfilmentGivenAwayRequest;
 import com.leroy.magportal.api.requests.order.OrderGetAdditionalProductsInfo;
 import com.leroy.magportal.api.requests.order.OrderGetRequest;
-import com.leroy.magportal.api.requests.order.OrderGetRequest.Extend;
 import com.leroy.magportal.api.requests.order.OrderWorkflowRequest;
 import com.leroy.magportal.api.requests.timeslot.AppointmentsRequest;
 import com.leroy.magportal.api.requests.timeslot.ChangeDateRequest;
@@ -91,7 +90,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         long currentTimeMillis = System.currentTimeMillis();
         while (System.currentTimeMillis() - currentTimeMillis < waitTimeoutInSeconds * 1000) {
             Response<OnlineOrderData> response = execute(req, OnlineOrderData.class);
-            if (response.isSuccessful() && response.asJson().getOrderId() != null) {
+            if (!isVerify || response.isSuccessful() && response.asJson().getOrderId() != null) {
                 return response;
             }
             Thread.sleep(3000);
