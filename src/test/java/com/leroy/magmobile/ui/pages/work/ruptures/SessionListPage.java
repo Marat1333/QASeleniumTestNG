@@ -191,10 +191,11 @@ public class SessionListPage extends CommonMagMobilePage {
         return this;
     }
 
-    public void verifyLastSessionData(Boolean isBulk, int productsCount) throws Exception {
+    public void verifyLastBulkSessionData(int expectedRupturesCount) throws Exception {
         List<SessionData> uiSessionData = activeSessionScrollView.getFullDataList(1);
         SessionData sessionData = uiSessionData.get(0);
-        //TODO проверить, что сессия помечена как массовая
-        //TODO проверить, что на каунтере 2 продукта
+        softAssert.isEquals(sessionData.getRuptureQuantity(), expectedRupturesCount, "Количество перебоев не совпадает");
+        softAssert.isEquals(sessionData.getType(), "Bulk", "Сессия не массовая");
+        softAssert.verifyAll();
     }
 }

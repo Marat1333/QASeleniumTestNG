@@ -1867,6 +1867,6 @@ public class RupturesTest extends AppBaseSteps {
         step("Выйти из сессии по железной кнопке");
         rupturesScannerPage.navigateBack();
         sessionListPage = new SessionListPage();
-        sessionListPage.verifyLastSessionData(true, 2);
+        sessionListPage.verifyLastBulkSessionData(2);
     }
 }
