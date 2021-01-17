@@ -23,8 +23,27 @@ public class RuptureHelper extends BaseHelper {
     @Inject
     RupturesClient rupturesClient;
 
-    @Step("Создать сессию с продуктами")
-    public int createSession(List<RuptureProductData> productDataList) {
+    @Step("Создать массовую сессию с ЛМ-кодами")
+    public int createBulkSession(List<String> lmCodes) {
+        ReqRuptureBulkSessionData rupturePostData = new ReqRuptureBulkSessionData();
+        rupturePostData.setDepartmentId(Integer.parseInt(userSessionData().getUserDepartmentId()));
+        rupturePostData.setLmCode(lmCodes.get(0));
+
+        Response<JsonNode> resp = rupturesClient.createBulkSession(rupturePostData);
+        int sessionId = rupturesClient.assertThatSessionIsCreatedAndGetId(resp);
+
+        if (lmCodes.size() > 1) {
+            for (int i = 1; i < lmCodes.size(); i++) {
+                rupturePostData.setLmCode(lmCodes.get(i));
+                Response<JsonNode> respUpdate = rupturesClient.addProductToBulkSession(rupturePostData, sessionId);
+                rupturesClient.assertThatIsUpdatedOrDeleted(respUpdate);
+            }
+        }
+        return sessionId;
+    }
+
+    @Step("Создать стандартную сессию с продуктами")
+    public int createStandardSession(List<RuptureProductData> productDataList) {
 
         ReqRuptureSessionData rupturePostData = new ReqRuptureSessionData();
         rupturePostData.setProduct(productDataList.get(0));
@@ -54,7 +73,7 @@ public class RuptureHelper extends BaseHelper {
         productData.setActions(null);
 
         for (int i = 0; i < sessionsCount; i++) {
-            sessionIdList.add(this.createSession(Collections.singletonList(productData)));
+            sessionIdList.add(this.createStandardSession(Collections.singletonList(productData)));
         }
         return sessionIdList;
     }

@@ -12,6 +12,7 @@ import com.leroy.magmobile.ui.pages.work.ruptures.data.SessionData;
 import com.leroy.magmobile.ui.pages.work.ruptures.widgets.ActiveSessionWidget;
 import com.leroy.magmobile.ui.pages.work.ruptures.widgets.FinishedSessionWidget;
 import io.qameta.allure.Step;
+import org.junit.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -197,5 +198,19 @@ public class SessionListPage extends CommonMagMobilePage {
         softAssert.isEquals(sessionData.getRuptureQuantity(), expectedRupturesCount, "Количество перебоев не совпадает");
         // softAssert.isEquals(sessionData.getType(), "Bulk", "Сессия не массовая"); TODO переделать после выполнения RUP-374
         softAssert.verifyAll();
+    }
+
+    public void verifyActiveBulkSessionDataBySessionId(int expectedRupturesCount, int sessionId) throws Exception {
+        List<SessionData> uiSessionData = activeSessionScrollView.getFullDataList();
+
+        for(SessionData session : uiSessionData){
+            if(Integer.parseInt(session.getSessionNumber()) == sessionId) {
+                softAssert.isEquals(session.getRuptureQuantity(), expectedRupturesCount, "Количество перебоев не совпадает");
+                // softAssert.isEquals(sessionData.getType(), "Bulk", "Сессия не массовая"); TODO переделать после выполнения RUP-374
+                softAssert.verifyAll();
+                return;
+            }
+            Assert.fail("Не нашли сессию №" + sessionId);
+        }
     }
 }
