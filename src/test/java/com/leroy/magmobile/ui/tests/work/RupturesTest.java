@@ -337,53 +337,6 @@ public class RupturesTest extends AppBaseSteps {
                 .shouldActiveSessionContainsSession(sessionData);
     }
 
-    @Test(description = "C3272521 Создание сессии со списка сессий (deprecated)")
-    public void testCreateSessionFromSessionList() throws Exception {
-        ProductItemData product = searchProductHelper.getProducts(1).get(0);
-
-        // Pre-conditions
-        WorkPage workPage = loginAndGoTo(WorkPage.class);
-        SessionListPage sessionListPage = workPage.goToRuptures();
-
-        // Step 1
-        step("Нажать на кнопку сканирования перебоев");
-        RupturesScannerPage rupturesScannerPage = sessionListPage.clickScanRupturesByOneButton();
-        rupturesScannerPage.verifyRequiredElements();
-
-        // Step 2
-        step("Перейти в ручной поиск и найти любой товар. Кликнуть на него.");
-        SearchProductPage searchProductPage = rupturesScannerPage.navigateToSearchProductPage();
-        searchProductPage.enterTextInSearchFieldAndSubmit(product.getLmCode());
-        RuptureCardPage ruptureCardPage = new RuptureCardPage();
-        ruptureCardPage.verifyRequiredElementsWhenCreateRupture();
-
-        // Step 3
-        step("Подтвердить добавление перебоя в сессию");
-        rupturesScannerPage = ruptureCardPage.clickSubmitButton();
-        rupturesScannerPage.shouldCounterIsCorrect(1)
-                .shouldRupturesListNavBtnIsVisible(true)
-                .verifyRequiredElements();
-
-        // Step 4
-        step("Закрыть сканер по кнопке 'х'");
-        rupturesScannerPage.closeScanner();
-        ActiveSessionPage activeSessionPage = new ActiveSessionPage();
-        activeSessionPage.verifyRequiredElements();
-        SessionData sessionData = activeSessionPage.getSessionData();
-
-        // Step 5
-        step("Выйти из сессии нажав стрелку назад");
-        ExitActiveSessionModalPage exitActiveSessionModalPage = activeSessionPage.exitActiveSession();
-        exitActiveSessionModalPage.verifyRequiredElements();
-
-        // Step 6
-        step("Подтвердить выход из сессии");
-        exitActiveSessionModalPage.confirmExit();
-        sessionListPage = new SessionListPage();
-        sessionListPage.verifyRequiredElements()
-                .shouldActiveSessionContainsSession(sessionData);
-    }
-
     @Test(description = "C3272525 Удаление перебоя из сессии")
     public void testDeleteRuptureFromSession() throws Exception {
         int sessionId = rupturesHelper.getActiveSessionIdWithProducts();
