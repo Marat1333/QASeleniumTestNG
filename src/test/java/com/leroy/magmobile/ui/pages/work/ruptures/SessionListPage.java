@@ -54,7 +54,7 @@ public class SessionListPage extends CommonMagMobilePage {
     protected void waitForPageIsLoaded() {
         backBtn.waitForVisibility();
         scanRupturesByOneBtn.waitForVisibility();
-        scanRupturesBulkBtn.waitForInvisibility();
+        scanRupturesBulkBtn.waitForVisibility();
         waitUntilProgressBarIsInvisible();
     }
 
@@ -112,10 +112,18 @@ public class SessionListPage extends CommonMagMobilePage {
         cardWidget.click();
     }
 
-    @Step("Проверить, что в списке активных сессия отсутствует сессия")
+    @Step("Проверить, что в списке активных сессий отсутствует сессия")
     public SessionListPage shouldActiveSessionHasNotContainsSession(SessionData data) throws Exception {
         List<SessionData> uiSessionData = activeSessionScrollView.getFullDataList();
         anAssert.isFalse(uiSessionData.contains(data), "лист содержит данные");
+        return this;
+    }
+
+    @Step("Проверить, что в списке активных сессий отсутствует сессия")
+    public SessionListPage shouldActiveSessionHasNotContainsSession(String sessionId) throws Exception {
+        List<SessionData> uiSessionData = activeSessionScrollView.getFullDataList();
+        List<String> sessionIds = uiSessionData.stream().map(SessionData::getSessionNumber).collect(Collectors.toList());
+        anAssert.isFalse(sessionIds.contains(sessionId), "лист содержит данные");
         return this;
     }
 
@@ -129,6 +137,14 @@ public class SessionListPage extends CommonMagMobilePage {
     @Step("Проверить, что в списке активных сессия присутствует сессия")
     public SessionListPage shouldActiveSessionContainsSession(String sessionId) throws Exception {
         List<SessionData> uiSessionData = activeSessionScrollView.getFullDataList();
+        List<String> sessionIds = uiSessionData.stream().map(SessionData::getSessionNumber).collect(Collectors.toList());
+        anAssert.isTrue(sessionIds.contains(sessionId), "лист не содержит данные");
+        return this;
+    }
+
+    @Step("Проверить, что в списке завршенных сессий присутствует сессия")
+    public SessionListPage shouldFinishedSessionContainsSession(String sessionId) throws Exception {
+        List<FinishedSessionData> uiSessionData = finishedSessionScrollView.getFullDataList();
         List<String> sessionIds = uiSessionData.stream().map(SessionData::getSessionNumber).collect(Collectors.toList());
         anAssert.isTrue(sessionIds.contains(sessionId), "лист не содержит данные");
         return this;
@@ -212,5 +228,14 @@ public class SessionListPage extends CommonMagMobilePage {
             }
             Assert.fail("Не нашли сессию №" + sessionId);
         }
+    }
+
+    public void checkSuccessToast() {
+        anAssert.isTrue(driver.getPageSource().contains("Сессия успешно завершена"), "Некорректный текст тоста");
+    }
+
+    public void checkFinishedBulkSessionToast() {
+        anAssert.isTrue(driver.getPageSource().contains("Сессия массового сканирования доступна только в Report"),
+                "Некорректный текст тоста");
     }
 }

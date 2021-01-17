@@ -4,6 +4,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.ScannerWithSearchBtnPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.modal.FinishSessionAcceptModalPage;
 import io.qameta.allure.Step;
 
 public class RupturesScannerPage extends ScannerWithSearchBtnPage {
@@ -36,6 +37,12 @@ public class RupturesScannerPage extends ScannerWithSearchBtnPage {
     public void closeScanner() {
         //этот сканер шустрее отрабатывает и с первого раза закрывается
         closeScannerBtn.click();
+    }
+
+    @Step("Завершить сессию")
+    public FinishSessionAcceptModalPage finishBulkSession() {
+        rupturesFinishBulkSessionBtn.click();
+        return new FinishSessionAcceptModalPage();
     }
 
     @Step("Перейти в список перебоев")

@@ -764,13 +764,15 @@ public class RupturesTest extends AppBaseSteps {
 
         // Step 2
         step("Отменить завершение");
-        activeSessionPage = finishSessionAcceptModalPage.cancel();
+        finishSessionAcceptModalPage.cancel();
+        activeSessionPage = new ActiveSessionPage();
         activeSessionPage.verifyRequiredElements();
 
         // Step 3
         step("Нажать кнопку завершить и подтвердить завершение сессии");
         finishSessionAcceptModalPage = activeSessionPage.finishSession();
-        FinishedSessionPage finishedSessionPage = finishSessionAcceptModalPage.finish();
+        finishSessionAcceptModalPage.finish();
+        FinishedSessionPage finishedSessionPage = new FinishedSessionPage();
         finishedSessionPage.shouldStatusIsFinished()
                 .shouldTasksCountIsCorrect(8)
                 .verifyRequiredElements();
@@ -1090,7 +1092,8 @@ public class RupturesTest extends AppBaseSteps {
         // Step 4
         step("Завершить сессию");
         FinishSessionAcceptModalPage finishSessionAcceptModalPage = activeSessionPage.finishSession();
-        FinishedSessionPage finishedSessionPage = finishSessionAcceptModalPage.finish();
+        finishSessionAcceptModalPage.finish();
+        FinishedSessionPage finishedSessionPage = new FinishedSessionPage();
         finishedSessionPage.verifyRequiredElements();
 
         // Step 5
@@ -1912,5 +1915,52 @@ public class RupturesTest extends AppBaseSteps {
         rupturesScannerPage.closeScanner();
         sessionListPage = new SessionListPage();
         sessionListPage.verifyActiveBulkSessionDataBySessionId(3, sessionId);
+    }
+
+    @Test(description = "C23437719 Завершение массовой сессии")
+    public void testFinishBulkSession() throws Exception {
+        List<ProductItemData> randomProducts = searchProductHelper.getProducts(3);
+        String firstProductLmCode = randomProducts.get(0).getLmCode();
+        String secondProductLmCode = randomProducts.get(1).getLmCode();
+        int sessionId = rupturesHelper.createBulkSession(Arrays.asList(firstProductLmCode, secondProductLmCode));
+        sessionsNumbers.set(sessionId);
+
+        // Pre-conditions
+        WorkPage workPage = loginAndGoTo(WorkPage.class);
+        SessionListPage sessionListPage = workPage.goToRuptures();
+
+        // Step 1
+        step("Тапнуть на массовую сессию");
+        sessionListPage.goToSession(String.valueOf(sessionId));
+        RupturesScannerPage rupturesScannerPage = new RupturesScannerPage();
+        rupturesScannerPage.shouldRupturesBulkLblIsVisible()
+                .shouldCounterIsCorrect(2)
+                .shouldDeleteButtonIsVisible(true)
+                .shouldFinishButtonIsVisible(true)
+                .shouldRupturesListNavBtnIsVisible(false)
+                .verifyRequiredElements();
+
+        // Step 2
+        step("Тапнуть на кнопку завершения сессии");
+        FinishSessionAcceptModalPage finishSessionAcceptModalPage = rupturesScannerPage.finishBulkSession();
+        finishSessionAcceptModalPage.verifyRequiredElements();
+
+        // Step 3
+        step("Отменить завершение");
+        finishSessionAcceptModalPage.cancel();
+        rupturesScannerPage = new RupturesScannerPage();
+        rupturesScannerPage.verifyRequiredElements();
+
+        // Step 4
+        step("Нажать кнопку завершить и подтвердить завершение сессии");
+        finishSessionAcceptModalPage = rupturesScannerPage.finishBulkSession();
+        finishSessionAcceptModalPage.finish();
+        sessionListPage = new SessionListPage();
+//        sessionListPage.checkSuccessToast(); TODO рассмотреть возможность поиска тоста во время waitForPageIsLoaded
+//        sessionListPage.shouldActiveSessionHasNotContainsSession(String.valueOf(sessionId));
+//        sessionListPage.shouldFinishedSessionContainsSession(String.valueOf(sessionId)); TODO доделать после выполнения RUP-374
+        rupturesHelper.checkSessionIsFinished(sessionId);
+        sessionListPage.goToSession(String.valueOf(sessionId));
+        sessionListPage.checkFinishedBulkSessionToast();
     }
 }
