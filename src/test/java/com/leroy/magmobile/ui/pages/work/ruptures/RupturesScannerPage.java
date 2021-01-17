@@ -19,8 +19,8 @@ public class RupturesScannerPage extends ScannerWithSearchBtnPage {
     @AppFindBy(accessibilityId = "finishBulkSessionBtn")
     Element rupturesFinishBulkSessionBtn;
 
-    @AppFindBy(xpath = "//*[@class = 'android.widget.Toast' and @text = 'Успешно добавлено!']") //TODO поправить, чтобы работало
-    Element rupturesSuccessToast;
+    @AppFindBy(xpath = "//*[@class = 'android.widget.Toast']")
+    Element rupturesToast;
 
     @AppFindBy(text = "СПИСОК ПЕРЕБОЕВ")
     Button rupturesListBtn;
@@ -92,11 +92,9 @@ public class RupturesScannerPage extends ScannerWithSearchBtnPage {
         return this;
     }
 
-    @Step("Проверить тост успешного добавления") //TODO допилить проверку тоста
-    public RupturesScannerPage checkSuccessToast() throws InterruptedException {
-       // waitForAnyOneOfElementsIsVisible(rupturesSuccessToast);
-        anAssert.isElementVisible(rupturesSuccessToast);
-        driver.wait(tiny_timeout);
+    @Step("Проверить тост успешного добавления")
+    public RupturesScannerPage checkSuccessToast() {
+        anAssert.isEquals(rupturesToast.getText(), "Успешно добавлено!", "Некорректный текст тоста");
         return this;
     }
 }

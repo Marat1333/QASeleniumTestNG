@@ -195,7 +195,7 @@ public class SessionListPage extends CommonMagMobilePage {
         List<SessionData> uiSessionData = activeSessionScrollView.getFullDataList(1);
         SessionData sessionData = uiSessionData.get(0);
         softAssert.isEquals(sessionData.getRuptureQuantity(), expectedRupturesCount, "Количество перебоев не совпадает");
-        softAssert.isEquals(sessionData.getType(), "Bulk", "Сессия не массовая");
+        // softAssert.isEquals(sessionData.getType(), "Bulk", "Сессия не массовая"); TODO переделать после выполнения RUP-374
         softAssert.verifyAll();
     }
 }

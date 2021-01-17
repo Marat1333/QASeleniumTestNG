@@ -1843,7 +1843,7 @@ public class RupturesTest extends AppBaseSteps {
         searchProductPage.searchProductAndSelect(firstProductLmCode);
         rupturesScannerPage = new RupturesScannerPage();
         rupturesScannerPage.shouldRupturesBulkLblIsVisible()
-                //.checkSuccessToast() TODO доделать проверку тоста
+                .checkSuccessToast()
                 .shouldCounterIsCorrect(1)
                 .shouldDeleteButtonIsVisible(true)
                 .shouldFinishButtonIsVisible(true)
@@ -1856,7 +1856,7 @@ public class RupturesTest extends AppBaseSteps {
         searchProductPage.searchProductAndSelect(secondProductLmCode);
         rupturesScannerPage = new RupturesScannerPage();
         rupturesScannerPage.shouldRupturesBulkLblIsVisible()
-                //.checkSuccessToast()
+                .checkSuccessToast()
                 .shouldCounterIsCorrect(2)
                 .shouldDeleteButtonIsVisible(true)
                 .shouldFinishButtonIsVisible(true)
