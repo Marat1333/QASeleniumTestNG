@@ -1960,6 +1960,9 @@ public class RupturesTest extends AppBaseSteps {
 //        sessionListPage.shouldActiveSessionHasNotContainsSession(String.valueOf(sessionId));
 //        sessionListPage.shouldFinishedSessionContainsSession(String.valueOf(sessionId)); TODO доделать после выполнения RUP-374
         rupturesHelper.checkSessionIsFinished(sessionId);
+
+        // Step 5
+        step("Тапнуть на завершенную массовую сессию");
         sessionListPage.goToSession(String.valueOf(sessionId));
         sessionListPage.checkFinishedBulkSessionToast();
     }
