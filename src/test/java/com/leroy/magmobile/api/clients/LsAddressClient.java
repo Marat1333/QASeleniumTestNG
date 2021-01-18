@@ -35,6 +35,16 @@ public class LsAddressClient extends BaseMashupClient {
         return execute(req, AlleyDataItems.class);
     }
 
+    @Step("Rename Alley")
+    public Response<AlleyData> renameAlley(AlleyData alleyData){
+        LsAddressAlleysPutRequest req = new LsAddressAlleysPutRequest();
+        req.setAlleyId(alleyData.getId());
+        req.setShopId(alleyData.getStoreId());
+        req.setDepartmentId(alleyData.getDepartmentId());
+        req.setCode(alleyData.getCode());
+        return execute(req, AlleyData.class);
+    }
+
     // Stands
 
     @Step("Create stand with alleyId={alleyId}")
@@ -184,6 +194,20 @@ public class LsAddressClient extends BaseMashupClient {
                 is(Integer.valueOf(getUserSessionData().getUserDepartmentId())));
         assertThat("code", actualData.getCode(), is(postData.getCode()));
         return actualData;
+    }
+
+    public AlleyData assertThatAlleyIsRenamedAndGetData(AlleyData actualData, AlleyData putData){
+        assertThat("id", actualData.getId(), is(putData.getId()));
+        assertThat("count", actualData.getCount(), is(0));
+        assertThat("storeId", actualData.getStoreId(), is(Integer.valueOf(getUserSessionData().getUserShopId())));
+        assertThat("departmentId", actualData.getDepartmentId(),
+                is(Integer.valueOf(getUserSessionData().getUserDepartmentId())));
+        assertThat("code", actualData.getCode(), is(putData.getCode()));
+        return actualData;
+    }
+
+    public void assertThatResponseIsSuccess(Response<?> resp) {
+        assertThatResponseIsOk(resp);
     }
 
     // Stand
