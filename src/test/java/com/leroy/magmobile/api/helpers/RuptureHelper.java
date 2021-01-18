@@ -149,4 +149,24 @@ public class RuptureHelper extends BaseHelper {
         Assert.fail("Session " + sessionId + " is not finished");
     }
 
+    @Step("Убедиться, что сессия удалена")
+    public void checkSessionIsDeleted(int sessionId) {
+        Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions("active", 100);
+        assertThat(resp, successful());
+        List<ResRuptureSessionData> activeSessions = resp.asJson().getItems();
+        for (ResRuptureSessionData activeSession:activeSessions) {
+            if (activeSession.getSessionId() == sessionId) {
+                Assert.fail("Session " + sessionId + " is active");
+            }
+        }
+
+        resp = rupturesClient.getSessions("finished", 100);
+        assertThat(resp, successful());
+        List<ResRuptureSessionData> finishedSessions = resp.asJson().getItems();
+        for (ResRuptureSessionData finishedSession:finishedSessions) {
+            if (finishedSession.getSessionId() == sessionId) {
+                Assert.fail("Session " + sessionId + " is finished");
+            }
+        }
+    }
 }

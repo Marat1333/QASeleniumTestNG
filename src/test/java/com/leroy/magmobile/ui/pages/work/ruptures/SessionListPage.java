@@ -142,6 +142,14 @@ public class SessionListPage extends CommonMagMobilePage {
         return this;
     }
 
+    @Step("Проверить, что в списке завршенных сессий отсутствует сессия")
+    public SessionListPage shouldFinishedSessionHasNotContainsSession(String sessionId) throws Exception {
+        List<FinishedSessionData> uiSessionData = finishedSessionScrollView.getFullDataList();
+        List<String> sessionIds = uiSessionData.stream().map(SessionData::getSessionNumber).collect(Collectors.toList());
+        anAssert.isFalse(sessionIds.contains(sessionId), "лист содержит данные");
+        return this;
+    }
+
     @Step("Проверить, что в списке завршенных сессий присутствует сессия")
     public SessionListPage shouldFinishedSessionContainsSession(String sessionId) throws Exception {
         List<FinishedSessionData> uiSessionData = finishedSessionScrollView.getFullDataList();

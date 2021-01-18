@@ -1872,7 +1872,7 @@ public class RupturesTest extends AppBaseSteps {
 
     @Test(description = "C23437719 Завершение массовой сессии")
     public void testFinishBulkSession() throws Exception {
-        List<ProductItemData> randomProducts = searchProductHelper.getProducts(3);
+        List<ProductItemData> randomProducts = searchProductHelper.getProducts(2);
         String firstProductLmCode = randomProducts.get(0).getLmCode();
         String secondProductLmCode = randomProducts.get(1).getLmCode();
         int sessionId = rupturesHelper.createBulkSession(Arrays.asList(firstProductLmCode, secondProductLmCode));
@@ -1899,7 +1899,7 @@ public class RupturesTest extends AppBaseSteps {
         finishSessionAcceptModalPage.verifyRequiredElements();
 
         // Step 3
-        step("Отменить завершение");
+        step("Отменить завершение по кнопке на модалке");
         finishSessionAcceptModalPage.cancel();
         rupturesScannerPage = new RupturesScannerPage();
         rupturesScannerPage.verifyRequiredElements();
@@ -1909,6 +1909,7 @@ public class RupturesTest extends AppBaseSteps {
         finishSessionAcceptModalPage = rupturesScannerPage.finishBulkSession();
         finishSessionAcceptModalPage.finish();
         sessionListPage = new SessionListPage();
+        sessionListPage.verifyRequiredElements();
 //        sessionListPage.checkSuccessToast(); TODO рассмотреть возможность поиска тоста во время waitForPageIsLoaded
 //        sessionListPage.shouldActiveSessionHasNotContainsSession(String.valueOf(sessionId));
 //        sessionListPage.shouldFinishedSessionContainsSession(String.valueOf(sessionId)); TODO доделать после выполнения RUP-374
@@ -1918,5 +1919,50 @@ public class RupturesTest extends AppBaseSteps {
         step("Тапнуть на завершенную массовую сессию");
         sessionListPage.goToSession(String.valueOf(sessionId));
         sessionListPage.checkFinishedBulkSessionToast();
+    }
+
+    @Test(description = "C23437720 Удаление массовой сессии")
+    public void testDeleteBulkSession() throws Exception {
+        List<ProductItemData> randomProducts = searchProductHelper.getProducts(1);
+        String firstProductLmCode = randomProducts.get(0).getLmCode();
+        int sessionId = rupturesHelper.createBulkSession(Collections.singletonList(firstProductLmCode));
+        sessionsNumbers.set(sessionId);
+
+        // Pre-conditions
+        WorkPage workPage = loginAndGoTo(WorkPage.class);
+        SessionListPage sessionListPage = workPage.goToRuptures();
+
+        // Step 1
+        step("Тапнуть на массовую сессию");
+        sessionListPage.goToSession(String.valueOf(sessionId));
+        RupturesScannerPage rupturesScannerPage = new RupturesScannerPage();
+        rupturesScannerPage.shouldRupturesBulkLblIsVisible()
+                .shouldCounterIsCorrect(1)
+                .shouldDeleteButtonIsVisible(true)
+                .shouldFinishButtonIsVisible(true)
+                .shouldRupturesListNavBtnIsVisible(false)
+                .verifyRequiredElements();
+
+        // Step 2
+        step("Тапнуть на кнопку удаления сессии");
+        DeleteSessionModalPage deleteSessionModalPage = rupturesScannerPage.deleteBulkSession();
+        deleteSessionModalPage.verifyRequiredElements();
+
+        // Step 3
+        step("Отменить удаление железной кнопкой");
+//        deleteRuptureModalPage.navigateBack(); TODO переделать на navigateBack после исправления RUP-376
+        deleteSessionModalPage.cancelDelete();
+        rupturesScannerPage = new RupturesScannerPage();
+        rupturesScannerPage.verifyRequiredElements();
+
+        // Step 4
+        step("Нажать кнопку удаления и подтвердить удаление сессии");
+        deleteSessionModalPage = rupturesScannerPage.deleteBulkSession();
+        deleteSessionModalPage.confirmDelete();
+        sessionListPage = new SessionListPage();
+        sessionListPage.verifyRequiredElements();
+//        sessionListPage.shouldActiveSessionHasNotContainsSession(String.valueOf(sessionId));
+//        sessionListPage.shouldFinishedSessionHasNotContainsSession(String.valueOf(sessionId)); TODO доделать после выполнения RUP-374
+        rupturesHelper.checkSessionIsDeleted(sessionId);
     }
 }
