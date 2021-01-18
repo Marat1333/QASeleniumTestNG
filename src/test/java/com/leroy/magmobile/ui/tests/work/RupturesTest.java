@@ -1870,6 +1870,50 @@ public class RupturesTest extends AppBaseSteps {
         sessionListPage.verifyActiveBulkSessionDataBySessionId(3, sessionId);
     }
 
+    @Test(description = "C23438915 Добавление дубля в массовую сессию")
+    public void testAddDuplicateProductToBulkSession()  throws Exception {
+        List<ProductItemData> randomProducts = searchProductHelper.getProducts(2);
+        String firstProductLmCode = randomProducts.get(0).getLmCode();
+        String secondProductLmCode = randomProducts.get(1).getLmCode();
+        int sessionId = rupturesHelper.createBulkSession(Arrays.asList(firstProductLmCode, secondProductLmCode));
+        sessionsNumbers.set(sessionId);
+
+        // Pre-conditions
+        WorkPage workPage = loginAndGoTo(WorkPage.class);
+        SessionListPage sessionListPage = workPage.goToRuptures();
+
+        //Step 1
+        step("Тапнуть на массовую сессию");
+        sessionListPage.goToSession(String.valueOf(sessionId));
+        RupturesScannerPage rupturesScannerPage = new RupturesScannerPage();
+        rupturesScannerPage.shouldRupturesBulkLblIsVisible()
+                .shouldCounterIsCorrect(2)
+                .shouldDeleteButtonIsVisible(true)
+                .shouldFinishButtonIsVisible(true)
+                .shouldRupturesListNavBtnIsVisible(false)
+                .verifyRequiredElements();
+
+        //Step 2
+        step("Добавить третий товар через ручной поиск по ЛМ");
+        SearchProductPage searchProductPage = rupturesScannerPage.navigateToSearchProductPage();
+        searchProductPage.searchProductAndSelect(secondProductLmCode);
+        rupturesScannerPage = new RupturesScannerPage();
+        rupturesScannerPage.shouldRupturesBulkLblIsVisible()
+                .checkSuccessToast()
+//                .shouldCounterIsCorrect(2) TODO Вернуть после исправления RUP-335
+                .shouldCounterIsCorrect(3)
+                .shouldDeleteButtonIsVisible(true)
+                .shouldFinishButtonIsVisible(true)
+                .shouldRupturesListNavBtnIsVisible(false)
+                .verifyRequiredElements();
+
+        //Step 3
+        step("Выйти из сессии нажав на крестик закрытия сканера");
+        rupturesScannerPage.closeScanner();
+        sessionListPage = new SessionListPage();
+        sessionListPage.verifyActiveBulkSessionDataBySessionId(2, sessionId);
+    }
+
     @Test(description = "C23437719 Завершение массовой сессии")
     public void testFinishBulkSession() throws Exception {
         List<ProductItemData> randomProducts = searchProductHelper.getProducts(2);
