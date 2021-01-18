@@ -206,7 +206,7 @@ public class RupturesTest extends AppBaseSteps {
     }
 
     @Test(description = "C3272520 Создание сессии с экрана списка сессий")
-    public void testCreateSessionFromWorkPage() throws Exception {
+    public void testCreateSessionFromSessionsListPage() throws Exception {
         List<ProductItemData> randomProducts = searchProductHelper.getProducts(2);
         String firstProductLmCode = randomProducts.get(0).getLmCode();
         String secondProductLmCode = randomProducts.get(1).getLmCode();
@@ -339,7 +339,7 @@ public class RupturesTest extends AppBaseSteps {
 
     @Test(description = "C3272525 Удаление перебоя из сессии")
     public void testDeleteRuptureFromSession() throws Exception {
-        int sessionId = rupturesHelper.getActiveSessionIdWithProducts();
+        int sessionId = rupturesHelper.getActiveSessionIdWithProducts(); //TODO Переделать на создание сессии с товаром
         List<RuptureProductData> sessionProducts = rupturesHelper.getProducts(sessionId).getItems();
         String someLmCode = sessionProducts.get(0).getLmCode();
 
@@ -1645,7 +1645,7 @@ public class RupturesTest extends AppBaseSteps {
         activeSessionPage.checkStockCorrectionStatus(secondProductLm, false);
     }
 
-    @Test(description = "C23440886 Коррекция C3 из активной сессии из карточка перебоя (через список экшенов)")
+    @Test(description = "C23440934 Коррекция C3 из активной сессии из карточка перебоя (через список экшенов)")
     public void testCreateStockCorrectionFromActiveSessionRuptureCardActionsList() throws Exception {
         getUserSessionData().setUserShopId("35");
         getUserSessionData().setUserDepartmentId("5");
@@ -1899,8 +1899,7 @@ public class RupturesTest extends AppBaseSteps {
         searchProductPage.searchProductAndSelect(secondProductLmCode);
         rupturesScannerPage = new RupturesScannerPage();
         rupturesScannerPage.shouldRupturesBulkLblIsVisible()
-                .checkSuccessToast()
-//                .shouldCounterIsCorrect(2) TODO Вернуть после исправления RUP-335
+//                .shouldCounterIsCorrect(2) TODO Вернуть после исправления RUP-335, возможно, дополнить
                 .shouldCounterIsCorrect(3)
                 .shouldDeleteButtonIsVisible(true)
                 .shouldFinishButtonIsVisible(true)
