@@ -1,15 +1,18 @@
 package com.leroy.magmobile.api.tests.ruptures;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.leroy.magmobile.api.clients.RupturesClient;
-import com.leroy.magmobile.api.data.ruptures.*;
+import com.leroy.magmobile.api.data.ruptures.ActionData;
+import com.leroy.magmobile.api.data.ruptures.ReqRuptureSessionData;
+import com.leroy.magmobile.api.data.ruptures.ReqRuptureSessionWithActionsData;
+import com.leroy.magmobile.api.data.ruptures.ResActionDataList;
+import com.leroy.magmobile.api.data.ruptures.RuptureProductData;
+import com.leroy.magmobile.api.data.ruptures.RuptureProductDataList;
 import io.qameta.allure.Step;
-import org.testng.annotations.Test;
-import ru.leroymerlin.qa.core.clients.base.Response;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import org.testng.annotations.Test;
+import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class RuptureSessionProductActionTest extends BaseRuptureTest {
 
@@ -19,7 +22,6 @@ public class RuptureSessionProductActionTest extends BaseRuptureTest {
 
     @Step("Pre-condition: Создаем сессию с товаром и Action'ами")
     private void setUp(boolean actionState0, boolean actionState1) {
-        RupturesClient rupturesClient = rupturesClient();
 
         // Generate test data
         ActionData action0 = ActionData.returnRandomData();
@@ -52,8 +54,6 @@ public class RuptureSessionProductActionTest extends BaseRuptureTest {
     @Test(description = "C3233584 PUT rupture action true")
     public void testPutRuptureActionTrue() {
         setUp(false, false);
-
-        RupturesClient rupturesClient = rupturesClient();
         RuptureProductData ruptureProductData = ruptureProductDataListBody.getItems().get(0);
         ruptureProductData.getActions().get(0).setState(true);
 
@@ -74,8 +74,6 @@ public class RuptureSessionProductActionTest extends BaseRuptureTest {
     @Test(description = "C3285466 PUT rupture action false")
     public void testPutRuptureActionFalse() {
         setUp(true, false);
-
-        RupturesClient rupturesClient = rupturesClient();
         RuptureProductData ruptureProductData = getCurrentRuptureProduct();
         ruptureProductData.getActions().get(0).setState(false);
 
@@ -97,8 +95,6 @@ public class RuptureSessionProductActionTest extends BaseRuptureTest {
     public void testPutRuptureActionForNotExistedProduct() {
         setUp(false, false);
 
-        RupturesClient rupturesClient = rupturesClient();
-
         ReqRuptureSessionWithActionsData ruptureData = new ReqRuptureSessionWithActionsData();
         ruptureData.setSessionId(sessionId);
         ruptureData.setLmCode("11111111"); // not existed product
@@ -116,8 +112,6 @@ public class RuptureSessionProductActionTest extends BaseRuptureTest {
     @Test(description = "C23409762 PUT rupture action add not included actions")
     public void testPutRuptureActionAddNotIncludeActions() {
         setUp(false, true);
-
-        RupturesClient rupturesClient = rupturesClient();
 
         ActionData actionData2 = ActionData.returnRandomData();
         actionData2.setAction(2);
@@ -154,8 +148,6 @@ public class RuptureSessionProductActionTest extends BaseRuptureTest {
     public void testPutRuptureActionRemoveActions() {
         setUp(true, false);
 
-        RupturesClient rupturesClient = rupturesClient();
-
         ReqRuptureSessionWithActionsData ruptureData = new ReqRuptureSessionWithActionsData();
         ruptureData.setSessionId(sessionId);
         ruptureData.setLmCode(getCurrentRuptureProduct().getLmCode());
@@ -175,8 +167,6 @@ public class RuptureSessionProductActionTest extends BaseRuptureTest {
     @Test(description = "C23409765 PUT rupture action for finished session")
     public void testPutRuptureActionForFinishedSession() {
         setUp(true, false);
-
-        RupturesClient rupturesClient = rupturesClient();
 
         step("Завершаем сессию");
         Response<JsonNode> respFinishSession = rupturesClient.finishSession(sessionId);

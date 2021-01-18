@@ -1,26 +1,22 @@
 package com.leroy.magmobile.api.tests;
 
+import static com.leroy.core.matchers.Matchers.successful;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.UserSessionData;
 import com.leroy.core.api.Module;
 import com.leroy.core.configuration.BaseTest;
-import com.leroy.magmobile.api.ApiClientProvider;
 import com.leroy.umbrella_extension.authorization.AuthClient;
 import org.testng.annotations.Guice;
 import ru.leroymerlin.qa.core.clients.base.Response;
-
-import static com.leroy.core.matchers.Matchers.successful;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 @Guice(modules = {Module.class})
 public abstract class BaseProjectApiTest extends BaseTest {
 
     @Inject
     private AuthClient authClient;
-
-    @Inject
-    protected ApiClientProvider apiClientProvider;
 
     @Override
     protected UserSessionData initTestClassUserSessionDataTemplate() {

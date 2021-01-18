@@ -1,25 +1,21 @@
 package com.leroy.magmobile.api.tests.cusomers;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.leroy.constants.api.StatusCodes;
+import com.google.inject.Inject;
 import com.leroy.common_mashups.customer_accounts.clients.CustomerClient;
 import com.leroy.common_mashups.customer_accounts.data.CustomerData;
 import com.leroy.common_mashups.customer_accounts.data.CustomerResponseBodyData;
+import com.leroy.constants.api.StatusCodes;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class CustomerTest extends BaseProjectApiTest {
 
+    @Inject
     private CustomerClient customerClient;
 
     private CustomerData customerData;
-
-    @BeforeClass
-    private void initClients() {
-        customerClient = apiClientProvider.getCustomerClient();
-    }
 
     @Override
     protected boolean isNeedAccessToken() {

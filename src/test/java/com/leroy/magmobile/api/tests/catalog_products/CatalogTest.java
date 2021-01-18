@@ -1,34 +1,48 @@
 package com.leroy.magmobile.api.tests.catalog_products;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyOrNullString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.oneOf;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.UserSessionData;
 import com.leroy.magmobile.api.clients.CatalogProductClient;
+import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.data.catalog.NomenclatureData;
-import com.leroy.magmobile.api.data.catalog.product.*;
+import com.leroy.magmobile.api.data.catalog.product.CatalogComplementaryProducts;
+import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
+import com.leroy.magmobile.api.data.catalog.product.CatalogShopsData;
+import com.leroy.magmobile.api.data.catalog.product.CatalogSimilarProducts;
+import com.leroy.magmobile.api.data.catalog.product.SalesHistoryData;
 import com.leroy.magmobile.api.data.catalog.product.reviews.CatalogReviewsOfProductList;
 import com.leroy.magmobile.api.data.catalog.product.reviews.ReviewData;
 import com.leroy.magmobile.api.data.catalog.supply.CatalogSupplierData;
 import com.leroy.magmobile.api.data.shops.ShopData;
 import com.leroy.magmobile.api.data.user.UserData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
+import java.util.List;
+import java.util.Random;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import java.util.List;
-import java.util.Random;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-
 public class CatalogTest extends BaseProjectApiTest {
 
     @Inject
-    SearchProductHelper searchProductHelper;
+    private SearchProductHelper searchProductHelper;
+    @Inject
+    private CatalogProductClient catalogProductClient;
+    @Inject
+    private CatalogSearchClient catalogSearchClient;
 
     private String lmCode;
     private String lmProductWithReviews = "10073940";
@@ -46,13 +60,9 @@ public class CatalogTest extends BaseProjectApiTest {
         lmCode = searchProductHelper.getProductLmCodes(1).get(0);
     }
 
-    private CatalogProductClient client() {
-        return apiClientProvider.getCatalogProductClient();
-    }
-
     @Test(description = "C23195046 GET nomenclature")
     public void testNomenclature() {
-        Response<?> response = client().getNomenclature();
+        Response<?> response = catalogProductClient.getNomenclature();
         isResponseOk(response);
         List<NomenclatureData> nomenclatureData = response.asJsonList(NomenclatureData.class);
         assertThat("count of departments", nomenclatureData.size(), equalTo(15)); //15 отделов
@@ -60,7 +70,7 @@ public class CatalogTest extends BaseProjectApiTest {
 
     @Test(description = "C3172856 get catalog product")
     public void testCatalogProduct() {
-        Response<CatalogProductData> catalogProductDataResponse = client().getProduct(lmCode,
+        Response<CatalogProductData> catalogProductDataResponse = catalogProductClient.getProduct(lmCode,
                 SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR, CatalogProductClient.Extend.builder().inventory(true)
                         .logistic(true).rating(true).build());
         isResponseOk(catalogProductDataResponse);
@@ -71,7 +81,7 @@ public class CatalogTest extends BaseProjectApiTest {
 
     @Test(description = "C23195047 GET reviews by lmCode")
     public void testCatalogProductReviews() {
-        Response<CatalogReviewsOfProductList> reviewsOfProductResponse = client().getProductReviews(
+        Response<CatalogReviewsOfProductList> reviewsOfProductResponse = catalogProductClient.getProductReviews(
                 lmProductWithReviews, 1, 3);
         isResponseOk(reviewsOfProductResponse);
         CatalogReviewsOfProductList data = reviewsOfProductResponse.asJson();
@@ -81,7 +91,7 @@ public class CatalogTest extends BaseProjectApiTest {
 
     @Test(description = "C23195048 GET info about sales history")
     public void testCatalogProductSales() {
-        Response<?> salesHistoryResponse = client().getProductSales(lmProductWithSalesHistory);
+        Response<?> salesHistoryResponse = catalogProductClient.getProductSales(lmProductWithSalesHistory);
         isResponseOk(salesHistoryResponse);
         List<SalesHistoryData> salesHistoryData = salesHistoryResponse.asJsonList(SalesHistoryData.class);
         assertThat("Count of items", salesHistoryData.size(), greaterThan(0));
@@ -98,7 +108,7 @@ public class CatalogTest extends BaseProjectApiTest {
     @Test(description = "C3161101 catalog shops - get remains info by lm code")
     public void testCatalogShops() {
         String[] shops = {"32", "5", "69"};
-        Response<?> catalogShopsResponse = client().getProductShopsPriceAndQuantity(
+        Response<?> catalogShopsResponse = catalogProductClient.getProductShopsPriceAndQuantity(
                 lmCode, shops);
         isResponseOk(catalogShopsResponse);
         List<CatalogShopsData> catalogShopsList = catalogShopsResponse.asJsonList(CatalogShopsData.class);
@@ -114,7 +124,7 @@ public class CatalogTest extends BaseProjectApiTest {
         CatalogProductClient.Extend extendParam = CatalogProductClient.Extend.builder()
                 .rating(true).logistic(true).inventory(true).build();
         Response<CatalogSimilarProducts> catalogSimilarProductsResponse =
-                client().getSimilarProducts(lmCode, extendParam);
+                catalogProductClient.getSimilarProducts(lmCode, extendParam);
         isResponseOk(catalogSimilarProductsResponse);
         CatalogSimilarProducts data = catalogSimilarProductsResponse.asJson();
         assertThat("total count", data.getTotalCount(), greaterThan(0));
@@ -123,7 +133,7 @@ public class CatalogTest extends BaseProjectApiTest {
 
     @Test(description = "C3254678 GET catalog/supplier")
     public void testCatalogSupplier() {
-        Response<CatalogSupplierData> response = client().getSupplyInfo(lmCode);
+        Response<CatalogSupplierData> response = catalogProductClient.getSupplyInfo(lmCode);
         isResponseOk(response);
         CatalogSupplierData data = response.asJson();
         assertThat("supplier code", data.getCode(), not(emptyOrNullString()));
@@ -149,15 +159,15 @@ public class CatalogTest extends BaseProjectApiTest {
         reviewData.setUser(userData);
         reviewData.setShop(shopData);
 
-        Response<JsonNode> response = client().sendReview(reviewData);
+        Response<JsonNode> response = catalogProductClient.sendReview(reviewData);
         isResponseOk(response);
         assertThat(response.asJson().get("id").asText(), not(emptyOrNullString()));
     }
 
     @Test(description = "C23416163 GET /catalog/complementary-products")
     public void testComplementaryProducts() {
-        Response<CatalogComplementaryProducts> response = client().getComplementaryProducts(
-                apiClientProvider.getCatalogSearchClient().getRandomProduct().getLmCode(),
+        Response<CatalogComplementaryProducts> response = catalogProductClient.getComplementaryProducts(
+                catalogSearchClient.getRandomProduct().getLmCode(),
                 getUserSessionData().getUserShopId());
         isResponseOk(response);
         CatalogComplementaryProducts complementaryProductsData = response.asJson();

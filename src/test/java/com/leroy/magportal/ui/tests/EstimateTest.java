@@ -1,6 +1,7 @@
 package com.leroy.magportal.ui.tests;
 
 import com.google.inject.Inject;
+import com.leroy.common_mashups.helpers.CustomerHelper;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
@@ -36,9 +37,11 @@ import java.util.stream.Collectors;
 public class EstimateTest extends BasePAOTest {
 
     @Inject
-    PAOHelper helper;
+    private PAOHelper paoHelper;
+    @Inject
+    private CustomerHelper customerHelper;
 
-    private String VALIDATION_EMAIL_ERROR_TEXT = "Введи email в формате username@example.ru";
+    private final String VALIDATION_EMAIL_ERROR_TEXT = "Введи email в формате username@example.ru";
 
     @Test(description = "C3302188 Create estimate", groups = NEED_PRODUCTS_GROUP)
     public void testCreateEstimate() throws Exception {
@@ -460,7 +463,7 @@ public class EstimateTest extends BasePAOTest {
 
     @Test(description = "C3302194 Add new client to estimate")
     public void testAddNewClientToEstimate() throws Exception {
-        String unusedPhoneNumber = apiClientProvider.findUnusedPhoneNumber();
+        String unusedPhoneNumber = customerHelper.findUnusedPhoneNumber();
 
         step("Выполнение предусловий: авторизуемся, заходим на страницу сметы");
         EstimatePage estimatePage = loginAndGoTo(EstimatePage.class)
@@ -590,13 +593,13 @@ public class EstimateTest extends BasePAOTest {
 
     @Test(description = "C23389036 Удаление сметы в статусе Черновик", groups = NEED_ACCESS_TOKEN_GROUP)
     public void testRemoveDraftEstimate() throws Exception {
-        String estimateId = apiClientProvider.createDraftEstimateAndGetCartId();
+        String estimateId = paoHelper.createDraftEstimateAndGetCartId();
         testRemoveEstimate(estimateId);
     }
 
     @Test(description = "C23398452 Удаление сметы в статусе Создан", groups = NEED_ACCESS_TOKEN_GROUP)
     public void testRemoveConfirmedEstimate() throws Exception {
-        String estimateId = apiClientProvider.createConfirmedEstimateAndGetCartId();
+        String estimateId = paoHelper.createConfirmedEstimateAndGetCartId();
         testRemoveEstimate(estimateId);
     }
 
@@ -605,10 +608,11 @@ public class EstimateTest extends BasePAOTest {
         String estimateId;
         EstimatePage estimatePage;
         if (isStartFromScratch()) {
-            CustomerData customerData = helper.searchForCustomer(TestDataConstants.SIMPLE_CUSTOMER_DATA_1);
+            CustomerData customerData = paoHelper.searchForCustomer(TestDataConstants.SIMPLE_CUSTOMER_DATA_1);
             EstimateProductOrderData estimateProductOrderData = new EstimateProductOrderData(productList.get(0));
             estimateProductOrderData.setQuantity(1.0);
-            estimateId = helper.createConfirmedEstimateAndGetId(estimateProductOrderData, customerData);
+            estimateId = paoHelper
+                    .createConfirmedEstimateAndGetId(estimateProductOrderData, customerData);
             estimatePage = loginAndGoTo(EstimatePage.class);
             estimatePage.openPageWithEstimate(estimateId);
         } else {
@@ -657,7 +661,7 @@ public class EstimateTest extends BasePAOTest {
     @Test(description = "C3302186 Search of documents", groups = NEED_ACCESS_TOKEN_GROUP)
     public void testSearchDocumentEstimate() throws Exception {
         step("Выполнение предусловий");
-        String estimateId = apiClientProvider.createDraftEstimateAndGetCartId();
+        String estimateId = paoHelper.createDraftEstimateAndGetCartId();
         EstimatePage estimatePage = loginAndGoTo(EstimatePage.class);
 
         // Step 1, 2

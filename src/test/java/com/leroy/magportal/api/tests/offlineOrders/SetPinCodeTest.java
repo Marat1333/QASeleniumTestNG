@@ -43,7 +43,15 @@ public class SetPinCodeTest extends BaseMagPortalApiTest {
         }
     }
 
-    @Test(description = "C23441740 First Set PinCode for Pickup Order", priority = 1)
+    @Test(description = "C23441744 Set Invalid PinCode", priority = 1)
+    public void testSetInvalidPinCode() {
+        currentPinCode = "1test";
+        Response<?> response = orderClient
+                .setPinCode(currentOrderData.getOrderId(), currentPinCode);
+        assertThat("Request to set PinCode has Failed.", !response.isSuccessful());
+    }
+
+    @Test(description = "C23441740 First Set PinCode for Pickup Order", priority = 2)
     public void testSetPinCodePickupFirst() {
         currentPinCode = paoHelper.getValidPinCode(currentOrderData.getDelivery());
         Response<?> response = orderClient
@@ -51,8 +59,7 @@ public class SetPinCodeTest extends BaseMagPortalApiTest {
         assertPinCodeResult(response);
     }
 
-    @Test(description = "C23441741 Second Set PinCode for Pickup Order", dependsOnMethods = {
-            "testSetPinCodePickupFirst"})
+    @Test(description = "C23441741 Second Set PinCode for Pickup Order", priority = 3)
     public void testSetPinCodePickupSecond() {
         currentPinCode = paoHelper.getValidPinCode(currentOrderData.getDelivery());
         Response<?> response = orderClient
@@ -60,8 +67,7 @@ public class SetPinCodeTest extends BaseMagPortalApiTest {
         assertPinCodeResult(response);
     }
 
-    @Test(description = "C23441742 Set PinCode Duplicate for Delivery Order", dependsOnMethods = {
-            "testSetPinCodePickupSecond"})
+    @Test(description = "C23441742 Set PinCode Duplicate for Delivery Order", priority = 4)
     public void testSetPinCodeDeliveryDuplicate() {
         createOfflineDeliveryOrder();
         Response<?> response = orderClient
@@ -69,21 +75,12 @@ public class SetPinCodeTest extends BaseMagPortalApiTest {
         assertThat("Request to set PinCode has Failed.", !response.isSuccessful());
     }
 
-    @Test(description = "C23441743 Set PinCode for Delivery Order", dependsOnMethods = {
-            "testSetPinCodeDeliveryDuplicate"})
+    @Test(description = "C23441743 Set PinCode for Delivery Order", priority = 5)
     public void testSetPinCodeDeliveryFirst() {
         currentPinCode = paoHelper.getValidPinCode(currentOrderData.getDelivery());
         Response<?> response = orderClient
                 .setPinCode(currentOrderData.getOrderId(), currentPinCode);
         assertPinCodeResult(response);
-    }
-
-    @Test(description = "C23441744 Set Invalid PinCode", priority = 2)
-    public void testSetInvalidPinCode() {
-        currentPinCode = "1test";
-        Response<?> response = orderClient
-                .setPinCode(currentOrderData.getOrderId(), currentPinCode);
-        assertThat("Request to set PinCode has Failed.", !response.isSuccessful());
     }
 
     private void createOfflineDeliveryOrder() {

@@ -3,24 +3,20 @@ package com.leroy.magportal.api.tests.onlineOrders.deliveryOrders;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.google.inject.Inject;
-import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
-import com.leroy.magportal.api.constants.PaymentStatusEnum;
 import com.leroy.magportal.api.data.onlineOrders.OrderDeliveryRecalculateResponseData;
-import com.leroy.magportal.api.helpers.BitrixHelper;
+import com.leroy.magportal.api.helpers.OnlineOrderHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
-import java.util.List;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
-import ru.leroymerlin.qa.core.clients.tunnel.data.BitrixSolutionResponse;
 
 public class DoorDeliveryRecalculateTest extends BaseMagPortalApiTest {
 
     @Inject
-    private BitrixHelper bitrixHelper;
+    private OnlineOrderHelper onlineOrderHelper;
     @Inject
     private OrderClient orderClient;
 
@@ -34,7 +30,8 @@ public class DoorDeliveryRecalculateTest extends BaseMagPortalApiTest {
         currentProductsCount = 3;
         currentOrderType = OnlineOrderTypeConst.DELIVERY_TO_DOOR;
 
-        currentOrderId = bitrixHelper.createOnlineOrderCardPayment(currentOrderType).getSolutionId();
+        currentOrderId = onlineOrderHelper.createOnlineOrderCardPayment(currentOrderType)
+                .getSolutionId();
     }
 
     @Test(description = "C23425649 Door: Delivery ReCalc: One product", priority = 1)
@@ -77,7 +74,7 @@ public class DoorDeliveryRecalculateTest extends BaseMagPortalApiTest {
     private void makeDimensionalOrder() {
         currentProductsCount = 1;
 
-        currentOrderId = bitrixHelper.createDimensionalOnlineOrder(currentOrderType)
+        currentOrderId = onlineOrderHelper.createDimensionalOnlineOrder(currentOrderType)
                 .getSolutionId();
     }
 }

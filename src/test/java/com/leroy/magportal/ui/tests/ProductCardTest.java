@@ -1,12 +1,12 @@
 package com.leroy.magportal.ui.tests;
 
+import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.ContextProvider;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
-import com.leroy.magportal.api.clients.MagPortalCatalogProductClient;
 import com.leroy.magportal.api.data.catalog.products.CatalogProductData;
 import com.leroy.magportal.api.data.catalog.products.CatalogSimilarProductsData;
 import com.leroy.magportal.api.data.catalog.shops.NearestShopsData;
@@ -19,14 +19,16 @@ import com.leroy.magportal.ui.pages.products.ExtendedProductCardPage;
 import com.leroy.magportal.ui.pages.products.ProductCardPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage.FilterFrame;
+import java.util.Collections;
+import java.util.List;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.Collections;
-import java.util.List;
-
 public class ProductCardTest extends WebBaseSteps {
+
+    @Inject
+    private CatalogSearchClient catalogSearchClient;
 
     @BeforeMethod
     private void precondition() throws Exception {
@@ -46,7 +48,6 @@ public class ProductCardTest extends WebBaseSteps {
     }
 
     private String getRandomLmCode() {
-        CatalogSearchClient catalogSearchClient = apiClientProvider.getCatalogSearchClient();
         ProductItemDataList productItemDataList = catalogSearchClient.searchProductsBy(new GetCatalogSearch().setPageSize(24)).asJson();
         List<ProductItemData> productItemData = productItemDataList.getItems();
         anAssert().isTrue(productItemData.size() > 0, "size must be more than 0");
@@ -54,14 +55,14 @@ public class ProductCardTest extends WebBaseSteps {
     }
 
     private String getRandomSimilarProductLmCode(String sourceLmCode) {
-        CatalogSimilarProductsData data = apiClientProvider.getMagPortalCatalogProductClientProvider().getSimilarProducts(sourceLmCode).asJson();
+        CatalogSimilarProductsData data = catalogSearchClient.getSimilarProducts(sourceLmCode).asJson();
         List<ProductItemData> resultList = data.getSubstitutes();
         String result = resultList.get((int) (Math.random() * resultList.size())).getLmCode();
         return result;
     }
 
     private String getRandomComplementProductLmCode(String sourceLmCode) {
-        CatalogSimilarProductsData data = apiClientProvider.getMagPortalCatalogProductClientProvider().getSimilarProducts(sourceLmCode).asJson();
+        CatalogSimilarProductsData data = catalogSearchClient.getSimilarProducts(sourceLmCode).asJson();
         List<ProductItemData> resultList = data.getComplements();
         String result = resultList.get((int) (Math.random() * resultList.size())).getLmCode();
         return result;
@@ -161,18 +162,16 @@ public class ProductCardTest extends WebBaseSteps {
         String lessThan4Complements = "10813144";
         String moreThan4Complements = "15057456";
 
-        MagPortalCatalogProductClient client = apiClientProvider.getMagPortalCatalogProductClientProvider();
-
-        CatalogSimilarProductsData data = client.getSimilarProducts(lessThan4Similar).asJson();
+        CatalogSimilarProductsData data = catalogSearchClient.getSimilarProducts(lessThan4Similar).asJson();
         List<ProductItemData> lessThan4SimilarList = data.getSubstitutes();
 
-        data = client.getSimilarProducts(moreThan4Similar).asJson();
+        data = catalogSearchClient.getSimilarProducts(moreThan4Similar).asJson();
         List<ProductItemData> moreThan4SimilarList = data.getSubstitutes();
 
-        data = client.getSimilarProducts(lessThan4Complements).asJson();
+        data = catalogSearchClient.getSimilarProducts(lessThan4Complements).asJson();
         List<ProductItemData> lessThan4ComplementsList = data.getComplements();
 
-        data = client.getSimilarProducts(moreThan4Complements).asJson();
+        data = catalogSearchClient.getSimilarProducts(moreThan4Complements).asJson();
         List<ProductItemData> moreThan4ComplementsList = data.getComplements();
 
 
@@ -306,7 +305,7 @@ public class ProductCardTest extends WebBaseSteps {
     @Test(description = "C23389190 Check short card data")
     public void testCheckShortCardData() throws Exception {
         String lmCode = getRandomLmCode();
-        CatalogProductData data = apiClientProvider.getMagPortalCatalogProductClientProvider().getProductData(lmCode).asJson();
+        CatalogProductData data = catalogSearchClient.getProductData(lmCode).asJson();
 
         //Step 1
         step("Перейти в укороченную карточку товара");
@@ -317,7 +316,7 @@ public class ProductCardTest extends WebBaseSteps {
     @Test(description = "C22782997 Check extended card data")
     public void testCheckExtendedCardData() throws Exception {
         String lmCode = getRandomLmCode();
-        CatalogProductData data = apiClientProvider.getMagPortalCatalogProductClientProvider().getProductData(lmCode).asJson();
+        CatalogProductData data = catalogSearchClient.getProductData(lmCode).asJson();
 
         //Step 1
         step("Перейти в расширенную карточку товара");
@@ -330,7 +329,7 @@ public class ProductCardTest extends WebBaseSteps {
         String shopId = "3";
         String shopName = "Химки";
         String lmCode = getRandomLmCode();
-        List<NearestShopsData> nearestShopsList = apiClientProvider.getMagPortalCatalogProductClientProvider().getNearestShopsInfo(lmCode).asJsonList(NearestShopsData.class);
+        List<NearestShopsData> nearestShopsList = catalogSearchClient.getNearestShopsInfo(lmCode).asJsonList(NearestShopsData.class);
 
         //Pre-condition
         ExtendedProductCardPage extendedProductCardPage = navigateToProductCardByUrl(lmCode, false);

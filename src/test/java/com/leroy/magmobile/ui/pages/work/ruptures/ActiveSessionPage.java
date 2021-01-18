@@ -30,7 +30,7 @@ public class ActiveSessionPage extends SessionPage {
     Element stockCorrectionHasBeenCreatedMsgLbl;
 
     AndroidScrollView<RuptureData> ruptureCardScrollView = new AndroidScrollView<>(driver,
-            AndroidScrollView.TYPICAL_LOCATOR, "./*/android.view.ViewGroup[android.view.ViewGroup]/descendant::*[3]",
+            AndroidScrollView.TYPICAL_LOCATOR, "./*/android.view.ViewGroup[android.view.ViewGroup]/descendant::*[1]",
             RuptureWidget.class);
 
     @Step("Получить список товаровв")

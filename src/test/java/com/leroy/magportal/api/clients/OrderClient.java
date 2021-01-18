@@ -82,17 +82,20 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         return this.getOnlineOrder(orderId, true);
     }
 
+    @SneakyThrows
     @Step("Get order with id = {orderId}")
     public Response<OnlineOrderData> getOnlineOrder(String orderId, boolean isVerify) {
         OrderGetRequest req = new OrderGetRequest();
         req.setOrderId(orderId);
-//        req.setExtend(Extend.PRODUCT_DETAILS);
-        Response<OnlineOrderData> response = execute(req, OnlineOrderData.class);
-        if (isVerify) {
-            assertThat("Get Order FAILED", response.isSuccessful());
+        long currentTimeMillis = System.currentTimeMillis();
+        while (System.currentTimeMillis() - currentTimeMillis < waitTimeoutInSeconds * 1000) {
+            Response<OnlineOrderData> response = execute(req, OnlineOrderData.class);
+            if (!isVerify || response.isSuccessful() && response.asJson().getOrderId() != null) {
+                return response;
+            }
+            Thread.sleep(3000);
         }
-
-        return response;
+        return null;
     }
 
     @Override
@@ -710,7 +713,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
             softAssert.assertEquals(orderData.getPaymentType(),
                     PaymentTypeEnum.getMashNameByName(currentOrderType.paymentType),
                     "Payment Type is invalid.");
-            if (!currentOrderType.getDeliveryServiceType()
+            if (!currentOrderType.getDeliveryType().getService()
                     .equals(DeliveryServiceTypeEnum.PICKUP.getService())) {
                 softAssert.assertTrue(orderData.getDelivery(), "Delivery is invalid.");
                 softAssert.assertNotNull(orderData.getDeliveryData(), "Delivery Data is empty.");
