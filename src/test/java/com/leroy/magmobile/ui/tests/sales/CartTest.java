@@ -1,5 +1,7 @@
 package com.leroy.magmobile.ui.tests.sales;
 
+import com.google.inject.Inject;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.core.annotations.Smoke;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magmobile.ui.models.sales.OrderAppData;
@@ -23,6 +25,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class CartTest extends SalesBaseTest {
+
+    @Inject
+    private SearchProductHelper searchProductHelper;
 
     // Test groups
     private final static String NEED_PRODUCTS_GROUP = "need_products";

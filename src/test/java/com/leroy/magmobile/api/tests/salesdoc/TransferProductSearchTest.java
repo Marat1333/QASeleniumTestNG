@@ -1,5 +1,12 @@
 package com.leroy.magmobile.api.tests.salesdoc;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyOrNullString;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.not;
+
+import com.google.inject.Inject;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.clients.TransferClient;
 import com.leroy.magmobile.api.data.sales.transfer.TransferSearchProductData;
@@ -8,18 +15,14 @@ import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-
 public class TransferProductSearchTest extends BaseProjectApiTest {
 
-    private TransferClient client() {
-        return apiClientProvider.getTransferClient();
-    }
+    @Inject
+    private TransferClient transferClient;
 
     @Test(description = "C3255521 Transfer product search GET")
     public void testTransferProductSearchGet() {
-        Response<TransferSearchProductDataList> resp = client().searchForTransferProducts(
+        Response<TransferSearchProductDataList> resp = transferClient.searchForTransferProducts(
                 SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR);
         isResponseOk(resp);
         TransferSearchProductDataList dataList = resp.asJson();

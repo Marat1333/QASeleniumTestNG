@@ -1,23 +1,22 @@
 package com.leroy.magmobile.api.helpers;
 
 
+import static com.leroy.core.matchers.Matchers.successful;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
+
 import com.google.inject.Inject;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.configuration.Log;
-import com.leroy.magmobile.api.ApiClientProvider;
 import com.leroy.magmobile.api.clients.TransferClient;
-import com.leroy.magmobile.api.data.sales.transfer.*;
+import com.leroy.magmobile.api.data.sales.transfer.TransferProductOrderData;
+import com.leroy.magmobile.api.data.sales.transfer.TransferRunRespData;
+import com.leroy.magmobile.api.data.sales.transfer.TransferSalesDocData;
+import com.leroy.magmobile.api.data.sales.transfer.TransferSearchProductData;
+import com.leroy.magmobile.api.data.sales.transfer.TransferSearchProductDataList;
 import com.leroy.magportal.api.helpers.BaseHelper;
 import io.qameta.allure.Step;
-import lombok.Data;
-import lombok.experimental.Accessors;
-import org.testng.Assert;
-import ru.leroymerlin.qa.core.clients.base.Response;
-import ru.leroymerlin.qa.core.clients.fulfillment.data.internaltransfer.FulfillmentInternalTransferClient;
-import ru.leroymerlin.qa.core.clients.fulfillment.data.internaltransfer.SimulateTaskResponse;
-
-import javax.net.ssl.*;
-import javax.xml.soap.*;
 import java.net.URL;
 import java.security.cert.X509Certificate;
 import java.time.ZonedDateTime;
@@ -25,11 +24,27 @@ import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.leroy.core.matchers.Matchers.successful;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasSize;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import javax.xml.soap.MessageFactory;
+import javax.xml.soap.MimeHeaders;
+import javax.xml.soap.SOAPBody;
+import javax.xml.soap.SOAPConnection;
+import javax.xml.soap.SOAPConnectionFactory;
+import javax.xml.soap.SOAPElement;
+import javax.xml.soap.SOAPEnvelope;
+import javax.xml.soap.SOAPMessage;
+import javax.xml.soap.SOAPPart;
+import lombok.Data;
+import lombok.experimental.Accessors;
+import org.testng.Assert;
+import ru.leroymerlin.qa.core.clients.base.Response;
+import ru.leroymerlin.qa.core.clients.fulfillment.data.internaltransfer.FulfillmentInternalTransferClient;
+import ru.leroymerlin.qa.core.clients.fulfillment.data.internaltransfer.SimulateTaskResponse;
 
 public class TransferHelper extends BaseHelper {
 
@@ -42,12 +57,14 @@ public class TransferHelper extends BaseHelper {
     // ----------- SOAP --------------- //
 
     private static class TrustAllHosts implements HostnameVerifier {
+
         public boolean verify(String hostname, SSLSession session) {
             return true;
         }
     }
 
     private static class TrustAllCertificates implements X509TrustManager {
+
         public void checkClientTrusted(X509Certificate[] certs, String authType) {
         }
 
@@ -85,7 +102,8 @@ public class TransferHelper extends BaseHelper {
             SOAPConnection soapConnection = SOAPConnectionFactory.newInstance().createConnection();
 
             // Send SOAP Message to SOAP Server
-            SOAPMessage soapResponse = soapConnection.call(createSOAPRequest(taskId, extTaskId), soapEndpointUrl);
+            SOAPMessage soapResponse = soapConnection
+                    .call(createSOAPRequest(taskId, extTaskId), soapEndpointUrl);
             soapConnection.close();
 
             // Close HTTPS connection
@@ -128,8 +146,10 @@ public class TransferHelper extends BaseHelper {
         SOAPElement buID = tasks.addChildElement("buID", myNamespace2);
         buID.addTextNode("9");
         SOAPElement storeID = tasks.addChildElement("storeID", myNamespace2);
-        if (!userSessionData().getUserShopId().equals("35"))
-            throw new IllegalArgumentException("Удаление заявки на отзыв возможно только для 35 магазина");
+        if (!userSessionData().getUserShopId().equals("35")) {
+            throw new IllegalArgumentException(
+                    "Удаление заявки на отзыв возможно только для 35 магазина");
+        }
         storeID.addTextNode(userSessionData().getUserShopId());
         SOAPElement solutionID = tasks.addChildElement("solutionID", myNamespace2);
         solutionID.addTextNode(taskId);
@@ -156,7 +176,8 @@ public class TransferHelper extends BaseHelper {
 
     private String getExtTaskByTaskId(String taskId) {
         Response<SimulateTaskResponse> resp = fulfillmentClient.getInternalTransferTask(taskId);
-        assertThat("GET http://fulfillment/v1/internal-transfer/task/" + taskId, resp, successful());
+        assertThat("GET http://fulfillment/v1/internal-transfer/task/" + taskId, resp,
+                successful());
         return resp.asJson().getExtTaskId();
     }
 
@@ -164,7 +185,8 @@ public class TransferHelper extends BaseHelper {
 
     @Step("API: Создаем заявку на отзыв")
     public TransferSalesDocData createDraftTransferTask(
-            List<TransferProductOrderData> productDataList, SalesDocumentsConst.GiveAwayPoints giveAwayPoints) {
+            List<TransferProductOrderData> productDataList,
+            SalesDocumentsConst.GiveAwayPoints giveAwayPoints) {
         TransferSalesDocData postSalesDocData = new TransferSalesDocData();
         postSalesDocData.setProducts(productDataList);
         postSalesDocData.setShopId(Integer.valueOf(userSessionData().getUserShopId()));
@@ -179,21 +201,25 @@ public class TransferHelper extends BaseHelper {
     }
 
     public TransferSalesDocData createDraftTransferTask(
-            TransferProductOrderData productData, SalesDocumentsConst.GiveAwayPoints giveAwayPoints) {
+            TransferProductOrderData productData,
+            SalesDocumentsConst.GiveAwayPoints giveAwayPoints) {
         return createDraftTransferTask(Collections.singletonList(productData), giveAwayPoints);
     }
 
     @Step("API: Создаем подтвержденную заявку на отзыв")
     public TransferRunRespData createConfirmedTransferTask(
-            List<TransferProductOrderData> productDataList, SalesDocumentsConst.GiveAwayPoints giveAwayPoints) {
-        TransferSalesDocData transferSalesDocData = createDraftTransferTask(productDataList, giveAwayPoints);
+            List<TransferProductOrderData> productDataList,
+            SalesDocumentsConst.GiveAwayPoints giveAwayPoints) {
+        TransferSalesDocData transferSalesDocData = createDraftTransferTask(productDataList,
+                giveAwayPoints);
         Response<TransferRunRespData> resp = transferClient.run(transferSalesDocData);
         assertThat(resp, successful());
         return resp.asJson();
     }
 
     public TransferRunRespData createConfirmedTransferTask(
-            TransferProductOrderData productData, SalesDocumentsConst.GiveAwayPoints giveAwayPoints) {
+            TransferProductOrderData productData,
+            SalesDocumentsConst.GiveAwayPoints giveAwayPoints) {
         return createConfirmedTransferTask(Collections.singletonList(productData), giveAwayPoints);
     }
 
@@ -212,8 +238,10 @@ public class TransferHelper extends BaseHelper {
                 SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR);
         assertThat(resp, successful());
         List<TransferSearchProductData> result = resp.asJson().getItems();
-        if (StockType.MONO_PALLET.equals(filters.getStockType()))
-            result = result.stream().filter(p -> p.getSource().get(0).getMonoPallets() != null).collect(Collectors.toList());
+        if (StockType.MONO_PALLET.equals(filters.getStockType())) {
+            result = result.stream().filter(p -> p.getSource().get(0).getMonoPallets() != null)
+                    .collect(Collectors.toList());
+        }
         assertThat("Не найден ни один товар", result, hasSize(greaterThan(0)));
         return result;
     }
@@ -229,6 +257,7 @@ public class TransferHelper extends BaseHelper {
     @Data
     @Accessors(chain = true)
     public static class SearchFilters {
+
         private StockType stockType;
     }
 

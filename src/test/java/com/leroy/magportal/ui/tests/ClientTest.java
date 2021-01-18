@@ -1,5 +1,7 @@
 package com.leroy.magportal.ui.tests;
 
+import com.google.inject.Inject;
+import com.leroy.common_mashups.helpers.CustomerHelper;
 import com.leroy.magportal.ui.WebBaseSteps;
 import com.leroy.magportal.ui.models.customers.CustomerWebData;
 import com.leroy.magportal.ui.pages.customers.CreateCustomerForm;
@@ -11,6 +13,9 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
 
 public class ClientTest extends WebBaseSteps {
+
+    @Inject
+    private CustomerHelper customerHelper;
 
     @Issue("PAO-465")
     @Test(description = "C22783064 Create client via button on client's page")
@@ -86,7 +91,7 @@ public class ClientTest extends WebBaseSteps {
     @Test(description = "C22783068 Create client via modal window after search")
     public void testC22783068() throws Exception {
         // Pre-condition
-        String phoneNumber = apiClientProvider.findUnusedPhoneNumber();
+        String phoneNumber = customerHelper.findUnusedPhoneNumber();
         String email = RandomStringUtils.randomAlphanumeric(8) + "@mail.com";
         CustomerPage clientPage = loginAndGoTo(CustomerPage.class);
 

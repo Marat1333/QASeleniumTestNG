@@ -1,5 +1,7 @@
 package com.leroy.magmobile.ui.tests.sales;
 
+import com.google.inject.Inject;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.annotations.Smoke;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
@@ -20,6 +22,7 @@ import com.leroy.magmobile.ui.pages.sales.orders.order.ProcessOrder35Page;
 import com.leroy.magmobile.ui.pages.sales.orders.order.modal.ConfirmExitOrderModal;
 import com.leroy.magmobile.ui.pages.sales.orders.order.modal.ConfirmRemoveOrderModal;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
+import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.utils.ParserUtil;
 import com.leroy.utils.RandomUtil;
 import io.qameta.allure.Issue;
@@ -34,6 +37,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class OrderTest extends SalesBaseTest {
+
+    @Inject
+    private PAOHelper paoHelper;
+    @Inject
+    private SearchProductHelper searchProductHelper;
 
     private final static String NEED_PRODUCTS_GROUP = "need_products";
 
@@ -620,7 +628,7 @@ public class OrderTest extends SalesBaseTest {
     @Test(description = "C22797122 Создание заказа из корзины, преобразованной из сметы", groups = NEED_PRODUCTS_GROUP)
     public void testCreateOrderFromTransformedCart() throws Exception {
         step("Pre-condition: Создаем смету, преобразуем в корзину");
-        String estimateId = apiClientProvider.createConfirmedEstimateAndGetCartId(lmCodes.subList(0, 1));
+        String estimateId = paoHelper.createConfirmedEstimateAndGetCartId(lmCodes.subList(0, 1));
         MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
                 MainSalesDocumentsPage.class);
         SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
