@@ -34,6 +34,18 @@ public class LsAddressClient extends BaseMashupClient {
         req.setShopId(getUserSessionData().getUserShopId());
         return execute(req, AlleyDataItems.class);
     }
+    @Step("Search alley by id")
+    public AlleyData searchAlleyById(int alleyId) {
+        Response<AlleyDataItems> resp = searchForAlleys();
+        List<AlleyData> items = resp.asJson().getItems();
+        AlleyData alleyData = new AlleyData();
+        for (AlleyData item : items) {
+            if (item.getId() == alleyId) {
+                alleyData = item;
+            }
+        }
+        return alleyData;
+    }
 
     @Step("Rename Alley")
     public Response<AlleyData> renameAlley(AlleyData alleyData){

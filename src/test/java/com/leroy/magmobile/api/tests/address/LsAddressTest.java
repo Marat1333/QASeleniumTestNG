@@ -49,7 +49,7 @@ public class LsAddressTest extends BaseProjectApiTest {
     @Override
     protected UserSessionData initTestClassUserSessionDataTemplate() {
         UserSessionData sessionData = super.initTestClassUserSessionDataTemplate();
-        sessionData.setUserShopId("25");
+        sessionData.setUserShopId("22");
         return sessionData;
     }
 
@@ -86,7 +86,7 @@ public class LsAddressTest extends BaseProjectApiTest {
         for (AlleyData alleyData : items) {
             assertThat("productsCount", alleyData.getProductsCount(), notNullValue());
             assertThat("id", alleyData.getId(), greaterThan(0));
-            assertThat("count", alleyData.getId(), notNullValue());
+            assertThat("count", alleyData.getCount(), notNullValue());
             assertThat("type", alleyData.getType(), notNullValue());
             assertThat("storeId", alleyData.getStoreId(), is(Integer.parseInt(getUserSessionData().getUserShopId())));
             assertThat("departmentId", alleyData.getDepartmentId(),
@@ -116,17 +116,9 @@ public class LsAddressTest extends BaseProjectApiTest {
         putAlleyData.setCode("24700");
         Response<AlleyData> renameResp = lsAddressClient.renameAlley(putAlleyData);
         lsAddressClient.assertThatResponseIsSuccess(renameResp);
-//        this.alleyData = lsAddressClient.assertThatAlleyIsRenamedAndGetData(renameResp, putAlleyData);
 
         step("Get renamed alley by id");
-        Response<AlleyDataItems> getResp = lsAddressClient.searchForAlleys();
-        List<AlleyData> items = getResp.asJson().getItems();
-        AlleyData renamedAlleyData = new AlleyData();
-        for (AlleyData item : items) {
-            if (item.getId() == alleyId) {
-                renamedAlleyData = item;
-            }
-        }
+        AlleyData renamedAlleyData = lsAddressClient.searchAlleyById(alleyId);
         this.alleyData = lsAddressClient.assertThatAlleyIsRenamedAndGetData(renamedAlleyData, putAlleyData);
     }
 
