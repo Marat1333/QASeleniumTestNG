@@ -18,8 +18,10 @@ capabilities:
       acceptInsecureCerts: true
       args:
         - headless
+        - start-maximized
   linux:
     chrome:
       acceptInsecureCerts: true
       args:
         - headless
+        - start-maximized
