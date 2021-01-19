@@ -284,7 +284,8 @@ public class RupturesTest extends AppBaseSteps {
 
         // Step 10
         step("Вернуться назад на карточку перебоя");
-        ruptureCardPage = productCardPage.returnBack(RuptureCardPage.class);
+        productCardPage.navigateBack();
+        ruptureCardPage = new RuptureCardPage();
         ruptureCardPage.shouldTasksListContainsTasks(toDoTasks)
                 .shouldCheckBoxConditionIsCorrect(true, firstTask)
                 .shouldRadioBtnHasCorrectCondition(RuptureCardPage.QuantityOption.THREE_OR_MORE)
@@ -311,7 +312,7 @@ public class RupturesTest extends AppBaseSteps {
         ActiveSessionPage activeSessionPage = rupturesScannerPage.navigateToRuptureProductList();
         activeSessionPage.shouldRupturesDataIsCorrect(secondAddedRupture, firstAddedRupture)
                 .verifyRequiredElements();
-        SessionData sessionData = activeSessionPage.getSessionData(); //TODO уточнить что тут происходит
+        SessionData sessionData = activeSessionPage.getSessionData();
 
         // Step 14
         step("Нажать железную кнопку назад");
@@ -327,7 +328,7 @@ public class RupturesTest extends AppBaseSteps {
         // Step 16
         step("Выйти из сессии нажав стрелку назад");
         exitActiveSessionModalPage = activeSessionPage.exitActiveSession();
-        exitActiveSessionModalPage.verifyRequiredElements(); //TO-DO убедиться, что это работает, добавил перед коммитом
+        exitActiveSessionModalPage.verifyRequiredElements();
 
         // Step 17
         step("Подтвердить выход из сессии");
