@@ -1,6 +1,18 @@
 package com.leroy.magmobile.api.tests.ruptures;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyOrNullString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.in;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.oneOf;
+
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.inject.Inject;
 import com.leroy.constants.api.ErrorTextConst;
 import com.leroy.constants.api.StatusCodes;
 import com.leroy.magmobile.api.clients.RupturesClient;
@@ -11,31 +23,25 @@ import com.leroy.magmobile.api.data.ruptures.ResRuptureSessionDataList;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductData;
 import com.leroy.magmobile.api.requests.ruptures.RupturesSessionsRequest;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
-import org.assertj.core.util.Arrays;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-import ru.leroymerlin.qa.core.clients.base.Response;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class RuptureSessionSearchTest extends BaseProjectApiTest {
+
+    @Inject
+    private RupturesClient rupturesClient;
 
     // Test constants
     private static final String ACTIVE_STATUS = "active";
     private static final String FINISHED_STATUS = "finished";
 
     private LinkedHashMap<Integer, String> ruptureStatuses = new LinkedHashMap<>();
-
-    private RupturesClient rupturesClient() {
-        return apiClientProvider.getRupturesClient();
-    }
 
     @Override
     protected boolean isNeedAccessToken() {
@@ -44,8 +50,6 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
 
     @BeforeClass
     public void setUp() {
-        RupturesClient rupturesClient = rupturesClient();
-
         // Clear department sessions
         int j = 0;
         while (j < 100) {
@@ -89,7 +93,6 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
 
     @Test(description = "C3285388 GET ruptures sessions status active")
     public void testSearchForActiveRuptureSessions() {
-        RupturesClient rupturesClient = rupturesClient();
         Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(ACTIVE_STATUS, 10);
         isResponseOk(resp);
         List<ResRuptureSessionData> items = resp.asJson().getItems();
@@ -102,8 +105,6 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
 
     @Test(description = "C3285383 GET ruptures sessions status finished")
     public void testSearchForFinishedRuptureSessions() {
-        RupturesClient rupturesClient = rupturesClient();
-
         Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(FINISHED_STATUS, 10);
         isResponseOk(resp);
         List<ResRuptureSessionData> items = resp.asJson().getItems();
@@ -116,7 +117,6 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
 
     @Test(description = "C3285389 GET ruptures sessions pagination first page")
     public void testSearchForRuptureSessionsPaginationFirstPage() {
-        RupturesClient rupturesClient = rupturesClient();
         Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(1, 4);
         isResponseOk(resp);
         List<ResRuptureSessionData> items = resp.asJson().getItems();
@@ -135,7 +135,6 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
 
     @Test(description = "C3285384 GET ruptures sessions pagination second page")
     public void testSearchForRuptureSessionsPaginationSecondPage() {
-        RupturesClient rupturesClient = rupturesClient();
         int startFrom = 5;
         int pageSize = 4;
 
@@ -155,7 +154,6 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
     @Test(description = "C3233580 GET ruptures sessions only shop and department")
     public void testSearchForRuptureSessionsWithoutSpecificFilters() {
         int expectedTotalCount = 11;
-        RupturesClient rupturesClient = rupturesClient();
         Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(20);
         isResponseOk(resp);
         List<ResRuptureSessionData> items = resp.asJson().getItems();
@@ -180,7 +178,6 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
 
     @Test(description = "C3285386 GET ruptures sessions without shopid header (check definition validation)")
     public void testGetRupturesSessionsWithoutShopidHeaderCheckValidation() {
-        RupturesClient rupturesClient = rupturesClient();
         Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(
                 new RupturesSessionsRequest()
                         .setDepartmentId(getUserSessionData().getUserDepartmentId()));
@@ -194,7 +191,6 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
 
     @Test(description = "C23440582 GET ruptures sessions without departmentId param (check definition validation)")
     public void testGetRupturesSessionsWithoutParamsCheckValidation() {
-        RupturesClient rupturesClient = rupturesClient();
         Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(
                 new RupturesSessionsRequest()
                         .setShopIdHeader(getUserSessionData().getUserShopId()));
@@ -208,7 +204,6 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
 
     @Test(description = "C3285387 GET ruptures sessions wrong shop and wrong department")
     public void testGetRupturesSessionsWrongShopAndWrongDepartment() {
-        RupturesClient rupturesClient = rupturesClient();
         Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(
                 new RupturesSessionsRequest()
                         .setDepartmentId(50)

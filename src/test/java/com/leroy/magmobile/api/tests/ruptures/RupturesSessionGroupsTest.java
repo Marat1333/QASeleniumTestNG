@@ -1,16 +1,24 @@
 package com.leroy.magmobile.api.tests.ruptures;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.hasSize;
+
 import com.fasterxml.jackson.databind.JsonNode;
-import com.leroy.magmobile.api.clients.RupturesClient;
-import com.leroy.magmobile.api.data.ruptures.*;
+import com.leroy.magmobile.api.data.ruptures.ActionData;
+import com.leroy.magmobile.api.data.ruptures.ReqRuptureSessionData;
+import com.leroy.magmobile.api.data.ruptures.RuptureProductData;
+import com.leroy.magmobile.api.data.ruptures.RuptureProductDataList;
+import com.leroy.magmobile.api.data.ruptures.RuptureSessionGroupData;
 import io.qameta.allure.Step;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
-
-import java.util.*;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 
 public class RupturesSessionGroupsTest extends BaseRuptureTest {
 
@@ -19,7 +27,6 @@ public class RupturesSessionGroupsTest extends BaseRuptureTest {
     @Step("Pre-conditions: Создаем сессию с товарами с одним экшеном + Товар без экшена")
     private void createSessionWithOneActionAndSeveralProducts() {
         Random random = new Random();
-        RupturesClient rupturesClient = rupturesClient();
         ActionData action1 = new ActionData();
         action1.setAction(0);
         action1.setUserPosition(0);
@@ -92,7 +99,6 @@ public class RupturesSessionGroupsTest extends BaseRuptureTest {
     @Step("Pre-conditions: Создаем сессию с товарами, со всеми добавленными экшенами и случайными выполненными экшенами + Товар без экшена")
     private void createSessionWithAllActions() {
         Random random = new Random();
-        RupturesClient rupturesClient = rupturesClient();
         ActionData action1 = new ActionData();
         action1.setAction(0);
         action1.setUserPosition(0);
@@ -176,8 +182,6 @@ public class RupturesSessionGroupsTest extends BaseRuptureTest {
 
     @Step("Pre-conditions: Создаем сессию с товаром без Action")
     private void createSessionWithProductWithoutActions() {
-        RupturesClient rupturesClient = rupturesClient();
-
         RuptureProductData productData1 = new RuptureProductData();
         productData1.generateRandomData();
         productData1.setActions(null);
@@ -223,7 +227,6 @@ public class RupturesSessionGroupsTest extends BaseRuptureTest {
                 greaterThanOrEqualTo(4));
 
         step("Основная часть теста");
-        RupturesClient rupturesClient = rupturesClient();
         Response<RuptureSessionGroupData> resp = rupturesClient.getGroups(sessionId);
         isResponseOk(resp);
         List<RuptureSessionGroupData> groups = resp.asJsonList(RuptureSessionGroupData.class);
@@ -266,7 +269,6 @@ public class RupturesSessionGroupsTest extends BaseRuptureTest {
                 equalTo(1));
 
         step("Основная часть теста");
-        RupturesClient rupturesClient = rupturesClient();
         Response<RuptureSessionGroupData> resp = rupturesClient.getGroups(sessionId);
         isResponseOk(resp);
         List<RuptureSessionGroupData> groups = resp.asJsonList(RuptureSessionGroupData.class);
@@ -286,7 +288,6 @@ public class RupturesSessionGroupsTest extends BaseRuptureTest {
         createSessionWithProductWithoutActions();
 
         step("Основная часть теста");
-        RupturesClient rupturesClient = rupturesClient();
         Response<RuptureSessionGroupData> resp = rupturesClient.getGroups(sessionId);
         isResponseOk(resp);
         assertThat("Response body", resp.asString(), equalTo("[]"));
@@ -294,7 +295,6 @@ public class RupturesSessionGroupsTest extends BaseRuptureTest {
 
     @Test(description = "C3285464 GET ruptures groups for non existing session")
     public void testGetRupturesGroupsForNonExistingSession() {
-        RupturesClient rupturesClient = rupturesClient();
         Response<RuptureSessionGroupData> resp = rupturesClient.getGroups(Integer.MAX_VALUE);
         isResponseOk(resp);
         assertThat("Response body", resp.asString(), equalTo("[]"));

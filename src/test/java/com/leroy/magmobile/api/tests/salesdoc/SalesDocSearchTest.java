@@ -1,24 +1,32 @@
 package com.leroy.magmobile.api.tests.salesdoc;
 
+import static com.leroy.core.matchers.Matchers.successful;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.oneOf;
+
+import com.google.inject.Inject;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.clients.SalesDocSearchClient;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
+import java.util.List;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import java.util.List;
-
-import static com.leroy.core.matchers.Matchers.successful;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-
 public class SalesDocSearchTest extends BaseProjectApiTest {
 
-    private SalesDocSearchClient client() {
-        return apiClientProvider.getSalesDocSearchClient();
-    }
+    @Inject
+    private SalesDocSearchClient salesDocSearchClient;
 
     @Override
     protected boolean isNeedAccessToken() {
@@ -31,7 +39,7 @@ public class SalesDocSearchTest extends BaseProjectApiTest {
     @Test(description = "C3164797 Search by shopId")
     public void testSearchByShopId() {
         String testShop = "5";
-        Response<SalesDocumentListResponse> resp = client().searchForDocumentsByShopId(testShop, 1, PAGE_SIZE);
+        Response<SalesDocumentListResponse> resp = salesDocSearchClient.searchForDocumentsByShopId(testShop, 1, PAGE_SIZE);
         assertThat(resp, successful());
         List<SalesDocumentResponseData> salesDocList = resp.asJson().getSalesDocuments();
         assertThat("Count of the documents", salesDocList.size(),
@@ -47,11 +55,10 @@ public class SalesDocSearchTest extends BaseProjectApiTest {
         String testDocType2 = SalesDocumentsConst.Types.ESTIMATE.getApiVal();
         String testDocType3 = SalesDocumentsConst.Types.ORDER.getApiVal();
         String testDocType4 = SalesDocumentsConst.Types.SALE.getApiVal();
-        SalesDocSearchClient client = client();
 
         // Step 1
         step("Search for documents with type = CART");
-        Response<SalesDocumentListResponse> resp = client.searchForDocumentsByDocType(testDocType1, startFrom, PAGE_SIZE);
+        Response<SalesDocumentListResponse> resp = salesDocSearchClient.searchForDocumentsByDocType(testDocType1, startFrom, PAGE_SIZE);
         assertThat(resp, successful());
         List<SalesDocumentResponseData> salesDocList = resp.asJson().getSalesDocuments();
         assertThat("Count of the documents", salesDocList.size(), is(PAGE_SIZE));
@@ -59,7 +66,7 @@ public class SalesDocSearchTest extends BaseProjectApiTest {
 
         // Step 2
         step("Search for documents with type = QUOTATION");
-        resp = client.searchForDocumentsByDocType(testDocType2, startFrom, PAGE_SIZE);
+        resp = salesDocSearchClient.searchForDocumentsByDocType(testDocType2, startFrom, PAGE_SIZE);
         assertThat(resp, successful());
         salesDocList = resp.asJson().getSalesDocuments();
         assertThat("Count of the documents", salesDocList.size(), is(PAGE_SIZE));
@@ -67,7 +74,7 @@ public class SalesDocSearchTest extends BaseProjectApiTest {
 
         // Step 3
         step("Search for documents with type = ORDER");
-        resp = client.searchForDocumentsByDocType(testDocType3, startFrom, PAGE_SIZE);
+        resp = salesDocSearchClient.searchForDocumentsByDocType(testDocType3, startFrom, PAGE_SIZE);
         assertThat(resp, successful());
         salesDocList = resp.asJson().getSalesDocuments();
         assertThat("Count of the documents", salesDocList.size(), is(PAGE_SIZE));
@@ -75,7 +82,7 @@ public class SalesDocSearchTest extends BaseProjectApiTest {
 
         // Step 4
         step("Search for documents with type = SALE");
-        resp = client.searchForDocumentsByDocType(testDocType4, startFrom, PAGE_SIZE);
+        resp = salesDocSearchClient.searchForDocumentsByDocType(testDocType4, startFrom, PAGE_SIZE);
         assertThat(resp, successful());
         salesDocList = resp.asJson().getSalesDocuments();
         assertThat("Count of the documents", salesDocList.size(), is(PAGE_SIZE));
@@ -85,7 +92,7 @@ public class SalesDocSearchTest extends BaseProjectApiTest {
     @Test(description = "C3164799 Search by docId")
     public void testSearchByDocId() {
         String testDocId = "1524";
-        Response<SalesDocumentListResponse> resp = client().searchForDocumentsByDocId(testDocId);
+        Response<SalesDocumentListResponse> resp = salesDocSearchClient.searchForDocumentsByDocId(testDocId);
         assertThat(resp, successful());
         List<SalesDocumentResponseData> salesDocList = resp.asJson().getSalesDocuments();
         assertThat("Count of the documents", salesDocList.size(), greaterThan(0));

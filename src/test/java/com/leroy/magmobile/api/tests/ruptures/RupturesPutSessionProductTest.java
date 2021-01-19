@@ -1,17 +1,19 @@
 package com.leroy.magmobile.api.tests.ruptures;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.leroy.magmobile.api.clients.RupturesClient;
 import com.leroy.magmobile.api.data.ruptures.ActionData;
 import com.leroy.magmobile.api.data.ruptures.ReqRuptureSessionData;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductData;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductDataList;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
-
-import java.util.*;
 
 public class RupturesPutSessionProductTest extends BaseRuptureTest {
 
@@ -22,8 +24,6 @@ public class RupturesPutSessionProductTest extends BaseRuptureTest {
 
     @BeforeClass
     private void createSession() {
-        RupturesClient rupturesClient = rupturesClient();
-
         RuptureProductData productData = new RuptureProductData();
         productData.generateRandomData();
         ActionData actionData1 = ActionData.returnRandomData();
@@ -60,7 +60,6 @@ public class RupturesPutSessionProductTest extends BaseRuptureTest {
 
     @Test(description = "C3233582 PUT ruptures product - Add new product")
     public void testUpdateRuptureSessionProduct() {
-        RupturesClient rupturesClient = rupturesClient();
         ActionData action1 = new ActionData();
         action1.setAction(2);
         action1.setState(new Random().nextBoolean());
@@ -84,7 +83,6 @@ public class RupturesPutSessionProductTest extends BaseRuptureTest {
 
     @Test(description = "C3285581 PUT ruptures product to finished session")
     public void testPutRupturesProductToFinishedSession() {
-        RupturesClient rupturesClient = rupturesClient();
         step("Завершаем сессию");
         Response<JsonNode> respFinishSession = rupturesClient.finishSession(sessionId);
         rupturesClient.assertThatIsUpdatedOrDeleted(respFinishSession);
@@ -108,7 +106,6 @@ public class RupturesPutSessionProductTest extends BaseRuptureTest {
 
     @Test(description = "C3285582 PUT ruptures product to deleted session")
     public void testPutRupturesProductToDeletedSession() {
-        RupturesClient rupturesClient = rupturesClient();
         step("Пытаемся изменить товар в несуществующей сессии");
         ActionData action1 = ActionData.returnRandomData();
 
@@ -139,7 +136,6 @@ public class RupturesPutSessionProductTest extends BaseRuptureTest {
         ActionData newAction = ActionData.returnRandomData();
         newAction.setAction(2);
         actions.add(newAction);
-        RupturesClient rupturesClient = rupturesClient();
         step("Изменяем товар в сессии");
         ReqRuptureSessionData rupturePostData = getTypicalReqRuptureSessionData(productData);
 

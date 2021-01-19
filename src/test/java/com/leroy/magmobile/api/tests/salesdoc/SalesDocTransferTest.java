@@ -21,18 +21,13 @@ import java.util.List;
 public class SalesDocTransferTest extends BaseProjectApiTest {
 
     @Inject
-    SearchProductHelper searchProductHelper;
-
+    private SearchProductHelper searchProductHelper;
+    @Inject
     private TransferClient transferClient;
 
     private TransferSalesDocData transferSalesDocData;
 
     private List<String> productLmCodes;
-
-    @BeforeClass
-    private void initClients() {
-        transferClient = apiClientProvider.getTransferClient();
-    }
 
     @Override
     protected boolean isNeedAccessToken() {

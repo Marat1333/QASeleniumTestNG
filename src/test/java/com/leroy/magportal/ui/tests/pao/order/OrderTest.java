@@ -1,13 +1,18 @@
 package com.leroy.magportal.ui.tests.pao.order;
 
+import static com.leroy.constants.DefectConst.INVISIBLE_AUTHOR_ORDER_DRAFT;
+import static com.leroy.constants.DefectConst.PRODUCT_COUNT_WHEN_TWO_ORDERS_IN_CART;
+import static com.leroy.core.matchers.Matchers.successful;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
+import com.leroy.common_mashups.customer_accounts.data.CustomerData;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.DiscountConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.common_mashups.customer_accounts.data.CustomerData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateProductOrderData;
 import com.leroy.magportal.api.clients.OrderClient;
@@ -30,33 +35,27 @@ import com.leroy.magportal.ui.pages.orders.modal.SubmittedOrderModal;
 import com.leroy.magportal.ui.pages.products.form.AddProductForm;
 import com.leroy.magportal.ui.tests.BasePAOTest;
 import com.leroy.utils.RandomUtil;
-import org.testng.annotations.Test;
-import ru.leroymerlin.qa.core.clients.base.Response;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import static com.leroy.constants.DefectConst.*;
-import static com.leroy.core.matchers.Matchers.successful;
-import static org.hamcrest.MatcherAssert.assertThat;
+import org.testng.annotations.Test;
+import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class OrderTest extends BasePAOTest {
 
     @Inject
-    PAOHelper paoHelper;
+    private PAOHelper paoHelper;
     @Inject
-    SearchProductHelper searchProductHelper;
+    private SearchProductHelper searchProductHelper;
     @Inject
-    OrderClient orderClient;
+    private OrderClient orderClient;
 
     private void cancelConfirmedOrder() throws Exception {
         if (orderData != null && orderData.getNumber() != null && orderData.getStatus() != null &&
                 !orderData.getStatus().equals(SalesDocumentsConst.States.DRAFT.getUiVal()) &&
                 !orderData.getStatus().equals(SalesDocumentsConst.States.CANCELLED.getUiVal())) {
-            OrderClient orderClient = apiClientProvider.getOrderClient();
             orderClient.waitUntilOrderCanBeCancelled(orderData.getNumber());
             Response<JsonNode> resp = orderClient.cancelOrder(orderData.getNumber());
             assertThat(resp, successful());

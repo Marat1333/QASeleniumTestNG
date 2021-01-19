@@ -1,28 +1,31 @@
 package com.leroy.magmobile.api.tests.shops_kladr;
 
+import static com.leroy.core.matchers.Matchers.successful;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyOrNullString;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+
+import com.google.inject.Inject;
 import com.leroy.magmobile.api.clients.ShopKladrClient;
 import com.leroy.magmobile.api.data.kladr.KladrItemData;
 import com.leroy.magmobile.api.data.kladr.KladrItemDataList;
 import com.leroy.magmobile.api.data.shops.ShopData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
+import java.util.List;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import java.util.List;
-
-import static com.leroy.core.matchers.Matchers.successful;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-
 public class ShopKladrTest extends BaseProjectApiTest {
 
-    private ShopKladrClient shopKladrClient() {
-        return apiClientProvider.getShopKladrClient();
-    }
+    @Inject
+    private ShopKladrClient shopKladrClient;
 
     @Test(description = "C23195091 GET shops")
     public void testGetShops() {
-        ShopKladrClient shopKladrClient = shopKladrClient();
         Response<ShopData> resp = shopKladrClient.getShops();
         assertThat(resp, successful());
         List<ShopData> dataList = resp.asJsonList(ShopData.class);
@@ -45,7 +48,6 @@ public class ShopKladrTest extends BaseProjectApiTest {
     @Test(description = "C3165821 Kladr gets a city that exists")
     public void testKladrGetsExistedCity() {
         int limit = 12;
-        ShopKladrClient shopKladrClient = shopKladrClient();
         Response<KladrItemDataList> resp = shopKladrClient.getKladrByCity("2900000000000", 12);
         assertThat(resp, successful());
         KladrItemDataList dataList = resp.asJson();

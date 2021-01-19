@@ -1,5 +1,9 @@
 package com.leroy.magportal.ui.tests.pao.estimate;
 
+import static com.leroy.core.matchers.Matchers.successful;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import com.google.inject.Inject;
 import com.leroy.core.ContextProvider;
 import com.leroy.core.configuration.DriverFactory;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
@@ -17,19 +21,20 @@ import com.leroy.magportal.ui.pages.cart_estimate.PrintEstimatePage;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SubmittedEstimateModal;
 import com.leroy.magportal.ui.pages.customers.CreateCustomerForm;
 import com.leroy.magportal.ui.tests.BasePAOTest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import static com.leroy.core.matchers.Matchers.successful;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 public class EstimatePrintTest extends BasePAOTest {
+
+    @Inject
+    private CatalogSearchClient catalogSearchClient;
+    @Inject
+    private EstimateClient estimateClient;
 
     @AfterMethod
     public void quiteDriver() {
@@ -37,10 +42,8 @@ public class EstimatePrintTest extends BasePAOTest {
     }
 
     private String createEstimateWith50Products() {
-        EstimateClient estimateClient = apiClientProvider.getEstimateClient();
         // Prepare request data
         CatalogSearchFilter catalogSearchFilter = new CatalogSearchFilter();
-        CatalogSearchClient catalogSearchClient = apiClientProvider.getCatalogSearchClient();
         // Search for products request #1
         Response<ProductItemDataList> searchResp = catalogSearchClient.searchProductsBy(
                 catalogSearchFilter, 1, 50);
@@ -55,7 +58,8 @@ public class EstimatePrintTest extends BasePAOTest {
 
         List<EstimateProductOrderData> estimateProducts = new ArrayList<>();
         for (ProductItemData productItemData : productItems) {
-            EstimateProductOrderData productOrderData = new EstimateProductOrderData(productItemData);
+            EstimateProductOrderData productOrderData = new EstimateProductOrderData(
+                    productItemData);
             productOrderData.setQuantity((double) new Random().nextInt(6) + 1);
             estimateProducts.add(productOrderData);
         }
@@ -184,7 +188,8 @@ public class EstimatePrintTest extends BasePAOTest {
         printEstimatePage.closeCurrentWindowAndSwitchToSpecified(estimatePage, true);
     }
 
-    @Test(description = "C23398086 Печать сметы физ. лицо", groups = {NEED_PRODUCTS_GROUP, NEED_ACCESS_TOKEN_GROUP})
+    @Test(description = "C23398086 Печать сметы физ. лицо", groups = {NEED_PRODUCTS_GROUP,
+            NEED_ACCESS_TOKEN_GROUP})
     public void testPrintEstimateWithIndividualPerson() throws Exception {
         // Test Data
         ProductItemData testProduct1 = productList.get(0);

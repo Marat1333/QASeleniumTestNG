@@ -7,7 +7,7 @@ import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
 import com.leroy.magportal.api.data.onlineOrders.OrderDeliveryRecalculateResponseData;
-import com.leroy.magportal.api.helpers.BitrixHelper;
+import com.leroy.magportal.api.helpers.OnlineOrderHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -16,7 +16,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 public class EntranceDeliveryRecalculateTest extends BaseMagPortalApiTest {
 
     @Inject
-    private BitrixHelper bitrixHelper;
+    private OnlineOrderHelper onlineOrderHelper;
     @Inject
     private OrderClient orderClient;
 
@@ -29,7 +29,8 @@ public class EntranceDeliveryRecalculateTest extends BaseMagPortalApiTest {
     private void setUp() {
         currentProductsCount = 3;
         currentOrderType = OnlineOrderTypeConst.DELIVERY_TO_ENTRANCE;
-        currentOrderId = bitrixHelper.createOnlineOrderCardPayment(currentOrderType).getSolutionId();
+        currentOrderId = onlineOrderHelper.createOnlineOrderCardPayment(currentOrderType)
+                .getSolutionId();
     }
 
     @Test(description = "C23425652 Entrance: Delivery ReCalc: One product", priority = 1)
@@ -72,7 +73,7 @@ public class EntranceDeliveryRecalculateTest extends BaseMagPortalApiTest {
     private void makeDimensionalOrder() {
         currentProductsCount = 1;
 
-        currentOrderId = bitrixHelper.createDimensionalOnlineOrder(currentOrderType)
+        currentOrderId = onlineOrderHelper.createDimensionalOnlineOrder(currentOrderType)
                 .getSolutionId();
     }
 }

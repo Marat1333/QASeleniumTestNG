@@ -5,6 +5,7 @@ public enum ShopTypeEnum {
     KK("62"),
     TK("139"),
     CDS("141"),
+    PVZ("139"),
     AK("141");//Адресное хранение
 
     private final String value;
