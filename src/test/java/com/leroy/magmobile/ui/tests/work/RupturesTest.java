@@ -340,7 +340,7 @@ public class RupturesTest extends AppBaseSteps {
 
     @Test(description = "C3272525 Удаление перебоя из сессии")
     public void testDeleteRuptureFromSession() throws Exception {
-        int sessionId = rupturesHelper.getActiveSessionIdWithProducts(); //TODO Переделать на создание сессии с товаром
+        int sessionId = createSessionWithProductWithAllActions();
         List<RuptureProductData> sessionProducts = rupturesHelper.getProducts(sessionId).getItems();
         String someLmCode = sessionProducts.get(0).getLmCode();
 
