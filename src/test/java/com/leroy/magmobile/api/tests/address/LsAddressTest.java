@@ -32,8 +32,12 @@ public class LsAddressTest extends BaseProjectApiTest {
     private LsAddressBackClient lsAddressBackClient;
 
     @Inject
-    SearchProductHelper searchProductHelper;
+    private LsAddressClient lsAddressClient;
 
+    @Inject
+    private SearchProductHelper searchProductHelper;
+
+    @Inject
     private AlleyData alleyData;
 
     private StandDataList standDataList;
@@ -97,29 +101,18 @@ public class LsAddressTest extends BaseProjectApiTest {
 
     @Test(description = "C23415877 lsAddress PUT alleys - rename alleys")
     public void testRenameAlleys() {
-        LsAddressClient lsAddressClient = lsAddressClient();
-
         step("Create Alley");
-        AlleyData postAlleyData = new AlleyData();
-        postAlleyData.setType(0);
-        postAlleyData.setCode("Alley_C3316285");
-        Response<AlleyData> resp = lsAddressClient.createAlley(postAlleyData);
-        this.alleyData = lsAddressClient.assertThatAlleyIsCreatedAndGetData(resp, postAlleyData);
-        int alleyId = alleyData.getId();
-        createdAlleyId = alleyId;
+        alleyData.setType(0);
+        alleyData.setCode("Alley_C3316285");
+        Response<AlleyData> resp = lsAddressClient.createAlley(alleyData);
+        alleyData = lsAddressClient.assertThatAlleyIsCreatedAndGetData(resp, alleyData);
+        createdAlleyId = alleyData.getId();
 
         step("Rename alley");
-        AlleyData putAlleyData = new AlleyData();
-        putAlleyData.setId(alleyData.getId());
-        putAlleyData.setStoreId(alleyData.getStoreId());
-        putAlleyData.setDepartmentId(alleyData.getDepartmentId());
-        putAlleyData.setCode("24700");
-        Response<AlleyData> renameResp = lsAddressClient.renameAlley(putAlleyData);
-        lsAddressClient.assertThatResponseIsSuccess(renameResp);
-
-        step("Get renamed alley by id");
-        AlleyData renamedAlleyData = lsAddressClient.searchAlleyById(alleyId);
-        this.alleyData = lsAddressClient.assertThatAlleyIsRenamedAndGetData(renamedAlleyData, putAlleyData);
+        alleyData.setCode("24700");
+        Response<AlleyData> renameResp = lsAddressClient.renameAlley(alleyData);
+        Response<AlleyDataItems> getResp = lsAddressClient.searchForAlleys();
+        lsAddressClient.assertThatAlleyIsRenamed(renameResp, getResp, alleyData);
     }
 
     @Test(description = "C3316291 lsAddress POST stands")

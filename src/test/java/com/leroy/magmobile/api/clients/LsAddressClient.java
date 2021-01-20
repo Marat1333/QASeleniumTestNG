@@ -1,11 +1,14 @@
 package com.leroy.magmobile.api.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.inject.Inject;
 import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.address.*;
 import com.leroy.magmobile.api.data.address.cellproducts.*;
+import com.leroy.magmobile.api.helpers.LsAddressHelper;
 import com.leroy.magmobile.api.requests.address.*;
 import io.qameta.allure.Step;
+import org.testng.Assert;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.List;
@@ -14,6 +17,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class LsAddressClient extends BaseMashupClient {
+
+    @Inject
+    LsAddressHelper lsAddressHelper;
 
     // REQUESTS //
 
@@ -34,21 +40,10 @@ public class LsAddressClient extends BaseMashupClient {
         req.setShopId(getUserSessionData().getUserShopId());
         return execute(req, AlleyDataItems.class);
     }
-    @Step("Search alley by id")
-    public AlleyData searchAlleyById(int alleyId) {
-        Response<AlleyDataItems> resp = searchForAlleys();
-        List<AlleyData> items = resp.asJson().getItems();
-        AlleyData alleyData = new AlleyData();
-        for (AlleyData item : items) {
-            if (item.getId() == alleyId) {
-                alleyData = item;
-            }
-        }
-        return alleyData;
-    }
+
 
     @Step("Rename Alley")
-    public Response<AlleyData> renameAlley(AlleyData alleyData){
+    public Response<AlleyData> renameAlley(AlleyData alleyData) {
         LsAddressAlleysPutRequest req = new LsAddressAlleysPutRequest();
         req.setAlleyId(alleyData.getId());
         req.setShopId(alleyData.getStoreId());
@@ -208,14 +203,17 @@ public class LsAddressClient extends BaseMashupClient {
         return actualData;
     }
 
-    public AlleyData assertThatAlleyIsRenamedAndGetData(AlleyData actualData, AlleyData putData){
-        assertThat("id", actualData.getId(), is(putData.getId()));
+    public void assertThatAlleyIsRenamed(Response<AlleyData> resp, Response<AlleyDataItems> getResp, AlleyData expectedData) {
+        assertThatResponseIsOk(resp);
+        assertThatResponseIsOk(getResp);
+        AlleyData actualData = this.lsAddressHelper.searchAlleyById(getResp, expectedData.getId());
+        assertThat("id", actualData.getId(), is(expectedData.getId()));
         assertThat("count", actualData.getCount(), is(0));
         assertThat("storeId", actualData.getStoreId(), is(Integer.valueOf(getUserSessionData().getUserShopId())));
         assertThat("departmentId", actualData.getDepartmentId(),
                 is(Integer.valueOf(getUserSessionData().getUserDepartmentId())));
-        assertThat("code", actualData.getCode(), is(putData.getCode()));
-        return actualData;
+        assertThat("code", actualData.getCode(), is(expectedData.getCode()));
+
     }
 
     public void assertThatResponseIsSuccess(Response<?> resp) {
