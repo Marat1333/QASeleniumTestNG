@@ -230,6 +230,18 @@ public class RupturesClient extends BaseMashupClient {
         assertThat("Session " + sessionId + " do not have product " + lmCode, items, hasSize(1));
     }
 
+    @Step("Проверяем, что в сессии присутствуют только перечисленные товары")
+    public void assertThatSessionContainsProducts(int sessionId, String...  expectedLmCodes) {
+        int totalCount = expectedLmCodes.length;
+        RuptureProductDataList productDataList = getProducts(sessionId).asJson();
+        assertThat("Wrong totalCount in session " + sessionId, productDataList.getTotalCount(), equalTo(totalCount));
+        List<RuptureProductData> items = new ArrayList<>(productDataList.getItems());
+        for (RuptureProductData item : items) {
+            String lmCode = item.getLmCode();
+            assertThat("Wrong lmCode in session", expectedLmCodes, hasItemInArray(lmCode));
+        }
+    }
+
     @Step("Check that updated/deleted is successful")
     public void assertThatIsUpdatedOrDeleted(Response<JsonNode> resp) {
         assertThatResponseIsOk(resp);
