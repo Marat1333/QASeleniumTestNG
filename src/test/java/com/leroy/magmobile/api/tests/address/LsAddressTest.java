@@ -8,6 +8,7 @@ import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.clients.LsAddressClient;
 import com.leroy.magmobile.api.data.address.*;
 import com.leroy.magmobile.api.data.address.cellproducts.*;
+import com.leroy.magmobile.api.helpers.LsAddressHelper;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import com.leroy.umbrella_extension.lsaddress.LsAddressBackClient;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -39,6 +40,9 @@ public class LsAddressTest extends BaseProjectApiTest {
 
     @Inject
     private AlleyData alleyData;
+
+    @Inject
+    private LsAddressHelper lsAddressHelper;
 
     private StandDataList standDataList;
 
@@ -112,7 +116,11 @@ public class LsAddressTest extends BaseProjectApiTest {
         alleyData.setCode("24700");
         Response<AlleyData> renameResp = lsAddressClient.renameAlley(alleyData);
         Response<AlleyDataItems> getResp = lsAddressClient.searchForAlleys();
-        lsAddressClient.assertThatAlleyIsRenamed(renameResp, getResp, alleyData);
+        lsAddressClient.assertThatResponseIsSuccess(renameResp);
+        lsAddressClient.assertThatResponseIsSuccess(getResp);
+
+        AlleyData actualData = lsAddressHelper.searchAlleyById(getResp, alleyData.getId());
+        lsAddressClient.assertThatAlleyIsRenamed(actualData, alleyData);
     }
 
     @Test(description = "C3316291 lsAddress POST stands")

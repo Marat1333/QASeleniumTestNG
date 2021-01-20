@@ -5,10 +5,10 @@ import com.google.inject.Inject;
 import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.address.*;
 import com.leroy.magmobile.api.data.address.cellproducts.*;
+import com.leroy.magmobile.api.data.ruptures.ActionData;
 import com.leroy.magmobile.api.helpers.LsAddressHelper;
 import com.leroy.magmobile.api.requests.address.*;
 import io.qameta.allure.Step;
-import org.testng.Assert;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.List;
@@ -19,7 +19,7 @@ import static org.hamcrest.Matchers.*;
 public class LsAddressClient extends BaseMashupClient {
 
     @Inject
-    LsAddressHelper lsAddressHelper;
+    private LsAddressHelper lsAddressHelper;
 
     // REQUESTS //
 
@@ -203,10 +203,7 @@ public class LsAddressClient extends BaseMashupClient {
         return actualData;
     }
 
-    public void assertThatAlleyIsRenamed(Response<AlleyData> resp, Response<AlleyDataItems> getResp, AlleyData expectedData) {
-        assertThatResponseIsOk(resp);
-        assertThatResponseIsOk(getResp);
-        AlleyData actualData = this.lsAddressHelper.searchAlleyById(getResp, expectedData.getId());
+    public void assertThatAlleyIsRenamed(AlleyData actualData, AlleyData expectedData) {
         assertThat("id", actualData.getId(), is(expectedData.getId()));
         assertThat("count", actualData.getCount(), is(0));
         assertThat("storeId", actualData.getStoreId(), is(Integer.valueOf(getUserSessionData().getUserShopId())));
