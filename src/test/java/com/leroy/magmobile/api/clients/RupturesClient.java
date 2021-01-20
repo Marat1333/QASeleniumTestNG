@@ -211,6 +211,25 @@ public class RupturesClient extends BaseMashupClient {
         return sessionId;
     }
 
+    @Step("Проверить, что созданная сессия есть в списке и имеет верный тип")
+    public void assertThatCreatedSessionPresentsInSessionsList(int sessionId, String type) {
+        Response<ResRuptureSessionDataList> getResp = getSessions(50);
+        assertThatResponseIsOk(getResp);
+        ResRuptureSessionDataList respBody = getResp.asJson();
+        List<ResRuptureSessionData> items = respBody.getItems().stream().filter(
+                a -> a.getSessionId().equals(sessionId)).collect(Collectors.toList());
+        assertThat("Session " + sessionId + " wasn't found", items, hasSize(1));
+        assertThat("Session " + sessionId + " isn't " + type, items.get(0).getType(), equalTo(type));
+    }
+
+    @Step("Проверяем, что товар присутствует в сессии")
+    public void assertThatProductPresentsInSessionList(int sessionId, String lmCode) {
+        Response<RuptureProductDataList> respGetProducts = getProducts(sessionId);
+        List<RuptureProductData> items = respGetProducts.asJson().getItems().stream().filter(
+                a -> a.getLmCode().equals(lmCode)).collect(Collectors.toList());
+        assertThat("Session " + sessionId + " do not have product " + lmCode, items, hasSize(1));
+    }
+
     @Step("Check that updated/deleted is successful")
     public void assertThatIsUpdatedOrDeleted(Response<JsonNode> resp) {
         assertThatResponseIsOk(resp);
