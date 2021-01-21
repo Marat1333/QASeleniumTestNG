@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.ruptures.*;
+import com.leroy.magmobile.api.enums.CorrectionAccessLevels;
 import com.leroy.magmobile.api.requests.ruptures.*;
 import io.qameta.allure.Step;
 import org.jetbrains.annotations.NotNull;
@@ -33,11 +34,11 @@ public class RupturesClient extends BaseMashupClient {
      * ---------- Executable Requests -------------
      **/
 
-    @Step("Check C3 access")
-    public Response<JsonNode> checkC3Access(int shopId, String ldap) {
+    @Step("Запрос за доступом к коррекции стока")
+    public Response<JsonNode> checkC3Access(CorrectionAccessLevels accessLevel) {
         RupturesCorrectionAccessCheckRequest req = new RupturesCorrectionAccessCheckRequest();
-        req.setLdapHeader(ldap);
-        req.setShopIdHeader(shopId);
+        req.setLdapHeader(accessLevel.getLdap());
+        req.setShopIdHeader(accessLevel.getShopId());
         req.bearerAuthHeader(getUserSessionData().getAccessToken());
         return execute(req, JsonNode.class);
     }
@@ -346,4 +347,15 @@ public class RupturesClient extends BaseMashupClient {
                 equalTo(String.format(SESSION_NOT_FOUND, sessionId)));
     }
 
+    @Step("Проверить доступы к коррекции стока")
+    public void assertStockCorrectionAccess(Response<JsonNode> resp, CorrectionAccessLevels accessLevel) {
+        if (accessLevel == CorrectionAccessLevels.UNKNOWN_USER) {
+            assertThat("Response code", resp.getStatusCode(), equalTo(404));
+            assertThat("Error", resp.asString(), equalTo(accessLevel.getResponse()));
+        }
+        else {
+            assertThatResponseIsOk(resp);
+            assertThat("Access", resp.asString(), equalTo(accessLevel.getResponse()));
+        }
+    }
 }
