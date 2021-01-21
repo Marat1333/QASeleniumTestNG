@@ -10,10 +10,10 @@ import static org.hamcrest.Matchers.lessThanOrEqualTo;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.core.configuration.Log;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.sales.BaseProductOrderData;
 import com.leroy.magmobile.api.data.sales.orders.OrderProductData;
 import com.leroy.magmobile.api.data.sales.orders.ResOrderCheckQuantityData;
@@ -470,9 +470,9 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         payload.setPaymentVersion(orderData.getPaymentVersion());
         payload.setSolutionVersion(orderData.getSolutionVersion());
 
-        List<ProductItemData> newProducts = searchProductHelper
+        List<ProductData> newProducts = searchProductHelper
                 .getProductsForShop(newProductsCount, orderData.getShopId());
-        for (ProductItemData productData : newProducts) {
+        for (ProductData productData : newProducts) {
             OrderProductDataPayload orderProductDataPayload = new OrderProductDataPayload();
             orderProductDataPayload.setLmCode(productData.getLmCode());
             orderProductDataPayload.setPrice(productData.getPrice());
@@ -503,7 +503,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         List<OrderProductDataPayload> orderProducts = new ArrayList<>();
         OrderRearrangePayload payload = this.makeRearrangePayload(orderId, 0, null);
 
-        ProductItemData product = searchProductHelper.getProductByLmCode(lmCode);
+        ProductData product = searchProductHelper.getProductByLmCode(lmCode);
 
         OrderProductDataPayload orderProductDataPayload = new OrderProductDataPayload();
         orderProductDataPayload.setLmCode(product.getLmCode());

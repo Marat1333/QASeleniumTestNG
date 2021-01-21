@@ -1,11 +1,11 @@
 package com.leroy.magmobile.ui.tests.work;
 
 import com.google.inject.Inject;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.TimeZone;
 import com.leroy.core.UserSessionData;
-import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.PrintPriceClient;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.common.BottomMenuPage;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
@@ -35,18 +35,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.testng.annotations.Test;
 
 public class PrintTagsTest extends AppBaseSteps {
 
     @Inject
-    private CatalogSearchClient catalogSearchClient;
+    private SearchProductHelper searchProductHelper;
     @Inject
     private PrintPriceClient printPriceClient;
 
     private TagsListPage loginAndCreateSession() throws Exception {
-        return loginAndCreateSession(catalogSearchClient.getRandomProduct().getLmCode());
+        return loginAndCreateSession(searchProductHelper.getRandomProduct().getLmCode());
     }
 
     private TagsListPage loginAndCreateSession(String lmCode) throws Exception {
@@ -67,7 +66,7 @@ public class PrintTagsTest extends AppBaseSteps {
     }
 
     private TagsListPage createSession() {
-        return createSession(catalogSearchClient.getRandomProduct().getLmCode());
+        return createSession(searchProductHelper.getRandomProduct().getLmCode());
     }
 
     @Override
@@ -78,7 +77,7 @@ public class PrintTagsTest extends AppBaseSteps {
         return sessionData;
     }
 
-    @Step("Добавить в сессию товары")
+    @Step("Добавить в сессию товары")//TODO метод ничего не делает, т.к. productTagDataList НЕ используется...
     private List<ProductTagData> addUniqueProductsToSessionByManualSearch(List<String> lmCodes) {
         List<ProductTagData> productTagDataList = new ArrayList<>();
         for (String lmCode : lmCodes) {
@@ -94,7 +93,7 @@ public class PrintTagsTest extends AppBaseSteps {
 
     @Test(description = "C23389191 Создание сессии через раздел \"Работа\"")
     public void testCreateSessionFromWorkPage() throws Exception {
-        ProductItemData randomProduct = catalogSearchClient.getRandomProduct();
+        ProductData randomProduct = searchProductHelper.getRandomProduct();
         String lmCode = randomProduct.getLmCode();
 
         //Pre-conditions
@@ -128,7 +127,7 @@ public class PrintTagsTest extends AppBaseSteps {
 
     @Test(description = "C23389192 Создание сессии через карточку товара")
     public void testCreateSessionFromProductCard() throws Exception {
-        ProductItemData randomProduct = catalogSearchClient.getRandomProduct();
+        ProductData randomProduct = searchProductHelper.getRandomProduct();
         String lmCode = randomProduct.getLmCode();
 
         MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
@@ -150,7 +149,7 @@ public class PrintTagsTest extends AppBaseSteps {
 
     @Test(description = "C23389199 возвращение в созданную ранее сессию")
     public void testReturnToCreatedSession() throws Exception {
-        ProductItemData randomProduct = catalogSearchClient.getRandomProduct();
+        ProductData randomProduct = searchProductHelper.getRandomProduct();
         String lmCode = randomProduct.getLmCode();
 
         //Pre-conditions
@@ -182,10 +181,8 @@ public class PrintTagsTest extends AppBaseSteps {
     @Test(description = "C23389193 добавление товара в сессию")
     public void testAddProductToCreatedSession() throws Exception {
         int productsCount = 3;
-        List<ProductItemData> randomProducts = catalogSearchClient.getRandomUniqueProductsWithTitles(productsCount);
-        List<String> lmCodesList = randomProducts.stream().map(ProductItemData::getLmCode).collect(Collectors.toList());
-        String[] lmCodes = new String[lmCodesList.size()];
-        lmCodes = lmCodesList.toArray(lmCodes);
+        List<String> lmCodesList = searchProductHelper.getProductLmCodes(productsCount);
+        String[] lmCodes = lmCodesList.toArray(new String[0]);
 
         //Pre-conditions
         WorkPage workPage = loginAndGoTo(WorkPage.class);
@@ -294,8 +291,7 @@ public class PrintTagsTest extends AppBaseSteps {
     @Test(description = "C23411536 удаление товаров")
     public void testDeleteProducts() throws Exception {
         int productsCount = 5;
-        List<ProductItemData> randomProducts = catalogSearchClient.getRandomUniqueProductsWithTitles(productsCount);
-        List<String> lmCodesList = randomProducts.stream().map(ProductItemData::getLmCode).collect(Collectors.toList());
+        List<String> lmCodesList = searchProductHelper.getProductLmCodes(productsCount);
 
         //Pre-conditions
         WorkPage workPage = loginAndGoTo(WorkPage.class);
@@ -385,8 +381,7 @@ public class PrintTagsTest extends AppBaseSteps {
     @Test(description = "C23389195 отправка на печать ценников")
     public void testSendingToPrint() throws Exception {
         int productsCount = 3;
-        List<ProductItemData> randomProducts = catalogSearchClient.getRandomUniqueProductsWithTitles(productsCount);
-        List<String> lmCodesList = randomProducts.stream().map(ProductItemData::getLmCode).collect(Collectors.toList());
+        List<String> lmCodesList = searchProductHelper.getProductLmCodes(productsCount);
 
         //Step 1
         step("отправка единственного формата");
@@ -465,7 +460,7 @@ public class PrintTagsTest extends AppBaseSteps {
 
     @Test(description = "C23389196 редактирование форматов и кол-ва ценников")
     public void testEditingTagsSizesAndQuantity() throws Exception {
-        String lmCode = catalogSearchClient.getRandomProduct().getLmCode();
+        String lmCode = searchProductHelper.getRandomProduct().getLmCode();
         LocalDateTime sessionCreationTime;
         LocalDateTime sessionCreationTimeCheck;
         ProductTagData tagData = new ProductTagData();
@@ -566,8 +561,7 @@ public class PrintTagsTest extends AppBaseSteps {
     @Test(description = "C23389200 массовое редактирование формата ценников")
     public void testTagsGroupEdition() throws Exception {
         int productsCount = 5;
-        List<ProductItemData> randomProducts = catalogSearchClient.getRandomUniqueProductsWithTitles(productsCount);
-        List<String> lmCodesList = randomProducts.stream().map(ProductItemData::getLmCode).collect(Collectors.toList());
+        List<String> lmCodesList = searchProductHelper.getProductLmCodes(productsCount);
 
         ProductTagData firstProductData = new ProductTagData(lmCodesList.get(0), 3, 0, 0);
         ProductTagData secondProductData = new ProductTagData(lmCodesList.get(1), 3, 0, 0);
@@ -666,7 +660,7 @@ public class PrintTagsTest extends AppBaseSteps {
 
     @Test(description = "C23389198 удаление сессии")
     public void testDeleteSession() throws Exception {
-        String lmCode = catalogSearchClient.getRandomProduct().getLmCode();
+        String lmCode = searchProductHelper.getRandomProduct().getLmCode();
         TagsListPage tagsListPage = loginAndCreateSession(lmCode);
 
         //Step 1
@@ -792,8 +786,7 @@ public class PrintTagsTest extends AppBaseSteps {
     @Test(description = "C23411538 Проверить подсчет кол-ва страниц")
     public void testPagesAmount() throws Exception {
         int productsCount = 2;
-        List<ProductItemData> randomProducts = catalogSearchClient.getRandomUniqueProductsWithTitles(productsCount);
-        List<String> lmCodesList = randomProducts.stream().map(ProductItemData::getLmCode).collect(Collectors.toList());
+        List<String> lmCodesList = searchProductHelper.getProductLmCodes(productsCount);
 
         //Pre-conditions
         TagsListPage tagsListPage = loginAndCreateSession(lmCodesList.get(0));
@@ -827,8 +820,7 @@ public class PrintTagsTest extends AppBaseSteps {
     @Test(description = "C23409752 Порядок отправки форматов ценников на печать")
     public void testFormatPrintingOrder() throws Exception {
         int productsCount = 3;
-        List<ProductItemData> randomProducts = catalogSearchClient.getRandomUniqueProductsWithTitles(productsCount);
-        List<String> lmCodesList = randomProducts.stream().map(ProductItemData::getLmCode).collect(Collectors.toList());
+        List<String> lmCodesList = searchProductHelper.getProductLmCodes(productsCount);
 
         //Pre-conditions
         WorkPage workPage = loginAndGoTo(WorkPage.class);
@@ -918,7 +910,7 @@ public class PrintTagsTest extends AppBaseSteps {
 
     @Test(description = "C23411003 навигация")
     public void testNavigation() throws Exception {
-        String lmCode = catalogSearchClient.getRandomProduct().getLmCode();
+        String lmCode = searchProductHelper.getRandomProduct().getLmCode();
 
         //Step 1
         step("Создать сессию печати через страницу карточки товара и удалить ее");

@@ -1,13 +1,11 @@
 package com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies;
 
-import com.leroy.constants.TimeZone;
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
-import com.leroy.magmobile.api.data.catalog.product.PriceInfo;
+import com.leroy.common_mashups.catalogs.data.product.CatalogProductData;
+import com.leroy.common_mashups.catalogs.data.product.details.PriceInfo;
 import com.leroy.magmobile.api.data.shops.ShopData;
 import com.leroy.magmobile.ui.models.product_card.ShopCardData;
 import com.leroy.magmobile.ui.pages.sales.product_card.widgets.ShopPriceInfoWidget;

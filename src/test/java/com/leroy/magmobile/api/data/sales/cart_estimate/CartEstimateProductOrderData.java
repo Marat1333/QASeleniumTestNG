@@ -1,6 +1,6 @@
 package com.leroy.magmobile.api.data.sales.cart_estimate;
 
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -8,12 +8,12 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Data
-public class CartEstimateProductOrderData extends ProductItemData {
+public class CartEstimateProductOrderData extends ProductData {
 
     public CartEstimateProductOrderData() {
     }
 
-    public CartEstimateProductOrderData(ProductItemData productItemResponse) {
+    public CartEstimateProductOrderData(ProductData productItemResponse) {
         this.setLmCode(productItemResponse.getLmCode());
         this.setBarCode(productItemResponse.getBarCode());
         this.setTitle(productItemResponse.getTitle());

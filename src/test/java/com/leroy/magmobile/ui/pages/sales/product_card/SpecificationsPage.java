@@ -5,8 +5,8 @@ import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magmobile.api.data.catalog.Characteristic;
-import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
+import com.leroy.common_mashups.catalogs.data.product.details.Characteristic;
+import com.leroy.common_mashups.catalogs.data.product.CatalogProductData;
 import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.SuppliesPage;
 import io.qameta.allure.Step;
 

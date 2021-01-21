@@ -2,8 +2,8 @@ package com.leroy.magportal.ui.pages.products;
 
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.*;
-import com.leroy.magmobile.api.data.catalog.Characteristic;
-import com.leroy.magportal.api.data.catalog.products.CatalogProductData;
+import com.leroy.common_mashups.catalogs.data.product.details.Characteristic;
+import com.leroy.common_mashups.catalogs.data.product.CatalogProductData;
 import com.leroy.magportal.api.data.catalog.shops.NearestShopsData;
 import com.leroy.magportal.ui.models.search.NomenclaturePath;
 import com.leroy.magportal.ui.models.search.ShopCardData;

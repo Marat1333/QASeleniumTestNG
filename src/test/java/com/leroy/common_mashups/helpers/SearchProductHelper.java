@@ -2,34 +2,40 @@ package com.leroy.common_mashups.helpers;
 
 import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasSize;
 
 import com.google.inject.Inject;
-import com.leroy.magmobile.api.clients.CatalogSearchClient;
-import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
-import com.leroy.magmobile.api.data.catalog.ServiceItemData;
-import com.leroy.magmobile.api.data.catalog.ServiceItemDataList;
-import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
-import com.leroy.magmobile.api.requests.catalog_search.GetCatalogServicesSearch;
+import com.leroy.common_mashups.catalogs.clients.CatalogProductClient;
+import com.leroy.common_mashups.catalogs.data.CatalogSearchFilter;
+import com.leroy.common_mashups.catalogs.data.ProductDataList;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
+import com.leroy.common_mashups.catalogs.data.ServiceItemData;
+import com.leroy.common_mashups.catalogs.data.ServiceItemDataList;
+import com.leroy.common_mashups.catalogs.data.CatalogComplementaryProductsDataV2;
+import com.leroy.common_mashups.catalogs.data.product.CatalogProductData;
+import com.leroy.common_mashups.catalogs.requests.GetCatalogProductSearchRequest;
+import com.leroy.common_mashups.catalogs.requests.GetCatalogServicesRequest;
 import com.leroy.magportal.api.helpers.BaseHelper;
 import io.qameta.allure.Step;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.junit.Assert;
+import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class SearchProductHelper extends BaseHelper {
 
     @Inject
-    private CatalogSearchClient catalogSearchClient;
+    private CatalogProductClient catalogSearchClient;
+    @Inject
+    private CatalogProductClient catalogProductClient;
+
+    private final static int MAX_PAGE_SIZE = 90;
 
     @Step("Find {necessaryCount} services")
     public List<ServiceItemData> getServices(int necessaryCount) {
-        GetCatalogServicesSearch params = new GetCatalogServicesSearch();
+        GetCatalogServicesRequest params = new GetCatalogServicesRequest();
         params.setShopId(userSessionData().getUserShopId())
                 .setStartFrom(1)
                 .setPageSize(necessaryCount); // TODO не работает. Почему?
@@ -41,46 +47,52 @@ public class SearchProductHelper extends BaseHelper {
     }
 
     @Step("Find {necessaryCount} products")
-    public List<ProductItemData> getProducts(int necessaryCount, CatalogSearchFilter filtersData) {
+    public List<ProductData> getProducts(int necessaryCount, CatalogSearchFilter filtersData) {
         String[] badLmCodes = {"10008698",
                 "10008751"}; // Из-за отсутствия синхронизации бэков на тесте, мы можем получить некорректные данные
         if (filtersData == null) {
             filtersData = new CatalogSearchFilter();
         }
-        Response<ProductItemDataList> resp = catalogSearchClient.searchProductsBy(filtersData);
-        assertThat("Catalog search request:", resp, successful());
-        List<ProductItemData> items = resp.asJson().getItems();
-        List<ProductItemData> resultList = new ArrayList<>();
         int i = 0;
-        for (ProductItemData item : items) {
-            if (!Arrays.asList(badLmCodes).contains(item.getLmCode())) {
-                if (filtersData.getAvs() == null
-                        || !filtersData.getAvs() && item.getAvsDate() == null
-                        || filtersData.getAvs() && item.getAvsDate() != null) {
-                    if (filtersData.getHasAvailableStock() == null ||
-                            (filtersData.getHasAvailableStock() && item.getAvailableStock() > 0 ||
-                                    !filtersData.getHasAvailableStock()
-                                            && item.getAvailableStock() <= 0)) {
-                        resultList.add(item);
-                        i++;
+        int startFrom = 1;
+        List<ProductData> resultList = new ArrayList<>();
+        while (i < necessaryCount) {
+            Response<ProductDataList> resp = catalogSearchClient.searchProductsBy(filtersData, startFrom, necessaryCount);
+            assertThat("Catalog search request has failed.", resp, successful());
+            List<ProductData> items = resp.asJson().getItems();
+
+            for (ProductData item : items) {
+                if (!Arrays.asList(badLmCodes).contains(item.getLmCode())
+                        && Strings.isNotNullAndNotEmpty(item.getTitle())) {
+                    if (filtersData.getAvs() == null
+                            || !filtersData.getAvs() && item.getAvsDate() == null
+                            || filtersData.getAvs() && item.getAvsDate() != null) {
+                        if (filtersData.getHasAvailableStock() == null ||
+                                (filtersData.getHasAvailableStock() && item.getAvailableStock() > 0 ||
+                                        !filtersData.getHasAvailableStock()
+                                                && item.getAvailableStock() <= 0)) {
+                            resultList.add(item);
+                            i++;
+                        }
                     }
                 }
+                if (necessaryCount == i) {
+                    break;
+                }
             }
-            if (necessaryCount == i) {
-                break;
-            }
+            startFrom += necessaryCount;
         }
-        assertThat("Catalog search request:", resultList, hasSize(greaterThan(0)));
-        return resultList;
+
+        return resultList.stream().limit(necessaryCount).collect(Collectors.toList());
     }
 
-    public List<ProductItemData> getProducts(int necessaryCount) {
+    public List<ProductData> getProducts(int necessaryCount) {
         CatalogSearchFilter filter = new CatalogSearchFilter();
         filter.setHasAvailableStock(true);
         return getProducts(necessaryCount, filter);
     }
 
-    public List<ProductItemData> getProducts(int necessaryCount, boolean isAvs, boolean isTopEm) {
+    public List<ProductData> getProducts(int necessaryCount, boolean isAvs, boolean isTopEm) {
         CatalogSearchFilter filter = new CatalogSearchFilter();
         filter.setHasAvailableStock(true);
         filter.setTopEM(isTopEm);
@@ -88,32 +100,85 @@ public class SearchProductHelper extends BaseHelper {
         return getProducts(necessaryCount, filter);
     }
 
+    public String getProductLmCode() {
+        return getProductLmCodes(1).get(0);
+    }
+
     public List<String> getProductLmCodes(int necessaryCount) {
-        List<ProductItemData> productItemResponseList = getProducts(necessaryCount, null);
-        return productItemResponseList.stream().map(ProductItemData::getLmCode)
+        List<ProductData> productItemResponseList = getProducts(necessaryCount, null);
+        return productItemResponseList.stream().map(ProductData::getLmCode)
                 .collect(Collectors.toList());
     }
 
     public List<String> getProductLmCodes(int necessaryCount, boolean isAvs, boolean isTopEm) {
-        List<ProductItemData> productItemResponseList = getProducts(necessaryCount, isAvs, isTopEm);
-        return productItemResponseList.stream().map(ProductItemData::getLmCode)
+        List<ProductData> productItemResponseList = getProducts(necessaryCount, isAvs, isTopEm);
+        return productItemResponseList.stream().map(ProductData::getLmCode)
                 .collect(Collectors.toList());
     }
 
     @Step("Return list of products for specified ShopId")
-    public List<ProductItemData> getProductsForShop(int countOfProducts,
+    public List<ProductData> getProductsForShop(int countOfProducts,
             String shopId) {
         return catalogSearchClient
-                .searchProductsBy(new GetCatalogSearch().setPageSize(countOfProducts)
+                .searchProductsBy(new GetCatalogProductSearchRequest().setPageSize(countOfProducts)
                         .setHasAvailableStock(true).setShopId(shopId)).asJson().getItems();
     }
 
     @Step("Return list of products for specified ShopId")
-    public ProductItemData getProductByLmCode(String lmCode) {
+    public ProductData getProductByLmCode(String lmCode) {
         CatalogSearchFilter filter = new CatalogSearchFilter();
         filter.setLmCode(lmCode);
         return catalogSearchClient.searchProductsBy(filter).asJson().getItems().stream().findFirst()
                 .orElse(null);
+    }
+
+    @Step("Return random product")
+    public ProductData getRandomProduct() {
+        ProductDataList productDataList = catalogSearchClient.searchProductsBy(new GetCatalogProductSearchRequest().setPageSize(10)
+                .setHasAvailableStock(true).setShopId(userSessionData().getUserShopId())).asJson();
+        List<ProductData> productData = productDataList.getItems();
+        productData = productData.stream().filter(i -> i.getTitle() != null).collect(Collectors.toList());
+        return productData.get((int) (Math.random() * productData.size()));
+    }
+
+    @Step("Get product with at least one complementary product")
+    public CatalogComplementaryProductsDataV2 getComplementaryProductData(boolean isEmpty) {
+        List<CatalogProductData> itemsList;
+        List<String> lmCodes = this.getProductLmCodes(MAX_PAGE_SIZE);
+        for (String lmCode : lmCodes) {
+            Response<CatalogComplementaryProductsDataV2> response = catalogProductClient.getComplementaryProducts(lmCode);
+            if (response.isSuccessful()) {
+                CatalogComplementaryProductsDataV2 result = response.asJson();
+                result.setParentLmCode(lmCode);
+                itemsList = result.getItems();
+                if (itemsList.size() > 0 && !isEmpty) {
+                    return result;
+                } else if (itemsList.size() == 0 && isEmpty) {
+                    return result;
+                }
+            }
+        }
+        Assert.fail("No products with complementary products were found");
+        return null;
+    }
+
+    @Step("Get product without complementary product")
+    public CatalogComplementaryProductsDataV2 getEmptyComplementaryProductData() {
+        List<CatalogProductData> itemsList;
+        List<String> lmCodes = this.getProductLmCodes(MAX_PAGE_SIZE);
+        for (String lmCode : lmCodes) {
+            Response<CatalogComplementaryProductsDataV2> response = catalogProductClient.getComplementaryProducts(lmCode);
+            if (response.isSuccessful()) {
+                itemsList = response.asJson().getItems();
+                if (itemsList.size() == 0) {
+                    CatalogComplementaryProductsDataV2 result = response.asJson();
+                    result.setParentLmCode(lmCode);
+                    return result;
+                }
+            }
+        }
+        Assert.fail("No products with complementary products were found");
+        return null;
     }
 
 }

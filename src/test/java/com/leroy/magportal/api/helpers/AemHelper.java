@@ -7,11 +7,11 @@ import static com.leroy.magportal.ui.constants.TestDataConstants.SIMPLE_CUSTOMER
 import static com.leroy.magportal.ui.constants.TestDataConstants.SIMPLE_CUSTOMER_DATA_2;
 
 import com.google.inject.Inject;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.core.api.ThreadApiClient;
 import com.leroy.core.configuration.Log;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.clients.ShopsClient;
 import com.leroy.magportal.api.constants.DeliveryServiceTypeEnum;
@@ -312,19 +312,19 @@ public class AemHelper extends BaseHelper {
         ArrayList<Product> result = new ArrayList<>();
 
         if (orderData.getLmCode() != null) {
-            ProductItemData product = searchProductHelper.getProductByLmCode(orderData.getLmCode());
+            ProductData product = searchProductHelper.getProductByLmCode(orderData.getLmCode());
             result.add(productItemDataToPayload(product));
         } else {
-            List<ProductItemData> products = searchProductHelper
+            List<ProductData> products = searchProductHelper
                     .getProductsForShop(productsCount, shopId);
-            for (ProductItemData productData : products) {
+            for (ProductData productData : products) {
                 result.add(productItemDataToPayload(productData));
             }
         }
         return result;
     }
 
-    private Product productItemDataToPayload(ProductItemData product) {
+    private Product productItemDataToPayload(ProductData product) {
         Product tunnelProduct = new Product();
 
         double quantity = 10.00;
