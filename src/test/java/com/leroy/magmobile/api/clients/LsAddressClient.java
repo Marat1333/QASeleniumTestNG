@@ -1,9 +1,12 @@
 package com.leroy.magmobile.api.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.inject.Inject;
 import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.address.*;
 import com.leroy.magmobile.api.data.address.cellproducts.*;
+import com.leroy.magmobile.api.data.ruptures.ActionData;
+import com.leroy.magmobile.api.helpers.LsAddressHelper;
 import com.leroy.magmobile.api.requests.address.*;
 import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -14,6 +17,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class LsAddressClient extends BaseMashupClient {
+
+    @Inject
+    private LsAddressHelper lsAddressHelper;
 
     // REQUESTS //
 
@@ -33,6 +39,17 @@ public class LsAddressClient extends BaseMashupClient {
         req.setDepartmentId(getUserSessionData().getUserDepartmentId());
         req.setShopId(getUserSessionData().getUserShopId());
         return execute(req, AlleyDataItems.class);
+    }
+
+
+    @Step("Rename Alley")
+    public Response<AlleyData> renameAlley(AlleyData alleyData) {
+        LsAddressAlleysPutRequest req = new LsAddressAlleysPutRequest();
+        req.setAlleyId(alleyData.getId());
+        req.setShopId(alleyData.getStoreId());
+        req.setDepartmentId(alleyData.getDepartmentId());
+        req.setCode(alleyData.getCode());
+        return execute(req, AlleyData.class);
     }
 
     // Stands
@@ -184,6 +201,20 @@ public class LsAddressClient extends BaseMashupClient {
                 is(Integer.valueOf(getUserSessionData().getUserDepartmentId())));
         assertThat("code", actualData.getCode(), is(postData.getCode()));
         return actualData;
+    }
+
+    public void assertThatAlleyIsRenamed(AlleyData actualData, AlleyData expectedData) {
+        assertThat("id", actualData.getId(), is(expectedData.getId()));
+        assertThat("count", actualData.getCount(), is(0));
+        assertThat("storeId", actualData.getStoreId(), is(Integer.valueOf(getUserSessionData().getUserShopId())));
+        assertThat("departmentId", actualData.getDepartmentId(),
+                is(Integer.valueOf(getUserSessionData().getUserDepartmentId())));
+        assertThat("code", actualData.getCode(), is(expectedData.getCode()));
+
+    }
+
+    public void assertThatResponseIsSuccess(Response<?> resp) {
+        assertThatResponseIsOk(resp);
     }
 
     // Stand
