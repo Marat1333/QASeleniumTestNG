@@ -25,7 +25,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 public class SearchProductHelper extends BaseHelper {
 
     @Inject
-    CatalogSearchClient catalogSearchClient;
+    private CatalogSearchClient catalogSearchClient;
 
     @Step("Find {necessaryCount} services")
     public List<ServiceItemData> getServices(int necessaryCount) {
@@ -113,7 +113,7 @@ public class SearchProductHelper extends BaseHelper {
         CatalogSearchFilter filter = new CatalogSearchFilter();
         filter.setLmCode(lmCode);
         return catalogSearchClient.searchProductsBy(filter).asJson().getItems().stream().findFirst()
-                .get();
+                .orElse(null);
     }
 
 }

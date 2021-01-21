@@ -1,5 +1,6 @@
 package com.leroy.magmobile.ui.tests;
 
+import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.UserSessionData;
@@ -8,7 +9,11 @@ import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.ShopKladrClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
-import com.leroy.magmobile.api.data.catalog.product.*;
+import com.leroy.magmobile.api.data.catalog.product.CatalogComplementaryProducts;
+import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
+import com.leroy.magmobile.api.data.catalog.product.CatalogShopsData;
+import com.leroy.magmobile.api.data.catalog.product.CatalogSimilarProducts;
+import com.leroy.magmobile.api.data.catalog.product.SalesHistoryData;
 import com.leroy.magmobile.api.data.catalog.product.reviews.CatalogReviewsOfProductList;
 import com.leroy.magmobile.api.data.catalog.supply.CatalogSupplierData;
 import com.leroy.magmobile.api.data.shops.PriceAndStockData;
@@ -18,33 +23,42 @@ import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.more.SearchShopPage;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.*;
+import com.leroy.magmobile.ui.pages.sales.product_card.FirstLeaveReviewPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.ProductCardPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.ReviewsPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.SalesHistoryPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.SecondLeaveReviewPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.SimilarProductsPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.SpecificationsPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.SuccessReviewSendingPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.PeriodOfUsageModalPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SalesHistoryUnitsModalPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.*;
+import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.PricesPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.ProductPricesQuantitySupplyPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.ShopPricesPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.ShopsStocksPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.StocksPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.SuppliesPage;
 import com.leroy.magmobile.ui.pages.search.FilterPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import io.qameta.allure.Step;
-import org.mapsforge.core.model.LatLong;
-import org.mapsforge.core.util.LatLongUtils;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.util.LatLongUtils;
+import org.testng.annotations.Test;
 
 public class ProductCardTest extends AppBaseSteps {
 
+    @Inject
     private CatalogSearchClient catalogSearchClient;
+    @Inject
     private CatalogProductClient catalogProductClient;
-
-    @BeforeClass
-    private void initClients() {
-        catalogProductClient = apiClientProvider.getCatalogProductClient();
-        catalogSearchClient = apiClientProvider.getCatalogSearchClient();
-    }
+    @Inject
+    private ShopKladrClient shopKladrClient;
 
     @Override
     public UserSessionData initTestClassUserSessionDataTemplate() {
@@ -329,7 +343,6 @@ public class ProductCardTest extends AppBaseSteps {
         String searchName = "Спб П";
 
         //get all shop id
-        ShopKladrClient shopKladrClient = apiClientProvider.getShopKladrClient();
         List<ShopData> shopDataList = shopKladrClient.getShops().asJsonList(ShopData.class);
         List<String> shopIdList = shopDataList.stream().map(ShopData::getId).collect(Collectors.toList());
         String[] shopIdArray = new String[shopIdList.size()];

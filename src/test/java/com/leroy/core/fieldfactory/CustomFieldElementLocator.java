@@ -49,7 +49,7 @@ public class CustomFieldElementLocator {
 
     private By buildBy(By parentBy) {
         String parentXpath = parentBy == null ? "" : XpathUtil.getXpath(parentBy);
-        boolean isApp = DriverFactory.isAppProfile();
+        boolean isApp = field.getAnnotation(AppFindBy.class) != null;
         Annotation annotation = isApp ? field.getAnnotation(AppFindBy.class) : field.getAnnotation(WebFindBy.class);
         if (annotation == null)
             return null;
@@ -102,7 +102,7 @@ public class CustomFieldElementLocator {
     }
 
     private String buildMetaName() {
-        boolean isApp = DriverFactory.isAppProfile();
+        boolean isApp = field.getAnnotation(AppFindBy.class) != null;
         Annotation annotation = isApp ?
                 field.getAnnotation(AppFindBy.class) : field.getAnnotation(WebFindBy.class);
         if (annotation == null)

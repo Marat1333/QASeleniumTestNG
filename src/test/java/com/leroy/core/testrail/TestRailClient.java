@@ -26,8 +26,7 @@ public class TestRailClient {
         Map<String, Object> settings = (Map<String, Object>) properties.get("settings");
         apiClient = new APIClient(settings.get("url").toString());
         apiClient.setUser(settings.get("user").toString());
-        apiClient.setPassword(new String(
-                Base64.getDecoder().decode(settings.get("password").toString())));
+        apiClient.setPassword(settings.get("password").toString());
     }
 
     public static Long findOrCreateNewPlanRun(String planName, String runName, long projectId, long suiteId)

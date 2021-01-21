@@ -9,7 +9,7 @@ import com.leroy.magportal.api.constants.OnlineOrderTypeConst;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
 import com.leroy.magportal.api.constants.PaymentStatusEnum;
 import com.leroy.magportal.api.data.picking.PickingTaskData;
-import com.leroy.magportal.api.helpers.BitrixHelper;
+import com.leroy.magportal.api.helpers.OnlineOrderHelper;
 import com.leroy.magportal.api.helpers.PaymentHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
 import org.testng.annotations.BeforeClass;
@@ -19,7 +19,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 public class EntranceWorkflowShortTest extends BaseMagPortalApiTest {
 
     @Inject
-    private BitrixHelper bitrixHelper;
+    private OnlineOrderHelper onlineOrderHelper;
     @Inject
     private PaymentHelper paymentHelper;
     @Inject
@@ -34,7 +34,8 @@ public class EntranceWorkflowShortTest extends BaseMagPortalApiTest {
     @BeforeClass
     private void setUp() {
         OnlineOrderTypeData currentOrderType = OnlineOrderTypeConst.DELIVERY_TO_ENTRANCE;
-        currentOrderId = bitrixHelper.createOnlineOrderCardPayment(currentOrderType).getSolutionId();
+        currentOrderId = onlineOrderHelper.createOnlineOrderCardPayment(currentOrderType)
+                .getSolutionId();
 
         currentTaskId = pickingTaskClient.searchForPickingTasks(currentOrderId).asJson().getItems()
                 .stream().findFirst().get().getTaskId();

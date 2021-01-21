@@ -1,5 +1,14 @@
 package com.leroy.magmobile.api.tests.salesdoc;
 
+import static com.leroy.core.matchers.Matchers.successful;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyOrNullString;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+
+import com.google.inject.Inject;
 import com.leroy.magmobile.api.clients.PickingTaskClient;
 import com.leroy.magmobile.api.data.sales.picking.PickingTaskData;
 import com.leroy.magmobile.api.data.sales.picking.PickingTaskDataList;
@@ -8,20 +17,14 @@ import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import static com.leroy.core.matchers.Matchers.successful;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-
 public class PickingActionTest extends BaseProjectApiTest {
 
-    private PickingTaskClient pickingTaskClient() {
-        return apiClientProvider.getPickingTaskClient();
-    }
+    @Inject
+    private PickingTaskClient pickingTaskClient;
 
     @Test(description = "C23195055 Picking search without filters")
     public void testPickingSearchWithoutFilters() {
         int pageSize = 14;
-        PickingTaskClient pickingTaskClient = pickingTaskClient();
         Response<PickingTaskDataList> resp = pickingTaskClient.searchForTasks(new PickingTaskFilter(), 1, pageSize);
         assertThat(resp, successful());
         PickingTaskDataList dataList = resp.asJson();

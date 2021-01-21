@@ -38,4 +38,12 @@
         </classes>
     </test>
 
+    <test name="Offline Orders: Set Pin Code tests">
+        <classes>
+            <class
+                name="com.leroy.magportal.api.tests.offlineOrders.SetPinCodeTest">
+            </class>
+        </classes>
+    </test>
+
 </suite>

@@ -4,7 +4,10 @@ import com.google.inject.Inject;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.DefectConst;
 import com.leroy.constants.EnvConstants;
+import com.leroy.core.ContextProvider;
 import com.leroy.core.UserSessionData;
+import com.leroy.core.pages.ChromeCertificateErrorPage;
+import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.ruptures.ActionData;
 import com.leroy.magmobile.api.data.ruptures.ResRuptureSessionDataList;
@@ -23,11 +26,17 @@ import com.leroy.magmobile.ui.pages.work.ruptures.data.SessionData;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.TaskData;
 import com.leroy.magmobile.ui.pages.work.ruptures.enums.Action;
 import com.leroy.magmobile.ui.pages.work.ruptures.modal.*;
+import com.leroy.magmobile.ui.pages.work.ruptures.stockCorrectionPages.StockCorrectionAddProductWebPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.stockCorrectionPages.StockCorrectionCardWebPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.stockCorrectionPages.StockCorrectionLoginWebPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.stockCorrectionPages.StockCorrectionSuccessWebPage;
 import com.leroy.magmobile.ui.pages.work.transfer.RuptureTransferToShopRoomSuccessPage;
 import com.leroy.magmobile.ui.pages.work.transfer.TransferOrderStep1Page;
 import com.leroy.magmobile.ui.pages.work.transfer.TransferShopRoomStep2Page;
+import com.leroy.utils.ParserUtil;
+import io.appium.java_client.MobileElement;
+import io.appium.java_client.android.AndroidDriver;
 import io.qameta.allure.Issue;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
@@ -96,21 +105,25 @@ public class RupturesTest extends AppBaseSteps {
         return sessionId;
     }
 
-    private int createSessionWithProductWithSpecificIncompleteAction(String lmCode, Action action) {
+    private int createSessionWithProductsWithSpecificIncompleteAction(Action action, String... lmCodes) {
         List<ActionData> actions = new ArrayList<>();
         ActionData data = new ActionData();
         data.setState(false);
         data.setAction(action.getActionNumber());
-        //
         data.setUserPosition(0);
         actions.add(data);
 
-        RuptureProductData productData = new RuptureProductData();
-        productData.generateRandomData();
-        productData.setLmCode(lmCode);
-        productData.setActions(actions);
+        List<RuptureProductData> productDataList = new ArrayList<>();
 
-        int sessionId = rupturesHelper.createSession(Collections.singletonList(productData));
+        for (String lmCode : lmCodes) {
+            RuptureProductData productData = new RuptureProductData();
+            productData.generateRandomData();
+            productData.setLmCode(lmCode);
+            productData.setActions(actions);
+            productDataList.add(productData);
+        }
+
+        int sessionId = rupturesHelper.createSession(productDataList);
         sessionsNumbers.set(sessionId);
         return sessionId;
     }
@@ -135,6 +148,43 @@ public class RupturesTest extends AppBaseSteps {
         int sessionId = rupturesHelper.createSession(ruptureProductDataList);
         sessionsNumbers.set(sessionId);
         return sessionId;
+    }
+
+    // Test case C23440885
+    private void makeStockCorrection(String ruptureLmCode, AcceptStockCorrectionModalPage acceptStockCorrectionModalPage) {
+
+        //Step 1
+        AndroidDriver<MobileElement> androidDriver = (AndroidDriver<MobileElement>) ContextProvider.getDriver();
+        androidDriver.context("WEBVIEW_chrome");
+        androidDriver.close();
+        androidDriver.context("NATIVE_APP");
+        acceptStockCorrectionModalPage.clickContinueButton();
+        new ChromeCertificateErrorPage().waitForButtonsAreVisible()
+                .skipSiteSecureError();
+        androidDriver.context("WEBVIEW_chrome");
+        StockCorrectionLoginWebPage stockCorrectionWebPage = new StockCorrectionLoginWebPage();
+
+        //Step 2
+        StockCorrectionAddProductWebPage stockCorrectionAddProductWebPage = stockCorrectionWebPage.clickLogIdBtn();
+        stockCorrectionAddProductWebPage.checkLmCode(ruptureLmCode);
+
+        //Step 3
+        stockCorrectionAddProductWebPage.enterNewCount();
+
+        //Step 4
+        StockCorrectionCardWebPage stockCorrectionCardWebPage = stockCorrectionAddProductWebPage.clickInCardBtn();
+        stockCorrectionCardWebPage.checkShopAndDepartment();
+        stockCorrectionCardWebPage.checkReason();
+        stockCorrectionCardWebPage.checkLmCode(ruptureLmCode);
+
+        //Step 5
+        stockCorrectionCardWebPage.clickSendBtn();
+
+        //Step 6
+        StockCorrectionSuccessWebPage stockCorrectionSuccessWebPage = stockCorrectionCardWebPage.clickConfirmSendBtn();
+
+        //Step 7
+        stockCorrectionSuccessWebPage.clickCloseBtn();
     }
 
     @Test(description = "C3272519 Перебои на экране работы")
@@ -541,10 +591,15 @@ public class RupturesTest extends AppBaseSteps {
     @Issue("RUP-118")
     @Test(description = "C23418142 Добавление дубля в сессию при работе с существующей сессией")
     public void testAddRuptureDuplicateToExistedSession() throws Exception {
+        ProductItemData someProduct = searchProductHelper.getProducts(1).get(0);
+        String someLmCode = someProduct.getLmCode();
+        RuptureProductData ruptureData = new RuptureProductData();
+        ruptureData.generateRandomData();
+        ruptureData.setLmCode(someLmCode);
+        ruptureData.setBarCode(someProduct.getBarCode());
+        int sessionId = rupturesHelper.createSession(Collections.singletonList(ruptureData));
+        sessionsNumbers.set(sessionId);
         String comment = "asd123";
-        int sessionId = rupturesHelper.getActiveSessionIdWithProducts();
-        List<RuptureProductData> sessionProducts = rupturesHelper.getProducts(sessionId).getItems();
-        String randomLmCode = sessionProducts.get(0).getLmCode();
 
         // Pre-conditions
         WorkPage workPage = loginAndGoTo(WorkPage.class);
@@ -562,7 +617,7 @@ public class RupturesTest extends AppBaseSteps {
         // Step 2
         step("Перейти к ручному поиску и найти товар, который уже есть в сессии");
         SearchProductPage searchProductPage = rupturesScannerPage.navigateToSearchProductPage();
-        searchProductPage.enterTextInSearchFieldAndSubmit(randomLmCode);
+        searchProductPage.enterTextInSearchFieldAndSubmit(someLmCode);
         AddDuplicateModalPage addDuplicateModalPage = new AddDuplicateModalPage();
         addDuplicateModalPage.verifyRequiredElements();
 
@@ -595,27 +650,31 @@ public class RupturesTest extends AppBaseSteps {
 
         // Step 5
         step("Выйти с карточки перебоя по железной кнопке");
-        ruptureCardPage.closeRuptureCardPage();
+        ruptureCardPage.navigateBack();
         searchProductPage = new SearchProductPage();
         searchProductPage.verifyRequiredElements();
 
         // Step 6
         step("Закрыть экран поиска по железной кнопке");
-        searchProductPage.returnBack();
+        searchProductPage.navigateBack();
         rupturesScannerPage = new RupturesScannerPage();
         rupturesScannerPage.shouldCounterIsCorrect(counterValue)
                 .shouldRupturesListNavBtnIsVisible(true);
 
         // Step 7
         step("Закрыть сканер по железной кнопке");
-        rupturesScannerPage.closeScanner();
+        rupturesScannerPage.navigateBack();
         activeSessionPage = new ActiveSessionPage();
         activeSessionPage.shouldRupturesDataIsCorrect(data)
                 .verifyRequiredElements();
 
         // Step 8
         step("Открыть карточку перебоя");
-        ruptureCardPage = activeSessionPage.goToRuptureCard(randomLmCode);
+        activeSessionPage.goToRuptureCard(someLmCode);
+        addDuplicateModalPage = new AddDuplicateModalPage(); // TODO убрать этот костыль когда поправят баг
+        addDuplicateModalPage.verifyRequiredElements().confirm();
+
+        ruptureCardPage = new RuptureCardPage();
         ruptureCardPage.shouldRadioBtnHasCorrectCondition(RuptureCardPage.QuantityOption.ONE)
                 .shouldTasksListContainsTasks(toDoTasks)
                 .shouldCheckBoxConditionIsCorrect(true, checkedTask)
@@ -656,7 +715,7 @@ public class RupturesTest extends AppBaseSteps {
 
         // Step 3
         step("Выйти из карточки товара по железной кнопке");
-        ruptureCardPage.closeRuptureCardPage();
+        ruptureCardPage.navigateBack();
         activeSessionPage = new ActiveSessionPage();
         activeSessionPage.verifyRequiredElements();
 
@@ -715,6 +774,7 @@ public class RupturesTest extends AppBaseSteps {
         finishedSessionPage.shouldStatusIsFinished()
                 .shouldTasksCountIsCorrect(8)
                 .verifyRequiredElements();
+        rupturesHelper.checkSessionIsFinished(sessionId);
 
         // Step 4
         step("Нажать назад");
@@ -724,26 +784,23 @@ public class RupturesTest extends AppBaseSteps {
 
     @Test(description = "C3272528 Изменение перебоев в завершенной сессии")
     public void testChangeRuptureInFinishedSession() throws Exception {
-        TaskData firstTaskData = new TaskData();
-        firstTaskData.setAllTasksCount(1);
-        firstTaskData.setDoneTasksCount(0);
-        firstTaskData.setTaskName(Action.GIVE_APOLOGISE.getActionName());
-        TaskData secondTaskData = new TaskData();
-        secondTaskData.setAllTasksCount(1);
-        secondTaskData.setDoneTasksCount(1);
-        secondTaskData.setTaskName(Action.REMOVE_PRICE_TAG.getActionName());
-        TaskData allTasks = new TaskData();
-        allTasks.setAllTasksCount(2);
-        allTasks.setDoneTasksCount(1);
-        allTasks.setTaskName("Все задачи");
+        TaskData firstTaskData = new TaskData(Action.GIVE_APOLOGISE.getActionName(), 0, 1);
+        TaskData secondTaskData = new TaskData(Action.REMOVE_PRICE_TAG.getActionName(), 1, 1);
+        TaskData allTasks = new TaskData("Все задачи", 1, 2);
 
+        String ruptureLmCode = searchProductHelper.getProducts(1).get(0).getLmCode();
         String comment = "123asd";
-        int sessionId = createSessionWithProductWithSpecificIncompleteAction(RandomStringUtils.randomNumeric(8),
-                Action.FIND_PRODUCT_AND_LAY_IT_OUT);
+        int sessionId = createSessionWithProductsWithSpecificIncompleteAction(Action.FIND_PRODUCT_AND_LAY_IT_OUT, ruptureLmCode);
         rupturesHelper.finishSession(sessionId);
+
         List<RuptureProductData> sessionProducts = rupturesHelper.getProducts(sessionId).getItems();
         RuptureProductData ruptureData = sessionProducts.get(0);
-        String firstRuptureLmCode = ruptureData.getLmCode();
+
+        RuptureData doneRuptureData = new RuptureData();
+        doneRuptureData.setLmCode(ruptureLmCode);
+        doneRuptureData.setBarCode(ruptureData.getBarCode());
+        doneRuptureData.setTitle(ruptureData.getTitle());
+        doneRuptureData.setActions(Collections.singletonMap(Action.REMOVE_PRICE_TAG.getActionName(), true));
 
         // Pre-conditions
         WorkPage workPage = loginAndGoTo(WorkPage.class);
@@ -759,7 +816,7 @@ public class RupturesTest extends AppBaseSteps {
 
         // Step 2
         step("Перейти в карточку перебоя");
-        RuptureCardPage ruptureCardPage = finishedSessionRupturesActionsPage.goToRuptureCard(firstRuptureLmCode)
+        RuptureCardPage ruptureCardPage = finishedSessionRupturesActionsPage.goToRuptureCard(ruptureLmCode)
                 .verifyRequiredElementsInFinishedSession();
 
         // Step 3
@@ -791,10 +848,10 @@ public class RupturesTest extends AppBaseSteps {
         ruptureCardPage.closeRuptureCardPage();
         finishedSessionRupturesActionsPage = new FinishedSessionRupturesActionsPage();
         finishedSessionRupturesActionsPage.shouldHeaderContainsActionName(Action.FIND_PRODUCT_AND_LAY_IT_OUT.getActionName())
-                .shouldAllRuptureTaskHaveDone();
+                .shouldAllRuptureTaskHaveDone(0, 0);
 
         // Step 8
-        step("Закрыть карточку перебоя");
+        step("Вернуться назад на экран списка экшенов в завершенной сессии");
         finishedSessionRupturesActionsPage.goBack();
         finishedSessionPage = new FinishedSessionPage();
         finishedSessionPage.shouldTasksAreCorrect(firstTaskData, secondTaskData)
@@ -803,27 +860,21 @@ public class RupturesTest extends AppBaseSteps {
         // Step 9
         step("Перейти в раздел 'Убрать ценник'");
         finishedSessionRupturesActionsPage = finishedSessionPage.goToActionPage(Action.REMOVE_PRICE_TAG);
-        finishedSessionRupturesActionsPage.shouldDoneTasksCounterIsCorrect(1)
-                .shouldTasksRatioCounterIsCorrect(1, 1)
-                .shouldNoActiveRuptureTasksAreAvailable();
+        finishedSessionRupturesActionsPage.shouldAllRuptureTaskHaveDone(1, 1)
+                .shouldDoneTasksCounterIsCorrect(1);
 
         // Step 10
         step("Тапнуть на 'Выполненные задачи'");
-        RuptureData doneRuptureData = new RuptureData();
-        doneRuptureData.setLmCode(firstRuptureLmCode);
-        doneRuptureData.setBarCode(ruptureData.getBarCode());
-        doneRuptureData.setTitle(ruptureData.getTitle());
-        doneRuptureData.setActions(Collections.singletonMap(Action.REMOVE_PRICE_TAG.getActionName(), true));
-
         finishedSessionRupturesActionsPage = finishedSessionRupturesActionsPage.goToDoneTasks();
         finishedSessionRupturesActionsPage.shouldDoneTasksViewIsPresented()
+                .shouldRuptureCardHasNotContainsTask(ruptureLmCode,Action.GIVE_APOLOGISE)
                 .shouldTasksRatioCounterIsCorrect(1)
                 .verifyRequiredElements()
                 .shouldRuptureDataIsCorrect(doneRuptureData);
 
         // Step 11
         step("Тапнуть на перебой");
-        ruptureCardPage = finishedSessionRupturesActionsPage.goToRuptureCard(firstRuptureLmCode);
+        ruptureCardPage = finishedSessionRupturesActionsPage.goToRuptureCard(ruptureLmCode);
         ruptureCardPage.verifyRequiredElementsInFinishedSession()
                 .shouldCheckBoxConditionIsCorrect(false, Action.GIVE_APOLOGISE.getActionName())
                 .shouldCheckBoxConditionIsCorrect(true, Action.REMOVE_PRICE_TAG.getActionName())
@@ -1092,25 +1143,10 @@ public class RupturesTest extends AppBaseSteps {
         findProductAndLayItOut.setUserPosition(0);
         findProductAndLayItOut.setAction(Action.FIND_PRODUCT_AND_LAY_IT_OUT.getActionNumber());
 
-        TaskData giveApologizeTaskData = new TaskData();
-        giveApologizeTaskData.setAllTasksCount(3);
-        giveApologizeTaskData.setDoneTasksCount(0);
-        giveApologizeTaskData.setTaskName(Action.GIVE_APOLOGISE.getActionName());
-
-        TaskData stickRedStickerTaskData = new TaskData();
-        stickRedStickerTaskData.setAllTasksCount(3);
-        stickRedStickerTaskData.setDoneTasksCount(0);
-        stickRedStickerTaskData.setTaskName(Action.STICK_RED_STICKER.getActionName());
-
-        TaskData findProductAndLayItOutTaskData = new TaskData();
-        findProductAndLayItOutTaskData.setAllTasksCount(3);
-        findProductAndLayItOutTaskData.setDoneTasksCount(0);
-        findProductAndLayItOutTaskData.setTaskName(Action.FIND_PRODUCT_AND_LAY_IT_OUT.getActionName());
-
-        TaskData allTaskData = new TaskData();
-        allTaskData.setAllTasksCount(9);
-        allTaskData.setDoneTasksCount(0);
-        allTaskData.setTaskName(Action.ALL_ACTIONS.getActionName());
+        TaskData giveApologizeTaskData = new TaskData(Action.GIVE_APOLOGISE.getActionName(), 0, 3);
+        TaskData stickRedStickerTaskData = new TaskData(Action.STICK_RED_STICKER.getActionName(), 0, 3);
+        TaskData findProductAndLayItOutTaskData = new TaskData(Action.FIND_PRODUCT_AND_LAY_IT_OUT.getActionName(), 0, 3);
+        TaskData allTaskData = new TaskData(Action.ALL_ACTIONS.getActionName(), 0, 9);
 
         int sessionId = createSessionWithNeededProductAmountWithSpecificActions(rupturesCount, giveApologize, stickRedSticker, findProductAndLayItOut);
         List<RuptureProductData> ruptures = rupturesHelper.getProducts(sessionId).getItems();
@@ -1324,7 +1360,7 @@ public class RupturesTest extends AppBaseSteps {
         //Step 2
         step("Тапнуть на круглую кнопку в нижней части экрана\n" +
                 "Выбрать пункт \"Сделать отзыв с РМ\"");
-        ActionModalPage actionModalPage = ruptureCardPage.callActionModal();
+        ActionModalPage actionModalPage = ruptureCardPage.callActionModalByRoundBtn();
         actionModalPage.recallFromRm();
         AcceptRecallFromRmModalPage acceptRecallFromRmModalPage = new AcceptRecallFromRmModalPage();
         acceptRecallFromRmModalPage.verifyRequiredElements();
@@ -1403,8 +1439,8 @@ public class RupturesTest extends AppBaseSteps {
         List<TransferSearchProductData> products = transferHelper.searchForProductsForTransfer();
         String ruptureLmCode = products.get(1).getLmCode();
 
-        int sessionId = createSessionWithProductWithSpecificIncompleteAction(
-                ruptureLmCode, Action.RECALL_FROM_RM);
+        int sessionId = createSessionWithProductsWithSpecificIncompleteAction(
+                Action.RECALL_FROM_RM, ruptureLmCode);
 
         WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
         SessionListPage sessionListPage = workPage.goToRuptures();
@@ -1471,8 +1507,8 @@ public class RupturesTest extends AppBaseSteps {
         List<TransferSearchProductData> products = transferHelper.searchForProductsForTransfer();
         String ruptureLmCode = products.get(2).getLmCode();
 
-        int sessionId = createSessionWithProductWithSpecificIncompleteAction(
-                ruptureLmCode, Action.RECALL_FROM_RM);
+        int sessionId = createSessionWithProductsWithSpecificIncompleteAction(
+                Action.RECALL_FROM_RM, ruptureLmCode);
         rupturesHelper.finishSession(sessionId);
 
         WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
@@ -1531,5 +1567,253 @@ public class RupturesTest extends AppBaseSteps {
         finishedSessionRupturesActionsPage.verifyRequiredElements()
                 .shouldRuptureCountIsCorrect(1)
                 .shouldRecallRequestHasBeenCreatedMsgIsVisible();
+    }
+
+    @Test(description = "C23424394 Коррекция C3 с экрана добавляемого товара")
+    public void testCreateStockCorrectionFromAddProductPage() throws Exception {
+        getUserSessionData().setUserShopId("35");
+        getUserSessionData().setUserDepartmentId("5");
+        CatalogSearchFilter filter = new CatalogSearchFilter().setDepartmentId("5");
+        List<ProductItemData> products = searchProductHelper.getProducts(1, filter);
+        String ruptureLmCode = products.get(0).getLmCode();
+
+        WorkPage workPage = loginAndGoTo("60069805", "Passwd12345", false, WorkPage.class);
+        SessionListPage sessionListPage = workPage.goToRuptures();
+
+        // Step 1
+        step("Нажать 'по одному' и перейти в ручной поиск, " +
+                "Найти товар из 5 отдела");
+        RupturesScannerPage rupturesScannerPage = sessionListPage.clickScanRupturesByOneButton();
+        SearchProductPage searchProductPage = rupturesScannerPage.navigateToSearchProductPage();
+        searchProductPage.enterTextInSearchFieldAndSubmit(ruptureLmCode);
+        RuptureCardPage ruptureCardPage = new RuptureCardPage();
+        ruptureCardPage.verifyRequiredElementsWhenCreateRupture();
+
+        //Step 2
+        step("Тапнуть на круглую кнопку в нижней части экрана\n" +
+                "Выбрать пункт \"Сделать коррекцию стока\"");
+        ActionModalPage actionModalPage = ruptureCardPage.callActionModalByRoundBtn();
+        actionModalPage.stockCorrection();
+        AcceptStockCorrectionModalPage acceptStockCorrectionModalPage = new AcceptStockCorrectionModalPage();
+        acceptStockCorrectionModalPage.verifyRequiredElements();
+
+        //Step 3
+        step("Выполнить коррекцию стока (шаги из тк C23389124)");
+        makeStockCorrection(ruptureLmCode, acceptStockCorrectionModalPage);
+        ruptureCardPage = new RuptureCardPage();
+        ruptureCardPage.verifyRequiredElements()
+                .shouldStockCorrectionHasBeenCreatedMsgIsVisible();
+
+        //Step 4
+        step("Нажать кнопку \"действия с перебоем\"");
+        actionModalPage = ruptureCardPage.callActionModalByPressingActionsWithRupturesBtn();
+        actionModalPage.stockCorrection();
+        actionModalPage.verifyRequiredElements();
+
+        // Step 5
+        step("Закрыть модалку, " +
+                "Перейти к редактированию экшенов перебоя (карандашик)");
+        ruptureCardPage = actionModalPage.closeModal();
+        TasksListsModalPage tasksListsModalPage = ruptureCardPage.callActionModalPage();
+        String pressedTaskName = Action.MAKE_C3_CORRECTION.getActionName();
+        tasksListsModalPage.selectTasks(pressedTaskName)
+                .shouldToDoListContainsTaskAndPossibleListNotContainsTask(Collections.singletonList(pressedTaskName));
+
+        //Step 6
+        step("Закрыть модалку \"задачи по перебою\"\n" +
+                "Закрыть карточку перебоя");
+        ruptureCardPage = tasksListsModalPage.closeModal();
+        ruptureCardPage.closeRuptureCardPage();
+        ActiveSessionPage activeSessionPage = new ActiveSessionPage();
+        activeSessionPage.shouldRuptureInTheList(ruptureLmCode)
+                .shouldStockCorrectionHasBeenCreatedMsgIsVisible()
+                .verifyRequiredElements();
+
+        //Step 7
+        step("Нажать железную кнопку назад и подтвердить выход из сессии");
+        String sessionNumber = activeSessionPage.getSessionNumber();
+        sessionsNumbers.set(ParserUtil.strToInt(sessionNumber));
+        ExitActiveSessionModalPage exitActiveSessionModalPage = activeSessionPage.exitActiveSession();
+        exitActiveSessionModalPage.confirmExit();
+        sessionListPage = new SessionListPage();
+        sessionListPage.shouldActiveSessionContainsSession(sessionNumber);
+    }
+
+    @Test(description = "C23440884 Коррекция C3 из активной сессии со списка перебоев")
+    public void testCreateStockCorrectionFromActiveSessionPage() throws Exception {
+        getUserSessionData().setUserShopId("35");
+        getUserSessionData().setUserDepartmentId("5");
+
+        CatalogSearchFilter filter = new CatalogSearchFilter().setDepartmentId("5");
+        List<ProductItemData> products = searchProductHelper.getProducts(2, filter);
+        String firstProductLm = products.get(0).getLmCode();
+        String secondProductLm = products.get(1).getLmCode();
+
+        int sessionId = createSessionWithProductsWithSpecificIncompleteAction(Action.MAKE_C3_CORRECTION, firstProductLm, secondProductLm);
+
+        WorkPage workPage = loginAndGoTo("60069805", "Passwd12345", false, WorkPage.class);
+        SessionListPage sessionListPage = workPage.goToRuptures();
+
+        // Step 1
+        step("Перейти в сессию");
+        sessionListPage.goToSession(String.valueOf(sessionId));
+        ActiveSessionPage activeSessionPage = new ActiveSessionPage();
+
+        //Step 2
+        step("Сделать коррекцию C3");
+        activeSessionPage.checkRuptureActionCheckBox(firstProductLm, "Сделать коррекцию C3");
+        AcceptStockCorrectionModalPage acceptStockCorrectionModalPage = new AcceptStockCorrectionModalPage();
+        acceptStockCorrectionModalPage.verifyRequiredElements();
+
+        //Step 3
+        step("Выполнить коррекцию стока (шаги из тк C23389124)");
+        makeStockCorrection(firstProductLm, acceptStockCorrectionModalPage);
+        activeSessionPage = new ActiveSessionPage();
+        activeSessionPage.verifyRequiredElements();
+        activeSessionPage.checkStockCorrectionStatus(firstProductLm, true);
+        activeSessionPage.checkStockCorrectionStatus(secondProductLm, false);
+
+        //Step 4
+        step("Нажать железную кнопку назад и подтвердить выход из сессии");
+        activeSessionPage.navigateBack();
+        ExitActiveSessionModalPage exitActiveSessionModalPage = new ExitActiveSessionModalPage();
+        exitActiveSessionModalPage.confirmExit();
+        sessionListPage = new SessionListPage();
+
+        //Step 5
+        step("Перейти в обратно в сессию");
+        sessionListPage.goToSession(String.valueOf(sessionId));
+        activeSessionPage = new ActiveSessionPage();
+        activeSessionPage.verifyRequiredElements();
+        activeSessionPage.checkStockCorrectionStatus(firstProductLm, true);
+        activeSessionPage.checkStockCorrectionStatus(secondProductLm, false);
+    }
+
+    @Test(description = "C23440886 Коррекция C3 из активной сессии из карточка перебоя (через список экшенов)")
+    public void testCreateStockCorrectionFromActiveSessionRuptureCardActionsList() throws Exception {
+        getUserSessionData().setUserShopId("35");
+        getUserSessionData().setUserDepartmentId("5");
+
+        CatalogSearchFilter filter = new CatalogSearchFilter().setDepartmentId("5");
+        List<ProductItemData> products = searchProductHelper.getProducts(2, filter);
+        String firstProductLm = products.get(0).getLmCode();
+        String secondProductLm = products.get(1).getLmCode();
+
+        int sessionId = createSessionWithProductsWithSpecificIncompleteAction(Action.MAKE_C3_CORRECTION, firstProductLm, secondProductLm);
+
+        WorkPage workPage = loginAndGoTo("60069805", "Passwd12345", false, WorkPage.class);
+        SessionListPage sessionListPage = workPage.goToRuptures();
+
+        // Step 1
+        step("Перейти в сессию");
+        sessionListPage.goToSession(String.valueOf(sessionId));
+        ActiveSessionPage activeSessionPage = new ActiveSessionPage();
+
+        //Step 2
+        step("Перейти в карточку перебоя первого товара");
+        RuptureCardPage ruptureCardPage = activeSessionPage.goToRuptureCard(firstProductLm);
+        ruptureCardPage.verifyRequiredElements();
+
+        //Step 3
+        step("Выбрать \"Сделать коррекцию С3\"");
+        AcceptStockCorrectionModalPage acceptStockCorrectionModalPage = ruptureCardPage.makeStockCorrection();
+        acceptStockCorrectionModalPage.verifyRequiredElements();
+
+        //Step 4
+        step("Выполнить коррекцию стока (шаги из тк C23389124)");
+        makeStockCorrection(firstProductLm, acceptStockCorrectionModalPage);
+        ruptureCardPage = new RuptureCardPage();
+        ruptureCardPage.verifyRequiredElements();
+        ruptureCardPage.shouldStockCorrectionHasBeenCreatedMsgIsVisible();
+
+        //Step 5
+        step("Выйти на экран активной сессии по железной кнопке");
+        ruptureCardPage.navigateBack();
+        activeSessionPage = new ActiveSessionPage();
+        activeSessionPage.verifyRequiredElements();
+        activeSessionPage.checkStockCorrectionStatus(firstProductLm, true);
+        activeSessionPage.checkStockCorrectionStatus(secondProductLm, false);
+
+        //Step 6
+        step("Нажать железную кнопку назад и подтвердить выход из сессии");
+        activeSessionPage.navigateBack();
+        ExitActiveSessionModalPage exitActiveSessionModalPage = new ExitActiveSessionModalPage();
+        exitActiveSessionModalPage.confirmExit();
+        sessionListPage = new SessionListPage();
+
+        //Step 7
+        step("Перейти в обратно в сессию");
+        sessionListPage.goToSession(String.valueOf(sessionId));
+        activeSessionPage = new ActiveSessionPage();
+        activeSessionPage.verifyRequiredElements();
+        activeSessionPage.checkStockCorrectionStatus(firstProductLm, true);
+        activeSessionPage.checkStockCorrectionStatus(secondProductLm, false);
+    }
+
+    @Test(description = "C23440886 Коррекция C3 из активной сессии из карточка перебоя (через действия с перебоями)")
+    public void testCreateStockCorrectionFromActiveSessionRuptureCardActionModal() throws Exception {
+        getUserSessionData().setUserShopId("35");
+        getUserSessionData().setUserDepartmentId("5");
+
+        CatalogSearchFilter filter = new CatalogSearchFilter().setDepartmentId("5");
+        List<ProductItemData> products = searchProductHelper.getProducts(2, filter);
+        String firstProductLm = products.get(0).getLmCode();
+        String secondProductLm = products.get(1).getLmCode();
+
+        int sessionId = createSessionWithProductsWithSpecificIncompleteAction(Action.MAKE_C3_CORRECTION, firstProductLm, secondProductLm);
+
+        WorkPage workPage = loginAndGoTo("60069805", "Passwd12345", false, WorkPage.class);
+        SessionListPage sessionListPage = workPage.goToRuptures();
+
+        // Step 1
+        step("Перейти в сессию");
+        sessionListPage.goToSession(String.valueOf(sessionId));
+        ActiveSessionPage activeSessionPage = new ActiveSessionPage();
+
+        //Step 2
+        step("Перейти в карточку перебоя первого товара");
+        RuptureCardPage ruptureCardPage = activeSessionPage.goToRuptureCard(firstProductLm);
+        ruptureCardPage.verifyRequiredElements();
+
+        //Step 3
+        step("Кликнуть на кнопку \"Действия с перебоями\"");
+        ActionModalPage actionModalPage = ruptureCardPage.callActionModal();
+        actionModalPage.verifyRequiredElements();
+
+        //Step 4
+        step("Выбрать \"Сделать коррекцию стока\"");
+        actionModalPage.stockCorrection();
+        AcceptStockCorrectionModalPage acceptStockCorrectionModalPage = new AcceptStockCorrectionModalPage();
+        acceptStockCorrectionModalPage.verifyRequiredElements();
+
+        //Step 5
+        step("Выполнить коррекцию стока (шаги из тк C23389124)");
+        makeStockCorrection(firstProductLm, acceptStockCorrectionModalPage);
+        ruptureCardPage = new RuptureCardPage();
+        ruptureCardPage.verifyRequiredElements();
+        ruptureCardPage.shouldStockCorrectionHasBeenCreatedMsgIsVisible();
+
+        //Step 6
+        step("Выйти на экран активной сессии по железной кнопке");
+        ruptureCardPage.navigateBack();
+        activeSessionPage = new ActiveSessionPage();
+        activeSessionPage.verifyRequiredElements();
+        activeSessionPage.checkStockCorrectionStatus(firstProductLm, true);
+        activeSessionPage.checkStockCorrectionStatus(secondProductLm, false);
+
+        //Step 7
+        step("Нажать железную кнопку назад и подтвердить выход из сессии");
+        activeSessionPage.navigateBack();
+        ExitActiveSessionModalPage exitActiveSessionModalPage = new ExitActiveSessionModalPage();
+        exitActiveSessionModalPage.confirmExit();
+        sessionListPage = new SessionListPage();
+
+        //Step 8
+        step("Перейти в обратно в сессию");
+        sessionListPage.goToSession(String.valueOf(sessionId));
+        activeSessionPage = new ActiveSessionPage();
+        activeSessionPage.verifyRequiredElements();
+        activeSessionPage.checkStockCorrectionStatus(firstProductLm, true);
+        activeSessionPage.checkStockCorrectionStatus(secondProductLm, false);
     }
 }

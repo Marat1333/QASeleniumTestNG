@@ -1,7 +1,14 @@
 package com.leroy.magmobile.api.tests.salesdoc;
 
+import static com.leroy.core.matchers.Matchers.successful;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
+import com.leroy.common_mashups.customer_accounts.data.CustomerData;
+import com.leroy.common_mashups.customer_accounts.data.PhoneData;
+import com.leroy.common_mashups.helpers.CustomerHelper;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.api.StatusCodes;
 import com.leroy.constants.customer.CustomerConst;
@@ -12,48 +19,44 @@ import com.leroy.magmobile.api.clients.CartClient;
 import com.leroy.magmobile.api.clients.OrderClient;
 import com.leroy.magmobile.api.clients.SalesDocSearchClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.common_mashups.customer_accounts.data.CustomerData;
-import com.leroy.common_mashups.customer_accounts.data.PhoneData;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
-import com.leroy.magmobile.api.data.sales.orders.*;
+import com.leroy.magmobile.api.data.sales.orders.GiveAwayData;
+import com.leroy.magmobile.api.data.sales.orders.OrderCustomerData;
+import com.leroy.magmobile.api.data.sales.orders.OrderData;
+import com.leroy.magmobile.api.data.sales.orders.OrderProductData;
+import com.leroy.magmobile.api.data.sales.orders.ReqOrderData;
+import com.leroy.magmobile.api.data.sales.orders.ReqOrderProductData;
+import com.leroy.magmobile.api.data.sales.orders.ResOrderCheckQuantityData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import com.leroy.magportal.api.helpers.PAOHelper;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-import ru.leroymerlin.qa.core.clients.base.Response;
-
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import static com.leroy.core.matchers.Matchers.successful;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class OrderTest extends BaseProjectApiTest {
 
     @Inject
-    PAOHelper paoHelper;
+    private PAOHelper paoHelper;
     @Inject
-    SearchProductHelper searchProductHelper;
-
+    private SearchProductHelper searchProductHelper;
+    @Inject
     private SalesDocSearchClient salesDocSearchClient;
+    @Inject
     private CartClient cartClient;
+    @Inject
     private OrderClient orderClient;
+    @Inject
+    private CustomerHelper customerHelper;
 
     private OrderData orderData;
     private List<ProductItemData> productItemDataList;
-
-    @BeforeClass
-    private void initClients() {
-        salesDocSearchClient = apiClientProvider.getSalesDocSearchClient();
-        cartClient = apiClientProvider.getCartClient();
-        orderClient = apiClientProvider.getOrderClient();
-    }
 
     @Override
     protected boolean isNeedAccessToken() {
@@ -130,10 +133,10 @@ public class OrderTest extends BaseProjectApiTest {
     public void testSetPinCode() {
         if (orderData == null)
             throw new IllegalArgumentException("order data hasn't been created");
-        String validPinCode = paoHelper.getValidPinCode();
+        String validPinCode = paoHelper.getValidPinCode(orderData.getDelivery());
         Response<JsonNode> response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
         if (response.getStatusCode() == StatusCodes.ST_400_BAD_REQ) {
-            validPinCode = paoHelper.getValidPinCode();
+            validPinCode = paoHelper.getValidPinCode(orderData.getDelivery());
             response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
         }
         orderClient.assertThatPinCodeIsSet(response);
@@ -146,7 +149,7 @@ public class OrderTest extends BaseProjectApiTest {
         if (orderData == null)
             throw new IllegalArgumentException("order data hasn't been created");
         step("Search for a customer");
-        CustomerData customerData = apiClientProvider.getAnyCustomer();
+        CustomerData customerData = customerHelper.getAnyCustomer();
         OrderCustomerData orderCustomerData = new OrderCustomerData();
         orderCustomerData.setFirstName(customerData.getFirstName());
         orderCustomerData.setLastName(customerData.getLastName());

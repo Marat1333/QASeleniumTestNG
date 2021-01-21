@@ -1,5 +1,7 @@
 package com.leroy.magmobile.api.tests.salesdoc;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
@@ -10,28 +12,19 @@ import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.SendEmailData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-import ru.leroymerlin.qa.core.clients.base.Response;
-
 import java.util.Collections;
 import java.util.Random;
-
-import static org.hamcrest.MatcherAssert.assertThat;
+import org.testng.annotations.Test;
+import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class EstimateTest extends BaseProjectApiTest {
 
     @Inject
-    SearchProductHelper searchProductHelper;
-
+    private SearchProductHelper searchProductHelper;
+    @Inject
     private EstimateClient estimateClient;
 
     private EstimateData estimateData;
-
-    @BeforeClass
-    private void initClients() {
-        estimateClient = apiClientProvider.getEstimateClient();
-    }
 
     @Override
     protected boolean isNeedAccessToken() {

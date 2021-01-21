@@ -1,8 +1,8 @@
 package com.leroy.magmobile.ui.tests.work;
 
+import com.google.inject.Inject;
 import com.leroy.constants.TimeZone;
 import com.leroy.core.UserSessionData;
-import com.leroy.core.configuration.DriverFactory;
 import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.PrintPriceClient;
 import com.leroy.magmobile.api.data.catalog.ProductItemData;
@@ -14,24 +14,35 @@ import com.leroy.magmobile.ui.pages.sales.product_card.modal.ActionWithProductMo
 import com.leroy.magmobile.ui.pages.search.NomenclatureSearchPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.work.WorkPage;
-import com.leroy.magmobile.ui.pages.work.print_tags.*;
+import com.leroy.magmobile.ui.pages.work.print_tags.PrintTagsScannerPage;
+import com.leroy.magmobile.ui.pages.work.print_tags.PrinterSelectorPage;
+import com.leroy.magmobile.ui.pages.work.print_tags.SessionsListPage;
+import com.leroy.magmobile.ui.pages.work.print_tags.SuccessPrintingPage;
+import com.leroy.magmobile.ui.pages.work.print_tags.TagsListPage;
 import com.leroy.magmobile.ui.pages.work.print_tags.data.ProductTagData;
 import com.leroy.magmobile.ui.pages.work.print_tags.enums.Format;
-import com.leroy.magmobile.ui.pages.work.print_tags.modal.*;
+import com.leroy.magmobile.ui.pages.work.print_tags.modal.AddProductToSessionErrorModalPage;
+import com.leroy.magmobile.ui.pages.work.print_tags.modal.ConfirmSessionExitModalPage;
+import com.leroy.magmobile.ui.pages.work.print_tags.modal.DeleteSessionByBtnModalPage;
+import com.leroy.magmobile.ui.pages.work.print_tags.modal.DeleteSessionByDeletingProductModalPage;
+import com.leroy.magmobile.ui.pages.work.print_tags.modal.EditTagModalPage;
+import com.leroy.magmobile.ui.pages.work.print_tags.modal.FormatSuccessPrintModalPage;
+import com.leroy.magmobile.ui.pages.work.print_tags.modal.PagesQuantityModalPage;
+import com.leroy.magmobile.ui.pages.work.print_tags.modal.SessionFormatsModalPage;
 import io.qameta.allure.Step;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.testng.annotations.Test;
 
 public class PrintTagsTest extends AppBaseSteps {
 
+    @Inject
     private CatalogSearchClient catalogSearchClient;
+    @Inject
     private PrintPriceClient printPriceClient;
 
     private TagsListPage loginAndCreateSession() throws Exception {
@@ -57,12 +68,6 @@ public class PrintTagsTest extends AppBaseSteps {
 
     private TagsListPage createSession() {
         return createSession(catalogSearchClient.getRandomProduct().getLmCode());
-    }
-
-    @BeforeClass
-    private void initClients() {
-        catalogSearchClient = apiClientProvider.getCatalogSearchClient();
-        printPriceClient = apiClientProvider.getPrintPriceClient();
     }
 
     @Override
