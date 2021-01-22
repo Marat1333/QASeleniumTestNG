@@ -134,7 +134,7 @@ public class SessionListPage extends CommonMagMobilePage {
         return this;
     }
 
-    @Step("Проверить, что в списке активных сессия присутствует сессия")
+    @Step("Проверить, что в списке активных сессий присутствует сессия")
     public SessionListPage shouldActiveSessionsContainSession(String sessionId) throws Exception {
         List<SessionData> uiSessionData = activeSessionScrollView.getFullDataList();
         List<String> sessionIds = uiSessionData.stream().map(SessionData::getSessionNumber).collect(Collectors.toList());
@@ -216,6 +216,7 @@ public class SessionListPage extends CommonMagMobilePage {
         return this;
     }
 
+    @Step("Проверить данные последней массовой сессии")
     public void verifyLastBulkSessionData(int expectedRupturesCount) throws Exception {
         List<SessionData> uiSessionData = activeSessionScrollView.getFullDataList(1);
         SessionData sessionData = uiSessionData.get(0);
@@ -224,6 +225,7 @@ public class SessionListPage extends CommonMagMobilePage {
         softAssert.verifyAll();
     }
 
+    @Step("Проверить данные активной массовой сессии по sessionId")
     public void verifyActiveBulkSessionDataBySessionId(int expectedRupturesCount, int sessionId) throws Exception {
         List<SessionData> uiSessionData = activeSessionScrollView.getFullDataList();
 
@@ -238,10 +240,12 @@ public class SessionListPage extends CommonMagMobilePage {
         }
     }
 
-    public void checkSuccessToast() {
+    @Step("Проверить тост успешного завершения сессии")
+    public void checkSuccessFinishBulkSessionToast() {
         anAssert.isTrue(driver.getPageSource().contains("Сессия успешно завершена"), "Некорректный текст тоста");
     }
 
+    @Step("Проверить тост при нажатии на завершенную массовую сессию")
     public void checkFinishedBulkSessionToast() {
         anAssert.isTrue(driver.getPageSource().contains("Сессия массового сканирования доступна только в Report"),
                 "Некорректный текст тоста");
