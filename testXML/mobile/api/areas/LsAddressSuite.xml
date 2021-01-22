@@ -12,6 +12,7 @@
                 <methods>
                     <include name="testCreateAlley"/>
                     <include name="testGetAlleys"/>
+                    <include name="testRenameAlleys"/>
                 </methods>
             </class>
         </classes>
