@@ -68,7 +68,7 @@ public class RupturesScannerPage extends ScannerWithSearchBtnPage {
         return this;
     }
 
-    @Step("Проверить, что счетчик товаров в списке на печать отображает корректное значение")
+    @Step("Проверить, что счетчик перебоев отображает корректное значение")
     public RupturesScannerPage shouldCounterIsCorrect(int productsCount) {
         anAssert.isElementTextEqual(rupturesCounterLbl, String.valueOf(productsCount));
         return this;
@@ -86,7 +86,7 @@ public class RupturesScannerPage extends ScannerWithSearchBtnPage {
         return this;
     }
 
-    @Step("Проверить отображение кнопки удалени массовой сессии")
+    @Step("Проверить отображение кнопки удаления массовой сессии")
     public RupturesScannerPage shouldDeleteButtonIsVisible(boolean isVisible) {
         if (isVisible) {
             anAssert.isElementVisible(rupturesDeleteBulkSessionBtn);
