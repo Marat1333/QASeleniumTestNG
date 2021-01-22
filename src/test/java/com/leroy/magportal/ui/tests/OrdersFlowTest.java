@@ -262,7 +262,7 @@ public class OrdersFlowTest extends BasePAOTest {
         giveAwayShipOrderPage.clickGiveAwayButton();
 
         // Step 14:
-        step("Обновить список документов и проверить статус выданного заказа");
+        step("Обновить список документов и проверить статус выданного заказас номером:" + orderId);
         orderPage.refreshDocumentList();
         orderPage.shouldDocumentIsPresent(orderId);
         orderPage.shouldDocumentListContainsOnlyWithStatuses(
@@ -326,7 +326,51 @@ public class OrdersFlowTest extends BasePAOTest {
         orderPage.shouldDocumentIsPresent(orderId);
         orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal());
         orderPage.shouldDocumentCountIs(1);
+
+        // Step 2:
+        //orderId = "210103322645";
+        step("Найти созданный заказ в статусе 'Готов к Сборке' с номером" + " " + orderId);
+        orderPage.enterSearchTextAndSubmit(orderId);
+        orderPage.shouldDocumentIsPresent(orderId);
+        orderPage.shouldDocumentListContainsOnlyWithStatuses(
+                SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal());
+        orderPage.shouldDocumentCountIs(1);
+
+        // Step 3:
+
+        step("Кликнуть на заказ: " + orderId);
+        orderPage.clickDocumentInLeftMenu(orderId);
+        OrderCreatedContentPage createdContentPage = new OrderCreatedContentPage();
+        createdContentPage.shouldOrderProductCountIs(1);
+
+        // Step 4:
+        step("Перейти на Сборки");
+        AssemblyOrderPage pickingTab = createdContentPage.clickGoToPickings();
+
+        // Step5: нажать на Сборку
+        step("нажать на Сборку");
+        PickingContentPage pickingContentPage = pickingTab.clickToPickingTask(1);
+
+        // Step6: Начать сборку
+        step("Нажать на кнопку Начать сборку");
+        pickingContentPage.clickStartAssemblyButton();
+
+        // Step7:
+        step("Товар 1: Ввести в инпут Собрано количество равное,  указанному в Заказано");
+        pickingContentPage.editCollectQuantity(1, 10)
+                .shouldProductCollectedQuantityIs(1, 10);
+        pickingContentPage.editCollectQuantity(2, 10)
+                .shouldProductCollectedQuantityIs(2, 10);
+        pickingContentPage.editCollectQuantity(3, 10)
+                .shouldProductCollectedQuantityIs(3, 10);
+
+        // Step 8:
+        step("Завершить сборку");
+        pickingContentPage.clickFinishAssemblyButton();
+        paymentHelper.makePaid(orderId);
+
     }
+
 
 
 

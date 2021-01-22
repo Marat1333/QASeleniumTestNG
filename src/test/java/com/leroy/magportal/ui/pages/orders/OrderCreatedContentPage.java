@@ -88,7 +88,7 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
         salesDocWebData.setNumber(ParserUtil.strWithOnlyDigits(orderNumber.getText()));
         salesDocWebData.setCreationDate(creationDate.getText());
         salesDocWebData.setStatus(orderStatus.getText());
-        salesDocWebData.setClient(customerSearchForm.getCustomerData());
+        //salesDocWebData.setClient(customerSearchForm.getCustomerData());
         salesDocWebData.setDeliveryType(deliveryType.getText().toLowerCase().equals("самовывоз") ?
                 SalesDocumentsConst.GiveAwayPoints.PICKUP : SalesDocumentsConst.GiveAwayPoints.DELIVERY);
         OrderWebData orderWebData = new OrderWebData();
