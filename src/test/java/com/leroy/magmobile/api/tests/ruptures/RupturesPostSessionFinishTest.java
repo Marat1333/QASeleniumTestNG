@@ -1,9 +1,5 @@
 package com.leroy.magmobile.api.tests.ruptures;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.api.ErrorTextConst;
 import com.leroy.constants.api.StatusCodes;
@@ -13,16 +9,18 @@ import com.leroy.magmobile.api.data.ruptures.ResRuptureSessionData;
 import com.leroy.magmobile.api.data.ruptures.ResRuptureSessionDataList;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductData;
 import io.qameta.allure.Step;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-public class RupturesPostSessionFinishTest extends BaseRuptureTest {
+import java.util.List;
+import java.util.stream.Collectors;
 
-    // Test constants
-    private static final String ACTIVE_STATUS = "active";
-    private static final String FINISHED_STATUS = "finished";
+import static com.leroy.magmobile.api.enums.RupturesSessionStatuses.FINISHED_STATUS;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+
+public class RupturesPostSessionFinishTest extends BaseRuptureTest {
 
     @Override
     protected boolean isDeleteSessionAfterEveryMethod() {
@@ -59,7 +57,8 @@ public class RupturesPostSessionFinishTest extends BaseRuptureTest {
         List<ResRuptureSessionData> items = respBody.getItems().stream().filter(
                 a -> a.getSessionId().equals(sessionId)).collect(Collectors.toList());
         assertThat("Session " + sessionId + " wasn't found", items, hasSize(1));
-        assertThat("Session " + sessionId + " should be finished", items.get(0).getStatus(), equalTo(FINISHED_STATUS));
+        assertThat("Session " + sessionId + " should be finished", items.get(0).getStatus(),
+                equalTo(FINISHED_STATUS.getName()));
     }
 
     @Test(description = "C3285352 PUT ruptures session finish for finished session")

@@ -1,16 +1,5 @@
 package com.leroy.magmobile.api.tests.ruptures;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.emptyOrNullString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.in;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.oneOf;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.constants.api.ErrorTextConst;
@@ -23,14 +12,20 @@ import com.leroy.magmobile.api.data.ruptures.ResRuptureSessionDataList;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductData;
 import com.leroy.magmobile.api.requests.ruptures.RupturesSessionsRequest;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+import ru.leroymerlin.qa.core.clients.base.Response;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-import ru.leroymerlin.qa.core.clients.base.Response;
+
+import static com.leroy.magmobile.api.enums.RupturesSessionStatuses.ACTIVE_STATUS;
+import static com.leroy.magmobile.api.enums.RupturesSessionStatuses.FINISHED_STATUS;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 public class RuptureSessionSearchTest extends BaseProjectApiTest {
 
@@ -38,9 +33,6 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
     private RupturesClient rupturesClient;
 
     // Test constants
-    private static final String ACTIVE_STATUS = "active";
-    private static final String FINISHED_STATUS = "finished";
-
     private LinkedHashMap<Integer, String> ruptureStatuses = new LinkedHashMap<>();
 
     @Override
@@ -76,13 +68,13 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
         for (int i = 0; i < 11; i++) {
             Response<JsonNode> resp = rupturesClient.createSession(rupturePostData);
             Integer sessionId = rupturesClient.assertThatSessionIsCreatedAndGetId(resp);
-            ruptureStatuses.put(sessionId, ACTIVE_STATUS);
+            ruptureStatuses.put(sessionId, ACTIVE_STATUS.getName());
             if (i < 3) {
                 continue;
             }
             resp = rupturesClient.finishSession(sessionId);
             rupturesClient.assertThatIsUpdatedOrDeleted(resp);
-            ruptureStatuses.put(sessionId, FINISHED_STATUS);
+            ruptureStatuses.put(sessionId, FINISHED_STATUS.getName());
         }
 
         // Create session in another department
@@ -99,7 +91,7 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
         assertThat("items count", items, hasSize(equalTo(3)));
         for (ResRuptureSessionData item : items) {
             assertThat("SessionId: " + item.getSessionId() + "; status", item.getStatus(),
-                    equalTo(ACTIVE_STATUS));
+                    equalTo(ACTIVE_STATUS.getName()));
         }
     }
 
@@ -111,7 +103,7 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
         assertThat("items count", items, hasSize(equalTo(8)));
         for (ResRuptureSessionData item : items) {
             assertThat("SessionId: " + item.getSessionId() + "; status",
-                    item.getStatus(), equalTo(FINISHED_STATUS));
+                    item.getStatus(), equalTo(FINISHED_STATUS.getName()));
         }
     }
 
@@ -125,10 +117,10 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
         for (ResRuptureSessionData item : items) {
             if (i < 3)
                 assertThat("SessionId: " + item.getSessionId() + "; status",
-                        item.getStatus(), equalTo(ACTIVE_STATUS));
+                        item.getStatus(), equalTo(ACTIVE_STATUS.getName()));
             else
                 assertThat("SessionId: " + item.getSessionId() + "; status",
-                        item.getStatus(), equalTo(FINISHED_STATUS));
+                        item.getStatus(), equalTo(FINISHED_STATUS.getName()));
             i++;
         }
     }
@@ -162,7 +154,7 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
         for (ResRuptureSessionData item : items) {
             String descPrefix = "SessionId: " + item.getSessionId() + "; ";
             assertThat(descPrefix + "storeId", item.getStoreId(), is(Integer.parseInt(getUserSessionData().getUserShopId())));
-            if (item.getStatus().equals(FINISHED_STATUS))
+            if (item.getStatus().equals(FINISHED_STATUS.getName()))
                 assertThat(descPrefix + "finishedOn", item.getFinishedOn(), notNullValue());
             else
                 assertThat(descPrefix + "finishedOn", item.getFinishedOn(), nullValue());
@@ -172,7 +164,7 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
             assertThat(descPrefix + "totalProductCount", item.getTotalProductCount(), notNullValue());
             assertThat(descPrefix + "userFullName", item.getUserFullName(), not(emptyOrNullString()));
             assertThat(descPrefix + "sessionId", item.getSessionId(), in(ruptureStatuses.keySet()));
-            assertThat(descPrefix + "status", item.getStatus(), oneOf(FINISHED_STATUS, ACTIVE_STATUS));
+            assertThat(descPrefix + "status", item.getStatus(), oneOf(FINISHED_STATUS.getName(), ACTIVE_STATUS.getName()));
         }
     }
 

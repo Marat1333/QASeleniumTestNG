@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.ruptures.*;
+import com.leroy.magmobile.api.enums.RupturesSessionStatuses;
 import com.leroy.magmobile.api.requests.ruptures.*;
 import io.qameta.allure.Step;
 import org.jetbrains.annotations.NotNull;
@@ -169,9 +170,9 @@ public class RupturesClient extends BaseMashupClient {
         return getSessions(req);
     }
 
-    public Response<ResRuptureSessionDataList> getSessions(String status, int pageSize) {
+    public Response<ResRuptureSessionDataList> getSessions(RupturesSessionStatuses status, int pageSize) {
         RupturesSessionsRequest req = getSessionsDefaultRequest();
-        req.setStatus(status);
+        req.setStatus(status.getName());
         req.setPageSize(pageSize);
         return getSessions(req);
     }
