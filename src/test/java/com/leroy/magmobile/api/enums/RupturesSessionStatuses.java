@@ -1,10 +1,10 @@
 package com.leroy.magmobile.api.enums;
 
 public enum  RupturesSessionStatuses {
-    ACTIVE_STATUS("active"),
-    FINISHED_STATUS("finished");
+    ACTIVE("active"),
+    FINISHED("finished");
 
-    private String name;
+    private final String name;
 
     RupturesSessionStatuses(String name) {
         this.name = name;

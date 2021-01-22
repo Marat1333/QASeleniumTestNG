@@ -335,7 +335,7 @@ public class RupturesTest extends AppBaseSteps {
         exitActiveSessionModalPage.confirmExit();
         sessionListPage = new SessionListPage();
         sessionListPage.verifyRequiredElements()
-                .shouldActiveSessionContainsSession(sessionData);
+                .shouldActiveSessionsContainSession(sessionData);
     }
 
     @Test(description = "C3272525 Удаление перебоя из сессии")
@@ -413,7 +413,7 @@ public class RupturesTest extends AppBaseSteps {
         step("Подтвердить удаление");
         deleteSessionModalPage.confirmDelete();
         sessionListPage = new SessionListPage();
-        sessionListPage.shouldActiveSessionHasNotContainsSession(data);
+        sessionListPage.shouldActiveSessionsHaveNotContainSession(data);
     }
 
     @Test(description = "C3272522 Добавление перебоя в стандартную сессию")
@@ -856,7 +856,7 @@ public class RupturesTest extends AppBaseSteps {
         SessionListPage sessionListPage = workPage.goToRuptures();
         sessionListPage = sessionListPage.changeDepartment(departmentId);
         sessionListPage.shouldTheseActiveSessionsArePresent(activeSessionsIdList)
-                .shouldTheseFinishedSessionArePresent(finishedSessionsIdList)
+                .shouldTheseFinishedSessionsArePresent(finishedSessionsIdList)
                 .verifyRequiredElements();
     }
 
@@ -892,7 +892,7 @@ public class RupturesTest extends AppBaseSteps {
         SessionListPage sessionListPage = workPage.goToRuptures();
         sessionListPage = sessionListPage.changeDepartment(departmentId);
         sessionListPage.shouldTheseActiveSessionsArePresent(sessionsIdList)
-                .shouldFinishedSessionCardsIsNotVisible()
+                .shouldFinishedSessionCardsAreNotVisible()
                 .verifyRequiredElements();
     }
 
@@ -913,8 +913,8 @@ public class RupturesTest extends AppBaseSteps {
         SessionListPage sessionListPage = workPage.goToRuptures();
         sessionListPage = sessionListPage.changeDepartment(departmentId);
         sessionListPage.verifyRequiredElements()
-                .shouldTheseFinishedSessionArePresent(sessionsIdList)
-                .shouldActiveSessionCardsIsNotVisible();
+                .shouldTheseFinishedSessionsArePresent(sessionsIdList)
+                .shouldActiveSessionCardsAreNotVisible();
     }
 
     @Test(description = "C23423653 Пагинация обоих списков сессий (5 отдел)")
@@ -936,7 +936,7 @@ public class RupturesTest extends AppBaseSteps {
         SessionListPage sessionListPage = workPage.goToRuptures();
         sessionListPage = sessionListPage.changeDepartment(departmentId);
         sessionListPage.shouldTheseActiveSessionsArePresent(activeSessionsIdList)
-                .shouldTheseFinishedSessionArePresent(finishedSessionsIdList)
+                .shouldTheseFinishedSessionsArePresent(finishedSessionsIdList)
                 .verifyRequiredElements();
     }
 
@@ -959,7 +959,7 @@ public class RupturesTest extends AppBaseSteps {
         SessionListPage sessionListPage = workPage.goToRuptures();
         sessionListPage = sessionListPage.changeDepartment(departmentId);
         sessionListPage.shouldTheseActiveSessionsArePresent(activeSessionsIdList)
-                .shouldTheseFinishedSessionArePresent(finishedSessionsIdList);
+                .shouldTheseFinishedSessionsArePresent(finishedSessionsIdList);
 
         // Step 2
         step("Удалить 1 активную и 1 завершенную сессию, " +
@@ -973,7 +973,7 @@ public class RupturesTest extends AppBaseSteps {
         rupturesHelper.deleteSessions(lastActiveSessionId, lastFinishedSessionId);
         sessionListPage = sessionListPage.pullToRefresh();
         sessionListPage.shouldTheseActiveSessionsArePresent(activeSessionsIdList)
-                .shouldTheseFinishedSessionArePresent(finishedSessionsIdList);
+                .shouldTheseFinishedSessionsArePresent(finishedSessionsIdList);
     }
 
     @Test(description = "C23423654 Смена отдела (7 отдел)")
@@ -1004,13 +1004,13 @@ public class RupturesTest extends AppBaseSteps {
         SessionListPage sessionListPage = workPage.goToRuptures();
         sessionListPage = sessionListPage.changeDepartment(seventhDepartmentId);
         sessionListPage.shouldTheseActiveSessionsArePresent(seventhActiveSessionsIdList)
-                .shouldTheseFinishedSessionArePresent(seventhFinishedSessionsIdList);
+                .shouldTheseFinishedSessionsArePresent(seventhFinishedSessionsIdList);
 
         // Step 2
         step("Сменить отдел");
         sessionListPage = sessionListPage.changeDepartment(eightDepartmentId);
         sessionListPage.shouldTheseActiveSessionsArePresent(eightActiveSessionsIdList)
-                .shouldTheseFinishedSessionArePresent(eightFinishedSessionsIdList);
+                .shouldTheseFinishedSessionsArePresent(eightFinishedSessionsIdList);
     }
 
     @Test(description = "C3272530 Список продуктов (пагинация)")
@@ -1051,17 +1051,17 @@ public class RupturesTest extends AppBaseSteps {
         finishedSessionPage.verifyRequiredElements();
 
         // Step 5
-        step("Перейти во все задачи дважды проскроллить до конца экрана");
+        step("Перейти во все задачи, дважды проскроллить до конца экрана");
         FinishedSessionRupturesActionsPage finishedSessionRupturesActionsPage = finishedSessionPage.goToActionPage(Action.ALL_ACTIONS);
         finishedSessionRupturesActionsPage.shouldRuptureCountIsCorrect(rupturesCount);
 
         // Step 6
-        step("Перейти в выполненные задачи дважды проскроллить до конца экрана");
+        step("Перейти в выполненные задачи, дважды проскроллить до конца экрана");
         finishedSessionRupturesActionsPage = finishedSessionRupturesActionsPage.goToDoneTasks();
         finishedSessionRupturesActionsPage.shouldRuptureCountIsCorrect(rupturesCount);
 
         // Step 7
-        step("Вернуться на экран завершенной сессии, Перейти в 'поставить извиняшку'" +
+        step("Вернуться на экран завершенной сессии, Перейти в 'поставить извиняшку'," +
                 " дважды проскроллить до конца экрана");
         finishedSessionRupturesActionsPage.goBack();
         finishedSessionRupturesActionsPage = new FinishedSessionRupturesActionsPage();
@@ -1386,7 +1386,7 @@ public class RupturesTest extends AppBaseSteps {
         ExitActiveSessionModalPage exitActiveSessionModalPage = activeSessionPage.exitActiveSession();
         exitActiveSessionModalPage.confirmExit();
         sessionListPage = new SessionListPage();
-        sessionListPage.shouldActiveSessionContainsSession(sessionNumber);
+        sessionListPage.shouldActiveSessionsContainSession(sessionNumber);
     }
 
     @Test(description = "C23389123 Создание отзыва с РМ из активной сессии (карточка, список перебоев)")
@@ -1593,7 +1593,7 @@ public class RupturesTest extends AppBaseSteps {
         ExitActiveSessionModalPage exitActiveSessionModalPage = activeSessionPage.exitActiveSession();
         exitActiveSessionModalPage.confirmExit();
         sessionListPage = new SessionListPage();
-        sessionListPage.shouldActiveSessionContainsSession(sessionNumber);
+        sessionListPage.shouldActiveSessionsContainSession(sessionNumber);
     }
 
     @Test(description = "C23440884 Коррекция C3 из активной сессии со списка перебоев")

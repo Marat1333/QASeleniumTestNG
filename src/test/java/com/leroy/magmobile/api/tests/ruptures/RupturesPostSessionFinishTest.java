@@ -15,7 +15,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.leroy.magmobile.api.enums.RupturesSessionStatuses.FINISHED_STATUS;
+import static com.leroy.magmobile.api.enums.RupturesSessionStatuses.FINISHED;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -51,14 +51,14 @@ public class RupturesPostSessionFinishTest extends BaseRuptureTest {
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
 
         step("Ищем созданные сессии и проверяем, что нужная нам в статсе 'finished'");
-        Response<ResRuptureSessionDataList> getResp = rupturesClient.getSessions(FINISHED_STATUS, 50);
+        Response<ResRuptureSessionDataList> getResp = rupturesClient.getSessions(FINISHED, 50);
         isResponseOk(getResp);
         ResRuptureSessionDataList respBody = getResp.asJson();
         List<ResRuptureSessionData> items = respBody.getItems().stream().filter(
                 a -> a.getSessionId().equals(sessionId)).collect(Collectors.toList());
         assertThat("Session " + sessionId + " wasn't found", items, hasSize(1));
         assertThat("Session " + sessionId + " should be finished", items.get(0).getStatus(),
-                equalTo(FINISHED_STATUS.getName()));
+                equalTo(FINISHED.getName()));
     }
 
     @Test(description = "C3285352 PUT ruptures session finish for finished session")

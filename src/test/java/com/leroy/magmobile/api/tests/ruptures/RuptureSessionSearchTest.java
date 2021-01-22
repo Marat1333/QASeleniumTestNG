@@ -22,8 +22,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.leroy.magmobile.api.enums.RupturesSessionStatuses.ACTIVE_STATUS;
-import static com.leroy.magmobile.api.enums.RupturesSessionStatuses.FINISHED_STATUS;
+import static com.leroy.magmobile.api.enums.RupturesSessionStatuses.ACTIVE;
+import static com.leroy.magmobile.api.enums.RupturesSessionStatuses.FINISHED;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -68,13 +68,13 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
         for (int i = 0; i < 11; i++) {
             Response<JsonNode> resp = rupturesClient.createSession(rupturePostData);
             Integer sessionId = rupturesClient.assertThatSessionIsCreatedAndGetId(resp);
-            ruptureStatuses.put(sessionId, ACTIVE_STATUS.getName());
+            ruptureStatuses.put(sessionId, ACTIVE.getName());
             if (i < 3) {
                 continue;
             }
             resp = rupturesClient.finishSession(sessionId);
             rupturesClient.assertThatIsUpdatedOrDeleted(resp);
-            ruptureStatuses.put(sessionId, FINISHED_STATUS.getName());
+            ruptureStatuses.put(sessionId, FINISHED.getName());
         }
 
         // Create session in another department
@@ -85,25 +85,25 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
 
     @Test(description = "C3285388 GET ruptures sessions status active")
     public void testSearchForActiveRuptureSessions() {
-        Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(ACTIVE_STATUS, 10);
+        Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(ACTIVE, 10);
         isResponseOk(resp);
         List<ResRuptureSessionData> items = resp.asJson().getItems();
         assertThat("items count", items, hasSize(equalTo(3)));
         for (ResRuptureSessionData item : items) {
             assertThat("SessionId: " + item.getSessionId() + "; status", item.getStatus(),
-                    equalTo(ACTIVE_STATUS.getName()));
+                    equalTo(ACTIVE.getName()));
         }
     }
 
     @Test(description = "C3285383 GET ruptures sessions status finished")
     public void testSearchForFinishedRuptureSessions() {
-        Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(FINISHED_STATUS, 10);
+        Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(FINISHED, 10);
         isResponseOk(resp);
         List<ResRuptureSessionData> items = resp.asJson().getItems();
         assertThat("items count", items, hasSize(equalTo(8)));
         for (ResRuptureSessionData item : items) {
             assertThat("SessionId: " + item.getSessionId() + "; status",
-                    item.getStatus(), equalTo(FINISHED_STATUS.getName()));
+                    item.getStatus(), equalTo(FINISHED.getName()));
         }
     }
 
@@ -117,10 +117,10 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
         for (ResRuptureSessionData item : items) {
             if (i < 3)
                 assertThat("SessionId: " + item.getSessionId() + "; status",
-                        item.getStatus(), equalTo(ACTIVE_STATUS.getName()));
+                        item.getStatus(), equalTo(ACTIVE.getName()));
             else
                 assertThat("SessionId: " + item.getSessionId() + "; status",
-                        item.getStatus(), equalTo(FINISHED_STATUS.getName()));
+                        item.getStatus(), equalTo(FINISHED.getName()));
             i++;
         }
     }
@@ -154,7 +154,7 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
         for (ResRuptureSessionData item : items) {
             String descPrefix = "SessionId: " + item.getSessionId() + "; ";
             assertThat(descPrefix + "storeId", item.getStoreId(), is(Integer.parseInt(getUserSessionData().getUserShopId())));
-            if (item.getStatus().equals(FINISHED_STATUS.getName()))
+            if (item.getStatus().equals(FINISHED.getName()))
                 assertThat(descPrefix + "finishedOn", item.getFinishedOn(), notNullValue());
             else
                 assertThat(descPrefix + "finishedOn", item.getFinishedOn(), nullValue());
@@ -164,7 +164,7 @@ public class RuptureSessionSearchTest extends BaseProjectApiTest {
             assertThat(descPrefix + "totalProductCount", item.getTotalProductCount(), notNullValue());
             assertThat(descPrefix + "userFullName", item.getUserFullName(), not(emptyOrNullString()));
             assertThat(descPrefix + "sessionId", item.getSessionId(), in(ruptureStatuses.keySet()));
-            assertThat(descPrefix + "status", item.getStatus(), oneOf(FINISHED_STATUS.getName(), ACTIVE_STATUS.getName()));
+            assertThat(descPrefix + "status", item.getStatus(), oneOf(FINISHED.getName(), ACTIVE.getName()));
         }
     }
 

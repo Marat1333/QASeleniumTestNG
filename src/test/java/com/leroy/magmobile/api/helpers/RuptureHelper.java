@@ -14,8 +14,8 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.leroy.core.matchers.Matchers.successful;
-import static com.leroy.magmobile.api.enums.RupturesSessionStatuses.ACTIVE_STATUS;
-import static com.leroy.magmobile.api.enums.RupturesSessionStatuses.FINISHED_STATUS;
+import static com.leroy.magmobile.api.enums.RupturesSessionStatuses.ACTIVE;
+import static com.leroy.magmobile.api.enums.RupturesSessionStatuses.FINISHED;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.greaterThan;
@@ -121,7 +121,7 @@ public class RuptureHelper extends BaseHelper {
 
     @Step("Получить активные сессии")
     public ResRuptureSessionDataList getActiveSessions() {
-        Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(ACTIVE_STATUS, 10);
+        Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(ACTIVE, 10);
         assertThat(resp, successful());
         return resp.asJson();
     }
@@ -141,7 +141,7 @@ public class RuptureHelper extends BaseHelper {
 
     @Step("Убедиться, что сессия завершена")
     public void checkSessionIsFinished(int sessionId) {
-        Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(FINISHED_STATUS, 100);
+        Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(FINISHED, 100);
         assertThat(resp, successful());
         List<ResRuptureSessionData> finishedSessions = resp.asJson().getItems();
         for (ResRuptureSessionData session:finishedSessions) {
@@ -153,7 +153,7 @@ public class RuptureHelper extends BaseHelper {
 
     @Step("Убедиться, что сессия удалена")
     public void checkSessionIsDeleted(int sessionId) {
-        Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(ACTIVE_STATUS, 100);
+        Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(ACTIVE, 100);
         assertThat(resp, successful());
         List<ResRuptureSessionData> activeSessions = resp.asJson().getItems();
         for (ResRuptureSessionData activeSession:activeSessions) {
@@ -162,7 +162,7 @@ public class RuptureHelper extends BaseHelper {
             }
         }
 
-        resp = rupturesClient.getSessions(FINISHED_STATUS, 100);
+        resp = rupturesClient.getSessions(FINISHED, 100);
         assertThat(resp, successful());
         List<ResRuptureSessionData> finishedSessions = resp.asJson().getItems();
         for (ResRuptureSessionData finishedSession:finishedSessions) {
