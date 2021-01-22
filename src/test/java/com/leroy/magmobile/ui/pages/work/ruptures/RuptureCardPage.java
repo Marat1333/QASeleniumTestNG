@@ -207,6 +207,7 @@ public class RuptureCardPage extends CommonMagMobilePage {
 
     @Step("Подтвердить ввод комментария")
     public RuptureCardPage submitComment() {
+        mainScrollView.scrollToEnd();
         submitCommentBtn.click();
         return this;
     }
@@ -311,11 +312,12 @@ public class RuptureCardPage extends CommonMagMobilePage {
         for (String taskName : taskNameArray) {
             boolean checkBoxCondition = ruptureTaskContainer.getCheckBoxCondition(taskName);
             if (isEnabled) {
-                anAssert.isTrue(checkBoxCondition, taskName + " чекбокс в состоянии disabled");
+                softAssert.isTrue(checkBoxCondition, taskName + " чекбокс в состоянии disabled");
             } else {
-                anAssert.isFalse(checkBoxCondition, taskName + " чекбокс в состоянии enabled");
+                softAssert.isFalse(checkBoxCondition, taskName + " чекбокс в состоянии enabled");
             }
         }
+        softAssert.verifyAll();
         return this;
     }
 

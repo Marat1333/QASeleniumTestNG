@@ -12,6 +12,7 @@ import com.leroy.magmobile.ui.pages.work.ruptures.data.SessionData;
 import com.leroy.magmobile.ui.pages.work.ruptures.widgets.ActiveSessionWidget;
 import com.leroy.magmobile.ui.pages.work.ruptures.widgets.FinishedSessionWidget;
 import io.qameta.allure.Step;
+import org.junit.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,9 @@ public class SessionListPage extends CommonMagMobilePage {
 
     @AppFindBy(text = "ПО ОДНОМУ")
     Button scanRupturesByOneBtn;
+
+    @AppFindBy(text = "МАССОВО")
+    Button scanRupturesBulkBtn;
 
     @AppFindBy(xpath = "//*[@text='ПО ОДНОМУ']/ancestor::*[5]/preceding-sibling::*[1]//android.widget.TextView")
     Button choseDepartmentBtn;
@@ -50,6 +54,7 @@ public class SessionListPage extends CommonMagMobilePage {
     protected void waitForPageIsLoaded() {
         backBtn.waitForVisibility();
         scanRupturesByOneBtn.waitForVisibility();
+        scanRupturesBulkBtn.waitForVisibility();
         waitUntilProgressBarIsInvisible();
     }
 
@@ -69,6 +74,12 @@ public class SessionListPage extends CommonMagMobilePage {
     @Step("Сканировать перебои 'по одному'")
     public RupturesScannerPage clickScanRupturesByOneButton() {
         scanRupturesByOneBtn.click();
+        return new RupturesScannerPage();
+    }
+
+    @Step("Сканировать перебои 'массово'")
+    public RupturesScannerPage clickScanRupturesBulkButton() {
+        scanRupturesBulkBtn.click();
         return new RupturesScannerPage();
     }
 
@@ -101,23 +112,47 @@ public class SessionListPage extends CommonMagMobilePage {
         cardWidget.click();
     }
 
-    @Step("Проверить, что в списке активных сессия отсутствует сессия")
-    public SessionListPage shouldActiveSessionHasNotContainsSession(SessionData data) throws Exception {
+    @Step("Проверить, что в списке активных сессий отсутствует сессия")
+    public SessionListPage shouldActiveSessionsHaveNotContainSession(SessionData data) throws Exception {
         List<SessionData> uiSessionData = activeSessionScrollView.getFullDataList();
         anAssert.isFalse(uiSessionData.contains(data), "лист содержит данные");
         return this;
     }
 
+    @Step("Проверить, что в списке активных сессий отсутствует сессия")
+    public SessionListPage shouldActiveSessionsHaveNotContainSession(String sessionId) throws Exception {
+        List<SessionData> uiSessionData = activeSessionScrollView.getFullDataList();
+        List<String> sessionIds = uiSessionData.stream().map(SessionData::getSessionNumber).collect(Collectors.toList());
+        anAssert.isFalse(sessionIds.contains(sessionId), "лист содержит данные");
+        return this;
+    }
+
     @Step("Проверить, что в списке активных сессий присутствует сессия")
-    public SessionListPage shouldActiveSessionContainsSession(SessionData data) throws Exception {
+    public SessionListPage shouldActiveSessionsContainSession(SessionData data) throws Exception {
         List<SessionData> uiSessionData = activeSessionScrollView.getFullDataList();
         anAssert.isTrue(uiSessionData.contains(data), "лист не содержит данные");
         return this;
     }
 
-    @Step("Проверить, что в списке активных сессия присутствует сессия")
-    public SessionListPage shouldActiveSessionContainsSession(String sessionId) throws Exception {
+    @Step("Проверить, что в списке активных сессий присутствует сессия")
+    public SessionListPage shouldActiveSessionsContainSession(String sessionId) throws Exception {
         List<SessionData> uiSessionData = activeSessionScrollView.getFullDataList();
+        List<String> sessionIds = uiSessionData.stream().map(SessionData::getSessionNumber).collect(Collectors.toList());
+        anAssert.isTrue(sessionIds.contains(sessionId), "лист не содержит данные");
+        return this;
+    }
+
+    @Step("Проверить, что в списке завршенных сессий отсутствует сессия")
+    public SessionListPage shouldFinishedSessionsHaveNotContainSession(String sessionId) throws Exception {
+        List<FinishedSessionData> uiSessionData = finishedSessionScrollView.getFullDataList();
+        List<String> sessionIds = uiSessionData.stream().map(SessionData::getSessionNumber).collect(Collectors.toList());
+        anAssert.isFalse(sessionIds.contains(sessionId), "лист содержит данные");
+        return this;
+    }
+
+    @Step("Проверить, что в списке завршенных сессий присутствует сессия")
+    public SessionListPage shouldFinishedSessionsContainSession(String sessionId) throws Exception {
+        List<FinishedSessionData> uiSessionData = finishedSessionScrollView.getFullDataList();
         List<String> sessionIds = uiSessionData.stream().map(SessionData::getSessionNumber).collect(Collectors.toList());
         anAssert.isTrue(sessionIds.contains(sessionId), "лист не содержит данные");
         return this;
@@ -135,15 +170,15 @@ public class SessionListPage extends CommonMagMobilePage {
         return this;
     }
 
-    @Step("Проверить, что все активные сессии отображены")
-    public SessionListPage shouldTheseFinishedSessionArePresent(List<Integer> finishedSessionsIdList) throws Exception {
+    @Step("Проверить, что все завершенные сессии отображены")
+    public SessionListPage shouldTheseFinishedSessionsArePresent(List<Integer> finishedSessionsIdList) throws Exception {
         Element anchor = E("contains(ЗАВЕРШЕННЫЕ СЕССИИ)");
         if (!anchor.isVisible()) {
             //из-за холостых скроллов shouldAllActiveSessionAreVisible() приходиться подниматься
             mainScrollView.scrollUpToElement(anchor);
         }
         List<FinishedSessionData> uiFinishedSessionData = finishedSessionScrollView.getFullDataList();
-        anAssert.isEquals(uiFinishedSessionData.size(), finishedSessionsIdList.size(), "wrong session count");
+        anAssert.isEquals(uiFinishedSessionData.size(), finishedSessionsIdList.size(), "Неверное кол-во сессий");
         List<Integer> uiFinishedSessionIdList = new ArrayList<>();
         for (SessionData each : uiFinishedSessionData) {
             uiFinishedSessionIdList.add(Integer.parseInt(each.getSessionNumber()));
@@ -153,18 +188,18 @@ public class SessionListPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что карточки заверешнных сессий не отображаются")
-    public SessionListPage shouldFinishedSessionCardsIsNotVisible() throws Exception {
+    public SessionListPage shouldFinishedSessionCardsAreNotVisible() throws Exception {
         mainScrollView.scrollToBeginning();
         int actualSize = finishedSessionScrollView.getRowCount();
-        anAssert.isEquals(actualSize, 0, "there are some finished sessions");
+        anAssert.isEquals(actualSize, 0, "найдены несколько завершенных сессий");
         return this;
     }
 
     @Step("Проверить, что карточки активных сессий не отображаются")
-    public SessionListPage shouldActiveSessionCardsIsNotVisible() throws Exception {
+    public SessionListPage shouldActiveSessionCardsAreNotVisible() throws Exception {
         activeSessionScrollView.scrollToBeginning();
         int actualSize = activeSessionScrollView.getRowCount();
-        anAssert.isEquals(actualSize, 0, "there are some active sessions");
+        anAssert.isEquals(actualSize, 0, "найдены несколько активных сессий");
         return this;
     }
 
@@ -179,5 +214,40 @@ public class SessionListPage extends CommonMagMobilePage {
         softAssert.areElementsVisible(getPageSource(), backBtn, scanRupturesByOneBtn, choseDepartmentBtn);
         softAssert.verifyAll();
         return this;
+    }
+
+    @Step("Проверить данные последней массовой сессии")
+    public void verifyLastBulkSessionData(int expectedRupturesCount) throws Exception {
+        List<SessionData> uiSessionData = activeSessionScrollView.getFullDataList(1);
+        SessionData sessionData = uiSessionData.get(0);
+        softAssert.isEquals(sessionData.getRuptureQuantity(), expectedRupturesCount, "Количество перебоев не совпадает");
+        // softAssert.isEquals(sessionData.getType(), "Bulk", "Сессия не массовая"); TODO переделать после выполнения RUP-374
+        softAssert.verifyAll();
+    }
+
+    @Step("Проверить данные активной массовой сессии по sessionId")
+    public void verifyActiveBulkSessionDataBySessionId(int expectedRupturesCount, int sessionId) throws Exception {
+        List<SessionData> uiSessionData = activeSessionScrollView.getFullDataList();
+
+        for(SessionData session : uiSessionData){
+            if(Integer.parseInt(session.getSessionNumber()) == sessionId) {
+                softAssert.isEquals(session.getRuptureQuantity(), expectedRupturesCount, "Количество перебоев не совпадает");
+                // softAssert.isEquals(sessionData.getType(), "Bulk", "Сессия не массовая"); TODO переделать после выполнения RUP-374
+                softAssert.verifyAll();
+                return;
+            }
+            Assert.fail("Не нашли сессию №" + sessionId);
+        }
+    }
+
+    @Step("Проверить тост успешного завершения сессии")
+    public void checkSuccessFinishBulkSessionToast() {
+        anAssert.isTrue(driver.getPageSource().contains("Сессия успешно завершена"), "Некорректный текст тоста");
+    }
+
+    @Step("Проверить тост при нажатии на завершенную массовую сессию")
+    public void checkFinishedBulkSessionToast() {
+        anAssert.isTrue(driver.getPageSource().contains("Сессия массового сканирования доступна только в Report"),
+                "Некорректный текст тоста");
     }
 }

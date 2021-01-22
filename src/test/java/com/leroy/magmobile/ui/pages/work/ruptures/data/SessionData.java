@@ -10,6 +10,7 @@ public class SessionData {
     private String createDate;
     private int ruptureQuantity;
     private String creatorName;
+    private String type;
 
     //из-за различных источников данных (бэк и фронт) решили ограничится несколькими полями
     @Override
