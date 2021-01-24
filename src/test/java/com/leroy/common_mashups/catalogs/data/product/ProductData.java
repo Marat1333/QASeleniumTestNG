@@ -3,7 +3,6 @@ package com.leroy.common_mashups.catalogs.data.product;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.leroy.common_mashups.catalogs.data.product.details.Characteristic;
-import com.leroy.common_mashups.catalogs.data.product.details.PriceInfo;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -31,7 +30,7 @@ public class ProductData {
     private String supCode;
     private List<String> images;
     private Double price;
-    private PriceInfo altPrice;
+    private Double altPrice;
     private String altPriceUnit;
     private String priceUnit;
     private String priceCurrency;

@@ -25,9 +25,6 @@ import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class SearchProductHelper extends BaseHelper {
-
-    @Inject
-    private CatalogProductClient catalogSearchClient;
     @Inject
     private CatalogProductClient catalogProductClient;
 
@@ -39,7 +36,7 @@ public class SearchProductHelper extends BaseHelper {
         params.setShopId(userSessionData().getUserShopId())
                 .setStartFrom(1)
                 .setPageSize(necessaryCount); // TODO не работает. Почему?
-        Response<ServiceItemDataList> resp = catalogSearchClient.searchServicesBy(params);
+        Response<ServiceItemDataList> resp = catalogProductClient.searchServicesBy(params);
         List<ServiceItemData> services =
                 resp.asJson().getItems().stream().limit(necessaryCount)
                         .collect(Collectors.toList());
@@ -57,7 +54,7 @@ public class SearchProductHelper extends BaseHelper {
         int startFrom = 1;
         List<ProductData> resultList = new ArrayList<>();
         while (i < necessaryCount) {
-            Response<ProductDataList> resp = catalogSearchClient.searchProductsBy(filtersData, startFrom, necessaryCount);
+            Response<ProductDataList> resp = catalogProductClient.searchProductsBy(filtersData, startFrom, necessaryCount);
             assertThat("Catalog search request has failed.", resp, successful());
             List<ProductData> items = resp.asJson().getItems();
 
@@ -119,22 +116,36 @@ public class SearchProductHelper extends BaseHelper {
     @Step("Return list of products for specified ShopId")
     public List<ProductData> getProductsForShop(int countOfProducts,
             String shopId) {
-        return catalogSearchClient
+        return catalogProductClient
                 .searchProductsBy(new GetCatalogProductSearchRequest().setPageSize(countOfProducts)
                         .setHasAvailableStock(true).setShopId(shopId)).asJson().getItems();
     }
 
-    @Step("Return list of products for specified ShopId")
-    public ProductData getProductByLmCode(String lmCode) {
+    @Step("Return first product for specified lmCode")
+    public ProductData searchProductByLmCode(String lmCode) {
         CatalogSearchFilter filter = new CatalogSearchFilter();
         filter.setLmCode(lmCode);
-        return catalogSearchClient.searchProductsBy(filter).asJson().getItems().stream().findFirst()
+        return catalogProductClient.searchProductsBy(filter).asJson().getItems().stream().findFirst()
                 .orElse(null);
+    }
+
+    @Step("Return product for specified lmCode")
+    public CatalogProductData getProductByLmCode(String lmCode) {
+        Response<CatalogProductData> response = catalogProductClient.getProduct(lmCode);
+        assertThat(response, successful());
+        return response.asJson();
+    }
+
+    @Step("Return product for specified lmCode")
+    public CatalogProductData getProductV2ByLmCode(String lmCode) {
+        Response<CatalogProductData> response = catalogProductClient.getProductV2(lmCode);
+        assertThat(response, successful());
+        return response.asJson();
     }
 
     @Step("Return random product")
     public ProductData getRandomProduct() {
-        ProductDataList productDataList = catalogSearchClient.searchProductsBy(new GetCatalogProductSearchRequest().setPageSize(10)
+        ProductDataList productDataList = catalogProductClient.searchProductsBy(new GetCatalogProductSearchRequest().setPageSize(10)
                 .setHasAvailableStock(true).setShopId(userSessionData().getUserShopId())).asJson();
         List<ProductData> productData = productDataList.getItems();
         productData = productData.stream().filter(i -> i.getTitle() != null).collect(Collectors.toList());

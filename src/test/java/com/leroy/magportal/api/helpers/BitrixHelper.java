@@ -137,19 +137,19 @@ public class BitrixHelper extends BaseHelper {
         ArrayList<BitrixSolutionPayload.Basket> result = new ArrayList<>();
 
         if (orderData.getLmCode() != null) {
-            ProductData product = searchProductHelper.getProductByLmCode(orderData.getLmCode());
-            result.add(productItemDataToPayload(product));
+            ProductData product = searchProductHelper.searchProductByLmCode(orderData.getLmCode());
+            result.add(productDataToPayload(product));
         } else {
             List<ProductData> products = searchProductHelper
                     .getProductsForShop(productsCount, shopId);
             for (ProductData productData : products) {
-                result.add(productItemDataToPayload(productData));
+                result.add(productDataToPayload(productData));
             }
         }
         return result;
     }
 
-    private BitrixSolutionPayload.Basket productItemDataToPayload(ProductData product) {
+    private BitrixSolutionPayload.Basket productDataToPayload(ProductData product) {
         BitrixSolutionPayload.Basket basket = new BitrixSolutionPayload.Basket();
         String price = "99.99";
         double quantity = 10.00;

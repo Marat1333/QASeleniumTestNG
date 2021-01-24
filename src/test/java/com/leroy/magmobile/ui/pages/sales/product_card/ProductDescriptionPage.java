@@ -1,6 +1,5 @@
 package com.leroy.magmobile.ui.pages.sales.product_card;
 
-import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.common_mashups.catalogs.data.product.CatalogProductData;
 import com.leroy.common_mashups.catalogs.data.product.reviews.CatalogReviewsOfProductList;
 import com.leroy.constants.DefectConst;
@@ -173,7 +172,7 @@ public class ProductDescriptionPage extends ProductCardPage {
         if (!DefectConst.LFRONT_3675) {
             for (int i = 0; i < apiDataList.size(); i++) {
                 ProductCardData uiData = productCardDataListFromPage.get(i);
-                ProductData apiData = apiDataList.get(i);
+                CatalogProductData apiData = apiDataList.get(i);
                 softAssert.isEquals(uiData.getLmCode(), apiData.getLmCode(), "lmCode");
                 if (type.equals(SearchProductPage.CardType.COMMON)) {
                     softAssert.isEquals(uiData.getAvailableQuantity(), apiData.getAvailableStock(), "available quantity");

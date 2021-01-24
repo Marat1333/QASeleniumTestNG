@@ -83,7 +83,7 @@ public class ExportExcelTest extends BaseMagPortalApiTest {
             softAssert().isEquals(priceUnit, row.getCellStringValueByIndex(13), "unit");
             String altPrice;
             if (apiData.getAltPrice() != null) {
-                altPrice = ParserUtil.prettyDoubleFmt(apiData.getAltPrice().getAltPrice());
+                altPrice = ParserUtil.prettyDoubleFmt(apiData.getAltPrice());
             } else {
                 altPrice = no;
             }

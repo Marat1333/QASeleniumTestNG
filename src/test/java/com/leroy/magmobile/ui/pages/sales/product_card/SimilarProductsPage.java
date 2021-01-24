@@ -1,8 +1,7 @@
 package com.leroy.magmobile.ui.pages.sales.product_card;
 
-import com.leroy.common_mashups.catalogs.data.product.ProductData;
-import com.leroy.common_mashups.catalogs.data.product.CatalogProductData;
 import com.leroy.common_mashups.catalogs.data.CatalogSimilarProductsDataV2;
+import com.leroy.common_mashups.catalogs.data.product.CatalogProductData;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.magmobile.ui.models.search.ProductCardData;
 import com.leroy.magmobile.ui.pages.sales.widget.SearchProductAllGammaCardWidget;
@@ -51,7 +50,7 @@ public class SimilarProductsPage extends ProductCardPage {
                 "Кол-во записей на странице не соответсвует");
 
         //На фронте реализована сортировка карточек по availableStock, как сортировать товары у которых остаток 0?
-        List<String> dataLmCodes = productDataListFromResponse.stream().map(ProductData::getLmCode).collect(Collectors.toList());
+        List<String> dataLmCodes = productDataListFromResponse.stream().map(CatalogProductData::getLmCode).collect(Collectors.toList());
         List<String> frontLmCodes = productCardDataListFromPage.stream().map(ProductCardData::getLmCode).collect(Collectors.toList());
 
         anAssert.isTrue(dataLmCodes.containsAll(frontLmCodes), "lmCodes mismatch");

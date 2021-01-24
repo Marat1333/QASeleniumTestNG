@@ -67,6 +67,14 @@ public class CatalogProductClient extends BaseMashupClient {
     }
 
     @Step("Get Catalog Product for lmCode={lmCode}")
+    public Response<CatalogProductData> getProductV2(String lmCode) {
+        GetCatalogProductV2Request req = new GetCatalogProductV2Request();
+        req.setLmCode(lmCode);
+        req.setShopId(getUserSessionData().getUserShopId());
+        return execute(req, CatalogProductData.class, oldGatewayUrl);
+    }
+
+    @Step("Get Catalog Product for lmCode={lmCode}")
     public Response<CatalogProductData> getProduct(String lmCode) {
         GetCatalogProduct req = new GetCatalogProduct();
         req.setLmCode(lmCode);

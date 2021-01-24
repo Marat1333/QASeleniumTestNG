@@ -503,7 +503,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         List<OrderProductDataPayload> orderProducts = new ArrayList<>();
         OrderRearrangePayload payload = this.makeRearrangePayload(orderId, 0, null);
 
-        ProductData product = searchProductHelper.getProductByLmCode(lmCode);
+        ProductData product = searchProductHelper.searchProductByLmCode(lmCode);
 
         OrderProductDataPayload orderProductDataPayload = new OrderProductDataPayload();
         orderProductDataPayload.setLmCode(product.getLmCode());
