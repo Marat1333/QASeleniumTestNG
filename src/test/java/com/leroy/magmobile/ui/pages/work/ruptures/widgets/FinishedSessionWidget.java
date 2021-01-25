@@ -12,7 +12,7 @@ public class FinishedSessionWidget extends CardWidget<FinishedSessionData> {
     @AppFindBy(containsText = "№")
     Element sessionNumberLbl;
 
-    @AppFindBy(xpath = "./android.widget.TextView[1]")
+    @AppFindBy(accessibilityId = "date")
     Element creationDateLbl;
 
     @AppFindBy(xpath = ".//android.view.ViewGroup[android.widget.TextView[contains(@text, '№')]]/following-sibling::android.view.ViewGroup/android.widget.TextView")

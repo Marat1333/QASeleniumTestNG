@@ -5,7 +5,6 @@ import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.widget.CardWidget;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.SessionData;
-import com.leroy.magmobile.ui.pages.work.ruptures.data.FinishedSessionData;
 import com.leroy.utils.ParserUtil;
 import org.openqa.selenium.WebDriver;
 
@@ -18,22 +17,27 @@ public class ActiveSessionWidget extends CardWidget<SessionData> {
     @AppFindBy(containsText = "№")
     Element sessionNumberLbl;
 
-    @AppFindBy(xpath = "./android.widget.TextView[1]")
+    @AppFindBy(accessibilityId = "date")
     Element creationDateLbl;
 
-    @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.TextView[contains(@text, '№')]]/following-sibling::android.view.ViewGroup/android.widget.TextView")
+//    @AppFindBy(accessibilityId = "quantityLbl")
+    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='quantityLbl']/android.widget.TextView")
     Element quantityLbl;
 
-    @AppFindBy(xpath = "//android.view.ViewGroup[android.widget.TextView[contains(@text, '№')]]/following-sibling::android.widget.TextView[2]")
+    @AppFindBy(accessibilityId = "creator")
     Element creatorLbl;
+
+    @AppFindBy(accessibilityId = "type")
+    Element type;
 
     @Override
     public SessionData collectDataFromPage(String pageSource) {
         SessionData data = new SessionData();
         data.setSessionNumber(ParserUtil.strWithOnlyDigits(sessionNumberLbl.getText(pageSource)));
-        data.setCreateDate(creationDateLbl.getText(pageSource));
+        data.setCreateDate(creationDateLbl.getText(pageSource).split("Открыта ")[1]);
         data.setRuptureQuantity(ParserUtil.strToInt(quantityLbl.getText(pageSource)));
         data.setCreatorName(creatorLbl.getText(pageSource));
+        data.setType(type.isVisible() == false ? "Standard" : "Bulk");
         return data;
     }
 
