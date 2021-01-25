@@ -17,17 +17,17 @@ public class ActiveSessionWidget extends CardWidget<SessionData> {
     @AppFindBy(containsText = "№")
     Element sessionNumberLbl;
 
-    @AppFindBy(accessibilityId = "date")
+    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc='date']")
     Element creationDateLbl;
 
 //    @AppFindBy(accessibilityId = "quantityLbl")
-    @AppFindBy(xpath = "//android.view.ViewGroup[@content-desc='quantityLbl']/android.widget.TextView")
+    @AppFindBy(xpath = ".//android.view.ViewGroup[@content-desc='quantityLbl']/android.widget.TextView")
     Element quantityLbl;
 
-    @AppFindBy(accessibilityId = "creator")
+    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc='creator']")
     Element creatorLbl;
 
-    @AppFindBy(accessibilityId = "type")
+    @AppFindBy(xpath = ".//android.widget.TextView[@content-desc='sessionType']")
     Element type;
 
     @Override
@@ -37,7 +37,7 @@ public class ActiveSessionWidget extends CardWidget<SessionData> {
         data.setCreateDate(creationDateLbl.getText(pageSource).split("Открыта ")[1]);
         data.setRuptureQuantity(ParserUtil.strToInt(quantityLbl.getText(pageSource)));
         data.setCreatorName(creatorLbl.getText(pageSource));
-        data.setType(type.isVisible() == false ? "Standard" : "Bulk");
+        data.setType(!type.isVisible() ? "Standard" : "Bulk");
         return data;
     }
 
