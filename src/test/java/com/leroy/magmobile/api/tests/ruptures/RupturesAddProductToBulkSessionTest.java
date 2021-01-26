@@ -12,12 +12,12 @@ public class RupturesAddProductToBulkSessionTest extends BaseRuptureTest{
 
     static final String firstLmCode = RandomStringUtils.randomNumeric(8);
     static final String secondLmCode = RandomStringUtils.randomNumeric(8);
+    ReqRuptureBulkSessionData postData = new ReqRuptureBulkSessionData();
 
 
     @BeforeMethod(description = "Create bulk session with random product")
     public void createBulkSession() {
         step("Создаем массовую сессию");
-        ReqRuptureBulkSessionData postData = new ReqRuptureBulkSessionData();
         postData.setDepartmentId(Integer.parseInt(getUserSessionData().getUserDepartmentId()));
         postData.setLmCode(firstLmCode);
 
@@ -27,8 +27,6 @@ public class RupturesAddProductToBulkSessionTest extends BaseRuptureTest{
 
     @Test(description = "C23718165 Add product to session")
     public void testAddProductToSession() {
-        ReqRuptureBulkSessionData postData = new ReqRuptureBulkSessionData();
-        postData.setDepartmentId(Integer.parseInt(getUserSessionData().getUserDepartmentId()));
         postData.setLmCode(secondLmCode);
 
         step("Добавляем товар в массовую сессию");
@@ -42,8 +40,6 @@ public class RupturesAddProductToBulkSessionTest extends BaseRuptureTest{
     @Issue("RUP-377")
     @Test(description = "C23718166 Add product to finished session")
     public void testAddProductToFinishedSession() {
-        ReqRuptureBulkSessionData postData = new ReqRuptureBulkSessionData();
-        postData.setDepartmentId(Integer.parseInt(getUserSessionData().getUserDepartmentId()));
         postData.setLmCode(secondLmCode);
 
         step("Завершаем сессию");
@@ -61,8 +57,6 @@ public class RupturesAddProductToBulkSessionTest extends BaseRuptureTest{
     @Issue("RUP-377")
     @Test(description = "C23718167 Add product to not existed session")
     public void testAddProductToNotExistedSession() {
-        ReqRuptureBulkSessionData postData = new ReqRuptureBulkSessionData();
-        postData.setDepartmentId(Integer.parseInt(getUserSessionData().getUserDepartmentId()));
         postData.setLmCode(secondLmCode);
 
         int notExistedSession = Integer.MAX_VALUE;
@@ -74,8 +68,6 @@ public class RupturesAddProductToBulkSessionTest extends BaseRuptureTest{
 
     @Test(description = "C23718168 Add duplicate product")
     public void testAddDuplicateProductToSession() {
-        ReqRuptureBulkSessionData postData = new ReqRuptureBulkSessionData();
-        postData.setDepartmentId(Integer.parseInt(getUserSessionData().getUserDepartmentId()));
         postData.setLmCode(firstLmCode);
 
         step("Добавляем дубль товара в массовую сессию");
