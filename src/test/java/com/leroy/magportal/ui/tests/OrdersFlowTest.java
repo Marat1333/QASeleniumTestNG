@@ -311,14 +311,16 @@ public class OrdersFlowTest extends BasePAOTest {
     }
 
     @Test(description = "C22829616 Заказы. Процесс обработки заказа. Онлайн. Самовывоз. Предоплата", groups = NEED_PRODUCTS_GROUP)
-    public void testOrderFlowOnlinePrepaymentDelivery() throws Exception {
-        //orderId = bitrixHelper.createOnlineOrderCardPayment(OnlineOrderTypeConst.DELIVERY_TO_DOOR).getSolutionId();
+    public void testOrderFlowOnlinePrepaymentPickUp() throws Exception {
+        orderId = bitrixHelper.createOnlineOrderCardPayment(OnlineOrderTypeConst.DELIVERY_TO_DOOR).getSolutionId();
         //initCreateOrder(1,SalesDocumentsConst.GiveAwayPoints.PICKUP, SalesDocumentsConst.States.ALLOWED_FOR_PICKING);
+        //orderId = "210103326494";
+
 
         // Step 1:
         step("Открыть страницу с Заказами");
         OrderHeaderPage orderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
-        orderId = bitrixHelper.createOnlineOrderCardPayment(OnlineOrderTypeConst.DELIVERY_TO_DOOR).getSolutionId();
+        //orderId = bitrixHelper.createOnlineOrderCardPayment(OnlineOrderTypeConst.DELIVERY_TO_DOOR).getSolutionId();
 
         // Step 2:
         step("Найти созданный заказ в статусе 'Готов к Сборке' с номером" + " " + orderId);
@@ -341,7 +343,7 @@ public class OrdersFlowTest extends BasePAOTest {
         step("Кликнуть на заказ: " + orderId);
         orderPage.clickDocumentInLeftMenu(orderId);
         OrderCreatedContentPage createdContentPage = new OrderCreatedContentPage();
-        createdContentPage.shouldOrderProductCountIs(1);
+        createdContentPage.shouldOrderProductCountIs(3);
 
         // Step 4:
         step("Перейти на Сборки");

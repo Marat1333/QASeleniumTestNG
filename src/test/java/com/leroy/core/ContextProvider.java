@@ -30,4 +30,11 @@ public class ContextProvider {
         }
     }
 
+    public static void closeDriver() {
+        WebDriver driver = getDriver();
+        if (driver != null) {
+            driver.close();
+        }
+    }
+
 }

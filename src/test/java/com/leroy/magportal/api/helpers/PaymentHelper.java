@@ -111,7 +111,7 @@ public class PaymentHelper extends BaseHelper {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            ContextProvider.quitDriver();
+            //ContextProvider.closeDriver();
         }
     }
 
