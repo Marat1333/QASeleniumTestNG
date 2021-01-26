@@ -1997,8 +1997,7 @@ public class RupturesTest extends AppBaseSteps {
 
         // Step 3
         step("Отменить удаление железной кнопкой");
-//        deleteRuptureModalPage.navigateBack(); TODO переделать на navigateBack после исправления RUP-376
-        deleteSessionModalPage.cancelDelete();
+        deleteSessionModalPage.navigateBack();
         rupturesScannerPage = new RupturesScannerPage();
         rupturesScannerPage.verifyRequiredElements();
 
