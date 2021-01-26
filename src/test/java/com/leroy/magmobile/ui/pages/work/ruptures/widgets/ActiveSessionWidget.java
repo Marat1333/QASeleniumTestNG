@@ -20,7 +20,6 @@ public class ActiveSessionWidget extends CardWidget<SessionData> {
     @AppFindBy(xpath = ".//android.widget.TextView[@content-desc='date']")
     Element creationDateLbl;
 
-//    @AppFindBy(accessibilityId = "quantityLbl")
     @AppFindBy(xpath = ".//android.view.ViewGroup[@content-desc='quantityLbl']/android.widget.TextView")
     Element quantityLbl;
 
