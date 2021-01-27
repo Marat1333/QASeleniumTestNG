@@ -19,7 +19,7 @@ public class LsAddressHelper extends BaseHelper {
                 return item;
             }
         }
-        Assert.fail("Required alley not found by id");
-        return null;
+
+        return new AlleyData();
     }
 }
