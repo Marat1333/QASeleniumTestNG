@@ -38,7 +38,7 @@ public class CatalogProductData {
     private String supName;
     private Integer topEMQuantity;
     private ExtStocks extStocks;
-    private PriceInfo altPrice;
+    private PriceInfo altPrice = null;
     private PriceInfo salesPrice;
     private Logistic logistic;
     private PriceInfo purchasePrice;

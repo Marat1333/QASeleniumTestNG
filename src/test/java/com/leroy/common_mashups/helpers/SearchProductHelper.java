@@ -130,8 +130,8 @@ public class SearchProductHelper extends BaseHelper {
     }
 
     @Step("Return product for specified lmCode")
-    public CatalogProductData getProductByLmCode(String lmCode) {
-        Response<CatalogProductData> response = catalogProductClient.getProduct(lmCode);
+    public ProductData getProductByLmCode(String lmCode) {
+        Response<ProductData> response = catalogProductClient.getProduct(lmCode);
         assertThat(response, successful());
         return response.asJson();
     }
@@ -154,7 +154,7 @@ public class SearchProductHelper extends BaseHelper {
 
     @Step("Get product with at least one complementary product")
     public CatalogComplementaryProductsDataV2 getComplementaryProductData(boolean isEmpty) {
-        List<CatalogProductData> itemsList;
+        List<ProductData> itemsList;
         List<String> lmCodes = this.getProductLmCodes(MAX_PAGE_SIZE);
         for (String lmCode : lmCodes) {
             Response<CatalogComplementaryProductsDataV2> response = catalogProductClient.getComplementaryProducts(lmCode);

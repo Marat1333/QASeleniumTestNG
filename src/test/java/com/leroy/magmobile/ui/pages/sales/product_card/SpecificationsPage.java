@@ -1,15 +1,14 @@
 package com.leroy.magmobile.ui.pages.sales.product_card;
 
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
+import com.leroy.common_mashups.catalogs.data.product.details.Characteristic;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.common_mashups.catalogs.data.product.details.Characteristic;
-import com.leroy.common_mashups.catalogs.data.product.CatalogProductData;
 import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.SuppliesPage;
 import io.qameta.allure.Step;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +33,7 @@ public class SpecificationsPage extends ProductCardPage {
     }
 
     @Step("Проверить корректность данных")
-    public SpecificationsPage shouldDataIsCorrect(CatalogProductData data) throws Exception {
+    public SpecificationsPage shouldDataIsCorrect(ProductData data) throws Exception {
         HashMap<String, String> frontCharacteristicsMap = grabCharacteristicsFromPage();
         List<Characteristic> characteristicList = data.getCharacteristics();
         HashMap<String, String> dataCharacteristicsMap = new HashMap<>();
@@ -51,9 +50,8 @@ public class SpecificationsPage extends ProductCardPage {
     }
 
     @Step("Проверить отсутствие кнопки \"Поставщик\"")
-    public SpecificationsPage shouldSupplierBtnIsInvisible() {
+    public void shouldSupplierBtnIsInvisible() {
         anAssert.isElementNotVisible(supplyInfoNavigationBtn);
-        return this;
     }
 
     private HashMap grabCharacteristicsFromPage() throws Exception {

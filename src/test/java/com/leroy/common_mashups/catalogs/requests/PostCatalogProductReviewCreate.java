@@ -3,7 +3,7 @@ package com.leroy.common_mashups.catalogs.requests;
 import com.leroy.magmobile.api.requests.CommonLegoRequest;
 import ru.leroymerlin.qa.core.clients.base.Method;
 
-@Method(value = "POST", path = "/v1/products/{lmCode}/review")
+@Method(value = "POST", path = "/v1/products/{lmCode}/reviews")
 public class PostCatalogProductReviewCreate extends
         CommonLegoRequest<PostCatalogProductReviewCreate> {
 

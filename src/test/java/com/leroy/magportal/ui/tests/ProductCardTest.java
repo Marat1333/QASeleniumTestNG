@@ -55,14 +55,14 @@ public class ProductCardTest extends WebBaseSteps {
     }
 
     private String getRandomSimilarProductLmCode(String sourceLmCode) {
-        CatalogSimilarProductsDataV1 data = catalogSearchClient.getSimilarProducts(sourceLmCode).asJson();
+        CatalogSimilarProductsDataV1 data = catalogSearchClient.getSimilarProductsV1(sourceLmCode).asJson();
         List<ProductData> resultList = data.getSubstitutes();
         String result = resultList.get((int) (Math.random() * resultList.size())).getLmCode();
         return result;
     }
 
     private String getRandomComplementProductLmCode(String sourceLmCode) {
-        CatalogSimilarProductsDataV1 data = catalogSearchClient.getSimilarProducts(sourceLmCode).asJson();
+        CatalogSimilarProductsDataV1 data = catalogSearchClient.getSimilarProductsV1(sourceLmCode).asJson();
         List<ProductData> resultList = data.getComplements();
         String result = resultList.get((int) (Math.random() * resultList.size())).getLmCode();
         return result;
@@ -162,16 +162,16 @@ public class ProductCardTest extends WebBaseSteps {
         String lessThan4Complements = "10813144";
         String moreThan4Complements = "15057456";
 
-        CatalogSimilarProductsDataV1 data = catalogSearchClient.getSimilarProducts(lessThan4Similar).asJson();
+        CatalogSimilarProductsDataV1 data = catalogSearchClient.getSimilarProductsV1(lessThan4Similar).asJson();
         List<ProductData> lessThan4SimilarList = data.getSubstitutes();
 
-        data = catalogSearchClient.getSimilarProducts(moreThan4Similar).asJson();
+        data = catalogSearchClient.getSimilarProductsV1(moreThan4Similar).asJson();
         List<ProductData> moreThan4SimilarList = data.getSubstitutes();
 
-        data = catalogSearchClient.getSimilarProducts(lessThan4Complements).asJson();
+        data = catalogSearchClient.getSimilarProductsV1(lessThan4Complements).asJson();
         List<ProductData> lessThan4ComplementsList = data.getComplements();
 
-        data = catalogSearchClient.getSimilarProducts(moreThan4Complements).asJson();
+        data = catalogSearchClient.getSimilarProductsV1(moreThan4Complements).asJson();
         List<ProductData> moreThan4ComplementsList = data.getComplements();
 
 

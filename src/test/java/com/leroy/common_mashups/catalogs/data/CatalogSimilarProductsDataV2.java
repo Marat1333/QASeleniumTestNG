@@ -1,13 +1,12 @@
 package com.leroy.common_mashups.catalogs.data;
 
-import com.leroy.common_mashups.catalogs.data.product.CatalogProductData;
-import lombok.Data;
-
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import java.util.List;
+import lombok.Data;
 
 @Data
 public class CatalogSimilarProductsDataV2 {
 
     private Integer totalCount;
-    private List<CatalogProductData> items;
+    private List<ProductData> items;
 }

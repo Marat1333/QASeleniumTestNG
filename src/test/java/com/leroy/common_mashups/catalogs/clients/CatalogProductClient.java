@@ -1,13 +1,14 @@
 package com.leroy.common_mashups.catalogs.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.leroy.common_mashups.catalogs.data.CatalogComplementaryProductsDataV2;
 import com.leroy.common_mashups.catalogs.data.CatalogSearchFilter;
 import com.leroy.common_mashups.catalogs.data.CatalogSimilarProductsDataV1;
+import com.leroy.common_mashups.catalogs.data.CatalogSimilarProductsDataV2;
 import com.leroy.common_mashups.catalogs.data.ProductDataList;
 import com.leroy.common_mashups.catalogs.data.ServiceItemDataList;
-import com.leroy.common_mashups.catalogs.data.CatalogComplementaryProductsDataV2;
 import com.leroy.common_mashups.catalogs.data.product.CatalogProductData;
-import com.leroy.common_mashups.catalogs.data.CatalogSimilarProductsDataV2;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.common_mashups.catalogs.data.product.reviews.CatalogReviewsOfProductList;
 import com.leroy.common_mashups.catalogs.data.product.reviews.ReviewData;
 import com.leroy.common_mashups.catalogs.data.supply.CatalogSupplierDataOld;
@@ -16,7 +17,8 @@ import com.leroy.common_mashups.catalogs.requests.GetCatalogProductSalesRequest;
 import com.leroy.common_mashups.catalogs.requests.GetCatalogProductSearchRequest;
 import com.leroy.common_mashups.catalogs.requests.GetCatalogProductV2Request;
 import com.leroy.common_mashups.catalogs.requests.GetCatalogServicesRequest;
-import com.leroy.common_mashups.catalogs.requests.GetCatalogSimilarProductsRequest;
+import com.leroy.common_mashups.catalogs.requests.GetCatalogSimilarProductsV1Request;
+import com.leroy.common_mashups.catalogs.requests.GetCatalogSimilarProductsV2Request;
 import com.leroy.common_mashups.catalogs.requests.GetCatalogSupplierSearchRequest;
 import com.leroy.common_mashups.catalogs.requests.GetComplementaryProductsRequest;
 import com.leroy.common_mashups.catalogs.requests.GetNearestShopsRequest;
@@ -75,33 +77,28 @@ public class CatalogProductClient extends BaseMashupClient {
     }
 
     @Step("Get Catalog Product for lmCode={lmCode}")
-    public Response<CatalogProductData> getProduct(String lmCode) {
+    public Response<ProductData> getProduct(String lmCode) {
         GetCatalogProduct req = new GetCatalogProduct();
         req.setLmCode(lmCode);
         req.setShopId(getUserSessionData().getUserShopId());
-        return execute(req, CatalogProductData.class, oldGatewayUrl);
+        return execute(req, ProductData.class, oldGatewayUrl);
     }
 
     @Step("Get Catalog Product for lmCode={lmCode}, pointOfGiveAway={pointOfGiveAway}, extend={extend}")
-    public Response<CatalogProductData> getProduct(
+    public Response<ProductData> getProduct(
             String lmCode, SalesDocumentsConst.GiveAwayPoints pointOfGiveAway, Extend extend) {
-        GetCatalogProduct req = new GetCatalogProduct();
-        req.setLmCode(lmCode);
-        req.setShopId(getUserSessionData().getUserShopId());
-        req.setPointOfGiveAway(pointOfGiveAway.getApiVal());
-        req.setExtend(extend.toString());
-        return execute(req, CatalogProductData.class, oldGatewayUrl);
+        return getProduct(getUserSessionData().getUserShopId(), lmCode,  pointOfGiveAway, extend);
     }
 
     @Step("Get Catalog Product for lmCode={lmCode}, pointOfGiveAway={pointOfGiveAway}, extend={extend}")
-    public Response<CatalogProductData> getProduct(String shopId,
+    public Response<ProductData> getProduct(String shopId,
                                                    String lmCode, SalesDocumentsConst.GiveAwayPoints pointOfGiveAway, Extend extend) {
         GetCatalogProduct req = new GetCatalogProduct();
         req.setLmCode(lmCode);
         req.setShopId(shopId);
         req.setPointOfGiveAway(pointOfGiveAway.getApiVal());
         req.setExtend(extend.toString());
-        return execute(req, CatalogProductData.class, oldGatewayUrl);
+        return execute(req, ProductData.class, oldGatewayUrl);
     }
 
     @Step("Get Product Reviews for lmCode={lmCode}, pageNumber={pageNumber}, pageSize={pageSize}")
@@ -147,12 +144,21 @@ public class CatalogProductClient extends BaseMashupClient {
                 .setLmCode(lmCode);
         String shopsAsString = String.join(",", shops);
         params.setShopId(shopsAsString);
-        return execute(params, Object.class);
+        return execute(params, Object.class, oldGatewayUrl);
     }
 
     @Step("Get Similar products for lmCode={lmCode}, extend={extend}")
-    public Response<CatalogSimilarProductsDataV2> getSimilarProducts(String lmCode, Extend extend) {
-        GetCatalogSimilarProductsRequest params = new GetCatalogSimilarProductsRequest()
+    public Response<CatalogSimilarProductsDataV1> getSimilarProductsV1(String lmCode, Extend extend) {
+        GetCatalogSimilarProductsV1Request params = new GetCatalogSimilarProductsV1Request()
+                .setLmCode(lmCode)
+                .setShopId(getUserSessionData().getUserShopId())
+                .setExtend(extend.toString());
+        return execute(params, CatalogSimilarProductsDataV1.class);
+    }
+
+    @Step("Get Similar products for lmCode={lmCode}, extend={extend}")
+    public Response<CatalogSimilarProductsDataV2> getSimilarProductsV2(String lmCode, Extend extend) {
+        GetCatalogSimilarProductsV2Request params = new GetCatalogSimilarProductsV2Request()
                 .setLmCode(lmCode)
                 .setShopId(getUserSessionData().getUserShopId())
                 .setExtend(extend.toString());
@@ -161,8 +167,9 @@ public class CatalogProductClient extends BaseMashupClient {
 
     @Step("Post review")
     public Response<JsonNode> sendReview(ReviewData data) {
-        PostCatalogProductReviewCreate params = new PostCatalogProductReviewCreate()
-                .jsonBody(data);
+        PostCatalogProductReviewCreate params = new PostCatalogProductReviewCreate();
+        params.setLmCode(data.getLmCode());
+        params.jsonBody(data);
         return execute(params, JsonNode.class);
     }
 
@@ -227,8 +234,8 @@ public class CatalogProductClient extends BaseMashupClient {
     }
 
     @Step("Get similar and complement products")
-    public Response<CatalogSimilarProductsDataV1> getSimilarProducts(String lmCode) {
-        return execute(new GetCatalogSimilarProductsRequest()
+    public Response<CatalogSimilarProductsDataV1> getSimilarProductsV1(String lmCode) {
+        return execute(new GetCatalogSimilarProductsV1Request()
                         .setLmCode(lmCode)
                         .setShopId(getUserSessionData().getUserShopId()),
                 CatalogSimilarProductsDataV1.class);

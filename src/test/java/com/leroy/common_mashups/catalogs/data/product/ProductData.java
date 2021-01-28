@@ -3,6 +3,9 @@ package com.leroy.common_mashups.catalogs.data.product;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.leroy.common_mashups.catalogs.data.product.details.Characteristic;
+import com.leroy.common_mashups.catalogs.data.product.details.ExtStocks;
+import com.leroy.common_mashups.catalogs.data.product.details.PriceInfo;
+import com.leroy.common_mashups.catalogs.data.product.details.StockAreas;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -35,6 +38,12 @@ public class ProductData {
     private String priceUnit;
     private String priceCurrency;
     private String supName;
+    private Double purchasePrice;
+    private String purchasePriceCurrency;
+    private PriceInfo salesPrice;
+    private StockAreas stocks;
+    private ExtStocks extStocks;
+    private StockAreas stockAreas;
 
     // SalesDoc Products содержат также такие поля: (Или это другая сущность?)
     private String departmentId;

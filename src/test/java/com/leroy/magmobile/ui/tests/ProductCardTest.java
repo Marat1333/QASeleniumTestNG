@@ -149,7 +149,7 @@ public class ProductCardTest extends AppBaseSteps {
     @Test(description = "C3201007 Проверить вкладку Характеристики")
     public void testCharacteristics() throws Exception {
         String lmCode = getRandomLmCode();
-        CatalogProductData data = catalogProductClient.getProduct(lmCode).asJson();
+        ProductData data = catalogProductClient.getProduct(lmCode).asJson();
 
         // Pre-conditions
         openProductCard(lmCode);
@@ -189,7 +189,7 @@ public class ProductCardTest extends AppBaseSteps {
         String lmCode = "10009965";
         CatalogProductClient.Extend extendParam = CatalogProductClient.Extend.builder()
                 .rating(true).logistic(true).inventory(true).build();
-        CatalogSimilarProductsDataV2 data = catalogProductClient.getSimilarProducts(lmCode, extendParam).asJson();
+        CatalogSimilarProductsDataV2 data = catalogProductClient.getSimilarProductsV2(lmCode, extendParam).asJson();
 
         // Pre-conditions
         openProductCard(lmCode);
@@ -290,7 +290,7 @@ public class ProductCardTest extends AppBaseSteps {
         String lmCode = getRandomLmCode();
         CatalogProductClient.Extend extendOptions = CatalogProductClient.Extend.builder()
                 .inventory(true).logistic(true).rating(true).build();
-        CatalogProductData data = catalogProductClient.getProduct(lmCode, SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR,
+       ProductData data = catalogProductClient.getProduct(lmCode, SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR,
                 extendOptions).asJson();
 
         // Pre-conditions
@@ -308,7 +308,7 @@ public class ProductCardTest extends AppBaseSteps {
         CatalogProductClient.Extend extendOptions = CatalogProductClient.Extend.builder()
                 .inventory(true).logistic(true).rating(true).build();
 
-        CatalogProductData data = catalogProductClient.getProduct("35", lmCode, SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR,
+        ProductData data = catalogProductClient.getProduct("35", lmCode, SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR,
                 extendOptions).asJson();
 
         // Pre-conditions
@@ -409,7 +409,7 @@ public class ProductCardTest extends AppBaseSteps {
         CatalogComplementaryProductsDataV2 lmWithoutComplementaryData = searchProductHelper.getComplementaryProductData(true);
         String lmWithComplementary = lmWithComplementaryData.getParentLmCode();
         String lmWithoutComplementary = lmWithoutComplementaryData.getParentLmCode();
-        List<CatalogProductData> sortedProductData = lmWithComplementaryData.getItems();
+        List<ProductData> sortedProductData = lmWithComplementaryData.getItems();
 
         //preconditions
         openProductCard(lmWithComplementary);

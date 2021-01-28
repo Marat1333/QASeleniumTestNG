@@ -11,19 +11,20 @@ import static org.hamcrest.Matchers.oneOf;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
-import com.leroy.common_mashups.helpers.SearchProductHelper;
-import com.leroy.constants.sales.SalesDocumentsConst;
-import com.leroy.core.UserSessionData;
 import com.leroy.common_mashups.catalogs.clients.CatalogProductClient;
-import com.leroy.common_mashups.catalogs.data.NomenclatureData;
 import com.leroy.common_mashups.catalogs.data.CatalogComplementaryProductsDataV2;
-import com.leroy.common_mashups.catalogs.data.product.CatalogProductData;
 import com.leroy.common_mashups.catalogs.data.CatalogShopsData;
+import com.leroy.common_mashups.catalogs.data.CatalogSimilarProductsDataV1;
 import com.leroy.common_mashups.catalogs.data.CatalogSimilarProductsDataV2;
+import com.leroy.common_mashups.catalogs.data.NomenclatureData;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.common_mashups.catalogs.data.product.SalesHistoryData;
 import com.leroy.common_mashups.catalogs.data.product.reviews.CatalogReviewsOfProductList;
 import com.leroy.common_mashups.catalogs.data.product.reviews.ReviewData;
 import com.leroy.common_mashups.catalogs.data.supply.CatalogSupplierDataOld;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
+import com.leroy.constants.sales.SalesDocumentsConst;
+import com.leroy.core.UserSessionData;
 import com.leroy.magmobile.api.data.shops.ShopData;
 import com.leroy.magmobile.api.data.user.UserData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
@@ -67,11 +68,11 @@ public class CatalogTest extends BaseProjectApiTest {
 
     @Test(description = "C3172856 get catalog product")
     public void testCatalogProduct() {
-        Response<CatalogProductData> catalogProductDataResponse = catalogProductClient.getProduct(lmCode,
+        Response<ProductData> catalogProductDataResponse = catalogProductClient.getProduct(lmCode,
                 SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR, CatalogProductClient.Extend.builder().inventory(true)
                         .logistic(true).rating(true).build());
         isResponseOk(catalogProductDataResponse);
-        CatalogProductData data = catalogProductDataResponse.asJson();
+        ProductData data = catalogProductDataResponse.asJson();
         assertThat("product lmCode", data.getLmCode(), notNullValue());
         assertThat("product barCode", data.getBarCode(), notNullValue());
     }
@@ -116,12 +117,24 @@ public class CatalogTest extends BaseProjectApiTest {
         }
     }
 
-    @Test(description = "C3254677 GET catalog/similarProducts")
-    public void testCatalogSimilarProducts() {
+    @Test(description = "C3254677 GET V1 catalog/similarProducts")
+    public void testCatalogSimilarProductsV1() {
+        CatalogProductClient.Extend extendParam = CatalogProductClient.Extend.builder()
+                .rating(true).logistic(true).inventory(true).build();
+        Response<CatalogSimilarProductsDataV1> catalogSimilarProductsResponse =
+                catalogProductClient.getSimilarProductsV1(lmCode, extendParam);
+        isResponseOk(catalogSimilarProductsResponse);
+        CatalogSimilarProductsDataV1 data = catalogSimilarProductsResponse.asJson();
+        assertThat("total count", data.getSubstitutes(), hasSize(greaterThan(0)));
+        assertThat("product items", data.getComplements(), hasSize(greaterThan(0)));
+    }
+
+    @Test(description = "C3254677 GET V2 catalog/similarProducts")
+    public void testCatalogSimilarProductsV2() {
         CatalogProductClient.Extend extendParam = CatalogProductClient.Extend.builder()
                 .rating(true).logistic(true).inventory(true).build();
         Response<CatalogSimilarProductsDataV2> catalogSimilarProductsResponse =
-                catalogProductClient.getSimilarProducts(lmCode, extendParam);
+                catalogProductClient.getSimilarProductsV2(lmCode, extendParam);
         isResponseOk(catalogSimilarProductsResponse);
         CatalogSimilarProductsDataV2 data = catalogSimilarProductsResponse.asJson();
         assertThat("total count", data.getTotalCount(), greaterThan(0));

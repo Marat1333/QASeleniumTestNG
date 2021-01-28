@@ -1,18 +1,17 @@
 package com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies;
 
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
+import com.leroy.common_mashups.catalogs.data.product.details.ExtStocks;
+import com.leroy.common_mashups.catalogs.data.product.details.StockAreas;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.common_mashups.catalogs.data.product.CatalogProductData;
-import com.leroy.common_mashups.catalogs.data.product.details.ExtStocks;
-import com.leroy.common_mashups.catalogs.data.product.details.StockAreas;
 import com.leroy.magmobile.api.data.shops.ShopData;
 import com.leroy.magmobile.ui.models.product_card.ShopCardData;
 import com.leroy.magmobile.ui.pages.sales.product_card.widgets.ShopStockInfoWidget;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
-
 import java.util.List;
 
 public class StocksPage extends ProductPricesQuantitySupplyPage {
@@ -85,7 +84,7 @@ public class StocksPage extends ProductPricesQuantitySupplyPage {
     }
 
     @Step("Проверить что данные по остаткам товара отображены корректно")
-    public StocksPage shouldDataIsCorrect(CatalogProductData data) throws Exception {
+    public StocksPage shouldDataIsCorrect(ProductData data) throws Exception {
         StockAreas stockAreas = data.getStockAreas();
         ExtStocks extStocks = data.getExtStocks();
         softAssert.isEquals(ParserUtil.strWithOnlyDigits(availableStockLbl.getText()), ParserUtil.prettyDoubleFmt(data.getAvailableStock()), "available 4 sale");
