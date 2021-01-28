@@ -25,6 +25,7 @@ import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class SearchProductHelper extends BaseHelper {
+
     @Inject
     private CatalogProductClient catalogProductClient;
 
@@ -54,7 +55,8 @@ public class SearchProductHelper extends BaseHelper {
         int startFrom = 1;
         List<ProductData> resultList = new ArrayList<>();
         while (i < necessaryCount) {
-            Response<ProductDataList> resp = catalogProductClient.searchProductsBy(filtersData, startFrom, necessaryCount);
+            Response<ProductDataList> resp = catalogProductClient
+                    .searchProductsBy(filtersData, startFrom, necessaryCount);
             assertThat("Catalog search request has failed.", resp, successful());
             List<ProductData> items = resp.asJson().getItems();
 
@@ -65,7 +67,8 @@ public class SearchProductHelper extends BaseHelper {
                             || !filtersData.getAvs() && item.getAvsDate() == null
                             || filtersData.getAvs() && item.getAvsDate() != null) {
                         if (filtersData.getHasAvailableStock() == null ||
-                                (filtersData.getHasAvailableStock() && item.getAvailableStock() > 0 ||
+                                (filtersData.getHasAvailableStock() && item.getAvailableStock() > 0
+                                        ||
                                         !filtersData.getHasAvailableStock()
                                                 && item.getAvailableStock() <= 0)) {
                             resultList.add(item);
@@ -125,7 +128,8 @@ public class SearchProductHelper extends BaseHelper {
     public ProductData searchProductByLmCode(String lmCode) {
         CatalogSearchFilter filter = new CatalogSearchFilter();
         filter.setLmCode(lmCode);
-        return catalogProductClient.searchProductsBy(filter).asJson().getItems().stream().findFirst()
+        return catalogProductClient.searchProductsBy(filter).asJson().getItems().stream()
+                .findFirst()
                 .orElse(null);
     }
 
@@ -145,26 +149,31 @@ public class SearchProductHelper extends BaseHelper {
 
     @Step("Return random product")
     public ProductData getRandomProduct() {
-        ProductDataList productDataList = catalogProductClient.searchProductsBy(new GetCatalogProductSearchRequest().setPageSize(10)
-                .setHasAvailableStock(true).setShopId(userSessionData().getUserShopId())).asJson();
+        ProductDataList productDataList = catalogProductClient
+                .searchProductsBy(new GetCatalogProductSearchRequest().setPageSize(10)
+                        .setHasAvailableStock(true).setShopId(userSessionData().getUserShopId()))
+                .asJson();
         List<ProductData> productData = productDataList.getItems();
-        productData = productData.stream().filter(i -> i.getTitle() != null).collect(Collectors.toList());
+        productData = productData.stream().filter(i -> i.getTitle() != null)
+                .collect(Collectors.toList());
         return productData.get((int) (Math.random() * productData.size()));
     }
 
-    @Step("Get product with at least one complementary product")
-    public CatalogComplementaryProductsDataV2 getComplementaryProductData(boolean isEmpty) {
+    @Step("Get product with{isEmpty==false} OR without{isEmpty==true} complementary product {isEmpty}")
+    public CatalogComplementaryProductsDataV2 getComplementaryProductData(
+            boolean withoutComplimentary) {
         List<ProductData> itemsList;
         List<String> lmCodes = this.getProductLmCodes(MAX_PAGE_SIZE);
         for (String lmCode : lmCodes) {
-            Response<CatalogComplementaryProductsDataV2> response = catalogProductClient.getComplementaryProducts(lmCode);
+            Response<CatalogComplementaryProductsDataV2> response = catalogProductClient
+                    .getComplementaryProducts(lmCode);
             if (response.isSuccessful()) {
                 CatalogComplementaryProductsDataV2 result = response.asJson();
                 result.setParentLmCode(lmCode);
                 itemsList = result.getItems();
-                if (itemsList.size() > 0 && !isEmpty) {
+                if (itemsList.size() > 0 && !withoutComplimentary) {
                     return result;
-                } else if (itemsList.size() == 0 && isEmpty) {
+                } else if (itemsList.size() == 0 && withoutComplimentary) {
                     return result;
                 }
             }
