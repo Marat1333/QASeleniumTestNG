@@ -120,12 +120,7 @@ public class LsAddressTest extends BaseProjectApiTest {
         step("Rename alley");
         alleyData.setCode("24700");
         Response<AlleyData> renameResp = lsAddressClient.renameAlley(alleyData);
-        Response<AlleyDataItems> getResp = lsAddressClient.searchForAlleys();
-        lsAddressClient.assertThatResponseIsSuccess(renameResp);
-        lsAddressClient.assertThatResponseIsSuccess(getResp);
-
-        AlleyData actualData = lsAddressHelper.searchAlleyById(getResp, alleyData.getId());
-        lsAddressClient.assertThatAlleyIsRenamed(actualData, alleyData);
+        lsAddressClient.assertThatAlleyIsRenamed(renameResp, alleyData);
     }
 
     @Test(description = "C23415876 lsAddress DELETE alleys - delete alley")
@@ -139,15 +134,9 @@ public class LsAddressTest extends BaseProjectApiTest {
 
         step("Delete alley");
         Response<AlleyData> deleteResp = lsAddressClient.deleteAlley(alleyData);
-        Response<AlleyDataItems> getResp = lsAddressClient.searchForAlleys();
-        lsAddressClient.assertThatResponseIsSuccess(deleteResp);
-        lsAddressClient.assertThatResponseIsSuccess(getResp);
-        AlleyData actualData = lsAddressHelper.searchAlleyById(getResp, alleyData.getId());
-        lsAddressClient.assertThatAlleyIsDeleted(actualData);
+        lsAddressClient.assertThatAlleyIsDeleted(deleteResp, createdAlleyId);
         createdAlleyId = 0;
-
     }
-
 
     @Test(description = "C3316291 lsAddress POST stands")
     public void testCreateStand() {
