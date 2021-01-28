@@ -20,11 +20,13 @@ import com.leroy.magmobile.api.data.address.cellproducts.*;
 import com.leroy.magmobile.api.helpers.LsAddressHelper;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import com.leroy.umbrella_extension.lsaddress.LsAddressBackClient;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
@@ -118,12 +120,22 @@ public class LsAddressTest extends BaseProjectApiTest {
         step("Rename alley");
         alleyData.setCode("24700");
         Response<AlleyData> renameResp = lsAddressClient.renameAlley(alleyData);
-        Response<AlleyDataItems> getResp = lsAddressClient.searchForAlleys();
-        lsAddressClient.assertThatResponseIsSuccess(renameResp);
-        lsAddressClient.assertThatResponseIsSuccess(getResp);
+        lsAddressClient.assertThatAlleyIsRenamed(renameResp, alleyData);
+    }
 
-        AlleyData actualData = lsAddressHelper.searchAlleyById(getResp, alleyData.getId());
-        lsAddressClient.assertThatAlleyIsRenamed(actualData, alleyData);
+    @Test(description = "C23415876 lsAddress DELETE alleys - delete alley")
+    public void testDeleteAlleys() {
+        step("Create Alley");
+        alleyData.setType(0);
+        alleyData.setCode("1a1a");
+        Response<AlleyData> resp = lsAddressClient.createAlley(alleyData);
+        alleyData = lsAddressClient.assertThatAlleyIsCreatedAndGetData(resp, alleyData);
+        createdAlleyId = alleyData.getId();
+
+        step("Delete alley");
+        Response<AlleyData> deleteResp = lsAddressClient.deleteAlley(alleyData);
+        lsAddressClient.assertThatAlleyIsDeleted(deleteResp, createdAlleyId);
+        createdAlleyId = 0;
     }
 
     @Test(description = "C3316291 lsAddress POST stands")
