@@ -77,8 +77,8 @@ public class PrintTagsTest extends AppBaseSteps {
         return sessionData;
     }
 
-    @Step("Добавить в сессию товары")//TODO метод ничего не делает, т.к. productTagDataList НЕ используется...
-    private List<ProductTagData> addUniqueProductsToSessionByManualSearch(List<String> lmCodes) {
+    @Step("Добавить в сессию товары")
+    private void addUniqueProductsToSessionByManualSearch(List<String> lmCodes) {
         List<ProductTagData> productTagDataList = new ArrayList<>();
         for (String lmCode : lmCodes) {
             TagsListPage tagsListPage = new TagsListPage();
@@ -88,7 +88,6 @@ public class PrintTagsTest extends AppBaseSteps {
             EditTagModalPage editTagModalPage = new EditTagModalPage();
             productTagDataList.add(editTagModalPage.addProductToPrintSession());
         }
-        return productTagDataList;
     }
 
     @Test(description = "C23389191 Создание сессии через раздел \"Работа\"")

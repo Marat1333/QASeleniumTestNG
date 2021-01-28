@@ -40,8 +40,6 @@ public class CatalogTest extends BaseProjectApiTest {
     private SearchProductHelper searchProductHelper;
     @Inject
     private CatalogProductClient catalogProductClient;
-    @Inject
-    private CatalogProductClient catalogSearchClient;
 
     private String lmCode;
     private final String lmProductWithReviews = "10073940";

@@ -7,6 +7,6 @@ import lombok.Data;
 @Data
 public class CatalogSimilarProductsDataV1 {
 
-    List<ProductData> substitutes;
-    List<ProductData> complements;
+    private List<ProductData> substitutes;
+    private List<ProductData> complements;
 }

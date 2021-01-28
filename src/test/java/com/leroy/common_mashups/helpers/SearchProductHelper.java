@@ -172,24 +172,4 @@ public class SearchProductHelper extends BaseHelper {
         Assert.fail("No products with complementary products were found");
         return null;
     }
-
-    @Step("Get product without complementary product")
-    public CatalogComplementaryProductsDataV2 getEmptyComplementaryProductData() {
-        List<CatalogProductData> itemsList;
-        List<String> lmCodes = this.getProductLmCodes(MAX_PAGE_SIZE);
-        for (String lmCode : lmCodes) {
-            Response<CatalogComplementaryProductsDataV2> response = catalogProductClient.getComplementaryProducts(lmCode);
-            if (response.isSuccessful()) {
-                itemsList = response.asJson().getItems();
-                if (itemsList.size() == 0) {
-                    CatalogComplementaryProductsDataV2 result = response.asJson();
-                    result.setParentLmCode(lmCode);
-                    return result;
-                }
-            }
-        }
-        Assert.fail("No products with complementary products were found");
-        return null;
-    }
-
 }

@@ -502,7 +502,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
 
         for (ProductData data : responseData) {
             assertThat("avs in product " + data.getLmCode() + " is " + data.getAvsDate(),
-                    data.getAvsDate().toString(), containsString(avsDate.toString()));
+                    data.getAvsDate(), containsString(avsDate.toString()));
         }
     }
 

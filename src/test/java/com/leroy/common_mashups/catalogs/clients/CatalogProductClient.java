@@ -173,7 +173,9 @@ public class CatalogProductClient extends BaseMashupClient {
                 .setLmCode(lmCode)
                 .setExtend(Extend.builder().inventory(true).rating(true).logistic(true).build());
         return execute(params, CatalogComplementaryProductsDataV2.class);
-    }    @Step("Search for products")
+    }
+
+    @Step("Search for products")
     public Response<ProductDataList> searchProductsBy(GetCatalogProductSearchRequest params) {
         params.setLdapHeader(getUserSessionData().getUserLdap());
         return execute(params, ProductDataList.class);
@@ -205,6 +207,7 @@ public class CatalogProductClient extends BaseMashupClient {
         return execute(req, ProductDataList.class);
     }
 
+    @Step("Search for products")
     public Response<ProductDataList> searchProductsBy(CatalogSearchFilter filters) {
         return searchProductsBy(filters, null, null);
     }
@@ -233,15 +236,17 @@ public class CatalogProductClient extends BaseMashupClient {
 
     @Step("Get product data")
     public Response<CatalogProductData> getProductData(String lmCode) {
-        return execute(new GetCatalogProductV2Request()
+        GetCatalogProductV2Request req = new GetCatalogProductV2Request()
                 .setLmCode(lmCode)
-                .setShopId(getUserSessionData().getUserShopId()), CatalogProductData.class);
+                .setShopId(getUserSessionData().getUserShopId());
+        return execute(req, CatalogProductData.class);
     }
 
     @Step("Get stocks and prices in nearest shops")
     public Response<NearestShopsData> getNearestShopsInfo(String lmCode) {
-        return execute(new GetNearestShopsRequest()
+        GetNearestShopsRequest req = new GetNearestShopsRequest()
                 .setLmCode(lmCode)
-                .setShopId(getUserSessionData().getUserShopId()), NearestShopsData.class);
+                .setShopId(getUserSessionData().getUserShopId());
+        return execute(req, NearestShopsData.class);
     }
 }
