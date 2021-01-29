@@ -62,7 +62,6 @@ public abstract class OrderCreatedPage extends OrderHeaderPage {
     public ControlOrderPage clickGoToControlTab()  {
         ControlTab.click();
         return new ControlOrderPage();
-
     }
 
     @Step ("Перейти на вкладку 'К ВЫдаче и Возврату'")

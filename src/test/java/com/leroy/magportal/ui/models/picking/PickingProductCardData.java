@@ -16,9 +16,9 @@ public class PickingProductCardData {
     private Double weight;
 
     private String reasonOfLack;
-    private Integer stockQuantity;
-    private Integer orderedQuantity;
-    private Integer collectedQuantity;
+    private int stockQuantity;
+    private int orderedQuantity;
+    private int collectedQuantity;
 
     public PickingProductCardData clone() {
         PickingProductCardData pickingProductCardData = new PickingProductCardData();

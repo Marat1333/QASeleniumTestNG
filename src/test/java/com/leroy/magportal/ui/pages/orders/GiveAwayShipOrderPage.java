@@ -19,7 +19,6 @@ public class GiveAwayShipOrderPage extends OrderCreatedPage {
             clazz = OrderProductToGiveAwayCardWidget.class)
     CardWebWidgetList<OrderProductToGiveAwayCardWidget, ToGiveAwayProductCardData> productCards;
 
-
     // Actions
 
     @Step("Нажать кнопку 'Выдать'")

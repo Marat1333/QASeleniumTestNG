@@ -7,15 +7,13 @@ public class ControlProductCardData {
     private String lmCode;
     private String barCode;
     private String title;
-
-
     private String reasonForNonGiveaway;
-    private Integer createdQuantity;
-    private Integer orderedQuantity;
-    private Integer collectedQuantity;
-    private Integer givenAwayQuantity;
-    private Integer refundToClient;
-    private Integer toGiveAwayQuantity;
+    private Double createdQuantity;
+    private Double orderedQuantity;
+    private Double collectedQuantity;
+    private Double givenAwayQuantity;
+    private Double refundToClient;
+    private Double toGiveAwayQuantity;
 
 
 }

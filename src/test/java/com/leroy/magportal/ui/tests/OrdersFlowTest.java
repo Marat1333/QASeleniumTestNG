@@ -2,7 +2,6 @@ package com.leroy.magportal.ui.tests;
 
 import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.constants.sales.SalesDocumentsConst;
@@ -86,7 +85,6 @@ public class OrdersFlowTest extends BasePAOTest {
         }
     }
 
-
     private void initCreateOrder(int productCount) {
         initCreateOrder(productCount, SalesDocumentsConst.States.CONFIRMED);
     }
@@ -107,7 +105,6 @@ public class OrdersFlowTest extends BasePAOTest {
             assertThat(resp, successful());
         }
     }
-
 
     @Test(description = "C23416311 Заказы.Оффлайн.Самовывоз.Переход из статуса Готов к сборке в статус Собран", groups = NEED_PRODUCTS_GROUP)
     public void testMoveFromReadyPickingToPicked() throws Exception {
@@ -169,18 +166,15 @@ public class OrdersFlowTest extends BasePAOTest {
         orderPage.shouldDocumentCountIs(1);
     }
 
-
     @Test(description = "C23428132 Заказы.Оффлайн.Самовывоз.", groups = NEED_PRODUCTS_GROUP)
     public void testOrderOfflinePickup() throws Exception {
         testOrderOffline(SalesDocumentsConst.GiveAwayPoints.PICKUP);
     }
 
-
     @Test(description = "C23437677 Заказы. Oффлайн. Доставка.", groups = NEED_PRODUCTS_GROUP)
     public void testOrderOfflineDelivery() throws Exception {
         testOrderOffline(SalesDocumentsConst.GiveAwayPoints.DELIVERY);
     }
-
 
     private void testOrderOffline(SalesDocumentsConst.GiveAwayPoints giveAwayPoint)
             throws Exception {
@@ -263,7 +257,6 @@ public class OrdersFlowTest extends BasePAOTest {
         orderPage.shouldDocumentCountIs(1);
     }
 
-
     @Test(description = "C23438407 Заказы. статус \"Собран\". Отображение полей на вкладке \"Контроль\". Контроль не пройден", groups = NEED_PRODUCTS_GROUP)
     public void testControlTabPickedNonControlled() throws Exception {
         initCreateOrder(1,SalesDocumentsConst.GiveAwayPoints.PICKUP, SalesDocumentsConst.States.PICKED);
@@ -300,9 +293,5 @@ public class OrdersFlowTest extends BasePAOTest {
         // Step 7:
         step("Сравнить количество на Контроль");
         controlPage.shouldControlledQuantityIs(1,0);
-
     }
-
-
-
 }

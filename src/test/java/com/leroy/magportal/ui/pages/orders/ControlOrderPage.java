@@ -11,7 +11,6 @@ import io.qameta.allure.Step;
  */
 public class ControlOrderPage extends OrderCreatedPage {
 
-
     @WebFindBy(xpath = "//div[contains(@class, 'Order-GiveAway-Card')]",
             clazz = OrderProductControlCardWidget.class)
     CardWebWidgetList<OrderProductControlCardWidget, ControlProductCardData> productCards;
@@ -24,7 +23,6 @@ public class ControlOrderPage extends OrderCreatedPage {
         productCards.get(index).clickExpandBtn();
         return this;
     }
-
 
     // Verifications
 
@@ -51,6 +49,23 @@ public class ControlOrderPage extends OrderCreatedPage {
                 "Неверное кол-во 'Контроль' у " + (index + 1) + "-ого товара");
         return this;
     }
+
+
+    
+    @Step("Проверить, кол-во 'Заказано', 'Собрано', 'Контроль' у {index}-ого товара равно {value}")
+    public ControlOrderPage orderPageVerifications(int index, int value) throws Exception {
+        index--;
+        anAssert.isEquals(productCards.get(index).getOrderedQuantity(), String.valueOf(value),
+                "Неверное кол-во 'Заказано' у " + (index + 1) + "-ого товара");
+        anAssert.isEquals(productCards.get(index).getCollectedQuantity(),String.valueOf(value),
+                "Неверное кол-во 'Собрано' у " + (index + 1) + "-ого товара");
+        anAssert.isEquals(productCards.get(index).getControlledQuantity(), String.valueOf(value),
+                "Неверное кол-во 'Контроль' у " + (index + 1) + "-ого товара");
+        return this;
+    }
+
+
+
 }
     
 

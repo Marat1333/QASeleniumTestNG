@@ -1,5 +1,4 @@
 package com.leroy.magportal.ui.pages.orders.widget;
-
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Button;
@@ -35,10 +34,6 @@ public class OrderProductControlCardWidget extends CardWebWidget<ControlProductC
             metaName = "Поле 'К выдаче'")
     EditBox toGiveAwayQuantity;
 
-    /*@WebFindBy(xpath = "",
-            metaName = "Кнопка свертывания")
-    Button collapseBtn; */
-
     @WebFindBy(xpath = "//button[contains(@class, 'lmui-Button-mt-gap2')]//span[contains(@class, 'lmui-Icon-size-ic2')]",
             metaName = "Кнопка развертывания")
     Button expandBtn;
@@ -58,28 +53,18 @@ public class OrderProductControlCardWidget extends CardWebWidget<ControlProductC
     }
 
     // Get data
-    public String getOrderedQuantity() {return orderedQuantity.getText(); }
+    public String getOrderedQuantity() {return orderedQuantity.getText();}
 
-    public String getCollectedQuantity() {
-        return collectedQuantity.getText();
-    }
+    public String getCollectedQuantity() {return collectedQuantity.getText();}
 
-    public String getControlledQuantity() {
-        return controlledQuantity.getText();
-    }
+    public String getControlledQuantity() {return controlledQuantity.getText();}
 
-    public String getToGiveAwayQuantity() {
-        return toGiveAwayQuantity.getText();
-    }
+    public String getToGiveAwayQuantity() {return toGiveAwayQuantity.getText();}
 
-    
    @Override
     public ControlProductCardData collectDataFromPage() {
        ControlProductCardData controlProductCardData = new ControlProductCardData();
-
        controlProductCardData.setTitle(title.getText());
-
-        return controlProductCardData;
+       return controlProductCardData;
     }
 }
-

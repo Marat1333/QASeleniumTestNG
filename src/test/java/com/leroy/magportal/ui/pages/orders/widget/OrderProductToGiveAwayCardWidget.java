@@ -27,12 +27,9 @@ public class OrderProductToGiveAwayCardWidget extends CardWebWidget<ToGiveAwayPr
     @WebFindBy(xpath = ".//div[contains(@class, 'ProductCardFooter__bigSide')]//p[2]", metaName = "Габариты")
     Element dimension;
 
-
     public String getToGiveAwayQuantity() {
         return toGiveAwayQuantity.getText();
     }
-
-
 
     // Actions
 

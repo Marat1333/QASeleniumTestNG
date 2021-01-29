@@ -29,8 +29,6 @@ public class OrderDraftProductCardWidget extends OrderProductCardWidget {
         ProductOrderCardWebData productOrderCardWebData = new ProductOrderCardWebData();
         productOrderCardWebData.setBarCode(ParserUtil.strWithOnlyDigits(barCode.getTextIfPresent()));
         productOrderCardWebData.setLmCode(lmCode.getText());
-        //productOrderCardWebData.setDepartment(ParserUtil.strToInt(department.getText()));
-        //productOrderCardWebData.setDimension(dimension.getText());
         productOrderCardWebData.setTitle(title.getText());
         productOrderCardWebData.setAvailableTodayQuantity(ParserUtil.strToDouble(availableQuantity.getText()));
         productOrderCardWebData.setSelectedQuantity(ParserUtil.strToDouble(orderedQuantityFld.getText()));
