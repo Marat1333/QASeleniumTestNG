@@ -42,12 +42,12 @@ public class SessionListPage extends CommonMagMobilePage {
 
     AndroidScrollView<SessionData> activeSessionScrollView = new AndroidScrollView<>(driver,
             AndroidScrollView.TYPICAL_LOCATOR,
-            ".//android.view.ViewGroup[android.view.ViewGroup[android.widget.TextView[contains(@text, '№')]] and not(android.view.ViewGroup[android.widget.TextView[contains(@text, '/')]])]",
+            ".//android.view.ViewGroup[@content-desc='activeSession']",
             ActiveSessionWidget.class);
 
     AndroidScrollView<FinishedSessionData> finishedSessionScrollView = new AndroidScrollView<>(driver,
             AndroidScrollView.TYPICAL_LOCATOR,
-            ".//android.view.ViewGroup[android.view.ViewGroup[android.widget.TextView[contains(@text, '№')]] and not(android.widget.TextView[contains(@text, 'Открыта')])]",
+            ".//android.view.ViewGroup[@content-desc='finishedSession']",
             FinishedSessionWidget.class);
 
     @Override
