@@ -30,6 +30,8 @@ public class CustomerClient extends BaseMashupClient {
     @Override
     protected void init() {
         gatewayUrl = EnvConstants.CLIENT_API_HOST;
+        jaegerHost = EnvConstants.CLIENTS_JAEGER_HOST;
+        jaegerService = EnvConstants.CLIENTS_JAEGER_SERVICE;
     }
 
     /**
