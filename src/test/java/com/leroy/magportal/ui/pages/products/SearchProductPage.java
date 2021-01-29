@@ -1,25 +1,33 @@
 package com.leroy.magportal.ui.pages.products;
 
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
+import com.leroy.common_mashups.catalogs.data.ProductDataList;
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magportal.ui.models.search.FiltersData;
 import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
 import com.leroy.magportal.ui.pages.products.widget.ExtendedProductCardTableViewWidget;
 import com.leroy.magportal.ui.pages.products.widget.ExtendedProductCardWidget;
 import com.leroy.magportal.ui.pages.products.widget.ProductCardTableViewWidget;
 import com.leroy.magportal.ui.pages.products.widget.ProductCardWidget;
-import com.leroy.magportal.ui.webelements.commonelements.*;
+import com.leroy.magportal.ui.webelements.commonelements.CalendarInputBox;
+import com.leroy.magportal.ui.webelements.commonelements.PuzCheckBox;
+import com.leroy.magportal.ui.webelements.commonelements.PuzComboBox;
+import com.leroy.magportal.ui.webelements.commonelements.PuzMultiSelectComboBox;
+import com.leroy.magportal.ui.webelements.commonelements.PuzRadioButton;
 import com.leroy.magportal.ui.webelements.searchelements.SupplierComboBox;
 import io.qameta.allure.Step;
-
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 public class SearchProductPage extends MagPortalBasePage {
 
@@ -637,8 +645,8 @@ public class SearchProductPage extends MagPortalBasePage {
 
     @Step("Проверить, что кол-во отображенных результатов соответствует кол-ву артикулов из ответа мэшапера")
     public SearchProductPage shouldResponseEntityEqualsToViewEntity(
-            ProductItemDataList responseData, FilterFrame frame, ViewMode mode) throws Exception {
-        List<ProductItemData> dataList = responseData.getItems();
+            ProductDataList responseData, FilterFrame frame, ViewMode mode) throws Exception {
+        List<ProductData> dataList = responseData.getItems();
         if (frame.equals(FilterFrame.MY_SHOP) && mode.equals(ViewMode.EXTENDED)) {
             anAssert.isTrue(dataList.size() == extendedProductCardList.getCount(),
                     "Кол-во артикулов отличается: отображено - " + extendedProductCardList.getCount() + ", получено - "

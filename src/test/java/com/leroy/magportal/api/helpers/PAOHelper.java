@@ -7,6 +7,8 @@ import static org.hamcrest.Matchers.hasSize;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
+import com.leroy.common_mashups.catalogs.data.CatalogSearchFilter;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.common_mashups.customer_accounts.clients.CustomerClient;
 import com.leroy.common_mashups.customer_accounts.data.CustomerData;
 import com.leroy.common_mashups.customer_accounts.data.CustomerListData;
@@ -24,8 +26,6 @@ import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.CartClient;
 import com.leroy.magmobile.api.clients.EstimateClient;
 import com.leroy.magmobile.api.clients.SalesDocSearchClient;
-import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
@@ -71,7 +71,7 @@ public class PAOHelper extends BaseHelper {
     @Step("Создает Список CartProductOrderData для СОЗДАНИЯ коозины")
     public List<CartProductOrderData> makeCartProducts(int necessaryCount) {
         List<CartProductOrderData> cartsProducts = new ArrayList<>();
-        for (ProductItemData productData : searchProductHelper.getProducts(necessaryCount)) {
+        for (ProductData productData : searchProductHelper.getProducts(necessaryCount)) {
             CartProductOrderData productCard = new CartProductOrderData(productData);
             cartsProducts.add(convertItemToCartProduct(productCard.getLmCode()));
         }
@@ -96,13 +96,13 @@ public class PAOHelper extends BaseHelper {
         filtersData.setAvs(false);
         filtersData.setTopEM(false);
         filtersData.setHasAvailableStock(true);
-        List<ProductItemData> productItemDataList = searchProductHelper.getProducts(2, filtersData);
+        List<ProductData> productIDataList = searchProductHelper.getProducts(2, filtersData);
         CartProductOrderData productWithNegativeBalance = new CartProductOrderData(
-                productItemDataList.get(0));
+                productIDataList.get(0));
         productWithNegativeBalance
-                .setQuantity(productItemDataList.get(0).getAvailableStock() + 10.0);
+                .setQuantity(productIDataList.get(0).getAvailableStock() + 10.0);
         CartProductOrderData productWithPositiveBalance = new CartProductOrderData(
-                productItemDataList.get(1));
+                productIDataList.get(1));
         productWithPositiveBalance.setQuantity(1.0);
 
         return Arrays.asList(productWithNegativeBalance, productWithPositiveBalance);

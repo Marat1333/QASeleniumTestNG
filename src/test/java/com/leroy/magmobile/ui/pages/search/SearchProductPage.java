@@ -1,15 +1,15 @@
 package com.leroy.magmobile.ui.pages.search;
 
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
+import com.leroy.common_mashups.catalogs.data.ProductDataList;
+import com.leroy.common_mashups.catalogs.data.ServiceItemData;
+import com.leroy.common_mashups.catalogs.data.ServiceItemDataList;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.configuration.Log;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
-import com.leroy.magmobile.api.data.catalog.ServiceItemData;
-import com.leroy.magmobile.api.data.catalog.ServiceItemDataList;
 import com.leroy.magmobile.ui.models.search.CommonSearchCardData;
 import com.leroy.magmobile.ui.models.search.ProductCardData;
 import com.leroy.magmobile.ui.models.search.ServiceCardData;
@@ -21,11 +21,10 @@ import com.leroy.magmobile.ui.pages.sales.widget.SearchProductCardWidget;
 import com.leroy.magmobile.ui.pages.sales.widget.SearchServiceCardWidget;
 import com.leroy.magmobile.ui.pages.search.modal.SortPage;
 import io.qameta.allure.Step;
-import org.openqa.selenium.By;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import org.openqa.selenium.By;
 
 public class SearchProductPage extends CommonMagMobilePage {
 
@@ -476,10 +475,10 @@ public class SearchProductPage extends CommonMagMobilePage {
     // API verifications
 
     @Step("Проверить, что фронт корректно отобразил ответ от сервера по запросу на catalog product")
-    public SearchProductPage shouldCatalogResponseEqualsContent(ProductItemDataList responseData, CardType type, Integer entityCount) throws Exception {
+    public SearchProductPage shouldCatalogResponseEqualsContent(ProductDataList responseData, CardType type, Integer entityCount) throws Exception {
         if (entityCount == null)
             entityCount = 30;
-        List<ProductItemData> productDataListFromResponse = responseData.getItems();
+        List<ProductData> productDataListFromResponse = responseData.getItems();
         List<ProductCardData> productCardDataListFromPage;
         switch (type) {
             case COMMON:
@@ -504,7 +503,7 @@ public class SearchProductPage extends CommonMagMobilePage {
     }
 
     public SearchProductPage shouldCatalogResponseEqualsContent(
-            ProductItemDataList responseData, CardType type) throws Exception {
+            ProductDataList responseData, CardType type) throws Exception {
         return shouldCatalogResponseEqualsContent(responseData, type, null);
     }
 

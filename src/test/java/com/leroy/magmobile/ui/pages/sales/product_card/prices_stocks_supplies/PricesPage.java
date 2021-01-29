@@ -1,20 +1,17 @@
 package com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies;
 
-import com.leroy.constants.TimeZone;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
+import com.leroy.common_mashups.catalogs.data.product.details.PriceInfo;
 import com.leroy.core.annotations.AppFindBy;
-import com.leroy.core.configuration.DriverFactory;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
-import com.leroy.magmobile.api.data.catalog.product.PriceInfo;
 import com.leroy.magmobile.api.data.shops.ShopData;
 import com.leroy.magmobile.ui.models.product_card.ShopCardData;
 import com.leroy.magmobile.ui.pages.sales.product_card.widgets.ShopPriceInfoWidget;
 import com.leroy.utils.DateTimeUtil;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
-
 import java.util.List;
 
 public class PricesPage extends ProductPricesQuantitySupplyPage {
@@ -60,7 +57,7 @@ public class PricesPage extends ProductPricesQuantitySupplyPage {
     }
 
     @Step("Проверить корректность данных")
-    public PricesPage shouldDataIsCorrect(CatalogProductData data) {
+    public PricesPage shouldDataIsCorrect(ProductData data) {
         String uiDateFormat = "d.MM.yy";
         String apiDateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 

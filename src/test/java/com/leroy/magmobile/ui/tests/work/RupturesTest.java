@@ -1,14 +1,14 @@
 package com.leroy.magmobile.ui.tests.work;
 
 import com.google.inject.Inject;
+import com.leroy.common_mashups.catalogs.data.CatalogSearchFilter;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.DefectConst;
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.ContextProvider;
 import com.leroy.core.UserSessionData;
 import com.leroy.core.pages.ChromeCertificateErrorPage;
-import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.ruptures.ActionData;
 import com.leroy.magmobile.api.data.ruptures.ResRuptureSessionDataList;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductData;
@@ -20,12 +20,25 @@ import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductCardPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.work.WorkPage;
-import com.leroy.magmobile.ui.pages.work.ruptures.*;
+import com.leroy.magmobile.ui.pages.work.ruptures.ActiveSessionPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.FinishedSessionPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.FinishedSessionRupturesActionsPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.RuptureCardPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.RupturesScannerPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.SessionListPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.RuptureData;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.SessionData;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.TaskData;
 import com.leroy.magmobile.ui.pages.work.ruptures.enums.Action;
-import com.leroy.magmobile.ui.pages.work.ruptures.modal.*;
+import com.leroy.magmobile.ui.pages.work.ruptures.modal.AcceptRecallFromRmModalPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.modal.AcceptStockCorrectionModalPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.modal.ActionModalPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.modal.AddDuplicateModalPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.modal.DeleteRuptureModalPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.modal.DeleteSessionModalPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.modal.ExitActiveSessionModalPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.modal.FinishSessionAcceptModalPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.modal.TasksListsModalPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.stockCorrectionPages.StockCorrectionAddProductWebPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.stockCorrectionPages.StockCorrectionCardWebPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.stockCorrectionPages.StockCorrectionLoginWebPage;
@@ -37,13 +50,19 @@ import com.leroy.utils.ParserUtil;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidDriver;
 import io.qameta.allure.Issue;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.Test;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.Test;
 
 public class RupturesTest extends AppBaseSteps {
 
@@ -207,7 +226,7 @@ public class RupturesTest extends AppBaseSteps {
 
     @Test(description = "C3272520 Создание сессии с экрана списка сессий")
     public void testCreateSessionFromSessionsListPage() throws Exception {
-        List<ProductItemData> randomProducts = searchProductHelper.getProducts(2);
+        List<ProductData> randomProducts = searchProductHelper.getProducts(2);
         String firstProductLmCode = randomProducts.get(0).getLmCode();
         String secondProductLmCode = randomProducts.get(1).getLmCode();
 
@@ -418,7 +437,7 @@ public class RupturesTest extends AppBaseSteps {
 
     @Test(description = "C3272522 Добавление перебоя в стандартную сессию")
     public void testAddRuptureToSession() throws Exception {
-        ProductItemData product = searchProductHelper.getProducts(1).get(0);
+        ProductData product = searchProductHelper.getProducts(1).get(0);
         int sessionId = createSessionWithProductWithoutActions();
 
         // Pre-conditions
@@ -466,7 +485,7 @@ public class RupturesTest extends AppBaseSteps {
 
     @Test(description = "C3272523 Добавление дубля в сессию при создании сессии по одному")
     public void testAddRuptureDuplicateToSession() throws Exception {
-        ProductItemData randomProduct = searchProductHelper.getProducts(0).get(0);
+        ProductData randomProduct = searchProductHelper.getProducts(1).get(0);
         String lmCode = randomProduct.getLmCode();
 
         // Pre-conditions
@@ -545,7 +564,7 @@ public class RupturesTest extends AppBaseSteps {
     @Issue("RUP-118")
     @Test(description = "C23418142 Добавление дубля в сессию при работе с существующей сессией")
     public void testAddRuptureDuplicateToExistedSession() throws Exception {
-        ProductItemData someProduct = searchProductHelper.getProducts(1).get(0);
+        ProductData someProduct = searchProductHelper.getProducts(1).get(0);
         String someLmCode = someProduct.getLmCode();
         RuptureProductData ruptureData = new RuptureProductData();
         ruptureData.generateRandomData();
@@ -1531,7 +1550,7 @@ public class RupturesTest extends AppBaseSteps {
         getUserSessionData().setUserShopId("35");
         getUserSessionData().setUserDepartmentId("5");
         CatalogSearchFilter filter = new CatalogSearchFilter().setDepartmentId("5");
-        List<ProductItemData> products = searchProductHelper.getProducts(1, filter);
+        List<ProductData> products = searchProductHelper.getProducts(1, filter);
         String ruptureLmCode = products.get(0).getLmCode();
 
         WorkPage workPage = loginAndGoTo("60069805", "Passwd12345", false, WorkPage.class);
@@ -1602,7 +1621,7 @@ public class RupturesTest extends AppBaseSteps {
         getUserSessionData().setUserDepartmentId("5");
 
         CatalogSearchFilter filter = new CatalogSearchFilter().setDepartmentId("5");
-        List<ProductItemData> products = searchProductHelper.getProducts(2, filter);
+        List<ProductData> products = searchProductHelper.getProducts(2, filter);
         String firstProductLm = products.get(0).getLmCode();
         String secondProductLm = products.get(1).getLmCode();
 
@@ -1652,7 +1671,7 @@ public class RupturesTest extends AppBaseSteps {
         getUserSessionData().setUserDepartmentId("5");
 
         CatalogSearchFilter filter = new CatalogSearchFilter().setDepartmentId("5");
-        List<ProductItemData> products = searchProductHelper.getProducts(2, filter);
+        List<ProductData> products = searchProductHelper.getProducts(2, filter);
         String firstProductLm = products.get(0).getLmCode();
         String secondProductLm = products.get(1).getLmCode();
 
@@ -1713,7 +1732,7 @@ public class RupturesTest extends AppBaseSteps {
         getUserSessionData().setUserDepartmentId("5");
 
         CatalogSearchFilter filter = new CatalogSearchFilter().setDepartmentId("5");
-        List<ProductItemData> products = searchProductHelper.getProducts(2, filter);
+        List<ProductData> products = searchProductHelper.getProducts(2, filter);
         String firstProductLm = products.get(0).getLmCode();
         String secondProductLm = products.get(1).getLmCode();
 
@@ -1776,7 +1795,7 @@ public class RupturesTest extends AppBaseSteps {
 
     @Test(description = "C23717536 Создание массовой сессии")
     public void testCreateBulkSession()  throws Exception {
-        List<ProductItemData> randomProducts = searchProductHelper.getProducts(2);
+        List<ProductData> randomProducts = searchProductHelper.getProducts(2);
         String firstProductLmCode = randomProducts.get(0).getLmCode();
         String secondProductLmCode = randomProducts.get(1).getLmCode();
 
@@ -1829,7 +1848,7 @@ public class RupturesTest extends AppBaseSteps {
 
     @Test(description = "C23437718 Добавление товаров в массовую сессию")
     public void testAddProductToBulkSession()  throws Exception {
-        List<ProductItemData> randomProducts = searchProductHelper.getProducts(3);
+        List<ProductData> randomProducts = searchProductHelper.getProducts(3);
         String firstProductLmCode = randomProducts.get(0).getLmCode();
         String secondProductLmCode = randomProducts.get(1).getLmCode();
         String thirdProductLmCode = randomProducts.get(2).getLmCode();
@@ -1873,7 +1892,7 @@ public class RupturesTest extends AppBaseSteps {
 
     @Test(description = "C23438915 Добавление дубля в массовую сессию")
     public void testAddDuplicateProductToBulkSession()  throws Exception {
-        List<ProductItemData> randomProducts = searchProductHelper.getProducts(2);
+        List<ProductData> randomProducts = searchProductHelper.getProducts(2);
         String firstProductLmCode = randomProducts.get(0).getLmCode();
         String secondProductLmCode = randomProducts.get(1).getLmCode();
         int sessionId = rupturesHelper.createBulkSession(Arrays.asList(firstProductLmCode, secondProductLmCode));
@@ -1916,7 +1935,7 @@ public class RupturesTest extends AppBaseSteps {
 
     @Test(description = "C23437719 Завершение массовой сессии")
     public void testFinishBulkSession() throws Exception {
-        List<ProductItemData> randomProducts = searchProductHelper.getProducts(2);
+        List<ProductData> randomProducts = searchProductHelper.getProducts(2);
         String firstProductLmCode = randomProducts.get(0).getLmCode();
         String secondProductLmCode = randomProducts.get(1).getLmCode();
         int sessionId = rupturesHelper.createBulkSession(Arrays.asList(firstProductLmCode, secondProductLmCode));
@@ -1967,7 +1986,7 @@ public class RupturesTest extends AppBaseSteps {
 
     @Test(description = "C23437720 Удаление массовой сессии")
     public void testDeleteBulkSession() throws Exception {
-        List<ProductItemData> randomProducts = searchProductHelper.getProducts(1);
+        List<ProductData> randomProducts = searchProductHelper.getProducts(1);
         String firstProductLmCode = randomProducts.get(0).getLmCode();
         int sessionId = rupturesHelper.createBulkSession(Collections.singletonList(firstProductLmCode));
         sessionsNumbers.set(sessionId);

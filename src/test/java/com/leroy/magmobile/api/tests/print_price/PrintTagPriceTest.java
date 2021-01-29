@@ -5,13 +5,12 @@ import static com.leroy.core.matchers.Matchers.valid;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.google.inject.Inject;
+import com.leroy.common_mashups.catalogs.clients.CatalogProductClient;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.UserSessionData;
-import com.leroy.magmobile.api.clients.CatalogProductClient;
 import com.leroy.magmobile.api.clients.PrintPriceClient;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
 import com.leroy.magmobile.api.data.print.PrintDepartmentList;
 import com.leroy.magmobile.api.data.print.PrintDepartments;
 import com.leroy.magmobile.api.data.print.PrintPrinterData;
@@ -40,7 +39,7 @@ public class PrintTagPriceTest extends BaseProjectApiTest {
     @BeforeClass
     private void beforeSetUp() {
         String[] lmCodes = searchProductHelper.getProducts(2).stream()
-                .map(ProductItemData::getLmCode).toArray(String[]::new);
+                .map(ProductData::getLmCode).toArray(String[]::new);
         initCatalogProductDataList(lmCodes);
     }
 
@@ -52,17 +51,17 @@ public class PrintTagPriceTest extends BaseProjectApiTest {
     }
 
     private void initCatalogProductDataList(String... lmCode) {
-        List<CatalogProductData> catalogProductList = new ArrayList<>();
+        List<ProductData> catalogProductList = new ArrayList<>();
         for (String eachLm : lmCode) {
             CatalogProductClient.Extend extendOptions = CatalogProductClient.Extend.builder()
                     .inventory(true).logistic(true).rating(true).build();
-            Response<CatalogProductData> resp = catalogProductClient.getProduct(
+            Response<ProductData> resp = catalogProductClient.getProduct(
                     eachLm, SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR, extendOptions);
             assertThat(resp, successful());
             catalogProductList.add(resp.asJson());
         }
         printTaskProductDataList = new ArrayList<>();
-        for (CatalogProductData catalogProductData : catalogProductList) {
+        for (ProductData catalogProductData : catalogProductList) {
             PrintTaskProductData printTaskProductData = new PrintTaskProductData();
             printTaskProductData.setLmCode(catalogProductData.getLmCode());
             printTaskProductData.setBarCode(catalogProductData.getBarCode());

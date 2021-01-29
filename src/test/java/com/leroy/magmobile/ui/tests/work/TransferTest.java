@@ -4,13 +4,14 @@ import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.google.inject.Inject;
+import com.leroy.common_mashups.catalogs.clients.CatalogProductClient;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
+import com.leroy.common_mashups.catalogs.data.ProductDataList;
+import com.leroy.common_mashups.catalogs.requests.GetCatalogProductSearchRequest;
 import com.leroy.constants.DefectConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.annotations.Smoke;
-import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.TransferClient;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.data.sales.transfer.TransferDataList;
 import com.leroy.magmobile.api.data.sales.transfer.TransferProductOrderData;
 import com.leroy.magmobile.api.data.sales.transfer.TransferSalesDocData;
@@ -18,7 +19,6 @@ import com.leroy.magmobile.api.data.sales.transfer.TransferSearchFilters;
 import com.leroy.magmobile.api.data.sales.transfer.TransferSearchProductData;
 import com.leroy.magmobile.api.data.sales.transfer.TransferSearchProductDataList;
 import com.leroy.magmobile.api.helpers.TransferHelper;
-import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.constants.TestDataConstants;
 import com.leroy.magmobile.ui.models.customer.MagCustomerData;
@@ -81,7 +81,7 @@ public class TransferTest extends AppBaseSteps {
     @Inject
     private TransferClient transferClient;
     @Inject
-    private CatalogSearchClient catalogSearchClient;
+    private CatalogProductClient catalogSearchClient;
 
     List<CustomTransferProduct> products = new ArrayList<>();
 
@@ -92,14 +92,14 @@ public class TransferTest extends AppBaseSteps {
         assertThat(resp, successful());
         List<TransferSearchProductData> transferProducts = resp.asJson().getItems();
         for (TransferSearchProductData transferProduct : transferProducts) {
-            Response<ProductItemDataList> respProduct = catalogSearchClient
-                    .searchProductsBy(new GetCatalogSearch().setByLmCode(transferProduct.getLmCode()));
+            Response<ProductDataList> respProduct = catalogSearchClient
+                    .searchProductsBy(new GetCatalogProductSearchRequest().setByLmCode(transferProduct.getLmCode()));
             assertThat(respProduct, successful());
-            ProductItemData productItemData = respProduct.asJson().getItems().get(0);
+            ProductData productIData = respProduct.asJson().getItems().get(0);
             CustomTransferProduct customProduct = new CustomTransferProduct();
-            customProduct.setLmCode(productItemData.getLmCode());
-            customProduct.setBarCode(productItemData.getBarCode());
-            customProduct.setTitle(productItemData.getTitle());
+            customProduct.setLmCode(productIData.getLmCode());
+            customProduct.setBarCode(productIData.getBarCode());
+            customProduct.setTitle(productIData.getTitle());
             TransferSearchProductData.Source source = transferProduct.getSource().get(0);
             if (source.getMonoPallets() != null) {
                 customProduct.setMonoPalletCapacity(transferProduct.getSource().get(0)
