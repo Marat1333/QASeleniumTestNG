@@ -44,6 +44,8 @@ public class CatalogProductClient extends BaseMashupClient {
     protected void init() {
         gatewayUrl = EnvConstants.SEARCH_API_HOST;
         oldGatewayUrl = EnvConstants.MAIN_API_HOST;
+        jaegerHost = EnvConstants.PRODUCTSEARCH_JAEGER_HOST;
+        jaegerService = EnvConstants.PRODUCTSEARCH_JAEGER_SERVICE;
     }
 
     @Builder
