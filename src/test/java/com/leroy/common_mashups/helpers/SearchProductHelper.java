@@ -2,6 +2,8 @@ package com.leroy.common_mashups.helpers;
 
 import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
 
 import com.google.inject.Inject;
 import com.leroy.common_mashups.catalogs.clients.CatalogProductClient;
@@ -57,9 +59,9 @@ public class SearchProductHelper extends BaseHelper {
         while (i < necessaryCount) {
             Response<ProductDataList> resp = catalogProductClient
                     .searchProductsBy(filtersData, startFrom, MAX_PAGE_SIZE);
-            assertThat("Catalog search request has failed.", resp, successful());
+            assertThat("Product search request has failed.", resp, successful());
             List<ProductData> items = resp.asJson().getItems();
-
+            assertThat("Product search request does NOT contain any data.", items, hasSize(greaterThan(0)));
             for (ProductData item : items) {
                 if (!Arrays.asList(badLmCodes).contains(item.getLmCode())
                         && Strings.isNotNullAndNotEmpty(item.getTitle())) {
