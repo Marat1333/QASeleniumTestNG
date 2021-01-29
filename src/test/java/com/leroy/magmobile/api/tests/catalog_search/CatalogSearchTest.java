@@ -523,7 +523,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
                 .setPageSize(20)
                 .setTop(TOP)
                 .setGamma(GAMMA)
-                .setAvsDate(avs)
+                .setAvsDate(avs)//TODO fail due to: "neq|null"
                 .setCtm(ctm)
                 .setTopEM(topEm);
         Response<ProductDataList> response = catalogSearchClient.searchProductsBy(fewCategoriesParams);

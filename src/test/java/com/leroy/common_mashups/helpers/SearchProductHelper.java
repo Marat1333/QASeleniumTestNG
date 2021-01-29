@@ -56,7 +56,7 @@ public class SearchProductHelper extends BaseHelper {
         List<ProductData> resultList = new ArrayList<>();
         while (i < necessaryCount) {
             Response<ProductDataList> resp = catalogProductClient
-                    .searchProductsBy(filtersData, startFrom, necessaryCount);
+                    .searchProductsBy(filtersData, startFrom, MAX_PAGE_SIZE);
             assertThat("Catalog search request has failed.", resp, successful());
             List<ProductData> items = resp.asJson().getItems();
 
@@ -80,7 +80,7 @@ public class SearchProductHelper extends BaseHelper {
                     break;
                 }
             }
-            startFrom += necessaryCount;
+            startFrom += MAX_PAGE_SIZE;
         }
 
         return resultList.stream().limit(necessaryCount).collect(Collectors.toList());
@@ -159,7 +159,7 @@ public class SearchProductHelper extends BaseHelper {
         return productData.get((int) (Math.random() * productData.size()));
     }
 
-    @Step("Get product with{isEmpty==false} OR without{isEmpty==true} complementary product {isEmpty}")
+    @Step("Get product with{withoutComplimentary==false} OR without complementary product")
     public CatalogComplementaryProductsDataV2 getComplementaryProductData(
             boolean withoutComplimentary) {
         List<ProductData> itemsList;

@@ -485,7 +485,7 @@ public class RupturesTest extends AppBaseSteps {
 
     @Test(description = "C3272523 Добавление дубля в сессию при создании сессии по одному")
     public void testAddRuptureDuplicateToSession() throws Exception {
-        ProductData randomProduct = searchProductHelper.getProducts(0).get(0);
+        ProductData randomProduct = searchProductHelper.getProducts(1).get(0);
         String lmCode = randomProduct.getLmCode();
 
         // Pre-conditions
