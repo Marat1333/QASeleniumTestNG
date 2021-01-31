@@ -14,5 +14,6 @@ public class ResRuptureSessionData {
     private String userFullName;
     private Integer sessionId;
     private String status;
+    private String type;
 
 }

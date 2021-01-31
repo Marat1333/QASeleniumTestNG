@@ -2,6 +2,8 @@ package com.leroy.common_mashups.helpers;
 
 import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
 
 import com.google.inject.Inject;
 import com.leroy.common_mashups.catalogs.clients.CatalogProductClient;
@@ -56,10 +58,10 @@ public class SearchProductHelper extends BaseHelper {
         List<ProductData> resultList = new ArrayList<>();
         while (i < necessaryCount) {
             Response<ProductDataList> resp = catalogProductClient
-                    .searchProductsBy(filtersData, startFrom, necessaryCount);
-            assertThat("Catalog search request has failed.", resp, successful());
+                    .searchProductsBy(filtersData, startFrom, MAX_PAGE_SIZE);
+            assertThat("Product search request has failed.", resp, successful());
             List<ProductData> items = resp.asJson().getItems();
-
+            assertThat("Product search request does NOT contain any data.", items, hasSize(greaterThan(0)));
             for (ProductData item : items) {
                 if (!Arrays.asList(badLmCodes).contains(item.getLmCode())
                         && Strings.isNotNullAndNotEmpty(item.getTitle())) {
@@ -80,7 +82,7 @@ public class SearchProductHelper extends BaseHelper {
                     break;
                 }
             }
-            startFrom += necessaryCount;
+            startFrom += MAX_PAGE_SIZE;
         }
 
         return resultList.stream().limit(necessaryCount).collect(Collectors.toList());
@@ -159,7 +161,7 @@ public class SearchProductHelper extends BaseHelper {
         return productData.get((int) (Math.random() * productData.size()));
     }
 
-    @Step("Get product with{isEmpty==false} OR without{isEmpty==true} complementary product {isEmpty}")
+    @Step("Get product with{withoutComplimentary==false} OR without complementary product")
     public CatalogComplementaryProductsDataV2 getComplementaryProductData(
             boolean withoutComplimentary) {
         List<ProductData> itemsList;
