@@ -13,7 +13,6 @@ import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.core.api.ThreadApiClient;
 import com.leroy.core.configuration.Log;
 import com.leroy.magportal.api.clients.OrderClient;
-import com.leroy.magportal.api.clients.ShopsClient;
 import com.leroy.magportal.api.constants.DeliveryServiceTypeEnum;
 import com.leroy.magportal.api.constants.LmCodeTypeEnum;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
@@ -59,7 +58,7 @@ public class AemHelper extends BaseHelper {
     @Inject
     private PaymentHelper paymentHelper;
     @Inject
-    private ShopsClient shopsClient;
+    private ShopsHelper shopsHelper;
     @Inject
     private SearchProductHelper searchProductHelper;
     @Inject
@@ -181,8 +180,8 @@ public class AemHelper extends BaseHelper {
         StepStartPayload payload = new StepStartPayload();
 
         payload.setReferral("");
-        payload.setRegionId(shopsClient.getRegionIdByShopId(shopId));
-        payload.setContextStoreId(shopsClient.getRefStoreIdByShopId(shopId));
+        payload.setRegionId(shopsHelper.getRegionIdByShopId(shopId));
+        payload.setContextStoreId(shopsHelper.getRefStoreIdByShopId(shopId));
         payload.setProducts(makeProducts(productCount, shopId, orderData));
 
         return payload;
@@ -345,6 +344,6 @@ public class AemHelper extends BaseHelper {
             shopId = userSessionData().getUserShopId();
         }
 
-        return shopsClient.getShopById(shopId);
+        return shopsHelper.getShopById(shopId);
     }
 }

@@ -2,14 +2,14 @@ package com.leroy.magportal.ui.tests;
 
 import com.google.inject.Inject;
 import com.leroy.common_mashups.catalogs.clients.CatalogProductClient;
-import com.leroy.common_mashups.catalogs.data.product.CatalogProductData;
 import com.leroy.common_mashups.catalogs.data.CatalogSimilarProductsDataV1;
-import com.leroy.common_mashups.catalogs.data.product.ProductData;
+import com.leroy.common_mashups.catalogs.data.NearestShopsData;
 import com.leroy.common_mashups.catalogs.data.ProductDataList;
+import com.leroy.common_mashups.catalogs.data.product.CatalogProductData;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.common_mashups.catalogs.requests.GetCatalogProductSearchRequest;
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.ContextProvider;
-import com.leroy.magportal.api.data.catalog.shops.NearestShopsData;
 import com.leroy.magportal.ui.WebBaseSteps;
 import com.leroy.magportal.ui.constants.search.CatalogSearchParams;
 import com.leroy.magportal.ui.models.search.NomenclaturePath;

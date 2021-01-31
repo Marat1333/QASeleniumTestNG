@@ -5,6 +5,8 @@ import com.leroy.common_mashups.catalogs.data.CatalogComplementaryProductsDataV2
 import com.leroy.common_mashups.catalogs.data.CatalogSearchFilter;
 import com.leroy.common_mashups.catalogs.data.CatalogSimilarProductsDataV1;
 import com.leroy.common_mashups.catalogs.data.CatalogSimilarProductsDataV2;
+import com.leroy.common_mashups.catalogs.data.NearestShopsData;
+import com.leroy.common_mashups.catalogs.data.NearestShopsV2Data;
 import com.leroy.common_mashups.catalogs.data.ProductDataList;
 import com.leroy.common_mashups.catalogs.data.ServiceItemDataList;
 import com.leroy.common_mashups.catalogs.data.product.CatalogProductData;
@@ -28,10 +30,9 @@ import com.leroy.common_mashups.catalogs.requests.obsolete.GetCatalogProduct;
 import com.leroy.common_mashups.catalogs.requests.obsolete.GetCatalogShops;
 import com.leroy.common_mashups.catalogs.requests.obsolete.GetCatalogSupplierRequest;
 import com.leroy.constants.EnvConstants;
-import com.leroy.constants.sales.SalesDocumentsConst;
+import com.leroy.constants.sales.SalesDocumentsConst.GiveAwayPoints;
 import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.supply_plan.suppliers.SupplierDataList;
-import com.leroy.magportal.api.data.catalog.shops.NearestShopsData;
 import io.qameta.allure.Step;
 import lombok.Builder;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -50,6 +51,7 @@ public class CatalogProductClient extends BaseMashupClient {
 
     @Builder
     public static class Extend {
+
         private boolean rating;
         private boolean logistic;
         private boolean inventory;
@@ -57,12 +59,15 @@ public class CatalogProductClient extends BaseMashupClient {
         @Override
         public String toString() {
             StringBuilder str = new StringBuilder();
-            if (rating)
+            if (rating) {
                 str.append("rating,");
-            if (logistic)
+            }
+            if (logistic) {
                 str.append("logistic,");
-            if (inventory)
+            }
+            if (inventory) {
                 str.append("inventory,");
+            }
             if (str.length() > 0) {
                 str.setLength(str.length() - 1);
             }
@@ -70,12 +75,28 @@ public class CatalogProductClient extends BaseMashupClient {
         }
     }
 
-    @Step("Get Catalog Product for lmCode={lmCode}")
+    @Step("Get Catalog Product V2 for lmCode={lmCode} with users shopId")
     public Response<CatalogProductData> getProductV2(String lmCode) {
+        return getProductV2(lmCode, getUserSessionData().getUserShopId());
+    }
+
+    @Step("Get Catalog Product V2 for lmCode={lmCode} and shopId={shopId}")
+    public Response<CatalogProductData> getProductV2(String lmCode, String shopId) {
+        GetCatalogProductV2Request req = new GetCatalogProductV2Request();
+        req.setLmCode(lmCode);
+        req.setShopId(shopId);
+        return execute(req, CatalogProductData.class);
+    }
+
+    @Step("Get Catalog Product V2 with Extend and pointOfGiveAway")
+    public Response<CatalogProductData> getProductV2(String lmCode, GiveAwayPoints pointOfGiveAway,
+            Extend extend) {
         GetCatalogProductV2Request req = new GetCatalogProductV2Request();
         req.setLmCode(lmCode);
         req.setShopId(getUserSessionData().getUserShopId());
-        return execute(req, CatalogProductData.class, oldGatewayUrl);
+        req.setPointOfGiveAway(pointOfGiveAway.getApiVal());
+        req.setExtend(extend.toString());
+        return execute(req, CatalogProductData.class);
     }
 
     @Step("Get Catalog Product for lmCode={lmCode}")
@@ -88,13 +109,13 @@ public class CatalogProductClient extends BaseMashupClient {
 
     @Step("Get Catalog Product for lmCode={lmCode}, pointOfGiveAway={pointOfGiveAway}, extend={extend}")
     public Response<ProductData> getProduct(
-            String lmCode, SalesDocumentsConst.GiveAwayPoints pointOfGiveAway, Extend extend) {
-        return getProduct(getUserSessionData().getUserShopId(), lmCode,  pointOfGiveAway, extend);
+            String lmCode, GiveAwayPoints pointOfGiveAway, Extend extend) {
+        return getProduct(getUserSessionData().getUserShopId(), lmCode, pointOfGiveAway, extend);
     }
 
     @Step("Get Catalog Product for lmCode={lmCode}, pointOfGiveAway={pointOfGiveAway}, extend={extend}")
     public Response<ProductData> getProduct(String shopId,
-                                                   String lmCode, SalesDocumentsConst.GiveAwayPoints pointOfGiveAway, Extend extend) {
+            String lmCode, GiveAwayPoints pointOfGiveAway, Extend extend) {
         GetCatalogProduct req = new GetCatalogProduct();
         req.setLmCode(lmCode);
         req.setShopId(shopId);
@@ -104,7 +125,8 @@ public class CatalogProductClient extends BaseMashupClient {
     }
 
     @Step("Get Product Reviews for lmCode={lmCode}, pageNumber={pageNumber}, pageSize={pageSize}")
-    public Response<CatalogReviewsOfProductList> getProductReviews(String lmCode, int pageNumber, int pageSize) {
+    public Response<CatalogReviewsOfProductList> getProductReviews(String lmCode, int pageNumber,
+            int pageSize) {
         GetCatalogProductReviewsRequest params = new GetCatalogProductReviewsRequest()
                 .setLmCode(lmCode)
                 .setShopId(getUserSessionData().getUserShopId())
@@ -149,8 +171,18 @@ public class CatalogProductClient extends BaseMashupClient {
         return execute(params, Object.class, oldGatewayUrl);
     }
 
+    @Step("Get Similar products for lmCode={lmCode}, shopId={shopId}")
+    public Response<CatalogSimilarProductsDataV1> getSimilarProductsV1(String lmCode,
+            String shopId) {
+        GetCatalogSimilarProductsV1Request params = new GetCatalogSimilarProductsV1Request()
+                .setLmCode(lmCode)
+                .setShopId(shopId);
+        return execute(params, CatalogSimilarProductsDataV1.class);
+    }
+
     @Step("Get Similar products for lmCode={lmCode}, extend={extend}")
-    public Response<CatalogSimilarProductsDataV1> getSimilarProductsV1(String lmCode, Extend extend) {
+    public Response<CatalogSimilarProductsDataV1> getSimilarProductsV1(String lmCode,
+            Extend extend) {
         GetCatalogSimilarProductsV1Request params = new GetCatalogSimilarProductsV1Request()
                 .setLmCode(lmCode)
                 .setShopId(getUserSessionData().getUserShopId())
@@ -158,12 +190,21 @@ public class CatalogProductClient extends BaseMashupClient {
         return execute(params, CatalogSimilarProductsDataV1.class);
     }
 
-    @Step("Get Similar products for lmCode={lmCode}, extend={extend}")
-    public Response<CatalogSimilarProductsDataV2> getSimilarProductsV2(String lmCode, Extend extend) {
+    @Step("Get Similar products for lmCode={lmCode}")
+    public Response<CatalogSimilarProductsDataV2> getSimilarProductsV2(String lmCode,
+            Extend extend) {
         GetCatalogSimilarProductsV2Request params = new GetCatalogSimilarProductsV2Request()
                 .setLmCode(lmCode)
                 .setShopId(getUserSessionData().getUserShopId())
                 .setExtend(extend.toString());
+        return execute(params, CatalogSimilarProductsDataV2.class);
+    }
+
+    @Step("Get Similar products for lmCode={lmCode} and user's shopId")
+    public Response<CatalogSimilarProductsDataV2> getSimilarProductsV2(String lmCode) {
+        GetCatalogSimilarProductsV2Request params = new GetCatalogSimilarProductsV2Request()
+                .setLmCode(lmCode)
+                .setShopId(getUserSessionData().getUserShopId());
         return execute(params, CatalogSimilarProductsDataV2.class);
     }
 
@@ -191,28 +232,38 @@ public class CatalogProductClient extends BaseMashupClient {
     }
 
     @Step("Search for products")
-    public Response<ProductDataList> searchProductsBy(CatalogSearchFilter filters, Integer startFrom, Integer pageSize) {
+    public Response<ProductDataList> searchProductsBy(CatalogSearchFilter filters,
+            Integer startFrom, Integer pageSize) {
         GetCatalogProductSearchRequest req = new GetCatalogProductSearchRequest();
         req.setLdapHeader(getUserSessionData().getUserLdap());
         req.setShopId(getUserSessionData().getUserShopId());
-        if (filters.getDepartmentId() != null)
+        if (filters.getDepartmentId() != null) {
             req.setDepartmentId(filters.getDepartmentId());
-        if (filters.getHasAvailableStock() != null)
+        }
+        if (filters.getHasAvailableStock() != null) {
             req.setHasAvailableStock(filters.getHasAvailableStock());
-        if (filters.getTopEM() != null)
+        }
+        if (filters.getTopEM() != null) {
             req.setTopEM(filters.getTopEM());
-        if (filters.getBestPrice() != null)
+        }
+        if (filters.getBestPrice() != null) {
             req.setBestPrice(filters.getBestPrice());
-        if (filters.getTop1000() != null)
+        }
+        if (filters.getTop1000() != null) {
             req.setTop1000(filters.getTop1000());
-        if (filters.getLmCode() != null)
+        }
+        if (filters.getLmCode() != null) {
             req.setByLmCode(filters.getLmCode());
-        if (filters.getAvs() != null && filters.getAvs())
+        }
+        if (filters.getAvs() != null && filters.getAvs()) {
             req.setAvsDate("neq|null");
-        if (startFrom != null)
+        }
+        if (startFrom != null) {
             req.setStartFrom(startFrom);
-        if (pageSize != null)
+        }
+        if (pageSize != null) {
             req.setPageSize(pageSize);
+        }
         return execute(req, ProductDataList.class);
     }
 
@@ -251,11 +302,31 @@ public class CatalogProductClient extends BaseMashupClient {
         return execute(req, CatalogProductData.class);
     }
 
-    @Step("Get stocks and prices in nearest shops")
+    @Step("Get stocks and prices in nearest shops for users shopId")
     public Response<NearestShopsData> getNearestShopsInfo(String lmCode) {
+        return getNearestShopsInfo(lmCode, getUserSessionData().getUserShopId());
+    }
+
+    @Step("Get stocks and prices in nearest shops")
+    public Response<NearestShopsData> getNearestShopsInfo(String lmCode, String shopId) {
         GetNearestShopsRequest req = new GetNearestShopsRequest()
+                .setVersion("v1")
                 .setLmCode(lmCode)
-                .setShopId(getUserSessionData().getUserShopId());
+                .setShopId(shopId);
         return execute(req, NearestShopsData.class);
+    }
+
+    @Step("Get stocks and prices in nearest shops for users shopId V2")
+    public Response<NearestShopsV2Data> getNearestShopsInfoV2(String lmCode) {
+        return getNearestShopsInfoV2(lmCode, getUserSessionData().getUserShopId());
+    }
+
+    @Step("Get stocks and prices in nearest shops V2")
+    public Response<NearestShopsV2Data> getNearestShopsInfoV2(String lmCode, String shopId) {
+        GetNearestShopsRequest req = new GetNearestShopsRequest()
+                .setVersion("v2")
+                .setLmCode(lmCode)
+                .setShopId(shopId);
+        return execute(req, NearestShopsV2Data.class);
     }
 }

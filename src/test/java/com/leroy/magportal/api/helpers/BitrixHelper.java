@@ -17,7 +17,6 @@ import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.core.api.ThreadApiClient;
 import com.leroy.core.configuration.Log;
 import com.leroy.magportal.api.clients.OrderClient;
-import com.leroy.magportal.api.clients.ShopsClient;
 import com.leroy.magportal.api.constants.DeliveryServiceTypeEnum;
 import com.leroy.magportal.api.constants.LmCodeTypeEnum;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
@@ -45,7 +44,7 @@ public class BitrixHelper extends BaseHelper {
     @Inject
     private PaymentHelper paymentHelper;
     @Inject
-    private ShopsClient shopsClient;
+    private ShopsHelper shopsHelper;
     @Inject
     private SearchProductHelper searchProductHelper;
     @Inject
@@ -339,7 +338,7 @@ public class BitrixHelper extends BaseHelper {
             shopId = userSessionData().getUserShopId();
         }
 
-        return shopsClient.getShopById(shopId);
+        return shopsHelper.getShopById(shopId);
     }
 
     private String convertShopId(Integer shopId) {

@@ -9,4 +9,12 @@ public class GetCatalogProductV2Request extends CommonLegoRequest<GetCatalogProd
     public GetCatalogProductV2Request setLmCode(String lmCode) {
         return queryParam("lmCode", lmCode);
     }
+
+    public GetCatalogProductV2Request setExtend(String value) {
+        return queryParam("extend", value);
+    }
+
+    public GetCatalogProductV2Request setPointOfGiveAway(String value) {
+        return queryParam("pointOfGiveAway", value);
+    }
 }

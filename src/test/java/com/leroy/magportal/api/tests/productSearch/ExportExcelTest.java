@@ -1,12 +1,9 @@
-package com.leroy.magportal.api.tests.search;
+package com.leroy.magportal.api.tests.productSearch;
 
-import com.google.inject.Inject;
 import com.leroy.common_mashups.catalogs.data.product.ProductData;
-import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.Units;
 import com.leroy.core.UserSessionData;
-import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
 import com.leroy.magportal.ui.constants.search.CatalogSearchParams;
 import com.leroy.utils.DateTimeUtil;
 import com.leroy.utils.ParserUtil;
@@ -19,10 +16,7 @@ import java.util.List;
 import java.util.Map;
 import org.testng.annotations.Test;
 
-public class ExportExcelTest extends BaseMagPortalApiTest {
-
-    @Inject
-    private SearchProductHelper searchProductHelper;
+public class ExportExcelTest extends BaseCatalogTest {
 
     private String buildUri(String resource, Map<String, String> queryParamsMap) {
         String result = EnvConstants.URL_MAG_PORTAL_OLD + "/api" + resource + "?";
@@ -58,8 +52,9 @@ public class ExportExcelTest extends BaseMagPortalApiTest {
             softAssert().isEquals(apiData.getGamma(), row.getCellStringValueByIndex(4), "gamma");
             String avsDate;
             if (apiData.getAvsDate() != null) {
-                avsDate = DateTimeUtil.localDateToStr(apiData.getAvsDateAsZonedDateTime().toLocalDate(),
-                        DateTimeUtil.DD_MM_YYYY);
+                avsDate = DateTimeUtil
+                        .localDateToStr(apiData.getAvsDateAsZonedDateTime().toLocalDate(),
+                                DateTimeUtil.DD_MM_YYYY);
             } else {
                 avsDate = no;
             }

@@ -1,17 +1,20 @@
 package com.leroy.magportal.ui.pages.products;
 
-import com.leroy.core.annotations.WebFindBy;
-import com.leroy.core.web_elements.general.*;
-import com.leroy.common_mashups.catalogs.data.product.details.Characteristic;
+import com.leroy.common_mashups.catalogs.data.NearestShopsData;
 import com.leroy.common_mashups.catalogs.data.product.CatalogProductData;
-import com.leroy.magportal.api.data.catalog.shops.NearestShopsData;
+import com.leroy.common_mashups.catalogs.data.product.details.Characteristic;
+import com.leroy.core.annotations.WebFindBy;
+import com.leroy.core.web_elements.general.Button;
+import com.leroy.core.web_elements.general.EditBox;
+import com.leroy.core.web_elements.general.Element;
+import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.core.web_elements.general.Image;
 import com.leroy.magportal.ui.models.search.NomenclaturePath;
 import com.leroy.magportal.ui.models.search.ShopCardData;
 import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
 import com.leroy.magportal.ui.pages.products.widget.ShopCardWidget;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -289,7 +292,7 @@ public class ProductCardPage extends MagPortalBasePage {
             anAssert.isEquals(data.getName().trim(), nearestShopsData.getName().trim(), "City name");
             anAssert.isEquals(data.getAddress().trim(), nearestShopsData.getCityName() + ", " +
                     ParserUtil.replaceSpecialSymbols(nearestShopsData.getAddress()).trim(), "Address");
-            anAssert.isEquals(ParserUtil.strToDouble(data.getPrice()), ParserUtil.strToDouble(nearestShopsData.getPrice()),
+            anAssert.isEquals(ParserUtil.strToDouble(data.getPrice()), nearestShopsData.getPrice(),
                     "Price");
             anAssert.isEquals(data.getQuantity(), nearestShopsData.getAvailableStock(), "Stocks");
             anAssert.isEquals(data.getDistance(),
