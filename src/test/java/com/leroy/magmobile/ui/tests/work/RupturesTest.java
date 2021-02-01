@@ -20,25 +20,12 @@ import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductCardPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.work.WorkPage;
-import com.leroy.magmobile.ui.pages.work.ruptures.ActiveSessionPage;
-import com.leroy.magmobile.ui.pages.work.ruptures.FinishedSessionPage;
-import com.leroy.magmobile.ui.pages.work.ruptures.FinishedSessionRupturesActionsPage;
-import com.leroy.magmobile.ui.pages.work.ruptures.RuptureCardPage;
-import com.leroy.magmobile.ui.pages.work.ruptures.RupturesScannerPage;
-import com.leroy.magmobile.ui.pages.work.ruptures.SessionListPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.*;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.RuptureData;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.SessionData;
 import com.leroy.magmobile.ui.pages.work.ruptures.data.TaskData;
 import com.leroy.magmobile.ui.pages.work.ruptures.enums.Action;
-import com.leroy.magmobile.ui.pages.work.ruptures.modal.AcceptRecallFromRmModalPage;
-import com.leroy.magmobile.ui.pages.work.ruptures.modal.AcceptStockCorrectionModalPage;
-import com.leroy.magmobile.ui.pages.work.ruptures.modal.ActionModalPage;
-import com.leroy.magmobile.ui.pages.work.ruptures.modal.AddDuplicateModalPage;
-import com.leroy.magmobile.ui.pages.work.ruptures.modal.DeleteRuptureModalPage;
-import com.leroy.magmobile.ui.pages.work.ruptures.modal.DeleteSessionModalPage;
-import com.leroy.magmobile.ui.pages.work.ruptures.modal.ExitActiveSessionModalPage;
-import com.leroy.magmobile.ui.pages.work.ruptures.modal.FinishSessionAcceptModalPage;
-import com.leroy.magmobile.ui.pages.work.ruptures.modal.TasksListsModalPage;
+import com.leroy.magmobile.ui.pages.work.ruptures.modal.*;
 import com.leroy.magmobile.ui.pages.work.ruptures.stockCorrectionPages.StockCorrectionAddProductWebPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.stockCorrectionPages.StockCorrectionCardWebPage;
 import com.leroy.magmobile.ui.pages.work.ruptures.stockCorrectionPages.StockCorrectionLoginWebPage;
@@ -50,19 +37,14 @@ import com.leroy.utils.ParserUtil;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidDriver;
 import io.qameta.allure.Issue;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.Test;
 
 public class RupturesTest extends AppBaseSteps {
 
@@ -82,6 +64,11 @@ public class RupturesTest extends AppBaseSteps {
         sessionData.setUserDepartmentId("15");
         sessionData.setAccessToken(getAccessToken());
         return sessionData;
+    }
+
+    @BeforeClass
+    private void clearSessionsInUsersDepartment() {
+        rupturesHelper.deleteAllSessionInCurrentDepartment();
     }
 
     @AfterMethod
