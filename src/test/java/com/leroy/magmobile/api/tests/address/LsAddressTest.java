@@ -76,19 +76,9 @@ public class LsAddressTest extends BaseProjectApiTest {
 
     @Test(description = "C3316284 lsAddress GET alleys")
     public void testGetAlleys() {
+        step("Get list of alleys");
         Response<AlleyDataItems> resp = lsAddressClient.searchForAlleys();
-        assertThat(resp, successful());
-        List<AlleyData> items = resp.asJson().getItems();
-        assertThat("items count", items, hasSize(greaterThan(0)));
-        for (AlleyData alleyData : items) {
-            assertThat("id", alleyData.getId(), greaterThan(0));
-            assertThat("count", alleyData.getCount(), notNullValue());
-            assertThat("type", alleyData.getType(), notNullValue());
-            assertThat("storeId", alleyData.getStoreId(), is(Integer.parseInt(getUserSessionData().getUserShopId())));
-            assertThat("departmentId", alleyData.getDepartmentId(),
-                    is(Integer.parseInt(getUserSessionData().getUserDepartmentId())));
-            assertThat("code", alleyData.getCode(), not(emptyOrNullString()));
-        }
+        lsAddressClient.assertThatGetAlleyList(resp);
     }
 
     @Test(description = "C23415877 lsAddress PUT alleys - rename alleys")

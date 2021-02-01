@@ -19,7 +19,7 @@ public class LsAddressHelper extends BaseHelper {
     private LsAddressClient lsAddressClient;
 
     @Step("Create new alley")
-    public Response<AlleyData> createAlley(AlleyData alleyData){
+    public Response<AlleyData> createAlley(AlleyData alleyData) {
         alleyData.setType(0);
         alleyData.setCode("Alley_C3316285");
         return lsAddressClient.createAlley(alleyData);

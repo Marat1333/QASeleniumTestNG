@@ -8,6 +8,8 @@ import com.leroy.magmobile.api.data.address.cellproducts.*;
 import com.leroy.magmobile.api.helpers.LsAddressHelper;
 import com.leroy.magmobile.api.requests.address.*;
 import io.qameta.allure.Step;
+import org.assertj.core.internal.Integers;
+import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.List;
@@ -208,6 +210,23 @@ public class LsAddressClient extends BaseMashupClient {
         assertThat("departmentId", actualData.getDepartmentId(),
                 is(Integer.valueOf(getUserSessionData().getUserDepartmentId())));
         assertThat("code", actualData.getCode(), is(alleyData.getCode()));
+    }
+
+    public void assertThatGetAlleyList(Response<AlleyDataItems> resp) {
+        assertThatResponseIsOk(resp);
+        List<AlleyData> items = resp.asJson().getItems();
+        assertThat("items count", items, hasSize(greaterThan(0)));
+        for (AlleyData alleyData : items) {
+            softAssert().isTrue(alleyData.getId() >= 0, "id");
+            softAssert().isTrue(alleyData.getCount() >= 0, "count");
+            softAssert().isTrue(alleyData.getType() >= 0, "type");
+            softAssert().isEquals(alleyData.getStoreId(),
+                    Integer.parseInt(getUserSessionData().getUserShopId()), "storeId");
+            softAssert().isEquals(alleyData.getDepartmentId(),
+                    Integer.parseInt(getUserSessionData().getUserDepartmentId()), "departmentId");
+            softAssert().isTrue(Strings.isNotNullAndNotEmpty(alleyData.getCode()), "code");
+            softAssert().verifyAll();
+        }
     }
 
     @Step("Check that alley is renamed")
