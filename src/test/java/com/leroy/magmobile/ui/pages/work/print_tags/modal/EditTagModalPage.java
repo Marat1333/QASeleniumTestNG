@@ -1,10 +1,10 @@
 package com.leroy.magmobile.ui.pages.work.print_tags.modal;
 
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.ui.elements.MagMobGreenCheckBox;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.work.print_tags.data.ProductTagData;
@@ -189,7 +189,7 @@ public class EditTagModalPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить данные товара")
-    public EditTagModalPage shouldProductDataIsCorrect(ProductItemData data) {
+    public EditTagModalPage shouldProductDataIsCorrect(ProductData data) {
         softAssert.isElementTextEqual(lmCode, "ЛМ " + data.getLmCode());
         softAssert.isEquals(ParserUtil.strWithOnlyDigits(barCode.getText()), data.getBarCode(), "barCode");
         softAssert.isElementTextEqual(title, data.getTitle());

@@ -6,12 +6,12 @@ import static org.hamcrest.Matchers.hasSize;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
+import com.leroy.common_mashups.catalogs.data.CatalogSearchFilter;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.DiscountConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.clients.CartClient;
-import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountReasonData;
@@ -36,7 +36,7 @@ public class CartTest extends BaseProjectApiTest {
 
     private CartData cartData;
 
-    private List<ProductItemData> products;
+    private List<ProductData> products;
 
     @Override
     protected boolean isNeedAccessToken() {
@@ -88,7 +88,7 @@ public class CartTest extends BaseProjectApiTest {
     public void testCartConfirmQuantity() {
         CatalogSearchFilter filter = new CatalogSearchFilter();
         filter.setHasAvailableStock(false);
-        ProductItemData product = searchProductHelper.getProducts(1, filter).get(0);
+        ProductData product = searchProductHelper.getProducts(1, filter).get(0);
         CartProductOrderData cartProductOrderData = new CartProductOrderData(product);
         cartProductOrderData.setQuantity(product.getAvailableStock() + 1.0);
         step("Create Cart with product quantity greater than Available stock");
@@ -131,12 +131,12 @@ public class CartTest extends BaseProjectApiTest {
         filtersData.setAvs(false);
         filtersData.setTopEM(false);
         filtersData.setHasAvailableStock(true);
-        List<ProductItemData> productItemDataList = searchProductHelper.getProducts(2, filtersData);
+        List<ProductData> productIDataList = searchProductHelper.getProducts(2, filtersData);
         CartProductOrderData productWithNegativeBalance = new CartProductOrderData(
-                productItemDataList.get(0));
-        productWithNegativeBalance.setQuantity(productItemDataList.get(0).getAvailableStock() + 10.0);
+                productIDataList.get(0));
+        productWithNegativeBalance.setQuantity(productIDataList.get(0).getAvailableStock() + 10.0);
         CartProductOrderData productWithPositiveBalance = new CartProductOrderData(
-                productItemDataList.get(1));
+                productIDataList.get(1));
         productWithPositiveBalance.setQuantity(1.0);
 
         step("Create Cart");

@@ -52,6 +52,15 @@ public class LsAddressClient extends BaseMashupClient {
         return execute(req, AlleyData.class);
     }
 
+    @Step("Delete Alley")
+    public Response<AlleyData> deleteAlley(AlleyData alleyData) {
+        LsAddressAlleysDeleteRequest req = new LsAddressAlleysDeleteRequest();
+        req.setAlleyId(alleyData.getId());
+        req.setCode(alleyData.getCode());
+        return execute(req, AlleyData.class);
+
+    }
+
     // Stands
 
     @Step("Create stand with alleyId={alleyId}")
@@ -203,18 +212,27 @@ public class LsAddressClient extends BaseMashupClient {
         return actualData;
     }
 
-    public void assertThatAlleyIsRenamed(AlleyData actualData, AlleyData expectedData) {
+    @Step("Check that alley is renamed")
+    public void assertThatAlleyIsRenamed(Response<AlleyData> resp, AlleyData expectedData) {
+        assertThatResponseIsOk(resp);
+        AlleyData actualData = lsAddressHelper.searchAlleyById(expectedData.getId());
         assertThat("id", actualData.getId(), is(expectedData.getId()));
         assertThat("count", actualData.getCount(), is(0));
         assertThat("storeId", actualData.getStoreId(), is(Integer.valueOf(getUserSessionData().getUserShopId())));
         assertThat("departmentId", actualData.getDepartmentId(),
                 is(Integer.valueOf(getUserSessionData().getUserDepartmentId())));
         assertThat("code", actualData.getCode(), is(expectedData.getCode()));
-
     }
 
-    public void assertThatResponseIsSuccess(Response<?> resp) {
+    @Step("Check that alley is deleted")
+    public void assertThatAlleyIsDeleted(Response<AlleyData> resp, int alleyId) {
         assertThatResponseIsOk(resp);
+        AlleyData actualData = lsAddressHelper.searchAlleyById(alleyId, true);
+        assertThat("id", actualData.getId(), nullValue());
+        assertThat("count", actualData.getCount(), nullValue());
+        assertThat("storeId", actualData.getStoreId(), nullValue());
+        assertThat("departmentId", actualData.getDepartmentId(), nullValue());
+        assertThat("code", actualData.getCode(), nullValue());
     }
 
     // Stand

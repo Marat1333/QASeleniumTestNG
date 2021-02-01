@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.ruptures.*;
+import com.leroy.magmobile.api.enums.CorrectionAccessLevels;
 import com.leroy.magmobile.api.enums.RupturesSessionStatuses;
 import com.leroy.magmobile.api.requests.ruptures.*;
 import io.qameta.allure.Step;
@@ -34,16 +35,16 @@ public class RupturesClient extends BaseMashupClient {
      * ---------- Executable Requests -------------
      **/
 
-    @Step("Check C3 access")
-    public Response<JsonNode> checkC3Access(int shopId, String ldap) {
+    @Step("Запрос за доступом к коррекции стока")
+    public Response<JsonNode> checkC3Access(CorrectionAccessLevels accessLevel) {
         RupturesCorrectionAccessCheckRequest req = new RupturesCorrectionAccessCheckRequest();
-        req.setLdapHeader(ldap);
-        req.setShopIdHeader(shopId);
+        req.setLdapHeader(accessLevel.getLdap());
+        req.setShopIdHeader(accessLevel.getShopId());
         req.bearerAuthHeader(getUserSessionData().getAccessToken());
         return execute(req, JsonNode.class);
     }
 
-    @Step("Create standard rupture session")
+    @Step("Создать стандартную сессию перебоев")
     public Response<JsonNode> createSession(ReqRuptureSessionData postData) {
         RupturesSessionCreateRequest req = new RupturesSessionCreateRequest();
         req.setShopIdHeader(postData.getShopId());
@@ -52,7 +53,7 @@ public class RupturesClient extends BaseMashupClient {
         return execute(req, JsonNode.class);
     }
 
-    @Step("Add product to standard rupture session")
+    @Step("Добавить товар в стандартную сессию перебоев")
     public Response<JsonNode> addProductToSession(ReqRuptureSessionData putData) {
         RupturesSessionProductAddRequest req = new RupturesSessionProductAddRequest();
         req.setSessionId(putData.getSessionId());
@@ -62,7 +63,7 @@ public class RupturesClient extends BaseMashupClient {
         return execute(req, JsonNode.class);
     }
 
-    @Step("Create bulk rupture session")
+    @Step("Создать массовую сессию перебоев")
     public Response<JsonNode> createBulkSession(ReqRuptureBulkSessionData postData) {
         RupturesBulkSessionCreateRequest req = new RupturesBulkSessionCreateRequest();
         req.setShopIdHeader(getUserSessionData().getUserShopId());
@@ -71,7 +72,7 @@ public class RupturesClient extends BaseMashupClient {
         return execute(req, JsonNode.class);
     }
 
-    @Step("Add product to bulk rupture session")
+    @Step("Добавить товар в массовую сессию перебоев")
     public Response<JsonNode> addProductToBulkSession(ReqRuptureBulkSessionData postData, int sessionId) {
         RupturesBulkSessionProductAddRequest req = new RupturesBulkSessionProductAddRequest();
         req.setShopIdHeader(getUserSessionData().getUserShopId());
@@ -81,7 +82,7 @@ public class RupturesClient extends BaseMashupClient {
         return execute(req, JsonNode.class);
     }
 
-    @Step("Delete rupture session product for lmCode={lmCode}")
+    @Step("Удалить из сессии товар с lmCode={lmCode}")
     public Response<JsonNode> deleteProductInSession(String lmCode, Object sessionId) {
         RupturesSessionProductDeleteRequest req = new RupturesSessionProductDeleteRequest();
         if (lmCode != null)
@@ -91,7 +92,7 @@ public class RupturesClient extends BaseMashupClient {
         return execute(req, JsonNode.class);
     }
 
-    @Step("Change actions for rupture session products")
+    @Step("Изменить экшены для товара в сессии перебоев")
     public Response<ResActionDataList> actionProduct(ReqRuptureSessionWithActionsData putData) {
         RupturesSessionProductActionRequest req = new RupturesSessionProductActionRequest();
         req.setSessionId(putData.getSessionId());
@@ -102,7 +103,7 @@ public class RupturesClient extends BaseMashupClient {
         return execute(req, ResActionDataList.class);
     }
 
-    @Step("Get products for sessionId={sessionId}")
+    @Step("Получить товары сессии с sessionId={sessionId}")
     public Response<RuptureProductDataList> getProducts(
             Object sessionId, Boolean actionState, Integer action, Integer[] productState, Integer startFrom, Integer pageSize) {
         RupturesSessionProductsRequest req = new RupturesSessionProductsRequest();
@@ -147,7 +148,7 @@ public class RupturesClient extends BaseMashupClient {
         return req;
     }
 
-    @Step("Get rupture sessions")
+    @Step("Получить список сессий")
     public Response<ResRuptureSessionDataList> getSessions(RupturesSessionsRequest req) {
         return execute(req, ResRuptureSessionDataList.class);
     }
@@ -179,14 +180,14 @@ public class RupturesClient extends BaseMashupClient {
 
     // ---------------------- GET /ruptures/session/groups -------------- //
 
-    @Step("Get groups for sessionId={sessionId}")
+    @Step("Получить группы экшенов для сессии с sessionId={sessionId}")
     public Response<RuptureSessionGroupData> getGroups(int sessionId) {
         RupturesSessionGroupsRequest req = new RupturesSessionGroupsRequest();
         req.setSessionId(sessionId);
         return execute(req, RuptureSessionGroupData.class);
     }
 
-    @Step("Finish session with id = {sessionId}")
+    @Step("Завершить сессию с sessionId={sessionId}")
     public Response<JsonNode> finishSession(Object sessionId) {
         RupturesSessionFinishRequest req = new RupturesSessionFinishRequest();
         if (sessionId != null)
@@ -194,7 +195,7 @@ public class RupturesClient extends BaseMashupClient {
         return execute(req, JsonNode.class);
     }
 
-    @Step("Delete session with id = {sessionId}")
+    @Step("Удалить сессию с sessionId={sessionId}")
     public Response<JsonNode> deleteSession(Object sessionId) {
         RupturesSessionDeleteRequest req = new RupturesSessionDeleteRequest();
         if (sessionId != null)
@@ -203,8 +204,7 @@ public class RupturesClient extends BaseMashupClient {
     }
 
     //Verifications
-
-    @Step("Check that session is created")
+    @Step("Проверить, что сессия была создана и вернуть sessionId")
     public Integer assertThatSessionIsCreatedAndGetId(Response<JsonNode> resp) {
         assertThatResponseIsOk(resp);
         Integer sessionId = resp.asJson().get("sessionId").intValue();
@@ -212,7 +212,38 @@ public class RupturesClient extends BaseMashupClient {
         return sessionId;
     }
 
-    @Step("Check that updated/deleted is successful")
+    @Step("Проверить, что созданная сессия есть в списке и имеет верный тип")
+    public void assertThatCreatedSessionPresentsInSessionsList(int sessionId, String type) {
+        Response<ResRuptureSessionDataList> getResp = getSessions(50);
+        assertThatResponseIsOk(getResp);
+        ResRuptureSessionDataList respBody = getResp.asJson();
+        List<ResRuptureSessionData> items = respBody.getItems().stream().filter(
+                a -> a.getSessionId().equals(sessionId)).collect(Collectors.toList());
+        assertThat("Session " + sessionId + " wasn't found", items, hasSize(1));
+        assertThat("Session " + sessionId + " isn't " + type, items.get(0).getType(), equalTo(type));
+    }
+
+    @Step("Проверяем, что товар присутствует в сессии")
+    public void assertThatProductPresentsInSessionList(int sessionId, String lmCode) {
+        Response<RuptureProductDataList> respGetProducts = getProducts(sessionId);
+        List<RuptureProductData> items = respGetProducts.asJson().getItems().stream().filter(
+                a -> a.getLmCode().equals(lmCode)).collect(Collectors.toList());
+        assertThat("Session " + sessionId + " do not have product " + lmCode, items, hasSize(1));
+    }
+
+    @Step("Проверяем, что в сессии присутствуют только перечисленные товары")
+    public void assertThatSessionContainsProducts(int sessionId, String...  expectedLmCodes) {
+        int totalCount = expectedLmCodes.length;
+        RuptureProductDataList productDataList = getProducts(sessionId).asJson();
+        assertThat("Wrong totalCount in session " + sessionId, productDataList.getTotalCount(), equalTo(totalCount));
+        List<RuptureProductData> items = new ArrayList<>(productDataList.getItems());
+        for (RuptureProductData item : items) {
+            String lmCode = item.getLmCode();
+            assertThat("Wrong lmCode in session", expectedLmCodes, hasItemInArray(lmCode));
+        }
+    }
+
+    @Step("Проверяем, что успешно обновлено/удалено")
     public void assertThatIsUpdatedOrDeleted(Response<JsonNode> resp) {
         assertThatResponseIsOk(resp);
         assertThat("success", resp.asJson().get("success").booleanValue());
@@ -230,17 +261,17 @@ public class RupturesClient extends BaseMashupClient {
         }
     }
 
-    @Step("Check that session is activated")
+    @Step("Проверяем, что экшены успешно изменены")
     public void assertThatSessionIsActivated(Response<ResActionDataList> resp, List<ActionData> expectedActions) {
         assertThatSessionIsActivated(resp, expectedActions, true);
     }
 
-    @Step("Check that session is NOT activated")
+    @Step("Проверяем, что экшены не были изменены")
     public void assertThatSessionIsNotActivated(Response<ResActionDataList> resp, List<ActionData> expectedActions) {
         assertThatSessionIsActivated(resp, expectedActions, false);
     }
 
-    @Step("Check that Response body matches expectedData")
+    @Step("Проверяем, что тело ответа соответствует данным expectedData")
     public void assertThatDataMatches(Response<RuptureProductDataList> resp, @NotNull RuptureProductDataList expectedData) {
         assertThatResponseIsOk(resp);
         RuptureProductDataList actualData = resp.asJson();
@@ -302,18 +333,29 @@ public class RupturesClient extends BaseMashupClient {
         }
     }
 
-    @Step("Check that session not found or finished")
+    @Step("Проверяем, что сессия не найдена или завершена")
     public void assertThatSessionNotFoundOrFinished(Response<JsonNode> resp, Integer sessionId) {
         assertThat("Response code", resp.getStatusCode(), equalTo(400));
         assertThat("Error", resp.asJson().get("error").asText(),
                 equalTo(String.format(SESSION_NOT_FOUND_OR_ALREADY_FINISHED, sessionId)));
     }
 
-    @Step("Check that session not found")
+    @Step("Проверяем, что сессия не найдена")
     public void assertThatSessionNotFound(Response<JsonNode> resp, Integer sessionId) {
         assertThat("Response code", resp.getStatusCode(), equalTo(400));
         assertThat("Error", resp.asJson().get("error").asText(),
                 equalTo(String.format(SESSION_NOT_FOUND, sessionId)));
     }
 
+    @Step("Проверить доступы к коррекции стока")
+    public void assertStockCorrectionAccess(Response<JsonNode> resp, CorrectionAccessLevels accessLevel) {
+        if (accessLevel == CorrectionAccessLevels.UNKNOWN_USER) {
+            assertThat("Response code", resp.getStatusCode(), equalTo(404));
+            assertThat("Error", resp.asString(), equalTo(accessLevel.getResponse()));
+        }
+        else {
+            assertThatResponseIsOk(resp);
+            assertThat("Access", resp.asString(), equalTo(accessLevel.getResponse()));
+        }
+    }
 }

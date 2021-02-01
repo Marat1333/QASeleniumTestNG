@@ -2,8 +2,8 @@ package com.leroy.magportal.ui.pages.products;
 
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.*;
-import com.leroy.magmobile.api.data.catalog.Characteristic;
-import com.leroy.magportal.api.data.catalog.products.CatalogProductData;
+import com.leroy.common_mashups.catalogs.data.product.details.Characteristic;
+import com.leroy.common_mashups.catalogs.data.product.CatalogProductData;
 import com.leroy.magportal.api.data.catalog.shops.NearestShopsData;
 import com.leroy.magportal.ui.models.search.NomenclaturePath;
 import com.leroy.magportal.ui.models.search.ShopCardData;
@@ -286,9 +286,9 @@ public class ProductCardPage extends MagPortalBasePage {
             nearestShopsData = dataList.get(i);
             anAssert.isEquals(data.getId(), shopIdList.get(i), "Sort mismatch");
             anAssert.isEquals(data.getId(), nearestShopsData.getId(), "ID");
-            anAssert.isEquals(data.getName(), nearestShopsData.getName(), "City name");
-            anAssert.isEquals(data.getAddress(), nearestShopsData.getCityName() + ", " +
-                    ParserUtil.replaceSpecialSymbols(nearestShopsData.getAddress()), "Address");
+            anAssert.isEquals(data.getName().trim(), nearestShopsData.getName().trim(), "City name");
+            anAssert.isEquals(data.getAddress().trim(), nearestShopsData.getCityName() + ", " +
+                    ParserUtil.replaceSpecialSymbols(nearestShopsData.getAddress()).trim(), "Address");
             anAssert.isEquals(ParserUtil.strToDouble(data.getPrice()), ParserUtil.strToDouble(nearestShopsData.getPrice()),
                     "Price");
             anAssert.isEquals(data.getQuantity(), nearestShopsData.getAvailableStock(), "Stocks");
@@ -304,7 +304,7 @@ public class ProductCardPage extends MagPortalBasePage {
         for (ShopCardWidget tmp : shopsList) {
             data = tmp.grabDataFromWidget();
             if (criterion.matches("\\^.?+D+.?+")) {
-                anAssert.isContainsIgnoringCase(data.getName(), criterion, "Name expected: " + criterion
+                anAssert.isContainsIgnoringCase(data.getName().trim(), criterion.trim(), "Name expected: " + criterion
                         + "actual" + data.getName());
             } else {
                 anAssert.isTrue(String.valueOf(data.getId()).contains(criterion) || data.getName().contains(criterion), "ID expected: "

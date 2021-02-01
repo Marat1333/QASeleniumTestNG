@@ -1,8 +1,8 @@
 package com.leroy.magportal.ui.tests;
 
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.DiscountConst;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magportal.ui.constants.TestDataConstants;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
 import com.leroy.magportal.ui.models.salesdoc.OrderWebData;
@@ -14,12 +14,11 @@ import com.leroy.magportal.ui.pages.cart_estimate.modal.DiscountModal;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.ExtendedSearchModal;
 import com.leroy.magportal.ui.pages.customers.CreateCustomerForm;
 import io.qameta.allure.Step;
+import java.time.LocalDate;
+import java.util.Random;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
 import org.testng.util.Strings;
-
-import java.time.LocalDate;
-import java.util.Random;
 
 public class CartTest extends BasePAOTest {
 
@@ -57,8 +56,8 @@ public class CartTest extends BasePAOTest {
 
     @Test(description = "C22797241 Search items by LM code, name, barcode", groups = NEED_PRODUCTS_GROUP)
     public void testSearchItemsByLmCodeByNameByBarcode() throws Exception {
-        ProductItemData productItemData1 = productList.get(0);
-        ProductItemData productItemData2 = productList.get(1);
+        ProductData productData1 = productList.get(0);
+        ProductData productData2 = productList.get(1);
         String titleSearch = "покрытие";
         stepLoginAndGoToCartPage();
 
@@ -68,11 +67,11 @@ public class CartTest extends BasePAOTest {
 
         // Step 2
         step("Введите ЛМ товара в поле 'Добавление товара' и нажмите Enter");
-        stepSearchForProduct(productItemData1, ProductSearchType.LM_CODE);
+        stepSearchForProduct(productData1, ProductSearchType.LM_CODE);
 
         // Step 3
         step("Введите баркод товара 'Добавление товара' и нажмите Enter");
-        stepSearchForProduct(productItemData2, ProductSearchType.BAR_CODE);
+        stepSearchForProduct(productData2, ProductSearchType.BAR_CODE);
 
         // Step 4
         step("Введите название товара в поле 'Добавление товара' и нажмите Enter");
@@ -181,8 +180,8 @@ public class CartTest extends BasePAOTest {
     @Test(description = "C22797249 Delete item from cart", groups = NEED_PRODUCTS_GROUP)
     public void testDeleteItemFromCart() throws Exception {
         // Pre-condition
-        ProductItemData testProduct1 = productList.get(0);
-        ProductItemData testProduct2 = productList.get(1);
+        ProductData testProduct1 = productList.get(0);
+        ProductData testProduct2 = productList.get(1);
         step("Выполнение предусловий:");
         if (isStartFromScratch()) {
             stepLoginAndGoToCartPage();
@@ -203,7 +202,7 @@ public class CartTest extends BasePAOTest {
     @Test(description = "C22797250 Delete last item from cart", groups = NEED_PRODUCTS_GROUP)
     public void testDeleteLastItemFromCart() throws Exception {
         // Pre-condition
-        ProductItemData testProduct1 = productList.get(0);
+        ProductData testProduct1 = productList.get(0);
         step("Выполнение предусловий:");
         if (isStartFromScratch()) {
             stepLoginAndGoToCartPage();
@@ -356,7 +355,7 @@ public class CartTest extends BasePAOTest {
     @Test(description = "C22797254 Create discount", groups = NEED_PRODUCTS_GROUP)
     public void testCreateDiscount() throws Exception {
         // Pre-condition
-        ProductItemData testProduct1 = productList.get(0);
+        ProductData testProduct1 = productList.get(0);
 
         stepLoginAndGoToCartPage();
         stepClickCreateCartButton();
@@ -394,7 +393,7 @@ public class CartTest extends BasePAOTest {
     @Test(description = "C22797256 Edit discount", groups = NEED_PRODUCTS_GROUP)
     public void testEditDiscount() throws Exception {
         // Test data
-        ProductItemData testProduct1 = productList.get(0);
+        ProductData testProduct1 = productList.get(0);
         double discountPercent = 10.0;
 
         // Pre-condition
@@ -436,7 +435,7 @@ public class CartTest extends BasePAOTest {
     @Test(description = "C22797255 Delete discount", groups = NEED_PRODUCTS_GROUP)
     public void testDeleteDiscount() throws Exception {
         // Test data
-        ProductItemData testProduct1 = productList.get(0);
+        ProductData testProduct1 = productList.get(0);
         double discountPercent = 10.0;
 
         // Pre-condition
@@ -502,7 +501,7 @@ public class CartTest extends BasePAOTest {
     /**
      * Поиск товара с помощью ввода в поле 'Добавление товара' данных о товаре
      */
-    private void stepSearchForProduct(ProductItemData expectedProductData, ProductSearchType searchType) throws Exception {
+    private void stepSearchForProduct(ProductData expectedProductData, ProductSearchType searchType) throws Exception {
         String searchText;
         switch (searchType) {
             case LM_CODE:

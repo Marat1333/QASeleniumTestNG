@@ -1,45 +1,44 @@
 package com.leroy.magportal.ui.tests;
 
 import com.google.inject.Inject;
+import com.leroy.common_mashups.catalogs.clients.CatalogProductClient;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
+import com.leroy.common_mashups.catalogs.data.ProductDataList;
+import com.leroy.common_mashups.catalogs.requests.GetCatalogProductSearchRequest;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.api.ThreadApiClient;
-import com.leroy.magmobile.api.clients.CatalogSearchClient;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.enums.CatalogSearchFields;
 import com.leroy.magmobile.api.enums.SortingOrder;
-import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magportal.ui.WebBaseSteps;
 import com.leroy.magportal.ui.constants.search.CatalogSearchParams;
 import com.leroy.magportal.ui.models.search.FiltersData;
 import com.leroy.magportal.ui.pages.products.ExtendedProductCardPage;
 import com.leroy.magportal.ui.pages.products.ProductCardPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
-import org.testng.annotations.Test;
-import ru.leroymerlin.qa.core.clients.base.Response;
-
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.testng.annotations.Test;
+import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class SearchTest extends WebBaseSteps {
 
     @Inject
     private SearchProductHelper searchProductHelper;
     @Inject
-    private CatalogSearchClient catalogSearchClient;
+    private CatalogProductClient catalogSearchClient;
 
     private final int defaultPageSize = 12;
     private final String allDepartments = "Каталог товаров";
 
-    private HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> sendRequestsSearchProductsBy(
-            GetCatalogSearch... paramsArray) {
-        HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> resultMap = new HashMap<>();
+    private HashMap<Integer, ThreadApiClient<ProductDataList, CatalogProductClient>> sendRequestsSearchProductsBy(
+            GetCatalogProductSearchRequest... paramsArray) {
+        HashMap<Integer, ThreadApiClient<ProductDataList, CatalogProductClient>> resultMap = new HashMap<>();
         int i = 0;
-        for (GetCatalogSearch param : paramsArray) {
-            ThreadApiClient<ProductItemDataList, CatalogSearchClient> myThread = new ThreadApiClient<>(
+        for (GetCatalogProductSearchRequest param : paramsArray) {
+            ThreadApiClient<ProductDataList, CatalogProductClient> myThread = new ThreadApiClient<>(
                     catalogSearchClient);
             myThread.sendRequest(client -> client.searchProductsBy(param));
             resultMap.put(i, myThread);
@@ -74,7 +73,7 @@ public class SearchTest extends WebBaseSteps {
         final String SUB_DEPT_ID = "730";
         final String CLASS_ID = "20";
 
-        GetCatalogSearch filterParams = new GetCatalogSearch()
+        GetCatalogProductSearchRequest filterParams = new GetCatalogProductSearchRequest()
                 .setTopEM(true)
                 .setDepartmentId(DEPT_ID.substring(2))
                 .setSubDepartmentId(SUB_DEPT_ID)
@@ -83,12 +82,12 @@ public class SearchTest extends WebBaseSteps {
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.ASC);
 
-        GetCatalogSearch paginationParams = new GetCatalogSearch()
+        GetCatalogProductSearchRequest paginationParams = new GetCatalogProductSearchRequest()
                 .setPageSize(24)
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setSortBy(CatalogSearchFields.LM_CODE, SortingOrder.ASC);
 
-        HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> apiThreads = sendRequestsSearchProductsBy(
+        HashMap<Integer, ThreadApiClient<ProductDataList, CatalogProductClient>> apiThreads = sendRequestsSearchProductsBy(
                 filterParams, paginationParams);
 
         //Pre-conditions
@@ -100,7 +99,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.choseSortType(SearchProductPage.SortType.LM_CODE_ASC);
         searchProductPage.choseCheckboxFilter(false, SearchProductPage.Filters.TOP_EM);
         searchProductPage.applyFilters();
-        ProductItemDataList productItemListResponse = apiThreads.get(0).getData();
+        ProductDataList productItemListResponse = apiThreads.get(0).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(productItemListResponse,
                 SearchProductPage.FilterFrame.MY_SHOP, SearchProductPage.ViewMode.EXTENDED);
         searchProductPage.shouldNoMoreResultsBeVisible();
@@ -113,7 +112,7 @@ public class SearchTest extends WebBaseSteps {
         //Step 3
         step("Нажать на кнопку \"Показать еще\"");
         searchProductPage.showMoreResults();
-        ProductItemDataList productItemListResponse1 = apiThreads.get(1).getData();
+        ProductDataList productItemListResponse1 = apiThreads.get(1).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(productItemListResponse1,
                 SearchProductPage.FilterFrame.MY_SHOP, SearchProductPage.ViewMode.EXTENDED);
     }
@@ -127,8 +126,8 @@ public class SearchTest extends WebBaseSteps {
         String shortLmCode = "1234";
         String shortBarCode = "590212011";
 
-        ProductItemDataList productItemDataList = catalogSearchClient.searchProductsBy(
-                new GetCatalogSearch().setByNameLike(shortSearchPhrase).setPageSize(defaultPageSize)
+        ProductDataList productDataList = catalogSearchClient.searchProductsBy(
+                new GetCatalogProductSearchRequest().setByNameLike(shortSearchPhrase).setPageSize(defaultPageSize)
                         .setShopId(getUserSessionData().getUserShopId())).asJson();
 
         //Pre-conditions
@@ -152,7 +151,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.clearSearchInputByClearBtn();
         searchProductPage.searchByPhrase(shortSearchPhrase);
         //searchProductPage.shouldUrlContains(CatalogSearchParams.byNameLikeParamName + shortSearchPhrase);
-        searchProductPage.shouldResponseEntityEqualsToViewEntity(productItemDataList,
+        searchProductPage.shouldResponseEntityEqualsToViewEntity(productDataList,
                 SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
         searchProductPage.clearSearchInputByClearBtn();
@@ -182,13 +181,13 @@ public class SearchTest extends WebBaseSteps {
     public void testClearTextInputByClearBtn() throws Exception {
         String searchPhrase = "123";
 
-        GetCatalogSearch params = new GetCatalogSearch()
+        GetCatalogProductSearchRequest params = new GetCatalogProductSearchRequest()
                 .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setPageSize(defaultPageSize)
                 .setHasAvailableStock(true);
 
-        HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> results = sendRequestsSearchProductsBy(
+        HashMap<Integer, ThreadApiClient<ProductDataList, CatalogProductClient>> results = sendRequestsSearchProductsBy(
                 params);
 
         //Pre-conditions
@@ -208,7 +207,7 @@ public class SearchTest extends WebBaseSteps {
                 .shouldBreadCrumbsContainsNomenclatureName(false,
                         EnvConstants.BASIC_USER_DEPARTMENT_ID);
 
-        ProductItemDataList responseData = results.get(0).getData();
+        ProductDataList responseData = results.get(0).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(responseData,
                 SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
@@ -222,29 +221,29 @@ public class SearchTest extends WebBaseSteps {
         String classId = "030";
         String subClassId = "010";
 
-        GetCatalogSearch allDepartmentsParams = new GetCatalogSearch()
+        GetCatalogProductSearchRequest allDepartmentsParams = new GetCatalogProductSearchRequest()
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setPageSize(defaultPageSize);
 
-        GetCatalogSearch departmentParams = new GetCatalogSearch()
+        GetCatalogProductSearchRequest departmentParams = new GetCatalogProductSearchRequest()
                 .setDepartmentId(dept.substring(1))
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setPageSize(defaultPageSize);
 
-        GetCatalogSearch subDepartmentParams = new GetCatalogSearch()
+        GetCatalogProductSearchRequest subDepartmentParams = new GetCatalogProductSearchRequest()
                 .setDepartmentId(dept.substring(1))
                 .setSubDepartmentId(subDept)
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setPageSize(defaultPageSize);
 
-        GetCatalogSearch classParams = new GetCatalogSearch()
+        GetCatalogProductSearchRequest classParams = new GetCatalogProductSearchRequest()
                 .setDepartmentId(dept.substring(1))
                 .setSubDepartmentId(subDept)
                 .setClassId(classId.substring(1))
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setPageSize(defaultPageSize);
 
-        GetCatalogSearch subClassParams = new GetCatalogSearch()
+        GetCatalogProductSearchRequest subClassParams = new GetCatalogProductSearchRequest()
                 .setDepartmentId(dept.substring(1))
                 .setSubDepartmentId(subDept)
                 .setClassId(classId.substring(1))
@@ -252,7 +251,7 @@ public class SearchTest extends WebBaseSteps {
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setPageSize(defaultPageSize);
 
-        HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> resultsMap =
+        HashMap<Integer, ThreadApiClient<ProductDataList, CatalogProductClient>> resultsMap =
                 sendRequestsSearchProductsBy(allDepartmentsParams, departmentParams,
                         subDepartmentParams, classParams,
                         subClassParams);
@@ -264,7 +263,7 @@ public class SearchTest extends WebBaseSteps {
         step("Перейти на уровень товарной иерархии - все отделы");
         searchProductPage.navigateToPreviousNomenclatureElement(allDepartments);
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(allDepartments);
-        ProductItemDataList allDepartmentsData = resultsMap.get(0).getData();
+        ProductDataList allDepartmentsData = resultsMap.get(0).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(allDepartmentsData,
                 SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
@@ -275,7 +274,7 @@ public class SearchTest extends WebBaseSteps {
         //searchProductPage.shouldUrlContains(CatalogSearchParams.departmentId + dept.substring(1));
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(dept);
         searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, allDepartments);
-        ProductItemDataList departmentData = resultsMap.get(1).getData();
+        ProductDataList departmentData = resultsMap.get(1).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(departmentData,
                 SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
@@ -286,7 +285,7 @@ public class SearchTest extends WebBaseSteps {
         //searchProductPage.shouldUrlContains(CatalogSearchParams.subdepartmentId + subDept);
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(subDept);
         searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, dept);
-        ProductItemDataList subDepartmentData = resultsMap.get(2).getData();
+        ProductDataList subDepartmentData = resultsMap.get(2).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(subDepartmentData,
                 SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
@@ -297,7 +296,7 @@ public class SearchTest extends WebBaseSteps {
         //searchProductPage.shouldUrlContains(CatalogSearchParams.classId + classId.substring(1));
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(classId);
         searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, subDept);
-        ProductItemDataList classData = resultsMap.get(3).getData();
+        ProductDataList classData = resultsMap.get(3).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(classData,
                 SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
@@ -308,7 +307,7 @@ public class SearchTest extends WebBaseSteps {
         //searchProductPage.shouldUrlContains(CatalogSearchParams.subclassId + subClassId.substring(1));
         searchProductPage.shouldCurrentNomenclatureElementNameIsDisplayed(subClassId);
         searchProductPage.shouldBreadCrumbsContainsNomenclatureName(true, classId);
-        ProductItemDataList subClassData = resultsMap.get(4).getData();
+        ProductDataList subClassData = resultsMap.get(4).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(subClassData,
                 SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
@@ -316,12 +315,12 @@ public class SearchTest extends WebBaseSteps {
 
     @Test(description = "C23384733 sorting")
     public void testSorting() throws Exception {
-        GetCatalogSearch defaultSort = new GetCatalogSearch()
+        GetCatalogProductSearchRequest defaultSort = new GetCatalogProductSearchRequest()
                 .setDepartmentId("5")
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setPageSize(defaultPageSize);
 
-        Response<ProductItemDataList> response = catalogSearchClient.searchProductsBy(defaultSort);
+        Response<ProductDataList> response = catalogSearchClient.searchProductsBy(defaultSort);
 
         //Pre-conditions
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
@@ -394,12 +393,12 @@ public class SearchTest extends WebBaseSteps {
         final String FIRST_SUPPLIER_NAME = "ООО Бард-Спб";
         final String SECOND_SUPPLIER_CODE = "12301";
 
-        GetCatalogSearch fewSuppliersParams = new GetCatalogSearch()
+        GetCatalogProductSearchRequest fewSuppliersParams = new GetCatalogProductSearchRequest()
                 .setSupId(FIRST_SUPPLIER_CODE + "," + SECOND_SUPPLIER_CODE)
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setPageSize(defaultPageSize);
 
-        HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> resultMap =
+        HashMap<Integer, ThreadApiClient<ProductDataList, CatalogProductClient>> resultMap =
                 sendRequestsSearchProductsBy(fewSuppliersParams);
 
         //Pre-conditions
@@ -413,7 +412,7 @@ public class SearchTest extends WebBaseSteps {
                         SECOND_SUPPLIER_CODE)
                 .applyFilters();
         //.shouldUrlContains(CatalogSearchParams.supplierId + FIRST_SUPPLIER_CODE + "%2C" + SECOND_SUPPLIER_CODE);
-        ProductItemDataList fewSuppliersData = resultMap.get(0).getData();
+        ProductDataList fewSuppliersData = resultMap.get(0).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(fewSuppliersData,
                 SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
@@ -436,7 +435,7 @@ public class SearchTest extends WebBaseSteps {
     public void testAvsFilter() throws Exception {
         LocalDate avsDate = LocalDate.of(2021, 4, 30);
 
-        GetCatalogSearch avsParamHasAvailableStock = new GetCatalogSearch()
+        GetCatalogProductSearchRequest avsParamHasAvailableStock = new GetCatalogProductSearchRequest()
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setPageSize(defaultPageSize)
                 .setAvsDate(String.format(
@@ -446,7 +445,7 @@ public class SearchTest extends WebBaseSteps {
                 .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
                 .setHasAvailableStock(true);
 
-        GetCatalogSearch avsParam = new GetCatalogSearch()
+        GetCatalogProductSearchRequest avsParam = new GetCatalogProductSearchRequest()
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setPageSize(defaultPageSize)
                 .setAvsDate(String.format(
@@ -455,13 +454,13 @@ public class SearchTest extends WebBaseSteps {
                         avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth() + 1))
                 .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);
 
-        GetCatalogSearch avsNeqNullParam = new GetCatalogSearch()
+        GetCatalogProductSearchRequest avsNeqNullParam = new GetCatalogProductSearchRequest()
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setPageSize(defaultPageSize)
                 .setAvsDate("neq|null")
                 .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);
 
-        HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> resultsMap =
+        HashMap<Integer, ThreadApiClient<ProductDataList, CatalogProductClient>> resultsMap =
                 sendRequestsSearchProductsBy(avsParamHasAvailableStock, avsParam, avsNeqNullParam);
 
         //Pre-conditions
@@ -474,7 +473,7 @@ public class SearchTest extends WebBaseSteps {
                 .choseAvsDate(avsDate)
                 .shouldAvsContainerContainsCorrectText(false, avsDate)
                 .applyFilters();
-        ProductItemDataList avsDateHasAvailableStockResponse = resultsMap.get(0).getData();
+        ProductDataList avsDateHasAvailableStockResponse = resultsMap.get(0).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(avsDateHasAvailableStockResponse,
                 SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED)
@@ -484,7 +483,7 @@ public class SearchTest extends WebBaseSteps {
         step("Выбрать фильтр \"Дата AVS\", не выбирая даты");
         searchProductPage.choseCheckboxFilter(true, SearchProductPage.Filters.AVS)
                 .shouldAvsContainerContainsCorrectText(true, null);
-        ProductItemDataList avsNeqNullResponse = resultsMap.get(2).getData();
+        ProductDataList avsNeqNullResponse = resultsMap.get(2).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(avsNeqNullResponse,
                 SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
@@ -493,7 +492,7 @@ public class SearchTest extends WebBaseSteps {
         step("Выбрать фильтр \"Дата AVS\", ввести дату вручную и выполнить поиск");
         searchProductPage.enterAvsDateManually(avsDate)
                 .applyFilters();
-        ProductItemDataList avsDateResponse = resultsMap.get(1).getData();
+        ProductDataList avsDateResponse = resultsMap.get(1).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(avsDateResponse,
                 SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
@@ -511,7 +510,7 @@ public class SearchTest extends WebBaseSteps {
     @Test(description = "C23384959 search by my shop filters group")
     public void testMyShopFiltersGroupSearch() throws Exception {
 
-        GetCatalogSearch myShopFiltersParam = new GetCatalogSearch()
+        GetCatalogProductSearchRequest myShopFiltersParam = new GetCatalogProductSearchRequest()
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setPageSize(defaultPageSize)
                 .setGamma("A,S")
@@ -520,23 +519,23 @@ public class SearchTest extends WebBaseSteps {
                 .setTopEM(true)
                 .setCtm(true);
 
-        GetCatalogSearch bestPriceParams = new GetCatalogSearch()
+        GetCatalogProductSearchRequest bestPriceParams = new GetCatalogProductSearchRequest()
                 .setTop1000(true)
                 .setBestPrice(true)
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setPageSize(defaultPageSize);
 
-        GetCatalogSearch limitedOfferParams = new GetCatalogSearch()
+        GetCatalogProductSearchRequest limitedOfferParams = new GetCatalogProductSearchRequest()
                 .setLimitedOffer(true)
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setPageSize(defaultPageSize);
 
-        GetCatalogSearch orderTypeParams = new GetCatalogSearch()
+        GetCatalogProductSearchRequest orderTypeParams = new GetCatalogProductSearchRequest()
                 .setOrderType("MBO")
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setPageSize(defaultPageSize);
 
-        HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> resultMap =
+        HashMap<Integer, ThreadApiClient<ProductDataList, CatalogProductClient>> resultMap =
                 sendRequestsSearchProductsBy(myShopFiltersParam, bestPriceParams,
                         limitedOfferParams, orderTypeParams);
 
@@ -554,7 +553,7 @@ public class SearchTest extends WebBaseSteps {
         //Step 1
         step("Выбрать фильтры: гамма А, гамма S, топ 1, топ 2, есть теор. запас, топ ЕМ, CTM и выполнить поиск по ним");
         searchProductPage.choseSeveralFilters(filtersData, true);
-        ProductItemDataList myShopResponse = resultMap.get(0).getData();
+        ProductDataList myShopResponse = resultMap.get(0).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(myShopResponse,
                 SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
@@ -570,7 +569,7 @@ public class SearchTest extends WebBaseSteps {
                 .setCheckBoxes(new SearchProductPage.Filters[]{SearchProductPage.Filters.TOP_1000,
                         SearchProductPage.Filters.BEST_PRICE});
         searchProductPage.choseSeveralFilters(filtersData, true);
-        ProductItemDataList bestPrice = resultMap.get(1).getData();
+        ProductDataList bestPrice = resultMap.get(1).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(bestPrice,
                 SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
@@ -581,7 +580,7 @@ public class SearchTest extends WebBaseSteps {
         step("Выбрать фильтр \"предложение ограничено\" и выполнить поиск по нему");
         searchProductPage.clearAllFilters();
         searchProductPage.choseCheckboxFilter(true, SearchProductPage.Filters.LIMITED_OFFER);
-        ProductItemDataList limitedOffer = resultMap.get(2).getData();
+        ProductDataList limitedOffer = resultMap.get(2).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(limitedOffer,
                 SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
@@ -591,7 +590,7 @@ public class SearchTest extends WebBaseSteps {
         step("Выбрать фильтр \"под заказ\" и выполнить поиск по нему");
         searchProductPage.clearAllFilters();
         searchProductPage.choseCheckboxFilter(true, SearchProductPage.Filters.ORDERED);
-        ProductItemDataList orderType = resultMap.get(3).getData();
+        ProductDataList orderType = resultMap.get(3).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(orderType,
                 SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
@@ -601,25 +600,25 @@ public class SearchTest extends WebBaseSteps {
     @Test(description = "C23384960 search by all gamma filters group")
     public void testAllGammaFiltersGroupSearch() throws Exception {
 
-        GetCatalogSearch ctmParam = new GetCatalogSearch()
+        GetCatalogProductSearchRequest ctmParam = new GetCatalogProductSearchRequest()
                 .setPageSize(defaultPageSize)
                 .setGamma("A,S")
                 .setCtm(true);
 
-        GetCatalogSearch bestPriceParams = new GetCatalogSearch()
+        GetCatalogProductSearchRequest bestPriceParams = new GetCatalogProductSearchRequest()
                 .setTop1000(true)
                 .setBestPrice(true)
                 .setPageSize(defaultPageSize);
 
-        GetCatalogSearch limitedOfferParams = new GetCatalogSearch()
+        GetCatalogProductSearchRequest limitedOfferParams = new GetCatalogProductSearchRequest()
                 .setLimitedOffer(true)
                 .setPageSize(defaultPageSize);
 
-        GetCatalogSearch orderTypeParams = new GetCatalogSearch()
+        GetCatalogProductSearchRequest orderTypeParams = new GetCatalogProductSearchRequest()
                 .setOrderType("MBO")
                 .setPageSize(defaultPageSize);
 
-        HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> resultMap =
+        HashMap<Integer, ThreadApiClient<ProductDataList, CatalogProductClient>> resultMap =
                 sendRequestsSearchProductsBy(ctmParam, bestPriceParams, limitedOfferParams,
                         orderTypeParams);
 
@@ -637,7 +636,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.navigateToPreviousNomenclatureElement(allDepartments);
         searchProductPage.choseSeveralFilters(filtersData, true);
         searchProductPage.shouldAllGammaFiltersHasCorrectCondition();
-        ProductItemDataList ctmResponse = resultMap.get(0).getData();
+        ProductDataList ctmResponse = resultMap.get(0).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(ctmResponse,
                 SearchProductPage.FilterFrame.ALL_GAMMA_LM,
                 SearchProductPage.ViewMode.EXTENDED);
@@ -653,7 +652,7 @@ public class SearchTest extends WebBaseSteps {
                 .setCheckBoxes(new SearchProductPage.Filters[]{SearchProductPage.Filters.TOP_1000,
                         SearchProductPage.Filters.BEST_PRICE});
         searchProductPage.choseSeveralFilters(filtersData, true);
-        ProductItemDataList bestPrice = resultMap.get(1).getData();
+        ProductDataList bestPrice = resultMap.get(1).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(bestPrice,
                 SearchProductPage.FilterFrame.ALL_GAMMA_LM,
                 SearchProductPage.ViewMode.EXTENDED);
@@ -664,7 +663,7 @@ public class SearchTest extends WebBaseSteps {
         step("Выбрать фильтр \"предложение ограничено\" и выполнить поиск по нему");
         searchProductPage.clearAllFilters();
         searchProductPage.choseCheckboxFilter(true, SearchProductPage.Filters.LIMITED_OFFER);
-        ProductItemDataList limitedOffer = resultMap.get(2).getData();
+        ProductDataList limitedOffer = resultMap.get(2).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(limitedOffer,
                 SearchProductPage.FilterFrame.ALL_GAMMA_LM,
                 SearchProductPage.ViewMode.EXTENDED);
@@ -675,7 +674,7 @@ public class SearchTest extends WebBaseSteps {
         step("выбрать фильтр \"под заказ\" и выполнить поиск по нему");
         searchProductPage.clearAllFilters();
         searchProductPage.choseCheckboxFilter(true, SearchProductPage.Filters.ORDERED);
-        ProductItemDataList orderType = resultMap.get(3).getData();
+        ProductDataList orderType = resultMap.get(3).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(orderType,
                 SearchProductPage.FilterFrame.ALL_GAMMA_LM,
                 SearchProductPage.ViewMode.EXTENDED);
@@ -690,7 +689,7 @@ public class SearchTest extends WebBaseSteps {
         final String FIRST_SUPPLIER_CODE = "1001123001";
         final String SECOND_SUPPLIER_CODE = "1002258015";
 
-        GetCatalogSearch myShopParams = new GetCatalogSearch()
+        GetCatalogProductSearchRequest myShopParams = new GetCatalogProductSearchRequest()
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setGamma("A,S")
                 .setTop("1,2")
@@ -701,7 +700,7 @@ public class SearchTest extends WebBaseSteps {
                         avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth(),
                         avsDate.getYear(), avsDate.getMonthValue(), avsDate.getDayOfMonth() + 1));
 
-        GetCatalogSearch allGammaParams = new GetCatalogSearch()
+        GetCatalogProductSearchRequest allGammaParams = new GetCatalogProductSearchRequest()
                 .setGamma("P,T")
                 .setLimitedOffer(true)
                 .setAvsDate(String.format(
@@ -711,7 +710,7 @@ public class SearchTest extends WebBaseSteps {
                         allGammaAvsDate.getYear(), allGammaAvsDate.getMonthValue(),
                         allGammaAvsDate.getDayOfMonth() + 1));
 
-        HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> resultMap =
+        HashMap<Integer, ThreadApiClient<ProductDataList, CatalogProductClient>> resultMap =
                 sendRequestsSearchProductsBy(allGammaParams, myShopParams);
 
         FiltersData myShopFilterData = new FiltersData();
@@ -746,7 +745,7 @@ public class SearchTest extends WebBaseSteps {
         step("Выбрать несколько фильтров из группы фильтров \"Вся гамма ЛМ\" и выполнить поиск по ним");
         searchProductPage.choseSeveralFilters(allGammaFilterData, true);
         searchProductPage.checkFiltersChosen(allGammaFilterData);
-        ProductItemDataList allGammaData = resultMap.get(0).getData();
+        ProductDataList allGammaData = resultMap.get(0).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(allGammaData,
                 SearchProductPage.FilterFrame.ALL_GAMMA_LM, SearchProductPage.ViewMode.EXTENDED);
         //searchProductPage.shouldUrlNotContains(CatalogSearchParams.shopId);
@@ -756,7 +755,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.switchFiltersFrame(SearchProductPage.FilterFrame.MY_SHOP);
         searchProductPage.checkFiltersChosen(myShopFilterData);
         searchProductPage.applyFilters();
-        ProductItemDataList myShopData = resultMap.get(1).getData();
+        ProductDataList myShopData = resultMap.get(1).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(myShopData,
                 SearchProductPage.FilterFrame.MY_SHOP, SearchProductPage.ViewMode.EXTENDED);
         //searchProductPage.shouldUrlContains(CatalogSearchParams.shopId);
@@ -764,19 +763,19 @@ public class SearchTest extends WebBaseSteps {
 
     @Test(description = "C22782968 Clear filters")
     public void testClearFilters() throws Exception {
-        GetCatalogSearch myShopDefaultParams = new GetCatalogSearch()
+        GetCatalogProductSearchRequest myShopDefaultParams = new GetCatalogProductSearchRequest()
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID)
                 .setPageSize(defaultPageSize);
 
-        GetCatalogSearch myShopAllCatalogParams = new GetCatalogSearch()
+        GetCatalogProductSearchRequest myShopAllCatalogParams = new GetCatalogProductSearchRequest()
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setPageSize(defaultPageSize);
 
-        GetCatalogSearch allGammaAllCatalogParams = new GetCatalogSearch()
+        GetCatalogProductSearchRequest allGammaAllCatalogParams = new GetCatalogProductSearchRequest()
                 .setPageSize(defaultPageSize);
 
-        HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> resultMap =
+        HashMap<Integer, ThreadApiClient<ProductDataList, CatalogProductClient>> resultMap =
                 sendRequestsSearchProductsBy(myShopDefaultParams, myShopAllCatalogParams,
                         allGammaAllCatalogParams);
 
@@ -811,7 +810,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.clearAllFilters();
         searchProductPage.shouldCleatAllFiltersButtonHasCorrectCondition(false);
         searchProductPage.checkFiltersNotChosen(myShopFilterData);
-        ProductItemDataList myShopDefaultResponse = resultMap.get(0).getData();
+        ProductDataList myShopDefaultResponse = resultMap.get(0).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(myShopDefaultResponse,
                 SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
@@ -825,7 +824,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.choseSeveralFilters(myShopFilterData, true);
         searchProductPage.navigateToPreviousNomenclatureElement(allDepartments);
         searchProductPage.checkFiltersNotChosen(myShopFilterData);
-        ProductItemDataList myShopAllDepartmentsResponse = resultMap.get(1).getData();
+        ProductDataList myShopAllDepartmentsResponse = resultMap.get(1).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(myShopAllDepartmentsResponse,
                 SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
@@ -855,7 +854,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.choseSeveralFilters(allGammaFilterData, true);
         searchProductPage.navigateToPreviousNomenclatureElement(allDepartments);
         searchProductPage.checkFiltersNotChosen(allGammaFilterData);
-        ProductItemDataList allGammaAllDepartmentsResponse = resultMap.get(2).getData();
+        ProductDataList allGammaAllDepartmentsResponse = resultMap.get(2).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(allGammaAllDepartmentsResponse,
                 SearchProductPage.FilterFrame.ALL_GAMMA_LM,
                 SearchProductPage.ViewMode.EXTENDED);
@@ -903,20 +902,20 @@ public class SearchTest extends WebBaseSteps {
         String deptId = EnvConstants.BASIC_USER_DEPARTMENT_ID;
         String subDeptId = "510";
 
-        GetCatalogSearch nomenclatureParam = new GetCatalogSearch()
+        GetCatalogProductSearchRequest nomenclatureParam = new GetCatalogProductSearchRequest()
                 .setByNameLike(byNameLikeParam)
                 .setDepartmentId(deptId)
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setPageSize(defaultPageSize);
 
-        GetCatalogSearch filterParam = new GetCatalogSearch()
+        GetCatalogProductSearchRequest filterParam = new GetCatalogProductSearchRequest()
                 .setByNameLike(byNameLikeParam)
                 .setGamma("A")
                 .setDepartmentId(deptId)
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
                 .setPageSize(defaultPageSize);
 
-        HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> resultMap =
+        HashMap<Integer, ThreadApiClient<ProductDataList, CatalogProductClient>> resultMap =
                 sendRequestsSearchProductsBy(nomenclatureParam, filterParam);
 
         //Pre-conditions
@@ -927,7 +926,7 @@ public class SearchTest extends WebBaseSteps {
         step("Заполнить поисковую строку и выбрать элемент товарной иерархии");
         searchProductPage.fillSearchInput(byNameLikeParam);
         searchProductPage.choseNomenclature(0 + deptId, null, null, null);
-        ProductItemDataList nomenclatureResponse = resultMap.get(0).getData();
+        ProductDataList nomenclatureResponse = resultMap.get(0).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(nomenclatureResponse,
                 SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
@@ -953,7 +952,7 @@ public class SearchTest extends WebBaseSteps {
         searchProductPage.fillSearchInput(byNameLikeParam);
         searchProductPage.choseGammaFilter("Гамма А");
         searchProductPage.applyFilters();
-        ProductItemDataList filterResponse = resultMap.get(1).getData();
+        ProductDataList filterResponse = resultMap.get(1).getData();
         searchProductPage.shouldResponseEntityEqualsToViewEntity(filterResponse,
                 SearchProductPage.FilterFrame.MY_SHOP,
                 SearchProductPage.ViewMode.EXTENDED);
@@ -1043,22 +1042,22 @@ public class SearchTest extends WebBaseSteps {
 
     @Test(description = "C23388851 navigate to product card")
     public void testNavigateToProductCard() throws Exception {
-        GetCatalogSearch lmCodeByShopParam = new GetCatalogSearch()
+        GetCatalogProductSearchRequest lmCodeByShopParam = new GetCatalogProductSearchRequest()
                 .setDepartmentId(getUserSessionData().getUserDepartmentId())
                 .setShopId(getUserSessionData().getUserShopId())
                 .setHasAvailableStock(true)
                 .setPageSize(defaultPageSize);
-        GetCatalogSearch lmCodeParam = new GetCatalogSearch()
+        GetCatalogProductSearchRequest lmCodeParam = new GetCatalogProductSearchRequest()
                 .setDepartmentId(getUserSessionData().getUserDepartmentId())
                 .setPageSize(defaultPageSize);
-        List<ProductItemData> productItemByShopDataList = catalogSearchClient
+        List<ProductData> productItemByShopDataList = catalogSearchClient
                 .searchProductsBy(lmCodeByShopParam).asJson().getItems();
-        List<ProductItemData> productItemDataList = catalogSearchClient
+        List<ProductData> productIDataList = catalogSearchClient
                 .searchProductsBy(lmCodeParam).asJson().getItems();
 
         String lmCodeByShop = productItemByShopDataList
                 .get((int) (Math.random() * productItemByShopDataList.size())).getLmCode();
-        String lmCode = productItemDataList.get((int) (Math.random() * productItemDataList.size()))
+        String lmCode = productIDataList.get((int) (Math.random() * productIDataList.size()))
                 .getLmCode();
 
         //Pre-conditions

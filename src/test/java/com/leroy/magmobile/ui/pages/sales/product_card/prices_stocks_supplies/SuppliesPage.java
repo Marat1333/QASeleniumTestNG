@@ -4,7 +4,7 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
-import com.leroy.magmobile.api.data.catalog.supply.CatalogSupplierData;
+import com.leroy.common_mashups.catalogs.data.supply.CatalogSupplierDataOld;
 import com.leroy.magmobile.ui.pages.sales.product_card.data.SupplyHistoryData;
 import com.leroy.magmobile.ui.pages.sales.product_card.widgets.SupplyHistoryWidget;
 import com.leroy.utils.DateTimeUtil;
@@ -76,7 +76,7 @@ public class SuppliesPage extends ProductPricesQuantitySupplyPage {
     }
 
     @Step("Проверить, что все данные отображены корректно")
-    public SuppliesPage shouldAllSupplyDataIsCorrect(CatalogSupplierData data) throws Exception {
+    public SuppliesPage shouldAllSupplyDataIsCorrect(CatalogSupplierDataOld data) throws Exception {
         String uiDateFormat = "d MMMM yyyy";
         String apiDateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
         softAssert.isElementTextEqual(supplierNameLbl, data.getName());
@@ -99,11 +99,11 @@ public class SuppliesPage extends ProductPricesQuantitySupplyPage {
         }
         mainScrollView.scrollDownToText("факт приёмки");
         List<SupplyHistoryData> uiSupplyHistoryDataList = supplyHistoryScrollView.getFullDataList();
-        List<com.leroy.magmobile.api.data.catalog.supply.SupplyHistoryData> apiSupplyHistoryDataList = data.getHistory();
+        List<com.leroy.common_mashups.catalogs.data.supply.SupplyHistoryData> apiSupplyHistoryDataList = data.getHistory();
         anAssert.isEquals(uiSupplyHistoryDataList.size(), apiSupplyHistoryDataList.size(), "supply history lists size mismatch");
         for (int i = 0; i < apiSupplyHistoryDataList.size(); i++) {
             SupplyHistoryData uiEntity = uiSupplyHistoryDataList.get(i);
-            com.leroy.magmobile.api.data.catalog.supply.SupplyHistoryData apiEntity = apiSupplyHistoryDataList.get(i);
+            com.leroy.common_mashups.catalogs.data.supply.SupplyHistoryData apiEntity = apiSupplyHistoryDataList.get(i);
             softAssert.isEquals(uiEntity.getId(), apiEntity.getOrderNo(), "order number");
             softAssert.isEquals(uiEntity.getOrderedAmount(), apiEntity.getOrderedItemQty(), "ordered quantity");
             softAssert.isEquals(uiEntity.getReceivedAmount(), apiEntity.getReceivedItemQty(), "received quantity");

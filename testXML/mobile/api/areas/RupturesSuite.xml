@@ -104,5 +104,23 @@
         </classes>
     </test>
 
+    <test name="Create ruptures bulk session">
+        <classes>
+            <class name="com.leroy.magmobile.api.tests.ruptures.RupturesCreateBulkSessionTest"/>
+        </classes>
+    </test>
+
+    <test name="Add product to ruptures bulk session">
+        <classes>
+            <class name="com.leroy.magmobile.api.tests.ruptures.RupturesAddProductToBulkSessionTest"/>
+        </classes>
+    </test>
+
+    <test name="Check stock correction access">
+        <classes>
+            <class name="com.leroy.magmobile.api.tests.ruptures.RupturesStockCorrectionAccessCheckTests"/>
+        </classes>
+    </test>
+
 
 </suite>

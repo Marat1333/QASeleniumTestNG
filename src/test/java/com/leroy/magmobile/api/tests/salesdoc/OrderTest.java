@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.hasSize;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.common_mashups.customer_accounts.data.CustomerData;
 import com.leroy.common_mashups.customer_accounts.data.PhoneData;
 import com.leroy.common_mashups.helpers.CustomerHelper;
@@ -18,7 +19,6 @@ import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.CartClient;
 import com.leroy.magmobile.api.clients.OrderClient;
 import com.leroy.magmobile.api.clients.SalesDocSearchClient;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
@@ -56,7 +56,7 @@ public class OrderTest extends BaseProjectApiTest {
     private CustomerHelper customerHelper;
 
     private OrderData orderData;
-    private List<ProductItemData> productItemDataList;
+    private List<ProductData> productDataList;
 
     @Override
     protected boolean isNeedAccessToken() {
@@ -65,7 +65,7 @@ public class OrderTest extends BaseProjectApiTest {
 
     @BeforeClass
     private void setUp() {
-        productItemDataList = searchProductHelper.getProducts(2);
+        productDataList = searchProductHelper.getProducts(2);
     }
 
     private void sendGetOrderRequestAndCheckData() {
@@ -88,7 +88,7 @@ public class OrderTest extends BaseProjectApiTest {
     public void testCreateOrder() {
         // Prepare request data
         CartProductOrderData productOrderData = new CartProductOrderData(
-                productItemDataList.get(0));
+                productDataList.get(0));
         productOrderData.setQuantity(1.0);
 
         // Create
@@ -186,8 +186,8 @@ public class OrderTest extends BaseProjectApiTest {
     public void testRearrangeOrder() throws Exception {
         if (orderData == null)
             throw new IllegalArgumentException("order data hasn't been created");
-        ProductItemData productItemData = productItemDataList.get(1);
-        OrderProductData orderProductData = new OrderProductData(productItemData);
+        ProductData productData = productDataList.get(1);
+        OrderProductData orderProductData = new OrderProductData(productData);
         orderProductData.setQuantity(1.0);
 
         step("Wait until order is confirmed");
@@ -242,10 +242,10 @@ public class OrderTest extends BaseProjectApiTest {
     public void testUpdateDraftOrderRemoveProductLine() {
         // Prepare request data
         CartProductOrderData productOrderData1 = new CartProductOrderData(
-                productItemDataList.get(0));
+                productDataList.get(0));
         productOrderData1.setQuantity(1.0);
         CartProductOrderData productOrderData2 = new CartProductOrderData(
-                productItemDataList.get(1));
+                productDataList.get(1));
         productOrderData2.setQuantity(1.0);
 
         // Create

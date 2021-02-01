@@ -6,6 +6,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
+import com.leroy.common_mashups.catalogs.data.CatalogSearchFilter;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.DiscountConst;
@@ -15,8 +17,6 @@ import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.CartClient;
 import com.leroy.magmobile.api.clients.OrderClient;
 import com.leroy.magmobile.api.clients.SalesDocSearchClient;
-import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
@@ -129,7 +129,7 @@ public class SalesBaseTest extends AppBaseSteps {
     protected List<String> getAnyLmCodesProductWithoutSpecificOptions(
             int necessaryCount) {
         return searchProductHelper.getProducts(necessaryCount, false, false)
-                .stream().map(ProductItemData::getLmCode).collect(Collectors.toList());
+                .stream().map(ProductData::getLmCode).collect(Collectors.toList());
     }
 
     protected String getAnyLmCodeProductWithoutSpecificOptions() {
@@ -174,12 +174,12 @@ public class SalesBaseTest extends AppBaseSteps {
         filtersData.setAvs(false);
         filtersData.setTopEM(false);
         filtersData.setHasAvailableStock(true);
-        List<ProductItemData> productItemDataList = searchProductHelper.getProducts(2, filtersData);
+        List<ProductData> productIDataList = searchProductHelper.getProducts(2, filtersData);
         CartProductOrderData productWithNegativeBalance = new CartProductOrderData(
-                productItemDataList.get(0));
-        productWithNegativeBalance.setQuantity(productItemDataList.get(0).getAvailableStock() + 10.0);
+                productIDataList.get(0));
+        productWithNegativeBalance.setQuantity(productIDataList.get(0).getAvailableStock() + 10.0);
         CartProductOrderData productWithPositiveBalance = new CartProductOrderData(
-                productItemDataList.get(1));
+                productIDataList.get(1));
         productWithPositiveBalance.setQuantity(1.0);
 
         return Arrays.asList(productWithNegativeBalance, productWithPositiveBalance);

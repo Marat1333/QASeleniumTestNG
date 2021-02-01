@@ -1,12 +1,12 @@
 package com.leroy.magportal.ui.tests;
 
 import com.google.inject.Inject;
+import com.leroy.common_mashups.catalogs.data.CatalogSearchFilter;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.common_mashups.customer_accounts.data.CustomerData;
 import com.leroy.common_mashups.helpers.CustomerHelper;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.core.UserSessionData;
-import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magportal.ui.WebBaseSteps;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
@@ -30,7 +30,7 @@ public abstract class BasePAOTest extends WebBaseSteps {
     @Inject
     private CustomerHelper customerHelper;
 
-    protected List<ProductItemData> productList;
+    protected List<ProductData> productList;
 
     protected String customerPhone = "1111111111";
 

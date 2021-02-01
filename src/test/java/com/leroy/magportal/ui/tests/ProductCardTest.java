@@ -1,14 +1,14 @@
 package com.leroy.magportal.ui.tests;
 
 import com.google.inject.Inject;
+import com.leroy.common_mashups.catalogs.clients.CatalogProductClient;
+import com.leroy.common_mashups.catalogs.data.product.CatalogProductData;
+import com.leroy.common_mashups.catalogs.data.CatalogSimilarProductsDataV1;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
+import com.leroy.common_mashups.catalogs.data.ProductDataList;
+import com.leroy.common_mashups.catalogs.requests.GetCatalogProductSearchRequest;
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.ContextProvider;
-import com.leroy.magmobile.api.clients.CatalogSearchClient;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
-import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
-import com.leroy.magportal.api.data.catalog.products.CatalogProductData;
-import com.leroy.magportal.api.data.catalog.products.CatalogSimilarProductsData;
 import com.leroy.magportal.api.data.catalog.shops.NearestShopsData;
 import com.leroy.magportal.ui.WebBaseSteps;
 import com.leroy.magportal.ui.constants.search.CatalogSearchParams;
@@ -28,7 +28,7 @@ import org.testng.annotations.Test;
 public class ProductCardTest extends WebBaseSteps {
 
     @Inject
-    private CatalogSearchClient catalogSearchClient;
+    private CatalogProductClient catalogSearchClient;
 
     @BeforeMethod
     private void precondition() throws Exception {
@@ -48,22 +48,22 @@ public class ProductCardTest extends WebBaseSteps {
     }
 
     private String getRandomLmCode() {
-        ProductItemDataList productItemDataList = catalogSearchClient.searchProductsBy(new GetCatalogSearch().setPageSize(24)).asJson();
-        List<ProductItemData> productItemData = productItemDataList.getItems();
-        anAssert().isTrue(productItemData.size() > 0, "size must be more than 0");
-        return productItemData.get((int) (Math.random() * productItemData.size())).getLmCode();
+        ProductDataList productDataList = catalogSearchClient.searchProductsBy(new GetCatalogProductSearchRequest().setPageSize(24)).asJson();
+        List<ProductData> productIData = productDataList.getItems();
+        anAssert().isTrue(productIData.size() > 0, "size must be more than 0");
+        return productIData.get((int) (Math.random() * productIData.size())).getLmCode();
     }
 
     private String getRandomSimilarProductLmCode(String sourceLmCode) {
-        CatalogSimilarProductsData data = catalogSearchClient.getSimilarProducts(sourceLmCode).asJson();
-        List<ProductItemData> resultList = data.getSubstitutes();
+        CatalogSimilarProductsDataV1 data = catalogSearchClient.getSimilarProductsV1(sourceLmCode).asJson();
+        List<ProductData> resultList = data.getSubstitutes();
         String result = resultList.get((int) (Math.random() * resultList.size())).getLmCode();
         return result;
     }
 
     private String getRandomComplementProductLmCode(String sourceLmCode) {
-        CatalogSimilarProductsData data = catalogSearchClient.getSimilarProducts(sourceLmCode).asJson();
-        List<ProductItemData> resultList = data.getComplements();
+        CatalogSimilarProductsDataV1 data = catalogSearchClient.getSimilarProductsV1(sourceLmCode).asJson();
+        List<ProductData> resultList = data.getComplements();
         String result = resultList.get((int) (Math.random() * resultList.size())).getLmCode();
         return result;
     }
@@ -162,17 +162,17 @@ public class ProductCardTest extends WebBaseSteps {
         String lessThan4Complements = "10813144";
         String moreThan4Complements = "15057456";
 
-        CatalogSimilarProductsData data = catalogSearchClient.getSimilarProducts(lessThan4Similar).asJson();
-        List<ProductItemData> lessThan4SimilarList = data.getSubstitutes();
+        CatalogSimilarProductsDataV1 data = catalogSearchClient.getSimilarProductsV1(lessThan4Similar).asJson();
+        List<ProductData> lessThan4SimilarList = data.getSubstitutes();
 
-        data = catalogSearchClient.getSimilarProducts(moreThan4Similar).asJson();
-        List<ProductItemData> moreThan4SimilarList = data.getSubstitutes();
+        data = catalogSearchClient.getSimilarProductsV1(moreThan4Similar).asJson();
+        List<ProductData> moreThan4SimilarList = data.getSubstitutes();
 
-        data = catalogSearchClient.getSimilarProducts(lessThan4Complements).asJson();
-        List<ProductItemData> lessThan4ComplementsList = data.getComplements();
+        data = catalogSearchClient.getSimilarProductsV1(lessThan4Complements).asJson();
+        List<ProductData> lessThan4ComplementsList = data.getComplements();
 
-        data = catalogSearchClient.getSimilarProducts(moreThan4Complements).asJson();
-        List<ProductItemData> moreThan4ComplementsList = data.getComplements();
+        data = catalogSearchClient.getSimilarProductsV1(moreThan4Complements).asJson();
+        List<ProductData> moreThan4ComplementsList = data.getComplements();
 
 
         //Step 1

@@ -8,9 +8,7 @@ import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
-import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.oneOf;
 
 import com.google.inject.Inject;
@@ -21,6 +19,7 @@ import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import java.util.List;
 import org.testng.annotations.Test;
+import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class SalesDocSearchTest extends BaseProjectApiTest {
@@ -103,7 +102,7 @@ public class SalesDocSearchTest extends BaseProjectApiTest {
                                                String docType, String shopId, String docId) {
         String shopId2 = shopId != null && shopId.length() == 1 ? "00" + shopId : shopId;
         for (SalesDocumentResponseData salesDoc : salesDocList) {
-            assertThat("docId", salesDoc.getDocId(), not(isEmptyOrNullString()));
+            assertThat("docId", Strings.isNotNullAndNotEmpty(salesDoc.getDocId()));
             assertThat("fullDocId", salesDoc.getFullDocId(), is(endsWith(salesDoc.getDocId())));
             if (docType != null)
                 assertThat("docType", salesDoc.getDocType(), is(docType));
