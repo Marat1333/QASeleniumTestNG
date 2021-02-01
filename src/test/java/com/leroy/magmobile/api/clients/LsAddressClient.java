@@ -5,7 +5,6 @@ import com.google.inject.Inject;
 import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.address.*;
 import com.leroy.magmobile.api.data.address.cellproducts.*;
-import com.leroy.magmobile.api.data.ruptures.ActionData;
 import com.leroy.magmobile.api.helpers.LsAddressHelper;
 import com.leroy.magmobile.api.requests.address.*;
 import io.qameta.allure.Step;
@@ -199,17 +198,16 @@ public class LsAddressClient extends BaseMashupClient {
     // Alley
 
     @Step("Check that alley is created and response matches postData")
-    public AlleyData assertThatAlleyIsCreatedAndGetData(Response<AlleyData> resp, AlleyData postData) {
+    public void assertThatAlleyIsCreated(Response<AlleyData> resp, AlleyData alleyData) {
         assertThatResponseIsOk(resp);
         AlleyData actualData = resp.asJson();
         assertThat("id", actualData.getId(), greaterThan(0));
         assertThat("count", actualData.getCount(), is(0));
-        assertThat("type", actualData.getType(), is(postData.getType()));
+        assertThat("type", actualData.getType(), is(alleyData.getType()));
         assertThat("storeId", actualData.getStoreId(), is(Integer.valueOf(getUserSessionData().getUserShopId())));
         assertThat("departmentId", actualData.getDepartmentId(),
                 is(Integer.valueOf(getUserSessionData().getUserDepartmentId())));
-        assertThat("code", actualData.getCode(), is(postData.getCode()));
-        return actualData;
+        assertThat("code", actualData.getCode(), is(alleyData.getCode()));
     }
 
     @Step("Check that alley is renamed")

@@ -18,6 +18,13 @@ public class LsAddressHelper extends BaseHelper {
     @Inject
     private LsAddressClient lsAddressClient;
 
+    @Step("Create new alley")
+    public Response<AlleyData> createAlley(AlleyData alleyData){
+        alleyData.setType(0);
+        alleyData.setCode("Alley_C3316285");
+        return lsAddressClient.createAlley(alleyData);
+    }
+
     @Step("Search alley by id")
     public AlleyData searchAlleyById(int alleyId, boolean allowEmpty) {
         Response<AlleyDataItems> resp = lsAddressClient.searchForAlleys();
