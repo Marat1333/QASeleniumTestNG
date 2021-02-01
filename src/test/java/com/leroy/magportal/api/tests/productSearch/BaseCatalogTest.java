@@ -29,12 +29,6 @@ public class BaseCatalogTest extends BaseMagPortalApiTest {
 
     protected String lmCode;
 
-    protected void isResponseSuccessfulAndContainsMoreThanOneEntity(Response<?> response,
-            List<?> responseData) {
-        isResponseOk(response);
-        assertThat("response contains 0 objects", responseData.size(), greaterThan(0));
-    }
-
     protected void isNearestShopsDataValid(Response<NearestShopsData> response) {
         isResponseOk(response);
         List<NearestShopsData> shopsData = response.asJsonList(NearestShopsData.class);
