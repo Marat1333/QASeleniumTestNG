@@ -790,8 +790,10 @@ public class RupturesTest extends AppBaseSteps {
         step("Убрать экшен 'найти товар и выложить'," +
                 " Добавить экшены 'Поставить извиняшку' и 'Убрать ценник'," +
                 " Закрыть модалку реактирования экшенов");
-        tasksListsModalPage.selectTasks(Action.FIND_PRODUCT_AND_LAY_IT_OUT.getActionName(),
-                Action.GIVE_APOLOGISE.getActionName(), Action.REMOVE_PRICE_TAG.getActionName())
+        tasksListsModalPage.selectTasks(
+                    Action.FIND_PRODUCT_AND_LAY_IT_OUT.getActionName(),
+                    Action.GIVE_APOLOGISE.getActionName(),
+                    Action.REMOVE_PRICE_TAG.getActionName())
                 .shouldToDoListContainsTaskAndPossibleListNotContainsTask(Arrays.asList(
                         Action.GIVE_APOLOGISE.getActionName(), Action.REMOVE_PRICE_TAG.getActionName()))
                 .closeModal();
