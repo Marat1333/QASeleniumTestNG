@@ -221,7 +221,7 @@ public class SessionListPage extends CommonMagMobilePage {
         List<SessionData> uiSessionData = activeSessionScrollView.getFullDataList(1);
         SessionData sessionData = uiSessionData.get(0);
         softAssert.isEquals(sessionData.getRuptureQuantity(), expectedRupturesCount, "Количество перебоев не совпадает");
-        // softAssert.isEquals(sessionData.getType(), "Bulk", "Сессия не массовая"); TODO переделать после выполнения RUP-374
+        softAssert.isEquals(sessionData.getType(), "Bulk", "Сессия не массовая");
         softAssert.verifyAll();
     }
 
@@ -229,10 +229,10 @@ public class SessionListPage extends CommonMagMobilePage {
     public void verifyActiveBulkSessionDataBySessionId(int expectedRupturesCount, int sessionId) throws Exception {
         List<SessionData> uiSessionData = activeSessionScrollView.getFullDataList();
 
-        for(SessionData session : uiSessionData){
-            if(Integer.parseInt(session.getSessionNumber()) == sessionId) {
-                softAssert.isEquals(session.getRuptureQuantity(), expectedRupturesCount, "Количество перебоев не совпадает");
-                // softAssert.isEquals(sessionData.getType(), "Bulk", "Сессия не массовая"); TODO переделать после выполнения RUP-374
+        for(SessionData sessionData : uiSessionData){
+            if(Integer.parseInt(sessionData.getSessionNumber()) == sessionId) {
+                softAssert.isEquals(sessionData.getRuptureQuantity(), expectedRupturesCount, "Количество перебоев не совпадает");
+                softAssert.isEquals(sessionData.getType(), "Bulk", "Сессия не массовая");
                 softAssert.verifyAll();
                 return;
             }

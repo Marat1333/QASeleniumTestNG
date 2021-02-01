@@ -9,6 +9,11 @@ import com.leroy.utils.ParserUtil;
 import org.openqa.selenium.WebDriver;
 
 public class FinishedSessionWidget extends CardWidget<FinishedSessionData> {
+
+    public FinishedSessionWidget(WebDriver driver, CustomLocator locator) {
+        super(driver, locator);
+    }
+
     @AppFindBy(containsText = "№")
     Element sessionNumberLbl;
 
@@ -24,10 +29,6 @@ public class FinishedSessionWidget extends CardWidget<FinishedSessionData> {
     @AppFindBy(xpath = ".//android.widget.TextView[@content-desc='sessionType']")
     Element type;
 
-    public FinishedSessionWidget(WebDriver driver, CustomLocator locator) {
-        super(driver, locator);
-    }
-
     @Override
     public FinishedSessionData collectDataFromPage(String pageSource) {
         FinishedSessionData data = new FinishedSessionData();
@@ -36,7 +37,7 @@ public class FinishedSessionWidget extends CardWidget<FinishedSessionData> {
         data.setFinishDate(creationAndFinishingDateLbl.getText(pageSource).split("—")[1]);
         data.setCreatorName(creatorLbl.getText(pageSource));
 
-        if (quantityLbl.getText().contains("/")) {
+        if (!type.isVisible(pageSource)) {
             String[] quantity = quantityLbl.getText(pageSource).split("/");
             data.setRuptureQuantity(ParserUtil.strToInt(quantity[1]));
             data.setFinishedRuptureQuantity(ParserUtil.strToInt(quantity[0]));

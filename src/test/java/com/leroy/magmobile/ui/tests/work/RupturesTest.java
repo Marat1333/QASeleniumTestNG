@@ -1958,8 +1958,8 @@ public class RupturesTest extends AppBaseSteps {
         sessionListPage = new SessionListPage();
         sessionListPage.verifyRequiredElements();
 //        sessionListPage.checkSuccessToast(); TODO рассмотреть возможность поиска тоста во время waitForPageIsLoaded
-//        sessionListPage.shouldActiveSessionHasNotContainsSession(String.valueOf(sessionId));
-//        sessionListPage.shouldFinishedSessionContainsSession(String.valueOf(sessionId)); TODO доделать после выполнения RUP-374
+        sessionListPage.shouldActiveSessionsHaveNotContainSession(String.valueOf(sessionId));
+        sessionListPage.shouldFinishedSessionsContainSession(String.valueOf(sessionId));
         rupturesHelper.checkSessionIsFinished(sessionId);
 
         // Step 5
@@ -2007,8 +2007,8 @@ public class RupturesTest extends AppBaseSteps {
         deleteSessionModalPage.confirmDelete();
         sessionListPage = new SessionListPage();
         sessionListPage.verifyRequiredElements();
-//        sessionListPage.shouldActiveSessionHasNotContainsSession(String.valueOf(sessionId));
-//        sessionListPage.shouldFinishedSessionHasNotContainsSession(String.valueOf(sessionId)); TODO доделать после выполнения RUP-374
+        sessionListPage.shouldActiveSessionsHaveNotContainSession(String.valueOf(sessionId));
+        sessionListPage.shouldFinishedSessionsHaveNotContainSession(String.valueOf(sessionId));
         rupturesHelper.checkSessionIsDeleted(sessionId);
     }
 }

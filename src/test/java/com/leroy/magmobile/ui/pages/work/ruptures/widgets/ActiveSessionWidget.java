@@ -36,7 +36,7 @@ public class ActiveSessionWidget extends CardWidget<SessionData> {
         data.setCreateDate(creationDateLbl.getText(pageSource).split("Открыта ")[1]);
         data.setRuptureQuantity(ParserUtil.strToInt(quantityLbl.getText(pageSource)));
         data.setCreatorName(creatorLbl.getText(pageSource));
-        data.setType(!type.isVisible() ? "Standard" : "Bulk");
+        data.setType(type.isVisible(pageSource) ? "Bulk" : "Standard");
         return data;
     }
 
