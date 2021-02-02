@@ -29,9 +29,9 @@ public class PaymentHelper extends BaseHelper {
     @Inject
     private PaymentClient paymentClient;
     @Inject
-    OrderClient orderClient;
+    private OrderClient orderClient;
     @Inject
-    TpNetClient tpNetClient;
+    private TpNetClient tpNetClient;
 
     private String getPaymentTaskId(String orderId) {
         Response<OnlineOrderData> resp = orderClient.getOnlineOrder(orderId);

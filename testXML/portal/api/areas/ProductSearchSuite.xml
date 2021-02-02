@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="API Product Search endpoints Suite" parallel="tests">
+
+    <listeners>
+        <listener class-name="com.leroy.core.listeners.TestRailListener"/>
+    </listeners>
+
+    <test name="Export Excel Test">
+        <classes>
+            <class name="com.leroy.magportal.api.tests.productSearch.ExportExcelTest">
+            </class>
+        </classes>
+    </test>
+
+    <test name="Catalog endpoints Test">
+        <classes>
+            <class name="com.leroy.magportal.api.tests.productSearch.CatalogTest">
+            </class>
+        </classes>
+    </test>
+
+</suite>
