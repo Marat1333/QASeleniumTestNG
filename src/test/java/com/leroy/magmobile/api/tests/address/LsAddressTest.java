@@ -70,8 +70,12 @@ public class LsAddressTest extends BaseProjectApiTest {
     @Test(description = "C3316285 lsAddress POST alleys")
     public void testCreateAlley() {
         step("Create new alley");
-        Response<AlleyData> resp = lsAddressHelper.createAlley(alleyData);
+        alleyData.setType(0);
+        alleyData.setCode(RandomStringUtils.randomNumeric(5));
+        Response<AlleyData> resp = lsAddressClient.createAlley(alleyData);
         lsAddressClient.assertThatAlleyIsCreated(resp, alleyData);
+        alleyData = resp.asJson();
+        createdAlleyId = alleyData.getId();
     }
 
     @Test(description = "C3316284 lsAddress GET alleys")
@@ -79,14 +83,13 @@ public class LsAddressTest extends BaseProjectApiTest {
         step("Get list of alleys");
         Response<AlleyDataItems> resp = lsAddressClient.searchForAlleys();
         lsAddressClient.assertThatGetAlleyList(resp);
+
     }
 
     @Test(description = "C23415877 lsAddress PUT alleys - rename alleys")
     public void testRenameAlleys() {
         step("Create new alley");
-        Response<AlleyData> resp = lsAddressHelper.createAlley(alleyData);
-        lsAddressClient.assertThatAlleyIsCreated(resp, alleyData);
-        alleyData = resp.asJson();
+        alleyData = lsAddressHelper.createRandomAlley();
         createdAlleyId = alleyData.getId();
 
         step("Rename alley");
@@ -98,9 +101,7 @@ public class LsAddressTest extends BaseProjectApiTest {
     @Test(description = "C23415876 lsAddress DELETE alleys - delete alley")
     public void testDeleteAlleys() {
         step("Create new alley");
-        Response<AlleyData> resp = lsAddressHelper.createAlley(alleyData);
-        lsAddressClient.assertThatAlleyIsCreated(resp, alleyData);
-        alleyData = resp.asJson();
+        alleyData = lsAddressHelper.createRandomAlley();
         createdAlleyId = alleyData.getId();
 
         step("Delete alley");

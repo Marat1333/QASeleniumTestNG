@@ -6,6 +6,7 @@ import com.leroy.magmobile.api.data.address.AlleyData;
 import com.leroy.magmobile.api.data.address.AlleyDataItems;
 import com.leroy.magportal.api.helpers.BaseHelper;
 import io.qameta.allure.Step;
+import org.apache.commons.lang3.RandomStringUtils;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.List;
@@ -18,11 +19,19 @@ public class LsAddressHelper extends BaseHelper {
     @Inject
     private LsAddressClient lsAddressClient;
 
-    @Step("Create new alley")
-    public Response<AlleyData> createAlley(AlleyData alleyData) {
+    @Step("Create default alley")
+    public AlleyData createDefaultAlley(String name) {
+        AlleyData alleyData = new AlleyData();
         alleyData.setType(0);
-        alleyData.setCode("Alley_C3316285");
-        return lsAddressClient.createAlley(alleyData);
+        alleyData.setCode(name);
+        Response<AlleyData> resp = lsAddressClient.createAlley(alleyData);
+        assertThat("Create alley request has failed.", resp, successful());
+        return resp.asJson();
+    }
+
+    @Step("Create default alley with random name")
+    public AlleyData createRandomAlley() {
+        return createDefaultAlley(RandomStringUtils.randomNumeric(5));
     }
 
     @Step("Search alley by id")
