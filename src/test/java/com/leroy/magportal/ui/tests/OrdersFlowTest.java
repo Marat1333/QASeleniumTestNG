@@ -315,6 +315,7 @@ public class OrdersFlowTest extends BasePAOTest {
         orderId = bitrixHelper.createOnlineOrderCardPayment(OnlineOrderTypeConst.DELIVERY_TO_DOOR).getSolutionId();
         //initCreateOrder(1,SalesDocumentsConst.GiveAwayPoints.PICKUP, SalesDocumentsConst.States.ALLOWED_FOR_PICKING);
         //orderId = "210103326494";
+        System.out.print(orderId);
 
 
         // Step 1:
