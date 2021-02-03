@@ -203,14 +203,15 @@ public class LsAddressClient extends BaseMashupClient {
     public void assertThatAlleyIsCreated(Response<AlleyData> resp, AlleyData expectedData) {
         assertThatResponseIsOk(resp);
         AlleyData actualData = resp.asJson();
-        softAssert().isTrue(actualData.getId() > 0, actualData.getId() + ": id doesn't match");
-        softAssert().isTrue(actualData.getCount() == 0, actualData.getCount() + ": count doesn't match");
-        softAssert().isEquals(actualData.getType(), expectedData.getType(), actualData.getType() + ": type doesn't match");
+        softAssert().isTrue(actualData.getId() > 0, "Alley id doesn't match expected value");
+        softAssert().isTrue(actualData.getCount() == 0, "Count doesn't match expected value");
+        softAssert().isEquals(actualData.getType(), expectedData.getType(), "Alley type doesn't match expected value");
         softAssert().isEquals(actualData.getStoreId(),
-                Integer.parseInt(getUserSessionData().getUserShopId()), actualData.getStoreId() + ": storeId doesn't match");
+                Integer.parseInt(getUserSessionData().getUserShopId()), "StoreId doesn't match expected value");
         softAssert().isEquals(actualData.getDepartmentId(),
-                Integer.parseInt(getUserSessionData().getUserDepartmentId()), actualData.getDepartmentId() + ": departmentId doesn't match");
-        softAssert().isTrue(Strings.isNotNullAndNotEmpty(actualData.getCode()), actualData.getCode() + ": alley name is null or empty");
+                Integer.parseInt(getUserSessionData().getUserDepartmentId()), "DepartmentId doesn't match expected value");
+        softAssert().isTrue(Strings.isNotNullAndNotEmpty(actualData.getCode()), "Alley name doesn't match expected value");
+        softAssert().verifyAll();
     }
 
     public void assertThatGetAlleyList(Response<AlleyDataItems> resp) {
@@ -218,14 +219,15 @@ public class LsAddressClient extends BaseMashupClient {
         List<AlleyData> items = resp.asJson().getItems();
         assertThat("items count", items, hasSize(greaterThan(0)));
         for (AlleyData alleyData : items) {
-            softAssert().isTrue(alleyData.getId() >= 0, alleyData.getId() + ": id doesn't match");
-            softAssert().isTrue(alleyData.getCount() >= 0, alleyData.getCount() + ": count doesn't match");
-            softAssert().isTrue(alleyData.getType() >= 0, alleyData.getType() + ": type doesn't match");
+            String desc = "AlleyID(" + alleyData.getId() + ")";
+            softAssert().isTrue(alleyData.getId() >= 0, desc + ": id doesn't match");
+            softAssert().isTrue(alleyData.getCount() >= 0, desc + ": count doesn't match");
+            softAssert().isTrue(alleyData.getType() >= 0, desc + ": type doesn't match");
             softAssert().isEquals(alleyData.getStoreId(),
-                    Integer.parseInt(getUserSessionData().getUserShopId()), alleyData.getStoreId() + ": storeId doesn't match");
+                    Integer.parseInt(getUserSessionData().getUserShopId()), desc + ": storeId doesn't match");
             softAssert().isEquals(alleyData.getDepartmentId(),
-                    Integer.parseInt(getUserSessionData().getUserDepartmentId()), alleyData.getDepartmentId() + ": departmentId doesn't match");
-            softAssert().isTrue(Strings.isNotNullAndNotEmpty(alleyData.getCode()), alleyData.getCode() + ": alley name is null or empty");
+                    Integer.parseInt(getUserSessionData().getUserDepartmentId()), desc + ": departmentId doesn't match");
+            softAssert().isTrue(Strings.isNotNullAndNotEmpty(alleyData.getCode()), desc + ": alley name is null or empty");
         }
         softAssert().verifyAll();
     }
