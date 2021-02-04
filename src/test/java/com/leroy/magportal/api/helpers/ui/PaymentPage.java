@@ -39,7 +39,7 @@ public class PaymentPage extends BaseWebPage {
     @WebFindBy(xpath = "//*[@name='password']")
     EditBox password;
 
-    @WebFindBy(xpath = "//input[@type='submit']")
+    @WebFindBy(xpath = "//input[@id='submit_id']")
     Element submitBtn;
 
     @Override
