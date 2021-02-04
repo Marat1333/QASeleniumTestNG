@@ -1,28 +1,27 @@
 package com.leroy.magmobile.ui.tests.catalogsearch;
 
 import com.google.inject.Inject;
+import com.leroy.common_mashups.catalogs.clients.CatalogProductClient;
+import com.leroy.common_mashups.catalogs.data.ProductDataList;
+import com.leroy.common_mashups.catalogs.requests.GetCatalogProductSearchRequest;
 import com.leroy.core.api.ThreadApiClient;
-import com.leroy.magmobile.api.clients.CatalogSearchClient;
-import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
-import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.search.NomenclatureSearchPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.tests.BaseUiMagMobMockTest;
-import org.testng.annotations.Test;
-
 import java.util.HashMap;
+import org.testng.annotations.Test;
 
 public class MockSearchTest extends BaseUiMagMobMockTest {
 
     @Inject
-    CatalogSearchClient searchClient;
+    CatalogProductClient searchClient;
 
     private final String CURRENT_SHOP = "32";
 
-    private GetCatalogSearch buildDefaultCatalogSearchParams() {
-        return new GetCatalogSearch()
+    private GetCatalogProductSearchRequest buildDefaultCatalogSearchParams() {
+        return new GetCatalogProductSearchRequest()
                 .setPageSize(10)
                 .setShopId(CURRENT_SHOP)
                 .setPageNumber(1)
@@ -31,12 +30,12 @@ public class MockSearchTest extends BaseUiMagMobMockTest {
                 .setHasAvailableStock(true);
     }
 
-    private HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> sendRequestsSearchProductsBy(
-            GetCatalogSearch... paramsArray) {
-        HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> resultMap = new HashMap<>();
+    private HashMap<Integer, ThreadApiClient<ProductDataList, CatalogProductClient>> sendRequestsSearchProductsBy(
+            GetCatalogProductSearchRequest... paramsArray) {
+        HashMap<Integer, ThreadApiClient<ProductDataList, CatalogProductClient>> resultMap = new HashMap<>();
         int i = 0;
-        for (GetCatalogSearch param : paramsArray) {
-            ThreadApiClient<ProductItemDataList, CatalogSearchClient> myThread = new ThreadApiClient<>(
+        for (GetCatalogProductSearchRequest param : paramsArray) {
+            ThreadApiClient<ProductDataList, CatalogProductClient> myThread = new ThreadApiClient<>(
                     searchClient);
             myThread.sendRequest(client -> client.searchProductsBy(param));
             resultMap.put(i, myThread);
@@ -53,23 +52,23 @@ public class MockSearchTest extends BaseUiMagMobMockTest {
         String shortLmCode = "1506";
         String shortBarCode = "590212011";
 
-        GetCatalogSearch byLmParams = new GetCatalogSearch()
+        GetCatalogProductSearchRequest byLmParams = new GetCatalogProductSearchRequest()
                 .setShopId(CURRENT_SHOP)
                 .setByLmCode(lmCode);
 
-        GetCatalogSearch byNameParam = buildDefaultCatalogSearchParams().setByNameLike(searchContext);
+        GetCatalogProductSearchRequest byNameParam = buildDefaultCatalogSearchParams().setByNameLike(searchContext);
 
-        GetCatalogSearch byBarCodeParams = new GetCatalogSearch()
+        GetCatalogProductSearchRequest byBarCodeParams = new GetCatalogProductSearchRequest()
                 .setByBarCode(barCode)
                 .setShopId(CURRENT_SHOP);
 
-        GetCatalogSearch byShortLmCodeParams = buildDefaultCatalogSearchParams()
+        GetCatalogProductSearchRequest byShortLmCodeParams = buildDefaultCatalogSearchParams()
                 .setByLmCode(shortLmCode);
 
-        GetCatalogSearch byShortBarCodeParams = buildDefaultCatalogSearchParams()
+        GetCatalogProductSearchRequest byShortBarCodeParams = buildDefaultCatalogSearchParams()
                 .setByBarCode(shortBarCode);
 
-        HashMap<Integer, ThreadApiClient<ProductItemDataList, CatalogSearchClient>> apiThreads =
+        HashMap<Integer, ThreadApiClient<ProductDataList, CatalogProductClient>> apiThreads =
                 sendRequestsSearchProductsBy(byLmParams, byNameParam, byBarCodeParams, byShortLmCodeParams, byShortBarCodeParams);
 
         // Pre-conditions

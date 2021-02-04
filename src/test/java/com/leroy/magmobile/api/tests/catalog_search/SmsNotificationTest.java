@@ -2,11 +2,11 @@ package com.leroy.magmobile.api.tests.catalog_search;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.common_mashups.customer_accounts.data.CustomerData;
 import com.leroy.common_mashups.helpers.CustomerHelper;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.magmobile.api.clients.SmsNotificationClient;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.notification.NotificationCustomerData;
 import com.leroy.magmobile.api.data.notification.SmsNotificationData;
 import com.leroy.magmobile.api.data.sales.BaseProductOrderData;
@@ -33,7 +33,7 @@ public class SmsNotificationTest extends BaseProjectApiTest {
     @Test(description = "C3175887 SMS post")
     public void testCreateNotification() {
         // Get test data:
-        ProductItemData product = searchProductHelper.getProducts(1).get(0);
+        ProductData product = searchProductHelper.getProducts(1).get(0);
         CustomerData customerData = customerHelper.getAnyCustomer();
 
         NotificationCustomerData notifyCustomerData = new NotificationCustomerData();

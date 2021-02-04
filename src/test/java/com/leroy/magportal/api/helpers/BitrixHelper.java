@@ -6,6 +6,7 @@ import static com.leroy.magportal.api.constants.PaymentMethodEnum.TPNET;
 import static com.leroy.magportal.ui.constants.TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
 
 import com.google.inject.Inject;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.common_mashups.customer_accounts.clients.CustomerClient;
 import com.leroy.common_mashups.customer_accounts.data.CustomerListData;
 import com.leroy.common_mashups.customer_accounts.data.CustomerSearchFilters;
@@ -15,9 +16,7 @@ import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.core.api.ThreadApiClient;
 import com.leroy.core.configuration.Log;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magportal.api.clients.OrderClient;
-import com.leroy.magportal.api.clients.ShopsClient;
 import com.leroy.magportal.api.constants.DeliveryServiceTypeEnum;
 import com.leroy.magportal.api.constants.LmCodeTypeEnum;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
@@ -45,7 +44,7 @@ public class BitrixHelper extends BaseHelper {
     @Inject
     private PaymentHelper paymentHelper;
     @Inject
-    private ShopsClient shopsClient;
+    private ShopsHelper shopsHelper;
     @Inject
     private SearchProductHelper searchProductHelper;
     @Inject
@@ -137,19 +136,19 @@ public class BitrixHelper extends BaseHelper {
         ArrayList<BitrixSolutionPayload.Basket> result = new ArrayList<>();
 
         if (orderData.getLmCode() != null) {
-            ProductItemData product = searchProductHelper.getProductByLmCode(orderData.getLmCode());
-            result.add(productItemDataToPayload(product));
+            ProductData product = searchProductHelper.searchProductByLmCode(orderData.getLmCode());
+            result.add(productDataToPayload(product));
         } else {
-            List<ProductItemData> products = searchProductHelper
+            List<ProductData> products = searchProductHelper
                     .getProductsForShop(productsCount, shopId);
-            for (ProductItemData productData : products) {
-                result.add(productItemDataToPayload(productData));
+            for (ProductData productData : products) {
+                result.add(productDataToPayload(productData));
             }
         }
         return result;
     }
 
-    private BitrixSolutionPayload.Basket productItemDataToPayload(ProductItemData product) {
+    private BitrixSolutionPayload.Basket productDataToPayload(ProductData product) {
         BitrixSolutionPayload.Basket basket = new BitrixSolutionPayload.Basket();
         String price = "99.99";
         double quantity = 10.00;
@@ -339,7 +338,7 @@ public class BitrixHelper extends BaseHelper {
             shopId = userSessionData().getUserShopId();
         }
 
-        return shopsClient.getShopById(shopId);
+        return shopsHelper.getShopById(shopId);
     }
 
     private String convertShopId(Integer shopId) {

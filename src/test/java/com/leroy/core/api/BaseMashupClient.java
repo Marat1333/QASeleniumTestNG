@@ -3,6 +3,7 @@ package com.leroy.core.api;
 import com.leroy.constants.EnvConstants;
 import com.leroy.core.ContextProvider;
 import com.leroy.core.UserSessionData;
+import com.leroy.core.asserts.SoftAssertWrapper;
 import com.leroy.core.configuration.Log;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
@@ -76,6 +77,10 @@ public abstract class BaseMashupClient extends BaseClient {
 
     public enum ResponseType {
         GET, PUT, POST, DELETE;
+    }
+
+    protected SoftAssertWrapper softAssert() {
+        return ContextProvider.getContext().getSoftAssert();
     }
 
     protected void assertThatResponseIsOk(Response<?> response) {

@@ -42,6 +42,5 @@ public abstract class BaseMagPortalApiTest extends BaseTest {
     protected void isResponseOk(Response<?> response) {
         assertThat(response, successful());
     }
-
 }
 

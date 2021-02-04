@@ -44,6 +44,8 @@ public class PickingTaskClient extends BaseMashupClient {
     protected void init() {
         gatewayUrl = EnvConstants.MAIN_API_HOST;
         secondUrl = EnvConstants.PICK_API_HOST;
+        jaegerHost = EnvConstants.PICK_JAEGER_HOST;
+        jaegerService = EnvConstants.PICK_JAEGER_SERVICE;
     }
 
     @Step("Search for picking tasks")

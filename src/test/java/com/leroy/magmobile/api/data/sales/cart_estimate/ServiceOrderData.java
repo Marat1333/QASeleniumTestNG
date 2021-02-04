@@ -1,6 +1,6 @@
 package com.leroy.magmobile.api.data.sales.cart_estimate;
 
-import com.leroy.magmobile.api.data.catalog.ServiceItemData;
+import com.leroy.common_mashups.catalogs.data.ServiceItemData;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

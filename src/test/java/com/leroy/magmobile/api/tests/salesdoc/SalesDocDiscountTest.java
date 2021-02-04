@@ -5,8 +5,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
-import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 
 import com.google.inject.Inject;
@@ -18,6 +16,7 @@ import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import java.util.List;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 
@@ -37,7 +36,7 @@ public class SalesDocDiscountTest extends BaseProjectApiTest {
 
     @BeforeClass
     private void setUp() {
-        productLmCode = searchProductHelper.getProductLmCodes(1).get(0);
+        productLmCode = searchProductHelper.getProductLmCode();
     }
 
     @Test(description = "C3254680 SalesDoc GET discounts")
@@ -50,7 +49,7 @@ public class SalesDocDiscountTest extends BaseProjectApiTest {
         assertThat("Reasons size", discountReasonDataList.size(), greaterThanOrEqualTo(6));
         for (DiscountReasonData discountReasonData : discountReasonDataList) {
             assertThat("Reason Id", discountReasonData.getId(), allOf(notNullValue(), greaterThan(0)));
-            assertThat("Reason name", discountReasonData.getName(), not(isEmptyOrNullString()));
+            assertThat("Reason name", Strings.isNotNullAndNotEmpty(discountReasonData.getName()));
         }
     }
 

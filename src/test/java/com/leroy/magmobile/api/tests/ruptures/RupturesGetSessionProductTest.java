@@ -1,8 +1,5 @@
 package com.leroy.magmobile.api.tests.ruptures;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.constants.api.ErrorTextConst;
@@ -13,13 +10,17 @@ import com.leroy.magmobile.api.data.ruptures.ActionData;
 import com.leroy.magmobile.api.data.ruptures.ReqRuptureSessionData;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductData;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductDataList;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+import ru.leroymerlin.qa.core.clients.base.Response;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-import ru.leroymerlin.qa.core.clients.base.Response;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 public class RupturesGetSessionProductTest extends BaseRuptureTest {
 
@@ -208,6 +209,15 @@ public class RupturesGetSessionProductTest extends BaseRuptureTest {
         expectedResponse.setTotalCount(12);
         List<RuptureProductData> expectedItems = new ArrayList<>(ruptureProductDataListBody.getItems());
         expectedResponse.setItems(expectedItems.subList(4, 8));
+        rupturesClient.assertThatDataMatches(resp, expectedResponse);
+    }
+
+    @Test(description = "C23409755 GET ruptures products pagination default is absent")
+    public void testGetRupturesProductsDefaultPaginationIsAbsent() {
+        Response<RuptureProductDataList> resp = rupturesClient.getProducts(sessionId);
+        RuptureProductDataList expectedResponse = new RuptureProductDataList();
+        expectedResponse.setTotalCount(12);
+        expectedResponse.setItems(new ArrayList<>(ruptureProductDataListBody.getItems()));
         rupturesClient.assertThatDataMatches(resp, expectedResponse);
     }
 
