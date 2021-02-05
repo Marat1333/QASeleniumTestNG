@@ -29,7 +29,7 @@ public class MenuPage extends BaseWebPage {
 
     // Left menu
 
-    @WebFindBy(xpath = "//button[contains(@class, 'burger-btn')]", metaName = "Бургер меню кнопка")
+    @WebFindBy(xpath = "//div[contains(@class, 'lmui-ScreenHeader-LeftAreaBtn')]//button", metaName = "Бургер меню кнопка")
     private Button burgerMenuBtn;
 
     @WebFindBy(text = "Магазин портал")
