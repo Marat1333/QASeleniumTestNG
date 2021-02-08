@@ -266,7 +266,7 @@ public class OrdersFlowTest extends BasePAOTest {
         OrderHeaderPage orderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
 
         // Step 2:
-        step("Найти созданный заказ с статусе 'Готов к Сборке' с номером" + " " + orderId);
+        step("Найти созданный заказ с статусе 'Готов к Сборке' с номером "+ orderId);
         orderPage.enterSearchTextAndSubmit(orderId);
         orderPage.shouldDocumentIsPresent(orderId);
         orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.PICKED.getUiVal());

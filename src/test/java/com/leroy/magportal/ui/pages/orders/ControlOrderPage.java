@@ -55,11 +55,11 @@ public class ControlOrderPage extends OrderCreatedPage {
     @Step("Проверить, кол-во 'Заказано', 'Собрано', 'Контроль' у {index}-ого товара равно {value}")
     public ControlOrderPage orderPageVerifications(int index, int value) throws Exception {
         index--;
-        anAssert.isEquals(productCards.get(index).getOrderedQuantity(), String.valueOf(value),
+        softAssert.isEquals(productCards.get(index).getOrderedQuantity(), String.valueOf(value),
                 "Неверное кол-во 'Заказано' у " + (index + 1) + "-ого товара");
-        anAssert.isEquals(productCards.get(index).getCollectedQuantity(),String.valueOf(value),
+        softAssert.isEquals(productCards.get(index).getCollectedQuantity(),String.valueOf(value),
                 "Неверное кол-во 'Собрано' у " + (index + 1) + "-ого товара");
-        anAssert.isEquals(productCards.get(index).getControlledQuantity(), String.valueOf(value),
+        softAssert.isEquals(productCards.get(index).getControlledQuantity(), String.valueOf(value),
                 "Неверное кол-во 'Контроль' у " + (index + 1) + "-ого товара");
         return this;
     }
